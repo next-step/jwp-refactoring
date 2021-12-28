@@ -1,7 +1,7 @@
 package kitchenpos.ordertable.application;
 
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.dto.ChangeEmptyOrderTableValidator;
+import kitchenpos.ordertable.domain.ChangeEmptyOrderOrderTableValidator;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.ordertable.infra.OrderTableRepository;
@@ -33,7 +33,7 @@ class OrderTableServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
-    private ChangeEmptyOrderTableValidator changeEmptyOrderTableValidator;
+    private ChangeEmptyOrderOrderTableValidator changeEmptyOrderTableValidator;
     @InjectMocks
     private OrderTableService tableService;
 

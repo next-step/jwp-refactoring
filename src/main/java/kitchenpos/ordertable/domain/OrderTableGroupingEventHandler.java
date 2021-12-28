@@ -26,7 +26,7 @@ public class OrderTableGroupingEventHandler {
         final List<OrderTable> orderTables = orderTableRepository.findAllById(event.getOrderTableIds());
         final Long tableGroupId = event.getTableGroupId();
         orderTables.forEach(orderTable -> orderTable.group(tableGroupId));
-//        orderTableRepository.saveAll(orderTables);
+        orderTableRepository.saveAll(orderTables);
     }
 
     @Async

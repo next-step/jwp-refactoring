@@ -1,17 +1,12 @@
 package kitchenpos.order.application;
 
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.exception.CanNotChangeOrderStatusException;
 import kitchenpos.order.infra.OrderRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Arrays;
-import java.util.List;
 
 @Service
 public class OrderStatusService {
@@ -31,10 +26,4 @@ public class OrderStatusService {
         savedOrder.updateOrderStatus(request.getOrderStatus());
         return OrderResponse.of(savedOrder);
     }
-
-    @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
-    public boolean isCookingOrMealStateByOrderTableId(Long orderTableId) {
-        return orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
-    }
-
 }

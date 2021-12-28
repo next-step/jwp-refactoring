@@ -1,4 +1,4 @@
-package kitchenpos.ordertable.application;
+package kitchenpos.ordertable.exception;
 
 public class NotFoundOrderTableException extends IllegalArgumentException{
     public NotFoundOrderTableException(String message) {

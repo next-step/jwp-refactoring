@@ -36,7 +36,7 @@ import static org.mockito.Mockito.doThrow;
 
 @DisplayName("메뉴 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
-class MenuServiceTest {
+public class MenuServiceTest {
     @Mock
     private MenuRepository menuRepository;
     @Mock

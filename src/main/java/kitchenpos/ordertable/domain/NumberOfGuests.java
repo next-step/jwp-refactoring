@@ -1,6 +1,6 @@
 package kitchenpos.ordertable.domain;
 
-import kitchenpos.ordertable.application.IllegalOrderTableIdsException;
+import kitchenpos.ordertable.exception.IllegalOrderTableIdsException;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

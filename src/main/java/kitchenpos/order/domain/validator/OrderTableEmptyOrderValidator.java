@@ -6,7 +6,7 @@ import kitchenpos.ordertable.application.OrderTableService;
 import org.springframework.stereotype.Component;
 
 @Component
-public class OrderTableEmptyOrderValidator implements OrderTableValidator {
+public class OrderTableEmptyOrderValidator implements OrderValidator {
     private static final String EMPTY_ERROR_MESSAGE = "테이블이 비어있을 경우 주문을 할 수 없습니다.";
     private final OrderTableService orderTableService;
 

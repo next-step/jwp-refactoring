@@ -1,6 +1,6 @@
 package kitchenpos.ordertable.domain;
 
-import kitchenpos.ordertable.application.CanNotChangeOrderTableException;
+import kitchenpos.ordertable.exception.CanNotChangeOrderTableException;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -68,7 +68,8 @@ public class OrderTable {
         this.numberOfGuests = NumberOfGuests.of(targetNumberOfGuests);
     }
 
-    public void changeEmpty(boolean empty) {
+    public void changeEmpty(boolean empty, ChangeOrderTableValidator changeOrderTableValidator) {
+        changeOrderTableValidator.validate(id);
         this.empty = OrderTableEmpty.of(empty);
     }
 

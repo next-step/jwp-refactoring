@@ -6,6 +6,7 @@ import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.product.infra.ProductRepository;
 import org.assertj.core.api.ThrowableAssert;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -27,7 +28,6 @@ import static org.mockito.BDDMockito.given;
 @DisplayName("상품 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
-
     @Mock
     private ProductRepository productRepository;
     @InjectMocks

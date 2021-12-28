@@ -3,7 +3,7 @@ package kitchenpos.tablegroup.domain;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.infra.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.application.IllegalOrderTableIdsException;
+import kitchenpos.ordertable.exception.IllegalOrderTableIdsException;
 import kitchenpos.ordertable.infra.OrderTableRepository;
 import kitchenpos.tablegroup.exception.CanNotGroupException;
 import kitchenpos.tablegroup.exception.CanNotUnGroupException;

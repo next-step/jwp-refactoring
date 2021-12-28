@@ -3,7 +3,7 @@ package kitchenpos.order.application;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.validator.MenuCountOrderValidator;
-import kitchenpos.order.domain.validator.OrderTableValidator;
+import kitchenpos.order.domain.validator.OrderValidator;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.infra.OrderRepository;
@@ -35,7 +35,7 @@ import static org.mockito.Mockito.doThrow;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
-    private OrderTableValidator orderTableValidator;
+    private OrderValidator orderValidator;
     @Mock
     private OrderRepository orderRepository;
     @Mock
@@ -65,7 +65,7 @@ class OrderServiceTest {
                 getOrderLineRequests(orderLineItem1, orderLineItem2));
 
         doNothing().when(menuCountOrderValidator).validate(any());
-        doNothing().when(orderTableValidator).validate(any());
+        doNothing().when(orderValidator).validate(any());
         given(orderRepository.save(any())).willReturn(expected);
 
         // when
@@ -118,7 +118,7 @@ class OrderServiceTest {
                     getOrderLineRequests(orderLineItem1, orderLineItem2));
 
             doNothing().when(menuCountOrderValidator).validate(anyList());
-            doThrow(new IllegalArgumentException()).when(orderTableValidator).validate(any());
+            doThrow(new IllegalArgumentException()).when(orderValidator).validate(any());
             // when
             ThrowableAssert.ThrowingCallable callable = () -> orderService.create(createRequest);
             // then
@@ -135,7 +135,7 @@ class OrderServiceTest {
                     getOrderLineRequests(orderLineItem1, orderLineItem2));
 
             doNothing().when(menuCountOrderValidator).validate(any());
-            doThrow(new IllegalArgumentException()).when(orderTableValidator).validate(anyLong());
+            doThrow(new IllegalArgumentException()).when(orderValidator).validate(anyLong());
             // when
             ThrowableAssert.ThrowingCallable callable = () -> orderService.create(createRequest);
             // then

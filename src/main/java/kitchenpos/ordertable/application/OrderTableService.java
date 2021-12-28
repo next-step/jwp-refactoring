@@ -1,9 +1,11 @@
 package kitchenpos.ordertable.application;
 
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.dto.ChangeEmptyOrderTableValidator;
+import kitchenpos.ordertable.domain.ChangeEmptyOrderOrderTableValidator;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
+import kitchenpos.ordertable.exception.CanNotChangeOrderTableException;
+import kitchenpos.ordertable.exception.NotFoundOrderTableException;
 import kitchenpos.ordertable.infra.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,10 +19,10 @@ public class OrderTableService {
     private static final String CHANGE_EMPTY_NOT_FOUND_ERROR_MESSAGE = "존재하는 주문 테이블만 빈 테이블 유무를 변경할 수 있습니다.";
     private static final String CHANGE_NUMBER_OF_GUEST_NOT_FOUND_ERROR_MESSAGE = "존재하는 주문 테이블만 방문자 수를 변경 할 수 있습니다.";
 
-    private final ChangeEmptyOrderTableValidator changeEmptyOrderTableValidator;
+    private final ChangeEmptyOrderOrderTableValidator changeEmptyOrderTableValidator;
     private final OrderTableRepository orderTableRepository;
 
-    public OrderTableService(final ChangeEmptyOrderTableValidator changeEmptyOrderTableValidator,
+    public OrderTableService(final ChangeEmptyOrderOrderTableValidator changeEmptyOrderTableValidator,
                              final OrderTableRepository orderTableRepository) {
         this.changeEmptyOrderTableValidator = changeEmptyOrderTableValidator;
         this.orderTableRepository = orderTableRepository;
@@ -43,8 +45,7 @@ public class OrderTableService {
                 .orElseThrow(() -> {
                     throw new CanNotChangeOrderTableException(CHANGE_EMPTY_NOT_FOUND_ERROR_MESSAGE);
                 });
-        changeEmptyOrderTableValidator.validate(orderTableId);
-        orderTable.changeEmpty(request.isEmpty());
+        orderTable.changeEmpty(request.isEmpty(), changeEmptyOrderTableValidator);
         return OrderTableResponse.of(orderTableRepository.save(orderTable));
     }
 
