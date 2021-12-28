@@ -39,9 +39,4 @@ public class MenuService {
 
         return MenuMapper.toMenuResponses(menus);
     }
-
-    @Transactional(readOnly = true)
-    public List<Menu> findMenus(List<Long> ids) {
-        return menuRepository.findByIdIn(ids);
-    }
 }

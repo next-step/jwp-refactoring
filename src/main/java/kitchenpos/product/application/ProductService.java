@@ -28,11 +28,6 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public List<Product> findProducts(List<Long> id) {
-        return productRepository.findByIdIn(id);
-    }
-
-    @Transactional(readOnly = true)
     public List<ProductResponse> list() {
         final List<Product> products = productRepository.findAll();
 
