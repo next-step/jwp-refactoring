@@ -14,7 +14,6 @@ import java.util.Objects;
 @Entity
 public class Menu {
     private static final int MIN_GROUP_ID = 0;
-    private static final int MIN_PRICE = 0;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

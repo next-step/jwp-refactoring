@@ -39,10 +39,6 @@ public class MenuProduct {
         return menu;
     }
 
-    public void toMenu(Menu menu) {
-        this.menu = menu;
-    }
-
     public Product getProduct() {
         return product;
     }
