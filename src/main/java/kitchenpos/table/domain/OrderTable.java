@@ -56,6 +56,10 @@ public class OrderTable extends BaseTimeEntity {
         this.numberOfGuests = numberOfGuests;
     }
 
+    public void changeTableGroup(Long tableGroupId) {
+        this.tableGroup = tableGroupId;
+    }
+
     public void ungroup(OrderTableValidator orderTableValidator) {
         orderTableValidator.ungroupValidator(this);
         this.tableGroup = null;

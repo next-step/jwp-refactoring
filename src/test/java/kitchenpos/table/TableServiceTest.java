@@ -1,8 +1,17 @@
 package kitchenpos.table;
 
 import kitchenpos.AcceptanceTest;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.repository.MenuGroupRepository;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.repository.ProductRepository;
 import kitchenpos.table.exception.CannotChangeTableEmptyException;
 import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.table.domain.OrderTable;
@@ -16,6 +25,9 @@ import kitchenpos.tablegroup.repository.TableGroupRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -74,17 +86,4 @@ class TableServiceTest extends AcceptanceTest {
             tableService.changeEmpty(orderTable.getId(), new TableChangeEmptyRequest(true));
         }).isInstanceOf(CannotChangeTableEmptyException.class);
     }
-
-/*    @Test
-    @DisplayName("그룹해제시 주문상태가 조리 또는 식사면 예외가 발생한다.")
-    void orderStatusCookingOrMeal() {
-        // given
-        final OrderTable orderTable = new OrderTable(0, false);
-        orderTable.addOrder(new Order(OrderStatus.COOKING));
-
-        // then
-        assertThatIllegalArgumentException().isThrownBy(() -> {
-            orderTable.ungroup();
-        });
-    }*/
 }

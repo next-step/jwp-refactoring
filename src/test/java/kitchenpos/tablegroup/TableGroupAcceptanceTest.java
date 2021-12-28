@@ -7,6 +7,7 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.dto.TableGroupCreateRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,10 +48,11 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     }
 
     private void 단체_지정_됨(final ExtractableResponse<Response> response) {
-        final TableGroup 생성된_단체 = response.as(TableGroup.class);
+        final TableGroupResponse 생성된_단체 = response.as(TableGroupResponse.class);
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-                () -> assertThat(생성된_단체.getId()).isNotNull()
+                () -> assertThat(생성된_단체.getId()).isNotNull(),
+                () -> assertThat(생성된_단체.getOrderTables().size()).isEqualTo(2)
         );
     }
 
@@ -58,7 +60,8 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         return post("/api/table-groups", tableGroupCreateRequest);
     }
 
-/*    @Test
+
+    @Test
     @DisplayName("단체 지정을 해제 할 수 있다.")
     void ungroup() {
         // given
@@ -81,5 +84,5 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
 
     private TableGroupResponse 생성된_단체(final TableGroupCreateRequest request) {
         return 단쳬_지정_요청(request).as(TableGroupResponse.class);
-    }*/
+    }
 }
