@@ -3,15 +3,16 @@ package kitchenpos.ordertable.domain;
 
 import static kitchenpos.ordertable.application.fixture.OrderTableFixture.단체지정된_주문테이블;
 import static kitchenpos.ordertable.application.fixture.OrderTableFixture.빈_테이블;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import kitchenpos.tablegroup.domain.TableGroupingEvent;
-import kitchenpos.tablegroup.domain.TableUnGroupingEvent;
+import kitchenpos.ordertable.domain.event.TableGroupingEventListener;
+import kitchenpos.ordertable.domain.event.TableUnGroupingEventListener;
+import kitchenpos.tablegroup.domain.event.TableGroupingEvent;
+import kitchenpos.tablegroup.domain.event.TableUnGroupingEvent;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,13 +22,16 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class OrderTableGroupingEventHandlerTest {
+class OrderTableGroupingEvenListenerTest {
 
     @Mock
     private OrderTableRepository orderTableRepository;
 
     @InjectMocks
-    private OrderTableGroupingEventHandler orderTableGroupingEventHandler;
+    TableUnGroupingEventListener tableUnGroupingEventListener;
+
+    @InjectMocks
+    TableGroupingEventListener tableGroupingEventListener;
 
     @Test
     @DisplayName("주문테이블에서 단체지정을 할 수 있다.")
@@ -41,8 +45,8 @@ class OrderTableGroupingEventHandlerTest {
         Assertions.assertThat(주문테이블_목록).extracting("tableGroupId").containsExactly(null, null);
 
         // when
-        orderTableGroupingEventHandler.groupingHandle(new TableGroupingEvent(1L,
-            Collections.singletonList(1L)));
+        tableGroupingEventListener.onApplicationEvent(
+            new TableGroupingEvent(1L, Collections.singletonList(1L)));
         // then
         Assertions.assertThat(주문테이블_목록).extracting("tableGroupId").containsExactly(1L, 1L);
     }
@@ -59,7 +63,7 @@ class OrderTableGroupingEventHandlerTest {
         Assertions.assertThat(주문테이블_목록).extracting("tableGroupId").containsExactly(1L, 1L);
 
         // when
-        orderTableGroupingEventHandler.unGroupingHandle(new TableUnGroupingEvent(1L));
+        tableUnGroupingEventListener.onApplicationEvent(new TableUnGroupingEvent(1L));
         // then
         Assertions.assertThat(주문테이블_목록).extracting("tableGroupId").containsExactly(null, null);
     }
