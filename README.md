@@ -72,3 +72,22 @@
 - [x] kitchenpos 패키지의 코드를 보고 키친포스의 요구 사항을 README.md에 작성한다.
     - [마크다운(Markdown) - Dooray! 참고](https://dooray.com/htmls/guides/markdown_ko_KR.html)
 - [x] 정리한 키친포스의 요구 사항을 토대로 테스트 코드를 작성한다. 모든 Business Object에 대한 테스트 코드를 작성한다.
+
+## 🚀 2단계 - 서비스 리팩터링
+## 요구사항
+- 단위 테스트하기 어려운 코드와 단위 테스트 가능한 코드를 분리해 단위 테스트 가능한 코드에 대해 단위 테스트를 구현한다.
+- Spring Data JPA 사용 시 spring.jpa.hibernate.ddl-auto=validate 옵션을 필수로 준다.
+
+## 구현목록
+- [x] JPA 설정 정보 추가
+- [x] package 분리
+- [x] JDBC -> JPA로 변경
+- [x] domain 정리
+    - [x] 정적팩토리 메서드 추가
+    - [x] setter 제거
+- [x] DTO 만들기
+- [x] 서비스 로직을 도메인 로직으로 이동
+    - [x] Domain 단위 테스트 추가
+- [x] 일급콜렉션 추가
+- [x] 메서드 이름 의미있게 짓기 (setter 메서드 네이밍 변경)
+
