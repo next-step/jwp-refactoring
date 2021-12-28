@@ -3,8 +3,8 @@ package kitchenpos.tobe.fixture;
 import java.math.BigDecimal;
 import kitchenpos.tobe.common.domain.Price;
 import kitchenpos.tobe.common.domain.Quantity;
-import kitchenpos.tobe.menus.domain.MenuProduct;
-import kitchenpos.tobe.menus.dto.MenuProductRequest;
+import kitchenpos.tobe.menus.menu.domain.MenuProduct;
+import kitchenpos.tobe.menus.menu.dto.MenuProductRequest;
 
 public class MenuProductFixture {
 

@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import kitchenpos.tobe.common.DomainService;
 import kitchenpos.tobe.common.domain.Validator;
-import kitchenpos.tobe.menus.domain.Menu;
-import kitchenpos.tobe.menus.domain.MenuRepository;
+import kitchenpos.tobe.menus.menu.domain.Menu;
+import kitchenpos.tobe.menus.menu.domain.MenuRepository;
 import kitchenpos.tobe.orders.domain.ordertable.OrderTable;
 import kitchenpos.tobe.orders.domain.ordertable.OrderTableRepository;
 

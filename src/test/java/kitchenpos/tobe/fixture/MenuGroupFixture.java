@@ -1,8 +1,8 @@
 package kitchenpos.tobe.fixture;
 
 import kitchenpos.tobe.common.domain.Name;
-import kitchenpos.tobe.menus.domain.MenuGroup;
-import kitchenpos.tobe.menus.dto.MenuGroupRequest;
+import kitchenpos.tobe.menus.menugroup.domain.MenuGroup;
+import kitchenpos.tobe.menus.menugroup.dto.MenuGroupRequest;
 
 public class MenuGroupFixture {
 
