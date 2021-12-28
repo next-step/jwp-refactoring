@@ -1,1 +1,5 @@
-rootProject.name = 'kitchenpos'
+rootProject.name = 'multimodule-kitchenpos'
+
+include 'common'
+include 'menu', 'menugroup', 'order', 'product', 'table', 'tablegroup'
+include 'multimodule-kitchenpos'
