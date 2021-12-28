@@ -17,9 +17,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.repository.MenuRepository;
+import kitchenpos.repository.OrderRepository;
+import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
@@ -36,11 +36,11 @@ import kitchenpos.exception.KitchenposException;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private OrderService orderService;
@@ -164,7 +164,7 @@ class OrderServiceTest {
 
         // then
         assertThat(actual.getOrderStatus()).isEqualTo("MEAL");
-        Mockito.verify(orderDao).save(Mockito.any());
+        Mockito.verify(orderRepository).save(Mockito.any());
     }
 
     @DisplayName("이미 완료상태이면 변경 불가능")
@@ -183,32 +183,32 @@ class OrderServiceTest {
     }
 
     private void ID로_주문_조회(Order order) {
-        Mockito.when(orderDao.findById(Mockito.anyLong()))
+        Mockito.when(orderRepository.findById(Mockito.anyLong()))
             .thenReturn(Optional.of(order));
     }
 
     private void 주문_저장(Order order) {
-        Mockito.when(orderDao.save(Mockito.any()))
+        Mockito.when(orderRepository.save(Mockito.any()))
             .thenReturn(order);
     }
 
     private void ID로_메뉴_조회(Menu menu) {
-        Mockito.when(menuDao.findById(Mockito.anyLong()))
+        Mockito.when(menuRepository.findById(Mockito.anyLong()))
             .thenReturn(Optional.of(menu));
     }
 
     private void 조회한_주문_테이블_반환(OrderTable orderTable) {
-        Mockito.when(orderTableDao.findById(Mockito.anyLong()))
+        Mockito.when(orderTableRepository.findById(Mockito.anyLong()))
             .thenReturn(Optional.of(orderTable));
     }
 
     private void 메뉴_개수_반환(long l) {
-        Mockito.when(menuDao.countByIdIn(Mockito.anyList()))
+        Mockito.when(menuRepository.countByIdIn(Mockito.anyList()))
             .thenReturn(l);
     }
 
     private void 주문_전쳬_조회() {
-        Mockito.when(orderDao.findAll())
+        Mockito.when(orderRepository.findAll())
             .thenReturn(Collections.singletonList(order));
     }
 }

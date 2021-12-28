@@ -15,9 +15,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
+import kitchenpos.repository.OrderRepository;
+import kitchenpos.repository.OrderTableRepository;
+import kitchenpos.repository.TableGroupRepository;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTables;
 import kitchenpos.domain.TableGroup;
@@ -29,11 +29,11 @@ import kitchenpos.exception.KitchenposException;
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -182,27 +182,27 @@ class TableGroupServiceTest {
     }
 
     private void 테이블_그룹_저장_결과_반환() {
-        Mockito.when(tableGroupDao.save(Mockito.any()))
+        Mockito.when(tableGroupRepository.save(Mockito.any()))
             .thenReturn(tableGroup);
     }
 
     private void 테이블_조회_결과_반환(List<OrderTable> orderTables) {
-        Mockito.when(orderTableDao.findAllByIdIn(Mockito.anyList()))
+        Mockito.when(orderTableRepository.findAllByIdIn(Mockito.anyList()))
             .thenReturn(orderTables);
     }
 
     private void 테이블_그룹_ID로_조회_결과_반환(List<OrderTable> orderTables) {
-        Mockito.when(orderTableDao.findAllByTableGroup(Mockito.any()))
+        Mockito.when(orderTableRepository.findAllByTableGroup(Mockito.any()))
             .thenReturn(orderTables);
     }
 
     private void 요리_또는_식사중인_테이블_존재_여부_반환(boolean b) {
-        Mockito.when(orderDao.existsByOrderTableInAndOrderStatusIn(Mockito.anyList(), Mockito.anyList()))
+        Mockito.when(orderRepository.existsByOrderTableInAndOrderStatusIn(Mockito.anyList(), Mockito.anyList()))
             .thenReturn(b);
     }
 
     private void 테이블_그룹_ID로_테이블_그룹_조회(TableGroup tableGroup) {
-        Mockito.when(tableGroupDao.findById(Mockito.anyLong()))
+        Mockito.when(tableGroupRepository.findById(Mockito.anyLong()))
             .thenReturn(java.util.Optional.ofNullable(tableGroup));
     }
 }

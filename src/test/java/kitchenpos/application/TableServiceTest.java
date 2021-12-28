@@ -15,8 +15,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.repository.OrderRepository;
+import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.OrderTableRequest;
@@ -27,9 +27,9 @@ import kitchenpos.exception.KitchenposException;
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private TableService tableService;
@@ -63,7 +63,7 @@ class TableServiceTest {
     void list() {
         // given
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
-        Mockito.when(orderTableDao.findAll())
+        Mockito.when(orderTableRepository.findAll())
             .thenReturn(orderTables);
 
         // when
@@ -161,17 +161,17 @@ class TableServiceTest {
     }
 
     private void 아이디로_조회시_주문테이블을_반환(OrderTable orderTable) {
-        Mockito.when(orderTableDao.findById(Mockito.anyLong()))
+        Mockito.when(orderTableRepository.findById(Mockito.anyLong()))
             .thenReturn(Optional.of(orderTable));
     }
 
     private void 저장시_예상된_결과_반환(OrderTable expected) {
-        Mockito.when(orderTableDao.save(Mockito.any()))
+        Mockito.when(orderTableRepository.save(Mockito.any()))
             .thenReturn(expected);
     }
 
     private void 식사_혹은_준비중인_테이블_존재여부_반환(boolean b) {
-        Mockito.when(orderDao.existsByOrderTableAndOrderStatusIn(Mockito.any(), Mockito.anyList()))
+        Mockito.when(orderRepository.existsByOrderTableAndOrderStatusIn(Mockito.any(), Mockito.anyList()))
             .thenReturn(b);
     }
 }

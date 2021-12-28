@@ -13,7 +13,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.ProductDao;
+import kitchenpos.repository.ProductRepository;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.ProductRequest;
 import kitchenpos.dto.ProductResponse;
@@ -23,7 +23,7 @@ import kitchenpos.exception.KitchenposException;
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private ProductService productService;
@@ -33,7 +33,7 @@ class ProductServiceTest {
     void create() {
         // given
         Product product = new Product(1L, "name", BigDecimal.valueOf(10000));
-        Mockito.when(productDao.save(Mockito.any()))
+        Mockito.when(productRepository.save(Mockito.any()))
             .thenReturn(product);
 
         ProductRequest request = new ProductRequest("name", BigDecimal.valueOf(10000));
@@ -75,7 +75,7 @@ class ProductServiceTest {
         Product product2 = new Product(2L, "name2", BigDecimal.valueOf(20000));
         ProductResponses expected = ProductResponses.from(Arrays.asList(product1, product2));
 
-        Mockito.when(productDao.findAll())
+        Mockito.when(productRepository.findAll())
             .thenReturn(Arrays.asList(product1, product2));
 
         // when

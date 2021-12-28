@@ -6,8 +6,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.repository.OrderRepository;
+import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.domain.NumberOfGuests;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
@@ -21,53 +21,53 @@ import kitchenpos.exception.KitchenposNotFoundException;
 @Service
 @Transactional(readOnly = true)
 public class TableService {
-    private final OrderDao orderDao;
-    private final OrderTableDao orderTableDao;
+    private final OrderRepository orderRepository;
+    private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderDao orderDao, final OrderTableDao orderTableDao) {
-        this.orderDao = orderDao;
-        this.orderTableDao = orderTableDao;
+    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
+        this.orderRepository = orderRepository;
+        this.orderTableRepository = orderTableRepository;
     }
 
     @Transactional
     public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
         OrderTable orderTable = orderTableRequest.toEntity();
 
-        return OrderTableResponse.from(orderTableDao.save(orderTable));
+        return OrderTableResponse.from(orderTableRepository.save(orderTable));
     }
 
     public OrderTableResponses list() {
-        List<OrderTable> orderTables = orderTableDao.findAll();
+        List<OrderTable> orderTables = orderTableRepository.findAll();
 
         return OrderTableResponses.from(orderTables);
     }
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest request) {
-        final OrderTable orderTable = orderTableDao.findById(orderTableId)
+        final OrderTable orderTable = orderTableRepository.findById(orderTableId)
             .orElseThrow(KitchenposNotFoundException::new);
 
         orderTable.checkNotGrouped();
 
-        if (orderDao.existsByOrderTableAndOrderStatusIn(
+        if (orderRepository.existsByOrderTableAndOrderStatusIn(
             orderTable, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new KitchenposException(KitchenposErrorCode.CONTAINS_USED_TABLE);
         }
 
         orderTable.updateEmpty(request.isEmpty());
 
-        return OrderTableResponse.from(orderTableDao.save(orderTable));
+        return OrderTableResponse.from(orderTableRepository.save(orderTable));
     }
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest request) {
         NumberOfGuests numberOfGuests = new NumberOfGuests(request.getNumberOfGuests());
 
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
+        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
             .orElseThrow(KitchenposNotFoundException::new);
 
         savedOrderTable.updateNumberOfGuests(numberOfGuests);
 
-        return OrderTableResponse.from(orderTableDao.save(savedOrderTable));
+        return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
     }
 }

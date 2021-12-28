@@ -6,9 +6,9 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.ProductDao;
+import kitchenpos.repository.MenuRepository;
+import kitchenpos.repository.MenuGroupRepository;
+import kitchenpos.repository.ProductRepository;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
@@ -23,29 +23,29 @@ import kitchenpos.exception.KitchenposNotFoundException;
 @Service
 @Transactional(readOnly = true)
 public class MenuService {
-    private final MenuDao menuDao;
-    private final MenuGroupDao menuGroupDao;
-    private final ProductDao productDao;
+    private final MenuRepository menuRepository;
+    private final MenuGroupRepository menuGroupRepository;
+    private final ProductRepository productRepository;
 
     public MenuService(
-        final MenuDao menuDao,
-        final MenuGroupDao menuGroupDao,
-        final ProductDao productDao
+        final MenuRepository menuRepository,
+        final MenuGroupRepository menuGroupRepository,
+        final ProductRepository productRepository
     ) {
-        this.menuDao = menuDao;
-        this.menuGroupDao = menuGroupDao;
-        this.productDao = productDao;
+        this.menuRepository = menuRepository;
+        this.menuGroupRepository = menuGroupRepository;
+        this.productRepository = productRepository;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        MenuGroup menuGroup = menuGroupDao.findById(menuRequest.getMenuGroupId())
+        MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
             .orElseThrow(KitchenposNotFoundException::new);
 
         MenuProducts menuProducts = makeMenuProducts(menuRequest.getMenuProducts());
         Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup, menuProducts);
 
-        final Menu savedMenu = menuDao.save(menu);
+        final Menu savedMenu = menuRepository.save(menu);
 
         return MenuResponse.from(savedMenu);
     }
@@ -53,7 +53,7 @@ public class MenuService {
     private MenuProducts makeMenuProducts(List<MenuProductRequest> menuProductRequests) {
         return new MenuProducts(menuProductRequests.stream()
             .map(menuProductRequest -> {
-                Product product = productDao.findById(menuProductRequest.getProductId())
+                Product product = productRepository.findById(menuProductRequest.getProductId())
                     .orElseThrow(KitchenposNotFoundException::new);
                 return new MenuProduct(product, menuProductRequest.getQuantity());
             })
@@ -61,7 +61,7 @@ public class MenuService {
     }
 
     public MenuResponses list() {
-        final List<Menu> menus = menuDao.findAll();
+        final List<Menu> menus = menuRepository.findAll();
         return MenuResponses.from(menus);
     }
 }

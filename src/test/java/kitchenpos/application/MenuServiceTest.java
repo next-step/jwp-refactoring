@@ -17,9 +17,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.ProductDao;
+import kitchenpos.repository.MenuRepository;
+import kitchenpos.repository.MenuGroupRepository;
+import kitchenpos.repository.ProductRepository;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
@@ -35,11 +35,11 @@ import kitchenpos.exception.KitchenposNotFoundException;
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private MenuService menuService;
@@ -150,7 +150,7 @@ class MenuServiceTest {
         Menu menu1 = new Menu(1L, "name1", BigDecimal.ONE, menuGroup, Arrays.asList(menuProduct));
         Menu menu2 = new Menu(2L, "name2", BigDecimal.ONE, menuGroup, Arrays.asList(menuProduct));
         List<Menu> menus = Arrays.asList(menu1, menu2);
-        Mockito.when(menuDao.findAll())
+        Mockito.when(menuRepository.findAll())
             .thenReturn(menus);
 
         // when
@@ -165,17 +165,17 @@ class MenuServiceTest {
     }
 
     private void 메뉴_저장() {
-        Mockito.when(menuDao.save(Mockito.any()))
+        Mockito.when(menuRepository.save(Mockito.any()))
             .thenReturn(menu);
     }
 
     private void ID로_상품_조회(Optional<Product> product) {
-        Mockito.when(productDao.findById(Mockito.anyLong()))
+        Mockito.when(productRepository.findById(Mockito.anyLong()))
             .thenReturn(product);
     }
 
     private void ID로_메뉴_그룹_조회(Optional<MenuGroup> menuGroup) {
-        Mockito.when(menuGroupDao.findById(Mockito.anyLong()))
+        Mockito.when(menuGroupRepository.findById(Mockito.anyLong()))
             .thenReturn(menuGroup);
     }
 }
