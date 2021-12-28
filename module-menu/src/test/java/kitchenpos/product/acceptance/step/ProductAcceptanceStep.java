@@ -40,7 +40,7 @@ public class ProductAcceptanceStep {
         List<ProductResponse> 조회된_상품목록 = response.as(new TypeRef<List<ProductResponse>>() {
         });
 
-        Assertions.assertThat(조회된_상품목록).extracting("id").contains(expected);
+        assertThat(조회된_상품목록).extracting("id").contains(expected);
 
         return 조회된_상품목록;
     }

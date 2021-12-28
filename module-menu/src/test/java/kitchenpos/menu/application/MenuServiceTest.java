@@ -91,6 +91,6 @@ class MenuServiceTest {
     }
 
     private void 메뉴목록_조회됨(List<MenuResponse> 메뉴목록) {
-        Assertions.assertThat(메뉴목록).isNotEmpty();
+        assertThat(메뉴목록).isNotEmpty();
     }
 }

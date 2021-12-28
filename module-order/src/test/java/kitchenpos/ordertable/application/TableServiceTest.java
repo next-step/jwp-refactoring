@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.Optional;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.TableValidator;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +28,8 @@ class TableServiceTest {
 
     @Mock
     private OrderTableRepository orderTableRepository;
+    @Mock
+    private TableValidator tableValidator;
 
     @InjectMocks
     private TableService tableService;
@@ -103,7 +105,7 @@ class TableServiceTest {
     }
 
     private void 주문목록_조회_검증(List<OrderTableResponse> orderTableResponses) {
-        Assertions.assertThat(orderTableResponses).isNotEmpty();
+        assertThat(orderTableResponses).isNotEmpty();
     }
 
     private void 빈테이블_변경_검증(OrderTableResponse orderTableResponse) {
@@ -113,5 +115,4 @@ class TableServiceTest {
     private void 방문손님수_변경_검증(int expect, OrderTableResponse orderTableResponse) {
         assertThat(orderTableResponse.getNumberOfGuests()).isEqualTo(expect);
     }
-
 }

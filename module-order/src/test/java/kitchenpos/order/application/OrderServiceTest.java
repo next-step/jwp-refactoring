@@ -65,7 +65,7 @@ class OrderServiceTest {
         List<OrderResponse> 조회된_주문목록 = orderService.list();
 
         // then
-        Assertions.assertThat(조회된_주문목록).isNotNull();
+        assertThat(조회된_주문목록).isNotNull();
     }
 
     @Test

@@ -59,7 +59,7 @@ public class MenuGroupAcceptanceStep {
         List<MenuGroup> 조회된_메뉴그룹_목록 = response.as(new TypeRef<List<MenuGroup>>() {
         });
 
-        Assertions.assertThat(조회된_메뉴그룹_목록).isNotNull()
+        assertThat(조회된_메뉴그룹_목록).isNotNull()
             .extracting("name")
             .contains(expected.getName());
 

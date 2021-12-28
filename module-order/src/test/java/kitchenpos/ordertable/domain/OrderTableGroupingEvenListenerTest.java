@@ -3,6 +3,7 @@ package kitchenpos.ordertable.domain;
 
 import static kitchenpos.ordertable.application.fixture.OrderTableFixture.단체지정된_주문테이블;
 import static kitchenpos.ordertable.application.fixture.OrderTableFixture.빈_테이블;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -13,7 +14,6 @@ import kitchenpos.ordertable.domain.event.TableGroupingEventListener;
 import kitchenpos.ordertable.domain.event.TableUnGroupingEventListener;
 import kitchenpos.tablegroup.domain.event.TableGroupingEvent;
 import kitchenpos.tablegroup.domain.event.TableUnGroupingEvent;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,13 +42,13 @@ class OrderTableGroupingEvenListenerTest {
         // when
         when(orderTableRepository.findAllById(any())).thenReturn(주문테이블_목록);
         // then
-        Assertions.assertThat(주문테이블_목록).extracting("tableGroupId").containsExactly(null, null);
+        assertThat(주문테이블_목록).extracting("tableGroupId").containsExactly(null, null);
 
         // when
         tableGroupingEventListener.onApplicationEvent(
             new TableGroupingEvent(1L, Collections.singletonList(1L)));
         // then
-        Assertions.assertThat(주문테이블_목록).extracting("tableGroupId").containsExactly(1L, 1L);
+        assertThat(주문테이블_목록).extracting("tableGroupId").containsExactly(1L, 1L);
     }
 
     @Test
@@ -60,11 +60,11 @@ class OrderTableGroupingEvenListenerTest {
         // when
         when(orderTableRepository.findAllByTableGroupId(any())).thenReturn(주문테이블_목록);
         // then
-        Assertions.assertThat(주문테이블_목록).extracting("tableGroupId").containsExactly(1L, 1L);
+        assertThat(주문테이블_목록).extracting("tableGroupId").containsExactly(1L, 1L);
 
         // when
         tableUnGroupingEventListener.onApplicationEvent(new TableUnGroupingEvent(1L));
         // then
-        Assertions.assertThat(주문테이블_목록).extracting("tableGroupId").containsExactly(null, null);
+        assertThat(주문테이블_목록).extracting("tableGroupId").containsExactly(null, null);
     }
 }

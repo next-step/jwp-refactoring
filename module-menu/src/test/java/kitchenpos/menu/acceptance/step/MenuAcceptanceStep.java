@@ -50,7 +50,7 @@ public class MenuAcceptanceStep {
         List<MenuResponse> 조회된_메뉴_목록 = response.as(new TypeRef<List<MenuResponse>>() {
         });
 
-        Assertions.assertThat(조회된_메뉴_목록).extracting("id").contains(expected);
+        assertThat(조회된_메뉴_목록).extracting("id").contains(expected);
         return 조회된_메뉴_목록;
     }
 }

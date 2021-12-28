@@ -44,7 +44,7 @@ public class OrderAcceptanceStep {
         Long expected) {
         List<OrderResponse> 조회된_주문_목록 = response.as(new TypeRef<List<OrderResponse>>() {
         });
-        Assertions.assertThat(조회된_주문_목록).extracting("id").contains(expected);
+        assertThat(조회된_주문_목록).extracting("id").contains(expected);
 
         return 조회된_주문_목록;
     }

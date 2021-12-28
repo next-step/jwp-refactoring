@@ -58,7 +58,7 @@ class ProductServiceTest {
 
 
     private void 상품목록_조회됨(List<ProductResponse> 상품목록) {
-        Assertions.assertThat(상품목록).isNotEmpty();
+        assertThat(상품목록).isNotEmpty();
     }
 
     private void 상품이_등록_검증(ProductResponse 등록된_상품) {

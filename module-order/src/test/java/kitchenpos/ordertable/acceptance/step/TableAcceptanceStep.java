@@ -70,7 +70,7 @@ public class TableAcceptanceStep {
         List<OrderTableResponse> 조회된_메뉴그룹_목록 = response.as(new TypeRef<List<OrderTableResponse>>() {
         });
 
-        Assertions.assertThat(조회된_메뉴그룹_목록).extracting("id").contains(orderTableId);
+        assertThat(조회된_메뉴그룹_목록).extracting("id").contains(orderTableId);
     }
 
     public static void 방문한_손님_수_변경_검증(ExtractableResponse<Response> response,

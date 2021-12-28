@@ -54,6 +54,6 @@ class MenuGroupServiceTest {
         List<MenuGroupResponse> 메뉴목록 = menuGroupService.list();
 
         // then
-        Assertions.assertThat(메뉴목록).isNotEmpty();
+        assertThat(메뉴목록).isNotEmpty();
     }
 }
