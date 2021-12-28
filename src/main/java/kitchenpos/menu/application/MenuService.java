@@ -3,12 +3,10 @@ package kitchenpos.menu.application;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,18 +37,8 @@ public class MenuService {
                         .orElseThrow(IllegalArgumentException::new), menuProductRequest.getQuantity()))
                 .collect(Collectors.toList());
 
-        final Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup, menuProducts);
-        final BigDecimal price = menu.getPrice();
-
-        BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProduct menuProduct : menuProducts) {
-            final Product product = menuProduct.getProduct();
-            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
-        }
-
-        if (price.compareTo(sum) > 0) {
-            throw new IllegalArgumentException();
-        }
+        final Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup);
+        menu.addMenuProducts(menuProducts);
 
         final Menu savedMenu = menuRepository.save(menu);
 

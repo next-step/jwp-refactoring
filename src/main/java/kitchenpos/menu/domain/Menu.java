@@ -19,32 +19,30 @@ public class Menu {
     @ManyToOne
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
-    @OneToMany(mappedBy = "menu", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private final List<MenuProduct> menuProducts = new ArrayList<>();
+    @Embedded
+    private MenuProducts menuProducts = new MenuProducts();
 
     public Menu() {
     }
 
     public Menu(String name, BigDecimal price) {
-        this(null, name, price, null, null);
+        this(null, name, price, null);
     }
 
-    public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        this(null, name, price, menuGroup, menuProducts);
+    public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
+        this(null, name, price, menuGroup);
     }
 
-    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup) {
         this.id = id;
         this.name = name;
         this.price = new Price(price);
         this.menuGroup = menuGroup;
-        addMenuProducts(menuProducts);
     }
 
-    private void addMenuProducts(List<MenuProduct> menuProducts) {
-        this.menuProducts.addAll(menuProducts.stream()
-                .map(menuProduct -> new MenuProduct(this, menuProduct.getProduct(), menuProduct.getQuantity()))
-                .collect(Collectors.toList()));
+    public void addMenuProducts(List<MenuProduct> menuProducts) {
+        comparePrice();
+        this.menuProducts.addMenuProducts(this, menuProducts);
     }
 
     public Long getId() {
@@ -63,8 +61,17 @@ public class Menu {
         return menuGroup;
     }
 
-    public List<MenuProduct> getMenuProducts() {
-        return this.menuProducts;
+    public MenuProducts getMenuProducts() {
+        return menuProducts;
     }
 
+    private BigDecimal getTotalPrice() {
+        return this.getMenuProducts().getTotalPrice();
+    }
+
+    private void comparePrice() {
+        if(this.price.getPrice().compareTo(getTotalPrice()) > 0) {
+            throw new IllegalArgumentException("메뉴 가격이 올바르지 않습니다. 메뉴 가격 : " + this.price.getPrice());
+        }
+    }
 }

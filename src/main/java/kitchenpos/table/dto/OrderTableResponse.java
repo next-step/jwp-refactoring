@@ -29,7 +29,7 @@ public class OrderTableResponse {
                 .collect(Collectors.toList());
     }
 
-    private static OrderTableResponse of(OrderTable orderTable) {
+    public static OrderTableResponse of(OrderTable orderTable) {
         return new OrderTableResponse(orderTable.getId(), orderTable.getTableGroupId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
     }
 
