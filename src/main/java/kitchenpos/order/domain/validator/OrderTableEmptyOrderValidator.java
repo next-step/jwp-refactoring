@@ -1,21 +1,26 @@
 package kitchenpos.order.domain.validator;
 
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.exception.CanNotOrderException;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.application.OrderTableService;
+import kitchenpos.ordertable.infra.OrderTableRepository;
 import org.springframework.stereotype.Component;
 
 @Component
-public class OrderTableEmptyOrderValidator implements OrderValidator {
+public class OrderTableEmptyOrderValidator implements OrderCreateValidator {
     private static final String EMPTY_ERROR_MESSAGE = "테이블이 비어있을 경우 주문을 할 수 없습니다.";
-    private final OrderTableService orderTableService;
+    private static final String NOT_FOUND_ORDER_TABLE_ERROR_MESSAGE = "주문 테이블이 존재하지 않아 주문을 할 수 없습니다.";
+    private final OrderTableRepository orderTableRepository;
 
-    public OrderTableEmptyOrderValidator(OrderTableService orderTableService) {
-        this.orderTableService = orderTableService;
+    public OrderTableEmptyOrderValidator(OrderTableRepository orderTableRepository) {
+        this.orderTableRepository = orderTableRepository;
     }
 
-    public void validate(Long orderTableId) {
-        final OrderTable orderTable = orderTableService.getOrderTable(orderTableId);
+    public void validate(Order order) {
+        final OrderTable orderTable = orderTableRepository.findById(order.getOrderTableId())
+                .orElseThrow(() -> {
+                    throw new CanNotOrderException(NOT_FOUND_ORDER_TABLE_ERROR_MESSAGE);
+                });
         if (orderTable.isEmpty()) {
             throw new CanNotOrderException(EMPTY_ERROR_MESSAGE);
         }
