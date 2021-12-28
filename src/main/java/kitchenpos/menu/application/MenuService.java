@@ -1,60 +1,70 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.exception.NotExistEntityException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.group.application.MenuGroupService;
 import kitchenpos.menu.group.domain.MenuGroup;
-import kitchenpos.menu.group.domain.MenuGroupRepository;
+import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.*;
 
 @Service
 @Transactional(readOnly = true)
 public class MenuService {
     private final MenuRepository menuRepository;
-    private final MenuGroupRepository menuGroupRepository;
-    private final ProductRepository productRepository;
+    private final MenuGroupService menuGroupService;
+    private final ProductService productService;
 
     public MenuService(
             final MenuRepository menuRepository,
-            final MenuGroupRepository menuGroupRepository,
-            final ProductRepository productRepository
+            final MenuGroupService menuGroupService,
+            final ProductService productService
     ) {
         this.menuRepository = menuRepository;
-        this.menuGroupRepository = menuGroupRepository;
-        this.productRepository = productRepository;
+        this.menuGroupService = menuGroupService;
+        this.productService = productService;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
 
-        final MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
-                .orElseThrow(() -> new EntityNotFoundException("MenuGroup이 존재하지 않습니다. MenuGroupId = " + menuRequest.getMenuGroupId()));
+        final MenuGroup menuGroup = menuGroupService.findById(menuRequest.getMenuGroupId());
 
         final Menu menu = menuRequest.toEntity();
-        menu.grouping(menuGroup);
+        menu.grouping(menuGroup.getId());
 
-        final List<Long> productIds = menuRequest.getProductIds();
-        final List<Product> products = productRepository.findAllById(productIds);
+        final List<Product> products = productService.findAllByIds(menuRequest.getProductIds());
 
-        if(products.size() != productIds.size()) {
-            throw new EntityNotFoundException("일부 상품이 존재하지 않습니다.");
+        Map<Product, Long> menuProducts = new HashMap<>();
+
+        for(Product product : products)
+        {
+            MenuProductRequest menuProductRequest = menuRequest.find(product);
+            menuProducts.put(product,  menuProductRequest.getQuantity());
         }
-
-        menu.addAllProduct(products, menuRequest);
-
-        final Menu savedMenu = menuRepository.save(menu);
-        return MenuResponse.of(savedMenu);
+        menu.addProducts(menuProducts);
+        return MenuResponse.of(menuRepository.save(menu));
     }
 
     public List<MenuResponse> list() {
         final List<Menu> menus = menuRepository.findAll();
         return MenuResponse.ofList(menus);
+    }
+
+    public List<Menu> findAllByIds(List<Long> menuIds) {
+        final List<Menu> menus = menuRepository.findAllById(menuIds);
+
+        if (menuIds.size() != menus.size()) {
+            throw new NotExistEntityException("일부 메뉴가 존재하지 않습니다.");
+        }
+
+        return menus;
     }
 }

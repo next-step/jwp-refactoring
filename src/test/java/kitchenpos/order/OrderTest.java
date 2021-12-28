@@ -16,7 +16,7 @@ public class OrderTest {
     void createOrder() {
 
         //given
-        OrderTable orderTable = OrderTable.create(10);
+        OrderTable orderTable = OrderTable.setting(10);
 
         //when
         Order order = Order.create(orderTable);
@@ -31,7 +31,7 @@ public class OrderTest {
     void changeOrderStatusToCompletion() {
 
         //given
-        OrderTable orderTable = OrderTable.create(10);
+        OrderTable orderTable = OrderTable.setting(10);
         Order order = Order.create(orderTable);
 
         //when
@@ -46,7 +46,7 @@ public class OrderTest {
     void changeOrderStatusFromCookingToMeal() {
 
         //given
-        OrderTable orderTable = OrderTable.create(10);
+        OrderTable orderTable = OrderTable.setting(10);
         Order order = Order.create(orderTable);
 
         //when
@@ -61,7 +61,7 @@ public class OrderTest {
     void changeOrderStatusFromMealToCompletion() {
 
         //given
-        OrderTable orderTable = OrderTable.create(10);
+        OrderTable orderTable = OrderTable.setting(10);
         Order order = Order.create(orderTable);
         order.nextOrderStatus();
 
@@ -78,7 +78,7 @@ public class OrderTest {
     void changeOrderStatusFromCompletionToNull() {
 
         //given
-        OrderTable orderTable = OrderTable.create(10);
+        OrderTable orderTable = OrderTable.setting(10);
         Order order = Order.create(orderTable);
         order.nextOrderStatus();
         order.nextOrderStatus();

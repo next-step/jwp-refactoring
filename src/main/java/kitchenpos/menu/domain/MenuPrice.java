@@ -16,21 +16,27 @@ public class MenuPrice {
     }
 
     public MenuPrice(BigDecimal price) {
-        validatePrice(price);
+        validateNegativePrice(price);
         this.price = price;
+    }
+
+    public MenuPrice(Long price) {
+        this(new BigDecimal(price));
     }
 
     public BigDecimal getPrice() {
         return price;
     }
 
-    private void validatePrice(BigDecimal price) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+    private void validateNegativePrice(BigDecimal price) {
+        final int negativeCriteria = 0;
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < negativeCriteria) {
             throw new IllegalArgumentException();
         }
     }
 
     public boolean notMatch(MenuPrice otherMenuPrice) {
-        return price.compareTo(otherMenuPrice.getPrice()) != 0;
+        final int correctCriteria = 0;
+        return price.compareTo(otherMenuPrice.getPrice()) != correctCriteria;
     }
 }

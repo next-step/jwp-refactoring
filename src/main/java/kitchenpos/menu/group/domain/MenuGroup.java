@@ -22,7 +22,7 @@ public class MenuGroup {
     }
 
     public static MenuGroup create(String name) {
-        return new MenuGroup(name);
+        return new MenuGroup(name.trim());
     }
 
     public Long getId() {

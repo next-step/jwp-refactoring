@@ -6,6 +6,7 @@ import kitchenpos.product.domain.Product;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,7 @@ import static java.util.stream.Collectors.toList;
 
 public class OrderRequest {
 
+    @Positive
     @NotNull
     private Long orderTableId;
 

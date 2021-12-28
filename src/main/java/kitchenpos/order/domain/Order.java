@@ -1,6 +1,7 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.order.application.OrderValidator;
 import kitchenpos.table.domain.OrderTable;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.context.event.EventListener;
@@ -8,6 +9,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -106,7 +108,11 @@ public class Order {
         return !isCompletion();
     }
 
-    public void addItem(Menu menu, long quantity) {
-        this.orderLineItems.add(OrderLineItem.create(this, menu, quantity));
+    public void addItem(Long menuId, String menuName, BigDecimal menuPrice, long quantity) {
+        this.orderLineItems.add(OrderLineItem.create(menuId, menuName, menuPrice, quantity));
+    }
+
+    public void validate(OrderValidator orderValidator) {
+        orderValidator.validate(this);
     }
 }

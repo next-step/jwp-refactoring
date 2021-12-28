@@ -1,5 +1,6 @@
 package kitchenpos.product.application;
 
+import kitchenpos.exception.NotExistEntityException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
@@ -26,5 +27,14 @@ public class ProductService {
 
     public List<ProductResponse> list() {
         return ProductResponse.ofList(productRepository.findAll());
+    }
+
+    public List<Product> findAllByIds(List<Long> productIds) {
+        final List<Product> products = productRepository.findAllById(productIds);
+
+        if(products.size() != productIds.size()) {
+            throw new NotExistEntityException("일부 상품이 존재하지 않습니다.");
+        }
+        return products;
     }
 }

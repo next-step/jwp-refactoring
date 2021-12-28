@@ -48,8 +48,8 @@ public class Product {
         return productPrice.getPrice();
     }
 
-    public BigDecimal multiplyQuantity(BigDecimal quantity) {
-        return this.productPrice.multiply(quantity);
+    public long multiplyQuantity(Long quantity) {
+        return this.productPrice.multiply(new BigDecimal(quantity)).longValue();
     }
 
     public boolean matchId(Long productId) {

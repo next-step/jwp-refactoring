@@ -29,7 +29,7 @@ public class OrderRepositoryTest {
         //given
         final int numberOfGuests = 10;
         final boolean isEmpty = false;
-        final OrderTable orderTable = OrderTable.create(numberOfGuests, isEmpty);
+        final OrderTable orderTable = OrderTable.setting(numberOfGuests, isEmpty);
         final Order order = Order.create(orderTable);
         orderTableRepository.save(orderTable);
 
@@ -48,7 +48,7 @@ public class OrderRepositoryTest {
         final int numberOfGuests = 10;
         final boolean isEmpty = false;
 
-        final OrderTable orderTable = OrderTable.create(numberOfGuests, isEmpty);
+        final OrderTable orderTable = OrderTable.setting(numberOfGuests, isEmpty);
         orderTableRepository.save(orderTable);
         final Order order = Order.create(orderTable);
         orderRepository.save(order);

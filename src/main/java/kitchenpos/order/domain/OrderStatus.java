@@ -14,6 +14,9 @@ public enum OrderStatus {
     }
 
     public OrderStatus next() {
+        if(this == OrderStatus.COMPLETION) {
+            return this;
+        }
         return this.nextOrderStatus;
     }
 }

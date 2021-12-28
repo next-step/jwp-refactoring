@@ -9,11 +9,11 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class TableGroupTest {
-
 
     @DisplayName("주문 테이블 단체 지정하기")
     @Test
@@ -22,54 +22,10 @@ public class TableGroupTest {
         //given
 
         //when
-        TableGroup tableGroup = TableGroup.create();
+        TableGroup tableGroup = TableGroup.setUp();
 
         //then
         assertThat(tableGroup).isNotNull();
-    }
-
-    @DisplayName("주문 테이블 추출")
-    @Test
-    void findOrderTable() {
-
-        //given
-        TableGroup tableGroup = TableGroup.create();
-        OrderTable orderTableA = OrderTable.create(10, true);
-        ReflectionTestUtils.setField(orderTableA, "id", 1L);
-
-        OrderTable orderTableB = OrderTable.create(7, true);
-        ReflectionTestUtils.setField(orderTableB, "id", 2L);
-
-        tableGroup.addOrderTable(orderTableA);
-        tableGroup.addOrderTable(orderTableB);
-
-        //when
-        List<OrderTable> orderTables = tableGroup.findOrderTables();
-
-        //then
-        assertThat(orderTables).contains(orderTableA, orderTableB);
-    }
-
-    @DisplayName("주문 테이블 식별자 추출")
-    @Test
-    void findOrderTableIds() {
-
-        //given
-        TableGroup tableGroup = TableGroup.create();
-        OrderTable orderTableA = OrderTable.create(10, true);
-        ReflectionTestUtils.setField(orderTableA, "id", 1L);
-
-        OrderTable orderTableB = OrderTable.create(7, true);
-        ReflectionTestUtils.setField(orderTableB, "id", 2L);
-
-        tableGroup.addOrderTable(orderTableA);
-        tableGroup.addOrderTable(orderTableB);
-
-        //when
-        List<Long> ids = tableGroup.findOrderTableIds();
-
-        //then
-        assertThat(ids).contains(1L, 2L);
     }
 
     @DisplayName("단체 지정 해제하기")
@@ -77,27 +33,27 @@ public class TableGroupTest {
     void unGroup() {
 
         //given
-        TableGroup tableGroup = TableGroup.create();
-        OrderTable orderTableA = OrderTable.create(10, true);
+        final long tableGroupId = 1L;
+        OrderTable orderTableA = OrderTable.setting(10, false);
         ReflectionTestUtils.setField(orderTableA, "id", 1L);
-        Order orderA = new Order();
+
+        orderTableA.grouping(tableGroupId);
+        Order orderA = orderTableA.placeOrder();
         orderA.completion();
-        orderTableA.order(orderA);
 
-        OrderTable orderTableB = OrderTable.create(7, true);
-        Order orderB = new Order();
-        orderB.completion();
-        orderTableB.order(orderB);
+        OrderTable orderTableB = OrderTable.setting(7, false);
         ReflectionTestUtils.setField(orderTableB, "id", 2L);
-
-        tableGroup.addOrderTable(orderTableA);
-        tableGroup.addOrderTable(orderTableB);
+        orderTableB.grouping(tableGroupId);
+        Order orderB = orderTableB.placeOrder();
+        orderB.completion();
 
         //when
-        tableGroup.unGrouping();
+        orderTableA.unGrouping();
+        orderTableB.unGrouping();
 
         //then
-        assertThat(tableGroup.findOrderTables().size()).isEqualTo(0);
+        assertThat(orderTableA.getTableGroupId()).isNull();
+        assertThat(orderTableB.getTableGroupId()).isNull();
     }
 
     @DisplayName("단체 지정 해제 시 요리중인 주문이 있거나 식사중인 주문이 있을경우")
@@ -105,23 +61,22 @@ public class TableGroupTest {
     void unGroupByOrderStatusCookingAndMeal() {
 
         //given
-        TableGroup tableGroup = TableGroup.create();
-        OrderTable orderTableA = OrderTable.create(10, true);
+        final long tableGroupId = 1L;
+        TableGroup tableGroup = TableGroup.setUp();
+
+        OrderTable orderTableA = OrderTable.setting(10, false);
         ReflectionTestUtils.setField(orderTableA, "id", 1L);
-        Order orderA = new Order();
-        orderA.cooking();
-        orderTableA.order(orderA);
+        orderTableA.grouping(tableGroupId);
+        orderTableA.placeOrder();
 
-        OrderTable orderTableB = OrderTable.create(7, true);
-        Order orderB = new Order();
-        orderB.completion();
-        orderTableB.order(orderB);
+        OrderTable orderTableB = OrderTable.setting(7, false);
         ReflectionTestUtils.setField(orderTableB, "id", 2L);
-
-        tableGroup.addOrderTable(orderTableA);
-        tableGroup.addOrderTable(orderTableB);
+        orderTableB.grouping(tableGroupId);
 
         //when
-        assertThatThrownBy(() -> tableGroup.unGrouping()).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> {
+            orderTableA.unGrouping();
+            orderTableB.unGrouping();
+        }).isInstanceOf(IllegalArgumentException.class);
     }
 }

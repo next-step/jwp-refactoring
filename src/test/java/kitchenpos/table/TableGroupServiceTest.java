@@ -2,6 +2,7 @@ package kitchenpos.table;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.table.application.TableGroupService;
+import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Arrays;
@@ -34,11 +36,13 @@ public class TableGroupServiceTest {
     private TableGroupService tableGroupService;
 
     @Mock
-    private OrderTableRepository orderTableRepository;
+    private TableService tableService;
 
     @Mock
     private TableGroupRepository tableGroupRepository;
 
+    @Mock
+    private ApplicationEventPublisher publisher;
 
     @DisplayName("단체 테이블 지정하기")
     @Test
@@ -66,7 +70,6 @@ public class TableGroupServiceTest {
                 .map(OrderTableRequest::toEntity)
                 .collect(toList());
 
-        when(orderTableRepository.findAllById(anyList())).thenReturn(orderTables);
         when(tableGroupRepository.save(any())).thenReturn(tableGroup);
 
         //when
@@ -75,14 +78,6 @@ public class TableGroupServiceTest {
         //then
         assertThat(savedTableGroupResponse).isNotNull();
         assertThat(savedTableGroupResponse.getId()).isGreaterThan(0L);
-        assertThat(savedTableGroupResponse.getOrderTables().size()).isEqualTo(2);
-        assertThat(savedTableGroupResponse.getOrderTables().stream()
-                .map(OrderTableResponse::isEmpty))
-                .contains(false, false);
-
-        assertThat(savedTableGroupResponse.getOrderTables().stream()
-                .map(OrderTableResponse::getNumberOfGuests))
-                .contains(10, 4);
     }
 
     @DisplayName("지정된 단체 테이블 해제하기")
@@ -90,20 +85,18 @@ public class TableGroupServiceTest {
     void unGroupingTable() {
 
         //given
-        OrderTable orderTableA = OrderTable.create(10, true);
-        Order orderA = new Order();
-        orderA.completion();;
-        orderTableA.order(orderA);
-
-        OrderTable orderTableB = OrderTable.create(4, true);
-        Order orderB = new Order();
-        orderB.completion();;
-        orderTableB.order(orderB);
-
-        TableGroup tableGroup = TableGroup.create();
+        TableGroup tableGroup = TableGroup.setUp();
         ReflectionTestUtils.setField(tableGroup, "id", 1L);
-        tableGroup.addOrderTable(orderTableA);
-        tableGroup.addOrderTable(orderTableB);
+
+        OrderTable orderTableA = OrderTable.setting(10, false);
+        orderTableA.grouping(tableGroup.getId());
+        Order orderA = orderTableA.placeOrder();
+        orderA.completion();
+
+        OrderTable orderTableB = OrderTable.setting(4, false);
+        orderTableB.grouping(tableGroup.getId());
+        Order orderB = orderTableB.placeOrder();
+        orderB.completion();
 
         when(tableGroupRepository.findById(anyLong())).thenReturn(Optional.ofNullable(tableGroup));
 
@@ -111,8 +104,8 @@ public class TableGroupServiceTest {
         tableGroupService.ungroup(tableGroup.getId());
 
         //then
-        assertThat(orderTableA.getTableGroup()).isNull();
-        assertThat(orderTableB.getTableGroup()).isNull();
+        assertThat(orderTableA.getTableGroupId()).isNotNull();
+        assertThat(orderTableB.getTableGroupId()).isNotNull();
     }
 
 }

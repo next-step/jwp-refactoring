@@ -29,10 +29,10 @@ public class MenuRepositoryTest {
     void createMenu() {
 
         //given
-        Menu menu = Menu.create("후라이드세트", new BigDecimal("24000"));
+        Menu menu = Menu.prepared("후라이드세트", new BigDecimal("24000"));
         MenuGroup menuGroup = MenuGroup.create("치킨");
         MenuGroup actualMenuGroup = menuGroupRepository.save(menuGroup);
-        menu.grouping(actualMenuGroup);
+        menu.grouping(actualMenuGroup.getId());
 
         //when
         Menu actualMenu = menuRepository.save(menu);
@@ -49,10 +49,10 @@ public class MenuRepositoryTest {
         MenuGroup menuGroup = MenuGroup.create("양식");
         MenuGroup actualMenuGroup = menuGroupRepository.save(menuGroup);
 
-        Menu 후라이드세트 = Menu.create("후라이드세트", new BigDecimal("24000"));
-        Menu 햄버거세트 = Menu.create("햄버거세트", new BigDecimal("10000"));
-        후라이드세트.grouping(actualMenuGroup);
-        햄버거세트.grouping(actualMenuGroup);
+        Menu 후라이드세트 = Menu.prepared("후라이드세트", new BigDecimal("24000"));
+        Menu 햄버거세트 = Menu.prepared("햄버거세트", new BigDecimal("10000"));
+        후라이드세트.grouping(actualMenuGroup.getId());
+        햄버거세트.grouping(actualMenuGroup.getId());
 
         List<Menu> saveMenus = Arrays.asList(후라이드세트, 햄버거세트);
         menuRepository.saveAll(saveMenus);

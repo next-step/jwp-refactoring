@@ -15,7 +15,7 @@ public class OrderLineItemResponse {
 
     private OrderLineItemResponse(OrderLineItem orderLineItem) {
         this.id = orderLineItem.getSeq();
-        this.menuId = orderLineItem.getMenu().getId();
+        this.menuId = orderLineItem.getMenuId();
         this.quantity = orderLineItem.getQuantity();
     }
 

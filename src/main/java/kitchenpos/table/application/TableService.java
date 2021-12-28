@@ -1,5 +1,6 @@
 package kitchenpos.table.application;
 
+import kitchenpos.exception.NotExistEntityException;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -7,10 +8,7 @@ import kitchenpos.table.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @Transactional(readOnly = true)
@@ -32,13 +30,23 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTableResponse changeEmpty(final Long orderTableId) {
+    public OrderTableResponse empty(final Long orderTableId) {
 
         final OrderTable savedOrderTable = findById(orderTableId);
 
         savedOrderTable.empty();
         return OrderTableResponse.of(savedOrderTable);
     }
+
+    @Transactional
+    public OrderTableResponse full(final Long orderTableId) {
+
+        final OrderTable savedOrderTable = findById(orderTableId);
+
+        savedOrderTable.full();
+        return OrderTableResponse.of(savedOrderTable);
+    }
+
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
@@ -51,6 +59,20 @@ public class TableService {
 
     public OrderTable findById(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
-                .orElseThrow(() -> new EntityNotFoundException("주문 테이블을 찾을 수 없습니다. orderTableId = " + orderTableId));
+                .orElseThrow(() -> new NotExistEntityException("주문 테이블을 찾을 수 없습니다. orderTableId = " + orderTableId));
+    }
+
+    public List<OrderTable> findAllByIds(List<Long> orderTableIds) {
+        final List<OrderTable> savedOrderTables = orderTableRepository.findAllById(orderTableIds);
+
+        if (orderTableIds.size() != savedOrderTables.size()) {
+            throw new NotExistEntityException("일부 주문 테이블을 찾을 수 없습니다.");
+        }
+
+        return savedOrderTables;
+    }
+
+    public List<OrderTable> findAllByTableGroupId(Long tableGroupId) {
+        return orderTableRepository.findByTableGroupId(tableGroupId);
     }
 }

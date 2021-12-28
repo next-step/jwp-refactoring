@@ -24,7 +24,7 @@ public class OrderTableRepositoryTest {
         //given
         final int numberOfGuests = 10;
         final boolean empty = true;
-        OrderTable orderTable = OrderTable.create(numberOfGuests, empty);
+        OrderTable orderTable = OrderTable.setting(numberOfGuests, empty);
 
         //when
         OrderTable actualOrderTable = orderTableRepository.save(orderTable);

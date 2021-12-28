@@ -84,7 +84,7 @@ public class OrderTableControllerTest extends ControllerTest {
         ReflectionTestUtils.setField(orderTableRequest, "empty", isEmpty);
         final OrderTableResponse orderTableResponse = OrderTableResponse.of(orderTableRequest.toEntity());
 
-        when(tableService.changeEmpty(anyLong())).thenReturn(orderTableResponse);
+        when(tableService.empty(anyLong())).thenReturn(orderTableResponse);
 
         //when
         ResultActions resultActions = put("/api/tables/1/empty", new LinkedMultiValueMap<>(), orderTableRequest);

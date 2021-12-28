@@ -8,8 +8,10 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuProductResponse;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.group.application.MenuGroupService;
 import kitchenpos.menu.group.domain.MenuGroup;
 import kitchenpos.menu.group.domain.MenuGroupRepository;
+import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductPrice;
 import kitchenpos.product.domain.ProductRepository;
@@ -22,9 +24,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static java.util.stream.Collectors.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,10 +41,10 @@ public class MenuServiceTest {
     private MenuRepository menuRepository;
 
     @Mock
-    private MenuGroupRepository menuGroupRepository;
+    private MenuGroupService menuGroupService;
 
     @Mock
-    private ProductRepository productRepository;
+    private ProductService productService;
 
     @DisplayName("메뉴를 생성한다.")
     @Test
@@ -58,22 +58,16 @@ public class MenuServiceTest {
 
         MenuProductRequest 후라이드요청 = new MenuProductRequest();
         ReflectionTestUtils.setField(후라이드요청, "productId", 1L);
-        ReflectionTestUtils.setField(후라이드요청, "quantity", 1);
+        ReflectionTestUtils.setField(후라이드요청, "quantity", 1L);
 
         MenuProductRequest 콜라요청 = new MenuProductRequest();
         ReflectionTestUtils.setField(콜라요청, "productId", 2L);
-        ReflectionTestUtils.setField(콜라요청, "quantity", 1);
+        ReflectionTestUtils.setField(콜라요청, "quantity", 1L);
 
         ReflectionTestUtils.setField(menu, "products", Arrays.asList(후라이드요청, 콜라요청));
 
-        MenuProduct 후라이드메뉴 = new MenuProduct();
-        ReflectionTestUtils.setField(후라이드메뉴, "quantity", 1L);
-
         Product 후라이드 = Product.create("후라이드", new BigDecimal(22000));
         ReflectionTestUtils.setField(후라이드, "id", 1L);
-
-        MenuProduct 콜라메뉴 = new MenuProduct();
-        ReflectionTestUtils.setField(콜라메뉴, "quantity", 1L);
 
         Product 콜라 = Product.create("콜라", new BigDecimal(2000));
         ReflectionTestUtils.setField(콜라, "id", 2L);
@@ -81,9 +75,9 @@ public class MenuServiceTest {
         MenuGroup menuGroup = MenuGroup.create("치킨");
         List<Product> products = Arrays.asList(후라이드, 콜라);
 
-        when(menuGroupRepository.findById(anyLong())).thenReturn(Optional.ofNullable(menuGroup));
-        when(productRepository.findAllById(anyList())).thenReturn(products);
-        when(menuRepository.save(any())).thenReturn(Menu.create("후라이드세트", new BigDecimal("24000")));
+        when(menuGroupService.findById(anyLong())).thenReturn(menuGroup);
+        when(productService.findAllByIds(anyList())).thenReturn(products);
+        when(menuRepository.save(any())).thenReturn(Menu.prepared("후라이드세트", new BigDecimal("24000")));
 
         //when
         MenuResponse savedMenu = menuService.create(menu);
@@ -98,13 +92,18 @@ public class MenuServiceTest {
     void getMenus() {
 
         //given
-        Menu menuA = Menu.create("후라이드세트", new BigDecimal("24000"));
-        menuA.addProduct(Product.create("후라이드", new BigDecimal("23000")), 1);
-        menuA.addProduct(Product.create("콜라", new BigDecimal("2000")), 1);
+        final Menu menuA = Menu.prepared("후라이드세트", new BigDecimal("24000"));
+        final Map<Product, Long> menuAProducts = new HashMap<>();
+        menuAProducts.put(Product.create("후라이드", new BigDecimal("23000")), 1L);
+        menuAProducts.put(Product.create("콜라", new BigDecimal("2000")), 1L);
+        menuA.addProducts(menuAProducts);
 
-        Menu menuB = Menu.create("햄버거세트", new BigDecimal("10000"));
-        menuB.addProduct(Product.create("햄버거", new BigDecimal("8000")), 1);
-        menuB.addProduct(Product.create("콜라", new BigDecimal("2000")), 1);
+        final Map<Product, Long> menuBProducts = new HashMap<>();
+        final Menu menuB = Menu.prepared("햄버거세트", new BigDecimal("10000"));
+        menuBProducts.put(Product.create("햄버거", new BigDecimal("8000")), 1L);
+        menuBProducts.put(Product.create("콜라", new BigDecimal("2000")), 1L);
+        menuB.addProducts(menuBProducts);
+
         List<Menu> menus = Arrays.asList(menuA, menuB);
 
         when(menuRepository.findAll()).thenReturn(menus);
