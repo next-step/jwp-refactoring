@@ -1,8 +1,10 @@
-package kitchenpos.acceptance;
+package kitchenpos.table.acceptance;
 
-import static kitchenpos.acceptance.step.TableGroupAcceptStep.*;
+import static kitchenpos.table.acceptance.TableGroupAcceptStep.*;
 
-import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,9 +12,8 @@ import org.junit.jupiter.api.Test;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.acceptance.step.TableAcceptStep;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableResponse;
 
 @DisplayName("단체 인수테스트")
 public class TableGroupAcceptTest extends AcceptanceTest {
@@ -21,11 +22,12 @@ public class TableGroupAcceptTest extends AcceptanceTest {
 	@Test
 	void 단체를_관리한다() {
 		// given
-		OrderTable 테이블1번 = TableAcceptStep.테이블_등록_되어_있음(2, true);
-		OrderTable 테이블2번 = TableAcceptStep.테이블_등록_되어_있음(4, true);
+		TableResponse 테이블1번 = TableAcceptStep.테이블_등록_되어_있음(2, false);
+		TableResponse 테이블2번 = TableAcceptStep.테이블_등록_되어_있음(4, false);
 
-		TableGroup 단체_생성_요청_데이터 = new TableGroup();
-		단체_생성_요청_데이터.setOrderTables(Arrays.asList(테이블1번, 테이블2번));
+		List<Long> ids = Stream.of(테이블1번, 테이블2번)
+			.map(TableResponse::getId).collect(Collectors.toList());
+		TableGroupRequest 단체_생성_요청_데이터 = new TableGroupRequest(ids);
 
 		// when
 		ExtractableResponse<Response> 단체_생성_응답 = 단체_생성_요청(단체_생성_요청_데이터);

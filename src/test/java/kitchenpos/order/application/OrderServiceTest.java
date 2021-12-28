@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.order.application;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -17,26 +17,23 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.exception.AppException;
 import kitchenpos.exception.ErrorCode;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderLineItemRepository;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderUpdateRequest;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
@@ -46,11 +43,7 @@ public class OrderServiceTest {
 	@Mock
 	private MenuService menuService;
 	@Mock
-	private OrderTableDao orderTableDao;
-	@Mock
 	private OrderRepository orderRepository;
-	@Mock
-	private OrderLineItemRepository orderLineItemRepository;
 	@Mock
 	private OrderTableRepository orderTableRepository;
 
@@ -69,8 +62,8 @@ public class OrderServiceTest {
 		더블후라이드 = Menu.of(1L, "더블 후라이드", BigDecimal.valueOf(30_000), 추천메뉴);
 		더블후라이드.addMenuProducts(Collections.singletonList(메뉴_상품));
 
-		테이블 = OrderTable.of(1L, null, 2, false);
-		빈_테이블 = OrderTable.of(2L, null, 0, true);
+		테이블 = OrderTable.of(1L, 2, false);
+		빈_테이블 = OrderTable.of(2L, 0, true);
 
 		OrderLineItem 생성된_주문_항목 = OrderLineItem.of(1L, 더블후라이드, 1L);
 		생성된_주문 = Order.of(1L, 테이블, OrderStatus.COOKING);

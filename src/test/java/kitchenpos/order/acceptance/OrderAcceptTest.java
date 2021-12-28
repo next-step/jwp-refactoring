@@ -1,6 +1,6 @@
-package kitchenpos.acceptance;
+package kitchenpos.order.acceptance;
 
-import static kitchenpos.acceptance.step.OrderAcceptStep.*;
+import static kitchenpos.order.acceptance.OrderAcceptStep.*;
 
 import java.util.Collections;
 
@@ -11,8 +11,6 @@ import org.junit.jupiter.api.Test;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.acceptance.step.TableAcceptStep;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.menu.acceptance.step.MenuAcceptStep;
 import kitchenpos.menu.acceptance.step.MenuGroupAcceptStep;
 import kitchenpos.menu.dto.MenuGroupResponse;
@@ -24,12 +22,14 @@ import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderUpdateRequest;
 import kitchenpos.product.acceptance.ProductAcceptStep;
 import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.table.acceptance.TableAcceptStep;
+import kitchenpos.table.dto.TableResponse;
 
 @DisplayName("주문 인수테스트")
 public class OrderAcceptTest extends AcceptanceTest {
 
 	private MenuResponse 후라이드둘;
-	private OrderTable 테이블;
+	private TableResponse 테이블;
 
 	@BeforeEach
 	void setup() {

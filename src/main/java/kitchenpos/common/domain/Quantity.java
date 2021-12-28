@@ -14,6 +14,9 @@ public class Quantity {
 
 	private Long quantity;
 
+	public Quantity() {
+	}
+
 	private Quantity(Long quantity) {
 		this.quantity = quantity;
 	}

@@ -66,6 +66,10 @@ public class MenuProduct {
 		}
 	}
 
+	public static MenuProduct of(Product product, Long quantity) {
+		return new MenuProduct(null, null, product, PositiveNumber.valueOf(quantity));
+	}
+
 	public void setMenu(Menu menu) {
 		this.menu = menu;
 	}
