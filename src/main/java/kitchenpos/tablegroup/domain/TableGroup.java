@@ -1,6 +1,7 @@
 package kitchenpos.tablegroup.domain;
 
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.Column;
@@ -15,7 +16,7 @@ import java.util.List;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class TableGroup {
+public class TableGroup extends AbstractAggregateRoot<TableGroup> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -31,20 +32,31 @@ public class TableGroup {
     }
 
     private TableGroup(List<Long> orderTableIds) {
-        this.tableGroupOrderTableIds = TableGroupOrderTableIds.of(orderTableIds);
+        groupOrderTable(orderTableIds);
     }
 
     private TableGroup(Long id, List<Long> orderTableIds) {
         this.id = id;
-        this.tableGroupOrderTableIds = TableGroupOrderTableIds.of(orderTableIds);
+        groupOrderTable(orderTableIds);
     }
 
-    public static TableGroup of(List<Long> orderTableIds) {
-        return new TableGroup(orderTableIds);
+    private void groupOrderTable(List<Long> orderTableIds) {
+        this.tableGroupOrderTableIds = TableGroupOrderTableIds.of(orderTableIds);
+        registerEvent(TableGroupedEvent.of(this));
     }
 
     public static TableGroup generate(Long id, List<Long> orderTableIds) {
         return new TableGroup(id, orderTableIds);
+    }
+
+    public static TableGroup create(List<Long> orderTableIds, TableGroupValidator tableGroupValidator) {
+        tableGroupValidator.createValidate(orderTableIds);
+        return new TableGroup(orderTableIds);
+    }
+
+    public void ungroup(TableGroupValidator tableGroupValidator) {
+        tableGroupValidator.ungroupValidate(getOrderTableIds());
+        registerEvent(TableUnGroupedEvent.of(this));
     }
 
     public Long getId() {

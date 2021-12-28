@@ -1,6 +1,6 @@
 package kitchenpos.tablegroup.domain;
 
-import kitchenpos.ordertable.exception.IllegalOrderTableIdsException;
+import kitchenpos.ordertable.application.IllegalOrderTableIdsException;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.CollectionTable;

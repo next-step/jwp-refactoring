@@ -1,7 +1,7 @@
 package kitchenpos.ordertable.dto;
 
 import kitchenpos.order.application.OrderStatusService;
-import kitchenpos.ordertable.exception.CanNotChangeOrderTableException;
+import kitchenpos.ordertable.application.CanNotChangeOrderTableException;
 import org.springframework.stereotype.Component;
 
 @Component

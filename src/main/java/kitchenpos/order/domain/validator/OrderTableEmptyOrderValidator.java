@@ -2,7 +2,7 @@ package kitchenpos.order.domain.validator;
 
 import kitchenpos.order.exception.CanNotOrderException;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.exception.OrderTableService;
+import kitchenpos.ordertable.application.OrderTableService;
 import org.springframework.stereotype.Component;
 
 @Component

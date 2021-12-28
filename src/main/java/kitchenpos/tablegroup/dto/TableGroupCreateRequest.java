@@ -1,7 +1,5 @@
 package kitchenpos.tablegroup.dto;
 
-import kitchenpos.tablegroup.domain.TableGroup;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,9 +16,5 @@ public class TableGroupCreateRequest {
 
     public List<Long> getOrderTableIds() {
         return orderTableIds;
-    }
-
-    public TableGroup toEntity() {
-        return TableGroup.of(orderTableIds);
     }
 }

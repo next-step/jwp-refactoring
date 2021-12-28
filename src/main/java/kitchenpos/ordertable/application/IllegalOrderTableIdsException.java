@@ -1,4 +1,4 @@
-package kitchenpos.ordertable.exception;
+package kitchenpos.ordertable.application;
 
 public class IllegalOrderTableIdsException extends IllegalArgumentException {
     public IllegalOrderTableIdsException(String message) {

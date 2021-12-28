@@ -1,7 +1,7 @@
 package kitchenpos.tablegroup.domain;
 
-import kitchenpos.ordertable.exception.OrderTableService;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.infra.OrderTableRepository;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,9 +22,9 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class OrderTableIdsTableGroupValidatorTest {
     @Mock
-    private OrderTableService orderTableService;
+    private OrderTableRepository orderTableRepository;
     @InjectMocks
-    private OrderTableIdsTableGroupValidator validator;
+    private TableGroupValidator validator;
 
 
     @DisplayName("모두 빈 상태가 아닐때 유효하지 못하다.")
@@ -35,9 +35,9 @@ class OrderTableIdsTableGroupValidatorTest {
         final List<OrderTable> expected = Arrays.asList(
                 OrderTable.of(3, false), OrderTable.of(3, true)
         );
-        given(orderTableService.getOrderTablesByIdIn(orderTableIds)).willReturn(expected);
+        given(orderTableRepository.findAllByIdIn(orderTableIds)).willReturn(expected);
         // when
-        final ThrowableAssert.ThrowingCallable throwingCallable = () -> validator.validate(orderTableIds);
+        final ThrowableAssert.ThrowingCallable throwingCallable = () -> validator.createValidate(orderTableIds);
         // then
         assertThatIllegalArgumentException().isThrownBy(throwingCallable);
     }
@@ -50,9 +50,9 @@ class OrderTableIdsTableGroupValidatorTest {
         final List<OrderTable> expected = Arrays.asList(
                 OrderTable.of(3, true), OrderTable.of(3, true)
         );
-        given(orderTableService.getOrderTablesByIdIn(orderTableIds)).willReturn(expected);
+        given(orderTableRepository.findAllByIdIn(orderTableIds)).willReturn(expected);
         // when
-        final Executable executable = () -> validator.validate(orderTableIds);
+        final Executable executable = () -> validator.createValidate(orderTableIds);
         // then
         assertDoesNotThrow(executable);
     }

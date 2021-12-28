@@ -1,12 +1,14 @@
 package kitchenpos.ordertable.domain;
 
-import kitchenpos.ordertable.exception.CanNotChangeOrderTableException;
+import kitchenpos.ordertable.application.CanNotChangeOrderTableException;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.security.InvalidParameterException;
 import java.util.Objects;
 
 @Entity
@@ -19,6 +21,8 @@ public class OrderTable {
     private NumberOfGuests numberOfGuests;
     @Embedded
     private OrderTableEmpty empty;
+    @Column(name = "table_group_id")
+    private Long tableGroupId;
 
     public OrderTable() {
     }
@@ -67,6 +71,22 @@ public class OrderTable {
     public void changeEmpty(boolean empty) {
         this.empty = OrderTableEmpty.of(empty);
     }
+
+    public void ungroup() {
+        tableGroupId = null;
+    }
+
+    public void group(Long tableGroupId) {
+        validateGrouping(tableGroupId);
+        this.tableGroupId = tableGroupId;
+    }
+
+    private void validateGrouping(Long tableGroupId) {
+        if (Objects.isNull(tableGroupId)) {
+            throw new InvalidParameterException("단체 지정 아이디는 빈값이 될 수 없습니다.");
+        }
+    }
+
 
     @Override
     public boolean equals(Object target) {
