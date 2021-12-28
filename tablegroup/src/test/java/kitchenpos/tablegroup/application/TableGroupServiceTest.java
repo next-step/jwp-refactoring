@@ -1,6 +1,7 @@
 package kitchenpos.tablegroup.application;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.when;
 
@@ -15,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroupId;
@@ -31,6 +33,9 @@ public class TableGroupServiceTest {
     
     @Mock
     private TableGroupValidator tableGroupValidator;
+    
+    @Mock
+    private TableService tableService;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -42,9 +47,7 @@ public class TableGroupServiceTest {
         OrderTable 치킨_주문_단체테이블 = OrderTable.of(0, true);
         OrderTable 치킨2_주문_단체테이블 = OrderTable.of(0, true);
 
-        List<OrderTable> 조회된_주문테이블_리스트 = List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블);
-
-        when(tableGroupValidator.getValidatedOrderTables(any(TableGroupDto.class))).thenReturn(OrderTables.of(조회된_주문테이블_리스트));
+        when(tableService.findAllByIdIn(anyList())).thenReturn(List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블));
         when(tableGroupRepository.save(any(TableGroup.class))).thenReturn(TableGroup.of(1L));
 
         TableGroupDto 단체지정_요청전문 = TableGroupDto.of(List.of(OrderTableDto.of(치킨_주문_단체테이블), OrderTableDto.of(치킨2_주문_단체테이블)));
@@ -69,12 +72,10 @@ public class TableGroupServiceTest {
         치킨2_주문_단체테이블.changeEmpty(true);
 
         TableGroup 단체주문테이블 = TableGroup.of(1L);
-
         주문테이블들.groupingTable(TableGroupId.of(단체주문테이블.getId()));
 
+        when(tableService.findByTableGroupId(nullable(Long.class))).thenReturn(List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블));
 
-        when(tableGroupValidator.getComplateOrderTable(nullable(Long.class))).thenReturn(주문테이블들);
-        
         // when
         tableGroupService.ungroup(단체주문테이블.getId());
 
