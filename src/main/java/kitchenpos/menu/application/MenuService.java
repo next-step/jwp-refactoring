@@ -49,7 +49,7 @@ public class MenuService {
     }
 
     @Transactional(readOnly = true)
-    public Menu findByMenuId(final Long menuId) {
+    public Menu findById(final Long menuId) {
         return menuRepository.findById(menuId)
             .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 메뉴 입니다."));
     }
