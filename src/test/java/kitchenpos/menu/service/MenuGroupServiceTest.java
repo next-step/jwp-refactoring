@@ -1,12 +1,10 @@
 package kitchenpos.menu.service;
 
-import kitchenpos.menu.MenuFactory;
 import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,18 +28,12 @@ public class MenuGroupServiceTest {
     @Mock
     MenuGroupRepository menuGroupRepository;
 
-    private MenuGroupRequest 튀김종류;
-
-    @BeforeEach
-    void setUp() {
-        튀김종류 = MenuFactory.ofMenuGroupRequest("튀김종류");
-    }
-
     @DisplayName("메뉴 그룹을 생성한다.")
     @Test
     void 메뉴_그룹_생성() {
         // given
-        MenuGroup expected = MenuFactory.ofMenuGroup(1L, "튀김종류");
+        MenuGroupRequest 튀김종류 = new MenuGroupRequest("튀김종류");
+        MenuGroup expected = MenuGroup.of("튀김종류");
         given(menuGroupRepository.save(튀김종류.toMenuGroup())).willReturn(expected);
 
         // when
@@ -58,8 +50,8 @@ public class MenuGroupServiceTest {
     @Test
     void 메뉴_그룹_목록_조회() {
         // given
-        MenuGroup 튀김종류_예상_결과 = MenuFactory.ofMenuGroup(1L, "튀김종류");
-        MenuGroup 중식종류_예상_결과 = MenuFactory.ofMenuGroup(2L, "중식종류");
+        MenuGroup 튀김종류_예상_결과 = MenuGroup.of("튀김종류");
+        MenuGroup 중식종류_예상_결과 = MenuGroup.of("중식종류");
         given(menuGroupRepository.findAll()).willReturn(Arrays.asList(튀김종류_예상_결과, 중식종류_예상_결과));
 
         // when
