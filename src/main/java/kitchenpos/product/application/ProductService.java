@@ -32,11 +32,4 @@ public class ProductService {
                 .map(ProductResponse::of)
                 .collect(Collectors.toList());
     }
-
-    @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
-    public Product getProduct(long productId) {
-        return productRepository.findById(productId).orElseThrow(() -> {
-            throw new IllegalArgumentException(NOT_FOUND_PRODUCT_ERROR_MESSAGE);
-        });
-    }
 }

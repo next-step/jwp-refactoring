@@ -2,11 +2,13 @@ package kitchenpos.menu.domain;
 
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.exception.IllegalMenuProductException;
+import kitchenpos.product.domain.Product;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -40,14 +42,20 @@ public class MenuProductGroup {
         return new MenuProductGroup(menuProducts);
     }
 
-    public static MenuProductGroup ofRequests(List<MenuProductRequest> menuProductRequests) {
-        final List<MenuProduct> menuProducts = menuProductRequests.stream()
-                .map(MenuProductRequest::toEntity)
-                .collect(Collectors.toList());
-        return MenuProductGroup.of(menuProducts);
-    }
-
     public List<MenuProduct> getMenuProducts() {
         return Collections.unmodifiableList(menuProducts);
+    }
+
+    public List<Long> getProductIds() {
+        return menuProducts.stream()
+                .map(MenuProduct::getProductId)
+                .collect(Collectors.toList());
+    }
+
+    public BigDecimal calcTotalPrice(List<Product> products) {
+        return menuProducts.stream()
+                .map(menuProduct -> menuProduct.totalPrice(products))
+                .reduce(BigDecimal::add)
+                .orElseThrow(IllegalArgumentException::new);
     }
 }

@@ -1,5 +1,8 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.menu.domain.validator.MenuCreateValidator;
+import kitchenpos.menu.dto.MenuRequest;
+
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -39,10 +42,6 @@ public class Menu {
         this(MenuName.of(name), MenuPrice.of(price), MenuProductGroup.of(menuProducts), menuGroupId);
     }
 
-    private Menu(String name, int price, Long menuGroupId, MenuProductGroup menuProductGroup) {
-        this(MenuName.of(name), MenuPrice.of(price), menuProductGroup, menuGroupId);
-    }
-
     private Menu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         this(MenuName.of(name), MenuPrice.of(price), MenuProductGroup.of(menuProducts), menuGroupId);
         this.id = id;
@@ -56,8 +55,12 @@ public class Menu {
         return new Menu(name, price, menuGroupId, menuProducts);
     }
 
-    public static Menu create(int price, String name, MenuProductGroup menuProducts, long menuGroupId) {
-        return new Menu(name, price, menuGroupId, menuProducts);
+    public static Menu create(MenuRequest menuRequest, List<MenuCreateValidator> validators) {
+        final Menu menu = menuRequest.toEntity();
+        for (MenuCreateValidator validator : validators) {
+            validator.validate(menu);
+        }
+        return menu;
     }
 
     public Long getId() {
@@ -80,11 +83,19 @@ public class Menu {
         return menuProducts.getMenuProducts();
     }
 
+    public MenuProductGroup getMenuProductGroup() {
+        return menuProducts;
+    }
+
     public boolean matchPrice(int targetPrice) {
         return this.price.matchPrice(targetPrice);
     }
 
     public boolean matchName(String targetName) {
         return this.name.matchName(targetName);
+    }
+
+    public boolean isLessThenMenuPrice(BigDecimal totalPrice) {
+        return this.price.isLessThen(totalPrice);
     }
 }

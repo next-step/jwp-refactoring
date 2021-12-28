@@ -3,7 +3,7 @@ package kitchenpos.menugroup.application;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.validator.ExistMenuGroupMenuValidator;
+import kitchenpos.menu.domain.validator.ExistMenuGroupMenuCreateValidator;
 import kitchenpos.product.domain.Product;
 import kitchenpos.menu.domain.validator.MenuPriceValidator;
 import kitchenpos.menu.dto.MenuProductRequest;
@@ -40,7 +40,7 @@ class MenuServiceTest {
     @Mock
     private MenuRepository menuRepository;
     @Mock
-    private ExistMenuGroupMenuValidator notFoundMenuGroupValidator;
+    private ExistMenuGroupMenuCreateValidator notFoundMenuGroupValidator;
     @Mock
     private MenuPriceValidator menuPriceValidator;
     @InjectMocks
@@ -78,7 +78,7 @@ class MenuServiceTest {
                 ));
 
 
-        doNothing().when(notFoundMenuGroupValidator).validate(anyLong());
+        doNothing().when(notFoundMenuGroupValidator).validate(any());
         given(menuRepository.save(any(Menu.class))).willReturn(expected);
 
         // when
@@ -124,7 +124,7 @@ class MenuServiceTest {
                             new MenuProductRequest(분짜.getId(), 6)
                     )
             );
-            doThrow(new IllegalArgumentException()).when(notFoundMenuGroupValidator).validate(anyLong());
+            doThrow(new IllegalArgumentException()).when(notFoundMenuGroupValidator).validate(any());
             // when
             ThrowableAssert.ThrowingCallable createCall = () -> menuService.create(createRequest);
             // then
@@ -146,7 +146,7 @@ class MenuServiceTest {
             );
 
             // given
-            doThrow(new IllegalArgumentException()).when(menuPriceValidator).validate(any(), any());
+            doThrow(new IllegalArgumentException()).when(menuPriceValidator).validate(any());
             // when
             ThrowableAssert.ThrowingCallable createCall = () -> menuService.create(createRequest);
             // then

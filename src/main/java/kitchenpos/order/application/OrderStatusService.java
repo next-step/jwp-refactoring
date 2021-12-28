@@ -37,8 +37,4 @@ public class OrderStatusService {
         return orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
     }
 
-    @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
-    public boolean isCookingOrMealStateByOrderTableIds(List<Long> orderTableIds) {
-        return orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
-    }
 }

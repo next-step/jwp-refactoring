@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.menu.domain.validator.ExistMenuGroupMenuValidator;
+import kitchenpos.menu.domain.validator.ExistMenuGroupMenuCreateValidator;
 import kitchenpos.menugroup.infra.MenuGroupRepository;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
@@ -23,7 +24,7 @@ class NotFoundMenuGroupValidatorTest {
     private MenuGroupRepository menuGroupRepository;
 
     @InjectMocks
-    private ExistMenuGroupMenuValidator notFoundMenuGroupValidator;
+    private ExistMenuGroupMenuCreateValidator notFoundMenuGroupValidator;
 
     @DisplayName("존재하지 않을 경우 유효하지 못하다.")
     @Test
@@ -31,7 +32,7 @@ class NotFoundMenuGroupValidatorTest {
         // given
         given(menuGroupRepository.existsById(anyLong())).willReturn(false);
         // when
-        final ThrowableAssert.ThrowingCallable throwingCallable = () -> notFoundMenuGroupValidator.validate(1L);
+        final ThrowableAssert.ThrowingCallable throwingCallable = () -> notFoundMenuGroupValidator.validate(any());
         // then
         assertThatThrownBy(throwingCallable).isInstanceOf(IllegalArgumentException.class);
     }
@@ -43,7 +44,7 @@ class NotFoundMenuGroupValidatorTest {
         // given
         given(menuGroupRepository.existsById(anyLong())).willReturn(true);
         // when
-        final Executable executable = () -> notFoundMenuGroupValidator.validate(1L);
+        final Executable executable = () -> notFoundMenuGroupValidator.validate(any());
         // then
         assertDoesNotThrow(executable);
     }
