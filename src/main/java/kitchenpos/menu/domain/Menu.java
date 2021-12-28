@@ -33,13 +33,13 @@ public class Menu {
     protected Menu() {
     }
     
-    private Menu(String name, Long price, MenuGroup menuGroup) {
+    private Menu(String name, long price, MenuGroup menuGroup) {
         this.name = name;
         this.price = Price.from(price);
         this.menuGroup = menuGroup;
     }
 
-    public static Menu of(String name, Long price, MenuGroup menuGroup) {
+    public static Menu of(String name, long price, MenuGroup menuGroup) {
         return new Menu(name, price, menuGroup);
     }
 
@@ -76,7 +76,7 @@ public class Menu {
     }
     
     private void checkTotalPrice(Price sumProductPrice) {
-        if (this.price.compareTo(sumProductPrice) > 0) {
+        if (this.price.isGreaterThan(sumProductPrice)) {
             throw new IllegalArgumentException("메뉴 가격이 상품 가격의 합보다 큽니다");
         }
     }

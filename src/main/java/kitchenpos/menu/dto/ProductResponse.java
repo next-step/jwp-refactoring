@@ -7,12 +7,12 @@ import kitchenpos.menu.domain.Product;
 public class ProductResponse {
     private Long id;
     private String name;
-    private Long price;
+    private long price;
     
     private ProductResponse() {
     }
 
-    private ProductResponse(Long id, String name, Long price) {
+    private ProductResponse(Long id, String name, long price) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -30,7 +30,7 @@ public class ProductResponse {
         return name;
     }
 
-    public Long getPrice() {
+    public long getPrice() {
         return price;
     }
 

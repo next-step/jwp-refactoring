@@ -9,25 +9,25 @@ import javax.persistence.Embeddable;
 public class Price {
 
     @Column(name = "price")
-    private Long value;
+    private long value;
     
     protected Price() {
     }
     
-    private Price(Long value) {
+    private Price(long value) {
         validatePrice(value);
         this.value = value;
     }
     
-    public static Price from(Long value) {
+    public static Price from(long value) {
         return new Price(value);
     }
     
-    public Long getValue() {
+    public long getValue() {
         return this.value;
     }
     
-    public Price multiply(Long quantity) {
+    public Price multiply(long quantity) {
         return new Price(this.value * quantity);
     }
     
@@ -35,12 +35,12 @@ public class Price {
         return new Price(this.value + price.getValue());
     }
     
-    public int compareTo(Price targetPrice) {
-        return this.value.compareTo(targetPrice.getValue());
+    public boolean isGreaterThan(Price targetPrice) {
+        return this.value > targetPrice.getValue();
     }
     
-    private void validatePrice(Long value) {
-        if (Objects.isNull(value) || value < 0) {
+    private void validatePrice(long value) {
+        if (value < 0) {
             throw new IllegalArgumentException("가격은 0원 이상이어야 합니다");
         }
     }

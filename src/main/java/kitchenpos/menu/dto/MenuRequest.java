@@ -7,21 +7,21 @@ import kitchenpos.menu.domain.MenuGroup;
 
 public class MenuRequest {
     private String name;
-    private Long price;
+    private long price;
     private Long menuGroupId;
     private List<MenuProductRequest> menuProducts;
     
     private MenuRequest() {
     }
 
-    private MenuRequest(String name, Long price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
+    private MenuRequest(String name, long price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
     }
     
-    public static MenuRequest of(String name, Long price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
+    public static MenuRequest of(String name, long price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
         return new MenuRequest(name, price, menuGroupId, menuProducts);
     }
     

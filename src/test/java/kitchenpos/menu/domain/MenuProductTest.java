@@ -11,7 +11,7 @@ public class MenuProductTest {
     @DisplayName("상품의 가격은 메뉴의 가격과 수량을 곱한 값이다")
     @ParameterizedTest
     @CsvSource(value = { "3000:2:6000", "5000:1:5000" }, delimiter = ':')
-    void 메뉴_상품_가격(Long price, int quantity, int expected) {
+    void 메뉴_상품_가격(long price, int quantity, long expected) {
         // given
         Menu 메뉴 = Menu.of("치킨", price, MenuGroup.from("메뉴그룹"));
         Product 상품 = Product.of("치킨", price);
