@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import org.springframework.util.CollectionUtils;
 
 @Embeddable
 public class OrderLineItems {
@@ -31,7 +30,7 @@ public class OrderLineItems {
     }
 
     private void validateOrderLineItemsNotEmpty(List<OrderLineItem> orderLineItems) {
-        if (CollectionUtils.isEmpty(orderLineItems)) {
+        if (orderLineItems.isEmpty()) {
             throw new IllegalArgumentException("주문 항목은 하나 이상이어야 합니다.");
         }
     }
