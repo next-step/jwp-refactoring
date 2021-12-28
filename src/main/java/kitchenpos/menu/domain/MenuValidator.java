@@ -2,9 +2,9 @@ package kitchenpos.menu.domain;
 
 import kitchenpos.global.exception.EntityNotFoundException;
 import kitchenpos.menu.exception.MenuPriceMoreThanMenuProductPriceSumException;
-import kitchenpos.menugroup.application.MenuGroupService;
-import kitchenpos.product.application.ProductService;
+import kitchenpos.menugroup.repository.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.repository.ProductRepository;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -14,12 +14,12 @@ import java.util.stream.Collectors;
 @Component
 public class MenuValidator {
 
-    private final MenuGroupService menuGroupService;
-    private final ProductService productService;
+    private final MenuGroupRepository menuGroupRepository;
+    private final ProductRepository productRepository;
 
-    public MenuValidator(final MenuGroupService menuGroupService, final ProductService productService) {
-        this.menuGroupService = menuGroupService;
-        this.productService = productService;
+    public MenuValidator(MenuGroupRepository menuGroupRepository, ProductRepository productRepository) {
+        this.menuGroupRepository = menuGroupRepository;
+        this.productRepository = productRepository;
     }
 
     public void menuCreateValidator(Menu menu) {
@@ -35,7 +35,8 @@ public class MenuValidator {
     }
 
     private void existMenuGroupValidator(final Menu menu) {
-        menuGroupService.findMenuGroup(menu.getMenuGroup());
+        menuGroupRepository.findById(menu.getMenuGroup())
+                .orElseThrow(() -> new EntityNotFoundException(String.format("menu not found. find menu id is %d", menu.getMenuGroup())));
     }
 
     private List<Product> getMenuProducts(final Menu menu) {
@@ -44,7 +45,7 @@ public class MenuValidator {
                 .map(MenuProduct::getProduct)
                 .collect(Collectors.toList());
 
-        return productService.findProducts(productIds);
+        return productRepository.findByIdIn(productIds);
     }
 
     private void checkExistProduct(final Menu menu, final List<Product> products) {
