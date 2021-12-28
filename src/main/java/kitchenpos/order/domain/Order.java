@@ -42,7 +42,7 @@ public class Order {
 
     public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
         this.orderTableId = orderTableId;
-        this.orderLineItems = OrderLineItems.of(this, orderLineItems);
+        this.orderLineItems = OrderLineItems.of(orderLineItems);
     }
 
     private Order(Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime,
@@ -115,4 +115,8 @@ public class Order {
         return orderLineItems;
     }
 
+    public void setOrderLineItems(OrderLineItems orderLineItems) {
+        orderLineItems.getValues().forEach(orderLineItem -> orderLineItem.setOrderId(getId()));
+        this.orderLineItems = orderLineItems;
+    }
 }

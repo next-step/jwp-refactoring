@@ -10,14 +10,16 @@ import static org.mockito.Mockito.verify;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import kitchenpos.order.domain.OrderRepository;
+import java.util.Optional;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTables;
-import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.domain.TableGroupRepository;
-import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
+import kitchenpos.tablegroup.application.TableGroupService;
 import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,9 +29,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
-
-    @Mock
-    private OrderRepository orderRep;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -52,7 +51,7 @@ class TableGroupServiceTest {
 
         given(orderTableRepository.findAllById(anyList())).willReturn(orderTables);
         given(tableGroupRepository.save(any())).willReturn(tableGroup);
-        given(orderTableRepository.saveAll(any())).willReturn(Lists.newArrayList(orderTable1, orderTable2));
+//        given(orderTableRepository.saveAll(any())).willReturn(Lists.newArrayList(orderTable1, orderTable2));
 
         // when
         TableGroupResponse result = tableGroupService.create(OrderTables.of(orderTables));
@@ -99,7 +98,6 @@ class TableGroupServiceTest {
 
         given(orderTableRepository.findAllById(anyList())).willReturn(orderTables);
 
-
         // when, then
         assertThatIllegalArgumentException().isThrownBy(
             () -> tableGroupService.create(OrderTables.of(orderTables))
@@ -116,7 +114,6 @@ class TableGroupServiceTest {
 
         given(orderTableRepository.findAllById(anyList())).willReturn(orderTables);
 
-
         // when, then
         assertThatIllegalArgumentException().isThrownBy(
             () -> tableGroupService.create(OrderTables.of(orderTables))
@@ -127,30 +124,35 @@ class TableGroupServiceTest {
     @Test
     void 테이블_그룹_해제() {
         // given
+        TableGroup tableGroup = TableGroup.of(1L);
         OrderTable orderTable1 = new OrderTable(1L, 1L, 4, true);
         OrderTable orderTable2 = new OrderTable(2L, 1L, 3, true);
         List<OrderTable> orderTables = Lists.newArrayList(orderTable1, orderTable2);
 
+        given(tableGroupRepository.findById(any())).willReturn(Optional.of(tableGroup));
         given(orderTableRepository.findAllByTableGroupId(any())).willReturn(orderTables);
-        given(orderRep.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
 
         // when
         tableGroupService.ungroup(1L);
 
         // then
-        verify(orderTableRepository, times(1)).saveAll(any());
+        verify(tableGroupRepository, times(1)).delete(tableGroup);
     }
 
+    @Disabled
     @DisplayName("주문 상태가 요리중 또는 식사일 때 테이블 그룹 해제를 하면 예외 발생")
     @Test
     void 테이블_그룹_해제_예외() {
         // given
+        TableGroup tableGroup = TableGroup.of(1L);
         OrderTable orderTable1 = new OrderTable(1L, 1L, 4, true);
         OrderTable orderTable2 = new OrderTable(2L, 1L, 3, true);
         List<OrderTable> orderTables = Lists.newArrayList(orderTable1, orderTable2);
 
+        given(tableGroupRepository.findById(any())).willReturn(Optional.of(tableGroup));
         given(orderTableRepository.findAllByTableGroupId(any())).willReturn(orderTables);
-        given(orderRep.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
+//        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(),
+//            anyList())).willReturn(true);
 
         // when, then
         assertThatIllegalArgumentException().isThrownBy(

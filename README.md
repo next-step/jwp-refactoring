@@ -57,6 +57,24 @@
 | 주문 항목 | order line item | 주문에 속하는 수량이 있는 메뉴 |
 | 매장 식사 | eat in | 포장하지 않고 매장에서 식사하는 것 |
 
+### step3 요구사항
+- [X] 메뉴 정보가 변경되더라도 주문 항목이 변경되지 않게 구현
+- [X] 클래스, 패키지 사이 의존 관계는 단방향으로 구현
+  - [X] Menu -> MenuProduct 단방향 연관관계로 변경 (MenuProduct -> Menu id로 참조)
+  - [X] Order -> OrderLineItem 단반향 연관관계로 변경 (OrderLineItem -> Order id로 참조)
+  - [X] order <=> table 패키지 의존관계 수정
+    - [X] 테이블 그룹해제 이벤트 적용
+    - [X] 테이블 상태변경 이벤트 적용
+  - [X] OrderTable, TableGroup 패키지 분리
+
+- 화살표별 의미
+  ![화살표.png](arrow.png)
+- 수정전 관계도
+  ![before.png](before.png)
+- 수정후 관계도
+  ![after.png](after.png)
+  
+
 ### step2 요구사항
 
 - [X] 상품 관리 리팩토링

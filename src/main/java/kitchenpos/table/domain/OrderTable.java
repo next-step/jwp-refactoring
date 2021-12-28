@@ -8,9 +8,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 @Entity
-public class OrderTable {
+public class OrderTable extends AbstractAggregateRoot<OrderTable> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,9 +61,9 @@ public class OrderTable {
         return isEmpty() && Objects.isNull(getTableGroupId());
     }
 
-    public void groupBy(TableGroup tableGroup) {
+    public void groupBy(Long tableGroupId) {
         changeEmpty(false);
-        this.tableGroupId = tableGroup.getId();
+        this.tableGroupId = tableGroupId;
     }
 
     public void ungroup() {
@@ -108,5 +109,6 @@ public class OrderTable {
 
     public void changeEmpty(final boolean empty) {
         this.empty = empty;
+        registerEvent(this);
     }
 }
