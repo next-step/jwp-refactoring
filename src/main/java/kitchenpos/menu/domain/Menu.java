@@ -32,7 +32,6 @@ public class Menu {
         this.price = price;
         this.menuGroupId = menuGroupId;
         this.menuProducts = new MenuProducts(menuProducts);
-        this.menuProducts.initMenu(this);
     }
 
     public Long getId() {

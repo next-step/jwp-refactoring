@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MenuProductsTest {
     private MenuProducts 메뉴_상품_리스트;
-    private MenuProduct 메뉴_상품 = new MenuProduct(1L, 치킨세트, 후라이드_상품.getId(), 1L);
+    private MenuProduct 메뉴_상품 = new MenuProduct(1L, 후라이드_상품.getId(), 1L);
 
     @BeforeEach
     void setUp() {
@@ -42,7 +42,7 @@ public class MenuProductsTest {
     @DisplayName("메뉴 상품 추가")
     void addTest() {
         // given
-        MenuProduct 추가_상품 = new MenuProduct(2L, 치킨세트, 양념치킨_상품.getId(), 2L);
+        MenuProduct 추가_상품 = new MenuProduct(2L, 양념치킨_상품.getId(), 2L);
         // when
         메뉴_상품_리스트.add(추가_상품);
         // then
@@ -57,7 +57,7 @@ public class MenuProductsTest {
     void totalPriceTest(long quantity, Long menuPrice) {
         // given
         // when
-        메뉴_상품_리스트.add(new MenuProduct(2L, 치킨세트, 양념치킨_상품.getId(), quantity));
+        메뉴_상품_리스트.add(new MenuProduct(2L, 양념치킨_상품.getId(), quantity));
         // then
         assertThrows(OverMenuPriceException.class,
                 () -> 메뉴_상품_리스트.validateOverPrice(

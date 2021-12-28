@@ -6,6 +6,7 @@ import kitchenpos.product.domain.Product;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -17,7 +18,8 @@ import java.util.stream.Collectors;
 public class MenuProducts {
     private static final int MIN_PRICE = 0;
 
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "menu_id", nullable = false)
     private final List<MenuProduct> menuProducts;
 
     protected MenuProducts() {
@@ -55,10 +57,6 @@ public class MenuProducts {
         if (price.compareTo(totalPrice(products)) > MIN_PRICE) {
             throw new OverMenuPriceException();
         }
-    }
-
-    public void initMenu(Menu menu) {
-        menuProducts.forEach(menuProduct -> menuProduct.assignMenu(menu));
     }
 
     public List<Long> getProductIds() {
