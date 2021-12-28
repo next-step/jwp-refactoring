@@ -71,20 +71,6 @@ public class OrderService {
             .orElseThrow(IllegalArgumentException::new);
     }
 
-    @Transactional(readOnly = true)
-    public boolean isAllOrderStatusCompleted(final List<Long> orderTableIds) {
-        return orderTableIds.stream()
-            .allMatch(this::isOrderStatusCompleted);
-    }
-
-    @Transactional(readOnly = true)
-    public boolean isOrderStatusCompleted(final Long orderTableId) {
-        List<Order> orders = orderRepository.findAllByOrderTableId(orderTableId);
-
-        return orders.stream()
-            .allMatch(Order::isCompleteStatus);
-    }
-
     private List<OrderLineItem> makeOrderLineItems(final Order order,
         final List<OrderLineItemRequest> orderLineItemRequests) {
         final List<OrderLineItem> orderLineItems = new ArrayList<>();
