@@ -35,7 +35,4 @@ public class OrderTableRequest {
         return empty;
     }
 
-    // public OrderTable toOrderTable() {
-    //     return new OrderTable(numberOfGuests, empty);
-    // }
 }
