@@ -2,7 +2,9 @@ package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.domain.*;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
@@ -12,8 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -55,7 +55,7 @@ public class OrderService {
     }
 
     private void addOrderLineItems(Order order, List<OrderLineItemRequest> orderLineItems) {
-        for(OrderLineItemRequest orderLineItemRequest : orderLineItems){
+        for (OrderLineItemRequest orderLineItemRequest : orderLineItems) {
             Menu menu = menuRepository.findById(orderLineItemRequest.getMenuId())
                     .orElseThrow(() -> new IllegalArgumentException("메뉴 정보가 없습니다."));
             order.addOrderLineItem(menu.getId(), orderLineItemRequest.getQuantity());

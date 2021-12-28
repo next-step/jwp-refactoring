@@ -1,7 +1,6 @@
 package kitchenpos.order.domain;
 
 import com.google.common.collect.Lists;
-import kitchenpos.menu.domain.Menu;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 

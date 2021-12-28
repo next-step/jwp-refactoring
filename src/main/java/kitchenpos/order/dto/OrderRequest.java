@@ -1,9 +1,6 @@
 package kitchenpos.order.dto;
 
-import kitchenpos.order.domain.OrderLineItem;
-
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class OrderRequest {
     Long orderTableId;
