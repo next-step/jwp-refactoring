@@ -9,14 +9,19 @@ import io.restassured.response.Response;
 import java.util.Collections;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderStatusRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 @DisplayName("주문 관리 기능")
 class OrderAcceptanceTest extends AcceptanceTest {
+
+    @MockBean
+    private OrderValidator orderValidator;
 
     @Test
     @DisplayName("주문관리 한다.")
