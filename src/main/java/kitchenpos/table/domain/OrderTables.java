@@ -1,4 +1,4 @@
-package table.domain;
+package kitchenpos.table.domain;
 
 import java.util.*;
 
@@ -7,14 +7,19 @@ import javax.persistence.*;
 @Embeddable
 public class OrderTables {
 
-    @OneToMany(mappedBy = "tableGroup")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "table_group_id")
     private List<OrderTable> orderTables = new ArrayList<>();
 
     public OrderTables() {
     }
 
-    public void add(TableGroup tableGroup, OrderTable orderTable) {
-        orderTable.changeTableGroup(tableGroup);
+    public List<OrderTable> getOrderTables() {
+        return orderTables;
+    }
+
+    public void add(Long tableGroupId, OrderTable orderTable) {
+        orderTable.changeTableGroup(tableGroupId);
         orderTables.add(orderTable);
     }
 

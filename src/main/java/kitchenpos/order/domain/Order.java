@@ -1,4 +1,4 @@
-package order.domain;
+package kitchenpos.order.domain;
 
 import java.time.*;
 import java.util.*;
@@ -8,9 +8,9 @@ import javax.persistence.Id;
 
 import org.springframework.data.annotation.*;
 
-import common.*;
-import menu.domain.*;
-import table.domain.*;
+import kitchenpos.common.*;
+import kitchenpos.menu.domain.*;
+import kitchenpos.table.domain.*;
 
 @Entity
 public class Order {

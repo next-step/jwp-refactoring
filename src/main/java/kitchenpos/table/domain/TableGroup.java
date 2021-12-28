@@ -1,9 +1,10 @@
-package table.domain;
+package kitchenpos.table.domain;
 
 import java.time.*;
+import java.util.*;
 
-import javax.persistence.*;
 import javax.persistence.Id;
+import javax.persistence.*;
 
 import org.springframework.data.annotation.*;
 
@@ -34,8 +35,12 @@ public class TableGroup {
         return createdDate;
     }
 
+    public List<OrderTable> getOrderTables() {
+        return orderTables.getOrderTables();
+    }
+
     public void addOrderTable(OrderTable orderTable) {
-        orderTables.add(this, orderTable);
+        orderTables.add(this.id, orderTable);
     }
 
     public void ungroup() {

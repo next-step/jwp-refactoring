@@ -1,25 +1,27 @@
-package order.application;
+package kitchenpos.order.application;
 
 import java.util.*;
 import java.util.stream.*;
 
 import org.springframework.stereotype.*;
+import org.springframework.transaction.annotation.*;
 import org.springframework.util.*;
 
-import common.*;
-import menu.repository.*;
-import order.domain.*;
-import order.dto.*;
-import order.repository.*;
-import table.domain.*;
-import table.repository.*;
+import kitchenpos.common.*;
+import kitchenpos.menu.repository.*;
+import kitchenpos.order.domain.*;
+import kitchenpos.order.dto.*;
+import kitchenpos.order.repository.*;
+import kitchenpos.table.domain.*;
+import kitchenpos.table.dto.*;
+import kitchenpos.table.repository.*;
 
 @Service
 public class OrderService {
     private static final String ORDER_TABLE = "주문 테이블";
     private static final String ORDER_LINE_ITEM = "주문 항목";
     private static final String MENU = "메뉴";
-    private static final String ORDER = "주문";
+    private static final String ORDER_IS_NOT_COMPLETED_EXCEPTION_STATEMENT = "주문 완료가 되지 않았습니다.";
 
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
@@ -61,6 +63,26 @@ public class OrderService {
             .stream()
             .map(OrderResponse::from)
             .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public OrderTableResponse cleanTable(final Long orderTableId) {
+        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
+            .orElseThrow(() -> new NotFoundException(ORDER_TABLE));
+
+        checkCompletion(savedOrderTable);
+        savedOrderTable.cleanTable();
+
+        return OrderTableResponse.of(savedOrderTable);
+    }
+
+    private void checkCompletion(OrderTable savedOrderTable) {
+        final List<Order> orders = orderRepository.findAllByOrderTable(savedOrderTable);
+        boolean isCompleted = orders.stream()
+            .allMatch(it -> it.getOrderStatus().equals(OrderStatus.COMPLETION));
+        if (!isCompleted) {
+            throw new IllegalArgumentException(ORDER_IS_NOT_COMPLETED_EXCEPTION_STATEMENT);
+        }
     }
 }
 

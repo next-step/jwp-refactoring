@@ -1,10 +1,10 @@
-package table.domain;
+package kitchenpos.table.domain;
 
 import java.util.*;
 
 import javax.persistence.*;
 
-import common.*;
+import kitchenpos.common.*;
 
 @Entity
 public class OrderTable {
@@ -18,9 +18,8 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "table_group_id")
-    private TableGroup tableGroup;
+    @Column(name = "table_group_id")
+    private Long tableGroupId;
 
     private int numberOfGuests;
 
@@ -31,7 +30,7 @@ public class OrderTable {
 
     public OrderTable(int numberOfGuests, boolean empty) {
         validate(numberOfGuests);
-        this.tableGroup = null;
+        this.tableGroupId = null;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
@@ -40,9 +39,9 @@ public class OrderTable {
         return new OrderTable(null, numberOfGuests, empty);
     }
 
-    public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
+    public OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
         validate(numberOfGuests);
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
@@ -57,8 +56,8 @@ public class OrderTable {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public int getNumberOfGuests() {
@@ -69,8 +68,8 @@ public class OrderTable {
         return empty;
     }
 
-    public void changeTableGroup(TableGroup tableGroup) {
-        if (Objects.nonNull(this.tableGroup)) {
+    public void changeTableGroup(Long tableGroupId) {
+        if (Objects.nonNull(this.tableGroupId)) {
             throw new IllegalArgumentException(TABLE_GROUP_IS_EXIST_EXCEPTION_STATEMENT);
         }
 
@@ -78,16 +77,16 @@ public class OrderTable {
             throw new IllegalArgumentException(ORDER_TABLE_IS_NOT_EMPTY_EXCEPTION_STATEMENT);
         }
 
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
         this.empty = false;
     }
 
     public void initTableGroup() {
-        if (Objects.isNull(this.tableGroup)) {
+        if (Objects.isNull(this.tableGroupId)) {
             throw new IllegalArgumentException(TABLE_GROUP_IS_NOT_EXIST_EXCEPTION_STATEMENT);
         }
 
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 
     public void cleanTable() {

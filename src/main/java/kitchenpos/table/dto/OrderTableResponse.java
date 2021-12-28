@@ -1,12 +1,12 @@
-package table.dto;
+package kitchenpos.table.dto;
 
 import java.util.*;
 
-import table.domain.*;
+import kitchenpos.table.domain.*;
 
 public class OrderTableResponse {
     private Long id;
-    private TableGroup tableGroup;
+    private Long tableGroupId;
     private int numberOfGuests;
     private boolean empty;
 
@@ -15,7 +15,7 @@ public class OrderTableResponse {
 
     public OrderTableResponse(OrderTable orderTable) {
         this.id = orderTable.getId();
-        this.tableGroup = orderTable.getTableGroup();
+        this.tableGroupId = orderTable.getTableGroupId();
         this.numberOfGuests = orderTable.getNumberOfGuests();
         this.empty = orderTable.isEmpty();
     }
@@ -28,8 +28,8 @@ public class OrderTableResponse {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public int getNumberOfGuests() {
@@ -47,12 +47,12 @@ public class OrderTableResponse {
         if (o == null || getClass() != o.getClass())
             return false;
         OrderTableResponse that = (OrderTableResponse)o;
-        return numberOfGuests == that.numberOfGuests && empty == that.empty && Objects.equals(tableGroup,
-            that.tableGroup);
+        return numberOfGuests == that.numberOfGuests && empty == that.empty && Objects.equals(tableGroupId,
+            that.tableGroupId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(tableGroup, numberOfGuests, empty);
+        return Objects.hash(tableGroupId, numberOfGuests, empty);
     }
 }
