@@ -90,7 +90,7 @@ class TableRestControllerTest {
             changeEmpty);
         OrderTableResponse expectedOrderTable = OrderTableResponse.from(
             new OrderTable(1L, new NumberOfGuests(6), changeEmpty));
-        given(tableService.changeEmpty(any(), any())).willReturn(expectedOrderTable);
+        given(tableService.changeOrderClose(any(), any())).willReturn(expectedOrderTable);
 
         //when,then
         mockMvc.perform(put(BASE_PATH + "/{orderTableId}/order_close", expectedOrderTable.getId())

@@ -16,13 +16,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class OrderValidatorTest {
+class OrderValidateEventListenerTest {
 
     @Mock
     private OrderRepository orderRepository;
 
     @InjectMocks
-    private OrderValidator orderValidator;
+    private OrderValidateEventListener orderValidateEventListener;
 
     @DisplayName("주문상태가 계산완료가 아닌 주문이 있는 경우 예외")
     @Test
@@ -34,9 +34,11 @@ class OrderValidatorTest {
             new Order(3L, 1L, OrderStatus.COOKING, Lists.emptyList()));
         특정_테이블의_전체주문_조회_모킹(orders);
 
+        OrderTableChangeOrderCloseEvent orderValidateEvent = new OrderTableChangeOrderCloseEvent(
+            this, 1L);
         //when, then
         assertThatThrownBy(
-            () -> orderValidator.validateAllOrdersInTableComplete(1L))
+            () -> orderValidateEventListener.validateAllOrdersInTableComplete(orderValidateEvent))
             .isInstanceOf(OrderIsNotCompleteException.class);
     }
 

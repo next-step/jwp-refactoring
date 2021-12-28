@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.dto.OrderTableResponse;
@@ -17,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
@@ -25,7 +25,7 @@ class TableServiceTest {
     private OrderTableRepository orderTableRepository;
 
     @Mock
-    private OrderValidator orderValidator;
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @InjectMocks
     private TableService tableService;
@@ -76,7 +76,7 @@ class TableServiceTest {
 
         //when
         boolean changeOrderClose = false;
-        OrderTableResponse savedOrderTable = tableService.changeEmpty(orderTable.getId(),
+        OrderTableResponse savedOrderTable = tableService.changeOrderClose(orderTable.getId(),
             TableTestFixtures.convertToIsOrderCloseChangeRequest(changeOrderClose));
 
         //then
@@ -92,7 +92,6 @@ class TableServiceTest {
         TableTestFixtures.특정_주문테이블_조회_모킹(orderTableRepository, orderTable);
 
         //when
-//        OrderTable changeOrderTable = new OrderTable(new NumberOfGuests(6));
         int changeNumberOfGuests = 6;
         OrderTableResponse savedOrderTable = tableService.changeNumberOfGuests(orderTable.getId(),
             TableTestFixtures.convertToNumberOfGuestsChangeRequest(changeNumberOfGuests));

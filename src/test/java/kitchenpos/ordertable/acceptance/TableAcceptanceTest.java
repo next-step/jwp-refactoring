@@ -5,6 +5,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.common.AcceptanceTest;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.testfixtures.MenuAcceptanceFixtures;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.testfixtures.acceptance.OrderAcceptanceFixtures;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.ordertable.testfixtures.TableAcceptanceFixtures;
@@ -63,6 +70,26 @@ public class TableAcceptanceTest extends AcceptanceTest {
         상태변경_확인(변경_결과, 주문종료_상태로_변경);
     }
 
+    @DisplayName("계산완료가 아닌 주문이 있는 경우 주문테이블 상태변경 예외")
+    @Test
+    void changeOrderClose_exception() {
+        //given
+        OrderTableResponse 첫번째_테이블 = TableAcceptanceFixtures.테이블_등록_요청(
+            TableAcceptanceFixtures.테이블_정의(6, false)).getBody();
+        OrderResponse 후라이드_주문 = 후라이드_주문_생성(첫번째_테이블.getId());
+        OrderRequest 주문상태_계산완료_변경 = new OrderRequest(OrderStatus.COMPLETION);
+        OrderAcceptanceFixtures.주문_상태_변경_요청(후라이드_주문.getId(), 주문상태_계산완료_변경);
+        허니콤보_주문_생성(첫번째_테이블.getId()); // 허니콤보는 주문상태 COOKING으로 남아있음
+
+        //when
+        OrderTableRequest 주문종료_상태로_변경 = new OrderTableRequest(true);
+        ResponseEntity<OrderTableResponse> 주문테이블_상태_변경_결과 = TableAcceptanceFixtures.주문테이블_상태_변경_요청(
+            첫번째_테이블.getId(), 주문종료_상태로_변경);
+
+        //then
+        예외발생_확인(주문테이블_상태_변경_결과);
+    }
+
     @DisplayName("방문자수 변경 변경")
     @Test
     void changeNumberOfGuests() {
@@ -109,5 +136,25 @@ public class TableAcceptanceTest extends AcceptanceTest {
         OrderTableResponse orderTableResponse = response.getBody();
         assertThat(orderTableResponse.getNumberOfGuests()).isEqualTo(
             orderTableRequest.getNumberOfGuests());
+    }
+
+    private void 예외발생_확인(ResponseEntity<OrderTableResponse> response) {
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    private OrderResponse 후라이드_주문_생성(Long tableId) {
+        MenuResponse 후라이드_앤드_양념 = MenuAcceptanceFixtures.후라이드_앤드_양념_메뉴_생성();
+        OrderLineItemRequest 후라이드_앤드_양념_주문항목 = new OrderLineItemRequest(후라이드_앤드_양념.getId(), 2);
+        return OrderAcceptanceFixtures.주문_등록_요청(
+            OrderAcceptanceFixtures.주문_정의(tableId,
+                Arrays.asList(후라이드_앤드_양념_주문항목))).getBody();
+    }
+
+    private OrderResponse 허니콤보_주문_생성(Long tableId) {
+        MenuResponse 허니콤보 = MenuAcceptanceFixtures.허니콤보_메뉴_생성();
+        OrderLineItemRequest 허니콤보_주문항목 = new OrderLineItemRequest(허니콤보.getId(), 2);
+        return OrderAcceptanceFixtures.주문_등록_요청(
+            OrderAcceptanceFixtures.주문_정의(tableId,
+                Arrays.asList(허니콤보_주문항목))).getBody();
     }
 }

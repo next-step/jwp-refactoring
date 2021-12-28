@@ -1,13 +1,14 @@
 package kitchenpos.ordertable.application;
 
 import java.util.List;
-import kitchenpos.order.domain.OrderValidator;
+import kitchenpos.order.domain.OrderTableChangeOrderCloseEvent;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.ordertable.exception.TableNotFoundException;
 import kitchenpos.ordertable.vo.NumberOfGuests;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,12 +17,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class TableService {
 
     private final OrderTableRepository orderTableRepository;
-    private final OrderValidator orderTableValidator;
+    private final ApplicationEventPublisher applicationEventPublisher;
+//    private final OrderValidator orderTableValidator;
+
 
     public TableService(OrderTableRepository orderTableRepository,
-        OrderValidator orderTableValidator) {
+        ApplicationEventPublisher applicationEventPublisher) {
         this.orderTableRepository = orderTableRepository;
-        this.orderTableValidator = orderTableValidator;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Transactional
@@ -44,10 +47,11 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTableResponse changeEmpty(final Long orderTableId,
+    public OrderTableResponse changeOrderClose(final Long orderTableId,
         final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
-        orderTableValidator.validateAllOrdersInTableComplete(savedOrderTable.getId());
+        applicationEventPublisher.publishEvent(
+            new OrderTableChangeOrderCloseEvent(this, savedOrderTable.getId()));
         savedOrderTable.updateTableStatus(orderTableRequest.isOrderClose());
         return OrderTableResponse.from(savedOrderTable);
     }

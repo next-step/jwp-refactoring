@@ -45,7 +45,7 @@ public class TableRestController {
         @RequestBody final OrderTableRequest orderTable
     ) {
         return ResponseEntity.ok()
-            .body(tableService.changeEmpty(orderTableId, orderTable));
+            .body(tableService.changeOrderClose(orderTableId, orderTable));
     }
 
     @PutMapping("/{orderTableId}/number-of-guests")
