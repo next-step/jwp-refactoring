@@ -2,7 +2,6 @@ package kitchenpos.table.domain;
 
 import kitchenpos.global.BaseTimeEntity;
 import kitchenpos.table.exception.TableNotAvailableException;
-import kitchenpos.tablegroup.exception.TableGroupNotAvailableException;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,7 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.util.Objects;
 
 @Entity
 @Table(name = "order_table")
@@ -45,12 +43,6 @@ public class OrderTable extends BaseTimeEntity {
     public void checkAvailability() {
         if (this.empty) {
             throw new TableNotAvailableException(String.format("table id is %d", this.id));
-        }
-    }
-
-    public void checkAvailabilityTableGroup() {
-        if (!this.empty || Objects.nonNull(this.tableGroup)) {
-            throw new TableGroupNotAvailableException(String.format("table id is %d", this.id));
         }
     }
 

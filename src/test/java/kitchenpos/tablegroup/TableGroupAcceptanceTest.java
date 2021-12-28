@@ -3,11 +3,10 @@ package kitchenpos.tablegroup;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.dto.TableGroupCreateRequest;
-import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -51,9 +50,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         final TableGroup 생성된_단체 = response.as(TableGroup.class);
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-                () -> assertThat(생성된_단체.getId()).isNotNull(),
-                () -> assertThat(생성된_단체.getOrderTables()).isNotNull(),
-                () -> assertThat(생성된_단체.getOrderTables().size()).isEqualTo(2)
+                () -> assertThat(생성된_단체.getId()).isNotNull()
         );
     }
 
