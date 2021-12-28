@@ -3,6 +3,7 @@ package kitchenpos.table.domain;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
+import kitchenpos.tablegroup.domain.TableGroup;
 import org.springframework.util.CollectionUtils;
 
 public class OrderTables {
@@ -25,7 +26,7 @@ public class OrderTables {
 
     public void groupBy(TableGroup tableGroup) {
         for (OrderTable orderTable : orderTables) {
-            orderTable.groupBy(tableGroup);
+            orderTable.groupBy(tableGroup.getId());
         }
     }
 

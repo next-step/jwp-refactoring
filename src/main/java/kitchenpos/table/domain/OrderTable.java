@@ -61,9 +61,9 @@ public class OrderTable extends AbstractAggregateRoot<OrderTable> {
         return isEmpty() && Objects.isNull(getTableGroupId());
     }
 
-    public void groupBy(TableGroup tableGroup) {
+    public void groupBy(Long tableGroupId) {
         changeEmpty(false);
-        this.tableGroupId = tableGroup.getId();
+        this.tableGroupId = tableGroupId;
     }
 
     public void ungroup() {

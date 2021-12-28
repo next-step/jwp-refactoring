@@ -1,4 +1,6 @@
-package kitchenpos.table.domain;
+package kitchenpos.tablegroup.domain;
+
+import kitchenpos.table.domain.OrderTables;
 
 public class TableUngroupedEvent {
 

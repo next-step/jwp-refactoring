@@ -1,10 +1,11 @@
-package kitchenpos.table.domain;
+package kitchenpos.tablegroup.domain;
 
 import java.time.LocalDateTime;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import kitchenpos.table.domain.OrderTables;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
 @Entity

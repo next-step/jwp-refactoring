@@ -59,14 +59,21 @@
 
 ### step3 요구사항
 - [X] 메뉴 정보가 변경되더라도 주문 항목이 변경되지 않게 구현
-- [ ] 클래스, 패키지 사이 의존 관계는 단방향으로 구현
+- [X] 클래스, 패키지 사이 의존 관계는 단방향으로 구현
   - step2 종료후 관계도
+  ![화살표.png](arrow.png)
   ![before.png](before.png)
   - [X] Menu -> MenuProduct 단방향 연관관계로 변경 (MenuProduct -> Menu id로 참조)
   - [X] Order -> OrderLineItem 단반향 연관관계로 변경 (OrderLineItem -> Order id로 참조)
-  - [ ] order <=> table 패키지 의존관계 수정
+  - [X] order <=> table 패키지 의존관계 수정
     - [X] 테이블 그룹해제 이벤트 적용
     - [X] 테이블 상태변경 이벤트 적용
+  - [X] OrderTable, TableGroup 패키지 분리
+
+  - 수정후 관계도
+  ![after.png](after.png)
+  
+
 ### step2 요구사항
 
 - [X] 상품 관리 리팩토링

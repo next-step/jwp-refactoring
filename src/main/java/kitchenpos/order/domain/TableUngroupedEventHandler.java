@@ -3,7 +3,7 @@ package kitchenpos.order.domain;
 import static kitchenpos.order.domain.OrderStatus.UNGROUP_IMPOSSIBLE_ORDER_STATUS;
 
 import kitchenpos.table.domain.OrderTables;
-import kitchenpos.table.domain.TableUngroupedEvent;
+import kitchenpos.tablegroup.domain.TableUngroupedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
