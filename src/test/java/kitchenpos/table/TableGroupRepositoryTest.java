@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
@@ -40,21 +42,25 @@ public class TableGroupRepositoryTest {
     void findById() {
 
         //given
-        OrderTable orderTableA = OrderTable.create(3, true);
-        OrderTable orderTableB = OrderTable.create(5, true);
+        OrderTable orderTableA = OrderTable.setting(3, true);
+        OrderTable orderTableB = OrderTable.setting(5, true);
+        orderTableRepository.save(orderTableA);
+        orderTableRepository.save(orderTableB);
 
         TableGroup tableGroup = TableGroup.setUp();
-        tableGroup.addOrderTable(orderTableA);
-        tableGroup.addOrderTable(orderTableB);
         TableGroup actualTableGroup = tableGroupRepository.save(tableGroup);
+        orderTableA.grouping(actualTableGroup.getId());
+        orderTableB.grouping(actualTableGroup.getId());
 
         //when
         TableGroup findTableGroup = tableGroupRepository.findById(actualTableGroup.getId())
                 .orElseThrow(() -> new IllegalArgumentException("단체 지정된 그룹을 찾을 수 없습니다."));
 
+        List<OrderTable> orderTables = orderTableRepository.findByTableGroupId(findTableGroup.getId());
+
         //then
         assertThat(findTableGroup).isNotNull();
-        assertThat(findTableGroup.findOrderTables()).extracting(OrderTable::getNumberOfGuests).contains(3, 5);
+        assertThat(orderTables).extracting(OrderTable::getNumberOfGuests).contains(3, 5);
     }
     
 }

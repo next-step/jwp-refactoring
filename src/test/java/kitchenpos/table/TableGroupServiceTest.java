@@ -17,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Arrays;
@@ -40,6 +41,8 @@ public class TableGroupServiceTest {
     @Mock
     private TableGroupRepository tableGroupRepository;
 
+    @Mock
+    private ApplicationEventPublisher publisher;
 
     @DisplayName("단체 테이블 지정하기")
     @Test
@@ -67,8 +70,6 @@ public class TableGroupServiceTest {
                 .map(OrderTableRequest::toEntity)
                 .collect(toList());
 
-        when(tableService.findAllByIds(anyList())).thenReturn(orderTables);
-        tableGroup.addAllOrderTables(orderTables);
         when(tableGroupRepository.save(any())).thenReturn(tableGroup);
 
         //when
@@ -77,14 +78,6 @@ public class TableGroupServiceTest {
         //then
         assertThat(savedTableGroupResponse).isNotNull();
         assertThat(savedTableGroupResponse.getId()).isGreaterThan(0L);
-        assertThat(savedTableGroupResponse.getOrderTables().size()).isEqualTo(2);
-        assertThat(savedTableGroupResponse.getOrderTables().stream()
-                .map(OrderTableResponse::isEmpty))
-                .contains(false, false);
-
-        assertThat(savedTableGroupResponse.getOrderTables().stream()
-                .map(OrderTableResponse::getNumberOfGuests))
-                .contains(10, 4);
     }
 
     @DisplayName("지정된 단체 테이블 해제하기")
@@ -95,14 +88,14 @@ public class TableGroupServiceTest {
         TableGroup tableGroup = TableGroup.setUp();
         ReflectionTestUtils.setField(tableGroup, "id", 1L);
 
-        OrderTable orderTableA = OrderTable.create(10, true);
-        tableGroup.addOrderTable(orderTableA);
-        Order orderA = orderTableA.order();
+        OrderTable orderTableA = OrderTable.setting(10, false);
+        orderTableA.grouping(tableGroup.getId());
+        Order orderA = orderTableA.placeOrder();
         orderA.completion();
 
-        OrderTable orderTableB = OrderTable.create(4, true);
-        tableGroup.addOrderTable(orderTableB);
-        Order orderB = orderTableB.order();
+        OrderTable orderTableB = OrderTable.setting(4, false);
+        orderTableB.grouping(tableGroup.getId());
+        Order orderB = orderTableB.placeOrder();
         orderB.completion();
 
         when(tableGroupRepository.findById(anyLong())).thenReturn(Optional.ofNullable(tableGroup));
@@ -111,7 +104,8 @@ public class TableGroupServiceTest {
         tableGroupService.ungroup(tableGroup.getId());
 
         //then
-        assertThat(tableGroup.findOrderTables().size()).isEqualTo(0);
+        assertThat(orderTableA.getTableGroupId()).isNotNull();
+        assertThat(orderTableB.getTableGroupId()).isNotNull();
     }
 
 }

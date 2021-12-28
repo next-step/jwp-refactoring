@@ -4,6 +4,7 @@ import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.application.OrderService;
+import kitchenpos.order.application.OrderValidator;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
@@ -20,6 +21,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
@@ -30,6 +32,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -46,6 +49,9 @@ public class OrderServiceTest {
 
     @Mock
     private OrderRepository orderRepository;
+
+    @Mock
+    private OrderValidator orderValidator;
 
     @DisplayName("주문한다.")
     @Test
@@ -64,7 +70,7 @@ public class OrderServiceTest {
 
         ReflectionTestUtils.setField(orderRequest, "orderLineItems", Arrays.asList(orderLineItemRequestA, orderLineItemRequestB));
 
-        final OrderTable orderTable = OrderTable.create(10, false);
+        final OrderTable orderTable = OrderTable.setting(10, false);
         ReflectionTestUtils.setField(orderTable, "id", 1L);
 
         final Order order = Order.create(orderTable);
@@ -78,6 +84,7 @@ public class OrderServiceTest {
         ReflectionTestUtils.setField(orderRequest, "orderTableId", orderTable.getId());
         when(menuService.findAllByIds(anyList())).thenReturn(Arrays.asList(menuA, menuB));
         when(tableService.findById(anyLong())).thenReturn(orderTable);
+        doNothing().when(orderValidator).validate(any());
         when(orderRepository.save(any())).thenReturn(order);
 
         //when
@@ -95,7 +102,7 @@ public class OrderServiceTest {
         //given
         final int numberOfGuest = 10;
         final boolean isEmpty = false;
-        OrderTable orderTable = OrderTable.create(numberOfGuest, isEmpty);
+        OrderTable orderTable = OrderTable.setting(numberOfGuest, isEmpty);
 
         Order orderA = Order.create(orderTable);
         ReflectionTestUtils.setField(orderA, "id", 1L);
@@ -125,7 +132,7 @@ public class OrderServiceTest {
 
         //given
         final int numberOfGuests = 10;
-        final OrderTable orderTable = OrderTable.create(numberOfGuests);
+        final OrderTable orderTable = OrderTable.setting(numberOfGuests);
         final Order order = Order.create(orderTable);
         ReflectionTestUtils.setField(order, "id", 1L);
 
@@ -145,7 +152,7 @@ public class OrderServiceTest {
 
         //given
         final int numberOfGuests = 10;
-        OrderTable orderTable = OrderTable.create(numberOfGuests);
+        OrderTable orderTable = OrderTable.setting(numberOfGuests);
         Order order = Order.create(orderTable);
         ReflectionTestUtils.setField(order, "id", 1L);
         order.completion();

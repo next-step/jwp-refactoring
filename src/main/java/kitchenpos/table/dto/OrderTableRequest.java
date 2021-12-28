@@ -28,8 +28,8 @@ public class OrderTableRequest {
 
     public OrderTable toEntity() {
         if(Objects.isNull(empty)) {
-            return OrderTable.create(numberOfGuests);
+            return OrderTable.setting(numberOfGuests);
         }
-        return OrderTable.create(numberOfGuests, empty);
+        return OrderTable.setting(numberOfGuests, empty);
     }
 }

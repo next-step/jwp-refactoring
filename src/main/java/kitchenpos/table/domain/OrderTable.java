@@ -15,9 +15,8 @@ public class OrderTable {
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "table_group_id")
-    private TableGroup tableGroup;
+    @Column(name = "table_group_id")
+    private Long tableGroupId;
 
     @Embedded
     private TableGuest numberOfGuests;
@@ -36,11 +35,11 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public static OrderTable create(int numberOfGuests) {
+    public static OrderTable setting(int numberOfGuests) {
         return new OrderTable(numberOfGuests, true);
     }
 
-    public static OrderTable create(int numberOfGuests, boolean empty) {
+    public static OrderTable setting(int numberOfGuests, boolean empty) {
         return new OrderTable(numberOfGuests, empty);
     }
 
@@ -48,8 +47,8 @@ public class OrderTable {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public int getNumberOfGuests() {
@@ -65,7 +64,7 @@ public class OrderTable {
     }
 
     private boolean isGrouping() {
-        return Objects.nonNull(this.tableGroup);
+        return Objects.nonNull(this.tableGroupId);
     }
 
     public void validateFullAndTableGrouping() {
@@ -99,14 +98,17 @@ public class OrderTable {
     }
 
     public void unGrouping() {
-        this.tableGroup = null;
+        validateOrderStatusCompletion();
+        this.tableGroupId = null;
     }
 
     public void full() {
+        validateTableGrouping();
+        validateOrderStatusCompletion();
         this.empty = false;
     }
 
-    public Order order() {
+    public Order placeOrder() {
         if (isEmpty()) {
             throw new IllegalArgumentException("비어있는 주문 테이블에서는 주문할 수 없습니다.");
         }
@@ -114,8 +116,8 @@ public class OrderTable {
         return this.order;
     }
 
-    public void grouping(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
+    public void grouping(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
     }
 
     public void changeNumberOfGuests(int numberOfGuests) {

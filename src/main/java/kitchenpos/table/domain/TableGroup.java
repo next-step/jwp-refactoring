@@ -17,9 +17,6 @@ public class TableGroup extends BaseEntity {
     @Column(name = "id")
     private Long id;
 
-    @Embedded
-    private OrderTables orderTables = new OrderTables();
-
     protected TableGroup() {
     }
 
@@ -33,25 +30,5 @@ public class TableGroup extends BaseEntity {
 
     public LocalDateTime getCreatedDate() {
         return super.createdDate;
-    }
-
-    public void addOrderTable(OrderTable orderTable) {
-        orderTable.validateFullAndTableGrouping();
-        orderTable.full();
-        this.orderTables.add(orderTable);
-    }
-
-    public void addAllOrderTables(List<OrderTable> orderTables) {
-        for(OrderTable orderTable : orderTables) {
-            addOrderTable(orderTable);
-        }
-    }
-
-    public List<OrderTable> findOrderTables() {
-        return this.orderTables.find();
-    }
-
-    public void unGrouping() {
-        this.orderTables.unGrouping();
     }
 }

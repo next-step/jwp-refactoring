@@ -50,7 +50,6 @@ public class MenuService {
             menuProducts.put(product,  menuProductRequest.getQuantity());
         }
         menu.addProducts(menuProducts);
-
         return MenuResponse.of(menuRepository.save(menu));
     }
 
@@ -62,7 +61,7 @@ public class MenuService {
     public List<Menu> findAllByIds(List<Long> menuIds) {
         final List<Menu> menus = menuRepository.findAllById(menuIds);
 
-        if (menus.size() != menus.size()) {
+        if (menuIds.size() != menus.size()) {
             throw new NotExistEntityException("일부 메뉴가 존재하지 않습니다.");
         }
 

@@ -30,13 +30,23 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTableResponse changeEmpty(final Long orderTableId) {
+    public OrderTableResponse empty(final Long orderTableId) {
 
         final OrderTable savedOrderTable = findById(orderTableId);
 
         savedOrderTable.empty();
         return OrderTableResponse.of(savedOrderTable);
     }
+
+    @Transactional
+    public OrderTableResponse full(final Long orderTableId) {
+
+        final OrderTable savedOrderTable = findById(orderTableId);
+
+        savedOrderTable.full();
+        return OrderTableResponse.of(savedOrderTable);
+    }
+
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
@@ -60,5 +70,9 @@ public class TableService {
         }
 
         return savedOrderTables;
+    }
+
+    public List<OrderTable> findAllByTableGroupId(Long tableGroupId) {
+        return orderTableRepository.findByTableGroupId(tableGroupId);
     }
 }

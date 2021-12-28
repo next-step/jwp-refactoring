@@ -20,30 +20,31 @@ public class OrderService {
     private final MenuService menuService;
     private final OrderRepository orderRepository;
     private final TableService tableService;
+    private final OrderValidator orderValidator;
 
     public OrderService(
             final MenuService menuService,
             final OrderRepository orderRepository,
-            final TableService tableService
+            final TableService tableService,
+            final OrderValidator orderValidator
     ) {
         this.menuService = menuService;
         this.orderRepository = orderRepository;
         this.tableService = tableService;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
         final List<Menu> menus = menuService.findAllByIds(orderRequest.getMenuIds());
-
         final OrderTable orderTable = tableService.findById(orderRequest.getOrderTableId());
-
-        final Order order = orderTable.order();
+        final Order order = orderTable.placeOrder();
 
         for(Menu menu : menus) {
             final OrderLineItemRequest orderLineItemRequest = orderRequest.find(menu);
-            order.addItem(menu, orderLineItemRequest.getQuantity());
+            order.addItem(menu.getId(), orderLineItemRequest.getMenuName(), orderLineItemRequest.getMenuPrice(), orderLineItemRequest.getQuantity());
         }
-
+        order.validate(orderValidator);
         final Order savedOrder = orderRepository.save(order);
         return OrderResponse.of(savedOrder);
     }

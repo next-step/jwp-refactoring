@@ -94,7 +94,7 @@ public class OrderControllerTest extends ControllerTest {
         //given
         final List<Order> orders = new ArrayList<>();
         final int numberOfGuests = 10;
-        final OrderTable orderTable = OrderTable.create(numberOfGuests);
+        final OrderTable orderTable = OrderTable.setting(numberOfGuests);
         ReflectionTestUtils.setField(orderTable, "id", 1L);
         final Order order = Order.create(orderTable);
         ReflectionTestUtils.setField(order, "id", 1L);

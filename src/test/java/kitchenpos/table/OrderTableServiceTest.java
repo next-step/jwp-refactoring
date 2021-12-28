@@ -41,7 +41,7 @@ public class OrderTableServiceTest {
         //given
         final int numberOfGuests = 7;
         final boolean empty = true;
-        final OrderTable orderTable = OrderTable.create(numberOfGuests, empty);
+        final OrderTable orderTable = OrderTable.setting(numberOfGuests, empty);
         final OrderTableRequest orderTableRequest = new OrderTableRequest();
         ReflectionTestUtils.setField(orderTableRequest, "numberOfGuests", numberOfGuests);
         ReflectionTestUtils.setField(orderTableRequest, "empty", empty);
@@ -62,8 +62,8 @@ public class OrderTableServiceTest {
         //given
         final int numberOfGuestsA = 10;
         final int numberOfGuestsB = 7;
-        OrderTable orderTableA = OrderTable.create(numberOfGuestsA, true);
-        OrderTable orderTableB = OrderTable.create(numberOfGuestsB, true);
+        OrderTable orderTableA = OrderTable.setting(numberOfGuestsA, true);
+        OrderTable orderTableB = OrderTable.setting(numberOfGuestsB, true);
         List<OrderTable> orderTables = Arrays.asList(orderTableA, orderTableB);
         when(orderTableRepository.findAll()).thenReturn(orderTables);
 
@@ -82,14 +82,14 @@ public class OrderTableServiceTest {
         //given
         final int numberOfGuests = 10;
         final boolean empty = false;
-        OrderTable originOrderTable = OrderTable.create(numberOfGuests, empty);
+        OrderTable originOrderTable = OrderTable.setting(numberOfGuests, empty);
         originOrderTable.full();
         ReflectionTestUtils.setField(originOrderTable, "id", 1L);
 
         when(orderTableRepository.findById(anyLong())).thenReturn(Optional.ofNullable(originOrderTable));
 
         //when
-        OrderTableResponse emptyOrderTable = tableService.changeEmpty(originOrderTable.getId());
+        OrderTableResponse emptyOrderTable = tableService.empty(originOrderTable.getId());
 
         //then
         assertThat(emptyOrderTable).isNotNull();
@@ -103,16 +103,17 @@ public class OrderTableServiceTest {
         //given
         final int numberOfGuests = 10;
         final boolean empty = true;
-        final OrderTable originOrderTable = OrderTable.create(numberOfGuests, empty);
+        final OrderTable originOrderTable = OrderTable.setting(numberOfGuests, empty);
         final TableGroup tableGroup = TableGroup.setUp();
+        ReflectionTestUtils.setField(tableGroup, "id", 1L);
         originOrderTable.full();
-        originOrderTable.grouping(tableGroup);
+        originOrderTable.grouping(tableGroup.getId());
         ReflectionTestUtils.setField(originOrderTable, "id", 1L);
 
         when(orderTableRepository.findById(anyLong())).thenReturn(Optional.ofNullable(originOrderTable));
 
         //when
-        assertThatThrownBy(() -> tableService.changeEmpty(originOrderTable.getId()))
+        assertThatThrownBy(() -> tableService.empty(originOrderTable.getId()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -123,14 +124,14 @@ public class OrderTableServiceTest {
         //given
         final int numberOfGuests = 10;
         final boolean empty = false;
-        final OrderTable originOrderTable = OrderTable.create(numberOfGuests, empty);
-        Order order = originOrderTable.order();
-        ReflectionTestUtils.setField(originOrderTable, "id", 1L);
+        final OrderTable orderTable = OrderTable.setting(numberOfGuests, empty);
+        ReflectionTestUtils.setField(orderTable, "id", 1L);
+        orderTable.placeOrder();
 
-        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.ofNullable(originOrderTable));
+        when(orderTableRepository.findById(anyLong())).thenReturn(Optional.ofNullable(orderTable));
 
         //when
-        assertThatThrownBy(() -> tableService.changeEmpty(originOrderTable.getId()))
+        assertThatThrownBy(() -> tableService.empty(orderTable.getId()))
                 .isInstanceOf(IllegalArgumentException.class);
 
     }
@@ -170,7 +171,7 @@ public class OrderTableServiceTest {
         ReflectionTestUtils.setField(orderTableRequest, "numberOfGuests", numberOfGuests);
         ReflectionTestUtils.setField(orderTableRequest, "empty", false);
 
-        OrderTable orderTable = OrderTable.create(10, false);
+        OrderTable orderTable = OrderTable.setting(10, false);
         ReflectionTestUtils.setField(orderTable, "id", orderTableId);
 
         when(orderTableRepository.findById(anyLong())).thenReturn(Optional.ofNullable(orderTable));

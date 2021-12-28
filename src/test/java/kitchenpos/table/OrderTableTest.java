@@ -20,7 +20,7 @@ public class OrderTableTest {
         final boolean empty = true;
 
         //when
-        OrderTable orderTable = OrderTable.create(numberOfGuests, empty);
+        OrderTable orderTable = OrderTable.setting(numberOfGuests, empty);
 
         //then
         assertThat(orderTable).isNotNull();
@@ -34,14 +34,14 @@ public class OrderTableTest {
         final int numberOfGuests = 10;
         final boolean empty = true;
 
-        OrderTable orderTable = OrderTable.create(numberOfGuests, empty);
-        TableGroup tableGroup = TableGroup.setUp();
+        OrderTable orderTable = OrderTable.setting(numberOfGuests, empty);
+        long tableGroupId = 1L;
 
         //when
-        orderTable.grouping(tableGroup);
+        orderTable.grouping(tableGroupId);
 
         //then
-        assertThat(orderTable.getTableGroup()).isNotNull();
+        assertThat(orderTable.getTableGroupId()).isNotNull();
     }
 
     @DisplayName("주문 테이블 손님 수 조정하기")
@@ -52,7 +52,7 @@ public class OrderTableTest {
         final int numberOfGuests = 10;
         final boolean empty = false;
         final int changedNumberOfGuests = 5;
-        OrderTable orderTable = OrderTable.create(numberOfGuests, empty);
+        OrderTable orderTable = OrderTable.setting(numberOfGuests, empty);
 
         //when
         orderTable.changeNumberOfGuests(changedNumberOfGuests);
@@ -69,7 +69,7 @@ public class OrderTableTest {
         final int numberOfGuests = 10;
         final boolean empty = false;
         final int changedNumberOfGuests = -1;
-        OrderTable orderTable = OrderTable.create(numberOfGuests, empty);
+        OrderTable orderTable = OrderTable.setting(numberOfGuests, empty);
 
         //when
         assertThatThrownBy(() -> orderTable.changeNumberOfGuests(changedNumberOfGuests))

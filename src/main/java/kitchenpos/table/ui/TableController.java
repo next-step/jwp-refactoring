@@ -37,11 +37,20 @@ public class TableController {
     }
 
     @PutMapping(value = "/{orderTableId}/empty", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<OrderTableResponse> changeEmpty(
+    public ResponseEntity<OrderTableResponse> empty(
             @PathVariable final Long orderTableId
     ) {
         return ResponseEntity.ok()
-                .body(tableService.changeEmpty(orderTableId))
+                .body(tableService.empty(orderTableId))
+                ;
+    }
+
+    @PutMapping(value = "/{orderTableId}/full", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<OrderTableResponse> full(
+            @PathVariable final Long orderTableId
+    ) {
+        return ResponseEntity.ok()
+                .body(tableService.full(orderTableId))
                 ;
     }
 
