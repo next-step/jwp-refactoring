@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.stream.*;
 
 import org.springframework.stereotype.*;
+import org.springframework.transaction.annotation.*;
 
 import common.*;
 import order.domain.*;
@@ -37,6 +38,7 @@ public class TableService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public OrderTableResponse cleanTable(final Long orderTableId) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(() -> new NotFoundException(ORDER_TABLE));
@@ -44,7 +46,7 @@ public class TableService {
         checkCompletion(savedOrderTable);
         savedOrderTable.cleanTable();
 
-        return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
+        return OrderTableResponse.of(savedOrderTable);
     }
 
     private void checkCompletion(OrderTable savedOrderTable) {
