@@ -91,7 +91,7 @@ public class OrderService {
 
         for (final OrderLineItemRequest orderLineItemRequest : orderLineItemRequests) {
             Menu menu = menuService.findById(orderLineItemRequest.getMenuId());
-            orderLineItems.add(new OrderLineItem(order, menu, orderLineItemRequest.getQuantity()));
+            orderLineItems.add(new OrderLineItem(order, menu.getId(), orderLineItemRequest.getQuantity()));
         }
 
         return orderLineItems;
