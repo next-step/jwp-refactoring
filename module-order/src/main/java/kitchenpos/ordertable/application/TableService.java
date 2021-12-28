@@ -1,7 +1,7 @@
 package kitchenpos.ordertable.application;
 
-import kitchenpos.common.exception.CommonErrorCode;
-import kitchenpos.common.exception.NotFoundException;
+import kitchenpos.common.OrderErrorCode;
+import kitchenpos.exception.NotFoundException;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.TableValidator;
@@ -62,6 +62,6 @@ public class TableService {
 
     public OrderTable findOrderTableById(final Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
-            .orElseThrow(() -> new NotFoundException(CommonErrorCode.ORDER_NOT_FOUND_EXCEPTION));
+            .orElseThrow(() -> new NotFoundException(OrderErrorCode.ORDER_NOT_FOUND_EXCEPTION));
     }
 }

@@ -8,8 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import kitchenpos.common.exception.CommonErrorCode;
-import kitchenpos.common.exception.InvalidParameterException;
+import kitchenpos.common.OrderErrorCode;
+import kitchenpos.exception.InvalidParameterException;
 import kitchenpos.tablegroup.domain.event.TableGroupingEvent;
 import kitchenpos.tablegroup.domain.event.TableUnGroupingEvent;
 import org.springframework.data.domain.AbstractAggregateRoot;
@@ -29,12 +29,17 @@ public class TableGroup extends AbstractAggregateRoot<TableGroup> {
     protected TableGroup() {
     }
 
-    private TableGroup(LocalDateTime createdDate) {
+    private TableGroup(Long id, LocalDateTime createdDate) {
+        this.id = id;
         this.createdDate = createdDate;
     }
 
     public static TableGroup of() {
-        return new TableGroup(LocalDateTime.now());
+        return new TableGroup(null, LocalDateTime.now());
+    }
+
+    public static TableGroup of(Long id) {
+        return new TableGroup(id, LocalDateTime.now());
     }
 
     public Long getId() {
@@ -58,7 +63,7 @@ public class TableGroup extends AbstractAggregateRoot<TableGroup> {
 
     private void minOrderTableValid(List<Long> tableIds) {
         if (tableIds.size() < ORDER_TABLES_MIN_SIZE) {
-            throw new InvalidParameterException(CommonErrorCode.ORDER_TABLES_MIN_UNDER_EXCEPTION);
+            throw new InvalidParameterException(OrderErrorCode.ORDER_TABLES_MIN_UNDER_EXCEPTION);
         }
     }
 

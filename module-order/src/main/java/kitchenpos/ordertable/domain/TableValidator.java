@@ -1,8 +1,8 @@
 package kitchenpos.ordertable.domain;
 
 import java.util.List;
-import kitchenpos.common.exception.CommonErrorCode;
-import kitchenpos.common.exception.InvalidParameterException;
+import kitchenpos.common.OrderErrorCode;
+import kitchenpos.exception.InvalidParameterException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import org.springframework.stereotype.Component;
@@ -23,7 +23,7 @@ public class TableValidator {
 
         if (!isAllCompleted) {
             throw new InvalidParameterException(
-                CommonErrorCode.ORDER_TABLE_CHANGE_EMPTY_NOT_COMPLETE_EXCEPTION);
+                OrderErrorCode.ORDER_TABLE_CHANGE_EMPTY_NOT_COMPLETE_EXCEPTION);
         }
     }
 

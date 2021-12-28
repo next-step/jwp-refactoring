@@ -1,8 +1,7 @@
 package kitchenpos.tablegroup.application;
 
-import java.util.List;
-import kitchenpos.common.exception.CommonErrorCode;
-import kitchenpos.common.exception.NotFoundException;
+import kitchenpos.common.OrderErrorCode;
+import kitchenpos.exception.NotFoundException;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupValidator;
@@ -39,7 +38,7 @@ public class TableGroupService {
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
             .orElseThrow(
-                () -> new NotFoundException(CommonErrorCode.TABLE_GROUP_NOT_FOUND_EXCEPTION));
+                () -> new NotFoundException(OrderErrorCode.TABLE_GROUP_NOT_FOUND_EXCEPTION));
 
         tableGroup.ungroup(tableGroupValidator);
 

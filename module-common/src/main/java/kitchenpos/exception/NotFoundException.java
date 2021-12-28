@@ -1,4 +1,4 @@
-package kitchenpos.common.exception;
+package kitchenpos.exception;
 
 /**
  * 데이터베이스 조회시 정보를 찾지 못할 때 throw 되는 예외입니다.

@@ -12,8 +12,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import kitchenpos.common.exception.CommonErrorCode;
-import kitchenpos.common.exception.InvalidParameterException;
+import kitchenpos.common.OrderErrorCode;
+import kitchenpos.exception.CommonErrorCode;
+import kitchenpos.exception.InvalidParameterException;
 
 @Entity
 @Table(name = "orders")
@@ -83,7 +84,7 @@ public class Order {
     public void changeOrderStatus(OrderStatus orderStatus) {
         if (isComplete()) {
             throw new InvalidParameterException(
-                CommonErrorCode.ORDER_STATUS_COMPLETE_NOT_CHANGE_STATUS_EXCEPTION);
+                OrderErrorCode.ORDER_STATUS_COMPLETE_NOT_CHANGE_STATUS_EXCEPTION);
         }
 
         this.orderStatus = orderStatus;

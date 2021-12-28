@@ -1,4 +1,4 @@
-package kitchenpos.common.exception;
+package kitchenpos.exception;
 
 /**
  * 유효하지 않은 매개 변수가 메소드에 전달 될 때 발생합니다.

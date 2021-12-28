@@ -8,7 +8,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 import java.util.Collections;
-import kitchenpos.common.exception.InvalidParameterException;
+import kitchenpos.exception.InvalidParameterException;
 import kitchenpos.order.domain.OrderRepository;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;

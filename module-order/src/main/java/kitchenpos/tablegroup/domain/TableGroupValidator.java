@@ -2,8 +2,8 @@ package kitchenpos.tablegroup.domain;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.common.exception.CommonErrorCode;
-import kitchenpos.common.exception.InvalidParameterException;
+import kitchenpos.common.OrderErrorCode;
+import kitchenpos.exception.InvalidParameterException;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.ordertable.domain.OrderTable;
@@ -27,7 +27,7 @@ public class TableGroupValidator {
     public void groupExistValidate(List<Long> orderTableIds) {
         List<OrderTable> orderTables = orderTableRepository.findAllById(orderTableIds);
         if (orderTables.size() != orderTableIds.size()) {
-            throw new InvalidParameterException(CommonErrorCode.TABLE_NOT_CREATED_EXCEPTION);
+            throw new InvalidParameterException(OrderErrorCode.TABLE_NOT_CREATED_EXCEPTION);
         }
 
         boolean isExistIncludeTableGroup = orderTables.stream()
@@ -35,7 +35,7 @@ public class TableGroupValidator {
 
         if (isExistIncludeTableGroup) {
             throw new InvalidParameterException(
-                CommonErrorCode.ORDER_TABLE_EXISTS_TABLE_GROUP_EXCEPTION);
+                OrderErrorCode.ORDER_TABLE_EXISTS_TABLE_GROUP_EXCEPTION);
         }
     }
 
@@ -50,7 +50,7 @@ public class TableGroupValidator {
         if (orderRepository.existsAllByOrderTableIdInAndOrderStatusIn(orderTableIds,
             OrderStatus.excludeCompletionValues())) {
             throw new InvalidParameterException(
-                CommonErrorCode.ORDER_TABLE_UNGROUP_NOT_COMPLETE_EXCEPTION);
+                OrderErrorCode.ORDER_TABLE_UNGROUP_NOT_COMPLETE_EXCEPTION);
         }
     }
 }

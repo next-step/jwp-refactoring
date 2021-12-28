@@ -8,8 +8,8 @@ import javax.persistence.Embeddable;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
-import kitchenpos.common.exception.CommonErrorCode;
-import kitchenpos.common.exception.InvalidParameterException;
+import kitchenpos.exception.CommonErrorCode;
+import kitchenpos.exception.InvalidParameterException;
 import org.springframework.util.CollectionUtils;
 
 @Embeddable

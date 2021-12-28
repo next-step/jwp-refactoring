@@ -7,8 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import kitchenpos.common.exception.CommonErrorCode;
-import kitchenpos.common.exception.InvalidParameterException;
+import kitchenpos.common.OrderErrorCode;
+import kitchenpos.exception.InvalidParameterException;
 
 @Entity
 public class OrderTable {
@@ -85,7 +85,7 @@ public class OrderTable {
     private void notIncludeTableGroupValid() {
         if (Objects.nonNull(tableGroupId)) {
             throw new InvalidParameterException(
-                CommonErrorCode.ORDER_TABLE_EXISTS_TABLE_GROUP_EXCEPTION);
+                OrderErrorCode.ORDER_TABLE_EXISTS_TABLE_GROUP_EXCEPTION);
         }
     }
 

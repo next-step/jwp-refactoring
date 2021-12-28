@@ -1,9 +1,9 @@
 package kitchenpos.order.domain;
 
 import java.util.List;
-import kitchenpos.common.exception.CommonErrorCode;
-import kitchenpos.common.exception.InvalidParameterException;
-import kitchenpos.common.exception.NotFoundException;
+import kitchenpos.common.OrderErrorCode;
+import kitchenpos.exception.InvalidParameterException;
+import kitchenpos.exception.NotFoundException;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
@@ -31,10 +31,10 @@ public class OrderValidator {
     private void existAndEmptyOrderTableValidate(Long orderTableId) {
         OrderTable orderTable = orderTableRepository.findById(orderTableId)
             .orElseThrow(
-                () -> new NotFoundException(CommonErrorCode.ORDER_TABLE_NOT_FOUND_EXCEPTION));
+                () -> new NotFoundException(OrderErrorCode.ORDER_TABLE_NOT_FOUND_EXCEPTION));
 
         if (orderTable.isEmpty()) {
-            throw new InvalidParameterException(CommonErrorCode.TABLE_NOT_EMPTY_EXCEPTION);
+            throw new InvalidParameterException(OrderErrorCode.TABLE_NOT_EMPTY_EXCEPTION);
         }
     }
 
@@ -42,7 +42,7 @@ public class OrderValidator {
         Long count = menuRepository.countAllByIdIn(menuIds);
 
         if (count != menuIds.size()) {
-            throw new NotFoundException(CommonErrorCode.MENU_NOT_FOUND_EXCEPTION);
+            throw new NotFoundException(OrderErrorCode.MENU_NOT_FOUND_EXCEPTION);
         }
     }
 }

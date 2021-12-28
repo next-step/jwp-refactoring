@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import kitchenpos.common.exception.CommonErrorCode;
-import kitchenpos.common.exception.InvalidParameterException;
+import kitchenpos.exception.CommonErrorCode;
+import kitchenpos.exception.InvalidParameterException;
 
 @Embeddable
 public class Price {

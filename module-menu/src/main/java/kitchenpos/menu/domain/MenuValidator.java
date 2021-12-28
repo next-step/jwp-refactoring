@@ -2,9 +2,10 @@ package kitchenpos.menu.domain;
 
 import java.math.BigDecimal;
 import java.util.Objects;
-import kitchenpos.common.exception.CommonErrorCode;
-import kitchenpos.common.exception.InvalidParameterException;
-import kitchenpos.common.exception.NotFoundException;
+import kitchenpos.common.MenuErrorCode;
+import kitchenpos.exception.CommonErrorCode;
+import kitchenpos.exception.InvalidParameterException;
+import kitchenpos.exception.NotFoundException;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
@@ -32,7 +33,7 @@ public class MenuValidator {
 
     private void existMenuGroupValid(Menu menu) {
         if (!menuGroupRepository.existsById(menu.getMenuGroupId())) {
-            throw new NotFoundException(CommonErrorCode.MENU_GROUP_NOT_FOUND_EXCEPTION);
+            throw new NotFoundException(MenuErrorCode.MENU_GROUP_NOT_FOUND_EXCEPTION);
         }
     }
 
@@ -46,7 +47,7 @@ public class MenuValidator {
         BigDecimal totalPrice = calculateTotalPrice(menu);
         Price menuPrice = menu.getPrice();
         if (menuPrice.greaterThanOf(totalPrice)) {
-            throw new InvalidParameterException(CommonErrorCode.MENU_PRICE_OVER_RANGE_EXCEPTION);
+            throw new InvalidParameterException(MenuErrorCode.MENU_PRICE_OVER_RANGE_EXCEPTION);
         }
     }
 
@@ -61,6 +62,6 @@ public class MenuValidator {
 
     private Product getProduct(Long productId) {
         return productRepository.findById(productId)
-            .orElseThrow(() -> new InvalidParameterException(CommonErrorCode.PRODUCT_NOT_FOUND));
+            .orElseThrow(() -> new InvalidParameterException(MenuErrorCode.PRODUCT_NOT_FOUND));
     }
 }

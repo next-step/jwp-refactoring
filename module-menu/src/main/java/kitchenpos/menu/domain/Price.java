@@ -4,8 +4,9 @@ import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import kitchenpos.common.exception.CommonErrorCode;
-import kitchenpos.common.exception.InvalidParameterException;
+import kitchenpos.common.MenuErrorCode;
+import kitchenpos.exception.CommonErrorCode;
+import kitchenpos.exception.InvalidParameterException;
 
 @Embeddable
 public class Price {
@@ -38,7 +39,7 @@ public class Price {
     private void minValid(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(MIN) < 0) {
             throw new InvalidParameterException(
-                CommonErrorCode.MENU_PRICE_MIN_UNDER_EXCEPTION);
+                MenuErrorCode.MENU_PRICE_MIN_UNDER_EXCEPTION);
         }
     }
 }

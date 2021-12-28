@@ -4,7 +4,7 @@ package kitchenpos.tablegroup.domain;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Collections;
-import kitchenpos.common.exception.InvalidParameterException;
+import kitchenpos.exception.InvalidParameterException;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

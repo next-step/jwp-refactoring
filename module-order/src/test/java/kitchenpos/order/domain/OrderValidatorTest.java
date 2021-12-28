@@ -7,8 +7,8 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.Collections;
 import java.util.Optional;
-import kitchenpos.common.exception.InvalidParameterException;
-import kitchenpos.common.exception.NotFoundException;
+import kitchenpos.exception.InvalidParameterException;
+import kitchenpos.exception.NotFoundException;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;

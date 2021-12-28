@@ -1,7 +1,7 @@
 package kitchenpos.order.application;
 
-import kitchenpos.common.exception.CommonErrorCode;
-import kitchenpos.common.exception.NotFoundException;
+import kitchenpos.common.OrderErrorCode;
+import kitchenpos.exception.NotFoundException;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.domain.Order;
@@ -44,7 +44,7 @@ public class OrderService {
     public OrderResponse changeOrderStatus(final Long orderId,
         OrderStatusRequest orderStatusRequest) {
         final Order savedOrder = orderRepository.findById(orderId)
-            .orElseThrow(() -> new NotFoundException(CommonErrorCode.ORDER_NOT_FOUND_EXCEPTION));
+            .orElseThrow(() -> new NotFoundException(OrderErrorCode.ORDER_NOT_FOUND_EXCEPTION));
 
         savedOrder.changeOrderStatus(orderStatusRequest.getOrderStatus());
         return OrderResponse.of(savedOrder);
