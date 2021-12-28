@@ -1,11 +1,10 @@
 package kitchenpos.application;
 
-import kitchenpos.table.application.OrderValidator;
+import kitchenpos.order.domain.OrderValidatorImpl;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.exception.IllegalOrderTablesException;
 import org.junit.jupiter.api.DisplayName;
@@ -30,7 +29,7 @@ class TableGroupServiceTest {
     @Mock
     private TableGroupRepository tableGroupRepository;
 
-    private OrderValidator orderValidator;
+    private OrderValidatorImpl orderValidator;
 
     @DisplayName("테이블이 1개 있는 테이블 그룹을 생성한다")
     @Test

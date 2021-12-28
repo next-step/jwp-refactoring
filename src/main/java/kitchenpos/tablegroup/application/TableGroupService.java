@@ -1,10 +1,10 @@
 package kitchenpos.tablegroup.application;
 
-import kitchenpos.table.application.OrderValidator;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.tablegroup.domain.TableGroupRepository;
+import kitchenpos.order.domain.OrderValidatorImpl;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import kitchenpos.tablegroup.exception.NoTableGroupException;
@@ -19,9 +19,9 @@ public class TableGroupService {
 
     private final TableGroupRepository tableGroupRepository;
 
-    private final OrderValidator orderValidator;
+    private final OrderValidatorImpl orderValidator;
 
-    public TableGroupService(OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository, OrderValidator orderValidator) {
+    public TableGroupService(OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository, OrderValidatorImpl orderValidator) {
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
         this.orderValidator = orderValidator;

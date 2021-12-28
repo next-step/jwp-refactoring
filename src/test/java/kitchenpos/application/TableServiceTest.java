@@ -1,12 +1,9 @@
 package kitchenpos.application;
 
-import kitchenpos.table.application.OrderValidator;
+import kitchenpos.order.domain.OrderValidatorImpl;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.exception.CannotChangeEmptyException;
@@ -29,7 +26,7 @@ class TableServiceTest {
     private OrderTableRepository orderTableRepository;
 
     @Mock
-    private OrderValidator orderValidator;
+    private OrderValidatorImpl orderValidator;
 
     private OrderTable orderTable;
 

@@ -1,6 +1,6 @@
 package kitchenpos.tablegroup.domain;
 
-import kitchenpos.table.application.OrderValidator;
+import kitchenpos.order.domain.OrderValidatorImpl;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.tablegroup.exception.IllegalOrderTablesException;
 import org.springframework.util.CollectionUtils;
@@ -64,7 +64,7 @@ public class TableGroup {
         return orderTables;
     }
 
-    public void ungroup(OrderValidator orderValidator) {
+    public void ungroup(OrderValidatorImpl orderValidator) {
         this.orderTables.forEach(orderTable -> orderValidator.canUngroupOrChange(orderTable.getId()));
         this.orderTables.forEach(OrderTable::ungroup);
     }

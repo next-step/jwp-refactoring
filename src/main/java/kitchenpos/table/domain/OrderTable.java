@@ -1,8 +1,6 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.order.domain.Order;
 import kitchenpos.order.exception.NegativeNumberOfGuestsException;
-import kitchenpos.table.application.OrderValidator;
 import kitchenpos.table.exception.CannotChangeEmptyException;
 import kitchenpos.table.exception.CannotChangeNumberOfGuestsException;
 

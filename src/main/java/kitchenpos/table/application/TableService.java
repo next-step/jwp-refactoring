@@ -1,7 +1,9 @@
 package kitchenpos.table.application;
 
-import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.order.domain.OrderValidatorImpl;
+import kitchenpos.table.domain.OrderValidator;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.exception.NoOrderTableException;
