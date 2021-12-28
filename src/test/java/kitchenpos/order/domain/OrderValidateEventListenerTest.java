@@ -6,6 +6,7 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
 import java.util.List;
+import kitchenpos.ordertable.domain.OrderTableChangeOrderCloseEvent;
 import kitchenpos.ordertable.exception.OrderIsNotCompleteException;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;

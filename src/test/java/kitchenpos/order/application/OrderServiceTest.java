@@ -19,7 +19,6 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.testfixtures.OrderTestFixtures;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTableValidator;
 import kitchenpos.ordertable.vo.NumberOfGuests;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,6 +27,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -42,7 +42,7 @@ class OrderServiceTest {
     private OrderMenuValidator orderMenuValidator;
 
     @Mock
-    private OrderTableValidator orderTableValidator;
+    private ApplicationEventPublisher applicationEventPublisher;
 
     private Menu 혼술세트;
     private Menu 이달의메뉴;

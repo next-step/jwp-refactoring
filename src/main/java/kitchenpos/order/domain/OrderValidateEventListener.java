@@ -1,6 +1,7 @@
 package kitchenpos.order.domain;
 
 import java.util.List;
+import kitchenpos.ordertable.domain.OrderTableChangeOrderCloseEvent;
 import kitchenpos.ordertable.exception.OrderIsNotCompleteException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;

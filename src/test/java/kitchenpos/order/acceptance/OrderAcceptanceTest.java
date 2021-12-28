@@ -12,6 +12,7 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.testfixtures.acceptance.OrderAcceptanceFixtures;
+import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.ordertable.testfixtures.TableAcceptanceFixtures;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,6 +51,24 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
         //then
         주문_등록_정상_확인(주문_등록_결과);
+    }
+
+    @DisplayName("주문종료된 테이블에서 주문 등록시 예외")
+    @Test
+    void create_exception() {
+        //given
+        OrderTableResponse 주문종료된_테이블 = TableAcceptanceFixtures.주문테이블_상태_변경_요청(
+            첫번째_테이블.getId(), new OrderTableRequest(true)).getBody();
+
+        OrderLineItemRequest 후라이드_앤드_양념_주문항목 = new OrderLineItemRequest(후라이드_앤드_양념.getId(), 2);
+        OrderRequest 주문_요청_정의 = new OrderRequest(주문종료된_테이블.getId(),
+            Arrays.asList(후라이드_앤드_양념_주문항목));
+
+        //when
+        ResponseEntity<OrderResponse> 주문_등록_결과 = OrderAcceptanceFixtures.주문_등록_요청(주문_요청_정의);
+
+        //then
+        예외발생_확인(주문_등록_결과);
     }
 
     @DisplayName("주문 전체 조회")
@@ -112,5 +131,9 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         OrderRequest orderRequest) {
         OrderResponse orderResponse = response.getBody();
         assertThat(orderResponse.getOrderStatus()).isEqualTo(orderRequest.getOrderStatus());
+    }
+
+    private void 예외발생_확인(ResponseEntity<OrderResponse> response) {
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 }

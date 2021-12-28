@@ -1,8 +1,8 @@
 package kitchenpos.ordertable.application;
 
 import java.util.List;
-import kitchenpos.order.domain.OrderTableChangeOrderCloseEvent;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTableChangeOrderCloseEvent;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;

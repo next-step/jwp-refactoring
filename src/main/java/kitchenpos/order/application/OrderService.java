@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.common.vo.Quantity;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderCreateEvent;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderMenuValidator;
 import kitchenpos.order.domain.OrderRepository;
@@ -12,7 +13,7 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.exception.NotFoundOrderLineItemException;
 import kitchenpos.order.exception.OrderNotFoundException;
-import kitchenpos.ordertable.domain.OrderTableValidator;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -20,23 +21,23 @@ import org.springframework.util.CollectionUtils;
 @Transactional(readOnly = true)
 @Service
 public class OrderService {
-    
+
     private final OrderRepository orderRepository;
     private final OrderMenuValidator orderMenuValidator;
-    private final OrderTableValidator orderTableValidator;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
-    public OrderService(OrderRepository orderRepository, OrderMenuValidator orderMenuValidator,
-        OrderTableValidator orderTableValidator) {
+    public OrderService(OrderRepository orderRepository,
+        OrderMenuValidator orderMenuValidator,
+        ApplicationEventPublisher applicationEventPublisher) {
         this.orderRepository = orderRepository;
         this.orderMenuValidator = orderMenuValidator;
-        this.orderTableValidator = orderTableValidator;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
         Long orderTableId = orderRequest.getOrderTableId();
-        orderTableValidator.validateNotOrderClosedTable(orderTableId);
-
+        applicationEventPublisher.publishEvent(new OrderCreateEvent(this, orderTableId));
         List<OrderLineItemRequest> requestOrderLineItems = orderRequest.getOrderLineItems();
         orderMenuValidator.validateOrderLineItems(requestOrderLineItems);
         List<OrderLineItem> orderLineItems = createOrderLineItems(requestOrderLineItems);
