@@ -7,6 +7,9 @@ import java.math.BigDecimal;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import kitchenpos.common.price.domain.Price;
+import kitchenpos.product.domain.Product;
+
 class MenuProductTest {
 
     @DisplayName("총 금액 계산")

@@ -8,6 +8,9 @@ import java.util.Arrays;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import kitchenpos.common.price.domain.Price;
+import kitchenpos.product.domain.Product;
+
 class MenuProductsTest {
 
     @DisplayName("메뉴 상품들 가격의 합 계산")

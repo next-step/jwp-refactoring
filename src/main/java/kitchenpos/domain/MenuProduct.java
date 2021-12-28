@@ -9,6 +9,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import kitchenpos.common.price.domain.Price;
+import kitchenpos.product.domain.Product;
+
 @Entity
 public class MenuProduct {
     @Id

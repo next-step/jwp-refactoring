@@ -1,6 +1,6 @@
-package kitchenpos.ui;
+package kitchenpos.product.ui;
 
-import static kitchenpos.ui.ProductAcceptanceTestHelper.*;
+import static kitchenpos.product.ui.ProductAcceptanceTestHelper.*;
 
 import java.util.HashMap;
 import java.util.Map;

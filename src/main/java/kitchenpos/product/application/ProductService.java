@@ -1,15 +1,15 @@
-package kitchenpos.application;
+package kitchenpos.product.application;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.domain.Product;
-import kitchenpos.dto.ProductRequest;
-import kitchenpos.dto.ProductResponse;
-import kitchenpos.dto.ProductResponses;
-import kitchenpos.repository.ProductRepository;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.product.dto.ProductResponses;
+import kitchenpos.product.domain.ProductRepository;
 
 @Service
 @Transactional(readOnly = true)
