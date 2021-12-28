@@ -26,7 +26,7 @@ import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.dto.OrderTableRequest;
-import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.tableGroup.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
