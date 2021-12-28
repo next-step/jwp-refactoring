@@ -49,6 +49,16 @@ public class Menu {
         return menu;
     }
 
+    public static Menu of(String name, Price menuPrice, MenuGroupId menuGroupId, MenuProducts menuProducts, MenuValidator menuValidator) {
+        menuValidator.checkAllFindProducts(menuProducts);
+        menuValidator.checkMenuPrice(menuPrice, menuProducts);
+
+        Menu menu = new Menu(null, name, menuPrice, menuGroupId);
+        menuProducts.acceptMenu(menu);
+
+        return menu;
+    }
+
     public static Menu of(String name, Price price) {
         return new Menu(null, name, price, null);
     }

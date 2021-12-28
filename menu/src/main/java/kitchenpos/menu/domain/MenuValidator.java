@@ -6,73 +6,49 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 import kitchenpos.common.domain.Price;
-import kitchenpos.menugroup.application.MenuGroupService;
-import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.Products;
 import kitchenpos.product.exception.NotFoundProductException;
-import kitchenpos.menu.dto.MenuDto;
-import kitchenpos.menu.dto.MenuProductDto;
 import kitchenpos.menu.exception.NotCorrectMenuPriceException;
 
 @Component
 public class MenuValidator {
     private final ProductService productService;
-    private final MenuGroupService menuGroupService;
 
     public MenuValidator (
-        final ProductService productService,
-        final MenuGroupService menuGroupService
+        final ProductService productService
     ) {
         this.productService = productService;
-        this.menuGroupService = menuGroupService;
     }
 
-    public Menu getValidatedMenu(MenuDto menuDto) {
-        MenuGroup menuGroup = menuGroupService.findById(menuDto.getMenuGroupId());
-        MenuProducts menuProducts = createMenuProducts(menuDto.getMenuProducts());
+    public void checkAllFindProducts(MenuProducts menuProducts) {
+        Products products = findProducts(menuProducts);
 
-        Menu newMenu = Menu.of(menuDto.getName(), Price.of(menuDto.getPrice()), MenuGroupId.of(menuGroup.getId()), menuProducts);
-
-        validateForCreate(newMenu);
-
-        return newMenu;
-    }
-
-    private MenuProducts createMenuProducts(List<MenuProductDto> menuProductDtos) {
-        return MenuProducts.of(menuProductDtos.stream()
-                                                .map(menuProductDto -> MenuProduct.of(ProductId.of(menuProductDto.getProductId()), menuProductDto.getQuantity()))
-                                                .collect(Collectors.toList())
-                             );
-    }
-
-    private void validateForCreate(Menu menu) {
-        checkAllFindProducts(menu);
-        checkMenuPrice(menu);
-    }
-
-    private void checkAllFindProducts(Menu menu) {
-        List<Long> productIds = menu.getProductIds().stream().map(ProductId::value).collect(Collectors.toList());
-        Products products = Products.of(productService.findAllByIds(productIds));
-
-        if (productIds.size() != products.size()) {
+        if (menuProducts.size() != products.size()) {
             throw new NotFoundProductException("요청된 상품과 조회된 상품의 수가 일치하지 않습니다.");
         }
     }
 
-    private void checkMenuPrice(Menu menu) {
-        List<Long> productIds = menu.getProductIds().stream().map(ProductId::value).collect(Collectors.toList());
-        Products products = Products.of(productService.findAllByIds(productIds));
+    public void checkMenuPrice(Price menuPrice, MenuProducts menuProducts) {
+        Products products = findProducts(menuProducts);
 
-        Price sumOfProductsPrice = getSumOfProductsPrice(menu.getMenuProducts(), products);
+        Price sumOfProductsPrice = getSumOfProductsPrice(menuProducts, products);
 
-        if (menu.getPrice().compareTo(sumOfProductsPrice) > 0) {
+        if (menuPrice.compareTo(sumOfProductsPrice) > 0) {
             throw new NotCorrectMenuPriceException("메뉴의 가격은 상품들의 가격의 합보다 클 수 없습니다.");
         }
     }
 
-    private Price getSumOfProductsPrice(MenuProducts menuProducts, Products products) {
+    private Products findProducts(MenuProducts menuProducts) {
+        List<Long> productIds = menuProducts.getProductIds().stream()
+                                            .map(ProductId::value)
+                                            .collect(Collectors.toList());
+
+        return Products.of(productService.findAllByIds(productIds));
+    }
+
+    public Price getSumOfProductsPrice(MenuProducts menuProducts, Products products) {
         Price sumOfProductsPrice = Price.of(0);
 
         for (int index = 0; index < menuProducts.size(); index++) {
