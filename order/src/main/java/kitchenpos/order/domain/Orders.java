@@ -64,6 +64,16 @@ public class Orders {
         return order;
     }
 
+    public static Orders of(OrderTableId orderTableId, OrderStatus orderStatus, OrderLineItems orderLineItems, OrdersValidator ordersValidator) {
+        ordersValidator.checkEmptyOfOrderLineItems(orderLineItems);
+        ordersValidator.checkExistOfMenu(orderLineItems);
+
+        Orders order = new Orders(orderTableId, orderStatus);
+        orderLineItems.acceptOrder(order);
+    
+        return order;
+    }
+
     public Long getId() {
         return this.id;
     }
@@ -88,6 +98,12 @@ public class Orders {
         this.orderStatus = orderStatus;
     }
 
+    public void changeOrderStatus(OrderStatus orderStatus, OrdersValidator ordersValidator) {
+        ordersValidator.validateionOfChageOrderStatus(this);
+
+        this.orderStatus = orderStatus;
+    }
+
     public boolean isCompletion() {
         return this.orderStatus.equals(OrderStatus.COMPLETION);
     }
@@ -107,4 +123,5 @@ public class Orders {
     public int hashCode() {
         return Objects.hash(id);
     }
+
 }

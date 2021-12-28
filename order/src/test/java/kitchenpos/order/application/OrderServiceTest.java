@@ -2,9 +2,12 @@ package kitchenpos.order.application;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.nullable;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -13,9 +16,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import kitchenpos.order.dto.OrderDto;
 import kitchenpos.order.dto.OrderLineItemDto;
+import kitchenpos.order.event.ValidateEmptyTableEvent;
+import kitchenpos.order.exception.NotFoundOrderException;
 import kitchenpos.order.domain.OrdersValidator;
 import kitchenpos.order.domain.Orders;
 import kitchenpos.order.domain.MenuId;
@@ -26,6 +32,9 @@ import kitchenpos.order.domain.OrderTableId;
 
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
+
     @Mock
     private OrdersRepository orderRepository;
 
@@ -43,7 +52,6 @@ public class OrderServiceTest {
         Orders 치킨주문 = Orders.of(OrderTableId.of(1L), OrderStatus.COOKING);
         치킨_주문항목.acceptOrder(치킨주문);
 
-        when(ordersValidator.getValidatedOrdersForCreate(any(OrderDto.class))).thenReturn(치킨주문);
         when(orderRepository.save(any(Orders.class))).thenReturn(치킨주문);
 
         OrderDto 주문_요청전문 = OrderDto.of(1L, List.of(OrderLineItemDto.of(1L, 1L)));
@@ -58,6 +66,26 @@ public class OrderServiceTest {
         );
     }
 
+    @DisplayName("주문테이블이 빈테이블인지 확인하는 이벤트가 발생된다.")
+    @Test
+    void exception_createOrder_emptyOrderTable() {
+        // given
+        OrderLineItem 치킨_주문항목 = OrderLineItem.of(MenuId.of(1L), 1L);
+        Orders 치킨주문 = Orders.of(OrderTableId.of(1L), OrderStatus.COOKING);
+        치킨_주문항목.acceptOrder(치킨주문);
+
+        when(orderRepository.save(any(Orders.class))).thenReturn(치킨주문);
+
+        OrderDto 주문_요청전문 = OrderDto.of(1L, List.of(OrderLineItemDto.of(1L, 1L)));
+
+        // when
+        orderService.create(주문_요청전문);
+
+        // then
+        verify(eventPublisher).publishEvent(any(ValidateEmptyTableEvent.class));
+    }
+
+    
     @DisplayName("주문이 조회된다.")
     @Test
     void search_order() {
@@ -82,9 +110,10 @@ public class OrderServiceTest {
         OrderLineItem 치킨_주문항목 = OrderLineItem.of(MenuId.of(1L), 1L);
         Orders 치킨주문 = Orders.of(OrderTableId.of(1L), OrderStatus.COOKING);
         치킨_주문항목.acceptOrder(치킨주문);
-
-        when(ordersValidator.getValidatedOrdersForChangeOrderStatus(치킨주문.getId())).thenReturn(치킨주문);
         
+
+        when(orderRepository.findById(nullable(Long.class))).thenReturn(Optional.of(치킨주문));
+
         OrderDto 상태변경_요청전문 = OrderDto.of(OrderStatus.MEAL.name());
 
         // when
@@ -95,5 +124,26 @@ public class OrderServiceTest {
             () -> Assertions.assertThat(chagedOrder).isEqualTo(OrderDto.of(치킨주문)),
             () -> Assertions.assertThat(chagedOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name())
         );
+    }
+
+
+    @DisplayName("주문의 상태가 변경시 조회된 주문이 없을시 에러가 발생된다..")
+    @Test
+    void exception_updateOrderStatus_notFound() {
+        // given
+        OrderLineItem 치킨_주문항목 = OrderLineItem.of(MenuId.of(1L), 1L);
+        Orders 치킨주문 = Orders.of(OrderTableId.of(1L), OrderStatus.COOKING);
+        치킨_주문항목.acceptOrder(치킨주문);
+        
+
+        when(orderRepository.findById(nullable(Long.class))).thenReturn(Optional.empty());
+
+        OrderDto 상태변경_요청전문 = OrderDto.of(OrderStatus.MEAL.name());
+
+        // when
+        // then
+        Assertions.assertThatExceptionOfType(NotFoundOrderException.class)
+                    .isThrownBy(() ->orderService.changeOrderStatus(치킨주문.getId(), 상태변경_요청전문));
+
     }
 }

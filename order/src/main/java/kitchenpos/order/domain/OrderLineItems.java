@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public final class OrderLineItems {
     private final List<OrderLineItem> orderLineItems;
@@ -40,6 +41,13 @@ public final class OrderLineItems {
 
     public List<OrderLineItem> getOrderLineItems() {
         return this.orderLineItems;
+    }
+
+    public List<Long> findMenuIds() {
+        return orderLineItems.stream()
+                            .map(OrderLineItem::getMenuId)
+                            .map(MenuId::value)
+                            .collect(Collectors.toList());
     }
 
     @Override
