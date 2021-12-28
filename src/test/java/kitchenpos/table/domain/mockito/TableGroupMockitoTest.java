@@ -10,6 +10,7 @@ import java.util.*;
 import org.junit.jupiter.api.*;
 
 import kitchenpos.table.application.*;
+import kitchenpos.table.domain.*;
 import kitchenpos.table.dto.*;
 import kitchenpos.table.repository.*;
 
@@ -29,8 +30,12 @@ class TableGroupMockitoTest {
     @DisplayName("단체 지정 생성하기")
     @Test
     void createTest() {
-        when(orderTableRepository.findAllById(any())).thenReturn(Arrays.asList(주문테이블_4명, 주문테이블_6명));
-        when(tableGroupRepository.save(any())).thenReturn(테이블그룹_주문테이불_4명과_주문테이블_6명);
+        OrderTable orderTable1 = OrderTable.of(주문테이블_4명.getNumberOfGuests(), true);
+        OrderTable orderTable2 = OrderTable.of(주문테이블_6명.getNumberOfGuests(), true);
+        TableGroup tableGroup = TableGroup.create();
+
+        when(orderTableRepository.findAllById(any())).thenReturn(Arrays.asList(orderTable1, orderTable2));
+        when(tableGroupRepository.save(any())).thenReturn(tableGroup);
 
         assertThat(
             tableGroupService.saveTableGroup(TableGroupRequest.from(Arrays.asList(1L, 2L)))
