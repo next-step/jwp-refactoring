@@ -1,4 +1,4 @@
-package kitchenpos.ui;
+package kitchenpos.tablegroup.ui;
 
 import static org.assertj.core.api.Assertions.*;
 

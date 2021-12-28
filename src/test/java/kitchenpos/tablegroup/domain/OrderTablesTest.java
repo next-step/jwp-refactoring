@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.tablegroup.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -8,6 +8,7 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import kitchenpos.domain.OrderTable;
 import kitchenpos.exception.KitchenposException;
 
 class OrderTablesTest {

@@ -1,4 +1,4 @@
-package kitchenpos.ui;
+package kitchenpos.tablegroup.ui;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -14,6 +14,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
+import kitchenpos.ui.OrderAcceptanceTestHelper;
+import kitchenpos.ui.TableAcceptanceTestHelper;
 
 class TableGroupAcceptanceTest extends AcceptanceTest {
     @DisplayName("주문 테이블 그룹을 관리한다.")

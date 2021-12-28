@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.tablegroup.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,6 +13,8 @@ import javax.persistence.Id;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import kitchenpos.domain.OrderTable;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)

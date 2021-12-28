@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.tablegroup.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -7,17 +7,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTables;
-import kitchenpos.domain.TableGroup;
-import kitchenpos.dto.OrderTableIdRequest;
-import kitchenpos.dto.TableGroupRequest;
-import kitchenpos.dto.TableGroupResponse;
 import kitchenpos.exception.KitchenposErrorCode;
 import kitchenpos.exception.KitchenposException;
 import kitchenpos.exception.KitchenposNotFoundException;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
-import kitchenpos.repository.TableGroupRepository;
+import kitchenpos.tablegroup.domain.OrderTables;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
+import kitchenpos.tablegroup.dto.OrderTableIdRequest;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 
 @Service
 @Transactional(readOnly = true)

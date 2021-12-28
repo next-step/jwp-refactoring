@@ -1,4 +1,4 @@
-package kitchenpos.dto;
+package kitchenpos.tablegroup.dto;
 
 import static org.assertj.core.api.Assertions.*;
 

@@ -18,9 +18,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.domain.Menu;
-import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
-import kitchenpos.product.domain.Product;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuProductResponse;
 import kitchenpos.dto.MenuRequest;
@@ -28,9 +26,11 @@ import kitchenpos.dto.MenuResponse;
 import kitchenpos.dto.MenuResponses;
 import kitchenpos.exception.KitchenposException;
 import kitchenpos.exception.KitchenposNotFoundException;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
-import kitchenpos.repository.MenuRepository;
+import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.repository.MenuRepository;
 
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {

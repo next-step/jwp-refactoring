@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
 
 @Service
 @Transactional(readOnly = true)
