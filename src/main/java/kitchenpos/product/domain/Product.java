@@ -2,6 +2,7 @@ package kitchenpos.product.domain;
 
 import kitchenpos.common.domain.BaseEntity;
 import kitchenpos.common.domain.Price;
+import kitchenpos.common.exception.IllegalArgumentException;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -27,7 +28,14 @@ public class Product extends BaseEntity {
     }
 
     public static Product of(Long id, String name, Price price) {
+        checkPriceParameter(price);
         return new Product(id, name, price);
+    }
+
+    private static void checkPriceParameter(Price price) {
+        if (price.isMinus()) {
+            throw new IllegalArgumentException("가격은 0이상 입력 가능합니다.");
+        }
     }
 
     public static Product of(String name, Price price) {

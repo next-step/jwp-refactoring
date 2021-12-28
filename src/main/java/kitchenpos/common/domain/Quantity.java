@@ -9,8 +9,8 @@ import javax.persistence.Embeddable;
 public class Quantity {
     private static final long MINIMUM_QUANTITY = 0;
 
-    @Column
-    private Long quantity;
+    @Column(nullable = false)
+    private Long quantity = MINIMUM_QUANTITY;
 
     protected Quantity() {}
 

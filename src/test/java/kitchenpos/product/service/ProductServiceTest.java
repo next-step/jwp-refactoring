@@ -1,5 +1,6 @@
 package kitchenpos.product.service;
 
+import kitchenpos.common.domain.Price;
 import kitchenpos.common.exception.IllegalArgumentException;
 import kitchenpos.menu.MenuFactory;
 import kitchenpos.product.application.ProductService;
@@ -14,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -37,16 +39,14 @@ public class ProductServiceTest {
         // given
         final String name = "치킨";
         final int price = 3500;
-        ProductRequest 치킨_상품 = MenuFactory.ofProductRequest(name, price);
-        ProductResponse expected = MenuFactory.ofProductResponse(1L, name, price);
-        given(productRepository.save(치킨_상품.toProduct())).willReturn(MenuFactory.ofProduct(1L, name, price));
+        ProductRequest 치킨_상품 = new ProductRequest(name, BigDecimal.valueOf(price));
+        given(productRepository.save(치킨_상품.toProduct())).willReturn(Product.of(name, Price.of(BigDecimal.valueOf(price))));
 
         // when
         ProductResponse response = productService.create(치킨_상품);
 
         // then
         assertAll(
-                () -> assertThat(response.getId()).isEqualTo(expected.getId()),
                 () -> assertThat(response.getName()).isEqualTo(치킨_상품.getName()),
                 () -> assertThat(response.getPrice()).isEqualTo(치킨_상품.getPrice())
         );
@@ -58,7 +58,7 @@ public class ProductServiceTest {
         // given
         final String name = "치킨";
         final int price = -1;
-        ProductRequest 치킨_상품 = MenuFactory.ofProductRequest(name, price);
+        ProductRequest 치킨_상품 = new ProductRequest(name, BigDecimal.valueOf(price));
 
         // when
         Throwable thrown = catchThrowable(() -> productService.create(치킨_상품));
@@ -71,8 +71,8 @@ public class ProductServiceTest {
     @Test
     void 상품_목록_조회() {
         // given
-        Product 치킨_예상결과 = MenuFactory.ofProduct(1L, "치킨", 3500);
-        Product 콜라_예상결과 = MenuFactory.ofProduct(2L, "콜라", 500);
+        Product 치킨_예상결과 = Product.of("치킨", Price.of(BigDecimal.valueOf(3500)));
+        Product 콜라_예상결과 = Product.of("콜라", Price.of(BigDecimal.valueOf(500)));
         given(productRepository.findAll()).willReturn(Arrays.asList(치킨_예상결과, 콜라_예상결과));
 
         // when
