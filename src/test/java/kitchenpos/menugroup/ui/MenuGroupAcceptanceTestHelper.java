@@ -1,4 +1,4 @@
-package kitchenpos.ui;
+package kitchenpos.menugroup.ui;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -11,7 +11,7 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroup;
 
 public class MenuGroupAcceptanceTestHelper {
     private MenuGroupAcceptanceTestHelper() {

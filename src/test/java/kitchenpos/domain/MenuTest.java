@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import kitchenpos.common.price.domain.Price;
 import kitchenpos.exception.KitchenposException;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 
 class MenuTest {

@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import kitchenpos.common.price.domain.Price;
 import kitchenpos.exception.KitchenposErrorCode;
 import kitchenpos.exception.KitchenposException;
+import kitchenpos.menugroup.domain.MenuGroup;
 
 @Entity
 public class Menu {
