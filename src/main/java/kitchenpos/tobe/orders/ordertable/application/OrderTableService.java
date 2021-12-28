@@ -1,7 +1,7 @@
 package kitchenpos.tobe.orders.ordertable.application;
 
 import java.util.List;
-import kitchenpos.tobe.common.domain.Validator;
+import kitchenpos.tobe.common.domain.CustomEventPublisher;
 import kitchenpos.tobe.orders.ordertable.domain.OrderTable;
 import kitchenpos.tobe.orders.ordertable.domain.OrderTableRepository;
 import kitchenpos.tobe.orders.ordertable.dto.OrderTableChangeEmptyRequest;
@@ -14,14 +14,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderTableService {
 
     private final OrderTableRepository orderTableRepository;
-    private final Validator<OrderTable> validator;
+    private final CustomEventPublisher<OrderTable> customEventPublisher;
 
     public OrderTableService(
         final OrderTableRepository orderTableRepository,
-        final Validator<OrderTable> validator
+        final CustomEventPublisher<OrderTable> customEventPublisher
     ) {
         this.orderTableRepository = orderTableRepository;
-        this.validator = validator;
+        this.customEventPublisher = customEventPublisher;
     }
 
     @Transactional
@@ -43,7 +43,8 @@ public class OrderTableService {
         final OrderTable orderTable = orderTableRepository.findById(orderTableId)
             .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 주문 테이블을 변경할 수 없습니다."));
         if (request.isEmpty()) {
-            orderTable.clear(validator);
+            orderTable.clear(customEventPublisher);
+
         }
         if (!request.isEmpty()) {
             orderTable.serve();

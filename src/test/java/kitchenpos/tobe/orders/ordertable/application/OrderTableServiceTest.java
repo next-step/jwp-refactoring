@@ -11,19 +11,21 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import kitchenpos.tobe.common.domain.Validator;
+import kitchenpos.tobe.common.domain.CustomEventPublisher;
 import kitchenpos.tobe.fixture.OrderTableFixture;
 import kitchenpos.tobe.orders.ordertable.domain.OrderTable;
 import kitchenpos.tobe.orders.ordertable.domain.OrderTableRepository;
 import kitchenpos.tobe.orders.ordertable.dto.OrderTableChangeEmptyRequest;
 import kitchenpos.tobe.orders.ordertable.dto.OrderTableResponse;
+import kitchenpos.tobe.orders.ordertable.infra.OrderTableClearedEventPublisher;
 import org.assertj.core.api.ThrowableAssert;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 @DisplayName("주문 테이블 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -33,10 +35,20 @@ public class OrderTableServiceTest {
     private OrderTableRepository orderTableRepository;
 
     @Mock
-    private Validator<OrderTable> validator;
+    private ApplicationEventPublisher applicationEventPublisher;
 
-    @InjectMocks
+    private CustomEventPublisher<OrderTable> customEventPublisher;
+
     private OrderTableService orderTableService;
+
+    @BeforeEach
+    void setUp() {
+        customEventPublisher = new OrderTableClearedEventPublisher(applicationEventPublisher);
+        orderTableService = new OrderTableService(
+            orderTableRepository,
+            customEventPublisher
+        );
+    }
 
     @DisplayName("주문 테이블을 생성할 수 있다.")
     @Test
@@ -89,8 +101,9 @@ public class OrderTableServiceTest {
         // given
         final OrderTable expected = OrderTableFixture.of(1L);
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(expected));
+        expected.serve();
 
-        final OrderTableChangeEmptyRequest request = OrderTableFixture.ofChangeEmptyRequest(false);
+        final OrderTableChangeEmptyRequest request = OrderTableFixture.ofChangeEmptyRequest(true);
 
         // when
         final OrderTableResponse response = orderTableService.changeEmpty(1L, request);
