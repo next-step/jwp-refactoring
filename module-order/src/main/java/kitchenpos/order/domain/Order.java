@@ -16,7 +16,7 @@ import kitchenpos.common.exception.CommonErrorCode;
 import kitchenpos.common.exception.InvalidParameterException;
 
 @Entity
-@Table(name = "asd")
+@Table(name = "orders")
 public class Order {
 
     @Id

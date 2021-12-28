@@ -12,7 +12,7 @@ import javax.persistence.Id;
 public class MenuProduct {
 
     @Id
-    @Column(name = "id")
+    @Column(name = "seq")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
 
