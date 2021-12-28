@@ -38,7 +38,7 @@ public class TableService {
         
         orderTable.changeEmpty(isEmpty);
         
-        return OrderTableResponse.from(orderTableRepository.save(orderTable));
+        return OrderTableResponse.from(orderTable);
     }
 
     @Transactional
@@ -47,7 +47,7 @@ public class TableService {
         
         orderTable.changeNumberOfGuests(numberOfGuests);
         
-        return OrderTableResponse.from(orderTableRepository.save(orderTable));
+        return OrderTableResponse.from(orderTable);
     }
     
     @Transactional(readOnly = true)

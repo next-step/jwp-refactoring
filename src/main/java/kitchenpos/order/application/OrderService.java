@@ -58,7 +58,7 @@ public class OrderService {
         
         order.onMealing();
         
-        return OrderResponse.from(orderRepository.save(order));
+        return OrderResponse.from(order);
     }
     
     @Transactional
@@ -67,7 +67,7 @@ public class OrderService {
         
         order.completed();
         
-        return OrderResponse.from(orderRepository.save(order));
+        return OrderResponse.from(order);
     }
     
     @Transactional(readOnly = true)
