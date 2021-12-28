@@ -1,5 +1,7 @@
 package kitchenpos.tablegroup.domain;
 
+import kitchenpos.tablegroup.domain.validator.CreateTableGroupValidator;
+import kitchenpos.tablegroup.domain.validator.UnGroupTableGroupValidator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -44,8 +46,8 @@ public class TableGroup extends AbstractAggregateRoot<TableGroup> {
         return new TableGroup(id, orderTableIds);
     }
 
-    public static TableGroup create(List<Long> orderTableIds, TableGroupValidator tableGroupValidator) {
-        tableGroupValidator.createValidate(orderTableIds);
+    public static TableGroup create(List<Long> orderTableIds, CreateTableGroupValidator createTableGroupValidator) {
+        createTableGroupValidator.validate(orderTableIds);
         return new TableGroup(orderTableIds);
     }
 
@@ -53,8 +55,8 @@ public class TableGroup extends AbstractAggregateRoot<TableGroup> {
         registerEvent(TableGroupedEvent.of(this));
     }
 
-    public void ungroup(TableGroupValidator tableGroupValidator) {
-        tableGroupValidator.ungroupValidate(getOrderTableIds());
+    public void ungroup(UnGroupTableGroupValidator tableGroupValidator) {
+        tableGroupValidator.validate(getOrderTableIds());
         registerEvent(TableUnGroupedEvent.of(this));
     }
 

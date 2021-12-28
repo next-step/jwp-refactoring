@@ -2,7 +2,8 @@ package kitchenpos.tablegroup.application;
 
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.domain.TableGroupValidator;
+import kitchenpos.tablegroup.domain.validator.CreateTableGroupValidator;
+import kitchenpos.tablegroup.domain.validator.UnGroupTableGroupValidator;
 import kitchenpos.tablegroup.dto.TableGroupCreateRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import kitchenpos.tablegroup.infra.TableGroupRepository;
@@ -36,7 +37,9 @@ import static org.mockito.Mockito.doThrow;
 class TableGroupServiceTest {
 
     @Mock
-    private TableGroupValidator tableGroupValidator;
+    private CreateTableGroupValidator createTableGroupValidator;
+    @Mock
+    private UnGroupTableGroupValidator unGroupTableGroupValidator;
     @Mock
     private TableGroupRepository tableGroupRepository;
     @InjectMocks
@@ -51,7 +54,7 @@ class TableGroupServiceTest {
         final TableGroupCreateRequest createRequest = getCreateRequest(orderTableIds);
         final TableGroup expectedTableGroup = getTableGroup(1L, orderTableIds);
 
-        doNothing().when(tableGroupValidator).createValidate(anyList());
+        doNothing().when(createTableGroupValidator).validate(anyList());
         given(tableGroupRepository.save(any(TableGroup.class))).willReturn(expectedTableGroup);
 
         // when
@@ -83,7 +86,7 @@ class TableGroupServiceTest {
             final List<Long> orderTableIds = Arrays.asList(1L, 2L);
             final TableGroupCreateRequest createRequest = getCreateRequest(orderTableIds);
 
-            doThrow(new IllegalArgumentException()).when(tableGroupValidator).createValidate(anyList());
+            doThrow(new IllegalArgumentException()).when(createTableGroupValidator).validate(anyList());
 
             // when
             ThrowableAssert.ThrowingCallable callable = () -> tableGroupService.create(createRequest);
@@ -102,7 +105,7 @@ class TableGroupServiceTest {
         TableGroup tableGroup = getTableGroup(1L, orderTableIds);
 
         given(tableGroupRepository.findById(any())).willReturn(Optional.of(tableGroup));
-        doNothing().when(tableGroupValidator).ungroupValidate(anyList());
+        doNothing().when(unGroupTableGroupValidator).validate(anyList());
         // when
         final Executable executable = () -> tableGroupService.ungroup(tableGroup.getId());
         // then
@@ -120,7 +123,7 @@ class TableGroupServiceTest {
         TableGroup tableGroup = getTableGroup(1L, orderTableIds);
 
         given(tableGroupRepository.findById(any())).willReturn(Optional.of(tableGroup));
-        doThrow(new IllegalArgumentException()).when(tableGroupValidator).ungroupValidate(anyList());
+        doThrow(new IllegalArgumentException()).when(unGroupTableGroupValidator).validate(anyList());
 
         // when
         ThrowableAssert.ThrowingCallable callable = () -> tableGroupService.ungroup(tableGroup.getId());

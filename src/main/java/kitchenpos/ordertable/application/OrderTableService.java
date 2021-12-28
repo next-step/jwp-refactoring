@@ -1,11 +1,10 @@
 package kitchenpos.ordertable.application;
 
-import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.ChangeEmptyOrderOrderTableValidator;
+import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.ordertable.exception.CanNotChangeOrderTableException;
-import kitchenpos.ordertable.exception.NotFoundOrderTableException;
 import kitchenpos.ordertable.infra.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +14,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrderTableService {
-    private static final String NOT_FOUND_ORDER_TABLE_ERROR_MESSAGE = "주문 테이블이 존재하지 않습니다.";
     private static final String CHANGE_EMPTY_NOT_FOUND_ERROR_MESSAGE = "존재하는 주문 테이블만 빈 테이블 유무를 변경할 수 있습니다.";
     private static final String CHANGE_NUMBER_OF_GUEST_NOT_FOUND_ERROR_MESSAGE = "존재하는 주문 테이블만 방문자 수를 변경 할 수 있습니다.";
 
@@ -58,13 +56,5 @@ public class OrderTableService {
                 });
         savedOrderTable.changeNumberOfGuests(numberOfGuests);
         return OrderTableResponse.of(savedOrderTable);
-    }
-
-    @Transactional(readOnly = true)
-    public OrderTable getOrderTable(Long id) {
-        return orderTableRepository.findById(id)
-                .orElseThrow(() -> {
-                    throw new NotFoundOrderTableException(NOT_FOUND_ORDER_TABLE_ERROR_MESSAGE);
-                });
     }
 }

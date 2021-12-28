@@ -1,14 +1,12 @@
 package kitchenpos.tablegroup.domain;
 
+import kitchenpos.tablegroup.domain.validator.CreateTableGroupValidator;
 import kitchenpos.tablegroup.infra.TableGroupRepository;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -22,12 +20,12 @@ class TableGroupTest {
     @Autowired
     private TableGroupRepository tableGroupRepository;
     @Autowired
-    private TableGroupValidator tableGroupValidator;
+    private CreateTableGroupValidator createTableGroupValidator;
 
     @DisplayName("단체 지정은 아이디, 생성시간, 주문 테이블로 구성되어 있다.")
     @Test
     void create() {
-        final TableGroup tableGroup = TableGroup.create(Arrays.asList(1L, 2L), tableGroupValidator);
+        final TableGroup tableGroup = TableGroup.create(Arrays.asList(1L, 2L), createTableGroupValidator);
         final TableGroup actual = tableGroupRepository.save(tableGroup);
 
         assertAll(
@@ -40,7 +38,7 @@ class TableGroupTest {
     @Test
     void createFail() {
         // given, when
-        ThrowableAssert.ThrowingCallable createCall = () -> TableGroup.create(Collections.singletonList(2L), tableGroupValidator);
+        ThrowableAssert.ThrowingCallable createCall = () -> TableGroup.create(Collections.singletonList(2L), createTableGroupValidator);
         // then
         assertThatThrownBy(createCall).isInstanceOf(IllegalArgumentException.class);
     }

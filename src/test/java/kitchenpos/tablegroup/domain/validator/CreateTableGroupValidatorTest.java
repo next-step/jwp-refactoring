@@ -1,7 +1,8 @@
-package kitchenpos.tablegroup.domain;
+package kitchenpos.tablegroup.domain.validator;
 
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.infra.OrderTableRepository;
+import kitchenpos.tablegroup.domain.validator.CreateTableGroupValidator;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,12 +21,11 @@ import static org.mockito.BDDMockito.given;
 
 @DisplayName("단체 지정 생성시 주문테이블 유효성 테스트")
 @ExtendWith(MockitoExtension.class)
-class OrderTableIdsTableGroupValidatorTest {
+class CreateTableGroupValidatorTest {
     @Mock
     private OrderTableRepository orderTableRepository;
     @InjectMocks
-    private TableGroupValidator validator;
-
+    private CreateTableGroupValidator validator;
 
     @DisplayName("모두 빈 상태가 아닐때 유효하지 못하다.")
     @Test
@@ -37,7 +37,7 @@ class OrderTableIdsTableGroupValidatorTest {
         );
         given(orderTableRepository.findAllByIdIn(orderTableIds)).willReturn(expected);
         // when
-        final ThrowableAssert.ThrowingCallable throwingCallable = () -> validator.createValidate(orderTableIds);
+        final ThrowableAssert.ThrowingCallable throwingCallable = () -> validator.validate(orderTableIds);
         // then
         assertThatIllegalArgumentException().isThrownBy(throwingCallable);
     }
@@ -52,7 +52,7 @@ class OrderTableIdsTableGroupValidatorTest {
         );
         given(orderTableRepository.findAllByIdIn(orderTableIds)).willReturn(expected);
         // when
-        final Executable executable = () -> validator.createValidate(orderTableIds);
+        final Executable executable = () -> validator.validate(orderTableIds);
         // then
         assertDoesNotThrow(executable);
     }
