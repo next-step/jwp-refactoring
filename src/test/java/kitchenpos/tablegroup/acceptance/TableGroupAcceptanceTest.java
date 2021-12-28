@@ -3,29 +3,20 @@ package kitchenpos.tablegroup.acceptance;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.ArrayList;
-import java.util.stream.Collectors;
-import java.util.stream.LongStream;
 
 import org.assertj.core.api.AbstractIntegerAssert;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.dto.OrderTableRequest;
-import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
-import kitchenpos.tablegroup.ui.TableGroupRestController;
 
 @DisplayName("테이블그룹 기능 인수테스트")
 class TableGroupAcceptanceTest extends AcceptanceTest {

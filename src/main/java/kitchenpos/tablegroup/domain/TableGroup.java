@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
@@ -21,49 +22,29 @@ import kitchenpos.ordertable.domain.OrderTable;
 
 @EntityListeners(AuditingEntityListener.class)
 @Entity
-public class TableGroup{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(columnDefinition = "bigint(20)")
-    private Long id;
+public class TableGroup {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(columnDefinition = "bigint(20)")
+	private Long id;
 
-    @Column(nullable = false)
-    @CreatedDate
-    private LocalDateTime createdDate;
+	@Column(nullable = false)
+	@CreatedDate
+	private LocalDateTime createdDate;
 
-    @OneToMany(mappedBy = "tableGroup", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-    private List<OrderTable> orderTables;
+	public TableGroup() {
+	}
 
-    public TableGroup() {
-    }
+	public TableGroup(Long id) {
+		this.id = id;
+	}
 
-    public TableGroup(Long id) {
-        this.id = id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public TableGroup(List<OrderTable> orderTables) {
-        this(null, orderTables);
-    }
+	public LocalDateTime getCreatedDate() {
+		return createdDate;
+	}
 
-    public TableGroup(Long id, List<OrderTable> orderTables) {
-        groupOrderTable(orderTables);
-        this.id = id;
-        this.orderTables = orderTables;
-    }
-
-    private void groupOrderTable(List<OrderTable> orderTables) {
-        orderTables.forEach(orderTable -> orderTable.toGroup(this));
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public List<OrderTable> getOrderTables() {
-        return orderTables;
-    }
 }

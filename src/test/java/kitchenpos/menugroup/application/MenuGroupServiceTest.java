@@ -3,22 +3,14 @@ package kitchenpos.menugroup.application;
 import static org.assertj.core.api.Assertions.*;
 import java.util.List;
 
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
-import kitchenpos.menugroup.dto.MenuGroupResponse;
 
 @Transactional
 @SpringBootTest
@@ -44,8 +36,8 @@ class MenuGroupServiceTest {
 	public void findMenuGroupList() {
 		//given
 		//when
-		List<MenuGroupResponse> menuGroupResponses = menuGroupService.list();
+		List<MenuGroup> menuGroups = menuGroupService.list();
 		//then
-		assertThat(menuGroupResponses).hasSize(4);
+		assertThat(menuGroups).hasSize(4);
 	}
 }

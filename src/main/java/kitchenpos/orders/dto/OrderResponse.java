@@ -27,13 +27,16 @@ public class OrderResponse {
 	}
 
 	public static OrderResponse of(Order order) {
-		List<OrderLineItemResponse> orderLineItemResponses = order.getOrderLineItems()
-			.stream()
-			.map(OrderLineItemResponse::of)
-			.collect(Collectors.toList());
-
-		return new OrderResponse(order.getId(), order.getOrderTableId(), order.getOrderStatus().name(), order.getOrderedTime(),
+		List<OrderLineItemResponse> orderLineItemResponses = OrderLineItemResponse.ofList(order.getOrderLineItems());
+		return new OrderResponse(order.getId(), order.getOrderTableId(), order.getOrderStatus().name(),
+			order.getOrderedTime(),
 			orderLineItemResponses);
+	}
+
+	public static List<OrderResponse> ofList(List<Order> orders) {
+		return orders.stream()
+			.map(OrderResponse::of)
+			.collect(Collectors.toList());
 	}
 
 	public Long getId() {

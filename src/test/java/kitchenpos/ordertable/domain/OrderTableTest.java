@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 class OrderTableTest {
@@ -24,8 +23,7 @@ class OrderTableTest {
 	@DisplayName("테이블이 그룹화되어있는지 확인")
 	public void isGrouped() {
 		//given
-		TableGroup tableGroup = new TableGroup();
-		OrderTable orderTable = new OrderTable(1L, tableGroup, 0, false);
+		OrderTable orderTable = new OrderTable(1L, 1L, 0, false);
 
 		//when
 		boolean result = orderTable.isGrouped();
@@ -68,10 +66,10 @@ class OrderTableTest {
 		OrderTable orderTable = new OrderTable(0, true);
 
 		//when
-		orderTable.toGroup(tableGroup);
+		orderTable.toGroup(tableGroup.getId());
 
 		//then
-		assertThat(orderTable.getTableGroup()).isNotNull();
+		assertThat(orderTable.getTableGroupId()).isNotNull();
 		assertThat(orderTable.isUse()).isTrue();
 	}
 
@@ -79,14 +77,13 @@ class OrderTableTest {
 	@DisplayName("테이블 그룹해제")
 	public void ungroup() {
 		//given
-		TableGroup tableGroup = new TableGroup(1L);
-		OrderTable orderTable = new OrderTable(1L, tableGroup, 0, true);
+		OrderTable orderTable = new OrderTable(1L, 1L, 0, true);
 
 		//when
 		orderTable.ungroup();
 
 		//then
-		assertThat(orderTable.getTableGroup()).isNull();
+		assertThat(orderTable.getTableGroupId()).isEqualTo(-1L);
 	}
 
 }

@@ -11,15 +11,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.product.domain.Product;
+import kitchenpos.common.domain.Price;
+import kitchenpos.common.domain.Quantity;
 
 @DataJpaTest
 class MenuRepositoryTest {
 
-	private static Product product = new Product(1L, "양념치킨", new BigDecimal(15000));
-	private static MenuProduct menuProduct = new MenuProduct(null, product, 2);
-	private static MenuGroup menuGroup = new MenuGroup(1L, "신메뉴");
+	private static MenuProduct menuProduct = new MenuProduct(null, 1L, Quantity.valueOf(2L));
 
 	@Autowired
 	private MenuRepository menuRepository;
@@ -29,7 +27,8 @@ class MenuRepositoryTest {
 	public void saveMenuTest() {
 		//given
 		//when
-		Menu menu = new Menu("신양념", new BigDecimal(20000), menuGroup, Lists.newArrayList(menuProduct));
+		MenuProducts menuProducts = new MenuProducts(Lists.newArrayList(menuProduct));
+		Menu menu = new Menu("신양념", Price.valueOf(new BigDecimal(20000)), 1L, menuProducts);
 
 		//when
 		Menu save = menuRepository.save(menu);

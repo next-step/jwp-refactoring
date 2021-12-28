@@ -52,7 +52,7 @@ class MenuServiceTest {
 		//then
 		assertThatThrownBy(() -> menuService.create(메뉴가격이_0보다_작은_메뉴))
 			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessage("메뉴의 가격은 0보다 작을 수 없습니다");
+			.hasMessage("가격은 0보다 작을 수 없습니다");
 	}
 
 	@Test

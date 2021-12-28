@@ -1,6 +1,7 @@
 package kitchenpos.orders.domain;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -9,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.Menu;
 
 @Entity
@@ -22,28 +24,28 @@ public class OrderLineItem {
     @JoinColumn(name = "order_id", nullable = false, columnDefinition = "bigint(20)")
     private Order order;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "menu_id", nullable = false, columnDefinition = "bigint(20)")
-    private Menu menu;
+    @Column(name = "menu_id", nullable = false, columnDefinition = "bigint(20)")
+    private Long menuId;
 
+    @Embedded
     @Column(columnDefinition = "bigint(20)", nullable = false)
-    private long quantity;
+    private Quantity quantity;
 
     public OrderLineItem() {
     }
 
-    public OrderLineItem(Menu menu, long quantity) {
-        this(null, null, menu, quantity);
+    public OrderLineItem(Long menuId, Quantity quantity) {
+        this(null, null, menuId, quantity);
     }
 
-    public OrderLineItem(Order order, Menu menu, long quantity) {
-        this(null, order, menu, quantity);
+    public OrderLineItem(Order order, Long menuId, Quantity quantity) {
+        this(null, order, menuId, quantity);
     }
 
-    public OrderLineItem(Long seq, Order order, Menu menu, long quantity) {
+    public OrderLineItem(Long seq, Order order, Long menuId, Quantity quantity) {
         this.seq = seq;
         this.order = order;
-        this.menu = menu;
+        this.menuId = menuId;
         this.quantity = quantity;
     }
 
@@ -55,11 +57,7 @@ public class OrderLineItem {
         return order;
     }
 
-    public Menu getMenu() {
-        return menu;
-    }
-
-    public long getQuantity() {
+    public Quantity getQuantity() {
         return quantity;
     }
 
@@ -68,6 +66,10 @@ public class OrderLineItem {
     }
 
     public Long getMenuId() {
-        return this.menu.getId();
+        return this.menuId;
+    }
+
+    public long getQuantityValue() {
+        return quantity.value();
     }
 }

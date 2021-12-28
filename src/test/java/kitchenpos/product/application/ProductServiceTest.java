@@ -5,18 +5,15 @@ import static org.assertj.core.api.Assertions.*;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import kitchenpos.common.domain.Price;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
-import kitchenpos.product.dto.ProductResponse;
 
 @Transactional
 @SpringBootTest
@@ -34,7 +31,7 @@ class ProductServiceTest {
 		//when
 		Product product = productService.create(new ProductRequest(NAME, PRICE));
 		//then
-		assertThat(product).isEqualTo(new Product(product.getId(), NAME, PRICE));
+		assertThat(product).isEqualTo(new Product(product.getId(), NAME, Price.valueOf(PRICE)));
 	}
 
 	@Test
@@ -42,7 +39,7 @@ class ProductServiceTest {
 	public void createProductFailTest() {
 		assertThatThrownBy(() -> productService.create(new ProductRequest(NAME, new BigDecimal(-1))))
 			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessage("상품 가격은 0이상의 값을 가져야합니다.");
+			.hasMessage("가격은 0보다 작을 수 없습니다");
 	}
 
 	@Test
@@ -50,9 +47,9 @@ class ProductServiceTest {
 	public void findProductListTest() {
 		//given
 		//when
-		List<ProductResponse> productResponses = productService.list();
+		List<Product> products = productService.list();
 		//then
-		assertThat(productResponses).hasSize(6);
+		assertThat(products).hasSize(6);
 	}
 
 }

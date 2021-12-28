@@ -1,21 +1,12 @@
 package kitchenpos.ordertable.domain;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-
-import kitchenpos.orders.domain.Order;
-import kitchenpos.tablegroup.domain.TableGroup;
 
 @Entity
 public class OrderTable {
@@ -24,12 +15,8 @@ public class OrderTable {
 	@Column(columnDefinition = "bigint(20)")
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "table_group_id", columnDefinition = "bigint(20)")
-	private TableGroup tableGroup;
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "orderTable")
-	private List<Order> orders = new ArrayList<>();
+	@Column(name = "table_group_id", columnDefinition = "bigint(20)")
+	private Long tableGroupId;
 
 	@Column(columnDefinition = "int(11)", nullable = false)
 	private int numberOfGuests;
@@ -48,15 +35,15 @@ public class OrderTable {
 		this(null, null, numberOfGuests, empty);
 	}
 
-	public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+	public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
 		this.id = id;
-		this.tableGroup = tableGroup;
+		this.tableGroupId = tableGroupId;
 		this.numberOfGuests = numberOfGuests;
 		this.empty = empty;
 	}
 
 	public boolean isGrouped() {
-		return Objects.nonNull(tableGroup);
+		return Objects.nonNull(tableGroupId);
 	}
 
 	public boolean isNotUse() {
@@ -64,7 +51,14 @@ public class OrderTable {
 	}
 
 	public void changeNumberOfGuests(int numberOfGuests) {
+		validateOrderTableIsNotUse();
 		this.numberOfGuests = numberOfGuests;
+	}
+
+	private void validateOrderTableIsNotUse() {
+		if (isNotUse()) {
+			throw new IllegalArgumentException("비어 있는 테이블입니다");
+		}
 	}
 
 	public boolean isUseOrIsGrouped() {
@@ -79,10 +73,6 @@ public class OrderTable {
 		return id;
 	}
 
-	public TableGroup getTableGroup() {
-		return tableGroup;
-	}
-
 	public int getNumberOfGuests() {
 		return numberOfGuests;
 	}
@@ -95,38 +85,35 @@ public class OrderTable {
 		if (isNotGrouped()) {
 			return -1L;
 		}
-		return this.tableGroup.getId();
+		return this.tableGroupId;
 	}
 
 	private boolean isNotGrouped() {
-		return Objects.isNull(tableGroup);
+		return Objects.isNull(tableGroupId);
 	}
 
 	public void use() {
 		this.empty = false;
 	}
 
-	public void toGroup(TableGroup tableGroup) {
+	public void toGroup(Long tableGroupId) {
 		use();
-		this.tableGroup = tableGroup;
+		this.tableGroupId = tableGroupId;
 	}
 
 	public void notUse() {
 		this.empty = true;
 	}
 
-	public List<Order> getOrders() {
-		return orders;
-	}
-
-	public boolean isOrderCompletion() {
-		return this.orders.stream()
-			.allMatch(Order::isCompletion);
-	}
-
 	public void ungroup() {
-		this.tableGroup = null;
+		this.tableGroupId = null;
 	}
 
-
+	public void changeStatus(boolean status) {
+		if (status) {
+			notUse();
+			return;
+		}
+		use();
+	}
 }

@@ -1,16 +1,13 @@
 package kitchenpos.menugroup.application;
 
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
-import kitchenpos.menugroup.dto.MenuGroupResponse;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class MenuGroupService {
@@ -26,14 +23,12 @@ public class MenuGroupService {
         return menuGroupRepository.save(menuGroup);
     }
 
-    public List<MenuGroupResponse> list() {
-        return menuGroupRepository.findAll()
-            .stream()
-            .map(MenuGroupResponse::of)
-            .collect(Collectors.toList());
+    @Transactional(readOnly = true)
+    public List<MenuGroup> list() {
+        return menuGroupRepository.findAll();
     }
 
-
+    @Transactional(readOnly = true)
     public MenuGroup findById(long id) {
         return menuGroupRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("메뉴그룹이 존재하지 않습니다."));

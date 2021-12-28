@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import kitchenpos.common.domain.Price;
+
 @DataJpaTest
 class ProductRepositoryTest {
 
@@ -20,11 +22,11 @@ class ProductRepositoryTest {
 	@DisplayName("상품 저장")
 	public void save() {
 		//given
-		Product product = new Product(null, "로제치킨", new BigDecimal(15000));
+		Product product = new Product(null, "로제치킨", Price.valueOf(new BigDecimal(15000)));
 		//when
 		Product save = productRepository.save(product);
 		//then
-		assertThat(save).isEqualTo(new Product(7L, "로제치킨", new BigDecimal(15000)));
+		assertThat(save).isEqualTo(new Product(7L, "로제치킨", Price.valueOf(new BigDecimal(15000))));
 	}
 
 	@Test

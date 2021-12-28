@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
@@ -23,6 +24,7 @@ import javax.persistence.Table;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.util.CollectionUtils;
 
 import kitchenpos.ordertable.domain.OrderTable;
 
@@ -36,9 +38,8 @@ public class Order {
 	@Column(columnDefinition = "bigint(20)")
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "order_table_id", nullable = false,columnDefinition = "bigint(20)")
-	private OrderTable orderTable;
+	@Column(name = "order_table_id", nullable = false, columnDefinition = "bigint(20)")
+	private Long orderTableId;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
@@ -48,21 +49,21 @@ public class Order {
 	@CreatedDate
 	private LocalDateTime orderedTime;
 
-	@OneToMany(mappedBy = "order", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<OrderLineItem> orderLineItems;
+	@Embedded
+	private OrderLineItems orderLineItems;
 
 	public Order() {
 	}
 
-	public Order(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-		this(null, orderTable, orderStatus, orderLineItems);
+	public Order(Long orderTableId, OrderStatus orderStatus, OrderLineItems orderLineItems) {
+		this(null, orderTableId, orderStatus, orderLineItems);
 	}
 
-	public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+	public Order(Long id, Long orderTableId, OrderStatus orderStatus, OrderLineItems orderLineItems) {
 		this.id = id;
-		this.orderTable = orderTable;
+		this.orderTableId = orderTableId;
 		this.orderStatus = orderStatus;
-		this.orderLineItems = setOrder(orderLineItems);
+		this.orderLineItems = orderLineItems.setOrder(this);
 	}
 
 	public boolean isCompletion() {
@@ -70,21 +71,22 @@ public class Order {
 	}
 
 	public void changeOrderStatus(String orderStatus) {
+		validateOrderIsCompletion();
 		this.orderStatus = OrderStatus.valueOf(orderStatus);
 	}
 
-	private List<OrderLineItem> setOrder(List<OrderLineItem> orderLineItems) {
-		return orderLineItems.stream()
-			.map(ol -> new OrderLineItem(this, ol.getMenu(), ol.getQuantity()))
-			.collect(Collectors.toList());
+	private void validateOrderIsCompletion() {
+		if (isCompletion()) {
+			throw new IllegalArgumentException("계산완료 된 주문은 상태를 변경 할 수 없습니다");
+		}
 	}
 
 	public Long getId() {
 		return id;
 	}
 
-	public OrderTable getOrderTable() {
-		return orderTable;
+	public Long getOrderTableId() {
+		return orderTableId;
 	}
 
 	public OrderStatus getOrderStatus() {
@@ -96,11 +98,10 @@ public class Order {
 	}
 
 	public List<OrderLineItem> getOrderLineItems() {
-		return orderLineItems;
+		return orderLineItems.value();
 	}
 
-	public Long getOrderTableId() {
-		return this.orderTable.getId();
+	public boolean isEmptyOrderLineItems() {
+		return orderLineItems.isEmpty();
 	}
-
 }

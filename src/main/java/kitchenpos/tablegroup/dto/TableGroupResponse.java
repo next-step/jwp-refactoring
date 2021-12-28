@@ -11,24 +11,17 @@ public class TableGroupResponse {
 
 	private Long id;
 	private LocalDateTime createdDate;
-	private List<OrderTableResponse> orderTables;
 
 	public TableGroupResponse() {
 	}
 
-	public TableGroupResponse(long id, LocalDateTime createdDate,
-		List<OrderTableResponse> orderTables) {
+	public TableGroupResponse(long id, LocalDateTime createdDate) {
 		this.id = id;
 		this.createdDate = createdDate;
-		this.orderTables = orderTables;
 	}
 
 	public static TableGroupResponse of(TableGroup tableGroup) {
-		List<OrderTableResponse> orderTableResponses = tableGroup.getOrderTables()
-			.stream()
-			.map(OrderTableResponse::of)
-			.collect(Collectors.toList());
-		return new TableGroupResponse(tableGroup.getId(), tableGroup.getCreatedDate(), orderTableResponses);
+		return new TableGroupResponse(tableGroup.getId(), tableGroup.getCreatedDate());
 	}
 
 	public Long getId() {
@@ -37,9 +30,5 @@ public class TableGroupResponse {
 
 	public LocalDateTime getCreatedDate() {
 		return createdDate;
-	}
-
-	public List<OrderTableResponse> getOrderTables() {
-		return orderTables;
 	}
 }

@@ -10,25 +10,25 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import kitchenpos.common.domain.Price;
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.product.domain.Product;
 
 @DataJpaTest
 class MenuProductRepositoryTest {
 
-	private static Product product = new Product(1L, "양념치킨", new BigDecimal(15000));
+	private static Product product = new Product(1L, "양념치킨", Price.valueOf(new BigDecimal(15000)));
 	private static Menu menu = new Menu(1L);
-
 
 	@Autowired
 	private MenuProductRepository menuProductRepository;
-
 
 	@Test
 	@DisplayName("메뉴상품 저장 테스트")
 	public void saveMenuProductTest() {
 		//given
 		//when
-		MenuProduct menuProduct = new MenuProduct(menu, product, 2);
+		MenuProduct menuProduct = new MenuProduct(menu, 1L, Quantity.valueOf(2L));
 
 		//when
 		MenuProduct save = menuProductRepository.save(menuProduct);
