@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
 import org.assertj.core.util.Lists;
@@ -24,6 +25,7 @@ import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.table.dto.OrderTableDto;
 import kitchenpos.tablegroup.dto.TableGroupDto;
+import kitchenpos.tablegroup.exception.NotFoundTableGroupException;
 import kitchenpos.tablegroup.domain.TableGroupValidator;
 
 @ExtendWith(MockitoExtension.class)
@@ -74,6 +76,7 @@ public class TableGroupServiceTest {
         TableGroup 단체주문테이블 = TableGroup.of(1L);
         주문테이블들.groupingTable(TableGroupId.of(단체주문테이블.getId()));
 
+        when(tableGroupRepository.findById(nullable(Long.class))).thenReturn(Optional.of(단체주문테이블));
         when(tableService.findByTableGroupId(nullable(Long.class))).thenReturn(List.of(치킨_주문_단체테이블, 치킨2_주문_단체테이블));
 
         // when
@@ -82,5 +85,27 @@ public class TableGroupServiceTest {
         // then
         Assertions.assertThat(치킨_주문_단체테이블.getTableGroupId()).isNull();
         Assertions.assertThat(치킨2_주문_단체테이블.getTableGroupId()).isNull();
+    }
+
+    @DisplayName("단체지정해제시 조회된 단체지정이 없으면 에러가 발생된다.")
+    @Test
+    void exception_updateTableUnGroup_notFound() {
+        // given
+        OrderTable 치킨_주문_단체테이블 = OrderTable.of(10, false);
+        OrderTable 치킨2_주문_단체테이블 = OrderTable.of(10, false);
+
+        OrderTables 주문테이블들 = OrderTables.of(Lists.newArrayList(치킨_주문_단체테이블, 치킨2_주문_단체테이블));
+        치킨_주문_단체테이블.changeEmpty(true);
+        치킨2_주문_단체테이블.changeEmpty(true);
+
+        TableGroup 단체주문테이블 = TableGroup.of(1L);
+        주문테이블들.groupingTable(TableGroupId.of(단체주문테이블.getId()));
+
+        when(tableGroupRepository.findById(nullable(Long.class))).thenReturn(Optional.empty());
+
+        // when
+        // then
+        Assertions.assertThatExceptionOfType(NotFoundTableGroupException.class)
+                    .isThrownBy(() -> tableGroupService.ungroup(단체주문테이블.getId()));
     }
 }

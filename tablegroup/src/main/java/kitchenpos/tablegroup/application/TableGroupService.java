@@ -2,11 +2,11 @@ package kitchenpos.tablegroup.application;
 
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTables;
-import kitchenpos.table.domain.TableGroupId;
 import kitchenpos.table.dto.OrderTableDto;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupDto;
+import kitchenpos.tablegroup.exception.NotFoundTableGroupException;
 import kitchenpos.tablegroup.domain.TableGroupValidator;
 
 import java.util.List;
@@ -39,26 +39,18 @@ public class TableGroupService {
         
         final OrderTables savedOrderTables = OrderTables.of(tableService.findAllByIdIn(orderTableIds));
 
-        tableGroupValidator.checkAllExistOfOrderTables(tableGroupDto.getOrderTables(), savedOrderTables);
-        tableGroupValidator.checkOrderTableSize(savedOrderTables);
-
-        for (int index = 0; index < savedOrderTables.size(); index++) {
-            tableGroupValidator.checkHasTableGroup(savedOrderTables.get(index));
-            tableGroupValidator.checkNotEmptyTable(savedOrderTables.get(index));
-        }
-
         TableGroup savedTableGroup = tableGroupRepository.save(TableGroup.of());
-        savedOrderTables.groupingTable(TableGroupId.of(savedTableGroup.getId()));
-        
+        savedTableGroup.groupingTable(tableGroupDto.getOrderTables(), savedOrderTables, tableGroupValidator);
+
         return TableGroupDto.of(savedTableGroup, savedOrderTables);
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final OrderTables orderTables = OrderTables.of(tableService.findByTableGroupId(tableGroupId));
-        
-        tableGroupValidator.validateForUnGroup(orderTables);
+        TableGroup tableGroup = tableGroupRepository.findById(tableGroupId).orElseThrow(NotFoundTableGroupException::new);
 
-        orderTables.unGroupTable();
+        final OrderTables orderTables = OrderTables.of(tableService.findByTableGroupId(tableGroup.getId()));
+        
+        tableGroup.ungroup(orderTables, tableGroupValidator);
     }
 }
