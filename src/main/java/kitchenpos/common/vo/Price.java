@@ -30,17 +30,15 @@ public class Price implements Comparable<Price> {
     }
 
     public static Price sumPrices(List<Price> prices) {
-        Price sum = prices.stream()
-            .reduce(Price.valueOf(BigDecimal.ZERO), (subSum, price) -> subSum.add(price));
-        return sum;
+        BigDecimal sum = prices.stream()
+            .map(Price::getPrice)
+            .reduce(BigDecimal.ZERO, (subSum, price) -> subSum.add(price));
+
+        return Price.valueOf(sum);
     }
 
     public Price multiply(Quantity quantity) {
         return Price.valueOf(price.multiply(BigDecimal.valueOf(quantity.getQuantity())));
-    }
-
-    private Price add(Price addPrice) {
-        return Price.valueOf(price.add(addPrice.getPrice()));
     }
 
     public boolean isBiggerThan(Price value) {
