@@ -32,17 +32,12 @@ public class TableGroup extends AbstractAggregateRoot<TableGroup> {
     }
 
     private TableGroup(List<Long> orderTableIds) {
-        groupOrderTable(orderTableIds);
+        this.tableGroupOrderTableIds = TableGroupOrderTableIds.of(orderTableIds);
     }
 
     private TableGroup(Long id, List<Long> orderTableIds) {
         this.id = id;
-        groupOrderTable(orderTableIds);
-    }
-
-    private void groupOrderTable(List<Long> orderTableIds) {
         this.tableGroupOrderTableIds = TableGroupOrderTableIds.of(orderTableIds);
-        registerEvent(TableGroupedEvent.of(this));
     }
 
     public static TableGroup generate(Long id, List<Long> orderTableIds) {
@@ -52,6 +47,10 @@ public class TableGroup extends AbstractAggregateRoot<TableGroup> {
     public static TableGroup create(List<Long> orderTableIds, TableGroupValidator tableGroupValidator) {
         tableGroupValidator.createValidate(orderTableIds);
         return new TableGroup(orderTableIds);
+    }
+
+    public void publishGroupEvent() {
+        registerEvent(TableGroupedEvent.of(this));
     }
 
     public void ungroup(TableGroupValidator tableGroupValidator) {

@@ -24,7 +24,9 @@ public class TableGroupService {
 
     public TableGroupResponse create(final TableGroupCreateRequest request) {
         final TableGroup tableGroup = TableGroup.create(request.getOrderTableIds(), tableGroupValidator);
-        return TableGroupResponse.of(tableGroupRepository.save(tableGroup));
+        final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
+        savedTableGroup.publishGroupEvent();
+        return TableGroupResponse.of(savedTableGroup);
     }
 
     public void ungroup(final Long tableGroupId) {
