@@ -6,8 +6,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.repository.OrderRepository;
-import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.domain.NumberOfGuests;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
@@ -17,6 +15,8 @@ import kitchenpos.dto.OrderTableResponses;
 import kitchenpos.exception.KitchenposErrorCode;
 import kitchenpos.exception.KitchenposException;
 import kitchenpos.exception.KitchenposNotFoundException;
+import kitchenpos.repository.OrderRepository;
+import kitchenpos.repository.OrderTableRepository;
 
 @Service
 @Transactional(readOnly = true)
@@ -49,14 +49,18 @@ public class TableService {
 
         orderTable.checkNotGrouped();
 
-        if (orderRepository.existsByOrderTableAndOrderStatusIn(
-            orderTable, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new KitchenposException(KitchenposErrorCode.CONTAINS_USED_TABLE);
-        }
+        checkTableCookingOrMeal(orderTable);
 
         orderTable.updateEmpty(request.isEmpty());
 
         return OrderTableResponse.from(orderTableRepository.save(orderTable));
+    }
+
+    private void checkTableCookingOrMeal(OrderTable orderTable) {
+        if (orderRepository.existsByOrderTableAndOrderStatusIn(orderTable,
+            Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+            throw new KitchenposException(KitchenposErrorCode.CONTAINS_USED_TABLE);
+        }
     }
 
     @Transactional

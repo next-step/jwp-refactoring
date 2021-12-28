@@ -37,23 +37,24 @@ public class TableGroupService {
     @Transactional
     public TableGroupResponse create(final TableGroupRequest request) {
         request.checkValidSize();
-        final List<Long> orderTableIds = request.getOrderTables().stream()
-            .map(OrderTableIdRequest::getId)
-            .collect(Collectors.toList());
+        final List<Long> orderTableIds = makeOrderTableIds(request);
 
         TableGroup tableGroup = makeTableGroup(orderTableIds);
         return TableGroupResponse.from(tableGroupRepository.save(tableGroup));
     }
 
+    private List<Long> makeOrderTableIds(TableGroupRequest request) {
+        return request.getOrderTables().stream()
+                .map(OrderTableIdRequest::getId)
+                .collect(Collectors.toList());
+    }
+
     private TableGroup makeTableGroup(List<Long> orderTableIds) {
-        final OrderTables savedOrderTables = new OrderTables(orderTableRepository.findAllByIdIn(orderTableIds));
-        savedOrderTables.checkSameSize(orderTableIds.size());
-        savedOrderTables.checkNotContainsUsedTable();
+        final OrderTables orderTables = new OrderTables(orderTableRepository.findAllByIdIn(orderTableIds));
+        orderTables.checkSameSize(orderTableIds.size());
+        orderTables.checkNotContainsUsedTable();
 
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.addOrderTables(savedOrderTables);
-
-        return tableGroup;
+        return new TableGroup(orderTables);
     }
 
     @Transactional
@@ -62,11 +63,15 @@ public class TableGroupService {
             .orElseThrow(KitchenposNotFoundException::new);
         OrderTables orderTables = new OrderTables(orderTableRepository.findAllByTableGroup(tableGroup));
 
+        checkContainsCookingOrMealTable(orderTables);
+
+        orderTables.unGroup();
+    }
+
+    private void checkContainsCookingOrMealTable(OrderTables orderTables) {
         if (orderRepository.existsByOrderTableInAndOrderStatusIn(
             orderTables.getOrderTables(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new KitchenposException(KitchenposErrorCode.CONTAINS_USED_TABLE);
         }
-
-        orderTables.unGroup();
     }
 }

@@ -40,6 +40,10 @@ public class TableGroup {
         this.orderTables = orderTables;
     }
 
+    public TableGroup(OrderTables orderTables) {
+        addOrderTables(orderTables);
+    }
+
     public Long getId() {
         return id;
     }
@@ -62,7 +66,7 @@ public class TableGroup {
         orderTable.referenceTableGroup(this);
     }
 
-    public void addOrderTables(OrderTables orderTables) {
+    private void addOrderTables(OrderTables orderTables) {
         for (final OrderTable orderTable : orderTables.getOrderTables()) {
             addOrderTable(orderTable);
         }

@@ -35,7 +35,7 @@ public class Price {
     }
 
     public boolean isBiggerThan(Price price) {
-        return this.price.compareTo(price.price) > 0;
+        return this.price.compareTo(price.price) > ZERO;
     }
 
     @Override

@@ -77,10 +77,6 @@ public class Order {
         return orderedTime;
     }
 
-    public OrderLineItems getOrderLineItems() {
-        return orderLineItems;
-    }
-
     public Long getOrderTableId() {
         if (orderTable == null) {
             return null;

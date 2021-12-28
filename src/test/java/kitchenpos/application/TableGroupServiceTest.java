@@ -56,7 +56,7 @@ class TableGroupServiceTest {
     void create() {
         // given
         테이블_조회_결과_반환(orderTables);
-        테이블_그룹_저장_결과_반환();
+        테이블_그룹_저장_결과_반환(tableGroup);
 
         List<OrderTableIdRequest> requestTables = Arrays.asList(
             new OrderTableIdRequest(1L),
@@ -181,7 +181,7 @@ class TableGroupServiceTest {
             .withMessage("사용중인 테이블이 있습니다.");
     }
 
-    private void 테이블_그룹_저장_결과_반환() {
+    private void 테이블_그룹_저장_결과_반환(TableGroup tableGroup) {
         Mockito.when(tableGroupRepository.save(Mockito.any()))
             .thenReturn(tableGroup);
     }
