@@ -1,9 +1,13 @@
 package kitchenpos.menu.dto;
 
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MenuCreateRequest {
 
@@ -18,10 +22,6 @@ public class MenuCreateRequest {
     private List<MenuProductRequest> menuProducts;
 
     public MenuCreateRequest() {
-    }
-
-    public MenuCreateRequest(final Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
     }
 
     public MenuCreateRequest(final String name, final BigDecimal price, final Long menuGroupId, final List<MenuProductRequest> menuProducts) {
@@ -67,5 +67,13 @@ public class MenuCreateRequest {
         public Long getQuantity() {
             return quantity;
         }
+    }
+
+    public Menu toEntity() {
+        final List<MenuProduct> menuProducts = this.menuProducts.stream()
+                .map(menuProductRequest -> new MenuProduct(menuProductRequest.getProductId(), menuProductRequest.getQuantity()))
+                .collect(Collectors.toList());
+
+        return new Menu(getName(), getPrice(), getMenuGroupId(), menuProducts);
     }
 }

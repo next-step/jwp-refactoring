@@ -2,7 +2,11 @@ package kitchenpos.menu;
 
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.exception.MenuPriceMoreThanMenuProductPriceSumException;
 import kitchenpos.menugroup.repository.MenuGroupRepository;
+import kitchenpos.product.domain.Product;
 import kitchenpos.product.repository.ProductRepository;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuCreateRequest;
@@ -31,8 +35,11 @@ class MenuServiceTest extends AcceptanceTest {
     @Test
     @DisplayName("메뉴 그룹이 존재하지 않을 경우 예외가 발생한다.")
     void nonExistMenuGroup() {
+        // given
+        Product product = productRepository.save(new Product("후라이드", BigDecimal.valueOf(8000)));
+
         assertThatThrownBy(() -> {
-            menuService.create(new MenuCreateRequest(1L));
+            menuService.create(new MenuCreateRequest("후라이드+후라이드", BigDecimal.valueOf(18000), 1L, Arrays.asList(new MenuCreateRequest.MenuProductRequest(product.getId(), 1L))));
         }).isInstanceOf(EntityNotFoundException.class);
     }
 
@@ -46,5 +53,19 @@ class MenuServiceTest extends AcceptanceTest {
         assertThatThrownBy(() -> {
             menuService.create(new MenuCreateRequest("후라이드+후라이드", BigDecimal.valueOf(18000), savedMenuGroup.getId(), Arrays.asList(new MenuCreateRequest.MenuProductRequest(1L, 1L))));
         }).isInstanceOf(EntityNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("메뉴의 금액이 상품의 총 금액보다 크다면 예외가 발생한다.")
+    void menuPriceMoreThanProductPriceSum() {
+        // given
+        final MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup("추천메뉴"));
+        final Product product = productRepository.save(new Product("후라이드", BigDecimal.valueOf(8000)));
+        final MenuProduct menuProduct = new MenuProduct(product.getId(), 2L);
+
+        // when
+        assertThatThrownBy(() -> {
+            menuService.create(new MenuCreateRequest("후라이드 2마리", BigDecimal.valueOf(18000), menuGroup.getId(), Arrays.asList(new MenuCreateRequest.MenuProductRequest(menuProduct.getProduct(), 2L))));
+        }).isInstanceOf(MenuPriceMoreThanMenuProductPriceSumException.class);
     }
 }

@@ -12,7 +12,7 @@ public class MenuMapper {
     }
 
     public static MenuResponse toMenuResponse(Menu menu) {
-        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(), menu.getMenuGroup().getId(), getMenuProduct(menu));
+        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(), menu.getMenuGroup(), getMenuProduct(menu));
     }
 
     public static List<MenuResponse> toMenuResponses(List<Menu> menus) {
@@ -25,7 +25,7 @@ public class MenuMapper {
     private static List<MenuResponse.MenuProduct> getMenuProduct(final Menu menu) {
         return menu.getMenuProducts()
                 .stream()
-                .map(menuProduct -> new MenuResponse.MenuProduct(menuProduct.getSeq(), menuProduct.getMenu().getId(), menuProduct.getProduct().getId(), menuProduct.getQuantity()))
+                .map(menuProduct -> new MenuResponse.MenuProduct(menuProduct.getSeq(), menuProduct.getMenu().getId(), menuProduct.getProduct(), menuProduct.getQuantity()))
                 .collect(Collectors.toList());
     }
 }

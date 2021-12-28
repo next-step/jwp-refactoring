@@ -54,7 +54,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         super.setUp();
         final MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup("추천메뉴"));
         final Product product = new Product("후라이드", BigDecimal.valueOf(8000));
-        final Menu menu = new Menu("후라이드+후라이드", BigDecimal.valueOf(15000), menuGroup, Arrays.asList(new MenuProduct(product, 2L)));
+        final Menu menu = new Menu("후라이드+후라이드", BigDecimal.valueOf(15000), menuGroup.getId(), Arrays.asList(new MenuProduct(product.getId(), 2L)));
         productRepository.save(product);
         this.menu = menuRepository.save(menu);
         orderTable = orderTableRepository.save(new OrderTable(0, false));

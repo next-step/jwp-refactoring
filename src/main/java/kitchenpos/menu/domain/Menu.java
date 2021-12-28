@@ -1,10 +1,16 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menu.exception.MenuPriceMoreThanMenuProductPriceSumException;
 import kitchenpos.global.BaseTimeEntity;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +29,8 @@ public class Menu extends BaseTimeEntity {
     @Column(name = "price", precision = 19, scale = 2, nullable = false)
     private BigDecimal price;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_group_id")
-    private MenuGroup menuGroup;
+    @Column(name = "menu_group_id")
+    private Long menuGroup;
 
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<MenuProduct> menuProducts = new ArrayList<>();
@@ -33,38 +38,16 @@ public class Menu extends BaseTimeEntity {
     protected Menu() {
     }
 
-    public Menu(final String name, final BigDecimal price, final MenuGroup menuGroup, final List<MenuProduct> menuProducts) {
+    public Menu(final String name, final BigDecimal price, final Long menuGroup, final List<MenuProduct> menuProducts) {
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
-        addMenuProduct(menuProducts);
-        checkMenuPrice();
+        this.menuProducts = menuProducts;
     }
 
-    private void addMenuProduct(List<MenuProduct> menuProduct) {
-        for (MenuProduct mp : menuProduct) {
-            this.menuProducts.add(mp);
-            mp.addMenu(this);
-        }
-    }
-
-    private void checkMenuPrice() {
-        final BigDecimal menuProductPriceSum = getMenuProductPriceSum();
-        if (this.price.compareTo(menuProductPriceSum) > 0) {
-            throw new MenuPriceMoreThanMenuProductPriceSumException(this.price.toPlainString());
-        }
-    }
-
-    private BigDecimal getMenuProductPriceSum() {
-        BigDecimal menuProductPriceSum = BigDecimal.ZERO;
-
-        for (final MenuProduct menuProduct : this.menuProducts) {
-            final BigDecimal productPrice = menuProduct.getProduct().getPrice();
-            final BigDecimal menuProductTotalPrice = productPrice.multiply(BigDecimal.valueOf(menuProduct.getQuantity()));
-            menuProductPriceSum = menuProductPriceSum.add(menuProductTotalPrice);
-        }
-
-        return menuProductPriceSum;
+    public void addMenu() {
+        this.menuProducts.stream()
+                .forEach(menuProduct -> menuProduct.addMenu(this));
     }
 
     public Long getId() {
@@ -79,7 +62,7 @@ public class Menu extends BaseTimeEntity {
         return price;
     }
 
-    public MenuGroup getMenuGroup() {
+    public Long getMenuGroup() {
         return menuGroup;
     }
 

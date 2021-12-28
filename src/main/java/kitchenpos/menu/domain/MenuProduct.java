@@ -1,9 +1,16 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.product.domain.Product;
 import kitchenpos.global.BaseTimeEntity;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "menu_product")
@@ -18,9 +25,8 @@ public class MenuProduct extends BaseTimeEntity {
     @JoinColumn(name = "menu_id")
     private Menu menu;
 
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
-    private Product product;
+    private Long product;
 
     @Column(name = "quantity", length = 20, nullable = false)
     private long quantity;
@@ -28,7 +34,7 @@ public class MenuProduct extends BaseTimeEntity {
     protected MenuProduct() {
     }
 
-    public MenuProduct(final Product product, final long quantity) {
+    public MenuProduct(final Long product, final long quantity) {
         this.product = product;
         this.quantity = quantity;
     }
@@ -45,7 +51,7 @@ public class MenuProduct extends BaseTimeEntity {
         return menu;
     }
 
-    public Product getProduct() {
+    public Long getProduct() {
         return product;
     }
 
