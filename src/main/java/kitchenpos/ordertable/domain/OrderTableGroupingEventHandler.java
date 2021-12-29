@@ -3,10 +3,11 @@ package kitchenpos.ordertable.domain;
 import kitchenpos.ordertable.infra.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroupedEvent;
 import kitchenpos.tablegroup.domain.TableUnGroupedEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.util.List;
 
@@ -20,8 +21,8 @@ public class OrderTableGroupingEventHandler {
     }
 
     @Async
-    @EventListener
     @Transactional
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void groupingHandle(TableGroupedEvent event) {
         final List<OrderTable> orderTables = orderTableRepository.findAllById(event.getOrderTableIds());
         final Long tableGroupId = event.getTableGroupId();
@@ -30,8 +31,8 @@ public class OrderTableGroupingEventHandler {
     }
 
     @Async
-    @EventListener
-    @Transactional(readOnly = true)
+    @Transactional
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void unGroupingHandle(TableUnGroupedEvent event) {
         List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(event.getTableGroupId());
         orderTables.forEach(OrderTable::ungroup);
