@@ -1,0 +1,47 @@
+package kitchenpos.menu.domain;
+
+import kitchenpos.product.domain.Product;
+
+import javax.persistence.*;
+
+@Table(name = "menu_product")
+@Entity
+public class MenuProduct {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long seq;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    private Product product;
+
+    @Embedded
+    private MenuProductQuantity menuProductQuantity;
+
+    protected MenuProduct() {
+
+    }
+
+    public MenuProduct(Product product, long quantity) {
+        this.product = product;
+        this.menuProductQuantity = new MenuProductQuantity(quantity);
+    }
+
+    public Long getSeq() {
+        return seq;
+    }
+
+    public Long getProductId() {
+        return product.getId();
+    }
+
+    public long getQuantity() {
+        return menuProductQuantity.getQuantity();
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+}
