@@ -21,7 +21,7 @@ public class OrderLineItemTest {
         Order 주문 = Order.createOrder(테이블_Id, Arrays.asList(주문_항목));
         
         // then
-        assertThat(주문_항목.getOrder()).isEqualTo(주문);
+        assertThat(주문_항목.getOrderId()).isEqualTo(주문.getId());
     }
 
 }

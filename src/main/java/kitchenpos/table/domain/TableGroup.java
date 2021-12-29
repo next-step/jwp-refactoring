@@ -68,7 +68,7 @@ public class TableGroup {
     
     private void addOrderTables(final List<OrderTable> orderTables) {
         orderTables.forEach(orderTable -> {
-            orderTable.updateTableGroup(this);
+            orderTable.updateTableGroup(this.id);
             this.orderTables.add(orderTable);
         });
         validateOrderTables();

@@ -107,6 +107,7 @@ public class TableServiceTest {
         OrderTable 첫번째_테이블 = OrderTable.of(3, false);
         OrderTable 두번째_테이블 = OrderTable.of(5, false);
         TableGroup.from(Arrays.asList(첫번째_테이블, 두번째_테이블));
+        두번째_테이블.updateTableGroup(1L);
         
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(두번째_테이블));
         doNothing().when(tableValidator).checkIsCookingOrMeal(anyLong());

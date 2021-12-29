@@ -69,7 +69,7 @@ public class Menu {
 
     public void addMenuProducts(final List<MenuProduct> menuProducts) {
         menuProducts.forEach(menuProduct -> {
-            menuProduct.setMenu(this);
+            menuProduct.setMenuId(this.id);
             this.menuProducts.add(menuProduct);
         });
     }

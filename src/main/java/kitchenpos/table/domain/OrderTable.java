@@ -7,7 +7,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 @Entity
 public class OrderTable {
@@ -17,9 +16,8 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
     @JoinColumn(name = "table_group_id")
-    private TableGroup tableGroup;
+    private Long tableGroupId;
 
     private int numberOfGuests;
 
@@ -42,15 +40,8 @@ public class OrderTable {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
-    }
-
     public Long getTableGroupId() {
-        if (tableGroup == null) {
-            return null;
-        }
-        return tableGroup.getId();
+        return tableGroupId;
     }
 
     public int getNumberOfGuests() {
@@ -66,8 +57,8 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public void updateTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
+    public void updateTableGroup(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
     }
 
     public void changeNumberOfGuests(final int numberOfGuests) {
@@ -77,11 +68,11 @@ public class OrderTable {
 
     public void ungroup() {
         empty = false;
-        tableGroup = null;
+        tableGroupId = null;
     }
 
     private void checkIsSetTableGroup() {
-        if (Objects.nonNull(tableGroup)) {
+        if (Objects.nonNull(tableGroupId)) {
             throw new IllegalArgumentException("단체지정이 되어있는 테이블은 빈 테이블로 변경할 수 없습니다");
         }
     }

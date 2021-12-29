@@ -15,6 +15,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 import org.springframework.data.annotation.CreatedDate;
@@ -38,7 +39,8 @@ public class Order {
     @Column(nullable = false, updatable = false)
     private LocalDateTime orderedTime;
     
-    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST}, orphanRemoval = true)
+    @JoinColumn(name = "order_id")
     private List<OrderLineItem> orderLineItems;
     
     protected Order() {
@@ -124,7 +126,7 @@ public class Order {
         
         orderLineItems.stream()
         .forEach(orderLineItem -> {
-            orderLineItem.setOrder(this);
+            orderLineItem.setOrderId(this.id);
             this.orderLineItems.add(orderLineItem);
         });
     }

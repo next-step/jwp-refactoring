@@ -5,7 +5,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 @Entity
 public class MenuProduct {
@@ -14,9 +13,8 @@ public class MenuProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
     
-    @ManyToOne
     @JoinColumn(name = "menu_id")
-    private Menu menu;
+    private Long menuId;
     
     private Long productId;
     
@@ -42,15 +40,15 @@ public class MenuProduct {
         return quantity;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public Long getMenuId() {
+        return menuId;
     }
 
     public Long getProductId() {
         return productId;
     }
-
-    public void setMenu(Menu menu) {
-        this.menu = menu;
+    
+    public void setMenuId(Long menuId) {
+        this.menuId = menuId;
     }
 }
