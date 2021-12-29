@@ -1,9 +1,10 @@
 package kitchenpos.order.application;
 
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
+import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.order.exceptions.InputOrderDataErrorCode;
+import kitchenpos.order.exceptions.InputOrderDataException;
 import kitchenpos.order.exceptions.InputTableDataErrorCode;
 import kitchenpos.order.exceptions.InputTableDataException;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -69,5 +71,39 @@ class TableServiceTest {
             tableService.changeNumberOfGuests(1L, -20);
         }).isInstanceOf(InputTableDataException.class)
                 .hasMessageContaining(InputTableDataErrorCode.THE_TABLE_CAN_NOT_FIND.errorMessage());
+    }
+
+    @Test
+    @DisplayName("그룹지정이 되어있어 상태를 변경 할 수 없습니다.")
+    void changeNotTableStatusBecauseOfGroup() {
+        //given
+        OrderTable orderTable = new OrderTable(5,false);
+        OrderTables orderTables = new OrderTables(Arrays.asList(orderTable));
+        new TableGroup(orderTables, LocalDateTime.now());
+
+        //when
+        assertThatThrownBy(() -> {
+            OrderTableValidator orderTableValidator = new OrderTableValidator(orderTable);
+            orderTableValidator.checkUpdateTableGroup();
+            orderTable.updateEmpty(true);
+        }).isInstanceOf(InputTableDataException.class)
+                .hasMessageContaining(InputTableDataErrorCode.THE_TABLE_HAS_GROUP.errorMessage());
+    }
+
+    @Test
+    @DisplayName("주문 상태가 조리중 또는 식사중인 테이블의 상태는 변경할 수 없습니다.")
+    void changeNotTableStatusBecauseOfCookingOrEating() {
+        //given
+        OrderTable orderTable = new OrderTable(5,false);
+        OrderLineItem orderLineItem = new OrderLineItem(1L, 4);
+        List<Order> orders = Arrays.asList(new Order(orderTable.getId(), new OrderLineItems(Arrays.asList(orderLineItem))));
+
+        //when
+        assertThatThrownBy(() -> {
+            OrderTableValidator orderTableValidator = new OrderTableValidator(orders, orderTable);
+            orderTableValidator.checkUpdateTableGroup();
+            orderTable.updateEmpty(true);
+        }).isInstanceOf(InputOrderDataException.class)
+                .hasMessageContaining(InputOrderDataErrorCode.THE_ORDER_IS_COOKING_OR_IS_EATING.errorMessage());
     }
 }

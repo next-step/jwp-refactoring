@@ -4,7 +4,7 @@ import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.exceptions.InputOrderDataErrorCode;
-import kitchenpos.order.exceptions.InputOrderDateException;
+import kitchenpos.order.exceptions.InputOrderDataException;
 import kitchenpos.order.exceptions.InputTableDataErrorCode;
 import kitchenpos.order.exceptions.InputTableDataException;
 import org.springframework.stereotype.Service;
@@ -12,30 +12,29 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static kitchenpos.order.domain.OrderStatus.COOKING;
-import static kitchenpos.order.domain.OrderStatus.MEAL;
-
 
 @Service
 public class OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
-    private final OrderLineItemRepository orderLineItemRepository;
 
-    public OrderService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository, final OrderLineItemRepository orderLineItemRepository) {
+    public OrderService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
-        this.orderLineItemRepository = orderLineItemRepository;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
         OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
                 .orElseThrow(() -> new InputTableDataException(InputTableDataErrorCode.THE_TABLE_CAN_NOT_FIND));
-        List<OrderLineItem> orderLineItems = orderRequest.getOrderLineItems();
+        List<OrderLineItem> orderLineItemBasket = orderRequest.getOrderLineItems();
+        OrderLineItems orderLineItems = new OrderLineItems(orderLineItemBasket);
 
-        Order createdOrder = new Order(orderTable, new OrderLineItems(orderLineItems));
+        OrderValidator orderValidator = new OrderValidator(orderLineItems);
+        orderValidator.isEmptyOrderLineItem();
+
+        Order createdOrder = new Order(orderTable.getId(), orderLineItems);
         return OrderResponse.of(orderRepository.save(createdOrder));
     }
 
@@ -47,20 +46,12 @@ public class OrderService {
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderStatus orderStatus) {
         Order foundOrder = orderRepository.findById(orderId)
-                .orElseThrow(() -> new InputOrderDateException(InputOrderDataErrorCode.THE_ORDER_CAN_NOT_SEARCH));
+                .orElseThrow(() -> new InputOrderDataException(InputOrderDataErrorCode.THE_ORDER_CAN_NOT_SEARCH));
 
-        if (orderStatus == COOKING) {
-            foundOrder.startCooking();
-            return OrderResponse.of(foundOrder);
-        }
+        OrderValidator orderValidator = new OrderValidator(foundOrder);
+        orderValidator.isAlreadyCompletionOrder();
 
-        if (orderStatus == MEAL) {
-            foundOrder.startMeal();
-            return OrderResponse.of(foundOrder);
-        }
-
-        foundOrder.endOrder();
+        foundOrder.updateOrderStatus(orderStatus);
         return OrderResponse.of(foundOrder);
-
     }
 }

@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 
 @Embeddable
 public class Price {
+    private static final int MIN_PRICE = 0;
     @Column
     private BigDecimal price;
 
@@ -34,7 +35,7 @@ public class Price {
             throw new InputDataException(InputDataErrorCode.THE_PRICE_MUST_INPUT);
         }
 
-        if (price.compareTo(BigDecimal.ZERO) < 0 ) {
+        if (price.compareTo(BigDecimal.ZERO) < MIN_PRICE) {
             throw new InputDataException(InputDataErrorCode.THE_PRICE_CAN_NOT_INPUT_LESS_THAN_ZERO);
         }
     }

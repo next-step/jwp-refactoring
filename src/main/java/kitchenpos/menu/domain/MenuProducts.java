@@ -1,8 +1,12 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.menu.exceptions.InputMenuDataErrorCode;
+import kitchenpos.menu.exceptions.InputMenuDataException;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -32,5 +36,18 @@ public class MenuProducts implements Iterable<MenuProduct> {
     @Override
     public Iterator<MenuProduct> iterator() {
         return this.menuProducts.iterator();
+    }
+
+    public void validSum(BigDecimal menuPrice) {
+        BigDecimal productAmount = calculateMenuProductPrice();
+        if (menuPrice.compareTo(productAmount) > 0) {
+            throw new InputMenuDataException(InputMenuDataErrorCode.THE_SUM_OF_MENU_PRICE_IS_LESS_THAN_SUM_OF_PRODUCTS);
+        }
+    }
+
+    private BigDecimal calculateMenuProductPrice() {
+        return this.menuProducts.stream()
+                .map(it-> it.getProduct().getPrice().getPrice())
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

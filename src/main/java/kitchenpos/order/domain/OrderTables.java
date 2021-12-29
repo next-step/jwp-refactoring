@@ -26,7 +26,7 @@ public class OrderTables implements Iterable<OrderTable> {
 
     public void cancleGroup(){
         this.orderTables.stream()
-                .forEach(it -> it.emptyTableGroup());
+                .forEach(it -> it.cancelTableGroup());
         this.orderTables = Collections.emptyList();
     }
 

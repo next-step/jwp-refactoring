@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class TableGroupService {
@@ -27,14 +26,11 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        List<Long> orderTableIds = tableGroupRequest.getOrderTables().stream()
-                .map(it -> it.getId())
-                .collect(Collectors.toList());
+        List<Long> orderTableIds = tableGroupRequest.getOrderIds();
 
         List<OrderTable> orderTables = orderTableRepository.findAllById(orderTableIds);
         TableGroup tableGroup = tableGroupRepository.save(new TableGroup(new OrderTables(orderTables), LocalDateTime.now()));
-
-        return TableGroupResponse.of(tableGroupRepository.save(tableGroup));
+        return TableGroupResponse.of(tableGroup);
     }
 
     @Transactional

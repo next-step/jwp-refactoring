@@ -18,7 +18,7 @@ class OrderTest {
         OrderTable orderTable = new OrderTable(5, true);
 
 
-        Order order = new Order(orderTable, new OrderLineItems(Arrays.asList(orderLineItem)));
+        Order order = new Order(1L, new OrderLineItems(Arrays.asList(orderLineItem)));
         orderLineItem.receiveOrder(order);
 
         assertAll(
@@ -34,7 +34,7 @@ class OrderTest {
         OrderLineItem orderLineItem = new OrderLineItem(1L, 10);
         OrderTable orderTable = new OrderTable(5, true);
 
-        Order order = new Order(orderTable, new OrderLineItems(Arrays.asList(orderLineItem)));
+        Order order = new Order(1L, new OrderLineItems(Arrays.asList(orderLineItem)));
         order.startMeal();
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
     }

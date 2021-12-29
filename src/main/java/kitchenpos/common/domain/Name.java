@@ -8,6 +8,7 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class Name {
+    private static final int MIN_NAME_LENGTH = 0;
 
     @Column
     private String name;
@@ -32,6 +33,6 @@ public class Name {
     }
 
     private boolean isEmpty(String name) {
-        return name == null || name.length() == 0;
+        return name == null || name.length() == MIN_NAME_LENGTH;
     }
 }

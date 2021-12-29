@@ -1,9 +1,7 @@
 package kitchenpos.order.application;
 
 
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
+import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.order.exceptions.InputTableDataErrorCode;
@@ -36,11 +34,13 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable foundOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(() -> new InputTableDataException(InputTableDataErrorCode.THE_TABLE_CAN_NOT_FIND));
-        if (orderTableRequest.isEmpty()) {
-            foundOrderTable.leaveGuest();
-            return OrderTableResponse.of(orderTableRepository.save(foundOrderTable));
-        }
-        foundOrderTable.enterGuest();
+        final List<Order> orders = orderRepository.findAll();
+
+        OrderTableValidator orderTableValidator = new OrderTableValidator(orders, foundOrderTable);
+        orderTableValidator.checkUpdateTableGroup();
+
+        foundOrderTable.updateEmpty(orderTableRequest.isEmpty());
+
         return OrderTableResponse.of(orderTableRepository.save(foundOrderTable));
     }
 
@@ -48,6 +48,10 @@ public class TableService {
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final int numberOfGuests) {
         OrderTable foundOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(() -> new InputTableDataException(InputTableDataErrorCode.THE_TABLE_CAN_NOT_FIND));
+
+        OrderTableValidator orderTableValidator = new OrderTableValidator(foundOrderTable);
+        orderTableValidator.checkTableEmpty();
+
         foundOrderTable.seatNumberOfGuests(numberOfGuests);
         return OrderTableResponse.of(foundOrderTable);
     }

@@ -1,8 +1,6 @@
 package kitchenpos.order.domain;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 public class OrderTable {
@@ -18,18 +16,10 @@ public class OrderTable {
     @Embedded
     private NumberOfGuests numberOfGuests;
 
-    @OneToMany(mappedBy = "orderTable")
-    private List<Order> orders = new ArrayList<>();
-
     private boolean empty;
 
     protected OrderTable() {
 
-    }
-
-    public OrderTable(int numberOfGuests, boolean empty, List<Order> orders) {
-        this(numberOfGuests, empty);
-        this.orders = orders;
     }
 
     public OrderTable(int numberOfGuests, boolean empty) {
@@ -49,12 +39,20 @@ public class OrderTable {
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
     }
 
+    public boolean hasTableGroup() {
+        return this.tableGroup != null;
+    }
+
+    public void cancelTableGroup() {
+        this.tableGroup = null;
+    }
+
     public boolean isEmpty() {
         return empty;
     }
 
-    public void emptyTableGroup() {
-        this.tableGroup = null;
+    public void allocateTableGroup(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
     }
 
     public void enterGuest() {
@@ -69,7 +67,13 @@ public class OrderTable {
         return tableGroup;
     }
 
-    public List<Order> getOrders() {
-        return orders;
+    public void updateEmpty(boolean empty) {
+        if (empty) {
+            this.leaveGuest();
+            return;
+        }
+        this.enterGuest();
     }
+
+
 }
