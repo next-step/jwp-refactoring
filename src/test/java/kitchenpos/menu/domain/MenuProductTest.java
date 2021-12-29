@@ -1,6 +1,7 @@
 package kitchenpos.menu.domain;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
 
@@ -8,15 +9,21 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import kitchenpos.common.price.domain.Price;
-import kitchenpos.product.domain.Product;
 
 class MenuProductTest {
 
-    @DisplayName("총 금액 계산")
+    @DisplayName("메뉴 상품 전체 가격 계산")
     @Test
-    void calculateTotal() {
-        MenuProduct menuProduct = new MenuProduct(new Product("product", BigDecimal.TEN), 4);
+    void calculatePrice() {
+        // given
+        MenuProduct menuProduct = new MenuProduct(1L, 2);
+        Price price = new Price(BigDecimal.TEN);
 
-        assertThat(menuProduct.calculateTotal()).isEqualTo(new Price(BigDecimal.valueOf(40)));
+        // when
+        Price result = menuProduct.calculatePrice(price);
+
+        // then
+        assertThat(result)
+            .isEqualTo(new Price(BigDecimal.valueOf(20)));
     }
 }

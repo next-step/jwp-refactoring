@@ -44,22 +44,10 @@ public class Menu {
         this.price = price;
         this.menuGroup = menuGroup;
         addMenuProducts(menuProducts);
-        validateMenu();
-    }
-
-    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        this(id, name, new Price(price), menuGroup, new MenuProducts(menuProducts));
     }
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
         this(null, name, new Price(price), menuGroup, menuProducts);
-    }
-
-    private void validateMenu() {
-        Price sum = menuProducts.calculateSum();
-        if (price.isBiggerThan(sum)) {
-            throw new KitchenposException(KitchenposErrorCode.INVALID_MENU_PRICE);
-        }
     }
 
     public Long getId() {
@@ -90,5 +78,11 @@ public class Menu {
 
     private void addMenuProduct(MenuProduct menuProduct) {
         this.menuProducts.add(menuProduct);
+    }
+
+    public void validatePrice(Price sum) {
+        if (price.isBiggerThan(sum)) {
+            throw new KitchenposException(KitchenposErrorCode.INVALID_MENU_PRICE);
+        }
     }
 }

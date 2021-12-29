@@ -19,9 +19,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.common.exception.KitchenposException;
 import kitchenpos.common.exception.KitchenposNotFoundException;
+import kitchenpos.common.price.domain.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.domain.MenuValidator;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuProductResponse;
 import kitchenpos.menu.dto.MenuRequest;
@@ -39,24 +42,24 @@ class MenuServiceTest {
     @Mock
     private MenuGroupRepository menuGroupRepository;
     @Mock
-    private ProductRepository productRepository;
+    private MenuValidator menuValidator;
 
     @InjectMocks
     private MenuService menuService;
 
     private MenuGroup menuGroup;
     private Menu menu;
-    private Product product;
     private MenuProduct menuProduct;
+    private MenuProducts menuProducts;
     private MenuProductRequest menuProductRequest;
 
     @BeforeEach
     void setUp() {
         menuProductRequest = new MenuProductRequest(1L, 2);
-        product = new Product(1L, "product", BigDecimal.ONE);
-        menuProduct = new MenuProduct(product, 2);
+        menuProduct = new MenuProduct(1L, 2);
         menuGroup = new MenuGroup(1L, "menuGroup");
-        menu = new Menu(1L, "menu", BigDecimal.ONE, menuGroup, Arrays.asList(menuProduct));
+        menuProducts = new MenuProducts(Arrays.asList(menuProductRequest));
+        menu = new Menu(1L, "menu", new Price(BigDecimal.ONE), menuGroup, menuProducts);
     }
 
     @DisplayName("메뉴 생성")
@@ -64,7 +67,7 @@ class MenuServiceTest {
     void create() {
         // given
         ID로_메뉴_그룹_조회(Optional.of(menuGroup));
-        ID로_상품_조회(Optional.of(product));
+        Mockito.doNothing().when(menuValidator).validate(Mockito.any());
         메뉴_저장();
 
         MenuRequest request = new MenuRequest("menu", BigDecimal.ONE, 1L, Arrays.asList(menuProductRequest));
@@ -79,28 +82,12 @@ class MenuServiceTest {
         );
     }
 
-    @DisplayName("메뉴 상품 가격의 합과 입력받은 가격 비교하여 입력받은 가격이 더 크면 에러")
-    @Test
-    void createErrorWhenPriceIsBiggerThanSum() {
-        // given
-        ID로_메뉴_그룹_조회(Optional.of(menuGroup));
-        ID로_상품_조회(Optional.of(product));
-
-        MenuRequest request =
-            new MenuRequest("name", BigDecimal.valueOf(3), 1L, Arrays.asList(menuProductRequest));
-
-        // when and then
-        assertThatExceptionOfType(KitchenposException.class)
-            .isThrownBy(() -> menuService.create(request))
-            .withMessage("각 상품 가격의 합보다 많은 가격입니다.");
-    }
-
     @DisplayName("메뉴 상품이 없을 시 에러")
     @Test
     void createErrorWhenProductNotExists() {
         // given
         ID로_메뉴_그룹_조회(Optional.of(menuGroup));
-        ID로_상품_조회(Optional.empty());
+        Mockito.doThrow(new KitchenposNotFoundException()).when(menuValidator).validate(Mockito.any());
 
         MenuRequest request =
             new MenuRequest("name", BigDecimal.ONE, 1L, Arrays.asList(menuProductRequest));
@@ -147,8 +134,8 @@ class MenuServiceTest {
     @Test
     void list() {
         // given
-        Menu menu1 = new Menu(1L, "name1", BigDecimal.ONE, menuGroup, Arrays.asList(menuProduct));
-        Menu menu2 = new Menu(2L, "name2", BigDecimal.ONE, menuGroup, Arrays.asList(menuProduct));
+        Menu menu1 = new Menu(1L, "name1", new Price(BigDecimal.ONE), menuGroup, menuProducts);
+        Menu menu2 = new Menu(2L, "name2", new Price(BigDecimal.ONE), menuGroup, menuProducts);
         List<Menu> menus = Arrays.asList(menu1, menu2);
         Mockito.when(menuRepository.findAll())
             .thenReturn(menus);
@@ -167,11 +154,6 @@ class MenuServiceTest {
     private void 메뉴_저장() {
         Mockito.when(menuRepository.save(Mockito.any()))
             .thenReturn(menu);
-    }
-
-    private void ID로_상품_조회(Optional<Product> product) {
-        Mockito.when(productRepository.findById(Mockito.anyLong()))
-            .thenReturn(product);
     }
 
     private void ID로_메뉴_그룹_조회(Optional<MenuGroup> menuGroup) {
