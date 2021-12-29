@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -42,6 +43,8 @@ public class TableServiceTest {
 	private OrderTableRepository orderTableRepository;
 	@Mock
 	private OrderRepository orderRepository;
+	@Mock
+	private TableValidator tableValidator;
 
 	private Menu 후라이드둘세트;
 	private OrderTable 테이블;
@@ -176,6 +179,46 @@ public class TableServiceTest {
 
 		// then
 		assertThat(result.getNumberOfGuests()).isEqualTo(테이블.getNumberOfGuests().toInt());
+	}
+
+	@DisplayName("테이블을 단체지정한다")
+	@Test
+	void groupedTest() {
+		// given
+		OrderTable 테이블_1번 = OrderTable.of(1L, 2, false);
+		OrderTable 테이블_2번 = OrderTable.of(2L, 4, false);
+		List<OrderTable> tables = Arrays.asList(테이블_1번, 테이블_2번);
+		TableGroup 단체_테이블 = TableGroup.of(1L);
+
+		// when
+		tableService.grouped(단체_테이블, tables);
+
+		// then
+		assertAll(
+			() -> assertThat(테이블_1번.getTableGroup()).isEqualTo(단체_테이블),
+			() -> assertThat(테이블_2번.getTableGroup()).isEqualTo(단체_테이블)
+		);
+
+	}
+
+	@DisplayName("테이블의 단체 지정을 해제한다")
+	@Test
+	void ungroupedTest() {
+		// given
+		OrderTable 테이블_1번 = OrderTable.of(1L, 2, false);
+		OrderTable 테이블_2번 = OrderTable.of(2L, 4, false);
+		List<OrderTable> tables = Arrays.asList(테이블_1번, 테이블_2번);
+		TableGroup 단체_테이블 = TableGroup.of(1L);
+		given(orderTableRepository.findByTableGroupId(단체_테이블.getId())).willReturn(tables);
+
+		// when
+		tableService.ungrouped(1L);
+
+		// then
+		assertAll(
+			() -> assertThat(테이블_1번.getTableGroup()).isNull(),
+			() -> assertThat(테이블_2번.getTableGroup()).isNull()
+		);
 	}
 
 }

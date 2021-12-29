@@ -93,18 +93,4 @@ public class TableGroupValidatorTest {
 			.isInstanceOf(AppException.class);
 	}
 
-	@DisplayName("단체 지정을 해제 시, 조리 중이거나 식사 중인 테이블은 안된다")
-	@Test
-	void ungroupTest2() {
-		// given
-		given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any()))
-			.willReturn(true);
-		List<OrderTable> orderTables = Arrays.asList(테이블_1번, 테이블_2번);
-
-		// when
-		assertThatThrownBy(() -> tableGroupValidator.validateUnGroup(orderTables))
-			.isInstanceOf(AppException.class);
-
-	}
-
 }

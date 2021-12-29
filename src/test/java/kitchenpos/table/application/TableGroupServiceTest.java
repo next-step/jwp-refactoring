@@ -6,6 +6,7 @@ import static org.mockito.BDDMockito.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -35,6 +37,8 @@ public class TableGroupServiceTest {
 	private TableGroupRepository tableGroupRepository;
 	@Mock
 	private TableGroupValidator tableGroupValidator;
+	@Mock
+	private ApplicationEventPublisher publisher;
 
 	private OrderTable 테이블_1번;
 	private OrderTable 테이블_2번;
@@ -72,7 +76,7 @@ public class TableGroupServiceTest {
 	void ungroupTest() {
 		// given
 		List<OrderTable> tables = Arrays.asList(테이블_1번, 테이블_2번);
-		given(orderTableRepository.findByTableGroupId(any())).willReturn(tables);
+		given(tableGroupRepository.findById(any())).willReturn(Optional.of(단체_테이블));
 
 		// when
 		tableGroupService.ungroup(단체_테이블.getId());

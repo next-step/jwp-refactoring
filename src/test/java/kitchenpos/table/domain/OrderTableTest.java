@@ -96,4 +96,17 @@ public class OrderTableTest {
 		// then
 		assertThat(속한_테이블.getTableGroup()).isNull();
 	}
+
+	@DisplayName("테이블 그룹을 지정할 수 있다")
+	@Test
+	void groupTest() {
+		// given
+		TableGroup 테이블_그룹 = TableGroup.of(1L);
+
+		// when, then
+		테이블.group(테이블_그룹);
+
+		// then
+		assertThat(테이블.getTableGroup()).isEqualTo(테이블_그룹);
+	}
 }
