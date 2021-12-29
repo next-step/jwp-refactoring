@@ -1,6 +1,7 @@
 package kitchenpos.tablegroup.domain;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,11 +11,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class TableGroup {
+public class TableGroup extends AbstractAggregateRoot<TableGroup> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,5 +38,14 @@ public class TableGroup {
 
     public LocalDateTime getCreatedDate() {
         return createdDate;
+    }
+
+    public void groupTables(List<Long> orderTableIds) {
+        GroupingTableEvent groupingTableEvent = registerEvent(new GroupingTableEvent(id, orderTableIds));
+    }
+
+    public void ungroup() {
+        UngroupingTableEvent ungroupingTableEvent = registerEvent(new UngroupingTableEvent(id));
+
     }
 }
