@@ -8,6 +8,7 @@ jar {
 
 dependencies {
     compile project(':module-domain')
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'io.rest-assured:rest-assured:3.3.0'
     runtimeOnly 'com.h2database:h2'

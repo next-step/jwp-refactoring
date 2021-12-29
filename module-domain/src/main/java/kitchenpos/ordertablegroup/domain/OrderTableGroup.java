@@ -11,14 +11,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Table(name = "table_group")
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class OrderTableGroup extends AbstractAggregateRoot<OrderTableGroup> {
+public class OrderTableGroup {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -49,16 +49,32 @@ public class OrderTableGroup extends AbstractAggregateRoot<OrderTableGroup> {
 	}
 
 	public void group(List<Long> orderTableIds, OrderTableGroupValidator validator) {
+		group(orderTableIds, validator, null);
+	}
+
+	public void group(
+		List<Long> orderTableIds,
+		OrderTableGroupValidator validator,
+		ApplicationEventPublisher publisher
+	) {
 		validator.validateOrderTablesAreGreaterThanOrEqualToTwo(orderTableIds);
 		validator.validateNotGrouped(orderTableIds);
 		validator.validateOrderTableIsEmpty(orderTableIds);
 
-		registerEvent(new OrderTableGroupingEvent(id, orderTableIds));
+		if (publisher != null) {
+			publisher.publishEvent(new OrderTableGroupingEvent(id, orderTableIds));
+		}
 	}
 
 	public void ungroup(OrderTableGroupValidator validator) {
+		ungroup(validator, null);
+	}
+
+	public void ungroup(OrderTableGroupValidator validator, ApplicationEventPublisher publisher) {
 		validator.validateNotCompletedOrderNotExist(id);
 
-		registerEvent(new OrderTableUngroupingEvent(id));
+		if (publisher != null) {
+			publisher.publishEvent(new OrderTableUngroupingEvent(id));
+		}
 	}
 }
