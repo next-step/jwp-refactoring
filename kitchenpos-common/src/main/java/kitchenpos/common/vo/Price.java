@@ -29,7 +29,7 @@ public class Price implements Comparable<Price> {
         }
     }
 
-    public static Price sumPrices(List<Price> prices) {
+    public static Price addPrices(List<Price> prices) {
         BigDecimal sum = prices.stream()
             .map(Price::getPrice)
             .reduce(BigDecimal.ZERO, (subSum, price) -> subSum.add(price));

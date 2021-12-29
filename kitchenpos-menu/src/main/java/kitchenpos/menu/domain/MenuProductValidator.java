@@ -25,7 +25,7 @@ public class MenuProductValidator {
     public void validateMenuPriceIsLessThanMenuProductsSum(Price menuPrice,
         List<MenuProductRequest> menuProductRequests) {
         List<Price> menuProductPrices = getMenuProductPrices(menuProductRequests);
-        Price sumOfMenuProducts = Price.sumPrices(menuProductPrices);
+        Price sumOfMenuProducts = Price.addPrices(menuProductPrices);
 
         if (menuPrice.isBiggerThan(sumOfMenuProducts)) {
             throw new PriceNotAcceptableException(ERROR_MESSAGE_MENU_PRICE_HIGH);

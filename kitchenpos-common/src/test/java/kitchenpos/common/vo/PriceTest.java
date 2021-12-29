@@ -7,7 +7,6 @@ import kitchenpos.common.exception.PriceNotAcceptableException;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.common.vo.Price;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -37,7 +36,7 @@ class PriceTest {
             Price.valueOf(BigDecimal.valueOf(5100)),
             Price.valueOf(BigDecimal.valueOf(10000))
         );
-        Price sum = Price.sumPrices(prices);
+        Price sum = Price.addPrices(prices);
         assertThat(sum).isEqualTo(Price.valueOf(BigDecimal.valueOf(16100)));
     }
 }
