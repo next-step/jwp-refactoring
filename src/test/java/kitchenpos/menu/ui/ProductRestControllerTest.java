@@ -1,10 +1,10 @@
-package kitchenpos.product.ui;
+package kitchenpos.menu.ui;
 
 import kitchenpos.common.ui.RestControllerTest;
-import kitchenpos.product.application.ProductService;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.dto.ProductRequest;
-import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.menu.application.ProductService;
+import kitchenpos.menu.domain.Product;
+import kitchenpos.menu.dto.ProductRequest;
+import kitchenpos.menu.dto.ProductResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

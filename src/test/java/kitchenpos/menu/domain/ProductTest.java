@@ -1,4 +1,4 @@
-package kitchenpos.product.domain;
+package kitchenpos.menu.domain;
 
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;

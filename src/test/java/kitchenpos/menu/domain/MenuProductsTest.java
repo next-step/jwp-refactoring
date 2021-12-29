@@ -2,7 +2,6 @@ package kitchenpos.menu.domain;
 
 import kitchenpos.common.fixtrue.MenuGroupFixture;
 import kitchenpos.common.fixtrue.ProductFixture;
-import kitchenpos.product.domain.Product;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.BeforeEach;
