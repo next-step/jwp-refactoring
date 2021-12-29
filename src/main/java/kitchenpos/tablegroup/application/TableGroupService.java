@@ -29,8 +29,8 @@ public class TableGroupService {
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         final TableGroup tableGroup = tableGroupRequest.toEntity();
+        tableGroup.grouping(tableGroupRequest.toOrderTableIds());
         TableGroup saveTableGroup = tableGroupRepository.save(tableGroup);
-        publisher.publishEvent(new TableGroupingEvent(this, saveTableGroup.getId(), tableGroupRequest.toOrderTableIds()));
         return TableGroupResponse.of(saveTableGroup);
     }
 
@@ -40,6 +40,6 @@ public class TableGroupService {
         final TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
                 .orElseThrow(() -> new NotExistEntityException("지정된 단체를 찾을 수 없습니다."));
 
-        publisher.publishEvent(new TableUnGroupingEvent(this, tableGroupId));
+        tableGroup.unGrouping();
     }
 }
