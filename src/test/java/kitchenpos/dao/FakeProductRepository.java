@@ -3,6 +3,7 @@ package kitchenpos.dao;
 import kitchenpos.domain.Product;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class FakeProductRepository implements ProductRepository {
     private Map<Long, Product> map = new HashMap<>();
@@ -25,5 +26,12 @@ public class FakeProductRepository implements ProductRepository {
     @Override
     public List<Product> findAll() {
         return new ArrayList<>(map.values());
+    }
+
+    @Override
+    public List<Product> findAllByIdIn(List<Long> ids) {
+        return map.values().stream()
+                .filter(product -> ids.contains(product.getId()))
+                .collect(Collectors.toList());
     }
 }

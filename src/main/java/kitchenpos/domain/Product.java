@@ -63,4 +63,8 @@ public class Product {
     public void createId(Long id) {
         this.id = id;
     }
+
+    public BigDecimal getTotalPrice(Long quantity) {
+        return this.price.multiply(BigDecimal.valueOf(quantity));
+    }
 }

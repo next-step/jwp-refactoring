@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,7 +31,7 @@ class OrderServiceTest {
     void setUp() {
         Product 살치살 = Product.of(1L,"살치살",10000);
         Product 부채살 = Product.of(2L,"부채살",10000);
-        Menu menu = Menu.of("소고기세트", 70000, null,
+        Menu menu = Menu.of("소고기세트", BigDecimal.valueOf(70000), null,
                 Arrays.asList(
                         MenuProduct.of(살치살, 2),
                         MenuProduct.of(부채살, 1)

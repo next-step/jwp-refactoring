@@ -6,6 +6,9 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.TestApiClient;
 import kitchenpos.domain.*;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
+import kitchenpos.dto.MenuProductRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,16 +26,16 @@ public class TableAcceptanceTest extends AcceptanceTest {
     private OrderTable 일번테이블;
     private Menu 소고기세트메뉴;
     private Product 소고기한우;
-    private MenuGroup 추천메뉴;
+    private MenuGroupResponse 추천메뉴;
     private Order 일번테이블_주문;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        추천메뉴 = MenuAcceptanceTest.메뉴그룹_등록되어있음(MenuGroup.of("추천메뉴"));
+        추천메뉴 = MenuAcceptanceTest.메뉴그룹_등록되어있음(MenuGroupRequest.of("추천메뉴"));
         소고기한우 = MenuAcceptanceTest.상품_등록되어있음(Product.of("소고기한우", 30000));
-        소고기세트메뉴 = MenuAcceptanceTest.메뉴_등록되어있음("소고기+소고기", 50000, 추천메뉴, Arrays.asList(MenuProduct.of(소고기한우, 2L)));
+        소고기세트메뉴 = MenuAcceptanceTest.메뉴_등록되어있음("소고기+소고기", 50000, 추천메뉴.toEntity(), Arrays.asList(MenuProductRequest.of(소고기한우, 2L)));
         일번테이블 = 테이블_등록되어_있음(OrderTable.of(4, false));
         일번테이블_주문 = OrderAcceptanceTest.주문_생성됨(일번테이블, Arrays.asList(OrderLineItem.of(소고기세트메뉴, 2)));
     }

@@ -19,7 +19,7 @@ public class FakeMenuGroupRepository implements MenuGroupRepository {
 
     @Override
     public Optional<MenuGroup> findById(Long id) {
-        return Optional.empty();
+        return Optional.ofNullable(map.get(id));
     }
 
     @Override

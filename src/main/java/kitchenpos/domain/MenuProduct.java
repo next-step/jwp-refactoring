@@ -38,16 +38,16 @@ public class MenuProduct {
         this.seq = seq;
     }
 
-    public Long getMenu() {
-        return menu.getId();
+    public Menu getMenu() {
+        return menu;
     }
 
     public void setMenu(final Menu menu) {
         this.menu = menu;
     }
 
-    public Long getProduct() {
-        return product.getId();
+    public Product getProduct() {
+        return product;
     }
 
     public void setProduct(final Product product) {
@@ -66,6 +66,10 @@ public class MenuProduct {
         this.seq = id;
     }
 
+    public void addMenu(Menu menu) {
+        this.menu = menu;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -78,5 +82,4 @@ public class MenuProduct {
     public int hashCode() {
         return Objects.hash(seq, menu, product, quantity);
     }
-
 }

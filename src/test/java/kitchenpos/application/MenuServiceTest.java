@@ -3,8 +3,11 @@ package kitchenpos.application;
 import kitchenpos.dao.*;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuProductResponse;
+import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.MenuResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -26,32 +29,33 @@ class MenuServiceTest {
     @DisplayName("가격이 음수면 예외가 발생한다.")
     @Test
     void priceIsNegative() {
-        Product 살치살 = Product.of(1L,"살치살",10000);
-        Product 부채살 = Product.of(2L,"부채살",10000);
+        Product 살치살 = productRepository.save(Product.of(1L,"살치살",10000));
+        Product 부채살 = productRepository.save(Product.of(2L,"부채살",10000));
         MenuGroup savedMenuGroup = menuGroupRepository.save(MenuGroup.of("추천메뉴"));
-        Menu menu = Menu.of("소고기세트", -1, savedMenuGroup,
+        MenuRequest menuRequest = MenuRequest.of("소고기세트", -1, savedMenuGroup,
                 Arrays.asList(
-                        MenuProduct.of(살치살, 2),
-                        MenuProduct.of(부채살, 1)
+                        MenuProductRequest.of(살치살, 2),
+                        MenuProductRequest.of(부채살, 1)
                 )
         );
 
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
+        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest));
     }
 
     @DisplayName("메뉴 그룹이 존재하지 않으면 예외가 발생한다.")
     @Test
     void notExistsMenuGroup() {
-        Product 살치살 = Product.of(1L,"살치살",10000);
-        Product 부채살 = Product.of(2L,"부채살",10000);
-        Menu menu = Menu.of("소고기세트", 50000, null,
+        Product 살치살 = productRepository.save(Product.of(1L,"살치살",10000));
+        Product 부채살 = productRepository.save(Product.of(2L,"부채살",10000));
+        MenuGroup menuGroup = MenuGroup.of("추천메뉴");
+        MenuRequest menuRequest = MenuRequest.of("소고기세트", 50000, menuGroup,
                 Arrays.asList(
-                        MenuProduct.of(살치살, 2),
-                        MenuProduct.of(부채살, 1)
+                        MenuProductRequest.of(살치살, 2),
+                        MenuProductRequest.of(부채살, 1)
                 )
         );
 
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
+        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest));
     }
 
     @DisplayName("상품이 존재하지 않으면 예외가 발생한다.")
@@ -60,14 +64,14 @@ class MenuServiceTest {
         Product 살치살 = Product.of(1L,"살치살",10000);
         Product 부채살 = Product.of(2L,"부채살",10000);
         MenuGroup savedMenuGroup = menuGroupRepository.save(MenuGroup.of("추천메뉴"));
-        Menu menu = Menu.of("소고기세트", 50000, savedMenuGroup,
+        MenuRequest menuRequest = MenuRequest.of("소고기세트", 50000, savedMenuGroup,
                 Arrays.asList(
-                        MenuProduct.of(살치살, 2),
-                        MenuProduct.of(부채살, 1)
+                        MenuProductRequest.of(살치살, 2),
+                        MenuProductRequest.of(부채살, 1)
                 )
         );
 
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
+        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest));
     }
 
     @DisplayName("메뉴 가격이 메뉴 상품들 가격의 합보다 크면 예외 발생한다.")
@@ -76,14 +80,14 @@ class MenuServiceTest {
         MenuGroup savedMenuGroup = menuGroupRepository.save(MenuGroup.of("추천메뉴"));
         Product 소고기 = productRepository.save(Product.of("소고기", 30000));
         Product 쌈채소 = productRepository.save(Product.of("쌈채소", 10000));
-        Menu menu = Menu.of("소고기세트", 100000, savedMenuGroup,
+        MenuRequest menuRequest = MenuRequest.of("소고기세트", 100000, savedMenuGroup,
                 Arrays.asList(
-                        MenuProduct.of(소고기, 2),
-                        MenuProduct.of(쌈채소, 1)
+                        MenuProductRequest.of(소고기, 2),
+                        MenuProductRequest.of(쌈채소, 1)
                 )
         );
 
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
+        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest));
     }
 
     @DisplayName("메뉴 생성 성공")
@@ -92,17 +96,17 @@ class MenuServiceTest {
         MenuGroup savedMenuGroup = menuGroupRepository.save(MenuGroup.of("추천메뉴"));
         Product 소고기 = productRepository.save(Product.of("소고기", 30000));
         Product 쌈채소 = productRepository.save(Product.of("쌈채소", 10000));
-        Menu menu = Menu.of("소고기세트", 70000, savedMenuGroup,
+        MenuRequest menuRequest = MenuRequest.of("소고기세트", 70000, savedMenuGroup,
                 Arrays.asList(
-                        MenuProduct.of(소고기, 2),
-                        MenuProduct.of(쌈채소, 1)
+                        MenuProductRequest.of(소고기, 2),
+                        MenuProductRequest.of(쌈채소, 1)
                 )
         );
 
-        Menu resultMenu = menuService.create(menu);
+        MenuResponse menuResponse = menuService.create(menuRequest);
         assertAll(
-                () -> equalsMenu(resultMenu, savedMenuGroup.getId(), menu),
-                () -> equalsMenuProduct(resultMenu, menu)
+                () -> equalsMenu(menuResponse, savedMenuGroup.getId(), menuRequest),
+                () -> equalsMenuProduct(menuResponse, menuRequest)
         );
     }
 
@@ -113,55 +117,53 @@ class MenuServiceTest {
         Product 소고기 = productRepository.save(Product.of("소고기", 30000));
         Product 쌈채소 = productRepository.save(Product.of("쌈채소", 10000));
         Product 소주 = productRepository.save(Product.of("소주", 5000));
-        Menu menu1 = Menu.of("소고기세트", 70000, savedMenuGroup,
+        MenuRequest menu1 = MenuRequest.of("소고기세트", 70000, savedMenuGroup,
                 Arrays.asList(
-                        MenuProduct.of(소고기, 2),
-                        MenuProduct.of(쌈채소, 1)
+                        MenuProductRequest.of(소고기, 2),
+                        MenuProductRequest.of(쌈채소, 1)
                 )
         );
-        Menu menu2 = Menu.of("소고기세트", 105000, savedMenuGroup,
+        MenuRequest menu2 = MenuRequest.of("소고기세트", 105000, savedMenuGroup,
                 Arrays.asList(
-                        MenuProduct.of(소고기, 3),
-                        MenuProduct.of(쌈채소, 1),
-                        MenuProduct.of(소주, 1)
+                        MenuProductRequest.of(소고기, 3),
+                        MenuProductRequest.of(쌈채소, 1),
+                        MenuProductRequest.of(소주, 1)
                 )
         );
 
-        Menu resultMenu1 = menuService.create(menu1);
-        Menu resultMenu2 = menuService.create(menu2);
+        MenuResponse menuResponse1 = menuService.create(menu1);
+        MenuResponse menuResponse2 = menuService.create(menu2);
 
-        List<Menu> list = menuService.list();
+        List<MenuResponse> list = menuService.list();
         long count = getMenuProductCount(list);
         assertAll(
                 () -> assertThat(list.size()).isEqualTo(2),
-                () -> assertThat(count).isEqualTo(resultMenu1.getMenuProducts().size() + resultMenu2.getMenuProducts().size())
+                () -> assertThat(count).isEqualTo(menuResponse1.getMenuProductResponses().size() + menuResponse2.getMenuProductResponses().size())
         );
     }
 
-    private long getMenuProductCount(List<Menu> list) {
+    private long getMenuProductCount(List<MenuResponse> list) {
         return list.stream()
-                .map(menu -> menu.getMenuProducts())
+                .map(menu -> menu.getMenuProductResponses())
                 .flatMap(menuProducts -> menuProducts.stream())
                 .count();
     }
 
-    private void equalsMenuProduct(Menu resultMenu, Menu menu) {
-        List<MenuProduct> savedMenuProducts = resultMenu.getMenuProducts();
-        List<MenuProduct> menuProducts = menu.getMenuProducts();
+    private void equalsMenuProduct(MenuResponse resultMenu, MenuRequest menu) {
+        List<MenuProductResponse> savedMenuProducts = resultMenu.getMenuProductResponses();
+        List<MenuProductRequest> menuProducts = menu.getMenuProductRequests();
         for (int i = 0; i < savedMenuProducts.size(); i++) {
-            MenuProduct resultMenuProduct = savedMenuProducts.get(i);
-            MenuProduct menuProduct = menuProducts.get(i);
-            assertThat(resultMenuProduct.getSeq()).isNotNull();
-            assertThat(resultMenuProduct.getProduct()).isEqualTo(menuProduct.getProduct());
+            MenuProductResponse resultMenuProduct = savedMenuProducts.get(i);
+            MenuProductRequest menuProduct = menuProducts.get(i);
             assertThat(resultMenuProduct.getQuantity()).isEqualTo(menuProduct.getQuantity());
-            assertThat(resultMenuProduct.getMenu()).isEqualTo(resultMenu.getId());
+            assertThat(resultMenuProduct.getMenuId()).isEqualTo(resultMenu.getId());
         }
     }
 
-    private void equalsMenu(Menu resultMenu, Long menuGroupId, Menu menu) {
-        assertThat(resultMenu.getMenuGroupId()).isEqualTo(menuGroupId);
-        assertThat(resultMenu.getPrice()).isEqualTo(menu.getPrice());
-        assertThat(resultMenu.getName()).isEqualTo(menu.getName());
+    private void equalsMenu(MenuResponse menuResponse, Long menuGroupId, MenuRequest menu) {
+        assertThat(menuResponse.getMenuGroup().getId()).isEqualTo(menuGroupId);
+        assertThat(menuResponse.getPrice()).isEqualTo(menu.getPrice());
+        assertThat(menuResponse.getName()).isEqualTo(menu.getName());
     }
 
 }

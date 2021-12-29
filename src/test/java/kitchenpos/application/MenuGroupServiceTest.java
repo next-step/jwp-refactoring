@@ -3,6 +3,8 @@ package kitchenpos.application;
 import kitchenpos.dao.FakeMenuGroupRepository;
 import kitchenpos.dao.MenuGroupRepository;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -19,8 +21,8 @@ class MenuGroupServiceTest {
     @DisplayName("메뉴 그룹 생성")
     @Test
     void create() {
-        MenuGroup menuGroup = MenuGroup.of("추천메뉴");
-        MenuGroup result = menuGroupService.create(menuGroup);
+        MenuGroupRequest menuGroup = MenuGroupRequest.of("추천메뉴");
+        MenuGroupResponse result = menuGroupService.create(menuGroup);
         assertAll(
                 () -> assertThat(result.getId()).isEqualTo(1L),
                 () -> assertThat(result.getName()).isEqualTo(menuGroup.getName())
@@ -30,13 +32,13 @@ class MenuGroupServiceTest {
     @DisplayName("모든 메뉴 그룹 조회")
     @Test
     void list() {
-        MenuGroup menuGroup1 = MenuGroup.of("추천메뉴1");
-        MenuGroup menuGroup2 = MenuGroup.of("추천메뉴2");
+        MenuGroupRequest menuGroup1 = MenuGroupRequest.of("추천메뉴1");
+        MenuGroupRequest menuGroup2 = MenuGroupRequest.of("추천메뉴2");
 
         menuGroupService.create(menuGroup1);
         menuGroupService.create(menuGroup2);
 
-        List<MenuGroup> list = menuGroupService.list();
+        List<MenuGroupResponse> list = menuGroupService.list();
         assertThat(list.size()).isEqualTo(2);
     }
 
