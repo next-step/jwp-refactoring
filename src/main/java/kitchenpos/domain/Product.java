@@ -2,6 +2,7 @@ package kitchenpos.domain;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Entity
 public class Product {
@@ -17,22 +18,38 @@ public class Product {
 
     protected Product() {}
 
-    private Product(String name, int price) {
+    private Product(String name, BigDecimal price) {
+        isValidPrice(price);
+
         this.name = name;
-        this.price = BigDecimal.valueOf(price);
+        this.price = price;
     }
 
-    public Product(Long id, String name, int price) {
+    private void isValidPrice(BigDecimal price) {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public Product(Long id, String name, BigDecimal price) {
         this.id = id;
         this.name = name;
-        this.price = BigDecimal.valueOf(price);
+        this.price = price;
     }
 
     public static Product of(String name, int price) {
+        return new Product(name, BigDecimal.valueOf(price));
+    }
+
+    public static Product of(String name, BigDecimal price) {
         return new Product(name, price);
     }
 
     public static Product of(Long id, String name, int price) {
+        return new Product(id, name, BigDecimal.valueOf(price));
+    }
+
+    public static Product of(Long id, String name, BigDecimal price) {
         return new Product(id, name, price);
     }
 
@@ -40,24 +57,12 @@ public class Product {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
     }
 
-    public void setName(final String name) {
-        this.name = name;
-    }
-
     public BigDecimal getPrice() {
         return price;
-    }
-
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
     }
 
     public void createId(Long id) {

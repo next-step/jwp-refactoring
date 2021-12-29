@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class MenuTest {
 
-    @DisplayName("가격이 음수면 예외 발생한다.")
+    @DisplayName("메뉴의 가격이 음수면 예외 발생한다.")
     @Test
     void negativePrice() {
         assertThatThrownBy(() -> new Menu("메뉴", BigDecimal.valueOf(-1), new MenuGroup()))

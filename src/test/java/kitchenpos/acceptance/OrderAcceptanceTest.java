@@ -5,14 +5,13 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.TestApiClient;
 import kitchenpos.domain.*;
-import kitchenpos.dto.MenuGroupRequest;
-import kitchenpos.dto.MenuGroupResponse;
-import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -26,7 +25,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
     private OrderTable 테이블;
     private Menu 메뉴;
-    private Product 소고기한우;
+    private ProductResponse 소고기한우;
     private MenuGroupResponse 추천메뉴;
 
     @BeforeEach
@@ -34,8 +33,15 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         super.setUp();
 
         추천메뉴 = MenuAcceptanceTest.메뉴그룹_등록되어있음(MenuGroupRequest.of("추천메뉴"));
-        소고기한우 = MenuAcceptanceTest.상품_등록되어있음(Product.of("소고기한우", 30000));
-        메뉴 = MenuAcceptanceTest.메뉴_등록되어있음("소고기+소고기", 50000, 추천메뉴.toEntity(), Arrays.asList(MenuProductRequest.of(소고기한우, 2L)));
+        소고기한우 = MenuAcceptanceTest.상품_등록되어있음(ProductRequest.of("소고기한우", BigDecimal.valueOf(30000)));
+        메뉴 = MenuAcceptanceTest.메뉴_등록되어있음(
+                "소고기+소고기",
+                50000,
+                추천메뉴.toEntity(),
+                Arrays.asList(
+                        MenuProductRequest.of(소고기한우.toEntity(), 2L)
+                )
+        );
         테이블 = TableAcceptanceTest.테이블_등록되어_있음(OrderTable.of(4, false));
     }
 

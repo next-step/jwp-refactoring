@@ -14,6 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,14 +25,14 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @DisplayName("메뉴 관련 기능")
 public class MenuAcceptanceTest extends AcceptanceTest {
 
-    private Product 소고기한우;
+    private ProductResponse 소고기한우;
     private MenuGroupResponse 추천메뉴;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
         추천메뉴 = 메뉴그룹_등록되어있음(MenuGroupRequest.of("추천메뉴"));
-        소고기한우 = 상품_등록되어있음(Product.of("소고기한우", 30000));
+        소고기한우 = 상품_등록되어있음(ProductRequest.of("소고기한우", BigDecimal.valueOf(30000)));
     }
 
     @DisplayName("메뉴 관리")
@@ -41,7 +42,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 "소고기+소고기",
                 50000,
                 추천메뉴.toEntity(),
-                Arrays.asList(MenuProductRequest.of(소고기한우, 2L))
+                Arrays.asList(MenuProductRequest.of(소고기한우.toEntity(), 2L))
         );
 
         ExtractableResponse<Response> createResponse = 메뉴_생성_요청(menuRequest);
@@ -90,8 +91,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         return TestApiClient.create(menuGroup, "/api/menu-groups").as(MenuGroupResponse.class);
     }
 
-    public static Product 상품_등록되어있음(Product product) {
-        return TestApiClient.create(product, "/api/products").as(Product.class);
+    public static ProductResponse 상품_등록되어있음(ProductRequest product) {
+        return TestApiClient.create(product, "/api/products").as(ProductResponse.class);
     }
 
     public static ExtractableResponse<Response> 메뉴_생성_요청(MenuRequest menuRequest) {
