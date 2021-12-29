@@ -11,6 +11,7 @@ import java.util.Objects;
 
 @Embeddable
 public class Price {
+    public static final int MINIMUM_PRICE_NUMBER = 0;
     @Column
     private BigDecimal price;
 
@@ -23,7 +24,7 @@ public class Price {
     }
 
     private void validatePrice(BigDecimal price) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < MINIMUM_PRICE_NUMBER) {
             throw new NegativePriceException();
         }
     }
@@ -37,6 +38,6 @@ public class Price {
                 .map(MenuProduct::multiply)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        return price.compareTo(sum) > 0;
+        return price.compareTo(sum) > MINIMUM_PRICE_NUMBER;
     }
 }
