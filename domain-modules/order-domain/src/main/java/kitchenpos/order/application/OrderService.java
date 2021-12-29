@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.common.exception.ExceptionMessage;
 import kitchenpos.common.exception.NotFoundException;
-import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.menu.application.MenuService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderTable;
@@ -22,15 +22,15 @@ import kitchenpos.order.repository.OrderTableRepository;
 @Service
 public class OrderService {
 
-    private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
+    private final MenuService menuService;
 
-    public OrderService(MenuRepository menuRepository, OrderRepository orderRepository,
-        OrderTableRepository orderTableRepository) {
-        this.menuRepository = menuRepository;
+    public OrderService(OrderRepository orderRepository,
+        OrderTableRepository orderTableRepository, MenuService menuService) {
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
+        this.menuService = menuService;
     }
 
     @Transactional
@@ -39,7 +39,7 @@ public class OrderService {
             new NotFoundException(ExceptionMessage.NOT_FOUND_DATA));
 
         Order order = Order.of(findOrderTable, makeOrderLineItems(orderRequest.getOrderLineItems()));
-        validateExistMenus(order.getMenuIds());
+        menuService.validateExistMenus(order.getMenuIds());
 
         final Order savedOrder = orderRepository.save(order);
         return new OrderResponse(savedOrder);
@@ -66,12 +66,5 @@ public class OrderService {
             .orElseThrow(() -> new NotFoundException(ExceptionMessage.NOT_FOUND_DATA));
         savedOrder.changeOrderStatus(orderStatusRequest.getOrderStatus());
         return new OrderResponse(savedOrder);
-    }
-
-    private void validateExistMenus(List<Long> menuIds) {
-        for (Long menuId : menuIds) {
-            menuRepository.findById(menuId).orElseThrow(() ->
-                new NotFoundException(ExceptionMessage.NOT_FOUND_DATA));
-        }
     }
 }
