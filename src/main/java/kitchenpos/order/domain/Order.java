@@ -1,6 +1,7 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.common.domain.BaseEntity;
+import kitchenpos.common.exception.IllegalArgumentException;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -19,19 +20,21 @@ public class Order extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private OrderStatus orderStatus = OrderStatus.COOKING;
+    private OrderStatus orderStatus;
 
     @Column(nullable = false)
-    private LocalDateTime orderedTime = LocalDateTime.now();
+    private LocalDateTime orderedTime;
 
     @Embedded
-    private OrderLineItems orderLineItems = new OrderLineItems();
+    private OrderLineItems orderLineItems;
 
     protected Order() {}
 
     private Order(Long id, Long orderTableId, OrderLineItems orderLineItems) {
         this.id = id;
         this.orderTableId = orderTableId;
+        this.orderStatus = OrderStatus.COOKING;
+        this.orderedTime = LocalDateTime.now();
         this.orderLineItems = orderLineItems;
     }
 
@@ -39,13 +42,15 @@ public class Order extends BaseEntity {
         return new Order(null, orderTableId, OrderLineItems.of(orderLineItems));
     }
 
-    public void occurred(OrderValidator orderValidator) {
-        orderValidator.validate(this);
+    public void changeOrderStatus(OrderStatus orderStatus) {
+        validateIsChangeable();
+        this.orderStatus = orderStatus;
     }
 
-    public void changeOrderStatus(OrderValidator orderValidator, OrderStatus orderStatus) {
-        orderValidator.validateChangeable(this);
-        this.orderStatus = orderStatus;
+    private void validateIsChangeable() {
+        if (isComplete()) {
+            throw new IllegalArgumentException("완료된 주문의 상태는 변경할 수 없습니다.");
+        }
     }
 
     public boolean isComplete() {

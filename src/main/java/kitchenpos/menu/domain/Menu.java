@@ -16,13 +16,13 @@ public class Menu extends BaseEntity {
     private String name;
 
     @Embedded
-    private Price price = Price.ZERO;
+    private Price price;
 
     @Column(name = "menu_group_id", nullable = false)
     private Long menuGroupId;
 
     @Embedded
-    private MenuProducts menuProducts = new MenuProducts();
+    private MenuProducts menuProducts;
 
     protected Menu() {
     }
@@ -33,15 +33,10 @@ public class Menu extends BaseEntity {
         this.price = price;
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
-
     }
 
     public static Menu of(String name, Price price, Long menuGroupId, List<MenuProduct> menuProducts) {
         return new Menu(null, name, price, menuGroupId, MenuProducts.of(menuProducts));
-    }
-
-    public void register(MenuValidator menuValidator) {
-        menuValidator.validate(this);
     }
 
     public Long getId() {
@@ -60,8 +55,8 @@ public class Menu extends BaseEntity {
         return menuGroupId;
     }
 
-    public MenuProducts getMenuProducts() {
-        return menuProducts;
+    public List<MenuProduct> getMenuProducts() {
+        return menuProducts.asList();
     }
 
     @Override
