@@ -57,8 +57,10 @@ public class TableService {
     @Transactional
     public List<OrderTableResponse> group(final TableGroupRequest tableGroupRequest) {
         List<OrderTable> orderTables = orderTableDao.findAllByIdIn(tableGroupRequest.getOrderTables());
+
         final OrderTables savedOrderTables = OrderTables.of(orderTables);
         tableGroupRequest.validIsSizeEquals(savedOrderTables);
+
         savedOrderTables.group();
 
         orderTableDao.flush();
@@ -68,7 +70,9 @@ public class TableService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         List<OrderTable> savedOrderTables = orderTableDao.findByTableGroupId(tableGroupId);
+
         OrderTables orderTables = OrderTables.of(savedOrderTables);
+
         orderTables.unGroup();
     }
 }
