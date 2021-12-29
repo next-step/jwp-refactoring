@@ -1,9 +1,9 @@
 package kitchenpos.table;
 
 import kitchenpos.table.dto.OrderTableRequest;
-import kitchenpos.table.dto.TableGroupRequest;
-import kitchenpos.table.dto.TableGroupResponse;
-import kitchenpos.table.ui.TableGroupController;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
+import kitchenpos.tablegroup.ui.TableGroupController;
 import kitchenpos.utils.ControllerTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

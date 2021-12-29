@@ -5,7 +5,7 @@ import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.group.application.MenuGroupService;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.order.application.OrderService;
-import kitchenpos.table.application.TableGroupService;
+import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.table.application.TableService;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.mock.mockito.MockBean;

@@ -1,6 +1,7 @@
-package kitchenpos.table.dto;
+package kitchenpos.tablegroup.dto;
 
-import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.tablegroup.domain.TableGroup;
 
 import javax.validation.constraints.Size;
 import java.util.ArrayList;

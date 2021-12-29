@@ -1,12 +1,9 @@
-package kitchenpos.table.domain;
+package kitchenpos.tablegroup.domain;
 
 import kitchenpos.utils.BaseEntity;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
-
-import static java.util.stream.Collectors.*;
 
 @Table(name = "table_group")
 @Entity

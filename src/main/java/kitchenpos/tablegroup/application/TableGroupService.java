@@ -1,17 +1,16 @@
-package kitchenpos.table.application;
+package kitchenpos.tablegroup.application;
 
 import kitchenpos.exception.NotExistEntityException;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.domain.TableGroupRepository;
-import kitchenpos.table.dto.TableGroupRequest;
-import kitchenpos.table.dto.TableGroupResponse;
-import org.apache.catalina.core.ApplicationPushBuilder;
+import kitchenpos.table.application.TableGroupingEvent;
+import kitchenpos.table.application.TableService;
+import kitchenpos.table.application.TableUnGroupingEvent;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
