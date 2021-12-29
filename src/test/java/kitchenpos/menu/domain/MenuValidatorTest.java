@@ -40,7 +40,7 @@ class MenuValidatorTest {
     @BeforeEach
     void setUp() {
         menuProductRequest = new MenuProductRequest(1L, 2);
-        product = new Product(1L, "product", BigDecimal.ONE);
+        product = new Product("product", BigDecimal.ONE);
         menuProducts = new MenuProducts(Arrays.asList(menuProductRequest));
     }
 

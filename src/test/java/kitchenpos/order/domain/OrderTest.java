@@ -20,7 +20,7 @@ class OrderTest {
             new OrderLineItems(Collections.singletonList(orderLineItem)));
 
         assertThatExceptionOfType(KitchenposException.class)
-            .isThrownBy(() -> order.updateOrderStatus(OrderStatus.COOKING))
+            .isThrownBy(() -> order.updateOrderStatus("COOKING"))
             .withMessage("완료된 주문의 상태를 바꿀 수 없습니다.");
     }
 }

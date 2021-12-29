@@ -20,7 +20,7 @@ public class OrderLineItems {
     @JoinColumn(name = "order_id", nullable = false)
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
-    public OrderLineItems() {
+    protected OrderLineItems() {
     }
 
     public OrderLineItems(List<OrderLineItem> orderLineItemRequests) {

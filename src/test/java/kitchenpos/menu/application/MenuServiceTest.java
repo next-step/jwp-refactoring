@@ -58,7 +58,7 @@ class MenuServiceTest {
     void create() {
         // given
         Mockito.doNothing().when(menuValidator).validate(Mockito.any());
-        메뉴_저장();
+        메뉴_생성(menu);
 
         MenuRequest request = new MenuRequest("menu", BigDecimal.ONE, 1L, Arrays.asList(menuProductRequest));
 
@@ -129,7 +129,7 @@ class MenuServiceTest {
         );
     }
 
-    private void 메뉴_저장() {
+    private void 메뉴_생성(Menu menu) {
         Mockito.when(menuRepository.save(Mockito.any()))
             .thenReturn(menu);
     }

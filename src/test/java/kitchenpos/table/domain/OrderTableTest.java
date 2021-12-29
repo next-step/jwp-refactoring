@@ -64,9 +64,10 @@ class OrderTableTest {
     @Test
     void updateNumberOfGuestsError() {
         OrderTable orderTable = new OrderTable(4, true);
+        NumberOfGuests numberOfGuests = new NumberOfGuests(2);
 
         assertThatExceptionOfType(KitchenposException.class)
-            .isThrownBy(() -> orderTable.updateNumberOfGuests(new NumberOfGuests(2)))
+            .isThrownBy(() -> orderTable.updateNumberOfGuests(numberOfGuests))
             .withMessage("주문 테이블이 비어있습니다.");
     }
 

@@ -32,7 +32,7 @@ class ProductServiceTest {
     @Test
     void create() {
         // given
-        Product product = new Product(1L, "name", BigDecimal.valueOf(10000));
+        Product product = new Product( "name", BigDecimal.valueOf(10000));
         Mockito.when(productRepository.save(Mockito.any()))
             .thenReturn(product);
 
@@ -71,8 +71,8 @@ class ProductServiceTest {
     @Test
     void list() {
         // given
-        Product product1 = new Product(1L, "name1", BigDecimal.valueOf(10000));
-        Product product2 = new Product(2L, "name2", BigDecimal.valueOf(20000));
+        Product product1 = new Product("name1", BigDecimal.valueOf(10000));
+        Product product2 = new Product( "name2", BigDecimal.valueOf(20000));
         ProductResponses expected = ProductResponses.from(Arrays.asList(product1, product2));
 
         Mockito.when(productRepository.findAll())

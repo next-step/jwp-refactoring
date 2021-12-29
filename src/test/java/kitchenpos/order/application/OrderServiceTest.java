@@ -138,7 +138,9 @@ class OrderServiceTest {
     @Test
     void changeOrderStatusFailWhenAlreadyCompleted() {
         // given
-        Order order = new Order(1L, 1L, OrderStatus.COMPLETION, new OrderLineItems());
+        Order order = new Order(1L, 1L, OrderStatus.COMPLETION,
+            new OrderLineItems(Collections.singletonList(orderLineItem)));
+
         ID로_주문_조회(order);
 
         OrderRequest request = new OrderRequest(1L, "MEAL");

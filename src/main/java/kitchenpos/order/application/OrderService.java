@@ -43,14 +43,13 @@ public class OrderService {
 
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest request) {
-        final Order savedOrder = orderRepository.findById(orderId)
+        final Order order = orderRepository.findById(orderId)
             .orElseThrow(KitchenposNotFoundException::new);
 
-        final OrderStatus orderStatus = OrderStatus.valueOf(request.getOrderStatus());
-        savedOrder.updateOrderStatus(orderStatus);
+        order.updateOrderStatus(request.getOrderStatus());
 
-        orderRepository.save(savedOrder);
+        orderRepository.save(order);
 
-        return OrderResponse.from(savedOrder);
+        return OrderResponse.from(order);
     }
 }

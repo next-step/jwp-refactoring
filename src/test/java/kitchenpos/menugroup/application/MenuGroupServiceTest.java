@@ -30,7 +30,7 @@ class MenuGroupServiceTest {
     void create() {
         // given
         MenuGroupRequest request = new MenuGroupRequest("name");
-        MenuGroup expected = new MenuGroup(1L, "name");
+        MenuGroup expected = new MenuGroup("name");
         Mockito.when(menuGroupRepository.save(Mockito.any()))
             .thenReturn(expected);
 
@@ -45,8 +45,8 @@ class MenuGroupServiceTest {
     @Test
     void list() {
         // given
-        MenuGroup menuGroup1 = new MenuGroup(1L, "name1");
-        MenuGroup menuGroup2 = new MenuGroup(2L, "name2");
+        MenuGroup menuGroup1 = new MenuGroup("name1");
+        MenuGroup menuGroup2 = new MenuGroup("name2");
         List<MenuGroup> expected = Arrays.asList(menuGroup1, menuGroup2);
         Mockito.when(menuGroupRepository.findAll())
             .thenReturn(expected);

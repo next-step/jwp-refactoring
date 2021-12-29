@@ -78,7 +78,7 @@ class TableServiceTest {
         저장시_예상된_결과_반환(new OrderTable(1L, null, 4, true));
 
         // when
-        OrderTableResponse actual = tableService.changeEmpty(1L, new OrderTableRequest(true));
+        OrderTableResponse actual = tableService.changeEmpty(1L, new OrderTableRequest(4, true));
 
         // then
         assertThat(actual.isEmpty()).isTrue();
@@ -91,7 +91,7 @@ class TableServiceTest {
         OrderTable orderTable = new OrderTable(1L, 1L, 4, false);
         아이디로_조회시_주문테이블을_반환(orderTable);
 
-        OrderTableRequest request = new OrderTableRequest(true);
+        OrderTableRequest request = new OrderTableRequest(4,true);
 
         // when and then
         assertThatExceptionOfType(KitchenposException.class)
@@ -107,7 +107,7 @@ class TableServiceTest {
         저장시_예상된_결과_반환(new OrderTable(1L, null, 4, false));
 
         // when
-        OrderTableResponse actual = tableService.changeNumberOfGuests(1L, new OrderTableRequest(4));
+        OrderTableResponse actual = tableService.changeNumberOfGuests(1L, new OrderTableRequest(4, false));
 
         // then
         assertThat(actual.getNumberOfGuests()).isEqualTo(4);
@@ -117,7 +117,7 @@ class TableServiceTest {
     @Test
     void modifyNumberOfGuestFailWhenLessThanZero() {
         // given
-        OrderTableRequest request = new OrderTableRequest(-1);
+        OrderTableRequest request = new OrderTableRequest(-1, false);
 
         // when and then
         assertThatExceptionOfType(KitchenposException.class)
@@ -132,7 +132,7 @@ class TableServiceTest {
         OrderTable orderTable = new OrderTable(1L, null, 2, true);
         아이디로_조회시_주문테이블을_반환(orderTable);
 
-        OrderTableRequest request = new OrderTableRequest(4);
+        OrderTableRequest request = new OrderTableRequest(4, false);
 
         // when and then
         assertThatExceptionOfType(KitchenposException.class)

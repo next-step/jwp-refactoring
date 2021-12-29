@@ -59,17 +59,6 @@ public class Order {
         return id;
     }
 
-    public void updateOrderStatus(final OrderStatus orderStatus) {
-        checkStatusNotCompleted();
-        this.orderStatus = orderStatus;
-    }
-
-    private void checkStatusNotCompleted() {
-        if (orderStatus.isCompletion()) {
-            throw new KitchenposException(KitchenposErrorCode.CANNOT_UPDATE_COMPLETED_ORDER);
-        }
-    }
-
     public LocalDateTime getOrderedTime() {
         return orderedTime;
     }
@@ -78,8 +67,23 @@ public class Order {
         return orderTableId;
     }
 
-    public void addOrderLineItem(OrderLineItem orderLineItem) {
-        orderLineItems.add(orderLineItem);
+    public List<OrderLineItem> getOrderLineItemValues() {
+        return orderLineItems.getOrderLineItems();
+    }
+
+    public String getOrderStatusName() {
+        return orderStatus.name();
+    }
+
+    public void updateOrderStatus(final String orderStatus) {
+        checkStatusNotCompleted();
+        this.orderStatus = OrderStatus.valueOf(orderStatus);
+    }
+
+    private void checkStatusNotCompleted() {
+        if (orderStatus.isCompletion()) {
+            throw new KitchenposException(KitchenposErrorCode.CANNOT_UPDATE_COMPLETED_ORDER);
+        }
     }
 
     public void addOrderLineItems(List<OrderLineItem> orderLineItems) {
@@ -88,11 +92,7 @@ public class Order {
         }
     }
 
-    public List<OrderLineItem> getOrderLineItemValues() {
-        return orderLineItems.getOrderLineItems();
-    }
-
-    public String getOrderStatusName() {
-        return orderStatus.name();
+    private void addOrderLineItem(OrderLineItem orderLineItem) {
+        orderLineItems.add(orderLineItem);
     }
 }

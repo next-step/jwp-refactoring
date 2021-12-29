@@ -14,14 +14,6 @@ public class OrderTableRequest {
         this.empty = empty;
     }
 
-    public OrderTableRequest(int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
-    }
-
-    public OrderTableRequest(boolean empty) {
-        this.empty = empty;
-    }
-
     public int getNumberOfGuests() {
         return numberOfGuests;
     }

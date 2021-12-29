@@ -21,7 +21,7 @@ class TableGroupRequestTest {
 
         // when and then
         assertThatExceptionOfType(KitchenposException.class)
-            .isThrownBy(() -> tableGroupRequest.checkValidSize())
+            .isThrownBy(tableGroupRequest::checkValidSize)
             .withMessage("테이블 그룹을 생성하기 위해 2개 이상의 테이블이 필요합니다.");
     }
 }

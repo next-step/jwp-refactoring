@@ -27,21 +27,8 @@ public class Product {
     }
 
     public Product(String name, BigDecimal price) {
-        this(null, name, new Price(price));
-    }
-
-    public Product(String name, Price price) {
-        this(null, name, price);
-    }
-
-    public Product(Long id, String name, BigDecimal price) {
-        this(id, name, new Price(price));
-    }
-
-    public Product(Long id, String name, Price price) {
-        this.id = id;
         this.name = name;
-        this.price = price;
+        this.price = new Price(price);
     }
 
     public Long getId() {

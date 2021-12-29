@@ -1,6 +1,7 @@
 package kitchenpos.tablegroup.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.util.CollectionUtils;
 
@@ -26,5 +27,11 @@ public class TableGroupRequest {
 
     public List<OrderTableIdRequest> getOrderTables() {
         return orderTables;
+    }
+
+    public List<Long> getOrderTableIds() {
+        return orderTables.stream()
+            .map(OrderTableIdRequest::getId)
+            .collect(Collectors.toList());
     }
 }

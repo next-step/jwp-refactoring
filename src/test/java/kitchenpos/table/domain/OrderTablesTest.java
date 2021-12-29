@@ -74,6 +74,7 @@ class OrderTablesTest {
             .withMessage("주문 테이블의 개수가 다릅니다.");
     }
 
+    @DisplayName("주문테이블들 그룹 해제")
     @Test
     void unGroup() {
         List<OrderTable> orderTables = Collections.singletonList(

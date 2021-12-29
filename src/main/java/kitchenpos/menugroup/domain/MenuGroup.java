@@ -15,15 +15,10 @@ public class MenuGroup {
     @Column(nullable = false)
     private String name;
 
-    public MenuGroup() {
+    protected MenuGroup() {
     }
 
     public MenuGroup(String name) {
-        this.name = name;
-    }
-
-    public MenuGroup(Long id, String name) {
-        this.id = id;
         this.name = name;
     }
 

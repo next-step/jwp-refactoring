@@ -41,11 +41,10 @@ public class TableGroup extends AbstractAggregateRoot<TableGroup> {
     }
 
     public void groupTables(List<Long> orderTableIds) {
-        GroupingTableEvent groupingTableEvent = registerEvent(new GroupingTableEvent(id, orderTableIds));
+        registerEvent(new GroupingTableEvent(id, orderTableIds));
     }
 
     public void ungroup() {
-        UngroupingTableEvent ungroupingTableEvent = registerEvent(new UngroupingTableEvent(id));
-
+        registerEvent(new UngroupingTableEvent(id));
     }
 }

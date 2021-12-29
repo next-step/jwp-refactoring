@@ -22,9 +22,9 @@ public class OrderValidator {
     }
 
     public void validate(OrderRequest orderRequest) {
-        OrderLineItems orderLineItems = new OrderLineItems(orderRequest.getOrderLineItemsEntity());
-
         validTable(orderRequest);
+
+        OrderLineItems orderLineItems = new OrderLineItems(orderRequest.getOrderLineItemsEntity());
         validateMenu(orderLineItems);
     }
 

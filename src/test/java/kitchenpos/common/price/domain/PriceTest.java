@@ -21,8 +21,10 @@ class PriceTest {
     @DisplayName("0 이하의 가격으로로 가격 생성시 에러")
     @Test
     void constructErrorWhenLessThanZero() {
+        BigDecimal minusOne = BigDecimal.valueOf(-1);
+
         assertThatExceptionOfType(KitchenposException.class)
-            .isThrownBy(() -> new Price(BigDecimal.valueOf(-1)))
+            .isThrownBy(() -> new Price(minusOne))
             .withMessage("0 이상의 가격만 입력 가능합니다.");
     }
 
@@ -52,6 +54,7 @@ class PriceTest {
         assertThat(ten.multiply(BigDecimal.valueOf(5))).isEqualTo(new Price(BigDecimal.valueOf(50)));
     }
 
+    @DisplayName("가격 더하기")
     @Test
     void add() {
         Price one = new Price(BigDecimal.ONE);

@@ -29,11 +29,11 @@ public class OrderLineItem {
         return seq;
     }
 
-    public long getQuantity() {
-        return quantity;
-    }
-
     public Long getMenuId() {
         return menuId;
+    }
+
+    public long getQuantity() {
+        return quantity;
     }
 }
