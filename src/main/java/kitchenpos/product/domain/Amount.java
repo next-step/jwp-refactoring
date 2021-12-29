@@ -10,11 +10,12 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
+import javax.persistence.Transient;
 
 @Embeddable
-public class Amount implements Serializable {
+public class Amount {
 
-    @Embedded
+    @Transient
     public static final Amount ZERO = new Amount(BigDecimal.ZERO);
 
     @Column(nullable = false)

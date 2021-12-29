@@ -1,18 +1,16 @@
 package kitchenpos.table.domain;
 
-import static javax.persistence.CascadeType.MERGE;
+import static javax.persistence.CascadeType.ALL;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import kitchenpos.common.exception.Message;
-import kitchenpos.order.domain.OrderStatus;
 import org.springframework.util.CollectionUtils;
 
 @Embeddable
@@ -20,7 +18,7 @@ public class OrderTables {
 
     private static final int MIN_TABLE_SIZE = 2;
 
-    @OneToMany(mappedBy = "tableGroup", fetch = FetchType.LAZY, cascade = {MERGE})
+    @OneToMany(mappedBy = "tableGroup", fetch = FetchType.LAZY, cascade = ALL)
     private List<OrderTable> orderTables = new ArrayList<>();
 
     public static OrderTables of(List<OrderTable> savedOrderTables) {
@@ -28,15 +26,19 @@ public class OrderTables {
     }
 
     private OrderTables(List<OrderTable> orderTables) {
+
+        this.orderTables.addAll(orderTables);
+
         if (isSmallThanMinTableSize(orderTables)) {
             throw new IllegalArgumentException(
                 Message.ORDER_TABLES_IS_SMALL_THAN_MIN_TABLE_SIZE.getMessage());
         }
-        if (isNotEmptyOrAlreadyGroup(orderTables)) {
+
+        if (matchOrderTable(this::isTableEmpty)) {
             throw new IllegalArgumentException(
-                Message.ORDER_TABLE_IS_NOT_EMPTY_TABLE_OR_ALREADY_GROUP.getMessage());
+                Message.ORDER_TABLE_IS_NOT_EMPTY_TABLE_OR_ALREADY_GROUP.getMessage()
+            );
         }
-        this.orderTables.addAll(orderTables);
     }
 
     protected OrderTables() {
@@ -46,13 +48,15 @@ public class OrderTables {
         return CollectionUtils.isEmpty(orderTables) || orderTables.size() < MIN_TABLE_SIZE;
     }
 
-    private boolean isNotEmptyOrAlreadyGroup(final List<OrderTable> orderTables) {
-        return orderTables.stream().anyMatch(isTableIsNotEmptyOrGroupIsNotNull());
-    }
+    public void group() {
+        if (matchOrderTable(isTableIsNotEmptyOrGroupIsNotNull())) {
+            throw new IllegalArgumentException(
+                Message.ORDER_TABLE_IS_NOT_EMPTY_TABLE_OR_ALREADY_GROUP.getMessage());
+        }
 
-    private Predicate<OrderTable> isTableIsNotEmptyOrGroupIsNotNull() {
-        return orderTable -> OrderTableStatus.isEmpty(orderTable) ||
-            Objects.nonNull(orderTable.getTableGroup());
+        TableGroup of = TableGroup.of();
+        orderTables.stream()
+            .forEach(s->s.group(of));
     }
 
     public void unGroup() {
@@ -60,26 +64,29 @@ public class OrderTables {
             .forEach(OrderTable::unGroup);
     }
 
+    private Predicate<OrderTable> isTableIsNotEmptyOrGroupIsNotNull() {
+        return orderTable -> isTableEmpty(orderTable) || isGroupIsNotNull(orderTable);
+    }
+
+    private boolean isTableEmpty(OrderTable orderTable) {
+        return OrderTableStatus.isEmpty(orderTable);
+    }
+
+    private boolean isGroupIsNotNull(OrderTable orderTable) {
+        return Objects.nonNull(orderTable.getTableGroupId());
+    }
+
+    private boolean matchOrderTable(Predicate<OrderTable> orderTablePredicate) {
+        return orderTables.stream()
+            .anyMatch(orderTablePredicate);
+    }
+
     public List<OrderTable> getList() {
         return Collections.unmodifiableList(orderTables);
     }
 
-    public boolean contains(OrderTable orderTable) {
-        return this.orderTables.contains(orderTable);
-    }
-
-    public void addAll(List<OrderTable> orderTables) {
-        this.orderTables.addAll(orderTables);
-    }
-
     public int size() {
         return orderTables.size();
-    }
-
-    public List<Long> getIds() {
-        return orderTables.stream()
-            .map(OrderTable::getId)
-            .collect(Collectors.toList());
     }
 
     @Override
@@ -99,4 +106,6 @@ public class OrderTables {
         return Objects.hash(orderTables);
     }
 
+
 }
+

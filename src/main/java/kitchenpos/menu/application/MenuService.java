@@ -1,20 +1,12 @@
 package kitchenpos.menu.application;
 
 import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import kitchenpos.common.exception.NoResultDataException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuDao;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuGroupDao;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.domain.MenuValidation;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.product.domain.Amount;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductDao;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,33 +14,23 @@ import org.springframework.transaction.annotation.Transactional;
 public class MenuService {
 
     private final MenuDao menuDao;
-    private final MenuGroupDao menuGroupDao;
-    private final ProductDao productDao;
-
+    private final MenuValidation menuValidation;
 
     public MenuService(
         final MenuDao menuDao,
-        final MenuGroupDao menuGroupDao,
-        final ProductDao productDao
+        final MenuValidation menuValidation
     ) {
         this.menuDao = menuDao;
-        this.menuGroupDao = menuGroupDao;
-        this.productDao = productDao;
+        this.menuValidation = menuValidation;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
+        Menu menu = menuRequest.toMenu();
+        menu.addMenuProducts(menuRequest.toMenuProducts());
 
-        final MenuGroup menuGroup = menuGroupDao.findById(menuRequest.getMenuGroupId())
-            .orElseThrow(NoResultDataException::new);
+        menuValidation.valid(menu);
 
-        final Menu menu = Menu.of(
-            menuRequest.getName(),
-            Amount.of(menuRequest.getPrice()),
-            menuGroup
-        );
-
-        menu.withMenuProducts(createMenuProducts(menuRequest, menu));
         return MenuResponse.of(menuDao.save(menu));
     }
 
@@ -56,19 +38,10 @@ public class MenuService {
         return MenuResponse.ofList(menuDao.findAll());
     }
 
-    private List<MenuProduct> createMenuProducts(final MenuRequest menuRequest, final Menu menu) {
-        return menuRequest.getMenuProducts()
-            .stream()
-            .map(findByProductIdToMenuProduct(menu))
-            .collect(Collectors.toList());
-    }
-
-    private Function<MenuProductRequest, MenuProduct> findByProductIdToMenuProduct(final Menu menu) {
-        return menuProduct -> {
-            Product product = productDao.findById(menuProduct.getProductId())
-                .orElseThrow(NoResultDataException::new);
-            return MenuProduct.of(menu, product, menuProduct.getQuantity());
-        };
+    public Long findById(Long id) {
+        Menu menu = menuDao.findById(id)
+            .orElseThrow(NoResultDataException::new);
+        return menu.getId();
     }
 
 }

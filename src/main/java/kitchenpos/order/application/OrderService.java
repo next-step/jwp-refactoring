@@ -1,53 +1,38 @@
 package kitchenpos.order.application;
 
 import java.util.List;
-import java.util.function.Function;
-import kitchenpos.common.exception.Message;
 import kitchenpos.common.exception.NoResultDataException;
-import kitchenpos.menu.domain.MenuDao;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderDao;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderLineItemDao;
+import kitchenpos.order.domain.OrderValidation;
 import kitchenpos.order.dto.ChangeOrderStatusRequest;
-import kitchenpos.order.dto.OrderLineRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableDao;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class OrderService {
 
-    private final MenuDao menuDao;
+
     private final OrderDao orderDao;
-    private final OrderLineItemDao orderLineItemDao;
-    private final OrderTableDao orderTableDao;
+    private final OrderValidation orderValidation;
 
     public OrderService(
-        final MenuDao menuDao,
         final OrderDao orderDao,
-        final OrderLineItemDao orderLineItemDao,
-        final OrderTableDao orderTableDao
+        final OrderValidation orderValidation
     ) {
-        this.menuDao = menuDao;
         this.orderDao = orderDao;
-        this.orderLineItemDao = orderLineItemDao;
-        this.orderTableDao = orderTableDao;
+        this.orderValidation = orderValidation;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        validSizeIsNotEquals(orderRequest);
-
-        final OrderTable orderTable = orderTableDao.findById(orderRequest.getOrderTableId())
-            .orElseThrow(NoResultDataException::new);
+        orderValidation.valid(orderRequest);
 
         Order orderCooking = Order.createCook(
-            orderTable,
-            orderRequest.convert(findByMenuIdToOrderItemLine())
+            orderRequest.getOrderTableId(),
+            orderRequest.toOrderItems()
         );
 
         return OrderResponse.of(orderDao.save(orderCooking));
@@ -67,20 +52,5 @@ public class OrderService {
 
         savedOrder.changeOrderStatus(changeOrderStatusRequest.getOrderStatus());
         return OrderResponse.of(orderDao.save(savedOrder));
-    }
-
-    private void validSizeIsNotEquals(OrderRequest orderRequest) {
-        if (orderRequest.getOrderItemSize() != menuDao.countByIdIn(
-            orderRequest.convert(OrderLineRequest::getMenuId))) {
-            throw new IllegalArgumentException(Message.ORDER_SIZE_IS_NOT_EQUALS.getMessage());
-        }
-    }
-
-    private Function<OrderLineRequest, OrderLineItem> findByMenuIdToOrderItemLine() {
-        return orderLineRequest -> OrderLineItem.of(
-            menuDao.findById(orderLineRequest.getMenuId())
-                .orElseThrow(NoResultDataException::new),
-            orderLineRequest.getQuantity()
-        );
     }
 }

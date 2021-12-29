@@ -14,7 +14,7 @@ public class OrderTableResponse {
 
     public static OrderTableResponse of(OrderTable orderTable) {
         return new OrderTableResponse(orderTable.getId(),
-            orderTable.getTableGroup() != null ? orderTable.getTableGroup().getId() : null,
+            orderTable.getTableGroupId(),
             orderTable.getNumberOfGuests(),
             orderTable.isEmpty());
     }
@@ -25,7 +25,8 @@ public class OrderTableResponse {
             .collect(Collectors.toList());
     }
 
-    private OrderTableResponse(Long id, Long tableGroupId, NumberOfGuests numberOfGuests, boolean empty) {
+    private OrderTableResponse(Long id, Long tableGroupId, NumberOfGuests numberOfGuests,
+        boolean empty) {
         this.id = id;
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;

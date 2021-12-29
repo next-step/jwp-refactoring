@@ -30,7 +30,15 @@ public class OrderLineItems {
     protected OrderLineItems() {
     }
 
+    public void association(List<OrderLineItem> orderLineItems, Order order) {
+        orderLineItems.stream()
+            .forEach(orderLineItem -> orderLineItem.setOrder(order));
+
+        this.orderLineItems.addAll(orderLineItems);
+    }
+
     public List<OrderLineItem> getList() {
         return Collections.unmodifiableList(orderLineItems);
     }
+
 }

@@ -230,14 +230,13 @@
   - 예외
     - [x] 0보다 작을 수 없습니다.
 
+----
 
+## Step3 의존성 리팩터링
 
+### 개선 전 
+![img.png](src/main/resources/static/before.png)
 
+### 개선 후
 
-
-
-
-
-
-
-
+![img.png](src/main/resources/static/after.png)

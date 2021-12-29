@@ -6,12 +6,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Embeddable;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 @Embeddable
 public class Orders {
 
-    @OneToMany(mappedBy = "orderTable", fetch = LAZY)
+    @OneToMany(fetch = LAZY)
+    @JoinColumn(name="order_table_id", foreignKey = @ForeignKey(name = "fk_order_order_table_id"))
     private List<Order> orders = new ArrayList<>();
 
     public Orders(List<Order> orders) {

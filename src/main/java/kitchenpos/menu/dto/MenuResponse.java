@@ -16,7 +16,7 @@ public class MenuResponse {
 
     public static MenuResponse of(Menu savedMenu) {
         return new MenuResponse(savedMenu.getId(), savedMenu.getName(), savedMenu.getPrice(),
-            savedMenu.getMenuGroup().getId(), savedMenu.getMenuProducts());
+            savedMenu.getMenuGroupId(), savedMenu.getMenuProducts());
     }
 
     public MenuResponse(Long id, String name, Amount price, Long menuGroupId,

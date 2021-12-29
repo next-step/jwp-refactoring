@@ -1,14 +1,15 @@
 package kitchenpos.table.domain;
 
-import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -24,7 +25,7 @@ public class OrderTable {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "table_group_id")
     private TableGroup tableGroup;
 
@@ -78,9 +79,13 @@ public class OrderTable {
         this.numberOfGuests = new NumberOfGuests(numberOfGuest);
     }
 
+    public void group(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
+    }
+
     public void unGroup() {
         validCookieOreMeal();
-        tableGroup = null;
+        this.tableGroup = null;
     }
 
     private void validCookieOreMeal() {
@@ -91,8 +96,11 @@ public class OrderTable {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        if (tableGroup == null) {
+            return null;
+        }
+        return tableGroup.getId();
     }
 
     public NumberOfGuests getNumberOfGuests() {
@@ -101,10 +109,6 @@ public class OrderTable {
 
     public boolean isEmpty() {
         return orderTableStatus.isEmpty();
-    }
-
-    public void withTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
     }
 
     public Orders getOrders() {
