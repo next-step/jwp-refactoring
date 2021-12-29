@@ -9,6 +9,7 @@ jar { enabled = true }
 dependencies {
 
     compile project(':kitchenpos-menu')
+    compile project(':kitchenpos-ordertable')
 
     testImplementation(testFixtures(project(":kitchenpos-menu")))
     testImplementation(testFixtures(project(":kitchenpos-ordertable")))

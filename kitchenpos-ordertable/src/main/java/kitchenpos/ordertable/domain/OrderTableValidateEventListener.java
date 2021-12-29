@@ -1,6 +1,6 @@
 package kitchenpos.ordertable.domain;
 
-import kitchenpos.common.event.OrderCreateEvent;
+import kitchenpos.ordertable.event.TableCreateOrderEvent;
 import kitchenpos.ordertable.exception.ClosedTableOrderException;
 import kitchenpos.ordertable.exception.TableNotFoundException;
 
@@ -18,7 +18,7 @@ public class OrderTableValidateEventListener {
     }
 
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
-    public void validateNotOrderClosedTable(OrderCreateEvent orderCreateEvent) {
+    public void validateNotOrderClosedTable(TableCreateOrderEvent orderCreateEvent) {
         Long orderTableId = orderCreateEvent.getOrderTableId();
         OrderTable orderTable = orderTableRepository.findById(orderTableId)
             .orElseThrow(TableNotFoundException::new);

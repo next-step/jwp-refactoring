@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import kitchenpos.order.domain.Order;
-import kitchenpos.common.event.OrderCreateEvent;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderMenuValidator;
 import kitchenpos.order.domain.OrderRepository;
@@ -13,6 +12,7 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.exception.OrderNotFoundException;
+import kitchenpos.ordertable.event.TableCreateOrderEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +38,7 @@ public class OrderService {
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
         Long orderTableId = orderRequest.getOrderTableId();
-        applicationEventPublisher.publishEvent(new OrderCreateEvent(this, orderTableId));
+        applicationEventPublisher.publishEvent(new TableCreateOrderEvent(this, orderTableId));
         List<OrderLineItemRequest> requestOrderLineItems = orderRequest.getOrderLineItems();
         orderMenuValidator.validateOrderLineItems(requestOrderLineItems);
         List<OrderLineItem> orderLineItems = createOrderLineItems(requestOrderLineItems);

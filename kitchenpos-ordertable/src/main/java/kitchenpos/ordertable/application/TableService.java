@@ -2,7 +2,7 @@ package kitchenpos.ordertable.application;
 
 import java.util.List;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.common.event.OrderTableChangeOrderCloseEvent;
+import kitchenpos.ordertable.event.TableChangeOrderCloseEvent;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
@@ -51,7 +51,7 @@ public class TableService {
         final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
         applicationEventPublisher.publishEvent(
-            new OrderTableChangeOrderCloseEvent(this, savedOrderTable.getId()));
+            new TableChangeOrderCloseEvent(this, savedOrderTable.getId()));
         savedOrderTable.updateTableStatus(orderTableRequest.isOrderClose());
         return OrderTableResponse.from(savedOrderTable);
     }

@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
-import kitchenpos.common.event.OrderTableChangeOrderCloseEvent;
+import kitchenpos.ordertable.event.TableChangeOrderCloseEvent;
 import kitchenpos.order.exception.OrderIsNotCompleteException;
 import java.util.Arrays;
 import java.util.List;
@@ -37,7 +37,7 @@ class OrderValidateEventListenerTest {
             new Order(3L, 1L, OrderStatus.COOKING, Lists.emptyList()));
         특정_테이블의_전체주문_조회_모킹(orders);
 
-        OrderTableChangeOrderCloseEvent orderValidateEvent = new OrderTableChangeOrderCloseEvent(
+        TableChangeOrderCloseEvent orderValidateEvent = new TableChangeOrderCloseEvent(
             this, 1L);
         //when, then
         assertThatThrownBy(

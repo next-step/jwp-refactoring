@@ -1,9 +1,9 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.common.event.OrderTableChangeOrderCloseEvent;
 import kitchenpos.order.exception.OrderIsNotCompleteException;
 import java.util.List;
 
+import kitchenpos.ordertable.event.TableChangeOrderCloseEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -19,7 +19,7 @@ public class OrderValidateEventListener {
 
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void validateAllOrdersInTableComplete(
-        OrderTableChangeOrderCloseEvent orderValidateEvent) {
+        TableChangeOrderCloseEvent orderValidateEvent) {
         Long orderTableId = orderValidateEvent.getOrderTableId();
         List<Order> orders = orderRepository.findAllByOrderTableId(orderTableId);
         orders.stream()

@@ -2,7 +2,7 @@ package kitchenpos.ordertable.domain;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import kitchenpos.common.event.OrderCreateEvent;
+import kitchenpos.ordertable.event.TableCreateOrderEvent;
 import kitchenpos.ordertable.exception.ClosedTableOrderException;
 
 import kitchenpos.ordertable.TableTestFixtures;
@@ -30,7 +30,7 @@ class OrderTableValidateEventListenerTest {
         //given
         OrderTable orderTable = new OrderTable(1L, new NumberOfGuests(6), true);
         TableTestFixtures.특정_주문테이블_조회_모킹(orderTableRepository, orderTable);
-        OrderCreateEvent orderCreateEvent = new OrderCreateEvent(this, orderTable.getId());
+        TableCreateOrderEvent orderCreateEvent = new TableCreateOrderEvent(this, orderTable.getId());
         //when, then
         assertThatThrownBy(
                 () -> orderTableValidateEventListener.validateNotOrderClosedTable(orderCreateEvent))

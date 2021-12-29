@@ -1,12 +1,12 @@
-package kitchenpos.common.event;
+package kitchenpos.ordertable.event;
 
 import org.springframework.context.ApplicationEvent;
 
-public class OrderTableChangeOrderCloseEvent extends ApplicationEvent {
+public class TableCreateOrderEvent extends ApplicationEvent {
 
     private Long orderTableId;
 
-    public OrderTableChangeOrderCloseEvent(Object source, Long orderTableId) {
+    public TableCreateOrderEvent(Object source, Long orderTableId) {
         super(source);
         this.orderTableId = orderTableId;
     }
