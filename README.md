@@ -37,7 +37,7 @@
 3. 저장소를 자신의 계정으로 Fork 한다.
 
 ### 요구 사항 1
-`kitchenpos` 패키지의 코드를 보고 키친포스의 요구 사항을 `README.md`에 작성한다. 미션을 진행함에 있어 아래 문서를 적극 활용한다.
+`api` 패키지의 코드를 보고 키친포스의 요구 사항을 `README.md`에 작성한다. 미션을 진행함에 있어 아래 문서를 적극 활용한다.
 - [마크다운](https://dooray.com/htmls/guides/markdown_ko_KR.html)
 
 ### 요구 사항 2
@@ -60,7 +60,7 @@
     ```text
     ###
     POST {{host}}/api/menu-groups
-    Content-Type: application/json
+    Content-Type: kitchenpos/json
     
     {
       "name": "추천메뉴"
@@ -418,3 +418,27 @@ completePayment() vs setOrderState()
 
 ### 패키지 분리 
 ![image info](./images/packages.png)
+
+
+--- 
+
+### 4단계 - 멀티 모듈 적용
+
+#### 요구사항 
+ - Gradle의 멀티 모듈 개념을 적용해 자유롭게 서로 다른 프로젝트로 분리해 본다.
+   - 컨텍스트 간의 독립된 모듈로 만들 수 있다.
+   - 계층 간의 독립된 모듈로 만들 수 있다.
+ - 의존성 주입, HTTP 요청/응답, 이벤트 발행/구독 등 다양한 방식으로 모듈 간 데이터를 주고받을 수 있다.
+   
+ - 힌트 
+   - [gradle멀티프로젝트관리](https://jojoldu.tistory.com/123)
+   - [권남님의 gradle Multi Project](https://kwonnam.pe.kr/wiki/gradle/multiproject)
+
+
+#### 멀티모듈 분리
+ - kitchenpos-api : 서비스 레이어 
+ - kitchenpos-common : 공통 제어(커스텀예외, 예외핸들러 정의)
+ - kitchenpos-domain : 도메인 레이어 
+ - kitchenpos-web : 프레젠테이션 레이어 
+ 
+ - 메인 : kitchenpos-web Application.class
