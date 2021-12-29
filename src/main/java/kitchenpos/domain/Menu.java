@@ -39,7 +39,7 @@ public class Menu {
         this.menuProducts = new ArrayList<>();
     }
 
-    public static Menu of(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+    public static Menu create(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         Menu menu = new Menu(name, price, menuGroup);
         menu.addMenuProduct(menuProducts);
         return menu;

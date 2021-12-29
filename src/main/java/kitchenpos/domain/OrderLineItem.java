@@ -1,5 +1,7 @@
 package kitchenpos.domain;
 
+import kitchenpos.dto.OrderLineItemRequest;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -22,12 +24,12 @@ public class OrderLineItem {
 
     public OrderLineItem() {}
 
-    private OrderLineItem(Menu menu, int quantity) {
+    private OrderLineItem(Menu menu, long quantity) {
         this.menu = menu;
         this.quantity = quantity;
     }
 
-    public static OrderLineItem of(Menu menu, int quantity) {
+    public static OrderLineItem of(Menu menu, long quantity) {
         return new OrderLineItem(menu, quantity);
     }
 
@@ -39,16 +41,16 @@ public class OrderLineItem {
         this.seq = seq;
     }
 
-    public Long getOrder() {
-        return order.getId();
+    public Order getOrder() {
+        return order;
     }
 
     public void setOrder(final Order order) {
         this.order = order;
     }
 
-    public Long getMenu() {
-        return menu.getId();
+    public Menu getMenu() {
+        return menu;
     }
 
     public void setMenu(final Menu menu) {
@@ -80,4 +82,7 @@ public class OrderLineItem {
         return Objects.hash(seq, order, menu, quantity);
     }
 
+    public void addOrder(Order order) {
+        this.order = order;
+    }
 }

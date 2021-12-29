@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.dao.*;
 import kitchenpos.domain.*;
+import kitchenpos.dto.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,7 +32,7 @@ class OrderServiceTest {
     void setUp() {
         Product 살치살 = Product.of(1L,"살치살",10000);
         Product 부채살 = Product.of(2L,"부채살",10000);
-        Menu menu = Menu.of("소고기세트", BigDecimal.valueOf(70000), null,
+        Menu menu = Menu.create("소고기세트", BigDecimal.valueOf(70000), null,
                 Arrays.asList(
                         MenuProduct.of(살치살, 2),
                         MenuProduct.of(부채살, 1)
@@ -44,7 +45,7 @@ class OrderServiceTest {
     @Test
     void notExistsOrderLineItems() {
         OrderTable orderTable = orderTableRepository.save(OrderTable.of(10, false));
-        Order order = Order.of(orderTable, Collections.emptyList());
+        OrderRequest order = OrderRequest.of(orderTable.getId(), Collections.emptyList());
 
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(order));
     }
@@ -53,9 +54,9 @@ class OrderServiceTest {
     @Test
     void notExistsOrderTable() {
         OrderTable orderTable = orderTableRepository.save(OrderTable.of(10, false));
-        Order order = Order.of(null,
+        OrderRequest order = OrderRequest.of(null,
                 Arrays.asList(
-                        OrderLineItem.of(소고기메뉴, 10)
+                        OrderLineItemRequest.of(소고기메뉴.getId(), 10)
                 )
         );
 
@@ -66,9 +67,9 @@ class OrderServiceTest {
     @Test
     void empty() {
         OrderTable orderTable = orderTableRepository.save(OrderTable.of(10, true));
-        Order order = Order.of(orderTable,
+        OrderRequest order = OrderRequest.of(orderTable.getId(),
                 Arrays.asList(
-                        OrderLineItem.of(소고기메뉴, 10)
+                        OrderLineItemRequest.of(소고기메뉴.getId(), 10)
                 )
         );
 
@@ -79,13 +80,13 @@ class OrderServiceTest {
     @Test
     void success() {
         OrderTable orderTable = orderTableRepository.save(OrderTable.of(10, false));
-        Order order = Order.of(orderTable,
+        OrderRequest order = OrderRequest.of(orderTable.getId(),
                 Arrays.asList(
-                        OrderLineItem.of(소고기메뉴, 10)
+                        OrderLineItemRequest.of(소고기메뉴.getId(), 10)
                 )
         );
 
-        Order result = orderService.create(order);
+        OrderResponse result = orderService.create(order);
         assertAll(
                 () -> assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name()),
                 () -> assertThat(result.getOrderTableId()).isEqualTo(orderTable.getId()),
@@ -97,27 +98,27 @@ class OrderServiceTest {
     @Test
     void list() {
         OrderTable orderTable = orderTableRepository.save(OrderTable.of(10, false));
-        Order order1 = Order.of(orderTable,
+        OrderRequest order1 = OrderRequest.of(orderTable.getId(),
                 Arrays.asList(
-                        OrderLineItem.of(소고기메뉴, 10)
+                        OrderLineItemRequest.of(소고기메뉴.getId(), 10)
                 )
         );
         OrderTable orderTable2 = orderTableRepository.save(OrderTable.of(15, false));
-        Order order2 = Order.of(orderTable2,
+        OrderRequest order2 = OrderRequest.of(orderTable2.getId(),
                 Arrays.asList(
-                        OrderLineItem.of(소고기메뉴, 20)
+                        OrderLineItemRequest.of(소고기메뉴.getId(), 20)
                 )
         );
 
-        Order resultOrder1 = orderService.create(order1);
-        Order resultOrder2 = orderService.create(order2);
+        OrderResponse resultOrder1 = orderService.create(order1);
+        OrderResponse resultOrder2 = orderService.create(order2);
 
-        List<Order> list = orderService.list();
+        List<OrderResponse> list = orderService.list();
 
         long count = getOrderLineItemCount(list);
         assertAll(
                 () -> assertThat(list.size()).isEqualTo(2),
-                () -> assertThat(count).isEqualTo(resultOrder1.getOrderLineItems().size() + resultOrder2.getOrderLineItems().size())
+                () -> assertThat(count).isEqualTo(resultOrder1.getOrderLineItemResponseList().size() + resultOrder2.getOrderLineItemResponseList().size())
         );
     }
 
@@ -125,7 +126,7 @@ class OrderServiceTest {
     @Test
     void changeStatus() {
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderService.changeOrderStatus(33L, Order.of(OrderStatus.COMPLETION.name())));
+                .isThrownBy(() -> orderService.changeOrderStatus(33L, OrderStatusUpdateRequest.of(OrderStatus.COMPLETION.name())));
     }
 
     @DisplayName("주문 상태가 COMPLETION 이면 예외가 발생한다.")
@@ -141,20 +142,20 @@ class OrderServiceTest {
         orderRepository.save(order);
 
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderService.changeOrderStatus(order.getId(), Order.of(OrderStatus.COMPLETION.name())));
+                .isThrownBy(() -> orderService.changeOrderStatus(order.getId(), OrderStatusUpdateRequest.of(OrderStatus.COMPLETION.name())));
     }
 
     @DisplayName("주문 상태 변경 성공")
     @Test
     void successChangeStatus() {
         OrderTable orderTable = orderTableRepository.save(OrderTable.of(10, false));
-        Order order = Order.of(orderTable,
+        OrderRequest order = OrderRequest.of(orderTable.getId(),
                 Arrays.asList(
-                        OrderLineItem.of(소고기메뉴, 10)
+                        OrderLineItemRequest.of(소고기메뉴.getId(), 10)
                 )
         );
-        Order result = orderService.create(order);
-        Order resultOrder = orderService.changeOrderStatus(result.getId(), Order.of(OrderStatus.COMPLETION.name()));
+        OrderResponse result = orderService.create(order);
+        OrderResponse resultOrder = orderService.changeOrderStatus(result.getId(), OrderStatusUpdateRequest.of(OrderStatus.COMPLETION.name()));
 
         assertAll(
                 () -> assertThat(resultOrder.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name()),
@@ -162,24 +163,28 @@ class OrderServiceTest {
         );
     }
 
-    private long getOrderLineItemCount(List<Order> list) {
+    private long getOrderLineItemCount(List<OrderResponse> list) {
         long count = list.stream()
-                .map(order -> order.getOrderLineItems())
+                .map(order -> order.getOrderLineItemResponseList())
                 .flatMap(orderLineItems -> orderLineItems.stream())
                 .count();
         return count;
     }
 
-    private void equalOrderLineItem(Order result, Order order) {
-        List<OrderLineItem> resultOrderLineItems = result.getOrderLineItems();
-        List<OrderLineItem> orderLineItems = order.getOrderLineItems();
-        for (int i = 0; i < resultOrderLineItems.size(); i++) {
-            OrderLineItem resultOrderLineItem = resultOrderLineItems.get(i);
-            OrderLineItem orderLineItem = orderLineItems.get(i);
-            assertThat(resultOrderLineItem.getMenu()).isEqualTo(orderLineItem.getMenu());
-            assertThat(resultOrderLineItem.getOrder()).isEqualTo(result.getId());
-            assertThat(resultOrderLineItem.getQuantity()).isEqualTo(orderLineItem.getQuantity());
-        }
+    private void equalOrderLineItem(OrderResponse result, OrderRequest order) {
+        List<OrderLineItemResponse> resultOrderLineItems = result.getOrderLineItemResponseList();
+        List<OrderLineItemRequest> orderLineItems = order.getOrderLineItems();
+        assertAll(
+                () -> {
+                    for (int i = 0; i < resultOrderLineItems.size(); i++) {
+                        OrderLineItemResponse resultOrderLineItem = resultOrderLineItems.get(i);
+                        OrderLineItemRequest orderLineItem = orderLineItems.get(i);
+                        assertThat(resultOrderLineItem.getMenuId()).isEqualTo(orderLineItem.getMenuId());
+                        assertThat(resultOrderLineItem.getOrderId()).isEqualTo(result.getId());
+                        assertThat(resultOrderLineItem.getQuantity()).isEqualTo(orderLineItem.getQuantity());
+                    }
+                }
+        );
     }
 
 }

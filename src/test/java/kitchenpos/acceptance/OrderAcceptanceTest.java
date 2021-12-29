@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 public class OrderAcceptanceTest extends AcceptanceTest {
 
     private OrderTable 테이블;
-    private Menu 메뉴;
+    private MenuResponse 메뉴;
     private ProductResponse 소고기한우;
     private MenuGroupResponse 추천메뉴;
 
@@ -49,74 +49,79 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void handleOrder() {
         // 주문 생성
-        Order order = Order.of(
-                테이블,
+        OrderRequest orderRequest = OrderRequest.of(
+                테이블.getId(),
                 Arrays.asList(
-                        OrderLineItem.of(메뉴, 2)
+                        OrderLineItemRequest.of(메뉴.getId(), 2)
                 )
         );
-        ExtractableResponse<Response> createResponse = 주문_생성_요청(order);
-        Order savedOrder = 주문_생성_확인(createResponse);
+        ExtractableResponse<Response> createResponse = 주문_생성_요청(orderRequest);
+        OrderResponse savedOrder = 주문_생성_확인(createResponse);
 
         // 주문 조회
         ExtractableResponse<Response> findResponse = 모든_주문_조회_요청();
         모든_주문_조회_확인(findResponse, savedOrder);
 
         // 주문 상태 변경
-        Order changeOrder = Order.of(OrderStatus.COMPLETION.name());
-        ExtractableResponse<Response> updateResponse = 주문_상태_변경_요청(savedOrder.getId(), changeOrder);
-        주문_상태_변경_확인(updateResponse, changeOrder);
+        OrderStatusUpdateRequest changeOrderStatus = OrderStatusUpdateRequest.of(OrderStatus.COMPLETION.name());
+        ExtractableResponse<Response> updateResponse = 주문_상태_변경_요청(savedOrder.getId(), changeOrderStatus);
+        주문_상태_변경_확인(updateResponse, changeOrderStatus);
     }
 
-    public static void 주문_상태_변경_확인(ExtractableResponse<Response> updateResponse, Order changeOrder) {
+    public static void 주문_상태_변경_확인(ExtractableResponse<Response> updateResponse, OrderStatusUpdateRequest request) {
         assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
-        Order order = updateResponse.as(Order.class);
-        assertThat(order.getOrderStatus()).isEqualTo(changeOrder.getOrderStatus());
+        OrderResponse order = updateResponse.as(OrderResponse.class);
+        assertThat(order.getOrderStatus()).isEqualTo(request.getOrderStatus());
     }
 
-    private void 모든_주문_조회_확인(ExtractableResponse<Response> findResponse, Order expected) {
+    private void 모든_주문_조회_확인(ExtractableResponse<Response> findResponse, OrderResponse expected) {
         assertAll(
                 () -> assertThat(findResponse.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> {
-                    List<Order> orders = findResponse.jsonPath().getList(".", Order.class);
-                    List<OrderLineItem> orderLineItems = orders.stream()
-                            .map(Order::getOrderLineItems)
-                            .flatMap(Collection::stream)
+                    List<OrderResponse> orderResponses = findResponse.jsonPath().getList(".", OrderResponse.class);
+                    List<Long> orderIds = orderResponses.stream()
+                            .map(orderResponse -> orderResponse.getId())
                             .collect(Collectors.toList());
-                    assertThat(orders).contains(expected);
-                    assertThat(orderLineItems).containsAll(expected.getOrderLineItems());
+                    List<Long> orderLineItems = orderResponses.stream()
+                            .map(orderResponse -> orderResponse.getOrderLineItemResponseList())
+                            .flatMap(Collection::stream)
+                            .map(orderLineItemResponse -> orderLineItemResponse.getSeq())
+                            .collect(Collectors.toList());
+
+                    assertThat(orderIds).contains(expected.getId());
+                    assertThat(orderLineItems).containsAll(expected.createOrderLineItemResponseSeqs());
                 }
         );
     }
 
-    private Order 주문_생성_확인(ExtractableResponse<Response> createResponse) {
-        Order savedOrder = createResponse.as(Order.class);
+    private OrderResponse 주문_생성_확인(ExtractableResponse<Response> createResponse) {
+        OrderResponse savedOrder = createResponse.as(OrderResponse.class);
         assertAll(
                 () -> assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
                 () -> {
                     assertThat(savedOrder.getOrderTableId()).isEqualTo(테이블.getId());
                     assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
-                    assertThat(savedOrder.getOrderLineItems()).isNotEmpty();
+                    assertThat(savedOrder.getOrderLineItemResponseList()).isNotEmpty();
                 }
         );
         return savedOrder;
     }
 
-    public static ExtractableResponse<Response> 주문_상태_변경_요청(Long id, Order changeOrder) {
-        return TestApiClient.update(changeOrder, "/api/orders/" + id + "/order-status");
+    public static ExtractableResponse<Response> 주문_상태_변경_요청(Long id, OrderStatusUpdateRequest request) {
+        return TestApiClient.update(request, "/api/orders/" + id + "/order-status");
     }
 
     private ExtractableResponse<Response> 모든_주문_조회_요청() {
         return TestApiClient.get("/api/orders");
     }
 
-    private static ExtractableResponse<Response> 주문_생성_요청(Order order) {
+    private static ExtractableResponse<Response> 주문_생성_요청(OrderRequest order) {
         return TestApiClient.create(order, "/api/orders");
     }
 
-    public static Order 주문_생성됨(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        Order order = Order.of(orderTable, orderLineItems);
-        return 주문_생성_요청(order).as(Order.class);
+    public static OrderResponse 주문_생성됨(OrderTable orderTable, List<OrderLineItemRequest> orderLineItems) {
+        OrderRequest order = OrderRequest.of(orderTable.getId(), orderLineItems);
+        return 주문_생성_요청(order).as(OrderResponse.class);
     }
 
 }

@@ -99,8 +99,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         return TestApiClient.create(menuRequest, "/api/menus");
     }
 
-    public static Menu 메뉴_등록되어있음(String name, int price, MenuGroup menuGroup, List<MenuProductRequest> menuProducts) {
+    public static MenuResponse 메뉴_등록되어있음(String name, int price, MenuGroup menuGroup, List<MenuProductRequest> menuProducts) {
         MenuRequest menu = MenuRequest.of(name, price, menuGroup, menuProducts);
-        return 메뉴_생성_요청(menu).as(Menu.class);
+        return 메뉴_생성_요청(menu).as(MenuResponse.class);
     }
 }

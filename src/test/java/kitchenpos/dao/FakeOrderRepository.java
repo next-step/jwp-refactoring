@@ -34,14 +34,14 @@ public class FakeOrderRepository implements OrderRepository {
     @Override
     public boolean existsByOrderTableAndOrderStatusIn(Long orderTableId, List<String> orderStatuses) {
         return map.values().stream()
-                .filter(order -> order.getOrderTableId().equals(orderTableId))
+                .filter(order -> order.getOrderTable().equals(orderTableId))
                 .anyMatch(order -> orderStatuses.contains(order.getOrderStatus()));
     }
 
     @Override
     public boolean existsByOrderTableInAndOrderStatusIn(List<Long> orderTableIds, List<String> orderStatuses) {
         return map.values().stream()
-                .filter(order -> orderTableIds.contains(order.getOrderTableId()))
+                .filter(order -> orderTableIds.contains(order.getOrderTable()))
                 .anyMatch(order -> orderStatuses.contains(order.getOrderStatus()));
     }
 }

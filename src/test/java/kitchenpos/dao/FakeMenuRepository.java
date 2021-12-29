@@ -3,6 +3,7 @@ package kitchenpos.dao;
 import kitchenpos.domain.Menu;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class FakeMenuRepository implements MenuRepository {
     private Map<Long, Menu> map = new HashMap<>();
@@ -32,5 +33,13 @@ public class FakeMenuRepository implements MenuRepository {
                 .filter(entry -> ids.contains(entry.getKey()))
                 .distinct()
                 .count();
+    }
+
+    @Override
+    public List<Menu> findAllByIdIn(List<Long> ids) {
+        return map.values()
+                .stream()
+                .filter(menu -> ids.contains(menu.getId()))
+                .collect(Collectors.toList());
     }
 }

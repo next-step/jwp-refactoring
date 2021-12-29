@@ -10,7 +10,7 @@ public class OrderTable {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"), nullable = false)
+    @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
     private TableGroup tableGroup;
 
     @Column(nullable = false)
@@ -64,8 +64,8 @@ public class OrderTable {
         this.id = id;
     }
 
-    public Long getTableGroup() {
-        return tableGroup.getId();
+    public TableGroup getTableGroup() {
+        return tableGroup;
     }
 
     public void setTableGroup(final TableGroup tableGroup) {
@@ -90,19 +90,6 @@ public class OrderTable {
 
     public void createId(Long id) {
         this.id = id;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        OrderTable that = (OrderTable) o;
-        return numberOfGuests == that.numberOfGuests && empty == that.empty && Objects.equals(id, that.id) && Objects.equals(tableGroup, that.tableGroup);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, tableGroup, numberOfGuests, empty);
     }
 
 }

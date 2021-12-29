@@ -15,4 +15,6 @@ public interface MenuRepository extends Repository<Menu, Long> {
     List<Menu> findAll();
 
     long countByIdIn(List<Long> ids);
+
+    List<Menu> findAllByIdIn(List<Long> ids);
 }

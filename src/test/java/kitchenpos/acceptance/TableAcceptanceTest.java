@@ -23,10 +23,10 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @DisplayName("테이블 관련 기능")
 public class TableAcceptanceTest extends AcceptanceTest {
     private OrderTable 일번테이블;
-    private Menu 소고기세트메뉴;
+    private MenuResponse 소고기세트메뉴;
     private ProductResponse 소고기한우;
     private MenuGroupResponse 추천메뉴;
-    private Order 일번테이블_주문;
+    private OrderResponse 일번테이블_주문;
 
     @BeforeEach
     public void setUp() {
@@ -43,7 +43,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
                 )
         );
         일번테이블 = 테이블_등록되어_있음(OrderTable.of(4, false));
-        일번테이블_주문 = OrderAcceptanceTest.주문_생성됨(일번테이블, Arrays.asList(OrderLineItem.of(소고기세트메뉴, 2)));
+        일번테이블_주문 = OrderAcceptanceTest.주문_생성됨(일번테이블, Arrays.asList(OrderLineItemRequest.of(소고기세트메뉴.getId(), 2)));
     }
 
     @DisplayName("테이블 관리")
@@ -51,7 +51,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
     void handleTable() {
         // 테이블 생성
         OrderTable 이번테이블 = 테이블_등록되어_있음(OrderTable.of(10, false));
-        Order 이번테이블_주문 = OrderAcceptanceTest.주문_생성됨(이번테이블, Arrays.asList(OrderLineItem.of(소고기세트메뉴, 3)));
+        OrderResponse 이번테이블_주문 = OrderAcceptanceTest.주문_생성됨(이번테이블, Arrays.asList(OrderLineItemRequest.of(소고기세트메뉴.getId(), 3)));
 
         // 테이블 조회
         ExtractableResponse<Response> findResponse = 모든_테이블_조회_요청();

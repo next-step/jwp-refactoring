@@ -4,10 +4,12 @@ import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
+@Table(name = "orders")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,7 +41,12 @@ public class Order {
     }
 
     private Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+
         this.orderTable = orderTable;
+        this.orderStatus = OrderStatus.COOKING;
         this.orderLineItems = orderLineItems;
     }
 
@@ -47,15 +54,31 @@ public class Order {
         this.orderStatus = OrderStatus.valueOf(orderStatus);
     }
 
-    public static Order of(Long id, OrderTable orderTable, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+    public static Order create(Long id, OrderTable orderTable, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
         return new Order(id, orderTable, orderStatus, orderedTime, orderLineItems);
     }
 
-    public static Order of(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        return new Order(orderTable, orderLineItems);
+    public static Order create(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        Order order = new Order(orderTable, orderLineItems);
+        order.addOrder(orderLineItems);
+        return order;
     }
 
-    public static Order of(String orderStatus) {
+    private void addOrder(List<OrderLineItem> orderLineItems) {
+        orderLineItems.forEach(orderLineItem -> {
+            orderLineItem.addOrder(this);
+        });
+    }
+
+    public void changeOrderStatus(String request) {
+        if (Objects.equals(OrderStatus.COMPLETION, this.orderStatus)) {
+            throw new IllegalArgumentException();
+        }
+
+        this.orderStatus = OrderStatus.valueOf(request);
+    }
+
+    public static Order create(String orderStatus) {
         return new Order(orderStatus);
     }
 
@@ -63,20 +86,12 @@ public class Order {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    public OrderTable getOrderTable() {
+        return orderTable;
     }
 
-    public Long getOrderTableId() {
-        return orderTable.getId();
-    }
-
-    public void setOrderTable(final OrderTable orderTable) {
-        this.orderTable = orderTable;
-    }
-
-    public String getOrderStatus() {
-        return orderStatus.name();
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
     }
 
     public void setOrderStatus(final OrderStatus orderStatus) {
@@ -85,10 +100,6 @@ public class Order {
 
     public LocalDateTime getOrderedTime() {
         return orderedTime;
-    }
-
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
     }
 
     public List<OrderLineItem> getOrderLineItems() {
