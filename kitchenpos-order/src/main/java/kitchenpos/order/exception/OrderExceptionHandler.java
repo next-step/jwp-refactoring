@@ -29,4 +29,14 @@ public class OrderExceptionHandler {
     public ResponseEntity handleOrderIsNotCompleteException(OrderIsNotCompleteException e) {
         return ResponseEntity.badRequest().build();
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity handleIllegalArgumentException(IllegalArgumentException e) {
+        return ResponseEntity.badRequest().build();
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity handleIllegalStateException(IllegalStateException e) {
+        return ResponseEntity.badRequest().build();
+    }
 }
