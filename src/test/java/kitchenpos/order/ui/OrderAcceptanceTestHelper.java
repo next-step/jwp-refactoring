@@ -1,4 +1,4 @@
-package kitchenpos.ui;
+package kitchenpos.order.ui;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -12,7 +12,7 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.dto.OrderResponse;
+import kitchenpos.order.dto.OrderResponse;
 
 public class OrderAcceptanceTestHelper {
     private OrderAcceptanceTestHelper() {

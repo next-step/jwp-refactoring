@@ -6,11 +6,11 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.exception.KitchenposErrorCode;
 import kitchenpos.exception.KitchenposException;
 import kitchenpos.exception.KitchenposNotFoundException;
-import kitchenpos.repository.OrderRepository;
+import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.tablegroup.domain.OrderTables;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;

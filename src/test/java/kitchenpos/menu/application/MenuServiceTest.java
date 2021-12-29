@@ -30,7 +30,7 @@ import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
-import kitchenpos.repository.MenuRepository;
+import kitchenpos.menu.domain.MenuRepository;
 
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {

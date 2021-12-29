@@ -1,10 +1,10 @@
-package kitchenpos.dto;
+package kitchenpos.order.dto;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import kitchenpos.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItem;
 
 public class OrderLineItemResponses {
     private List<OrderLineItemResponse> orderLineItemResponses;

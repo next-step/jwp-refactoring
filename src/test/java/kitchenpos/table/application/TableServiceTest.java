@@ -16,7 +16,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.exception.KitchenposException;
-import kitchenpos.repository.OrderRepository;
+import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
 import table.application.TableService;
 import table.domain.OrderTable;

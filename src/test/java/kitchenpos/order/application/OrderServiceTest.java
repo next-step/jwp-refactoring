@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.order.application;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,18 +17,18 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderLineItems;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.dto.OrderLineItemRequest;
-import kitchenpos.dto.OrderLineItemResponse;
-import kitchenpos.dto.OrderRequest;
-import kitchenpos.dto.OrderResponse;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderLineItemResponse;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.exception.KitchenposException;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.repository.MenuRepository;
-import kitchenpos.repository.OrderRepository;
+import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
 import table.domain.OrderTable;
 import table.domain.OrderTableRepository;

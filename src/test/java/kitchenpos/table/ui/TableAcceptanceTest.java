@@ -15,7 +15,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.tablegroup.ui.TableGroupAcceptanceTestHelper;
-import kitchenpos.ui.OrderAcceptanceTestHelper;
+import kitchenpos.order.ui.OrderAcceptanceTestHelper;
 
 class TableAcceptanceTest extends AcceptanceTest {
 
