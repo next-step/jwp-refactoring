@@ -1,7 +1,7 @@
 package kitchenpos.domain;
 
 import kitchenpos.common.exceptions.EmptyOrderTableException;
-import kitchenpos.common.exceptions.EmptyOrderTableStatusException;
+import kitchenpos.common.exceptions.EmptyOrderStatusException;
 import kitchenpos.common.exceptions.OrderStatusCompletedException;
 
 import javax.persistence.*;
@@ -55,7 +55,7 @@ public class Order extends BaseTimeEntity {
             throw new EmptyOrderTableException();
         }
         if (Objects.isNull(orderStatus)) {
-            throw new EmptyOrderTableStatusException();
+            throw new EmptyOrderStatusException();
         }
     }
 
