@@ -1,24 +1,17 @@
 package kitchenpos.table.domain;
 
-import static javax.persistence.CascadeType.ALL;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
-import javax.persistence.Embeddable;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
 import kitchenpos.common.exception.Message;
 import org.springframework.util.CollectionUtils;
 
-@Embeddable
 public class OrderTables {
 
     private static final int MIN_TABLE_SIZE = 2;
 
-    @OneToMany(mappedBy = "tableGroup", fetch = FetchType.LAZY, cascade = ALL)
     private List<OrderTable> orderTables = new ArrayList<>();
 
     public static OrderTables of(List<OrderTable> savedOrderTables) {
@@ -56,7 +49,7 @@ public class OrderTables {
 
         TableGroup of = TableGroup.of();
         orderTables.stream()
-            .forEach(s->s.group(of));
+            .forEach(s -> s.group(of));
     }
 
     public void unGroup() {
