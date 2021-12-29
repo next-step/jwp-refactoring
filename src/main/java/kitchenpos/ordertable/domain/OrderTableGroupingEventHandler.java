@@ -20,7 +20,6 @@ public class OrderTableGroupingEventHandler {
         this.orderTableRepository = orderTableRepository;
     }
 
-    @Async
     @Transactional
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void groupingHandle(TableGroupedEvent event) {
@@ -30,7 +29,6 @@ public class OrderTableGroupingEventHandler {
         orderTableRepository.saveAll(orderTables);
     }
 
-    @Async
     @Transactional
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void unGroupingHandle(TableUnGroupedEvent event) {
