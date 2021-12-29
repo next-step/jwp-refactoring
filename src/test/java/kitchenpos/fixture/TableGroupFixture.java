@@ -1,11 +1,7 @@
 package kitchenpos.fixture;
 
-import kitchenpos.domain.TableGroup;
-
-import java.time.LocalDateTime;
-
-import static kitchenpos.fixture.OrderTablesFixture.orderTables;
+import kitchenpos.table.domain.*;
 
 public class TableGroupFixture {
-    public static TableGroup tableGroup = TableGroup.of(1L, LocalDateTime.now(), orderTables);
+    public static TableGroup 테이블그룹_주문테이불_4명과_주문테이블_6명 = TableGroup.create();
 }

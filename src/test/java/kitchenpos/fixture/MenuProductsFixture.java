@@ -1,16 +1,12 @@
 package kitchenpos.fixture;
 
-import kitchenpos.domain.MenuProduct;
-import org.assertj.core.util.Lists;
+import static kitchenpos.fixture.MenuProductFixture.*;
 
-import java.util.List;
+import java.util.*;
+import org.assertj.core.util.*;
 
-import static kitchenpos.fixture.MenuFixture.menu1;
-import static kitchenpos.fixture.MenuFixture.menu2;
-import static kitchenpos.fixture.ProductFixture.후라이드치킨;
-import static kitchenpos.fixture.ProductFixture.양념치킨;
+import kitchenpos.menu.domain.*;
 
 public class MenuProductsFixture {
-    public static final List<MenuProduct> menuProducts1 = Lists.newArrayList(MenuProduct.of(1L, menu1.getId(), 후라이드치킨.getId(), 1L));
-    public static final List<MenuProduct> menuProducts2 = Lists.newArrayList(MenuProduct.of(2L, menu2.getId(), 양념치킨.getId(), 1L));;
+    public static final List<MenuProduct> 메뉴프로덕트모음 = Lists.newArrayList(메뉴프로덕트_후라이드치킨);
 }

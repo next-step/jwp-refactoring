@@ -1,10 +1,10 @@
 package kitchenpos.fixture;
 
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderStatus;
+import static kitchenpos.fixture.OrderTableFixture.*;
 
-import java.time.LocalDateTime;
+import kitchenpos.order.domain.*;
 
 public class OrderFixture {
-    public static final Order order = Order.of(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), null);
+    public static final Order 주문_첫번째 = Order.from(주문테이블_4명);
+    public static final Order 주문_두번째 = Order.from(주문테이블_4명);
 }
