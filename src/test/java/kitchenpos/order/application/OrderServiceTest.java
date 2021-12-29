@@ -40,6 +40,9 @@ class OrderServiceTest {
         when(orderRepository.findById(anyLong()))
                 .thenReturn(Optional.of(order));
 
+        OrderValidator orderValidator = new OrderValidator(order);
+        orderValidator.isAlreadyCompletionOrder();
+
         orderService.changeOrderStatus(1L, OrderStatus.MEAL);
         verify(order).updateOrderStatus(OrderStatus.MEAL);
     }
@@ -53,6 +56,9 @@ class OrderServiceTest {
         //when
         when(orderRepository.findById(anyLong()))
                 .thenReturn(Optional.of(order));
+
+        OrderValidator orderValidator = new OrderValidator(order);
+        orderValidator.isAlreadyCompletionOrder();
 
         orderService.changeOrderStatus(1L, OrderStatus.COMPLETION);
         verify(order).updateOrderStatus(OrderStatus.COMPLETION);
@@ -80,14 +86,12 @@ class OrderServiceTest {
 
         //given
         OrderLineItems orderLineItems = new OrderLineItems(Arrays.asList(new OrderLineItem(1L, 5)));
-
-        Order order = new Order(new OrderTable(4, false), orderLineItems);
+        Order order = new Order(1L, orderLineItems);
         order.endOrder();
-        //when
-        when(orderRepository.findById(anyLong()))
-                .thenReturn(Optional.of(order));
 
         assertThatThrownBy(() -> {
+            OrderValidator orderValidator = new OrderValidator(order);
+            orderValidator.isAlreadyCompletionOrder();
             orderService.changeOrderStatus(1L, OrderStatus.COOKING);
         }).isInstanceOf(InputOrderDataException.class)
                 .hasMessageContaining(InputOrderDataErrorCode.THE_ORDER_STATUS_DO_NOT_CHANGE_COMPLETION_TO_ANY_OTHER.errorMessage());
@@ -99,14 +103,12 @@ class OrderServiceTest {
 
         //given
         OrderLineItems orderLineItems = new OrderLineItems(Arrays.asList(new OrderLineItem(1L, 5)));
-
-        Order order = new Order(new OrderTable(4, false), orderLineItems);
+        Order order = new Order(1L, orderLineItems);
         order.endOrder();
-        //when
-        when(orderRepository.findById(anyLong()))
-                .thenReturn(Optional.of(order));
 
         assertThatThrownBy(() -> {
+            OrderValidator orderValidator = new OrderValidator(order);
+            orderValidator.isAlreadyCompletionOrder();
             orderService.changeOrderStatus(1L, OrderStatus.MEAL);
         }).isInstanceOf(InputOrderDataException.class)
                 .hasMessageContaining(InputOrderDataErrorCode.THE_ORDER_STATUS_DO_NOT_CHANGE_COMPLETION_TO_ANY_OTHER.errorMessage());

@@ -79,15 +79,12 @@ class TableServiceTest {
         //given
         OrderTable orderTable = new OrderTable(5,false);
         OrderTables orderTables = new OrderTables(Arrays.asList(orderTable));
-
-        OrderLineItem orderLineItem = new OrderLineItem(1L, 5);
-        OrderLineItems orderLineItems = new OrderLineItems(Arrays.asList(orderLineItem));
-
-        orderTable.addOrder(new Order(orderTable, orderLineItems));
         new TableGroup(orderTables, LocalDateTime.now());
 
         //when
         assertThatThrownBy(() -> {
+            OrderTableValidator orderTableValidator = new OrderTableValidator(orderTable);
+            orderTableValidator.checkUpdateTableGroup();
             orderTable.updateEmpty(true);
         }).isInstanceOf(InputTableDataException.class)
                 .hasMessageContaining(InputTableDataErrorCode.THE_TABLE_HAS_GROUP.errorMessage());
@@ -98,13 +95,13 @@ class TableServiceTest {
     void changeNotTableStatusBecauseOfCookingOrEating() {
         //given
         OrderTable orderTable = new OrderTable(5,false);
-        OrderLineItem orderLineItem = new OrderLineItem(1L, 5);
-        OrderLineItems orderLineItems = new OrderLineItems(Arrays.asList(orderLineItem));
-
-        orderTable.addOrder(new Order(orderTable, orderLineItems));
+        OrderLineItem orderLineItem = new OrderLineItem(1L, 4);
+        List<Order> orders = Arrays.asList(new Order(orderTable.getId(), new OrderLineItems(Arrays.asList(orderLineItem))));
 
         //when
         assertThatThrownBy(() -> {
+            OrderTableValidator orderTableValidator = new OrderTableValidator(orders, orderTable);
+            orderTableValidator.checkUpdateTableGroup();
             orderTable.updateEmpty(true);
         }).isInstanceOf(InputOrderDataException.class)
                 .hasMessageContaining(InputOrderDataErrorCode.THE_ORDER_IS_COOKING_OR_IS_EATING.errorMessage());

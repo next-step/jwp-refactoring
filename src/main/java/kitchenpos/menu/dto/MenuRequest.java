@@ -36,7 +36,7 @@ public class MenuRequest {
 
     public MenuProduct toMenuProduct(Product product) {
         return menuProducts.stream()
-                .filter(menuProductRequest -> menuProductRequest.getProductId() == menuProductRequest.getProductId())
+                .filter(menuProductRequest -> isSameProduct(product, menuProductRequest))
                 .map(menuProductRequest -> menuProductRequest.toEntity(product))
                 .findAny()
                 .orElseThrow(() -> new InputMenuDataException(InputMenuDataErrorCode.THE_PRODUCT_CAN_NOT_SEARCH));
@@ -58,13 +58,13 @@ public class MenuRequest {
         return menuGroupId;
     }
 
-    public List<MenuProductRequest> getMenuProducts() {
-        return menuProducts;
-    }
-
     public List<Long> getProductIds(){
        return this.menuProducts.stream()
                 .map(it -> it.getProductId())
                 .collect(Collectors.toList());
+    }
+
+    private boolean isSameProduct(Product product, MenuProductRequest menuProductRequest) {
+        return menuProductRequest.getProductId() == product.getId();
     }
 }

@@ -55,18 +55,19 @@ class TableGroupServiceTest {
     @DisplayName("식사중이거나 조리중인 주문은 테이블 그룹을 해지할 수 없다.")
     void deleteCookingOrEatingOrderGroupTest() {
         //given
-        OrderTable orderTable = new OrderTable(5,false);
-        OrderTable orderTable2 = new OrderTable(5,false);
+        OrderTable orderTable = new OrderTable(5, false);
+        OrderTable orderTable2 = new OrderTable(5, false);
         OrderTables orderTables = new OrderTables(Arrays.asList(orderTable, orderTable2));
 
         OrderLineItem orderLineItem = new OrderLineItem(1L, 5);
         OrderLineItems orderLineItems = new OrderLineItems(Arrays.asList(orderLineItem));
-
-        orderTable.addOrder(new Order(orderTable, orderLineItems));
+        Order order = new Order(1L, orderLineItems);
         TableGroup tableGroup1 = new TableGroup(orderTables, LocalDateTime.now());
 
         //when
         assertThatThrownBy(() -> {
+            OrderTableValidator orderTableValidator = new OrderTableValidator(Arrays.asList(order), orderTable);
+            orderTableValidator.cancelTableGroup();
             tableGroup1.cancleGroup();
         }).isInstanceOf(InputOrderDataException.class)
                 .hasMessageContaining(InputOrderDataErrorCode.THE_ORDER_IS_COOKING_OR_IS_EATING.errorMessage());

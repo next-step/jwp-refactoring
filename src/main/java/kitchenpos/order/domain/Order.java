@@ -1,9 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.order.exceptions.InputOrderDataErrorCode;
-import kitchenpos.order.exceptions.InputOrderDataException;
-import org.springframework.util.CollectionUtils;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,9 +16,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "order_table_id")
-    private OrderTable orderTable;
+    @Column(name="ORDER_TABLE_ID", nullable = false)
+    private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
@@ -32,9 +27,8 @@ public class Order {
     @Embedded
     private OrderLineItems orderLineItems;
 
-    public Order(OrderTable orderTable, OrderLineItems orderLineItems) {
-        validate(orderLineItems);
-        this.orderTable = orderTable;
+    public Order(Long orderTableId, OrderLineItems orderLineItems) {
+        this.orderTableId = orderTableId;
         this.orderedTime = LocalDateTime.now();
         this.orderLineItems = orderLineItems;
         this.orderStatus = OrderStatus.COOKING;
@@ -45,17 +39,14 @@ public class Order {
     }
 
     public void startCooking() {
-        checkEndOrder();
         this.orderStatus = OrderStatus.COOKING;
     }
 
     public void startMeal() {
-        checkEndOrder();
         this.orderStatus = OrderStatus.MEAL;
     }
 
     public void endOrder() {
-        checkEndOrder();
         this.orderStatus = OrderStatus.COMPLETION;
     }
 
@@ -83,12 +74,8 @@ public class Order {
         return orderLineItems.getOrderLineItems();
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
-    }
-
     public Long getOrderTableId() {
-        return orderTable.getId();
+        return this.orderTableId;
     }
 
     public void updateOrderStatus(OrderStatus orderStatus) {
@@ -103,18 +90,6 @@ public class Order {
         }
 
         this.endOrder();
-    }
-
-    private void checkEndOrder() {
-        if (this.orderStatus == OrderStatus.COMPLETION) {
-            throw new InputOrderDataException(InputOrderDataErrorCode.THE_ORDER_STATUS_DO_NOT_CHANGE_COMPLETION_TO_ANY_OTHER);
-        }
-    }
-
-    private void validate(OrderLineItems orderLineItems) {
-        if (CollectionUtils.isEmpty(orderLineItems.getOrderLineItems())) {
-            throw new InputOrderDataException(InputOrderDataErrorCode.THE_ORDER_LINE_IS_EMPTY);
-        }
     }
 
     @Override

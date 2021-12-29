@@ -56,6 +56,8 @@ class OrderTableTest {
     void modifyEmptyTableGuestCountTest() {
         OrderTable orderTable = new OrderTable(0, true);
         assertThatThrownBy(() -> {
+            OrderTableValidator orderTableValidator = new OrderTableValidator(orderTable);
+            orderTableValidator.checkTableEmpty();
             orderTable.seatNumberOfGuests(2);
         }).isInstanceOf(InputTableDataException.class)
                 .hasMessageContaining(InputTableDataErrorCode.THE_STATUS_IS_ALEADY_EMPTY.errorMessage());

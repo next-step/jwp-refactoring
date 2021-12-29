@@ -28,9 +28,13 @@ public class OrderService {
     public OrderResponse create(final OrderRequest orderRequest) {
         OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
                 .orElseThrow(() -> new InputTableDataException(InputTableDataErrorCode.THE_TABLE_CAN_NOT_FIND));
-        List<OrderLineItem> orderLineItems = orderRequest.getOrderLineItems();
+        List<OrderLineItem> orderLineItemBasket = orderRequest.getOrderLineItems();
+        OrderLineItems orderLineItems = new OrderLineItems(orderLineItemBasket);
 
-        Order createdOrder = new Order(orderTable, new OrderLineItems(orderLineItems));
+        OrderValidator orderValidator = new OrderValidator(orderLineItems);
+        orderValidator.isEmptyOrderLineItem();
+
+        Order createdOrder = new Order(orderTable.getId(), orderLineItems);
         return OrderResponse.of(orderRepository.save(createdOrder));
     }
 
@@ -43,6 +47,10 @@ public class OrderService {
     public OrderResponse changeOrderStatus(final Long orderId, final OrderStatus orderStatus) {
         Order foundOrder = orderRepository.findById(orderId)
                 .orElseThrow(() -> new InputOrderDataException(InputOrderDataErrorCode.THE_ORDER_CAN_NOT_SEARCH));
+
+        OrderValidator orderValidator = new OrderValidator(foundOrder);
+        orderValidator.isAlreadyCompletionOrder();
+
         foundOrder.updateOrderStatus(orderStatus);
         return OrderResponse.of(foundOrder);
     }
