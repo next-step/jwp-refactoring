@@ -9,7 +9,9 @@ import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Service
@@ -25,8 +27,8 @@ public class MenuService {
         this.menuGroupRepository = menuGroupRepository;
     }
 
-    @Transactional
-    public MenuResponse create(final MenuRequest menuRequest) {
+    @Validated
+    public MenuResponse create(@Valid MenuRequest menuRequest) {
         MenuGroup menuGroup = findMenuGroupById(menuRequest.getMenuGroupId());
         final Menu menu = menuRepository.save(menuRequest.toMenu(menuGroup));
 
