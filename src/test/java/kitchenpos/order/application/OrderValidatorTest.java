@@ -15,7 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.exception.AppException;
 import kitchenpos.exception.ErrorCode;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 
@@ -59,13 +58,4 @@ public class OrderValidatorTest {
 			.hasMessage(ErrorCode.WRONG_INPUT.getMessage());
 	}
 
-	@DisplayName("주문 상태를 변경 시, 주문 상태가 완료가 아니어야 한다")
-	@Test
-	void changeOrderStatusTest2() {
-		// when
-		assertThatThrownBy(() -> orderValidator.validateUpdate(OrderStatus.COMPLETION))
-			.isInstanceOf(AppException.class)
-			.hasMessage(ErrorCode.WRONG_INPUT.getMessage());
-	}
-	
 }

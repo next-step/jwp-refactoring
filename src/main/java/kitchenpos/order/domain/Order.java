@@ -86,7 +86,14 @@ public class Order {
 	}
 
 	public void updateStatus(OrderStatus updateStatusName) {
+		validateUpdate(orderStatus);
 		this.orderStatus = updateStatusName;
+	}
+
+	private void validateUpdate(OrderStatus orderStatus) {
+		if (orderStatus.equals(OrderStatus.COMPLETION)) {
+			throw new AppException(ErrorCode.WRONG_INPUT, "이미 완료되어서, 상태를 바꿀 수 없습니다");
+		}
 	}
 
 	public Long getId() {

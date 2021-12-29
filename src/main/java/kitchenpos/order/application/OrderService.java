@@ -60,7 +60,6 @@ public class OrderService {
 
 	public OrderResponse changeOrderStatus(final Long orderId, final OrderUpdateRequest request) {
 		Order order = getById(orderId);
-		orderValidator.validateUpdate(order.getOrderStatus());
 		order.updateStatus(request.getOrderStatus());
 		return new OrderResponse(order);
 	}

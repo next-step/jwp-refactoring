@@ -151,4 +151,18 @@ public class OrderServiceTest {
 		assertThat(result.getOrderStatus().name()).isEqualTo(OrderStatus.MEAL.name());
 	}
 
+	@DisplayName("주문 상태를 변경 시, 주문 상태가 완료가 아니어야 한다")
+	@Test
+	void changeOrderStatusTest2() {
+		// given
+		Long id = 계산된_주문.getId();
+		OrderUpdateRequest request = new OrderUpdateRequest(OrderStatus.MEAL);
+		given(orderRepository.findById(any())).willReturn(Optional.of(계산된_주문));
+
+		// when
+		assertThatThrownBy(() -> orderService.changeOrderStatus(id, request))
+			.isInstanceOf(AppException.class)
+			.hasMessage(ErrorCode.WRONG_INPUT.getMessage());
+	}
+
 }
