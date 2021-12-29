@@ -45,7 +45,7 @@ public class OrderTablesTest {
 	@Test
 	void unGroupTest() {
 		//
-		TableGroup 테이블_그룹 = TableGroup.of(1L, Arrays.asList(테이블, 테이블));
+		TableGroup 테이블_그룹 = TableGroup.of(1L);
 		OrderTable 속한_테이블 = OrderTable.of(1L, 테이블_그룹, NumberOfGuests.of(4), false);
 		OrderTables orderTables = OrderTables.of(Collections.singletonList(속한_테이블));
 

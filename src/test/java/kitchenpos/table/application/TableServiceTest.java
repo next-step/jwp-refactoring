@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -111,7 +110,7 @@ public class TableServiceTest {
 	@Test
 	void changeEmptyTest2() {
 		// given
-		TableGroup 테이블_그룹 = TableGroup.of(1L, Arrays.asList(테이블, 테이블));
+		TableGroup 테이블_그룹 = TableGroup.of(1L);
 		OrderTable 속한_테이블 = OrderTable.of(1L, 테이블_그룹, NumberOfGuests.of(4), false);
 		TableEmptyUpdateRequest request = new TableEmptyUpdateRequest(false);
 		Long requestId = 속한_테이블.getId();
