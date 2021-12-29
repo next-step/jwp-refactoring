@@ -16,8 +16,7 @@ public class MenuProduct {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @Embedded
-    private ProductId productId;
+    private Long productId;
 
     private Long quantity;
 
@@ -31,7 +30,7 @@ public class MenuProduct {
 
     private MenuProduct(Long id, Long productId, Long quantity) {
         this.id = id;
-        this.productId = new ProductId(productId);
+        this.productId = productId;
         this.quantity = quantity;
     }
 
@@ -43,7 +42,7 @@ public class MenuProduct {
     }
 
     public Long getProductId() {
-        return productId.getId();
+        return productId;
     }
 
     public Long getQuantity() {

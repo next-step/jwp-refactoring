@@ -3,7 +3,6 @@ package kitchenpos.menu.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.menu.domain.ProductId;
 
 public class MenuProductResponse {
 
