@@ -1,4 +1,4 @@
-package kitchenpos.tableGroup;
+package kitchenpos.table.dto;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,7 +14,7 @@ public class OrderTableResponse {
 
     public static OrderTableResponse of(OrderTable orderTable) {
         return new OrderTableResponse(orderTable.getId(),
-            orderTable.getTableGroup(),
+            orderTable.getTableGroupId(),
             orderTable.getNumberOfGuests(),
             orderTable.isEmpty());
     }

@@ -13,7 +13,6 @@ import javax.persistence.Id;
 import kitchenpos.common.exception.Message;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.Orders;
-import kitchenpos.tableGroup.domain.TableGroupId;
 
 @Entity
 public class OrderTable {
@@ -22,8 +21,7 @@ public class OrderTable {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @Embedded
-    private TableGroupId tableGroupId;
+    private Long tableGroupId;
 
     @Embedded
     private NumberOfGuests numberOfGuests;
@@ -75,8 +73,8 @@ public class OrderTable {
         this.numberOfGuests = new NumberOfGuests(numberOfGuest);
     }
 
-    public void group(Long id) {
-        this.tableGroupId = new TableGroupId(id);
+    public void group(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
     }
 
     public void unGroup() {
@@ -92,11 +90,11 @@ public class OrderTable {
         return id;
     }
 
-    public Long getTableGroup() {
-        if (tableGroupId == null ){
+    public Long getTableGroupId() {
+        if (tableGroupId == null) {
             return null;
         }
-        return tableGroupId.getId();
+        return tableGroupId;
     }
 
     public NumberOfGuests getNumberOfGuests() {
@@ -106,7 +104,6 @@ public class OrderTable {
     public boolean isEmpty() {
         return orderTableStatus.isEmpty();
     }
-
 
     public Orders getOrders() {
         return orders;

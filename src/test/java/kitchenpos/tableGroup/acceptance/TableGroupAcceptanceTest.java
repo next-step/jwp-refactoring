@@ -12,7 +12,7 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.dto.OrderTableRequest;
-import kitchenpos.tableGroup.OrderTableResponse;
+import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.tableGroup.dto.TableGroupRequest;
 import kitchenpos.tableGroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
