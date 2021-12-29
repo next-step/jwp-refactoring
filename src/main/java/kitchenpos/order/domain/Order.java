@@ -21,7 +21,6 @@ import java.util.Objects;
 @Table(name = "orders")
 public class Order {
 
-    public static final int ORDER_LINE_ITEM_MIN_SIZE = 1;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
