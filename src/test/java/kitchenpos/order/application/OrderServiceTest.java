@@ -19,10 +19,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.exception.AppException;
 import kitchenpos.exception.ErrorCode;
-import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
@@ -41,7 +41,7 @@ public class OrderServiceTest {
 	@InjectMocks
 	private OrderService orderService;
 	@Mock
-	private MenuService menuService;
+	private MenuRepository menuRepository;
 	@Mock
 	private OrderRepository orderRepository;
 	@Mock
@@ -52,6 +52,7 @@ public class OrderServiceTest {
 	private OrderTable 빈_테이블;
 	private Order 생성된_주문;
 	private Order 계산된_주문;
+	private OrderLineItem 생성된_주문_항목;
 
 	@BeforeEach
 	void setup() {
@@ -79,7 +80,7 @@ public class OrderServiceTest {
 		// given
 		given(orderTableRepository.findById(any())).willReturn(Optional.of(테이블));
 		given(orderRepository.save(any())).willReturn(생성된_주문);
-		given(menuService.getById(any())).willReturn(더블후라이드);
+		given(menuRepository.findById(any())).willReturn(Optional.of(더블후라이드));
 
 		OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(1L, 1L);
 		OrderRequest request = new OrderRequest(1L, Collections.singletonList(orderLineItemRequest));
@@ -99,6 +100,7 @@ public class OrderServiceTest {
 		OrderRequest request = new OrderRequest(1L, Collections.singletonList(orderLineItemRequest));
 
 		given(orderTableRepository.findById(any())).willReturn(Optional.of(테이블));
+		given(menuRepository.findById(any())).willReturn(Optional.of(더블후라이드));
 
 		// when, then
 		assertThatThrownBy(() -> orderService.create(request))
@@ -114,7 +116,7 @@ public class OrderServiceTest {
 		OrderRequest request = new OrderRequest(1L, Collections.singletonList(orderLineItemRequest));
 
 		given(orderTableRepository.findById(any())).willReturn(Optional.of(테이블));
-		given(menuService.getById(any())).willThrow(new AppException(ErrorCode.NOT_FOUND, "해당 메뉴를 찾을 수 없습니다"));
+		given(menuRepository.findById(any())).willReturn(Optional.empty());
 
 		// when, then
 		assertThatThrownBy(() -> orderService.create(request))

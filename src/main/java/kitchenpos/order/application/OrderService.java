@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.exception.AppException;
 import kitchenpos.exception.ErrorCode;
-import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
@@ -25,14 +25,15 @@ import kitchenpos.table.domain.OrderTableRepository;
 public class OrderService {
 
 	private final OrderRepository orderRepository;
-	private final MenuService menuService;
+	private final MenuRepository menuRepository;
 	private final OrderTableRepository orderTableRepository;
 
 	public OrderService(final OrderRepository orderRepository,
-		final MenuService menuService,
+		final MenuRepository menuRepository,
 		final OrderTableRepository orderTableRepository) {
+
 		this.orderRepository = orderRepository;
-		this.menuService = menuService;
+		this.menuRepository = menuRepository;
 		this.orderTableRepository = orderTableRepository;
 	}
 
@@ -58,7 +59,8 @@ public class OrderService {
 	}
 
 	private OrderLineItem getOrderItem(OrderLineItemRequest request) {
-		Menu menu = menuService.getById(request.getMenuId());
+		Menu menu = menuRepository.findById(request.getMenuId())
+			.orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "해당 메뉴를 찾을 수 없습니다"));
 		return OrderLineItem.create(menu, request.getQuantity());
 	}
 

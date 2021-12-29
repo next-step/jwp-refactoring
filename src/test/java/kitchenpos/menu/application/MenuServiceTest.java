@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,7 @@ import kitchenpos.menu.domain.MenuTest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.domain.ProductTest;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,7 +41,7 @@ public class MenuServiceTest {
 	private MenuGroupService menuGroupService;
 
 	@Mock
-	private ProductService productService;
+	private ProductRepository productRepository;
 
 	@DisplayName("메뉴 목록을 조회한다")
 	@Test
@@ -72,7 +73,7 @@ public class MenuServiceTest {
 
 		given(menuRepository.save(any())).willReturn(MenuTest.후라이드둘);
 		given(menuGroupService.getById(any())).willReturn(MenuGroupTest.추천메뉴);
-		given(productService.getById(any())).willReturn(ProductTest.후라이드);
+		given(productRepository.findById(any())).willReturn(Optional.of(ProductTest.후라이드));
 
 		// when
 		MenuResponse result = menuService.create(request);
@@ -127,13 +128,13 @@ public class MenuServiceTest {
 			MenuTest.후라이드둘.getMenuGroup().getId(),
 			Collections.singletonList(menuProductRequest));
 
-		given(productService.getById(any())).willReturn(null);
+		given(productRepository.findById(any())).willReturn(Optional.empty());
 		given(menuGroupService.getById(any())).willReturn(MenuGroupTest.추천메뉴);
 
 		// when, then
 		assertThatThrownBy(() -> menuService.create(request))
 			.isInstanceOf(AppException.class)
-			.hasMessage(ErrorCode.WRONG_INPUT.getMessage());
+			.hasMessage(ErrorCode.NOT_FOUND.getMessage());
 	}
 
 	@DisplayName("메뉴 가격이 제품들의 가격 합보다 비싸면 안된다")
@@ -147,7 +148,7 @@ public class MenuServiceTest {
 			MenuTest.후라이드둘.getMenuGroup().getId(),
 			Collections.singletonList(menuProductRequest));
 
-		given(productService.getById(any())).willReturn(ProductTest.후라이드);
+		given(productRepository.findById(any())).willReturn(Optional.of(ProductTest.후라이드));
 		given(menuGroupService.getById(any())).willReturn(MenuGroupTest.추천메뉴);
 
 		// when, then

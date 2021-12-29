@@ -15,8 +15,8 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 
 @Service
 @Transactional
@@ -24,15 +24,15 @@ public class MenuService {
 
 	private final MenuRepository menuRepository;
 	private final MenuGroupService menuGroupService;
-	private final ProductService productService;
+	private final ProductRepository productRepository;
 
 	public MenuService(final MenuRepository menuRepository,
 		final MenuGroupService menuGroupService,
-		final ProductService productService) {
+		ProductRepository productRepository) {
 
 		this.menuRepository = menuRepository;
 		this.menuGroupService = menuGroupService;
-		this.productService = productService;
+		this.productRepository = productRepository;
 	}
 
 	public MenuResponse create(final MenuRequest request) {
@@ -50,7 +50,8 @@ public class MenuService {
 	}
 
 	private MenuProduct getMenuProduct(MenuProductRequest request) {
-		Product product = productService.getById(request.getProductId());
+		Product product = productRepository.findById(request.getProductId())
+			.orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "해당 상품을 찾을 수 없습니다"));
 		return request.toEntity(product);
 	}
 
