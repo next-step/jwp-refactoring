@@ -69,7 +69,7 @@ public class OrderTest {
 	@Test
 	void updateStatusTest() {
 		// when
-		생성된_주문.updateStatus(OrderStatus.COMPLETION.name());
+		생성된_주문.updateStatus(OrderStatus.COMPLETION);
 
 		// then
 		assertThat(생성된_주문.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);

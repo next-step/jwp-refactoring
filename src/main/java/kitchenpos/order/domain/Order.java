@@ -92,11 +92,11 @@ public class Order {
 		this.orderLineItems.add(orderLineItem);
 	}
 
-	public void updateStatus(String updateStatusName) {
+	public void updateStatus(OrderStatus updateStatusName) {
 		if (orderStatus.equals(OrderStatus.COMPLETION)) {
 			throw new AppException(ErrorCode.WRONG_INPUT, "이미 완료되어서, 상태를 바꿀 수 없습니다");
 		}
-		this.orderStatus = OrderStatus.valueOf(updateStatusName);
+		this.orderStatus = updateStatusName;
 	}
 
 	public Long getId() {

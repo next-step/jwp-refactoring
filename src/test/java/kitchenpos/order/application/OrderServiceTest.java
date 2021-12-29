@@ -169,7 +169,7 @@ public class OrderServiceTest {
 	@Test
 	void changeOrderStatusTest() {
 		// given
-		OrderUpdateRequest request = new OrderUpdateRequest(OrderStatus.MEAL.name());
+		OrderUpdateRequest request = new OrderUpdateRequest(OrderStatus.MEAL);
 
 		given(orderRepository.findById(any())).willReturn(Optional.of(생성된_주문));
 
@@ -177,7 +177,7 @@ public class OrderServiceTest {
 		OrderResponse result = orderService.changeOrderStatus(생성된_주문.getId(), request);
 
 		// then
-		assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
+		assertThat(result.getOrderStatus().name()).isEqualTo(OrderStatus.MEAL.name());
 	}
 
 	@DisplayName("주문 상태를 변경 시, 주문 상태가 완료가 아니어야 한다")
@@ -185,7 +185,7 @@ public class OrderServiceTest {
 	void changeOrderStatusTest2() {
 		// given
 		Long id = 계산된_주문.getId();
-		OrderUpdateRequest request = new OrderUpdateRequest(OrderStatus.MEAL.name());
+		OrderUpdateRequest request = new OrderUpdateRequest(OrderStatus.MEAL);
 		given(orderRepository.findById(any())).willReturn(Optional.of(계산된_주문));
 
 		// when
