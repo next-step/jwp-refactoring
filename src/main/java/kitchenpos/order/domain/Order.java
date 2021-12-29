@@ -15,15 +15,11 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.CollectionUtils;
-
-import kitchenpos.table.domain.OrderTable;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -33,9 +29,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_table_id")
-    private OrderTable orderTable;
+    private Long orderTableId;
     
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
@@ -50,35 +44,27 @@ public class Order {
     protected Order() {
     }
     
-    public Order(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-        this.orderTable = orderTable;
+    public Order(Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderLineItems = new ArrayList<OrderLineItem>();
         addOrderLineItems(orderLineItems);
-        orderTable.addOrder(this);
     }
 
-    public static Order of(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-        return new Order(orderTable, orderStatus, orderLineItems);
+    public static Order of(Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        return new Order(orderTableId, orderStatus, orderLineItems);
     }
     
-    public static Order createOrder(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        return new Order(orderTable, OrderStatus.COOKING, orderLineItems);
+    public static Order createOrder(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        return new Order(orderTableId, OrderStatus.COOKING, orderLineItems);
     }
     
     public Long getId() {
         return id;
     }
-
-    public OrderTable getOrderTable() {
-        return orderTable;
-    }
     
     public Long getOrderTableId() {
-        if (orderTable == null) {
-            return null;
-        }
-        return orderTable.getId();
+        return orderTableId;
     }
     
     public OrderStatus getOrderStatus() {
@@ -99,10 +85,6 @@ public class Order {
     
     public void completed() {
         changeOrderStatus(OrderStatus.COMPLETION);
-    }
-    
-    public void setOrderTable(OrderTable orderTable) {
-        this.orderTable = orderTable;
     }
     
     public boolean isCompletion() {

@@ -27,18 +27,12 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.table.application.TableService;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.TableGroup;
 
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
 
     @Mock
     private OrderRepository orderRepository;
-
-    @Mock
-    private TableService tableService;
     
     @Mock
     private OrderValidator orderValidator;
@@ -51,18 +45,14 @@ public class OrderServiceTest {
     void 주문_등록() {
         // given
         Long 메뉴_Id = 1L;
-        
-        OrderTable 첫번째_테이블 = OrderTable.of(3, false);
-        OrderTable 두번째_테이블 = OrderTable.of(5, false);
-        TableGroup 단체지정 = TableGroup.from(Arrays.asList(첫번째_테이블, 두번째_테이블));
+        Long 테이블_Id = 1L;
         
         List<OrderLineItem> 주문_항목_목록 = new ArrayList<OrderLineItem>();
         주문_항목_목록.add(OrderLineItem.of(메뉴_Id, 1L));
         
-        Order 주문 = Order.createOrder(첫번째_테이블, 주문_항목_목록);
+        Order 주문 = Order.createOrder(테이블_Id, 주문_항목_목록);
         
         doNothing().when(orderValidator).checkMenu(anyList());
-        given(tableService.findById(anyLong())).willReturn(첫번째_테이블);
         given(orderRepository.save(any())).willReturn(주문);
         
         OrderRequest 주문_생성_요청 = OrderRequest.of(1L, 주문.getOrderStatus(), Arrays.asList(OrderLineItemRequest.of(1L, 1L)));
@@ -78,8 +68,6 @@ public class OrderServiceTest {
     @Test
     void 주문_등록_메뉴_필수() {
         // given
-        OrderTable 테이블 = OrderTable.of(3, false);
-        given(tableService.findById(anyLong())).willReturn(테이블);
         
         // when, then
         assertThatThrownBy(() -> {
@@ -94,7 +82,7 @@ public class OrderServiceTest {
     @Test
     void 주문_목록_조회() {
         // given
-        OrderTable 테이블 = OrderTable.of(3, false);
+        Long 테이블_Id = 1L;
         
         Long 첫번째_메뉴_Id = 1L;
         List<OrderLineItem> 첫번째_주문_항목 = new ArrayList<OrderLineItem>();
@@ -104,8 +92,8 @@ public class OrderServiceTest {
         List<OrderLineItem> 두번째_주문_항목 = new ArrayList<OrderLineItem>();
         두번째_주문_항목.add(OrderLineItem.of(두번째_메뉴_Id, 1L));
         
-        Order 첫번째_주문 = Order.of(테이블, OrderStatus.COOKING, 첫번째_주문_항목);
-        Order 두번째_주문 = Order.of(테이블, OrderStatus.MEAL, 두번째_주문_항목);
+        Order 첫번째_주문 = Order.of(테이블_Id, OrderStatus.COOKING, 첫번째_주문_항목);
+        Order 두번째_주문 = Order.of(테이블_Id, OrderStatus.MEAL, 두번째_주문_항목);
         
         given(orderRepository.findAll()).willReturn(Arrays.asList(첫번째_주문, 두번째_주문));
     
@@ -121,9 +109,9 @@ public class OrderServiceTest {
     void 식사중_상태_변경() {
         // given
         Long 메뉴_Id = 1L;
-        OrderTable 테이블 = OrderTable.of(3, false);
+        Long 테이블_Id = 1L;
         OrderLineItem 주문_항목 = OrderLineItem.of(메뉴_Id, 2L);
-        Order 조리중_주문 = Order.of(테이블, OrderStatus.COOKING, Arrays.asList(주문_항목));
+        Order 조리중_주문 = Order.of(테이블_Id, OrderStatus.COOKING, Arrays.asList(주문_항목));
         
         given(orderRepository.findById(anyLong())).willReturn(Optional.of(조리중_주문));
         
@@ -139,9 +127,9 @@ public class OrderServiceTest {
     void 계산완료_상태_변경() {
         // given
         Long 메뉴_Id = 1L;
-        OrderTable 테이블 = OrderTable.of(3, false);
+        Long 테이블_Id = 1L;
         OrderLineItem 주문_항목 = OrderLineItem.of(메뉴_Id, 2L);
-        Order 식사중_주문 = Order.of(테이블, OrderStatus.MEAL, Arrays.asList(주문_항목));
+        Order 식사중_주문 = Order.of(테이블_Id, OrderStatus.MEAL, Arrays.asList(주문_항목));
         
         given(orderRepository.findById(anyLong())).willReturn(Optional.of(식사중_주문));
         
@@ -157,9 +145,9 @@ public class OrderServiceTest {
     void 계산_완료_주문_변경_불가() {
         // given
         Long 메뉴_Id = 1L;
-        OrderTable 테이블 = OrderTable.of(3, false);
+        Long 테이블_Id = 1L;
         OrderLineItem 주문_항목 = OrderLineItem.of(메뉴_Id, 2L);
-        Order 계산_완료_주문 = Order.of(테이블, OrderStatus.COMPLETION, Arrays.asList(주문_항목));
+        Order 계산_완료_주문 = Order.of(테이블_Id, OrderStatus.COMPLETION, Arrays.asList(주문_항목));
         
         given(orderRepository.findById(anyLong())).willReturn(Optional.of(계산_완료_주문));
     

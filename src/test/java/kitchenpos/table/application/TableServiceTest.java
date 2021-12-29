@@ -6,6 +6,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -19,7 +21,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.table.application.TableService;
 import kitchenpos.table.dao.OrderTableRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
@@ -31,6 +32,9 @@ public class TableServiceTest {
 
     @Mock
     private OrderTableRepository orderTableRepository;
+    
+    @Mock
+    private TableValidator tableValidator;
 
     @InjectMocks
     private TableService tableService;
@@ -72,6 +76,7 @@ public class TableServiceTest {
         OrderTable 테이블 = OrderTable.of(3, false);
         
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(테이블));
+        doNothing().when(tableValidator).checkIsCookingOrMeal(anyLong());
     
         // when
         OrderTableResponse 상태_변경후_테이블 = tableService.changeEmpty(1L, true);
@@ -85,6 +90,7 @@ public class TableServiceTest {
     void 등록되지않은_테이블_빈_테이블_변경_불가() {
         // when
         when(orderTableRepository.findById(anyLong())).thenReturn(Optional.empty());
+        lenient().doNothing().when(tableValidator).checkIsCookingOrMeal(anyLong());
         
         // then
         assertThatThrownBy(() -> {
@@ -103,6 +109,7 @@ public class TableServiceTest {
         TableGroup.from(Arrays.asList(첫번째_테이블, 두번째_테이블));
         
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(두번째_테이블));
+        doNothing().when(tableValidator).checkIsCookingOrMeal(anyLong());
         
         // when, then
         assertThatThrownBy(() -> {

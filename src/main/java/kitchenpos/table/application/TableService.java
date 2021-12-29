@@ -14,9 +14,11 @@ import kitchenpos.table.dto.OrderTableResponse;
 @Service
 public class TableService {
     private final OrderTableRepository orderTableRepository;
+    private final TableValidator tableValidator;
 
-    public TableService(final OrderTableRepository orderTableRepository) {
+    public TableService(final OrderTableRepository orderTableRepository, final TableValidator tableValidator) {
         this.orderTableRepository = orderTableRepository;
+        this.tableValidator = tableValidator;
     }
 
     @Transactional
@@ -35,7 +37,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, boolean isEmpty) {
         final OrderTable orderTable = findById(orderTableId);
-        
+        tableValidator.checkIsCookingOrMeal(orderTableId);
         orderTable.changeEmpty(isEmpty);
         
         return OrderTableResponse.from(orderTable);

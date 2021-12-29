@@ -1,18 +1,13 @@
 package kitchenpos.table.domain;
 
-import java.util.ArrayList;
 import java.util.Objects;
 
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.Orders;
 
 @Entity
 public class OrderTable {
@@ -30,9 +25,6 @@ public class OrderTable {
 
     private boolean empty;
 
-    @Embedded
-    private Orders orders;
-
     protected OrderTable() {
     }
 
@@ -40,7 +32,6 @@ public class OrderTable {
         checkNumberOfGuests(numberOfGuests);
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
-        this.orders = Orders.from(new ArrayList<>());
     }
 
     public static OrderTable of(int numberOfGuests, boolean empty) {
@@ -72,7 +63,6 @@ public class OrderTable {
 
     public void changeEmpty(final boolean empty) {
         checkIsSetTableGroup();
-        checkIsCookingOrMeal();
         this.empty = empty;
     }
 
@@ -86,24 +76,13 @@ public class OrderTable {
     }
 
     public void ungroup() {
-        checkIsCookingOrMeal();
         empty = false;
         tableGroup = null;
-    }
-
-    public void addOrder(Order order) {
-        orders.add(order);
     }
 
     private void checkIsSetTableGroup() {
         if (Objects.nonNull(tableGroup)) {
             throw new IllegalArgumentException("단체지정이 되어있는 테이블은 빈 테이블로 변경할 수 없습니다");
-        }
-    }
-
-    private void checkIsCookingOrMeal() {
-        if (orders.isContainsMealStatus() || orders.isContainsCookingStatus()) {
-            throw new IllegalArgumentException("조리중, 식사중인 주문 테이블은 변경할 수 없습니다");
         }
     }
 

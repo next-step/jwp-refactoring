@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,8 +20,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.table.application.TableGroupService;
-import kitchenpos.table.application.TableService;
 import kitchenpos.table.dao.TableGroupRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
@@ -35,6 +34,9 @@ public class TableGroupServiceTest {
     
     @Mock
     private TableGroupRepository tableGroupRepository;
+    
+    @Mock
+    private TableValidator tableValidator;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -69,7 +71,8 @@ public class TableGroupServiceTest {
         
         TableGroup 단체지정 = TableGroup.from(Arrays.asList(첫번째_테이블, 두번째_테이블));
         
-        given(tableGroupRepository.findById(nullable(Long.class))).willReturn(Optional.of(단체지정));
+        given(tableGroupRepository.findByIdWithOrderTable(nullable(Long.class))).willReturn(Optional.of(단체지정));
+        doNothing().when(tableValidator).checkIsCookingOrMeal(nullable(Long.class));
     
         // when
         tableGroupService.ungroup(단체지정.getId());

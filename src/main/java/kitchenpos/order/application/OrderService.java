@@ -13,32 +13,25 @@ import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.table.application.TableService;
-import kitchenpos.table.domain.OrderTable;
 
 @Service
 public class OrderService {
     private final OrderRepository orderRepository;
-    private final TableService tableService;
     private final OrderValidator orderValidator;
 
     public OrderService(
             final OrderRepository orderRepository,
-            final TableService tableService,
             final OrderValidator orderValidator
     ) {
         this.orderRepository = orderRepository;
-        this.tableService = tableService;
         this.orderValidator = orderValidator;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest request) {
-        final OrderTable orderTable = tableService.findById(request.getOrderTableId());
-        
         List<OrderLineItem> orderLineItems = createOrderLineItems(request.getOrderLineItems());
         
-        Order order = Order.createOrder(orderTable, orderLineItems);
+        Order order = Order.createOrder(request.getOrderTableId(), orderLineItems);
         
         return OrderResponse.from(orderRepository.save(order));
     }
@@ -89,5 +82,9 @@ public class OrderService {
         }
 
         return result;
+    }
+
+    public List<Order> findAllByOrderTableId(Long orderTableId) {
+        return orderRepository.findAllByOrderTableId(orderTableId);
     }
 }

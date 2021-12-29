@@ -8,8 +8,6 @@ import java.util.Arrays;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.table.domain.OrderTable;
-
 public class OrdersTest {
     
     @DisplayName("주문 목록에 주문을 추가한다")
@@ -20,9 +18,9 @@ public class OrdersTest {
         OrderLineItem 첫번째_주문_항목 = OrderLineItem.of(메뉴_Id, 3L);
         OrderLineItem 두번째_주문_항목 = OrderLineItem.of(메뉴_Id, 3L);
         
-        OrderTable 테이블 = OrderTable.of(3, false);
-        Order 첫번째_주문 = Order.of(테이블, OrderStatus.COOKING, Arrays.asList(첫번째_주문_항목));
-        Order 두번째_주문 = Order.of(테이블, OrderStatus.MEAL, Arrays.asList(두번째_주문_항목));
+        Long 테이블_Id = 1L;
+        Order 첫번째_주문 = Order.of(테이블_Id, OrderStatus.COOKING, Arrays.asList(첫번째_주문_항목));
+        Order 두번째_주문 = Order.of(테이블_Id, OrderStatus.MEAL, Arrays.asList(두번째_주문_항목));
         Orders 주문_목록 = Orders.from(new ArrayList<Order>(Arrays.asList(첫번째_주문)));
         
         // when
@@ -39,8 +37,8 @@ public class OrdersTest {
         Long 메뉴_Id = 1L;
         OrderLineItem 주문_항목 = OrderLineItem.of(메뉴_Id, 3L);
         
-        OrderTable 테이블 = OrderTable.of(3, false);
-        Order 주문 = Order.of(테이블, OrderStatus.COOKING, Arrays.asList(주문_항목));
+        Long 테이블_Id = 1L;
+        Order 주문 = Order.of(테이블_Id, OrderStatus.COOKING, Arrays.asList(주문_항목));
         Orders 주문_목록 = Orders.from(Arrays.asList(주문));
         
         // when
@@ -57,8 +55,8 @@ public class OrdersTest {
         Long 메뉴_Id = 1L;
         OrderLineItem 주문_항목 = OrderLineItem.of(메뉴_Id, 3L);
         
-        OrderTable 테이블 = OrderTable.of(3, false);
-        Order 주문 = Order.of(테이블, OrderStatus.MEAL, Arrays.asList(주문_항목));
+        Long 테이블_Id = 1L;
+        Order 주문 = Order.of(테이블_Id, OrderStatus.MEAL, Arrays.asList(주문_항목));
         Orders 주문_목록 = Orders.from(Arrays.asList(주문));
         
         // when

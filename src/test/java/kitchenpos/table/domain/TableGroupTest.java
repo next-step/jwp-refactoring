@@ -9,12 +9,6 @@ import java.util.Arrays;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.TableGroup;
-
 public class TableGroupTest {
     
     @DisplayName("단체지정은 최소 두 테이블 이상만 가능하다")
@@ -45,24 +39,4 @@ public class TableGroupTest {
                 () -> assertThat(두번째_테이블.getTableGroupId()).isNull()
         );
     }
-    
-    @DisplayName("조리중, 식사중인 주문 테이블은 단체지정을 해제할 수 없다")
-    @Test
-    void 조리중_식사중_테이블_단체지정_해제_불가() {
-        // given
-        Long 메뉴_Id = 1L;
-        OrderLineItem 주문_항목 = OrderLineItem.of(메뉴_Id, 3L);
-        
-        OrderTable 첫번째_테이블 = OrderTable.of(3, false);
-        OrderTable 두번째_테이블 = OrderTable.of(5, false);
-        Order.of(첫번째_테이블, OrderStatus.COOKING, Arrays.asList(주문_항목));
-        TableGroup 단체지정 = TableGroup.from(Arrays.asList(첫번째_테이블, 두번째_테이블));
-        
-        // when, then
-        assertThatThrownBy(() -> {
-            단체지정.ungroup();
-        }).isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("조리중, 식사중인 주문 테이블은 변경할 수 없습니다");
-    }
-
 }

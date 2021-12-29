@@ -13,8 +13,6 @@ import org.junit.jupiter.api.Test;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTables;
 
 public class OrderTablesTest {
     
@@ -40,11 +38,7 @@ public class OrderTablesTest {
     @Test
     void 주문_테이블_해제() {
         // given
-        Long 메뉴_Id = 1L;
-        OrderLineItem 주문_항목 = OrderLineItem.of(메뉴_Id, 3L);
-        
         OrderTable 테이블 = OrderTable.of(5, true);
-        Order 주문 = Order.of(테이블, OrderStatus.COMPLETION, Arrays.asList(주문_항목));
         OrderTables 주문_테이블_목록 = OrderTables.from(new ArrayList<OrderTable>(Arrays.asList(테이블)));
         
         // when
@@ -56,23 +50,4 @@ public class OrderTablesTest {
                 () -> assertThat(테이블.isEmpty()).isFalse()
         );
     }
-    
-    @DisplayName("조리중이거나 식사중일때는 주문 테이블을 해제 할 수 없다")
-    @Test
-    void 주문_테이블_해제_불가() {
-        // given
-        Long 메뉴_Id = 1L;
-        OrderLineItem 주문_항목 = OrderLineItem.of(메뉴_Id, 3L);
-        
-        OrderTable 테이블 = OrderTable.of(5, true);
-        Order 주문 = Order.of(테이블, OrderStatus.MEAL, Arrays.asList(주문_항목));
-        OrderTables 주문_테이블_목록 = OrderTables.from(new ArrayList<OrderTable>(Arrays.asList(테이블)));
-        
-        // when, then
-        assertThatThrownBy(() -> {
-            주문_테이블_목록.ungroup();
-        }).isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("조리중, 식사중인 주문 테이블은 변경할 수 없습니다");
-    }
-
 }

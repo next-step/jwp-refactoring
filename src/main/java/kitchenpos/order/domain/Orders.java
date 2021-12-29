@@ -3,15 +3,8 @@ package kitchenpos.order.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Embeddable;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-
-@Embeddable
 public class Orders {
     
-    @OneToMany(mappedBy = "orderTable", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private List<Order> orders;
     
     protected Orders() {
