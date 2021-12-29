@@ -27,7 +27,7 @@ public class OrderTableTest {
 		// given
 		Product 후라이드치킨 = Product.of(1L, "후라이드치킨", BigDecimal.valueOf(17_000));
 		MenuGroup 추천메뉴 = MenuGroup.of(1L, "추천메뉴");
-		MenuProduct 메뉴_상품 = MenuProduct.of(후라이드치킨, 2L);
+		MenuProduct 메뉴_상품 = MenuProduct.of(후라이드치킨.getId(), 2L);
 
 		Menu 후라이드둘세트 = Menu.of(1L, "후라이드 둘 세트", BigDecimal.valueOf(32_000), 추천메뉴);
 		후라이드둘세트.addMenuProducts(Collections.singletonList(메뉴_상품));

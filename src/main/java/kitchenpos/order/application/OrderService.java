@@ -39,7 +39,7 @@ public class OrderService {
 
 	public OrderResponse create(final OrderRequest orderRequest) {
 		OrderTable orderTable = getOrderTableById(orderRequest.getOrderTableId());
-		Order order = Order.create(orderTable);
+		Order order = Order.create(orderTable.getId());
 		List<OrderLineItem> orderLineItemList = getOrderLineItems(orderRequest.getOrderLineItems());
 		order.addOrderLineItems(orderLineItemList);
 		return new OrderResponse(orderRepository.save(order));
@@ -61,7 +61,7 @@ public class OrderService {
 	private OrderLineItem getOrderItem(OrderLineItemRequest request) {
 		Menu menu = menuRepository.findById(request.getMenuId())
 			.orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "해당 메뉴를 찾을 수 없습니다"));
-		return OrderLineItem.create(menu, request.getQuantity());
+		return OrderLineItem.create(menu.getId(), request.getQuantity());
 	}
 
 	@Transactional(readOnly = true)

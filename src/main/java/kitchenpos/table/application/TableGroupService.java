@@ -2,6 +2,7 @@ package kitchenpos.table.application;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,8 +46,10 @@ public class TableGroupService {
 
 	public void ungroup(final Long tableGroupId) {
 		TableGroup tableGroup = getTableGroupById(tableGroupId);
-		if (orderRepository.existsByOrderTableInAndOrderStatusIn(
-			tableGroup.getOrderTables().toList(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+		List<Long> orderTableIds = tableGroup.getOrderTables().toList().stream().map(OrderTable::getId).collect(
+			Collectors.toList());
+		if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
+			orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
 			throw new AppException(ErrorCode.WRONG_INPUT, "조리 중이거나 식사 중인 테이블이 있으면 단체 해제가 안됩니다");
 		}
 		tableGroup.unGroup();

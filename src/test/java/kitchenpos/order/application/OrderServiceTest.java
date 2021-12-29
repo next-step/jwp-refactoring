@@ -58,7 +58,7 @@ public class OrderServiceTest {
 	void setup() {
 		Product 후라이드 = Product.of(1L, "후라이드", BigDecimal.valueOf(17_000));
 		MenuGroup 추천메뉴 = MenuGroup.of(1L, "추천메뉴");
-		MenuProduct 메뉴_상품 = MenuProduct.of(1L, null, 후라이드, 2L);
+		MenuProduct 메뉴_상품 = MenuProduct.of(1L, null, 후라이드.getId(), 2L);
 
 		더블후라이드 = Menu.of(1L, "더블 후라이드", BigDecimal.valueOf(30_000), 추천메뉴);
 		더블후라이드.addMenuProducts(Collections.singletonList(메뉴_상품));
@@ -66,9 +66,9 @@ public class OrderServiceTest {
 		테이블 = OrderTable.of(1L, 2, false);
 		빈_테이블 = OrderTable.of(2L, 0, true);
 
-		OrderLineItem 생성된_주문_항목 = OrderLineItem.of(1L, 더블후라이드, 1L);
-		생성된_주문 = Order.of(1L, 테이블, OrderStatus.COOKING);
-		계산된_주문 = Order.of(2L, 테이블, OrderStatus.COMPLETION);
+		OrderLineItem 생성된_주문_항목 = OrderLineItem.of(1L, 더블후라이드.getId(), 1L);
+		생성된_주문 = Order.of(1L, 테이블.getId(), OrderStatus.COOKING);
+		계산된_주문 = Order.of(2L, 테이블.getId(), OrderStatus.COMPLETION);
 
 		생성된_주문.addOrderLineItems(Collections.singletonList(생성된_주문_항목));
 		계산된_주문.addOrderLineItems(Collections.singletonList(생성된_주문_항목));

@@ -33,15 +33,14 @@ public class MenuServiceTest {
 
 	@InjectMocks
 	private MenuService menuService;
-
 	@Mock
 	private MenuRepository menuRepository;
-
 	@Mock
 	private MenuGroupService menuGroupService;
-
 	@Mock
 	private ProductRepository productRepository;
+	@Mock
+	private MenuValidator menuValidator;
 
 	@DisplayName("메뉴 목록을 조회한다")
 	@Test
@@ -135,26 +134,6 @@ public class MenuServiceTest {
 		assertThatThrownBy(() -> menuService.create(request))
 			.isInstanceOf(AppException.class)
 			.hasMessage(ErrorCode.NOT_FOUND.getMessage());
-	}
-
-	@DisplayName("메뉴 가격이 제품들의 가격 합보다 비싸면 안된다")
-	@Test
-	void createTest5() {
-		// given
-		MenuProductRequest menuProductRequest = new MenuProductRequest(ProductTest.후라이드.getId(), 2L);
-		MenuRequest request = new MenuRequest(
-			MenuTest.후라이드둘.getName().toText(),
-			BigDecimal.valueOf(90_000),
-			MenuTest.후라이드둘.getMenuGroup().getId(),
-			Collections.singletonList(menuProductRequest));
-
-		given(productRepository.findById(any())).willReturn(Optional.of(ProductTest.후라이드));
-		given(menuGroupService.getById(any())).willReturn(MenuGroupTest.추천메뉴);
-
-		// when, then
-		assertThatThrownBy(() -> menuService.create(request))
-			.isInstanceOf(AppException.class)
-			.hasMessage(ErrorCode.WRONG_INPUT.getMessage());
 	}
 
 }

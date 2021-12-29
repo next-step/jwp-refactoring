@@ -29,7 +29,7 @@ public class OrderResponse {
 
 	public OrderResponse(Order order) {
 		this.id = order.getId();
-		this.orderTableId = order.getOrderTable().getId();
+		this.orderTableId = order.getOrderTableId();
 		this.orderStatus = order.getOrderStatus();
 		this.orderedTime = order.getOrderedTime();
 		this.orderLineItems = order.getOrderLineItems().toList().stream().map(OrderLineItemResponse::new)

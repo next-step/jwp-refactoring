@@ -9,8 +9,6 @@ import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 
-import kitchenpos.common.domain.Price;
-
 @Embeddable
 public class MenuProducts {
 
@@ -30,13 +28,6 @@ public class MenuProducts {
 
 	public static MenuProducts empty() {
 		return new MenuProducts(new ArrayList<>());
-	}
-
-	public boolean isOverPrice(Price price) {
-		Price totalPrice = menuProducts.stream()
-			.map(MenuProduct::getTotalPrice)
-			.reduce(Price.ZERO, Price::add);
-		return price.isGreaterThan(totalPrice);
 	}
 
 	public void add(MenuProduct menuProduct) {

@@ -12,7 +12,7 @@ public class MenuProductResponse {
 	}
 
 	public MenuProductResponse(MenuProduct menuProduct) {
-		this.productId = menuProduct.getProduct().getId();
+		this.productId = menuProduct.getProductId();
 		this.quantity = menuProduct.getQuantity().toLong();
 	}
 

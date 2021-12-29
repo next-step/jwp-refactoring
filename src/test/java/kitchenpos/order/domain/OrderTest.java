@@ -28,22 +28,22 @@ public class OrderTest {
 	void setup() {
 		Product 후라이드 = Product.of(1L, "후라이드", BigDecimal.valueOf(17_000));
 		MenuGroup 추천메뉴 = MenuGroup.of(1L, "추천메뉴");
-		MenuProduct 메뉴_상품 = MenuProduct.of(1L, null, 후라이드, 2L);
+		MenuProduct 메뉴_상품 = MenuProduct.of(1L, null, 후라이드.getId(), 2L);
 
 		Menu 더블후라이드 = Menu.of(1L, "더블 후라이드", BigDecimal.valueOf(30_000), 추천메뉴);
 		더블후라이드.addMenuProducts(Collections.singletonList(메뉴_상품));
 
 		테이블 = OrderTable.of(1L, 2, false);
 
-		생성된_주문_항목 = OrderLineItem.of(1L, 더블후라이드, 1L);
-		생성된_주문 = Order.of(1L, 테이블, OrderStatus.COOKING);
+		생성된_주문_항목 = OrderLineItem.of(1L, 더블후라이드.getId(), 1L);
+		생성된_주문 = Order.of(1L, 테이블.getId(), OrderStatus.COOKING);
 	}
 
 	@DisplayName("생성 테스트")
 	@Test
 	void createTest() {
-		assertThat(Order.of(1L, 테이블, OrderStatus.COOKING))
-			.isEqualTo(Order.of(1L, 테이블, OrderStatus.COOKING));
+		assertThat(Order.of(1L, 테이블.getId(), OrderStatus.COOKING))
+			.isEqualTo(Order.of(1L, 테이블.getId(), OrderStatus.COOKING));
 	}
 
 	@DisplayName("생성 시, 주문 테이블 입력되어야 합니다")

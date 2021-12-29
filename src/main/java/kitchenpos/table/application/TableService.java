@@ -45,7 +45,7 @@ public class TableService {
 
 	public TableResponse changeEmpty(final Long orderTableId, final TableEmptyUpdateRequest request) {
 		OrderTable orderTable = getNotGroupedOrderTableById(orderTableId);
-		if (orderRepository.existsByOrderTableAndOrderStatusIn(orderTable, NOT_AVAILABLE_STATUS)) {
+		if (orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTable.getId(), NOT_AVAILABLE_STATUS)) {
 			throw new AppException(ErrorCode.WRONG_INPUT, "빈 테이블 변경 시, 조리 중이거나 식사 중인 테이블이면 안됩니다");
 		}
 		orderTable.changeEmptyStatus(request.isEmpty());

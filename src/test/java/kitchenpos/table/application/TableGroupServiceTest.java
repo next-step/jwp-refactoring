@@ -128,7 +128,7 @@ public class TableGroupServiceTest {
 	void ungroupTest() {
 		// given
 		given(tableGroupRepository.findById(any())).willReturn(Optional.of(단체_테이블));
-		given(orderRepository.existsByOrderTableInAndOrderStatusIn(any(), any()))
+		given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any()))
 			.willReturn(false);
 
 		// when
@@ -140,7 +140,7 @@ public class TableGroupServiceTest {
 	void ungroupTest2() {
 		// given
 		given(tableGroupRepository.findById(any())).willReturn(Optional.of(단체_테이블));
-		given(orderRepository.existsByOrderTableInAndOrderStatusIn(any(), any()))
+		given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any()))
 			.willReturn(true);
 
 		// when

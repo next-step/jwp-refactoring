@@ -14,7 +14,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import kitchenpos.common.domain.Quantity;
-import kitchenpos.menu.domain.Menu;
 
 @Entity
 @Table(name = "order_line_item")
@@ -29,8 +28,7 @@ public class OrderLineItem {
 	private Order order;
 
 	@JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_order_line_item_menu"), nullable = false)
-	@ManyToOne(fetch = FetchType.LAZY)
-	private Menu menu;
+	private Long menuId;
 
 	@Embedded
 	@AttributeOverride(name = "quantity", column = @Column(name = "quantity", nullable = false))
@@ -39,19 +37,19 @@ public class OrderLineItem {
 	protected OrderLineItem() {
 	}
 
-	private OrderLineItem(Long seq, Order order, Menu menu, Quantity quantity) {
+	private OrderLineItem(Long seq, Order order, Long menuId, Quantity quantity) {
 		this.seq = seq;
 		this.order = order;
-		this.menu = menu;
+		this.menuId = menuId;
 		this.quantity = quantity;
 	}
 
-	public static OrderLineItem create(Menu menu, Long quantity) {
-		return new OrderLineItem(null, null, menu, Quantity.of(quantity));
+	public static OrderLineItem create(Long menuId, Long quantity) {
+		return new OrderLineItem(null, null, menuId, Quantity.of(quantity));
 	}
 
-	public static OrderLineItem of(Long id, Menu menu, Long quantity) {
-		return new OrderLineItem(id, null, menu, Quantity.of(quantity));
+	public static OrderLineItem of(Long id, Long menuId, Long quantity) {
+		return new OrderLineItem(id, null, menuId, Quantity.of(quantity));
 	}
 
 	public void setOrder(Order order) {
@@ -66,8 +64,8 @@ public class OrderLineItem {
 		return order;
 	}
 
-	public Menu getMenu() {
-		return menu;
+	public Long getMenuId() {
+		return menuId;
 	}
 
 	public Quantity getQuantity() {

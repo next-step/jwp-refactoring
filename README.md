@@ -18,6 +18,7 @@
     - MenuService
 - 도메인 레이어 의존성 개선: 객체 참조를 ID 참조로 변경하여 개선
     - MenuProduct 의 Product 참조
+        - MenuValidator 생성
     - OrderLineItem 의 Menu 참조
     - Order 의 OrderTable 참조
 - 패키지 내 객체 의존성 개선: 객체 간 단방향 관계로 변경

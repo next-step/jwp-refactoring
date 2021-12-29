@@ -15,11 +15,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
 import kitchenpos.exception.AppException;
 import kitchenpos.exception.ErrorCode;
-import kitchenpos.product.domain.Product;
 
 @Entity
 @Table(name = "menu_product")
@@ -33,9 +31,8 @@ public class MenuProduct {
 	@JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_menu_product_menu"), nullable = false)
 	private Menu menu;
 
-	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_menu_product_product"), nullable = false)
-	private Product product;
+	private Long productId;
 
 	@Embedded
 	@AttributeOverride(name = "quantity", column = @Column(name = "quantity", nullable = false))
@@ -44,38 +41,34 @@ public class MenuProduct {
 	protected MenuProduct() {
 	}
 
-	private MenuProduct(Long seq, Menu menu, Product product, Quantity quantity) {
+	private MenuProduct(Long seq, Menu menu, Long productId, Quantity quantity) {
 		this.seq = seq;
 		this.menu = menu;
-		this.product = product;
+		this.productId = productId;
 		this.quantity = quantity;
 	}
 
-	public static MenuProduct create(Product product, Long quantity) {
-		validateCreate(product);
-		return new MenuProduct(null, null, product, Quantity.valueOf(quantity));
+	public static MenuProduct create(Long productId, Long quantity) {
+		validateCreate(productId);
+		return new MenuProduct(null, null, productId, Quantity.valueOf(quantity));
 	}
 
-	public static MenuProduct of(Long seq, Menu menu, Product product, Long quantity) {
-		return new MenuProduct(seq, menu, product, Quantity.valueOf(quantity));
+	public static MenuProduct of(Long seq, Menu menu, Long productId, Long quantity) {
+		return new MenuProduct(seq, menu, productId, Quantity.valueOf(quantity));
 	}
 
-	private static void validateCreate(Product product) {
-		if (Objects.isNull(product)) {
-			throw new AppException(ErrorCode.WRONG_INPUT, "MenuProduct 은 Product 이 필수입니다");
+	private static void validateCreate(Long productId) {
+		if (Objects.isNull(productId)) {
+			throw new AppException(ErrorCode.WRONG_INPUT, "MenuProduct 은 ProductId 가 필수입니다");
 		}
 	}
 
-	public static MenuProduct of(Product product, Long quantity) {
-		return new MenuProduct(null, null, product, Quantity.valueOf(quantity));
+	public static MenuProduct of(Long productId, Long quantity) {
+		return new MenuProduct(null, null, productId, Quantity.valueOf(quantity));
 	}
 
 	public void setMenu(Menu menu) {
 		this.menu = menu;
-	}
-
-	public Price getTotalPrice() {
-		return product.getPrice().multiply(quantity.toLong());
 	}
 
 	public Long getSeq() {
@@ -86,8 +79,8 @@ public class MenuProduct {
 		return menu;
 	}
 
-	public Product getProduct() {
-		return product;
+	public Long getProductId() {
+		return productId;
 	}
 
 	public Quantity getQuantity() {
