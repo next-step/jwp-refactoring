@@ -30,7 +30,7 @@
 
 개선 목표
 
-- ![img.png](docs/개선목표_의존성.png)
+- ![img.png](docs/개선목표안.png)
 
 -----
 
