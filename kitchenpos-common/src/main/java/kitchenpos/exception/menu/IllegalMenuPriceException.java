@@ -1,7 +1,8 @@
 package kitchenpos.menu.exception;
 
-import kitchenpos.common.exception.ServiceException;
-import kitchenpos.menu.domain.MenuPrice;
+import org.hibernate.service.spi.ServiceException;
+
+import java.math.BigDecimal;
 
 /**
  * packageName : kitchenpos.menu.exception
@@ -12,9 +13,9 @@ import kitchenpos.menu.domain.MenuPrice;
  */
 public class IllegalMenuPriceException extends ServiceException {
     private static final Long serialVersionUID = 1L;
-    public static final String message = "가격은 %d원 보다 작을 수 없습니다.";
+    public static final String message = "가격 데이터가 유효하지 않습니다. %s";
 
-    public IllegalMenuPriceException() {
-        super(String.format(message, MenuPrice.MIN_PRICE.intValue()));
+    public IllegalMenuPriceException(BigDecimal value) {
+        super(String.format(message, value));
     }
 }
