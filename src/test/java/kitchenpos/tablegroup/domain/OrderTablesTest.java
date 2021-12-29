@@ -8,8 +8,8 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import table.domain.OrderTable;
 import kitchenpos.exception.KitchenposException;
+import table.domain.OrderTable;
 
 class OrderTablesTest {
 

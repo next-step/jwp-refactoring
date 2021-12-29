@@ -15,15 +15,15 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import table.application.TableService;
-import table.domain.OrderTable;
-import kitchenpos.dto.OrderTableRequest;
-import kitchenpos.dto.OrderTableResponse;
-import kitchenpos.dto.OrderTableResponses;
 import kitchenpos.exception.KitchenposException;
 import kitchenpos.repository.OrderRepository;
-import table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
+import table.application.TableService;
+import table.domain.OrderTable;
+import table.domain.OrderTableRepository;
+import table.dto.OrderTableRequest;
+import table.dto.OrderTableResponse;
+import table.dto.OrderTableResponses;
 
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {

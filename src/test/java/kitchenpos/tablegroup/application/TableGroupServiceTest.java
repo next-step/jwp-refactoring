@@ -15,16 +15,16 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import table.domain.OrderTable;
 import kitchenpos.exception.KitchenposException;
 import kitchenpos.repository.OrderRepository;
-import table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.OrderTables;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.OrderTableIdRequest;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
+import table.domain.OrderTable;
+import table.domain.OrderTableRepository;
 
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {

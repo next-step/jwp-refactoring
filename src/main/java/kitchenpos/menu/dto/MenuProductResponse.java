@@ -1,8 +1,8 @@
-package kitchenpos.dto;
+package kitchenpos.menu.dto;
 
 import java.util.Objects;
 
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProduct;
 
 public class MenuProductResponse {
     private Long seq;

@@ -1,4 +1,4 @@
-package kitchenpos.dto;
+package table.dto;
 
 import java.util.Collections;
 import java.util.List;

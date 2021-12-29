@@ -13,7 +13,7 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.dto.OrderTableResponse;
+import table.dto.OrderTableResponse;
 
 public class TableAcceptanceTestHelper {
     private TableAcceptanceTestHelper() {

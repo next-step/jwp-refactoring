@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import kitchenpos.exception.KitchenposException;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.tablegroup.domain.TableGroup;
 import table.domain.OrderTable;
 

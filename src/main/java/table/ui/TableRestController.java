@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import table.application.TableService;
-import kitchenpos.dto.OrderTableRequest;
-import kitchenpos.dto.OrderTableResponse;
-import kitchenpos.dto.OrderTableResponses;
+import table.dto.OrderTableRequest;
+import table.dto.OrderTableResponse;
+import table.dto.OrderTableResponses;
 
 @RestController
 public class TableRestController {

@@ -1,4 +1,4 @@
-package kitchenpos.ui;
+package kitchenpos.menu.ui;
 
 import java.util.Arrays;
 import java.util.HashMap;

@@ -17,21 +17,21 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderLineItems;
 import kitchenpos.domain.OrderStatus;
-import table.domain.OrderTable;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderLineItemResponse;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
 import kitchenpos.exception.KitchenposException;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.repository.MenuRepository;
 import kitchenpos.repository.OrderRepository;
-import table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
+import table.domain.OrderTable;
+import table.domain.OrderTableRepository;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {

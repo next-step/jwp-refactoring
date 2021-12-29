@@ -7,18 +7,18 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderLineItems;
 import kitchenpos.domain.OrderStatus;
-import table.domain.OrderTable;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
 import kitchenpos.dto.OrderResponses;
 import kitchenpos.exception.KitchenposNotFoundException;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.repository.MenuRepository;
 import kitchenpos.repository.OrderRepository;
+import table.domain.OrderTable;
 import table.domain.OrderTableRepository;
 
 @Service

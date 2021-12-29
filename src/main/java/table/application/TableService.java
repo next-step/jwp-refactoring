@@ -5,17 +5,17 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.domain.NumberOfGuests;
 import kitchenpos.domain.OrderStatus;
-import table.domain.OrderTable;
-import kitchenpos.dto.OrderTableRequest;
-import kitchenpos.dto.OrderTableResponse;
-import kitchenpos.dto.OrderTableResponses;
 import kitchenpos.exception.KitchenposErrorCode;
 import kitchenpos.exception.KitchenposException;
 import kitchenpos.exception.KitchenposNotFoundException;
 import kitchenpos.repository.OrderRepository;
+import table.domain.NumberOfGuests;
+import table.domain.OrderTable;
 import table.domain.OrderTableRepository;
+import table.dto.OrderTableRequest;
+import table.dto.OrderTableResponse;
+import table.dto.OrderTableResponses;
 
 @Service
 @Transactional(readOnly = true)

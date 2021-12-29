@@ -7,6 +7,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import kitchenpos.menu.domain.Menu;
+
 @Entity
 public class OrderLineItem {
     @Id
