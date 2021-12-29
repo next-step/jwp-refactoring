@@ -3,9 +3,8 @@ package kitchenpos.dao;
 import kitchenpos.domain.Menu;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
-public class FakeMenuDao implements MenuDao {
+public class FakeMenuRepository implements MenuRepository {
     private Map<Long, Menu> map = new HashMap<>();
     private Long key = 1L;
 

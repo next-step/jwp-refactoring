@@ -5,7 +5,7 @@ import kitchenpos.domain.OrderTable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class FakeOrderTableDao implements OrderTableDao {
+public class FakeOrderTableRepository implements OrderTableRepository {
     private Map<Long, OrderTable> map = new HashMap<>();
     private Long key = 1L;
 
@@ -40,9 +40,9 @@ public class FakeOrderTableDao implements OrderTableDao {
     }
 
     @Override
-    public List<OrderTable> findAllByTableGroupId(Long tableGroupId) {
+    public List<OrderTable> findAllByTableGroup(Long tableGroupId) {
         return map.values().stream()
-                .filter(orderTable -> tableGroupId.equals(orderTable.getTableGroupId()))
+                .filter(orderTable -> tableGroupId.equals(orderTable.getTableGroup()))
                 .collect(Collectors.toList());
     }
 }

@@ -17,19 +17,22 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("메뉴 테스트")
 class MenuServiceTest {
-    private final MenuDao menuDao = new FakeMenuDao();
-    private final MenuGroupDao menuGroupDao = new FakeMenuGroupDao();
-    private final MenuProductDao menuProductDao = new FakeMenuProductDao();
-    private final ProductDao productDao = new FakeProductDao();
-    private final MenuService menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
+    private final MenuRepository menuRepository = new FakeMenuRepository();
+    private final MenuGroupRepository menuGroupRepository = new FakeMenuGroupRepository();
+    private final MenuProductRepository menuProductRepository = new FakeMenuProductRepository();
+    private final ProductRepository productRepository = new FakeProductRepository();
+    private final MenuService menuService = new MenuService(menuRepository, menuGroupRepository, menuProductRepository, productRepository);
 
     @DisplayName("가격이 음수면 예외가 발생한다.")
     @Test
     void priceIsNegative() {
-        Menu menu = Menu.of("소고기세트", -1, 1L,
+        Product 살치살 = Product.of(1L,"살치살",10000);
+        Product 부채살 = Product.of(2L,"부채살",10000);
+        MenuGroup savedMenuGroup = menuGroupRepository.save(MenuGroup.of("추천메뉴"));
+        Menu menu = Menu.of("소고기세트", -1, savedMenuGroup,
                 Arrays.asList(
-                        MenuProduct.of(1L, 2),
-                        MenuProduct.of(2L, 1)
+                        MenuProduct.of(살치살, 2),
+                        MenuProduct.of(부채살, 1)
                 )
         );
 
@@ -39,10 +42,12 @@ class MenuServiceTest {
     @DisplayName("메뉴 그룹이 존재하지 않으면 예외가 발생한다.")
     @Test
     void notExistsMenuGroup() {
-        Menu menu = Menu.of("소고기세트", 50000, 1L,
+        Product 살치살 = Product.of(1L,"살치살",10000);
+        Product 부채살 = Product.of(2L,"부채살",10000);
+        Menu menu = Menu.of("소고기세트", 50000, null,
                 Arrays.asList(
-                        MenuProduct.of(1L, 2),
-                        MenuProduct.of(2L, 1)
+                        MenuProduct.of(살치살, 2),
+                        MenuProduct.of(부채살, 1)
                 )
         );
 
@@ -52,11 +57,13 @@ class MenuServiceTest {
     @DisplayName("상품이 존재하지 않으면 예외가 발생한다.")
     @Test
     void notExistsProduct() {
-        MenuGroup savedMenuGroup = menuGroupDao.save(MenuGroup.of("추천메뉴"));
-        Menu menu = Menu.of("소고기세트", 50000, savedMenuGroup.getId(),
+        Product 살치살 = Product.of(1L,"살치살",10000);
+        Product 부채살 = Product.of(2L,"부채살",10000);
+        MenuGroup savedMenuGroup = menuGroupRepository.save(MenuGroup.of("추천메뉴"));
+        Menu menu = Menu.of("소고기세트", 50000, savedMenuGroup,
                 Arrays.asList(
-                        MenuProduct.of(1L, 2),
-                        MenuProduct.of(2L, 1)
+                        MenuProduct.of(살치살, 2),
+                        MenuProduct.of(부채살, 1)
                 )
         );
 
@@ -66,13 +73,13 @@ class MenuServiceTest {
     @DisplayName("메뉴 가격이 메뉴 상품들 가격의 합보다 크면 예외 발생한다.")
     @Test
     void priceCheaperThanSumMenuProducts() {
-        MenuGroup savedMenuGroup = menuGroupDao.save(MenuGroup.of("추천메뉴"));
-        Product product1 = productDao.save(Product.of("소고기", 30000));
-        Product product2 = productDao.save(Product.of("쌈채소", 10000));
-        Menu menu = Menu.of("소고기세트", 100000, savedMenuGroup.getId(),
+        MenuGroup savedMenuGroup = menuGroupRepository.save(MenuGroup.of("추천메뉴"));
+        Product 소고기 = productRepository.save(Product.of("소고기", 30000));
+        Product 쌈채소 = productRepository.save(Product.of("쌈채소", 10000));
+        Menu menu = Menu.of("소고기세트", 100000, savedMenuGroup,
                 Arrays.asList(
-                        MenuProduct.of(product1.getId(), 2),
-                        MenuProduct.of(product2.getId(), 1)
+                        MenuProduct.of(소고기, 2),
+                        MenuProduct.of(쌈채소, 1)
                 )
         );
 
@@ -82,13 +89,13 @@ class MenuServiceTest {
     @DisplayName("메뉴 생성 성공")
     @Test
     void success() {
-        MenuGroup savedMenuGroup = menuGroupDao.save(MenuGroup.of("추천메뉴"));
-        Product product1 = productDao.save(Product.of("소고기", 30000));
-        Product product2 = productDao.save(Product.of("쌈채소", 10000));
-        Menu menu = Menu.of("소고기세트", 70000, savedMenuGroup.getId(),
+        MenuGroup savedMenuGroup = menuGroupRepository.save(MenuGroup.of("추천메뉴"));
+        Product 소고기 = productRepository.save(Product.of("소고기", 30000));
+        Product 쌈채소 = productRepository.save(Product.of("쌈채소", 10000));
+        Menu menu = Menu.of("소고기세트", 70000, savedMenuGroup,
                 Arrays.asList(
-                        MenuProduct.of(product1.getId(), 2),
-                        MenuProduct.of(product2.getId(), 1)
+                        MenuProduct.of(소고기, 2),
+                        MenuProduct.of(쌈채소, 1)
                 )
         );
 
@@ -102,21 +109,21 @@ class MenuServiceTest {
     @DisplayName("모든 메뉴 조회")
     @Test
     void list() {
-        MenuGroup savedMenuGroup = menuGroupDao.save(MenuGroup.of("추천메뉴"));
-        Product product1 = productDao.save(Product.of("소고기", 30000));
-        Product product2 = productDao.save(Product.of("쌈채소", 10000));
-        Product product3 = productDao.save(Product.of("소주", 5000));
-        Menu menu1 = Menu.of("소고기세트", 70000, savedMenuGroup.getId(),
+        MenuGroup savedMenuGroup = menuGroupRepository.save(MenuGroup.of("추천메뉴"));
+        Product 소고기 = productRepository.save(Product.of("소고기", 30000));
+        Product 쌈채소 = productRepository.save(Product.of("쌈채소", 10000));
+        Product 소주 = productRepository.save(Product.of("소주", 5000));
+        Menu menu1 = Menu.of("소고기세트", 70000, savedMenuGroup,
                 Arrays.asList(
-                        MenuProduct.of(product1.getId(), 2),
-                        MenuProduct.of(product2.getId(), 1)
+                        MenuProduct.of(소고기, 2),
+                        MenuProduct.of(쌈채소, 1)
                 )
         );
-        Menu menu2 = Menu.of("소고기세트", 105000, savedMenuGroup.getId(),
+        Menu menu2 = Menu.of("소고기세트", 105000, savedMenuGroup,
                 Arrays.asList(
-                        MenuProduct.of(product1.getId(), 3),
-                        MenuProduct.of(product2.getId(), 1),
-                        MenuProduct.of(product3.getId(), 1)
+                        MenuProduct.of(소고기, 3),
+                        MenuProduct.of(쌈채소, 1),
+                        MenuProduct.of(소주, 1)
                 )
         );
 
@@ -145,9 +152,9 @@ class MenuServiceTest {
             MenuProduct resultMenuProduct = savedMenuProducts.get(i);
             MenuProduct menuProduct = menuProducts.get(i);
             assertThat(resultMenuProduct.getSeq()).isNotNull();
-            assertThat(resultMenuProduct.getProductId()).isEqualTo(menuProduct.getProductId());
+            assertThat(resultMenuProduct.getProduct()).isEqualTo(menuProduct.getProduct());
             assertThat(resultMenuProduct.getQuantity()).isEqualTo(menuProduct.getQuantity());
-            assertThat(resultMenuProduct.getMenuId()).isEqualTo(resultMenu.getId());
+            assertThat(resultMenuProduct.getMenu()).isEqualTo(resultMenu.getId());
         }
     }
 

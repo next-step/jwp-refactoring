@@ -4,7 +4,7 @@ import kitchenpos.domain.Product;
 
 import java.util.*;
 
-public class FakeProductDao implements ProductDao {
+public class FakeProductRepository implements ProductRepository {
     private Map<Long, Product> map = new HashMap<>();
     private Long key = 1L;
 

@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.FakeProductDao;
-import kitchenpos.dao.ProductDao;
+import kitchenpos.dao.FakeProductRepository;
+import kitchenpos.dao.ProductRepository;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,8 +14,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("상품 테스트")
 class ProductServiceTest {
-    private final ProductDao productDao = new FakeProductDao();
-    private final ProductService productService = new ProductService(productDao);
+    private final ProductRepository productRepository = new FakeProductRepository();
+    private final ProductService productService = new ProductService(productRepository);
 
     @DisplayName("상품가격이 0보다 작으면 예외발생")
     @Test

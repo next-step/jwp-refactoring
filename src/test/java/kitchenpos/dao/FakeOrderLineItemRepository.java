@@ -5,7 +5,7 @@ import kitchenpos.domain.OrderLineItem;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class FakeOrderLineItemDao implements OrderLineItemDao {
+public class FakeOrderLineItemRepository implements OrderLineItemRepository {
     private Map<Long, OrderLineItem> map = new HashMap<>();
     private Long key = 1L;
 
@@ -30,7 +30,7 @@ public class FakeOrderLineItemDao implements OrderLineItemDao {
     @Override
     public List<OrderLineItem> findAllByOrderId(Long orderId) {
         return map.values().stream()
-                .filter(orderLineItem -> orderLineItem.getOrderId().equals(orderId))
+                .filter(orderLineItem -> orderLineItem.getOrder().equals(orderId))
                 .collect(Collectors.toList());
     }
 }

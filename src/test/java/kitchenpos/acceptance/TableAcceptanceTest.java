@@ -32,9 +32,9 @@ public class TableAcceptanceTest extends AcceptanceTest {
 
         추천메뉴 = MenuAcceptanceTest.메뉴그룹_등록되어있음(MenuGroup.of("추천메뉴"));
         소고기한우 = MenuAcceptanceTest.상품_등록되어있음(Product.of("소고기한우", 30000));
-        소고기세트메뉴 = MenuAcceptanceTest.메뉴_등록되어있음("소고기+소고기", 50000, 추천메뉴.getId(), Arrays.asList(MenuProduct.of(소고기한우.getId(), 2L)));
+        소고기세트메뉴 = MenuAcceptanceTest.메뉴_등록되어있음("소고기+소고기", 50000, 추천메뉴, Arrays.asList(MenuProduct.of(소고기한우, 2L)));
         일번테이블 = 테이블_등록되어_있음(OrderTable.of(4, false));
-        일번테이블_주문 = OrderAcceptanceTest.주문_생성됨(일번테이블.getId(), Arrays.asList(OrderLineItem.of(소고기세트메뉴.getId(), 2)));
+        일번테이블_주문 = OrderAcceptanceTest.주문_생성됨(일번테이블, Arrays.asList(OrderLineItem.of(소고기세트메뉴, 2)));
     }
 
     @DisplayName("테이블 관리")
@@ -42,7 +42,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
     void handleTable() {
         // 테이블 생성
         OrderTable 이번테이블 = 테이블_등록되어_있음(OrderTable.of(10, false));
-        Order 이번테이블_주문 = OrderAcceptanceTest.주문_생성됨(이번테이블.getId(), Arrays.asList(OrderLineItem.of(소고기세트메뉴.getId(), 3)));
+        Order 이번테이블_주문 = OrderAcceptanceTest.주문_생성됨(이번테이블, Arrays.asList(OrderLineItem.of(소고기세트메뉴, 3)));
 
         // 테이블 조회
         ExtractableResponse<Response> findResponse = 모든_테이블_조회_요청();
@@ -121,7 +121,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(location).isEqualTo("/api/table-groups/" + tableGroup.getId()),
                 () -> {
                     tableGroup.getOrderTables().forEach(orderTable -> {
-                        assertThat(orderTable.getTableGroupId()).isNotNull();
+                        assertThat(orderTable.getTableGroup()).isNotNull();
                     });
                 }
         );

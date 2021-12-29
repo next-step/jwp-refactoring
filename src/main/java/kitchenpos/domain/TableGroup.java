@@ -1,11 +1,22 @@
 package kitchenpos.domain;
 
+import org.springframework.data.annotation.CreatedDate;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Entity
 public class TableGroup {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @CreatedDate
+    @Column(nullable = false)
     private LocalDateTime createdDate;
+
+    @OneToMany(mappedBy = "tableGroup")
     private List<OrderTable> orderTables;
 
     public TableGroup() {}
@@ -14,9 +25,16 @@ public class TableGroup {
         this.orderTables = tables;
     }
 
+    public TableGroup(Long id) {
+        this.id = id;
+    }
 
     public static TableGroup of(List<OrderTable> tables) {
         return new TableGroup(tables);
+    }
+
+    public static TableGroup of(Long id) {
+        return new TableGroup(id);
     }
 
     public Long getId() {

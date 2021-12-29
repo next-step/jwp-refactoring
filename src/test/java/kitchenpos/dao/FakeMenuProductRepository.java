@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class FakeMenuProductDao implements MenuProductDao {
+public class FakeMenuProductRepository implements MenuProductRepository {
     private Map<Long, MenuProduct> map = new HashMap<>();
     private Long key = 1L;
 
@@ -33,7 +33,7 @@ public class FakeMenuProductDao implements MenuProductDao {
     @Override
     public List<MenuProduct> findAllByMenuId(Long menuId) {
         return map.values().stream()
-                .filter(menuProduct -> menuId.equals(menuProduct.getMenuId()))
+                .filter(menuProduct -> menuId.equals(menuProduct.getMenu()))
                 .collect(Collectors.toList());
     }
 }

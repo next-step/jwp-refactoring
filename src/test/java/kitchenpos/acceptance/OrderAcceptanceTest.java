@@ -32,7 +32,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
         추천메뉴 = MenuAcceptanceTest.메뉴그룹_등록되어있음(MenuGroup.of("추천메뉴"));
         소고기한우 = MenuAcceptanceTest.상품_등록되어있음(Product.of("소고기한우", 30000));
-        메뉴 = MenuAcceptanceTest.메뉴_등록되어있음("소고기+소고기", 50000, 추천메뉴.getId(), Arrays.asList(MenuProduct.of(소고기한우.getId(), 2L)));
+        메뉴 = MenuAcceptanceTest.메뉴_등록되어있음("소고기+소고기", 50000, 추천메뉴, Arrays.asList(MenuProduct.of(소고기한우, 2L)));
         테이블 = TableAcceptanceTest.테이블_등록되어_있음(OrderTable.of(4, false));
     }
 
@@ -41,9 +41,9 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     void handleOrder() {
         // 주문 생성
         Order order = Order.of(
-                테이블.getId(),
+                테이블,
                 Arrays.asList(
-                        OrderLineItem.of(메뉴.getId(), 2)
+                        OrderLineItem.of(메뉴, 2)
                 )
         );
         ExtractableResponse<Response> createResponse = 주문_생성_요청(order);
@@ -105,8 +105,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         return TestApiClient.create(order, "/api/orders");
     }
 
-    public static Order 주문_생성됨(Long orderTableId, List<OrderLineItem> orderLineItems) {
-        Order order = Order.of(orderTableId, orderLineItems);
+    public static Order 주문_생성됨(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        Order order = Order.of(orderTable, orderLineItems);
         return 주문_생성_요청(order).as(Order.class);
     }
 

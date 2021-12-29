@@ -1,11 +1,10 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.FakeMenuGroupDao;
-import kitchenpos.dao.MenuGroupDao;
+import kitchenpos.dao.FakeMenuGroupRepository;
+import kitchenpos.dao.MenuGroupRepository;
 import kitchenpos.domain.MenuGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 
 import java.util.List;
 
@@ -14,8 +13,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("메뉴 그룹 테스트")
 class MenuGroupServiceTest {
-    private final MenuGroupDao menuGroupDao = new FakeMenuGroupDao();
-    private final MenuGroupService menuGroupService = new MenuGroupService(menuGroupDao);
+    private final MenuGroupRepository menuGroupRepository = new FakeMenuGroupRepository();
+    private final MenuGroupService menuGroupService = new MenuGroupService(menuGroupRepository);
 
     @DisplayName("메뉴 그룹 생성")
     @Test

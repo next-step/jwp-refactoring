@@ -5,7 +5,7 @@ import kitchenpos.domain.MenuGroup;
 import java.util.*;
 
 
-public class FakeMenuGroupDao implements MenuGroupDao {
+public class FakeMenuGroupRepository implements MenuGroupRepository {
     private Map<Long, MenuGroup> map = new HashMap<>();
     private Long key = 1L;
 

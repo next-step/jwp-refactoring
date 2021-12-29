@@ -4,7 +4,7 @@ import kitchenpos.domain.Order;
 
 import java.util.*;
 
-public class FakeOrderDao implements OrderDao {
+public class FakeOrderRepository implements OrderRepository {
     private Map<Long, Order> map = new HashMap<>();
     private Long key = 1L;
 
@@ -32,14 +32,14 @@ public class FakeOrderDao implements OrderDao {
     }
 
     @Override
-    public boolean existsByOrderTableIdAndOrderStatusIn(Long orderTableId, List<String> orderStatuses) {
+    public boolean existsByOrderTableAndOrderStatusIn(Long orderTableId, List<String> orderStatuses) {
         return map.values().stream()
                 .filter(order -> order.getOrderTableId().equals(orderTableId))
                 .anyMatch(order -> orderStatuses.contains(order.getOrderStatus()));
     }
 
     @Override
-    public boolean existsByOrderTableIdInAndOrderStatusIn(List<Long> orderTableIds, List<String> orderStatuses) {
+    public boolean existsByOrderTableInAndOrderStatusIn(List<Long> orderTableIds, List<String> orderStatuses) {
         return map.values().stream()
                 .filter(order -> orderTableIds.contains(order.getOrderTableId()))
                 .anyMatch(order -> orderStatuses.contains(order.getOrderStatus()));

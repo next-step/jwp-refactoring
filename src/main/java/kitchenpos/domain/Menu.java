@@ -1,27 +1,40 @@
 package kitchenpos.domain;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
+@Entity
 public class Menu {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private BigDecimal price;
-    private Long menuGroupId;
+
+    @ManyToOne
+    @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"), nullable = false)
+    private MenuGroup menuGroup;
+
+    @OneToMany(mappedBy = "menu", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<MenuProduct> menuProducts;
 
-    public Menu() {}
+    protected Menu() {}
 
-    public Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.name = name;
         this.price = price;
-        this.menuGroupId = menuGroupId;
+        this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
     }
 
-    public static Menu of(String name, int price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        return new Menu(name, BigDecimal.valueOf(price), menuGroupId, menuProducts);
+    public static Menu of(String name, int price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        return new Menu(name, BigDecimal.valueOf(price), menuGroup, menuProducts);
     }
 
 
@@ -50,11 +63,7 @@ public class Menu {
     }
 
     public Long getMenuGroupId() {
-        return menuGroupId;
-    }
-
-    public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
+        return menuGroup.getId();
     }
 
     public List<MenuProduct> getMenuProducts() {
@@ -69,16 +78,4 @@ public class Menu {
         this.id = id;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Menu menu = (Menu) o;
-        return Objects.equals(id, menu.id) && Objects.equals(name, menu.name) && Objects.equals(price.intValue(), menu.price.intValue()) && Objects.equals(menuGroupId, menu.menuGroupId) && Objects.equals(menuProducts, menu.menuProducts);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, price, menuGroupId, menuProducts);
-    }
 }

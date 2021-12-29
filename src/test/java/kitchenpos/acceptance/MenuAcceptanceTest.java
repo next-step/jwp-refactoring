@@ -39,8 +39,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         Menu menu = Menu.of(
                 "소고기+소고기",
                 50000,
-                추천메뉴.getId(),
-                Arrays.asList(MenuProduct.of(소고기한우.getId(), 2L))
+                추천메뉴,
+                Arrays.asList(MenuProduct.of(소고기한우, 2L))
         );
 
         ExtractableResponse<Response> createResponse = 메뉴_생성_요청(menu);
@@ -87,8 +87,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         return TestApiClient.create(menu, "/api/menus");
     }
 
-    public static Menu 메뉴_등록되어있음(String name, int price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        Menu menu = Menu.of(name, price, menuGroupId, menuProducts);
+    public static Menu 메뉴_등록되어있음(String name, int price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        Menu menu = Menu.of(name, price, menuGroup, menuProducts);
         return 메뉴_생성_요청(menu).as(Menu.class);
     }
 }

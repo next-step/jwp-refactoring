@@ -4,7 +4,7 @@ import kitchenpos.domain.TableGroup;
 
 import java.util.*;
 
-public class FakeTableGroupDao implements TableGroupDao {
+public class FakeTableGroupRepository implements TableGroupRepository {
     private Map<Long, TableGroup> map = new HashMap<>();
     private Long key = 1L;
 
