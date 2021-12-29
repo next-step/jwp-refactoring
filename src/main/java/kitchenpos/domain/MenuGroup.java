@@ -1,33 +1,55 @@
 package kitchenpos.domain;
 
-public class MenuGroup {
-    private Long id;
-    private String name;
+import javax.persistence.*;
+import java.util.Objects;
 
-    public MenuGroup() {}
+@Entity
+public class MenuGroup {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Embedded
+    @AttributeOverride(name = "name", column = @Column(name = "name", nullable = false))
+    private Name name;
+
+    public MenuGroup() {
+    }
 
     public MenuGroup(final Long id, final String name) {
         this.id = id;
-        this.name = name;
+        this.name = Name.from(name);
     }
 
     public static MenuGroup of(final Long id, final String name) {
         return new MenuGroup(id, name);
     }
 
+    public static MenuGroup of(final String name) {
+        return new MenuGroup(null, name);
+    }
+
+    public static MenuGroup from(final String name) {
+        return new MenuGroup(null, name);
+    }
+
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public String getName() {
-        return name;
+        return name.toName();
     }
 
-    public void setName(final String name) {
-        this.name = name;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MenuGroup menuGroup = (MenuGroup) o;
+        return Objects.equals(id, menuGroup.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
