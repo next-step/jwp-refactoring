@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import kitchenpos.tobe.common.domain.CustomEventPublisher;
+import kitchenpos.tobe.common.domain.Validator;
 import kitchenpos.tobe.fixture.OrderTableFixture;
 import kitchenpos.tobe.fixture.TableGroupFixture;
 import org.assertj.core.api.ThrowableAssert;
@@ -65,12 +65,12 @@ public class OrderTableTest {
     @Test
     void clear() {
         // given
-        final CustomEventPublisher<OrderTable> eventPublisher = new FakeOrderTableEventPublisher();
+        final Validator<OrderTable> validator = new FakeOrderTableValidator();
         final OrderTable table = OrderTableFixture.of();
         table.serve(new NumberOfGuests(4));
 
         // when
-        table.clear(eventPublisher);
+        table.clear(validator);
 
         // then
         assertAll(
@@ -83,11 +83,11 @@ public class OrderTableTest {
     @Test
     void clearFailTableEmpty() {
         // given
-        final CustomEventPublisher<OrderTable> eventPublisher = new FakeOrderTableEventPublisher();
+        final Validator<OrderTable> validator = new FakeOrderTableValidator();
         final OrderTable table = OrderTableFixture.of();
 
         // when
-        final ThrowableAssert.ThrowingCallable request = () -> table.clear(eventPublisher);
+        final ThrowableAssert.ThrowingCallable request = () -> table.clear(validator);
 
         // then
         assertThatThrownBy(request).isInstanceOf(IllegalStateException.class);

@@ -11,18 +11,17 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import kitchenpos.tobe.common.domain.CustomEventPublisher;
+import kitchenpos.tobe.common.domain.Validator;
 import kitchenpos.tobe.fixture.OrderTableFixture;
 import kitchenpos.tobe.orders.ordertable.domain.OrderTable;
 import kitchenpos.tobe.orders.ordertable.domain.OrderTableRepository;
 import kitchenpos.tobe.orders.ordertable.dto.OrderTableChangeEmptyRequest;
 import kitchenpos.tobe.orders.ordertable.dto.OrderTableResponse;
-import kitchenpos.tobe.orders.ordertable.infra.OrderTableClearedEventPublisher;
 import org.assertj.core.api.ThrowableAssert;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
@@ -37,18 +36,11 @@ public class OrderTableServiceTest {
     @Mock
     private ApplicationEventPublisher applicationEventPublisher;
 
-    private CustomEventPublisher<OrderTable> customEventPublisher;
+    @Mock
+    private Validator<OrderTable> validator;
 
+    @InjectMocks
     private OrderTableService orderTableService;
-
-    @BeforeEach
-    void setUp() {
-        customEventPublisher = new OrderTableClearedEventPublisher(applicationEventPublisher);
-        orderTableService = new OrderTableService(
-            orderTableRepository,
-            customEventPublisher
-        );
-    }
 
     @DisplayName("주문 테이블을 생성할 수 있다.")
     @Test

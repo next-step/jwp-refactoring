@@ -10,7 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import kitchenpos.tobe.common.domain.CustomEventPublisher;
+import kitchenpos.tobe.common.domain.Validator;
 
 @Entity
 public class OrderTable {
@@ -68,13 +68,13 @@ public class OrderTable {
         changeNumberOfGuests(numberOfGuests);
     }
 
-    public void clear(final CustomEventPublisher<OrderTable> eventPublisher) {
+    public void clear(final Validator<OrderTable> validator) {
+        validator.validate(this);
         if (isEmpty()) {
             throw new IllegalStateException();
         }
         this.numberOfGuests = new NumberOfGuests(MIN_NUMBER_OF_GUESTS);
         this.empty = new Empty(CLEAR);
-        eventPublisher.publish(this);
     }
 
     public Long getId() {
