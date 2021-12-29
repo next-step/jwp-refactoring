@@ -171,7 +171,13 @@
   
 
   ![image](https://user-images.githubusercontent.com/17772475/146971725-05a656c6-22ca-48ab-923f-7ee8180344fa.png)
+
+- 관계도 2차 그림
   
+
+  ![image](https://user-images.githubusercontent.com/17772475/147706656-f8619599-3b3a-4ac6-81e4-67bb48eb779f.png)
+  
+
 
 ## 2단계 할 일
 - [x] Dao 기반 -> Repository 기반 (spring-data-jpa) 로 변경
@@ -194,3 +200,26 @@ _ menuGroup은 왜 필수일까..?
 
 ## 주요 변화 기록
 - TableService -> OrderTableService로 변경
+
+### 3단계 할 일
+- [ ] **Bean Validation 극한으로 써 보기**
+- [ ] menu와 OrderLineItem 결합도 해결
+- [x] 의존성 관계 정리
+- [x] 매직넘버 없애기
+- [x] TODO -> DONE 완료 시키기..
+- [x] 생성자 protected 적용
+- [x] changeEmpty는 개인적으로 changeNumbersOfGuests(0)로 컨버팅 (메서드 자체는 이해 관계자 설득 전에는 살려둔다는 느낌 또는 empty 명시적 표현의 느낌으로 살려 둠)
+
+### 의문 해소
+- 도메인을 점점 이해하게되면서 menu와 product가 이해관계에 따라 필요할 수 있다고 생각하게 됨
+    - ex. 짜장면, 탕수육 세트 => 메뉴 짜장면 => 상품
+    - 이렇게 되면 menu -> menuProduct, product는 필요하게 됨
+    - menu, menuProduct는 일대다 단방향 설정이 가능하지만 일대다 단방향에서는 연관 관계 처리를 위해 update 쿼리가 발동하므로 양방향으로 놔둠
+- menuGroup도 필수로 하는 것이 필요할 수도 있겠다고 생각하게 됨
+    - 1메뉴그룹 1~n 메뉴 그룹을 필수적으로 가짐으로써 메뉴 그룹이 없는 메뉴에 대한 조회 걱정이 없어진다면 그럴 수 있겠다고 생각
+- changeEmpty는 개인적으로 changeNumbersOfGuests(0)와 같다고 생각
+
+### 생각
+- 결합도가 높은 도메인 관계 찾기
+  - Menu 와 OrderLineItem 의 관계
+    - 메뉴의 이름과 가격이 변할 때 같이 변하지 않게 하기
