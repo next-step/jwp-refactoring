@@ -1,32 +1,20 @@
 package kitchenpos.orders.domain;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.util.CollectionUtils;
 
-import kitchenpos.ordertable.domain.OrderTable;
 
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "orders")
@@ -49,21 +37,17 @@ public class Order {
 	@CreatedDate
 	private LocalDateTime orderedTime;
 
-	@Embedded
-	private OrderLineItems orderLineItems;
-
 	public Order() {
 	}
 
-	public Order(Long orderTableId, OrderStatus orderStatus, OrderLineItems orderLineItems) {
-		this(null, orderTableId, orderStatus, orderLineItems);
+	public Order(Long orderTableId, OrderStatus orderStatus) {
+		this(null, orderTableId, orderStatus);
 	}
 
-	public Order(Long id, Long orderTableId, OrderStatus orderStatus, OrderLineItems orderLineItems) {
+	public Order(Long id, Long orderTableId, OrderStatus orderStatus) {
 		this.id = id;
 		this.orderTableId = orderTableId;
 		this.orderStatus = orderStatus;
-		this.orderLineItems = orderLineItems.setOrder(this);
 	}
 
 	public boolean isCompletion() {
@@ -97,11 +81,4 @@ public class Order {
 		return orderedTime;
 	}
 
-	public List<OrderLineItem> getOrderLineItems() {
-		return orderLineItems.value();
-	}
-
-	public boolean isEmptyOrderLineItems() {
-		return orderLineItems.isEmpty();
-	}
 }

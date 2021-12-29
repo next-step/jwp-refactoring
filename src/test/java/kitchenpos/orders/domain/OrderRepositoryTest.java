@@ -4,13 +4,10 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
-import kitchenpos.ordertable.domain.OrderTable;
 
 @DataJpaTest
 class OrderRepositoryTest {
@@ -22,7 +19,7 @@ class OrderRepositoryTest {
 	@DisplayName("주문 저장 테스트")
 	public void saveOrderTest() {
 		//given
-		Order order = new Order(null, 1L, OrderStatus.COOKING, new OrderLineItems(Lists.emptyList()));
+		Order order = new Order(null, 1L, OrderStatus.COOKING);
 
 		//when
 		Order save = orderRepository.save(order);

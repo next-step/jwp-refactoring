@@ -60,7 +60,7 @@ class MenuProductRepositoryTest {
 	}
 
 	@Test
-	@DisplayName("없는 메뉴 id로 조회 테스트")
+	@DisplayName("없는 메뉴상품 id로 조회 테스트")
 	public void findByIdMenuProductFailTest() {
 		//given
 
@@ -69,6 +69,18 @@ class MenuProductRepositoryTest {
 
 		//then
 		assertThat(menuProduct.getSeq()).isNull();
+	}
+
+	@Test
+	@DisplayName("메뉴 id로 조회 테스트")
+	public void findAllByMenuId() {
+		//given
+
+		//when
+		List<MenuProduct> menuProducts = menuProductRepository.findAllByMenuId(1L);
+
+		//then
+		assertThat(menuProducts).hasSize(1);
 	}
 
 }

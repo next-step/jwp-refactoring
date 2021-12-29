@@ -18,20 +18,20 @@ public class OrderValidator {
 		this.menuRepository = menuRepository;
 	}
 
-	public void validateOrderCreate(Order order) {
-		validateOrderLineItemIsEmpty(order);
-		validateIsMenuExisted(order);
+	public void validateOrderCreate(Order order, OrderLineItems orderLineItems) {
+		validateOrderLineItemIsEmpty(orderLineItems);
+		validateIsMenuExisted(orderLineItems);
 		validateOrderTableIsUnUse(findOrderTableById(order.getOrderTableId()));
 	}
 
-	private void validateOrderLineItemIsEmpty(Order order) {
-		if (order.isEmptyOrderLineItems()) {
+	private void validateOrderLineItemIsEmpty(OrderLineItems orderLineItems) {
+		if (orderLineItems.isEmptyOrderLineItems()) {
 			throw new IllegalArgumentException("주문할 메뉴를 골라주세요");
 		}
 	}
 
-	private void validateIsMenuExisted(Order order) {
-		order.getOrderLineItems()
+	private void validateIsMenuExisted(OrderLineItems orderLineItems) {
+		orderLineItems.value()
 			.forEach(ol -> findMenuById(ol.getMenuId()));
 	}
 

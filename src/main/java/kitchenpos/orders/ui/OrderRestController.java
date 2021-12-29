@@ -1,7 +1,6 @@
 package kitchenpos.orders.ui;
 
 import kitchenpos.orders.application.OrderService;
-import kitchenpos.orders.domain.Order;
 import kitchenpos.orders.dto.OrderRequest;
 import kitchenpos.orders.dto.OrderResponse;
 
@@ -21,19 +20,19 @@ public class OrderRestController {
 
 	@PostMapping("/api/orders")
 	public ResponseEntity<OrderResponse> create(@RequestBody final OrderRequest orderRequest) {
-		final Order created = orderService.create(orderRequest);
+		final OrderResponse created = orderService.create(orderRequest);
 		final URI uri = URI.create("/api/orders/" + created.getId());
-		return ResponseEntity.created(uri).body(OrderResponse.of(created));
+		return ResponseEntity.created(uri).body(created);
 	}
 
 	@GetMapping("/api/orders")
 	public ResponseEntity<List<OrderResponse>> list() {
-		return ResponseEntity.ok().body(OrderResponse.ofList(orderService.list()));
+		return ResponseEntity.ok().body(orderService.list());
 	}
 
 	@PutMapping("/api/orders/{orderId}/order-status")
 	public ResponseEntity<OrderResponse> changeOrderStatus(@PathVariable final Long orderId, @RequestBody final OrderRequest orderRequest) {
-		Order updated = orderService.changeOrderStatus(orderId, orderRequest);
-		return ResponseEntity.ok(OrderResponse.of(updated));
+		OrderResponse updated = orderService.changeOrderStatus(orderId, orderRequest);
+		return ResponseEntity.ok(updated);
 	}
 }

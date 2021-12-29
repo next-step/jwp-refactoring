@@ -3,13 +3,6 @@ package kitchenpos.orders.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.orders.domain.Order;
 import kitchenpos.orders.domain.OrderLineItem;
 
 public class OrderLineItemResponse {

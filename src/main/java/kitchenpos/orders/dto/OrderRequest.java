@@ -3,14 +3,12 @@ package kitchenpos.orders.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.util.CollectionUtils;
 
 import kitchenpos.common.domain.Quantity;
 import kitchenpos.orders.domain.Order;
 import kitchenpos.orders.domain.OrderLineItem;
 import kitchenpos.orders.domain.OrderLineItems;
 import kitchenpos.orders.domain.OrderStatus;
-import kitchenpos.ordertable.domain.OrderTable;
 
 public class OrderRequest {
 	private Long orderTableId;
@@ -42,10 +40,10 @@ public class OrderRequest {
 	}
 
 	public Order toOrder() {
-		return new Order(orderTableId, OrderStatus.COOKING, createOrderLineItems());
+		return new Order(orderTableId, OrderStatus.COOKING);
 	}
 
-	private OrderLineItems createOrderLineItems() {
+	public OrderLineItems toOrderLineItems() {
 		return new OrderLineItems(orderLineItemRequests
 			.stream()
 			.map(ol -> new OrderLineItem(ol.getMenuId(), Quantity.valueOf(ol.getQuantity())))

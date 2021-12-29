@@ -12,6 +12,7 @@ import java.util.List;
 
 @Service
 public class OrderTableService {
+	public static final int NUMBER_OF_GUESTS_MIN_SIZE = 0;
 	private final OrderTableRepository orderTableRepository;
 	private final OrderTableValidator orderTableValidator;
 
@@ -49,7 +50,7 @@ public class OrderTableService {
 	}
 
 	private void validateNumberOfGuestsLessThanZero(OrderTableRequest orderTableRequest) {
-		if (orderTableRequest.getNumberOfGuests() < 0) {
+		if (orderTableRequest.getNumberOfGuests() < NUMBER_OF_GUESTS_MIN_SIZE) {
 			throw new IllegalArgumentException("인원수는 0보다 작을 수 없습니다");
 		}
 	}

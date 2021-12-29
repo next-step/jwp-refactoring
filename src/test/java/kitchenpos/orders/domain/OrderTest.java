@@ -2,7 +2,6 @@ package kitchenpos.orders.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -26,7 +25,7 @@ class OrderTest {
 	@DisplayName("주문이 계산완료된 상태인지 확인")
 	public void isCompletion(String status, boolean expected) {
 		//when
-		Order order = new Order(1L, null, OrderStatus.valueOf(status), new OrderLineItems(Lists.emptyList()));
+		Order order = new Order(1L, null, OrderStatus.valueOf(status));
 
 		//then
 		assertThat(order.isCompletion()).isEqualTo(expected);

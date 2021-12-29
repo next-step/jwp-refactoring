@@ -11,10 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.orders.domain.Order;
 import kitchenpos.orders.domain.OrderStatus;
 import kitchenpos.orders.dto.OrderLineItemRequest;
 import kitchenpos.orders.dto.OrderRequest;
+import kitchenpos.orders.dto.OrderResponse;
 
 @Transactional
 @SpringBootTest
@@ -33,7 +33,7 @@ class OrderServiceTest {
 		OrderRequest orderRequest = new OrderRequest(7L, Lists.newArrayList(orderLineItemRequest));
 
 		//when
-		Order save = orderService.create(orderRequest);
+		OrderResponse save = orderService.create(orderRequest);
 
 		//then
 		assertThat(save).isNotNull();
@@ -100,7 +100,7 @@ class OrderServiceTest {
 	public void findAllOrderList() {
 		//given
 		//when
-		List<Order> orders = orderService.list();
+		List<OrderResponse> orders = orderService.list();
 
 		//then
 		assertThat(orders).hasSize(7);
@@ -111,10 +111,10 @@ class OrderServiceTest {
 	public void changeOrderStatusTest() {
 		//given
 		//when
-		Order change = orderService.changeOrderStatus(1L, changeOrderStatus);
+		OrderResponse change = orderService.changeOrderStatus(1L, changeOrderStatus);
 
 		//then
-		assertThat(change.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
+		assertThat(change.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
 	}
 
 	@Test

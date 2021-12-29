@@ -4,21 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Embeddable;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-
 import org.springframework.util.CollectionUtils;
 
-
-@Embeddable
 public class OrderLineItems {
 
-	@OneToMany(mappedBy = "order", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<OrderLineItem> orderLineItems;
+	private final List<OrderLineItem> orderLineItems;
 
 	public OrderLineItems() {
+		this.orderLineItems = new ArrayList<>();
 	}
 
 	public OrderLineItems(final List<OrderLineItem> orderLineItems) {
@@ -27,7 +20,7 @@ public class OrderLineItems {
 
 	public OrderLineItems setOrder(Order order) {
 		return new OrderLineItems(orderLineItems.stream()
-			.map(ol -> new OrderLineItem(order, ol.getMenuId(), ol.getQuantity()))
+			.map(ol -> new OrderLineItem(order.getId(), ol.getMenuId(), ol.getQuantity()))
 			.collect(Collectors.toList()));
 	}
 
@@ -35,7 +28,7 @@ public class OrderLineItems {
 		return new ArrayList<>(orderLineItems);
 	}
 
-	public boolean isEmpty() {
+	public boolean isEmptyOrderLineItems() {
 		return CollectionUtils.isEmpty(orderLineItems);
 	}
 }
