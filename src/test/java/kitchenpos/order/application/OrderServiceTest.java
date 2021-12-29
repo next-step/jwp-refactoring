@@ -124,7 +124,7 @@ class OrderServiceTest {
         when(orderRepository.findById(anyLong())).thenReturn(Optional.of(주문));
 
         // given
-        OrderRequest orderRequest = new OrderRequest(주문_테이블_1번.getId(), "MEAL");
+        OrderRequest orderRequest = new OrderRequest(주문_테이블_1번.getId(), OrderStatus.MEAL);
 
         // when
         OrderResponse changedOrders = orderService.changeOrderStatus(2L, orderRequest);

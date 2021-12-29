@@ -47,7 +47,7 @@ public class OrderService {
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
         final Order order = findById(orderId);
 
-        order.changeOrderStatus(OrderStatus.valueOf(orderRequest.getOrderStatus()));
+        order.changeOrderStatus(orderRequest.getOrderStatus());
 
         return OrderResponse.of(order);
     }
