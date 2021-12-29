@@ -91,7 +91,7 @@ class TableServiceTest {
         OrderTable orderTable = new OrderTable(1L, 1L, 4, false);
         아이디로_조회시_주문테이블을_반환(orderTable);
 
-        OrderTableRequest request = new OrderTableRequest(4,true);
+        OrderTableRequest request = new OrderTableRequest(4, true);
 
         // when and then
         assertThatExceptionOfType(KitchenposException.class)
