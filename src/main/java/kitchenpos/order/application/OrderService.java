@@ -2,11 +2,11 @@ package kitchenpos.order.application;
 
 import java.util.List;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderCompletionEvent;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.repository.OrderRepository;
-import kitchenpos.table.repository.OrderTableRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,23 +15,19 @@ public class OrderService {
 
     private final OrderMapper orderMapper;
     private final OrderValidator orderValidator;
-
-    private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     public OrderService(
         final OrderMapper orderMapper,
         final OrderValidator orderValidator,
-        final MenuRepository menuRepository,
         final OrderRepository orderRepository,
-        final OrderTableRepository orderTableRepository
+        final ApplicationEventPublisher eventPublisher
     ) {
         this.orderMapper = orderMapper;
         this.orderValidator = orderValidator;
-        this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional
@@ -51,6 +47,9 @@ public class OrderService {
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
         final Order savedOrder = orderMapper.mapFrom(orderId);
         savedOrder.changeOrderStatus(orderValidator, orderRequest.getOrderStatus());
+        if (savedOrder.isCompleted()) {
+            eventPublisher.publishEvent(new OrderCompletionEvent(savedOrder));
+        }
         return OrderResponse.from(savedOrder);
     }
 }

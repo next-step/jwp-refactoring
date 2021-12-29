@@ -21,6 +21,8 @@ import kitchenpos.table.dto.TableRequest;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -134,10 +136,11 @@ class OrderServiceTest {
     }
 
     @DisplayName("주문 상태를 변경할 수 있다.")
-    @Test
-    void 주문상태_변경() {
+    @ParameterizedTest
+    @ValueSource(strings = {"COOKING", "MEAL", "COMPLETION"})
+    void 주문상태_변경(String status) {
         // given
-        OrderStatus 상태 = OrderStatus.COOKING;
+        OrderStatus 상태 = OrderStatus.valueOf(status);
         OrderResponse 주문 = 주문_등록();
 
         // when
@@ -146,6 +149,10 @@ class OrderServiceTest {
         // then
         assertThat(actual.getId()).isEqualTo(주문.getId());
         assertThat(actual.getOrderStatus()).isEqualTo(상태);
+
+        if (상태.equals(OrderStatus.COMPLETION)) {
+            assertThat(actual.getOrderTable().isEmpty()).isTrue();
+        }
     }
 
     @DisplayName("주문이 COMPLETION 상태일 때는 주문 변경을 할 수 없다.")

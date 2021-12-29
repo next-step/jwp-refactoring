@@ -19,6 +19,30 @@
     
   * 외부 애그리거트의 상태값 변경을 위해서 '이벤트' 를 활용
   
+
+### 객체 의존 관계 BEFORE :
+
+![img.png](./src/main/resources/imgs/object-relations-before.png)
+- 생애 주기가 비슷한 객체들을 묶음
+  - Product
+  - Menu
+  - Order
+  - Table
+
+### 객체 의존 관계 AFTER :
+
+![img.png](src/main/resources/imgs/objects-relations-after.png)
+- 의존 관계가 강하고 transaction 단위가 크면, 설계상/ 성능상의 문제가 발생한다.
+- 관계 해제가 적당하다고 생각되는 부분 의존성 개선
+  
+  - orderLineItem 과 menu 객체 연관 관계 해제
+  - orderTable - order 관계 양방향 -> 단방향 변경
+
+### 이벤트 작동 방식 :
+![img.png](src/main/resources/imgs/event-flow.png)
+- 주문 종료 시에 table 객체 그룹에 이벤트를 보낼 수 있도록 ApplicationEventPublisher, Handler 추가
+- order - table 사이 관계를 끊지 않았지 때문에 이벤트 활용이 꼭 필요하지는 않을 수 있음
+- 의존성 리팩터링 시 필요한 실습인 것 같아 진행.
 ---
 
 
@@ -59,6 +83,8 @@
   * 주문 테이블이 등록되어 있지 않음.
   * 주문 테이블이 빈 테이블일 경우.
 
+* 주문 등록 후 메뉴 정보가 바뀌어도 주문 정보는 바뀌지 않는다.
+
 ### 단체 지정 (주문 테이블 그룹)
 * 주문 테이블 목록을 단체 지정할 수 있다.
 * 주문 테이블 목록을 단체 지정할 수 없는 경우.
@@ -83,6 +109,7 @@
 * 주문 목록을 조회할 수 있다.
 * 주문의 상태를 변경할 수 있다. 
   * 조리 -> 식사 -> 완료
+  * 완료로 변경할 경우 주문 테이블은 빈테이블이 된다.
 * 이미 완료된 주문은 변경할 수 없다.
 
 
