@@ -19,8 +19,8 @@ public class OrderStatusValidateEventHandler {
     @EventListener
     @Transactional
     public void handle(OrderStatusValidateEvent event) {
-        if (orderRepository.existsByOrderTableAndOrderStatusIn(
-            event.getOrderTable(), OrderStatus.NOT_COMPLETED_LIST)) {
+        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
+            event.getOrderTableId(), OrderStatus.NOT_COMPLETED_LIST)) {
             throw new KitchenposException(KitchenposErrorCode.CONTAINS_USED_TABLE);
         }
     }

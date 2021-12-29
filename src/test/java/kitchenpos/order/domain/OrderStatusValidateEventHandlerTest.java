@@ -12,7 +12,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.common.exception.KitchenposException;
 import kitchenpos.table.domain.OrderStatusValidateEvent;
-import kitchenpos.table.domain.OrderTable;
 
 @ExtendWith(MockitoExtension.class)
 class OrderStatusValidateEventHandlerTest {
@@ -26,11 +25,10 @@ class OrderStatusValidateEventHandlerTest {
     @Test
     void handle() {
         // given
-        Mockito.when(orderRepository.existsByOrderTableAndOrderStatusIn(Mockito.any(), Mockito.anyList()))
+        Mockito.when(orderRepository.existsByOrderTableIdAndOrderStatusIn(Mockito.anyLong(), Mockito.anyList()))
             .thenReturn(false);
 
-        OrderTable orderTable = new OrderTable(1L, 4);
-        OrderStatusValidateEvent event = new OrderStatusValidateEvent(orderTable);
+        OrderStatusValidateEvent event = new OrderStatusValidateEvent(1L);
 
         // when and then
         assertThatCode(() -> orderStatusValidateEventHandler.handle(event))
@@ -41,11 +39,10 @@ class OrderStatusValidateEventHandlerTest {
     @Test
     void handleFail() {
         // given
-        Mockito.when(orderRepository.existsByOrderTableAndOrderStatusIn(Mockito.any(), Mockito.anyList()))
+        Mockito.when(orderRepository.existsByOrderTableIdAndOrderStatusIn(Mockito.anyLong(), Mockito.anyList()))
             .thenReturn(true);
 
-        OrderTable orderTable = new OrderTable(1L, 4);
-        OrderStatusValidateEvent event = new OrderStatusValidateEvent(orderTable);
+        OrderStatusValidateEvent event = new OrderStatusValidateEvent(1L);
 
         // when and then
         assertThatExceptionOfType(KitchenposException.class)

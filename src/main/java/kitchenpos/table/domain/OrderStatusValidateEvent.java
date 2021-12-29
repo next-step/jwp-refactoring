@@ -1,13 +1,13 @@
 package kitchenpos.table.domain;
 
 public class OrderStatusValidateEvent {
-    private final OrderTable orderTable;
+    private final Long orderTableId;
 
-    public OrderStatusValidateEvent(OrderTable orderTable) {
-        this.orderTable = orderTable;
+    public OrderStatusValidateEvent(Long orderTableId) {
+        this.orderTableId = orderTableId;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 }

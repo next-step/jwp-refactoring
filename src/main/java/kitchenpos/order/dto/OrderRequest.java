@@ -3,7 +3,10 @@ package kitchenpos.order.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
+import kitchenpos.order.domain.OrderStatus;
 
 public class OrderRequest {
     private Long orderTableId;
@@ -40,5 +43,9 @@ public class OrderRequest {
             .map(orderLineItemRequest ->
                 new OrderLineItem(orderLineItemRequest.getMenuId(), orderLineItemRequest.getQuantity()))
             .collect(Collectors.toList());
+    }
+
+    public Order toEntity() {
+        return new Order(orderTableId, OrderStatus.COOKING, new OrderLineItems(getOrderLineItemsEntity()));
     }
 }

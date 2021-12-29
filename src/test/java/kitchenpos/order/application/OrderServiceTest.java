@@ -3,7 +3,6 @@ package kitchenpos.order.application;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -29,40 +28,32 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderLineItemResponse;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
     private OrderRepository orderRepository;
     @Mock
-    private OrderTableRepository orderTableRepository;
-    @Mock
     private OrderValidator orderValidator;
 
     @InjectMocks
     private OrderService orderService;
 
-    private OrderTable orderTable;
     private OrderLineItem orderLineItem;
     private OrderLineItemRequest orderLineItemRequest;
     private Order order;
 
     @BeforeEach
     void setUp() {
-        orderTable = new OrderTable(1L, 1L, 4, false);
         orderLineItemRequest = new OrderLineItemRequest(1L, 1);
         orderLineItem = new OrderLineItem(1L, 1);
-        order = new Order(1L, orderTable, OrderStatus.COOKING, LocalDateTime.now(),
-            new OrderLineItems(Collections.singletonList(orderLineItem)));
+        order = new Order(1L, 1L, OrderStatus.COOKING, new OrderLineItems(Collections.singletonList(orderLineItem)));
     }
 
     @DisplayName("주문 생성")
     @Test
     void create() {
         // given
-        조회한_주문_테이블_반환(orderTable);
         유효성_확인시_에러_던지지_않음();
         주문_저장(order);
 
@@ -107,22 +98,6 @@ class OrderServiceTest {
             .withMessage("주문 항목의 개수가 다릅니다.");
     }
 
-    @DisplayName("주문 테이블이 빈 테이블인 경우 주문 불가능")
-    @Test
-    void createOrderFailWhenTableNotExists() {
-        // given
-
-        OrderTable orderTable = new OrderTable(1L, 1L, 4, true);
-        조회한_주문_테이블_반환(orderTable);
-
-        OrderRequest request = new OrderRequest(1L, Collections.singletonList(orderLineItemRequest));
-
-        // when and then
-        assertThatExceptionOfType(KitchenposException.class)
-            .isThrownBy(() -> orderService.create(request))
-            .withMessage("주문 테이블이 비어있습니다.");
-    }
-
     @DisplayName("주문 조회")
     @Test
     void list() {
@@ -163,7 +138,7 @@ class OrderServiceTest {
     @Test
     void changeOrderStatusFailWhenAlreadyCompleted() {
         // given
-        Order order = new Order(1L, orderTable, OrderStatus.COMPLETION, LocalDateTime.now(), new OrderLineItems());
+        Order order = new Order(1L, 1L, OrderStatus.COMPLETION, new OrderLineItems());
         ID로_주문_조회(order);
 
         OrderRequest request = new OrderRequest(1L, "MEAL");
@@ -186,17 +161,12 @@ class OrderServiceTest {
 
     private void 유효성_확인시_에러_던지지_않음() {
         Mockito.doNothing()
-            .when(orderValidator).validateMenu(Mockito.any());
+            .when(orderValidator).validate(Mockito.any());
     }
 
     private void 유효성_주문_항목_개수_다름_에러() {
         Mockito.doThrow(new KitchenposException(KitchenposErrorCode.INVALID_ORDER_LINE_ITEM_SIZE))
-            .when(orderValidator).validateMenu(Mockito.any());
-    }
-
-    private void 조회한_주문_테이블_반환(OrderTable orderTable) {
-        Mockito.when(orderTableRepository.findById(Mockito.anyLong()))
-            .thenReturn(Optional.of(orderTable));
+            .when(orderValidator).validate(Mockito.any());
     }
 
     private void 주문_전쳬_조회() {

@@ -6,28 +6,28 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import kitchenpos.common.exception.KitchenposErrorCode;
 import kitchenpos.common.exception.KitchenposException;
-import kitchenpos.table.domain.OrderTable;
 
 @Entity(name = "orders")
+@EntityListeners(AuditingEntityListener.class)
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private OrderTable orderTable;
+    @Column(nullable = false)
+    private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -43,18 +43,16 @@ public class Order {
     protected Order() {
     }
 
-    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
-        OrderLineItems orderLineItems) {
+    public Order(Long id, Long orderTableId, OrderStatus orderStatus, OrderLineItems orderLineItems) {
         this.id = id;
-        this.orderTable = orderTable;
+        this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
         addOrderLineItems(orderLineItems.getOrderLineItems());
     }
 
-    public Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
+    public Order(Long orderTableId, OrderStatus orderStatus,
         OrderLineItems orderLineItems) {
-        this(null, orderTable, orderStatus, orderedTime, orderLineItems);
+        this(null, orderTableId, orderStatus, orderLineItems);
     }
 
     public Long getId() {
@@ -77,11 +75,7 @@ public class Order {
     }
 
     public Long getOrderTableId() {
-        if (orderTable == null) {
-            return null;
-        }
-
-        return orderTable.getId();
+        return orderTableId;
     }
 
     public void addOrderLineItem(OrderLineItem orderLineItem) {

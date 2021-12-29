@@ -75,7 +75,7 @@ public class OrderTable extends AbstractAggregateRoot<OrderTable> {
 
     public void updateEmpty(final boolean empty) {
         checkNotGrouped();
-        registerEvent(new OrderStatusValidateEvent(this));
+        registerEvent(new OrderStatusValidateEvent(id));
         this.empty = empty;
     }
 
@@ -91,7 +91,7 @@ public class OrderTable extends AbstractAggregateRoot<OrderTable> {
 
     public void ungroup() {
         this.tableGroupId = null;
-        registerEvent(new OrderStatusValidateEvent(this));
+        registerEvent(new OrderStatusValidateEvent(id));
     }
 
     public void group(Long tableGroupId) {

@@ -2,14 +2,12 @@ package kitchenpos.order.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.time.LocalDateTime;
 import java.util.Collections;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import kitchenpos.common.exception.KitchenposException;
-import kitchenpos.table.domain.OrderTable;
 
 class OrderTest {
 
@@ -17,9 +15,8 @@ class OrderTest {
     @Test
     void updateOrderStatus() {
         OrderLineItem orderLineItem = new OrderLineItem(1L, 1);
-        OrderTable orderTable = new OrderTable(1L, 1L, 4, false);
 
-        Order order = new Order(orderTable, OrderStatus.COMPLETION, LocalDateTime.now(),
+        Order order = new Order(1L, OrderStatus.COMPLETION,
             new OrderLineItems(Collections.singletonList(orderLineItem)));
 
         assertThatExceptionOfType(KitchenposException.class)
