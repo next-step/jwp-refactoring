@@ -11,7 +11,9 @@ public class MenuGroup {
     @Column(nullable = false)
     private String name;
 
-    protected MenuGroup() {}
+    protected MenuGroup() {
+    }
+
     private MenuGroup(String name) {
         this.name = name;
     }
@@ -33,16 +35,8 @@ public class MenuGroup {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
     }
 
     public void createId(Long id) {

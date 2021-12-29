@@ -22,9 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class MenuServiceTest {
     private final MenuRepository menuRepository = new FakeMenuRepository();
     private final MenuGroupRepository menuGroupRepository = new FakeMenuGroupRepository();
-    private final MenuProductRepository menuProductRepository = new FakeMenuProductRepository();
     private final ProductRepository productRepository = new FakeProductRepository();
-    private final MenuService menuService = new MenuService(menuRepository, menuGroupRepository, menuProductRepository, productRepository);
+    private final MenuService menuService = new MenuService(menuRepository, menuGroupRepository, productRepository);
 
     @DisplayName("가격이 음수면 예외가 발생한다.")
     @Test
