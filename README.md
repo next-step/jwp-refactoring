@@ -235,7 +235,7 @@
 ## Step3 의존성 리팩터링
 
 ### 개선 전 
-![img.png](src/main/resources/static/img.png)
+![img.png](src/main/resources/static/before.png)
 
 ### 개선 후
 
