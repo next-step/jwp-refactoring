@@ -26,6 +26,9 @@ public class OrderTables {
     }
 
     private OrderTables(List<OrderTable> orderTables) {
+
+        this.orderTables.addAll(orderTables);
+
         if (isSmallThanMinTableSize(orderTables)) {
             throw new IllegalArgumentException(
                 Message.ORDER_TABLES_IS_SMALL_THAN_MIN_TABLE_SIZE.getMessage());
@@ -36,11 +39,9 @@ public class OrderTables {
                 Message.ORDER_TABLE_IS_NOT_EMPTY_TABLE_OR_ALREADY_GROUP.getMessage()
             );
         }
-
-        this.orderTables.addAll(orderTables);
     }
 
-    public OrderTables() {
+    protected OrderTables() {
     }
 
     private boolean isSmallThanMinTableSize(final List<OrderTable> orderTables) {
