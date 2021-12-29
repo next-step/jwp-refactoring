@@ -52,21 +52,6 @@ public class ProductServiceTest {
         );
     }
 
-    @DisplayName("상품 생성 시 가격이 0원보다 낮으면 안된다.")
-    @Test
-    void 상품_생성_가격_0원_미만_예외() {
-        // given
-        final String name = "치킨";
-        final int price = -1;
-        ProductRequest 치킨_상품 = new ProductRequest(name, BigDecimal.valueOf(price));
-
-        // when
-        Throwable thrown = catchThrowable(() -> productService.create(치킨_상품));
-
-        // then
-        assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
-    }
-
     @DisplayName("상품 목록을 조회한다.")
     @Test
     void 상품_목록_조회() {
