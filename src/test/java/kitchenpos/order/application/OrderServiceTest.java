@@ -46,6 +46,8 @@ public class OrderServiceTest {
 	private OrderRepository orderRepository;
 	@Mock
 	private OrderTableRepository orderTableRepository;
+	@Mock
+	private OrderValidator orderValidator;
 
 	private Menu 더블후라이드;
 	private OrderTable 테이블;
@@ -78,7 +80,6 @@ public class OrderServiceTest {
 	@Test
 	void createTest() {
 		// given
-		given(orderTableRepository.findById(any())).willReturn(Optional.of(테이블));
 		given(orderRepository.save(any())).willReturn(생성된_주문);
 		given(menuService.getById(any())).willReturn(더블후라이드);
 
@@ -99,7 +100,6 @@ public class OrderServiceTest {
 		OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(1L, 0L);
 		OrderRequest request = new OrderRequest(1L, Collections.singletonList(orderLineItemRequest));
 
-		given(orderTableRepository.findById(any())).willReturn(Optional.of(테이블));
 		given(menuService.getById(any())).willReturn(더블후라이드);
 
 		// when, then
@@ -115,43 +115,12 @@ public class OrderServiceTest {
 		OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(1L, 0L);
 		OrderRequest request = new OrderRequest(1L, Collections.singletonList(orderLineItemRequest));
 
-		given(orderTableRepository.findById(any())).willReturn(Optional.of(테이블));
 		given(menuService.getById(any())).willThrow(new AppException(ErrorCode.NOT_FOUND, ""));
 
 		// when, then
 		assertThatThrownBy(() -> orderService.create(request))
 			.isInstanceOf(AppException.class)
 			.hasMessage(ErrorCode.NOT_FOUND.getMessage());
-	}
-
-	@DisplayName("주문 시, 주문 테이블이 존재해야 한다")
-	@Test
-	void createTest4() {
-		// given
-		OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(1L, 0L);
-		OrderRequest request = new OrderRequest(1L, Collections.singletonList(orderLineItemRequest));
-
-		given(orderTableRepository.findById(any())).willReturn(Optional.empty());
-
-		// when, then
-		assertThatThrownBy(() -> orderService.create(request))
-			.isInstanceOf(AppException.class)
-			.hasMessage(ErrorCode.NOT_FOUND.getMessage());
-	}
-
-	@DisplayName("주문 시, 주문 테이블이 빈 테이블 상태가 아니어야 한다")
-	@Test
-	void createTest5() {
-		// given
-		OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(1L, 0L);
-		OrderRequest request = new OrderRequest(1L, Collections.singletonList(orderLineItemRequest));
-
-		given(orderTableRepository.findById(any())).willReturn(Optional.of(빈_테이블));
-
-		// when, then
-		assertThatThrownBy(() -> orderService.create(request))
-			.isInstanceOf(AppException.class)
-			.hasMessage(ErrorCode.WRONG_INPUT.getMessage());
 	}
 
 	@DisplayName("주문 목록을 조회한다")
@@ -180,20 +149,6 @@ public class OrderServiceTest {
 
 		// then
 		assertThat(result.getOrderStatus().name()).isEqualTo(OrderStatus.MEAL.name());
-	}
-
-	@DisplayName("주문 상태를 변경 시, 주문 상태가 완료가 아니어야 한다")
-	@Test
-	void changeOrderStatusTest2() {
-		// given
-		Long id = 계산된_주문.getId();
-		OrderUpdateRequest request = new OrderUpdateRequest(OrderStatus.MEAL);
-		given(orderRepository.findById(any())).willReturn(Optional.of(계산된_주문));
-
-		// when
-		assertThatThrownBy(() -> orderService.changeOrderStatus(id, request))
-			.isInstanceOf(AppException.class)
-			.hasMessage(ErrorCode.WRONG_INPUT.getMessage());
 	}
 
 }

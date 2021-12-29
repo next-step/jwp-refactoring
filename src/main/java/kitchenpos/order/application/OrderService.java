@@ -17,8 +17,6 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderUpdateRequest;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
 
 @Service
 @Transactional
@@ -26,32 +24,23 @@ public class OrderService {
 
 	private final OrderRepository orderRepository;
 	private final MenuService menuService;
-	private final OrderTableRepository orderTableRepository;
+	private final OrderValidator orderValidator;
 
 	public OrderService(final OrderRepository orderRepository,
 		final MenuService menuService,
-		final OrderTableRepository orderTableRepository) {
+		final OrderValidator orderValidator) {
 
 		this.orderRepository = orderRepository;
 		this.menuService = menuService;
-		this.orderTableRepository = orderTableRepository;
+		this.orderValidator = orderValidator;
 	}
 
 	public OrderResponse create(final OrderRequest orderRequest) {
-		OrderTable orderTable = getOrderTableById(orderRequest.getOrderTableId());
-		Order order = Order.create(orderTable.getId());
+		orderValidator.validateCreate(orderRequest.getOrderTableId());
+		Order order = Order.create(orderRequest.getOrderTableId());
 		List<OrderLineItem> orderLineItemList = getOrderLineItems(orderRequest.getOrderLineItems());
 		order.addOrderLineItems(orderLineItemList);
 		return new OrderResponse(orderRepository.save(order));
-	}
-
-	private OrderTable getOrderTableById(Long orderTableId) {
-		OrderTable orderTable = orderTableRepository.findById(orderTableId)
-			.orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "주문 테이블을 찾을 수 없습니다"));
-		if (orderTable.isEmpty()) {
-			throw new AppException(ErrorCode.WRONG_INPUT, "빈 주문 테이블입니다.");
-		}
-		return orderTable;
 	}
 
 	private List<OrderLineItem> getOrderLineItems(List<OrderLineItemRequest> orderLineItems) {
@@ -71,6 +60,7 @@ public class OrderService {
 
 	public OrderResponse changeOrderStatus(final Long orderId, final OrderUpdateRequest request) {
 		Order order = getById(orderId);
+		orderValidator.validateUpdate(order.getOrderStatus());
 		order.updateStatus(request.getOrderStatus());
 		return new OrderResponse(order);
 	}
