@@ -37,7 +37,7 @@
 3. 저장소를 자신의 계정으로 Fork 한다.
 
 ### 요구 사항 1
-`kitchenpos` 패키지의 코드를 보고 키친포스의 요구 사항을 `README.md`에 작성한다. 미션을 진행함에 있어 아래 문서를 적극 활용한다.
+`api` 패키지의 코드를 보고 키친포스의 요구 사항을 `README.md`에 작성한다. 미션을 진행함에 있어 아래 문서를 적극 활용한다.
 - [마크다운](https://dooray.com/htmls/guides/markdown_ko_KR.html)
 
 ### 요구 사항 2
