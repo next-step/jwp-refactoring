@@ -29,10 +29,7 @@ subprojects {
         implementation 'org.springframework.boot:spring-boot-starter-actuator'
         implementation 'org.springframework.boot:spring-boot-starter-jdbc'
         implementation 'org.springframework.boot:spring-boot-starter-web'
-        runtimeOnly 'com.h2database:h2'
 
-        testImplementation 'io.rest-assured:rest-assured:3.3.0'
-        testImplementation 'org.springframework.boot:spring-boot-starter-test'
     }
 }
 
@@ -42,7 +39,7 @@ test {
 
 project(':module-common') {
     dependencies {
-        implementation 'org.flywaydb:flyway-core'
+
     }
 }
 
