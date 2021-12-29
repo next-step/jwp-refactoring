@@ -9,6 +9,7 @@ import kitchenpos.order.infra.OrderRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +28,7 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest request) {
-        final Order order = Order.create(request, orderCreateValidator, menuGroupValidator);
+        final Order order = Order.create(request.getOrderTableId(), request.getOrderLineItems(), Arrays.asList(orderCreateValidator, menuGroupValidator));
         return OrderResponse.of(orderRepository.save(order));
     }
 

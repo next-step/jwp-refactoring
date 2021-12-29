@@ -1,7 +1,6 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.order.domain.validator.OrderCreateValidator;
-import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.exception.CanNotChangeOrderStatusException;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -70,8 +69,8 @@ public class Order {
         return new Order(id, orderTableId, orderStatus, orderLineItems);
     }
 
-    public static Order create(OrderRequest request, OrderCreateValidator... validators) {
-        final Order order = request.toEntity();
+    public static Order create(Long orderTableId, List<OrderLineItem> orderLineItems, List<OrderCreateValidator> validators) {
+        final Order order = Order.of(orderTableId, orderLineItems);
         for (OrderCreateValidator validator : validators) {
             validator.validate(order);
         }

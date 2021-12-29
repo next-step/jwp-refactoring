@@ -1,8 +1,6 @@
 package kitchenpos.menu.dto;
 
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProductGroup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,14 +31,10 @@ public class MenuRequest {
         return price;
     }
 
-    public List<MenuProductRequest> getMenuProductRequests() {
-        return menuProductRequests;
-    }
-    
-    public Menu toEntity() {
-        final List<MenuProduct> menuProducts = this.menuProductRequests.stream()
+    public List<MenuProduct> getMenuProducts() {
+        return this.menuProductRequests.stream()
                 .map(MenuProductRequest::toEntity)
                 .collect(Collectors.toList());
-        return Menu.of(name, price, menuGroupId, menuProducts);
     }
+
 }

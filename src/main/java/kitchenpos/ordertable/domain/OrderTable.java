@@ -8,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.security.InvalidParameterException;
 import java.util.Objects;
 
 @Entity
@@ -78,16 +77,8 @@ public class OrderTable {
     }
 
     public void group(Long tableGroupId) {
-        validateGrouping(tableGroupId);
         this.tableGroupId = tableGroupId;
     }
-
-    private void validateGrouping(Long tableGroupId) {
-        if (Objects.isNull(tableGroupId)) {
-            throw new InvalidParameterException("단체 지정 아이디는 빈값이 될 수 없습니다.");
-        }
-    }
-
 
     @Override
     public boolean equals(Object target) {

@@ -1,7 +1,6 @@
 package kitchenpos.menu.domain;
 
 import kitchenpos.menu.domain.validator.MenuCreateValidator;
-import kitchenpos.menu.dto.MenuRequest;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -55,8 +54,8 @@ public class Menu {
         return new Menu(name, price, menuGroupId, menuProducts);
     }
 
-    public static Menu create(MenuRequest menuRequest, List<MenuCreateValidator> validators) {
-        final Menu menu = menuRequest.toEntity();
+    public static Menu create(String name, int price, long menuGroupId, List<MenuProduct> menuProducts, List<MenuCreateValidator> validators) {
+        final Menu menu = new Menu(name, price, menuGroupId, menuProducts);
         for (MenuCreateValidator validator : validators) {
             validator.validate(menu);
         }
