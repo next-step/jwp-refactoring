@@ -1,53 +1,74 @@
 package kitchenpos.domain;
 
+import javax.persistence.*;
+import java.util.Objects;
+
+@Entity
 public class OrderLineItem {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
-    private Long orderId;
-    private Long menuId;
-    private long quantity;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"), nullable = false)
+    private Order order;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_order_line_item_menu"), nullable = false)
+    private Menu menu;
+    @AttributeOverride(name = "quantity", column = @Column(name = "quantity", nullable = false))
+    private Quantity quantity;
 
-    public OrderLineItem() {}
+    protected OrderLineItem() {
+    }
 
-    public OrderLineItem(final Long seq, final Long orderId, final Long menuId, long quantity) {
+    private OrderLineItem(final Long seq, final Order order, final Menu menu, final Quantity quantity) {
         this.seq = seq;
-        this.orderId = orderId;
-        this.menuId = menuId;
+        this.order = order;
+        this.menu = menu;
         this.quantity = quantity;
     }
 
-    public static OrderLineItem of(final Long seq, final Long orderId, final Long menuId, long quantity) {
-        return new OrderLineItem(seq, orderId, menuId, quantity);
+    public static OrderLineItem of(final Long seq, final Order order, final Menu menu, final Long quantity) {
+        return new OrderLineItem(seq, order, menu, Quantity.from(quantity));
+    }
+
+    public static OrderLineItem of(final Order order, final Menu menu, final Long quantity) {
+        return new OrderLineItem(null, order, menu, Quantity.from(quantity));
+    }
+
+    public static OrderLineItem of(final Menu menu, final Long quantity) {
+        return new OrderLineItem(null, null, menu, Quantity.from(quantity));
     }
 
     public Long getSeq() {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
+    public Order getOrder() {
+        return order;
     }
 
-    public Long getOrderId() {
-        return orderId;
+    public Menu getMenu() {
+        return menu;
     }
 
-    public void setOrderId(final Long orderId) {
-        this.orderId = orderId;
-    }
-
-    public Long getMenuId() {
-        return menuId;
-    }
-
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
-    }
-
-    public long getQuantity() {
+    public Quantity getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
+    public void decideOrder(final Order order) {
+        this.order = order;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderLineItem that = (OrderLineItem) o;
+        return Objects.equals(seq, that.seq);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(seq);
     }
 }
