@@ -13,9 +13,6 @@
 
 ## 기능 목록
 
-- 서비스 레이어 의존성 개선: 패키지가 다른 서비스끼리의 참조를 Repository 사용을 통해 끊기
-    - OrderService
-    - MenuService
 - 도메인 레이어 의존성 개선: 객체 참조를 ID 참조로 변경하여 개선
     - MenuProduct 의 Product 참조
         - MenuValidator 생성
