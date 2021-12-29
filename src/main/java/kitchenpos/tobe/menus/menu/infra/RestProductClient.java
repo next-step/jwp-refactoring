@@ -1,12 +1,13 @@
 package kitchenpos.tobe.menus.menu.infra;
 
 import java.util.List;
+import kitchenpos.tobe.menus.menu.domain.ProductRepository;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 @Component
-public class RestProductClient {
+public class RestProductClient implements ProductRepository {
 
     private final RestTemplate restTemplate;
 
@@ -14,6 +15,7 @@ public class RestProductClient {
         this.restTemplate = restTemplateBuilder.build();
     }
 
+    @Override
     public boolean existAll(final List<Long> productIds) {
         return true;
     }

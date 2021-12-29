@@ -4,21 +4,20 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import kitchenpos.tobe.common.DomainService;
 import kitchenpos.tobe.common.domain.Validator;
-import kitchenpos.tobe.menus.menu.infra.RestProductClient;
 import kitchenpos.tobe.menus.menugroup.domain.MenuGroupRepository;
 
 @DomainService
 public class MenuValidator implements Validator<Menu> {
 
     private final MenuGroupRepository menuGroupRepository;
-    private final RestProductClient restProductClient;
+    private final ProductRepository productRepository;
 
     public MenuValidator(
         final MenuGroupRepository menuGroupRepository,
-        final RestProductClient restProductClient
+        final ProductRepository productRepository
     ) {
         this.menuGroupRepository = menuGroupRepository;
-        this.restProductClient = restProductClient;
+        this.productRepository = productRepository;
     }
 
     public void validate(final Menu menu) {
@@ -39,7 +38,7 @@ public class MenuValidator implements Validator<Menu> {
     }
 
     private void menuShouldConsistOfRegisteredProducts(final List<Long> productIds) {
-        if (!restProductClient.existAll(productIds)) {
+        if (!productRepository.existAll(productIds)) {
             throw new NoSuchElementException("상품이 없으면 메뉴를 등록할 수 없습니다.");
         }
     }
