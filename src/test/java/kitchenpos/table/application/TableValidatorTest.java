@@ -56,7 +56,7 @@ class TableValidatorTest {
                 두마리치킨,
                 MenuProducts.from(Collections.singletonList(후라이드_메뉴_상품)));
         주문_테이블 = OrderTableFixture.of(4, false);
-        주문_항목들 = OrderLineItems.from(Collections.singletonList(OrderLineItem.of(후라이드_후라이드, 1L)));
+        주문_항목들 = OrderLineItems.from(Collections.singletonList(OrderLineItem.of(1L, 1L)));
     }
 
     @Test

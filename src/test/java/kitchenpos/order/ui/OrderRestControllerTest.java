@@ -78,7 +78,7 @@ class OrderRestControllerTest extends RestControllerTest {
         OrderLineItemRequest 주문_항목_요청 = OrderLineItemRequest.of(후라이드_후라이드.getId(), 1L);
         주문_요청 = OrderRequest.of(주문_테이블.getId(), Arrays.asList(주문_항목_요청));
 
-        주문_항목 = OrderLineItemFixture.of(후라이드_후라이드, 1L);
+        주문_항목 = OrderLineItemFixture.of(1L, 1L);
         주문 = Order.of(1L, OrderLineItems.from(Collections.singletonList(주문_항목)));
 
         주문_응답 = OrderResponse.from(주문);

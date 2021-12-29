@@ -79,7 +79,7 @@ class OrderServiceTest {
 
         주문_테이블 = OrderTableFixture.of(4, false);
         빈_테이블 = OrderTableFixture.of(0, true);
-        주문_상품 = OrderLineItemFixture.of(후라이드_후라이드, 1L);
+        주문_상품 = OrderLineItemFixture.of(1L, 1L);
 
         주문_항목_요청 = OrderLineItemRequest.of(후라이드_후라이드.getId(), 1L);
         주문_요청 = OrderRequest.of(1L, Arrays.asList(주문_항목_요청));
