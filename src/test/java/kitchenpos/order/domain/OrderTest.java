@@ -9,6 +9,8 @@ import java.util.Arrays;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import kitchenpos.table.domain.OrderTable;
+
 public class OrderTest {
     
     @DisplayName("식사중으로 주문 상태를 변경할 수 있다")

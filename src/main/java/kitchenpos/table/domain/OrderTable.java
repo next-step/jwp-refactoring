@@ -1,5 +1,6 @@
-package kitchenpos.order.domain;
+package kitchenpos.table.domain;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 import javax.persistence.Embedded;
@@ -9,6 +10,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.Orders;
 
 @Entity
 public class OrderTable {
@@ -36,7 +40,7 @@ public class OrderTable {
         checkNumberOfGuests(numberOfGuests);
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
-        this.orders = new Orders();
+        this.orders = Orders.from(new ArrayList<>());
     }
 
     public static OrderTable of(int numberOfGuests, boolean empty) {

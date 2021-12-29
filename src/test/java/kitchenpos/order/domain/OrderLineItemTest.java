@@ -7,6 +7,8 @@ import java.util.Arrays;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import kitchenpos.table.domain.OrderTable;
+
 public class OrderLineItemTest {
     
     @DisplayName("주문 생성시 주문 항목도 세팅된다")
