@@ -1,4 +1,4 @@
-package kitchenpos.ui;
+package table.ui;
 
 import java.net.URI;
 import java.util.List;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import kitchenpos.application.TableService;
+import table.application.TableService;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.dto.OrderTableResponses;

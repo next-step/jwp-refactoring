@@ -18,6 +18,7 @@ import org.springframework.data.annotation.CreatedDate;
 
 import kitchenpos.exception.KitchenposErrorCode;
 import kitchenpos.exception.KitchenposException;
+import table.domain.OrderTable;
 
 @Entity(name = "orders")
 public class Order {

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import kitchenpos.domain.OrderTable;
+import table.domain.OrderTable;
 
 public class OrderTableResponses {
     private final List<OrderTableResponse> orderTableResponses;

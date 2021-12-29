@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
+import kitchenpos.table.ui.TableAcceptanceTestHelper;
 
 class OrderAcceptanceTest extends AcceptanceTest {
 

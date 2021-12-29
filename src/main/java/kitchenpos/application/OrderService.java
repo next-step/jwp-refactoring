@@ -12,14 +12,14 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderLineItems;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import table.domain.OrderTable;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
 import kitchenpos.dto.OrderResponses;
 import kitchenpos.exception.KitchenposNotFoundException;
 import kitchenpos.repository.MenuRepository;
 import kitchenpos.repository.OrderRepository;
-import kitchenpos.repository.OrderTableRepository;
+import table.domain.OrderTableRepository;
 
 @Service
 @Transactional(readOnly = true)

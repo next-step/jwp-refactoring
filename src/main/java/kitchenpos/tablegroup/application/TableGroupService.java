@@ -11,7 +11,7 @@ import kitchenpos.exception.KitchenposErrorCode;
 import kitchenpos.exception.KitchenposException;
 import kitchenpos.exception.KitchenposNotFoundException;
 import kitchenpos.repository.OrderRepository;
-import kitchenpos.repository.OrderTableRepository;
+import table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.OrderTables;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;

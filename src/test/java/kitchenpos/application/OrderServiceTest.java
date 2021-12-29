@@ -22,7 +22,7 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderLineItems;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import table.domain.OrderTable;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderLineItemResponse;
 import kitchenpos.dto.OrderRequest;
@@ -30,7 +30,7 @@ import kitchenpos.dto.OrderResponse;
 import kitchenpos.exception.KitchenposException;
 import kitchenpos.repository.MenuRepository;
 import kitchenpos.repository.OrderRepository;
-import kitchenpos.repository.OrderTableRepository;
+import table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 @ExtendWith(MockitoExtension.class)

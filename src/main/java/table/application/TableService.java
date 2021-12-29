@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package table.application;
 
 import java.util.List;
 
@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.domain.NumberOfGuests;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import table.domain.OrderTable;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.dto.OrderTableResponses;
@@ -15,7 +15,7 @@ import kitchenpos.exception.KitchenposErrorCode;
 import kitchenpos.exception.KitchenposException;
 import kitchenpos.exception.KitchenposNotFoundException;
 import kitchenpos.repository.OrderRepository;
-import kitchenpos.repository.OrderTableRepository;
+import table.domain.OrderTableRepository;
 
 @Service
 @Transactional(readOnly = true)

@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package table.domain;
 
 import java.util.Objects;
 
@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import kitchenpos.domain.NumberOfGuests;
 import kitchenpos.exception.KitchenposErrorCode;
 import kitchenpos.exception.KitchenposException;
 import kitchenpos.tablegroup.domain.TableGroup;

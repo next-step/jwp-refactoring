@@ -15,7 +15,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.ui.OrderAcceptanceTestHelper;
-import kitchenpos.ui.TableAcceptanceTestHelper;
+import kitchenpos.table.ui.TableAcceptanceTestHelper;
 
 class TableGroupAcceptanceTest extends AcceptanceTest {
     @DisplayName("주문 테이블 그룹을 관리한다.")

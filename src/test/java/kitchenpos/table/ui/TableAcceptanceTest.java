@@ -1,4 +1,4 @@
-package kitchenpos.ui;
+package kitchenpos.table.ui;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,6 +15,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.tablegroup.ui.TableGroupAcceptanceTestHelper;
+import kitchenpos.ui.OrderAcceptanceTestHelper;
 
 class TableAcceptanceTest extends AcceptanceTest {
 
