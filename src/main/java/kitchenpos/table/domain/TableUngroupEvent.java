@@ -3,18 +3,18 @@ package kitchenpos.table.domain;
 import java.util.List;
 
 public class TableUngroupEvent {
-    private final Long tableGroupId;
+    private final List<OrderTable> orderTables;
 
 
-    private TableUngroupEvent(Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
+    private TableUngroupEvent(List<OrderTable> orderTables) {
+        this.orderTables = orderTables;
     }
 
-    public static TableUngroupEvent of(Long tableGroupId) {
-        return new TableUngroupEvent(tableGroupId);
+    public static TableUngroupEvent of(List<OrderTable> orderTables) {
+        return new TableUngroupEvent(orderTables);
     }
 
-    public Long getTableGroupId() {
-        return tableGroupId;
+    public List<OrderTable> getOrderTables() {
+        return orderTables;
     }
 }

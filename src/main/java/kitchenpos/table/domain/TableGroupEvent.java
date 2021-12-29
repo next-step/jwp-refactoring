@@ -4,22 +4,22 @@ import java.util.List;
 
 public class TableGroupEvent {
     private final Long tableGroupId;
-    private final List<Long> orderTableIds;
+    private final List<OrderTable> orderTables;
 
-    private TableGroupEvent(Long tableGroupId, List<Long> orderTableIds) {
+    private TableGroupEvent(Long tableGroupId, List<OrderTable> orderTables) {
         this.tableGroupId = tableGroupId;
-        this.orderTableIds = orderTableIds;
+        this.orderTables = orderTables;
     }
 
-    public static TableGroupEvent of(Long tableId, List<Long> orderTableIds) {
-        return new TableGroupEvent(tableId, orderTableIds);
+    public static TableGroupEvent of(Long tableId, List<OrderTable> orderTables) {
+        return new TableGroupEvent(tableId, orderTables);
     }
 
     public Long getTableGroupId() {
         return tableGroupId;
     }
 
-    public List<Long> getOrderTableIds() {
-        return orderTableIds;
+    public List<OrderTable> getOrderTables() {
+        return orderTables;
     }
 }

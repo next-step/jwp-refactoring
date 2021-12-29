@@ -22,16 +22,13 @@ public class TableGroup extends AbstractAggregateRoot<TableGroup> {
         return new TableGroup();
     }
 
-    public TableGroup group(TableGroupValidator tableGroupValidator, List<Long> orderTableIds) {
-        tableGroupValidator.validateGrouping(orderTableIds);
-        registerEvent(TableGroupEvent.of(id, orderTableIds));
-
+    public TableGroup group(List<OrderTable> orderTables) {
+        registerEvent(TableGroupEvent.of(id, orderTables));
         return this;
     }
 
-    public void ungroup(TableGroupValidator tableGroupValidator) {
-        tableGroupValidator.validateUngrouping(id);
-        registerEvent(TableUngroupEvent.of(id));
+    public void ungroup(List<OrderTable> orderTables) {
+        registerEvent(TableUngroupEvent.of(orderTables));
     }
 
     public Long getId() {
