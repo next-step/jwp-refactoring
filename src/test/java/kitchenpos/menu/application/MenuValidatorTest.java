@@ -43,7 +43,7 @@ public class MenuValidatorTest {
 
         // when, then
         assertThatThrownBy(() -> {
-            menuValidator.checkTotalPrice(메뉴, Arrays.asList(1L, 2L));
+            menuValidator.checkTotalPrice(메뉴);
         }).isInstanceOf(IllegalArgumentException.class)
         .hasMessage("메뉴 가격이 상품 가격의 합보다 큽니다");
     }

@@ -27,6 +27,10 @@ public class MenuPrice {
         return this.value;
     }
     
+    public boolean isGreaterThan(long targetPrice) {
+        return this.value > targetPrice;
+    }
+    
     private void validatePrice(long value) {
         if (value < 0) {
             throw new IllegalArgumentException("가격은 0원 이상이어야 합니다");

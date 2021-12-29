@@ -56,7 +56,7 @@ public class MenuServiceTest {
         
         given(menuGroupService.findById(anyLong())).willReturn(메뉴.getMenuGroup());
         given(menuRepository.save(any())).willReturn(메뉴);
-        doNothing().when(menuValidator).checkTotalPrice(메뉴, Arrays.asList(1L));
+        doNothing().when(menuValidator).checkTotalPrice(메뉴);
 
 
         // when
