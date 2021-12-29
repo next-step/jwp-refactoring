@@ -1,7 +1,8 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.table.domain.OrderTable;
+import org.springframework.util.Assert;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -11,7 +12,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,9 +25,9 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @Column(nullable = false)
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_orders_order_table"))
-    private OrderTable orderTable;
+    private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
@@ -40,25 +40,25 @@ public class Order {
     protected Order() {
     }
 
-    private Order(OrderTable orderTable, OrderLineItems orderLineItems) {
-        validateEmptyOrderTable(orderTable);
-        this.orderTable = orderTable;
+    private Order(Long orderTableId, OrderLineItems orderLineItems) {
+        Assert.notNull(orderTableId, "주문테이블은 필수입니다.");
+        this.orderTableId = orderTableId;
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
         this.orderLineItems = orderLineItems;
         orderLineItems.changeOrder(this);
     }
 
-    public static Order of(OrderTable orderTable, OrderLineItems orderLineItems) {
-        return new Order(orderTable, orderLineItems);
+    public static Order of(Long orderTableId, OrderLineItems orderLineItems) {
+        return new Order(orderTableId, orderLineItems);
     }
 
     public Long getId() {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {
@@ -83,11 +83,5 @@ public class Order {
 
     public boolean isNotCooking() {
         return orderStatus != OrderStatus.COOKING;
-    }
-
-    private void validateEmptyOrderTable(OrderTable orderTable) {
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException("주문 테이블이 빈 테이블인 경우 주문할 수 없습니다.");
-        }
     }
 }

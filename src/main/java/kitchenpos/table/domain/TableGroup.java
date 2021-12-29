@@ -1,7 +1,5 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.order.domain.OrderTables;
-
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

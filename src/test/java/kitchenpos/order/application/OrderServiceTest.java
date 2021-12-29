@@ -16,12 +16,11 @@ import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.product.domain.Product;
+import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -52,7 +51,7 @@ class OrderServiceTest {
     OrderRepository orderRepository;
 
     @Mock
-    OrderTableRepository orderTableRepository;
+    OrderValidator orderValidator;
 
     @InjectMocks
     OrderService orderService;
@@ -83,8 +82,8 @@ class OrderServiceTest {
         주문_상품 = OrderLineItemFixture.of(후라이드_후라이드, 1L);
 
         주문_항목_요청 = OrderLineItemRequest.of(후라이드_후라이드.getId(), 1L);
-        주문_요청 = OrderRequest.of(주문_테이블.getId(), Arrays.asList(주문_항목_요청));
-        주문 = Order.of(주문_테이블, OrderLineItems.from(Collections.singletonList(주문_상품)));
+        주문_요청 = OrderRequest.of(1L, Arrays.asList(주문_항목_요청));
+        주문 = Order.of(1L, OrderLineItems.from(Collections.singletonList(주문_상품)));
         주문_응답 = OrderResponse.from(주문);
     }
 
@@ -98,7 +97,6 @@ class OrderServiceTest {
 
         given(menuService.countByIdIn(menuIds)).willReturn(1L);
         given(menuService.findMenuById(any())).willReturn(후라이드_후라이드);
-        given(orderTableRepository.findById(주문_테이블.getId())).willReturn(Optional.of(주문_테이블));
         given(orderRepository.save(any())).willReturn(주문);
 
         // when
@@ -112,34 +110,6 @@ class OrderServiceTest {
     void 주문_발생_시_주문_상품은_반드시_메뉴에_존재해야_한다() {
         // given
         given(menuService.countByIdIn(any())).willReturn(0L);
-
-        // when
-        ThrowingCallable throwingCallable = () -> orderService.create(주문_요청);
-
-        // then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(throwingCallable);
-    }
-
-    @Test
-    void 주문_발생_시_주문_테이블이_존재해야_한다() {
-        // given
-        given(menuService.countByIdIn(any())).willReturn(1L);
-        given(orderTableRepository.findById(주문_테이블.getId())).willReturn(Optional.empty());
-
-        // when
-        ThrowingCallable throwingCallable = () -> orderService.create(주문_요청);
-
-        // then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(throwingCallable);
-    }
-
-    @Test
-    void 주문_발생_시_주문_테이블이_빈_테이블이면_주문할_수_없다() {
-        // given
-        given(menuService.countByIdIn(any())).willReturn(1L);
-        given(orderTableRepository.findById(주문_테이블.getId())).willReturn(Optional.of(빈_테이블));
 
         // when
         ThrowingCallable throwingCallable = () -> orderService.create(주문_요청);

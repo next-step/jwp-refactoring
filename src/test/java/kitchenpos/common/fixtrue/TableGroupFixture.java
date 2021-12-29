@@ -1,6 +1,6 @@
 package kitchenpos.common.fixtrue;
 
-import kitchenpos.order.domain.OrderTables;
+import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
 
 public class TableGroupFixture {

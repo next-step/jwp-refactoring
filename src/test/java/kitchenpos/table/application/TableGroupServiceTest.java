@@ -1,12 +1,10 @@
 package kitchenpos.table.application;
 
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.order.domain.OrderTables;
+import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
 import kitchenpos.table.dto.TableGroupResponse;
-import kitchenpos.table.application.TableGroupService;
-import kitchenpos.table.application.TableService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

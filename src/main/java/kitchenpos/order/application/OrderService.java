@@ -6,8 +6,6 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
@@ -20,30 +18,26 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 @Service
 public class OrderService {
-    private final MenuService menuService;
     private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
+    private final MenuService menuService;
+    private final OrderValidator orderValidator;
 
     public OrderService(
-            final MenuService menuService,
             final OrderRepository orderRepository,
-            final OrderTableRepository orderTableRepository
+            final MenuService menuService,
+            final OrderValidator orderValidator
     ) {
-        this.menuService = menuService;
         this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
+        this.menuService = menuService;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
         validateExistsOrderLineItems(orderRequest);
-
-        final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
-                .orElseThrow(() -> new IllegalArgumentException("주문 테이블이 존재하지 않습니다."));
-
-        final Order savedOrder = orderRepository.save(Order.of(orderTable, findOrderLineItems(orderRequest.getOrderLineItems())));
-
-        return OrderResponse.from(savedOrder);
+        orderValidator.validate(orderRequest);
+        final Order savedOrder = Order.of(orderRequest.getOrderTableId(), findOrderLineItems(orderRequest.getOrderLineItems()));
+        return OrderResponse.from(orderRepository.save(savedOrder));
     }
 
     public List<OrderResponse> list() {
@@ -56,7 +50,7 @@ public class OrderService {
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
         final Order savedOrder = orderRepository.findById(orderId)
-                .orElseThrow(() -> new IllegalArgumentException("주문 테이블이 존재하지 않습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("주문이 존재하지 않습니다."));
         savedOrder.changeOrderStatus(orderRequest.getOrderStatus());
         return OrderResponse.from(savedOrder);
     }

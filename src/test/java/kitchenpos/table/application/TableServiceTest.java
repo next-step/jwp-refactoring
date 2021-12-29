@@ -1,6 +1,6 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.domain.OrderTables;
+import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
@@ -31,6 +31,9 @@ class TableServiceTest {
     @Mock
     OrderTableRepository orderTableRepository;
 
+    @Mock
+    TableValidator tableValidator;
+
     @InjectMocks
     TableService tableService;
 
@@ -41,7 +44,6 @@ class TableServiceTest {
     void setUp() {
         빈_테이블_요청 = OrderTableRequest.of(0, true);
         주문_테이블_요청 = OrderTableRequest.of(5, false);
-
     }
 
     @Test

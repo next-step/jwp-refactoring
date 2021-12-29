@@ -1,7 +1,5 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.order.domain.Order;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -10,9 +8,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -29,9 +24,6 @@ public class OrderTable {
     private int numberOfGuests;
 
     private boolean empty;
-
-    @OneToMany(mappedBy = "orderTable")
-    private List<Order> orders = new ArrayList<>();
 
     protected OrderTable() {
     }
@@ -57,7 +49,6 @@ public class OrderTable {
             throw new IllegalArgumentException("단체 지정 된 테이블은 상태를 변경할 수 없습니다.");
         }
 
-        validateOrderStatus();
         this.empty = empty;
     }
 
@@ -67,7 +58,6 @@ public class OrderTable {
     }
 
     public void ungroup() {
-        validateOrderStatus();
         this.tableGroup = null;
     }
 
@@ -104,14 +94,5 @@ public class OrderTable {
 
     private void grouped() {
         this.empty = false;
-    }
-
-    private void validateOrderStatus() {
-        boolean isNotCooking = orders
-                .stream()
-                .anyMatch(Order::isNotCooking);
-        if (isNotCooking) {
-            throw new IllegalArgumentException("주문 테이블의 상태가 조리이거나, 식사이면 변경할 수 없습니다.");
-        }
     }
 }
