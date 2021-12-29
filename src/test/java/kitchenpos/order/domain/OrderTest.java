@@ -28,7 +28,7 @@ class OrderTest {
     void 주문_정상생성() {
         OrderTable 첫번째_주문테이블 = OrderTableFixture.첫번째_주문테이블();
         Menu 메뉴_양념치킨 = 메뉴_양념치킨();
-        OrderLineItem orderLineItem = OrderLineItem.of(new MenuId(메뉴_양념치킨.getId()), 1);
+        OrderLineItem orderLineItem = OrderLineItem.of(메뉴_양념치킨.getId(), 1);
         List<OrderLineItem> orderLineItems = asList(orderLineItem);
 
         Order cook = Order.createCook(첫번째_주문테이블.getId(), orderLineItems);

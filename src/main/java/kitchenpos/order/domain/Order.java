@@ -3,6 +3,7 @@ package kitchenpos.order.domain;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -21,8 +22,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Embedded
-    private OrderTableId orderTableId;
+    @Column(name = "order_table_id")
+    private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
@@ -37,10 +38,17 @@ public class Order {
     }
 
     private Order(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
+        validIsNotNull(orderTableId);
         this.id = id;
-        this.orderTableId = new OrderTableId(orderTableId);
+        this.orderTableId = orderTableId;
         this.orderStatus = OrderStatus.COOKING;
         association(orderLineItems);
+    }
+
+    private void validIsNotNull(Long orderTableId) {
+        if (Objects.isNull(orderTableId)) {
+            throw new IllegalArgumentException(Message.ORDER_TABLE_IS_NOT_NULL.getMessage());
+        }
     }
 
     protected Order() {
@@ -62,7 +70,7 @@ public class Order {
     }
 
     public Long getOrderTableId() {
-        return orderTableId.getId();
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {

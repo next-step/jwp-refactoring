@@ -31,7 +31,7 @@ public class OrderValidation {
     private void validIsExistMenu(OrderRequest orderRequest) {
         orderRequest.toOrderItems()
             .stream()
-            .forEach(m -> menuService.findById(m.getMenuId().getId()));
+            .forEach(m -> menuService.findById(m.getMenuId()));
     }
 
     private void validIsExistOrderTable(OrderRequest orderRequest) {

@@ -2,7 +2,6 @@ package kitchenpos.order.dto;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.order.domain.MenuId;
 import kitchenpos.order.domain.OrderLineItem;
 
 public class OrderRequest {
@@ -32,7 +31,7 @@ public class OrderRequest {
 
     public List<OrderLineItem> toOrderItems() {
         return orderLineItems.stream()
-            .map(s -> new OrderLineItem(null, new MenuId(s.getMenuId()), s.getQuantity()))
+            .map(s -> new OrderLineItem(null, s.getMenuId(), s.getQuantity()))
             .collect(Collectors.toList());
     }
 

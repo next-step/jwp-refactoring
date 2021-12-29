@@ -4,7 +4,7 @@ import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Embedded;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -22,20 +22,20 @@ public class OrderLineItem {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @Embedded
-    private MenuId menuId;
+    @Column(name = "menu_id")
+    private Long menuId;
 
     private Long quantity;
 
-    public static OrderLineItem of(MenuId menuId, long quantity) {
+    public static OrderLineItem of(Long menuId, long quantity) {
         return new OrderLineItem(null, menuId, quantity);
     }
 
-    public static OrderLineItem of(Long id, MenuId menuId, long quantity) {
+    public static OrderLineItem of(Long id, Long menuId, long quantity) {
         return new OrderLineItem(id, menuId, quantity);
     }
 
-    public OrderLineItem(Long id, MenuId menuId, Long quantity) {
+    public OrderLineItem(Long id, Long menuId, Long quantity) {
         this.id = id;
         this.menuId = menuId;
         this.quantity = quantity;
@@ -56,7 +56,7 @@ public class OrderLineItem {
         return order;
     }
 
-    public MenuId getMenuId() {
+    public Long getMenuId() {
         return menuId;
     }
 
