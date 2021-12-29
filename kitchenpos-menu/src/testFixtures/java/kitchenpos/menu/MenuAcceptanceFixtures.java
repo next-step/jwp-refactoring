@@ -1,6 +1,5 @@
 package kitchenpos.menu;
 
-import kitchenpos.common.CustomTestRestTemplate;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;

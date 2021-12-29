@@ -1,6 +1,5 @@
 package kitchenpos.product;
 
-import kitchenpos.common.CustomTestRestTemplate;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import java.math.BigDecimal;

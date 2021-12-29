@@ -2,7 +2,6 @@ package kitchenpos.tablegroup.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import kitchenpos.common.AcceptanceTest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;

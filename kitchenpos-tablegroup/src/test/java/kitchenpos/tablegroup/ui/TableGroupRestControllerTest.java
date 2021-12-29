@@ -7,8 +7,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import kitchenpos.tablegroup.application.TableGroupService;
-import kitchenpos.common.CommonTestFixtures;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.tablegroup.common.CommonTestFixtures;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;

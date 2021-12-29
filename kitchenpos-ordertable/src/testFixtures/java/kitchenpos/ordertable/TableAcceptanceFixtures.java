@@ -1,6 +1,5 @@
 package kitchenpos.ordertable;
 
-import kitchenpos.common.CustomTestRestTemplate;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import java.util.List;

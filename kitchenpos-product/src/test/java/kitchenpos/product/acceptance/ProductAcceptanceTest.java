@@ -2,7 +2,6 @@ package kitchenpos.product.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import kitchenpos.common.AcceptanceTest;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import java.math.BigDecimal;

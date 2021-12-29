@@ -1,6 +1,5 @@
 package kitchenpos.order;
 
-import kitchenpos.common.CustomTestRestTemplate;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;

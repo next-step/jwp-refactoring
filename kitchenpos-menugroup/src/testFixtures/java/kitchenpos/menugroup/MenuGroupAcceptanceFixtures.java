@@ -1,6 +1,5 @@
 package kitchenpos.menugroup;
 
-import kitchenpos.common.CustomTestRestTemplate;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import java.util.List;

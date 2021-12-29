@@ -1,4 +1,4 @@
-package kitchenpos.common.utils;
+package kitchenpos.product.utils;
 
 import com.google.common.base.CaseFormat;
 import java.util.List;

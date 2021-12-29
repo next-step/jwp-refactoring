@@ -1,4 +1,4 @@
-package kitchenpos.common;
+package kitchenpos.product;
 
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.client.RestTemplateBuilder;

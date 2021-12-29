@@ -2,7 +2,6 @@ package kitchenpos.order.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import kitchenpos.common.AcceptanceTest;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.order.dto.OrderLineItemRequest;

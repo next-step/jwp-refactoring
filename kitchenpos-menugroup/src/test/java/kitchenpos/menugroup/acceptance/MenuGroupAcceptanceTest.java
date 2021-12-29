@@ -6,7 +6,6 @@ import kitchenpos.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.common.AcceptanceTest;
 import kitchenpos.menugroup.MenuGroupAcceptanceFixtures;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

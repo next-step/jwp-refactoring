@@ -1,6 +1,5 @@
 package kitchenpos.tablegroup;
 
-import kitchenpos.common.CustomTestRestTemplate;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;

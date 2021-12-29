@@ -12,12 +12,10 @@ dependencies {
     compile project(':kitchenpos-product')
 
     // test에서 참조
-    testImplementation(testFixtures(project(":kitchenpos-common")))
     testImplementation(testFixtures(project(":kitchenpos-product")))
     testImplementation(testFixtures(project(":kitchenpos-menugroup")))
 
     // testfixtures에서 참조
-    testFixturesImplementation(testFixtures(project(":kitchenpos-common")))
     testFixturesImplementation(testFixtures(project(":kitchenpos-menugroup")))
     testFixturesImplementation(testFixtures(project(":kitchenpos-product")))
 

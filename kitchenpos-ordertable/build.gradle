@@ -10,11 +10,9 @@ dependencies {
 
     compile project(':kitchenpos-common')
 
-    testImplementation(testFixtures(project(":kitchenpos-common")))
     testImplementation(testFixtures(project(":kitchenpos-order")))
     testImplementation(testFixtures(project(":kitchenpos-menu")))
 
-    testFixturesImplementation(testFixtures(project(":kitchenpos-common")))
     testFixturesImplementation 'org.springframework.boot:spring-boot-starter-test'
     //spring
     testFixturesImplementation 'org.springframework.boot:spring-boot-starter-web'

@@ -2,7 +2,6 @@ package kitchenpos.menu.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import kitchenpos.common.AcceptanceTest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;

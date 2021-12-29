@@ -1,4 +1,4 @@
-package kitchenpos.common;
+package kitchenpos.menugroup.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -11,5 +11,4 @@ public class CommonTestFixtures {
             throw new RuntimeException(e);
         }
     }
-
 }

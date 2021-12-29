@@ -9,11 +9,9 @@ jar { enabled = true }
 dependencies {
     compile project(':kitchenpos-ordertable')
 
-    testImplementation(testFixtures(project(":kitchenpos-common")))
     testImplementation(testFixtures(project(":kitchenpos-ordertable")))
 
     //test fixtures 설정
-    testFixturesImplementation(testFixtures(project(":kitchenpos-common")))
     testFixturesImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     testFixturesImplementation 'org.springframework.boot:spring-boot-starter-web'
