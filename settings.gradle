@@ -1,1 +1,11 @@
 rootProject.name = 'kitchenpos'
+include 'domain-modules'
+include 'domain-modules:menu-domain'
+findProject(':domain-modules:menu-domain')?.name = 'menu-domain'
+include 'domain-modules:order-domain'
+findProject(':domain-modules:order-domain')?.name = 'order-domain'
+include 'domain-modules:common-domain'
+findProject(':domain-modules:common-domain')?.name = 'common-domain'
+include 'kitchenpos-app-api'
+include 'common-module'
+

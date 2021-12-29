@@ -1,31 +1,80 @@
 plugins {
-    id 'org.springframework.boot' version '2.4.1'
-    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+    id 'org.springframework.boot' version '2.4.1' apply false
+    id 'io.spring.dependency-management' version '1.0.10.RELEASE' apply false
     id 'java'
 }
-
-group = 'camp.nextstep.edu'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
 
 repositories {
     mavenCentral()
 }
 
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.flywaydb:flyway-core'
+subprojects {
+    group = 'camp.nextstep.edu'
+    version = '0.0.1-SNAPSHOT'
+    sourceCompatibility = '1.8'
 
-    implementation 'pl.allegro.tech.boot:handlebars-spring-boot-starter:0.3.0'
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
 
-    runtimeOnly 'com.h2database:h2'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'io.rest-assured:rest-assured:3.3.0'
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
 }
 
-test {
-    useJUnitPlatform()
+project(':kitchenpos-app-api') {
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.flywaydb:flyway-core'
+        implementation 'pl.allegro.tech.boot:handlebars-spring-boot-starter:0.3.0'
+        testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        testImplementation 'io.rest-assured:rest-assured:3.3.0'
+
+        implementation project(':common-module')
+        implementation project(':domain-modules:menu-domain')
+        implementation project(':domain-modules:order-domain')
+    }
+}
+
+project(':domain-modules') {
+    allprojects {
+        bootJar { enabled = false }
+        jar { enabled = true }
+    }
+
+    subprojects {
+        dependencies {
+            implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+            runtimeOnly 'com.h2database:h2'
+
+            implementation project(':common-module')
+        }
+    }
+}
+
+project(':domain-modules:menu-domain') {
+    dependencies {
+        implementation project(':domain-modules:common-domain')
+    }
+}
+
+project(':domain-modules:order-domain') {
+    dependencies {
+        implementation project(':domain-modules:common-domain')
+        implementation project(':domain-modules:menu-domain')
+    }
+}
+
+project(':common-module') {
+    bootJar { enabled = false }
+    jar { enabled = true }
 }
