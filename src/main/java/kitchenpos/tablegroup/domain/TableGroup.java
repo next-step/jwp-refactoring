@@ -3,7 +3,6 @@ package kitchenpos.tablegroup.domain;
 import kitchenpos.tablegroup.domain.validator.CreateTableGroupValidator;
 import kitchenpos.tablegroup.domain.validator.UnGroupTableGroupValidator;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.Column;
@@ -18,7 +17,7 @@ import java.util.List;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class TableGroup extends AbstractAggregateRoot<TableGroup> {
+public class TableGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -53,7 +52,6 @@ public class TableGroup extends AbstractAggregateRoot<TableGroup> {
 
     public void ungroup(UnGroupTableGroupValidator tableGroupValidator) {
         tableGroupValidator.validate(getOrderTableIds());
-        registerEvent(TableUnGroupedEvent.of(this));
     }
 
     public Long getId() {
