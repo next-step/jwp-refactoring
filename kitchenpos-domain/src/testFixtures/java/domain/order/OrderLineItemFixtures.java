@@ -1,6 +1,6 @@
 package domain.order;
 
-import api.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItem;
 
 /**
  * packageName : kitchenpos.fixtures

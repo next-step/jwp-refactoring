@@ -1,6 +1,6 @@
 package api.product;
 
-import api.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductRequest;
 
 import java.math.BigDecimal;
 

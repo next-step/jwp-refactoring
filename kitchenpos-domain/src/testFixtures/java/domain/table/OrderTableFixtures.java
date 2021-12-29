@@ -1,6 +1,6 @@
 package domain.table;
 
-import api.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 
 
 public class OrderTableFixtures {

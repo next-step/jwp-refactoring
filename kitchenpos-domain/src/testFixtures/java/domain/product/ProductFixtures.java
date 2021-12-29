@@ -1,6 +1,6 @@
 package domain.product;
 
-import api.product.domain.Product;
+import kitchenpos.product.domain.Product;
 
 import java.math.BigDecimal;
 

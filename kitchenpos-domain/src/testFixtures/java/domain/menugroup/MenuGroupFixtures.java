@@ -1,6 +1,6 @@
 package domain.menugroup;
 
-import api.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroup;
 
 
 public class MenuGroupFixtures {

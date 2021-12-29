@@ -1,7 +1,7 @@
 package api.order;
 
-import api.order.dto.OrderLineItemSaveRequest;
-import api.order.dto.OrderSaveRequest;
+import kitchenpos.order.dto.OrderLineItemSaveRequest;
+import kitchenpos.order.dto.OrderSaveRequest;
 
 import java.util.Arrays;
 import java.util.List;

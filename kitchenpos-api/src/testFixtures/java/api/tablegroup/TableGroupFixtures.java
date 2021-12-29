@@ -1,7 +1,7 @@
 package api.tablegroup;
 
-import api.table.dto.OrderTableRequest;
-import api.tablegroup.dto.TableGroupSaveRequest;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.tablegroup.dto.TableGroupSaveRequest;
 
 import java.util.List;
 

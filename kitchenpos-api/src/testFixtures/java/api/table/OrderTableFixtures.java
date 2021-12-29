@@ -1,9 +1,9 @@
 package api.table;
 
-import api.table.dto.ChangeEmptyRequest;
-import api.table.dto.ChangeGuestNumberRequest;
-import api.table.dto.OrderTableRequest;
-import api.table.dto.OrderTableSaveRequest;
+import kitchenpos.table.dto.ChangeEmptyRequest;
+import kitchenpos.table.dto.ChangeGuestNumberRequest;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableSaveRequest;
 
 /**
  * packageName : kitchenpos.fixtures

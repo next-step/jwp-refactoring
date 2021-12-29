@@ -1,6 +1,6 @@
 package domain.menu;
 
-import api.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProduct;
 
 
 public class MenuProductFixtures {

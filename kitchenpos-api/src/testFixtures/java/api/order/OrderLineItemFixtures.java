@@ -1,6 +1,6 @@
 package api.order;
 
-import api.order.dto.OrderLineItemSaveRequest;
+import kitchenpos.order.dto.OrderLineItemSaveRequest;
 
 /**
  * packageName : kitchenpos.fixtures

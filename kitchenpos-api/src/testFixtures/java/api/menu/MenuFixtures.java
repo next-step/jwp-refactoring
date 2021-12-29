@@ -1,7 +1,7 @@
 package api.menu;
 
-import api.menu.dto.MenuProductRequest;
-import api.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
 
 import java.math.BigDecimal;
 import java.util.List;

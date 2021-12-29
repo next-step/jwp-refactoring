@@ -1,7 +1,7 @@
 package domain.order;
 
-import api.order.domain.Order;
-import api.order.domain.OrderStatus;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderStatus;
 
 import java.util.Arrays;
 

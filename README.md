@@ -60,7 +60,7 @@
     ```text
     ###
     POST {{host}}/api/menu-groups
-    Content-Type: application/json
+    Content-Type: kitchenpos/json
     
     {
       "name": "추천메뉴"
@@ -433,3 +433,12 @@ completePayment() vs setOrderState()
  - 힌트 
    - [gradle멀티프로젝트관리](https://jojoldu.tistory.com/123)
    - [권남님의 gradle Multi Project](https://kwonnam.pe.kr/wiki/gradle/multiproject)
+
+
+#### 멀티모듈 분리
+ - kitchenpos-api : 서비스 레이어 
+ - kitchenpos-common : 공통 제어(커스텀예외, 예외핸들러 정의)
+ - kitchenpos-domain : 도메인 레이어 
+ - kitchenpos-web : 프레젠테이션 레이어 
+ 
+ - 메인 : kitchenpos-web Application.class

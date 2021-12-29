@@ -1,6 +1,6 @@
 package api.menugroup;
 
-import api.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
 
 /**
  * packageName : kitchenpos.fixtures

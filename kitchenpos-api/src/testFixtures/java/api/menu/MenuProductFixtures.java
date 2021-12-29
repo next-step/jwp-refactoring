@@ -1,6 +1,6 @@
 package api.menu;
 
-import api.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuProductRequest;
 
 /**
  * packageName : kitchenpos.fixtures
