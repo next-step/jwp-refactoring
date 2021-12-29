@@ -12,7 +12,6 @@ import kitchenpos.common.exception.KitchenposException;
 import kitchenpos.common.price.domain.Price;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.product.domain.Product;
 
 class MenuTest {
     @DisplayName("메뉴의 합보다 금액이 많을 시 에러")

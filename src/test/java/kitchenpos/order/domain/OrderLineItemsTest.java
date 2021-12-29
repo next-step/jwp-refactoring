@@ -8,14 +8,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import kitchenpos.common.exception.KitchenposException;
-import kitchenpos.menu.domain.Menu;
 
 class OrderLineItemsTest {
 
     @DisplayName("사이즈 값이 맞는지 확인")
     @Test
     void validateSize() {
-        OrderLineItem orderLineItem = new OrderLineItem(new Menu(), 1);
+        OrderLineItem orderLineItem = new OrderLineItem(1L, 1);
         OrderLineItems orderLineItems = new OrderLineItems(Collections.singletonList(orderLineItem));
 
         assertThatExceptionOfType(KitchenposException.class)

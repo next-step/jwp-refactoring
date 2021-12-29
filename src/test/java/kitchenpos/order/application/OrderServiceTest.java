@@ -17,14 +17,14 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.common.exception.KitchenposErrorCode;
 import kitchenpos.common.exception.KitchenposException;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderLineItemResponse;
 import kitchenpos.order.dto.OrderRequest;
@@ -35,11 +35,11 @@ import kitchenpos.table.domain.OrderTableRepository;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
-    private MenuRepository menuRepository;
-    @Mock
     private OrderRepository orderRepository;
     @Mock
     private OrderTableRepository orderTableRepository;
+    @Mock
+    private OrderValidator orderValidator;
 
     @InjectMocks
     private OrderService orderService;
@@ -48,14 +48,12 @@ class OrderServiceTest {
     private OrderLineItem orderLineItem;
     private OrderLineItemRequest orderLineItemRequest;
     private Order order;
-    private Menu menu;
 
     @BeforeEach
     void setUp() {
         orderTable = new OrderTable(1L, 1L, 4, false);
         orderLineItemRequest = new OrderLineItemRequest(1L, 1);
-        menu = new Menu();
-        orderLineItem = new OrderLineItem(menu, 1);
+        orderLineItem = new OrderLineItem(1L, 1);
         order = new Order(1L, orderTable, OrderStatus.COOKING, LocalDateTime.now(),
             new OrderLineItems(Collections.singletonList(orderLineItem)));
     }
@@ -64,10 +62,8 @@ class OrderServiceTest {
     @Test
     void create() {
         // given
-        메뉴_개수_반환(1L);
         조회한_주문_테이블_반환(orderTable);
-        ID로_메뉴_조회(menu);
-
+        유효성_확인시_에러_던지지_않음();
         주문_저장(order);
 
         OrderRequest request = new OrderRequest(1L, Collections.singletonList(orderLineItemRequest));
@@ -101,8 +97,7 @@ class OrderServiceTest {
     @Test
     void createOrderFailWhenItemNotExists() {
         // given
-        ID로_메뉴_조회(menu);
-        메뉴_개수_반환(2L);
+        유효성_주문_항목_개수_다름_에러();
 
         OrderRequest request = new OrderRequest(1L, Collections.singletonList(orderLineItemRequest));
 
@@ -116,8 +111,6 @@ class OrderServiceTest {
     @Test
     void createOrderFailWhenTableNotExists() {
         // given
-        ID로_메뉴_조회(menu);
-        메뉴_개수_반환(1L);
 
         OrderTable orderTable = new OrderTable(1L, 1L, 4, true);
         조회한_주문_테이블_반환(orderTable);
@@ -191,19 +184,19 @@ class OrderServiceTest {
             .thenReturn(order);
     }
 
-    private void ID로_메뉴_조회(Menu menu) {
-        Mockito.when(menuRepository.findById(Mockito.anyLong()))
-            .thenReturn(Optional.of(menu));
+    private void 유효성_확인시_에러_던지지_않음() {
+        Mockito.doNothing()
+            .when(orderValidator).validateMenu(Mockito.any());
+    }
+
+    private void 유효성_주문_항목_개수_다름_에러() {
+        Mockito.doThrow(new KitchenposException(KitchenposErrorCode.INVALID_ORDER_LINE_ITEM_SIZE))
+            .when(orderValidator).validateMenu(Mockito.any());
     }
 
     private void 조회한_주문_테이블_반환(OrderTable orderTable) {
         Mockito.when(orderTableRepository.findById(Mockito.anyLong()))
             .thenReturn(Optional.of(orderTable));
-    }
-
-    private void 메뉴_개수_반환(long l) {
-        Mockito.when(menuRepository.countByIdIn(Mockito.anyList()))
-            .thenReturn(l);
     }
 
     private void 주문_전쳬_조회() {

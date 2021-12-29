@@ -56,11 +56,11 @@ public class OrderTable {
     }
 
     public void updateNumberOfGuests(final NumberOfGuests numberOfGuests) {
-        checkNotEmpty();
+        validateNotEmpty();
         this.numberOfGuests = numberOfGuests;
     }
 
-    public void checkNotEmpty() {
+    public void validateNotEmpty() {
         if (empty) {
             throw new KitchenposException(KitchenposErrorCode.TABLE_IS_EMPTY);
         }

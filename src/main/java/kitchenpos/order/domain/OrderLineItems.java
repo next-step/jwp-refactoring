@@ -42,7 +42,7 @@ public class OrderLineItems {
         orderLineItems.add(orderLineItem);
     }
 
-    public List<Long> getIds() {
+    public List<Long> getMenuIds() {
         return orderLineItems.stream()
             .map(OrderLineItem::getMenuId)
             .collect(Collectors.toList());
