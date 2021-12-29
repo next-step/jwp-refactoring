@@ -10,9 +10,6 @@ import java.util.Arrays;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-
 public class OrderTablesTest {
     
     @DisplayName("목록에 새 주문 테이블을 추가한다")
@@ -37,8 +34,8 @@ public class OrderTablesTest {
     @Test
     void 주문_테이블_해제() {
         // given
-        Menu 메뉴 = Menu.of("메뉴", 5000L, MenuGroup.from("메뉴그룹"));
-        OrderLineItem 주문_항목 = OrderLineItem.of(메뉴, 3L);
+        Long 메뉴_Id = 1L;
+        OrderLineItem 주문_항목 = OrderLineItem.of(메뉴_Id, 3L);
         
         OrderTable 테이블 = OrderTable.of(5, true);
         Order 주문 = Order.of(테이블, OrderStatus.COMPLETION, Arrays.asList(주문_항목));
@@ -58,8 +55,8 @@ public class OrderTablesTest {
     @Test
     void 주문_테이블_해제_불가() {
         // given
-        Menu 메뉴 = Menu.of("메뉴", 5000L, MenuGroup.from("메뉴그룹"));
-        OrderLineItem 주문_항목 = OrderLineItem.of(메뉴, 3L);
+        Long 메뉴_Id = 1L;
+        OrderLineItem 주문_항목 = OrderLineItem.of(메뉴_Id, 3L);
         
         OrderTable 테이블 = OrderTable.of(5, true);
         Order 주문 = Order.of(테이블, OrderStatus.MEAL, Arrays.asList(주문_항목));

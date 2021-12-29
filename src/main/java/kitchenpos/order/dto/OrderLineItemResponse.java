@@ -19,7 +19,7 @@ public class OrderLineItemResponse {
     }
     
     public static OrderLineItemResponse from(OrderLineItem orderLineItem) {
-        return new OrderLineItemResponse(orderLineItem.getSeq(), orderLineItem.getOrder().getId(), orderLineItem.getMenu().getId(), orderLineItem.getQuantity());
+        return new OrderLineItemResponse(orderLineItem.getSeq(), orderLineItem.getOrder().getId(), orderLineItem.getMenuId(), orderLineItem.getQuantity());
     }
     
     public Long getSeq() {

@@ -7,8 +7,6 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.dao.OrderRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -19,18 +17,18 @@ import kitchenpos.order.dto.OrderResponse;
 
 @Service
 public class OrderService {
-    private final MenuService menuService;
     private final OrderRepository orderRepository;
     private final TableService tableService;
+    private final OrderValidator orderValidator;
 
     public OrderService(
-            final MenuService menuService,
             final OrderRepository orderRepository,
-            final TableService tableService
+            final TableService tableService,
+            final OrderValidator orderValidator
     ) {
-        this.menuService = menuService;
         this.orderRepository = orderRepository;
         this.tableService = tableService;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
@@ -83,15 +81,10 @@ public class OrderService {
         List<Long> menuIds = request.stream()
                 .map(OrderLineItemRequest::getMenuId)
                 .collect(Collectors.toList());
+        orderValidator.checkMenu(menuIds);
         
-        List<Menu> menus = menuService.findAllByIds(menuIds);
-        
-        if (menus.size() != request.size()) {
-            new IllegalArgumentException("등록된 메뉴만 주문할 수 있습니다");
-        }
-        
-        for (int i = 0; i < menus.size(); i++) {
-            result.add(OrderLineItem.of(menus.get(i), request.get(i).getQuantity()));
+        for (OrderLineItemRequest orderLineItemRequest : request) {
+            result.add(OrderLineItem.of(orderLineItemRequest.getMenuId(), orderLineItemRequest.getQuantity()));
         }
 
         return result;

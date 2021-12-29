@@ -7,17 +7,14 @@ import java.util.Arrays;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-
 public class OrderTableTest {
     
     @DisplayName("조리중이거나 식사중인 테이블은 빈 테이블로 변경할 수 없다")
     @Test
     void 조리중_식사중_테이블은_빈_테이블_변경_불가() {
         // given
-        Menu 메뉴 = Menu.of("메뉴", 5000L, MenuGroup.from("메뉴그룹"));
-        OrderLineItem 주문_항목 = OrderLineItem.of(메뉴, 3L);
+        Long 메뉴_Id = 1L;
+        OrderLineItem 주문_항목 = OrderLineItem.of(메뉴_Id, 3L);
         OrderTable 테이블 = OrderTable.of(3, false);
         Order 주문 = Order.of(테이블, OrderStatus.COOKING, Arrays.asList(주문_항목));
     
