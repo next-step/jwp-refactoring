@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import kitchenpos.tablegroup.domain.TableGroup;
-import table.dto.OrderTableResponse;
-import table.dto.OrderTableResponses;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.dto.OrderTableResponses;
 
 public class TableGroupResponse {
     private Long id;

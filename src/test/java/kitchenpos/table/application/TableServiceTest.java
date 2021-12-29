@@ -18,12 +18,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.common.exception.KitchenposException;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
-import table.application.TableService;
-import table.domain.OrderTable;
-import table.domain.OrderTableRepository;
-import table.dto.OrderTableRequest;
-import table.dto.OrderTableResponse;
-import table.dto.OrderTableResponses;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.dto.OrderTableResponses;
 
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {

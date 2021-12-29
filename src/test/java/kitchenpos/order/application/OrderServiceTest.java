@@ -30,8 +30,8 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
-import table.domain.OrderTable;
-import table.domain.OrderTableRepository;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {

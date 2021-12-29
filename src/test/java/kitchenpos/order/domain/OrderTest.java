@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import kitchenpos.common.exception.KitchenposException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.tablegroup.domain.TableGroup;
-import table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 
 class OrderTest {
 

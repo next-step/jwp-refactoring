@@ -1,11 +1,11 @@
-package table.dto;
+package kitchenpos.table.dto;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 
 public class OrderTableResponses {
     private final List<OrderTableResponse> orderTableResponses;

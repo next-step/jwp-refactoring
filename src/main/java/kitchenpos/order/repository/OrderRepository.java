@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
-import table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
     boolean existsByOrderTableAndOrderStatusIn(OrderTable orderTable, List<OrderStatus> orderStatuses);

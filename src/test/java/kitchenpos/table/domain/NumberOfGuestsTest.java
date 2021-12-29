@@ -6,7 +6,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import kitchenpos.common.exception.KitchenposException;
-import table.domain.NumberOfGuests;
 
 class NumberOfGuestsTest {
 

@@ -8,7 +8,7 @@ import javax.persistence.OneToMany;
 
 import kitchenpos.common.exception.KitchenposErrorCode;
 import kitchenpos.common.exception.KitchenposException;
-import table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 
 @Embeddable
 public class OrderTables {

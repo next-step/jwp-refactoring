@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 
 import kitchenpos.common.exception.KitchenposException;
 import kitchenpos.tablegroup.domain.TableGroup;
-import table.domain.OrderTable;
 
 class OrderTableTest {
 

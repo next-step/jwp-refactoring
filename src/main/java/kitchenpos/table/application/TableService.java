@@ -1,4 +1,4 @@
-package table.application;
+package kitchenpos.table.application;
 
 import java.util.List;
 
@@ -10,12 +10,12 @@ import kitchenpos.common.exception.KitchenposErrorCode;
 import kitchenpos.common.exception.KitchenposException;
 import kitchenpos.common.exception.KitchenposNotFoundException;
 import kitchenpos.order.repository.OrderRepository;
-import table.domain.NumberOfGuests;
-import table.domain.OrderTable;
-import table.domain.OrderTableRepository;
-import table.dto.OrderTableRequest;
-import table.dto.OrderTableResponse;
-import table.dto.OrderTableResponses;
+import kitchenpos.table.domain.NumberOfGuests;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.dto.OrderTableResponses;
 
 @Service
 @Transactional(readOnly = true)

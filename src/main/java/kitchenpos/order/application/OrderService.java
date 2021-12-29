@@ -18,8 +18,8 @@ import kitchenpos.common.exception.KitchenposNotFoundException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.repository.OrderRepository;
-import table.domain.OrderTable;
-import table.domain.OrderTableRepository;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 
 @Service
 @Transactional(readOnly = true)

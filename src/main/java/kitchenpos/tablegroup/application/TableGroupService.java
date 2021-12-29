@@ -17,7 +17,7 @@ import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.OrderTableIdRequest;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
-import table.domain.OrderTableRepository;
+import kitchenpos.table.domain.OrderTableRepository;
 
 @Service
 @Transactional(readOnly = true)
