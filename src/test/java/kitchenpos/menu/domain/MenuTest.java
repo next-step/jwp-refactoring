@@ -20,6 +20,6 @@ public class MenuTest {
         Menu 양념치킨_세트 = Menu.of("양념치킨_세트", Price.of(BigDecimal.valueOf(55000)), 1L, Arrays.asList(양념치킨_메뉴_상품, 맥주_메뉴_상품));
 
 
-        assertThat(양념치킨_세트.getMenuProducts().asList()).containsExactly(양념치킨_메뉴_상품, 맥주_메뉴_상품);
+        assertThat(양념치킨_세트.getMenuProducts()).containsExactly(양념치킨_메뉴_상품, 맥주_메뉴_상품);
     }
 }

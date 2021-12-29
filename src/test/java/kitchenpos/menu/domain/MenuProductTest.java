@@ -1,15 +1,12 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
-import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("메뉴 상품 도메인 테스트")
 public class MenuProductTest {

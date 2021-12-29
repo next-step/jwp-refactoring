@@ -25,8 +25,8 @@ public class MenuProductResponse {
         return new MenuProductResponse(menuProduct.getSeq(), menuProduct.getProductId(), menuProduct.getQuantity());
     }
 
-    public static List<MenuProductResponse> ofList(MenuProducts menuProducts) {
-        return menuProducts.asList()
+    public static List<MenuProductResponse> ofList(List<MenuProduct> menuProducts) {
+        return menuProducts
                 .stream()
                 .map(MenuProductResponse::of)
                 .collect(Collectors.toList());

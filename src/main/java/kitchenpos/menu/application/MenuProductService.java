@@ -1,6 +1,9 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.common.domain.Price;
 import kitchenpos.common.exception.IllegalArgumentException;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
@@ -16,15 +19,7 @@ public class MenuProductService {
         this.productRepository = productRepository;
     }
 
-    public BigDecimal calculateTotalPrice(MenuProducts menuProducts) {
-        return menuProducts.asList()
-                .stream()
-                .map(it -> it.multiplyByQuantity(findProductById(it.getProductId()).getPrice()))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
 
-    private Product findProductById(Long id) {
-        return productRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다."));
-    }
+
+
 }
