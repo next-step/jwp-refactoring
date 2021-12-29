@@ -14,6 +14,10 @@ public class OrderTableRequest {
         this.empty = empty;
     }
 
+    public OrderTableRequest(boolean empty) {
+        this.empty = empty;
+    }
+
     public OrderTable toOrderTable() {
         return OrderTable.of(numberOfGuests, empty);
     }

@@ -1,6 +1,8 @@
 package kitchenpos.table.domain;
 
 import kitchenpos.common.domain.BaseEntity;
+import kitchenpos.common.exception.BadRequestException;
+import kitchenpos.common.exception.IllegalArgumentException;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -39,17 +41,33 @@ public class OrderTable extends BaseEntity {
         this.tableGroupId = null;
     }
 
-    public void changeEmpty(OrderTableValidator orderTableValidator, boolean empty) {
-        orderTableValidator.validateChangeEmpty(this);
+    public void changeEmpty(boolean empty) {
+        checkIsAbleToEmpty();
         this.empty = empty;
     }
 
-    public void changeNumberOfGuests(OrderTableValidator orderTableValidator, int numberOfGuests) {
-        orderTableValidator.validateChangeNumberOfGuests(this, numberOfGuests);
+    public void changeNumberOfGuests(int numberOfGuests) {
+        checkIsNumberOfGuestsChangeable(numberOfGuests);
         this.numberOfGuests = numberOfGuests;
     }
 
-    public boolean isGrouping() {
+    private void checkIsAbleToEmpty() {
+        if (isGrouping()) {
+            throw new BadRequestException("테이블 그룹이 존재하므로 빈 테이블 설정을 할 수 없습니다.");
+        }
+    }
+
+    private void checkIsNumberOfGuestsChangeable(int numberOfGuests) {
+        if (numberOfGuests < 0) {
+            throw new IllegalArgumentException("손님 수는 최소 0명 이상 설정 가능합니다.");
+        }
+
+        if (isEmpty()) {
+            throw new BadRequestException("빈 테이블의 손님 수를 설정할 수 없습니다.");
+        }
+    }
+
+    private boolean isGrouping() {
         return Objects.nonNull(tableGroupId);
     }
 
@@ -80,15 +98,5 @@ public class OrderTable extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return "OrderTable{" +
-                "id=" + id +
-                ", tableGroupId=" + tableGroupId +
-                ", numberOfGuests=" + numberOfGuests +
-                ", empty=" + empty +
-                '}';
     }
 }
