@@ -1,4 +1,4 @@
-package kitchenpos.tableGroup.acceptance;
+package kitchenpos.table.acceptance;
 
 import static java.util.Arrays.asList;
 import static kitchenpos.table.acceptance.OrderTableAcceptanceTest.주문테이블_생성_요청;

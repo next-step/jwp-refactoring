@@ -1,4 +1,4 @@
-package kitchenpos.tableGroup.domain;
+package kitchenpos.table.domain;
 
 import static common.OrderTableFixture.단체지정_두번째_계산완료;
 import static common.OrderTableFixture.단체지정_두번째_주문테이블;
