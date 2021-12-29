@@ -12,7 +12,10 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 @Table(name = "orders")
 @Entity
@@ -78,6 +81,14 @@ public class Order {
 
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems.findAll();
+    }
+
+    public List<Long> getMenuIds() {
+        return Collections.unmodifiableList(
+                getOrderLineItems().stream()
+                .map(OrderLineItem::getMenuId)
+                .collect(toList())
+        );
     }
 
     public void completion() {

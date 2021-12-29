@@ -60,4 +60,15 @@ public class OrderLineItem {
         return orderQuantity.getQuantity();
     }
 
+    private boolean matchOrderItem(Long menuId) {
+        return this.menuId.equals(menuId);
+    }
+
+    public boolean notMatchOrderItemName(Long menuId, String menuName) {
+        return matchOrderItem(menuId) && !this.menuName.equals(menuName);
+    }
+
+    public boolean notMatchOrderItemPrice(Long menuId, BigDecimal menuPrice) {
+        return matchOrderItem(menuId) && this.menuPrice.compareTo(menuPrice);
+    }
 }

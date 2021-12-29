@@ -10,10 +10,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.*;
 import static java.util.stream.Collectors.toMap;
 
 @Component
@@ -39,22 +37,17 @@ public class OrderValidator {
     }
 
     private void validateOrderLineItem(OrderLineItem item, Menu menu) {
-        final int correctStandard = 0;
-        if(item.getMenuId().equals(menu.getId()) && !item.getMenuName().equals(menu.getName())) {
+        if(item.notMatchOrderItemName(menu.getId(), menu.getName())) {
             throw new IllegalArgumentException("주문항목과 메뉴항목의 이름이 일치하지 않습니다.");
         }
 
-        if(item.getMenuId().equals(menu.getId()) && item.getMenuPrice().compareTo(menu.getMenuPrice()) != correctStandard) {
+        if(item.notMatchOrderItemPrice(menu.getId(), menu.getMenuPrice())) {
             throw new IllegalArgumentException("주문항목과 메뉴항목의 가격이 일치하지 않습니다.");
         }
     }
 
     private Map<Long, Menu> getMenus(Order order) {
-        return menuService.findAllByIds(
-                order.getOrderLineItems().stream()
-                .map(OrderLineItem::getMenuId)
-                .collect(toList()))
-                .stream()
+        return menuService.findAllByIds(order.getMenuIds()).stream()
                 .collect(toMap(Menu::getId, identity()));
     }
 }

@@ -22,4 +22,8 @@ public class OrderLineItemPrice {
         return menuPrice;
     }
 
+    public boolean compareTo(BigDecimal menuPrice) {
+        final int correctStandard = 0;
+        return this.menuPrice.compareTo(menuPrice) != correctStandard;
+    }
 }
