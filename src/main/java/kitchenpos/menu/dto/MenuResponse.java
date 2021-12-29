@@ -2,9 +2,9 @@ package kitchenpos.menu.dto;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
 
 public class MenuResponse {
 
@@ -26,15 +26,9 @@ public class MenuResponse {
 		this.menuProductResponses = menuProductResponses;
 	}
 
-	public static MenuResponse of(Menu menu) {
-		List<MenuProductResponse> menuProductResponses = MenuProductResponse.ofList(menu.getMenuProductsValue());
+	public static MenuResponse of(Menu menu, List<MenuProduct> menuProducts) {
+		List<MenuProductResponse> menuProductResponses = MenuProductResponse.ofList(menuProducts);
 		return new MenuResponse(menu.getId(), menu.getName(), menu.getPriceValue(), menu.getMenuGroupId(), menuProductResponses);
-	}
-
-	public static List<MenuResponse> ofList(List<Menu> Menus) {
-		return Menus.stream()
-			.map(MenuResponse::of)
-			.collect(Collectors.toList());
 	}
 
 	public Long getId() {

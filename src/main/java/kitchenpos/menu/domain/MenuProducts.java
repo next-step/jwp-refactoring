@@ -11,7 +11,6 @@ import javax.persistence.OneToMany;
 
 @Embeddable
 public class MenuProducts {
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "menu", orphanRemoval = true, cascade = CascadeType.ALL)
 	private final List<MenuProduct> menuProducts;
 
 	public MenuProducts() {
@@ -24,11 +23,12 @@ public class MenuProducts {
 
 	public MenuProducts setMenu(Menu menu) {
 		return new MenuProducts(menuProducts.stream()
-			.map(mp -> new MenuProduct(menu, mp.getProductId(), mp.getQuantity()))
+			.map(mp -> new MenuProduct(menu.getId(), mp.getProductId(), mp.getQuantity()))
 			.collect(Collectors.toList()));
 	}
 
 	public List<MenuProduct> value() {
 		return new ArrayList<>(menuProducts);
 	}
+
 }

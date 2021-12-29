@@ -5,19 +5,15 @@ import static org.assertj.core.api.Assertions.*;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import kitchenpos.common.domain.Price;
-import kitchenpos.common.domain.Quantity;
 
 @DataJpaTest
 class MenuRepositoryTest {
-
-	private static MenuProduct menuProduct = new MenuProduct(null, 1L, Quantity.valueOf(2L));
 
 	@Autowired
 	private MenuRepository menuRepository;
@@ -27,8 +23,7 @@ class MenuRepositoryTest {
 	public void saveMenuTest() {
 		//given
 		//when
-		MenuProducts menuProducts = new MenuProducts(Lists.newArrayList(menuProduct));
-		Menu menu = new Menu("신양념", Price.valueOf(new BigDecimal(20000)), 1L, menuProducts);
+		Menu menu = new Menu("신양념", Price.valueOf(new BigDecimal(20000)), 1L);
 
 		//when
 		Menu save = menuRepository.save(menu);

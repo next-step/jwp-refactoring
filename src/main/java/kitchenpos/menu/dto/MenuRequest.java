@@ -28,10 +28,7 @@ public class MenuRequest {
 	}
 
 	public Menu toMenu() {
-		List<MenuProduct> menuProducts = menuProductRequests.stream()
-			.map(mp -> new MenuProduct(mp.getProductId(), Quantity.valueOf(mp.getQuantity())))
-			.collect(Collectors.toList());
-		return new Menu(name, Price.valueOf(price), menuGroupId, new MenuProducts(menuProducts));
+		return new Menu(name, Price.valueOf(price), menuGroupId);
 	}
 
 	public String getName() {
@@ -50,5 +47,9 @@ public class MenuRequest {
 		return menuProductRequests;
 	}
 
-
+	public MenuProducts toMenuProducts() {
+		return new MenuProducts(menuProductRequests.stream()
+			.map(mp -> new MenuProduct(mp.getProductId(), Quantity.valueOf(mp.getQuantity())))
+			.collect(Collectors.toList()));
+	}
 }

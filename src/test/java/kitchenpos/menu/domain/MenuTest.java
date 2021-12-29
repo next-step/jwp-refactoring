@@ -24,7 +24,7 @@ class MenuTest {
 	@DisplayName("메뉴 생성 테스트")
 	public void createMenuTest() {
 		//when
-		Menu menu = new Menu(1L, "신양념", Price.valueOf(new BigDecimal(20000)), 1L, menuProducts );
+		Menu menu = new Menu(1L, "신양념", Price.valueOf(new BigDecimal(20000)), 1L);
 
 		//then
 		assertThat(menu).isNotNull();
@@ -34,7 +34,7 @@ class MenuTest {
 	@DisplayName("메뉴가격이 0보다 작아서 메뉴생성 실패")
 	public void crateMenuFailPriceLessThanZeroTest() {
 		assertThatThrownBy(
-			() -> new Menu(1L, "신양념", Price.valueOf(new BigDecimal(-1)), 1L, menuProducts))
+			() -> new Menu(1L, "신양념", Price.valueOf(new BigDecimal(-1)), 1L))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessage("가격은 0보다 작을 수 없습니다");
 	}

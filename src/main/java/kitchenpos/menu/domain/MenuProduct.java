@@ -3,12 +3,9 @@ package kitchenpos.menu.domain;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 import kitchenpos.common.domain.Quantity;
 
@@ -20,9 +17,8 @@ public class MenuProduct {
 	@Column(columnDefinition = "bigint(20)")
 	private Long seq;
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "menu_id", nullable = false, columnDefinition = "bigint(20)")
-	private Menu menu;
+	@Column(name = "menu_id", nullable = false, columnDefinition = "bigint(20)")
+	private Long menuId;
 
 	@Column(name = "product_id", nullable = false, columnDefinition = "bigint(20)")
 	private Long productId;
@@ -38,23 +34,19 @@ public class MenuProduct {
 		this(null, null, productId, quantity);
 	}
 
-	public MenuProduct(Menu menu, Long productId, Quantity quantity) {
-		this(null, menu, productId, quantity);
+	public MenuProduct(Long menuId, Long productId, Quantity quantity) {
+		this(null, menuId, productId, quantity);
 	}
 
-	public MenuProduct(Long seq, Menu menu, Long productId, Quantity quantity) {
+	public MenuProduct(Long seq, Long menuId, Long productId, Quantity quantity) {
 		this.seq = seq;
-		this.menu = menu;
+		this.menuId = menuId;
 		this.productId = productId;
 		this.quantity = quantity;
 	}
 
 	public Long getSeq() {
 		return seq;
-	}
-
-	public Menu getMenu() {
-		return menu;
 	}
 
 	public Quantity getQuantity() {
@@ -65,8 +57,8 @@ public class MenuProduct {
 		return productId;
 	}
 
-	public long getMenuId() {
-		return this.menu.getId();
+	public Long getMenuId() {
+		return menuId;
 	}
 
 	public long getQuantityValue() {

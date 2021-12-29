@@ -29,9 +29,6 @@ public class Menu {
 	@Column(name = "menuGroupId", columnDefinition = "bigint(20)", nullable = false)
 	private Long menuGroupId;
 
-	@Embedded
-	private MenuProducts menuProducts;
-
 	public Menu() {
 	}
 
@@ -39,16 +36,15 @@ public class Menu {
 		this.id = id;
 	}
 
-	public Menu(String name, Price price, Long menuGroupId, MenuProducts menuProducts) {
-		this(null, name, price, menuGroupId, menuProducts);
+	public Menu(String name, Price price, Long menuGroupId) {
+		this(null, name, price, menuGroupId);
 	}
 
-	public Menu(Long id, String name, Price price, Long menuGroupId, MenuProducts menuProducts) {
+	public Menu(Long id, String name, Price price, Long menuGroupId) {
 		this.id = id;
 		this.name = name;
 		this.price = price;
 		this.menuGroupId = menuGroupId;
-		this.menuProducts = menuProducts.setMenu(this);
 	}
 
 	public Long getId() {
@@ -65,14 +61,6 @@ public class Menu {
 
 	public Long getMenuGroupId() {
 		return menuGroupId;
-	}
-
-	public MenuProducts getMenuProducts() {
-		return menuProducts;
-	}
-
-	public List<MenuProduct> getMenuProductsValue() {
-		return menuProducts.value();
 	}
 
 	public BigDecimal getPriceValue() {

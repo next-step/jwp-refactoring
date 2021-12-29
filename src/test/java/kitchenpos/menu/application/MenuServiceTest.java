@@ -12,9 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 
 @Transactional
 @SpringBootTest
@@ -33,7 +33,7 @@ class MenuServiceTest {
 	public void createMenuSuccessTest() {
 		//given
 		//when
-		Menu menu = menuService.create(후라이드2_양념1);
+		MenuResponse menu = menuService.create(후라이드2_양념1);
 
 		//then
 		assertThat(menu).isNotNull();
@@ -89,7 +89,7 @@ class MenuServiceTest {
 		//given
 		//when
 
-		List<Menu> menus = menuService.list();
+		List<MenuResponse> menus = menuService.list();
 		//then
 		assertThat(menus).hasSize(6);
 	}
