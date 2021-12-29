@@ -3,6 +3,7 @@ package kitchenpos.common.domain;
 import kitchenpos.common.exception.NegativePriceException;
 import kitchenpos.menu.domain.MenuProduct;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.math.BigDecimal;
 import java.util.List;
@@ -10,9 +11,10 @@ import java.util.Objects;
 
 @Embeddable
 public class Price {
+    @Column
     private BigDecimal price;
 
-    public Price() {
+    protected Price() {
     }
 
     public Price(BigDecimal price) {
