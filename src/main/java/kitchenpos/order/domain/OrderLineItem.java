@@ -4,7 +4,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 
 @Entity
 public class OrderLineItem {
@@ -12,9 +11,6 @@ public class OrderLineItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
-    
-    @JoinColumn(name = "order_id")
-    private Long orderId;
     
     private Long menuId;
     
@@ -36,10 +32,6 @@ public class OrderLineItem {
         return seq;
     }
 
-    public Long getOrderId() {
-        return orderId;
-    }
-
     public Long getMenuId() {
         return menuId;
     }
@@ -48,7 +40,4 @@ public class OrderLineItem {
         return quantity;
     }
 
-    public void setOrderId(Long orderId) {
-        this.orderId = orderId;
-    }
 }

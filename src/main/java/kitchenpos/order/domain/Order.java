@@ -126,7 +126,6 @@ public class Order {
         
         orderLineItems.stream()
         .forEach(orderLineItem -> {
-            orderLineItem.setOrderId(this.id);
             this.orderLineItems.add(orderLineItem);
         });
     }
