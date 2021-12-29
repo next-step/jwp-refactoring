@@ -51,7 +51,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> 테이블_손님수_변경(OrderTable createOrderTable, int numberOfGuests) {
         OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(numberOfGuests);
+        orderTable.changeNumberOfGuests(numberOfGuests);
         return RestAssured
                 .given().log().all()
                 .body(orderTable)
@@ -62,7 +62,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> 테이블_상태_변경(OrderTable createOrderTable, boolean empty) {
         OrderTable orderTable = new OrderTable();
-        orderTable.setEmpty(empty);
+        orderTable.changeEmpty(empty);
         return RestAssured
                 .given().log().all()
                 .body(orderTable)
@@ -73,8 +73,8 @@ public class TableAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 주문_테이블_등록_요청(boolean empty, int numberOfGuests) {
         OrderTable orderTable = new OrderTable();
-        orderTable.setEmpty(empty);
-        orderTable.setNumberOfGuests(numberOfGuests);
+        orderTable.changeEmpty(empty);
+        orderTable.changeNumberOfGuests(numberOfGuests);
 
         return RestAssured
                 .given().log().all()

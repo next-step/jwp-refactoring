@@ -83,7 +83,7 @@ public class OrderServiceTest {
     @DisplayName("주문을 등록할 때 메뉴 정보가 DB에 없으면 실패한다.")
     void createWithInvalidMenuId() {
         OrderRequest 주문 = 주문_등록(테이블.getId(), Arrays.asList(주문_항목(짜장면메뉴1.getId(), 1L), 주문_항목(짜장면메뉴2.getId(), 1L)));
-        테이블.setEmpty(false);
+        테이블.changeEmpty(false);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(테이블));
         given(menuRepository.findById(any())).willReturn(Optional.empty());
 
@@ -110,7 +110,7 @@ public class OrderServiceTest {
     @DisplayName("주문을 등록한다.")
     void createOrder() {
         OrderRequest 주문 = 주문_등록(테이블.getId(), Arrays.asList(주문_항목(짜장면메뉴1.getId(), 1L), 주문_항목(짜장면메뉴2.getId(), 1L)));
-        테이블.setEmpty(false);
+        테이블.changeEmpty(false);
         given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(테이블));
         Order order = new Order(테이블.getId(), OrderStatus.COOKING);
         given(orderRepository.save(any())).willReturn(order);
@@ -125,11 +125,11 @@ public class OrderServiceTest {
     void list() {
         List<OrderLineItem> orderLineItems = Arrays.asList(new OrderLineItem(1L, null, 짜장면메뉴1.getId(), 1L), new OrderLineItem(2L, null, 짜장면메뉴2.getId(), 1L));
         Order 주문1 = new Order(1L, 테이블.getId(), OrderStatus.COOKING);
-        주문1.addOrderLineItem(짜장면메뉴1.getId(), 1L);
-        주문1.addOrderLineItem(짜장면메뉴2.getId(), 1L);
+        주문1.order(짜장면메뉴1.getId(), 1L);
+        주문1.order(짜장면메뉴2.getId(), 1L);
 
         Order 주문2 = new Order(2L, 테이블.getId(), OrderStatus.COOKING);
-        주문1.addOrderLineItem(짜장면메뉴1.getId(), 1L);
+        주문1.order(짜장면메뉴1.getId(), 1L);
         given(orderRepository.findAll()).willReturn(Arrays.asList(주문1, 주문2));
 
         List<OrderResponse> orders = orderService.list();
@@ -148,7 +148,7 @@ public class OrderServiceTest {
 
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
             orderService.changeOrderStatus(주문.getId(), 주문상태변경);
-        });
+        }).withMessageContaining("완료된 주문은 상태를 변경할 수 없습니다");
     }
 
     @Test

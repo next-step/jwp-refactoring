@@ -75,7 +75,7 @@ public class MenuServiceTest {
 
     public static Menu 메뉴_등록(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         Menu menu = new Menu(id, name, price, menuGroup);
-        menu.addMenuProducts(menuProducts);
+        menu.organizeMenu(menuProducts);
         return menu;
     }
 

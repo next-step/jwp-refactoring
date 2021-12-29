@@ -80,11 +80,11 @@ public class TableServiceTest {
     @Test
     @DisplayName("그룹이 존재하는 테이블은 비울 수 없다.")
     void changeEmptyOfNotNullTableGroupId() {
-        orderTable.setTableGroupId(1L);
-
+        orderTable.group(1L);
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
             tableService.changeEmpty(orderTable.getId(), orderTable);
-        });
+        }).withMessageContaining("단체로 지정된 테이블입니다");
     }
 
     @Test
@@ -96,14 +96,14 @@ public class TableServiceTest {
 
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
             tableService.changeEmpty(orderTable.getId(), orderTable);
-        });
+        }).withMessageContaining("테이블이 식사중이거나 조리중인경우 테이블을 비울 수 없습니다.");
     }
 
     @Test
     @DisplayName("방문한 손님 수를 변경한다.")
     void changeNumberOfGuests() {
-        orderTable.setEmpty(false);
-        orderTable.setNumberOfGuests(10);
+        orderTable.changeEmpty(false);
+        orderTable.changeNumberOfGuests(10);
         given(orderTableRepository.save(any())).willReturn(orderTable);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
 
@@ -114,21 +114,23 @@ public class TableServiceTest {
     @Test
     @DisplayName("방문한 손님 수를 0이하로 변경하면 실패한다.")
     void changeNumberOfGuestsToZero() {
-        orderTable.setEmpty(false);
-        orderTable.setNumberOfGuests(-5);
+        orderTable.changeEmpty(false);
+        orderTable.changeNumberOfGuests(-5);
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
             tableService.changeNumberOfGuests(orderTable.getId(), orderTable);
-        });
+        }).withMessageContaining("손님수는 0이상의 값");
     }
 
     @Test
     @DisplayName("빈 테이블의 방문한 손님 수를 변경하면 실패한다.")
     void changeNumberOfGuestsEmptyTable() {
-        orderTable.setEmpty(true);
-        orderTable.setNumberOfGuests(10);
+        orderTable.changeEmpty(true);
+        orderTable.changeNumberOfGuests(10);
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
+
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
             tableService.changeNumberOfGuests(orderTable.getId(), orderTable);
-        });
+        }).withMessageContaining("비어있는 테이블은 손님수를 변경할 수 없습니다.");
     }
 
     public static OrderTableRequest 테이블_등록_요청(Long id, int numberOfGuests, boolean empty) {

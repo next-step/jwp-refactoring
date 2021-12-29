@@ -3,9 +3,9 @@ package kitchenpos.order.dto;
 import java.util.List;
 
 public class OrderRequest {
-    Long orderTableId;
-    String orderStatus;
-    List<OrderLineItemRequest> orderLineItems;
+    private Long orderTableId;
+    private String orderStatus;
+    private List<OrderLineItemRequest> orderLineItems;
 
     public OrderRequest() {
     }

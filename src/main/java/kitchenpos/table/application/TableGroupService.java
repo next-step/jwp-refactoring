@@ -45,7 +45,7 @@ public class TableGroupService {
 
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
                 orderTables.getOrderTableIds(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("테이블이 식사중이거나 조리중이면 단체 지정을 해제할 수 없습니다.");
         }
 
         orderTables.ungroup();

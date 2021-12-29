@@ -38,7 +38,7 @@ public class MenuService {
                 .collect(Collectors.toList());
 
         final Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup);
-        menu.addMenuProducts(menuProducts);
+        menu.organizeMenu(menuProducts);
 
         final Menu savedMenu = menuRepository.save(menu);
 
@@ -46,8 +46,7 @@ public class MenuService {
     }
 
     public List<MenuResponse> list() {
-        final List<Menu> menus = menuRepository.findAll();
-        return menus.stream()
+        return menuRepository.findAll().stream()
                 .map(menu -> MenuResponse.of(menu))
                 .collect(Collectors.toList());
     }

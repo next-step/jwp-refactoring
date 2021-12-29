@@ -123,7 +123,7 @@ public class TableGroupServiceTest {
 
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
             tableGroupService.ungroup(tableGroup.getId());
-        });
+        }).withMessageContaining("테이블이 식사중이거나 조리중이면 단체 지정을 해제할 수 없습니다.");
     }
 
     private OrderTable 주문_테이블_생성(Long id, int numberOfGuests, boolean empty) {

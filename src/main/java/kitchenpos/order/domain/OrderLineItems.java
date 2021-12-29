@@ -22,7 +22,7 @@ public class OrderLineItems {
         return orderLineItems;
     }
 
-    public void add(Order order, Long menu, long quantity) {
-        orderLineItems.add(new OrderLineItem(order, menu, quantity));
+    public void add(Order order, Long menuId, long quantity) {
+        orderLineItems.add(new OrderLineItem(order, menuId, quantity));
     }
 }

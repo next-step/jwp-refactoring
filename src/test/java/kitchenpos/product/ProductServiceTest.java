@@ -59,7 +59,7 @@ public class ProductServiceTest {
         // then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
             productService.create(상품_등록("짜장면", price));
-        });
+        }).withMessageContaining("가격은 0 미만의 값으로 설정할 수 없습니다");
     }
 
     @Test

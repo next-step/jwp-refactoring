@@ -29,16 +29,16 @@ public class OrderTables {
         return orderTables;
     }
 
-    public void group(Long tableGroupId) {
-        for (OrderTable orderTable : orderTables) {
-            orderTable.group(tableGroupId);
-        }
-    }
-
     public List<Long> getOrderTableIds() {
         return this.orderTables.stream()
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
+    }
+
+    public void group(Long tableGroupId) {
+        for (OrderTable orderTable : orderTables) {
+            orderTable.group(tableGroupId);
+        }
     }
 
     public void ungroup() {

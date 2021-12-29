@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.Objects;
 
 @Entity
 public class OrderTable {
@@ -35,15 +36,11 @@ public class OrderTable {
         return tableGroupId;
     }
 
-    public void setTableGroupId(Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
-    }
-
     public int getNumberOfGuests() {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
+    public void changeNumberOfGuests(final int numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
     }
 
@@ -51,7 +48,7 @@ public class OrderTable {
         return empty;
     }
 
-    public void setEmpty(final boolean empty) {
+    public void changeEmpty(final boolean empty) {
         this.empty = empty;
     }
 
@@ -66,5 +63,32 @@ public class OrderTable {
 
     public void ungroup() {
         this.tableGroupId = null;
+    }
+
+    public OrderTable isNotEmpty() {
+        if (this.empty) {
+            throw new IllegalArgumentException("주문 테이블이 비어있습니다.");
+        }
+        return this;
+    }
+
+    public OrderTable isNotGroup() {
+        if (Objects.nonNull(this.tableGroupId)) {
+            throw new IllegalArgumentException("단체로 지정된 테이블입니다.");
+        }
+        return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderTable that = (OrderTable) o;
+        return numberOfGuests == that.numberOfGuests && empty == that.empty && Objects.equals(id, that.id) && Objects.equals(tableGroupId, that.tableGroupId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, tableGroupId, numberOfGuests, empty);
     }
 }

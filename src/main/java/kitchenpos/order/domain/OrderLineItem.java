@@ -1,6 +1,7 @@
 package kitchenpos.order.domain;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class OrderLineItem {
@@ -13,7 +14,7 @@ public class OrderLineItem {
     private Long menuId;
     private long quantity;
 
-    public OrderLineItem() {
+    protected OrderLineItem() {
     }
 
     public OrderLineItem(Order order, Long menuId, long quantity) {
@@ -41,5 +42,18 @@ public class OrderLineItem {
 
     public long getQuantity() {
         return quantity;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderLineItem that = (OrderLineItem) o;
+        return quantity == that.quantity && Objects.equals(seq, that.seq) && Objects.equals(order, that.order) && Objects.equals(menuId, that.menuId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(seq, order, menuId, quantity);
     }
 }

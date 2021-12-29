@@ -7,6 +7,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Entity(name = "orders")
 @EntityListeners(AuditingEntityListener.class)
@@ -22,8 +23,13 @@ public class Order {
     @Embedded
     private OrderLineItems orderLineItems = new OrderLineItems();
 
-    public Order() {
+    protected Order() {
     }
+
+    public Order(Long orderTableId) {
+        this(orderTableId, OrderStatus.COOKING);
+    }
+
 
     public Order(Long orderTableId, OrderStatus orderStatus) {
         this(null, orderTableId, orderStatus);
@@ -64,11 +70,31 @@ public class Order {
         return orderLineItems;
     }
 
-    public void changeOrderStatus(String orderStatus) {
-        this.orderStatus = OrderStatus.valueOf(orderStatus);
+    public void changeOrderStatus(String orderStatusName) {
+        isCompleted();
+        this.orderStatus = OrderStatus.getOrderStatus(orderStatusName);
     }
 
-    public void addOrderLineItem(Long menu, long quantity) {
-        this.orderLineItems.add(this, menu, quantity);
+    private void isCompleted() {
+        if (Objects.equals(OrderStatus.COMPLETION, this.orderStatus)) {
+            throw new IllegalArgumentException("완료된 주문은 상태를 변경할 수 없습니다.");
+        }
+    }
+
+    public void order(Long menuId, long quantity) {
+        this.orderLineItems.add(this, menuId, quantity);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Order order = (Order) o;
+        return Objects.equals(id, order.id) && Objects.equals(orderTableId, order.orderTableId) && orderStatus == order.orderStatus && Objects.equals(orderedTime, order.orderedTime) && Objects.equals(orderLineItems, order.orderLineItems);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, orderTableId, orderStatus, orderedTime, orderLineItems);
     }
 }
