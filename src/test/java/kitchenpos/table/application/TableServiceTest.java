@@ -17,7 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.common.exception.KitchenposException;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -93,7 +92,7 @@ class TableServiceTest {
     @Test
     void changeEmptyFailWhenTableGroupExists() {
         // given
-        OrderTable orderTable = new OrderTable(1L, new TableGroup(), 4, false);
+        OrderTable orderTable = new OrderTable(1L, 1L, 4, false);
         아이디로_조회시_주문테이블을_반환(orderTable);
 
         OrderTableRequest request = new OrderTableRequest(true);

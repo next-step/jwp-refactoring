@@ -7,14 +7,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import kitchenpos.common.exception.KitchenposException;
-import kitchenpos.tablegroup.domain.TableGroup;
 
 class OrderTableTest {
 
     @DisplayName("테이블 그룹에 포함되어 있으면 에러")
     @Test
     void checkNotGrouped() {
-        OrderTable orderTable = new OrderTable(new TableGroup(1L), 4);
+        OrderTable orderTable = new OrderTable(1L, 4);
 
         assertThatExceptionOfType(KitchenposException.class)
             .isThrownBy(orderTable::checkNotGrouped)
@@ -35,7 +34,7 @@ class OrderTableTest {
     @Test
     void cannotBeGroupedTrue() {
         OrderTable orderTable1 = new OrderTable(4, false);
-        OrderTable orderTable2 = new OrderTable(new TableGroup(1L), 4);
+        OrderTable orderTable2 = new OrderTable(1L, 4);
 
         assertAll(
             () -> assertThat(orderTable1.cannotBeGrouped()).isTrue(),

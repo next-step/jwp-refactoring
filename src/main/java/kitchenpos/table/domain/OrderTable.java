@@ -4,15 +4,12 @@ import java.util.Objects;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 
 import kitchenpos.common.exception.KitchenposErrorCode;
 import kitchenpos.common.exception.KitchenposException;
-import kitchenpos.tablegroup.domain.TableGroup;
 
 @Entity
 public class OrderTable {
@@ -20,8 +17,7 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private TableGroup tableGroup;
+    private Long tableGroupId;
 
     @Embedded
     private NumberOfGuests numberOfGuests;
@@ -31,8 +27,8 @@ public class OrderTable {
     protected OrderTable() {
     }
 
-    public OrderTable(TableGroup tableGroup, int numberOfGuests) {
-        this.tableGroup = tableGroup;
+    public OrderTable(Long tableGroupId, int numberOfGuests) {
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
     }
 
@@ -41,9 +37,9 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
         this.empty = empty;
     }
@@ -52,12 +48,11 @@ public class OrderTable {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
-
-    public void referenceTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
+    public void referenceTableGroupId(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
     }
 
     public void updateNumberOfGuests(final NumberOfGuests numberOfGuests) {
@@ -79,24 +74,17 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public Long getTableGroupId() {
-        if (tableGroup == null) {
-            return null;
-        }
-        return tableGroup.getId();
-    }
-
     public int getGuestNumber() {
         return numberOfGuests.getNumberOfGuests();
     }
 
     public void checkNotGrouped() {
-        if (Objects.nonNull(tableGroup)) {
+        if (Objects.nonNull(tableGroupId)) {
             throw new KitchenposException(KitchenposErrorCode.TABLE_IS_IN_GROUP);
         }
     }
 
     public boolean cannotBeGrouped() {
-        return !empty || Objects.nonNull(tableGroup);
+        return !empty || Objects.nonNull(tableGroupId);
     }
 }

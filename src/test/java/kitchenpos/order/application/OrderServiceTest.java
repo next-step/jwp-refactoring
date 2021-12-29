@@ -17,19 +17,18 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.common.exception.KitchenposException;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderLineItemResponse;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.common.exception.KitchenposException;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 
@@ -53,7 +52,7 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        orderTable = new OrderTable(1L, new TableGroup(), 4, false);
+        orderTable = new OrderTable(1L, 1L, 4, false);
         orderLineItemRequest = new OrderLineItemRequest(1L, 1);
         menu = new Menu();
         orderLineItem = new OrderLineItem(menu, 1);
@@ -120,7 +119,7 @@ class OrderServiceTest {
         ID로_메뉴_조회(menu);
         메뉴_개수_반환(1L);
 
-        OrderTable orderTable = new OrderTable(1L, new TableGroup(1L), 4, true);
+        OrderTable orderTable = new OrderTable(1L, 1L, 4, true);
         조회한_주문_테이블_반환(orderTable);
 
         OrderRequest request = new OrderRequest(1L, Collections.singletonList(orderLineItemRequest));

@@ -29,11 +29,11 @@ class OrderTablesTest {
     @Test
     void unGroup() {
         List<OrderTable> orderTables = Collections.singletonList(
-            new OrderTable(1L, new TableGroup(1L), 4, true));
+            new OrderTable(1L, 1L, 4, true));
 
         OrderTables tables = new OrderTables(orderTables);
         tables.unGroup();
 
-        assertThat(tables.getOrderTables().get(0).getTableGroup()).isNull();
+        assertThat(tables.getOrderTables().get(0).getTableGroupId()).isNull();
     }
 }

@@ -8,8 +8,8 @@ import java.util.Arrays;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.common.price.domain.Price;
 import kitchenpos.common.exception.KitchenposException;
+import kitchenpos.common.price.domain.Price;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 

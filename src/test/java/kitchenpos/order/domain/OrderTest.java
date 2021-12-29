@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 
 import kitchenpos.common.exception.KitchenposException;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.table.domain.OrderTable;
 
 class OrderTest {
@@ -19,7 +18,7 @@ class OrderTest {
     @Test
     void updateOrderStatus() {
         OrderLineItem orderLineItem = new OrderLineItem(new Menu(), 1);
-        OrderTable orderTable = new OrderTable(1L, new TableGroup(1L), 4, false);
+        OrderTable orderTable = new OrderTable(1L, 1L, 4, false);
 
         Order order = new Order(orderTable, OrderStatus.COMPLETION, LocalDateTime.now(),
             new OrderLineItems(Collections.singletonList(orderLineItem)));

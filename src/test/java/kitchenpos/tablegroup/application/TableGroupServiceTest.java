@@ -17,14 +17,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.common.exception.KitchenposException;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.tablegroup.domain.OrderTables;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.OrderTableIdRequest;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
 
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
@@ -47,8 +46,7 @@ class TableGroupServiceTest {
             new OrderTable(1L, null, 4, true),
             new OrderTable(2L, null, 2, true));
 
-        tableGroup = new TableGroup(1L, new OrderTables(orderTables));
-
+        tableGroup = new TableGroup(1L);
     }
 
     @DisplayName("테이블 그룹 생성")
@@ -72,6 +70,7 @@ class TableGroupServiceTest {
             () -> assertThat(actual.getOrderTables().get(0)).isNotNull(),
             () -> assertThat(actual.getOrderTables().get(0).isEmpty()).isFalse()
         );
+        Mockito.verify(orderTableRepository).saveAll(Mockito.anyList());
     }
 
     @DisplayName("주문 테이블이 없거나 2개 미만일 시 생성 불가능")
@@ -132,7 +131,7 @@ class TableGroupServiceTest {
         // given
         List<OrderTable> orderTables = Arrays.asList(
             new OrderTable(1L, null, 4, true),
-            new OrderTable(2L, new TableGroup(), 2, true));
+            new OrderTable(2L, 1L, 2, true));
         테이블_조회_결과_반환(orderTables);
 
         List<OrderTableIdRequest> requestTables = Arrays.asList(
@@ -150,10 +149,9 @@ class TableGroupServiceTest {
     @Test
     void ungroup() {
         // given
-        테이블_그룹_ID로_테이블_그룹_조회(tableGroup);
         List<OrderTable> orderTables = Arrays.asList(
-            new OrderTable(1L, tableGroup, 4, true),
-            new OrderTable(2L, tableGroup, 2, true));
+            new OrderTable(1L, 1L, 4, true),
+            new OrderTable(2L, 1L, 2, true));
         테이블_그룹_ID로_조회_결과_반환(orderTables);
 
         요리_또는_식사중인_테이블_존재_여부_반환(false);
@@ -166,11 +164,9 @@ class TableGroupServiceTest {
     @Test
     void unGroupFailWhenContainsMealOrCooking() {
         // given
-        테이블_그룹_ID로_테이블_그룹_조회(tableGroup);
-
         List<OrderTable> orderTables = Arrays.asList(
-            new OrderTable(1L, tableGroup, 4, true),
-            new OrderTable(2L, tableGroup, 2, true));
+            new OrderTable(1L, 1L, 4, true),
+            new OrderTable(2L, 1L, 2, true));
         테이블_그룹_ID로_조회_결과_반환(orderTables);
 
         요리_또는_식사중인_테이블_존재_여부_반환(true);
@@ -192,17 +188,12 @@ class TableGroupServiceTest {
     }
 
     private void 테이블_그룹_ID로_조회_결과_반환(List<OrderTable> orderTables) {
-        Mockito.when(orderTableRepository.findAllByTableGroup(Mockito.any()))
+        Mockito.when(orderTableRepository.findAllByTableGroupId(Mockito.anyLong()))
             .thenReturn(orderTables);
     }
 
     private void 요리_또는_식사중인_테이블_존재_여부_반환(boolean b) {
         Mockito.when(orderRepository.existsByOrderTableInAndOrderStatusIn(Mockito.anyList(), Mockito.anyList()))
             .thenReturn(b);
-    }
-
-    private void 테이블_그룹_ID로_테이블_그룹_조회(TableGroup tableGroup) {
-        Mockito.when(tableGroupRepository.findById(Mockito.anyLong()))
-            .thenReturn(java.util.Optional.ofNullable(tableGroup));
     }
 }

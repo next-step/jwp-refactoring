@@ -1,24 +1,19 @@
 package kitchenpos.tablegroup.domain;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import javax.persistence.Embeddable;
-import javax.persistence.OneToMany;
 
 import kitchenpos.common.exception.KitchenposErrorCode;
 import kitchenpos.common.exception.KitchenposException;
+import kitchenpos.common.exception.KitchenposNotFoundException;
 import kitchenpos.table.domain.OrderTable;
 
-@Embeddable
 public class OrderTables {
-    @OneToMany(mappedBy = "tableGroup")
-    private List<OrderTable> orderTables = new ArrayList<>();
-
-    protected OrderTables() {
-    }
+    private final List<OrderTable> orderTables;
 
     public OrderTables(List<OrderTable> orderTables) {
+        if (orderTables.isEmpty()) {
+            throw new KitchenposNotFoundException();
+        }
         this.orderTables = orderTables;
     }
 
@@ -39,13 +34,16 @@ public class OrderTables {
         return orderTables;
     }
 
-    public void add(OrderTable orderTable) {
-        orderTables.add(orderTable);
-    }
-
     public void unGroup() {
         for (final OrderTable orderTable : orderTables) {
-            orderTable.referenceTableGroup(null);
+            orderTable.referenceTableGroupId(null);
+        }
+    }
+
+    public void referenceGroupId(Long tableGroupId) {
+        for (OrderTable orderTable : orderTables) {
+            orderTable.updateEmpty(false);
+            orderTable.referenceTableGroupId(tableGroupId);
         }
     }
 }

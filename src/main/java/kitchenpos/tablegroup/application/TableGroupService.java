@@ -8,9 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.common.exception.KitchenposErrorCode;
 import kitchenpos.common.exception.KitchenposException;
-import kitchenpos.common.exception.KitchenposNotFoundException;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.OrderTables;
 import kitchenpos.tablegroup.domain.TableGroup;
@@ -38,8 +38,12 @@ public class TableGroupService {
         request.checkValidSize();
         final List<Long> orderTableIds = makeOrderTableIds(request);
 
-        TableGroup tableGroup = makeTableGroup(orderTableIds);
-        return TableGroupResponse.from(tableGroupRepository.save(tableGroup));
+        TableGroup tableGroup = tableGroupRepository.save(new TableGroup());
+        OrderTables orderTables = makeOrderTables(orderTableIds);
+        orderTables.referenceGroupId(tableGroup.getId());
+        orderTableRepository.saveAll(orderTables.getOrderTables());
+
+        return TableGroupResponse.of(tableGroup, orderTables.getOrderTables());
     }
 
     private List<Long> makeOrderTableIds(TableGroupRequest request) {
@@ -48,19 +52,19 @@ public class TableGroupService {
             .collect(Collectors.toList());
     }
 
-    private TableGroup makeTableGroup(List<Long> orderTableIds) {
+    private OrderTables makeOrderTables(List<Long> orderTableIds) {
         final OrderTables orderTables = new OrderTables(orderTableRepository.findAllByIdIn(orderTableIds));
         orderTables.checkSameSize(orderTableIds.size());
         orderTables.checkNotContainsUsedTable();
 
-        return new TableGroup(orderTables);
+        return orderTables;
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
-            .orElseThrow(KitchenposNotFoundException::new);
-        OrderTables orderTables = new OrderTables(orderTableRepository.findAllByTableGroup(tableGroup));
+        List<OrderTable> tables = orderTableRepository.findAllByTableGroupId(tableGroupId);
+
+        OrderTables orderTables = new OrderTables(tables);
 
         checkContainsCookingOrMealTable(orderTables);
 

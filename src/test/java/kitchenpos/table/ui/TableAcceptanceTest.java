@@ -14,8 +14,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.tablegroup.ui.TableGroupAcceptanceTestHelper;
 import kitchenpos.order.ui.OrderAcceptanceTestHelper;
+import kitchenpos.tablegroup.ui.TableGroupAcceptanceTestHelper;
 
 class TableAcceptanceTest extends AcceptanceTest {
 
