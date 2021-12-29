@@ -1,6 +1,7 @@
 package kitchenpos.table.domain;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -14,6 +15,28 @@ import kitchenpos.tablegroup.domain.GroupingTableEvent;
 
 class OrderTablesTest {
 
+    @DisplayName("주문테이블들 그룹화")
+    @Test
+    void group() {
+        // given
+        List<OrderTable> orderTables = Arrays.asList(
+            new OrderTable(1L, null, 4, true),
+            new OrderTable(2L, null, 4, true)
+        );
+
+        OrderTables tables = new OrderTables(orderTables);
+        GroupingTableEvent event = new GroupingTableEvent(1L, Arrays.asList(1L, 2L));
+
+        // when
+        tables.group(event);
+
+        // then
+        assertAll(
+            () -> assertThat(tables.getOrderTables().get(0).getTableGroupId()).isEqualTo(1),
+            () -> assertThat(tables.getOrderTables().get(1).getTableGroupId()).isEqualTo(1)
+        );
+    }
+
     @DisplayName("사용중인 주문테이블이 있으면 에러")
     @Test
     void checkNotContainsUsedTable() {
@@ -25,6 +48,7 @@ class OrderTablesTest {
 
         OrderTables tables = new OrderTables(orderTables);
 
+        // when and then
         GroupingTableEvent event = new GroupingTableEvent(1L, Arrays.asList(1L, 2L));
         assertThatExceptionOfType(KitchenposException.class)
             .isThrownBy(() -> tables.group(event))

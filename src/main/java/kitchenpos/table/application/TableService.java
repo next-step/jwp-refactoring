@@ -5,11 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.common.exception.KitchenposErrorCode;
-import kitchenpos.common.exception.KitchenposException;
 import kitchenpos.common.exception.KitchenposNotFoundException;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -20,11 +16,9 @@ import kitchenpos.table.dto.OrderTableResponses;
 @Service
 @Transactional(readOnly = true)
 public class TableService {
-    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
+    public TableService(final OrderTableRepository orderTableRepository) {
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -46,20 +40,9 @@ public class TableService {
         final OrderTable orderTable = orderTableRepository.findById(orderTableId)
             .orElseThrow(KitchenposNotFoundException::new);
 
-        orderTable.checkNotGrouped();
-
-        checkTableCookingOrMeal(orderTable);
-
         orderTable.updateEmpty(request.isEmpty());
 
         return OrderTableResponse.from(orderTableRepository.save(orderTable));
-    }
-
-    private void checkTableCookingOrMeal(OrderTable orderTable) {
-        if (orderRepository.existsByOrderTableAndOrderStatusIn(orderTable,
-            OrderStatus.NOT_COMPLETED_LIST)) {
-            throw new KitchenposException(KitchenposErrorCode.CONTAINS_USED_TABLE);
-        }
     }
 
     @Transactional

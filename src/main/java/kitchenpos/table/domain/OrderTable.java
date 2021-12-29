@@ -8,11 +8,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import org.springframework.data.domain.AbstractAggregateRoot;
+
 import kitchenpos.common.exception.KitchenposErrorCode;
 import kitchenpos.common.exception.KitchenposException;
 
 @Entity
-public class OrderTable {
+public class OrderTable extends AbstractAggregateRoot<OrderTable> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -51,8 +53,13 @@ public class OrderTable {
     public Long getTableGroupId() {
         return tableGroupId;
     }
-    public void referenceTableGroupId(Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
+
+    public boolean isEmpty() {
+        return empty;
+    }
+
+    public int getGuestNumber() {
+        return numberOfGuests.getNumberOfGuests();
     }
 
     public void updateNumberOfGuests(final NumberOfGuests numberOfGuests) {
@@ -66,19 +73,13 @@ public class OrderTable {
         }
     }
 
-    public boolean isEmpty() {
-        return empty;
-    }
-
     public void updateEmpty(final boolean empty) {
+        checkNotGrouped();
+        registerEvent(new OrderStatusValidateEvent(this));
         this.empty = empty;
     }
 
-    public int getGuestNumber() {
-        return numberOfGuests.getNumberOfGuests();
-    }
-
-    public void checkNotGrouped() {
+    private void checkNotGrouped() {
         if (Objects.nonNull(tableGroupId)) {
             throw new KitchenposException(KitchenposErrorCode.TABLE_IS_IN_GROUP);
         }
@@ -86,5 +87,15 @@ public class OrderTable {
 
     public boolean cannotBeGrouped() {
         return !empty || Objects.nonNull(tableGroupId);
+    }
+
+    public void ungroup() {
+        this.tableGroupId = null;
+        registerEvent(new OrderStatusValidateEvent(this));
+    }
+
+    public void group(Long tableGroupId) {
+        this.empty = false;
+        this.tableGroupId = tableGroupId;
     }
 }

@@ -8,6 +8,4 @@ import kitchenpos.table.domain.OrderTable;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
     boolean existsByOrderTableAndOrderStatusIn(OrderTable orderTable, List<OrderStatus> orderStatuses);
-
-    boolean existsByOrderTableInAndOrderStatusIn(List<OrderTable> orderTables, List<OrderStatus> orderStatuses);
 }

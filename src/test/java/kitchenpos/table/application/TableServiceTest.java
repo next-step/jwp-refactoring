@@ -16,7 +16,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.common.exception.KitchenposException;
-import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -25,8 +24,6 @@ import kitchenpos.table.dto.OrderTableResponses;
 
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
-    @Mock
-    private OrderRepository orderRepository;
     @Mock
     private OrderTableRepository orderTableRepository;
 
@@ -77,7 +74,6 @@ class TableServiceTest {
     void changeEmpty() {
         // given
         아이디로_조회시_주문테이블을_반환(orderTable1);
-        식사_혹은_준비중인_테이블_존재여부_반환(false);
 
         저장시_예상된_결과_반환(new OrderTable(1L, null, 4, true));
 
@@ -101,21 +97,6 @@ class TableServiceTest {
         assertThatExceptionOfType(KitchenposException.class)
             .isThrownBy(() -> tableService.changeEmpty(1L, request))
             .withMessage("주문 테이블이 그룹에 포함되어 있습니다.");
-    }
-
-    @DisplayName("요리 중이나 식사 중일 때 변경 불가능")
-    @Test
-    void changeEmptyFailWhenCookingOrMeal() {
-        // given
-        아이디로_조회시_주문테이블을_반환(orderTable1);
-        식사_혹은_준비중인_테이블_존재여부_반환(true);
-
-        OrderTableRequest request = new OrderTableRequest(true);
-
-        // when and then
-        assertThatExceptionOfType(KitchenposException.class)
-            .isThrownBy(() -> tableService.changeEmpty(1L, request))
-            .withMessage("사용중인 테이블이 있습니다.");
     }
 
     @DisplayName("고객 수 변경")
@@ -167,10 +148,5 @@ class TableServiceTest {
     private void 저장시_예상된_결과_반환(OrderTable expected) {
         Mockito.when(orderTableRepository.save(Mockito.any()))
             .thenReturn(expected);
-    }
-
-    private void 식사_혹은_준비중인_테이블_존재여부_반환(boolean b) {
-        Mockito.when(orderRepository.existsByOrderTableAndOrderStatusIn(Mockito.any(), Mockito.anyList()))
-            .thenReturn(b);
     }
 }

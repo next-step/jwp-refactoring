@@ -116,8 +116,6 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
             Collections.singletonMap("id", 2));
         TableGroupAcceptanceTestHelper.테이블_그룹_생성되어_있음(tableIds);
 
-        TableAcceptanceTestHelper.테이블_빈_테이블_여부_변경되어_있음(1L, "false");
-
         Map<String, Integer> orderLineItem = new HashMap<>();
         orderLineItem.put("menuId", 1);
         orderLineItem.put("quantity", 1);

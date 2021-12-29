@@ -6,21 +6,14 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.common.exception.KitchenposErrorCode;
-import kitchenpos.common.exception.KitchenposException;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.tablegroup.domain.UngroupingTableEvent;
 
 @Component
 public class UngroupingTableEventHandler {
     private final OrderTableRepository orderTableRepository;
-    private final OrderRepository orderRepository;
 
-    public UngroupingTableEventHandler(OrderTableRepository orderTableRepository,
-        OrderRepository orderRepository) {
+    public UngroupingTableEventHandler(OrderTableRepository orderTableRepository) {
         this.orderTableRepository = orderTableRepository;
-        this.orderRepository = orderRepository;
     }
 
     @Transactional
@@ -30,15 +23,9 @@ public class UngroupingTableEventHandler {
 
         OrderTables orderTables = new OrderTables(tables);
 
-        checkContainsCookingOrMealTable(orderTables.getOrderTables());
-
         orderTables.unGroup();
-    }
-
-    private void checkContainsCookingOrMealTable(List<OrderTable> orderTables) {
-        if (orderRepository.existsByOrderTableInAndOrderStatusIn(
-            orderTables, OrderStatus.NOT_COMPLETED_LIST)) {
-            throw new KitchenposException(KitchenposErrorCode.CONTAINS_USED_TABLE);
+        for (OrderTable orderTable : orderTables.getOrderTables()) {
+            orderTableRepository.save(orderTable);
         }
     }
 }

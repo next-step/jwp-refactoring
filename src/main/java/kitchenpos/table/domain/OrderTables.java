@@ -23,14 +23,14 @@ public class OrderTables {
 
     public void unGroup() {
         for (final OrderTable orderTable : orderTables) {
-            orderTable.referenceTableGroupId(null);
+            orderTable.ungroup();
         }
     }
 
     public void group(GroupingTableEvent event) {
         checkSameSize(event.getTablesSize());
         checkNotContainsUsedTable();
-        referenceGroupId(event.getTableGroupId());
+        group(event.getTableGroupId());
     }
 
     private void checkNotContainsUsedTable() {
@@ -46,10 +46,9 @@ public class OrderTables {
         }
     }
 
-    private void referenceGroupId(Long tableGroupId) {
+    private void group(Long tableGroupId) {
         for (OrderTable orderTable : orderTables) {
-            orderTable.updateEmpty(false);
-            orderTable.referenceTableGroupId(tableGroupId);
+            orderTable.group(tableGroupId);
         }
     }
 }
