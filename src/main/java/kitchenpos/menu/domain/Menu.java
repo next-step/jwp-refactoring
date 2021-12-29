@@ -72,7 +72,7 @@ public class Menu {
                 .orElseThrow(MenuGroupRequiredException::new);
 
         if (!price.isPossibleMenu(menuProducts)) {
-            throw new MenuProductSumPriceException();
+            throw new MenuProductSumPriceException(price.getPrice());
         }
     }
 

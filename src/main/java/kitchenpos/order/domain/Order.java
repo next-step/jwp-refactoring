@@ -7,6 +7,7 @@ import kitchenpos.common.exception.OrderStatusNotCompletedException;
 import kitchenpos.common.exception.OrderStatusNotProcessingException;
 import kitchenpos.ordertable.domain.OrderTable;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -35,6 +36,7 @@ public class Order {
     @Enumerated(value = EnumType.STRING)
     private OrderStatus orderStatus;
 
+    @Column
     private LocalDateTime orderedTime;
 
     @Embedded
