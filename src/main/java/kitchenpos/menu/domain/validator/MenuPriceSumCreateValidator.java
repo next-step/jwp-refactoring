@@ -1,7 +1,6 @@
 package kitchenpos.menu.domain.validator;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProductGroup;
 import kitchenpos.menu.exception.IllegalMenuPriceException;
 import kitchenpos.product.domain.Product;
@@ -12,11 +11,11 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Component
-public class MenuPriceSumValidator implements MenuPriceValidator {
+public class MenuPriceSumCreateValidator implements MenuPriceCreateValidator {
     private static final String ILLEGAL_PRICE_ERROR_MESSAGE = "가격은 포함된 구성된 상품들의 금액 보다 작거나 같아야 한다.";
     private final ProductRepository productRepository;
 
-    public MenuPriceSumValidator(ProductRepository productRepository) {
+    public MenuPriceSumCreateValidator(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 

@@ -2,7 +2,7 @@ package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.validator.MenuGroupCreateValidator;
-import kitchenpos.menu.domain.validator.MenuPriceValidator;
+import kitchenpos.menu.domain.validator.MenuPriceCreateValidator;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.infra.MenuRepository;
@@ -16,19 +16,19 @@ import java.util.stream.Collectors;
 @Service
 public class MenuService {
     private final MenuRepository menuRepository;
-    private final MenuPriceValidator menuPriceValidator;
-    private final MenuGroupCreateValidator menuGroupValidator;
+    private final MenuPriceCreateValidator menuPriceCreateValidator;
+    private final MenuGroupCreateValidator menuGroupCreateValidator;
 
-    public MenuService(MenuRepository menuRepository, MenuPriceValidator menuPriceValidator,
-                       MenuGroupCreateValidator menuGroupValidator) {
+    public MenuService(MenuRepository menuRepository, MenuPriceCreateValidator menuPriceCreateValidator,
+                       MenuGroupCreateValidator menuGroupCreateValidator) {
         this.menuRepository = menuRepository;
-        this.menuPriceValidator = menuPriceValidator;
-        this.menuGroupValidator = menuGroupValidator;
+        this.menuPriceCreateValidator = menuPriceCreateValidator;
+        this.menuGroupCreateValidator = menuGroupCreateValidator;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest request) {
-        final Menu menu = Menu.create(request, Arrays.asList(menuGroupValidator, menuPriceValidator));
+        final Menu menu = Menu.create(request, Arrays.asList(menuGroupCreateValidator, menuPriceCreateValidator));
         return MenuResponse.of(menuRepository.save(menu));
     }
 

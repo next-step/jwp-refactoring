@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.menu.domain.validator.MenuPriceSumValidator;
+import kitchenpos.menu.domain.validator.MenuPriceSumCreateValidator;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.infra.ProductRepository;
 import org.assertj.core.api.ThrowableAssert;
@@ -26,7 +26,7 @@ class MenuPriceSumValidatorTest {
     private ProductRepository productRepository;
 
     @InjectMocks
-    private MenuPriceSumValidator menuPriceValidator;
+    private MenuPriceSumCreateValidator menuPriceValidator;
 
     @DisplayName("메뉴의 가격은 포함된 상품들의 금액의 합 보다 크지 않을경우 유효하다.")
     @Test

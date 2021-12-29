@@ -5,7 +5,7 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.validator.ExistMenuGroupMenuCreateValidator;
 import kitchenpos.product.domain.Product;
-import kitchenpos.menu.domain.validator.MenuPriceValidator;
+import kitchenpos.menu.domain.validator.MenuPriceCreateValidator;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -28,7 +28,6 @@ import static kitchenpos.product.application.ProductServiceTest.getProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -42,7 +41,7 @@ public class MenuServiceTest {
     @Mock
     private ExistMenuGroupMenuCreateValidator notFoundMenuGroupValidator;
     @Mock
-    private MenuPriceValidator menuPriceValidator;
+    private MenuPriceCreateValidator menuPriceCreateValidator;
     @InjectMocks
     private MenuService menuService;
 
@@ -146,7 +145,7 @@ public class MenuServiceTest {
             );
 
             // given
-            doThrow(new IllegalArgumentException()).when(menuPriceValidator).validate(any());
+            doThrow(new IllegalArgumentException()).when(menuPriceCreateValidator).validate(any());
             // when
             ThrowableAssert.ThrowingCallable createCall = () -> menuService.create(createRequest);
             // then
