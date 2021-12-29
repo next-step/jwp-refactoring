@@ -3,9 +3,9 @@ package kitchenpos.ordertable.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import kitchenpos.common.event.GroupEvent;
-import kitchenpos.common.event.GroupInfo;
-import kitchenpos.common.event.UngroupEvent;
+import kitchenpos.ordertable.event.GroupEvent;
+import kitchenpos.ordertable.event.GroupInfo;
+import kitchenpos.ordertable.event.UngroupEvent;
 import kitchenpos.ordertable.exception.DuplicateTablesException;
 import kitchenpos.ordertable.exception.IllegalGroupingTableStateException;
 import kitchenpos.ordertable.exception.NotEnoughTablesException;
