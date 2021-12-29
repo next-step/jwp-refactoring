@@ -72,13 +72,6 @@ public class Menu {
             menuProduct.setMenu(this);
             this.menuProducts.add(menuProduct);
         });
-        checkTotalPrice(this.menuProducts.getTotalPrice());
-    }
-    
-    private void checkTotalPrice(MenuPrice sumProductPrice) {
-        if (this.price.isGreaterThan(sumProductPrice)) {
-            throw new IllegalArgumentException("메뉴 가격이 상품 가격의 합보다 큽니다");
-        }
     }
 
     @Override

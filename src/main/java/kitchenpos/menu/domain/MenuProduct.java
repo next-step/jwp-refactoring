@@ -7,8 +7,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import kitchenpos.product.domain.Product;
-
 @Entity
 public class MenuProduct {
     
@@ -20,22 +18,20 @@ public class MenuProduct {
     @JoinColumn(name = "menu_id")
     private Menu menu;
     
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
+    private Long productId;
     
     private long quantity;
     
     protected MenuProduct() {
     }
 
-    public MenuProduct(Product product, long quantity) {
-        this.product = product;
+    public MenuProduct(Long productId, long quantity) {
+        this.productId = productId;
         this.quantity = quantity;
     }
 
-    public static MenuProduct of(Product product, long quantity) {
-        return new MenuProduct(product, quantity);
+    public static MenuProduct of(Long productId, long quantity) {
+        return new MenuProduct(productId, quantity);
     }
 
     public Long getSeq() {
@@ -50,16 +46,11 @@ public class MenuProduct {
         return menu;
     }
 
-    public Product getProduct() {
-        return product;
+    public Long getProductId() {
+        return productId;
     }
 
     public void setMenu(Menu menu) {
         this.menu = menu;
     }
-    
-    public MenuPrice getPrice() {
-        return MenuPrice.from(product.getPrice().multiply(this.quantity).getValue());
-    }
-
 }

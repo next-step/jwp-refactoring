@@ -2,11 +2,10 @@ package kitchenpos.menu.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,7 +24,6 @@ import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 
 @ExtendWith(MockitoExtension.class)
@@ -36,9 +34,9 @@ public class MenuServiceTest {
 
     @Mock
     private MenuGroupService menuGroupService;
-
+    
     @Mock
-    private ProductService productService;
+    private MenuValidator menuValidator;
 
     @InjectMocks
     private MenuService menuService;
@@ -49,15 +47,16 @@ public class MenuServiceTest {
         // given
         Menu 메뉴 = Menu.of("짜장면", 6000L, MenuGroup.from("중식"));
         Product 상품 = Product.of("짜장면", 6000L);
-        MenuProduct 메뉴상품 = MenuProduct.of(상품, 1L);
+        Long 상품_Id = 1L;
+        MenuProduct 메뉴상품 = MenuProduct.of(상품_Id, 1L);
         메뉴.addMenuProducts(Arrays.asList(메뉴상품));
         
         MenuProductRequest 메뉴_상품_요청 = MenuProductRequest.of(1L, 1L);
         MenuRequest 메뉴_생성_요청 = MenuRequest.of("짜장면", 6000L, 1L, Arrays.asList(메뉴_상품_요청));
         
         given(menuGroupService.findById(anyLong())).willReturn(메뉴.getMenuGroup());
-        given(productService.findAllByIds(anyList())).willReturn(Arrays.asList(상품));
         given(menuRepository.save(any())).willReturn(메뉴);
+        doNothing().when(menuValidator).checkTotalPrice(메뉴);
 
 
         // when

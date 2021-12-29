@@ -27,10 +27,6 @@ public class ProductPrice {
         return this.value;
     }
     
-    public ProductPrice multiply(long quantity) {
-        return new ProductPrice(this.value * quantity);
-    }
-    
     private void validatePrice(long value) {
         if (value < 0) {
             throw new IllegalArgumentException("가격은 0원 이상이어야 합니다");
