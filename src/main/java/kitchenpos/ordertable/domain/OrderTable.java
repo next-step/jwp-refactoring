@@ -21,6 +21,8 @@ import java.util.Objects;
 
 @Entity
 public class OrderTable {
+    public static final int EMPTY_TABLE_NUMBER = 0;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -59,8 +61,10 @@ public class OrderTable {
     }
 
     private void checkEmpty(int numberOfGuests) {
-        if (numberOfGuests == 0) {
+        if (numberOfGuests == EMPTY_TABLE_NUMBER) {
+            validateChangeableEmpty();
             empty = new Empty(true);
+            orders = Collections.emptyList();
             return;
         }
 
@@ -99,9 +103,8 @@ public class OrderTable {
     }
 
     public void changeEmpty() {
-        validateChangeableEmpty();
-        empty = new Empty(true);
-        orders = Collections.emptyList();
+        this.numberOfGuests.changeNumberOfGuests(EMPTY_TABLE_NUMBER);
+        checkEmpty(EMPTY_TABLE_NUMBER);
     }
 
     private void validateChangeableEmpty() {
