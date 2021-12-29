@@ -14,7 +14,7 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderResponses;
-import kitchenpos.exception.KitchenposNotFoundException;
+import kitchenpos.common.exception.KitchenposNotFoundException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.repository.OrderRepository;

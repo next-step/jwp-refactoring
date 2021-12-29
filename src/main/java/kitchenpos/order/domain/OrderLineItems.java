@@ -10,8 +10,8 @@ import javax.persistence.OneToMany;
 
 import org.springframework.util.CollectionUtils;
 
-import kitchenpos.exception.KitchenposErrorCode;
-import kitchenpos.exception.KitchenposException;
+import kitchenpos.common.exception.KitchenposErrorCode;
+import kitchenpos.common.exception.KitchenposException;
 
 @Embeddable
 public class OrderLineItems {

@@ -7,7 +7,7 @@ import java.util.Collections;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.exception.KitchenposException;
+import kitchenpos.common.exception.KitchenposException;
 import kitchenpos.menu.domain.Menu;
 
 class OrderLineItemsTest {

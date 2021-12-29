@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.exception.KitchenposException;
+import kitchenpos.common.exception.KitchenposException;
 
 class PriceTest {
     @DisplayName("null로 가격 생성시 에러")

@@ -16,8 +16,8 @@ import javax.persistence.ManyToOne;
 
 import org.springframework.data.annotation.CreatedDate;
 
-import kitchenpos.exception.KitchenposErrorCode;
-import kitchenpos.exception.KitchenposException;
+import kitchenpos.common.exception.KitchenposErrorCode;
+import kitchenpos.common.exception.KitchenposException;
 import table.domain.OrderTable;
 
 @Entity(name = "orders")

@@ -17,8 +17,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.exception.KitchenposException;
-import kitchenpos.exception.KitchenposNotFoundException;
+import kitchenpos.common.exception.KitchenposException;
+import kitchenpos.common.exception.KitchenposNotFoundException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuProductRequest;

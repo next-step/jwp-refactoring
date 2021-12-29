@@ -15,7 +15,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.exception.KitchenposException;
+import kitchenpos.common.exception.KitchenposException;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
 import table.application.TableService;

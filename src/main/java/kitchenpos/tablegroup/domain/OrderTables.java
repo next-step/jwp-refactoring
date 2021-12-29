@@ -6,8 +6,8 @@ import java.util.List;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
-import kitchenpos.exception.KitchenposErrorCode;
-import kitchenpos.exception.KitchenposException;
+import kitchenpos.common.exception.KitchenposErrorCode;
+import kitchenpos.common.exception.KitchenposException;
 import table.domain.OrderTable;
 
 @Embeddable

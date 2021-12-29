@@ -2,8 +2,8 @@ package table.domain;
 
 import javax.persistence.Embeddable;
 
-import kitchenpos.exception.KitchenposErrorCode;
-import kitchenpos.exception.KitchenposException;
+import kitchenpos.common.exception.KitchenposErrorCode;
+import kitchenpos.common.exception.KitchenposException;
 
 @Embeddable
 public class NumberOfGuests {

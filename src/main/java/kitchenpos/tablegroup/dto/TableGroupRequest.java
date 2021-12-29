@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.util.CollectionUtils;
 
-import kitchenpos.exception.KitchenposErrorCode;
-import kitchenpos.exception.KitchenposException;
+import kitchenpos.common.exception.KitchenposErrorCode;
+import kitchenpos.common.exception.KitchenposException;
 
 public class TableGroupRequest {
     private static final int MIN_SIZE = 2;

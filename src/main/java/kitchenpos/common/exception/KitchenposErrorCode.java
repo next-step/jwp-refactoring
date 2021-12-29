@@ -1,4 +1,4 @@
-package kitchenpos.exception;
+package kitchenpos.common.exception;
 
 public enum KitchenposErrorCode {
     TABLE_IS_EMPTY("주문 테이블이 비어있습니다."),

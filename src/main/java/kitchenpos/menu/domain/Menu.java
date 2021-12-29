@@ -13,8 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 import kitchenpos.common.price.domain.Price;
-import kitchenpos.exception.KitchenposErrorCode;
-import kitchenpos.exception.KitchenposException;
+import kitchenpos.common.exception.KitchenposErrorCode;
+import kitchenpos.common.exception.KitchenposException;
 import kitchenpos.menugroup.domain.MenuGroup;
 
 @Entity
