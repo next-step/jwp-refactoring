@@ -11,7 +11,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-//TODO 트랜잭션 내에서의 이벤트를 사용할 때 주의할 점에 대해 고민해볼 것
 @Service
 public class TableGroupService {
     private final TableGroupRepository tableGroupRepository;

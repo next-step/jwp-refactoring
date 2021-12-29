@@ -7,6 +7,8 @@ import kitchenpos.tablegroup.domain.TableUngroupEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.util.List;
 
@@ -25,15 +27,13 @@ public class TableEventHandler {
         this.orderTableRepository = orderTableRepository;
     }
 
-    @EventListener
-    @Transactional
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, fallbackExecution = true)
     public void groupEvent(TableGroupEvent event) {
         List<OrderTable> orderTables = orderTableRepository.findAllById(event.getTableIds());
         orderTables.forEach(orderTable -> orderTable.groupBy(event.getGroupTableId()));
     }
 
-    @EventListener
-    @Transactional
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, fallbackExecution = true)
     public void ungroupEvent(TableUngroupEvent event) {
         List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(event.getTableGroupId());
         orderTables.forEach(OrderTable::ungroup);
