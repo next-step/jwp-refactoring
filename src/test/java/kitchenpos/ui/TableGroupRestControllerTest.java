@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.TableGroupService;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.tablegroup.TableGroupRequest;
+import kitchenpos.dto.tablegroup.TableGroupResponse;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +20,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -39,53 +41,58 @@ class TableGroupRestControllerTest {
     @MockBean
     private TableGroupService tableGroupService;
 
+    private TableGroup 테이블그룹;
+    private OrderTable 주문테이블1;
+    private OrderTable 주문테이블2;
+    private List<OrderTable> 주문테이블_목록;
+
+    private TableGroupRequest 테이블그룹_요청;
+    private TableGroupResponse 테이블그룹_응답;
+
     @BeforeEach
     void setup() {
         this.mvc = MockMvcBuilders.webAppContextSetup(ctx)
                 .addFilters(new CharacterEncodingFilter("UTF-8", true))
                 .alwaysDo(print())
                 .build();
+
+        주문테이블1 = OrderTable.of(1L, 2, false);
+        주문테이블2 = OrderTable.of(2L, 2, false);
+        주문테이블_목록 = Lists.newArrayList(주문테이블1, 주문테이블2);
+        테이블그룹 = TableGroup.of(1L, 주문테이블_목록);
+
+        테이블그룹_요청 = TableGroupRequest.from(Lists.newArrayList(주문테이블1.getId(), 주문테이블2.getId()));
+        테이블그룹_응답 = TableGroupResponse.from(테이블그룹);
     }
 
     @DisplayName("통합 계산을 위해 단체 지정 등록한다.")
     @Test
     void create() throws Exception {
-        // given
-        final OrderTable orderTable1 = new OrderTable(1L, 1L, 5, false);
-        final OrderTable orderTable2 = new OrderTable(2L, 1L, 5, false);
-        final List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
-        final TableGroup tableGroup = new TableGroup(1L, null, orderTables);
-        given(tableGroupService.create(any())).willReturn(tableGroup);
+        
+        given(tableGroupService.create(any())).willReturn(테이블그룹_응답);
 
-        // when
+        
         final ResultActions actions = mvc.perform(post("/api/table-groups")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON_VALUE)
-                        .content(new ObjectMapper().writeValueAsString(tableGroup)))
+                        .content(new ObjectMapper().writeValueAsString(테이블그룹_요청)))
                 .andDo(print());
-        //then
+        
         actions.andExpect(status().isCreated())
                 .andExpect(jsonPath("id").value(1L))
-                .andExpect(jsonPath("orderTables").isArray())
-                .andExpect(jsonPath("orderTables[0].id").value(1L))
-                .andExpect(jsonPath("orderTables[1].id").value(2L));
+                .andExpect(jsonPath("orderTableRespons").hasJsonPath())
+                .andExpect(jsonPath("createdDate").hasJsonPath());
     }
 
     @DisplayName("단체 지정을 해지한다.")
     @Test
     void ungroup() throws Exception {
-        // given
-        final OrderTable orderTable1 = new OrderTable(1L, 1L, 5, false);
-        final OrderTable orderTable2 = new OrderTable(2L, 1L, 5, false);
-        final List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
-        final TableGroup tableGroup = new TableGroup(1L, null, orderTables);
-
-        // when
-        final ResultActions actions = mvc.perform(delete("/api/table-groups/{tableGroupId}", tableGroup.getId())
+        
+        final ResultActions actions = mvc.perform(delete("/api/table-groups/{tableGroupId}", 테이블그룹_응답.getId())
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andDo(print());
 
-        //then
+        
         actions.andExpect(status().isNoContent());
     }
 }
