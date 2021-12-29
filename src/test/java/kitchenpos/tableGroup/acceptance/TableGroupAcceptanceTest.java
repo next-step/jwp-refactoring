@@ -9,13 +9,15 @@ import static kitchenpos.utils.TestFactory.post;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.List;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.tableGroup.dto.TableGroupRequest;
-import kitchenpos.tableGroup.dto.TableGroupResponse;
+import kitchenpos.table.domain.TableGroupRequest;
+import kitchenpos.table.domain.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 public class TableGroupAcceptanceTest extends AcceptanceTest {
@@ -35,15 +37,15 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
             new OrderTableRequest(new NumberOfGuests(0), true)).as(
             OrderTableResponse.class);
 
-        주문_테이블1 = new OrderTableRequest(1L, createTable1.getNumberOfGuests(), false);
-        주문_테이블2 = new OrderTableRequest(2L, createTable2.getNumberOfGuests(), false);
+        주문_테이블1 = new OrderTableRequest(1L, createTable1.getNumberOfGuests(), true);
+        주문_테이블2 = new OrderTableRequest(2L, createTable2.getNumberOfGuests(), true);
     }
 
     @Test
     void 주문테이블_단체지정_생성() {
 
         // given
-        TableGroupRequest tableGroupRequest = new TableGroupRequest(asList(주문_테이블1, 주문_테이블2));
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(asList(주문_테이블1.getId(), 주문_테이블2.getId()));
 
         // when
         ExtractableResponse<Response> response = 단체지정_생성_요청(tableGroupRequest);
@@ -56,14 +58,14 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     void 단체지정을_취소할_수_있다() {
 
         // given
-        TableGroupRequest tableGroupRequest = new TableGroupRequest(asList(주문_테이블1, 주문_테이블2));
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(asList(주문_테이블1.getId(), 주문_테이블2.getId()));
 
         // when
-        TableGroupResponse createResponse = 단체지정_생성_요청(tableGroupRequest).as(
-            TableGroupResponse.class);
+        List<OrderTableResponse> list = 단체지정_생성_요청(tableGroupRequest).jsonPath()
+            .getList(".", OrderTableResponse.class);
 
         // then
-        ExtractableResponse<Response> response = 단체지정_취소_요청(createResponse.getId());
+        ExtractableResponse<Response> response = 단체지정_취소_요청(list.get(0).getTableGroupId());
         단체지정_취소됨(response);
 
     }
@@ -77,7 +79,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 단체지정_취소_요청(Long id) {
-        return delete(TABLE_GROUP_BASE_URL+"/{tableGroupId}","tableGroupId", id);
+        return delete(TABLE_GROUP_BASE_URL + "/{tableGroupId}","tableGroupId", id);
     }
 
     public static void 단체지정_취소됨(ExtractableResponse<Response> response) {

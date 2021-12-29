@@ -8,7 +8,10 @@ import kitchenpos.table.dto.ChangeEmptyRequest;
 import kitchenpos.table.dto.ChangeNumberOfGuestRequest;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.domain.TableGroupRequest;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -61,5 +64,21 @@ public class TableRestController {
         return ResponseEntity.ok()
             .body(tableService.changeNumberOfGuests(orderTableId, changeNumberOfGuestRequest))
             ;
+    }
+
+    @PostMapping("/api/table-groups")
+    public ResponseEntity<List<OrderTableResponse>> group(
+        @RequestBody final TableGroupRequest tableGroupRequest) {
+        final List<OrderTableResponse> grouped = tableService.group(tableGroupRequest);
+        final URI uri = URI.create("/api/table-groups/" + grouped.get(0).getId());
+        return ResponseEntity.created(uri)
+            .body(grouped)
+            ;
+    }
+
+    @DeleteMapping(value = "/api/table-groups/{tableGroupId}")
+    public ResponseEntity<Void> ungroup(@PathVariable final Long tableGroupId) {
+        tableService.ungroup(tableGroupId);
+        return ResponseEntity.noContent().build();
     }
 }

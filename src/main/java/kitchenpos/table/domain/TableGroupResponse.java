@@ -1,7 +1,6 @@
-package kitchenpos.tableGroup.dto;
+package kitchenpos.table.domain;
 
 import java.time.LocalDateTime;
-import kitchenpos.tableGroup.domain.TableGroup;
 
 public class TableGroupResponse {
 

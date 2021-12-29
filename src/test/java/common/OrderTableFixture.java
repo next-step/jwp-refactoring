@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableStatus;
+import kitchenpos.table.domain.OrderTables;
+import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableRequest;
 
 public class OrderTableFixture {
@@ -36,8 +38,8 @@ public class OrderTableFixture {
         return OrderTable.of(2L, new NumberOfGuests(2), OrderTableStatus.EMPTY, asList(계산_완료()));
     }
 
-    public static OrderTableRequest from(OrderTable orderTable) {
-        return new OrderTableRequest(orderTable.getNumberOfGuests(),
-            orderTable.isEmpty());
+    public static OrderTables 단체지정() {
+        return OrderTables.of(asList(단체지정_첫번째_주문테이블(), 단체지정_두번째_주문테이블()));
     }
+
 }

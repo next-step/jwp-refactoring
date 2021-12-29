@@ -4,12 +4,16 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import kitchenpos.common.exception.Message;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.Orders;
@@ -21,7 +25,9 @@ public class OrderTable {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    private Long tableGroupId;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "table_group_id")
+    private TableGroup tableGroup;
 
     @Embedded
     private NumberOfGuests numberOfGuests;
@@ -73,13 +79,13 @@ public class OrderTable {
         this.numberOfGuests = new NumberOfGuests(numberOfGuest);
     }
 
-    public void group(Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
+    public void group(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
     }
 
     public void unGroup() {
         validCookieOreMeal();
-        this.tableGroupId = null;
+        this.tableGroup = null;
     }
 
     private void validCookieOreMeal() {
@@ -91,10 +97,10 @@ public class OrderTable {
     }
 
     public Long getTableGroupId() {
-        if (tableGroupId == null) {
+        if (tableGroup == null) {
             return null;
         }
-        return tableGroupId;
+        return tableGroup.getId();
     }
 
     public NumberOfGuests getNumberOfGuests() {

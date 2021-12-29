@@ -1,13 +1,17 @@
 package kitchenpos.table.application;
 
 import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import kitchenpos.common.exception.NoResultDataException;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableDao;
+import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.dto.ChangeEmptyRequest;
 import kitchenpos.table.dto.ChangeNumberOfGuestRequest;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.domain.TableGroupRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,5 +52,23 @@ public class TableService {
 
         savedOrderTable.changeNumberOfGuest(changeEmptyRequest.getNumberOfGuest());
         return OrderTableResponse.of(savedOrderTable);
+    }
+
+    @Transactional
+    public List<OrderTableResponse> group(final TableGroupRequest tableGroupRequest) {
+        List<OrderTable> orderTables = orderTableDao.findAllByIdIn(tableGroupRequest.getOrderTables());
+        final OrderTables savedOrderTables = OrderTables.of(orderTables);
+        tableGroupRequest.validIsSizeEquals(savedOrderTables);
+        savedOrderTables.group();
+
+        orderTableDao.flush();
+        return OrderTableResponse.ofList(savedOrderTables.getList());
+    }
+
+    @Transactional
+    public void ungroup(final Long tableGroupId) {
+        List<OrderTable> savedOrderTables = orderTableDao.findByTableGroupId(tableGroupId);
+        OrderTables orderTables = OrderTables.of(savedOrderTables);
+        orderTables.unGroup();
     }
 }

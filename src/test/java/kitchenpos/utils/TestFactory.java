@@ -79,7 +79,7 @@ public class TestFactory {
     }
 
     public static ExtractableResponse<Response> delete(String url,String pathParam, Long id) {
-        return given()
+        return given().log().all()
             .pathParam(pathParam, id)
             .when()
             .delete(prefix + url)
