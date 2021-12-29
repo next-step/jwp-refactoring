@@ -2,10 +2,6 @@
 
 MenuProduct "N "}--" " Menu
 
-OrderLineItem "N "}--"1 " Order
-OrderStatus <-- Order
-OrderStatus <-- OrderTable
-
 class MenuGroup {
     - Long id
     - String name
@@ -31,6 +27,15 @@ class Product {
     - String name
     - BigDecimal price
 }
+
+@enduml
+
+
+@startuml
+
+OrderLineItem "N "}--"1 " Order
+OrderStatus <-- Order
+OrderStatus <-- OrderTable
 
 class Order {
     - Long id

@@ -72,15 +72,36 @@
 
 ## 다이어그램
 
-![클래스 다이어그램](./plantuml/domain-diagram.png)
-![서비스 다이어그램](./plantuml/service-diagram-1.png)
-![서비스 다이어그램](./plantuml/service-diagram-2.png)
+- 도메인 모듈 클래스 다이어그램
+    - 메뉴
 
-![주문 플로우](./plantuml/flow/flow-order-1.png)
-![주문 플로우](./plantuml/flow/flow-order-2.png)
+      ![클래스 다이어그램](./plantuml/class/domain-menu.png)
 
-![테이블 플로우](./plantuml/flow/flow-tablegroup-1.png)
-![테이블 플로우](./plantuml/flow/flow-tablegroup-2.png)
+    - 주문
+
+      ![서비스 다이어그램](./plantuml/class/domain-order.png)
+
+
+- API 모듈 클래스 다이어그램
+    - 메뉴
+
+      ![서비스 다이어그램](./plantuml/class/service-menu.png)
+
+    - 주문
+
+      ![서비스 다이어그램](./plantuml/class/service-order.png)
+
+
+- 서비스 동작 흐름
+    - 주문
+
+      ![주문 플로우](./plantuml/flow/flow-order-1.png)
+      ![주문 플로우](./plantuml/flow/flow-order-2.png)
+
+    - 단체석 지정
+
+      ![테이블 플로우](./plantuml/flow/flow-tablegroup-1.png)
+      ![테이블 플로우](./plantuml/flow/flow-tablegroup-2.png)
 
 ## 용어 사전
 
