@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 import org.springframework.util.CollectionUtils;
@@ -15,7 +16,8 @@ import kitchenpos.common.exception.KitchenposException;
 
 @Embeddable
 public class OrderLineItems {
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "order_id", nullable = false)
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     public OrderLineItems() {

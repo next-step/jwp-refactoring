@@ -86,7 +86,6 @@ public class Order {
 
     public void addOrderLineItem(OrderLineItem orderLineItem) {
         orderLineItems.add(orderLineItem);
-        orderLineItem.referenceOrder(this);
     }
 
     public void addOrderLineItems(List<OrderLineItem> orderLineItems) {

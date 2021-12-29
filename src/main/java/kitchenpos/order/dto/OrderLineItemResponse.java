@@ -6,28 +6,23 @@ import kitchenpos.order.domain.OrderLineItem;
 
 public class OrderLineItemResponse {
     private Long seq;
-    private Long orderId;
     private Long menuId;
     private long quantity;
 
-    public OrderLineItemResponse(Long seq, Long orderId, Long menuId, long quantity) {
+    public OrderLineItemResponse(Long seq, Long menuId, long quantity) {
         this.seq = seq;
-        this.orderId = orderId;
         this.menuId = menuId;
         this.quantity = quantity;
     }
 
     public static OrderLineItemResponse from(OrderLineItem orderLineItem) {
-        return new OrderLineItemResponse(orderLineItem.getSeq(), orderLineItem.getOrderId(),
-            orderLineItem.getMenuId(), orderLineItem.getQuantity());
+        return new OrderLineItemResponse(orderLineItem.getSeq(),
+            orderLineItem.getMenuId(),
+            orderLineItem.getQuantity());
     }
 
     public Long getSeq() {
         return seq;
-    }
-
-    public Long getOrderId() {
-        return orderId;
     }
 
     public Long getMenuId() {
@@ -47,12 +42,11 @@ public class OrderLineItemResponse {
         OrderLineItemResponse that = (OrderLineItemResponse)o;
         return quantity == that.quantity &&
             Objects.equals(seq, that.seq) &&
-            Objects.equals(orderId, that.orderId) &&
             Objects.equals(menuId, that.menuId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(seq, orderId, menuId, quantity);
+        return Objects.hash(seq, menuId, quantity);
     }
 }
