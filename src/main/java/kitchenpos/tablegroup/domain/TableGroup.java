@@ -51,10 +51,6 @@ public class TableGroup extends AbstractAggregateRoot<TableGroup> {
         return new TableGroup(orderTableIds);
     }
 
-    public void publishGroupEvent() {
-        registerEvent(TableGroupedEvent.of(this));
-    }
-
     public void ungroup(UnGroupTableGroupValidator tableGroupValidator) {
         tableGroupValidator.validate(getOrderTableIds());
         registerEvent(TableUnGroupedEvent.of(this));

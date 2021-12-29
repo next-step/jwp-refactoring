@@ -6,6 +6,9 @@ import java.util.List;
 public class TableGroupCreateRequest {
     private final List<Long> orderTableIds = new ArrayList<>();
 
+    public TableGroupCreateRequest() {
+    }
+
     public TableGroupCreateRequest(List<Long> orderTableIds) {
         this.orderTableIds.addAll(orderTableIds);
     }

@@ -16,6 +16,7 @@ import org.junit.jupiter.api.function.Executable;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -42,6 +43,8 @@ class TableGroupServiceTest {
     private UnGroupTableGroupValidator unGroupTableGroupValidator;
     @Mock
     private TableGroupRepository tableGroupRepository;
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
     @InjectMocks
     private TableGroupService tableGroupService;
 
