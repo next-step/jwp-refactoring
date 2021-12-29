@@ -51,14 +51,14 @@ public class OrderValidatorTest {
     @DisplayName("테이블정보가 등록되어 있지 않은 경우 등록할 수 없다.")
     public void createFailByUnknownTable() {
         // then
-        assertThatThrownBy(() -> orderValidator.validate(주문())).isInstanceOf(OrderTableNotFoundException.class);
+        assertThatThrownBy(() -> orderValidator.validate(OrderFixtures.주문())).isInstanceOf(OrderTableNotFoundException.class);
     }
 
     @Test
     @DisplayName("주문정보가 있지 않은 경우 등록할 수 없다.")
     public void createFailByNotExistOrderLineItem() throws Exception {
         //given
-        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(주문가능_다섯명테이블()));
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(OrderTableFixtures.주문가능_다섯명테이블()));
 
         // then
         assertThatThrownBy(() -> orderValidator.validate(new Order(1L, Lists.emptyList()))).isInstanceOf(OrderLineItemNotFoundException.class);
@@ -68,10 +68,10 @@ public class OrderValidatorTest {
     @DisplayName("주문정보가 등록되어 있지 않은 경우 등록할 수 없다.")
     public void createFailByUnknownOrderLineItem() {
         //given
-        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(주문가능_다섯명테이블()));
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(OrderTableFixtures.주문가능_다섯명테이블()));
         given(menuRepository.findAllById(anyList())).willReturn(Lists.emptyList());
         // then
-        assertThatThrownBy(() -> orderValidator.validate(주문())).isInstanceOf(MenuNotFoundException.class);
+        assertThatThrownBy(() -> orderValidator.validate(OrderFixtures.주문())).isInstanceOf(MenuNotFoundException.class);
     }
 
 
@@ -79,10 +79,10 @@ public class OrderValidatorTest {
     @DisplayName("빈 테이블인 경우 등록할 수 없다.")
     public void createFailByEmptyTable() {
         //given
-        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(주문불가_다섯명테이블()));
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(OrderTableFixtures.주문불가_다섯명테이블()));
         given(menuRepository.findAllById(anyList())).willReturn(Lists.emptyList());
 
         // then
-        assertThatThrownBy(() -> orderValidator.validate(주문())).isInstanceOf(InvalidTableException.class);
+        assertThatThrownBy(() -> orderValidator.validate(OrderFixtures.주문())).isInstanceOf(InvalidTableException.class);
     }
 }

@@ -1,9 +1,9 @@
 package kitchenpos.product.application;
 
+import kitchenpos.exception.product.IllegalPriceException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
-import kitchenpos.product.exception.IllegalPriceException;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

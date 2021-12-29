@@ -1,7 +1,6 @@
-package kitchenpos.order.exception;
+package kitchenpos.exception.order;
 
-import kitchenpos.common.exception.ServiceException;
-import kitchenpos.order.domain.OrderQuantity;
+import kitchenpos.exception.ServiceException;
 
 /**
  * packageName : kitchenpos.order.domain
@@ -12,9 +11,9 @@ import kitchenpos.order.domain.OrderQuantity;
  */
 public class IllegalOrderQuantityException extends ServiceException {
     private static final Long serialVersionUID = 1L;
-    public static final String message = "수량은 %d개 보다 작을 수 없습니다.";
+    public static final String message = "수량이 유효하지 않습니다. %s";
 
-    public IllegalOrderQuantityException() {
-        super(String.format(message, OrderQuantity.MIN_QUANTITY.intValue()));
+    public IllegalOrderQuantityException(Long value) {
+        super(String.format(message, value));
     }
 }

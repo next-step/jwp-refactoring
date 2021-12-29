@@ -1,0 +1,11 @@
+dependencies {
+    implementation project(':kitchenpos-common')
+    implementation project(':kitchenpos-api')
+
+    implementation 'com.google.guava:guava:28.1-jre'
+
+    testImplementation 'io.rest-assured:rest-assured:3.3.0'
+
+
+
+}

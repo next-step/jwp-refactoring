@@ -1,0 +1,1 @@
+alter table menu_product modify column menu_id BIGINT(20);

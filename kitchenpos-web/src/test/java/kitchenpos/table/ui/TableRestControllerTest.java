@@ -6,7 +6,6 @@ import kitchenpos.table.dto.ChangeEmptyRequest;
 import kitchenpos.table.dto.ChangeGuestNumberRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.OrderTableSaveRequest;
-import kitchenpos.table.fixtures.OrderTableFixtures;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

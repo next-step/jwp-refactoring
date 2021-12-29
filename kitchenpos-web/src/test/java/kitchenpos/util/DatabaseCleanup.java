@@ -1,4 +1,4 @@
-package kitchenpos.utils;
+package kitchenpos.util;
 
 import com.google.common.base.CaseFormat;
 import org.springframework.beans.factory.InitializingBean;

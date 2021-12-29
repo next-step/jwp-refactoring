@@ -15,7 +15,6 @@ import static kitchenpos.table.fixtures.OrderTableFixtures.그룹화되지_않�
 import static kitchenpos.table.fixtures.OrderTableFixtures.그룹화된_테이블;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
 /**

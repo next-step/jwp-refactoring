@@ -1,6 +1,6 @@
-package kitchenpos.menu.exception;
+package kitchenpos.exception.menu;
 
-import org.hibernate.service.spi.ServiceException;
+import kitchenpos.exception.ServiceException;
 
 import java.math.BigDecimal;
 

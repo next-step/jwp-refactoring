@@ -1,26 +1,12 @@
 package kitchenpos.tablegroup.application;
 
-import javafx.scene.control.Tab;
-import kitchenpos.table.application.TableValidator;
-import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import kitchenpos.table.exception.IllegalOrderTableException;
-import kitchenpos.tablegroup.exception.NotSupportUngroupException;
 import kitchenpos.table.exception.OrderTableNotFoundException;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.product.domain.Product;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
-import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.exception.TableGroupNotFoundException;
-import org.assertj.core.util.Lists;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,14 +15,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 
-import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.menu.fixtures.MenuFixtures.*;
-import static kitchenpos.menugroup.fixtures.MenuGroupFixtures.메뉴그룹;
-import static kitchenpos.menu.fixtures.MenuProductFixtures.*;
-import static kitchenpos.table.fixtures.OrderTableFixtures.*;
-import static kitchenpos.product.fixtures.ProductFixtures.양념치킨;
 import static kitchenpos.tablegroup.fixtures.TableGroupFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -44,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 /**

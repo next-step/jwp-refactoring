@@ -1,14 +1,13 @@
 package kitchenpos.table.application;
 
 import com.google.common.collect.Lists;
+import kitchenpos.exception.table.IllegalGuestNumberException;
+import kitchenpos.exception.table.OrderTableNotFoundException;
+import kitchenpos.exception.table.TableGuestNumberUpdateException;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.OrderTableSaveRequest;
-import kitchenpos.table.exception.IllegalGuestNumberException;
-import kitchenpos.table.exception.IllegalQuantityException;
-import kitchenpos.table.exception.OrderTableNotFoundException;
-import kitchenpos.table.exception.TableGuestNumberUpdateException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

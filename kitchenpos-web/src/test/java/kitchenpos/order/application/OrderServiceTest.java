@@ -1,17 +1,16 @@
 package kitchenpos.order.application;
 
-import kitchenpos.menu.exception.MenuNotFoundException;
-import kitchenpos.order.domain.*;
-import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.exception.order.OrderNotFoundException;
+import kitchenpos.exception.order.OrderStatusUpdateException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.exception.OrderLineItemNotFoundException;
-import kitchenpos.order.exception.OrderNotFoundException;
-import kitchenpos.order.exception.OrderStatusUpdateException;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.exception.InvalidTableException;
-import kitchenpos.table.exception.OrderTableNotFoundException;
+import kitchenpos.menu.fixtures.MenuProductFixtures;
+import kitchenpos.menugroup.fixtures.MenuGroupFixtures;
+import kitchenpos.order.domain.*;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.fixtures.OrderFixtures;
+import kitchenpos.table.fixtures.OrderTableFixtures;
+import org.assertj.core.api.Assertions;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,19 +21,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.menugroup.fixtures.MenuGroupFixtures.메뉴그룹;
-import static kitchenpos.menu.fixtures.MenuProductFixtures.메뉴상품;
-import static kitchenpos.order.fixtures.OrderFixtures.*;
-import static kitchenpos.table.fixtures.OrderTableFixtures.주문가능_다섯명테이블;
-import static kitchenpos.table.fixtures.OrderTableFixtures.주문불가_다섯명테이블;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
@@ -64,14 +55,14 @@ public class OrderServiceTest {
     void setUp() {
         BigDecimal 메뉴가격 = new BigDecimal(32000);
 
-        MenuProduct 양념치킨메뉴상품 = 메뉴상품(1L, 1L);
-        MenuProduct 후라이드메뉴상품 = 메뉴상품(2L, 1L);
+        MenuProduct 양념치킨메뉴상품 = MenuProductFixtures.메뉴상품(1L, 1L);
+        MenuProduct 후라이드메뉴상품 = MenuProductFixtures.메뉴상품(2L, 1L);
 
-        후라이드반양념반메뉴 = new Menu("후라이드반양념반메뉴", 메뉴가격, 메뉴그룹("반반메뉴").getId(), Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품));
+        후라이드반양념반메뉴 = new Menu("후라이드반양념반메뉴", 메뉴가격, MenuGroupFixtures.메뉴그룹("반반메뉴").getId(), Lists.newArrayList(양념치킨메뉴상품, 후라이드메뉴상품));
 
         OrderLineItem 주문정보_후라이드양념반두개 = new OrderLineItem(후라이드반양념반메뉴.getId(), 2L);
 
-        후라이드반양념반두개주문 = new Order(주문가능_다섯명테이블().getId(), Lists.newArrayList(주문정보_후라이드양념반두개));
+        후라이드반양념반두개주문 = new Order(OrderTableFixtures.주문가능_다섯명테이블().getId(), Lists.newArrayList(주문정보_후라이드양념반두개));
     }
 
     @Test
@@ -84,7 +75,7 @@ public class OrderServiceTest {
         List<OrderResponse> orders = orderService.list();
 
         // then
-        assertThat(orders).hasSize(1);
+        Assertions.assertThat(orders).hasSize(1);
     }
 
 
@@ -92,12 +83,12 @@ public class OrderServiceTest {
     @DisplayName("주문을 등록할 수 있다.")
     public void createOrder() {
         // when
-        OrderResponse actual = orderService.create(주문등록요청());
+        OrderResponse actual = orderService.create(OrderFixtures.주문등록요청());
 
         // then
         assertAll(
-                () -> assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.COOKING),
-                () -> assertThat(actual.getOrderLineItems()).hasSize(1)
+                () -> Assertions.assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.COOKING),
+                () -> Assertions.assertThat(actual.getOrderLineItems()).hasSize(1)
         );
     }
 
@@ -109,17 +100,17 @@ public class OrderServiceTest {
         given(orderRepository.findById(anyLong())).willReturn(Optional.of(후라이드반양념반두개주문));
 
         // when
-        OrderResponse actual = orderService.changeOrderStatus(1L, 식사중으로_변경요청());
+        OrderResponse actual = orderService.changeOrderStatus(1L, OrderFixtures.식사중으로_변경요청());
 
         // then
-        assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
+        Assertions.assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
     }
 
     @Test
     @DisplayName("주문이 존재하지 않은 경우 주문 상태를 변경할 수 없다.")
     public void changeOrderStatusFailByUnknownOrder() {
         // then
-        assertThatThrownBy(() -> orderService.changeOrderStatus(1L, 식사중으로_변경요청())).isInstanceOf(OrderNotFoundException.class);
+        assertThatThrownBy(() -> orderService.changeOrderStatus(1L, OrderFixtures.식사중으로_변경요청())).isInstanceOf(OrderNotFoundException.class);
     }
 
     @Test
@@ -127,9 +118,9 @@ public class OrderServiceTest {
     public void changeOrderStatusFailByOrderStatus() {
         // given
         given(orderRepository.findById(anyLong())).willReturn(Optional.of(후라이드반양념반두개주문));
-        orderService.changeOrderStatus(1L, 식사완료로_변경요청());
+        orderService.changeOrderStatus(1L, OrderFixtures.식사완료로_변경요청());
 
         // then
-        assertThatThrownBy(() -> orderService.changeOrderStatus(1L, 식사중으로_변경요청())).isInstanceOf(OrderStatusUpdateException.class);
+        assertThatThrownBy(() -> orderService.changeOrderStatus(1L, OrderFixtures.식사중으로_변경요청())).isInstanceOf(OrderStatusUpdateException.class);
     }
 }

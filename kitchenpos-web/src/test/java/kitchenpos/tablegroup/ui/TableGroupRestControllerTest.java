@@ -5,7 +5,6 @@ import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import kitchenpos.tablegroup.dto.TableGroupSaveRequest;
 import kitchenpos.tablegroup.domain.TableGroup;
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,8 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import static kitchenpos.table.fixtures.OrderTableFixtures.주문불가_다섯명테이블;
-import static kitchenpos.table.fixtures.OrderTableFixtures.주문불가_두명테이블;
 import static kitchenpos.tablegroup.fixtures.TableGroupFixtures.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;

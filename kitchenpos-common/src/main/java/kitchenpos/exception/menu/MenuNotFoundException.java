@@ -1,6 +1,6 @@
-package kitchenpos.menu.exception;
+package kitchenpos.exception.menu;
 
-import kitchenpos.common.exception.ServiceException;
+import kitchenpos.exception.ServiceException;
 
 /**
  * packageName : kitchenpos.exception

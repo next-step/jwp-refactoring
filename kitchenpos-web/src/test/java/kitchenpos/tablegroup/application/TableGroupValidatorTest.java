@@ -5,7 +5,6 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.exception.IllegalOrderTableException;
 import kitchenpos.table.exception.OrderTableNotFoundException;
-import kitchenpos.table.fixtures.OrderTableFixtures;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.exception.NotSupportUngroupException;
 import org.assertj.core.util.Lists;
@@ -16,14 +15,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Optional;
 
-import static kitchenpos.table.fixtures.OrderTableFixtures.*;
 import static kitchenpos.table.fixtures.OrderTableFixtures.주문가능_두명테이블;
 import static kitchenpos.tablegroup.fixtures.TableGroupFixtures.그룹테이블_그룹요청;
-import static kitchenpos.tablegroup.fixtures.TableGroupFixtures.그룹테이블_그룹요청_예외_테이블한개;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;

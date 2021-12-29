@@ -1,7 +1,6 @@
-package kitchenpos.table.exception;
+package kitchenpos.exception.table;
 
-import kitchenpos.common.exception.ServiceException;
-import kitchenpos.table.domain.NumberOfGuests;
+import kitchenpos.exception.ServiceException;
 
 /**
  * packageName : kitchenpos.table.exception
@@ -13,9 +12,9 @@ import kitchenpos.table.domain.NumberOfGuests;
 
 public class IllegalGuestNumberException extends ServiceException {
     private static final Long serialVersionUID = 1L;
-    public static final String message = "인원은 %d명 보다 작을 수 없습니다.";
+    public static final String message = "인원이 유효하지 않습니다. %s";
 
-    public IllegalGuestNumberException() {
-        super(String.format(message, NumberOfGuests.MIN_GUESTS));
+    public IllegalGuestNumberException(Integer value) {
+        super(String.format(message, value));
     }
 }

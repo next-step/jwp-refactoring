@@ -9,7 +9,6 @@ import kitchenpos.menu.exception.LimitPriceException;
 import kitchenpos.menugroup.exception.MenuGroupNotFoundException;
 import kitchenpos.product.exception.ProductNotFoundException;
 import kitchenpos.product.domain.ProductRepository;
-import kitchenpos.product.exception.IllegalPriceException;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
