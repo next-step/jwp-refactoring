@@ -40,7 +40,11 @@ public class MenuService {
         
         MenuProducts menuProducts = createMenuProducts(request.getMenuProducts());
         menu.addMenuProducts(menuProducts.getMenuProducts());
-        menuValidator.checkTotalPrice(menu);
+        
+        List<Long> productIds = request.getMenuProducts().stream()
+                .map(MenuProductRequest::getProductId)
+                .collect(Collectors.toList());
+        menuValidator.checkTotalPrice(menu, productIds);
         
         final Menu savedMenu = menuRepository.save(menu);
 

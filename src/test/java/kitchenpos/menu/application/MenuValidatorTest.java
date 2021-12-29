@@ -1,6 +1,7 @@
 package kitchenpos.menu.application;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
@@ -38,12 +39,11 @@ public class MenuValidatorTest {
         MenuProduct 메뉴_콜라 = MenuProduct.of(2L, 2L);
         메뉴.addMenuProducts(Arrays.asList(메뉴_치킨, 메뉴_콜라));
         
-        given(productService.findById(1L)).willReturn(치킨);
-        given(productService.findById(2L)).willReturn(콜라);
+        given(productService.findAllByIds(anyList())).willReturn(Arrays.asList(치킨, 콜라));
 
         // when, then
         assertThatThrownBy(() -> {
-            menuValidator.checkTotalPrice(메뉴);
+            menuValidator.checkTotalPrice(메뉴, Arrays.asList(1L, 2L));
         }).isInstanceOf(IllegalArgumentException.class)
         .hasMessage("메뉴 가격이 상품 가격의 합보다 큽니다");
     }
