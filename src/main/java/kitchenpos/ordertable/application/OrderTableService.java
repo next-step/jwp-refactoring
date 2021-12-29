@@ -1,6 +1,7 @@
 package kitchenpos.ordertable.application;
 
 import kitchenpos.ordertable.domain.ChangeEmptyOrderOrderTableValidator;
+import kitchenpos.ordertable.domain.ChangeOrderTableValidator;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
@@ -17,10 +18,10 @@ public class OrderTableService {
     private static final String CHANGE_EMPTY_NOT_FOUND_ERROR_MESSAGE = "존재하는 주문 테이블만 빈 테이블 유무를 변경할 수 있습니다.";
     private static final String CHANGE_NUMBER_OF_GUEST_NOT_FOUND_ERROR_MESSAGE = "존재하는 주문 테이블만 방문자 수를 변경 할 수 있습니다.";
 
-    private final ChangeEmptyOrderOrderTableValidator changeEmptyOrderTableValidator;
+    private final ChangeOrderTableValidator changeEmptyOrderTableValidator;
     private final OrderTableRepository orderTableRepository;
 
-    public OrderTableService(final ChangeEmptyOrderOrderTableValidator changeEmptyOrderTableValidator,
+    public OrderTableService(final ChangeOrderTableValidator changeEmptyOrderTableValidator,
                              final OrderTableRepository orderTableRepository) {
         this.changeEmptyOrderTableValidator = changeEmptyOrderTableValidator;
         this.orderTableRepository = orderTableRepository;
