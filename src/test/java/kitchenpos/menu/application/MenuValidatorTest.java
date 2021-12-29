@@ -5,7 +5,6 @@ import static org.mockito.BDDMockito.*;
 
 import java.math.BigDecimal;
 import java.util.Collections;
-import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +18,7 @@ import kitchenpos.exception.ErrorCode;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroupTest;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.ProductTest;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,7 +27,7 @@ public class MenuValidatorTest {
 	@InjectMocks
 	MenuValidator menuValidator;
 	@Mock
-	ProductRepository productRepository;
+	ProductService productService;
 
 	@DisplayName("가격이 구성품의 가격의 합보다 높으면 안된다")
 	@Test
@@ -38,7 +37,7 @@ public class MenuValidatorTest {
 		MenuProduct 후라이드둘 = MenuProduct.of(1L, menu, ProductTest.후라이드.getId(), 2L);
 		menu.addMenuProducts(Collections.singletonList(후라이드둘));
 
-		given(productRepository.findById(any())).willReturn(Optional.of(ProductTest.후라이드));
+		given(productService.getById(any())).willReturn(ProductTest.후라이드);
 
 		// when, then
 		assertThatThrownBy(() -> menuValidator.isOverPrice(menu))

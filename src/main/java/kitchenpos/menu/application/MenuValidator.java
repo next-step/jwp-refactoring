@@ -9,17 +9,17 @@ import kitchenpos.exception.ErrorCode;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
 
 @Component
 @Transactional(readOnly = true)
 public class MenuValidator {
 
-	private final ProductRepository productRepository;
+	private final ProductService productService;
 
-	public MenuValidator(ProductRepository productRepository) {
-		this.productRepository = productRepository;
+	public MenuValidator(ProductService productService) {
+		this.productService = productService;
 	}
 
 	public void isOverPrice(Menu menu) {
@@ -36,8 +36,7 @@ public class MenuValidator {
 	}
 
 	private Price calculatePrice(MenuProduct menuProduct) {
-		Product product = productRepository.findById(menuProduct.getProductId())
-			.orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "상품을 찾을 수 없습니다"));
+		Product product = productService.getById(menuProduct.getProductId());
 		return product.getPrice().multiply(menuProduct.getQuantity().toLong());
 	}
 }

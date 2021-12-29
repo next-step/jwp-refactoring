@@ -7,7 +7,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +24,7 @@ import kitchenpos.menu.domain.MenuTest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.ProductTest;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,7 +37,7 @@ public class MenuServiceTest {
 	@Mock
 	private MenuGroupService menuGroupService;
 	@Mock
-	private ProductRepository productRepository;
+	private ProductService productService;
 	@Mock
 	private MenuValidator menuValidator;
 
@@ -72,7 +71,7 @@ public class MenuServiceTest {
 
 		given(menuRepository.save(any())).willReturn(MenuTest.후라이드둘);
 		given(menuGroupService.getById(any())).willReturn(MenuGroupTest.추천메뉴);
-		given(productRepository.findById(any())).willReturn(Optional.of(ProductTest.후라이드));
+		given(productService.getById(any())).willReturn(ProductTest.후라이드);
 
 		// when
 		MenuResponse result = menuService.create(request);
@@ -127,7 +126,7 @@ public class MenuServiceTest {
 			MenuTest.후라이드둘.getMenuGroup().getId(),
 			Collections.singletonList(menuProductRequest));
 
-		given(productRepository.findById(any())).willReturn(Optional.empty());
+		given(productService.getById(any())).willThrow(new AppException(ErrorCode.NOT_FOUND, ""));
 		given(menuGroupService.getById(any())).willReturn(MenuGroupTest.추천메뉴);
 
 		// when, then

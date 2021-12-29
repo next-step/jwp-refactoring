@@ -15,8 +15,8 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
 
 @Service
 @Transactional
@@ -24,17 +24,17 @@ public class MenuService {
 
 	private final MenuRepository menuRepository;
 	private final MenuGroupService menuGroupService;
-	private final ProductRepository productRepository;
+	private final ProductService productService;
 	private final MenuValidator menuValidator;
 
 	public MenuService(final MenuRepository menuRepository,
 		final MenuGroupService menuGroupService,
-		final ProductRepository productRepository,
+		final ProductService productService,
 		final MenuValidator menuValidator) {
 
 		this.menuRepository = menuRepository;
 		this.menuGroupService = menuGroupService;
-		this.productRepository = productRepository;
+		this.productService = productService;
 		this.menuValidator = menuValidator;
 	}
 
@@ -53,8 +53,7 @@ public class MenuService {
 	}
 
 	private MenuProduct getMenuProduct(MenuProductRequest request) {
-		Product product = productRepository.findById(request.getProductId())
-			.orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "해당 상품을 찾을 수 없습니다"));
+		Product product = productService.getById(request.getProductId());
 		return MenuProduct.create(product.getId(), request.getQuantity());
 	}
 
@@ -63,5 +62,10 @@ public class MenuService {
 		List<Menu> menuList = menuRepository.findAll();
 		return menuList.stream().map(MenuResponse::new).collect(Collectors.toList());
 	}
-	
+
+	@Transactional(readOnly = true)
+	public Menu getById(Long menuId) {
+		return menuRepository.findById(menuId)
+			.orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "해당 메뉴를 찾을 수 없습니다"));
+	}
 }
