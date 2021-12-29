@@ -38,9 +38,4 @@ public class MenuService {
                 .map(MenuResponse::of)
                 .collect(Collectors.toList());
     }
-
-    @Transactional(readOnly = true)
-    public int countByIdIn(List<Long> menuIds) {
-        return menuRepository.countByIdIn(menuIds);
-    }
 }
