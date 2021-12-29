@@ -19,20 +19,20 @@ import kitchenpos.common.exception.KitchenposException;
 import kitchenpos.common.exception.KitchenposNotFoundException;
 import kitchenpos.common.price.domain.Price;
 import kitchenpos.menu.dto.MenuProductRequest;
-import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 
 @ExtendWith(MockitoExtension.class)
 class MenuValidatorTest {
     @Mock
+    private MenuGroupRepository menuGroupRepository;
+    @Mock
     private ProductRepository productRepository;
 
     @InjectMocks
     private MenuValidator menuValidator;
 
-    private MenuGroup menuGroup;
-    private MenuProduct menuProduct;
     private Product product;
     private MenuProducts menuProducts;
     private MenuProductRequest menuProductRequest;
@@ -40,9 +40,7 @@ class MenuValidatorTest {
     @BeforeEach
     void setUp() {
         menuProductRequest = new MenuProductRequest(1L, 2);
-        menuProduct = new MenuProduct(1L, 2);
         product = new Product(1L, "product", BigDecimal.ONE);
-        menuGroup = new MenuGroup(1L, "menuGroup");
         menuProducts = new MenuProducts(Arrays.asList(menuProductRequest));
     }
 
@@ -50,8 +48,9 @@ class MenuValidatorTest {
     @Test
     void validateErrorWhenPriceIsBiggerThanSum() {
         // given
-        ID로_상품_조회(Optional.of(product));
-        Menu menu = new Menu(1L, "menu", new Price(BigDecimal.valueOf(3)), menuGroup, menuProducts);
+        ID로_메뉴_그룹_존재여부_확인(true);
+        ID로_상품_조회(product);
+        Menu menu = new Menu(1L, "menu", new Price(BigDecimal.valueOf(3)), 1L, menuProducts);
 
         // when and then
         assertThatExceptionOfType(KitchenposException.class)
@@ -63,8 +62,21 @@ class MenuValidatorTest {
     @Test
     void validateErrorWhenProductNotExists() {
         // given
-        ID로_상품_조회(Optional.empty());
-        Menu menu = new Menu(1L, "menu", new Price(BigDecimal.ONE), menuGroup, menuProducts);
+        ID로_메뉴_그룹_존재여부_확인(true);
+        ID로_상품_조회(null);
+        Menu menu = new Menu(1L, "menu", new Price(BigDecimal.ONE), 1L, menuProducts);
+
+        // when and then
+        assertThatExceptionOfType(KitchenposNotFoundException.class)
+            .isThrownBy(() -> menuValidator.validate(menu));
+    }
+
+    @DisplayName("메뉴 그룹이 없을 시 에러")
+    @Test
+    void validateErrorWhenMenuGroupNotExists() {
+        // given
+        ID로_메뉴_그룹_존재여부_확인(false);
+        Menu menu = new Menu(1L, "menu", new Price(BigDecimal.ONE), 1L, menuProducts);
 
         // when and then
         assertThatExceptionOfType(KitchenposNotFoundException.class)
@@ -75,17 +87,23 @@ class MenuValidatorTest {
     @Test
     void validate() {
         // given
-        ID로_상품_조회(Optional.of(product));
-        Menu menu = new Menu(1L, "menu", new Price(BigDecimal.ONE), menuGroup, menuProducts);
+        ID로_메뉴_그룹_존재여부_확인(true);
+        ID로_상품_조회(product);
+        Menu menu = new Menu(1L, "menu", new Price(BigDecimal.ONE), 1L, menuProducts);
 
         // when and then
         assertThatCode(() -> menuValidator.validate(menu))
             .doesNotThrowAnyException();
     }
 
-    private void ID로_상품_조회(Optional<Product> product) {
+    private void ID로_메뉴_그룹_존재여부_확인(boolean expected) {
+        Mockito.when(menuGroupRepository.existsById(Mockito.anyLong()))
+            .thenReturn(expected);
+    }
+
+    private void ID로_상품_조회(Product product) {
         Mockito.when(productRepository.findById(Mockito.anyLong()))
-            .thenReturn(product);
+            .thenReturn(Optional.ofNullable(product));
     }
 
 }

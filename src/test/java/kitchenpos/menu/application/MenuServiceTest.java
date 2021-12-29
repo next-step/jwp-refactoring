@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import kitchenpos.common.exception.KitchenposException;
 import kitchenpos.common.exception.KitchenposNotFoundException;
 import kitchenpos.common.price.domain.Price;
 import kitchenpos.menu.domain.Menu;
@@ -29,22 +29,17 @@ import kitchenpos.menu.dto.MenuProductResponse;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.dto.MenuResponses;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.domain.MenuGroupRepository;
 
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
     @Mock
     private MenuRepository menuRepository;
     @Mock
-    private MenuGroupRepository menuGroupRepository;
-    @Mock
     private MenuValidator menuValidator;
 
     @InjectMocks
     private MenuService menuService;
 
-    private MenuGroup menuGroup;
     private Menu menu;
     private MenuProduct menuProduct;
     private MenuProducts menuProducts;
@@ -54,16 +49,14 @@ class MenuServiceTest {
     void setUp() {
         menuProductRequest = new MenuProductRequest(1L, 2);
         menuProduct = new MenuProduct(1L, 2);
-        menuGroup = new MenuGroup(1L, "menuGroup");
         menuProducts = new MenuProducts(Arrays.asList(menuProductRequest));
-        menu = new Menu(1L, "menu", new Price(BigDecimal.ONE), menuGroup, menuProducts);
+        menu = new Menu(1L, "menu", new Price(BigDecimal.ONE), 1L, menuProducts);
     }
 
     @DisplayName("메뉴 생성")
     @Test
     void create() {
         // given
-        ID로_메뉴_그룹_조회(Optional.of(menuGroup));
         Mockito.doNothing().when(menuValidator).validate(Mockito.any());
         메뉴_저장();
 
@@ -83,7 +76,6 @@ class MenuServiceTest {
     @Test
     void createErrorWhenProductNotExists() {
         // given
-        ID로_메뉴_그룹_조회(Optional.of(menuGroup));
         Mockito.doThrow(new KitchenposNotFoundException()).when(menuValidator).validate(Mockito.any());
 
         MenuRequest request =
@@ -100,8 +92,9 @@ class MenuServiceTest {
         MenuRequest menu = new MenuRequest("name", null, 1L, Arrays.asList(menuProductRequest));
 
         // when and then
-        assertThatExceptionOfType(KitchenposNotFoundException.class)
-            .isThrownBy(() -> menuService.create(menu));
+        assertThatExceptionOfType(KitchenposException.class)
+            .isThrownBy(() -> menuService.create(menu))
+            .withMessage("0 이상의 가격만 입력 가능합니다.");
     }
 
     @DisplayName("메뉴 상품 가격이 0 미만이면 에러")
@@ -110,29 +103,17 @@ class MenuServiceTest {
         MenuRequest menu = new MenuRequest("name", BigDecimal.valueOf(-1), 1L, Arrays.asList(menuProductRequest));
 
         // when and then
-        assertThatExceptionOfType(KitchenposNotFoundException.class)
-            .isThrownBy(() -> menuService.create(menu));
-    }
-
-    @DisplayName("메뉴 그룹이 존재하지 않으면 에러 발생")
-    @Test
-    void createErrorWhenMenuGroupNotExists() {
-        // given
-        ID로_메뉴_그룹_조회(Optional.empty());
-
-        MenuRequest menu = new MenuRequest("name", BigDecimal.ONE, 1L, Arrays.asList(menuProductRequest));
-
-        // when and then
-        assertThatExceptionOfType(KitchenposNotFoundException.class)
-            .isThrownBy(() -> menuService.create(menu));
+        assertThatExceptionOfType(KitchenposException.class)
+            .isThrownBy(() -> menuService.create(menu))
+            .withMessage("0 이상의 가격만 입력 가능합니다.");
     }
 
     @DisplayName("메뉴 조회")
     @Test
     void list() {
         // given
-        Menu menu1 = new Menu(1L, "name1", new Price(BigDecimal.ONE), menuGroup, menuProducts);
-        Menu menu2 = new Menu(2L, "name2", new Price(BigDecimal.ONE), menuGroup, menuProducts);
+        Menu menu1 = new Menu(1L, "name1", new Price(BigDecimal.ONE), 1L, menuProducts);
+        Menu menu2 = new Menu(2L, "name2", new Price(BigDecimal.ONE), 1L, menuProducts);
         List<Menu> menus = Arrays.asList(menu1, menu2);
         Mockito.when(menuRepository.findAll())
             .thenReturn(menus);
@@ -151,10 +132,5 @@ class MenuServiceTest {
     private void 메뉴_저장() {
         Mockito.when(menuRepository.save(Mockito.any()))
             .thenReturn(menu);
-    }
-
-    private void ID로_메뉴_그룹_조회(Optional<MenuGroup> menuGroup) {
-        Mockito.when(menuGroupRepository.findById(Mockito.anyLong()))
-            .thenReturn(menuGroup);
     }
 }

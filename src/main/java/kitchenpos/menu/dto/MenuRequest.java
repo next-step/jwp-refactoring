@@ -3,6 +3,9 @@ package kitchenpos.menu.dto;
 import java.math.BigDecimal;
 import java.util.List;
 
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProducts;
+
 public class MenuRequest {
     private String name;
     private BigDecimal price;
@@ -31,5 +34,10 @@ public class MenuRequest {
 
     public List<MenuProductRequest> getMenuProducts() {
         return menuProducts;
+    }
+
+    public Menu toEntity() {
+        MenuProducts menuProducts = new MenuProducts(this.menuProducts);
+        return new Menu(name, price, menuGroupId, menuProducts);
     }
 }

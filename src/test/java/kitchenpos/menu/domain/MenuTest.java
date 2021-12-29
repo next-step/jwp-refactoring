@@ -11,16 +11,14 @@ import org.junit.jupiter.api.Test;
 import kitchenpos.common.exception.KitchenposException;
 import kitchenpos.common.price.domain.Price;
 import kitchenpos.menu.dto.MenuProductRequest;
-import kitchenpos.menugroup.domain.MenuGroup;
 
 class MenuTest {
     @DisplayName("메뉴의 합보다 금액이 많을 시 에러")
     @Test
     void validatePrice() {
-        MenuGroup menuGroup = new MenuGroup("menuGroup");
         MenuProducts menuProducts = new MenuProducts(Arrays.asList(new MenuProductRequest(1L, 2)));
 
-        Menu menu = new Menu(1L, "name", new Price(BigDecimal.valueOf(11)), menuGroup, menuProducts);
+        Menu menu = new Menu(1L, "name", new Price(BigDecimal.valueOf(11)), 1L, menuProducts);
         Price sum = new Price(BigDecimal.valueOf(10));
 
         assertThatExceptionOfType(KitchenposException.class)
