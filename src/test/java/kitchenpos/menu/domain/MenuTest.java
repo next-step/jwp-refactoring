@@ -7,6 +7,8 @@ import java.util.Arrays;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import kitchenpos.product.domain.Product;
+
 public class MenuTest {
     
     @DisplayName("메뉴 가격은 0원 이상이어야한다")

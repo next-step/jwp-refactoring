@@ -31,8 +31,8 @@ public class MenuProducts {
         return Collections.unmodifiableList(menuProducts);
     }
 
-    public Price getTotalPrice() {
-        Price sum = Price.from(0L);
+    public MenuPrice getTotalPrice() {
+        MenuPrice sum = MenuPrice.from(0L);
         for (MenuProduct menuProduct : this.menuProducts) {
             sum = sum.add(menuProduct.getPrice());
         }

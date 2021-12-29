@@ -6,36 +6,32 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class Price {
+public class MenuPrice {
 
     @Column(name = "price")
     private long value;
     
-    protected Price() {
+    protected MenuPrice() {
     }
     
-    private Price(long value) {
+    private MenuPrice(long value) {
         validatePrice(value);
         this.value = value;
     }
     
-    public static Price from(long value) {
-        return new Price(value);
+    public static MenuPrice from(long value) {
+        return new MenuPrice(value);
     }
     
     public long getValue() {
         return this.value;
     }
     
-    public Price multiply(long quantity) {
-        return new Price(this.value * quantity);
+    public MenuPrice add(MenuPrice price) {
+        return new MenuPrice(this.value + price.getValue());
     }
     
-    public Price add(Price price) {
-        return new Price(this.value + price.getValue());
-    }
-    
-    public boolean isGreaterThan(Price targetPrice) {
+    public boolean isGreaterThan(MenuPrice targetPrice) {
         return this.value > targetPrice.getValue();
     }
     
@@ -49,7 +45,7 @@ public class Price {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Price price = (Price) o;
+        MenuPrice price = (MenuPrice) o;
         return Objects.equals(value, price.value);
     }
 

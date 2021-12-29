@@ -1,13 +1,13 @@
 package kitchenpos.menu.domain;
 
-import java.util.Objects;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+
+import kitchenpos.product.domain.Product;
 
 @Entity
 public class MenuProduct {
@@ -58,8 +58,8 @@ public class MenuProduct {
         this.menu = menu;
     }
     
-    public Price getPrice() {
-        return product.getPrice().multiply(this.quantity);
+    public MenuPrice getPrice() {
+        return MenuPrice.from(product.getPrice().multiply(this.quantity).getValue());
     }
 
 }

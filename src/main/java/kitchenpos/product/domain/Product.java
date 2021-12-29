@@ -1,4 +1,4 @@
-package kitchenpos.menu.domain;
+package kitchenpos.product.domain;
 
 import java.util.Objects;
 
@@ -18,14 +18,14 @@ public class Product {
     private String name;
     
     @Embedded
-    private Price price;
+    private ProductPrice price;
 
     protected Product() {
     }
     
     private Product(String name, long price) {
         this.name = name;
-        this.price = Price.from(price);
+        this.price = ProductPrice.from(price);
     }
 
     public static Product of(String name, long price) {
@@ -40,7 +40,7 @@ public class Product {
         return name;
     }
 
-    public Price getPrice() {
+    public ProductPrice getPrice() {
         return price;
     }
 

@@ -1,4 +1,4 @@
-package kitchenpos.menu.application;
+package kitchenpos.product.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -18,10 +18,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.menu.dao.ProductRepository;
-import kitchenpos.menu.domain.Product;
-import kitchenpos.menu.dto.ProductRequest;
-import kitchenpos.menu.dto.ProductResponse;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.dao.ProductRepository;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {

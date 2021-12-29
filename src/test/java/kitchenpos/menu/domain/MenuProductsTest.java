@@ -7,6 +7,8 @@ import java.util.Arrays;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import kitchenpos.product.domain.Product;
+
 public class MenuProductsTest {
     
     @DisplayName("메뉴 상품들의 총 가격을 확인한다")
@@ -21,10 +23,10 @@ public class MenuProductsTest {
         MenuProducts 메뉴_상품_목록 = MenuProducts.from(Arrays.asList(메뉴_치킨, 메뉴_콜라));
         
         // when
-        Price 총_가격 = 메뉴_상품_목록.getTotalPrice();
+        MenuPrice 총_가격 = 메뉴_상품_목록.getTotalPrice();
     
         // then
-        assertThat(총_가격).isEqualTo(Price.from(22_000L));
+        assertThat(총_가격).isEqualTo(MenuPrice.from(22_000L));
     }
 
 }

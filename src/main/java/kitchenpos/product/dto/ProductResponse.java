@@ -1,8 +1,8 @@
-package kitchenpos.menu.dto;
+package kitchenpos.product.dto;
 
 import java.util.Objects;
 
-import kitchenpos.menu.domain.Product;
+import kitchenpos.product.domain.Product;
 
 public class ProductResponse {
     private Long id;

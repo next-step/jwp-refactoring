@@ -6,6 +6,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import kitchenpos.product.domain.Product;
+
 public class MenuProductTest {
     
     @DisplayName("상품의 가격은 메뉴의 가격과 수량을 곱한 값이다")
@@ -18,7 +20,7 @@ public class MenuProductTest {
         MenuProduct 메뉴_상품 = MenuProduct.of(상품, quantity);
         
         // when
-        Price 메뉴_상품_가격 = 메뉴_상품.getPrice();
+        MenuPrice 메뉴_상품_가격 = 메뉴_상품.getPrice();
         
         // then
         assertThat(메뉴_상품_가격.getValue()).isEqualTo(expected);
