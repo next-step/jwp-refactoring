@@ -1,0 +1,12 @@
+bootJar {
+    enabled=false
+}
+
+jar {
+    enabled=true
+}
+
+dependencies {
+    implementation project(':module-api')
+    implementation project(':module-domain')
+}
