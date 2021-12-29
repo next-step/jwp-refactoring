@@ -7,8 +7,8 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.ordertable.application.OrderTableService;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import org.assertj.core.util.Lists;
@@ -36,7 +36,7 @@ class OrderServiceTest {
     private OrderRepository orderRepository;
 
     @Mock
-    private OrderTableRepository orderTableRepository;
+    private OrderTableService orderTableService;
 
     private OrderService orderService;
 
@@ -49,7 +49,7 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(orderRepository, orderTableRepository);
+        orderService = new OrderService(orderRepository, orderTableService);
         주문_테이블_1번 = new OrderTable(1L, null, 3);
         주문_테이블_2번 = new OrderTable(null, 0);
 
@@ -63,7 +63,7 @@ class OrderServiceTest {
     @DisplayName("주문을 등록할 수 있다.")
     @Test
     void createOrderTest() {
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(주문_테이블_1번));
+        when(orderTableService.findOrderTableById(any())).thenReturn(주문_테이블_1번);
         when(orderRepository.save(any())).thenReturn(주문);
 
         // when
@@ -94,7 +94,7 @@ class OrderServiceTest {
     @Test
     void createOrderNotEmptyOrderTableExceptionTest() {
         assertThatThrownBy(() -> {
-            when(orderTableRepository.findById(any())).thenReturn(Optional.of(주문_테이블_2번));
+            when(orderTableService.findOrderTableById(any())).thenReturn(주문_테이블_2번);
 
             // given
             final OrderRequest emptyOrderTableItem = new OrderRequest(주문_테이블_2번.getId(), Lists.newArrayList(주문_항목, 주문_항목2));
