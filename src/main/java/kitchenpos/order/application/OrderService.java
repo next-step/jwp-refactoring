@@ -2,7 +2,10 @@ package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderLineItemRepository;
+import kitchenpos.order.exception.BadOrderRequestException;
+import kitchenpos.order.exception.NotCreatedMenuException;
+import kitchenpos.order.exception.NotFoundOrderException;
+import kitchenpos.order.exception.OrderErrorCode;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -11,6 +14,7 @@ import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusUpdateRequest;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.exception.NotFoundOrderTableException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -40,7 +44,7 @@ public class OrderService {
 
         List<OrderLineItem> orderLineItems = getValidOrderLineItems(orderRequest);
         final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow( () -> new NotFoundOrderTableException(orderRequest.getOrderTableId()));
 
         final Order savedOrder = orderRepository.save(Order.create(orderTable, orderLineItems));
         return OrderResponse.of(savedOrder);
@@ -56,14 +60,14 @@ public class OrderService {
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderStatusUpdateRequest request) {
         final Order savedOrder = orderRepository.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(NotFoundOrderException::new);
         savedOrder.changeOrderStatus(request.getOrderStatus());
         return OrderResponse.of(savedOrder);
     }
 
     private void isEmptyOrderLineItems(OrderRequest orderRequest) {
         if (CollectionUtils.isEmpty(orderRequest.getOrderLineItems())) {
-            throw new IllegalArgumentException();
+            throw new BadOrderRequestException(OrderErrorCode.NOT_EXISTS_ORDER_LINE_ITEM);
         }
     }
 
@@ -71,7 +75,7 @@ public class OrderService {
         List<Menu> menus = menuRepository.findAllByIdIn(orderRequest.createMenuIds());
 
         if (isNotCreatedMenu(orderRequest, menus)) {
-            throw new IllegalArgumentException();
+            throw new NotCreatedMenuException();
         }
 
         return menus.stream()

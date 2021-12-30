@@ -3,9 +3,14 @@ package kitchenpos.order.application;
 import kitchenpos.menu.domain.*;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.*;
+import kitchenpos.order.exception.BadOrderRequestException;
+import kitchenpos.order.exception.NotChangeOrderStatusException;
+import kitchenpos.order.exception.NotCreateOrderException;
+import kitchenpos.order.exception.NotFoundOrderException;
 import kitchenpos.table.domain.FakeOrderTableRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.exception.NotFoundOrderTableException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,8 +21,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("주문 테스트")
@@ -49,7 +53,8 @@ class OrderServiceTest {
         OrderTable orderTable = orderTableRepository.save(OrderTable.of(10, false));
         OrderRequest order = OrderRequest.of(orderTable.getId(), Collections.emptyList());
 
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(order));
+        assertThatThrownBy( () -> orderService.create(order))
+                .isInstanceOf(BadOrderRequestException.class);
     }
 
     @DisplayName("주문 테이블이 없으면 예외 발생한다.")
@@ -62,7 +67,8 @@ class OrderServiceTest {
                 )
         );
 
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(order));
+        assertThatThrownBy( () -> orderService.create(order))
+                .isInstanceOf(NotFoundOrderTableException.class);
     }
 
     @DisplayName("주문 테이블이 공석이면 예외가 발생한다")
@@ -75,7 +81,8 @@ class OrderServiceTest {
                 )
         );
 
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(order));
+        assertThatThrownBy( () -> orderService.create(order))
+                .isInstanceOf(NotCreateOrderException.class);
     }
 
     @DisplayName("주문 저장 성공")
@@ -127,8 +134,8 @@ class OrderServiceTest {
     @DisplayName("주문이 없으면 예외가 발생한다.")
     @Test
     void changeStatus() {
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderService.changeOrderStatus(33L, OrderStatusUpdateRequest.of(OrderStatus.COMPLETION.name())));
+        assertThatThrownBy(() -> orderService.changeOrderStatus(33L, OrderStatusUpdateRequest.of(OrderStatus.COMPLETION.name())))
+                .isInstanceOf(NotFoundOrderException.class);
     }
 
     @DisplayName("주문 상태가 COMPLETION 이면 예외가 발생한다.")
@@ -143,8 +150,8 @@ class OrderServiceTest {
         );
         orderRepository.save(order);
 
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderService.changeOrderStatus(order.getId(), OrderStatusUpdateRequest.of(OrderStatus.COMPLETION.name())));
+        assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), OrderStatusUpdateRequest.of(OrderStatus.COMPLETION.name())))
+                .isInstanceOf(NotChangeOrderStatusException.class);
     }
 
     @DisplayName("주문 상태 변경 성공")

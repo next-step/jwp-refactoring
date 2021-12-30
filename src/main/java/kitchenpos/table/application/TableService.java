@@ -8,6 +8,8 @@ import kitchenpos.table.dto.OrderTableChangeEmptyRequest;
 import kitchenpos.table.dto.OrderTableChangeNumberOfGuestsRequest;
 import kitchenpos.table.dto.OrderTableCreateRequest;
 import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.exception.NotFoundOrderTableException;
+import kitchenpos.table.exception.NotValidOrderException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,13 +62,13 @@ public class TableService {
 
     private OrderTable findOrderTableById(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow( () -> new NotFoundOrderTableException(orderTableId));
     }
 
     private void isValidOrder(Long orderTableId) {
         if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
                 orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
+            throw new NotValidOrderException();
         }
     }
 

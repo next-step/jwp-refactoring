@@ -9,6 +9,9 @@ import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.exception.DifferentOrderAndMenuPriceException;
+import kitchenpos.menu.exception.NotCreatedProductException;
+import kitchenpos.menu.exception.NotFoundMenuGroupException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,7 +40,7 @@ public class MenuService {
         List<Product> products = getValidProducts(menuRequest);
 
         MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow( () -> new NotFoundMenuGroupException(menuRequest.getMenuGroupId()));
 
         Menu menu = Menu.create(menuRequest.getName(), menuRequest.getPrice(), menuGroup, createMenuProduct(menuRequest, products));
         return MenuResponse.of(menuRepository.save(menu));
@@ -60,7 +63,7 @@ public class MenuService {
         List<Long> productIds = menuRequest.getProductIds();
         List<Product> products = productRepository.findAllByIdIn(productIds);
         if (productIds.size() != products.size()) {
-            throw new IllegalArgumentException();
+            throw new NotCreatedProductException();
         }
 
         BigDecimal sum = products.stream()
@@ -68,7 +71,7 @@ public class MenuService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         if (menuRequest.getPrice().compareTo(sum) > 0) {
-            throw new IllegalArgumentException();
+            throw new DifferentOrderAndMenuPriceException();
         }
         return products;
     }

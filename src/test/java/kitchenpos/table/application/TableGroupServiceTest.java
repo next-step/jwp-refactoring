@@ -5,6 +5,9 @@ import kitchenpos.table.domain.*;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.table.exception.NotCreateTableGroupException;
+import kitchenpos.table.exception.NotCreatedOrderTablesException;
+import kitchenpos.table.exception.NotValidOrderException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -12,8 +15,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 class TableGroupServiceTest {
@@ -29,18 +31,17 @@ class TableGroupServiceTest {
     @Test
     void notCreateTabeGroupLessTwoTable() {
         TableGroupRequest tableGroup = TableGroupRequest.of(Arrays.asList(저장안된_주문테이블ID_ONE));
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.create(tableGroup));
+        assertThatThrownBy( () -> tableGroupService.create(tableGroup))
+                .isInstanceOf(NotCreateTableGroupException.class);
     }
 
     @DisplayName("주문 테이블이 저장되어 있지 않으면 단체를 지정할 수 없다.")
     @Test
     void notCreateTableGroupNotSavedOrderTable() {
-
         TableGroupRequest tableGroup = TableGroupRequest.of(Arrays.asList(저장안된_주문테이블ID_ONE, 저장안된_주문테이블ID_TWO));
 
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.create(tableGroup));
+        assertThatThrownBy( () -> tableGroupService.create(tableGroup))
+                .isInstanceOf(NotCreatedOrderTablesException.class);
     }
 
     @DisplayName("주문 테이블이 공석이 아니면 단체를 지정할 수 없다.")
@@ -50,8 +51,8 @@ class TableGroupServiceTest {
         OrderTable savedOrderTable2 = orderTableRepository.save(OrderTable.of(20, false));
         TableGroupRequest tableGroup = TableGroupRequest.of(Arrays.asList(savedOrderTable1.getId(), savedOrderTable2.getId()));
 
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.create(tableGroup));
+        assertThatThrownBy( () -> tableGroupService.create(tableGroup))
+                .isInstanceOf(NotCreateTableGroupException.class);
     }
 
     @DisplayName("주문 테이블이 이미 단체 지정 되어 있으면 단체를 지정할 수 없다.")
@@ -61,8 +62,8 @@ class TableGroupServiceTest {
         OrderTable savedOrderTable2 = orderTableRepository.save(OrderTable.of(TableGroup.of(1L), 20, true));
         TableGroupRequest tableGroup = TableGroupRequest.of(Arrays.asList(savedOrderTable1.getId(), savedOrderTable2.getId()));
 
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.create(tableGroup));
+        assertThatThrownBy( () -> tableGroupService.create(tableGroup))
+                .isInstanceOf(NotCreateTableGroupException.class);
     }
 
     @DisplayName("단체 지정 성공")
@@ -106,8 +107,8 @@ class TableGroupServiceTest {
         );
         orderRepository.save(order2);
 
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.ungroup(result.getId()));
+        assertThatThrownBy( () -> tableGroupService.ungroup(result.getId()))
+                .isInstanceOf(NotValidOrderException.class);
     }
 
     @DisplayName("단체 해지 성공")

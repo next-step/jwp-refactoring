@@ -1,5 +1,7 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.table.exception.NotCreateTableGroupException;
+import kitchenpos.table.exception.TableErrorCode;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -32,10 +34,6 @@ public class TableGroup {
         this.id = id;
     }
 
-    public static TableGroup of(List<OrderTable> tables) {
-        return new TableGroup(tables);
-    }
-
     public static TableGroup of(Long id) {
         return new TableGroup(id);
     }
@@ -50,7 +48,7 @@ public class TableGroup {
 
     private void isValidOrderTable(OrderTable savedOrderTable) {
         if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) {
-            throw new IllegalArgumentException();
+            throw new NotCreateTableGroupException(TableErrorCode.ALREADY_ASSIGN_GROUP);
         }
     }
 

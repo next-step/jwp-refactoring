@@ -4,14 +4,14 @@ import kitchenpos.menu.domain.FakeProductRepository;
 import kitchenpos.menu.domain.ProductRepository;
 import kitchenpos.menu.dto.ProductRequest;
 import kitchenpos.menu.dto.ProductResponse;
+import kitchenpos.menu.exception.WrongPriceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("상품 테스트")
@@ -23,7 +23,8 @@ class ProductServiceTest {
     @Test
     void priceIsNegative() {
         ProductRequest product = ProductRequest.of("소고기", BigDecimal.valueOf(-100));
-        assertThatIllegalArgumentException().isThrownBy(() -> productService.create(product));
+        assertThatThrownBy( () -> productService.create(product))
+                .isInstanceOf(WrongPriceException.class);
     }
 
     @DisplayName("상품 생성 성공")

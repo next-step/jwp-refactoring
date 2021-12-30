@@ -1,6 +1,9 @@
 package kitchenpos.table.domain;
 
 import kitchenpos.table.dto.OrderTableChangeEmptyRequest;
+import kitchenpos.table.exception.NotChangeEmptyException;
+import kitchenpos.table.exception.NotChangeNumberOfGuestException;
+import kitchenpos.table.exception.TableErrorCode;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -64,7 +67,7 @@ public class OrderTable {
 
     public void changeEmpty(OrderTableChangeEmptyRequest request) {
         if (Objects.nonNull(getTableGroup())) {
-            throw new IllegalArgumentException();
+            throw new NotChangeEmptyException(TableErrorCode.ALREADY_ASSIGN_GROUP);
         }
 
         this.empty = request.isEmpty();
@@ -72,11 +75,11 @@ public class OrderTable {
 
     public void changeNumberOfGuests(int updateNumberOfGuests) {
         if (isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new NotChangeNumberOfGuestException(TableErrorCode.EMPTY_TABLE);
         }
 
         if (updateNumberOfGuests < 0) {
-            throw new IllegalArgumentException();
+            throw new NotChangeNumberOfGuestException(TableErrorCode.GUEST_MORE_THAN_ZERO);
         }
 
         this.numberOfGuests = updateNumberOfGuests;

@@ -12,6 +12,9 @@ import kitchenpos.table.dto.OrderTableChangeEmptyRequest;
 import kitchenpos.table.dto.OrderTableChangeNumberOfGuestsRequest;
 import kitchenpos.table.dto.OrderTableCreateRequest;
 import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.exception.NotChangeNumberOfGuestException;
+import kitchenpos.table.exception.NotFoundOrderTableException;
+import kitchenpos.table.exception.NotValidOrderException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -19,8 +22,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("주문 테이블 테스트")
@@ -58,8 +60,8 @@ class TableServiceTest {
     @DisplayName("주문 테이블이 없으면 테이블 공석 여부 변경을 할 수 없다.")
     @Test
     void notChangeEmptyTableNotExistsOrderTable() {
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeEmpty(1L, OrderTableChangeEmptyRequest.of(false)));
+        assertThatThrownBy( () -> tableService.changeEmpty(1L, OrderTableChangeEmptyRequest.of(false)))
+                .isInstanceOf(NotFoundOrderTableException.class);
     }
 
     @DisplayName("주문 상태가 COOKING,MEAL 이면 테이블 공석 여부를 변경할 수 없다.")
@@ -74,8 +76,8 @@ class TableServiceTest {
         );
         orderRepository.save(order);
 
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeEmpty(savedOrderTable.getId(), OrderTableChangeEmptyRequest.of(false)));
+        assertThatThrownBy( () -> tableService.changeEmpty(savedOrderTable.getId(), OrderTableChangeEmptyRequest.of(false)))
+                .isInstanceOf(NotValidOrderException.class);
     }
 
     @DisplayName("주문 테이블 공석 여부 변경")
@@ -101,16 +103,16 @@ class TableServiceTest {
     @Test
     void notChangeNumberOfGuestLessThanZero() {
         orderTableRepository.save(OrderTable.of(-1, true));
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeNumberOfGuests(1L, OrderTableChangeNumberOfGuestsRequest.of(-1)));
+        assertThatThrownBy( () -> tableService.changeNumberOfGuests(1L, OrderTableChangeNumberOfGuestsRequest.of(-1)))
+                .isInstanceOf(NotChangeNumberOfGuestException.class);
     }
 
     @DisplayName("주문 테이블이 공석인 상태면 손님 수를 변경할 수 없다.")
     @Test
     void notChangeNumberOfGuestOrderTableIsEmpty() {
         OrderTable savedOrderTable = orderTableRepository.save(OrderTable.of(10, true));
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeNumberOfGuests(savedOrderTable.getId(), OrderTableChangeNumberOfGuestsRequest.of(15)));
+        assertThatThrownBy( () -> tableService.changeNumberOfGuests(savedOrderTable.getId(), OrderTableChangeNumberOfGuestsRequest.of(15)))
+                .isInstanceOf(NotChangeNumberOfGuestException.class);
     }
 
     @DisplayName("주문 테이블 손님 수 변공 성공")

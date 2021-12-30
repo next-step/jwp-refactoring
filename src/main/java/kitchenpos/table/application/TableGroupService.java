@@ -8,6 +8,9 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.table.exception.NotCreateTableGroupException;
+import kitchenpos.table.exception.NotCreatedOrderTablesException;
+import kitchenpos.table.exception.NotValidOrderException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -57,14 +60,14 @@ public class TableGroupService {
                 .collect(Collectors.toList());
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL) )) {
-            throw new IllegalArgumentException();
+            throw new NotValidOrderException();
         }
     }
 
     private void isValidRequest(TableGroupRequest tableGroupRequest) {
         final List<Long> orderTables = tableGroupRequest.getOrderTableIds();
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException();
+            throw new NotCreateTableGroupException("주문 테이블 개수가 부족합니다.");
         }
 
     }
@@ -72,7 +75,7 @@ public class TableGroupService {
     private void isNotCreatedOrderTables(TableGroupRequest tableGroupRequest, List<OrderTable> savedOrderTables) {
         List<Long> requestIds = tableGroupRequest.getOrderTableIds();
         if (requestIds.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
+            throw new NotCreatedOrderTablesException();
         }
     }
 }

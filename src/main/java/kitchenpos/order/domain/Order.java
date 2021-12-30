@@ -1,5 +1,8 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.order.exception.NotCreateOrderException;
+import kitchenpos.order.exception.NotChangeOrderStatusException;
+import kitchenpos.order.exception.OrderErrorCode;
 import kitchenpos.table.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
 
@@ -42,7 +45,7 @@ public class Order {
 
     private Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new NotCreateOrderException(orderTable.getId() + OrderErrorCode.EMPTY_ORDER_TABLE);
         }
 
         this.orderTable = orderTable;
@@ -72,7 +75,7 @@ public class Order {
 
     public void changeOrderStatus(String request) {
         if (Objects.equals(OrderStatus.COMPLETION, this.orderStatus)) {
-            throw new IllegalArgumentException();
+            throw new NotChangeOrderStatusException(OrderErrorCode.ORDER_COMPLETE);
         }
 
         this.orderStatus = OrderStatus.valueOf(request);

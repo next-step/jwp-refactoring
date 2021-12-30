@@ -1,5 +1,7 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.menu.exception.WrongPriceException;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -30,7 +32,7 @@ public class Menu {
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
+            throw new WrongPriceException();
         }
 
         this.name = name;

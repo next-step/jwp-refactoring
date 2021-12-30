@@ -1,6 +1,7 @@
 package kitchenpos.menu.domain;
 
 import kitchenpos.menu.domain.Product;
+import kitchenpos.menu.exception.WrongPriceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +16,7 @@ class ProductTest {
     @Test
     void isNegativeProduct() {
         assertThatThrownBy( () -> Product.of("상품", BigDecimal.valueOf(-100)))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(WrongPriceException.class);
     }
 
 

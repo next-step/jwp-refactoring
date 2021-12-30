@@ -5,14 +5,17 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuProductResponse;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.exception.DifferentOrderAndMenuPriceException;
+import kitchenpos.menu.exception.NotCreatedProductException;
+import kitchenpos.menu.exception.NotFoundMenuGroupException;
+import kitchenpos.menu.exception.WrongPriceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("메뉴 테스트")
@@ -34,8 +37,8 @@ class MenuServiceTest {
                         MenuProductRequest.of(부채살, 1)
                 )
         );
-
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest));
+        assertThatThrownBy( () -> menuService.create(menuRequest))
+                .isInstanceOf(WrongPriceException.class);
     }
 
     @DisplayName("메뉴 그룹이 존재하지 않으면 예외가 발생한다.")
@@ -51,7 +54,8 @@ class MenuServiceTest {
                 )
         );
 
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest));
+        assertThatThrownBy( () -> menuService.create(menuRequest))
+                .isInstanceOf(DifferentOrderAndMenuPriceException.class);
     }
 
     @DisplayName("상품이 존재하지 않으면 예외가 발생한다.")
@@ -67,7 +71,8 @@ class MenuServiceTest {
                 )
         );
 
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest));
+        assertThatThrownBy( () -> menuService.create(menuRequest))
+                .isInstanceOf(NotCreatedProductException.class);
     }
 
     @DisplayName("메뉴 가격이 메뉴 상품들 가격의 합보다 크면 예외 발생한다.")
@@ -82,8 +87,8 @@ class MenuServiceTest {
                         MenuProductRequest.of(쌈채소, 1)
                 )
         );
-
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest));
+        assertThatThrownBy( () -> menuService.create(menuRequest))
+                .isInstanceOf(DifferentOrderAndMenuPriceException.class);
     }
 
     @DisplayName("메뉴 생성 성공")
