@@ -1,6 +1,8 @@
 package kitchenpos.moduledomain.common.exception;
 
-public enum Message {
+import kitchenpos.exception.Message;
+
+public enum DomainMessage implements Message {
 
     PRODUCT_NAME_IS_NOT_EMPTY("상품 이름은 빈 값일 수 없습니다."),
     AMOUNT_PRICE_IS_NOT_EMPTY("금액은 빈 값일 수 없습니다."),
@@ -20,15 +22,16 @@ public enum Message {
 
     private String message;
 
-    Message(String message) {
+    DomainMessage(String message) {
         this.message = message;
     }
 
+    @Override
     public String getMessage() {
         return message;
     }
 
-    public static String format(Message message, Object... arg) {
+    public static String format(DomainMessage message, Object... arg) {
         return String.format(message.getMessage(), arg);
     }
 }

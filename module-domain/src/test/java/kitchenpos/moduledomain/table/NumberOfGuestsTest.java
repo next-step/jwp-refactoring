@@ -3,7 +3,7 @@ package kitchenpos.moduledomain.table;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import kitchenpos.moduledomain.common.exception.Message;
+import kitchenpos.moduledomain.common.exception.DomainMessage;
 import org.junit.jupiter.api.Test;
 
 class NumberOfGuestsTest {
@@ -14,7 +14,7 @@ class NumberOfGuestsTest {
         assertThatThrownBy(() -> {
             NumberOfGuests numberOfGuests = new NumberOfGuests(-1);
         }).isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(Message.NUMBER_OF_GUEST_SMALL_THAN_ZERO.getMessage());
+            .hasMessage(DomainMessage.NUMBER_OF_GUEST_SMALL_THAN_ZERO.getMessage());
     }
 
 

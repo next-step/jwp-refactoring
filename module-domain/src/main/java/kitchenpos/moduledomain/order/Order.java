@@ -12,7 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import kitchenpos.moduledomain.common.exception.Message;
+import kitchenpos.moduledomain.common.exception.DomainMessage;
 
 @Entity
 @Table(name = "orders")
@@ -47,7 +47,7 @@ public class Order {
 
     private void validIsNotNull(Long orderTableId) {
         if (Objects.isNull(orderTableId)) {
-            throw new IllegalArgumentException(Message.ORDER_TABLE_IS_NOT_NULL.getMessage());
+            throw new IllegalArgumentException(DomainMessage.ORDER_TABLE_IS_NOT_NULL.getMessage());
         }
     }
 
@@ -56,7 +56,7 @@ public class Order {
 
     public void changeOrderStatus(final String changeOrderStatus) {
         if (OrderStatus.isEqualsCompletion(getOrderStatus())) {
-            throw new IllegalArgumentException(Message.ORDER_STATUS_IS_NOT_COMPLETION.getMessage());
+            throw new IllegalArgumentException(DomainMessage.ORDER_STATUS_IS_NOT_COMPLETION.getMessage());
         }
         this.orderStatus = OrderStatus.valueOf(changeOrderStatus);
     }

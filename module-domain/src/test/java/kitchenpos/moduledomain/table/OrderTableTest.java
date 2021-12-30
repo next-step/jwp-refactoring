@@ -7,15 +7,9 @@ import static kitchenpos.moduledomain.common.OrderTableFixture.첫번째_주문�
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.atMostOnce;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import kitchenpos.moduledomain.common.exception.Message;
+import kitchenpos.moduledomain.common.exception.DomainMessage;
 import kitchenpos.moduledomain.order.Order;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -64,7 +58,7 @@ class OrderTableTest {
         assertThatThrownBy(() -> {
             OrderTable.of(new NumberOfGuests(3), null);
         }).isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(Message.ORDER_TABLE_IS_NOT_ORDER_TABLE_STATUS_NULL.getMessage());
+            .hasMessage(DomainMessage.ORDER_TABLE_IS_NOT_ORDER_TABLE_STATUS_NULL.getMessage());
     }
 
 

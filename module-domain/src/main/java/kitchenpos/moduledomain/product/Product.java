@@ -1,6 +1,6 @@
 package kitchenpos.moduledomain.product;
 
-import static kitchenpos.moduledomain.common.exception.Message.PRODUCT_NAME_IS_NOT_EMPTY;
+import static kitchenpos.moduledomain.common.exception.DomainMessage.PRODUCT_NAME_IS_NOT_EMPTY;
 
 import java.util.Objects;
 import javax.persistence.Column;

@@ -1,8 +1,8 @@
 package kitchenpos.moduledomain.product;
 
 import static java.lang.String.valueOf;
-import static kitchenpos.moduledomain.common.exception.Message.AMOUNT_IS_NOT_LESS_THAN_ZERO;
-import static kitchenpos.moduledomain.common.exception.Message.AMOUNT_PRICE_IS_NOT_EMPTY;
+import static kitchenpos.moduledomain.common.exception.DomainMessage.AMOUNT_IS_NOT_LESS_THAN_ZERO;
+import static kitchenpos.moduledomain.common.exception.DomainMessage.AMOUNT_PRICE_IS_NOT_EMPTY;
 
 import java.math.BigDecimal;
 import java.util.Objects;

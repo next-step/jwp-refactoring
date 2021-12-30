@@ -1,8 +1,7 @@
 package kitchenpos.moduledomain.menu;
 
 
-import java.util.List;
-import kitchenpos.moduledomain.common.exception.Message;
+import kitchenpos.moduledomain.common.exception.DomainMessage;
 import kitchenpos.moduledomain.common.exception.NoResultDataException;
 import kitchenpos.moduledomain.product.Amount;
 import kitchenpos.moduledomain.product.Product;
@@ -30,7 +29,7 @@ public class MenuValidation {
 
     public  void validSumProductPrice(Amount price, MenuProducts menuProducts) {
         if (price.grateThan(sum(menuProducts))) {
-            throw new IllegalArgumentException(Message.MENU_AMOUNT_IS_TOO_LAGE.getMessage());
+            throw new IllegalArgumentException(DomainMessage.MENU_AMOUNT_IS_TOO_LAGE.getMessage());
         }
     }
 

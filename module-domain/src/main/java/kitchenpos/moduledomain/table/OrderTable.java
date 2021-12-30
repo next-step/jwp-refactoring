@@ -14,7 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import kitchenpos.moduledomain.common.exception.Message;
+import kitchenpos.moduledomain.common.exception.DomainMessage;
 import kitchenpos.moduledomain.order.Order;
 import kitchenpos.moduledomain.order.Orders;
 
@@ -66,7 +66,7 @@ public class OrderTable {
     private void validOrderTableStatusIsNotNull(OrderTableStatus orderTableStatus) {
         if (Objects.isNull(orderTableStatus)) {
             throw new IllegalArgumentException(
-                Message.ORDER_TABLE_IS_NOT_ORDER_TABLE_STATUS_NULL.getMessage());
+                DomainMessage.ORDER_TABLE_IS_NOT_ORDER_TABLE_STATUS_NULL.getMessage());
         }
     }
 

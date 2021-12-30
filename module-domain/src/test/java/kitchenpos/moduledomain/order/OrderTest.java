@@ -10,17 +10,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.atMostOnce;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.util.List;
-import java.util.Optional;
-import kitchenpos.moduledomain.common.exception.Message;
+import kitchenpos.moduledomain.common.exception.DomainMessage;
 import kitchenpos.moduledomain.menu.Menu;
 import kitchenpos.moduledomain.table.OrderTable;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class OrderTest {
@@ -30,7 +25,7 @@ class OrderTest {
         assertThatThrownBy(() -> {
             Order.createCook(null, null);
         }).isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(Message.ORDER_TABLE_IS_NOT_NULL.getMessage());
+            .hasMessage(DomainMessage.ORDER_TABLE_IS_NOT_NULL.getMessage());
     }
 
     @Test
@@ -58,7 +53,7 @@ class OrderTest {
             Order 계산_완료 = 계산_완료();
             계산_완료.changeOrderStatus(OrderStatus.COMPLETION.name());
         }).isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(Message.ORDER_STATUS_IS_NOT_COMPLETION.getMessage());
+            .hasMessage(DomainMessage.ORDER_STATUS_IS_NOT_COMPLETION.getMessage());
     }
 
 

@@ -13,13 +13,7 @@ import static org.mockito.Mockito.when;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.moduledomain.common.exception.Message;
-import kitchenpos.moduledomain.menu.Menu;
-import kitchenpos.moduledomain.menu.MenuGroup;
-import kitchenpos.moduledomain.menu.MenuGroupDao;
-import kitchenpos.moduledomain.menu.MenuProduct;
-import kitchenpos.moduledomain.menu.MenuProducts;
-import kitchenpos.moduledomain.menu.MenuValidation;
+import kitchenpos.moduledomain.common.exception.DomainMessage;
 import kitchenpos.moduledomain.product.Amount;
 import kitchenpos.moduledomain.product.ProductDao;
 import org.assertj.core.api.Assertions;
@@ -74,7 +68,7 @@ class MenuTest {
         Assertions.assertThatThrownBy(() -> {
                 Menu.of(input, Amount.of(10000), 메뉴그룹_한마리.getId());
             }).isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(Message.MENU_NAME_IS_NOT_NULL.getMessage());
+            .hasMessage(DomainMessage.MENU_NAME_IS_NOT_NULL.getMessage());
     }
 
     /**

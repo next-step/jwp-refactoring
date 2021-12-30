@@ -1,6 +1,6 @@
 package kitchenpos.moduledomain.order;
 
-import kitchenpos.moduledomain.common.exception.Message;
+import kitchenpos.moduledomain.common.exception.DomainMessage;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -11,6 +11,6 @@ class OrderLineItemsTest {
         Assertions.assertThatThrownBy(() -> {
                 OrderLineItems.of(null);
             }).isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(Message.ORDER_LINE_ITEMS_IS_NOT_NULL.getMessage());
+            .hasMessage(DomainMessage.ORDER_LINE_ITEMS_IS_NOT_NULL.getMessage());
     }
 }

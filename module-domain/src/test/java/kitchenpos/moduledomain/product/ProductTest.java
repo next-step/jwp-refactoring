@@ -4,7 +4,7 @@ import static kitchenpos.moduledomain.common.ProductFixture.가격이없는_반�
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import kitchenpos.moduledomain.common.exception.Message;
+import kitchenpos.moduledomain.common.exception.DomainMessage;
 import org.junit.jupiter.api.Test;
 
 public class ProductTest {
@@ -25,6 +25,6 @@ public class ProductTest {
         assertThatThrownBy(() -> {
             Product 가격이없는_반반치킨 = 가격이없는_반반치킨();
         }).isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(Message.AMOUNT_IS_NOT_LESS_THAN_ZERO.getMessage());
+            .hasMessage(DomainMessage.AMOUNT_IS_NOT_LESS_THAN_ZERO.getMessage());
     }
 }

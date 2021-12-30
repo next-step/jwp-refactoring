@@ -1,4 +1,4 @@
-package kitchenpos.moduledomain.common.exception;
+package kitchenpos.exception;
 
 public class ErrorResponse {
 

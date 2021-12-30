@@ -8,7 +8,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.moduledomain.common.exception.Message;
+import kitchenpos.moduledomain.common.exception.DomainMessage;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +22,7 @@ class OrderTablesTest {
         assertThatThrownBy(() -> {
             OrderTables.of(orderTables);
         }).isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(Message.ORDER_TABLE_IS_NOT_EMPTY_TABLE_OR_ALREADY_GROUP.getMessage());
+            .hasMessage(DomainMessage.ORDER_TABLE_IS_NOT_EMPTY_TABLE_OR_ALREADY_GROUP.getMessage());
     }
 
     @Test
@@ -33,7 +33,7 @@ class OrderTablesTest {
         assertThatThrownBy(() -> {
             OrderTables.of(orderTables);
         }).isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(Message.ORDER_TABLES_IS_SMALL_THAN_MIN_TABLE_SIZE.getMessage());
+            .hasMessage(DomainMessage.ORDER_TABLES_IS_SMALL_THAN_MIN_TABLE_SIZE.getMessage());
     }
 
     @Test

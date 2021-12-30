@@ -9,7 +9,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import kitchenpos.moduledomain.common.exception.Message;
+import kitchenpos.moduledomain.common.exception.DomainMessage;
 import kitchenpos.moduledomain.menu.MenuDao;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,6 +35,6 @@ class OrderValidationTest {
             List<Long> menuIds = asList(메뉴_양념치킨().getId(), 메뉴_반반치킨().getId(), 메뉴_후라이드().getId());
             orderValidation.validSizeIsNotEquals(menuIds, 2);
         }).isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(Message.ORDER_SIZE_IS_NOT_EQUALS.getMessage());
+            .hasMessage(DomainMessage.ORDER_SIZE_IS_NOT_EQUALS.getMessage());
     }
 }

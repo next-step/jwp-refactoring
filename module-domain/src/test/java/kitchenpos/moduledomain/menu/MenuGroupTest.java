@@ -2,8 +2,7 @@ package kitchenpos.moduledomain.menu;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
-import kitchenpos.moduledomain.common.exception.Message;
-import kitchenpos.moduledomain.menu.MenuGroup;
+import kitchenpos.moduledomain.common.exception.DomainMessage;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -18,7 +17,7 @@ class MenuGroupTest {
         assertThatThrownBy(() -> {
             MenuGroup.of(input);
         }).isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(Message.MENU_GROUP_NAME_IS_NOT_NULL.getMessage());
+            .hasMessage(DomainMessage.MENU_GROUP_NAME_IS_NOT_NULL.getMessage());
     }
 
     @Test

@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
-import kitchenpos.moduledomain.common.exception.Message;
+import kitchenpos.moduledomain.common.exception.DomainMessage;
 import org.springframework.util.CollectionUtils;
 
 public class OrderTables {
@@ -24,12 +24,12 @@ public class OrderTables {
 
         if (isSmallThanMinTableSize(orderTables)) {
             throw new IllegalArgumentException(
-                Message.ORDER_TABLES_IS_SMALL_THAN_MIN_TABLE_SIZE.getMessage());
+                DomainMessage.ORDER_TABLES_IS_SMALL_THAN_MIN_TABLE_SIZE.getMessage());
         }
 
         if (matchOrderTable(this::isTableEmpty)) {
             throw new IllegalArgumentException(
-                Message.ORDER_TABLE_IS_NOT_EMPTY_TABLE_OR_ALREADY_GROUP.getMessage()
+                DomainMessage.ORDER_TABLE_IS_NOT_EMPTY_TABLE_OR_ALREADY_GROUP.getMessage()
             );
         }
     }
@@ -44,7 +44,7 @@ public class OrderTables {
     public void group() {
         if (matchOrderTable(isTableIsNotEmptyOrGroupIsNotNull())) {
             throw new IllegalArgumentException(
-                Message.ORDER_TABLE_IS_NOT_EMPTY_TABLE_OR_ALREADY_GROUP.getMessage());
+                DomainMessage.ORDER_TABLE_IS_NOT_EMPTY_TABLE_OR_ALREADY_GROUP.getMessage());
         }
 
         TableGroup of = TableGroup.of();

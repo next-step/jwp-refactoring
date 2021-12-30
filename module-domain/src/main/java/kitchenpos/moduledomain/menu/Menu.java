@@ -8,7 +8,7 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import kitchenpos.moduledomain.common.exception.Message;
+import kitchenpos.moduledomain.common.exception.DomainMessage;
 import kitchenpos.moduledomain.product.Amount;
 import org.apache.logging.log4j.util.Strings;
 
@@ -50,7 +50,7 @@ public class Menu {
 
     private void validIsNotNull(String name) {
         if (Strings.isBlank(name)) {
-            throw new IllegalArgumentException(Message.MENU_NAME_IS_NOT_NULL.getMessage());
+            throw new IllegalArgumentException(DomainMessage.MENU_NAME_IS_NOT_NULL.getMessage());
         }
     }
 

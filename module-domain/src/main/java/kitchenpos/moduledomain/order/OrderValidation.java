@@ -1,7 +1,7 @@
 package kitchenpos.moduledomain.order;
 
 import java.util.List;
-import kitchenpos.moduledomain.common.exception.Message;
+import kitchenpos.moduledomain.common.exception.DomainMessage;
 import kitchenpos.moduledomain.common.exception.NoResultDataException;
 import kitchenpos.moduledomain.menu.MenuDao;
 import kitchenpos.moduledomain.table.OrderTableDao;
@@ -32,7 +32,7 @@ public class OrderValidation {
     public void validSizeIsNotEquals(List<Long> menuIds, int size) {
         final Long count = menuDao.countByIdIn(menuIds);
         if (size != count) {
-            throw new IllegalArgumentException(Message.ORDER_SIZE_IS_NOT_EQUALS.getMessage());
+            throw new IllegalArgumentException(DomainMessage.ORDER_SIZE_IS_NOT_EQUALS.getMessage());
         }
     }
 

@@ -5,7 +5,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import kitchenpos.moduledomain.common.exception.Message;
+import kitchenpos.moduledomain.common.exception.DomainMessage;
 import org.apache.logging.log4j.util.Strings;
 
 @Entity
@@ -27,7 +27,7 @@ public class MenuGroup {
 
     private static void validIsNotNull(String name) {
         if (Strings.isBlank(name)) {
-            throw new IllegalArgumentException(Message.MENU_GROUP_NAME_IS_NOT_NULL.getMessage());
+            throw new IllegalArgumentException(DomainMessage.MENU_GROUP_NAME_IS_NOT_NULL.getMessage());
         }
     }
 
