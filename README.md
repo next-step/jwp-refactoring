@@ -1,3 +1,19 @@
+# 4 단계 - 멀티 모듈 적용
+
+## 요구사항
+
+- Gradle 멀티 모듈을 통해 다른 프로젝트로 분리
+    - 컨텍스트 간 독립 모듈 가능
+    - 계층 간의 독립된 모듈 가능
+- 의존성 주입, HTTP 요청/응답, 이벤트 발행/구독 등 다양한 방식을 모듈 간 통신 가능
+
+## 기능 목록
+
+- Presentaion(WebAPI), Service, Domain 으로 Layer 간 모듈 분리
+- kitchenpos-domain: 도메인 계층
+- kitchenpos-application: 서비스 계층
+- kitchenpos-webapi: 프레젠테이션 계층. HTTP API.
+
 # 3 단계 - 의존성 리팩토링
 
 ## 요구사항
