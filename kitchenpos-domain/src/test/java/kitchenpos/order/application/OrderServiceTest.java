@@ -81,7 +81,6 @@ public class OrderServiceTest {
 	void createTest() {
 		// given
 		given(orderRepository.save(any())).willReturn(생성된_주문);
-		given(menuService.getById(any())).willReturn(더블후라이드);
 
 		OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(1L, 1L);
 		OrderRequest request = new OrderRequest(1L, Collections.singletonList(orderLineItemRequest));
@@ -100,27 +99,10 @@ public class OrderServiceTest {
 		OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(1L, 0L);
 		OrderRequest request = new OrderRequest(1L, Collections.singletonList(orderLineItemRequest));
 
-		given(menuService.getById(any())).willReturn(더블후라이드);
-
 		// when, then
 		assertThatThrownBy(() -> orderService.create(request))
 			.isInstanceOf(AppException.class)
 			.hasMessage(ErrorCode.WRONG_INPUT.getMessage());
-	}
-
-	@DisplayName("주문 시, 모든 주문 항목 메뉴가 존재해야 한다")
-	@Test
-	void createTest3() {
-		// given
-		OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(1L, 0L);
-		OrderRequest request = new OrderRequest(1L, Collections.singletonList(orderLineItemRequest));
-
-		given(menuService.getById(any())).willThrow(new AppException(ErrorCode.NOT_FOUND, ""));
-
-		// when, then
-		assertThatThrownBy(() -> orderService.create(request))
-			.isInstanceOf(AppException.class)
-			.hasMessage(ErrorCode.NOT_FOUND.getMessage());
 	}
 
 	@DisplayName("주문 목록을 조회한다")
