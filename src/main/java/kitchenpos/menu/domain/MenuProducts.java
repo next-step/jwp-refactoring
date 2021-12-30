@@ -16,7 +16,6 @@ public class MenuProducts {
         this.menuProducts = menuProducts;
     }
 
-
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
     }

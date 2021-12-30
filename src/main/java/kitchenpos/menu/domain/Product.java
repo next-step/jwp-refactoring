@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.common.Price;
 import kitchenpos.menu.exception.WrongPriceException;
 
 import javax.persistence.*;
@@ -15,28 +16,20 @@ public class Product {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private BigDecimal price;
+    @Embedded
+    private Price price;
 
     protected Product() {}
 
     private Product(String name, BigDecimal price) {
-        isValidPrice(price);
-
         this.name = name;
-        this.price = price;
-    }
-
-    private void isValidPrice(BigDecimal price) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new WrongPriceException();
-        }
+        this.price = new Price(price);
     }
 
     public Product(Long id, String name, BigDecimal price) {
         this.id = id;
         this.name = name;
-        this.price = price;
+        this.price = new Price(price);
     }
 
     public static Product of(String name, int price) {
@@ -64,7 +57,7 @@ public class Product {
     }
 
     public BigDecimal getPrice() {
-        return price;
+        return price.getPrice();
     }
 
     public void createId(Long id) {
@@ -72,6 +65,7 @@ public class Product {
     }
 
     public BigDecimal getTotalPrice(Long quantity) {
-        return this.price.multiply(BigDecimal.valueOf(quantity));
+        Price multiplyPrice = this.price.multiply(quantity);
+        return multiplyPrice.getPrice();
     }
 }

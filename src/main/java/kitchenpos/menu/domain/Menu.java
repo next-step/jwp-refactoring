@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.common.Price;
 import kitchenpos.menu.exception.WrongPriceException;
 
 import javax.persistence.*;
@@ -16,8 +17,8 @@ public class Menu {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private BigDecimal price;
+    @Embedded
+    private Price price;
 
     @ManyToOne
     @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"), nullable = false)
@@ -35,7 +36,7 @@ public class Menu {
         }
 
         this.name = name;
-        this.price = price;
+        this.price = new Price(price);
         this.menuGroup = menuGroup;
         this.menuProducts = new MenuProducts(menuProducts);
     }
@@ -59,7 +60,7 @@ public class Menu {
     }
 
     public BigDecimal getPrice() {
-        return price;
+        return price.getPrice();
     }
 
     public MenuGroup getMenuGroup() {
