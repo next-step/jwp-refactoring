@@ -10,15 +10,14 @@ public class OrderLineItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
 
-    @ManyToOne
-    private Menu menu;
+    private Long menuId;
 
     private Long orderId;
 
     private long quantity;
 
-    public OrderLineItem(Menu menu, Long quantity) {
-        this.menu = menu;
+    public OrderLineItem(Long menuId, Long quantity) {
+        this.menuId = menuId;
         this.quantity = quantity;
     }
 
@@ -30,8 +29,8 @@ public class OrderLineItem {
         return seq;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public Long getMenuId() {
+        return menuId;
     }
 
     public void makeOrder(Order order) {

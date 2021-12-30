@@ -57,7 +57,7 @@ public class OrderService {
     private void makeOrderLineItem(OrderRequest orderRequest, Order order, List<Menu> menus) {
         for (OrderLineItemRequest orderLineItemRequest : orderRequest.getOrderLineItemRequests()) {
             Menu filteredMenu = getFilteredMenu(menus, orderLineItemRequest);
-            OrderLineItem orderLineItem = new OrderLineItem(filteredMenu, orderLineItemRequest.getQuantity());
+            OrderLineItem orderLineItem = new OrderLineItem(filteredMenu.getId(), orderLineItemRequest.getQuantity());
             orderLineItem.makeOrder(order);
         }
     }

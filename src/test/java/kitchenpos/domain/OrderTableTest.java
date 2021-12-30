@@ -1,8 +1,5 @@
 package kitchenpos.domain;
 
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderValidatorImpl;
 import kitchenpos.order.exception.NegativeNumberOfGuestsException;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderValidator;
@@ -10,16 +7,9 @@ import kitchenpos.table.exception.CannotChangeEmptyException;
 import kitchenpos.table.exception.CannotChangeNumberOfGuestsException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
 
 class OrderTableTest {
 
