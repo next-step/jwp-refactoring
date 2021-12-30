@@ -65,12 +65,12 @@ public class Menu {
         return menuProducts;
     }
 
-    private BigDecimal getTotalPrice() {
-        return this.getMenuProducts().getTotalPrice();
+    private Price getTotalPrice() {
+        return this.menuProducts.getTotalPrice();
     }
 
     private boolean isSamePrice() {
-        if (this.price.getPrice().compareTo(getTotalPrice()) > 0) {
+        if (this.price.equals(getTotalPrice())) {
             throw new IllegalArgumentException("메뉴 가격이 올바르지 않습니다. 메뉴 가격 : " + this.price.getPrice());
         }
         return true;

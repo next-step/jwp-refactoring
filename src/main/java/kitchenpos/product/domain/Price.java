@@ -16,6 +16,10 @@ public class Price {
         this.price = price;
     }
 
+    public static Price of(BigDecimal price) {
+        return new Price(price);
+    }
+
     public BigDecimal getPrice() {
         return this.price;
     }
@@ -37,5 +41,13 @@ public class Price {
     @Override
     public int hashCode() {
         return Objects.hash(price);
+    }
+
+    public Price multiply(long quantity) {
+        return Price.of(this.price.multiply(BigDecimal.valueOf(quantity)));
+    }
+
+    public Price add(Price price) {
+        return Price.of(this.price.add(price.getPrice()));
     }
 }

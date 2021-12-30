@@ -58,7 +58,7 @@ public class OrderService {
     public List<OrderResponse> list() {
         return orderRepository.findAll()
                 .stream()
-                .map(order -> OrderResponse.of(order))
+                .map(OrderResponse::of)
                 .collect(Collectors.toList());
     }
 

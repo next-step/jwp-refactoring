@@ -52,8 +52,8 @@ public class MenuServiceTest {
         짜장면 = 상품_등록("짜장면", new BigDecimal(5000)).toProduct();
         탕수육 = 상품_등록("탕수육", new BigDecimal(15000)).toProduct();
         중국음식 = 메뉴_그룹_등록("중국음식");
-        짜장면메뉴 = 메뉴_등록(1L, "짜장면탕수육세트", 짜장면.getPrice().add(탕수육.getPrice()), 중국음식, Arrays.asList(메뉴_상품_등록(짜장면, 1L), 메뉴_상품_등록(탕수육, 1L)));
-        짜장면메뉴등록요청 = new MenuRequest("짜장면탕수육세트", 짜장면.getPrice().add(탕수육.getPrice()), 중국음식.getId(), Arrays.asList(new MenuProductRequest(짜장면.getId(), 1l), new MenuProductRequest(탕수육.getId(), 1l)));
+        짜장면메뉴 = 메뉴_등록(1L, "짜장면탕수육세트", 짜장면.getPrice().add(탕수육.getPrice()).getPrice(), 중국음식, Arrays.asList(메뉴_상품_등록(짜장면, 1L), 메뉴_상품_등록(탕수육, 1L)));
+        짜장면메뉴등록요청 = new MenuRequest("짜장면탕수육세트", 짜장면.getPrice().add(탕수육.getPrice()).getPrice(), 중국음식.getId(), Arrays.asList(new MenuProductRequest(짜장면.getId(), 1l), new MenuProductRequest(탕수육.getId(), 1l)));
     }
 
     @Test
