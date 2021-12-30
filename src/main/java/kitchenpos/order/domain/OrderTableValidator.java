@@ -44,7 +44,7 @@ public class OrderTableValidator {
     }
 
     private boolean isCookingOrEatingOrder() {
-        return this.orders.stream().anyMatch(it -> it.isCooking() || it.isEating());
+        return this.orders.stream().anyMatch(order -> order.isCooking() || order.isEating());
     }
 
 }

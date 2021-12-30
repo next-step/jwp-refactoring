@@ -9,9 +9,7 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "table_group_id")
-    private TableGroup tableGroup;
+    private Long tableGroupId;
 
     @Embedded
     private NumberOfGuests numberOfGuests;
@@ -40,19 +38,19 @@ public class OrderTable {
     }
 
     public boolean hasTableGroup() {
-        return this.tableGroup != null;
+        return this.tableGroupId != null;
     }
 
     public void cancelTableGroup() {
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 
     public boolean isEmpty() {
         return empty;
     }
 
-    public void allocateTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
+    public void allocateTableGroup(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
     }
 
     public void enterGuest() {
@@ -63,8 +61,8 @@ public class OrderTable {
         this.empty = true;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return this.tableGroupId;
     }
 
     public void updateEmpty(boolean empty) {

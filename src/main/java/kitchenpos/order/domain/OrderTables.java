@@ -9,7 +9,7 @@ import java.util.List;
 @Embeddable
 public class OrderTables implements Iterable<OrderTable> {
 
-    @OneToMany(mappedBy = "tableGroup")
+    @OneToMany(mappedBy = "tableGroupId")
     private List<OrderTable> orderTables;
 
     protected OrderTables(){
@@ -26,7 +26,7 @@ public class OrderTables implements Iterable<OrderTable> {
 
     public void cancleGroup(){
         this.orderTables.stream()
-                .forEach(it -> it.cancelTableGroup());
+                .forEach(orderTable -> orderTable.cancelTableGroup());
         this.orderTables = Collections.emptyList();
     }
 

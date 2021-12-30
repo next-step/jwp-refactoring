@@ -31,7 +31,7 @@ public class TableGroup {
 
     private void allocateTableGroup() {
         this.orderTables.getOrderTables().stream()
-                .forEach(it -> it.allocateTableGroup(this));
+                .forEach(orderTable -> orderTable.allocateTableGroup(this.getId()));
     }
 
     public Long getId() {

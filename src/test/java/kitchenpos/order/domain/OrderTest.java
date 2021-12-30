@@ -15,11 +15,8 @@ class OrderTest {
     @DisplayName("주문을 등록한다")
     void createOrderTest() {
         OrderLineItem orderLineItem = new OrderLineItem(1L, 10);
-        OrderTable orderTable = new OrderTable(5, true);
-
-
         Order order = new Order(1L, new OrderLineItems(Arrays.asList(orderLineItem)));
-        orderLineItem.receiveOrder(order);
+        orderLineItem.receiveOrder(1L);
 
         assertAll(
                 () -> assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name()),
@@ -30,10 +27,7 @@ class OrderTest {
     @Test
     @DisplayName("주문상태를 변경한다")
     void modifyOrderTest() {
-
         OrderLineItem orderLineItem = new OrderLineItem(1L, 10);
-        OrderTable orderTable = new OrderTable(5, true);
-
         Order order = new Order(1L, new OrderLineItems(Arrays.asList(orderLineItem)));
         order.startMeal();
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());

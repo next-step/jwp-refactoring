@@ -14,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -77,10 +76,8 @@ class TableServiceTest {
     @DisplayName("그룹지정이 되어있어 상태를 변경 할 수 없습니다.")
     void changeNotTableStatusBecauseOfGroup() {
         //given
-        OrderTable orderTable = new OrderTable(5,false);
-        OrderTables orderTables = new OrderTables(Arrays.asList(orderTable));
-        new TableGroup(orderTables, LocalDateTime.now());
-
+        OrderTable orderTable = mock(OrderTable.class);
+        when(orderTable.hasTableGroup()).thenReturn(true);
         //when
         assertThatThrownBy(() -> {
             OrderTableValidator orderTableValidator = new OrderTableValidator(orderTable);
@@ -105,5 +102,21 @@ class TableServiceTest {
             orderTable.updateEmpty(true);
         }).isInstanceOf(InputOrderDataException.class)
                 .hasMessageContaining(InputOrderDataErrorCode.THE_ORDER_IS_COOKING_OR_IS_EATING.errorMessage());
+    }
+
+    @Test
+    @DisplayName("빈 주문 테이븡의 손님 수는 변경 할 수 없습니다.")
+    void changeMemnberCountEmptyTableTest() {
+        //given
+        OrderTable orderTable = new OrderTable(5,true);
+
+        //when
+        assertThatThrownBy(() -> {
+            OrderTableValidator orderTableValidator = new OrderTableValidator(orderTable);
+            orderTableValidator.checkTableEmpty();
+            orderTable.seatNumberOfGuests(10);
+
+        }).isInstanceOf(InputTableDataException.class)
+                .hasMessageContaining(InputTableDataErrorCode.THE_STATUS_IS_ALEADY_EMPTY.errorMessage());
     }
 }

@@ -10,7 +10,7 @@ import java.util.List;
 @Embeddable
 public class OrderLineItems implements Iterable<OrderLineItem> {
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "orderId", cascade = CascadeType.ALL)
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     protected OrderLineItems(){
