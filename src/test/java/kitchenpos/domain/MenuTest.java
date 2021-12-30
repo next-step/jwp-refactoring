@@ -4,7 +4,6 @@ import kitchenpos.common.exceptions.MenuGroupRequiredException;
 import kitchenpos.common.exceptions.MenuProductSumPriceException;
 import kitchenpos.common.exceptions.NegativePriceException;
 import kitchenpos.common.exceptions.NoRequiredNameException;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -63,10 +62,8 @@ class MenuTest {
     void checkOverPriceTest() {
         
         final Menu 메뉴 = Menu.of("메뉴", BigDecimal.valueOf(50_000), 메뉴그룹);
-        메뉴.addMenuProducts(Collections.singletonList(메뉴상품));
 
-        assertThatThrownBy(메뉴::checkOverPrice)
+        assertThatThrownBy(() -> 메뉴.addMenuProducts(Collections.singletonList(메뉴상품)))
                 .isInstanceOf(MenuProductSumPriceException.class);
-
     }
 }

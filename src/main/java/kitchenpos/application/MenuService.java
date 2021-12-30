@@ -32,9 +32,9 @@ public class MenuService {
     public MenuResponse create(final MenuRequest request) {
         final MenuGroup menuGroup = menuGroupService.findMenuGroupById(request.getMenuGroupId());
         final Menu menu = request.toMenu(menuGroup);
-        List<MenuProduct> menuProductList = getMenuProductList(request.getMenuProducts());
+
+        final List<MenuProduct> menuProductList = getMenuProductList(request.getMenuProducts());
         menu.addMenuProducts(menuProductList);
-        menu.checkOverPrice();
         return MenuResponse.from(menuRepository.save(menu));
     }
 
