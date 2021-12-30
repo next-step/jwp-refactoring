@@ -9,6 +9,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity
 public class TableGroup {
@@ -65,6 +66,8 @@ public class TableGroup {
     }
 
     public void ungroup(OrderValidatorImpl orderValidator) {
+        List<Long> orderTableIds = this.orderTables.stream().map(OrderTable::getId).collect(Collectors.toList());
+        orderValidator.canUngroupOrChangeOrderList(orderTableIds);
         this.orderTables.forEach(orderTable -> orderValidator.canUngroupOrChange(orderTable.getId()));
         this.orderTables.forEach(OrderTable::ungroup);
     }
