@@ -25,7 +25,7 @@ public class OrderValidatorImpl implements OrderValidator {
     public void canUngroupOrChangeOrderList(List<Long> orderTableIds) {
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds,
                 Arrays.asList(OrderStatus.COOKING.name(),
-                OrderStatus.MEAL.name()))) {
+                        OrderStatus.MEAL.name()))) {
             throw new CannotChangeEmptyException();
         }
     }

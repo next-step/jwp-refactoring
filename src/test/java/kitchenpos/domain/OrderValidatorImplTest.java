@@ -1,11 +1,8 @@
 package kitchenpos.domain;
 
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderValidator;
 import kitchenpos.table.exception.CannotChangeEmptyException;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class OrderValidatorImplTest implements OrderValidator {
