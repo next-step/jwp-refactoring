@@ -1,8 +1,11 @@
 package kitchenpos.domain;
 
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderValidatorImpl;
 import kitchenpos.order.exception.NegativeNumberOfGuestsException;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderValidator;
 import kitchenpos.table.exception.CannotChangeEmptyException;
 import kitchenpos.table.exception.CannotChangeNumberOfGuestsException;
 import org.junit.jupiter.api.DisplayName;
@@ -11,20 +14,23 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
 class OrderTableTest {
 
-    @Mock
-    OrderValidatorImpl orderValidator;
+    OrderValidator orderValidator;
 
     @DisplayName("빈 테이블로 변경한다")
     @Test
     void changeEmptyTest() {
-        OrderTable orderTable = new OrderTable(null, 1, false);
+        orderValidator = new OrderValidatorImplTest();
+        OrderTable orderTable = new OrderTable(2L, null, 1, false);
+
         orderTable.changeEmpty(orderValidator, true);
 
         assertThat(orderTable.isEmpty()).isTrue();
@@ -42,8 +48,8 @@ class OrderTableTest {
     @DisplayName("조리 중이거나 식사 중인 테이블은 빈 테이블로 변경할 수 없다")
     @Test
     void changeEmptyTableInCookingOrMeal() {
-        OrderTable CookingOrderTable = new OrderTable(null, 1, false);
-        doThrow(new CannotChangeEmptyException()).when(orderValidator).canUngroupOrChange(null);
+        orderValidator = new OrderValidatorImplTest();
+        OrderTable CookingOrderTable = new OrderTable(1L, null, 1, false);
 
         assertThatThrownBy(() -> CookingOrderTable.changeEmpty(orderValidator, true))
                 .isInstanceOf(CannotChangeEmptyException.class);

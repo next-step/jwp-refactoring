@@ -11,6 +11,10 @@ import java.util.List;
 public class OrderValidatorImpl implements OrderValidator {
     OrderRepository orderRepository;
 
+    public OrderValidatorImpl(OrderRepository orderRepository) {
+        this.orderRepository = orderRepository;
+    }
+
     public void canUngroupOrChange(Long id) {
         if (orderRepository.existsByOrderTableIdAndOrderStatusIn(id, Arrays.asList(OrderStatus.COOKING.name(),
                 OrderStatus.MEAL.name()))) {
