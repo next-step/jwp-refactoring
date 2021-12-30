@@ -1,7 +1,7 @@
 package kitchenpos.menu.domain;
 
 import kitchenpos.menugroup.infra.MenuGroupRepository;
-import kitchenpos.menu.infra.MenuRepository;
+import kitchenpos.menu.infra.JpaMenuRepository;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.infra.JpaProductRepository;
 import kitchenpos.product.domain.Product;
@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DataJpaTest
 class MenuTest {
     @Autowired
-    private MenuRepository menuRepository;
+    private JpaMenuRepository jpaMenuRepository;
     @Autowired
     private MenuGroupRepository menuGroupRepository;
     @Autowired
@@ -45,7 +45,7 @@ class MenuTest {
         final List<MenuProduct> menuProducts = Collections.singletonList(MenuProduct.of(짬뽕_아이디, 10));
         final Menu menu = Menu.of("짬뽕", 30000, 추천메뉴_아이디, menuProducts);
         // when
-        final Menu actual = menuRepository.save(menu);
+        final Menu actual = jpaMenuRepository.save(menu);
         // then
         assertAll(
                 () -> assertThat(actual).isNotNull(),

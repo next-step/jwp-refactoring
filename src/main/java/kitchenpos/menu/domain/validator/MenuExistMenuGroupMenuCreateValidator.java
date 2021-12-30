@@ -1,7 +1,6 @@
-package kitchenpos.menu.application.validator;
+package kitchenpos.menu.domain.validator;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.validator.MenuGroupMenuCreateValidator;
 import kitchenpos.menugroup.exception.NotFoundMenuGroupException;
 import kitchenpos.menugroup.infra.MenuGroupRepository;
 import org.springframework.stereotype.Component;

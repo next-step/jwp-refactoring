@@ -1,7 +1,6 @@
-package kitchenpos.order.domain.validator;
+package kitchenpos.menu.domain;
 
-import kitchenpos.menu.application.validator.MenuCountOrderCreateValidator;
-import kitchenpos.menu.infra.MenuRepository;
+import kitchenpos.menu.domain.validator.MenuCountOrderCreateValidator;
 import kitchenpos.order.domain.Order;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;

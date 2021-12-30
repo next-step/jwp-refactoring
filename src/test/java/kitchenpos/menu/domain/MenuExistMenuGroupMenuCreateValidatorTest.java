@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.menu.application.validator.MenuExistMenuGroupMenuCreateValidator;
+import kitchenpos.menu.domain.validator.MenuExistMenuGroupMenuCreateValidator;
 import kitchenpos.menugroup.infra.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import org.assertj.core.api.ThrowableAssert;
@@ -25,7 +25,7 @@ import static org.mockito.BDDMockito.given;
 
 @DisplayName("메뉴 그룹 존재 유효성 검사 테스트")
 @ExtendWith(MockitoExtension.class)
-class NotFoundMenuGroupValidatorTest {
+class MenuExistMenuGroupMenuCreateValidatorTest {
     @Mock
     private MenuGroupRepository menuGroupRepository;
     @InjectMocks

@@ -1,6 +1,6 @@
 package kitchenpos.order.application;
 
-import kitchenpos.menu.application.validator.MenuCountOrderCreateValidator;
+import kitchenpos.menu.domain.validator.MenuCountOrderCreateValidator;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.validator.OrderCreateValidator;
 import kitchenpos.order.dto.OrderRequest;
