@@ -18,11 +18,11 @@ public class OrderLineItemTest {
 
     @BeforeEach
     void setup() {
-        Product 상품 = Product.of("상품", BigDecimal.valueOf(17_000));
-        MenuGroup 메뉴그룹 = MenuGroup.of("메뉴그룹");
+        Product 상품 = Product.of("상품", 17000);
+        MenuGroup 메뉴그룹 = MenuGroup.from("메뉴그룹");
         MenuProduct 메뉴상품 = MenuProduct.of(null, 상품, 2L);
 
-        메뉴 = Menu.of("더블 후라이드", BigDecimal.valueOf(30_000), 메뉴그룹);
+        메뉴 = Menu.of("메뉴", 30000, 메뉴그룹);
         메뉴.addMenuProducts(Collections.singletonList(메뉴상품));
 
         OrderTable 테이블 = OrderTable.of(2, false);

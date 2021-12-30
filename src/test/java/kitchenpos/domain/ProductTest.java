@@ -15,7 +15,7 @@ class ProductTest {
 
     @BeforeEach
     void setUp() {
-        상품1 = Product.of(1L, "상품1", new BigDecimal("10000"));
+        상품1 = Product.of(1L, "상품1", 10000);
     }
 
     @DisplayName("상품을 등록할 수 있다.")

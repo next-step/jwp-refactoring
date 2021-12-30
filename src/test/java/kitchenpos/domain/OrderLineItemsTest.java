@@ -20,10 +20,10 @@ public class OrderLineItemsTest {
 
     @BeforeEach
     void setup() {
-        상품 = Product.of("상품", BigDecimal.valueOf(17_000));
-        메뉴그룹 = MenuGroup.of("추천메뉴");
+        상품 = Product.of("상품", 17000);
+        메뉴그룹 = MenuGroup.from("추천메뉴");
         메뉴상품 = MenuProduct.of(null, 상품, 2L);
-        메뉴 = Menu.of("더블 후라이드", BigDecimal.valueOf(30_000), 메뉴그룹);
+        메뉴 = Menu.of("더블 후라이드", 30000, 메뉴그룹);
         메뉴.addMenuProducts(Collections.singletonList(메뉴상품));
         주문상품 = OrderLineItem.of(메뉴, 1L);
     }

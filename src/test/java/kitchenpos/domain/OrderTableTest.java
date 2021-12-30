@@ -24,11 +24,11 @@ public class OrderTableTest {
     @BeforeEach
     void setup() {
         
-        Product 상품 = Product.of("상품", BigDecimal.valueOf(17_000));
-        MenuGroup 메뉴그룹 = MenuGroup.of("추천메뉴");
+        Product 상품 = Product.of("상품",17000);
+        MenuGroup 메뉴그룹 = MenuGroup.from("추천메뉴");
         MenuProduct 메뉴상품 = MenuProduct.of(상품, 2L);
 
-        Menu 메뉴 = Menu.of("메뉴", BigDecimal.valueOf(32_000), 메뉴그룹);
+        Menu 메뉴 = Menu.of("메뉴", 32000, 메뉴그룹);
         메뉴.addMenuProducts(Collections.singletonList(메뉴상품));
         테이블 = OrderTable.of(4, false);
         빈_테이블 = OrderTable.of(4, true);

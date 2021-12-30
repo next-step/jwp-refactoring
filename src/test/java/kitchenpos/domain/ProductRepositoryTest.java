@@ -17,7 +17,7 @@ class ProductRepositoryTest {
     @DisplayName("상품을 등록한다.")
     @Test
     void saveProduct() {
-        final Product product = Product.of("소곱창", new BigDecimal("100000"));
+        final Product product = Product.of("소곱창", 100000);
 
         final Product actual = productRepository.save(product);
 
@@ -27,7 +27,7 @@ class ProductRepositoryTest {
     @DisplayName("등록한 상품을 조회한다.")
     @Test
     void findProduct() {
-        final Product product = Product.of("소곱창", new BigDecimal("100000"));
+        final Product product = Product.of("소곱창", 100000);
         final Product persistProduct = productRepository.save(product);
 
         final Product actual = productRepository.findById(persistProduct.getId()).get();

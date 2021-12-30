@@ -38,11 +38,11 @@ class ProductServiceTest {
     
     @BeforeEach
     void setUp() {
-        상품1 = Product.of(1L, "상품1", new BigDecimal("10000"));
-        상품2 = Product.of(2L, "상품2", new BigDecimal("20000"));
+        상품1 = Product.of(1L, "상품1", 10000);
+        상품2 = Product.of(2L, "상품2", 20000);
         상품_목록 = Lists.newArrayList(상품1, 상품2);
-        상품_요청1 = ProductRequest.of("상품1", new BigDecimal("10000"));
-        상품_요청2 = ProductRequest.of("상품2", new BigDecimal("20000"));
+        상품_요청1 = ProductRequest.of("상품1", 10000);
+        상품_요청2 = ProductRequest.of("상품2", 20000);
     }
 
     @DisplayName("상품을 등록한다.")
@@ -55,7 +55,7 @@ class ProductServiceTest {
         assertAll(
                 () -> assertThat(상품_응답).isNotNull(),
                 () -> assertThat(상품_응답.getId()).isEqualTo(상품1.getId()),
-                () -> assertThat(상품_응답.getPrice()).isEqualTo(상품1.getPrice().toBigDecimal()),
+                () -> assertThat(상품_응답.getPrice()).isEqualTo(상품1.getPrice().toLong()),
                 () -> assertThat(상품_응답.getName()).isEqualTo(상품1.getName())
         );
     }

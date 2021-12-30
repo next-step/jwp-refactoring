@@ -20,10 +20,10 @@ public class OrderTest {
 
     @BeforeEach
     void setup() {
-        Product 상품 = Product.of("상품", BigDecimal.valueOf(17_000));
-        MenuGroup 메뉴그룹 = MenuGroup.of("메뉴그룹");
+        Product 상품 = Product.of("상품", 17000);
+        MenuGroup 메뉴그룹 = MenuGroup.from("메뉴그룹");
         MenuProduct 메뉴상품 = MenuProduct.of(null, 상품, 2L);
-        Menu 메뉴 = Menu.of("메뉴", BigDecimal.valueOf(30_000), 메뉴그룹);
+        Menu 메뉴 = Menu.of("메뉴", 30000, 메뉴그룹);
         메뉴.addMenuProducts(Collections.singletonList(메뉴상품));
 
         주문테이블 = OrderTable.of(2, false);

@@ -22,9 +22,9 @@ class MenuProductsTest {
 
     @BeforeEach
     void setUp() {
-        상품 = Product.of("상품", new BigDecimal("12000"));
-        메뉴그룹 = MenuGroup.of("메뉴그룹");
-        메뉴 = Menu.of("메뉴", BigDecimal.valueOf(30_000), 메뉴그룹);
+        상품 = Product.of("상품", 12000);
+        메뉴그룹 = MenuGroup.from("메뉴그룹");
+        메뉴 = Menu.of("메뉴", 30000, 메뉴그룹);
         메뉴상품 = MenuProduct.of(메뉴, 상품, 2L);
         메뉴상품_목록 = Collections.singletonList(메뉴상품);
         메뉴상품들 = MenuProducts.from(Collections.singletonList(메뉴상품));

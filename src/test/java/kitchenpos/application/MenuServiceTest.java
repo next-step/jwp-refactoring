@@ -47,13 +47,13 @@ class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        메뉴그룹 = MenuGroup.of("메뉴그룹");
-        상품1 = Product.of(1L,"상품",new BigDecimal("10000"));
-        메뉴 = Menu.of(1L,Name.from("메뉴"),Price.from(new BigDecimal("50000")),MenuGroup.of("메뉴그룹"));
+        메뉴그룹 = MenuGroup.of(1L, "메뉴그룹");
+        상품1 = Product.of(1L,"상품", 10000);
+        메뉴 = Menu.of(1L, "메뉴", 50000, 메뉴그룹);
         메뉴_목록 = Collections.singletonList(메뉴);
         메뉴상품 = MenuProduct.of(1L, 메뉴, 상품1,2L);
         메뉴_상품_목록_요청 = Lists.newArrayList(new MenuProductRequest(1L, 2L));
-        메뉴_요청 = MenuRequest.of("메뉴", new BigDecimal("10000"), 1L, 메뉴_상품_목록_요청);
+        메뉴_요청 = MenuRequest.of("메뉴", 10000, 1L, 메뉴_상품_목록_요청);
     }
 
     @DisplayName("메뉴를 등록한다.")

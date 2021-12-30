@@ -19,15 +19,15 @@ class MenuProductTest {
 
     @BeforeEach
     void setUp() {
-        메뉴상품_생성 = MenuProduct.of(null, null, 1L);
-        상품 = Product.of("상품", new BigDecimal("12000"));
+        상품 = Product.of("상품", 12000);
+        메뉴상품_생성 = MenuProduct.of(null, 상품, 1L);
     }
 
     @DisplayName("생성 테스트")
     @Test
     void createTest() {
         assertThat(메뉴상품_생성)
-                .isEqualTo(MenuProduct.of(null, null, 1L));
+                .isEqualTo(MenuProduct.of(null, 상품, 1L));
     }
 
     @DisplayName("생성 시, 상품 정보가 필요합니다")

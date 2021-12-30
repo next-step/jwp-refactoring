@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
 import kitchenpos.domain.*;
-import kitchenpos.dto.menu.OrderLineItemRequest;
+import kitchenpos.dto.order.OrderLineItemRequest;
 import kitchenpos.dto.order.OrderRequest;
 import kitchenpos.dto.order.OrderResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +12,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -48,7 +47,7 @@ class OrderServiceTest {
     @BeforeEach
     void setUp() {
         메뉴그룹 = MenuGroup.of(1L, "메뉴그룹");
-        메뉴 = Menu.of(1L, Name.from("메뉴"), Price.from(new BigDecimal("15000")), 메뉴그룹);
+        메뉴 = Menu.of(1L, "메뉴", 15000, 메뉴그룹);
         주문테이블 = OrderTable.of(1L, 1, false);
         주문상품 = OrderLineItem.of(메뉴, 1L);
         주문 = Order.of(1L, 주문테이블, OrderStatus.COOKING);

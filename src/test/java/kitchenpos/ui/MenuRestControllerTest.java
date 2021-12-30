@@ -57,8 +57,8 @@ class MenuRestControllerTest {
                 .build();
 
         메뉴상품_요청 = MenuProductRequest.of(1L, 1L);
-        메뉴_요청 = MenuRequest.of("후라이드", new BigDecimal("50000"), 1L, Collections.singletonList(메뉴상품_요청));
-        메뉴상품_응답 = MenuProductResponse.of(ProductResponse.of(1L, "후라이드", new BigDecimal("10000")), 1L);
+        메뉴_요청 = MenuRequest.of("후라이드", 50000, 1L, Collections.singletonList(메뉴상품_요청));
+        메뉴상품_응답 = MenuProductResponse.of(ProductResponse.of(1L, "상품", 10000), 1L);
         메뉴그룹_응답 = MenuGroupResponse.of(1L, "추천메뉴");
         메뉴_응답 = MenuResponse.of(1L, "후라이드", new BigDecimal("50000"), 메뉴그룹_응답, Collections.singletonList(메뉴상품_응답));
     }

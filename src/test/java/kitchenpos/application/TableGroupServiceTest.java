@@ -45,8 +45,8 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        주문_테이블1 = OrderTable.of(NumberOfGuests.from(0), Empty.from(false));
-        주문_테이블2 = OrderTable.of(NumberOfGuests.from(0), Empty.from(false));
+        주문_테이블1 = OrderTable.of(0, false);
+        주문_테이블2 = OrderTable.of(0, false);
         주문_테이블_목록 = Lists.newArrayList(주문_테이블1, 주문_테이블2);
         테이블_그룹 = TableGroup.of(1L, 주문_테이블_목록);
 

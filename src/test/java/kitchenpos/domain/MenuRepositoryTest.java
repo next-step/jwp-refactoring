@@ -24,7 +24,7 @@ class MenuRepositoryTest {
     void saveMenu() {
         final MenuGroup menuGroup = MenuGroup.from("메뉴그룹");
         final MenuGroup persistMenuGroup = menuGroupRepository.save(menuGroup);
-        final Menu menu = Menu.of("메뉴", new BigDecimal("1000"), persistMenuGroup);
+        final Menu menu = Menu.of("메뉴", 1000, persistMenuGroup);
 
         final Menu actual = menuRepository.save(menu);
 
@@ -40,7 +40,7 @@ class MenuRepositoryTest {
     void findMenu() {
         final MenuGroup menuGroup = MenuGroup.from("메뉴그룹");
         final MenuGroup persistMenuGroup = menuGroupRepository.save(menuGroup);
-        final Menu menu = Menu.of("메뉴", new BigDecimal("1000"), persistMenuGroup);
+        final Menu menu = Menu.of("메뉴", 1000, persistMenuGroup);
         final Menu expected = menuRepository.save(menu);
 
         final Menu actual = menuRepository.findById(expected.getId()).get();

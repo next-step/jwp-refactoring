@@ -3,7 +3,7 @@ package kitchenpos.ui;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.OrderService;
 import kitchenpos.domain.*;
-import kitchenpos.dto.menu.OrderLineItemRequest;
+import kitchenpos.dto.order.OrderLineItemRequest;
 import kitchenpos.dto.order.OrderLineItemResponse;
 import kitchenpos.dto.order.OrderRequest;
 import kitchenpos.dto.order.OrderResponse;
@@ -22,7 +22,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Collections;
 
@@ -68,8 +67,8 @@ class OrderRestControllerTest {
                 .alwaysDo(print())
                 .build();
 
-        메뉴그룹 = MenuGroup.of(1L, "추천메뉴");
-        메뉴 = Menu.of(1L, Name.from("후라이드"), Price.from(new BigDecimal("15000")), 메뉴그룹);
+        메뉴그룹 = MenuGroup.of(1L, "메뉴그룹");
+        메뉴 = Menu.of(1L, "메뉴", 15000, 메뉴그룹);
         주문테이블1 = OrderTable.of(1L, 1, false);
         주문테이블2 = OrderTable.of(2L, 1, false);
         테이블그룹 = TableGroup.of(1L, Lists.newArrayList(주문테이블1, 주문테이블2));

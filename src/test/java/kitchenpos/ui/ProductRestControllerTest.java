@@ -18,7 +18,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
@@ -52,11 +51,12 @@ class ProductRestControllerTest {
                 .alwaysDo(print())
                 .build();
 
-        상품_요청1 = ProductRequest.of("상품1", new BigDecimal("10000"));
-        상품_응답1 = ProductResponse.of(1L, "상품1", new BigDecimal("10000"));
-        상품_응답2 = ProductResponse.of(2L, "상품2", new BigDecimal("20000"));
+        상품_요청1 = ProductRequest.of("상품1", 10000);
+        상품_응답1 = ProductResponse.of(1L, "상품1", 10000);
+        상품_응답2 = ProductResponse.of(2L, "상품2", 20000);
         상품_목록_응답 = Lists.newArrayList(상품_응답1, 상품_응답2);
     }
+
 
     @DisplayName("상품을 등록한다.")
     @Test
