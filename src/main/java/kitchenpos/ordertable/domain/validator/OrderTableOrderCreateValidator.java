@@ -1,10 +1,11 @@
-package kitchenpos.ordertable.application.validator;
+package kitchenpos.ordertable.domain.validator;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.validator.OrderCreateValidator;
 import kitchenpos.order.exception.CanNotOrderException;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.infra.OrderTableRepository;
+import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.ordertable.infra.JpaOrderTableRepository;
 import org.springframework.stereotype.Component;
 
 @Component

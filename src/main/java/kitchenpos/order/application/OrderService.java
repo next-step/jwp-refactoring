@@ -6,7 +6,7 @@ import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.validator.OrderCreateValidator;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.ordertable.application.validator.OrderTableOrderCreateValidator;
+import kitchenpos.ordertable.domain.validator.OrderTableOrderCreateValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

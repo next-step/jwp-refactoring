@@ -2,9 +2,10 @@ package kitchenpos.ordertable.application;
 
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.order.domain.validator.OrderOrderTableChangeEmptyValidator;
+import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
-import kitchenpos.ordertable.infra.OrderTableRepository;
+import kitchenpos.ordertable.infra.JpaOrderTableRepository;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

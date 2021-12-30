@@ -1,8 +1,8 @@
-package kitchenpos.ordertable.application.validator;
+package kitchenpos.ordertable.domain.validator;
 
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.exception.IllegalOrderTableIdsException;
-import kitchenpos.ordertable.infra.OrderTableRepository;
 import kitchenpos.tablegroup.domain.validator.TableGroupCreateValidator;
 import kitchenpos.tablegroup.exception.CanNotGroupException;
 import org.springframework.stereotype.Component;
@@ -23,7 +23,6 @@ public class OrderTableTableGroupCreateValidator implements TableGroupCreateVali
         final List<OrderTable> savedOrderTables = validateExistOrderTableIds(orderTableIds);
         validateEmptyOrderTable(savedOrderTables);
     }
-
 
     private void validateEmptyOrderTable(List<OrderTable> savedOrderTables) {
         for (final OrderTable savedOrderTable : savedOrderTables) {

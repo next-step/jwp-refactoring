@@ -1,6 +1,6 @@
 package kitchenpos.ordertable.domain;
 
-import kitchenpos.ordertable.infra.OrderTableRepository;
+import kitchenpos.ordertable.infra.JpaOrderTableRepository;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class OrderTableTest {
 
     @Autowired
-    private OrderTableRepository orderTableRepository;
+    private JpaOrderTableRepository orderTableRepository;
 
     @DisplayName("주문 테이블은 아이디, 방문한 손님 수, 빈 테이블 유무로 구성되어 있다.")
     @Test

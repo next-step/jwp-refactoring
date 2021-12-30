@@ -1,9 +1,10 @@
-package kitchenpos.order.domain.validator;
+package kitchenpos.ordertable.domain;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.application.validator.OrderTableOrderCreateValidator;
-import kitchenpos.ordertable.infra.OrderTableRepository;
+import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.ordertable.domain.validator.OrderTableOrderCreateValidator;
+import kitchenpos.ordertable.infra.JpaOrderTableRepository;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

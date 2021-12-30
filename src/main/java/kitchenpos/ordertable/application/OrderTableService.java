@@ -1,11 +1,12 @@
 package kitchenpos.ordertable.application;
 
+import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.domain.validator.OrderTableChangeEmptyValidator;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.ordertable.exception.CanNotChangeOrderTableException;
-import kitchenpos.ordertable.infra.OrderTableRepository;
+import kitchenpos.ordertable.infra.JpaOrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

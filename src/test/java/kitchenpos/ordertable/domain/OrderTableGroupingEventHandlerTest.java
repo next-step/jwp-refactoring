@@ -1,6 +1,6 @@
 package kitchenpos.ordertable.domain;
 
-import kitchenpos.ordertable.infra.OrderTableRepository;
+import kitchenpos.ordertable.infra.JpaOrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.event.TableGroupedEvent;
 import kitchenpos.tablegroup.domain.event.TableUnGroupedEvent;
