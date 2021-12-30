@@ -1,14 +1,12 @@
 package kitchenpos.domain;
 
-import kitchenpos.common.exceptions.MenuGroupRequiredException;
-import kitchenpos.common.exceptions.MenuProductSumPriceException;
-import kitchenpos.common.exceptions.NegativePriceException;
-import kitchenpos.common.exceptions.NoRequiredNameException;
+import kitchenpos.common.exceptions.EmptyMenuGroupException;
+import kitchenpos.common.exceptions.GreaterProductSumPriceException;
+import kitchenpos.common.exceptions.EmptyNameException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,14 +38,14 @@ class MenuTest {
     @Test
     void validateTest() {
         assertThatThrownBy(() -> Menu.of("메뉴", 1000, null))
-                .isInstanceOf(MenuGroupRequiredException.class);
+                .isInstanceOf(EmptyMenuGroupException.class);
     }
 
     @DisplayName("등록 시, 이름이 필요하다")
     @Test
     void validateTest3() {
         assertThatThrownBy(() -> Menu.of(null, 1, 메뉴그룹))
-                .isInstanceOf(NoRequiredNameException.class);
+                .isInstanceOf(EmptyNameException.class);
     }
 
     @DisplayName("메뉴 가격이 구성품의 가격의 합보다 높으면 안된다")
@@ -57,6 +55,6 @@ class MenuTest {
         final Menu 메뉴 = Menu.of("메뉴", 50000, 메뉴그룹);
 
         assertThatThrownBy(() -> 메뉴.addMenuProducts(Collections.singletonList(메뉴상품)))
-                .isInstanceOf(MenuProductSumPriceException.class);
+                .isInstanceOf(GreaterProductSumPriceException.class);
     }
 }
