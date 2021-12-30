@@ -7,5 +7,4 @@ dependencies {
 
     implementation project(':common-module')
     implementation project(':common-domain')
-    implementation project(':menu-domain')
 }
