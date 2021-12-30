@@ -12,17 +12,78 @@ repositories {
     mavenCentral()
 }
 
+bootJar {
+    enabled = true
+}
+
+jar {
+    enabled = true
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.flywaydb:flyway-core'
 
     runtimeOnly 'com.h2database:h2'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'io.rest-assured:rest-assured:3.3.0'
-    testImplementation 'io.rest-assured:xml-path:4.2.0'
+}
+
+subprojects {
+    group 'com.blogcode'
+    version '1.0'
+
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    sourceCompatibility = 1.8
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        testCompile group: 'junit', name: 'junit', version: '4.12'
+    }
+}
+
+project(':module-product') {
+    dependencies {
+        compile project(':module-common')
+    }
+}
+
+project(':module-menu') {
+    dependencies {
+        compile project(':module-common')
+    }
+}
+
+project(':module-order') {
+    dependencies {
+        compile project(':module-common')
+    }
+}
+
+project(':module-common') {
+    dependencies {
+        compile project(':module-api')
+        compile project(':module-menu')
+        compile project(':module-order')
+        compile project(':module-product')
+    }
+}
+
+
+project(':module-api') {
+    dependencies {
+        compile project(':module-common')
+        compile project(':module-menu')
+        compile project(':module-order')
+        compile project(':module-product')
+    }
 }
 
 test {
