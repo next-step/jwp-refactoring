@@ -1,12 +1,10 @@
 package kitchenpos.domain;
 
 import kitchenpos.common.exceptions.NegativeQuantityException;
-import kitchenpos.common.exceptions.ProductRequiredException;
+import kitchenpos.common.exceptions.EmptyProductException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -34,7 +32,7 @@ class MenuProductTest {
     @Test
     void validateTest2() {
         assertThatThrownBy(() -> MenuProduct.of(null, 2L))
-                .isInstanceOf(ProductRequiredException.class);
+                .isInstanceOf(EmptyProductException.class);
     }
 
     @DisplayName("생성 시, 수량 정보가 0 이상이어야 합니다")
