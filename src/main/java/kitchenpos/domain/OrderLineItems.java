@@ -11,7 +11,7 @@ import java.util.Objects;
 
 @Embeddable
 public class OrderLineItems {
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", cascade = CascadeType.PERSIST)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     protected OrderLineItems() {
