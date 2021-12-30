@@ -3,7 +3,7 @@ package kitchenpos.application;
 import kitchenpos.common.exceptions.NotFoundEntityException;
 import kitchenpos.common.exceptions.OrderStatusNotProcessingException;
 import kitchenpos.domain.*;
-import kitchenpos.dto.menu.OrderLineItemRequest;
+import kitchenpos.dto.order.OrderLineItemRequest;
 import kitchenpos.dto.order.OrderRequest;
 import kitchenpos.dto.order.OrderResponse;
 import org.springframework.stereotype.Service;
