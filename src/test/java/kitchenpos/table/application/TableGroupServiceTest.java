@@ -6,7 +6,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -72,7 +71,6 @@ public class TableGroupServiceTest {
         TableGroup 단체지정 = TableGroup.from(Arrays.asList(첫번째_테이블, 두번째_테이블));
         
         given(tableGroupRepository.findByIdWithOrderTable(nullable(Long.class))).willReturn(Optional.of(단체지정));
-        doNothing().when(tableValidator).checkIsCookingOrMeal(nullable(Long.class));
     
         // when
         tableGroupService.ungroup(단체지정.getId());

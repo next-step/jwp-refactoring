@@ -3,10 +3,8 @@ package kitchenpos.order.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,7 +50,6 @@ public class OrderServiceTest {
         
         Order 주문 = Order.createOrder(테이블_Id, 주문_항목_목록);
         
-        doNothing().when(orderValidator).checkMenu(anyList());
         given(orderRepository.save(any())).willReturn(주문);
         
         OrderRequest 주문_생성_요청 = OrderRequest.of(1L, 주문.getOrderStatus(), Arrays.asList(OrderLineItemRequest.of(1L, 1L)));

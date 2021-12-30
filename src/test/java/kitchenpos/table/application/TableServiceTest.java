@@ -6,8 +6,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -76,7 +74,6 @@ public class TableServiceTest {
         OrderTable 테이블 = OrderTable.of(3, false);
         
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(테이블));
-        doNothing().when(tableValidator).checkIsCookingOrMeal(anyLong());
     
         // when
         OrderTableResponse 상태_변경후_테이블 = tableService.changeEmpty(1L, true);
@@ -90,7 +87,6 @@ public class TableServiceTest {
     void 등록되지않은_테이블_빈_테이블_변경_불가() {
         // when
         when(orderTableRepository.findById(anyLong())).thenReturn(Optional.empty());
-        lenient().doNothing().when(tableValidator).checkIsCookingOrMeal(anyLong());
         
         // then
         assertThatThrownBy(() -> {
@@ -110,7 +106,6 @@ public class TableServiceTest {
         두번째_테이블.updateTableGroup(1L);
         
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(두번째_테이블));
-        doNothing().when(tableValidator).checkIsCookingOrMeal(anyLong());
         
         // when, then
         assertThatThrownBy(() -> {

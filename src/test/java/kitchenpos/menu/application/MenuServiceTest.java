@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
 
 import java.util.Arrays;
 import java.util.List;
@@ -56,8 +55,6 @@ public class MenuServiceTest {
         
         given(menuGroupService.findById(anyLong())).willReturn(메뉴.getMenuGroup());
         given(menuRepository.save(any())).willReturn(메뉴);
-        doNothing().when(menuValidator).checkTotalPrice(메뉴);
-
 
         // when
         MenuResponse 저장된_메뉴 = menuService.create(메뉴_생성_요청);
