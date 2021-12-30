@@ -74,6 +74,6 @@ public class MenuService {
     
     @Transactional(readOnly = true)
     public List<Menu> findAllByIds(List<Long> ids) {
-        return menuRepository.findAllByIds(ids);
+        return menuRepository.findAllByIdIn(ids);
     }
 }

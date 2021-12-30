@@ -102,8 +102,8 @@ public class TableServiceTest {
         // given
         OrderTable 첫번째_테이블 = OrderTable.of(3, false);
         OrderTable 두번째_테이블 = OrderTable.of(5, false);
-        TableGroup.from(Arrays.asList(첫번째_테이블, 두번째_테이블));
-        두번째_테이블.updateTableGroup(1L);
+        TableGroup 단체지정 = TableGroup.from(Arrays.asList(첫번째_테이블, 두번째_테이블));
+        두번째_테이블.setTableGroup(단체지정);
         
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(두번째_테이블));
         

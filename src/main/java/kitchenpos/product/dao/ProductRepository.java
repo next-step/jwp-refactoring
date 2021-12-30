@@ -8,6 +8,6 @@ import kitchenpos.product.domain.Product;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
     
-    List<Product> findAllByIds(List<Long> ids);
+    List<Product> findAllByIdIn(List<Long> ids);
 
 }

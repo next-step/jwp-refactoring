@@ -15,14 +15,15 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.CollectionUtils;
 
 @Entity
+@Table(name = "orders")
 @EntityListeners(AuditingEntityListener.class)
 public class Order {
     
@@ -39,8 +40,7 @@ public class Order {
     @Column(nullable = false, updatable = false)
     private LocalDateTime orderedTime;
     
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST}, orphanRemoval = true)
-    @JoinColumn(name = "order_id")
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<OrderLineItem> orderLineItems;
     
     protected Order() {
@@ -126,6 +126,7 @@ public class Order {
         
         orderLineItems.stream()
         .forEach(orderLineItem -> {
+            orderLineItem.setOrder(this);
             this.orderLineItems.add(orderLineItem);
         });
     }

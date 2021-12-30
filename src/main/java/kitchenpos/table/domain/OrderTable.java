@@ -2,11 +2,11 @@ package kitchenpos.table.domain;
 
 import java.util.Objects;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class OrderTable {
@@ -16,8 +16,8 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "table_group_id")
-    private Long tableGroupId;
+    @ManyToOne
+    private TableGroup tableGroup;
 
     private int numberOfGuests;
 
@@ -39,9 +39,16 @@ public class OrderTable {
     public Long getId() {
         return id;
     }
+    
+    public TableGroup getTableGroup() {
+        return tableGroup;
+    }
 
     public Long getTableGroupId() {
-        return tableGroupId;
+        if (tableGroup == null) {
+            return null;
+        }
+        return tableGroup.getId();
     }
 
     public int getNumberOfGuests() {
@@ -57,8 +64,8 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public void updateTableGroup(Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
+    public void setTableGroup(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
     }
 
     public void changeNumberOfGuests(final int numberOfGuests) {
@@ -68,11 +75,11 @@ public class OrderTable {
 
     public void ungroup() {
         empty = false;
-        tableGroupId = null;
+        tableGroup = null;
     }
 
     private void checkIsSetTableGroup() {
-        if (Objects.nonNull(tableGroupId)) {
+        if (Objects.nonNull(tableGroup)) {
             throw new IllegalArgumentException("단체지정이 되어있는 테이블은 빈 테이블로 변경할 수 없습니다");
         }
     }
