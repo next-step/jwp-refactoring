@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.common;
 
 import java.util.Objects;
 import javax.persistence.Column;
