@@ -2,53 +2,62 @@ package kitchenpos.fixture;
 
 import java.math.BigDecimal;
 import java.util.List;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.common.domain.Name;
+import kitchenpos.common.domain.Price;
+import kitchenpos.common.domain.Validator;
+import kitchenpos.menus.menu.domain.Menu;
+import kitchenpos.menus.menu.domain.MenuProducts;
+import kitchenpos.menus.menu.dto.MenuProductRequest;
+import kitchenpos.menus.menu.dto.MenuRequest;
 
 public class MenuFixture {
 
     private MenuFixture() {
     }
 
-    public static Menu ofCreateRequest(
-        final String name,
-        final BigDecimal price,
-        final Long menuGroupId,
-        final List<MenuProduct> menuProducts
-    ) {
-        final Menu menu = new Menu();
-        menu.setName(name);
-        menu.setPrice(price);
-        menu.setMenuGroupId(menuGroupId);
-        menu.setMenuProducts(menuProducts);
-        return menu;
-    }
-
     public static Menu of(
         final Long id,
         final String name,
-        final BigDecimal price,
+        final long price,
+        final MenuProducts menuProducts,
         final Long menuGroupId,
-        final List<MenuProduct> menuProducts
+        final Validator<Menu> menuValidator
     ) {
-        final Menu menu = new Menu();
-        menu.setId(id);
-        menu.setName(name);
-        menu.setPrice(price);
-        menu.setMenuGroupId(menuGroupId);
-        menu.setMenuProducts(menuProducts);
-        return menu;
+        return new Menu(
+            id,
+            new Name(name),
+            new Price(BigDecimal.valueOf(price)),
+            menuProducts,
+            menuGroupId,
+            menuValidator
+        );
     }
 
-    public static MenuProduct ofMenuProduct(
-        final Long seq,
-        final Long productId,
-        final Long quantity
+    public static Menu of(
+        final String name,
+        final long price,
+        final MenuProducts menuProducts,
+        final Long menuGroupId,
+        final Validator<Menu> menuValidator
     ) {
-        final MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setSeq(seq);
-        menuProduct.setProductId(productId);
-        menuProduct.setQuantity(quantity);
-        return menuProduct;
+        return of(null, name, price, menuProducts, menuGroupId, menuValidator);
+    }
+
+    public static MenuRequest ofRequest(
+        final String name,
+        final BigDecimal price,
+        final List<MenuProductRequest> menuProducts,
+        final Long menuGroupId
+    ) {
+        return new MenuRequest(name, price, menuProducts, menuGroupId);
+    }
+
+    public static MenuRequest ofRequest(
+        final String name,
+        final long price,
+        final List<MenuProductRequest> menuProducts,
+        final Long menuGroupId
+    ) {
+        return ofRequest(name, BigDecimal.valueOf(price), menuProducts, menuGroupId);
     }
 }

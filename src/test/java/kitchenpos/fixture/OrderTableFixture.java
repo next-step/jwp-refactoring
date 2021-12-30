@@ -1,42 +1,35 @@
 package kitchenpos.fixture;
 
-import kitchenpos.domain.OrderTable;
+import java.util.Arrays;
+import kitchenpos.orders.ordertable.domain.OrderTable;
+import kitchenpos.orders.ordertable.domain.OrderTables;
+import kitchenpos.orders.ordertable.dto.OrderTableChangeEmptyRequest;
+import kitchenpos.orders.ordertable.dto.OrderTableChangeNumberOfGuestsRequest;
 
 public class OrderTableFixture {
 
     private OrderTableFixture() {
     }
 
-    public static OrderTable of(
-        final Long id,
-        final Long tableGroupId,
-        final int numberOfGuests,
-        final boolean empty
+    public static OrderTables ofList(final OrderTable... orderTables) {
+        return new OrderTables(Arrays.asList(orderTables));
+    }
+
+    public static OrderTable of(final Long id) {
+        return new OrderTable(id);
+    }
+
+    public static OrderTable of() {
+        return of(null);
+    }
+
+    public static OrderTableChangeEmptyRequest ofChangeEmptyRequest(final boolean empty) {
+        return new OrderTableChangeEmptyRequest(empty);
+    }
+
+    public static OrderTableChangeNumberOfGuestsRequest ofChangeNumberOfGuestsRequest(
+        final int numberOfGuests
     ) {
-        final OrderTable orderTable = new OrderTable();
-        orderTable.setId(id);
-        orderTable.setTableGroupId(tableGroupId);
-        orderTable.setNumberOfGuests(numberOfGuests);
-        orderTable.setEmpty(empty);
-        return orderTable;
-    }
-
-    public static OrderTable ofCreateRequest(final int numberOfGuests) {
-        final OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(numberOfGuests);
-        orderTable.setEmpty(true);
-        return orderTable;
-    }
-
-    public static OrderTable ofChangeEmptyRequest(final boolean empty) {
-        final OrderTable orderTable = new OrderTable();
-        orderTable.setEmpty(empty);
-        return orderTable;
-    }
-
-    public static OrderTable ofChangeNumberOfGuestsRequest(final int numberOfGuests) {
-        final OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(numberOfGuests);
-        return orderTable;
+        return new OrderTableChangeNumberOfGuestsRequest(numberOfGuests);
     }
 }
