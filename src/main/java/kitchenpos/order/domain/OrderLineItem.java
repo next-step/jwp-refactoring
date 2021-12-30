@@ -33,6 +33,10 @@ public class OrderLineItem {
         return this.order;
     }
 
+    public Long getOrderId(){
+        return this.order.getId();
+    }
+
     public Long getMenuId() {
         return menuId;
     }

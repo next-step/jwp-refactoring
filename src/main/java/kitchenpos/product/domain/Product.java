@@ -38,12 +38,8 @@ public class Product {
         return id;
     }
 
-    public Name getName() {
-        return name;
-    }
-
-    public Price getPrice() {
-        return this.price;
+    public String getName() {
+        return name.getName();
     }
 
     public BigDecimal getAmount() {

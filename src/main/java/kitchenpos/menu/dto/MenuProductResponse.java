@@ -20,12 +20,12 @@ public class MenuProductResponse {
     }
 
     public static MenuProductResponse of(MenuProduct menuProduct) {
-        return new MenuProductResponse(menuProduct.getSeq(), menuProduct.getMenuId(), menuProduct.getProduct().getId(), menuProduct.getQuantity());
+        return new MenuProductResponse(menuProduct.getSeq(), menuProduct.getMenuId(), menuProduct.getProductId(), menuProduct.getQuantity());
     }
 
     public static List<MenuProductResponse> listOf(List<MenuProduct> menuProducts) {
         return menuProducts.stream()
-                .map(it -> MenuProductResponse.of(it))
+                .map(menuProduct -> MenuProductResponse.of(menuProduct))
                 .collect(Collectors.toList());
     }
 

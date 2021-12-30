@@ -26,7 +26,4 @@ public class MenuProductRequest {
         return productId;
     }
 
-    public long getQuantity() {
-        return quantity;
-    }
 }

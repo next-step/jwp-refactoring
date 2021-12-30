@@ -40,7 +40,7 @@ class ProductTest {
     }
 
     private void checkValidProduct(Product product, String name, BigDecimal price) {
-        assertThat(product.getName().getName()).isEqualTo(name);
+        assertThat(product.getName()).isEqualTo(name);
         assertThat(product.getAmount()).isEqualTo(price);
     }
 

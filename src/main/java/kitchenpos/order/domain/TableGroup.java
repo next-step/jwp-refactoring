@@ -58,6 +58,6 @@ public class TableGroup {
 
     private boolean hasEmptyTable(List<OrderTable> orderTables) {
         return orderTables.stream()
-                .anyMatch(it -> it.isEmpty());
+                .anyMatch(orderTable -> orderTable.isEmpty());
     }
 }

@@ -40,14 +40,18 @@ public class MenuProducts implements Iterable<MenuProduct> {
 
     public void validSum(BigDecimal menuPrice) {
         BigDecimal productAmount = calculateMenuProductPrice();
-        if (menuPrice.compareTo(productAmount) > 0) {
+        if (isBiggerMenuPriceThanProductAmount(menuPrice, productAmount)) {
             throw new InputMenuDataException(InputMenuDataErrorCode.THE_SUM_OF_MENU_PRICE_IS_LESS_THAN_SUM_OF_PRODUCTS);
         }
     }
 
+    private boolean isBiggerMenuPriceThanProductAmount(BigDecimal menuPrice, BigDecimal productAmount) {
+        return menuPrice.compareTo(productAmount) > 0;
+    }
+
     private BigDecimal calculateMenuProductPrice() {
         return this.menuProducts.stream()
-                .map(it -> it.getProduct().getPrice().getPrice())
+                .map(menuProduct -> menuProduct.getProductAmount())
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

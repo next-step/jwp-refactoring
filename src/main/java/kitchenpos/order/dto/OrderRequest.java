@@ -19,10 +19,6 @@ public class OrderRequest {
         return orderTableId;
     }
 
-    public List<OrderLineItemRequest> getOrderLineItemRequests() {
-        return orderLineItems;
-    }
-
     public List<OrderLineItem> getOrderLineItems(){
         return orderLineItems.stream()
                 .map(OrderLineItemRequest::toEntity)

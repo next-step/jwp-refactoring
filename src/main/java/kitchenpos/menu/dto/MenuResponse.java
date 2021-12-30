@@ -34,7 +34,7 @@ public class MenuResponse {
 
     public static List<MenuResponse> listOf(List<Menu> menus) {
         return menus.stream()
-                .map(it -> MenuResponse.of(it))
+                .map(menu -> MenuResponse.of(menu))
                 .collect(Collectors.toList());
     }
 

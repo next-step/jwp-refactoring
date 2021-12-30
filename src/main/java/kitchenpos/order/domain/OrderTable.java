@@ -75,5 +75,4 @@ public class OrderTable {
         this.enterGuest();
     }
 
-
 }

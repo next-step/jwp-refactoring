@@ -27,7 +27,6 @@ public class TableGroupService {
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         List<Long> orderTableIds = tableGroupRequest.getOrderIds();
-
         List<OrderTable> orderTables = orderTableRepository.findAllById(orderTableIds);
         TableGroup tableGroup = tableGroupRepository.save(new TableGroup(new OrderTables(orderTables), LocalDateTime.now()));
         return TableGroupResponse.of(tableGroup);

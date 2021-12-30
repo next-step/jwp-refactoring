@@ -30,7 +30,7 @@ public class MenuRequest {
 
     public List<MenuProduct> toMenuProducts(List<Product> products){
         return products.stream()
-                .map(it -> toMenuProduct(it))
+                .map(product -> toMenuProduct(product))
                 .collect(Collectors.toList());
     }
 

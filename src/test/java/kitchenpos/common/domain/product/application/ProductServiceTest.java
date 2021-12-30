@@ -1,6 +1,5 @@
 package kitchenpos.common.domain.product.application;
 
-import kitchenpos.common.domain.Name;
 import kitchenpos.common.exception.InputDataErrorCode;
 import kitchenpos.common.exception.InputDataException;
 import kitchenpos.product.application.ProductService;
@@ -42,7 +41,7 @@ class ProductServiceTest {
         Product product = mock(Product.class);
 
         given(product.getName())
-                .willReturn(new Name("양파치킨"));
+                .willReturn("양파치킨");
 
         when(productRequest.toEntity()).thenReturn(product);
         when(productRepository.save(any(Product.class))).thenReturn(product);
@@ -62,7 +61,7 @@ class ProductServiceTest {
         when(product.getId())
                 .thenReturn(1L);
         when(product.getName())
-                .thenReturn(new Name("양파치킨"));
+                .thenReturn("양파치킨");
 
         when(productRepository.findAll())
                 .thenReturn(Arrays.asList(product));

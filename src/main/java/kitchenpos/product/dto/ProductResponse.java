@@ -19,7 +19,7 @@ public class ProductResponse {
     }
 
     public static ProductResponse of(Product product) {
-        return new ProductResponse(product.getId(), product.getName().getName(), product.getAmount());
+        return new ProductResponse(product.getId(), product.getName(), product.getAmount());
     }
 
     public static List<ProductResponse> listOf(List<Product> products) {
