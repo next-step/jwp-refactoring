@@ -39,7 +39,7 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         final TableGroup tableGroup = findByTableGroupId(tableGroupId);
-        orderService.existsByOrderTableInAndOrderStatusIn(tableGroup.getOrderTables().toList());
+        orderService.validateOrderStatus(tableGroup.getOrderTables().toList());
         tableGroup.unGroup();
     }
 
