@@ -1,0 +1,26 @@
+plugins {
+    id "java-library"
+    id "java-test-fixtures"
+}
+
+bootJar { enabled = false }
+jar { enabled = true }
+
+dependencies {
+
+    compile project(':kitchenpos-common')
+
+    testImplementation(testFixtures(project(":kitchenpos-order")))
+    testImplementation(testFixtures(project(":kitchenpos-menu")))
+
+    testFixturesImplementation 'org.springframework.boot:spring-boot-starter-test'
+    //spring
+    testFixturesImplementation 'org.springframework.boot:spring-boot-starter-web'
+    testFixturesImplementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // API dependencies are visible to consumers when building
+    testFixturesApi 'org.apache.commons:commons-lang3:3.9'
+
+    // Implementation dependencies are not leaked to consumers when building
+    testFixturesImplementation 'org.apache.commons:commons-text:1.6'
+}
