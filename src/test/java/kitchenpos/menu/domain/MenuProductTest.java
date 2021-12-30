@@ -12,7 +12,7 @@ import kitchenpos.product.domain.ProductTest;
 @DisplayName("메뉴-제품 도메인 테스트")
 public class MenuProductTest {
 
-	public static final MenuProduct 후라이드둘_메뉴_후라이드_상품 = MenuProduct.of(1L, MenuTest.후라이드둘, ProductTest.후라이드, 2L);
+	public static final MenuProduct 후라이드둘_메뉴_후라이드_상품 = MenuProduct.of(1L, MenuTest.후라이드둘, ProductTest.후라이드.getId(), 2L);
 
 	@DisplayName("생성 테스트")
 	@Test
@@ -32,7 +32,8 @@ public class MenuProductTest {
 	@DisplayName("생성 시, 수량 정보가 0 이상이어야 합니다")
 	@Test
 	void validateTest3() {
-		assertThatThrownBy(() -> MenuProduct.create(ProductTest.후라이드, -1L))
+		Long productId = ProductTest.후라이드.getId();
+		assertThatThrownBy(() -> MenuProduct.create(productId, -1L))
 			.isInstanceOf(AppException.class)
 			.hasMessage(ErrorCode.WRONG_INPUT.getMessage());
 	}

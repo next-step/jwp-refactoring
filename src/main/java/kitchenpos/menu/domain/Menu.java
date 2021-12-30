@@ -93,12 +93,6 @@ public class Menu {
 		menuProducts.add(menuProduct);
 	}
 
-	public void checkOverPrice() {
-		if (menuProducts.isOverPrice(price)) {
-			throw new AppException(ErrorCode.WRONG_INPUT, "메뉴 가격은 구성상품들의 총합보다 작거나 같아야 합니다");
-		}
-	}
-
 	public Long getId() {
 		return id;
 	}

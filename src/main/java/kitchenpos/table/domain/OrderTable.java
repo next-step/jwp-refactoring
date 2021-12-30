@@ -72,6 +72,10 @@ public class OrderTable {
 		this.numberOfGuests = NumberOfGuests.of(numbers);
 	}
 
+	public void group(TableGroup tableGroup) {
+		this.tableGroup = tableGroup;
+	}
+
 	public void unGroup() {
 		this.tableGroup = null;
 	}

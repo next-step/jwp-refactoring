@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderLineItemResponse;
 import kitchenpos.order.dto.OrderRequest;
@@ -78,7 +79,7 @@ public class OrderAcceptStep {
 		return order -> {
 			assertThat(order.getId()).isNotNull();
 			assertThat(order.getOrderTableId()).isEqualTo(등록_요청_데이터.getOrderTableId());
-			assertThat(order.getOrderStatus()).isEqualTo("COOKING");
+			assertThat(order.getOrderStatus().name()).isEqualTo(OrderStatus.COOKING.name());
 			주문_항목_확인(order, 등록_요청_데이터);
 		};
 	}

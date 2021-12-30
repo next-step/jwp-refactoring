@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 
 import kitchenpos.exception.AppException;
 import kitchenpos.exception.ErrorCode;
-import kitchenpos.product.domain.ProductTest;
 
 @DisplayName("메뉴 도메인 테스트")
 public class MenuTest {
@@ -46,18 +45,5 @@ public class MenuTest {
 			.isInstanceOf(AppException.class)
 			.hasMessage(ErrorCode.WRONG_INPUT.getMessage());
 	}
-
-	@DisplayName("가격이 구성품의 가격의 합보다 높으면 안된다")
-	@Test
-	void checkOverPriceTest() {
-		// given
-		Menu menu = Menu.of(1L, "후라이드들", BigDecimal.valueOf(50_000), MenuGroupTest.추천메뉴);
-		MenuProduct.of(1L, menu, ProductTest.후라이드, 2L);
-
-		// when, then
-		assertThatThrownBy(menu::checkOverPrice)
-			.isInstanceOf(AppException.class)
-			.hasMessage(ErrorCode.WRONG_INPUT.getMessage());
-
-	}
+	
 }

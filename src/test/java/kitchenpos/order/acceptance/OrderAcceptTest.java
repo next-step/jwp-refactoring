@@ -16,6 +16,7 @@ import kitchenpos.menu.acceptance.step.MenuGroupAcceptStep;
 import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
@@ -62,7 +63,7 @@ public class OrderAcceptTest extends AcceptanceTest {
 		주문_목록_조회_확인(주문_목록_조회_응답, 생성된_주문);
 
 		// given
-		OrderUpdateRequest 상태_변경_요청_데이터 = new OrderUpdateRequest("MEAL");
+		OrderUpdateRequest 상태_변경_요청_데이터 = new OrderUpdateRequest(OrderStatus.MEAL);
 
 		// when
 		ExtractableResponse<Response> 주문_상태_변경_응답 = 주문_상태_변경_요청(주문_생성_응답, 상태_변경_요청_데이터);

@@ -43,6 +43,8 @@ public class TableServiceTest {
 	private OrderTableRepository orderTableRepository;
 	@Mock
 	private OrderRepository orderRepository;
+	@Mock
+	private TableValidator tableValidator;
 
 	private Menu 후라이드둘세트;
 	private OrderTable 테이블;
@@ -53,7 +55,7 @@ public class TableServiceTest {
 		// given
 		Product 후라이드치킨 = Product.of(1L, "후라이드치킨", BigDecimal.valueOf(17_000));
 		MenuGroup 추천메뉴 = MenuGroup.of(1L, "추천메뉴");
-		MenuProduct 메뉴_상품 = MenuProduct.of(후라이드치킨, 2L);
+		MenuProduct 메뉴_상품 = MenuProduct.of(후라이드치킨.getId(), 2L);
 
 		후라이드둘세트 = Menu.of(1L, "후라이드 둘 세트", BigDecimal.valueOf(32_000), 추천메뉴);
 		후라이드둘세트.addMenuProducts(Collections.singletonList(메뉴_상품));
@@ -98,7 +100,7 @@ public class TableServiceTest {
 		// given
 		TableEmptyUpdateRequest request = new TableEmptyUpdateRequest(false);
 		given(orderTableRepository.findById(any())).willReturn(Optional.of(테이블));
-		given(orderRepository.existsByOrderTableAndOrderStatusIn(any(), any())).willReturn(false);
+		given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(false);
 
 		// when
 		TableResponse result = tableService.changeEmpty(테이블.getId(), request);
@@ -111,7 +113,7 @@ public class TableServiceTest {
 	@Test
 	void changeEmptyTest2() {
 		// given
-		TableGroup 테이블_그룹 = TableGroup.of(1L, Arrays.asList(테이블, 테이블));
+		TableGroup 테이블_그룹 = TableGroup.of(1L);
 		OrderTable 속한_테이블 = OrderTable.of(1L, 테이블_그룹, NumberOfGuests.of(4), false);
 		TableEmptyUpdateRequest request = new TableEmptyUpdateRequest(false);
 		Long requestId = 속한_테이블.getId();
@@ -130,7 +132,7 @@ public class TableServiceTest {
 		Long requestId = 빈_테이블.getId();
 		TableEmptyUpdateRequest request = new TableEmptyUpdateRequest(false);
 		given(orderTableRepository.findById(any())).willReturn(Optional.of(빈_테이블));
-		given(orderRepository.existsByOrderTableAndOrderStatusIn(any(), any())).willReturn(true);
+		given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(true);
 
 		// when, then
 		assertThatThrownBy(() -> tableService.changeEmpty(requestId, request))
@@ -177,6 +179,46 @@ public class TableServiceTest {
 
 		// then
 		assertThat(result.getNumberOfGuests()).isEqualTo(테이블.getNumberOfGuests().toInt());
+	}
+
+	@DisplayName("테이블을 단체지정한다")
+	@Test
+	void groupedTest() {
+		// given
+		OrderTable 테이블_1번 = OrderTable.of(1L, 2, false);
+		OrderTable 테이블_2번 = OrderTable.of(2L, 4, false);
+		List<OrderTable> tables = Arrays.asList(테이블_1번, 테이블_2번);
+		TableGroup 단체_테이블 = TableGroup.of(1L);
+
+		// when
+		tableService.grouped(단체_테이블, tables);
+
+		// then
+		assertAll(
+			() -> assertThat(테이블_1번.getTableGroup()).isEqualTo(단체_테이블),
+			() -> assertThat(테이블_2번.getTableGroup()).isEqualTo(단체_테이블)
+		);
+
+	}
+
+	@DisplayName("테이블의 단체 지정을 해제한다")
+	@Test
+	void ungroupedTest() {
+		// given
+		OrderTable 테이블_1번 = OrderTable.of(1L, 2, false);
+		OrderTable 테이블_2번 = OrderTable.of(2L, 4, false);
+		List<OrderTable> tables = Arrays.asList(테이블_1번, 테이블_2번);
+		TableGroup 단체_테이블 = TableGroup.of(1L);
+		given(orderTableRepository.findByTableGroupId(단체_테이블.getId())).willReturn(tables);
+
+		// when
+		tableService.ungrouped(1L);
+
+		// then
+		assertAll(
+			() -> assertThat(테이블_1번.getTableGroup()).isNull(),
+			() -> assertThat(테이블_2번.getTableGroup()).isNull()
+		);
 	}
 
 }

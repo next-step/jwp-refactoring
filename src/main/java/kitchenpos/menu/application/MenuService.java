@@ -25,14 +25,17 @@ public class MenuService {
 	private final MenuRepository menuRepository;
 	private final MenuGroupService menuGroupService;
 	private final ProductService productService;
+	private final MenuValidator menuValidator;
 
 	public MenuService(final MenuRepository menuRepository,
 		final MenuGroupService menuGroupService,
-		final ProductService productService) {
+		final ProductService productService,
+		final MenuValidator menuValidator) {
 
 		this.menuRepository = menuRepository;
 		this.menuGroupService = menuGroupService;
 		this.productService = productService;
+		this.menuValidator = menuValidator;
 	}
 
 	public MenuResponse create(final MenuRequest request) {
@@ -40,7 +43,7 @@ public class MenuService {
 		Menu menu = request.toEntity(menuGroup);
 		List<MenuProduct> menuProductList = getMenuProductList(request.getMenuProducts());
 		menu.addMenuProducts(menuProductList);
-		menu.checkOverPrice();
+		menuValidator.isOverPrice(menu);
 		return new MenuResponse(menuRepository.save(menu));
 	}
 
@@ -51,7 +54,7 @@ public class MenuService {
 
 	private MenuProduct getMenuProduct(MenuProductRequest request) {
 		Product product = productService.getById(request.getProductId());
-		return request.toEntity(product);
+		return MenuProduct.create(product.getId(), request.getQuantity());
 	}
 
 	@Transactional(readOnly = true)
@@ -60,8 +63,9 @@ public class MenuService {
 		return menuList.stream().map(MenuResponse::new).collect(Collectors.toList());
 	}
 
+	@Transactional(readOnly = true)
 	public Menu getById(Long menuId) {
 		return menuRepository.findById(menuId)
-			.orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "해당 메뉴를 찾을 수 없습니디다"));
+			.orElseThrow(() -> new AppException(ErrorCode.NOT_FOUND, "해당 메뉴를 찾을 수 없습니다"));
 	}
 }

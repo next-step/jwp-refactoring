@@ -9,20 +9,17 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
 
 import kitchenpos.exception.AppException;
 import kitchenpos.exception.ErrorCode;
-import kitchenpos.table.domain.OrderTable;
 
 @Table(name = "orders")
 @Entity
@@ -32,8 +29,7 @@ public class Order {
 	private Long id;
 
 	@JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_orders_order_table"), nullable = false)
-	@ManyToOne(fetch = FetchType.LAZY)
-	private OrderTable orderTable;
+	private Long orderTableId;
 
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
@@ -49,38 +45,35 @@ public class Order {
 	protected Order() {
 	}
 
-	private Order(Long id, OrderTable orderTable, OrderStatus orderStatus, OrderLineItems orderLineItems) {
+	private Order(Long id, Long orderTableId, OrderStatus orderStatus, OrderLineItems orderLineItems) {
 		this.id = id;
-		this.orderTable = orderTable;
+		this.orderTableId = orderTableId;
 		this.orderStatus = orderStatus;
 		this.orderLineItems = orderLineItems;
 	}
 
-	private static Order of(Long id, OrderTable orderTable, OrderStatus orderStatus, OrderLineItems orderLineItems) {
-		validate(orderTable, orderStatus);
-		return new Order(id, orderTable, orderStatus, orderLineItems);
+	private static Order of(Long id, Long orderTableId, OrderLineItems orderLineItems) {
+		validate(orderTableId);
+		return new Order(id, orderTableId, OrderStatus.COOKING, orderLineItems);
 	}
 
-	public static Order create(OrderTable orderTable) {
-		return of(null, orderTable, OrderStatus.COOKING, OrderLineItems.empty());
+	public static Order create(Long orderTableId) {
+		return of(null, orderTableId, OrderLineItems.empty());
 	}
 
-	private static void validate(OrderTable orderTable, OrderStatus orderStatus) {
-		if (Objects.isNull(orderTable)) {
+	private static void validate(Long orderTableId) {
+		if (Objects.isNull(orderTableId)) {
 			throw new AppException(ErrorCode.WRONG_INPUT, "주문 테이블은 입력되어야 합니다");
 		}
-		if (Objects.isNull(orderStatus)) {
-			throw new AppException(ErrorCode.WRONG_INPUT, "주문 상태는 입력되어야 합니다");
-		}
 	}
 
-	public static Order of(Long id, OrderTable orderTable, OrderStatus orderStatus,
+	public static Order of(Long id, Long orderTableId, OrderStatus orderStatus,
 		List<OrderLineItem> orderLineItemList) {
-		return new Order(id, orderTable, orderStatus, OrderLineItems.of(orderLineItemList));
+		return new Order(id, orderTableId, orderStatus, OrderLineItems.of(orderLineItemList));
 	}
 
-	public static Order of(long id, OrderTable orderTable, OrderStatus orderStatus) {
-		return new Order(id, orderTable, orderStatus, OrderLineItems.empty());
+	public static Order of(long id, Long orderTableId, OrderStatus orderStatus) {
+		return new Order(id, orderTableId, orderStatus, OrderLineItems.empty());
 	}
 
 	public void addOrderLineItems(List<OrderLineItem> orderLineItemList) {
@@ -92,19 +85,23 @@ public class Order {
 		this.orderLineItems.add(orderLineItem);
 	}
 
-	public void updateStatus(String updateStatusName) {
+	public void updateStatus(OrderStatus updateStatusName) {
+		validateUpdate(orderStatus);
+		this.orderStatus = updateStatusName;
+	}
+
+	private void validateUpdate(OrderStatus orderStatus) {
 		if (orderStatus.equals(OrderStatus.COMPLETION)) {
 			throw new AppException(ErrorCode.WRONG_INPUT, "이미 완료되어서, 상태를 바꿀 수 없습니다");
 		}
-		this.orderStatus = OrderStatus.valueOf(updateStatusName);
 	}
 
 	public Long getId() {
 		return id;
 	}
 
-	public OrderTable getOrderTable() {
-		return orderTable;
+	public Long getOrderTableId() {
+		return orderTableId;
 	}
 
 	public OrderStatus getOrderStatus() {
