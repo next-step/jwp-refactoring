@@ -38,9 +38,9 @@ public class Menu {
         this.menuProducts = new MenuProducts();
     }
 
-    public void organizeMenu(List<MenuProduct> menuProducts) {
-        this.menuProducts.addMenuProducts(this, menuProducts);
-        isSamePrice();
+    public static Menu create(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts, MenuValidator menuValidator) {
+        menuValidator.validateCreateMenu(menuGroupId, price, menuProducts);
+        return new Menu(name, price, menuGroupId);
     }
 
     public Long getId() {
@@ -51,8 +51,8 @@ public class Menu {
         return name;
     }
 
-    public BigDecimal getPrice() {
-        return price.getPrice();
+    public Price getPrice() {
+        return price;
     }
 
     public Long getMenuGroupId() {
@@ -63,15 +63,8 @@ public class Menu {
         return menuProducts;
     }
 
-    private Price getTotalPrice() {
-        return this.menuProducts.getTotalPrice();
-    }
-
-    private boolean isSamePrice() {
-        if (!this.price.equals(getTotalPrice())) {
-            throw new IllegalArgumentException("메뉴 가격이 올바르지 않습니다. 메뉴 가격 : " + this.price.getPrice());
-        }
-        return true;
+    public void organizeMenu(List<MenuProduct> menuProducts) {
+        this.menuProducts.addMenuProducts(this, menuProducts);
     }
 
     @Override

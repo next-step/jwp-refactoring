@@ -13,23 +13,26 @@ public class MenuProduct {
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "menu_id")
     private Menu menu;
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
+    private Long productId;
     private long quantity;
 
     protected MenuProduct() {
     }
 
     public MenuProduct(Product product, long quantity) {
-        this(null, product, quantity);
+        this(null, product.getId(), quantity);
     }
 
-    public MenuProduct(Menu menu, Product product, long quantity) {
+    public MenuProduct(Long productId, long quantity) {
+        this(null, productId, quantity);
+    }
+
+    public MenuProduct(Menu menu, Long productId, long quantity) {
         this.menu = menu;
-        this.product = product;
+        this.productId = productId;
         this.quantity = quantity;
     }
+
 
     public Long getSeq() {
         return seq;
@@ -39,8 +42,8 @@ public class MenuProduct {
         return menu;
     }
 
-    public Product getProduct() {
-        return product;
+    public Long getProductId() {
+        return productId;
     }
 
     public long getQuantity() {
@@ -52,11 +55,11 @@ public class MenuProduct {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MenuProduct that = (MenuProduct) o;
-        return quantity == that.quantity && Objects.equals(seq, that.seq) && Objects.equals(menu, that.menu) && Objects.equals(product, that.product);
+        return quantity == that.quantity && Objects.equals(seq, that.seq) && Objects.equals(menu, that.menu) && Objects.equals(productId, that.productId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(seq, menu, product, quantity);
+        return Objects.hash(seq, menu, productId, quantity);
     }
 }

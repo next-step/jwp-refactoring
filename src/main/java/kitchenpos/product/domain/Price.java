@@ -30,12 +30,24 @@ public class Price {
         }
     }
 
+    public Price multiply(long quantity) {
+        return Price.of(this.price.multiply(BigDecimal.valueOf(quantity)));
+    }
+
+    public Price add(Price price) {
+        return Price.of(this.price.add(price.getPrice()));
+    }
+
+    public boolean isExpensiveThan(BigDecimal price) {
+        return this.price.compareTo(price) >= 0;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Price price1 = (Price) o;
-        return price.compareTo(price1.price) == 0;
+        return Objects.equals(price, price1.price);
     }
 
     @Override
@@ -43,11 +55,10 @@ public class Price {
         return Objects.hash(price);
     }
 
-    public Price multiply(long quantity) {
-        return Price.of(this.price.multiply(BigDecimal.valueOf(quantity)));
-    }
-
-    public Price add(Price price) {
-        return Price.of(this.price.add(price.getPrice()));
+    @Override
+    public String toString() {
+        return "Price{" +
+                "price=" + price.toString() +
+                '}';
     }
 }

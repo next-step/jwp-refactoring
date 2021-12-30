@@ -22,7 +22,7 @@ public class MenuResponse {
     }
 
     public static MenuResponse of(Menu menu) {
-        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(), menu.getMenuGroupId(), menu.getMenuProducts().getMenuProducts()
+        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice().getPrice(), menu.getMenuGroupId(), menu.getMenuProducts().getMenuProducts()
                 .stream()
                 .map(MenuProductResponse::of)
                 .collect(Collectors.toList()));
