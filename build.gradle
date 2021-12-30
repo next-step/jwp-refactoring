@@ -40,37 +40,8 @@ project(':kitchenpos-app-api') {
         testImplementation 'io.rest-assured:rest-assured:3.3.0'
 
         implementation project(':common-module')
-        implementation project(':domain-modules:menu-domain')
-        implementation project(':domain-modules:order-domain')
-    }
-}
-
-project(':domain-modules') {
-    allprojects {
-        bootJar { enabled = false }
-        jar { enabled = true }
-    }
-
-    subprojects {
-        dependencies {
-            implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-            runtimeOnly 'com.h2database:h2'
-
-            implementation project(':common-module')
-        }
-    }
-}
-
-project(':domain-modules:menu-domain') {
-    dependencies {
-        implementation project(':domain-modules:common-domain')
-    }
-}
-
-project(':domain-modules:order-domain') {
-    dependencies {
-        implementation project(':domain-modules:common-domain')
-        implementation project(':domain-modules:menu-domain')
+        implementation project(':menu-domain')
+        implementation project(':order-domain')
     }
 }
 
