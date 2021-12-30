@@ -3,7 +3,7 @@ package kitchenpos.tablegroup.application;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.ordertable.application.validator.OrderTableTableGroupCreateValidator;
-import kitchenpos.order.application.validator.OrderTableGroupUnGroupValidator;
+import kitchenpos.order.domain.validator.OrderTableGroupUnGroupValidator;
 import kitchenpos.tablegroup.dto.TableGroupCreateRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import kitchenpos.tablegroup.infra.TableGroupRepository;

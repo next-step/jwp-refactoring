@@ -1,7 +1,7 @@
-package kitchenpos.order.application.validator;
+package kitchenpos.order.domain.validator;
 
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.infra.OrderRepository;
 import kitchenpos.tablegroup.domain.validator.TableGroupUnGroupValidator;
 import kitchenpos.tablegroup.exception.CanNotUnGroupException;
 import org.springframework.stereotype.Component;

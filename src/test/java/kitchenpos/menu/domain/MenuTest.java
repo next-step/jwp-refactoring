@@ -1,17 +1,16 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.menugroup.domain.MenuGroupRepository;
-import kitchenpos.menugroup.infra.JpaMenuGroupRepository;
-import kitchenpos.menu.infra.JpaMenuRepository;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.product.infra.JpaProductRepository;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Collections;
 import java.util.List;
@@ -21,14 +20,15 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DataJpaTest
+@SpringBootTest
+//@DataJpaTest
 class MenuTest {
     @Autowired
-    private JpaMenuRepository jpaMenuRepository;
+    private MenuRepository menuRepository;
     @Autowired
     private MenuGroupRepository menuGroupRepository;
     @Autowired
-    private JpaProductRepository jpaProductRepository;
+    private ProductRepository productRepository;
 
     private Long 추천메뉴_아이디;
     private Long 짬뽕_아이디;
@@ -36,7 +36,7 @@ class MenuTest {
     @BeforeEach
     void setUp() {
         추천메뉴_아이디 = menuGroupRepository.save(MenuGroup.of("추천메뉴")).getId();
-        짬뽕_아이디 = jpaProductRepository.save(Product.of("짬뽕", 3000)).getId();
+        짬뽕_아이디 = productRepository.save(Product.of("짬뽕", 3000)).getId();
     }
 
     @DisplayName("메뉴는 이름, 가격, 메뉴 그룹의 아이디, 메뉴상품그룹으로 구성되어 있다.")
@@ -46,7 +46,7 @@ class MenuTest {
         final List<MenuProduct> menuProducts = Collections.singletonList(MenuProduct.of(짬뽕_아이디, 10));
         final Menu menu = Menu.of("짬뽕", 30000, 추천메뉴_아이디, menuProducts);
         // when
-        final Menu actual = jpaMenuRepository.save(menu);
+        final Menu actual = menuRepository.save(menu);
         // then
         assertAll(
                 () -> assertThat(actual).isNotNull(),

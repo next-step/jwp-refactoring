@@ -1,6 +1,6 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.order.infra.OrderRepository;
+import kitchenpos.order.infra.JpaOrderRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DataJpaTest
 class OrderTest {
     @Autowired
-    private OrderRepository orderRepository;
+    private JpaOrderRepository orderRepository;
 
     @DisplayName("주문은 아이디, 주문 테이블의 아이디, 주문 상태, 주문 시간, 주문 항목들로 구성되어 있다.")
     @Test

@@ -1,6 +1,6 @@
 package kitchenpos.tablegroup.application;
 
-import kitchenpos.order.application.validator.OrderTableGroupUnGroupValidator;
+import kitchenpos.order.domain.validator.OrderTableGroupUnGroupValidator;
 import kitchenpos.ordertable.application.validator.OrderTableTableGroupCreateValidator;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.event.TableGroupedEvent;

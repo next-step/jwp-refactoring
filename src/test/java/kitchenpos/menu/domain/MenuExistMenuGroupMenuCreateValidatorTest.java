@@ -20,7 +20,7 @@ import static kitchenpos.menugroup.application.MenuServiceTest.getMenuProduct;
 import static kitchenpos.product.application.ProductServiceTest.getProduct;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
 @DisplayName("메뉴 그룹 존재 유효성 검사 테스트")
@@ -29,7 +29,7 @@ class MenuExistMenuGroupMenuCreateValidatorTest {
     @Mock
     private MenuGroupRepository menuGroupRepository;
     @InjectMocks
-    private MenuExistMenuGroupMenuCreateValidator notFoundMenuGroupValidator;
+    private MenuExistMenuGroupMenuCreateValidator createValidator;
 
     private Product 양지쌀국수;
     private Product 분짜;
@@ -51,14 +51,12 @@ class MenuExistMenuGroupMenuCreateValidatorTest {
                         getMenuProduct(1L, 양지쌀국수, 10),
                         getMenuProduct(2L, 분짜, 6)
                 ));
-
-        given(menuGroupRepository.existsById(1L)).willReturn(false);
+        given(menuGroupRepository.existsById(anyLong())).willReturn(false);
         // when
-        final ThrowableAssert.ThrowingCallable throwingCallable = () -> notFoundMenuGroupValidator.validate(menu);
+        final ThrowableAssert.ThrowingCallable throwingCallable = () -> createValidator.validate(menu);
         // then
         assertThatThrownBy(throwingCallable).isInstanceOf(IllegalArgumentException.class);
     }
-
 
     @DisplayName("존재하지 않을 경우 유효하다..")
     @Test
@@ -71,10 +69,9 @@ class MenuExistMenuGroupMenuCreateValidatorTest {
                         getMenuProduct(1L, 양지쌀국수, 10),
                         getMenuProduct(2L, 분짜, 6)
                 ));
-
-        given(menuGroupRepository.existsById(any())).willReturn(true);
+        given(menuGroupRepository.existsById(anyLong())).willReturn(true);
         // when
-        final Executable executable = () -> notFoundMenuGroupValidator.validate(menu);
+        final Executable executable = () -> createValidator.validate(menu);
         // then
         assertDoesNotThrow(executable);
     }

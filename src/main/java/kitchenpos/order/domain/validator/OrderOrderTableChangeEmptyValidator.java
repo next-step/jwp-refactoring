@@ -1,7 +1,8 @@
-package kitchenpos.order.application.validator;
+package kitchenpos.order.domain.validator;
 
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.infra.OrderRepository;
+import kitchenpos.order.infra.JpaOrderRepository;
 import kitchenpos.ordertable.domain.validator.OrderTableChangeEmptyValidator;
 import kitchenpos.ordertable.exception.CanNotChangeOrderTableException;
 import org.springframework.stereotype.Component;
