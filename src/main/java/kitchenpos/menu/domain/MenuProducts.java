@@ -7,7 +7,6 @@ import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -34,12 +33,5 @@ public class MenuProducts {
 
     public List<MenuProduct> getMenuProducts() {
         return Collections.unmodifiableList(menuProducts);
-    }
-
-    public BigDecimal calculatorTotalPrice() {
-        return menuProducts.stream()
-                .map(MenuProduct::calculateTotalPrice)
-                .reduce(BigDecimal::add)
-                .orElse(BigDecimal.ZERO);
     }
 }

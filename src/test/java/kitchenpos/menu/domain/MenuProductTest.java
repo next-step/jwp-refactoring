@@ -24,14 +24,14 @@ class MenuProductTest {
 
     @Test
     void 메뉴_상품_생성() {
-        MenuProduct actual = MenuProduct.of(후라이드치킨, 5);
+        MenuProduct actual = MenuProduct.of(후라이드치킨.getId(), 5);
 
         assertThat(actual).isNotNull();
     }
 
     @Test
     void 메뉴_상품의_수량은_0개_이상이다() {
-        ThrowableAssert.ThrowingCallable throwingCallable = () -> MenuProduct.of(후라이드치킨, -1);
+        ThrowableAssert.ThrowingCallable throwingCallable = () -> MenuProduct.of(후라이드치킨.getId(), -1);
 
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(throwingCallable)

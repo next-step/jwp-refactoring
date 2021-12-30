@@ -72,7 +72,7 @@ class MenuServiceTest {
                 Collections.singletonList(MenuProductRequest.of(후라이드치킨.getId(), 2)));
 
         후라이드_후라이드_메뉴_상품_요청 = MenuProductRequest.of(후라이드치킨.getId(), 2);
-        후라이드_후라이드_메뉴_상품 = MenuProductFixture.of(후라이드치킨, 2);
+        후라이드_후라이드_메뉴_상품 = MenuProductFixture.of(후라이드치킨.getId(), 2);
         후라이드_후라이드 = Menu.of(
                 후라이드_후라이드_요청.getName(),
                 후라이드_후라이드_요청.getPrice(),

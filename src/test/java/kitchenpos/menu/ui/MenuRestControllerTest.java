@@ -62,7 +62,7 @@ class MenuRestControllerTest extends RestControllerTest {
                 두마리치킨.getId(),
                 Collections.singletonList(MenuProductRequest.of(후라이드치킨.getId(), 2)));
 
-        MenuProduct 후라이드_후라이드_메뉴_상품 = MenuProductFixture.of(후라이드치킨, 2);
+        MenuProduct 후라이드_후라이드_메뉴_상품 = MenuProductFixture.of(후라이드치킨.getId(), 2);
         Menu 후라이드_후라이드 = Menu.of(
                 후라이드_후라이드_요청.getName(),
                 후라이드_후라이드_요청.getPrice(),
