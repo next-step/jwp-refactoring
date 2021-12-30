@@ -7,6 +7,11 @@ public class OrderLineItemRequest {
     private long menuId;
     private long quantity;
 
+    public OrderLineItemRequest(long menuId, long quantity) {
+        this.menuId = menuId;
+        this.quantity = quantity;
+    }
+
     public long getMenuId() {
         return menuId;
     }

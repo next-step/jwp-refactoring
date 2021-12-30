@@ -15,10 +15,12 @@ import java.util.List;
 public class TableService {
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
+    private final OrderTableValidator orderTableValidator;
 
-    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
+    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository, final OrderTableValidator orderTableValidator) {
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
+        this.orderTableValidator = orderTableValidator;
     }
 
     @Transactional
@@ -36,9 +38,7 @@ public class TableService {
                 .orElseThrow(() -> new InputTableDataException(InputTableDataErrorCode.THE_TABLE_CAN_NOT_FIND));
         final List<Order> orders = orderRepository.findAll();
 
-        OrderTableValidator orderTableValidator = new OrderTableValidator(orders, foundOrderTable);
-        orderTableValidator.checkUpdateTableGroup();
-
+        orderTableValidator.checkUpdateTableGroup(orders, foundOrderTable);
         foundOrderTable.updateEmpty(orderTableRequest.isEmpty());
 
         return OrderTableResponse.of(orderTableRepository.save(foundOrderTable));
@@ -49,8 +49,7 @@ public class TableService {
         OrderTable foundOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(() -> new InputTableDataException(InputTableDataErrorCode.THE_TABLE_CAN_NOT_FIND));
 
-        OrderTableValidator orderTableValidator = new OrderTableValidator(foundOrderTable);
-        orderTableValidator.checkTableEmpty();
+        orderTableValidator.checkTableEmpty(foundOrderTable);
 
         foundOrderTable.seatNumberOfGuests(numberOfGuests);
         return OrderTableResponse.of(foundOrderTable);

@@ -2,10 +2,9 @@ package kitchenpos.order.domain;
 
 import kitchenpos.common.exception.InputDataErrorCode;
 import kitchenpos.common.exception.InputDataException;
-import kitchenpos.order.exceptions.InputTableDataErrorCode;
-import kitchenpos.order.exceptions.InputTableDataException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -13,6 +12,9 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("테이블 단위 테스트")
 class OrderTableTest {
+
+    @Autowired
+    private OrderTableValidator orderTableValidator;
 
     @Test
     @DisplayName("테이블을 등록한다.")
@@ -49,18 +51,6 @@ class OrderTableTest {
             orderTable.seatNumberOfGuests(-2);
         }).isInstanceOf(InputDataException.class)
                 .hasMessageContaining(InputDataErrorCode.THE_NUMBER_OF_GUESTS_IS_LESS_THAN_ZERO.errorMessage());
-    }
-
-    @Test
-    @DisplayName("비어있는 테이블 인원수를 수정하면 에러처리")
-    void modifyEmptyTableGuestCountTest() {
-        OrderTable orderTable = new OrderTable(0, true);
-        assertThatThrownBy(() -> {
-            OrderTableValidator orderTableValidator = new OrderTableValidator(orderTable);
-            orderTableValidator.checkTableEmpty();
-            orderTable.seatNumberOfGuests(2);
-        }).isInstanceOf(InputTableDataException.class)
-                .hasMessageContaining(InputTableDataErrorCode.THE_STATUS_IS_ALEADY_EMPTY.errorMessage());
     }
 
 }

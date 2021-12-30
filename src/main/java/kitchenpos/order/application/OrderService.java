@@ -18,10 +18,12 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
+    private final OrderValidator orderValidator;
 
-    public OrderService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
+    public OrderService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository, final OrderValidator orderValidator) {
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
@@ -31,8 +33,7 @@ public class OrderService {
         List<OrderLineItem> orderLineItemBasket = orderRequest.getOrderLineItems();
         OrderLineItems orderLineItems = new OrderLineItems(orderLineItemBasket);
 
-        OrderValidator orderValidator = new OrderValidator(orderLineItems);
-        orderValidator.isEmptyOrderLineItem();
+        orderValidator.isEmptyOrderLineItem(orderLineItems);
 
         Order createdOrder = new Order(orderTable.getId(), orderLineItems);
         return OrderResponse.of(orderRepository.save(createdOrder));
@@ -47,10 +48,6 @@ public class OrderService {
     public OrderResponse changeOrderStatus(final Long orderId, final OrderStatus orderStatus) {
         Order foundOrder = orderRepository.findById(orderId)
                 .orElseThrow(() -> new InputOrderDataException(InputOrderDataErrorCode.THE_ORDER_CAN_NOT_SEARCH));
-
-        OrderValidator orderValidator = new OrderValidator(foundOrder);
-        orderValidator.isAlreadyCompletionOrder();
-
         foundOrder.updateOrderStatus(orderStatus);
         return OrderResponse.of(foundOrder);
     }

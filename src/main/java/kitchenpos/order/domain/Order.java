@@ -1,12 +1,14 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.order.exceptions.InputOrderDataErrorCode;
+import kitchenpos.order.exceptions.InputOrderDataException;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
-import static kitchenpos.order.domain.OrderStatus.COOKING;
-import static kitchenpos.order.domain.OrderStatus.MEAL;
+import static kitchenpos.order.domain.OrderStatus.*;
 
 @Entity
 @Table(name = "orders")
@@ -79,6 +81,10 @@ public class Order {
     }
 
     public void updateOrderStatus(OrderStatus orderStatus) {
+        if(this.orderStatus == COMPLETION){
+            throw new InputOrderDataException(InputOrderDataErrorCode.THE_ORDER_STATUS_DO_NOT_CHANGE_COMPLETION_TO_ANY_OTHER);
+        }
+
         if (orderStatus == COOKING) {
             this.startCooking();
             return;

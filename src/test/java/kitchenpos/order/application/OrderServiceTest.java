@@ -6,63 +6,30 @@ import kitchenpos.order.exceptions.InputOrderDataErrorCode;
 import kitchenpos.order.exceptions.InputOrderDataException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @DisplayName("주문 서비스 테스트")
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class OrderServiceTest {
 
     @Mock
     private OrderRepository orderRepository;
 
+    @Autowired
+    private OrderValidator orderValidator;
+
     @InjectMocks
     private OrderService orderService;
-
-    @Test
-    @DisplayName("주문상태를 변경한다. 요리중 -> 식사중")
-    void modifyOrderStatusMealTest() {
-        //given
-        Order order = mock(Order.class);
-        when(order.getOrderStatus()).thenReturn(OrderStatus.MEAL.name());
-        //when
-        when(orderRepository.findById(anyLong()))
-                .thenReturn(Optional.of(order));
-
-        OrderValidator orderValidator = new OrderValidator(order);
-        orderValidator.isAlreadyCompletionOrder();
-
-        orderService.changeOrderStatus(1L, OrderStatus.MEAL);
-        verify(order).updateOrderStatus(OrderStatus.MEAL);
-    }
-
-    @Test
-    @DisplayName("주문상태를 변경한다. 식사중 -> 완료")
-    void modifyOrderStatusCompletionTest() {
-        //given
-        Order order = mock(Order.class);
-        when(order.getOrderStatus()).thenReturn(OrderStatus.MEAL.name());
-        //when
-        when(orderRepository.findById(anyLong()))
-                .thenReturn(Optional.of(order));
-
-        OrderValidator orderValidator = new OrderValidator(order);
-        orderValidator.isAlreadyCompletionOrder();
-
-        orderService.changeOrderStatus(1L, OrderStatus.COMPLETION);
-        verify(order).updateOrderStatus(OrderStatus.COMPLETION);
-    }
 
     @Test
     @DisplayName("주문 내역을 조회한다.")
@@ -90,8 +57,7 @@ class OrderServiceTest {
         order.endOrder();
 
         assertThatThrownBy(() -> {
-            OrderValidator orderValidator = new OrderValidator(order);
-            orderValidator.isAlreadyCompletionOrder();
+            orderValidator.isAlreadyCompletionOrder(order);
             orderService.changeOrderStatus(1L, OrderStatus.COOKING);
         }).isInstanceOf(InputOrderDataException.class)
                 .hasMessageContaining(InputOrderDataErrorCode.THE_ORDER_STATUS_DO_NOT_CHANGE_COMPLETION_TO_ANY_OTHER.errorMessage());
@@ -107,8 +73,7 @@ class OrderServiceTest {
         order.endOrder();
 
         assertThatThrownBy(() -> {
-            OrderValidator orderValidator = new OrderValidator(order);
-            orderValidator.isAlreadyCompletionOrder();
+            orderValidator.isAlreadyCompletionOrder(order);
             orderService.changeOrderStatus(1L, OrderStatus.MEAL);
         }).isInstanceOf(InputOrderDataException.class)
                 .hasMessageContaining(InputOrderDataErrorCode.THE_ORDER_STATUS_DO_NOT_CHANGE_COMPLETION_TO_ANY_OTHER.errorMessage());

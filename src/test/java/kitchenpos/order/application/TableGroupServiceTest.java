@@ -5,8 +5,8 @@ import kitchenpos.order.exceptions.InputOrderDataErrorCode;
 import kitchenpos.order.exceptions.InputOrderDataException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Arrays;
 
@@ -17,8 +17,15 @@ import static org.mockito.Mockito.when;
 
 
 @DisplayName("Table Group 서비스 테스트")
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class TableGroupServiceTest {
+
+    private OrderTableValidator orderTableValidator;
+
+    @Autowired
+    public TableGroupServiceTest(OrderTableValidator orderTableValidator) {
+        this.orderTableValidator = orderTableValidator;
+    }
 
     @Test
     @DisplayName("테이블 그룹을 생성한다.")
@@ -65,8 +72,7 @@ class TableGroupServiceTest {
 
         //when
         assertThatThrownBy(() -> {
-            OrderTableValidator orderTableValidator = new OrderTableValidator(Arrays.asList(order), orderTable);
-            orderTableValidator.cancelTableGroup();
+            orderTableValidator.cancelTableGroup(Arrays.asList(order));
             tableGroup1.cancleGroup();
         }).isInstanceOf(InputOrderDataException.class)
                 .hasMessageContaining(InputOrderDataErrorCode.THE_ORDER_IS_COOKING_OR_IS_EATING.errorMessage());
