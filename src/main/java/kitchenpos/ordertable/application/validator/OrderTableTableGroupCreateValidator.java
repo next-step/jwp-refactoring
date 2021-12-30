@@ -1,4 +1,4 @@
-package kitchenpos.ordertable.domain.validator;
+package kitchenpos.ordertable.application.validator;
 
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.exception.IllegalOrderTableIdsException;

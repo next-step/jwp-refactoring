@@ -1,6 +1,6 @@
 package kitchenpos.ordertable.domain;
 
-import kitchenpos.order.domain.validator.OrderOrderTableChangeEmptyValidator;
+import kitchenpos.order.application.validator.OrderOrderTableChangeEmptyValidator;
 import kitchenpos.order.infra.OrderRepository;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;

@@ -1,7 +1,7 @@
 package kitchenpos.tablegroup.domain.validator;
 
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.validator.OrderTableTableGroupCreateValidator;
+import kitchenpos.ordertable.application.validator.OrderTableTableGroupCreateValidator;
 import kitchenpos.ordertable.infra.OrderTableRepository;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;

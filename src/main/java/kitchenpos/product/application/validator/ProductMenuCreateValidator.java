@@ -1,4 +1,4 @@
-package kitchenpos.product.domain.validator;
+package kitchenpos.product.application.validator;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProductGroup;

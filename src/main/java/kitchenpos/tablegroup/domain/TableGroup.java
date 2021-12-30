@@ -1,7 +1,5 @@
 package kitchenpos.tablegroup.domain;
 
-import kitchenpos.ordertable.domain.validator.OrderTableTableGroupCreateValidator;
-import kitchenpos.order.domain.validator.OrderTableGroupUnGroupValidator;
 import kitchenpos.tablegroup.domain.validator.TableGroupCreateValidator;
 import kitchenpos.tablegroup.domain.validator.TableGroupUnGroupValidator;
 import org.springframework.data.annotation.CreatedDate;

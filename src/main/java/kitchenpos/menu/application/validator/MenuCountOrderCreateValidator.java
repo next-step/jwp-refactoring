@@ -1,4 +1,4 @@
-package kitchenpos.menu.domain.validator;
+package kitchenpos.menu.application.validator;
 
 import kitchenpos.menu.infra.MenuRepository;
 import kitchenpos.order.domain.Order;

@@ -1,12 +1,12 @@
 package kitchenpos.order.application;
 
-import kitchenpos.menu.domain.validator.MenuCountOrderCreateValidator;
+import kitchenpos.menu.application.validator.MenuCountOrderCreateValidator;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.validator.OrderCreateValidator;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.infra.OrderRepository;
-import kitchenpos.ordertable.domain.validator.OrderTableOrderCreateValidator;
+import kitchenpos.ordertable.application.validator.OrderTableOrderCreateValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
