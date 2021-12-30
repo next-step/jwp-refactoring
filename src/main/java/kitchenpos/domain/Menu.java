@@ -59,10 +59,10 @@ public class Menu {
     }
 
     public void addMenuProducts(final List<MenuProduct> menuProductList) {
+        menuProductList.forEach(this::addMenuProduct);
         if (this.menuProducts.isOverPrice(this.price)) {
             throw new MenuProductSumPriceException();
         }
-        menuProductList.forEach(this::addMenuProduct);
     }
 
     private void addMenuProduct(final MenuProduct menuProduct) {
