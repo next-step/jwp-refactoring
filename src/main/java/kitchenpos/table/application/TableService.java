@@ -17,11 +17,9 @@ import java.util.stream.Collectors;
 public class TableService {
 
     private final OrderTableRepository orderTableRepository;
-    private final TableValidator tableValidator;
 
-    public TableService(final OrderTableRepository orderTableRepository, final TableValidator tableValidator) {
+    public TableService(final OrderTableRepository orderTableRepository) {
         this.orderTableRepository = orderTableRepository;
-        this.tableValidator = tableValidator;
     }
 
     @Transactional
@@ -42,7 +40,6 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(() -> new IllegalArgumentException("주문 테이블이 존재하지 않습니다."));
-        tableValidator.validateOrderStatus(savedOrderTable);
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
         return OrderTableResponse.from(savedOrderTable);
     }
