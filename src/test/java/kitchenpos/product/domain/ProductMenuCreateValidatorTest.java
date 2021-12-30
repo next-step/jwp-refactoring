@@ -1,8 +1,8 @@
-package kitchenpos.menu.domain;
+package kitchenpos.product.domain;
 
-import kitchenpos.product.application.validator.ProductMenuCreateValidator;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.infra.ProductRepository;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.product.domain.validator.ProductMenuCreateValidator;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,7 @@ import static org.mockito.BDDMockito.given;
 
 @DisplayName("메뉴 가격 유효성 검사 테스트")
 @ExtendWith(MockitoExtension.class)
-class MenuPriceSumValidatorTest {
+class ProductMenuCreateValidatorTest {
     @Mock
     private ProductRepository productRepository;
 

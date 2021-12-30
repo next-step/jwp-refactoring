@@ -3,7 +3,7 @@ package kitchenpos.menu.domain;
 import kitchenpos.menugroup.infra.MenuGroupRepository;
 import kitchenpos.menu.infra.MenuRepository;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.product.infra.ProductRepository;
+import kitchenpos.product.infra.JpaProductRepository;
 import kitchenpos.product.domain.Product;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +27,7 @@ class MenuTest {
     @Autowired
     private MenuGroupRepository menuGroupRepository;
     @Autowired
-    private ProductRepository productRepository;
+    private JpaProductRepository jpaProductRepository;
 
     private Long 추천메뉴_아이디;
     private Long 짬뽕_아이디;
@@ -35,7 +35,7 @@ class MenuTest {
     @BeforeEach
     void setUp() {
         추천메뉴_아이디 = menuGroupRepository.save(MenuGroup.of("추천메뉴")).getId();
-        짬뽕_아이디 = productRepository.save(Product.of("짬뽕", 3000)).getId();
+        짬뽕_아이디 = jpaProductRepository.save(Product.of("짬뽕", 3000)).getId();
     }
 
     @DisplayName("메뉴는 이름, 가격, 메뉴 그룹의 아이디, 메뉴상품그룹으로 구성되어 있다.")

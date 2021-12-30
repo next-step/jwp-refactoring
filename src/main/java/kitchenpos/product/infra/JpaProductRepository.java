@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface ProductRepository extends JpaRepository<Product, Long> {
+public interface JpaProductRepository extends JpaRepository<Product, Long> {
 
     @Query("select p from Product p where p.id in (:ids)")
     List<Product> findAllByIds(@Param("ids") List<Long> productIds);

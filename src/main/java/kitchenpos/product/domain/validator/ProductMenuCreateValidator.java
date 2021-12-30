@@ -1,11 +1,11 @@
-package kitchenpos.product.application.validator;
+package kitchenpos.product.domain.validator;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProductGroup;
 import kitchenpos.menu.domain.validator.MenuPriceMenuCreateValidator;
 import kitchenpos.menu.exception.IllegalMenuPriceException;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.infra.ProductRepository;
+import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;

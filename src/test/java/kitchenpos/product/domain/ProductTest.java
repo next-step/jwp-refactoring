@@ -1,7 +1,6 @@
 package kitchenpos.product.domain;
 
-import kitchenpos.product.infra.ProductRepository;
-import kitchenpos.product.domain.Product;
+import kitchenpos.product.infra.JpaProductRepository;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class ProductTest {
 
     @Autowired
-    private ProductRepository productRepository;
+    private JpaProductRepository jpaProductRepository;
 
     @DisplayName("상품은 아이디, 이름, 가격으로 구성되어 있다.")
     @Test
@@ -27,7 +26,7 @@ class ProductTest {
         // given
         Product menuProduct = Product.of("쌀국수", 13_000);
         // when
-        final Product actual = productRepository.save(menuProduct);
+        final Product actual = jpaProductRepository.save(menuProduct);
         // then
         assertAll(
                 () -> assertThat(actual).isNotNull(),
