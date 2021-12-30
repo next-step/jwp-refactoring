@@ -27,6 +27,10 @@ public class OrderLineItemResponse {
         return new OrderLineItemResponse(orderLineItem.getSeq(), menuResponse, orderLineItem.getQuantity().toLong());
     }
 
+    public static OrderLineItemResponse of(final Long seq, final MenuResponse menuResponse, final long quantity) {
+        return new OrderLineItemResponse(seq, menuResponse, quantity);
+    }
+
     public Long getSeq() {
         return seq;
     }

@@ -53,10 +53,6 @@ public class Order {
         return new Order(id, orderTable, orderStatus, orderLineItems);
     }
 
-    public static Order of(final OrderTable orderTable, final OrderStatus orderStatus) {
-        return new Order(null, orderTable, orderStatus, OrderLineItems.empty());
-    }
-
     public static Order from(final OrderTable orderTable) {
         return new Order(null, orderTable, OrderStatus.COOKING, OrderLineItems.empty());
     }

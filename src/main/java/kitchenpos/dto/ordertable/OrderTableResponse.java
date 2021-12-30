@@ -20,6 +20,10 @@ public class OrderTableResponse {
         return new OrderTableResponse(orderTable.getId(), orderTable.getNumberOfGuests().toInt(), orderTable.getEmpty().isEmpty());
     }
 
+    public static OrderTableResponse of(final Long id, final int numberOfGuestsm, final boolean empty) {
+        return new OrderTableResponse(id, numberOfGuestsm, empty);
+    }
+
     public Long getId() {
         return id;
     }
