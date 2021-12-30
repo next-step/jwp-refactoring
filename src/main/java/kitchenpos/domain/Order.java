@@ -1,8 +1,7 @@
 package kitchenpos.domain;
 
-import kitchenpos.common.exceptions.EmptyOrderTableException;
 import kitchenpos.common.exceptions.EmptyOrderStatusException;
-import kitchenpos.common.exceptions.OrderStatusCompletedException;
+import kitchenpos.common.exceptions.EmptyOrderTableException;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -58,15 +57,6 @@ public class Order {
         return new Order(null, orderTable, orderStatus, OrderLineItems.empty());
     }
 
-    private void validate(final OrderTable orderTable, OrderStatus orderStatus) {
-        if (Objects.isNull(orderTable)) {
-            throw new EmptyOrderTableException();
-        }
-        if (Objects.isNull(orderStatus)) {
-            throw new EmptyOrderStatusException();
-        }
-    }
-
     public static Order from(final OrderTable orderTable) {
         return new Order(null, orderTable, OrderStatus.COOKING, OrderLineItems.empty());
     }
@@ -80,11 +70,18 @@ public class Order {
         this.orderLineItems.add(orderLineItem);
     }
 
-    public void updateStatus(final OrderStatus updateStatusName) {
-        if (this.orderStatus.equals(OrderStatus.COMPLETION)) {
-            throw new OrderStatusCompletedException();
+    private void validate(final OrderTable orderTable, OrderStatus orderStatus) {
+        if (Objects.isNull(orderTable)) {
+            throw new EmptyOrderTableException();
         }
-        this.orderStatus = updateStatusName;
+        if (Objects.isNull(orderStatus)) {
+            throw new EmptyOrderStatusException();
+        }
+    }
+
+    public void updateStatus(final OrderStatus updateStatus) {
+        this.orderStatus.validateStatus(updateStatus);
+        this.orderStatus = updateStatus;
     }
 
     public boolean existsOrderStatus() {
