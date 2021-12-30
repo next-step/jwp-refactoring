@@ -9,7 +9,6 @@ import kitchenpos.dto.order.OrderResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -65,9 +64,12 @@ public class OrderService {
                 .orElseThrow(NotFoundEntityException::new);
     }
 
-    public void existsByOrderTableInAndOrderStatusIn(final List<OrderTable> orderTables) {
-        if (orderRepository.existsByOrderTableInAndOrderStatusIn(
-                orderTables, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+    public void validateOrderStatus(final List<OrderTable> orderTables) {
+        final List<Order> orders = orderRepository.findByOrderTableIn(orderTables);
+        final List<Order> checkOrders = orders.stream()
+                .filter(Order::existsOrderStatus)
+                .collect(Collectors.toList());
+        if (orders.containsAll(checkOrders)) {
             throw new OrderStatusNotProcessingException();
         }
     }
