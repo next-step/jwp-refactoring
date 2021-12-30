@@ -1,6 +1,6 @@
 package kitchenpos.domain;
 
-import kitchenpos.common.exceptions.ProductRequiredException;
+import kitchenpos.common.exceptions.EmptyProductException;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -48,7 +48,7 @@ public class MenuProduct {
 
     private void validateCreate(final Product product) {
         if (Objects.isNull(product)) {
-            throw new ProductRequiredException();
+            throw new EmptyProductException();
         }
     }
 

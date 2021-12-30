@@ -1,9 +1,7 @@
 package kitchenpos.domain;
 
-import kitchenpos.common.exceptions.MenuGroupRequiredException;
-import kitchenpos.common.exceptions.MenuProductSumPriceException;
-import kitchenpos.common.exceptions.NoRequiredInputPriceException;
-import kitchenpos.common.exceptions.NoRequiredNameException;
+import kitchenpos.common.exceptions.EmptyMenuGroupException;
+import kitchenpos.common.exceptions.GreaterProductSumPriceException;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -35,7 +33,7 @@ public class Menu {
     }
 
     private Menu(final Long id, final Name name, final Price price, final MenuGroup menuGroup) {
-        validate(name, price, menuGroup);
+        validate(menuGroup);
         this.id = id;
         this.name = name;
         this.price = price;
@@ -50,22 +48,16 @@ public class Menu {
         return new Menu(null, Name.from(name), Price.from(BigDecimal.valueOf(price)), menuGroup);
     }
 
-    private void validate(final Name name, final Price price, final MenuGroup menuGroup) {
-        if (Objects.isNull(name)) {
-            throw new NoRequiredNameException();
-        }
-        if (Objects.isNull(price)) {
-            throw new NoRequiredInputPriceException();
-        }
+    private void validate(final MenuGroup menuGroup) {
         if (Objects.isNull(menuGroup)) {
-            throw new MenuGroupRequiredException();
+            throw new EmptyMenuGroupException();
         }
     }
 
     public void addMenuProducts(final List<MenuProduct> menuProductList) {
         menuProductList.forEach(this::addMenuProduct);
         if (this.menuProducts.isOverPrice(this.price)) {
-            throw new MenuProductSumPriceException();
+            throw new GreaterProductSumPriceException();
         }
     }
 

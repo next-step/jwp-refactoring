@@ -1,7 +1,7 @@
 package kitchenpos.domain;
 
 import io.micrometer.core.instrument.util.StringUtils;
-import kitchenpos.common.exceptions.NoRequiredNameException;
+import kitchenpos.common.exceptions.EmptyNameException;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -26,7 +26,7 @@ public class Name {
 
     private void validate(final String valueOf) {
         if (StringUtils.isEmpty(valueOf) || Objects.isNull(valueOf)) {
-            throw new NoRequiredNameException();
+            throw new EmptyNameException();
         }
     }
 
