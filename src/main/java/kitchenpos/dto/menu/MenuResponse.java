@@ -4,7 +4,6 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.dto.menugroup.MenuGroupResponse;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -12,14 +11,14 @@ import java.util.stream.Collectors;
 public class MenuResponse {
     private Long id;
     private String name;
-    private BigDecimal price;
+    private long price;
     private MenuGroupResponse menuGroupResponse;
     private List<MenuProductResponse> menuProductResponses;
 
     public MenuResponse() {
     }
 
-    private MenuResponse(final Long id, final String name, final BigDecimal price, final MenuGroupResponse menuGroupResponse, final List<MenuProductResponse> menuProductResponses) {
+    private MenuResponse(final Long id, final String name, final long price, final MenuGroupResponse menuGroupResponse, final List<MenuProductResponse> menuProductResponses) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -37,7 +36,7 @@ public class MenuResponse {
                 .stream()
                 .map(MenuProductResponse::from)
                 .collect(Collectors.toList());
-        return new MenuResponse(menu.getId(), menu.getName().toName(), menu.getPrice().toBigDecimal(), menuGroupResponse, menuProductResponses);
+        return new MenuResponse(menu.getId(), menu.getName().toName(), menu.getPrice().toLong(), menuGroupResponse, menuProductResponses);
     }
 
     public static List<MenuGroupResponse> from(final List<MenuGroup> menuGroups) {
@@ -46,7 +45,7 @@ public class MenuResponse {
                 .collect(Collectors.toList());
     }
 
-    public static MenuResponse of(final Long id, final String name, final BigDecimal price, final MenuGroupResponse menuGroupResponse, final List<MenuProductResponse> menuProducts) {
+    public static MenuResponse of(final Long id, final String name, final long price, final MenuGroupResponse menuGroupResponse, final List<MenuProductResponse> menuProducts) {
         return new MenuResponse(id, name, price, menuGroupResponse, menuProducts);
     }
 
@@ -58,7 +57,7 @@ public class MenuResponse {
         return name;
     }
 
-    public BigDecimal getPrice() {
+    public long getPrice() {
         return price;
     }
 
