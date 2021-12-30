@@ -7,7 +7,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 @Entity
 public class OrderLineItem {
@@ -15,10 +14,6 @@ public class OrderLineItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
-
-    @ManyToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_order_line_item_orders"))
-    private Order order;
 
     @Column(nullable = false)
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_order_line_item_menu"))
@@ -39,16 +34,9 @@ public class OrderLineItem {
         return new OrderLineItem(menuId, quantity);
     }
 
-    public void changeOrder(Order order) {
-        this.order = order;
-    }
 
     public Long getSeq() {
         return seq;
-    }
-
-    public Order getOrder() {
-        return order;
     }
 
     public Long getMenuId() {

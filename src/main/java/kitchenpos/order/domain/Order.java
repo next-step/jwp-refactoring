@@ -43,7 +43,6 @@ public class Order {
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
         this.orderLineItems = orderLineItems;
-        orderLineItems.changeOrder(this);
     }
 
     public static Order of(Long orderTableId, OrderLineItems orderLineItems) {
