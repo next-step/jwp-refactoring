@@ -1,7 +1,7 @@
 package kitchenpos.common.exceptions;
 
 public class NotFoundEntityException extends CustomException {
-    public static final String NOT_FOUND_ENTITY_MESSAGE = "찾을 수 없는 entity 입니다.";
+    public static final String NOT_FOUND_ENTITY_MESSAGE = "조회한 내용은 존재하지 않습니다.";
 
     public NotFoundEntityException() {
         super(NOT_FOUND_ENTITY_MESSAGE);

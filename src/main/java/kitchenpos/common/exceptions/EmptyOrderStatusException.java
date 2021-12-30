@@ -1,7 +1,7 @@
 package kitchenpos.common.exceptions;
 
 public class EmptyOrderStatusException extends CustomException {
-    public static final String EMPTY_ORDER_TABLE_STATUS_MESSAGE = "주문 상태가 없습니다.";
+    public static final String EMPTY_ORDER_TABLE_STATUS_MESSAGE = "주문 상태는 필수로 입력되어야 합니다.";
 
     public EmptyOrderStatusException() {
         super(EMPTY_ORDER_TABLE_STATUS_MESSAGE);
