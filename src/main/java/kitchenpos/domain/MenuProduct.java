@@ -20,7 +20,6 @@ public class MenuProduct {
     private Product product;
 
     @Embedded
-    @AttributeOverride(name = "quantity", column = @Column(name = "quantity", nullable = false))
     private Quantity quantity;
 
     protected MenuProduct() {

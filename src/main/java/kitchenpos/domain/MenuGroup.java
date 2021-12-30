@@ -10,7 +10,6 @@ public class MenuGroup {
     private Long id;
 
     @Embedded
-    @AttributeOverride(name = "name", column = @Column(name = "name", nullable = false))
     private Name name;
 
     public MenuGroup() {
