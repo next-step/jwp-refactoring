@@ -18,16 +18,13 @@ public class TableGroup {
     @CreatedDate
     private LocalDateTime createdDate;
 
-    @OneToMany(mappedBy = "tableGroup")
-    private List<OrderTable> orderTables;
+    @Embedded
+    private OrderTables orderTables;
 
     public TableGroup() {}
 
     private TableGroup(List<OrderTable> tables) {
-        for (final OrderTable savedOrderTable : tables) {
-            isValidOrderTable(savedOrderTable);
-        }
-        this.orderTables = tables;
+        this.orderTables = new OrderTables(tables);
     }
 
     public TableGroup(Long id) {
@@ -40,16 +37,12 @@ public class TableGroup {
 
     public static TableGroup create(List<OrderTable> savedOrderTables) {
         TableGroup tableGroup = new TableGroup(savedOrderTables);
-        savedOrderTables.forEach(savedOrderTable -> {
-            savedOrderTable.assignTableGroup(tableGroup);
-        });
+        tableGroup.assignTable();
         return tableGroup;
     }
 
-    private void isValidOrderTable(OrderTable savedOrderTable) {
-        if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) {
-            throw new NotCreateTableGroupException(TableErrorCode.ALREADY_ASSIGN_GROUP);
-        }
+    private void assignTable() {
+        this.orderTables.assignTable(this);
     }
 
     public Long getId() {
@@ -61,7 +54,7 @@ public class TableGroup {
     }
 
     public List<OrderTable> getOrderTables() {
-        return orderTables;
+        return orderTables.getOrderTables();
     }
 
     public void createId(Long id) {

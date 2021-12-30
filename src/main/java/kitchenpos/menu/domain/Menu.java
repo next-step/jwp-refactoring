@@ -4,7 +4,6 @@ import kitchenpos.menu.exception.WrongPriceException;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,13 +23,13 @@ public class Menu {
     @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"), nullable = false)
     private MenuGroup menuGroup;
 
-    @OneToMany(mappedBy = "menu", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<MenuProduct> menuProducts;
+    @Embedded
+    private MenuProducts menuProducts;
 
     protected Menu() {
     }
 
-    public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
+    private Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new WrongPriceException();
         }
@@ -38,20 +37,17 @@ public class Menu {
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
-        this.menuProducts = new ArrayList<>();
+        this.menuProducts = new MenuProducts(menuProducts);
     }
 
     public static Menu create(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        Menu menu = new Menu(name, price, menuGroup);
-        menu.addMenuProduct(menuProducts);
+        Menu menu = new Menu(name, price, menuGroup, menuProducts);
+        menu.addMenu();
         return menu;
     }
 
-    public void addMenuProduct(List<MenuProduct> menuProducts) {
-        menuProducts.forEach(menuProduct -> {
-            menuProduct.addMenu(this);
-        });
-        this.menuProducts = new ArrayList<>(menuProducts);
+    public void addMenu() {
+        this.menuProducts.addMenu( this);
     }
 
     public Long getId() {
@@ -71,7 +67,7 @@ public class Menu {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
+        return menuProducts.getMenuProducts();
     }
 
     public void createId(Long id) {

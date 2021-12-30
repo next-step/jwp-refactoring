@@ -29,10 +29,10 @@ public class Order {
     @CreatedDate
     private LocalDateTime orderedTime;
 
-    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<OrderLineItem> orderLineItems;
+    @Embedded
+    private OrderLineItems orderLineItems;
 
-    public Order() {
+    protected Order() {
     }
 
     public Order(Long id, OrderTable orderTable, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
@@ -40,17 +40,17 @@ public class Order {
         this.orderTable = orderTable;
         this.orderStatus = OrderStatus.valueOf(orderStatus);
         this.orderedTime = orderedTime;
-        this.orderLineItems = orderLineItems;
+        this.orderLineItems = new OrderLineItems(orderLineItems);
     }
 
-    private Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+    private Order(OrderTable orderTable, List<OrderLineItem> orderLineItemList) {
         if (orderTable.isEmpty()) {
             throw new NotCreateOrderException(orderTable.getId() + OrderErrorCode.EMPTY_ORDER_TABLE);
         }
 
         this.orderTable = orderTable;
         this.orderStatus = OrderStatus.COOKING;
-        this.orderLineItems = orderLineItems;
+        this.orderLineItems = new OrderLineItems(orderLineItemList);
     }
 
     public Order(String orderStatus) {
@@ -61,16 +61,14 @@ public class Order {
         return new Order(id, orderTable, orderStatus, orderedTime, orderLineItems);
     }
 
-    public static Order create(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        Order order = new Order(orderTable, orderLineItems);
-        order.addOrder(orderLineItems);
+    public static Order create(OrderTable orderTable, List<OrderLineItem> orderLineItemList) {
+        Order order = new Order(orderTable, orderLineItemList);
+        order.addOrderLineItems();
         return order;
     }
 
-    private void addOrder(List<OrderLineItem> orderLineItems) {
-        orderLineItems.forEach(orderLineItem -> {
-            orderLineItem.addOrder(this);
-        });
+    private void addOrderLineItems() {
+        this.orderLineItems.addOrderLineItems( this);
     }
 
     public void changeOrderStatus(String request) {
@@ -102,7 +100,7 @@ public class Order {
     }
 
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
+        return orderLineItems.getOrderLineItems();
     }
 
     public void createId(Long id) {
