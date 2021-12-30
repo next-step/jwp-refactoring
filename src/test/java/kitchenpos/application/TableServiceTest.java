@@ -3,9 +3,8 @@ package kitchenpos.application;
 import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
-import kitchenpos.dto.ordertable.OrderTableRequest;
 import kitchenpos.dto.ordertable.OrderTableResponse;
-import org.junit.jupiter.api.BeforeEach;
+import kitchenpos.fixture.TestOrderTableFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,12 +12,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -33,78 +29,52 @@ class TableServiceTest {
     @InjectMocks
     private TableService tableService;
 
-    private OrderTable 주문_테이블;
-    private OrderTableRequest 주문_테이블_요청;
-    private OrderTableRequest 주문_빈_테이블_요청;
-    private OrderTableRequest 주문_손님변경_테이블_요청;
-
-    @BeforeEach
-    void setUp() {
-        주문_테이블 = OrderTable.of(1L, 2, false);
-        주문_테이블_요청 = OrderTableRequest.of(2, false);
-        주문_빈_테이블_요청 = OrderTableRequest.of(0, true);
-        주문_손님변경_테이블_요청 = OrderTableRequest.of(5, false);
-    }
-
     @DisplayName("주문 테이블을 등록한다.")
     @Test
     void create() {
-        given(orderTableRepository.save(any())).willReturn(주문_테이블);
+        final OrderTable 주문테이블 = TestOrderTableFactory.주문_테이블_생성됨(1L, 10, false);
 
-        final OrderTableResponse actual = tableService.create(주문_테이블_요청);
+        given(orderTableRepository.save(any())).willReturn(주문테이블);
 
-        assertAll(
-                () -> assertThat(actual).isNotNull(),
-                () -> assertThat(actual.getId()).isEqualTo(1),
-                () -> assertThat(actual.getNumberOfGuests()).isEqualTo(2),
-                () -> assertThat(actual.isEmpty()).isFalse()
-        );
+        final OrderTableResponse actual = tableService.create(TestOrderTableFactory.주문_테이블_요청(10, false));
+
+        TestOrderTableFactory.주문테이블_생성_확인됨(actual, 주문테이블);
     }
 
     @DisplayName("주문 테이블 목록을 조회한다.")
     @Test
     void list() {
-        given(orderTableRepository.findAll()).willReturn(Collections.singletonList(주문_테이블));
+        final List<OrderTable> 주문테이블_목록 = TestOrderTableFactory.주문_테이블_목록_조회됨(10);
+
+        given(orderTableRepository.findAll()).willReturn(주문테이블_목록);
 
         final List<OrderTableResponse> actual = tableService.list();
 
-        assertAll(
-                () -> assertThat(actual).hasSize(1),
-                () -> assertThat(actual.get(0)).isNotNull(),
-                () -> assertThat(actual.get(0).getId()).isEqualTo(1),
-                () -> assertThat(actual.get(0).getNumberOfGuests()).isEqualTo(2),
-                () -> assertThat(actual.get(0).isEmpty()).isFalse()
-        );
+        TestOrderTableFactory.주문_테이블_목록_확인됨(actual,주문테이블_목록);
     }
 
     @DisplayName("주문 테이블을 비운다.")
     @Test
     void changeEmpty() {
-        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(주문_테이블));
+        final OrderTable 주문테이블 = TestOrderTableFactory.주문_테이블_조회됨(1L, 10, false);
+
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(주문테이블));
         given(orderRepository.existsByOrderTableAndOrderStatusIn(any(), any())).willReturn(false);
 
-        final OrderTableResponse actual = tableService.changeEmpty(1L, 주문_빈_테이블_요청);
+        final OrderTableResponse actual = tableService.changeEmpty(1L, TestOrderTableFactory.주문_빈테이블_요청());
 
-        assertAll(
-                () ->  assertThat(actual).isNotNull(),
-                () ->  assertThat(actual.getId()).isEqualTo(1),
-                () ->  assertThat(actual.getNumberOfGuests()).isEqualTo(2),
-                () ->  assertThat(actual.isEmpty()).isTrue()
-        );
+        TestOrderTableFactory.주문_빈테이블_확인됨(actual, 주문테이블);
     }
 
     @DisplayName("주문 테이블의 손님수를 변경한다.")
     @Test
     void changeNumberOfGuests() {
-        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(주문_테이블));
+        final OrderTable 주문테이블 = TestOrderTableFactory.주문_테이블_조회됨(1L, 10, false);
 
-        final OrderTableResponse actual = tableService.changeNumberOfGuests(1L, 주문_손님변경_테이블_요청);
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(주문테이블));
 
-        assertAll(
-                () -> assertThat(actual).isNotNull(),
-                () -> assertThat(actual.getId()).isEqualTo(1),
-                () -> assertThat(actual.getNumberOfGuests()).isEqualTo(주문_손님변경_테이블_요청.getNumberOfGuests()),
-                () -> assertThat(actual.isEmpty()).isFalse()
-        );
+        final OrderTableResponse actual = tableService.changeNumberOfGuests(1L, TestOrderTableFactory.주문_손님_변경_테이블_요청(5));
+
+        TestOrderTableFactory.주문_손님변경테이블_확인됨(actual, 5);
     }
 }
