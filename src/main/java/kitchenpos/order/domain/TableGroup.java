@@ -1,19 +1,17 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.common.domain.BaseEntity;
 import kitchenpos.order.exceptions.InputTableDataErrorCode;
 import kitchenpos.order.exceptions.InputTableDataException;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-public class TableGroup {
+public class TableGroup extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private LocalDateTime createdDate;
 
     @Embedded
     private OrderTables orderTables;
@@ -22,10 +20,9 @@ public class TableGroup {
 
     }
 
-    public TableGroup(OrderTables orderTables, LocalDateTime createdDate) {
+    public TableGroup(OrderTables orderTables) {
         validateTable(orderTables);
         this.orderTables = orderTables;
-        this.createdDate = createdDate;
         allocateTableGroup();
     }
 
@@ -36,10 +33,6 @@ public class TableGroup {
 
     public Long getId() {
         return id;
-    }
-
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
     }
 
     public List<OrderTable> getOrderTables() {

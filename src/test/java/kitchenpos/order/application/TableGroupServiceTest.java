@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -43,7 +42,7 @@ class TableGroupServiceTest {
         OrderTable orderTable = mock(OrderTable.class);
         OrderTable orderTable2 = mock(OrderTable.class);
         OrderTables orderTables = new OrderTables(Arrays.asList(orderTable, orderTable2));
-        TableGroup tableGroup1 = new TableGroup(orderTables, LocalDateTime.now());
+        TableGroup tableGroup1 = new TableGroup(orderTables);
 
         //when
         tableGroup1.cancleGroup();
@@ -62,7 +61,7 @@ class TableGroupServiceTest {
         OrderLineItem orderLineItem = new OrderLineItem(1L, 5);
         OrderLineItems orderLineItems = new OrderLineItems(Arrays.asList(orderLineItem));
         Order order = new Order(1L, orderLineItems);
-        TableGroup tableGroup1 = new TableGroup(orderTables, LocalDateTime.now());
+        TableGroup tableGroup1 = new TableGroup(orderTables);
 
         //when
         assertThatThrownBy(() -> {

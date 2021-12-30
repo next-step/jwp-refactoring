@@ -3,7 +3,6 @@ package kitchenpos.order.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,7 +17,7 @@ class TableGroupTest {
         OrderTable orderTable = mock(OrderTable.class);
         OrderTable orderTable2 = mock(OrderTable.class);
         OrderTables orderTables = new OrderTables(Arrays.asList(orderTable, orderTable2));
-        TableGroup tableGroup = new TableGroup(orderTables, LocalDateTime.now());
+        TableGroup tableGroup = new TableGroup(orderTables);
 
         assertThat(tableGroup.getOrderTables()).contains(orderTable, orderTable2);
     }
@@ -29,7 +28,7 @@ class TableGroupTest {
         OrderTable orderTable = mock(OrderTable.class);
         OrderTable orderTable2 = mock(OrderTable.class);
         OrderTables orderTables = new OrderTables(Arrays.asList(orderTable, orderTable2));
-        TableGroup tableGroup = new TableGroup(orderTables, LocalDateTime.now());
+        TableGroup tableGroup = new TableGroup(orderTables);
 
         tableGroup.cancleGroup();
         assertThat(tableGroup.getOrderTables().size()).isEqualTo(0);

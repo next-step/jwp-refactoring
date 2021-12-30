@@ -9,7 +9,6 @@ import kitchenpos.order.exceptions.InputTableDataException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -28,7 +27,7 @@ public class TableGroupService {
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         List<Long> orderTableIds = tableGroupRequest.getOrderIds();
         List<OrderTable> orderTables = orderTableRepository.findAllById(orderTableIds);
-        TableGroup tableGroup = tableGroupRepository.save(new TableGroup(new OrderTables(orderTables), LocalDateTime.now()));
+        TableGroup tableGroup = tableGroupRepository.save(new TableGroup(new OrderTables(orderTables)));
         return TableGroupResponse.of(tableGroup);
     }
 
