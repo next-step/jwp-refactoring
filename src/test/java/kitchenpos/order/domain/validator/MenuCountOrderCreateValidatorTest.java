@@ -1,5 +1,6 @@
 package kitchenpos.order.domain.validator;
 
+import kitchenpos.menu.domain.validator.MenuCountOrderCreateValidator;
 import kitchenpos.menu.infra.MenuRepository;
 import kitchenpos.order.domain.Order;
 import org.assertj.core.api.ThrowableAssert;

@@ -1,6 +1,7 @@
-package kitchenpos.order.domain.validator;
+package kitchenpos.ordertable.domain.validator;
 
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.validator.OrderCreateValidator;
 import kitchenpos.order.exception.CanNotOrderException;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.infra.OrderTableRepository;

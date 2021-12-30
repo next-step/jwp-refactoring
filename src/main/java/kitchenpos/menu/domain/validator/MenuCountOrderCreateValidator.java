@@ -1,7 +1,8 @@
-package kitchenpos.order.domain.validator;
+package kitchenpos.menu.domain.validator;
 
 import kitchenpos.menu.infra.MenuRepository;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.validator.OrderCreateValidator;
 import kitchenpos.order.exception.IllegalMenuIdsException;
 import org.springframework.stereotype.Component;
 

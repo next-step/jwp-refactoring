@@ -1,5 +1,6 @@
 package kitchenpos.tablegroup.domain.validator;
 
+import kitchenpos.order.domain.validator.OrderUnGroupTableGroupValidator;
 import kitchenpos.order.infra.OrderRepository;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
@@ -20,11 +21,11 @@ import static org.mockito.BDDMockito.given;
 
 @DisplayName("단체 지정 해산시 주문테이블 유효성 테스트")
 @ExtendWith(MockitoExtension.class)
-class UnGroupTableGroupValidatorTest {
+class OrderUnGroupTableGroupValidatorTest {
     @Mock
     private OrderRepository orderRepository;
     @InjectMocks
-    private UnGroupTableGroupValidator validator;
+    private OrderUnGroupTableGroupValidator validator;
 
     @DisplayName("조리나 식사 상태일 경우일 경우 유효하다.")
     @Test

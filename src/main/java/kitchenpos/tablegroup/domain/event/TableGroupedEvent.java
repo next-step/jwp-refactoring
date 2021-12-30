@@ -1,4 +1,6 @@
-package kitchenpos.tablegroup.domain;
+package kitchenpos.tablegroup.domain.event;
+
+import kitchenpos.tablegroup.domain.TableGroup;
 
 import java.util.List;
 

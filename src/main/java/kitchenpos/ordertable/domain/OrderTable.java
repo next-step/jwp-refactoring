@@ -1,5 +1,6 @@
 package kitchenpos.ordertable.domain;
 
+import kitchenpos.ordertable.domain.validator.ChangeOrderTableValidator;
 import kitchenpos.ordertable.exception.CanNotChangeOrderTableException;
 
 import javax.persistence.Column;

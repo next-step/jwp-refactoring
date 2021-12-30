@@ -2,8 +2,8 @@ package kitchenpos.order.application;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.validator.MenuCountOrderCreateValidator;
-import kitchenpos.order.domain.validator.OrderTableEmptyOrderValidator;
+import kitchenpos.menu.domain.validator.MenuCountOrderCreateValidator;
+import kitchenpos.ordertable.domain.validator.OrderTableEmptyOrderValidator;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.infra.OrderRepository;

@@ -1,8 +1,8 @@
 package kitchenpos.tablegroup.domain.validator;
 
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.validator.OrderTableCreateTableGroupValidator;
 import kitchenpos.ordertable.infra.OrderTableRepository;
-import kitchenpos.tablegroup.domain.validator.CreateTableGroupValidator;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,11 +21,11 @@ import static org.mockito.BDDMockito.given;
 
 @DisplayName("단체 지정 생성시 주문테이블 유효성 테스트")
 @ExtendWith(MockitoExtension.class)
-class CreateTableGroupValidatorTest {
+class OrderTableCreateTableGroupValidatorTest {
     @Mock
     private OrderTableRepository orderTableRepository;
     @InjectMocks
-    private CreateTableGroupValidator validator;
+    private OrderTableCreateTableGroupValidator validator;
 
     @DisplayName("모두 빈 상태가 아닐때 유효하지 못하다.")
     @Test

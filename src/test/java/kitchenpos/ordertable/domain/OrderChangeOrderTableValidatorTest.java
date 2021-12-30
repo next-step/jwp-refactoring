@@ -1,6 +1,6 @@
 package kitchenpos.ordertable.domain;
 
-import kitchenpos.order.domain.validator.ChangeEmptyOrderOrderTableValidator;
+import kitchenpos.order.domain.validator.OrderChangeOrderTableValidator;
 import kitchenpos.order.infra.OrderRepository;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
@@ -20,11 +20,11 @@ import static org.mockito.BDDMockito.given;
 
 @DisplayName("주문 테이블 변경시  테스트")
 @ExtendWith(MockitoExtension.class)
-class ChangeEmptyOrderOrderTableValidatorTest {
+class OrderChangeOrderTableValidatorTest {
     @Mock
     private OrderRepository orderRepository;
     @InjectMocks
-    private ChangeEmptyOrderOrderTableValidator validator;
+    private OrderChangeOrderTableValidator validator;
 
     @DisplayName("주문 테이블의 주문 상태가 조리나 식사일 경우 유효하지 못하다.")
     @Test

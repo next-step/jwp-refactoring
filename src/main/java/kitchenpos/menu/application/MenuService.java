@@ -1,8 +1,8 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.validator.MenuGroupCreateValidator;
-import kitchenpos.menu.domain.validator.MenuPriceCreateValidator;
+import kitchenpos.menu.domain.validator.MenuGroupMenuCreateValidator;
+import kitchenpos.menu.domain.validator.MenuPriceMenuCreateValidator;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.infra.MenuRepository;
@@ -16,20 +16,20 @@ import java.util.stream.Collectors;
 @Service
 public class MenuService {
     private final MenuRepository menuRepository;
-    private final MenuPriceCreateValidator menuPriceCreateValidator;
-    private final MenuGroupCreateValidator menuGroupCreateValidator;
+    private final MenuPriceMenuCreateValidator menuPriceMenuCreateValidator;
+    private final MenuGroupMenuCreateValidator menuGroupMenuCreateValidator;
 
-    public MenuService(MenuRepository menuRepository, MenuPriceCreateValidator menuPriceCreateValidator,
-                       MenuGroupCreateValidator menuGroupCreateValidator) {
+    public MenuService(MenuRepository menuRepository, MenuPriceMenuCreateValidator menuPriceMenuCreateValidator,
+                       MenuGroupMenuCreateValidator menuGroupMenuCreateValidator) {
         this.menuRepository = menuRepository;
-        this.menuPriceCreateValidator = menuPriceCreateValidator;
-        this.menuGroupCreateValidator = menuGroupCreateValidator;
+        this.menuPriceMenuCreateValidator = menuPriceMenuCreateValidator;
+        this.menuGroupMenuCreateValidator = menuGroupMenuCreateValidator;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest request) {
         final Menu menu = Menu.create(request.getName(), request.getPrice(), request.getMenuGroupId(), request.getMenuProducts(),
-                Arrays.asList(menuGroupCreateValidator, menuPriceCreateValidator));
+                Arrays.asList(menuGroupMenuCreateValidator, menuPriceMenuCreateValidator));
         return MenuResponse.of(menuRepository.save(menu));
     }
 

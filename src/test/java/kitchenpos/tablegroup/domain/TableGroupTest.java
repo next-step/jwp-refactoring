@@ -1,6 +1,6 @@
 package kitchenpos.tablegroup.domain;
 
-import kitchenpos.tablegroup.domain.validator.CreateTableGroupValidator;
+import kitchenpos.ordertable.domain.validator.OrderTableCreateTableGroupValidator;
 import kitchenpos.tablegroup.infra.TableGroupRepository;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
@@ -20,12 +20,12 @@ class TableGroupTest {
     @Autowired
     private TableGroupRepository tableGroupRepository;
     @Autowired
-    private CreateTableGroupValidator createTableGroupValidator;
+    private OrderTableCreateTableGroupValidator orderTableCreateTableGroupValidator;
 
     @DisplayName("단체 지정은 아이디, 생성시간, 주문 테이블로 구성되어 있다.")
     @Test
     void create() {
-        final TableGroup tableGroup = TableGroup.create(Arrays.asList(1L, 2L), createTableGroupValidator);
+        final TableGroup tableGroup = TableGroup.create(Arrays.asList(1L, 2L), orderTableCreateTableGroupValidator);
         final TableGroup actual = tableGroupRepository.save(tableGroup);
 
         assertAll(
@@ -38,7 +38,7 @@ class TableGroupTest {
     @Test
     void createFail() {
         // given, when
-        ThrowableAssert.ThrowingCallable createCall = () -> TableGroup.create(Collections.singletonList(2L), createTableGroupValidator);
+        ThrowableAssert.ThrowingCallable createCall = () -> TableGroup.create(Collections.singletonList(2L), orderTableCreateTableGroupValidator);
         // then
         assertThatThrownBy(createCall).isInstanceOf(IllegalArgumentException.class);
     }

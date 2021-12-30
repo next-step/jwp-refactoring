@@ -2,6 +2,7 @@ package kitchenpos.order.domain.validator;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.validator.OrderTableEmptyOrderValidator;
 import kitchenpos.ordertable.infra.OrderTableRepository;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.BeforeEach;

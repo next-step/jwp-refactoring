@@ -2,8 +2,8 @@ package kitchenpos.ordertable.domain;
 
 import kitchenpos.ordertable.infra.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.domain.TableGroupedEvent;
-import kitchenpos.tablegroup.domain.TableUnGroupedEvent;
+import kitchenpos.tablegroup.domain.event.TableGroupedEvent;
+import kitchenpos.tablegroup.domain.event.TableUnGroupedEvent;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

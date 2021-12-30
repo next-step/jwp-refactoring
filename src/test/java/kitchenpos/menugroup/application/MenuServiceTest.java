@@ -3,9 +3,9 @@ package kitchenpos.menugroup.application;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.validator.ExistMenuGroupMenuCreateValidator;
+import kitchenpos.menu.domain.validator.MenuExistMenuGroupMenuMenuCreateValidator;
 import kitchenpos.product.domain.Product;
-import kitchenpos.menu.domain.validator.MenuPriceCreateValidator;
+import kitchenpos.menu.domain.validator.MenuPriceMenuCreateValidator;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -39,9 +39,9 @@ public class MenuServiceTest {
     @Mock
     private MenuRepository menuRepository;
     @Mock
-    private ExistMenuGroupMenuCreateValidator notFoundMenuGroupValidator;
+    private MenuExistMenuGroupMenuMenuCreateValidator notFoundMenuGroupValidator;
     @Mock
-    private MenuPriceCreateValidator menuPriceCreateValidator;
+    private MenuPriceMenuCreateValidator menuPriceMenuCreateValidator;
     @InjectMocks
     private MenuService menuService;
 
@@ -145,7 +145,7 @@ public class MenuServiceTest {
             );
 
             // given
-            doThrow(new IllegalArgumentException()).when(menuPriceCreateValidator).validate(any());
+            doThrow(new IllegalArgumentException()).when(menuPriceMenuCreateValidator).validate(any());
             // when
             ThrowableAssert.ThrowingCallable createCall = () -> menuService.create(createRequest);
             // then

@@ -1,7 +1,8 @@
-package kitchenpos.tablegroup.domain;
+package kitchenpos.tablegroup.domain.event;
+
+import kitchenpos.tablegroup.domain.TableGroup;
 
 public class TableUnGroupedEvent {
-
     private final Long tableGroupId;
 
     private TableUnGroupedEvent(Long tableGroupId) {
