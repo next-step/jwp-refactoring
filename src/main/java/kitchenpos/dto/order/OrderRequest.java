@@ -4,13 +4,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import kitchenpos.domain.OrderStatus;
 
 import java.util.List;
-
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class OrderRequest {
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long orderTableId;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private OrderStatus orderStatus;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<OrderLineItemRequest> orderLineItems;
 
     protected OrderRequest() {
