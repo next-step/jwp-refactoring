@@ -1,7 +1,7 @@
 package kitchenpos.tablegroup.domain;
 
 import kitchenpos.ordertable.domain.validator.OrderTableTableGroupCreateValidator;
-import kitchenpos.tablegroup.infra.TableGroupRepository;
+import kitchenpos.tablegroup.infra.JpaTableGroupRepository;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @SpringBootTest
 class TableGroupTest {
     @Autowired
-    private TableGroupRepository tableGroupRepository;
+    private JpaTableGroupRepository tableGroupRepository;
     @Autowired
     private OrderTableTableGroupCreateValidator orderTableCreateTableGroupValidator;
 

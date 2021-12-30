@@ -1,7 +1,7 @@
 package kitchenpos.tablegroup.application;
 
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.infra.JpaOrderTableRepository;
+import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.tablegroup.dto.TableGroupCreateRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 class TableGroupServiceEventTest {
     @Autowired
-    private JpaOrderTableRepository orderTableRepository;
+    private OrderTableRepository orderTableRepository;
 
     @Autowired
     private TableGroupService tableGroupService;
