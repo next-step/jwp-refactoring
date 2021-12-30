@@ -2,7 +2,6 @@ package kitchenpos.exception;
 
 import java.time.LocalDateTime;
 
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -18,7 +17,7 @@ public class ExceptionResponseHandler extends ResponseEntityExceptionHandler {
 	public ResponseEntity<Object> handleAppException(AppException ex) {
 		ExceptionResponse response = new ExceptionResponse(ex);
 		return ResponseEntity
-			.status(response.getHttpStatus())
+			.status(ExceptionStatusCode.getHttpStatusBy(ex.getErrorCode()))
 			.body(new ExceptionResponse(ex));
 	}
 
@@ -31,12 +30,4 @@ public class ExceptionResponseHandler extends ResponseEntityExceptionHandler {
 			.body(response);
 	}
 
-	@ExceptionHandler(DataIntegrityViolationException.class)
-	public ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
-		HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
-		ExceptionResponse response = new ExceptionResponse(
-			httpStatus, ex.getMessage(), EMPTY_DESCRIPTION, LocalDateTime.now());
-		return ResponseEntity.status(httpStatus)
-			.body(response);
-	}
 }
