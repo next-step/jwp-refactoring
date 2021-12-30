@@ -31,8 +31,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(response.as(TableGroupResponse.class).getOrderTables()).hasSize(2);
-        assertThat(response.as(TableGroupResponse.class).getOrderTables().get(0).getTableGroupId()).isNotNull();
+        assertThat(response.as(TableGroupResponse.class)).isNotNull();
 
         // when
         ExtractableResponse<Response> deleteResponse = 단체_지정_해제(response.as(TableGroupResponse.class));

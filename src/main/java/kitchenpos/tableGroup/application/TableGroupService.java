@@ -1,53 +1,45 @@
 package kitchenpos.tableGroup.application;
 
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderTableRepository;
-import kitchenpos.order.domain.OrderTables;
-import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.tableGroup.domain.TableGroup;
 import kitchenpos.tableGroup.domain.TableGroupRepository;
 import kitchenpos.tableGroup.dto.TableGroupRequest;
 import kitchenpos.tableGroup.dto.TableGroupResponse;
+import kitchenpos.tableGroup.event.GroupEvent;
+import kitchenpos.tableGroup.event.UngroupEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-
 @Service
 public class TableGroupService {
-    private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
-    public TableGroupService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository, final TableGroupRepository tableGroupRepository) {
-        this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
+    public TableGroupService(final TableGroupRepository tableGroupRepository, ApplicationEventPublisher applicationEventPublisher) {
         this.tableGroupRepository = tableGroupRepository;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        final OrderTables orderTables = OrderTables.of(tableGroupRequest.orderTablesSize(), orderTableRepository.findAllById(tableGroupRequest.toOrderTableIds()));
+        validateCreateTableGroup(tableGroupRequest);
 
         final TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup());
-        orderTables.group(savedTableGroup.getId());
+        applicationEventPublisher.publishEvent(new GroupEvent(savedTableGroup.getId(), tableGroupRequest.toOrderTableIds()));
 
-        return TableGroupResponse.of(savedTableGroup, OrderTableResponse.of(orderTables));
+        return TableGroupResponse.of(savedTableGroup);
+    }
+
+    private void validateCreateTableGroup(TableGroupRequest tableGroupRequest) {
+        if (tableGroupRequest.orderTablesSize() < 2) {
+            throw new IllegalArgumentException("단체 지정을 하려면 주문 테이블을 2개 이상 선택해주세요.");
+        }
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
         tableGroupRepository.findById(tableGroupId)
                 .orElseThrow(() -> new IllegalArgumentException("그룹 정보가 존재하지 않습니다."));
-
-        final OrderTables orderTables = new OrderTables(orderTableRepository.findAllByTableGroupId(tableGroupId));
-
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTables.getOrderTableIds(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException("테이블이 식사중이거나 조리중이면 단체 지정을 해제할 수 없습니다.");
-        }
-
-        orderTables.ungroup();
+        applicationEventPublisher.publishEvent(new UngroupEvent(tableGroupId));
     }
 }

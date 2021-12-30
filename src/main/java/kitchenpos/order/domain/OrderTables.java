@@ -1,7 +1,5 @@
 package kitchenpos.order.domain;
 
-import org.springframework.util.CollectionUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,10 +14,6 @@ public class OrderTables {
     public static OrderTables of(int orderTablesSize, List<OrderTable> orderTables) {
         if (orderTablesSize != orderTables.size()) {
             throw new IllegalArgumentException("주문 테이블 정보가 존재하지 않습니다.");
-        }
-
-        if (CollectionUtils.isEmpty(orderTables) || orderTablesSize < 2) {
-            throw new IllegalArgumentException("단체 지정을 하려면 주문 테이블을 2개 이상 선택해주세요.");
         }
 
         return new OrderTables(orderTables);
