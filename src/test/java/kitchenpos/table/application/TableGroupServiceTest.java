@@ -4,6 +4,7 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -39,8 +40,8 @@ class TableGroupServiceTest {
         List<OrderTable> orderTables = Arrays.asList(
                 firstOrderTable,
                 secondOrderTable);
-        given(tableService.findOrderTables(any())).willReturn(OrderTables.from(orderTables));
-        given(tableGroupRepository.save(any())).willReturn(TableGroup.from(OrderTables.from(orderTables)));
+        given(tableGroupRepository.save(any())).willReturn(TableGroup.from());
+        given(tableService.findOrderTables((TableGroupRequest) any())).willReturn(OrderTables.from(orderTables));
 
         // when
         TableGroupResponse actual = tableGroupService.create(any());
@@ -58,13 +59,14 @@ class TableGroupServiceTest {
                 firstOrderTable,
                 secondOrderTable);
 
-        given(tableGroupRepository.findById(any())).willReturn(Optional.of(TableGroup.from(OrderTables.from(orderTables))));
+        given(tableGroupRepository.findById(any())).willReturn(Optional.of(TableGroup.from()));
+        given(tableService.findOrderTables((Long) any())).willReturn(OrderTables.from(orderTables));
 
         // when
         tableGroupService.ungroup(any());
 
         Assertions.assertThat(orderTables)
-                .extracting("tableGroup")
+                .extracting("tableGroupId")
                 .containsExactly(null, null);
     }
 }

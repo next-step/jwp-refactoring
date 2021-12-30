@@ -1,5 +1,6 @@
 package kitchenpos.table.application;
 
+import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
 import kitchenpos.table.dto.TableGroupRequest;
@@ -20,14 +21,17 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        final TableGroup savedTableGroup = TableGroup.from(tableService.findOrderTables(tableGroupRequest));
-        return TableGroupResponse.from(tableGroupRepository.save(savedTableGroup));
+        final TableGroup savedTableGroup = tableGroupRepository.save(TableGroup.from());
+        OrderTables orderTables = tableService.findOrderTables(tableGroupRequest);
+        savedTableGroup.group(orderTables);
+        return TableGroupResponse.from(savedTableGroup, orderTables.getOrderTables());
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
                 .orElseThrow(() -> new IllegalArgumentException("단체 지정된 주문 테이블만 해제할 수 있습니다."));
-        tableGroup.ungroup();
+        OrderTables orderTables = tableService.findOrderTables(tableGroupId);
+        tableGroup.ungroup(orderTables);
     }
 }

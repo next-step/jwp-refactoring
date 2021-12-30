@@ -2,12 +2,9 @@ package kitchenpos.table.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import java.util.Objects;
 
 @Entity
@@ -16,9 +13,8 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
-    private TableGroup tableGroup;
+    @Column
+    private Long tableGroupId;
 
     @Column(nullable = false)
     private int numberOfGuests;
@@ -45,28 +41,28 @@ public class OrderTable {
     }
 
     public void changeEmpty(boolean empty) {
-        if (Objects.nonNull(tableGroup)) {
+        if (isGrouped()) {
             throw new IllegalArgumentException("단체 지정 된 테이블은 상태를 변경할 수 없습니다.");
         }
 
         this.empty = empty;
     }
 
-    public void group(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
+    public void group(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
         grouped();
     }
 
     public void ungroup() {
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 
     public Long getId() {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public int getNumberOfGuests() {
@@ -78,11 +74,7 @@ public class OrderTable {
     }
 
     public boolean isGrouped() {
-        return Objects.nonNull(tableGroup);
-    }
-
-    public boolean isNotEmpty() {
-        return !empty;
+        return Objects.nonNull(tableGroupId);
     }
 
     public void changeNumberOfGuests(int numberOfGuests) {

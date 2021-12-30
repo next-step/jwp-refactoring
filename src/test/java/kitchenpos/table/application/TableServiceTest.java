@@ -1,9 +1,7 @@
 package kitchenpos.table.application;
 
-import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -118,12 +116,11 @@ class TableServiceTest {
         // given
         OrderTableRequest 단체_지정_테이블_요청 = OrderTableRequest.of(5, true);
         OrderTable 첫번째_단체_지정_테이블 = OrderTable.of(단체_지정_테이블_요청.getNumberOfGuests(), 단체_지정_테이블_요청.isEmpty());
-        OrderTable 두번째_단체_지정_테이블 = OrderTable.of(단체_지정_테이블_요청.getNumberOfGuests(), 단체_지정_테이블_요청.isEmpty());
-        TableGroup.from(OrderTables.from(Arrays.asList(첫번째_단체_지정_테이블, 두번째_단체_지정_테이블)));
-        given(orderTableRepository.findById(첫번째_단체_지정_테이블.getId())).willReturn(Optional.of(첫번째_단체_지정_테이블));
+        첫번째_단체_지정_테이블.group(1L);
+        given(orderTableRepository.findById(1L)).willReturn(Optional.of(첫번째_단체_지정_테이블));
 
         // when
-        ThrowingCallable throwingCallable = () -> tableService.changeEmpty(첫번째_단체_지정_테이블.getId(), 단체_지정_테이블_요청);
+        ThrowingCallable throwingCallable = () -> tableService.changeEmpty(1L, 단체_지정_테이블_요청);
 
         // then
         assertThatExceptionOfType(IllegalArgumentException.class)

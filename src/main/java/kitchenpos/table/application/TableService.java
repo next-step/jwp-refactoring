@@ -63,4 +63,8 @@ public class TableService {
         }
         return OrderTables.from(savedOrderTable);
     }
+
+    public OrderTables findOrderTables(final Long tableGroupId) {
+        return OrderTables.from(orderTableRepository.findAllByTableGroupId(tableGroupId));
+    }
 }
