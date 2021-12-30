@@ -109,22 +109,22 @@
 프로젝트 구조
 
 Root project 'kitchenpos'
+|--- Project ':common-domain'
 |--- Project ':common-module'
-|--- Project ':domain-modules'
-|    |--- Project ':domain-modules:common-domain'
-|    |--- Project ':domain-modules:menu-domain'
-|    |--- Project ':domain-modules:order-domain'
-|--- Project ':kitchenpos-app-api'
+|--- Project ':menu-app-api'
+|--- Project ':menu-domain'
+|--- Project ':order-app-api'
+|--- Project ':order-domain'
 
 모듈 설명 
 
 common-module: 모든 프로젝트에서 사용되는 common module
                정말 필요한 경우에만 사용
                
-domain-modules: domain module 들의 상위 module
-- common-domain: domain modules 내부에서만 사용되는 domain common module
-- menu-domain: 메뉴 관련 domain module
-- order-domain: 주문 관련 domain module
+common-domain: domain modules 내부에서만 사용되는 domain common module
+menu-domain: 메뉴 관련 domain module
+order-domain: 주문 관련 domain module
 
-kitchenpos-app-api: kitchenpost api module  
+menu-app-api: 메뉴 관련 api module
+order-app-api: 주문 관련 api module
 ```
