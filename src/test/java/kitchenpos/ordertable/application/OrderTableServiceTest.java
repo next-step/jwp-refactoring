@@ -1,7 +1,7 @@
-package kitchenpos.ordertable.exception;
+package kitchenpos.ordertable.application;
 
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.dto.ChangeEmptyOrderTableValidator;
+import kitchenpos.order.domain.validator.OrderOrderTableChangeEmptyValidator;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.ordertable.infra.OrderTableRepository;
@@ -15,11 +15,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -33,7 +33,7 @@ class OrderTableServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
-    private ChangeEmptyOrderTableValidator changeEmptyOrderTableValidator;
+    private OrderOrderTableChangeEmptyValidator changeEmptyOrderTableValidator;
     @InjectMocks
     private OrderTableService tableService;
 
@@ -177,35 +177,6 @@ class OrderTableServiceTest {
             // then
             assertThatThrownBy(callable).isInstanceOf(IllegalArgumentException.class);
         }
-    }
-
-    @DisplayName("주문 테이블 아이디 목록 으로 주문 테이블을 조회할 수 있다.")
-    @Test
-    void findAllByIdIn() {
-        // given
-        final List<Long> orderTableIds = Arrays.asList(1L, 2L);
-        final List<OrderTable> expected = Arrays.asList(OrderTable.of(3, false), OrderTable.of(3, false));
-        given(orderTableRepository.findAllByIdIn(orderTableIds)).willReturn(expected);
-
-        // when
-        final List<OrderTable> actual = tableService.getOrderTablesByIdIn(orderTableIds);
-
-        // then
-        assertThat(actual).containsExactlyElementsOf(expected);
-    }
-
-    @DisplayName("주문 테이블 아이디 목록수와 조회된 주문 테이블 크기가 다르면 오류가 발생한다.")
-    @Test
-    void findAllByIdInFail() {
-        // given
-        final List<Long> orderTableIds = Arrays.asList(1L, 2L);
-        final List<OrderTable> expected = Collections.singletonList(OrderTable.of(3, false));
-        given(orderTableRepository.findAllByIdIn(orderTableIds)).willReturn(expected);
-
-        // when
-        final ThrowableAssert.ThrowingCallable throwingCallable = () -> tableService.getOrderTablesByIdIn(orderTableIds);
-        // then
-        assertThatIllegalArgumentException().isThrownBy(throwingCallable);
     }
 
     private OrderTableRequest getChangeNumberOfGuestsRequest(int numberOfGuests) {

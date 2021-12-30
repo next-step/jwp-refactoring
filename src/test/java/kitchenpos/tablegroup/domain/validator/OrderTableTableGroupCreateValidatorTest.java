@@ -1,7 +1,8 @@
-package kitchenpos.tablegroup.domain;
+package kitchenpos.tablegroup.domain.validator;
 
-import kitchenpos.ordertable.exception.OrderTableService;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.validator.OrderTableTableGroupCreateValidator;
+import kitchenpos.ordertable.infra.OrderTableRepository;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,12 +21,11 @@ import static org.mockito.BDDMockito.given;
 
 @DisplayName("단체 지정 생성시 주문테이블 유효성 테스트")
 @ExtendWith(MockitoExtension.class)
-class OrderTableIdsTableGroupValidatorTest {
+class OrderTableTableGroupCreateValidatorTest {
     @Mock
-    private OrderTableService orderTableService;
+    private OrderTableRepository orderTableRepository;
     @InjectMocks
-    private OrderTableIdsTableGroupValidator validator;
-
+    private OrderTableTableGroupCreateValidator validator;
 
     @DisplayName("모두 빈 상태가 아닐때 유효하지 못하다.")
     @Test
@@ -35,7 +35,7 @@ class OrderTableIdsTableGroupValidatorTest {
         final List<OrderTable> expected = Arrays.asList(
                 OrderTable.of(3, false), OrderTable.of(3, true)
         );
-        given(orderTableService.getOrderTablesByIdIn(orderTableIds)).willReturn(expected);
+        given(orderTableRepository.findAllByIdIn(orderTableIds)).willReturn(expected);
         // when
         final ThrowableAssert.ThrowingCallable throwingCallable = () -> validator.validate(orderTableIds);
         // then
@@ -50,7 +50,7 @@ class OrderTableIdsTableGroupValidatorTest {
         final List<OrderTable> expected = Arrays.asList(
                 OrderTable.of(3, true), OrderTable.of(3, true)
         );
-        given(orderTableService.getOrderTablesByIdIn(orderTableIds)).willReturn(expected);
+        given(orderTableRepository.findAllByIdIn(orderTableIds)).willReturn(expected);
         // when
         final Executable executable = () -> validator.validate(orderTableIds);
         // then

@@ -4,6 +4,7 @@ import kitchenpos.menu.exception.IllegalMenuProductException;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.math.BigDecimal;
 
 @Embeddable
 public class MenuProductQuantity {
@@ -34,4 +35,7 @@ public class MenuProductQuantity {
         return quantity;
     }
 
+    public BigDecimal bigDecimalValue() {
+        return BigDecimal.valueOf(quantity);
+    }
 }

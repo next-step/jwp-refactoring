@@ -11,4 +11,7 @@ public interface OrderTableRepository extends JpaRepository<OrderTable, Long> {
 
     @Query("select o from OrderTable o where o.id in (:ids)")
     List<OrderTable> findAllByIdIn(@Param("ids") List<Long> orderTableIds);
+
+    List<OrderTable> findAllByTableGroupId(Long tableGroupId);
+
 }

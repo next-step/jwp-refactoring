@@ -1,11 +1,16 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.product.domain.Product;
+
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class MenuProduct {
@@ -48,5 +53,15 @@ public class MenuProduct {
 
     public long getQuantity() {
         return quantity.getQuantity();
+    }
+
+
+    public BigDecimal totalPrice(List<Product> products) {
+        return products.stream()
+                .filter(product -> Objects.equals(product.getId(), productId))
+                .findAny()
+                .orElseThrow(IllegalArgumentException::new)
+                .getPrice()
+                .multiply(this.quantity.bigDecimalValue());
     }
 }

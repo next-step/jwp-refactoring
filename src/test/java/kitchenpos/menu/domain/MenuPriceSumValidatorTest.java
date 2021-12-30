@@ -1,9 +1,8 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.menu.domain.validator.MenuPriceSumValidator;
-import kitchenpos.menu.dto.MenuProductRequest;
-import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.validator.ProductMenuCreateValidator;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.infra.ProductRepository;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,38 +13,38 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doThrow;
 
 @DisplayName("메뉴 가격 유효성 검사 테스트")
 @ExtendWith(MockitoExtension.class)
 class MenuPriceSumValidatorTest {
     @Mock
-    private ProductService productService;
+    private ProductRepository productRepository;
 
     @InjectMocks
-    private MenuPriceSumValidator menuPriceValidator;
+    private ProductMenuCreateValidator menuPriceValidator;
 
     @DisplayName("메뉴의 가격은 포함된 상품들의 금액의 합 보다 크지 않을경우 유효하다.")
     @Test
     void validate() {
         // given
-        final MenuProductGroup menuProductGroup = MenuProductGroup.ofRequests(Arrays.asList(
-                new MenuProductRequest(1L, 2),
-                new MenuProductRequest(2L, 3)
-        ));
-
-        final MenuPrice price = MenuPrice.of(6000);
-
-        given(productService.getProduct(1L)).willReturn(Product.generate(1L, "마일드참치캔", 1000));
-        given(productService.getProduct(2L)).willReturn(Product.generate(2L, "고추참치캔", 2000));
+        final Menu menu = Menu.of("메뉴이름", 6000, 1L,
+                Arrays.asList(
+                        MenuProduct.of(1L, 3),
+                        MenuProduct.of(2L, 3))
+        );
+        List<Product> expectedProducts = Arrays.asList(
+                Product.generate(1L, "마일드참치캔", 1000),
+                Product.generate(2L, "고추참치캔", 2000)
+        );
+        given(productRepository.findAllByIds(Arrays.asList(1L, 2L))).willReturn(expectedProducts);
 
         // when
-        final Executable executable = () -> menuPriceValidator.validate(price, menuProductGroup);
+        final Executable executable = () -> menuPriceValidator.validate(menu);
         // then
         assertDoesNotThrow(executable);
     }
@@ -54,18 +53,19 @@ class MenuPriceSumValidatorTest {
     @Test
     void validateByIllegalPrice() {
         // given
-        final MenuProductGroup menuProductGroup = MenuProductGroup.ofRequests(Arrays.asList(
-                new MenuProductRequest(1L, 2),
-                new MenuProductRequest(2L, 3)
-        ));
-
-        final MenuPrice price = MenuPrice.of(9000);
-
-        given(productService.getProduct(1L)).willReturn(Product.generate(1L, "마일드참치캔", 1000));
-        given(productService.getProduct(2L)).willReturn(Product.generate(2L, "고추참치캔", 2000));
+        final Menu menu = Menu.of("메뉴이름", 16000, 1L,
+                Arrays.asList(
+                        MenuProduct.of(1L, 3),
+                        MenuProduct.of(2L, 3))
+        );
+        List<Product> expectedProducts = Arrays.asList(
+                Product.generate(1L, "마일드참치캔", 1000),
+                Product.generate(2L, "고추참치캔", 2000)
+        );
+        given(productRepository.findAllByIds(Arrays.asList(1L, 2L))).willReturn(expectedProducts);
 
         // when
-        ThrowableAssert.ThrowingCallable throwingCallable = () -> menuPriceValidator.validate(price, menuProductGroup);
+        ThrowableAssert.ThrowingCallable throwingCallable = () -> menuPriceValidator.validate(menu);
         // then
         assertThatThrownBy(throwingCallable).isInstanceOf(IllegalArgumentException.class);
     }
@@ -74,17 +74,19 @@ class MenuPriceSumValidatorTest {
     @Test
     void createByNotExistProduct() {
         // given
-        final MenuProductGroup menuProductGroup = MenuProductGroup.ofRequests(Arrays.asList(
-                new MenuProductRequest(1L, 2),
-                new MenuProductRequest(2L, 3)
-        ));
-
-        final MenuPrice price = MenuPrice.of(9000);
-
-        doThrow(IllegalArgumentException.class).when(productService).getProduct(anyLong());
+        final Menu menu = Menu.of("메뉴이름", 16000, 1L,
+                Arrays.asList(
+                        MenuProduct.of(1L, 3),
+                        MenuProduct.of(2L, 3))
+        );
+        List<Product> expectedProducts = Arrays.asList(
+                Product.generate(1L, "마일드참치캔", 1000),
+                Product.generate(3L, "고추참치캔", 2000)
+        );
+        given(productRepository.findAllByIds(Arrays.asList(1L, 2L))).willReturn(expectedProducts);
 
         // when
-        ThrowableAssert.ThrowingCallable throwingCallable = () -> menuPriceValidator.validate(price, menuProductGroup);
+        ThrowableAssert.ThrowingCallable throwingCallable = () -> menuPriceValidator.validate(menu);
         // then
         assertThatThrownBy(throwingCallable).isInstanceOf(IllegalArgumentException.class);
     }

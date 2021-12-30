@@ -1,39 +1,36 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.menu.domain.MenuPrice;
-import kitchenpos.menu.domain.MenuProductGroup;
-import kitchenpos.menu.domain.validator.MenuGroupValidator;
-import kitchenpos.menu.domain.validator.MenuPriceValidator;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.validator.MenuGroupMenuCreateValidator;
+import kitchenpos.menu.domain.validator.MenuPriceMenuCreateValidator;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.infra.MenuRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class MenuService {
     private final MenuRepository menuRepository;
-    private final MenuPriceValidator menuPriceValidator;
-    private final MenuGroupValidator menuGroupValidator;
+    private final MenuPriceMenuCreateValidator menuPriceMenuCreateValidator;
+    private final MenuGroupMenuCreateValidator menuGroupMenuCreateValidator;
 
-    public MenuService(MenuRepository menuRepository, MenuPriceValidator menuPriceValidator,
-                       MenuGroupValidator menuGroupValidator) {
+    public MenuService(MenuRepository menuRepository, MenuPriceMenuCreateValidator menuPriceMenuCreateValidator,
+                       MenuGroupMenuCreateValidator menuGroupMenuCreateValidator) {
         this.menuRepository = menuRepository;
-        this.menuPriceValidator = menuPriceValidator;
-        this.menuGroupValidator = menuGroupValidator;
+        this.menuPriceMenuCreateValidator = menuPriceMenuCreateValidator;
+        this.menuGroupMenuCreateValidator = menuGroupMenuCreateValidator;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest request) {
-        menuGroupValidator.validate(request.getMenuGroupId());
-        menuPriceValidator.validate(
-                MenuPrice.of(request.getPrice()),
-                MenuProductGroup.ofRequests(request.getMenuProductRequests())
-        );
-        return MenuResponse.of(menuRepository.save(request.toEntity()));
+        final Menu menu = Menu.create(request.getName(), request.getPrice(), request.getMenuGroupId(), request.getMenuProducts(),
+                Arrays.asList(menuGroupMenuCreateValidator, menuPriceMenuCreateValidator));
+        return MenuResponse.of(menuRepository.save(menu));
     }
 
     @Transactional(readOnly = true)
@@ -41,10 +38,5 @@ public class MenuService {
         return menuRepository.findAll().stream()
                 .map(MenuResponse::of)
                 .collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true)
-    public int countByIdIn(List<Long> menuIds) {
-        return menuRepository.countByIdIn(menuIds);
     }
 }

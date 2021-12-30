@@ -1,7 +1,9 @@
 package kitchenpos.ordertable.domain;
 
+import kitchenpos.ordertable.domain.validator.OrderTableChangeEmptyValidator;
 import kitchenpos.ordertable.exception.CanNotChangeOrderTableException;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,6 +21,8 @@ public class OrderTable {
     private NumberOfGuests numberOfGuests;
     @Embedded
     private OrderTableEmpty empty;
+    @Column(name = "table_group_id")
+    private Long tableGroupId;
 
     public OrderTable() {
     }
@@ -64,8 +68,17 @@ public class OrderTable {
         this.numberOfGuests = NumberOfGuests.of(targetNumberOfGuests);
     }
 
-    public void changeEmpty(boolean empty) {
+    public void changeEmpty(boolean empty, OrderTableChangeEmptyValidator orderTableChangeEmptyValidator) {
+        orderTableChangeEmptyValidator.validate(id);
         this.empty = OrderTableEmpty.of(empty);
+    }
+
+    public void ungroup() {
+        tableGroupId = null;
+    }
+
+    public void group(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
     }
 
     @Override

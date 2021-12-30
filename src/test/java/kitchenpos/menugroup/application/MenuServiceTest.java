@@ -3,9 +3,9 @@ package kitchenpos.menugroup.application;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.validator.ExistMenuGroupMenuValidator;
+import kitchenpos.menu.domain.validator.MenuExistMenuGroupMenuCreateValidator;
 import kitchenpos.product.domain.Product;
-import kitchenpos.menu.domain.validator.MenuPriceValidator;
+import kitchenpos.menu.domain.validator.MenuPriceMenuCreateValidator;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -28,7 +28,6 @@ import static kitchenpos.product.application.ProductServiceTest.getProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -36,13 +35,13 @@ import static org.mockito.Mockito.doThrow;
 
 @DisplayName("메뉴 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
-class MenuServiceTest {
+public class MenuServiceTest {
     @Mock
     private MenuRepository menuRepository;
     @Mock
-    private ExistMenuGroupMenuValidator notFoundMenuGroupValidator;
+    private MenuExistMenuGroupMenuCreateValidator notFoundMenuGroupValidator;
     @Mock
-    private MenuPriceValidator menuPriceValidator;
+    private MenuPriceMenuCreateValidator menuPriceMenuCreateValidator;
     @InjectMocks
     private MenuService menuService;
 
@@ -78,7 +77,7 @@ class MenuServiceTest {
                 ));
 
 
-        doNothing().when(notFoundMenuGroupValidator).validate(anyLong());
+        doNothing().when(notFoundMenuGroupValidator).validate(any());
         given(menuRepository.save(any(Menu.class))).willReturn(expected);
 
         // when
@@ -124,7 +123,7 @@ class MenuServiceTest {
                             new MenuProductRequest(분짜.getId(), 6)
                     )
             );
-            doThrow(new IllegalArgumentException()).when(notFoundMenuGroupValidator).validate(anyLong());
+            doThrow(new IllegalArgumentException()).when(notFoundMenuGroupValidator).validate(any());
             // when
             ThrowableAssert.ThrowingCallable createCall = () -> menuService.create(createRequest);
             // then
@@ -146,7 +145,7 @@ class MenuServiceTest {
             );
 
             // given
-            doThrow(new IllegalArgumentException()).when(menuPriceValidator).validate(any(), any());
+            doThrow(new IllegalArgumentException()).when(menuPriceMenuCreateValidator).validate(any());
             // when
             ThrowableAssert.ThrowingCallable createCall = () -> menuService.create(createRequest);
             // then

@@ -2,8 +2,8 @@ package kitchenpos.order.application;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.validator.MenuCountOrderValidator;
-import kitchenpos.order.domain.validator.OrderTableValidator;
+import kitchenpos.menu.domain.validator.MenuCountOrderCreateValidator;
+import kitchenpos.ordertable.domain.validator.OrderTableOrderCreateValidator;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.infra.OrderRepository;
@@ -23,10 +23,10 @@ import java.util.Collections;
 import java.util.List;
 
 import static kitchenpos.order.application.OrderServiceFixture.*;
-import static kitchenpos.ordertable.exception.OrderTableServiceTest.getOrderTable;
+import static kitchenpos.ordertable.application.OrderTableServiceTest.getOrderTable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -35,11 +35,11 @@ import static org.mockito.Mockito.doThrow;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
-    private OrderTableValidator orderTableValidator;
+    private OrderTableOrderCreateValidator emptyOrderValidator;
     @Mock
     private OrderRepository orderRepository;
     @Mock
-    private MenuCountOrderValidator menuCountOrderValidator;
+    private MenuCountOrderCreateValidator menuCountOrderValidator;
     @InjectMocks
     private OrderService orderService;
 
@@ -65,7 +65,7 @@ class OrderServiceTest {
                 getOrderLineRequests(orderLineItem1, orderLineItem2));
 
         doNothing().when(menuCountOrderValidator).validate(any());
-        doNothing().when(orderTableValidator).validate(any());
+        doNothing().when(emptyOrderValidator).validate(any());
         given(orderRepository.save(any())).willReturn(expected);
 
         // when
@@ -85,7 +85,6 @@ class OrderServiceTest {
             // given
             final OrderTable orderTable = getOrderTable(1L, false, 7);
             final OrderRequest createRequest = getCreateRequest(orderTable.getId(), Collections.emptyList());
-            doNothing().when(menuCountOrderValidator).validate(any());
             // when
             ThrowableAssert.ThrowingCallable callable = () -> orderService.create(createRequest);
             // then
@@ -101,7 +100,7 @@ class OrderServiceTest {
             final OrderRequest createRequest = getCreateRequest(주문_테이블.getId(),
                     getOrderLineRequests(orderLineItem1, orderLineItem2));
 
-            doThrow(new IllegalArgumentException()).when(menuCountOrderValidator).validate(anyList());
+            doThrow(new IllegalArgumentException()).when(menuCountOrderValidator).validate(any());
             // when
             ThrowableAssert.ThrowingCallable callable = () -> orderService.create(createRequest);
             // then
@@ -117,8 +116,7 @@ class OrderServiceTest {
             final OrderRequest createRequest = getCreateRequest(주문_테이블.getId(),
                     getOrderLineRequests(orderLineItem1, orderLineItem2));
 
-            doNothing().when(menuCountOrderValidator).validate(anyList());
-            doThrow(new IllegalArgumentException()).when(orderTableValidator).validate(any());
+            doThrow(new IllegalArgumentException()).when(emptyOrderValidator).validate(any());
             // when
             ThrowableAssert.ThrowingCallable callable = () -> orderService.create(createRequest);
             // then
@@ -133,9 +131,7 @@ class OrderServiceTest {
             final OrderLineItem orderLineItem2 = getOrderLineItem(2L, 4);
             final OrderRequest createRequest = getCreateRequest(빈_주문_테이블.getId(),
                     getOrderLineRequests(orderLineItem1, orderLineItem2));
-
-            doNothing().when(menuCountOrderValidator).validate(any());
-            doThrow(new IllegalArgumentException()).when(orderTableValidator).validate(anyLong());
+            doThrow(new IllegalArgumentException()).when(emptyOrderValidator).validate(any());
             // when
             ThrowableAssert.ThrowingCallable callable = () -> orderService.create(createRequest);
             // then
