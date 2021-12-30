@@ -1,5 +1,9 @@
 package kitchenpos.domain;
 
+import kitchenpos.dto.OrderTableChangeEmptyRequest;
+import kitchenpos.dto.OrderTableChangeNumberOfGuestsRequest;
+import kitchenpos.dto.OrderTableCreateRequest;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -54,6 +58,43 @@ public class OrderTable {
 
     public static OrderTable of(boolean empty) {
         return new OrderTable(empty);
+    }
+
+    public static OrderTable create(Integer numberOfGuests, boolean empty) {
+        return new OrderTable(null, numberOfGuests, empty);
+    }
+
+    public void changeEmpty(OrderTableChangeEmptyRequest request) {
+        if (Objects.nonNull(getTableGroup())) {
+            throw new IllegalArgumentException();
+        }
+
+        this.empty = request.isEmpty();
+    }
+
+    public void changeNumberOfGuests(int updateNumberOfGuests) {
+        if (isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+
+        if (updateNumberOfGuests < 0) {
+            throw new IllegalArgumentException();
+        }
+
+        this.numberOfGuests = updateNumberOfGuests;
+    }
+
+    public boolean isGroupingTable() {
+        return tableGroup != null;
+    }
+
+    public void assignTableGroup(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
+        this.empty = false;
+    }
+
+    public void unGroup() {
+        this.tableGroup = null;
     }
 
     public Long getId() {

@@ -8,6 +8,10 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderTableChangeEmptyRequest;
+import kitchenpos.dto.OrderTableChangeNumberOfGuestsRequest;
+import kitchenpos.dto.OrderTableCreateRequest;
+import kitchenpos.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -28,10 +32,10 @@ class TableServiceTest {
     @DisplayName("주문 테이블 생성")
     @Test
     void create() {
-        OrderTable orderTable = new OrderTable(10, true);
-        OrderTable result = tableService.create(orderTable);
+        OrderTableCreateRequest orderTable = OrderTableCreateRequest.of(10, true);
+        OrderTableResponse result = tableService.create(orderTable);
         assertAll(
-                () -> assertThat(result.getTableGroup()).isNull(),
+                () -> assertThat(result.getTableGroupId()).isNull(),
                 () -> assertThat(result.getNumberOfGuests()).isEqualTo(10)
         );
     }
@@ -39,15 +43,15 @@ class TableServiceTest {
     @DisplayName("모든 주문 테이블 조회")
     @Test
     void list() {
-        OrderTable orderTable1 = new OrderTable(1, true);
-        OrderTable orderTable2 = new OrderTable(2, true);
-        OrderTable orderTable3 = new OrderTable(3, true);
+        OrderTableCreateRequest orderTable1 = OrderTableCreateRequest.of(1, true);
+        OrderTableCreateRequest orderTable2 = OrderTableCreateRequest.of(2, true);
+        OrderTableCreateRequest orderTable3 = OrderTableCreateRequest.of(3, true);
 
         tableService.create(orderTable1);
         tableService.create(orderTable2);
         tableService.create(orderTable3);
 
-        List<OrderTable> orderTableList = tableService.list();
+        List<OrderTableResponse> orderTableList = tableService.list();
         assertThat(orderTableList.size()).isEqualTo(3);
     }
 
@@ -55,7 +59,7 @@ class TableServiceTest {
     @Test
     void notChangeEmptyTableNotExistsOrderTable() {
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeEmpty(1L, new OrderTable(false)));
+                .isThrownBy(() -> tableService.changeEmpty(1L, OrderTableChangeEmptyRequest.of(false)));
     }
 
     @DisplayName("주문 상태가 COOKING,MEAL 이면 테이블 공석 여부를 변경할 수 없다.")
@@ -71,7 +75,7 @@ class TableServiceTest {
         orderRepository.save(order);
 
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeEmpty(savedOrderTable.getId(), new OrderTable(false)));
+                .isThrownBy(() -> tableService.changeEmpty(savedOrderTable.getId(), OrderTableChangeEmptyRequest.of(false)));
     }
 
     @DisplayName("주문 테이블 공석 여부 변경")
@@ -86,7 +90,7 @@ class TableServiceTest {
         );
         orderRepository.save(order);
 
-        OrderTable result = tableService.changeEmpty(savedOrderTable.getId(), new OrderTable(false));
+        OrderTableResponse result = tableService.changeEmpty(savedOrderTable.getId(), OrderTableChangeEmptyRequest.of(false));
         assertAll(
                 () -> assertThat(result.getNumberOfGuests()).isEqualTo(10),
                 () -> assertThat(result.isEmpty()).isFalse()
@@ -98,14 +102,7 @@ class TableServiceTest {
     void notChangeNumberOfGuestLessThanZero() {
         orderTableRepository.save(OrderTable.of(-1, true));
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeNumberOfGuests(1L, new OrderTable(-1)));
-    }
-
-    @DisplayName("주문 테이블이 없으면 주문 테이블 손님 수를 변경할 수 없다.")
-    @Test
-    void notChangeNumberOfGuestNotExistsOrderTable() {
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeEmpty(1L, new OrderTable(10, false)));
+                .isThrownBy(() -> tableService.changeNumberOfGuests(1L, OrderTableChangeNumberOfGuestsRequest.of(-1)));
     }
 
     @DisplayName("주문 테이블이 공석인 상태면 손님 수를 변경할 수 없다.")
@@ -113,14 +110,14 @@ class TableServiceTest {
     void notChangeNumberOfGuestOrderTableIsEmpty() {
         OrderTable savedOrderTable = orderTableRepository.save(OrderTable.of(10, true));
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeNumberOfGuests(savedOrderTable.getId(), new OrderTable(15)));
+                .isThrownBy(() -> tableService.changeNumberOfGuests(savedOrderTable.getId(), OrderTableChangeNumberOfGuestsRequest.of(15)));
     }
 
     @DisplayName("주문 테이블 손님 수 변공 성공")
     @Test
     void successChangeNumberOfGuest() {
         OrderTable savedOrderTable = orderTableRepository.save(OrderTable.of(10, false));
-        OrderTable result = tableService.changeNumberOfGuests(savedOrderTable.getId(), new OrderTable(15));
+        OrderTableResponse result = tableService.changeNumberOfGuests(savedOrderTable.getId(), OrderTableChangeNumberOfGuestsRequest.of(15));
         assertThat(result.getNumberOfGuests()).isEqualTo(15);
     }
 

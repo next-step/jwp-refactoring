@@ -42,7 +42,7 @@ public class FakeOrderTableRepository implements OrderTableRepository {
     @Override
     public List<OrderTable> findAllByTableGroup(Long tableGroupId) {
         return map.values().stream()
-                .filter(orderTable -> tableGroupId.equals(orderTable.getTableGroup()))
+                .filter(orderTable -> tableGroupId.equals(orderTable.getTableGroup().getId()))
                 .collect(Collectors.toList());
     }
 }

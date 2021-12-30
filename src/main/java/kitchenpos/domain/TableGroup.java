@@ -5,6 +5,7 @@ import org.springframework.data.annotation.CreatedDate;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class TableGroup {
@@ -13,7 +14,6 @@ public class TableGroup {
     private Long id;
 
     @CreatedDate
-    @Column(nullable = false)
     private LocalDateTime createdDate;
 
     @OneToMany(mappedBy = "tableGroup")
@@ -22,6 +22,9 @@ public class TableGroup {
     public TableGroup() {}
 
     private TableGroup(List<OrderTable> tables) {
+        for (final OrderTable savedOrderTable : tables) {
+            isValidOrderTable(savedOrderTable);
+        }
         this.orderTables = tables;
     }
 
@@ -35,6 +38,20 @@ public class TableGroup {
 
     public static TableGroup of(Long id) {
         return new TableGroup(id);
+    }
+
+    public static TableGroup create(List<OrderTable> savedOrderTables) {
+        TableGroup tableGroup = new TableGroup(savedOrderTables);
+        savedOrderTables.forEach(savedOrderTable -> {
+            savedOrderTable.assignTableGroup(tableGroup);
+        });
+        return tableGroup;
+    }
+
+    private void isValidOrderTable(OrderTable savedOrderTable) {
+        if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) {
+            throw new IllegalArgumentException();
+        }
     }
 
     public Long getId() {

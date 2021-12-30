@@ -2,6 +2,9 @@ package kitchenpos.application;
 
 import kitchenpos.dao.*;
 import kitchenpos.domain.*;
+import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -19,14 +22,13 @@ class TableGroupServiceTest {
     private final TableGroupRepository tableGroupRepository = new FakeTableGroupRepository();
     private final TableGroupService tableGroupService = new TableGroupService(orderRepository, orderTableRepository, tableGroupRepository);
 
+    private Long 저장안된_주문테이블ID_ONE = 1L;
+    private Long 저장안된_주문테이블ID_TWO = 2L;
+
     @DisplayName("주문 테이블 수가 2보다 작으면 단체를 지정할 수 없다.")
     @Test
     void notCreateTabeGroupLessTwoTable() {
-        TableGroup tableGroup = TableGroup.of(
-                Arrays.asList(
-                        OrderTable.of(10, true)
-                )
-        );
+        TableGroupRequest tableGroup = TableGroupRequest.of(Arrays.asList(저장안된_주문테이블ID_ONE));
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableGroupService.create(tableGroup));
     }
@@ -34,9 +36,8 @@ class TableGroupServiceTest {
     @DisplayName("주문 테이블이 저장되어 있지 않으면 단체를 지정할 수 없다.")
     @Test
     void notCreateTableGroupNotSavedOrderTable() {
-        OrderTable savedOrderTable1 = OrderTable.of(10, true);
-        OrderTable savedOrderTable2 = OrderTable.of(20, true);
-        TableGroup tableGroup = TableGroup.of(Arrays.asList(savedOrderTable1, savedOrderTable2));
+
+        TableGroupRequest tableGroup = TableGroupRequest.of(Arrays.asList(저장안된_주문테이블ID_ONE, 저장안된_주문테이블ID_TWO));
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableGroupService.create(tableGroup));
@@ -47,7 +48,7 @@ class TableGroupServiceTest {
     void notCreateTableGroupNotEmptyTable() {
         OrderTable savedOrderTable1 = orderTableRepository.save(OrderTable.of(10, false));
         OrderTable savedOrderTable2 = orderTableRepository.save(OrderTable.of(20, false));
-        TableGroup tableGroup = TableGroup.of(Arrays.asList(savedOrderTable1, savedOrderTable2));
+        TableGroupRequest tableGroup = TableGroupRequest.of(Arrays.asList(savedOrderTable1.getId(), savedOrderTable2.getId()));
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableGroupService.create(tableGroup));
@@ -58,7 +59,7 @@ class TableGroupServiceTest {
     void notCreateTableGroupAlreadyGroupingTable() {
         OrderTable savedOrderTable1 = orderTableRepository.save(OrderTable.of(TableGroup.of(1L), 10, true));
         OrderTable savedOrderTable2 = orderTableRepository.save(OrderTable.of(TableGroup.of(1L), 20, true));
-        TableGroup tableGroup = TableGroup.of(Arrays.asList(savedOrderTable1, savedOrderTable2));
+        TableGroupRequest tableGroup = TableGroupRequest.of(Arrays.asList(savedOrderTable1.getId(), savedOrderTable2.getId()));
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableGroupService.create(tableGroup));
@@ -69,14 +70,14 @@ class TableGroupServiceTest {
     void successCreateTableGroup() {
         OrderTable savedOrderTable1 = orderTableRepository.save(OrderTable.of(10, true));
         OrderTable savedOrderTable2 = orderTableRepository.save(OrderTable.of(20, true));
-        TableGroup tableGroup = TableGroup.of(Arrays.asList(savedOrderTable1, savedOrderTable2));
+        TableGroupRequest tableGroup = TableGroupRequest.of(Arrays.asList(savedOrderTable1.getId(), savedOrderTable2.getId()));
 
-        TableGroup result = tableGroupService.create(tableGroup);
-        List<OrderTable> resultOrderTables = result.getOrderTables();
+        TableGroupResponse result = tableGroupService.create(tableGroup);
+        List<OrderTableResponse> resultOrderTables = result.getOrderTables();
         assertAll(
                 () -> {
-                    for (OrderTable orderTable : resultOrderTables) {
-                        assertThat(orderTable.getTableGroup()).isEqualTo(result.getId());
+                    for (OrderTableResponse orderTable : resultOrderTables) {
+                        assertThat(orderTable.getTableGroupId()).isEqualTo(result.getId());
                         assertThat(orderTable.isEmpty()).isFalse();
                     }
                 }
@@ -88,8 +89,8 @@ class TableGroupServiceTest {
     void notUngroupTableCookingOrMeal() {
         OrderTable savedOrderTable1 = orderTableRepository.save(OrderTable.of(10, true));
         OrderTable savedOrderTable2 = orderTableRepository.save(OrderTable.of(20, true));
-        TableGroup tableGroup = TableGroup.of(Arrays.asList(savedOrderTable1, savedOrderTable2));
-        TableGroup result = tableGroupService.create(tableGroup);
+        TableGroupRequest tableGroup = TableGroupRequest.of(Arrays.asList(savedOrderTable1.getId(), savedOrderTable2.getId()));
+        TableGroupResponse result = tableGroupService.create(tableGroup);
         Order order1 = new Order(1L,
                 savedOrderTable1,
                 OrderStatus.COOKING.name(),
@@ -114,12 +115,12 @@ class TableGroupServiceTest {
     void successUngroup() {
         OrderTable savedOrderTable1 = orderTableRepository.save(OrderTable.of(10, true));
         OrderTable savedOrderTable2 = orderTableRepository.save(OrderTable.of(20, true));
-        TableGroup tableGroup = TableGroup.of(Arrays.asList(savedOrderTable1, savedOrderTable2));
-        TableGroup result = tableGroupService.create(tableGroup);
+        TableGroupRequest tableGroup = TableGroupRequest.of(Arrays.asList(savedOrderTable1.getId(), savedOrderTable2.getId()));
+        TableGroupResponse result = tableGroupService.create(tableGroup);
 
         assertAll(
-                () -> assertThat(savedOrderTable1.getTableGroup()).isEqualTo(tableGroup.getId()),
-                () -> assertThat(savedOrderTable2.getTableGroup()).isEqualTo(tableGroup.getId())
+                () -> assertThat(tableGroup.getOrderTableIds()).contains(savedOrderTable1.getId()),
+                () -> assertThat(tableGroup.getOrderTableIds()).contains(savedOrderTable2.getId())
         );
 
         Order order1 = new Order(1L,

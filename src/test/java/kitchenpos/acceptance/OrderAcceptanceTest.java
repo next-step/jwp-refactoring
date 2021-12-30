@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @DisplayName("주문 관련 기능")
 public class OrderAcceptanceTest extends AcceptanceTest {
 
-    private OrderTable 테이블;
+    private OrderTableResponse 테이블;
     private MenuResponse 메뉴;
     private ProductResponse 소고기한우;
     private MenuGroupResponse 추천메뉴;
@@ -42,7 +42,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                         MenuProductRequest.of(소고기한우.toEntity(), 2L)
                 )
         );
-        테이블 = TableAcceptanceTest.테이블_등록되어_있음(OrderTable.of(4, false));
+        테이블 = TableAcceptanceTest.테이블_등록되어_있음(OrderTableCreateRequest.of(4, false));
     }
 
     @DisplayName("주문 관리")
@@ -119,8 +119,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         return TestApiClient.create(order, "/api/orders");
     }
 
-    public static OrderResponse 주문_생성됨(OrderTable orderTable, List<OrderLineItemRequest> orderLineItems) {
-        OrderRequest order = OrderRequest.of(orderTable.getId(), orderLineItems);
+    public static OrderResponse 주문_생성됨(Long orderTableId, List<OrderLineItemRequest> orderLineItems) {
+        OrderRequest order = OrderRequest.of(orderTableId, orderLineItems);
         return 주문_생성_요청(order).as(OrderResponse.class);
     }
 
