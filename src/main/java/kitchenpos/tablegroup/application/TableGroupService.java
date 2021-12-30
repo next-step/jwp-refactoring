@@ -1,10 +1,12 @@
 package kitchenpos.tablegroup.application;
 
+import kitchenpos.order.domain.validator.OrderTableGroupUnGroupValidator;
+import kitchenpos.ordertable.domain.validator.OrderTableTableGroupCreateValidator;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.event.TableGroupedEvent;
 import kitchenpos.tablegroup.domain.event.TableUnGroupedEvent;
-import kitchenpos.ordertable.domain.validator.OrderTableTableGroupCreateValidator;
-import kitchenpos.order.domain.validator.OrderTableGroupUnGroupValidator;
+import kitchenpos.tablegroup.domain.validator.TableGroupCreateValidator;
+import kitchenpos.tablegroup.domain.validator.TableGroupUnGroupValidator;
 import kitchenpos.tablegroup.dto.TableGroupCreateRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import kitchenpos.tablegroup.exception.CanNotUnGroupException;
@@ -19,8 +21,8 @@ public class TableGroupService {
     private static final String NOT_FOUND_TABLE_GROUP_ERROR_MESSAGE = "해당 단체 지정을 찾지 못하여 해산할 수 없습니다.";
 
     private final TableGroupRepository tableGroupRepository;
-    private final OrderTableGroupUnGroupValidator orderUnGroupTableGroupValidator;
-    private final OrderTableTableGroupCreateValidator orderTableCreateTableGroupValidator;
+    private final TableGroupUnGroupValidator orderUnGroupTableGroupValidator;
+    private final TableGroupCreateValidator orderTableCreateTableGroupValidator;
     private final ApplicationEventPublisher eventPublisher;
 
     public TableGroupService(TableGroupRepository tableGroupRepository,
