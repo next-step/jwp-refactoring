@@ -1,12 +1,8 @@
 package kitchenpos.order.acceptance;
 
-import static kitchenpos.menu.acceptance.MenuAcceptanceTest.*;
-import static kitchenpos.menu.acceptance.MenuGroupAcceptanceTest.*;
-import static kitchenpos.menu.acceptance.ProductAcceptanceTest.*;
 import static kitchenpos.order.acceptance.TableAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.*;
 
-import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,12 +17,6 @@ import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.menu.dto.MenuGroupResponse;
-import kitchenpos.menu.dto.MenuProductRequest;
-import kitchenpos.menu.dto.MenuRequest;
-import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.dto.ProductRequest;
-import kitchenpos.menu.dto.ProductResponse;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
@@ -43,22 +33,12 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-
-        // menu
-        ProductResponse 후라이드 = 상품_생성_요청(new ProductRequest("후라이드", new BigDecimal(16000)))
-            .as(ProductResponse.class);
-        MenuGroupResponse 두마리메뉴 = 메뉴_그룹_생성_요청("두마리 메뉴").as(MenuGroupResponse.class);
-        MenuRequest menuRequest = new MenuRequest("후라이드+후라이드", new BigDecimal(19000), 두마리메뉴.getId(),
-            Collections.singletonList(new MenuProductRequest(후라이드.getId(), 2)));
-
-        MenuResponse menuResponse = 메뉴_생성_요청(menuRequest).as(MenuResponse.class);
-
         // order table
         OrderTableRequest orderTableRequest = new OrderTableRequest(0, false);
         OrderTableResponse orderTableResponse = 주문_테이블_생성_요청(orderTableRequest).as(OrderTableResponse.class);
 
         orderRequest = new OrderRequest(orderTableResponse.getId(), Collections.singletonList(
-            new OrderLineItemRequest(menuResponse.getId(), 2)
+            new OrderLineItemRequest(1L, 2)
         ));
     }
 

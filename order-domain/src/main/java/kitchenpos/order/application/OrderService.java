@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.common.exception.ExceptionMessage;
 import kitchenpos.common.exception.NotFoundException;
-import kitchenpos.menu.application.MenuService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderTable;
@@ -24,13 +23,11 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
-    private final MenuService menuService;
 
     public OrderService(OrderRepository orderRepository,
-        OrderTableRepository orderTableRepository, MenuService menuService) {
+        OrderTableRepository orderTableRepository) {
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
-        this.menuService = menuService;
     }
 
     @Transactional
@@ -39,7 +36,6 @@ public class OrderService {
             new NotFoundException(ExceptionMessage.NOT_FOUND_DATA));
 
         Order order = Order.of(findOrderTable, makeOrderLineItems(orderRequest.getOrderLineItems()));
-        menuService.validateExistMenus(order.getMenuIds());
 
         final Order savedOrder = orderRepository.save(order);
         return new OrderResponse(savedOrder);
