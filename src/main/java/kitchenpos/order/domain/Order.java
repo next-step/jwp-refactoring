@@ -14,10 +14,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import kitchenpos.order.application.OrderValidator;
 import kitchenpos.table.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @EntityListeners(AuditingEntityListener.class)
@@ -72,15 +70,6 @@ public class Order {
         return orderStatus;
     }
 
-    public boolean isOrderStatus(OrderStatus status) {
-        return orderStatus.equals(status);
-    }
-
-    public void changeOrderStatus(final OrderValidator validator, final OrderStatus orderStatus) {
-        validator.validateStatusChangeable(this);
-        this.orderStatus = orderStatus;
-    }
-
     public LocalDateTime getOrderedTime() {
         return orderedTime;
     }
@@ -102,8 +91,25 @@ public class Order {
         this.orderStatus = OrderStatus.COOKING;
     }
 
-    public void place(OrderValidator validator) {
-        validator.validateCreatable(this);
+    public void place() {
+        validateCreatable();
         ordered();
+    }
+
+    public void changeOrderStatus(final OrderStatus orderStatus) {
+        validateStatusChangeable();
+        this.orderStatus = orderStatus;
+    }
+
+    private void validateCreatable() {
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException("빈 테이블은 주문을 등록할 수 없습니다.");
+        }
+    }
+
+    private void validateStatusChangeable() {
+        if (isCompleted()) {
+            throw new IllegalArgumentException("이미 완료(COMPLETION) 된 주문입니다.");
+        }
     }
 }

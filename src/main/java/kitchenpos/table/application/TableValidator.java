@@ -39,12 +39,16 @@ public class TableValidator {
 
     public void validateTableGroupCreatable(final OrderTables orderTables) {
         for (final OrderTable orderTable : orderTables.getOrderTables()) {
-            if (!orderTable.isEmpty()) {
-                throw new IllegalArgumentException("빈테이블은 단체 지정할 수 없습니다.");
-            }
-            if (orderTable.isGrouped()) {
-                throw new IllegalArgumentException("이미 단체가 있으면 단체 지정할 수 없습니다.");
-            }
+            validateTableGroupCreatable(orderTable);
+        }
+    }
+
+    public void validateTableGroupCreatable(final OrderTable orderTable) {
+        if (!orderTable.isEmpty()) {
+            throw new IllegalArgumentException("빈테이블은 단체 지정할 수 없습니다.");
+        }
+        if (orderTable.isGrouped()) {
+            throw new IllegalArgumentException("이미 단체가 있으면 단체 지정할 수 없습니다.");
         }
     }
 

@@ -21,7 +21,7 @@ public class OrderLineItem {
     @JoinColumn(nullable = false)
     private Order order;
 
-    @Column(name = "menu_id")
+    @Column(name = "menu_id", columnDefinition = "bigint(20)", nullable = false)
     private Long menuId;
 
     @Column(nullable = false)

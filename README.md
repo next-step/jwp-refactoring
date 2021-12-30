@@ -22,7 +22,7 @@
 
 ### 객체 의존 관계 BEFORE :
 
-![img.png](./src/main/resources/imgs/object-relations-before.png)
+![img.png](./src/main/resources/imgs/objects-relations-before.png)
 - 생애 주기가 비슷한 객체들을 묶음
   - Product
   - Menu
@@ -35,8 +35,13 @@
 - 의존 관계가 강하고 transaction 단위가 크면, 설계상/ 성능상의 문제가 발생한다.
 - 관계 해제가 적당하다고 생각되는 부분 의존성 개선
   
-  - orderLineItem 과 menu 객체 연관 관계 해제
-  - orderTable - order 관계 양방향 -> 단방향 변경
+  - `orderLineItem` 과 `menu` 객체 연관 관계 해제
+    - menu 와 order 가 생애주기가 다르므로 분리
+  - `orderTable` - `order` 관계 양방향 -> 단방향 변경
+    - table과 order는 생애주기가 다르고, 
+    - table 조회 시 orders 가 loading 되면 불필요하게 하나의 트랜잭션이 감당할 객체 범위가 커지므로 변경
+  - `order` - `orderLineItem` 관계 양방향 -> 단방향 변경 
+    - 양방향 불필요하여 단방향 변경
 
 ### 이벤트 작동 방식 :
 ![img.png](src/main/resources/imgs/event-flow.png)

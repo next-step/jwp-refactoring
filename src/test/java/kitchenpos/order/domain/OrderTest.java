@@ -2,9 +2,7 @@ package kitchenpos.order.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import kitchenpos.order.application.OrderValidator;
 import kitchenpos.table.domain.OrderTable;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -12,13 +10,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class OrderTest {
-
-    private static OrderValidator orderValidator;
-
-    @BeforeAll
-    static void setup() {
-        orderValidator = new OrderValidator();
-    }
 
     @Test
     @DisplayName("주문 생성")
@@ -49,7 +40,7 @@ class OrderTest {
         //when
         Order order = new Order();
         OrderStatus orderStatus = OrderStatus.valueOf(status);
-        order.changeOrderStatus(orderValidator, orderStatus);
+        order.changeOrderStatus(orderStatus);
 
         //then
         assertThat(order.getOrderStatus()).isEqualTo(orderStatus);
