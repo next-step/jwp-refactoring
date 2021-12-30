@@ -30,16 +30,17 @@ public class OrderService {
     public OrderResponse create(final OrderRequest request) {
         final OrderTable orderTable = tableService.findOrderTableById(request.getOrderTableId());
         final Order order = Order.from(orderTable);
-        final List<OrderLineItem> orderLineItems = getOrderLineItems(request.getOrderLineItems());
-        order.addOrderLineItems(orderLineItems);
+        addOrderLineItems(order, request.getOrderLineItems());
+
         final Order savedOrder = orderRepository.save(order);
         return OrderResponse.from(savedOrder);
     }
 
-    private List<OrderLineItem> getOrderLineItems(final List<OrderLineItemRequest> orderLineItems) {
-        return orderLineItems.stream()
+    private void addOrderLineItems(final Order order, final List<OrderLineItemRequest> orderLineItemRequests) {
+        final List<OrderLineItem> orderLineItems = orderLineItemRequests.stream()
                 .map(this::getOrderItem)
                 .collect(Collectors.toList());
+        order.addOrderLineItems(orderLineItems);
     }
 
     private OrderLineItem getOrderItem(final OrderLineItemRequest request) {
