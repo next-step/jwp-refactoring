@@ -8,8 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kitchenpos.exception.AppException;
 import kitchenpos.exception.ErrorCode;
-import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
@@ -23,20 +21,17 @@ import kitchenpos.order.dto.OrderUpdateRequest;
 public class OrderService {
 
 	private final OrderRepository orderRepository;
-	private final MenuService menuService;
 	private final OrderValidator orderValidator;
 
 	public OrderService(final OrderRepository orderRepository,
-		final MenuService menuService,
 		final OrderValidator orderValidator) {
 
 		this.orderRepository = orderRepository;
-		this.menuService = menuService;
 		this.orderValidator = orderValidator;
 	}
 
 	public OrderResponse create(final OrderRequest orderRequest) {
-		orderValidator.validateCreate(orderRequest.getOrderTableId());
+		orderValidator.validateCreate(orderRequest);
 		Order order = Order.create(orderRequest.getOrderTableId());
 		List<OrderLineItem> orderLineItemList = getOrderLineItems(orderRequest.getOrderLineItems());
 		order.addOrderLineItems(orderLineItemList);
@@ -48,8 +43,7 @@ public class OrderService {
 	}
 
 	private OrderLineItem getOrderItem(OrderLineItemRequest request) {
-		Menu menu = menuService.getById(request.getMenuId());
-		return OrderLineItem.create(menu.getId(), request.getQuantity());
+		return OrderLineItem.create(request.getMenuId(), request.getQuantity());
 	}
 
 	@Transactional(readOnly = true)

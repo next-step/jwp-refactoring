@@ -3,6 +3,7 @@ package kitchenpos.order.application;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
+import java.util.Collections;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +16,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import kitchenpos.exception.AppException;
 import kitchenpos.exception.ErrorCode;
+import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 
@@ -25,6 +29,8 @@ public class OrderValidatorTest {
 	private OrderValidator orderValidator;
 	@Mock
 	private OrderTableRepository orderTableRepository;
+	@Mock
+	private MenuRepository menuRepository;
 
 	private OrderTable 테이블;
 
@@ -56,6 +62,22 @@ public class OrderValidatorTest {
 		assertThatThrownBy(() -> orderValidator.validateCreate(1L))
 			.isInstanceOf(AppException.class)
 			.hasMessage(ErrorCode.WRONG_INPUT.getMessage());
+	}
+
+	@DisplayName("주문 시, 모든 주문 항목 메뉴가 존재해야 한다")
+	@Test
+	void createTest3() {
+		// given
+		OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(1L, 2L);
+		OrderRequest request = new OrderRequest(1L, Collections.singletonList(orderLineItemRequest));
+
+		given(orderTableRepository.findById(테이블.getId())).willReturn(Optional.of(테이블));
+		given(menuRepository.existsById(any())).willReturn(false);
+
+		// when, then
+		assertThatThrownBy(() -> orderValidator.validateCreate(request))
+			.isInstanceOf(AppException.class)
+			.hasMessage(ErrorCode.NOT_FOUND.getMessage());
 	}
 
 }
