@@ -2,9 +2,8 @@ package kitchenpos.orders.order.domain;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import kitchenpos.common.domain.Validator;
 import kitchenpos.common.DomainService;
-import kitchenpos.orders.order.infra.RestMenuClient;
+import kitchenpos.common.domain.Validator;
 import kitchenpos.orders.ordertable.domain.OrderTable;
 import kitchenpos.orders.ordertable.domain.OrderTableRepository;
 
@@ -12,14 +11,14 @@ import kitchenpos.orders.ordertable.domain.OrderTableRepository;
 public class OrderValidator implements Validator<Order> {
 
     private final OrderTableRepository orderTableRepository;
-    private final RestMenuClient restMenuClient;
+    private final MenuRepository menuRepository;
 
     public OrderValidator(
         final OrderTableRepository orderTableRepository,
-        final RestMenuClient restMenuClient
+        final MenuRepository menuRepository
     ) {
         this.orderTableRepository = orderTableRepository;
-        this.restMenuClient = restMenuClient;
+        this.menuRepository = menuRepository;
     }
 
     @Override
@@ -34,7 +33,7 @@ public class OrderValidator implements Validator<Order> {
             throw new IllegalArgumentException("1개 이상의 등록된 메뉴로 매장 주문을 등록할 수 있습니다.");
         }
 
-        if (!restMenuClient.existAll(menuIds)) {
+        if (!menuRepository.existAll(menuIds)) {
             throw new NoSuchElementException("메뉴가 없으면 매장 주문을 등록할 수 없습니다.");
         }
     }
