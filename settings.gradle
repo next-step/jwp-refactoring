@@ -1,1 +1,11 @@
 rootProject.name = 'kitchenpos'
+include 'module-common'
+include 'module-domain'
+include 'module-api'
+include 'module-web'
+
+project(':module-common').projectDir = "$rootDir/module-common" as File
+project(':module-domain').projectDir = "$rootDir/module-domain" as File
+project(':module-api').projectDir = "$rootDir/module-api" as File
+project(':module-web').projectDir = "$rootDir/module-web" as File
+

@@ -1,0 +1,74 @@
+@startuml
+
+MenuProduct "N "}--" " Menu
+
+class MenuGroup {
+    - Long id
+    - String name
+}
+
+class Menu {
+    - Long id
+    - String name
+    - BigDecimal price
+    - Long menuGroupId
+    - List<MenuProduct> menuProducts
+}
+
+class MenuProduct {
+    - Long seq
+    - Long menuId
+    - Long productId
+    - Long quantity
+}
+
+class Product {
+    - Long id
+    - String name
+    - BigDecimal price
+}
+
+@enduml
+
+
+@startuml
+
+OrderLineItem "N "}--"1 " Order
+OrderStatus <-- Order
+OrderStatus <-- OrderTable
+
+class Order {
+    - Long id
+    - Long orderTableId
+    - String orderStatus
+    - LocalDateTime orderedTime
+    - List<OrderLineItem> orderLineItems
+}
+
+enum OrderStatus {
+    READY
+    COOKING
+    MEAL
+    COMPLETION
+}
+
+class OrderLineItem {
+    - Long seq
+    - Long orderId
+    - Long menuId
+    - Long quantity
+}
+
+class OrderTable {
+    - Long id
+    - Long tableGroupId
+    - int numberOfGuests
+    - boolean empty
+    - String orderStatus
+}
+
+class TableGroup {
+    - Long id
+    - LocalDateTime createdDate
+}
+@enduml

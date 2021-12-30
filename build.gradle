@@ -1,46 +1,35 @@
-plugins {
-    id 'org.springframework.boot' version '2.4.1'
-    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
-    id 'java'
+allprojects {
+    apply plugin: 'java'
+    group 'camp.nextstep.edu'
+    version = '0.0.1-SNAPSHOT'
+    sourceCompatibility = '1.8'
 }
 
-group = 'camp.nextstep.edu'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
-
-repositories {
-    mavenCentral()
+buildscript {
+    ext {
+        springBootVersion = '2.4.1'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+    }
 }
 
-dependencies {
-    // Spring boot
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+subprojects {
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
 
-    // JDBC
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    repositories {
+        mavenCentral()
+    }
 
-    // JPA
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    dependencies {
 
-    // Spring boot Validation
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-
-    // Spring boot Actuator
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-
-    // H2
-    runtimeOnly 'com.h2database:h2'
-
-    // Flyway
-    implementation 'org.flywaydb:flyway-core'
-
-    // RestAssured
-    testImplementation 'io.rest-assured:rest-assured:3.3.0'
-
-    // Guava
-    implementation 'com.google.guava:guava:31.0.1-jre'
+    }
 }
+
 
 test {
     useJUnitPlatform()
