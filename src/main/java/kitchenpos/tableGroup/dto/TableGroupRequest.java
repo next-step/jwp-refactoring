@@ -1,6 +1,6 @@
 package kitchenpos.tableGroup.dto;
 
-import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.order.dto.OrderTableRequest;
 
 import java.util.List;
 import java.util.stream.Collectors;

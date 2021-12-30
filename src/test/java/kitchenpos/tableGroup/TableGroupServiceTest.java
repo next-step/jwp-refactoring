@@ -1,9 +1,9 @@
 package kitchenpos.tableGroup;
 
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.OrderTableRepository;
+import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.tableGroup.application.TableGroupService;
 import kitchenpos.tableGroup.domain.TableGroup;
 import kitchenpos.tableGroup.domain.TableGroupRepository;

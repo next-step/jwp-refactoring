@@ -81,7 +81,8 @@ public class Order {
         }
     }
 
-    public void order(Long menuId, long quantity) {
+    public void order(Long menuId, long quantity, MenuFindValidator menuValidator) {
+        menuValidator.validateMenu(menuId);
         this.orderLineItems.add(this, menuId, quantity);
     }
 

@@ -4,8 +4,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.tableGroup.dto.TableGroupRequest;
 import kitchenpos.tableGroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -16,7 +16,7 @@ import org.springframework.http.MediaType;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.table.TableAcceptanceTest.주문_테이블_등록_요청;
+import static kitchenpos.order.TableAcceptanceTest.주문_테이블_등록_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("단체 지정 관련 기능")

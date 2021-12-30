@@ -1,10 +1,10 @@
 package kitchenpos.menu;
 
 import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.CreateMenuValidator;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.domain.MenuValidator;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -40,7 +40,7 @@ public class MenuServiceTest {
     MenuService menuService;
 
     @Mock
-    MenuValidator menuValidator;
+    CreateMenuValidator menuValidator;
 
     private Product 짜장면;
     private Product 탕수육;

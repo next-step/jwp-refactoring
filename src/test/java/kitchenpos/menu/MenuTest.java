@@ -1,8 +1,8 @@
 package kitchenpos.menu;
 
+import kitchenpos.menu.domain.CreateMenuValidator;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuValidator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +19,7 @@ public class MenuTest {
         MenuProduct 짜장면상품 = new MenuProduct(1L, 1);
         MenuProduct 탕수육상품 = new MenuProduct(2L, 1);
 
-        MenuValidator menuValidator = mock(MenuValidator.class);
+        CreateMenuValidator menuValidator = mock(CreateMenuValidator.class);
         Menu menu = Menu.create("짜장면셋트", new BigDecimal(20000), 1L, Arrays.asList(짜장면상품, 탕수육상품), menuValidator);
         menu.organizeMenu(Arrays.asList(짜장면상품, 탕수육상품));
 

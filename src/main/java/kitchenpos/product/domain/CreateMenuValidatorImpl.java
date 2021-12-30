@@ -1,7 +1,7 @@
 package kitchenpos.product.domain;
 
+import kitchenpos.menu.domain.CreateMenuValidator;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuValidator;
 import kitchenpos.menuGroup.domain.MenuGroupRepository;
 import org.springframework.stereotype.Component;
 
@@ -9,11 +9,11 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Component
-public class MenuValidatorImpl implements MenuValidator {
+public class CreateMenuValidatorImpl implements CreateMenuValidator {
     private final MenuGroupRepository menuGroupRepository;
     private final ProductRepository productRepository;
 
-    public MenuValidatorImpl(MenuGroupRepository menuGroupRepository, ProductRepository productRepository) {
+    public CreateMenuValidatorImpl(MenuGroupRepository menuGroupRepository, ProductRepository productRepository) {
         this.menuGroupRepository = menuGroupRepository;
         this.productRepository = productRepository;
     }

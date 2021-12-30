@@ -1,9 +1,9 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.menu.domain.CreateMenuValidator;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.domain.MenuValidator;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import org.springframework.stereotype.Service;
@@ -15,9 +15,9 @@ import java.util.stream.Collectors;
 @Service
 public class MenuService {
     private final MenuRepository menuRepository;
-    private final MenuValidator menuValidator;
+    private final CreateMenuValidator menuValidator;
 
-    public MenuService(final MenuRepository menuRepository, MenuValidator menuValidator) {
+    public MenuService(final MenuRepository menuRepository, CreateMenuValidator menuValidator) {
         this.menuRepository = menuRepository;
         this.menuValidator = menuValidator;
     }

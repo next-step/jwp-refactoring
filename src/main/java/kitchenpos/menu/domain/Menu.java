@@ -38,7 +38,7 @@ public class Menu {
         this.menuProducts = new MenuProducts();
     }
 
-    public static Menu create(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts, MenuValidator menuValidator) {
+    public static Menu create(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts, CreateMenuValidator menuValidator) {
         menuValidator.validateCreateMenu(menuGroupId, price, menuProducts);
         return new Menu(name, price, menuGroupId);
     }
