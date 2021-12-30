@@ -4,7 +4,7 @@ import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.domain.validator.MenuExistMenuGroupMenuCreateValidator;
+import kitchenpos.menugroup.domain.MenuExistMenuGroupMenuCreateValidator;
 import kitchenpos.menu.domain.validator.MenuPriceMenuCreateValidator;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;

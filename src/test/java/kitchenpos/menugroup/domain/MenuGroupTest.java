@@ -1,6 +1,6 @@
 package kitchenpos.menugroup.domain;
 
-import kitchenpos.menugroup.infra.MenuGroupRepository;
+import kitchenpos.menugroup.infra.JpaMenuGroupRepository;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class MenuGroupTest {
 
     @Autowired
-    private MenuGroupRepository menuGroupRepository;
+    private JpaMenuGroupRepository menuGroupRepository;
 
 
     @DisplayName("메뉴 그룹은 아이디와 이름으로 구성되어 있다.")

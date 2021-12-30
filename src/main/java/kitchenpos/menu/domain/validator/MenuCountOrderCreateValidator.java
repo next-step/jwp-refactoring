@@ -1,7 +1,6 @@
 package kitchenpos.menu.domain.validator;
 
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.infra.JpaMenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.validator.OrderCreateValidator;
 import kitchenpos.order.exception.IllegalMenuIdsException;
