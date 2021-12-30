@@ -9,7 +9,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 @DisplayName("손님 숫자 도메인 테스트")
 class NumberOfGuestsTest {
-
     @DisplayName("생성 테스트")
     @Test
     void createTest() {

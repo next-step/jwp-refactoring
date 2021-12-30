@@ -10,14 +10,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 @DisplayName("수량 도메인 테스트")
 class QuantityTest {
-
-    @DisplayName("생성 테스트")
-    @Test
-    void createTest() {
-        assertThat(Quantity.valueOf(1L))
-                .isEqualTo(Quantity.valueOf(1L));
-    }
-
     @DisplayName("최소값 1 이상이어야 한다")
     @Test
     void validateTest() {
@@ -31,5 +23,4 @@ class QuantityTest {
         assertThatThrownBy(() -> Quantity.valueOf(null))
                 .isInstanceOf(NegativeQuantityException.class);
     }
-
 }
