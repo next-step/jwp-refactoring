@@ -1,9 +1,12 @@
 package kitchenpos.table.application;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import kitchenpos.order.application.OrderService;
-import kitchenpos.order.domain.Orders;
+import kitchenpos.order.domain.CompletionOrders;
+import kitchenpos.order.domain.Order;
 
 @Component
 public class TableValidator {
@@ -14,9 +17,7 @@ public class TableValidator {
     }
     
     public void checkIsCookingOrMeal(Long orderTableId) {
-        Orders orders = Orders.from(orderService.findAllByOrderTableId(orderTableId));
-        if (orders.isContainsMealStatus() || orders.isContainsCookingStatus()) {
-            throw new IllegalArgumentException("조리중, 식사중인 주문 테이블은 변경할 수 없습니다");
-        }
+        List<Order> orders = orderService.findAllByOrderTableId(orderTableId);
+        CompletionOrders.from(orders);
     }
 }
