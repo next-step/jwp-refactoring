@@ -19,10 +19,6 @@ public class MenuProduct {
     private Long seq;
 
     @ManyToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_menu_product_menu"))
-    private Menu menu;
-
-    @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_menu_product_product"))
     private Product product;
 
@@ -41,16 +37,8 @@ public class MenuProduct {
         return new MenuProduct(product, quantity);
     }
 
-    public void changeMenu(Menu menu) {
-        this.menu = menu;
-    }
-
     public Long getSeq() {
         return seq;
-    }
-
-    public Menu getMenu() {
-        return menu;
     }
 
     public Product getProduct() {

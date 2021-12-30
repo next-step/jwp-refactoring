@@ -4,6 +4,8 @@ import org.springframework.util.Assert;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -13,7 +15,8 @@ import java.util.List;
 @Embeddable
 public class MenuProducts {
 
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "menu_id")
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
     protected MenuProducts() {
@@ -38,11 +41,5 @@ public class MenuProducts {
                 .map(MenuProduct::calculateTotalPrice)
                 .reduce(BigDecimal::add)
                 .orElse(BigDecimal.ZERO);
-    }
-
-    public void changeMenu(Menu menu) {
-        Assert.notNull(menu, "메뉴는 필수입니다.");
-        menuProducts.forEach(menuProduct ->
-                menuProduct.changeMenu(menu));
     }
 }

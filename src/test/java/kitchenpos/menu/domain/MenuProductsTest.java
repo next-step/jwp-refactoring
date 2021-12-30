@@ -64,18 +64,4 @@ class MenuProductsTest {
         // then
         Assertions.assertThat(actual).isEqualTo(BigDecimal.valueOf(60000));
     }
-
-    @Test
-    void 메뉴_변경시_메뉴는_필수이다() {
-        // given
-        MenuProducts actual = MenuProducts.from(Collections.singletonList(MenuProduct.of(후라이드치킨, 2L)));
-
-        // when
-        ThrowableAssert.ThrowingCallable throwingCallable = () -> actual.changeMenu(null);
-
-        // then
-        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(throwingCallable)
-                .withMessage("메뉴는 필수입니다.");
-    }
 }

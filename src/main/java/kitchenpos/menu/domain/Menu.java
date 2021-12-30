@@ -43,7 +43,6 @@ public class Menu {
         this.price = price;
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
-        menuProducts.changeMenu(this);
     }
 
     public static Menu of(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
