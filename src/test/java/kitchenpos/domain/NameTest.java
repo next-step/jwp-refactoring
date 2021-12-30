@@ -1,6 +1,6 @@
 package kitchenpos.domain;
 
-import kitchenpos.common.exceptions.NoRequiredNameException;
+import kitchenpos.common.exceptions.EmptyNameException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -20,6 +20,6 @@ class NameTest {
     @Test
     void validateTest() {
         assertThatThrownBy(() -> Name.from(""))
-                .isInstanceOf(NoRequiredNameException.class);
+                .isInstanceOf(EmptyNameException.class);
     }
 }
