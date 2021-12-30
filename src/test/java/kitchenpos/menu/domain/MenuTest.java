@@ -4,6 +4,7 @@ import kitchenpos.common.fixtrue.MenuFixture;
 import kitchenpos.common.fixtrue.MenuGroupFixture;
 import kitchenpos.common.fixtrue.MenuProductFixture;
 import kitchenpos.common.fixtrue.ProductFixture;
+import kitchenpos.product.domain.Product;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

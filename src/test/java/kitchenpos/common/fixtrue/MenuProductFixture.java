@@ -1,7 +1,7 @@
 package kitchenpos.common.fixtrue;
 
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.Product;
+import kitchenpos.product.domain.Product;
 
 public class MenuProductFixture {
 

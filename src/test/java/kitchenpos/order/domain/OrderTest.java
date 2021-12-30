@@ -9,7 +9,7 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.menu.domain.Product;
+import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.OrderTable;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

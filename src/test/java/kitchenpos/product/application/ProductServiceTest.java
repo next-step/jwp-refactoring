@@ -1,10 +1,9 @@
-package kitchenpos.menu.applicaiton;
+package kitchenpos.product.application;
 
-import kitchenpos.menu.application.ProductService;
-import kitchenpos.menu.domain.Product;
-import kitchenpos.menu.domain.ProductRepository;
-import kitchenpos.menu.dto.ProductRequest;
-import kitchenpos.menu.dto.ProductResponse;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
