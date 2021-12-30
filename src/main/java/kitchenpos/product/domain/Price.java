@@ -35,7 +35,7 @@ public class Price {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Price price1 = (Price) o;
-        return Objects.equals(price, price1.price);
+        return price.compareTo(price1.price) == 0;
     }
 
     @Override

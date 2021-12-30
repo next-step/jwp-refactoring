@@ -9,6 +9,9 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.util.Arrays;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 public class MenuTest {
     @Test
     @DisplayName("메뉴를 구성한다.")
@@ -20,6 +23,8 @@ public class MenuTest {
 
         Menu menu = new Menu("짜장면셋트", new BigDecimal(20000));
         menu.organizeMenu(Arrays.asList(짜장면상품, 탕수육상품));
+
+        assertThat(menu.getMenuProducts().getMenuProducts()).hasSize(2);
     }
 
     @Test
@@ -31,6 +36,9 @@ public class MenuTest {
         MenuProduct 탕수육상품 = new MenuProduct(탕수육, 1);
 
         Menu menu = new Menu("짜장면셋트", new BigDecimal(20000));
-        menu.organizeMenu(Arrays.asList(짜장면상품, 탕수육상품));
+
+        assertThatThrownBy(() -> menu.organizeMenu(Arrays.asList(짜장면상품, 탕수육상품)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("메뉴 가격이 올바르지 않습니다");
     }
 }

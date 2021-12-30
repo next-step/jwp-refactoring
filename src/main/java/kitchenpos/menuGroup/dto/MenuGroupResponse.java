@@ -1,4 +1,4 @@
-package kitchenpos.menu.dto;
+package kitchenpos.menuGroup.dto;
 
 public class MenuGroupResponse {
     private final Long id;
