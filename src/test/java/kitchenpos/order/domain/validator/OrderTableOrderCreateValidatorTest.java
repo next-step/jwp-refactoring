@@ -2,7 +2,7 @@ package kitchenpos.order.domain.validator;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.validator.OrderTableEmptyOrderValidator;
+import kitchenpos.ordertable.domain.validator.OrderTableOrderCreateValidator;
 import kitchenpos.ordertable.infra.OrderTableRepository;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,12 +26,12 @@ import static org.mockito.Mockito.doThrow;
 
 @DisplayName("주문 생성시 빈 테이블 유효성 테스트")
 @ExtendWith(MockitoExtension.class)
-class OrderTableEmptyOrderValidatorTest {
+class OrderTableOrderCreateValidatorTest {
 
     @Mock
     private OrderTableRepository orderTableRepository;
     @InjectMocks
-    private OrderTableEmptyOrderValidator validator;
+    private OrderTableOrderCreateValidator validator;
 
     private OrderTable 빈_주문_테이블;
     private OrderTable 주문_테이블;

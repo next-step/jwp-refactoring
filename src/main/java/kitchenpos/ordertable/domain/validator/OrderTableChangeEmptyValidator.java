@@ -1,5 +1,5 @@
 package kitchenpos.ordertable.domain.validator;
 
-public interface ChangeOrderTableValidator {
+public interface OrderTableChangeEmptyValidator {
     void validate(Long orderTableId);
 }

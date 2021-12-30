@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.menu.domain.validator.MenuExistMenuGroupMenuMenuCreateValidator;
+import kitchenpos.menu.domain.validator.MenuExistMenuGroupMenuCreateValidator;
 import kitchenpos.menugroup.infra.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import org.assertj.core.api.ThrowableAssert;
@@ -29,7 +29,7 @@ class NotFoundMenuGroupValidatorTest {
     @Mock
     private MenuGroupRepository menuGroupRepository;
     @InjectMocks
-    private MenuExistMenuGroupMenuMenuCreateValidator notFoundMenuGroupValidator;
+    private MenuExistMenuGroupMenuCreateValidator notFoundMenuGroupValidator;
 
     private Product 양지쌀국수;
     private Product 분짜;

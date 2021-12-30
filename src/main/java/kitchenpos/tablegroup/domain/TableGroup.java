@@ -1,7 +1,7 @@
 package kitchenpos.tablegroup.domain;
 
-import kitchenpos.ordertable.domain.validator.OrderTableCreateTableGroupValidator;
-import kitchenpos.order.domain.validator.OrderUnGroupTableGroupValidator;
+import kitchenpos.ordertable.domain.validator.OrderTableTableGroupCreateValidator;
+import kitchenpos.order.domain.validator.OrderTableGroupUnGroupValidator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -45,12 +45,12 @@ public class TableGroup {
         return new TableGroup(id, orderTableIds);
     }
 
-    public static TableGroup create(List<Long> orderTableIds, OrderTableCreateTableGroupValidator orderTableCreateTableGroupValidator) {
+    public static TableGroup create(List<Long> orderTableIds, OrderTableTableGroupCreateValidator orderTableCreateTableGroupValidator) {
         orderTableCreateTableGroupValidator.validate(orderTableIds);
         return new TableGroup(orderTableIds);
     }
 
-    public void ungroup(OrderUnGroupTableGroupValidator tableGroupValidator) {
+    public void ungroup(OrderTableGroupUnGroupValidator tableGroupValidator) {
         tableGroupValidator.validate(getOrderTableIds());
     }
 

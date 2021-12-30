@@ -12,11 +12,11 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Component
-public class ProductMenuPriceSumMenuCreateValidator implements MenuPriceMenuCreateValidator {
+public class ProductMenuCreateValidator implements MenuPriceMenuCreateValidator {
     private static final String ILLEGAL_PRICE_ERROR_MESSAGE = "가격은 포함된 구성된 상품들의 금액 보다 작거나 같아야 한다.";
     private final ProductRepository productRepository;
 
-    public ProductMenuPriceSumMenuCreateValidator(ProductRepository productRepository) {
+    public ProductMenuCreateValidator(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 

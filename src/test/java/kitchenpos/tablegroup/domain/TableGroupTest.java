@@ -1,6 +1,6 @@
 package kitchenpos.tablegroup.domain;
 
-import kitchenpos.ordertable.domain.validator.OrderTableCreateTableGroupValidator;
+import kitchenpos.ordertable.domain.validator.OrderTableTableGroupCreateValidator;
 import kitchenpos.tablegroup.infra.TableGroupRepository;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
@@ -20,7 +20,7 @@ class TableGroupTest {
     @Autowired
     private TableGroupRepository tableGroupRepository;
     @Autowired
-    private OrderTableCreateTableGroupValidator orderTableCreateTableGroupValidator;
+    private OrderTableTableGroupCreateValidator orderTableCreateTableGroupValidator;
 
     @DisplayName("단체 지정은 아이디, 생성시간, 주문 테이블로 구성되어 있다.")
     @Test

@@ -2,6 +2,6 @@ package kitchenpos.tablegroup.domain.validator;
 
 import java.util.List;
 
-public interface CreateTableGroupValidator {
+public interface TableGroupUnGroupValidator {
     void validate(List<Long> orderTableIds);
 }

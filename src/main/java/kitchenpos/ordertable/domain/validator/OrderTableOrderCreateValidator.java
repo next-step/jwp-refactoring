@@ -8,12 +8,12 @@ import kitchenpos.ordertable.infra.OrderTableRepository;
 import org.springframework.stereotype.Component;
 
 @Component
-public class OrderTableEmptyOrderValidator implements OrderCreateValidator {
+public class OrderTableOrderCreateValidator implements OrderCreateValidator {
     private static final String EMPTY_ERROR_MESSAGE = "테이블이 비어있을 경우 주문을 할 수 없습니다.";
     private static final String NOT_FOUND_ORDER_TABLE_ERROR_MESSAGE = "주문 테이블이 존재하지 않아 주문을 할 수 없습니다.";
     private final OrderTableRepository orderTableRepository;
 
-    public OrderTableEmptyOrderValidator(OrderTableRepository orderTableRepository) {
+    public OrderTableOrderCreateValidator(OrderTableRepository orderTableRepository) {
         this.orderTableRepository = orderTableRepository;
     }
 

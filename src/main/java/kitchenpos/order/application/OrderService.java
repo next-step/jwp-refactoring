@@ -2,7 +2,7 @@ package kitchenpos.order.application;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.menu.domain.validator.MenuCountOrderCreateValidator;
-import kitchenpos.ordertable.domain.validator.OrderTableEmptyOrderValidator;
+import kitchenpos.ordertable.domain.validator.OrderTableOrderCreateValidator;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.infra.OrderRepository;
@@ -17,10 +17,10 @@ import java.util.stream.Collectors;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final MenuCountOrderCreateValidator menuGroupValidator;
-    private final OrderTableEmptyOrderValidator orderCreateValidator;
+    private final OrderTableOrderCreateValidator orderCreateValidator;
 
     public OrderService(OrderRepository orderRepository, MenuCountOrderCreateValidator menuGroupValidator,
-                        OrderTableEmptyOrderValidator orderCreateValidator) {
+                        OrderTableOrderCreateValidator orderCreateValidator) {
         this.orderRepository = orderRepository;
         this.menuGroupValidator = menuGroupValidator;
         this.orderCreateValidator = orderCreateValidator;

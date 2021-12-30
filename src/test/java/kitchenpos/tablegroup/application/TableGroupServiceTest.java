@@ -2,8 +2,8 @@ package kitchenpos.tablegroup.application;
 
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.ordertable.domain.validator.OrderTableCreateTableGroupValidator;
-import kitchenpos.order.domain.validator.OrderUnGroupTableGroupValidator;
+import kitchenpos.ordertable.domain.validator.OrderTableTableGroupCreateValidator;
+import kitchenpos.order.domain.validator.OrderTableGroupUnGroupValidator;
 import kitchenpos.tablegroup.dto.TableGroupCreateRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import kitchenpos.tablegroup.infra.TableGroupRepository;
@@ -38,9 +38,9 @@ import static org.mockito.Mockito.doThrow;
 class TableGroupServiceTest {
 
     @Mock
-    private OrderTableCreateTableGroupValidator orderTableCreateTableGroupValidator;
+    private OrderTableTableGroupCreateValidator orderTableCreateTableGroupValidator;
     @Mock
-    private OrderUnGroupTableGroupValidator orderUnGroupTableGroupValidator;
+    private OrderTableGroupUnGroupValidator orderUnGroupTableGroupValidator;
     @Mock
     private TableGroupRepository tableGroupRepository;
     @Mock

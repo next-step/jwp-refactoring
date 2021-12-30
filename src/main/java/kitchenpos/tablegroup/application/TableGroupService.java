@@ -3,8 +3,8 @@ package kitchenpos.tablegroup.application;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.event.TableGroupedEvent;
 import kitchenpos.tablegroup.domain.event.TableUnGroupedEvent;
-import kitchenpos.ordertable.domain.validator.OrderTableCreateTableGroupValidator;
-import kitchenpos.order.domain.validator.OrderUnGroupTableGroupValidator;
+import kitchenpos.ordertable.domain.validator.OrderTableTableGroupCreateValidator;
+import kitchenpos.order.domain.validator.OrderTableGroupUnGroupValidator;
 import kitchenpos.tablegroup.dto.TableGroupCreateRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import kitchenpos.tablegroup.exception.CanNotUnGroupException;
@@ -19,13 +19,13 @@ public class TableGroupService {
     private static final String NOT_FOUND_TABLE_GROUP_ERROR_MESSAGE = "해당 단체 지정을 찾지 못하여 해산할 수 없습니다.";
 
     private final TableGroupRepository tableGroupRepository;
-    private final OrderUnGroupTableGroupValidator orderUnGroupTableGroupValidator;
-    private final OrderTableCreateTableGroupValidator orderTableCreateTableGroupValidator;
+    private final OrderTableGroupUnGroupValidator orderUnGroupTableGroupValidator;
+    private final OrderTableTableGroupCreateValidator orderTableCreateTableGroupValidator;
     private final ApplicationEventPublisher eventPublisher;
 
     public TableGroupService(TableGroupRepository tableGroupRepository,
-                             OrderUnGroupTableGroupValidator orderUnGroupTableGroupValidator,
-                             OrderTableCreateTableGroupValidator orderTableCreateTableGroupValidator,
+                             OrderTableGroupUnGroupValidator orderUnGroupTableGroupValidator,
+                             OrderTableTableGroupCreateValidator orderTableCreateTableGroupValidator,
                              ApplicationEventPublisher applicationEventPublisher) {
         this.tableGroupRepository = tableGroupRepository;
         this.orderUnGroupTableGroupValidator = orderUnGroupTableGroupValidator;
