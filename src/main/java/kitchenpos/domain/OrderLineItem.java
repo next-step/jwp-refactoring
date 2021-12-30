@@ -33,56 +33,28 @@ public class OrderLineItem {
         return new OrderLineItem(menu, quantity);
     }
 
-    public Long getSeq() {
-        return seq;
+    public void addOrder(Order order) {
+        this.order = order;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
+    public Long getSeq() {
+        return seq;
     }
 
     public Order getOrder() {
         return order;
     }
 
-    public void setOrder(final Order order) {
-        this.order = order;
-    }
-
     public Menu getMenu() {
         return menu;
-    }
-
-    public void setMenu(final Menu menu) {
-        this.menu = menu;
     }
 
     public long getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
-    }
-
     public void createId(Long seq) {
         this.seq = seq;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        OrderLineItem that = (OrderLineItem) o;
-        return quantity == that.quantity && Objects.equals(seq, that.seq) && Objects.equals(order, that.order) && Objects.equals(menu, that.menu);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(seq, order, menu, quantity);
-    }
-
-    public void addOrder(Order order) {
-        this.order = order;
-    }
 }
