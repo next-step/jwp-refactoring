@@ -38,8 +38,14 @@ subprojects {
 
 }
 
-
 project(':kitchenpos-webapi') {
+    dependencies {
+        implementation project(':kitchenpos-domain')
+        implementation project(':kitchenpos-application')
+    }
+}
+
+project(':kitchenpos-application') {
     dependencies {
         implementation project(':kitchenpos-domain')
     }

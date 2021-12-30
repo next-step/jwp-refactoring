@@ -16,10 +16,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.exception.AppException;
 import kitchenpos.exception.ErrorCode;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroupTest;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.fixture.MenuTestFixture;
 import kitchenpos.product.application.ProductService;
-import kitchenpos.product.domain.ProductTest;
+import kitchenpos.product.fixture.ProductTestFixture;
 
 @ExtendWith(MockitoExtension.class)
 public class MenuValidatorTest {
@@ -33,11 +33,11 @@ public class MenuValidatorTest {
 	@Test
 	void checkOverPriceTest() {
 		// given
-		Menu menu = Menu.of(1L, "후라이드들", BigDecimal.valueOf(50_000), MenuGroupTest.추천메뉴);
-		MenuProduct 후라이드둘 = MenuProduct.of(1L, menu, ProductTest.후라이드.getId(), 2L);
+		Menu menu = Menu.of(1L, "후라이드들", BigDecimal.valueOf(50_000), MenuTestFixture.추천메뉴);
+		MenuProduct 후라이드둘 = MenuProduct.of(1L, menu, ProductTestFixture.후라이드.getId(), 2L);
 		menu.addMenuProducts(Collections.singletonList(후라이드둘));
 
-		given(productService.getById(any())).willReturn(ProductTest.후라이드);
+		given(productService.getById(any())).willReturn(ProductTestFixture.후라이드);
 
 		// when, then
 		assertThatThrownBy(() -> menuValidator.isOverPrice(menu))

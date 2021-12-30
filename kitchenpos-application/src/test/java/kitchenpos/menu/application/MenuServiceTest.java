@@ -18,14 +18,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import kitchenpos.exception.AppException;
 import kitchenpos.exception.ErrorCode;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroupTest;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.domain.MenuTest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.fixture.MenuTestFixture;
 import kitchenpos.product.application.ProductService;
-import kitchenpos.product.domain.ProductTest;
+import kitchenpos.product.fixture.ProductTestFixture;
 
 @ExtendWith(MockitoExtension.class)
 public class MenuServiceTest {
@@ -46,7 +45,7 @@ public class MenuServiceTest {
 	void listTest() {
 		// given
 		List<Menu> persist = new ArrayList<>();
-		Menu menu1 = Menu.of(1L, "반반치킨", BigDecimal.valueOf(1000), MenuGroupTest.추천메뉴);
+		Menu menu1 = Menu.of(1L, "반반치킨", BigDecimal.valueOf(1000), MenuTestFixture.추천메뉴);
 		persist.add(menu1);
 
 		given(menuRepository.findAll()).willReturn(persist);
@@ -62,16 +61,16 @@ public class MenuServiceTest {
 	@Test
 	void createTest() {
 		// given
-		MenuProductRequest menuProductRequest = new MenuProductRequest(ProductTest.후라이드.getId(), 2L);
+		MenuProductRequest menuProductRequest = new MenuProductRequest(ProductTestFixture.후라이드.getId(), 2L);
 		MenuRequest request = new MenuRequest(
-			MenuTest.후라이드둘.getName().toText(),
-			MenuTest.후라이드둘.getPrice().toBigDecimal(),
-			MenuTest.후라이드둘.getMenuGroup().getId(),
+			MenuTestFixture.후라이드둘.getName().toText(),
+			MenuTestFixture.후라이드둘.getPrice().toBigDecimal(),
+			MenuTestFixture.후라이드둘.getMenuGroup().getId(),
 			Collections.singletonList(menuProductRequest));
 
-		given(menuRepository.save(any())).willReturn(MenuTest.후라이드둘);
-		given(menuGroupService.getById(any())).willReturn(MenuGroupTest.추천메뉴);
-		given(productService.getById(any())).willReturn(ProductTest.후라이드);
+		given(menuRepository.save(any())).willReturn(MenuTestFixture.후라이드둘);
+		given(menuGroupService.getById(any())).willReturn(MenuTestFixture.추천메뉴);
+		given(productService.getById(any())).willReturn(ProductTestFixture.후라이드);
 
 		// when
 		MenuResponse result = menuService.create(request);
@@ -85,13 +84,13 @@ public class MenuServiceTest {
 	@Test
 	void createTest2() {
 		// given
-		MenuProductRequest menuProductRequest = new MenuProductRequest(ProductTest.후라이드.getId(), 2L);
+		MenuProductRequest menuProductRequest = new MenuProductRequest(ProductTestFixture.후라이드.getId(), 2L);
 		MenuRequest request = new MenuRequest(
-			MenuTest.후라이드둘.getName().toText(),
+			MenuTestFixture.후라이드둘.getName().toText(),
 			BigDecimal.valueOf(-1),
-			MenuTest.후라이드둘.getMenuGroup().getId(),
+			MenuTestFixture.후라이드둘.getMenuGroup().getId(),
 			Collections.singletonList(menuProductRequest));
-		given(menuGroupService.getById(MenuGroupTest.추천메뉴.getId())).willReturn(MenuGroupTest.추천메뉴);
+		given(menuGroupService.getById(MenuTestFixture.추천메뉴.getId())).willReturn(MenuTestFixture.추천메뉴);
 
 		// when, then
 		assertThatThrownBy(() -> menuService.create(request))
@@ -104,9 +103,9 @@ public class MenuServiceTest {
 	void createTest3() {
 		// given
 		MenuRequest request = new MenuRequest(
-			MenuTest.후라이드둘.getName().toText(),
+			MenuTestFixture.후라이드둘.getName().toText(),
 			BigDecimal.valueOf(30_000),
-			MenuTest.후라이드둘.getMenuGroup().getId(),
+			MenuTestFixture.후라이드둘.getMenuGroup().getId(),
 			new ArrayList<>());
 
 		// when, then
@@ -119,15 +118,15 @@ public class MenuServiceTest {
 	@Test
 	void createTest4() {
 		// given
-		MenuProductRequest menuProductRequest = new MenuProductRequest(ProductTest.후라이드.getId(), 2L);
+		MenuProductRequest menuProductRequest = new MenuProductRequest(ProductTestFixture.후라이드.getId(), 2L);
 		MenuRequest request = new MenuRequest(
-			MenuTest.후라이드둘.getName().toText(),
-			MenuTest.후라이드둘.getPrice().toBigDecimal(),
-			MenuTest.후라이드둘.getMenuGroup().getId(),
+			MenuTestFixture.후라이드둘.getName().toText(),
+			MenuTestFixture.후라이드둘.getPrice().toBigDecimal(),
+			MenuTestFixture.후라이드둘.getMenuGroup().getId(),
 			Collections.singletonList(menuProductRequest));
 
 		given(productService.getById(any())).willThrow(new AppException(ErrorCode.NOT_FOUND, ""));
-		given(menuGroupService.getById(any())).willReturn(MenuGroupTest.추천메뉴);
+		given(menuGroupService.getById(any())).willReturn(MenuTestFixture.추천메뉴);
 
 		// when, then
 		assertThatThrownBy(() -> menuService.create(request))
