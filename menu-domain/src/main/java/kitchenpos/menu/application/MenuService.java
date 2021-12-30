@@ -60,12 +60,4 @@ public class MenuService {
             .map(MenuResponse::new)
             .collect(Collectors.toList());
     }
-
-    @Transactional(readOnly = true)
-    public void validateExistMenus(List<Long> ids) {
-        for (Long id : ids) {
-            menuRepository.findById(id).orElseThrow(() ->
-                new NotFoundException(ExceptionMessage.NOT_FOUND_DATA));
-        }
-    }
 }
