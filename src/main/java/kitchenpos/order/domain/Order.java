@@ -57,10 +57,6 @@ public class Order {
         this.orderStatus = OrderStatus.valueOf(orderStatus);
     }
 
-    public static Order create(Long id, OrderTable orderTable, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
-        return new Order(id, orderTable, orderStatus, orderedTime, orderLineItems);
-    }
-
     public static Order create(OrderTable orderTable, List<OrderLineItem> orderLineItemList) {
         Order order = new Order(orderTable, orderLineItemList);
         order.addOrderLineItems();

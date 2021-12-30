@@ -24,7 +24,7 @@ public class OrderTable {
     @Column(nullable = false)
     private boolean empty;
 
-    public OrderTable() {}
+    protected OrderTable() {}
 
     public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
         this.tableGroup = tableGroup;
@@ -37,28 +37,12 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public OrderTable(int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
-    }
-
-    public OrderTable(boolean empty) {
-        this.empty = empty;
-    }
-
     public static OrderTable of(int numberOfGuests, boolean empty) {
         return new OrderTable(numberOfGuests, empty);
     }
 
     public static OrderTable of(TableGroup tableGroup, int numberOfGuests, boolean empty) {
         return new OrderTable(tableGroup, numberOfGuests, empty);
-    }
-
-    public static OrderTable of(int numberOfGuests) {
-        return new OrderTable(numberOfGuests);
-    }
-
-    public static OrderTable of(boolean empty) {
-        return new OrderTable(empty);
     }
 
     public static OrderTable create(Integer numberOfGuests, boolean empty) {
