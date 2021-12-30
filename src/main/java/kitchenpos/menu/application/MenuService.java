@@ -56,7 +56,6 @@ public class MenuService {
                 .collect(Collectors.toList());
     }
     
-    @Transactional(readOnly = true)
     private MenuProducts createMenuProducts(List<MenuProductRequest> request) {
         List<MenuProduct> result = new ArrayList<MenuProduct>();
         
