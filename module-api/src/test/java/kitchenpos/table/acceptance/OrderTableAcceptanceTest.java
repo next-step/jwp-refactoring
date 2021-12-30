@@ -8,7 +8,7 @@ import static kitchenpos.utils.TestFactory.put;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.table.domain.NumberOfGuests;
+import kitchenpos.moduledomain.table.NumberOfGuests;
 import kitchenpos.table.dto.ChangeEmptyRequest;
 import kitchenpos.table.dto.ChangeNumberOfGuestRequest;
 import kitchenpos.table.dto.OrderTableRequest;

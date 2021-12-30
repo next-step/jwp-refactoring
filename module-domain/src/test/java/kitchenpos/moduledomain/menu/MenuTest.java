@@ -51,9 +51,12 @@ class MenuTest {
         MenuProduct 양념치킨_1개 = 양념치킨_1개();
         MenuProduct 콜라_1개 = 콜라_1개();
 
+        when(productDao.findById(anyLong())).thenReturn(Optional.of(양념치킨()), Optional.of(콜라()));
+        when(menuGroupDao.findById(anyLong())).thenReturn(Optional.of(메뉴그룹_한마리));
+
         // when
         menu.addMenuProducts(MenuProducts.of(asList(양념치킨_1개, 콜라_1개)),
-            new MenuValidation(null, null));
+            new MenuValidation(productDao, menuGroupDao));
 
         // then
         assertAll(() -> {

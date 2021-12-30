@@ -2,14 +2,13 @@ package kitchenpos.table.ui;
 
 import java.net.URI;
 import java.util.List;
+import kitchenpos.moduledomain.table.OrderTable;
 import kitchenpos.table.application.TableService;
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableGroupRequest;
 import kitchenpos.table.dto.ChangeEmptyRequest;
 import kitchenpos.table.dto.ChangeNumberOfGuestRequest;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.table.domain.TableGroupRequest;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

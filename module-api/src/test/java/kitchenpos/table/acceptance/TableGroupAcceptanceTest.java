@@ -11,13 +11,11 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.table.domain.NumberOfGuests;
+import kitchenpos.moduledomain.table.NumberOfGuests;
+import kitchenpos.table.domain.TableGroupRequest;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.table.domain.TableGroupRequest;
-import kitchenpos.table.domain.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 public class TableGroupAcceptanceTest extends AcceptanceTest {
@@ -45,7 +43,8 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     void 주문테이블_단체지정_생성() {
 
         // given
-        TableGroupRequest tableGroupRequest = new TableGroupRequest(asList(주문_테이블1.getId(), 주문_테이블2.getId()));
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(
+            asList(주문_테이블1.getId(), 주문_테이블2.getId()));
 
         // when
         ExtractableResponse<Response> response = 단체지정_생성_요청(tableGroupRequest);
@@ -58,7 +57,8 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     void 단체지정을_취소할_수_있다() {
 
         // given
-        TableGroupRequest tableGroupRequest = new TableGroupRequest(asList(주문_테이블1.getId(), 주문_테이블2.getId()));
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(
+            asList(주문_테이블1.getId(), 주문_테이블2.getId()));
 
         // when
         List<OrderTableResponse> list = 단체지정_생성_요청(tableGroupRequest).jsonPath()
@@ -79,7 +79,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 단체지정_취소_요청(Long id) {
-        return delete(TABLE_GROUP_BASE_URL + "/{tableGroupId}","tableGroupId", id);
+        return delete(TABLE_GROUP_BASE_URL + "/{tableGroupId}", "tableGroupId", id);
     }
 
     public static void 단체지정_취소됨(ExtractableResponse<Response> response) {
