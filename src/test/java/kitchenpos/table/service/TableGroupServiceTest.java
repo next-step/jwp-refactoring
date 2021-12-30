@@ -1,14 +1,15 @@
 package kitchenpos.table.service;
 
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.common.exception.BadRequestException;
+import kitchenpos.common.exception.NotFoundException;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.application.TableGroupService;
-import kitchenpos.order.domain.*;
+import kitchenpos.table.domain.*;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.domain.TableGroupRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,58 +21,62 @@ import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 @DisplayName("테이블 그룹 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 public class TableGroupServiceTest {
     @InjectMocks
-    TableGroupService tableGroupService;
+    private TableGroupService tableGroupService;
 
     @Mock
-    OrderTableRepository orderTableRepository;
+    private OrderRepository orderRepository;
 
     @Mock
-    TableGroupRepository tableGroupRepository;
+    private OrderTableRepository orderTableRepository;
+
+    @Mock
+    private TableGroupRepository tableGroupRepository;
 
     @DisplayName("테이블 그룹을 생성한다.")
     @Test
     void 테이블_그룹_생성() {
-        OrderTable firstOrderTable = new OrderTable(1L, null, 10, true);
-        OrderTable secondOrderTable = new OrderTable(2L, null, 5, true);
-        List<OrderTable> orderTables = new ArrayList<>(Arrays.asList(firstOrderTable, secondOrderTable));
-
-        OrderTable savedFirstOrderTable = new OrderTable(1L, null, 10, true);
-        OrderTable savedSecondOrderTable = new OrderTable(2L, null, 5, true);
-        List<OrderTable> savedOrderTables = new ArrayList<>(Arrays.asList(savedFirstOrderTable, savedSecondOrderTable));
+        OrderTable firstOrderTable = OrderTable.of(1, true);
+        OrderTable secondOrderTable = OrderTable.of(2, true);
+        TableGroup tableGroup = TableGroup.create();
 
         TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(firstOrderTable.getId(), secondOrderTable.getId()));
-
-        TableGroup tableGroup = TableGroup.create();
-        TableGroup savedTableGroup = TableGroup.create();
-        savedTableGroup.group(savedOrderTables);
-
-        given(orderTableRepository.findAllById(tableGroupRequest.getOrderTableIds())).willReturn(orderTables);
-        given(tableGroupRepository.save(tableGroup)).willReturn(savedTableGroup);
+        List<Long> orderTableIds = tableGroupRequest.getOrderTableIds();
+        given(orderTableRepository.findAllById(orderTableIds)).willReturn(Arrays.asList(firstOrderTable, secondOrderTable));
+        given(tableGroupRepository.save(tableGroup)).willReturn(tableGroup);
+        given(tableGroupRepository.save(tableGroup)).willReturn(tableGroup);
 
         TableGroupResponse response = tableGroupService.create(tableGroupRequest);
 
-        System.out.println("response = " + response.getOrderTables());
-        assertThat(response.getOrderTables().size()).isEqualTo(2);
+        assertThat(response).isNotNull();
     }
 
-    @DisplayName("테이블 그룹을 생성 요청 받은 주문 테이블이 최소 2개 이상이어야 한다.")
+    @DisplayName("테이블 그룹을 해제한다.")
     @Test
-    void 테이블_그룹_생성_주문_테이블_2개_미만_예외() {
-        OrderTable firstOrderTable = new OrderTable(1L, null, 10, true);
+    void 테이블_그룹_해제() {
+        TableGroup tableGroup = TableGroup.create();
 
+        given(tableGroupRepository.findById(tableGroup.getId())).willReturn(Optional.of(tableGroup));
+
+        tableGroupService.ungroup(tableGroup.getId());
+
+        verify(tableGroupRepository).delete(tableGroup);
+    }
+
+    @DisplayName("그룹핑 목표 주문 테이블 최소 개수 체크")
+    @Test
+    void 주문_테이블_갯수_예외() {
+        OrderTable firstOrderTable = OrderTable.of(1, true);
         TableGroupRequest tableGroupRequest = new TableGroupRequest(Collections.singletonList(firstOrderTable.getId()));
+        List<Long> orderTableIds = tableGroupRequest.getOrderTableIds();
 
-        List<OrderTable> orderTables = new ArrayList<>(Collections.singletonList(firstOrderTable));
-
-        given(orderTableRepository.findAllById(tableGroupRequest.getOrderTableIds())).willReturn(orderTables);
-
+        given(orderTableRepository.findAllById(orderTableIds)).willReturn(Collections.singletonList(firstOrderTable));
 
         Throwable thrown = catchThrowable(() -> tableGroupService.create(tableGroupRequest));
 
@@ -79,101 +84,74 @@ public class TableGroupServiceTest {
                 .hasMessage("주문 테이블 2개 이상 그룹화할 수 있습니다.");
     }
 
-    @DisplayName("테이블 그룹을 생성 요청 받은 주문 테이블들이 디비에 존재해야 한다.")
+    @DisplayName("그룹핑 목표 주문 테이블이 이미 그룹핑되어 경우 예외")
     @Test
-    void 테이블_그룹_생성_주문_테이블_미존재_예외() {
-        OrderTable firstOrderTable = new OrderTable(1L, null, 10, true);
-        OrderTable secondOrderTable = new OrderTable(2L, null, 5, true);
-        List<OrderTable> orderTables = new ArrayList<>(Collections.singletonList(firstOrderTable));
+    void 주문_테이블_이미_그룹핑_됨_예외() {
+        OrderTable firstOrderTable = OrderTable.of(1, true);
+        OrderTable secondOrderTable = OrderTable.of(2, true);
+        secondOrderTable.addGroup(1L);
+        TableGroup tableGroup = TableGroup.create();
 
         TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(firstOrderTable.getId(), secondOrderTable.getId()));
-
-
-        given(orderTableRepository.findAllById(tableGroupRequest.getOrderTableIds())).willReturn(orderTables);
-
-        Throwable thrown = catchThrowable(() -> tableGroupService.create(tableGroupRequest));
-
-        assertThat(thrown).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("요청한 그룹화 주문 테이블 갯수와 저장된 주문 테이블 갯수가 일치하지 않습니다.");
-    }
-
-    @DisplayName("테이블 그룹을 생성 요청 받은 주문 테이블들 빈 테이블 아님 예외")
-    @Test
-    void 테이블_그룹_생성_주문_테이블들_빈테이블_아님_예외() {
-        OrderTable firstOrderTable = new OrderTable(1L, null, 10, false);
-        OrderTable secondOrderTable = new OrderTable(2L, null, 5, true);
-        List<OrderTable> orderTables = new ArrayList<>(Arrays.asList(firstOrderTable, secondOrderTable));
-
-        TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(firstOrderTable.getId(), secondOrderTable.getId()));
-
-
-        given(orderTableRepository.findAllById(tableGroupRequest.getOrderTableIds())).willReturn(orderTables);
+        List<Long> orderTableIds = tableGroupRequest.getOrderTableIds();
+        given(orderTableRepository.findAllById(orderTableIds)).willReturn(Arrays.asList(firstOrderTable, secondOrderTable));
+        given(tableGroupRepository.save(tableGroup)).willReturn(tableGroup);
+        given(tableGroupRepository.save(tableGroup)).willReturn(tableGroup);
 
         Throwable thrown = catchThrowable(() -> tableGroupService.create(tableGroupRequest));
 
         assertThat(thrown).isInstanceOf(BadRequestException.class)
-                .hasMessage("빈 테이블이 아닌 주문 테이블은 그룹화할 수 없습니다.");
+                .hasMessage("이미 그룹이 존재하는 주문 테이블입니다.");
     }
 
-    @DisplayName("테이블 그룹을 생성 요청 받은 주문 테이블들 이미 그룹이 존재함 예외")
+    @DisplayName("그룹핑 목표 주문 테이블이 이미 그룹핑되어 경우 예외")
     @Test
-    void 테이블_그룹_생성_주문_테이블들_이미_그룹_존재_예외() {
-        OrderTable firstOrderTable = new OrderTable(1L, null, 10, true);
-        OrderTable secondOrderTable = new OrderTable(2L, null, 5, true);
-        List<OrderTable> orderTables = new ArrayList<>(Arrays.asList(firstOrderTable, secondOrderTable));
+    void 완료_안된_주문_테이블_존재_예외() {
+        OrderTable firstOrderTable = OrderTable.of(1, true);
+        OrderTable secondOrderTable = OrderTable.of(2, true);
+        TableGroup tableGroup = TableGroup.create();
 
         TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(firstOrderTable.getId(), secondOrderTable.getId()));
+        List<Long> orderTableIds = tableGroupRequest.getOrderTableIds();
+        given(orderTableRepository.findAllById(orderTableIds)).willReturn(Arrays.asList(firstOrderTable, secondOrderTable));
 
-        TableGroup tableGroup = TableGroup.create();
-        tableGroup.group(orderTables);
-
-        given(orderTableRepository.findAllById(tableGroupRequest.getOrderTableIds())).willReturn(orderTables);
+        Order order = Order.of(firstOrderTable.getId(), Collections.singletonList(OrderLineItem.of(1L, Quantity.of(1L))));
+        given(orderRepository.findOrderByOrderTableId(firstOrderTable.getId())).willReturn(Collections.singletonList(order));
+        given(tableGroupRepository.save(tableGroup)).willReturn(tableGroup);
+        given(tableGroupRepository.save(tableGroup)).willReturn(tableGroup);
 
         Throwable thrown = catchThrowable(() -> tableGroupService.create(tableGroupRequest));
 
         assertThat(thrown).isInstanceOf(BadRequestException.class)
-                .hasMessage("이미 그룹화된 주문 테이블 입니다.");
+                .hasMessage("완료되지 않은 주문이 존재합니다.");
     }
 
-    @DisplayName("테이블 그룹을 해제한다.")
+    @DisplayName("테이블 그룹이 미존재하여 해제 예외")
     @Test
-    void 테이블_그룹_해제() {
-        OrderTable firstOrderTable = new OrderTable(1L, null, 10, true);
-        OrderTable secondOrderTable = new OrderTable(2L, null, 5, true);
-        List<OrderTable> orderTables = new ArrayList<>(Arrays.asList(firstOrderTable, secondOrderTable));
-
+    void 테이블_그룹_미존재_시_해제_예외() {
         TableGroup tableGroup = TableGroup.create();
-        tableGroup.group(orderTables);
 
-        given(tableGroupRepository.findById(tableGroup.getId())).willReturn(Optional.of(tableGroup));
+        given(tableGroupRepository.findById(tableGroup.getId())).willReturn(Optional.empty());
 
-        tableGroupService.ungroup(tableGroup.getId());
+        Throwable thrown = catchThrowable(() -> tableGroupService.ungroup(tableGroup.getId()));
 
-        assertAll(
-                () -> assertThat(firstOrderTable.getTableGroup()).isNull(),
-                () -> assertThat(secondOrderTable.getTableGroup()).isNull()
-        );
+        assertThat(thrown).isInstanceOf(NotFoundException.class)
+                .hasMessage("해당 테이블 그룹을 찾을 수 없습니다.");
     }
 
-    @DisplayName("주문들의 상태가 완료가 아닌 경우 그룹을 해제할 수 없다.")
+    @DisplayName("완료되지 않은 주문이 존재하여 그룹 해제 예외")
     @Test
-    void 주문_상태_완료_아님_예외() {
-        OrderTable firstOrderTable = new OrderTable(1L, null, 10, true);
-        OrderTable secondOrderTable = new OrderTable(2L, null, 5, true);
-        List<OrderTable> orderTables = Arrays.asList(firstOrderTable, secondOrderTable);
-
+    void 완료되지_않은_주문_존재_시_해제_예외() {
         TableGroup tableGroup = TableGroup.create();
-        tableGroup.group(orderTables);
-
-        Order firstOrder = Order.of(firstOrderTable);
-        Order secondOrder = Order.of(secondOrderTable);
-
+        Order order = Order.of(1L, Collections.singletonList(OrderLineItem.of(1L, Quantity.of(1L))));
 
         given(tableGroupRepository.findById(tableGroup.getId())).willReturn(Optional.of(tableGroup));
+        given(orderTableRepository.findOrderTableByTableGroupId(null)).willReturn(Collections.singletonList(OrderTable.of(10, false)));
+        given(orderRepository.findOrderByOrderTableId(null)).willReturn(Collections.singletonList(order));
 
         Throwable thrown = catchThrowable(() -> tableGroupService.ungroup(tableGroup.getId()));
 
         assertThat(thrown).isInstanceOf(BadRequestException.class)
-                .hasMessage("주문이 완료 되지 않아 그룹을 해제할 수 없습니다.");
+                .hasMessage("완료되지 않은 주문이 존재하여 테이블 그룹을 해제할 수 없습니다.");
     }
 }

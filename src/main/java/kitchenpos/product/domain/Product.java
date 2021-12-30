@@ -2,6 +2,7 @@ package kitchenpos.product.domain;
 
 import kitchenpos.common.domain.BaseEntity;
 import kitchenpos.common.domain.Price;
+import kitchenpos.common.exception.IllegalArgumentException;
 
 import javax.persistence.*;
 import java.math.BigDecimal;

@@ -1,19 +1,20 @@
 package kitchenpos.order.domain;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Embeddable;
-import javax.persistence.OneToMany;
-import java.util.ArrayList;
+import kitchenpos.common.exception.IllegalArgumentException;
+
+import javax.persistence.*;
 import java.util.List;
 
 @Embeddable
 public class OrderLineItems {
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<OrderLineItem> orderLineItems = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"), nullable = false)
+    private List<OrderLineItem> orderLineItems;
 
     protected OrderLineItems() {}
 
     private OrderLineItems(List<OrderLineItem> orderLineItems) {
+        checkOrderLineItemIsEmpty(orderLineItems);
         this.orderLineItems = orderLineItems;
     }
 
@@ -21,8 +22,10 @@ public class OrderLineItems {
         return new OrderLineItems(orderLineItems);
     }
 
-    public void add(OrderLineItem orderLineItem) {
-        orderLineItems.add(orderLineItem);
+    private void checkOrderLineItemIsEmpty(List<OrderLineItem> orderLineItems) {
+        if (orderLineItems.isEmpty()) {
+            throw new IllegalArgumentException("주문 라인은 최소 1개 이상 필요합니다.");
+        }
     }
 
     public List<OrderLineItem> getOrderLineItems() {

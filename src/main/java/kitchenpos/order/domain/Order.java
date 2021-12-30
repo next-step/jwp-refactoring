@@ -2,7 +2,6 @@ package kitchenpos.order.domain;
 
 import kitchenpos.common.domain.BaseEntity;
 import kitchenpos.common.exception.IllegalArgumentException;
-import kitchenpos.table.domain.OrderTable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -16,86 +15,54 @@ public class Order extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "order_table_id")
-    private OrderTable orderTable;
+    @JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"), nullable = false)
+    private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private OrderStatus orderStatus;
 
+    @Column(nullable = false)
     private LocalDateTime orderedTime;
 
     @Embedded
-    private OrderLineItems orderLineItems = new OrderLineItems();
+    private OrderLineItems orderLineItems;
 
     protected Order() {}
 
-    private Order(Long id, OrderTable orderTable) {
+    private Order(Long id, Long orderTableId, OrderLineItems orderLineItems) {
         this.id = id;
-        addOrderTable(orderTable);
+        this.orderTableId = orderTableId;
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
+        this.orderLineItems = orderLineItems;
     }
 
-    public static Order of(OrderTable orderTable) {
-        return new Order(null, orderTable);
-    }
-
-    private void addOrderLineItem(OrderLineItem orderLineItem) {
-        orderLineItems.add(orderLineItem);
-        orderLineItem.addOrder(this);
-    }
-
-    public void addOrderLineItems(List<OrderLineItem> orderLineItems) {
-        checkOrderLineItemValidation(orderLineItems);
-
-        for (OrderLineItem orderLineItem : orderLineItems) {
-            addOrderLineItem(orderLineItem);
-        }
-    }
-
-    private void addOrderTable(OrderTable orderTable) {
-        if (!equalsOrderTable(orderTable)) {
-            this.orderTable = orderTable;
-            orderTable.addOrder(this);
-        }
-    }
-
-    public boolean isComplete() {
-        return orderStatus.equals(OrderStatus.COMPLETION);
-    }
-
-    public boolean equalsOrderTable(OrderTable orderTable) {
-        if (Objects.isNull(this.orderTable)) {
-            return false;
-        }
-
-        return this.orderTable.equals(orderTable);
+    public static Order of(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        return new Order(null, orderTableId, OrderLineItems.of(orderLineItems));
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
-        checkChangeOrderStatusValidation();
+        validateIsChangeable();
         this.orderStatus = orderStatus;
     }
 
-    private void checkChangeOrderStatusValidation() {
+    private void validateIsChangeable() {
         if (isComplete()) {
             throw new IllegalArgumentException("완료된 주문의 상태는 변경할 수 없습니다.");
         }
     }
 
-    private void checkOrderLineItemValidation(List<OrderLineItem> orderLineItems) {
-        if (orderLineItems.isEmpty()) {
-            throw new IllegalArgumentException("주문 라인은 최소 1개 이상 필요합니다.");
-        }
+    public boolean isComplete() {
+        return orderStatus.isComplete();
     }
 
     public Long getId() {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {

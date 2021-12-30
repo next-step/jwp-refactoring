@@ -1,7 +1,6 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.common.domain.BaseEntity;
-import kitchenpos.common.exception.BadRequestException;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -9,14 +8,12 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-public class TableGroup extends BaseEntity {
-    private static final int MINIMUM_GROUP_SIZE = 2;
+public class TableGroup extends AbstractAggregateRoot<TableGroup> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Embedded
-    private OrderTables orderTables = new OrderTables();
+    private LocalDateTime createdDate = LocalDateTime.now();
 
     protected TableGroup() {
     }
@@ -25,40 +22,21 @@ public class TableGroup extends BaseEntity {
         return new TableGroup();
     }
 
-    public void group(List<OrderTable> orderTables) {
-        checkOrderTablesValidation(orderTables);
-
-        for (OrderTable orderTable : orderTables) {
-            addOrderTable(orderTable);
-        }
-
-        this.orderTables.group(this);
+    public TableGroup group(List<OrderTable> orderTables) {
+        registerEvent(TableGroupEvent.of(id, orderTables));
+        return this;
     }
 
-    public void ungroup() {
-        orderTables.ungroup();
-    }
-
-    private void addOrderTable(OrderTable orderTable) {
-        this.orderTables.add(orderTable);
-    }
-
-    private void checkOrderTablesValidation(List<OrderTable> orderTables) {
-        if (orderTables.isEmpty()) {
-            throw new BadRequestException("주문 테이블이 존재하지 않아 그룹화할 수 없습니다.");
-        }
-
-        if (orderTables.size() < MINIMUM_GROUP_SIZE) {
-            throw new BadRequestException("주문 테이블 " + MINIMUM_GROUP_SIZE + "개 이상 그룹화할 수 있습니다.");
-        }
+    public void ungroup(List<OrderTable> orderTables) {
+        registerEvent(TableUngroupEvent.of(orderTables));
     }
 
     public Long getId() {
         return id;
     }
 
-    public List<OrderTable> getOrderTables() {
-        return orderTables.asList();
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
     }
 
     @Override

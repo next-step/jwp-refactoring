@@ -1,15 +1,16 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.common.domain.Quantity;
+import kitchenpos.common.exception.IllegalArgumentException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.menu.domain.MenuProductTest.getMenuProduct;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 @DisplayName("메뉴 상품 컬렉션 도메인 테스트")
 public class MenuProductsTest {
@@ -17,8 +18,8 @@ public class MenuProductsTest {
     @Test
     void 메뉴_상품_컬렉션_생성() {
         // given
-        MenuProduct 양념치킨_메뉴_상품 = getMenuProduct(1L, "양념치킨", 20000, 2L);
-        MenuProduct 콜라_메뉴_상품 = getMenuProduct(2L, "콜라", 2000, 3L);
+        MenuProduct 양념치킨_메뉴_상품 = MenuProduct.of(1L, Quantity.of(2L));
+        MenuProduct 콜라_메뉴_상품 = MenuProduct.of(2L, Quantity.of(3L));
         List<MenuProduct> menuProductList = new ArrayList<>(Arrays.asList(양념치킨_메뉴_상품, 콜라_메뉴_상품));
 
         // when
@@ -28,19 +29,17 @@ public class MenuProductsTest {
         assertThat(menuProducts.asList().size()).isEqualTo(2);
     }
 
-    @DisplayName("메뉴 상품 컬렉션 전체합계를 계산한다.")
+    @DisplayName("메뉴 상품 비어있음 예외")
     @Test
-    void 메뉴_상품_컬렉션_전체합계_계산() {
+    void 메뉴_상품_비어있음_예외() {
         // given
-        MenuProduct 양념치킨_메뉴_상품 = getMenuProduct(1L, "양념치킨", 20000, 2L);
-        MenuProduct 콜라_메뉴_상품 = getMenuProduct(2L, "콜라", 2000, 3L);
-        List<MenuProduct> menuProductList = new ArrayList<>(Arrays.asList(양념치킨_메뉴_상품, 콜라_메뉴_상품));
-        MenuProducts menuProducts = MenuProducts.of(menuProductList);
+        List<MenuProduct> menuProductList = new ArrayList<>();
 
         // when
-        BigDecimal menuProductsSum = menuProducts.sum();
+        Throwable thrown = catchThrowable(() -> MenuProducts.of(menuProductList));
 
         // then
-        assertThat(menuProductsSum).isEqualTo(BigDecimal.valueOf(46000));
+        assertThat(thrown).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("메뉴 상품 목록이 비어있습니다.");
     }
 }

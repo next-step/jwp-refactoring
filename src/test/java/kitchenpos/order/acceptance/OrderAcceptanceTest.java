@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -99,9 +100,10 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
         MenuResponse menuResponse = 메뉴_생성되어_있음();
 
-        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menuResponse.getId(), 2L);
+        OrderLineItemRequest firstOrderLine = new OrderLineItemRequest(menuResponse.getId(), 2L);
+        OrderLineItemRequest secondOrderLine = new OrderLineItemRequest(menuResponse.getId(), 1L);
 
-        return new OrderRequest(orderTableResponse.getId(), null, Collections.singletonList(orderLineItemRequest));
+        return new OrderRequest(orderTableResponse.getId(), null, Arrays.asList(firstOrderLine, secondOrderLine));
     }
 
     private ExtractableResponse<Response> 주문_상태_변경_요청(Long orderId, OrderRequest orderRequest) {

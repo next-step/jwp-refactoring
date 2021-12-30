@@ -1,10 +1,9 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.common.domain.Price;
-import kitchenpos.common.domain.Quantity;
-import kitchenpos.common.exception.NotFoundException;
+import kitchenpos.common.exception.BadRequestException;
+import kitchenpos.common.exception.IllegalArgumentException;
 import kitchenpos.menu.domain.*;
-import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.Product;
@@ -12,7 +11,7 @@ import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,9 +22,7 @@ public class MenuService {
     private final MenuGroupRepository menuGroupRepository;
     private final ProductRepository productRepository;
 
-    public MenuService(MenuRepository menuRepository,
-                       MenuGroupRepository menuGroupRepository,
-                       ProductRepository productRepository) {
+    public MenuService(MenuRepository menuRepository, MenuGroupRepository menuGroupRepository, ProductRepository productRepository) {
         this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
         this.productRepository = productRepository;
@@ -33,13 +30,10 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        final MenuGroup menuGroup = findMenuGroupById(menuRequest.getMenuGroupId());
-        final List<MenuProduct> menuProducts = getMenuProducts(menuRequest);
-        final Menu menu = Menu.of(menuRequest.getName(), Price.of(menuRequest.getPrice()), menuGroup);
-        menu.addMenuProducts(menuProducts);
+        final Menu menu = menuRequest.toMenu();
+        validateMenu(menu);
 
-        final Menu savedMenu = menuRepository.save(menu);
-        return MenuResponse.of(savedMenu);
+        return MenuResponse.of(menuRepository.save(menu));
     }
 
     public List<MenuResponse> list() {
@@ -49,24 +43,39 @@ public class MenuService {
                 .collect(Collectors.toList());
     }
 
-    private MenuGroup findMenuGroupById(Long menuGroupId) {
-        return menuGroupRepository.findById(menuGroupId)
-                .orElseThrow(() -> new NotFoundException("해당 메뉴 그룹을 찾을 수 없습니다."));
+    private Product findProductById(Long id) {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다."));
     }
 
-    private Product findProductById(Long productId) {
-        return productRepository.findById(productId)
-                .orElseThrow(() -> new NotFoundException("해당 상품을 찾을 수 없습니다."));
+    private void validateMenu(Menu menu) {
+        checkMenuGroup(menu.getMenuGroupId());
+        checkMenuPrice(menu);
     }
 
-    private List<MenuProduct> getMenuProducts(MenuRequest menuRequest) {
-        final List<MenuProduct> menuProductList = new ArrayList<>();
-        for (MenuProductRequest menuProductRequest : menuRequest.getMenuProductRequests()) {
-            Product product = findProductById(menuProductRequest.getProductId());
-            Quantity quantity = Quantity.of(menuProductRequest.getQuantity());
+    private void checkMenuGroup(Long menuGroupId) {
+        menuGroupRepository.findById(menuGroupId)
+                .orElseThrow(() -> new BadRequestException("해당 메뉴 그룹을 찾을 수 없습니다."));
+    }
 
-            menuProductList.add(MenuProduct.of(product, quantity));
+    private void checkMenuPrice(Menu menu) {
+        BigDecimal totalPrice = calculateTotalPrice(menu.getMenuProducts());
+        Price menuPrice = menu.getPrice();
+
+        if (menuPrice.isGreaterThan(totalPrice)) {
+            throw new IllegalArgumentException("메뉴의 가격이 상품 가격의 합계보다 클 수 없습니다.");
         }
-        return menuProductList;
+    }
+
+    private BigDecimal calculateTotalPrice(List<MenuProduct> menuProduct) {
+        return menuProduct.stream()
+                .map(this::calculateMenuProductPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    private BigDecimal calculateMenuProductPrice(MenuProduct menuProduct) {
+        Product product = findProductById(menuProduct.getProductId());
+        BigDecimal productPrice = product.getPrice();
+        return menuProduct.multiplyByQuantity(productPrice);
     }
 }

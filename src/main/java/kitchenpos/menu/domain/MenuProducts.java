@@ -1,37 +1,38 @@
 package kitchenpos.menu.domain;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Embeddable;
-import javax.persistence.OneToMany;
-import java.math.BigDecimal;
+import kitchenpos.common.exception.IllegalArgumentException;
+
+import javax.persistence.*;
 import java.util.List;
 
 @Embeddable
 public class MenuProducts {
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_menu_product_menu"), nullable = false)
     private List<MenuProduct> menuProducts;
 
     protected MenuProducts() {}
 
-    public MenuProducts(List<MenuProduct> menuProducts) {
+    private MenuProducts(List<MenuProduct> menuProducts) {
+        checkMenuProductIsEmpty(menuProducts);
         this.menuProducts = menuProducts;
+    }
+
+    private void checkMenuProductIsEmpty(List<MenuProduct> menuProducts) {
+        if (menuProducts.isEmpty()) {
+            throw new IllegalArgumentException("메뉴 상품 목록이 비어있습니다.");
+        }
     }
 
     public static MenuProducts of(List<MenuProduct> menuProducts) {
         return new MenuProducts(menuProducts);
     }
 
-    public void addMenuProduct(MenuProduct menuProduct) {
-        menuProducts.add(menuProduct);
+    public boolean isEmpty() {
+        return menuProducts.isEmpty();
     }
 
     public List<MenuProduct> asList() {
         return menuProducts;
-    }
-
-    public BigDecimal sum() {
-        return menuProducts.stream()
-                .map(MenuProduct::totalPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

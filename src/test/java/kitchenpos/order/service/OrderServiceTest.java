@@ -4,7 +4,10 @@ package kitchenpos.order.service;
 import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
 import kitchenpos.common.exception.NotFoundException;
-import kitchenpos.menu.domain.*;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
@@ -25,6 +28,7 @@ import java.util.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
 @DisplayName("주문 서비스 테스트")
@@ -34,30 +38,25 @@ public class OrderServiceTest {
     private OrderService orderService;
 
     @Mock
+    private OrderTableRepository orderTableRepository;
+
+    @Mock
     private MenuRepository menuRepository;
 
     @Mock
     private OrderRepository orderRepository;
 
-    @Mock
-    private OrderTableRepository orderTableRepository;
-
     @DisplayName("주문을 생성한다.")
     @Test
     void 주문_생성() {
-        final Long orderTableId = 1L;
-        final Long menuId = 1L;
-        final Long menuQuantity = 2L;
-        final OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menuId, menuQuantity);
-        final OrderRequest orderRequest = new OrderRequest(orderTableId, null, Collections.singletonList(orderLineItemRequest));
-        final OrderTable orderTable = new OrderTable(orderTableId, null, 10, false);
-        final Menu menu = Menu.of(menuId, "치킨", Price.of(BigDecimal.valueOf(10000)), MenuGroup.of(1L, "튀김류"));
-        final Order order = Order.of(orderTable);
-        order.addOrderLineItems(Collections.singletonList(OrderLineItem.of(menu, Quantity.of(menuQuantity))));
+        final OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(1L, 1L);
+        final OrderRequest orderRequest = new OrderRequest(1L, null, Collections.singletonList(orderLineItemRequest));
+        final Menu menu = Menu.of("menu", Price.of(BigDecimal.valueOf(5000)), 1L, Collections.singletonList(MenuProduct.of(1L, Quantity.of(1L))));
+        final Order order = orderRequest.toOrder();
 
-        given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
-        given(menuRepository.findById(menuId)).willReturn(Optional.of(menu));
-        given(orderRepository.save(Order.of(orderTable))).willReturn(order);
+        given(orderTableRepository.findById(orderRequest.getOrderTableId())).willReturn(Optional.of(OrderTable.of(10, false)));
+        given(menuRepository.findById(orderLineItemRequest.getMenuId())).willReturn(Optional.of(menu));
+        given(orderRepository.save(order)).willReturn(order);
 
         OrderResponse response = orderService.create(orderRequest);
 
@@ -67,71 +66,37 @@ public class OrderServiceTest {
         );
     }
 
-    @DisplayName("주문에 최소 1개 이상의 주문 라인 아이템이 존재해야 한다.")
+    @DisplayName("주문 테이블을 미존재 예외")
     @Test
-    void 주문에_주문_라인_아이템_미존재_예외() {
-        // given
-        final Long orderTableId = 1L;
-        final OrderRequest orderRequest = new OrderRequest(orderTableId, null, Collections.singletonList(new OrderLineItemRequest()));
-        final OrderTable orderTable = new OrderTable(orderTableId, null, 10, false);
+    void 주문_테이블_미존재_검증() {
+        OrderRequest orderRequest = new OrderRequest(55L, null, Collections.singletonList(new OrderLineItemRequest(1L, 1L)));
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.empty());
 
-        given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
-
-        // when
         Throwable thrown = catchThrowable(() -> orderService.create(orderRequest));
 
-        // then
-        assertThat(thrown).isInstanceOf(NotFoundException.class);
-    }
-
-    @DisplayName("주문 라인 아이템 갯수만큼 메뉴 테이블에 메뉴가 존재해야 한다.")
-    @Test
-    void 주문_라인_아이템_메뉴_갯수_불일치_예외() {
-        // given
-        final Long orderTableId = 1L;
-        final Long menuId = 1L;
-        final Long menuQuantity = 2L;
-        final OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menuId, menuQuantity);
-        final OrderRequest orderRequest = new OrderRequest(orderTableId, null, Collections.singletonList(orderLineItemRequest));
-        final OrderTable orderTable = new OrderTable(orderTableId, null, 10, false);
-
-        given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
-        given(menuRepository.findById(menuId)).willReturn(Optional.empty());
-
-        // when
-        Throwable thrown = catchThrowable(() -> orderService.create(orderRequest));
-
-        // then
-        assertThat(thrown).isInstanceOf(NotFoundException.class)
-                .hasMessage("해당 메뉴를 찾을 수 없습니다.");
-    }
-
-    @DisplayName("주문에 해당하는 주문 테이블이 없을 경우 예외가 발생한다.")
-    @Test
-    void 주문에_해당하는_주문_테이블_미존재_예외() {
-        // given
-        final Long orderTableId = 1L;
-        final Long menuId = 1L;
-        final Long menuQuantity = 2L;
-        final OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menuId, menuQuantity);
-        final OrderRequest orderRequest = new OrderRequest(orderTableId, null, Collections.singletonList(orderLineItemRequest));
-
-        given(orderTableRepository.findById(orderTableId)).willReturn(Optional.empty());
-
-        // when
-        Throwable thrown = catchThrowable(() -> orderService.create(orderRequest));
-
-        // then
         assertThat(thrown).isInstanceOf(NotFoundException.class)
                 .hasMessage("해당 주문 테이블을 찾을 수 없습니다.");
+    }
+
+    @DisplayName("메뉴 미존재 예외")
+    @Test
+    void 메뉴_미존재_검증() {
+        OrderRequest orderRequest = new OrderRequest(55L, null, Collections.singletonList(new OrderLineItemRequest(1L, 1L)));
+        given(orderTableRepository.findById(orderRequest.getOrderTableId())).willReturn(Optional.of(OrderTable.of(10, false)));
+        given(menuRepository.findById(anyLong())).willReturn(Optional.empty());
+
+        Throwable thrown = catchThrowable(() -> orderService.create(orderRequest));
+
+        assertThat(thrown).isInstanceOf(NotFoundException.class)
+                .hasMessage("해당 메뉴를 찾을 수 없습니다.");
     }
 
     @DisplayName("주문 목록을 조회한다.")
     @Test
     void 주문_목록_조회() {
         // given
-        Order firstOrder = Order.of(OrderTable.of(10, false));
-        Order secondOrder = Order.of(OrderTable.of(5, false));
+        Order firstOrder = Order.of(1L, Collections.singletonList(OrderLineItem.of(1L, Quantity.of(2L))));
+        Order secondOrder = Order.of(1L, Collections.singletonList(OrderLineItem.of(2L, Quantity.of(1L))));
         given(orderRepository.findAll()).willReturn(Arrays.asList(firstOrder, secondOrder));
 
         // when

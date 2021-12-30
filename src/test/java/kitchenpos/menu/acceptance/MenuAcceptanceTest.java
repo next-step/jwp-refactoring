@@ -25,7 +25,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void createMenu() {
         // given
-        MenuGroupResponse 튀김종류 = 메뉴_그룹_생성됨(MenuFactory.ofMenuGroupRequest("튀김종류"));
+        MenuGroupResponse 튀김종류 = 메뉴_그룹_생성됨(new MenuGroupRequest("튀김종류"));
         ProductResponse 치킨 = 상품_생성됨(MenuFactory.ofProductRequest("치킨", 35000));
         MenuRequest 치킨세트 = MenuFactory.ofMenuRequest("치킨세트",
                 BigDecimal.valueOf(35000),

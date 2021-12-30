@@ -1,6 +1,5 @@
 package kitchenpos.order.dto;
 
-import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.order.domain.OrderLineItem;
 
 import java.util.List;
@@ -8,20 +7,20 @@ import java.util.stream.Collectors;
 
 public class OrderLineItemResponse {
     private Long seq;
-    private MenuResponse menuResponse;
+    private Long menuId;
     private Long quantity;
 
     public OrderLineItemResponse() {
     }
 
-    public OrderLineItemResponse(Long seq, MenuResponse menuResponse, Long quantity) {
+    public OrderLineItemResponse(Long seq, Long menuId, Long quantity) {
         this.seq = seq;
-        this.menuResponse = menuResponse;
+        this.menuId = menuId;
         this.quantity = quantity;
     }
 
     public static OrderLineItemResponse of(OrderLineItem orderLineItem) {
-        return new OrderLineItemResponse(orderLineItem.getSeq(), MenuResponse.of(orderLineItem.getMenu()), orderLineItem.getQuantity());
+        return new OrderLineItemResponse(orderLineItem.getSeq(), orderLineItem.getMenuId(), orderLineItem.getQuantity());
     }
 
     public static List<OrderLineItemResponse> ofList(List<OrderLineItem> orderLineItems) {
@@ -34,8 +33,8 @@ public class OrderLineItemResponse {
         return seq;
     }
 
-    public MenuResponse getMenuResponse() {
-        return menuResponse;
+    public Long getMenuId() {
+        return menuId;
     }
 
     public Long getQuantity() {

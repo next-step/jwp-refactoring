@@ -2,11 +2,8 @@ package kitchenpos.menu.domain;
 
 import kitchenpos.common.domain.BaseEntity;
 import kitchenpos.common.domain.Price;
-import kitchenpos.common.exception.IllegalArgumentException;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -21,49 +18,25 @@ public class Menu extends BaseEntity {
     @Embedded
     private Price price;
 
-    @ManyToOne
-    @JoinColumn(name = "menu_group_id")
-    private MenuGroup menuGroup;
+    @Column(name = "menu_group_id", nullable = false)
+    private Long menuGroupId;
 
     @Embedded
-    private MenuProducts menuProducts = new MenuProducts(new ArrayList<>());
+    private MenuProducts menuProducts;
 
     protected Menu() {
     }
 
-    public Menu(Long id, String name, Price price, MenuGroup menuGroup) {
+    private Menu(Long id, String name, Price price, Long menuGroupId, MenuProducts menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
-        this.menuGroup = menuGroup;
+        this.menuGroupId = menuGroupId;
+        this.menuProducts = menuProducts;
     }
 
-    public static Menu of(Long id, String name, Price price, MenuGroup menuGroup) {
-        return new Menu(id, name, price, menuGroup);
-    }
-
-    public static Menu of(String name, Price price, MenuGroup menuGroup) {
-        return of(null, name, price, menuGroup);
-    }
-
-    private static void checkValidation(Price price, MenuProducts menuProducts) {
-        if (price.isGreaterThan(menuProducts.sum())) {
-            throw new IllegalArgumentException("메뉴의 가격이 상품 가격의 합계보다 클 수 없습니다.");
-        }
-    }
-
-    public void addMenuProducts(List<MenuProduct> menuProducts) {
-        for (MenuProduct menuProduct : menuProducts) {
-            addMenuProduct(menuProduct);
-        }
-        checkValidation(price, this.menuProducts);
-    }
-
-    public void addMenuProduct(MenuProduct menuProduct) {
-        menuProducts.addMenuProduct(menuProduct);
-        if (!menuProduct.equalsMenu(this)) {
-            menuProduct.addMenu(this);
-        }
+    public static Menu of(String name, Price price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        return new Menu(null, name, price, menuGroupId, MenuProducts.of(menuProducts));
     }
 
     public Long getId() {
@@ -74,16 +47,16 @@ public class Menu extends BaseEntity {
         return name;
     }
 
-    public BigDecimal getPrice() {
-        return price.get();
+    public Price getPrice() {
+        return price;
     }
 
-    public MenuGroup getMenuGroup() {
-        return menuGroup;
+    public Long getMenuGroupId() {
+        return menuGroupId;
     }
 
-    public MenuProducts getMenuProducts() {
-        return menuProducts;
+    public List<MenuProduct> getMenuProducts() {
+        return menuProducts.asList();
     }
 
     @Override

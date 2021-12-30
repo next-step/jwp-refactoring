@@ -5,6 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.common.acceptance.AcceptanceTest;
 import kitchenpos.order.OrderFactory;
+import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
@@ -24,10 +25,10 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void createTableGroup() {
         // given
-        OrderTableResponse 주문_테이블_첫번째 = TableAcceptanceTest.주문_테이블_생성됨(OrderFactory.ofOrderTableRequest(4, true));
-        OrderTableResponse 주문_테이블_두번째 = TableAcceptanceTest.주문_테이블_생성됨(OrderFactory.ofOrderTableRequest(5, true));
+        OrderTableResponse 주문_테이블_첫번째 = TableAcceptanceTest.주문_테이블_생성됨(new OrderTableRequest(0, true));
+        OrderTableResponse 주문_테이블_두번째 = TableAcceptanceTest.주문_테이블_생성됨(new OrderTableRequest(0, true));
 
-        TableGroupRequest 테이블_그룹_첫번째 = OrderFactory.ofTableGroupRequest(Arrays.asList(주문_테이블_첫번째, 주문_테이블_두번째));
+        TableGroupRequest 테이블_그룹_첫번째 = new TableGroupRequest(Arrays.asList(주문_테이블_첫번째.getId(), 주문_테이블_두번째.getId()));
 
         // when
         ExtractableResponse<Response> response = 테이블_그룹_생성_요청(테이블_그룹_첫번째);
@@ -40,9 +41,9 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void changeTableGroup() {
         // given
-        OrderTableResponse 주문_테이블_첫번째 = TableAcceptanceTest.주문_테이블_생성됨(OrderFactory.ofOrderTableRequest(4, true));
-        OrderTableResponse 주문_테이블_두번째 = TableAcceptanceTest.주문_테이블_생성됨(OrderFactory.ofOrderTableRequest(5, true));
-        TableGroupRequest 테이블_그룹_첫번째 = OrderFactory.ofTableGroupRequest(Arrays.asList(주문_테이블_첫번째, 주문_테이블_두번째));
+        OrderTableResponse 주문_테이블_첫번째 = TableAcceptanceTest.주문_테이블_생성됨(new OrderTableRequest(0, true));
+        OrderTableResponse 주문_테이블_두번째 = TableAcceptanceTest.주문_테이블_생성됨(new OrderTableRequest(0, true));
+        TableGroupRequest 테이블_그룹_첫번째 = new TableGroupRequest(Arrays.asList(주문_테이블_첫번째.getId(), 주문_테이블_두번째.getId()));
 
         TableGroupResponse 테이블_그룹 = 테이블_그룹_생성됨(테이블_그룹_첫번째);
 

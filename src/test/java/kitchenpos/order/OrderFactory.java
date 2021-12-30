@@ -15,7 +15,7 @@ public class OrderFactory {
 
     public static TableGroupRequest ofTableGroupRequest(List<OrderTableResponse> orderTableResponses) {
         List<OrderTable> orderTables = orderTableResponses.stream()
-                .map(orderTableResponse -> new OrderTable(orderTableResponse.getId(), null, orderTableResponse.getNumberOfGuests(), orderTableResponse.isEmpty()))
+                .map(orderTableResponse -> OrderTable.of(10, false))
                 .collect(Collectors.toList());
         return new TableGroupRequest(orderTables.stream()
                 .map(OrderTable::getId)

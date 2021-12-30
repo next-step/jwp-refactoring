@@ -9,24 +9,24 @@ import java.util.stream.Collectors;
 
 public class MenuProductResponse {
     private Long seq;
-    private ProductResponse product;
+    private Long productId;
     private Long quantity;
 
     public MenuProductResponse() {
     }
 
-    public MenuProductResponse(Long seq, ProductResponse productResponse, Long quantity) {
+    public MenuProductResponse(Long seq, Long productId, Long quantity) {
         this.seq = seq;
-        this.product = productResponse;
+        this.productId = productId;
         this.quantity = quantity;
     }
 
     public static MenuProductResponse of(MenuProduct menuProduct) {
-        return new MenuProductResponse(menuProduct.getSeq(), ProductResponse.of(menuProduct.getProduct()), menuProduct.getQuantity());
+        return new MenuProductResponse(menuProduct.getSeq(), menuProduct.getProductId(), menuProduct.getQuantity());
     }
 
-    public static List<MenuProductResponse> ofList(MenuProducts menuProducts) {
-        return menuProducts.asList()
+    public static List<MenuProductResponse> ofList(List<MenuProduct> menuProducts) {
+        return menuProducts
                 .stream()
                 .map(MenuProductResponse::of)
                 .collect(Collectors.toList());
@@ -36,8 +36,8 @@ public class MenuProductResponse {
         return seq;
     }
 
-    public ProductResponse getProduct() {
-        return product;
+    public Long getProductId() {
+        return productId;
     }
 
     public Long getQuantity() {

@@ -2,7 +2,6 @@ package kitchenpos.menu.domain;
 
 import kitchenpos.common.domain.BaseEntity;
 import kitchenpos.common.domain.Quantity;
-import kitchenpos.product.domain.Product;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -14,56 +13,34 @@ public class MenuProduct extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
 
-    @ManyToOne
-    @JoinColumn(name = "menu_id")
-    private Menu menu;
-
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
+    @JoinColumn(name = "product_id",foreignKey = @ForeignKey(name = "fk_menu_product_product"), nullable = false)
+    private Long productId;
 
     @Embedded
     private Quantity quantity;
 
     protected MenuProduct() {}
 
-    private MenuProduct(Long seq, Menu menu, Product product, Quantity quantity) {
+    private MenuProduct(Long seq, Long productId, Quantity quantity) {
         this.seq = seq;
-        this.menu = menu;
-        this.product = product;
+        this.productId = productId;
         this.quantity = quantity;
     }
 
-    public static MenuProduct of(Product product, Quantity quantity) {
-        return new MenuProduct(null, null, product, quantity);
+    public static MenuProduct of(Long productId, Quantity quantity) {
+        return new MenuProduct(null, productId, quantity);
     }
 
-    public void addMenu(Menu menu) {
-        this.menu = menu;
-    }
-
-    public boolean equalsMenu(Menu menu) {
-        if (this.menu != null) {
-            return this.menu.equals(menu);
-        }
-
-        return false;
-    }
-
-    public BigDecimal totalPrice() {
-        return product.getPrice().multiply(BigDecimal.valueOf(getQuantity()));
+    public BigDecimal multiplyByQuantity(BigDecimal price) {
+        return price.multiply(BigDecimal.valueOf(quantity.get()));
     }
 
     public Long getSeq() {
         return seq;
     }
 
-    public Menu getMenu() {
-        return menu;
-    }
-
-    public Product getProduct() {
-        return product;
+    public Long getProductId() {
+        return productId;
     }
 
     public Long getQuantity() {

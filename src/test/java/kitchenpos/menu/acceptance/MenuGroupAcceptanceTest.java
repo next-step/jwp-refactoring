@@ -21,7 +21,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     @DisplayName("메뉴 그룹을 생성한다.")
     @Test
     void createProduct() {
-        MenuGroupRequest 튀김종류 = MenuFactory.ofMenuGroupRequest("튀김종류");
+        MenuGroupRequest 튀김종류 = new MenuGroupRequest("튀김종류");
         // when
         ExtractableResponse<Response> response = 메뉴_그룹_생성_요청(튀김종류);
 
