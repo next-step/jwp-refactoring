@@ -14,7 +14,7 @@ import java.util.List;
 @Embeddable
 public class MenuProducts implements Iterable<MenuProduct> {
 
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "menuId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
     protected MenuProducts() {
@@ -29,7 +29,7 @@ public class MenuProducts implements Iterable<MenuProduct> {
         return new MenuProducts(menuProducts);
     }
 
-    public List<MenuProduct> getMenuProducts() {
+    public List<MenuProduct> menuProducts() {
         return menuProducts;
     }
 
@@ -47,7 +47,7 @@ public class MenuProducts implements Iterable<MenuProduct> {
 
     private BigDecimal calculateMenuProductPrice() {
         return this.menuProducts.stream()
-                .map(it-> it.getProduct().getPrice().getPrice())
+                .map(it -> it.getProduct().getPrice().getPrice())
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

@@ -11,9 +11,8 @@ public class MenuProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
 
-    @ManyToOne
-    @JoinColumn(name="menu_id")
-    private Menu menu;
+    @Column(name = "MENU_ID", nullable = false)
+    private Long menuId;
 
     @ManyToOne
     @JoinColumn(name="product_id")
@@ -35,8 +34,8 @@ public class MenuProduct {
         return seq;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public Long getMenuId() {
+        return menuId;
     }
 
     public Product getProduct() {

@@ -31,7 +31,7 @@ public class Menu {
     private Long menuGroupId;
 
     @Embedded
-    private MenuProducts menuProducts = new MenuProducts();
+    private MenuProducts menuProducts;// = new MenuProducts();
 
     protected Menu() {
 
@@ -69,7 +69,7 @@ public class Menu {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts.getMenuProducts();
+        return menuProducts.menuProducts();
     }
 
     public Price getPrice() {
