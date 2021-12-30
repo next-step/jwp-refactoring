@@ -9,7 +9,7 @@ import java.util.Objects;
 
 @Embeddable
 public class Name {
-    @Column
+    @Column(nullable = false)
     private String name;
 
     protected Name() {
