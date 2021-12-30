@@ -37,3 +37,9 @@ project(':kitchenpos-application') {
         compile project(':kitchenpos-common')
     }
 }
+
+project(':kitchenpos-web') {
+    dependencies {
+        compile project(':kitchenpos-application')
+    }
+}
