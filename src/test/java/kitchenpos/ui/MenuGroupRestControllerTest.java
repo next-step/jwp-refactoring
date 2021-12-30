@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.MenuGroupService;
 import kitchenpos.dto.menugroup.MenuGroupRequest;
 import kitchenpos.dto.menugroup.MenuGroupResponse;
-import org.assertj.core.util.Lists;
+import kitchenpos.fixture.TestMenuGroupFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,6 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.util.List;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -39,31 +38,22 @@ class MenuGroupRestControllerTest {
     @MockBean
     private MenuGroupService menuGroupService;
 
-    private MenuGroupRequest 메뉴그룹_요청;
-    private MenuGroupResponse 메뉴그룹_응답;
-    private MenuGroupResponse 메뉴그룹_응답2;
-    private List<MenuGroupResponse> 메뉴그룹목록_응답;
-
     @BeforeEach
     void setup() {
         this.mvc = MockMvcBuilders.webAppContextSetup(ctx)
                 .addFilters(new CharacterEncodingFilter("UTF-8", true))
                 .alwaysDo(print())
                 .build();
-
-        메뉴그룹_요청 = MenuGroupRequest.from("메뉴그룹");
-        메뉴그룹_응답 = MenuGroupResponse.of(1L, "메뉴그룹");
-        메뉴그룹_응답2 = MenuGroupResponse.of(2L, "메뉴그룹2");
-        메뉴그룹목록_응답 = Lists.newArrayList(메뉴그룹_응답, 메뉴그룹_응답2);
     }
 
     @DisplayName("메뉴 그룹을 등록한다.")
     @Test
     void create() throws Exception {
-        
+        final MenuGroupRequest 메뉴그룹_요청 = TestMenuGroupFactory.메뉴그룹_요청("메뉴그룹");
+        final MenuGroupResponse 메뉴그룹_응답 = TestMenuGroupFactory.메뉴그룹_응답(1L, "메뉴그룹");
+
         given(menuGroupService.create(any())).willReturn(메뉴그룹_응답);
 
-        
         final ResultActions actions = mvc.perform(post("/api/menu-groups")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -78,18 +68,15 @@ class MenuGroupRestControllerTest {
     @DisplayName("메뉴 그룹 목록을 조회한다.")
     @Test
     void list() throws Exception {
-        
+        final List<MenuGroupResponse> 메뉴그룹목록_응답 = TestMenuGroupFactory.메뉴그룹목록_응답(2);
+
         given(menuGroupService.list()).willReturn(메뉴그룹목록_응답);
 
-        
         final ResultActions actions = mvc.perform(get("/api/menu-groups")
                 .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andDo(print());
 
-        
         actions.andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.valueOf("application/json;charset=UTF-8")))
-                .andExpect(content().string(containsString("메뉴그룹")))
-                .andExpect(content().string(containsString("메뉴그룹2")));
+                .andExpect(content().contentType(MediaType.valueOf("application/json;charset=UTF-8")));
     }
 }

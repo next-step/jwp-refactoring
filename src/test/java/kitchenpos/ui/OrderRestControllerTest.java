@@ -2,13 +2,16 @@ package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.OrderService;
-import kitchenpos.domain.*;
-import kitchenpos.dto.order.OrderLineItemRequest;
+import kitchenpos.domain.OrderStatus;
+import kitchenpos.dto.menu.MenuProductResponse;
+import kitchenpos.dto.menu.MenuResponse;
+import kitchenpos.dto.menugroup.MenuGroupResponse;
 import kitchenpos.dto.order.OrderLineItemResponse;
 import kitchenpos.dto.order.OrderRequest;
 import kitchenpos.dto.order.OrderResponse;
 import kitchenpos.dto.ordertable.OrderTableResponse;
-import org.assertj.core.util.Lists;
+import kitchenpos.dto.product.ProductResponse;
+import kitchenpos.fixture.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,6 +27,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
@@ -44,51 +48,27 @@ class OrderRestControllerTest {
     @MockBean
     private OrderService orderService;
 
-    private Menu 메뉴;
-    private MenuGroup 메뉴그룹;
-    private Order 주문;
-    private TableGroup 테이블그룹;
-    private OrderTable 주문테이블1;
-    private OrderTable 주문테이블2;
-    private OrderLineItem 주문상품;
-
-    private OrderLineItemRequest 주문상품_요청;
-    private OrderRequest 주문_요청;
-    private OrderRequest 주문완료_요청;
-    private OrderResponse 주문_응답;
-    private OrderTableResponse 주문테이블_응답;
-    private OrderLineItemResponse 주문상품_응답;
-    private OrderResponse 주문완료_응답;
-
     @BeforeEach
     void setup() {
         this.mvc = MockMvcBuilders.webAppContextSetup(ctx)
                 .addFilters(new CharacterEncodingFilter("UTF-8", true))
                 .alwaysDo(print())
                 .build();
-
-        메뉴그룹 = MenuGroup.of(1L, "메뉴그룹");
-        메뉴 = Menu.of(1L, "메뉴", 15000, 메뉴그룹);
-        주문테이블1 = OrderTable.of(1L, 1, false);
-        주문테이블2 = OrderTable.of(2L, 1, false);
-        테이블그룹 = TableGroup.of(1L, Lists.newArrayList(주문테이블1, 주문테이블2));
-        주문상품 = OrderLineItem.of(메뉴, 1L);
-        주문 = Order.from(주문테이블1);
-        주문.addOrderLineItems(Collections.singletonList(주문상품));
-
-        주문상품_요청 = OrderLineItemRequest.of(1L, 1L);
-        주문_요청 = OrderRequest.of(1L, Collections.singletonList(주문상품_요청));
-        주문완료_요청 = OrderRequest.from(OrderStatus.COMPLETION);
-
-        주문테이블_응답 = OrderTableResponse.from(주문테이블1);
-        주문상품_응답 = OrderLineItemResponse.from(주문상품);
-        주문_응답 = OrderResponse.of(1L, 주문테이블_응답, OrderStatus.COOKING, LocalDateTime.now(), Collections.singletonList(주문상품_응답));
-        주문완료_응답 = OrderResponse.of(1L, 주문테이블_응답, OrderStatus.COMPLETION, LocalDateTime.now(), Collections.singletonList(주문상품_응답));
     }
 
     @DisplayName("주문을 등록한다.")
     @Test
     void create() throws Exception {
+        final OrderRequest 주문_요청 = TestOrderFactory.주문_생성_요청(1L);
+        final ProductResponse 상품_응답 = TestProductFactory.상품_응답(1L, "상품", 1000);
+        final List<MenuProductResponse> 메뉴상품목록_응답 = TestMenuFactory.메뉴상품목록_응답(상품_응답, 2);
+        final MenuGroupResponse 메뉴그룹_응답 = TestMenuGroupFactory.메뉴그룹_응답(1L, "메뉴그룹");
+        final MenuResponse 메뉴_응답 = TestMenuFactory.메뉴_응답(1L, "메뉴", 50000, 메뉴그룹_응답, 메뉴상품목록_응답);
+
+        final List<OrderLineItemResponse> orderLineItems = TestOrderTableFactory.주문상품아이템_응답(1L, 메뉴_응답, 1);
+        final OrderTableResponse 주문테이블_응답 = TestOrderTableFactory.주문테이블_응답(1L, 10, false);
+        final OrderResponse 주문_응답 = OrderResponse.of(1L, 주문테이블_응답, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
+
         given(orderService.create(any())).willReturn(주문_응답);
 
         final ResultActions actions = mvc.perform(post("/api/orders")
@@ -109,6 +89,14 @@ class OrderRestControllerTest {
     @DisplayName("주문을 조회한다.")
     @Test
     void list() throws Exception {
+        final ProductResponse 상품_응답 = TestProductFactory.상품_응답(1L, "상품", 1000);
+        final List<MenuProductResponse> 메뉴상품목록_응답 = TestMenuFactory.메뉴상품목록_응답(상품_응답, 2);
+        final MenuGroupResponse 메뉴그룹_응답 = TestMenuGroupFactory.메뉴그룹_응답(1L, "메뉴그룹");
+        final MenuResponse 메뉴_응답 = TestMenuFactory.메뉴_응답(1L, "메뉴", 50000, 메뉴그룹_응답, 메뉴상품목록_응답);
+
+        final List<OrderLineItemResponse> orderLineItems = TestOrderTableFactory.주문상품아이템_응답(1L, 메뉴_응답, 1);
+        final OrderTableResponse 주문테이블_응답 = TestOrderTableFactory.주문테이블_응답(1L, 10, false);
+        final OrderResponse 주문_응답 = OrderResponse.of(1L, 주문테이블_응답, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
         
         given(orderService.list()).willReturn(Collections.singletonList(주문_응답));
 
@@ -124,6 +112,15 @@ class OrderRestControllerTest {
     @DisplayName("주문 상태를 완료로 변경한다.")
     @Test
     void changeOrderStatus() throws Exception {
+        final OrderRequest 주문완료_요청 = TestOrderFactory.주문_완료_요청();
+        final ProductResponse 상품_응답 = TestProductFactory.상품_응답(1L, "상품", 1000);
+        final List<MenuProductResponse> 메뉴상품목록_응답 = TestMenuFactory.메뉴상품목록_응답(상품_응답, 2);
+        final MenuGroupResponse 메뉴그룹_응답 = TestMenuGroupFactory.메뉴그룹_응답(1L, "메뉴그룹");
+        final MenuResponse 메뉴_응답 = TestMenuFactory.메뉴_응답(1L, "메뉴", 50000, 메뉴그룹_응답, 메뉴상품목록_응답);
+
+        final List<OrderLineItemResponse> orderLineItems = TestOrderTableFactory.주문상품아이템_응답(1L, 메뉴_응답, 1);
+        final OrderTableResponse 주문테이블_응답 = TestOrderTableFactory.주문테이블_응답(1L, 10, false);
+        final OrderResponse 주문완료_응답 = OrderResponse.of(1L, 주문테이블_응답, OrderStatus.COMPLETION, LocalDateTime.now(), orderLineItems);
         
         given(orderService.changeOrderStatus(anyLong(), any())).willReturn(주문완료_응답);
 
