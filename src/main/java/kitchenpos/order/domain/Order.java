@@ -7,11 +7,9 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,7 +24,6 @@ public class Order {
     private Long id;
 
     @Column(nullable = false)
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_orders_order_table"))
     private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
