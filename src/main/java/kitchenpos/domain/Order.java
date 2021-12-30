@@ -79,6 +79,13 @@ public class Order extends BaseTimeEntity {
         this.orderStatus = updateStatusName;
     }
 
+    public boolean existsOrderStatus() {
+        if (OrderStatus.COOKING.equals(this.orderStatus) || OrderStatus.MEAL.equals(this.orderStatus)) {
+            return true;
+        }
+        return false;
+    }
+
     public Long getId() {
         return this.id;
     }
