@@ -59,18 +59,15 @@ public class Menu {
     }
 
     public void addMenuProducts(final List<MenuProduct> menuProductList) {
+        if (this.menuProducts.isOverPrice(this.price)) {
+            throw new MenuProductSumPriceException();
+        }
         menuProductList.forEach(this::addMenuProduct);
     }
 
     private void addMenuProduct(final MenuProduct menuProduct) {
         menuProduct.decideMenu(this);
-        menuProducts.add(menuProduct);
-    }
-
-    public void checkOverPrice() {
-        if (menuProducts.isOverPrice(price)) {
-            throw new MenuProductSumPriceException();
-        }
+        this.menuProducts.add(menuProduct);
     }
 
     public Long getId() {
