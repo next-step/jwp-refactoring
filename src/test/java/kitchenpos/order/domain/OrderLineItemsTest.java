@@ -42,7 +42,7 @@ class OrderLineItemsTest {
 
     @Test
     void 주문_항목들_생성() {
-        OrderLineItems actual = OrderLineItems.from(Collections.singletonList(OrderLineItem.of(1L, 1L)));
+        OrderLineItems actual = OrderLineItems.from(Collections.singletonList(OrderLineItem.of(후라이드_후라이드, 1L)));
 
         assertThat(actual).isNotNull();
     }

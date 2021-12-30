@@ -1,6 +1,7 @@
 package kitchenpos.order.application;
 
 import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
@@ -61,11 +62,11 @@ public class OrderService {
         }
     }
 
-    private OrderLineItems findOrderLineItems(List<OrderLineItemRequest> orderLineItemRequests) {
+     private OrderLineItems findOrderLineItems(List<OrderLineItemRequest> orderLineItemRequests) {
         return OrderLineItems.from(orderLineItemRequests.stream()
                 .map(orderLineItemRequest -> {
-                    menuService.findMenuById(orderLineItemRequest.getMenuId());
-                    return OrderLineItem.of(orderLineItemRequest.getMenuId(), orderLineItemRequest.getQuantity());
+                    Menu menu = menuService.findMenuById(orderLineItemRequest.getMenuId());
+                    return OrderLineItem.of(menu, orderLineItemRequest.getQuantity());
                 })
                 .collect(Collectors.toList()));
     }
