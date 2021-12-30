@@ -3,7 +3,7 @@ package kitchenpos.dto.menu;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
-import kitchenpos.domain.menu.Menu;
+import kitchenpos.menu.Menu;
 
 
 public class MenuRequest {

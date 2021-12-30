@@ -27,10 +27,13 @@ subprojects {
     }
 
     dependencies {
+        implementation 'com.google.guava:guava:11.0.2'
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
     }
 }
 
-test {
-    useJUnitPlatform()
+project(':kitchenpos-application') {
+    dependencies {
+        compile project(':kitchenpos-common')
+    }
 }

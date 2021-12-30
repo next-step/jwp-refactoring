@@ -3,7 +3,7 @@ package kitchenpos.dto.order;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
-import kitchenpos.domain.order.Order;
+import kitchenpos.order.Order;
 
 
 public class OrderRequest {

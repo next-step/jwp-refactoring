@@ -1,5 +1,4 @@
 rootProject.name = 'kitchenpos'
 
-include 'kitchenpos-common'
+include 'kitchenpos-common', 'kitchenpos-application'
 include 'kitchenpos-web'
-include 'kitchenpos-application'

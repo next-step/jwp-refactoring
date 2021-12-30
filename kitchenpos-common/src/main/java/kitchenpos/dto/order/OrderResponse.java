@@ -4,8 +4,8 @@ import static java.util.stream.Collectors.toList;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import kitchenpos.domain.order.Order;
-import kitchenpos.domain.order.OrderStatus;
+import kitchenpos.order.Order;
+import kitchenpos.order.OrderStatus;
 
 public class OrderResponse {
 

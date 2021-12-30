@@ -1,7 +1,7 @@
 package kitchenpos.dto.product;
 
 
-import kitchenpos.domain.product.Product;
+import kitchenpos.product.Product;
 
 public class ProductResponse {
 

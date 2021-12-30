@@ -4,7 +4,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.math.BigDecimal;
 import java.util.List;
-import kitchenpos.domain.menu.Menu;
+import kitchenpos.menu.Menu;
 
 
 public class MenuResponse {

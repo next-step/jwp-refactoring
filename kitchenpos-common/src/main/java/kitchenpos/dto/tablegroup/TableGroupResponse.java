@@ -4,8 +4,8 @@ import static java.util.stream.Collectors.toList;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import kitchenpos.domain.table.OrderTables;
-import kitchenpos.domain.tablegroup.TableGroup;
+import kitchenpos.table.OrderTables;
+import kitchenpos.tablegroup.TableGroup;
 import kitchenpos.dto.table.OrderTableResponse;
 
 

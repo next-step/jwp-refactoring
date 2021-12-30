@@ -1,9 +1,9 @@
-package kitchenpos.domain.tablegroup.ui;
+package kitchenpos.tablegroup.ui;
 
 import java.net.URI;
-import kitchenpos.domain.tablegroup.application.TableGroupService;
-import kitchenpos.domain.tablegroup.dto.TableGroupResponse;
-import kitchenpos.domain.tablegroup.dto.TableGroupsRequest;
+import kitchenpos.tablegroup.application.TableGroupService;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
+import kitchenpos.tablegroup.dto.TableGroupsRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
