@@ -39,10 +39,6 @@ public class OrderTable {
     public Long getId() {
         return id;
     }
-    
-    public TableGroup getTableGroup() {
-        return tableGroup;
-    }
 
     public Long getTableGroupId() {
         if (tableGroup == null) {

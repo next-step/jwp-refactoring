@@ -49,7 +49,7 @@ public class TableGroupServiceTest {
         테이블_목록.add(OrderTable.of(5, true));
         TableGroup 단체지정 = TableGroup.from(테이블_목록);
         
-        given(tableService.findByOrderTables(anyList())).willReturn(단체지정.getOrderTables().getOrderTables());
+        given(tableService.findByOrderTables(anyList())).willReturn(단체지정.getOrderTables());
         given(tableGroupRepository.save(any())).willReturn(단체지정);
         
         // when

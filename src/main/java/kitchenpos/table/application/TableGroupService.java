@@ -34,7 +34,7 @@ public class TableGroupService {
     public void ungroup(final Long tableGroupId) {
         final TableGroup tableGroup = tableGroupRepository.findByIdWithOrderTable(tableGroupId)
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 단체지정이 없습니다"));
-        for (OrderTable orderTable : tableGroup.getOrderTables().getOrderTables()) {
+        for (OrderTable orderTable : tableGroup.getOrderTables()) {
             tableValidator.checkIsCookingOrMeal(orderTable.getId());
         }
         tableGroup.ungroup();
