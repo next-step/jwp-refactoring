@@ -15,15 +15,19 @@ public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Embedded
     @AttributeOverride(name = "name", column = @Column(name = "name", nullable = false))
     private Name name;
-    @Enumerated
+
+    @Embedded
     @AttributeOverride(name = "price", column = @Column(name = "price", nullable = false))
     private Price price;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"), nullable = false)
     private MenuGroup menuGroup;
+
     @Embedded
     private MenuProducts menuProducts = MenuProducts.empty();
 

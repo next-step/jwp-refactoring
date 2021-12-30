@@ -11,12 +11,15 @@ public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
     private TableGroup tableGroup;
+
     @Embedded
     @Column(nullable = false)
     private NumberOfGuests numberOfGuests;
+
     @Embedded
     private Empty empty;
 

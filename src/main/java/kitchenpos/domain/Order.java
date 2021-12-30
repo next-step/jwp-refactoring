@@ -3,23 +3,31 @@ package kitchenpos.domain;
 import kitchenpos.common.exceptions.EmptyOrderTableException;
 import kitchenpos.common.exceptions.EmptyOrderStatusException;
 import kitchenpos.common.exceptions.OrderStatusCompletedException;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "orders")
-public class Order extends BaseTimeEntity {
+public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_orders_order_table"), nullable = false)
     private OrderTable orderTable;
+
     @Column(nullable = false)
+    @CreatedDate
+    private LocalDateTime orderedTime;
+
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
+
     @Embedded
     private OrderLineItems orderLineItems = OrderLineItems.empty();
 
@@ -100,6 +108,10 @@ public class Order extends BaseTimeEntity {
 
     public OrderLineItems getOrderLineItems() {
         return this.orderLineItems;
+    }
+
+    public LocalDateTime getOrderedTime() {
+        return this.orderedTime;
     }
 
     @Override

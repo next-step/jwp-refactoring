@@ -2,6 +2,7 @@ package kitchenpos.domain;
 
 import kitchenpos.common.exceptions.NegativeQuantityException;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.util.Objects;
 
@@ -10,6 +11,7 @@ public class Quantity {
 
     private static final Long MINIMUM = 1L;
 
+    @Column
     private Long quantity;
 
     public Quantity() {

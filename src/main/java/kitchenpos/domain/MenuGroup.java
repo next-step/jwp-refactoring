@@ -8,6 +8,7 @@ public class MenuGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Embedded
     @AttributeOverride(name = "name", column = @Column(name = "name", nullable = false))
     private Name name;

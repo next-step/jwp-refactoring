@@ -9,9 +9,11 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Embedded
     @AttributeOverride(name = "name", column = @Column(name = "name", nullable = false))
     private Name name;
+
     @Embedded
     @AttributeOverride(name = "price", column = @Column(name = "price", nullable = false))
     private Price price;
