@@ -40,57 +40,30 @@ class TableRestControllerTest {
     @MockBean
     private TableService tableService;
 
-    private OrderTable 주문테이블1;
-    private OrderTable 주문테이블2;
-    private OrderTable 빈_주문테이블1;
-    private OrderTable 손님수변경_주문테이블2;
-
-    private OrderTableRequest 주문테이블_요청1;
-    private OrderTableResponse 주문테이블1_응답;
-    private OrderTableResponse 주문테이블2_응답;
-    private List<OrderTableResponse> 주문테이블목록_응답;
-    private OrderTableRequest 주문테이블1빈테이블_요청;
-    private OrderTableRequest 주문테이블2손님수변경_요청;
-    private OrderTableResponse 주문테이블1빈테이블_응답;
-    private OrderTableResponse 주문테이블2손님수변경_응답;
-
     @BeforeEach
     void setup() {
         this.mvc = MockMvcBuilders.webAppContextSetup(ctx)
                 .addFilters(new CharacterEncodingFilter("UTF-8", true))
                 .alwaysDo(print())
                 .build();
-
-        주문테이블1 = OrderTable.of(1L, 2, false);
-        주문테이블2 = OrderTable.of(2L, 2, false);
-        빈_주문테이블1 = OrderTable.of(1L, 0, true);
-        손님수변경_주문테이블2 = OrderTable.of(2L, 5, false);
-
-        주문테이블_요청1 = OrderTableRequest.of(5, false);
-        주문테이블1빈테이블_요청 = OrderTableRequest.from(true);
-        주문테이블2손님수변경_요청 = OrderTableRequest.from(10);
-
-        주문테이블1_응답 = OrderTableResponse.from(주문테이블1);
-        주문테이블2_응답 = OrderTableResponse.from(주문테이블2);
-        주문테이블목록_응답 = Lists.newArrayList(주문테이블1_응답, 주문테이블2_응답);
-
-        주문테이블1빈테이블_응답 = OrderTableResponse.from(빈_주문테이블1);
-        주문테이블2손님수변경_응답 = OrderTableResponse.from(손님수변경_주문테이블2);
     }
 
     @DisplayName("주문 테이블을 등록한다.")
     @Test
     void create() throws Exception {
+        final OrderTableRequest 주문테이블_요청1 = OrderTableRequest.of(5, false);
+
+        final OrderTable 주문테이블1 = OrderTable.of(1L, 2, false);
+        final OrderTableResponse 주문테이블1_응답 = OrderTableResponse.from(주문테이블1);
         
         given(tableService.create(any())).willReturn(주문테이블1_응답);
 
-        
         final ResultActions actions = mvc.perform(post("/api/tables")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON_VALUE)
                         .content(new ObjectMapper().writeValueAsString(주문테이블_요청1)))
                 .andDo(print());
-        
+
         actions.andExpect(status().isCreated())
                 .andExpect(jsonPath("id").value(1L))
                 .andExpect(jsonPath("numberOfGuests").value(2))
@@ -100,15 +73,18 @@ class TableRestControllerTest {
     @DisplayName("주문 테이블 목록을 조회한다.")
     @Test
     void list() throws Exception {
+        final OrderTable 주문테이블1 = OrderTable.of(1L, 2, false);
+        final OrderTable 주문테이블2 = OrderTable.of(2L, 2, false);
+        final OrderTableResponse 주문테이블1_응답 = OrderTableResponse.from(주문테이블1);
+        final OrderTableResponse 주문테이블2_응답 = OrderTableResponse.from(주문테이블2);
+        final List<OrderTableResponse> 주문테이블목록_응답 = Lists.newArrayList(주문테이블1_응답, 주문테이블2_응답);
         
         given(tableService.list()).willReturn(주문테이블목록_응답);
 
-        
         final ResultActions actions = mvc.perform(get("/api/tables")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andDo(print());
 
-        
         actions.andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.valueOf("application/json;charset=UTF-8")));
     }
@@ -116,6 +92,9 @@ class TableRestControllerTest {
     @DisplayName("빈 테이블로 변경한다.")
     @Test
     void changeEmpty() throws Exception {
+        final OrderTable 빈_주문테이블 = OrderTable.of(1L, 0, true);
+        final OrderTableRequest 주문테이블1빈테이블_요청 = OrderTableRequest.from(true);
+        final OrderTableResponse 주문테이블1빈테이블_응답 = OrderTableResponse.from(빈_주문테이블);
         
         given(tableService.changeEmpty(anyLong(), any())).willReturn(주문테이블1빈테이블_응답);
 
@@ -135,6 +114,9 @@ class TableRestControllerTest {
     @DisplayName("손님수를 변경한다.")
     @Test
     void changeNumberOfGuests() throws Exception {
+        final OrderTableRequest 주문테이블2손님수변경_요청 = OrderTableRequest.from(10);
+        final OrderTable 손님수변경_주문테이블2 = OrderTable.of(2L, 5, false);
+        final OrderTableResponse 주문테이블2손님수변경_응답 = OrderTableResponse.from(손님수변경_주문테이블2);
         
         given(tableService.changeNumberOfGuests(anyLong(), any())).willReturn(주문테이블2손님수변경_응답);
 
@@ -144,7 +126,6 @@ class TableRestControllerTest {
                         .content(new ObjectMapper().writeValueAsString(주문테이블2손님수변경_요청)))
                 .andDo(print());
 
-        
         actions.andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.valueOf("application/json;charset=UTF-8")))
                 .andExpect(content().string(containsString(Long.toString(2L))))

@@ -41,33 +41,24 @@ class TableGroupRestControllerTest {
     @MockBean
     private TableGroupService tableGroupService;
 
-    private TableGroup 테이블그룹;
-    private OrderTable 주문테이블1;
-    private OrderTable 주문테이블2;
-    private List<OrderTable> 주문테이블_목록;
-
-    private TableGroupRequest 테이블그룹_요청;
-    private TableGroupResponse 테이블그룹_응답;
-
     @BeforeEach
     void setup() {
         this.mvc = MockMvcBuilders.webAppContextSetup(ctx)
                 .addFilters(new CharacterEncodingFilter("UTF-8", true))
                 .alwaysDo(print())
                 .build();
-
-        주문테이블1 = OrderTable.of(1L, 2, false);
-        주문테이블2 = OrderTable.of(2L, 2, false);
-        주문테이블_목록 = Lists.newArrayList(주문테이블1, 주문테이블2);
-        테이블그룹 = TableGroup.of(1L, 주문테이블_목록);
-
-        테이블그룹_요청 = TableGroupRequest.from(Lists.newArrayList(주문테이블1.getId(), 주문테이블2.getId()));
-        테이블그룹_응답 = TableGroupResponse.from(테이블그룹);
     }
 
     @DisplayName("통합 계산을 위해 단체 지정 등록한다.")
     @Test
     void create() throws Exception {
+        final OrderTable 주문테이블1 = OrderTable.of(1L, 2, false);
+        final OrderTable 주문테이블2 = OrderTable.of(2L, 2, false);
+        final List<OrderTable> 주문테이블_목록 = Lists.newArrayList(주문테이블1, 주문테이블2);
+        final TableGroup 테이블그룹 = TableGroup.of(1L, 주문테이블_목록);
+
+        final TableGroupRequest 테이블그룹_요청 = TableGroupRequest.from(Lists.newArrayList(주문테이블1.getId(), 주문테이블2.getId()));
+        final TableGroupResponse 테이블그룹_응답 = TableGroupResponse.from(테이블그룹);
         
         given(tableGroupService.create(any())).willReturn(테이블그룹_응답);
 
@@ -87,12 +78,18 @@ class TableGroupRestControllerTest {
     @DisplayName("단체 지정을 해지한다.")
     @Test
     void ungroup() throws Exception {
-        
+        final OrderTable 주문테이블1 = OrderTable.of(1L, 2, false);
+        final OrderTable 주문테이블2 = OrderTable.of(2L, 2, false);
+        final List<OrderTable> 주문테이블_목록 = Lists.newArrayList(주문테이블1, 주문테이블2);
+        final TableGroup 테이블그룹 = TableGroup.of(1L, 주문테이블_목록);
+
+        final TableGroupRequest 테이블그룹_요청 = TableGroupRequest.from(Lists.newArrayList(주문테이블1.getId(), 주문테이블2.getId()));
+        final TableGroupResponse 테이블그룹_응답 = TableGroupResponse.from(테이블그룹);
+
         final ResultActions actions = mvc.perform(delete("/api/table-groups/{tableGroupId}", 테이블그룹_응답.getId())
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andDo(print());
 
-        
         actions.andExpect(status().isNoContent());
     }
 }

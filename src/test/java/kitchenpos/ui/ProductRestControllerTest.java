@@ -39,32 +39,22 @@ class ProductRestControllerTest {
     @MockBean
     private ProductService productService;
 
-    private ProductRequest 상품_요청1;
-    private ProductResponse 상품_응답1;
-    private ProductResponse 상품_응답2;
-    private List<ProductResponse> 상품_목록_응답;
-
     @BeforeEach
     void setup() {
         this.mvc = MockMvcBuilders.webAppContextSetup(ctx)
                 .addFilters(new CharacterEncodingFilter("UTF-8", true))
                 .alwaysDo(print())
                 .build();
-
-        상품_요청1 = ProductRequest.of("상품1", 10000);
-        상품_응답1 = ProductResponse.of(1L, "상품1", 10000);
-        상품_응답2 = ProductResponse.of(2L, "상품2", 20000);
-        상품_목록_응답 = Lists.newArrayList(상품_응답1, 상품_응답2);
     }
-
 
     @DisplayName("상품을 등록한다.")
     @Test
     void create() throws Exception {
-        
+        final ProductRequest 상품_요청1 = ProductRequest.of("상품1", 10000);
+        final ProductResponse 상품_응답1 = ProductResponse.of(1L, "상품1", 10000);
+
         given(productService.create(any())).willReturn(상품_응답1);
 
-        
         final ResultActions actions = mvc.perform(post("/api/products")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -80,18 +70,18 @@ class ProductRestControllerTest {
     @DisplayName("상품을 조회한다.")
     @Test
     void list() throws Exception {
-        
+        final ProductResponse 상품_응답1 = ProductResponse.of(1L, "상품1", 10000);
+        final ProductResponse 상품_응답2 = ProductResponse.of(2L, "상품2", 20000);
+        final List<ProductResponse> 상품_목록_응답 = Lists.newArrayList(상품_응답1, 상품_응답2);
+
         given(productService.list()).willReturn(상품_목록_응답);
 
-        
         final ResultActions actions = mvc.perform(get("/api/products")
                         .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andDo(print());
 
         
         actions.andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.valueOf("application/json;charset=UTF-8")))
-                .andExpect(content().string(containsString("상품1")))
-                .andExpect(content().string(containsString("상품2")));
+                .andExpect(content().contentType(MediaType.valueOf("application/json;charset=UTF-8")));
     }
 }
