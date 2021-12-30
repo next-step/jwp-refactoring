@@ -18,15 +18,15 @@ public class Quantity {
     }
 
     private Quantity(final Long quantity) {
+        validate(quantity);
         this.quantity = quantity;
     }
 
     public static Quantity from(final Long quantity) {
-        validate(quantity);
         return new Quantity(quantity);
     }
 
-    private static void validate(final Long quantity) {
+    private void validate(final Long quantity) {
         if (Objects.isNull(quantity) || quantity < MINIMUM) {
             throw new NegativeQuantityException();
         }

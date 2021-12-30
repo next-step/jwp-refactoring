@@ -31,10 +31,11 @@ public class Order {
     @Embedded
     private OrderLineItems orderLineItems = OrderLineItems.empty();
 
-    public Order() {
+    protected Order() {
     }
 
     private Order(final Long id, final OrderTable orderTable, final OrderStatus orderStatus, final OrderLineItems orderLineItems) {
+        validate(orderTable, orderStatus);
         this.id = id;
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
@@ -42,15 +43,14 @@ public class Order {
     }
 
     public static Order of(final OrderTable orderTable, final OrderStatus orderStatus, final OrderLineItems orderLineItems) {
-        return of(null, orderTable, orderStatus, orderLineItems);
+        return new Order(null, orderTable, orderStatus, orderLineItems);
     }
 
     public static Order of(final Long id, final OrderTable orderTable, final OrderStatus orderStatus) {
-        return of(id, orderTable, orderStatus, OrderLineItems.empty());
+        return new Order(id, orderTable, orderStatus, OrderLineItems.empty());
     }
 
     public static Order of(final Long id, final OrderTable orderTable, final OrderStatus orderStatus, final OrderLineItems orderLineItems) {
-        validate(orderTable, orderStatus);
         return new Order(id, orderTable, orderStatus, orderLineItems);
     }
 
@@ -58,7 +58,7 @@ public class Order {
         return new Order(null, orderTable, orderStatus, OrderLineItems.empty());
     }
 
-    private static void validate(final OrderTable orderTable, OrderStatus orderStatus) {
+    private void validate(final OrderTable orderTable, OrderStatus orderStatus) {
         if (Objects.isNull(orderTable)) {
             throw new EmptyOrderTableException();
         }
@@ -68,7 +68,7 @@ public class Order {
     }
 
     public static Order from(final OrderTable orderTable) {
-        return of(null, orderTable, OrderStatus.COOKING, OrderLineItems.empty());
+        return new Order(null, orderTable, OrderStatus.COOKING, OrderLineItems.empty());
     }
 
     public void addOrderLineItems(final List<OrderLineItem> orderLineItemList) {

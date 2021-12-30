@@ -20,20 +20,20 @@ public class Price {
     }
 
     private Price(final BigDecimal price) {
+        validate(price);
         this.price = price;
     }
 
     public static Price from(final BigDecimal price) {
-        validate(price);
         return new Price(price);
     }
 
     public static Price valueOf(final int price) {
-        return from(BigDecimal.valueOf(price));
+        return new Price(BigDecimal.valueOf(price));
     }
 
     public static Price valueOf(final long price) {
-        return from(BigDecimal.valueOf(price));
+        return new Price(BigDecimal.valueOf(price));
     }
 
     public static void validate(final BigDecimal price) {
@@ -57,6 +57,10 @@ public class Price {
 
     public BigDecimal toBigDecimal() {
         return price;
+    }
+
+    public long toLong() {
+        return price.longValue();
     }
 
     @Override

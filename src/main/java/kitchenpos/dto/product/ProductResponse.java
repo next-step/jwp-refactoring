@@ -2,26 +2,25 @@ package kitchenpos.dto.product;
 
 import kitchenpos.domain.Product;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ProductResponse {
     private Long id;
     private String name;
-    private BigDecimal price;
+    private long price;
 
     protected ProductResponse() {
     }
 
-    private ProductResponse(final Long id, final String name, final BigDecimal price) {
+    private ProductResponse(final Long id, final String name, final long price) {
         this.id = id;
         this.name = name;
         this.price = price;
     }
 
     public static ProductResponse from(final Product product) {
-        return new ProductResponse(product.getId(), product.getName(), product.getPrice().toBigDecimal());
+        return new ProductResponse(product.getId(), product.getName(), product.getPrice().toLong());
     }
 
     public static List<ProductResponse> from(final List<Product> products) {
@@ -30,7 +29,7 @@ public class ProductResponse {
                 .collect(Collectors.toList());
     }
 
-    public static ProductResponse of(final Long id, final String name, final BigDecimal price) {
+    public static ProductResponse of(final Long id, final String name, final long price) {
         return new ProductResponse(id, name, price);
     }
 
@@ -42,7 +41,7 @@ public class ProductResponse {
         return name;
     }
 
-    public BigDecimal getPrice() {
+    public long getPrice() {
         return price;
     }
 }

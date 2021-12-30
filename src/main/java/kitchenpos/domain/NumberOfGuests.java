@@ -17,15 +17,15 @@ public class NumberOfGuests {
     }
 
     private NumberOfGuests(final int numberOfGuests) {
+        validate(numberOfGuests);
         this.numberOfGuests = numberOfGuests;
     }
 
-    public static NumberOfGuests from(final Integer numberOfGuests) {
-        validate(numberOfGuests);
+    public static NumberOfGuests from(final int numberOfGuests) {
         return new NumberOfGuests(numberOfGuests);
     }
 
-    private static void validate(final Integer quantity) {
+    private void validate(final int quantity) {
         if (Objects.isNull(quantity) || quantity < MINIMUM) {
             throw new NegativeNumberOfGuestsException();
         }

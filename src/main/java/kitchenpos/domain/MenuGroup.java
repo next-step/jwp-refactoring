@@ -25,10 +25,6 @@ public class MenuGroup {
         return new MenuGroup(id, name);
     }
 
-    public static MenuGroup of(final String name) {
-        return new MenuGroup(null, name);
-    }
-
     public static MenuGroup from(final String name) {
         return new MenuGroup(null, name);
     }

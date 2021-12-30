@@ -35,22 +35,22 @@ public class Menu {
     }
 
     private Menu(final Long id, final Name name, final Price price, final MenuGroup menuGroup) {
+        validate(name, price, menuGroup);
         this.id = id;
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
     }
 
-    public static Menu of(final Long id, final Name name, final Price price, final MenuGroup menuGroup) {
-        validate(name, price, menuGroup);
-        return new Menu(id, name, price, menuGroup);
+    public static Menu of(final Long id, final String name, final long price, final MenuGroup menuGroup) {
+        return new Menu(id, Name.from(name), Price.from(BigDecimal.valueOf(price)), menuGroup);
     }
 
-    public static Menu of(final String name, final BigDecimal price, final MenuGroup menuGroup) {
-        return of(null, Name.from(name), Price.from(price), menuGroup);
+    public static Menu of(final String name, final long price, final MenuGroup menuGroup) {
+        return new Menu(null, Name.from(name), Price.from(BigDecimal.valueOf(price)), menuGroup);
     }
 
-    private static void validate(final Name name, final Price price, final MenuGroup menuGroup) {
+    private void validate(final Name name, final Price price, final MenuGroup menuGroup) {
         if (Objects.isNull(name)) {
             throw new NoRequiredNameException();
         }

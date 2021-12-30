@@ -30,15 +30,15 @@ public class OrderLineItem {
         this.quantity = quantity;
     }
 
-    public static OrderLineItem of(final Long seq, final Order order, final Menu menu, final Long quantity) {
+    public static OrderLineItem of(final Long seq, final Order order, final Menu menu, final long quantity) {
         return new OrderLineItem(seq, order, menu, Quantity.from(quantity));
     }
 
-    public static OrderLineItem of(final Order order, final Menu menu, final Long quantity) {
+    public static OrderLineItem of(final Order order, final Menu menu, final long quantity) {
         return new OrderLineItem(null, order, menu, Quantity.from(quantity));
     }
 
-    public static OrderLineItem of(final Menu menu, final Long quantity) {
+    public static OrderLineItem of(final Menu menu, final long quantity) {
         return new OrderLineItem(null, null, menu, Quantity.from(quantity));
     }
 

@@ -33,20 +33,16 @@ public class OrderTable {
     }
 
 
-    public static OrderTable of(final Long id, final TableGroup tableGroup, final NumberOfGuests numberOfGuests, final Empty empty) {
-        return new OrderTable(id, tableGroup, numberOfGuests, empty);
-    }
-
-    public static OrderTable of(final NumberOfGuests numberOfGuests, final Empty empty) {
-        return of(null, null, numberOfGuests, empty);
+    public static OrderTable of(final Long id, final TableGroup tableGroup, final int numberOfGuests, final boolean empty) {
+        return new OrderTable(id, tableGroup, NumberOfGuests.from(numberOfGuests), Empty.from(empty));
     }
 
     public static OrderTable of(final int numberOfGuests, final boolean empty) {
-        return of(null, null, NumberOfGuests.from(numberOfGuests), Empty.from(empty));
+        return new OrderTable(null, null, NumberOfGuests.from(numberOfGuests), Empty.from(empty));
     }
 
     public static OrderTable of(final TableGroup tableGroup, final int numberOfGuests, final boolean empty) {
-        return of(null, tableGroup, NumberOfGuests.from(numberOfGuests), Empty.from(empty));
+        return new OrderTable(null, tableGroup, NumberOfGuests.from(numberOfGuests), Empty.from(empty));
     }
 
     public static OrderTable of(final Long id, final int numberOfGuests, final boolean empty) {

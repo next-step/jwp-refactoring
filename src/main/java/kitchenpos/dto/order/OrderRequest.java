@@ -2,7 +2,6 @@ package kitchenpos.dto.order;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.dto.menu.OrderLineItemRequest;
 
 import java.util.List;
 

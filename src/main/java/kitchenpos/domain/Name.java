@@ -16,15 +16,15 @@ public class Name {
     }
 
     private Name(final String name) {
+        validate(name);
         this.name = name;
     }
 
     public static Name from(final String valueOf) {
-        validate(valueOf);
         return new Name(valueOf);
     }
 
-    private static void validate(final String valueOf) {
+    private void validate(final String valueOf) {
         if (StringUtils.isEmpty(valueOf) || Objects.isNull(valueOf)) {
             throw new NoRequiredNameException();
         }

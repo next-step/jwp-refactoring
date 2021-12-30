@@ -1,8 +1,6 @@
 package kitchenpos.dto.ordertable;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import kitchenpos.domain.Empty;
-import kitchenpos.domain.NumberOfGuests;
 import kitchenpos.domain.OrderTable;
 
 public class OrderTableRequest {
@@ -32,7 +30,7 @@ public class OrderTableRequest {
     }
 
     public OrderTable toOrderTable() {
-        return OrderTable.of(NumberOfGuests.from(numberOfGuests), Empty.from(empty));
+        return OrderTable.of(numberOfGuests, empty);
     }
 
     public Integer getNumberOfGuests() {

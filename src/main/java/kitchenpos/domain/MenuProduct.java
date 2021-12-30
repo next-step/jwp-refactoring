@@ -27,26 +27,26 @@ public class MenuProduct {
     }
 
     private MenuProduct(final Long seq, final Menu menu, final Product product, final Quantity quantity) {
+        validateCreate(product);
         this.seq = seq;
         this.menu = menu;
         this.product = product;
         this.quantity = quantity;
     }
 
-    public static MenuProduct of(final Long seq, final Menu menu, final Product product, final Long quantity) {
+    public static MenuProduct of(final Long seq, final Menu menu, final Product product, final long quantity) {
         return new MenuProduct(seq, menu, product, Quantity.valueOf(quantity));
     }
 
-    public static MenuProduct of(final Menu menu, final Product product, final Long quantity) {
+    public static MenuProduct of(final Menu menu, final Product product, final long quantity) {
         return new MenuProduct(null, menu, product, Quantity.valueOf(quantity));
     }
 
-    public static MenuProduct of(final Product product, final Long quantity) {
-        validateCreate(product);
+    public static MenuProduct of(final Product product, final long quantity) {
         return new MenuProduct(null, null, product, Quantity.valueOf(quantity));
     }
 
-    private static void validateCreate(final Product product) {
+    private void validateCreate(final Product product) {
         if (Objects.isNull(product)) {
             throw new ProductRequiredException();
         }
