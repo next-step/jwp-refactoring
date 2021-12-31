@@ -3,6 +3,7 @@ package kitchenpos.table.domain;
 import kitchenpos.table.dto.OrderTableChangeEmptyRequest;
 import kitchenpos.table.exception.NotChangeEmptyException;
 import kitchenpos.table.exception.NotChangeNumberOfGuestException;
+import kitchenpos.table.exception.NotCreateTableGroupException;
 import kitchenpos.table.exception.TableErrorCode;
 
 import javax.persistence.*;
@@ -55,6 +56,12 @@ public class OrderTable {
 
     public static OrderTable create(Integer numberOfGuests, boolean empty) {
         return new OrderTable(null, numberOfGuests, empty);
+    }
+
+    public void availableCreate() {
+        if (!isEmpty() || Objects.nonNull(getTableGroup())) {
+            throw new NotCreateTableGroupException(TableErrorCode.ALREADY_ASSIGN_GROUP);
+        }
     }
 
     public void changeEmpty(OrderTableChangeEmptyRequest request) {

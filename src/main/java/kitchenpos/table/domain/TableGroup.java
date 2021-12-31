@@ -1,6 +1,5 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.exception.NotCreatedOrderTablesException;
 import org.springframework.data.annotation.CreatedDate;
 
@@ -42,6 +41,7 @@ public class TableGroup {
     }
 
     public static TableGroup create(List<Long> orderTableIds, OrderTables orderTables) {
+        orderTables.validateOrderTable();
         isNotCreatedOrderTables(orderTableIds, orderTables);
 
         TableGroup tableGroup = new TableGroup(orderTables.getOrderTables());
