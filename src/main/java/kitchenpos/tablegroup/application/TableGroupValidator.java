@@ -2,12 +2,13 @@ package kitchenpos.tablegroup.application;
 
 import kitchenpos.common.exception.MinimumOrderTableNumberException;
 import kitchenpos.common.exception.NotEmptyOrderTableStatusException;
+import kitchenpos.common.exception.NotFoundEntityException;
 import kitchenpos.common.exception.OrderStatusNotCompletedException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -19,10 +20,10 @@ import java.util.Objects;
 public class TableGroupValidator {
     public static final int MINIMUM_ORDER_TABLE_NUMBER = 2;
 
-    private final TableGroupService tableGroupService;
+    private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupValidator(TableGroupService tableGroupService) {
-        this.tableGroupService = tableGroupService;
+    public TableGroupValidator(TableGroupRepository tableGroupRepository) {
+        this.tableGroupRepository = tableGroupRepository;
     }
 
     public void validateCreateTableGroup(TableGroupRequest tableGroupRequest) {
@@ -64,7 +65,9 @@ public class TableGroupValidator {
     }
 
     private void validateAddableOrderTable(OrderTable orderTable) {
-        TableGroup tableGroup = tableGroupService.findByTableGroupId(orderTable.getTableGroupId());
+        TableGroup tableGroup = tableGroupRepository.findById(orderTable.getTableGroupId())
+                .orElseThrow(NotFoundEntityException::new);
+
         if (!orderTable.isEmpty() || Objects.nonNull(tableGroup)) {
             throw new NotEmptyOrderTableStatusException();
         }

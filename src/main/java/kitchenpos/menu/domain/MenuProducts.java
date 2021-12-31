@@ -22,7 +22,7 @@ public class MenuProducts {
         return menuProducts;
     }
 
-    public void addMenuProduct(MenuProduct menuProduct) {
-        this.menuProducts.add(menuProduct);
+    public void addAllMenuProducts(List<MenuProduct> menuProducts) {
+        this.menuProducts.addAll(menuProducts);
     }
 }

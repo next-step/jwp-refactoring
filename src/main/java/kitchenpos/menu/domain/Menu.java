@@ -2,7 +2,9 @@ package kitchenpos.menu.domain;
 
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
+import kitchenpos.menu.event.MenuDecideEvent;
 import kitchenpos.menugroup.domain.MenuGroup;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -15,7 +17,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
-public class Menu {
+public class Menu extends AbstractAggregateRoot<Menu> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -44,7 +46,7 @@ public class Menu {
         this.name = new Name(name);
         this.price = new Price(price);
         this.menuGroup = menuGroup;
-        addMenuProducts(menuProducts);
+        this.menuProducts.addAllMenuProducts(menuProducts);
     }
 
     public Menu(Long id, String name, int price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
@@ -52,14 +54,8 @@ public class Menu {
         this.name = new Name(name);
         this.price = new Price(BigDecimal.valueOf(price));
         this.menuGroup = menuGroup;
-        addMenuProducts(menuProducts);
-    }
-
-    private void addMenuProducts(List<MenuProduct> menuProducts) {
-        menuProducts.forEach(menuProduct -> {
-            this.menuProducts.addMenuProduct(menuProduct);
-            menuProduct.decideMenu(this);
-        });
+        this.menuProducts.addAllMenuProducts(menuProducts);
+        registerEvent(new MenuDecideEvent(this, menuProducts));
     }
 
 

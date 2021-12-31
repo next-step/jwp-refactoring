@@ -2,12 +2,16 @@ package kitchenpos.tablegroup.domain;
 
 import kitchenpos.ordertable.domain.OrderTable;
 
+import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 
+@Embeddable
 public class OrderTables {
-    @OneToMany(mappedBy = "tableGroup")
+    @OneToMany
+    @JoinColumn(name = "table_group_id")
     private List<OrderTable> orderTables = new ArrayList<>();
 
     public OrderTables() {

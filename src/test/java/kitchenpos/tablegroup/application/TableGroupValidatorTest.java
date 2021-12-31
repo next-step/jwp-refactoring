@@ -11,9 +11,8 @@ import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.product.domain.Product;
-import kitchenpos.tablegroup.application.TableGroupService;
-import kitchenpos.tablegroup.application.TableGroupValidator;
 import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,15 +24,18 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
 
 @DisplayName("테이블 그룹 벨리데이터 관련 테스트")
 @ExtendWith(MockitoExtension.class)
 class TableGroupValidatorTest {
     @Mock
-    private TableGroupService tableGroupService;
+    private TableGroupRepository tableGroupRepository;
 
     private TableGroupValidator tableGroupValidator;
 
@@ -51,6 +53,7 @@ class TableGroupValidatorTest {
     private OrderTable 주문테이블4번;
 
     private TableGroup 단체테이블1번;
+    private TableGroup 단체테이블3번;
 
     private TableGroupRequest 단체테이블1번_요청;
     private TableGroupRequest 단체테이블2번_요청;
@@ -58,7 +61,7 @@ class TableGroupValidatorTest {
 
     @BeforeEach
     void setUp() {
-        tableGroupValidator = new TableGroupValidator(tableGroupService);
+        tableGroupValidator = new TableGroupValidator(tableGroupRepository);
 
         짜장면_상품 = new Product("짜장면", new BigDecimal(1000));
         짜장면_하나 = new MenuProduct(1L, new Menu(), 짜장면_상품.getId(), 1);
@@ -71,6 +74,7 @@ class TableGroupValidatorTest {
         주문테이블1번 = new OrderTable(null, 0);
         주문테이블2번 = new OrderTable(null, 0);
         단체테이블1번 = new TableGroup(1L, Lists.newArrayList(주문테이블1번, 주문테이블2번));
+        단체테이블3번 = new TableGroup(2L, Lists.newArrayList(주문테이블3번, 주문테이블4번));
 
         주문테이블3번 = new OrderTable(null, 3);
         주문테이블4번 = new OrderTable(null, 3);
@@ -95,6 +99,7 @@ class TableGroupValidatorTest {
     @Test
     void createTableGroupEmptyOrderTableExceptionTest() {
         assertThatThrownBy(() -> {
+            when(tableGroupRepository.findById(any())).thenReturn(Optional.ofNullable(단체테이블3번));
             // when
             테이블_그룹_생성을_확인한다(단체테이블3번_요청);
 

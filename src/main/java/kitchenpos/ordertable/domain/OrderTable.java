@@ -4,6 +4,7 @@ import kitchenpos.common.domain.Empty;
 import kitchenpos.common.domain.NumberOfGuests;
 import kitchenpos.order.domain.Order;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,6 +22,7 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "table_group_id")
     private Long tableGroupId;
 
     @OneToMany(mappedBy = "orderTable")
