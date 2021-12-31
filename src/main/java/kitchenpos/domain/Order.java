@@ -16,9 +16,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_orders_order_table"), nullable = false)
-    private OrderTable orderTable;
+    private Long orderTableId;
 
     @Column(nullable = false)
     @CreatedDate
@@ -33,28 +31,28 @@ public class Order {
     protected Order() {
     }
 
-    private Order(final Long id, final OrderTable orderTable, final OrderStatus orderStatus, final OrderLineItems orderLineItems) {
-        validate(orderTable, orderStatus);
+    private Order(final Long id, final Long orderTableId, final OrderStatus orderStatus, final OrderLineItems orderLineItems) {
+        validate(orderTableId, orderStatus);
         this.id = id;
-        this.orderTable = orderTable;
+        this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderLineItems = orderLineItems;
     }
 
-    public static Order of(final OrderTable orderTable, final OrderStatus orderStatus, final OrderLineItems orderLineItems) {
-        return new Order(null, orderTable, orderStatus, orderLineItems);
+    public static Order of(final Long orderTableId, final OrderStatus orderStatus, final OrderLineItems orderLineItems) {
+        return new Order(null, orderTableId, orderStatus, orderLineItems);
     }
 
-    public static Order of(final Long id, final OrderTable orderTable, final OrderStatus orderStatus) {
-        return new Order(id, orderTable, orderStatus, OrderLineItems.empty());
+    public static Order of(final Long id, final Long orderTableId, final OrderStatus orderStatus) {
+        return new Order(id, orderTableId, orderStatus, OrderLineItems.empty());
     }
 
-    public static Order of(final Long id, final OrderTable orderTable, final OrderStatus orderStatus, final OrderLineItems orderLineItems) {
-        return new Order(id, orderTable, orderStatus, orderLineItems);
+    public static Order of(final Long id, final Long orderTableId, final OrderStatus orderStatus, final OrderLineItems orderLineItems) {
+        return new Order(id, orderTableId, orderStatus, orderLineItems);
     }
 
-    public static Order from(final OrderTable orderTable) {
-        return new Order(null, orderTable, OrderStatus.COOKING, OrderLineItems.empty());
+    public static Order from(final Long orderTableId) {
+        return new Order(null, orderTableId, OrderStatus.COOKING, OrderLineItems.empty());
     }
 
     public void addOrderLineItems(final List<OrderLineItem> orderLineItemList) {
@@ -66,8 +64,8 @@ public class Order {
         this.orderLineItems.add(orderLineItem);
     }
 
-    private void validate(final OrderTable orderTable, OrderStatus orderStatus) {
-        if (Objects.isNull(orderTable)) {
+    private void validate(final Long orderTableId, OrderStatus orderStatus) {
+        if (Objects.isNull(orderTableId)) {
             throw new EmptyOrderTableException();
         }
         if (Objects.isNull(orderStatus)) {
@@ -91,8 +89,8 @@ public class Order {
         return this.id;
     }
 
-    public OrderTable getOrderTable() {
-        return this.orderTable;
+    public Long getOrderTableId() {
+        return this.orderTableId;
     }
 
     public OrderStatus getOrderStatus() {
