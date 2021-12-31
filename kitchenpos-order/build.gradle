@@ -11,5 +11,5 @@ dependencies {
     testImplementation 'com.google.guava:guava:14.0.1'
 
     compile project(':kitchenpos-common')
-    compile project(':kitchenpos-order')
+    compile project(':kitchenpos-table')
 }
