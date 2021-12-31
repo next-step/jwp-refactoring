@@ -7,5 +7,5 @@ import java.util.List;
 public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findByOrderTableIdIn(List<OrderTable> orderTables);
 
-    boolean existsByOrderTableIdAndOrderStatusIn(OrderTable orderTable, List<OrderStatus> statusList);
+    Order findByOrderTableId(Long orderTableId);
 }
