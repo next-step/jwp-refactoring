@@ -13,9 +13,7 @@ public class OrderLineItem {
     @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"), nullable = false)
     private Order order;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_order_line_item_menu"), nullable = false)
-    private Menu menu;
+    private Long menuId;
 
     @Embedded
     private Quantity quantity;
@@ -23,27 +21,27 @@ public class OrderLineItem {
     protected OrderLineItem() {
     }
 
-    private OrderLineItem(final Long seq, final Order order, final Menu menu, final Quantity quantity) {
+    private OrderLineItem(final Long seq, final Order order, final Long menuId, final Quantity quantity) {
         this.seq = seq;
         this.order = order;
-        this.menu = menu;
+        this.menuId = menuId;
         this.quantity = quantity;
     }
 
-    public static OrderLineItem of(final Long seq, final Order order, final Menu menu, final long quantity) {
-        return new OrderLineItem(seq, order, menu, Quantity.from(quantity));
+    public static OrderLineItem of(final Long seq, final Order order, final Long menuId, final long quantity) {
+        return new OrderLineItem(seq, order, menuId, Quantity.from(quantity));
     }
 
-    public static OrderLineItem of(final Long seq, final Menu menu, final long quantity) {
-        return new OrderLineItem(seq, null, menu, Quantity.from(quantity));
+    public static OrderLineItem of(final Long seq, final Long menuId, final long quantity) {
+        return new OrderLineItem(seq, null, menuId, Quantity.from(quantity));
     }
 
-    public static OrderLineItem of(final Order order, final Menu menu, final long quantity) {
-        return new OrderLineItem(null, order, menu, Quantity.from(quantity));
+    public static OrderLineItem of(final Order order, final Long menuId, final long quantity) {
+        return new OrderLineItem(null, order, menuId, Quantity.from(quantity));
     }
 
-    public static OrderLineItem of(final Menu menu, final long quantity) {
-        return new OrderLineItem(null, null, menu, Quantity.from(quantity));
+    public static OrderLineItem of(final Long menuId, final long quantity) {
+        return new OrderLineItem(null, null, menuId, Quantity.from(quantity));
     }
 
     public Long getSeq() {
@@ -54,8 +52,8 @@ public class OrderLineItem {
         return order;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public Long getMenuId() {
+        return menuId;
     }
 
     public Quantity getQuantity() {
