@@ -1,17 +1,35 @@
 package kitchenpos.table;
 
 import kitchenpos.AcceptanceTest;
-import kitchenpos.application.*;
-import kitchenpos.repository.OrderTableRepository;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.dto.TableChangeEmptyRequest;
-import kitchenpos.dto.TableChangeNumberOfGuestRequest;
-import kitchenpos.exception.TableNotAvailableException;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.repository.MenuGroupRepository;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.repository.ProductRepository;
+import kitchenpos.table.exception.CannotChangeTableEmptyException;
+import kitchenpos.table.repository.OrderTableRepository;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.TableChangeEmptyRequest;
+import kitchenpos.table.dto.TableChangeNumberOfGuestRequest;
+import kitchenpos.table.exception.TableNotAvailableException;
 import kitchenpos.global.exception.EntityNotFoundException;
+import kitchenpos.table.application.TableService;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.repository.TableGroupRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
+
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("테이블 관련 기능")
@@ -22,6 +40,9 @@ class TableServiceTest extends AcceptanceTest {
 
     @Autowired
     private OrderTableRepository orderTableRepository;
+
+    @Autowired
+    private TableGroupRepository tableGroupRepository;
 
     @Test
     @DisplayName("사용여부를 변경하고자 하는 테이블이 존재하지 않으면 예외가 발생한다.")
@@ -53,4 +74,16 @@ class TableServiceTest extends AcceptanceTest {
         }).isInstanceOf(TableNotAvailableException.class);
     }
 
+    @Test
+    @DisplayName("사용여부를 변경하고자 하는 테이블이 단체 지정 되어 있다면 예외가 발생한다.")
+    void isTableGroup() {
+        // given
+        TableGroup tableGroup = tableGroupRepository.save(new TableGroup());
+        final OrderTable orderTable = orderTableRepository.save(new OrderTable(tableGroup.getId(), 0, false));
+
+        // when
+        assertThatThrownBy(() -> {
+            tableService.changeEmpty(orderTable.getId(), new TableChangeEmptyRequest(true));
+        }).isInstanceOf(CannotChangeTableEmptyException.class);
+    }
 }

@@ -1,19 +1,32 @@
 package kitchenpos.order;
 
 import kitchenpos.AcceptanceTest;
-import kitchenpos.application.OrderService;
-import kitchenpos.application.TableService;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.dto.*;
-import kitchenpos.exception.TableNotAvailableException;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.dto.MenuCreateRequest;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menugroup.application.MenuGroupService;
+import kitchenpos.menugroup.dto.MenuGroupCreateRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.order.dto.OrderCreateRequest;
+import kitchenpos.order.dto.OrderStatusChangeRequest;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductCreateRequest;
+import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.table.application.TableService;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.table.exception.TableNotAvailableException;
 import kitchenpos.global.exception.EntityNotFoundException;
+import kitchenpos.table.dto.TableCreateRequest;
+import kitchenpos.table.dto.TableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("주문 관련 기능")
@@ -24,6 +37,15 @@ class OrderServiceTest extends AcceptanceTest {
 
     @Autowired
     private TableService tableService;
+
+    @Autowired
+    private MenuService menuService;
+
+    @Autowired
+    private MenuGroupService menuGroupService;
+
+    @Autowired
+    private ProductService productService;
 
     @Test
     @DisplayName("주문한 메뉴가 존재하지 않으면 예외가 발생한다.")
@@ -63,8 +85,11 @@ class OrderServiceTest extends AcceptanceTest {
     @DisplayName("테이블의 상태가 사용불가라면 예외가 발생한다.")
     void createOrderFailBecauseOfIsEmptyTableStatus() {
         // given
+        final ProductResponse productResponse = productService.create(new ProductCreateRequest("후라이드", BigDecimal.valueOf(7000)));
+        final MenuGroupResponse menuGroupResponse = menuGroupService.create(new MenuGroupCreateRequest("추천메뉴"));
+        final MenuResponse menuResponse = menuService.create(new MenuCreateRequest("후라이드 2마리", BigDecimal.valueOf(13000), menuGroupResponse.getId(), Arrays.asList(new MenuCreateRequest.MenuProductRequest(productResponse.getId(), 2L))));
         final TableResponse tableResponse = tableService.create(new TableCreateRequest(0, true));
-        final OrderCreateRequest orderCreateRequest = new OrderCreateRequest(tableResponse.getId(), Arrays.asList(new OrderCreateRequest.OrderLineItem(1L, 1L)));
+        final OrderCreateRequest orderCreateRequest = new OrderCreateRequest(tableResponse.getId(), Arrays.asList(new OrderCreateRequest.OrderLineItem(menuResponse.getId(), 1L)));
 
         // when
         assertThatThrownBy(() -> {
