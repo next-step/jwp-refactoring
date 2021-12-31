@@ -8,14 +8,14 @@ import kitchenpos.menu.domain.Menu;
 public class MenuResponse {
     private Long id;
     private String name;
-    private Long price;
+    private long price;
     private Long menuGroupId;
     private List<MenuProductResponse> menuProducts;
     
     private MenuResponse() {
     }
 
-    private MenuResponse(Long id, String name, Long price, Long menuGroupId, List<MenuProductResponse> menuProducts) {
+    private MenuResponse(Long id, String name, long price, Long menuGroupId, List<MenuProductResponse> menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -40,7 +40,7 @@ public class MenuResponse {
         return name;
     }
 
-    public Long getPrice() {
+    public long getPrice() {
         return price;
     }
 

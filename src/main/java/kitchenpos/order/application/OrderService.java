@@ -7,42 +7,32 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.dao.OrderRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 
 @Service
 public class OrderService {
-    private final MenuService menuService;
     private final OrderRepository orderRepository;
-    private final TableService tableService;
+    private final OrderValidator orderValidator;
 
     public OrderService(
-            final MenuService menuService,
             final OrderRepository orderRepository,
-            final TableService tableService
+            final OrderValidator orderValidator
     ) {
-        this.menuService = menuService;
         this.orderRepository = orderRepository;
-        this.tableService = tableService;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest request) {
-        final OrderTable orderTable = tableService.findById(request.getOrderTableId());
-        
         List<OrderLineItem> orderLineItems = createOrderLineItems(request.getOrderLineItems());
         
-        Order order = Order.createOrder(orderTable, orderLineItems);
+        Order order = Order.createOrder(request.getOrderTableId(), orderLineItems);
         
-        order.received();
-
         return OrderResponse.from(orderRepository.save(order));
     }
 
@@ -60,7 +50,7 @@ public class OrderService {
         
         order.onMealing();
         
-        return OrderResponse.from(orderRepository.save(order));
+        return OrderResponse.from(order);
     }
     
     @Transactional
@@ -69,7 +59,7 @@ public class OrderService {
         
         order.completed();
         
-        return OrderResponse.from(orderRepository.save(order));
+        return OrderResponse.from(order);
     }
     
     @Transactional(readOnly = true)
@@ -85,17 +75,16 @@ public class OrderService {
         List<Long> menuIds = request.stream()
                 .map(OrderLineItemRequest::getMenuId)
                 .collect(Collectors.toList());
+        orderValidator.checkMenu(menuIds);
         
-        List<Menu> menus = menuService.findAllByIds(menuIds);
-        
-        if (menus.size() != request.size()) {
-            new IllegalArgumentException("등록된 메뉴만 주문할 수 있습니다");
-        }
-        
-        for (int i = 0; i < menus.size(); i++) {
-            result.add(OrderLineItem.of(menus.get(i), request.get(i).getQuantity()));
+        for (OrderLineItemRequest orderLineItemRequest : request) {
+            result.add(OrderLineItem.of(orderLineItemRequest.getMenuId(), orderLineItemRequest.getQuantity()));
         }
 
         return result;
+    }
+
+    public List<Order> findAllByOrderTableId(Long orderTableId) {
+        return orderRepository.findAllByOrderTableId(orderTableId);
     }
 }

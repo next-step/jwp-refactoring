@@ -9,20 +9,17 @@ import java.util.Arrays;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-
 public class OrderTest {
     
     @DisplayName("식사중으로 주문 상태를 변경할 수 있다")
     @Test
     void 식사중_상태_변경() {
         // given
-        Menu 메뉴 = Menu.of("메뉴", 5000L, MenuGroup.from("메뉴그룹"));
-        OrderLineItem 주문_항목 = OrderLineItem.of(메뉴, 3L);
+        Long 메뉴_Id = 1L;
+        OrderLineItem 주문_항목 = OrderLineItem.of(메뉴_Id, 3L);
         
-        OrderTable 테이블 = OrderTable.of(3, false);
-        Order 주문 = Order.of(테이블, OrderStatus.COOKING, Arrays.asList(주문_항목));
+        Long 테이블_Id = 1L;
+        Order 주문 = Order.of(테이블_Id, OrderStatus.COOKING, Arrays.asList(주문_항목));
         
         // when
         주문.onMealing();
@@ -36,11 +33,11 @@ public class OrderTest {
     @Test
     void 계산_완료_상태_변경() {
         // given
-        Menu 메뉴 = Menu.of("메뉴", 5000L, MenuGroup.from("메뉴그룹"));
-        OrderLineItem 주문_항목 = OrderLineItem.of(메뉴, 3L);
+        Long 메뉴_Id = 1L;
+        OrderLineItem 주문_항목 = OrderLineItem.of(메뉴_Id, 3L);
         
-        OrderTable 테이블 = OrderTable.of(3, false);
-        Order 주문 = Order.of(테이블, OrderStatus.MEAL, Arrays.asList(주문_항목));
+        Long 테이블_Id = 1L;
+        Order 주문 = Order.of(테이블_Id, OrderStatus.MEAL, Arrays.asList(주문_항목));
         
         // when
         주문.completed();
@@ -54,11 +51,11 @@ public class OrderTest {
     @Test
     void 완료_주문_상태_변경_불가() {
         // given
-        Menu 메뉴 = Menu.of("메뉴", 5000L, MenuGroup.from("메뉴그룹"));
-        OrderLineItem 주문_항목 = OrderLineItem.of(메뉴, 3L);
+        Long 메뉴_Id = 1L;
+        OrderLineItem 주문_항목 = OrderLineItem.of(메뉴_Id, 3L);
         
-        OrderTable 테이블 = OrderTable.of(3, false);
-        Order 주문 = Order.of(테이블, OrderStatus.COMPLETION, Arrays.asList(주문_항목));
+        Long 테이블_Id = 1L;
+        Order 주문 = Order.of(테이블_Id, OrderStatus.COMPLETION, Arrays.asList(주문_항목));
     
         // when, then
         assertThatThrownBy(() -> {
@@ -73,11 +70,11 @@ public class OrderTest {
     @Test
     void 주문_메뉴_확인() {
         // given
-        OrderTable 테이블 = OrderTable.of(3, false);
+        Long 테이블_Id = 1L;
         
         // when, then
         assertThatThrownBy(() -> {
-            Order.of(테이블, OrderStatus.COOKING, new ArrayList<OrderLineItem>());
+            Order.of(테이블_Id, OrderStatus.COOKING, new ArrayList<OrderLineItem>());
         }).isInstanceOf(IllegalArgumentException.class)
         .hasMessage("주문에 메뉴가 없습니다");
     

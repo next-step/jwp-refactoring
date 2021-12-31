@@ -21,7 +21,7 @@ public class Menu {
     private String name;
     
     @Embedded
-    private Price price;
+    private MenuPrice price;
     
     @ManyToOne
     @JoinColumn(name = "menu_group_id")
@@ -33,13 +33,13 @@ public class Menu {
     protected Menu() {
     }
     
-    private Menu(String name, Long price, MenuGroup menuGroup) {
+    private Menu(String name, long price, MenuGroup menuGroup) {
         this.name = name;
-        this.price = Price.from(price);
+        this.price = MenuPrice.from(price);
         this.menuGroup = menuGroup;
     }
 
-    public static Menu of(String name, Long price, MenuGroup menuGroup) {
+    public static Menu of(String name, long price, MenuGroup menuGroup) {
         return new Menu(name, price, menuGroup);
     }
 
@@ -51,7 +51,7 @@ public class Menu {
         return name;
     }
 
-    public Price getPrice() {
+    public MenuPrice getPrice() {
         return price;
     }
 
@@ -72,13 +72,6 @@ public class Menu {
             menuProduct.setMenu(this);
             this.menuProducts.add(menuProduct);
         });
-        checkTotalPrice(this.menuProducts.getTotalPrice());
-    }
-    
-    private void checkTotalPrice(Price sumProductPrice) {
-        if (this.price.compareTo(sumProductPrice) > 0) {
-            throw new IllegalArgumentException("메뉴 가격이 상품 가격의 합보다 큽니다");
-        }
     }
 
     @Override

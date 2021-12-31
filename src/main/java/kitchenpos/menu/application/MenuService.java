@@ -12,7 +12,6 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -21,16 +20,16 @@ import kitchenpos.menu.dto.MenuResponse;
 public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupService menuGroupService;
-    private final ProductService productService;
+    private final MenuValidator menuValidator;
 
     public MenuService(
             final MenuRepository menuRepository,
             final MenuGroupService menuGroupService,
-            final ProductService productService
+            final MenuValidator menuValidator
     ) {
         this.menuRepository = menuRepository;
         this.menuGroupService = menuGroupService;
-        this.productService = productService;
+        this.menuValidator = menuValidator;
     }
 
     @Transactional
@@ -41,6 +40,8 @@ public class MenuService {
         
         MenuProducts menuProducts = createMenuProducts(request.getMenuProducts());
         menu.addMenuProducts(menuProducts.getMenuProducts());
+        
+        menuValidator.checkTotalPrice(menu);
         
         final Menu savedMenu = menuRepository.save(menu);
 
@@ -55,22 +56,16 @@ public class MenuService {
                 .collect(Collectors.toList());
     }
     
-    @Transactional(readOnly = true)
     private MenuProducts createMenuProducts(List<MenuProductRequest> request) {
         List<MenuProduct> result = new ArrayList<MenuProduct>();
         
         List<Long> productIds = request.stream()
                 .map(MenuProductRequest::getProductId)
                 .collect(Collectors.toList());
+        menuValidator.checkProducts(productIds);
         
-        List<Product> products = productService.findAllByIds(productIds);
-        
-        if (products.size() != request.size()) {
-            new IllegalArgumentException("메뉴에는 저장된 상품만 등록할 수 있습니다");
-        }
-        
-        for (int i = 0; i < products.size(); i++) {
-            result.add(MenuProduct.of(products.get(i), request.get(i).getQuantity()));
+        for (MenuProductRequest menuProductRequest : request) {
+            result.add(MenuProduct.of(menuProductRequest.getProductId(), menuProductRequest.getQuantity()));
         }
 
         return MenuProducts.from(result);
@@ -78,6 +73,6 @@ public class MenuService {
     
     @Transactional(readOnly = true)
     public List<Menu> findAllByIds(List<Long> ids) {
-        return menuRepository.findAllByIds(ids);
+        return menuRepository.findAllByIdIn(ids);
     }
 }

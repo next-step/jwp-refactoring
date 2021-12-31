@@ -3,7 +3,6 @@ package kitchenpos.order.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
@@ -19,15 +18,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.order.dao.OrderRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.TableGroup;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
@@ -36,13 +30,10 @@ import kitchenpos.order.dto.OrderResponse;
 public class OrderServiceTest {
 
     @Mock
-    private MenuService menuService;
-
-    @Mock
     private OrderRepository orderRepository;
-
+    
     @Mock
-    private TableService tableService;
+    private OrderValidator orderValidator;
 
     @InjectMocks
     private OrderService orderService;
@@ -51,19 +42,14 @@ public class OrderServiceTest {
     @Test
     void 주문_등록() {
         // given
-        Menu 메뉴 = Menu.of("메뉴", 5000L, MenuGroup.from("메뉴그룹"));
-        
-        OrderTable 첫번째_테이블 = OrderTable.of(3, false);
-        OrderTable 두번째_테이블 = OrderTable.of(5, false);
-        TableGroup 단체지정 = TableGroup.from(Arrays.asList(첫번째_테이블, 두번째_테이블));
+        Long 메뉴_Id = 1L;
+        Long 테이블_Id = 1L;
         
         List<OrderLineItem> 주문_항목_목록 = new ArrayList<OrderLineItem>();
-        주문_항목_목록.add(OrderLineItem.of(메뉴, 1L));
+        주문_항목_목록.add(OrderLineItem.of(메뉴_Id, 1L));
         
-        Order 주문 = Order.createOrder(첫번째_테이블, 주문_항목_목록);
+        Order 주문 = Order.createOrder(테이블_Id, 주문_항목_목록);
         
-        given(menuService.findAllByIds(anyList())).willReturn(Arrays.asList(메뉴));
-        given(tableService.findById(anyLong())).willReturn(첫번째_테이블);
         given(orderRepository.save(any())).willReturn(주문);
         
         OrderRequest 주문_생성_요청 = OrderRequest.of(1L, 주문.getOrderStatus(), Arrays.asList(OrderLineItemRequest.of(1L, 1L)));
@@ -79,8 +65,6 @@ public class OrderServiceTest {
     @Test
     void 주문_등록_메뉴_필수() {
         // given
-        OrderTable 테이블 = OrderTable.of(3, false);
-        given(tableService.findById(anyLong())).willReturn(테이블);
         
         // when, then
         assertThatThrownBy(() -> {
@@ -95,18 +79,18 @@ public class OrderServiceTest {
     @Test
     void 주문_목록_조회() {
         // given
-        OrderTable 테이블 = OrderTable.of(3, false);
+        Long 테이블_Id = 1L;
         
-        Menu 첫번째_메뉴 = Menu.of("메뉴", 5000L, MenuGroup.from("메뉴그룹"));
+        Long 첫번째_메뉴_Id = 1L;
         List<OrderLineItem> 첫번째_주문_항목 = new ArrayList<OrderLineItem>();
-        첫번째_주문_항목.add(OrderLineItem.of(첫번째_메뉴, 1L));
+        첫번째_주문_항목.add(OrderLineItem.of(첫번째_메뉴_Id, 1L));
 
-        Menu 두번째_메뉴 = Menu.of("메뉴", 5000L, MenuGroup.from("메뉴그룹"));
+        Long 두번째_메뉴_Id = 2L;
         List<OrderLineItem> 두번째_주문_항목 = new ArrayList<OrderLineItem>();
-        두번째_주문_항목.add(OrderLineItem.of(두번째_메뉴, 1L));
+        두번째_주문_항목.add(OrderLineItem.of(두번째_메뉴_Id, 1L));
         
-        Order 첫번째_주문 = Order.of(테이블, OrderStatus.COOKING, 첫번째_주문_항목);
-        Order 두번째_주문 = Order.of(테이블, OrderStatus.MEAL, 두번째_주문_항목);
+        Order 첫번째_주문 = Order.of(테이블_Id, OrderStatus.COOKING, 첫번째_주문_항목);
+        Order 두번째_주문 = Order.of(테이블_Id, OrderStatus.MEAL, 두번째_주문_항목);
         
         given(orderRepository.findAll()).willReturn(Arrays.asList(첫번째_주문, 두번째_주문));
     
@@ -121,12 +105,12 @@ public class OrderServiceTest {
     @Test
     void 식사중_상태_변경() {
         // given
-        OrderTable 테이블 = OrderTable.of(3, false);
-        OrderLineItem 주문_항목 = OrderLineItem.of(Menu.of("메뉴", 3000L, null), 2L);
-        Order 조리중_주문 = Order.of(테이블, OrderStatus.COOKING, Arrays.asList(주문_항목));
+        Long 메뉴_Id = 1L;
+        Long 테이블_Id = 1L;
+        OrderLineItem 주문_항목 = OrderLineItem.of(메뉴_Id, 2L);
+        Order 조리중_주문 = Order.of(테이블_Id, OrderStatus.COOKING, Arrays.asList(주문_항목));
         
         given(orderRepository.findById(anyLong())).willReturn(Optional.of(조리중_주문));
-        given(orderRepository.save(any())).willReturn(조리중_주문);
         
         // when
         OrderResponse 변경후_주문 = orderService.onMealing(1L);
@@ -139,12 +123,12 @@ public class OrderServiceTest {
     @Test
     void 계산완료_상태_변경() {
         // given
-        OrderTable 테이블 = OrderTable.of(3, false);
-        OrderLineItem 주문_항목 = OrderLineItem.of(Menu.of("메뉴", 3000L, null), 2L);
-        Order 식사중_주문 = Order.of(테이블, OrderStatus.MEAL, Arrays.asList(주문_항목));
+        Long 메뉴_Id = 1L;
+        Long 테이블_Id = 1L;
+        OrderLineItem 주문_항목 = OrderLineItem.of(메뉴_Id, 2L);
+        Order 식사중_주문 = Order.of(테이블_Id, OrderStatus.MEAL, Arrays.asList(주문_항목));
         
         given(orderRepository.findById(anyLong())).willReturn(Optional.of(식사중_주문));
-        given(orderRepository.save(any())).willReturn(식사중_주문);
         
         // when
         OrderResponse 변경후_주문 = orderService.completed(1L);
@@ -157,9 +141,10 @@ public class OrderServiceTest {
     @Test
     void 계산_완료_주문_변경_불가() {
         // given
-        OrderTable 테이블 = OrderTable.of(3, false);
-        OrderLineItem 주문_항목 = OrderLineItem.of(Menu.of("메뉴", 3000L, null), 2L);
-        Order 계산_완료_주문 = Order.of(테이블, OrderStatus.COMPLETION, Arrays.asList(주문_항목));
+        Long 메뉴_Id = 1L;
+        Long 테이블_Id = 1L;
+        OrderLineItem 주문_항목 = OrderLineItem.of(메뉴_Id, 2L);
+        Order 계산_완료_주문 = Order.of(테이블_Id, OrderStatus.COMPLETION, Arrays.asList(주문_항목));
         
         given(orderRepository.findById(anyLong())).willReturn(Optional.of(계산_완료_주문));
     

@@ -2,10 +2,7 @@ package kitchenpos.order.dto;
 
 import java.util.List;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderTable;
 
 public class OrderRequest {
     private Long orderTableId;
@@ -27,10 +24,6 @@ public class OrderRequest {
     
     public static OrderRequest of(Long orderTableId, List<OrderLineItemRequest> orderLineItemRequests) {
         return new OrderRequest(orderTableId, null, orderLineItemRequests);
-    }
-    
-    public Order toOrder(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        return Order.of(orderTable, orderStatus, orderLineItems);
     }
 
     public Long getOrderTableId() {

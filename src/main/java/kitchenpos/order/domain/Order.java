@@ -15,15 +15,15 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.CollectionUtils;
 
 @Entity
+@Table(name = "orders")
 @EntityListeners(AuditingEntityListener.class)
 public class Order {
     
@@ -31,9 +31,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_table_id")
-    private OrderTable orderTable;
+    private Long orderTableId;
     
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
@@ -42,41 +40,33 @@ public class Order {
     @Column(nullable = false, updatable = false)
     private LocalDateTime orderedTime;
     
-    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<OrderLineItem> orderLineItems;
     
     protected Order() {
     }
     
-    public Order(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-        this.orderTable = orderTable;
+    public Order(Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderLineItems = new ArrayList<OrderLineItem>();
         addOrderLineItems(orderLineItems);
-        orderTable.addOrder(this);
     }
 
-    public static Order of(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-        return new Order(orderTable, orderStatus, orderLineItems);
+    public static Order of(Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        return new Order(orderTableId, orderStatus, orderLineItems);
     }
     
-    public static Order createOrder(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        return new Order(orderTable, OrderStatus.COOKING, orderLineItems);
+    public static Order createOrder(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        return new Order(orderTableId, OrderStatus.COOKING, orderLineItems);
     }
     
     public Long getId() {
         return id;
     }
-
-    public OrderTable getOrderTable() {
-        return orderTable;
-    }
     
     public Long getOrderTableId() {
-        if (orderTable == null) {
-            return null;
-        }
-        return orderTable.getId();
+        return orderTableId;
     }
     
     public OrderStatus getOrderStatus() {
@@ -91,20 +81,12 @@ public class Order {
         return orderLineItems;
     }
     
-    public void received() {
-        changeOrderStatus(OrderStatus.COOKING);
-    }
-    
     public void onMealing() {
         changeOrderStatus(OrderStatus.MEAL);
     }
     
     public void completed() {
         changeOrderStatus(OrderStatus.COMPLETION);
-    }
-    
-    public void setOrderTable(OrderTable orderTable) {
-        this.orderTable = orderTable;
     }
     
     public boolean isCompletion() {
@@ -126,11 +108,14 @@ public class Order {
     }
     
     private void changeOrderStatus(OrderStatus orderStatus) {
-        checkCompletionStatus();
+        validateOrderStatus(orderStatus);
         this.orderStatus = orderStatus;
     }
 
-    private void checkCompletionStatus() {
+    private void validateOrderStatus(OrderStatus orderStatus) {
+        if (isMeal() && orderStatus.equals(OrderStatus.COOKING)) {
+            throw new IllegalArgumentException("식사중인 주문은 조리중으로 상태를 변경 할 수 없습니다");
+        }
         if (isCompletion()) {
             throw new IllegalArgumentException("계산이 완료된 주문은 상태를 변경 할 수 없습니다");
         }

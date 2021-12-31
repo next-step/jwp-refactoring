@@ -12,7 +12,7 @@ import javax.persistence.OneToMany;
 @Embeddable
 public class MenuProducts {
 
-    @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "menu", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     private List<MenuProduct> menuProducts;
 
     protected MenuProducts() {
@@ -29,14 +29,6 @@ public class MenuProducts {
 
     public List<MenuProduct> getMenuProducts() {
         return Collections.unmodifiableList(menuProducts);
-    }
-
-    public Price getTotalPrice() {
-        Price sum = Price.from(0L);
-        for (MenuProduct menuProduct : this.menuProducts) {
-            sum = sum.add(menuProduct.getPrice());
-        }
-        return sum;
     }
 
     public void add(MenuProduct menuProduct) {
