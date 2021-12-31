@@ -41,7 +41,7 @@ class TableGroupTest {
     @Test
     @DisplayName("테이블 그룹에 속해있는 테이블을 테이블 그룹으로 만든다")
     void alreadyTableGroupTest() {
-        OrderTable tableGroupOrderTable = new OrderTable(new TableGroup(), 1, true);
+        OrderTable tableGroupOrderTable = new OrderTable(1L, 1, true);
         OrderTable nullTableGroupOrderTable = new OrderTable(null, 1, true);
         List<OrderTable> orderTables = Arrays.asList(tableGroupOrderTable, nullTableGroupOrderTable);
         assertThatThrownBy(() -> new TableGroup(orderTables)).isInstanceOf(IllegalOrderTablesException.class);

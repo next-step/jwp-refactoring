@@ -5,10 +5,10 @@ import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.exception.IllegalMenuPriceException;
 import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.exception.NoMenuGroupException;
 import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.exception.NegativePriceException;
-import kitchenpos.menugroup.exception.NoMenuGroupException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

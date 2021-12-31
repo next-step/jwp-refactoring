@@ -2,8 +2,8 @@ package kitchenpos.domain;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.order.exception.CannotProgressException;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.exception.NoOrderTableException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

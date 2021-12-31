@@ -1,10 +1,8 @@
 package kitchenpos.table.dto;
 
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.tablegroup.domain.TableGroup;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class OrderTableResponse {
@@ -31,12 +29,7 @@ public class OrderTableResponse {
     }
 
     public static OrderTableResponse from(@org.jetbrains.annotations.NotNull OrderTable orderTable) {
-        Optional<TableGroup> tableGroup = Optional.ofNullable(orderTable.getTableGroup());
-        Long tableGroupId = null;
-        if (tableGroup.isPresent()) {
-            tableGroupId = orderTable.getTableGroup().getId();
-        }
-        return new OrderTableResponse(orderTable.getId(), tableGroupId, orderTable.getNumberOfGuests(), orderTable.isEmpty());
+        return new OrderTableResponse(orderTable.getId(), orderTable.getTableGroupId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
     }
 
     public Long getId() {

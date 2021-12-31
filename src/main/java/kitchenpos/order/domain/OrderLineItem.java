@@ -1,8 +1,9 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.menu.domain.Menu;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Entity
 public class OrderLineItem {
@@ -10,16 +11,14 @@ public class OrderLineItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Order order;
+    private Long menuId;
 
-    @ManyToOne
-    private Menu menu;
+    private Long orderId;
 
     private long quantity;
 
-    public OrderLineItem(Menu menu, Long quantity) {
-        this.menu = menu;
+    public OrderLineItem(Long menuId, Long quantity) {
+        this.menuId = menuId;
         this.quantity = quantity;
     }
 
@@ -31,12 +30,11 @@ public class OrderLineItem {
         return seq;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public Long getMenuId() {
+        return menuId;
     }
 
     public void makeOrder(Order order) {
-        this.order = order;
         order.addOrderLineItem(this);
     }
 

@@ -11,8 +11,7 @@ public class MenuProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
 
-    @ManyToOne
-    private Menu menu;
+    private Long menuId;
 
     @ManyToOne
     private Product product;
@@ -29,14 +28,6 @@ public class MenuProduct {
 
     public Long getSeq() {
         return seq;
-    }
-
-    public Menu getMenu() {
-        return menu;
-    }
-
-    public void changeMenu(Menu menu) {
-        this.menu = menu;
     }
 
     public Product getProduct() {

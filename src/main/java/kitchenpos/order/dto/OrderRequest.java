@@ -1,7 +1,6 @@
 package kitchenpos.order.dto;
 
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.dto.OrderLineItemRequest;
 
 import java.util.List;
 

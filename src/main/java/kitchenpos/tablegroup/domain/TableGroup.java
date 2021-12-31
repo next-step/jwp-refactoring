@@ -1,5 +1,6 @@
 package kitchenpos.tablegroup.domain;
 
+import kitchenpos.order.domain.OrderValidatorImpl;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.tablegroup.exception.IllegalOrderTablesException;
 import org.springframework.util.CollectionUtils;
@@ -8,6 +9,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity
 public class TableGroup {
@@ -19,7 +21,7 @@ public class TableGroup {
 
     private LocalDateTime createdDate;
 
-    @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "tableGroupId", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderTable> orderTables;
 
     public TableGroup() {
@@ -33,8 +35,7 @@ public class TableGroup {
     }
 
     private void groupOrderTables(List<OrderTable> orderTables) {
-        orderTables.forEach(orderTable -> orderTable.changeTableGroup(this));
-        orderTables.forEach(orderTable -> orderTable.changeEmpty(false));
+        orderTables.forEach(orderTable -> orderTable.changeTableGroup(this.id));
     }
 
     private void validateOrderTables() {
@@ -47,7 +48,7 @@ public class TableGroup {
     }
 
     private void validateOrderTable(OrderTable savedOrderTable) {
-        if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) {
+        if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
             throw new IllegalOrderTablesException();
         }
     }
@@ -64,7 +65,10 @@ public class TableGroup {
         return orderTables;
     }
 
-    public void ungroup() {
+    public void ungroup(OrderValidatorImpl orderValidator) {
+        List<Long> orderTableIds = this.orderTables.stream().map(OrderTable::getId).collect(Collectors.toList());
+        orderValidator.canUngroupOrChangeOrderList(orderTableIds);
+        this.orderTables.forEach(orderTable -> orderValidator.canUngroupOrChange(orderTable.getId()));
         this.orderTables.forEach(OrderTable::ungroup);
     }
 }

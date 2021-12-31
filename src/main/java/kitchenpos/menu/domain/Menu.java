@@ -1,7 +1,7 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menu.exception.IllegalMenuPriceException;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.exception.NoMenuGroupException;
 import kitchenpos.product.domain.Price;
 
@@ -38,7 +38,6 @@ public class Menu {
         this.menuProducts = menuProducts;
         validateMenuGroup();
         validateMenuPrice();
-        menuProducts.changeMenu(this);
     }
 
     private void validateMenuGroup() {
