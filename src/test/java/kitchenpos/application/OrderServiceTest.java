@@ -26,8 +26,13 @@ import static org.mockito.BDDMockito.given;
 class OrderServiceTest {
     @Mock
     private OrderRepository orderRepository;
+
     @Mock
     private TableService tableService;
+
+    @Mock
+    private OrderValidator orderValidator;
+
     @InjectMocks
     private OrderService orderService;
 
@@ -35,9 +40,8 @@ class OrderServiceTest {
     @Test
     void saveOrder() {
         final OrderTable 주문테이블 = TestOrderTableFactory.주문_테이블_조회됨(1L, 5, false);
-        final Order 주문 = TestOrderFactory.주문_생성_Cooking_단계(주문테이블);
+        final Order 주문 = TestOrderFactory.주문_생성_Cooking_단계(주문테이블.getId());
 
-        given(tableService.findOrderTableById(anyLong())).willReturn(주문테이블);
         given(orderRepository.save(any())).willReturn(주문);
 
         final OrderResponse actual = orderService.create(TestOrderFactory.주문_생성_요청(1L));
@@ -48,7 +52,8 @@ class OrderServiceTest {
     @DisplayName("등록된 주문을 조회한다.")
     @Test
     void findOrders() {
-        final List<Order> 주문_목록 = TestOrderFactory.주문_목록_조회됨(10);
+        final OrderTable 주문테이블 = TestOrderTableFactory.주문_테이블_조회됨(1L, 5, false);
+        final List<Order> 주문_목록 = TestOrderFactory.주문_목록_조회됨(주문테이블.getId() , 10);
 
         given(orderRepository.findAll()).willReturn(주문_목록);
 
@@ -62,7 +67,7 @@ class OrderServiceTest {
     void changeOrderStatus() {
         final OrderTable 주문테이블 = TestOrderTableFactory.주문_테이블_조회됨(1L, 5, false);
         final Menu 메뉴 = TestMenuFactory.메뉴_조회됨(1L, "메뉴", 10000, "메뉴그룹");
-        final Order 주문 = TestOrderFactory.주문_meal_조회됨(10, 1L, 주문테이블, 메뉴, 5);
+        final Order 주문 = TestOrderFactory.주문_meal_조회됨(10, 1L, 주문테이블.getId(), 메뉴.getId(), 5);
 
         given(orderRepository.findById(anyLong())).willReturn(Optional.of(주문));
 
