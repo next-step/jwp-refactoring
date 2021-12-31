@@ -29,13 +29,6 @@ public class MenuProducts {
         return new MenuProducts(new ArrayList<>());
     }
 
-    public boolean isOverPrice(final Price price) {
-        final Price totalPrice = menuProducts.stream()
-                .map(MenuProduct::getTotalPrice)
-                .reduce(Price.ZERO, Price::add);
-        return price.isGreaterThan(totalPrice);
-    }
-
     public void add(final MenuProduct menuProduct) {
         this.menuProducts.add(menuProduct);
     }
