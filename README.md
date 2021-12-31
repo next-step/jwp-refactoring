@@ -219,7 +219,7 @@ _ menuGroup은 왜 필수일까..?
 - [x] TODO -> DONE 완료 시키기..
 - [x] 생성자 protected 적용
 - [x] changeEmpty는 개인적으로 changeNumbersOfGuests(0)로 컨버팅 (메서드 자체는 이해 관계자 설득 전에는 살려둔다는 느낌 또는 empty 명시적 표현의 느낌으로 살려 둠)
-- [ ] **Bean Validation 극한으로 써 보기**
+- [ ] **Bean Validation 극한으로 써 보기** - 실패.. (시간 부족으로 4단계 마무리 후 TODO)
 - [x] 메뉴 <-> 주문 항목 간접 참조로 변경
 - [x] 메뉴상품 <-> 상품 간접 참조로 변경
 - [x] 주문 테이블 <-> 테이블 그룹 간접 참조로 변경
