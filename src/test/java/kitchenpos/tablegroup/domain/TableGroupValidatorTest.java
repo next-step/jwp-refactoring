@@ -4,7 +4,6 @@ import kitchenpos.common.exception.MinimumOrderTableNumberException;
 import kitchenpos.common.exception.NotEmptyOrderTableStatusException;
 import kitchenpos.common.exception.OrderStatusNotCompletedException;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuId;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
@@ -27,7 +26,6 @@ import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 @DisplayName("테이블 그룹 벨리데이터 관련 테스트")
 @ExtendWith(MockitoExtension.class)

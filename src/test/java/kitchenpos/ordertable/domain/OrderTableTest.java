@@ -1,9 +1,7 @@
 package kitchenpos.ordertable.domain;
 
 import kitchenpos.common.exception.NegativeNumberOfGuestsException;
-import kitchenpos.common.exception.NotEmptyOrderTableStatusException;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuId;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
@@ -30,7 +28,6 @@ class OrderTableTest {
     private OrderTable 빈_주문_테이블;
     private Order 주문;
     private Menu 짜장면;
-    private MenuId 짜장면_ID;
     private MenuProduct 짜장면_하나;
     private MenuProduct 짜장면_두개;
     private OrderLineItem 짜장면_주문1;
