@@ -3,7 +3,8 @@ package kitchenpos.table.dto;
 public class OrderTableChangeNumberOfGuestsRequest {
     private Integer numberOfGuests;
 
-    protected OrderTableChangeNumberOfGuestsRequest() {}
+    protected OrderTableChangeNumberOfGuestsRequest() {
+    }
 
     public OrderTableChangeNumberOfGuestsRequest(Integer numberOfGuests) {
         this.numberOfGuests = numberOfGuests;

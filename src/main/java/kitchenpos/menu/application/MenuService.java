@@ -1,12 +1,6 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.menu.domain.MenuGroupRepository;
-import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.domain.ProductRepository;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.Product;
+import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.exception.DifferentOrderAndMenuPriceException;
@@ -40,7 +34,7 @@ public class MenuService {
         List<Product> products = getValidProducts(menuRequest);
 
         MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
-                .orElseThrow( () -> new NotFoundMenuGroupException(menuRequest.getMenuGroupId()));
+                .orElseThrow(() -> new NotFoundMenuGroupException(menuRequest.getMenuGroupId()));
 
         Menu menu = Menu.create(menuRequest.getName(), menuRequest.getPrice(), menuGroup, createMenuProduct(menuRequest, products));
         return MenuResponse.of(menuRepository.save(menu));

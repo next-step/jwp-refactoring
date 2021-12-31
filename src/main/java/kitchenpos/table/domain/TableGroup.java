@@ -1,13 +1,10 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.table.exception.NotCreateTableGroupException;
-import kitchenpos.table.exception.TableErrorCode;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class TableGroup {
@@ -21,7 +18,8 @@ public class TableGroup {
     @Embedded
     private OrderTables orderTables;
 
-    public TableGroup() {}
+    public TableGroup() {
+    }
 
     private TableGroup(List<OrderTable> tables) {
         this.orderTables = new OrderTables(tables);

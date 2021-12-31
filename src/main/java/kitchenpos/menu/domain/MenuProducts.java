@@ -10,7 +10,8 @@ public class MenuProducts {
     @OneToMany(mappedBy = "menu", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<MenuProduct> menuProducts;
 
-    protected  MenuProducts() {}
+    protected MenuProducts() {
+    }
 
     public MenuProducts(List<MenuProduct> menuProducts) {
         this.menuProducts = menuProducts;

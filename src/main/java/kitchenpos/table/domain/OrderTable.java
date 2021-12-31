@@ -24,7 +24,8 @@ public class OrderTable {
     @Column(nullable = false)
     private boolean empty;
 
-    protected OrderTable() {}
+    protected OrderTable() {
+    }
 
     public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
         this.tableGroup = tableGroup;

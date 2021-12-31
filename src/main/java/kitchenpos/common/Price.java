@@ -12,27 +12,22 @@ public class Price {
     @Column(nullable = false)
     private BigDecimal price;
 
-    protected Price() {}
+    protected Price() {
+    }
 
     public Price(BigDecimal price) {
-        isValidPrice(price);
+        validatePrice(price);
 
         this.price = price;
     }
 
-    public Price(int price) {
-        isValidPrice(BigDecimal.valueOf(price));
-
-        this.price = BigDecimal.valueOf(price);
-    }
-
-    private void isValidPrice(BigDecimal price) {
+    private void validatePrice(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new WrongPriceException();
         }
     }
 
-    public BigDecimal getPrice() {
+    public BigDecimal toBigDecimal() {
         return price;
     }
 

@@ -1,9 +1,9 @@
 package kitchenpos.table.application;
 
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableChangeEmptyRequest;
 import kitchenpos.table.dto.OrderTableChangeNumberOfGuestsRequest;
 import kitchenpos.table.dto.OrderTableCreateRequest;
@@ -62,7 +62,7 @@ public class TableService {
 
     private OrderTable findOrderTableById(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
-                .orElseThrow( () -> new NotFoundOrderTableException(orderTableId));
+                .orElseThrow(() -> new NotFoundOrderTableException(orderTableId));
     }
 
     private void isValidOrder(Long orderTableId) {

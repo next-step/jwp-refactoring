@@ -8,7 +8,8 @@ import java.util.stream.Collectors;
 public class TableGroupRequest {
     private List<Long> orderTableIds;
 
-    protected TableGroupRequest() {}
+    protected TableGroupRequest() {
+    }
 
     public TableGroupRequest(List<Long> orderTableIds) {
         this.orderTableIds = orderTableIds;

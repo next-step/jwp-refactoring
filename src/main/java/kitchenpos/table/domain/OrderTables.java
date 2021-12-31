@@ -13,9 +13,10 @@ public class OrderTables {
     @OneToMany(mappedBy = "tableGroup")
     private List<OrderTable> orderTables;
 
-    protected OrderTables() {}
+    protected OrderTables() {
+    }
 
-    protected  OrderTables(List<OrderTable> tables) {
+    protected OrderTables(List<OrderTable> tables) {
         for (final OrderTable savedOrderTable : tables) {
             isValidOrderTable(savedOrderTable);
         }

@@ -57,7 +57,7 @@ public class OrderResponse {
 
     public List<Long> createOrderLineItemResponseSeqs() {
         return orderLineItemResponseList.stream()
-                .map(orderLineItemResponse ->  orderLineItemResponse.getSeq())
+                .map(orderLineItemResponse -> orderLineItemResponse.getSeq())
                 .collect(Collectors.toList());
     }
 }

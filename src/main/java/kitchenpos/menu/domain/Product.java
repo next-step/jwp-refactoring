@@ -1,11 +1,9 @@
 package kitchenpos.menu.domain;
 
 import kitchenpos.common.Price;
-import kitchenpos.menu.exception.WrongPriceException;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.Objects;
 
 @Entity
 public class Product {
@@ -19,7 +17,8 @@ public class Product {
     @Embedded
     private Price price;
 
-    protected Product() {}
+    protected Product() {
+    }
 
     private Product(String name, BigDecimal price) {
         this.name = name;
@@ -57,7 +56,7 @@ public class Product {
     }
 
     public BigDecimal getPrice() {
-        return price.getPrice();
+        return price.toBigDecimal();
     }
 
     public void createId(Long id) {
@@ -66,6 +65,6 @@ public class Product {
 
     public BigDecimal getTotalPrice(Long quantity) {
         Price multiplyPrice = this.price.multiply(quantity);
-        return multiplyPrice.getPrice();
+        return multiplyPrice.toBigDecimal();
     }
 }

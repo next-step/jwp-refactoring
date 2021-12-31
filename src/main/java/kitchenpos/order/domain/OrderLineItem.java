@@ -21,7 +21,8 @@ public class OrderLineItem {
     @Column(nullable = false)
     private long quantity;
 
-    public OrderLineItem() {}
+    public OrderLineItem() {
+    }
 
     private OrderLineItem(Menu menu, long quantity) {
         this.menu = menu;

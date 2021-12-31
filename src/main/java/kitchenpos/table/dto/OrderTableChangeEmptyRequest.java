@@ -3,7 +3,8 @@ package kitchenpos.table.dto;
 public class OrderTableChangeEmptyRequest {
     private boolean empty;
 
-    protected OrderTableChangeEmptyRequest() {}
+    protected OrderTableChangeEmptyRequest() {
+    }
 
     public OrderTableChangeEmptyRequest(boolean empty) {
         this.empty = empty;

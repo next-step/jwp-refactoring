@@ -1,6 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.order.domain.OrderLineItem;
 import org.springframework.data.repository.Repository;
 
 import java.util.List;

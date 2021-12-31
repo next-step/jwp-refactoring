@@ -1,6 +1,5 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.menu.domain.Menu;
 import org.springframework.data.repository.Repository;
 
 import java.util.List;

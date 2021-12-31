@@ -48,7 +48,7 @@ public class Menu {
     }
 
     public void addMenu() {
-        this.menuProducts.addMenu( this);
+        this.menuProducts.addMenu(this);
     }
 
     public Long getId() {
@@ -60,7 +60,7 @@ public class Menu {
     }
 
     public BigDecimal getPrice() {
-        return price.getPrice();
+        return price.toBigDecimal();
     }
 
     public MenuGroup getMenuGroup() {

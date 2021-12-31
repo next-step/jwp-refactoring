@@ -1,6 +1,5 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.table.domain.TableGroup;
 import org.springframework.data.repository.Repository;
 
 import java.util.List;

@@ -1,7 +1,7 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.order.exception.NotCreateOrderException;
 import kitchenpos.order.exception.NotChangeOrderStatusException;
+import kitchenpos.order.exception.NotCreateOrderException;
 import kitchenpos.order.exception.OrderErrorCode;
 import kitchenpos.table.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
@@ -64,7 +64,7 @@ public class Order {
     }
 
     private void addOrderLineItems() {
-        this.orderLineItems.addOrderLineItems( this);
+        this.orderLineItems.addOrderLineItems(this);
     }
 
     public void changeOrderStatus(String request) {
