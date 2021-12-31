@@ -7,5 +7,6 @@ dependencies {
     testImplementation 'io.rest-assured:rest-assured:3.3.0'
 
     implementation project(':common-module')
+    implementation project(':common-web')
     implementation project(':order-domain')
 }

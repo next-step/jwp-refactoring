@@ -111,6 +111,7 @@
 Root project 'kitchenpos'
 |--- Project ':common-domain'
 |--- Project ':common-module'
+|--- Project ':common-web'
 |--- Project ':menu-app-api'
 |--- Project ':menu-domain'
 |--- Project ':order-app-api'
@@ -125,6 +126,7 @@ common-domain: domain modules 내부에서만 사용되는 domain common module
 menu-domain: 메뉴 관련 domain module
 order-domain: 주문 관련 domain module
 
+common-web: web 관련 module 에서 공통으로 사용하는 module
 menu-app-api: 메뉴 관련 api module
 order-app-api: 주문 관련 api module
 ```

@@ -5,3 +5,5 @@ include 'common-domain'
 include 'common-module'
 include 'menu-app-api'
 include 'order-app-api'
+include 'common-web'
+
