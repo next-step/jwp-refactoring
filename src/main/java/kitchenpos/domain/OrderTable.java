@@ -87,6 +87,10 @@ public class OrderTable {
         return empty.isEmpty();
     }
 
+    public void group(final TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
