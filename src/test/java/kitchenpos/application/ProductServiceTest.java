@@ -1,7 +1,9 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.ProductRepository;
+import kitchenpos.dto.product.ProductResponse;
+import kitchenpos.fixture.TestProductFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,43 +11,41 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
+@DisplayName("상품 관련 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private ProductService productService;
-
+    
     @DisplayName("상품을 등록한다.")
     @Test
     void saveProduct() {
-        final Product product = new Product(1L, "상품", new BigDecimal("1000"));
-        given(productDao.save(any())).willReturn(product);
+        final Product 상품 = TestProductFactory.상품_생성돰(1L, "상품", 5000);
 
-        final Product actual = productService.create(product);
+        given(productRepository.save(any())).willReturn(상품);
 
-        assertThat(actual).isEqualTo(product);
+        final ProductResponse actual = productService.create(TestProductFactory.상품_요청("상품", 5000));
+
+        TestProductFactory.상품_생성됨(actual, 상품);
     }
 
     @DisplayName("등록한 상품을 조회한다.")
     @Test
     void findProducts() {
-        final Product product1 = new Product(1L, "상품", new BigDecimal("1000"));
-        final Product product2 = new Product(2L, "상품2", new BigDecimal("1000"));
-        final List<Product> products = Arrays.asList(product1, product2);
-        given(productDao.findAll()).willReturn(products);
+        final List<Product> 상품_목록 = TestProductFactory.상품_목록_조회됨(10);
 
-        final List<Product> actual = productService.list();
+        given(productRepository.findAll()).willReturn(상품_목록);
 
-        assertThat(actual).hasSize(2);
+        final List<ProductResponse> actual = productService.list();
+
+        TestProductFactory.상품_목록_확인됨(actual, 상품_목록);
     }
 }

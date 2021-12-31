@@ -1,10 +1,11 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.TableGroupRepository;
+import kitchenpos.dto.tablegroup.TableGroupResponse;
+import kitchenpos.fixture.TestOrderTableFactory;
+import kitchenpos.fixture.TestTableGroupFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,24 +13,21 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
+@DisplayName("테이블 그룹 관련 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    private OrderDao orderDao;
-
+    private OrderService orderService;
     @Mock
-    private OrderTableDao orderTableDao;
-
+    private TableService tableService;
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -37,45 +35,28 @@ class TableGroupServiceTest {
     @DisplayName("주문 테이블 단체 지정을 등록한다.")
     @Test
     void create() {
-        final OrderTable orderTable1 = new OrderTable(1L, null, 5, true);
-        final OrderTable orderTable2 = new OrderTable(2L, null, 5, true);
-        final List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
-        final TableGroup tableGroup = new TableGroup(1L, null, orderTables);
-        given(orderTableDao.findAllByIdIn(anyList())).willReturn(orderTables);
-        given(tableGroupDao.save(any())).willReturn(tableGroup);
+        final TableGroup 테이블그룹 = TestTableGroupFactory.테이블_그룹_생성됨(1L, 10);
+        final List<OrderTable> 주문테이블_목록 = TestOrderTableFactory.주문_테이블_목록_조회됨(10);
 
-        final OrderTable savedOrderTable1 = new OrderTable(1L, 1L, 5, false);
-        final OrderTable savedOrderTable2 = new OrderTable(2L, 1L, 5, false);
-        given(orderTableDao.save(any())).willReturn(savedOrderTable1);
-        given(orderTableDao.save(any())).willReturn(savedOrderTable2);
+        given(tableService.findAllById(anyList())).willReturn(주문테이블_목록);
+        given(tableGroupRepository.save(any())).willReturn(테이블그룹);
 
-        final TableGroup actual = tableGroupService.create(tableGroup);
+        final TableGroupResponse actual = tableGroupService.create(TestTableGroupFactory.테이블_그룹_요청(TestOrderTableFactory.주문테이블_ID_목록(주문테이블_목록)));
 
-        assertAll(
-                () -> assertThat(actual).isEqualTo(tableGroup),
-                () -> assertThat(actual.getOrderTables()).hasSize(2)
-        );
+        TestTableGroupFactory.테이블_그룹_생성_확인함(actual, 테이블그룹);
     }
 
     @DisplayName("주문 테이블 단체 지정을 해제한다.")
     @Test
     void ungroup() {
-        final OrderTable orderTable1 = new OrderTable(1L, 1L, 5, false);
-        final OrderTable orderTable2 = new OrderTable(2L, 1L, 5, false);
-        final List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
-        given(orderTableDao.findAllByTableGroupId(anyLong())).willReturn(orderTables);
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
+        final OrderTable 주문테이블1 = TestOrderTableFactory.주문_테이블_테이블그룹_설정(1L, null, 5, false);
+        final OrderTable 주문테이블2 = TestOrderTableFactory.주문_테이블_테이블그룹_설정(2L, null, 5, false);
+        final TableGroup 테이블그룹 = TestTableGroupFactory.테이블_그룹_추가됨(1L, 주문테이블1, 주문테이블2);
 
-        final OrderTable savedOrderTable1 = new OrderTable(1L, null, 5, false);
-        final OrderTable savedOrderTable2 = new OrderTable(2L, null, 5, false);
-        given(orderTableDao.save(any())).willReturn(savedOrderTable1);
-        given(orderTableDao.save(any())).willReturn(savedOrderTable2);
+        given(tableGroupRepository.findById(anyLong())).willReturn(Optional.of(테이블그룹));
 
-        tableGroupService.ungroup(1L);
+        tableGroupService.ungroup(테이블그룹.getId());
 
-        assertAll(
-                () -> assertThat(savedOrderTable1.getTableGroupId()).isNull(),
-                () -> assertThat(savedOrderTable2.getTableGroupId()).isNull()
-        );
+        TestTableGroupFactory.테이블그룹_해제_확인됨(주문테이블1, 주문테이블2);
     }
 }

@@ -1,53 +1,90 @@
 package kitchenpos.domain;
 
+import kitchenpos.common.exceptions.EmptyProductException;
+
+import javax.persistence.*;
+import java.util.Objects;
+
+@Entity
 public class MenuProduct {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
-    private Long menuId;
-    private Long productId;
-    private long quantity;
 
-    public MenuProduct() {}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_menu_product_menu"), nullable = false)
+    private Menu menu;
 
-    public MenuProduct(final Long seq, final Long menuId, final Long productId, final long quantity) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_menu_product_product"), nullable = false)
+    private Product product;
+
+    @Embedded
+    private Quantity quantity;
+
+    protected MenuProduct() {
+    }
+
+    private MenuProduct(final Long seq, final Menu menu, final Product product, final Quantity quantity) {
+        validateCreate(product);
         this.seq = seq;
-        this.menuId = menuId;
-        this.productId = productId;
+        this.menu = menu;
+        this.product = product;
         this.quantity = quantity;
     }
 
-    public static MenuProduct of(final Long seq, final Long menuId, final Long productId, final long quantity) {
-        return new MenuProduct(seq, menuId, productId, quantity);
+    public static MenuProduct of(final Long seq, final Menu menu, final Product product, final long quantity) {
+        return new MenuProduct(seq, menu, product, Quantity.valueOf(quantity));
+    }
+
+    public static MenuProduct of(final Menu menu, final Product product, final long quantity) {
+        return new MenuProduct(null, menu, product, Quantity.valueOf(quantity));
+    }
+
+    public static MenuProduct of(final Product product, final long quantity) {
+        return new MenuProduct(null, null, product, Quantity.valueOf(quantity));
+    }
+
+    private void validateCreate(final Product product) {
+        if (Objects.isNull(product)) {
+            throw new EmptyProductException();
+        }
+    }
+
+    public void decideMenu(final Menu menu) {
+        this.menu = menu;
+    }
+
+    public Price getTotalPrice() {
+        return product.getPrice().multiply(quantity.toLong());
     }
 
     public Long getSeq() {
-        return seq;
+        return this.seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
+    public Menu getMenu() {
+        return this.menu;
     }
 
-    public Long getMenuId() {
-        return menuId;
+    public Product getProduct() {
+        return this.product;
     }
 
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
+    public Quantity getQuantity() {
+        return this.quantity;
     }
 
-    public Long getProductId() {
-        return productId;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MenuProduct that = (MenuProduct) o;
+        return Objects.equals(seq, that.seq);
     }
 
-    public void setProductId(final Long productId) {
-        this.productId = productId;
-    }
-
-    public long getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
+    @Override
+    public int hashCode() {
+        return Objects.hash(seq);
     }
 }
