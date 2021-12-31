@@ -37,7 +37,6 @@ public class OrderTable {
     @Embedded
     private NumberOfGuests numberOfGuests;
 
-
     @Embedded
     private Empty empty;
 
@@ -64,7 +63,7 @@ public class OrderTable {
         if (numberOfGuests == EMPTY_TABLE_NUMBER) {
             validateChangeableEmpty();
             empty = new Empty(true);
-            orders = Collections.emptyList();
+            orders = new ArrayList<>();
             return;
         }
 
