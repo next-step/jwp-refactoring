@@ -1,9 +1,8 @@
-package kitchenpos.orders.ordertable.domain;
+package kitchenpos.orders.order.domain;
 
 import kitchenpos.common.DomainService;
 import kitchenpos.common.domain.Validator;
-import kitchenpos.orders.order.domain.OrderRepository;
-import kitchenpos.orders.order.domain.OrderStatus;
+import kitchenpos.orders.ordertable.domain.OrderTable;
 
 @DomainService
 class OrderTableValidator implements Validator<OrderTable> {
