@@ -42,7 +42,6 @@ subprojects {
     }
 }
 
-
 project(':kitchenpos-core') {
     bootJar { enabled = false }
     jar { enabled = true }
@@ -62,15 +61,17 @@ project(':kitchenpos-application') {
     }
 }
 
-project(':client-api') {
+project(':kitchenpos-client-api') {
+    bootJar { enabled = true }
+    jar { enabled = true }
+
     dependencies {
+        compile project(':kitchenpos-core')
         compile project(':kitchenpos-application')
 
-        compile 'org.springframework.boot:spring-boot-starter-data-jpa'
         compile 'org.springframework.boot:spring-boot-starter-web'
         implementation 'org.springframework.boot:spring-boot-starter-actuator'
         runtimeOnly 'com.h2database:h2'
         implementation 'org.flywaydb:flyway-core'
     }
 }
-

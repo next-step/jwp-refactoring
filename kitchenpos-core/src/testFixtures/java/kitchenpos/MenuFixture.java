@@ -1,8 +1,8 @@
 package kitchenpos;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.product.Product;
+import kitchenpos.domain.menu.domain.Menu;
+import kitchenpos.domain.menu.domain.MenuProduct;
+import kitchenpos.domain.product.Product;
 
 import java.math.BigDecimal;
 import java.util.List;

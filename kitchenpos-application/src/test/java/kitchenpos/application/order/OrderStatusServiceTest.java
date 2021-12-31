@@ -1,8 +1,8 @@
 package kitchenpos.application.order;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.domain.order.domain.Order;
+import kitchenpos.domain.order.domain.OrderRepository;
+import kitchenpos.domain.order.domain.OrderStatus;
 import kitchenpos.application.order.dto.OrderRequest;
 import kitchenpos.application.order.dto.OrderResponse;
 import org.assertj.core.api.ThrowableAssert;

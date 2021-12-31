@@ -1,14 +1,14 @@
 package kitchenpos.application.tablegroup;
 
-import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.domain.TableGroupRepository;
-import kitchenpos.tablegroup.exception.CanNotUnGroupException;
-import kitchenpos.order.validator.OrderTableGroupUnGroupValidator;
-import kitchenpos.ordertable.validator.OrderTableTableGroupCreateValidator;
-import kitchenpos.tablegroup.event.TableGroupedEvent;
-import kitchenpos.tablegroup.event.TableUnGroupedEvent;
-import kitchenpos.tablegroup.validator.TableGroupCreateValidator;
-import kitchenpos.tablegroup.validator.TableGroupUnGroupValidator;
+import kitchenpos.domain.tablegroup.domain.TableGroup;
+import kitchenpos.domain.tablegroup.domain.TableGroupRepository;
+import kitchenpos.domain.tablegroup.exception.CanNotUnGroupException;
+import kitchenpos.domain.order.validator.OrderTableGroupUnGroupValidator;
+import kitchenpos.domain.ordertable.validator.OrderTableTableGroupCreateValidator;
+import kitchenpos.domain.tablegroup.event.TableGroupedEvent;
+import kitchenpos.domain.tablegroup.event.TableUnGroupedEvent;
+import kitchenpos.domain.tablegroup.validator.TableGroupCreateValidator;
+import kitchenpos.domain.tablegroup.validator.TableGroupUnGroupValidator;
 import kitchenpos.application.tablegroup.dto.TableGroupCreateRequest;
 import kitchenpos.application.tablegroup.dto.TableGroupResponse;
 import org.springframework.context.ApplicationEventPublisher;

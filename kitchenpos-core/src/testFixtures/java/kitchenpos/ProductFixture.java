@@ -1,6 +1,6 @@
 package kitchenpos;
 
-import kitchenpos.product.Product;
+import kitchenpos.domain.product.Product;
 
 public class ProductFixture {
     private ProductFixture() {

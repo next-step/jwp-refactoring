@@ -1,13 +1,13 @@
 package kitchenpos.application.order;
 
-import kitchenpos.menu.validator.MenuCountOrderCreateValidator;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.domain.menu.validator.MenuCountOrderCreateValidator;
+import kitchenpos.domain.order.domain.Order;
+import kitchenpos.domain.order.domain.OrderLineItem;
+import kitchenpos.domain.order.domain.OrderRepository;
 import kitchenpos.application.order.dto.OrderRequest;
 import kitchenpos.application.order.dto.OrderResponse;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.validator.OrderTableOrderCreateValidator;
+import kitchenpos.domain.ordertable.domain.OrderTable;
+import kitchenpos.domain.ordertable.validator.OrderTableOrderCreateValidator;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

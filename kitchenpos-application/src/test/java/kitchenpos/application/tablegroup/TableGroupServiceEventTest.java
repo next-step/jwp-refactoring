@@ -1,8 +1,7 @@
 package kitchenpos.application.tablegroup;
 
-import kitchenpos.application.tablegroup.TableGroupService;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.domain.ordertable.domain.OrderTable;
+import kitchenpos.domain.ordertable.domain.OrderTableRepository;
 import kitchenpos.application.tablegroup.dto.TableGroupCreateRequest;
 import kitchenpos.application.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
