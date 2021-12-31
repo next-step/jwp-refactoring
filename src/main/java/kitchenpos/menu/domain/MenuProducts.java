@@ -1,8 +1,10 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.common.domain.Price;
 import kitchenpos.common.exception.IllegalArgumentException;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Embeddable
@@ -26,6 +28,12 @@ public class MenuProducts {
 
     public static MenuProducts of(List<MenuProduct> menuProducts) {
         return new MenuProducts(menuProducts);
+    }
+
+    public BigDecimal calculateTotalPrice() {
+        return menuProducts.stream()
+                .map(MenuProduct::getMenuProductPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     public boolean isEmpty() {

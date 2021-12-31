@@ -14,22 +14,20 @@ public class MenuProductTest {
     @Test
     void 메뉴_상품_생성() {
         // when
-        MenuProduct menuProduct = MenuProduct.of(1L, Quantity.of(50));
+        MenuProduct menuProduct = MenuProduct.of(1L, Quantity.of(50), BigDecimal.valueOf(1000));
 
         // then
         assertThat(menuProduct.getQuantity()).isEqualTo(50);
+        assertThat(menuProduct.getMenuProductPrice()).isEqualTo(BigDecimal.valueOf(50000));
     }
 
     @DisplayName("상품의 가격과 수량을 곱한 총 합계 금액을 계산한다.")
     @Test
     void 메뉴_상품_합계_금액_계산() {
-        // given
-        MenuProduct menuProduct = MenuProduct.of(1L, Quantity.of(3L));
-
-        // when
-        BigDecimal totalPrice = menuProduct.multiplyByQuantity(BigDecimal.valueOf(500));
+        // then
+        MenuProduct menuProduct = MenuProduct.of(1L, Quantity.of(3L), BigDecimal.valueOf(500));
 
         // then
-        assertThat(totalPrice).isEqualTo(BigDecimal.valueOf(1500));
+        assertThat(menuProduct.getMenuProductPrice()).isEqualTo(BigDecimal.valueOf(1500));
     }
 }

@@ -1,6 +1,7 @@
 package kitchenpos.menu.domain;
 
 import kitchenpos.common.domain.BaseEntity;
+import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
 
 import javax.persistence.*;
@@ -19,20 +20,28 @@ public class MenuProduct extends BaseEntity {
     @Embedded
     private Quantity quantity;
 
+    @Transient
+    private Price menuProductPrice;
+
     protected MenuProduct() {}
 
-    private MenuProduct(Long seq, Long productId, Quantity quantity) {
+    private MenuProduct(Long seq, Long productId, Quantity quantity, BigDecimal productPrice) {
         this.seq = seq;
         this.productId = productId;
         this.quantity = quantity;
+        this.menuProductPrice = calculateTotalPrice(productPrice, quantity.get());
     }
 
-    public static MenuProduct of(Long productId, Quantity quantity) {
-        return new MenuProduct(null, productId, quantity);
+    public static MenuProduct of(Long productId, Quantity quantity, BigDecimal productPrice) {
+        return new MenuProduct(null, productId, quantity, productPrice);
     }
 
-    public BigDecimal multiplyByQuantity(BigDecimal price) {
-        return price.multiply(BigDecimal.valueOf(quantity.get()));
+    private BigDecimal multiplyByQuantity(BigDecimal price, Long quantity) {
+        return price.multiply(BigDecimal.valueOf(quantity));
+    }
+
+    private Price calculateTotalPrice(BigDecimal price, Long quantity) {
+        return Price.of(multiplyByQuantity(price, quantity));
     }
 
     public Long getSeq() {
@@ -45,6 +54,10 @@ public class MenuProduct extends BaseEntity {
 
     public Long getQuantity() {
         return quantity.get();
+    }
+
+    public BigDecimal getMenuProductPrice() {
+        return menuProductPrice.get();
     }
 
     @Override

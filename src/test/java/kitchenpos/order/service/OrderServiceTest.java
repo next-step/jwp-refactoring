@@ -51,7 +51,8 @@ public class OrderServiceTest {
     void 주문_생성() {
         final OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(1L, 1L);
         final OrderRequest orderRequest = new OrderRequest(1L, null, Collections.singletonList(orderLineItemRequest));
-        final Menu menu = Menu.of("menu", Price.of(BigDecimal.valueOf(5000)), 1L, Collections.singletonList(MenuProduct.of(1L, Quantity.of(1L))));
+        final List<MenuProduct> menuProducts = Collections.singletonList(MenuProduct.of(1L, Quantity.of(1L), BigDecimal.valueOf(5000)));
+        final Menu menu = Menu.of("menu", Price.of(BigDecimal.valueOf(5000)), 1L, MenuProducts.of(menuProducts));
         final Order order = orderRequest.toOrder();
 
         given(orderTableRepository.findById(orderRequest.getOrderTableId())).willReturn(Optional.of(OrderTable.of(10, false)));

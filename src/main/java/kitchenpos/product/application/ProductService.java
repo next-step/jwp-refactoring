@@ -1,5 +1,6 @@
 package kitchenpos.product.application;
 
+import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
@@ -24,6 +25,13 @@ public class ProductService {
         final Product persistProduct = productRepository.save(productRequest.toProduct());
 
         return ProductResponse.of(persistProduct);
+    }
+
+    public ProductResponse findById(Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new NotFoundException("해당 상품을 찾을 수 없습니다."));
+
+        return ProductResponse.of(product);
     }
 
     public List<ProductResponse> list() {
