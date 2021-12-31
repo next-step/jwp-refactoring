@@ -4,7 +4,6 @@ import java.math.*;
 import java.util.*;
 
 import javax.persistence.*;
-
 import kitchenpos.common.*;
 
 @Entity
@@ -28,7 +27,7 @@ public class Menu {
     private MenuGroup menuGroup;
 
     @Embedded
-    private final MenuProducts menuProducts = new MenuProducts();
+    public MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {
 
@@ -39,6 +38,14 @@ public class Menu {
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
+    }
+
+    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.menuGroup = menuGroup;
+        this.menuProducts = menuProducts;
     }
 
     public static Menu of(String name, BigDecimal price, MenuGroup menuGroup) {
@@ -79,7 +86,7 @@ public class Menu {
         return menuGroup;
     }
 
-    public List<MenuProduct> getMenuProducts() {
-        return menuProducts.getMenuProducts();
+    public MenuProducts getMenuProducts() {
+        return menuProducts;
     }
 }

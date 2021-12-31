@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.math.*;
 
+import kitchenpos.common.WrongValueException;
 import org.junit.jupiter.api.*;
 
 import kitchenpos.menu.domain.*;
@@ -21,6 +22,6 @@ class ProductTest {
     @DisplayName("상품 가격이 음수이면 생성 실패함")
     @Test
     void exceptionTest1() {
-        assertThatThrownBy(() -> Product.of(상품_후라이드치킨.getName(), BigDecimal.valueOf(-1L))).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> Product.of(상품_후라이드치킨.getName(), BigDecimal.valueOf(-1L))).isInstanceOf(WrongValueException.class);
     }
 }

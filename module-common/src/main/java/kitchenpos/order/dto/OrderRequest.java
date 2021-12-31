@@ -3,6 +3,7 @@ package kitchenpos.order.dto;
 import java.util.*;
 
 import kitchenpos.order.domain.*;
+import org.assertj.core.util.Lists;
 
 public class OrderRequest {
 
@@ -28,7 +29,7 @@ public class OrderRequest {
     }
 
     public static OrderRequest from(OrderStatus orderStatus) {
-        return new OrderRequest(null, new ArrayList<>(), orderStatus);
+        return new OrderRequest(null, Lists.newArrayList(), orderStatus);
     }
 
     public Long getOrderTableId() {

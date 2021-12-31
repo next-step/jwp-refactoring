@@ -4,9 +4,11 @@ import java.util.*;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import kitchenpos.common.*;
 
 @Entity
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class OrderTable {
     private static final String TABLE_GROUP_IS_EXIST_EXCEPTION_STATEMENT = "그룹 테이블이 존재합니다.";
     private static final String ORDER_TABLE_IS_NOT_EMPTY_EXCEPTION_STATEMENT = "주문 테이블이 비어있지 않습니다.";
@@ -102,4 +104,16 @@ public class OrderTable {
         this.empty = false;
     }
 
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderTable that = (OrderTable) o;
+        return numberOfGuests == that.numberOfGuests && empty == that.empty && Objects.equals(tableGroupId, that.tableGroupId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(tableGroupId, numberOfGuests, empty);
+    }
 }

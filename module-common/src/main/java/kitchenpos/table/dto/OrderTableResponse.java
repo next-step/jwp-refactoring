@@ -6,7 +6,7 @@ import kitchenpos.table.domain.*;
 
 public class OrderTableResponse {
     private Long id;
-    private Long tableGroupId;
+    private TableGroup tableGroup;
     private int numberOfGuests;
     private boolean empty;
 
@@ -15,9 +15,16 @@ public class OrderTableResponse {
 
     public OrderTableResponse(OrderTable orderTable) {
         this.id = orderTable.getId();
-        this.tableGroupId = orderTable.getTableGroupId();
+        this.tableGroup = null;
         this.numberOfGuests = orderTable.getNumberOfGuests();
         this.empty = orderTable.isEmpty();
+    }
+
+    public OrderTableResponse(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+        this.id = id;
+        this.tableGroup = tableGroup;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
     }
 
     public static OrderTableResponse of(OrderTable orderTable) {
@@ -28,8 +35,8 @@ public class OrderTableResponse {
         return id;
     }
 
-    public Long getTableGroupId() {
-        return tableGroupId;
+    public TableGroup getTableGroup() {
+        return tableGroup;
     }
 
     public int getNumberOfGuests() {
@@ -47,12 +54,12 @@ public class OrderTableResponse {
         if (o == null || getClass() != o.getClass())
             return false;
         OrderTableResponse that = (OrderTableResponse)o;
-        return numberOfGuests == that.numberOfGuests && empty == that.empty && Objects.equals(tableGroupId,
-            that.tableGroupId);
+        return numberOfGuests == that.numberOfGuests && empty == that.empty && Objects.equals(tableGroup,
+            that.tableGroup);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(tableGroupId, numberOfGuests, empty);
+        return Objects.hash(tableGroup, numberOfGuests, empty);
     }
 }

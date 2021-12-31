@@ -9,11 +9,19 @@ public class MenuRequest {
     private Long menuGroupId;
     private List<MenuProductRequest> menuProductRequests;
 
+    public MenuRequest() {
+
+    }
+
     private MenuRequest(String name, BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProductRequests) {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
         this.menuProductRequests = menuProductRequests;
+    }
+
+    public static MenuRequest of(String name, BigDecimal price, Long menuGroupId) {
+        return new MenuRequest(name, price, menuGroupId, new ArrayList<>());
     }
 
     public static MenuRequest of(String name, BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProductRequests) {

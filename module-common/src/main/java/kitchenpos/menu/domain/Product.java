@@ -1,12 +1,16 @@
 package kitchenpos.menu.domain;
 
 import java.math.*;
+import java.util.*;
 
 import javax.persistence.*;
 
+import kitchenpos.common.*;
+
 @Entity
 public class Product {
-    private static final String WRONG_PRICE_EXCEPTION_STATEMENT = "상품의 금액이 잘못되었습니다.";
+    private static final String PRICE = "금액";
+    private static final String NAME = "이름";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +25,7 @@ public class Product {
     }
 
     public Product(String name, BigDecimal price) {
-        validate(price);
+        validate(name, price);
         this.name = name;
         this.price = price;
     }
@@ -30,9 +34,13 @@ public class Product {
         return new Product(name, price);
     }
 
-    private void validate(BigDecimal price) {
-        if (price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException(WRONG_PRICE_EXCEPTION_STATEMENT);
+    private void validate(String name, BigDecimal price) {
+        if (Objects.isNull(name) || name.isEmpty()) {
+            throw new WrongValueException(NAME);
+        }
+
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new WrongValueException(PRICE);
         }
     }
 

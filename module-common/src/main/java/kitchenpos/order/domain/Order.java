@@ -6,6 +6,7 @@ import java.util.*;
 import javax.persistence.*;
 import javax.persistence.Id;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.*;
 
 import kitchenpos.common.*;
@@ -13,6 +14,7 @@ import kitchenpos.menu.domain.*;
 import kitchenpos.table.domain.*;
 
 @Entity
+@Table(name = "orders")
 public class Order {
     private static final String ORDER_TABLE = "주문테이블";
     private static final String CANNOT_CHANGE_ORDER_STATUS_EXCEPTION_STATEMENT = "주문이 완료되어 주문상태를 변경할 수 없습니다.";
@@ -29,10 +31,10 @@ public class Order {
     private OrderStatus orderStatus;
 
     @Embedded
-    private final OrderLineItems orderLineItems = new OrderLineItems();
+    private OrderLineItems orderLineItems = new OrderLineItems();
 
     @CreatedDate
-    private final LocalDateTime orderedTime = LocalDateTime.now();
+    private LocalDateTime orderedTime = LocalDateTime.now();
 
     protected Order() {
     }

@@ -12,6 +12,10 @@ public class MenuResponse {
     private MenuGroup menuGroup;
     private List<MenuProduct> menuProducts;
 
+    public MenuResponse() {
+
+    }
+
     private MenuResponse(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = name;
@@ -21,7 +25,7 @@ public class MenuResponse {
     }
 
     public static MenuResponse from(Menu menu) {
-        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(), menu.getMenuGroup(), menu.getMenuProducts());
+        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(), menu.getMenuGroup(), menu.getMenuProducts().getMenuProducts());
     }
 
     public Long getId() {

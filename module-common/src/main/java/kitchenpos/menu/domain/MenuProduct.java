@@ -1,7 +1,6 @@
 package kitchenpos.menu.domain;
 
 import java.util.*;
-
 import javax.persistence.*;
 
 import kitchenpos.common.*;

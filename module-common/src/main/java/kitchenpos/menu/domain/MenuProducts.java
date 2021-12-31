@@ -11,6 +11,10 @@ public class MenuProducts {
     @JoinColumn(name = "menu_id")
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
+    public MenuProducts() {
+
+    }
+
     public void add(Long menuId, Product product, Long quantity) {
         menuProducts.add(new MenuProduct(menuId, product, quantity));
     }
