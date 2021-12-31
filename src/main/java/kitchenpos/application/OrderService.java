@@ -1,8 +1,9 @@
 package kitchenpos.application;
 
-import kitchenpos.common.exceptions.NotFoundEntityException;
-import kitchenpos.common.exceptions.OrderStatusNotProcessingException;
-import kitchenpos.domain.*;
+import kitchenpos.common.exceptions.EmptyOrderException;
+import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderRepository;
 import kitchenpos.dto.order.OrderLineItemRequest;
 import kitchenpos.dto.order.OrderRequest;
 import kitchenpos.dto.order.OrderResponse;
@@ -18,8 +19,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderValidator orderValidator;
 
-    public OrderService(
-            final OrderRepository orderRepository, OrderValidator orderValidator) {
+    public OrderService(final OrderRepository orderRepository, OrderValidator orderValidator) {
         this.orderRepository = orderRepository;
         this.orderValidator = orderValidator;
     }
@@ -60,16 +60,6 @@ public class OrderService {
 
     private Order findById(final Long orderId) {
         return orderRepository.findById(orderId)
-                .orElseThrow(NotFoundEntityException::new);
-    }
-
-    public void validateOrderStatus(final List<OrderTable> orderTables) {
-        final List<Order> orders = orderRepository.findByOrderTableIdIn(orderTables);
-        final List<Order> checkOrders = orders.stream()
-                .filter(Order::existsOrderStatus)
-                .collect(Collectors.toList());
-        if (orders.containsAll(checkOrders)) {
-            throw new OrderStatusNotProcessingException();
-        }
+                .orElseThrow(EmptyOrderException::new);
     }
 }
