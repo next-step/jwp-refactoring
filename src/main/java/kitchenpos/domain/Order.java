@@ -78,11 +78,8 @@ public class Order {
         this.orderStatus = updateStatus;
     }
 
-    public boolean existsOrderStatus() {
-        if (OrderStatus.COOKING.equals(this.orderStatus) || OrderStatus.MEAL.equals(this.orderStatus)) {
-            return true;
-        }
-        return false;
+    public boolean existsCookingOrMeal() {
+        return this.orderStatus.existsOrderStatus();
     }
 
     public Long getId() {

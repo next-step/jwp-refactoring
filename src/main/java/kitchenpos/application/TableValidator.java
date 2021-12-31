@@ -28,7 +28,7 @@ public class TableValidator {
             throw new EmptyOrderException();
         }
         final List<Order> checkOrders = orders.stream()
-                .filter(Order::existsOrderStatus)
+                .filter(Order::existsCookingOrMeal)
                 .collect(Collectors.toList());
         if (orders.containsAll(checkOrders)) {
             throw new OrderStatusNotProcessingException();
@@ -40,7 +40,7 @@ public class TableValidator {
         if (Objects.isNull(order)) {
             throw new EmptyOrderException();
         }
-        if (order.existsOrderStatus()) {
+        if (order.existsCookingOrMeal()) {
             throw new OrderStatusNotProcessingException();
         }
     }
