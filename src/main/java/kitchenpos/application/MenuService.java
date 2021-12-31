@@ -21,11 +21,14 @@ public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupService menuGroupService;
     private final ProductService productService;
+    private final MenuValidator menuValidator;
 
-    public MenuService(final MenuGroupService menuGroupService, final MenuRepository menuRepository, final ProductService productService) {
+    public MenuService(final MenuGroupService menuGroupService, final MenuRepository menuRepository
+            , final ProductService productService, final MenuValidator menuValidator) {
         this.menuGroupService = menuGroupService;
         this.menuRepository = menuRepository;
         this.productService = productService;
+        this.menuValidator = menuValidator;
     }
 
     @Transactional
@@ -35,6 +38,7 @@ public class MenuService {
 
         final List<MenuProduct> menuProductList = getMenuProductList(request.getMenuProducts());
         menu.addMenuProducts(menuProductList);
+        menuValidator.isOverPrice(menu);
         return MenuResponse.from(menuRepository.save(menu));
     }
 
@@ -45,7 +49,7 @@ public class MenuService {
 
     private MenuProduct getMenuProduct(final MenuProductRequest request) {
         final Product product = productService.getById(request.getProductId());
-        return request.toMenuProduct(product);
+        return MenuProduct.of(product.getId(), request.getQuantity());
     }
 
     public List<MenuResponse> list() {
