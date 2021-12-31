@@ -79,7 +79,7 @@ public class Order {
     }
 
     public boolean existsCookingOrMeal() {
-        return this.orderStatus.existsOrderStatus();
+        return this.orderStatus.existsCookingOrMeal();
     }
 
     public Long getId() {

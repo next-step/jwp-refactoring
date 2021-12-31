@@ -32,10 +32,7 @@ public enum OrderStatus {
         }
     }
 
-    public boolean existsOrderStatus() {
-        if (OrderStatus.COOKING.equals(this) || OrderStatus.MEAL.equals(this)) {
-            return true;
-        }
-        return false;
+    public boolean existsCookingOrMeal() {
+        return OrderStatus.COOKING.equals(this) || OrderStatus.MEAL.equals(this);
     }
 }
