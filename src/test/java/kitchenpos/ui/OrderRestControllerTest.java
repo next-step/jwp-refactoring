@@ -65,8 +65,8 @@ class OrderRestControllerTest {
         final MenuGroupResponse 메뉴그룹_응답 = TestMenuGroupFactory.메뉴그룹_응답(1L, "메뉴그룹");
         final MenuResponse 메뉴_응답 = TestMenuFactory.메뉴_응답(1L, "메뉴", 50000, 메뉴그룹_응답, 메뉴상품목록_응답);
 
-        final List<OrderLineItemResponse> orderLineItems = TestOrderTableFactory.주문상품아이템_응답(1L, 메뉴_응답.getId(), 1);
-        final OrderTableResponse 주문테이블_응답 = TestOrderTableFactory.주문테이블_응답(1L, 10, false);
+        final List<OrderLineItemResponse> orderLineItems = TestOrderTableFactory.주문_상품아이템_응답(1L, 메뉴_응답.getId(), 1);
+        final OrderTableResponse 주문테이블_응답 = TestOrderTableFactory.주문_테이블_응답(1L, 10, false);
         final OrderResponse 주문_응답 = OrderResponse.of(1L, 주문테이블_응답.getId(), OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
 
         given(orderService.create(any())).willReturn(주문_응답);
@@ -95,8 +95,8 @@ class OrderRestControllerTest {
         final MenuGroupResponse 메뉴그룹_응답 = TestMenuGroupFactory.메뉴그룹_응답(1L, "메뉴그룹");
         final MenuResponse 메뉴_응답 = TestMenuFactory.메뉴_응답(1L, "메뉴", 50000, 메뉴그룹_응답, 메뉴상품목록_응답);
 
-        final List<OrderLineItemResponse> orderLineItems = TestOrderTableFactory.주문상품아이템_응답(1L, 메뉴_응답.getId(), 1);
-        final OrderTableResponse 주문테이블_응답 = TestOrderTableFactory.주문테이블_응답(1L, 10, false);
+        final List<OrderLineItemResponse> orderLineItems = TestOrderTableFactory.주문_상품아이템_응답(1L, 메뉴_응답.getId(), 1);
+        final OrderTableResponse 주문테이블_응답 = TestOrderTableFactory.주문_테이블_응답(1L, 10, false);
         final OrderResponse 주문_응답 = OrderResponse.of(1L, 주문테이블_응답.getId(), OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
         
         given(orderService.list()).willReturn(Collections.singletonList(주문_응답));
@@ -119,8 +119,8 @@ class OrderRestControllerTest {
         final MenuGroupResponse 메뉴그룹_응답 = TestMenuGroupFactory.메뉴그룹_응답(1L, "메뉴그룹");
         final MenuResponse 메뉴_응답 = TestMenuFactory.메뉴_응답(1L, "메뉴", 50000, 메뉴그룹_응답, 메뉴상품목록_응답);
 
-        final List<OrderLineItemResponse> orderLineItems = TestOrderTableFactory.주문상품아이템_응답(1L, 메뉴_응답.getId(), 1);
-        final OrderTableResponse 주문테이블_응답 = TestOrderTableFactory.주문테이블_응답(1L, 10, false);
+        final List<OrderLineItemResponse> orderLineItems = TestOrderTableFactory.주문_상품아이템_응답(1L, 메뉴_응답.getId(), 1);
+        final OrderTableResponse 주문테이블_응답 = TestOrderTableFactory.주문_테이블_응답(1L, 10, false);
         final OrderResponse 주문완료_응답 = OrderResponse.of(1L, 주문테이블_응답.getId(), OrderStatus.COMPLETION, LocalDateTime.now(), orderLineItems);
         
         given(orderService.changeOrderStatus(anyLong(), any())).willReturn(주문완료_응답);

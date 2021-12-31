@@ -6,6 +6,8 @@ import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.tablegroup.TableGroupRequest;
 import kitchenpos.dto.tablegroup.TableGroupResponse;
+import kitchenpos.fixture.TestOrderTableFactory;
+import kitchenpos.fixture.TestTableGroupFactory;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -52,17 +54,16 @@ class TableGroupRestControllerTest {
     @DisplayName("통합 계산을 위해 단체 지정 등록한다.")
     @Test
     void create() throws Exception {
-        final OrderTable 주문테이블1 = OrderTable.of(1L, 2, false);
-        final OrderTable 주문테이블2 = OrderTable.of(2L, 2, false);
+        final OrderTable 주문테이블1 = TestOrderTableFactory.주문_테이블_조회됨(1L, 2, false);
+        final OrderTable 주문테이블2 = TestOrderTableFactory.주문_테이블_조회됨(2L, 2, false);
         final List<OrderTable> 주문테이블_목록 = Lists.newArrayList(주문테이블1, 주문테이블2);
-        final TableGroup 테이블그룹 = TableGroup.from(1L);
+        final TableGroup 테이블그룹 = TestTableGroupFactory.테이블_그룹_생성됨(1L);
 
-        final TableGroupRequest 테이블그룹_요청 = TableGroupRequest.from(Lists.newArrayList(주문테이블1.getId(), 주문테이블2.getId()));
-        final TableGroupResponse 테이블그룹_응답 = TableGroupResponse.of(테이블그룹, 주문테이블_목록);
-        
+        final TableGroupRequest 테이블그룹_요청 = TestTableGroupFactory.테이블_그룹_요청(Lists.newArrayList(주문테이블1.getId(), 주문테이블2.getId()));
+        final TableGroupResponse 테이블그룹_응답 = TestTableGroupFactory.테이블_그룹_응답(테이블그룹, 주문테이블_목록);
+
         given(tableGroupService.create(any())).willReturn(테이블그룹_응답);
 
-        
         final ResultActions actions = mvc.perform(post("/api/table-groups")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -78,10 +79,10 @@ class TableGroupRestControllerTest {
     @DisplayName("단체 지정을 해지한다.")
     @Test
     void ungroup() throws Exception {
-        final OrderTable 주문테이블1 = OrderTable.of(1L, 2, false);
-        final OrderTable 주문테이블2 = OrderTable.of(2L, 2, false);
+        final OrderTable 주문테이블1 = TestOrderTableFactory.주문_테이블_조회됨(1L, 2, false);
+        final OrderTable 주문테이블2 = TestOrderTableFactory.주문_테이블_조회됨(2L, 2, false);
         final List<OrderTable> 주문테이블_목록 = Lists.newArrayList(주문테이블1, 주문테이블2);
-        final TableGroup 테이블그룹 = TableGroup.from(1L);
+        final TableGroup 테이블그룹 = TestTableGroupFactory.테이블_그룹_생성됨(1L);
 
         final TableGroupResponse 테이블그룹_응답 = TableGroupResponse.of(테이블그룹, 주문테이블_목록);
 
