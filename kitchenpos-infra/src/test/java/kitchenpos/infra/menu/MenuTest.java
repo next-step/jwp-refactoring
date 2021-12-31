@@ -2,8 +2,8 @@ package kitchenpos.infra.menu;
 
 import kitchenpos.core.menu.domain.Menu;
 import kitchenpos.core.menu.domain.MenuProduct;
-import kitchenpos.core.menugroup.domain.MenuGroup;
-import kitchenpos.core.product.domain.Product;
+import kitchenpos.core.domain.MenuGroup;
+import kitchenpos.core.domain.Product;
 import kitchenpos.infra.menugroup.JpaMenuGroupRepository;
 import kitchenpos.infra.product.JpaProductRepository;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,6 +1,6 @@
 package kitchenpos.application.order.dto;
 
-import kitchenpos.core.order.domain.Order;
+import kitchenpos.core.domain.Order;
 
 import java.time.LocalDateTime;
 import java.util.List;

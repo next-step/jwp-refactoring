@@ -1,8 +1,8 @@
 package kitchenpos.application.order;
 
-import kitchenpos.core.order.domain.Order;
-import kitchenpos.core.order.domain.OrderRepository;
-import kitchenpos.core.order.exception.CanNotChangeOrderStatusException;
+import kitchenpos.core.domain.Order;
+import kitchenpos.core.domain.OrderRepository;
+import kitchenpos.core.exception.CanNotChangeOrderStatusException;
 import kitchenpos.application.order.dto.OrderRequest;
 import kitchenpos.application.order.dto.OrderResponse;
 import org.springframework.stereotype.Service;

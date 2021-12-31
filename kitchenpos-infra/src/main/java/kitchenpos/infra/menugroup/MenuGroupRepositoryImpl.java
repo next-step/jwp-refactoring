@@ -1,7 +1,7 @@
 package kitchenpos.infra.menugroup;
 
-import kitchenpos.core.menugroup.domain.MenuGroup;
-import kitchenpos.core.menugroup.domain.MenuGroupRepository;
+import kitchenpos.core.domain.MenuGroup;
+import kitchenpos.core.domain.MenuGroupRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

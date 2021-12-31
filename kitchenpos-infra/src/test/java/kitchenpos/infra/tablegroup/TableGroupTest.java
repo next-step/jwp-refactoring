@@ -1,18 +1,15 @@
 package kitchenpos.infra.tablegroup;
 
-import kitchenpos.core.ordertable.domain.OrderTable;
-import kitchenpos.core.ordertable.validator.OrderTableTableGroupCreateValidator;
-import kitchenpos.core.tablegroup.domain.TableGroup;
+import kitchenpos.core.domain.OrderTable;
+import kitchenpos.core.validator.OrderTableTableGroupCreateValidator;
+import kitchenpos.core.domain.TableGroup;
 import kitchenpos.infra.ordertable.JpaOrderTableRepository;
-import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;

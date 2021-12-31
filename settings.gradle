@@ -1,6 +1,8 @@
 rootProject.name = 'kitchenpos'
-include 'kitchenpos-core'
 include 'kitchenpos-application'
 include 'kitchenpos-client-api'
 include 'kitchenpos-infra'
+// core
+include 'kitchenpos-core-menu', 'kitchenpos-core-menugroup', 'kitchenpos-core-order', 'kitchenpos-core-tablegroup',
+        'kitchenpos-core-ordertable', 'kitchenpos-core-product'
 

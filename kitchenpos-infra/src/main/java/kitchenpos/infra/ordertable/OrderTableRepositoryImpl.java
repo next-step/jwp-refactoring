@@ -1,7 +1,7 @@
 package kitchenpos.infra.ordertable;
 
-import kitchenpos.core.ordertable.domain.OrderTable;
-import kitchenpos.core.ordertable.domain.OrderTableRepository;
+import kitchenpos.core.domain.OrderTable;
+import kitchenpos.core.domain.OrderTableRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

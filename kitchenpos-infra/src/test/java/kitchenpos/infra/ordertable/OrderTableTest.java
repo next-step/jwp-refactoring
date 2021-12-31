@@ -1,6 +1,6 @@
 package kitchenpos.infra.ordertable;
 
-import kitchenpos.core.ordertable.domain.OrderTable;
+import kitchenpos.core.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

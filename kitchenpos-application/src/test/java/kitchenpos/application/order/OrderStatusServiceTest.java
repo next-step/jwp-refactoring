@@ -1,10 +1,10 @@
 package kitchenpos.application.order;
 
-import kitchenpos.core.order.domain.Order;
-import kitchenpos.core.order.domain.OrderRepository;
-import kitchenpos.core.order.domain.OrderStatus;
 import kitchenpos.application.order.dto.OrderRequest;
 import kitchenpos.application.order.dto.OrderResponse;
+import kitchenpos.core.domain.Order;
+import kitchenpos.core.domain.OrderRepository;
+import kitchenpos.core.domain.OrderStatus;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -16,8 +16,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static kitchenpos.OrderFixture.*;
 import static kitchenpos.application.order.OrderServiceFixture.getChangeRequest;
+import static kitchenpos.core.OrderFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyLong;

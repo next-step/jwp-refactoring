@@ -1,10 +1,10 @@
 package kitchenpos.application.ordertable;
 
-import kitchenpos.core.order.validator.OrderOrderTableChangeEmptyValidator;
-import kitchenpos.core.ordertable.domain.OrderTable;
-import kitchenpos.core.ordertable.domain.OrderTableRepository;
 import kitchenpos.application.ordertable.dto.OrderTableRequest;
 import kitchenpos.application.ordertable.dto.OrderTableResponse;
+import kitchenpos.core.domain.OrderTable;
+import kitchenpos.core.domain.OrderTableRepository;
+import kitchenpos.core.validator.OrderOrderTableChangeEmptyValidator;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.OrderTableFixture.getOrderTable;
+import static kitchenpos.core.OrderTableFixture.getOrderTable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;

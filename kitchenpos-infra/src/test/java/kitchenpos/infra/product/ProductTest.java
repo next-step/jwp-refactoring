@@ -1,6 +1,6 @@
 package kitchenpos.infra.product;
 
-import kitchenpos.core.product.domain.Product;
+import kitchenpos.core.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

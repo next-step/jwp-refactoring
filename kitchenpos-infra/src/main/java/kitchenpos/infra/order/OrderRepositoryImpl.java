@@ -1,8 +1,8 @@
 package kitchenpos.infra.order;
 
-import kitchenpos.core.order.domain.Order;
-import kitchenpos.core.order.domain.OrderStatus;
-import kitchenpos.core.order.domain.OrderRepository;
+import kitchenpos.core.domain.Order;
+import kitchenpos.core.domain.OrderStatus;
+import kitchenpos.core.domain.OrderRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

@@ -1,8 +1,8 @@
 package kitchenpos.infra.order;
 
-import kitchenpos.core.order.domain.Order;
-import kitchenpos.core.order.domain.OrderLineItem;
-import kitchenpos.core.order.domain.OrderStatus;
+import kitchenpos.core.domain.Order;
+import kitchenpos.core.domain.OrderLineItem;
+import kitchenpos.core.domain.OrderStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

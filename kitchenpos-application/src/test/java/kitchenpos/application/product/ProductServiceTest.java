@@ -2,8 +2,8 @@ package kitchenpos.application.product;
 
 import kitchenpos.application.product.dto.ProductRequest;
 import kitchenpos.application.product.dto.ProductResponse;
-import kitchenpos.core.product.domain.Product;
-import kitchenpos.core.product.domain.ProductRepository;
+import kitchenpos.core.domain.Product;
+import kitchenpos.core.domain.ProductRepository;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.ProductFixture.getProduct;
+import static kitchenpos.core.ProductFixture.getProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;

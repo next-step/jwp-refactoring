@@ -36,7 +36,12 @@ subprojects {
             exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
         }
         // fixture 사용
-        testImplementation(testFixtures(project(':kitchenpos-core')))
+        testImplementation(testFixtures(project(':kitchenpos-core-menu')))
+        testImplementation(testFixtures(project(':kitchenpos-core-menugroup')))
+        testImplementation(testFixtures(project(':kitchenpos-core-order')))
+        testImplementation(testFixtures(project(':kitchenpos-core-ordertable')))
+        testImplementation(testFixtures(project(':kitchenpos-core-product')))
+        testImplementation(testFixtures(project(':kitchenpos-core-tablegroup')))
     }
 
     test {
@@ -44,11 +49,64 @@ subprojects {
     }
 }
 
-project(':kitchenpos-core') {
+project(':kitchenpos-core-menugroup') {
     bootJar { enabled = false }
     jar { enabled = true }
 
     dependencies {
+        compile project(':kitchenpos-core-menu')
+        compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+    }
+}
+
+project(':kitchenpos-core-menu') {
+    bootJar { enabled = false }
+    jar { enabled = true }
+
+    dependencies {
+        compile project(':kitchenpos-core-product')
+        compile project(':kitchenpos-core-order')
+        compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+    }
+}
+
+project(':kitchenpos-core-order') {
+    bootJar { enabled = false }
+    jar { enabled = true }
+
+    dependencies {
+        compile project(':kitchenpos-core-ordertable')
+        compile project(':kitchenpos-core-tablegroup')
+        compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+    }
+}
+
+project(':kitchenpos-core-ordertable') {
+    bootJar { enabled = false }
+    jar { enabled = true }
+
+    dependencies {
+        compile project(':kitchenpos-core-order')
+        compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+    }
+}
+
+project(':kitchenpos-core-product') {
+    bootJar { enabled = false }
+    jar { enabled = true }
+
+    dependencies {
+        compile project(':kitchenpos-core-menu')
+        compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+    }
+}
+
+project(':kitchenpos-core-tablegroup') {
+    bootJar { enabled = false }
+    jar { enabled = true }
+
+    dependencies {
+        compile project(':kitchenpos-core-ordertable')
         compile 'org.springframework.boot:spring-boot-starter-data-jpa'
     }
 }
@@ -58,7 +116,13 @@ project(':kitchenpos-application') {
     jar { enabled = true }
 
     dependencies {
-        compile project(':kitchenpos-core')
+        compile project(':kitchenpos-core-menu'),
+                project(':kitchenpos-core-menugroup'),
+                project(':kitchenpos-core-order'),
+                project(':kitchenpos-core-ordertable'),
+                project(':kitchenpos-core-product'),
+                project(':kitchenpos-core-tablegroup')
+
         compile project(':kitchenpos-infra')
     }
 }
@@ -67,7 +131,12 @@ project(':kitchenpos-infra') {
     bootJar { enabled = false }
     jar { enabled = true }
     dependencies {
-        compile project(':kitchenpos-core')
+        compile project(':kitchenpos-core-menu'),
+                project(':kitchenpos-core-menugroup'),
+                project(':kitchenpos-core-order'),
+                project(':kitchenpos-core-ordertable'),
+                project(':kitchenpos-core-product'),
+                project(':kitchenpos-core-tablegroup')
 
         runtimeOnly 'com.h2database:h2'
         implementation 'org.flywaydb:flyway-core'
@@ -79,7 +148,12 @@ project(':kitchenpos-client-api') {
     jar { enabled = true }
 
     dependencies {
-        compile project(':kitchenpos-core'),
+        compile project(':kitchenpos-core-menu'),
+                project(':kitchenpos-core-menugroup'),
+                project(':kitchenpos-core-order'),
+                project(':kitchenpos-core-ordertable'),
+                project(':kitchenpos-core-product'),
+                project(':kitchenpos-core-tablegroup'),
                 project(':kitchenpos-application'),
                 project(':kitchenpos-infra')
 

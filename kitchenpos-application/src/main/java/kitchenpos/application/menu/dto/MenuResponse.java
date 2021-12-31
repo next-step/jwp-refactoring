@@ -1,6 +1,6 @@
 package kitchenpos.application.menu.dto;
 
-import kitchenpos.core.menu.domain.Menu;
+import kitchenpos.core.domain.Menu;
 
 import java.util.ArrayList;
 import java.util.List;

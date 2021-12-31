@@ -1,7 +1,7 @@
 package kitchenpos.infra.tablegroup;
 
-import kitchenpos.core.tablegroup.domain.TableGroup;
-import kitchenpos.core.tablegroup.domain.TableGroupRepository;
+import kitchenpos.core.domain.TableGroup;
+import kitchenpos.core.domain.TableGroupRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;

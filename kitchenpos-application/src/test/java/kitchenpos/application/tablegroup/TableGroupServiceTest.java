@@ -1,12 +1,12 @@
 package kitchenpos.application.tablegroup;
 
-import kitchenpos.core.order.validator.OrderTableGroupUnGroupValidator;
-import kitchenpos.core.ordertable.domain.OrderTable;
-import kitchenpos.core.ordertable.validator.OrderTableTableGroupCreateValidator;
-import kitchenpos.core.tablegroup.domain.TableGroup;
-import kitchenpos.core.tablegroup.domain.TableGroupRepository;
 import kitchenpos.application.tablegroup.dto.TableGroupCreateRequest;
 import kitchenpos.application.tablegroup.dto.TableGroupResponse;
+import kitchenpos.core.domain.OrderTable;
+import kitchenpos.core.domain.TableGroup;
+import kitchenpos.core.domain.TableGroupRepository;
+import kitchenpos.core.validator.OrderTableGroupUnGroupValidator;
+import kitchenpos.core.validator.OrderTableTableGroupCreateValidator;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.OrderTableFixture.getOrderTable;
+import static kitchenpos.core.OrderTableFixture.getOrderTable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
