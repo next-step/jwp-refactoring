@@ -1,42 +1,35 @@
 package kitchenpos.dto.order;
 
 import kitchenpos.domain.OrderLineItem;
-import kitchenpos.dto.menu.MenuResponse;
-
-import java.util.Objects;
 
 public class OrderLineItemResponse {
     private Long seq;
-    private MenuResponse menuResponse;
+    private Long menuId;
     private long quantity;
 
     protected OrderLineItemResponse() {
     }
 
-    private OrderLineItemResponse(final Long seq, final MenuResponse menuResponse, final long quantity) {
+    private OrderLineItemResponse(final Long seq, final Long menuId, final long quantity) {
         this.seq = seq;
-        this.menuResponse = menuResponse;
+        this.menuId = menuId;
         this.quantity = quantity;
     }
 
     public static OrderLineItemResponse from(final OrderLineItem orderLineItem) {
-        MenuResponse menuResponse = new MenuResponse();
-        if (Objects.nonNull(orderLineItem.getMenu())) {
-            menuResponse = MenuResponse.from(orderLineItem.getMenu());
-        }
-        return new OrderLineItemResponse(orderLineItem.getSeq(), menuResponse, orderLineItem.getQuantity().toLong());
+        return new OrderLineItemResponse(orderLineItem.getSeq(), orderLineItem.getMenuId(), orderLineItem.getQuantity().toLong());
     }
 
-    public static OrderLineItemResponse of(final Long seq, final MenuResponse menuResponse, final long quantity) {
-        return new OrderLineItemResponse(seq, menuResponse, quantity);
+    public static OrderLineItemResponse of(final Long seq, final Long menuId, final long quantity) {
+        return new OrderLineItemResponse(seq, menuId, quantity);
     }
 
     public Long getSeq() {
         return seq;
     }
 
-    public MenuResponse getMenuResponse() {
-        return menuResponse;
+    public Long getMenuId() {
+        return menuId;
     }
 
     public long getQuantity() {
