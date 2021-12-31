@@ -1,4 +1,4 @@
-package kitchenpos.product.domain;
+package kitchenpos.menu.domain;
 
 import java.math.BigDecimal;
 import javax.persistence.Embedded;
@@ -6,8 +6,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import kitchenpos.common.domain.Name;
-import kitchenpos.common.domain.Price;
 
 @Entity
 public class Product {

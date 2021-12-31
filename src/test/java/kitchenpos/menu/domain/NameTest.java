@@ -1,8 +1,8 @@
-package kitchenpos.common.domain;
+package kitchenpos.menu.domain;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import kitchenpos.common.domain.Name;
+import kitchenpos.menu.domain.Name;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

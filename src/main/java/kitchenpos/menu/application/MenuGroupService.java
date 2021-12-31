@@ -24,9 +24,16 @@ public class MenuGroupService {
         return MenuGroupResponse.of(savedMenuGroup);
     }
 
+    @Transactional(readOnly = true)
     public List<MenuGroupResponse> list() {
         return menuGroupRepository.findAll().stream()
             .map(MenuGroupResponse::of)
             .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public MenuGroup findById(final Long menuGroupId) {
+        return menuGroupRepository.findById(menuGroupId)
+            .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 메뉴 그룹입니다."));
     }
 }

@@ -34,8 +34,9 @@ public class OrderService {
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
         final OrderTable orderTable = findOrderTableById(orderRequest.getOrderTableId());
+        validateOrderTableNotEmpty(orderTable);
 
-        final Order order = new Order(orderTable);
+        final Order order = new Order(orderTable.getId());
         order.addOrderLineItems(makeOrderLineItems(order, orderRequest.getOrderLineItems()));
 
         final Order persistOrder = orderRepository.save(order);
@@ -90,10 +91,16 @@ public class OrderService {
         final List<OrderLineItem> orderLineItems = new ArrayList<>();
 
         for (final OrderLineItemRequest orderLineItemRequest : orderLineItemRequests) {
-            Menu menu = menuService.findByMenuId(orderLineItemRequest.getMenuId());
-            orderLineItems.add(new OrderLineItem(order, menu, orderLineItemRequest.getQuantity()));
+            Menu menu = menuService.findById(orderLineItemRequest.getMenuId());
+            orderLineItems.add(new OrderLineItem(order, menu.getId(), orderLineItemRequest.getQuantity()));
         }
 
         return orderLineItems;
+    }
+
+    private void validateOrderTableNotEmpty(OrderTable orderTable) {
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException("주문 테이블이 비어있습니다.");
+        }
     }
 }

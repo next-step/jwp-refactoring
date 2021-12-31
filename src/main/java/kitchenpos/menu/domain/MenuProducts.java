@@ -6,8 +6,6 @@ import java.util.Collections;
 import java.util.List;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import kitchenpos.common.domain.Price;
-import org.springframework.util.CollectionUtils;
 
 @Embeddable
 public class MenuProducts {
@@ -34,7 +32,7 @@ public class MenuProducts {
     }
 
     private void validateMenuProductsNotEmpty(final List<MenuProduct> menuProducts) {
-        if (CollectionUtils.isEmpty(menuProducts)) {
+        if (menuProducts.isEmpty()) {
             throw new IllegalArgumentException("메뉴 상품은 하나 이상여야 합니다.");
         }
     }
