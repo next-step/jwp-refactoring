@@ -16,20 +16,18 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class OrderService {
     private final OrderRepository orderRepository;
-    private final MenuService menuService;
-    private final TableService tableService;
+    private final OrderValidator orderValidator;
 
     public OrderService(
-            final OrderRepository orderRepository, final MenuService menuService, final TableService tableService) {
+            final OrderRepository orderRepository, OrderValidator orderValidator) {
         this.orderRepository = orderRepository;
-        this.menuService = menuService;
-        this.tableService = tableService;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest request) {
-        final OrderTable orderTable = tableService.findOrderTableById(request.getOrderTableId());
-        final Order order = Order.from(orderTable);
+        final Long orderTableId = orderValidator.findOrderTableById(request);
+        final Order order = Order.from(orderTableId);
         addOrderLineItems(order, request.getOrderLineItems());
 
         final Order savedOrder = orderRepository.save(order);
@@ -44,8 +42,8 @@ public class OrderService {
     }
 
     private OrderLineItem getOrderItem(final OrderLineItemRequest request) {
-        final Menu menu = menuService.getMenuById(request.getMenuId());
-        return OrderLineItem.of(menu, request.getQuantity());
+        final Long menuId = orderValidator.findMenuById(request);
+        return OrderLineItem.of(menuId, request.getQuantity());
     }
 
     public List<OrderResponse> list() {
@@ -66,7 +64,7 @@ public class OrderService {
     }
 
     public void validateOrderStatus(final List<OrderTable> orderTables) {
-        final List<Order> orders = orderRepository.findByOrderTableIn(orderTables);
+        final List<Order> orders = orderRepository.findByOrderTableIdIn(orderTables);
         final List<Order> checkOrders = orders.stream()
                 .filter(Order::existsOrderStatus)
                 .collect(Collectors.toList());
