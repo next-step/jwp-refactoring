@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.common.exceptions.NotFoundEntityException;
+import kitchenpos.common.exceptions.EmptyMenuGroupException;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.dto.menugroup.MenuGroupRequest;
@@ -35,6 +35,6 @@ public class MenuGroupService {
 
     public MenuGroup findMenuGroupById(final Long id) {
         return menuGroupRepository.findById(id)
-                .orElseThrow(NotFoundEntityException::new);
+                .orElseThrow(EmptyMenuGroupException::new);
     }
 }
