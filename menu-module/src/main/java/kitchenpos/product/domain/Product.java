@@ -2,6 +2,7 @@ package kitchenpos.product.domain;
 
 import kitchenpos.global.BaseTimeEntity;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity

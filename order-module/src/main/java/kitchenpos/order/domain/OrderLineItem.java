@@ -2,6 +2,8 @@ package kitchenpos.order.domain;
 
 import kitchenpos.global.BaseTimeEntity;
 
+import javax.persistence.*;
+
 @Entity
 @Table(name = "order_line_item")
 public class OrderLineItem extends BaseTimeEntity {

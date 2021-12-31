@@ -2,6 +2,7 @@ package kitchenpos.order.domain;
 
 import kitchenpos.global.BaseTimeEntity;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 

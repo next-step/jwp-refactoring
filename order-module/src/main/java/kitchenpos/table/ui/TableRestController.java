@@ -7,6 +7,7 @@ import kitchenpos.table.dto.TableChangeNumberOfGuestRequest;
 import kitchenpos.table.dto.TableCreateRequest;
 import kitchenpos.table.dto.TableResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;

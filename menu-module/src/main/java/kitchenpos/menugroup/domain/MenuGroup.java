@@ -2,6 +2,8 @@ package kitchenpos.menugroup.domain;
 
 import kitchenpos.global.BaseTimeEntity;
 
+import javax.persistence.*;
+
 @Entity
 @Table(name = "menu_group")
 public class MenuGroup extends BaseTimeEntity {
