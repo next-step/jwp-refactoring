@@ -33,6 +33,9 @@ class MenuServiceTest {
     @Mock
     private ProductService productService;
 
+    @Mock
+    private MenuValidator menuValidator;
+
     @InjectMocks
     private MenuService menuService;
 
