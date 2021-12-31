@@ -40,14 +40,13 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        isEmptyOrderLineItems(orderRequest);
+        checkEmptyOrderLineItems(orderRequest);
 
         List<OrderLineItem> orderLineItems = getValidOrderLineItems(orderRequest);
         final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
                 .orElseThrow(() -> new NotFoundOrderTableException(orderRequest.getOrderTableId()));
 
-        final Order savedOrder = orderRepository.save(Order.create(orderTable, orderLineItems));
-        return OrderResponse.of(savedOrder);
+        return OrderResponse.of(orderRepository.save(Order.create(orderTable, orderLineItems)));
     }
 
     public List<OrderResponse> list() {
@@ -65,7 +64,7 @@ public class OrderService {
         return OrderResponse.of(savedOrder);
     }
 
-    private void isEmptyOrderLineItems(OrderRequest orderRequest) {
+    private void checkEmptyOrderLineItems(OrderRequest orderRequest) {
         if (CollectionUtils.isEmpty(orderRequest.getOrderLineItems())) {
             throw new BadOrderRequestException(OrderErrorCode.NOT_EXISTS_ORDER_LINE_ITEM);
         }

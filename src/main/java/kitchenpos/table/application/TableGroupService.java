@@ -33,7 +33,7 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        isValidRequest(tableGroupRequest);
+        validateRequest(tableGroupRequest);
 
         final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(tableGroupRequest.getOrderTableIds());
         isNotCreatedOrderTables(tableGroupRequest, savedOrderTables);
@@ -47,14 +47,14 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroup(tableGroupId);
-        isValidOrder(orderTables);
+        validateOrder(orderTables);
 
         for (final OrderTable orderTable : orderTables) {
             orderTable.unGroup();
         }
     }
 
-    private void isValidOrder(List<OrderTable> orderTables) {
+    private void validateOrder(List<OrderTable> orderTables) {
         final List<Long> orderTableIds = orderTables.stream()
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
@@ -64,7 +64,7 @@ public class TableGroupService {
         }
     }
 
-    private void isValidRequest(TableGroupRequest tableGroupRequest) {
+    private void validateRequest(TableGroupRequest tableGroupRequest) {
         final List<Long> orderTables = tableGroupRequest.getOrderTableIds();
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
             throw new NotCreateTableGroupException("주문 테이블 개수가 부족합니다.");

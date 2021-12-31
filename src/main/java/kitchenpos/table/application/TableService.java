@@ -42,7 +42,7 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableChangeEmptyRequest request) {
-        isValidOrder(orderTableId);
+        validateOrder(orderTableId);
 
         final OrderTable savedOrderTable = findOrderTableById(orderTableId);
 
@@ -65,7 +65,7 @@ public class TableService {
                 .orElseThrow(() -> new NotFoundOrderTableException(orderTableId));
     }
 
-    private void isValidOrder(Long orderTableId) {
+    private void validateOrder(Long orderTableId) {
         if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
                 orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new NotValidOrderException();

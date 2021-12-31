@@ -43,13 +43,13 @@ public class MenuService {
     public List<MenuResponse> list() {
         return menuRepository.findAll()
                 .stream()
-                .map(menu -> MenuResponse.of(menu))
+                .map(MenuResponse::of)
                 .collect(Collectors.toList());
     }
 
     private List<MenuProduct> createMenuProduct(MenuRequest menuRequest, List<Product> products) {
         return products.stream()
-                .map(product -> menuRequest.createMenuProduct(product))
+                .map(menuRequest::createMenuProduct)
                 .collect(Collectors.toList());
     }
 
