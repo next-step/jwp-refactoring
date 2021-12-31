@@ -27,8 +27,6 @@ subprojects {
     }
 
     dependencies {
-        implementation 'org.springframework.boot:spring-boot-starter-web'
-        implementation 'org.springframework.boot:spring-boot-starter-actuator'
         implementation 'pl.allegro.tech.boot:handlebars-spring-boot-starter:0.3.0'
         implementation 'org.springframework.boot:spring-boot-autoconfigure'
 
@@ -59,7 +57,6 @@ project (':module-domain') {
         implementation project(':module-common')
 
         implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-        implementation 'org.springframework.boot:spring-boot-starter-web'
 
         runtimeOnly 'com.h2database:h2'
         implementation 'org.flywaydb:flyway-core'
@@ -73,10 +70,13 @@ project (':module-api') {
     bootJar { enabled = false }
     jar { enabled = true }
     dependencies {
+        implementation project(':module-common')
         implementation project(':module-domain')
 
         implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
         implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
         testImplementation 'io.rest-assured:rest-assured:3.3.0'
     }
     test {
