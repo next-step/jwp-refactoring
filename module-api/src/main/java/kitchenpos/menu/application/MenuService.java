@@ -24,19 +24,25 @@ public class MenuService {
 
     public MenuResponse save(MenuRequest request) {
         MenuGroup menuGroup = menuGroupService.findById(request.getMenuGroupId());
-        Menu menu = Menu.of(request.getName(), request.getPrice(), menuGroup);
+        final Menu savedMenu = menuRepository.save(Menu.of(request.getName(), request.getPrice(), menuGroup));
 
         Map<Long, Product> productById = getProducts(request);
-        request.getMenuProductRequests()
-            .forEach(menuProductRequest -> menu.addMenuProduct(
-                productById.get(menuProductRequest.getProductId()),
-                menuProductRequest.getQuantity()
-            ));
 
-        return MenuResponse.from(menuRepository.save(menu));
+        if (Objects.nonNull(productById)) {
+            request.getMenuProductRequests()
+                .forEach(menuProductRequest -> savedMenu.addMenuProduct(
+                    productById.get(menuProductRequest.getProductId()),
+                    menuProductRequest.getQuantity()
+                ));
+        }
+
+        return MenuResponse.from(menuRepository.save(savedMenu));
     }
 
     private Map<Long, Product> getProducts(MenuRequest request) {
+        if (Objects.isNull(request.getMenuProductRequests())) {
+            return null;
+        }
         List<Long> menuProductIds = request.getMenuProductRequests()
             .stream()
             .map(MenuProductRequest::getProductId)

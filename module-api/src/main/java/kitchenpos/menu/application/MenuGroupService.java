@@ -21,7 +21,8 @@ public class MenuGroupService {
     }
 
     public MenuGroup findById(Long id) {
-        return menuGroupRepository.findById(id).orElseThrow(() -> new NotFoundException(MENU_GROUP));
+        return menuGroupRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException(MENU_GROUP));
     }
 
     public MenuGroupResponse save(MenuGroupRequest menuGroupRequest) {

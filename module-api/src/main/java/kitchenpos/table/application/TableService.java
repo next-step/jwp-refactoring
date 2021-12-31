@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.stream.*;
 
 import org.springframework.stereotype.*;
+import org.springframework.transaction.annotation.*;
 
 import kitchenpos.common.*;
 import kitchenpos.table.domain.*;
