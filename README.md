@@ -183,6 +183,13 @@
   ![image](https://user-images.githubusercontent.com/17772475/147825104-c6d9e7a1-51dd-42db-ba00-04f24da86fcc.png)
 
 
+- 관계도 4차 그림
+  
+
+  ![image](https://user-images.githubusercontent.com/17772475/147834393-8f566886-4557-4e40-a545-dfba6b2cb012.png)
+
+
+
 
 ## 2단계 할 일
 - [x] Dao 기반 -> Repository 기반 (spring-data-jpa) 로 변경
