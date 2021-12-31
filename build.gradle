@@ -58,21 +58,13 @@ project(':module-product') {
 project(':module-menu') {
     dependencies {
         compile project(':module-common')
+        compile project(':module-product')
     }
 }
 
 project(':module-order') {
     dependencies {
         compile project(':module-common')
-    }
-}
-
-project(':module-common') {
-    dependencies {
-        compile project(':module-api')
-        compile project(':module-menu')
-        compile project(':module-order')
-        compile project(':module-product')
     }
 }
 

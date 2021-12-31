@@ -15,10 +15,16 @@ import java.util.List;
 public class TableGroupService {
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
+    private final OrderRepository orderRepository;
+    private final OrderTableValidator orderTableValidator;
 
-    public TableGroupService(final OrderTableRepository orderTableRepository, final TableGroupRepository tableGroupRepository) {
+
+    public TableGroupService(final OrderTableRepository orderTableRepository, final TableGroupRepository tableGroupRepository,
+                             final OrderRepository orderRepository, final OrderTableValidator orderTableValidator) {
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
+        this.orderRepository = orderRepository;
+        this.orderTableValidator = orderTableValidator;
     }
 
     @Transactional
@@ -33,6 +39,14 @@ public class TableGroupService {
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
                 .orElseThrow(() -> new InputTableDataException(InputTableDataErrorCode.THE_TABLE_GROUP_CAN_NOT_FIND));
+
+        List<OrderTable> orderTableBasket = orderTableRepository.findAllByTableGroupId(tableGroup.getId());
+        OrderTables orderTables = new OrderTables(orderTableBasket);
+        List<Long> orderTableIds = orderTables.getOrderTableIds();
+
+        List<Order> orders = orderRepository.findAllByOrderTableIdIn(orderTableIds);
+        orderTableValidator.cancelTableGroup(orders);
         tableGroup.cancleGroup();
+
     }
 }

@@ -10,7 +10,8 @@ import java.math.BigDecimal;
 @Embeddable
 public class Price {
     private static final int MIN_PRICE = 0;
-    @Column
+
+    @Column(name = "price", nullable = false)
     private BigDecimal price;
 
     protected Price() {

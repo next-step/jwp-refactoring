@@ -39,6 +39,11 @@ public class TableGroup extends BaseEntity {
         return orderTables.getOrderTables();
     }
 
+    public void cancleGroup(List<Order> orders, OrderTableValidator orderTableValidator) {
+        orderTableValidator.cancelTableGroup(orders);
+        this.orderTables.cancleGroup();
+    }
+
     public void cancleGroup() {
         this.orderTables.cancleGroup();
     }

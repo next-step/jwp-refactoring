@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 @DisplayName("Table 서비스 테스트")
-@SpringBootTest
+@SpringBootTest(classes = OrderTableValidator.class)
 class TableServiceTest {
 
     @Mock

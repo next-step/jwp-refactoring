@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @DisplayName("주문 서비스 테스트")
-@SpringBootTest
+@SpringBootTest(classes = OrderValidator.class)
 class OrderServiceTest {
 
     @Mock

@@ -5,6 +5,7 @@ import javax.persistence.OneToMany;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class OrderTables implements Iterable<OrderTable> {
@@ -22,6 +23,12 @@ public class OrderTables implements Iterable<OrderTable> {
 
     public List<OrderTable> getOrderTables() {
         return orderTables;
+    }
+
+    public List<Long> getOrderTableIds(){
+        return this.orderTables.stream()
+                .map(orderTable -> orderTable.getId())
+                .collect(Collectors.toList());
     }
 
     public void cancleGroup(){
