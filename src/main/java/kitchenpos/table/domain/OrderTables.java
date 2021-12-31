@@ -42,4 +42,8 @@ public class OrderTables {
     public void validateOrderTable() {
         orderTables.forEach(OrderTable::availableCreate);
     }
+
+    public void unGroup() {
+        orderTables.forEach(OrderTable::unGroup);
+    }
 }

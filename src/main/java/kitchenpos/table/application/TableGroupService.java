@@ -40,12 +40,10 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroup(tableGroupId);
-        validateOrder(orderTables);
+        OrderTables orderTables = new OrderTables(orderTableRepository.findAllByTableGroup(tableGroupId));
+        validateOrder(orderTables.getOrderTables());
 
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.unGroup();
-        }
+        orderTables.unGroup();
     }
 
     private void validateOrder(List<OrderTable> orderTables) {
