@@ -24,7 +24,7 @@ public class MenuResponse {
     }
 
     public static MenuResponse of(Menu menu) {
-        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(), menu.getMenuGroup(), createMenuProducts(menu.getMenuProducts()));
+        return new MenuResponse(menu.getId(), menu.getName(), menu.toBigDecimal(), menu.getMenuGroup(), createMenuProducts(menu.getMenuProducts()));
     }
 
     private static List<MenuProductResponse> createMenuProducts(List<MenuProduct> menuProducts) {

@@ -24,6 +24,7 @@ class MenuServiceTest {
     private final MenuGroupRepository menuGroupRepository = new FakeMenuGroupRepository();
     private final ProductRepository productRepository = new FakeProductRepository();
     private final MenuService menuService = new MenuService(menuRepository, menuGroupRepository, productRepository);
+    private final MenuProductRepository menuProductRepository = new FakeMenuProductRepository();
 
     @DisplayName("가격이 음수면 예외가 발생한다.")
     @Test

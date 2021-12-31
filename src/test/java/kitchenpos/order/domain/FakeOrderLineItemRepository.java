@@ -8,8 +8,8 @@ public class FakeOrderLineItemRepository implements OrderLineItemRepository {
     private Long key = 1L;
 
     @Override
-    public OrderLineItem save(OrderLineItem orderLineItem) {
-        orderLineItem.createId(key);
+    public OrderLineItem save(OrderLineItem inputOrderLineItem) {
+        OrderLineItem orderLineItem = new OrderLineItem(key, inputOrderLineItem.getOrder(), inputOrderLineItem.getMenu(), inputOrderLineItem.getQuantity());
         map.put(key, orderLineItem);
         key++;
         return orderLineItem;

@@ -11,8 +11,8 @@ public class FakeMenuProductRepository implements MenuProductRepository {
     private Long key = 1L;
 
     @Override
-    public MenuProduct save(MenuProduct menuProduct) {
-        menuProduct.createId(key);
+    public MenuProduct save(MenuProduct inputMenuProduct) {
+        MenuProduct menuProduct = new MenuProduct(key, inputMenuProduct.getMenu(), inputMenuProduct.getProduct(), inputMenuProduct.getQuantity());
         map.put(key, menuProduct);
         key++;
         return menuProduct;

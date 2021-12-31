@@ -38,6 +38,13 @@ public class OrderTable {
         this.empty = empty;
     }
 
+    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+        this.id = id;
+        this.tableGroup = tableGroup;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
     public static OrderTable of(int numberOfGuests, boolean empty) {
         return new OrderTable(numberOfGuests, empty);
     }
@@ -97,10 +104,6 @@ public class OrderTable {
 
     public boolean isEmpty() {
         return empty;
-    }
-
-    public void createId(Long id) {
-        this.id = id;
     }
 
 }

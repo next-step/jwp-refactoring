@@ -8,8 +8,8 @@ public class FakeProductRepository implements ProductRepository {
     private Long key = 1L;
 
     @Override
-    public Product save(Product product) {
-        product.createId(key);
+    public Product save(Product inputProduct) {
+        Product product = new Product(key, inputProduct.getName(), inputProduct.toBigDecimal());
         map.put(key, product);
         key++;
         return product;

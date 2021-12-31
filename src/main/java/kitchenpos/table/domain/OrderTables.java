@@ -1,5 +1,6 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.exception.NotCreateTableGroupException;
 import kitchenpos.table.exception.TableErrorCode;
 
@@ -7,6 +8,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class OrderTables {
@@ -38,5 +40,11 @@ public class OrderTables {
 
     public List<OrderTable> getOrderTables() {
         return orderTables;
+    }
+
+    public List<OrderTableResponse> getOrderTableResponses() {
+        return orderTables.stream()
+                .map(orderTable -> OrderTableResponse.of(orderTable))
+                .collect(Collectors.toList());
     }
 }

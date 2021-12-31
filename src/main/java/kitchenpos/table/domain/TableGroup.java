@@ -29,11 +29,18 @@ public class TableGroup {
         this.id = id;
     }
 
+    public TableGroup(Long id, LocalDateTime createdDate, OrderTables orderTables) {
+        this.id = id;
+        this.createdDate = createdDate;
+        this.orderTables = orderTables;
+    }
+
     public static TableGroup of(Long id) {
         return new TableGroup(id);
     }
 
     public static TableGroup create(List<OrderTable> savedOrderTables) {
+
         TableGroup tableGroup = new TableGroup(savedOrderTables);
         tableGroup.assignTable();
         return tableGroup;
@@ -51,11 +58,8 @@ public class TableGroup {
         return createdDate;
     }
 
-    public List<OrderTable> getOrderTables() {
-        return orderTables.getOrderTables();
+    public OrderTables getOrderTables() {
+        return orderTables;
     }
 
-    public void createId(Long id) {
-        this.id = id;
-    }
 }

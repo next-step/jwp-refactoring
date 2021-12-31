@@ -5,14 +5,27 @@ import java.util.stream.Collectors;
 
 public class FakeMenuRepository implements MenuRepository {
     private Map<Long, Menu> map = new HashMap<>();
-    private Long key = 1L;
+    private Long menuKey = 1L;
+    private Long menuProductKey = 1L;
 
     @Override
-    public Menu save(Menu menu) {
-        menu.createId(key);
-        map.put(key, menu);
-        key++;
+    public Menu save(Menu inputMenu) {
+        Menu menu = new Menu(menuKey, inputMenu.getName(), inputMenu.toBigDecimal(), inputMenu.getMenuGroup(), createMenuProductList(inputMenu));
+        map.put(menuKey, menu);
+        menuKey++;
         return menu;
+    }
+
+    private List<MenuProduct> createMenuProductList(Menu inputMenu) {
+        List<MenuProduct> menuProducts = new ArrayList<>();
+        Menu menu = new Menu(menuKey, inputMenu.getName(), inputMenu.toBigDecimal(), inputMenu.getMenuGroup(), inputMenu.getMenuProducts());
+
+        for (MenuProduct inputMenuProduct : inputMenu.getMenuProducts()) {
+            MenuProduct menuProduct = new MenuProduct(menuProductKey, menu, inputMenuProduct.getProduct(), inputMenuProduct.getQuantity());
+            menuProducts.add(menuProduct);
+            menuProductKey++;
+        }
+        return menuProducts;
     }
 
     @Override

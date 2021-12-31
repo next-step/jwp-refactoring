@@ -47,6 +47,11 @@ public class Product {
         return new Product(id, name, price);
     }
 
+    public BigDecimal getTotalPrice(Long quantity) {
+        Price multiplyPrice = this.price.multiply(quantity);
+        return multiplyPrice.getPrice();
+    }
+
     public Long getId() {
         return id;
     }
@@ -55,16 +60,8 @@ public class Product {
         return name;
     }
 
-    public BigDecimal getPrice() {
-        return price.toBigDecimal();
+    public BigDecimal toBigDecimal() {
+        return price.getPrice();
     }
 
-    public void createId(Long id) {
-        this.id = id;
-    }
-
-    public BigDecimal getTotalPrice(Long quantity) {
-        Price multiplyPrice = this.price.multiply(quantity);
-        return multiplyPrice.toBigDecimal();
-    }
 }

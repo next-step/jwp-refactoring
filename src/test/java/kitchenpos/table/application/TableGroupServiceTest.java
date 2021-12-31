@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class TableGroupServiceTest {
     private final OrderRepository orderRepository = new FakeOrderRepository();
     private final OrderTableRepository orderTableRepository = new FakeOrderTableRepository();
-    private final TableGroupRepository tableGroupRepository = new FakeTableGroupRepository();
+    private final TableGroupRepository tableGroupRepository = new FakeTableGroupRepository(orderTableRepository);
     private final TableGroupService tableGroupService = new TableGroupService(orderRepository, orderTableRepository, tableGroupRepository);
 
     private Long 저장안된_주문테이블ID_ONE = 1L;
@@ -93,19 +93,10 @@ class TableGroupServiceTest {
         OrderTable savedOrderTable2 = orderTableRepository.save(OrderTable.of(20, true));
         TableGroupRequest tableGroup = TableGroupRequest.of(Arrays.asList(savedOrderTable1.getId(), savedOrderTable2.getId()));
         TableGroupResponse result = tableGroupService.create(tableGroup);
-        Order order1 = new Order(1L,
-                savedOrderTable1,
-                OrderStatus.COOKING.name(),
-                LocalDateTime.now(),
-                Arrays.asList(OrderLineItem.of(null, 20))
-        );
+
+        Order order1 = createOrder(savedOrderTable1, OrderStatus.COOKING);
         orderRepository.save(order1);
-        Order order2 = new Order(1L,
-                savedOrderTable2,
-                OrderStatus.MEAL.name(),
-                LocalDateTime.now(),
-                Arrays.asList(OrderLineItem.of(null, 20))
-        );
+        Order order2 = createOrder(savedOrderTable2, OrderStatus.MEAL);
         orderRepository.save(order2);
 
         assertThatThrownBy(() -> tableGroupService.ungroup(result.getId()))
@@ -125,26 +116,28 @@ class TableGroupServiceTest {
                 () -> assertThat(tableGroup.getOrderTableIds()).contains(savedOrderTable2.getId())
         );
 
-        Order order1 = new Order(1L,
-                savedOrderTable1,
-                OrderStatus.COMPLETION.name(),
-                LocalDateTime.now(),
-                Arrays.asList(OrderLineItem.of(null, 20))
-        );
+        Order order1 = createOrder(savedOrderTable1, OrderStatus.COMPLETION);
         orderRepository.save(order1);
-        Order order2 = new Order(1L,
-                savedOrderTable2,
-                OrderStatus.COMPLETION.name(),
-                LocalDateTime.now(),
-                Arrays.asList(OrderLineItem.of(null, 20))
-        );
+        Order order2 = createOrder(savedOrderTable2, OrderStatus.COMPLETION);
         orderRepository.save(order2);
 
         tableGroupService.ungroup(result.getId());
 
+        OrderTable resultOrderTable1 = orderTableRepository.findById(savedOrderTable1.getId()).get();
+        OrderTable resultOrderTable2 = orderTableRepository.findById(savedOrderTable2.getId()).get();
+
         assertAll(
-                () -> assertThat(savedOrderTable1.getTableGroup()).isNull(),
-                () -> assertThat(savedOrderTable2.getTableGroup()).isNull()
+                () -> assertThat(resultOrderTable1.getTableGroup()).isNull(),
+                () -> assertThat(resultOrderTable2.getTableGroup()).isNull()
+        );
+    }
+
+    private Order createOrder(OrderTable savedOrderTable1, OrderStatus completion) {
+        return new Order(1L,
+                orderTableRepository.findById(savedOrderTable1.getId()).get(),
+                completion.name(),
+                LocalDateTime.now(),
+                Arrays.asList(OrderLineItem.of(null, 20))
         );
     }
 

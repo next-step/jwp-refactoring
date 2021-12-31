@@ -8,8 +8,8 @@ public class FakeMenuGroupRepository implements MenuGroupRepository {
     private Long key = 1L;
 
     @Override
-    public MenuGroup save(MenuGroup menuGroup) {
-        menuGroup.createId(key);
+    public MenuGroup save(MenuGroup inputMenuGroup) {
+        MenuGroup menuGroup = MenuGroup.of(key, inputMenuGroup.getName());
         map.put(key, menuGroup);
         key++;
         return menuGroup;

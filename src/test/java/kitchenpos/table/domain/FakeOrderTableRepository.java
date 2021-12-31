@@ -8,12 +8,12 @@ public class FakeOrderTableRepository implements OrderTableRepository {
     private Long key = 1L;
 
     @Override
-    public OrderTable save(OrderTable orderTable) {
-        if (map.containsKey(orderTable.getId())) {
-            map.put(orderTable.getId(), orderTable);
-            return orderTable;
+    public OrderTable save(OrderTable inputOrderTable) {
+        if (map.containsKey(inputOrderTable.getId())) {
+            map.put(inputOrderTable.getId(), inputOrderTable);
+            return inputOrderTable;
         }
-        orderTable.createId(key);
+        OrderTable orderTable = new OrderTable(key, inputOrderTable.getTableGroup(), inputOrderTable.getNumberOfGuests(), inputOrderTable.isEmpty());
         map.put(key, orderTable);
         key++;
         return orderTable;

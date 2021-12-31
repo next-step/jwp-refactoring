@@ -99,8 +99,4 @@ public class Order {
         return orderLineItems.getOrderLineItems();
     }
 
-    public void createId(Long id) {
-        this.id = id;
-    }
-
 }
