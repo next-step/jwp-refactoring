@@ -1,16 +1,12 @@
 package kitchenpos.table.ui;
 
-import kitchenpos.common.fixtrue.OrderTableFixture;
-import kitchenpos.common.fixtrue.TableGroupFixture;
 import kitchenpos.common.ui.RestControllerTest;
 import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.order.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
-import kitchenpos.table.ui.TableGroupRestController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,10 +56,9 @@ class TableGroupRestControllerTest extends RestControllerTest {
         // given
         OrderTable firstOrderTable = OrderTable.of(2, true);
         OrderTable secondOrderTable = OrderTable.of(2, true);
-        TableGroup tableGroup = TableGroup.from(
-                OrderTables.from(Arrays.asList(firstOrderTable, secondOrderTable)));
+        TableGroup tableGroup = TableGroup.from();
 
-        given(tableGroupService.create(any())).willReturn(TableGroupResponse.from(tableGroup));
+        given(tableGroupService.create(any())).willReturn(TableGroupResponse.from(tableGroup, Arrays.asList(firstOrderTable, secondOrderTable)));
 
         // when
         ResultActions actions = mockMvc.perform(post(API_TABLE_GROUP_ROOT)
@@ -80,12 +75,7 @@ class TableGroupRestControllerTest extends RestControllerTest {
 
     @Test
     void 단체_지정_해제() throws Exception {
-        // given
-        OrderTable firstOrderTable = OrderTableFixture.of(2, true);
-        OrderTable secondOrderTable = OrderTableFixture.of(2, true);
-        TableGroupFixture.from(OrderTables.from(Arrays.asList(firstOrderTable, secondOrderTable)));
-
-        // when
+        // given - when
         ResultActions actions = mockMvc.perform(delete(API_TABLE_GROUP_ROOT + "/" + 1L))
                 .andDo(print());
 

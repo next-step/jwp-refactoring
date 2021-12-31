@@ -1,7 +1,6 @@
 package kitchenpos.table.domain;
 
 import kitchenpos.common.fixtrue.OrderTableFixture;
-import kitchenpos.order.domain.OrderTables;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("단체 지정 테스트")
 class TableGroupTest {
@@ -27,13 +25,13 @@ class TableGroupTest {
 
     @Test
     void 단체_지정() {
-        // given - when
-        TableGroup actual = TableGroup.from(orderTables);
+        // given
+        TableGroup actual = TableGroup.from();
+
+        // when
+        actual.group(orderTables);
 
         // then
-        assertAll(() -> {
-            assertThat(actual).isNotNull();
-            assertThat(actual.getOrderTables()).hasSize(2);
-        });
+        assertThat(actual).isNotNull();
     }
 }

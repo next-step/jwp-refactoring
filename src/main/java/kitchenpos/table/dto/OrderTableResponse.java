@@ -25,12 +25,12 @@ public class OrderTableResponse {
     }
 
     public static OrderTableResponse from(OrderTable orderTable) {
-        if (Objects.isNull(orderTable.getTableGroup())) {
+        if (Objects.isNull(orderTable.getTableGroupId())) {
             return new OrderTableResponse(orderTable.getId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
 
         }
         return new OrderTableResponse(orderTable.getId(),
-                orderTable.getTableGroup().getId(),
+                orderTable.getTableGroupId(),
                 orderTable.getNumberOfGuests(),
                 orderTable.isEmpty());
     }

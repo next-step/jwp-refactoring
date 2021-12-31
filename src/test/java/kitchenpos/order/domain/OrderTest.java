@@ -33,7 +33,7 @@ class OrderTest {
     void setUp() {
         Product 후라이드치킨 = ProductFixture.of("후라이드치킨", BigDecimal.valueOf(16000));
         MenuGroup 두마리치킨 = MenuGroupFixture.from("두마리치킨");
-        MenuProduct 후라이드_메뉴_상품 = MenuProductFixture.of(후라이드치킨, 2);
+        MenuProduct 후라이드_메뉴_상품 = MenuProductFixture.of(후라이드치킨.getId(), 2);
         후라이드_후라이드 = MenuFixture.of(
                 "후라이드+후라이드",
                 BigDecimal.valueOf(31000),
@@ -46,7 +46,7 @@ class OrderTest {
     @Test
     void 주문_발생_시_주문상태는_조리상태이다() {
         // given
-        Order actual = Order.of(주문_테이블, 주문_항목들);
+        Order actual = Order.of(1L, 주문_항목들);
 
         assertAll(() -> {
             assertThat(actual).isNotNull();
@@ -57,7 +57,7 @@ class OrderTest {
     @Test
     void 주문_상태를_변경한다() {
         // given
-        Order actual = Order.of(주문_테이블, 주문_항목들);
+        Order actual = Order.of(1L, 주문_항목들);
 
         // when
         actual.changeOrderStatus(OrderStatus.MEAL);
@@ -69,7 +69,7 @@ class OrderTest {
     @Test
     void 주문_상태가_계산_완료_상태이면_변경할_수_없다() {
         // given
-        Order actual = Order.of(주문_테이블, 주문_항목들);
+        Order actual = Order.of(1L, 주문_항목들);
         actual.changeOrderStatus(OrderStatus.COMPLETION);
 
         // when

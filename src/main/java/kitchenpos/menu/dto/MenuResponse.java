@@ -24,13 +24,13 @@ public class MenuResponse {
     }
 
     public static MenuResponse from(Menu menu) {
-        List<MenuProductResponse> menuProducts = toMenuProductResponse(menu.getMenuProducts());
+        List<MenuProductResponse> menuProducts = toMenuProductResponse(menu.getId(), menu.getMenuProducts());
         return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(), menu.getMenuGroup().getId(), menuProducts);
     }
 
-    private static List<MenuProductResponse> toMenuProductResponse(List<MenuProduct> menuProducts) {
+    private static List<MenuProductResponse> toMenuProductResponse(Long id, List<MenuProduct> menuProducts) {
         return menuProducts.stream()
-                .map(MenuProductResponse::from)
+                .map(menuProduct -> MenuProductResponse.of(id, menuProduct))
                 .collect(Collectors.toList());
     }
 

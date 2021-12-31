@@ -8,9 +8,11 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.Product;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,7 +39,7 @@ public class MenuService {
                 menuRequest.getName(),
                 menuRequest.getPrice(),
                 menuGroupService.findMenuGroupById(menuRequest.getMenuGroupId()),
-                findMenuProducts(menuRequest.getMenuProducts()));
+                findMenuProducts(menuRequest.getMenuProducts(), menuRequest.getPrice()));
         return MenuResponse.from(menuRepository.save(savedMenu));
     }
 
@@ -57,12 +59,31 @@ public class MenuService {
                 .collect(Collectors.toList());
     }
 
-    private MenuProducts findMenuProducts(List<MenuProductRequest> menuProducts) {
+    private MenuProducts findMenuProducts(List<MenuProductRequest> menuProducts, BigDecimal menuPrice) {
+        validateTotalPrice(menuProducts, menuPrice);
+
         return MenuProducts.from(menuProducts
                 .stream()
-                .map(menuProductRequest ->
-                        MenuProduct.of(productService
-                                .findProductById(menuProductRequest.getProductId()), menuProductRequest.getQuantity()))
+                .map(menuProductRequest -> {
+                    Product product = productService.findProductById(menuProductRequest.getProductId());
+                    return MenuProduct.of(product.getId(), menuProductRequest.getQuantity());
+                })
                 .collect(Collectors.toList()));
+    }
+
+    private void validateTotalPrice(List<MenuProductRequest> menuProducts, BigDecimal menuPrice) {
+        if (menuPrice.compareTo(calculatorTotalPrice(menuProducts)) > 0) {
+            throw new IllegalArgumentException("메뉴의 가격은 " +
+                    "메뉴 상품들의 수량 * 상품의 가격을 모두 더한 금액 보다 작거나 같아야 합니다.");
+        }
+    }
+
+    private BigDecimal calculatorTotalPrice(List<MenuProductRequest> menuProducts) {
+        return menuProducts.stream()
+                .map(menuProduct -> {
+                    Product product = productService.findProductById(menuProduct.getProductId());
+                    return product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity()));
+                })
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

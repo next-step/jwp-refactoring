@@ -27,8 +27,8 @@ public class OrderResponse {
     }
 
     public static OrderResponse from(Order order) {
-        List<OrderLineItemResponse> orderLineItemResponses = toOrderLineItemResponse(order.getOrderLineItems());
-        return new OrderResponse(order.getId(), order.getOrderTable().getId(), order.getOrderStatus().name(), order.getOrderedTime(), orderLineItemResponses);
+        List<OrderLineItemResponse> orderLineItemResponses = toOrderLineItemResponse(order.getId(), order.getOrderLineItems());
+        return new OrderResponse(order.getId(), order.getOrderTableId(), order.getOrderStatus().name(), order.getOrderedTime(), orderLineItemResponses);
     }
 
     public Long getId() {
@@ -51,9 +51,9 @@ public class OrderResponse {
         return orderLineItems;
     }
 
-    private static List<OrderLineItemResponse> toOrderLineItemResponse(List<OrderLineItem> orderLineItems) {
+    private static List<OrderLineItemResponse> toOrderLineItemResponse(Long id, List<OrderLineItem> orderLineItems) {
         return orderLineItems.stream()
-                .map(OrderLineItemResponse::from)
+                .map(orderLineItem -> OrderLineItemResponse.of(id, orderLineItem))
                 .collect(Collectors.toList());
     }
 }

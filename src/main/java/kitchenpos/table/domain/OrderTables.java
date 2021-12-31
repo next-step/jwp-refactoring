@@ -1,25 +1,13 @@
-package kitchenpos.order.domain;
+package kitchenpos.table.domain;
 
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.TableGroup;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Embeddable;
-import javax.persistence.OneToMany;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@Embeddable
 public class OrderTables {
 
     private static final int TABLE_MIN_SIZE = 2;
 
-    @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderTable> orderTables = new ArrayList<>();
-
-    protected OrderTables() {
-    }
+    private List<OrderTable> orderTables;
 
     private OrderTables(List<OrderTable> orderTables) {
         validateSize(orderTables);
@@ -32,8 +20,8 @@ public class OrderTables {
         return new OrderTables(orderTables);
     }
 
-    public void group(TableGroup tableGroup) {
-        orderTables.forEach(orderTable -> orderTable.group(tableGroup));
+    public void group(Long tableGroupId) {
+        orderTables.forEach(orderTable -> orderTable.group(tableGroupId));
     }
 
     public List<OrderTable> getOrderTables() {

@@ -19,10 +19,6 @@ public class OrderLineItem {
     private Long seq;
 
     @ManyToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_order_line_item_orders"))
-    private Order order;
-
-    @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "fk_order_line_item_menu"))
     private Menu menu;
 
@@ -41,16 +37,9 @@ public class OrderLineItem {
         return new OrderLineItem(menu, quantity);
     }
 
-    public void changeOrder(Order order) {
-        this.order = order;
-    }
 
     public Long getSeq() {
         return seq;
-    }
-
-    public Order getOrder() {
-        return order;
     }
 
     public Menu getMenu() {

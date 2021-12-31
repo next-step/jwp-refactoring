@@ -4,12 +4,10 @@ import kitchenpos.order.domain.Order;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,17 +19,17 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
-    private TableGroup tableGroup;
+    @Column
+    private Long tableGroupId;
 
     @Column(nullable = false)
     private int numberOfGuests;
 
     private boolean empty;
 
-    @OneToMany(mappedBy = "orderTable")
-    private List<Order> orders = new ArrayList<>();
+    @OneToMany
+	@JoinColumn(name = "orderTableId")
+	private List<Order> orders = new ArrayList<>();
 
     protected OrderTable() {
     }
@@ -40,6 +38,14 @@ public class OrderTable {
         validateNumberOfGuests(numberOfGuests);
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
+        this.orders = new ArrayList<>();
+    }
+
+    private OrderTable(int numberOfGuests, boolean empty, List<Order> orders) {
+        validateNumberOfGuests(numberOfGuests);
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+        this.orders = orders;
     }
 
     private void validateNumberOfGuests(int numberOfGuests) {
@@ -52,8 +58,12 @@ public class OrderTable {
         return new OrderTable(numberOfGuests, empty);
     }
 
+    public static OrderTable ofOrder(int numberOfGuests, boolean empty, List<Order> orders) {
+        return new OrderTable(numberOfGuests, empty, orders);
+    }
+
     public void changeEmpty(boolean empty) {
-        if (Objects.nonNull(tableGroup)) {
+        if (isGrouped()) {
             throw new IllegalArgumentException("단체 지정 된 테이블은 상태를 변경할 수 없습니다.");
         }
 
@@ -61,22 +71,22 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public void group(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
+    public void group(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
         grouped();
     }
 
     public void ungroup() {
         validateOrderStatus();
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 
     public Long getId() {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public int getNumberOfGuests() {
@@ -88,11 +98,7 @@ public class OrderTable {
     }
 
     public boolean isGrouped() {
-        return Objects.nonNull(tableGroup);
-    }
-
-    public boolean isNotEmpty() {
-        return !empty;
+        return Objects.nonNull(tableGroupId);
     }
 
     public void changeNumberOfGuests(int numberOfGuests) {

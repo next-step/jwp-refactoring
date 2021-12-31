@@ -2,7 +2,7 @@ package kitchenpos.table.application;
 
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.order.domain.OrderTables;
+import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupRequest;
@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 @Service
 public class TableService {
+
     private final OrderTableRepository orderTableRepository;
 
     public TableService(final OrderTableRepository orderTableRepository) {
@@ -38,7 +39,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("주문 테이블이 존재하지 않습니다."));
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
         return OrderTableResponse.from(savedOrderTable);
     }
@@ -60,7 +61,7 @@ public class TableService {
         return OrderTables.from(savedOrderTable);
     }
 
-    public List<OrderTable> findAllByTableGroupId(final Long tableGroupId) {
-        return orderTableRepository.findAllByTableGroupId(tableGroupId);
+    public OrderTables findOrderTables(final Long tableGroupId) {
+        return OrderTables.from(orderTableRepository.findAllByTableGroupId(tableGroupId));
     }
 }

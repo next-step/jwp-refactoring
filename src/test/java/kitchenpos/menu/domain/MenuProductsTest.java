@@ -12,7 +12,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -33,7 +32,7 @@ class MenuProductsTest {
     @Test
     void 메뉴_상품들_생성() {
         // given - when
-        MenuProducts actual = MenuProducts.from(Collections.singletonList(MenuProduct.of(후라이드치킨, 2L)));
+        MenuProducts actual = MenuProducts.from(Collections.singletonList(MenuProduct.of(후라이드치킨.getId(), 2L)));
 
         // then
         Assertions.assertThat(actual).isNotNull();
@@ -49,33 +48,5 @@ class MenuProductsTest {
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(throwingCallable)
                 .withMessage("메뉴 상품은 필수입니다.");
-    }
-
-    @Test
-    void 메뉴_상품들의_총합을_구한다() {
-        // given
-        List<MenuProduct> menuProducts = Arrays.asList(
-                MenuProduct.of(후라이드치킨, 2L),
-                MenuProduct.of(양념치킨, 2L));
-
-        // when
-        BigDecimal actual = MenuProducts.from(menuProducts).calculatorTotalPrice();
-
-        // then
-        Assertions.assertThat(actual).isEqualTo(BigDecimal.valueOf(60000));
-    }
-
-    @Test
-    void 메뉴_변경시_메뉴는_필수이다() {
-        // given
-        MenuProducts actual = MenuProducts.from(Collections.singletonList(MenuProduct.of(후라이드치킨, 2L)));
-
-        // when
-        ThrowableAssert.ThrowingCallable throwingCallable = () -> actual.changeMenu(null);
-
-        // then
-        Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(throwingCallable)
-                .withMessage("메뉴는 필수입니다.");
     }
 }
