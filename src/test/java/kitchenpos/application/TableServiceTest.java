@@ -59,7 +59,7 @@ class TableServiceTest {
         final OrderTable 주문테이블 = TestOrderTableFactory.주문_테이블_조회됨(1L, 10, false);
 
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(주문테이블));
-        given(orderRepository.existsByOrderTableAndOrderStatusIn(any(), any())).willReturn(false);
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(false);
 
         final OrderTableResponse actual = tableService.changeEmpty(1L, TestOrderTableFactory.주문_빈테이블_요청());
 
