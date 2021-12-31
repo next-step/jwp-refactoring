@@ -1,8 +1,8 @@
 package kitchenpos.validator;
 
-import kitchenpos.common.exception.NotFoundMenuException;
-import kitchenpos.common.exception.NotFoundOrderTableException;
-import kitchenpos.common.exception.NotOrderedEmptyTableException;
+import kitchenpos.exception.NotFoundMenuException;
+import kitchenpos.exception.NotFoundOrderTableException;
+import kitchenpos.exception.NotOrderedEmptyTableException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

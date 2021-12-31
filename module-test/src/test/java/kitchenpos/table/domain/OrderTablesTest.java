@@ -1,7 +1,7 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.common.exception.InvalidOrderTableException;
-import kitchenpos.common.exception.InvalidTableGroupSizeException;
+import kitchenpos.exception.InvalidOrderTableException;
+import kitchenpos.exception.InvalidTableGroupSizeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

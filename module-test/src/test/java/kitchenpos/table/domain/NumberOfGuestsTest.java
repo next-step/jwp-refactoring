@@ -1,6 +1,6 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.common.exception.GuestsNumberNegativeException;
+import kitchenpos.exception.GuestsNumberNegativeException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

@@ -30,7 +30,10 @@ subprojects {
     }
 }
 
-project(':module-common') {
+project(':module-domain') {
+    bootJar { enabled = false }
+    jar {enabled = true}
+
     dependencies {
     }
 }
@@ -42,14 +45,19 @@ project(':module-web') {
 }
 
 project(':module-api') {
+    bootJar { enabled = false }
+    jar {enabled = true}
+
     dependencies {
-        compile project(':module-common')
+        compile project(':module-domain')
     }
 }
 
 project(':module-test') {
+    bootJar { enabled = false }
+    jar {enabled = true}
+
     dependencies {
-        compile project(':module-common')
-        compile project(':module-api')
+        compile project(':module-web')
     }
 }

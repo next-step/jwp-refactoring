@@ -1,6 +1,6 @@
 package kitchenpos.product.application;
 
-import kitchenpos.common.exception.InvalidPriceException;
+import kitchenpos.exception.InvalidPriceException;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;

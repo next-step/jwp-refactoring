@@ -1,8 +1,8 @@
 package kitchenpos.validator;
 
-import kitchenpos.common.domain.Price;
-import kitchenpos.common.exception.NotFoundMenuGroupException;
-import kitchenpos.common.exception.NotFoundProductException;
+import kitchenpos.common.Price;
+import kitchenpos.exception.NotFoundMenuGroupException;
+import kitchenpos.exception.NotFoundProductException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import org.junit.jupiter.api.DisplayName;

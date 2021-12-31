@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.common.exception.OverMenuPriceException;
+import kitchenpos.exception.OverMenuPriceException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

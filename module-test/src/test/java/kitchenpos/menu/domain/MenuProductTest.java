@@ -8,7 +8,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import java.math.BigDecimal;
 import java.util.Arrays;
 
-import static kitchenpos.menu.domain.MenuTest.치킨세트;
 import static kitchenpos.product.domain.ProductTest.후라이드_상품;
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -175,7 +175,7 @@ ___
 - gradle 멀티모듈 구성
   - [X] module-api
     - service, validator
-  - [X] module-common
+  - [X] module-domain
     - domain, repository, dto, exception
   - [X] module-test
     - test
