@@ -7,7 +7,6 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.ordertable.application.OrderTableService;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
@@ -36,7 +35,7 @@ class OrderServiceTest {
     private OrderRepository orderRepository;
 
     @Mock
-    private OrderTableService orderTableService;
+    private OrderValidator orderValidator;
 
     private OrderService orderService;
 
@@ -49,7 +48,7 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(orderRepository, orderTableService);
+        orderService = new OrderService(orderRepository, orderValidator);
         주문_테이블_1번 = new OrderTable(1L, null, 3);
         주문_테이블_2번 = new OrderTable(null, 0);
 
@@ -63,7 +62,6 @@ class OrderServiceTest {
     @DisplayName("주문을 등록할 수 있다.")
     @Test
     void createOrderTest() {
-        when(orderTableService.findOrderTableById(any())).thenReturn(주문_테이블_1번);
         when(orderRepository.save(any())).thenReturn(주문);
 
         // when
@@ -74,36 +72,6 @@ class OrderServiceTest {
                 () -> assertThat(createdOrder.getOrderLineItems().get(0)).isEqualTo(주문_항목),
                 () -> assertThat(createdOrder.getOrderLineItems().get(1)).isEqualTo(주문_항목2)
         );
-    }
-
-    @DisplayName("주문 테이블이 존재해야 한다. (주문 테이블이 존재해야 한다)")
-    @Test
-    void createOrderExistOrderTableExceptionTest() {
-        assertThatThrownBy(() -> {
-            // given
-            final OrderRequest emptyOrderTableItem = new OrderRequest(null, Lists.newArrayList(주문_항목, 주문_항목2));
-
-            // when
-            OrderResponse createdOrder = 주문_요청_한다(emptyOrderTableItem);
-
-            // then
-        }).isInstanceOf(NotFoundEntityException.class);
-    }
-
-    @DisplayName("주문 테이블이 존재해야 한다. (주문 테이블이 빈 상태가 아니어야 한다)")
-    @Test
-    void createOrderNotEmptyOrderTableExceptionTest() {
-        assertThatThrownBy(() -> {
-            when(orderTableService.findOrderTableById(any())).thenReturn(주문_테이블_2번);
-
-            // given
-            final OrderRequest emptyOrderTableItem = new OrderRequest(주문_테이블_2번.getId(), Lists.newArrayList(주문_항목, 주문_항목2));
-
-            // when
-            OrderResponse createdOrder = 주문_요청_한다(emptyOrderTableItem);
-
-            // then
-        }).isInstanceOf(EmptyOrderTableException.class);
     }
 
     @DisplayName("주문 목록을 조회한다.")
@@ -142,20 +110,6 @@ class OrderServiceTest {
 
             // then
         }).isInstanceOf(NotFoundEntityException.class);
-    }
-
-    @DisplayName("주문 상태는 완료가 아니어야 한다.")
-    @Test
-    void changeOrderNotCompleteStatusExceptionTest() {
-        assertThatThrownBy(() -> {
-            // given
-            주문.changeOrderStatus(OrderStatus.COMPLETION);
-
-            // when
-            OrderResponse changedOrders = orderService.changeOrderStatus(2L, 주문_요청);
-
-            // then
-        }).isInstanceOf(OrderStatusCompletedException.class);
     }
 
     private OrderResponse 주문_요청_한다(OrderRequest orderRequest) {

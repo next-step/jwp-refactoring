@@ -46,7 +46,6 @@ public class Order {
     }
 
     public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        validateOrder(orderTable);
         this.orderTable = orderTable;
         this.orderStatus = OrderStatus.NONE;
         this.orderedTime = LocalDateTime.now();
@@ -54,21 +53,11 @@ public class Order {
     }
 
     public Order(Long id, OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        validateOrder(orderTable);
         this.id = id;
         this.orderTable = orderTable;
         this.orderStatus = OrderStatus.NONE;
         this.orderedTime = LocalDateTime.now();
         addOrderLineItems(orderLineItems);
-    }
-
-    private void validateOrder(OrderTable orderTable) {
-        orderTable = Optional.ofNullable(orderTable)
-                .orElseThrow(NotFoundEntityException::new);
-
-        if (orderTable.isEmpty()) {
-            throw new EmptyOrderTableException();
-        }
     }
 
     private void addOrderLineItems(List<OrderLineItem> orderLineItems) {
@@ -103,10 +92,6 @@ public class Order {
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
-        if (OrderStatus.isCompleted(orderStatus)) {
-            throw new OrderStatusCompletedException();
-        }
-
         this.orderStatus = orderStatus;
     }
 }
