@@ -1,10 +1,10 @@
 package kitchenpos.application.tablegroup;
 
-import kitchenpos.domain.order.validator.OrderTableGroupUnGroupValidator;
-import kitchenpos.domain.ordertable.domain.OrderTable;
-import kitchenpos.domain.ordertable.validator.OrderTableTableGroupCreateValidator;
-import kitchenpos.domain.tablegroup.domain.TableGroup;
-import kitchenpos.domain.tablegroup.domain.TableGroupRepository;
+import kitchenpos.core.order.validator.OrderTableGroupUnGroupValidator;
+import kitchenpos.core.ordertable.domain.OrderTable;
+import kitchenpos.core.ordertable.validator.OrderTableTableGroupCreateValidator;
+import kitchenpos.core.tablegroup.domain.TableGroup;
+import kitchenpos.core.tablegroup.domain.TableGroupRepository;
 import kitchenpos.application.tablegroup.dto.TableGroupCreateRequest;
 import kitchenpos.application.tablegroup.dto.TableGroupResponse;
 import org.assertj.core.api.ThrowableAssert;

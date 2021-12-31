@@ -1,11 +1,11 @@
 package kitchenpos.application.menu;
 
 import kitchenpos.application.menu.dto.MenuResponse;
-import kitchenpos.domain.menu.domain.Menu;
-import kitchenpos.domain.menu.domain.MenuRepository;
-import kitchenpos.domain.menu.validator.MenuCreateValidator;
-import kitchenpos.domain.menu.validator.MenuGroupMenuCreateValidator;
-import kitchenpos.domain.menu.validator.MenuPriceMenuCreateValidator;
+import kitchenpos.core.menu.domain.Menu;
+import kitchenpos.core.menu.domain.MenuRepository;
+import kitchenpos.core.menu.validator.MenuCreateValidator;
+import kitchenpos.core.menu.validator.MenuGroupMenuCreateValidator;
+import kitchenpos.core.menu.validator.MenuPriceMenuCreateValidator;
 import kitchenpos.application.menu.dto.MenuRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

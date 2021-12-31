@@ -1,8 +1,8 @@
 package kitchenpos.application.ordertable;
 
-import kitchenpos.domain.order.validator.OrderOrderTableChangeEmptyValidator;
-import kitchenpos.domain.ordertable.domain.OrderTable;
-import kitchenpos.domain.ordertable.domain.OrderTableRepository;
+import kitchenpos.core.order.validator.OrderOrderTableChangeEmptyValidator;
+import kitchenpos.core.ordertable.domain.OrderTable;
+import kitchenpos.core.ordertable.domain.OrderTableRepository;
 import kitchenpos.application.ordertable.dto.OrderTableRequest;
 import kitchenpos.application.ordertable.dto.OrderTableResponse;
 import org.assertj.core.api.ThrowableAssert;

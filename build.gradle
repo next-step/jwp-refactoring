@@ -32,7 +32,9 @@ subprojects {
     }
 
     dependencies {
-        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testImplementation('org.springframework.boot:spring-boot-starter-test') {
+            exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+        }
         // fixture 사용
         testImplementation(testFixtures(project(':kitchenpos-core')))
     }
@@ -48,7 +50,6 @@ project(':kitchenpos-core') {
 
     dependencies {
         compile 'org.springframework.boot:spring-boot-starter-data-jpa'
-        runtimeOnly 'com.h2database:h2'
     }
 }
 
@@ -58,6 +59,18 @@ project(':kitchenpos-application') {
 
     dependencies {
         compile project(':kitchenpos-core')
+        compile project(':kitchenpos-infra')
+    }
+}
+
+project(':kitchenpos-infra') {
+    bootJar { enabled = false }
+    jar { enabled = true }
+    dependencies {
+        compile project(':kitchenpos-core')
+
+        runtimeOnly 'com.h2database:h2'
+        implementation 'org.flywaydb:flyway-core'
     }
 }
 
@@ -66,12 +79,11 @@ project(':kitchenpos-client-api') {
     jar { enabled = true }
 
     dependencies {
-        compile project(':kitchenpos-core')
-        compile project(':kitchenpos-application')
+        compile project(':kitchenpos-core'),
+                project(':kitchenpos-application'),
+                project(':kitchenpos-infra')
 
         compile 'org.springframework.boot:spring-boot-starter-web'
         implementation 'org.springframework.boot:spring-boot-starter-actuator'
-        runtimeOnly 'com.h2database:h2'
-        implementation 'org.flywaydb:flyway-core'
     }
 }

@@ -1,8 +1,8 @@
 package kitchenpos;
 
-import kitchenpos.domain.order.domain.Order;
-import kitchenpos.domain.order.domain.OrderLineItem;
-import kitchenpos.domain.order.domain.OrderStatus;
+import kitchenpos.core.order.domain.Order;
+import kitchenpos.core.order.domain.OrderLineItem;
+import kitchenpos.core.order.domain.OrderStatus;
 
 import java.util.Arrays;
 import java.util.List;

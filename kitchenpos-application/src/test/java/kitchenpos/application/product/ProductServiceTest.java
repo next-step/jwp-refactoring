@@ -2,8 +2,8 @@ package kitchenpos.application.product;
 
 import kitchenpos.application.product.dto.ProductRequest;
 import kitchenpos.application.product.dto.ProductResponse;
-import kitchenpos.domain.product.Product;
-import kitchenpos.domain.product.ProductRepository;
+import kitchenpos.core.product.domain.Product;
+import kitchenpos.core.product.domain.ProductRepository;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
