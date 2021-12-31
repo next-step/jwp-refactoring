@@ -84,7 +84,7 @@ public class TestOrderTableFactory {
         return OrderTableResponse.of(id, numberOfGuestsm, empty);
     }
 
-    public static List<OrderLineItemResponse> 주문상품아이템_응답(final Long seq, final MenuResponse menuResponse, final long quantity) {
-        return Lists.newArrayList(OrderLineItemResponse.of(seq, menuResponse, quantity));
+    public static List<OrderLineItemResponse> 주문상품아이템_응답(final Long seq, final Long menuId, final long quantity) {
+        return Lists.newArrayList(OrderLineItemResponse.of(seq, menuId, quantity));
     }
 }
