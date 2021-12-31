@@ -8,6 +8,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.*;
 
+import kitchenpos.table.domain.TableGroup;
 import org.assertj.core.util.*;
 import org.junit.jupiter.api.*;
 
@@ -22,6 +23,7 @@ class OrderMockitoTest {
     private MenuRepository menuRepository;
     private OrderRepository orderRepository;
     private OrderTableRepository orderTableRepository;
+    private TableGroupRepository tableGroupRepository;
     private OrderService orderService;
 
     @BeforeEach
@@ -29,7 +31,8 @@ class OrderMockitoTest {
         this.menuRepository = mock(MenuRepository.class);
         this.orderRepository = mock(OrderRepository.class);
         this.orderTableRepository = mock(OrderTableRepository.class);
-        this.orderService = OrderService.of(menuRepository, orderRepository, orderTableRepository);
+        this.tableGroupRepository = mock(TableGroupRepository.class);
+        this.orderService = OrderService.of(menuRepository, orderRepository, orderTableRepository, tableGroupRepository);
     }
 
     @DisplayName("주문 생성하기")
@@ -48,8 +51,9 @@ class OrderMockitoTest {
     @DisplayName("주문 조회하기")
     @Test
     void findAllTest() {
+        when(tableGroupRepository.save(any())).thenReturn(TableGroup.create());
         when(orderRepository.findAll()).thenReturn(Lists.newArrayList(주문_첫번째, 주문_두번째));
-        assertThat(orderService.findAll()).containsExactly(OrderResponse.from(주문_첫번째), OrderResponse.from(주문_두번째));
+        assertThat(orderService.findAll()).contains(OrderResponse.from(주문_첫번째), OrderResponse.from(주문_두번째));
     }
 
     @DisplayName("주문 테이블 청소하기")

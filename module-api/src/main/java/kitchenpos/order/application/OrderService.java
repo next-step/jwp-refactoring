@@ -1,8 +1,8 @@
 package kitchenpos.order.application;
 
 import java.util.*;
-import java.util.stream.*;
 
+import kitchenpos.menu.domain.Menu;
 import org.springframework.stereotype.*;
 import org.springframework.transaction.annotation.*;
 import org.springframework.util.*;
@@ -18,6 +18,7 @@ import kitchenpos.table.repository.*;
 
 @Service
 public class OrderService {
+    private static final String ORDER = "주문";
     private static final String ORDER_TABLE = "주문 테이블";
     private static final String ORDER_LINE_ITEM = "주문 항목";
     private static final String MENU = "메뉴";
@@ -26,15 +27,19 @@ public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
+    private final TableGroupRepository tableGroupRepository;
 
-    public OrderService(MenuRepository menuRepository, OrderRepository orderRepository, OrderTableRepository orderTableRepository) {
+    public OrderService(MenuRepository menuRepository, OrderRepository orderRepository,
+                        OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
+        this.tableGroupRepository = tableGroupRepository;
     }
 
-    public static OrderService of(MenuRepository menuRepository, OrderRepository orderRepository, OrderTableRepository orderTableRepository) {
-        return new OrderService(menuRepository, orderRepository, orderTableRepository);
+    public static OrderService of(MenuRepository menuRepository, OrderRepository orderRepository
+        , OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository) {
+        return new OrderService(menuRepository, orderRepository, orderTableRepository, tableGroupRepository);
     }
 
     public OrderResponse saveOrder(OrderRequest orderRequest) {
@@ -42,6 +47,7 @@ public class OrderService {
             .orElseThrow(() -> new NotFoundException(ORDER_TABLE));
 
         Order saveOrder = Order.from(orderTable);
+        saveOrder = orderRepository.save(saveOrder);
         setUpOrderLineItem(saveOrder, orderRequest.getOrderLineItems());
         return OrderResponse.from(orderRepository.save(saveOrder));
     }
@@ -51,18 +57,38 @@ public class OrderService {
             throw new NotFoundException(ORDER_LINE_ITEM);
         }
 
-        orderLineItems.stream()
-            .forEach(orderLineItem -> saveOrder.addOrderLineItem(
-                menuRepository.findById(orderLineItem.getMenuId()).orElseThrow(() -> new NotFoundException(MENU)),
-                orderLineItem.getQuantity()
-            ));
+        for (OrderLineItemRequest orderLineItem : orderLineItems) {
+            Menu menu = menuRepository.findById(orderLineItem.getMenuId())
+                .orElseThrow(() -> new NotFoundException(MENU));
+            saveOrder.addOrderLineItem(menu, orderLineItem.getQuantity());
+        }
     }
 
     public List<OrderResponse> findAll() {
-        return orderRepository.findAll()
-            .stream()
-            .map(OrderResponse::from)
-            .collect(Collectors.toList());
+        List<Order> orders = orderRepository.findAll();
+        List<OrderResponse> orderResponses = new ArrayList<>();
+
+        for (int i = 0; i < orders.size(); i++) {
+            Order order = orders.get(i);
+            OrderTable orderTable = order.getOrderTable();
+            TableGroup tableGroup = tableGroupRepository.save(TableGroup.create());
+            orderTable = new OrderTable(tableGroup.getId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
+            orderResponses.add(new OrderResponse(order.getId(), orderTable, order.getOrderStatus(), order.getOrderLineItems(), order.getOrderedTime()));
+        }
+
+        return orderResponses;
+    }
+
+    public OrderResponse changeOrderStatus(Long orderId, OrderRequest orderRequest) {
+        Order order = orderRepository.findById(orderId)
+            .orElseThrow(() -> new NotFoundException(ORDER));
+        order.changeOrderStatus(orderRequest.getOrderStatus());
+
+        TableGroup tableGroup = tableGroupRepository.save(TableGroup.create());
+        OrderTable orderTable = order.getOrderTable();
+        orderTable = new OrderTable(tableGroup.getId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
+
+        return new OrderResponse(order.getId(), orderTable, order.getOrderStatus(), order.getOrderLineItems(), order.getOrderedTime());
     }
 
     @Transactional
