@@ -43,7 +43,7 @@ class MenuServiceTest {
     @Test
     void saveMenu() {
         final MenuGroup 메뉴그룹 = TestMenuGroupFactory.메뉴그룹_조회됨(1L, "메뉴그룹");
-        final Product 상품 = TestProductFactory.상품_조회돰(1L, "상품", 5000);
+        final Product 상품 = TestProductFactory.상품_조회됨(1L, "상품", 5000);
         final Menu 메뉴 = TestMenuFactory.메뉴_생성됨(1L, "메뉴", 4000, 메뉴그룹.getName());
 
         final List<MenuProductRequest> 메뉴_상품_목록_요청 = TestMenuFactory.메뉴_상품_목록_요청(TestMenuFactory.메뉴_상품_요청(1L, 2));
