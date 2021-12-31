@@ -45,7 +45,6 @@ public class TableGroupService {
     private void validateGrouping(List<OrderTable> orderTables) {
         checkNumberOfOrderTable(orderTables);
         checkOrderTableGroupIsEmpty(orderTables);
-        checkIsAbleToGrouping(orderTables);
     }
 
     @Transactional
@@ -75,21 +74,6 @@ public class TableGroupService {
 
         if (!isGroupEmpty) {
             throw new BadRequestException("이미 그룹이 존재하는 주문 테이블입니다.");
-        }
-    }
-
-    private void checkIsAbleToGrouping(List<OrderTable> orderTables) {
-        orderTables.forEach(orderTable -> checkCompletedOrderTable(orderTable.getId()));
-    }
-
-    private void checkCompletedOrderTable(Long orderTableId) {
-        List<Order> orders = orderRepository.findOrderByOrderTableId(orderTableId);
-
-        boolean isComplete = orders.stream()
-                .allMatch(Order::isComplete);
-
-        if (!isComplete) {
-            throw new BadRequestException("완료되지 않은 주문이 존재합니다.");
         }
     }
 

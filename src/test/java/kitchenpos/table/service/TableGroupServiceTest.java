@@ -104,28 +104,6 @@ public class TableGroupServiceTest {
                 .hasMessage("이미 그룹이 존재하는 주문 테이블입니다.");
     }
 
-    @DisplayName("그룹핑 목표 주문 테이블이 이미 그룹핑되어 경우 예외")
-    @Test
-    void 완료_안된_주문_테이블_존재_예외() {
-        OrderTable firstOrderTable = OrderTable.of(1, true);
-        OrderTable secondOrderTable = OrderTable.of(2, true);
-        TableGroup tableGroup = TableGroup.create();
-
-        TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(firstOrderTable.getId(), secondOrderTable.getId()));
-        List<Long> orderTableIds = tableGroupRequest.getOrderTableIds();
-        given(orderTableRepository.findAllById(orderTableIds)).willReturn(Arrays.asList(firstOrderTable, secondOrderTable));
-
-        Order order = Order.of(firstOrderTable.getId(), Collections.singletonList(OrderLineItem.of(1L, Quantity.of(1L))));
-        given(orderRepository.findOrderByOrderTableId(firstOrderTable.getId())).willReturn(Collections.singletonList(order));
-        given(tableGroupRepository.save(tableGroup)).willReturn(tableGroup);
-        given(tableGroupRepository.save(tableGroup)).willReturn(tableGroup);
-
-        Throwable thrown = catchThrowable(() -> tableGroupService.create(tableGroupRequest));
-
-        assertThat(thrown).isInstanceOf(BadRequestException.class)
-                .hasMessage("완료되지 않은 주문이 존재합니다.");
-    }
-
     @DisplayName("테이블 그룹이 미존재하여 해제 예외")
     @Test
     void 테이블_그룹_미존재_시_해제_예외() {
