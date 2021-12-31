@@ -1,0 +1,11 @@
+bootJar { enabled = false }
+jar { enabled = true }
+
+version 'unspecified'
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    runtimeOnly 'com.h2database:h2'
+
+    implementation project(':kitchenpos-order-domain')
+}

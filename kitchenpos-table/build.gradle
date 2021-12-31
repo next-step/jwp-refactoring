@@ -10,6 +10,8 @@ dependencies {
     testImplementation 'io.rest-assured:rest-assured:3.3.0'
     testImplementation 'com.google.guava:guava:14.0.1'
 
-    compile project(':kitchenpos-common')
-    compile project(':kitchenpos-order')
+    implementation project(':kitchenpos-common')
+    implementation project(':kitchenpos-table-domain')
+    implementation project(':kitchenpos-order-domain')
+    implementation project(':kitchenpos-order')
 }
