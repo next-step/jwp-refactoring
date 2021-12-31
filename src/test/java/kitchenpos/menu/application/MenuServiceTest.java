@@ -4,18 +4,22 @@ import kitchenpos.common.exception.MenuProductSumPriceException;
 import kitchenpos.common.exception.NegativePriceException;
 import kitchenpos.common.exception.NotFoundEntityException;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuValidator;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.product.domain.ProductRepository;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -41,6 +45,9 @@ class MenuServiceTest {
     @Mock
     private MenuGroupRepository menuGroupRepository;
 
+    @Mock
+    private MenuValidator menuValidator;
+
     private MenuService menuService;
 
     private Menu 짜장면;
@@ -51,10 +58,11 @@ class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        menuService = new MenuService(menuRepository, menuGroupRepository);
+        menuService = new MenuService(menuRepository, menuGroupRepository, menuValidator);
+
         짜장면_상품 = new Product("짜장면", new BigDecimal(1000));
-        짜장면_하나 = new MenuProduct(1L, new Menu(), 짜장면_상품, 1);
-        짜장면_두개 = new MenuProduct(2L, new Menu(), 짜장면_상품, 2);
+        짜장면_하나 = new MenuProduct(1L, new Menu(), 짜장면_상품.getId(), 1);
+        짜장면_두개 = new MenuProduct(2L, new Menu(), 짜장면_상품.getId(), 2);
         짜장면 = new Menu("짜장면", 10000, new MenuGroup(), Lists.newArrayList(짜장면_하나, 짜장면_두개));
         짜장면_요청 = new MenuRequest("짜장면", 10000, 1L, Lists.newArrayList(짜장면_하나, 짜장면_두개));
     }
@@ -102,24 +110,6 @@ class MenuServiceTest {
 
             // then
         }).isInstanceOf(NotFoundEntityException.class);
-    }
-
-    @DisplayName("메뉴의 가격이 상품들의 총 가격의 합보다 커야한다.")
-    @Test
-    void createMenuSumBiggerThanPriceExceptionTest() {
-        assertThatThrownBy(() -> {
-            // given
-            Menu 가격이_말도_안되는_짜장면 = new Menu(1L, "짜장면", 1000, new MenuGroup(), Lists.newArrayList(짜장면_하나, 짜장면_두개));
-            when(menuGroupRepository.findById(any())).thenReturn(Optional.of(new MenuGroup()));
-            when(menuRepository.save(any())).thenReturn(가격이_말도_안되는_짜장면);
-
-            final MenuRequest 가격이_말도_안되는_짜장면_요청 = new MenuRequest("짜장면", 1000, 1L, new ArrayList<>());
-
-            // when
-            메뉴를_주문한다(가격이_말도_안되는_짜장면_요청);
-
-            // then
-        }).isInstanceOf(MenuProductSumPriceException.class);
     }
 
     @DisplayName("메뉴 목록을 조회한다.")

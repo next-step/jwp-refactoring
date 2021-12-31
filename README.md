@@ -207,13 +207,18 @@ _ menuGroup은 왜 필수일까..?
 - TableService -> OrderTableService로 변경
 
 ### 3단계 할 일
-- [ ] **Bean Validation 극한으로 써 보기**
-- [ ] menu와 OrderLineItem 결합도 해결
 - [x] 의존성 관계 정리
 - [x] 매직넘버 없애기
 - [x] TODO -> DONE 완료 시키기..
 - [x] 생성자 protected 적용
 - [x] changeEmpty는 개인적으로 changeNumbersOfGuests(0)로 컨버팅 (메서드 자체는 이해 관계자 설득 전에는 살려둔다는 느낌 또는 empty 명시적 표현의 느낌으로 살려 둠)
+- [ ] **Bean Validation 극한으로 써 보기**
+- [x] 메뉴 <-> 주문 항목 간접 참조로 변경
+- [ ] 메뉴상품 <-> 상품 간접 참조로 변경
+- [ ] 주문 테이블 <-> 테이블 그룹 간접 참조로 변경
+- [ ] 주문 <-> 주문 테이블 간접 참조로 변경
+- [ ] 각 도메인마다 validator 작성
+- [ ] 이벤트 pub-sub 패턴 쓰기
 
 ### 의문 해소
 - 도메인을 점점 이해하게되면서 menu와 product가 이해관계에 따라 필요할 수 있다고 생각하게 됨
@@ -259,5 +264,4 @@ _ menuGroup은 왜 필수일까..?
   - 메뉴 <-> 주문 항목
   - 주문 테이블 <-> 테이블 그룹
   - 주문 <-> 주문 테이블
-  
   

@@ -47,12 +47,11 @@ class OrderTableTest {
         테이블_그룹_1번 = new TableGroup(Lists.newArrayList(주문_테이블_2번, 주문_테이블_3번));
 
         짜장면_상품 = new Product("짜장면", new BigDecimal(1000));
-        짜장면_하나 = new MenuProduct(1L, new Menu(), 짜장면_상품, 1);
-        짜장면_두개 = new MenuProduct(2L, new Menu(), 짜장면_상품, 2);
+        짜장면_하나 = new MenuProduct(1L, new Menu(), 짜장면_상품.getId(), 1);
+        짜장면_두개 = new MenuProduct(2L, new Menu(), 짜장면_상품.getId(), 2);
         짜장면 = new Menu("짜장면", 10000, new MenuGroup(), Lists.newArrayList(짜장면_하나, 짜장면_두개));
-        짜장면_ID = new MenuId(짜장면.getId());
-        짜장면_주문1 = new OrderLineItem(주문, 짜장면_ID, 10);
-        짜장면_주문2 = new OrderLineItem(주문, 짜장면_ID, 3);
+        짜장면_주문1 = new OrderLineItem(주문, 짜장면.getId(), 10);
+        짜장면_주문2 = new OrderLineItem(주문, 짜장면.getId(), 3);
 
         주문 = new Order(주문_테이블_1번, Lists.newArrayList(짜장면_주문1, 짜장면_주문2));
         주문_테이블_1번.addOrder(주문);

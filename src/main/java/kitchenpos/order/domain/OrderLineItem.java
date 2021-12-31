@@ -27,16 +27,16 @@ public class OrderLineItem {
     public OrderLineItem() {
     }
 
-    public OrderLineItem(Order order, MenuId menuId, long quantity) {
+    public OrderLineItem(Order order, Long menuId, long quantity) {
         this.order = order;
-        this.menuId = menuId.getMenuId();
+        this.menuId = menuId;
         this.quantity = quantity;
     }
 
-    public OrderLineItem(Long seq, Order order, MenuId menuId, long quantity) {
+    public OrderLineItem(Long seq, Order order, Long menuId, long quantity) {
         this.seq = seq;
         this.order = order;
-        this.menuId = menuId.getMenuId();
+        this.menuId = menuId;
         this.quantity = quantity;
     }
 

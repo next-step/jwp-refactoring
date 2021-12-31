@@ -2,6 +2,7 @@ package kitchenpos.menu.application;
 
 import kitchenpos.common.exception.NotFoundEntityException;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuValidator;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuRepository;
@@ -18,18 +19,23 @@ import java.util.List;
 public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
+    private final MenuValidator menuValidator;
 
     public MenuService(
-            final MenuRepository menuRepository,
-            final MenuGroupRepository menuGroupRepository
+            MenuRepository menuRepository,
+            MenuGroupRepository menuGroupRepository,
+            MenuValidator menuValidator
     ) {
         this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
+        this.menuValidator = menuValidator;
     }
 
     @Validated
+    @Transactional
     public MenuResponse create(@Valid MenuRequest menuRequest) {
         MenuGroup menuGroup = findMenuGroupById(menuRequest.getMenuGroupId());
+        menuValidator.validateMenu(menuGroup, menuRequest);
         final Menu menu = menuRepository.save(menuRequest.toMenu(menuGroup));
 
         return MenuResponse.of(menu);

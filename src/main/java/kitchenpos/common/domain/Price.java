@@ -32,12 +32,4 @@ public class Price {
     public BigDecimal getPrice() {
         return price;
     }
-
-    public boolean isPossibleMenu(List<MenuProduct> menuProducts) {
-        BigDecimal sum = menuProducts.stream()
-                .map(MenuProduct::multiply)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        return price.compareTo(sum) > MINIMUM_PRICE_NUMBER;
-    }
 }
