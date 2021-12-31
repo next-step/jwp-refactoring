@@ -1,7 +1,7 @@
 package kitchenpos.ordertable.domain;
 
-import kitchenpos.tablegroup.domain.event.TableGroupedEvent;
-import kitchenpos.tablegroup.domain.event.TableUnGroupedEvent;
+import kitchenpos.tablegroup.event.TableGroupedEvent;
+import kitchenpos.tablegroup.event.TableUnGroupedEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;

@@ -1,7 +1,7 @@
 package kitchenpos.ordertable.domain;
 
-import kitchenpos.ordertable.domain.validator.OrderTableChangeEmptyValidator;
 import kitchenpos.ordertable.exception.CanNotChangeOrderTableException;
+import kitchenpos.ordertable.validator.OrderTableChangeEmptyValidator;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;

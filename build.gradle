@@ -5,7 +5,6 @@ buildscript {
     repositories {
         mavenCentral()
     }
-
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
         classpath "io.spring.gradle:dependency-management-plugin:1.0.10.RELEASE"
@@ -21,6 +20,10 @@ subprojects {
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'java'
+    // fixture 사용
+    apply plugin: 'java-library'
+    apply plugin: 'java-test-fixtures'
+    apply plugin: 'maven-publish'
 
     sourceCompatibility = '1.8'
 
@@ -37,16 +40,28 @@ subprojects {
     }
 }
 
+
 project(':kitchenpos-core') {
     bootJar { enabled = false }
     jar { enabled = true }
 
     dependencies {
-        implementation 'org.springframework.boot:spring-boot-starter-actuator'
-        implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-        implementation 'org.springframework.boot:spring-boot-starter-web'
-        implementation 'org.flywaydb:flyway-core'
+        compile 'org.springframework.boot:spring-boot-starter-data-jpa'
         runtimeOnly 'com.h2database:h2'
     }
 }
+
+
+project(':kitchenpos-application') {
+    dependencies {
+        implementation project(':kitchenpos-core')
+        // fixture 사용
+        testImplementation(testFixtures(project(':kitchenpos-core')))
+
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.flywaydb:flyway-core'
+
+    }
+}
+

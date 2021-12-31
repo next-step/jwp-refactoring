@@ -1,7 +1,7 @@
 package kitchenpos.tablegroup.domain;
 
-import kitchenpos.tablegroup.domain.validator.TableGroupCreateValidator;
-import kitchenpos.tablegroup.domain.validator.TableGroupUnGroupValidator;
+import kitchenpos.tablegroup.validator.TableGroupCreateValidator;
+import kitchenpos.tablegroup.validator.TableGroupUnGroupValidator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 

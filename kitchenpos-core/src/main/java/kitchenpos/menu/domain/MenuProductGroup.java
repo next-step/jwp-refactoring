@@ -1,7 +1,7 @@
 package kitchenpos.menu.domain;
 
 import kitchenpos.menu.exception.IllegalMenuProductException;
-import kitchenpos.product.domain.Product;
+import kitchenpos.product.Product;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;

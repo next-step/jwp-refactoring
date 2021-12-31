@@ -1,7 +1,7 @@
 package kitchenpos.product.infra;
 
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.Product;
+import kitchenpos.product.ProductRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

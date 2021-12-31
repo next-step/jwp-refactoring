@@ -1,7 +1,7 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.order.domain.validator.OrderCreateValidator;
 import kitchenpos.order.exception.CanNotChangeOrderStatusException;
+import kitchenpos.order.validator.OrderCreateValidator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.CollectionUtils;
