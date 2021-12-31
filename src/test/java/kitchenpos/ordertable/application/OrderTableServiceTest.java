@@ -2,18 +2,15 @@ package kitchenpos.ordertable.application;
 
 import kitchenpos.common.exception.NegativeNumberOfGuestsException;
 import kitchenpos.common.exception.NotFoundEntityException;
-import kitchenpos.common.exception.OrderStatusNotProcessingException;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuId;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.ordertable.domain.OrderTableValidator;
 import kitchenpos.product.domain.Product;
-import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import org.assertj.core.util.Lists;
@@ -41,24 +38,26 @@ public class OrderTableServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
 
+    @Mock
+    private OrderTableValidator orderTableValidator;
+
     private OrderTableService orderTableService;
 
     private OrderTable 주문_테이블_1번;
     private OrderTable 빈_주문_테이블;
-    private Order 주문;
-    private Menu 짜장면;
-    private MenuId 짜장면_ID;
-    private OrderLineItem 짜장면_주문1;
-    private OrderLineItem 짜장면_주문2;
-    private OrderTableRequest 주문_테이블_1번_요청;
-    private OrderTableRequest 빈_주문_테이블_요청;
+    private Product 짜장면_상품;
     private MenuProduct 짜장면_곱배기;
     private MenuProduct 짜장면_보통;
-    private Product 짜장면_상품;
+    private Menu 짜장면;
+    private OrderLineItem 짜장면_주문1;
+    private OrderLineItem 짜장면_주문2;
+    private Order 주문;
+    private OrderTableRequest 주문_테이블_1번_요청;
+    private OrderTableRequest 빈_주문_테이블_요청;
 
     @BeforeEach
     void setUp() {
-        orderTableService = new OrderTableService(orderTableRepository);
+        orderTableService = new OrderTableService(orderTableRepository, orderTableValidator);
 
         짜장면_상품 = new Product("짜장면", new BigDecimal(1000));
         짜장면_곱배기 = new MenuProduct(1L, 짜장면, 짜장면_상품.getId(), 2);
@@ -97,7 +96,7 @@ public class OrderTableServiceTest {
     @Test
     void getListTableTest() {
         // given
-        List<OrderTable> 주문_테이블_목록 = Lists.newArrayList(new OrderTable(new TableGroup(), 3), new OrderTable(new TableGroup(), 7));
+        List<OrderTable> 주문_테이블_목록 = Lists.newArrayList(new OrderTable(1L, 3), new OrderTable(1L, 7));
         when(orderTableRepository.findAll()).thenReturn(주문_테이블_목록);
 
         // when
@@ -136,24 +135,6 @@ public class OrderTableServiceTest {
 
             // then
         }).isInstanceOf(NotFoundEntityException.class);
-    }
-
-    @DisplayName("주문 상태는 cooking이나 meal이 아니어야 한다. ")
-    @Test
-    void changeEmptyTableOrderStatusExceptionTest() {
-        assertThatThrownBy(() -> {
-            when(orderTableRepository.save(any())).thenReturn(주문_테이블_1번);
-            when(orderTableRepository.findById(any())).thenReturn(Optional.of(주문_테이블_1번));
-
-            // given
-            final OrderTableResponse createdOrderTable = 주문_테이블_요청한다(주문_테이블_1번_요청);
-            주문_상태를_변경한다(주문, OrderStatus.COOKING);
-
-            // when
-            final OrderTableResponse changeEmptyTable = 주문_테이블을_비운다(createdOrderTable.getId());
-
-            // then
-        }).isInstanceOf(OrderStatusNotProcessingException.class);
     }
 
     @DisplayName("테이블 게스트 숫자를 변경한다.")
@@ -221,10 +202,6 @@ public class OrderTableServiceTest {
 
     private OrderTableResponse 주문_테이블_손님수를_변경한다(Long orderTableId, OrderTableRequest orderTableRequest) {
         return orderTableService.changeNumberOfGuests(orderTableId, orderTableRequest);
-    }
-
-    private void 주문_상태를_변경한다(Order order, OrderStatus orderStatus) {
-        order.changeOrderStatus(orderStatus);
     }
 
 }

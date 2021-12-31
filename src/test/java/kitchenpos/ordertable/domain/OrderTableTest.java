@@ -76,18 +76,6 @@ class OrderTableTest {
         );
     }
 
-    @DisplayName("테이블 그룹에 속해있다면 빈 테이블로 변경할 수 없다.")
-    @Test
-    void changeEmptyTableNotHavingTableGroupExceptionTest() {
-        assertThatThrownBy(() -> {
-            // when
-            주문_테이블_2번 = new OrderTable(테이블_그룹_1번, 3);
-            주문_테이블_2번.changeEmpty();
-
-            // then
-        }).isInstanceOf(NotEmptyOrderTableStatusException.class);
-    }
-
     @DisplayName("테이블 게스트 숫자는 0 미만으로 변경할 수 없다.")
     @Test
     void changeNumberOfGuestsNegativeNumberExceptionTest() {

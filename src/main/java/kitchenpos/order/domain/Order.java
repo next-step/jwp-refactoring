@@ -109,18 +109,4 @@ public class Order {
 
         this.orderStatus = orderStatus;
     }
-
-    public void validateCompletedWhenUngroup() {
-        if (!OrderStatus.isCompleted(orderStatus)) {
-            throw new OrderStatusNotCompletedException();
-        }
-    }
-
-    public void validateNotProcessingWhenChangeEmpty() {
-        if (!OrderStatus.isMeal(orderStatus) && !OrderStatus.isCooking(orderStatus)) {
-            return;
-        }
-
-        throw new OrderStatusNotProcessingException();
-    }
 }

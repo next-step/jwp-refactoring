@@ -1,7 +1,6 @@
-package kitchenpos.ordertable.domain;
+package kitchenpos.tablegroup.domain;
 
-import kitchenpos.common.exception.MinimumOrderTableNumberException;
-import org.springframework.util.CollectionUtils;
+import kitchenpos.ordertable.domain.OrderTable;
 
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
@@ -16,21 +15,6 @@ public class OrderTables {
 
     public OrderTables(List<OrderTable> orderTables) {
         this.orderTables = orderTables;
-        validateTableGroup();
-    }
-
-    private void validateTableGroup() {
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new MinimumOrderTableNumberException();
-        }
-
-        validateOrderTables();
-    }
-
-    private void validateOrderTables() {
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.validateAddableOrderTable();
-        }
     }
 
     public List<OrderTable> getOrderTables() {
@@ -41,5 +25,7 @@ public class OrderTables {
         for (OrderTable orderTable: orderTables) {
             orderTable.ungroupTableGroup();
         }
+
+        orderTables = new ArrayList<>();
     }
 }

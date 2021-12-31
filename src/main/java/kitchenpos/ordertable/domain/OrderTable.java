@@ -2,8 +2,6 @@ package kitchenpos.ordertable.domain;
 
 import kitchenpos.common.domain.Empty;
 import kitchenpos.common.domain.NumberOfGuests;
-import kitchenpos.common.exception.NotEmptyOrderTableStatusException;
-import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.order.domain.Order;
 
 import javax.persistence.Embedded;
@@ -11,13 +9,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class OrderTable {
@@ -27,9 +21,7 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "table_group_id")
-    private TableGroup tableGroup;
+    private Long tableGroupId;
 
     @OneToMany(mappedBy = "orderTable")
     private List<Order> orders = new ArrayList<>();
@@ -48,20 +40,19 @@ public class OrderTable {
         this(null, numberOfGuests);
     }
 
-    public OrderTable(TableGroup tableGroup, int numberOfGuests) {
-        this(null, tableGroup, numberOfGuests);
+    public OrderTable(Long tableGroupId, int numberOfGuests) {
+        this(null, tableGroupId, numberOfGuests);
     }
 
-    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests) {
+    public OrderTable(Long id, Long tableGroupId, int numberOfGuests) {
         this.id = id;
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
         checkEmpty(numberOfGuests);
     }
 
     private void checkEmpty(int numberOfGuests) {
         if (numberOfGuests == EMPTY_TABLE_NUMBER) {
-            validateChangeableEmpty();
             empty = new Empty(true);
             orders = new ArrayList<>();
             return;
@@ -74,8 +65,8 @@ public class OrderTable {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public List<Order> getOrders() {
@@ -90,12 +81,6 @@ public class OrderTable {
         return empty.isEmpty();
     }
 
-    public void validateAddableOrderTable() {
-        if (!isEmpty() || Objects.nonNull(tableGroup)) {
-            throw new NotEmptyOrderTableStatusException();
-        }
-    }
-
     public void changeNumberOfGuests(int numberOfGuests) {
         this.numberOfGuests.changeNumberOfGuests(numberOfGuests);
         checkEmpty(numberOfGuests);
@@ -106,33 +91,12 @@ public class OrderTable {
         checkEmpty(EMPTY_TABLE_NUMBER);
     }
 
-    private void validateChangeableEmpty() {
-        validateNotHavingTableGroup();
-        validateNotProcessing();
-    }
-
-    private void validateNotHavingTableGroup() {
-        if (Objects.nonNull(tableGroup)) {
-            throw new NotEmptyOrderTableStatusException();
-        }
-    }
-
-    public void validateNotProcessing() {
-        for (Order order: orders) {
-            order.validateNotProcessingWhenChangeEmpty();
-        }
-    }
-
     public void addOrder(Order order) {
         this.orders.add(order);
         order.decideOrderTable(this);
     }
 
     public void ungroupTableGroup() {
-        for (Order order: orders) {
-            order.validateCompletedWhenUngroup();
-        }
-
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 }

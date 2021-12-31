@@ -29,7 +29,6 @@ class TableGroupTest {
     private OrderLineItem 짜장면_주문2;
     private Order 주문;
     private Menu 짜장면;
-    private MenuId 짜장면_ID;
     private MenuProduct 짜장면_하나;
     private MenuProduct 짜장면_두개;
 
@@ -60,26 +59,5 @@ class TableGroupTest {
         assertAll(
                 () -> assertThat(단체테이블1번.getOrderTables().get(0)).isEqualTo(주문테이블1번)
         );
-    }
-
-    @DisplayName("테이블 그룹은 주문 상태가 cooking or meal 이 아니어야 한다.")
-    @Test
-    void ungroupTableGroupEmptyOrderTableExceptionTest() {
-        assertThatThrownBy(() -> {
-            // given
-            단체테이블1번 = new TableGroup(1L, Arrays.asList(주문테이블1번, 주문테이블2번));
-
-            주문테이블1번.changeNumberOfGuests(3);
-
-            주문 = new Order(주문테이블1번, Arrays.asList(짜장면_주문1, 짜장면_주문2));
-            주문.changeOrderStatus(OrderStatus.COOKING);
-
-            주문테이블1번.addOrder(주문);
-
-            // when
-            단체테이블1번.ungroup();
-
-            // then
-        }).isInstanceOf(OrderStatusNotCompletedException.class);
     }
 }
