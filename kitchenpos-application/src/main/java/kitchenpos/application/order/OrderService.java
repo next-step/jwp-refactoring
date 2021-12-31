@@ -5,8 +5,8 @@ import kitchenpos.application.order.dto.OrderResponse;
 import kitchenpos.core.domain.Order;
 import kitchenpos.core.validator.OrderCreateValidator;
 import kitchenpos.core.domain.OrderRepository;
-import kitchenpos.core.validator.MenuCountOrderCreateValidator;
-import kitchenpos.core.validator.OrderTableOrderCreateValidator;
+import kitchenpos.core.validator.MenuCountOrderCreateValidatorImpl;
+import kitchenpos.core.validator.OrderTableOrderCreateValidatorImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,8 +20,8 @@ public class OrderService {
     private final List<OrderCreateValidator> createValidators;
 
     public OrderService(OrderRepository orderRepository,
-                        MenuCountOrderCreateValidator menuGroupValidator,
-                        OrderTableOrderCreateValidator orderCreateValidator) {
+                        MenuCountOrderCreateValidatorImpl menuGroupValidator,
+                        OrderTableOrderCreateValidatorImpl orderCreateValidator) {
         this.orderRepository = orderRepository;
         this.createValidators = Arrays.asList(orderCreateValidator, menuGroupValidator);
     }

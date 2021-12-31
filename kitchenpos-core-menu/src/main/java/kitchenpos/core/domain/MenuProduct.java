@@ -7,8 +7,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class MenuProduct {
@@ -54,12 +52,7 @@ public class MenuProduct {
     }
 
 
-    public BigDecimal totalPrice(List<Product> products) {
-        return products.stream()
-                .filter(product -> Objects.equals(product.getId(), productId))
-                .findAny()
-                .orElseThrow(IllegalArgumentException::new)
-                .getPrice()
-                .multiply(this.quantity.bigDecimalValue());
+    public BigDecimal totalPrice(BigDecimal productPrice) {
+        return productPrice.multiply(quantity.bigDecimalValue());
     }
 }

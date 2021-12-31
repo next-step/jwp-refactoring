@@ -3,7 +3,6 @@ package kitchenpos.core.validator;
 import kitchenpos.core.domain.Menu;
 import kitchenpos.core.domain.MenuGroupRepository;
 import kitchenpos.core.domain.Product;
-import kitchenpos.core.domain.validator.MenuGroupMenuCreateValidator;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

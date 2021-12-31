@@ -24,7 +24,7 @@ class MenuCountOrderCreateValidatorTest {
     @Mock
     private MenuRepository menuRepository;
     @InjectMocks
-    private MenuCountOrderCreateValidator validator;
+    private MenuCountOrderCreateValidatorImpl validator;
 
     @DisplayName("요청한 메뉴 아이디의 갯수가 실제 메뉴의 갯수와 다르다면 유효하지 못하다.")
     @Test

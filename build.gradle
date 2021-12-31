@@ -54,8 +54,17 @@ project(':kitchenpos-core-menugroup') {
     jar { enabled = true }
 
     dependencies {
-        compile project(':kitchenpos-core-menu')
         compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+    }
+}
+
+project(':kitchenpos-core-menugroup-validator') {
+    bootJar { enabled = false }
+    jar { enabled = true }
+
+    dependencies {
+        compile project(':kitchenpos-core-menugroup'),
+                project(':kitchenpos-core-menu')
     }
 }
 
@@ -64,8 +73,6 @@ project(':kitchenpos-core-menu') {
     jar { enabled = true }
 
     dependencies {
-        compile project(':kitchenpos-core-product')
-
         compile 'org.springframework.boot:spring-boot-starter-data-jpa'
     }
 }
@@ -77,7 +84,7 @@ project(':kitchenpos-core-menu-validator') {
     dependencies {
         compile project(':kitchenpos-core-menu')
         compile project(':kitchenpos-core-order')
-        compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+        compile project(':kitchenpos-core-menugroup-validator')
     }
 }
 
@@ -97,7 +104,6 @@ project(':kitchenpos-core-order-validator') {
     dependencies {
         compile project(':kitchenpos-core-order')
         compile project(':kitchenpos-core-ordertable')
-        compile 'org.springframework.boot:spring-boot-starter-data-jpa'
     }
 }
 
@@ -118,8 +124,6 @@ project(':kitchenpos-core-ordertable-validator') {
     dependencies {
         compile project(':kitchenpos-core-ordertable')
         compile project(':kitchenpos-core-order')
-        compile project(':kitchenpos-core-order-validator')
-        compile 'org.springframework.boot:spring-boot-starter-data-jpa'
     }
 }
 
@@ -139,8 +143,6 @@ project(':kitchenpos-core-product-validator') {
     dependencies {
         compile project(':kitchenpos-core-product')
         compile project(':kitchenpos-core-menu')
-        compile project(':kitchenpos-core-menu-validator')
-        compile 'org.springframework.boot:spring-boot-starter-data-jpa'
     }
 }
 
@@ -176,6 +178,7 @@ project(':kitchenpos-infra') {
         compile project(':kitchenpos-core-menu'),
                 project(':kitchenpos-core-menu-validator'),
                 project(':kitchenpos-core-menugroup'),
+                project(':kitchenpos-core-menugroup-validator'),
                 project(':kitchenpos-core-order'),
                 project(':kitchenpos-core-order-validator'),
                 project(':kitchenpos-core-ordertable'),
@@ -197,6 +200,7 @@ project(':kitchenpos-client-api') {
         compile project(':kitchenpos-core-menu'),
                 project(':kitchenpos-core-menu-validator'),
                 project(':kitchenpos-core-menugroup'),
+                project(':kitchenpos-core-menugroup-validator'),
                 project(':kitchenpos-core-order'),
                 project(':kitchenpos-core-order-validator'),
                 project(':kitchenpos-core-ordertable'),

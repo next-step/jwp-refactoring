@@ -4,9 +4,9 @@ import kitchenpos.application.menu.dto.MenuProductRequest;
 import kitchenpos.application.menu.dto.MenuRequest;
 import kitchenpos.application.menu.dto.MenuResponse;
 import kitchenpos.core.domain.Menu;
-import kitchenpos.core.domain.MenuExistMenuGroupMenuCreateValidator;
 import kitchenpos.core.domain.MenuRepository;
 import kitchenpos.core.domain.Product;
+import kitchenpos.core.domain.validator.MenuGroupMenuCreateValidator;
 import kitchenpos.core.validator.ProductMenuCreateValidator;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,7 +38,7 @@ public class MenuServiceTest {
     @Mock
     private MenuRepository menuRepository;
     @Mock
-    private MenuExistMenuGroupMenuCreateValidator menuGroupMenuCreateValidator;
+    private MenuGroupMenuCreateValidator menuGroupMenuCreateValidator;
     @Mock
     private ProductMenuCreateValidator menuPriceMenuCreateValidator;
     @InjectMocks
@@ -71,8 +71,8 @@ public class MenuServiceTest {
                 17_000,
                 1L,
                 Arrays.asList(
-                        getMenuProduct(1L, 양지쌀국수, 10),
-                        getMenuProduct(2L, 분짜, 6)
+                        getMenuProduct(1L, 양지쌀국수.getId(), 10),
+                        getMenuProduct(2L, 분짜.getId(), 6)
                 ));
 
         doNothing().when(menuGroupMenuCreateValidator).validate(any());
@@ -162,16 +162,16 @@ public class MenuServiceTest {
                 17_000,
                 1L,
                 Arrays.asList(
-                        getMenuProduct(1L, 양지쌀국수, 10),
-                        getMenuProduct(2L, 분짜, 6)
+                        getMenuProduct(1L, 양지쌀국수.getId(), 10),
+                        getMenuProduct(2L, 분짜.getId(), 6)
                 ));
 
         Menu 추천메뉴 = getMenu(1L, "추천메뉴",
                 17_000,
                 1L,
                 Arrays.asList(
-                        getMenuProduct(1L, 양지쌀국수, 10),
-                        getMenuProduct(2L, 분짜, 6)
+                        getMenuProduct(1L, 양지쌀국수.getId(), 10),
+                        getMenuProduct(2L, 분짜.getId(), 6)
                 ));
 
         final List<Menu> expected = Arrays.asList(대표메뉴, 추천메뉴);

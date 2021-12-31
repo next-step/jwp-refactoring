@@ -50,10 +50,12 @@ public class MenuProductGroup {
                 .collect(Collectors.toList());
     }
 
-    public BigDecimal calcTotalPrice(List<Product> products) {
+    public BigDecimal calcTotalPrice(long productId, BigDecimal productPrice) {
         return menuProducts.stream()
-                .map(menuProduct -> menuProduct.totalPrice(products))
-                .reduce(BigDecimal::add)
-                .orElseThrow(IllegalArgumentException::new);
+                .filter(menuProduct -> menuProduct.getProductId() == productId)
+                .findAny()
+                .orElseThrow(IllegalArgumentException::new)
+                .totalPrice(productPrice);
+
     }
 }

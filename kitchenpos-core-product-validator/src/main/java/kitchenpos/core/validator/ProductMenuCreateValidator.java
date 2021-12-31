@@ -1,10 +1,10 @@
 package kitchenpos.core.validator;
 
 import kitchenpos.core.domain.Menu;
-import kitchenpos.core.domain.validator.MenuPriceMenuCreateValidator;
 import kitchenpos.core.domain.MenuProductGroup;
 import kitchenpos.core.domain.Product;
 import kitchenpos.core.domain.ProductRepository;
+import kitchenpos.core.domain.validator.MenuPriceMenuCreateValidator;
 import kitchenpos.core.exception.IllegalMenuPriceException;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +30,10 @@ public class ProductMenuCreateValidator implements MenuPriceMenuCreateValidator 
     private BigDecimal calcTotalPrice(MenuProductGroup menuProductGroup) {
         final List<Long> productIds = menuProductGroup.getProductIds();
         final List<Product> products = productRepository.findAllByIds(productIds);
-        return menuProductGroup.calcTotalPrice(products);
+        BigDecimal price = BigDecimal.ZERO;
+        for (Product product : products) {
+            price = price.add(menuProductGroup.calcTotalPrice(product.getId(), product.getPrice()));
+        }
+        return price;
     }
 }

@@ -6,8 +6,8 @@ import kitchenpos.core.domain.Order;
 import kitchenpos.core.domain.OrderLineItem;
 import kitchenpos.core.domain.OrderRepository;
 import kitchenpos.core.domain.OrderTable;
-import kitchenpos.core.validator.MenuCountOrderCreateValidator;
-import kitchenpos.core.validator.OrderTableOrderCreateValidator;
+import kitchenpos.core.validator.MenuCountOrderCreateValidatorImpl;
+import kitchenpos.core.validator.OrderTableOrderCreateValidatorImpl;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,11 +35,11 @@ import static org.mockito.Mockito.doThrow;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
-    private OrderTableOrderCreateValidator emptyOrderValidator;
+    private OrderTableOrderCreateValidatorImpl emptyOrderValidator;
     @Mock
     private OrderRepository orderRepository;
     @Mock
-    private MenuCountOrderCreateValidator menuCountOrderValidator;
+    private MenuCountOrderCreateValidatorImpl menuCountOrderValidator;
     @InjectMocks
     private OrderService orderService;
 

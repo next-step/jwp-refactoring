@@ -5,9 +5,6 @@ include 'kitchenpos-infra'
 // core
 include 'kitchenpos-core-menu', 'kitchenpos-core-menugroup', 'kitchenpos-core-order', 'kitchenpos-core-tablegroup',
         'kitchenpos-core-ordertable', 'kitchenpos-core-product'
-include 'kitchenpos-core-menu-validator'
-include 'kitchenpos-core-menugroup-validator'
-include 'kitchenpos-core-order-validator'
-include 'kitchenpos-core-ordertable-validator'
-include 'kitchenpos-core-product-validator'
+include 'kitchenpos-core-menu-validator', 'kitchenpos-core-menugroup-validator', 'kitchenpos-core-order-validator',
+        'kitchenpos-core-ordertable-validator', 'kitchenpos-core-product-validator'
 

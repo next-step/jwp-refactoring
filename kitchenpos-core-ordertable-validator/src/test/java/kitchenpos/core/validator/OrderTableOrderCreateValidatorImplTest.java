@@ -25,12 +25,12 @@ import static org.mockito.Mockito.doThrow;
 
 @DisplayName("주문 생성시 빈 테이블 유효성 테스트")
 @ExtendWith(MockitoExtension.class)
-class OrderTableOrderCreateValidatorTest {
+class OrderTableOrderCreateValidatorImplTest {
 
     @Mock
     private OrderTableRepository orderTableRepository;
     @InjectMocks
-    private OrderTableOrderCreateValidator validator;
+    private OrderTableOrderCreateValidatorImpl validator;
 
     private OrderTable 빈_주문_테이블;
     private OrderTable 주문_테이블;
