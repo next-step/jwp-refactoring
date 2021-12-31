@@ -36,7 +36,7 @@ public class TestOrderTableFactory {
         return orderTables;
     }
 
-    public static List<Long> 주문테이블_ID_목록(final List<OrderTable> orderTables) {
+    public static List<Long> 주문_테이블_ID_목록(final List<OrderTable> orderTables) {
         return orderTables.stream()
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
@@ -46,7 +46,7 @@ public class TestOrderTableFactory {
         return OrderTableRequest.of(numberOfGuests, empty);
     }
 
-    public static void 주문테이블_생성_확인됨(final OrderTableResponse actual, final OrderTable orderTable) {
+    public static void 주문_테이블_생성_확인됨(final OrderTableResponse actual, final OrderTable orderTable) {
         assertAll(
                 () -> assertThat(actual).isNotNull(),
                 () -> assertThat(actual.getId()).isEqualTo(orderTable.getId()),
@@ -80,11 +80,11 @@ public class TestOrderTableFactory {
         assertThat(actual.getNumberOfGuests()).isEqualTo(numberOfGuests);
     }
 
-    public static OrderTableResponse 주문테이블_응답(final Long id, final int numberOfGuestsm, final boolean empty) {
+    public static OrderTableResponse 주문_테이블_응답(final Long id, final int numberOfGuestsm, final boolean empty) {
         return OrderTableResponse.of(id, numberOfGuestsm, empty);
     }
 
-    public static List<OrderLineItemResponse> 주문상품아이템_응답(final Long seq, final Long menuId, final long quantity) {
+    public static List<OrderLineItemResponse> 주문_상품아이템_응답(final Long seq, final Long menuId, final long quantity) {
         return Lists.newArrayList(OrderLineItemResponse.of(seq, menuId, quantity));
     }
 }

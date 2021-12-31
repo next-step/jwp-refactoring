@@ -44,7 +44,7 @@ class TableGroupServiceTest {
         final OrderTable 주문테이블1 = TestOrderTableFactory.주문_테이블_조회됨(1L, 5, false);
         final OrderTable 주문테이블2 = TestOrderTableFactory.주문_테이블_조회됨(2L, 5, false);
         final List<OrderTable> 주문테이블_목록 = Lists.newArrayList(주문테이블1, 주문테이블2);
-        final List<Long> 주문테이블_ID_목록 = TestOrderTableFactory.주문테이블_ID_목록(주문테이블_목록);
+        final List<Long> 주문테이블_ID_목록 = TestOrderTableFactory.주문_테이블_ID_목록(주문테이블_목록);
         final TableGroupRequest 테이블그룹_요청 = TestTableGroupFactory.테이블_그룹_요청(주문테이블_ID_목록);
 
         given(tableGroupRepository.save(any())).willReturn(테이블그룹);

@@ -37,7 +37,7 @@ class TableServiceTest {
 
         final OrderTableResponse actual = tableService.create(TestOrderTableFactory.주문_테이블_요청(10, false));
 
-        TestOrderTableFactory.주문테이블_생성_확인됨(actual, 주문테이블);
+        TestOrderTableFactory.주문_테이블_생성_확인됨(actual, 주문테이블);
     }
 
     @DisplayName("주문 테이블 목록을 조회한다.")
