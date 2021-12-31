@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.common.exceptions.NotFoundEntityException;
+import kitchenpos.common.exceptions.EmptyMenuException;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.MenuGroup;
@@ -61,6 +61,6 @@ public class MenuService {
 
     public Menu getMenuById(final Long menuId) {
         return menuRepository.findById(menuId)
-                .orElseThrow(NotFoundEntityException::new);
+                .orElseThrow(EmptyMenuException::new);
     }
 }
