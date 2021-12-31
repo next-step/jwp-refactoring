@@ -55,10 +55,10 @@ class TableGroupRestControllerTest {
         final OrderTable 주문테이블1 = OrderTable.of(1L, 2, false);
         final OrderTable 주문테이블2 = OrderTable.of(2L, 2, false);
         final List<OrderTable> 주문테이블_목록 = Lists.newArrayList(주문테이블1, 주문테이블2);
-        final TableGroup 테이블그룹 = TableGroup.of(1L, 주문테이블_목록);
+        final TableGroup 테이블그룹 = TableGroup.from(1L);
 
         final TableGroupRequest 테이블그룹_요청 = TableGroupRequest.from(Lists.newArrayList(주문테이블1.getId(), 주문테이블2.getId()));
-        final TableGroupResponse 테이블그룹_응답 = TableGroupResponse.from(테이블그룹);
+        final TableGroupResponse 테이블그룹_응답 = TableGroupResponse.of(테이블그룹, 주문테이블_목록);
         
         given(tableGroupService.create(any())).willReturn(테이블그룹_응답);
 
@@ -81,10 +81,9 @@ class TableGroupRestControllerTest {
         final OrderTable 주문테이블1 = OrderTable.of(1L, 2, false);
         final OrderTable 주문테이블2 = OrderTable.of(2L, 2, false);
         final List<OrderTable> 주문테이블_목록 = Lists.newArrayList(주문테이블1, 주문테이블2);
-        final TableGroup 테이블그룹 = TableGroup.of(1L, 주문테이블_목록);
+        final TableGroup 테이블그룹 = TableGroup.from(1L);
 
-        final TableGroupRequest 테이블그룹_요청 = TableGroupRequest.from(Lists.newArrayList(주문테이블1.getId(), 주문테이블2.getId()));
-        final TableGroupResponse 테이블그룹_응답 = TableGroupResponse.from(테이블그룹);
+        final TableGroupResponse 테이블그룹_응답 = TableGroupResponse.of(테이블그룹, 주문테이블_목록);
 
         final ResultActions actions = mvc.perform(delete("/api/table-groups/{tableGroupId}", 테이블그룹_응답.getId())
                         .accept(MediaType.APPLICATION_JSON_VALUE))
