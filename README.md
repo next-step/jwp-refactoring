@@ -170,3 +170,14 @@ ___
 - ### 주문 생성 유효성 검사
 ![img_order_create](uml/img_order_create.png)
 - 연관된 도메인끼리만 연관관계를 묶고 나머지는 Id로 연결
+
+### [4단계] 미션 요구사항 목록
+- gradle 멀티모듈 구성
+  - [X] module-api
+    - service, validator
+  - [X] module-domain
+    - domain, repository, dto, exception
+  - [X] module-test
+    - test
+  - [X] module-web
+    - ui
