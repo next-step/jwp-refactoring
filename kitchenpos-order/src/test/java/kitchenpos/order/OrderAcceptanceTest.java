@@ -4,28 +4,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.menu.MenuAcceptanceTest;
-import kitchenpos.menu.MenuGroupAcceptanceTest;
-import kitchenpos.menu.dto.MenuGroupRequest;
-import kitchenpos.menu.dto.MenuGroupResponse;
-import kitchenpos.menu.dto.MenuProductRequest;
-import kitchenpos.menu.dto.MenuRequest;
-import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.menu.ProductAcceptanceTest;
-import kitchenpos.menu.dto.ProductRequest;
-import kitchenpos.menu.dto.ProductResponse;
-import kitchenpos.table.TableAcceptanceTest;
-import kitchenpos.table.dto.OrderTableRequest;
-import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.utils.RestTestApi;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -44,36 +30,12 @@ class OrderAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        MenuGroupResponse 한마리메뉴그룹_응답 = MenuGroupAcceptanceTest.메뉴그룹_등록되어_있음(
-                new MenuGroupRequest("한마리메뉴")).as(MenuGroupResponse.class);
+        OrderLineItemRequest 주문항목_후라이드 = new OrderLineItemRequest(1L, 1L);
+        OrderLineItemRequest 주문항목_양념치킨 = new OrderLineItemRequest(2L, 1L);
 
-        ProductResponse 상품후라이드_응답 = ProductAcceptanceTest.상품_생성되어_있음(
-                new ProductRequest("후라이드", BigDecimal.valueOf(16_000L))).as(ProductResponse.class);
-        ProductResponse 상품양념치킨_응답 = ProductAcceptanceTest.상품_생성되어_있음(
-                new ProductRequest("후라이드", BigDecimal.valueOf(16_000L))).as(ProductResponse.class);
-
-        MenuProductRequest 메뉴상품_후라이드 = new MenuProductRequest(상품후라이드_응답.getId(), 1L);
-        MenuProductRequest 메뉴상품_양념치킨 = new MenuProductRequest(상품양념치킨_응답.getId(), 1L);
-
-        MenuRequest 메뉴_후라이드 = new MenuRequest("후라이드치킨", 상품후라이드_응답.getPrice(), 한마리메뉴그룹_응답.getId(),
-            Arrays.asList(메뉴상품_후라이드));
-        MenuRequest 메뉴_양념치킨 = new MenuRequest("양념치킨", 상품양념치킨_응답.getPrice(), 한마리메뉴그룹_응답.getId(),
-            Arrays.asList(메뉴상품_양념치킨));
-
-        MenuResponse 메뉴_후라이드_응답 = MenuAcceptanceTest.메뉴_등록되어_있음(메뉴_후라이드).as(MenuResponse.class);
-        MenuResponse 메뉴_양념치킨_응답 = MenuAcceptanceTest.메뉴_등록되어_있음(메뉴_양념치킨).as(MenuResponse.class);
-
-        OrderTableResponse 주문테이블_후라이드_응답 = TableAcceptanceTest.테이블_등록되어_있음(
-                new OrderTableRequest(2, false)).as(OrderTableResponse.class);
-        OrderTableResponse 주문테이블_양념치킨_응답 = TableAcceptanceTest.테이블_등록되어_있음(
-                new OrderTableRequest(3, false)).as(OrderTableResponse.class);
-
-        OrderLineItemRequest 주문항목_후라이드 = new OrderLineItemRequest(메뉴_후라이드_응답.getId(), 1L);
-        OrderLineItemRequest 주문항목_양념치킨 = new OrderLineItemRequest(메뉴_양념치킨_응답.getId(), 1L);
-
-        주문_후라이드 = new OrderRequest(주문테이블_후라이드_응답.getId(), OrderStatus.COOKING,
+        주문_후라이드 = new OrderRequest(9L, OrderStatus.COOKING,
             Arrays.asList(주문항목_후라이드));
-        주문_양념치킨 = new OrderRequest(주문테이블_양념치킨_응답.getId(), OrderStatus.COOKING,
+        주문_양념치킨 = new OrderRequest(10L, OrderStatus.COOKING,
             Arrays.asList(주문항목_양념치킨));
     }
 
