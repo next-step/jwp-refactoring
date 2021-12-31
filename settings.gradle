@@ -1,1 +1,6 @@
 rootProject.name = 'jwp-refactoring'
+include 'module-menu'
+include 'module-order'
+include 'module-table'
+include 'module-product'
+
