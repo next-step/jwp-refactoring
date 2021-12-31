@@ -45,7 +45,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable orderTable = getNotGroupedOrderTableById(orderTableId);
-        if (orderRepository.existsByOrderTableAndOrderStatusIn(orderTable,
+        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTable,
                 Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new OrderStatusNotProcessingException();
         }
