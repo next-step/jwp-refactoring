@@ -3,7 +3,6 @@ package kitchenpos.tablegroup.application;
 import kitchenpos.common.exception.NotFoundEntityException;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
-import kitchenpos.tablegroup.domain.TableGroupValidator;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;

@@ -2,7 +2,6 @@ package kitchenpos.menu.application;
 
 import kitchenpos.common.exception.NotFoundEntityException;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuValidator;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuRepository;

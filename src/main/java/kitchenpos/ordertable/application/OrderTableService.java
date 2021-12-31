@@ -3,7 +3,6 @@ package kitchenpos.ordertable.application;
 import kitchenpos.common.exception.NotFoundEntityException;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
-import kitchenpos.ordertable.domain.OrderTableValidator;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;

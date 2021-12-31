@@ -1,8 +1,9 @@
-package kitchenpos.menu.domain;
+package kitchenpos.menu.application;
 
 import kitchenpos.common.domain.Price;
 import kitchenpos.common.exception.MenuGroupRequiredException;
 import kitchenpos.common.exception.MenuProductSumPriceException;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.application.ProductService;

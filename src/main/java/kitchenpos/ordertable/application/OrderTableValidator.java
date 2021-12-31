@@ -1,9 +1,10 @@
-package kitchenpos.ordertable.domain;
+package kitchenpos.ordertable.application;
 
 import kitchenpos.common.exception.NotEmptyOrderTableStatusException;
 import kitchenpos.common.exception.OrderStatusNotProcessingException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.domain.TableGroup;
 import org.springframework.stereotype.Component;

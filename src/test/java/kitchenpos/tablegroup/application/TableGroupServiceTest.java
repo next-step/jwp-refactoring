@@ -1,15 +1,8 @@
 package kitchenpos.tablegroup.application;
 
-import kitchenpos.common.exception.MinimumOrderTableNumberException;
-import kitchenpos.common.exception.NotEmptyOrderTableStatusException;
-import kitchenpos.common.exception.OrderStatusNotCompletedException;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.ordertable.application.OrderTableServiceTest;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
-import kitchenpos.tablegroup.domain.TableGroupValidator;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.assertj.core.util.Lists;

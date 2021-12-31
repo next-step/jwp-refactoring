@@ -1,4 +1,4 @@
-package kitchenpos.tablegroup.domain;
+package kitchenpos.tablegroup.application;
 
 import kitchenpos.common.exception.MinimumOrderTableNumberException;
 import kitchenpos.common.exception.NotEmptyOrderTableStatusException;
@@ -12,6 +12,8 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.product.domain.Product;
 import kitchenpos.tablegroup.application.TableGroupService;
+import kitchenpos.tablegroup.application.TableGroupValidator;
+import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
