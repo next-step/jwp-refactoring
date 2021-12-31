@@ -1,13 +1,9 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.domain.FakeOrderRepository;
+import kitchenpos.order.domain.*;
 import kitchenpos.table.domain.FakeOrderTableRepository;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableChangeEmptyRequest;
 import kitchenpos.table.dto.OrderTableChangeNumberOfGuestsRequest;
 import kitchenpos.table.dto.OrderTableCreateRequest;
@@ -22,7 +18,8 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("주문 테이블 테스트")
@@ -60,7 +57,7 @@ class TableServiceTest {
     @DisplayName("주문 테이블이 없으면 테이블 공석 여부 변경을 할 수 없다.")
     @Test
     void notChangeEmptyTableNotExistsOrderTable() {
-        assertThatThrownBy( () -> tableService.changeEmpty(1L, OrderTableChangeEmptyRequest.of(false)))
+        assertThatThrownBy(() -> tableService.changeEmpty(1L, OrderTableChangeEmptyRequest.of(false)))
                 .isInstanceOf(NotFoundOrderTableException.class);
     }
 
@@ -76,7 +73,7 @@ class TableServiceTest {
         );
         orderRepository.save(order);
 
-        assertThatThrownBy( () -> tableService.changeEmpty(savedOrderTable.getId(), OrderTableChangeEmptyRequest.of(false)))
+        assertThatThrownBy(() -> tableService.changeEmpty(savedOrderTable.getId(), OrderTableChangeEmptyRequest.of(false)))
                 .isInstanceOf(NotValidOrderException.class);
     }
 
@@ -103,7 +100,7 @@ class TableServiceTest {
     @Test
     void notChangeNumberOfGuestLessThanZero() {
         orderTableRepository.save(OrderTable.of(-1, true));
-        assertThatThrownBy( () -> tableService.changeNumberOfGuests(1L, OrderTableChangeNumberOfGuestsRequest.of(-1)))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, OrderTableChangeNumberOfGuestsRequest.of(-1)))
                 .isInstanceOf(NotChangeNumberOfGuestException.class);
     }
 
@@ -111,7 +108,7 @@ class TableServiceTest {
     @Test
     void notChangeNumberOfGuestOrderTableIsEmpty() {
         OrderTable savedOrderTable = orderTableRepository.save(OrderTable.of(10, true));
-        assertThatThrownBy( () -> tableService.changeNumberOfGuests(savedOrderTable.getId(), OrderTableChangeNumberOfGuestsRequest.of(15)))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(savedOrderTable.getId(), OrderTableChangeNumberOfGuestsRequest.of(15)))
                 .isInstanceOf(NotChangeNumberOfGuestException.class);
     }
 

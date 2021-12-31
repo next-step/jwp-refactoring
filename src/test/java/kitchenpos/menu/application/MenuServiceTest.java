@@ -7,7 +7,6 @@ import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.exception.DifferentOrderAndMenuPriceException;
 import kitchenpos.menu.exception.NotCreatedProductException;
-import kitchenpos.menu.exception.NotFoundMenuGroupException;
 import kitchenpos.menu.exception.WrongPriceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +14,8 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("메뉴 테스트")
@@ -28,8 +28,8 @@ class MenuServiceTest {
     @DisplayName("가격이 음수면 예외가 발생한다.")
     @Test
     void priceIsNegative() {
-        Product 살치살 = productRepository.save(Product.of(1L,"살치살",10000));
-        Product 부채살 = productRepository.save(Product.of(2L,"부채살",10000));
+        Product 살치살 = productRepository.save(Product.of(1L, "살치살", 10000));
+        Product 부채살 = productRepository.save(Product.of(2L, "부채살", 10000));
         MenuGroup savedMenuGroup = menuGroupRepository.save(MenuGroup.of("추천메뉴"));
         MenuRequest menuRequest = MenuRequest.of("소고기세트", -1, savedMenuGroup,
                 Arrays.asList(
@@ -37,15 +37,15 @@ class MenuServiceTest {
                         MenuProductRequest.of(부채살, 1)
                 )
         );
-        assertThatThrownBy( () -> menuService.create(menuRequest))
+        assertThatThrownBy(() -> menuService.create(menuRequest))
                 .isInstanceOf(WrongPriceException.class);
     }
 
     @DisplayName("메뉴 그룹이 존재하지 않으면 예외가 발생한다.")
     @Test
     void notExistsMenuGroup() {
-        Product 살치살 = productRepository.save(Product.of(1L,"살치살",10000));
-        Product 부채살 = productRepository.save(Product.of(2L,"부채살",10000));
+        Product 살치살 = productRepository.save(Product.of(1L, "살치살", 10000));
+        Product 부채살 = productRepository.save(Product.of(2L, "부채살", 10000));
         MenuGroup menuGroup = MenuGroup.of("추천메뉴");
         MenuRequest menuRequest = MenuRequest.of("소고기세트", 50000, menuGroup,
                 Arrays.asList(
@@ -54,15 +54,15 @@ class MenuServiceTest {
                 )
         );
 
-        assertThatThrownBy( () -> menuService.create(menuRequest))
+        assertThatThrownBy(() -> menuService.create(menuRequest))
                 .isInstanceOf(DifferentOrderAndMenuPriceException.class);
     }
 
     @DisplayName("상품이 존재하지 않으면 예외가 발생한다.")
     @Test
     void notExistsProduct() {
-        Product 살치살 = Product.of(1L,"살치살",10000);
-        Product 부채살 = Product.of(2L,"부채살",10000);
+        Product 살치살 = Product.of(1L, "살치살", 10000);
+        Product 부채살 = Product.of(2L, "부채살", 10000);
         MenuGroup savedMenuGroup = menuGroupRepository.save(MenuGroup.of("추천메뉴"));
         MenuRequest menuRequest = MenuRequest.of("소고기세트", 50000, savedMenuGroup,
                 Arrays.asList(
@@ -71,7 +71,7 @@ class MenuServiceTest {
                 )
         );
 
-        assertThatThrownBy( () -> menuService.create(menuRequest))
+        assertThatThrownBy(() -> menuService.create(menuRequest))
                 .isInstanceOf(NotCreatedProductException.class);
     }
 
@@ -87,7 +87,7 @@ class MenuServiceTest {
                         MenuProductRequest.of(쌈채소, 1)
                 )
         );
-        assertThatThrownBy( () -> menuService.create(menuRequest))
+        assertThatThrownBy(() -> menuService.create(menuRequest))
                 .isInstanceOf(DifferentOrderAndMenuPriceException.class);
     }
 

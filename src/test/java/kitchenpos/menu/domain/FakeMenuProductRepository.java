@@ -1,8 +1,5 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProductRepository;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

@@ -1,8 +1,5 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.domain.TableGroupRepository;
-
 import java.util.*;
 
 public class FakeTableGroupRepository implements TableGroupRepository {

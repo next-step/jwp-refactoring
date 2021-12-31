@@ -21,7 +21,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("주문 테스트")
@@ -36,8 +37,8 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        Product 살치살 = Product.of(1L,"살치살",10000);
-        Product 부채살 = Product.of(2L,"부채살",10000);
+        Product 살치살 = Product.of(1L, "살치살", 10000);
+        Product 부채살 = Product.of(2L, "부채살", 10000);
         Menu menu = Menu.create("소고기세트", BigDecimal.valueOf(70000), null,
                 Arrays.asList(
                         MenuProduct.of(살치살, 2),
@@ -53,7 +54,7 @@ class OrderServiceTest {
         OrderTable orderTable = orderTableRepository.save(OrderTable.of(10, false));
         OrderRequest order = OrderRequest.of(orderTable.getId(), Collections.emptyList());
 
-        assertThatThrownBy( () -> orderService.create(order))
+        assertThatThrownBy(() -> orderService.create(order))
                 .isInstanceOf(BadOrderRequestException.class);
     }
 
@@ -67,7 +68,7 @@ class OrderServiceTest {
                 )
         );
 
-        assertThatThrownBy( () -> orderService.create(order))
+        assertThatThrownBy(() -> orderService.create(order))
                 .isInstanceOf(NotFoundOrderTableException.class);
     }
 
@@ -81,7 +82,7 @@ class OrderServiceTest {
                 )
         );
 
-        assertThatThrownBy( () -> orderService.create(order))
+        assertThatThrownBy(() -> orderService.create(order))
                 .isInstanceOf(NotCreateOrderException.class);
     }
 

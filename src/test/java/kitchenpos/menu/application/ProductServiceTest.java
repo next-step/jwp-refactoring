@@ -11,7 +11,8 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("상품 테스트")
@@ -23,7 +24,7 @@ class ProductServiceTest {
     @Test
     void priceIsNegative() {
         ProductRequest product = ProductRequest.of("소고기", BigDecimal.valueOf(-100));
-        assertThatThrownBy( () -> productService.create(product))
+        assertThatThrownBy(() -> productService.create(product))
                 .isInstanceOf(WrongPriceException.class);
     }
 

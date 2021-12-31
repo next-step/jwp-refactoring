@@ -15,7 +15,8 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 class TableGroupServiceTest {
@@ -31,7 +32,7 @@ class TableGroupServiceTest {
     @Test
     void notCreateTabeGroupLessTwoTable() {
         TableGroupRequest tableGroup = TableGroupRequest.of(Arrays.asList(저장안된_주문테이블ID_ONE));
-        assertThatThrownBy( () -> tableGroupService.create(tableGroup))
+        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
                 .isInstanceOf(NotCreateTableGroupException.class);
     }
 
@@ -40,7 +41,7 @@ class TableGroupServiceTest {
     void notCreateTableGroupNotSavedOrderTable() {
         TableGroupRequest tableGroup = TableGroupRequest.of(Arrays.asList(저장안된_주문테이블ID_ONE, 저장안된_주문테이블ID_TWO));
 
-        assertThatThrownBy( () -> tableGroupService.create(tableGroup))
+        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
                 .isInstanceOf(NotCreatedOrderTablesException.class);
     }
 
@@ -51,7 +52,7 @@ class TableGroupServiceTest {
         OrderTable savedOrderTable2 = orderTableRepository.save(OrderTable.of(20, false));
         TableGroupRequest tableGroup = TableGroupRequest.of(Arrays.asList(savedOrderTable1.getId(), savedOrderTable2.getId()));
 
-        assertThatThrownBy( () -> tableGroupService.create(tableGroup))
+        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
                 .isInstanceOf(NotCreateTableGroupException.class);
     }
 
@@ -62,7 +63,7 @@ class TableGroupServiceTest {
         OrderTable savedOrderTable2 = orderTableRepository.save(OrderTable.of(TableGroup.of(1L), 20, true));
         TableGroupRequest tableGroup = TableGroupRequest.of(Arrays.asList(savedOrderTable1.getId(), savedOrderTable2.getId()));
 
-        assertThatThrownBy( () -> tableGroupService.create(tableGroup))
+        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
                 .isInstanceOf(NotCreateTableGroupException.class);
     }
 
@@ -107,7 +108,7 @@ class TableGroupServiceTest {
         );
         orderRepository.save(order2);
 
-        assertThatThrownBy( () -> tableGroupService.ungroup(result.getId()))
+        assertThatThrownBy(() -> tableGroupService.ungroup(result.getId()))
                 .isInstanceOf(NotValidOrderException.class);
     }
 

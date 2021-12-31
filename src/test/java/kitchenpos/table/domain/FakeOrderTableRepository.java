@@ -1,8 +1,5 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
