@@ -5,4 +5,5 @@ include 'kitchenpos-order'
 include 'kitchenpos-menu'
 include 'kitchenpos-order-domain'
 include 'kitchenpos-table-domain'
+include 'kitchenpos-menu-domain'
 
