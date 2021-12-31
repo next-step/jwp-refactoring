@@ -18,15 +18,23 @@ public class OrderTables {
     protected OrderTables() {
     }
 
-    protected OrderTables(List<OrderTable> tables) {
-        for (final OrderTable savedOrderTable : tables) {
-            isValidOrderTable(savedOrderTable);
-        }
+    public OrderTables(List<OrderTable> tables) {
+//        for (final OrderTable savedOrderTable : tables) {
+//            isValidOrderTable(savedOrderTable);
+//        }
 
         this.orderTables = tables;
     }
 
-    private void isValidOrderTable(OrderTable savedOrderTable) {
+    public static OrderTables of(List<OrderTable> orderTables) {
+        for (final OrderTable savedOrderTable : orderTables) {
+            isValidOrderTable(savedOrderTable);
+        }
+
+        return new OrderTables(orderTables);
+    }
+
+    private static void isValidOrderTable(OrderTable savedOrderTable) {
         if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) {
             throw new NotCreateTableGroupException(TableErrorCode.ALREADY_ASSIGN_GROUP);
         }
@@ -46,5 +54,9 @@ public class OrderTables {
         return orderTables.stream()
                 .map(orderTable -> OrderTableResponse.of(orderTable))
                 .collect(Collectors.toList());
+    }
+
+    public boolean isCreatedOrderTable(int orderTableIdSize) {
+        return orderTables.size() ==  orderTableIdSize;
     }
 }

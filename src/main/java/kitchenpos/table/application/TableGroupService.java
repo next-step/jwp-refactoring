@@ -2,10 +2,7 @@ package kitchenpos.table.application;
 
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.table.domain.*;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import kitchenpos.table.exception.NotCreateTableGroupException;
@@ -35,13 +32,10 @@ public class TableGroupService {
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         validateRequest(tableGroupRequest);
 
-        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(tableGroupRequest.getOrderTableIds());
-        isNotCreatedOrderTables(tableGroupRequest, savedOrderTables);
+        OrderTables orderTables = OrderTables.of(orderTableRepository.findAllByIdIn(tableGroupRequest.getOrderTableIds()));
+        TableGroup tableGroup = TableGroup.create(tableGroupRequest.getOrderTableIds(), orderTables);
 
-        TableGroup tableGroup = TableGroup.create(savedOrderTables);
-
-        final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
-        return TableGroupResponse.of(savedTableGroup);
+        return TableGroupResponse.of(tableGroupRepository.save(tableGroup));
     }
 
     @Transactional
@@ -72,10 +66,4 @@ public class TableGroupService {
 
     }
 
-    private void isNotCreatedOrderTables(TableGroupRequest tableGroupRequest, List<OrderTable> savedOrderTables) {
-        List<Long> requestIds = tableGroupRequest.getOrderTableIds();
-        if (requestIds.size() != savedOrderTables.size()) {
-            throw new NotCreatedOrderTablesException();
-        }
-    }
 }
