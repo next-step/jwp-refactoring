@@ -41,13 +41,14 @@ allprojects {
 
 project(':menu') {
     dependencies {
-        compile project(':common')
+        implementation project(':common')
     }
 }
 
 project(':order') {
     dependencies {
-        compile project(':menu')
+        implementation project(':common')
+        implementation project(':menu')
     }
 }
 
@@ -56,5 +57,5 @@ dependencies {
     implementation 'org.flywaydb:flyway-core'
     runtimeOnly 'com.h2database:h2'
 
-    compile project(':order')
+    implementation project(':order')
 }
