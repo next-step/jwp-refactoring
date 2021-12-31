@@ -97,3 +97,36 @@
 - 클래스 간의 방향도 중요하고 패키지 간의 방향도 중요하다.
   - 클래스 사이, 패키지 사이의 의존 관계는 단방향이 되도록 해야 한다.
 - 데이터베이스 스키마 변경 및 마이그레이션이 필요하다면 flyway 사용
+
+## 4단계 - 멀티 모듈 적용
+### 요구사항
+- Gradle 멀티 모듈 개념을 적용해 자유롭게 서로 다른 프로젝트로 분리해 본다.
+  - 컨텍스트 간의 독립된 모듈로 만들 수 있다.
+  - 계층 간의 독립된 모듈로 만들 수 있다.
+- 의존성 주입, HTTP 요청/응답, 이벤트 발행/구독 등 다양한 방식으로 모듈 간 데이터를 주고받을 수 있다.
+
+```
+프로젝트 구조
+
+Root project 'kitchenpos'
+|--- Project ':common-domain'
+|--- Project ':common-module'
+|--- Project ':common-web'
+|--- Project ':menu-app-api'
+|--- Project ':menu-domain'
+|--- Project ':order-app-api'
+|--- Project ':order-domain'
+
+모듈 설명 
+
+common-module: 모든 프로젝트에서 사용되는 common module
+               정말 필요한 경우에만 사용
+               
+common-domain: domain modules 내부에서만 사용되는 domain common module
+menu-domain: 메뉴 관련 domain module
+order-domain: 주문 관련 domain module
+
+common-web: web 관련 module 에서 공통으로 사용하는 module
+menu-app-api: 메뉴 관련 api module
+order-app-api: 주문 관련 api module
+```
