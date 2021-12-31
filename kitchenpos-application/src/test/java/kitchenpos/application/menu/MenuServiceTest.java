@@ -7,7 +7,7 @@ import kitchenpos.core.domain.Menu;
 import kitchenpos.core.domain.MenuExistMenuGroupMenuCreateValidator;
 import kitchenpos.core.domain.MenuRepository;
 import kitchenpos.core.domain.Product;
-import kitchenpos.core.validator.MenuPriceMenuCreateValidator;
+import kitchenpos.core.validator.ProductMenuCreateValidator;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -38,9 +38,9 @@ public class MenuServiceTest {
     @Mock
     private MenuRepository menuRepository;
     @Mock
-    private MenuExistMenuGroupMenuCreateValidator notFoundMenuGroupValidator;
+    private MenuExistMenuGroupMenuCreateValidator menuGroupMenuCreateValidator;
     @Mock
-    private MenuPriceMenuCreateValidator menuPriceMenuCreateValidator;
+    private ProductMenuCreateValidator menuPriceMenuCreateValidator;
     @InjectMocks
     private MenuService menuService;
 
@@ -75,8 +75,9 @@ public class MenuServiceTest {
                         getMenuProduct(2L, 분짜, 6)
                 ));
 
+        doNothing().when(menuGroupMenuCreateValidator).validate(any());
+        doNothing().when(menuPriceMenuCreateValidator).validate(any());
 
-        doNothing().when(notFoundMenuGroupValidator).validate(any());
         given(menuRepository.save(any(Menu.class))).willReturn(expected);
 
         // when
@@ -122,7 +123,8 @@ public class MenuServiceTest {
                             new MenuProductRequest(분짜.getId(), 6)
                     )
             );
-            doThrow(new IllegalArgumentException()).when(notFoundMenuGroupValidator).validate(any());
+            doThrow(new IllegalArgumentException()).when(menuGroupMenuCreateValidator).validate(any());
+            doNothing().when(menuPriceMenuCreateValidator).validate(any());
             // when
             ThrowableAssert.ThrowingCallable createCall = () -> menuService.create(createRequest);
             // then

@@ -5,8 +5,8 @@ import kitchenpos.application.tablegroup.dto.TableGroupResponse;
 import kitchenpos.core.domain.OrderTable;
 import kitchenpos.core.domain.TableGroup;
 import kitchenpos.core.domain.TableGroupRepository;
-import kitchenpos.core.validator.OrderTableGroupUnGroupValidator;
-import kitchenpos.core.validator.OrderTableTableGroupCreateValidator;
+import kitchenpos.core.validator.TableGroupCreateValidator;
+import kitchenpos.core.validator.TableGroupUnGroupValidator;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -38,9 +38,9 @@ import static org.mockito.Mockito.doThrow;
 class TableGroupServiceTest {
 
     @Mock
-    private OrderTableTableGroupCreateValidator orderTableCreateTableGroupValidator;
+    private TableGroupCreateValidator orderTableCreateTableGroupValidator;
     @Mock
-    private OrderTableGroupUnGroupValidator orderUnGroupTableGroupValidator;
+    private TableGroupUnGroupValidator orderUnGroupTableGroupValidator;
     @Mock
     private TableGroupRepository tableGroupRepository;
     @Mock

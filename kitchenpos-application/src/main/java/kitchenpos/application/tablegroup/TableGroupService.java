@@ -1,16 +1,14 @@
 package kitchenpos.application.tablegroup;
 
-import kitchenpos.core.domain.TableGroup;
-import kitchenpos.core.domain.TableGroupRepository;
-import kitchenpos.core.exception.CanNotUnGroupException;
-import kitchenpos.core.validator.OrderTableGroupUnGroupValidator;
-import kitchenpos.core.validator.OrderTableTableGroupCreateValidator;
-import kitchenpos.core.event.TableGroupedEvent;
-import kitchenpos.core.event.TableUnGroupedEvent;
-import kitchenpos.core.validator.TableGroupCreateValidator;
-import kitchenpos.core.validator.TableGroupUnGroupValidator;
 import kitchenpos.application.tablegroup.dto.TableGroupCreateRequest;
 import kitchenpos.application.tablegroup.dto.TableGroupResponse;
+import kitchenpos.core.domain.TableGroup;
+import kitchenpos.core.domain.TableGroupRepository;
+import kitchenpos.core.event.TableGroupedEvent;
+import kitchenpos.core.event.TableUnGroupedEvent;
+import kitchenpos.core.exception.CanNotUnGroupException;
+import kitchenpos.core.validator.TableGroupCreateValidator;
+import kitchenpos.core.validator.TableGroupUnGroupValidator;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,8 +24,8 @@ public class TableGroupService {
     private final ApplicationEventPublisher eventPublisher;
 
     public TableGroupService(TableGroupRepository tableGroupRepository,
-                             OrderTableGroupUnGroupValidator orderUnGroupTableGroupValidator,
-                             OrderTableTableGroupCreateValidator orderTableCreateTableGroupValidator,
+                             TableGroupUnGroupValidator orderUnGroupTableGroupValidator,
+                             TableGroupCreateValidator orderTableCreateTableGroupValidator,
                              ApplicationEventPublisher applicationEventPublisher) {
         this.tableGroupRepository = tableGroupRepository;
         this.orderUnGroupTableGroupValidator = orderUnGroupTableGroupValidator;

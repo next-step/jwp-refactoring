@@ -1,6 +1,6 @@
 package kitchenpos.core.domain;
 
-import kitchenpos.core.validator.MenuCreateValidator;
+import kitchenpos.core.domain.validator.MenuCreateValidator;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;

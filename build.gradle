@@ -65,6 +65,17 @@ project(':kitchenpos-core-menu') {
 
     dependencies {
         compile project(':kitchenpos-core-product')
+
+        compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+    }
+}
+
+project(':kitchenpos-core-menu-validator') {
+    bootJar { enabled = false }
+    jar { enabled = true }
+
+    dependencies {
+        compile project(':kitchenpos-core-menu')
         compile project(':kitchenpos-core-order')
         compile 'org.springframework.boot:spring-boot-starter-data-jpa'
     }
@@ -75,8 +86,17 @@ project(':kitchenpos-core-order') {
     jar { enabled = true }
 
     dependencies {
+        compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+    }
+}
+
+project(':kitchenpos-core-order-validator') {
+    bootJar { enabled = false }
+    jar { enabled = true }
+
+    dependencies {
+        compile project(':kitchenpos-core-order')
         compile project(':kitchenpos-core-ordertable')
-        compile project(':kitchenpos-core-tablegroup')
         compile 'org.springframework.boot:spring-boot-starter-data-jpa'
     }
 }
@@ -86,7 +106,19 @@ project(':kitchenpos-core-ordertable') {
     jar { enabled = true }
 
     dependencies {
+        compile project(':kitchenpos-core-tablegroup')
+        compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+    }
+}
+
+project(':kitchenpos-core-ordertable-validator') {
+    bootJar { enabled = false }
+    jar { enabled = true }
+
+    dependencies {
+        compile project(':kitchenpos-core-ordertable')
         compile project(':kitchenpos-core-order')
+        compile project(':kitchenpos-core-order-validator')
         compile 'org.springframework.boot:spring-boot-starter-data-jpa'
     }
 }
@@ -96,7 +128,18 @@ project(':kitchenpos-core-product') {
     jar { enabled = true }
 
     dependencies {
+        compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+    }
+}
+
+project(':kitchenpos-core-product-validator') {
+    bootJar { enabled = false }
+    jar { enabled = true }
+
+    dependencies {
+        compile project(':kitchenpos-core-product')
         compile project(':kitchenpos-core-menu')
+        compile project(':kitchenpos-core-menu-validator')
         compile 'org.springframework.boot:spring-boot-starter-data-jpa'
     }
 }
@@ -106,7 +149,6 @@ project(':kitchenpos-core-tablegroup') {
     jar { enabled = true }
 
     dependencies {
-        compile project(':kitchenpos-core-ordertable')
         compile 'org.springframework.boot:spring-boot-starter-data-jpa'
     }
 }
@@ -132,10 +174,14 @@ project(':kitchenpos-infra') {
     jar { enabled = true }
     dependencies {
         compile project(':kitchenpos-core-menu'),
+                project(':kitchenpos-core-menu-validator'),
                 project(':kitchenpos-core-menugroup'),
                 project(':kitchenpos-core-order'),
+                project(':kitchenpos-core-order-validator'),
                 project(':kitchenpos-core-ordertable'),
+                project(':kitchenpos-core-ordertable-validator'),
                 project(':kitchenpos-core-product'),
+                project(':kitchenpos-core-product-validator'),
                 project(':kitchenpos-core-tablegroup')
 
         runtimeOnly 'com.h2database:h2'
@@ -149,13 +195,17 @@ project(':kitchenpos-client-api') {
 
     dependencies {
         compile project(':kitchenpos-core-menu'),
+                project(':kitchenpos-core-menu-validator'),
                 project(':kitchenpos-core-menugroup'),
                 project(':kitchenpos-core-order'),
+                project(':kitchenpos-core-order-validator'),
                 project(':kitchenpos-core-ordertable'),
+                project(':kitchenpos-core-ordertable-validator'),
                 project(':kitchenpos-core-product'),
-                project(':kitchenpos-core-tablegroup'),
-                project(':kitchenpos-application'),
-                project(':kitchenpos-infra')
+                project(':kitchenpos-core-product-validator'),
+                project(':kitchenpos-core-tablegroup')
+        compile project(':kitchenpos-application')
+        compile project(':kitchenpos-infra')
 
         compile 'org.springframework.boot:spring-boot-starter-web'
         implementation 'org.springframework.boot:spring-boot-starter-actuator'

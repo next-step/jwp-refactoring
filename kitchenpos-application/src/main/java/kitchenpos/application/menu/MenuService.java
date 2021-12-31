@@ -1,12 +1,12 @@
 package kitchenpos.application.menu;
 
-import kitchenpos.application.menu.dto.MenuResponse;
-import kitchenpos.core.menu.domain.Menu;
-import kitchenpos.core.menu.domain.MenuRepository;
-import kitchenpos.core.menu.validator.MenuCreateValidator;
-import kitchenpos.core.menu.validator.MenuGroupMenuCreateValidator;
-import kitchenpos.core.menu.validator.MenuPriceMenuCreateValidator;
 import kitchenpos.application.menu.dto.MenuRequest;
+import kitchenpos.application.menu.dto.MenuResponse;
+import kitchenpos.core.domain.Menu;
+import kitchenpos.core.domain.MenuRepository;
+import kitchenpos.core.domain.validator.MenuCreateValidator;
+import kitchenpos.core.domain.validator.MenuGroupMenuCreateValidator;
+import kitchenpos.core.domain.validator.MenuPriceMenuCreateValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +19,8 @@ public class MenuService {
     private final MenuRepository menuRepository;
     private final List<MenuCreateValidator> menuCreateValidators;
 
-    public MenuService(MenuRepository menuRepository, MenuPriceMenuCreateValidator menuPriceMenuCreateValidator,
+    public MenuService(MenuRepository menuRepository,
+                       MenuPriceMenuCreateValidator menuPriceMenuCreateValidator,
                        MenuGroupMenuCreateValidator menuGroupMenuCreateValidator) {
         this.menuRepository = menuRepository;
         this.menuCreateValidators = Arrays.asList(menuPriceMenuCreateValidator, menuGroupMenuCreateValidator);

@@ -3,8 +3,8 @@ package kitchenpos.application.ordertable;
 import kitchenpos.application.ordertable.dto.OrderTableRequest;
 import kitchenpos.application.ordertable.dto.OrderTableResponse;
 import kitchenpos.core.domain.OrderTable;
+import kitchenpos.core.domain.OrderTableChangeEmptyValidator;
 import kitchenpos.core.domain.OrderTableRepository;
-import kitchenpos.core.validator.OrderOrderTableChangeEmptyValidator;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -34,7 +34,7 @@ class OrderTableServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
-    private OrderOrderTableChangeEmptyValidator changeEmptyOrderTableValidator;
+    private OrderTableChangeEmptyValidator changeEmptyOrderTableValidator;
     @InjectMocks
     private OrderTableService tableService;
 

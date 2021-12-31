@@ -1,8 +1,8 @@
 package kitchenpos.infra.menu;
 
-import kitchenpos.core.menu.domain.Menu;
-import kitchenpos.core.menu.domain.MenuProduct;
+import kitchenpos.core.domain.Menu;
 import kitchenpos.core.domain.MenuGroup;
+import kitchenpos.core.domain.MenuProduct;
 import kitchenpos.core.domain.Product;
 import kitchenpos.infra.menugroup.JpaMenuGroupRepository;
 import kitchenpos.infra.product.JpaProductRepository;
