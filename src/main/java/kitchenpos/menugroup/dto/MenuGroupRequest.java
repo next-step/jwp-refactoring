@@ -22,7 +22,7 @@ public class MenuGroupRequest {
         return name;
     }
 
-    public MenuGroup toMenu() {
+    public MenuGroup toMenuGroup() {
         return new MenuGroup(name);
     }
 }

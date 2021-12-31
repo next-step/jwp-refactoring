@@ -1,9 +1,8 @@
 package kitchenpos.tablegroup.domain;
 
-import kitchenpos.common.exception.MinimumOrderTableNumberException;
-import kitchenpos.common.exception.NotEmptyOrderTableStatusException;
 import kitchenpos.common.exception.OrderStatusNotCompletedException;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuId;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
@@ -17,6 +16,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -29,6 +29,7 @@ class TableGroupTest {
     private OrderLineItem 짜장면_주문2;
     private Order 주문;
     private Menu 짜장면;
+    private MenuId 짜장면_ID;
     private MenuProduct 짜장면_하나;
     private MenuProduct 짜장면_두개;
 
@@ -38,13 +39,15 @@ class TableGroupTest {
 
     @BeforeEach
     void setUp() {
-        짜장면_상품 = new Product("짜장면", new BigDecimal(1000));
-        짜장면_주문1 = new OrderLineItem(주문, 짜장면, 10);
-        짜장면_주문2 = new OrderLineItem(주문, 짜장면, 3);
 
+        짜장면_상품 = new Product("짜장면", new BigDecimal(1000));
         짜장면_하나 = new MenuProduct(1L, new Menu(), 짜장면_상품, 1);
         짜장면_두개 = new MenuProduct(2L, new Menu(), 짜장면_상품, 2);
         짜장면 = new Menu("짜장면", 10000, new MenuGroup(), Lists.newArrayList(짜장면_하나, 짜장면_두개));
+        짜장면_ID = new MenuId(짜장면.getId());
+
+        짜장면_주문1 = new OrderLineItem(주문, 짜장면_ID, 10);
+        짜장면_주문2 = new OrderLineItem(주문, 짜장면_ID, 3);
 
         주문테이블1번 = new OrderTable(null, 0);
 
@@ -65,11 +68,11 @@ class TableGroupTest {
     void ungroupTableGroupEmptyOrderTableExceptionTest() {
         assertThatThrownBy(() -> {
             // given
-            단체테이블1번 = new TableGroup(1L, Lists.newArrayList(주문테이블1번, 주문테이블2번));
+            단체테이블1번 = new TableGroup(1L, Arrays.asList(주문테이블1번, 주문테이블2번));
 
             주문테이블1번.changeNumberOfGuests(3);
 
-            주문 = new Order(주문테이블1번, Lists.newArrayList(짜장면_주문1, 짜장면_주문2));
+            주문 = new Order(주문테이블1번, Arrays.asList(짜장면_주문1, 짜장면_주문2));
             주문.changeOrderStatus(OrderStatus.COOKING);
 
             주문테이블1번.addOrder(주문);

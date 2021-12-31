@@ -4,6 +4,7 @@ import kitchenpos.common.exception.NegativeNumberOfGuestsException;
 import kitchenpos.common.exception.NotFoundEntityException;
 import kitchenpos.common.exception.OrderStatusNotProcessingException;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuId;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
@@ -46,6 +47,7 @@ public class OrderTableServiceTest {
     private OrderTable 빈_주문_테이블;
     private Order 주문;
     private Menu 짜장면;
+    private MenuId 짜장면_ID;
     private OrderLineItem 짜장면_주문1;
     private OrderLineItem 짜장면_주문2;
     private OrderTableRequest 주문_테이블_1번_요청;
@@ -59,11 +61,13 @@ public class OrderTableServiceTest {
         orderTableService = new OrderTableService(orderTableRepository);
 
         짜장면_상품 = new Product("짜장면", new BigDecimal(1000));
-        짜장면_주문1 = new OrderLineItem(주문, 짜장면, 10);
-        짜장면_주문2 = new OrderLineItem(주문, 짜장면, 3);
         짜장면_곱배기 = new MenuProduct(1L, 짜장면, 짜장면_상품, 2);
         짜장면_보통 = new MenuProduct(1L, 짜장면, 짜장면_상품, 1);
         짜장면 = new Menu("짜장면", 10000, new MenuGroup(), Lists.newArrayList(짜장면_곱배기, 짜장면_보통));
+        짜장면_ID = new MenuId(짜장면.getId());
+
+        짜장면_주문1 = new OrderLineItem(주문, 짜장면_ID, 10);
+        짜장면_주문2 = new OrderLineItem(주문, 짜장면_ID, 3);
 
         주문_테이블_1번 = new OrderTable(3);
         주문 = new Order(주문_테이블_1번, Lists.newArrayList(짜장면_주문1, 짜장면_주문2));
