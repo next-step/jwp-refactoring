@@ -50,7 +50,7 @@ class TableGroupServiceTest {
         given(tableGroupRepository.save(any())).willReturn(테이블그룹);
         given(tableService.findAllById(anyList())).willReturn(주문테이블_목록);
 
-        final TableGroupResponse actual = tableGroupService.create(테이블그룹_요청);
+        final TableGroupResponse actual = tableGroupService.group(테이블그룹_요청);
 
         TestTableGroupFactory.테이블_그룹_생성_확인함(actual, 테이블그룹);
     }
