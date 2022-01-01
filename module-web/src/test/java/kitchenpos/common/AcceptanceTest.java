@@ -19,9 +19,4 @@ public class AcceptanceTest {
         RestAssured.port = port;
         RestAssured.defaultParser = Parser.JSON;
     }
-
-    @Bean
-    Hibernate5Module hibernate5Module(){
-        return new Hibernate5Module();
-    }
 }
