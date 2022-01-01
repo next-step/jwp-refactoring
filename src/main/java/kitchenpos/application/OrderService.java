@@ -26,8 +26,8 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest request) {
-        final Long orderTableId = orderValidator.findOrderTableById(request);
-        final Order order = Order.from(orderTableId);
+         orderValidator.validatorTableService(request);
+        final Order order = Order.from(request.getOrderTableId());
         addOrderLineItems(order, request.getOrderLineItems());
 
         final Order savedOrder = orderRepository.save(order);
@@ -42,8 +42,8 @@ public class OrderService {
     }
 
     private OrderLineItem getOrderItem(final OrderLineItemRequest request) {
-        final Long menuId = orderValidator.findMenuById(request);
-        return OrderLineItem.of(menuId, request.getQuantity());
+        orderValidator.validatorMenu(request);
+        return request.toOrderLineItem();
     }
 
     public List<OrderResponse> list() {
