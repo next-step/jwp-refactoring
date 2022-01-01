@@ -16,18 +16,7 @@ public class TableGroupRequest {
     }
 
     public static TableGroupRequest of(List<Long> orderTables) {
-        //return new TableGroupRequest(createOrderTableIds(orderTables));
         return new TableGroupRequest(orderTables);
-    }
-
-    public static TableGroupRequest create(List<Long> orderTableIds) {
-        return new TableGroupRequest(orderTableIds);
-    }
-
-    private static List<Long> createOrderTableIds(List<OrderTable> orderTables) {
-        return orderTables.stream()
-                .map(orderTable -> orderTable.getId())
-                .collect(Collectors.toList());
     }
 
     public List<Long> getOrderTableIds() {

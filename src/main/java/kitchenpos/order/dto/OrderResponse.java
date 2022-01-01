@@ -47,10 +47,6 @@ public class OrderResponse {
         return orderStatus;
     }
 
-    public LocalDateTime getOrderedTime() {
-        return orderedTime;
-    }
-
     public List<OrderLineItemResponse> getOrderLineItemResponseList() {
         return orderLineItemResponseList;
     }

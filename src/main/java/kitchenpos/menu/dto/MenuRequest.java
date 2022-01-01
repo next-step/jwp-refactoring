@@ -41,25 +41,4 @@ public class MenuRequest {
         return menuProductRequests;
     }
 
-    public List<Long> getProductIds() {
-        return menuProductRequests.stream()
-                .map(MenuProductRequest::getProductId)
-                .collect(Collectors.toList());
-    }
-
-    public Long getQuantity(Long productId) {
-        return menuProductRequests.stream()
-                .filter(menuProductRequest -> menuProductRequest.getProductId().equals(productId))
-                .map(menuProductRequest -> menuProductRequest.getQuantity())
-                .findFirst()
-                .get();
-    }
-
-    public MenuProduct createMenuProduct(Product product) {
-        return menuProductRequests.stream()
-                .filter(menuProductRequest -> menuProductRequest.getProductId().equals(product.getId()))
-                .map(menuProductRequest -> menuProductRequest.toEntity(product))
-                .findFirst()
-                .get();
-    }
 }

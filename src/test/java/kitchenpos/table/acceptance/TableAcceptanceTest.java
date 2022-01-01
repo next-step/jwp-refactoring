@@ -70,7 +70,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
         OrderTableResponse savedOrder2 = 테이블_공석_변경_확인(changeEmptyResponse2, emptyOrderTableRequest);
 
         // 단체 생성
-        TableGroupRequest tableGroup = TableGroupRequest.create(Arrays.asList(savedOrder1.getId(), savedOrder2.getId()));
+        TableGroupRequest tableGroup = TableGroupRequest.of(Arrays.asList(savedOrder1.getId(), savedOrder2.getId()));
         ExtractableResponse<Response> createGroupResponse = 단체_생성_요청(tableGroup);
         TableGroupResponse savedTableGroup = 단체_생성_확인(createGroupResponse);
 
