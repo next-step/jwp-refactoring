@@ -36,7 +36,7 @@ subprojects {
     test { useJUnitPlatform() }
 }
 
-project(":module-api") {
+project(":module-domain") {
     dependencies {
         api project(':module-common')
     }
@@ -44,6 +44,6 @@ project(":module-api") {
 
 project(":module-web") {
     dependencies {
-        api project(':module-api')
+        api project(':module-domain')
     }
 }
