@@ -343,4 +343,11 @@ Lombok은 그 강력한 기능만큼 사용상 주의를 요한다.
   - 단체 그룹 지정
   - 단체 그룹 해제
 - Diagram 
-- ![screen](./diagram/Diagram.drawio.png)
+  - ![screen](./diagram/Diagram.drawio.png)
+
+### 4단계 요구사항 정리
+#### 지난 피드백 반영
+- [X] validator 라는 목적의 맞게 역할 및 네이밍 수정
+- [X] 이벤트 발생시점의 파라미터(도메인 -> id) 변경
+- [X] 유효성 검사 일관되게 수정
+
