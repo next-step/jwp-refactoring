@@ -30,12 +30,4 @@ public class OrderRequest {
                 .collect(Collectors.toList());
     }
 
-    public long findQuantityByMenuId(Long menuId) {
-        return orderLineItems.stream()
-                .filter(orderLineItemRequest -> menuId.equals(orderLineItemRequest.getMenuId()))
-                .findFirst()
-                .map(orderLineItemRequest -> orderLineItemRequest.getQuantity())
-                .get();
-    }
-
 }

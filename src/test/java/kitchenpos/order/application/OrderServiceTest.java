@@ -24,6 +24,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.Mockito.mock;
 
 @DisplayName("주문 테스트")
 class OrderServiceTest {
@@ -31,7 +32,9 @@ class OrderServiceTest {
     private final MenuRepository menuRepository = new FakeMenuRepository();
     private final OrderRepository orderRepository = new FakeOrderRepository();
     private final OrderTableRepository orderTableRepository = new FakeOrderTableRepository();
-    private final OrderService orderService = new OrderService(menuRepository, orderRepository, orderTableRepository);
+    private final MenuQueryService menuQueryService = new MenuQueryService(menuRepository);
+    private final OrderValidator orderValidator = new OrderValidator(menuQueryService);
+    private final OrderService orderService = new OrderService(menuRepository, orderRepository, orderTableRepository, orderValidator);
 
     private Menu 소고기메뉴;
 
