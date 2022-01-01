@@ -18,16 +18,16 @@ import java.util.stream.Collectors;
 public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
-    private final ProductRepository productRepository;
+    private final MenuValidator menuValidator;
 
     public MenuService(
             final MenuRepository menuRepository,
             final MenuGroupRepository menuGroupRepository,
-            final ProductRepository productRepository
+            final MenuValidator menuValidator
     ) {
         this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
-        this.productRepository = productRepository;
+        this.menuValidator = menuValidator;
     }
 
     @Transactional
@@ -36,7 +36,7 @@ public class MenuService {
                 .orElseThrow(() -> new NotFoundMenuGroupException(menuRequest.getMenuGroupId()));
 
         MenuProducts menuProducts = createMenuProducts(menuRequest);
-        menuProducts.checkOverPrice(menuRequest.getPrice());
+        menuValidator.validatePrice(menuRequest);
 
         Menu menu = Menu.create(menuRequest.getName(), menuRequest.getPrice(), menuGroup, menuProducts);
         return MenuResponse.of(menuRepository.save(menu));
@@ -59,9 +59,7 @@ public class MenuService {
     }
 
     private MenuProduct createMenuProduct(MenuProductRequest request) {
-        Product product = productRepository.findById(request.getProductId())
-                .orElseThrow(NotCreatedProductException::new);
-        return MenuProduct.of(product, request.getQuantity());
+        return MenuProduct.of(request.getProductId(), request.getQuantity());
     }
 
 }

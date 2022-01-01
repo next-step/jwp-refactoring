@@ -31,13 +31,4 @@ public class MenuProducts {
         });
     }
 
-    public void checkOverPrice(BigDecimal menuPrice) {
-        BigDecimal sum = menuProducts.stream()
-                .map(MenuProduct::getTotalPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        if (menuPrice.compareTo(sum) > 0) {
-            throw new DifferentOrderAndMenuPriceException();
-        }
-    }
 }

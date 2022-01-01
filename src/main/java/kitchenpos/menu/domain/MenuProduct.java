@@ -13,28 +13,28 @@ public class MenuProduct {
     @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_menu_product_menu"), nullable = false)
     private Menu menu;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_menu_product_product"), nullable = false)
-    private Product product;
+    @Column(name = "product_id")
+    private Long productId;
+
     private long quantity;
 
     protected MenuProduct() {
     }
 
-    public MenuProduct(Product product, long quantity) {
-        this.product = product;
+    public MenuProduct(Long productId, long quantity) {
+        this.productId = productId;
         this.quantity = quantity;
     }
 
-    public MenuProduct(Long seq, Menu menu, Product product, long quantity) {
+    public MenuProduct(Long seq, Menu menu, Long productId, long quantity) {
         this.seq = seq;
         this.menu = menu;
-        this.product = product;
+        this.productId = productId;
         this.quantity = quantity;
     }
 
-    public static MenuProduct of(Product product, long quantity) {
-        return new MenuProduct(product, quantity);
+    public static MenuProduct of(Long productId, long quantity) {
+        return new MenuProduct(productId, quantity);
     }
 
     public void addMenu(Menu menu) {
@@ -49,16 +49,15 @@ public class MenuProduct {
         return menu;
     }
 
-    public Product getProduct() {
-        return product;
+    public Long getProductId() {
+        return productId;
     }
 
     public long getQuantity() {
         return quantity;
     }
 
-    public BigDecimal getTotalPrice() {
-        return this.product.getTotalPrice(quantity);
-
-    }
+//    public BigDecimal getTotalPrice() {
+//        return this.product.getTotalPrice(quantity);
+//    }
 }

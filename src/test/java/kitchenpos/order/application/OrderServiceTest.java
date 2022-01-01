@@ -47,8 +47,8 @@ class OrderServiceTest {
         Menu menu = Menu.create("소고기세트", BigDecimal.valueOf(70000), null,
                 new MenuProducts(
                         Arrays.asList(
-                                MenuProduct.of(살치살, 2),
-                                MenuProduct.of(부채살, 1)
+                                MenuProduct.of(살치살.getId(), 2),
+                                MenuProduct.of(부채살.getId(), 1)
                         )
                 )
         );

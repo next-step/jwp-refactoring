@@ -21,7 +21,7 @@ public class FakeMenuRepository implements MenuRepository {
         Menu menu = new Menu(menuKey, inputMenu.getName(), inputMenu.toBigDecimal(), inputMenu.getMenuGroup(), inputMenu.getMenuProducts());
 
         for (MenuProduct inputMenuProduct : inputMenu.getMenuProducts()) {
-            MenuProduct menuProduct = new MenuProduct(menuProductKey, menu, inputMenuProduct.getProduct(), inputMenuProduct.getQuantity());
+            MenuProduct menuProduct = new MenuProduct(menuProductKey, menu, inputMenuProduct.getProductId(), inputMenuProduct.getQuantity());
             menuProducts.add(menuProduct);
             menuProductKey++;
         }

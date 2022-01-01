@@ -12,7 +12,7 @@ public class FakeMenuProductRepository implements MenuProductRepository {
 
     @Override
     public MenuProduct save(MenuProduct inputMenuProduct) {
-        MenuProduct menuProduct = new MenuProduct(key, inputMenuProduct.getMenu(), inputMenuProduct.getProduct(), inputMenuProduct.getQuantity());
+        MenuProduct menuProduct = new MenuProduct(key, inputMenuProduct.getMenu(), inputMenuProduct.getProductId(), inputMenuProduct.getQuantity());
         map.put(key, menuProduct);
         key++;
         return menuProduct;
