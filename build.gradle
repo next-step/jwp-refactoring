@@ -2,27 +2,77 @@ plugins {
     id 'org.springframework.boot' version '2.4.1'
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
     id 'java'
+    id 'application'
 }
 
-group = 'camp.nextstep.edu'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
+mainClassName = 'kitchenpos.Application'
 
 repositories {
     mavenCentral()
 }
 
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.flywaydb:flyway-core'
-    runtimeOnly 'com.h2database:h2'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    // fixture 사용
+    apply plugin: 'java-library'
+    apply plugin: 'java-test-fixtures'
+    apply plugin: 'maven-publish'
+
+    group = 'camp.nextstep.edu'
+    version = '0.0.1-SNAPSHOT'
+    sourceCompatibility = '1.8'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+        // fixture 사용
+        testImplementation(testFixtures(project(':domain-menu')))
+        testImplementation(testFixtures(project(':domain-order')))
+        testImplementation(testFixtures(project(':domain-table')))
+        testImplementation(testFixtures(project(':domain-product')))
+    }
+
+    test {
+        useJUnitPlatform()
+    }
 }
 
-test {
-    useJUnitPlatform()
+project(':app-kitchenpos-api') {
+    dependencies {
+        compile project(':domain-menu')
+        compile project(':domain-table')
+        compile project(':domain-order')
+        compile project(':domain-product')
+    }
+}
+
+project(':domain-menu') {
+    dependencies {
+        compile project(':domain-product')
+    }
+}
+
+project(':domain-order') {
+    dependencies {
+        compile project(':domain-menu')
+    }
+}
+
+project(':domain-table') {
+    dependencies {
+        compile project(':domain-order')
+    }
+}
+
+project(':domain-product') {
+    dependencies {
+    }
 }
