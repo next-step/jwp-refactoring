@@ -62,7 +62,7 @@ class TableGroupRestControllerTest {
         final TableGroupRequest 테이블그룹_요청 = TestTableGroupFactory.테이블_그룹_요청(Lists.newArrayList(주문테이블1.getId(), 주문테이블2.getId()));
         final TableGroupResponse 테이블그룹_응답 = TestTableGroupFactory.테이블_그룹_응답(테이블그룹, 주문테이블_목록);
 
-        given(tableGroupService.create(any())).willReturn(테이블그룹_응답);
+        given(tableGroupService.group(any())).willReturn(테이블그룹_응답);
 
         final ResultActions actions = mvc.perform(post("/api/table-groups")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
