@@ -3,6 +3,7 @@ package kitchenpos.common.domain;
 import kitchenpos.common.exception.NegativePriceException;
 import kitchenpos.menu.domain.MenuProduct;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.math.BigDecimal;
 import java.util.List;
@@ -10,9 +11,11 @@ import java.util.Objects;
 
 @Embeddable
 public class Price {
+    public static final int MINIMUM_PRICE_NUMBER = 0;
+    @Column
     private BigDecimal price;
 
-    public Price() {
+    protected Price() {
     }
 
     public Price(BigDecimal price) {
@@ -21,20 +24,12 @@ public class Price {
     }
 
     private void validatePrice(BigDecimal price) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < MINIMUM_PRICE_NUMBER) {
             throw new NegativePriceException();
         }
     }
 
     public BigDecimal getPrice() {
         return price;
-    }
-
-    public boolean isPossibleMenu(List<MenuProduct> menuProducts) {
-        BigDecimal sum = menuProducts.stream()
-                .map(MenuProduct::multiply)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        return price.compareTo(sum) > 0;
     }
 }

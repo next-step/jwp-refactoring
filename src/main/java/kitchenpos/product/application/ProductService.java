@@ -1,5 +1,6 @@
 package kitchenpos.product.application;
 
+import kitchenpos.common.exception.NotFoundEntityException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
@@ -25,5 +26,10 @@ public class ProductService {
 
     public List<ProductResponse> list() {
         return ProductResponse.listOf(productRepository.findAll());
+    }
+
+    public Product findById(Long id) {
+        return productRepository.findById(id)
+                .orElseThrow(NotFoundEntityException::new);
     }
 }

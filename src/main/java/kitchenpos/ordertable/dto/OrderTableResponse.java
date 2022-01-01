@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 public class OrderTableResponse {
     private Long id;
-    private TableGroup tableGroup;
+    private Long tableGroupId;
     private List<Order> orders;
     private int numberOfGuests;
     private boolean empty;
@@ -17,9 +17,9 @@ public class OrderTableResponse {
     public OrderTableResponse() {
     }
 
-    public OrderTableResponse(Long id, TableGroup tableGroup, List<Order> orders, int numberOfGuests, boolean empty) {
+    public OrderTableResponse(Long id, Long tableGroupId, List<Order> orders, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
         this.orders = orders;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
@@ -28,7 +28,7 @@ public class OrderTableResponse {
     public static OrderTableResponse of(OrderTable orderTable) {
         return new OrderTableResponse(
                 orderTable.getId(),
-                orderTable.getTableGroup(),
+                orderTable.getTableGroupId(),
                 orderTable.getOrders(),
                 orderTable.getNumberOfGuests(),
                 orderTable.isEmpty()
@@ -45,8 +45,8 @@ public class OrderTableResponse {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public List<Order> getOrders() {

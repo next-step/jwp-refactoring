@@ -7,6 +7,7 @@ import kitchenpos.common.exception.OrderStatusNotCompletedException;
 import kitchenpos.common.exception.OrderStatusNotProcessingException;
 import kitchenpos.ordertable.domain.OrderTable;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -35,6 +36,7 @@ public class Order {
     @Enumerated(value = EnumType.STRING)
     private OrderStatus orderStatus;
 
+    @Column
     private LocalDateTime orderedTime;
 
     @Embedded
@@ -44,7 +46,6 @@ public class Order {
     }
 
     public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        validateOrder(orderTable);
         this.orderTable = orderTable;
         this.orderStatus = OrderStatus.NONE;
         this.orderedTime = LocalDateTime.now();
@@ -52,21 +53,11 @@ public class Order {
     }
 
     public Order(Long id, OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        validateOrder(orderTable);
         this.id = id;
         this.orderTable = orderTable;
         this.orderStatus = OrderStatus.NONE;
         this.orderedTime = LocalDateTime.now();
         addOrderLineItems(orderLineItems);
-    }
-
-    private void validateOrder(OrderTable orderTable) {
-        orderTable = Optional.ofNullable(orderTable)
-                .orElseThrow(NotFoundEntityException::new);
-
-        if (orderTable.isEmpty()) {
-            throw new EmptyOrderTableException();
-        }
     }
 
     private void addOrderLineItems(List<OrderLineItem> orderLineItems) {
@@ -101,24 +92,6 @@ public class Order {
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
-        if (OrderStatus.isCompleted(orderStatus)) {
-            throw new OrderStatusCompletedException();
-        }
-
         this.orderStatus = orderStatus;
-    }
-
-    public void validateCompletedWhenUngroup() {
-        if (!OrderStatus.isCompleted(orderStatus)) {
-            throw new OrderStatusNotCompletedException();
-        }
-    }
-
-    public void validateNotProcessingWhenChangeEmpty() {
-        if (!OrderStatus.isMeal(orderStatus) && !OrderStatus.isCooking(orderStatus)) {
-            return;
-        }
-
-        throw new OrderStatusNotProcessingException();
     }
 }

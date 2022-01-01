@@ -10,16 +10,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TableGroupService {
-    private TableGroupRepository tableGroupRepository;
+    private final TableGroupRepository tableGroupRepository;
+    private final TableGroupValidator tableGroupValidator;
 
-    public TableGroupService(
-            TableGroupRepository tableGroupRepository
-    ) {
+    public TableGroupService(TableGroupRepository tableGroupRepository, TableGroupValidator tableGroupValidator) {
         this.tableGroupRepository = tableGroupRepository;
+        this.tableGroupValidator = tableGroupValidator;
     }
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
+        tableGroupValidator.validateCreateTableGroup(tableGroupRequest);
         final TableGroup tableGroup = tableGroupRepository.save(tableGroupRequest.toTableGroup());
 
         return TableGroupResponse.of(tableGroup);
@@ -28,10 +29,11 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         final TableGroup tableGroup = findByTableGroupId(tableGroupId);
+        tableGroupValidator.validateUnGroupTableGroup(tableGroup);
         tableGroup.ungroup();
     }
 
-    private TableGroup findByTableGroupId(Long id) {
+    public TableGroup findByTableGroupId(Long id) {
         return tableGroupRepository.findById(id)
                 .orElseThrow(NotFoundEntityException::new);
     }

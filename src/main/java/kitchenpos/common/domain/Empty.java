@@ -1,12 +1,14 @@
 package kitchenpos.common.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
 public class Empty {
+    @Column
     private boolean empty;
 
-    public Empty() {
+    protected Empty() {
     }
 
     public Empty(boolean empty) {
