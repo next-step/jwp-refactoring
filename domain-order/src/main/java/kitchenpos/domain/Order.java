@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.util.Assert;
 
 import javax.persistence.Column;
@@ -17,7 +18,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "orders")
-public class Order {
+public class Order extends AbstractAggregateRoot<Order> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,6 +44,7 @@ public class Order {
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
         this.orderLineItems = orderLineItems;
+        registerEvent(new OrderCreatedEvent(this));
     }
 
     public static Order of(Long orderTableId, OrderLineItems orderLineItems) {

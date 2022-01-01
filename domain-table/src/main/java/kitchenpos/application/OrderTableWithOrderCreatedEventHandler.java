@@ -1,21 +1,26 @@
 package kitchenpos.application;
 
+import kitchenpos.domain.OrderCreatedEvent;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
-import kitchenpos.dto.OrderRequest;
+import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
-public class OrderValidator {
-
+public class OrderTableWithOrderCreatedEventHandler {
     private final OrderTableRepository orderTableRepository;
 
-    public OrderValidator(OrderTableRepository orderTableRepository) {
+    public OrderTableWithOrderCreatedEventHandler(OrderTableRepository orderTableRepository) {
         this.orderTableRepository = orderTableRepository;
     }
 
-    public void validate(OrderRequest orderRequest) {
-        final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
+    @Async
+    @EventListener
+    @Transactional
+    public void handle(OrderCreatedEvent orderCreatedEvent) {
+        final OrderTable orderTable = orderTableRepository.findById(orderCreatedEvent.getOrderTableId())
                 .orElseThrow(() -> new IllegalArgumentException("주문 테이블이 존재하지 않습니다."));
 
         if (orderTable.isEmpty()) {

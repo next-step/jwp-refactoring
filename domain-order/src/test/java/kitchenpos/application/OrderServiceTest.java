@@ -49,9 +49,6 @@ class OrderServiceTest {
     @Mock
     OrderRepository orderRepository;
 
-    @Mock
-    OrderValidator orderValidator;
-
     @InjectMocks
     OrderService orderService;
 

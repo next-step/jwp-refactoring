@@ -19,22 +19,18 @@ import java.util.stream.Collectors;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final MenuService menuService;
-    private final OrderValidator orderValidator;
 
     public OrderService(
             final OrderRepository orderRepository,
-            final MenuService menuService,
-            final OrderValidator orderValidator
+            final MenuService menuService
     ) {
         this.orderRepository = orderRepository;
         this.menuService = menuService;
-        this.orderValidator = orderValidator;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
         validateExistsOrderLineItems(orderRequest);
-        orderValidator.validate(orderRequest);
         final Order savedOrder = Order.of(orderRequest.getOrderTableId(), findOrderLineItems(orderRequest.getOrderLineItems()));
         return OrderResponse.from(orderRepository.save(savedOrder));
     }
