@@ -28,7 +28,7 @@ class OrderValidatorTest {
     void create() {
         final OrderRequest 주문요청 = TestOrderFactory.주문_생성_요청(1L);
 
-        assertThatThrownBy(() -> orderValidator.findOrderTableById(주문요청))
+        assertThatThrownBy(() -> orderValidator.validatorTableService(주문요청))
                 .isInstanceOf(EmptyOrderTableException.class);
     }
 
@@ -37,7 +37,7 @@ class OrderValidatorTest {
     void create2() {
         final OrderLineItemRequest 주문상품_요청 = TestOrderFactory.주문_상품_생성_요청(1L, 2);
 
-        assertThatThrownBy(() -> orderValidator.findMenuById(주문상품_요청))
+        assertThatThrownBy(() -> orderValidator.validatorMenu(주문상품_요청))
                 .isInstanceOf(EmptyMenuException.class);
     }
 }
