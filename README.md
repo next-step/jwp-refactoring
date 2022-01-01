@@ -235,8 +235,131 @@
 ## Step3 의존성 리팩터링
 
 ### 개선 전 
-![img.png](src/main/resources/static/before.png)
+![img.png](module-domain/src/main/resources/static/before.png)
 
 ### 개선 후
 
-![img.png](src/main/resources/static/after.png)
+![img.png](module-domain/src/main/resources/static/after.png)
+
+
+## setp4 멀티 모듈적용에서 적용하려다 멈춘 설계 
+
+- 멈춘 설계의 관점은 `도메인 별` 분리를 했던 관점이었습니다.
+- 그렇다보니 기존 소스에서 OrderTable -> order 와의 단방향 관계에서 문제가 생겼다고 판단했던 코드 내용입니다. 
+- 작성 중에 패키지 단위로 분리하면서 `Order` 를 참조하지 못한다고 생각했는데 `build gradle` 에서 포함하면된다는 생각을 하게되었네요 .
+- 하지만 이 깨달음 전 다음 방법에 대해서 어떻게 생각하시는지 궁금합니다. 
+- 사실 `재요청?` 부분을 활용하게 되었을 때의 문제에 대해서 문의하려고 합니다.
+  요청에서 `지연` 발생시 정상처리되지 못하는 문제와 속도관련 문제가 생길 수있다는게 가장 큰 문제가 될 수 있다는 생각이 들지만 궁금하다보니 질문해봅니다.
+
+- 아래 코드는 기존 코드입니다. 
+- -OrderTable에서 Order를 바라보는 이유는 해당 주문테이블에서의 주문이 요리중 , 식사 중인지 확인하지 위한 연관관계입니다.
+- 이 상태에서 저는 Order와 OrderTable을 모듈별로 분리하고자 했습니다. 
+- 분리 전 **OrderTable 와 Order 는 패키지를 분리한 상태였습니다.**
+
+
+## 기존 코드 
+- 아래 코드를 보시면 `Orders` 를 바라봅니다 만약 분리를 생각한다면 `Orders`를 참조하지 않고서 접근해야한다고 생각했습니다.
+```java
+@Entity
+public class OrderTable {
+
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "table_group_id")
+    private TableGroup tableGroup;
+
+    @Embedded
+    private NumberOfGuests numberOfGuests;
+
+    @Enumerated(EnumType.STRING)
+    private OrderTableStatus orderTableStatus = OrderTableStatus.EMPTY;
+
+    @Embedded
+    private Orders orders = new Orders();
+}
+```
+
+
+이 과정에서 들었던 생각은 이 관계를 끊어내기 위해서 두가지 관점을 생각했습니다.   
+- OrderTable와 Order를 엮는 모듈을 새로 도출
+- RestTemplate를 통한 정보 호출 
+
+하지만 결론에서는 `RestTemplate`를 선택하게 되었습니다.
+
+구조는 다음과 같습니다. 
+![img.png](module-domain/src/main/resources/static/anOrtherflow.png)
+
+## `OrderFinder` 는 도메인 계층에 위치합니다.
+해당 정보는 OrderFinder를 통해 
+```java
+public interface OrderFinder {
+    void cookieOrMeal(Long id);
+}
+```
+
+## `external` 패키지에 `OrderFinder` 를 구현한 `OrderService` 를 구현합니다.
+
+```java
+
+@Component
+public class OrderService implements OrderFinder {
+
+    private OrderRepository orderRepository;
+
+    public OrderService(OrderRepository orderRepository) {
+        this.orderRepository = orderRepository;
+    }
+
+    @Override
+    public void cookieOrMeal(Long id) {
+        orderRepository.findOrdersByOrderTableId(id);
+    }
+}
+
+```
+
+`external` 패키지에 `OrderRestTemplate` 를 구현하여 해당 `Order`쪽으로 `OrderTable` 정보를 호출하여해당 정보가 `cookie, meal` 상태인지 확인하기 위한 요청을합니다.
+
+
+```java
+
+public interface OrderRepository {
+    void findOrdersByOrderTableId(Long id);
+}
+
+@Component
+public class OrderRestTemplate implements OrderRepository {
+
+    private RestTemplate restTemplate;
+
+    public OrderRestTemplate(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
+
+    public static final String HTTPS_LOCALHOST_8080_API_ORDERS = "https://localhost:8080/api/orders/";
+
+    @Override
+    public void findOrdersByOrderTableId(Long id) {
+        ResponseEntity<Void> orderResponses = restTemplate.exchange(
+            HTTPS_LOCALHOST_8080_API_ORDERS + id,
+            HttpMethod.GET,
+            null,
+            new ParameterizedTypeReference<Void>() {}
+        );
+        validStatus(orderResponses.getStatusCode());
+    }
+
+    private void validStatus(HttpStatus statusCode) {
+        if (! statusCode.is2xxSuccessful()) {
+            throw new NoResultDataException();
+        }
+    }
+}
+
+```
+
+해당 요청시 OrderContoller 에서 요청을 받아 검증하는 하게됩니다. 
+하지만, 다음과 같은 구현 방식이 옳은가하는 생각이들어 포기하고 `Pr`보낸 방법으로 요청하게 되었습니다.
