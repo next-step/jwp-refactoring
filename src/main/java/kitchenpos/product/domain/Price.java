@@ -16,6 +16,10 @@ public class Price {
         this.price = price;
     }
 
+    public static Price of(BigDecimal price) {
+        return new Price(price);
+    }
+
     public BigDecimal getPrice() {
         return this.price;
     }
@@ -24,6 +28,18 @@ public class Price {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("가격은 0 미만의 값으로 설정할 수 없습니다.");
         }
+    }
+
+    public Price multiply(long quantity) {
+        return Price.of(this.price.multiply(BigDecimal.valueOf(quantity)));
+    }
+
+    public Price add(Price price) {
+        return Price.of(this.price.add(price.getPrice()));
+    }
+
+    public boolean isExpensiveThan(BigDecimal price) {
+        return this.price.compareTo(price) >= 0;
     }
 
     @Override
@@ -37,5 +53,12 @@ public class Price {
     @Override
     public int hashCode() {
         return Objects.hash(price);
+    }
+
+    @Override
+    public String toString() {
+        return "Price{" +
+                "price=" + price.toString() +
+                '}';
     }
 }

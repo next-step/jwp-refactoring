@@ -1,12 +1,16 @@
 package kitchenpos.menu;
 
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.domain.*;
+import kitchenpos.menu.domain.CreateMenuValidator;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menuGroup.domain.MenuGroup;
+import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,13 +22,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
-import static kitchenpos.menu.MenuGroupServiceTest.메뉴_그룹_등록;
-import static kitchenpos.product.ProductServiceTest.상품_등록;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("메뉴 관련 기능")
@@ -32,14 +36,11 @@ public class MenuServiceTest {
     @Mock
     MenuRepository menuRepository;
 
-    @Mock
-    MenuGroupRepository menuGroupRepository;
-
-    @Mock
-    ProductRepository productRepository;
-
     @InjectMocks
     MenuService menuService;
+
+    @Mock
+    CreateMenuValidator menuValidator;
 
     private Product 짜장면;
     private Product 탕수육;
@@ -49,20 +50,24 @@ public class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        짜장면 = 상품_등록("짜장면", new BigDecimal(5000)).toProduct();
-        탕수육 = 상품_등록("탕수육", new BigDecimal(15000)).toProduct();
-        중국음식 = 메뉴_그룹_등록("중국음식");
-        짜장면메뉴 = 메뉴_등록(1L, "짜장면탕수육세트", 짜장면.getPrice().add(탕수육.getPrice()), 중국음식, Arrays.asList(메뉴_상품_등록(짜장면, 1L), 메뉴_상품_등록(탕수육, 1L)));
-        짜장면메뉴등록요청 = new MenuRequest("짜장면탕수육세트", 짜장면.getPrice().add(탕수육.getPrice()), 중국음식.getId(), Arrays.asList(new MenuProductRequest(짜장면.getId(), 1l), new MenuProductRequest(탕수육.getId(), 1l)));
+        짜장면 = mock(Product.class);
+        when(짜장면.getId()).thenReturn(1L);
+        when(짜장면.getPrice()).thenReturn(Price.of(new BigDecimal(5000)));
+
+        탕수육 = mock(Product.class);
+        when(탕수육.getId()).thenReturn(2L);
+        when(탕수육.getPrice()).thenReturn(Price.of(new BigDecimal(15000)));
+
+        중국음식 = mock(MenuGroup.class);
+        when(중국음식.getId()).thenReturn(1L);
     }
 
     @Test
     @DisplayName("메뉴를 등록한다.")
     void createMenu() {
+        짜장면메뉴 = 메뉴_등록(1L, "짜장면탕수육세트", 짜장면.getPrice().add(탕수육.getPrice()).getPrice(), 중국음식.getId(), Arrays.asList(메뉴_상품_등록(짜장면, 1L), 메뉴_상품_등록(탕수육, 1L)));
+        짜장면메뉴등록요청 = new MenuRequest("짜장면탕수육세트", 짜장면.getPrice().add(탕수육.getPrice()).getPrice(), 중국음식.getId(), Arrays.asList(new MenuProductRequest(짜장면.getId(), 1l), new MenuProductRequest(탕수육.getId(), 1l)));
         // given
-        given(menuGroupRepository.findById(any())).willReturn(Optional.ofNullable(중국음식));
-        given(productRepository.findById(짜장면.getId())).willReturn(Optional.of(짜장면));
-        given(productRepository.findById(탕수육.getId())).willReturn(Optional.of(탕수육));
         given(menuRepository.save(any())).willReturn(짜장면메뉴);
 
         // when
@@ -73,8 +78,27 @@ public class MenuServiceTest {
         assertThat(createMenu.getMenuProducts()).hasSize(2);
     }
 
-    public static Menu 메뉴_등록(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        Menu menu = new Menu(id, name, price, menuGroup);
+    @Test
+    @DisplayName("메뉴 가격이 메뉴 상품 가격의 총 합보다 크면 등록에 실패한다.")
+    void createMenuOfNotSamePrice() {
+        짜장면메뉴 = 메뉴_등록(1L, "짜장면탕수육세트", 짜장면.getPrice().add(탕수육.getPrice()).getPrice(), 중국음식.getId(), Arrays.asList(메뉴_상품_등록(짜장면, 1L), 메뉴_상품_등록(탕수육, 1L)));
+        짜장면메뉴등록요청 = new MenuRequest("짜장면탕수육세트", BigDecimal.valueOf(10000), 중국음식.getId(), Arrays.asList(new MenuProductRequest(짜장면.getId(), 1l), new MenuProductRequest(탕수육.getId(), 1l)));
+
+        List<MenuProduct> menuProducts = 짜장면메뉴등록요청.getMenuProductRequests()
+                .stream()
+                .map(menuProductRequest -> menuProductRequest.toMenuProduct())
+                .collect(Collectors.toList());
+
+        doThrow(IllegalArgumentException.class).when(menuValidator).validateCreateMenu(짜장면메뉴등록요청.getMenuGroupId(), 짜장면메뉴등록요청.getPrice(), menuProducts);
+
+        // then
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+            menuService.create(짜장면메뉴등록요청);
+        });
+    }
+
+    public static Menu 메뉴_등록(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        Menu menu = new Menu(id, name, price, menuGroupId);
         menu.organizeMenu(menuProducts);
         return menu;
     }

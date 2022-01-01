@@ -1,13 +1,12 @@
 package kitchenpos.order.application;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.order.domain.MenuFindValidator;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -17,16 +16,16 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
-    private final MenuRepository menuRepository;
+    private final MenuFindValidator menuValidator;
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
 
     public OrderService(
-            final MenuRepository menuRepository,
+            final MenuFindValidator menuValidator,
             final OrderRepository orderRepository,
             final OrderTableRepository orderTableRepository
     ) {
-        this.menuRepository = menuRepository;
+        this.menuValidator = menuValidator;
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
     }
@@ -49,16 +48,14 @@ public class OrderService {
 
     private void order(Order order, List<OrderLineItemRequest> orderLineItems) {
         for (OrderLineItemRequest orderLineItemRequest : orderLineItems) {
-            Menu menu = menuRepository.findById(orderLineItemRequest.getMenuId())
-                    .orElseThrow(() -> new IllegalArgumentException("메뉴 정보가 없습니다."));
-            order.order(menu.getId(), orderLineItemRequest.getQuantity());
+            order.order(orderLineItemRequest.getMenuId(), orderLineItemRequest.getQuantity(), menuValidator);
         }
     }
 
     public List<OrderResponse> list() {
         return orderRepository.findAll()
                 .stream()
-                .map(order -> OrderResponse.of(order))
+                .map(OrderResponse::of)
                 .collect(Collectors.toList());
     }
 

@@ -1,5 +1,6 @@
 package kitchenpos.order;
 
+import kitchenpos.order.domain.MenuFindValidator;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import org.junit.jupiter.api.DisplayName;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
 
 @DisplayName("주문 관련 기능 테스트")
 public class OrderTest {
@@ -21,8 +23,9 @@ public class OrderTest {
     @Test
     @DisplayName("메뉴를 주문한다.")
     void order() {
+        MenuFindValidator menuFindValidator = mock(MenuFindValidator.class);
         Order order = new Order(1L);
-        order.order(1L, 1L);
+        order.order(1L, 1L, menuFindValidator);
         assertThat(order.getOrderLineItems().getOrderLineItems()).hasSize(1);
     }
 

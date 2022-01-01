@@ -15,9 +15,7 @@ public class Menu {
     private String name;
     @Embedded
     private Price price;
-    @ManyToOne
-    @JoinColumn(name = "menu_group_id")
-    private MenuGroup menuGroup;
+    private Long menuGroupId;
     @Embedded
     private MenuProducts menuProducts;
 
@@ -28,21 +26,21 @@ public class Menu {
         this(null, name, price, null);
     }
 
-    public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
-        this(null, name, price, menuGroup);
+    public Menu(String name, BigDecimal price, Long menuGroupId) {
+        this(null, name, price, menuGroupId);
     }
 
-    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup) {
+    public Menu(Long id, String name, BigDecimal price, Long menuGroupId) {
         this.id = id;
         this.name = name;
         this.price = new Price(price);
-        this.menuGroup = menuGroup;
+        this.menuGroupId = menuGroupId;
         this.menuProducts = new MenuProducts();
     }
 
-    public void organizeMenu(List<MenuProduct> menuProducts) {
-        this.menuProducts.addMenuProducts(this, menuProducts);
-        isSamePrice();
+    public static Menu create(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts, CreateMenuValidator menuValidator) {
+        menuValidator.validateCreateMenu(menuGroupId, price, menuProducts);
+        return new Menu(name, price, menuGroupId);
     }
 
     public Long getId() {
@@ -53,27 +51,20 @@ public class Menu {
         return name;
     }
 
-    public BigDecimal getPrice() {
-        return price.getPrice();
+    public Price getPrice() {
+        return price;
     }
 
-    public MenuGroup getMenuGroup() {
-        return menuGroup;
+    public Long getMenuGroupId() {
+        return menuGroupId;
     }
 
     public MenuProducts getMenuProducts() {
         return menuProducts;
     }
 
-    private BigDecimal getTotalPrice() {
-        return this.getMenuProducts().getTotalPrice();
-    }
-
-    private boolean isSamePrice() {
-        if (this.price.getPrice().compareTo(getTotalPrice()) > 0) {
-            throw new IllegalArgumentException("메뉴 가격이 올바르지 않습니다. 메뉴 가격 : " + this.price.getPrice());
-        }
-        return true;
+    public void organizeMenu(List<MenuProduct> menuProducts) {
+        this.menuProducts.addMenuProducts(this, menuProducts);
     }
 
     @Override
@@ -81,11 +72,11 @@ public class Menu {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Menu menu = (Menu) o;
-        return Objects.equals(id, menu.id) && Objects.equals(name, menu.name) && Objects.equals(price, menu.price) && Objects.equals(menuGroup, menu.menuGroup) && Objects.equals(menuProducts, menu.menuProducts);
+        return Objects.equals(id, menu.id) && Objects.equals(name, menu.name) && Objects.equals(price, menu.price) && Objects.equals(menuGroupId, menu.menuGroupId) && Objects.equals(menuProducts, menu.menuProducts);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, price, menuGroup, menuProducts);
+        return Objects.hash(id, name, price, menuGroupId, menuProducts);
     }
 }

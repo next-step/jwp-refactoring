@@ -1,20 +1,13 @@
 package kitchenpos.order;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.order.application.OrderService;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.product.domain.Product;
-import kitchenpos.table.TableServiceTest;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,14 +22,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.menu.MenuGroupServiceTest.메뉴_그룹_등록;
 import static kitchenpos.menu.MenuServiceTest.메뉴_등록;
 import static kitchenpos.menu.MenuServiceTest.메뉴_상품_등록;
+import static kitchenpos.menuGroup.MenuGroupServiceTest.메뉴_그룹_등록;
 import static kitchenpos.product.ProductServiceTest.상품_등록;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("주문 관련 기능")
@@ -44,7 +38,7 @@ public class OrderServiceTest {
     @Mock
     private OrderRepository orderRepository;
     @Mock
-    private MenuRepository menuRepository;
+    private MenuFindValidator menuFindValidator;
     @Mock
     private OrderTableRepository orderTableRepository;
 
@@ -65,9 +59,9 @@ public class OrderServiceTest {
         짜장면 = 상품_등록("짜장면", new BigDecimal(5000)).toProduct();
         탕수육 = 상품_등록("탕수육", new BigDecimal(15000)).toProduct();
         중국음식 = 메뉴_그룹_등록("중국음식");
-        짜장면메뉴1 = 메뉴_등록(1L, "짜장면탕수육세트", 짜장면.getPrice().add(탕수육.getPrice()), 중국음식, Arrays.asList(메뉴_상품_등록(짜장면, 1L), 메뉴_상품_등록(탕수육, 1L)));
-        짜장면메뉴2 = 메뉴_등록(2L, "짜장면", 짜장면.getPrice(), 중국음식, Arrays.asList(메뉴_상품_등록(짜장면, 1L)));
-        짜장면메뉴3 = 메뉴_등록(3L, "탕수육", 탕수육.getPrice(), 중국음식, Arrays.asList(메뉴_상품_등록(탕수육, 1L)));
+        짜장면메뉴1 = 메뉴_등록(1L, "짜장면탕수육세트", 짜장면.getPrice().add(탕수육.getPrice()).getPrice(), 중국음식.getId(), Arrays.asList(메뉴_상품_등록(짜장면, 1L), 메뉴_상품_등록(탕수육, 1L)));
+        짜장면메뉴2 = 메뉴_등록(2L, "짜장면", 짜장면.getPrice().getPrice(), 중국음식.getId(), Arrays.asList(메뉴_상품_등록(짜장면, 1L)));
+        짜장면메뉴3 = 메뉴_등록(3L, "탕수육", 탕수육.getPrice().getPrice(), 중국음식.getId(), Arrays.asList(메뉴_상품_등록(탕수육, 1L)));
 
         테이블 = TableServiceTest.테이블_등록(1L, 6, true);
     }
@@ -85,9 +79,12 @@ public class OrderServiceTest {
         OrderRequest 주문 = 주문_등록(테이블.getId(), Arrays.asList(주문_항목(짜장면메뉴1.getId(), 1L), 주문_항목(짜장면메뉴2.getId(), 1L)));
         테이블.changeEmpty(false);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(테이블));
-        given(menuRepository.findById(any())).willReturn(Optional.empty());
+        given(orderRepository.save(any())).willReturn(new Order(테이블.getId()));
+        doThrow(IllegalArgumentException.class).when(menuFindValidator).validateMenu(짜장면메뉴1.getId());
 
-        주문_등록_실패(주문, "메뉴 정보가 없습니다");
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+            orderService.create(주문);
+        });
     }
 
     @Test
@@ -114,8 +111,6 @@ public class OrderServiceTest {
         given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(테이블));
         Order order = new Order(테이블.getId(), OrderStatus.COOKING);
         given(orderRepository.save(any())).willReturn(order);
-        given(menuRepository.findById(짜장면메뉴1.getId())).willReturn(Optional.ofNullable(짜장면메뉴1));
-        given(menuRepository.findById(짜장면메뉴2.getId())).willReturn(Optional.ofNullable(짜장면메뉴2));
         OrderResponse 새주문 = orderService.create(주문);
         assertThat(새주문.getOrderLineItems()).hasSize(2);
     }
@@ -125,11 +120,11 @@ public class OrderServiceTest {
     void list() {
         List<OrderLineItem> orderLineItems = Arrays.asList(new OrderLineItem(1L, null, 짜장면메뉴1.getId(), 1L), new OrderLineItem(2L, null, 짜장면메뉴2.getId(), 1L));
         Order 주문1 = new Order(1L, 테이블.getId(), OrderStatus.COOKING);
-        주문1.order(짜장면메뉴1.getId(), 1L);
-        주문1.order(짜장면메뉴2.getId(), 1L);
+        주문1.order(짜장면메뉴1.getId(), 1L, menuFindValidator);
+        주문1.order(짜장면메뉴2.getId(), 1L, menuFindValidator);
 
         Order 주문2 = new Order(2L, 테이블.getId(), OrderStatus.COOKING);
-        주문1.order(짜장면메뉴1.getId(), 1L);
+        주문1.order(짜장면메뉴1.getId(), 1L, menuFindValidator);
         given(orderRepository.findAll()).willReturn(Arrays.asList(주문1, 주문2));
 
         List<OrderResponse> orders = orderService.list();
