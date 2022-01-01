@@ -1,5 +1,6 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.order.domain.Order;
 import kitchenpos.table.dto.OrderTableChangeEmptyRequest;
 import kitchenpos.table.exception.NotChangeEmptyException;
 import kitchenpos.table.exception.NotChangeNumberOfGuestException;
@@ -7,7 +8,9 @@ import kitchenpos.table.exception.NotCreateTableGroupException;
 import kitchenpos.table.exception.TableErrorCode;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Entity
 public class OrderTable {
@@ -18,6 +21,9 @@ public class OrderTable {
     @ManyToOne
     @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
     private TableGroup tableGroup;
+
+    @OneToMany(mappedBy = "orderTable")
+    private List<Order> orders;
 
     @Column(nullable = false)
     private int numberOfGuests;
@@ -46,6 +52,14 @@ public class OrderTable {
         this.empty = empty;
     }
 
+    private OrderTable(OrderTable orderTable, List<Order> orders) {
+        this.id = orderTable.getId();
+        this.tableGroup = orderTable.getTableGroup();
+        this.orders = orders;
+        this.empty = orderTable.empty;
+        this.numberOfGuests = orderTable.getNumberOfGuests();
+    }
+
     public static OrderTable of(int numberOfGuests, boolean empty) {
         return new OrderTable(numberOfGuests, empty);
     }
@@ -58,28 +72,24 @@ public class OrderTable {
         return new OrderTable(null, numberOfGuests, empty);
     }
 
+    public static OrderTable of(OrderTable oldOrderTable, List<Order> orders) {
+        return new OrderTable(oldOrderTable, orders);
+    }
+
     public void availableCreate() {
         if (!isEmpty() || Objects.nonNull(getTableGroup())) {
             throw new NotCreateTableGroupException(TableErrorCode.ALREADY_ASSIGN_GROUP);
         }
     }
 
-    public void changeEmpty(OrderTableChangeEmptyRequest request) {
-        if (Objects.nonNull(getTableGroup())) {
-            throw new NotChangeEmptyException(TableErrorCode.ALREADY_ASSIGN_GROUP);
-        }
+    public void changeEmpty(OrderTableValidator orderTableValidator, boolean empty) {
+        orderTableValidator.validateChangeableEmpty(this);
 
-        this.empty = request.isEmpty();
+        this.empty = empty;
     }
 
-    public void changeNumberOfGuests(int updateNumberOfGuests) {
-        if (isEmpty()) {
-            throw new NotChangeNumberOfGuestException(TableErrorCode.EMPTY_TABLE);
-        }
-
-        if (updateNumberOfGuests < 0) {
-            throw new NotChangeNumberOfGuestException(TableErrorCode.GUEST_MORE_THAN_ZERO);
-        }
+    public void changeNumberOfGuests(OrderTableValidator orderTableValidator, int updateNumberOfGuests) {
+        orderTableValidator.validateChangeableNumberOfGuests(this);
 
         this.numberOfGuests = updateNumberOfGuests;
     }
@@ -113,4 +123,7 @@ public class OrderTable {
         return empty;
     }
 
+    public List<Order> getOrders() {
+        return orders;
+    }
 }

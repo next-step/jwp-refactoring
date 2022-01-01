@@ -1,9 +1,13 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.domain.*;
+import kitchenpos.order.domain.FakeOrderRepository;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.FakeOrderTableRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.OrderTableValidator;
 import kitchenpos.table.dto.OrderTableChangeEmptyRequest;
 import kitchenpos.table.dto.OrderTableChangeNumberOfGuestsRequest;
 import kitchenpos.table.dto.OrderTableCreateRequest;
@@ -24,9 +28,10 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("주문 테이블 테스트")
 class TableServiceTest {
-    private final OrderRepository orderRepository = new FakeOrderRepository();
-    private final OrderTableRepository orderTableRepository = new FakeOrderTableRepository();
-    private final TableService tableService = new TableService(orderRepository, orderTableRepository);
+    private final FakeOrderRepository orderRepository = new FakeOrderRepository();
+    private final OrderTableValidator orderTableValidator = new OrderTableValidator();
+    private final OrderTableRepository orderTableRepository = new FakeOrderTableRepository(orderRepository);
+    private final TableService tableService = new TableService(orderTableRepository, orderTableValidator);
 
     @DisplayName("주문 테이블 생성")
     @Test
@@ -71,7 +76,7 @@ class TableServiceTest {
                 LocalDateTime.now(),
                 Arrays.asList(OrderLineItem.of(null, 20))
         );
-        orderRepository.save(order);
+        Order savedOrder = orderRepository.save(order);
 
         assertThatThrownBy(() -> tableService.changeEmpty(savedOrderTable.getId(), OrderTableChangeEmptyRequest.of(false)))
                 .isInstanceOf(NotValidOrderException.class);

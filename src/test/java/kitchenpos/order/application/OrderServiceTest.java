@@ -1,7 +1,10 @@
 package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.*;
-import kitchenpos.order.domain.*;
+import kitchenpos.order.domain.FakeOrderRepository;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.*;
 import kitchenpos.order.exception.BadOrderRequestException;
 import kitchenpos.order.exception.NotChangeOrderStatusException;
@@ -24,14 +27,13 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.Mockito.mock;
 
 @DisplayName("주문 테스트")
 class OrderServiceTest {
 
     private final MenuRepository menuRepository = new FakeMenuRepository();
-    private final OrderRepository orderRepository = new FakeOrderRepository();
-    private final OrderTableRepository orderTableRepository = new FakeOrderTableRepository();
+    private final FakeOrderRepository orderRepository = new FakeOrderRepository();
+    private final OrderTableRepository orderTableRepository = new FakeOrderTableRepository(orderRepository);
     private final MenuQueryService menuQueryService = new MenuQueryService(menuRepository);
     private final OrderValidator orderValidator = new OrderValidator(menuQueryService);
     private final OrderService orderService = new OrderService(menuRepository, orderRepository, orderTableRepository, orderValidator);

@@ -1,6 +1,7 @@
 package kitchenpos.order.domain;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class FakeOrderRepository implements OrderRepository {
     private Map<Long, Order> map = new HashMap<>();
@@ -54,5 +55,11 @@ public class FakeOrderRepository implements OrderRepository {
         return map.values().stream()
                 .filter(order -> orderTableIds.contains(order.getOrderTable().getId()))
                 .anyMatch(order -> orderStatuses.contains(order.getOrderStatus()));
+    }
+
+    public List<Order> findByOrderTableId(Long orderTableId) {
+        return map.values().stream()
+                .filter(order -> order.getOrderTable().getId().equals(orderTableId))
+                .collect(Collectors.toList());
     }
 }

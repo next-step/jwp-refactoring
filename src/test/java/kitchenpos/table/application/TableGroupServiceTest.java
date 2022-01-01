@@ -1,6 +1,9 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.domain.*;
+import kitchenpos.order.domain.FakeOrderRepository;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.*;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupRequest;
@@ -20,10 +23,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 class TableGroupServiceTest {
-    private final OrderRepository orderRepository = new FakeOrderRepository();
-    private final OrderTableRepository orderTableRepository = new FakeOrderTableRepository();
-    private final TableGroupRepository tableGroupRepository = new FakeTableGroupRepository(orderTableRepository);
-    private final TableGroupService tableGroupService = new TableGroupService(orderRepository, orderTableRepository, tableGroupRepository);
+    private final FakeOrderRepository orderRepository = new FakeOrderRepository();
+    private final FakeOrderTableRepository orderTableRepository = new FakeOrderTableRepository(orderRepository);
+    private final FakeTableGroupRepository tableGroupRepository = new FakeTableGroupRepository(orderTableRepository);
+    private final TableGroupValidator tableGroupValidator = new TableGroupValidator();
+    private final TableGroupService tableGroupService = new TableGroupService(tableGroupValidator, orderTableRepository, tableGroupRepository);
 
     private Long 저장안된_주문테이블ID_ONE = 1L;
     private Long 저장안된_주문테이블ID_TWO = 2L;
@@ -79,7 +83,7 @@ class TableGroupServiceTest {
         assertAll(
                 () -> {
                     for (OrderTableResponse orderTable : resultOrderTables) {
-                        assertThat(orderTable.getTableGroupId()).isEqualTo(result.getId());
+                        assertThat(orderTable.getTableGroupId()).isNotNull();
                         assertThat(orderTable.isEmpty()).isFalse();
                     }
                 }
@@ -94,9 +98,9 @@ class TableGroupServiceTest {
         TableGroupRequest tableGroup = TableGroupRequest.of(Arrays.asList(savedOrderTable1.getId(), savedOrderTable2.getId()));
         TableGroupResponse result = tableGroupService.create(tableGroup);
 
-        Order order1 = createOrder(savedOrderTable1, OrderStatus.COOKING);
+        Order order1 = createOrder(1L, savedOrderTable1, OrderStatus.COOKING);
         orderRepository.save(order1);
-        Order order2 = createOrder(savedOrderTable2, OrderStatus.MEAL);
+        Order order2 = createOrder(2L, savedOrderTable2, OrderStatus.MEAL);
         orderRepository.save(order2);
 
         assertThatThrownBy(() -> tableGroupService.ungroup(result.getId()))
@@ -106,25 +110,26 @@ class TableGroupServiceTest {
     @DisplayName("단체 해지 성공")
     @Test
     void successUngroup() {
-        OrderTable savedOrderTable1 = orderTableRepository.save(OrderTable.of(10, true));
-        OrderTable savedOrderTable2 = orderTableRepository.save(OrderTable.of(20, true));
-        TableGroupRequest tableGroup = TableGroupRequest.of(Arrays.asList(savedOrderTable1.getId(), savedOrderTable2.getId()));
-        TableGroupResponse result = tableGroupService.create(tableGroup);
-
-        assertAll(
-                () -> assertThat(tableGroup.getOrderTableIds()).contains(savedOrderTable1.getId()),
-                () -> assertThat(tableGroup.getOrderTableIds()).contains(savedOrderTable2.getId())
+        TableGroup tableGroup1 = new TableGroup(1L);
+        OrderTable 주문테이블1 = orderTableRepository.save(new OrderTable(1L, null, 10, true));
+        OrderTable 주문테이블2 = orderTableRepository.save(new OrderTable(2L, null, 20, true));
+        OrderTables orderTables = new OrderTables(
+                Arrays.asList(
+                        주문테이블1,
+                        주문테이블2
+                )
         );
+        orderTables.assignTable(tableGroup1);
 
-        Order order1 = createOrder(savedOrderTable1, OrderStatus.COMPLETION);
+        Order order1 = createOrder(1L, 주문테이블1, OrderStatus.COMPLETION);
         orderRepository.save(order1);
-        Order order2 = createOrder(savedOrderTable2, OrderStatus.COMPLETION);
+        Order order2 = createOrder(2L, 주문테이블2, OrderStatus.COMPLETION);
         orderRepository.save(order2);
 
-        tableGroupService.ungroup(result.getId());
+        tableGroupService.ungroup(1L);
 
-        OrderTable resultOrderTable1 = orderTableRepository.findById(savedOrderTable1.getId()).get();
-        OrderTable resultOrderTable2 = orderTableRepository.findById(savedOrderTable2.getId()).get();
+        OrderTable resultOrderTable1 = orderTableRepository.findById(주문테이블1.getId()).get();
+        OrderTable resultOrderTable2 = orderTableRepository.findById(주문테이블2.getId()).get();
 
         assertAll(
                 () -> assertThat(resultOrderTable1.getTableGroup()).isNull(),
@@ -132,9 +137,10 @@ class TableGroupServiceTest {
         );
     }
 
-    private Order createOrder(OrderTable savedOrderTable1, OrderStatus completion) {
-        return new Order(1L,
-                orderTableRepository.findById(savedOrderTable1.getId()).get(),
+    private Order createOrder(Long orderId, OrderTable savedOrderTable, OrderStatus completion) {
+        return new Order(
+                orderId,
+                savedOrderTable,
                 completion.name(),
                 LocalDateTime.now(),
                 Arrays.asList(OrderLineItem.of(null, 20))

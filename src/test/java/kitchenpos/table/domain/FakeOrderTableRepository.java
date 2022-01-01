@@ -1,11 +1,19 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.order.domain.FakeOrderRepository;
+import kitchenpos.order.domain.Order;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class FakeOrderTableRepository implements OrderTableRepository {
+    private final FakeOrderRepository fakeOrderRepository;
     private Map<Long, OrderTable> map = new HashMap<>();
     private Long key = 1L;
+
+    public FakeOrderTableRepository(FakeOrderRepository fakeOrderRepository) {
+        this.fakeOrderRepository = fakeOrderRepository;
+    }
 
     @Override
     public OrderTable save(OrderTable inputOrderTable) {
@@ -21,7 +29,14 @@ public class FakeOrderTableRepository implements OrderTableRepository {
 
     @Override
     public Optional<OrderTable> findById(Long id) {
-        return Optional.ofNullable(map.get(id));
+        List<Order> orders = fakeOrderRepository.findByOrderTableId(id);
+        Optional<OrderTable> optionalOrderTable = Optional.ofNullable(map.get(id));
+        if (!optionalOrderTable.isPresent()) {
+            return Optional.empty();
+        }
+        OrderTable newOrderTable = OrderTable.of(optionalOrderTable.get(), orders);
+        map.put(newOrderTable.getId(), newOrderTable);
+        return Optional.ofNullable(newOrderTable);
     }
 
     @Override
@@ -39,8 +54,10 @@ public class FakeOrderTableRepository implements OrderTableRepository {
 
     @Override
     public List<OrderTable> findAllByTableGroup(Long tableGroupId) {
-        return map.values().stream()
+        List<OrderTable> collect = map.values().stream()
                 .filter(orderTable -> tableGroupId.equals(orderTable.getTableGroup().getId()))
+                .map(orderTable -> findById(orderTable.getId()).get())
                 .collect(Collectors.toList());
+        return collect;
     }
 }

@@ -75,10 +75,6 @@ public class Order {
         this.orderStatus = OrderStatus.valueOf(request);
     }
 
-    public static Order create(String orderStatus) {
-        return new Order(orderStatus);
-    }
-
     public Long getId() {
         return id;
     }
@@ -99,4 +95,7 @@ public class Order {
         return orderLineItems.getOrderLineItems();
     }
 
+    public boolean isProcessing() {
+        return orderStatus.equals(OrderStatus.COOKING) || orderStatus.equals(OrderStatus.MEAL);
+    }
 }

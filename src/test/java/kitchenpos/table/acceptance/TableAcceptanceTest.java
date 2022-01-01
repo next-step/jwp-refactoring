@@ -8,8 +8,10 @@ import kitchenpos.common.TestApiClient;
 import kitchenpos.menu.acceptance.MenuAcceptanceTest;
 import kitchenpos.menu.dto.*;
 import kitchenpos.order.acceptance.OrderAcceptanceTest;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.dto.OrderStatusUpdateRequest;
 import kitchenpos.table.dto.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -61,6 +63,14 @@ public class TableAcceptanceTest extends AcceptanceTest {
         // 테이블 조회
         ExtractableResponse<Response> findResponse = 모든_테이블_조회_요청();
         모든_테이블_조회_확인(findResponse, 일번테이블.getId(), 이번테이블.getId());
+
+        // 주문 상태 변경
+        OrderStatusUpdateRequest 주문완료요청1 = OrderStatusUpdateRequest.of(OrderStatus.COMPLETION.name());
+        ExtractableResponse<Response> 주문완료응답1 = OrderAcceptanceTest.주문_상태_변경_요청(일번테이블_주문.getId(), 주문완료요청1);
+        OrderAcceptanceTest.주문_상태_변경_확인(주문완료응답1, 주문완료요청1);
+        OrderStatusUpdateRequest 주문완료요청2 = OrderStatusUpdateRequest.of(OrderStatus.COMPLETION.name());
+        ExtractableResponse<Response> 주문완료응답2 = OrderAcceptanceTest.주문_상태_변경_요청(이번테이블_주문.getId(), 주문완료요청2);
+        OrderAcceptanceTest.주문_상태_변경_확인(주문완료응답2, 주문완료요청2);
 
         // 테이블 공석 설정
         OrderTableChangeEmptyRequest emptyOrderTableRequest = OrderTableChangeEmptyRequest.of(true);

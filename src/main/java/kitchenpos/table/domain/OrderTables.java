@@ -25,6 +25,12 @@ public class OrderTables {
         });
     }
 
+    public void unGroup(TableGroupValidator tableGroupValidator) {
+        tableGroupValidator.availableUnGroup(orderTables);
+
+        orderTables.forEach(OrderTable::unGroup);
+    }
+
     public List<OrderTable> getOrderTables() {
         return orderTables;
     }
@@ -43,7 +49,4 @@ public class OrderTables {
         orderTables.forEach(OrderTable::availableCreate);
     }
 
-    public void unGroup() {
-        orderTables.forEach(OrderTable::unGroup);
-    }
 }

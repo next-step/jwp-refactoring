@@ -3,11 +3,11 @@ package kitchenpos.table.domain;
 import java.util.*;
 
 public class FakeTableGroupRepository implements TableGroupRepository {
-    private OrderTableRepository fakeOrderTableRepository;
+    private FakeOrderTableRepository fakeOrderTableRepository;
     private Map<Long, TableGroup> map = new HashMap<>();
     private Long key = 1L;
 
-    public FakeTableGroupRepository(OrderTableRepository fakeOrderTableRepository) {
+    public FakeTableGroupRepository(FakeOrderTableRepository fakeOrderTableRepository) {
         this.fakeOrderTableRepository = fakeOrderTableRepository;
     }
 
@@ -15,7 +15,7 @@ public class FakeTableGroupRepository implements TableGroupRepository {
     public TableGroup save(TableGroup inputTableGroup) {
         OrderTables newOrderTables = initOrderTables(inputTableGroup);
 
-        for(OrderTable orderTable : newOrderTables.getOrderTables()) {
+        for (OrderTable orderTable : newOrderTables.getOrderTables()) {
             fakeOrderTableRepository.save(orderTable);
         }
 
