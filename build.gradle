@@ -12,16 +12,59 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.flywaydb:flyway-core'
-    runtimeOnly 'com.h2database:h2'
-    implementation 'mysql:mysql-connector-java'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    group = 'rest'
+    version = '0.0.1-SNAPSHOT'
+    sourceCompatibility = '1.8'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    }
+
+}
+
+project(':module-product') {
+    dependencies {
+        compile project(':module-common')
+    }
+}
+
+project(':module-menu') {
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-validation'
+        compile project(':module-common')
+        compile project(':module-product')
+    }
+}
+
+project(':module-order') {
+    dependencies {
+        compile project(':module-common')
+        compile project(':module-menu')
+        compile project(':module-product')
+    }
+}
+
+project(':module-main') {
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-validation'
+        implementation 'org.flywaydb:flyway-core'
+        compile project(':module-common')
+        compile project(':module-menu')
+        compile project(':module-product')
+        compile project(':module-order')
+    }
 }
 
 test {
