@@ -1,6 +1,7 @@
 package kitchenpos.menu.domain;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 public class MenuProduct {
@@ -56,4 +57,8 @@ public class MenuProduct {
         return quantity;
     }
 
+    public BigDecimal getTotalPrice() {
+        return this.product.getTotalPrice(quantity);
+
+    }
 }

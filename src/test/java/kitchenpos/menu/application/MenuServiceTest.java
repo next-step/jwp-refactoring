@@ -7,6 +7,7 @@ import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.exception.DifferentOrderAndMenuPriceException;
 import kitchenpos.menu.exception.NotCreatedProductException;
+import kitchenpos.menu.exception.NotFoundMenuGroupException;
 import kitchenpos.menu.exception.WrongPriceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -56,7 +57,7 @@ class MenuServiceTest {
         );
 
         assertThatThrownBy(() -> menuService.create(menuRequest))
-                .isInstanceOf(DifferentOrderAndMenuPriceException.class);
+                .isInstanceOf(NotFoundMenuGroupException.class);
     }
 
     @DisplayName("상품이 존재하지 않으면 예외가 발생한다.")

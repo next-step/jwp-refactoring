@@ -1,6 +1,7 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.*;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.exception.DifferentOrderAndMenuPriceException;
@@ -31,12 +32,13 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        List<Product> products = getValidProducts(menuRequest);
-
         MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
                 .orElseThrow(() -> new NotFoundMenuGroupException(menuRequest.getMenuGroupId()));
 
-        Menu menu = Menu.create(menuRequest.getName(), menuRequest.getPrice(), menuGroup, createMenuProduct(menuRequest, products));
+        MenuProducts menuProducts = createMenuProducts(menuRequest);
+        menuProducts.checkOverPrice(menuRequest.getPrice());
+
+        Menu menu = Menu.create(menuRequest.getName(), menuRequest.getPrice(), menuGroup, menuProducts);
         return MenuResponse.of(menuRepository.save(menu));
     }
 
@@ -47,27 +49,19 @@ public class MenuService {
                 .collect(Collectors.toList());
     }
 
-    private List<MenuProduct> createMenuProduct(MenuRequest menuRequest, List<Product> products) {
-        return products.stream()
-                .map(menuRequest::createMenuProduct)
-                .collect(Collectors.toList());
+    private MenuProducts createMenuProducts(MenuRequest menuRequest) {
+        List<MenuProductRequest> menuProductRequests = menuRequest.getMenuProductRequests();
+        return new MenuProducts(
+                menuProductRequests.stream()
+                        .map(this::createMenuProduct)
+                        .collect(Collectors.toList())
+        );
     }
 
-    private List<Product> getValidProducts(MenuRequest menuRequest) {
-        List<Long> productIds = menuRequest.getProductIds();
-        List<Product> products = productRepository.findAllByIdIn(productIds);
-        if (productIds.size() != products.size()) {
-            throw new NotCreatedProductException();
-        }
-
-        BigDecimal sum = products.stream()
-                .map(product -> product.getTotalPrice(menuRequest.getQuantity(product.getId())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        if (menuRequest.getPrice().compareTo(sum) > 0) {
-            throw new DifferentOrderAndMenuPriceException();
-        }
-        return products;
+    private MenuProduct createMenuProduct(MenuProductRequest request) {
+        Product product = productRepository.findById(request.getProductId())
+                .orElseThrow(NotCreatedProductException::new);
+        return MenuProduct.of(product, request.getQuantity());
     }
 
 }

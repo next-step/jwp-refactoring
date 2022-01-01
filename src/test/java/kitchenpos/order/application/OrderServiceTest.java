@@ -40,9 +40,11 @@ class OrderServiceTest {
         Product 살치살 = Product.of(1L, "살치살", 10000);
         Product 부채살 = Product.of(2L, "부채살", 10000);
         Menu menu = Menu.create("소고기세트", BigDecimal.valueOf(70000), null,
-                Arrays.asList(
-                        MenuProduct.of(살치살, 2),
-                        MenuProduct.of(부채살, 1)
+                new MenuProducts(
+                        Arrays.asList(
+                                MenuProduct.of(살치살, 2),
+                                MenuProduct.of(부채살, 1)
+                        )
                 )
         );
         소고기메뉴 = menuRepository.save(menu);

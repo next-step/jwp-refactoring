@@ -30,7 +30,7 @@ public class Menu {
     protected Menu() {
     }
 
-    private Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+    private Menu(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new WrongPriceException();
         }
@@ -38,7 +38,7 @@ public class Menu {
         this.name = name;
         this.price = new Price(price);
         this.menuGroup = menuGroup;
-        this.menuProducts = new MenuProducts(menuProducts);
+        this.menuProducts = menuProducts;
     }
 
     public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
@@ -49,7 +49,7 @@ public class Menu {
         this.menuProducts = new MenuProducts(menuProducts);
     }
 
-    public static Menu create(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+    public static Menu create(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
         Menu menu = new Menu(name, price, menuGroup, menuProducts);
         menu.addMenu();
         return menu;
