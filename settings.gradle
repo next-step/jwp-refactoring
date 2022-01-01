@@ -1,1 +1,10 @@
 rootProject.name = 'kitchenpos'
+include 'kitchenpos-application'
+include 'kitchenpos-client-api'
+include 'kitchenpos-infra'
+// core
+include 'kitchenpos-core-menu', 'kitchenpos-core-menugroup', 'kitchenpos-core-order', 'kitchenpos-core-tablegroup',
+        'kitchenpos-core-ordertable', 'kitchenpos-core-product'
+include 'kitchenpos-core-menu-validator', 'kitchenpos-core-menugroup-validator', 'kitchenpos-core-order-validator',
+        'kitchenpos-core-ordertable-validator', 'kitchenpos-core-product-validator'
+

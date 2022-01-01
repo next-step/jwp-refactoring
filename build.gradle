@@ -1,27 +1,217 @@
-plugins {
-    id 'org.springframework.boot' version '2.4.1'
-    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
-    id 'java'
+buildscript {
+    ext {
+        springBootVersion = '2.4.1'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.10.RELEASE"
+    }
 }
 
-group = 'camp.nextstep.edu'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
-
-repositories {
-    mavenCentral()
+allprojects {
+    group = 'camp.nextstep.edu'
+    version = '0.0.1-SNAPSHOT'
 }
 
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.flywaydb:flyway-core'
-    runtimeOnly 'com.h2database:h2'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+subprojects {
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'java'
+    // fixture 사용
+    apply plugin: 'java-library'
+    apply plugin: 'java-test-fixtures'
+    apply plugin: 'maven-publish'
+
+    sourceCompatibility = '1.8'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        testImplementation('org.springframework.boot:spring-boot-starter-test') {
+            exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+        }
+        // fixture 사용
+        testImplementation(testFixtures(project(':kitchenpos-core-menu')))
+        testImplementation(testFixtures(project(':kitchenpos-core-menugroup')))
+        testImplementation(testFixtures(project(':kitchenpos-core-order')))
+        testImplementation(testFixtures(project(':kitchenpos-core-ordertable')))
+        testImplementation(testFixtures(project(':kitchenpos-core-product')))
+        testImplementation(testFixtures(project(':kitchenpos-core-tablegroup')))
+    }
+
+    test {
+        useJUnitPlatform()
+    }
 }
 
-test {
-    useJUnitPlatform()
+project(':kitchenpos-core-menugroup') {
+    bootJar { enabled = false }
+    jar { enabled = true }
+
+    dependencies {
+        compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+    }
+}
+
+project(':kitchenpos-core-menugroup-validator') {
+    bootJar { enabled = false }
+    jar { enabled = true }
+
+    dependencies {
+        compile project(':kitchenpos-core-menugroup'),
+                project(':kitchenpos-core-menu')
+    }
+}
+
+project(':kitchenpos-core-menu') {
+    bootJar { enabled = false }
+    jar { enabled = true }
+
+    dependencies {
+        compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+    }
+}
+
+project(':kitchenpos-core-menu-validator') {
+    bootJar { enabled = false }
+    jar { enabled = true }
+
+    dependencies {
+        compile project(':kitchenpos-core-menu')
+        compile project(':kitchenpos-core-order')
+        compile project(':kitchenpos-core-menugroup-validator')
+    }
+}
+
+project(':kitchenpos-core-order') {
+    bootJar { enabled = false }
+    jar { enabled = true }
+
+    dependencies {
+        compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+    }
+}
+
+project(':kitchenpos-core-order-validator') {
+    bootJar { enabled = false }
+    jar { enabled = true }
+
+    dependencies {
+        compile project(':kitchenpos-core-order')
+        compile project(':kitchenpos-core-ordertable')
+    }
+}
+
+project(':kitchenpos-core-ordertable') {
+    bootJar { enabled = false }
+    jar { enabled = true }
+
+    dependencies {
+        compile project(':kitchenpos-core-tablegroup')
+        compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+    }
+}
+
+project(':kitchenpos-core-ordertable-validator') {
+    bootJar { enabled = false }
+    jar { enabled = true }
+
+    dependencies {
+        compile project(':kitchenpos-core-ordertable')
+        compile project(':kitchenpos-core-order')
+    }
+}
+
+project(':kitchenpos-core-product') {
+    bootJar { enabled = false }
+    jar { enabled = true }
+
+    dependencies {
+        compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+    }
+}
+
+project(':kitchenpos-core-product-validator') {
+    bootJar { enabled = false }
+    jar { enabled = true }
+
+    dependencies {
+        compile project(':kitchenpos-core-product')
+        compile project(':kitchenpos-core-menu')
+    }
+}
+
+project(':kitchenpos-core-tablegroup') {
+    bootJar { enabled = false }
+    jar { enabled = true }
+
+    dependencies {
+        compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+    }
+}
+
+project(':kitchenpos-application') {
+    bootJar { enabled = false }
+    jar { enabled = true }
+
+    dependencies {
+        compile project(':kitchenpos-core-menu'),
+                project(':kitchenpos-core-menugroup'),
+                project(':kitchenpos-core-order'),
+                project(':kitchenpos-core-ordertable'),
+                project(':kitchenpos-core-product'),
+                project(':kitchenpos-core-tablegroup')
+
+        compile project(':kitchenpos-infra')
+    }
+}
+
+project(':kitchenpos-infra') {
+    bootJar { enabled = false }
+    jar { enabled = true }
+    dependencies {
+        compile project(':kitchenpos-core-menu'),
+                project(':kitchenpos-core-menu-validator'),
+                project(':kitchenpos-core-menugroup'),
+                project(':kitchenpos-core-menugroup-validator'),
+                project(':kitchenpos-core-order'),
+                project(':kitchenpos-core-order-validator'),
+                project(':kitchenpos-core-ordertable'),
+                project(':kitchenpos-core-ordertable-validator'),
+                project(':kitchenpos-core-product'),
+                project(':kitchenpos-core-product-validator'),
+                project(':kitchenpos-core-tablegroup')
+
+        runtimeOnly 'com.h2database:h2'
+        implementation 'org.flywaydb:flyway-core'
+    }
+}
+
+project(':kitchenpos-client-api') {
+    bootJar { enabled = true }
+    jar { enabled = true }
+
+    dependencies {
+        compile project(':kitchenpos-core-menu'),
+                project(':kitchenpos-core-menu-validator'),
+                project(':kitchenpos-core-menugroup'),
+                project(':kitchenpos-core-menugroup-validator'),
+                project(':kitchenpos-core-order'),
+                project(':kitchenpos-core-order-validator'),
+                project(':kitchenpos-core-ordertable'),
+                project(':kitchenpos-core-ordertable-validator'),
+                project(':kitchenpos-core-product'),
+                project(':kitchenpos-core-product-validator'),
+                project(':kitchenpos-core-tablegroup')
+        compile project(':kitchenpos-application')
+        compile project(':kitchenpos-infra')
+
+        compile 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    }
 }
