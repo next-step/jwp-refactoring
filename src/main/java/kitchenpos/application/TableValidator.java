@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 @Component
 @Transactional(readOnly = true)
 public class TableValidator {
+
     private final OrderRepository orderRepository;
 
     public TableValidator(final OrderRepository orderRepository) {
@@ -42,6 +43,13 @@ public class TableValidator {
         }
         if (order.existsCookingOrMeal()) {
             throw new OrderStatusNotProcessingException();
+        }
+    }
+
+    public void validateGroup(final List<OrderTable> orderTables) {
+        final List<Order> orders = orderRepository.findByOrderTableIdIn(orderTables);
+        if (CollectionUtils.isEmpty(orders)) {
+            throw new EmptyOrderException();
         }
     }
 }
