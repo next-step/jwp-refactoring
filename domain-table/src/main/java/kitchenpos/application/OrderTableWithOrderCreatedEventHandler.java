@@ -4,7 +4,6 @@ import kitchenpos.domain.OrderCreatedEvent;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
 import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +15,6 @@ public class OrderTableWithOrderCreatedEventHandler {
         this.orderTableRepository = orderTableRepository;
     }
 
-    @Async
     @EventListener
     @Transactional
     public void handle(OrderCreatedEvent orderCreatedEvent) {
