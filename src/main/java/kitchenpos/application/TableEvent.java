@@ -1,8 +1,5 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
-
 import java.util.List;
 
 public class TableEvent {
@@ -11,24 +8,24 @@ public class TableEvent {
     }
 
     public static class Grouped {
-        private TableGroup tableGroup;
-        private List<OrderTable> orderTables;
+        private Long tableGroupId;
+        private List<Long> orderTableIds;
 
-        private Grouped(final TableGroup tableGroup, final List<OrderTable> orderTables) {
-            this.tableGroup = tableGroup;
-            this.orderTables = orderTables;
+        private Grouped(final Long tableGroupId, final List<Long> orderTableIds) {
+            this.tableGroupId = tableGroupId;
+            this.orderTableIds = orderTableIds;
         }
 
-        public static Grouped from(final TableGroup tableGroup, final List<OrderTable> orderTables) {
-            return new Grouped(tableGroup, orderTables);
+        public static Grouped from(final Long tableGroupId, final List<Long> orderTableIds) {
+            return new Grouped(tableGroupId, orderTableIds);
         }
 
-        public TableGroup getTableGroup() {
-            return tableGroup;
+        public Long getTableGroupId() {
+            return tableGroupId;
         }
 
-        public List<OrderTable> getOrderTables() {
-            return orderTables;
+        public List<Long> getOrderTableIds() {
+            return orderTableIds;
         }
     }
 

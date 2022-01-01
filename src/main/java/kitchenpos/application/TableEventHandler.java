@@ -13,7 +13,7 @@ public class TableEventHandler {
 
     @EventListener
     public void grouped(TableEvent.Grouped event) {
-        tableService.grouped(event.getTableGroup(), event.getOrderTables());
+        tableService.grouped(event.getTableGroupId(), event.getOrderTableIds());
     }
 
     @EventListener
