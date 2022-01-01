@@ -57,7 +57,7 @@ class TableAcceptanceTest extends AcceptanceTest {
     void failTest1() {
         주문_테이블_생성_요청(테이블_6인_요청).as(OrderTableResponse.class);
         OrderTableRequest 변경_요청 = OrderTableRequest.of(2, false);
-        BAD_REQUEST_응답_잘_받았음( 주문_테이블_방문한_손님_수_변경_요청(변경_요청, 100));
+        BAD_REQUEST_응답_잘_받았음(주문_테이블_방문한_손님_수_변경_요청(변경_요청, 100));
     }
 
     @DisplayName("방문한 손님 수가 음수이면 실패함")
