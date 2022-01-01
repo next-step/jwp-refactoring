@@ -44,7 +44,7 @@ public class Order extends AbstractAggregateRoot<Order> {
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
         this.orderLineItems = orderLineItems;
-        registerEvent(new OrderCreatedEvent(this));
+        registerEvent(new OrderCreatedEvent(orderTableId));
     }
 
     public static Order of(Long orderTableId, OrderLineItems orderLineItems) {

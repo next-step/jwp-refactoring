@@ -1,13 +1,13 @@
 package kitchenpos.domain;
 
 public class OrderCreatedEvent {
-    private final Order order;
+    private final Long orderTableId;
 
-    public OrderCreatedEvent(Order order) {
-        this.order = order;
+    public OrderCreatedEvent(Long orderTableId) {
+        this.orderTableId = orderTableId;
     }
 
     public Long getOrderTableId() {
-        return order.getOrderTableId();
+        return orderTableId;
     }
 }
