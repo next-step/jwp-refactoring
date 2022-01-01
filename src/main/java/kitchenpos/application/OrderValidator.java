@@ -23,19 +23,17 @@ public class OrderValidator {
         this.tableService = tableService;
     }
 
-    public Long findOrderTableById(final OrderRequest request) {
+    public void validatorTableService(final OrderRequest request) {
         final OrderTable orderTable = tableService.findOrderTableById(request.getOrderTableId());
         if (Objects.isNull(orderTable)) {
             throw new EmptyOrderTableException();
         }
-        return orderTable.getId();
     }
 
-    public Long findMenuById(final OrderLineItemRequest request) {
+    public void validatorMenu(final OrderLineItemRequest request) {
         final Menu menu = menuService.getMenuById(request.getMenuId());
         if (Objects.isNull(menu)) {
             throw new EmptyMenuException();
         }
-        return menu.getId();
     }
 }
