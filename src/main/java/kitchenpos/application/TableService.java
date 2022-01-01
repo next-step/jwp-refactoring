@@ -1,14 +1,15 @@
 package kitchenpos.application;
 
 import kitchenpos.common.exceptions.EmptyOrderTableException;
+import kitchenpos.common.exceptions.MinimumOrderTableNumberException;
 import kitchenpos.common.exceptions.NotEmptyOrderTableGroupException;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
-import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.ordertable.OrderTableRequest;
 import kitchenpos.dto.ordertable.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -17,6 +18,8 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 public class TableService {
+    private static final int MINIMUM = 2;
+
     private final OrderTableRepository orderTableRepository;
     private  final TableValidator tableValidator;
 
@@ -49,7 +52,7 @@ public class TableService {
 
     private OrderTable getNotGroupedOrderTableById(final Long id) {
         final OrderTable orderTable = findById(id);
-        if (Objects.nonNull(orderTable.getTableGroup())) {
+        if (Objects.nonNull(orderTable.getTableGroupId())) {
             throw new NotEmptyOrderTableGroupException();
         }
         return orderTable;
@@ -62,32 +65,51 @@ public class TableService {
     }
 
     public OrderTable findOrderTableById(final Long orderTableId) {
-        final OrderTable orderTable = findById(orderTableId);
-        return orderTable;
+        return findById(orderTableId);
     }
 
     public List<OrderTable> findAllById(final List<Long> ids) {
         return orderTableRepository.findAllById(ids);
     }
 
-    public void grouped(final TableGroup tableGroup, final List<OrderTable> tables) {
-        for (OrderTable orderTable : tables) {
-            orderTable.group(tableGroup);
+    public void grouped(final Long tableGroupId, final List<Long> orderTableIds) {
+        final List<OrderTable> orderTables = orderTableRepository.findAllById(orderTableIds);
+        validateOrderTables(orderTables);
+        tableValidator.validateGroup(orderTables);
+        for (OrderTable orderTable : orderTables) {
+            orderTable.group(tableGroupId);
         }
-        orderTableRepository.saveAll(tables);
+        orderTableRepository.saveAll(orderTables);
     }
 
     public void ungrouped(final Long tableGroupId) {
-        final List<OrderTable> tables = orderTableRepository.findByTableGroupId(tableGroupId);
-        tableValidator.validateUnGroup(tables);
-        for (OrderTable table : tables) {
-            table.unGroup();
+        final List<OrderTable> orderTables = orderTableRepository.findByTableGroupId(tableGroupId);
+        tableValidator.validateUnGroup(orderTables);
+        for (OrderTable orderTable : orderTables) {
+            orderTable.unGroup();
         }
-        orderTableRepository.saveAll(tables);
+        orderTableRepository.saveAll(orderTables);
     }
 
     private OrderTable findById(final Long id) {
         return orderTableRepository.findById(id)
                 .orElseThrow(EmptyOrderTableException::new);
+    }
+
+    private void validateOrderTables(final List<OrderTable> orderTables) {
+        if (CollectionUtils.isEmpty(orderTables)) {
+            throw new EmptyOrderTableException();
+        }
+        if (orderTables.size() < MINIMUM) {
+            throw new MinimumOrderTableNumberException();
+        }
+        if (hasAnyEmptyTable(orderTables)) {
+            throw new NotEmptyOrderTableGroupException();
+        }
+    }
+
+    private static boolean hasAnyEmptyTable(final List<OrderTable> orderTables) {
+        return orderTables.stream()
+                .anyMatch(OrderTable::isEmpty);
     }
 }
