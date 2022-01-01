@@ -1,6 +1,5 @@
 package kitchenpos.fixture;
 
-import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.dto.menugroup.MenuGroupRequest;
 import kitchenpos.dto.menugroup.MenuGroupResponse;
@@ -17,6 +16,10 @@ public class TestMenuGroupFactory {
     }
 
     public static MenuGroup 메뉴그룹_조회됨(final Long id, final String name) {
+        return MenuGroup.of(id, name);
+    }
+
+    public static MenuGroup 메뉴그룹_생성됨(final Long id, final String name) {
         return MenuGroup.of(id, name);
     }
 

@@ -24,9 +24,7 @@ class OrderTableTest {
     @DisplayName("상태 변경 시, 테이블 그룹에 속해 있지 않아야 한다")
     @Test
     void changeEmptyStatusTest2() {
-        final OrderTable 테이블1 = OrderTable.of(4, false);
-        final OrderTable 테이블2 = OrderTable.of(4, false);
-        final TableGroup 테이블그룹 = TableGroup.from(Lists.newArrayList(테이블1, 테이블2));
+        final TableGroup 테이블그룹 = TableGroup.from(1L);
         final OrderTable 주문테이블 = OrderTable.of(테이블그룹, 4, false);
 
         assertThatThrownBy(() -> 주문테이블.changeEmptyStatus(true))
@@ -36,17 +34,17 @@ class OrderTableTest {
     @DisplayName("손님 인원을 변경을 할 수 있다")
     @Test
     void changeNumberOfGuestsTest() {
-        final OrderTable 테이블1 = OrderTable.of(4, false);
+        final OrderTable 주문테이블 = OrderTable.of(4, false);
 
-        테이블1.changeNumberOfGuests(10);
+        주문테이블.changeNumberOfGuests(10);
 
-        assertThat(테이블1.getNumberOfGuests().toInt()).isEqualTo(10);
+        assertThat(주문테이블.getNumberOfGuests().toInt()).isEqualTo(10);
     }
 
     @DisplayName("빈 테이블의 인원을 변경할 수 없다")
     @Test
     void changeNumberOfGuestsTest2() {
-        final OrderTable 빈_테이블 = OrderTable.of(4, true);
+        final OrderTable 빈_테이블 = OrderTable.of(0, true);
 
         assertThatThrownBy(() -> 빈_테이블.changeNumberOfGuests(10))
                 .isInstanceOf(NegativeNumberOfGuestsException.class);
@@ -55,9 +53,7 @@ class OrderTableTest {
     @DisplayName("테이블 그룹을 해제할 수 있다")
     @Test
     void unGroupTest() {
-        final OrderTable 테이블1 = OrderTable.of(4, false);
-        final OrderTable 테이블2 = OrderTable.of(4, false);
-        final TableGroup 테이블그룹 = TableGroup.from(Lists.newArrayList(테이블1, 테이블2));
+        final TableGroup 테이블그룹 = TableGroup.from(1L);
         final OrderTable 주문테이블 = OrderTable.of(테이블그룹, 4, false);
 
         주문테이블.unGroup();

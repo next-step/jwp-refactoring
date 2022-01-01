@@ -2,9 +2,9 @@ package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.TableService;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.ordertable.OrderTableRequest;
 import kitchenpos.dto.ordertable.OrderTableResponse;
+import kitchenpos.fixture.TestOrderTableFactory;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -51,11 +51,9 @@ class TableRestControllerTest {
     @DisplayName("주문 테이블을 등록한다.")
     @Test
     void create() throws Exception {
-        final OrderTableRequest 주문테이블_요청1 = OrderTableRequest.of(5, false);
+        final OrderTableRequest 주문테이블_요청1 = TestOrderTableFactory.주문_테이블_요청(5, false);
+        final OrderTableResponse 주문테이블1_응답 = TestOrderTableFactory.주문_테이블_응답(1L, 5, false);
 
-        final OrderTable 주문테이블1 = OrderTable.of(1L, 2, false);
-        final OrderTableResponse 주문테이블1_응답 = OrderTableResponse.from(주문테이블1);
-        
         given(tableService.create(any())).willReturn(주문테이블1_응답);
 
         final ResultActions actions = mvc.perform(post("/api/tables")
@@ -66,17 +64,15 @@ class TableRestControllerTest {
 
         actions.andExpect(status().isCreated())
                 .andExpect(jsonPath("id").value(1L))
-                .andExpect(jsonPath("numberOfGuests").value(2))
+                .andExpect(jsonPath("numberOfGuests").value(5))
                 .andExpect(jsonPath("empty").value(false));
     }
 
     @DisplayName("주문 테이블 목록을 조회한다.")
     @Test
     void list() throws Exception {
-        final OrderTable 주문테이블1 = OrderTable.of(1L, 2, false);
-        final OrderTable 주문테이블2 = OrderTable.of(2L, 2, false);
-        final OrderTableResponse 주문테이블1_응답 = OrderTableResponse.from(주문테이블1);
-        final OrderTableResponse 주문테이블2_응답 = OrderTableResponse.from(주문테이블2);
+        final OrderTableResponse 주문테이블1_응답 = TestOrderTableFactory.주문_테이블_응답(1L, 5, false);
+        final OrderTableResponse 주문테이블2_응답 = TestOrderTableFactory.주문_테이블_응답(2L, 5, false);
         final List<OrderTableResponse> 주문테이블목록_응답 = Lists.newArrayList(주문테이블1_응답, 주문테이블2_응답);
         
         given(tableService.list()).willReturn(주문테이블목록_응답);
@@ -92,9 +88,8 @@ class TableRestControllerTest {
     @DisplayName("빈 테이블로 변경한다.")
     @Test
     void changeEmpty() throws Exception {
-        final OrderTable 빈_주문테이블 = OrderTable.of(1L, 0, true);
-        final OrderTableRequest 주문테이블1빈테이블_요청 = OrderTableRequest.from(true);
-        final OrderTableResponse 주문테이블1빈테이블_응답 = OrderTableResponse.from(빈_주문테이블);
+        final OrderTableRequest 주문테이블1빈테이블_요청 = TestOrderTableFactory.주문_빈테이블_요청();
+        final OrderTableResponse 주문테이블1빈테이블_응답 = TestOrderTableFactory.주문_테이블_응답(1L, 0, true);
         
         given(tableService.changeEmpty(anyLong(), any())).willReturn(주문테이블1빈테이블_응답);
 
@@ -114,9 +109,8 @@ class TableRestControllerTest {
     @DisplayName("손님수를 변경한다.")
     @Test
     void changeNumberOfGuests() throws Exception {
-        final OrderTableRequest 주문테이블2손님수변경_요청 = OrderTableRequest.from(10);
-        final OrderTable 손님수변경_주문테이블2 = OrderTable.of(2L, 5, false);
-        final OrderTableResponse 주문테이블2손님수변경_응답 = OrderTableResponse.from(손님수변경_주문테이블2);
+        final OrderTableRequest 주문테이블2손님수변경_요청 = TestOrderTableFactory.주문_손님_변경_테이블_요청(5);
+        final OrderTableResponse 주문테이블2손님수변경_응답 = TestOrderTableFactory.주문_테이블_응답(2L, 5, false);
         
         given(tableService.changeNumberOfGuests(anyLong(), any())).willReturn(주문테이블2손님수변경_응답);
 

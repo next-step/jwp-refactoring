@@ -1,7 +1,6 @@
 package kitchenpos.domain;
 
 import kitchenpos.common.exceptions.EmptyMenuGroupException;
-import kitchenpos.common.exceptions.GreaterProductSumPriceException;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -54,9 +53,6 @@ public class Menu {
 
     public void addMenuProducts(final List<MenuProduct> menuProductList) {
         menuProductList.forEach(this::addMenuProduct);
-        if (this.menuProducts.isOverPrice(this.price)) {
-            throw new GreaterProductSumPriceException();
-        }
     }
 
     private void addMenuProduct(final MenuProduct menuProduct) {

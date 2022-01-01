@@ -28,7 +28,7 @@ class ProductServiceTest {
     @DisplayName("상품을 등록한다.")
     @Test
     void saveProduct() {
-        final Product 상품 = TestProductFactory.상품_생성돰(1L, "상품", 5000);
+        final Product 상품 = TestProductFactory.상품_생성됨(1L, "상품", 5000);
 
         given(productRepository.save(any())).willReturn(상품);
 

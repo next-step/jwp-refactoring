@@ -70,9 +70,8 @@ public class TestMenuFactory {
         assertThat(actual).hasSize(menus.size());
     }
 
-    public static List<MenuProduct> 메뉴상품_목록(final String productName, final long price, final int quantity ) {
-        final Product product = Product.of(productName, price);
-        final MenuProduct menuProduct = MenuProduct.of(product, quantity);
+    public static List<MenuProduct> 메뉴상품_목록(final Long productId, final long price, final int quantity ) {
+        final MenuProduct menuProduct = MenuProduct.of(productId, quantity);
         return Lists.newArrayList(menuProduct);
     }
 
@@ -80,7 +79,7 @@ public class TestMenuFactory {
         return MenuResponse.of(id, name, price, menuGroupResponse, menuProducts);
     }
 
-    public static List<MenuProductResponse> 메뉴상품목록_응답(final ProductResponse productResponse, final int quantity) {
-        return Lists.newArrayList(MenuProductResponse.of(productResponse, quantity));
+    public static List<MenuProductResponse> 메뉴상품목록_응답(final Long productId, final int quantity) {
+        return Lists.newArrayList(MenuProductResponse.of(productId, quantity));
     }
 }

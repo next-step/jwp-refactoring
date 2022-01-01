@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.common.exceptions.NotFoundEntityException;
+import kitchenpos.common.exceptions.EmptyProductException;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductRepository;
 import kitchenpos.dto.product.ProductRequest;
@@ -35,6 +35,6 @@ public class ProductService {
 
     public Product getById(final Long id) {
         return productRepository.findById(id)
-                .orElseThrow(NotFoundEntityException::new);
+                .orElseThrow(EmptyProductException::new);
     }
 }

@@ -29,15 +29,4 @@ class MenuTest {
         assertThatThrownBy(() -> TestMenuFactory.메뉴_생성(메뉴그룹, null, 1000))
                 .isInstanceOf(EmptyNameException.class);
     }
-
-    @DisplayName("메뉴 가격이 구성품의 가격의 합보다 높으면 안된다")
-    @Test
-    void checkOverPriceTest() {
-        final MenuGroup 메뉴그룹 = TestMenuGroupFactory.메뉴그룹_생성("메뉴그룹");
-        final Menu 메뉴 = TestMenuFactory.메뉴_생성(메뉴그룹, "메뉴", 10000);
-        final List<MenuProduct> 메뉴상품_목록 = TestMenuFactory.메뉴상품_목록("상품", 2000, 2);
-
-        assertThatThrownBy(() -> 메뉴.addMenuProducts(메뉴상품_목록))
-                .isInstanceOf(GreaterProductSumPriceException.class);
-    }
 }

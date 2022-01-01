@@ -31,4 +31,8 @@ public enum OrderStatus {
             throw new NotOrderStatusException();
         }
     }
+
+    public boolean existsCookingOrMeal() {
+        return OrderStatus.COOKING.equals(this) || OrderStatus.MEAL.equals(this);
+    }
 }

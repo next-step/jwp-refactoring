@@ -15,9 +15,7 @@ public class MenuProduct {
     @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_menu_product_menu"), nullable = false)
     private Menu menu;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_menu_product_product"), nullable = false)
-    private Product product;
+    private Long productId;
 
     @Embedded
     private Quantity quantity;
@@ -25,38 +23,34 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
-    private MenuProduct(final Long seq, final Menu menu, final Product product, final Quantity quantity) {
-        validateCreate(product);
+    private MenuProduct(final Long seq, final Menu menu, final Long productId, final Quantity quantity) {
+        validateCreate(productId);
         this.seq = seq;
         this.menu = menu;
-        this.product = product;
+        this.productId = productId;
         this.quantity = quantity;
     }
 
-    public static MenuProduct of(final Long seq, final Menu menu, final Product product, final long quantity) {
-        return new MenuProduct(seq, menu, product, Quantity.valueOf(quantity));
+    public static MenuProduct of(final Long seq, final Menu menu, final Long productId, final long quantity) {
+        return new MenuProduct(seq, menu, productId, Quantity.valueOf(quantity));
     }
 
-    public static MenuProduct of(final Menu menu, final Product product, final long quantity) {
-        return new MenuProduct(null, menu, product, Quantity.valueOf(quantity));
+    public static MenuProduct of(final Menu menu, final Long productId, final long quantity) {
+        return new MenuProduct(null, menu, productId, Quantity.valueOf(quantity));
     }
 
-    public static MenuProduct of(final Product product, final long quantity) {
-        return new MenuProduct(null, null, product, Quantity.valueOf(quantity));
+    public static MenuProduct of(final Long productId, final long quantity) {
+        return new MenuProduct(null, null, productId, Quantity.valueOf(quantity));
     }
 
-    private void validateCreate(final Product product) {
-        if (Objects.isNull(product)) {
+    private void validateCreate(final Long productId) {
+        if (Objects.isNull(productId)) {
             throw new EmptyProductException();
         }
     }
 
     public void decideMenu(final Menu menu) {
         this.menu = menu;
-    }
-
-    public Price getTotalPrice() {
-        return product.getPrice().multiply(quantity.toLong());
     }
 
     public Long getSeq() {
@@ -67,8 +61,8 @@ public class MenuProduct {
         return this.menu;
     }
 
-    public Product getProduct() {
-        return this.product;
+    public Long getProductId() {
+        return this.productId;
     }
 
     public Quantity getQuantity() {

@@ -1,8 +1,9 @@
 package kitchenpos.application;
 
-import kitchenpos.common.exceptions.NotFoundEntityException;
-import kitchenpos.common.exceptions.OrderStatusNotProcessingException;
-import kitchenpos.domain.*;
+import kitchenpos.common.exceptions.EmptyOrderException;
+import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderRepository;
 import kitchenpos.dto.order.OrderLineItemRequest;
 import kitchenpos.dto.order.OrderRequest;
 import kitchenpos.dto.order.OrderResponse;
@@ -16,20 +17,17 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class OrderService {
     private final OrderRepository orderRepository;
-    private final MenuService menuService;
-    private final TableService tableService;
+    private final OrderValidator orderValidator;
 
-    public OrderService(
-            final OrderRepository orderRepository, final MenuService menuService, final TableService tableService) {
+    public OrderService(final OrderRepository orderRepository, OrderValidator orderValidator) {
         this.orderRepository = orderRepository;
-        this.menuService = menuService;
-        this.tableService = tableService;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest request) {
-        final OrderTable orderTable = tableService.findOrderTableById(request.getOrderTableId());
-        final Order order = Order.from(orderTable);
+        final Long orderTableId = orderValidator.findOrderTableById(request);
+        final Order order = Order.from(orderTableId);
         addOrderLineItems(order, request.getOrderLineItems());
 
         final Order savedOrder = orderRepository.save(order);
@@ -44,8 +42,8 @@ public class OrderService {
     }
 
     private OrderLineItem getOrderItem(final OrderLineItemRequest request) {
-        final Menu menu = menuService.getMenuById(request.getMenuId());
-        return OrderLineItem.of(menu, request.getQuantity());
+        final Long menuId = orderValidator.findMenuById(request);
+        return OrderLineItem.of(menuId, request.getQuantity());
     }
 
     public List<OrderResponse> list() {
@@ -62,16 +60,6 @@ public class OrderService {
 
     private Order findById(final Long orderId) {
         return orderRepository.findById(orderId)
-                .orElseThrow(NotFoundEntityException::new);
-    }
-
-    public void validateOrderStatus(final List<OrderTable> orderTables) {
-        final List<Order> orders = orderRepository.findByOrderTableIn(orderTables);
-        final List<Order> checkOrders = orders.stream()
-                .filter(Order::existsOrderStatus)
-                .collect(Collectors.toList());
-        if (orders.containsAll(checkOrders)) {
-            throw new OrderStatusNotProcessingException();
-        }
+                .orElseThrow(EmptyOrderException::new);
     }
 }

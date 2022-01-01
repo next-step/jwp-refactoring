@@ -59,7 +59,7 @@ class MenuRestControllerTest {
         final MenuRequest 메뉴_요청 = TestMenuFactory.메뉴_요청("메뉴", 40000, 1L);
 
         final ProductResponse 상품_응답 = TestProductFactory.상품_응답(1L, "상품", 1000);
-        final List<MenuProductResponse> 메뉴상품목록_응답 = TestMenuFactory.메뉴상품목록_응답(상품_응답, 2);
+        final List<MenuProductResponse> 메뉴상품목록_응답 = TestMenuFactory.메뉴상품목록_응답(상품_응답.getId(), 2);
         final MenuGroupResponse 메뉴그룹_응답 = TestMenuGroupFactory.메뉴그룹_응답(1L, "메뉴그룹");
         final MenuResponse 메뉴_응답 = TestMenuFactory.메뉴_응답(1L, "메뉴", 50000, 메뉴그룹_응답, 메뉴상품목록_응답);
 
@@ -84,7 +84,7 @@ class MenuRestControllerTest {
     @Test
     void list() throws Exception {
         final ProductResponse 상품_응답 = TestProductFactory.상품_응답(1L, "상품", 1000);
-        final List<MenuProductResponse> 메뉴상품목록_응답 = TestMenuFactory.메뉴상품목록_응답(상품_응답, 2);
+        final List<MenuProductResponse> 메뉴상품목록_응답 = TestMenuFactory.메뉴상품목록_응답(상품_응답.getId(), 2);
         final MenuGroupResponse 메뉴그룹_응답 = TestMenuGroupFactory.메뉴그룹_응답(1L, "메뉴그룹");
         final MenuResponse 메뉴_응답 = TestMenuFactory.메뉴_응답(1L, "메뉴", 50000, 메뉴그룹_응답, 메뉴상품목록_응답);
 

@@ -25,13 +25,12 @@ public class TestOrderFactory {
         return OrderRequest.from(OrderStatus.COMPLETION);
     }
 
-    public static Order 주문_생성_Cooking_단계(final OrderTable orderTable) {
-        return Order.from(orderTable);
+    public static Order 주문_생성_Cooking_단계(final Long orderTableId) {
+        return Order.from(orderTableId);
     }
 
-    public static Order 주문_생성_Cooking_단계(final int numberOfGuests, final boolean empty) {
-        final OrderTable orderTable = OrderTable.of(numberOfGuests, empty);
-        return Order.from(orderTable);
+    public static Order 주문_생성_Cooking_단계(final Long orderTableId, final int numberOfGuests, final boolean empty) {
+        return Order.from(orderTableId);
     }
 
     public static Order 주문_생성_주문테이블_없음() {
@@ -42,8 +41,8 @@ public class TestOrderFactory {
         order.addOrderLineItems(orderLineItems);
     }
 
-    public static OrderLineItem 주문_상품_생성(final Menu menu, final long quantity) {
-        return OrderLineItem.of(menu, quantity);
+    public static OrderLineItem 주문_상품_생성(final Long menuId, final long quantity) {
+        return OrderLineItem.of(menuId, quantity);
     }
 
     public static void 주문_상태_cooking_meal_변경(final Order order) {
@@ -62,36 +61,36 @@ public class TestOrderFactory {
         return order.getOrderStatus();
     }
 
-    public static List<Order> 주문_목록_조회됨(final int countOrder) {
+    public static List<Order> 주문_목록_조회됨(final Long orderTableId, final int countOrder) {
         final List<Order> orders = new ArrayList<>();
         for (int i = 1; i <= countOrder; i++) {
-            orders.add(Order.of(Long.valueOf(i), OrderTable.of(1L, 10, false), OrderStatus.COOKING, OrderLineItems.from(new ArrayList<>())));
+            orders.add(Order.of(Long.valueOf(i), orderTableId, OrderStatus.COOKING, OrderLineItems.from(new ArrayList<>())));
         }
         return orders;
     }
 
-    public static Order 주문_cooking_조회됨(final int orderLineItemcount, final Long id, final OrderTable orderTable, final Menu menu, final int quantity) {
+    public static Order 주문_cooking_조회됨(final int orderLineItemcount, final Long id, final Long orderTableId, final Long menuId, final int quantity) {
         final List<OrderLineItem> orderLineItems = new ArrayList<>();
         for (int i = 1; i <= orderLineItemcount; i++) {
-            OrderLineItem.of(Long.valueOf(i), menu, quantity);
+            OrderLineItem.of(Long.valueOf(i), menuId, quantity);
         }
-        return Order.of(id, orderTable, OrderStatus.COOKING, OrderLineItems.from(orderLineItems));
+        return Order.of(id, orderTableId, OrderStatus.COOKING, OrderLineItems.from(orderLineItems));
     }
 
-    public static Order 주문_meal_조회됨(final int orderLineItemcount, final Long id, final OrderTable orderTable, final Menu menu, final int quantity) {
+    public static Order 주문_meal_조회됨(final int orderLineItemcount, final Long id, final Long orderTableId, final Long menuId, final int quantity) {
         final List<OrderLineItem> orderLineItems = new ArrayList<>();
         for (int i = 1; i <= orderLineItemcount; i++) {
-            OrderLineItem.of(Long.valueOf(i), menu, quantity);
+            OrderLineItem.of(Long.valueOf(i), menuId, quantity);
         }
-        return Order.of(id, orderTable, OrderStatus.MEAL, OrderLineItems.from(orderLineItems));
+        return Order.of(id, orderTableId, OrderStatus.MEAL, OrderLineItems.from(orderLineItems));
     }
 
-    public static Order 주문_complete_조회됨(final int orderLineItemcount, final Long id, final OrderTable orderTable, final Menu menu, final int quantity) {
+    public static Order 주문_complete_조회됨(final int orderLineItemcount, final Long id, final Long orderTableId, final Long menuId, final int quantity) {
         final List<OrderLineItem> orderLineItems = new ArrayList<>();
         for (int i = 1; i <= orderLineItemcount; i++) {
-            OrderLineItem.of(Long.valueOf(i), menu, quantity);
+            OrderLineItem.of(Long.valueOf(i), menuId, quantity);
         }
-        return Order.of(id, orderTable, OrderStatus.COMPLETION, OrderLineItems.from(orderLineItems));
+        return Order.of(id, orderTableId, OrderStatus.COMPLETION, OrderLineItems.from(orderLineItems));
     }
 
     public static void 주문_생성_확인됨(final OrderResponse orderResponse, final Order order) {
@@ -100,8 +99,7 @@ public class TestOrderFactory {
                 () -> assertThat(orderResponse.getId()).isEqualTo(order.getId()),
                 () -> assertThat(orderResponse.getOrderStatus()).isEqualTo(order.getOrderStatus()),
                 () -> assertThat(orderResponse.getOrderLineItems()).hasSize(order.getOrderLineItems().toList().size()),
-                () -> assertThat(orderResponse.getOrderTableResponse().getId()).isEqualTo(order.getOrderTable().getId()),
-                () -> assertThat(orderResponse.getOrderTableResponse().getNumberOfGuests()).isEqualTo(order.getOrderTable().getNumberOfGuests().toInt())
+                () -> assertThat(orderResponse.getOrderTableId()).isEqualTo(order.getOrderTableId())
         );
     }
 

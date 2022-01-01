@@ -2,18 +2,14 @@ package kitchenpos.application;
 
 import kitchenpos.common.exceptions.EmptyOrderTableException;
 import kitchenpos.common.exceptions.NotEmptyOrderTableGroupException;
-import kitchenpos.common.exceptions.NotFoundEntityException;
-import kitchenpos.common.exceptions.OrderStatusNotProcessingException;
-import kitchenpos.domain.OrderRepository;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
+import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.ordertable.OrderTableRequest;
 import kitchenpos.dto.ordertable.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -21,12 +17,12 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 public class TableService {
-    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
+    private  final TableValidator tableValidator;
 
-    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
+    public TableService(final OrderTableRepository orderTableRepository, final TableValidator tableValidator) {
         this.orderTableRepository = orderTableRepository;
+        this.tableValidator = tableValidator;
     }
 
     @Transactional
@@ -45,10 +41,8 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable orderTable = getNotGroupedOrderTableById(orderTableId);
-        if (orderRepository.existsByOrderTableAndOrderStatusIn(orderTable,
-                Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new OrderStatusNotProcessingException();
-        }
+        tableValidator.validateEmpty(orderTable.getId());
+
         orderTable.changeEmptyStatus(orderTableRequest.isEmpty());
         return OrderTableResponse.from(orderTable);
     }
@@ -69,9 +63,6 @@ public class TableService {
 
     public OrderTable findOrderTableById(final Long orderTableId) {
         final OrderTable orderTable = findById(orderTableId);
-        if (orderTable.isEmpty()) {
-            throw new EmptyOrderTableException();
-        }
         return orderTable;
     }
 
@@ -79,8 +70,24 @@ public class TableService {
         return orderTableRepository.findAllById(ids);
     }
 
+    public void grouped(final TableGroup tableGroup, final List<OrderTable> tables) {
+        for (OrderTable orderTable : tables) {
+            orderTable.group(tableGroup);
+        }
+        orderTableRepository.saveAll(tables);
+    }
+
+    public void ungrouped(final Long tableGroupId) {
+        final List<OrderTable> tables = orderTableRepository.findByTableGroupId(tableGroupId);
+        tableValidator.validateUnGroup(tables);
+        for (OrderTable table : tables) {
+            table.unGroup();
+        }
+        orderTableRepository.saveAll(tables);
+    }
+
     private OrderTable findById(final Long id) {
         return orderTableRepository.findById(id)
-                .orElseThrow(NotFoundEntityException::new);
+                .orElseThrow(EmptyOrderTableException::new);
     }
 }

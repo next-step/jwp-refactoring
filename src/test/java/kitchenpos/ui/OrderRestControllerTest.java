@@ -61,13 +61,13 @@ class OrderRestControllerTest {
     void create() throws Exception {
         final OrderRequest 주문_요청 = TestOrderFactory.주문_생성_요청(1L);
         final ProductResponse 상품_응답 = TestProductFactory.상품_응답(1L, "상품", 1000);
-        final List<MenuProductResponse> 메뉴상품목록_응답 = TestMenuFactory.메뉴상품목록_응답(상품_응답, 2);
+        final List<MenuProductResponse> 메뉴상품목록_응답 = TestMenuFactory.메뉴상품목록_응답(상품_응답.getId(), 2);
         final MenuGroupResponse 메뉴그룹_응답 = TestMenuGroupFactory.메뉴그룹_응답(1L, "메뉴그룹");
         final MenuResponse 메뉴_응답 = TestMenuFactory.메뉴_응답(1L, "메뉴", 50000, 메뉴그룹_응답, 메뉴상품목록_응답);
 
-        final List<OrderLineItemResponse> orderLineItems = TestOrderTableFactory.주문상품아이템_응답(1L, 메뉴_응답, 1);
-        final OrderTableResponse 주문테이블_응답 = TestOrderTableFactory.주문테이블_응답(1L, 10, false);
-        final OrderResponse 주문_응답 = OrderResponse.of(1L, 주문테이블_응답, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
+        final List<OrderLineItemResponse> orderLineItems = TestOrderTableFactory.주문_상품아이템_응답(1L, 메뉴_응답.getId(), 1);
+        final OrderTableResponse 주문테이블_응답 = TestOrderTableFactory.주문_테이블_응답(1L, 10, false);
+        final OrderResponse 주문_응답 = OrderResponse.of(1L, 주문테이블_응답.getId(), OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
 
         given(orderService.create(any())).willReturn(주문_응답);
 
@@ -80,7 +80,7 @@ class OrderRestControllerTest {
         actions.andExpect(status().isCreated())
                 .andExpect(header().stringValues("Location", "/api/orders/1"))
                 .andExpect(jsonPath("id").value(1L))
-                .andExpect(jsonPath("orderTableResponse").hasJsonPath())
+                .andExpect(jsonPath("orderTableId").hasJsonPath())
                 .andExpect(jsonPath("orderStatus").value(OrderStatus.COOKING.name()))
                 .andExpect(jsonPath("orderedTime").hasJsonPath())
                 .andExpect(jsonPath("orderLineItems").isArray());
@@ -90,13 +90,14 @@ class OrderRestControllerTest {
     @Test
     void list() throws Exception {
         final ProductResponse 상품_응답 = TestProductFactory.상품_응답(1L, "상품", 1000);
-        final List<MenuProductResponse> 메뉴상품목록_응답 = TestMenuFactory.메뉴상품목록_응답(상품_응답, 2);
+        final List<MenuProductResponse> 메뉴상품목록_응답 = TestMenuFactory.메뉴상품목록_응답(상품_응답.getId()
+                , 2);
         final MenuGroupResponse 메뉴그룹_응답 = TestMenuGroupFactory.메뉴그룹_응답(1L, "메뉴그룹");
         final MenuResponse 메뉴_응답 = TestMenuFactory.메뉴_응답(1L, "메뉴", 50000, 메뉴그룹_응답, 메뉴상품목록_응답);
 
-        final List<OrderLineItemResponse> orderLineItems = TestOrderTableFactory.주문상품아이템_응답(1L, 메뉴_응답, 1);
-        final OrderTableResponse 주문테이블_응답 = TestOrderTableFactory.주문테이블_응답(1L, 10, false);
-        final OrderResponse 주문_응답 = OrderResponse.of(1L, 주문테이블_응답, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
+        final List<OrderLineItemResponse> orderLineItems = TestOrderTableFactory.주문_상품아이템_응답(1L, 메뉴_응답.getId(), 1);
+        final OrderTableResponse 주문테이블_응답 = TestOrderTableFactory.주문_테이블_응답(1L, 10, false);
+        final OrderResponse 주문_응답 = OrderResponse.of(1L, 주문테이블_응답.getId(), OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
         
         given(orderService.list()).willReturn(Collections.singletonList(주문_응답));
 
@@ -114,13 +115,13 @@ class OrderRestControllerTest {
     void changeOrderStatus() throws Exception {
         final OrderRequest 주문완료_요청 = TestOrderFactory.주문_완료_요청();
         final ProductResponse 상품_응답 = TestProductFactory.상품_응답(1L, "상품", 1000);
-        final List<MenuProductResponse> 메뉴상품목록_응답 = TestMenuFactory.메뉴상품목록_응답(상품_응답, 2);
+        final List<MenuProductResponse> 메뉴상품목록_응답 = TestMenuFactory.메뉴상품목록_응답(상품_응답.getId(), 2);
         final MenuGroupResponse 메뉴그룹_응답 = TestMenuGroupFactory.메뉴그룹_응답(1L, "메뉴그룹");
         final MenuResponse 메뉴_응답 = TestMenuFactory.메뉴_응답(1L, "메뉴", 50000, 메뉴그룹_응답, 메뉴상품목록_응답);
 
-        final List<OrderLineItemResponse> orderLineItems = TestOrderTableFactory.주문상품아이템_응답(1L, 메뉴_응답, 1);
-        final OrderTableResponse 주문테이블_응답 = TestOrderTableFactory.주문테이블_응답(1L, 10, false);
-        final OrderResponse 주문완료_응답 = OrderResponse.of(1L, 주문테이블_응답, OrderStatus.COMPLETION, LocalDateTime.now(), orderLineItems);
+        final List<OrderLineItemResponse> orderLineItems = TestOrderTableFactory.주문_상품아이템_응답(1L, 메뉴_응답.getId(), 1);
+        final OrderTableResponse 주문테이블_응답 = TestOrderTableFactory.주문_테이블_응답(1L, 10, false);
+        final OrderResponse 주문완료_응답 = OrderResponse.of(1L, 주문테이블_응답.getId(), OrderStatus.COMPLETION, LocalDateTime.now(), orderLineItems);
         
         given(orderService.changeOrderStatus(anyLong(), any())).willReturn(주문완료_응답);
 
@@ -133,7 +134,7 @@ class OrderRestControllerTest {
 
         actions.andExpect(status().isOk())
                 .andExpect(jsonPath("id").value(1L))
-                .andExpect(jsonPath("orderTableResponse").hasJsonPath())
+                .andExpect(jsonPath("orderTableId").hasJsonPath())
                 .andExpect(jsonPath("orderedTime").hasJsonPath())
                 .andExpect(jsonPath("orderLineItems").isArray())
                 .andExpect(jsonPath("orderStatus").value(OrderStatus.COMPLETION.name()));

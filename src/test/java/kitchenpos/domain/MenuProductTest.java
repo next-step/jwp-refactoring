@@ -20,7 +20,7 @@ class MenuProductTest {
     @DisplayName("생성 시, 수량 정보가 0 이상이어야 합니다")
     @Test
     void validateTest3() {
-        assertThatThrownBy(() -> MenuProduct.of(Product.of("상품", 1000), -1L))
+        assertThatThrownBy(() -> MenuProduct.of(1L, -1L))
                 .isInstanceOf(NegativeQuantityException.class);
     }
 }

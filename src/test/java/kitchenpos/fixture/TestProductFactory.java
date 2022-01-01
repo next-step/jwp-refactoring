@@ -11,11 +11,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class TestProductFactory {
-    public static Product 상품_조회돰(final Long id, final String name, final long price) {
+    public static Product 상품_조회됨(final Long id, final String name, final long price) {
         return Product.of(id, name, price);
     }
 
-    public static Product 상품_생성돰(final Long id, final String name, final long price) {
+    public static Product 상품_생성됨(final Long id, final String name, final long price) {
         return Product.of(id, name, price);
     }
 
