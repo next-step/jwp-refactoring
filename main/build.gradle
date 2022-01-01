@@ -1,0 +1,19 @@
+dependencies {
+    implementation project(':common')
+    implementation project(':menugroup')
+    implementation project(':menu')
+    implementation project(':product')
+    implementation project(':table')
+    implementation project(':tablegroup')
+    implementation project(':order')
+
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.flywaydb:flyway-core'
+
+    testImplementation 'io.rest-assured:rest-assured:3.3.0'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    runtimeOnly 'com.h2database:h2'
+}

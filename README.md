@@ -183,7 +183,8 @@
 ## 4단계
 ### 기능 요구사항
 - [ ] Gradle의 멀티 모듈 개념을 적용해 서로 다른 프로젝트로 분리
-    - [ ] web
-    - [ ] application
-    - [ ] domain
+    - [ ] 도메인 단위로 분리
+        - [ ] web
+        - [ ] application
+        - [ ] domain
     - [ ] common
