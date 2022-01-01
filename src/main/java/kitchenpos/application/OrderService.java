@@ -26,7 +26,6 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest request) {
-         orderValidator.validatorTableService(request);
         final Order order = Order.from(request.getOrderTableId());
         addOrderLineItems(order, request.getOrderLineItems());
 
