@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -29,12 +30,16 @@ public class TableGroupService {
     }
 
     @Transactional
-    public TableGroupResponse create(final TableGroupRequest request) {
+    public TableGroupResponse group(final TableGroupRequest request) {
         tableGroupValidator.validateOrderTables(request);
-        final TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup());
 
+        final TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup());
         final List<OrderTable> orderTables = tableService.findAllById(request.getOrderTableIds());
-        applicationEventPublisher.publishEvent(TableEvent.Grouped.from(savedTableGroup, orderTables));
+        final List<Long> orderTableIds = orderTables.stream()
+                .map(OrderTable::getId)
+                .collect(Collectors.toList());
+
+        applicationEventPublisher.publishEvent(TableEvent.Grouped.from(savedTableGroup.getId(), orderTableIds));
         return TableGroupResponse.of(savedTableGroup, orderTables);
     }
 
