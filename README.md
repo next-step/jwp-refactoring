@@ -133,3 +133,12 @@
 - [x] 도메인 서비스 로직 일부 도메인 내부로 이동
 - [x] 중복 로직 제거
 - [x] 서로 다른 에그리거트를 직접적으로 가져오지 않고 비즈니스 로직 풀어내기
+
+### 멀티 모듈 적용
+- 구조
+  - Presentation layer: `module-external-api`
+  - Service layer: `module-application`
+  - Domain layer: `module-domain`
+  - Infra or common layer: `module-common`
+
+- 도메인 기준이 아닌 계층별로 구분
