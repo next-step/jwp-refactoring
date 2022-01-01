@@ -7,3 +7,7 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+repositories {
+    mavenCentral()
+}
