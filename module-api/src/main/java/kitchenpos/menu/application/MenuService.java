@@ -41,7 +41,7 @@ public class MenuService {
 
     private Map<Long, Product> getProducts(MenuRequest request) {
         if (Objects.isNull(request.getMenuProductRequests())) {
-            return null;
+            return Collections.emptyMap();
         }
         List<Long> menuProductIds = request.getMenuProductRequests()
             .stream()
