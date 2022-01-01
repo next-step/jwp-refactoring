@@ -1,3 +1,9 @@
 rootProject.name = 'kitchenpos'
 
-include 'common', 'menu', 'menugroup', 'order', 'table', 'tablegroup', 'product', 'main'
+include 'common', 'main'
+include ':menugroup:menugroup-domain', ':menugroup:menugroup-application', ':menugroup:menugroup-web'
+include ':menu:menu-domain', ':menu:menu-application', ':menu:menu-web'
+include ':product:product-domain', ':product:product-application', ':product:product-web'
+include ':tablegroup:tablegroup-domain', ':tablegroup:tablegroup-application', ':tablegroup:tablegroup-web'
+include ':table:table-domain', ':table:table-application', ':table:table-web'
+include ':order:order-domain', ':order:order-application', ':order:order-web'
