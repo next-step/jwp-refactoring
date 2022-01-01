@@ -42,8 +42,8 @@ public class TestTableGroupFactory {
 
     public static void 테이블그룹_해제_확인됨(final OrderTable orderTable1, final OrderTable orderTable2) {
         assertAll(
-                () -> assertThat(orderTable1.getTableGroup()).isNull(),
-                () -> assertThat(orderTable2.getTableGroup()).isNull()
+                () -> assertThat(orderTable1.getTableGroupId()).isNull(),
+                () -> assertThat(orderTable2.getTableGroupId()).isNull()
         );
     }
 }

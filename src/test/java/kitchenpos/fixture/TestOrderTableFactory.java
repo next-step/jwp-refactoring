@@ -24,8 +24,8 @@ public class TestOrderTableFactory {
         return OrderTable.of(id, numberOfGuests, empty);
     }
 
-    public static OrderTable 주문_테이블_테이블그룹_설정(final Long id, final TableGroup tableGroup, final int numberOfGuests, final boolean empty) {
-        return OrderTable.of(id, tableGroup, numberOfGuests, empty);
+    public static OrderTable 주문_테이블_테이블그룹_설정(final Long id, final Long tableGroupId, final int numberOfGuests, final boolean empty) {
+        return OrderTable.of(id, tableGroupId, numberOfGuests, empty);
     }
 
     public static List<OrderTable> 주문_테이블_목록_조회됨(int countProduct) {

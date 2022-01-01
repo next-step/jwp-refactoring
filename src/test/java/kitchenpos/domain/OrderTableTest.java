@@ -25,7 +25,7 @@ class OrderTableTest {
     @Test
     void changeEmptyStatusTest2() {
         final TableGroup 테이블그룹 = TableGroup.from(1L);
-        final OrderTable 주문테이블 = OrderTable.of(테이블그룹, 4, false);
+        final OrderTable 주문테이블 = OrderTable.of(null, 테이블그룹.getId(), 4, false);
 
         assertThatThrownBy(() -> 주문테이블.changeEmptyStatus(true))
                 .isInstanceOf(NotEmptyOrderTableGroupException.class);
@@ -54,10 +54,10 @@ class OrderTableTest {
     @Test
     void unGroupTest() {
         final TableGroup 테이블그룹 = TableGroup.from(1L);
-        final OrderTable 주문테이블 = OrderTable.of(테이블그룹, 4, false);
+        final OrderTable 주문테이블 = OrderTable.of(테이블그룹.getId(), 4, false);
 
         주문테이블.unGroup();
 
-        assertThat(주문테이블.getTableGroup()).isNull();
+        assertThat(주문테이블.getTableGroupId()).isNull();
     }
 }

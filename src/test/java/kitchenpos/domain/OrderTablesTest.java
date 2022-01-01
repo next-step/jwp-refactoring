@@ -13,11 +13,11 @@ class OrderTablesTest {
     @Test
     void unGroupTest() {
         final TableGroup 테이블그룹 = TableGroup.from(1L);
-        final OrderTable 주문테이블 = OrderTable.of(테이블그룹, 4, false);
+        final OrderTable 주문테이블 = OrderTable.of(테이블그룹.getId(), 4, false);
         final OrderTables 주문테이블들 = OrderTables.from(Collections.singletonList(주문테이블));
 
         주문테이블들.unGroup();
 
-        assertThat(주문테이블.getTableGroup()).isNull();
+        assertThat(주문테이블.getTableGroupId()).isNull();
     }
 }
