@@ -12,9 +12,7 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
-    private TableGroup tableGroup;
+    private Long tableGroupId;
 
     @Embedded
     @Column(nullable = false)
@@ -25,32 +23,28 @@ public class OrderTable {
 
     protected OrderTable() {}
 
-    private OrderTable(final Long id, final TableGroup tableGroup, final NumberOfGuests numberOfGuests, final Empty empty) {
+    private OrderTable(final Long id, final Long tableGroupId, final NumberOfGuests numberOfGuests, final Empty empty) {
         this.id = id;
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
 
 
-    public static OrderTable of(final Long id, final TableGroup tableGroup, final int numberOfGuests, final boolean empty) {
-        return new OrderTable(id, tableGroup, NumberOfGuests.from(numberOfGuests), Empty.from(empty));
-    }
-
-    public static OrderTable of(final int numberOfGuests, final boolean empty) {
-        return new OrderTable(null, null, NumberOfGuests.from(numberOfGuests), Empty.from(empty));
-    }
-
-    public static OrderTable of(final TableGroup tableGroup, final int numberOfGuests, final boolean empty) {
-        return new OrderTable(null, tableGroup, NumberOfGuests.from(numberOfGuests), Empty.from(empty));
+    public static OrderTable of(final Long id, final Long tableGroupId, final int numberOfGuests, final boolean empty) {
+        return new OrderTable(id, tableGroupId, NumberOfGuests.from(numberOfGuests), Empty.from(empty));
     }
 
     public static OrderTable of(final Long id, final int numberOfGuests, final boolean empty) {
         return new OrderTable(id, null, NumberOfGuests.from(numberOfGuests), Empty.from(empty));
     }
 
+    public static OrderTable of(final int numberOfGuests, final boolean empty) {
+        return new OrderTable(null, null, NumberOfGuests.from(numberOfGuests), Empty.from(empty));
+    }
+
     public void changeEmptyStatus(final boolean empty) {
-        if (Objects.nonNull(tableGroup)) {
+        if (Objects.nonNull(tableGroupId)) {
             throw new NotEmptyOrderTableGroupException();
         }
         this.empty = Empty.from(empty);
@@ -64,15 +58,15 @@ public class OrderTable {
     }
 
     public void unGroup() {
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 
     public Long getId() {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public NumberOfGuests getNumberOfGuests() {
@@ -87,8 +81,8 @@ public class OrderTable {
         return empty.isEmpty();
     }
 
-    public void group(final TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
+    public void group(final Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
     }
 
     @Override
