@@ -1,0 +1,16 @@
+dependencies {
+    implementation project(':common')
+    implementation project(':menugroup:menugroup-domain')
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
