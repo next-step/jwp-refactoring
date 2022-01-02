@@ -125,3 +125,20 @@
 
 - 메뉴의 이름과 가격이 변경되면 주문 항목도 함께 변경된다. 메뉴 정보가 변경되더라도 주문 항목이 변경되지 않게 구현한다.
 - 클래스 간의 방향도 중요하고 패키지 간의 방향도 중요하다. 클래스 사이, 패키지 사이의 의존 관계는 단방향이 되도록 해야 한다.
+
+## 멀티 모듈 적용
+
+### 3단계 미션 피드백 사항
+
+- [x] 도메인 서비스 로직 일부 도메인 내부로 이동
+- [x] 중복 로직 제거
+- [x] 서로 다른 에그리거트를 직접적으로 가져오지 않고 비즈니스 로직 풀어내기
+
+### 멀티 모듈 적용
+- 구조
+  - Presentation layer: `module-external-api`
+  - Service layer: `module-application`
+  - Domain layer: `module-domain`
+  - Infra or common layer: `module-common`
+
+- 도메인 기준이 아닌 계층별로 구분
