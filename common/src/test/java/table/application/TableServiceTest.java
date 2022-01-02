@@ -1,22 +1,23 @@
 package table.application;
 
-import kitchenpos.order.domain.FakeOrderRepository;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderStatus;
+
+import order.domain.FakeOrderRepository;
+import order.domain.Order;
+import order.domain.OrderLineItem;
+import order.domain.OrderStatus;
 import table.domain.FakeOrderTableRepository;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.OrderTableValidator;
-import kitchenpos.table.dto.OrderTableChangeEmptyRequest;
-import kitchenpos.table.dto.OrderTableChangeNumberOfGuestsRequest;
-import kitchenpos.table.dto.OrderTableCreateRequest;
-import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.table.exception.NotChangeNumberOfGuestException;
-import kitchenpos.table.exception.NotFoundOrderTableException;
-import kitchenpos.table.exception.NotValidOrderException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import table.domain.OrderTable;
+import table.domain.OrderTableRepository;
+import table.domain.OrderTableValidator;
+import table.dto.OrderTableChangeEmptyRequest;
+import table.dto.OrderTableChangeNumberOfGuestsRequest;
+import table.dto.OrderTableCreateRequest;
+import table.dto.OrderTableResponse;
+import table.exception.NotChangeNumberOfGuestException;
+import table.exception.NotFoundOrderTableException;
+import table.exception.NotValidOrderException;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;

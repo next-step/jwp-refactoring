@@ -1,6 +1,8 @@
 package order.exception;
 
-public class NotFoundOrderException extends RuntimeException {
+import javax.persistence.EntityNotFoundException;
+
+public class NotFoundOrderException extends EntityNotFoundException {
     public NotFoundOrderException() {
     }
 }

@@ -1,6 +1,6 @@
 package common;
 
-import kitchenpos.menu.exception.WrongPriceException;
+import menu.exception.WrongPriceException;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

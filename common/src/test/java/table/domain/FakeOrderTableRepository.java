@@ -1,7 +1,7 @@
 package table.domain;
 
-import kitchenpos.order.domain.FakeOrderRepository;
-import kitchenpos.order.domain.Order;
+import order.domain.FakeOrderRepository;
+import order.domain.Order;
 
 import java.util.*;
 import java.util.stream.Collectors;

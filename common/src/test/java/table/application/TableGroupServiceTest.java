@@ -1,20 +1,17 @@
 package table.application;
 
-import kitchenpos.order.domain.FakeOrderRepository;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.*;
-import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.table.dto.TableGroupRequest;
-import kitchenpos.table.dto.TableGroupResponse;
-import kitchenpos.table.exception.NotCreateTableGroupException;
-import kitchenpos.table.exception.NotCreatedOrderTablesException;
-import kitchenpos.table.exception.NotValidOrderException;
+import order.domain.FakeOrderRepository;
+import order.domain.Order;
+import order.domain.OrderStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import table.domain.FakeOrderTableRepository;
-import table.domain.FakeTableGroupRepository;
+import table.domain.*;
+import table.dto.OrderTableResponse;
+import table.dto.TableGroupRequest;
+import table.dto.TableGroupResponse;
+import table.exception.NotCreateTableGroupException;
+import table.exception.NotCreatedOrderTablesException;
+import table.exception.NotValidOrderException;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;

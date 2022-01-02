@@ -1,18 +1,19 @@
 package order.application;
 
-import kitchenpos.order.domain.*;
-import kitchenpos.order.exception.BadOrderRequestException;
-import kitchenpos.order.exception.NotChangeOrderStatusException;
-import kitchenpos.order.exception.NotCreateOrderException;
-import kitchenpos.order.exception.NotFoundOrderException;
-import kitchenpos.table.domain.FakeOrderTableRepository;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.exception.NotFoundOrderTableException;
-import order.domain.FakeOrderRepository;
+import menu.domain.*;
+import order.domain.*;
+import order.dto.*;
+import order.exception.BadOrderRequestException;
+import order.exception.NotChangeOrderStatusException;
+import order.exception.NotCreateOrderException;
+import order.exception.NotFoundOrderException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import table.domain.FakeOrderTableRepository;
+import table.domain.OrderTable;
+import table.domain.OrderTableRepository;
+import table.exception.NotFoundOrderTableException;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
