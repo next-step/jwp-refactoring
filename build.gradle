@@ -62,11 +62,13 @@ project(':menu') {
 project(':order') {
     dependencies {
         implementation project(':common')
+        implementation project(':menu')
     }
 }
 
 project(':table') {
     dependencies {
         implementation project(':common')
+        implementation project(':order')
     }
 }

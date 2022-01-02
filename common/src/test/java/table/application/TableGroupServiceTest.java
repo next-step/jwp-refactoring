@@ -2,6 +2,7 @@ package table.application;
 
 import order.domain.FakeOrderRepository;
 import order.domain.Order;
+import order.domain.OrderLineItem;
 import order.domain.OrderStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

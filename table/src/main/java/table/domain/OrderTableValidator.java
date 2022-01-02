@@ -1,5 +1,8 @@
 package table.domain;
 
+import order.domain.Order;
+import order.exception.NotCreateOrderException;
+import order.exception.OrderErrorCode;
 import table.exception.NotChangeEmptyException;
 import table.exception.NotChangeNumberOfGuestException;
 import table.exception.NotValidOrderException;
@@ -34,6 +37,12 @@ public class OrderTableValidator {
 
         if (orderTable.getNumberOfGuests() < 0) {
             throw new NotChangeNumberOfGuestException(TableErrorCode.GUEST_MORE_THAN_ZERO);
+        }
+    }
+
+    private void checkEmptyOrderTable(OrderTable orderTable) {
+        if (orderTable.isEmpty()) {
+            throw new NotCreateOrderException(orderTable.getId() + OrderErrorCode.EMPTY_ORDER_TABLE);
         }
     }
 }

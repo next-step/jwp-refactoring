@@ -1,5 +1,6 @@
 package table.domain;
 
+import order.domain.Order;
 import table.exception.NotCreatedOrderTablesException;
 import table.exception.NotValidOrderException;
 import org.springframework.stereotype.Component;

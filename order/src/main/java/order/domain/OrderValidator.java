@@ -1,9 +1,10 @@
 package order.domain;
 
 
+import menu.domain.Menu;
+import menu.domain.MenuQueryService;
 import order.dto.OrderRequest;
 import order.exception.BadOrderRequestException;
-import order.exception.NotCreateOrderException;
 import order.exception.NotCreatedMenuException;
 import order.exception.OrderErrorCode;
 import org.springframework.stereotype.Component;
@@ -19,16 +20,9 @@ public class OrderValidator {
         this.menuQueryService = menuQueryService;
     }
 
-    public void validate(OrderRequest orderRequest, OrderTable orderTable) {
+    public void validate(OrderRequest orderRequest) {
         checkEmptyOrderLineItems(orderRequest);
         checkCreatedMenu(orderRequest);
-        checkEmptyOrderTable(orderTable);
-    }
-
-    private void checkEmptyOrderTable(OrderTable orderTable) {
-        if (orderTable.isEmpty()) {
-            throw new NotCreateOrderException(orderTable.getId() + OrderErrorCode.EMPTY_ORDER_TABLE);
-        }
     }
 
     private void checkEmptyOrderLineItems(OrderRequest orderRequest) {

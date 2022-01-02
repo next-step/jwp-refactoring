@@ -1,9 +1,7 @@
 package order.application;
 
-import order.domain.Order;
-import order.domain.OrderLineItem;
-import order.domain.OrderRepository;
-import order.domain.OrderValidator;
+import common.config.event.Events;
+import order.domain.*;
 import order.dto.OrderLineItemRequest;
 import order.dto.OrderRequest;
 import order.dto.OrderResponse;
@@ -18,28 +16,22 @@ import java.util.stream.Collectors;
 @Service
 public class OrderService {
     private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
     private final OrderValidator orderValidator;
 
     public OrderService(
             final OrderRepository orderRepository,
-            final OrderTableRepository orderTableRepository,
             final OrderValidator orderValidator
     ) {
         this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
         this.orderValidator = orderValidator;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
         List<OrderLineItem> orderLineItems = createOrderLineItems(orderRequest.getOrderLineItems());
-        final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
-                .orElseThrow(() -> new NotFoundOrderTableException(orderRequest.getOrderTableId()));
-
-        orderValidator.validate(orderRequest, orderTable);
-
-        return OrderResponse.of(orderRepository.save(Order.create(orderTable.getId(), orderLineItems)));
+        orderValidator.validate(orderRequest);
+        Events.raise(new OrderCreatedEvent(orderRequest.getOrderTableId()));
+        return OrderResponse.of(orderRepository.save(Order.create(orderRequest.getOrderTableId(), orderLineItems)));
     }
 
     public List<OrderResponse> list() {
