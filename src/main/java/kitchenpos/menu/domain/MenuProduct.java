@@ -57,7 +57,4 @@ public class MenuProduct {
         return quantity;
     }
 
-//    public BigDecimal getTotalPrice() {
-//        return this.product.getTotalPrice(quantity);
-//    }
 }

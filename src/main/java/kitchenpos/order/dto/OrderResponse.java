@@ -24,7 +24,7 @@ public class OrderResponse {
 
     public static OrderResponse of(Order order) {
         return new OrderResponse(
-                order.getId(), order.getOrderTable().getId(), order.getOrderStatus().name(),
+                order.getId(), order.getOrderTableId(), order.getOrderStatus().name(),
                 order.getOrderedTime(), createOrderLineItemResponses(order.getOrderLineItems())
         );
     }

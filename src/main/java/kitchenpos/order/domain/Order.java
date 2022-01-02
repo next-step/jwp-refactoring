@@ -18,9 +18,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_orders_order_table"), nullable = false)
-    private OrderTable orderTable;
+    @Column(name = "order_table_id")
+    private Long orderTableId;
 
     @Column(nullable = false)
     @Enumerated
@@ -35,20 +34,16 @@ public class Order {
     protected Order() {
     }
 
-    public Order(Long id, OrderTable orderTable, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+    public Order(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
         this.id = id;
-        this.orderTable = orderTable;
+        this.orderTableId = orderTableId;
         this.orderStatus = OrderStatus.valueOf(orderStatus);
         this.orderedTime = orderedTime;
         this.orderLineItems = new OrderLineItems(orderLineItems);
     }
 
-    private Order(OrderTable orderTable, List<OrderLineItem> orderLineItemList) {
-        if (orderTable.isEmpty()) {
-            throw new NotCreateOrderException(orderTable.getId() + OrderErrorCode.EMPTY_ORDER_TABLE);
-        }
-
-        this.orderTable = orderTable;
+    private Order(Long orderTableId, List<OrderLineItem> orderLineItemList) {
+        this.orderTableId = orderTableId;
         this.orderStatus = OrderStatus.COOKING;
         this.orderLineItems = new OrderLineItems(orderLineItemList);
     }
@@ -57,8 +52,8 @@ public class Order {
         this.orderStatus = OrderStatus.valueOf(orderStatus);
     }
 
-    public static Order create(OrderTable orderTable, List<OrderLineItem> orderLineItemList) {
-        Order order = new Order(orderTable, orderLineItemList);
+    public static Order create(Long orderTableId, List<OrderLineItem> orderLineItemList) {
+        Order order = new Order(orderTableId, orderLineItemList);
         order.addOrderLineItems();
         return order;
     }
@@ -79,8 +74,8 @@ public class Order {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {

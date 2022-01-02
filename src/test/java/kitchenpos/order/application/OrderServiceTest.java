@@ -1,10 +1,7 @@
 package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.*;
-import kitchenpos.order.domain.FakeOrderRepository;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.*;
 import kitchenpos.order.exception.BadOrderRequestException;
 import kitchenpos.order.exception.NotChangeOrderStatusException;
@@ -151,7 +148,7 @@ class OrderServiceTest {
     void orderStatusComplete() {
         OrderTable orderTable = orderTableRepository.save(OrderTable.of(10, false));
         Order order = new Order(1L,
-                orderTable,
+                orderTable.getId(),
                 OrderStatus.COMPLETION.name(),
                 LocalDateTime.now(),
                 Arrays.asList(OrderLineItem.of(소고기메뉴, 20))

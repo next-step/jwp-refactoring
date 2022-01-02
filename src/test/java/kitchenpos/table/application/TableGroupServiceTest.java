@@ -140,7 +140,7 @@ class TableGroupServiceTest {
     private Order createOrder(Long orderId, OrderTable savedOrderTable, OrderStatus completion) {
         return new Order(
                 orderId,
-                savedOrderTable,
+                savedOrderTable.getId(),
                 completion.name(),
                 LocalDateTime.now(),
                 Arrays.asList(OrderLineItem.of(null, 20))

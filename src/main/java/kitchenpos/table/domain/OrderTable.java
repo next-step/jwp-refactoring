@@ -22,7 +22,7 @@ public class OrderTable {
     @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
     private TableGroup tableGroup;
 
-    @OneToMany(mappedBy = "orderTable")
+    @OneToMany(mappedBy = "orderTableId")
     private List<Order> orders;
 
     @Column(nullable = false)

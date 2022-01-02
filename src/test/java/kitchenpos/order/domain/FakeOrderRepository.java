@@ -14,7 +14,7 @@ public class FakeOrderRepository implements OrderRepository {
             map.put(inputOrder.getId(), inputOrder);
             return inputOrder;
         }
-        Order order = new Order(orderKey, inputOrder.getOrderTable(), inputOrder.getOrderStatus().name(), inputOrder.getOrderedTime(), createOrderLineItems(inputOrder));
+        Order order = new Order(orderKey, inputOrder.getOrderTableId(), inputOrder.getOrderStatus().name(), inputOrder.getOrderedTime(), createOrderLineItems(inputOrder));
         map.put(orderKey, order);
         orderKey++;
         return order;
@@ -22,7 +22,7 @@ public class FakeOrderRepository implements OrderRepository {
 
     private List<OrderLineItem> createOrderLineItems(Order inputOrder) {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
-        Order order = new Order(orderKey, inputOrder.getOrderTable(), inputOrder.getOrderStatus().name(), inputOrder.getOrderedTime(), inputOrder.getOrderLineItems());
+        Order order = new Order(orderKey, inputOrder.getOrderTableId(), inputOrder.getOrderStatus().name(), inputOrder.getOrderedTime(), inputOrder.getOrderLineItems());
 
         for (OrderLineItem inputOrderLineItem : inputOrder.getOrderLineItems()) {
             OrderLineItem orderLineItem = new OrderLineItem(orderLineItemKey, order, inputOrderLineItem.getMenu(), inputOrderLineItem.getQuantity());
@@ -46,20 +46,20 @@ public class FakeOrderRepository implements OrderRepository {
     @Override
     public boolean existsByOrderTableIdAndOrderStatusIn(Long orderTableId, List<OrderStatus> orderStatuses) {
         return map.values().stream()
-                .filter(order -> order.getOrderTable().getId().equals(orderTableId))
+                .filter(order -> order.getOrderTableId().equals(orderTableId))
                 .anyMatch(order -> orderStatuses.contains(order.getOrderStatus()));
     }
 
     @Override
     public boolean existsByOrderTableIdInAndOrderStatusIn(List<Long> orderTableIds, List<OrderStatus> orderStatuses) {
         return map.values().stream()
-                .filter(order -> orderTableIds.contains(order.getOrderTable().getId()))
+                .filter(order -> orderTableIds.contains(order.getOrderTableId()))
                 .anyMatch(order -> orderStatuses.contains(order.getOrderStatus()));
     }
 
     public List<Order> findByOrderTableId(Long orderTableId) {
         return map.values().stream()
-                .filter(order -> order.getOrderTable().getId().equals(orderTableId))
+                .filter(order -> order.getOrderTableId().equals(orderTableId))
                 .collect(Collectors.toList());
     }
 }

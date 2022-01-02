@@ -4,11 +4,14 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusUpdateRequest;
+import kitchenpos.order.exception.NotCreateOrderException;
 import kitchenpos.order.exception.NotFoundOrderException;
+import kitchenpos.order.exception.OrderErrorCode;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.exception.NotFoundOrderTableException;
@@ -45,7 +48,11 @@ public class OrderService {
         final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
                 .orElseThrow(() -> new NotFoundOrderTableException(orderRequest.getOrderTableId()));
 
-        return OrderResponse.of(orderRepository.save(Order.create(orderTable, orderLineItems)));
+        if (orderTable.isEmpty()) {
+            throw new NotCreateOrderException(orderTable.getId() + OrderErrorCode.EMPTY_ORDER_TABLE);
+        }
+
+        return OrderResponse.of(orderRepository.save(Order.create(orderTable.getId(), orderLineItems)));
     }
 
     public List<OrderResponse> list() {

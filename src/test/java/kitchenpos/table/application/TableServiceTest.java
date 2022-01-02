@@ -71,7 +71,7 @@ class TableServiceTest {
     void notChangeEmptyTableCookingOrMeal() {
         OrderTable savedOrderTable = orderTableRepository.save(OrderTable.of(10, true));
         Order order = new Order(1L,
-                savedOrderTable,
+                savedOrderTable.getId(),
                 OrderStatus.COOKING.name(),
                 LocalDateTime.now(),
                 Arrays.asList(OrderLineItem.of(null, 20))
@@ -87,7 +87,7 @@ class TableServiceTest {
     void successChangeEmpty() {
         OrderTable savedOrderTable = orderTableRepository.save(OrderTable.of(10, true));
         Order order = new Order(1L,
-                savedOrderTable,
+                savedOrderTable.getId(),
                 OrderStatus.COMPLETION.name(),
                 LocalDateTime.now(),
                 Arrays.asList(OrderLineItem.of(null, 20))
