@@ -3,4 +3,4 @@ include 'common'
 include 'menu'
 include 'order'
 include 'table'
-
+include 'app-kitchenpos-api'

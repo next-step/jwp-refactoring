@@ -28,6 +28,11 @@ allprojects {
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
 
+    // fixture 사용
+    apply plugin: 'java-library'
+    apply plugin: 'java-test-fixtures'
+    apply plugin: 'maven-publish'
+
     repositories {
         mavenCentral()
     }
@@ -48,6 +53,15 @@ allprojects {
     }
 }
 
+project(':app-kitchenpos-api') {
+    dependencies {
+        implementation project(':common')
+        implementation project(':menu')
+        implementation project(':order')
+        implementation project(':table')
+    }
+}
+
 project(':common') {
     dependencies {
 
@@ -56,20 +70,32 @@ project(':common') {
 
 project(':menu') {
     dependencies {
-        compile project(':common')
+        implementation project(':common')
+
+        testImplementation(testFixtures(project(':menu')))
+        testImplementation(testFixtures(project(':order')))
+        testImplementation(testFixtures(project(':table')))
     }
 }
 
 project(':order') {
     dependencies {
-        compile project(':common')
-        compile project(':menu')
+        implementation project(':common')
+        implementation project(':menu')
+
+        testImplementation(testFixtures(project(':menu')))
+        testImplementation(testFixtures(project(':order')))
+        testImplementation(testFixtures(project(':table')))
     }
 }
 
 project(':table') {
     dependencies {
-        compile project(':common')
-        compile project(':order')
+        implementation project(':common')
+        implementation project(':order')
+
+        testImplementation(testFixtures(project(':menu')))
+        testImplementation(testFixtures(project(':order')))
+        testImplementation(testFixtures(project(':table')))
     }
 }
