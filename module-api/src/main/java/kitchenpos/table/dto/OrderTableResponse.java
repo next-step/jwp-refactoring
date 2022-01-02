@@ -28,7 +28,7 @@ public class OrderTableResponse {
                 .collect(Collectors.toList());
     }
 
-    public static OrderTableResponse from(@org.jetbrains.annotations.NotNull OrderTable orderTable) {
+    public static OrderTableResponse from(OrderTable orderTable) {
         return new OrderTableResponse(orderTable.getId(), orderTable.getTableGroupId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
     }
 
