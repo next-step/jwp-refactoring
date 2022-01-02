@@ -1,10 +1,11 @@
 package menu.application;
 
+import kitchenpos.menu.application.ProductService;
 import menu.domain.FakeProductRepository;
-import menu.domain.ProductRepository;
-import menu.dto.ProductRequest;
-import menu.dto.ProductResponse;
-import menu.exception.WrongPriceException;
+import kitchenpos.menu.domain.ProductRepository;
+import kitchenpos.menu.dto.ProductRequest;
+import kitchenpos.menu.dto.ProductResponse;
+import kitchenpos.menu.exception.WrongPriceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

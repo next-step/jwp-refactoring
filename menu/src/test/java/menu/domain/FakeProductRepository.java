@@ -1,5 +1,8 @@
 package menu.domain;
 
+import kitchenpos.menu.domain.Product;
+import kitchenpos.menu.domain.ProductRepository;
+
 import java.util.*;
 import java.util.stream.Collectors;
 

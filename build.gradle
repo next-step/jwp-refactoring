@@ -19,9 +19,6 @@ test {
     useJUnitPlatform()
 }
 
-bootJar { enabled = false }
-jar { enabled = true }
-
 // 서브 프로젝트의 공통 설정
 allprojects {
     apply plugin: 'java'
@@ -38,64 +35,51 @@ allprojects {
     }
 
     dependencies {
-        implementation 'org.springframework.boot:spring-boot-starter-actuator'
-        implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-        implementation 'org.springframework.boot:spring-boot-starter-web'
-        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-        implementation 'org.flywaydb:flyway-core'
-        runtimeOnly 'com.h2database:h2'
+
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testImplementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
         testImplementation 'io.rest-assured:rest-assured:3.3.0'
+
+        // fixture 사용
+        testImplementation(testFixtures(project(':menu')))
+        testImplementation(testFixtures(project(':order')))
+        testImplementation(testFixtures(project(':table')))
+
     }
 
     test {
         useJUnitPlatform()
     }
+
+
 }
 
 project(':app-kitchenpos-api') {
     dependencies {
-        implementation project(':common')
-        implementation project(':menu')
-        implementation project(':order')
-        implementation project(':table')
+        compile project(':common')
+        compile project(':menu')
+        compile project(':order')
+        compile project(':table')
     }
 }
 
-project(':common') {
-    dependencies {
-
-    }
-}
 
 project(':menu') {
     dependencies {
-        implementation project(':common')
-
-        testImplementation(testFixtures(project(':menu')))
-        testImplementation(testFixtures(project(':order')))
-        testImplementation(testFixtures(project(':table')))
+        compile project(':common')
     }
 }
 
 project(':order') {
     dependencies {
-        implementation project(':common')
-        implementation project(':menu')
-
-        testImplementation(testFixtures(project(':menu')))
-        testImplementation(testFixtures(project(':order')))
-        testImplementation(testFixtures(project(':table')))
+        compile project(':common')
+        compile project(':menu')
     }
 }
 
 project(':table') {
     dependencies {
-        implementation project(':common')
-        implementation project(':order')
-
-        testImplementation(testFixtures(project(':menu')))
-        testImplementation(testFixtures(project(':order')))
-        testImplementation(testFixtures(project(':table')))
+        compile project(':common')
+        compile project(':order')
     }
 }

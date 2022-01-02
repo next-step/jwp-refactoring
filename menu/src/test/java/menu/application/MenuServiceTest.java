@@ -1,15 +1,17 @@
 package menu.application;
 
 
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.*;
 import menu.domain.*;
-import menu.dto.MenuProductRequest;
-import menu.dto.MenuProductResponse;
-import menu.dto.MenuRequest;
-import menu.dto.MenuResponse;
-import menu.exception.DifferentOrderAndMenuPriceException;
-import menu.exception.NotCreatedProductException;
-import menu.exception.NotFoundMenuGroupException;
-import menu.exception.WrongPriceException;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuProductResponse;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.exception.DifferentOrderAndMenuPriceException;
+import kitchenpos.menu.exception.NotCreatedProductException;
+import kitchenpos.menu.exception.NotFoundMenuGroupException;
+import kitchenpos.menu.exception.WrongPriceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

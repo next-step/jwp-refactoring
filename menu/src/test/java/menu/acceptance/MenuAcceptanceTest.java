@@ -2,8 +2,8 @@ package menu.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import menu.domain.MenuGroup;
-import menu.dto.*;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.dto.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
