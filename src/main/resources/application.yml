@@ -11,6 +11,10 @@ spring:
   config:
     activate:
       on-profile: dev
+  datasource:
+    url: jdbc:h2:~/mem;
+    username: sa
+    password:
   h2:
     console:
       enabled: true
@@ -22,6 +26,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  flyway:
+    enabled: true
 logging:
   level:
     org:
