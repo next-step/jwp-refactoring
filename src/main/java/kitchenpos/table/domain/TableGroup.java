@@ -1,6 +1,5 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.table.exception.NotCreatedOrderTablesException;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -40,19 +39,12 @@ public class TableGroup {
         return new TableGroup(id);
     }
 
-    public static TableGroup create(List<Long> orderTableIds, OrderTables orderTables) {
-        orderTables.validateOrderTable();
-        isNotCreatedOrderTables(orderTableIds, orderTables);
+    public static TableGroup create(TableGroupValidator tableGroupValidator, List<Long> orderTableIds, OrderTables orderTables) {
+        tableGroupValidator.availableCreate(orderTables, orderTableIds);
 
         TableGroup tableGroup = new TableGroup(orderTables.getOrderTables());
         tableGroup.assignTable();
         return tableGroup;
-    }
-
-    private static void isNotCreatedOrderTables(List<Long> orderTableIds, OrderTables orderTables) {
-        if (!orderTables.isCreatedOrderTable(orderTableIds.size())) {
-            throw new NotCreatedOrderTablesException();
-        }
     }
 
     private void assignTable() {

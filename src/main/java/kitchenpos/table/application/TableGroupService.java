@@ -30,7 +30,7 @@ public class TableGroupService {
         validateRequest(tableGroupRequest);
 
         OrderTables orderTables = new OrderTables(orderTableRepository.findAllByIdIn(tableGroupRequest.getOrderTableIds()));
-        TableGroup tableGroup = TableGroup.create(tableGroupRequest.getOrderTableIds(), orderTables);
+        TableGroup tableGroup = TableGroup.create(tableGroupValidator, tableGroupRequest.getOrderTableIds(), orderTables);
 
         return TableGroupResponse.of(tableGroupRepository.save(tableGroup));
     }
