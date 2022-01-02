@@ -11,18 +11,74 @@ sourceCompatibility = '1.8'
 repositories {
     mavenCentral()
 }
-
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.flywaydb:flyway-core'
-    runtimeOnly 'com.h2database:h2'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'io.rest-assured:rest-assured:3.3.0'
-}
-
 test {
     useJUnitPlatform()
+}
+bootJar { enabled = false }
+jar { enabled = true }
+
+// 서브 프로젝트의 공통 설정
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        testCompile 'junit:junit:4.8.2'
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testImplementation 'io.rest-assured:rest-assured:3.3.0'
+    }
+
+    version = '1.0'
+
+    jar {
+        manifest.attributes provider: 'gradle'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+}
+
+project(':menu-api') {
+    dependencies {
+        implementation project(':menu-domain')
+        implementation project(':kitchenpos-core')
+    }
+}
+
+project(':order-api') {
+    dependencies {
+        implementation project(':order-domain')
+        implementation project(':menu-domain')
+        implementation project(':kitchenpos-core')
+    }
+}
+
+project(':menu-domain') {
+    dependencies {
+        implementation project(':kitchenpos-core')
+
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+        implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+        implementation 'org.flywaydb:flyway-core'
+        runtimeOnly 'com.h2database:h2'
+    }
+}
+
+project(':order-domain') {
+    dependencies {
+        implementation project(':kitchenpos-core')
+
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+        implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+        implementation 'org.flywaydb:flyway-core'
+        runtimeOnly 'com.h2database:h2'
+    }
 }

@@ -22,7 +22,7 @@
 
 ### 객체 의존 관계 BEFORE :
 
-![img.png](./src/main/resources/imgs/objects-relations-before.png)
+![img.png](resources/imgs/objects-relations-before.png)
 - 생애 주기가 비슷한 객체들을 묶음
   - Product
   - Menu
@@ -31,7 +31,7 @@
 
 ### 객체 의존 관계 AFTER :
 
-![img.png](src/main/resources/imgs/objects-relations-after.png)
+![img.png](resources/imgs/objects-relations-after.png)
 - 의존 관계가 강하고 transaction 단위가 크면, 설계상/ 성능상의 문제가 발생한다.
 - 관계 해제가 적당하다고 생각되는 부분 의존성 개선
   
@@ -44,12 +44,53 @@
     - 양방향 불필요하여 단방향 변경
 
 ### 이벤트 작동 방식 :
-![img.png](src/main/resources/imgs/event-flow.png)
+![img.png](resources/imgs/event-flow.png)
 - 주문 종료 시에 table 객체 그룹에 이벤트를 보낼 수 있도록 ApplicationEventPublisher, Handler 추가
 - order - table 사이 관계를 끊지 않았지 때문에 이벤트 활용이 꼭 필요하지는 않을 수 있음
 - 의존성 리팩터링 시 필요한 실습인 것 같아 진행.
 ---
 
+### 미션4 - 멀티 모듈 적용
+
+- Gradle의 멀티 모듈 개념을 적용해 자유롭게 서로 다른 프로젝트로 분리해 본다. 
+  - 컨텍스트 간의 독립된 모듈로 만들 수 있다. 
+  - 계층 간의 독립된 모듈로 만들 수 있다.
+- 의존성 주입, HTTP 요청/응답, 이벤트 발행/구독 등 다양한 방식으로 모듈 간 데이터를 주고받을 수 있다.
+
+
+```
+[ 프로젝트 구조 ]
+
+Root project 'kitchenpos'
+
+  |__ Sub Project ':menu-api'
+  |__ Sub Project ':order-api'
+  
+  |__ Sub Project ':menu-domain'
+  |__ Sub Project ':order-domain'
+  
+  |__ Sub Project ':kitchenpos-core'
+
+```
+
+```
+[ 모듈 정보 ] 
+
+kitchenpos-core: 공통 모듈
+- 공통으로 사용하는 Type, Util 등을 정의.
+- 모듈간 주고 받는 이벤트 규격도 여기에 추가.
+
+- domain : domain(entity), repository 를 포함
+  - menu-domain: menu, menuProduct, product 객체를 포함
+  - order-domain: order, orderTable, tableGroup 객체를 포함
+
+- api: application controller, service, dto 를 포함
+  - menu-api: menu-domain, core 에 의존
+  - order-api: order-domain, menu-domain, core 에 의존
+```
+
+
+---
 
 ## 요구 사항
 
