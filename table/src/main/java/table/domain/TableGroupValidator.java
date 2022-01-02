@@ -1,6 +1,5 @@
 package table.domain;
 
-import kitchenpos.order.domain.Order;
 import table.exception.NotCreatedOrderTablesException;
 import table.exception.NotValidOrderException;
 import org.springframework.stereotype.Component;

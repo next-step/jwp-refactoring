@@ -1,6 +1,7 @@
 package menu.domain;
 
-import kitchenpos.common.Price;
+
+import common.Price;
 import menu.exception.WrongPriceException;
 
 import javax.persistence.*;

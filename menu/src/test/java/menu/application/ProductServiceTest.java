@@ -1,15 +1,16 @@
 package menu.application;
 
 import menu.domain.FakeProductRepository;
-import kitchenpos.menu.domain.ProductRepository;
-import kitchenpos.menu.dto.ProductRequest;
-import kitchenpos.menu.dto.ProductResponse;
-import kitchenpos.menu.exception.WrongPriceException;
+import menu.domain.ProductRepository;
+import menu.dto.ProductRequest;
+import menu.dto.ProductResponse;
+import menu.exception.WrongPriceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.List;
+
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

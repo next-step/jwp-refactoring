@@ -2,7 +2,6 @@ package order.domain;
 
 import order.exception.NotChangeOrderStatusException;
 import order.exception.OrderErrorCode;
-import kitchenpos.table.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;

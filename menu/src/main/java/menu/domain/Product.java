@@ -1,6 +1,7 @@
 package menu.domain;
 
-import kitchenpos.common.Price;
+
+import common.Price;
 
 import javax.persistence.*;
 import java.math.BigDecimal;

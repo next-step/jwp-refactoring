@@ -1,9 +1,9 @@
 package menu.application;
 
 import menu.domain.FakeMenuGroupRepository;
-import kitchenpos.menu.domain.MenuGroupRepository;
-import kitchenpos.menu.dto.MenuGroupRequest;
-import kitchenpos.menu.dto.MenuGroupResponse;
+import menu.domain.MenuGroupRepository;
+import menu.dto.MenuGroupRequest;
+import menu.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

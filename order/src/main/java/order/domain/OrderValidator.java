@@ -1,13 +1,11 @@
 package order.domain;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuQueryService;
+
 import order.dto.OrderRequest;
 import order.exception.BadOrderRequestException;
 import order.exception.NotCreateOrderException;
 import order.exception.NotCreatedMenuException;
 import order.exception.OrderErrorCode;
-import kitchenpos.table.domain.OrderTable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 

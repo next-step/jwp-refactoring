@@ -1,11 +1,9 @@
 package table.domain;
 
-import kitchenpos.order.domain.Order;
 import table.exception.NotCreateTableGroupException;
 import table.exception.TableErrorCode;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
