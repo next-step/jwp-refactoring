@@ -25,7 +25,7 @@ public class FakeOrderRepository implements OrderRepository {
         Order order = new Order(orderKey, inputOrder.getOrderTableId(), inputOrder.getOrderStatus().name(), inputOrder.getOrderedTime(), inputOrder.getOrderLineItems());
 
         for (OrderLineItem inputOrderLineItem : inputOrder.getOrderLineItems()) {
-            OrderLineItem orderLineItem = new OrderLineItem(orderLineItemKey, order, inputOrderLineItem.getMenu(), inputOrderLineItem.getQuantity());
+            OrderLineItem orderLineItem = new OrderLineItem(orderLineItemKey, order, inputOrderLineItem.getMenuId(), inputOrderLineItem.getQuantity());
             orderLineItems.add(orderLineItem);
             orderLineItemKey++;
         }

@@ -33,7 +33,7 @@ class OrderServiceTest {
     private final OrderTableRepository orderTableRepository = new FakeOrderTableRepository(orderRepository);
     private final MenuQueryService menuQueryService = new MenuQueryService(menuRepository);
     private final OrderValidator orderValidator = new OrderValidator(menuQueryService);
-    private final OrderService orderService = new OrderService(menuRepository, orderRepository, orderTableRepository, orderValidator);
+    private final OrderService orderService = new OrderService(orderRepository, orderTableRepository, orderValidator);
 
     private Menu 소고기메뉴;
 
@@ -151,7 +151,7 @@ class OrderServiceTest {
                 orderTable.getId(),
                 OrderStatus.COMPLETION.name(),
                 LocalDateTime.now(),
-                Arrays.asList(OrderLineItem.of(소고기메뉴, 20))
+                Arrays.asList(OrderLineItem.of(소고기메뉴.getId(), 20))
         );
         orderRepository.save(order);
 

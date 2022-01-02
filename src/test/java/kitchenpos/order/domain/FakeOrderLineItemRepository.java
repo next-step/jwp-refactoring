@@ -9,7 +9,7 @@ public class FakeOrderLineItemRepository implements OrderLineItemRepository {
 
     @Override
     public OrderLineItem save(OrderLineItem inputOrderLineItem) {
-        OrderLineItem orderLineItem = new OrderLineItem(key, inputOrderLineItem.getOrder(), inputOrderLineItem.getMenu(), inputOrderLineItem.getQuantity());
+        OrderLineItem orderLineItem = new OrderLineItem(key, inputOrderLineItem.getOrder(), inputOrderLineItem.getMenuId(), inputOrderLineItem.getQuantity());
         map.put(key, orderLineItem);
         key++;
         return orderLineItem;
