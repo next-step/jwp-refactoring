@@ -1,7 +1,5 @@
 package menu.domain;
 
-
-import common.Price;
 import menu.exception.WrongPriceException;
 
 import javax.persistence.*;

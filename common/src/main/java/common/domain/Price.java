@@ -1,6 +1,6 @@
-package common;
+package common.domain;
 
-import menu.exception.WrongPriceException;
+import common.config.exception.PriceException;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -23,7 +23,7 @@ public class Price {
 
     private void validatePrice(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new WrongPriceException();
+            throw new PriceException("가격 에러");
         }
     }
 

@@ -56,20 +56,20 @@ project(':common') {
 
 project(':menu') {
     dependencies {
-        implementation project(':common')
+        compile project(':common')
     }
 }
 
 project(':order') {
     dependencies {
-        implementation project(':common')
-        implementation project(':menu')
+        compile project(':common')
+        compile project(':menu')
     }
 }
 
 project(':table') {
     dependencies {
-        implementation project(':common')
-        implementation project(':order')
+        compile project(':common')
+        compile project(':order')
     }
 }

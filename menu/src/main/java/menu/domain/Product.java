@@ -1,8 +1,5 @@
 package menu.domain;
 
-
-import common.Price;
-
 import javax.persistence.*;
 import java.math.BigDecimal;
 
