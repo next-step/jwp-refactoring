@@ -109,6 +109,10 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    public static Order 주문_등록됨(OrderTable orderTable, Menu... menus) {
+        return 주문_생성_요청(orderTable, menus).getBody();
+    }
+
     public static ResponseEntity<Order> 주문_생성_요청(OrderTable orderTable, Menu... menus) {
         Map<String, Object> request = new HashMap<>();
         request.put("orderTableId", orderTable.getId());
