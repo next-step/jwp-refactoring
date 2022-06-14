@@ -47,18 +47,18 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
                 dynamicTest("단체 지정을 등록한다.", () -> {
                     ResponseEntity<TableGroup> response = 단체_지정_생성_요청(테이블1, 테이블2);
 
-                    단쳬_지정_생성됨(response);
+                    단체_지정_생성됨(response);
                     단체_지정1 = response.getBody();
                 }),
                 dynamicTest("주문이 들어간 테이블이 포함된 단체 지정을 등록한다.", () -> {
                     ResponseEntity<TableGroup> response = 단체_지정_생성_요청(주문이_들어간_테이블, 테이블3);
 
-                    단쳬_지정_생성_실패됨(response);
+                    단체_지정_생성_실패됨(response);
                 }),
                 dynamicTest("1개의 테이블로 단체 지정을 등록한다.", () -> {
                     ResponseEntity<TableGroup> response = 단체_지정_생성_요청(테이블4);
 
-                    단쳬_지정_생성_실패됨(response);
+                    단체_지정_생성_실패됨(response);
                 }),
                 dynamicTest("존재하지 않는 테이블이 포함된 단체 지정을 등록한다.", () -> {
                     OrderTable 존재하지_않는_테이블 = new OrderTable();
@@ -66,32 +66,36 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
 
                     ResponseEntity<TableGroup> response = 단체_지정_생성_요청(테이블4, 존재하지_않는_테이블);
 
-                    단쳬_지정_생성_실패됨(response);
+                    단체_지정_생성_실패됨(response);
                 }),
                 dynamicTest("다른 단체 지정에 포함된 테이블이 포함된 단체 지정을 등록한다.", () -> {
                     ResponseEntity<TableGroup> response = 단체_지정_생성_요청(테이블4, 테이블1);
 
-                    단쳬_지정_생성_실패됨(response);
+                    단체_지정_생성_실패됨(response);
                 }),
                 dynamicTest("단체 지정을 등록한다.", () -> {
                     ResponseEntity<TableGroup> response = 단체_지정_생성_요청(테이블3, 테이블4);
 
-                    단쳬_지정_생성됨(response);
+                    단체_지정_생성됨(response);
                     단체_지정2 = response.getBody();
                 }),
                 dynamicTest("단체 지정을 해지한다.", () -> {
                     ResponseEntity<Void> response = 단체_지정_해지_요청(단체_지정1);
 
-                    단쳬_지정_해지됨(response);
+                    단체_지정_해지됨(response);
                 }),
                 dynamicTest("주문이 들어간 테이블이 포함된 단체 지정은 단체 지정을 해지할 수 없다.", () -> {
                     주문_등록됨(테이블3, 신메뉴_강정치킨_가져오기());
 
                     ResponseEntity<Void> response = 단체_지정_해지_요청(단체_지정2);
 
-                    단쳬_지정_해지_실패됨(response);
+                    단체_지정_해지_실패됨(response);
                 })
         );
+    }
+
+    public static TableGroup 단체_지정_등록됨(OrderTable... orderTables) {
+        return 단체_지정_생성_요청(orderTables).getBody();
     }
 
     public static ResponseEntity<TableGroup> 단체_지정_생성_요청(OrderTable... orderTables) {
@@ -107,19 +111,19 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
                                        null, Void.class, urlVariables);
     }
 
-    public static void 단쳬_지정_생성됨(ResponseEntity<TableGroup> response) {
+    public static void 단체_지정_생성됨(ResponseEntity<TableGroup> response) {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     }
 
-    public static void 단쳬_지정_생성_실패됨(ResponseEntity<TableGroup> response) {
+    public static void 단체_지정_생성_실패됨(ResponseEntity<TableGroup> response) {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    public static void 단쳬_지정_해지됨(ResponseEntity<Void> response) {
+    public static void 단체_지정_해지됨(ResponseEntity<Void> response) {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
 
-    public static void 단쳬_지정_해지_실패됨(ResponseEntity<Void> response) {
+    public static void 단체_지정_해지_실패됨(ResponseEntity<Void> response) {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
