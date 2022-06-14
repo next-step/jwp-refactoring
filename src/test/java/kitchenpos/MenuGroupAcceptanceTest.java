@@ -33,7 +33,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
                 dynamicTest("이름이 없는 메뉴 그룹을 등록한다.", () -> {
                     ResponseEntity<MenuGroup> response = 메뉴_그룹_생성_요청(null);
 
-                    메뉴_그룹_실패됨(response);
+                    메뉴_그룹_생성_실패됨(response);
                 }),
                 dynamicTest("메뉴 그룹 목록을 조회한다.", () -> {
                     ResponseEntity<List<MenuGroup>> response = 메뉴_그룹_목록_조회_요청();
@@ -60,7 +60,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
         assertThat(response.getHeaders().getLocation()).isNotNull();
     }
 
-    public static void 메뉴_그룹_실패됨(ResponseEntity<MenuGroup> response) {
+    public static void 메뉴_그룹_생성_실패됨(ResponseEntity<MenuGroup> response) {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

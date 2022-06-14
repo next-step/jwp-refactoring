@@ -32,12 +32,12 @@ public class ProductAcceptanceTest extends AcceptanceTest {
                 dynamicTest("가격이 0미만인 상품을 등록한다.", () -> {
                     ResponseEntity<Product> response = 상품_생성_요청("강정치킨", BigDecimal.valueOf(-1L));
 
-                    상품_실패됨(response);
+                    상품_생성_실패됨(response);
                 }),
                 dynamicTest("이름이 없는 상품을 등록한다.", () -> {
                     ResponseEntity<Product> response = 상품_생성_요청(null, BigDecimal.valueOf(15_000L));
 
-                    상품_실패됨(response);
+                    상품_생성_실패됨(response);
                 }),
                 dynamicTest("상품 목록을 조회한다.", () -> {
                     ResponseEntity<List<Product>> response = 상품_목록_조회_요청();
@@ -65,7 +65,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         assertThat(response.getHeaders().getLocation()).isNotNull();
     }
 
-    public static void 상품_실패됨(ResponseEntity<Product> response) {
+    public static void 상품_생성_실패됨(ResponseEntity<Product> response) {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
