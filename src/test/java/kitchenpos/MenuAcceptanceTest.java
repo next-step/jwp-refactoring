@@ -47,6 +47,12 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
                     메뉴_생성됨(response);
                 }),
+                dynamicTest("가격이 0미만의 메뉴을 등록한다.", () -> {
+                    ResponseEntity<Menu> response = 메뉴_생성_요청("강정치킨", BigDecimal.valueOf(-1),
+                                                                   신메뉴.getId(), 강정치킨);
+
+                    메뉴_생성_실패됨(response);
+                }),
                 dynamicTest("이름이 없는 메뉴을 등록한다.", () -> {
                     ResponseEntity<Menu> response = 메뉴_생성_요청(null, BigDecimal.valueOf(15_000L),
                                                                    신메뉴.getId(), 강정치킨);
