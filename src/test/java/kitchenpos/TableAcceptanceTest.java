@@ -73,6 +73,10 @@ public class TableAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    public static OrderTable 테이블_등록됨(boolean empty, int numberOfGuests) {
+        return 테이블_생성_요청(empty, numberOfGuests).getBody();
+    }
+
     public static ResponseEntity<OrderTable> 테이블_생성_요청(boolean empty, int numberOfGuests) {
         Map<String, Object> request = new HashMap<>();
         request.put("empty", empty);

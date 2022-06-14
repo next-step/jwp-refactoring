@@ -91,6 +91,10 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    public static Menu 메뉴_등록됨(String name, BigDecimal price, Long menuGroupId, Product... products) {
+        return 메뉴_생성_요청(name, price, menuGroupId, products).getBody();
+    }
+
     public static ResponseEntity<Menu> 메뉴_생성_요청(String name, BigDecimal price, Long menuGroupId,
                                                       Product... products) {
         Map<String, Object> request = new HashMap<>();
