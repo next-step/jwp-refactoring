@@ -48,6 +48,10 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    public static Product 상품_등록됨(String name, BigDecimal price) {
+        return 상품_생성_요청(name, price).getBody();
+    }
+
     public static ResponseEntity<Product> 상품_생성_요청(String name, BigDecimal price) {
         Map<String, Object> request = new HashMap<>();
         request.put("name", name);

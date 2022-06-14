@@ -44,6 +44,10 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    public static MenuGroup 메뉴_그룹_등록됨(String name) {
+        return 메뉴_그룹_생성_요청(name).getBody();
+    }
+
     public static ResponseEntity<MenuGroup> 메뉴_그룹_생성_요청(String name) {
         Map<String, Object> request = new HashMap<>();
         request.put("name", name);
