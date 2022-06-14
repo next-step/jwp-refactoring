@@ -43,7 +43,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("단체 지정 관련 기능 테스트")
     @TestFactory
-    Stream<DynamicNode> product() {
+    Stream<DynamicNode> tableGroup() {
         return Stream.of(
                 dynamicTest("기초 데이터를 추가한다.", () -> {
                     Product 강정치킨_상품 = 상품_등록됨("강정치킨", BigDecimal.valueOf(15_000L));

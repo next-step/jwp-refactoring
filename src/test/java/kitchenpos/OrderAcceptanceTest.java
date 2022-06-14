@@ -43,7 +43,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("주문 관련 기능 테스트")
     @TestFactory
-    Stream<DynamicNode> product() {
+    Stream<DynamicNode> order() {
         return Stream.of(
                 dynamicTest("기초 데이터를 추가한다.", () -> {
                     테이블 = 테이블_등록됨(false, 5);

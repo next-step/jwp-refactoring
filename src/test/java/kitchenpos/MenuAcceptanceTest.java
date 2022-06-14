@@ -34,7 +34,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("메뉴 관련 기능 테스트")
     @TestFactory
-    Stream<DynamicNode> product() {
+    Stream<DynamicNode> menu() {
         return Stream.of(
                 dynamicTest("메뉴을 등록한다.", () -> {
                     신메뉴 = 메뉴_그룹_등록됨("신메뉴");

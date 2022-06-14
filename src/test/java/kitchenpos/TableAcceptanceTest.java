@@ -26,7 +26,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("테이블 관련 기능 테스트")
     @TestFactory
-    Stream<DynamicNode> product() {
+    Stream<DynamicNode> table() {
         return Stream.of(
                 dynamicTest("빈 테이블을 등록한다.", () -> {
                     ResponseEntity<OrderTable> response = 테이블_생성_요청(true, 0);

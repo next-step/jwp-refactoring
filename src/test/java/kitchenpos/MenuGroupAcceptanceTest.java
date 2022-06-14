@@ -23,7 +23,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("메뉴 그룹 관련 기능 테스트")
     @TestFactory
-    Stream<DynamicNode> product() {
+    Stream<DynamicNode> menuGroup() {
         return Stream.of(
                 dynamicTest("메뉴 그룹을 등록한다.", () -> {
                     ResponseEntity<MenuGroup> response = 메뉴_그룹_생성_요청("신메뉴");
