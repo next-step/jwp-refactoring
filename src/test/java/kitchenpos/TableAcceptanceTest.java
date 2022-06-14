@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 public class TableAcceptanceTest extends AcceptanceTest {
 
     private OrderTable 빈_테이블;
-    private OrderTable 주문_테이블;
+    private OrderTable 손님이_있는_테이블;
 
     @DisplayName("테이블 관련 기능 테스트")
     @TestFactory
@@ -34,25 +34,25 @@ public class TableAcceptanceTest extends AcceptanceTest {
                     테이블_생성됨(response);
                     빈_테이블 = response.getBody();
                 }),
-                dynamicTest("빈 테이블을 등록한다.", () -> {
+                dynamicTest("손님이 있는 테이블을 등록한다.", () -> {
                     ResponseEntity<OrderTable> response = 테이블_생성_요청(false, 5);
 
                     테이블_생성됨(response);
-                    주문_테이블 = response.getBody();
+                    손님이_있는_테이블 = response.getBody();
                 }),
                 dynamicTest("테이블 목록을 조회한다.", () -> {
                     ResponseEntity<List<OrderTable>> response = 테이블_목록_조회_요청();
 
                     테이블_목록_응답됨(response);
-                    테이블_목록_응답됨(response, 빈_테이블, 주문_테이블);
+                    테이블_목록_응답됨(response, 빈_테이블, 손님이_있는_테이블);
                 }),
                 dynamicTest("주문 테이블의 손님 수를 변경한다.", () -> {
-                    ResponseEntity<OrderTable> response = 테이블_손님_수_변경_요청(주문_테이블, 5);
+                    ResponseEntity<OrderTable> response = 테이블_손님_수_변경_요청(손님이_있는_테이블, 5);
 
                     테이블_손님_수_변경됨(response);
                 }),
                 dynamicTest("주문 테이블의 손님 수를 0미만으로 변경한다.", () -> {
-                    ResponseEntity<OrderTable> response = 테이블_손님_수_변경_요청(주문_테이블, -1);
+                    ResponseEntity<OrderTable> response = 테이블_손님_수_변경_요청(손님이_있는_테이블, -1);
 
                     테이블_손님_수_변경_실패됨(response);
                 }),
