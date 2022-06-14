@@ -40,6 +40,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                     신메뉴 = 메뉴_그룹_등록됨("신메뉴");
                     강정치킨 = 상품_등록됨("강정치킨", BigDecimal.valueOf(15_000L));
                     후라이드 = 상품_등록됨("후라이드", BigDecimal.valueOf(15_000L));
+
                     ResponseEntity<Menu> response = 메뉴_생성_요청("강정1,후라이드1치킨",
                                                                    BigDecimal.valueOf(15_000L),
                                                                    신메뉴.getId(), 강정치킨, 후라이드);
@@ -67,6 +68,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 dynamicTest("존재하지 않는 상품이 포함된 메뉴을 등록한다.", () -> {
                     Product 존재하지_않는_상품 = new Product();
                     존재하지_않는_상품.setId(Long.MAX_VALUE);
+
                     ResponseEntity<Menu> response = 메뉴_생성_요청("강정치킨", BigDecimal.valueOf(15_000L),
                                                                    신메뉴.getId(), 존재하지_않는_상품);
 
