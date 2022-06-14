@@ -1,9 +1,6 @@
 package kitchenpos;
 
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
 import kitchenpos.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
@@ -12,18 +9,14 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static kitchenpos.MenuAcceptanceTest.메뉴_등록됨;
-import static kitchenpos.MenuGroupAcceptanceTest.메뉴_그룹_등록됨;
+import static kitchenpos.MenuAcceptanceUtil.신메뉴_강정치킨_가져오기;
 import static kitchenpos.OrderAcceptanceTest.주문_등록됨;
-import static kitchenpos.ProductAcceptanceTest.상품_등록됨;
 import static kitchenpos.TableAcceptanceTest.테이블_등록됨;
-import static kitchenpos.TableAcceptanceUtil.존재하지_않는_테이블_가져오기;
 import static kitchenpos.TableAcceptanceUtil.주문이_들어간_테이블_가져오기;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
@@ -31,7 +24,6 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 @DisplayName("단체 지정 관련 기능")
 public class TableGroupAcceptanceTest extends AcceptanceTest {
 
-    private Menu 강정치킨;
     private OrderTable 주문이_들어간_테이블;
     private OrderTable 테이블1;
     private OrderTable 테이블2;
@@ -46,10 +38,6 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     Stream<DynamicNode> tableGroup() {
         return Stream.of(
                 dynamicTest("기초 데이터를 추가한다.", () -> {
-                    Product 강정치킨_상품 = 상품_등록됨("강정치킨", BigDecimal.valueOf(15_000L));
-                    MenuGroup 신메뉴 = 메뉴_그룹_등록됨("신메뉴");
-                    강정치킨 = 메뉴_등록됨("강정치킨", BigDecimal.valueOf(15_000L), 신메뉴.getId(), 강정치킨_상품);
-
                     주문이_들어간_테이블 = 주문이_들어간_테이블_가져오기();
                     테이블1 = 테이블_등록됨(true, 0);
                     테이블2 = 테이블_등록됨(true, 0);
@@ -73,7 +61,10 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
                     단쳬_지정_생성_실패됨(response);
                 }),
                 dynamicTest("존재하지 않는 테이블이 포함된 단체 지정을 등록한다.", () -> {
-                    ResponseEntity<TableGroup> response = 단체_지정_생성_요청(테이블4, 존재하지_않는_테이블_가져오기());
+                    OrderTable 존재하지_않는_테이블 = new OrderTable();
+                    존재하지_않는_테이블.setId(Long.MAX_VALUE);
+
+                    ResponseEntity<TableGroup> response = 단체_지정_생성_요청(테이블4, 존재하지_않는_테이블);
 
                     단쳬_지정_생성_실패됨(response);
                 }),
@@ -94,7 +85,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
                     단쳬_지정_해지됨(response);
                 }),
                 dynamicTest("주문이 들어간 테이블이 포함된 단체 지정은 단체 지정을 해지할 수 없다.", () -> {
-                    주문_등록됨(테이블3, 강정치킨);
+                    주문_등록됨(테이블3, 신메뉴_강정치킨_가져오기());
 
                     ResponseEntity<Void> response = 단체_지정_해지_요청(단체_지정2);
 

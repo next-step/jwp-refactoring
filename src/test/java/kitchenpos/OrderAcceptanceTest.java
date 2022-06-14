@@ -1,12 +1,10 @@
 package kitchenpos;
 
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.TestFactory;
@@ -16,7 +14,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -24,9 +21,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static kitchenpos.MenuAcceptanceTest.메뉴_등록됨;
-import static kitchenpos.MenuGroupAcceptanceTest.메뉴_그룹_등록됨;
-import static kitchenpos.ProductAcceptanceTest.상품_등록됨;
+import static kitchenpos.MenuAcceptanceUtil.신메뉴_강정치킨_가져오기;
 import static kitchenpos.TableAcceptanceTest.테이블_등록됨;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
@@ -36,8 +31,6 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
     private OrderTable 테이블;
     private OrderTable 빈_테이블;
-    private Product 강정치킨_상품;
-    private MenuGroup 신메뉴;
     private Menu 강정치킨;
     private Order 주문;
 
@@ -48,9 +41,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 dynamicTest("기초 데이터를 추가한다.", () -> {
                     테이블 = 테이블_등록됨(false, 5);
                     빈_테이블 = 테이블_등록됨(true, 0);
-                    강정치킨_상품 = 상품_등록됨("강정치킨", BigDecimal.valueOf(15_000L));
-                    신메뉴 = 메뉴_그룹_등록됨("신메뉴");
-                    강정치킨 = 메뉴_등록됨("강정치킨", BigDecimal.valueOf(15_000L), 신메뉴.getId(), 강정치킨_상품);
+                    강정치킨 = 신메뉴_강정치킨_가져오기();
                 }),
                 dynamicTest("주문을 등록한다.", () -> {
                     ResponseEntity<Order> response = 주문_생성_요청(테이블, 강정치킨);
