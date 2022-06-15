@@ -60,7 +60,7 @@ class MenuServiceTest {
     }
 
     @Test
-    @DisplayName("메뉴 가격이 NULL 이거나 음수이면 메뉴를 추가할 수 없다")
+    @DisplayName("메뉴 가격이 양수가 아니면 메뉴를 추가할 수 없다")
     void create_failed_1() {
         //given
         Menu menu = new Menu();
@@ -69,7 +69,7 @@ class MenuServiceTest {
         assertThatThrownBy(() -> menuService.create(menu)).isExactlyInstanceOf(IllegalArgumentException.class);
 
         //when
-        menu.setPrice(BigDecimal.valueOf(-1));
+        menu.setPrice(BigDecimal.valueOf(0));
 
         //then
         assertThatThrownBy(() -> menuService.create(menu)).isExactlyInstanceOf(IllegalArgumentException.class);
