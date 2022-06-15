@@ -12,4 +12,10 @@ public class OrderTableFixtureFactory {
         orderTable.setEmpty(empty);
         return orderTable;
     }
+
+    public static OrderTable createWithGuest(Long id, boolean empty, int numberOfGuest) {
+        OrderTable orderTable = create(id, empty);
+        orderTable.setNumberOfGuests(numberOfGuest);
+        return orderTable;
+    }
 }
