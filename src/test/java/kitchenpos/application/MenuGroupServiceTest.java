@@ -1,7 +1,6 @@
 package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
 import java.util.List;
@@ -30,7 +29,7 @@ class MenuGroupServiceTest {
     private MenuGroup 초밥_메뉴그룹;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         분식_메뉴그룹 = MenuGroupFixtureFactory.create(1L, "분식 메뉴그룹");
         초밥_메뉴그룹 = MenuGroupFixtureFactory.create(2L, "초밥 메뉴그룹");
     }
