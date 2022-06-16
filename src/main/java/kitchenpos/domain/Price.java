@@ -1,11 +1,15 @@
 package kitchenpos.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import java.math.BigDecimal;
 import java.util.Objects;
 import static java.util.Objects.requireNonNull;
 
+@Embeddable
 public class Price implements Comparable<Price> {
 
+    @Column(nullable = false)
     private BigDecimal price;
 
     public Price(BigDecimal price) {
@@ -25,6 +29,15 @@ public class Price implements Comparable<Price> {
 
     public BigDecimal getValue() {
         return price;
+    }
+
+    public Amount multiply(Quantity quantity) {
+        requireNonNull(quantity, "quantity");
+        return new Amount(price.multiply(BigDecimal.valueOf(quantity.getValue())));
+    }
+
+    public Amount toAmount() {
+        return new Amount(price);
     }
 
     @Override
