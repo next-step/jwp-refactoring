@@ -1,9 +1,13 @@
 package kitchenpos.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import java.util.Objects;
 
+@Embeddable
 public class Quantity implements Comparable<Quantity> {
 
+    @Column(nullable = false)
     private long quantity;
 
     public Quantity(long quantity) {
