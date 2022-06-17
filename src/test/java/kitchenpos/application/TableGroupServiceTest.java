@@ -47,12 +47,17 @@ class TableGroupServiceTest {
         nullGroupIdOrderTable.setId(2L);
 
         given(orderTableDao.findAllByIdIn(any())).willReturn(Arrays.asList(emptyOrderTable, nullGroupIdOrderTable));
+        given(orderTableDao.save(any())).willReturn(new OrderTable());
         given(tableGroupDao.save(any())).willReturn(new TableGroup());
 
-        //then
+        //when
         TableGroup tableGroup = new TableGroup();
         tableGroup.setOrderTables(Arrays.asList(emptyOrderTable, nullGroupIdOrderTable));
-        assertThat(tableGroupService.create(tableGroup)).isInstanceOf(TableGroup.class);
+        TableGroup savedTableGroup = tableGroupService.create(tableGroup);
+
+        //then
+        assertThat(savedTableGroup).isInstanceOf(TableGroup.class);
+        assertThat(savedTableGroup.getOrderTables()).isNotEmpty();
     }
 
     @Test
