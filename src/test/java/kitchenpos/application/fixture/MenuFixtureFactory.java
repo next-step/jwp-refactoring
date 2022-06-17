@@ -1,6 +1,7 @@
 package kitchenpos.application.fixture;
 
 import java.math.BigDecimal;
+import java.util.List;
 import kitchenpos.domain.Menu;
 
 public class MenuFixtureFactory {
