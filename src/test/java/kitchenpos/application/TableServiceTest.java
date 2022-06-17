@@ -123,7 +123,7 @@ class TableServiceTest {
         assertThatIllegalArgumentException().isThrownBy(() -> tableService.changeEmpty(단체_1_주문_테이블.getId(), 빈_테이블));
     }
 
-    @DisplayName("테이블의 주문 상태가 COOKING 상태이면 빈 테이블 상태로 변경할 수 없다.")
+    @DisplayName("테이블의 주문 상태가 COOKING 혹은 MEAL 상태이면 빈 테이블 상태로 변경할 수 없다.")
     @Test
     void change04() {
         // given
