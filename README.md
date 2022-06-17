@@ -11,63 +11,63 @@
 
 - 등록되어있는 상품 목록을 조회할 수 있다.
 
-#### :memo:메뉴그룹
-- 메뉴그룹을 등록할 수 있다. [메뉴그룹명]
-- 등록되어있는 메뉴그룹 목록을 조회할 수 있다.
+#### :memo:메뉴 그룹
+- 메뉴 그룹을 등록할 수 있다. [메뉴그룹명]
+- 등록되어있는 메뉴 그룹 목록을 조회할 수 있다.
 
 #### :memo:메뉴
 - 메뉴를 등록할 수 있다.[상품이름, 가격, 메뉴그룹ID, 상품ID, 재고]
 - 등록되어있는 메뉴 목록을 조회할 수 있다.
 
-#### :memo:주문테이블
-- 주문테이블을 등록할 수 있다. [테이블그룹, 빈테이블, 방문손님수]
-- 주문테이블 목록을 조회할 수 있다. (빈테이블 포함)
-- 주문테이블이 빈테이블인지 여부를 업데이트 할 수 있다.
+#### :memo:주문 테이블
+- 주문 테이블을 등록할 수 있다. [테이블그룹, 빈테이블, 방문손님수]
+- 주문 테이블 목록을 조회할 수 있다. (빈 테이블 포함)
+- 주문 테이블이 빈 테이블인지 여부를 업데이트 할 수 있다.
     * 예외 상황
       |내용|Exception|
       |---|---|
       | 테이블그룹이 없으면 업데이트 할 수 없다. | IllegalArgumentException |
-      | 주문상태가 조리, 식사인 경우 업데이트 할 수 없다. | IllegalArgumentException |
+      | 주문 상태가 조리, 식사인 경우 업데이트 할 수 없다. | IllegalArgumentException |
 
 - 방문한 손님 수를 업데이트 할 수 있다.
     * 예외 상황
       |내용|Exception|
       |---|---|
       | 방문한 손님 수를 0 미만으로 요청하면 업데이트 할 수 없다.  | IllegalArgumentException |
-      | 주문테이블이 빈테이블인 경우 업데이트 할 수 없다.  | IllegalArgumentException |
+      | 주문 테이블이 빈 테이블인 경우 업데이트 할 수 없다.  | IllegalArgumentException |
 
-#### :memo:주문테이블그룹
-- 주문테이블그룹을 등록 할 수 있다.
+#### :memo:단체 지정
+- 단체 지정을 등록 할 수 있다. (테이블 그룹화)
     * 예외 상황
       |내용|Exception|
       |---|---|
-      | 그룹화할 주문테이블이 2개 미만인 경우 등록 할 수 없다.  | IllegalArgumentException |
-      | 요청한 주문테이블들 중 하나라도 없는 경우에는 등록 할 수 없다. | IllegalArgumentException |
-      | 요청한 주문테이블들 중 하나라도 빈테이블이 아닌 경우 등록 할 수 없다.  | IllegalArgumentException |
-      | 요청한 주문테이블들 중 하나라도 이미 그룹있는 경우 등록 할 수 없다.  | IllegalArgumentException |
+      | 단체 지정할 주문 테이블이 2개 미만인 경우 등록 할 수 없다.  | IllegalArgumentException |
+      | 없는 주문 테이블이 있는 경우에는 등록 할 수 없다. | IllegalArgumentException |
+      | 요청한 주문 테이블들 중 하나라도 빈 테이블이 아닌 경우 등록 할 수 없다.  | IllegalArgumentException |
+      | 이미 단체 지정된 주문 테이블이 있는 경우 등록 할 수 없다.  | IllegalArgumentException |
 
 - 주문테이블그룹을 해제 할 수 있다.
     * 예외 상황
       |내용|Exception|
       |---|---|
-      | 요청한 주문테이블들 중 하나라도 주문상태가 조리, 식사인 경우 해제 할 수 없다.| IllegalArgumentException |
+      | 요청한 주문 테이블들 중 하나라도 주문 상태가 조리, 식사인 경우 해제 할 수 없다.| IllegalArgumentException |
 
 #### :memo:주문
 - 주문을 등록 할 수 있다.
-    - 주문상태가 조리로 변경된다.
+    - 주문 상태가 조리로 변경된다.
     * 예외 상황
       |내용|Exception|
       |---|---|
-      | 주문항목이 없는 경우 등록 할 수 없다.| IllegalArgumentException |
+      | 주문 항목이 없는 경우 등록 할 수 없다.| IllegalArgumentException |
       | 없는 메뉴가 있는 경우 등록 할 수 없다.| IllegalArgumentException |
-      | 주문테이블이 없거나 빈테이블인 경우 등록 할 수 없다.| IllegalArgumentException |
+      | 주문 테이블이 없거나 빈 테이블인 경우 등록 할 수 없다.| IllegalArgumentException |
 
 - 주문 목록을 조회 할 수 있다.
-- 주문상태를 업데이트 할 수 있다.
+- 주문 상태를 업데이트 할 수 있다.
     * 예외 상황
       |내용|Exception|
       |---|---|
-      | 주문상태가 계산 완료인 경우 업데이트 할 수 없다. | IllegalArgumentException |
+      | 주문 상태가 계산 완료인 경우 업데이트 할 수 없다. | IllegalArgumentException |
       
 
 ## 용어 사전
