@@ -8,6 +8,7 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,33 +38,43 @@ class OrderServiceTest {
     @InjectMocks
     private OrderService orderService;
 
+    private OrderLineItem orderLineItem1;
+    private OrderLineItem orderLineItem2;
+    private Order order;
+    private OrderTable orderTable;
+
+    @BeforeEach
+    void setUp() {
+        order = new Order();
+        orderLineItem1 = new OrderLineItem();
+        orderLineItem2 = new OrderLineItem();
+        orderTable = new OrderTable();
+    }
+
     @Test
     @DisplayName("주문을 생성할 수 있다.")
     void create() {
         //given
-        Order order = new Order();
-        order.setOrderLineItems(Arrays.asList(new OrderLineItem()));
+        order.setOrderLineItems(Arrays.asList(orderLineItem1));
         given(menuDao.countByIdIn(any())).willReturn(1L);
-        OrderTable orderTable = new OrderTable();
         orderTable.setEmpty(false);
         given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
-        given(orderLineItemDao.save(any())).willReturn(new OrderLineItem());
+        given(orderLineItemDao.save(any())).willReturn(orderLineItem1);
         given(orderDao.save(any())).willReturn(order);
 
         //when
         Order savedOrder = orderService.create(order);
 
         //then
-        assertThat(savedOrder).isInstanceOf(Order.class);
+        assertThat(savedOrder).isEqualTo(order);
         assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
-        assertThat(savedOrder.getOrderLineItems()).isNotEmpty();
+        assertThat(savedOrder.getOrderLineItems()).isNotEmpty().containsExactly(orderLineItem1);
     }
 
     @Test
     @DisplayName("주문 항목이 비어있으면 주문에 실패한다.")
     void create_fail_1() {
         //given
-        Order order = new Order();
         order.setOrderLineItems(Collections.emptyList());
 
         //then
@@ -74,8 +85,7 @@ class OrderServiceTest {
     @DisplayName("주문 항목의 요청 갯수와 실제 저장된 주문 항목을 조회했을 때 갯수가 다르면 주문에 실패한다.")
     void create_fail_2() {
         //given
-        Order order = new Order();
-        order.setOrderLineItems(Arrays.asList(new OrderLineItem()));
+        order.setOrderLineItems(Arrays.asList(orderLineItem2));
         given(menuDao.countByIdIn(any())).willReturn(0L);
 
         //then
@@ -86,8 +96,7 @@ class OrderServiceTest {
     @DisplayName("주문 테이블 조회 결과가 없으면 주문에 실패한다.")
     void create_fail_3() {
         //given
-        Order order = new Order();
-        order.setOrderLineItems(Arrays.asList(new OrderLineItem()));
+        order.setOrderLineItems(Arrays.asList(orderLineItem1));
         given(menuDao.countByIdIn(any())).willReturn(1L);
         given(orderTableDao.findById(any())).willReturn(Optional.empty());
 
@@ -99,28 +108,27 @@ class OrderServiceTest {
     @DisplayName("전체 주문을 조회할 수 있다.")
     void list() {
         //given
-        given(orderDao.findAll()).willReturn(Arrays.asList(new Order()));
+        given(orderDao.findAll()).willReturn(Arrays.asList(order));
 
         //then
-        assertThat(orderService.list()).isNotEmpty();
+        assertThat(orderService.list()).containsExactly(order);
     }
 
     @Test
     @DisplayName("주문 상태를 변경할 수 있다.")
     void changeOrderStatus() {
         //given
-        Order order = new Order();
         order.setOrderStatus(OrderStatus.MEAL.name());
         given(orderDao.findById(any())).willReturn(Optional.of(order));
         given(orderDao.save(any())).willReturn(order);
-        given(orderLineItemDao.findAllByOrderId(any())).willReturn(Arrays.asList(new OrderLineItem()));
+        given(orderLineItemDao.findAllByOrderId(any())).willReturn(Arrays.asList(orderLineItem2));
 
         //when
         Order savedOrder = orderService.changeOrderStatus(0L, order);
 
         //then
         assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
-        assertThat(savedOrder.getOrderLineItems()).isNotEmpty();
+        assertThat(savedOrder.getOrderLineItems()).isNotEmpty().containsExactly(orderLineItem2);
     }
 
     @Test
@@ -130,7 +138,7 @@ class OrderServiceTest {
         given(orderDao.findById(any())).willReturn(Optional.empty());
 
         //then
-        assertThatThrownBy(() -> orderService.changeOrderStatus(0L, new Order())).isExactlyInstanceOf(
+        assertThatThrownBy(() -> orderService.changeOrderStatus(0L, order)).isExactlyInstanceOf(
                 IllegalArgumentException.class);
 
     }
@@ -139,7 +147,6 @@ class OrderServiceTest {
     @DisplayName("계산 완료된 주문은 상태를 변경할 수 없다.")
     void changeOrderStatus_failed_2() {
         //given
-        Order order = new Order();
         order.setOrderStatus(OrderStatus.COMPLETION.name());
         given(orderDao.findById(any())).willReturn(Optional.of(order));
 

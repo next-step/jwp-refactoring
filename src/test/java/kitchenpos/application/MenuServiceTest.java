@@ -7,6 +7,7 @@ import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,37 +38,42 @@ class MenuServiceTest {
     @InjectMocks
     private MenuService menuService;
 
+    private Menu menu;
+    private MenuProduct menuProduct;
+    private Product product;
+
+    @BeforeEach
+    void setUp() {
+        menu = new Menu();
+        menuProduct = new MenuProduct();
+        product = new Product();
+    }
+
     @Test
     @DisplayName("메뉴 그룹을 생성할 수 있다.")
     void create() {
         //given
-        Menu menu = new Menu();
         menu.setPrice(BigDecimal.valueOf(999));
-        Product product = new Product();
         product.setPrice(BigDecimal.valueOf(1000));
-        MenuProduct menuProduct = new MenuProduct();
         menuProduct.setQuantity(1);
         menu.setMenuProducts(Arrays.asList(menuProduct));
         given(menuGroupDao.existsById(any())).willReturn(true);
         given(productDao.findById(any())).willReturn(Optional.of(product));
-        given(menuProductDao.save(any())).willReturn(new MenuProduct());
-        given(menuDao.save(any())).willReturn(new Menu());
+        given(menuProductDao.save(any())).willReturn(menuProduct);
+        given(menuDao.save(any())).willReturn(menu);
 
         //when
         Menu savedMenu = menuService.create(menu);
 
         //then
         assertThat(savedMenu).isInstanceOf(Menu.class);
-        assertThat(savedMenu.getMenuProducts()).isNotEmpty();
+        assertThat(savedMenu.getMenuProducts()).containsExactly(menuProduct);
 
     }
 
     @Test
     @DisplayName("메뉴 가격이 NULL 이거나 음수이면 메뉴를 추가할 수 없다")
     void create_failed_1() {
-        //given
-        Menu menu = new Menu();
-
         //then
         assertThatThrownBy(() -> menuService.create(menu)).isExactlyInstanceOf(IllegalArgumentException.class);
 
@@ -78,12 +84,10 @@ class MenuServiceTest {
         assertThatThrownBy(() -> menuService.create(menu)).isExactlyInstanceOf(IllegalArgumentException.class);
     }
 
-
     @Test
     @DisplayName("메뉴 그룹에 속하지 않으면 메뉴를 추가할 수 없다")
     void create_failed_2() {
         //given
-        Menu menu = new Menu();
         menu.setPrice(BigDecimal.valueOf(10000));
         given(menuGroupDao.existsById(any())).willReturn(false);
 
@@ -95,11 +99,9 @@ class MenuServiceTest {
     @DisplayName("메뉴 상품의 금액보다 메뉴 가격이 크거나 같으면 메뉴로 추가할 수 없다")
     void create_failed_3() {
         //given
-        Menu menu = new Menu();
-        Product product = new Product();
         product.setPrice(BigDecimal.valueOf(10000));
         menu.setPrice(BigDecimal.valueOf(10000));
-        menu.setMenuProducts(Arrays.asList(new MenuProduct()));
+        menu.setMenuProducts(Arrays.asList(menuProduct));
         given(menuGroupDao.existsById(any())).willReturn(true);
         given(productDao.findById(any())).willReturn(Optional.of(product));
 
@@ -111,9 +113,8 @@ class MenuServiceTest {
     @DisplayName("메뉴 상품 중 조회 되지 않는 경우가 있으면 메뉴로 추가할 수 없다")
     void create_failed_4() {
         //given
-        Menu menu = new Menu();
         menu.setPrice(BigDecimal.valueOf(10000));
-        menu.setMenuProducts(Arrays.asList(new MenuProduct()));
+        menu.setMenuProducts(Arrays.asList(menuProduct));
         given(menuGroupDao.existsById(any())).willReturn(true);
         given(productDao.findById(any())).willReturn(Optional.empty());
 
@@ -125,8 +126,8 @@ class MenuServiceTest {
     @DisplayName("전체 메뉴 그룹을 조회할 수 있다.")
     void list() {
         //given
-        given(menuDao.findAll()).willReturn(Arrays.asList(new Menu()));
-        given(menuProductDao.findAllByMenuId(any())).willReturn(Collections.singletonList(new MenuProduct()));
+        given(menuDao.findAll()).willReturn(Arrays.asList(menu));
+        given(menuProductDao.findAllByMenuId(any())).willReturn(Collections.singletonList(menuProduct));
 
         //then
         assertThat(menuService.list()).isNotEmpty();

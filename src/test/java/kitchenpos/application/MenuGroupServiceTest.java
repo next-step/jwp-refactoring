@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,29 +24,36 @@ class MenuGroupServiceTest {
     @InjectMocks
     private MenuGroupService menuGroupService;
 
+    private MenuGroup menuGroup;
+
+    @BeforeEach
+    void setUp() {
+        menuGroup = new MenuGroup();
+    }
+
     @Test
     @DisplayName("메뉴 그룹을 생성할 수 있다.")
     void create() {
         //given
-        given(menuGroupDao.save(any())).willReturn(new MenuGroup());
+        given(menuGroupDao.save(any())).willReturn(menuGroup);
 
         //when
-        MenuGroup menuGroup = menuGroupService.create(new MenuGroup());
+        MenuGroup savedMenuGroup = menuGroupService.create(menuGroup);
 
         //then
-        assertThat(menuGroup).isNotNull();
+        assertThat(savedMenuGroup).isEqualTo(menuGroup);
     }
 
     @Test
     @DisplayName("전체 메뉴 그룹을 조회할 수 있다.")
     void list() {
         //given
-        given(menuGroupDao.findAll()).willReturn(Arrays.asList(new MenuGroup(), new MenuGroup()));
+        given(menuGroupDao.findAll()).willReturn(Arrays.asList(menuGroup));
 
         //when
         List<MenuGroup> menuGroupList = menuGroupService.list();
 
         //then
-        assertThat(menuGroupList).isNotEmpty();
+        assertThat(menuGroupList).containsExactly(menuGroup);
     }
 }
