@@ -37,7 +37,6 @@
           | 주문테이블이 빈테이블인 경우 업데이트 할 수 없다.  | IllegalArgumentException |
     
 - 주문테이블그룹
-  
     - 주문테이블그룹을 등록 할 수 있다.
         * 예외 상황
           |내용|Exception|
@@ -52,6 +51,23 @@
           |내용|Exception|
           |---|---|
           | 요청한 주문테이블들 중 하나라도 주문상태가 조리, 식사인 경우 해제 할 수 없다.| IllegalArgumentException |
+          
+- 주문
+    - 주문을 등록 할 수 있다.
+        - 주문상태가 조리로 변경된다.
+        * 예외 상황
+          |내용|Exception|
+          |---|---|
+          | 주문항목이 없는 경우 등록 할 수 없다.| IllegalArgumentException |
+          | 없는 메뉴가 있는 경우 등록 할 수 없다.| IllegalArgumentException |
+          | 주문테이블이 없거나 빈테이블인 경우 등록 할 수 없다.| IllegalArgumentException |
+          
+    - 주문 목록을 조회 할 수 있다.
+    - 주문상태를 업데이트 할 수 있다.
+        * 예외 상황
+          |내용|Exception|
+          |---|---|
+          | 주문상태가 계산 완료인 경우 업데이트 할 수 없다. | IllegalArgumentException |
 
 ## 용어 사전
 
