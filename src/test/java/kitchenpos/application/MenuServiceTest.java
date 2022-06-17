@@ -38,6 +38,7 @@ class MenuServiceTest {
     private MenuService menuService;
 
     @Test
+    @DisplayName("메뉴 그룹을 생성할 수 있다.")
     void create() {
         //given
         Menu menu = new Menu();
@@ -121,6 +122,7 @@ class MenuServiceTest {
     }
 
     @Test
+    @DisplayName("전체 메뉴 그룹을 조회할 수 있다.")
     void list() {
         //given
         given(menuDao.findAll()).willReturn(Arrays.asList(new Menu()));

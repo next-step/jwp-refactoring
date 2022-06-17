@@ -28,6 +28,7 @@ class TableServiceTest {
     private TableService tableService;
 
     @Test
+    @DisplayName("주문 테이블을 생성할 수 있다.")
     void create() {
         //given
         given(orderTableDao.save(any())).willReturn(new OrderTable());
@@ -37,6 +38,7 @@ class TableServiceTest {
     }
 
     @Test
+    @DisplayName("전체 주문 테이블을 조회할 수 있다.")
     void list() {
         //given
         given(orderTableDao.findAll()).willReturn(Arrays.asList(new OrderTable()));
@@ -46,18 +48,25 @@ class TableServiceTest {
     }
 
     @Test
+    @DisplayName("주문 테이블을 빈 테이블로 변경할 수 있다.")
     void changeEmpty() {
         //given
-        given(orderTableDao.findById(any())).willReturn(Optional.of(new OrderTable()));
+        OrderTable orderTable = new OrderTable();
+        orderTable.setEmpty(true);
+        given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(false);
-        given(orderTableDao.save(any())).willReturn(new OrderTable());
+        given(orderTableDao.save(any())).willReturn(orderTable);
+
+        //when
+        OrderTable savedOrderTable = tableService.changeEmpty(0L, new OrderTable());
 
         //then
-        assertThat(tableService.changeEmpty(0L, new OrderTable())).isExactlyInstanceOf(OrderTable.class);
+        assertThat(savedOrderTable).isExactlyInstanceOf(OrderTable.class);
+        assertThat(savedOrderTable.isEmpty()).isFalse();
     }
 
     @Test
-    @DisplayName("주문 테이블이 조회되지 않으면 실패한다.")
+    @DisplayName("주문 테이블이 조회되지 않으면 빈 테이블로 변경 실패한다.")
     void changeEmpty_failed_1() {
         //given
         given(orderTableDao.findById(any())).willReturn(Optional.empty());
@@ -81,7 +90,7 @@ class TableServiceTest {
     }
 
     @Test
-    @DisplayName("주문 상태가 조리, 식사 인 경우 빈 테이블로 변경 실패한다.")
+    @DisplayName("주문 테이블의 상태가 조리, 식사 인 경우 빈 테이블로 변경 실패한다.")
     void changeEmpty_failed_3() {
         //given
         given(orderTableDao.findById(any())).willReturn(Optional.of(new OrderTable()));
@@ -93,21 +102,25 @@ class TableServiceTest {
     }
 
     @Test
+    @DisplayName("주문 테이블의 방문한 손님 수를 변경할 수 있다.")
     void changeNumberOfGuests() {
         //given
         OrderTable orderTable = new OrderTable();
         orderTable.setNumberOfGuests(10);
         orderTable.setEmpty(false);
         given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
-        given(orderTableDao.save(any())).willReturn(new OrderTable());
+        given(orderTableDao.save(any())).willReturn(orderTable);
+
+        //when
+        OrderTable savedOrderTable = tableService.changeNumberOfGuests(0L, new OrderTable());
 
         //then
-        assertThat(tableService.changeNumberOfGuests(0L, orderTable)).isExactlyInstanceOf(OrderTable.class);
-
+        assertThat(savedOrderTable.isEmpty()).isFalse();
+        assertThat(savedOrderTable.getNumberOfGuests()).isZero();
     }
 
     @Test
-    @DisplayName("방문한 손님 수가 음수면 방문한 손님 수 변경에 실패한다.")
+    @DisplayName("주문 테이블의 방문한 손님 수가 음수면 방문한 손님 수 변경에 실패한다.")
     void changeNumberOfGuests_failed_1() {
         //given
         OrderTable orderTable = new OrderTable();
