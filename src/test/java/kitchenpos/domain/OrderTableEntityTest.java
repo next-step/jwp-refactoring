@@ -30,4 +30,47 @@ class OrderTableEntityTest {
         }).isInstanceOf(InvalidNumberOfGuestsException.class)
         .hasMessageContaining("유효하지 않은 손님 수입니다.");
     }
+
+    @DisplayName("비움 여부를 변경한다.")
+    @Test
+    void changeEmpty() {
+        OrderTableEntity orderTable = new OrderTableEntity(0, false);
+
+        orderTable.changeEmpty(true);
+
+        assertThat(orderTable.isEmpty()).isTrue();
+    }
+
+    @DisplayName("단체 지정된 테이블의 비움 여부를 변경한다.")
+    @Test
+    void changeEmptyWithGrouped() {
+        OrderTableEntity orderTable = new OrderTableEntity(0, false);
+        orderTable.bindTo(new TableGroupEntity());
+
+        assertThatThrownBy(() -> {
+            orderTable.changeEmpty(true);
+        }).isInstanceOf(CannotChangeEmptyException.class)
+        .hasMessageContaining("비움 여부를 변경할 수 없습니다.");
+    }
+
+    @DisplayName("테이블의 손님 수를 변경한다.")
+    @Test
+    void changeNumberOfGuest() {
+        OrderTableEntity orderTable = new OrderTableEntity(0, false);
+
+        orderTable.changeNumberOfGuests(5);
+
+        assertThat(orderTable.getNumberOfGuests().getValue()).isEqualTo(5);
+    }
+
+    @DisplayName("테이블의 손님 수를 변경한다.")
+    @Test
+    void changeNumberOfGuestWithEmpty() {
+        OrderTableEntity orderTable = new OrderTableEntity(0, true);
+
+        assertThatThrownBy(() -> {
+            orderTable.changeNumberOfGuests(5);
+        }).isInstanceOf(CannotChangeNumberOfGuestsException.class)
+        .hasMessageContaining("손님 수를 변경할 수 없습니다.");
+    }
 }

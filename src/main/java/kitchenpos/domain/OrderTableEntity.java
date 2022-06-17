@@ -45,4 +45,18 @@ public class OrderTableEntity {
     public NumberOfGuests getNumberOfGuests() {
         return numberOfGuests;
     }
+
+    public void changeEmpty(boolean empty) {
+        if (isGrouped()) {
+            throw new CannotChangeEmptyException();
+        }
+        this.empty = new Empty(empty);
+    }
+
+    public void changeNumberOfGuests(int numberOfGuests) {
+        if (isEmpty()) {
+            throw new CannotChangeNumberOfGuestsException();
+        }
+        this.numberOfGuests = new NumberOfGuests(numberOfGuests);
+    }
 }
