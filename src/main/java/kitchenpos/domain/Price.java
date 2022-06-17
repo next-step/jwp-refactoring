@@ -22,7 +22,7 @@ public class Price implements Comparable<Price> {
     private BigDecimal validate(BigDecimal price) {
         requireNonNull(price, "price");
         if (price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new InvalidPriceException();
+            throw new InvalidPriceException("유효하지 않은 가격입니다.");
         }
         return price;
     }
