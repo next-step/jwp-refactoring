@@ -5,7 +5,6 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -72,7 +71,7 @@ class TableGroupServiceTest {
     }
 
     @Test
-    @DisplayName("요청한 단체 지정의 주문 테이블 수와 실제 저장된 주문 테이블 갯수 차이가 나면 단체 지정에 실패한다.")
+    @DisplayName("요청한 단체 지정의 주문 테이블 수와 실제 주문 테이블 갯수 차이가 나면 단체 지정에 실패한다.")
     void create_failed_2() {
         //given
         TableGroup tableGroup = new TableGroup();
@@ -105,11 +104,18 @@ class TableGroupServiceTest {
     @DisplayName("단체 지정을 해제할 수 있다.")
     void ungroup() {
         //given
-        given(orderTableDao.findAllByTableGroupId(any())).willReturn(Collections.emptyList());
+        OrderTable groupedOrderTable = new OrderTable();
+        groupedOrderTable.setTableGroupId(1L);
+        List<OrderTable> ungroupOrderTables = Arrays.asList(groupedOrderTable);
+        given(orderTableDao.findAllByTableGroupId(any())).willReturn(ungroupOrderTables);
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(false);
+        given(orderTableDao.save(any())).willReturn(new OrderTable());
+
+        //when
+        tableGroupService.ungroup(0L);
 
         //then
-        Assertions.assertDoesNotThrow(() -> tableGroupService.ungroup(0L));
+        assertThat(groupedOrderTable.getTableGroupId()).isNull();
     }
 
     @Test
