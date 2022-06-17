@@ -12,11 +12,11 @@ public class MenuGroupRequest {
     protected MenuGroupRequest() {
     }
 
-    public String getName() {
-        return name;
-    }
-
     public MenuGroupEntity toMenuGroup() {
         return new MenuGroupEntity(name);
+    }
+
+    public String getName() {
+        return name;
     }
 }

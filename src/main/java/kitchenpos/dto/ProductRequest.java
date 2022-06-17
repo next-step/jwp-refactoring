@@ -15,15 +15,15 @@ public class ProductRequest {
     protected ProductRequest() {
     }
 
+    public ProductEntity toProduct() {
+        return new ProductEntity(name, price);
+    }
+
     public String getName() {
         return name;
     }
 
     public BigDecimal getPrice() {
         return price;
-    }
-
-    public ProductEntity toProduct() {
-        return new ProductEntity(name, price);
     }
 }
