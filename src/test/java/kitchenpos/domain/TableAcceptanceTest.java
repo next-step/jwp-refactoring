@@ -15,31 +15,23 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.application.fixture.OrderTableFixtureFactory;
-import kitchenpos.application.fixture.TableGroupFixtureFactory;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("단체 관련 인수테스트")
+@DisplayName("테이블 관련 인수테스트")
 class TableAcceptanceTest extends AcceptanceTest {
 
-    private TableGroup 단체_1;
     private OrderTable 빈_테이블;
     private OrderTable 주문_테이블;
-    private OrderTable 주문_테이블_10명;
-    private OrderTable 단체_1_주문_테이블;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        빈_테이블 = OrderTableFixtureFactory.create(1L, true);
-        주문_테이블 = OrderTableFixtureFactory.create(1L, false);
-        주문_테이블_10명 = OrderTableFixtureFactory.createWithGuest(1L, false, 10);
-
-        단체_1 = TableGroupFixtureFactory.create(1L);
-        단체_1_주문_테이블 = OrderTableFixtureFactory.create(2L, true);
+        빈_테이블 = OrderTableFixtureFactory.create(true);
+        주문_테이블 = OrderTableFixtureFactory.create(false);
     }
 
     @DisplayName("테이블을 등록할 수 있다.")

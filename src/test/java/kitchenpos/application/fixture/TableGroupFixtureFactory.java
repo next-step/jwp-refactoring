@@ -12,4 +12,8 @@ public class TableGroupFixtureFactory {
 
         return tableGroup;
     }
+
+    public static TableGroup create(){
+        return new TableGroup();
+    }
 }

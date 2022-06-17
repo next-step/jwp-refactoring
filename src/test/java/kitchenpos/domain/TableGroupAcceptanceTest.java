@@ -24,20 +24,21 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        단체_1 = TableGroupFixtureFactory.create(1L);
+        단체_1 = TableGroupFixtureFactory.create();
 
-        주문_1_테이블 = OrderTableFixtureFactory.createWithGuest(1L, 단체_1.getId(), true, 2);
-        주문_2_테이블 = OrderTableFixtureFactory.createWithGuest(2L, 단체_1.getId(), true, 4);
+        주문_1_테이블 = OrderTableFixtureFactory.create(true);
+        주문_2_테이블 = OrderTableFixtureFactory.create(true);
 
         주문_1_테이블 = 테이블_등록되어_있음(주문_1_테이블).as(OrderTable.class);
         주문_2_테이블 = 테이블_등록되어_있음(주문_2_테이블).as(OrderTable.class);
-
-        단체_1.setOrderTables(Lists.newArrayList(주문_1_테이블, 주문_2_테이블));
     }
 
     @DisplayName("단체를 지정할 수 있다.")
     @Test
     void create01() {
+        // given
+        단체_1.setOrderTables(Lists.newArrayList(주문_1_테이블, 주문_2_테이블));
+
         // when
         ExtractableResponse<Response> response = 단체_등록_요청(단체_1);
 
@@ -49,6 +50,7 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void change01() {
         // given
+        단체_1.setOrderTables(Lists.newArrayList(주문_1_테이블, 주문_2_테이블));
         TableGroup createdTableGroup = 단체_등록되어_있음(단체_1).as(TableGroup.class);
 
         // when
