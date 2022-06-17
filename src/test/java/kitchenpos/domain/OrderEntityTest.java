@@ -58,5 +58,4 @@ class OrderEntityTest {
         }).isInstanceOf(EmptyOrderLineItemsException.class)
         .hasMessageContaining("주문 항목이 비었습니다.");
     }
-
 }

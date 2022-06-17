@@ -26,6 +26,14 @@ public class OrderTableEntity {
         this.tableGroup = tableGroup;
     }
 
+    public boolean isGrouped() {
+        return tableGroup != null;
+    }
+
+    public boolean isEmpty() {
+        return empty.isTrue();
+    }
+
     public Long getId() {
         return id;
     }
@@ -36,9 +44,5 @@ public class OrderTableEntity {
 
     public NumberOfGuests getNumberOfGuests() {
         return numberOfGuests;
-    }
-
-    public boolean isEmpty() {
-        return empty.isTrue();
     }
 }
