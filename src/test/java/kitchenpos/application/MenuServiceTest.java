@@ -60,7 +60,7 @@ class MenuServiceTest {
     }
 
     @Test
-    @DisplayName("메뉴 가격이 양수가 아니면 메뉴를 추가할 수 없다")
+    @DisplayName("메뉴 가격이 NULL 이거나 음수이면 메뉴를 추가할 수 없다")
     void create_failed_1() {
         //given
         Menu menu = new Menu();
@@ -89,7 +89,7 @@ class MenuServiceTest {
     }
 
     @Test
-    @DisplayName("메뉴 구성품들의 가격 총합보다 메뉴 가격이 크거나 같으면 메뉴로 추가할 수 없다")
+    @DisplayName("메뉴 상품의 금액보다 메뉴 가격이 크거나 같으면 메뉴로 추가할 수 없다")
     void create_failed_3() {
         //given
         Menu menu = new Menu();
@@ -105,7 +105,7 @@ class MenuServiceTest {
     }
 
     @Test
-    @DisplayName("메뉴 구성품들 중 조회가 되지 않는 구성품이 있으면 메뉴로 추가할 수 없다")
+    @DisplayName("메뉴 상품 중 조회 되지 않는 경우가 있으면 메뉴로 추가할 수 없다")
     void create_failed_4() {
         //given
         Menu menu = new Menu();

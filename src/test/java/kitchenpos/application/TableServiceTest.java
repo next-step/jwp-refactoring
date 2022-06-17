@@ -57,7 +57,7 @@ class TableServiceTest {
     }
 
     @Test
-    @DisplayName("orderTableId 가 조회되지 않으면 실패한다.")
+    @DisplayName("주문 테이블이 조회되지 않으면 실패한다.")
     void changeEmpty_failed_1() {
         //given
         given(orderTableDao.findById(any())).willReturn(Optional.empty());
@@ -68,7 +68,7 @@ class TableServiceTest {
     }
 
     @Test
-    @DisplayName("저장된 주문 테이블의 테이블 그룹 id 가 비어있지 않으면 실패한다.")
+    @DisplayName("저장된 주문 테이블의 단체 지정이 되어있으면 빈 테이블로 변경 실패한다.")
     void changeEmpty_failed_2() {
         //given
         OrderTable orderTable = new OrderTable();
@@ -81,7 +81,7 @@ class TableServiceTest {
     }
 
     @Test
-    @DisplayName("주문 상태가 COOKING, MEAL 인 경우 실패한다.")
+    @DisplayName("주문 상태가 조리, 식사 인 경우 빈 테이블로 변경 실패한다.")
     void changeEmpty_failed_3() {
         //given
         given(orderTableDao.findById(any())).willReturn(Optional.of(new OrderTable()));
@@ -107,7 +107,7 @@ class TableServiceTest {
     }
 
     @Test
-    @DisplayName("손님 수가 음수면 실패한다.")
+    @DisplayName("방문한 손님 수가 음수면 방문한 손님 수 변경에 실패한다.")
     void changeNumberOfGuests_failed_1() {
         //given
         OrderTable orderTable = new OrderTable();
@@ -120,7 +120,7 @@ class TableServiceTest {
     }
 
     @Test
-    @DisplayName("orderTableId 로 조회가 안 되면 실패한다.")
+    @DisplayName("주문 테이블이 조회가 안 되면 방문한 손님 수 변경에 실패한다.")
     void changeNumberOfGuests_failed_2() {
         //given
         OrderTable orderTable = new OrderTable();
@@ -134,7 +134,7 @@ class TableServiceTest {
     }
 
     @Test
-    @DisplayName("orderTable 이 비어있으면 실패한다.")
+    @DisplayName("주문 테이블이 비어있으면 방문한 손님 수 변경에 실패한다.")
     void changeNumberOfGuests_failed_3() {
         //given
         OrderTable orderTable = new OrderTable();

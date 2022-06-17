@@ -33,7 +33,7 @@ class TableGroupServiceTest {
     private TableGroupService tableGroupService;
 
     @Test
-    @DisplayName("테이블 그룹을 생성할 수 있다.")
+    @DisplayName("단체 지정을 할 수 있다.")
     void create() {
         //given
         OrderTable emptyOrderTable = new OrderTable();
@@ -56,7 +56,7 @@ class TableGroupServiceTest {
     }
 
     @Test
-    @DisplayName("테이블 그룹에 속한 주문 테이블 수가 2 미만이면 실패한다.")
+    @DisplayName("단체 지정에 속한 주문 테이블 수가 2 미만이면 실패한다.")
     void create_failed_1() {
         //given
         TableGroup tableGroup = new TableGroup();
@@ -67,7 +67,7 @@ class TableGroupServiceTest {
     }
 
     @Test
-    @DisplayName("요청한 테이블 그룹의 주문 테이블 수와 실제 저장된 주문 테이블 갯수 차이가 나면 실패한다.")
+    @DisplayName("요청한 단체 지정의 주문 테이블 수와 실제 저장된 주문 테이블 갯수 차이가 나면 단체 지정에 실패한다.")
     void create_failed_2() {
         //given
         TableGroup tableGroup = new TableGroup();
@@ -78,7 +78,7 @@ class TableGroupServiceTest {
     }
 
     @Test
-    @DisplayName("요청한 테이블 그룹에 속한 주문 테이블 중 이미 그룹이 있거나, 비어있지 않은 주문 테이블이 있으면 실패한다.")
+    @DisplayName("단체 지정 내 속한 주문 테이블 중 이미 단체 지정이 되어있거나, 빈 테이블이 아닌 주문 테이블이 있으면 단체 지정에 실패한다.")
     void create_failed_3() {
         //given
         TableGroup tableGroup = new TableGroup();
@@ -97,7 +97,7 @@ class TableGroupServiceTest {
     }
 
     @Test
-    @DisplayName("테이블 그룹을 해제할 수 있다.")
+    @DisplayName("단체 지정을 해제할 수 있다.")
     void ungroup() {
         //given
         given(orderTableDao.findAllByTableGroupId(any())).willReturn(Collections.emptyList());
@@ -108,7 +108,7 @@ class TableGroupServiceTest {
     }
 
     @Test
-    @DisplayName("테이블 그룹 내 주문 상태가 COOKING/MEAL 인 주문 테이블이 포함되어 있을 경우 해제할 수 없다.")
+    @DisplayName("단체 지정 내 주문 상태가 조리 혹은 식사 인 주문 테이블이 포함되어 있을 경우 해제할 수 없다.")
     void ungroup_failed_1() {
         //given
         given(orderTableDao.findAllByTableGroupId(any())).willReturn(Arrays.asList(new OrderTable(), new OrderTable()));

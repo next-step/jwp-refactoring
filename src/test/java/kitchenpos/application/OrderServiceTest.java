@@ -56,7 +56,7 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("주문 아이템 목록이 비어있으면 실패한다.")
+    @DisplayName("주문 항목이 비어있으면 주문에 실패한다.")
     void create_fail_1() {
         //given
         Order order = new Order();
@@ -67,7 +67,7 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("주문 아이템의 메뉴 id가 적절하지 않으면 실패한다.")
+    @DisplayName("주문 항목의 요청 갯수와 실제 저장된 주문 항목을 조회했을 때 갯수가 다르면 주문에 실패한다.")
     void create_fail_2() {
         //given
         Order order = new Order();
@@ -79,7 +79,7 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("주문 테이블 조회 결과가 없으면 실패한다.")
+    @DisplayName("주문 테이블 조회 결과가 없으면 주문에 실패한다.")
     void create_fail_3() {
         //given
         Order order = new Order();
@@ -92,7 +92,7 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("주문 목록을 조회할 수 있다.")
+    @DisplayName("전체 주문을 조회할 수 있다.")
     void list() {
         //given
         given(orderDao.findAll()).willReturn(Arrays.asList(new Order()));
@@ -102,7 +102,7 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("주문의 상태를 변경할 수 있다.")
+    @DisplayName("주문 상태를 변경할 수 있다.")
     void changeOrderStatus() {
         //given
         Order order = new Order();
@@ -128,7 +128,7 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("완료된 주문은 상태를 변경할 수 없다.")
+    @DisplayName("계산 완료된 주문은 상태를 변경할 수 없다.")
     void changeOrderStatus_failed_2() {
         //given
         Order order = new Order();

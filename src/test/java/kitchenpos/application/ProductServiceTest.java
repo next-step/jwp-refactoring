@@ -26,7 +26,7 @@ class ProductServiceTest {
     private ProductService productService;
 
     @Test
-    @DisplayName("제품을 생성할 수 있다.")
+    @DisplayName("상품을 생성할 수 있다.")
     void create() {
         //given
         Product product = new Product();
@@ -41,7 +41,7 @@ class ProductServiceTest {
     }
 
     @Test
-    @DisplayName("제품 가격이 자연수가 아니면 생성할 수 없다.")
+    @DisplayName("상품 가격이 NULL 이거나 음수면 생성할 수 없다.")
     void create_fail() {
         //given
         Product product = new Product();
@@ -57,7 +57,7 @@ class ProductServiceTest {
     }
 
     @Test
-    @DisplayName("전체 제품 목록을 조회할 수 있다.")
+    @DisplayName("전체 상품을 조회할 수 있다.")
     void list() {
         //given
         given(productDao.findAll()).willReturn(Arrays.asList(new Product()));
