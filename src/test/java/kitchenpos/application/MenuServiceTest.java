@@ -13,7 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.stubbing.Answer;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -50,12 +49,15 @@ class MenuServiceTest {
         menu.setMenuProducts(Arrays.asList(menuProduct));
         given(menuGroupDao.existsById(any())).willReturn(true);
         given(productDao.findById(any())).willReturn(Optional.of(product));
-        //Do Nothing
-        given(menuProductDao.save(any())).will((Answer<MenuProduct>) invocation -> new MenuProduct());
-        given(menuDao.save(any())).will((Answer<Menu>) invocation -> new Menu());
+        given(menuProductDao.save(any())).willReturn(new MenuProduct());
+        given(menuDao.save(any())).willReturn(new Menu());
+
+        //when
+        Menu savedMenu = menuService.create(menu);
 
         //then
-        assertThat(menuService.create(menu)).isInstanceOf(Menu.class);
+        assertThat(savedMenu).isInstanceOf(Menu.class);
+        assertThat(savedMenu.getMenuProducts()).isNotEmpty();
 
     }
 
