@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -75,7 +76,12 @@ class TableGroupServiceTest {
     void create_failed_2() {
         //given
         TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Arrays.asList(new OrderTable()));
+        OrderTable orderTable1 = new OrderTable();
+        orderTable1.setId(1L);
+        OrderTable orderTable2 = new OrderTable();
+        orderTable2.setId(2L);
+        tableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
+        given(orderTableDao.findAllByIdIn(any())).willReturn(Collections.emptyList());
 
         //then
         assertThatThrownBy(() -> tableGroupService.create(tableGroup)).isExactlyInstanceOf(IllegalArgumentException.class);
