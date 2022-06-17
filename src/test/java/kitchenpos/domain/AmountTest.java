@@ -34,10 +34,10 @@ class AmountTest {
         assertThat(ten.add(one)).isEqualTo(new Amount(BigDecimal.valueOf(11)));
     }
 
-    @DisplayName("금액(1)은 금액(10)보다 작다.")
+    @DisplayName("금액(10)은 금액(1)보다 크다.")
     @Test
     void isLessThan() {
-        assertThat(one.isLessThan(ten)).isTrue();
+        assertThat(ten.isGatherThan(one)).isTrue();
     }
 
     @DisplayName("Amount(10)과 Amount(10)은 동등하다.")
