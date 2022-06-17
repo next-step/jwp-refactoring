@@ -15,8 +15,17 @@ public class Product {
         this.price = price;
     }
 
+    private Product(String name, BigDecimal price) {
+        this.name = name;
+        this.price = price;
+    }
+
     public static Product of(Long id, String name, BigDecimal price) {
         return new Product(id, name, price);
+    }
+
+    public static Product of(String name, BigDecimal price) {
+        return new Product(name, price);
     }
 
     public Long getId() {

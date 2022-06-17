@@ -62,7 +62,7 @@ public class AcceptanceTest {
     }
 
     public static Long parseIdFromLocationHeader(ExtractableResponse<Response> response) {
-        String id = response.header(LOCATION_HEADER_KEY).split(SLASH)[2];
+        String id = response.header(LOCATION_HEADER_KEY).split(SLASH)[3];
         return Long.parseLong(id);
     }
 
