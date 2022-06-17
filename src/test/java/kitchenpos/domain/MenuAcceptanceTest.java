@@ -1,7 +1,12 @@
 package kitchenpos.domain;
 
-import static kitchenpos.domain.MenuAcceptanceTestMethod.*;
-import static kitchenpos.domain.MenuGroupAcceptanceTestMethod.*;
+import static kitchenpos.domain.MenuAcceptanceTestMethod.메뉴_등록_요청;
+import static kitchenpos.domain.MenuAcceptanceTestMethod.메뉴_등록되어_있음;
+import static kitchenpos.domain.MenuAcceptanceTestMethod.메뉴_등록됨;
+import static kitchenpos.domain.MenuAcceptanceTestMethod.메뉴_목록_응답됨;
+import static kitchenpos.domain.MenuAcceptanceTestMethod.메뉴_목록_조회_요청;
+import static kitchenpos.domain.MenuAcceptanceTestMethod.메뉴_목록_포함됨;
+import static kitchenpos.domain.MenuGroupAcceptanceTestMethod.메뉴_그룹_등록되어_있음;
 import static kitchenpos.domain.ProductAcceptanceTestMethod.상품_등록되어_있음;
 
 import io.restassured.response.ExtractableResponse;
@@ -9,9 +14,7 @@ import io.restassured.response.Response;
 import java.math.BigDecimal;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.application.fixture.MenuFixtureFactory;
-import kitchenpos.application.fixture.MenuGroupFixtureFactory;
 import kitchenpos.application.fixture.MenuProductFixtureFactory;
-import kitchenpos.application.fixture.ProductFixtureFactory;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
