@@ -1,8 +1,8 @@
 package kitchenpos;
 
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.MenuGroupResponse;
 
 import java.math.BigDecimal;
 
@@ -17,7 +17,7 @@ public final class MenuAcceptanceUtil {
 
     public static Menu 신메뉴_강정치킨_가져오기() {
         Product 강정치킨 = 상품_등록됨("강정치킨", BigDecimal.valueOf(15_000L));
-        MenuGroup 신메뉴 = 메뉴_그룹_등록됨("신메뉴");
+        MenuGroupResponse 신메뉴 = 메뉴_그룹_등록됨("신메뉴");
         return 메뉴_등록됨("강정치킨", BigDecimal.valueOf(15_000L), 신메뉴.getId(), 강정치킨);
     }
 }
