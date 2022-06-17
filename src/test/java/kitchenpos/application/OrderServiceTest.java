@@ -51,8 +51,13 @@ class OrderServiceTest {
         given(orderLineItemDao.save(any())).willReturn(new OrderLineItem());
         given(orderDao.save(any())).willReturn(order);
 
+        //when
+        Order savedOrder = orderService.create(order);
+
         //then
-        assertThat(orderService.create(order)).isInstanceOf(Order.class);
+        assertThat(savedOrder).isInstanceOf(Order.class);
+        assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(savedOrder.getOrderLineItems()).isNotEmpty();
     }
 
     @Test
