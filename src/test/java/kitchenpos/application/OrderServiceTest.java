@@ -8,7 +8,6 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -111,13 +110,17 @@ class OrderServiceTest {
     void changeOrderStatus() {
         //given
         Order order = new Order();
-        order.setOrderStatus(OrderStatus.COOKING.name());
+        order.setOrderStatus(OrderStatus.MEAL.name());
         given(orderDao.findById(any())).willReturn(Optional.of(order));
         given(orderDao.save(any())).willReturn(order);
-        given(orderLineItemDao.findAllByOrderId(any())).willReturn(Collections.emptyList());
+        given(orderLineItemDao.findAllByOrderId(any())).willReturn(Arrays.asList(new OrderLineItem()));
+
+        //when
+        Order savedOrder = orderService.changeOrderStatus(0L, order);
 
         //then
-        Assertions.assertDoesNotThrow(() -> orderService.changeOrderStatus(0L, order));
+        assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
+        assertThat(savedOrder.getOrderLineItems()).isNotEmpty();
     }
 
     @Test
