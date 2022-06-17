@@ -5,6 +5,12 @@
 - [X] 키친포스의 요구사항을 README.md 파일에 작성한다.
 - [X] 정의된 요구사항을 토대로 테스트 코드를 작성한다.
  
+**2단계 : 서비스 리팩터링**
+- [X] spring data jpa 의존성 추가 및 property 처리
+- [ ] 도메인별 패키지 정리 (application, domain, dto, ui)
+- [ ] 도메인 클래스 JPA Entity 변경
+- [ ] 도메인별 Repository 구성 및 Dao -> Repository 변경
+- [ ] Service 비즈니스 로직 도메인으로 리팩토링 
 
 ---
 ## 요구 사항
