@@ -35,7 +35,7 @@ class MenuEntityTest {
         }).isInstanceOf(NullPointerException.class);
     }
 
-    @DisplayName("이름없이 메뉴를 생성한다.")
+    @DisplayName("가격인 -1인 메뉴를 생성한다.")
     @Test
     void failureCreateWithNegativePrice() {
         assertThatThrownBy(() -> {
