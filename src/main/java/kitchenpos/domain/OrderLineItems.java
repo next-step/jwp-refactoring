@@ -25,7 +25,7 @@ public class OrderLineItems {
         }
     }
 
-    public void add(Order order, OrderLineItem orderLineItem) {
+    private void add(Order order, OrderLineItem orderLineItem) {
         if (!this.orderLineItems.contains(orderLineItem)) {
             this.orderLineItems.add(orderLineItem);
         }

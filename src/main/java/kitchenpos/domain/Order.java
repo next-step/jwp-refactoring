@@ -39,6 +39,18 @@ public class Order {
         }
     }
 
+    public void changeOrderStatus(OrderStatus orderStatus) {
+        requireNonNull(orderStatus, "orderStatus");
+        if (isCompleted()) {
+            throw new CannotChangeOrderStatusException();
+        }
+        this.orderStatus = orderStatus;
+    }
+
+    private boolean isCompleted() {
+        return OrderStatus.COMPLETION == this.orderStatus;
+    }
+
     public Long getId() {
         return id;
     }
@@ -57,17 +69,5 @@ public class Order {
 
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems.get();
-    }
-
-    public void changeOrderStatus(OrderStatus orderStatus) {
-        requireNonNull(orderStatus, "orderStatus");
-        if (isCompleted()) {
-            throw new CannotChangeOrderStatusException();
-        }
-        this.orderStatus = orderStatus;
-    }
-
-    private boolean isCompleted() {
-        return OrderStatus.COMPLETION == this.orderStatus;
     }
 }
