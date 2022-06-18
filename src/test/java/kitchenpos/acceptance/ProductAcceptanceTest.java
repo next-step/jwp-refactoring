@@ -4,6 +4,7 @@ package kitchenpos.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,13 +25,13 @@ class ProductAcceptanceTest extends AcceptanceTest {
    private static final String PRODUCTS_PATH = "/api/products";
 
   /**
-   * Feature: 상품을 관련 기능
+   * Feature: 상품 관련 기능
    *
    *   Scenario: 상품을 관리
-   *     Given 상품명과 가격으로
+   *     Given 요청할 상품을 생성하고
    *     When  상품 등록 요청하면
    *     Then  등록 된다.
-   *     Given 상품명과 가격은 0원이하로
+   *     Given 요청할 상품을 가격은 0원미만으로 생성하고
    *     When  상품 등록 요청하면
    *     Then  등록 실패한다,
    *
@@ -41,11 +42,9 @@ class ProductAcceptanceTest extends AcceptanceTest {
   @TestFactory
   Stream<DynamicTest> manageProduct() {
       return Stream.of(
-              dynamicTest("상품을 등록한다.(가격이 0원이하면 실패한다.)", () -> {
+              dynamicTest("상품을 등록한다.", () -> {
                   //given
-                  Map<String, Object> params = new HashMap<>();
-                  params.put("name", "강정치킨");
-                  params.put("price", 17000);
+                  Map<String, Object> params = 요청할_상품_생성("강정치킨", 17000);
 
                   //when
                   ExtractableResponse<Response> response = 상품_등록_요청(params);
@@ -54,9 +53,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
                   상품_등록됨(response);
 
                   //given
-                  Map<String, Object> params2 = new HashMap<>();
-                  params.put("name", "강정치킨2");
-                  params.put("price", 0);
+                  Map<String, Object> params2 = 요청할_상품_생성("초코치킨", -1000);
 
                   //when
                   ExtractableResponse<Response> response2 = 상품_등록_요청(params2);
@@ -70,14 +67,21 @@ class ProductAcceptanceTest extends AcceptanceTest {
                   ExtractableResponse<Response> response = 상품_목록_조회_요청();
 
                   //then
-                  상품_목록_조회됨(response);
+                  상품_목록_조회됨(response, Collections.singletonList("강정치킨"));
               })
       );
 
   }
 
-    public static Product 상품_등록_되어있음(Map<String, Object> params){
-      return 상품_등록_요청(params).as(Product.class);
+    public static Product 상품_등록_되어있음(Map<String, Object> params) {
+        return 상품_등록_요청(params).as(Product.class);
+    }
+
+    private Map<String, Object> 요청할_상품_생성(String name, int price) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", name);
+        params.put("price", price);
+        return params;
     }
 
     private ExtractableResponse<Response> 상품_목록_조회_요청() {
@@ -96,21 +100,17 @@ class ProductAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 상품_목록_조회됨(ExtractableResponse<Response> response) {
+    private void 상품_목록_조회됨(ExtractableResponse<Response> response, List<String> productNames) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        List<String> names = response.body().jsonPath().getList("name", String.class);
-        assertThat(names).hasSize(1);
-        assertThat(names).contains("강정치킨");
+        assertThat(response.body().jsonPath().getList("name", String.class)).containsExactlyElementsOf(productNames);
     }
 
-    private void 상품_등록_실패됨(ExtractableResponse<Response> response2) {
-        assertThat(response2.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    private void 상품_등록_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     private void 상품_등록됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
-
-
 
 }
