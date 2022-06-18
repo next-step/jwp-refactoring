@@ -82,7 +82,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> 상품_등록_요청(Map<String, Object> params) {
+    private static ExtractableResponse<Response> 상품_등록_요청(Map<String, Object> params) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
@@ -94,7 +94,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
     private void 상품_목록_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         List<String> names = response.body().jsonPath().getList("name", String.class);
-        assertThat(names).hasSize(7);
+        assertThat(names).hasSize(1);
         assertThat(names).contains("강정치킨");
     }
 
