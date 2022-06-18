@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class TableService {
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
