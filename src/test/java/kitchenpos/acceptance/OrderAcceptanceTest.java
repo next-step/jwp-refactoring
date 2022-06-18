@@ -32,7 +32,6 @@ class OrderAcceptanceTest extends AcceptanceTest {
 
 
     private static final String ORDER_PATH = "/api/orders";
-    private static final int PRODUCT_QUANTITY_DEFAULT = 100;
 
     private Product 뿌링클;
     private Product 투움바;
@@ -157,14 +156,19 @@ class OrderAcceptanceTest extends AcceptanceTest {
     }
 
 
-    private Map<String, Object> 요청할_주문_생성(OrderTable orderTable, List<Menu> menus) {
+    public static void 주문_동록_및_주문_상태_업데이트_되어있음(OrderTable orderTable, List<Menu> menus, OrderStatus orderStatus) {
+        Map<String, Object> params = 요청할_주문_생성(orderTable, menus);
+        주문_상태_업데이트_요청(주문_등록_요청(params), orderStatus);
+    }
+
+    private static Map<String, Object> 요청할_주문_생성(OrderTable orderTable, List<Menu> menus) {
         Map<String, Object> params = new HashMap<>();
         params.put("orderTableId", orderTable.getId());
         params.put("orderLineItems", 요청할_주문_항목_리스트_생성(menus));
         return params;
     }
 
-    private List<Map<String, Object>> 요청할_주문_항목_리스트_생성(List<Menu> menus) {
+    private static List<Map<String, Object>> 요청할_주문_항목_리스트_생성(List<Menu> menus) {
         List<Map<String, Object>> params = new ArrayList<>();
         for (Menu menu : menus) {
             Map<String, Object> orderLineItemParam = new HashMap<>();
@@ -175,7 +179,8 @@ class OrderAcceptanceTest extends AcceptanceTest {
         return params;
     }
 
-    private ExtractableResponse<Response> 주문_상태_업데이트_요청(ExtractableResponse<Response> response, OrderStatus orderStatus) {
+    private static ExtractableResponse<Response> 주문_상태_업데이트_요청(ExtractableResponse<Response> response,
+                                                               OrderStatus orderStatus) {
         String location = response.header("Location");
 
         Map<String, Object> params = new HashMap<>();
@@ -189,7 +194,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> 주문_등록_요청(Map<String, Object> params) {
+    private static ExtractableResponse<Response> 주문_등록_요청(Map<String, Object> params) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
