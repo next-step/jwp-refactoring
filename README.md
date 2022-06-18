@@ -41,21 +41,21 @@
       | 빈 테이블인 경우 업데이트 할 수 없다.  | IllegalArgumentException |
 
 #### :memo:단체 지정
-- 단체 지정은 주문 테이블들로 이루어져 있다.
-- 단체 지정을 등록 할 수 있다. (테이블 그룹화)
+- 단체 지정은 테이블들로 이루어져 있다.
+- 단체 지정을 등록 할 수 있다. (빈 테이블 그룹화)
     * 예외 상황
       |내용|Exception|
       |---|---|
-      | 단체 지정할 주문 테이블이 2개 미만인 경우 등록 할 수 없다.  | IllegalArgumentException |
-      | 없는 주문 테이블이 있는 경우에는 등록 할 수 없다. | IllegalArgumentException |
-      | 요청한 주문 테이블들 중 하나라도 빈 테이블이 아닌 경우 등록 할 수 없다.  | IllegalArgumentException |
-      | 이미 단체 지정된 주문 테이블이 있는 경우 등록 할 수 없다.  | IllegalArgumentException |
+      | 단체 지정할 테이블이 2개 미만인 경우 등록 할 수 없다.  | IllegalArgumentException |
+      | 존재하지 않는 테이블이 있는 경우에는 등록 할 수 없다. | IllegalArgumentException |
+      | 주문 테이블 있는 경우 등록 할 수 없다.  | IllegalArgumentException |
+      | 이미 단체 지정된 테이블이 있는 경우 등록 할 수 없다.  | IllegalArgumentException |
 
-- 주문테이블그룹을 해제 할 수 있다.
+- 단체 지정을 해제 할 수 있다.
     * 예외 상황
       |내용|Exception|
       |---|---|
-      | 요청한 주문 테이블들 중 하나라도 주문 상태가 조리, 식사인 경우 해제 할 수 없다.| IllegalArgumentException |
+      | 요청한 테이블들 중 하나라도 주문 상태가 조리, 식사인 경우 해제 할 수 없다.| IllegalArgumentException |
 
 #### :memo:주문
 - 주문은 단체 지정, 주문 상태, 주문 항목으로 이루어져 있다. 
