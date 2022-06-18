@@ -6,11 +6,14 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
@@ -80,7 +83,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
                     ExtractableResponse<Response> response = 메뉴_목록_조회_요청();
 
                     //then
-                    메뉴_목록_조회됨(response);
+                    메뉴_목록_조회됨(response, Arrays.asList(뿌링클, 투움바));
                 })
         );
 
@@ -134,10 +137,14 @@ class MenuAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    private void 메뉴_목록_조회됨(ExtractableResponse<Response> response) {
+    private void 메뉴_목록_조회됨(ExtractableResponse<Response> response, List<Product> products) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.body().jsonPath().getList("name", String.class)).contains("뿌링클", "투움바");
-        assertThat(response.body().jsonPath().getList("price",String.class)).contains("27000.0", "30000.0");
+        assertThat(response.body().jsonPath().getList("name", String.class))
+                .containsExactlyInAnyOrderElementsOf(
+                        products.stream().map(Product::getName).collect(Collectors.toList()));
+        assertThat(response.body().jsonPath().getList("price", BigDecimal.class))
+                .containsExactlyInAnyOrderElementsOf(
+                        products.stream().map(Product::getPrice).collect(Collectors.toList()));
     }
 
 }
