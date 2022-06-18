@@ -3,8 +3,8 @@ package kitchenpos.domain;
 import javax.persistence.*;
 import static java.util.Objects.requireNonNull;
 
-@Entity(name = "order_line_item")
-public class OrderLineItemEntity {
+@Entity
+public class OrderLineItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
@@ -15,12 +15,12 @@ public class OrderLineItemEntity {
     @Embedded
     private Quantity quantity;
 
-    public OrderLineItemEntity(Long menuId, long quantity) {
+    public OrderLineItem(Long menuId, long quantity) {
         this.menuId = requireNonNull(menuId, "menuId");
         this.quantity = new Quantity(quantity);
     }
 
-    protected OrderLineItemEntity() {
+    protected OrderLineItem() {
     }
 
     public void bindTo(Order order) {

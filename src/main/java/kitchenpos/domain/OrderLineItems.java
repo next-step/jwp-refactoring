@@ -12,27 +12,27 @@ import static java.util.Objects.requireNonNull;
 public class OrderLineItems {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderLineItemEntity> orderLineItems = new ArrayList<>();
+    private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     protected OrderLineItems() {
     }
 
-    public void addAll(Order order, List<OrderLineItemEntity> orderLineItems) {
+    public void addAll(Order order, List<OrderLineItem> orderLineItems) {
         requireNonNull(order, "order");
         requireNonNull(orderLineItems, "orderLineItems");
-        for (OrderLineItemEntity orderLineItem : orderLineItems) {
+        for (OrderLineItem orderLineItem : orderLineItems) {
             add(order, orderLineItem);
         }
     }
 
-    public void add(Order order, OrderLineItemEntity orderLineItem) {
+    public void add(Order order, OrderLineItem orderLineItem) {
         if (!this.orderLineItems.contains(orderLineItem)) {
             this.orderLineItems.add(orderLineItem);
         }
         orderLineItem.bindTo(order);
     }
 
-    public List<OrderLineItemEntity> get() {
+    public List<OrderLineItem> get() {
         return Collections.unmodifiableList(orderLineItems);
     }
 }

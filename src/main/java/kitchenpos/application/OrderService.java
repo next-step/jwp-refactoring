@@ -37,28 +37,28 @@ public class OrderService {
     }
 
     private void validate(OrderRequest request) {
-        List<OrderLineItemEntity> orderLineItems = request.toOrderLineItems();
+        List<OrderLineItem> orderLineItems = request.toOrderLineItems();
         validateNotEmptyOrderLineItems(orderLineItems);
         validateExistsAllMenus(orderLineItems);
         validateNotEmptyOrderTable(request);
     }
 
-    private void validateNotEmptyOrderLineItems(List<OrderLineItemEntity> orderLineItems) {
+    private void validateNotEmptyOrderLineItems(List<OrderLineItem> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
             throw new EmptyOrderLineItemsException();
         }
     }
 
-    private void validateExistsAllMenus(List<OrderLineItemEntity> orderLineItems) {
+    private void validateExistsAllMenus(List<OrderLineItem> orderLineItems) {
         List<Long> menuIds = toMenuIds(orderLineItems);
         if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
             throw new InvalidOrderException("존재하지 않는 메뉴가 있습니다.");
         }
     }
 
-    private List<Long> toMenuIds(List<OrderLineItemEntity> orderLineItems) {
+    private List<Long> toMenuIds(List<OrderLineItem> orderLineItems) {
         return orderLineItems.stream()
-                             .map(OrderLineItemEntity::getMenuId)
+                             .map(OrderLineItem::getMenuId)
                              .collect(Collectors.toList());
     }
 

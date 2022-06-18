@@ -28,12 +28,12 @@ public class Order {
     protected Order() {
     }
 
-    public void addOrderLineItems(List<OrderLineItemEntity> orderLineItems) {
+    public void addOrderLineItems(List<OrderLineItem> orderLineItems) {
         validateOrderLineItems(orderLineItems);
         this.orderLineItems.addAll(this, orderLineItems);
     }
 
-    private void validateOrderLineItems(List<OrderLineItemEntity> orderLineItems) {
+    private void validateOrderLineItems(List<OrderLineItem> orderLineItems) {
         if (orderLineItems.isEmpty()) {
             throw new EmptyOrderLineItemsException();
         }
@@ -55,7 +55,7 @@ public class Order {
         return orderedTime;
     }
 
-    public List<OrderLineItemEntity> getOrderLineItems() {
+    public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems.get();
     }
 

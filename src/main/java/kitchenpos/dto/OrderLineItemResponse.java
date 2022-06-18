@@ -1,6 +1,6 @@
 package kitchenpos.dto;
 
-import kitchenpos.domain.OrderLineItemEntity;
+import kitchenpos.domain.OrderLineItem;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,12 +21,12 @@ public class OrderLineItemResponse {
     protected OrderLineItemResponse() {
     }
 
-    public static OrderLineItemResponse of(OrderLineItemEntity orderLineItem) {
+    public static OrderLineItemResponse of(OrderLineItem orderLineItem) {
         return new OrderLineItemResponse(orderLineItem.getSeq(), orderLineItem.getOrder().getId(),
                                          orderLineItem.getMenuId(), orderLineItem.getQuantity().getValue());
     }
 
-    public static List<OrderLineItemResponse> of(List<OrderLineItemEntity> orderLineItems) {
+    public static List<OrderLineItemResponse> of(List<OrderLineItem> orderLineItems) {
         return orderLineItems.stream()
                              .map(OrderLineItemResponse::of)
                              .collect(Collectors.toList());

@@ -6,12 +6,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("OrderLineItem 클래스 테스트")
-class OrderLineItemEntityTest {
+class OrderLineItemTest {
 
     @DisplayName("OrderLineItem 생성한다.")
     @Test
     void successfulCreate() {
-        OrderLineItemEntity orderLineItem = new OrderLineItemEntity(1L, 1);
+        OrderLineItem orderLineItem = new OrderLineItem(1L, 1);
         assertThat(orderLineItem).isNotNull();
     }
 
@@ -19,7 +19,7 @@ class OrderLineItemEntityTest {
     @Test
     void failureCreateWithEmptyMenu() {
         assertThatThrownBy(() -> {
-            new OrderLineItemEntity(null, 1);
+            new OrderLineItem(null, 1);
         }).isInstanceOf(NullPointerException.class);
     }
 
@@ -27,7 +27,7 @@ class OrderLineItemEntityTest {
     @Test
     void failureCreateWithNegativeQuantity() {
         assertThatThrownBy(() -> {
-            new OrderLineItemEntity(1L, -1);
+            new OrderLineItem(1L, -1);
         }).isInstanceOf(InvalidQuantityException.class);
     }
 }
