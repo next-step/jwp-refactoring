@@ -1,7 +1,6 @@
 package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -26,7 +25,7 @@ class MenuGroupServiceTest {
     private MenuGroupService menuGroupService;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         menuGroupService = new MenuGroupService(menuGroupDao);
     }
 
@@ -34,7 +33,7 @@ class MenuGroupServiceTest {
     @Test
     void create() {
         //given
-        MenuGroup menuGroup = new MenuGroup("인기 메뉴");
+        MenuGroup menuGroup = new MenuGroup(null, "인기 메뉴");
         when(menuGroupDao.save(any())).thenReturn(menuGroup);
 
         //when
@@ -48,9 +47,9 @@ class MenuGroupServiceTest {
     @Test
     void list() {
         //given
-        MenuGroup menuGroup1 = new MenuGroup("인기 메뉴");
-        MenuGroup menuGroup2 = new MenuGroup("단품 메뉴");
-        MenuGroup menuGroup3 = new MenuGroup("세트 메뉴");
+        MenuGroup menuGroup1 = new MenuGroup(null, "인기 메뉴");
+        MenuGroup menuGroup2 = new MenuGroup(null, "단품 메뉴");
+        MenuGroup menuGroup3 = new MenuGroup(null, "세트 메뉴");
         when(menuGroupDao.findAll()).thenReturn(Arrays.asList(menuGroup1, menuGroup2, menuGroup3));
 
         //when

@@ -36,7 +36,7 @@ class ProductServiceTest {
     void create() {
         //given
         Product product = new Product(BigDecimal.valueOf(19000));
-        when(productDao.save(any())).thenReturn(product);
+        when(productDao.save(product)).thenReturn(product);
 
         //when
         Product result = productService.create(product);
