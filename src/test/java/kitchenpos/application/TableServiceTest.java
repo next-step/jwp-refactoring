@@ -24,7 +24,6 @@ class TableServiceTest extends ServiceTest {
 
     @BeforeEach
     public void setUp(@Autowired OrderRepository orderRepository) {
-        super.setUp();
         orderTable = orderTableRepository.save(new OrderTableEntity(0, false));
     }
 

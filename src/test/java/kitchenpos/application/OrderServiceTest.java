@@ -29,7 +29,6 @@ class OrderServiceTest extends ServiceTest {
     @BeforeEach
     public void setUp(@Autowired MenuServiceTestSupport menuServiceTestSupport,
                       @Autowired OrderTableRepository orderTableRepository) {
-        super.setUp();
         강정치킨 = menuServiceTestSupport.신메뉴_강정치킨_가져오기();
         테이블 = orderTableRepository.save(new OrderTableEntity(5, false));
         빈테이블 = orderTableRepository.save(new OrderTableEntity(0, true));

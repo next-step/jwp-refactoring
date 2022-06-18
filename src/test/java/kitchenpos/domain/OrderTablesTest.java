@@ -24,4 +24,15 @@ class OrderTablesTest {
 
         assertThat(orderTables.get()).hasSize(3);
     }
+
+    @DisplayName("OrderTables를 초기화한다.")
+    @Test
+    void clear() {
+        OrderTables orderTables = new OrderTables();
+        orderTables.addAll(this.tableGroup, this.orderTables);
+
+        orderTables.clear();
+
+        assertThat(orderTables.get()).hasSize(0);
+    }
 }

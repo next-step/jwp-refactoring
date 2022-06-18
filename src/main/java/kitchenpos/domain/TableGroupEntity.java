@@ -30,20 +30,18 @@ public class TableGroupEntity {
         if (orderTables.size() < MIN_SIZE) {
             throw new InvalidOrderTablesException("테이블 갯수가 적습니다.");
         }
-        if (hasNotEmpty(orderTables)) {
-            throw new InvalidOrderTablesException("테이블 중에 빈 테이블이 아닌 테이블이 있습니다.");
-        }
-        if (hasGroup(orderTables)) {
-            throw new InvalidOrderTablesException("테이블 중에 다른 단체 지정된 테이블이 있습니다.");
+        if (hasNotEmptyOrGrouped(orderTables)) {
+            throw new InvalidOrderTablesException(
+                    "테이블 중에 빈 테이블이 아니거나 다른 단체에 지정된 테이블이 있습니다.");
         }
     }
 
-    private boolean hasNotEmpty(List<OrderTableEntity> orderTables) {
-        return orderTables.stream().anyMatch(it -> !it.isEmpty());
+    private boolean hasNotEmptyOrGrouped(List<OrderTableEntity> orderTables) {
+        return orderTables.stream().anyMatch(it -> !it.isEmpty() || it.isGrouped());
     }
 
-    private boolean hasGroup(List<OrderTableEntity> orderTables) {
-        return orderTables.stream().anyMatch(OrderTableEntity::isGrouped);
+    public void ungroup() {
+        orderTables.clear();
     }
 
     public Long getId() {

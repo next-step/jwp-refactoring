@@ -35,4 +35,9 @@ public class OrderTables {
     public List<OrderTableEntity> get() {
         return Collections.unmodifiableList(orderTables);
     }
+
+    public void clear() {
+        orderTables.forEach(OrderTableEntity::unbind);
+        orderTables.clear();
+    }
 }

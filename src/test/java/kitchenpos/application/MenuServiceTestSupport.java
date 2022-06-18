@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.domain.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -20,6 +21,7 @@ public class MenuServiceTestSupport {
         this.menuRepository = menuRepository;
     }
 
+    @Transactional
     public MenuEntity 신메뉴_강정치킨_가져오기() {
         ProductEntity 강정치킨 = productRepository.save(new ProductEntity("강정치킨", BigDecimal.valueOf(15_000)));
         MenuGroupEntity 신메뉴 = menuGroupRepository.save(new MenuGroupEntity("신메뉴"));

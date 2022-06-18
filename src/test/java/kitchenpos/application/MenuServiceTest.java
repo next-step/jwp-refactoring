@@ -28,7 +28,6 @@ class MenuServiceTest extends ServiceTest {
     @BeforeEach
     public void setUp(@Autowired ProductRepository productRepository,
                       @Autowired MenuGroupRepository menuGroupRepository) {
-        super.setUp();
         강정치킨 = productRepository.save(new ProductEntity("강정치킨", BigDecimal.valueOf(15_000)));
         신메뉴 = menuGroupRepository.save(new MenuGroupEntity("신메뉴"));
     }

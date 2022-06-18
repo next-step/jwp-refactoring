@@ -24,6 +24,11 @@ public class OrderTableEntity {
 
     public void bindTo(TableGroupEntity tableGroup) {
         this.tableGroup = tableGroup;
+        this.empty = new Empty(false);
+    }
+
+    public void unbind() {
+        tableGroup = null;
     }
 
     public boolean isGrouped() {
