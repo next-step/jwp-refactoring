@@ -58,4 +58,26 @@ class OrderEntityTest {
         }).isInstanceOf(EmptyOrderLineItemsException.class)
         .hasMessageContaining("주문 항목이 비었습니다.");
     }
+
+    @DisplayName("주문의 상태를 변경한다.")
+    @Test
+    void changeOrderStatus() {
+        OrderEntity order = new OrderEntity(1L);
+
+        order.changeOrderStatus(OrderStatus.MEAL);
+
+        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
+    }
+
+    @DisplayName("주문의 상태를 변경한다.")
+    @Test
+    void changeOrderStatusWithCompleted() {
+        OrderEntity order = new OrderEntity(1L);
+        order.changeOrderStatus(OrderStatus.COMPLETION);
+
+        assertThatThrownBy(() -> {
+            order.changeOrderStatus(OrderStatus.COMPLETION);
+        }).isInstanceOf(CannotChangeOrderStatusException.class)
+        .hasMessageContaining("주문 상태를 변경할 수 없습니다.");
+    }
 }

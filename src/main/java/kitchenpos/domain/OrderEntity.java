@@ -3,6 +3,7 @@ package kitchenpos.domain;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+
 import static java.util.Objects.requireNonNull;
 
 @Entity(name = "orders")
@@ -56,5 +57,17 @@ public class OrderEntity {
 
     public List<OrderLineItemEntity> getOrderLineItems() {
         return orderLineItems.get();
+    }
+
+    public void changeOrderStatus(OrderStatus orderStatus) {
+        requireNonNull(orderStatus, "orderStatus");
+        if (isCompleted()) {
+            throw new CannotChangeOrderStatusException();
+        }
+        this.orderStatus = orderStatus;
+    }
+
+    private boolean isCompleted() {
+        return OrderStatus.COMPLETION == this.orderStatus;
     }
 }
