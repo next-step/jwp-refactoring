@@ -22,16 +22,16 @@ class OrderServiceTest extends ServiceTest {
     @Autowired
     private OrderService service;
 
-    private MenuEntity 강정치킨;
-    private OrderTableEntity 테이블;
-    private OrderTableEntity 빈테이블;
+    private Menu 강정치킨;
+    private OrderTable 테이블;
+    private OrderTable 빈테이블;
 
     @BeforeEach
     public void setUp(@Autowired MenuServiceTestSupport menuServiceTestSupport,
                       @Autowired OrderTableRepository orderTableRepository) {
         강정치킨 = menuServiceTestSupport.신메뉴_강정치킨_가져오기();
-        테이블 = orderTableRepository.save(new OrderTableEntity(5, false));
-        빈테이블 = orderTableRepository.save(new OrderTableEntity(0, true));
+        테이블 = orderTableRepository.save(new OrderTable(5, false));
+        빈테이블 = orderTableRepository.save(new OrderTable(0, true));
     }
 
     @DisplayName("주문을 생성한다.")

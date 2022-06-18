@@ -12,27 +12,27 @@ import static java.util.Objects.requireNonNull;
 public class MenuProducts {
 
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MenuProductEntity> menuProducts = new ArrayList<>();
+    private List<MenuProduct> menuProducts = new ArrayList<>();
 
     protected MenuProducts() {
     }
 
-    public void addAll(MenuEntity menu, List<MenuProductEntity> menuProducts) {
+    public void addAll(Menu menu, List<MenuProduct> menuProducts) {
         requireNonNull(menu, "menu");
         requireNonNull(menuProducts, "menuProducts");
-        for (MenuProductEntity menuProduct : menuProducts) {
+        for (MenuProduct menuProduct : menuProducts) {
             add(menu, menuProduct);
         }
     }
 
-    private void add(MenuEntity menu, MenuProductEntity menuProduct) {
+    private void add(Menu menu, MenuProduct menuProduct) {
         if (!this.menuProducts.contains(menuProduct)) {
             menuProducts.add(menuProduct);
         }
         menuProduct.bindTo(menu);
     }
 
-    public List<MenuProductEntity> get() {
+    public List<MenuProduct> get() {
         return Collections.unmodifiableList(menuProducts);
     }
 }

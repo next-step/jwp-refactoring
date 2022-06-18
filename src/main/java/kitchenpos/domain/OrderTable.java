@@ -2,27 +2,27 @@ package kitchenpos.domain;
 
 import javax.persistence.*;
 
-@Entity(name = "order_table")
-public class OrderTableEntity {
+@Entity
+public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    private TableGroupEntity tableGroup;
+    private TableGroup tableGroup;
     @Embedded
     private NumberOfGuests numberOfGuests;
     @Embedded
     private Empty empty;
 
-    public OrderTableEntity(int numberOfGuests, boolean empty) {
+    public OrderTable(int numberOfGuests, boolean empty) {
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
         this.empty = new Empty(empty);
     }
 
-    protected OrderTableEntity() {
+    protected OrderTable() {
     }
 
-    public void bindTo(TableGroupEntity tableGroup) {
+    public void bindTo(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
         this.empty = new Empty(false);
     }
@@ -43,7 +43,7 @@ public class OrderTableEntity {
         return id;
     }
 
-    public TableGroupEntity getTableGroup() {
+    public TableGroup getTableGroup() {
         return tableGroup;
     }
 

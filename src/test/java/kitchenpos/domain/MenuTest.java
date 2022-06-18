@@ -10,20 +10,20 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("Menu 클래스 테스트")
-class MenuEntityTest {
+class MenuTest {
 
-    private MenuProductEntity menuProduct;
+    private MenuProduct menuProduct;
 
     @BeforeEach
     void setUp() {
-        ProductEntity product = new ProductEntity("강정치킨", BigDecimal.valueOf(15_000L));
-        menuProduct = new MenuProductEntity(product, 1L);
+        Product product = new Product("강정치킨", BigDecimal.valueOf(15_000L));
+        menuProduct = new MenuProduct(product, 1L);
     }
 
     @DisplayName("메뉴를 생성한다.")
     @Test
     void create() {
-        MenuEntity menu = new MenuEntity("강정치킨", BigDecimal.valueOf(15_000L), 1L);
+        Menu menu = new Menu("강정치킨", BigDecimal.valueOf(15_000L), 1L);
         assertThat(menu).isNotNull();
     }
 
@@ -31,7 +31,7 @@ class MenuEntityTest {
     @Test
     void failureCreateWithEmptyName() {
         assertThatThrownBy(() -> {
-            new MenuEntity(null, BigDecimal.valueOf(15_000L), 1L);
+            new Menu(null, BigDecimal.valueOf(15_000L), 1L);
         }).isInstanceOf(NullPointerException.class);
     }
 
@@ -39,7 +39,7 @@ class MenuEntityTest {
     @Test
     void failureCreateWithNegativePrice() {
         assertThatThrownBy(() -> {
-            new MenuEntity("강정치킨", BigDecimal.valueOf(-1), 1L);
+            new Menu("강정치킨", BigDecimal.valueOf(-1), 1L);
         }).isInstanceOf(InvalidPriceException.class);
     }
 
@@ -47,14 +47,14 @@ class MenuEntityTest {
     @Test
     void failureCreateWithNullMenuGroupId() {
         assertThatThrownBy(() -> {
-            new MenuEntity("강정치킨", BigDecimal.valueOf(15_000L), null);
+            new Menu("강정치킨", BigDecimal.valueOf(15_000L), null);
         }).isInstanceOf(NullPointerException.class);
     }
 
     @DisplayName("메뉴에 메뉴 상품들을 추가한다.")
     @Test
     void addAllMenuProducts() {
-        MenuEntity menu = new MenuEntity("강정치킨", BigDecimal.valueOf(15_000L), 1L);
+        Menu menu = new Menu("강정치킨", BigDecimal.valueOf(15_000L), 1L);
 
         menu.addMenuProducts(Arrays.asList(menuProduct));
 
@@ -70,7 +70,7 @@ class MenuEntityTest {
     @DisplayName("메뉴에 메뉴 가격이 상품들의 금액의 합보다 큰 메뉴 상품들을 추가한다.")
     @Test
     void addAllMenuProductsThrownException() {
-        MenuEntity menu = new MenuEntity("강정치킨", BigDecimal.valueOf(16_000L), 1L);
+        Menu menu = new Menu("강정치킨", BigDecimal.valueOf(16_000L), 1L);
 
         assertThatThrownBy(() -> {
             menu.addMenuProducts(Arrays.asList(menuProduct));

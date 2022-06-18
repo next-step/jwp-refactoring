@@ -27,15 +27,15 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(TableGroupRequest request) {
-        List<OrderTableEntity> orderTables = validateCreate(request);
-        TableGroupEntity tableGroup = tableGroupRepository.save(new TableGroupEntity());
+        List<OrderTable> orderTables = validateCreate(request);
+        TableGroup tableGroup = tableGroupRepository.save(new TableGroup());
         tableGroup.addOrderTables(orderTables);
         return TableGroupResponse.of(tableGroup);
     }
 
-    private List<OrderTableEntity> validateCreate(TableGroupRequest request) {
+    private List<OrderTable> validateCreate(TableGroupRequest request) {
         List<Long> orderTableIds = validateNotEmptyIds(request);
-        List<OrderTableEntity> orderTables = orderTableRepository.findAllByIdIn(orderTableIds);
+        List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(orderTableIds);
         if (orderTableIds.size() != orderTables.size()) {
             throw new InvalidTableGroupException("존재하지 않는 테이블이 있습니다.");
         }
@@ -52,7 +52,7 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(Long tableGroupId) {
-        TableGroupEntity tableGroup = tableGroupRepository.findById(tableGroupId)
+        TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
                                                           .orElseThrow(NotFoundTableGroupException::new);
         validateUngroup(tableGroupId);
         tableGroup.ungroup();
@@ -71,9 +71,9 @@ public class TableGroupService {
     }
 
     private List<Long> findOrderTableIdsByTableGroupId(Long tableGroupId) {
-        List<OrderTableEntity> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
+        List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
         return orderTables.stream()
-                          .map(OrderTableEntity::getId)
+                          .map(OrderTable::getId)
                           .collect(Collectors.toList());
     }
 }

@@ -20,11 +20,11 @@ class TableServiceTest extends ServiceTest {
     @Autowired
     private OrderTableRepository orderTableRepository;
 
-    private OrderTableEntity orderTable;
+    private OrderTable orderTable;
 
     @BeforeEach
     public void setUp(@Autowired OrderRepository orderRepository) {
-        orderTable = orderTableRepository.save(new OrderTableEntity(0, false));
+        orderTable = orderTableRepository.save(new OrderTable(0, false));
     }
 
     @DisplayName("테이블을 생성한다.")

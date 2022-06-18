@@ -1,12 +1,12 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.MenuEntity;
+import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroupRepository;
-import kitchenpos.domain.MenuProductEntity;
+import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.NotFoundMenuGroupException;
 import kitchenpos.domain.NotFoundProductException;
-import kitchenpos.domain.ProductEntity;
+import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductRepository;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
@@ -35,26 +35,26 @@ public class MenuService {
     @Transactional
     public MenuResponse create(final MenuRequest request) {
         validateExistMenuGroup(request);
-        MenuEntity menu = createMenu(request);
+        Menu menu = createMenu(request);
         return MenuResponse.of(menu);
     }
 
-    private MenuEntity createMenu(MenuRequest request) {
-        MenuEntity menu = menuRepository.save(request.toMenu());
+    private Menu createMenu(MenuRequest request) {
+        Menu menu = menuRepository.save(request.toMenu());
         menu.addMenuProducts(toMenuProducts(request));
         return menu;
     }
 
-    private List<MenuProductEntity> toMenuProducts(MenuRequest request) {
-        List<MenuProductEntity> menuProducts = new ArrayList<>(request.getMenuProducts().size());
+    private List<MenuProduct> toMenuProducts(MenuRequest request) {
+        List<MenuProduct> menuProducts = new ArrayList<>(request.getMenuProducts().size());
         for (MenuProductRequest menuProductRequest : request.getMenuProducts()) {
-            ProductEntity product = findProductById(menuProductRequest);
+            Product product = findProductById(menuProductRequest);
             menuProducts.add(menuProductRequest.toMenuProduct(product));
         }
         return menuProducts;
     }
 
-    private ProductEntity findProductById(MenuProductRequest menuProductRequest) {
+    private Product findProductById(MenuProductRequest menuProductRequest) {
         return productRepository.findById(menuProductRequest.getProductId()).orElseThrow(NotFoundProductException::new);
     }
 

@@ -7,12 +7,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("Product 클래스 테스트")
-class ProductEntityTest {
+class ProductTest {
 
     @DisplayName("Product를 생성한다.")
     @Test
     void successfulCreate() {
-        ProductEntity product = new ProductEntity("강정치킨", BigDecimal.TEN);
+        Product product = new Product("강정치킨", BigDecimal.TEN);
         assertThat(product).isNotNull();
     }
 
@@ -20,7 +20,7 @@ class ProductEntityTest {
     @Test
     void failureCreateWithEmptyName() {
         assertThatThrownBy(() -> {
-            new ProductEntity(null, BigDecimal.TEN);
+            new Product(null, BigDecimal.TEN);
         }).isInstanceOf(NullPointerException.class);
     }
 
@@ -28,7 +28,7 @@ class ProductEntityTest {
     @Test
     void failureCreateWithNegativePrice() {
         assertThatThrownBy(() -> {
-            new ProductEntity("강정치킨", BigDecimal.valueOf(-1));
+            new Product("강정치킨", BigDecimal.valueOf(-1));
         }).isInstanceOf(InvalidPriceException.class);
     }
 }

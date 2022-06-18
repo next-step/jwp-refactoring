@@ -17,7 +17,7 @@ public class OrderLineItems {
     protected OrderLineItems() {
     }
 
-    public void addAll(OrderEntity order, List<OrderLineItemEntity> orderLineItems) {
+    public void addAll(Order order, List<OrderLineItemEntity> orderLineItems) {
         requireNonNull(order, "order");
         requireNonNull(orderLineItems, "orderLineItems");
         for (OrderLineItemEntity orderLineItem : orderLineItems) {
@@ -25,7 +25,7 @@ public class OrderLineItems {
         }
     }
 
-    public void add(OrderEntity order, OrderLineItemEntity orderLineItem) {
+    public void add(Order order, OrderLineItemEntity orderLineItem) {
         if (!this.orderLineItems.contains(orderLineItem)) {
             this.orderLineItems.add(orderLineItem);
         }

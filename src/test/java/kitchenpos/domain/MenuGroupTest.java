@@ -6,12 +6,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("MenuGroup 클래스 테스트")
-class MenuGroupEntityTest {
+class MenuGroupTest {
 
     @DisplayName("MenuGroup를 생성한다.")
     @Test
     void successfulCreate() {
-        MenuGroupEntity menuGroup = new MenuGroupEntity("신메뉴");
+        MenuGroup menuGroup = new MenuGroup("신메뉴");
         assertThat(menuGroup).isNotNull();
     }
 
@@ -19,7 +19,7 @@ class MenuGroupEntityTest {
     @Test
     void failureCreateWithEmptyName() {
         assertThatThrownBy(() -> {
-            new MenuGroupEntity(null);
+            new MenuGroup(null);
         }).isInstanceOf(NullPointerException.class);
     }
 }

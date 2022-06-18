@@ -4,8 +4,8 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Entity(name = "table_group")
-public class TableGroupEntity {
+@Entity
+public class TableGroup {
 
     private static final int MIN_SIZE = 2;
 
@@ -17,16 +17,16 @@ public class TableGroupEntity {
     @Embedded
     private OrderTables orderTables = new OrderTables();
 
-    public TableGroupEntity() {
+    public TableGroup() {
         this.createdDate = LocalDateTime.now();
     }
 
-    public void addOrderTables(List<OrderTableEntity> orderTables) {
+    public void addOrderTables(List<OrderTable> orderTables) {
         validateOrderTables(orderTables);
         this.orderTables.addAll(this, orderTables);
     }
 
-    private void validateOrderTables(List<OrderTableEntity> orderTables) {
+    private void validateOrderTables(List<OrderTable> orderTables) {
         if (orderTables.size() < MIN_SIZE) {
             throw new InvalidOrderTablesException("테이블 갯수가 적습니다.");
         }
@@ -36,7 +36,7 @@ public class TableGroupEntity {
         }
     }
 
-    private boolean hasNotEmptyOrGrouped(List<OrderTableEntity> orderTables) {
+    private boolean hasNotEmptyOrGrouped(List<OrderTable> orderTables) {
         return orderTables.stream().anyMatch(it -> !it.isEmpty() || it.isGrouped());
     }
 
@@ -52,7 +52,7 @@ public class TableGroupEntity {
         return createdDate;
     }
 
-    public List<OrderTableEntity> getOrderTables() {
+    public List<OrderTable> getOrderTables() {
         return orderTables.get();
     }
 }

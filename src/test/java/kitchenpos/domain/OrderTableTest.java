@@ -6,19 +6,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("OrderTable 클래스 테스트")
-class OrderTableEntityTest {
+class OrderTableTest {
 
     @DisplayName("빈 OrderTable을 생성한다.")
     @Test
     void createEmptyTable() {
-        OrderTableEntity orderTable = new OrderTableEntity(0, true);
+        OrderTable orderTable = new OrderTable(0, true);
         assertThat(orderTable.isEmpty()).isTrue();
     }
 
     @DisplayName("비어있지 않은 OrderTable을 생성한다.")
     @Test
     void createNotEmptyTable() {
-        OrderTableEntity orderTable = new OrderTableEntity(5, false);
+        OrderTable orderTable = new OrderTable(5, false);
         assertThat(orderTable.isEmpty()).isFalse();
     }
 
@@ -26,7 +26,7 @@ class OrderTableEntityTest {
     @Test
     void failureCreateWithNegativeNumberOfGuests() {
         assertThatThrownBy(() -> {
-            new OrderTableEntity(-1, false);
+            new OrderTable(-1, false);
         }).isInstanceOf(InvalidNumberOfGuestsException.class)
         .hasMessageContaining("유효하지 않은 손님 수입니다.");
     }
@@ -34,7 +34,7 @@ class OrderTableEntityTest {
     @DisplayName("비움 여부를 변경한다.")
     @Test
     void changeEmpty() {
-        OrderTableEntity orderTable = new OrderTableEntity(0, false);
+        OrderTable orderTable = new OrderTable(0, false);
 
         orderTable.changeEmpty(true);
 
@@ -44,8 +44,8 @@ class OrderTableEntityTest {
     @DisplayName("단체 지정된 테이블의 비움 여부를 변경한다.")
     @Test
     void changeEmptyWithGrouped() {
-        OrderTableEntity orderTable = new OrderTableEntity(0, false);
-        orderTable.bindTo(new TableGroupEntity());
+        OrderTable orderTable = new OrderTable(0, false);
+        orderTable.bindTo(new TableGroup());
 
         assertThatThrownBy(() -> {
             orderTable.changeEmpty(true);
@@ -56,7 +56,7 @@ class OrderTableEntityTest {
     @DisplayName("테이블의 손님 수를 변경한다.")
     @Test
     void changeNumberOfGuest() {
-        OrderTableEntity orderTable = new OrderTableEntity(0, false);
+        OrderTable orderTable = new OrderTable(0, false);
 
         orderTable.changeNumberOfGuests(5);
 
@@ -66,7 +66,7 @@ class OrderTableEntityTest {
     @DisplayName("테이블의 손님 수를 변경한다.")
     @Test
     void changeNumberOfGuestWithEmpty() {
-        OrderTableEntity orderTable = new OrderTableEntity(0, true);
+        OrderTable orderTable = new OrderTable(0, true);
 
         assertThatThrownBy(() -> {
             orderTable.changeNumberOfGuests(5);

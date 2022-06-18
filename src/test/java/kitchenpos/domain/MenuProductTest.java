@@ -8,19 +8,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("MenuProduct 클래스 테스트")
-class MenuProductEntityTest {
+class MenuProductTest {
 
-    private ProductEntity product;
+    private Product product;
 
     @BeforeEach
     void setUp() {
-        product = new ProductEntity("강정치킨", BigDecimal.valueOf(15_000L));
+        product = new Product("강정치킨", BigDecimal.valueOf(15_000L));
     }
 
     @DisplayName("MenuProduct 생성한다.")
     @Test
     void successfulCreate() {
-        MenuProductEntity menuProduct = new MenuProductEntity(product, 1);
+        MenuProduct menuProduct = new MenuProduct(product, 1);
         assertThat(menuProduct).isNotNull();
     }
 
@@ -28,7 +28,7 @@ class MenuProductEntityTest {
     @Test
     void failureCreateWithEmptyProduct() {
         assertThatThrownBy(() -> {
-            new MenuProductEntity(null, 1);
+            new MenuProduct(null, 1);
         }).isInstanceOf(NullPointerException.class);
     }
 
@@ -36,14 +36,14 @@ class MenuProductEntityTest {
     @Test
     void failureCreateWithNegativeQuantity() {
         assertThatThrownBy(() -> {
-            new MenuProductEntity(product, -1);
+            new MenuProduct(product, -1);
         }).isInstanceOf(InvalidQuantityException.class);
     }
 
     @DisplayName("가격이 15_000인 Product를 2개로 MenuProduct를 생성하면 금액은 30_000이다.")
     @Test
     void calculateAmount() {
-        MenuProductEntity menuProduct = new MenuProductEntity(product, 2);
+        MenuProduct menuProduct = new MenuProduct(product, 2);
 
         assertThat(menuProduct.calculateAmount()).isEqualTo(new Amount(BigDecimal.valueOf(30_000L)));
     }

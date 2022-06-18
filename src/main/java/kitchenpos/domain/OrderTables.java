@@ -12,32 +12,32 @@ import static java.util.Objects.requireNonNull;
 public class OrderTables {
 
     @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderTableEntity> orderTables = new ArrayList<>();
+    private List<OrderTable> orderTables = new ArrayList<>();
 
     protected OrderTables() {
     }
 
-    public void addAll(TableGroupEntity tableGroup, List<OrderTableEntity> orderTables) {
+    public void addAll(TableGroup tableGroup, List<OrderTable> orderTables) {
         requireNonNull(tableGroup, "tableGroup");
         requireNonNull(orderTables, "orderTables");
-        for (OrderTableEntity orderTable : orderTables) {
+        for (OrderTable orderTable : orderTables) {
             add(tableGroup, orderTable);
         }
     }
 
-    private void add(TableGroupEntity tableGroup, OrderTableEntity orderTable) {
+    private void add(TableGroup tableGroup, OrderTable orderTable) {
         if (!this.orderTables.contains(orderTable)) {
             orderTables.add(orderTable);
         }
         orderTable.bindTo(tableGroup);
     }
 
-    public List<OrderTableEntity> get() {
+    public List<OrderTable> get() {
         return Collections.unmodifiableList(orderTables);
     }
 
     public void clear() {
-        orderTables.forEach(OrderTableEntity::unbind);
+        orderTables.forEach(OrderTable::unbind);
         orderTables.clear();
     }
 }

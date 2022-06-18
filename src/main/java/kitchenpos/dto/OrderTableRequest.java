@@ -1,6 +1,6 @@
 package kitchenpos.dto;
 
-import kitchenpos.domain.OrderTableEntity;
+import kitchenpos.domain.OrderTable;
 
 public class OrderTableRequest {
     private int numberOfGuests;
@@ -14,8 +14,8 @@ public class OrderTableRequest {
     public OrderTableRequest() {
     }
 
-    public OrderTableEntity toOrderTable() {
-        return new OrderTableEntity(numberOfGuests, empty);
+    public OrderTable toOrderTable() {
+        return new OrderTable(numberOfGuests, empty);
     }
 
     public int getNumberOfGuests() {

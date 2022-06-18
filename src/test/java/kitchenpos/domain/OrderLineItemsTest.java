@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @DisplayName("OrderLineItems 클래스 테스트")
 class OrderLineItemsTest {
 
-    private final OrderEntity order = new OrderEntity(1L);
+    private final Order order = new Order(1L);
     private final List<OrderLineItemEntity> orderLineItems = Arrays.asList(new OrderLineItemEntity( 1L, 1L));
 
     @DisplayName("1개의 OrderLineItem로 OrderLineItems를 생성한다.")

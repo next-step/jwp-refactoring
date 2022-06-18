@@ -7,7 +7,7 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 @Entity(name = "orders")
-public class OrderEntity {
+public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,13 +19,13 @@ public class OrderEntity {
     @Embedded
     private OrderLineItems orderLineItems = new OrderLineItems();
 
-    public OrderEntity(Long orderTableId) {
+    public Order(Long orderTableId) {
         this.orderTableId = requireNonNull(orderTableId, "orderTableId");
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
     }
 
-    protected OrderEntity() {
+    protected Order() {
     }
 
     public void addOrderLineItems(List<OrderLineItemEntity> orderLineItems) {

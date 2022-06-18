@@ -1,20 +1,24 @@
 package kitchenpos.domain;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
-@Entity(name = "menu_group")
-public class MenuGroupEntity {
+@Entity
+public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Embedded
     private Name name;
+    @Embedded
+    private Price price;
 
-    public MenuGroupEntity(String name) {
+    public Product(String name, BigDecimal price) {
         this.name = new Name(name);
+        this.price = new Price(price);
     }
 
-    protected MenuGroupEntity() {
+    public Product() {
     }
 
     public Long getId() {
@@ -23,5 +27,9 @@ public class MenuGroupEntity {
 
     public Name getName() {
         return name;
+    }
+
+    public Price getPrice() {
+        return price;
     }
 }

@@ -33,7 +33,7 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(Long orderTableId, EmptyRequest request) {
-        OrderTableEntity orderTable = orderTableRepository.findById(orderTableId)
+        OrderTable orderTable = orderTableRepository.findById(orderTableId)
                                                           .orElseThrow(NotFoundOrderTableException::new);
         if (hasUncompletedOrder(orderTableId)) {
             throw new CannotChangeEmptyException();
@@ -49,7 +49,7 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(Long orderTableId, NumberOfGuestsRequest request) {
-        OrderTableEntity orderTable = orderTableRepository.findById(orderTableId)
+        OrderTable orderTable = orderTableRepository.findById(orderTableId)
                                                           .orElseThrow(NotFoundOrderTableException::new);
         orderTable.changeNumberOfGuests(request.getNumberOfGuests());
         return OrderTableResponse.of(orderTableRepository.save(orderTable));

@@ -19,9 +19,9 @@ public class OrderTableServiceTestSupport {
     }
 
     @Transactional
-    public OrderTableEntity 강정치킨_주문하기(OrderTableEntity orderTable) {
-        MenuEntity 강정치킨 = menuServiceTestSupport.신메뉴_강정치킨_가져오기();
-        OrderEntity 주문 = new OrderEntity(orderTable.getId());
+    public OrderTable 강정치킨_주문하기(OrderTable orderTable) {
+        Menu 강정치킨 = menuServiceTestSupport.신메뉴_강정치킨_가져오기();
+        Order 주문 = new Order(orderTable.getId());
         주문.addOrderLineItems(Arrays.asList(new OrderLineItemEntity(강정치킨.getId(), 1L)));
         orderRepository.save(주문);
         return orderTable;

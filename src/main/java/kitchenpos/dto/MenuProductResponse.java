@@ -1,6 +1,6 @@
 package kitchenpos.dto;
 
-import kitchenpos.domain.MenuProductEntity;
+import kitchenpos.domain.MenuProduct;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,13 +20,13 @@ public class MenuProductResponse {
     protected MenuProductResponse() {
     }
 
-    public static List<MenuProductResponse> of(List<MenuProductEntity> menuProducts) {
+    public static List<MenuProductResponse> of(List<MenuProduct> menuProducts) {
         return menuProducts.stream()
                            .map(MenuProductResponse::of)
                            .collect(Collectors.toList());
     }
 
-    public static MenuProductResponse of(MenuProductEntity menuProduct) {
+    public static MenuProductResponse of(MenuProduct menuProduct) {
         return new MenuProductResponse(menuProduct.getSeq(), menuProduct.getMenu().getId(),
                                        menuProduct.getProduct().getId(), menuProduct.getQuantity().getValue());
     }

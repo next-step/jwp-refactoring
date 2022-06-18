@@ -1,7 +1,6 @@
 package kitchenpos;
 
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTableEntity;
 import kitchenpos.dto.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;

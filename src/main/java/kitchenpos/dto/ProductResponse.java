@@ -1,6 +1,6 @@
 package kitchenpos.dto;
 
-import kitchenpos.domain.ProductEntity;
+import kitchenpos.domain.Product;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,13 +19,13 @@ public class ProductResponse {
     protected ProductResponse() {
     }
 
-    public static ProductResponse of(ProductEntity product) {
+    public static ProductResponse of(Product product) {
         return new ProductResponse(product.getId(),
                                    product.getName().getValue(),
                                    product.getPrice().getValue());
     }
 
-    public static List<ProductResponse> of(List<ProductEntity> products) {
+    public static List<ProductResponse> of(List<Product> products) {
         return products.stream()
                        .map(ProductResponse::of)
                        .collect(Collectors.toList());

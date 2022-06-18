@@ -10,14 +10,14 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("Order 클래스 테스트")
-class OrderEntityTest {
+class OrderTest {
 
     private final List<OrderLineItemEntity> orderLineItems = Arrays.asList(new OrderLineItemEntity(1L, 1L));
 
     @DisplayName("주문을 생성한다.")
     @Test
     void create() {
-        OrderEntity order = new OrderEntity(1L);
+        Order order = new Order(1L);
         assertAll(
                 () -> assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING),
                 () -> assertThat(order.getOrderedTime()).isNotNull()
@@ -28,14 +28,14 @@ class OrderEntityTest {
     @Test
     void failureWithOrderTable() {
         assertThatThrownBy(() -> {
-            new OrderEntity(null);
+            new Order(null);
         }).isInstanceOf(NullPointerException.class);
     }
 
     @DisplayName("주문에 주문 항목을 추가한다.")
     @Test
     void addOrderLineItems() {
-        OrderEntity order = new OrderEntity(1L);
+        Order order = new Order(1L);
 
         order.addOrderLineItems(orderLineItems);
 
@@ -51,7 +51,7 @@ class OrderEntityTest {
     @DisplayName("주문에 빈 주문 항목을 추가한다.")
     @Test
     void addOrderLimeItemsWithEmpty() {
-        OrderEntity order = new OrderEntity(1L);
+        Order order = new Order(1L);
 
         assertThatThrownBy(() -> {
             order.addOrderLineItems(Collections.emptyList());
@@ -62,7 +62,7 @@ class OrderEntityTest {
     @DisplayName("주문의 상태를 변경한다.")
     @Test
     void changeOrderStatus() {
-        OrderEntity order = new OrderEntity(1L);
+        Order order = new Order(1L);
 
         order.changeOrderStatus(OrderStatus.MEAL);
 
@@ -72,7 +72,7 @@ class OrderEntityTest {
     @DisplayName("주문의 상태를 변경한다.")
     @Test
     void changeOrderStatusWithCompleted() {
-        OrderEntity order = new OrderEntity(1L);
+        Order order = new Order(1L);
         order.changeOrderStatus(OrderStatus.COMPLETION);
 
         assertThatThrownBy(() -> {

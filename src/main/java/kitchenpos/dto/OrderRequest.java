@@ -1,6 +1,6 @@
 package kitchenpos.dto;
 
-import kitchenpos.domain.OrderEntity;
+import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItemEntity;
 
 import java.util.List;
@@ -18,8 +18,8 @@ public class OrderRequest {
     protected OrderRequest() {
     }
 
-    public OrderEntity toOrder() {
-        return new OrderEntity(orderTableId);
+    public Order toOrder() {
+        return new Order(orderTableId);
     }
 
     public List<OrderLineItemEntity> toOrderLineItems() {

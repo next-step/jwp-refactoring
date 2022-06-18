@@ -24,13 +24,13 @@ class TableGroupServiceTest extends ServiceTest {
     @Autowired
     private OrderTableServiceTestSupport orderTableServiceTestSupport;
 
-    private OrderTableEntity 빈테이블1;
-    private OrderTableEntity 빈테이블2;
+    private OrderTable 빈테이블1;
+    private OrderTable 빈테이블2;
 
     @BeforeEach
     public void setUp(@Autowired OrderTableRepository orderTableRepository) {
-        빈테이블1 = orderTableRepository.save(new OrderTableEntity(0, true));
-        빈테이블2 = orderTableRepository.save(new OrderTableEntity(0, true));
+        빈테이블1 = orderTableRepository.save(new OrderTable(0, true));
+        빈테이블2 = orderTableRepository.save(new OrderTable(0, true));
     }
 
     @DisplayName("단체 지정을 생성한다.")
@@ -72,7 +72,7 @@ class TableGroupServiceTest extends ServiceTest {
         .hasMessageContaining("존재하지 않는 테이블이 있습니다.");
     }
 
-    private TableGroupResponse createTableGroup(OrderTableEntity... orderTables) {
+    private TableGroupResponse createTableGroup(OrderTable... orderTables) {
         TableGroupRequest request = new TableGroupRequest(Arrays.stream(orderTables)
                                                                 .map(it -> new OrderTableIdRequest(it.getId()))
                                                                 .collect(Collectors.toList()));

@@ -11,8 +11,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @DisplayName("MenuProducts 클래스 테스트")
 class MenuProductsTest {
 
-    private final MenuEntity menu = new MenuEntity("강정치킨", BigDecimal.TEN, 1L);
-    private final List<MenuProductEntity> menuProducts = Arrays.asList(new MenuProductEntity(new ProductEntity("강정치킨", BigDecimal.TEN), 1L));
+    private final Menu menu = new Menu("강정치킨", BigDecimal.TEN, 1L);
+    private final List<MenuProduct> menuProducts = Arrays.asList(new MenuProduct(new Product("강정치킨", BigDecimal.TEN), 1L));
 
     @DisplayName("1개의 MenuProduct를 MenuProducts에 추가한다.")
     @Test

@@ -1,10 +1,10 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.MenuGroupEntity;
+import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.domain.NotFoundMenuGroupException;
 import kitchenpos.domain.NotFoundProductException;
-import kitchenpos.domain.ProductEntity;
+import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductRepository;
 import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.MenuRequestUtils;
@@ -22,14 +22,14 @@ class MenuServiceTest extends ServiceTest {
     @Autowired
     private MenuService service;
 
-    private ProductEntity 강정치킨;
-    private MenuGroupEntity 신메뉴;
+    private Product 강정치킨;
+    private MenuGroup 신메뉴;
 
     @BeforeEach
     public void setUp(@Autowired ProductRepository productRepository,
                       @Autowired MenuGroupRepository menuGroupRepository) {
-        강정치킨 = productRepository.save(new ProductEntity("강정치킨", BigDecimal.valueOf(15_000)));
-        신메뉴 = menuGroupRepository.save(new MenuGroupEntity("신메뉴"));
+        강정치킨 = productRepository.save(new Product("강정치킨", BigDecimal.valueOf(15_000)));
+        신메뉴 = menuGroupRepository.save(new MenuGroup("신메뉴"));
     }
 
     @DisplayName("메뉴를 생성한다.")

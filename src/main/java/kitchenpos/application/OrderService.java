@@ -30,7 +30,7 @@ public class OrderService {
     @Transactional
     public OrderResponse create(OrderRequest request) {
         validate(request);
-        OrderEntity order = orderRepository.save(request.toOrder());
+        Order order = orderRepository.save(request.toOrder());
         order.addOrderLineItems(request.toOrderLineItems());
         return OrderResponse.of(order);
     }
@@ -58,7 +58,7 @@ public class OrderService {
     }
 
     private void validateNotEmptyOrderTable(OrderRequest request) {
-        OrderTableEntity orderTable = orderTableRepository.findById(request.getOrderTableId())
+        OrderTable orderTable = orderTableRepository.findById(request.getOrderTableId())
                                                           .orElseThrow(NotFoundOrderTableException::new);
         if (orderTable.isEmpty()) {
             throw new InvalidOrderException("빈 테이블 입니다.");
@@ -71,7 +71,7 @@ public class OrderService {
 
     @Transactional
     public OrderResponse changeOrderStatus(Long orderId, OrderStatusRequest request) {
-        OrderEntity order = orderRepository.findById(orderId).orElseThrow(NotFoundOrderException::new);
+        Order order = orderRepository.findById(orderId).orElseThrow(NotFoundOrderException::new);
         order.changeOrderStatus(request.getOrderStatus());
         return OrderResponse.of(orderRepository.save(order));
     }

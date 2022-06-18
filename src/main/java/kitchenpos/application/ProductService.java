@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.ProductEntity;
+import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductRepository;
 import kitchenpos.dto.ProductRequest;
 import kitchenpos.dto.ProductResponse;
@@ -18,7 +18,7 @@ public class ProductService {
 
     @Transactional
     public ProductResponse create(final ProductRequest request) {
-        ProductEntity product = repository.save(request.toProduct());
+        Product product = repository.save(request.toProduct());
         return ProductResponse.of(product);
     }
 

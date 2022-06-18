@@ -9,7 +9,7 @@ public class OrderLineItemEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
     @ManyToOne
-    private OrderEntity order;
+    private Order order;
     @Column(nullable = false)
     private Long menuId;
     @Embedded
@@ -23,7 +23,7 @@ public class OrderLineItemEntity {
     protected OrderLineItemEntity() {
     }
 
-    public void bindTo(OrderEntity order) {
+    public void bindTo(Order order) {
         this.order = order;
     }
 
@@ -31,7 +31,7 @@ public class OrderLineItemEntity {
         return seq;
     }
 
-    public OrderEntity getOrder() {
+    public Order getOrder() {
         return order;
     }
 
