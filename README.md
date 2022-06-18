@@ -30,7 +30,7 @@
     * 예외 상황
       |내용|Exception|
       |---|---|
-      | 테이블그룹이 없으면 업데이트 할 수 없다. | IllegalArgumentException |
+      | 단체 지정이 있으면 업데이트 할 수 없다. | IllegalArgumentException |
       | 주문 상태가 조리, 식사인 경우 업데이트 할 수 없다. | IllegalArgumentException |
 
 - 방문한 손님 수를 업데이트 할 수 있다.
