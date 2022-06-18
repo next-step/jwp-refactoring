@@ -7,6 +7,7 @@ import io.restassured.response.Response;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.AcceptanceTest;
+import kitchenpos.menugroup.domain.MenuGroup;
 import org.springframework.http.HttpStatus;
 
 class MenuGroupAcceptanceTestMethod extends AcceptanceTest {

@@ -1,7 +1,7 @@
 package kitchenpos.application.fixture;
 
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderStatus;
 
 public class OrderFixtureFactory {
 
