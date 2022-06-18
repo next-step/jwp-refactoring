@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,6 +35,10 @@ public class TableGroupService {
 
     private List<OrderTable> validateCreate(TableGroupRequest request) {
         List<Long> orderTableIds = validateNotEmptyIds(request);
+        return validateExistsAllOrderTables(orderTableIds);
+    }
+
+    private List<OrderTable> validateExistsAllOrderTables(List<Long> orderTableIds) {
         List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(orderTableIds);
         if (orderTableIds.size() != orderTables.size()) {
             throw new InvalidTableGroupException("존재하지 않는 테이블이 있습니다.");
@@ -68,7 +71,7 @@ public class TableGroupService {
 
     private boolean hasUncompletedOrder(List<Long> orderTableIds) {
         return orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
+                orderTableIds, OrderStatus.getUncompletedStatuses());
     }
 
     private List<Long> findOrderTableIdsByTableGroupId(Long tableGroupId) {

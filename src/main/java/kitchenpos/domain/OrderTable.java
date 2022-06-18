@@ -39,18 +39,6 @@ public class OrderTable {
         return empty.isTrue();
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public TableGroup getTableGroup() {
-        return tableGroup;
-    }
-
-    public NumberOfGuests getNumberOfGuests() {
-        return numberOfGuests;
-    }
-
     public void changeEmpty(boolean empty) {
         if (isGrouped()) {
             throw new CannotChangeEmptyException();
@@ -63,5 +51,17 @@ public class OrderTable {
             throw new CannotChangeNumberOfGuestsException();
         }
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public TableGroup getTableGroup() {
+        return tableGroup;
+    }
+
+    public NumberOfGuests getNumberOfGuests() {
+        return numberOfGuests;
     }
 }

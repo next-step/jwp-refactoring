@@ -38,12 +38,12 @@ public class OrderService {
 
     private void validate(OrderRequest request) {
         List<OrderLineItemEntity> orderLineItems = request.toOrderLineItems();
-        validateEmptyOrderLineItems(orderLineItems);
+        validateNotEmptyOrderLineItems(orderLineItems);
         validateExistsAllMenus(orderLineItems);
         validateNotEmptyOrderTable(request);
     }
 
-    private void validateEmptyOrderLineItems(List<OrderLineItemEntity> orderLineItems) {
+    private void validateNotEmptyOrderLineItems(List<OrderLineItemEntity> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
             throw new EmptyOrderLineItemsException();
         }

@@ -43,14 +43,13 @@ public class TableService {
     }
 
     private boolean hasUncompletedOrder(Long orderTableId) {
-        return orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId,
-                Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
+        return orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId, OrderStatus.getUncompletedStatuses());
     }
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(Long orderTableId, NumberOfGuestsRequest request) {
         OrderTable orderTable = orderTableRepository.findById(orderTableId)
-                                                          .orElseThrow(NotFoundOrderTableException::new);
+                                                    .orElseThrow(NotFoundOrderTableException::new);
         orderTable.changeNumberOfGuests(request.getNumberOfGuests());
         return OrderTableResponse.of(orderTableRepository.save(orderTable));
     }
