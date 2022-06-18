@@ -11,7 +11,7 @@ import static java.util.Objects.requireNonNull;
 @Embeddable
 public class OrderTables {
 
-    @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL)
     private List<OrderTable> orderTables = new ArrayList<>();
 
     protected OrderTables() {
