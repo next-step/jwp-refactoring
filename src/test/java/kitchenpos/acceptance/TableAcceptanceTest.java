@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
+import kitchenpos.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
@@ -104,6 +105,16 @@ class TableAcceptanceTest extends AcceptanceTest {
 
     }
 
+    public static OrderTable 빈_테이블_등록_되어있음(int numberOfGuests) {
+        Map<String, Object> params = 요청할_빈_테이블_생성(numberOfGuests);
+        return 테이블_등록_요청(params).as(OrderTable.class);
+    }
+
+    public static OrderTable 주문_테이블_등록_되어있음(int numberOfGuests) {
+        Map<String, Object> params = 요청할_주문_테이블_생성(numberOfGuests);
+        return 테이블_등록_요청(params).as(OrderTable.class);
+    }
+
     private ExtractableResponse<Response> 방문_손님_수_업데이트_요청(ExtractableResponse<Response> response, int numberOfGuests) {
         String location = response.header("Location");
 
@@ -139,7 +150,7 @@ class TableAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> 테이블_등록_요청(Map<String, Object> params) {
+    private static ExtractableResponse<Response> 테이블_등록_요청(Map<String, Object> params) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
@@ -148,14 +159,14 @@ class TableAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private Map<String, Object> 요청할_주문_테이블_생성(int numberOfGuests) {
+    private static Map<String, Object> 요청할_주문_테이블_생성(int numberOfGuests) {
         Map<String, Object> params = new HashMap<>();
         params.put("numberOfGuests", numberOfGuests);
         params.put("empty", false);
         return params;
     }
 
-    private Map<String, Object> 요청할_빈_테이블_생성(int numberOfGuests) {
+    private static Map<String, Object> 요청할_빈_테이블_생성(int numberOfGuests) {
         Map<String, Object> params = new HashMap<>();
         params.put("numberOfGuests", numberOfGuests);
         params.put("empty", true);
