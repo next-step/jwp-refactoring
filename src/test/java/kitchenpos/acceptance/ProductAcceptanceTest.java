@@ -38,39 +38,39 @@ class ProductAcceptanceTest extends AcceptanceTest {
    * */
   @DisplayName("상품을 관리한다.")
   @TestFactory
-  Stream<DynamicTest> manageProduct(){
+  Stream<DynamicTest> manageProduct() {
       return Stream.of(
-          dynamicTest("상품을 등록한다.(가격이 0원이하면 실패한다.)",()->{
-              //given
-              Map<String, Object> params = new HashMap<>();
-              params.put("name","강정치킨");
-              params.put("price",17000);
+              dynamicTest("상품을 등록한다.(가격이 0원이하면 실패한다.)", () -> {
+                  //given
+                  Map<String, Object> params = new HashMap<>();
+                  params.put("name", "강정치킨");
+                  params.put("price", 17000);
 
-              //when
-              ExtractableResponse<Response> response = 상품_등록_요청(params);
+                  //when
+                  ExtractableResponse<Response> response = 상품_등록_요청(params);
 
-              //then
-              상품_등록됨(response);
+                  //then
+                  상품_등록됨(response);
 
-              //given
-              Map<String, Object> params2 = new HashMap<>();
-              params.put("name","강정치킨2");
-              params.put("price",0);
+                  //given
+                  Map<String, Object> params2 = new HashMap<>();
+                  params.put("name", "강정치킨2");
+                  params.put("price", 0);
 
-              //when
-              ExtractableResponse<Response> response2 = 상품_등록_요청(params2);
+                  //when
+                  ExtractableResponse<Response> response2 = 상품_등록_요청(params2);
 
-              //then
-              상품_등록_실패됨(response2);
-          }),
+                  //then
+                  상품_등록_실패됨(response2);
+              }),
 
-          dynamicTest("상품 목록을 조회한다.",()->{
-              //when
-              ExtractableResponse<Response> response = 상품_목록_조회_요청();
+              dynamicTest("상품 목록을 조회한다.", () -> {
+                  //when
+                  ExtractableResponse<Response> response = 상품_목록_조회_요청();
 
-              //then
-              상품_목록_조회됨(response);
-          })
+                  //then
+                  상품_목록_조회됨(response);
+              })
       );
 
   }
