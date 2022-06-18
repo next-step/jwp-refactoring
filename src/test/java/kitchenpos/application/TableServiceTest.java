@@ -18,13 +18,14 @@ class TableServiceTest extends ServiceTest {
     @Autowired
     private TableService service;
     @Autowired
-    private OrderTableRepository orderTableRepository;
+    private OrderTableServiceTestSupport orderTableServiceTestSupport;
 
-    private OrderTable orderTable;
+    private OrderTable 테이블;
 
     @BeforeEach
-    public void setUp(@Autowired OrderRepository orderRepository) {
-        orderTable = orderTableRepository.save(new OrderTable(0, false));
+    public void setUp(@Autowired OrderTableRepository orderTableRepository) {
+        테이블 = orderTableRepository.save(new OrderTable(0, false));
+
     }
 
     @DisplayName("테이블을 생성한다.")
@@ -43,19 +44,28 @@ class TableServiceTest extends ServiceTest {
     void changeEmpty() {
         EmptyRequest request = new EmptyRequest(false);
 
-        OrderTableResponse response = service.changeEmpty(orderTable.getId(), request);
+        OrderTableResponse response = service.changeEmpty(테이블.getId(), request);
 
         assertThat(response.isEmpty()).isFalse();
     }
 
-    // todo(heowc): 비움 여부 변경 추가 테스트 작성
+    @DisplayName("계산이 완료되지 않은 테이블의 비움 여부를 변경한다.")
+    @Test
+    void changeEmptyWithNotCompletedOrder() {
+        orderTableServiceTestSupport.강정치킨_주문하기(테이블);
+
+        assertThatThrownBy(() -> {
+            service.changeEmpty(테이블.getId(), new EmptyRequest(true));
+        }).isInstanceOf(CannotChangeEmptyException.class)
+        .hasMessageContaining("비움 여부를 변경할 수 없습니다.");
+    }
 
     @DisplayName("테이블의 손님 수를 변경한다.")
     @Test
     void changeNumberOfGuests() {
         NumberOfGuestsRequest request = new NumberOfGuestsRequest(5);
 
-        OrderTableResponse response = service.changeNumberOfGuests(orderTable.getId(), request);
+        OrderTableResponse response = service.changeNumberOfGuests(테이블.getId(), request);
 
         assertThat(response.getNumberOfGuests()).isEqualTo(5);
     }
