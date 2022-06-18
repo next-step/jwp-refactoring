@@ -127,7 +127,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
     }
 
     public static ResponseEntity<OrderTableResponse> 테이블_손님_수_변경_요청(Long orderTableId,
-                                                                    int numberOfGuests) {
+                                                                              int numberOfGuests) {
         Map<String, Long> urlVariables = new HashMap<>();
         urlVariables.put("orderTableId", orderTableId);
 
