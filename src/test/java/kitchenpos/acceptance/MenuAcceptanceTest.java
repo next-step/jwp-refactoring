@@ -142,9 +142,10 @@ class MenuAcceptanceTest extends AcceptanceTest {
         assertThat(response.body().jsonPath().getList("name", String.class))
                 .containsExactlyInAnyOrderElementsOf(
                         products.stream().map(Product::getName).collect(Collectors.toList()));
-        assertThat(response.body().jsonPath().getList("price", BigDecimal.class))
-                .containsExactlyInAnyOrderElementsOf(
-                        products.stream().map(Product::getPrice).collect(Collectors.toList()));
+        assertThat(response.body().jsonPath().getList("price", BigDecimal.class)
+                .stream().mapToInt(BigDecimal::intValue).toArray())
+                .containsExactly(products.stream().map(Product::getPrice).mapToInt(BigDecimal::intValue).toArray());
+
     }
 
 }
