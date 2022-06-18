@@ -73,7 +73,11 @@ class ProductAcceptanceTest extends AcceptanceTest {
 
   }
 
-    public static Product 상품_등록_되어있음(Map<String, Object> params) {
+    public static Product 상품_등록_되어있음(String productName, int price) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", productName);
+        params.put("price", price);
+
         return 상품_등록_요청(params).as(Product.class);
     }
 

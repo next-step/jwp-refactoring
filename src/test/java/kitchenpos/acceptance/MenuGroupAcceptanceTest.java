@@ -64,7 +64,9 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
     }
 
 
-    public static MenuGroup 메뉴_그룹_등록_되어있음(Map<String, Object> params) {
+    public static MenuGroup 메뉴_그룹_등록_되어있음(String menuGroupName) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", menuGroupName);
         return 메뉴_그룹_등록_요청(params).as(MenuGroup.class);
     }
 

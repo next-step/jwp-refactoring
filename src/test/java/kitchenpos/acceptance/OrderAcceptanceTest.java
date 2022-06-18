@@ -48,25 +48,11 @@ class OrderAcceptanceTest extends AcceptanceTest {
     public void setUp(){
         super.setUp();
         //given
-        Map<String, Object> params1 = new HashMap<>();
-        params1.put("name","뿌링클");
-        params1.put("price","27000");
+        뿌링클 = ProductAcceptanceTest.상품_등록_되어있음("뿌링클", 27000);
+        투움바 = ProductAcceptanceTest.상품_등록_되어있음("투움바", 30000);
+        로제떡볶이 = ProductAcceptanceTest.상품_등록_되어있음("로제떡볶이", 19000);
         
-        Map<String, Object> params2 = new HashMap<>();
-        params2.put("name","투움바");
-        params2.put("price","30000");
-
-        Map<String, Object> params3 = new HashMap<>();
-        params3.put("name","로제떡볶이");
-        params3.put("price","19000");
-
-        뿌링클 = ProductAcceptanceTest.상품_등록_되어있음(params1);
-        투움바 = ProductAcceptanceTest.상품_등록_되어있음(params2);
-        로제떡볶이 = ProductAcceptanceTest.상품_등록_되어있음(params3);
-
-        params1 = new HashMap<>();
-        params1.put("name", "인기 메뉴");
-        인기메뉴 = MenuGroupAcceptanceTest.메뉴_그룹_등록_되어있음(params1);
+        인기메뉴 = MenuGroupAcceptanceTest.메뉴_그룹_등록_되어있음("인기 메뉴");
 
         메뉴_뿌링클 = MenuAcceptanceTest.메뉴_등록_되어있음(뿌링클, 인기메뉴);
         메뉴_투움바 = MenuAcceptanceTest.메뉴_등록_되어있음(투움바, 인기메뉴);
