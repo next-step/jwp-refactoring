@@ -33,8 +33,7 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(Long orderTableId, EmptyRequest request) {
-        OrderTable orderTable = orderTableRepository.findById(orderTableId)
-                                                          .orElseThrow(NotFoundOrderTableException::new);
+        OrderTable orderTable = findById(orderTableId);
         if (hasUncompletedOrder(orderTableId)) {
             throw new CannotChangeEmptyException();
         }
@@ -53,5 +52,9 @@ public class TableService {
                                                           .orElseThrow(NotFoundOrderTableException::new);
         orderTable.changeNumberOfGuests(request.getNumberOfGuests());
         return OrderTableResponse.of(orderTableRepository.save(orderTable));
+    }
+
+    public OrderTable findById(Long id) {
+        return orderTableRepository.findById(id).orElseThrow(NotFoundOrderTableException::new);
     }
 }

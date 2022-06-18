@@ -15,16 +15,16 @@ import java.util.stream.Collectors;
 public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
+    private final TableService tableService;
 
     public OrderService(
             MenuRepository menuRepository,
             OrderRepository orderRepository,
-            OrderTableRepository orderTableRepository
+            TableService tableService
     ) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
+        this.tableService = tableService;
     }
 
     @Transactional
@@ -49,17 +49,20 @@ public class OrderService {
     }
 
     private void validateExistsAllMenus(List<OrderLineItemEntity> orderLineItems) {
-        List<Long> menuIds = orderLineItems.stream()
-                                           .map(OrderLineItemEntity::getMenuId)
-                                           .collect(Collectors.toList());
+        List<Long> menuIds = toMenuIds(orderLineItems);
         if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
             throw new InvalidOrderException("존재하지 않는 메뉴가 있습니다.");
         }
     }
 
+    private List<Long> toMenuIds(List<OrderLineItemEntity> orderLineItems) {
+        return orderLineItems.stream()
+                             .map(OrderLineItemEntity::getMenuId)
+                             .collect(Collectors.toList());
+    }
+
     private void validateNotEmptyOrderTable(OrderRequest request) {
-        OrderTable orderTable = orderTableRepository.findById(request.getOrderTableId())
-                                                          .orElseThrow(NotFoundOrderTableException::new);
+        OrderTable orderTable = tableService.findById(request.getOrderTableId());
         if (orderTable.isEmpty()) {
             throw new InvalidOrderException("빈 테이블 입니다.");
         }

@@ -53,7 +53,7 @@ public class TableGroupService {
     @Transactional
     public void ungroup(Long tableGroupId) {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
-                                                          .orElseThrow(NotFoundTableGroupException::new);
+                                                    .orElseThrow(NotFoundTableGroupException::new);
         validateUngroup(tableGroupId);
         tableGroup.ungroup();
     }
