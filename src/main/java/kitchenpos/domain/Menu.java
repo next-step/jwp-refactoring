@@ -10,6 +10,13 @@ public class Menu {
     private Long menuGroupId;
     private List<MenuProduct> menuProducts;
 
+    public Menu() {
+    }
+
+    public Menu(Long id) {
+        this.id = id;
+    }
+
     public Long getId() {
         return id;
     }

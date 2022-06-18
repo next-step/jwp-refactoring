@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
+import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
@@ -94,7 +95,14 @@ class MenuAcceptanceTest extends AcceptanceTest {
 
     }
 
-    private Map<String, Object> 요청할_메뉴_생성(Product product, MenuGroup menuGroup) {
+
+    public static Menu 메뉴_등록_되어있음(Product product, MenuGroup menuGroup) {
+        Map<String, Object> params = 요청할_메뉴_생성(product, menuGroup);
+        return 메뉴_등록_요청(params).as(Menu.class);
+    }
+
+
+    private static Map<String, Object> 요청할_메뉴_생성(Product product, MenuGroup menuGroup) {
         Map<String, Object> params = new HashMap<>();
         params.put("price", product.getPrice());
         params.put("menuGroupId", menuGroup.getId());
@@ -103,7 +111,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
         return params;
     }
 
-    private List<Map<String, Object>> 요청할_메뉴_상품_리스트_생성(List<Product> products) {
+    private static List<Map<String, Object>> 요청할_메뉴_상품_리스트_생성(List<Product> products) {
         List<Map<String, Object>> menuProducts = new ArrayList<>();
 
         for (Product product : products) {
@@ -122,7 +130,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> 메뉴_등록_요청(Map<String, Object> params) {
+    private static ExtractableResponse<Response> 메뉴_등록_요청(Map<String, Object> params) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
