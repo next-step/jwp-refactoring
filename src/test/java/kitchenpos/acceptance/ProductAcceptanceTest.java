@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
+import kitchenpos.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
@@ -74,6 +75,10 @@ class ProductAcceptanceTest extends AcceptanceTest {
       );
 
   }
+
+    public static Product 상품_등록_되어있음(Map<String, Object> params){
+      return 상품_등록_요청(params).as(Product.class);
+    }
 
     private ExtractableResponse<Response> 상품_목록_조회_요청() {
         return RestAssured.given().log().all()

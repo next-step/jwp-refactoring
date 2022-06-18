@@ -9,6 +9,7 @@ import io.restassured.response.Response;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
+import kitchenpos.domain.MenuGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
@@ -58,6 +59,11 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
 
     }
 
+
+    public static MenuGroup 메뉴_그룹_등록_되어있음(Map<String, Object> params) {
+         return 메뉴_그룹_등록_요청(params).as(MenuGroup.class);
+    }
+
     private ExtractableResponse<Response> 메뉴_그룹_목록_조회_요청() {
         return RestAssured.given().log().all()
                 .when().get(MENU_GROUP_PATH)
@@ -65,7 +71,7 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> 메뉴_그룹_등록_요청(Map<String, Object> params) {
+    private static ExtractableResponse<Response> 메뉴_그룹_등록_요청(Map<String, Object> params) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
