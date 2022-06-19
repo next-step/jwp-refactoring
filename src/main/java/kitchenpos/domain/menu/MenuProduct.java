@@ -1,6 +1,7 @@
 package kitchenpos.domain.menu;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
@@ -10,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import kitchenpos.domain.Quantity;
 
 @Entity
 @Table(name = "menu_product")
@@ -23,7 +25,8 @@ public class MenuProduct {
     private Menu menu;
     @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_menu_product_product"), nullable = false)
     private Long productId;
-    private long quantity;
+    @Embedded
+    private Quantity quantity;
 
     protected MenuProduct() {}
 
@@ -31,18 +34,18 @@ public class MenuProduct {
         this.seq = seq;
         this.menu = menu;
         this.productId = productId;
-        this.quantity = quantity;
+        this.quantity = Quantity.from(quantity);
     }
 
     private MenuProduct(Menu menu, Long productId, long quantity) {
         this.menu = menu;
         this.productId = productId;
-        this.quantity = quantity;
+        this.quantity = Quantity.from(quantity);
     }
 
     private MenuProduct(Long productId, long quantity) {
         this.productId = productId;
-        this.quantity = quantity;
+        this.quantity = Quantity.from(quantity);
     }
 
     public static MenuProduct of(Long productId, long quantity) {
@@ -70,7 +73,7 @@ public class MenuProduct {
         return this.productId;
     }
 
-    public long getQuantity() {
+    public Quantity getQuantity() {
         return quantity;
     }
 

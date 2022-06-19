@@ -1,0 +1,53 @@
+package kitchenpos.domain;
+
+import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+
+@Embeddable
+public class Quantity {
+
+    public static final String INVALID_QUANTITY = "수량(Quantity)는 0보다 작을 수 없습니다.";
+    private static final long MIN_QUANTITY = 0;
+
+    @Column(name = "quantity", nullable = false)
+    private long value;
+
+    protected Quantity() {}
+
+    private Quantity(long quantity) {
+        this.value = quantity;
+    }
+
+    public long getValue() {
+        return this.value;
+    }
+
+    public static Quantity from(long quantity) {
+        validateQuantity(quantity);
+        return new Quantity(quantity);
+    }
+
+    private static void validateQuantity(long quantity) {
+        if (quantity < MIN_QUANTITY) {
+            throw new IllegalArgumentException(String.format(INVALID_QUANTITY, quantity));
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Quantity quantity = (Quantity) o;
+        return getValue() == quantity.getValue();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getValue());
+    }
+}

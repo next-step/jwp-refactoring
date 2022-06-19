@@ -95,7 +95,7 @@ class OrderServiceTest {
         // given
         OrderRequest orderRequest = OrderRequest.of(A_주문_테이블.getId(),
                 OrderStatus.COOKING,
-                Lists.newArrayList(OrderLineItemRequest.of(A_주문항목.getMenuId(), A_주문항목.getQuantity())));
+                Lists.newArrayList(OrderLineItemRequest.of(A_주문항목.getMenuId(), A_주문항목.getQuantity().getValue())));
 
         given(menuRepository.countByIdIn(Lists.newArrayList(A.getId()))).willReturn(1L);
         given(orderTableRepository.findById(A_주문_테이블.getId())).willReturn(Optional.ofNullable(A_주문_테이블));
@@ -126,7 +126,7 @@ class OrderServiceTest {
         // given
         OrderRequest orderRequest = OrderRequest.of(A_주문_테이블.getId(),
                 OrderStatus.COOKING,
-                Lists.newArrayList(OrderLineItemRequest.of(A_주문항목.getMenuId(), A_주문항목.getQuantity())));
+                Lists.newArrayList(OrderLineItemRequest.of(A_주문항목.getMenuId(), A_주문항목.getQuantity().getValue())));
 
         given(menuRepository.countByIdIn(Lists.newArrayList(A.getId()))).willReturn(0L);
 
@@ -140,7 +140,7 @@ class OrderServiceTest {
         // given
         OrderRequest orderRequest = OrderRequest.of(A_주문_테이블.getId(),
                 OrderStatus.COOKING,
-                Lists.newArrayList(OrderLineItemRequest.of(A_주문항목.getMenuId(), A_주문항목.getQuantity())));
+                Lists.newArrayList(OrderLineItemRequest.of(A_주문항목.getMenuId(), A_주문항목.getQuantity().getValue())));
 
         given(menuRepository.countByIdIn(Lists.newArrayList(A.getId()))).willReturn(1L);
         given(orderTableRepository.findById(A_주문_테이블.getId())).willReturn(Optional.empty());
@@ -169,7 +169,7 @@ class OrderServiceTest {
         A_주문.changeOrderStatus(OrderStatus.MEAL);
         OrderRequest orderRequest = OrderRequest.of(A_주문_테이블.getId(),
                 OrderStatus.MEAL,
-                Lists.newArrayList(OrderLineItemRequest.of(A_주문항목.getMenuId(), A_주문항목.getQuantity())));
+                Lists.newArrayList(OrderLineItemRequest.of(A_주문항목.getMenuId(), A_주문항목.getQuantity().getValue())));
 
         given(orderRepository.findById(A_주문.getId())).willReturn(Optional.of(A_주문));
         given(orderRepository.save(any(Order.class))).willReturn(A_주문);
@@ -191,7 +191,7 @@ class OrderServiceTest {
         A_주문.changeOrderStatus(OrderStatus.COMPLETION);
         OrderRequest orderRequest = OrderRequest.of(A_주문_테이블.getId(),
                 OrderStatus.COOKING,
-                Lists.newArrayList(OrderLineItemRequest.of(A_주문항목.getMenuId(), A_주문항목.getQuantity())));
+                Lists.newArrayList(OrderLineItemRequest.of(A_주문항목.getMenuId(), A_주문항목.getQuantity().getValue())));
 
         given(orderRepository.findById(A_주문.getId())).willReturn(Optional.of(A_주문));
 
