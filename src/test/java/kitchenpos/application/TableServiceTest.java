@@ -2,8 +2,8 @@ package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,7 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@DisplayName("테이블 관련 Service 기능 테스트 - Stub")
+@DisplayName("테이블 관련 Service 단위 테스트 - Stub")
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
 
@@ -41,8 +41,7 @@ class TableServiceTest {
         long generateTableId = 1;
         OrderTable request = new OrderTable(null, 1L, 5, false);
 
-        doAnswer(invocation -> new OrderTable(generateTableId, request.getTableGroupId(), request.getNumberOfGuests(),
-                request.isEmpty()))
+        doAnswer(invocation -> new OrderTable(generateTableId, request.getTableGroupId(), request.getNumberOfGuests(), request.isEmpty()))
                 .when(orderTableDao).save(request);
 
         //when
@@ -63,10 +62,10 @@ class TableServiceTest {
         OrderTable request = new OrderTable(null, null, 0, true);
         OrderTable orderTable = new OrderTable(1L, null, 5, false);
 
-        when(orderTableDao.findById(requestTableId)).thenReturn(Optional.of(orderTable));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(requestTableId,
-                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(false);
-        when(orderTableDao.save(orderTable)).thenReturn(orderTable);
+        given(orderTableDao.findById(requestTableId)).willReturn(Optional.of(orderTable));
+        given(orderDao.existsByOrderTableIdAndOrderStatusIn(requestTableId,
+                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(false);
+        given(orderTableDao.save(orderTable)).willReturn(orderTable);
 
         //when
         OrderTable result = tableService.changeEmpty(requestTableId, request);
@@ -84,7 +83,7 @@ class TableServiceTest {
         OrderTable request = new OrderTable(null, null, 0, true);
         OrderTable orderTable = new OrderTable(1L, 1L, 5, false);
 
-        when(orderTableDao.findById(requestTableId)).thenReturn(Optional.of(orderTable));
+        given(orderTableDao.findById(requestTableId)).willReturn(Optional.of(orderTable));
 
         //when then
         assertThatIllegalArgumentException()
@@ -99,9 +98,9 @@ class TableServiceTest {
         OrderTable request = new OrderTable(null, null, 0, true);
         OrderTable orderTable = new OrderTable(1L, null, 5, false);
 
-        when(orderTableDao.findById(requestTableId)).thenReturn(Optional.of(orderTable));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(requestTableId,
-                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(true);
+        given(orderTableDao.findById(requestTableId)).willReturn(Optional.of(orderTable));
+        given(orderDao.existsByOrderTableIdAndOrderStatusIn(requestTableId,
+                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(true);
 
         //when then
         assertThatIllegalArgumentException()
@@ -116,8 +115,8 @@ class TableServiceTest {
         OrderTable request = new OrderTable(null, null, 10, true);
         OrderTable orderTable = new OrderTable(1L, null, 5, false);
 
-        when(orderTableDao.findById(requestTableId)).thenReturn(Optional.of(orderTable));
-        when(orderTableDao.save(orderTable)).thenReturn(orderTable);
+        given(orderTableDao.findById(requestTableId)).willReturn(Optional.of(orderTable));
+        given(orderTableDao.save(orderTable)).willReturn(orderTable);
 
         //when
         OrderTable result = tableService.changeNumberOfGuests(requestTableId, request);
@@ -147,7 +146,7 @@ class TableServiceTest {
         OrderTable request = new OrderTable(null, null, 10, true);
         OrderTable orderTable = new OrderTable(1L, null, 0, true);
 
-        when(orderTableDao.findById(requestTableId)).thenReturn(Optional.of(orderTable));
+        given(orderTableDao.findById(requestTableId)).willReturn(Optional.of(orderTable));
 
         //when then
         assertThatIllegalArgumentException()
@@ -162,7 +161,7 @@ class TableServiceTest {
         OrderTable orderTable2 = new OrderTable(2L, null, 2, false);
         OrderTable orderTable3 = new OrderTable(3L, null, 3, false);
 
-        when(orderTableDao.findAll()).thenReturn(Arrays.asList(orderTable1, orderTable2, orderTable3));
+        given(orderTableDao.findAll()).willReturn(Arrays.asList(orderTable1, orderTable2, orderTable3));
 
         //when
         List<OrderTable> results = tableService.list();

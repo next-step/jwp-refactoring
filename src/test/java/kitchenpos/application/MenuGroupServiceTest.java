@@ -1,8 +1,8 @@
 package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
@@ -15,7 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@DisplayName("메뉴 그룹 Service 기능 테스트 - Stub")
+@DisplayName("메뉴 그룹 Service 단위 테스트 - Stub")
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
 
@@ -52,7 +52,7 @@ class MenuGroupServiceTest {
         MenuGroup menuGroup1 = new MenuGroup(null, "인기 메뉴");
         MenuGroup menuGroup2 = new MenuGroup(null, "단품 메뉴");
         MenuGroup menuGroup3 = new MenuGroup(null, "세트 메뉴");
-        when(menuGroupDao.findAll()).thenReturn(Arrays.asList(menuGroup1, menuGroup2, menuGroup3));
+        given(menuGroupDao.findAll()).willReturn(Arrays.asList(menuGroup1, menuGroup2, menuGroup3));
 
         //when
         List<MenuGroup> results = menuGroupService.list();

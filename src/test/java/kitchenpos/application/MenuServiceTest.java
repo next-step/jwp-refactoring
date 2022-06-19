@@ -3,8 +3,8 @@ package kitchenpos.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -26,7 +26,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@DisplayName("메뉴 관련 Service 기능 테스트 - Stub")
+@DisplayName("메뉴 관련 Service 단위 테스트 - Stub")
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
 
@@ -67,13 +67,13 @@ class MenuServiceTest {
         //given
         long generateMenuId = 1;
         Menu request = new Menu(null, "돈까스 정식", convert(10000), 인기메뉴.getId(), Arrays.asList(돈까스, 미니우동));
-        when(menuGroupDao.existsById(인기메뉴.getId())).thenReturn(true);
-        when(productDao.findById(돈까스.getProductId())).thenReturn(Optional.of(돈까스상품));
-        when(productDao.findById(미니우동.getProductId())).thenReturn(Optional.of(미니우동상품));
+        given(menuGroupDao.existsById(인기메뉴.getId())).willReturn(true);
+        given(productDao.findById(돈까스.getProductId())).willReturn(Optional.of(돈까스상품));
+        given(productDao.findById(미니우동.getProductId())).willReturn(Optional.of(미니우동상품));
         doAnswer(invocation -> new Menu(generateMenuId, request.getName(), request.getPrice(), request.getMenuGroupId(), request.getMenuProducts()))
                 .when(menuDao).save(request);
-        when(menuProductDao.save(돈까스)).thenReturn(돈까스);
-        when(menuProductDao.save(미니우동)).thenReturn(미니우동);
+        given(menuProductDao.save(돈까스)).willReturn(돈까스);
+        given(menuProductDao.save(미니우동)).willReturn(미니우동);
 
         //when
         Menu result = menuService.create(request);
@@ -110,9 +110,9 @@ class MenuServiceTest {
         Menu menu1 = new Menu(1L, "돈까스 정식", convert(10000), 인기메뉴.getId(), Arrays.asList(돈까스, 미니우동));
         Menu menu2 = new Menu(2L, "제육덮밥", convert(7000), 인기메뉴.getId(), Collections.singletonList(제육덮밥));
 
-        when(menuDao.findAll()).thenReturn(Arrays.asList(menu1, menu2));
-        when(menuProductDao.findAllByMenuId(menu1.getId())).thenReturn(Arrays.asList(돈까스, 미니우동));
-        when(menuProductDao.findAllByMenuId(menu2.getId())).thenReturn(Collections.singletonList(제육덮밥));
+        given(menuDao.findAll()).willReturn(Arrays.asList(menu1, menu2));
+        given(menuProductDao.findAllByMenuId(menu1.getId())).willReturn(Arrays.asList(돈까스, 미니우동));
+        given(menuProductDao.findAllByMenuId(menu2.getId())).willReturn(Collections.singletonList(제육덮밥));
 
         //when
         List<Menu> results = menuService.list();

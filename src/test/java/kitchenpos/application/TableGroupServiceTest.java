@@ -2,8 +2,8 @@ package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -22,7 +22,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@DisplayName("단체 지정 Service 기능 테스트 - Stub")
+@DisplayName("단체 지정 Service 단위 테스트 - Stub")
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
 
@@ -48,8 +48,8 @@ class TableGroupServiceTest {
         OrderTable emptyTable2 = new OrderTable(2L, null, 0, true);
         TableGroup request = new TableGroup(null, null, Arrays.asList(emptyTable1, emptyTable2));
 
-        when(orderTableDao.findAllByIdIn(Arrays.asList(emptyTable1.getId(), emptyTable2.getId())))
-                .thenReturn(Arrays.asList(emptyTable1, emptyTable2));
+        given(orderTableDao.findAllByIdIn(Arrays.asList(emptyTable1.getId(), emptyTable2.getId())))
+                .willReturn(Arrays.asList(emptyTable1, emptyTable2));
         doAnswer(invocation -> new TableGroup(generateTableGroupId, request.getCreatedDate(), request.getOrderTables()))
                 .when(tableGroupDao).save(request);
 
@@ -87,8 +87,8 @@ class TableGroupServiceTest {
         OrderTable emptyTable2 = new OrderTable(2L, null, 0, true);
         TableGroup request = new TableGroup(null, null, Arrays.asList(emptyTable1, emptyTable2));
 
-        when(orderTableDao.findAllByIdIn(Arrays.asList(emptyTable1.getId(), emptyTable2.getId())))
-                .thenReturn(Arrays.asList(emptyTable1));
+        given(orderTableDao.findAllByIdIn(Arrays.asList(emptyTable1.getId(), emptyTable2.getId())))
+                .willReturn(Arrays.asList(emptyTable1));
 
         //when then
         assertThatIllegalArgumentException()
@@ -103,8 +103,8 @@ class TableGroupServiceTest {
         OrderTable emptyTable1 = new OrderTable(2L, null, 0, true);
         TableGroup request = new TableGroup(null, null, Arrays.asList(orderTable1, emptyTable1));
 
-        when(orderTableDao.findAllByIdIn(Arrays.asList(orderTable1.getId(), emptyTable1.getId())))
-                .thenReturn(Arrays.asList(orderTable1, emptyTable1));
+        given(orderTableDao.findAllByIdIn(Arrays.asList(orderTable1.getId(), emptyTable1.getId())))
+                .willReturn(Arrays.asList(orderTable1, emptyTable1));
 
         //when then
         assertThatIllegalArgumentException()
@@ -119,8 +119,8 @@ class TableGroupServiceTest {
         OrderTable emptyTable1 = new OrderTable(2L, null, 0, true);
         TableGroup request = new TableGroup(null, null, Arrays.asList(already, emptyTable1));
 
-        when(orderTableDao.findAllByIdIn(Arrays.asList(already.getId(), emptyTable1.getId())))
-                .thenReturn(Arrays.asList(already, emptyTable1));
+        given(orderTableDao.findAllByIdIn(Arrays.asList(already.getId(), emptyTable1.getId())))
+                .willReturn(Arrays.asList(already, emptyTable1));
 
         //when then
         assertThatIllegalArgumentException()
@@ -135,12 +135,12 @@ class TableGroupServiceTest {
         OrderTable orderTable1 = new OrderTable(1L, 1L, 2, false);
         OrderTable orderTable2 = new OrderTable(2L, 1L, 3, false);
 
-        when(orderTableDao.findAllByTableGroupId(requestTableGroupId))
-                .thenReturn(Arrays.asList(orderTable1, orderTable2));
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(
+        given(orderTableDao.findAllByTableGroupId(requestTableGroupId))
+                .willReturn(Arrays.asList(orderTable1, orderTable2));
+        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(
                 Arrays.asList(orderTable1.getId(), orderTable2.getId())
                 , Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
-                .thenReturn(false);
+                .willReturn(false);
 
         //when
         tableGroupService.ungroup(requestTableGroupId);
@@ -158,11 +158,11 @@ class TableGroupServiceTest {
         OrderTable orderTable1 = new OrderTable(1L, 1L, 2, false);
         OrderTable orderTable2 = new OrderTable(2L, 1L, 3, false);
 
-        when(orderTableDao.findAllByTableGroupId(requestTableGroupId))
-                .thenReturn(Arrays.asList(orderTable1, orderTable2));
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(orderTable1.getId(), orderTable2.getId())
+        given(orderTableDao.findAllByTableGroupId(requestTableGroupId))
+                .willReturn(Arrays.asList(orderTable1, orderTable2));
+        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(orderTable1.getId(), orderTable2.getId())
                 , Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
-                .thenReturn(true);
+                .willReturn(true);
 
         //when then
         assertThatIllegalArgumentException()

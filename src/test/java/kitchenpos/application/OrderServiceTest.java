@@ -2,9 +2,8 @@ package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -26,7 +25,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@DisplayName("주문 관련 Service 기능 테스트 - Stub")
+@DisplayName("주문 관련 Service 단위 테스트 - Stub")
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
 
@@ -56,14 +55,14 @@ class OrderServiceTest {
         long registeredMenuCount = 2;
         long generateNewOrderId = 5;
 
-        when(menuDao.countByIdIn(Arrays.asList(orderLineItem1.getMenuId(), orderLineItem2.getMenuId())))
-                .thenReturn(registeredMenuCount);
-        when(orderTableDao.findById(request.getOrderTableId())).thenReturn(Optional.of(orderTable));
+        given(menuDao.countByIdIn(Arrays.asList(orderLineItem1.getMenuId(), orderLineItem2.getMenuId())))
+                .willReturn(registeredMenuCount);
+        given(orderTableDao.findById(request.getOrderTableId())).willReturn(Optional.of(orderTable));
         doAnswer(invocation -> new Order(generateNewOrderId, request.getOrderTableId(), request.getOrderStatus(),
                 request.getOrderedTime(), Arrays.asList(orderLineItem1, orderLineItem2)))
                 .when(orderDao).save(request);
-        when(orderLineItemDao.save(orderLineItem1)).thenReturn(orderLineItem1);
-        when(orderLineItemDao.save(orderLineItem2)).thenReturn(orderLineItem2);
+        given(orderLineItemDao.save(orderLineItem1)).willReturn(orderLineItem1);
+        given(orderLineItemDao.save(orderLineItem2)).willReturn(orderLineItem2);
 
         //when
         Order result = orderService.create(request);
@@ -96,8 +95,8 @@ class OrderServiceTest {
         Order request = new Order(null, 1L, null, null, Arrays.asList(orderLineItem1, orderLineItem2));
         long registeredMenuCount = 1;
 
-        when(menuDao.countByIdIn(Arrays.asList(orderLineItem1.getMenuId(), orderLineItem2.getMenuId())))
-                .thenReturn(registeredMenuCount);
+        given(menuDao.countByIdIn(Arrays.asList(orderLineItem1.getMenuId(), orderLineItem2.getMenuId())))
+                .willReturn(registeredMenuCount);
 
         //when then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(request));
@@ -113,9 +112,9 @@ class OrderServiceTest {
         Order request = new Order(null, emptyTable.getId(), null, null, Arrays.asList(orderLineItem1, orderLineItem2));
         long registeredMenuCount = 2;
 
-        when(menuDao.countByIdIn(Arrays.asList(orderLineItem1.getMenuId(), orderLineItem2.getMenuId())))
-                .thenReturn(registeredMenuCount);
-        when(orderTableDao.findById(request.getOrderTableId())).thenReturn(Optional.of(emptyTable));
+        given(menuDao.countByIdIn(Arrays.asList(orderLineItem1.getMenuId(), orderLineItem2.getMenuId())))
+                .willReturn(registeredMenuCount);
+        given(orderTableDao.findById(request.getOrderTableId())).willReturn(Optional.of(emptyTable));
 
         //when then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(request));
@@ -130,9 +129,9 @@ class OrderServiceTest {
         Order request = new Order(null, 99999L, null, null, Arrays.asList(orderLineItem1, orderLineItem2));
         long registeredMenuCount = 2;
 
-        when(menuDao.countByIdIn(Arrays.asList(orderLineItem1.getMenuId(), orderLineItem2.getMenuId())))
-                .thenReturn(registeredMenuCount);
-        when(orderTableDao.findById(request.getOrderTableId())).thenReturn(Optional.empty());
+        given(menuDao.countByIdIn(Arrays.asList(orderLineItem1.getMenuId(), orderLineItem2.getMenuId())))
+                .willReturn(registeredMenuCount);
+        given(orderTableDao.findById(request.getOrderTableId())).willReturn(Optional.empty());
 
         //when then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(request));
@@ -147,10 +146,10 @@ class OrderServiceTest {
         OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1L, 1L, 10);
         OrderLineItem orderLineItem2 = new OrderLineItem(2L, 1L, 3L, 5);
 
-        doAnswer(invocation -> Optional.of(new Order(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), null)))
-                .when(orderDao).findById(requestOrderId);
-        when(orderLineItemDao.findAllByOrderId(requestOrderId))
-                .thenReturn(Arrays.asList(orderLineItem1, orderLineItem2));
+        given(orderDao.findById(requestOrderId))
+                .willReturn(Optional.of(new Order(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), null)));
+        given(orderLineItemDao.findAllByOrderId(requestOrderId))
+                .willReturn(Arrays.asList(orderLineItem1, orderLineItem2));
 
         //when
         Order result = orderService.changeOrderStatus(requestOrderId, request);
@@ -167,8 +166,8 @@ class OrderServiceTest {
         long requestOrderId = 1;
         Order request = new Order(null, null, OrderStatus.MEAL.name(), null, null);
 
-        doAnswer(invocation -> Optional.of(new Order(1L, 1L, OrderStatus.COMPLETION.name(), LocalDateTime.now(), null)))
-                .when(orderDao).findById(requestOrderId);
+        given(orderDao.findById(requestOrderId))
+                .willReturn(Optional.of(new Order(1L, 1L, OrderStatus.COMPLETION.name(), LocalDateTime.now(), null)));
 
         //when then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.changeOrderStatus(requestOrderId, request));
@@ -185,10 +184,10 @@ class OrderServiceTest {
         Order order1 = new Order(1L, 1L, OrderStatus.MEAL.name(), LocalDateTime.now(), null);
         Order order2 = new Order(2L, 2L, OrderStatus.COMPLETION.name(), LocalDateTime.now(), null);
 
-        when(orderDao.findAll()).thenReturn(Arrays.asList(order1, order2));
-        when(orderLineItemDao.findAllByOrderId(order1.getId()))
-                .thenReturn(Arrays.asList(orderLineItem1, orderLineItem2));
-        when(orderLineItemDao.findAllByOrderId(order2.getId())).thenReturn(Arrays.asList(orderLineItem3));
+        given(orderDao.findAll()).willReturn(Arrays.asList(order1, order2));
+        given(orderLineItemDao.findAllByOrderId(order1.getId()))
+                .willReturn(Arrays.asList(orderLineItem1, orderLineItem2));
+        given(orderLineItemDao.findAllByOrderId(order2.getId())).willReturn(Arrays.asList(orderLineItem3));
 
         //when
         List<Order> results = orderService.list();

@@ -3,8 +3,8 @@ package kitchenpos.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -18,7 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@DisplayName("상품 관련 Service 기능 테스트 - Stub")
+@DisplayName("상품 관련 Service 단위 테스트 - Stub")
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
 
@@ -68,7 +68,7 @@ class ProductServiceTest {
         Product product1 = new Product(BigDecimal.valueOf(19000));
         Product product2 = new Product(BigDecimal.valueOf(15000));
         Product product3 = new Product(BigDecimal.valueOf(13000));
-        when(productDao.findAll()).thenReturn(Arrays.asList(product1, product2, product3));
+        given(productDao.findAll()).willReturn(Arrays.asList(product1, product2, product3));
 
         //when
         List<Product> result = productService.list();
