@@ -14,8 +14,8 @@ import static kitchenpos.domain.TableAcceptanceTestMethod.테이블_손님_수_�
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.table.dto.OrderTableRequest;
-import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.dto.table.OrderTableRequest;
+import kitchenpos.dto.table.OrderTableResponse;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

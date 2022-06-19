@@ -2,9 +2,9 @@ package kitchenpos.application.fixture;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.domain.order.Order;
+import kitchenpos.domain.order.OrderLineItem;
+import kitchenpos.domain.order.OrderStatus;
 
 public class OrderFixtureFactory {
 

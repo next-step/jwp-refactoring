@@ -7,8 +7,8 @@ import io.restassured.response.Response;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.dto.menugroup.MenuGroupRequest;
+import kitchenpos.dto.menugroup.MenuGroupResponse;
 import org.springframework.http.HttpStatus;
 
 class MenuGroupAcceptanceTestMethod extends AcceptanceTest {
@@ -43,9 +43,9 @@ class MenuGroupAcceptanceTestMethod extends AcceptanceTest {
                 .map(AcceptanceTest::parseIdFromLocationHeader)
                 .collect(Collectors.toList());
 
-        List<Long> actualIds = response.jsonPath().getList(DOT, MenuGroup.class)
+        List<Long> actualIds = response.jsonPath().getList(DOT, MenuGroupResponse.class)
                 .stream()
-                .map(MenuGroup::getId)
+                .map(MenuGroupResponse::getId)
                 .collect(Collectors.toList());
 
         assertThat(actualIds).containsAll(expectedIds);

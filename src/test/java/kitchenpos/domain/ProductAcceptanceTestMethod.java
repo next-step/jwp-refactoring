@@ -7,8 +7,9 @@ import io.restassured.response.Response;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.domain.product.Product;
+import kitchenpos.dto.product.ProductRequest;
+import kitchenpos.dto.product.ProductResponse;
 import org.springframework.http.HttpStatus;
 
 class ProductAcceptanceTestMethod extends AcceptanceTest {
@@ -43,9 +44,9 @@ class ProductAcceptanceTestMethod extends AcceptanceTest {
                 .map(AcceptanceTest::parseIdFromLocationHeader)
                 .collect(Collectors.toList());
 
-        List<Long> actualIds = response.jsonPath().getList(DOT, Product.class)
+        List<Long> actualIds = response.jsonPath().getList(DOT, ProductResponse.class)
                 .stream()
-                .map(Product::getId)
+                .map(ProductResponse::getId)
                 .collect(Collectors.toList());
 
         assertThat(actualIds).containsAll(expectedIds);

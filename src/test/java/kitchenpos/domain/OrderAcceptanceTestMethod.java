@@ -7,8 +7,8 @@ import io.restassured.response.Response;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.domain.order.Order;
+import kitchenpos.domain.order.OrderStatus;
 import org.springframework.http.HttpStatus;
 
 class OrderAcceptanceTestMethod extends AcceptanceTest {

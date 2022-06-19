@@ -7,9 +7,8 @@ import io.restassured.response.Response;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.dto.OrderTableRequest;
-import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.dto.table.OrderTableRequest;
+import kitchenpos.dto.table.OrderTableResponse;
 import org.springframework.http.HttpStatus;
 
 class TableAcceptanceTestMethod extends AcceptanceTest {
