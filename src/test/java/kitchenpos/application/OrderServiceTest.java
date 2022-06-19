@@ -26,7 +26,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@DisplayName("주문 관련 Service 기능 테스트")
+@DisplayName("주문 관련 Service 기능 테스트 - Stub")
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
 

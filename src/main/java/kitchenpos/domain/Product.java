@@ -14,10 +14,10 @@ public class Product {
         this.price = price;
     }
 
-    public Product(Long id, String name, int price) {
+    public Product(Long id, String name, BigDecimal price) {
         this.id = id;
         this.name = name;
-        this.price = BigDecimal.valueOf(price);
+        this.price = price;
     }
 
     public Long getId() {

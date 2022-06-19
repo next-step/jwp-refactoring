@@ -1,8 +1,7 @@
 package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -16,7 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@DisplayName("메뉴 그룹 Service 기능 테스트")
+@DisplayName("메뉴 그룹 Service 기능 테스트 - Stub")
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
 
@@ -33,14 +32,17 @@ class MenuGroupServiceTest {
     @Test
     void create() {
         //given
-        MenuGroup menuGroup = new MenuGroup(null, "인기 메뉴");
-        when(menuGroupDao.save(any())).thenReturn(menuGroup);
+        long generateMenuGroupId = 1;
+        MenuGroup request = new MenuGroup(null, "인기 메뉴");
+        doAnswer(invocation -> new MenuGroup(generateMenuGroupId, request.getName()))
+                .when(menuGroupDao).save(request);
 
         //when
-        MenuGroup result = menuGroupService.create(menuGroup);
+        MenuGroup result = menuGroupService.create(request);
 
         //then
-        assertThat(result).isEqualTo(menuGroup);
+        assertThat(result.getId()).isEqualTo(generateMenuGroupId);
+        assertThat(result.getName()).isEqualTo(request.getName());
     }
 
     @DisplayName("상품 목록을 조회한다.")

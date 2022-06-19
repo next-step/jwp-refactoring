@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -21,7 +22,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@DisplayName("단체 지정 Service 기능 테스트")
+@DisplayName("단체 지정 Service 기능 테스트 - Stub")
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
 
@@ -42,14 +43,15 @@ class TableGroupServiceTest {
     @Test
     void create() {
         //given
+        long generateTableGroupId = 1;
         OrderTable emptyTable1 = new OrderTable(1L, null, 0, true);
         OrderTable emptyTable2 = new OrderTable(2L, null, 0, true);
         TableGroup request = new TableGroup(null, null, Arrays.asList(emptyTable1, emptyTable2));
-        TableGroup tableGroup = new TableGroup(1L, null, Arrays.asList(emptyTable1, emptyTable2));
 
         when(orderTableDao.findAllByIdIn(Arrays.asList(emptyTable1.getId(), emptyTable2.getId())))
                 .thenReturn(Arrays.asList(emptyTable1, emptyTable2));
-        when(tableGroupDao.save(request)).thenReturn(tableGroup);
+        doAnswer(invocation -> new TableGroup(generateTableGroupId, request.getCreatedDate(), request.getOrderTables()))
+                .when(tableGroupDao).save(request);
 
         //when
         TableGroup result = tableGroupService.create(request);
@@ -57,9 +59,9 @@ class TableGroupServiceTest {
         //then
         List<OrderTable> orderTables = result.getOrderTables();
         assertThat(orderTables.get(0).isEmpty()).isFalse();
-        assertThat(orderTables.get(0).getTableGroupId()).isEqualTo(tableGroup.getId());
+        assertThat(orderTables.get(0).getTableGroupId()).isEqualTo(generateTableGroupId);
         assertThat(orderTables.get(1).isEmpty()).isFalse();
-        assertThat(orderTables.get(1).getTableGroupId()).isEqualTo(tableGroup.getId());
+        assertThat(orderTables.get(1).getTableGroupId()).isEqualTo(generateTableGroupId);
     }
 
     @DisplayName("테이블이 2개 미만이거나 비어있으면 단체 지정을 등록 할 수 없다.")

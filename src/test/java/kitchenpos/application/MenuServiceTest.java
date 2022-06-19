@@ -3,7 +3,7 @@ package kitchenpos.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -26,7 +26,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@DisplayName("메뉴 관련 Service 기능 테스트")
+@DisplayName("메뉴 관련 Service 기능 테스트 - Stub")
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
 
@@ -53,9 +53,9 @@ class MenuServiceTest {
         menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
 
         인기메뉴 = new MenuGroup(1L, "인기 메뉴");
-        돈까스상품 = new Product(1L, "돈까스", 8000);
-        미니우동상품 = new Product(2L, "미니우동", 3000);
-        제육덮밥상품 = new Product(3L, "제육덮밥", 7000);
+        돈까스상품 = new Product(1L, "돈까스", convert(8000));
+        미니우동상품 = new Product(2L, "미니우동", convert(3000));
+        제육덮밥상품 = new Product(3L, "제육덮밥", convert(7000));
         돈까스 = new MenuProduct(null, 돈까스상품.getId(), 100);
         미니우동 = new MenuProduct(null, 미니우동상품.getId(), 50);
         제육덮밥 = new MenuProduct(null, 제육덮밥상품.getId(), 50);
@@ -65,23 +65,24 @@ class MenuServiceTest {
     @Test
     void create() {
         //given
-        Menu menu = new Menu(1L, "돈까스 정식", convert(10000), 인기메뉴.getId(), Arrays.asList(돈까스, 미니우동));
+        long generateMenuId = 1;
+        Menu request = new Menu(null, "돈까스 정식", convert(10000), 인기메뉴.getId(), Arrays.asList(돈까스, 미니우동));
         when(menuGroupDao.existsById(인기메뉴.getId())).thenReturn(true);
         when(productDao.findById(돈까스.getProductId())).thenReturn(Optional.of(돈까스상품));
         when(productDao.findById(미니우동.getProductId())).thenReturn(Optional.of(미니우동상품));
-        when(menuDao.save(menu)).thenReturn(menu);
+        doAnswer(invocation -> new Menu(generateMenuId, request.getName(), request.getPrice(), request.getMenuGroupId(), request.getMenuProducts()))
+                .when(menuDao).save(request);
         when(menuProductDao.save(돈까스)).thenReturn(돈까스);
         when(menuProductDao.save(미니우동)).thenReturn(미니우동);
 
-
         //when
-        Menu result = menuService.create(menu);
+        Menu result = menuService.create(request);
 
         //then
         assertAll(
-                () -> assertThat(result).isEqualTo(menu),
-                () -> assertThat(result.getMenuProducts().get(0).getMenuId()).isEqualTo(menu.getId()),
-                () -> assertThat(result.getMenuProducts().get(1).getMenuId()).isEqualTo(menu.getId())
+                () -> assertThat(result.getId()).isEqualTo(generateMenuId),
+                () -> assertThat(result.getMenuProducts().get(0).getMenuId()).isEqualTo(generateMenuId),
+                () -> assertThat(result.getMenuProducts().get(1).getMenuId()).isEqualTo(generateMenuId)
         );
 
     }
@@ -90,13 +91,13 @@ class MenuServiceTest {
     @Test
     void create_price_null_or_less_then_zero() {
         //given
-        Menu menu1 = new Menu(1L, "돈까스 정식", convert(-1), 인기메뉴.getId(), Arrays.asList(돈까스, 미니우동));
-        Menu menu2 = new Menu(1L, "돈까스 정식", null, 인기메뉴.getId(), Arrays.asList(돈까스, 미니우동));
+        Menu request_price_less_then_zero = new Menu(1L, "돈까스 정식", convert(-1), 인기메뉴.getId(), Arrays.asList(돈까스, 미니우동));
+        Menu request_price_null = new Menu(1L, "돈까스 정식", null, 인기메뉴.getId(), Arrays.asList(돈까스, 미니우동));
 
         //when then
         assertAll(
-                () -> assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu1)),
-                () -> assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu2))
+                () -> assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(request_price_less_then_zero)),
+                () -> assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(request_price_null))
         );
 
     }
