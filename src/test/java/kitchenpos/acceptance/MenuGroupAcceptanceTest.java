@@ -21,7 +21,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     @DisplayName("메뉴그룹을 등록한다.")
     void createMenuGroup() {
         // when
-        ExtractableResponse<Response> response = 메뉴_그룹_등록_요청("두마리메뉴");
+        ExtractableResponse<Response> response = 메뉴_그룹_등록_요청("추천메뉴");
 
         // then
         메뉴_그룹_등록됨(response);
