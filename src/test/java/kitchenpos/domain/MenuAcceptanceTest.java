@@ -13,12 +13,12 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.application.fixture.MenuFixtureFactory;
-import kitchenpos.application.fixture.MenuProductFixtureFactory;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.product.domain.Product;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,38 +27,32 @@ import org.junit.jupiter.api.Test;
 @DisplayName("메뉴 관련 기능 인수테스트")
 class MenuAcceptanceTest extends AcceptanceTest {
 
-    private MenuGroup 초밥_메뉴그룹;
-    private Product 우아한_초밥_1;
-    private Product 우아한_초밥_2;
-    private MenuProduct A_우아한_초밥_1;
-    private MenuProduct B_우아한_초밥_1;
-    private Menu A메뉴;
-    private Menu B메뉴;
+    private MenuGroupResponse 초밥_메뉴그룹;
+    private ProductResponse 우아한_초밥_A;
+    private ProductResponse 우아한_초밥_B;
+
+    private MenuRequest 우아한_초밥_메뉴_A_request;
+    private MenuRequest 우아한_초밥_메뉴_B_request;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
+        초밥_메뉴그룹 = 메뉴_그룹_등록되어_있음(MenuGroupRequest.from("초밥_메뉴그룹")).as(MenuGroupResponse.class);
+        우아한_초밥_A = 상품_등록되어_있음(ProductRequest.of("우아한_초밥_A", BigDecimal.valueOf(10_000))).as(ProductResponse.class);
+        우아한_초밥_B = 상품_등록되어_있음(ProductRequest.of("우아한_초밥_B", BigDecimal.valueOf(20_000))).as(ProductResponse.class);
 
-        초밥_메뉴그룹 = 메뉴_그룹_등록되어_있음(MenuGroup.from("초밥_메뉴그룹")).as(MenuGroup.class);
-        우아한_초밥_1 = 상품_등록되어_있음(Product.of("우아한_초밥_1", BigDecimal.valueOf(10_000))).as(Product.class);
-        우아한_초밥_2 = 상품_등록되어_있음(Product.of("우아한_초밥_2", BigDecimal.valueOf(20_000))).as(Product.class);
+        MenuProductRequest 우아한_초밥_A_메뉴상품_request = MenuProductRequest.of(우아한_초밥_A.getId(), 2L);
+        MenuProductRequest 우아한_초밥_B_메뉴상품_request = MenuProductRequest.of(우아한_초밥_B.getId(), 2L);
 
-        A메뉴 = MenuFixtureFactory.create("A", BigDecimal.valueOf(9_000), 초밥_메뉴그룹.getId());
-        B메뉴 = MenuFixtureFactory.create("B", BigDecimal.valueOf(10_000), 초밥_메뉴그룹.getId());
-
-        A_우아한_초밥_1 = MenuProductFixtureFactory.create(1L, A메뉴.getId(), 우아한_초밥_1.getId(), 1);
-        B_우아한_초밥_1 = MenuProductFixtureFactory.create(2L, B메뉴.getId(), 우아한_초밥_2.getId(), 2);
-
-        A메뉴.setMenuProducts(Lists.newArrayList(A_우아한_초밥_1));
-        B메뉴.setMenuProducts(Lists.newArrayList(B_우아한_초밥_1));
-
+        우아한_초밥_메뉴_A_request = MenuRequest.of("우아한_초밥_메뉴_A", BigDecimal.valueOf(10_000), 초밥_메뉴그룹.getId(), Lists.newArrayList(우아한_초밥_A_메뉴상품_request));
+        우아한_초밥_메뉴_B_request = MenuRequest.of("우아한_초밥_메뉴_B", BigDecimal.valueOf(10_000), 초밥_메뉴그룹.getId(), Lists.newArrayList(우아한_초밥_B_메뉴상품_request));
     }
 
     @DisplayName("메뉴를 등록할 수 있다.")
     @Test
     void create01() {
         // when
-        ExtractableResponse<Response> response = 메뉴_등록_요청(A메뉴);
+        ExtractableResponse<Response> response = 메뉴_등록_요청(우아한_초밥_메뉴_A_request);
 
         // then
         메뉴_등록됨(response);
@@ -68,8 +62,8 @@ class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void find01() {
         // given
-        ExtractableResponse<Response> createdResponse1 = 메뉴_등록되어_있음(A메뉴);
-        ExtractableResponse<Response> createdResponse2 = 메뉴_등록되어_있음(B메뉴);
+        ExtractableResponse<Response> createdResponse1 = 메뉴_등록되어_있음(우아한_초밥_메뉴_A_request);
+        ExtractableResponse<Response> createdResponse2 = 메뉴_등록되어_있음(우아한_초밥_메뉴_B_request);
 
         // when
         ExtractableResponse<Response> response = 메뉴_목록_조회_요청();

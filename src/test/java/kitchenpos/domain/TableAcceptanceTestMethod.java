@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.springframework.http.HttpStatus;
 
 class TableAcceptanceTestMethod extends AcceptanceTest {
@@ -17,19 +19,19 @@ class TableAcceptanceTestMethod extends AcceptanceTest {
     private static final String TABLE_GUEST_PATH_FORMAT = "/api/tables/%s/number-of-guests";
     private static final String DOT = ".";
 
-    public static ExtractableResponse<Response> 테이블_등록_요청(OrderTable params) {
+    public static ExtractableResponse<Response> 테이블_등록_요청(OrderTableRequest params) {
         return post(TABLE_PATH, params);
     }
 
-    public static ExtractableResponse<Response> 테이블_등록되어_있음(OrderTable params) {
+    public static ExtractableResponse<Response> 테이블_등록되어_있음(OrderTableRequest params) {
         return 테이블_등록_요청(params);
     }
 
-    public static ExtractableResponse<Response> 빈_테이블_변경_요청(Long id, OrderTable params) {
+    public static ExtractableResponse<Response> 빈_테이블_변경_요청(Long id, OrderTableRequest params) {
         return put(String.format(TABLE_EMPTY_PATH_FORMAT, id), params);
     }
 
-    public static ExtractableResponse<Response> 테이블_손님_수_변경_요청(Long id, OrderTable params) {
+    public static ExtractableResponse<Response> 테이블_손님_수_변경_요청(Long id, OrderTableRequest params) {
         return put(String.format(TABLE_GUEST_PATH_FORMAT, id), params);
     }
 
@@ -60,9 +62,9 @@ class TableAcceptanceTestMethod extends AcceptanceTest {
                 .map(AcceptanceTest::parseIdFromLocationHeader)
                 .collect(Collectors.toList());
 
-        List<Long> actualIds = response.jsonPath().getList(DOT, OrderTable.class)
+        List<Long> actualIds = response.jsonPath().getList(DOT, OrderTableResponse.class)
                 .stream()
-                .map(OrderTable::getId)
+                .map(OrderTableResponse::getId)
                 .collect(Collectors.toList());
 
         assertThat(actualIds).containsAll(expectedIds);

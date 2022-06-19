@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
 import org.springframework.http.HttpStatus;
 
 class ProductAcceptanceTestMethod extends AcceptanceTest {
@@ -15,11 +16,11 @@ class ProductAcceptanceTestMethod extends AcceptanceTest {
     private static final String PRODUCT_PATH = "/api/products";
     private static final String DOT = ".";
 
-    public static ExtractableResponse<Response> 상품_등록_요청(Product params) {
+    public static ExtractableResponse<Response> 상품_등록_요청(ProductRequest params) {
         return post(PRODUCT_PATH, params);
     }
 
-    public static ExtractableResponse<Response> 상품_등록되어_있음(Product params) {
+    public static ExtractableResponse<Response> 상품_등록되어_있음(ProductRequest params) {
         return 상품_등록_요청(params);
     }
 

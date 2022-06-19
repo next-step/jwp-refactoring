@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
 import org.springframework.http.HttpStatus;
 
 class MenuGroupAcceptanceTestMethod extends AcceptanceTest {
@@ -15,11 +16,11 @@ class MenuGroupAcceptanceTestMethod extends AcceptanceTest {
     private static final String MENU_GROUP_PATH = "/api/menu-groups";
     private static final String DOT = ".";
 
-    public static ExtractableResponse<Response> 메뉴_그룹_등록_요청(MenuGroup params) {
+    public static ExtractableResponse<Response> 메뉴_그룹_등록_요청(MenuGroupRequest params) {
         return post(MENU_GROUP_PATH, params);
     }
 
-    public static ExtractableResponse<Response> 메뉴_그룹_등록되어_있음(MenuGroup params) {
+    public static ExtractableResponse<Response> 메뉴_그룹_등록되어_있음(MenuGroupRequest params) {
         return 메뉴_그룹_등록_요청(params);
     }
 

@@ -14,8 +14,8 @@ import static kitchenpos.domain.TableAcceptanceTestMethod.테이블_손님_수_�
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.application.fixture.OrderTableFixtureFactory;
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,22 +24,22 @@ import org.junit.jupiter.api.Test;
 @DisplayName("테이블 관련 인수테스트")
 class TableAcceptanceTest extends AcceptanceTest {
 
-    private OrderTable 빈_테이블;
-    private OrderTable 주문_테이블;
+    private OrderTableRequest orderTableRequest1;
+    private OrderTableRequest orderTableRequest2;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        빈_테이블 = OrderTableFixtureFactory.create(true);
-        주문_테이블 = OrderTableFixtureFactory.create(false);
+        orderTableRequest1 = OrderTableRequest.of(0, true);
+        orderTableRequest2 = OrderTableRequest.of(0, false);
     }
 
     @DisplayName("테이블을 등록할 수 있다.")
     @Test
     void create01() {
         // when
-        ExtractableResponse<Response> response = 테이블_등록_요청(빈_테이블);
+        ExtractableResponse<Response> response = 테이블_등록_요청(orderTableRequest1);
 
         // then
         테이블_등록됨(response);
@@ -49,8 +49,8 @@ class TableAcceptanceTest extends AcceptanceTest {
     @Test
     void find01() {
         // given
-        ExtractableResponse<Response> createdResponse1 = 테이블_등록되어_있음(빈_테이블);
-        ExtractableResponse<Response> createdResponse2 = 테이블_등록되어_있음(주문_테이블);
+        ExtractableResponse<Response> createdResponse1 = 테이블_등록되어_있음(orderTableRequest1);
+        ExtractableResponse<Response> createdResponse2 = 테이블_등록되어_있음(orderTableRequest2);
 
         // when
         ExtractableResponse<Response> response = 테이블_목록_조회_요청();
@@ -64,11 +64,11 @@ class TableAcceptanceTest extends AcceptanceTest {
     @Test
     void change01() {
         // given
-        OrderTable createdOrderTable = 테이블_등록되어_있음(주문_테이블).as(OrderTable.class);
-        createdOrderTable.setEmpty(true);
+        OrderTableResponse createdOrderTable = 테이블_등록되어_있음(orderTableRequest2).as(OrderTableResponse.class);
+        OrderTableRequest request = OrderTableRequest.of(createdOrderTable.getNumberOfGuests(), true);
 
         // when
-        ExtractableResponse<Response> response = 빈_테이블_변경_요청(createdOrderTable.getId(), createdOrderTable);
+        ExtractableResponse<Response> response = 빈_테이블_변경_요청(createdOrderTable.getId(), request);
 
         // then
         빈_테이블_변경됨(response);
@@ -78,11 +78,11 @@ class TableAcceptanceTest extends AcceptanceTest {
     @Test
     void change02() {
         // given
-        OrderTable createdOrderTable = 테이블_등록되어_있음(주문_테이블).as(OrderTable.class);
-        createdOrderTable.setNumberOfGuests(50);
+        OrderTableResponse createdOrderTable = 테이블_등록되어_있음(orderTableRequest2).as(OrderTableResponse.class);
+        OrderTableRequest request = OrderTableRequest.of(10, createdOrderTable.isEmpty());
 
         // when
-        ExtractableResponse<Response> response = 테이블_손님_수_변경_요청(createdOrderTable.getId(), createdOrderTable);
+        ExtractableResponse<Response> response = 테이블_손님_수_변경_요청(createdOrderTable.getId(), request);
 
         // then
         테이블_손님_수_변경됨(response);

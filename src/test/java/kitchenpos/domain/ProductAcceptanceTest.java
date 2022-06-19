@@ -1,36 +1,41 @@
 package kitchenpos.domain;
 
-import static kitchenpos.domain.ProductAcceptanceTestMethod.*;
+import static kitchenpos.domain.ProductAcceptanceTestMethod.상품_등록_요청;
+import static kitchenpos.domain.ProductAcceptanceTestMethod.상품_등록되어_있음;
+import static kitchenpos.domain.ProductAcceptanceTestMethod.상품_등록됨;
+import static kitchenpos.domain.ProductAcceptanceTestMethod.상품_목록_응답됨;
+import static kitchenpos.domain.ProductAcceptanceTestMethod.상품_목록_조회_요청;
+import static kitchenpos.domain.ProductAcceptanceTestMethod.상품_목록_포함됨;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.application.fixture.ProductFixtureFactory;
-import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+@DisplayName("상품 관련 기능 인수테스트")
 class ProductAcceptanceTest extends AcceptanceTest {
 
-    private Product 우아한_초밥_1;
-    private Product 우아한_초밥_2;
+    private ProductRequest 우아한_초밥_1_request;
+    private ProductRequest 우아한_초밥_2_request;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        우아한_초밥_1 = ProductFixtureFactory.create("우아한_초밥_1", BigDecimal.valueOf(10_000));
-        우아한_초밥_2 = ProductFixtureFactory.create("우아한_초밥_2", BigDecimal.valueOf(20_000));
+        우아한_초밥_1_request = ProductRequest.of("우아한_초밥_1", BigDecimal.valueOf(10_000));
+        우아한_초밥_2_request = ProductRequest.of("우아한_초밥_2", BigDecimal.valueOf(20_000));
     }
 
     @DisplayName("상품을 등록할 수 있다.")
     @Test
     void create01() {
         // when
-        ExtractableResponse<Response> response = 상품_등록_요청(우아한_초밥_1);
+        ExtractableResponse<Response> response = 상품_등록_요청(우아한_초밥_1_request);
 
         // then
         상품_등록됨(response);
@@ -40,8 +45,8 @@ class ProductAcceptanceTest extends AcceptanceTest {
     @Test
     void find01() {
         // given
-        ExtractableResponse<Response> createdResponse1 = 상품_등록되어_있음(우아한_초밥_1);
-        ExtractableResponse<Response> createdResponse2 = 상품_등록되어_있음(우아한_초밥_2);
+        ExtractableResponse<Response> createdResponse1 = 상품_등록되어_있음(우아한_초밥_1_request);
+        ExtractableResponse<Response> createdResponse2 = 상품_등록되어_있음(우아한_초밥_2_request);
 
         // when
         ExtractableResponse<Response> response = 상품_목록_조회_요청();

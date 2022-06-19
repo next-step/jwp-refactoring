@@ -10,8 +10,7 @@ import static kitchenpos.domain.MenuGroupAcceptanceTestMethod.메뉴_그룹_목�
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.application.fixture.MenuGroupFixtureFactory;
-import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,15 +19,15 @@ import org.junit.jupiter.api.Test;
 @DisplayName("메뉴그룹 관련 기능 인수테스트")
 class MenuGroupAcceptanceTest extends AcceptanceTest {
 
-    private MenuGroup 분식_메뉴그룹;
-    private MenuGroup 초밥_메뉴그룹;
+    private MenuGroupRequest 분식_메뉴그룹;
+    private MenuGroupRequest 초밥_메뉴그룹;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        분식_메뉴그룹 = MenuGroupFixtureFactory.create(1L, "분식 메뉴그룹");
-        초밥_메뉴그룹 = MenuGroupFixtureFactory.create(2L, "초밥 메뉴그룹");
+        분식_메뉴그룹 = MenuGroupRequest.from("분식 메뉴그룹");
+        초밥_메뉴그룹 = MenuGroupRequest.from("초밥 메뉴그룹");
     }
 
     @DisplayName("메뉴 그룹을 등록한다.")

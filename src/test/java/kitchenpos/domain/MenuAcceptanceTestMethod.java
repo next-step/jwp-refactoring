@@ -7,7 +7,8 @@ import io.restassured.response.Response;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import org.springframework.http.HttpStatus;
 
 class MenuAcceptanceTestMethod extends AcceptanceTest {
@@ -15,11 +16,11 @@ class MenuAcceptanceTestMethod extends AcceptanceTest {
     private static final String MENU_GROUP_PATH = "/api/menus";
     private static final String DOT = ".";
 
-    public static ExtractableResponse<Response> 메뉴_등록_요청(Menu params) {
+    public static ExtractableResponse<Response> 메뉴_등록_요청(MenuRequest params) {
         return post(MENU_GROUP_PATH, params);
     }
 
-    public static ExtractableResponse<Response> 메뉴_등록되어_있음(Menu params) {
+    public static ExtractableResponse<Response> 메뉴_등록되어_있음(MenuRequest params) {
         return 메뉴_등록_요청(params);
     }
 
@@ -42,9 +43,9 @@ class MenuAcceptanceTestMethod extends AcceptanceTest {
                 .map(AcceptanceTest::parseIdFromLocationHeader)
                 .collect(Collectors.toList());
 
-        List<Long> actualIds = response.jsonPath().getList(DOT, Menu.class)
+        List<Long> actualIds = response.jsonPath().getList(DOT, MenuResponse.class)
                 .stream()
-                .map(Menu::getId)
+                .map(MenuResponse::getId)
                 .collect(Collectors.toList());
 
         assertThat(actualIds).containsAll(expectedIds);
