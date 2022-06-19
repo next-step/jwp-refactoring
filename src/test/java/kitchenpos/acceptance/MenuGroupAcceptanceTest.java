@@ -31,15 +31,10 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     @DisplayName("메뉴그룹을 조회한다.")
     void getMenuGroup() {
         // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/api/menu-groups")
-                .then().log().all().extract();
+        ExtractableResponse<Response> response = 메뉴_그룹_조회_요청();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.jsonPath().getList(".")).hasSize(4);
+        메뉴_그룹_조회됨(response);
     }
 
     public static ExtractableResponse<Response> 메뉴_그룹_등록_요청(String name) {
@@ -54,7 +49,19 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private void 메뉴_그룹_등록됨(ExtractableResponse<Response> response) {
+    public static ExtractableResponse<Response> 메뉴_그룹_조회_요청() {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/api/menu-groups")
+                .then().log().all().extract();
+    }
+
+    public static void 메뉴_그룹_등록됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    public static void 메뉴_그룹_조회됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }
