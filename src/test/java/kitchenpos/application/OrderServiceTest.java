@@ -149,6 +149,51 @@ class OrderServiceTest {
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
+    @DisplayName("주문상태를 변경하면 정상적으로 변경되어야 한다")
+    @Test
+    void change_order_test() {
+        // given
+        주문_2.setOrderStatus(OrderStatus.COOKING.name());
+        when(orderDao.findById(주문_1.getId()))
+            .thenReturn(Optional.of(주문_1));
+        when(orderDao.save(주문_1))
+            .thenReturn(주문_1);
+        when(orderLineItemDao.findAllByOrderId(주문_1.getId()))
+            .thenReturn(Collections.emptyList());
+
+        // when
+        Order result = orderService.changeOrderStatus(주문_1.getId(), 주문_2);
+
+        // then
+        assertThat(result.getId()).isEqualTo(주문_1.getId());
+        assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+    }
+
+    @DisplayName("주문상태를 변경할 주문이 없다면 예외가 발생한다")
+    @Test
+    void change_order_exception_test() {
+        // given
+        when(orderDao.findById(주문_1.getId()))
+            .thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> {
+            orderService.changeOrderStatus(주문_1.getId(), 주문_2);
+        }).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("주문상태를 변경할 주문이 이미 계산완료된 상태라면 예외가 발생한다")
+    @Test
+    void change_order_exception_test2() {
+        // given
+        주문_1.setOrderStatus(OrderStatus.COMPLETION.name());
+        when(orderDao.findById(주문_1.getId()))
+            .thenReturn(Optional.of(주문_1));
+
+        assertThatThrownBy(() -> {
+            orderService.changeOrderStatus(주문_1.getId(), 주문_2);
+        }).isInstanceOf(IllegalArgumentException.class);
+    }
+
     @DisplayName("주문목록을 조회한다")
     @Test
     void findAll_test() {
