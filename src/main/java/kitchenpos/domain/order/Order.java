@@ -1,10 +1,9 @@
 package kitchenpos.domain.order;
 
-import com.google.common.collect.Lists;
 import java.time.LocalDateTime;
 import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -13,7 +12,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -28,8 +26,8 @@ public class Order {
     private OrderStatus orderStatus;
     @Column(name = "ordered_time", nullable = false)
     private LocalDateTime orderedTime;
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderLineItem> orderLineItems = Lists.newArrayList();
+    @Embedded
+    private OrderLineItems orderLineItems = OrderLineItems.createEmpty();
 
     protected Order() {}
 
@@ -37,9 +35,10 @@ public class Order {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
-        this.orderLineItems = orderLineItems;
+        this.orderLineItems = OrderLineItems.from(orderLineItems);
 
-        this.orderLineItems.forEach(orderLineItem -> orderLineItem.mappedByOrder(this));
+        this.orderLineItems.getReadOnlyValues()
+                .forEach(orderLineItem -> orderLineItem.mappedByOrder(this));
     }
 
     private Order(Long orderTableId, OrderStatus orderStatus) {
@@ -54,9 +53,10 @@ public class Order {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
-        this.orderLineItems = orderLineItems;
+        this.orderLineItems = OrderLineItems.from(orderLineItems);
 
-        this.orderLineItems.forEach(orderLineItem -> orderLineItem.mappedByOrder(this));
+        this.orderLineItems.getReadOnlyValues()
+                .forEach(orderLineItem -> orderLineItem.mappedByOrder(this));
     }
 
     public static Order of(Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
@@ -88,7 +88,7 @@ public class Order {
         return orderedTime;
     }
 
-    public List<OrderLineItem> getOrderLineItems() {
+    public OrderLineItems getOrderLineItems() {
         return orderLineItems;
     }
 

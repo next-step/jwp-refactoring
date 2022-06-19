@@ -34,7 +34,8 @@ public class OrderResponse {
                 order.getOrderTableId(),
                 order.getOrderStatus(),
                 order.getOrderedTime(),
-                order.getOrderLineItems().stream()
+                order.getOrderLineItems().getReadOnlyValues()
+                        .stream()
                         .map(OrderLineItemResponse::from)
                         .collect(Collectors.toList()));
     }
