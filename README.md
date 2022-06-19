@@ -8,8 +8,9 @@
 **2단계 : 서비스 리팩터링**
 - [X] spring data jpa 의존성 추가 및 property 처리
 - [X] 도메인별 패키지 정리 (application, domain, dto, ui)
-- [ ] 도메인 클래스 JPA Entity 변경
-- [ ] 도메인별 Repository 구성 및 Dao -> Repository 변경
+- [X] 도메인 클래스 JPA Entity 변경
+- [X] 도메인별 Repository 구성 및 Dao -> Repository 변경
+- [ ] 값객체, 일급컬랙션을 활용한 도메인 내부 리팩토링
 - [ ] Service 비즈니스 로직 도메인으로 리팩토링 
 
 ---
