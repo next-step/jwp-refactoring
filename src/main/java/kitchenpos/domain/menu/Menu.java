@@ -16,6 +16,9 @@ import kitchenpos.domain.Price;
 @Entity
 @Table(name = "menu")
 public class Menu {
+
+    private static final String INVALID_MENU_PRICE = "메뉴(Menu)의 가격(Price)는 상품(Product)의 총합보다 작아야 합니다.";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -82,5 +85,20 @@ public class Menu {
 
     public void appendMenuProduct(MenuProduct menuProduct) {
         this.menuProducts.add(menuProduct);
+    }
+
+    public void appendAllMenuProducts(List<MenuProduct> menuProducts) {
+        validateMenuPrice(menuProducts);
+        menuProducts.forEach(menuProduct -> menuProduct.mappedByMenu(this));
+    }
+
+    private void validateMenuPrice(List<MenuProduct> menuProducts) {
+        BigDecimal sum = menuProducts.stream()
+                .map(MenuProduct::calculateTotalPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        if (price.compareTo(sum) > 0) {
+            throw new IllegalArgumentException(INVALID_MENU_PRICE);
+        }
     }
 }

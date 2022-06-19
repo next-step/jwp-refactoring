@@ -1,5 +1,6 @@
 package kitchenpos.domain.menu;
 
+import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -12,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import kitchenpos.domain.Quantity;
+import kitchenpos.domain.product.Product;
 
 @Entity
 @Table(name = "menu_product")
@@ -23,41 +25,42 @@ public class MenuProduct {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_menu_product_menu"), nullable = false)
     private Menu menu;
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_menu_product_product"), nullable = false)
-    private Long productId;
+    private Product product;
     @Embedded
     private Quantity quantity;
 
     protected MenuProduct() {}
 
-    private MenuProduct(Long seq, Menu menu, Long productId, long quantity) {
+    private MenuProduct(Long seq, Menu menu, Product product, long quantity) {
         this.seq = seq;
         this.menu = menu;
-        this.productId = productId;
+        this.product = product;
         this.quantity = Quantity.from(quantity);
     }
 
-    private MenuProduct(Menu menu, Long productId, long quantity) {
+    private MenuProduct(Menu menu, Product product, long quantity) {
         this.menu = menu;
-        this.productId = productId;
+        this.product = product;
         this.quantity = Quantity.from(quantity);
     }
 
-    private MenuProduct(Long productId, long quantity) {
-        this.productId = productId;
+    private MenuProduct(Product product, long quantity) {
+        this.product = product;
         this.quantity = Quantity.from(quantity);
     }
 
-    public static MenuProduct of(Long productId, long quantity) {
-        return new MenuProduct(productId, quantity);
+    public static MenuProduct of(Product product, long quantity) {
+        return new MenuProduct(product, quantity);
     }
 
-    public static MenuProduct of(Long seq, Menu menu, Long productId, long quantity) {
-        return new MenuProduct(seq, menu, productId, quantity);
+    public static MenuProduct of(Long seq, Menu menu, Product product, long quantity) {
+        return new MenuProduct(seq, menu, product, quantity);
     }
 
-    public static MenuProduct of(Menu menu, Long productId, long quantity) {
-        return new MenuProduct(menu, productId, quantity);
+    public static MenuProduct of(Menu menu, Product product, long quantity) {
+        return new MenuProduct(menu, product, quantity);
     }
 
     public Long getSeq() {
@@ -70,7 +73,7 @@ public class MenuProduct {
     }
 
     public Long getProductId() {
-        return this.productId;
+        return this.product.getId();
     }
 
     public Quantity getQuantity() {
@@ -80,5 +83,10 @@ public class MenuProduct {
     public void mappedByMenu(Menu menu) {
         this.menu = menu;
         menu.appendMenuProduct(this);
+    }
+
+    public BigDecimal calculateTotalPrice() {
+        BigDecimal productQuantity = BigDecimal.valueOf(this.quantity.getValue());
+        return product.getPrice().getValue().multiply(productQuantity);
     }
 }

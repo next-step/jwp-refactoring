@@ -77,8 +77,8 @@ class OrderServiceTest {
         우아한_초밥_2 = ProductFixtureFactory.create(2L, "우아한_초밥_2", BigDecimal.valueOf(20_000));
         A = MenuFixtureFactory.create("A", BigDecimal.valueOf(30_000), 초밥_메뉴그룹.getId());
 
-        A_우아한_초밥_1 = MenuProductFixtureFactory.create(1L, A, 우아한_초밥_1.getId(), 1);
-        A_우아한_초밥_2 = MenuProductFixtureFactory.create(2L, A, 우아한_초밥_2.getId(), 2);
+        A_우아한_초밥_1 = MenuProductFixtureFactory.create(1L, A, 우아한_초밥_1, 1);
+        A_우아한_초밥_2 = MenuProductFixtureFactory.create(2L, A, 우아한_초밥_2, 2);
 
         A_우아한_초밥_1.mappedByMenu(A);
         A_우아한_초밥_2.mappedByMenu(A);

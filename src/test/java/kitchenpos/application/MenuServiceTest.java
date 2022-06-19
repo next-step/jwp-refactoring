@@ -67,8 +67,8 @@ class MenuServiceTest {
         우아한_초밥_2 = ProductFixtureFactory.create(2L, "우아한_초밥_2", BigDecimal.valueOf(20_000));
         A = MenuFixtureFactory.create("A", BigDecimal.valueOf(30_000), 초밥_메뉴그룹.getId());
 
-        A_우아한_초밥_1 = MenuProductFixtureFactory.create(1L, A, 우아한_초밥_1.getId(), 1);
-        A_우아한_초밥_2 = MenuProductFixtureFactory.create(2L, A, 우아한_초밥_2.getId(), 2);
+        A_우아한_초밥_1 = MenuProductFixtureFactory.create(1L, A, 우아한_초밥_1, 1);
+        A_우아한_초밥_2 = MenuProductFixtureFactory.create(2L, A, 우아한_초밥_2, 2);
 
         A_우아한_초밥_1.mappedByMenu(A);
         A_우아한_초밥_2.mappedByMenu(A);
@@ -85,7 +85,8 @@ class MenuServiceTest {
                         MenuProductRequest.of(A_우아한_초밥_1.getProductId(), A_우아한_초밥_1.getQuantity().getValue()),
                         MenuProductRequest.of(A_우아한_초밥_2.getProductId(), A_우아한_초밥_2.getQuantity().getValue()))
         );
-        given(menuGroupRepository.existsById(초밥_메뉴그룹.getId())).willReturn(true);
+
+        given(menuGroupRepository.findById(초밥_메뉴그룹.getId())).willReturn(Optional.ofNullable(초밥_메뉴그룹));
         given(productRepository.findById(A_우아한_초밥_1.getProductId())).willReturn(Optional.ofNullable(우아한_초밥_1));
         given(productRepository.findById(A_우아한_초밥_2.getProductId())).willReturn(Optional.ofNullable(우아한_초밥_2));
         given(menuRepository.save(any(Menu.class))).willReturn(A);
@@ -143,7 +144,8 @@ class MenuServiceTest {
                         MenuProductRequest.of(A_우아한_초밥_2.getProductId(), A_우아한_초밥_2.getQuantity().getValue()))
         );
 
-        given(menuGroupRepository.existsById(초밥_메뉴그룹.getId())).willReturn(false);
+        given(productRepository.findById(A_우아한_초밥_1.getProductId())).willReturn(Optional.ofNullable(우아한_초밥_1));
+        given(menuGroupRepository.findById(초밥_메뉴그룹.getId())).willReturn(Optional.ofNullable(초밥_메뉴그룹));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest));
@@ -161,7 +163,7 @@ class MenuServiceTest {
                         MenuProductRequest.of(A_우아한_초밥_2.getProductId(), A_우아한_초밥_2.getQuantity().getValue()))
         );
 
-        given(menuGroupRepository.existsById(초밥_메뉴그룹.getId())).willReturn(true);
+        given(menuGroupRepository.findById(초밥_메뉴그룹.getId())).willReturn(Optional.ofNullable(초밥_메뉴그룹));
         given(productRepository.findById(A_우아한_초밥_1.getProductId())).willThrow(IllegalArgumentException.class);
 
         // when & then

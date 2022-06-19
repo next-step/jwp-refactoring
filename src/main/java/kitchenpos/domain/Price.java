@@ -28,6 +28,10 @@ public class Price {
         return this.value;
     }
 
+    public int compareTo(BigDecimal value) {
+        return this.value.compareTo(value);
+    }
+
     private static void validatePrice(BigDecimal price) {
         if (price == null || price.compareTo(MIN_PRICE) <= 0) {
             throw new IllegalArgumentException(String.format(INVALID_PRICE, price));
@@ -50,4 +54,5 @@ public class Price {
     public int hashCode() {
         return Objects.hash(getValue());
     }
+
 }
