@@ -1,6 +1,7 @@
 package kitchenpos.domain.table;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
@@ -21,8 +22,8 @@ public class OrderTable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
     private TableGroup tableGroup;
-    @Column(name = "number_of_guests", nullable = false)
-    private int numberOfGuests;
+    @Embedded
+    private NumberOfGuests numberOfGuests;
     @Column(name = "empty", nullable = false)
     private boolean empty;
 
@@ -30,11 +31,12 @@ public class OrderTable {
 
     private OrderTable(boolean empty, int numberOfGuests) {
         this.empty = empty;
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = NumberOfGuests.from(numberOfGuests);
     }
 
     private OrderTable(boolean empty) {
         this.empty = empty;
+        this.numberOfGuests = NumberOfGuests.createEmpty();
     }
 
     private OrderTable(Long orderTableId) {
@@ -61,7 +63,7 @@ public class OrderTable {
         return this.tableGroup;
     }
 
-    public int getNumberOfGuests() {
+    public NumberOfGuests getNumberOfGuests() {
         return numberOfGuests;
     }
 
@@ -82,7 +84,7 @@ public class OrderTable {
     }
 
     public void changeNumberOfGuests(int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = NumberOfGuests.from(numberOfGuests);
     }
 
     public Long getTableGroupId() {
