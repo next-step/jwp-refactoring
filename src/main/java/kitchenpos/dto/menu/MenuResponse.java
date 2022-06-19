@@ -29,7 +29,7 @@ public class MenuResponse {
 
     public static MenuResponse from(Menu menu) {
         return new MenuResponse(menu.getId(),
-                menu.getName(),
+                menu.getName().getValue(),
                 menu.getPrice(),
                 menu.getMenuGroupId(),
                 menu.getMenuProducts().stream()

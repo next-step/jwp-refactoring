@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
@@ -13,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import kitchenpos.domain.Name;
 
 @Entity
 @Table(name = "menu")
@@ -20,8 +22,8 @@ public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Embedded
+    private Name name;
     @Column(name = "price", nullable = false)
     private BigDecimal price;
     @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"), nullable = false)
@@ -32,20 +34,20 @@ public class Menu {
     protected Menu() {}
 
     private Menu(String name, BigDecimal price, Long menuGroupId) {
-        this.name = name;
+        this.name = Name.from(name);
         this.price = price;
         this.menuGroupId = menuGroupId;
     }
 
     private Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        this.name = name;
+        this.name = Name.from(name);
         this.price = price;
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
     }
 
     private Menu(String name, BigDecimal price) {
-        this.name = name;
+        this.name = Name.from(name);
         this.price = price;
     }
 
@@ -65,7 +67,7 @@ public class Menu {
         return id;
     }
 
-    public String getName() {
+    public Name getName() {
         return name;
     }
 
