@@ -56,9 +56,9 @@ class MenuServiceTest {
         돈까스상품 = new Product(1L, "돈까스", convert(8000));
         미니우동상품 = new Product(2L, "미니우동", convert(3000));
         제육덮밥상품 = new Product(3L, "제육덮밥", convert(7000));
-        돈까스 = new MenuProduct(null, 돈까스상품.getId(), 100);
-        미니우동 = new MenuProduct(null, 미니우동상품.getId(), 50);
-        제육덮밥 = new MenuProduct(null, 제육덮밥상품.getId(), 50);
+        돈까스 = new MenuProduct(null, 돈까스상품.getId(), 2);
+        미니우동 = new MenuProduct(null, 미니우동상품.getId(), 1);
+        제육덮밥 = new MenuProduct(null, 제육덮밥상품.getId(), 1);
     }
 
     @DisplayName("메뉴를 등록한다.")
@@ -89,10 +89,25 @@ class MenuServiceTest {
 
     @DisplayName("메뉴 그룹이 등록 되어있지 않은 경우 메뉴를 등록 할 수 없다.")
     @Test
-    void create_emppty_menu_group_id() {
+    void create_empty_menu_group_id() {
         //given
         Menu request = new Menu(null, "돈까스 정식", convert(10000), 인기메뉴.getId(), Arrays.asList(돈까스, 미니우동));
         given(menuGroupDao.existsById(인기메뉴.getId())).willReturn(false);
+
+        //when then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() ->  menuService.create(request));
+
+    }
+
+    @DisplayName("메뉴 가격이 금액(가격 * 수량)보다 큰 경우 메뉴를 등록할 수 없다.")
+    @Test
+    void create_price_greater_than_amount() {
+        //given
+        Menu request = new Menu(null, "돈까스 정식", convert(20000), 인기메뉴.getId(), Arrays.asList(돈까스, 미니우동));
+        given(menuGroupDao.existsById(인기메뉴.getId())).willReturn(true);
+        given(productDao.findById(돈까스.getProductId())).willReturn(Optional.of(돈까스상품));
+        given(productDao.findById(미니우동.getProductId())).willReturn(Optional.of(미니우동상품));
 
         //when then
         assertThatIllegalArgumentException()
