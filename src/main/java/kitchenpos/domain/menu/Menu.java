@@ -1,9 +1,7 @@
 package kitchenpos.domain.menu;
 
-import com.google.common.collect.Lists;
 import java.math.BigDecimal;
 import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -11,7 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import kitchenpos.domain.Name;
 import kitchenpos.domain.Price;
@@ -28,8 +25,8 @@ public class Menu {
     private Price price;
     @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"), nullable = false)
     private Long menuGroupId;
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MenuProduct> menuProducts = Lists.newArrayList();
+    @Embedded
+    private MenuProducts menuProducts = MenuProducts.createEmpty();
 
     protected Menu() {}
 
@@ -43,7 +40,7 @@ public class Menu {
         this.name = Name.from(name);
         this.price = Price.from(price);
         this.menuGroupId = menuGroupId;
-        this.menuProducts = menuProducts;
+        this.menuProducts = MenuProducts.from(menuProducts);
     }
 
     private Menu(String name, BigDecimal price) {
@@ -79,7 +76,7 @@ public class Menu {
         return this.menuGroupId;
     }
 
-    public List<MenuProduct> getMenuProducts() {
+    public MenuProducts getMenuProducts() {
         return menuProducts;
     }
 

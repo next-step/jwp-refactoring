@@ -32,7 +32,8 @@ public class MenuResponse {
                 menu.getName().getValue(),
                 menu.getPrice().getValue(),
                 menu.getMenuGroupId(),
-                menu.getMenuProducts().stream()
+                menu.getMenuProducts().getReadOnlyValues()
+                        .stream()
                         .map(MenuProductResponse::from)
                         .collect(Collectors.toList())
         );
