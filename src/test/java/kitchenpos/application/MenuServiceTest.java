@@ -87,7 +87,20 @@ class MenuServiceTest {
 
     }
 
-    @DisplayName("메뉴 가격이 null 이거나 0원 미만이면 등록에 실패한다.")
+    @DisplayName("메뉴 그룹이 등록 되어있지 않은 경우 메뉴를 등록 할 수 없다.")
+    @Test
+    void create_emppty_menu_group_id() {
+        //given
+        Menu request = new Menu(null, "돈까스 정식", convert(10000), 인기메뉴.getId(), Arrays.asList(돈까스, 미니우동));
+        given(menuGroupDao.existsById(인기메뉴.getId())).willReturn(false);
+
+        //when then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() ->  menuService.create(request));
+
+    }
+
+    @DisplayName("메뉴 가격이 null 이거나 0원 미만이면 메뉴를 등록할 수 없다.")
     @Test
     void create_price_null_or_less_then_zero() {
         //given
