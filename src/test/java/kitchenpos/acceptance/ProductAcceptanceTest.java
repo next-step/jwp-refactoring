@@ -29,6 +29,16 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
+    @DisplayName("상품 가격이 0미만이면 등록 실패한다.")
+    void createProduct2() {
+        // when
+        ExtractableResponse<Response> response = 상품_등록_요청("강정치킨", new BigDecimal(-1000));
+
+        // then
+        상품_실패됨(response);
+    }
+
+    @Test
     @DisplayName("상품을 조회한다.")
     void getProducts() {
         // when
@@ -58,5 +68,9 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 
     public static void 상품_등록됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    public static void 상품_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }
