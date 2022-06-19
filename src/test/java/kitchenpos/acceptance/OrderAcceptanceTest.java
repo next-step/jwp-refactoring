@@ -32,7 +32,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("주문 관리 기능")
+    @DisplayName("주문 관리")
     void order() {
         // given
         OrderLineItem orderLineItem = new OrderLineItem();
