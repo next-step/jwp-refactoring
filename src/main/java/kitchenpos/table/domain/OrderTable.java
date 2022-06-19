@@ -18,14 +18,11 @@ public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
     private TableGroup tableGroup;
-
     @Column(name = "number_of_guests", nullable = false)
     private int numberOfGuests;
-
     @Column(name = "empty", nullable = false)
     private boolean empty;
 
@@ -63,6 +60,7 @@ public class OrderTable {
     public TableGroup getTableGroup() {
         return this.tableGroup;
     }
+
     public int getNumberOfGuests() {
         return numberOfGuests;
     }
