@@ -102,7 +102,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         메뉴_조회됨(response);
     }
 
-    private ExtractableResponse<Response> 메뉴_등록_요청(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    public static ExtractableResponse<Response> 메뉴_등록_요청(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         Menu menu = new Menu();
         menu.setMenuGroupId(menuGroupId);
         menu.setMenuProducts(menuProducts);
@@ -125,15 +125,15 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private void 메뉴_등록됨(ExtractableResponse<Response> response) {
+    public static void 메뉴_등록됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    private void 메뉴_등록_실패됨(ExtractableResponse<Response> response) {
+    public static void 메뉴_등록_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
-    private void 메뉴_조회됨(ExtractableResponse<Response> response) {
+    public static void 메뉴_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }
