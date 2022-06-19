@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -15,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import kitchenpos.domain.Name;
+import kitchenpos.domain.Price;
 
 @Entity
 @Table(name = "menu")
@@ -24,8 +24,8 @@ public class Menu {
     private Long id;
     @Embedded
     private Name name;
-    @Column(name = "price", nullable = false)
-    private BigDecimal price;
+    @Embedded
+    private Price price;
     @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"), nullable = false)
     private Long menuGroupId;
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -35,20 +35,20 @@ public class Menu {
 
     private Menu(String name, BigDecimal price, Long menuGroupId) {
         this.name = Name.from(name);
-        this.price = price;
+        this.price = Price.from(price);
         this.menuGroupId = menuGroupId;
     }
 
     private Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         this.name = Name.from(name);
-        this.price = price;
+        this.price = Price.from(price);
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
     }
 
     private Menu(String name, BigDecimal price) {
         this.name = Name.from(name);
-        this.price = price;
+        this.price = Price.from(price);
     }
 
     public static Menu of(String name, BigDecimal price, Long menuGroupId) {
@@ -71,7 +71,7 @@ public class Menu {
         return name;
     }
 
-    public BigDecimal getPrice() {
+    public Price getPrice() {
         return price;
     }
 
