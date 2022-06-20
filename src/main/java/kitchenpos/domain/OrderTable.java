@@ -1,40 +1,67 @@
 package kitchenpos.domain;
 
+import javax.persistence.*;
+
+@Entity
 public class OrderTable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long tableGroupId;
-    private int numberOfGuests;
-    private boolean empty;
+    @ManyToOne
+    private TableGroup tableGroup;
+    @Embedded
+    private NumberOfGuests numberOfGuests;
+    @Embedded
+    private Empty empty;
+
+    public OrderTable(int numberOfGuests, boolean empty) {
+        this.numberOfGuests = new NumberOfGuests(numberOfGuests);
+        this.empty = new Empty(empty);
+    }
+
+    protected OrderTable() {
+    }
+
+    public void bindTo(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
+        this.empty = new Empty(false);
+    }
+
+    public void unbind() {
+        tableGroup = null;
+    }
+
+    public boolean isGrouped() {
+        return tableGroup != null;
+    }
+
+    public boolean isEmpty() {
+        return empty.isTrue();
+    }
+
+    public void changeEmpty(boolean empty) {
+        if (isGrouped()) {
+            throw new CannotChangeEmptyException();
+        }
+        this.empty = new Empty(empty);
+    }
+
+    public void changeNumberOfGuests(int numberOfGuests) {
+        if (isEmpty()) {
+            throw new CannotChangeNumberOfGuestsException();
+        }
+        this.numberOfGuests = new NumberOfGuests(numberOfGuests);
+    }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    public TableGroup getTableGroup() {
+        return tableGroup;
     }
 
-    public Long getTableGroupId() {
-        return tableGroupId;
-    }
-
-    public void setTableGroupId(final Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
-    }
-
-    public int getNumberOfGuests() {
+    public NumberOfGuests getNumberOfGuests() {
         return numberOfGuests;
-    }
-
-    public void setNumberOfGuests(final int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
-    }
-
-    public boolean isEmpty() {
-        return empty;
-    }
-
-    public void setEmpty(final boolean empty) {
-        this.empty = empty;
     }
 }
