@@ -21,9 +21,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static kitchenpos.fixture.OrderFixture.*;
+import static kitchenpos.fixture.OrderLineItemFixture.주문항목_데이터_생성;
+import static kitchenpos.fixture.OrderLineItemFixture.주문항목_데이터_확인;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -55,9 +56,9 @@ class OrderServiceTest {
     @Test
     void create() {
         //given
-        OrderLineItem orderLineItem = new OrderLineItem(1L, 1L, 1L, 1);
+        OrderLineItem orderLineItem = 주문항목_데이터_생성();
         List<OrderLineItem> requestOrderLineItems = Arrays.asList(orderLineItem);
-        Order request = new Order(null, 1L, null, null, requestOrderLineItems);
+        Order request = 주문_요청_데이터_생성(requestOrderLineItems);
 
         given(menuDao.countByIdIn(anyList())).willReturn(1L);
         given(orderTableDao.findById(any())).willReturn(Optional.of(new OrderTable(1L, 1L, 4, false)));
@@ -68,21 +69,8 @@ class OrderServiceTest {
         Order order = orderService.create(request);
 
         //then
-        assertAll(
-                () -> assertEquals(1L, order.getId()),
-                () -> assertEquals(1L, order.getOrderTableId()),
-                () -> assertEquals(OrderStatus.COOKING.name(), order.getOrderStatus()),
-                () -> assertThat(order.getOrderedTime()).isNotNull(),
-                () -> assertThat(order.getOrderLineItems()).isNotEmpty()
-        );
-        List<OrderLineItem> orderLineItems = order.getOrderLineItems();
-        assertAll(
-                () -> assertEquals(1L, orderLineItems.size()),
-                () -> assertEquals(1L, orderLineItems.get(0).getSeq()),
-                () -> assertEquals(1L, orderLineItems.get(0).getOrderId()),
-                () -> assertEquals(1L, orderLineItems.get(0).getMenuId()),
-                () -> assertEquals(1, orderLineItems.get(0).getQuantity())
-        );
+        주문_데이터_확인(order, 1L, 1L, OrderStatus.COOKING);
+        주문항목_데이터_확인(order.getOrderLineItems().get(0), 1L, 1L, 1L, 1);
     }
 
     @DisplayName("주문항목이 하나도 없으면 생성할 수 없다.")
@@ -90,7 +78,7 @@ class OrderServiceTest {
     void create_fail_menuNotExists() {
         //given
         List<OrderLineItem> requestOrderLineItems = Collections.emptyList();
-        Order request = new Order(null, 1L, null, null, requestOrderLineItems);
+        Order request = 주문_요청_데이터_생성(requestOrderLineItems);
 
         //when //then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(request));
@@ -100,9 +88,9 @@ class OrderServiceTest {
     @Test
     void create_fail_notEqualsMenuSize() {
         //given
-        OrderLineItem orderLineItem = new OrderLineItem(1L, 1L, 1L, 1);
+        OrderLineItem orderLineItem = 주문항목_데이터_생성();
         List<OrderLineItem> requestOrderLineItems = Arrays.asList(orderLineItem);
-        Order request = new Order(null, 1L, null, null, requestOrderLineItems);
+        Order request = 주문_요청_데이터_생성(requestOrderLineItems);
 
         given(menuDao.countByIdIn(anyList())).willReturn(2L);
 
@@ -114,9 +102,9 @@ class OrderServiceTest {
     @Test
     void create_fail_notExistsOrderTable() {
         //given
-        OrderLineItem orderLineItem = new OrderLineItem(1L, 1L, 1L, 1);
+        OrderLineItem orderLineItem = 주문항목_데이터_생성();
         List<OrderLineItem> requestOrderLineItems = Arrays.asList(orderLineItem);
-        Order request = new Order(null, 1L, null, null, requestOrderLineItems);
+        Order request = 주문_요청_데이터_생성(requestOrderLineItems);
 
         given(menuDao.countByIdIn(anyList())).willReturn(1L);
         given(orderTableDao.findById(any())).willReturn(Optional.empty());
@@ -129,9 +117,9 @@ class OrderServiceTest {
     @Test
     void create_fail_emptyOrderTable() {
         //given
-        OrderLineItem orderLineItem = new OrderLineItem(1L, 1L, 1L, 1);
+        OrderLineItem orderLineItem = 주문항목_데이터_생성();
         List<OrderLineItem> requestOrderLineItems = Arrays.asList(orderLineItem);
-        Order request = new Order(null, 1L, null, null, requestOrderLineItems);
+        Order request = 주문_요청_데이터_생성(requestOrderLineItems);
 
         given(menuDao.countByIdIn(anyList())).willReturn(1L);
         given(orderTableDao.findById(any())).willReturn(Optional.of(new OrderTable(1L, 1L, 1, true)));
@@ -144,7 +132,7 @@ class OrderServiceTest {
     @Test
     void list() {
         //given
-        OrderLineItem orderLineItem = new OrderLineItem(1L, 1L, 1L, 1);
+        OrderLineItem orderLineItem = 주문항목_데이터_생성();
         List<OrderLineItem> requestOrderLineItems = Arrays.asList(orderLineItem);
 
         Order order = new Order(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), requestOrderLineItems);
@@ -163,28 +151,26 @@ class OrderServiceTest {
     @Test
     void changeOrderStatus() {
         //given
-        OrderLineItem orderLineItem = new OrderLineItem(1L, 1L, 1L, 1);
-        List<OrderLineItem> requestOrderLineItems = Arrays.asList(orderLineItem);
-        Order expectedOrder = new Order(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), requestOrderLineItems);
-        Order requestOrder = new Order(null, null, OrderStatus.COOKING.name(), null, null);
+        Order requestOrder = 주문수정_요청_데이터_생성(OrderStatus.COOKING.name());
 
-        given(orderDao.findById(any())).willReturn(Optional.of(expectedOrder));
+        OrderLineItem orderLineItem = 주문항목_데이터_생성();
+        List<OrderLineItem> requestOrderLineItems = Arrays.asList(orderLineItem);
+        given(orderDao.findById(any())).willReturn(
+                Optional.of(주문_데이터_생성(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), requestOrderLineItems)));
+        given(orderLineItemDao.findAllByOrderId(any())).willReturn(requestOrderLineItems);
 
         //when
         Order order = orderService.changeOrderStatus(1L, requestOrder);
 
         //then
-        assertAll(
-                () -> assertEquals(1L, order.getId()),
-                () -> assertEquals(OrderStatus.COOKING.name(), order.getOrderStatus())
-        );
+        주문_데이터_확인(order, 1L, 1L, OrderStatus.COOKING);
     }
 
     @DisplayName("해당 주문 id가 없는경우, 상태를 변경할 수 없다.")
     @Test
     void changeOrderStatus_fail_notExistsOrder() {
         //given
-        Order requestOrder = new Order(null, null, OrderStatus.COOKING.name(), null, null);
+        Order requestOrder = 주문수정_요청_데이터_생성(OrderStatus.COOKING.name());
 
         given(orderDao.findById(any())).willReturn(Optional.empty());
 
@@ -195,15 +181,14 @@ class OrderServiceTest {
     @DisplayName("주문상태가 계산완료인 경우, 상태를 변경할 수 없다")
     @Test
     void changeOrderStatus_fail_statusComplete() {
-        OrderLineItem orderLineItem = new OrderLineItem(1L, 1L, 1L, 1);
-        List<OrderLineItem> requestOrderLineItems = Arrays.asList(orderLineItem);
-        Order expectedOrder = new Order(1L, 1L, OrderStatus.COMPLETION.name(), LocalDateTime.now(), requestOrderLineItems);
-        Order requestOrder = new Order(null, null, OrderStatus.COOKING.name(), null, null);
+        List<OrderLineItem> orderLineItems = Arrays.asList(주문항목_데이터_생성());
 
-        given(orderDao.findById(any())).willReturn(Optional.of(expectedOrder));
+        given(orderDao.findById(any())).willReturn(
+                Optional.of(주문_데이터_생성(1L, 1L, OrderStatus.COMPLETION.name(), LocalDateTime.now(), orderLineItems)));
 
         //when //then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.changeOrderStatus(1L, requestOrder));
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> orderService.changeOrderStatus(1L, 주문수정_요청_데이터_생성(OrderStatus.COOKING.name())));
     }
 
 }

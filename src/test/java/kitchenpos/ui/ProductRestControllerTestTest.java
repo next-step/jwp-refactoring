@@ -12,6 +12,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.math.BigDecimal;
 import java.util.Arrays;
 
+import static kitchenpos.fixture.ProductFixture.상품_데이터_생성;
+import static kitchenpos.fixture.ProductFixture.상품_요청_데이터_생성;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -34,10 +36,10 @@ public class ProductRestControllerTestTest extends BaseRestControllerTest {
     @Test
     void create() throws Exception {
         //given
-        Product product = new Product("product", BigDecimal.valueOf(1000));
+        Product product = 상품_요청_데이터_생성("product", BigDecimal.valueOf(1000));
         String requestBody = objectMapper.writeValueAsString(product);
 
-        given(productService.create(any())).willReturn(new Product(1L, "product", BigDecimal.valueOf(1000)));
+        given(productService.create(any())).willReturn(상품_데이터_생성(1L, "product", BigDecimal.valueOf(1000)));
 
         //when then
         mockMvc.perform(post("/api/products")
@@ -53,7 +55,8 @@ public class ProductRestControllerTestTest extends BaseRestControllerTest {
     @Test
     void list() throws Exception {
         //given
-        given(productService.list()).willReturn(Arrays.asList(new Product(1L, "product", BigDecimal.valueOf(1000))));
+        given(productService.list()).willReturn(Arrays.asList(상품_데이터_생성(1L, "product", BigDecimal.valueOf(1000))));
+
         //when then
         mockMvc.perform(get("/api/products"))
                 .andDo(print())

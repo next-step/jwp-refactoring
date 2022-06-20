@@ -38,7 +38,7 @@ class MenuRestControllerTestTest extends BaseRestControllerTest {
         BigDecimal price = BigDecimal.valueOf(1000);
         Long menuGroupId = 1L;
         List<MenuProduct> menuProducts = Arrays.asList(createMenuProduct());
-        Menu request = new Menu(name, price, menuGroupId, menuProducts);
+        Menu request = new Menu(null, name, price, menuGroupId, menuProducts);
         String requestBody = objectMapper.writeValueAsString(request);
 
         Long id = 1L;

@@ -1,7 +1,6 @@
 package kitchenpos.ui;
 
 import kitchenpos.application.MenuGroupService;
-import kitchenpos.domain.MenuGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,6 +10,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
 
+import static kitchenpos.fixture.MenuGroupFixture.메뉴묶음_데이터_생성;
+import static kitchenpos.fixture.MenuGroupFixture.메뉴묶음_요청데이터_생성;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -34,10 +35,9 @@ class MenuGroupRestControllerTestTest extends BaseRestControllerTest {
     void create() throws Exception {
         //given
         String name = "menuGroup";
-        MenuGroup request = new MenuGroup(name);
-        String requestBody = objectMapper.writeValueAsString(request);
+        String requestBody = objectMapper.writeValueAsString(메뉴묶음_요청데이터_생성(name));
 
-        given(menuGroupService.create(any())).willReturn(new MenuGroup(1L, name));
+        given(menuGroupService.create(any())).willReturn(메뉴묶음_데이터_생성(1L, name));
 
         //when //then
         mockMvc.perform(post("/api/menu-groups")
@@ -54,7 +54,8 @@ class MenuGroupRestControllerTestTest extends BaseRestControllerTest {
     void list() throws Exception {
         //given
         String name = "menuGroup";
-        given(menuGroupService.list()).willReturn(Arrays.asList(new MenuGroup(1L, name)));
+        given(menuGroupService.list()).willReturn(Arrays.asList(메뉴묶음_데이터_생성(1L, name)));
+
         //when //then
         mockMvc.perform(get("/api/menu-groups"))
                 .andDo(print())

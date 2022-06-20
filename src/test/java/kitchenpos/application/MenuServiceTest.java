@@ -19,9 +19,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static kitchenpos.fixture.MenuFixture.*;
+import static kitchenpos.fixture.MenuProductFixture.메뉴상품_데이터_생성;
+import static kitchenpos.fixture.MenuProductFixture.메뉴상품_데이터_확인;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -52,22 +53,19 @@ class MenuServiceTest {
     void create() {
         //given
         String name = "menu";
-        BigDecimal menuPrice = BigDecimal.valueOf(1000);
         Long menuGroupId = 1L;
-        Long productId = 1L;
-        Long productId2 = 2L;
-        MenuProduct menuProduct = new MenuProduct(1L, productId, 2);
-
-        MenuProduct menuProduct2 = new MenuProduct(2L, productId2, 1);
+        BigDecimal menuPrice = BigDecimal.valueOf(1000);
+        MenuProduct menuProduct = 메뉴상품_데이터_생성(1L, 1L, 2);
+        MenuProduct menuProduct2 = 메뉴상품_데이터_생성(2L, 2L, 2);
         List<MenuProduct> menuProducts = Arrays.asList(menuProduct, menuProduct2);
-        Menu request = new Menu(name, menuPrice, menuGroupId, menuProducts);
+        Menu request = 메뉴_요청_데이터_생성(name, menuPrice, menuGroupId, menuProducts);
 
-        given(menuGroupDao.existsById(menuGroupId)).willReturn(true);
-        given(productDao.findById(productId)).willReturn(Optional.of(new Product(productId, "product", BigDecimal.valueOf(300))));
-        given(productDao.findById(productId2)).willReturn(Optional.of(new Product(productId2, "product", BigDecimal.valueOf(500))));
+        given(menuGroupDao.existsById(any())).willReturn(true);
+        given(productDao.findById(any())).willReturn(Optional.of(new Product(1L, "product", BigDecimal.valueOf(300))));
+        given(productDao.findById(any())).willReturn(Optional.of(new Product(2L, "product", BigDecimal.valueOf(500))));
 
         Long menuId = 1L;
-        given(menuDao.save(any())).willReturn(new Menu(menuId, name, menuPrice, menuGroupId, menuProducts));
+        given(menuDao.save(any())).willReturn(메뉴_데이터_생성(menuId, name, menuPrice, menuGroupId, menuProducts));
 
         menuProduct.setMenuId(menuId);
         menuProduct2.setMenuId(menuId);
@@ -78,28 +76,16 @@ class MenuServiceTest {
         Menu menu = menuService.create(request);
 
         //then
-        assertAll(
-                () -> assertEquals(name, menu.getName()),
-                () -> assertEquals(menuPrice, menu.getPrice()),
-                () -> assertEquals(menuGroupId, menu.getMenuGroupId()),
-                () -> assertThat(menu.getMenuProducts()).isNotEmpty()
-        );
-        List<MenuProduct> savedMenuProducts = menu.getMenuProducts();
-        assertAll(
-                () -> assertEquals(1L, savedMenuProducts.get(0).getSeq()),
-                () -> assertEquals(menuId, savedMenuProducts.get(0).getMenuId()),
-                () -> assertEquals(productId, savedMenuProducts.get(0).getProductId()),
-                () -> assertEquals(2L, savedMenuProducts.get(1).getSeq()),
-                () -> assertEquals(menuId, savedMenuProducts.get(1).getMenuId()),
-                () -> assertEquals(productId2, savedMenuProducts.get(1).getProductId())
-        );
+        메뉴_데이터_확인(menu, menuId, name, menuGroupId, menuPrice);;
+        메뉴상품_데이터_확인(menu.getMenuProducts().get(0), 1L, 1L, 1L);
+        메뉴상품_데이터_확인(menu.getMenuProducts().get(1), 2L, 1L, 2L);
     }
 
     @DisplayName("가격이 비어있다면 생성할 수 없다.")
     @Test
     void create_fail_priceNull() {
         //given
-        Menu request = createRequest(null);
+        Menu request = createFailRequest(null);
 
         //when //then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(request));
@@ -109,7 +95,7 @@ class MenuServiceTest {
     @Test
     void create_fail_priceNegative() {
         //given
-        Menu request = createRequest(BigDecimal.valueOf(-1));
+        Menu request = createFailRequest(BigDecimal.valueOf(-1));
 
         //when //then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(request));
@@ -119,7 +105,7 @@ class MenuServiceTest {
     @Test
     void create_fail_menuGroupNotExists() {
         //given
-        Menu request = createRequest(BigDecimal.valueOf(1000));
+        Menu request = createFailRequest(BigDecimal.valueOf(1000));
 
         given(menuGroupDao.existsById(any())).willReturn(false);
 
@@ -131,7 +117,7 @@ class MenuServiceTest {
     @Test
     void create_fail_productNotExists() {
         //given
-        Menu request = createRequest(BigDecimal.valueOf(1000));
+        Menu request = createFailRequest(BigDecimal.valueOf(1000));
 
         given(menuGroupDao.existsById(any())).willReturn(true);
         given(productDao.findById(any())).willReturn(
@@ -146,7 +132,7 @@ class MenuServiceTest {
     @Test
     void create_fail_menuPriceGe() {
         //given
-        Menu request = createRequest(BigDecimal.valueOf(1000));
+        Menu request = createFailRequest(BigDecimal.valueOf(1000));
 
         given(menuGroupDao.existsById(any())).willReturn(true);
         given(productDao.findById(any())).willReturn(
@@ -164,9 +150,9 @@ class MenuServiceTest {
         String name = "menu";
         BigDecimal price = BigDecimal.valueOf(1000);
         Long menuGroupId = 1L;
-        List<MenuProduct> menuProducts = Arrays.asList(new MenuProduct(1L, 1L, 1));
+        List<MenuProduct> menuProducts = Arrays.asList(메뉴상품_데이터_생성(1L, 1L, 1));
 
-        given(menuDao.findAll()).willReturn(Arrays.asList(new Menu(menuId, name, price, menuGroupId, menuProducts)));
+        given(menuDao.findAll()).willReturn(Arrays.asList(메뉴_데이터_생성(menuId, name, price, menuGroupId, menuProducts)));
         given(menuProductDao.findAllByMenuId(menuId)).willReturn(menuProducts);
 
         //when
@@ -174,9 +160,10 @@ class MenuServiceTest {
 
         //then
         assertEquals(1, menus.size());
+        메뉴_데이터_확인(menus.get(0), menuId, name, menuGroupId, price);
     }
 
-    private Menu createRequest(BigDecimal menuPrice) {
+    private Menu createFailRequest(BigDecimal menuPrice) {
         String name = "menu";
         Long menuGroupId = 1L;
 
@@ -186,6 +173,6 @@ class MenuServiceTest {
         MenuProduct menuProduct2 = new MenuProduct(2L, productId2, 1);
         List<MenuProduct> menuProducts = Arrays.asList(menuProduct, menuProduct2);
 
-        return new Menu(name, menuPrice, menuGroupId, menuProducts);
+        return 메뉴_요청_데이터_생성(name, menuPrice, menuGroupId, menuProducts);
     }
 }

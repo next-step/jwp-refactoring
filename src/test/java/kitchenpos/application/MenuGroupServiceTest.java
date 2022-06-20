@@ -11,7 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
+import static kitchenpos.fixture.MenuGroupFixture.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 
@@ -32,32 +32,31 @@ class MenuGroupServiceTest {
     void create() {
         //given
         String name = "menuGroup";
-        MenuGroup request = new MenuGroup(name);
+        MenuGroup request = 메뉴묶음_요청데이터_생성(name);
 
-        long id = 1L;
+        Long id = 1L;
         given(menuGroupDao.save(request)).willReturn(new MenuGroup(id, name));
 
         //when
         MenuGroup menuGroup = menuGroupService.create(request);
 
         //then
-        assertAll(
-                () -> assertEquals(id, menuGroup.getId()),
-                () -> assertEquals(name, menuGroup.getName())
-        );
+        메뉴묶음_확인(menuGroup, id, name);
     }
 
     @Test
     void list() {
         //given
-        long id = 1L;
+        Long id = 1L;
         String name = "menuGroup";
-        given(menuGroupDao.findAll()).willReturn(Arrays.asList(new MenuGroup(id, name)));
+        given(menuGroupDao.findAll()).willReturn(Arrays.asList(메뉴묶음_데이터_생성(id, name)));
 
         //when
         List<MenuGroup> menuGroups = menuGroupService.list();
 
         //then
         assertEquals(1, menuGroups.size());
+        MenuGroup menuGroup = menuGroups.get(0);
+        메뉴묶음_확인(menuGroup, id, name);
     }
 }

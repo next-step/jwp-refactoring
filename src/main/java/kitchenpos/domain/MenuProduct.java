@@ -17,8 +17,6 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
-
-
     public Long getSeq() {
         return seq;
     }

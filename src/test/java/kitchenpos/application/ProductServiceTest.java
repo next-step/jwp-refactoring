@@ -12,8 +12,8 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
+import static kitchenpos.fixture.ProductFixture.*;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 
@@ -33,25 +33,25 @@ class ProductServiceTest {
     @Test
     void create() {
         //given
-        long id = 1L;
         String name = "product";
         BigDecimal price = BigDecimal.valueOf(1000);
-        Product request = new Product(name, price);
+        Product request = 상품_요청_데이터_생성(name, price);
 
+        Long id = 1L;
         given(productDao.save(request)).willReturn(new Product(id, name, price));
 
         //when
         Product product = productService.create(request);
 
         //then
-        상품_확인(id, name, price, product);
+        상품_데이터_확인(product, id, name, price);
     }
 
     @Test
     void create_fail_null() {
         //given
         String name = "product";
-        Product request = new Product(name, null);
+        Product request = 상품_요청_데이터_생성(name, null);
 
         //when //then
         assertThatIllegalArgumentException().isThrownBy(() -> productService.create(request));
@@ -61,7 +61,7 @@ class ProductServiceTest {
     void create_fail_negative() {
         //given
         String name = "product";
-        Product request = new Product(name, BigDecimal.valueOf(-1));
+        Product request = 상품_요청_데이터_생성(name, BigDecimal.valueOf(-1));
 
         //when //then
         assertThatIllegalArgumentException().isThrownBy(() -> productService.create(request));
@@ -70,20 +70,16 @@ class ProductServiceTest {
     @Test
     void list() {
         //given
-        given(productDao.findAll()).willReturn(Arrays.asList(new Product(1L, "product", BigDecimal.valueOf(1000))));
+        Long id = 1L;
+        String name = "product";
+        BigDecimal price = BigDecimal.valueOf(1000);
+        given(productDao.findAll()).willReturn(Arrays.asList(상품_데이터_생성(id, name, price)));
 
         //when
         List<Product> list = productService.list();
 
         //then
         assertEquals(1, list.size());
-    }
-
-    private void 상품_확인(long id, String name, BigDecimal price, Product product) {
-        assertAll(
-                () -> assertEquals(id, product.getId()),
-                () -> assertEquals(name, product.getName()),
-                () -> assertEquals(price, product.getPrice())
-        );
+        상품_데이터_확인(list.get(0), id, name, price);
     }
 }
