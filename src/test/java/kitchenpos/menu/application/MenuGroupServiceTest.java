@@ -1,10 +1,11 @@
 package kitchenpos.menu.application;
 
+import static kitchenpos.helper.MenuGroupFixtures.인기메뉴;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
@@ -26,15 +27,12 @@ class MenuGroupServiceTest {
     @DisplayName("메뉴 그룹을 등록한다.")
     @Test
     void create() {
-        //given
-        MenuGroup request = new MenuGroup(null, "인기 메뉴");
-
         //when
-        MenuGroup result = menuGroupService.create(request);
+        MenuGroupResponse result = menuGroupService.create(인기메뉴);
 
         //then
         assertThat(result.getId()).isNotNull();
-        assertThat(result.getName()).isEqualTo(request.getName());
+        assertThat(result.getName()).isEqualTo(인기메뉴.getName());
     }
 
     @Order(2)
@@ -42,11 +40,11 @@ class MenuGroupServiceTest {
     @Test
     void list() {
         //when
-        List<MenuGroup> results = menuGroupService.list();
+        List<MenuGroupResponse> results = menuGroupService.list();
 
         //then
-        assertThat(results.stream().map(MenuGroup::getName).collect(Collectors.toList()))
-                .contains("인기 메뉴");
+        assertThat(results.stream().map(MenuGroupResponse::getName).collect(Collectors.toList()))
+                .contains(인기메뉴.getName());
     }
 
 }
