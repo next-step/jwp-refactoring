@@ -105,6 +105,19 @@ class OrderServiceTest {
     }
 
     @Test
+    @DisplayName("주문 테이블이 비어있으면 주문에 실패한다.")
+    void create_fail_4() {
+        //given
+        order.setOrderLineItems(Arrays.asList(orderLineItem1));
+        given(menuDao.countByIdIn(any())).willReturn(1L);
+        orderTable.setEmpty(true);
+        given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
+
+        //then
+        assertThatThrownBy(() -> orderService.create(order)).isExactlyInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
     @DisplayName("전체 주문을 조회할 수 있다.")
     void list() {
         //given
@@ -132,7 +145,7 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("주문이 조회되지 않으면 상태를 변경할 수 없다.")
+    @DisplayName("주문이 비어 있으면 상태를 변경할 수 없다.")
     void changeOrderStatus_failed_1() {
         //given
         given(orderDao.findById(any())).willReturn(Optional.empty());
