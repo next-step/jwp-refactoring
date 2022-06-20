@@ -19,10 +19,15 @@ public class Menu {
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
 
-    public Menu(String name, BigDecimal price, Long menuGroupId) {
+    protected Menu(Long id, String name, BigDecimal price, Long menuGroupId) {
+        this.id = id;
         this.name = new Name(name);
         this.price = new Price(price);
         this.menuGroupId = requireNonNull(menuGroupId, "menuGroupId");
+    }
+
+    public Menu(String name, BigDecimal price, Long menuGroupId) {
+        this(null, name, price, menuGroupId);
     }
 
     protected Menu() {
@@ -44,6 +49,10 @@ public class Menu {
         return menuProducts.stream()
                            .map(MenuProduct::calculateAmount)
                            .reduce(Amount.ZERO, Amount::add);
+    }
+
+    public MenuSummary toSummary() {
+        return new MenuSummary(id, name, price);
     }
 
     public Long getId() {

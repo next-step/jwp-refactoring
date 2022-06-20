@@ -13,7 +13,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class OrderLineItemsTest {
 
     private final Order order = new Order(1L);
-    private final List<OrderLineItem> orderLineItems = Arrays.asList(new OrderLineItem( 1L, 1L));
+    private final Menu menu = new FixtureMenu("강정치킨");
+    private final List<OrderLineItem> orderLineItems = Arrays.asList(new OrderLineItem(menu.toSummary(), 1L));
 
     @DisplayName("1개의 OrderLineItem로 OrderLineItems를 생성한다.")
     @Test

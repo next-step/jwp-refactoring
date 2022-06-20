@@ -10,13 +10,17 @@ public class OrderLineItem {
     private Long seq;
     @ManyToOne
     private Order order;
-    @Column(nullable = false)
-    private Long menuId;
+    @AttributeOverrides({
+            @AttributeOverride(name = "menuName.name", column = @Column(name = "menu_name", nullable = false)),
+            @AttributeOverride(name = "menuPrice.price", column = @Column(name = "menu_price", nullable = false))
+    })
+    @Embedded
+    private MenuSummary menuSummary;
     @Embedded
     private Quantity quantity;
 
-    public OrderLineItem(Long menuId, long quantity) {
-        this.menuId = requireNonNull(menuId, "menuId");
+    public OrderLineItem(MenuSummary menuSummary, long quantity) {
+        this.menuSummary = requireNonNull(menuSummary, "menuSummary");
         this.quantity = new Quantity(quantity);
     }
 
@@ -36,7 +40,7 @@ public class OrderLineItem {
     }
 
     public Long getMenuId() {
-        return menuId;
+        return menuSummary.getMenuId();
     }
 
     public Quantity getQuantity() {

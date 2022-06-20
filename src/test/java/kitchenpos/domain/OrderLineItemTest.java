@@ -8,10 +8,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @DisplayName("OrderLineItem 클래스 테스트")
 class OrderLineItemTest {
 
+    private Menu menu = new FixtureMenu("강정치킨");
+
     @DisplayName("OrderLineItem 생성한다.")
     @Test
     void successfulCreate() {
-        OrderLineItem orderLineItem = new OrderLineItem(1L, 1);
+        OrderLineItem orderLineItem = new OrderLineItem(menu.toSummary(), 1);
         assertThat(orderLineItem).isNotNull();
     }
 
@@ -27,7 +29,7 @@ class OrderLineItemTest {
     @Test
     void failureCreateWithNegativeQuantity() {
         assertThatThrownBy(() -> {
-            new OrderLineItem(1L, -1);
+            new OrderLineItem(menu.toSummary(), -1);
         }).isInstanceOf(InvalidQuantityException.class);
     }
 }

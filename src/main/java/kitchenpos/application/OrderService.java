@@ -1,6 +1,7 @@
 package kitchenpos.application;
 
 import kitchenpos.domain.*;
+import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
 import kitchenpos.dto.OrderStatusRequest;
@@ -8,8 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -32,41 +33,49 @@ public class OrderService {
     public OrderResponse create(OrderRequest request) {
         validate(request);
         Order order = orderRepository.save(request.toOrder());
-        order.addOrderLineItems(request.toOrderLineItems());
+        order.addOrderLineItems(toOrderLineItems(request));
         return OrderResponse.of(order);
     }
 
     private void validate(OrderRequest request) {
-        List<OrderLineItem> orderLineItems = request.toOrderLineItems();
+        List<OrderLineItemRequest> orderLineItems = request.getOrderLineItems();
+        List<Long> menuIds = request.toMenuIds();
         validateNotEmptyOrderLineItems(orderLineItems);
-        validateExistsAllMenus(orderLineItems);
-        validateNotEmptyOrderTable(request);
+        validateExistsAllMenus(menuIds);
+        validateNotEmptyOrderTable(request.getOrderTableId());
     }
 
-    private void validateNotEmptyOrderLineItems(List<OrderLineItem> orderLineItems) {
+    private void validateNotEmptyOrderLineItems(List<OrderLineItemRequest> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
             throw new EmptyOrderLineItemsException();
         }
     }
 
-    private void validateExistsAllMenus(List<OrderLineItem> orderLineItems) {
-        List<Long> menuIds = toMenuIds(orderLineItems);
-        if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
+    private void validateExistsAllMenus(List<Long> menuIds) {
+        if (menuIds.size() != menuRepository.countByIdIn(menuIds)) {
             throw new InvalidOrderException("존재하지 않는 메뉴가 있습니다.");
         }
     }
 
-    private List<Long> toMenuIds(List<OrderLineItem> orderLineItems) {
-        return orderLineItems.stream()
-                             .map(OrderLineItem::getMenuId)
-                             .collect(Collectors.toList());
-    }
-
-    private void validateNotEmptyOrderTable(OrderRequest request) {
-        OrderTable orderTable = tableService.findById(request.getOrderTableId());
+    private void validateNotEmptyOrderTable(Long orderTableId) {
+        OrderTable orderTable = tableService.findById(orderTableId);
         if (orderTable.isEmpty()) {
             throw new InvalidOrderException("빈 테이블 입니다.");
         }
+    }
+
+    private List<OrderLineItem> toOrderLineItems(OrderRequest request) {
+        List<OrderLineItem> orderLineItems = new ArrayList<>();
+        for (OrderLineItemRequest orderLineItemRequest : request.getOrderLineItems()) {
+            Menu menu = findMenuById(orderLineItemRequest.getMenuId());
+            orderLineItems.add(orderLineItemRequest.toOrderLineItem(menu));
+        }
+        return orderLineItems;
+    }
+
+    private Menu findMenuById(Long menuId) {
+        return menuRepository.findById(menuId)
+                             .orElseThrow(NotFoundMenuException::new);
     }
 
     public List<OrderResponse> list() {

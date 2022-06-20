@@ -77,4 +77,18 @@ class MenuTest {
         }).isInstanceOf(InvalidPriceException.class)
         .hasMessageContaining("상품들 금액의 합이 메뉴 가격보다 클 수 없습니다.");
     }
+
+    @DisplayName("메뉴를 메뉴 이름, 가격이 포함된 메뉴 요약으로 변환한다.")
+    @Test
+    void toSummary() {
+        Menu menu = new FixtureMenu("강정치킨");
+
+        MenuSummary menuSummary = menu.toSummary();
+
+        assertAll(
+                () -> assertThat(menuSummary.getMenuId()).isNotNull(),
+                () -> assertThat(menuSummary.getMenuName()).isEqualTo(menu.getName()),
+                () -> assertThat(menuSummary.getMenuPrice()).isEqualTo(menu.getPrice())
+        );
+    }
 }
