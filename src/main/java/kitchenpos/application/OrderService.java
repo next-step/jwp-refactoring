@@ -60,7 +60,7 @@ public class OrderService {
         List<OrderLineItem> result = Lists.newArrayList();
         for (OrderLineItemRequest orderLineItem : orderLineItems) {
             Menu menu = menuService.findMenu(orderLineItem.getMenuId());
-            result.add(OrderLineItem.of(menu.getId(), orderLineItem.getQuantity()));
+            result.add(OrderLineItem.of(menu, orderLineItem.getQuantity()));
         }
         return result;
     }
