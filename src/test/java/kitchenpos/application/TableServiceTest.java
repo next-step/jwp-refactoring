@@ -38,6 +38,9 @@ class TableServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
 
+    @Mock
+    private OrderService orderService;
+
     @InjectMocks
     private TableService tableService;
 
@@ -132,7 +135,7 @@ class TableServiceTest {
     void change04() {
         // given
         OrderTableRequest request = OrderTableRequest.of(0, true);
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(주문_테이블.getId(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).willReturn(true);
+        given(orderService.isAvailableUnGroupState(주문_테이블.getId())).willReturn(true);
         given(orderTableRepository.findById(주문_테이블.getId())).willReturn(Optional.ofNullable(주문_테이블));
 
         // when & then

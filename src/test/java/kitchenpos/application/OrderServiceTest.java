@@ -19,16 +19,13 @@ import kitchenpos.application.fixture.OrderTableFixtureFactory;
 import kitchenpos.application.fixture.ProductFixtureFactory;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuProduct;
-import kitchenpos.domain.menu.MenuRepository;
 import kitchenpos.domain.menugroup.MenuGroup;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderLineItem;
-import kitchenpos.domain.order.OrderLineItemRepository;
 import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.product.Product;
 import kitchenpos.domain.table.OrderTable;
-import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.dto.order.OrderLineItemRequest;
 import kitchenpos.dto.order.OrderRequest;
 import kitchenpos.dto.order.OrderResponse;
@@ -45,16 +42,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class OrderServiceTest {
 
     @Mock
-    private MenuRepository menuRepository;
-
-    @Mock
     private OrderRepository orderRepository;
 
     @Mock
-    private OrderLineItemRepository orderLineItemRepository;
+    private OrderTableService orderTableService;
 
     @Mock
-    private OrderTableRepository orderTableRepository;
+    private MenuService menuService;
 
     @InjectMocks
     private OrderService orderService;
@@ -96,9 +90,9 @@ class OrderServiceTest {
                 OrderStatus.COOKING,
                 Lists.newArrayList(OrderLineItemRequest.of(A_주문항목.getMenuId(), A_주문항목.getQuantity().getValue())));
 
-        given(menuRepository.countByIdIn(Lists.newArrayList(A.getId()))).willReturn(1L);
-        given(menuRepository.findById(A.getId())).willReturn(Optional.ofNullable(A));
-        given(orderTableRepository.findById(A_주문_테이블.getId())).willReturn(Optional.ofNullable(A_주문_테이블));
+        given(menuService.countByIdIn(Lists.newArrayList(A.getId()))).willReturn(1L);
+        given(menuService.findMenu(A.getId())).willReturn(A);
+        given(orderTableService.findOrderTable(A_주문_테이블.getId())).willReturn(A_주문_테이블);
         given(orderRepository.save(any(Order.class))).willReturn(A_주문);
 
         // when
@@ -116,7 +110,7 @@ class OrderServiceTest {
                 OrderStatus.COOKING,
                 Collections.emptyList());
 
-        given(orderTableRepository.findById(A_주문_테이블.getId())).willReturn(Optional.ofNullable(A_주문_테이블));
+        given(orderTableService.findOrderTable(A_주문_테이블.getId())).willReturn(A_주문_테이블);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(orderRequest));
@@ -130,6 +124,8 @@ class OrderServiceTest {
                 OrderStatus.COOKING,
                 Lists.newArrayList(OrderLineItemRequest.of(A_주문항목.getMenuId(), A_주문항목.getQuantity().getValue())));
 
+        given(orderTableService.findOrderTable(A_주문_테이블.getId())).willReturn(A_주문_테이블);
+
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(orderRequest));
     }
@@ -142,7 +138,7 @@ class OrderServiceTest {
                 OrderStatus.COOKING,
                 Lists.newArrayList(OrderLineItemRequest.of(A_주문항목.getMenuId(), A_주문항목.getQuantity().getValue())));
 
-        given(orderTableRepository.findById(A_주문_테이블.getId())).willReturn(Optional.empty());
+        given(orderTableService.findOrderTable(A_주문_테이블.getId())).willThrow(IllegalArgumentException.class);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(orderRequest));

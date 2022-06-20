@@ -6,16 +6,12 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 import java.util.Collections;
 import java.util.Optional;
 import kitchenpos.application.fixture.OrderTableFixtureFactory;
 import kitchenpos.application.fixture.TableGroupFixtureFactory;
-import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.domain.table.OrderTable;
-import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.domain.tablegroup.TableGroup;
 import kitchenpos.domain.tablegroup.TableGroupRepository;
 import kitchenpos.dto.tablegroup.TableGroupRequest;
@@ -33,13 +29,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class TableGroupServiceTest {
 
     @Mock
-    private OrderRepository orderRepository;
-
-    @Mock
-    private OrderTableRepository orderTableRepository;
-
-    @Mock
     private TableGroupRepository tableGroupRepository;
+
+    @Mock
+    private OrderTableService orderTableService;
+
+    @Mock
+    private OrderService orderService;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -62,8 +58,7 @@ class TableGroupServiceTest {
     void create01() {
         // given
         TableGroupRequest request = TableGroupRequest.from(Lists.newArrayList(주문_1_테이블.getId(), 주문_2_테이블.getId()));
-
-        given(orderTableRepository.findAllByIdIn(
+        given(orderTableService.findOrderTables(
                         Lists.newArrayList(주문_1_테이블.getId(), 주문_2_테이블.getId()))
         ).willReturn(Lists.newArrayList(주문_1_테이블, 주문_2_테이블));
         given(tableGroupRepository.save(any(TableGroup.class))).willReturn(단체_1);
@@ -101,9 +96,8 @@ class TableGroupServiceTest {
         // given
         TableGroupRequest request = TableGroupRequest.from(Lists.newArrayList(주문_1_테이블.getId(), 주문_2_테이블.getId()));
 
-        given(orderTableRepository.findAllByIdIn(
-                Lists.newArrayList(주문_1_테이블.getId(), 주문_2_테이블.getId()))
-        ).willReturn(Collections.emptyList());
+        given(orderTableService.findOrderTables(Lists.newArrayList(주문_1_테이블.getId(), 주문_2_테이블.getId())))
+                .willReturn(Collections.emptyList());
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(request));
@@ -157,7 +151,7 @@ class TableGroupServiceTest {
         주문_1_테이블.mappedByTableGroup(단체_1);
         주문_2_테이블.mappedByTableGroup(단체_1);
 
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
+        given(orderService.isAvailableUnGroupState(anyList())).willReturn(true);
         given(tableGroupRepository.findById(단체_1.getId())).willReturn(Optional.ofNullable(단체_1));
 
         // when & then
