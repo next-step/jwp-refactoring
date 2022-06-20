@@ -151,7 +151,7 @@ class TableGroupServiceTest {
         주문_1_테이블.mappedByTableGroup(단체_1);
         주문_2_테이블.mappedByTableGroup(단체_1);
 
-        given(orderService.isAvailableUnGroupState(anyList())).willReturn(true);
+        given(orderService.isExistDontUnGroupState(anyList())).willReturn(true);
         given(tableGroupRepository.findById(단체_1.getId())).willReturn(Optional.ofNullable(단체_1));
 
         // when & then

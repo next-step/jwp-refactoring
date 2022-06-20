@@ -50,7 +50,7 @@ public class TableGroupService {
 
     private void validateUnGroup(TableGroup tableGroup) {
         List<Long> orderTableIds = tableGroup.findOrderTableIds();
-        if (orderService.isAvailableUnGroupState(orderTableIds)) {
+        if (orderService.isExistDontUnGroupState(orderTableIds)) {
             throw new IllegalArgumentException();
         }
     }

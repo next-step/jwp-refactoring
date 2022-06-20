@@ -1,7 +1,6 @@
 package kitchenpos.application;
 
 import com.google.common.collect.Lists;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.domain.menu.Menu;
@@ -97,17 +96,17 @@ public class OrderService {
         return orderRepository.findById(orderId).orElseThrow(IllegalArgumentException::new);
     }
 
-    public boolean isAvailableUnGroupState(List<Long> orderTableIds) {
+    public boolean isExistDontUnGroupState(List<Long> orderTableIds) {
         return orderRepository.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds,
-                Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)
+                OrderStatus.dontUngroupStatus()
         );
     }
 
-    public boolean isAvailableUnGroupState(Long orderTableId) {
+    public boolean isExistDontUnGroupState(Long orderTableId) {
         return orderRepository.existsByOrderTableIdAndOrderStatusIn(
                 orderTableId,
-                Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)
+                OrderStatus.dontUngroupStatus()
         );
     }
 }

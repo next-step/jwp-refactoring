@@ -61,7 +61,7 @@ public class TableService {
     }
 
     private void validateOrderTableStatus(OrderTable orderTable) {
-        if (orderService.isAvailableUnGroupState(orderTable.getId())) {
+        if (orderService.isExistDontUnGroupState(orderTable.getId())) {
             throw new IllegalArgumentException();
         }
     }

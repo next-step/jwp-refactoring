@@ -6,13 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.application.fixture.OrderTableFixtureFactory;
 import kitchenpos.application.fixture.TableGroupFixtureFactory;
 import kitchenpos.domain.order.OrderRepository;
-import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.domain.tablegroup.TableGroup;
@@ -135,7 +133,7 @@ class TableServiceTest {
     void change04() {
         // given
         OrderTableRequest request = OrderTableRequest.of(0, true);
-        given(orderService.isAvailableUnGroupState(주문_테이블.getId())).willReturn(true);
+        given(orderService.isExistDontUnGroupState(주문_테이블.getId())).willReturn(true);
         given(orderTableRepository.findById(주문_테이블.getId())).willReturn(Optional.ofNullable(주문_테이블));
 
         // when & then
