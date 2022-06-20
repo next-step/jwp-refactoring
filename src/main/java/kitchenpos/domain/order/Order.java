@@ -13,10 +13,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
+import kitchenpos.domain.table.OrderTable;
 
 @Entity
 @Table(name = "orders")
 public class Order {
+
+    private static final String CANNOT_CHANGE_ORDER_STATUS = "완료 주문은 상태를 바꿀 수 없습니다.";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -72,6 +76,10 @@ public class Order {
         return new Order(id, orderTableId, orderStatus, orderedTime, orderLineItems);
     }
 
+    public static Order from(OrderTable orderTable) {
+        return new Order(orderTable.getId(), OrderStatus.COOKING);
+    }
+
     public Long getId() {
         return id;
     }
@@ -93,6 +101,19 @@ public class Order {
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
+        validateChangeOrderStatus();
         this.orderStatus = orderStatus;
+    }
+
+    private void validateChangeOrderStatus() {
+        if (this.orderStatus.isCompletion()) {
+            throw new IllegalArgumentException(CANNOT_CHANGE_ORDER_STATUS);
+        }
+    }
+
+    public void addAllOrderLineItems(List<OrderLineItem> orderLineItems) {
+        this.orderLineItems = OrderLineItems.from(orderLineItems);
+        this.orderLineItems.getReadOnlyValues()
+                .forEach(orderLineItem -> orderLineItem.mappedByOrder(this));
     }
 }
