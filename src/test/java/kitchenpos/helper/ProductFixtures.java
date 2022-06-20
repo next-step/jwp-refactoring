@@ -1,8 +1,9 @@
 package kitchenpos.helper;
 
-import java.math.BigDecimal;
-import kitchenpos.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
 
 public class ProductFixtures {
-    public static Product 제육덮밥 = new Product(null, "제육덮밥", BigDecimal.valueOf(8000));
+    public static ProductRequest 제육덮밥 = new ProductRequest("제육덮밥", 8000);
+    public static ProductRequest 제육덮밥_가격마이너스 = new ProductRequest( "제육덮밥", -1);
+    public static ProductRequest 제육덮밥_가격NULL = new ProductRequest( "제육덮밥", null);
 }

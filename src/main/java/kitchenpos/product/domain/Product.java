@@ -8,6 +8,7 @@ import javax.persistence.Id;
 
 @Entity
 public class Product {
+    private static final int FREE = 0;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,9 +27,27 @@ public class Product {
         this.price = price;
     }
 
+    public Product(Long id, String name, Integer price) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+    }
+
     private void validatePrice(Integer price) {
-        if(price == null || price < 0){
+        if(price == null || price < FREE){
             throw new IllegalArgumentException("[ERROR] 상품 가격은 0원 이상 이어야 합니다.");
         }
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Integer getPrice() {
+        return price;
     }
 }
