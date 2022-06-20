@@ -55,8 +55,8 @@ public class Menu {
                            .reduce(Amount.ZERO, Amount::add);
     }
 
-    public MenuSummary toSummary() {
-        return new MenuSummary(id, name, price);
+    public OrderedMenu toOrderedMenu() {
+        return new OrderedMenu(id, name, price);
     }
 
     public Long getId() {

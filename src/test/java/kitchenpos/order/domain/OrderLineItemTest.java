@@ -16,7 +16,7 @@ class OrderLineItemTest {
     @DisplayName("OrderLineItem 생성한다.")
     @Test
     void successfulCreate() {
-        OrderLineItem orderLineItem = new OrderLineItem(menu.toSummary(), 1);
+        OrderLineItem orderLineItem = new OrderLineItem(menu.toOrderedMenu(), 1);
         assertThat(orderLineItem).isNotNull();
     }
 
@@ -32,7 +32,7 @@ class OrderLineItemTest {
     @Test
     void failureCreateWithNegativeQuantity() {
         assertThatThrownBy(() -> {
-            new OrderLineItem(menu.toSummary(), -1);
+            new OrderLineItem(menu.toOrderedMenu(), -1);
         }).isInstanceOf(InvalidQuantityException.class);
     }
 }

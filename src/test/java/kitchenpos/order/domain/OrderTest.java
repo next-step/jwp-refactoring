@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class OrderTest {
 
     private final Menu menu = new FixtureMenu("강정치킨");
-    private final List<OrderLineItem> orderLineItems = Arrays.asList(new OrderLineItem(menu.toSummary(), 1L));
+    private final List<OrderLineItem> orderLineItems = Arrays.asList(new OrderLineItem(menu.toOrderedMenu(), 1L));
 
     @DisplayName("주문을 생성한다.")
     @Test

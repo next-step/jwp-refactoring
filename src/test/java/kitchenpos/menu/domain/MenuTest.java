@@ -80,17 +80,17 @@ class MenuTest {
         .hasMessageContaining("상품들 금액의 합이 메뉴 가격보다 클 수 없습니다.");
     }
 
-    @DisplayName("메뉴를 메뉴 이름, 가격이 포함된 메뉴 요약으로 변환한다.")
+    @DisplayName("메뉴를 주문한 메뉴로 변환한다.")
     @Test
-    void toSummary() {
+    void toOrderedMenu() {
         Menu menu = new FixtureMenu("강정치킨");
 
-        MenuSummary menuSummary = menu.toSummary();
+        OrderedMenu orderedMenu = menu.toOrderedMenu();
 
         assertAll(
-                () -> assertThat(menuSummary.getMenuId()).isNotNull(),
-                () -> assertThat(menuSummary.getMenuName()).isEqualTo(menu.getName()),
-                () -> assertThat(menuSummary.getMenuPrice()).isEqualTo(menu.getPrice())
+                () -> assertThat(orderedMenu.getMenuId()).isNotNull(),
+                () -> assertThat(orderedMenu.getMenuName()).isEqualTo(menu.getName()),
+                () -> assertThat(orderedMenu.getMenuPrice()).isEqualTo(menu.getPrice())
         );
     }
 }

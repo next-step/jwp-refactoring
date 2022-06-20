@@ -1,7 +1,7 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.core.domain.Quantity;
-import kitchenpos.menu.domain.MenuSummary;
+import kitchenpos.menu.domain.OrderedMenu;
 import javax.persistence.*;
 import static java.util.Objects.requireNonNull;
 
@@ -17,12 +17,12 @@ public class OrderLineItem {
             @AttributeOverride(name = "menuPrice.price", column = @Column(name = "menu_price", nullable = false))
     })
     @Embedded
-    private MenuSummary menuSummary;
+    private OrderedMenu orderedMenu;
     @Embedded
     private Quantity quantity;
 
-    public OrderLineItem(MenuSummary menuSummary, long quantity) {
-        this.menuSummary = requireNonNull(menuSummary, "menuSummary");
+    public OrderLineItem(OrderedMenu orderedMenu, long quantity) {
+        this.orderedMenu = requireNonNull(orderedMenu, "menuSummary");
         this.quantity = new Quantity(quantity);
     }
 
@@ -42,7 +42,7 @@ public class OrderLineItem {
     }
 
     public Long getMenuId() {
-        return menuSummary.getMenuId();
+        return orderedMenu.getMenuId();
     }
 
     public Quantity getQuantity() {

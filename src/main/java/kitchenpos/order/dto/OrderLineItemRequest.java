@@ -16,7 +16,7 @@ public class OrderLineItemRequest {
     }
 
     public OrderLineItem toOrderLineItem(Menu menu) {
-        return new OrderLineItem(menu.toSummary(), quantity);
+        return new OrderLineItem(menu.toOrderedMenu(), quantity);
     }
 
     public Long getMenuId() {
