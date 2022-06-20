@@ -3,6 +3,8 @@ package kitchenpos.ui;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.MenuGroupService;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,7 +42,7 @@ class MenuGroupRestControllerTest {
     @Test
     void test_get() throws Exception {
         //given
-        given(menuGroupService.list()).willReturn(Collections.singletonList(new MenuGroup()));
+        given(menuGroupService.list()).willReturn(Collections.singletonList(new MenuGroupResponse(new MenuGroup())));
 
         //then
         mockMvc.perform(get("/api/menu-groups"))
@@ -51,11 +53,12 @@ class MenuGroupRestControllerTest {
     @Test
     void test_post() throws Exception {
         //given
-        given(menuGroupService.create(any())).willReturn(new MenuGroup());
+        MenuGroupRequest request = new MenuGroupRequest("menu");
+        given(menuGroupService.create(any())).willReturn(new MenuGroupResponse(request.toMenuGroup()));
 
         //then
         mockMvc.perform(post("/api/menu-groups")
-                        .content(objectMapper.writeValueAsString(new MenuGroup()))
+                        .content(objectMapper.writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isCreated());

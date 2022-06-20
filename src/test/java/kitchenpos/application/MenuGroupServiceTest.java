@@ -1,8 +1,9 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
-import org.junit.jupiter.api.BeforeEach;
+import kitchenpos.domain.MenuGroupRepository;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -20,40 +22,37 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
     @InjectMocks
     private MenuGroupService menuGroupService;
-
-    private MenuGroup menuGroup;
-
-    @BeforeEach
-    void setUp() {
-        menuGroup = new MenuGroup();
-    }
 
     @Test
     @DisplayName("메뉴 그룹을 생성할 수 있다.")
     void create() {
         //given
-        given(menuGroupDao.save(any())).willReturn(menuGroup);
+        MenuGroupRequest request = new MenuGroupRequest("menuGroup");
+        given(menuGroupRepository.save(any())).willReturn(request.toMenuGroup());
 
         //when
-        MenuGroup savedMenuGroup = menuGroupService.create(menuGroup);
+        MenuGroupResponse savedMenuGroup = menuGroupService.create(request);
 
         //then
-        assertThat(savedMenuGroup).isEqualTo(menuGroup);
+        assertThat(savedMenuGroup.getName()).isEqualTo("menuGroup");
     }
 
     @Test
     @DisplayName("전체 메뉴 그룹을 조회할 수 있다.")
     void list() {
         //given
-        given(menuGroupDao.findAll()).willReturn(Arrays.asList(menuGroup));
+        MenuGroup menuGroup1 = new MenuGroup("menuGroup1");
+        MenuGroup menuGroup2 = new MenuGroup("menuGroup2");
+        given(menuGroupRepository.findAll()).willReturn(Arrays.asList(menuGroup1, menuGroup2));
 
         //when
-        List<MenuGroup> menuGroupList = menuGroupService.list();
+        List<MenuGroupResponse> menuGroupList = menuGroupService.list();
 
         //then
-        assertThat(menuGroupList).containsExactly(menuGroup);
+        assertThat(menuGroupList.stream().map(MenuGroupResponse::getName)
+                .collect(Collectors.toList())).containsExactlyInAnyOrder("menuGroup1", "menuGroup2");
     }
 }
