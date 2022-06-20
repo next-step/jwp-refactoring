@@ -86,7 +86,6 @@ public class MenuProduct {
     }
 
     public BigDecimal calculateTotalPrice() {
-        BigDecimal productQuantity = BigDecimal.valueOf(this.findQuantity());
-        return product.findPrice().multiply(productQuantity);
+        return product.calculatePrice(BigDecimal.valueOf(this.findQuantity()));
     }
 }

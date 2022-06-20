@@ -53,4 +53,8 @@ public class Product {
     public BigDecimal findPrice() {
         return price.getValue();
     }
+
+    public BigDecimal calculatePrice(BigDecimal quantity) {
+        return findPrice().multiply(quantity);
+    }
 }
