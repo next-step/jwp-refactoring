@@ -11,15 +11,15 @@ public class Amount implements Comparable<Amount> {
     private BigDecimal amount;
 
     public Amount(BigDecimal amount) {
-        this.amount = validate(amount);
+        validate(amount);
+        this.amount = amount;
     }
 
-    private BigDecimal validate(BigDecimal amount) {
+    private void validate(BigDecimal amount) {
         requireNonNull(amount, "amount");
         if (amount.compareTo(BigDecimal.ZERO) < 0) {
             throw new InvalidAmountException();
         }
-        return amount;
     }
 
     public Amount add(Amount amount) {

@@ -11,17 +11,17 @@ public class NumberOfGuests implements Comparable<NumberOfGuests> {
     private int numberOfGuests;
 
     public NumberOfGuests(int numberOfGuests) {
-        this.numberOfGuests = validate(numberOfGuests);
+        validate(numberOfGuests);
+        this.numberOfGuests = numberOfGuests;
     }
 
     protected NumberOfGuests() {
     }
 
-    private int validate(int numberOfGuests) {
+    private void validate(int numberOfGuests) {
         if (numberOfGuests < 0) {
             throw new InvalidNumberOfGuestsException();
         }
-        return numberOfGuests;
     }
 
     public int getValue() {

@@ -13,18 +13,18 @@ public class Price implements Comparable<Price> {
     private BigDecimal price;
 
     public Price(BigDecimal price) {
-        this.price = validate(price);
+        validate(price);
+        this.price = price;
     }
 
     protected Price() {
     }
 
-    private BigDecimal validate(BigDecimal price) {
+    private void validate(BigDecimal price) {
         requireNonNull(price, "price");
         if (price.compareTo(BigDecimal.ZERO) < 0) {
             throw new InvalidPriceException("유효하지 않은 가격입니다.");
         }
-        return price;
     }
 
     public BigDecimal getValue() {

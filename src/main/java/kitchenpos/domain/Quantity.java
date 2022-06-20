@@ -11,17 +11,17 @@ public class Quantity implements Comparable<Quantity> {
     private long quantity;
 
     public Quantity(long quantity) {
-        this.quantity = validate(quantity);
+        validate(quantity);
+        this.quantity = quantity;
     }
 
     protected Quantity() {
     }
 
-    private long validate(long quantity) {
+    private void validate(long quantity) {
         if (quantity < 0) {
             throw new InvalidQuantityException();
         }
-        return quantity;
     }
 
     public long getValue() {
