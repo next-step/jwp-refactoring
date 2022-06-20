@@ -34,9 +34,9 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        MenuGroup menuGroup = this.findMenuGroupByMenuGroupId(menuRequest.getMenuGroupId());
+        MenuGroup menuGroup = this.findMenuGroup(menuRequest.getMenuGroupId());
         Menu menu = Menu.of(menuRequest.getName(), menuRequest.getPrice(), menuGroup.getId());
-        List<MenuProduct> menuProducts = this.createMenuProductsByMenuRequest(menuRequest);
+        List<MenuProduct> menuProducts = this.createMenuProducts(menuRequest);
 
         menu.appendAllMenuProducts(menuProducts);
         return MenuResponse.from(menuRepository.save(menu));
@@ -46,12 +46,12 @@ public class MenuService {
         return MenuResponse.fromList(menuRepository.findAll());
     }
 
-    private MenuGroup findMenuGroupByMenuGroupId(Long menuGroupId) {
+    private MenuGroup findMenuGroup(Long menuGroupId) {
         return menuGroupRepository.findById(menuGroupId)
                 .orElseThrow(IllegalArgumentException::new);
     }
 
-    private List<MenuProduct> createMenuProductsByMenuRequest(MenuRequest menuRequest) {
+    private List<MenuProduct> createMenuProducts(MenuRequest menuRequest) {
         List<MenuProduct> menuProducts = new ArrayList<>();
         for (MenuProductRequest menuProductRequest : menuRequest.getMenuProducts()) {
             Product product = this.findProduct(menuProductRequest.getProductId());
