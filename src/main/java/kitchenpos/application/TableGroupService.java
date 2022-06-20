@@ -60,7 +60,7 @@ public class TableGroupService {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        final List<OrderTable> orderTables = tableGroup.getOrderTables();
+        final List<OrderTable> orderTables = tableGroup.getOrderTables().getReadOnlyValues();
 
         final List<Long> orderTableIds = orderTables.stream()
                 .map(OrderTable::getId)
