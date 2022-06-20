@@ -10,8 +10,8 @@
 - [X] 도메인별 패키지 정리 (application, domain, dto, ui)
 - [X] 도메인 클래스 JPA Entity 변경
 - [X] 도메인별 Repository 구성 및 Dao -> Repository 변경
-- [ ] 값객체, 일급컬랙션을 활용한 도메인 내부 리팩토링
-- [ ] Service 비즈니스 로직 도메인으로 리팩토링 
+- [X] 값객체, 일급컬랙션을 활용한 도메인 내부 리팩토링
+- [X] Service 비즈니스 로직 도메인으로 리팩토링 
 
 ---
 ## 요구 사항
