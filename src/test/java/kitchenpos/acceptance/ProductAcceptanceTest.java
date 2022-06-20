@@ -1,9 +1,9 @@
 package kitchenpos.acceptance;
 
-import static kitchenpos.acceptance.ProductAcceptanceSupport.상품_등록됨;
-import static kitchenpos.acceptance.ProductAcceptanceSupport.상품_등록요청;
-import static kitchenpos.acceptance.ProductAcceptanceSupport.상품목록_조회됨;
-import static kitchenpos.acceptance.ProductAcceptanceSupport.상품목록_조회요청;
+import static kitchenpos.acceptance.support.ProductAcceptanceSupport.상품_등록됨;
+import static kitchenpos.acceptance.support.ProductAcceptanceSupport.상품_등록요청;
+import static kitchenpos.acceptance.support.ProductAcceptanceSupport.상품목록_조회됨;
+import static kitchenpos.acceptance.support.ProductAcceptanceSupport.상품목록_조회요청;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;

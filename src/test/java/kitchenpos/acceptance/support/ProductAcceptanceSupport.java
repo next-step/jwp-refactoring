@@ -1,4 +1,4 @@
-package kitchenpos.acceptance;
+package kitchenpos.acceptance.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -6,40 +6,40 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.Product;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-public class MenuGroupAcceptanceSupport {
+public class ProductAcceptanceSupport {
 
-    public static ExtractableResponse<Response> 메뉴_그룹_등록요청(MenuGroup menuGroup) {
+    public static ExtractableResponse<Response> 상품_등록요청(Product product) {
         return RestAssured
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(menuGroup)
-            .when().post("/api/menu-groups")
-            .then().log().all().
-            extract();
+            .body(product)
+            .when().post("/api/products")
+            .then().log().all()
+            .extract();
     }
 
-    public static void 메뉴_그룹_등록됨(ExtractableResponse<Response> response) {
+    public static void 상품_등록됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
     }
 
-    public static ExtractableResponse<Response> 메뉴_그룹목록_조회요청() {
+    public static ExtractableResponse<Response> 상품목록_조회요청() {
         return RestAssured
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().get("/api/menu-groups")
+            .when().get("/api/products")
             .then().log().all().
             extract();
     }
 
-    public static void 메뉴_그룹목록_조회됨(ExtractableResponse<Response> response, int size) {
+    public static void 상품목록_조회됨(ExtractableResponse<Response> response, int size) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
-        List<MenuGroup> result = response.jsonPath().getList(".", MenuGroup.class);
+        List<Product> result = response.jsonPath().getList(".", Product.class);
         assertThat(result).isNotNull();
         assertThat(result).hasSize(size);
     }

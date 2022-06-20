@@ -1,7 +1,7 @@
 package kitchenpos.acceptance;
 
-import static kitchenpos.acceptance.MenuGroupAcceptanceSupport.메뉴_그룹_등록요청;
-import static kitchenpos.acceptance.ProductAcceptanceSupport.상품_등록요청;
+import static kitchenpos.acceptance.support.MenuGroupAcceptanceSupport.메뉴_그룹_등록요청;
+import static kitchenpos.acceptance.support.ProductAcceptanceSupport.상품_등록요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
