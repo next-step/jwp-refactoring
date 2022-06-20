@@ -21,7 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 @DisplayName("메뉴에 관한 인수 테스트")
-public class MenuAcceptanceTest extends AcceptanceTest {
+class MenuAcceptanceTest extends AcceptanceTest {
     private Product 후라이드_치킨;
     private Product 감자튀김;
     private MenuProduct 메뉴_상품_후라이드_치킨;
