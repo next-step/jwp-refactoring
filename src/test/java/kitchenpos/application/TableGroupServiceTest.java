@@ -145,7 +145,6 @@ class TableGroupServiceTest {
 
         // then
         assertAll(
-                () -> verify(orderTableRepository, times(2)).save(any(OrderTable.class)),
                 () -> assertThat(주문_1_테이블.getTableGroup()).isNull(),
                 () -> assertThat(주문_2_테이블.getTableGroup()).isNull()
         );
