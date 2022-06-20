@@ -75,7 +75,8 @@ public class OrderService {
 
     @Transactional
     public OrderResponse changeOrderStatus(Long orderId, OrderStatusRequest request) {
-        Order order = orderRepository.findById(orderId).orElseThrow(NotFoundOrderException::new);
+        Order order = orderRepository.findById(orderId)
+                                     .orElseThrow(NotFoundOrderException::new);
         order.changeOrderStatus(request.getOrderStatus());
         return OrderResponse.of(orderRepository.save(order));
     }

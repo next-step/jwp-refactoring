@@ -56,7 +56,8 @@ public class MenuService {
     }
 
     private Product findProductById(MenuProductRequest menuProductRequest) {
-        return productRepository.findById(menuProductRequest.getProductId()).orElseThrow(NotFoundProductException::new);
+        return productRepository.findById(menuProductRequest.getProductId())
+                                .orElseThrow(NotFoundProductException::new);
     }
 
     private void validateExistMenuGroup(MenuRequest request) {
