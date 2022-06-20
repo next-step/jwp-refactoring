@@ -13,6 +13,9 @@ import org.springframework.util.CollectionUtils;
 @Service
 @Transactional(readOnly = true)
 public class TableGroupService {
+
+    private static final int MIN_ORDER_TABLE_COUNT = 2;
+
     private final OrderService orderService;
     private final OrderTableService orderTableService;
     private final TableGroupRepository tableGroupRepository;
@@ -57,7 +60,7 @@ public class TableGroupService {
     }
 
     private void validateTableGroupOrderTables(List<Long> orderTableIds, List<OrderTable> orderTables) {
-        if (CollectionUtils.isEmpty(orderTableIds) || orderTableIds.size() < 2) {
+        if (isCreateTableGroup(orderTableIds)) {
             throw new IllegalArgumentException();
         }
 
@@ -70,5 +73,9 @@ public class TableGroupService {
                 throw new IllegalArgumentException();
             }
         }
+    }
+
+    private boolean isCreateTableGroup(List<Long> orderTableIds) {
+        return CollectionUtils.isEmpty(orderTableIds) || orderTableIds.size() < MIN_ORDER_TABLE_COUNT;
     }
 }
