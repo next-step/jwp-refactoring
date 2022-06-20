@@ -100,7 +100,7 @@ class OrderServiceTest extends ServiceTest {
         assertThat(changeResponse.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
     }
 
-    @DisplayName("주문상태를 변경한다.")
+    @DisplayName("존재하지 않는 주문의 주문상태를 변경한다.")
     @Test
     void changeStatusWithNotFoundOrder() {
         Long 존재하지_않는_주문_id = Long.MAX_VALUE;

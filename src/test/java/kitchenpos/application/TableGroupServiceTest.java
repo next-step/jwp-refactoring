@@ -95,7 +95,7 @@ class TableGroupServiceTest extends ServiceTest {
         });
     }
 
-    @DisplayName("단체 지정을 해지한다.")
+    @DisplayName("존재하지 않는 단체 지정을 해지한다.")
     @Test
     void ungroupWithNotFoundTableGroup() {
         Long 존재하지_않는_단체_지정_id = Long.MAX_VALUE;
