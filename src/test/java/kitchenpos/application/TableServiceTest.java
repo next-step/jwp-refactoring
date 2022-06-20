@@ -92,7 +92,6 @@ class TableServiceTest {
         주문_테이블.changeEmpty(true);
 
         given(orderTableRepository.findById(주문_테이블.getId())).willReturn(Optional.ofNullable(주문_테이블));
-        given(orderTableRepository.save(any(OrderTable.class))).willReturn(주문_테이블);
 
         OrderTableRequest request = OrderTableRequest.of(0, true);
 
@@ -147,7 +146,6 @@ class TableServiceTest {
         OrderTableRequest request = OrderTableRequest.of(10, false);
 
         given(orderTableRepository.findById(주문_테이블.getId())).willReturn(Optional.ofNullable(주문_테이블));
-        given(orderTableRepository.save(any(OrderTable.class))).willReturn(주문_테이블);
 
         // when
         OrderTableResponse response = tableService.changeNumberOfGuests(주문_테이블.getId(), request);
