@@ -21,6 +21,14 @@ public class Product {
     }
 
     public Product(String name, Integer price) {
+        validatePrice(price);
+        this.name = name;
+        this.price = price;
+    }
 
+    private void validatePrice(Integer price) {
+        if(price == null || price < 0){
+            throw new IllegalArgumentException("[ERROR] 상품 가격은 0원 이상 이어야 합니다.");
+        }
     }
 }
