@@ -17,8 +17,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -58,9 +57,7 @@ public class ProductServiceTest {
         product.setPrice(price);
 
         // then
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
-            productService.create(product);
-        });
+        assertThatThrownBy(() ->productService.create(product)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
