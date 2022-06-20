@@ -46,6 +46,14 @@ public class MenuService {
         return MenuResponse.fromList(menuRepository.findAll());
     }
 
+    public Menu findMenu(Long menuId) {
+        return menuRepository.findById(menuId).orElseThrow(IllegalArgumentException::new);
+    }
+
+    public long countByIdIn(List<Long> menuIds) {
+        return menuRepository.countByIdIn(menuIds);
+    }
+
     private MenuGroup findMenuGroup(Long menuGroupId) {
         return menuGroupRepository.findById(menuGroupId)
                 .orElseThrow(IllegalArgumentException::new);

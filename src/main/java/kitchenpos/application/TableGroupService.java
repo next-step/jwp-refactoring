@@ -1,11 +1,7 @@
 package kitchenpos.application;
 
-import java.util.Arrays;
 import java.util.List;
-import kitchenpos.domain.order.OrderRepository;
-import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.table.OrderTable;
-import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.domain.tablegroup.TableGroup;
 import kitchenpos.domain.tablegroup.TableGroupRepository;
 import kitchenpos.dto.tablegroup.TableGroupRequest;
@@ -17,19 +13,21 @@ import org.springframework.util.CollectionUtils;
 @Service
 @Transactional(readOnly = true)
 public class TableGroupService {
-    private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
+    private final OrderService orderService;
+    private final OrderTableService orderTableService;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository, final TableGroupRepository tableGroupRepository) {
-        this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
+    public TableGroupService(final OrderService orderService,
+                             final OrderTableService orderTableService,
+                             final TableGroupRepository tableGroupRepository) {
+        this.orderService = orderService;
+        this.orderTableService = orderTableService;
         this.tableGroupRepository = tableGroupRepository;
     }
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        List<OrderTable> orderTables = this.findOrderTables(tableGroupRequest.getOrderTables());
+        List<OrderTable> orderTables = orderTableService.findOrderTables(tableGroupRequest.getOrderTables());
         validateTableGroupOrderTables(tableGroupRequest.getOrderTables(), orderTables);
 
         TableGroup tableGroup = tableGroupRepository.save(TableGroup.from(orderTables));
@@ -49,9 +47,7 @@ public class TableGroupService {
 
     private void validateUnGroup(TableGroup tableGroup) {
         List<Long> orderTableIds = tableGroup.getOrderTables().getIds();
-
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+        if (orderService.isAvailableUnGroupState(orderTableIds)) {
             throw new IllegalArgumentException();
         }
     }
@@ -74,9 +70,5 @@ public class TableGroupService {
                 throw new IllegalArgumentException();
             }
         }
-    }
-
-    private List<OrderTable> findOrderTables(List<Long> orderTables) {
-        return orderTableRepository.findAllByIdIn(orderTables);
     }
 }
