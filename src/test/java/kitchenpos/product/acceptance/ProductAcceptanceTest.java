@@ -32,12 +32,12 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     @DisplayName("상품 등록 관련 기능")
     void integrationTest() {
         //when
-        ExtractableResponse<Response> 가격_0원_미만_상품_등록_응답_결과 = 상품_등록_요청("허니콤보", BigDecimal.valueOf(-1L));
+        ExtractableResponse<Response> 가격_0원_미만_상품_등록_응답_결과 = 상품_등록_요청("허니콤보", -1L);
         //then
         상품_등록_실패됨(가격_0원_미만_상품_등록_응답_결과);
 
         //when
-        ExtractableResponse<Response> 상품_등록_응답_결과 = 상품_등록_요청("허니콤보", BigDecimal.valueOf(20_000L));
+        ExtractableResponse<Response> 상품_등록_응답_결과 = 상품_등록_요청("허니콤보", 20_000L);
         //then
         상품_등록됨(상품_등록_응답_결과);
 
@@ -47,20 +47,27 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         상품_목록_조회됨(상품_조회_요청_응답_결과, "허니콤보");
     }
 
-    private void 상품_목록_조회됨(ExtractableResponse<Response> response, String... name) {
+    public static ExtractableResponse<Response> 상품_등록_요청(String name, long price) {
+        Product product = new Product();
+        product.setName(name);
+        product.setPrice(BigDecimal.valueOf(price));
+        return sendPost("/api/products", product);
+    }
+
+    public static ExtractableResponse<Response> 상품_조회_요청() {
+        return sendGet("/api/products");
+    }
+
+    private void 상품_목록_조회됨(ExtractableResponse<Response> response, String... names) {
         List<String> productNames = 상품_이름_목록_조회(response);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(productNames).containsExactly(name);
+        assertThat(productNames).containsExactly(names);
     }
 
     private List<String> 상품_이름_목록_조회(ExtractableResponse<Response> response) {
         return response.jsonPath().getList(".", Product.class).stream()
                 .map(Product::getName)
                 .collect(Collectors.toList());
-    }
-
-    public static ExtractableResponse<Response> 상품_조회_요청() {
-        return sendGet("/api/products");
     }
 
     private void 상품_등록됨(ExtractableResponse<Response> response) {
@@ -71,12 +78,5 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 
     private void 상품_등록_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
-    }
-
-    public static ExtractableResponse<Response> 상품_등록_요청(String name, BigDecimal price) {
-        Product product = new Product();
-        product.setName(name);
-        product.setPrice(price);
-        return sendPost("/api/products", product);
     }
 }

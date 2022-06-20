@@ -49,9 +49,15 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
         메뉴_그룹_목록_조회됨(메뉴_그룹_조회_응답_결과, "추천메뉴");
     }
 
-    private void 메뉴_그룹_목록_조회됨(ExtractableResponse<Response> response, String... name) {
-        List<String> names = 메뉴_그룹_이름_목록_조회(response);
-        assertThat(names).containsExactly(name);
+    public static ExtractableResponse<Response> 메뉴_그룹_등록_요청(String name) {
+        MenuGroup menuGroup = new MenuGroup();
+        menuGroup.setName(name);
+        return sendPost("/api/menu-groups", menuGroup);
+    }
+
+    private void 메뉴_그룹_목록_조회됨(ExtractableResponse<Response> response, String... names) {
+        List<String> menuGroupNames = 메뉴_그룹_이름_목록_조회(response);
+        assertThat(menuGroupNames).containsExactly(names);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
     
@@ -71,11 +77,5 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
 
     private void 메뉴_그룹_등록_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
-    }
-
-    public static ExtractableResponse<Response> 메뉴_그룹_등록_요청(String name) {
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setName(name);
-        return sendPost("/api/menu-groups", menuGroup);
     }
 }
