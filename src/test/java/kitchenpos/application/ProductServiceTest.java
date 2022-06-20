@@ -45,6 +45,7 @@ class ProductServiceTest {
 
         //then
         assertThat(result).isNotNull();
+        assertThat(result.getPrice()).isEqualTo(BigDecimal.TEN);
     }
 
     @Test
