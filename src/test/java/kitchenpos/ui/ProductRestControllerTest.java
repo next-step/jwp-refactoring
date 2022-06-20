@@ -2,7 +2,8 @@ package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.ProductService;
-import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -40,7 +42,7 @@ class ProductRestControllerTest {
     @Test
     void test_get() throws Exception {
         //given
-        given(productService.list()).willReturn(Collections.singletonList(new Product()));
+        given(productService.list()).willReturn(Collections.singletonList(new ProductResponse()));
 
         //then
         mockMvc.perform(get("/api/products")).andDo(print()).andExpect(status().isOk());
@@ -49,10 +51,13 @@ class ProductRestControllerTest {
     @Test
     void test_post() throws Exception {
         //given
-        given(productService.create(any())).willReturn(new Product());
+        given(productService.create(any())).willReturn(new ProductResponse());
 
         //then
-        mockMvc.perform(post("/api/products").content(objectMapper.writeValueAsString(new Product()))
-                .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isCreated());
+        mockMvc.perform(post("/api/products")
+                .content(objectMapper.writeValueAsString(new ProductRequest("product", BigDecimal.TEN)))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isCreated());
     }
 }
