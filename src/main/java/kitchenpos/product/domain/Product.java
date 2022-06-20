@@ -17,4 +17,10 @@ public class Product {
     @Column(nullable = false)
     private Integer price;
 
+    protected Product() {
+    }
+
+    public Product(String name, Integer price) {
+
+    }
 }
