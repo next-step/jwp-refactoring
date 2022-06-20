@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.product.application;
 
 import static kitchenpos.helper.ProductFixtures.제육덮밥;
 import static kitchenpos.helper.ProductFixtures.제육덮밥_가격NULL;
@@ -13,7 +13,6 @@ import static org.mockito.Mockito.doAnswer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
@@ -27,7 +26,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @DisplayName("상품 관련 Service 단위 테스트 - Stub")
 @ExtendWith(MockitoExtension.class)
-class ProductServiceTest {
+class ProductServiceUnitTest {
 
     @Mock
     private ProductRepository productRepository;

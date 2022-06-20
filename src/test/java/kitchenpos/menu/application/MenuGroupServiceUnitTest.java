@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.menu.application;
 
 import static kitchenpos.helper.MenuGroupFixtures.인기메뉴;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -9,7 +9,6 @@ import static org.mockito.Mockito.doAnswer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.dto.MenuGroupRequest;
@@ -23,7 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @DisplayName("메뉴 그룹 Service 단위 테스트 - Stub")
 @ExtendWith(MockitoExtension.class)
-class MenuGroupServiceTest {
+class MenuGroupServiceUnitTest {
 
     @Mock
     private MenuGroupRepository menuGroupRepository;
