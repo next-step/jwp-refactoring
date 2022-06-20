@@ -52,8 +52,8 @@ public class MenuServiceTest {
     @BeforeEach
     void setUp() {
         강정치킨 = 상품_등록(1L, "강정치킨", 17000);
-        치킨메뉴 = 메뉴_그룹_등록(1L, "추천메뉴");
-        추천메뉴 = 메뉴_등록(1L, "치킨메뉴", 강정치킨.getPrice(), 치킨메뉴.getId(),
+        치킨메뉴 = 메뉴_그룹_등록(1L, "치킨메뉴");
+        추천메뉴 = 메뉴_등록(1L, "추천메뉴", 강정치킨.getPrice(), 치킨메뉴.getId(),
                 Arrays.asList(메뉴_상품_등록(1L, 강정치킨.getId(), 1L)));
     }
 
