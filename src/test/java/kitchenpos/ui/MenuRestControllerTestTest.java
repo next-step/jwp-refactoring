@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class MenuRestControllerTest extends BaseRestController {
+class MenuRestControllerTestTest extends BaseRestControllerTest {
 
     @Mock
     private MenuService menuService;

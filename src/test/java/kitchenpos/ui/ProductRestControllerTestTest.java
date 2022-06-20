@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class ProductRestControllerTest extends BaseRestController {
+public class ProductRestControllerTestTest extends BaseRestControllerTest {
 
     @Mock
     private ProductService productService;

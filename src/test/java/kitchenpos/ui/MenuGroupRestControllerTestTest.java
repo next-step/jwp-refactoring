@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class MenuGroupRestControllerTest extends BaseRestController {
+class MenuGroupRestControllerTestTest extends BaseRestControllerTest {
 
     @Mock
     private MenuGroupService menuGroupService;
