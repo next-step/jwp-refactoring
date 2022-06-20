@@ -106,9 +106,20 @@ class MenuServiceTest {
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("메뉴 등록시 등록할 메뉴의 그룹이 존재하지 않으면 예외가 발생한다")
+    @DisplayName("메뉴 등록시 메뉴의 금액이 없거나 0 미만이면 예외가 발생한다")
     @Test
     void create_exception_test2() {
+        메뉴_후라이드_치킨Set.setPrice(BigDecimal.valueOf(-500));
+
+        // then
+        assertThatThrownBy(() -> {
+            menuService.create(메뉴_후라이드_치킨Set);
+        }).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("메뉴 등록시 등록할 메뉴의 그룹이 존재하지 않으면 예외가 발생한다")
+    @Test
+    void create_exception_test3() {
         // given
         메뉴_후라이드_치킨Set.setMenuGroupId(null);
 
@@ -120,7 +131,7 @@ class MenuServiceTest {
 
     @DisplayName("메뉴 등록시 등록할 메뉴의 상품이 존재하지 않으면 예외가 발생한다")
     @Test
-    void create_exception_test3() {
+    void create_exception_test4() {
         // given
         when(menuGroupDao.existsById(메뉴_후라이드_치킨Set.getMenuGroupId()))
             .thenReturn(true);
@@ -135,7 +146,7 @@ class MenuServiceTest {
 
     @DisplayName("등록할 메뉴의 상품들의 금액의 합보다 메뉴의 금액이 더 크면 예외가 발생한다")
     @Test
-    void create_exception_test4() {
+    void create_exception_test5() {
         // given
         후라이드_치킨.setPrice(BigDecimal.valueOf(10000L));
         감자튀김.setPrice(BigDecimal.valueOf(5000L));
