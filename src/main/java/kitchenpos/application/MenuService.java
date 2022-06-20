@@ -2,7 +2,6 @@ package kitchenpos.application;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.domain.menu.MenuRepository;
@@ -44,10 +43,7 @@ public class MenuService {
     }
 
     public List<MenuResponse> list() {
-        List<Menu> menus = menuRepository.findAll();
-        return menus.stream()
-                .map(MenuResponse::from)
-                .collect(Collectors.toList());
+        return MenuResponse.fromList(menuRepository.findAll());
     }
 
     private MenuGroup findMenuGroupByMenuGroupId(Long menuGroupId) {

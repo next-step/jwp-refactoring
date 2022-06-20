@@ -40,6 +40,10 @@ public class OrderResponse {
                         .collect(Collectors.toList()));
     }
 
+    public static List<OrderResponse> fromList(List<Order> orders) {
+        return orders.stream().map(OrderResponse::from).collect(Collectors.toList());
+    }
+
     public Long getId() {
         return id;
     }

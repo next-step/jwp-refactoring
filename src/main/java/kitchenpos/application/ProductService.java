@@ -1,14 +1,12 @@
 package kitchenpos.application;
 
-import java.util.stream.Collectors;
+import java.util.List;
 import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.ProductRepository;
 import kitchenpos.dto.product.ProductRequest;
 import kitchenpos.dto.product.ProductResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -26,9 +24,6 @@ public class ProductService {
     }
 
     public List<ProductResponse> list() {
-        List<Product> products = productRepository.findAll();
-        return products.stream()
-                .map(ProductResponse::from)
-                .collect(Collectors.toList());
+        return ProductResponse.fromList(productRepository.findAll());
     }
 }

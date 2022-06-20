@@ -39,6 +39,10 @@ public class MenuResponse {
         );
     }
 
+    public static List<MenuResponse> fromList(List<Menu> menus) {
+        return menus.stream().map(MenuResponse::from).collect(Collectors.toList());
+    }
+
     public Long getId() {
         return id;
     }
