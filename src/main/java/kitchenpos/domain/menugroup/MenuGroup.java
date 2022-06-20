@@ -40,7 +40,7 @@ public class MenuGroup {
         return id;
     }
 
-    public Name getName() {
-        return name;
+    public String findName() {
+        return name.getValue();
     }
 }

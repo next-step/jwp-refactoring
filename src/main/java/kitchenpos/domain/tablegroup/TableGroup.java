@@ -55,6 +55,14 @@ public class TableGroup {
         return orderTables;
     }
 
+    public List<OrderTable> findOrderTables() {
+        return this.orderTables.getReadOnlyValues();
+    }
+
+    public List<Long> findOrderTableIds() {
+        return this.orderTables.getIds();
+    }
+
     public void assignedOrderTables(List<OrderTable> orderTables) {
         this.orderTables = OrderTables.from(orderTables);
         orderTables.forEach(orderTable -> orderTable.mappedByTableGroup(this));

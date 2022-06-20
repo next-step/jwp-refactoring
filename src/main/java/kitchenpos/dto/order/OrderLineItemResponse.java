@@ -22,7 +22,7 @@ public class OrderLineItemResponse {
         return new OrderLineItemResponse(orderLineItem.getSeq(),
                 orderLineItem.getOrderId(),
                 orderLineItem.getMenuId(),
-                orderLineItem.getQuantity().getValue());
+                orderLineItem.findQuantity());
     }
 
     public Long getSeq() {

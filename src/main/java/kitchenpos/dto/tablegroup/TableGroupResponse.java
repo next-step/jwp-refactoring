@@ -23,7 +23,7 @@ public class TableGroupResponse {
     public static TableGroupResponse from(TableGroup tableGroup) {
         return new TableGroupResponse(tableGroup.getId(),
                 tableGroup.getCreatedDate(),
-                tableGroup.getOrderTables().getReadOnlyValues()
+                tableGroup.findOrderTables()
                         .stream()
                         .map(OrderTableResponse::from)
                         .collect(Collectors.toList())

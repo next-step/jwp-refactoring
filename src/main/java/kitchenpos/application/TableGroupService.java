@@ -40,13 +40,13 @@ public class TableGroupService {
         TableGroup tableGroup = this.findTableGroup(tableGroupId);
         validateUnGroup(tableGroup);
 
-        for (final OrderTable orderTable : tableGroup.getOrderTables().getReadOnlyValues()) {
+        for (final OrderTable orderTable : tableGroup.findOrderTables()) {
             orderTable.ungroup();
         }
     }
 
     private void validateUnGroup(TableGroup tableGroup) {
-        List<Long> orderTableIds = tableGroup.getOrderTables().getIds();
+        List<Long> orderTableIds = tableGroup.findOrderTableIds();
         if (orderService.isAvailableUnGroupState(orderTableIds)) {
             throw new IllegalArgumentException();
         }

@@ -51,8 +51,8 @@ public class OrderLineItem {
         return menuId;
     }
 
-    public Quantity getQuantity() {
-        return quantity;
+    public long findQuantity() {
+        return quantity.getValue();
     }
 
     public void mappedByOrder(Order order) {

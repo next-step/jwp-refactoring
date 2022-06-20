@@ -82,8 +82,8 @@ class MenuServiceTest {
                 BigDecimal.valueOf(30_000),
                 초밥_메뉴그룹.getId(),
                 Lists.newArrayList(
-                        MenuProductRequest.of(A_우아한_초밥_1.getProductId(), A_우아한_초밥_1.getQuantity().getValue()),
-                        MenuProductRequest.of(A_우아한_초밥_2.getProductId(), A_우아한_초밥_2.getQuantity().getValue()))
+                        MenuProductRequest.of(A_우아한_초밥_1.getProductId(), A_우아한_초밥_1.findQuantity()),
+                        MenuProductRequest.of(A_우아한_초밥_2.getProductId(), A_우아한_초밥_2.findQuantity()))
         );
 
         given(menuGroupRepository.findById(초밥_메뉴그룹.getId())).willReturn(Optional.ofNullable(초밥_메뉴그룹));
@@ -107,8 +107,8 @@ class MenuServiceTest {
                 price,
                 초밥_메뉴그룹.getId(),
                 Lists.newArrayList(
-                        MenuProductRequest.of(A_우아한_초밥_1.getProductId(), A_우아한_초밥_1.getQuantity().getValue()),
-                        MenuProductRequest.of(A_우아한_초밥_2.getProductId(), A_우아한_초밥_2.getQuantity().getValue()))
+                        MenuProductRequest.of(A_우아한_초밥_1.getProductId(), A_우아한_초밥_1.findQuantity()),
+                        MenuProductRequest.of(A_우아한_초밥_2.getProductId(), A_우아한_초밥_2.findQuantity()))
         );
 
         // when & then
@@ -124,8 +124,8 @@ class MenuServiceTest {
                 BigDecimal.valueOf(price),
                 초밥_메뉴그룹.getId(),
                 Lists.newArrayList(
-                        MenuProductRequest.of(A_우아한_초밥_1.getProductId(), A_우아한_초밥_1.getQuantity().getValue()),
-                        MenuProductRequest.of(A_우아한_초밥_2.getProductId(), A_우아한_초밥_2.getQuantity().getValue()))
+                        MenuProductRequest.of(A_우아한_초밥_1.getProductId(), A_우아한_초밥_1.findQuantity()),
+                        MenuProductRequest.of(A_우아한_초밥_2.getProductId(), A_우아한_초밥_2.findQuantity()))
         );
 
         // when & then
@@ -140,8 +140,8 @@ class MenuServiceTest {
                 BigDecimal.valueOf(30_000),
                 초밥_메뉴그룹.getId(),
                 Lists.newArrayList(
-                        MenuProductRequest.of(A_우아한_초밥_1.getProductId(), A_우아한_초밥_1.getQuantity().getValue()),
-                        MenuProductRequest.of(A_우아한_초밥_2.getProductId(), A_우아한_초밥_2.getQuantity().getValue()))
+                        MenuProductRequest.of(A_우아한_초밥_1.getProductId(), A_우아한_초밥_1.findQuantity()),
+                        MenuProductRequest.of(A_우아한_초밥_2.getProductId(), A_우아한_초밥_2.findQuantity()))
         );
 
         given(productRepository.findById(A_우아한_초밥_1.getProductId())).willReturn(Optional.ofNullable(우아한_초밥_1));
@@ -159,8 +159,8 @@ class MenuServiceTest {
                 BigDecimal.valueOf(30_000),
                 초밥_메뉴그룹.getId(),
                 Lists.newArrayList(
-                        MenuProductRequest.of(A_우아한_초밥_1.getProductId(), A_우아한_초밥_1.getQuantity().getValue()),
-                        MenuProductRequest.of(A_우아한_초밥_2.getProductId(), A_우아한_초밥_2.getQuantity().getValue()))
+                        MenuProductRequest.of(A_우아한_초밥_1.getProductId(), A_우아한_초밥_1.findQuantity()),
+                        MenuProductRequest.of(A_우아한_초밥_2.getProductId(), A_우아한_초밥_2.findQuantity()))
         );
 
         given(menuGroupRepository.findById(초밥_메뉴그룹.getId())).willReturn(Optional.ofNullable(초밥_메뉴그룹));
@@ -178,8 +178,8 @@ class MenuServiceTest {
                 BigDecimal.valueOf(10_000_000),
                 초밥_메뉴그룹.getId(),
                 Lists.newArrayList(
-                        MenuProductRequest.of(A_우아한_초밥_1.getProductId(), A_우아한_초밥_1.getQuantity().getValue()),
-                        MenuProductRequest.of(A_우아한_초밥_2.getProductId(), A_우아한_초밥_2.getQuantity().getValue()))
+                        MenuProductRequest.of(A_우아한_초밥_1.getProductId(), A_우아한_초밥_1.findQuantity()),
+                        MenuProductRequest.of(A_우아한_초밥_2.getProductId(), A_우아한_초밥_2.findQuantity()))
         );
 
         // when & then

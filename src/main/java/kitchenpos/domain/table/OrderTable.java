@@ -63,8 +63,8 @@ public class OrderTable {
         return this.tableGroup;
     }
 
-    public NumberOfGuests getNumberOfGuests() {
-        return numberOfGuests;
+    public int findNumberOfGuests() {
+        return numberOfGuests.getValue();
     }
 
     public boolean isEmpty() {

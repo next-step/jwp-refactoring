@@ -23,7 +23,7 @@ public class MenuProductResponse {
         return new MenuProductResponse(menuProduct.getSeq(),
                 menuProduct.getMenuId(),
                 menuProduct.getProductId(),
-                menuProduct.getQuantity().getValue());
+                menuProduct.findQuantity());
     }
 
     public Long getSeq() {

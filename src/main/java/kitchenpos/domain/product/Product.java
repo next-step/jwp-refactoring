@@ -46,11 +46,11 @@ public class Product {
         return id;
     }
 
-    public Name getName() {
-        return name;
+    public String findName() {
+        return name.getValue();
     }
 
-    public Price getPrice() {
-        return price;
+    public BigDecimal findPrice() {
+        return price.getValue();
     }
 }

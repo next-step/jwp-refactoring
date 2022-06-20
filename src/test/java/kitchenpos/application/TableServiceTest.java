@@ -156,7 +156,7 @@ class TableServiceTest {
         // then
         assertAll(
                 () -> assertThat(response).isEqualTo(OrderTableResponse.from(주문_테이블)),
-                () -> assertThat(response.getNumberOfGuests()).isEqualTo(주문_테이블_10명.getNumberOfGuests().getValue())
+                () -> assertThat(response.getNumberOfGuests()).isEqualTo(주문_테이블_10명.findNumberOfGuests())
         );
     }
 

@@ -76,8 +76,8 @@ public class MenuProduct {
         return this.product.getId();
     }
 
-    public Quantity getQuantity() {
-        return quantity;
+    public long findQuantity() {
+        return quantity.getValue();
     }
 
     public void mappedByMenu(Menu menu) {
@@ -86,7 +86,7 @@ public class MenuProduct {
     }
 
     public BigDecimal calculateTotalPrice() {
-        BigDecimal productQuantity = BigDecimal.valueOf(this.quantity.getValue());
-        return product.getPrice().getValue().multiply(productQuantity);
+        BigDecimal productQuantity = BigDecimal.valueOf(this.findQuantity());
+        return product.findPrice().multiply(productQuantity);
     }
 }

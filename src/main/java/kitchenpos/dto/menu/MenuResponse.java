@@ -29,10 +29,10 @@ public class MenuResponse {
 
     public static MenuResponse from(Menu menu) {
         return new MenuResponse(menu.getId(),
-                menu.getName().getValue(),
-                menu.getPrice().getValue(),
+                menu.findName(),
+                menu.findPrice(),
                 menu.getMenuGroupId(),
-                menu.getMenuProducts().getReadOnlyValues()
+                menu.findMenuProducts()
                         .stream()
                         .map(MenuProductResponse::from)
                         .collect(Collectors.toList())
