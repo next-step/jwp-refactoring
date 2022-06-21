@@ -1,13 +1,11 @@
 package kitchenpos;
 
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.MediaType;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AcceptanceTest {
@@ -17,46 +15,12 @@ public class AcceptanceTest {
     @Autowired
     private DatabaseCleanup databaseCleanup;
 
+    public static TestRestTemplate testRestTemplate;
+
     @BeforeEach
     public void setUp() {
-        RestAssured.port = port;
+        String baseUri = "http://localhost:" + port;
+        testRestTemplate = new TestRestTemplate(new RestTemplateBuilder().rootUri(baseUri));
         databaseCleanup.execute();
-    }
-
-    public static ExtractableResponse<Response> sendPost(String path, Object request, Object... pathParams) {
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(request)
-                .when().post(path, pathParams)
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> sendGet(String path, Object... pathParams) {
-        return RestAssured
-                .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get(path, pathParams)
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> sendPut(String path, Object request, Object... pathParams) {
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(request)
-                .when().put(path, pathParams)
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> sendDelete(String path, Object... pathParams) {
-        return RestAssured
-                .given().log().all()
-                .when().delete(path, pathParams)
-                .then().log().all()
-                .extract();
     }
 }
