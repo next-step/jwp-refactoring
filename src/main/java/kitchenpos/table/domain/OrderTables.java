@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 @Embeddable
 public class OrderTables {
-    @OneToMany(mappedBy = "tableGroup", fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "table_group_id")
     private List<OrderTableEntity> items = new ArrayList<>();
 
     public void addAll(List<OrderTableEntity> orderTables) {
@@ -33,6 +35,6 @@ public class OrderTables {
     }
 
     public void unGroup() {
-        items.forEach(it -> it.unGroup());
+        items.forEach(OrderTableEntity::unGroup);
     }
 }
