@@ -18,34 +18,34 @@ import java.util.stream.Collectors;
 
 @Service
 public class TableService {
-    private final OrdersRepository orderDao;
-    private final OrderTableRepository orderTableDao;
+    private final OrdersRepository ordersRepository;
+    private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrdersRepository orderDao, final OrderTableRepository orderTableDao) {
-        this.orderDao = orderDao;
-        this.orderTableDao = orderTableDao;
+    public TableService(final OrdersRepository ordersRepository, final OrderTableRepository orderTableRepository) {
+        this.ordersRepository = ordersRepository;
+        this.orderTableRepository = orderTableRepository;
     }
 
     @Transactional
     public OrderTableResponse create(final OrderTableRequest request) {
-        OrderTable savedOrderTable = orderTableDao.save(new OrderTable(null, null, request.getNumberOfGuests(), request.isEmpty()));
+        OrderTable savedOrderTable = orderTableRepository.save(new OrderTable(null, null, request.getNumberOfGuests(), request.isEmpty()));
         return new OrderTableResponse(savedOrderTable);
     }
 
     public List<OrderTableResponse> list() {
-        return orderTableDao.findAll().stream().map(OrderTableResponse::new).collect(Collectors.toList());
+        return orderTableRepository.findAll().stream().map(OrderTableResponse::new).collect(Collectors.toList());
     }
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableUpdateEmptyRequest request) {
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
+        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
         if (Objects.nonNull(savedOrderTable.getTableGroup())) {
             throw new IllegalArgumentException();
         }
 
-        if (orderDao.existsByOrderTableInAndOrderStatusIn(Arrays.asList(savedOrderTable), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+        if (ordersRepository.existsByOrderTableInAndOrderStatusIn(Arrays.asList(savedOrderTable), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException();
         }
 
@@ -62,7 +62,7 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId).orElseThrow(IllegalArgumentException::new);
+        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId).orElseThrow(IllegalArgumentException::new);
 
         if (savedOrderTable.isEmpty()) {
             throw new IllegalArgumentException();

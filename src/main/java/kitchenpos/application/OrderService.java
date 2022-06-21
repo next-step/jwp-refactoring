@@ -16,14 +16,14 @@ import java.util.stream.Collectors;
 @Service
 public class OrderService {
     private final MenuRepository menuRepository;
-    private final OrdersRepository orderDao;
+    private final OrdersRepository ordersRepository;
     private final OrderTableRepository orderTableRepository;
 
     public OrderService(
-            final MenuRepository menuRepository, final OrdersRepository orderDao,
+            final MenuRepository menuRepository, final OrdersRepository ordersRepository,
             final OrderTableRepository orderTableRepository) {
         this.menuRepository = menuRepository;
-        this.orderDao = orderDao;
+        this.ordersRepository = ordersRepository;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -42,7 +42,7 @@ public class OrderService {
             throw new IllegalArgumentException();
         }
 
-        final Orders savedOrders = orderDao.save(new Orders(orderTable, OrderStatus.COOKING, LocalDateTime.now()));
+        final Orders savedOrders = ordersRepository.save(new Orders(orderTable, OrderStatus.COOKING, LocalDateTime.now()));
 
         for (final OrderLineItemRequest orderLineItem : request.getOrderLineItems()) {
             Menu menu = menuRepository.findById(orderLineItem.getMenuId()).orElseThrow(NoSuchElementException::new);
@@ -53,12 +53,12 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public List<OrderResponse> list() {
-        return orderDao.findAll().stream().map(OrderResponse::new).collect(Collectors.toList());
+        return ordersRepository.findAll().stream().map(OrderResponse::new).collect(Collectors.toList());
     }
 
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderStatusRequest request) {
-        final Orders savedOrders = orderDao.findById(orderId).orElseThrow(IllegalArgumentException::new);
+        final Orders savedOrders = ordersRepository.findById(orderId).orElseThrow(IllegalArgumentException::new);
         savedOrders.updateStatus(request.getOrderStatus());
         return new OrderResponse(savedOrders);
     }

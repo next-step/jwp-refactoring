@@ -24,9 +24,9 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    private OrdersRepository orderDao;
+    private OrdersRepository ordersRepository;
     @Mock
-    private OrderTableRepository orderTableDao;
+    private OrderTableRepository orderTableRepository;
     @Mock
     private TableGroupRepository tableGroupRepository;
     @InjectMocks
@@ -38,7 +38,7 @@ class TableGroupServiceTest {
         //given
         OrderTable orderTable1 = new OrderTable(1L, null, 5, true);
         OrderTable orderTable2 = new OrderTable(2L, null, 1, true);
-        given(orderTableDao.findAllByIdIn(any())).willReturn(Arrays.asList(orderTable1, orderTable2));
+        given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(orderTable1, orderTable2));
         TableGroup tableGroup = new TableGroup(1L);
         given(tableGroupRepository.save(any())).willReturn(tableGroup);
 
@@ -63,7 +63,7 @@ class TableGroupServiceTest {
     @DisplayName("요청한 단체 지정의 주문 테이블 수와 실제 주문 테이블 갯수 차이가 나면 단체 지정에 실패한다.")
     void create_failed_2() {
         //given
-        given(orderTableDao.findAllByIdIn(any())).willReturn(Collections.emptyList());
+        given(orderTableRepository.findAllByIdIn(any())).willReturn(Collections.emptyList());
 
         //then
         assertThatThrownBy(() -> tableGroupService.create(new TableGroupRequest(
@@ -77,7 +77,7 @@ class TableGroupServiceTest {
         //given
         OrderTable emptyOrderTable = new OrderTable(1L, null, 5, true);
         OrderTable alreadyGroupedOrderTable = new OrderTable(2L, new TableGroup(), 5, false);
-        given(orderTableDao.findAllByIdIn(any())).willReturn(Arrays.asList(emptyOrderTable, alreadyGroupedOrderTable));
+        given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(emptyOrderTable, alreadyGroupedOrderTable));
 
         //then
         assertThatThrownBy(() -> tableGroupService.create(new TableGroupRequest(
@@ -95,7 +95,7 @@ class TableGroupServiceTest {
         tableGroup.add(orderTable1);
         tableGroup.add(orderTable2);
         given(tableGroupRepository.findById(any())).willReturn(Optional.of(tableGroup));
-        given(orderDao.existsByOrderTableInAndOrderStatusIn(any(), any())).willReturn(false);
+        given(ordersRepository.existsByOrderTableInAndOrderStatusIn(any(), any())).willReturn(false);
 
         //when
         tableGroupService.ungroup(0L);
@@ -115,7 +115,7 @@ class TableGroupServiceTest {
         tableGroup.add(orderTable1);
         tableGroup.add(orderTable2);
         given(tableGroupRepository.findById(any())).willReturn(Optional.of(tableGroup));
-        given(orderDao.existsByOrderTableInAndOrderStatusIn(any(), any())).willReturn(true);
+        given(ordersRepository.existsByOrderTableInAndOrderStatusIn(any(), any())).willReturn(true);
 
         //then
         assertThatThrownBy(() -> tableGroupService.ungroup(0L)).isExactlyInstanceOf(IllegalArgumentException.class);
