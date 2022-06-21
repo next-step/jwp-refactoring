@@ -1,13 +1,9 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,7 +24,7 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Mock
     private OrderDao orderDao;
     @Mock
@@ -56,7 +52,7 @@ class OrderServiceTest {
     void create() {
         //given
         order.setOrderLineItems(Arrays.asList(orderLineItem1));
-        given(menuDao.countByIdIn(any())).willReturn(1L);
+        given(menuRepository.countByIdIn(any())).willReturn(1L);
         orderTable.setEmpty(false);
         given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
         given(orderLineItemDao.save(any())).willReturn(orderLineItem1);
@@ -86,7 +82,7 @@ class OrderServiceTest {
     void create_fail_2() {
         //given
         order.setOrderLineItems(Arrays.asList(orderLineItem2));
-        given(menuDao.countByIdIn(any())).willReturn(0L);
+        given(menuRepository.countByIdIn(any())).willReturn(0L);
 
         //then
         assertThatThrownBy(() -> orderService.create(order)).isExactlyInstanceOf(IllegalArgumentException.class);
@@ -97,7 +93,7 @@ class OrderServiceTest {
     void create_fail_3() {
         //given
         order.setOrderLineItems(Arrays.asList(orderLineItem1));
-        given(menuDao.countByIdIn(any())).willReturn(1L);
+        given(menuRepository.countByIdIn(any())).willReturn(1L);
         given(orderTableDao.findById(any())).willReturn(Optional.empty());
 
         //then
@@ -109,7 +105,7 @@ class OrderServiceTest {
     void create_fail_4() {
         //given
         order.setOrderLineItems(Arrays.asList(orderLineItem1));
-        given(menuDao.countByIdIn(any())).willReturn(1L);
+        given(menuRepository.countByIdIn(any())).willReturn(1L);
         orderTable.setEmpty(true);
         given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
 
