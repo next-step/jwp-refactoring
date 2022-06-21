@@ -104,6 +104,10 @@ public class MenuServiceTest {
     @Test
     @DisplayName("메뉴 목록을 조회한다.")
     void findAll() {
+        //given
+        honeyRedCombo.setMenuGroupId(1L);
+        honeyRedCombo.setMenuProducts(Arrays.asList(HONEY_MENU_PRODUCT, RED_MENU_PRODUCT));
+        menuService.create(honeyRedCombo);
         //when
         List<Menu> menus = menuService.list();
         //then
