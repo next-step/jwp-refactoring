@@ -40,8 +40,6 @@ class TableGroupServiceTest {
         OrderTable orderTable2 = new OrderTable(2L, null, 1, true);
         given(orderTableDao.findAllByIdIn(any())).willReturn(Arrays.asList(orderTable1, orderTable2));
         TableGroup tableGroup = new TableGroup(1L);
-        tableGroup.add(orderTable1);
-        tableGroup.add(orderTable2);
         given(tableGroupRepository.save(any())).willReturn(tableGroup);
 
         //when
