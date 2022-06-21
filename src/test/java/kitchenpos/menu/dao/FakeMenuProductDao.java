@@ -1,5 +1,9 @@
 package kitchenpos.menu.dao;
 
+import static kitchenpos.ServiceTestFactory.HONEY_MENU_PRODUCT;
+import static kitchenpos.ServiceTestFactory.RED_MENU_PRODUCT;
+
+import java.util.Arrays;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.domain.MenuProduct;
 
@@ -9,7 +13,7 @@ import java.util.Optional;
 public class FakeMenuProductDao implements MenuProductDao {
     @Override
     public MenuProduct save(MenuProduct entity) {
-        return null;
+        return entity;
     }
 
     @Override
@@ -24,6 +28,6 @@ public class FakeMenuProductDao implements MenuProductDao {
 
     @Override
     public List<MenuProduct> findAllByMenuId(Long menuId) {
-        return null;
+        return Arrays.asList(HONEY_MENU_PRODUCT, RED_MENU_PRODUCT);
     }
 }

@@ -18,7 +18,9 @@ public class FakeProductDao implements ProductDao {
 
     @Override
     public Optional<Product> findById(Long id) {
-        return Optional.empty();
+        return Arrays.asList(HONEY_COMBO, RED_COMBO).stream()
+                .filter(product -> product.getId().equals(id))
+                .findFirst();
     }
 
     @Override
