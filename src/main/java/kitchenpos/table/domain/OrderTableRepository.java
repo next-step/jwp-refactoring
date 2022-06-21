@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface OrderTableRepository extends JpaRepository<OrderTableEntity, Long> {
     List<OrderTableEntity> findAllByIdIn(List<Long> orderTableIds);
+    List<OrderTableEntity> findAllByTableGroupId(Long tableGroupId);
 }

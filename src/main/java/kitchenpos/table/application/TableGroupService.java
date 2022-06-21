@@ -137,21 +137,10 @@ public class TableGroupService {
 
     @Transactional
     public void ungroupCopy(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableDao.findAllByTableGroupId(tableGroupId);
-
-        final List<Long> orderTableIds = orderTables.stream()
-            .map(OrderTable::getId)
-            .collect(Collectors.toList());
-
-        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
-            orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
-        }
-
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.setTableGroupId(null);
-            orderTableDao.save(orderTable);
-        }
+        final List<OrderTableEntity> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
+        validateOrderTablesStatus(orderTables);
+        TableGroupEntity tableGroup = TableGroupEntity.from(orderTables);
+        tableGroup.unGroup();
     }
 
     private void validateOrderTablesStatus(List<OrderTableEntity> orderTables) {

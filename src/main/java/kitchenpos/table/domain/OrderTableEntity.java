@@ -58,4 +58,8 @@ public class OrderTableEntity {
     public void setEmpty(final boolean empty) {
         this.empty = empty;
     }
+
+    public void unGroup() {
+        this.tableGroupId = null;
+    }
 }

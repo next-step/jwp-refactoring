@@ -31,4 +31,8 @@ public class OrderTables {
     public void tablesMapIntoGroup(Long tableGroupId) {
         items.forEach(it -> it.mapIntoGroup(tableGroupId));
     }
+
+    public void unGroup() {
+        items.forEach(it -> it.unGroup());
+    }
 }

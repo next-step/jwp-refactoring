@@ -51,4 +51,8 @@ public class TableGroupEntity {
     public List<OrderTableEntity> getOrderTables() {
         return orderTables.getItems();
     }
+
+    public void unGroup() {
+        this.orderTables.unGroup();
+    }
 }
