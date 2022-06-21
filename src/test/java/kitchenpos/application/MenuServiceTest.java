@@ -2,7 +2,6 @@ package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -108,6 +107,8 @@ class MenuServiceTest {
                         MenuProductRequest.of(A_우아한_초밥_2.getProductId(), A_우아한_초밥_2.findQuantity()))
         );
 
+        given(menuGroupService.findMenuGroup(초밥_메뉴그룹.getId())).willReturn(초밥_메뉴그룹);
+
         // when & then
         assertThatExceptionOfType(NegativePriceException.class).isThrownBy(() -> menuService.create(menuRequest));
     }
@@ -124,6 +125,8 @@ class MenuServiceTest {
                         MenuProductRequest.of(A_우아한_초밥_1.getProductId(), A_우아한_초밥_1.findQuantity()),
                         MenuProductRequest.of(A_우아한_초밥_2.getProductId(), A_우아한_초밥_2.findQuantity()))
         );
+
+        given(menuGroupService.findMenuGroup(초밥_메뉴그룹.getId())).willReturn(초밥_메뉴그룹);
 
         // when & then
         assertThatExceptionOfType(NegativePriceException.class).isThrownBy(() -> menuService.create(menuRequest));

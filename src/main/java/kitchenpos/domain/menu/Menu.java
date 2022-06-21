@@ -15,11 +15,15 @@ import javax.persistence.Table;
 import kitchenpos.domain.Name;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.menugroup.MenuGroup;
+import kitchenpos.exception.CreateMenuException;
 import kitchenpos.exception.MenuPriceException;
 
 @Entity
 @Table(name = "menu")
 public class Menu {
+
+    private static final String MENU_GROUP_IS_NOT_NULL = "메뉴생성 시 메뉴그룹이 필수입니다.";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -41,28 +45,9 @@ public class Menu {
         this.menuGroup = menuGroup;
     }
 
-    private Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        this.name = Name.from(name);
-        this.price = Price.from(price);
-        this.menuGroup = menuGroup;
-        this.menuProducts = MenuProducts.from(menuProducts);
-    }
-
-    private Menu(String name, BigDecimal price) {
-        this.name = Name.from(name);
-        this.price = Price.from(price);
-    }
-
     public static Menu of(String name, BigDecimal price, MenuGroup menuGroup) {
+        validateCreateMenu(menuGroup);
         return new Menu(name, price, menuGroup);
-    }
-
-    public static Menu of(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        return new Menu(name, price, menuGroup, menuProducts);
-    }
-
-    public static Menu of(String name, BigDecimal price) {
-        return new Menu(name, price);
     }
 
     public Long getId() {
@@ -92,6 +77,16 @@ public class Menu {
     public void appendAllMenuProducts(List<MenuProduct> menuProducts) {
         validateMenuPrice(menuProducts);
         menuProducts.forEach(menuProduct -> menuProduct.mappedByMenu(this));
+    }
+
+    public MenuGroup getMenuGroup() {
+        return this.menuGroup;
+    }
+
+    private static void validateCreateMenu(MenuGroup menuGroup) {
+        if (menuGroup == null) {
+            throw new CreateMenuException(MENU_GROUP_IS_NOT_NULL);
+        }
     }
 
     private void validateMenuPrice(List<MenuProduct> menuProducts) {
