@@ -1,6 +1,6 @@
 package kitchenpos.menu.application;
 
-import static kitchenpos.helper.MenuGroupFixtures.인기메뉴;
+import static kitchenpos.helper.MenuGroupFixtures.인기메뉴_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -38,7 +38,7 @@ class MenuGroupServiceUnitTest {
     void create() {
         //given
         long generateMenuGroupId = 1;
-        MenuGroupRequest request = 인기메뉴;
+        MenuGroupRequest request = 인기메뉴_요청;
         doAnswer(invocation -> new MenuGroup(generateMenuGroupId, request.getName()))
                 .when(menuGroupRepository).save(any());
 

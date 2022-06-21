@@ -21,6 +21,6 @@ class MenuProductsTest {
         Amounts totalAmount = menuProducts.getAmounts();
 
         //then
-        assertThat(totalAmount.calculateTotalAmount()).isEqualTo(34_000);
+        assertThat(totalAmount.calculateTotalAmount()).isEqualTo(32_000);
     }
 }

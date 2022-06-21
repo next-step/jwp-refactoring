@@ -16,7 +16,7 @@ class ProductTest {
     void createAmount() {
         //given
         int quantity = 10;
-        Product product = ProductFixtures.제육덮밥.toProduct();
+        Product product = ProductFixtures.제육덮밥_요청.toProduct();
 
         //when
         Amount amount = product.createAmount(quantity);

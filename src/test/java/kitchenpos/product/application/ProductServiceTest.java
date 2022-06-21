@@ -1,8 +1,8 @@
 package kitchenpos.product.application;
 
-import static kitchenpos.helper.ProductFixtures.제육덮밥;
-import static kitchenpos.helper.ProductFixtures.제육덮밥_가격NULL;
-import static kitchenpos.helper.ProductFixtures.제육덮밥_가격마이너스;
+import static kitchenpos.helper.ProductFixtures.제육덮밥_요청;
+import static kitchenpos.helper.ProductFixtures.제육덮밥_가격NULL_요청;
+import static kitchenpos.helper.ProductFixtures.제육덮밥_가격마이너스_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -32,11 +32,11 @@ class ProductServiceTest {
     @Test
     void create() {
         //when
-        ProductResponse result = productService.create(제육덮밥);
+        ProductResponse result = productService.create(제육덮밥_요청);
 
         //then
         assertThat(result.getId()).isNotNull();
-        assertThat(result.getPrice()).isEqualTo(제육덮밥.getPrice());
+        assertThat(result.getPrice()).isEqualTo(제육덮밥_요청.getPrice());
     }
 
     @Order(2)
@@ -45,8 +45,8 @@ class ProductServiceTest {
     void create_price_null_or_less_then_zero() {
         //when then
         assertAll(
-                () -> assertThatIllegalArgumentException().isThrownBy(()-> productService.create(제육덮밥_가격NULL)),
-                () -> assertThatIllegalArgumentException().isThrownBy(()-> productService.create(제육덮밥_가격마이너스))
+                () -> assertThatIllegalArgumentException().isThrownBy(()-> productService.create(제육덮밥_가격NULL_요청)),
+                () -> assertThatIllegalArgumentException().isThrownBy(()-> productService.create(제육덮밥_가격마이너스_요청))
         );
     }
 
@@ -59,6 +59,6 @@ class ProductServiceTest {
 
         //then
         assertThat(result.stream().map(ProductResponse::getName).collect(Collectors.toList()))
-                .contains(제육덮밥.getName());
+                .contains(제육덮밥_요청.getName());
     }
 }

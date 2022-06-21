@@ -1,6 +1,6 @@
 package kitchenpos.menu.application;
 
-import static kitchenpos.helper.MenuGroupFixtures.인기메뉴;
+import static kitchenpos.helper.MenuGroupFixtures.인기메뉴_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
@@ -28,11 +28,11 @@ class MenuGroupServiceTest {
     @Test
     void create() {
         //when
-        MenuGroupResponse result = menuGroupService.create(인기메뉴);
+        MenuGroupResponse result = menuGroupService.create(인기메뉴_요청);
 
         //then
         assertThat(result.getId()).isNotNull();
-        assertThat(result.getName()).isEqualTo(인기메뉴.getName());
+        assertThat(result.getName()).isEqualTo(인기메뉴_요청.getName());
     }
 
     @Order(2)
@@ -44,7 +44,7 @@ class MenuGroupServiceTest {
 
         //then
         assertThat(results.stream().map(MenuGroupResponse::getName).collect(Collectors.toList()))
-                .contains(인기메뉴.getName());
+                .contains(인기메뉴_요청.getName());
     }
 
 }
