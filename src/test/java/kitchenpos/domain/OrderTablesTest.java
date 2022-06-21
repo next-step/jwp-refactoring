@@ -2,6 +2,7 @@ package kitchenpos.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -34,7 +35,7 @@ class OrderTablesTest {
         assertThat(주문테이블_목록.getItems()).hasSize(2);
     }
 
-    @DisplayName("주문 테이블목록에 내의 주문 테이블을 그룹에 매핑하면 정상적으로 매핑된다")
+    @DisplayName("주문 테이블목록의 주문 테이블을 그룹에 매핑하면 정상적으로 매핑된다")
     @Test
     void tables_mapped_test() {
         // given
@@ -47,6 +48,23 @@ class OrderTablesTest {
         // then
         for (OrderTableEntity orderTable : 주문테이블_목록.getItems()) {
             assertThat(orderTable.getTableGroupId()).isEqualTo(테이블_그룹_id);
+        }
+    }
+
+    @DisplayName("주문 테이블목록의 주문 테이블을 그룹에 해제하면 정상적으로 해제된다")
+    @Test
+    void tables_unGroup_test() {
+        // given
+        주문테이블_목록.addAll(Arrays.asList(주문_테이블, 주문_테이블2));
+        Long 테이블_그룹_id = 1L;
+        주문테이블_목록.tablesMapIntoGroup(테이블_그룹_id);
+
+        // when
+        주문테이블_목록.unGroup();
+
+        // then
+        for (OrderTableEntity orderTable : 주문테이블_목록.getItems()) {
+            assertNull(orderTable.getTableGroupId());
         }
     }
 
