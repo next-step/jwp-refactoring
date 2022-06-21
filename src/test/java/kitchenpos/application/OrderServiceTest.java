@@ -65,7 +65,7 @@ class OrderServiceTest extends ServiceTest {
                 한마리메뉴.getId(), Arrays.asList(후라이드_메뉴상품, 콜라_메뉴상품))
         );
 
-        테이블_A = this.orderTableDao.save(new OrderTable(null, 4, false));
+        테이블_A = this.orderTableDao.save(new OrderTable(4, false));
     }
 
     @Test

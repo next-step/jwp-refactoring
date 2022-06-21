@@ -37,8 +37,8 @@ class TableGroupServiceTest extends ServiceTest {
     @BeforeEach
     void setUp() {
         super.setUp();
-        orderTable1 = this.orderTableDao.save(new OrderTable(null, 0, true));
-        orderTable2 = this.orderTableDao.save(new OrderTable(null, 0, true));
+        orderTable1 = this.orderTableDao.save(new OrderTable(0, true));
+        orderTable2 = this.orderTableDao.save(new OrderTable(0, true));
         tableGroup = this.tableGroupService.create(new TableGroup(Arrays.asList(orderTable1, orderTable2)));
     }
 
@@ -56,7 +56,7 @@ class TableGroupServiceTest extends ServiceTest {
     @Test
     @DisplayName("테이블 중 비어있지 않은 테이블이 존재할 경우 생성될 수 없다.")
     void createFail_orderTableEmptyStatus() {
-        OrderTable orderTable = this.orderTableDao.save(new OrderTable(null, 4, false));
+        OrderTable orderTable = this.orderTableDao.save(new OrderTable(4, false));
 
         assertThatIllegalArgumentException()
             .isThrownBy(() -> this.tableGroupService.create(new TableGroup(Collections.singletonList(orderTable))));
@@ -65,7 +65,7 @@ class TableGroupServiceTest extends ServiceTest {
     @Test
     @DisplayName("테이블 중 이미 테이블 그룹에 속한 테이블이 존재할 경우 생성될 수 없다.")
     void createFail_alreadyContainTableGroup() {
-        OrderTable orderTable = this.orderTableDao.save(new OrderTable(null, 0, true));
+        OrderTable orderTable = this.orderTableDao.save(new OrderTable(0, true));
         this.tableGroupDao.save(new TableGroup(Collections.singletonList(orderTable)));
 
         assertThatIllegalArgumentException()

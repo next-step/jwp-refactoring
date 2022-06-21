@@ -22,6 +22,10 @@ public class OrderTable {
         this(null, tableGroupId, numberOfGuests, empty);
     }
 
+    public OrderTable(int numberOfGuests, boolean empty) {
+        this(null, null, numberOfGuests, empty);
+    }
+
     public Long getId() {
         return id;
     }
