@@ -1,6 +1,7 @@
 package kitchenpos.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import kitchenpos.table.domain.OrderTableEntity;
@@ -35,5 +36,27 @@ class OrderTableTest {
 
         // then
         assertNull(orderTable.getTableGroupId());
+    }
+
+    @DisplayName("주문 테이블의 tableGroupId 확인시 tableGroupId 가 존재하면 예외가 발생한다")
+    @Test
+    void order_table_exception_test() {
+        // given
+        OrderTableEntity orderTable = OrderTableEntity.of(1L, 1, true);
+
+        // then
+        assertThatThrownBy(orderTable::validateHasTableGroupId)
+            .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("주문 테이블이 빈 테이블인지 확인시 테이블이 비었다면 예외가 발생한다")
+    @Test
+    void order_table_exception_test2() {
+        // given
+        OrderTableEntity orderTable = OrderTableEntity.of(1L, 1, true);
+
+        // then
+        assertThatThrownBy(orderTable::validateIsNotEmpty)
+            .isInstanceOf(IllegalArgumentException.class);
     }
 }

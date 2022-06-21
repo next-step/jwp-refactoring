@@ -35,8 +35,20 @@ public class OrderTableEntity {
         this.tableGroupId = tableGroupId;
     }
 
-    public boolean isGrouped () {
+    public boolean isGrouped() {
         return Objects.nonNull(tableGroupId);
+    }
+
+    public void validateHasTableGroupId() {
+        if (isGrouped()) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public void validateIsNotEmpty() {
+        if (isEmpty()) {
+            throw new IllegalArgumentException();
+        }
     }
 
     public Long getId() {
@@ -61,5 +73,9 @@ public class OrderTableEntity {
 
     public void unGroup() {
         this.tableGroupId = null;
+    }
+
+    public void changeNumberOfGuests(int numberOfGuests) {
+        this.numberOfGuests = numberOfGuests;
     }
 }
