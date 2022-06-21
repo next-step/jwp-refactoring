@@ -2,6 +2,8 @@ package kitchenpos.table.ui;
 
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.request.OrderTableRequest;
+import kitchenpos.table.domain.response.OrderTableResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,8 +28,8 @@ public class TableRestController {
     }
 
     @PostMapping
-    public ResponseEntity<OrderTable> createCopy(@RequestBody final OrderTable orderTable) {
-        final OrderTable created = tableService.createCopy(orderTable);
+    public ResponseEntity<OrderTableResponse> createCopy(@RequestBody final OrderTableRequest orderTableRequest) {
+        final OrderTableResponse created = tableService.createCopy(orderTableRequest);
         final URI uri = URI.create("/api/tables/" + created.getId());
         return ResponseEntity.created(uri).body(created);
     }
@@ -38,7 +40,7 @@ public class TableRestController {
     }
 
     @GetMapping
-    public ResponseEntity<List<OrderTable>> listCopy() {
+    public ResponseEntity<List<OrderTableResponse>> listCopy() {
         return ResponseEntity.ok().body(tableService.listCopy());
     }
 
@@ -49,9 +51,8 @@ public class TableRestController {
     }
 
     @PutMapping("/{orderTableId}/empty")
-    public ResponseEntity<OrderTable> changeEmptyCopy(@PathVariable final Long orderTableId,
-        @RequestBody final OrderTable orderTable) {
-        return ResponseEntity.ok().body(tableService.changeEmptyCopy(orderTableId, orderTable));
+    public ResponseEntity<OrderTableResponse> changeEmptyCopy(@PathVariable final Long orderTableId) {
+        return ResponseEntity.ok().body(tableService.changeEmptyCopy(orderTableId));
     }
 
     @PutMapping("/{orderTableId}/number-of-guests")
@@ -62,9 +63,9 @@ public class TableRestController {
     }
 
     @PutMapping("/{orderTableId}/number-of-guests")
-    public ResponseEntity<OrderTable> changeNumberOfGuestsCopy(@PathVariable final Long orderTableId,
-        @RequestBody final OrderTable orderTable) {
+    public ResponseEntity<OrderTableResponse> changeNumberOfGuestsCopy(@PathVariable final Long orderTableId,
+        @RequestBody final OrderTableRequest orderTableRequest) {
         return ResponseEntity.ok()
-            .body(tableService.changeNumberOfGuestsCopy(orderTableId, orderTable));
+            .body(tableService.changeNumberOfGuestsCopy(orderTableId, orderTableRequest));
     }
 }
