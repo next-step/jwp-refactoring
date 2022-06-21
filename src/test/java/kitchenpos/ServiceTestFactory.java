@@ -1,5 +1,6 @@
 package kitchenpos;
 
+import java.util.List;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
@@ -9,6 +10,7 @@ import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
 
 import java.math.BigDecimal;
+import kitchenpos.domain.TableGroup;
 
 public class ServiceTestFactory {
     public static Product HONEY_COMBO = createProductBy(1L, "허니콤보", 20_000L);
@@ -20,12 +22,6 @@ public class ServiceTestFactory {
     public static MenuProduct HONEY_MENU_PRODUCT = createMenuProductBy(1L, HONEY_RED_COMBO, HONEY_COMBO, 1);
     public static MenuProduct NOT_EXISTS_MENU_PRODUCT = createMenuProductBy(2L, HONEY_RED_COMBO, ORIGINAL_COMBO, 1);
     public static MenuProduct RED_MENU_PRODUCT = createMenuProductBy(3L, HONEY_RED_COMBO, RED_COMBO, 1);
-    public static OrderTable ORDER_TABLE = createOrderTableBy(1L, 4, false, 1L);
-    public static OrderTable OTHER_ORDER_TABLE = createOrderTableBy(2L, 3, false, null);
-    public static OrderTable THIRD_ORDER_TABLE = createOrderTableBy(3L, 2, false, null);
-    public static OrderTable EMPTY_ORDER_TABLE = createOrderTableBy(4L, 0, true, null);
-    public static Order COMPLETE_ORDER = createOrderBy(1L, 1L, OrderStatus.COMPLETION.name());
-    public static Order COOKING_ORDER = createOrderBy(2L, 2L, OrderStatus.COOKING.name());
 
     public static Product createProductBy(Long id, String name, long price) {
         Product product = new Product();
@@ -74,5 +70,12 @@ public class ServiceTestFactory {
         order.setOrderTableId(orderTableId);
         order.setOrderStatus(orderStatus);
         return order;
+    }
+
+    public static TableGroup createTableGroupBy(Long id, List<OrderTable> orderTables) {
+        TableGroup tableGroup = new TableGroup();
+        tableGroup.setId(id);
+        tableGroup.setOrderTables(orderTables);
+        return tableGroup;
     }
 }
