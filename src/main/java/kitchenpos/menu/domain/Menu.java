@@ -33,6 +33,12 @@ public class Menu {
         this.price = price;
     }
 
+    public void validateAmount(Amounts amounts){
+        if(price > amounts.calculateTotalAmount()){
+            throw new IllegalArgumentException("[ERROR] 메뉴 가격은 총 금액을 넘을 수 없습니다.");
+        }
+    }
+
     private void validatePrice(Integer price) {
         if(price == null || price < FREE){
             throw new IllegalArgumentException("[ERROR] 메뉴 가격은 0원 이상 이어야 합니다.");
