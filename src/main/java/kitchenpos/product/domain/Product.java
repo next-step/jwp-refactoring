@@ -50,4 +50,8 @@ public class Product {
     public Integer getPrice() {
         return price;
     }
+
+    public int calculateAmount(int quantity) {
+        return price * quantity;
+    }
 }

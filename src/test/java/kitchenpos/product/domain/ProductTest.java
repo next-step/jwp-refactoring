@@ -1,13 +1,29 @@
 package kitchenpos.product.domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.jupiter.api.Assertions.*;
 
+import kitchenpos.helper.ProductFixtures;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("상품 관련 Domain 단위 테스트")
 class ProductTest {
+
+    @DisplayName("금액(가격 * 수량)을 계산한다.")
+    @Test
+    void calculateAmount(){
+        //given
+        int quantity = 10;
+        Product product = ProductFixtures.제육덮밥.toProduct();
+
+        //when
+        int amount = product.calculateAmount(quantity);
+
+        //then
+        assertThat(amount).isEqualTo(80_000);
+
+    }
 
     @DisplayName("상품 가격이 null 이거나 0원 미만일 수 없다.")
     @Test
