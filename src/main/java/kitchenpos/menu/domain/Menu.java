@@ -43,10 +43,7 @@ public class Menu {
     }
 
     public void checkAmount() {
-
-    }
-
-    public void validateAmount(Amounts amounts) {
+        Amounts amounts = menuProducts.getAmounts();
         if (price > amounts.calculateTotalAmount()) {
             throw new IllegalArgumentException("[ERROR] 메뉴 가격은 총 금액을 넘을 수 없습니다.");
         }
