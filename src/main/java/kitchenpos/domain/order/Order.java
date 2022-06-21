@@ -16,11 +16,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import kitchenpos.domain.table.OrderTable;
+import kitchenpos.exception.CreateOrderException;
 
 @Entity
 @Table(name = "orders")
 public class Order {
 
+    private static final String ORDER_TABLE_IS_NOT_EMPTY = "주문 생성 시 주문테이블은 필수입니다.";
     private static final String CANNOT_CHANGE_ORDER_STATUS = "완료 주문은 상태를 바꿀 수 없습니다.";
 
     @Id
@@ -37,16 +39,6 @@ public class Order {
     private OrderLineItems orderLineItems = OrderLineItems.createEmpty();
 
     protected Order() {}
-
-    private Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
-        this.orderTable = orderTable;
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
-        this.orderLineItems = OrderLineItems.from(orderLineItems);
-
-        this.orderLineItems.getReadOnlyValues()
-                .forEach(orderLineItem -> orderLineItem.mappedByOrder(this));
-    }
 
     private Order(OrderTable orderTable, OrderStatus orderStatus) {
         this.orderTable = orderTable;
@@ -66,20 +58,13 @@ public class Order {
                 .forEach(orderLineItem -> orderLineItem.mappedByOrder(this));
     }
 
-    public static Order of(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
-        return new Order(orderTable, orderStatus, orderedTime, orderLineItems);
-    }
-
-    public static Order of(OrderTable orderTable, OrderStatus orderStatus) {
-        return new Order(orderTable, orderStatus);
-    }
-
     public static Order of(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
                            List<OrderLineItem> orderLineItems) {
         return new Order(id, orderTable, orderStatus, orderedTime, orderLineItems);
     }
 
     public static Order from(OrderTable orderTable) {
+        validateOrder(orderTable);
         return new Order(orderTable, OrderStatus.COOKING);
     }
 
@@ -106,6 +91,12 @@ public class Order {
     public void changeOrderStatus(OrderStatus orderStatus) {
         validateChangeOrderStatus();
         this.orderStatus = orderStatus;
+    }
+
+    private static void validateOrder(OrderTable orderTable) {
+        if (orderTable == null) {
+            throw new CreateOrderException(ORDER_TABLE_IS_NOT_EMPTY);
+        }
     }
 
     private void validateChangeOrderStatus() {

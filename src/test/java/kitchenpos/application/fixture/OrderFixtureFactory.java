@@ -11,14 +11,6 @@ public class OrderFixtureFactory {
 
     private OrderFixtureFactory() {}
 
-    public static Order create(OrderTable orderTable, OrderStatus orderStatus) {
-        return Order.of(orderTable, orderStatus);
-    }
-
-    public static Order create(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-        return Order.of(orderTable, orderStatus, LocalDateTime.now(), orderLineItems);
-    }
-
     public static Order create(Long id, OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
         return Order.of(id, orderTable, orderStatus, LocalDateTime.now(), orderLineItems);
     }
