@@ -1,8 +1,8 @@
 package kitchenpos.acceptance.support;
 
 import java.math.BigDecimal;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.menu.domain.Product;
 
 public class TestFixture {
     public static final Product 후라이드_치킨_FIXTURE = Product.of(null, "후라이드 치킨", BigDecimal.valueOf(15000L));

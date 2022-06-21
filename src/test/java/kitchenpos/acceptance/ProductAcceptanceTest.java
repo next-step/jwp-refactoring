@@ -8,7 +8,7 @@ import static kitchenpos.acceptance.support.ProductAcceptanceSupport.상품목�
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
-import kitchenpos.domain.Product;
+import kitchenpos.menu.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
