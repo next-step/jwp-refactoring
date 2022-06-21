@@ -49,8 +49,7 @@ public class TableGroupService {
     }
 
     private void validateUnGroup(TableGroup tableGroup) {
-        List<Long> orderTableIds = tableGroup.findOrderTableIds();
-        if (orderService.isExistDontUnGroupState(orderTableIds)) {
+        if (orderService.isExistDontUnGroupState(tableGroup.findOrderTables())) {
             throw new IllegalArgumentException();
         }
     }

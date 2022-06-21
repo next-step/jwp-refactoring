@@ -79,7 +79,7 @@ class OrderServiceTest {
         A_주문_테이블 = OrderTableFixtureFactory.create(false);
 
         A_주문항목 = OrderLineItemFixtureFactory.create(A, 1);
-        A_주문 = OrderFixtureFactory.create(1L, A_주문_테이블.getId(), OrderStatus.COOKING, Lists.newArrayList(A_주문항목));
+        A_주문 = OrderFixtureFactory.create(1L, A_주문_테이블, OrderStatus.COOKING, Lists.newArrayList(A_주문항목));
     }
 
     @DisplayName("주문을 할 수 있다.")

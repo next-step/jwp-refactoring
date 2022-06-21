@@ -1,9 +1,6 @@
 package kitchenpos.dto.tablegroup;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import kitchenpos.domain.table.OrderTable;
-import kitchenpos.domain.tablegroup.TableGroup;
 
 public class TableGroupRequest {
     private List<Long> orderTables;
@@ -20,13 +17,5 @@ public class TableGroupRequest {
 
     public List<Long> getOrderTables() {
         return orderTables;
-    }
-
-    public TableGroup toTableGroup() {
-        return TableGroup.from(
-                this.orderTables.stream()
-                        .map(OrderTable::from)
-                        .collect(Collectors.toList())
-        );
     }
 }

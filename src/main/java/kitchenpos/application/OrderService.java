@@ -96,16 +96,16 @@ public class OrderService {
         return orderRepository.findById(orderId).orElseThrow(IllegalArgumentException::new);
     }
 
-    public boolean isExistDontUnGroupState(List<Long> orderTableIds) {
-        return orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds,
+    public boolean isExistDontUnGroupState(List<OrderTable> orderTables) {
+        return orderRepository.existsByOrderTableInAndOrderStatusIn(
+                orderTables,
                 OrderStatus.dontUngroupStatus()
         );
     }
 
-    public boolean isExistDontUnGroupState(Long orderTableId) {
-        return orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId,
+    public boolean isExistDontUnGroupState(OrderTable orderTable) {
+        return orderRepository.existsByOrderTableAndOrderStatusIn(
+                orderTable,
                 OrderStatus.dontUngroupStatus()
         );
     }

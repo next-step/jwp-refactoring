@@ -7,11 +7,13 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import kitchenpos.domain.table.OrderTable;
 
@@ -24,8 +26,9 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_orders_order_table"), nullable = false)
-    private Long orderTableId;
+    private OrderTable orderTable;
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
     @Column(name = "ordered_time", nullable = false)
@@ -35,8 +38,8 @@ public class Order {
 
     protected Order() {}
 
-    private Order(Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
-        this.orderTableId = orderTableId;
+    private Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+        this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = OrderLineItems.from(orderLineItems);
@@ -45,16 +48,16 @@ public class Order {
                 .forEach(orderLineItem -> orderLineItem.mappedByOrder(this));
     }
 
-    private Order(Long orderTableId, OrderStatus orderStatus) {
-        this.orderTableId = orderTableId;
+    private Order(OrderTable orderTable, OrderStatus orderStatus) {
+        this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = LocalDateTime.now();
     }
 
-    private Order(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime,
+    private Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
                  List<OrderLineItem> orderLineItems) {
         this.id = id;
-        this.orderTableId = orderTableId;
+        this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = OrderLineItems.from(orderLineItems);
@@ -63,21 +66,21 @@ public class Order {
                 .forEach(orderLineItem -> orderLineItem.mappedByOrder(this));
     }
 
-    public static Order of(Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
-        return new Order(orderTableId, orderStatus, orderedTime, orderLineItems);
+    public static Order of(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+        return new Order(orderTable, orderStatus, orderedTime, orderLineItems);
     }
 
-    public static Order of(Long orderTableId, OrderStatus orderStatus) {
-        return new Order(orderTableId, orderStatus);
+    public static Order of(OrderTable orderTable, OrderStatus orderStatus) {
+        return new Order(orderTable, orderStatus);
     }
 
-    public static Order of(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime,
+    public static Order of(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
                            List<OrderLineItem> orderLineItems) {
-        return new Order(id, orderTableId, orderStatus, orderedTime, orderLineItems);
+        return new Order(id, orderTable, orderStatus, orderedTime, orderLineItems);
     }
 
     public static Order from(OrderTable orderTable) {
-        return new Order(orderTable.getId(), OrderStatus.COOKING);
+        return new Order(orderTable, OrderStatus.COOKING);
     }
 
     public Long getId() {
@@ -85,7 +88,7 @@ public class Order {
     }
 
     public Long getOrderTableId() {
-        return orderTableId;
+        return this.orderTable.getId();
     }
 
     public OrderStatus getOrderStatus() {

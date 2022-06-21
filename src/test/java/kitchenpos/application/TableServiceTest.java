@@ -133,7 +133,7 @@ class TableServiceTest {
     void change04() {
         // given
         OrderTableRequest request = OrderTableRequest.of(0, true);
-        given(orderService.isExistDontUnGroupState(주문_테이블.getId())).willReturn(true);
+        given(orderService.isExistDontUnGroupState(주문_테이블)).willReturn(true);
         given(orderTableRepository.findById(주문_테이블.getId())).willReturn(Optional.ofNullable(주문_테이블));
 
         // when & then
