@@ -1,7 +1,6 @@
 package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
 import kitchenpos.dao.MenuGroupDao;
@@ -34,24 +33,17 @@ class MenuGroupServiceTest extends ServiceTest{
     @Test
     @DisplayName("메뉴그룹이 정상적으로 생성된다.")
     void createMenuGroup() {
-
-        // when
         MenuGroup created = this.menuGroupService.create(new MenuGroup("menu_group"));
 
-        // then
-        assertAll(
-            () -> assertThat(created.getId()).isNotNull(),
-            () -> assertThat(created.getName()).isEqualTo("menu_group")
-        );
+        assertThat(created.getId()).isNotNull();
+        assertThat(created.getName()).isEqualTo("menu_group");
     }
 
     @Test
     @DisplayName("메뉴그룹을 모두 조회한다.")
     void findAll() {
-        // when
         List<MenuGroup> list = this.menuGroupService.list();
 
-        // then
         assertThat(list).containsExactly(메뉴_그룹_A, 메뉴_그룹_B);
     }
 

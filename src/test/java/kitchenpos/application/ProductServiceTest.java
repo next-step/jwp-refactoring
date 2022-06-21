@@ -2,7 +2,6 @@ package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -14,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 class ProductServiceTest extends ServiceTest{
 
+    @Autowired
+    private ProductDao productDao;
     @Autowired
     private ProductService productService;
 
@@ -40,10 +41,8 @@ class ProductServiceTest extends ServiceTest{
     @Test
     @DisplayName("상품을 모두 조회한다.")
     void list() {
-        Product product1 = new Product("후라이드", BigDecimal.valueOf(16000.00));
-        Product product2 = new Product("양념치킨", BigDecimal.valueOf(16000.00));
-        product1 = this.productService.create(product1);
-        product2 = this.productService.create(product2);
+        Product product1 = this.productDao.save(new Product("후라이드", BigDecimal.valueOf(16000.00)));
+        Product product2 = this.productDao.save(new Product("양념치킨", BigDecimal.valueOf(16000.00)));
 
         List<Product> products = this.productService.list();
 

@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
@@ -20,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 class MenuServiceTest extends ServiceTest{
 
+    @Autowired
+    private MenuDao menuDao;
     @Autowired
     private MenuGroupDao menuGroupDao;
     @Autowired
@@ -87,8 +90,10 @@ class MenuServiceTest extends ServiceTest{
     void list() {
         Menu 후라이드_양념_세트 = new Menu("후라이드_양념_세트", BigDecimal.valueOf(31000), 두마리메뉴.getId(), Arrays.asList(후라이드_메뉴상품, 양념치킨_메뉴상품));
         Menu 임시_메뉴 = new Menu("닭강정", BigDecimal.valueOf(5000), 두마리메뉴.getId(), Collections.singletonList(후라이드_메뉴상품));
-        후라이드_양념_세트 = this.menuService.create(후라이드_양념_세트);
-        임시_메뉴 = this.menuService.create(임시_메뉴);
+        후라이드_양념_세트 = this.menuDao.save(후라이드_양념_세트);
+        임시_메뉴 = this.menuDao.save(임시_메뉴);
+        후라이드_양념_세트.setMenuProducts(Collections.emptyList());
+        임시_메뉴.setMenuProducts(Collections.emptyList());
 
         List<Menu> list = this.menuService.list();
 

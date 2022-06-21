@@ -43,6 +43,9 @@ class OrderServiceTest extends ServiceTest {
     private Menu 후라이드_양념_세트;
     private Menu 후라이드_단품_세트;
     private OrderTable 테이블_A;
+    private OrderLineItem 후라이드_양념_세트_주문;
+    private OrderLineItem 후라이드_단품_세트_주문;
+    private Order 주문;
 
     @BeforeEach
     void setUp() {
@@ -66,6 +69,11 @@ class OrderServiceTest extends ServiceTest {
         );
 
         테이블_A = this.orderTableDao.save(new OrderTable(4, false));
+
+        후라이드_양념_세트_주문 = new OrderLineItem(후라이드_양념_세트.getId(), 1);
+        후라이드_단품_세트_주문 = new OrderLineItem(후라이드_단품_세트.getId(), 1);
+
+        주문 = this.orderService.create(new Order(테이블_A.getId(), Arrays.asList(후라이드_양념_세트_주문, 후라이드_단품_세트_주문)));
     }
 
     @Test
@@ -80,7 +88,6 @@ class OrderServiceTest extends ServiceTest {
     @Test
     @DisplayName("주문한 메뉴가 실제 존재하지 않는 경우 예외를 던진다.")
     void createFail_orderLineItems() {
-        OrderLineItem 후라이드_양념_세트_주문 = new OrderLineItem(후라이드_양념_세트.getId(), 1);
         OrderLineItem 없는_주문 = new OrderLineItem(1000L, 1);
         Order order = new Order(테이블_A.getId(), Arrays.asList(후라이드_양념_세트_주문, 없는_주문));
 
@@ -91,72 +98,51 @@ class OrderServiceTest extends ServiceTest {
     @Test
     @DisplayName("주문한 테이블 정보가 존재하지 않을 경우 예외를 던진다.")
     void createFail_orderTableEmpty() {
-        OrderLineItem 후라이드_양념_세트_주문 = new OrderLineItem(후라이드_양념_세트.getId(), 1);
-        OrderLineItem 후라이드_단품_세트_주문 = new OrderLineItem(후라이드_단품_세트.getId(), 1);
-        Order order = new Order(1000L, Arrays.asList(후라이드_양념_세트_주문, 후라이드_단품_세트_주문));
-
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> this.orderService.create(order));
+            .isThrownBy(() -> this.orderService.create(new Order(null, Arrays.asList(후라이드_양념_세트_주문, 후라이드_단품_세트_주문))));
     }
 
     @Test
     @DisplayName("주문시 주문정보가 생성된디.")
     void create() {
-        OrderLineItem 후라이드_양념_세트_주문 = new OrderLineItem(후라이드_양념_세트.getId(), 1);
-        OrderLineItem 후라이드_단품_세트_주문 = new OrderLineItem(후라이드_단품_세트.getId(), 1);
-        Order order = new Order(테이블_A.getId(), Arrays.asList(후라이드_양념_세트_주문, 후라이드_단품_세트_주문));
-
-        order = this.orderService.create(order);
-
-        assertThat(order.getId()).isNotNull();
-        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
-        assertThat(order.getOrderedTime()).isNotNull();
-        assertThat(order.getOrderLineItems()).hasSize(2);
+        assertThat(주문.getId()).isNotNull();
+        assertThat(주문.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(주문.getOrderedTime()).isNotNull();
+        assertThat(주문.getOrderLineItems()).hasSize(2);
     }
 
     @Test
     @DisplayName("주문을 모두 조회한다.")
     void list() {
-        OrderLineItem 후라이드_양념_세트_주문 = new OrderLineItem(후라이드_양념_세트.getId(), 1);
-        OrderLineItem 후라이드_단품_세트_주문 = new OrderLineItem(후라이드_단품_세트.getId(), 1);
-        Order order1 = new Order(테이블_A.getId(), Arrays.asList(후라이드_양념_세트_주문, 후라이드_단품_세트_주문));
-        Order order2 = new Order(테이블_A.getId(), Collections.singletonList(후라이드_양념_세트_주문));
-        order1 = this.orderService.create(order1);
-        order2 = this.orderService.create(order2);
+        Order 주문_추가 = new Order(테이블_A.getId(), Collections.singletonList(후라이드_양념_세트_주문));
+        주문_추가.setOrderStatus(OrderStatus.COOKING.name());
+        주문_추가 = this.orderDao.save(주문_추가);
+        주문_추가.setOrderLineItems(Collections.emptyList());
 
         List<Order> list = this.orderService.list();
 
-        assertThat(list).containsExactly(order1, order2);
+        assertThat(list).containsExactly(주문, 주문_추가);
     }
 
     @Test
     @DisplayName("주문 상태가 완료된 건 변경할 수 없다.")
     void changeOrderStatusFail() {
-        OrderLineItem 후라이드_양념_세트_주문 = new OrderLineItem(후라이드_양념_세트.getId(), 1);
-        OrderLineItem 후라이드_단품_세트_주문 = new OrderLineItem(후라이드_단품_세트.getId(), 1);
-        Order order = new Order(테이블_A.getId(), Arrays.asList(후라이드_양념_세트_주문, 후라이드_단품_세트_주문));
-        Order createdOrder = this.orderService.create(order);
-
-        createdOrder.setOrderStatus(OrderStatus.COMPLETION.name());
-        this.orderDao.save(createdOrder);
+        주문.setOrderStatus(OrderStatus.COMPLETION.name());
+        this.orderDao.save(주문);
 
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> this.orderService.changeOrderStatus(createdOrder.getId(), null));
+            .isThrownBy(() -> this.orderService.changeOrderStatus(주문.getId(), null));
     }
 
     @Test
     @DisplayName("주문 상태를 변경한다.")
     void changeOrderStatus() {
-        OrderLineItem 후라이드_양념_세트_주문 = new OrderLineItem(후라이드_양념_세트.getId(), 1);
-        OrderLineItem 후라이드_단품_세트_주문 = new OrderLineItem(후라이드_단품_세트.getId(), 1);
-        Order order = new Order(테이블_A.getId(), Arrays.asList(후라이드_양념_세트_주문, 후라이드_단품_세트_주문));
-        Order createdOrder = this.orderService.create(order);
-
         Order statusOrder = new Order();
         statusOrder.setOrderStatus(OrderStatus.MEAL.name());
-        this.orderService.changeOrderStatus(createdOrder.getId(), statusOrder);
-        Order expectedOrder = this.orderDao.findById(createdOrder.getId()).orElse(null);
 
+        this.orderService.changeOrderStatus(주문.getId(), statusOrder);
+
+        Order expectedOrder = this.orderDao.findById(주문.getId()).orElse(null);
         assertThat(expectedOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
     }
 
