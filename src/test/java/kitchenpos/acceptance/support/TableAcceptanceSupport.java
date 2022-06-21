@@ -23,7 +23,7 @@ public class TableAcceptanceSupport {
             .extract();
     }
 
-    public static void 주문_테이블_등록됨(ExtractableResponse<Response> response) {
+    public static void 등록한_주문_테이블_검증됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
     }

@@ -1,6 +1,6 @@
 package kitchenpos.acceptance;
 
-import static kitchenpos.acceptance.support.TableAcceptanceSupport.주문_테이블_등록됨;
+import static kitchenpos.acceptance.support.TableAcceptanceSupport.등록한_주문_테이블_검증됨;
 import static kitchenpos.acceptance.support.TableAcceptanceSupport.주문_테이블_등록요청;
 import static kitchenpos.acceptance.support.TableAcceptanceSupport.주문_테이블_목록_조회됨;
 import static kitchenpos.acceptance.support.TableAcceptanceSupport.주문_테이블_목록_조회요청;
@@ -36,7 +36,7 @@ class TableAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 주문_테이블_등록요청(주문_테이블);
 
         // then
-        주문_테이블_등록됨(response);
+        등록한_주문_테이블_검증됨(response);
     }
 
     @DisplayName("주문 테이블 목록을 조회한다")
@@ -81,5 +81,10 @@ class TableAcceptanceTest extends AcceptanceTest {
 
         // then
         주문_테이블_손님수_변경됨(response, 변경할_손님수);
+    }
+
+    public static OrderTable 주문_테이블_등록됨(OrderTable orderTable) {
+        ExtractableResponse<Response> response = 주문_테이블_등록요청(orderTable);
+        return response.as(OrderTable.class);
     }
 }
