@@ -27,7 +27,7 @@ public class TableGroupRestController {
         return ResponseEntity.created(uri).body(created);
     }
 
-    @PostMapping
+    @PostMapping("/copy")
     public ResponseEntity<TableGroupResponse> createCopy(@RequestBody final TableGroupRequest request) {
         final TableGroupResponse created = tableGroupService.createCopy(request);
         final URI uri = URI.create("/api/table-groups/" + created.getId());
@@ -40,7 +40,7 @@ public class TableGroupRestController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{tableGroupId}")
+    @DeleteMapping("/{tableGroupId}/copy")
     public ResponseEntity<Void> ungroupCopy(@PathVariable final Long tableGroupId) {
         tableGroupService.ungroupCopy(tableGroupId);
         return ResponseEntity.noContent().build();

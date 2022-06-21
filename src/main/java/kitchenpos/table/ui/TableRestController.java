@@ -27,7 +27,7 @@ public class TableRestController {
         return ResponseEntity.created(uri).body(created);
     }
 
-    @PostMapping
+    @PostMapping("/copy")
     public ResponseEntity<OrderTableResponse> createCopy(@RequestBody final OrderTableRequest orderTableRequest) {
         final OrderTableResponse created = tableService.createCopy(orderTableRequest);
         final URI uri = URI.create("/api/tables/" + created.getId());
@@ -39,7 +39,7 @@ public class TableRestController {
         return ResponseEntity.ok().body(tableService.list());
     }
 
-    @GetMapping
+    @GetMapping("/copy")
     public ResponseEntity<List<OrderTableResponse>> listCopy() {
         return ResponseEntity.ok().body(tableService.listCopy());
     }
@@ -50,7 +50,7 @@ public class TableRestController {
         return ResponseEntity.ok().body(tableService.changeEmpty(orderTableId, orderTable));
     }
 
-    @PutMapping("/{orderTableId}/empty")
+    @PutMapping("/{orderTableId}/empty/copy")
     public ResponseEntity<OrderTableResponse> changeEmptyCopy(@PathVariable final Long orderTableId) {
         return ResponseEntity.ok().body(tableService.changeEmptyCopy(orderTableId));
     }
@@ -62,7 +62,7 @@ public class TableRestController {
             .body(tableService.changeNumberOfGuests(orderTableId, orderTable));
     }
 
-    @PutMapping("/{orderTableId}/number-of-guests")
+    @PutMapping("/{orderTableId}/number-of-guests/copy")
     public ResponseEntity<OrderTableResponse> changeNumberOfGuestsCopy(@PathVariable final Long orderTableId,
         @RequestBody final OrderTableRequest orderTableRequest) {
         return ResponseEntity.ok()
