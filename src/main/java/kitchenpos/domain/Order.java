@@ -18,6 +18,7 @@ public class Order {
     public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderLineItems = orderLineItems;
+        this.orderedTime = LocalDateTime.now();
     }
 
     public Long getId() {
