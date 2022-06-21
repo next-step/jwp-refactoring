@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.ProductRepository;
 import kitchenpos.dto.ProductRequest;
 import kitchenpos.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -17,14 +17,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
     @InjectMocks
     private ProductService productService;
 
@@ -33,7 +32,7 @@ class ProductServiceTest {
     void create() {
         //given
         ProductRequest request = new ProductRequest("product", BigDecimal.TEN);
-        given(productDao.save(any())).willReturn(request.toProduct());
+        given(productRepository.save(any())).willReturn(request.toProduct());
 
         //when
         ProductResponse result = productService.create(request);
@@ -44,22 +43,12 @@ class ProductServiceTest {
     }
 
     @Test
-    @DisplayName("상품 가격이 NULL 이거나 음수면 생성할 수 없다.")
-    void create_fail() {
-        //given
-        ProductRequest request = new ProductRequest("product", null);
-
-        //then
-        assertThatThrownBy(() -> productService.create(request)).isExactlyInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
     @DisplayName("전체 상품을 조회할 수 있다.")
     void list() {
         //given
         Product product1 = new Product("product1", BigDecimal.TEN);
         Product product2 = new Product("product2", BigDecimal.ZERO);
-        given(productDao.findAll()).willReturn(Arrays.asList(product1, product2));
+        given(productRepository.findAll()).willReturn(Arrays.asList(product1, product2));
 
         //when
         List<ProductResponse> products = productService.list();
