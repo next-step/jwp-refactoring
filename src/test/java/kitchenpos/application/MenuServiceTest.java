@@ -122,7 +122,11 @@ class MenuServiceTest {
     @DisplayName("생성 하려는 메뉴 가격이 전체 메뉴상품의 전체 금액(가격 * 수량의 총합)보다 클 수 없다.")
     void createTestFail05() {
         //given
+        given(menuGroupDao.existsById(메뉴그룹1.getId())).willReturn(true);
+        given(productDao.findById(메뉴상품1.getProductId())).willReturn(Optional.of(상품1));
+        given(productDao.findById(메뉴상품2.getProductId())).willReturn(Optional.of(상품2));
         Menu 잘못된_메뉴 = new Menu(1L, "잘못된 메뉴", BigDecimal.valueOf(100_000), 메뉴그룹1.getId());
+        잘못된_메뉴.setMenuProducts(Arrays.asList(메뉴상품1, 메뉴상품2));
         //when & then
         assertThatThrownBy(
                 () -> menuService.create(잘못된_메뉴)
