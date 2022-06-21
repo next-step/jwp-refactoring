@@ -48,7 +48,7 @@ class TableServiceTest {
         주문_테이블1 = OrderTableFixtureFactory.create(1L, false);
         빈주문_테이블 = OrderTableFixtureFactory.create(1L, true);
         주문_테이블2 = OrderTableFixtureFactory.create(2L, false);
-        손님_주문_테이블_5명 = OrderTableFixtureFactory.create(1L, 5,false);
+        손님_주문_테이블_5명 = OrderTableFixtureFactory.createByGuestNumber(1L, 5,false);
         단체 = TableGroupFixtureFactory.create(1L);
     }
 
