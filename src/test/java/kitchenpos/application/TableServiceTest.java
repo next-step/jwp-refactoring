@@ -29,10 +29,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
-
-    @Mock
-    private OrderRepository orderRepository;
-
     @Mock
     private OrderTableRepository orderTableRepository;
 
@@ -46,7 +42,8 @@ class TableServiceTest {
     private OrderTable 빈_테이블;
     private OrderTable 주문_테이블;
     private OrderTable 주문_테이블_10명;
-    private OrderTable 단체_1_주문_테이블;
+    private OrderTable 단체_1_주문_테이블_1;
+    private OrderTable 단체_1_주문_테이블_2;
 
     @BeforeEach
     void setUp() {
@@ -54,8 +51,9 @@ class TableServiceTest {
         주문_테이블 = OrderTableFixtureFactory.create(false);
         주문_테이블_10명 = OrderTableFixtureFactory.createWithGuest(false, 10);
 
-        단체_1_주문_테이블 = OrderTableFixtureFactory.create(true);
-        단체_1 = TableGroupFixtureFactory.create(1L, Lists.newArrayList(단체_1_주문_테이블));
+        단체_1_주문_테이블_1 = OrderTableFixtureFactory.create(true);
+        단체_1_주문_테이블_2 = OrderTableFixtureFactory.create(true);
+        단체_1 = TableGroupFixtureFactory.create(1L, Lists.newArrayList(단체_1_주문_테이블_1, 단체_1_주문_테이블_2));
     }
 
     @DisplayName("테이블을 등록할 수 있다.")
@@ -122,10 +120,10 @@ class TableServiceTest {
     void change03() {
         // given
         OrderTableRequest request = OrderTableRequest.of(0, true);
-        단체_1_주문_테이블.mappedByTableGroup(단체_1);
+        단체_1_주문_테이블_1.mappedByTableGroup(단체_1);
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableService.changeEmpty(단체_1_주문_테이블.getId(), request));
+        assertThatIllegalArgumentException().isThrownBy(() -> tableService.changeEmpty(단체_1_주문_테이블_1.getId(), request));
     }
 
     @DisplayName("테이블의 주문 상태가 COOKING 혹은 MEAL 상태이면 빈 테이블 상태로 변경할 수 없다.")
