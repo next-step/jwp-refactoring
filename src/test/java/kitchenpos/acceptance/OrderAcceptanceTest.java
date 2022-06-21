@@ -53,9 +53,9 @@ class OrderAcceptanceTest extends AcceptanceTest {
         
         인기메뉴 = MenuGroupAcceptanceTest.메뉴_그룹_등록_되어있음("인기 메뉴");
 
-        메뉴_뿌링클 = MenuAcceptanceTest.메뉴_등록_되어있음(뿌링클, 인기메뉴);
-        메뉴_투움바 = MenuAcceptanceTest.메뉴_등록_되어있음(투움바, 인기메뉴);
-        메뉴_로제떡볶이 = MenuAcceptanceTest.메뉴_등록_되어있음(로제떡볶이, 인기메뉴);
+        메뉴_뿌링클 = MenuAcceptanceTest.메뉴_등록_되어있음("뿌링클", 27000, Arrays.asList(뿌링클), 인기메뉴);
+        메뉴_투움바 = MenuAcceptanceTest.메뉴_등록_되어있음("투움바", 30000, Arrays.asList(투움바), 인기메뉴);
+        메뉴_로제떡볶이 = MenuAcceptanceTest.메뉴_등록_되어있음("로제떡볶이", 19000, Arrays.asList(로제떡볶이), 인기메뉴);
         메뉴_등록안됨 = new Menu(99999999L);
         주문테이블  = TableAcceptanceTest.주문_테이블_등록_되어있음(3);
     }

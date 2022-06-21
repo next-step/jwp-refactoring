@@ -9,7 +9,6 @@ import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +28,7 @@ import org.springframework.http.MediaType;
 class MenuAcceptanceTest extends AcceptanceTest {
 
     private static final String MENU_PATH = "/api/menus";
-    private static final int PRODUCT_QUANTITY_DEFAULT = 100;
+    private static final int PRODUCT_QUANTITY_DEFAULT = 1;
 
     private Product 뿌링클;
     private Product 투움바;
@@ -66,8 +65,8 @@ class MenuAcceptanceTest extends AcceptanceTest {
         return Stream.of(
                 dynamicTest("메뉴를 등록 한다.", () -> {
                     //given
-                    Map<String, Object> params1 = 요청할_메뉴_생성(뿌링클, 인기메뉴);
-                    Map<String, Object> params2 = 요청할_메뉴_생성(투움바, 인기메뉴);
+                    Map<String, Object> params1 = 요청할_메뉴_생성("뿌링클", 27000 ,Arrays.asList(뿌링클), 인기메뉴);
+                    Map<String, Object> params2 = 요청할_메뉴_생성("투움바", 30000 ,Arrays.asList(투움바), 인기메뉴);
 
                     //when
                     ExtractableResponse<Response> response1 = 메뉴_등록_요청(params1);
@@ -90,18 +89,18 @@ class MenuAcceptanceTest extends AcceptanceTest {
     }
 
 
-    public static Menu 메뉴_등록_되어있음(Product product, MenuGroup menuGroup) {
-        Map<String, Object> params = 요청할_메뉴_생성(product, menuGroup);
+    public static Menu 메뉴_등록_되어있음(String menuName, int menuPrice, List<Product> products, MenuGroup menuGroup) {
+        Map<String, Object> params = 요청할_메뉴_생성(menuName, menuPrice, products, menuGroup);
         return 메뉴_등록_요청(params).as(Menu.class);
     }
 
 
-    private static Map<String, Object> 요청할_메뉴_생성(Product product, MenuGroup menuGroup) {
+    private static Map<String, Object> 요청할_메뉴_생성(String name, int price, List<Product> products, MenuGroup menuGroup) {
         Map<String, Object> params = new HashMap<>();
-        params.put("price", product.getPrice());
+        params.put("price", price);
         params.put("menuGroupId", menuGroup.getId());
-        params.put("menuProducts", 요청할_메뉴_상품_리스트_생성(Collections.singletonList(product)));
-        params.put("name", product.getName());
+        params.put("menuProducts", 요청할_메뉴_상품_리스트_생성(products));
+        params.put("name", name);
         return params;
     }
 

@@ -40,7 +40,7 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
         //given
         뿌링클 = ProductAcceptanceTest.상품_등록_되어있음("뿌링클", 27000);
         인기메뉴 = MenuGroupAcceptanceTest.메뉴_그룹_등록_되어있음("인기 메뉴");
-        메뉴_뿌링클 = MenuAcceptanceTest.메뉴_등록_되어있음(뿌링클, 인기메뉴);
+        메뉴_뿌링클 = MenuAcceptanceTest.메뉴_등록_되어있음("뿌링클", 27000, Arrays.asList(뿌링클), 인기메뉴);
     }
 
     /**
