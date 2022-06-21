@@ -1,7 +1,6 @@
 package kitchenpos.menu.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import kitchenpos.helper.MenuProductFixtures;
 import org.junit.jupiter.api.DisplayName;
@@ -19,7 +18,7 @@ class MenuProductsTest {
         menuProducts.addMenuProduct(MenuProductFixtures.양념치킨_메뉴);
 
         //when
-        Amounts totalAmount = menuProducts.getTotalAmount();
+        Amounts totalAmount = menuProducts.getAmounts();
 
         //then
         assertThat(totalAmount.calculateTotalAmount()).isEqualTo(34_000);

@@ -39,8 +39,8 @@ public class MenuProduct {
         this.product = product;
     }
 
-    public Amount makeAmount() {
-        return null;
+    public Amount createAmount() {
+        return product.createAmount(quantity);
     }
 
     public Long getSeq() {

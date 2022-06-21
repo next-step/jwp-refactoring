@@ -15,7 +15,7 @@ class MenuProductTest {
         MenuProduct menuProduct = MenuProductFixtures.양념치킨_메뉴;
 
         //when
-        Amount amount = menuProduct.makeAmount();
+        Amount amount = menuProduct.createAmount();
 
         //then
         assertThat(amount.calculateAmount()).isEqualTo(18_000);

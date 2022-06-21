@@ -20,7 +20,11 @@ public class MenuProducts {
         return menuProducts;
     }
 
-    public Amounts getTotalAmount(){
-      return null;
+    public Amounts getAmounts(){
+        Amounts amounts = new Amounts();
+        for (MenuProduct menuProduct : menuProducts){
+            amounts.addAmount(menuProduct.createAmount());
+        }
+        return amounts;
     }
 }
