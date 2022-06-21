@@ -51,8 +51,8 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        주문_1_테이블 = OrderTableFixtureFactory.create(true);
-        주문_2_테이블 = OrderTableFixtureFactory.create(true);
+        주문_1_테이블 = OrderTableFixtureFactory.createWithGuest(true, 2);
+        주문_2_테이블 = OrderTableFixtureFactory.createWithGuest(true, 2);
         주문_테이블_10명 = OrderTableFixtureFactory.createWithGuest(false, 10);
         단체_1 = TableGroupFixtureFactory.create(1L, Lists.newArrayList(주문_1_테이블, 주문_2_테이블));
     }

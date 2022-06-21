@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Optional;
 import kitchenpos.application.fixture.OrderTableFixtureFactory;
 import kitchenpos.application.fixture.TableGroupFixtureFactory;
-import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.domain.tablegroup.TableGroup;
@@ -47,12 +46,12 @@ class TableServiceTest {
 
     @BeforeEach
     void setUp() {
-        빈_테이블 = OrderTableFixtureFactory.create(true);
-        주문_테이블 = OrderTableFixtureFactory.create(false);
+        빈_테이블 = OrderTableFixtureFactory.createWithGuest(true, 0);
+        주문_테이블 = OrderTableFixtureFactory.createWithGuest(false, 4);
         주문_테이블_10명 = OrderTableFixtureFactory.createWithGuest(false, 10);
 
-        단체_1_주문_테이블_1 = OrderTableFixtureFactory.create(true);
-        단체_1_주문_테이블_2 = OrderTableFixtureFactory.create(true);
+        단체_1_주문_테이블_1 = OrderTableFixtureFactory.createWithGuest(true, 2);
+        단체_1_주문_테이블_2 = OrderTableFixtureFactory.createWithGuest(true, 2);
         단체_1 = TableGroupFixtureFactory.create(1L, Lists.newArrayList(단체_1_주문_테이블_1, 단체_1_주문_테이블_2));
     }
 

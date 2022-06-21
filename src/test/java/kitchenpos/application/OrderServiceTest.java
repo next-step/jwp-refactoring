@@ -79,7 +79,7 @@ class OrderServiceTest {
         A_우아한_초밥_1.mappedByMenu(A);
         A_우아한_초밥_2.mappedByMenu(A);
 
-        A_주문_테이블 = OrderTableFixtureFactory.create(false);
+        A_주문_테이블 = OrderTableFixtureFactory.createWithGuest(false, 2);
 
         A_주문항목 = OrderLineItemFixtureFactory.create(A, 1);
         A_주문 = OrderFixtureFactory.create(1L, A_주문_테이블, OrderStatus.COOKING, Lists.newArrayList(A_주문항목));

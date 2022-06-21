@@ -34,25 +34,8 @@ public class OrderTable {
         this.numberOfGuests = NumberOfGuests.from(numberOfGuests);
     }
 
-    private OrderTable(boolean empty) {
-        this.empty = empty;
-        this.numberOfGuests = NumberOfGuests.createEmpty();
-    }
-
-    private OrderTable(Long orderTableId) {
-        this.id = orderTableId;
-    }
-
-    public static OrderTable of(boolean empty) {
-        return new OrderTable(empty);
-    }
-
     public static OrderTable of(boolean empty, int numberOfGuests) {
         return new OrderTable(empty, numberOfGuests);
-    }
-
-    public static OrderTable from(Long orderTableId) {
-        return new OrderTable(orderTableId);
     }
 
     public Long getId() {
