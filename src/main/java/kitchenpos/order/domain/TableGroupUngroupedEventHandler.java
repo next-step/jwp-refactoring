@@ -8,11 +8,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @DomainService
-public class UncompletedOrderWithTableGroupUngroupedEventHandler {
+public class TableGroupUngroupedEventHandler {
 
     private final OrderRepository orderRepository;
 
-    public UncompletedOrderWithTableGroupUngroupedEventHandler(OrderRepository orderRepository) {
+    public TableGroupUngroupedEventHandler(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
     }
 

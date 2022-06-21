@@ -10,13 +10,13 @@ import org.springframework.context.event.EventListener;
 import org.springframework.transaction.annotation.Transactional;
 
 @DomainService
-public class UncompletedOrderWithTableEmptyChangedEventHandler {
+public class TableEmptyChangedEventHandler {
 
     private final OrderTableRepository orderTableRepository;
     private final OrderRepository orderRepository;
 
-    public UncompletedOrderWithTableEmptyChangedEventHandler(OrderTableRepository orderTableRepository,
-                                                             OrderRepository orderRepository) {
+    public TableEmptyChangedEventHandler(OrderTableRepository orderTableRepository,
+                                         OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
     }
