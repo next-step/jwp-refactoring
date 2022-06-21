@@ -10,6 +10,8 @@ import javax.persistence.ManyToOne;
 
 @Entity
 public class Menu {
+    private static final int FREE = 0;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,8 +27,15 @@ public class Menu {
     }
 
     public Menu(Long id, String name, Integer price) {
+        validatePrice(price);
         this.id = id;
         this.name = name;
         this.price = price;
+    }
+
+    private void validatePrice(Integer price) {
+        if(price == null || price < FREE){
+            throw new IllegalArgumentException("[ERROR] 메뉴 가격은 0원 이상 이어야 합니다.");
+        }
     }
 }
