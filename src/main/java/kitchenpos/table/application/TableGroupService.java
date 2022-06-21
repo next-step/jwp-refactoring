@@ -134,4 +134,34 @@ public class TableGroupService {
             orderTableDao.save(orderTable);
         }
     }
+
+    @Transactional
+    public void ungroupCopy(final Long tableGroupId) {
+        final List<OrderTable> orderTables = orderTableDao.findAllByTableGroupId(tableGroupId);
+
+        final List<Long> orderTableIds = orderTables.stream()
+            .map(OrderTable::getId)
+            .collect(Collectors.toList());
+
+        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
+            orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+            throw new IllegalArgumentException();
+        }
+
+        for (final OrderTable orderTable : orderTables) {
+            orderTable.setTableGroupId(null);
+            orderTableDao.save(orderTable);
+        }
+    }
+
+    private void validateOrderTablesStatus(List<OrderTableEntity> orderTables) {
+        final List<Long> orderTableIds = orderTables.stream()
+            .map(OrderTableEntity::getId)
+            .collect(Collectors.toList());
+
+        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
+            orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+            throw new IllegalArgumentException();
+        }
+    }
 }

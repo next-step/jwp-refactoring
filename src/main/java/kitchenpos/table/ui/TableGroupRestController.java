@@ -39,4 +39,10 @@ public class TableGroupRestController {
         tableGroupService.ungroup(tableGroupId);
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/{tableGroupId}")
+    public ResponseEntity<Void> ungroupCopy(@PathVariable final Long tableGroupId) {
+        tableGroupService.ungroupCopy(tableGroupId);
+        return ResponseEntity.noContent().build();
+    }
 }
