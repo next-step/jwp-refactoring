@@ -33,6 +33,16 @@ public class MenuProduct {
         this.product = product;
     }
 
+    public MenuProduct(Integer quantity, Menu menu, Product product) {
+        this.quantity = quantity;
+        this.menu = menu;
+        this.product = product;
+    }
+
+    public Amount makeAmount() {
+        return null;
+    }
+
     public Long getSeq() {
         return seq;
     }

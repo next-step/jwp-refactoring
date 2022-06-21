@@ -25,7 +25,7 @@ public class Menu {
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
     @Embedded
-    private MenuProducts menuProducts;
+    private MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {
     }
@@ -40,6 +40,10 @@ public class Menu {
     public void addMenuProduct(MenuProduct menuProduct) {
         menuProducts.addMenuProduct(menuProduct);
         menuProduct.setMenu(this);
+    }
+
+    public void checkAmount() {
+
     }
 
     public void validateAmount(Amounts amounts) {

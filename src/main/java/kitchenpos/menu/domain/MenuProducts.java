@@ -19,4 +19,8 @@ public class MenuProducts {
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
     }
+
+    public Amounts getTotalAmount(){
+      return null;
+    }
 }
