@@ -92,7 +92,7 @@ public class ControllerTest {
 ```
 
 ## 📚 Todo List 📚
-- [ ] 키친포스의 요구사항 작성하기
+- [x] 키친포스의 요구사항 작성하기
 - [ ] 테스트 코드 작성하기
   - [ ] MenuGroup에 관한 테스트 코드 작성하기
   - [ ] Menu에 관한 테스트 코드 작성하기
