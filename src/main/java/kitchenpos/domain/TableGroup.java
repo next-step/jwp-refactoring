@@ -1,12 +1,24 @@
 package kitchenpos.domain;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Entity
 public class TableGroup {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDateTime createdDate;
-    private List<OrderTable> orderTables;
+    @Embedded
+    private OrderTables orderTables = new OrderTables();
+
+    public TableGroup() {
+    }
+
+    public TableGroup(Long id) {
+        this.id = id;
+    }
 
     public Long getId() {
         return id;
@@ -25,10 +37,9 @@ public class TableGroup {
     }
 
     public List<OrderTable> getOrderTables() {
-        return orderTables;
+        return orderTables.getAll();
     }
 
     public void setOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
     }
 }
