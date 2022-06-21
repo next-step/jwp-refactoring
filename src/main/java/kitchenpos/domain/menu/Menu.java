@@ -72,10 +72,12 @@ public class Menu {
 
     public void appendMenuProduct(MenuProduct menuProduct) {
         this.menuProducts.add(menuProduct);
+        menuProduct.mappedByMenu(this);
     }
 
     public void appendAllMenuProducts(List<MenuProduct> menuProducts) {
         validateMenuPrice(menuProducts);
+        this.menuProducts.addAll(menuProducts);
         menuProducts.forEach(menuProduct -> menuProduct.mappedByMenu(this));
     }
 

@@ -38,10 +38,13 @@ public class MenuProducts {
         this.values.add(menuProduct);
     }
 
+    public void addAll(List<MenuProduct> menuProducts) {
+        this.values.addAll(menuProducts);
+    }
+
     private static void validateMenuProducts(List<MenuProduct> menuProducts) {
         if (menuProducts == null) {
             throw new IllegalArgumentException(DONT_EMPTY_IS_MENU_PRODUCTS);
         }
     }
-
 }
