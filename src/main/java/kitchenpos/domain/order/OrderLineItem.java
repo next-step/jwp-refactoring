@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import kitchenpos.domain.Quantity;
 import kitchenpos.domain.menu.Menu;
+import kitchenpos.exception.CreateOrderLineItemException;
 
 @Entity
 @Table(name = "order_line_item")
@@ -38,7 +39,14 @@ public class OrderLineItem {
     }
 
     public static OrderLineItem of(Menu menu, Long quantity) {
+        validateOrderLineItem(menu);
         return new OrderLineItem(menu, quantity);
+    }
+
+    private static void validateOrderLineItem(Menu menu) {
+        if (menu == null) {
+            throw new CreateOrderLineItemException();
+        }
     }
 
     public Long getSeq() {
