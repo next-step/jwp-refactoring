@@ -8,7 +8,7 @@ public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
     private TableGroup tableGroup;
     private int numberOfGuests;
     private boolean empty;
@@ -21,22 +21,10 @@ public class OrderTable {
     }
 
     public OrderTable() {
-
     }
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public Long getTableGroupId() {
-        return this.tableGroup.getId();
-    }
-
-    public void setTableGroupId(final Long tableGroupId) {
     }
 
     public void unGroup() {
@@ -63,6 +51,10 @@ public class OrderTable {
         return this.tableGroup;
     }
 
+    public void setTableGroup(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -78,9 +70,5 @@ public class OrderTable {
     @Override
     public int hashCode() {
         return Objects.hash(getId());
-    }
-
-    public void setTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
     }
 }

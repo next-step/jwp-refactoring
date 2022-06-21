@@ -22,8 +22,7 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
-    public MenuProduct() {
-
+    protected MenuProduct() {
     }
 
     public Long getSeq() {
@@ -32,20 +31,5 @@ public class MenuProduct {
 
     public long getQuantity() {
         return quantity;
-    }
-
-    public void setSeq(long aLong) {
-    }
-
-    public void setMenuId(long menu_id) {
-
-    }
-
-    public void setProductId(long product_id) {
-
-    }
-
-    public void setQuantity(long quantity) {
-
     }
 }

@@ -87,6 +87,8 @@ class MenuServiceTest {
     void create_failed_3() {
         //given
         given(menuGroupDao.findById(any())).willReturn(Optional.of(group));
+        given(productDao.findById(product1.getId())).willReturn(Optional.of(product1));
+        given(productDao.findById(product2.getId())).willReturn(Optional.of(product2));
 
         //then
         assertThatThrownBy(() -> menuService.create(new MenuRequest("name", BigDecimal.valueOf(10000), 0L,

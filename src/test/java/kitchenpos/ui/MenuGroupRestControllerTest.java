@@ -42,7 +42,8 @@ class MenuGroupRestControllerTest {
     @Test
     void test_get() throws Exception {
         //given
-        given(menuGroupService.list()).willReturn(Collections.singletonList(new MenuGroupResponse(new MenuGroup())));
+        given(menuGroupService.list()).willReturn(Collections.singletonList(new MenuGroupResponse(new MenuGroup(
+                "menuGroup"))));
 
         //then
         mockMvc.perform(get("/api/menu-groups"))

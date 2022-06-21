@@ -50,7 +50,7 @@ class OrdersServiceTest {
         menu = new Menu(1L, "menu1", BigDecimal.valueOf(1000), menuGroup);
         menu.addMenuProduct(product1, 1);
         menu.addMenuProduct(product2, 2);
-        orders = new Orders(1L, 비어있지_않은_주문_테이블, OrderStatus.COOKING, LocalDateTime.now());
+        orders = new Orders(비어있지_않은_주문_테이블, OrderStatus.COOKING, LocalDateTime.now());
     }
 
     @Test

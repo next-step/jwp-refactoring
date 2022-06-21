@@ -52,10 +52,10 @@ class TableGroupRestControllerTest {
     @Test
     void test_post() throws Exception {
         //given
-        given(tableGroupService.create(any())).willReturn(new TableGroupResponse(new TableGroup()));
+        given(tableGroupService.create(any())).willReturn(new TableGroupResponse(new TableGroup(1L)));
 
         //then
-        mockMvc.perform(post("/api/table-groups").content(objectMapper.writeValueAsString(new MenuGroup()))
+        mockMvc.perform(post("/api/table-groups").content(objectMapper.writeValueAsString(new MenuGroup("menuGroup")))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isCreated());

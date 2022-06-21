@@ -7,10 +7,10 @@ public class OrderLineItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
-    @ManyToOne(cascade = {CascadeType.PERSIST})
+    @ManyToOne(cascade = { CascadeType.PERSIST })
     @JoinColumn(nullable = false)
     private Orders order;
-    @ManyToOne(cascade = {CascadeType.PERSIST})
+    @ManyToOne(cascade = { CascadeType.PERSIST })
     @JoinColumn(nullable = false)
     private Menu menu;
     private long quantity;
@@ -21,28 +21,7 @@ public class OrderLineItem {
         this.quantity = quantity;
     }
 
-    public OrderLineItem(Long seq, Orders order, Menu menu, long quantity) {
-        this.seq = seq;
-        this.order = order;
-        this.menu = menu;
-        this.quantity = quantity;
-    }
-
-    public OrderLineItem() {
-    }
-
-    public void setSeq(final Long seq) {
-        this.seq = seq;
-    }
-
-    public void setOrderId(final Long orderId) {
-    }
-
-    public void setMenuId(final Long menuId) {
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
+    protected OrderLineItem() {
     }
 
     public Long getSeq() {

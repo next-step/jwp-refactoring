@@ -32,30 +32,18 @@ public class Menu {
         this.menuGroup = menuGroup;
     }
 
-    public Menu() {}
+    protected Menu() {}
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(final String name) {
-        this.name = name;
-    }
-
     public BigDecimal getPrice() {
         return price;
-    }
-
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
     }
 
     public MenuGroup getMenuGroup() {
@@ -68,9 +56,5 @@ public class Menu {
 
     public void addMenuProduct(Product product, long quantity) {
         this.menuProducts.add(new MenuProduct(this, product, quantity));
-    }
-
-    public void setMenuGroupId(long menu_group_id) {
-        this.menuGroup.setId(menu_group_id);
     }
 }
