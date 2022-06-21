@@ -1,8 +1,10 @@
 package kitchenpos.domain;
 
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static kitchenpos.exception.NegativeQuantityException.INVALID_QUANTITY;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
+import kitchenpos.exception.NegativeQuantityException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -20,7 +22,8 @@ class QuantityTest {
     @ParameterizedTest
     @ValueSource(longs = {-1000, -10, -1})
     void create02(long quantity) {
-        assertThatIllegalArgumentException().isThrownBy(() -> Quantity.from(quantity))
-                .withMessageContaining(String.format(Quantity.INVALID_QUANTITY, quantity));
+        assertThatExceptionOfType(NegativeQuantityException.class)
+                .isThrownBy(() -> Quantity.from(quantity))
+                .withMessageContaining(String.format(INVALID_QUANTITY, quantity));
     }
 }

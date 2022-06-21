@@ -4,10 +4,10 @@ import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import kitchenpos.exception.NegativePriceException;
 
 @Embeddable
 public class Price {
-    public static final String INVALID_PRICE = "Price는 0원 보다 작은 값일 수 없습니다. (input = %s)";
     private static final BigDecimal MIN_PRICE = BigDecimal.ZERO;
 
     @Column(name = "price", nullable = false)
@@ -34,7 +34,7 @@ public class Price {
 
     private static void validatePrice(BigDecimal price) {
         if (price == null || price.compareTo(MIN_PRICE) <= 0) {
-            throw new IllegalArgumentException(String.format(INVALID_PRICE, price));
+            throw new NegativePriceException(price);
         }
     }
 

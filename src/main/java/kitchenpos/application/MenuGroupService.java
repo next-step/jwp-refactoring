@@ -5,6 +5,7 @@ import kitchenpos.domain.menugroup.MenuGroup;
 import kitchenpos.domain.menugroup.MenuGroupRepository;
 import kitchenpos.dto.menugroup.MenuGroupRequest;
 import kitchenpos.dto.menugroup.MenuGroupResponse;
+import kitchenpos.exception.NotFoundMenuGroupException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,5 +25,10 @@ public class MenuGroupService {
 
     public List<MenuGroupResponse> list() {
         return MenuGroupResponse.fromList(menuGroupRepository.findAll());
+    }
+
+    public MenuGroup findMenuGroup(Long menuGroupId) {
+        return menuGroupRepository.findById(menuGroupId)
+                .orElseThrow(() -> new NotFoundMenuGroupException(menuGroupId));
     }
 }

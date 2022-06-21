@@ -1,8 +1,10 @@
 package kitchenpos.domain;
 
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static kitchenpos.exception.EmptyNameException.CANT_EMPTY_IS_NAME;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
+import kitchenpos.exception.EmptyNameException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
@@ -21,7 +23,8 @@ class NameTest {
     @ParameterizedTest
     @NullAndEmptySource
     void create02(String name) {
-        assertThatIllegalArgumentException().isThrownBy(() -> Name.from(name))
-                .withMessageContaining(String.format(Name.CANT_EMPTY_IS_NAME, name));
+        assertThatExceptionOfType(EmptyNameException.class)
+                .isThrownBy(() -> Name.from(name))
+                .withMessageContaining(String.format(CANT_EMPTY_IS_NAME, name));
     }
 }

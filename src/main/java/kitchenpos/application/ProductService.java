@@ -5,6 +5,7 @@ import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.ProductRepository;
 import kitchenpos.dto.product.ProductRequest;
 import kitchenpos.dto.product.ProductResponse;
+import kitchenpos.exception.NotFoundProductException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,5 +26,10 @@ public class ProductService {
 
     public List<ProductResponse> list() {
         return ProductResponse.fromList(productRepository.findAll());
+    }
+
+    public Product findProduct(Long productId) {
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new NotFoundProductException(productId));
     }
 }

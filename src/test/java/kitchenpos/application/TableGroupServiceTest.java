@@ -1,8 +1,10 @@
 package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
@@ -16,6 +18,8 @@ import kitchenpos.domain.tablegroup.TableGroup;
 import kitchenpos.domain.tablegroup.TableGroupRepository;
 import kitchenpos.dto.tablegroup.TableGroupRequest;
 import kitchenpos.dto.tablegroup.TableGroupResponse;
+import kitchenpos.exception.CreateTableGroupException;
+import kitchenpos.exception.DontUnGroupException;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -77,7 +81,8 @@ class TableGroupServiceTest {
         TableGroupRequest request = TableGroupRequest.from(Collections.emptyList());
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(request));
+        assertThatExceptionOfType(CreateTableGroupException.class)
+                .isThrownBy(() -> tableGroupService.create(request));
     }
 
     @DisplayName("주문 테이블이 1개이면 테이블을 단체로 지정할 수 없다.")
@@ -87,7 +92,8 @@ class TableGroupServiceTest {
         TableGroupRequest request = TableGroupRequest.from(Lists.newArrayList(주문_1_테이블.getId()));
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(request));
+        assertThatExceptionOfType(CreateTableGroupException.class)
+                .isThrownBy(() -> tableGroupService.create(request));
     }
 
     @DisplayName("단체에 속하는 주문 테이블이 존재하지 않으면 단체로 지정할 수 없다.")
@@ -100,7 +106,8 @@ class TableGroupServiceTest {
                 .willReturn(Collections.emptyList());
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(request));
+        assertThatExceptionOfType(CreateTableGroupException.class)
+                .isThrownBy(() -> tableGroupService.create(request));
     }
 
     @DisplayName("단체에 속하는 주문 테이블이 빈 테이블이 아니면 단체로 지정할 수 없다.")
@@ -110,7 +117,8 @@ class TableGroupServiceTest {
         TableGroupRequest request = TableGroupRequest.from(Lists.newArrayList(주문_테이블_10명.getId()));
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(request));
+        assertThatExceptionOfType(CreateTableGroupException.class)
+                .isThrownBy(() -> tableGroupService.create(request));
     }
 
     @DisplayName("단체에 속하는 주문 테이블이 이미 테이블 그룹에 속해있으면 단체로 지정할 수 없다.")
@@ -122,7 +130,8 @@ class TableGroupServiceTest {
         주문_1_테이블.mappedByTableGroup(단체_1);
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(request));
+        assertThatExceptionOfType(CreateTableGroupException.class)
+                .isThrownBy(() -> tableGroupService.create(request));
     }
 
     @DisplayName("단체를 해제할 수 있다.")
@@ -155,8 +164,8 @@ class TableGroupServiceTest {
         given(tableGroupRepository.findById(단체_1.getId())).willReturn(Optional.ofNullable(단체_1));
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(
-                () -> tableGroupService.ungroup(단체_1.getId())
+        assertThatExceptionOfType(DontUnGroupException.class)
+                .isThrownBy(() -> tableGroupService.ungroup(단체_1.getId())
         );
     }
 }

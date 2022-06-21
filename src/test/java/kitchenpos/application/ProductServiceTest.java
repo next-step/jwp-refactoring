@@ -2,7 +2,7 @@ package kitchenpos.application;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -13,6 +13,7 @@ import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.ProductRepository;
 import kitchenpos.dto.product.ProductRequest;
 import kitchenpos.dto.product.ProductResponse;
+import kitchenpos.exception.NegativePriceException;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -66,7 +67,8 @@ class ProductServiceTest {
         ProductRequest productRequest = ProductRequest.of("우아한_초밥_1", price);
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> productService.create(productRequest));
+        assertThatExceptionOfType(NegativePriceException.class)
+                .isThrownBy(() -> productService.create(productRequest));
     }
 
     @DisplayName("상품의 가격은 0원 이상이어야 한다. (0미만)")
@@ -77,7 +79,8 @@ class ProductServiceTest {
         ProductRequest productRequest = ProductRequest.of("우아한_초밥_1", BigDecimal.valueOf(price));
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> productService.create(productRequest));
+        assertThatExceptionOfType(NegativePriceException.class)
+                .isThrownBy(() -> productService.create(productRequest));
     }
 
     @DisplayName("상품 목록을 조회할 수 있다.")

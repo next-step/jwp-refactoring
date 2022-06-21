@@ -3,11 +3,10 @@ package kitchenpos.domain;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import kitchenpos.exception.NegativeQuantityException;
 
 @Embeddable
 public class Quantity {
-
-    public static final String INVALID_QUANTITY = "수량(Quantity)는 0보다 작을 수 없습니다.";
     private static final long MIN_QUANTITY = 0;
 
     @Column(name = "quantity", nullable = false)
@@ -30,7 +29,7 @@ public class Quantity {
 
     private static void validateQuantity(long quantity) {
         if (quantity < MIN_QUANTITY) {
-            throw new IllegalArgumentException(String.format(INVALID_QUANTITY, quantity));
+            throw new NegativeQuantityException(quantity);
         }
     }
 

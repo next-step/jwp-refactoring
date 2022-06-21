@@ -1,6 +1,7 @@
 package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
@@ -29,6 +30,8 @@ import kitchenpos.domain.table.OrderTable;
 import kitchenpos.dto.order.OrderLineItemRequest;
 import kitchenpos.dto.order.OrderRequest;
 import kitchenpos.dto.order.OrderResponse;
+import kitchenpos.exception.NotEqualsMenuAndOrderLineItemMenuException;
+import kitchenpos.exception.NotExistOrderLineItemsException;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -113,7 +116,8 @@ class OrderServiceTest {
         given(orderTableService.findOrderTable(A_주문_테이블.getId())).willReturn(A_주문_테이블);
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(orderRequest));
+        assertThatExceptionOfType(NotExistOrderLineItemsException.class)
+                .isThrownBy(() -> orderService.create(orderRequest));
     }
 
     @DisplayName("주문항목에 메뉴가 존재하지 않으면 주문을 등록할 수 없다.")
@@ -127,7 +131,8 @@ class OrderServiceTest {
         given(orderTableService.findOrderTable(A_주문_테이블.getId())).willReturn(A_주문_테이블);
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(orderRequest));
+        assertThatExceptionOfType(NotEqualsMenuAndOrderLineItemMenuException.class)
+                .isThrownBy(() -> orderService.create(orderRequest));
     }
 
     @DisplayName("주문 테이블이 없이는 주문을 등록할 수 없다.")

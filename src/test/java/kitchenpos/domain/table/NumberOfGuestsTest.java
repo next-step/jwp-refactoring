@@ -1,8 +1,9 @@
 package kitchenpos.domain.table;
 
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
+import kitchenpos.exception.NegativeNumberOfGuestsException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -22,7 +23,8 @@ class NumberOfGuestsTest {
     @ValueSource(ints = {-100, -1})
     void create02(int numberOfGuests) {
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> NumberOfGuests.from(numberOfGuests))
+        assertThatExceptionOfType(NegativeNumberOfGuestsException.class)
+                .isThrownBy(() -> NumberOfGuests.from(numberOfGuests))
                 .withMessageContaining(String.format(NumberOfGuests.INVALID_NUMBER_OF_GUESTS, numberOfGuests));
     }
 }

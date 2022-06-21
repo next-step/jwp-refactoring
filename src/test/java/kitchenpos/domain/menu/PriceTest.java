@@ -1,10 +1,12 @@
 package kitchenpos.domain.menu;
 
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static kitchenpos.exception.NegativePriceException.INVALID_PRICE;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
 import java.math.BigDecimal;
 import kitchenpos.domain.Price;
+import kitchenpos.exception.NegativePriceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -22,8 +24,9 @@ class PriceTest {
     @ParameterizedTest
     @ValueSource(longs = {-10000L, -1L, 0})
     void create02(long price) {
-        assertThatIllegalArgumentException().isThrownBy(() -> Price.from(BigDecimal.valueOf(price)))
-                .withMessageContaining(String.format(Price.INVALID_PRICE, price));
+        assertThatExceptionOfType(NegativePriceException.class)
+                .isThrownBy(() -> Price.from(BigDecimal.valueOf(price)))
+                .withMessageContaining(String.format(INVALID_PRICE, price));
     }
 
 }

@@ -3,13 +3,11 @@ package kitchenpos.domain;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import kitchenpos.exception.EmptyNameException;
 import kitchenpos.utils.StringUtil;
 
 @Embeddable
 public class Name {
-
-    public static final String CANT_EMPTY_IS_NAME = "이름은 빈값일 수 없습니다 (input = %s)";
-
     @Column(name = "name", nullable = false)
     private String value;
 
@@ -30,7 +28,7 @@ public class Name {
 
     private static void validateName(String name) {
         if (StringUtil.isEmpty(name)) {
-            throw new IllegalArgumentException(String.format(CANT_EMPTY_IS_NAME, name));
+            throw new EmptyNameException(name);
         }
     }
 

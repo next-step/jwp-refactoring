@@ -1,28 +1,27 @@
 package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 import kitchenpos.application.fixture.MenuFixtureFactory;
 import kitchenpos.application.fixture.MenuGroupFixtureFactory;
 import kitchenpos.application.fixture.MenuProductFixtureFactory;
 import kitchenpos.application.fixture.ProductFixtureFactory;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuProduct;
-import kitchenpos.domain.menu.MenuProductRepository;
 import kitchenpos.domain.menu.MenuRepository;
 import kitchenpos.domain.menugroup.MenuGroup;
-import kitchenpos.domain.menugroup.MenuGroupRepository;
 import kitchenpos.domain.product.Product;
-import kitchenpos.domain.product.ProductRepository;
 import kitchenpos.dto.menu.MenuProductRequest;
 import kitchenpos.dto.menu.MenuRequest;
 import kitchenpos.dto.menu.MenuResponse;
+import kitchenpos.exception.NegativePriceException;
+import kitchenpos.exception.NotFoundProductException;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -42,13 +41,10 @@ class MenuServiceTest {
     private MenuRepository menuRepository;
 
     @Mock
-    private MenuGroupRepository menuGroupRepository;
+    private MenuGroupService menuGroupService;
 
     @Mock
-    private MenuProductRepository menuProductRepository;
-
-    @Mock
-    private ProductRepository productRepository;
+    private ProductService productService;
 
     @InjectMocks
     private MenuService menuService;
@@ -86,9 +82,9 @@ class MenuServiceTest {
                         MenuProductRequest.of(A_우아한_초밥_2.getProductId(), A_우아한_초밥_2.findQuantity()))
         );
 
-        given(menuGroupRepository.findById(초밥_메뉴그룹.getId())).willReturn(Optional.ofNullable(초밥_메뉴그룹));
-        given(productRepository.findById(A_우아한_초밥_1.getProductId())).willReturn(Optional.ofNullable(우아한_초밥_1));
-        given(productRepository.findById(A_우아한_초밥_2.getProductId())).willReturn(Optional.ofNullable(우아한_초밥_2));
+        given(menuGroupService.findMenuGroup(초밥_메뉴그룹.getId())).willReturn(초밥_메뉴그룹);
+        given(productService.findProduct(A_우아한_초밥_1.getProductId())).willReturn(우아한_초밥_1);
+        given(productService.findProduct(A_우아한_초밥_2.getProductId())).willReturn(우아한_초밥_2);
         given(menuRepository.save(any(Menu.class))).willReturn(A);
 
         // when
@@ -112,7 +108,7 @@ class MenuServiceTest {
         );
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest));
+        assertThatExceptionOfType(NegativePriceException.class).isThrownBy(() -> menuService.create(menuRequest));
     }
 
     @DisplayName("메뉴 가격은 0원 이상이어야 한다. (0원 이하)")
@@ -129,7 +125,7 @@ class MenuServiceTest {
         );
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest));
+        assertThatExceptionOfType(NegativePriceException.class).isThrownBy(() -> menuService.create(menuRequest));
     }
 
     @DisplayName("메뉴는 반드시 메뉴 그룹에 포함되어야 한다.")
@@ -140,12 +136,11 @@ class MenuServiceTest {
                 BigDecimal.valueOf(30_000),
                 초밥_메뉴그룹.getId(),
                 Lists.newArrayList(
-                        MenuProductRequest.of(A_우아한_초밥_1.getProductId(), A_우아한_초밥_1.findQuantity()),
-                        MenuProductRequest.of(A_우아한_초밥_2.getProductId(), A_우아한_초밥_2.findQuantity()))
+                        MenuProductRequest.of(A_우아한_초밥_1.getProductId(), A_우아한_초밥_1.findQuantity()))
         );
 
-        given(productRepository.findById(A_우아한_초밥_1.getProductId())).willReturn(Optional.ofNullable(우아한_초밥_1));
-        given(menuGroupRepository.findById(초밥_메뉴그룹.getId())).willReturn(Optional.ofNullable(초밥_메뉴그룹));
+        given(productService.findProduct(A_우아한_초밥_1.getProductId())).willReturn(우아한_초밥_1);
+        given(menuGroupService.findMenuGroup(초밥_메뉴그룹.getId())).willReturn(초밥_메뉴그룹);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest));
@@ -159,15 +154,15 @@ class MenuServiceTest {
                 BigDecimal.valueOf(30_000),
                 초밥_메뉴그룹.getId(),
                 Lists.newArrayList(
-                        MenuProductRequest.of(A_우아한_초밥_1.getProductId(), A_우아한_초밥_1.findQuantity()),
-                        MenuProductRequest.of(A_우아한_초밥_2.getProductId(), A_우아한_초밥_2.findQuantity()))
+                        MenuProductRequest.of(A_우아한_초밥_1.getProductId(), A_우아한_초밥_1.findQuantity()))
         );
 
-        given(menuGroupRepository.findById(초밥_메뉴그룹.getId())).willReturn(Optional.ofNullable(초밥_메뉴그룹));
-        given(productRepository.findById(A_우아한_초밥_1.getProductId())).willThrow(IllegalArgumentException.class);
+        given(menuGroupService.findMenuGroup(초밥_메뉴그룹.getId())).willReturn(초밥_메뉴그룹);
+        given(productService.findProduct(A_우아한_초밥_1.getProductId())).willThrow(NotFoundProductException.class);
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest));
+        assertThatExceptionOfType(NotFoundProductException.class)
+                .isThrownBy(() -> menuService.create(menuRequest));
     }
 
     @DisplayName("메뉴 가격은 메뉴를 구성하는 상품 가격 * 수량의 합보다 클 수 없다")
@@ -178,9 +173,11 @@ class MenuServiceTest {
                 BigDecimal.valueOf(10_000_000),
                 초밥_메뉴그룹.getId(),
                 Lists.newArrayList(
-                        MenuProductRequest.of(A_우아한_초밥_1.getProductId(), A_우아한_초밥_1.findQuantity()),
-                        MenuProductRequest.of(A_우아한_초밥_2.getProductId(), A_우아한_초밥_2.findQuantity()))
+                        MenuProductRequest.of(A_우아한_초밥_1.getProductId(), A_우아한_초밥_1.findQuantity()))
         );
+
+        given(productService.findProduct(A_우아한_초밥_1.getProductId())).willReturn(우아한_초밥_1);
+        given(menuGroupService.findMenuGroup(초밥_메뉴그룹.getId())).willReturn(초밥_메뉴그룹);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest));

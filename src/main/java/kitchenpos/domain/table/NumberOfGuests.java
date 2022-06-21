@@ -3,6 +3,7 @@ package kitchenpos.domain.table;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import kitchenpos.exception.NegativeNumberOfGuestsException;
 
 @Embeddable
 public class NumberOfGuests {
@@ -34,7 +35,7 @@ public class NumberOfGuests {
 
     private static void validateNumberOfGuests(int numberOfGuests) {
         if (numberOfGuests < MIN_NUMBER_OF_GUESTS) {
-            throw new IllegalArgumentException(String.format(INVALID_NUMBER_OF_GUESTS, numberOfGuests));
+            throw new NegativeNumberOfGuestsException(numberOfGuests);
         }
     }
 

@@ -12,6 +12,10 @@ import kitchenpos.domain.table.OrderTable;
 import kitchenpos.dto.order.OrderLineItemRequest;
 import kitchenpos.dto.order.OrderRequest;
 import kitchenpos.dto.order.OrderResponse;
+import kitchenpos.exception.NotEqualsMenuAndOrderLineItemMenuException;
+import kitchenpos.exception.NotExistOrderLineItemsException;
+import kitchenpos.exception.NotFoundOrderException;
+import kitchenpos.exception.OrderTableAlreadyEmptyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -76,24 +80,24 @@ public class OrderService {
         long menuCount = menuService.countByIdIn(menuIds);
 
         if (menuCount != menuIds.size()) {
-            throw new IllegalArgumentException();
+            throw new NotEqualsMenuAndOrderLineItemMenuException(menuCount, menuIds.size());
         }
     }
 
     private void validateOrderLineItems(List<OrderLineItemRequest> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
+            throw new NotExistOrderLineItemsException();
         }
     }
 
     private void validateEmptyOrderTable(OrderTable orderTable) {
         if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new OrderTableAlreadyEmptyException(orderTable.getId());
         }
     }
 
     private Order findOrder(Long orderId) {
-        return orderRepository.findById(orderId).orElseThrow(IllegalArgumentException::new);
+        return orderRepository.findById(orderId).orElseThrow(() -> new NotFoundOrderException(orderId));
     }
 
     public boolean isExistDontUnGroupState(List<OrderTable> orderTables) {
