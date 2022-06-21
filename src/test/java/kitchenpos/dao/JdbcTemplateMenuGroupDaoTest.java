@@ -21,10 +21,10 @@ class JdbcTemplateMenuGroupDaoTest {
     @Test
     void save() {
         // given
-        MenuGroup request = new MenuGroup("두마리통닭메뉴");
+        MenuGroup menuGroup = new MenuGroup("두마리통닭메뉴");
 
         // when
-        MenuGroup saved = menuGroupDao.save(request);
+        MenuGroup saved = menuGroupDao.save(menuGroup);
 
         // then
         assertThat(saved.getId()).isNotNull();
