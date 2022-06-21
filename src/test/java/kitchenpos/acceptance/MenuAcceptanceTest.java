@@ -12,7 +12,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
@@ -55,6 +54,12 @@ class MenuAcceptanceTest extends AcceptanceTest {
      *     Given  요청할 메뉴를 생성하고
      *     When   메뉴 등록 요청하면
      *     Then   메뉴가 등록된다.
+     *     Given  메뉴 상품이 N개인 메뉴를 생성하고
+     *     When   메뉴 등록 요청하면
+     *     Then   메뉴가 등록된다.
+     *     Given  메뉴 가격이 금액(가격 * 수량)보다 큰 메뉴를 생성하고
+     *     When   메뉴 등록 요청하면
+     *     Then   메뉴 등록 실패된다.
      *
      *     When   메뉴 목록을 조회하면
      *     Then   메뉴 목록이 조회된다.
@@ -75,6 +80,25 @@ class MenuAcceptanceTest extends AcceptanceTest {
                     //then
                     메뉴_등록됨(response1);
                     메뉴_등록됨(response2);
+
+                    //given
+                    Map<String, Object> params3 = 요청할_메뉴_생성("인기치킨 두마리 세트", 50000, Arrays.asList(뿌링클, 투움바), 인기메뉴);
+
+                    //when
+                    ExtractableResponse<Response> response3 = 메뉴_등록_요청(params3);
+
+                    //then
+                    메뉴_등록됨(response3);
+
+                    //given
+                    Map<String, Object> params4 = 요청할_메뉴_생성("합친게 더 비싼 세트", 60000, Arrays.asList(뿌링클, 투움바), 인기메뉴);
+
+                    //when
+                    ExtractableResponse<Response> response4 = 메뉴_등록_요청(params4);
+
+                    //then
+                    메뉴_등록_실패됨(response4);
+
                 }),
 
                 dynamicTest("메뉴 그룹 목록 조회한다.", () -> {
@@ -82,7 +106,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
                     ExtractableResponse<Response> response = 메뉴_목록_조회_요청();
 
                     //then
-                    메뉴_목록_조회됨(response, Arrays.asList(뿌링클, 투움바));
+                    메뉴_목록_조회됨(response, Arrays.asList("뿌링클", "투움바", "인기치킨 두마리 세트"), 27000, 30000, 50000);
                 })
         );
 
@@ -93,7 +117,6 @@ class MenuAcceptanceTest extends AcceptanceTest {
         Map<String, Object> params = 요청할_메뉴_생성(menuName, menuPrice, products, menuGroup);
         return 메뉴_등록_요청(params).as(Menu.class);
     }
-
 
     private static Map<String, Object> 요청할_메뉴_생성(String name, int price, List<Product> products, MenuGroup menuGroup) {
         Map<String, Object> params = new HashMap<>();
@@ -136,14 +159,17 @@ class MenuAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    private void 메뉴_목록_조회됨(ExtractableResponse<Response> response, List<Product> products) {
+    private void 메뉴_등록_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    private void 메뉴_목록_조회됨(ExtractableResponse<Response> response, List<String> menuNames, int ...menuPrices) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.body().jsonPath().getList("name", String.class))
-                .containsExactlyInAnyOrderElementsOf(
-                        products.stream().map(Product::getName).collect(Collectors.toList()));
+                .containsExactlyInAnyOrderElementsOf(menuNames);
         assertThat(response.body().jsonPath().getList("price", BigDecimal.class)
                 .stream().mapToInt(BigDecimal::intValue).toArray())
-                .containsExactly(products.stream().map(Product::getPrice).mapToInt(BigDecimal::intValue).toArray());
+                .containsExactly(menuPrices);
 
     }
 
