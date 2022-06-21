@@ -15,13 +15,11 @@ import javax.persistence.Table;
 import kitchenpos.domain.Name;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.menugroup.MenuGroup;
+import kitchenpos.exception.MenuPriceException;
 
 @Entity
 @Table(name = "menu")
 public class Menu {
-
-    private static final String INVALID_MENU_PRICE = "메뉴(Menu)의 가격(Price)는 상품(Product)의 총합보다 작아야 합니다.";
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -102,7 +100,7 @@ public class Menu {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         if (price.compareTo(sum) > 0) {
-            throw new IllegalArgumentException(INVALID_MENU_PRICE);
+            throw new MenuPriceException(price, sum);
         }
     }
 }

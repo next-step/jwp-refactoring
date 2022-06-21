@@ -20,6 +20,7 @@ import kitchenpos.domain.product.Product;
 import kitchenpos.dto.menu.MenuProductRequest;
 import kitchenpos.dto.menu.MenuRequest;
 import kitchenpos.dto.menu.MenuResponse;
+import kitchenpos.exception.MenuPriceException;
 import kitchenpos.exception.NegativePriceException;
 import kitchenpos.exception.NotFoundProductException;
 import org.assertj.core.util.Lists;
@@ -143,7 +144,8 @@ class MenuServiceTest {
         given(menuGroupService.findMenuGroup(초밥_메뉴그룹.getId())).willReturn(초밥_메뉴그룹);
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest));
+        assertThatExceptionOfType(MenuPriceException.class)
+                .isThrownBy(() -> menuService.create(menuRequest));
     }
 
     @DisplayName("메뉴를 구성하는 상품이 없는 경우 메뉴로 등록할 수 없다.")
@@ -180,7 +182,8 @@ class MenuServiceTest {
         given(menuGroupService.findMenuGroup(초밥_메뉴그룹.getId())).willReturn(초밥_메뉴그룹);
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menuRequest));
+        assertThatExceptionOfType(MenuPriceException.class)
+                .isThrownBy(() -> menuService.create(menuRequest));
     }
 
     @DisplayName("메뉴 목록을 조회할 수 있다.")
