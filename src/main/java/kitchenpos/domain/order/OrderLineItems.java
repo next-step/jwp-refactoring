@@ -6,11 +6,10 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import kitchenpos.exception.EmptyOrderLineItemsException;
 
 @Embeddable
 public class OrderLineItems {
-
-    public static final String DONT_EMPTY_IS_ORDER_LINE_ITEMS = "주문 항목(orderLineItem) 가 존재하지 않습니다.";
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderLineItem> values = Lists.newArrayList();
@@ -36,7 +35,7 @@ public class OrderLineItems {
 
     private static void validateOrderLineItems(List<OrderLineItem> orderLineItems) {
         if (orderLineItems == null) {
-            throw new IllegalArgumentException(DONT_EMPTY_IS_ORDER_LINE_ITEMS);
+            throw new EmptyOrderLineItemsException();
         }
     }
 

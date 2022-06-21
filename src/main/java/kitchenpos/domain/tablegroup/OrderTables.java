@@ -4,11 +4,11 @@ import com.google.common.collect.Lists;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import kitchenpos.domain.table.OrderTable;
+import kitchenpos.exception.EmptyOrderTablesException;
 
 @Embeddable
 public class OrderTables {
@@ -22,6 +22,7 @@ public class OrderTables {
     }
 
     public static OrderTables from(List<OrderTable> orderTables) {
+        validateOrderTables(orderTables);
         return new OrderTables(orderTables);
     }
 
@@ -33,8 +34,10 @@ public class OrderTables {
         return Collections.unmodifiableList(this.values);
     }
 
-    public List<Long> getIds() {
-        return this.values.stream().map(OrderTable::getId).collect(Collectors.toList());
+    private static void validateOrderTables(List<OrderTable> orderTables) {
+        if (orderTables == null || orderTables.isEmpty()) {
+            throw new EmptyOrderTablesException();
+        }
     }
 
     @Override
