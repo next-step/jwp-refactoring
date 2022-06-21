@@ -3,6 +3,9 @@ package kitchenpos;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderStatus;
+import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
 
 import java.math.BigDecimal;
@@ -17,6 +20,12 @@ public class ServiceTestFactory {
     public static MenuProduct HONEY_MENU_PRODUCT = createMenuProductBy(1L, HONEY_RED_COMBO, HONEY_COMBO, 1);
     public static MenuProduct NOT_EXISTS_MENU_PRODUCT = createMenuProductBy(2L, HONEY_RED_COMBO, ORIGINAL_COMBO, 1);
     public static MenuProduct RED_MENU_PRODUCT = createMenuProductBy(3L, HONEY_RED_COMBO, RED_COMBO, 1);
+    public static OrderTable ORDER_TABLE = createOrderTableBy(1L, 4, false, 1L);
+    public static OrderTable OTHER_ORDER_TABLE = createOrderTableBy(2L, 3, false, null);
+    public static OrderTable THIRD_ORDER_TABLE = createOrderTableBy(3L, 2, false, null);
+    public static OrderTable EMPTY_ORDER_TABLE = createOrderTableBy(4L, 0, true, null);
+    public static Order COMPLETE_ORDER = createOrderBy(1L, 1L, OrderStatus.COMPLETION.name());
+    public static Order COOKING_ORDER = createOrderBy(2L, 2L, OrderStatus.COOKING.name());
 
     public static Product createProductBy(Long id, String name, long price) {
         Product product = new Product();
@@ -48,5 +57,22 @@ public class ServiceTestFactory {
         menuProduct.setQuantity(quantity);
         menuProduct.setProductId(product.getId());
         return menuProduct;
+    }
+
+    public static OrderTable createOrderTableBy(Long id, int numberOfGuests, boolean empty, Long tableGroupId) {
+        OrderTable orderTable = new OrderTable();
+        orderTable.setId(id);
+        orderTable.setNumberOfGuests(numberOfGuests);
+        orderTable.setEmpty(empty);
+        orderTable.setTableGroupId(tableGroupId);
+        return orderTable;
+    }
+
+    public static Order createOrderBy(Long id, Long orderTableId, String orderStatus) {
+        Order order = new Order();
+        order.setId(id);
+        order.setOrderTableId(orderTableId);
+        order.setOrderStatus(orderStatus);
+        return order;
     }
 }
