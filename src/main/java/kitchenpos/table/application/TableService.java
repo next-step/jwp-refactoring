@@ -52,13 +52,13 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(Long orderTableId, NumberOfGuestsRequest request) {
-        OrderTable orderTable = orderTableRepository.findById(orderTableId)
-                                                    .orElseThrow(NotFoundOrderTableException::new);
+        OrderTable orderTable = findById(orderTableId);
         orderTable.changeNumberOfGuests(request.getNumberOfGuests());
         return OrderTableResponse.of(orderTableRepository.save(orderTable));
     }
 
     public OrderTable findById(Long id) {
-        return orderTableRepository.findById(id).orElseThrow(NotFoundOrderTableException::new);
+        return orderTableRepository.findById(id)
+                                   .orElseThrow(NotFoundOrderTableException::new);
     }
 }
