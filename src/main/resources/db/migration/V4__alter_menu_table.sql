@@ -1,0 +1,2 @@
+ALTER TABLE menu ALTER COLUMN price INT
+
