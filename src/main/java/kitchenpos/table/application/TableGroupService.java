@@ -81,41 +81,15 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse createCopy(final TableGroupRequest request) {
-        final List<OrderTable> orderTables = tableGroup.getOrderTables();
+        final List<OrderTableEntity> orderTables = validateOrderTables(request.getOrderTableRequest());
 
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException();
-        }
+        TableGroupEntity tableGroup = TableGroupEntity.from(orderTables);
+        tableGroup.validateTablesEmpty();
 
-        final List<Long> orderTableIds = orderTables.stream()
-            .map(OrderTable::getId)
-            .collect(Collectors.toList());
+        final TableGroupEntity savedTableGroup = tableGroupRepository.save(tableGroup);
+        savedTableGroup.tablesMapIntoGroup();
 
-        final List<OrderTable> savedOrderTables = orderTableDao.findAllByIdIn(orderTableIds);
-
-        if (orderTables.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
-        }
-
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        tableGroup.setCreatedDate(LocalDateTime.now());
-
-        final TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
-
-        final Long tableGroupId = savedTableGroup.getId();
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.setTableGroupId(tableGroupId);
-            savedOrderTable.setEmpty(false);
-            orderTableDao.save(savedOrderTable);
-        }
-        savedTableGroup.setOrderTables(savedOrderTables);
-
-        return savedTableGroup;
+        return TableGroupResponse.toResponse(savedTableGroup);
     }
 
     private List<OrderTableEntity> validateOrderTables(List<OrderTableRequest> orderTableRequest) {
