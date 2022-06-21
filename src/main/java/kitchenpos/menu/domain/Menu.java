@@ -20,4 +20,13 @@ public class Menu {
     @ManyToOne
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
+
+    protected Menu() {
+    }
+
+    public Menu(Long id, String name, Integer price) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+    }
 }
