@@ -1,7 +1,7 @@
 package kitchenpos.acceptance.support;
 
 import java.math.BigDecimal;
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.menu.domain.Product;
 
 public class TestFixture {

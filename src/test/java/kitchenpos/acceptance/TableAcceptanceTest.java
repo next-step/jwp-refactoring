@@ -11,7 +11,7 @@ import static kitchenpos.acceptance.support.TableAcceptanceSupport.주문_테이
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

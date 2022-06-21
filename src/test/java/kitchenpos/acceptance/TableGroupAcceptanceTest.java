@@ -9,7 +9,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
