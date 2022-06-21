@@ -1,13 +1,14 @@
 package kitchenpos.domain;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     private TableGroup tableGroup;
     private int numberOfGuests;
     private boolean empty;
@@ -38,6 +39,10 @@ public class OrderTable {
     public void setTableGroupId(final Long tableGroupId) {
     }
 
+    public void unGroup() {
+        this.tableGroup = null;
+    }
+
     public int getNumberOfGuests() {
         return numberOfGuests;
     }
@@ -52,5 +57,30 @@ public class OrderTable {
 
     public void setEmpty(final boolean empty) {
         this.empty = empty;
+    }
+
+    public TableGroup getTableGroup() {
+        return this.tableGroup;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof OrderTable)) {
+            return false;
+        }
+        OrderTable that = (OrderTable) o;
+        return Objects.equals(getId(), that.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
+    }
+
+    public void setTableGroup(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
     }
 }

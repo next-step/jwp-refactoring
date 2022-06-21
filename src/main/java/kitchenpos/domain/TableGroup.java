@@ -14,6 +14,7 @@ public class TableGroup {
     private OrderTables orderTables = new OrderTables();
 
     public TableGroup() {
+        this.createdDate = LocalDateTime.now();
     }
 
     public TableGroup(Long id) {
@@ -41,5 +42,9 @@ public class TableGroup {
     }
 
     public void setOrderTables(final List<OrderTable> orderTables) {
+    }
+
+    public void add(OrderTable orderTable) {
+        this.orderTables.add(orderTable);
     }
 }

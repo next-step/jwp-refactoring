@@ -15,4 +15,8 @@ public class OrderTables {
     public List<OrderTable> getAll() {
         return this.orderTables;
     }
+
+    public void add(OrderTable orderTable) {
+        this.orderTables.add(orderTable);
+    }
 }

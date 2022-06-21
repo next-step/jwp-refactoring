@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.TableGroupService;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -51,7 +52,7 @@ class TableGroupRestControllerTest {
     @Test
     void test_post() throws Exception {
         //given
-        given(tableGroupService.create(any())).willReturn(new TableGroup());
+        given(tableGroupService.create(any())).willReturn(new TableGroupResponse(new TableGroup()));
 
         //then
         mockMvc.perform(post("/api/table-groups").content(objectMapper.writeValueAsString(new MenuGroup()))

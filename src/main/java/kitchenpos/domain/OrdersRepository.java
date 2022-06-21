@@ -8,4 +8,5 @@ import java.util.List;
 public interface OrdersRepository extends JpaRepository<Orders, Long> {
     @EntityGraph(attributePaths = {"orderLineItems"})
     List<Orders> findAll();
+    boolean existsByOrderTableInAndOrderStatusIn(List<OrderTable> orderTables, List<OrderStatus> orderStatuses);
 }
