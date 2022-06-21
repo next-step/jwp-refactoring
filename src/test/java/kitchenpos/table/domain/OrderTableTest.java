@@ -44,18 +44,6 @@ class OrderTableTest {
         assertThat(orderTable.isEmpty()).isTrue();
     }
 
-    @DisplayName("단체 지정된 테이블의 비움 여부를 변경한다.")
-    @Test
-    void changeEmptyWithGrouped() {
-        OrderTable orderTable = new OrderTable(0, false);
-        orderTable.bindTo(new TableGroup());
-
-        assertThatThrownBy(() -> {
-            orderTable.changeEmpty(true);
-        }).isInstanceOf(CannotChangeEmptyException.class)
-        .hasMessageContaining("비움 여부를 변경할 수 없습니다.");
-    }
-
     @DisplayName("테이블의 손님 수를 변경한다.")
     @Test
     void changeNumberOfGuest() {

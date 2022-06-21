@@ -6,6 +6,7 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import static java.util.Objects.requireNonNull;
 
 @Embeddable
@@ -30,6 +31,12 @@ public class OrderTables {
             orderTables.add(orderTable);
         }
         orderTable.bindTo(tableGroup);
+    }
+
+    public List<Long> getIds() {
+        return orderTables.stream()
+                          .map(OrderTable::getId)
+                          .collect(Collectors.toList());
     }
 
     public List<OrderTable> get() {

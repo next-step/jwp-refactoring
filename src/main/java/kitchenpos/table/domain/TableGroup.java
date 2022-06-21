@@ -1,12 +1,13 @@
 package kitchenpos.table.domain;
 
 import kitchenpos.table.exception.InvalidOrderTablesException;
+import org.springframework.data.domain.AbstractAggregateRoot;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-public class TableGroup {
+public class TableGroup extends AbstractAggregateRoot<TableGroup> {
 
     private static final int MIN_SIZE = 2;
 
@@ -42,7 +43,9 @@ public class TableGroup {
     }
 
     public void ungroup() {
+        List<Long> orderTableIds = orderTables.getIds();
         orderTables.clear();
+        registerEvent(new TableGroupUngroupedEvent(orderTableIds));
     }
 
     public Long getId() {

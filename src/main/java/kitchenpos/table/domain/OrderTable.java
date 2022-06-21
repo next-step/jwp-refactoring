@@ -1,11 +1,11 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.table.exception.CannotChangeEmptyException;
 import kitchenpos.table.exception.CannotChangeNumberOfGuestsException;
+import org.springframework.data.domain.AbstractAggregateRoot;
 import javax.persistence.*;
 
 @Entity
-public class OrderTable {
+public class OrderTable extends AbstractAggregateRoot<OrderTable> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -42,10 +42,8 @@ public class OrderTable {
     }
 
     public void changeEmpty(boolean empty) {
-        if (isGrouped()) {
-            throw new CannotChangeEmptyException();
-        }
         this.empty = new Empty(empty);
+        registerEvent(new TableEmptyChangedEvent(id));
     }
 
     public void changeNumberOfGuests(int numberOfGuests) {
