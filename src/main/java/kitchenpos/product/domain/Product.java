@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import kitchenpos.menu.domain.Amount;
 
 @Entity
 public class Product {
@@ -34,7 +35,7 @@ public class Product {
     }
 
     private void validatePrice(Integer price) {
-        if(price == null || price < FREE){
+        if (price == null || price < FREE) {
             throw new IllegalArgumentException("[ERROR] 상품 가격은 0원 이상 이어야 합니다.");
         }
     }
@@ -51,7 +52,7 @@ public class Product {
         return price;
     }
 
-    public int calculateAmount(int quantity) {
-        return price * quantity;
+    public Amount createAmount(int quantity) {
+        return new Amount(price, quantity);
     }
 }
