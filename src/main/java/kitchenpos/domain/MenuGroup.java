@@ -10,8 +10,7 @@ public class MenuGroup {
     public MenuGroup() {
     }
 
-    public MenuGroup(Long id, String name) {
-        this.id = id;
+    public MenuGroup(String name) {
         this.name = name;
     }
 
@@ -46,6 +45,14 @@ public class MenuGroup {
     @Override
     public int hashCode() {
         return Objects.hash(id, name);
+    }
+
+    @Override
+    public String toString() {
+        return "MenuGroup{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            '}';
     }
 
 }
