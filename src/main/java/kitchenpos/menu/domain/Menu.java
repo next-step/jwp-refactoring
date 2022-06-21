@@ -1,6 +1,8 @@
 package kitchenpos.menu.domain;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,9 +21,11 @@ public class Menu {
     private String name;
     @Column(nullable = false)
     private Integer price;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
+    @Embedded
+    private MenuProducts menuProducts;
 
     protected Menu() {
     }
@@ -33,15 +37,41 @@ public class Menu {
         this.price = price;
     }
 
-    public void validateAmount(Amounts amounts){
-        if(price > amounts.calculateTotalAmount()){
+    public void addMenuProduct(MenuProduct menuProduct) {
+        menuProducts.addMenuProduct(menuProduct);
+        menuProduct.setMenu(this);
+    }
+
+    public void validateAmount(Amounts amounts) {
+        if (price > amounts.calculateTotalAmount()) {
             throw new IllegalArgumentException("[ERROR] 메뉴 가격은 총 금액을 넘을 수 없습니다.");
         }
     }
 
     private void validatePrice(Integer price) {
-        if(price == null || price < FREE){
+        if (price == null || price < FREE) {
             throw new IllegalArgumentException("[ERROR] 메뉴 가격은 0원 이상 이어야 합니다.");
         }
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Integer getPrice() {
+        return price;
+    }
+
+    public MenuGroup getMenuGroup() {
+        return menuGroup;
+    }
+
+    public void setMenuGroup(MenuGroup menuGroup) {
+        this.menuGroup = menuGroup;
+    }
+
 }

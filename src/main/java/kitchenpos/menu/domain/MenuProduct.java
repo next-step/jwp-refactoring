@@ -24,4 +24,32 @@ public class MenuProduct {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product product;
+
+    protected MenuProduct() {
+    }
+
+    public MenuProduct(Integer quantity, Product product) {
+        this.quantity = quantity;
+        this.product = product;
+    }
+
+    public Long getSeq() {
+        return seq;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public Menu getMenu() {
+        return menu;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setMenu(Menu menu) {
+        this.menu = menu;
+    }
 }
