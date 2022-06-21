@@ -2,7 +2,11 @@ package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.application.OrderService;
-import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderStatus;
+import kitchenpos.dto.OrderLineItemRequest;
+import kitchenpos.dto.OrderResponse;
+import kitchenpos.dto.OrderStatusRequest;
+import kitchenpos.dto.OrdersRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -22,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-class OrderRestControllerTest {
+class OrdersRestControllerTest {
     private MockMvc mockMvc;
     @Mock
     private OrderService orderService;
@@ -42,32 +47,29 @@ class OrderRestControllerTest {
         given(orderService.list()).willReturn(Collections.emptyList());
 
         //then
-        mockMvc.perform(get("/api/orders"))
-                .andDo(print())
-                .andExpect(status().isOk());
+        mockMvc.perform(get("/api/orders")).andDo(print()).andExpect(status().isOk());
     }
 
     @Test
     void test_post() throws Exception {
         //given
-        given(orderService.create(any())).willReturn(new Order());
+        given(orderService.create(any())).willReturn(new OrderResponse());
 
         //then
-        mockMvc.perform(post("/api/orders").content(objectMapper.writeValueAsString(new Order()))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isCreated());
+        mockMvc.perform(post("/api/orders").content(
+                        objectMapper.writeValueAsString(new OrdersRequest(0L,
+                                Arrays.asList(new OrderLineItemRequest(1L, 2L)))))
+                .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isCreated());
     }
 
     @Test
     void test_put_changeEmpty() throws Exception {
         //given
-        given(orderService.changeOrderStatus(any(), any())).willReturn(new Order());
+        given(orderService.changeOrderStatus(any(), any())).willReturn(new OrderResponse());
 
         //then
-        mockMvc.perform(put("/api/orders/{orderId}/order-status", 0).content(objectMapper.writeValueAsString(new Order()))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk());
+        mockMvc.perform(put("/api/orders/{orderId}/order-status", 0)
+                .content(objectMapper.writeValueAsString(new OrderStatusRequest(OrderStatus.MEAL)))
+                .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
     }
 }
