@@ -27,72 +27,72 @@ class MenuServiceTest extends ServiceTest{
     @Autowired
     private MenuService menuService;
 
-    private Product 후라이드_닭강정;
-    private Product 양념_닭강정;
-    private MenuProduct 후라이드_닭강정_메뉴상품;
-    private MenuProduct 양념_닭강정_메뉴상품;
-    private MenuGroup 닭강정_치킨_세트;
+    private Product 후라이드;
+    private Product 양념치킨;
+    private MenuProduct 후라이드_메뉴상품;
+    private MenuProduct 양념치킨_메뉴상품;
+    private MenuGroup 두마리메뉴;
 
     @BeforeEach
     void setUp() {
         super.setUp();
 
-        후라이드_닭강정 = this.productDao.save(new Product("후라이드 닭강정", BigDecimal.valueOf(4000)));
-        양념_닭강정 = this.productDao.save(new Product("양념 닭강정", BigDecimal.valueOf(5000)));
-        후라이드_닭강정_메뉴상품 = new MenuProduct(후라이드_닭강정.getId(), 2);
-        양념_닭강정_메뉴상품 = new MenuProduct(양념_닭강정.getId(), 3);
-        닭강정_치킨_세트 = this.menuGroupDao.save(new MenuGroup("닭강정_치킨_세트"));
+        후라이드 = this.productDao.save(new Product("후라이드", BigDecimal.valueOf(16000)));
+        양념치킨 = this.productDao.save(new Product("양념치킨", BigDecimal.valueOf(16000)));
+        후라이드_메뉴상품 = new MenuProduct(후라이드.getId(), 1);
+        양념치킨_메뉴상품 = new MenuProduct(양념치킨.getId(), 1);
+        두마리메뉴 = this.menuGroupDao.save(new MenuGroup("두마리메뉴"));
     }
 
     @Test
     @DisplayName("가격이 1원이상으로 책정되어야 한다.")
     void createFail_price() {
-        Menu 닭강정_메뉴 = new Menu("닭강정", BigDecimal.valueOf(-1), 닭강정_치킨_세트.getId(), Arrays.asList(후라이드_닭강정_메뉴상품, 양념_닭강정_메뉴상품));
+        Menu 후라이드_양념_세트 = new Menu("후라이드_양념_세트", BigDecimal.valueOf(-1), 두마리메뉴.getId(), Arrays.asList(후라이드_메뉴상품, 양념치킨_메뉴상품));
 
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> this.menuService.create(닭강정_메뉴));
+            .isThrownBy(() -> this.menuService.create(후라이드_양념_세트));
     }
 
     @Test
     @DisplayName("속할 메뉴그룹이 지정되어야 한다.")
     void createFail_menuGroup() {
-        Menu 닭강정_메뉴 = new Menu("닭강정", BigDecimal.valueOf(23000), null, Arrays.asList(후라이드_닭강정_메뉴상품, 양념_닭강정_메뉴상품));
+        Menu 후라이드_양념_세트 = new Menu("후라이드_양념_세트", BigDecimal.valueOf(32000), null, Arrays.asList(후라이드_메뉴상품, 양념치킨_메뉴상품));
 
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> this.menuService.create(닭강정_메뉴));
+            .isThrownBy(() -> this.menuService.create(후라이드_양념_세트));
     }
 
     @Test
     @DisplayName("메뉴에 속한 상품 가격의 합보다 같거나 작아야한다.")
     void createFail_comparePriceToProduct() {
-        Menu 닭강정_메뉴 = new Menu("닭강정", BigDecimal.valueOf(24000), 닭강정_치킨_세트.getId(), Arrays.asList(후라이드_닭강정_메뉴상품, 양념_닭강정_메뉴상품));
+        Menu 후라이드_양념_세트 = new Menu("후라이드_양념_세트", BigDecimal.valueOf(33000), 두마리메뉴.getId(), Arrays.asList(후라이드_메뉴상품, 양념치킨_메뉴상품));
 
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> this.menuService.create(닭강정_메뉴));
+            .isThrownBy(() -> this.menuService.create(후라이드_양념_세트));
     }
 
     @Test
     @DisplayName("메뉴 등록에 성공한다.")
     void create() {
-        Menu 닭강정_메뉴 = new Menu("닭강정", BigDecimal.valueOf(22000), 닭강정_치킨_세트.getId(), Arrays.asList(후라이드_닭강정_메뉴상품, 양념_닭강정_메뉴상품));
+        Menu 후라이드_양념_세트 = new Menu("후라이드_양념_세트", BigDecimal.valueOf(31000), 두마리메뉴.getId(), Arrays.asList(후라이드_메뉴상품, 양념치킨_메뉴상품));
 
-        닭강정_메뉴 = this.menuService.create(닭강정_메뉴);
+        후라이드_양념_세트 = this.menuService.create(후라이드_양념_세트);
 
-        assertThat(닭강정_메뉴.getId()).isNotNull();
-        assertThat(닭강정_메뉴.getMenuProducts()).hasSize(2);
+        assertThat(후라이드_양념_세트.getId()).isNotNull();
+        assertThat(후라이드_양념_세트.getMenuProducts()).hasSize(2);
     }
 
     @Test
     @DisplayName("메뉴를 모두 조회한다.")
     void list() {
-        Menu 닭강정_메뉴_A = new Menu("닭강정", BigDecimal.valueOf(22000), 닭강정_치킨_세트.getId(), Arrays.asList(후라이드_닭강정_메뉴상품, 양념_닭강정_메뉴상품));
-        Menu 닭강정_메뉴_B = new Menu("닭강정", BigDecimal.valueOf(5000), 닭강정_치킨_세트.getId(), Collections.singletonList(후라이드_닭강정_메뉴상품));
-        닭강정_메뉴_A = this.menuService.create(닭강정_메뉴_A);
-        닭강정_메뉴_B = this.menuService.create(닭강정_메뉴_B);
+        Menu 후라이드_양념_세트 = new Menu("후라이드_양념_세트", BigDecimal.valueOf(31000), 두마리메뉴.getId(), Arrays.asList(후라이드_메뉴상품, 양념치킨_메뉴상품));
+        Menu 임시_메뉴 = new Menu("닭강정", BigDecimal.valueOf(5000), 두마리메뉴.getId(), Collections.singletonList(후라이드_메뉴상품));
+        후라이드_양념_세트 = this.menuService.create(후라이드_양념_세트);
+        임시_메뉴 = this.menuService.create(임시_메뉴);
 
         List<Menu> list = this.menuService.list();
 
-        assertThat(list).containsExactly(닭강정_메뉴_A, 닭강정_메뉴_B);
+        assertThat(list).containsExactly(후라이드_양념_세트, 임시_메뉴);
     }
 
 }
