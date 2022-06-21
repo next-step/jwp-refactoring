@@ -35,7 +35,7 @@ public class MenuService {
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
         MenuGroup menuGroup = this.findMenuGroup(menuRequest.getMenuGroupId());
-        Menu menu = Menu.of(menuRequest.getName(), menuRequest.getPrice(), menuGroup.getId());
+        Menu menu = Menu.of(menuRequest.getName(), menuRequest.getPrice(), menuGroup);
         List<MenuProduct> menuProducts = this.createMenuProducts(menuRequest);
 
         menu.appendAllMenuProducts(menuProducts);

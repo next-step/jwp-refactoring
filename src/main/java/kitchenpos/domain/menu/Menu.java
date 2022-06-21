@@ -4,14 +4,17 @@ import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import kitchenpos.domain.Name;
 import kitchenpos.domain.Price;
+import kitchenpos.domain.menugroup.MenuGroup;
 
 @Entity
 @Table(name = "menu")
@@ -26,23 +29,24 @@ public class Menu {
     private Name name;
     @Embedded
     private Price price;
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"), nullable = false)
-    private Long menuGroupId;
+    private MenuGroup menuGroup;
     @Embedded
     private MenuProducts menuProducts = MenuProducts.createEmpty();
 
     protected Menu() {}
 
-    private Menu(String name, BigDecimal price, Long menuGroupId) {
+    private Menu(String name, BigDecimal price, MenuGroup menuGroup) {
         this.name = Name.from(name);
         this.price = Price.from(price);
-        this.menuGroupId = menuGroupId;
+        this.menuGroup = menuGroup;
     }
 
-    private Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    private Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.name = Name.from(name);
         this.price = Price.from(price);
-        this.menuGroupId = menuGroupId;
+        this.menuGroup = menuGroup;
         this.menuProducts = MenuProducts.from(menuProducts);
     }
 
@@ -51,12 +55,12 @@ public class Menu {
         this.price = Price.from(price);
     }
 
-    public static Menu of(String name, BigDecimal price, Long menuGroupId) {
-        return new Menu(name, price, menuGroupId);
+    public static Menu of(String name, BigDecimal price, MenuGroup menuGroup) {
+        return new Menu(name, price, menuGroup);
     }
 
-    public static Menu of(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        return new Menu(name, price, menuGroupId, menuProducts);
+    public static Menu of(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        return new Menu(name, price, menuGroup, menuProducts);
     }
 
     public static Menu of(String name, BigDecimal price) {
@@ -76,7 +80,7 @@ public class Menu {
     }
 
     public Long getMenuGroupId() {
-        return this.menuGroupId;
+        return this.menuGroup.getId();
     }
 
     public List<MenuProduct> findMenuProducts() {
