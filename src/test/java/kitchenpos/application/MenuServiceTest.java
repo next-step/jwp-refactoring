@@ -7,7 +7,7 @@ import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -72,11 +72,11 @@ public class MenuServiceTest {
         assertThat(createMenu).isNotNull();
     }
 
-    static Menu 메뉴_등록(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    static Menu 메뉴_등록(Long id, String name, Integer price, Long menuGroupId, List<MenuProduct> menuProducts) {
         Menu menu = new Menu();
         menu.setId(id);
         menu.setName(name);
-        menu.setPrice(price);
+        menu.setPrice(BigDecimal.valueOf(price));
         menu.setMenuGroupId(menuGroupId);
         menu.setMenuProducts(menuProducts);
         return menu;

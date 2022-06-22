@@ -7,7 +7,7 @@ import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -52,7 +52,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("메뉴를 등록 실패한다. (메뉴 가격 0 미만)")
-    void createMenu2() {
+    void FailCreateMenuOfUnderZeroPirce() {
         MenuProduct menuProduct = new MenuProduct();
         menuProduct.setMenuId(1L);
         menuProduct.setProductId(product.getId());
@@ -66,7 +66,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("메뉴를 등록 실패한다. (menuGroup 누락)")
-    void createMenu3() {
+    void FailCreateMenuWithoutMenuGroup() {
         MenuProduct menuProduct = new MenuProduct();
         menuProduct.setMenuId(1L);
         menuProduct.setProductId(product.getId());
@@ -80,7 +80,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("메뉴를 등록 실패한다. (상품 등록되어있지 않음)")
-    void createMenu4() {
+    void FailCreateMenuOfNotExistProduct() {
         MenuProduct menuProduct = new MenuProduct();
         menuProduct.setMenuId(1L);
         menuProduct.setProductId(10L);
