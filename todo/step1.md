@@ -97,6 +97,6 @@ public class ControllerTest {
   - [x] MenuGroup에 관한 테스트 코드 작성하기
   - [ ] Menu에 관한 테스트 코드 작성하기
   - [ ] Order에 관한 테스트 코드 작성하기
-  - [ ] Product에 관한 테스트 코드 작성하기
+  - [x] Product에 관한 테스트 코드 작성하기
   - [ ] TableGroup에 관한 테스트 코드 작성하기
   - [ ] Table에 관한 테스트 코드 작성하기 
