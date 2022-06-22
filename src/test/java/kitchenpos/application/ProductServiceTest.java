@@ -29,7 +29,7 @@ class ProductServiceTest {
     @Test
     void create() {
         // given
-        Product product = new Product.Builder("마늘치킨", BigDecimal.valueOf(1000)).build();
+        Product product = new Product.Builder("마늘치킨", 1000).build();
 
         given(productDao.save(any(Product.class))).willReturn(new Product.Builder().id(1L).build());
 
@@ -48,8 +48,7 @@ class ProductServiceTest {
         // when
         // then
         assertAll(
-                () -> assertThatThrownBy(() -> productService.create(new Product.Builder("마늘치킨", null).build())),
-                () -> assertThatThrownBy(() -> productService.create(new Product.Builder("마늘치킨", BigDecimal.valueOf(-1000)).build()))
+                () -> assertThatThrownBy(() -> productService.create(new Product.Builder("마늘치킨", -1000).build()))
         );
 
         // verify

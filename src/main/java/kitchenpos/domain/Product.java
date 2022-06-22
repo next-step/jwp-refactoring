@@ -57,9 +57,9 @@ public class Product {
         public Builder() {
         }
 
-        public Builder(String name, BigDecimal price) {
+        public Builder(String name, long price) {
             this.name = name;
-            this.price = price;
+            this.price = BigDecimal.valueOf(price);
         }
 
         public Builder id(Long id) {
