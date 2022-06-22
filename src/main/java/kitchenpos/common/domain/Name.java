@@ -13,7 +13,7 @@ public class Name {
 
     private Name(String name) {
         if (null == name) {
-            throw new IllegalArgumentException("이름이 존재해야합니다.");
+            throw new IllegalArgumentException("이름이 존재 해야합니다.");
         }
         this.name = name;
     }
