@@ -1,35 +1,46 @@
 package kitchenpos.application;
 
+import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
-    private final ProductService productService;
-
-    @Autowired
-    public ProductServiceTest(ProductService productService) {
-        this.productService = productService;
-    }
+    @Mock
+    private ProductDao productDao;
+    @InjectMocks
+    private ProductService productService;
 
     @Test
     void create() {
         // given
-        Product product = Product.of("마늘치킨", BigDecimal.valueOf(18000));
+        Product product = new Product.Builder("마늘치킨", BigDecimal.valueOf(1000)).build();
+
+        given(productDao.save(any(Product.class))).willReturn(new Product.Builder().id(1L).build());
 
         // when
-        Product saved = productService.create(product);
+        Product created = productService.create(product);
 
         // then
-        assertThat(saved.getId()).isNotNull();
+        assertThat(created.getId()).isNotNull();
+
+        // verify
+        then(productDao).should(times(1)).save(any(Product.class));
     }
 
     @Test
@@ -37,8 +48,11 @@ class ProductServiceTest {
         // when
         // then
         assertAll(
-                () -> assertThatThrownBy(() -> productService.create(Product.of("마늘치킨", null))),
-                () -> assertThatThrownBy(() -> productService.create(Product.of("마늘치킨", BigDecimal.valueOf(-18000))))
+                () -> assertThatThrownBy(() -> productService.create(new Product.Builder("마늘치킨", null).build())),
+                () -> assertThatThrownBy(() -> productService.create(new Product.Builder("마늘치킨", BigDecimal.valueOf(-1000)).build()))
         );
+
+        // verify
+        then(productDao).should(never()).save(any(Product.class));
     }
 }
