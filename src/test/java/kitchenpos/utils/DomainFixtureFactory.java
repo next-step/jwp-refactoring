@@ -5,6 +5,7 @@ import java.util.List;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
 
 public class DomainFixtureFactory {
@@ -23,5 +24,9 @@ public class DomainFixtureFactory {
 
     public static MenuProduct createMenuProduct(Long seq, Long menuId, Long productId, long quantity) {
         return MenuProduct.of(seq, menuId, productId, quantity);
+    }
+
+    public static OrderTable createOrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+        return OrderTable.of(id, tableGroupId, numberOfGuests, empty);
     }
 }

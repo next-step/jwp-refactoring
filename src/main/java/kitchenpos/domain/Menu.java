@@ -12,7 +12,6 @@ public class Menu {
     private List<MenuProduct> menuProducts;
 
     public Menu() {
-
     }
 
     private Menu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
