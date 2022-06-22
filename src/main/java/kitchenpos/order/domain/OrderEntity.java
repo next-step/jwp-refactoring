@@ -59,6 +59,16 @@ public class OrderEntity {
         this.orderLineItems.add(orderLineItem);
     }
 
+    public void validateMustNotBeCompletionStatus() {
+        if (OrderStatus.COMPLETION.equals(orderStatus)) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public void changeOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
     public Long getId() {
         return id;
     }

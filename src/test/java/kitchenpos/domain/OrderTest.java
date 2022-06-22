@@ -49,6 +49,31 @@ class OrderTest {
         assertThat(주문_항목2.getOrder()).isEqualTo(주문);
     }
 
+    @DisplayName("주문의 상태를 변경하면 정상적으로 변경된다")
+    @Test
+    void change_status_test() {
+        // given
+        OrderEntity 주문 = OrderEntity.of(null, 주문_테이블);
+
+        // when
+        주문.changeOrderStatus(OrderStatus.COMPLETION);
+
+        // then
+        assertThat(주문.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
+    }
+
+    @DisplayName("주문의 상태를 변경하면 정상적으로 변경된다")
+    @Test
+    void order_status_exception_test() {
+        // given
+        OrderEntity 주문 = OrderEntity.of(null, 주문_테이블);
+        주문.changeOrderStatus(OrderStatus.COMPLETION);
+
+        // then
+        assertThatThrownBy(주문::validateMustNotBeCompletionStatus)
+            .isInstanceOf(IllegalArgumentException.class);
+    }
+
     @DisplayName("빈 주문 테이블을 주문에 넘기면 예외가 발생한다")
     @Test
     void order_exception_test() {
