@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.menu.application;
 
 import static kitchenpos.helper.MenuFixtures.통반세트_요청_만들기;
 import static kitchenpos.helper.MenuGroupFixtures.두마리메뉴_그룹;
@@ -14,7 +14,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doAnswer;
 
 import java.util.Optional;
-import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuRepository;
@@ -30,7 +29,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @DisplayName("메뉴 관련 Service 단위 테스트 - Stub")
 @ExtendWith(MockitoExtension.class)
-class MenuServiceTest {
+class MenuServiceUnitTest {
 
     @Mock
     private MenuRepository menuRepository;
