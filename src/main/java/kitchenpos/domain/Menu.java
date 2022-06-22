@@ -13,17 +13,6 @@ public class Menu {
     public Menu() {
     }
 
-    private Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        this.name = name;
-        this.price = price;
-        this.menuGroupId = menuGroupId;
-        this.menuProducts = menuProducts;
-    }
-
-    public static Menu of(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        return new Menu(name, price, menuGroupId, menuProducts);
-    }
-
     public Menu(Builder builder) {
         this.id = builder.id;
         this.name = builder.name;

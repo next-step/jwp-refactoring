@@ -9,36 +9,11 @@ public class OrderTable {
     public OrderTable() {
     }
 
-    public OrderTable(boolean empty) {
-        this.empty = empty;
-    }
-
-    public OrderTable(int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
-    }
-
-    private OrderTable(int numberOfGuests, boolean empty) {
-        this.numberOfGuests = numberOfGuests;
-        this.empty = empty;
-    }
-
     private OrderTable(Builder builder) {
         id = builder.id;
         tableGroupId = builder.tableGroupId;
         numberOfGuests = builder.numberOfGuests;
         empty = builder.empty;
-    }
-
-    public static OrderTable from(boolean empty) {
-        return new OrderTable(empty);
-    }
-
-    public static OrderTable from(int numberOfGuests) {
-        return new OrderTable(numberOfGuests);
-    }
-
-    public static OrderTable of(int numberOfGuests, boolean empty) {
-        return new OrderTable(numberOfGuests, empty);
     }
 
     public Long getId() {

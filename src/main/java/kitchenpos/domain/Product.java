@@ -10,15 +10,6 @@ public class Product {
     public Product() {
     }
 
-    private Product(String name, BigDecimal price) {
-        this.name = name;
-        this.price = price;
-    }
-
-    public static Product of(String name, BigDecimal price) {
-        return new Product(name, price);
-    }
-
     public Product(Builder builder) {
         this.id = builder.id;
         this.name = builder.name;

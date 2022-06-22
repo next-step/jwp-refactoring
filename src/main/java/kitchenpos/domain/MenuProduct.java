@@ -9,15 +9,6 @@ public class MenuProduct {
     public MenuProduct() {
     }
 
-    private MenuProduct(Long productId, long quantity) {
-        this.productId = productId;
-        this.quantity = quantity;
-    }
-
-    public static MenuProduct of(Long productId, long quantity) {
-        return new MenuProduct(productId, quantity);
-    }
-
     public MenuProduct(Builder builder) {
         this.seq = builder.seq;
         this.menuId = builder.menuId;

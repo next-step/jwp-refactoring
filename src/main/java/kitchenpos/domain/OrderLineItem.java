@@ -9,20 +9,11 @@ public class OrderLineItem {
     public OrderLineItem() {
     }
 
-    private OrderLineItem(Long menuId, long quantity) {
-        this.menuId = menuId;
-        this.quantity = quantity;
-    }
-
     public OrderLineItem(Builder builder) {
         this.seq = builder.seq;
         this.orderId = builder.orderId;
         this.menuId = builder.menuId;
         this.quantity = builder.quantity;
-    }
-
-    public static OrderLineItem of(Long menuId, long quantity) {
-        return new OrderLineItem(menuId, quantity);
     }
 
     public Long getSeq() {

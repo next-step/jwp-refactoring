@@ -7,10 +7,6 @@ public class MenuGroup {
     public MenuGroup() {
     }
 
-    public MenuGroup(String name) {
-        this.name = name;
-    }
-
     public MenuGroup(Builder builder) {
         this.id = builder.id;
         this.name = builder.name;
