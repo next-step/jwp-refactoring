@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import kitchenpos.domain.OrderStatus;
 
 @Embeddable
 public class Orders {
@@ -18,6 +19,10 @@ public class Orders {
 
     public void addOrder(Order order){
         orders.add(order);
+    }
+
+    public boolean isTargetOrderStatusAtLeastOne(List<OrderStatus> orderStatuses){
+        return false;
     }
 
 

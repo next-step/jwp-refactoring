@@ -40,6 +40,11 @@ public class OrderTable {
         orders.addOrder(order);
     }
 
+    public void checkPossibleChangeEmpty(){
+
+    }
+
+
 
     public Long getId() {
         return id;
