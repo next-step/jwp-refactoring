@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+@DisplayName("메뉴 인수테스트 기능")
 class MenuAcceptanceTest extends AcceptanceTest {
     private static final String MENU_URI = "/api/menus";
 

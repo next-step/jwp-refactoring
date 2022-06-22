@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+@DisplayName("테이블 인수테스트 기능")
 class TableAcceptanceTest extends AcceptanceTest {
     private static final String TABLE_URI = "/api/tables";
 
@@ -29,7 +30,7 @@ class TableAcceptanceTest extends AcceptanceTest {
     @DisplayName("테이블 주문번호를 부여하면 조회할 수 있다.")
     void createOrderTable() {
         // when
-        final ExtractableResponse<Response> 테이블_주문_번호_생성_요청_결과 = 테이블_주문_번호_생성_요청(3);
+        final ExtractableResponse<Response> 테이블_주문_번호_생성_요청_결과 = 테이블_주문_번호_생성_요청(3, false);
 
         // then
         테이블_주문_번호_생성_확인(테이블_주문_번호_생성_요청_결과);
@@ -44,7 +45,7 @@ class TableAcceptanceTest extends AcceptanceTest {
     @DisplayName("빈 테이블로 변경하면 해당 주문번호는 빈 테이블로 변경된다.")
     void changeEmptyOrderTable() {
         // given
-        테이블_주문_번호_생성_요청(3);
+        테이블_주문_번호_생성_요청(3, false);
 
         // when
         final ExtractableResponse<Response> 빈_테이블_변경_결과 = 빈_테이블_변경(1);
@@ -62,7 +63,7 @@ class TableAcceptanceTest extends AcceptanceTest {
     @DisplayName("고객 수를 변경하면 해당 주문번호는 고객수가 변경된다.")
     void changeNumberOfGuests() {
         // given
-        테이블_주문_번호_생성_요청(3);
+        테이블_주문_번호_생성_요청(3, false);
 
         // when
         final ExtractableResponse<Response> 테이블_방문_고객수_변경_결과 = 테이블_방문_고객수_변경(1, 5);
@@ -71,8 +72,8 @@ class TableAcceptanceTest extends AcceptanceTest {
         테이블_방문_고객수_확인(테이블_방문_고객수_변경_결과, 5);
     }
 
-    public static ExtractableResponse<Response> 테이블_주문_번호_생성_요청(Integer 손님수) {
-        final OrderTable 주문테이블 = new OrderTable(null, null, 손님수, false);
+    public static ExtractableResponse<Response> 테이블_주문_번호_생성_요청(Integer 손님수, boolean 빈_테이블_유무) {
+        final OrderTable 주문테이블 = new OrderTable(null, null, 손님수, 빈_테이블_유무);
 
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
