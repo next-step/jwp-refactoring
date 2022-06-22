@@ -76,7 +76,8 @@ public class TableServiceTest {
     void changeEmptyWithOrderStatus() {
         //given
         tableService.create(firstTable);
-        OrderTable saved = tableService.create(secondTable);
+        tableService.create(secondTable);
+        OrderTable saved = tableService.create(thirdTable);
         //when, then
         assertThatThrownBy(() -> {
             tableService.changeEmpty(saved.getId(), saved);
@@ -88,8 +89,7 @@ public class TableServiceTest {
     void changeEmpty() {
         //given
         tableService.create(firstTable);
-        tableService.create(secondTable);
-        OrderTable saved = tableService.create(thirdTable);
+        OrderTable saved = tableService.create(secondTable);
         //when
         OrderTable changed = tableService.changeEmpty(saved.getId(), emptyTable);
         //then
@@ -128,8 +128,7 @@ public class TableServiceTest {
     @DisplayName("손님수를 수정한다.")
     void changeNumber() {
         //given
-        tableService.create(firstTable);
-        OrderTable saved = tableService.create(secondTable);
+        OrderTable saved = tableService.create(firstTable);
         //when
         OrderTable changed = tableService.changeNumberOfGuests(saved.getId(), firstTable);
         //then

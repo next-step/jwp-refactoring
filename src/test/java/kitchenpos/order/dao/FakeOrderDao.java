@@ -10,9 +10,10 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
 
 public class FakeOrderDao implements OrderDao {
-    public static Order COMPLETE_ORDER = createOrderBy(1L, 1L, OrderStatus.COMPLETION.name());
-    public static Order COOKING_ORDER = createOrderBy(2L, 2L, OrderStatus.COOKING.name());
-    public static Order MEAL_ORDER = createOrderBy(2L, 3L, OrderStatus.MEAL.name());
+    private final Order completeOrder = createOrderBy(1L, 1L, OrderStatus.COMPLETION.name());
+    private final Order secondCompleteOrder = createOrderBy(2L, 2L, OrderStatus.COMPLETION.name());
+    private final Order mealOrder = createOrderBy(3L, 3L, OrderStatus.MEAL.name());
+    private final Order cookingOrder = createOrderBy(4L, 4L, OrderStatus.COOKING.name());
 
     @Override
     public Order save(Order entity) {
@@ -31,15 +32,19 @@ public class FakeOrderDao implements OrderDao {
 
     @Override
     public boolean existsByOrderTableIdAndOrderStatusIn(Long orderTableId, List<String> orderStatuses) {
-        Order find = Arrays.asList(COMPLETE_ORDER, COOKING_ORDER, MEAL_ORDER).stream()
+        Order find = Arrays.asList(completeOrder, secondCompleteOrder, cookingOrder, mealOrder).stream()
                 .filter(order -> order.getOrderTableId().equals(orderTableId))
                 .findFirst()
-                .orElse(COMPLETE_ORDER);
+                .orElse(completeOrder);
         return orderStatuses.contains(find.getOrderStatus());
     }
 
     @Override
     public boolean existsByOrderTableIdInAndOrderStatusIn(List<Long> orderTableIds, List<String> orderStatuses) {
-        return false;
+        boolean result = false;
+        for (Long id : orderTableIds) {
+            result = existsByOrderTableIdAndOrderStatusIn(id, orderStatuses);
+        }
+        return result;
     }
 }

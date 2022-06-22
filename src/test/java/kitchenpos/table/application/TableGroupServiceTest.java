@@ -25,6 +25,8 @@ public class TableGroupServiceTest {
 
     private OrderTable firstTable;
     private OrderTable secondTable;
+    private OrderTable thirdTable;
+    private OrderTable fourthTable;
     private TableGroup tableGroup;
     private TableGroup secondTableGroup;
 
@@ -32,8 +34,10 @@ public class TableGroupServiceTest {
     void setUp() {
         firstTable = createOrderTableBy(1L, 4, true, null);
         secondTable = createOrderTableBy(2L, 3, true, null);
+        thirdTable = createOrderTableBy(3L, 2, false, null);
+        fourthTable = createOrderTableBy(4L, 1, false, null);
         tableGroup = createTableGroupBy(1L, Arrays.asList(firstTable, secondTable));
-        secondTableGroup = createTableGroupBy(2L, Arrays.asList(firstTable, secondTable));
+        secondTableGroup = createTableGroupBy(2L, Arrays.asList(thirdTable, fourthTable));
     }
 
     @Test
@@ -64,14 +68,14 @@ public class TableGroupServiceTest {
     @DisplayName("저장된 주문 테이블이 아닌 경우, 단체지정할 수 없다.")
     void createWithNoSavedOrderTables() {
         //given
-        TableGroup tableGroup = new TableGroup();
-        OrderTable table = createOrderTableBy(4L, 4, false, 1L);
-        OrderTable anotherTable = createOrderTableBy(5L, 3, false, null);
+        TableGroup newGroup = new TableGroup();
+        OrderTable table = createOrderTableBy(98L, 4, false, null);
+        OrderTable anotherTable = createOrderTableBy(99L, 3, false, null);
         List<OrderTable> orderTables = Arrays.asList(table, anotherTable);
-        tableGroup.setOrderTables(orderTables);
+        newGroup.setOrderTables(orderTables);
         //when, then
         assertThatThrownBy(() -> {
-            tableGroupService.create(tableGroup);
+            tableGroupService.create(newGroup);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -79,10 +83,7 @@ public class TableGroupServiceTest {
     @DisplayName("단체지정할 수 있다.")
     void create() {
         //given
-        TableGroup tableGroup = new TableGroup();
-        List<OrderTable> orderTables = Arrays.asList(firstTable, secondTable);
-        List<Long> expectedIds = findOrderTableIds(orderTables);
-        tableGroup.setOrderTables(orderTables);
+        List<Long> expectedIds = findOrderTableIds(Arrays.asList(firstTable, secondTable));
         //when
         TableGroup saved = tableGroupService.create(tableGroup);
         List<Long> actualIds = findOrderTableIds(saved.getOrderTables());
@@ -94,5 +95,25 @@ public class TableGroupServiceTest {
         return orderTables.stream()
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
+    }
+
+    @Test
+    @DisplayName("테이블이 조리, 식사 중이면 단체 지정을 해제할 수 없다.")
+    void unGroupWithInvalidOrderStatus() {
+        //given
+        TableGroup saved = tableGroupService.create(secondTableGroup);
+        //when, then
+        assertThatThrownBy(() -> {
+            tableGroupService.ungroup(saved.getId());
+        }).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("단체 지정을 해제할 수 있다.")
+    void unGroup() {
+        //given
+        TableGroup saved = tableGroupService.create(tableGroup);
+        //when, then
+        tableGroupService.ungroup(saved.getId());
     }
 }

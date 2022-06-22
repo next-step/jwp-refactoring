@@ -1,7 +1,5 @@
 package kitchenpos.product.application;
 
-import static kitchenpos.ServiceTestFactory.HONEY_COMBO;
-import static kitchenpos.ServiceTestFactory.RED_COMBO;
 import static kitchenpos.ServiceTestFactory.createProductBy;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
