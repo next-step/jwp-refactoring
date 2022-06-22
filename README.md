@@ -13,6 +13,24 @@
 - [X] 값객체, 일급컬랙션을 활용한 도메인 내부 리팩토링
 - [X] Service 비즈니스 로직 도메인으로 리팩토링 
 
+**3단계 : 의존성 리팩토링**
+- [ ] 도메인 간 직접참조 사항에 대한 의존관계 해제 : 간접 참조
+- [ ] Package Cycle 의존성 발생사항에 대해 단방향 참조가 처리될 수 있도록 대응
+
+[step2 형상] 도메인 연관관계 구조 도식화
+![이미지](/step3/step2_architecture.png)
+
+[step2 형상] 객체 묶어보기 도식화
+![이미지](/step3/step2_object_grouping.png)
+
+[step3] 객체 참조 끊기 : ID를 이용한 연관관계 매핑 (간접매핑) 
+![이미지](/step3/step3_relation_mapping_by_id.png)
+
+[step3] 객체 참조 끊기 : 패키지 사이클 의존성 제거하기 (새로운 패키지 추 및 Domain Event)
+![이미지](/step3/step3_event.png)
+
+
+
 ---
 ## 요구 사항
 ### 메뉴 그룹 (Menu Group)
