@@ -23,6 +23,7 @@ import kitchenpos.dto.menu.MenuProductRequest;
 import kitchenpos.dto.menu.MenuRequest;
 import kitchenpos.dto.menu.MenuResponse;
 import kitchenpos.exception.CreateMenuException;
+import kitchenpos.exception.CreateMenuProductException;
 import kitchenpos.exception.MenuPriceException;
 import kitchenpos.exception.NegativePriceException;
 import kitchenpos.exception.NotFoundMenuGroupException;
@@ -72,8 +73,8 @@ class MenuServiceTest {
         우아한_초밥_2 = ProductFixtureFactory.create(2L, "우아한_초밥_2", BigDecimal.valueOf(20_000));
         A = MenuFixtureFactory.create("A", BigDecimal.valueOf(30_000), 초밥_메뉴그룹.getId());
 
-        A_우아한_초밥_1 = MenuProductFixtureFactory.create(1L, A, 우아한_초밥_1, 1);
-        A_우아한_초밥_2 = MenuProductFixtureFactory.create(2L, A, 우아한_초밥_2, 2);
+        A_우아한_초밥_1 = MenuProductFixtureFactory.create(1L, A, 우아한_초밥_1.getId(), 1);
+        A_우아한_초밥_2 = MenuProductFixtureFactory.create(2L, A, 우아한_초밥_2.getId(), 2);
 
         A_우아한_초밥_1.mappedByMenu(A);
         A_우아한_초밥_2.mappedByMenu(A);
@@ -166,7 +167,7 @@ class MenuServiceTest {
         );
 
         // when & then
-        assertThatExceptionOfType(NotFoundProductException.class)
+        assertThatExceptionOfType(CreateMenuProductException.class)
                 .isThrownBy(() -> menuService.create(menuRequest));
     }
 

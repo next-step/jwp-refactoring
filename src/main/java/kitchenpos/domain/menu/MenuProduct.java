@@ -12,16 +12,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import kitchenpos.domain.Price;
 import kitchenpos.domain.Quantity;
-import kitchenpos.domain.product.Product;
-import kitchenpos.exception.CreateMenuProductException;
 
 @Entity
 @Table(name = "menu_product")
 public class MenuProduct {
-
-    private static final String PRODUCT_IS_NOT_NULL = "메뉴상품 생성 시 상품은 필수입니다.";
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "seq")
@@ -29,34 +25,31 @@ public class MenuProduct {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_menu_product_menu"), nullable = false)
     private Menu menu;
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_menu_product_product"), nullable = false)
-    private Product product;
+    private Long productId;
     @Embedded
     private Quantity quantity;
 
     protected MenuProduct() {}
 
-    private MenuProduct(Long seq, Menu menu, Product product, long quantity) {
+    private MenuProduct(Long seq, Menu menu, Long productId, long quantity) {
         this.seq = seq;
         this.menu = menu;
-        this.product = product;
+        this.productId = productId;
         this.quantity = Quantity.from(quantity);
     }
 
-    private MenuProduct(Product product, long quantity) {
-        this.product = product;
+    private MenuProduct(Long productId, long quantity) {
+        this.productId = productId;
         this.quantity = Quantity.from(quantity);
     }
 
-    public static MenuProduct of(Product product, long quantity) {
-        validateMenuProduct(product);
-        return new MenuProduct(product, quantity);
+    public static MenuProduct of(Long productId, long quantity) {
+        return new MenuProduct(productId, quantity);
     }
 
-    public static MenuProduct of(Long seq, Menu menu, Product product, long quantity) {
-        validateMenuProduct(product);
-        return new MenuProduct(seq, menu, product, quantity);
+    public static MenuProduct of(Long seq, Menu menu, Long productId, long quantity) {
+        return new MenuProduct(seq, menu, productId, quantity);
     }
 
     public Long getSeq() {
@@ -68,7 +61,7 @@ public class MenuProduct {
     }
 
     public Long getProductId() {
-        return this.product.getId();
+        return this.productId;
     }
 
     public long findQuantity() {
@@ -79,13 +72,7 @@ public class MenuProduct {
         this.menu = menu;
     }
 
-    public BigDecimal calculateTotalPrice() {
-        return product.calculatePrice(BigDecimal.valueOf(this.findQuantity()));
-    }
-
-    private static void validateMenuProduct(Product product) {
-        if (product == null) {
-            throw new CreateMenuProductException(PRODUCT_IS_NOT_NULL);
-        }
+    public BigDecimal calculateTotalPrice(Price price) {
+        return price.getValue().multiply(BigDecimal.valueOf(this.findQuantity()));
     }
 }
