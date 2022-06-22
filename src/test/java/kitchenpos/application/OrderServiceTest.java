@@ -82,6 +82,18 @@ class OrderServiceTest {
         주문_생성_실패됨(() -> orderService.create(주문));
     }
 
+    @DisplayName("빈 주문 테이블에 주문을 추가하면 예외가 발생해야 한다")
+    @Test
+    void createOrderByEmptyOrderTableTest() {
+        // given
+        Order 주문 = 주문_생성(0L, OrderStatus.COOKING, Collections.singletonList(주문_목록_생성(0L, 1L, 1)));
+        when(menuDao.countByIdIn(any())).thenReturn(1L);
+        when(orderTableDao.findById(any())).thenReturn(Optional.of(주문_테이블_생성(0L, 1, true)));
+
+        // then
+        주문_생성_실패됨(() -> orderService.create(주문));
+    }
+
     @DisplayName("정상 상태의 주문을 저장하면 정상 저장되어야 한다")
     @Test
     void createOrderTest() {

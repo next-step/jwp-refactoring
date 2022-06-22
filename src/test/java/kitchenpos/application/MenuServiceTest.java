@@ -51,7 +51,7 @@ class MenuServiceTest {
         // given
         Menu 메뉴 = 메뉴_생성(
                 "0원 메뉴",
-                0,
+                -1,
                 0L,
                 Collections.singletonList(메뉴_상품_생성(0L, 0L, 1))
         );

@@ -109,11 +109,51 @@ class TableGroupServiceTest {
         테이블_그룹_정상_생성됨(테이블_그룹_생성_결과, 테이블_그룹);
     }
 
+    @DisplayName("주문 테이블의 상태가 요리중 또는 식사중인 테이블 그룹을 해제하면 예외가 발생해야 한다")
+    @Test
+    void ungroupByCookingOrMealStatusTableGroupTest() {
+        // given
+        when(orderTableDao.findAllByTableGroupId(any())).thenReturn(Collections.singletonList(주문_테이블_생성(0L, 10, false)));
+        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(true);
+
+        // then
+        테이블_그룹_해제_실패(() -> tableGroupService.ungroup(0L));
+    }
+
+    @DisplayName("정상 상태의 주문 테이블의 테이블 그룹을 해제하면 정상 동작해야 한다")
+    @Test
+    void ungroupTest() {
+        // given
+        List<OrderTable> 주문_테이블_리스트 = Arrays.asList(
+                주문_테이블_생성(0L, 1, false),
+                주문_테이블_생성(0L, 2, false),
+                주문_테이블_생성(0L, 3, false)
+        );
+        when(orderTableDao.findAllByTableGroupId(any())).thenReturn(주문_테이블_리스트);
+        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(false);
+
+        // when
+        tableGroupService.ungroup(0L);
+
+        // then
+        테이블_그룹_해제_성공(주문_테이블_리스트);
+    }
+
     void 테이블_그룹_생성_실패(Runnable runnable) {
         assertThatIllegalArgumentException().isThrownBy(runnable::run);
     }
 
     void 테이블_그룹_정상_생성됨(TableGroup source, TableGroup target) {
         assertThat(source.getOrderTables()).isEqualTo(target.getOrderTables());
+    }
+
+    void 테이블_그룹_해제_실패(Runnable runnable) {
+        assertThatIllegalArgumentException().isThrownBy(runnable::run);
+    }
+
+    void 테이블_그룹_해제_성공(List<OrderTable> source) {
+        for (OrderTable orderTable : source) {
+            assertThat(orderTable.getTableGroupId()).isNull();
+        }
     }
 }
