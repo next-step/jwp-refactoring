@@ -46,6 +46,9 @@ public class TableGroup {
         private LocalDateTime createdDate;
         private List<OrderTable> orderTables;
 
+        public Builder() {
+        }
+
         public Builder id(Long id) {
             this.id = id;
             return this;
