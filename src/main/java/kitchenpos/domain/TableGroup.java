@@ -8,6 +8,15 @@ public class TableGroup {
     private LocalDateTime createdDate;
     private List<OrderTable> orderTables;
 
+    public TableGroup() {
+    }
+
+    private TableGroup(Builder builder) {
+        id = builder.id;
+        createdDate = builder.createdDate;
+        orderTables = builder.orderTables;
+    }
+
     public Long getId() {
         return id;
     }
@@ -30,5 +39,30 @@ public class TableGroup {
 
     public void setOrderTables(final List<OrderTable> orderTables) {
         this.orderTables = orderTables;
+    }
+
+    public static class Builder {
+        private Long id;
+        private LocalDateTime createdDate;
+        private List<OrderTable> orderTables;
+
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder createdDate(LocalDateTime createdDate) {
+            this.createdDate = createdDate;
+            return this;
+        }
+
+        public Builder orderTables(List<OrderTable> orderTables) {
+            this.orderTables = orderTables;
+            return this;
+        }
+
+        public TableGroup build() {
+            return new TableGroup(this);
+        }
     }
 }

@@ -22,6 +22,13 @@ public class OrderTable {
         this.empty = empty;
     }
 
+    private OrderTable(Builder builder) {
+        id = builder.id;
+        tableGroupId = builder.tableGroupId;
+        numberOfGuests = builder.numberOfGuests;
+        empty = builder.empty;
+    }
+
     public static OrderTable from(boolean empty) {
         return new OrderTable(empty);
     }
@@ -64,5 +71,41 @@ public class OrderTable {
 
     public void setEmpty(final boolean empty) {
         this.empty = empty;
+    }
+
+    public static class Builder {
+        private Long id;
+        private Long tableGroupId;
+        private int numberOfGuests;
+        private boolean empty;
+
+        public Builder(int numberOfGuests, boolean empty) {
+            this.numberOfGuests = numberOfGuests;
+            this.empty = empty;
+        }
+
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder tableGroupId(Long tableGroupId) {
+            this.tableGroupId = tableGroupId;
+            return this;
+        }
+
+        public Builder numberOfGuests(int numberOfGuests) {
+            this.numberOfGuests = numberOfGuests;
+            return this;
+        }
+
+        public Builder empty(boolean empty) {
+            this.empty = empty;
+            return this;
+        }
+
+        public OrderTable build() {
+            return new OrderTable(this);
+        }
     }
 }
