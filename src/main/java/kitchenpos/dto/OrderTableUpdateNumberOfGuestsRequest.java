@@ -1,12 +1,19 @@
 package kitchenpos.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class OrderTableUpdateNumberOfGuestsRequest {
     private int numberOfGuests;
 
     public OrderTableUpdateNumberOfGuestsRequest() {
     }
 
-    public OrderTableUpdateNumberOfGuestsRequest(int numberOfGuests) {
+    @JsonCreator
+    public OrderTableUpdateNumberOfGuestsRequest(@JsonProperty("numberOfGuests") int numberOfGuests) {
+        if (numberOfGuests < 0) {
+            throw new IllegalArgumentException();
+        }
         this.numberOfGuests = numberOfGuests;
     }
 

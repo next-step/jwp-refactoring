@@ -11,7 +11,6 @@ import org.springframework.util.CollectionUtils;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,18 +42,13 @@ public class TableGroupService {
         }
 
         for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) {
+            if (!savedOrderTable.isEmpty() || savedOrderTable.hasTableGroup()) {
                 throw new IllegalArgumentException();
             }
         }
 
-        TableGroup tableGroup = tableGroupRepository.save(new TableGroup());
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.setTableGroup(tableGroup);
-            savedOrderTable.setEmpty(false);
-            tableGroup.add(savedOrderTable);
-        }
-
+        TableGroup tableGroup = new TableGroup(savedOrderTables);
+        tableGroupRepository.save(tableGroup);
         return new TableGroupResponse(tableGroup);
     }
 
@@ -67,8 +61,6 @@ public class TableGroupService {
             throw new IllegalArgumentException();
         }
 
-        for (final OrderTable orderTable : tableGroup.getOrderTables()) {
-            orderTable.unGroup();
-        }
+        tableGroup.unGroup();
     }
 }

@@ -19,4 +19,10 @@ public class OrderTables {
     public void add(OrderTable orderTable) {
         this.orderTables.add(orderTable);
     }
+
+    public void unGroup() {
+        for (final OrderTable orderTable : this.orderTables) {
+            orderTable.unGroup();
+        }
+    }
 }

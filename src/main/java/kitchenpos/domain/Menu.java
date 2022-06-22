@@ -54,7 +54,7 @@ public class Menu {
         return this.menuProducts.getAll();
     }
 
-    public void addMenuProduct(Product product, long quantity) {
+    public void add(Product product, long quantity) {
         this.menuProducts.add(new MenuProduct(this, product, quantity));
     }
 }

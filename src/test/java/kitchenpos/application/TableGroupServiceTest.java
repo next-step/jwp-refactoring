@@ -39,7 +39,7 @@ class TableGroupServiceTest {
         OrderTable orderTable1 = new OrderTable(1L, null, 5, true);
         OrderTable orderTable2 = new OrderTable(2L, null, 1, true);
         given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(orderTable1, orderTable2));
-        TableGroup tableGroup = new TableGroup(1L);
+        TableGroup tableGroup = new TableGroup();
         given(tableGroupRepository.save(any())).willReturn(tableGroup);
 
         //when

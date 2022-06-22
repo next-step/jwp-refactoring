@@ -54,8 +54,8 @@ class MenuServiceTest {
                 Arrays.asList(new MenuProductRequest(product1.getId(), 10),
                         new MenuProductRequest(product2.getId(), 20)));
         Menu menu = new Menu("menu1", BigDecimal.valueOf(10000), new MenuGroup(1L, "group"));
-        menu.addMenuProduct(product1, 10);
-        menu.addMenuProduct(product2, 20);
+        menu.add(product1, 10);
+        menu.add(product2, 20);
         given(menuGroupDao.findById(any())).willReturn(Optional.of(group));
         given(menuDao.save(any())).willReturn(menu);
         given(productDao.findById(product1.getId())).willReturn(Optional.of(product1));
@@ -114,8 +114,8 @@ class MenuServiceTest {
     void list() {
         //given
         Menu menu = new Menu("menu1", BigDecimal.valueOf(10000), new MenuGroup(1L, "group"));
-        menu.addMenuProduct(product1, 10);
-        menu.addMenuProduct(product2, 20);
+        menu.add(product1, 10);
+        menu.add(product2, 20);
         given(menuDao.findAll()).willReturn(Arrays.asList(menu));
 
         //then

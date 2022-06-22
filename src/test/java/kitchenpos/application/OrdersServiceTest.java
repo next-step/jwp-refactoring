@@ -43,13 +43,13 @@ class OrdersServiceTest {
     @BeforeEach
     void setUp() {
         menuGroup = new MenuGroup(1L, "menuGroup");
-        비어있지_않은_주문_테이블 = new OrderTable(1L, new TableGroup(1L), 5, false);
-        비어있는_주문_테이블 = new OrderTable(2L, new TableGroup(2L), 10, true);
+        비어있지_않은_주문_테이블 = new OrderTable(1L, new TableGroup(), 5, false);
+        비어있는_주문_테이블 = new OrderTable(2L, new TableGroup(), 10, true);
         product1 = new Product(1L, "product1", BigDecimal.valueOf(100));
         product2 = new Product(2L, "product2", BigDecimal.valueOf(500));
         menu = new Menu(1L, "menu1", BigDecimal.valueOf(1000), menuGroup);
-        menu.addMenuProduct(product1, 1);
-        menu.addMenuProduct(product2, 2);
+        menu.add(product1, 1);
+        menu.add(product2, 2);
         orders = new Orders(비어있지_않은_주문_테이블, OrderStatus.COOKING, LocalDateTime.now());
     }
 
@@ -59,7 +59,7 @@ class OrdersServiceTest {
         //given
         given(menuRepository.countByIdIn(any())).willReturn(1L);
         given(menuRepository.findById(any())).willReturn(Optional.of(menu));
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(비어있지_않은_주문_테이블));
+        given(orderTableRepository.findByIdAndEmptyIsFalse(any())).willReturn(Optional.of(비어있지_않은_주문_테이블));
         given(ordersRepository.save(any())).willReturn(orders);
 
         //when
@@ -89,7 +89,7 @@ class OrdersServiceTest {
     void create_fail_3() {
         //given
         given(menuRepository.countByIdIn(any())).willReturn(1L);
-        given(orderTableRepository.findById(any())).willReturn(Optional.empty());
+        given(orderTableRepository.findByIdAndEmptyIsFalse(any())).willReturn(Optional.empty());
 
         //then
         assertThatThrownBy(() -> orderService.create(new OrdersRequest(비어있지_않은_주문_테이블.getId(),
@@ -102,7 +102,7 @@ class OrdersServiceTest {
     void create_fail_4() {
         //given
         given(menuRepository.countByIdIn(any())).willReturn(1L);
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(비어있는_주문_테이블));
+        given(orderTableRepository.findByIdAndEmptyIsFalse(any())).willReturn(Optional.of(비어있는_주문_테이블));
 
         //then
         assertThatThrownBy(() -> orderService.create(new OrdersRequest(비어있는_주문_테이블.getId(),

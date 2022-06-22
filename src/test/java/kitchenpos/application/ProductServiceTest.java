@@ -54,7 +54,7 @@ class ProductServiceTest {
         List<ProductResponse> products = productService.list();
 
         //then
-        assertThat(products.stream().map(product -> product.getName()).collect(Collectors.toList()))
+        assertThat(products.stream().map(ProductResponse::getName).collect(Collectors.toList()))
                 .containsExactlyInAnyOrder("product1", "product2");
     }
 }

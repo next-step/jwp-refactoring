@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,7 +19,8 @@ public class OrderService {
     private final OrderTableRepository orderTableRepository;
 
     public OrderService(
-            final MenuRepository menuRepository, final OrdersRepository ordersRepository,
+            final MenuRepository menuRepository,
+            final OrdersRepository ordersRepository,
             final OrderTableRepository orderTableRepository) {
         this.menuRepository = menuRepository;
         this.ordersRepository = ordersRepository;
@@ -29,23 +29,16 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrdersRequest request) {
-        if (request.getOrderLineItems().size() != menuRepository.countByIdIn(
-                request.getOrderLineItems().stream().map(OrderLineItemRequest::getMenuId)
-                        .collect(Collectors.toList()))) {
+        List<OrderLineItemRequest> orderLineItems = request.getOrderLineItems();
+        if (orderLineItems.size() != menuRepository.countByIdIn(request.getOrderLineItems().stream().map(OrderLineItemRequest::getMenuId).collect(Collectors.toList()))) {
             throw new IllegalArgumentException();
         }
 
-        final OrderTable orderTable =
-                orderTableRepository.findById(request.getOrderTableId()).orElseThrow(IllegalArgumentException::new);
-
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
+        final OrderTable orderTable = orderTableRepository.findByIdAndEmptyIsFalse(request.getOrderTableId()).orElseThrow(IllegalArgumentException::new);
         final Orders savedOrders = ordersRepository.save(new Orders(orderTable, OrderStatus.COOKING, LocalDateTime.now()));
 
-        for (final OrderLineItemRequest orderLineItem : request.getOrderLineItems()) {
-            Menu menu = menuRepository.findById(orderLineItem.getMenuId()).orElseThrow(NoSuchElementException::new);
+        for (final OrderLineItemRequest orderLineItem : orderLineItems) {
+            Menu menu = menuRepository.findById(orderLineItem.getMenuId()).orElseThrow(IllegalArgumentException::new);
             savedOrders.add(menu, orderLineItem.getQuantity());
         }
         return new OrderResponse(savedOrders);

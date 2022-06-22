@@ -49,7 +49,7 @@ class TableServiceTest {
     void list() {
         //given
         OrderTable orderTable1 = new OrderTable(1L, null, 2, true);
-        OrderTable orderTable2 = new OrderTable(2L, new TableGroup(1L), 10, false);
+        OrderTable orderTable2 = new OrderTable(2L, new TableGroup(), 10, false);
         given(orderTableRepository.findAll()).willReturn(Arrays.asList(orderTable1, orderTable2));
 
         //then
@@ -61,7 +61,7 @@ class TableServiceTest {
     void changeEmpty() {
         //given
         OrderTable orderTable = new OrderTable(1L, null, 2, false);
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
+        given(orderTableRepository.findByIdAndTableGroupIsNull(any())).willReturn(Optional.of(orderTable));
         given(ordersRepository.existsByOrderTableInAndOrderStatusIn(any(), any())).willReturn(false);
 
         //when
@@ -76,7 +76,7 @@ class TableServiceTest {
     @DisplayName("주문 테이블이 조회되지 않으면 빈 테이블로 변경 실패한다.")
     void changeEmpty_failed_1() {
         //given
-        given(orderTableRepository.findById(any())).willReturn(Optional.empty());
+        given(orderTableRepository.findByIdAndTableGroupIsNull(any())).willReturn(Optional.empty());
 
         //then
         assertThatThrownBy(() -> tableService.changeEmpty(0L, new OrderTableUpdateEmptyRequest(true))).isExactlyInstanceOf(IllegalArgumentException.class);
@@ -86,9 +86,8 @@ class TableServiceTest {
     @DisplayName("저장된 주문 테이블의 단체 지정이 되어있으면 빈 테이블로 변경 실패한다.")
     void changeEmpty_failed_2() {
         //given
-        OrderTable orderTable = new OrderTable(1L, new TableGroup(1L), 2, false);
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
-
+        given(orderTableRepository.findByIdAndTableGroupIsNull(any())).willReturn(Optional.of(new OrderTable(1L, null, 2, false)));
+        given(ordersRepository.existsByOrderTableInAndOrderStatusIn(any(), any())).willReturn(true);
         //then
         assertThatThrownBy(() -> tableService.changeEmpty(0L, new OrderTableUpdateEmptyRequest(true))).isExactlyInstanceOf(
                 IllegalArgumentException.class);
@@ -98,7 +97,7 @@ class TableServiceTest {
     @DisplayName("주문 테이블의 상태가 조리, 식사 인 경우 빈 테이블로 변경 실패한다.")
     void changeEmpty_failed_3() {
         //given
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(new OrderTable(1L, null, 2, false)));
+        given(orderTableRepository.findByIdAndTableGroupIsNull(any())).willReturn(Optional.of(new OrderTable(1L, null, 2, false)));
         given(ordersRepository.existsByOrderTableInAndOrderStatusIn(any(), any())).willReturn(true);
 
         //then
@@ -110,7 +109,7 @@ class TableServiceTest {
     @DisplayName("주문 테이블의 방문한 손님 수를 변경할 수 있다.")
     void changeNumberOfGuests() {
         //given
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(new OrderTable(1L, new TableGroup(), 5, false)));
+        given(orderTableRepository.findByIdAndEmptyIsFalse(any())).willReturn(Optional.of(new OrderTable(1L, new TableGroup(), 5, false)));
 
         //when
         OrderTableResponse updatedOrderTable = tableService.changeNumberOfGuests(0L, new OrderTableUpdateNumberOfGuestsRequest(0));
@@ -132,7 +131,7 @@ class TableServiceTest {
     @DisplayName("주문 테이블이 조회가 안 되면 방문한 손님 수 변경에 실패한다.")
     void changeNumberOfGuests_failed_2() {
         //given
-        given(orderTableRepository.findById(any())).willReturn(Optional.empty());
+        given(orderTableRepository.findByIdAndEmptyIsFalse(any())).willReturn(Optional.empty());
 
         //then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(0L, new OrderTableUpdateNumberOfGuestsRequest(10))).isExactlyInstanceOf(
@@ -145,7 +144,7 @@ class TableServiceTest {
     void changeNumberOfGuests_failed_3() {
         //given
         OrderTable orderTable = new OrderTable(1L, null, 2, true);
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
+        given(orderTableRepository.findByIdAndEmptyIsFalse(any())).willReturn(Optional.of(orderTable));
 
         //then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(0L, new OrderTableUpdateNumberOfGuestsRequest(10))).isExactlyInstanceOf(

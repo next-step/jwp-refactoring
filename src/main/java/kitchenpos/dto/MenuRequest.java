@@ -40,6 +40,12 @@ public class MenuRequest {
         return price;
     }
 
+    public void check(BigDecimal price) {
+        if (this.price.compareTo(price) > 0) {
+            throw new IllegalArgumentException();
+        }
+    }
+
     private void check(String name, BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException();

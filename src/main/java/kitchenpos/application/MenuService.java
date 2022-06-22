@@ -17,7 +17,9 @@ public class MenuService {
     private final MenuGroupRepository menuGroupRepository;
     private final ProductRepository productRepository;
 
-    public MenuService(final MenuRepository menuRepository, final MenuGroupRepository menuGroupRepository, final ProductRepository productRepository) {
+    public MenuService(
+            final MenuRepository menuRepository, final MenuGroupRepository menuGroupRepository,
+            final ProductRepository productRepository) {
         this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
         this.productRepository = productRepository;
@@ -30,16 +32,12 @@ public class MenuService {
         BigDecimal sum = BigDecimal.ZERO;
         for (final MenuProductRequest menuProductRequest : request.getMenuProducts()) {
             final Product product = productRepository.findById(menuProductRequest.getProductId()).orElseThrow(IllegalArgumentException::new);
-            menu.addMenuProduct(product, menuProductRequest.getQuantity());
+            menu.add(product, menuProductRequest.getQuantity());
             sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProductRequest.getQuantity())));
         }
 
-        if (request.getPrice().compareTo(sum) > 0) {
-            throw new IllegalArgumentException();
-        }
-
-        final Menu savedMenu = menuRepository.save(menu);
-        return new MenuResponse(savedMenu);
+        request.check(sum);
+        return new MenuResponse(menuRepository.save(menu));
     }
 
     public List<MenuResponse> list() {

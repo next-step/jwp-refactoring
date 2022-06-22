@@ -17,8 +17,11 @@ public class TableGroup {
         this.createdDate = LocalDateTime.now();
     }
 
-    public TableGroup(Long id) {
-        this.id = id;
+    public TableGroup(List<OrderTable> savedOrderTables) {
+        for(OrderTable orderTable: savedOrderTables) {
+            add(orderTable);
+        }
+        this.createdDate = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -31,5 +34,10 @@ public class TableGroup {
 
     public void add(OrderTable orderTable) {
         this.orderTables.add(orderTable);
+        orderTable.updateTableGroup(this);
+    }
+
+    public void unGroup() {
+        this.orderTables.unGroup();
     }
 }
