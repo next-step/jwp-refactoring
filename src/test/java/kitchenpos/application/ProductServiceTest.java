@@ -21,7 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
     @Mock
-    ProductDao productDao;
+    private ProductDao productDao;
     @InjectMocks
     private ProductService productService;
     Product 피자;
