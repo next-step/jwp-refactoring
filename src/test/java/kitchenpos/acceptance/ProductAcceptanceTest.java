@@ -30,7 +30,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("상품 가격이 0미만이면 등록 실패한다.")
-    void createProduct2() {
+    void createProductOfUnderZeroPrice() {
         // when
         ExtractableResponse<Response> response = 상품_등록_요청("강정치킨", new BigDecimal(-1000));
 
