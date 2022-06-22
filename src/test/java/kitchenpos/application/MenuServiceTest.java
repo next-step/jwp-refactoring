@@ -1,81 +1,106 @@
 package kitchenpos.application;
 
+import kitchenpos.dao.MenuDao;
+import kitchenpos.dao.MenuGroupDao;
+import kitchenpos.dao.MenuProductDao;
+import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
-    private MenuGroupService menuGroupService;
+    @Mock
+    private MenuDao menuDao;
+    @Mock
+    private MenuGroupDao menuGroupDao;
+    @Mock
+    private MenuProductDao menuProductDao;
+    @Mock
+    private ProductDao productDao;
+    @InjectMocks
     private MenuService menuService;
-    private ProductService productService;
 
-    @Autowired
-    public MenuServiceTest(MenuGroupService menuGroupService, MenuService menuService, ProductService productService) {
-        this.menuGroupService = menuGroupService;
-        this.menuService = menuService;
-        this.productService = productService;
-    }
-
-    private Product 제육볶음;
-    private Product 소불고기;
-    private List<MenuProduct> 고기반찬;
-    private MenuGroup 점심특선;
+    private Product product;
+    private List<MenuProduct> menuProducts;
+    private MenuGroup menuGroup;
+    private Menu menu;
 
     @BeforeEach
     void beforeEach() {
-        제육볶음 = productService.create(Product.of("제육볶음", BigDecimal.valueOf(1000)));
-        소불고기 = productService.create(Product.of("소불고기", BigDecimal.valueOf(1000)));
-        고기반찬 = Arrays.asList(MenuProduct.of(제육볶음.getId(), 1), MenuProduct.of(소불고기.getId(), 1));
-        점심특선 = 메뉴묶음_요청("점심특선");
+        product = new Product.Builder("소불고기", 1000).id(1L).build();
+        menuProducts = Arrays.asList(new MenuProduct.Builder(product.getId(), 1).build(),
+                new MenuProduct.Builder(product.getId(), 1).build());
+        menuGroup = new MenuGroup.Builder().id(1L).name("점심메뉴").build();
+        menu = new Menu.Builder("점심특선", 2000, menuGroup.getId(), menuProducts).build();
     }
 
     @Test
     void create() {
+        // given
+        given(menuGroupDao.existsById(anyLong())).willReturn(true);
+        given(productDao.findById(anyLong())).willReturn(Optional.of(product));
+        given(menuDao.save(any(Menu.class))).willReturn(new Menu.Builder().id(1L).build());
+        given(menuProductDao.save(any(MenuProduct.class))).willReturn(new MenuProduct.Builder().build());
+
         // when
-        Menu 점심특선 = menuService.create(Menu.of("점심특선", BigDecimal.valueOf(2000), this.점심특선.getId(), 고기반찬));
+        Menu created = menuService.create(menu);
 
         // then
-        assertThat(점심특선.getId()).isNotNull();
+        assertThat(created.getId()).isNotNull();
+
+        // verify
+        then(menuGroupDao).should(times(1)).existsById(anyLong());
+        then(productDao).should(times(2)).findById(anyLong());
+        then(menuDao).should(times(1)).save(any(Menu.class));
+        then(menuProductDao).should(times(2)).save(any(MenuProduct.class));
     }
 
     @Test
     void create_throwsException_ifPriceLessThanZero() {
         // when
         // then
-        assertThatThrownBy(() -> menuService.create(Menu.of("점심특선", BigDecimal.valueOf(0), -1L, 고기반찬)))
+        assertThatThrownBy(() ->
+                menuService.create(new Menu.Builder("점심특선", -1000, menuGroup.getId(), menuProducts).build()))
                 .isInstanceOf(IllegalArgumentException.class);
-    }
 
-    @Test
-    void create_throwsException_ifNonExistMenuGroupId() {
-        // when
-        // then
-        assertThatThrownBy(() -> menuService.create(Menu.of("점심특선", BigDecimal.valueOf(2000), -1L, 고기반찬)))
-                .isInstanceOf(IllegalArgumentException.class);
+        // verify
+        then(menuGroupDao).should(never()).existsById(anyLong());
     }
 
     @Test
     void create_throwsException_ifWrongAmount() {
+        // given
+        given(menuGroupDao.existsById(anyLong())).willReturn(true);
+        given(productDao.findById(anyLong())).willReturn(Optional.of(product));
+
         // when
         // then
-        assertThatThrownBy(() -> menuService.create(Menu.of("점심특선", BigDecimal.valueOf(4000), 점심특선.getId(), 고기반찬)))
+        assertThatThrownBy(() ->
+                menuService.create(new Menu.Builder("점심특선", 4000, menuGroup.getId(), menuProducts).build()))
                 .isInstanceOf(IllegalArgumentException.class);
-    }
 
-    MenuGroup 메뉴묶음_요청(String name) {
-        return menuGroupService.create(new MenuGroup(name));
+        // verify
+        then(menuDao).should(never()).save(any(Menu.class));
     }
 }
