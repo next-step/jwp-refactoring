@@ -2,6 +2,7 @@ package kitchenpos.acceptance;
 
 import static kitchenpos.acceptance.ProductRestAssured.상품_등록_요청;
 import static kitchenpos.acceptance.ProductRestAssured.상품_목록_조회_요청;
+import static kitchenpos.utils.DomainFixtureFactory.createProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
@@ -17,15 +18,15 @@ import org.springframework.http.HttpStatus;
 
 @DisplayName("상품 관련 기능")
 class ProductAcceptanceTest extends AcceptanceTest {
-    Product 피자;
-    Product 스파게티;
+    private Product 피자;
+    private Product 스파게티;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        피자 = Product.of(1L, "피자", BigDecimal.valueOf(20000L));
-        스파게티 = Product.of(2L, "스파게티", BigDecimal.valueOf(20000L));
+        피자 = createProduct(1L, "피자", BigDecimal.valueOf(20000L));
+        스파게티 = createProduct(2L, "스파게티", BigDecimal.valueOf(20000L));
     }
 
     /**
@@ -50,7 +51,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
     @Test
     void createWithPriceUnderZero() {
         // when
-        ExtractableResponse<Response> response = 상품_등록_요청(Product.of(1L, "스파게티", BigDecimal.valueOf(-100L)));
+        ExtractableResponse<Response> response = 상품_등록_요청(createProduct(1L, "스파게티", BigDecimal.valueOf(-100L)));
 
         // then
         상품_등록_실패됨(response);

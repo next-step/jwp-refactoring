@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import static kitchenpos.utils.DomainFixtureFactory.createProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -24,13 +25,13 @@ class ProductServiceTest {
     private ProductDao productDao;
     @InjectMocks
     private ProductService productService;
-    Product 피자;
-    Product 스파게티;
+    private Product 피자;
+    private Product 스파게티;
 
     @BeforeEach
     void setUp() {
-        피자 = Product.of(1L, "피자", BigDecimal.valueOf(20000L));
-        스파게티 = Product.of(2L, "스파게티", BigDecimal.valueOf(20000L));
+        피자 = createProduct(1L, "피자", BigDecimal.valueOf(20000L));
+        스파게티 = createProduct(2L, "스파게티", BigDecimal.valueOf(20000L));
     }
 
     @DisplayName("상품 생성 테스트")
@@ -47,7 +48,7 @@ class ProductServiceTest {
     @DisplayName("상품 생성시 가격이 없는 경우 테스트")
     @Test
     void createWithPriceNull() {
-        Product product = Product.of(1L, "스파게티", null);
+        Product product = createProduct(1L, "스파게티", null);
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> productService.create(product));
     }
@@ -55,7 +56,7 @@ class ProductServiceTest {
     @DisplayName("상품 생성시 가격이 0원 아래인 경우 테스트")
     @Test
     void createWithPriceUnderZero() {
-        Product product = Product.of(1L, "스파게티", BigDecimal.valueOf(-100L));
+        Product product = createProduct(1L, "스파게티", BigDecimal.valueOf(-100L));
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> productService.create(product));
     }

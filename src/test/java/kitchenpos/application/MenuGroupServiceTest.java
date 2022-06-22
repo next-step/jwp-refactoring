@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import static kitchenpos.utils.DomainFixtureFactory.createMenuGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
@@ -22,13 +23,13 @@ class MenuGroupServiceTest {
     private MenuGroupDao menuGroupDao;
     @InjectMocks
     private MenuGroupService menuGroupService;
-    MenuGroup 두마리메뉴;
-    MenuGroup 한마리메뉴;
+    private MenuGroup 두마리메뉴;
+    private MenuGroup 한마리메뉴;
 
     @BeforeEach
     void setUp() {
-        두마리메뉴 = MenuGroup.of(1L, "두마리메뉴");
-        한마리메뉴 = MenuGroup.of(2L, "한마리메뉴");
+        두마리메뉴 = createMenuGroup(1L, "두마리메뉴");
+        한마리메뉴 = createMenuGroup(2L, "한마리메뉴");
     }
 
     @DisplayName("메뉴 그룹 생성 테스트")

@@ -2,6 +2,7 @@ package kitchenpos.acceptance;
 
 import static kitchenpos.acceptance.MenuGroupRestAssured.메뉴그룹_등록_요청;
 import static kitchenpos.acceptance.MenuGroupRestAssured.메뉴그룹_목록_조회_요청;
+import static kitchenpos.utils.DomainFixtureFactory.createMenuGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
@@ -16,15 +17,15 @@ import org.springframework.http.HttpStatus;
 
 @DisplayName("메뉴그룹_등록_요청")
 class MenuGroupAcceptanceTest extends AcceptanceTest {
-    MenuGroup 두마리메뉴;
-    MenuGroup 한마리메뉴;
+    private MenuGroup 두마리메뉴;
+    private MenuGroup 한마리메뉴;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        두마리메뉴 = MenuGroup.of(1L, "두마리메뉴");
-        한마리메뉴 = MenuGroup.of(2L, "한마리메뉴");
+        두마리메뉴 = createMenuGroup(1L, "두마리메뉴");
+        한마리메뉴 = createMenuGroup(2L, "한마리메뉴");
     }
 
     /**
