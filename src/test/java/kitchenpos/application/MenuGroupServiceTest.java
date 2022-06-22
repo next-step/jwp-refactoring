@@ -1,6 +1,9 @@
 package kitchenpos.application;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.domain.MenuGroup;
+
+import kitchenpos.menu.application.MenuGroupService;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroupRepository;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,7 +23,7 @@ import static org.mockito.BDDMockito.given;
 @DisplayName("메뉴 그룹 관련 기능")
 public class MenuGroupServiceTest {
     @Mock
-    MenuGroupDao menuGroupDao;
+    MenuGroupRepository menuGroupRepository;
 
     @InjectMocks
     MenuGroupService menuGroupService;
@@ -36,10 +39,10 @@ public class MenuGroupServiceTest {
     @DisplayName("메뉴 그룹을 등록한다.")
     void createMenuGroup() {
         // given
-        given(menuGroupDao.save(any())).willReturn(menuGroup);
+        given(menuGroupRepository.save(any())).willReturn(menuGroup);
 
         // when
-        MenuGroup createMenuGroup = menuGroupService.create(menuGroup);
+        MenuGroupResponse createMenuGroup = menuGroupService.create(menuGroup);
 
         // then
         assertThat(createMenuGroup).isNotNull();
@@ -49,19 +52,16 @@ public class MenuGroupServiceTest {
     @DisplayName("메뉴 그룹을 조회한다.")
     void getMenuGroup() {
         // given
-        given(menuGroupDao.findAll()).willReturn(Arrays.asList(menuGroup));
+        given(menuGroupRepository.findAll()).willReturn(Arrays.asList(menuGroup));
 
         // when
-        List<MenuGroup> menuGroups = menuGroupService.list();
+        List<MenuGroupResponse> menuGroups = menuGroupService.list();
 
         // then
         assertThat(menuGroups).isNotNull();
     }
 
     public static MenuGroup 메뉴_그룹_등록(Long id, String name) {
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setId(id);
-        menuGroup.setName(name);
-        return menuGroup;
+        return MenuGroup.of(name);
     }
 }

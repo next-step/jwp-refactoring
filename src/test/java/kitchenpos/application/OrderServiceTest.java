@@ -6,6 +6,8 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.*;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
