@@ -1,18 +1,13 @@
 package kitchenpos.application;
 
-
-import static kitchenpos.utils.DomainFixtureFactory.createMenu;
-import static kitchenpos.utils.DomainFixtureFactory.createMenuProduct;
 import static kitchenpos.utils.DomainFixtureFactory.createOrder;
 import static kitchenpos.utils.DomainFixtureFactory.createOrderLineItem;
 import static kitchenpos.utils.DomainFixtureFactory.createOrderTable;
-import static kitchenpos.utils.DomainFixtureFactory.createProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,13 +15,10 @@ import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -49,18 +41,12 @@ class OrderServiceTest {
     @InjectMocks
     private OrderService orderService;
 
-    private Menu 양념치킨;
-    private Product 양념;
-    private MenuProduct 양념치킨상품;
     private OrderTable 주문테이블;
     private OrderLineItem 주문항목;
     private Order 주문;
 
     @BeforeEach
     void setUp() {
-        양념 = createProduct(1L, "양념", BigDecimal.valueOf(20000L));
-        양념치킨상품 = createMenuProduct(1L, 1L, 1L, 2L);
-        양념치킨 = createMenu(1L, "양념치킨", BigDecimal.valueOf(40000L), 1L, Lists.newArrayList(양념치킨상품));
         주문테이블 = createOrderTable(1L, null, 2, false);
         주문항목 = createOrderLineItem(1L, null, 1L, 2L);
         주문 = createOrder(1L, 주문테이블.getId(), null, null, Lists.newArrayList(주문항목));
