@@ -33,12 +33,12 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     @DisplayName("제품(상품)을 만들면 조회 할 수 있다.")
     void createProduct() {
         // when
-        final ExtractableResponse<Response> 제품_생성_요청_결과 = 제품_생성_요청("강정치킨", 17000);
+        final ExtractableResponse<Response> 제품_생성_요청_결과 = 제품_생성_요청("강정치킨", 17_000);
         제품_생성_요청_확인(제품_생성_요청_결과);
 
         // then
         final ExtractableResponse<Response> 제품_조회_결과 = 제품_조회();
-        제품_조회_확인(제품_조회_결과, Arrays.asList(new Product("강정치킨", BigDecimal.valueOf(17000.0))));
+        제품_조회_확인(제품_조회_결과, Arrays.asList(new Product("강정치킨", BigDecimal.valueOf(17_000.0))));
     }
 
     public static ExtractableResponse<Response> 제품_생성_요청(String 제품명, Integer 금액) {
@@ -52,7 +52,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 제품_생성_요청_확인(ExtractableResponse<Response> 제품_생성_요청_결과) {
+    public static void 제품_생성_요청_확인(ExtractableResponse<Response> 제품_생성_요청_결과) {
         assertThat(제품_생성_요청_결과.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
@@ -63,7 +63,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 제품_조회_확인(ExtractableResponse<Response> 제품_조회_결과, List<Product> 예상된_제품_조회_결과) {
+    public static void 제품_조회_확인(ExtractableResponse<Response> 제품_조회_결과, List<Product> 예상된_제품_조회_결과) {
         final List<Product> actual = 제품_조회_결과.body().jsonPath().getList(".", Product.class);
 
         assertAll(
@@ -73,12 +73,12 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    private void 제품_내용_확인(List<Product> 제품_리스트1, List<Product> 제품_리스트2) {
+    public static void 제품_내용_확인(List<Product> 제품_리스트1, List<Product> 제품_리스트2) {
         for (int idx = 0; idx < 제품_리스트1.size(); idx++) {
-            int finalIdx = idx;
+            int innerIdx = idx;
             assertAll(
-                    () -> assertThat(제품_리스트1.get(finalIdx).getName()).isEqualTo(제품_리스트2.get(finalIdx).getName()),
-                    () -> assertThat(제품_리스트1.get(finalIdx).getPrice()).isEqualTo(제품_리스트2.get(finalIdx).getPrice())
+                    () -> assertThat(제품_리스트1.get(innerIdx).getName()).isEqualTo(제품_리스트2.get(innerIdx).getName()),
+                    () -> assertThat(제품_리스트1.get(innerIdx).getPrice()).isEqualTo(제품_리스트2.get(innerIdx).getPrice())
             );
         }
     }
