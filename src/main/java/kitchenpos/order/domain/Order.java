@@ -57,6 +57,8 @@ public class Order {
     }
 
     public void checkPossibleChangeEmpty() {
-
+        if(!OrderStatus.COMPLETION.equals(orderStatus)){
+            throw new IllegalStateException("[ERROR] 주문이 계산완료 상태가 아닙니다.");
+        }
     }
 }

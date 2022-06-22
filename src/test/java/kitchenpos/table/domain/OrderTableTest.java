@@ -1,6 +1,6 @@
 package kitchenpos.table.domain;
 
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
 import kitchenpos.domain.OrderStatus;
@@ -27,10 +27,10 @@ class OrderTableTest {
         orderTable2.addOrder(new Order(null, OrderStatus.COMPLETION, null));
 
         //when then
-        assertThatIllegalArgumentException()
+        assertThatIllegalStateException()
                 .isThrownBy(orderTable1::checkPossibleChangeEmpty);
         assertThatNoException()
-                .isThrownBy(orderTable1::checkPossibleChangeEmpty);
+                .isThrownBy(orderTable2::checkPossibleChangeEmpty);
 
     }
 }

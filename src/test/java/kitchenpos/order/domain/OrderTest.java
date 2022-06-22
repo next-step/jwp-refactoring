@@ -1,6 +1,6 @@
 package kitchenpos.order.domain;
 
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
 import java.time.LocalDateTime;
@@ -20,9 +20,9 @@ class OrderTest {
         Order order3 = new Order(null, OrderStatus.COMPLETION, LocalDateTime.now());
 
         //when then
-        assertThatIllegalArgumentException()
+        assertThatIllegalStateException()
                 .isThrownBy(order1::checkPossibleChangeEmpty);
-        assertThatIllegalArgumentException()
+        assertThatIllegalStateException()
                 .isThrownBy(order2::checkPossibleChangeEmpty);
         assertThatNoException()
                 .isThrownBy(order3::checkPossibleChangeEmpty);
