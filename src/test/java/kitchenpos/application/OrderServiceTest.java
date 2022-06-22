@@ -23,8 +23,9 @@ import java.util.Optional;
 
 import static kitchenpos.fixture.OrderFixture.*;
 import static kitchenpos.fixture.OrderLineItemFixture.주문항목_데이터_생성;
-import static kitchenpos.fixture.OrderLineItemFixture.주문항목_데이터_확인;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -189,6 +190,25 @@ class OrderServiceTest {
         //when //then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> orderService.changeOrderStatus(1L, 주문수정_요청_데이터_생성(OrderStatus.COOKING.name())));
+    }
+
+    private void 주문_데이터_확인(Order order, Long id, Long tableId, OrderStatus orderStatus) {
+        assertAll(
+                () -> assertEquals(id, order.getId()),
+                () -> assertEquals(tableId, order.getOrderTableId()),
+                () -> assertEquals(orderStatus.name(), order.getOrderStatus()),
+                () -> assertThat(order.getOrderedTime()).isNotNull(),
+                () -> assertThat(order.getOrderLineItems()).isNotEmpty()
+        );
+    }
+
+    private void 주문항목_데이터_확인(OrderLineItem orderLineItem, Long seq, Long orderId, Long menuId, int quantity) {
+        assertAll(
+                () -> assertEquals(seq, orderLineItem.getSeq()),
+                () -> assertEquals(orderId, orderLineItem.getOrderId()),
+                () -> assertEquals(menuId, orderLineItem.getMenuId()),
+                () -> assertEquals(quantity, orderLineItem.getQuantity())
+        );
     }
 
 }

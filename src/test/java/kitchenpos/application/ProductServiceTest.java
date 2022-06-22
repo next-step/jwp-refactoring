@@ -3,6 +3,7 @@ package kitchenpos.application;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -12,8 +13,10 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.fixture.ProductFixture.*;
+import static kitchenpos.fixture.ProductFixture.상품_데이터_생성;
+import static kitchenpos.fixture.ProductFixture.상품_요청_데이터_생성;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 
@@ -30,6 +33,7 @@ class ProductServiceTest {
         productService = new ProductService(productDao);
     }
 
+    @DisplayName("상품을 생성한다.")
     @Test
     void create() {
         //given
@@ -47,6 +51,7 @@ class ProductServiceTest {
         상품_데이터_확인(product, id, name, price);
     }
 
+    @DisplayName("가격이 비어 있으면 생성할 수 없다.")
     @Test
     void create_fail_null() {
         //given
@@ -57,6 +62,7 @@ class ProductServiceTest {
         assertThatIllegalArgumentException().isThrownBy(() -> productService.create(request));
     }
 
+    @DisplayName("가격이 음수이면 생성할 수 없다.")
     @Test
     void create_fail_negative() {
         //given
@@ -67,6 +73,7 @@ class ProductServiceTest {
         assertThatIllegalArgumentException().isThrownBy(() -> productService.create(request));
     }
 
+    @DisplayName("상품을 전체 조회한다.")
     @Test
     void list() {
         //given
@@ -81,5 +88,13 @@ class ProductServiceTest {
         //then
         assertEquals(1, list.size());
         상품_데이터_확인(list.get(0), id, name, price);
+    }
+
+    private void 상품_데이터_확인(Product product, Long id, String name, BigDecimal price) {
+        assertAll(
+                () -> assertEquals(id, product.getId()),
+                () -> assertEquals(name, product.getName()),
+                () -> assertEquals(price, product.getPrice())
+        );
     }
 }

@@ -4,6 +4,7 @@ import kitchenpos.application.MenuService;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.http.MediaType;
@@ -21,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class MenuRestControllerTestTest extends BaseRestControllerTest {
+class MenuRestControllerTest extends BaseRestControllerTest {
 
     @Mock
     private MenuService menuService;
@@ -31,6 +32,7 @@ class MenuRestControllerTestTest extends BaseRestControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(new MenuRestController(menuService)).build();
     }
 
+    @DisplayName("메뉴를 생성한다.")
     @Test
     void create() throws Exception {
         //given
@@ -54,6 +56,7 @@ class MenuRestControllerTestTest extends BaseRestControllerTest {
                 .andExpect(jsonPath("$.id").value(id));
     }
 
+    @DisplayName("메뉴와 메뉴상품을 전체 조회한다.")
     @Test
     void list() throws Exception {
         //given

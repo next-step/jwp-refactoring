@@ -2,14 +2,9 @@ package kitchenpos.fixture;
 
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class OrderFixture {
 
@@ -25,13 +20,4 @@ public class OrderFixture {
         return new Order(null, null, orderStatus, null, null);
     }
 
-    public static void 주문_데이터_확인(Order order, Long id, Long tableId, OrderStatus orderStatus) {
-        assertAll(
-                () -> assertEquals(id, order.getId()),
-                () -> assertEquals(tableId, order.getOrderTableId()),
-                () -> assertEquals(orderStatus.name(), order.getOrderStatus()),
-                () -> assertThat(order.getOrderedTime()).isNotNull(),
-                () -> assertThat(order.getOrderLineItems()).isNotEmpty()
-        );
-    }
 }

@@ -18,8 +18,11 @@ import java.util.Collections;
 import java.util.List;
 
 import static kitchenpos.fixture.OrderTableFixture.주문테이블_데이터_생성;
-import static kitchenpos.fixture.TableGroupFixture.*;
+import static kitchenpos.fixture.TableGroupFixture.단체_데이터_생성;
+import static kitchenpos.fixture.TableGroupFixture.단체_지정_데이터_생성;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
@@ -117,6 +120,7 @@ class TableGroupServiceTest {
         assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.create(request));
     }
 
+    @DisplayName("테이블 그룹을 해제한다.")
     @Test
     void ungroup() {
         //given
@@ -142,5 +146,12 @@ class TableGroupServiceTest {
 
         //when //then
         assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.ungroup(tableGroupId));
+    }
+
+    private void 단체_데이터_확인(TableGroup tableGroup, Long tableGroupId, LocalDateTime createdDate) {
+        assertAll(
+                () -> assertEquals(tableGroupId, tableGroup.getId()),
+                () -> assertEquals(createdDate, tableGroup.getCreatedDate())
+        );
     }
 }

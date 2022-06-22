@@ -19,10 +19,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.fixture.MenuFixture.*;
+import static kitchenpos.fixture.MenuFixture.메뉴_데이터_생성;
+import static kitchenpos.fixture.MenuFixture.메뉴_요청_데이터_생성;
 import static kitchenpos.fixture.MenuProductFixture.메뉴상품_데이터_생성;
-import static kitchenpos.fixture.MenuProductFixture.메뉴상품_데이터_확인;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -49,6 +51,7 @@ class MenuServiceTest {
         menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
     }
 
+    @DisplayName("메뉴를 생성한다.")
     @Test
     void create() {
         //given
@@ -76,7 +79,7 @@ class MenuServiceTest {
         Menu menu = menuService.create(request);
 
         //then
-        메뉴_데이터_확인(menu, menuId, name, menuGroupId, menuPrice);;
+        메뉴_데이터_확인(menu, menuId, name, menuGroupId, menuPrice);
         메뉴상품_데이터_확인(menu.getMenuProducts().get(0), 1L, 1L, 1L);
         메뉴상품_데이터_확인(menu.getMenuProducts().get(1), 2L, 1L, 2L);
     }
@@ -143,6 +146,7 @@ class MenuServiceTest {
         assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(request));
     }
 
+    @DisplayName("메뉴와 메뉴상품을 전체 조회한다.")
     @Test
     void list() {
         //given
@@ -174,5 +178,23 @@ class MenuServiceTest {
         List<MenuProduct> menuProducts = Arrays.asList(menuProduct, menuProduct2);
 
         return 메뉴_요청_데이터_생성(name, menuPrice, menuGroupId, menuProducts);
+    }
+
+    private void 메뉴_데이터_확인(Menu menu, Long id, String name, Long menuGroupId, BigDecimal menuPrice) {
+        assertAll(
+                () -> assertEquals(id, menu.getId()),
+                () -> assertEquals(name, menu.getName()),
+                () -> assertEquals(menuPrice, menu.getPrice()),
+                () -> assertEquals(menuGroupId, menu.getMenuGroupId()),
+                () -> assertThat(menu.getMenuProducts()).isNotEmpty()
+        );
+    }
+
+    private void 메뉴상품_데이터_확인(MenuProduct menuProduct, Long seq, Long menuId, Long productId) {
+        assertAll(
+                () -> assertEquals(seq, menuProduct.getSeq()),
+                () -> assertEquals(menuId, menuProduct.getMenuId()),
+                () -> assertEquals(productId, menuProduct.getProductId())
+        );
     }
 }

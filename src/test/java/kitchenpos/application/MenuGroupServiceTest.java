@@ -3,6 +3,7 @@ package kitchenpos.application;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -11,7 +12,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.fixture.MenuGroupFixture.*;
+import static kitchenpos.fixture.MenuGroupFixture.메뉴묶음_데이터_생성;
+import static kitchenpos.fixture.MenuGroupFixture.메뉴묶음_요청데이터_생성;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 
@@ -28,6 +31,7 @@ class MenuGroupServiceTest {
         menuGroupService = new MenuGroupService(menuGroupDao);
     }
 
+    @DisplayName("메뉴 묶음을 생성한다.")
     @Test
     void create() {
         //given
@@ -44,6 +48,7 @@ class MenuGroupServiceTest {
         메뉴묶음_확인(menuGroup, id, name);
     }
 
+    @DisplayName("메뉴 묶음을 전체 조회한다.")
     @Test
     void list() {
         //given
@@ -58,5 +63,12 @@ class MenuGroupServiceTest {
         assertEquals(1, menuGroups.size());
         MenuGroup menuGroup = menuGroups.get(0);
         메뉴묶음_확인(menuGroup, id, name);
+    }
+
+    private void 메뉴묶음_확인(MenuGroup menuGroup, Long id, String name) {
+        assertAll(
+                () -> assertEquals(id, menuGroup.getId()),
+                () -> assertEquals(name, menuGroup.getName())
+        );
     }
 }

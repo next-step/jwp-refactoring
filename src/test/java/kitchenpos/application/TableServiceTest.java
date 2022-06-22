@@ -16,6 +16,7 @@ import java.util.Optional;
 
 import static kitchenpos.fixture.OrderTableFixture.*;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -187,5 +188,14 @@ class TableServiceTest {
 
         //when //then
         assertThatIllegalArgumentException().isThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, request));
+    }
+
+    private void 주문테이블_데이터_확인(OrderTable orderTable, Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+        assertAll(
+                () -> assertEquals(id, orderTable.getId()),
+                () -> assertEquals(tableGroupId, orderTable.getTableGroupId()),
+                () -> assertEquals(numberOfGuests, orderTable.getNumberOfGuests()),
+                () -> assertEquals(empty, orderTable.isEmpty())
+        );
     }
 }

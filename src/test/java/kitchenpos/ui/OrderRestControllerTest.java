@@ -1,11 +1,11 @@
 package kitchenpos.ui;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import kitchenpos.application.OrderService;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.http.MediaType;
@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+import static kitchenpos.fixture.OrderFixture.주문_요청_데이터_생성;
+import static kitchenpos.fixture.OrderLineItemFixture.주문항목_데이터_생성;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -22,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class OrderRestControllerTestTest extends BaseRestControllerTest {
+class OrderRestControllerTest extends BaseRestControllerTest {
 
     @Mock
     private OrderService orderService;
@@ -32,11 +34,13 @@ class OrderRestControllerTestTest extends BaseRestControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(new OrderRestController(orderService)).build();
     }
 
+    @DisplayName("주문을 생성한다.")
     @Test
     void create() throws Exception {
         //given
-        List<OrderLineItem> orderLineItems = Arrays.asList(new OrderLineItem(1L, 1L, 1L, 1));
-        String requestBody = createOrderRequest(orderLineItems);
+        List<OrderLineItem> orderLineItems = Arrays.asList(주문항목_데이터_생성());
+        Order request = 주문_요청_데이터_생성(orderLineItems);
+        String requestBody = objectMapper.writeValueAsString(request);
 
         Order order = new Order(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItems);
         given(orderService.create(any())).willReturn(order);
@@ -55,11 +59,7 @@ class OrderRestControllerTestTest extends BaseRestControllerTest {
                 .andExpect(jsonPath("$.orderLineItems").isNotEmpty());
     }
 
-    private String createOrderRequest(List<OrderLineItem> orderLineItems) throws JsonProcessingException {
-        Order request = new Order(null, 1L, null, null, orderLineItems);
-        return objectMapper.writeValueAsString(request);
-    }
-
+    @DisplayName("주문과 주문항목을 전체 조회한다.")
     @Test
     void list() throws Exception {
         //given
@@ -74,6 +74,7 @@ class OrderRestControllerTestTest extends BaseRestControllerTest {
                 .andExpect(jsonPath("$.size()").value(1));
     }
 
+    @DisplayName("주문상태를 변경한다.")
     @Test
     void changeOrderStatus() throws Exception {
         //given
