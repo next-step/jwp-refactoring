@@ -7,7 +7,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
+import java.util.List;
 import kitchenpos.domain.Product;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,11 +18,14 @@ import org.springframework.http.HttpStatus;
 @DisplayName("상품 관련 기능")
 class ProductAcceptanceTest extends AcceptanceTest {
     Product 피자;
+    Product 스파게티;
+
     @BeforeEach
     public void setUp() {
         super.setUp();
 
         피자 = Product.of(1L, "피자", BigDecimal.valueOf(20000L));
+        스파게티 = Product.of(2L, "스파게티", BigDecimal.valueOf(20000L));
     }
 
     /**
@@ -52,28 +57,34 @@ class ProductAcceptanceTest extends AcceptanceTest {
     }
 
     /**
+     * Given 상품을 등록하고
      * When 상품 목록을 조회 하면
-     * Then 상품이 목록 조회 됨
+     * Then 상품 목록 조회 됨
      */
     @DisplayName("상품 목록을 조회 한다.")
     @Test
     void getProducts() {
+        // given
+        Product 등록한_피자 = 상품_등록_요청(피자).as(Product.class);
+        Product 등록한_스파게티 = 상품_등록_요청(스파게티).as(Product.class);
+
         // when
         ExtractableResponse<Response> response = 상품_목록_조회_요청();
 
         // then
-        상품_목록_조회됨(response);
+        상품_목록_조회됨(response, Lists.newArrayList(등록한_피자, 등록한_스파게티));
     }
 
-    public static void 상품_등록됨(ExtractableResponse<Response> response) {
+    private void 상품_등록됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    public static void 상품_등록_실패됨(ExtractableResponse<Response> response) {
+    private void 상품_등록_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
-    public static void 상품_목록_조회됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    private void 상품_목록_조회됨(ExtractableResponse<Response> response, List<Product> expectedProducts) {
+        List<Product> products = response.jsonPath().getList(".", Product.class);
+        assertThat(products).containsExactlyElementsOf(expectedProducts);
     }
 }
