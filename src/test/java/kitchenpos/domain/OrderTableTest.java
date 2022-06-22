@@ -56,7 +56,7 @@ class OrderTableTest {
         OrderTableEntity orderTable = OrderTableEntity.of(1L, 1, true);
 
         // then
-        assertThatThrownBy(orderTable::validateIsNotEmpty)
+        assertThatThrownBy(orderTable::validateIsEmpty)
             .isInstanceOf(IllegalArgumentException.class);
     }
 }
