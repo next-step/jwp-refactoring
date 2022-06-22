@@ -99,4 +99,4 @@ public class ControllerTest {
   - [ ] Order에 관한 테스트 코드 작성하기
   - [x] Product에 관한 테스트 코드 작성하기
   - [ ] TableGroup에 관한 테스트 코드 작성하기
-  - [ ] Table에 관한 테스트 코드 작성하기 
+  - [x] Table에 관한 테스트 코드 작성하기 
