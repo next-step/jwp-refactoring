@@ -28,7 +28,7 @@ class MenuProductTest {
     @BeforeEach
     void setUp() {
         메뉴그룹 = MenuGroupFixtureFactory.create("메뉴그룹");
-        메뉴 = MenuFixtureFactory.create("메뉴", BigDecimal.valueOf(20_000), 메뉴그룹);
+        메뉴 = MenuFixtureFactory.create("메뉴", BigDecimal.valueOf(20_000), 메뉴그룹.getId());
         상품_1 = ProductFixtureFactory.create("상품_1", BigDecimal.valueOf(20_000));
     }
 
