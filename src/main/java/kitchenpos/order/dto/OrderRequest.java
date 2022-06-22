@@ -1,9 +1,8 @@
 package kitchenpos.order.dto;
 
+import kitchenpos.domain.OrderLineItem;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,17 +19,21 @@ public class OrderRequest {
         this.orderLineItemRequests = orderLineItemRequests;
     }
 
-    public Long getOrderTableId() {
-        return orderTableId;
-    }
-
-    public List<OrderLineItemRequest> getOrderLineItemRequests() {
-        return orderLineItemRequests;
+    public static OrderRequest of(Long orderTableId, List<OrderLineItemRequest> orderLineItemRequests) {
+        return new OrderRequest(orderTableId, orderLineItemRequests);
     }
 
     public Order toEntity() {
         return Order.of(orderTableId, orderLineItemRequests.stream()
                 .map(OrderLineItemRequest::toEntity)
                 .collect(Collectors.toList()));
+    }
+
+    public Long getOrderTableId() {
+        return orderTableId;
+    }
+
+    public List<OrderLineItemRequest> getOrderLineItemRequests() {
+        return orderLineItemRequests;
     }
 }

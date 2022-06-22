@@ -2,6 +2,7 @@ package kitchenpos.order.domain;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -16,9 +17,9 @@ public class Order {
     private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus;
+    private OrderStatus orderStatus = OrderStatus.COOKING;
 
-    private LocalDateTime orderedTime;
+    private LocalDateTime orderedTime = LocalDateTime.now();
 
     @Embedded
     private OrderLineItems orderLineItems;

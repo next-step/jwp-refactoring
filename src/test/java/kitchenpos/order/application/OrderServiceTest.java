@@ -12,6 +12,7 @@ import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.product.domain.Product;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -150,7 +151,8 @@ public class OrderServiceTest {
         given(orderRepository.findById(any())).willReturn(Optional.of(order));
 
         // when-then
-        assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), order)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), OrderStatusRequest.of(OrderStatus.COMPLETION)))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -167,7 +169,8 @@ public class OrderServiceTest {
         given(orderRepository.save(any())).willReturn(newOrder);
 
         // when-then
-        assertThat(orderService.changeOrderStatus(order.getId(), newOrder).getOrderStatus()).isEqualTo(OrderStatus.MEAL);
+        assertThat(orderService.changeOrderStatus(order.getId(), OrderStatusRequest.of(OrderStatus.MEAL)).getOrderStatus())
+                .isEqualTo(OrderStatus.MEAL);
     }
 
     private OrderLineItem 주문_항목_등록(Long seq, Long menuId, long quantity) {

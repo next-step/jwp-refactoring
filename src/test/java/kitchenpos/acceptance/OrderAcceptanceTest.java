@@ -4,10 +4,13 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.dto.OrderStatusRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,14 +37,9 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("주문 관리")
     void order() {
-        // given
-        OrderLineItem orderLineItem = new OrderLineItem();
-        orderLineItem.setMenuId(1L);
-        orderLineItem.setQuantity(1L);
-
         // when
-        ExtractableResponse<Response> response = 주문_등록_요청(orderTable.getId(), Arrays.asList(orderLineItem));
-        Order createdOrder = response.as(Order.class);
+        ExtractableResponse<Response> response = 주문_등록_요청(orderTable.getId(), Arrays.asList(OrderLineItemRequest.of(1L, 1)));
+        OrderResponse createdOrder = response.as(OrderResponse.class);
         // then
         주문_등록됨(response);
 
@@ -51,19 +49,15 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         주문_목록_조회됨(response);
 
         // when
-        response = 주문_상태_변경_요청(createdOrder.getId(), OrderStatus.MEAL.name());
+        response = 주문_상태_변경_요청(createdOrder.getId(), OrderStatus.MEAL);
         // then
-        주문_상태_변경됨(response, OrderStatus.MEAL.name());
+        주문_상태_변경됨(response, OrderStatus.MEAL);
     }
 
-    private ExtractableResponse<Response> 주문_등록_요청(Long orderTableId, List<OrderLineItem> orderLineItems) {
-        Order order = new Order();
-        order.setOrderTableId(orderTableId);
-        order.setOrderLineItems(orderLineItems);
-
+    private ExtractableResponse<Response> 주문_등록_요청(Long orderTableId, List<OrderLineItemRequest> orderLineItemRequest) {
         return RestAssured
                 .given().log().all()
-                .body(order)
+                .body(OrderRequest.of(orderTableId, orderLineItemRequest))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/api/orders")
                 .then().log().all().extract();
@@ -77,12 +71,10 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 주문_상태_변경_요청(Long orderId, String orderStatus) {
-        Order order = new Order();
-        order.setOrderStatus(orderStatus);
+    public static ExtractableResponse<Response> 주문_상태_변경_요청(Long orderId, OrderStatus orderStatus) {
         return RestAssured
                 .given().log().all()
-                .body(order)
+                .body(OrderStatusRequest.of(orderStatus))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().put("/api/orders/{orderId}/order-status", orderId)
                 .then().log().all().extract();
@@ -96,8 +88,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static void 주문_상태_변경됨(ExtractableResponse<Response> response, String orderStatus) {
+    public static void 주문_상태_변경됨(ExtractableResponse<Response> response, OrderStatus orderStatus) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.as(Order.class).getOrderStatus()).isEqualTo(orderStatus);
+        assertThat(response.as(OrderResponse.class).getOrderStatus()).isEqualTo(orderStatus);
     }
 }

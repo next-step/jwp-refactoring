@@ -97,11 +97,9 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 메뉴_등록_요청(String name, Integer price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
-        MenuRequest menu = new MenuRequest(name, price, menuGroupId, menuProducts);
-
         return RestAssured
                 .given().log().all()
-                .body(menu)
+                .body(MenuRequest.of(name, price, menuGroupId, menuProducts))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/api/menus")
                 .then().log().all().extract();
