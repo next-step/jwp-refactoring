@@ -54,10 +54,18 @@
       - domain
         - 엔티티 변환
         - price wrapping 처리
+        - name wrapping 처리
       - application
       - ui       
       - dto
     - 메뉴
+      - domain
+          - meny/menyGroup 엔티티 변환
+          - price wrapping 처리
+          - name wrapping 처리
+      - application
+      - ui
+      - dto
     - 테이블
     - 주문
 
