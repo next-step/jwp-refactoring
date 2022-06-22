@@ -4,26 +4,18 @@ import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import kitchenpos.domain.Name;
 import kitchenpos.domain.Price;
-import kitchenpos.domain.menugroup.MenuGroup;
-import kitchenpos.exception.CreateMenuException;
-import kitchenpos.exception.MenuPriceException;
 
 @Entity
 @Table(name = "menu")
 public class Menu {
-
-    private static final String MENU_GROUP_IS_NOT_NULL = "메뉴생성 시 메뉴그룹이 필수입니다.";
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -31,23 +23,21 @@ public class Menu {
     private Name name;
     @Embedded
     private Price price;
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"), nullable = false)
-    private MenuGroup menuGroup;
+    private Long menuGroupId;
     @Embedded
     private MenuProducts menuProducts = MenuProducts.createEmpty();
 
     protected Menu() {}
 
-    private Menu(String name, BigDecimal price, MenuGroup menuGroup) {
+    private Menu(String name, BigDecimal price, Long menuGroupId) {
         this.name = Name.from(name);
         this.price = Price.from(price);
-        this.menuGroup = menuGroup;
+        this.menuGroupId = menuGroupId;
     }
 
-    public static Menu of(String name, BigDecimal price, MenuGroup menuGroup) {
-        validateCreateMenu(menuGroup);
-        return new Menu(name, price, menuGroup);
+    public static Menu of(String name, BigDecimal price, Long menuGroupId) {
+        return new Menu(name, price, menuGroupId);
     }
 
     public Long getId() {
@@ -63,7 +53,7 @@ public class Menu {
     }
 
     public Long getMenuGroupId() {
-        return this.menuGroup.getId();
+        return this.menuGroupId;
     }
 
     public List<MenuProduct> findMenuProducts() {
@@ -76,28 +66,7 @@ public class Menu {
     }
 
     public void appendAllMenuProducts(List<MenuProduct> menuProducts) {
-        validateMenuPrice(menuProducts);
         this.menuProducts.addAll(menuProducts);
         menuProducts.forEach(menuProduct -> menuProduct.mappedByMenu(this));
-    }
-
-    public MenuGroup getMenuGroup() {
-        return this.menuGroup;
-    }
-
-    private static void validateCreateMenu(MenuGroup menuGroup) {
-        if (menuGroup == null) {
-            throw new CreateMenuException(MENU_GROUP_IS_NOT_NULL);
-        }
-    }
-
-    private void validateMenuPrice(List<MenuProduct> menuProducts) {
-        BigDecimal sum = menuProducts.stream()
-                .map(MenuProduct::calculateTotalPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        if (price.compareTo(sum) > 0) {
-            throw new MenuPriceException(price, sum);
-        }
     }
 }

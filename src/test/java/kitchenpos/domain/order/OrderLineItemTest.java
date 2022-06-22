@@ -36,7 +36,7 @@ class OrderLineItemTest {
     @BeforeEach
     void setUp() {
         메뉴그룹 = MenuGroupFixtureFactory.create("메뉴그룹");
-        메뉴 = MenuFixtureFactory.create("메뉴", BigDecimal.valueOf(30_000), 메뉴그룹);
+        메뉴 = MenuFixtureFactory.create("메뉴", BigDecimal.valueOf(30_000), 메뉴그룹.getId());
         상품_1 = ProductFixtureFactory.create("상품_1", BigDecimal.valueOf(10_000));
         상품_2 = ProductFixtureFactory.create("상품_2", BigDecimal.valueOf(20_000));
         메뉴_상품_1 = MenuProductFixtureFactory.create(1L, 메뉴, 상품_1, 1L);

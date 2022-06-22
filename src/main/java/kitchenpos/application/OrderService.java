@@ -3,6 +3,7 @@ package kitchenpos.application;
 import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.stream.Collectors;
+import kitchenpos.application.menu.MenuService;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderLineItem;
