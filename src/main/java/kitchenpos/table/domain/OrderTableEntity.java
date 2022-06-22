@@ -31,8 +31,19 @@ public class OrderTableEntity {
         this.empty = empty;
     }
 
+    private OrderTableEntity(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+        this.id = id;
+        this.tableGroupId = tableGroupId;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
     public static OrderTableEntity of(Long tableGroupId, int numberOfGuests, boolean empty) {
         return new OrderTableEntity(tableGroupId, numberOfGuests, empty);
+    }
+
+    public static OrderTableEntity of(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+        return new OrderTableEntity(id, tableGroupId, numberOfGuests, empty);
     }
 
     public void mapIntoGroup(Long tableGroupId) {

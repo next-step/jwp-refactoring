@@ -2,9 +2,7 @@ package kitchenpos.table.application;
 
 import java.util.stream.Collectors;
 import kitchenpos.order.dao.OrderDao;
-import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableEntity;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.request.OrderTableRequest;
@@ -14,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class TableService {

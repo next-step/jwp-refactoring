@@ -30,6 +30,16 @@ public class TableGroupEntity {
         this.orderTables.addAll(orderTables);
     }
 
+    private TableGroupEntity(Long id, List<OrderTableEntity> orderTables) {
+        this.id = id;
+        this.createdDate = LocalDateTime.now();
+        this.orderTables.addAll(orderTables);
+    }
+
+    public static TableGroupEntity of(Long id, List<OrderTableEntity> orderTables) {
+        return new TableGroupEntity(id, orderTables);
+    }
+
     public static TableGroupEntity from(List<OrderTableEntity> orderTables) {
         return new TableGroupEntity(orderTables);
     }
