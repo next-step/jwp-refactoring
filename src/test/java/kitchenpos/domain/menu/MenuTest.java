@@ -62,8 +62,8 @@ class MenuTest {
     void create01() {
         // given
         List<MenuProduct> menuProducts = Lists.newArrayList(
-                MenuProduct.of(상품_1, 1L),
-                MenuProduct.of(상품_2, 1L)
+                MenuProduct.of(상품_1.getId(), 1L),
+                MenuProduct.of(상품_2.getId(), 1L)
         );
 
         // when
@@ -111,8 +111,8 @@ class MenuTest {
         // given
         BigDecimal menuPrice = BigDecimal.valueOf(10_000_000);
         List<MenuProduct> menuProducts = Lists.newArrayList(
-                MenuProduct.of(상품_1, 1L),
-                MenuProduct.of(상품_2, 1L)
+                MenuProduct.of(상품_1.getId(), 1L),
+                MenuProduct.of(상품_2.getId(), 1L)
         );
 
         Menu 메뉴 = Menu.of("메뉴", menuPrice, 메뉴그룹.getId());

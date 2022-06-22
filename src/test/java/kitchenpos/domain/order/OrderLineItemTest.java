@@ -39,8 +39,8 @@ class OrderLineItemTest {
         메뉴 = MenuFixtureFactory.create("메뉴", BigDecimal.valueOf(30_000), 메뉴그룹.getId());
         상품_1 = ProductFixtureFactory.create("상품_1", BigDecimal.valueOf(10_000));
         상품_2 = ProductFixtureFactory.create("상품_2", BigDecimal.valueOf(20_000));
-        메뉴_상품_1 = MenuProductFixtureFactory.create(1L, 메뉴, 상품_1, 1L);
-        메뉴_상품_2 = MenuProductFixtureFactory.create(2L, 메뉴, 상품_2, 2L);
+        메뉴_상품_1 = MenuProductFixtureFactory.create(1L, 메뉴, 상품_1.getId(), 1L);
+        메뉴_상품_2 = MenuProductFixtureFactory.create(2L, 메뉴, 상품_2.getId(), 2L);
         주문테이블 = OrderTableFixtureFactory.createWithGuest(false, 2);
         주문 = OrderFixtureFactory.create(1L, 주문테이블, OrderStatus.COOKING, Lists.newArrayList());
     }
