@@ -3,6 +3,8 @@ package kitchenpos.order.application;
 import kitchenpos.menu.dao.MenuDao;
 import kitchenpos.order.dao.OrderDao;
 import kitchenpos.order.dao.OrderLineItemDao;
+import kitchenpos.order.domain.request.OrderRequest;
+import kitchenpos.order.domain.response.OrderResponse;
 import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -78,7 +80,8 @@ public class OrderService {
     }
 
     @Transactional
-    public Order createCopy(final Order order) {
+    public OrderResponse createCopy(final OrderRequest orderRequest) {
+        Order order = new Order();
         final List<OrderLineItem> orderLineItems = order.getOrderLineItems();
 
         if (CollectionUtils.isEmpty(orderLineItems)) {
@@ -114,7 +117,7 @@ public class OrderService {
         }
         savedOrder.setOrderLineItems(savedOrderLineItems);
 
-        return savedOrder;
+        return null;
     }
 
     public List<Order> list() {
@@ -127,14 +130,14 @@ public class OrderService {
         return orders;
     }
 
-    public List<Order> listCopy() {
+    public List<OrderResponse> listCopy() {
         final List<Order> orders = orderDao.findAll();
 
         for (final Order order : orders) {
             order.setOrderLineItems(orderLineItemDao.findAllByOrderId(order.getId()));
         }
 
-        return orders;
+        return null;
     }
 
     @Transactional
@@ -157,7 +160,8 @@ public class OrderService {
     }
 
     @Transactional
-    public Order changeOrderStatusCopy(final Long orderId, final Order order) {
+    public OrderResponse changeOrderStatusCopy(final Long orderId, final OrderRequest orderRequest) {
+        Order order = new Order();
         final Order savedOrder = orderDao.findById(orderId)
             .orElseThrow(IllegalArgumentException::new);
 
@@ -172,6 +176,6 @@ public class OrderService {
 
         savedOrder.setOrderLineItems(orderLineItemDao.findAllByOrderId(orderId));
 
-        return savedOrder;
+        return null;
     }
 }
