@@ -46,9 +46,7 @@ public class Order {
         this.orderedTime = LocalDateTime.now();
     }
 
-    private Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
-                 List<OrderLineItem> orderLineItems) {
-        this.id = id;
+    private Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
@@ -58,9 +56,8 @@ public class Order {
                 .forEach(orderLineItem -> orderLineItem.mappedByOrder(this));
     }
 
-    public static Order of(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
-                           List<OrderLineItem> orderLineItems) {
-        return new Order(id, orderTable, orderStatus, orderedTime, orderLineItems);
+    public static Order of(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+        return new Order(orderTable, orderStatus, orderedTime, orderLineItems);
     }
 
     public static Order from(OrderTable orderTable) {
