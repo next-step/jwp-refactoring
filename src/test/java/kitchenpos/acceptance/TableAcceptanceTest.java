@@ -25,7 +25,7 @@ class TableAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        주문테이블 = createOrderTable(1L, null, 2, false);
+        주문테이블 = createOrderTable(null, null, 2, false);
     }
 
     /**
