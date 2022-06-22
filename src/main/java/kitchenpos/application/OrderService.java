@@ -35,13 +35,13 @@ public class OrderService {
         }
 
         final OrderTable orderTable = orderTableRepository.findByIdAndEmptyIsFalse(request.getOrderTableId()).orElseThrow(IllegalArgumentException::new);
-        final Orders savedOrders = ordersRepository.save(new Orders(orderTable, OrderStatus.COOKING, LocalDateTime.now()));
+        final Orders savedOrders = new Orders(orderTable, OrderStatus.COOKING, LocalDateTime.now());
 
         for (final OrderLineItemRequest orderLineItem : orderLineItems) {
             Menu menu = menuRepository.findById(orderLineItem.getMenuId()).orElseThrow(IllegalArgumentException::new);
             savedOrders.add(menu, orderLineItem.getQuantity());
         }
-        return new OrderResponse(savedOrders);
+        return new OrderResponse(ordersRepository.save(savedOrders));
     }
 
     @Transactional(readOnly = true)
