@@ -1,9 +1,9 @@
 # 키친포스
 ## 2단계 작업 순서
-- [ ] Domain 객체와 Request/Response 상에서 사용하는 DTO 를 별도로 사용하도록 분리
-- [ ] DomainRepository 생성
-- [ ] Service 로직을 Domain 객체 내 비즈니스 로직으로 추가하기  
-- [ ] Service 정리 하기, Domain 의 getter/setter 미사용 제거하기 
+- [X] Domain 객체와 Request/Response 상에서 사용하는 DTO 를 별도로 사용하도록 분리
+- [X] DomainRepository 생성
+- [X] Service 로직을 Domain 객체 내 비즈니스 로직으로 추가하기  
+- [X] Service 정리 하기, Domain 의 getter/setter 미사용 제거하기 
 
 ## 요구 사항
 
