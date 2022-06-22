@@ -58,14 +58,17 @@
       - application
       - ui       
       - dto
+  
     - 메뉴
       - domain
-          - meny/menyGroup 엔티티 변환
+          - menu/menuGroup 엔티티 변환 및 관계 처리
           - price wrapping 처리
           - name wrapping 처리
+          - menuProducts 일급 컬랙션으로 변경
       - application
       - ui
       - dto
+  
     - 테이블
     - 주문
 
