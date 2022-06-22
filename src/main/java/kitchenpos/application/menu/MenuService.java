@@ -2,7 +2,7 @@ package kitchenpos.application.menu;
 
 import java.util.ArrayList;
 import java.util.List;
-import kitchenpos.application.ProductService;
+import kitchenpos.application.product.ProductService;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.domain.menu.MenuRepository;

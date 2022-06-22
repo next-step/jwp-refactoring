@@ -9,6 +9,7 @@ import static org.mockito.BDDMockito.given;
 import java.math.BigDecimal;
 import java.util.List;
 import kitchenpos.application.fixture.ProductFixtureFactory;
+import kitchenpos.application.product.ProductService;
 import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.ProductRepository;
 import kitchenpos.dto.product.ProductRequest;

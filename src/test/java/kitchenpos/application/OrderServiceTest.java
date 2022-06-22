@@ -19,6 +19,8 @@ import kitchenpos.application.fixture.OrderLineItemFixtureFactory;
 import kitchenpos.application.fixture.OrderTableFixtureFactory;
 import kitchenpos.application.fixture.ProductFixtureFactory;
 import kitchenpos.application.menu.MenuService;
+import kitchenpos.application.order.OrderService;
+import kitchenpos.application.table.OrderTableService;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.domain.menugroup.MenuGroup;

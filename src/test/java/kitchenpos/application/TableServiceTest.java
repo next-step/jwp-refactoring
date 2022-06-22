@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Optional;
 import kitchenpos.application.fixture.OrderTableFixtureFactory;
 import kitchenpos.application.fixture.TableGroupFixtureFactory;
+import kitchenpos.application.order.OrderService;
+import kitchenpos.application.table.TableService;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.domain.tablegroup.TableGroup;

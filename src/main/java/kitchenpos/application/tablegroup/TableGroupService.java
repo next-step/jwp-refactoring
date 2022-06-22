@@ -1,8 +1,10 @@
-package kitchenpos.application;
+package kitchenpos.application.tablegroup;
 
 import static kitchenpos.domain.tablegroup.TableGroup.CREATE_TABLE_GROUP_ORDER_TABLE_MISMATCH;
 
 import java.util.List;
+import kitchenpos.application.order.OrderService;
+import kitchenpos.application.table.OrderTableService;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.tablegroup.TableGroup;
 import kitchenpos.domain.tablegroup.TableGroupRepository;
