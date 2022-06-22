@@ -1,13 +1,16 @@
-package kitchenpos.application;
+package kitchenpos.order.application;
 
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
+import kitchenpos.application.TableServiceTest;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.*;
+import kitchenpos.domain.OrderTable;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.product.domain.Product;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,27 +29,26 @@ import static kitchenpos.menu.application.MenuGroupServiceTest.메뉴_그룹_등
 import static kitchenpos.menu.application.MenuServiceTest.메뉴_등록;
 import static kitchenpos.menu.application.MenuServiceTest.메뉴_상품_등록;
 import static kitchenpos.product.ProductServiceTest.상품_등록;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("주문 관련 기능")
 public class OrderServiceTest {
+
     @InjectMocks
     OrderService orderService;
 
     @Mock
-    private MenuDao menuDao;
-
-    @Mock
-    private OrderDao orderDao;
-
-    @Mock
-    private OrderLineItemDao orderLineItemDao;
-
-    @Mock
     private OrderTableDao orderTableDao;
+
+    @Mock
+    private MenuRepository menuRepository;
+
+    @Mock
+    private OrderRepository orderRepository;
 
     private Product 강정치킨;
     private MenuGroup 치킨메뉴;
@@ -90,7 +92,7 @@ public class OrderServiceTest {
     void createWithInvalidOrderTable() {
         // given
         Order order = 주문_등록(1L, 테이블.getId(), 주문항목);
-        given(menuDao.countByIdIn(any())).willReturn(1L);
+        given(menuRepository.countByIdIn(any())).willReturn(1);
 
         // when-then
         assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
@@ -101,7 +103,7 @@ public class OrderServiceTest {
     void createWithEmptyOrderTable() {
         // given
         Order order = 주문_등록(1L, 테이블.getId(), 주문항목);
-        given(menuDao.countByIdIn(any())).willReturn(1L);
+        given(menuRepository.countByIdIn(any())).willReturn(1);
         given(orderTableDao.findById(any())).willReturn(Optional.ofNullable(테이블));
 
         // when-then
@@ -114,9 +116,9 @@ public class OrderServiceTest {
         // given
         Order order = 주문_등록(1L, 테이블.getId(), 주문항목);
         테이블.setEmpty(false);
-        given(menuDao.countByIdIn(any())).willReturn(1L);
+        given(menuRepository.countByIdIn(any())).willReturn(1);
         given(orderTableDao.findById(any())).willReturn(Optional.ofNullable(테이블));
-        given(orderDao.save(any())).willReturn(order);
+        given(orderRepository.save(any())).willReturn(order);
 
         // when-then
         assertThat(orderService.create(order)).isEqualTo(order);
@@ -127,15 +129,15 @@ public class OrderServiceTest {
     void list() {
         // given
         Order order = 주문_등록(1L, 테이블.getId(), 주문항목);
-        given(orderDao.findAll()).willReturn(Arrays.asList(order));
-        given(orderLineItemDao.findAllByOrderId(order.getId())).willReturn(주문항목);
+        given(orderRepository.findAll()).willReturn(Arrays.asList(order));
+//        given(orderLineItemDao.findAllByOrderId(order.getId())).willReturn(주문항목);
 
         // when
         List<Order> orders = orderService.list();
 
         // then
         assertThat(orders).hasSize(1);
-        assertThat(orders.get(0).getOrderLineItems()).hasSize(1);
+        assertThat(orders.get(0).getOrderLineItems().getValues()).hasSize(1);
     }
 
     @Test
@@ -143,8 +145,8 @@ public class OrderServiceTest {
     void changeOrderStatusOfCompleted() {
         // given
         Order order = 주문_등록(1L, 테이블.getId(), 주문항목);
-        order.setOrderStatus(OrderStatus.COMPLETION.name());
-        given(orderDao.findById(any())).willReturn(Optional.of(order));
+        order.changeOrderStatus(OrderStatus.COMPLETION);
+        given(orderRepository.findById(any())).willReturn(Optional.of(order));
 
         // when-then
         assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), order)).isInstanceOf(IllegalArgumentException.class);
@@ -155,30 +157,22 @@ public class OrderServiceTest {
     void changeOrderStatus() {
         // given
         Order order = 주문_등록(1L, 테이블.getId(), 주문항목);
-        order.setOrderStatus(OrderStatus.COOKING.name());
+        order.changeOrderStatus(OrderStatus.COOKING);
 
         Order newOrder = 주문_등록(1L, 테이블.getId(), 주문항목);
-        newOrder.setOrderStatus(OrderStatus.MEAL.name());
+        newOrder.changeOrderStatus(OrderStatus.MEAL);
 
-        given(orderDao.findById(any())).willReturn(Optional.of(order));
+        given(orderRepository.findById(any())).willReturn(Optional.of(order));
 
         // when-then
-        assertThat(orderService.changeOrderStatus(order.getId(), newOrder).getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
+        assertThat(orderService.changeOrderStatus(order.getId(), newOrder).getOrderStatus()).isEqualTo(OrderStatus.MEAL);
     }
 
     private OrderLineItem 주문_항목_등록(Long seq, Long menuId, long quantity) {
-        OrderLineItem orderLineItem = new OrderLineItem();
-        orderLineItem.setSeq(seq);
-        orderLineItem.setMenuId(menuId);
-        orderLineItem.setQuantity(quantity);
-        return orderLineItem;
+        return OrderLineItem.of(menuId, quantity);
     }
 
     private Order 주문_등록(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
-        Order order = new Order();
-        order.setId(id);
-        order.setOrderTableId(orderTableId);
-        order.setOrderLineItems(orderLineItems);
-        return order;
+        return Order.of(orderTableId, orderLineItems);
     }
 }
