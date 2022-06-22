@@ -36,15 +36,14 @@ class TableGroupServiceTest {
     @Test
     void create() {
         // given
-        TableGroup tableGroup = new TableGroup.Builder().id(1L)
-                                                        .orderTables(Arrays.asList(
+        TableGroup tableGroup = new TableGroup.Builder().orderTables(Arrays.asList(
                                                                 new OrderTable.Builder(0, true).id(1L).build(),
                                                                 new OrderTable.Builder(0, true).id(2L).build(),
                                                                 new OrderTable.Builder(0, true).id(3L).build()))
                                                         .build();
 
         given(orderTableDao.findAllByIdIn(anyList())).willReturn(tableGroup.getOrderTables());
-        given(tableGroupDao.save(any(TableGroup.class))).willReturn(tableGroup);
+        given(tableGroupDao.save(any(TableGroup.class))).willReturn(new TableGroup.Builder().id(1L).build());
 
         // when
         TableGroup created = tableGroupService.create(tableGroup);
@@ -61,8 +60,7 @@ class TableGroupServiceTest {
     @Test
     void create_throwException_ifIncorrectSize() {
         // given
-        TableGroup tableGroup = new TableGroup.Builder().id(1L)
-                                                        .orderTables(Collections.singletonList(
+        TableGroup tableGroup = new TableGroup.Builder().orderTables(Collections.singletonList(
                                                                 new OrderTable.Builder(0, true).id(1L).build()))
                                                         .build();
 
