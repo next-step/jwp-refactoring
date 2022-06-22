@@ -53,6 +53,16 @@ class OrderAcceptanceTest extends AcceptanceTest {
         주문_등록요청_검증됨(response);
     }
 
+    @DisplayName("주문을 등록한다")
+    @Test
+    void create_test_copy() {
+        // when
+        ExtractableResponse<Response> response = 주문_등록요청_copy(주문);
+
+        // then
+        주문_등록요청_검증됨_copy(response);
+    }
+
     @DisplayName("모든 주문목록을 조회한다")
     @Test
     void find_test() {
@@ -65,6 +75,20 @@ class OrderAcceptanceTest extends AcceptanceTest {
         
         // then
         주문_목록_조회_검증됨(response, 2);
+    }
+
+    @DisplayName("모든 주문목록을 조회한다")
+    @Test
+    void find_test_copy() {
+        // given
+        주문_등록요청_copy(주문);
+        주문_등록요청_copy(주문2);
+
+        // when
+        ExtractableResponse<Response> response = 주문_목록_조회요청_copy();
+
+        // then
+        주문_목록_조회_검증됨_copy(response, 2);
     }
 
     @DisplayName("주문상태를 변경한다")
@@ -81,6 +105,20 @@ class OrderAcceptanceTest extends AcceptanceTest {
         주문_상태_변경됨(response, OrderStatus.MEAL.name());
     }
 
+    @DisplayName("주문상태를 변경한다")
+    @Test
+    void change_orderStatus_test_copy() {
+        // given
+        주문 = 주문_등록요청(주문).as(Order.class);
+        주문2.setOrderStatus(OrderStatus.MEAL.name());;
+
+        // when
+        ExtractableResponse<Response> response = 주문_상태_변경요청_copy(주문.getId(), 주문2);
+
+        // then
+        주문_상태_변경됨_copy(response, OrderStatus.MEAL.name());
+    }
+
     private ExtractableResponse<Response> 주문_등록요청(Order order) {
         return RestAssured
             .given().log().all()
@@ -91,7 +129,26 @@ class OrderAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
+    private ExtractableResponse<Response> 주문_등록요청_copy(Order order) {
+        return RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(order)
+            .when().post("/api/orders/copy")
+            .then().log().all()
+            .extract();
+    }
+
     private void 주문_등록요청_검증됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.header("Location")).isNotBlank();
+
+        Order result = response.as(Order.class);
+        assertNotNull(result.getOrderLineItems());
+        assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+    }
+
+    private void 주문_등록요청_검증됨_copy(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
 
@@ -109,7 +166,23 @@ class OrderAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
+    private ExtractableResponse<Response> 주문_목록_조회요청_copy() {
+        return RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/api/orders/copy")
+            .then().log().all()
+            .extract();
+    }
+
     private void 주문_목록_조회_검증됨(ExtractableResponse<Response> response, int size) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        List<Order> result = response.jsonPath().getList(".", Order.class);
+        assertThat(result).hasSize(size);
+    }
+
+    private void 주문_목록_조회_검증됨_copy(ExtractableResponse<Response> response, int size) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
         List<Order> result = response.jsonPath().getList(".", Order.class);
@@ -126,7 +199,22 @@ class OrderAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
+    private ExtractableResponse<Response> 주문_상태_변경요청_copy(Long orderId, Order order) {
+        return RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(order)
+            .when().put("/api/orders/{orderId}/order-status/copy", orderId)
+            .then().log().all()
+            .extract();
+    }
+
     private void 주문_상태_변경됨(ExtractableResponse<Response> response, String orderStatus) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getString("orderStatus")).isEqualTo(orderStatus);
+    }
+
+    private void 주문_상태_변경됨_copy(ExtractableResponse<Response> response, String orderStatus) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.jsonPath().getString("orderStatus")).isEqualTo(orderStatus);
     }
