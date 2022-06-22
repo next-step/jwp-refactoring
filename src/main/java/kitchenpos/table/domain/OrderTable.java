@@ -21,4 +21,29 @@ public class OrderTable {
     @ManyToOne
     @JoinColumn(name = "table_group_id")
     private TableGroup tableGroup;
+
+    public OrderTable() {
+    }
+
+    public OrderTable(Long id, Integer numberOfGuests, Boolean empty) {
+        this.id = id;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Integer getNumberOfGuests() {
+        return numberOfGuests;
+    }
+
+    public Boolean getEmpty() {
+        return empty;
+    }
+
+    public TableGroup getTableGroup() {
+        return tableGroup;
+    }
 }

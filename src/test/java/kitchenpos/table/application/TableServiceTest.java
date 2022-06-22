@@ -1,5 +1,6 @@
 package kitchenpos.table.application;
 
+import static kitchenpos.helper.TableFixtures.테이블_요청_만들기;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
@@ -8,6 +9,8 @@ import java.util.Arrays;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,16 +33,16 @@ class TableServiceTest {
     @Test
     void create() {
         //given
-        OrderTable request = new OrderTable(null, 1L, 5, false);
+        OrderTableRequest request = 테이블_요청_만들기(0, true);
 
         //when
-        OrderTable result = tableService.create(request);
+        OrderTableResponse result = tableService.create(request);
 
         //then
         assertThat(result.getId()).isNotNull();
         assertThat(result.getTableGroupId()).isEqualTo(request.getTableGroupId());
         assertThat(result.getNumberOfGuests()).isEqualTo(request.getNumberOfGuests());
-        assertThat(result.isEmpty()).isEqualTo(request.isEmpty());
+        assertThat(result.getEmpty()).isEqualTo(request.getEmpty());
     }
 
     @DisplayName("빈 테이블 여부를 업데이트 한다.")

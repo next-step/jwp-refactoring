@@ -17,4 +17,19 @@ public class TableGroup {
     private LocalDateTime createdDate;
     @Embedded
     private OrderTables orderTables = new OrderTables();
+
+    public TableGroup() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public OrderTables getOrderTables() {
+        return orderTables;
+    }
 }

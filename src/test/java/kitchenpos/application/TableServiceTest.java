@@ -1,7 +1,9 @@
 package kitchenpos.application;
 
+import static kitchenpos.helper.TableFixtures.테이블_요청_만들기;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doAnswer;
 
@@ -13,6 +15,9 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.table.application.TableService;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,11 +33,13 @@ class TableServiceTest {
     private OrderDao orderDao;
     @Mock
     private OrderTableDao orderTableDao;
+    @Mock
+    private OrderTableRepository orderTableRepository;
     private TableService tableService;
 
     @BeforeEach
     void setUp() {
-        tableService = new TableService(orderDao, orderTableDao);
+        tableService = new TableService(orderDao, orderTableDao, orderTableRepository);
     }
 
     @DisplayName("테이블을 생성한다.")
@@ -40,19 +47,20 @@ class TableServiceTest {
     void create() {
         //given
         long generateTableId = 1;
-        OrderTable request = new OrderTable(null, 1L, 5, false);
-
-        doAnswer(invocation -> new OrderTable(generateTableId, request.getTableGroupId(), request.getNumberOfGuests(), request.isEmpty()))
-                .when(orderTableDao).save(request);
+        OrderTableRequest request = 테이블_요청_만들기(0, true);
+        doAnswer(invocation -> new kitchenpos.table.domain.OrderTable(generateTableId,
+                    request.getNumberOfGuests(),
+                    request.getEmpty())
+        ).when(orderTableRepository).save(any());
 
         //when
-        OrderTable result = tableService.create(request);
+        OrderTableResponse result = tableService.create(request);
 
         //then
         assertThat(result.getId()).isEqualTo(generateTableId);
         assertThat(result.getTableGroupId()).isEqualTo(request.getTableGroupId());
         assertThat(result.getNumberOfGuests()).isEqualTo(request.getNumberOfGuests());
-        assertThat(result.isEmpty()).isEqualTo(request.isEmpty());
+        assertThat(result.getEmpty()).isEqualTo(request.getEmpty());
     }
 
     @DisplayName("빈 테이블 여부를 업데이트 한다.")
