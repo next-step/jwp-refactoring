@@ -8,12 +8,14 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.request.OrderTableRequest;
+import kitchenpos.table.domain.response.OrderTableResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 public class TableAcceptanceSupport {
 
-    public static ExtractableResponse<Response> 주문_테이블_등록요청(OrderTable orderTable) {
+    public static ExtractableResponse<Response> 주문_테이블_등록요청(OrderTableRequest orderTable) {
         return RestAssured
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -40,16 +42,15 @@ public class TableAcceptanceSupport {
     public static void 주문_테이블_목록_조회됨(ExtractableResponse<Response> response, int size) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
-        List<OrderTable> result = response.jsonPath().getList(".", OrderTable.class);
+        List<OrderTableResponse> result = response.jsonPath().getList(".", OrderTableResponse.class);
         assertThat(result).isNotNull();
         assertThat(result).hasSize(size);
     }
 
-    public static ExtractableResponse<Response> 주문_테이블_빈테이블로_변경요청(Long orderTableId, OrderTable orderTable) {
+    public static ExtractableResponse<Response> 주문_테이블_빈테이블로_변경요청(Long orderTableId) {
         return RestAssured
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(orderTable)
             .when().put("/api/tables/{orderTableId}/empty", orderTableId)
             .then().log().all()
             .extract();
@@ -58,11 +59,11 @@ public class TableAcceptanceSupport {
     public static void 주문_테이블_빈테이블로_변경됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
-        OrderTable result = response.as(OrderTable.class);
+        OrderTableResponse result = response.as(OrderTableResponse.class);
         assertTrue(result.isEmpty());
     }
 
-    public static ExtractableResponse<Response> 주문_테이블_손님수_변경요청(Long orderTableId, OrderTable orderTable) {
+    public static ExtractableResponse<Response> 주문_테이블_손님수_변경요청(Long orderTableId, OrderTableRequest orderTable) {
         return RestAssured
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -75,7 +76,7 @@ public class TableAcceptanceSupport {
     public static void 주문_테이블_손님수_변경됨(ExtractableResponse<Response> response, int numberOfGuests) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
-        OrderTable result = response.as(OrderTable.class);
+        OrderTableResponse result = response.as(OrderTableResponse.class);
         assertThat(result.getNumberOfGuests()).isEqualTo(numberOfGuests);
     }
 }

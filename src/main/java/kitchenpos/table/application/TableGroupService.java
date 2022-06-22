@@ -27,61 +27,18 @@ import java.util.stream.Collectors;
 @Service
 public class TableGroupService {
     private final OrderDao orderDao;
-    private final OrderTableDao orderTableDao;
-    private final TableGroupDao tableGroupDao;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final OrderDao orderDao, final OrderTableDao orderTableDao, final TableGroupDao tableGroupDao, OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository) {
+    public TableGroupService(final OrderDao orderDao, OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository) {
         this.orderDao = orderDao;
-        this.orderTableDao = orderTableDao;
-        this.tableGroupDao = tableGroupDao;
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
     }
 
     @Transactional
-    public TableGroup create(final TableGroup tableGroup) {
-        final List<OrderTable> orderTables = tableGroup.getOrderTables();
-
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException();
-        }
-
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-
-        final List<OrderTable> savedOrderTables = orderTableDao.findAllByIdIn(orderTableIds);
-
-        if (orderTables.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
-        }
-
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        tableGroup.setCreatedDate(LocalDateTime.now());
-
-        final TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
-
-        final Long tableGroupId = savedTableGroup.getId();
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.setTableGroupId(tableGroupId);
-            savedOrderTable.setEmpty(false);
-            orderTableDao.save(savedOrderTable);
-        }
-        savedTableGroup.setOrderTables(savedOrderTables);
-
-        return savedTableGroup;
-    }
-
-    @Transactional
-    public TableGroupResponse createCopy(final TableGroupRequest request) {
-        final List<OrderTableEntity> orderTables = validateOrderTables(request.getOrderTableRequest());
+    public TableGroupResponse create(final TableGroupRequest request) {
+        final List<OrderTableEntity> orderTables = validateOrderTables(request.getOrderTableIds());
 
         TableGroupEntity tableGroup = TableGroupEntity.from(orderTables);
         tableGroup.validateTablesEmpty();
@@ -92,20 +49,16 @@ public class TableGroupService {
         return TableGroupResponse.toResponse(savedTableGroup);
     }
 
-    private List<OrderTableEntity> validateOrderTables(List<OrderTableRequest> orderTableRequest) {
-        validateOrderTableSize(orderTableRequest);
-
-        final List<Long> orderTableIds = orderTableRequest.stream()
-            .map(OrderTableRequest::getId)
-            .collect(Collectors.toList());
+    private List<OrderTableEntity> validateOrderTables(List<Long> orderTableIds) {
+        validateOrderTableSize(orderTableIds);
 
         final List<OrderTableEntity> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
         validateOrderTableEqualsSize(savedOrderTables, orderTableIds);
         return savedOrderTables;
     }
 
-    private void validateOrderTableSize(List<OrderTableRequest> orderTableRequest) {
-        if (CollectionUtils.isEmpty(orderTableRequest) || orderTableRequest.size() < 2) {
+    private void validateOrderTableSize(List<Long> orderTableIds) {
+        if (CollectionUtils.isEmpty(orderTableIds) || orderTableIds.size() < 2) {
             throw new IllegalArgumentException();
         }
     }
@@ -118,25 +71,6 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableDao.findAllByTableGroupId(tableGroupId);
-
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-
-        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
-        }
-
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.setTableGroupId(null);
-            orderTableDao.save(orderTable);
-        }
-    }
-
-    @Transactional
-    public void ungroupCopy(final Long tableGroupId) {
         final List<OrderTableEntity> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
         validateOrderTablesStatus(orderTables);
         TableGroupEntity tableGroup = TableGroupEntity.from(orderTables);

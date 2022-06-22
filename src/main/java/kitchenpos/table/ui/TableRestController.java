@@ -21,51 +21,28 @@ public class TableRestController {
     }
 
     @PostMapping
-    public ResponseEntity<OrderTable> create(@RequestBody final OrderTable orderTable) {
-        final OrderTable created = tableService.create(orderTable);
-        final URI uri = URI.create("/api/tables/" + created.getId());
-        return ResponseEntity.created(uri).body(created);
-    }
-
-    @PostMapping("/copy")
-    public ResponseEntity<OrderTableResponse> createCopy(@RequestBody final OrderTableRequest orderTableRequest) {
-        final OrderTableResponse created = tableService.createCopy(orderTableRequest);
+    public ResponseEntity<OrderTableResponse> createCopy(
+        @RequestBody final OrderTableRequest orderTableRequest) {
+        final OrderTableResponse created = tableService.create(orderTableRequest);
         final URI uri = URI.create("/api/tables/" + created.getId());
         return ResponseEntity.created(uri).body(created);
     }
 
     @GetMapping
-    public ResponseEntity<List<OrderTable>> list() {
+    public ResponseEntity<List<OrderTableResponse>> listCopy() {
         return ResponseEntity.ok().body(tableService.list());
     }
 
-    @GetMapping("/copy")
-    public ResponseEntity<List<OrderTableResponse>> listCopy() {
-        return ResponseEntity.ok().body(tableService.listCopy());
-    }
-
     @PutMapping("/{orderTableId}/empty")
-    public ResponseEntity<OrderTable> changeEmpty(@PathVariable final Long orderTableId,
-        @RequestBody final OrderTable orderTable) {
-        return ResponseEntity.ok().body(tableService.changeEmpty(orderTableId, orderTable));
-    }
-
-    @PutMapping("/{orderTableId}/empty/copy")
-    public ResponseEntity<OrderTableResponse> changeEmptyCopy(@PathVariable final Long orderTableId) {
-        return ResponseEntity.ok().body(tableService.changeEmptyCopy(orderTableId));
+    public ResponseEntity<OrderTableResponse> changeEmptyCopy(
+        @PathVariable final Long orderTableId) {
+        return ResponseEntity.ok().body(tableService.changeEmpty(orderTableId));
     }
 
     @PutMapping("/{orderTableId}/number-of-guests")
-    public ResponseEntity<OrderTable> changeNumberOfGuests(@PathVariable final Long orderTableId,
-        @RequestBody final OrderTable orderTable) {
+    public ResponseEntity<OrderTableResponse> changeNumberOfGuestsCopy(
+        @PathVariable final Long orderTableId, @RequestBody final OrderTableRequest orderTableRequest) {
         return ResponseEntity.ok()
-            .body(tableService.changeNumberOfGuests(orderTableId, orderTable));
-    }
-
-    @PutMapping("/{orderTableId}/number-of-guests/copy")
-    public ResponseEntity<OrderTableResponse> changeNumberOfGuestsCopy(@PathVariable final Long orderTableId,
-        @RequestBody final OrderTableRequest orderTableRequest) {
-        return ResponseEntity.ok()
-            .body(tableService.changeNumberOfGuestsCopy(orderTableId, orderTableRequest));
+            .body(tableService.changeNumberOfGuests(orderTableId, orderTableRequest));
     }
 }

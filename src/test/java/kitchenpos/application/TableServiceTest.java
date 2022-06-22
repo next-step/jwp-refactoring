@@ -42,135 +42,135 @@ class TableServiceTest {
         주문_테이블_2 = OrderTable.of(2L, null, 5, true);
     }
 
-    @DisplayName("주문 테이블을 등록하면 정상적으로 등록된다")
-    @Test
-    void create_test() {
-        // given
-        when(orderTableDao.save(주문_테이블))
-            .thenReturn(주문_테이블);
-
-        // when
-        OrderTable result = tableService.create(주문_테이블);
-
-        // then
-        assertThat(result).isNotNull();
-    }
-
-    @DisplayName("주문 테이블목록을 조회한다")
-    @Test
-    void findAll_test() {
-        // given
-        when(orderTableDao.findAll())
-            .thenReturn(Arrays.asList(주문_테이블, 주문_테이블));
-
-        // when
-        List<OrderTable> result = tableService.list();
-
-        // then
-        assertThat(result).hasSize(2);
-    }
-
-    @DisplayName("주문 테이블을 빈 테이블로 변경한다")
-    @Test
-    void change_empty_test() {
-        // given
-        주문_테이블.setEmpty(false);
-        when(orderTableDao.findById(주문_테이블.getId()))
-            .thenReturn(Optional.of(주문_테이블));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(주문_테이블.getId(), Arrays.asList(
-            OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
-            .thenReturn(false);
-        when(orderTableDao.save(주문_테이블))
-            .thenReturn(주문_테이블);
-
-        // when
-        OrderTable result = tableService.changeEmpty(주문_테이블.getId(), 주문_테이블_2);
-
-        // then
-        assertTrue(result.isEmpty());
-    }
-
-    @DisplayName("주문 테이블을 빈 테이블로 변경시 변경할 테이블이 존재하지 않으면 예외가 발생한다")
-    @Test
-    void change_empty_exception_test() {
-        // given
-        when(orderTableDao.findById(주문_테이블.getId()))
-            .thenReturn(Optional.empty());
-
-        // then
-        assertThatThrownBy(() -> {
-            tableService.changeEmpty(주문_테이블.getId(), 주문_테이블_2);
-        }).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("주문 테이블을 빈 테이블로 변경시 요리중, 식사중인 테이블이 있다면 예외가 발생한다")
-    @Test
-    void change_empty_exception_test2() {
-        // given
-        when(orderTableDao.findById(주문_테이블.getId()))
-            .thenReturn(Optional.of(주문_테이블));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(주문_테이블.getId(), Arrays.asList(
-            OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
-            .thenReturn(true);
-
-        // then
-        assertThatThrownBy(() -> {
-            tableService.changeEmpty(주문_테이블.getId(), 주문_테이블_2);
-        }).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("주문 테이블의 손님 수를 변경하면 정상적으로 변경된다")
-    @Test
-    void change_number_of_guests_test() {
-        // given
-        주문_테이블.setEmpty(false);
-        when(orderTableDao.findById(주문_테이블.getId()))
-            .thenReturn(Optional.of(주문_테이블));
-        when(orderTableDao.save(주문_테이블))
-            .thenReturn(주문_테이블);
-
-        // when
-        OrderTable result = tableService.changeNumberOfGuests(주문_테이블.getId(), 주문_테이블_2);
-
-        // then
-        assertThat(result.getNumberOfGuests()).isEqualTo(주문_테이블_2.getNumberOfGuests());
-    }
-
-    @DisplayName("주문 테이블의 손님 수 변경시 변경할 손님 수가 0미만이면 예외가 발생한다")
-    @Test
-    void change_number_of_guests_exception_test() {
-        // given
-        주문_테이블_2.setNumberOfGuests(-5);
-
-        // then
-        assertThatThrownBy(() -> {
-            tableService.changeNumberOfGuests(주문_테이블.getId(), 주문_테이블_2);
-        }).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("주문 테이블의 손님 수 변경시 변경할 주문 테이블이 존재하지 않으면 예외가 발생한다")
-    @Test
-    void change_number_of_guests_exception_test2() {
-        // given
-        when(orderTableDao.findById(주문_테이블.getId()))
-            .thenReturn(Optional.empty());
-
-        // then
-        assertThatThrownBy(() -> {
-            tableService.changeNumberOfGuests(주문_테이블.getId(), 주문_테이블_2);
-        }).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("주문 테이블의 손님 수 변경시 변경할 주문 테이블이 비어있다면 예외가 발생한다")
-    @Test
-    void change_number_of_guests_exception_test3() {
-        // given
-        when(orderTableDao.findById(주문_테이블.getId()))
-            .thenReturn(Optional.of(주문_테이블));
-
-        // then
-        assertThatThrownBy(() -> {
-            tableService.changeNumberOfGuests(주문_테이블.getId(), 주문_테이블_2);
-        }).isInstanceOf(IllegalArgumentException.class);
-    }
+//    @DisplayName("주문 테이블을 등록하면 정상적으로 등록된다")
+//    @Test
+//    void create_test() {
+//        // given
+//        when(orderTableDao.save(주문_테이블))
+//            .thenReturn(주문_테이블);
+//
+//        // when
+//        OrderTable result = tableService.create(주문_테이블);
+//
+//        // then
+//        assertThat(result).isNotNull();
+//    }
+//
+//    @DisplayName("주문 테이블목록을 조회한다")
+//    @Test
+//    void findAll_test() {
+//        // given
+//        when(orderTableDao.findAll())
+//            .thenReturn(Arrays.asList(주문_테이블, 주문_테이블));
+//
+//        // when
+//        List<OrderTable> result = tableService.list();
+//
+//        // then
+//        assertThat(result).hasSize(2);
+//    }
+//
+//    @DisplayName("주문 테이블을 빈 테이블로 변경한다")
+//    @Test
+//    void change_empty_test() {
+//        // given
+//        주문_테이블.setEmpty(false);
+//        when(orderTableDao.findById(주문_테이블.getId()))
+//            .thenReturn(Optional.of(주문_테이블));
+//        when(orderDao.existsByOrderTableIdAndOrderStatusIn(주문_테이블.getId(), Arrays.asList(
+//            OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
+//            .thenReturn(false);
+//        when(orderTableDao.save(주문_테이블))
+//            .thenReturn(주문_테이블);
+//
+//        // when
+//        OrderTable result = tableService.changeEmpty(주문_테이블.getId(), 주문_테이블_2);
+//
+//        // then
+//        assertTrue(result.isEmpty());
+//    }
+//
+//    @DisplayName("주문 테이블을 빈 테이블로 변경시 변경할 테이블이 존재하지 않으면 예외가 발생한다")
+//    @Test
+//    void change_empty_exception_test() {
+//        // given
+//        when(orderTableDao.findById(주문_테이블.getId()))
+//            .thenReturn(Optional.empty());
+//
+//        // then
+//        assertThatThrownBy(() -> {
+//            tableService.changeEmpty(주문_테이블.getId(), 주문_테이블_2);
+//        }).isInstanceOf(IllegalArgumentException.class);
+//    }
+//
+//    @DisplayName("주문 테이블을 빈 테이블로 변경시 요리중, 식사중인 테이블이 있다면 예외가 발생한다")
+//    @Test
+//    void change_empty_exception_test2() {
+//        // given
+//        when(orderTableDao.findById(주문_테이블.getId()))
+//            .thenReturn(Optional.of(주문_테이블));
+//        when(orderDao.existsByOrderTableIdAndOrderStatusIn(주문_테이블.getId(), Arrays.asList(
+//            OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
+//            .thenReturn(true);
+//
+//        // then
+//        assertThatThrownBy(() -> {
+//            tableService.changeEmpty(주문_테이블.getId(), 주문_테이블_2);
+//        }).isInstanceOf(IllegalArgumentException.class);
+//    }
+//
+//    @DisplayName("주문 테이블의 손님 수를 변경하면 정상적으로 변경된다")
+//    @Test
+//    void change_number_of_guests_test() {
+//        // given
+//        주문_테이블.setEmpty(false);
+//        when(orderTableDao.findById(주문_테이블.getId()))
+//            .thenReturn(Optional.of(주문_테이블));
+//        when(orderTableDao.save(주문_테이블))
+//            .thenReturn(주문_테이블);
+//
+//        // when
+//        OrderTable result = tableService.changeNumberOfGuests(주문_테이블.getId(), 주문_테이블_2);
+//
+//        // then
+//        assertThat(result.getNumberOfGuests()).isEqualTo(주문_테이블_2.getNumberOfGuests());
+//    }
+//
+//    @DisplayName("주문 테이블의 손님 수 변경시 변경할 손님 수가 0미만이면 예외가 발생한다")
+//    @Test
+//    void change_number_of_guests_exception_test() {
+//        // given
+//        주문_테이블_2.setNumberOfGuests(-5);
+//
+//        // then
+//        assertThatThrownBy(() -> {
+//            tableService.changeNumberOfGuests(주문_테이블.getId(), 주문_테이블_2);
+//        }).isInstanceOf(IllegalArgumentException.class);
+//    }
+//
+//    @DisplayName("주문 테이블의 손님 수 변경시 변경할 주문 테이블이 존재하지 않으면 예외가 발생한다")
+//    @Test
+//    void change_number_of_guests_exception_test2() {
+//        // given
+//        when(orderTableDao.findById(주문_테이블.getId()))
+//            .thenReturn(Optional.empty());
+//
+//        // then
+//        assertThatThrownBy(() -> {
+//            tableService.changeNumberOfGuests(주문_테이블.getId(), 주문_테이블_2);
+//        }).isInstanceOf(IllegalArgumentException.class);
+//    }
+//
+//    @DisplayName("주문 테이블의 손님 수 변경시 변경할 주문 테이블이 비어있다면 예외가 발생한다")
+//    @Test
+//    void change_number_of_guests_exception_test3() {
+//        // given
+//        when(orderTableDao.findById(주문_테이블.getId()))
+//            .thenReturn(Optional.of(주문_테이블));
+//
+//        // then
+//        assertThatThrownBy(() -> {
+//            tableService.changeNumberOfGuests(주문_테이블.getId(), 주문_테이블_2);
+//        }).isInstanceOf(IllegalArgumentException.class);
+//    }
 }

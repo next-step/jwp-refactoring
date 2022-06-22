@@ -5,18 +5,18 @@ import java.util.List;
 public class TableGroupRequest {
 
     private Long id;
-    private List<OrderTableRequest> orderTableRequest;
+    private List<Long> orderTableIds;
 
-    public TableGroupRequest(Long id, List<OrderTableRequest> orderTableRequest) {
+    public TableGroupRequest(Long id, List<Long> orderTableIds) {
         this.id = id;
-        this.orderTableRequest = orderTableRequest;
+        this.orderTableIds = orderTableIds;
     }
 
     public Long getId() {
         return id;
     }
 
-    public List<OrderTableRequest> getOrderTableRequest() {
-        return orderTableRequest;
+    public List<Long> getOrderTableIds() {
+        return orderTableIds;
     }
 }
