@@ -79,6 +79,9 @@ public class OrderTable {
         private int numberOfGuests;
         private boolean empty;
 
+        public Builder() {
+        }
+
         public Builder(int numberOfGuests, boolean empty) {
             this.numberOfGuests = numberOfGuests;
             this.empty = empty;
