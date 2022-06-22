@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.menu;
 
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
@@ -17,13 +17,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.application.MenuGroupServiceTest.메뉴_그룹_등록;
-import static kitchenpos.application.ProductServiceTest.상품_등록;
+import static kitchenpos.menu.MenuGroupServiceTest.메뉴_그룹_등록;
+import static kitchenpos.product.ProductServiceTest.상품_등록;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -75,11 +74,11 @@ public class MenuServiceTest {
 
     static Menu 메뉴_등록(Long id, String name, Integer price, Long menuGroupId, List<MenuProduct> menuProducts) {
         Menu menu = new Menu();
-        menu.setId(id);
-        menu.setName(name);
-        menu.setPrice(BigDecimal.valueOf(price));
-        menu.setMenuGroupId(menuGroupId);
-        menu.setMenuProducts(menuProducts);
+//        menu.setId(id);
+//        menu.setName(name);
+//        menu.setPrice(BigDecimal.valueOf(price));
+//        menu.setMenuGroupId(menuGroupId);
+//        menu.setMenuProducts(menuProducts);
         return menu;
     }
 
