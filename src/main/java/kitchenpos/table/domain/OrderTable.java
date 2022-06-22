@@ -41,10 +41,8 @@ public class OrderTable {
     }
 
     public void checkPossibleChangeEmpty(){
-
+        orders.checkPossibleChangeEmpty();
     }
-
-
 
     public Long getId() {
         return id;

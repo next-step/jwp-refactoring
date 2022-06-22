@@ -1,7 +1,6 @@
 package kitchenpos.order.domain;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -26,6 +25,9 @@ public class Order {
     private LocalDateTime orderedTime;
     @Embedded
     private final OrderLineItems orderLineItems = new OrderLineItems();
+
+    protected Order() {
+    }
 
     public Order(Long id, OrderStatus orderStatus, LocalDateTime orderedTime) {
         this.id = id;
@@ -54,7 +56,7 @@ public class Order {
         orderLineItem.setOrder(this);
     }
 
-    public boolean isTargetOrderStatus(List<OrderStatus> targetOrderStatus) {
-        return false;
+    public void checkPossibleChangeEmpty() {
+
     }
 }
