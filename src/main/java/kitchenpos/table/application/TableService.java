@@ -37,7 +37,7 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse createCopy(final OrderTableRequest orderTableRequest) {
-        OrderTableEntity orderTable = OrderTableEntity.of(null, orderTableRequest.getNumberOfGuests(), true);
+        OrderTableEntity orderTable = OrderTableEntity.of(null, orderTableRequest.getNumberOfGuests(), orderTableRequest.isEmpty());
         orderTable = orderTableRepository.save(orderTable);
         return OrderTableResponse.of(orderTable);
     }
