@@ -2,7 +2,7 @@ package kitchenpos.application.order;
 
 import com.google.common.collect.Lists;
 import java.util.List;
-import kitchenpos.application.table.OrderTableService;
+import java.util.stream.Collectors;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderLineItem;
 import kitchenpos.domain.order.OrderRepository;
@@ -18,24 +18,20 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 public class OrderService {
-    private final OrderTableService orderTableService;
     private final OrderRepository orderRepository;
     private final OrderValidator orderValidator;
 
     public OrderService(
-            final OrderTableService orderTableService,
             final OrderRepository orderRepository,
             final OrderValidator orderValidator
     ) {
-        this.orderTableService = orderTableService;
         this.orderRepository = orderRepository;
         this.orderValidator = orderValidator;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        OrderTable orderTable = orderTableService.findOrderTable(orderRequest.getOrderTableId());
-        Order order = Order.from(orderTable);
+        Order order = Order.from(orderRequest.getOrderTableId());
         List<OrderLineItem> orderLineItems = this.findOrderLineItems(orderRequest.getOrderLineItems());
         order.addAllOrderLineItems(orderLineItems);
 
@@ -51,6 +47,9 @@ public class OrderService {
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
         Order order = this.findOrder(orderId);
+
+        orderValidator.validateChangeOrderStatus(order);
+
         order.changeOrderStatus(orderRequest.getOrderStatus());
         return OrderResponse.from(order);
     }
@@ -68,15 +67,15 @@ public class OrderService {
     }
 
     public boolean isExistDontUnGroupState(List<OrderTable> orderTables) {
-        return orderRepository.existsByOrderTableInAndOrderStatusIn(
-                orderTables,
+        return orderRepository.existsByOrderTableIdInAndOrderStatusIn(
+                orderTables.stream().map(OrderTable::getId).collect(Collectors.toList()),
                 OrderStatus.dontUngroupStatus()
         );
     }
 
     public boolean isExistDontUnGroupState(OrderTable orderTable) {
-        return orderRepository.existsByOrderTableAndOrderStatusIn(
-                orderTable,
+        return orderRepository.existsByOrderTableIdAndOrderStatusIn(
+                orderTable.getId(),
                 OrderStatus.dontUngroupStatus()
         );
     }

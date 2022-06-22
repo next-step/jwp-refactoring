@@ -99,9 +99,10 @@ class OrderServiceTest {
 
         A_주문_테이블 = OrderTableFixtureFactory.createWithGuest(false, 2);
         A_주문항목 = OrderLineItemFixtureFactory.create(A.getId(), 1);
-        A_주문 = OrderFixtureFactory.create(A_주문_테이블, OrderStatus.COOKING, Lists.newArrayList(A_주문항목));
 
         A_주문_테이블 = orderTableRepository.save(A_주문_테이블);
+
+        A_주문 = OrderFixtureFactory.create(A_주문_테이블.getId(), OrderStatus.COOKING, Lists.newArrayList(A_주문항목));
         A_주문 = orderRepository.save(A_주문);
     }
 
