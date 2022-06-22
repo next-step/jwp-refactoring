@@ -1,88 +1,86 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.*;
+import kitchenpos.dao.OrderDao;
+import kitchenpos.dao.OrderTableDao;
+import kitchenpos.domain.OrderStatus;
+import kitchenpos.domain.OrderTable;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.times;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class TableServiceTest {
-    @Autowired
+    @Mock
+    private OrderDao orderDao;
+    @Mock
+    private OrderTableDao orderTableDao;
+    @InjectMocks
     private TableService tableService;
-    @Autowired
-    private OrderService orderService;
-    @Autowired
-    private ProductService productService;
-    @Autowired
-    private MenuGroupService menuGroupService;
-    @Autowired
-    private MenuService menuService;
 
     @Test
     void create() {
+        // given
+        given(orderTableDao.save(any(OrderTable.class))).willReturn(new OrderTable.Builder().id(1L).build());
+
         // when
-        OrderTable 주문불가능테이블 = tableService.create(OrderTable.of(0, true));
+        OrderTable created = tableService.create(new OrderTable.Builder(0, true).build());
 
         // then
-        assertThat(주문불가능테이블.getId()).isNotNull();
+        assertThat(created.getId()).isNotNull();
+
+        // verify
+        then(orderTableDao).should(times(1)).save(any(OrderTable.class));
     }
 
     @Test
     void changeEmpty() {
         // given
-        OrderTable 주문불가능테이블 = tableService.create(OrderTable.of(0, true));
+        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(new OrderTable.Builder().build()));
+        given(orderDao.existsByOrderTableIdAndOrderStatusIn(1L, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
+                .willReturn(false);
+        given(orderTableDao.save(any(OrderTable.class))).willReturn(new OrderTable.Builder().id(1L).empty(true).build());
+
+        OrderTable created = tableService.create(new OrderTable.Builder(0, true).build());
 
         // when
-        OrderTable 주문가능테이블 = tableService.changeEmpty(주문불가능테이블.getId(), OrderTable.from(false));
+        OrderTable changed = tableService.changeEmpty(created.getId(), new OrderTable.Builder().empty(true).build());
 
         // then
-        assertThat(주문가능테이블.isEmpty()).isFalse();
+        assertThat(changed.isEmpty()).isTrue();
+
+        // verify
+        then(orderTableDao).should(times(1)).findById(anyLong());
+        then(orderDao).should(times(1)).existsByOrderTableIdAndOrderStatusIn(
+                1L, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()));
+        then(orderTableDao).should(times(2)).save(any(OrderTable.class)); // create, changeEmpty
     }
 
     @Test
     void changeNumberOfGuests() {
         // given
-        OrderTable 주문불가능테이블 = tableService.create(OrderTable.of(0, true));
-        OrderTable 주문가능테이블 = tableService.changeEmpty(주문불가능테이블.getId(), OrderTable.from(false));
+        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(new OrderTable.Builder(4, false).id(1L).build()));
+        given(orderTableDao.save(any(OrderTable.class))).willReturn(new OrderTable.Builder(8, false).id(1L).build());
 
         // when
-        OrderTable 방문손님수변경 = tableService.changeNumberOfGuests(주문가능테이블.getId(), OrderTable.from(4));
+        OrderTable changed = tableService.changeNumberOfGuests(1L, new OrderTable.Builder().numberOfGuests(8).build());
 
         // then
-        assertThat(방문손님수변경.getNumberOfGuests()).isEqualTo(4);
-    }
+        assertThat(changed.getNumberOfGuests()).isEqualTo(8);
 
-    @Test
-    void create_throwException_ifNonAllowedOrderStatus() {
-        // given
-        OrderTable 주문불가능테이블 = tableService.create(OrderTable.of(0, true));
-        OrderTable 주문가능테이블 = tableService.changeEmpty(주문불가능테이블.getId(), OrderTable.from(false));
-        Product 제육볶음 = productService.create(Product.of("제육볶음", BigDecimal.valueOf(1000)));
-        Product 소불고기 = productService.create(Product.of("소불고기", BigDecimal.valueOf(1000)));
-        List<MenuProduct> 고기반찬 = Arrays.asList(MenuProduct.of(제육볶음.getId(), 1), MenuProduct.of(소불고기.getId(), 1));
-        MenuGroup 점심특선 = 메뉴묶음_요청("점심특선");
-        Menu 점심특선A = menuService.create(Menu.of("점심특선", BigDecimal.valueOf(2000), 점심특선.getId(), 고기반찬));
-        List<OrderLineItem> 주문항목 = Collections.singletonList(OrderLineItem.of(점심특선A.getId(), 1));
-        orderService.create(Order.of(주문가능테이블.getId(), 주문항목));
-
-        // when
-        // then
-        assertAll(
-                () -> assertThatThrownBy(() -> tableService.changeEmpty(주문불가능테이블.getId(), OrderTable.from(false))),
-                () -> assertThatThrownBy(() -> tableService.changeEmpty(주문가능테이블.getId(), OrderTable.from(true)))
-        );
-    }
-
-    MenuGroup 메뉴묶음_요청(String name) {
-        return menuGroupService.create(new MenuGroup(name));
+        // verify
+        then(orderTableDao).should(times(1)).findById(anyLong());
+        then(orderTableDao).should(times(1)).save(any(OrderTable.class));
     }
 }
