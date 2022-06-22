@@ -15,7 +15,7 @@ class MenuTest {
         //given
         Menu menu = new Menu(1L, "반반치킨 세트", 50_000);
         menu.addMenuProduct(MenuProductFixtures.양념치킨_메뉴);
-        menu.addMenuProduct(MenuProductFixtures.후라이드치킨_메뉴);
+        menu.addMenuProduct(MenuProductFixtures.후라이드치킨_메뉴상품);
 
         //when then
         assertThatIllegalArgumentException()
