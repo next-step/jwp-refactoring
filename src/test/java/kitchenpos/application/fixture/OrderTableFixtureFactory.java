@@ -15,7 +15,7 @@ public class OrderTableFixtureFactory {
         return new OrderTable(id, tableGroupId, empty);
     }
 
-    public static OrderTable createByGuestNumber(final Long id, int numberOfGuests, final boolean empty) {
+    public static OrderTable createByGuestNumber(final Long id, final int numberOfGuests, final boolean empty) {
         return new OrderTable(id, numberOfGuests, empty);
     }
 }
