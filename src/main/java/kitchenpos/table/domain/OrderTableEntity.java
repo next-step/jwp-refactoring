@@ -61,7 +61,7 @@ public class OrderTableEntity {
         }
     }
 
-    public void validateIsNotEmpty() {
+    public void validateIsEmpty() {
         if (isEmpty()) {
             throw new IllegalArgumentException();
         }

@@ -1,6 +1,7 @@
 package kitchenpos.order.domain;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -32,24 +33,30 @@ public class OrderEntity {
 
     private LocalDateTime orderedTime;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<OrderLineItemEntity> orderLineItems;
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
+    private List<OrderLineItemEntity> orderLineItems = new ArrayList<>();
 
     protected OrderEntity() {
     }
 
-    private OrderEntity(Long id, OrderTableEntity orderTable, OrderStatus orderStatus,
-        LocalDateTime orderedTime, List<OrderLineItemEntity> orderLineItems) {
+    private OrderEntity(Long id, OrderTableEntity orderTable) {
         this.id = id;
         this.orderTable = orderTable;
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
-        this.orderLineItems = orderLineItems;
+        this.orderStatus = OrderStatus.COOKING;
+        this.orderedTime = LocalDateTime.now();
     }
 
-    public static OrderEntity of(Long id, OrderTableEntity orderTable, OrderStatus orderStatus,
-        LocalDateTime orderedTime, List<OrderLineItemEntity> orderLineItems) {
-        return new OrderEntity(id, orderTable, orderStatus, orderedTime, orderLineItems);
+    public static OrderEntity of(Long id, OrderTableEntity orderTable) {
+        orderTable.validateIsEmpty();
+        return new OrderEntity(id, orderTable);
+    }
+
+    public void mapIntoLineItems(List<OrderLineItemEntity> orderLineItems) {
+        orderLineItems.forEach(it -> it.mapIntoOrder(this));
+    }
+
+    public void addOrderLineItem(OrderLineItemEntity orderLineItem) {
+        this.orderLineItems.add(orderLineItem);
     }
 
     public Long getId() {

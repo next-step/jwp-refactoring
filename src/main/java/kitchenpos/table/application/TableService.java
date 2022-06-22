@@ -61,7 +61,7 @@ public class TableService {
 
         OrderTableEntity savedOrderTable = orderTableRepository.findById(orderTableId)
             .orElseThrow(IllegalArgumentException::new);
-        savedOrderTable.validateIsNotEmpty();
+        savedOrderTable.validateIsEmpty();
 
         savedOrderTable.changeNumberOfGuests(numberOfGuests);
         return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));

@@ -1,5 +1,7 @@
 package kitchenpos.order.domain;
 
+import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -15,6 +17,7 @@ public class OrderLineItemEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "seq")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -37,6 +40,17 @@ public class OrderLineItemEntity {
 
     public static OrderLineItemEntity of(Long id, OrderEntity order, Long menuId, long quantity) {
         return new OrderLineItemEntity(id, order, menuId, quantity);
+    }
+
+    public void mapIntoOrder(OrderEntity order) {
+        this.order = order;
+        order.addOrderLineItem(this);
+    }
+
+    public void validateMenu() {
+        if (Objects.isNull(menuId)) {
+            throw new IllegalArgumentException();
+        }
     }
 
     public Long getId() {
