@@ -83,9 +83,9 @@ class OrderLineItemTest {
         메뉴 = menuRepository.save(메뉴);
 
         주문테이블 = OrderTableFixtureFactory.createWithGuest(false, 2);
-        주문 = OrderFixtureFactory.create(주문테이블, OrderStatus.COOKING, Lists.newArrayList());
-
         주문테이블 = orderTableRepository.save(주문테이블);
+
+        주문 = OrderFixtureFactory.create(주문테이블.getId(), OrderStatus.COOKING, Lists.newArrayList());
         주문 = orderRepository.save(주문);
     }
 
@@ -107,7 +107,7 @@ class OrderLineItemTest {
     void create02() {
         // given
         OrderLineItem orderLineItem = OrderLineItem.of(0L, 1L);
-        Order order = OrderFixtureFactory.create(주문테이블, OrderStatus.COOKING, Lists.newArrayList(orderLineItem));
+        Order order = OrderFixtureFactory.create(주문테이블.getId(), OrderStatus.COOKING, Lists.newArrayList(orderLineItem));
 
         // when & then
         assertThatExceptionOfType(NotEqualsMenuAndOrderLineItemMenuException.class)
