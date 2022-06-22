@@ -5,6 +5,7 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class Name {
+
     @Column
     private String name;
 
@@ -24,5 +25,12 @@ public class Name {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public String toString() {
+        return "Name{" +
+                "name='" + name + '\'' +
+                '}';
     }
 }

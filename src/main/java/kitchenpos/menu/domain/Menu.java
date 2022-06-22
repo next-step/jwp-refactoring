@@ -3,15 +3,8 @@ package kitchenpos.menu.domain;
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 
+import javax.persistence.*;
 import java.util.List;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 @Entity
 public class Menu {
@@ -39,8 +32,8 @@ public class Menu {
         this.id = id;
     }
 
-    private Menu(String name, Integer price, Long menuGroupId,
-                 List<MenuProduct> menuProducts) {
+    public Menu(String name, Integer price, Long menuGroupId,
+                List<MenuProduct> menuProducts) {
         this.name = Name.of(name);
         this.price = Price.of(price);
         this.menuGroup = MenuGroup.of(menuGroupId);
@@ -74,5 +67,16 @@ public class Menu {
 
     public MenuProducts getMenuProducts() {
         return menuProducts;
+    }
+
+    @Override
+    public String toString() {
+        return "Menu{" +
+                "id=" + id +
+                ", name=" + name +
+                ", price=" + price +
+                ", menuGroup=" + menuGroup +
+                ", menuProducts=" + menuProducts +
+                '}';
     }
 }

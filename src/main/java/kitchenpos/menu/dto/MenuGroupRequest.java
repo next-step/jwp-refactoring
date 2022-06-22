@@ -12,11 +12,11 @@ public class MenuGroupRequest {
         this.name = name;
     }
 
-    public String getName() {
-        return name;
+    public MenuGroup toEntity() {
+        return MenuGroup.of(this.name);
     }
 
-    public MenuGroup toEntity() {
-        return MenuGroup.of(name);
+    public String getName() {
+        return name;
     }
 }

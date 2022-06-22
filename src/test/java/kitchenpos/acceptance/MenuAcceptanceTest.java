@@ -4,10 +4,10 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.product.domain.Product;
+import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,26 +25,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("메뉴 관련 기능")
 public class MenuAcceptanceTest extends AcceptanceTest {
 
-    private Product product;
-    private MenuGroup menuGroup;
+    private ProductResponse product;
+    private MenuGroupResponse menuGroup;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        product = 상품_등록_요청("강정치킨", new BigDecimal(17000)).as(Product.class);
-        menuGroup = 메뉴_그룹_등록_요청("추천메뉴").as(MenuGroup.class);
+        product = 상품_등록_요청("강정치킨", new BigDecimal(17000)).as(ProductResponse.class);
+        menuGroup = 메뉴_그룹_등록_요청("추천메뉴").as(MenuGroupResponse.class);
     }
 
     @Test
     @DisplayName("메뉴를 등록한다.")
     void createMenu() {
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setMenuId(1L);
-        menuProduct.setProductId(product.getId());
-        menuProduct.setQuantity(2);
+        // given
+        MenuProductRequest menuProduct = MenuProductRequest.of(product.getId(), 1);
 
         // when
-        ExtractableResponse<Response> response = 메뉴_등록_요청("강정치킨", new BigDecimal(17000), menuGroup.getId(), Arrays.asList(menuProduct));
+        ExtractableResponse<Response> response = 메뉴_등록_요청("강정치킨", 17000, menuGroup.getId(), Arrays.asList(menuProduct));
 
         // then
         메뉴_등록됨(response);
@@ -53,12 +51,11 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("메뉴를 등록 실패한다. (메뉴 가격 0 미만)")
     void FailCreateMenuOfUnderZeroPirce() {
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setMenuId(1L);
-        menuProduct.setProductId(product.getId());
-        menuProduct.setQuantity(1);
+        // given
+        MenuProductRequest menuProduct = MenuProductRequest.of(product.getId(), 1);
+
         // when
-        ExtractableResponse<Response> response = 메뉴_등록_요청("강정치킨", new BigDecimal(-1000), menuGroup.getId(), Arrays.asList(menuProduct));
+        ExtractableResponse<Response> response = 메뉴_등록_요청("강정치킨", -1000, menuGroup.getId(), Arrays.asList(menuProduct));
 
         // then
         메뉴_등록_실패됨(response);
@@ -67,12 +64,10 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("메뉴를 등록 실패한다. (menuGroup 누락)")
     void FailCreateMenuWithoutMenuGroup() {
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setMenuId(1L);
-        menuProduct.setProductId(product.getId());
-        menuProduct.setQuantity(1);
+        // given
+        MenuProductRequest menuProduct = MenuProductRequest.of(product.getId(), 1);
         // when
-        ExtractableResponse<Response> response = 메뉴_등록_요청("강정치킨", new BigDecimal(-1000), null, Arrays.asList(menuProduct));
+        ExtractableResponse<Response> response = 메뉴_등록_요청("강정치킨", 1000, null, Arrays.asList(menuProduct));
 
         // then
         메뉴_등록_실패됨(response);
@@ -81,12 +76,11 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("메뉴를 등록 실패한다. (상품 등록되어있지 않음)")
     void FailCreateMenuOfNotExistProduct() {
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setMenuId(1L);
-        menuProduct.setProductId(10L);
-        menuProduct.setQuantity(1);
+        // given
+        MenuProductRequest menuProduct = MenuProductRequest.of(10L, 1);
+
         // when
-        ExtractableResponse<Response> response = 메뉴_등록_요청("강정치킨", new BigDecimal(-1000), null, Arrays.asList(menuProduct));
+        ExtractableResponse<Response> response = 메뉴_등록_요청("강정치킨", 1000, null, Arrays.asList(menuProduct));
 
         // then
         메뉴_등록_실패됨(response);
@@ -102,15 +96,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         메뉴_조회됨(response);
     }
 
-    public static ExtractableResponse<Response> 메뉴_등록_요청(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-//        Menu menu = Menu.of(name, price, menuGroupId, menuProducts);
-//                new Menu();
-//        menu.setMenuGroupId(menuGroupId);
-//        menu.setMenuProducts(menuProducts);
-//        menu.setName(name);
-//        menu.setPrice(price);
-        Menu menu = new Menu();
-
+    public static ExtractableResponse<Response> 메뉴_등록_요청(String name, Integer price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
+        MenuRequest menu = new MenuRequest(name, price, menuGroupId, menuProducts);
 
         return RestAssured
                 .given().log().all()

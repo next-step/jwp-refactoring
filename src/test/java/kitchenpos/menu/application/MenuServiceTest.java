@@ -1,6 +1,8 @@
 package kitchenpos.menu.application;
 
+
 import kitchenpos.menu.domain.*;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,10 +59,10 @@ public class MenuServiceTest {
         given(menuRepository.save(any())).willReturn(추천메뉴);
 
         // when
-        Menu createMenu = menuService.create(추천메뉴);
+        MenuResponse createdMenu = menuService.create(추천메뉴);
 
         // then
-        assertThat(createMenu).isNotNull();
+        assertThat(createdMenu).isNotNull();
     }
 
     public static Menu 메뉴_등록(Long id, String name, Integer price, Long menuGroupId, List<MenuProduct> menuProducts) {
