@@ -93,10 +93,10 @@ public class ControllerTest {
 
 ## 📚 Todo List 📚
 - [x] 키친포스의 요구사항 작성하기
-- [ ] 테스트 코드 작성하기
+- [x] 테스트 코드 작성하기
   - [x] MenuGroup에 관한 테스트 코드 작성하기
   - [x] Menu에 관한 테스트 코드 작성하기
-  - [ ] Order에 관한 테스트 코드 작성하기
+  - [x] Order에 관한 테스트 코드 작성하기
   - [x] Product에 관한 테스트 코드 작성하기
   - [x] TableGroup에 관한 테스트 코드 작성하기
   - [x] Table에 관한 테스트 코드 작성하기 
