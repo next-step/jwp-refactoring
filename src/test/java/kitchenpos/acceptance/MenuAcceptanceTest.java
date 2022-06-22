@@ -103,11 +103,14 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 메뉴_등록_요청(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+//        Menu menu = Menu.of(name, price, menuGroupId, menuProducts);
+//                new Menu();
+//        menu.setMenuGroupId(menuGroupId);
+//        menu.setMenuProducts(menuProducts);
+//        menu.setName(name);
+//        menu.setPrice(price);
         Menu menu = new Menu();
-        menu.setMenuGroupId(menuGroupId);
-        menu.setMenuProducts(menuProducts);
-        menu.setName(name);
-        menu.setPrice(price);
+
 
         return RestAssured
                 .given().log().all()

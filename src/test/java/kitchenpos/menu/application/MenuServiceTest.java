@@ -1,14 +1,8 @@
-package kitchenpos.menu;
+package kitchenpos.menu.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.*;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.menu.MenuGroupServiceTest.메뉴_그룹_등록;
+import static kitchenpos.menu.application.MenuGroupServiceTest.메뉴_그룹_등록;
 import static kitchenpos.product.ProductServiceTest.상품_등록;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -31,16 +25,13 @@ import static org.mockito.BDDMockito.given;
 @DisplayName("메뉴 관련 기능")
 public class MenuServiceTest {
     @Mock
-    MenuDao menuDao;
+    MenuRepository menuRepository;
 
     @Mock
-    MenuGroupDao menuGroupDao;
+    MenuGroupRepository menuGroupRepository;
 
     @Mock
-    MenuProductDao menuProductDao;
-
-    @Mock
-    ProductDao productDao;
+    ProductRepository productRepository;
 
     @InjectMocks
     MenuService menuService;
@@ -61,9 +52,9 @@ public class MenuServiceTest {
     @DisplayName("메뉴를 등록한다.")
     void createMenu() {
         // given
-        given(menuGroupDao.existsById(any())).willReturn(true);
-        given(productDao.findById(any())).willReturn(Optional.of(강정치킨));
-        given(menuDao.save(any())).willReturn(추천메뉴);
+        given(menuGroupRepository.existsById(any())).willReturn(true);
+        given(productRepository.findById(any())).willReturn(Optional.of(강정치킨));
+        given(menuRepository.save(any())).willReturn(추천메뉴);
 
         // when
         Menu createMenu = menuService.create(추천메뉴);
@@ -72,21 +63,11 @@ public class MenuServiceTest {
         assertThat(createMenu).isNotNull();
     }
 
-    static Menu 메뉴_등록(Long id, String name, Integer price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        Menu menu = new Menu();
-//        menu.setId(id);
-//        menu.setName(name);
-//        menu.setPrice(BigDecimal.valueOf(price));
-//        menu.setMenuGroupId(menuGroupId);
-//        menu.setMenuProducts(menuProducts);
-        return menu;
+    public static Menu 메뉴_등록(Long id, String name, Integer price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        return Menu.of(name, price, menuGroupId, menuProducts);
     }
 
-    static MenuProduct 메뉴_상품_등록(Long seq, Long productId, long quantity) {
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setSeq(seq);
-        menuProduct.setProductId(productId);
-        menuProduct.setQuantity(quantity);
-        return menuProduct;
+    public static MenuProduct 메뉴_상품_등록(Long seq, Long productId, long quantity) {
+        return MenuProduct.of(productId, quantity);
     }
 }

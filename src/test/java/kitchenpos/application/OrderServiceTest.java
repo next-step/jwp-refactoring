@@ -22,9 +22,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.menu.MenuGroupServiceTest.메뉴_그룹_등록;
-import static kitchenpos.menu.MenuServiceTest.메뉴_등록;
-import static kitchenpos.menu.MenuServiceTest.메뉴_상품_등록;
+import static kitchenpos.menu.application.MenuGroupServiceTest.메뉴_그룹_등록;
+import static kitchenpos.menu.application.MenuServiceTest.메뉴_등록;
+import static kitchenpos.menu.application.MenuServiceTest.메뉴_상품_등록;
 import static kitchenpos.product.ProductServiceTest.상품_등록;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
