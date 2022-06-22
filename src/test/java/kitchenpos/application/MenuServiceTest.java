@@ -71,7 +71,7 @@ class MenuServiceTest {
 
     @Test
     @DisplayName("생성 하려는 메뉴 가격은 null일 수 없다.")
-    void createFailTest01() {
+    void createFailWithNullTest() {
         //given
         Menu 잘못된_메뉴 = new Menu(1L, "잘못된 메뉴", null, 메뉴그룹1.getId());
 
@@ -83,7 +83,7 @@ class MenuServiceTest {
 
     @Test
     @DisplayName("생성 하려는 메뉴 가격은 음수일 수 없다.")
-    void createFailTest02() {
+    void createFailNegativePriceTest() {
         //given
         Menu 잘못된_메뉴 = new Menu(1L, "잘못된 메뉴", BigDecimal.valueOf(-1), 메뉴그룹1.getId());
 
@@ -95,7 +95,7 @@ class MenuServiceTest {
 
     @Test
     @DisplayName("생성 하려는 메뉴의 메뉴 그룹이 시스템에 존재 하지 않으면 추가 할 수 없다.")
-    void createTestFail03() {
+    void createTestFailWithMenuGroupNotExist() {
         //given
         given(menuGroupDao.existsById(메뉴그룹1.getId())).willReturn(false);
 
@@ -107,7 +107,7 @@ class MenuServiceTest {
 
     @Test
     @DisplayName("생성 하려는 메뉴의 메뉴 상품이 시스템에 등록 되어 있지 않으면 추가 할 수 없다.")
-    void createTestFail04() {
+    void createTestFailWithMenuProductNotExist() {
         //given
         given(menuGroupDao.existsById(메뉴그룹1.getId())).willReturn(true);
         given(productDao.findById(메뉴상품1.getProductId())).willThrow(IllegalArgumentException.class);
@@ -120,7 +120,7 @@ class MenuServiceTest {
 
     @Test
     @DisplayName("생성 하려는 메뉴 가격이 전체 메뉴상품의 전체 금액(가격 * 수량의 총합)보다 클 수 없다.")
-    void createTestFail05() {
+    void createTestFailWithAmount() {
         //given
         given(menuGroupDao.existsById(메뉴그룹1.getId())).willReturn(true);
         given(productDao.findById(메뉴상품1.getProductId())).willReturn(Optional.of(상품1));

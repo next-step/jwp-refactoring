@@ -40,7 +40,7 @@ class ProductServiceTest {
 
     @Test
     @DisplayName("생성하려는 상품에서 상품 가격 항목이 null이면 생성 할 수 없다.")
-    void createFail01() {
+    void createFailWithNullTest() {
         //given
         Product 저장할_상품 = new Product(1L, "상품1", null);
 
@@ -51,7 +51,7 @@ class ProductServiceTest {
 
     @Test
     @DisplayName("생성하려는 상품에서 상품 가격이 음수라면 생성 할 수 없다.")
-    void createFail02() {
+    void createFailWithPriceNegativeTest() {
         //given
         Product 저장할_상품 = new Product(1L, "상품1", BigDecimal.valueOf(-1));
 
@@ -62,7 +62,7 @@ class ProductServiceTest {
 
     @Test
     @DisplayName("상품을 생성 할 수 있다.")
-    void createTest01() {
+    void createTest() {
         //given
         Product 저장할_상품 = new Product(1L, "상품1", BigDecimal.valueOf(1000));
         given(productDao.save(any(Product.class))).willReturn(상품1);
@@ -76,7 +76,7 @@ class ProductServiceTest {
 
     @Test
     @DisplayName("상품 목록을 조회 한다.")
-    void listTest01() {
+    void listTest() {
         //given
         given(productDao.findAll()).willReturn(Arrays.asList(상품1, 상품2));
 

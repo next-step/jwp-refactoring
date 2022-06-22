@@ -80,7 +80,7 @@ class TableServiceTest {
 
     @Test
     @DisplayName("주문 테이블이 시스템에 등록 되어 있지 않으면 빈테이블로 변경 할 수 없다.")
-    void changeEmptyFailTest01() {
+    void changeEmptyFailWithTableNotExitTest() {
         //given
         given(orderTableDao.findById(주문_테이블1.getId())).willThrow(IllegalArgumentException.class);
 
@@ -92,7 +92,7 @@ class TableServiceTest {
 
     @Test
     @DisplayName("주문 테이블이 단체 지정 되어 있으면 빈테이블로 지정 할 수 없다.")
-    void changeEmptyFailTest02() {
+    void changeEmptyFailWithTableGroupTest() {
         //given
         주문_테이블1.setTableGroupId(단체.getId());
         given(orderTableDao.findById(주문_테이블1.getId())).willReturn(Optional.of(주문_테이블1));
@@ -105,7 +105,7 @@ class TableServiceTest {
 
     @Test
     @DisplayName("조리 중(COOKING), 식사 중(MEAL) 상태에 있으면 빈테이블로 지정 할 수 없다.")
-    void changeEmptyFailTest03() {
+    void changeEmptyFailWithStatusTest() {
         //given
         given(orderTableDao.findById(주문_테이블1.getId())).willReturn(Optional.of(주문_테이블1));
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(true);
@@ -118,7 +118,7 @@ class TableServiceTest {
 
     @Test
     @DisplayName("주문 테이블을 빈테이블로 변경 할 수 있다.")
-    void changeEmptyTest03() {
+    void changeEmptyTest() {
         //given
         given(orderTableDao.findById(주문_테이블1.getId())).willReturn(Optional.of(주문_테이블1));
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(false);
@@ -133,7 +133,7 @@ class TableServiceTest {
 
     @Test
     @DisplayName("변경하려는 손님수가 0 보다 작을 수 없다.")
-    void changeNumberOfGuestsFailTest01() {
+    void changeNumberOfGuestsFailWithUnderTest() {
         //given
         OrderTable orderTable = new OrderTable(1L, -1, false);
 
@@ -145,7 +145,7 @@ class TableServiceTest {
 
     @Test
     @DisplayName("주문 테이블이 시스템에 등록 되어 있지 않으면 손님수를 변경 할 수 없다.")
-    void changeNumberOfGuestsFailTest02() {
+    void changeNumberOfGuestsFailWithOrderTableNotExistTest() {
         //given
         OrderTable orderTable = new OrderTable(1L, 5, false);
         given(orderTableDao.findById(orderTable.getId())).willThrow(IllegalArgumentException.class);
@@ -158,7 +158,7 @@ class TableServiceTest {
 
     @Test
     @DisplayName("빈테이블 이면 손님수를 변경 할 수 없다.")
-    void changeNumberOfGuestsFailTest03() {
+    void changeNumberOfGuestsFailWithEmptyTableTest() {
         //given
         OrderTable orderTable = new OrderTable(1L, 5, true);
         given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.of(orderTable));

@@ -55,7 +55,7 @@ class TableGroupServiceTest {
 
     @Test
     @DisplayName("주문 테이블이 비어 있으면 테이블 그룹으로 지정 할 수 없다.")
-    void createFailTest01() {
+    void createFailWithEmptyTest() {
 
         //given
         TableGroup tableGroup = new TableGroup(1L, Collections.emptyList());
@@ -68,7 +68,7 @@ class TableGroupServiceTest {
 
     @Test
     @DisplayName("주문 테이블이 2개보다 작으면 테이블 그룹으로 지정 할 수 없다.")
-    void createFailTest02() {
+    void createFailWithUnder2Test() {
 
         //given
         TableGroup tableGroup = new TableGroup(1L, Arrays.asList(주문_테이블1));
@@ -81,7 +81,7 @@ class TableGroupServiceTest {
 
     @Test
     @DisplayName("주문 테이블들이 시스템에 등록 되어 있지 않으면 테이블 그룹은 지정 할 수 없다.")
-    void createFailTest03() {
+    void createFailWithOrderTableNotExistTest() {
 
         //given
         TableGroup tableGroup = new TableGroup(1L, Arrays.asList(주문_테이블1, 주문_테이블2));
@@ -96,7 +96,7 @@ class TableGroupServiceTest {
 
     @Test
     @DisplayName("주문 테이블이 빈테이블이 아니면 테이블 그룹을 지정 할 수 없다.")
-    void createFailTest04() {
+    void createFailWithEmptyTableTest() {
         //given
         OrderTable orderTable1 = new OrderTable(1L, false);
         OrderTable orderTable2 = new OrderTable(2L, false);
@@ -111,7 +111,7 @@ class TableGroupServiceTest {
 
     @Test
     @DisplayName("이미 테이블 그룹에 속해 있으면 테이블 그룹을 지정 할 수 없다.")
-    void createFailTest05() {
+    void createFailWithTableGroupTest() {
         //given
         TableGroup tableGroup = new TableGroup(1L);
         OrderTable orderTable1 = new OrderTable(1L, tableGroup.getId(), true);
@@ -145,7 +145,7 @@ class TableGroupServiceTest {
 
     @Test
     @DisplayName("주문 상태가 조리중(COOKING), 식사중(MEAL)인 경우에는 해제 할 수 없다.")
-    void ungroupFailTest01() {
+    void ungroupFailWithStatusTest() {
         //given
         given(orderTableDao.findAllByTableGroupId(단체.getId())).willReturn(Arrays.asList(주문_테이블1, 주문_테이블2));
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);

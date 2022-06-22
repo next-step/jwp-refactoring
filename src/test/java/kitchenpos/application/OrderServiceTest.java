@@ -92,7 +92,7 @@ class OrderServiceTest {
 
     @Test
     @DisplayName("생성하려는 주문에서 주문 항목이 비어있으면 주문을 생성 할 수 없다.")
-    void createFailTest01() {
+    void createFailWithEmptyTest() {
         //given
         Order order = new Order(1L, 주문_테이블1.getId());
         order.setOrderLineItems(Collections.emptyList());
@@ -105,7 +105,7 @@ class OrderServiceTest {
 
     @Test
     @DisplayName("생성하려는 주문에서 주문 항목의 메뉴가 시스템에 등록 되어 있지 않으면 주문을 생성 할 수 없다.")
-    void createFailTest02() {
+    void createFailWithMenuNotExistTest() {
 
         //given
         Order order = new Order(1L, 주문_테이블1.getId());
@@ -121,7 +121,7 @@ class OrderServiceTest {
 
     @Test
     @DisplayName("생성하려는 주문에서 주문 테이블이 시스템에 등록 되어 있지 않으면 주문을 생성 할 수 없다.")
-    void createFailTest03() {
+    void createFailWithOrderNotExistTest() {
         //given
         Order order = new Order(1L, 주문_테이블1.getId());
         order.setOrderLineItems(Arrays.asList(주문항목1));
@@ -137,7 +137,7 @@ class OrderServiceTest {
 
     @Test
     @DisplayName("생성하려는 주문에서 주문 테이블이 빈주문 테이블이면 생성 할 수 없다.")
-    void createFailTest04() {
+    void createFailWithEmptyOrderTableTest() {
         //given
         Order order = new Order(1L, 빈주문_테이블.getId());
         order.setOrderLineItems(Arrays.asList(주문항목1));
@@ -153,7 +153,7 @@ class OrderServiceTest {
 
     @Test
     @DisplayName("주문을 생성 할 수 있다.")
-    void createTest01() {
+    void createTest() {
         //given
         given(menuDao.countByIdIn(Arrays.asList(메뉴1.getId()))).willReturn(1L);
         given(orderTableDao.findById(주문_테이블1.getId())).willReturn(Optional.of(주문_테이블1));
@@ -170,7 +170,7 @@ class OrderServiceTest {
 
     @Test
     @DisplayName("주문 목록을 조회 할 수 있다.")
-    void listTest01() {
+    void listTest() {
         //given
         given(orderDao.findAll()).willReturn(Arrays.asList(주문1));
 
@@ -183,7 +183,7 @@ class OrderServiceTest {
 
     @Test
     @DisplayName("주문이 시스템에 등록 되어 있지 않으면 변경 할 수 없다.")
-    void changeOrderStatusFailTest01() {
+    void changeOrderStatusFailWithOrderNotExistTest() {
         //given
         given(orderDao.findById(주문1.getId())).willThrow(IllegalArgumentException.class);
 
@@ -195,7 +195,7 @@ class OrderServiceTest {
 
     @Test
     @DisplayName("주문이 완료 상태이면 변경 할 수 없다.")
-    void changeOrderStatusFailTest02() {
+    void changeOrderStatusFailWithCompleteStatusTest() {
         //given
         주문1.setOrderStatus(String.valueOf(OrderStatus.COMPLETION));
         given(orderDao.findById(주문1.getId())).willReturn(Optional.of(주문1));
@@ -208,7 +208,7 @@ class OrderServiceTest {
 
     @Test
     @DisplayName("주문의 상태를 변경 할 수 있다.")
-    void changeOrderStatusTest01() {
+    void changeOrderStatusTest() {
 
         //given
         주문1.setOrderStatus(String.valueOf(OrderStatus.COOKING));
