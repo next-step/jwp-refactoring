@@ -2,6 +2,7 @@ package kitchenpos.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Arrays;
@@ -35,7 +36,8 @@ class OrderTablesTest {
         assertThat(주문테이블_목록.getItems()).hasSize(2);
     }
 
-    @DisplayName("주문 테이블목록의 주문 테이블을 그룹에 매핑하면 정상적으로 매핑된다")
+    @DisplayName("주문 테이블목록의 주문 테이블을 그룹에 매핑하면 정상적으로 매핑되고 "
+        + "테이블 상태가 빈 테이블이 아니게 된다")
     @Test
     void tables_mapped_test() {
         // given
@@ -48,6 +50,7 @@ class OrderTablesTest {
         // then
         for (OrderTableEntity orderTable : 주문테이블_목록.getItems()) {
             assertThat(orderTable.getTableGroupId()).isEqualTo(테이블_그룹_id);
+            assertFalse(orderTable.isEmpty());
         }
     }
 

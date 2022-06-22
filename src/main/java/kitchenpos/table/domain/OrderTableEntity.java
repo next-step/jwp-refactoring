@@ -37,6 +37,7 @@ public class OrderTableEntity {
 
     public void mapIntoGroup(Long tableGroupId) {
         this.tableGroupId = tableGroupId;
+        this.empty = false;
     }
 
     public boolean isGrouped() {
