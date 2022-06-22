@@ -71,6 +71,10 @@ public class Menu {
         return menuGroup;
     }
 
+    public MenuProducts getMenuProducts() {
+        return menuProducts;
+    }
+
     public void setMenuGroup(MenuGroup menuGroup) {
         this.menuGroup = menuGroup;
     }
