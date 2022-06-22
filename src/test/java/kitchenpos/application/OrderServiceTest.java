@@ -149,7 +149,7 @@ class OrderServiceTest {
         given(orderDao.findById(1L)).willReturn(Optional.of(변경전_주문));
 
         // when && then
-        assertThatThrownBy(() -> 주문_상태_변경(1L, 변경전_주문)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> 주문_상태_변경(1L, 변경후_주문)).isInstanceOf(IllegalArgumentException.class);
     }
 
     private OrderLineItem 주문_항목_데이터_생성(Long seq, Long orderId, Long menuId, long quantity) {
