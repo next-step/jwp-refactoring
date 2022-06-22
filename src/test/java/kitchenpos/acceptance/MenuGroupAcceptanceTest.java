@@ -15,7 +15,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-@DisplayName("메뉴그룹_등록_요청")
+@DisplayName("메뉴그룹 관련 기능")
 class MenuGroupAcceptanceTest extends AcceptanceTest {
     private MenuGroup 두마리메뉴;
     private MenuGroup 한마리메뉴;
@@ -49,7 +49,7 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
      */
     @DisplayName("메뉴그룹 목록을 조회 한다.")
     @Test
-    void getProducts() {
+    void lists() {
         // given
         MenuGroup 등록한_두마리메뉴 = 메뉴그룹_등록_요청(두마리메뉴).as(MenuGroup.class);
         MenuGroup 등록한_한마리메뉴 = 메뉴그룹_등록_요청(한마리메뉴).as(MenuGroup.class);

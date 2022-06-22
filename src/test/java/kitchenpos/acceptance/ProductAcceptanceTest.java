@@ -64,7 +64,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
      */
     @DisplayName("상품 목록을 조회 한다.")
     @Test
-    void getProducts() {
+    void lists() {
         // given
         Product 등록한_피자 = 상품_등록_요청(피자).as(Product.class);
         Product 등록한_스파게티 = 상품_등록_요청(스파게티).as(Product.class);

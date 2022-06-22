@@ -24,7 +24,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-@DisplayName("상품 관련 기능")
+@DisplayName("메뉴 관련 기능")
 class MenuAcceptanceTest extends AcceptanceTest {
     private Menu 양념치킨;
     private MenuGroup 한마리메뉴;
@@ -62,7 +62,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
      */
     @DisplayName("메뉴 목록을 조회 한다.")
     @Test
-    void getProducts() {
+    void lists() {
         // given
         Menu 등록한_양념치킨 = 메뉴_등록_요청(양념치킨).as(Menu.class);
 
