@@ -13,6 +13,10 @@ public class OrderTable {
         this.empty = empty;
     }
 
+    public OrderTable(int numberOfGuests) {
+        this.numberOfGuests = numberOfGuests;
+    }
+
     private OrderTable(int numberOfGuests, boolean empty) {
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
@@ -20,6 +24,10 @@ public class OrderTable {
 
     public static OrderTable from(boolean empty) {
         return new OrderTable(empty);
+    }
+
+    public static OrderTable from(int numberOfGuests) {
+        return new OrderTable(numberOfGuests);
     }
 
     public static OrderTable of(int numberOfGuests, boolean empty) {
