@@ -11,6 +11,7 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.product.domain.Product;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -121,7 +122,7 @@ public class OrderServiceTest {
         given(orderRepository.save(any())).willReturn(order);
 
         // when-then
-        assertThat(orderService.create(order)).isEqualTo(order);
+        assertThat(orderService.create(order).getOrderStatus()).isEqualTo(order.getOrderStatus());
     }
 
     @Test
@@ -133,11 +134,11 @@ public class OrderServiceTest {
 //        given(orderLineItemDao.findAllByOrderId(order.getId())).willReturn(주문항목);
 
         // when
-        List<Order> orders = orderService.list();
+        List<OrderResponse> orders = orderService.list();
 
         // then
         assertThat(orders).hasSize(1);
-        assertThat(orders.get(0).getOrderLineItems().getValues()).hasSize(1);
+        assertThat(orders.get(0).getOrderLineItems()).hasSize(1);
     }
 
     @Test
@@ -163,6 +164,7 @@ public class OrderServiceTest {
         newOrder.changeOrderStatus(OrderStatus.MEAL);
 
         given(orderRepository.findById(any())).willReturn(Optional.of(order));
+        given(orderRepository.save(any())).willReturn(newOrder);
 
         // when-then
         assertThat(orderService.changeOrderStatus(order.getId(), newOrder).getOrderStatus()).isEqualTo(OrderStatus.MEAL);
