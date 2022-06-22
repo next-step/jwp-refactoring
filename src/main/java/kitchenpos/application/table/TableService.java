@@ -50,6 +50,10 @@ public class TableService {
         return OrderTableResponse.from(orderTable);
     }
 
+    public OrderTable findOrderTable(Long orderTableId) {
+        return orderTableRepository.findById(orderTableId).orElseThrow(IllegalArgumentException::new);
+    }
+
     private void validateChangeNumberOfGuests(OrderTable orderTable) {
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException();
@@ -71,9 +75,5 @@ public class TableService {
         if (orderTable.getTableGroup() != null) {
             throw new IllegalArgumentException();
         }
-    }
-
-    private OrderTable findOrderTable(Long orderTableId) {
-        return orderTableRepository.findById(orderTableId).orElseThrow(IllegalArgumentException::new);
     }
 }

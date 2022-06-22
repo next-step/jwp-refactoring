@@ -2,11 +2,9 @@ package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatNoException;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 import kitchenpos.application.fixture.MenuFixtureFactory;
 import kitchenpos.application.fixture.MenuGroupFixtureFactory;
 import kitchenpos.application.fixture.MenuProductFixtureFactory;
@@ -22,12 +20,10 @@ import kitchenpos.domain.product.ProductRepository;
 import kitchenpos.dto.menu.MenuProductRequest;
 import kitchenpos.dto.menu.MenuRequest;
 import kitchenpos.dto.menu.MenuResponse;
-import kitchenpos.exception.CreateMenuException;
 import kitchenpos.exception.CreateMenuProductException;
 import kitchenpos.exception.MenuPriceException;
 import kitchenpos.exception.NegativePriceException;
 import kitchenpos.exception.NotFoundMenuGroupException;
-import kitchenpos.exception.NotFoundProductException;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
