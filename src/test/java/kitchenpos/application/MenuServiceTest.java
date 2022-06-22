@@ -19,8 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -49,8 +48,10 @@ class MenuServiceTest {
     @BeforeEach
     void beforeEach() {
         product = new Product.Builder("소불고기", 1000).id(1L).build();
-        menuProducts = Arrays.asList(new MenuProduct.Builder(product.getId(), 1).build(),
-                new MenuProduct.Builder(product.getId(), 1).build());
+        menuProducts = Arrays.asList(
+                new MenuProduct.Builder(product.getId(), 1).build(),
+                new MenuProduct.Builder(product.getId(), 1).build()
+        );
         menuGroup = new MenuGroup.Builder().id(1L).name("점심메뉴").build();
         menu = new Menu.Builder("점심특선", 2000, menuGroup.getId(), menuProducts).build();
     }
@@ -80,9 +81,9 @@ class MenuServiceTest {
     void create_throwsException_ifPriceLessThanZero() {
         // when
         // then
-        assertThatThrownBy(() ->
-                menuService.create(new Menu.Builder("점심특선", -1000, menuGroup.getId(), menuProducts).build()))
-                .isInstanceOf(IllegalArgumentException.class);
+        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(
+                new Menu.Builder("점심특선", -1000, menuGroup.getId(), menuProducts).build())
+        );
 
         // verify
         then(menuGroupDao).should(never()).existsById(anyLong());
@@ -96,9 +97,9 @@ class MenuServiceTest {
 
         // when
         // then
-        assertThatThrownBy(() ->
-                menuService.create(new Menu.Builder("점심특선", 4000, menuGroup.getId(), menuProducts).build()))
-                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuService.create(
+                new Menu.Builder("점심특선", 4000, menuGroup.getId(), menuProducts).build())
+        ).isInstanceOf(IllegalArgumentException.class);
 
         // verify
         then(menuDao).should(never()).save(any(Menu.class));

@@ -48,8 +48,7 @@ class TableServiceTest {
     void changeEmpty() {
         // given
         given(orderTableDao.findById(anyLong())).willReturn(Optional.of(new OrderTable.Builder().build()));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(1L, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
-                .willReturn(false);
+        given(orderDao.existsByOrderTableIdAndOrderStatusIn(1L, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(false);
         given(orderTableDao.save(any(OrderTable.class))).willReturn(new OrderTable.Builder().id(1L).empty(true).build());
 
         OrderTable created = tableService.create(new OrderTable.Builder(0, true).build());
@@ -62,8 +61,7 @@ class TableServiceTest {
 
         // verify
         then(orderTableDao).should(times(1)).findById(anyLong());
-        then(orderDao).should(times(1)).existsByOrderTableIdAndOrderStatusIn(
-                1L, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()));
+        then(orderDao).should(times(1)).existsByOrderTableIdAndOrderStatusIn(1L, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()));
         then(orderTableDao).should(times(2)).save(any(OrderTable.class)); // create, changeEmpty
     }
 

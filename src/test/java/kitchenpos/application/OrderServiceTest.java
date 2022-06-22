@@ -43,8 +43,10 @@ class OrderServiceTest {
     @BeforeEach
     void beforeEach() {
         product = new Product.Builder("소불고기", 1000).id(1L).build();
-        menuProducts = Arrays.asList(new MenuProduct.Builder(product.getId(), 1).build(),
-                new MenuProduct.Builder(product.getId(), 1).build());
+        menuProducts = Arrays.asList(
+                new MenuProduct.Builder(product.getId(), 1).build(),
+                new MenuProduct.Builder(product.getId(), 1).build()
+        );
         menuGroup = new MenuGroup.Builder().id(1L).name("점심메뉴").build();
         menu = new Menu.Builder("점심특선", 2000, menuGroup.getId(), menuProducts).build();
     }

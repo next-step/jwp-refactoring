@@ -78,7 +78,8 @@ class TableGroupServiceTest {
         // given
         given(orderTableDao.findAllByTableGroupId(1L)).willReturn(Arrays.asList(
                 new OrderTable.Builder(4, false).id(1L).build(),
-                new OrderTable.Builder(2, false).id(2L).build()));
+                new OrderTable.Builder(2, false).id(2L).build())
+        );
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(
                 Arrays.asList(1L, 2L),
                 Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(false);
@@ -97,7 +98,8 @@ class TableGroupServiceTest {
         // given
         given(orderTableDao.findAllByTableGroupId(1L)).willReturn(Arrays.asList(
                 new OrderTable.Builder(4, false).id(1L).build(),
-                new OrderTable.Builder(2, false).id(2L).build()));
+                new OrderTable.Builder(2, false).id(2L).build())
+        );
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(
                 Arrays.asList(1L, 2L),
                 Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(true);
