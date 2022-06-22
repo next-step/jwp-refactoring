@@ -14,20 +14,25 @@ public class FakeOrderDao implements OrderDao {
     private final Order secondCompleteOrder = createOrderBy(2L, 2L, OrderStatus.COMPLETION.name());
     private final Order mealOrder = createOrderBy(3L, 3L, OrderStatus.MEAL.name());
     private final Order cookingOrder = createOrderBy(4L, 4L, OrderStatus.COOKING.name());
+    private final Order cookingSaveOrder = createOrderBy(1L, 1L, OrderStatus.COOKING.name());
+    private final Order completeSaveOrder = createOrderBy(2L, 2L, OrderStatus.COMPLETION.name());
 
     @Override
     public Order save(Order entity) {
-        return null;
+        return entity;
     }
 
     @Override
     public Optional<Order> findById(Long id) {
-        return Optional.empty();
+        return Arrays.asList(cookingSaveOrder, completeSaveOrder)
+                .stream()
+                .filter(order -> order.getId().equals(id))
+                .findFirst();
     }
 
     @Override
     public List<Order> findAll() {
-        return null;
+        return Arrays.asList(cookingSaveOrder);
     }
 
     @Override

@@ -1,26 +1,21 @@
 package kitchenpos;
 
 import java.util.List;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
+
+import kitchenpos.domain.*;
 
 import java.math.BigDecimal;
-import kitchenpos.domain.TableGroup;
 
 public class ServiceTestFactory {
-    public static Product HONEY_COMBO = createProductBy(1L, "허니콤보", 20_000L);
-    public static Product RED_COMBO = createProductBy(2L,"레드콤보", 19_000L);
-    public static Product ORIGINAL_COMBO = createProductBy(3L,"오리지널콤보", 18_000L);
-    public static MenuGroup NEW_MENU_GROUP = createMenuGroupBy(1L, "신메뉴");
-    public static MenuGroup FAVORITE_MENU_GROUP = createMenuGroupBy(2L, "인기메뉴");
-    public static Menu HONEY_RED_COMBO = createMenuBy(1L, "허니레드콤보", 39_000L);
-    public static MenuProduct HONEY_MENU_PRODUCT = createMenuProductBy(1L, HONEY_RED_COMBO, HONEY_COMBO, 1);
-    public static MenuProduct NOT_EXISTS_MENU_PRODUCT = createMenuProductBy(2L, HONEY_RED_COMBO, ORIGINAL_COMBO, 1);
-    public static MenuProduct RED_MENU_PRODUCT = createMenuProductBy(3L, HONEY_RED_COMBO, RED_COMBO, 1);
+    public final static Product HONEY_COMBO = createProductBy(1L, "허니콤보", 20_000L);
+    public final static Product RED_COMBO = createProductBy(2L,"레드콤보", 19_000L);
+    public final static Product ORIGINAL_COMBO = createProductBy(3L,"오리지널콤보", 18_000L);
+    public final static MenuGroup NEW_MENU_GROUP = createMenuGroupBy(1L, "신메뉴");
+    public final static MenuGroup FAVORITE_MENU_GROUP = createMenuGroupBy(2L, "인기메뉴");
+    public final static Menu HONEY_RED_COMBO = createMenuBy(1L, "허니레드콤보", 39_000L);
+    public final static MenuProduct HONEY_MENU_PRODUCT = createMenuProductBy(1L, HONEY_RED_COMBO, HONEY_COMBO, 1);
+    public final static MenuProduct NOT_EXISTS_MENU_PRODUCT = createMenuProductBy(2L, HONEY_RED_COMBO, ORIGINAL_COMBO, 1);
+    public final static MenuProduct RED_MENU_PRODUCT = createMenuProductBy(3L, HONEY_RED_COMBO, RED_COMBO, 1);
 
     public static Product createProductBy(Long id, String name, long price) {
         Product product = new Product();
@@ -76,5 +71,14 @@ public class ServiceTestFactory {
         tableGroup.setId(id);
         tableGroup.setOrderTables(orderTables);
         return tableGroup;
+    }
+
+    public static OrderLineItem createOrderLineItemBy(Long seq, Long orderId, Long menuId, long quantity) {
+        OrderLineItem orderLineItem = new OrderLineItem();
+        orderLineItem.setSeq(seq);
+        orderLineItem.setOrderId(orderId);
+        orderLineItem.setMenuId(menuId);
+        orderLineItem.setQuantity(quantity);
+        return orderLineItem;
     }
 }

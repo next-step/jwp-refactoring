@@ -10,6 +10,8 @@ import java.util.Optional;
 import static kitchenpos.ServiceTestFactory.HONEY_RED_COMBO;
 
 public class FakeMenuDao implements MenuDao {
+    private final List<Menu> menus = Arrays.asList(HONEY_RED_COMBO);
+
     @Override
     public Menu save(Menu entity) {
         return entity;
@@ -22,11 +24,13 @@ public class FakeMenuDao implements MenuDao {
 
     @Override
     public List<Menu> findAll() {
-        return Arrays.asList(HONEY_RED_COMBO);
+        return menus;
     }
 
     @Override
     public long countByIdIn(List<Long> ids) {
-        return 0;
+        return menus.stream()
+                .filter(menu -> ids.contains(menu.getId()))
+                .count();
     }
 }
