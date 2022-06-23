@@ -34,14 +34,17 @@ public class TableGroup {
         this.orderTables = orderTables;
     }
 
-    public void groupingTables(OrderTables emptyTables) {
-        checkPossibleGrouping(emptyTables);
+    public void groupingTables(OrderTables emptyTables, int requestCount) {
+        checkPossibleGrouping(emptyTables, requestCount);
         orderTables.groupingTableGroup(emptyTables, this);
     }
 
-    private void checkPossibleGrouping(OrderTables emptyTables) {
+    private void checkPossibleGrouping(OrderTables emptyTables, int requestCount) {
         if (emptyTables.size() < MIN_TABLE_SIZE) {
             throw new IllegalArgumentException("[ERROR] 단체 지정에는 최소 2개의 테이블이 필요합니다.");
+        }
+        if (emptyTables.size() != requestCount) {
+            throw new IllegalArgumentException("[ERROR] 등록 되어있지 않은 테이블이 존재합니다.");
         }
     }
 

@@ -45,10 +45,10 @@ public class OrderTable {
 
     private void checkPossibleGrouping() {
         if (tableGroup != null) {
-            throw new IllegalStateException("[ERROR] 이미 단체지정이 되어있습니다.");
+            throw new IllegalArgumentException("[ERROR] 이미 단체지정이 되어있습니다.");
         }
         if (Boolean.FALSE.equals(empty)) {
-            throw new IllegalStateException("[ERROR] 빈 테이블이 아닌 경우 단체 지정 할 수 없습니다.");
+            throw new IllegalArgumentException("[ERROR] 빈 테이블이 아닌 경우 단체 지정 할 수 없습니다.");
         }
     }
 

@@ -19,7 +19,7 @@ class TableGroupTest {
         orderTables.addOrderTable(new OrderTable(null, 5, true));
 
         //when
-        tableGroup.groupingTables(orderTables);
+        tableGroup.groupingTables(orderTables, 2);
 
         //then
         assertThat(orderTables.getOrderTables().get(0).getTableGroup()).isNotNull();
@@ -38,6 +38,6 @@ class TableGroupTest {
 
         // when then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroup.groupingTables(orderTables));
+                .isThrownBy(() -> tableGroup.groupingTables(orderTables,1));
     }
 }

@@ -1,14 +1,19 @@
 package kitchenpos.table.application;
 
+import static kitchenpos.helper.TableFixtures.테이블_요청_만들기;
+import static kitchenpos.helper.TableGroupFixtures.테이블_그룹_요청_만들기;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import jdk.nashorn.internal.ir.annotations.Ignore;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +28,7 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 class TableGroupServiceTest {
 
     @Autowired
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
     @Autowired
     private TableGroupService tableGroupService;
 
@@ -31,28 +36,28 @@ class TableGroupServiceTest {
     @Test
     void create() {
         //given
-        OrderTable emptyTable1 = new OrderTable(1L, null, 0, true);
-        OrderTable emptyTable2 = new OrderTable(2L, null, 0, true);
-        TableGroup request = new TableGroup(null, null, Arrays.asList(emptyTable1, emptyTable2));
+        OrderTableRequest emptyTable1 = 테이블_요청_만들기(1L);
+        OrderTableRequest emptyTable2 = 테이블_요청_만들기(2L);
+        TableGroupRequest request = 테이블_그룹_요청_만들기(Arrays.asList(emptyTable1, emptyTable2));
 
         //when
-        TableGroup result = tableGroupService.create(request);
+        TableGroupResponse result = tableGroupService.create(request);
 
         //then
-        List<OrderTable> orderTables = result.getOrderTables();
-        assertThat(orderTables.get(0).isEmpty()).isFalse();
+        List<OrderTableResponse> orderTables = result.getOrderTables();
+        assertThat(orderTables.get(0).getEmpty()).isFalse();
         assertThat(orderTables.get(0).getTableGroupId()).isNotNull();
-        assertThat(orderTables.get(1).isEmpty()).isFalse();
+        assertThat(orderTables.get(1).getEmpty()).isFalse();
         assertThat(orderTables.get(1).getTableGroupId()).isNotNull();
     }
 
-    @DisplayName("테이블이 2개 미만이거나 비어있으면 단체 지정을 등록 할 수 없다.")
+    @DisplayName("테이블이 2개 미만이면 단체 지정을 등록 할 수 없다.")
     @Test
-    void create_empty_or_less_then_two() {
+    void create_less_then_two() {
         //given
-        OrderTable emptyTable3 = new OrderTable(3L, null, 0, true);
-        TableGroup request_single = new TableGroup(null, null, Collections.singletonList(emptyTable3));
-        TableGroup request_empty = new TableGroup(null, null, Collections.emptyList());
+        OrderTableRequest emptyTable1 = 테이블_요청_만들기(3L);
+        TableGroupRequest request_single = 테이블_그룹_요청_만들기(Arrays.asList(emptyTable1));
+        TableGroupRequest request_empty = 테이블_그룹_요청_만들기(Collections.emptyList());
 
         //when then
         assertThatIllegalArgumentException()
@@ -66,9 +71,9 @@ class TableGroupServiceTest {
     @Test
     void create_not_registered_table() {
         //given
-        OrderTable emptyTable1 = new OrderTable(1L, null, 0, true);
-        OrderTable not_registered_table = new OrderTable(9999999L, null, 0, true);
-        TableGroup request = new TableGroup(null, null, Arrays.asList(emptyTable1, not_registered_table));
+        OrderTableRequest not_registered_table = 테이블_요청_만들기(99999L);
+        OrderTableRequest emptyTable = 테이블_요청_만들기(3L);
+        TableGroupRequest request = 테이블_그룹_요청_만들기(Arrays.asList(not_registered_table, emptyTable));
 
         //when then
         assertThatIllegalArgumentException()
@@ -80,9 +85,10 @@ class TableGroupServiceTest {
     @Test
     void create_in_order_table() {
         //given
-        OrderTable orderTable1 = orderTableDao.save( new OrderTable(10L, null, 3, false));
-        OrderTable emptyTable1 = new OrderTable(2L, null, 0, true);
-        TableGroup request = new TableGroup(null, null, Arrays.asList(orderTable1, emptyTable1));
+        kitchenpos.table.domain.OrderTable orderTable = orderTableRepository.save(new kitchenpos.table.domain.OrderTable(null, 3, false));
+        OrderTableRequest orderTable1 = 테이블_요청_만들기(orderTable.getId());
+        OrderTableRequest emptyTable1 = 테이블_요청_만들기(3L);
+        TableGroupRequest request = 테이블_그룹_요청_만들기(Arrays.asList(orderTable1, emptyTable1));
 
         //when then
         assertThatIllegalArgumentException()
@@ -94,33 +100,34 @@ class TableGroupServiceTest {
     @Test
     void create_already() {
         //given
-        OrderTable emptyTable3 = new OrderTable(3L, null, 0, true);
-        OrderTable emptyTable4 = new OrderTable(4L, null, 0, true);
-        OrderTable emptyTable5 = new OrderTable(5L, null, 0, true);
-        tableGroupService.create(new TableGroup(null, null, Arrays.asList(emptyTable3, emptyTable4)));
-
-        TableGroup request = new TableGroup(null, null, Arrays.asList(emptyTable3, emptyTable5));
+        OrderTableRequest emptyTable1 = 테이블_요청_만들기(3L);
+        OrderTableRequest emptyTable2 = 테이블_요청_만들기(4L);
+        OrderTableRequest emptyTable3 = 테이블_요청_만들기(5L);
+        TableGroupRequest request1 = 테이블_그룹_요청_만들기(Arrays.asList(emptyTable1, emptyTable2));
+        tableGroupService.create(request1);
+        TableGroupRequest request2 = 테이블_그룹_요청_만들기(Arrays.asList(emptyTable1, emptyTable3));
 
         //when then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.create(request));
+                .isThrownBy(() -> tableGroupService.create(request2));
     }
 
+    @Ignore
     @DisplayName("단체 지정을 해제 한다.")
     @Test
     void ungroup() {
         //given
-        OrderTable emptyTable4 = new OrderTable(5L, null, 0, true);
-        OrderTable emptyTable5 = new OrderTable(6L, null, 0, true);
-        TableGroup tableGroup = tableGroupService
-                .create(new TableGroup(null, null, Arrays.asList(emptyTable4, emptyTable5)));
-
-        //when
-        tableGroupService.ungroup(tableGroup.getId());
-
-        //then
-        List<OrderTable> results = orderTableDao.findAllByTableGroupId(tableGroup.getId());
-        assertThat(results).isEmpty();
+//        OrderTable emptyTable4 = new OrderTable(5L, null, 0, true);
+//        OrderTable emptyTable5 = new OrderTable(6L, null, 0, true);
+//        TableGroup tableGroup = tableGroupService
+//                .create(new TableGroup(null, null, Arrays.asList(emptyTable4, emptyTable5)));
+//
+//        //when
+//        tableGroupService.ungroup(tableGroup.getId());
+//
+//        //then
+//        List<OrderTable> results = orderTableDao.findAllByTableGroupId(tableGroup.getId());
+//        assertThat(results).isEmpty();
     }
 
 }

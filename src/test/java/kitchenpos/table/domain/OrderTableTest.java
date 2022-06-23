@@ -81,7 +81,7 @@ class OrderTableTest {
         OrderTable orderTable = new OrderTable(null, 3, false);
 
         //when then
-        assertThatIllegalStateException()
+        assertThatIllegalArgumentException()
                 .isThrownBy(() -> orderTable.assignTableGroup(new TableGroup(2L, null)));
     }
 
@@ -93,7 +93,7 @@ class OrderTableTest {
         orderTable.setTableGroup(new TableGroup(1L, null));
 
         //when then
-        assertThatIllegalStateException()
+        assertThatIllegalArgumentException()
                 .isThrownBy(() -> orderTable.assignTableGroup(new TableGroup(2L, null)));
     }
 }
