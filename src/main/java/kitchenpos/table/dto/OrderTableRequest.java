@@ -4,16 +4,36 @@ import kitchenpos.table.domain.OrderTable;
 
 public class OrderTableRequest {
 
-    private int numberOfGuests;
-
     private boolean empty;
 
-    public OrderTableRequest() {
+    private int numberOfGuests;
+
+    protected OrderTableRequest() {
     }
 
-    public OrderTableRequest(int numberOfGuests, boolean empty) {
+    private OrderTableRequest(int numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
+    }
+
+    private OrderTableRequest(boolean empty) {
         this.empty = empty;
+    }
+
+    private OrderTableRequest(boolean empty, int numberOfGuests) {
+        this.empty = empty;
+        this.numberOfGuests = numberOfGuests;
+    }
+
+    public static OrderTableRequest of(int numberOfGuests) {
+        return new OrderTableRequest(numberOfGuests);
+    }
+
+    public static OrderTableRequest of(boolean empty) {
+        return new OrderTableRequest(empty);
+    }
+
+    public static OrderTableRequest of(boolean empty, int numberOfGuests) {
+        return new OrderTableRequest(empty, numberOfGuests);
     }
 
     public OrderTable toEntity() {

@@ -17,6 +17,10 @@ public class TableGroupRequest {
         this.orderTables = orderTables;
     }
 
+    public static TableGroupRequest of(List<OrderTableIdRequest> orderTables) {
+        return new TableGroupRequest(orderTables);
+    }
+
     public List<OrderTableIdRequest> getOrderTables() {
         return orderTables;
     }

@@ -6,8 +6,12 @@ public class OrderTableIdRequest {
     protected OrderTableIdRequest() {
     }
 
-    public OrderTableIdRequest(Long id) {
+    private OrderTableIdRequest(Long id) {
         this.id = id;
+    }
+
+    public static OrderTableIdRequest of(Long id) {
+        return new OrderTableIdRequest(id);
     }
 
     public Long getId() {
