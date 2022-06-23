@@ -75,27 +75,12 @@ class OrderTableTest {
         OrderTable orderTable1 = OrderTable.of(true, 1);
         OrderTable orderTable2 = OrderTable.of(true, 1);
         OrderTable orderTable3 = OrderTable.of(true, 1);
-        TableGroup tableGroup = TableGroup.from(Lists.newArrayList(orderTable1, orderTable2));
+        TableGroup tableGroup = TableGroup.create();
 
         // when
-        orderTable3.mappedByTableGroup(tableGroup);
+        orderTable3.mappedByTableGroup(tableGroup.getId());
 
         // then
-        assertEquals(tableGroup, orderTable3.getTableGroup());
-    }
-
-    @DisplayName("TableGroup에 할당된 OrderTable을 해제할 수 있다.")
-    @Test
-    void ungroup01() {
-        // given
-        OrderTable orderTable1 = OrderTable.of(true, 1);
-        OrderTable orderTable2 = OrderTable.of(true, 1);
-        TableGroup tableGroup = TableGroup.from(Lists.newArrayList(orderTable1, orderTable2));
-
-        // when
-        orderTable2.ungroup();
-
-        // then
-        assertEquals(2, tableGroup.findOrderTables().size());
+        assertEquals(tableGroup.getId(), orderTable3.getTableGroupId());
     }
 }

@@ -76,6 +76,7 @@ public class Order {
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
+        validateChangeOrderStatus();
         this.orderStatus = orderStatus;
     }
 
@@ -84,4 +85,11 @@ public class Order {
         this.orderLineItems.getReadOnlyValues()
                 .forEach(orderLineItem -> orderLineItem.mappedByOrder(this));
     }
+
+    private void validateChangeOrderStatus() {
+        if (this.orderStatus.isCompletion()) {
+            throw new IllegalArgumentException();
+        }
+    }
+
 }

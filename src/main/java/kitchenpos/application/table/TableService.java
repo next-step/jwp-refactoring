@@ -72,7 +72,7 @@ public class TableService {
     }
 
     private void validateExistTableGroup(OrderTable orderTable) {
-        if (orderTable.getTableGroup() != null) {
+        if (orderTable.getTableGroupId() != null) {
             throw new IllegalArgumentException();
         }
     }

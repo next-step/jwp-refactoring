@@ -54,7 +54,7 @@ class TableServiceTest {
 
         단체_1_주문_테이블_1 = OrderTableFixtureFactory.createWithGuest(true, 2);
         단체_1_주문_테이블_2 = OrderTableFixtureFactory.createWithGuest(true, 2);
-        단체_1 = TableGroupFixtureFactory.create(1L, Lists.newArrayList(단체_1_주문_테이블_1, 단체_1_주문_테이블_2));
+        단체_1 = TableGroupFixtureFactory.create(1L);
     }
 
     @DisplayName("테이블을 등록할 수 있다.")
@@ -121,7 +121,7 @@ class TableServiceTest {
     void change03() {
         // given
         OrderTableRequest request = OrderTableRequest.of(0, true);
-        단체_1_주문_테이블_1.mappedByTableGroup(단체_1);
+        단체_1_주문_테이블_1.mappedByTableGroup(단체_1.getId());
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> tableService.changeEmpty(단체_1_주문_테이블_1.getId(), request));
