@@ -35,16 +35,17 @@ public class TableGroup {
     }
 
     public void groupingTables(OrderTables emptyTables) {
-
+        checkPossibleGrouping(emptyTables);
+        orderTables.groupingTableGroup(emptyTables, this);
     }
 
-    public void checkPossibleGrouping(){
-        if(orderTables == null ||  orderTables.size() < MIN_TABLE_SIZE){
+    private void checkPossibleGrouping(OrderTables emptyTables) {
+        if (emptyTables.size() < MIN_TABLE_SIZE) {
             throw new IllegalArgumentException("[ERROR] 단체 지정에는 최소 2개의 테이블이 필요합니다.");
         }
     }
 
-    public void addOrderTable(OrderTable orderTable){
+    public void addOrderTable(OrderTable orderTable) {
         orderTables.addOrderTable(orderTable);
         orderTable.setTableGroup(this);
     }

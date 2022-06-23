@@ -10,10 +10,24 @@ import javax.persistence.OneToMany;
 public class OrderTables {
 
     @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL)
-    private final List<OrderTable> orderTables = new ArrayList<>();
+    private List<OrderTable> orderTables = new ArrayList<>();
+
+    protected OrderTables() {
+    }
+
+    public OrderTables(List<OrderTable> orderTables) {
+        this.orderTables = orderTables;
+    }
 
     public void addOrderTable(OrderTable orderTable) {
         orderTables.add(orderTable);
+    }
+
+    public void groupingTableGroup(OrderTables emptyTables, TableGroup tableGroup) {
+        for (OrderTable emptyTable : emptyTables.orderTables) {
+            emptyTable.assignTableGroup(tableGroup);
+            orderTables.add(emptyTable);
+        }
     }
 
     public List<OrderTable> getOrderTables() {
