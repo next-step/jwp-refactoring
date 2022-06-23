@@ -4,8 +4,8 @@ import static kitchenpos.ServiceTestFactory.createMenuGroupBy;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
-import kitchenpos.application.MenuGroupService;
-import kitchenpos.domain.MenuGroup;
+
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dao.FakeMenuGroupDao;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

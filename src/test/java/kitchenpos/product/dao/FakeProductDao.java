@@ -3,8 +3,8 @@ package kitchenpos.product.dao;
 import static kitchenpos.ServiceTestFactory.HONEY_COMBO;
 import static kitchenpos.ServiceTestFactory.RED_COMBO;
 
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.infrastructure.ProductDao;
 
 import java.util.Arrays;
 import java.util.List;

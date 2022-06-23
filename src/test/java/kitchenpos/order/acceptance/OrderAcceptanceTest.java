@@ -8,8 +8,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.*;
-import kitchenpos.domain.Order;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.product.domain.Product;
+import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.*;
 
 import org.springframework.core.ParameterizedTypeReference;

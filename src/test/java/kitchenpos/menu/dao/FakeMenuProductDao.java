@@ -4,8 +4,9 @@ import static kitchenpos.ServiceTestFactory.HONEY_MENU_PRODUCT;
 import static kitchenpos.ServiceTestFactory.RED_MENU_PRODUCT;
 
 import java.util.Arrays;
-import kitchenpos.dao.MenuProductDao;
-import kitchenpos.domain.MenuProduct;
+
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.infrastructure.MenuProductDao;
 
 import java.util.List;
 import java.util.Optional;

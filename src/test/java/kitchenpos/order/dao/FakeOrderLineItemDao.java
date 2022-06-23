@@ -2,8 +2,8 @@ package kitchenpos.order.dao;
 
 import static kitchenpos.ServiceTestFactory.createOrderLineItemBy;
 
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.infrastructure.OrderLineItemDao;
 
 import java.util.Arrays;
 import java.util.List;

@@ -9,8 +9,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.*;
-import kitchenpos.domain.Order;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.order.domain.Order;
+import kitchenpos.product.domain.Product;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableGroup;
 import org.junit.jupiter.api.*;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;

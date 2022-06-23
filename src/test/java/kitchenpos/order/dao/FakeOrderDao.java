@@ -5,9 +5,10 @@ import static kitchenpos.ServiceTestFactory.createOrderBy;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderStatus;
+
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.infrastructure.OrderDao;
 
 public class FakeOrderDao implements OrderDao {
     private final Order completeOrder = createOrderBy(1L, 1L, OrderStatus.COMPLETION.name());

@@ -9,8 +9,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.application.MenuService;
-import kitchenpos.domain.Menu;
+
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.dao.FakeMenuDao;
 import kitchenpos.menu.dao.FakeMenuGroupDao;
 import kitchenpos.menu.dao.FakeMenuProductDao;

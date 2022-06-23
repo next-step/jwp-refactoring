@@ -3,8 +3,8 @@ package kitchenpos.menu.dao;
 import static kitchenpos.ServiceTestFactory.FAVORITE_MENU_GROUP;
 import static kitchenpos.ServiceTestFactory.NEW_MENU_GROUP;
 
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.infrastructure.MenuGroupDao;
 
 import java.util.Arrays;
 import java.util.List;

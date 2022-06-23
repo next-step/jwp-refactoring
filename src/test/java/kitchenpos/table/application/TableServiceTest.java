@@ -5,8 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
-import kitchenpos.application.TableService;
-import kitchenpos.domain.OrderTable;
+
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.order.dao.FakeOrderDao;
 import kitchenpos.table.dao.FakeOrderTableDao;
 import org.junit.jupiter.api.BeforeEach;

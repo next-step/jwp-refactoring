@@ -2,8 +2,9 @@ package kitchenpos.table.dao;
 
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.TableGroup;
+
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.infrastructure.TableGroupDao;
 
 public class FakeTableGroupDao implements TableGroupDao {
     @Override

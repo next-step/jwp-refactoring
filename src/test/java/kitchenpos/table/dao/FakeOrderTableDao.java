@@ -4,8 +4,9 @@ import static kitchenpos.ServiceTestFactory.createOrderTableBy;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.OrderTable;
+
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.infrastructure.OrderTableDao;
 
 public class FakeOrderTableDao implements OrderTableDao {
     private final OrderTable firstTable = createOrderTableBy(1L, 4, false, 1L);
