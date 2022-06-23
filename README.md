@@ -58,8 +58,8 @@
     - [x] table group에 속하는 주문테이블 수와 등록된 주문테이블들 중 table group에 속한 주문테이블들로 실제 조회했을 때의 수가 불일치하면 안된다.
     - [x] table group의 주문테이블 각각이 빈 것이 아니면 안된다.
     - [x] table group의 주문테이블 각각이 주문테이블의 단체지정이 있으면 안된다.
-- [] table group을 해제할 수 있다.
-    - [] table group의 주문테이블들 중 주문상태가 조리, 식사인 것이 있으면 안된다.
+- [x] table group을 해제할 수 있다.
+    - [x] table group의 주문테이블들 중 주문상태가 조리, 식사인 것이 있으면 안된다.
 
 ### 주문 항목 (order line item)
 
