@@ -26,8 +26,7 @@ public class OrderService {
     private final OrderTableRepository orderTableRepository;
 
     public OrderService(
-            final MenuRepository menuRepository,
-            final OrdersRepository ordersRepository,
+            final MenuRepository menuRepository, final OrdersRepository ordersRepository,
             final OrderTableRepository orderTableRepository) {
         this.menuRepository = menuRepository;
         this.ordersRepository = ordersRepository;
@@ -36,16 +35,14 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrdersRequest request) {
-        List<OrderLineItemRequest> orderLineItems = request.getOrderLineItems();
-        if (orderLineItems.size() != menuRepository.countByIdIn(request.getOrderLineItems().stream().map(OrderLineItemRequest::getMenuId).collect(Collectors.toList()))) {
+        if (request.getOrderLineItems().size() != menuRepository.countByIdIn(request.getOrderLineItemIds())) {
             throw new IllegalArgumentException("주문 항목 갯수가 적절하지 않습니다.");
         }
 
-        final OrderTable orderTable =
-                orderTableRepository.findByIdAndEmptyIsFalse(request.getOrderTableId()).orElseThrow(NoSuchElementException::new);
+        final OrderTable orderTable = orderTableRepository.findByIdAndEmptyIsFalse(request.getOrderTableId()).orElseThrow(NoSuchElementException::new);
         final Orders savedOrders = new Orders(orderTable, OrderStatus.COOKING, LocalDateTime.now());
 
-        for (final OrderLineItemRequest orderLineItem : orderLineItems) {
+        for (final OrderLineItemRequest orderLineItem : request.getOrderLineItems()) {
             Menu menu = menuRepository.findById(orderLineItem.getMenuId()).orElseThrow(NoSuchElementException::new);
             savedOrders.add(menu, orderLineItem.getQuantity());
         }

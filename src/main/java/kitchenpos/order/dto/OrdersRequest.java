@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class OrdersRequest {
     private long orderTableId;
@@ -26,5 +27,9 @@ public class OrdersRequest {
 
     public List<OrderLineItemRequest> getOrderLineItems() {
         return orderLineItems;
+    }
+
+    public List<Long> getOrderLineItemIds() {
+        return this.orderLineItems.stream().map(OrderLineItemRequest::getMenuId).collect(Collectors.toList());
     }
 }
