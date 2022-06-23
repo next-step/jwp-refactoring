@@ -8,22 +8,14 @@ import static kitchenpos.acceptance.support.TableAcceptanceSupport.주문_테이
 import static kitchenpos.acceptance.support.TableAcceptanceSupport.주문_테이블_빈테이블로_변경요청;
 import static kitchenpos.acceptance.support.TableAcceptanceSupport.주문_테이블_손님수_변경됨;
 import static kitchenpos.acceptance.support.TableAcceptanceSupport.주문_테이블_손님수_변경요청;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.List;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableEntity;
 import kitchenpos.table.domain.request.OrderTableRequest;
 import kitchenpos.table.domain.response.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 @DisplayName("주문 테이블에 대한 인수 테스트")
 class TableAcceptanceTest extends AcceptanceTest {
@@ -93,14 +85,7 @@ class TableAcceptanceTest extends AcceptanceTest {
         주문_테이블_손님수_변경됨(response, 변경할_손님수);
     }
 
-    public static OrderTable 주문_테이블_등록됨(OrderTable orderTable) {
-        OrderTableRequest request = new OrderTableRequest(orderTable.getId(),
-            orderTable.getTableGroupId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
-        ExtractableResponse<Response> response = 주문_테이블_등록요청(request);
-        return response.as(OrderTable.class);
-    }
-
-    public static OrderTableResponse 주문_테이블_등록됨_copy(OrderTableRequest orderTableRequest) {
+    public static OrderTableResponse 주문_테이블_등록됨(OrderTableRequest orderTableRequest) {
         ExtractableResponse<Response> response = 주문_테이블_등록요청(orderTableRequest);
         return response.as(OrderTableResponse.class);
     }

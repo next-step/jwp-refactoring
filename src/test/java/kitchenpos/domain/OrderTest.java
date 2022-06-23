@@ -62,7 +62,7 @@ class OrderTest {
         assertThat(주문.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
     }
 
-    @DisplayName("주문의 상태를 변경하면 정상적으로 변경된다")
+    @DisplayName("주문상태 변경시 이미 완료된 상태면 예외가 발생한다")
     @Test
     void order_status_exception_test() {
         // given
