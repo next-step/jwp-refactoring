@@ -1,5 +1,7 @@
 package kitchenpos.domain.product;
 
+import kitchenpos.dto.product.ProductResponse;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 
@@ -19,10 +21,18 @@ public class Product {
 
     }
 
+    public Product(String name, BigDecimal price) {
+        this(null, name, price);
+    }
+
     public Product(Long id, String name, BigDecimal price) {
         this.id = id;
         this.name = name;
         this.price = price;
+    }
+
+    public static Product of(ProductResponse productResponse) {
+        return new Product(productResponse.getId(), productResponse.getName(), productResponse.getPrice());
     }
 
     public Long getId() {

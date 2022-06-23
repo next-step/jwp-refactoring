@@ -2,6 +2,8 @@ package kitchenpos.application;
 
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.product.Product;
+import kitchenpos.dto.product.ProductRequest;
+import kitchenpos.dto.product.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,7 +39,7 @@ class ProductServiceTest {
         given(productDao.save(request)).willReturn(예상값);
 
         // when
-        Product 상품_생성_결과 = 상품_생성(request);
+        Product 상품_생성_결과 = 상품_생성(ProductRequest.of(request));
 
         // then
         상품_값_비교(상품_생성_결과, 예상값);
@@ -47,14 +49,14 @@ class ProductServiceTest {
     @Test
     void create_exception1() {
         // given
-        Product request1 = new Product(1L, "초밥", null);
+        ProductRequest request1 = new ProductRequest("초밥", null);
 
         // when && then
         assertThatThrownBy(() -> 상품_생성(request1))
                 .isInstanceOf(IllegalArgumentException.class);
 
         // given
-        Product request2 = new Product(1L, "초밥", BigDecimal.valueOf(-1));
+        ProductRequest request2 = new ProductRequest("초밥", null);
 
         // when && then
         assertThatThrownBy(() -> 상품_생성(request2))
@@ -81,8 +83,8 @@ class ProductServiceTest {
         );
     }
 
-    private Product 상품_생성(Product request) {
-        return productService.create(request);
+    private Product 상품_생성(ProductRequest request) {
+        return Product.of(productService.create(request));
     }
 
     private void 상품_값_비교(Product result, Product expectation) {
