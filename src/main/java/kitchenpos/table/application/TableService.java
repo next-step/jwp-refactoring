@@ -36,8 +36,7 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTable orderTable) {
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+        final OrderTable savedOrderTable = getOrderTable(orderTableId);
 
         validateChangeableOrderStatus(orderTableId);
         savedOrderTable.changeEmpty(orderTable.isEmpty());
@@ -47,12 +46,16 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTable orderTable) {
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+        final OrderTable savedOrderTable = getOrderTable(orderTableId);
 
         savedOrderTable.changeNumberOfGuests(orderTable.getNumberOfGuests());
 
         return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
+    }
+
+    private OrderTable getOrderTable(Long orderTableId) {
+        return orderTableRepository.findById(orderTableId)
+                .orElseThrow(IllegalArgumentException::new);
     }
 
     private void validateChangeableOrderStatus(Long orderTableId) {
