@@ -29,13 +29,13 @@ class ProductServiceTest {
     @InjectMocks
     private ProductService productService;
 
-   private Product 상품1;
-   private Product 상품2;
+   private Product 짬뽕;
+   private Product 짜장;
 
     @BeforeEach
     void before() {
-        상품1 = ProductFixtureFactory.create(1L, "상품1", BigDecimal.valueOf(1000));
-        상품2 = ProductFixtureFactory.create(2L, "상품2", BigDecimal.valueOf(1000));
+        짬뽕 = ProductFixtureFactory.create(1L, "상품1", BigDecimal.valueOf(1000));
+        짜장 = ProductFixtureFactory.create(2L, "상품2", BigDecimal.valueOf(1000));
     }
 
     @Test
@@ -65,25 +65,25 @@ class ProductServiceTest {
     void createTest() {
         //given
         Product 저장할_상품 = new Product(1L, "상품1", BigDecimal.valueOf(1000));
-        given(productDao.save(any(Product.class))).willReturn(상품1);
+        given(productDao.save(any(Product.class))).willReturn(짬뽕);
 
         //when
         Product product = productService.create(저장할_상품);
 
         //then
-        assertThat(product).isEqualTo(상품1);
+        assertThat(product).isEqualTo(짬뽕);
     }
 
     @Test
     @DisplayName("상품 목록을 조회 한다.")
     void listTest() {
         //given
-        given(productDao.findAll()).willReturn(Arrays.asList(상품1, 상품2));
+        given(productDao.findAll()).willReturn(Arrays.asList(짬뽕, 짜장));
 
         //when
         List<Product> products = productService.list();
 
         //then
-        assertThat(products).containsExactly(상품1, 상품2);
+        assertThat(products).containsExactly(짬뽕, 짜장);
     }
 }

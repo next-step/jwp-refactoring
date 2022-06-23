@@ -54,47 +54,47 @@ class OrderServiceTest {
     @InjectMocks
     private OrderService orderService;
 
-    private Menu 메뉴1;
-    private MenuGroup 메뉴그룹1;
-    private MenuProduct 메뉴상품1;
-    private MenuProduct 메뉴상품2;
-    private Product 상품1;
-    private Product 상품2;
+    private Menu 중식_메뉴;
+    private MenuGroup 중식;
+    private MenuProduct 중식_메뉴_짬뽕;
+    private MenuProduct 중식_메뉴_짜장;
+    private Product 짬뽕;
+    private Product 짜장;
     private Order 주문1;
     private Order 주문2;
-    private OrderTable 주문_테이블1;
+    private OrderTable 주문_테이블;
     private OrderTable 빈주문_테이블;
-    private OrderLineItem 주문항목1;
+    private OrderLineItem 중식_주문_항목;
 
     @BeforeEach
     void before() {
-        메뉴그룹1 = MenuGroupFixtureFactory.create(1L, "메뉴그룹1");
-        메뉴1 = MenuFixtureFactory.create(1L, "메뉴1", BigDecimal.valueOf(3000), 메뉴그룹1.getId());
+        중식 = MenuGroupFixtureFactory.create(1L, "메뉴그룹1");
+        중식_메뉴 = MenuFixtureFactory.create(1L, "메뉴1", BigDecimal.valueOf(3000), 중식.getId());
 
-        상품1 = ProductFixtureFactory.create(1L, "상품1", BigDecimal.valueOf(1000));
-        상품2 = ProductFixtureFactory.create(2L, "상품2", BigDecimal.valueOf(2000));
+        짬뽕 = ProductFixtureFactory.create(1L, "상품1", BigDecimal.valueOf(1000));
+        짜장 = ProductFixtureFactory.create(2L, "상품2", BigDecimal.valueOf(2000));
 
-        메뉴상품1 = MenuProductFixtureFactory.create(1L, 메뉴1.getId(), 상품1.getId(), 3);
-        메뉴상품2 = MenuProductFixtureFactory.create(2L, 메뉴1.getId(), 상품2.getId(), 1);
+        중식_메뉴_짬뽕 = MenuProductFixtureFactory.create(1L, 중식_메뉴.getId(), 짬뽕.getId(), 3);
+        중식_메뉴_짜장 = MenuProductFixtureFactory.create(2L, 중식_메뉴.getId(), 짜장.getId(), 1);
 
-        메뉴1.setMenuProducts(Arrays.asList(메뉴상품1, 메뉴상품2));
+        중식_메뉴.setMenuProducts(Arrays.asList(중식_메뉴_짬뽕, 중식_메뉴_짜장));
 
-        주문_테이블1 = OrderTableFixtureFactory.create(1L, false);
+        주문_테이블 = OrderTableFixtureFactory.create(1L, false);
         빈주문_테이블 = OrderTableFixtureFactory.create(1L, true);
 
-        주문1 = OrderFixtureFactory.create(1L, 주문_테이블1.getId());
-        주문2 = OrderFixtureFactory.create(2L, 주문_테이블1.getId());
-        주문항목1 = OrderLineItemFixtureFactory.create(1L, 주문1.getId(), 메뉴1.getId(), 1);
+        주문1 = OrderFixtureFactory.create(1L, 주문_테이블.getId());
+        주문2 = OrderFixtureFactory.create(2L, 주문_테이블.getId());
+        중식_주문_항목 = OrderLineItemFixtureFactory.create(1L, 주문1.getId(), 중식_메뉴.getId(), 1);
 
-        주문1.setOrderLineItems(Arrays.asList(주문항목1));
-        주문2.setOrderLineItems(Arrays.asList(주문항목1));
+        주문1.setOrderLineItems(Arrays.asList(중식_주문_항목));
+        주문2.setOrderLineItems(Arrays.asList(중식_주문_항목));
     }
 
     @Test
     @DisplayName("생성하려는 주문에서 주문 항목이 비어있으면 주문을 생성 할 수 없다.")
     void createFailWithEmptyTest() {
         //given
-        Order order = new Order(1L, 주문_테이블1.getId());
+        Order order = new Order(1L, 주문_테이블.getId());
         order.setOrderLineItems(Collections.emptyList());
 
         //when & then
@@ -108,8 +108,8 @@ class OrderServiceTest {
     void createFailWithMenuNotExistTest() {
 
         //given
-        Order order = new Order(1L, 주문_테이블1.getId());
-        order.setOrderLineItems(Arrays.asList(주문항목1));
+        Order order = new Order(1L, 주문_테이블.getId());
+        order.setOrderLineItems(Arrays.asList(중식_주문_항목));
 
         given(menuDao.countByIdIn(anyList())).willReturn(0L);
 
@@ -123,10 +123,10 @@ class OrderServiceTest {
     @DisplayName("생성하려는 주문에서 주문 테이블이 시스템에 등록 되어 있지 않으면 주문을 생성 할 수 없다.")
     void createFailWithOrderNotExistTest() {
         //given
-        Order order = new Order(1L, 주문_테이블1.getId());
-        order.setOrderLineItems(Arrays.asList(주문항목1));
+        Order order = new Order(1L, 주문_테이블.getId());
+        order.setOrderLineItems(Arrays.asList(중식_주문_항목));
 
-        given(menuDao.countByIdIn(Arrays.asList(메뉴1.getId()))).willReturn(1L);
+        given(menuDao.countByIdIn(Arrays.asList(중식_메뉴.getId()))).willReturn(1L);
         given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.empty());
 
         //when & then
@@ -140,9 +140,9 @@ class OrderServiceTest {
     void createFailWithEmptyOrderTableTest() {
         //given
         Order order = new Order(1L, 빈주문_테이블.getId());
-        order.setOrderLineItems(Arrays.asList(주문항목1));
+        order.setOrderLineItems(Arrays.asList(중식_주문_항목));
 
-        given(menuDao.countByIdIn(Arrays.asList(메뉴1.getId()))).willReturn(1L);
+        given(menuDao.countByIdIn(Arrays.asList(중식_메뉴.getId()))).willReturn(1L);
         given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(빈주문_테이블));
 
         //when & then
@@ -155,10 +155,10 @@ class OrderServiceTest {
     @DisplayName("주문을 생성 할 수 있다.")
     void createTest() {
         //given
-        given(menuDao.countByIdIn(Arrays.asList(메뉴1.getId()))).willReturn(1L);
-        given(orderTableDao.findById(주문_테이블1.getId())).willReturn(Optional.of(주문_테이블1));
+        given(menuDao.countByIdIn(Arrays.asList(중식_메뉴.getId()))).willReturn(1L);
+        given(orderTableDao.findById(주문_테이블.getId())).willReturn(Optional.of(주문_테이블));
         given(orderDao.save(any(Order.class))).willReturn(주문1);
-        given(orderLineItemDao.save(any(OrderLineItem.class))).willReturn(주문항목1);
+        given(orderLineItemDao.save(any(OrderLineItem.class))).willReturn(중식_주문_항목);
 
         //when
         Order order = orderService.create(주문1);
