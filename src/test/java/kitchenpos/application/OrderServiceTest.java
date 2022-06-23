@@ -12,13 +12,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.menu.dao.MenuDao;
-import kitchenpos.order.domain.OrderEntity;
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.request.OrderRequest;
 import kitchenpos.order.domain.response.OrderResponse;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.application.OrderService;
-import kitchenpos.table.domain.OrderTableEntity;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.request.OrderLineItemRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,23 +43,23 @@ class OrderServiceTest {
     @InjectMocks
     private OrderService orderService;
 
-    private OrderTableEntity 주문_테이블_entity;
+    private OrderTable 주문_테이블_entity;
 
     private OrderLineItemRequest 주문_항목_request;
     private OrderLineItemRequest 주문_항목_request2;
     private OrderRequest 주문_request;
 
-    private OrderEntity 주문;
+    private Order 주문;
 
     @BeforeEach
     void setUp() {
-        주문_테이블_entity = OrderTableEntity.of(1L, null, 3, false);
+        주문_테이블_entity = OrderTable.of(1L, null, 3, false);
 
         주문_항목_request = new OrderLineItemRequest(1L, 1);
         주문_항목_request2 = new OrderLineItemRequest(2L, 1);
         주문_request = new OrderRequest(1L, null, null, Arrays.asList(주문_항목_request, 주문_항목_request2));
 
-        주문 = OrderEntity.of(1L, 주문_테이블_entity);
+        주문 = Order.of(1L, 주문_테이블_entity);
     }
 
     @DisplayName("주문을 등록하면 정상적으로 등록되어야 한다")

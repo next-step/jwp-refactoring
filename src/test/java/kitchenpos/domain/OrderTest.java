@@ -5,28 +5,28 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Arrays;
-import kitchenpos.order.domain.OrderEntity;
-import kitchenpos.order.domain.OrderLineItemEntity;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTableEntity;
+import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("주문에 대한 단위 테스트")
 class OrderTest {
-    private OrderTableEntity 주문_테이블;
+    private OrderTable 주문_테이블;
 
     @BeforeEach
     void setUp() {
-        주문_테이블 = OrderTableEntity.of(null, 1, false);
+        주문_테이블 = OrderTable.of(null, 1, false);
     }
 
     @DisplayName("주문을 생성하면 정상적으로 조리중 상태, 주문생성시간이 생성된다")
     @Test
     void create_test() {
         // when
-        OrderEntity result = OrderEntity.of(null, 주문_테이블);
+        Order result = Order.of(null, 주문_테이블);
 
         // then
         assertNotNull(result.getOrderedTime());
@@ -37,9 +37,9 @@ class OrderTest {
     @Test
     void map_into_test() {
         // given
-        OrderLineItemEntity 주문_항목 = OrderLineItemEntity.of(1L, null, 1L, 1);
-        OrderLineItemEntity 주문_항목2 = OrderLineItemEntity.of(2L, null, 2L, 1);
-        OrderEntity 주문 = OrderEntity.of(null, 주문_테이블);
+        OrderLineItem 주문_항목 = OrderLineItem.of(1L, null, 1L, 1);
+        OrderLineItem 주문_항목2 = OrderLineItem.of(2L, null, 2L, 1);
+        Order 주문 = Order.of(null, 주문_테이블);
 
         // when
         주문.mapIntoLineItems(Arrays.asList(주문_항목, 주문_항목2));
@@ -53,7 +53,7 @@ class OrderTest {
     @Test
     void change_status_test() {
         // given
-        OrderEntity 주문 = OrderEntity.of(null, 주문_테이블);
+        Order 주문 = Order.of(null, 주문_테이블);
 
         // when
         주문.changeOrderStatus(OrderStatus.COMPLETION);
@@ -66,7 +66,7 @@ class OrderTest {
     @Test
     void order_status_exception_test() {
         // given
-        OrderEntity 주문 = OrderEntity.of(null, 주문_테이블);
+        Order 주문 = Order.of(null, 주문_테이블);
         주문.changeOrderStatus(OrderStatus.COMPLETION);
 
         // then
@@ -78,11 +78,11 @@ class OrderTest {
     @Test
     void order_exception_test() {
         // given
-        OrderTableEntity 빈_주문_테이블 = OrderTableEntity.of(null, 1, true);
+        OrderTable 빈_주문_테이블 = OrderTable.of(null, 1, true);
 
         // then
         assertThatThrownBy(() -> {
-            OrderEntity.of(null, 빈_주문_테이블);
+            Order.of(null, 빈_주문_테이블);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 }

@@ -1,6 +1,6 @@
 package kitchenpos.table.domain.response;
 
-import kitchenpos.table.domain.OrderTableEntity;
+import kitchenpos.table.domain.OrderTable;
 
 public class OrderTableResponse {
 
@@ -16,7 +16,7 @@ public class OrderTableResponse {
         this.empty = empty;
     }
 
-    public static OrderTableResponse of(OrderTableEntity orderTable) {
+    public static OrderTableResponse of(OrderTable orderTable) {
         return new OrderTableResponse(
             orderTable.getId()
             , orderTable.getTableGroupId()

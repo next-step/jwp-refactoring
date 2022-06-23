@@ -14,10 +14,10 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTableEntity;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.application.TableGroupService;
-import kitchenpos.table.domain.TableGroupEntity;
+import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
 import kitchenpos.table.domain.request.OrderTableRequest;
 import kitchenpos.table.domain.request.TableGroupRequest;
@@ -48,8 +48,8 @@ class TableGroupServiceTest {
     private OrderTableRequest 주문_테이블_2_request;
     private TableGroupRequest 테이블_그룹_request;
 
-    private OrderTableEntity 주문_테이블;
-    private OrderTableEntity 주문_테이블2;
+    private OrderTable 주문_테이블;
+    private OrderTable 주문_테이블2;
 
     @BeforeEach
     void setUp() {
@@ -57,16 +57,16 @@ class TableGroupServiceTest {
         주문_테이블_2_request = new OrderTableRequest(2L, null, 5, true);
         테이블_그룹_request = new TableGroupRequest(1L, Arrays.asList(주문_테이블_request.getId(), 주문_테이블_2_request.getId()));
 
-        주문_테이블 = OrderTableEntity.of(1L, null, 3, true);
-        주문_테이블2 = OrderTableEntity.of(2L, null, 5, true);
+        주문_테이블 = OrderTable.of(1L, null, 3, true);
+        주문_테이블2 = OrderTable.of(2L, null, 5, true);
     }
 
     @DisplayName("주문 테이블을 단체지정하면 정상적으로 단체지정 되어야한다")
     @Test
     void create_test() {
         // given
-        List<OrderTableEntity> 주문_테이블_목록 = Arrays.asList(주문_테이블, 주문_테이블2);
-        TableGroupEntity 테이블_그룹 = TableGroupEntity.of(1L, 주문_테이블_목록);
+        List<OrderTable> 주문_테이블_목록 = Arrays.asList(주문_테이블, 주문_테이블2);
+        TableGroup 테이블_그룹 = TableGroup.of(1L, 주문_테이블_목록);
 
         // given
         when(orderTableRepository.findAllByIdIn(Arrays.asList(주문_테이블_request.getId(), 주문_테이블_2_request.getId())))
@@ -132,8 +132,8 @@ class TableGroupServiceTest {
     @Test
     void create_exception_test4() {
         // given
-        주문_테이블 = OrderTableEntity.of(1L, null, 3, false);
-        주문_테이블2 = OrderTableEntity.of(2L, 3L, 3, true);
+        주문_테이블 = OrderTable.of(1L, null, 3, false);
+        주문_테이블2 = OrderTable.of(2L, 3L, 3, true);
         when(orderTableRepository.findAllByIdIn(Arrays.asList(주문_테이블.getId(), 주문_테이블2.getId())))
             .thenReturn(Arrays.asList(주문_테이블, 주문_테이블2));
 

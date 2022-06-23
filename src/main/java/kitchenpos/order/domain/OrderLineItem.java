@@ -13,7 +13,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "order_line_item")
-public class OrderLineItemEntity {
+public class OrderLineItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,27 +22,27 @@ public class OrderLineItemEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
-    private OrderEntity order;
+    private Order order;
 
     private Long menuId;
 
     private long quantity;
 
-    protected OrderLineItemEntity() {
+    protected OrderLineItem() {
     }
 
-    private OrderLineItemEntity(Long id, OrderEntity order, Long menuId, long quantity) {
+    private OrderLineItem(Long id, Order order, Long menuId, long quantity) {
         this.id = id;
         this.order = order;
         this.menuId = menuId;
         this.quantity = quantity;
     }
 
-    public static OrderLineItemEntity of(Long id, OrderEntity order, Long menuId, long quantity) {
-        return new OrderLineItemEntity(id, order, menuId, quantity);
+    public static OrderLineItem of(Long id, Order order, Long menuId, long quantity) {
+        return new OrderLineItem(id, order, menuId, quantity);
     }
 
-    public void mapIntoOrder(OrderEntity order) {
+    public void mapIntoOrder(Order order) {
         this.order = order;
         order.addOrderLineItem(this);
     }
@@ -57,7 +57,7 @@ public class OrderLineItemEntity {
         return id;
     }
 
-    public OrderEntity getOrder() {
+    public Order getOrder() {
         return order;
     }
 

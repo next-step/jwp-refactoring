@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "order_table")
-public class OrderTableEntity {
+public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,28 +22,28 @@ public class OrderTableEntity {
 
     private boolean empty;
 
-    protected OrderTableEntity() {
+    protected OrderTable() {
     }
 
-    private OrderTableEntity(Long tableGroupId, int numberOfGuests, boolean empty) {
+    private OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
 
-    private OrderTableEntity(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+    private OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
 
-    public static OrderTableEntity of(Long tableGroupId, int numberOfGuests, boolean empty) {
-        return new OrderTableEntity(tableGroupId, numberOfGuests, empty);
+    public static OrderTable of(Long tableGroupId, int numberOfGuests, boolean empty) {
+        return new OrderTable(tableGroupId, numberOfGuests, empty);
     }
 
-    public static OrderTableEntity of(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
-        return new OrderTableEntity(id, tableGroupId, numberOfGuests, empty);
+    public static OrderTable of(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+        return new OrderTable(id, tableGroupId, numberOfGuests, empty);
     }
 
     public void mapIntoGroup(Long tableGroupId) {

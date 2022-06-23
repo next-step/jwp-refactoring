@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import kitchenpos.table.domain.OrderTableEntity;
+import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +16,7 @@ class OrderTableTest {
     void order_table_mapping_test() {
         // given
         Long 테이블_그룹_id = 1L;
-        OrderTableEntity orderTable = OrderTableEntity.of(null, 1, true);
+        OrderTable orderTable = OrderTable.of(null, 1, true);
 
         // when
         orderTable.mapIntoGroup(테이블_그룹_id);
@@ -29,7 +29,7 @@ class OrderTableTest {
     @Test
     void order_table_unGroup_test() {
         // given
-        OrderTableEntity orderTable = OrderTableEntity.of(1L, 1, true);
+        OrderTable orderTable = OrderTable.of(1L, 1, true);
 
         // when
         orderTable.unGroup();
@@ -42,7 +42,7 @@ class OrderTableTest {
     @Test
     void order_table_exception_test() {
         // given
-        OrderTableEntity orderTable = OrderTableEntity.of(1L, 1, true);
+        OrderTable orderTable = OrderTable.of(1L, 1, true);
 
         // then
         assertThatThrownBy(orderTable::validateHasTableGroupId)
@@ -53,7 +53,7 @@ class OrderTableTest {
     @Test
     void order_table_exception_test2() {
         // given
-        OrderTableEntity orderTable = OrderTableEntity.of(1L, 1, true);
+        OrderTable orderTable = OrderTable.of(1L, 1, true);
 
         // then
         assertThatThrownBy(orderTable::validateIsEmpty)

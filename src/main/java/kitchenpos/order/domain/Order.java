@@ -15,11 +15,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import kitchenpos.table.domain.OrderTableEntity;
+import kitchenpos.table.domain.OrderTable;
 
 @Entity
 @Table(name = "orders")
-public class OrderEntity {
+public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +27,7 @@ public class OrderEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_table_id")
-    private OrderTableEntity orderTable;
+    private OrderTable orderTable;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
@@ -35,28 +35,28 @@ public class OrderEntity {
     private LocalDateTime orderedTime;
 
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    private List<OrderLineItemEntity> orderLineItems = new ArrayList<>();
+    private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
-    protected OrderEntity() {
+    protected Order() {
     }
 
-    private OrderEntity(Long id, OrderTableEntity orderTable) {
+    private Order(Long id, OrderTable orderTable) {
         this.id = id;
         this.orderTable = orderTable;
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
     }
 
-    public static OrderEntity of(Long id, OrderTableEntity orderTable) {
+    public static Order of(Long id, OrderTable orderTable) {
         orderTable.validateIsEmpty();
-        return new OrderEntity(id, orderTable);
+        return new Order(id, orderTable);
     }
 
-    public void mapIntoLineItems(List<OrderLineItemEntity> orderLineItems) {
+    public void mapIntoLineItems(List<OrderLineItem> orderLineItems) {
         orderLineItems.forEach(it -> it.mapIntoOrder(this));
     }
 
-    public void addOrderLineItem(OrderLineItemEntity orderLineItem) {
+    public void addOrderLineItem(OrderLineItem orderLineItem) {
         this.orderLineItems.add(orderLineItem);
     }
 
@@ -74,7 +74,7 @@ public class OrderEntity {
         return id;
     }
 
-    public OrderTableEntity getOrderTable() {
+    public OrderTable getOrderTable() {
         return orderTable;
     }
 
@@ -86,7 +86,7 @@ public class OrderEntity {
         return orderedTime;
     }
 
-    public List<OrderLineItemEntity> getOrderLineItems() {
+    public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
     }
 }

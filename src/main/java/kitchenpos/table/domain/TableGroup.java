@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "table_group")
-public class TableGroupEntity {
+public class TableGroup {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,26 +22,26 @@ public class TableGroupEntity {
     @Embedded
     private OrderTables orderTables = new OrderTables();
 
-    protected TableGroupEntity() {
+    protected TableGroup() {
     }
 
-    private TableGroupEntity(List<OrderTableEntity> orderTables) {
+    private TableGroup(List<OrderTable> orderTables) {
         this.createdDate = LocalDateTime.now();
         this.orderTables.addAll(orderTables);
     }
 
-    private TableGroupEntity(Long id, List<OrderTableEntity> orderTables) {
+    private TableGroup(Long id, List<OrderTable> orderTables) {
         this.id = id;
         this.createdDate = LocalDateTime.now();
         this.orderTables.addAll(orderTables);
     }
 
-    public static TableGroupEntity of(Long id, List<OrderTableEntity> orderTables) {
-        return new TableGroupEntity(id, orderTables);
+    public static TableGroup of(Long id, List<OrderTable> orderTables) {
+        return new TableGroup(id, orderTables);
     }
 
-    public static TableGroupEntity from(List<OrderTableEntity> orderTables) {
-        return new TableGroupEntity(orderTables);
+    public static TableGroup from(List<OrderTable> orderTables) {
+        return new TableGroup(orderTables);
     }
 
     public void validateTablesEmpty() {
@@ -60,7 +60,7 @@ public class TableGroupEntity {
         return createdDate;
     }
 
-    public List<OrderTableEntity> getOrderTables() {
+    public List<OrderTable> getOrderTables() {
         return orderTables.getItems();
     }
 

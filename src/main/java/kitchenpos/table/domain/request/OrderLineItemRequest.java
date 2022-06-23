@@ -1,6 +1,6 @@
 package kitchenpos.table.domain.request;
 
-import kitchenpos.order.domain.OrderLineItemEntity;
+import kitchenpos.order.domain.OrderLineItem;
 
 public class OrderLineItemRequest {
     private Long menuId;
@@ -11,8 +11,8 @@ public class OrderLineItemRequest {
         this.quantity = quantity;
     }
 
-    public static OrderLineItemEntity toEntity(OrderLineItemRequest request) {
-        return OrderLineItemEntity.of(null, null, request.getMenuId(), request.getQuantity());
+    public static OrderLineItem toEntity(OrderLineItemRequest request) {
+        return OrderLineItem.of(null, null, request.getMenuId(), request.getQuantity());
     }
 
     public Long getMenuId() {

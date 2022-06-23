@@ -11,13 +11,13 @@ import javax.persistence.OneToMany;
 public class OrderTables {
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "table_group_id")
-    private List<OrderTableEntity> items = new ArrayList<>();
+    private List<OrderTable> items = new ArrayList<>();
 
-    public void addAll(List<OrderTableEntity> orderTables) {
+    public void addAll(List<OrderTable> orderTables) {
         this.items.addAll(orderTables);
     }
 
-    public List<OrderTableEntity> getItems() {
+    public List<OrderTable> getItems() {
         return items;
     }
 
@@ -35,6 +35,6 @@ public class OrderTables {
     }
 
     public void unGroup() {
-        items.forEach(OrderTableEntity::unGroup);
+        items.forEach(OrderTable::unGroup);
     }
 }

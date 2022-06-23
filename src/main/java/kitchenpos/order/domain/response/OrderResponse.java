@@ -3,7 +3,7 @@ package kitchenpos.order.domain.response;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.order.domain.OrderEntity;
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.response.OrderTableResponse;
 
@@ -27,7 +27,7 @@ public class OrderResponse {
     public OrderResponse() {
     }
 
-    public static OrderResponse of(OrderEntity order) {
+    public static OrderResponse of(Order order) {
         List<OrderLineItemResponse> orderLineItems = order.getOrderLineItems().stream()
             .map(OrderLineItemResponse::toResponseWithoutOrder)
             .collect(Collectors.toList());

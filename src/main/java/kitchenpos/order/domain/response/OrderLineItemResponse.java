@@ -1,6 +1,6 @@
 package kitchenpos.order.domain.response;
 
-import kitchenpos.order.domain.OrderLineItemEntity;
+import kitchenpos.order.domain.OrderLineItem;
 
 public class OrderLineItemResponse {
     private Long id;
@@ -24,7 +24,7 @@ public class OrderLineItemResponse {
         this.quantity = quantity;
     }
 
-    public static OrderLineItemResponse of(OrderLineItemEntity orderLineItem) {
+    public static OrderLineItemResponse of(OrderLineItem orderLineItem) {
         return new OrderLineItemResponse(
             orderLineItem.getId(),
             OrderResponse.of(orderLineItem.getOrder()),
@@ -32,7 +32,7 @@ public class OrderLineItemResponse {
             orderLineItem.getMenuId());
     }
 
-    public static OrderLineItemResponse toResponseWithoutOrder(OrderLineItemEntity orderLineItem) {
+    public static OrderLineItemResponse toResponseWithoutOrder(OrderLineItem orderLineItem) {
         return new OrderLineItemResponse(
             orderLineItem.getId(),
             orderLineItem.getMenuId(),

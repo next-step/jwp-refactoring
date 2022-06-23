@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Arrays;
 import java.util.Collections;
-import kitchenpos.table.domain.OrderTableEntity;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,14 +15,14 @@ import org.junit.jupiter.api.Test;
 
 @DisplayName("주문 테이블 목록에 대한 단위 테스트")
 class OrderTablesTest {
-    private OrderTableEntity 주문_테이블;
-    private OrderTableEntity 주문_테이블2;
+    private OrderTable 주문_테이블;
+    private OrderTable 주문_테이블2;
     private OrderTables 주문테이블_목록;
 
     @BeforeEach
     void setUp() {
-        주문_테이블 = OrderTableEntity.of(null, 1, true);
-        주문_테이블2 = OrderTableEntity.of(null, 1, true);
+        주문_테이블 = OrderTable.of(null, 1, true);
+        주문_테이블2 = OrderTable.of(null, 1, true);
         주문테이블_목록 = new OrderTables();
     }
 
@@ -48,7 +48,7 @@ class OrderTablesTest {
         주문테이블_목록.tablesMapIntoGroup(테이블_그룹_id);
 
         // then
-        for (OrderTableEntity orderTable : 주문테이블_목록.getItems()) {
+        for (OrderTable orderTable : 주문테이블_목록.getItems()) {
             assertThat(orderTable.getTableGroupId()).isEqualTo(테이블_그룹_id);
             assertFalse(orderTable.isEmpty());
         }
@@ -66,7 +66,7 @@ class OrderTablesTest {
         주문테이블_목록.unGroup();
 
         // then
-        for (OrderTableEntity orderTable : 주문테이블_목록.getItems()) {
+        for (OrderTable orderTable : 주문테이블_목록.getItems()) {
             assertNull(orderTable.getTableGroupId());
         }
     }
@@ -75,7 +75,7 @@ class OrderTablesTest {
     @Test
     void tables_validate_test() {
         // given
-        주문_테이블 = OrderTableEntity.of(null, 1, false);
+        주문_테이블 = OrderTable.of(null, 1, false);
         주문테이블_목록.addAll(Collections.singletonList(주문_테이블));
 
         // then
@@ -87,7 +87,7 @@ class OrderTablesTest {
     @Test
     void tables_validate_test2() {
         // given
-        주문_테이블 = OrderTableEntity.of(1L, 1, true);
+        주문_테이블 = OrderTable.of(1L, 1, true);
         주문테이블_목록.addAll(Collections.singletonList(주문_테이블));
 
         // then

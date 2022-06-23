@@ -12,7 +12,7 @@ import java.util.Optional;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.application.TableService;
-import kitchenpos.table.domain.OrderTableEntity;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.request.OrderTableRequest;
 import kitchenpos.table.domain.response.OrderTableResponse;
@@ -39,14 +39,14 @@ class TableServiceTest {
     private OrderTableRequest 주문_테이블_request;
     private OrderTableRequest 주문_테이블_2_request;
 
-    private OrderTableEntity 주문_테이블;
+    private OrderTable 주문_테이블;
 
     @BeforeEach
     void setUp() {
         주문_테이블_request = new OrderTableRequest(null, null, 3, true);
         주문_테이블_2_request = new OrderTableRequest(null, null, 5, true);
 
-        주문_테이블 = OrderTableEntity.of(1L, null, 3, true);
+        주문_테이블 = OrderTable.of(1L, null, 3, true);
     }
 
     @DisplayName("주문 테이블을 등록하면 정상적으로 등록된다")

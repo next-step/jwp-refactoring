@@ -3,7 +3,7 @@ package kitchenpos.table.application;
 import java.util.stream.Collectors;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTableEntity;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.request.OrderTableRequest;
 import kitchenpos.table.domain.response.OrderTableResponse;
@@ -25,14 +25,14 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
-        OrderTableEntity orderTable = OrderTableEntity.of(null, orderTableRequest.getNumberOfGuests(), orderTableRequest.isEmpty());
+        OrderTable orderTable = OrderTable.of(null, orderTableRequest.getNumberOfGuests(), orderTableRequest.isEmpty());
         orderTable = orderTableRepository.save(orderTable);
         return OrderTableResponse.of(orderTable);
     }
 
     @Transactional(readOnly = true)
     public List<OrderTableResponse> list() {
-        List<OrderTableEntity> orderTableEntities = orderTableRepository.findAll();
+        List<OrderTable> orderTableEntities = orderTableRepository.findAll();
         return orderTableEntities.stream()
             .map(OrderTableResponse::of)
             .collect(Collectors.toList());
@@ -40,7 +40,7 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId) {
-        OrderTableEntity orderTable = orderTableRepository.findById(orderTableId)
+        OrderTable orderTable = orderTableRepository.findById(orderTableId)
             .orElseThrow(IllegalArgumentException::new);
         orderTable.validateHasTableGroupId();
 
@@ -59,7 +59,7 @@ public class TableService {
         final int numberOfGuests = orderTableRequest.getNumberOfGuests();
         validateNumberOfGuests(numberOfGuests);
 
-        OrderTableEntity savedOrderTable = orderTableRepository.findById(orderTableId)
+        OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
             .orElseThrow(IllegalArgumentException::new);
         savedOrderTable.validateIsEmpty();
 

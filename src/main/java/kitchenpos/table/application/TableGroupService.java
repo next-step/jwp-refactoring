@@ -2,9 +2,9 @@ package kitchenpos.table.application;
 
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTableEntity;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.TableGroupEntity;
+import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
 import kitchenpos.table.domain.request.TableGroupRequest;
 import kitchenpos.table.domain.response.TableGroupResponse;
@@ -29,21 +29,21 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest request) {
-        final List<OrderTableEntity> orderTables = validateOrderTables(request.getOrderTableIds());
+        final List<OrderTable> orderTables = validateOrderTables(request.getOrderTableIds());
 
-        TableGroupEntity tableGroup = TableGroupEntity.from(orderTables);
+        TableGroup tableGroup = TableGroup.from(orderTables);
         tableGroup.validateTablesEmpty();
 
-        final TableGroupEntity savedTableGroup = tableGroupRepository.save(tableGroup);
+        final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
         savedTableGroup.tablesMapIntoGroup();
 
         return TableGroupResponse.toResponse(savedTableGroup);
     }
 
-    private List<OrderTableEntity> validateOrderTables(List<Long> orderTableIds) {
+    private List<OrderTable> validateOrderTables(List<Long> orderTableIds) {
         validateOrderTableSize(orderTableIds);
 
-        final List<OrderTableEntity> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
+        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
         validateOrderTableEqualsSize(savedOrderTables, orderTableIds);
         return savedOrderTables;
     }
@@ -54,7 +54,7 @@ public class TableGroupService {
         }
     }
 
-    private void validateOrderTableEqualsSize(List<OrderTableEntity> savedOrderTables, List<Long> orderTableIds)  {
+    private void validateOrderTableEqualsSize(List<OrderTable> savedOrderTables, List<Long> orderTableIds)  {
         if (savedOrderTables.size() != orderTableIds.size()) {
             throw new IllegalArgumentException();
         }
@@ -62,13 +62,13 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final List<OrderTableEntity> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
+        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
         validateOrderTablesStatus(orderTables);
-        TableGroupEntity tableGroup = TableGroupEntity.from(orderTables);
+        TableGroup tableGroup = TableGroup.from(orderTables);
         tableGroup.unGroup();
     }
 
-    private void validateOrderTablesStatus(List<OrderTableEntity> orderTables) {
+    private void validateOrderTablesStatus(List<OrderTable> orderTables) {
         if (orderRepository.existsByOrderTableInAndOrderStatusIn(
             orderTables, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException();
