@@ -33,4 +33,16 @@ public class MenuRestController {
     public ResponseEntity<List<Menu>> list() {
         return ResponseEntity.ok().body(menuService.list());
     }
+
+    @PostMapping
+    public ResponseEntity<Menu> createCopy(@RequestBody final Menu menu) {
+        final Menu created = menuService.create(menu);
+        final URI uri = URI.create("/api/menus/" + created.getId());
+        return ResponseEntity.created(uri).body(created);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Menu>> listCopy() {
+        return ResponseEntity.ok().body(menuService.list());
+    }
 }

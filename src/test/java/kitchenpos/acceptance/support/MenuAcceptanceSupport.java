@@ -22,6 +22,16 @@ public class MenuAcceptanceSupport {
             extract();
     }
 
+    public static ExtractableResponse<Response> 메뉴등록을_요청_copy(Menu menu) {
+        return RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(menu)
+            .when().post("/api/menus/copy")
+            .then().log().all().
+            extract();
+    }
+
     public static void 메뉴_정상_등록됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
@@ -36,7 +46,23 @@ public class MenuAcceptanceSupport {
             extract();
     }
 
+    public static ExtractableResponse<Response> 모든메뉴_조회요청_copy() {
+        return RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/api/menus/copy")
+            .then().log().all().
+            extract();
+    }
+
     public static void 메뉴목록_정상_조회됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        List<Menu> result = response.jsonPath().getList(".", Menu.class);
+        assertThat(result).isNotNull();
+    }
+
+    public static void 메뉴목록_정상_조회됨_copy(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
         List<Menu> result = response.jsonPath().getList(".", Menu.class);

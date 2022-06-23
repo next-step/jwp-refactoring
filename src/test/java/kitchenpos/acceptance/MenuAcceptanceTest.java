@@ -2,8 +2,11 @@ package kitchenpos.acceptance;
 
 import static kitchenpos.acceptance.support.MenuAcceptanceSupport.메뉴_정상_등록됨;
 import static kitchenpos.acceptance.support.MenuAcceptanceSupport.메뉴등록을_요청;
+import static kitchenpos.acceptance.support.MenuAcceptanceSupport.메뉴등록을_요청_copy;
 import static kitchenpos.acceptance.support.MenuAcceptanceSupport.메뉴목록_정상_조회됨;
+import static kitchenpos.acceptance.support.MenuAcceptanceSupport.메뉴목록_정상_조회됨_copy;
 import static kitchenpos.acceptance.support.MenuAcceptanceSupport.모든메뉴_조회요청;
+import static kitchenpos.acceptance.support.MenuAcceptanceSupport.모든메뉴_조회요청_copy;
 import static kitchenpos.acceptance.support.MenuGroupAcceptanceSupport.메뉴_그룹_등록요청;
 import static kitchenpos.acceptance.support.ProductAcceptanceSupport.상품_등록요청;
 import static kitchenpos.acceptance.support.TestFixture.감자튀김_FIXTURE;
@@ -53,6 +56,29 @@ class MenuAcceptanceTest extends AcceptanceTest {
 
         // then
         메뉴목록_정상_조회됨(getResponse);
+    }
+
+    @DisplayName("메뉴를 등록한다")
+    @Test
+    void create_test_copy() {
+        // when
+        ExtractableResponse<Response> response = 메뉴등록을_요청_copy(치킨_메뉴);
+
+        // then
+        메뉴_정상_등록됨(response);
+    }
+
+    @DisplayName("모든 메뉴를 조회한다")
+    @Test
+    void find_test_copy() {
+        // given
+        메뉴등록을_요청(치킨_메뉴);
+
+        // when
+        ExtractableResponse<Response> getResponse = 모든메뉴_조회요청_copy();
+
+        // then
+        메뉴목록_정상_조회됨_copy(getResponse);
     }
 
     public static Menu 치킨세트_메뉴_등록함() {
