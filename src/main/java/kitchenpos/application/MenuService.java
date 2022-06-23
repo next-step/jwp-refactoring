@@ -1,10 +1,10 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuProductDao;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menuGroup.MenuGroupRepository;
 import kitchenpos.domain.menuProduct.MenuProduct;
+import kitchenpos.domain.menuProduct.MenuProductRepository;
 import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.ProductRepository;
 import org.springframework.stereotype.Service;
@@ -19,23 +19,25 @@ import java.util.Objects;
 public class MenuService {
     private final MenuDao menuDao;
     private final MenuGroupRepository menuGroupRepository;
-    private final MenuProductDao menuProductDao;
+    private final MenuProductRepository menuProductRepository;
     private final ProductRepository productRepository;
 
     public MenuService(
             final MenuDao menuDao,
             final MenuGroupRepository menuGroupRepository,
-            final MenuProductDao menuProductDao,
+            final MenuProductRepository menuProductRepository,
             final ProductRepository productRepository
     ) {
         this.menuDao = menuDao;
         this.menuGroupRepository = menuGroupRepository;
-        this.menuProductDao = menuProductDao;
+        this.menuProductRepository = menuProductRepository;
         this.productRepository = productRepository;
     }
 
     @Transactional
     public Menu create(final Menu menu) {
+        menu.validateForCreate();
+
         final BigDecimal price = menu.getPrice();
 
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
@@ -50,7 +52,7 @@ public class MenuService {
 
         BigDecimal sum = BigDecimal.ZERO;
         for (final MenuProduct menuProduct : menuProducts) {
-            final Product product = productRepository.findById(menuProduct.getProductId())
+            final Product product = productRepository.findById(menuProduct.getProduct().getId())
                     .orElseThrow(IllegalArgumentException::new);
             sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
         }
@@ -65,7 +67,7 @@ public class MenuService {
         final List<MenuProduct> savedMenuProducts = new ArrayList<>();
         for (final MenuProduct menuProduct : menuProducts) {
             menuProduct.setMenuId(menuId);
-            savedMenuProducts.add(menuProductDao.save(menuProduct));
+            savedMenuProducts.add(menuProductRepository.save(menuProduct));
         }
         savedMenu.setMenuProducts(savedMenuProducts);
 
@@ -76,7 +78,7 @@ public class MenuService {
         final List<Menu> menus = menuDao.findAll();
 
         for (final Menu menu : menus) {
-            menu.setMenuProducts(menuProductDao.findAllByMenuId(menu.getId()));
+            menu.setMenuProducts(menuProductRepository.findAllByMenuId(menu.getId()));
         }
 
         return menus;

@@ -1,10 +1,10 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuProductDao;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menuGroup.MenuGroupRepository;
 import kitchenpos.domain.menuProduct.MenuProduct;
+import kitchenpos.domain.menuProduct.MenuProductRepository;
 import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,20 +40,25 @@ class MenuServiceTest {
     ProductRepository productRepository;
 
     @Mock
-    MenuProductDao menuProductDao;
+    MenuProductRepository menuProductRepository;
 
     @InjectMocks
     MenuService menuService;
 
-    private MenuProduct menuProductSeq1;
-    private MenuProduct menuProductSeq2;
+    private MenuProduct requestMenuProductSeq1;
+    private MenuProduct requestMenuProductSeq2;
     private List<MenuProduct> menuProducts;
+    private Product 초밥;
+    private Product 우동;
 
     @BeforeEach
     void setUp() {
-        menuProductSeq1 = new MenuProduct(1L, 1L, 1L, 2);
-        menuProductSeq2 = new MenuProduct(2L, 1L, 2L, 2);
-        menuProducts = Arrays.asList(menuProductSeq1, menuProductSeq2);
+        초밥 = new Product(1L, "초밥", BigDecimal.valueOf(10000));
+        우동 = new Product(2L, "우동", BigDecimal.valueOf(30000));
+
+        requestMenuProductSeq1 = new MenuProduct(1L, null, null, 2);
+        requestMenuProductSeq2 = new MenuProduct(2L, null, null, 2);
+        menuProducts = Arrays.asList(requestMenuProductSeq1, requestMenuProductSeq2);
     }
 
     @DisplayName("메뉴를 생성할 수 있다")
@@ -62,11 +67,13 @@ class MenuServiceTest {
         // given
         Menu request = 메뉴_데이터_생성(null, BigDecimal.valueOf(26000));
         Menu 예상값 = 메뉴_데이터_생성(1L, BigDecimal.valueOf(26000));
+        MenuProduct menuProductSeq1 = new MenuProduct(1L, 예상값, 초밥, 2);
+        MenuProduct menuProductSeq2 = new MenuProduct(2L, 예상값, 우동, 2);
         given(메뉴_그룹_유효성_확인()).willReturn(true);
-        given(상품_조회(1L)).willReturn(Optional.of(new Product(1L, "초밥", BigDecimal.valueOf(10000))));
-        given(상품_조회(2L)).willReturn(Optional.of(new Product(2L, "우동", BigDecimal.valueOf(3000))));
-        given(메뉴_상품_생성(menuProductSeq1)).willReturn(menuProductSeq1);
-        given(메뉴_상품_생성(menuProductSeq2)).willReturn(menuProductSeq2);
+        given(상품_조회(1L)).willReturn(Optional.of(초밥));
+        given(상품_조회(2L)).willReturn(Optional.of(우동));
+        given(메뉴_상품_생성(requestMenuProductSeq1)).willReturn(menuProductSeq1);
+        given(메뉴_상품_생성(requestMenuProductSeq2)).willReturn(menuProductSeq2);
         given(menuDao.save(request)).willReturn(예상값);
 
         // when
@@ -126,8 +133,8 @@ class MenuServiceTest {
         // given
         Menu request = 메뉴_데이터_생성(null, BigDecimal.valueOf(26001));
         given(메뉴_그룹_유효성_확인()).willReturn(true);
-        given(상품_조회(1L)).willReturn(Optional.of(new Product(1L, "초밥", BigDecimal.valueOf(10000))));
-        given(상품_조회(2L)).willReturn(Optional.of(new Product(2L, "우동", BigDecimal.valueOf(3000))));
+        given(상품_조회(1L)).willReturn(Optional.of(초밥));
+        given(상품_조회(2L)).willReturn(Optional.of(우동));
 
         // when && then
         assertThatThrownBy(() -> 메뉴_생성(request))
@@ -173,7 +180,7 @@ class MenuServiceTest {
     }
 
     private MenuProduct 메뉴_상품_생성(MenuProduct menuProduct) {
-        return menuProductDao.save(menuProduct);
+        return menuProductRepository.save(menuProduct);
     }
 
     private Menu 메뉴_생성(Menu menu) {
