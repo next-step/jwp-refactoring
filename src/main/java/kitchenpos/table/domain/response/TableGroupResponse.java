@@ -18,6 +18,9 @@ public class TableGroupResponse {
         this.orderTables = orderTables;
     }
 
+    public TableGroupResponse() {
+    }
+
     public static TableGroupResponse toResponse(TableGroup tableGroup) {
         List<OrderTableResponse> orderTableResponses = tableGroup.getOrderTables().stream()
             .map(OrderTableResponse::of)

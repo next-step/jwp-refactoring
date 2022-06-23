@@ -49,7 +49,7 @@ public class TableGroup {
     }
 
     public void tablesMapIntoGroup() {
-        this.orderTables.tablesMapIntoGroup(id);
+        this.orderTables.tablesMapIntoGroup(this);
     }
 
     public Long getId() {

@@ -30,8 +30,8 @@ public class OrderTables {
             });
     }
 
-    public void tablesMapIntoGroup(Long tableGroupId) {
-        items.forEach(it -> it.mapIntoGroup(tableGroupId));
+    public void tablesMapIntoGroup(TableGroup tableGroup) {
+        items.forEach(it -> it.mapIntoGroup(tableGroup));
     }
 
     public void unGroup() {

@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
+import kitchenpos.table.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,12 +19,14 @@ class OrderTablesTest {
     private OrderTable 주문_테이블;
     private OrderTable 주문_테이블2;
     private OrderTables 주문테이블_목록;
+    private TableGroup 테이블_그룹;
 
     @BeforeEach
     void setUp() {
         주문_테이블 = OrderTable.of(null, 1, true);
         주문_테이블2 = OrderTable.of(null, 1, true);
         주문테이블_목록 = new OrderTables();
+        테이블_그룹 = TableGroup.of(1L, Arrays.asList(주문_테이블, 주문_테이블2));
     }
 
     @DisplayName("주문 테이블목록 객체에 주문 테이블을 넣으면 정상적으로 들어간다")
@@ -42,14 +45,13 @@ class OrderTablesTest {
     void tables_mapped_test() {
         // given
         주문테이블_목록.addAll(Arrays.asList(주문_테이블, 주문_테이블2));
-        Long 테이블_그룹_id = 1L;
 
         // when
-        주문테이블_목록.tablesMapIntoGroup(테이블_그룹_id);
+        주문테이블_목록.tablesMapIntoGroup(테이블_그룹);
 
         // then
         for (OrderTable orderTable : 주문테이블_목록.getItems()) {
-            assertThat(orderTable.getTableGroupId()).isEqualTo(테이블_그룹_id);
+            assertThat(orderTable.getTableGroup()).isEqualTo(테이블_그룹);
             assertFalse(orderTable.isEmpty());
         }
     }
@@ -59,15 +61,14 @@ class OrderTablesTest {
     void tables_unGroup_test() {
         // given
         주문테이블_목록.addAll(Arrays.asList(주문_테이블, 주문_테이블2));
-        Long 테이블_그룹_id = 1L;
-        주문테이블_목록.tablesMapIntoGroup(테이블_그룹_id);
+        주문테이블_목록.tablesMapIntoGroup(테이블_그룹);
 
         // when
         주문테이블_목록.unGroup();
 
         // then
         for (OrderTable orderTable : 주문테이블_목록.getItems()) {
-            assertNull(orderTable.getTableGroupId());
+            assertNull(orderTable.getTableGroup());
         }
     }
 
@@ -87,7 +88,7 @@ class OrderTablesTest {
     @Test
     void tables_validate_test2() {
         // given
-        주문_테이블 = OrderTable.of(1L, 1, true);
+        주문_테이블 = OrderTable.of(테이블_그룹, 1, true);
         주문테이블_목록.addAll(Collections.singletonList(주문_테이블));
 
         // then

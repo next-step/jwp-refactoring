@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
@@ -51,6 +52,8 @@ class TableGroupServiceTest {
     private OrderTable 주문_테이블;
     private OrderTable 주문_테이블2;
 
+    private TableGroup 테이블_그룹;
+
     @BeforeEach
     void setUp() {
         주문_테이블_request = new OrderTableRequest(1L, null, 3, true);
@@ -59,6 +62,8 @@ class TableGroupServiceTest {
 
         주문_테이블 = OrderTable.of(1L, null, 3, true);
         주문_테이블2 = OrderTable.of(2L, null, 5, true);
+
+        테이블_그룹 = TableGroup.from(Arrays.asList(주문_테이블, 주문_테이블2));
     }
 
     @DisplayName("주문 테이블을 단체지정하면 정상적으로 단체지정 되어야한다")
@@ -133,7 +138,7 @@ class TableGroupServiceTest {
     void create_exception_test4() {
         // given
         주문_테이블 = OrderTable.of(1L, null, 3, false);
-        주문_테이블2 = OrderTable.of(2L, 3L, 3, true);
+        주문_테이블2 = OrderTable.of(2L, 테이블_그룹, 3, true);
         when(orderTableRepository.findAllByIdIn(Arrays.asList(주문_테이블.getId(), 주문_테이블2.getId())))
             .thenReturn(Arrays.asList(주문_테이블, 주문_테이블2));
 
@@ -147,26 +152,26 @@ class TableGroupServiceTest {
     @Test
     void ungroup_test() {
         // given
-        Long 테이블_그룹_id = 3L;
-
-        when(orderTableRepository.findAllByTableGroupId(테이블_그룹_id))
+        when(tableGroupRepository.findById(테이블_그룹.getId()))
+            .thenReturn(Optional.of(테이블_그룹));
+        when(orderTableRepository.findAllByTableGroup(테이블_그룹))
             .thenReturn(Arrays.asList(주문_테이블, 주문_테이블2));
 
         // when
-        tableGroupService.ungroup(테이블_그룹_id);
+        tableGroupService.ungroup(테이블_그룹.getId());
 
         // then
-        assertNull(주문_테이블.getTableGroupId());
-        assertNull(주문_테이블2.getTableGroupId());
+        assertNull(주문_테이블.getTableGroup());
+        assertNull(주문_테이블2.getTableGroup());
     }
 
     @DisplayName("단체지정을 해제시 테이블의 주문이 요리중, 식사중인 상태가 있으면 예외가 발생한다")
     @Test
     void ungroup_exception_test() {
         // given
-        Long 테이블_그룹_id = 3L;
-
-        when(orderTableRepository.findAllByTableGroupId(테이블_그룹_id))
+        when(tableGroupRepository.findById(테이블_그룹.getId()))
+            .thenReturn(Optional.of(테이블_그룹));
+        when(orderTableRepository.findAllByTableGroup(테이블_그룹))
             .thenReturn(Arrays.asList(주문_테이블, 주문_테이블2));
         when(orderRepository.existsByOrderTableInAndOrderStatusIn(
             Arrays.asList(주문_테이블, 주문_테이블2),
@@ -175,7 +180,7 @@ class TableGroupServiceTest {
 
         // then
         assertThatThrownBy(() -> {
-            tableGroupService.ungroup(테이블_그룹_id);
+            tableGroupService.ungroup(테이블_그룹.getId());
         }).isInstanceOf(IllegalArgumentException.class);
     }
 }

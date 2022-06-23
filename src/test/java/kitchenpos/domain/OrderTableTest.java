@@ -4,45 +4,53 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import java.util.Collections;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableGroup;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("주문 테이블에 대한 단위 테스트")
 class OrderTableTest {
+    private TableGroup 테이블_그룹;
+
+    @BeforeEach
+    void setUp() {
+        테이블_그룹 = TableGroup.of(1L, Collections.emptyList());
+    }
 
     @DisplayName("주문 테이블을 테이블 그룹으로 매핑하면 정상적으로 매핑되어야 한다")
     @Test
     void order_table_mapping_test() {
         // given
-        Long 테이블_그룹_id = 1L;
         OrderTable orderTable = OrderTable.of(null, 1, true);
 
         // when
-        orderTable.mapIntoGroup(테이블_그룹_id);
+        orderTable.mapIntoGroup(테이블_그룹);
 
         // then
-        assertThat(orderTable.getTableGroupId()).isEqualTo(테이블_그룹_id);
+        assertThat(orderTable.getTableGroup()).isEqualTo(테이블_그룹);
     }
 
     @DisplayName("주문 테이블을 테이블 그룹에서 해제하면 정상적으로 해제되어야 한다")
     @Test
     void order_table_unGroup_test() {
         // given
-        OrderTable orderTable = OrderTable.of(1L, 1, true);
+        OrderTable orderTable = OrderTable.of(테이블_그룹, 1, true);
 
         // when
         orderTable.unGroup();
 
         // then
-        assertNull(orderTable.getTableGroupId());
+        assertNull(orderTable.getTableGroup());
     }
 
     @DisplayName("주문 테이블의 tableGroupId 확인시 tableGroupId 가 존재하면 예외가 발생한다")
     @Test
     void order_table_exception_test() {
         // given
-        OrderTable orderTable = OrderTable.of(1L, 1, true);
+        OrderTable orderTable = OrderTable.of(테이블_그룹, 1, true);
 
         // then
         assertThatThrownBy(orderTable::validateHasTableGroupId)
@@ -53,7 +61,7 @@ class OrderTableTest {
     @Test
     void order_table_exception_test2() {
         // given
-        OrderTable orderTable = OrderTable.of(1L, 1, true);
+        OrderTable orderTable = OrderTable.of(테이블_그룹, 1, true);
 
         // then
         assertThatThrownBy(orderTable::validateIsEmpty)

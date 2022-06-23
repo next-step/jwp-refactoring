@@ -62,9 +62,11 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
+        TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
+            .orElseThrow(IllegalArgumentException::new);
+
+        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroup(tableGroup);
         validateOrderTablesStatus(orderTables);
-        TableGroup tableGroup = TableGroup.from(orderTables);
         tableGroup.unGroup();
     }
 
