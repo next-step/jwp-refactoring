@@ -38,10 +38,12 @@ public class OrderTable {
     }
 
     public void assignTableGroup(TableGroup tableGroup) {
-
+        checkPossibleGrouping();
+        this.tableGroup = tableGroup;
+        empty = false;
     }
 
-    public void checkPossibleGrouping() {
+    private void checkPossibleGrouping() {
         if (tableGroup != null) {
             throw new IllegalStateException("[ERROR] 이미 단체지정이 되어있습니다.");
         }
