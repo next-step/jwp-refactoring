@@ -121,8 +121,8 @@ class TableServiceTest {
     @DisplayName("주문테이블이 손님 수가 0보다 적은 경우 손님 수 변경 테스트")
     @Test
     void changeNumberOfGuestsWithGuestUnderZero() {
-        주문테이블 = createOrderTable(1L, null, -1, true);
-        OrderTable orderTable = createOrderTable(1L, null, 4, true);
+        주문테이블 = createOrderTable(1L, null, 2, true);
+        OrderTable orderTable = createOrderTable(1L, null, -1, true);
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableService.changeNumberOfGuests(주문테이블.getId(), orderTable));
     }
