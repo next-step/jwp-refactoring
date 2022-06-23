@@ -27,6 +27,13 @@ public class ProductEntity {
     protected ProductEntity() {
     }
 
+    private ProductEntity(Long id, String name, Price price) {
+        validateProduct(name);
+        this.id = id;
+        this.name = name;
+        this.price = price;
+    }
+
     private ProductEntity(String name, Price price) {
         validateProduct(name);
         this.name = name;
@@ -35,6 +42,10 @@ public class ProductEntity {
 
     public static ProductEntity of(String name, BigDecimal price) {
         return new ProductEntity(name, new Price(price));
+    }
+
+    public static ProductEntity of(Long id, String name, BigDecimal price) {
+        return new ProductEntity(id, name, new Price(price));
     }
 
     private void validateProduct(String name) {
