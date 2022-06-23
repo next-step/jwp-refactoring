@@ -47,6 +47,10 @@ public class OrderTable {
         orders.checkPossibleChangeEmpty();
     }
 
+    public void updateNumberOfGuests(Integer numberOfGuests){
+
+    }
+
     public void updateEmpty(boolean empty) {
         this.empty = empty;
     }

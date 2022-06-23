@@ -33,4 +33,28 @@ class OrderTableTest {
                 .isThrownBy(orderTable2::checkPossibleChangeEmpty);
 
     }
+
+    @DisplayName("방문 손님 수가 0명미만으로 업데이트 할 수 없다.")
+    @Test
+    void updateNumberOfGuests_less_then_one() {
+
+        //given
+        OrderTable orderTable1 = new OrderTable(null, 0, true);
+
+        //when then
+        assertThatIllegalStateException()
+                .isThrownBy(()->orderTable1.updateNumberOfGuests(-1));
+    }
+
+    @DisplayName("빈 테이블이 아닌 경우 방문 손님 수 업데이트 할 수 없다. ")
+    @Test
+    void updateNumberOfGuests_not_empty_table() {
+
+        //given
+        OrderTable orderTable1 = new OrderTable(null, 3, false);
+
+        //when then
+        assertThatIllegalStateException()
+                .isThrownBy(()->orderTable1.updateNumberOfGuests(-1));
+    }
 }
