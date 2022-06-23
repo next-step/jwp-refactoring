@@ -11,4 +11,11 @@ public class OrderTables {
     @OneToMany(mappedBy = "tableGroup")
     private final List<OrderTable> orderTables = new ArrayList<>();
 
+    public void addOrderTable(OrderTable orderTable){
+        orderTables.add(orderTable);
+    }
+
+    public List<OrderTable> getOrderTables() {
+        return orderTables;
+    }
 }

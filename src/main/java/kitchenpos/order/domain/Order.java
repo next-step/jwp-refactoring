@@ -9,8 +9,11 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import kitchenpos.domain.OrderStatus;
+import kitchenpos.table.domain.OrderTable;
 
 @Entity
 @Table(name = "orders")
@@ -25,6 +28,9 @@ public class Order {
     private LocalDateTime orderedTime;
     @Embedded
     private final OrderLineItems orderLineItems = new OrderLineItems();
+    @ManyToOne
+    @JoinColumn(name = "order_table_id")
+    private OrderTable orderTable;
 
     protected Order() {
     }
