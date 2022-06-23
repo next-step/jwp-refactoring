@@ -58,13 +58,12 @@ public class OrderLineItem {
             return false;
         }
         OrderLineItem that = (OrderLineItem) o;
-        return quantity == that.quantity && Objects.equals(seq, that.seq) && Objects.equals(orderId,
-            that.orderId) && Objects.equals(menuId, that.menuId);
+        return Objects.equals(seq, that.seq);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(seq, orderId, menuId, quantity);
+        return Objects.hash(seq);
     }
 
     @Override

@@ -67,13 +67,12 @@ public class OrderTable {
             return false;
         }
         OrderTable that = (OrderTable) o;
-        return numberOfGuests == that.numberOfGuests && empty == that.empty && Objects.equals(id, that.id)
-            && Objects.equals(tableGroupId, that.tableGroupId);
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, tableGroupId, numberOfGuests, empty);
+        return Objects.hash(id);
     }
 
     @Override

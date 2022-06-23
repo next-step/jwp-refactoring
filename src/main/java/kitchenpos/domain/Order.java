@@ -70,14 +70,12 @@ public class Order {
             return false;
         }
         Order order = (Order) o;
-        return Objects.equals(id, order.id) && Objects.equals(orderTableId, order.orderTableId)
-            && Objects.equals(orderStatus, order.orderStatus)
-            && Objects.equals(orderLineItems, order.orderLineItems);
+        return Objects.equals(id, order.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, orderTableId, orderStatus, orderLineItems);
+        return Objects.hash(id);
     }
 
     @Override

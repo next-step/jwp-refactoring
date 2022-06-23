@@ -71,14 +71,12 @@ public class Menu {
             return false;
         }
         Menu menu = (Menu) o;
-        return Objects.equals(id, menu.id) && Objects.equals(name, menu.name)
-            && Objects.equals(price, menu.price) && Objects.equals(menuGroupId, menu.menuGroupId)
-            && Objects.equals(menuProducts, menu.menuProducts);
+        return Objects.equals(id, menu.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, price, menuGroupId, menuProducts);
+        return Objects.hash(id);
     }
 
     @Override

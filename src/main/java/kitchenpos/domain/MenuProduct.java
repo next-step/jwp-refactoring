@@ -58,13 +58,12 @@ public class MenuProduct {
             return false;
         }
         MenuProduct that = (MenuProduct) o;
-        return quantity == that.quantity && Objects.equals(seq, that.seq) && Objects.equals(menuId,
-            that.menuId) && Objects.equals(productId, that.productId);
+        return Objects.equals(seq, that.seq);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(seq, menuId, productId, quantity);
+        return Objects.hash(seq);
     }
 
     @Override
