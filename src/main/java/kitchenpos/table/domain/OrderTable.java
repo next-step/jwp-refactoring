@@ -2,13 +2,7 @@ package kitchenpos.table.domain;
 
 import kitchenpos.common.domain.NumberOfGuests;
 
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
+import javax.persistence.*;
 
 @Entity
 public class OrderTable {
@@ -57,6 +51,10 @@ public class OrderTable {
         return new OrderTable(null, numberOfGuests, empty);
     }
 
+    public static OrderTable of(long tableGroupId, int numberOfGuests, boolean empty) {
+        return new OrderTable(tableGroupId, numberOfGuests, empty);
+    }
+
     public Long getId() {
         return id;
     }
@@ -71,5 +69,17 @@ public class OrderTable {
 
     public boolean isEmpty() {
         return empty;
+    }
+
+    public void changeNumberOfGuests(int numberOfGuests) {
+        this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
+    }
+
+    public void changeEmpty(final boolean empty) {
+        this.empty = empty;
+    }
+
+    public void ungroup() {
+        this.tableGroupId = null;
     }
 }
