@@ -10,6 +10,8 @@ import javax.persistence.Id;
 
 @Entity
 public class TableGroup {
+    private static final int MIN_TABLE_SIZE = 2;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,6 +32,12 @@ public class TableGroup {
         this.id = id;
         this.createdDate = createdDate;
         this.orderTables = orderTables;
+    }
+
+    public void checkPossibleGrouping(){
+        if(orderTables == null ||  orderTables.size() < MIN_TABLE_SIZE){
+            throw new IllegalArgumentException("[ERROR] 단체 지정에는 최소 2개의 테이블이 필요합니다.");
+        }
     }
 
     public void addOrderTable(OrderTable orderTable){

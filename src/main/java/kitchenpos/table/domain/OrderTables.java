@@ -19,4 +19,8 @@ public class OrderTables {
     public List<OrderTable> getOrderTables() {
         return orderTables;
     }
+
+    public int size() {
+        return orderTables.size();
+    }
 }
