@@ -14,6 +14,9 @@ public class OrderLineItemResponse {
         this.quantity = quantity;
     }
 
+    public OrderLineItemResponse() {
+    }
+
     private OrderLineItemResponse(Long id, OrderResponse orderResponse, Long menuId, long quantity) {
         this.id = id;
         this.orderResponse = orderResponse;

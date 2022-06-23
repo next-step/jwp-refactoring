@@ -24,6 +24,9 @@ public class OrderResponse {
         this.orderLineItems = orderLineItems;
     }
 
+    public OrderResponse() {
+    }
+
     public static OrderResponse of(OrderEntity order) {
         List<OrderLineItemResponse> orderLineItems = order.getOrderLineItems().stream()
             .map(OrderLineItemResponse::toResponseWithoutOrder)

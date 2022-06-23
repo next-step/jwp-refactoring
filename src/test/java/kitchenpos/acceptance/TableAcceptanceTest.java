@@ -16,6 +16,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableEntity;
 import kitchenpos.table.domain.request.OrderTableRequest;
 import kitchenpos.table.domain.response.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -97,5 +98,10 @@ class TableAcceptanceTest extends AcceptanceTest {
             orderTable.getTableGroupId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
         ExtractableResponse<Response> response = 주문_테이블_등록요청(request);
         return response.as(OrderTable.class);
+    }
+
+    public static OrderTableResponse 주문_테이블_등록됨_copy(OrderTableRequest orderTableRequest) {
+        ExtractableResponse<Response> response = 주문_테이블_등록요청(orderTableRequest);
+        return response.as(OrderTableResponse.class);
     }
 }

@@ -115,13 +115,20 @@ public class OrderService {
             throw new IllegalArgumentException();
         }
 
+        validateExistMenu(orderLineItemRequests);
+        return orderLineItemRequests.stream()
+            .map(OrderLineItemRequest::toEntity)
+            .collect(Collectors.toList());
+    }
+
+    private void validateExistMenu(List<OrderLineItemRequest> orderLineItemRequests) {
         List<Long> menuIds = orderLineItemRequests.stream()
             .map(OrderLineItemRequest::getMenuId)
             .collect(Collectors.toList());
 
-        List<OrderLineItemEntity> orderLineItemEntities = orderLineItemRepository.findAllByIdIn(menuIds);
-        orderLineItemEntities.forEach(OrderLineItemEntity::validateMenu);
-        return orderLineItemEntities;
+        if (orderLineItemRequests.size() != menuDao.countByIdIn(menuIds)) {
+            throw new IllegalArgumentException();
+        }
     }
 
     public List<Order> list() {

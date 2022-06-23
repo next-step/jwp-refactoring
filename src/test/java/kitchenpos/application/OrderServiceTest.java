@@ -130,8 +130,8 @@ class OrderServiceTest {
     @Test
     void create_test_copy() {
         // given
-        when(orderLineItemRepository.findAllByIdIn(Arrays.asList(주문_항목_request.getMenuId(), 주문_항목_request2.getMenuId())))
-            .thenReturn(Arrays.asList(주문_항목, 주문_항목2));
+        when(menuDao.countByIdIn(Arrays.asList(주문_항목_request.getMenuId(), 주문_항목_request2.getMenuId())))
+            .thenReturn(2L);
         when(orderTableRepository.findById(주문_request.getOrderTableId()))
             .thenReturn(Optional.of(주문_테이블_entity));
         when(orderRepository.save(any()))
