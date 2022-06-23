@@ -34,6 +34,10 @@ public class TableGroup {
         this.orderTables = orderTables;
     }
 
+    public void groupingTables(OrderTables emptyTables) {
+
+    }
+
     public void checkPossibleGrouping(){
         if(orderTables == null ||  orderTables.size() < MIN_TABLE_SIZE){
             throw new IllegalArgumentException("[ERROR] 단체 지정에는 최소 2개의 테이블이 필요합니다.");
