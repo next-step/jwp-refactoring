@@ -1,6 +1,6 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.dao.OrderDao;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTableEntity;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -14,18 +14,17 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class TableGroupService {
-    private final OrderDao orderDao;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
+    private final OrderRepository orderRepository;
 
-    public TableGroupService(final OrderDao orderDao, OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository) {
-        this.orderDao = orderDao;
+    public TableGroupService(OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository, OrderRepository orderRepository) {
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
+        this.orderRepository = orderRepository;
     }
 
     @Transactional
@@ -70,12 +69,8 @@ public class TableGroupService {
     }
 
     private void validateOrderTablesStatus(List<OrderTableEntity> orderTables) {
-        final List<Long> orderTableIds = orderTables.stream()
-            .map(OrderTableEntity::getId)
-            .collect(Collectors.toList());
-
-        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
-            orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+        if (orderRepository.existsByOrderTableInAndOrderStatusIn(
+            orderTables, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException();
         }
     }

@@ -9,7 +9,7 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.order.dao.OrderDao;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTableEntity;
@@ -29,9 +29,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class TableServiceTest {
 
     @Mock
-    private OrderDao orderDao;
-    @Mock
     private OrderTableRepository orderTableRepository;
+    @Mock
+    private OrderRepository orderRepository;
 
     @InjectMocks
     private TableService tableService;
@@ -84,8 +84,8 @@ class TableServiceTest {
         주문_테이블.setEmpty(false);
         when(orderTableRepository.findById(주문_테이블.getId()))
             .thenReturn(Optional.of(주문_테이블));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(주문_테이블.getId(), Arrays.asList(
-            OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
+        when(orderRepository.existsByOrderTableAndOrderStatusIn(주문_테이블, Arrays.asList(
+            OrderStatus.COOKING, OrderStatus.MEAL)))
             .thenReturn(false);
         when(orderTableRepository.save(주문_테이블))
             .thenReturn(주문_테이블);
@@ -116,8 +116,8 @@ class TableServiceTest {
         // given
         when(orderTableRepository.findById(주문_테이블.getId()))
             .thenReturn(Optional.of(주문_테이블));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(주문_테이블.getId(), Arrays.asList(
-            OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
+        when(orderRepository.existsByOrderTableAndOrderStatusIn(주문_테이블, Arrays.asList(
+            OrderStatus.COOKING, OrderStatus.MEAL)))
             .thenReturn(true);
 
         // then

@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import kitchenpos.order.dao.OrderDao;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTableEntity;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -35,11 +35,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    private OrderDao orderDao;
-    @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
     private TableGroupRepository tableGroupRepository;
+    @Mock
+    private OrderRepository orderRepository;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -168,9 +168,9 @@ class TableGroupServiceTest {
 
         when(orderTableRepository.findAllByTableGroupId(테이블_그룹_id))
             .thenReturn(Arrays.asList(주문_테이블, 주문_테이블2));
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(
-            Arrays.asList(주문_테이블.getId(), 주문_테이블2.getId()),
-            Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())
+        when(orderRepository.existsByOrderTableInAndOrderStatusIn(
+            Arrays.asList(주문_테이블, 주문_테이블2),
+            Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)
         )).thenReturn(true);
 
         // then

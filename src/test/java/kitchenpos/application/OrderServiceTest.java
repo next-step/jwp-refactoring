@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -13,19 +12,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.menu.dao.MenuDao;
-import kitchenpos.order.dao.OrderDao;
-import kitchenpos.order.dao.OrderLineItemDao;
 import kitchenpos.order.domain.OrderEntity;
-import kitchenpos.order.domain.OrderLineItemEntity;
-import kitchenpos.order.domain.OrderLineItemRepository;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.request.OrderRequest;
 import kitchenpos.order.domain.response.OrderResponse;
-import kitchenpos.table.dao.OrderTableDao;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.table.domain.OrderTableEntity;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -52,12 +43,6 @@ class OrderServiceTest {
     @InjectMocks
     private OrderService orderService;
 
-    private OrderLineItem 주문항목_1;
-    private OrderLineItem 주문항목_2;
-    private OrderLineItem 주문항목_3;
-    private OrderTable 주문_테이블;
-    private Order 주문_1;
-
     private OrderTableEntity 주문_테이블_entity;
 
     private OrderLineItemRequest 주문_항목_request;
@@ -68,13 +53,6 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        주문항목_1 = OrderLineItem.of(1L, 1L, 1L, 1);
-        주문항목_2 = OrderLineItem.of(2L, 1L, 2L, 1);
-        주문항목_3 = OrderLineItem.of(3L, 1L, 3L, 2);
-        주문_테이블 = OrderTable.of(1L, null, 3, false);
-        주문_1 = Order.of(1L, 주문_테이블.getId(), null, null,
-            Arrays.asList(주문항목_1, 주문항목_2, 주문항목_3));
-
         주문_테이블_entity = OrderTableEntity.of(1L, null, 3, false);
 
         주문_항목_request = new OrderLineItemRequest(1L, 1);

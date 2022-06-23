@@ -9,7 +9,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.request.OrderTableRequest;
 import kitchenpos.table.domain.request.TableGroupRequest;
 import kitchenpos.table.domain.response.OrderTableResponse;
@@ -56,7 +55,7 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void ungroup_test() {
         // given
-        TableGroup tableGroup = 테이블_단체지정_등록요청(테이블_그룹_request).as(TableGroup.class);
+        TableGroupResponse tableGroup = 테이블_단체지정_등록요청(테이블_그룹_request).as(TableGroupResponse.class);
 
         // when
         ExtractableResponse<Response> response = 테이블_단체지정_해제요청(tableGroup.getId());
