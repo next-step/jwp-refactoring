@@ -1,10 +1,10 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.orderTable.OrderTable;
 import kitchenpos.domain.orderTable.OrderTableRepository;
 import kitchenpos.domain.tableGroup.TableGroup;
+import kitchenpos.domain.tableGroup.TableGroupRepository;
 import kitchenpos.dto.tableGroup.TableGroupRequest;
 import kitchenpos.dto.tableGroup.TableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -14,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -38,7 +37,7 @@ class TableGroupServiceTest {
     OrderTableRepository orderTableRepository;
 
     @Mock
-    TableGroupDao tableGroupDao;
+    TableGroupRepository tableGroupRepository;
 
     @InjectMocks
     TableGroupService tableGroupService;
@@ -50,10 +49,10 @@ class TableGroupServiceTest {
         OrderTable orderTableId1 = 주문_테이블_데이터_생성(1L, null, 2, true);
         OrderTable orderTableId2 = 주문_테이블_데이터_생성(2L, null, 4, true);
         List<OrderTable> orderTables = Arrays.asList(orderTableId1, orderTableId2);
-        TableGroupRequest request = 테이블_그룹_요청_데이터_생성(LocalDateTime.now(), orderTables);
-        TableGroup 예상값 = 테이블_그룹_데이터_생성(1L, LocalDateTime.now(), orderTables);
+        TableGroupRequest request = 테이블_그룹_요청_데이터_생성(orderTables);
+        TableGroup 예상값 = 테이블_그룹_데이터_생성(1L, orderTables);
         given(orderTableRepository.findAllByIdIn(anyList())).willReturn(orderTables);
-        given(tableGroupDao.save(any(TableGroup.class))).willReturn(예상값);
+        given(tableGroupRepository.save(any(TableGroup.class))).willReturn(예상값);
 
         // when
         TableGroupResponse 테이블_그룹_생성_결과 = 테이블_그룹_생성(request);
@@ -69,7 +68,7 @@ class TableGroupServiceTest {
         OrderTable orderTableId1 = 주문_테이블_데이터_생성(1L, null, 2, false);
         OrderTable orderTableId2 = 주문_테이블_데이터_생성(2L, null, 4, false);
         List<OrderTable> orderTables = Arrays.asList(orderTableId1, orderTableId2);
-        TableGroupRequest request = 테이블_그룹_요청_데이터_생성(LocalDateTime.now(), orderTables);
+        TableGroupRequest request = 테이블_그룹_요청_데이터_생성(orderTables);
         given(orderTableRepository.findAllByIdIn(anyList())).willReturn(orderTables);
 
         // when && then
@@ -83,7 +82,7 @@ class TableGroupServiceTest {
         // given
         OrderTable orderTableId1 = 주문_테이블_데이터_생성(1L, null, 2, false);
         List<OrderTable> orderTables = Collections.singletonList(orderTableId1);
-        TableGroupRequest request = 테이블_그룹_요청_데이터_생성(LocalDateTime.now(), orderTables);
+        TableGroupRequest request = 테이블_그룹_요청_데이터_생성(orderTables);
 
         // when && then
         assertThatThrownBy(() -> 테이블_그룹_생성(request))
@@ -95,9 +94,9 @@ class TableGroupServiceTest {
     void create_exception3() {
         // given
         OrderTable orderTableId1 = 주문_테이블_데이터_생성(1L, null, 2, false);
-        OrderTable orderTableId2 = 주문_테이블_데이터_생성(2L, 테이블_그룹_데이터_생성(1L, LocalDateTime.now(), null), 4, false);
+        OrderTable orderTableId2 = 주문_테이블_데이터_생성(2L, 테이블_그룹_데이터_생성(1L, null), 4, false);
         List<OrderTable> orderTables = Arrays.asList(orderTableId1, orderTableId2);
-        TableGroupRequest request = 테이블_그룹_요청_데이터_생성(LocalDateTime.now(), orderTables);
+        TableGroupRequest request = 테이블_그룹_요청_데이터_생성(orderTables);
         given(orderTableRepository.findAllByIdIn(anyList())).willReturn(orderTables);
 
         // when && then
@@ -109,8 +108,8 @@ class TableGroupServiceTest {
     @Test
     void ungroup() {
         // given
-        OrderTable orderTableId1 = 주문_테이블_데이터_생성(1L, 테이블_그룹_데이터_생성(1L, LocalDateTime.now(), null), 2, true);
-        OrderTable orderTableId2 = 주문_테이블_데이터_생성(2L, 테이블_그룹_데이터_생성(1L, LocalDateTime.now(), null), 4, true);
+        OrderTable orderTableId1 = 주문_테이블_데이터_생성(1L, 테이블_그룹_데이터_생성(1L, null), 2, true);
+        OrderTable orderTableId2 = 주문_테이블_데이터_생성(2L, 테이블_그룹_데이터_생성(1L, null), 4, true);
         List<OrderTable> orderTables = Arrays.asList(orderTableId1, orderTableId2);
 
         given(orderTableRepository.findAllByTableGroupId(1L)).willReturn(orderTables);
@@ -125,8 +124,8 @@ class TableGroupServiceTest {
     @Test
     void ungroup_exception1() {
         // given
-        OrderTable orderTableId1 = 주문_테이블_데이터_생성(1L, 테이블_그룹_데이터_생성(1L, LocalDateTime.now(), null), 2, true);
-        OrderTable orderTableId2 = 주문_테이블_데이터_생성(2L, 테이블_그룹_데이터_생성(1L, LocalDateTime.now(), null), 4, true);
+        OrderTable orderTableId1 = 주문_테이블_데이터_생성(1L, 테이블_그룹_데이터_생성(1L, null), 2, true);
+        OrderTable orderTableId2 = 주문_테이블_데이터_생성(2L, 테이블_그룹_데이터_생성(1L, null), 4, true);
         List<OrderTable> orderTables = Arrays.asList(orderTableId1, orderTableId2);
 
         given(orderTableRepository.findAllByTableGroupId(1L)).willReturn(orderTables);
@@ -137,20 +136,20 @@ class TableGroupServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    public static TableGroup 테이블_그룹_데이터_생성(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
-        return new TableGroup(id, createdDate, orderTables);
+    public static TableGroup 테이블_그룹_데이터_생성(Long id, List<OrderTable> orderTables) {
+        return new TableGroup(id, orderTables);
     }
 
-    public static TableGroupRequest 테이블_그룹_요청_데이터_생성(LocalDateTime createdDate, List<OrderTable> orderTables) {
-        return new TableGroupRequest(createdDate, orderTables);
+    public static TableGroupRequest 테이블_그룹_요청_데이터_생성(List<OrderTable> orderTables) {
+        return new TableGroupRequest(orderTables);
     }
 
     private TableGroupResponse 테이블_그룹_생성(TableGroupRequest tableGroupRequest) {
         return tableGroupService.create(tableGroupRequest);
     }
 
-    private void 테이블_그룹_해제(long l) {
-        tableGroupService.ungroup(l);
+    private void 테이블_그룹_해제(long tableGroupId) {
+        tableGroupService.ungroup(tableGroupId);
     }
 
     private void 테이블_그룹_데이터_비교(TableGroupResponse 테이블_그룹_생성_결과, TableGroupResponse 예상값) {

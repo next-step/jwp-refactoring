@@ -94,7 +94,7 @@ class TableServiceTest {
     @Test
     void changeEmpty_exception1() {
         // given
-        OrderTable orderTable = 주문_테이블_데이터_생성(1L,테이블_그룹_데이터_생성(1L, LocalDateTime.now(), null), 2, true);
+        OrderTable orderTable = 주문_테이블_데이터_생성(1L,테이블_그룹_데이터_생성(1L, null), 2, true);
         given(orderTableRepository.findById(1L)).willReturn(Optional.of(orderTable));
 
         // when && then

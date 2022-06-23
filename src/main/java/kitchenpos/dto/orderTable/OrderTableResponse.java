@@ -2,6 +2,8 @@ package kitchenpos.dto.orderTable;
 
 import kitchenpos.domain.orderTable.OrderTable;
 
+import java.util.Objects;
+
 public class OrderTableResponse {
     private final Long id;
     private final int numberOfGuests;
@@ -30,5 +32,19 @@ public class OrderTableResponse {
 
     public boolean isEmpty() {
         return empty;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof OrderTableResponse)) return false;
+        OrderTableResponse that = (OrderTableResponse) o;
+        if (Objects.equals(getId(), that.getId())) return true;
+        return getNumberOfGuests() == that.getNumberOfGuests() && isEmpty() == that.isEmpty();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getNumberOfGuests(), isEmpty());
     }
 }

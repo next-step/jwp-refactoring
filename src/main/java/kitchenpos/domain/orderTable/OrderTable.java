@@ -98,4 +98,12 @@ public class OrderTable {
     public void setEmpty(final boolean empty) {
         this.empty = empty;
     }
+
+    public boolean isNotEmptyAndNotExistTableGroup() {
+        return !empty || Objects.nonNull(tableGroup);
+    }
+
+    public void updateTableGroup(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
+    }
 }
