@@ -8,7 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import static org.mockito.Mockito.verify;
+import java.util.Collections;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 @DisplayName("메뉴 그룹 관련")
 @SpringBootTest
@@ -22,22 +26,27 @@ class MenuGroupServiceTest {
     @Test
     void create() {
         // given
-        MenuGroup menuGroup = new MenuGroup("중식");
+        MenuGroup given = new MenuGroup("중식");
+        when(menuGroupDao.save(given)).thenReturn(given);
 
         // when
-        menuGroupService.create(menuGroup);
+        MenuGroup actual = menuGroupService.create(given);
 
         // then
-        verify(menuGroupDao).save(menuGroup);
+        assertThat(actual).isSameAs(given);
     }
 
     @DisplayName("메뉴 그룹의 목록을 조회할 수 있다")
     @Test
     void list() {
+        // given
+        List<MenuGroup> given = Collections.emptyList();
+        when(menuGroupDao.findAll()).thenReturn(given);
+
         // when
-        menuGroupService.list();
+        List<MenuGroup> actual = menuGroupService.list();
 
         // then
-        verify(menuGroupDao).findAll();
+        assertThat(actual).isSameAs(given);
     }
 }
