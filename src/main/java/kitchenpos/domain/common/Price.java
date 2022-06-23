@@ -21,6 +21,10 @@ public class Price {
         }
     }
 
+    public BigDecimal getValue() {
+        return price;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

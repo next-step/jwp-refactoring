@@ -16,8 +16,12 @@ public class Name {
 
     private void validateName(String name) {
         if (name == null || name.isEmpty()) {
-            throw new IllegalArgumentException("이름값이 없습니다.");
+            throw new IllegalArgumentException("이름값이 존재 하야합니다.");
         }
+    }
+
+    public String getValue() {
+        return name;
     }
 
     @Override
