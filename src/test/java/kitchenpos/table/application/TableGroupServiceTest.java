@@ -62,21 +62,6 @@ class TableGroupServiceTest extends ServiceTest {
         .hasMessageContaining("단체 지정할 테이블이 없습니다.");
     }
 
-    @DisplayName("존재하지 않는 테이블을 포함하여 단체 지정을 생성한다.")
-    @Test
-    void createWithNotFoundTable() {
-        Long 존재하지_않는_테이블_id = Long.MAX_VALUE;
-        TableGroupRequest request = new TableGroupRequest(Arrays.asList(
-                new OrderTableIdRequest(빈테이블1.getId()),
-                new OrderTableIdRequest(존재하지_않는_테이블_id)
-        ));
-
-        assertThatThrownBy(() -> {
-            service.create(request);
-        }).isInstanceOf(InvalidTableGroupException.class)
-        .hasMessageContaining("존재하지 않는 테이블이 있습니다.");
-    }
-
     private TableGroupResponse createTableGroup(OrderTable... orderTables) {
         TableGroupRequest request = new TableGroupRequest(Arrays.stream(orderTables)
                                                                 .map(it -> new OrderTableIdRequest(it.getId()))
