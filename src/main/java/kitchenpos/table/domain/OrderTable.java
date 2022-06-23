@@ -13,6 +13,7 @@ import kitchenpos.order.domain.Orders;
 
 @Entity
 public class OrderTable {
+    private static final int EMPTY_GEUST = 0;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,8 +48,14 @@ public class OrderTable {
         orders.checkPossibleChangeEmpty();
     }
 
-    public void updateNumberOfGuests(Integer numberOfGuests){
-
+    public void updateNumberOfGuests(Integer numberOfGuests) {
+        if (numberOfGuests < EMPTY_GEUST) {
+            throw new IllegalArgumentException("[ERROR] 방문 손님 수는 0명 미만으로 변경할 수 없습니다.");
+        }
+        if (Boolean.FALSE.equals(empty)) {
+            throw new IllegalArgumentException("[ERROR] 빈테이블이 아닌 경우 방문 손님 수를 변경할 수 없습니다.");
+        }
+        this.numberOfGuests = numberOfGuests;
     }
 
     public void updateEmpty(boolean empty) {

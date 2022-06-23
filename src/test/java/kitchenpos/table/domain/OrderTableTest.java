@@ -1,5 +1,6 @@
 package kitchenpos.table.domain;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
@@ -42,7 +43,7 @@ class OrderTableTest {
         OrderTable orderTable1 = new OrderTable(null, 0, true);
 
         //when then
-        assertThatIllegalStateException()
+        assertThatIllegalArgumentException()
                 .isThrownBy(()->orderTable1.updateNumberOfGuests(-1));
     }
 
@@ -54,7 +55,7 @@ class OrderTableTest {
         OrderTable orderTable1 = new OrderTable(null, 3, false);
 
         //when then
-        assertThatIllegalStateException()
+        assertThatIllegalArgumentException()
                 .isThrownBy(()->orderTable1.updateNumberOfGuests(-1));
     }
 }
