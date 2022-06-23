@@ -14,6 +14,7 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.*;
 
@@ -30,8 +31,8 @@ import java.util.stream.Stream;
 @DisplayName("주문 관련 기능 인수테스트")
 public class OrderAcceptanceTest extends AcceptanceTest {
     private MenuGroup 추천메뉴;
-    private Product 허니콤보;
-    private Product 레드콤보;
+    private ProductResponse 허니콤보;
+    private ProductResponse 레드콤보;
     private Menu 허니레드콤보;
     private OrderTable 손님_4명_테이블;
     private Order 주문;

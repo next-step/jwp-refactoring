@@ -26,9 +26,9 @@ public class ServiceTestFactory {
 
     public static Product createProductBy(Long id, String name, long price) {
         Product product = new Product();
-        product.setId(id);
-        product.setName(name);
-        product.setPrice(BigDecimal.valueOf(price));
+        //product.setId(id);
+        //product.setName(name);
+        //product.setPrice(BigDecimal.valueOf(price));
         return product;
     }
 

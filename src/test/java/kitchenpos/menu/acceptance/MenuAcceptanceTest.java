@@ -18,6 +18,7 @@ import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
 
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.*;
 
 import org.springframework.core.ParameterizedTypeReference;
@@ -28,8 +29,8 @@ import org.springframework.http.ResponseEntity;
 @DisplayName("메뉴 관련 기능 인수테스트")
 public class MenuAcceptanceTest extends AcceptanceTest {
     private MenuGroup 추천메뉴;
-    private Product 허니콤보;
-    private Product 레드콤보;
+    private ProductResponse 허니콤보;
+    private ProductResponse 레드콤보;
 
     @TestFactory
     @DisplayName("메뉴 관련 기능 정상 시나리오")
@@ -78,7 +79,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                     메뉴_등록_실패됨(등록되지_않는_메뉴그룹_메뉴_등록_응답_결과);
                 }),
                 dynamicTest("등록되지 않은 상품으로 메뉴 등록 요청하면 메뉴 등록 실패한다.", () -> {
-                    Product 등록안된_상품 = new Product();
+                    ProductResponse 등록안된_상품 = new ProductResponse();
 
                     ResponseEntity<Menu> 존재하지_않는_메뉴_등록_응답_결과 = 메뉴_등록_요청(추천메뉴, "레드허니콤보", 39_000L, 등록안된_상품);
 
@@ -87,20 +88,20 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    public static Menu 메뉴_등록_되어있음(MenuGroup menuGroup, String name, long price, Product... products) {
+    public static Menu 메뉴_등록_되어있음(MenuGroup menuGroup, String name, long price, ProductResponse... products) {
         return 메뉴_등록_요청(menuGroup, name, price, products).getBody();
     }
 
-    public static ResponseEntity<Menu> 메뉴_등록_요청(MenuGroup menuGroup, String name, long price, Product... products) {
+    public static ResponseEntity<Menu> 메뉴_등록_요청(MenuGroup menuGroup, String name, long price, ProductResponse... products) {
         List<MenuProduct> menuProducts = 메뉴_상품_생성(products);
         Menu menu = 메뉴_생성(menuGroup, name, price, menuProducts);
         return testRestTemplate.postForEntity("/api/menus", menu, Menu.class);
     }
 
-    private void 메뉴_목록_조회됨(ResponseEntity<List<Menu>> response, Product... products) {
+    private void 메뉴_목록_조회됨(ResponseEntity<List<Menu>> response, ProductResponse... products) {
         List<Long> actualIds = 메뉴_상품_아이디_추출(response);
         List<Long> expectedIds = Arrays.stream(products)
-                .map(Product::getId)
+                .map(ProductResponse::getId)
                 .collect(Collectors.toList());
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -145,7 +146,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         return request;
     }
 
-    private static List<MenuProduct> 메뉴_상품_생성(Product[] products) {
+    private static List<MenuProduct> 메뉴_상품_생성(ProductResponse[] products) {
         return Arrays.stream(products)
                 .map(product -> {
                     MenuProduct menuProduct = new MenuProduct();
