@@ -37,15 +37,15 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public void addOrder(Order order) {
-        orders.addOrder(order);
+    public void assignTableGroup(TableGroup tableGroup) {
+
     }
 
     public void checkPossibleGrouping() {
         if (tableGroup != null) {
             throw new IllegalStateException("[ERROR] 이미 단체지정이 되어있습니다.");
         }
-        if (Boolean.FALSE.equals(empty)){
+        if (Boolean.FALSE.equals(empty)) {
             throw new IllegalStateException("[ERROR] 빈 테이블이 아닌 경우 단체 지정 할 수 없습니다.");
         }
     }
@@ -70,6 +70,10 @@ public class OrderTable {
 
     public void updateEmpty(boolean empty) {
         this.empty = empty;
+    }
+
+    public void addOrder(Order order) {
+        orders.addOrder(order);
     }
 
     public Long getId() {

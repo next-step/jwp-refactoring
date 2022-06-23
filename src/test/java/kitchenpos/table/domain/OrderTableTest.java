@@ -1,5 +1,6 @@
 package kitchenpos.table.domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
@@ -59,26 +60,40 @@ class OrderTableTest {
                 .isThrownBy(() -> orderTable.updateNumberOfGuests(5));
     }
 
+    @DisplayName("단체 지정을 등록한다.")
+    @Test
+    void assignTableGroup() {
+        //given
+        OrderTable orderTable = new OrderTable(null, 3, true);
+
+        //when
+        orderTable.assignTableGroup(new TableGroup(1L, null));
+
+        // then
+        assertThat(orderTable.getTableGroup()).isNotNull();
+        assertThat(orderTable.getEmpty()).isFalse();
+    }
+
     @DisplayName("빈 테이블이 아닌 경우 단체지정 할 수 없다.")
     @Test
-    void checkPossibleGrouping_not_empty() {
+    void assignTableGroup_not_empty() {
         //given
         OrderTable orderTable = new OrderTable(null, 3, false);
 
         //when then
         assertThatIllegalStateException()
-                .isThrownBy(orderTable::checkPossibleGrouping);
+                .isThrownBy(() -> orderTable.assignTableGroup(new TableGroup(2L, null)));
     }
 
     @DisplayName("이미 단체 지정이 되어있으면 단체지정 할 수 없다.")
     @Test
-    void checkPossibleGrouping_cant() {
+    void assignTableGroup_already() {
         //given
         OrderTable orderTable = new OrderTable(null, 3, true);
         orderTable.setTableGroup(new TableGroup(1L, null));
 
         //when then
         assertThatIllegalStateException()
-                .isThrownBy(orderTable::checkPossibleGrouping);
+                .isThrownBy(() -> orderTable.assignTableGroup(new TableGroup(2L, null)));
     }
 }
