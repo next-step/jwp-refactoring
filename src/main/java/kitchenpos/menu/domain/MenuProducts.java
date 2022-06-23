@@ -20,4 +20,8 @@ public class MenuProducts {
     public List<MenuProduct> getAll() {
         return this.menuProducts;
     }
+
+    public long totalPrice() {
+        return this.menuProducts.stream().mapToLong(menuProduct -> menuProduct.getQuantity() * menuProduct.getPrice()).sum();
+    }
 }

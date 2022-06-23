@@ -33,14 +33,13 @@ public class MenuService {
     public MenuResponse create(final MenuRequest request) {
         MenuGroup menuGroup = menuGroupRepository.findById(request.getMenuGroupId()).orElseThrow(IllegalArgumentException::new);
         Menu menu = new Menu(request.getName(), request.getPrice(), menuGroup);
-        long sum = 0;
+
         for (final MenuProductRequest menuProductRequest : request.getMenuProducts()) {
             final Product product = productRepository.findById(menuProductRequest.getProductId()).orElseThrow(IllegalArgumentException::new);
             menu.add(product, menuProductRequest.getQuantity());
-            sum += product.getPrice() * menuProductRequest.getQuantity();
         }
 
-        request.check(sum);
+        menu.checkPrice();
         return new MenuResponse(menuRepository.save(menu));
     }
 

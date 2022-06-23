@@ -9,12 +9,12 @@ import java.util.Objects;
 public class MenuRequest {
     private String name;
     private long price;
-    private Long menuGroupId;
+    private long menuGroupId;
     private List<MenuProductRequest> menuProducts;
 
     @JsonCreator
     public MenuRequest(@JsonProperty("name") String name, @JsonProperty("price") long price,
-            @JsonProperty("menuGroupId") Long menuGroupId,
+            @JsonProperty("menuGroupId") long menuGroupId,
             @JsonProperty("menuProducts") List<MenuProductRequest> menuProducts) {
         check(name, price);
         this.name = name;
@@ -27,7 +27,7 @@ public class MenuRequest {
         return name;
     }
 
-    public Long getMenuGroupId() {
+    public long getMenuGroupId() {
         return menuGroupId;
     }
 
@@ -39,14 +39,8 @@ public class MenuRequest {
         return price;
     }
 
-    public void check(long price) {
-        if (this.price > price) {
-            throw new IllegalArgumentException();
-        }
-    }
-
     private void check(String name, long price) {
-        if (Objects.isNull(price) || price < 0) {
+        if (price < 0) {
             throw new IllegalArgumentException();
         }
 

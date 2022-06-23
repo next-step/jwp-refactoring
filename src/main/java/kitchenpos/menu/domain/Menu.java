@@ -59,4 +59,10 @@ public class Menu {
     public void add(Product product, long quantity) {
         this.menuProducts.add(new MenuProduct(this, product, quantity));
     }
+
+    public void checkPrice() {
+        if (this.price > this.menuProducts.totalPrice()) {
+            throw new IllegalArgumentException();
+        }
+    }
 }

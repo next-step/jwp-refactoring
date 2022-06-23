@@ -34,4 +34,8 @@ public class MenuProduct {
     public long getQuantity() {
         return quantity;
     }
+
+    public long getPrice() {
+        return this.product.getPrice();
+    }
 }
