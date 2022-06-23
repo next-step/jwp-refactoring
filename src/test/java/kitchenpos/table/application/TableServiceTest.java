@@ -4,6 +4,7 @@ import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -59,7 +60,7 @@ public class TableServiceTest {
         given(orderTableRepository.findAll()).willReturn(Arrays.asList(orderTable));
 
         // when
-        List<OrderTable> tables = tableService.list();
+        List<OrderTableResponse> tables = tableService.list();
 
         // then
         assertThat(tables).isNotNull();
@@ -74,7 +75,7 @@ public class TableServiceTest {
         given(orderTableRepository.save(any())).willReturn(orderTable);
 
         // when
-        OrderTable emptyTable = tableService.changeEmpty(orderTable.getId(), orderTable);
+        OrderTableResponse emptyTable = tableService.changeEmpty(orderTable.getId(), orderTable);
 
         // then
         assertThat(emptyTable).isNotNull();
@@ -112,7 +113,7 @@ public class TableServiceTest {
         given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
 
         // when
-        OrderTable changeTable = tableService.changeNumberOfGuests(orderTable.getId(), orderTable);
+        OrderTableResponse changeTable = tableService.changeNumberOfGuests(orderTable.getId(), orderTable);
 
         // then
         assertThat(changeTable).isNotNull();
