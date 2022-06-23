@@ -72,15 +72,13 @@ class OrderTableTest {
     @Test
     void align01() {
         // given
-        OrderTable orderTable1 = OrderTable.of(true, 1);
-        OrderTable orderTable2 = OrderTable.of(true, 1);
-        OrderTable orderTable3 = OrderTable.of(true, 1);
+        OrderTable orderTable = OrderTable.of(true, 1);
         TableGroup tableGroup = TableGroup.create();
 
         // when
-        orderTable3.mappedByTableGroup(tableGroup.getId());
+        tableGroup.group(Lists.newArrayList(orderTable.getId()));
 
         // then
-        assertEquals(tableGroup.getId(), orderTable3.getTableGroupId());
+        assertEquals(tableGroup.getId(), orderTable.getTableGroupId());
     }
 }

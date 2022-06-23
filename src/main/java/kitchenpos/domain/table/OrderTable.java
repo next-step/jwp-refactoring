@@ -48,6 +48,7 @@ public class OrderTable {
 
     public void mappedByTableGroup(Long tableGroupId) {
         this.tableGroupId = tableGroupId;
+        this.changeEmpty(false);
     }
 
     public void changeEmpty(boolean empty) {

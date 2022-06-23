@@ -121,7 +121,7 @@ class TableServiceTest {
     void change03() {
         // given
         OrderTableRequest request = OrderTableRequest.of(0, true);
-        단체_1_주문_테이블_1.mappedByTableGroup(단체_1.getId());
+        단체_1.group(Lists.newArrayList(단체_1_주문_테이블_1.getId()));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> tableService.changeEmpty(단체_1_주문_테이블_1.getId(), request));

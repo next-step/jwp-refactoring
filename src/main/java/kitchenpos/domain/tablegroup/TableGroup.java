@@ -8,11 +8,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import kitchenpos.domain.table.OrderTable;
+import kitchenpos.domain.tablegroup.event.TableGroupingEvent;
+import kitchenpos.domain.tablegroup.event.TableUngroupEvent;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 @Entity
 @Table(name = "table_group")
-public class TableGroup {
+public class TableGroup extends AbstractAggregateRoot<TableGroup> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -44,7 +46,11 @@ public class TableGroup {
         return createdDate;
     }
 
-    public void assignedOrderTables(List<OrderTable> orderTables) {
-        orderTables.forEach(orderTable -> orderTable.mappedByTableGroup(this.getId()));
+    public void group(List<Long> orderTableIds) {
+        registerEvent(new TableGroupingEvent(this, orderTableIds));
+    }
+
+    public void upgroup() {
+        registerEvent(new TableUngroupEvent(this));
     }
 }

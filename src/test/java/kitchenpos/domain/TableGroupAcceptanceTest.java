@@ -29,7 +29,6 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-
         주문_1_테이블 = 테이블_등록되어_있음(OrderTableRequest.of(2, true)).as(OrderTableResponse.class);
         주문_2_테이블 = 테이블_등록되어_있음(OrderTableRequest.of(4, true)).as(OrderTableResponse.class);
         tableGroupRequest = TableGroupRequest.from(Lists.newArrayList(주문_1_테이블.getId(), 주문_2_테이블.getId()));
