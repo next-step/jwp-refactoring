@@ -67,19 +67,20 @@ class OrdersServiceTest {
     @DisplayName("주문을 생성할 수 있다.")
     void create() {
         //given
+        Orders savedOrder = new Orders(비어있지_않은_주문_테이블, OrderStatus.COOKING, LocalDateTime.now());
+        savedOrder.add(menu, 1);
         given(menuRepository.countByIdIn(any())).willReturn(1L);
         given(menuRepository.findById(any())).willReturn(Optional.of(menu));
         given(orderTableRepository.findByIdAndEmptyIsFalse(any())).willReturn(Optional.of(비어있지_않은_주문_테이블));
-        given(ordersRepository.save(any())).willReturn(orders);
+        given(ordersRepository.save(any())).willReturn(savedOrder);
 
         //when
-        OrderResponse savedOrder = orderService.create(
+        OrderResponse response = orderService.create(
                 new OrdersRequest(비어있지_않은_주문_테이블.getId(), Arrays.asList(new OrderLineItemRequest(menu.getId(), 1))));
 
         //then
-        assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
-        assertThat(savedOrder.getOrderLineItems().stream().map(OrderLineItemResponse::getQuantity)).isNotEmpty()
-                .containsExactly(1L);
+        assertThat(response.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
+        assertThat(response.getOrderLineItems().stream().map(OrderLineItemResponse::getQuantity).collect(Collectors.toList())).containsExactlyInAnyOrder(1L);
     }
 
     @Test
