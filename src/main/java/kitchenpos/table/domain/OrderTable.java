@@ -76,10 +76,6 @@ public class OrderTable {
         return isEmpty() && Objects.isNull(getTableGroupId());
     }
 
-    public void setTableGroupId(Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
-    }
-
     public void ungroup() {
         this.tableGroupId = null;
     }
@@ -94,6 +90,13 @@ public class OrderTable {
     }
 
     public void changeEmpty(final boolean empty) {
+        validateOfChangeEmpty();
         this.empty = empty;
+    }
+
+    private void validateOfChangeEmpty() {
+        if (Objects.nonNull(tableGroupId)) {
+            throw new IllegalArgumentException("그룹이 있는 테이블은 빈 상태로 변경할 수 없습니다");
+        }
     }
 }

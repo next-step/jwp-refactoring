@@ -1,17 +1,16 @@
 package kitchenpos.table.application;
 
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.common.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static kitchenpos.common.domain.OrderStatus.UNCOMPLETED_STATUSES;
 
 @Service
 public class TableService {
@@ -40,16 +39,9 @@ public class TableService {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
-            throw new IllegalArgumentException();
-        }
-
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
-        }
-
+        validateChangeableOrderStatus(orderTableId);
         savedOrderTable.changeEmpty(orderTable.isEmpty());
+
         return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
     }
 
@@ -69,5 +61,11 @@ public class TableService {
         }
         savedOrderTable.changeNumberOfGuests(numberOfGuests);
         return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
+    }
+
+    private void validateChangeableOrderStatus(Long orderTableId) {
+        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId, UNCOMPLETED_STATUSES)) {
+            throw new IllegalArgumentException("조리중 또는 식사중 상태에서는 테이블을 비울 수 없습니다.");
+        }
     }
 }

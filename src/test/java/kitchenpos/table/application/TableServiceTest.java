@@ -1,11 +1,10 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.common.domain.OrderStatus;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableResponse;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,18 +33,11 @@ public class TableServiceTest {
     @InjectMocks
     private TableService tableService;
 
-    private OrderTable orderTable;
-
-    @BeforeEach
-    void setUp() {
-        orderTable = 테이블_등록2(1L, 4, true);
-    }
-
-
     @Test
     @DisplayName("테이블을 등록한다.")
     void createTable() {
         // given
+        OrderTable orderTable = 테이블_등록(1L, 4, true);
         given(orderTableRepository.save(any())).willReturn(orderTable);
 
         // when-then
@@ -56,6 +48,7 @@ public class TableServiceTest {
     @DisplayName("테이블 목록을 조회한다.")
     void getTable() {
         // given
+        OrderTable orderTable = 테이블_등록(1L, 4, true);
         given(orderTableRepository.findAll()).willReturn(Arrays.asList(orderTable));
 
         // when
@@ -69,6 +62,7 @@ public class TableServiceTest {
     @DisplayName("테이블을 비운다.")
     void changeEmpty() {
         // given
+        OrderTable orderTable = 테이블_등록(1L, 4, true);
         orderTable.ungroup();
         given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
         given(orderTableRepository.save(any())).willReturn(orderTable);
@@ -83,6 +77,8 @@ public class TableServiceTest {
     @Test
     @DisplayName("그룹이 존재하는 테이블은 비울 수 없다.")
     void changeEmptyOfNotNullTableGroupId() {
+        // given
+        OrderTable orderTable = 테이블_등록(1L, 4, true);
         // when-then
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), orderTable))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -92,6 +88,7 @@ public class TableServiceTest {
     @DisplayName("식사중이거나 조리중인 테이블은 비울 수 없다.")
     void changeEmptyOfExistsByOrderTableIdAndOrderStatusIn() {
         // given
+        OrderTable orderTable = 테이블_등록(1L, 4, true);
         orderTable.ungroup();
         given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
         given(orderRepository.existsByOrderTableIdAndOrderStatusIn(
@@ -106,8 +103,7 @@ public class TableServiceTest {
     @DisplayName("방문한 손님 수를 변경한다.")
     void changeNumberOfGuests() {
         // given
-        orderTable.changeEmpty(false);
-        orderTable.changeNumberOfGuests(10);
+        OrderTable orderTable = 테이블_등록(1L, 10, false);
         given(orderTableRepository.save(any())).willReturn(orderTable);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
 
@@ -122,8 +118,7 @@ public class TableServiceTest {
     @DisplayName("방문한 손님 수가 0이하이면 실패한다. ")
     void changeNumberOfGuestsOfZero() {
         // given
-        orderTable.changeEmpty(false);
-        orderTable.changeNumberOfGuests(0);
+        OrderTable orderTable = 테이블_등록(1L, 0, false);
 
         // when-then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), orderTable))
@@ -134,8 +129,7 @@ public class TableServiceTest {
     @DisplayName("빈 테이블에 손님 수를 변경할수 없다.")
     void changeNumberOfGuestsOfEmptyTable() {
         // given
-        orderTable.changeEmpty(true);
-        orderTable.changeNumberOfGuests(0);
+        OrderTable orderTable = 테이블_등록(1L, 4, true);
 
         // when-then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), orderTable))
