@@ -1,29 +1,20 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.core.domain.Amount;
 import kitchenpos.core.exception.InvalidQuantityException;
-import kitchenpos.product.domain.Product;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import java.math.BigDecimal;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("MenuProduct 클래스 테스트")
 class MenuProductTest {
 
-    private Product product;
-
-    @BeforeEach
-    void setUp() {
-        product = new Product("강정치킨", BigDecimal.valueOf(15_000L));
-    }
+    private Long productId = 1L;
 
     @DisplayName("MenuProduct 생성한다.")
     @Test
     void successfulCreate() {
-        MenuProduct menuProduct = new MenuProduct(product, 1);
+        MenuProduct menuProduct = new MenuProduct(productId, 1);
         assertThat(menuProduct).isNotNull();
     }
 
@@ -39,15 +30,7 @@ class MenuProductTest {
     @Test
     void failureCreateWithNegativeQuantity() {
         assertThatThrownBy(() -> {
-            new MenuProduct(product, -1);
+            new MenuProduct(productId, -1);
         }).isInstanceOf(InvalidQuantityException.class);
-    }
-
-    @DisplayName("가격이 15_000인 Product를 2개로 MenuProduct를 생성하면 금액은 30_000이다.")
-    @Test
-    void calculateAmount() {
-        MenuProduct menuProduct = new MenuProduct(product, 2);
-
-        assertThat(menuProduct.calculateAmount()).isEqualTo(new Amount(BigDecimal.valueOf(30_000L)));
     }
 }

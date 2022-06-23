@@ -1,7 +1,6 @@
 package kitchenpos.menu.domain;
 
 import kitchenpos.core.exception.InvalidPriceException;
-import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,12 +13,12 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @DisplayName("Menu 클래스 테스트")
 class MenuTest {
 
+    private Long productId = 1L;
     private MenuProduct menuProduct;
 
     @BeforeEach
     void setUp() {
-        Product product = new Product("강정치킨", BigDecimal.valueOf(15_000L));
-        menuProduct = new MenuProduct(product, 1L);
+        menuProduct = new MenuProduct(productId, 1L);
     }
 
     @DisplayName("메뉴를 생성한다.")
@@ -67,17 +66,6 @@ class MenuTest {
                                                             assertThat(it.getMenu()).isNotNull();
                                                         })
         );
-    }
-
-    @DisplayName("메뉴에 메뉴 가격이 상품들의 금액의 합보다 큰 메뉴 상품들을 추가한다.")
-    @Test
-    void addAllMenuProductsThrownException() {
-        Menu menu = new Menu("강정치킨", BigDecimal.valueOf(16_000L), 1L);
-
-        assertThatThrownBy(() -> {
-            menu.addMenuProducts(Arrays.asList(menuProduct));
-        }).isInstanceOf(InvalidPriceException.class)
-        .hasMessageContaining("상품들 금액의 합이 메뉴 가격보다 클 수 없습니다.");
     }
 
     @DisplayName("메뉴를 주문한 메뉴로 변환한다.")

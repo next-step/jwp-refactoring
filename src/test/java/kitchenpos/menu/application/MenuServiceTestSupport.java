@@ -28,7 +28,7 @@ public class MenuServiceTestSupport {
         Product 강정치킨 = productRepository.save(new Product("강정치킨", BigDecimal.valueOf(15_000)));
         MenuGroup 신메뉴 = menuGroupRepository.save(new MenuGroup("신메뉴"));
         Menu 강정치킨_메뉴 = new Menu("강정치킨", BigDecimal.valueOf(15_000), 신메뉴.getId());
-        강정치킨_메뉴.addMenuProducts(Arrays.asList(new MenuProduct(강정치킨, 1L)));
+        강정치킨_메뉴.addMenuProducts(Arrays.asList(new MenuProduct(강정치킨.getId(), 1L)));
         return menuRepository.save(강정치킨_메뉴);
     }
 }
