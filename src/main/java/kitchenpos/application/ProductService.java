@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -26,7 +27,11 @@ public class ProductService {
         return ProductResponse.of(saveProduct);
     }
 
-    public List<Product> list() {
-        return productRepository.findAll();
+    public List<ProductResponse> list() {
+        List<Product> products = productRepository.findAll();
+
+        return products.stream()
+                .map(ProductResponse::of)
+                .collect(Collectors.toList());
     }
 }

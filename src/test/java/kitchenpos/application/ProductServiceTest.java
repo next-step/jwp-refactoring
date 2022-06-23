@@ -75,21 +75,17 @@ class ProductServiceTest {
         given(productRepository.findAll()).willReturn(예상값);
 
         // when
-        List<Product> 상품_조회_결과 = productService.list();
+        List<ProductResponse> 상품_조회_결과 = productService.list();
 
         // then
         assertAll(
-                () -> 상품_값_비교(상품_조회_결과.get(0), 예상값.get(0)),
-                () -> 상품_값_비교(상품_조회_결과.get(1), 예상값.get(1))
+                () -> 상품_값_비교(상품_조회_결과.get(0), ProductResponse.of(예상값.get(0))),
+                () -> 상품_값_비교(상품_조회_결과.get(1), ProductResponse.of(예상값.get(1)))
         );
     }
 
     private ProductResponse 상품_생성(ProductRequest request) {
         return productService.create(request);
-    }
-
-    private void 상품_값_비교(Product result, Product expectation) {
-        상품_값_비교(ProductResponse.of(result), ProductResponse.of(expectation));
     }
 
     private void 상품_값_비교(ProductResponse result, ProductResponse expectation) {
