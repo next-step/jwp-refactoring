@@ -1,14 +1,16 @@
 package kitchenpos.menu.acceptance;
 
-import static kitchenpos.menu.acceptance.MenuGroupAcceptanceTest.메뉴_그룹_등록_요청;
-import static kitchenpos.product.acceptance.ProductAcceptanceTest.상품_등록_요청;
+import static kitchenpos.menu.acceptance.MenuGroupAcceptanceTest.메뉴_그룹_등록되어_있음;
+import static kitchenpos.product.acceptance.ProductAcceptanceTest.상품_등록_되어있음;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.Menu;
@@ -16,9 +18,7 @@ import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -31,56 +31,64 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     private Product 허니콤보;
     private Product 레드콤보;
 
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
-        추천메뉴 = 메뉴_그룹_등록_요청("추천메뉴").getBody();
-        허니콤보 = 상품_등록_요청("허니콤보", 20_000L).getBody();
-        레드콤보 = 상품_등록_요청("레드콤보", 19_000L).getBody();
+    @TestFactory
+    @DisplayName("메뉴 관련 기능 정상 시나리오")
+    Stream<DynamicTest> successTest() {
+        return Stream.of(
+                dynamicTest("메뉴 등록 요청하면 메뉴가 등록된다.", () -> {
+                    추천메뉴 = 메뉴_그룹_등록되어_있음("추천메뉴");
+                    허니콤보 = 상품_등록_되어있음("허니콤보", 20_000L);
+                    레드콤보 = 상품_등록_되어있음("레드콤보", 19_000L);
+
+                    ResponseEntity<Menu> 메뉴_등록_응답_결과 = 메뉴_등록_요청(추천메뉴, "허니레드콤보", 39_000L, 허니콤보, 레드콤보);
+
+                    메뉴_등록됨(메뉴_등록_응답_결과);
+                }),
+                dynamicTest("메뉴 목록 조회 요청하면 메뉴 목록이 조회된다.", () -> {
+                    ResponseEntity<List<Menu>> 메뉴_목록_조회_응답_결과 = 메뉴_목록_조회_요청();
+
+                    메뉴_목록_조회됨(메뉴_목록_조회_응답_결과, 허니콤보, 레드콤보);
+                })
+        );
     }
-    /**
-     * Feature 메뉴 관련 기능
-     *
-     * Background
-     * Given 메뉴 그룹 등록되어있음
-     * And 상품 등록되어있음
-     *
-     * Scenario 메뉴 관련 기능
-     * Given 0원 미만 가격
-     * When 메뉴 등록 요청
-     * Then 메뉴 등록 실패됨
-     *
-     * Given 상품 가격 총합보다 높은 가격
-     * When 메뉴 등록 요청
-     * Then 메뉴 등록 실패됨
-     *
-     * When 메뉴 등록 요청
-     * Then 메뉴 등록됨
-     * When 메뉴 목록 조회 요청
-     * Then 메뉴 목록 조회됨
-     */
-    @Test
-    @DisplayName("메뉴 관련 기능")
-    void integrationTest() {
-        //when
-        ResponseEntity<Menu> 가격_0원_미만_메뉴_등록_응답_결과 = 메뉴_등록_요청(추천메뉴, "레드허니콤보", -1L, 허니콤보, 레드콤보);
-        //then
-        메뉴_등록_실패됨(가격_0원_미만_메뉴_등록_응답_결과);
 
-        //when
-        ResponseEntity<Menu> 상품_가격_총합_초과_메뉴_등록_응답_결과 = 메뉴_등록_요청(추천메뉴, "허니레드콤보", 40_000L, 허니콤보, 레드콤보);
-        //then
-        메뉴_등록_실패됨(상품_가격_총합_초과_메뉴_등록_응답_결과);
+    @TestFactory
+    @DisplayName("메뉴 관련 기능 예외 시나리오")
+    Stream<DynamicTest> failTest() {
+        return Stream.of(
+                dynamicTest("0원 미만 가격으로 메뉴 등록 요청하면 메뉴 등록 실패한다.", () -> {
+                    추천메뉴 = 메뉴_그룹_등록되어_있음("추천메뉴");
+                    허니콤보 = 상품_등록_되어있음("허니콤보", 20_000L);
+                    레드콤보 = 상품_등록_되어있음("레드콤보", 19_000L);
 
-        //when
-        ResponseEntity<Menu> 메뉴_등록_응답_결과 = 메뉴_등록_요청(추천메뉴, "허니레드콤보", 39_000L, 허니콤보, 레드콤보);
-        //then
-        메뉴_등록됨(메뉴_등록_응답_결과);
+                    ResponseEntity<Menu> 가격_0원_미만_메뉴_등록_응답_결과 = 메뉴_등록_요청(추천메뉴, "레드허니콤보", -1L, 허니콤보, 레드콤보);
 
-        //when
-        ResponseEntity<List<Menu>> 메뉴_목록_조회_응답_결과 = 메뉴_목록_조회_요청();
-        //then
-        메뉴_목록_조회됨(메뉴_목록_조회_응답_결과, 허니콤보, 레드콤보);
+                    메뉴_등록_실패됨(가격_0원_미만_메뉴_등록_응답_결과);
+                }),
+                dynamicTest("상품 가격 총합보다 높은 가격으로 메뉴 등록 요청하면 메뉴 등록 실패한다.", () -> {
+                    ResponseEntity<Menu> 상품_가격_총합_초과_메뉴_등록_응답_결과 = 메뉴_등록_요청(추천메뉴, "허니레드콤보", 40_000L, 허니콤보, 레드콤보);
+
+                    메뉴_등록_실패됨(상품_가격_총합_초과_메뉴_등록_응답_결과);
+                }),
+                dynamicTest("등록되지 않은 메뉴 그룹에 메뉴 등록 요청하면 메뉴 등록 실패한다.", () -> {
+                    MenuGroup 등록되지_않은_메뉴그룹 = new MenuGroup();
+
+                    ResponseEntity<Menu> 등록되지_않는_메뉴그룹_메뉴_등록_응답_결과 = 메뉴_등록_요청(등록되지_않은_메뉴그룹, "레드허니콤보", 39_000L, 허니콤보, 레드콤보);
+
+                    메뉴_등록_실패됨(등록되지_않는_메뉴그룹_메뉴_등록_응답_결과);
+                }),
+                dynamicTest("등록되지 않은 상품으로 메뉴 등록 요청하면 메뉴 등록 실패한다.", () -> {
+                    Product 등록안된_상품 = new Product();
+
+                    ResponseEntity<Menu> 존재하지_않는_메뉴_등록_응답_결과 = 메뉴_등록_요청(추천메뉴, "레드허니콤보", 39_000L, 등록안된_상품);
+
+                    메뉴_등록_실패됨(존재하지_않는_메뉴_등록_응답_결과);
+                })
+        );
+    }
+
+    public static Menu 메뉴_등록_되어있음(MenuGroup menuGroup, String name, long price, Product... products) {
+        return 메뉴_등록_요청(menuGroup, name, price, products).getBody();
     }
 
     public static ResponseEntity<Menu> 메뉴_등록_요청(MenuGroup menuGroup, String name, long price, Product... products) {

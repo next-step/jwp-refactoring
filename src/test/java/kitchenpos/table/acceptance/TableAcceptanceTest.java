@@ -1,18 +1,20 @@
 package kitchenpos.table.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DynamicTest;
+
+import org.junit.jupiter.api.TestFactory;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,78 +23,73 @@ import java.util.stream.Stream;
 
 @DisplayName("테이블 관련 기능 인수테스트")
 public class TableAcceptanceTest extends AcceptanceTest {
+    @TestFactory
+    @DisplayName("테이블 관련 기능 정상 시나리오")
+    Stream<DynamicTest> successTest() {
+        return Stream.of(
+                dynamicTest("빈 테이블을 등록요청하면 테이블이 등록된다.", () -> {
+                    ResponseEntity<OrderTable>빈_테이블_등록_요청_결과 = 테이블_등록_요청(0, true);
 
-    /**
-     * Feature 테이블 관련 기능
-     *
-     * Scenario 테이블 관련 기능
-     * When 테이블 등록 요청
-     * Then 테이블 등록됨
-     * When 테이블 목록 조회 요청
-     * Then 테이블 목록 조회됨
-     *
-     * When 테이블 빈 테이블 여부 수정 요청
-     * Then 테이블 빈 테이블 여부 수정됨
-     *
-     * When 테이블 0명 미만 손님수 수정 요청
-     * Then 테이블 수정 실패됨
-     * When 없는 테이블 손님수 수정 요청
-     * Then 테이블 수정 실패됨
-     * When 빈 테이블 손님수 수정 요청
-     * Then 테이블 수정 실패됨
-     *
-     * When 테이블 손님수 수정 요청
-     * Then 테이블 손님수 수정됨
-     */
-    @Test
-    @DisplayName("테이블 관련 기능")
-    void integrationTest() {
-        //when
-        boolean 비어있음 = true;
-        ResponseEntity<OrderTable>빈_테이블_등록_요청_결과 = 테이블_등록_요청(0, 비어있음);
-        OrderTable 빈_테이블 = 빈_테이블_등록_요청_결과.getBody();
-        //then
-        테이블_등록됨(빈_테이블_등록_요청_결과);
+                    테이블_등록됨(빈_테이블_등록_요청_결과);
+                }),
+                dynamicTest("손님 테이블을 등록요청하면 테이블이 등록된다.", () -> {
+                    ResponseEntity<OrderTable> 손님_테이블_등록_요청_결과 = 테이블_등록_요청(4, false);
 
-        //when
-        boolean 비어있지않음 = false;
-        ResponseEntity<OrderTable> 손님_테이블_등록_요청_결과 = 테이블_등록_요청(4, 비어있지않음);
-        OrderTable 손님_테이블 = 손님_테이블_등록_요청_결과.getBody();
-        //then
-        테이블_등록됨(손님_테이블_등록_요청_결과);
+                    테이블_등록됨(손님_테이블_등록_요청_결과);
+                }),
+                dynamicTest("테이블 목록을 조회요청하면 목록이 조회된다.", () -> {
+                    ResponseEntity<List<OrderTable>> 테이블_목록_조회_요청_결과 = 테이블_목록_조회_요청();
 
-        //when
-        ResponseEntity<List<OrderTable>> 테이블_목록_조회_요청_결과 = 테이블_목록_조회_요청();
-        //then
-        테이블_목록_조회됨(테이블_목록_조회_요청_결과, 빈_테이블, 손님_테이블);
+                    테이블_목록_조회됨(테이블_목록_조회_요청_결과);
+                }),
+                dynamicTest("빈 테이블 여부를 수정요청하면 테이블 정보가 수정된다.", () -> {
+                    OrderTable 빈_테이블 = 테이블_등록_되어있음(0, true);
 
-        //when
-        ResponseEntity<OrderTable> 빈_테이블_여부_수정_결과 = 테이블_빈_테이블_여부_수정_요청(빈_테이블, 비어있지않음);
-        //then
-        테이블_빈_테이블_여부_수정됨(빈_테이블_여부_수정_결과, 빈_테이블);
+                    ResponseEntity<OrderTable> 빈_테이블_여부_수정_결과 = 테이블_빈_테이블_여부_수정_요청(빈_테이블, false);
 
-        //when
-        ResponseEntity<OrderTable> 손님수_0명_미만_수정_결과 = 테이블_손님수_수정_요청(손님_테이블, -1);
-        //then
-        테이블_손님수_수정_실패됨(손님수_0명_미만_수정_결과);
+                    테이블_빈_테이블_여부_수정됨(빈_테이블_여부_수정_결과, 빈_테이블);
+                }),
+                dynamicTest("손님수를 수정요청하면 테이블 정보가 수정된다.", () -> {
+                    OrderTable 손님_테이블 = 테이블_등록_되어있음(4, false);
 
-        //when
-        OrderTable 없는_테이블 = new OrderTable();
-        없는_테이블.setId(99L);
-        ResponseEntity<OrderTable> 없는_테이블_손님수_수정_결과 = 테이블_손님수_수정_요청(없는_테이블, 5);
-        //then
-        테이블_손님수_수정_실패됨(없는_테이블_손님수_수정_결과);
+                    ResponseEntity<OrderTable> 손님수_수정_결과 = 테이블_손님수_수정_요청(손님_테이블, 5);
 
-        //when
-        테이블_빈_테이블_여부_수정_요청(빈_테이블, 비어있음);
-        ResponseEntity<OrderTable> 빈_테이블_손님수_수정_결과 = 테이블_손님수_수정_요청(빈_테이블, 5);
-        //then
-        테이블_손님수_수정_실패됨(빈_테이블_손님수_수정_결과);
+                    테이블_손님수_수정됨(손님수_수정_결과, 손님_테이블);
+                })
+        );
+    }
 
-        //when
-        ResponseEntity<OrderTable> 손님수_수정_결과 = 테이블_손님수_수정_요청(손님_테이블, 5);
-        //then
-        테이블_손님수_수정됨(손님수_수정_결과, 손님_테이블);
+    @TestFactory
+    @DisplayName("테이블 관련 기능 예외 시나리오")
+    Stream<DynamicTest> failTest() {
+        return Stream.of(
+                dynamicTest("손님 수를 0명 미만으로 수정할 수 없다.", () -> {
+                    OrderTable 손님_테이블 = 테이블_등록_되어있음(4, false);
+
+                    ResponseEntity<OrderTable> 손님수_0명_미만_수정_결과 = 테이블_손님수_수정_요청(손님_테이블, -1);
+
+                    테이블_손님수_수정_실패됨(손님수_0명_미만_수정_결과);
+                }),
+                dynamicTest("존재하지 않는 테이블을 수정할 수 없다.", () -> {
+                    OrderTable 없는_테이블 = new OrderTable();
+                    없는_테이블.setId(99L);
+
+                    ResponseEntity<OrderTable> 없는_테이블_손님수_수정_결과 = 테이블_손님수_수정_요청(없는_테이블, 5);
+
+                    테이블_손님수_수정_실패됨(없는_테이블_손님수_수정_결과);
+                }),
+                dynamicTest("빈 테이블은 손님 수를 수정할 수 없다.", () -> {
+                    OrderTable 빈_테이블 = 테이블_등록_되어있음(0, true);
+
+                    ResponseEntity<OrderTable> 빈_테이블_손님수_수정_결과 = 테이블_손님수_수정_요청(빈_테이블, 5);
+
+                    테이블_손님수_수정_실패됨(빈_테이블_손님수_수정_결과);
+                })
+        );
+    }
+
+    public static OrderTable 테이블_등록_되어있음(int numberOfGuests, boolean empty) {
+        return 테이블_등록_요청(numberOfGuests, empty).getBody();
     }
 
     public static ResponseEntity<OrderTable> 테이블_등록_요청(int numberOfGuests, boolean empty) {
@@ -154,10 +151,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
     }
 
     private void 테이블_목록_조회됨(ResponseEntity<List<OrderTable>> response, OrderTable... orderTables) {
-        List<Long> actualIds = 테이블_목록_아이디_추출(response.getBody().stream());
-        List<Long> expectedIds = 테이블_목록_아이디_추출(Arrays.stream(orderTables));
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(actualIds).containsExactlyElementsOf(expectedIds);
     }
 
     private List<Long> 테이블_목록_아이디_추출(Stream<OrderTable> stream) {

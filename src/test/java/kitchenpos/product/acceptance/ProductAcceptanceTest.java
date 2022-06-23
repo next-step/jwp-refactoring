@@ -16,19 +16,6 @@ import org.springframework.http.ResponseEntity;
 
 @DisplayName("상품 관련 기능 인수테스트")
 public class ProductAcceptanceTest extends AcceptanceTest {
-    /**
-     * Feature 상품 관련 기능
-     *
-     * Scenario 상품 관련 기능
-     * Given 0원 미만 가격
-     * When 상품 등록 요청
-     * Then 상품 등록 실패됨
-     *
-     * When 상품 등록 요청
-     * Then 상품 등록됨
-     * When 상품 목록 조회 요청
-     * Then 상품 목록 조회됨
-     */
     @Test
     @DisplayName("상품 등록 관련 기능")
     void integrationTest() {
@@ -46,6 +33,10 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         ResponseEntity<List<Product>> 상품_조회_요청_응답_결과 = 상품_조회_요청();
         //then
         상품_목록_조회됨(상품_조회_요청_응답_결과, "허니콤보");
+    }
+
+    public static Product 상품_등록_되어있음(String name, long price) {
+        return 상품_등록_요청(name, price).getBody();
     }
 
     public static ResponseEntity<Product> 상품_등록_요청(String name, long price) {

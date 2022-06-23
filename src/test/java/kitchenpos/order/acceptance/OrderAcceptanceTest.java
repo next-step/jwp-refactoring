@@ -1,11 +1,17 @@
 package kitchenpos.order.acceptance;
 
+import static kitchenpos.menu.acceptance.MenuAcceptanceTest.메뉴_등록_되어있음;
+import static kitchenpos.menu.acceptance.MenuGroupAcceptanceTest.메뉴_그룹_등록되어_있음;
+import static kitchenpos.product.acceptance.ProductAcceptanceTest.상품_등록_되어있음;
+import static kitchenpos.table.acceptance.TableAcceptanceTest.테이블_등록_되어있음;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
+
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.*;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.mockito.internal.matchers.Or;
+import kitchenpos.domain.Order;
+import org.junit.jupiter.api.*;
+
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -14,12 +20,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static kitchenpos.menu.acceptance.MenuAcceptanceTest.메뉴_등록_요청;
-import static kitchenpos.menu.acceptance.MenuGroupAcceptanceTest.메뉴_그룹_등록_요청;
-import static kitchenpos.product.acceptance.ProductAcceptanceTest.상품_등록_요청;
-import static kitchenpos.table.acceptance.TableAcceptanceTest.테이블_등록_요청;
-import static org.assertj.core.api.Assertions.assertThat;
+import java.util.stream.Stream;
 
 @DisplayName("주문 관련 기능 인수테스트")
 public class OrderAcceptanceTest extends AcceptanceTest {
@@ -28,61 +29,56 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     private Product 레드콤보;
     private Menu 허니레드콤보;
     private OrderTable 손님_4명_테이블;
+    private Order 주문;
 
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
-        추천메뉴 = 메뉴_그룹_등록_요청("추천메뉴").getBody();
-        허니콤보 = 상품_등록_요청("허니콤보", 20_000L).getBody();
-        레드콤보 = 상품_등록_요청("레드콤보", 19_000L).getBody();
-        허니레드콤보 = 메뉴_등록_요청(추천메뉴, "허니레드콤보", 39_000L, 허니콤보, 레드콤보).getBody();
-        손님_4명_테이블 = 테이블_등록_요청(4, false).getBody();
+    @TestFactory
+    @DisplayName("주문 관련 기능 정상 시나리오")
+    Stream<DynamicTest> successTest() {
+        return Stream.of(
+                dynamicTest("주문 등록요청하면 주문이 등록된다.", () -> {
+                    추천메뉴 = 메뉴_그룹_등록되어_있음("추천메뉴");
+                    허니콤보 = 상품_등록_되어있음("허니콤보", 20_000L);
+                    레드콤보 = 상품_등록_되어있음("레드콤보", 19_000L);
+                    허니레드콤보 = 메뉴_등록_되어있음(추천메뉴, "허니레드콤보", 39_000L, 허니콤보, 레드콤보);
+                    손님_4명_테이블 = 테이블_등록_되어있음(4, false);
+
+                    ResponseEntity<Order> 주문_등록_요청_결과 = 주문_등록_요청(손님_4명_테이블, 허니레드콤보);
+
+                    주문_등록됨(주문_등록_요청_결과);
+                }),
+                dynamicTest("주문 목록 조회요청하면 주문 목록이 조회된다.", () -> {
+                    ResponseEntity<List<Order>> 주문_목록_조회_요청_결과 = 주문_목록_조회_요청();
+
+                    주문_목록_조회됨(주문_목록_조회_요청_결과, 허니레드콤보);
+                }),
+                dynamicTest("주문 상태 변경요청하면 주문 상태가 변경된다.", () -> {
+                    주문 = 주문_등록_되어있음(손님_4명_테이블, 허니레드콤보);
+
+                    ResponseEntity<Order> 주문_상태_변경_요청_결과 = 주문_상태_변경_요청(주문, OrderStatus.COMPLETION.name());
+
+                    주문_상태_변경됨(주문_상태_변경_요청_결과);
+                })
+        );
     }
 
-    /**
-     * Feature 주문 관련 기능
-     *
-     * Backgroud
-     * Given 메뉴그룹 등록되어 있음
-     * And 상품 등록되어 있음
-     * And 메뉴 등록되어 있음
-     * And 테이블 등록되어 있음
-     *
-     * Screnario 주문 관련 기능
-     * When 주문 등록 요청
-     * Then 주문 등록됨
-     * When 주문 목록 조회 요청
-     * Then 주문 목록 조회됨
-     * When 주문 상태 변경 요청
-     * Then 주문 상태 변경됨
-     * 
-     * Given 주문 계산 완료 상태
-     * When 주문 상태 변경 요청
-     * Then 주문 상태 변경 실패됨
-     */
-    @Test
-    @DisplayName("주문 관련 기능")
-    void integrationTest() {
-        //when
-        ResponseEntity<Order> 주문_등록_요청_결과 = 주문_등록_요청(손님_4명_테이블, 허니레드콤보);
-        Order 주문 = 주문_등록_요청_결과.getBody();
-        //then
-        주문_등록됨(주문_등록_요청_결과);
+    @TestFactory
+    @DisplayName("주문 관련 기능 예외 시나리오")
+    Stream<DynamicTest> failTest() {
+        return Stream.of(
+                dynamicTest("계산완료인 주문을 변경요청하면 변경 실패된다.", () -> {
+                    추천메뉴 = 메뉴_그룹_등록되어_있음("추천메뉴");
+                    허니콤보 = 상품_등록_되어있음("허니콤보", 20_000L);
+                    레드콤보 = 상품_등록_되어있음("레드콤보", 19_000L);
+                    허니레드콤보 = 메뉴_등록_되어있음(추천메뉴, "허니레드콤보", 39_000L, 허니콤보, 레드콤보);
+                    손님_4명_테이블 = 테이블_등록_되어있음(4, false);
+                    주문 = 주문_등록_되어있음(손님_4명_테이블, 허니레드콤보);
+                    주문_상태_변경_요청(주문, OrderStatus.COMPLETION.name());
 
-        //when
-        ResponseEntity<List<Order>> 주문_목록_조회_요청_결과 = 주문_목록_조회_요청();
-        //then
-        주문_목록_조회됨(주문_목록_조회_요청_결과, 허니레드콤보);
+                    ResponseEntity<Order> 계산_완료_주문_상태_변경_요청_결과 = 주문_상태_변경_요청(주문, OrderStatus.MEAL.name());
 
-        //when
-        ResponseEntity<Order> 주문_상태_변경_요청_결과 = 주문_상태_변경_요청(주문, OrderStatus.COMPLETION.name());
-        //then
-        주문_상태_변경됨(주문_상태_변경_요청_결과);
-
-        //when
-        ResponseEntity<Order> 계산_완료_주문_상태_변경_요청_결과 = 주문_상태_변경_요청(주문, OrderStatus.MEAL.name());
-        //then
-        주문_상태_변경_실패됨(계산_완료_주문_상태_변경_요청_결과);
+                    주문_상태_변경_실패됨(계산_완료_주문_상태_변경_요청_결과);
+                })
+        );
     }
 
     public static ResponseEntity<Order> 주문_상태_변경_요청(Order order, String orderStatus) {
@@ -97,6 +93,10 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 httpEntity,
                 Order.class,
                 params);
+    }
+
+    public static Order 주문_등록_되어있음(OrderTable orderTable, Menu... menus) {
+        return 주문_등록_요청(orderTable, menus).getBody();
     }
 
     public static ResponseEntity<Order> 주문_등록_요청(OrderTable orderTable, Menu... menus) {
