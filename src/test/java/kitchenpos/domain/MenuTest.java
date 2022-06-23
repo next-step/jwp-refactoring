@@ -18,8 +18,8 @@ class MenuTest {
     void mapping_test() {
         // given
         ProductEntity 상품 = ProductEntity.of("test", BigDecimal.valueOf(500L));
-        MenuProductEntity 메뉴_상품 = MenuProductEntity.of(null, 상품, 3);
-        MenuProductEntity 메뉴_상품2 = MenuProductEntity.of(null, 상품, 2);
+        MenuProductEntity 메뉴_상품 = MenuProductEntity.of(상품, 3);
+        MenuProductEntity 메뉴_상품2 = MenuProductEntity.of(상품, 2);
         MenuEntity 메뉴 = MenuEntity.of("menu", BigDecimal.valueOf(500L), null);
 
         // when

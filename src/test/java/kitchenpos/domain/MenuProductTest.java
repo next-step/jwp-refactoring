@@ -19,7 +19,7 @@ class MenuProductTest {
     @Test
     void exception_test() {
         // given
-        MenuProductEntity menuProduct = MenuProductEntity.of(null, null, 3);
+        MenuProductEntity menuProduct = MenuProductEntity.of(null, 3);
 
         // then
         assertThatThrownBy(menuProduct::validateHasProduct)
@@ -31,7 +31,7 @@ class MenuProductTest {
     void total_price_test() {
         // given
         ProductEntity product = ProductEntity.of("test", BigDecimal.valueOf(500L));
-        MenuProductEntity menuProduct = MenuProductEntity.of(null, product, 3);
+        MenuProductEntity menuProduct = MenuProductEntity.of(product, 3);
 
         // then
         assertThat(menuProduct.getTotalPrice()).isEqualTo(new Price(BigDecimal.valueOf(1500L)));
@@ -42,7 +42,7 @@ class MenuProductTest {
     void mapping_test() {
         // given
         MenuEntity menu = MenuEntity.of("menu", BigDecimal.valueOf(500L), null);
-        MenuProductEntity menuProduct = MenuProductEntity.of(null, null, 3);
+        MenuProductEntity menuProduct = MenuProductEntity.of(null, 3);
 
         // when
         menuProduct.mapInto(menu);

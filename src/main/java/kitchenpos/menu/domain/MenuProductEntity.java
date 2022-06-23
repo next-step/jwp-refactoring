@@ -34,14 +34,13 @@ public class MenuProductEntity {
     protected MenuProductEntity() {
     }
 
-    private MenuProductEntity(MenuEntity menu, ProductEntity product, long quantity) {
-        this.menu = menu;
+    private MenuProductEntity(ProductEntity product, long quantity) {
         this.product = product;
         this.quantity = quantity;
     }
 
-    public static MenuProductEntity of(MenuEntity menu, ProductEntity product, long quantity) {
-        return new MenuProductEntity(menu, product, quantity);
+    public static MenuProductEntity of(ProductEntity product, long quantity) {
+        return new MenuProductEntity(product, quantity);
     }
 
     public void validateHasProduct() {

@@ -27,8 +27,8 @@ class MenuProductsTest {
     @Test
     void exception_test() {
         // given
-        MenuProductEntity menuProduct = MenuProductEntity.of(null, 상품, 3);
-        MenuProductEntity menuProduct2 = MenuProductEntity.of(null, null, 3);
+        MenuProductEntity menuProduct = MenuProductEntity.of(상품, 3);
+        MenuProductEntity menuProduct2 = MenuProductEntity.of(null, 3);
 
         // then
         assertThatThrownBy(() -> {
@@ -40,8 +40,8 @@ class MenuProductsTest {
     @Test
     void exception_test2() {
         // given
-        MenuProductEntity menuProduct = MenuProductEntity.of(null, 상품, 3);
-        MenuProductEntity menuProduct2 = MenuProductEntity.of(null, 상품2, 3);
+        MenuProductEntity menuProduct = MenuProductEntity.of(상품, 3);
+        MenuProductEntity menuProduct2 = MenuProductEntity.of(상품2, 3);
 
         // then
         Price menuPrice = new Price(BigDecimal.valueOf(2410L));
