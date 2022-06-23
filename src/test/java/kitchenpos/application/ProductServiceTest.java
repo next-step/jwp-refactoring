@@ -29,9 +29,9 @@ class ProductServiceTest {
     void create() {
         // given
         Product given = new Product("짜장면", BigDecimal.valueOf(6000));
+        when(productDao.save(given)).thenReturn(given);
 
         // when
-        when(productDao.save(given)).thenReturn(given);
         Product actual = productService.create(given);
 
         // then
@@ -59,9 +59,9 @@ class ProductServiceTest {
     void list() {
         // given
         List<Product> given = Collections.emptyList();
+        when(productDao.findAll()).thenReturn(given);
 
         // when
-        when(productDao.findAll()).thenReturn(given);
         List<Product> actual = productService.list();
 
         // then
