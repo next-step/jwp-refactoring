@@ -3,6 +3,8 @@ package kitchenpos.application;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.orderTable.OrderTable;
+import kitchenpos.dto.orderTable.OrderTableRequest;
+import kitchenpos.dto.orderTable.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +18,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
@@ -38,15 +40,15 @@ class TableServiceTest {
     @Test
     void create() {
         // given
-        OrderTable request = 주문_테이블_데이터_생성(null, null, 2, false);
+        OrderTableRequest request = 주문_테이블_요청_데이터_생성(null, 2, false);
         OrderTable 예상값 = 주문_테이블_데이터_생성(1L, null, 2, false);
-        given(orderTableDao.save(request)).willReturn(예상값);
+        given(orderTableDao.save(any(OrderTable.class))).willReturn(예상값);
 
         // when
-        OrderTable 주문_테이블_생성_결과 = tableService.create(request);
+        OrderTableResponse 주문_테이블_생성_결과 = tableService.create(request);
 
         // then
-        주문_테이블_데이터_비교(주문_테이블_생성_결과, 예상값);
+        주문_테이블_데이터_비교(주문_테이블_생성_결과, OrderTableResponse.of(예상값));
     }
 
     @DisplayName("주문 테이블 목록을 조회할 수 있다")
@@ -60,12 +62,12 @@ class TableServiceTest {
         given(orderTableDao.findAll()).willReturn(예상값);
 
         // when
-        List<OrderTable> 주문_테이블_목록_조회_결과 = tableService.list();
+        List<OrderTableResponse> 주문_테이블_목록_조회_결과 = tableService.list();
 
         // then
         assertAll(
-                () -> 주문_테이블_데이터_비교(주문_테이블_목록_조회_결과.get(0), 예상값.get(0)),
-                () -> 주문_테이블_데이터_비교(주문_테이블_목록_조회_결과.get(1), 예상값.get(1))
+                () -> 주문_테이블_데이터_비교(주문_테이블_목록_조회_결과.get(0), OrderTableResponse.of(예상값.get(0))),
+                () -> 주문_테이블_데이터_비교(주문_테이블_목록_조회_결과.get(1), OrderTableResponse.of(예상값.get(1)))
         );
     }
 
@@ -79,7 +81,7 @@ class TableServiceTest {
         given(orderTableDao.save(orderTable)).willReturn(orderTable);
 
         // when
-        OrderTable 주문상태_변경_결과 = 주문_상태_변경(1L, orderTable);
+        OrderTableResponse 주문상태_변경_결과 = 주문_상태_변경(1L, orderTable);
 
         // then
         assertThat(주문상태_변경_결과.isEmpty()).isTrue();
@@ -120,7 +122,7 @@ class TableServiceTest {
         given(orderTableDao.save(any())).willReturn(변경후_주문_테이블);
 
         // when
-        OrderTable 방문_손님_수_변경_결과 = 방문_손님_수_변경(1L, 변경후_주문_테이블);
+        OrderTableResponse 방문_손님_수_변경_결과 = 방문_손님_수_변경(1L, 변경후_주문_테이블);
 
         // then
         assertThat(방문_손님_수_변경_결과.getNumberOfGuests()).isEqualTo(변경후_주문_테이블.getNumberOfGuests());
@@ -150,19 +152,23 @@ class TableServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
+    public static OrderTableRequest 주문_테이블_요청_데이터_생성(Long tableGroupId, int numberOfGuests, boolean empty) {
+        return new OrderTableRequest(tableGroupId, numberOfGuests, empty);
+    }
+
     public static OrderTable 주문_테이블_데이터_생성(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         return new OrderTable(id, tableGroupId, numberOfGuests, empty);
     }
 
-    private OrderTable 주문_상태_변경(long orderTableId, OrderTable orderTable) {
+    private OrderTableResponse 주문_상태_변경(long orderTableId, OrderTable orderTable) {
         return tableService.changeEmpty(orderTableId, orderTable);
     }
 
-    private OrderTable 방문_손님_수_변경(long orderTableId, OrderTable orderTable) {
+    private OrderTableResponse 방문_손님_수_변경(long orderTableId, OrderTable orderTable) {
         return tableService.changeNumberOfGuests(orderTableId, orderTable);
     }
 
-    private void 주문_테이블_데이터_비교(OrderTable result, OrderTable expectation) {
+    private void 주문_테이블_데이터_비교(OrderTableResponse result, OrderTableResponse expectation) {
         assertAll(
                 () -> assertThat(result.getId()).isEqualTo(expectation.getId()),
                 () -> assertThat(result.getTableGroupId()).isEqualTo(expectation.getTableGroupId()),
