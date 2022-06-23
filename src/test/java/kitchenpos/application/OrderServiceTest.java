@@ -105,6 +105,21 @@ class OrderServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
+    @DisplayName("주문 생성 - 중복된 메뉴가 있어서는 안된다.")
+    @Test
+    void create_exception4() {
+        // given
+        List<OrderLineItem> orderLineItems = new ArrayList<>();
+        orderLineItems.addAll(주문_항목_목록_데이터_생성());
+        orderLineItems.add(주문_항목_데이터_생성(3L, 1L, 2L, 3));
+        Order request = 주문_데이터_생성(null, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItems);
+        given(menuDao.countByIdIn(anyList())).willReturn(2L);
+
+        // when && then
+        assertThatThrownBy(() -> orderService.create(request))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
     @DisplayName("주문 목록 조회")
     @Test
     void list() {
