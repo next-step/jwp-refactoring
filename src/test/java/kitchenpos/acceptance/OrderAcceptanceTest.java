@@ -11,7 +11,7 @@ import io.restassured.response.Response;
 import java.util.Collections;
 import java.util.List;
 import kitchenpos.acceptance.support.TestFixture;
-import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.response.MenuResponse;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.request.OrderRequest;
 import kitchenpos.order.domain.response.OrderResponse;
@@ -26,7 +26,7 @@ import org.springframework.http.MediaType;
 @DisplayName("주문에 대한 인수 테스트")
 class OrderAcceptanceTest extends AcceptanceTest {
 
-    private Menu 메뉴;
+    private MenuResponse 메뉴;
 
     private OrderTableResponse 주문_테이블_response;
     private OrderLineItemRequest 주문_항목_request;
