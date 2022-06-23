@@ -42,7 +42,9 @@ public class Order {
     }
 
     public void checkPossibleUngroupingOrderStatus(){
-
+        if(OrderStatus.MEAL.equals(orderStatus) || OrderStatus.COOKING.equals(orderStatus)){
+            throw new IllegalArgumentException("[ERROR] 주문 상태가 조리, 식사 인 경우 단체 지정 해제 할 수 없습니다.");
+        }
     }
 
     public Long getId() {

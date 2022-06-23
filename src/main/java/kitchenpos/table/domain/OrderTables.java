@@ -23,6 +23,12 @@ public class OrderTables {
         orderTables.add(orderTable);
     }
 
+    public void ungroupingTableGroup(){
+        for (OrderTable orderTable : orderTables){
+            orderTable.ungroupingTableGroup();
+        }
+    }
+
     public void groupingTableGroup(OrderTables emptyTables, TableGroup tableGroup) {
         for (OrderTable emptyTable : emptyTables.orderTables) {
             emptyTable.assignTableGroup(tableGroup);

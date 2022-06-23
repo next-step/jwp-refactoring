@@ -52,7 +52,7 @@ class TableGroupTest {
         tableGroup.groupingTables(orderTables, 2);
 
         //when
-        tableGroup.ungroupingTable();
+        tableGroup.ungroupingTableGroup();
 
         //then
         assertThat(orderTables.getOrderTables().get(0).getTableGroup()).isNull();

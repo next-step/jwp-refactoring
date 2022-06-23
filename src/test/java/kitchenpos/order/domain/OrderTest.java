@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
@@ -37,9 +38,9 @@ class OrderTest {
         Order order3 = new Order(null, OrderStatus.COMPLETION, LocalDateTime.now());
 
         //when then
-        assertThatIllegalStateException()
+        assertThatIllegalArgumentException()
                 .isThrownBy(order1::checkPossibleUngroupingOrderStatus);
-        assertThatIllegalStateException()
+        assertThatIllegalArgumentException()
                 .isThrownBy(order2::checkPossibleUngroupingOrderStatus);
         assertThatNoException()
                 .isThrownBy(order3::checkPossibleUngroupingOrderStatus);

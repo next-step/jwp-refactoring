@@ -111,17 +111,40 @@ class OrderTableTest {
         assertThat(orderTable.getTableGroup()).isNull();
     }
 
-    @DisplayName("주문 상태가 조리, 식사 인 경우 단체 지정 해제 할 수 없다.")
+    @DisplayName("단체 지정이 되어있지 않은 경우 해제 할 수 없다.")
     @Test
-    void ungroupingTableGroup_order_status_cooking_meal() {
+    void ungroupingTableGroup_not_registered() {
         //given
         OrderTable orderTable = new OrderTable(null, 3, true);
-
-        orderTable.assignTableGroup(new TableGroup(1L, null));
 
         //when then
         assertThatIllegalArgumentException()
                 .isThrownBy(orderTable::ungroupingTableGroup);
+    }
+
+    @DisplayName("주문 상태가 조리, 식사 인 경우 단체 지정 해제 할 수 없다.")
+    @Test
+    void ungroupingTableGroup_order_status_cooking_meal() {
+        //given
+        OrderTable orderTable1 = new OrderTable(null, 3, true);
+        orderTable1.addOrder(new Order(null, OrderStatus.MEAL, null));
+        orderTable1.assignTableGroup(new TableGroup(1L, null));
+
+        OrderTable orderTable2 = new OrderTable(null, 3, true);
+        orderTable2.addOrder(new Order(null, OrderStatus.COOKING, null));
+        orderTable2.assignTableGroup(new TableGroup(1L, null));
+
+        OrderTable orderTable3 = new OrderTable(null, 3, true);
+        orderTable3.addOrder(new Order(null, OrderStatus.COMPLETION, null));
+        orderTable3.assignTableGroup(new TableGroup(1L, null));
+
+        //when then
+        assertThatIllegalArgumentException()
+                .isThrownBy(orderTable1::ungroupingTableGroup);
+        assertThatIllegalArgumentException()
+                .isThrownBy(orderTable2::ungroupingTableGroup);
+        assertThatNoException()
+                .isThrownBy(orderTable3::ungroupingTableGroup);
 
     }
 }

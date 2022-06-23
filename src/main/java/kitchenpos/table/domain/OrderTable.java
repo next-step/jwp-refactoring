@@ -38,7 +38,11 @@ public class OrderTable {
     }
 
     public void ungroupingTableGroup(){
-
+        orders.checkPossibleUngroupingOrderStatus();
+        if(tableGroup == null){
+            throw new IllegalArgumentException("[ERROR] 단체 지정이 되어있지 않아 해제할 수 없습니다.");
+        }
+        tableGroup = null;
     }
 
     public void assignTableGroup(TableGroup tableGroup) {

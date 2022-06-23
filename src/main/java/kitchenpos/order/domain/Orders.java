@@ -20,6 +20,12 @@ public class Orders {
         orders.add(order);
     }
 
+    public void checkPossibleUngroupingOrderStatus(){
+        for (Order order : orders) {
+            order.checkPossibleUngroupingOrderStatus();
+        }
+    }
+
     public void checkPossibleChangeEmpty() {
         for (Order order : orders) {
             order.checkPossibleChangeEmpty();

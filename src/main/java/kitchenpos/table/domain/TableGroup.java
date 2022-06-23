@@ -34,8 +34,8 @@ public class TableGroup {
         this.orderTables = orderTables;
     }
 
-    public void ungroupingTable() {
-        
+    public void ungroupingTableGroup() {
+        orderTables.ungroupingTableGroup();
     }
 
     public void groupingTables(OrderTables emptyTables, int requestCount) {
