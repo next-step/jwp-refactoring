@@ -18,7 +18,7 @@ public class MenuRequest {
     protected MenuRequest() {
     }
 
-    public MenuRequest(String name, Integer price, Long menuGroupId,
+    private MenuRequest(String name, Integer price, Long menuGroupId,
                        List<MenuProductRequest> menuProducts) {
         this.name = name;
         this.price = price;

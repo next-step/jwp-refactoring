@@ -20,7 +20,7 @@ public class MenuResponse {
     protected MenuResponse() {
     }
 
-    public MenuResponse(Long id, String name, BigDecimal price, Long menuGroupId,
+    private MenuResponse(Long id, String name, BigDecimal price, Long menuGroupId,
                         List<MenuProductResponse> menuProducts) {
         this.id = id;
         this.name = name;
