@@ -2,6 +2,10 @@
 
 ## 요구 사항
 
+- [ ] kitchenpos 패키지의 코드를 보고 키친포스의 요구 사항을 README.md에 작성한다.
+- [ ] 정리한 키친포스의 요구 사항을 토대로 테스트 코드를 작성한다. 모든 Business Object에 대한 테스트 코드를 작성한다. @SpringBootTest를 이용한 통합 테스트 코드 또는
+  @ExtendWith(MockitoExtension.class)를 이용한 단위 테스트 코드를 작성한다. 인수 테스트 코드 작성은 권장하지만 필수는 아니다.
+
 ## 용어 사전
 
 | 한글명 | 영문명 | 설명 |
