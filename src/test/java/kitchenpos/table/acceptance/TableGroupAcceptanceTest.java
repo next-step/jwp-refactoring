@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.order.domain.Order;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductResponse;
@@ -73,7 +74,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
                     테이블_그룹_등록_실패됨(손님_테이블_단체_지정_등록_요청_결과);
                 }),
                 dynamicTest("주문이 조리, 식사 중일경우, 단체 지정 해제 요청하면 단체 지정 해제에 실패한다.", () -> {
-                    MenuGroup 추천메뉴 = 메뉴_그룹_등록되어_있음("추천메뉴");
+                    MenuGroupResponse 추천메뉴 = 메뉴_그룹_등록되어_있음("추천메뉴");
                     ProductResponse 허니콤보 = 상품_등록_되어있음("허니콤보", 20_000L);
                     ProductResponse 레드콤보 = 상품_등록_되어있음("레드콤보", 19_000L);
                     Menu 허니레드콤보 = 메뉴_등록_되어있음(추천메뉴, "허니레드콤보", 39_000L, 허니콤보, 레드콤보);

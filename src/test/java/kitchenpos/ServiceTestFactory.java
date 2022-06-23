@@ -34,8 +34,8 @@ public class ServiceTestFactory {
 
     public static MenuGroup createMenuGroupBy(Long id, String name) {
         MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setId(id);
-        menuGroup.setName(name);
+//        menuGroup.setId(id);
+//        menuGroup.setName(name);
         return menuGroup;
     }
 

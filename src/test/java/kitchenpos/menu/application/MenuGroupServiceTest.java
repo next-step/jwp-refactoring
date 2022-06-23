@@ -1,58 +1,57 @@
 package kitchenpos.menu.application;
 
-import static kitchenpos.ServiceTestFactory.createMenuGroupBy;
 import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.Arrays;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.dao.FakeMenuGroupDao;
-import org.junit.jupiter.api.BeforeEach;
+import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menu.infrastructure.MenuGroupRepository;
+import org.assertj.core.util.Lists;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 public class MenuGroupServiceTest {
-    private final MenuGroupService menuGroupService = new MenuGroupService(new FakeMenuGroupDao());
-    private MenuGroup newMenuGroup;
-    private MenuGroup favoriteMenuGroup;
+    @Mock
+    private MenuGroupRepository menuGroupRepository;
 
-    @BeforeEach
-    void setUp() {
-        newMenuGroup = createMenuGroupBy(1L, "신메뉴");
-        favoriteMenuGroup = createMenuGroupBy(2L, "인기메뉴");
-    }
+    @InjectMocks
+    private MenuGroupService menuGroupService;
 
     @Test
     @DisplayName("메뉴 그룹을 생성한다.")
     void createMenuGroup() {
-        //when
-        MenuGroup actual = menuGroupService.create(newMenuGroup);
-        //then
-        assertThat(actual.getName()).isEqualTo(newMenuGroup.getName());
+        MenuGroup menuGroup = MenuGroup.from("한마리메뉴");
+        MenuGroupRequest request = new MenuGroupRequest("한마리메뉴");
+        when(menuGroupRepository.save(any())).thenReturn(menuGroup);
+
+        MenuGroupResponse actual = menuGroupService.create(request);
+
+        assertThat(actual.getName()).isEqualTo(request.getName());
     }
 
     @Test
     @DisplayName("메뉴 그룹 목록을 조회한다.")
     void findAll() {
-        //given
-        menuGroupService.create(newMenuGroup);
-        menuGroupService.create(favoriteMenuGroup);
-        List<String> expectedNames = findMenuGroupNames(Arrays.asList(newMenuGroup, favoriteMenuGroup));
+        MenuGroup menuGroup = MenuGroup.from("한마리메뉴");
+        MenuGroup otherMenuGroup = MenuGroup.from("두마리메뉴");
+        when(menuGroupRepository.findAll()).thenReturn(Lists.list(menuGroup, otherMenuGroup));
 
-        //when
-        List<MenuGroup> actual = menuGroupService.list();
-        List<String> actualNames = findMenuGroupNames(actual);
-
-        //then
-        assertThat(actualNames).containsExactlyElementsOf(expectedNames);
-    }
-
-    private List<String> findMenuGroupNames(List<MenuGroup> actual) {
-        return actual.stream()
-                .map(MenuGroup::getName)
+        List<MenuGroupResponse> actual = menuGroupService.list();
+        List<String> actualNames = actual.stream()
+                .map(MenuGroupResponse::getName)
                 .collect(Collectors.toList());
+
+        assertThat(actualNames).containsExactly(menuGroup.getName(), otherMenuGroup.getName());
     }
 }

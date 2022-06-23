@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
@@ -30,7 +31,7 @@ import java.util.stream.Stream;
 
 @DisplayName("주문 관련 기능 인수테스트")
 public class OrderAcceptanceTest extends AcceptanceTest {
-    private MenuGroup 추천메뉴;
+    private MenuGroupResponse 추천메뉴;
     private ProductResponse 허니콤보;
     private ProductResponse 레드콤보;
     private Menu 허니레드콤보;
