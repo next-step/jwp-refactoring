@@ -1,6 +1,6 @@
 package kitchenpos.order.application;
 
-import kitchenpos.table.application.TableService;
+import kitchenpos.order.domain.OrderCreatingValidator;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
@@ -11,13 +11,9 @@ import kitchenpos.menu.exception.NotFoundMenuException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.exception.EmptyOrderLineItemsException;
-import kitchenpos.order.exception.InvalidOrderException;
 import kitchenpos.order.exception.NotFoundOrderException;
-import kitchenpos.table.domain.OrderTable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,58 +21,31 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 public class OrderService {
+    private final OrderCreatingValidator orderCreatingValidator;
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
-    private final TableService tableService;
 
     public OrderService(
+            OrderCreatingValidator orderCreatingValidator,
             MenuRepository menuRepository,
-            OrderRepository orderRepository,
-            TableService tableService
+            OrderRepository orderRepository
     ) {
+        this.orderCreatingValidator = orderCreatingValidator;
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
-        this.tableService = tableService;
     }
 
     @Transactional
     public OrderResponse create(OrderRequest request) {
-        validate(request);
+        orderCreatingValidator.validate(request);
         Order order = orderRepository.save(request.toOrder());
-        order.addOrderLineItems(toOrderLineItems(request));
+        order.addOrderLineItems(toOrderLineItems(request.getOrderLineItems()));
         return OrderResponse.of(order);
     }
 
-    private void validate(OrderRequest request) {
-        List<OrderLineItemRequest> orderLineItems = request.getOrderLineItems();
-        List<Long> menuIds = request.toMenuIds();
-        validateNotEmptyOrderLineItems(orderLineItems);
-        validateExistsAllMenus(menuIds);
-        validateNotEmptyOrderTable(request.getOrderTableId());
-    }
-
-    private void validateNotEmptyOrderLineItems(List<OrderLineItemRequest> orderLineItems) {
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new EmptyOrderLineItemsException();
-        }
-    }
-
-    private void validateExistsAllMenus(List<Long> menuIds) {
-        if (menuIds.size() != menuRepository.countByIdIn(menuIds)) {
-            throw new InvalidOrderException("존재하지 않는 메뉴가 있습니다.");
-        }
-    }
-
-    private void validateNotEmptyOrderTable(Long orderTableId) {
-        OrderTable orderTable = tableService.findById(orderTableId);
-        if (orderTable.isEmpty()) {
-            throw new InvalidOrderException("빈 테이블 입니다.");
-        }
-    }
-
-    private List<OrderLineItem> toOrderLineItems(OrderRequest request) {
+    private List<OrderLineItem> toOrderLineItems(List<OrderLineItemRequest> orderLineItemRequests) {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
-        for (OrderLineItemRequest orderLineItemRequest : request.getOrderLineItems()) {
+        for (OrderLineItemRequest orderLineItemRequest : orderLineItemRequests) {
             Menu menu = findMenuById(orderLineItemRequest.getMenuId());
             orderLineItems.add(orderLineItemRequest.toOrderLineItem(menu));
         }
