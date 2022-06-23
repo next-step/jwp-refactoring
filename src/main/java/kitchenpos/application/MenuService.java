@@ -38,10 +38,6 @@ public class MenuService {
     public Menu create(final Menu menu) {
         final BigDecimal price = menu.getPrice();
 
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
-
         if (!menuGroupDao.existsById(menu.getMenuGroupId())) {
             throw new IllegalArgumentException();
         }
