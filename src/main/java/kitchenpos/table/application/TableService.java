@@ -23,8 +23,7 @@ public class TableService {
 
     @Transactional
     public OrderTable create(final OrderTable orderTable) {
-//        orderTable.setTableGroupId(null);
-
+        orderTable.ungroup();
         return orderTableRepository.save(orderTable);
     }
 
@@ -46,8 +45,7 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-//        savedOrderTable.setEmpty(orderTable.isEmpty());
-
+        savedOrderTable.changeEmpty(orderTable.isEmpty());
         return orderTableRepository.save(savedOrderTable);
     }
 
@@ -65,9 +63,7 @@ public class TableService {
         if (savedOrderTable.isEmpty()) {
             throw new IllegalArgumentException();
         }
-
-//        savedOrderTable.setNumberOfGuests(numberOfGuests);
-
+        savedOrderTable.changeNumberOfGuests(numberOfGuests);
         return orderTableRepository.save(savedOrderTable);
     }
 }
