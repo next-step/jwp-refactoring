@@ -4,6 +4,7 @@ import kitchenpos.dto.product.ProductResponse;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Entity
 public class Product {
@@ -33,6 +34,12 @@ public class Product {
 
     public static Product of(ProductResponse productResponse) {
         return new Product(productResponse.getId(), productResponse.getName(), productResponse.getPrice());
+    }
+
+    public void validate() {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException();
+        }
     }
 
     public Long getId() {
