@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.product.Product;
+import kitchenpos.domain.product.ProductRepository;
 import kitchenpos.dto.product.ProductRequest;
 import kitchenpos.dto.product.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +18,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @DisplayName("상품 관련 테스트")
@@ -25,7 +26,7 @@ import static org.mockito.BDDMockito.given;
 class ProductServiceTest {
 
     @Mock
-    ProductDao productDao;
+    ProductRepository productRepository;
 
     @InjectMocks
     ProductService productService;
@@ -34,15 +35,15 @@ class ProductServiceTest {
     @Test
     void create() {
         // given
-        Product request = new Product(null, "초밥", BigDecimal.valueOf(20000));
+        ProductRequest request = new ProductRequest("초밥", BigDecimal.valueOf(20000));
         Product 예상값 = new Product(1L, "초밥", BigDecimal.valueOf(20000));
-        given(productDao.save(request)).willReturn(예상값);
+        given(productRepository.save(any(Product.class))).willReturn(예상값);
 
         // when
-        Product 상품_생성_결과 = 상품_생성(ProductRequest.of(request));
+        ProductResponse 상품_생성_결과 = 상품_생성(request);
 
         // then
-        상품_값_비교(상품_생성_결과, 예상값);
+        상품_값_비교(상품_생성_결과, ProductResponse.of(예상값));
     }
 
     @DisplayName("상품을 생성할 수 있다 - 상품의 가격은 0원 이상이어야 한다")
@@ -71,7 +72,7 @@ class ProductServiceTest {
                 new Product(1L, "초밥", BigDecimal.valueOf(20000)),
                 new Product(2L, "김밥", BigDecimal.valueOf(2000))
         );
-        given(productDao.findAll()).willReturn(예상값);
+        given(productRepository.findAll()).willReturn(예상값);
 
         // when
         List<Product> 상품_조회_결과 = productService.list();
@@ -83,11 +84,15 @@ class ProductServiceTest {
         );
     }
 
-    private Product 상품_생성(ProductRequest request) {
-        return Product.of(productService.create(request));
+    private ProductResponse 상품_생성(ProductRequest request) {
+        return productService.create(request);
     }
 
     private void 상품_값_비교(Product result, Product expectation) {
+        상품_값_비교(ProductResponse.of(result), ProductResponse.of(expectation));
+    }
+
+    private void 상품_값_비교(ProductResponse result, ProductResponse expectation) {
         assertAll(
                 () -> assertThat(result.getId()).isEqualTo(expectation.getId()),
                 () -> assertThat(result.getName()).isEqualTo(expectation.getName()),

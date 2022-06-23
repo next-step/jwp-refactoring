@@ -3,10 +3,10 @@ package kitchenpos.application;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menuProduct.MenuProduct;
 import kitchenpos.domain.product.Product;
+import kitchenpos.domain.product.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -37,7 +37,7 @@ class MenuServiceTest {
     MenuGroupDao menuGroupDao;
 
     @Mock
-    ProductDao productDao;
+    ProductRepository productRepository;
 
     @Mock
     MenuProductDao menuProductDao;
@@ -169,7 +169,7 @@ class MenuServiceTest {
     }
 
     private Optional<Product> 상품_조회(long id) {
-        return productDao.findById(id);
+        return productRepository.findById(id);
     }
 
     private MenuProduct 메뉴_상품_생성(MenuProduct menuProduct) {
