@@ -43,6 +43,18 @@ class TableGroupServiceTest extends ServiceTest {
     }
 
     @Test
+    @DisplayName("테이블 그룹이 정상적으로 생성된다.")
+    void createTableGroup() {
+        OrderTable orderTable1 = this.orderTableDao.save(new OrderTable(0, true));
+        OrderTable orderTable2 = this.orderTableDao.save(new OrderTable(0, true));
+        TableGroup tableGroup = this.tableGroupService.create(new TableGroup(Arrays.asList(orderTable1, orderTable2)));
+
+        assertThat(tableGroup.getId()).isNotNull();
+        assertThat(tableGroup.getOrderTables()).hasSize(2);
+        assertTrue(tableGroup.getOrderTables().stream().anyMatch(orderTable -> !orderTable.isEmpty()));
+    }
+
+    @Test
     @DisplayName("테이블 정보가 존재하지 않을 경우 예외를 던진다.")
     void createFail_orderTableNullOrEmpty() {
         OrderTable orderTable = new OrderTable(100L, null, 0, true);
@@ -73,11 +85,12 @@ class TableGroupServiceTest extends ServiceTest {
     }
 
     @Test
-    @DisplayName("테이블 그룹이 정상적으로 생성된다.")
-    void createTableGroup() {
-        assertThat(tableGroup.getId()).isNotNull();
-        assertThat(tableGroup.getOrderTables()).hasSize(2);
-        assertTrue(tableGroup.getOrderTables().stream().anyMatch(orderTable -> !orderTable.isEmpty()));
+    @DisplayName("테이블 그룹을 해제한다.")
+    void ungroup() {
+        this.tableGroupService.ungroup(tableGroup.getId());
+
+        List<OrderTable> orderTables = this.orderTableDao.findAll();
+        assertTrue(orderTables.stream().anyMatch(orderTable -> orderTable.getTableGroupId() == null));
     }
 
     @Test
@@ -89,15 +102,6 @@ class TableGroupServiceTest extends ServiceTest {
 
         assertThatIllegalArgumentException()
             .isThrownBy(() -> this.tableGroupService.ungroup(tableGroup.getId()));
-    }
-
-    @Test
-    @DisplayName("테이블 그룹을 해제한다.")
-    void ungroup() {
-        this.tableGroupService.ungroup(tableGroup.getId());
-
-        List<OrderTable> orderTables = this.orderTableDao.findAll();
-        assertTrue(orderTables.stream().anyMatch(orderTable -> orderTable.getTableGroupId() == null));
     }
 
 }

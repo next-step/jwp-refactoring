@@ -20,7 +20,7 @@ class ProductServiceTest extends ServiceTest{
     private ProductDao productDao;
     @Autowired
     private ProductService productService;
-    
+
     @Test
     @DisplayName("상품이 정상적으로 생성된다.")
     void create() {

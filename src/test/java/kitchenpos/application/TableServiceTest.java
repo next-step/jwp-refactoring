@@ -55,6 +55,16 @@ class TableServiceTest extends ServiceTest{
     }
 
     @Test
+    @DisplayName("테이블의 빈 상태가 변경된다.")
+    void changeEmpty() {
+        changeOrderTable.setEmpty(true);
+
+        OrderTable expectedOrderTable = this.tableService.changeEmpty(orderTable1.getId(), changeOrderTable);
+
+        assertThat(expectedOrderTable.isEmpty()).isEqualTo(true);
+    }
+
+    @Test
     @DisplayName("테이블 그룹에 포함될 경우 테이블의 빈 상태를 바꿀 수 없다.")
     void changeEmptyFail_existTableGroup() {
         TableGroup tableGroup = this.tableGroupDao.save(new TableGroup(null));
@@ -76,13 +86,13 @@ class TableServiceTest extends ServiceTest{
     }
 
     @Test
-    @DisplayName("테이블의 빈 상태가 변경된다.")
-    void changeEmpty() {
-        changeOrderTable.setEmpty(true);
+    @DisplayName("테이블의 인원수를 변경한다.")
+    void changeNumberOfGuests() {
+        changeOrderTable.setNumberOfGuests(3);
 
-        OrderTable expectedOrderTable = this.tableService.changeEmpty(orderTable1.getId(), changeOrderTable);
+        OrderTable expectedOrderTable = this.tableService.changeNumberOfGuests(orderTable1.getId(), changeOrderTable);
 
-        assertThat(expectedOrderTable.isEmpty()).isEqualTo(true);
+        assertThat(expectedOrderTable.getNumberOfGuests()).isEqualTo(3);
     }
 
     @Test
@@ -99,16 +109,6 @@ class TableServiceTest extends ServiceTest{
     void changeNumberOfGuestsFail_orderTable() {
         assertThatIllegalArgumentException()
             .isThrownBy(() -> this.tableService.changeNumberOfGuests(1L, changeOrderTable));
-    }
-
-    @Test
-    @DisplayName("테이블의 인원수를 변경한다.")
-    void changeNumberOfGuests() {
-        changeOrderTable.setNumberOfGuests(3);
-
-        OrderTable expectedOrderTable = this.tableService.changeNumberOfGuests(orderTable1.getId(), changeOrderTable);
-
-        assertThat(expectedOrderTable.getNumberOfGuests()).isEqualTo(3);
     }
 
 }
