@@ -40,11 +40,11 @@ class OrderTableTest {
     void updateNumberOfGuests_less_then_one() {
 
         //given
-        OrderTable orderTable1 = new OrderTable(null, 0, true);
+        OrderTable orderTable = new OrderTable(null, 0, true);
 
         //when then
         assertThatIllegalArgumentException()
-                .isThrownBy(()->orderTable1.updateNumberOfGuests(-1));
+                .isThrownBy(() -> orderTable.updateNumberOfGuests(-1));
     }
 
     @DisplayName("빈 테이블인 경우 방문 손님 수 업데이트 할 수 없다. ")
@@ -52,10 +52,33 @@ class OrderTableTest {
     void updateNumberOfGuests_not_empty_table() {
 
         //given
-        OrderTable orderTable1 = new OrderTable(null, 3, true);
+        OrderTable orderTable = new OrderTable(null, 3, true);
 
         //when then
         assertThatIllegalArgumentException()
-                .isThrownBy(()->orderTable1.updateNumberOfGuests(5));
+                .isThrownBy(() -> orderTable.updateNumberOfGuests(5));
+    }
+
+    @DisplayName("빈 테이블이 아닌 경우 단체지정 할 수 없다.")
+    @Test
+    void checkPossibleGrouping_not_empty() {
+        //given
+        OrderTable orderTable = new OrderTable(null, 3, false);
+
+        //when then
+        assertThatIllegalStateException()
+                .isThrownBy(orderTable::checkPossibleGrouping);
+    }
+
+    @DisplayName("이미 단체 지정이 되어있으면 단체지정 할 수 없다.")
+    @Test
+    void checkPossibleGrouping_cant() {
+        //given
+        OrderTable orderTable = new OrderTable(null, 3, true);
+        orderTable.setTableGroup(new TableGroup(1L, null));
+
+        //when then
+        assertThatIllegalStateException()
+                .isThrownBy(orderTable::checkPossibleGrouping);
     }
 }
