@@ -1,7 +1,6 @@
 package kitchenpos.order.application;
 
 
-import kitchenpos.application.TableServiceTest;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.menu.domain.Menu;
@@ -30,7 +29,8 @@ import java.util.Optional;
 import static kitchenpos.menu.application.MenuGroupServiceTest.메뉴_그룹_등록;
 import static kitchenpos.menu.application.MenuServiceTest.메뉴_등록;
 import static kitchenpos.menu.application.MenuServiceTest.메뉴_상품_등록;
-import static kitchenpos.product.ProductServiceTest.상품_등록;
+import static kitchenpos.product.application.ProductServiceTest.상품_등록;
+import static kitchenpos.table.application.TableServiceTest.테이블_등록;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -65,7 +65,7 @@ public class OrderServiceTest {
         추천메뉴 = 메뉴_등록(1L, "추천메뉴", 강정치킨.getPrice(), 치킨메뉴.getId(),
                 Arrays.asList(메뉴_상품_등록(1L, 강정치킨.getId(), 1L)));
 
-        테이블 = TableServiceTest.테이블_등록(1L, true);
+        테이블 = 테이블_등록(1L, true);
         주문항목 = Arrays.asList(주문_항목_등록(1L, 추천메뉴.getId(), 1L));
     }
 
