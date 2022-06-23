@@ -77,6 +77,17 @@ class OrderServiceTest extends ServiceTest {
     }
 
     @Test
+    @DisplayName("주문시 주문정보가 생성된디.")
+    void create() {
+        Order order = this.orderService.create(new Order(테이블_A.getId(), Arrays.asList(후라이드_양념_세트_주문, 후라이드_단품_세트_주문)));
+
+        assertThat(order.getId()).isNotNull();
+        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(order.getOrderedTime()).isNotNull();
+        assertThat(order.getOrderLineItems()).hasSize(2);
+    }
+
+    @Test
     @DisplayName("주문한 메뉴가 0개일 경우 예외를 던진다.")
     void createFail_orderLineItemsEmpty() {
         Order order = new Order(테이블_A.getId(), Collections.emptyList());
@@ -103,15 +114,6 @@ class OrderServiceTest extends ServiceTest {
     }
 
     @Test
-    @DisplayName("주문시 주문정보가 생성된디.")
-    void create() {
-        assertThat(주문.getId()).isNotNull();
-        assertThat(주문.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
-        assertThat(주문.getOrderedTime()).isNotNull();
-        assertThat(주문.getOrderLineItems()).hasSize(2);
-    }
-
-    @Test
     @DisplayName("주문을 모두 조회한다.")
     void list() {
         Order 주문_추가 = new Order(테이블_A.getId(), Collections.singletonList(후라이드_양념_세트_주문));
@@ -125,16 +127,6 @@ class OrderServiceTest extends ServiceTest {
     }
 
     @Test
-    @DisplayName("주문 상태가 완료된 건 변경할 수 없다.")
-    void changeOrderStatusFail() {
-        주문.setOrderStatus(OrderStatus.COMPLETION.name());
-        this.orderDao.save(주문);
-
-        assertThatIllegalArgumentException()
-            .isThrownBy(() -> this.orderService.changeOrderStatus(주문.getId(), null));
-    }
-
-    @Test
     @DisplayName("주문 상태를 변경한다.")
     void changeOrderStatus() {
         Order statusOrder = new Order();
@@ -144,6 +136,17 @@ class OrderServiceTest extends ServiceTest {
 
         Order expectedOrder = this.orderDao.findById(주문.getId()).orElse(null);
         assertThat(expectedOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
+    }
+
+
+    @Test
+    @DisplayName("주문 상태가 완료된 건 변경할 수 없다.")
+    void changeOrderStatusFail() {
+        주문.setOrderStatus(OrderStatus.COMPLETION.name());
+        this.orderDao.save(주문);
+
+        assertThatIllegalArgumentException()
+            .isThrownBy(() -> this.orderService.changeOrderStatus(주문.getId(), null));
     }
 
 }
