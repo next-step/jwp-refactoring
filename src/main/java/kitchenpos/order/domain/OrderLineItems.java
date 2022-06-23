@@ -6,6 +6,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class OrderLineItems {
@@ -29,24 +30,18 @@ public class OrderLineItems {
         return new OrderLineItems(orderLineItems);
     }
 
-//    public void validateForCreateOrder() {
-//        if (CollectionUtils.isEmpty(orderLineItems)) {
-//            throw new IllegalArgumentException("주문 항목은 하나 이상 있어야 합니다");
-//        }
-//    }
-//
-//    public List<Long> extractMenuIds() {
-//        return orderLineItems.stream()
-//                .map(OrderLineItem::getMenuId)
-//                .collect(toList());
-//    }
-//
+    public List<Long> extractMenuIds() {
+        return orderLineItems.stream()
+                .map(OrderLineItem::getMenuId)
+                .collect(Collectors.toList());
+    }
+
     public List<OrderLineItem> getValues() {
         return orderLineItems;
     }
-//
-//    public int size() {
-//        return orderLineItems.size();
-//    }
+
+    public int size() {
+        return orderLineItems.size();
+    }
 
 }

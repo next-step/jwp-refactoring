@@ -1,5 +1,7 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.table.domain.OrderTable;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -44,15 +46,6 @@ public class Order {
         this.orderLineItems = OrderLineItems.of(orderLineItems);
     }
 
-    public Order(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime,
-                 List<OrderLineItem> orderLineItems) {
-        this.id = id;
-        this.orderTableId = orderTableId;
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
-        this.orderLineItems = OrderLineItems.of(orderLineItems);
-    }
-
     public static Order of(Long id) {
         return new Order(id);
     }
@@ -84,6 +77,15 @@ public class Order {
 
     public OrderLineItems getOrderLineItems() {
         return orderLineItems;
+    }
+
+    public void receive(OrderTable orderTable) {
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException("테이블이 비어 있습니다");
+        }
+        this.orderTableId = orderTable.getId();
+        changeOrderStatus(OrderStatus.COOKING);
+        this.orderedTime = LocalDateTime.now();
     }
 
     public void changeOrderStatus(final OrderStatus orderStatus) {

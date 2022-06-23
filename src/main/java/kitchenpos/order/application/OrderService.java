@@ -2,7 +2,7 @@ package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderResponse;
@@ -11,12 +11,12 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Transactional
 @Service
 public class OrderService {
     private final MenuRepository menuRepository;
@@ -29,39 +29,23 @@ public class OrderService {
         this.orderTableRepository = orderTableRepository;
     }
 
-    @Transactional
     public OrderResponse create(final Order order) {
-        final List<OrderLineItem> orderLineItems = order.getOrderLineItems().getValues();
-
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
-        }
-
-        final List<Long> menuIds = orderLineItems.stream()
-                .map(OrderLineItem::getMenuId)
-                .collect(Collectors.toList());
-
-        if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException();
-        }
+        validate(order.getOrderLineItems());
 
         final OrderTable orderTable = orderTableRepository.findById(order.getOrderTableId())
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
+                .orElseThrow(() -> new IllegalArgumentException("주문 테이블 정보가 없습니다."));
+        order.receive(orderTable);
 
         return OrderResponse.from(orderRepository.save(order));
     }
 
+    @Transactional(readOnly = true)
     public List<OrderResponse> list() {
         return orderRepository.findAll().stream()
                 .map(OrderResponse::from)
                 .collect(Collectors.toList());
     }
 
-    @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderStatusRequest orderStatusRequest) {
         final Order savedOrder = orderRepository.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
@@ -73,5 +57,12 @@ public class OrderService {
         savedOrder.changeOrderStatus(orderStatusRequest.getStatus());
 
         return OrderResponse.from(orderRepository.save(savedOrder));
+    }
+
+    private void validate(OrderLineItems orderLineItems) {
+        Integer menuCount = menuRepository.countByIdIn(orderLineItems.extractMenuIds());
+        if (!menuCount.equals(orderLineItems.size())) {
+            throw new IllegalArgumentException("주문 항목에 메뉴가 존재해야 합니다.");
+        }
     }
 }
