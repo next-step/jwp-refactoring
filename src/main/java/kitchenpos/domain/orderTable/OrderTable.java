@@ -52,6 +52,10 @@ public class OrderTable {
         this.tableGroup.setId(tableGroupId);
     }
 
+    public TableGroup getTableGroup() {
+        return tableGroup;
+    }
+
     public int getNumberOfGuests() {
         return numberOfGuests;
     }

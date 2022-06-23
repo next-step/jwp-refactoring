@@ -4,13 +4,11 @@ import kitchenpos.domain.orderTable.OrderTable;
 
 public class OrderTableResponse {
     private final Long id;
-    private final Long tableGroupId;
     private final int numberOfGuests;
     private final boolean empty;
 
-    public OrderTableResponse(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+    public OrderTableResponse(Long id, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
@@ -18,17 +16,12 @@ public class OrderTableResponse {
     public static OrderTableResponse of(OrderTable orderTable) {
         return new OrderTableResponse(
                 orderTable.getId(),
-                orderTable.getTableGroupId(),
                 orderTable.getNumberOfGuests(),
                 orderTable.isEmpty());
     }
 
     public Long getId() {
         return id;
-    }
-
-    public Long getTableGroupId() {
-        return tableGroupId;
     }
 
     public int getNumberOfGuests() {

@@ -43,7 +43,7 @@ class TableServiceTest {
     @Test
     void create() {
         // given
-        OrderTableRequest request = 주문_테이블_요청_데이터_생성(null, 2, false);
+        OrderTableRequest request = 주문_테이블_요청_데이터_생성(2, false);
         OrderTable 예상값 = 주문_테이블_데이터_생성(1L, null, 2, false);
         given(orderTableRepository.save(any(OrderTable.class))).willReturn(예상값);
 
@@ -155,8 +155,8 @@ class TableServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    public static OrderTableRequest 주문_테이블_요청_데이터_생성(Long tableGroupId, int numberOfGuests, boolean empty) {
-        return new OrderTableRequest(tableGroupId, numberOfGuests, empty);
+    public static OrderTableRequest 주문_테이블_요청_데이터_생성(int numberOfGuests, boolean empty) {
+        return new OrderTableRequest(numberOfGuests, empty);
     }
 
     public static OrderTable 주문_테이블_데이터_생성(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
@@ -174,7 +174,6 @@ class TableServiceTest {
     private void 주문_테이블_데이터_비교(OrderTableResponse result, OrderTableResponse expectation) {
         assertAll(
                 () -> assertThat(result.getId()).isEqualTo(expectation.getId()),
-                () -> assertThat(result.getTableGroupId()).isEqualTo(expectation.getTableGroupId()),
                 () -> assertThat(result.getNumberOfGuests()).isEqualTo(expectation.getNumberOfGuests()),
                 () -> assertThat(result.isEmpty()).isEqualTo(expectation.isEmpty())
         );
