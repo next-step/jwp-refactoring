@@ -44,7 +44,7 @@ class TableGroupServiceTest {
         OrderTable orderTable1 = new OrderTable(1L, null, 5, true);
         OrderTable orderTable2 = new OrderTable(2L, null, 1, true);
         given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(orderTable1, orderTable2));
-        TableGroup tableGroup = new TableGroup();
+        TableGroup tableGroup = TableGroup.empty();
         given(tableGroupRepository.save(any())).willReturn(tableGroup);
 
         //when
@@ -54,14 +54,6 @@ class TableGroupServiceTest {
         //then
         assertThat(savedTableGroup.getOrderTables().stream().map(OrderTableResponse::getId)).isNotEmpty()
                 .containsExactlyInAnyOrder(1L, 2L);
-    }
-
-    @Test
-    @DisplayName("단체 지정에 속한 주문 테이블 수가 2 미만이면 실패한다.")
-    void create_failed_1() {
-        assertThatThrownBy(() -> tableGroupService.create(
-                new TableGroupRequest(Arrays.asList(new OrderTableRequest(1L))))).isExactlyInstanceOf(
-                IllegalArgumentException.class);
     }
 
     @Test
@@ -81,7 +73,7 @@ class TableGroupServiceTest {
     void create_failed_3() {
         //given
         OrderTable emptyOrderTable = new OrderTable(1L, null, 5, true);
-        OrderTable alreadyGroupedOrderTable = new OrderTable(2L, new TableGroup(), 5, false);
+        OrderTable alreadyGroupedOrderTable = new OrderTable(2L, TableGroup.empty(), 5, false);
         given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(emptyOrderTable, alreadyGroupedOrderTable));
 
         //then
@@ -94,7 +86,7 @@ class TableGroupServiceTest {
     @DisplayName("단체 지정을 해제할 수 있다.")
     void ungroup() {
         //given
-        TableGroup tableGroup = new TableGroup();
+        TableGroup tableGroup = TableGroup.empty();
         OrderTable orderTable1 = new OrderTable(1L, tableGroup, 5, false);
         OrderTable orderTable2 = new OrderTable(2L, tableGroup, 1, false);
         tableGroup.add(orderTable1);
@@ -114,7 +106,7 @@ class TableGroupServiceTest {
     @DisplayName("단체 지정 내 주문 상태가 조리 혹은 식사 인 주문 테이블이 포함되어 있을 경우 해제할 수 없다.")
     void ungroup_failed_1() {
         //given
-        TableGroup tableGroup = new TableGroup();
+        TableGroup tableGroup = TableGroup.empty();
         OrderTable orderTable1 = new OrderTable(1L, tableGroup, 5, false);
         OrderTable orderTable2 = new OrderTable(2L, tableGroup, 1, false);
         tableGroup.add(orderTable1);

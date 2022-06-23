@@ -2,21 +2,17 @@ package kitchenpos.tablegroup.application;
 
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrdersRepository;
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.domain.OrderTables;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Service
 public class TableGroupService {
@@ -24,7 +20,8 @@ public class TableGroupService {
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final OrdersRepository ordersRepository, final OrderTableRepository orderTableRepository,
+    public TableGroupService(
+            final OrdersRepository ordersRepository, final OrderTableRepository orderTableRepository,
             final TableGroupRepository tableGroupRepository) {
         this.ordersRepository = ordersRepository;
         this.orderTableRepository = orderTableRepository;
@@ -33,26 +30,9 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest request) {
-        final List<OrderTableRequest> orderTables = request.getOrderTables();
-
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException();
-        }
-
-        final List<Long> orderTableIds = orderTables.stream().map(OrderTableRequest::getId).collect(Collectors.toList());
-        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
-
-        if (orderTables.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
-        }
-
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || savedOrderTable.hasTableGroup()) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        TableGroup tableGroup = new TableGroup(savedOrderTables);
+        final OrderTables savedOrderTables = new OrderTables(request.getOrderTableIds().size(),
+                orderTableRepository.findAllByIdIn(request.getOrderTableIds()));
+        TableGroup tableGroup = TableGroup.group(savedOrderTables);
         tableGroupRepository.save(tableGroup);
         return new TableGroupResponse(tableGroup);
     }

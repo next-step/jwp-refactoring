@@ -1,9 +1,10 @@
 package kitchenpos.tablegroup;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import kitchenpos.tablegroup.ui.TableGroupRestController;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +16,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.Arrays;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -53,10 +56,11 @@ class TableGroupRestControllerTest {
     @Test
     void test_post() throws Exception {
         //given
-        given(tableGroupService.create(any())).willReturn(new TableGroupResponse(new TableGroup()));
+        given(tableGroupService.create(any())).willReturn(new TableGroupResponse(TableGroup.empty()));
 
         //then
-        mockMvc.perform(post("/api/table-groups").content(objectMapper.writeValueAsString(new MenuGroup("menuGroup")))
+        mockMvc.perform(post("/api/table-groups").content(objectMapper.writeValueAsString(new TableGroupRequest(
+                                Arrays.asList(new OrderTableRequest(), new OrderTableRequest()))))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isCreated());

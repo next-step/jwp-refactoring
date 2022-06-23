@@ -16,15 +16,24 @@ public class TableGroup {
     @Embedded
     private OrderTables orderTables = new OrderTables();
 
-    public TableGroup() {
+    protected TableGroup() {
         this.createdDate = LocalDateTime.now();
     }
 
-    public TableGroup(List<OrderTable> savedOrderTables) {
-        for(OrderTable orderTable: savedOrderTables) {
-            add(orderTable);
+    public static TableGroup empty() {
+        return new TableGroup();
+    }
+
+    public static TableGroup group(OrderTables orderTables) {
+        TableGroup tableGroup = TableGroup.empty();
+        for (OrderTable orderTable : orderTables) {
+            if (!orderTable.isEmpty() || orderTable.hasTableGroup()) {
+                throw new IllegalArgumentException();
+            }
+            orderTable.group(tableGroup);
+            tableGroup.add(orderTable);
         }
-        this.createdDate = LocalDateTime.now();
+        return tableGroup;
     }
 
     public Long getId() {
@@ -37,10 +46,11 @@ public class TableGroup {
 
     public void add(OrderTable orderTable) {
         this.orderTables.add(orderTable);
-        orderTable.updateTableGroup(this);
     }
 
     public void unGroup() {
-        this.orderTables.unGroup();
+        for (final OrderTable orderTable : this.orderTables) {
+            orderTable.unGroup();
+        }
     }
 }

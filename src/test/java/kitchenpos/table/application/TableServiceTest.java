@@ -40,8 +40,9 @@ class TableServiceTest {
         given(orderTableRepository.save(any())).willReturn(orderTable);
 
         //then
-        assertThat(tableService.create(new OrderTableRequest(null, orderTable.getNumberOfGuests(),
-                orderTable.isEmpty())).getNumberOfGuests()).isEqualTo(2);
+        assertThat(
+                tableService.create(new OrderTableRequest(null, orderTable.getNumberOfGuests(), orderTable.isEmpty()))
+                        .getNumberOfGuests()).isEqualTo(2);
     }
 
     @Test
@@ -49,7 +50,7 @@ class TableServiceTest {
     void list() {
         //given
         OrderTable orderTable1 = new OrderTable(1L, null, 2, true);
-        OrderTable orderTable2 = new OrderTable(2L, new TableGroup(), 10, false);
+        OrderTable orderTable2 = new OrderTable(2L, TableGroup.empty(), 10, false);
         given(orderTableRepository.findAll()).willReturn(Arrays.asList(orderTable1, orderTable2));
 
         //then
@@ -65,8 +66,8 @@ class TableServiceTest {
         given(ordersRepository.existsByOrderTableInAndOrderStatusIn(any(), any())).willReturn(false);
 
         //when
-        OrderTableResponse updatedOrderTable = tableService.changeEmpty(orderTable.getId(),
-                new OrderTableUpdateEmptyRequest(true));
+        OrderTableResponse updatedOrderTable =
+                tableService.changeEmpty(orderTable.getId(), new OrderTableUpdateEmptyRequest(true));
 
         //then
         assertThat(updatedOrderTable.isEmpty()).isTrue();
@@ -79,17 +80,21 @@ class TableServiceTest {
         given(orderTableRepository.findByIdAndTableGroupIsNull(any())).willReturn(Optional.empty());
 
         //then
-        assertThatThrownBy(() -> tableService.changeEmpty(0L, new OrderTableUpdateEmptyRequest(true))).isExactlyInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(
+                () -> tableService.changeEmpty(0L, new OrderTableUpdateEmptyRequest(true))).isExactlyInstanceOf(
+                IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("저장된 주문 테이블의 단체 지정이 되어있으면 빈 테이블로 변경 실패한다.")
     void changeEmpty_failed_2() {
         //given
-        given(orderTableRepository.findByIdAndTableGroupIsNull(any())).willReturn(Optional.of(new OrderTable(1L, null, 2, false)));
+        given(orderTableRepository.findByIdAndTableGroupIsNull(any())).willReturn(
+                Optional.of(new OrderTable(1L, null, 2, false)));
         given(ordersRepository.existsByOrderTableInAndOrderStatusIn(any(), any())).willReturn(true);
         //then
-        assertThatThrownBy(() -> tableService.changeEmpty(0L, new OrderTableUpdateEmptyRequest(true))).isExactlyInstanceOf(
+        assertThatThrownBy(
+                () -> tableService.changeEmpty(0L, new OrderTableUpdateEmptyRequest(true))).isExactlyInstanceOf(
                 IllegalArgumentException.class);
     }
 
@@ -97,11 +102,13 @@ class TableServiceTest {
     @DisplayName("주문 테이블의 상태가 조리, 식사 인 경우 빈 테이블로 변경 실패한다.")
     void changeEmpty_failed_3() {
         //given
-        given(orderTableRepository.findByIdAndTableGroupIsNull(any())).willReturn(Optional.of(new OrderTable(1L, null, 2, false)));
+        given(orderTableRepository.findByIdAndTableGroupIsNull(any())).willReturn(
+                Optional.of(new OrderTable(1L, null, 2, false)));
         given(ordersRepository.existsByOrderTableInAndOrderStatusIn(any(), any())).willReturn(true);
 
         //then
-        assertThatThrownBy(() -> tableService.changeEmpty(0L, new OrderTableUpdateEmptyRequest(true))).isExactlyInstanceOf(
+        assertThatThrownBy(
+                () -> tableService.changeEmpty(0L, new OrderTableUpdateEmptyRequest(true))).isExactlyInstanceOf(
                 IllegalArgumentException.class);
     }
 
@@ -109,10 +116,12 @@ class TableServiceTest {
     @DisplayName("주문 테이블의 방문한 손님 수를 변경할 수 있다.")
     void changeNumberOfGuests() {
         //given
-        given(orderTableRepository.findByIdAndEmptyIsFalse(any())).willReturn(Optional.of(new OrderTable(1L, new TableGroup(), 5, false)));
+        given(orderTableRepository.findByIdAndEmptyIsFalse(any())).willReturn(
+                Optional.of(new OrderTable(1L, TableGroup.empty(), 5, false)));
 
         //when
-        OrderTableResponse updatedOrderTable = tableService.changeNumberOfGuests(0L, new OrderTableUpdateNumberOfGuestsRequest(0));
+        OrderTableResponse updatedOrderTable =
+                tableService.changeNumberOfGuests(0L, new OrderTableUpdateNumberOfGuestsRequest(0));
 
         //then
         assertThat(updatedOrderTable.getNumberOfGuests()).isEqualTo(0);
@@ -122,8 +131,8 @@ class TableServiceTest {
     @DisplayName("주문 테이블의 방문한 손님 수가 음수면 방문한 손님 수 변경에 실패한다.")
     void changeNumberOfGuests_failed_1() {
         //then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(0L, new OrderTableUpdateNumberOfGuestsRequest(-1))).isExactlyInstanceOf(
-                IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(0L,
+                new OrderTableUpdateNumberOfGuestsRequest(-1))).isExactlyInstanceOf(IllegalArgumentException.class);
 
     }
 
@@ -134,8 +143,8 @@ class TableServiceTest {
         given(orderTableRepository.findByIdAndEmptyIsFalse(any())).willReturn(Optional.empty());
 
         //then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(0L, new OrderTableUpdateNumberOfGuestsRequest(10))).isExactlyInstanceOf(
-                IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(0L,
+                new OrderTableUpdateNumberOfGuestsRequest(10))).isExactlyInstanceOf(IllegalArgumentException.class);
 
     }
 
@@ -147,8 +156,8 @@ class TableServiceTest {
         given(orderTableRepository.findByIdAndEmptyIsFalse(any())).willReturn(Optional.of(orderTable));
 
         //then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(0L, new OrderTableUpdateNumberOfGuestsRequest(10))).isExactlyInstanceOf(
-                IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(0L,
+                new OrderTableUpdateNumberOfGuestsRequest(10))).isExactlyInstanceOf(IllegalArgumentException.class);
 
     }
 }

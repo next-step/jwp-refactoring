@@ -65,7 +65,7 @@ public class OrderTable {
         return !Objects.equals(this.tableGroup, null);
     }
 
-    public void updateTableGroup(TableGroup tableGroup) {
+    public void group(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
         this.empty = false;
     }
