@@ -1,9 +1,9 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.domain.menu.Menu;
+import kitchenpos.domain.menuGroup.MenuGroupRepository;
 import kitchenpos.domain.menuProduct.MenuProduct;
 import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.ProductRepository;
@@ -34,7 +34,7 @@ class MenuServiceTest {
     MenuDao menuDao;
 
     @Mock
-    MenuGroupDao menuGroupDao;
+    MenuGroupRepository menuGroupRepository;
 
     @Mock
     ProductRepository productRepository;
@@ -181,6 +181,6 @@ class MenuServiceTest {
     }
 
     private boolean 메뉴_그룹_유효성_확인() {
-        return menuGroupDao.existsById(any());
+        return menuGroupRepository.existsById(any());
     }
 }
