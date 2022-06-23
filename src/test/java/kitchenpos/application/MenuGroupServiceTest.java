@@ -2,6 +2,8 @@ package kitchenpos.application;
 
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.menuGroup.MenuGroup;
+import kitchenpos.dto.menuGroup.MenuGroupRequest;
+import kitchenpos.dto.menuGroup.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +16,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @DisplayName("메뉴 그룹 관련 테스트")
@@ -32,13 +35,13 @@ class MenuGroupServiceTest {
         // given
         MenuGroup request = new MenuGroup(null, "런치메뉴");
         MenuGroup 예상값 = new MenuGroup(1L, "런치메뉴");
-        given(menuGroupDao.save(request)).willReturn(예상값);
+        given(menuGroupDao.save(any(MenuGroup.class))).willReturn(예상값);
 
         // when
-        MenuGroup 메뉴_그룹_생성_결과 = 메뉴_그룹_생성(request);
+        MenuGroupResponse 메뉴_그룹_생성_결과 = 메뉴_그룹_생성(request);
 
         // then
-        메뉴_그룹_값_비교(메뉴_그룹_생성_결과, 예상값);
+        메뉴_그룹_값_비교(메뉴_그룹_생성_결과, MenuGroupResponse.of(예상값));
     }
 
     @DisplayName("메뉴 그룹 목록을 조회할 수 있다")
@@ -52,20 +55,20 @@ class MenuGroupServiceTest {
         given(menuGroupDao.findAll()).willReturn(예상값);
 
         // when
-        List<MenuGroup> 메뉴_그룹_목록_조회_결과 = menuGroupService.list();
+        List<MenuGroupResponse> 메뉴_그룹_목록_조회_결과 = menuGroupService.list();
 
         // then
         assertAll(
-                () -> 메뉴_그룹_값_비교(메뉴_그룹_목록_조회_결과.get(0), 예상값.get(0)),
-                () -> 메뉴_그룹_값_비교(메뉴_그룹_목록_조회_결과.get(1), 예상값.get(1))
+                () -> 메뉴_그룹_값_비교(메뉴_그룹_목록_조회_결과.get(0), MenuGroupResponse.of(예상값.get(0))),
+                () -> 메뉴_그룹_값_비교(메뉴_그룹_목록_조회_결과.get(1), MenuGroupResponse.of(예상값.get(1)))
         );
     }
 
-    private MenuGroup 메뉴_그룹_생성(MenuGroup request) {
-        return menuGroupService.create(request);
+    private MenuGroupResponse 메뉴_그룹_생성(MenuGroup menuGroup) {
+        return menuGroupService.create(MenuGroupRequest.of(menuGroup));
     }
 
-    private void 메뉴_그룹_값_비교(MenuGroup result, MenuGroup expectation) {
+    private void 메뉴_그룹_값_비교(MenuGroupResponse result, MenuGroupResponse expectation) {
         assertAll(
                 () -> assertThat(result.getId()).isEqualTo(expectation.getId()),
                 () -> assertThat(result.getName()).isEqualTo(expectation.getName())
