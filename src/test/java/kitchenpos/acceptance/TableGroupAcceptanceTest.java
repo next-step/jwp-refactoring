@@ -1,12 +1,11 @@
 package kitchenpos.acceptance;
 
-import static kitchenpos.acceptance.TableGroupRestAssured.단체지정_등록_요청;
-import static kitchenpos.acceptance.TableGroupRestAssured.단체지정_해제_요청;
 import static kitchenpos.acceptance.TableRestAssured.주문테이블_등록_요청;
 import static kitchenpos.utils.DomainFixtureFactory.createOrderTable;
 import static kitchenpos.utils.DomainFixtureFactory.createTableGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.OrderTable;
@@ -16,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 @DisplayName("단체지정 관련 기능")
 class TableGroupAcceptanceTest extends AcceptanceTest {
@@ -66,7 +66,26 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    public static void 단체지정_해제됨(ExtractableResponse<Response> response) {
+    private void 단체지정_해제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private ExtractableResponse<Response> 단체지정_등록_요청(TableGroup tableGroup) {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(tableGroup)
+                .when().post("/api/table-groups")
+                .then().log().all()
+                .extract();
+    }
+
+    private ExtractableResponse<Response> 단체지정_해제_요청(long id) {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/api/table-groups/{id}", id)
+                .then().log().all()
+                .extract();
     }
 }

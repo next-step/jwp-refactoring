@@ -2,8 +2,8 @@ package kitchenpos.acceptance;
 
 import static kitchenpos.acceptance.MenuGroupRestAssured.메뉴그룹_등록_요청;
 import static kitchenpos.acceptance.MenuRestAssured.메뉴_등록_요청;
+import static kitchenpos.acceptance.MenuRestAssured.메뉴_목록_조회_요청;
 import static kitchenpos.acceptance.ProductRestAssured.상품_등록_요청;
-import static kitchenpos.acceptance.ProductRestAssured.상품_목록_조회_요청;
 import static kitchenpos.utils.DomainFixtureFactory.createMenu;
 import static kitchenpos.utils.DomainFixtureFactory.createMenuGroup;
 import static kitchenpos.utils.DomainFixtureFactory.createMenuProduct;
@@ -64,7 +64,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
         Menu 등록한_양념치킨 = 메뉴_등록_요청(양념치킨).as(Menu.class);
 
         // when
-        ExtractableResponse<Response> response = 상품_목록_조회_요청();
+        ExtractableResponse<Response> response = 메뉴_목록_조회_요청();
 
         // then
         메뉴_목록_조회됨(response, Lists.newArrayList(등록한_양념치킨));

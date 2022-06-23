@@ -38,7 +38,6 @@ public class TableRestAssured {
                 .extract();
     }
 
-
     public static ExtractableResponse<Response> 주문테이블_손님수_변경_요청(OrderTable targetOrderTable, int numberOfGuests) {
         OrderTable orderTable = new OrderTable();
         orderTable.setNumberOfGuests(numberOfGuests);

@@ -2,9 +2,6 @@ package kitchenpos.acceptance;
 
 import static kitchenpos.acceptance.MenuGroupRestAssured.메뉴그룹_등록_요청;
 import static kitchenpos.acceptance.MenuRestAssured.메뉴_등록_요청;
-import static kitchenpos.acceptance.OrderRestAssured.주문_등록_요청;
-import static kitchenpos.acceptance.OrderRestAssured.주문_목록_조회_요청;
-import static kitchenpos.acceptance.OrderRestAssured.주문_상태_변경_요청;
 import static kitchenpos.acceptance.ProductRestAssured.상품_등록_요청;
 import static kitchenpos.acceptance.TableRestAssured.주문테이블_등록_요청;
 import static kitchenpos.utils.DomainFixtureFactory.createMenu;
@@ -16,6 +13,7 @@ import static kitchenpos.utils.DomainFixtureFactory.createOrderTable;
 import static kitchenpos.utils.DomainFixtureFactory.createProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
@@ -31,6 +29,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 @DisplayName("주문 관련 기능")
 class OrderAcceptanceTest extends AcceptanceTest {
@@ -111,5 +110,35 @@ class OrderAcceptanceTest extends AcceptanceTest {
 
     private void 주문_상태_변경됨(ExtractableResponse<Response> response, String orderStatus) {
         assertThat(response.as(Order.class).getOrderStatus()).isEqualTo(orderStatus);
+    }
+
+    private ExtractableResponse<Response> 주문_등록_요청(Order order) {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(order)
+                .when().post("/api/orders")
+                .then().log().all()
+                .extract();
+    }
+
+    private ExtractableResponse<Response> 주문_목록_조회_요청() {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/api/orders")
+                .then().log().all()
+                .extract();
+    }
+
+    private ExtractableResponse<Response> 주문_상태_변경_요청(Order targetOrder, String orderStatus) {
+        Order order = createOrder(1L, null, orderStatus, null, null);
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(order)
+                .when().put("/api/orders/{orderId}/order-status", targetOrder.getId())
+                .then().log().all()
+                .extract();
     }
 }

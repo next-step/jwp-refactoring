@@ -25,5 +25,4 @@ public class MenuRestAssured {
                 .then().log().all()
                 .extract();
     }
-
 }
