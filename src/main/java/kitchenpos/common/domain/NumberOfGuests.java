@@ -1,4 +1,4 @@
-package kitchenpos.table.domain;
+package kitchenpos.common.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -13,9 +13,7 @@ public class NumberOfGuests {
     }
 
     private NumberOfGuests(int numberOfGuests) {
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException("손님의 수는 0보다 커야 합니다");
-        }
+        validate(numberOfGuests);
         this.numberOfGuests = numberOfGuests;
     }
 
@@ -25,5 +23,11 @@ public class NumberOfGuests {
 
     public int getValue() {
         return numberOfGuests;
+    }
+
+    private void validate(long numberOfGuests) {
+        if (numberOfGuests < 0) {
+            throw new IllegalArgumentException("방문한 손님 수가 0보다 작을 수 없습니다.");
+        }
     }
 }

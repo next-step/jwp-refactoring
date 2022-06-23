@@ -1,6 +1,7 @@
 package kitchenpos.table.domain;
 
-import java.util.Objects;
+import kitchenpos.common.domain.NumberOfGuests;
+
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
