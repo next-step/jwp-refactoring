@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("주문 테이 관련 기능")
+@DisplayName("주문 테이블 관련 기능")
 public class TableAcceptanceTest extends AcceptanceTest {
 
     OrderTable orderTable1;

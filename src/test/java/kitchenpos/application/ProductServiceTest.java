@@ -67,7 +67,7 @@ public class ProductServiceTest {
         assertThat(products).containsExactly(팔당보쌈, 파파존스피자);
     }
 
-    public static Product 상품_생성(long id, String name, int price) {
+    public static Product 상품_생성(Long id, String name, int price) {
         Product product = new Product();
         product.setId(id);
         product.setName(name);
