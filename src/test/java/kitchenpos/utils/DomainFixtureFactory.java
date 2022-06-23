@@ -10,6 +10,7 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.TableGroup;
 
 public class DomainFixtureFactory {
     public static Product createProduct(Long id, String name, BigDecimal price) {
@@ -40,5 +41,9 @@ public class DomainFixtureFactory {
 
     public static OrderLineItem createOrderLineItem(Long seq, Long orderId, Long menuId, long quantity) {
         return OrderLineItem.of(seq, orderId, menuId, quantity);
+    }
+
+    public static TableGroup createTableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
+        return TableGroup.of(id, createdDate, orderTables);
     }
 }
