@@ -25,7 +25,33 @@ public class Price {
         }
     }
 
+    public Price add(Price price) {
+        BigDecimal result = this.value.add(price.getValue());
+        return new Price(result);
+    }
+
+    public boolean isOverThan(Price target) {
+        return value.compareTo(target.getValue()) > 0;
+    }
+
     public BigDecimal getValue() {
         return value;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Price price = (Price) o;
+        return Objects.equals(getValue(), price.getValue());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getValue());
     }
 }
