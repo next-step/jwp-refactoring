@@ -82,6 +82,14 @@ public class TableAcceptanceTest extends AcceptanceTest {
         손님_수_변경됨(response);
     }
 
+    public static ExtractableResponse<Response> 주문_테이블_생성되어_있음(
+            Long tableGroupId,
+            boolean isEmpty,
+            int numberOfGuests) {
+        OrderTable orderTable = TableServiceTest.주문_테이블_생성(tableGroupId, null, isEmpty, numberOfGuests);
+        return 주문_테이블_생성_요청(orderTable);
+    }
+
     public static ExtractableResponse<Response> 주문_테이블_생성_요청(OrderTable orderTable) {
         return RestAssured
                 .given().log().all()

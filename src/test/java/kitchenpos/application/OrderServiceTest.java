@@ -71,7 +71,7 @@ public class OrderServiceTest {
     void 주문_생성_성공() {
         // given
         OrderLineItem 주문_항목 = 주문_항목_생성(기본_메뉴.getId(), 2);
-        Order 주문 = 주문_생성(테이블.getId(), 1L, OrderStatus.COOKING, 주문_항목);
+        Order 주문 = 주문_생성(테이블.getId(), 1L, OrderStatus.COOKING.name(), 주문_항목);
         given(menuDao.countByIdIn(anyList())).willReturn(1L);
         given(orderTableDao.findById(any())).willReturn(Optional.of(테이블));
         given(orderDao.save(any())).willReturn(주문);
@@ -89,7 +89,7 @@ public class OrderServiceTest {
     void 주문_생성_예외_빈_테이블() {
         // given
         OrderLineItem 주문_항목 = 주문_항목_생성(기본_메뉴.getId(), 2);
-        Order 주문 = 주문_생성(빈_테이블.getId(), 1L, OrderStatus.COOKING, 주문_항목);
+        Order 주문 = 주문_생성(빈_테이블.getId(), 1L, OrderStatus.COOKING.name(), 주문_항목);
         given(menuDao.countByIdIn(anyList())).willReturn(1L);
         given(orderTableDao.findById(any())).willReturn(Optional.of(빈_테이블));
 
@@ -102,7 +102,7 @@ public class OrderServiceTest {
     @Test
     void 주문_생성_예외_주문_항목_없음() {
         // given
-        Order 주문 = 주문_생성(빈_테이블.getId(), 1L, OrderStatus.COOKING);
+        Order 주문 = 주문_생성(빈_테이블.getId(), 1L, OrderStatus.COOKING.name());
 
         // when, then
         assertThatThrownBy(() -> orderService.create(주문))
@@ -114,7 +114,7 @@ public class OrderServiceTest {
     void 주문_목록_조회() {
         // given
         OrderLineItem 주문_항목 = 주문_항목_생성(기본_메뉴.getId(), 2);
-        Order 주문 = 주문_생성(테이블.getId(), 1L, OrderStatus.COOKING, 주문_항목);
+        Order 주문 = 주문_생성(테이블.getId(), 1L, OrderStatus.COOKING.name(), 주문_항목);
         given(orderDao.findAll()).willReturn(Arrays.asList(주문));
         given(orderLineItemDao.findAllByOrderId(any(Long.class))).willReturn(Arrays.asList(주문_항목));
 
@@ -130,8 +130,8 @@ public class OrderServiceTest {
     void 주문_상태_변경() {
         // given
         OrderLineItem 주문_항목 = 주문_항목_생성(기본_메뉴.getId(), 2);
-        Order 주문 = 주문_생성(테이블.getId(), 1L, OrderStatus.COOKING, 주문_항목);
-        Order 변경된_주문 = 주문_생성(테이블.getId(), 1L, OrderStatus.MEAL, 주문_항목);
+        Order 주문 = 주문_생성(테이블.getId(), 1L, OrderStatus.COOKING.name(), 주문_항목);
+        Order 변경된_주문 = 주문_생성(테이블.getId(), 1L, OrderStatus.MEAL.name(), 주문_항목);
         given(orderDao.findById(any(Long.class))).willReturn(Optional.of(주문));
         given(orderDao.save(any(Order.class))).willReturn(변경된_주문);
         given(orderLineItemDao.findAllByOrderId(any(Long.class))).willReturn(Arrays.asList(주문_항목));
@@ -149,8 +149,8 @@ public class OrderServiceTest {
     void 주문_상태_변경_예외() {
         // given
         OrderLineItem 주문_항목 = 주문_항목_생성(기본_메뉴.getId(), 2);
-        Order 주문 = 주문_생성(테이블.getId(), 1L, OrderStatus.COMPLETION, 주문_항목);
-        Order 변경된_주문 = 주문_생성(테이블.getId(), 1L, OrderStatus.MEAL, 주문_항목);
+        Order 주문 = 주문_생성(테이블.getId(), 1L, OrderStatus.COMPLETION.name(), 주문_항목);
+        Order 변경된_주문 = 주문_생성(테이블.getId(), 1L, OrderStatus.MEAL.name(), 주문_항목);
         given(orderDao.findById(any(Long.class))).willReturn(Optional.of(주문));
 
         // when, then
@@ -165,11 +165,11 @@ public class OrderServiceTest {
         return orderLineItem;
     }
 
-    public static Order 주문_생성(Long orderTableId, Long orderId, OrderStatus orderStatus, OrderLineItem... orderLineItems) {
+    public static Order 주문_생성(Long orderTableId, Long orderId, String orderStatus, OrderLineItem... orderLineItems) {
         Order order = new Order();
         order.setOrderTableId(orderTableId);
         order.setId(orderId);
-        order.setOrderStatus(orderStatus.name());
+        order.setOrderStatus(orderStatus);
         order.setOrderLineItems(Arrays.asList(orderLineItems));
         order.setOrderedTime(LocalDateTime.now());
         return order;

@@ -64,6 +64,15 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         메뉴_목록_포함됨(response, Arrays.asList(createResponse1, createResponse2));
     }
 
+    public static ExtractableResponse<Response> 메뉴_생성되어_있음(
+            MenuGroup menuGroup,
+            String menuName,
+            int menuPrice,
+            MenuProduct... menuProducts) {
+        Menu menu = MenuServiceTest.메뉴_생성(menuGroup.getId(), menuName, menuPrice, menuProducts);
+        return 메뉴_생성_요청(menu);
+    }
+
     public static ExtractableResponse<Response> 메뉴_생성_요청(Menu menu) {
         return RestAssured
                 .given().log().all()
