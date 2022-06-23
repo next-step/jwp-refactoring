@@ -2,6 +2,8 @@ package kitchenpos.product.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import kitchenpos.menu.domain.InvalidNameException;
+import kitchenpos.menu.domain.InvalidPriceException;
 import kitchenpos.product.domain.Product;
 
 import java.util.Objects;
@@ -31,11 +33,11 @@ public class ProductRequest {
 
     private void check(String name, long price) {
         if (price < 0) {
-            throw new IllegalArgumentException();
+            throw new InvalidPriceException();
         }
 
         if (Objects.isNull(name)) {
-            throw new IllegalArgumentException();
+            throw new InvalidNameException();
         }
     }
 }

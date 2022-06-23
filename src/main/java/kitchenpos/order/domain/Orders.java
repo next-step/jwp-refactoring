@@ -52,7 +52,7 @@ public class Orders {
 
     public void updateStatus(OrderStatus orderStatus) {
         if (Objects.equals(OrderStatus.COMPLETION, this.orderStatus)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("계산 완료 상태의 주문은 상태를 변경할 수 없습니다.");
         }
         this.orderStatus = orderStatus;
     }

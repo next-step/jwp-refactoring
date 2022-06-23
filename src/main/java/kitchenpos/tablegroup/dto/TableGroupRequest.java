@@ -19,7 +19,7 @@ public class TableGroupRequest {
 
     private void check(List<OrderTableRequest> orderTables) {
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문 테이블 갯수가 적절하지 않습니다.");
         }
     }
 

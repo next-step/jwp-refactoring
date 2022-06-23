@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -82,7 +83,7 @@ class TableServiceTest {
         //then
         assertThatThrownBy(
                 () -> tableService.changeEmpty(0L, new OrderTableUpdateEmptyRequest(true))).isExactlyInstanceOf(
-                IllegalArgumentException.class);
+                NoSuchElementException.class);
     }
 
     @Test
@@ -144,7 +145,7 @@ class TableServiceTest {
 
         //then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(0L,
-                new OrderTableUpdateNumberOfGuestsRequest(10))).isExactlyInstanceOf(IllegalArgumentException.class);
+                new OrderTableUpdateNumberOfGuestsRequest(10))).isExactlyInstanceOf(NoSuchElementException.class);
 
     }
 

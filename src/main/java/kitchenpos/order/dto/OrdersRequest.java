@@ -14,7 +14,7 @@ public class OrdersRequest {
     public OrdersRequest(@JsonProperty("orderTableId") long orderTableId,
             @JsonProperty("orderLineItems") List<OrderLineItemRequest> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문 항목은 반드시 존재해야 합니다.");
         }
         this.orderTableId = orderTableId;
         this.orderLineItems = orderLineItems;

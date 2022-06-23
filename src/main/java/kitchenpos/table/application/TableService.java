@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,10 +38,11 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableUpdateEmptyRequest request) {
-        final OrderTable savedOrderTable = orderTableRepository.findByIdAndTableGroupIsNull(orderTableId).orElseThrow(IllegalArgumentException::new);
+        final OrderTable savedOrderTable =
+                orderTableRepository.findByIdAndTableGroupIsNull(orderTableId).orElseThrow(NoSuchElementException::new);
 
         if (ordersRepository.existsByOrderTableInAndOrderStatusIn(Arrays.asList(savedOrderTable), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("계산 완료 상태가 아닌 테이블이 포함되어 있습니다.");
         }
 
         savedOrderTable.updateEmpty(request.isEmpty());
@@ -51,7 +53,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableUpdateNumberOfGuestsRequest request) {
         final OrderTable savedOrderTable =
-                orderTableRepository.findByIdAndEmptyIsFalse(orderTableId).orElseThrow(IllegalArgumentException::new);
+                orderTableRepository.findByIdAndEmptyIsFalse(orderTableId).orElseThrow(NoSuchElementException::new);
 
         savedOrderTable.updateNumberOfGuests(request.getNumberOfGuests());
 

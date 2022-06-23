@@ -22,6 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -104,7 +105,7 @@ class OrdersServiceTest {
         //then
         assertThatThrownBy(() -> orderService.create(new OrdersRequest(비어있지_않은_주문_테이블.getId(),
                 Arrays.asList(new OrderLineItemRequest(menu.getId(), 1))))).isExactlyInstanceOf(
-                IllegalArgumentException.class);
+                NoSuchElementException.class);
     }
 
     @Test
@@ -117,7 +118,7 @@ class OrdersServiceTest {
         //then
         assertThatThrownBy(() -> orderService.create(new OrdersRequest(비어있는_주문_테이블.getId(),
                 Arrays.asList(new OrderLineItemRequest(menu.getId(), 1))))).isExactlyInstanceOf(
-                IllegalArgumentException.class);
+                NoSuchElementException.class);
     }
 
     @Test
@@ -152,7 +153,7 @@ class OrdersServiceTest {
 
         //then
         assertThatThrownBy(() -> orderService.changeOrderStatus(0L,
-                new OrderStatusRequest(OrderStatus.COMPLETION))).isExactlyInstanceOf(IllegalArgumentException.class);
+                new OrderStatusRequest(OrderStatus.COMPLETION))).isExactlyInstanceOf(NoSuchElementException.class);
     }
 
     @Test

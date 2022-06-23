@@ -28,7 +28,7 @@ public class TableGroup {
         TableGroup tableGroup = TableGroup.empty();
         for (OrderTable orderTable : orderTables) {
             if (!orderTable.isEmpty() || orderTable.hasTableGroup()) {
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("적절하지 않은 테이블이 포함되어 있습니다.");
             }
             orderTable.group(tableGroup);
             tableGroup.add(orderTable);

@@ -43,7 +43,7 @@ public class TableGroupService {
 
         if (ordersRepository.existsByOrderTableInAndOrderStatusIn(tableGroup.getOrderTables(),
                 Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("계산완료 상태가 아닌 테이블이 포함되어 있습니다.");
         }
 
         tableGroup.unGroup();

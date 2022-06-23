@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,14 +38,15 @@ public class OrderService {
     public OrderResponse create(final OrdersRequest request) {
         List<OrderLineItemRequest> orderLineItems = request.getOrderLineItems();
         if (orderLineItems.size() != menuRepository.countByIdIn(request.getOrderLineItems().stream().map(OrderLineItemRequest::getMenuId).collect(Collectors.toList()))) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문 항목 갯수가 적절하지 않습니다.");
         }
 
-        final OrderTable orderTable = orderTableRepository.findByIdAndEmptyIsFalse(request.getOrderTableId()).orElseThrow(IllegalArgumentException::new);
+        final OrderTable orderTable =
+                orderTableRepository.findByIdAndEmptyIsFalse(request.getOrderTableId()).orElseThrow(NoSuchElementException::new);
         final Orders savedOrders = new Orders(orderTable, OrderStatus.COOKING, LocalDateTime.now());
 
         for (final OrderLineItemRequest orderLineItem : orderLineItems) {
-            Menu menu = menuRepository.findById(orderLineItem.getMenuId()).orElseThrow(IllegalArgumentException::new);
+            Menu menu = menuRepository.findById(orderLineItem.getMenuId()).orElseThrow(NoSuchElementException::new);
             savedOrders.add(menu, orderLineItem.getQuantity());
         }
         return new OrderResponse(ordersRepository.save(savedOrders));
@@ -57,7 +59,7 @@ public class OrderService {
 
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderStatusRequest request) {
-        final Orders savedOrders = ordersRepository.findById(orderId).orElseThrow(IllegalArgumentException::new);
+        final Orders savedOrders = ordersRepository.findById(orderId).orElseThrow(NoSuchElementException::new);
         savedOrders.updateStatus(request.getOrderStatus());
         return new OrderResponse(savedOrders);
     }

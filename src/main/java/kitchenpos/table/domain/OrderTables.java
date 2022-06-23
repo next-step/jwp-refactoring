@@ -15,7 +15,7 @@ public class OrderTables implements Iterable<OrderTable> {
 
     public OrderTables(long size, List<OrderTable> orderTables) {
         if (size != orderTables.size()){
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("테이블 갯수가 적절하지 않습니다.");
         }
         this.orderTables = orderTables;
     }

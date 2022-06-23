@@ -1,5 +1,6 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.menu.domain.InvalidPriceException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
@@ -20,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -82,8 +84,7 @@ class MenuServiceTest {
 
         //then
         assertThatThrownBy(() -> menuService.create(
-                new MenuRequest("name", 10L, 0L, Collections.emptyList()))).isExactlyInstanceOf(
-                IllegalArgumentException.class);
+                new MenuRequest("name", 10L, 0L, Collections.emptyList()))).isExactlyInstanceOf(NoSuchElementException.class);
     }
 
     @Test
@@ -97,7 +98,7 @@ class MenuServiceTest {
         //then
         assertThatThrownBy(() -> menuService.create(new MenuRequest("name", 10000L, 0L,
                 Arrays.asList(new MenuProductRequest(1L, 5), new MenuProductRequest(2L, 3))))).isExactlyInstanceOf(
-                IllegalArgumentException.class);
+                InvalidPriceException.class);
     }
 
     @Test
@@ -110,7 +111,7 @@ class MenuServiceTest {
         //then
         assertThatThrownBy(() -> menuService.create(new MenuRequest("name", 10000L, 0L,
                 Arrays.asList(new MenuProductRequest(3L, 5), new MenuProductRequest(2L, 3))))).isExactlyInstanceOf(
-                IllegalArgumentException.class);
+                NoSuchElementException.class);
     }
 
     @Test

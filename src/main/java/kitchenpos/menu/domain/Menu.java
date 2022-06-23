@@ -62,7 +62,7 @@ public class Menu {
 
     public void checkPrice() {
         if (this.price > this.menuProducts.totalPrice()) {
-            throw new IllegalArgumentException();
+            throw new InvalidPriceException();
         }
     }
 }

@@ -1,5 +1,7 @@
 package kitchenpos.menu;
 
+import kitchenpos.menu.domain.InvalidNameException;
+import kitchenpos.menu.domain.InvalidPriceException;
 import kitchenpos.menu.dto.MenuRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,16 +14,15 @@ class MenuRequestTest {
     @Test
     @DisplayName("메뉴 가격이 음수면 요청을 생성할 수 없다")
     void create_failed_1() {
-        assertThatThrownBy(
-                () -> new MenuRequest("name", -1L, 0L, Collections.emptyList())).isExactlyInstanceOf(
-                IllegalArgumentException.class);
+        assertThatThrownBy(() -> new MenuRequest("name", -1L, 0L, Collections.emptyList())).isExactlyInstanceOf(
+                InvalidPriceException.class);
     }
 
     @Test
     @DisplayName("메뉴 이름이 비어있으면 요청을 생성할 수 없다")
     void create_failed_2() {
-        assertThatThrownBy(() -> new MenuRequest(null, 10000L, 0L,
-                Collections.emptyList())).isExactlyInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new MenuRequest(null, 10000L, 0L, Collections.emptyList())).isExactlyInstanceOf(
+                InvalidNameException.class);
     }
 
 }
