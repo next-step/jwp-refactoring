@@ -9,6 +9,10 @@ public class TableFixtures {
         return new OrderTableRequest(null, null, numberOfGuests, isEmpty);
     }
 
+    public static OrderTableRequest 테이블_요청_만들기(Integer numberOfGuests){
+        return 테이블_요청_만들기(numberOfGuests, null);
+    }
+
     public static OrderTable 테이블_만들기(Integer numberOfGuests, Boolean isEmpty){
         return new OrderTable(null, numberOfGuests, isEmpty);
     }

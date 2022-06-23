@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.time.LocalDateTime;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -26,6 +26,8 @@ class TableServiceTest {
 
     @Autowired
     private TableGroupRepository tableGroupRepository;
+    @Autowired
+    private OrderTableRepository orderTableRepository;
     @Autowired
     private TableService tableService;
 
@@ -81,11 +83,13 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests() {
         //given
-        long requestTableId = 1;
-        OrderTable request = new OrderTable(null, null, 10, true);
+        kitchenpos.table.domain.OrderTable orderTable = 테이블_만들기(3, false);
+        orderTableRepository.save(orderTable);
+        long requestTableId = orderTable.getId();
+        OrderTableRequest request = 테이블_요청_만들기(3);
 
         //when
-        OrderTable result = tableService.changeNumberOfGuests(requestTableId, request);
+        OrderTableResponse result = tableService.changeNumberOfGuests(requestTableId, request);
 
         //then
         assertThat(result.getNumberOfGuests()).isEqualTo(request.getNumberOfGuests());
@@ -95,20 +99,25 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests_less_than_zero() {
         //given
-        long requestTableId = 1;
-        OrderTable request = new OrderTable(null, null, -1, true);
+        kitchenpos.table.domain.OrderTable orderTable = 테이블_만들기(3, false);
+        orderTableRepository.save(orderTable);
+        long requestTableId = orderTable.getId();
+        OrderTableRequest request = 테이블_요청_만들기(-1);
 
         //when then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeNumberOfGuests(requestTableId, request));
+                .isThrownBy(() -> tableService.changeNumberOfGuests(requestTableId, request))
+                .withMessageContaining("방문 손님 수는 0명 미만으로 변경할 수 없습니다");
     }
 
     @DisplayName("빈 테이블인 경우 방문 손님 수를 업데이트 할 수 없다.")
     @Test
     void changeNumberOfGuests_empty_table() {
         //given
-        long requestTableId = 3;
-        OrderTable request = new OrderTable(null, null, 10, true);
+        kitchenpos.table.domain.OrderTable orderTable = 테이블_만들기(3, true);
+        orderTableRepository.save(orderTable);
+        long requestTableId = orderTable.getId();
+        OrderTableRequest request = 테이블_요청_만들기(5);
 
         //when then
         assertThatIllegalArgumentException()

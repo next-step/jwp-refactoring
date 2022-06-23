@@ -9,13 +9,11 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
@@ -92,7 +90,7 @@ class TableServiceTest {
         OrderTableRequest request = 테이블_요청_만들기(3, true);
         kitchenpos.table.domain.OrderTable orderTable = new kitchenpos.table.domain.OrderTable(requestTableId,
                 request.getNumberOfGuests(), request.getEmpty());
-        orderTable.setTableGroup(new TableGroup(1L, null,null));
+        orderTable.setTableGroup(new TableGroup(1L, null, null));
         given(orderTableRepository.findById(requestTableId)).willReturn(Optional.of(orderTable));
 
         //when then
@@ -121,18 +119,16 @@ class TableServiceTest {
     void changeNumberOfGuests() {
         //given
         long requestTableId = 1;
-        OrderTable request = new OrderTable(null, null, 10, true);
-        OrderTable orderTable = new OrderTable(1L, null, 5, false);
+        OrderTableRequest request = 테이블_요청_만들기(3);
 
-        given(orderTableDao.findById(requestTableId)).willReturn(Optional.of(orderTable));
-        given(orderTableDao.save(orderTable)).willReturn(orderTable);
+        kitchenpos.table.domain.OrderTable orderTable = spy(kitchenpos.table.domain.OrderTable.class);
+        given(orderTableRepository.findById(requestTableId)).willReturn(Optional.of(orderTable));
 
         //when
-        OrderTable result = tableService.changeNumberOfGuests(requestTableId, request);
+        OrderTableResponse result = tableService.changeNumberOfGuests(requestTableId, request);
 
         //then
         assertThat(result.getNumberOfGuests()).isEqualTo(request.getNumberOfGuests());
-        assertThat(result.isEmpty()).isEqualTo(orderTable.isEmpty());
     }
 
     @DisplayName("방문 손님 수가 0명 미만인 경우 업데이트 할 수 없다.")
@@ -140,7 +136,7 @@ class TableServiceTest {
     void changeNumberOfGuests_less_than_zero() {
         //given
         long requestTableId = 1;
-        OrderTable request = new OrderTable(null, null, -1, true);
+        OrderTableRequest request = 테이블_요청_만들기(-1);
 
         //when then
         assertThatIllegalArgumentException()
@@ -152,31 +148,15 @@ class TableServiceTest {
     void changeNumberOfGuests_empty_table() {
         //given
         long requestTableId = 1;
-        OrderTable request = new OrderTable(null, null, 10, true);
-        OrderTable orderTable = new OrderTable(1L, null, 0, true);
+        OrderTableRequest request = 테이블_요청_만들기(3);
+        kitchenpos.table.domain.OrderTable orderTable = new kitchenpos.table.domain.OrderTable(requestTableId,
+                request.getNumberOfGuests(), true);
 
-        given(orderTableDao.findById(requestTableId)).willReturn(Optional.of(orderTable));
+        given(orderTableRepository.findById(requestTableId)).willReturn(Optional.of(orderTable));
 
         //when then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableService.changeNumberOfGuests(requestTableId, request));
-    }
-
-    @DisplayName("테이블 목록을 조회한다.")
-    @Test
-    void list() {
-        //given
-        OrderTable orderTable1 = new OrderTable(1L, null, 0, true);
-        OrderTable orderTable2 = new OrderTable(2L, null, 2, false);
-        OrderTable orderTable3 = new OrderTable(3L, null, 3, false);
-
-        given(orderTableDao.findAll()).willReturn(Arrays.asList(orderTable1, orderTable2, orderTable3));
-
-        //when
-        List<OrderTable> results = tableService.list();
-
-        //then
-        assertThat(results).containsExactlyInAnyOrderElementsOf(Arrays.asList(orderTable1, orderTable2, orderTable3));
     }
 
 }
