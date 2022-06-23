@@ -1,12 +1,14 @@
 package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.ProductDao;
@@ -16,8 +18,14 @@ import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 
 class MenuServiceTest extends ServiceTest{
 
@@ -48,33 +56,6 @@ class MenuServiceTest extends ServiceTest{
     }
 
     @Test
-    @DisplayName("가격이 1원이상으로 책정되어야 한다.")
-    void createFail_price() {
-        Menu 후라이드_양념_세트 = new Menu("후라이드_양념_세트", BigDecimal.valueOf(-1), 두마리메뉴.getId(), Arrays.asList(후라이드_메뉴상품, 양념치킨_메뉴상품));
-
-        assertThatIllegalArgumentException()
-            .isThrownBy(() -> this.menuService.create(후라이드_양념_세트));
-    }
-
-    @Test
-    @DisplayName("속할 메뉴그룹이 지정되어야 한다.")
-    void createFail_menuGroup() {
-        Menu 후라이드_양념_세트 = new Menu("후라이드_양념_세트", BigDecimal.valueOf(32000), null, Arrays.asList(후라이드_메뉴상품, 양념치킨_메뉴상품));
-
-        assertThatIllegalArgumentException()
-            .isThrownBy(() -> this.menuService.create(후라이드_양념_세트));
-    }
-
-    @Test
-    @DisplayName("메뉴에 속한 상품 가격의 합보다 같거나 작아야한다.")
-    void createFail_comparePriceToProduct() {
-        Menu 후라이드_양념_세트 = new Menu("후라이드_양념_세트", BigDecimal.valueOf(33000), 두마리메뉴.getId(), Arrays.asList(후라이드_메뉴상품, 양념치킨_메뉴상품));
-
-        assertThatIllegalArgumentException()
-            .isThrownBy(() -> this.menuService.create(후라이드_양념_세트));
-    }
-
-    @Test
     @DisplayName("메뉴 등록에 성공한다.")
     void create() {
         Menu 후라이드_양념_세트 = new Menu("후라이드_양념_세트", BigDecimal.valueOf(31000), 두마리메뉴.getId(), Arrays.asList(후라이드_메뉴상품, 양념치킨_메뉴상품));
@@ -83,6 +64,37 @@ class MenuServiceTest extends ServiceTest{
 
         assertThat(후라이드_양념_세트.getId()).isNotNull();
         assertThat(후라이드_양념_세트.getMenuProducts()).hasSize(2);
+    }
+
+    @TestFactory
+    @DisplayName("메뉴 등록시 값들의 유효성 검사에 따라 에러처리를 확인한다.")
+    Stream<DynamicTest> createFail_menuGroup() {
+        return Stream.of(
+            DynamicTest.dynamicTest("메뉴 이름이 없는 경우", () -> {
+                Menu 후라이드_양념_세트 = new Menu(null, BigDecimal.valueOf(31000), 두마리메뉴.getId(), Arrays.asList(후라이드_메뉴상품, 양념치킨_메뉴상품));
+                메뉴그룹_생성_실패(후라이드_양념_세트, DataIntegrityViolationException.class);
+            }),
+            DynamicTest.dynamicTest("가격이 없는 경우", () -> {
+                Menu 후라이드_양념_세트 = new Menu("후라이드_양념_세트", null, 두마리메뉴.getId(), Arrays.asList(후라이드_메뉴상품, 양념치킨_메뉴상품));
+                메뉴그룹_생성_실패(후라이드_양념_세트, IllegalArgumentException.class);
+            }),
+            DynamicTest.dynamicTest("메뉴 그룹이 없는 경우", () -> {
+                Menu 후라이드_양념_세트 = new Menu("후라이드_양념_세트", BigDecimal.valueOf(31000), null, Arrays.asList(후라이드_메뉴상품, 양념치킨_메뉴상품));
+                메뉴그룹_생성_실패(후라이드_양념_세트, IllegalArgumentException.class);
+            }),
+            DynamicTest.dynamicTest("상품이 없는 경우", () -> {
+                Menu 후라이드_양념_세트 = new Menu("후라이드_양념_세트", BigDecimal.valueOf(31000), 두마리메뉴.getId(), null);
+                메뉴그룹_생성_실패(후라이드_양념_세트, NullPointerException.class);
+            }),
+            DynamicTest.dynamicTest("가격이 0원 미만일 경우", () -> {
+                Menu 후라이드_양념_세트 = new Menu("후라이드_양념_세트", BigDecimal.valueOf(-1), 두마리메뉴.getId(), Arrays.asList(후라이드_메뉴상품, 양념치킨_메뉴상품));
+                메뉴그룹_생성_실패(후라이드_양념_세트, IllegalArgumentException.class);
+            }),
+            DynamicTest.dynamicTest("상품의 가격 합보다 메뉴의 가격이 클 경우", () -> {
+                Menu 후라이드_양념_세트 = new Menu("후라이드_양념_세트", BigDecimal.valueOf(33000), 두마리메뉴.getId(), Arrays.asList(후라이드_메뉴상품, 양념치킨_메뉴상품));
+                메뉴그룹_생성_실패(후라이드_양념_세트, IllegalArgumentException.class);
+            })
+        );
     }
 
     @Test
@@ -98,6 +110,13 @@ class MenuServiceTest extends ServiceTest{
         List<Menu> list = this.menuService.list();
 
         assertThat(list).containsExactly(후라이드_양념_세트, 임시_메뉴);
+    }
+
+
+
+    private void 메뉴그룹_생성_실패(Menu menu, Class<? extends Exception> exception) {
+        assertThatExceptionOfType(exception)
+            .isThrownBy(() -> this.menuService.create(menu));
     }
 
 }
