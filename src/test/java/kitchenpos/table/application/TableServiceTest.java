@@ -62,8 +62,7 @@ public class TableServiceTest {
     @DisplayName("테이블을 비운다.")
     void changeEmpty() {
         // given
-        OrderTable orderTable = 테이블_등록(1L, 4, true);
-        orderTable.ungroup();
+        OrderTable orderTable = 테이블_등록(4, true);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
         given(orderTableRepository.save(any())).willReturn(orderTable);
 
@@ -79,6 +78,8 @@ public class TableServiceTest {
     void changeEmptyOfNotNullTableGroupId() {
         // given
         OrderTable orderTable = 테이블_등록(1L, 4, true);
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
+
         // when-then
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), orderTable))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -108,20 +109,20 @@ public class TableServiceTest {
         given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
 
         // when
-        OrderTableResponse changeTable = tableService.changeNumberOfGuests(orderTable.getId(), orderTable);
+        OrderTableResponse changeTable = tableService.changeNumberOfGuests(orderTable.getId(), OrderTable.of(5));
 
         // then
         assertThat(changeTable).isNotNull();
     }
 
     @Test
-    @DisplayName("방문한 손님 수가 0이하이면 실패한다. ")
+    @DisplayName("방문한 손님 수가 0이하이면 실패한다.")
     void changeNumberOfGuestsOfZero() {
         // given
-        OrderTable orderTable = 테이블_등록(1L, 0, false);
+        OrderTable orderTable = 테이블_등록(1L, 10, false);
 
         // when-then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), orderTable))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), OrderTable.of(-1)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -130,9 +131,10 @@ public class TableServiceTest {
     void changeNumberOfGuestsOfEmptyTable() {
         // given
         OrderTable orderTable = 테이블_등록(1L, 4, true);
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
 
         // when-then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), orderTable))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), OrderTable.of(10)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -142,9 +144,5 @@ public class TableServiceTest {
 
     public static OrderTable 테이블_등록(int numberOfGuests, boolean empty) {
         return OrderTable.of(numberOfGuests, empty);
-    }
-
-    public static OrderTable 테이블_등록2(long tableGroupId, int numberOfGuests, boolean empty) {
-        return OrderTable.of(tableGroupId, numberOfGuests, empty);
     }
 }

@@ -89,6 +89,11 @@ public class OrderTable {
         this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
     }
 
+    public void changeNumberOfGuests(NumberOfGuests numberOfGuests) {
+        validateOfChangeNumberOfGuests(numberOfGuests);
+        this.numberOfGuests = numberOfGuests;
+    }
+
     public void changeEmpty(final boolean empty) {
         validateOfChangeEmpty();
         this.empty = empty;
@@ -97,6 +102,12 @@ public class OrderTable {
     private void validateOfChangeEmpty() {
         if (Objects.nonNull(tableGroupId)) {
             throw new IllegalArgumentException("그룹이 있는 테이블은 빈 상태로 변경할 수 없습니다");
+        }
+    }
+
+    private void validateOfChangeNumberOfGuests(NumberOfGuests numberOfGuests) {
+        if (isEmpty()) {
+            throw new IllegalArgumentException("빈 테이블에 손님 수를 변경 할수 없습니다");
         }
     }
 }
