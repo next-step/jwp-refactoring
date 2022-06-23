@@ -85,10 +85,6 @@ public class OrderTable {
         this.tableGroupId = tableGroup.getId();
     }
 
-    public void changeNumberOfGuests(int numberOfGuests) {
-        this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
-    }
-
     public void changeNumberOfGuests(NumberOfGuests numberOfGuests) {
         validateOfChangeNumberOfGuests(numberOfGuests);
         this.numberOfGuests = numberOfGuests;

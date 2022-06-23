@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
 import kitchenpos.product.domain.Product;
 
@@ -53,15 +54,23 @@ public class MenuProduct {
         return menu;
     }
 
-    void setMenu(Menu menu) {
-        this.menu = menu;
-    }
-
     public Long getProductId() {
         return product.getId();
     }
 
     public long getQuantityValue() {
         return quantity.getValue();
+    }
+
+    void bindMenu(Menu menu) {
+        this.menu = menu;
+    }
+
+    public void bindProduct(Product product) {
+        this.product = product;
+    }
+
+    public Price calculateProductsPrice() {
+        return Price.multiply(product, quantity);
     }
 }

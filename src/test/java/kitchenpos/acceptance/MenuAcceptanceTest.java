@@ -87,6 +87,18 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
+    @DisplayName("메뉴를 등록 실패한다. (상품가격이 메뉴가격보다 크다)")
+    void FailCreateMenuOfOverPriceProduct() {
+        // given
+        MenuProductRequest menuProduct = MenuProductRequest.of(1L, 1);
+
+        // when
+        ExtractableResponse<Response> response = 메뉴_등록_요청("강정치킨", 1000, menuGroup.getId(), Arrays.asList(menuProduct));
+        // then
+        메뉴_등록_실패됨(response);
+    }
+
+    @Test
     @DisplayName("메뉴를 조회한다.")
     void getMenu() {
         // when

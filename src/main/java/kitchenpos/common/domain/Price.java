@@ -38,7 +38,16 @@ public class Price {
         }
     }
 
+    public Price add(Price other) {
+        return Price.of(price.add(other.price));
+    }
+
     public static Price multiply(Product product, Quantity quantity) {
-        return Price.of(product.getPriceVal().multiply(BigDecimal.valueOf(quantity.getValue())));
+        return Price.of(product.getPriceValue()
+                .multiply(BigDecimal.valueOf(quantity.getValue())));
+    }
+
+    public boolean isGreaterThan(Price other) {
+        return price.compareTo(other.price) > 0;
     }
 }

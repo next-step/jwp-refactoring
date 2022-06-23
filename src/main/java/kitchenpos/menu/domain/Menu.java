@@ -61,22 +61,17 @@ public class Menu {
         return price;
     }
 
-    public MenuGroup getMenuGroup() {
-        return menuGroup;
+    public Long getMenuGroupId() {
+        return menuGroup.getId();
     }
 
     public MenuProducts getMenuProducts() {
         return menuProducts;
     }
 
-    @Override
-    public String toString() {
-        return "Menu{" +
-                "id=" + id +
-                ", name=" + name +
-                ", price=" + price +
-                ", menuGroup=" + menuGroup +
-                ", menuProducts=" + menuProducts +
-                '}';
+    public void validateMenuPrice(Price menuPrice) {
+        if (menuPrice.isGreaterThan((price))) {
+            throw new IllegalArgumentException("상품들 금액의 합이 메뉴 가격보다 클 수 없습니다");
+        }
     }
 }

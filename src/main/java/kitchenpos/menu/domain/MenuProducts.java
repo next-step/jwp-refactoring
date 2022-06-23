@@ -1,9 +1,12 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.common.domain.Price;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class MenuProducts {
@@ -18,11 +21,25 @@ public class MenuProducts {
     }
 
     public static MenuProducts of(Menu menu, List<MenuProduct> menuProducts) {
-        menuProducts.forEach(menuProduct -> menuProduct.setMenu(menu));
+        menuProducts.forEach(menuProduct -> menuProduct.bindMenu(menu));
         return new MenuProducts(menuProducts);
     }
 
     public List<MenuProduct> getValues() {
         return menuProducts;
+    }
+
+    public List<Long> getProductIds() {
+        return getValues().stream()
+                .map(MenuProduct::getProductId)
+                .collect(Collectors.toList());
+    }
+
+    public Price getTotalPrice() {
+        Price totalPrice = Price.of(0);
+        for (MenuProduct menuProduct : menuProducts) {
+            totalPrice = totalPrice.add(menuProduct.calculateProductsPrice());
+        }
+        return totalPrice;
     }
 }

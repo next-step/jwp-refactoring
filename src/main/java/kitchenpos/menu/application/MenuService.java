@@ -1,18 +1,13 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroupRepository;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,28 +25,10 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final Menu menu) {
-        final BigDecimal price = menu.getPrice().getValue();
+        validateOfMenuGroup(menu.getMenuGroupId());
 
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
-
-        if (!menuGroupRepository.existsById(menu.getMenuGroup().getId())) {
-            throw new IllegalArgumentException();
-        }
-
-        final List<MenuProduct> menuProducts = menu.getMenuProducts().getValues();
-
-        BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProduct menuProduct : menuProducts) {
-            final Product product = productRepository.findById(menuProduct.getProductId())
-                    .orElseThrow(IllegalArgumentException::new);
-            sum = sum.add(BigDecimal.valueOf(product.getPrice()).multiply(BigDecimal.valueOf(menuProduct.getQuantityValue())));
-        }
-
-        if (price.compareTo(sum) > 0) {
-            throw new IllegalArgumentException();
-        }
+        MenuProducts menuProducts = bindProducts(menu.getMenuProducts());
+        menu.validateMenuPrice(menuProducts.getTotalPrice());
 
         return MenuResponse.from(menuRepository.save(menu));
     }
@@ -60,5 +37,24 @@ public class MenuService {
         return menuRepository.findAll().stream()
                 .map(MenuResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    private void validateOfMenuGroup(Long menuGroupId) {
+        if (!menuGroupRepository.existsById(menuGroupId)) {
+            throw new IllegalArgumentException("메뉴 그룹이 존재하지 않습니다.");
+        }
+    }
+
+    private MenuProducts bindProducts(MenuProducts menuProducts) {
+        for (MenuProduct menuProduct : menuProducts.getValues()) {
+            Product product = getProduct(menuProduct.getProductId());
+            menuProduct.bindProduct(product);
+        }
+        return menuProducts;
+    }
+
+    private Product getProduct(Long productId) {
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다."));
     }
 }

@@ -55,7 +55,7 @@ public class MenuServiceTest {
     void createMenu() {
         // given
         given(menuGroupRepository.existsById(any())).willReturn(true);
-        given(productRepository.findById(any())).willReturn(Optional.of(강정치킨));
+        given(productRepository.findById(any())).willReturn(Optional.ofNullable(강정치킨));
         given(menuRepository.save(any())).willReturn(추천메뉴);
 
         // when

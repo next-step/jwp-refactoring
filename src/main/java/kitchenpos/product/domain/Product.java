@@ -53,4 +53,8 @@ public class Product {
     public BigDecimal getPriceVal() {
         return price.getValue();
     }
+
+    public BigDecimal getPriceValue() {
+        return price.getValue();
+    }
 }
