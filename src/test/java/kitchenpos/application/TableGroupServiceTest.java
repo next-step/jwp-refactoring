@@ -3,9 +3,11 @@ package kitchenpos.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.List;
 import kitchenpos.application.fixture.MenuFixtureFactory;
 import kitchenpos.application.fixture.MenuGroupFixtureFactory;
 import kitchenpos.application.fixture.MenuProductFixtureFactory;
@@ -30,6 +32,8 @@ import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.domain.tablegroup.TableGroup;
 import kitchenpos.domain.tablegroup.TableGroupRepository;
+import kitchenpos.domain.tablegroup.event.TableGroupingEvent;
+import kitchenpos.domain.tablegroup.event.TableUngroupEvent;
 import kitchenpos.dto.tablegroup.TableGroupRequest;
 import kitchenpos.dto.tablegroup.TableGroupResponse;
 import kitchenpos.exception.CreateTableGroupException;
@@ -40,6 +44,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.stereotype.Component;
@@ -68,6 +73,8 @@ class TableGroupServiceTest {
     @Autowired
     private TableGroupService tableGroupService;
 
+    @Autowired
+    private ApplicationEventPublisher publisher;
 
     private MenuGroup 초밥_메뉴그룹;
     private Product 우아한_초밥_1;
@@ -134,53 +141,48 @@ class TableGroupServiceTest {
 
         // then
         TableGroup findTableGroup = tableGroupRepository.findById(response.getId()).get();
-        assertThat(response).isEqualTo(TableGroupResponse.of(findTableGroup, Lists.newArrayList(주문_1_테이블, 주문_2_테이블)));
+        assertThat(response).isEqualTo(TableGroupResponse.from(findTableGroup));
     }
 
     @DisplayName("주문 테이블이 비어있으면 테이블을 단체로 지정할 수 없다.")
     @Test
     void create02() {
         // given
-        TableGroupRequest request = TableGroupRequest.from(Collections.emptyList());
+        List<Long> orderTableIds = Collections.emptyList();
 
         // when & then
-        assertThatExceptionOfType(CreateTableGroupException.class)
-                .isThrownBy(() -> tableGroupService.create(request));
+        assertThrows(CreateTableGroupException.class, () -> publisher.publishEvent(new TableGroupingEvent(단체_1, orderTableIds)));
     }
 
     @DisplayName("주문 테이블이 1개이면 테이블을 단체로 지정할 수 없다.")
     @Test
     void create03() {
         // given
-        TableGroupRequest request = TableGroupRequest.from(Lists.newArrayList(주문_1_테이블.getId()));
+        List<Long> orderTableIds = Lists.newArrayList(주문_1_테이블.getId());
 
         // when & then
-        assertThatExceptionOfType(CreateTableGroupException.class)
-                .isThrownBy(() -> tableGroupService.create(request));
+        assertThrows(CreateTableGroupException.class, () -> publisher.publishEvent(new TableGroupingEvent(단체_1, orderTableIds)));
     }
 
     @DisplayName("단체에 속하는 주문 테이블이 빈 테이블이 아니면 단체로 지정할 수 없다.")
     @Test
     void create05() {
         // given
-        TableGroupRequest request = TableGroupRequest.from(Lists.newArrayList(주문_테이블_10명.getId()));
+        List<Long> orderTableIds = Lists.newArrayList(주문_테이블_10명.getId(), 주문_1_테이블.getId());
 
         // when & then
-        assertThatExceptionOfType(CreateTableGroupException.class)
-                .isThrownBy(() -> tableGroupService.create(request));
+        assertThrows(CreateTableGroupException.class, () -> publisher.publishEvent(new TableGroupingEvent(단체_1, orderTableIds)));
     }
 
     @DisplayName("단체에 속하는 주문 테이블이 이미 테이블 그룹에 속해있으면 단체로 지정할 수 없다.")
     @Test
     void create06() {
         // given
-        TableGroupRequest request = TableGroupRequest.from(Lists.newArrayList(주문_1_테이블.getId(), 주문_2_테이블.getId()));
-
         주문_1_테이블.mappedByTableGroup(단체_1.getId());
+        List<Long> orderTableIds = Lists.newArrayList(주문_1_테이블.getId(), 주문_2_테이블.getId());
 
         // when & then
-        assertThatExceptionOfType(CreateTableGroupException.class)
-                .isThrownBy(() -> tableGroupService.create(request));
+        assertThrows(CreateTableGroupException.class, () -> publisher.publishEvent(new TableGroupingEvent(단체_1, orderTableIds)));
     }
 
     @DisplayName("단체를 해제할 수 있다.")
@@ -191,7 +193,7 @@ class TableGroupServiceTest {
         주문_2_테이블.mappedByTableGroup(단체_1.getId());
 
         // when
-        tableGroupService.ungroup(단체_1.getId());
+        publisher.publishEvent(new TableUngroupEvent(단체_1));
 
         // then
         assertAll(
@@ -205,10 +207,9 @@ class TableGroupServiceTest {
     void change02() {
         // given
         A_주문_테이블.mappedByTableGroup(단체_1.getId());
+        주문_테이블_10명.mappedByTableGroup(단체_1.getId());
 
         // when & then
-        assertThatExceptionOfType(DontUnGroupException.class)
-                .isThrownBy(() -> tableGroupService.ungroup(단체_1.getId())
-        );
+        assertThrows(DontUnGroupException.class, () -> publisher.publishEvent(new TableUngroupEvent(단체_1)));
     }
 }
