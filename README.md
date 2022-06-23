@@ -83,6 +83,36 @@
 - 데이터베이스 스키마 변경 및 마이그레이션이 필요하다면 아래 문서를 적극 활용한다.
   - [DB도 형상관리를 해보자!](https://meetup.toast.com/posts/173)
 
+### 리팩토링 리스트
+- [x] 패키지 나누기
+- [x] JPA 설정
+- [ ] Request, Response DTO 생성
+  - [x] product
+  - [ ] menu
+  - [x] menu group
+  - [ ] menu product
+  - [ ] order
+  - [ ] order line item
+  - [x] order table
+  - [x] table group
+- [ ] Service 비즈니스 로직 도메인으로 책임 위임
+  - [x] ProductService
+  - [ ] MenuService
+  - [x] MenuGroupService
+  - [ ] OrderService
+  - [x] TableService
+  - [x] TableGroupService
+- [ ] DAO -> Repository 변경
+  - [x] product
+  - [ ] menu
+  - [x] menu group
+  - [ ] menu product
+  - [ ] order
+  - [x] order table
+  - [x] table group
+- [ ] 불필요한 getter, setter 제거
+- [ ] 모든 원시 값과 문자열 포장
+
 ---
 ### 프로그래밍 요구 사항
 - Lombok은 그 강력한 기능만큼 사용상 주의를 요한다.
