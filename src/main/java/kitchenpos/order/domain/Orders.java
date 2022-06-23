@@ -9,7 +9,7 @@ import javax.persistence.OneToMany;
 @Embeddable
 public class Orders {
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "orderTable")
     private final List<Order> orders = new ArrayList<>();
     
     public List<Order> getOrders() {

@@ -1,14 +1,14 @@
 package kitchenpos.table.application;
 
+import static kitchenpos.helper.TableFixtures.테이블_만들기;
 import static kitchenpos.helper.TableFixtures.테이블_요청_만들기;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.domain.TableGroupRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -25,7 +25,7 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 class TableServiceTest {
 
     @Autowired
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
     @Autowired
     private TableService tableService;
 
@@ -50,30 +50,31 @@ class TableServiceTest {
     void changeEmpty() {
         //given
         long requestTableId = 1L;
-        OrderTable request = new OrderTable(null, null, 0, false);
+        OrderTableRequest request = 테이블_요청_만들기(0, false);
 
-        //whe
-        OrderTable result = tableService.changeEmpty(requestTableId, request);
+        //when
+        OrderTableResponse result = tableService.changeEmpty(requestTableId, request);
 
         //then
-        assertThat(result.isEmpty()).isEqualTo(request.isEmpty());
-        assertThat(result.getNumberOfGuests()).isEqualTo(request.getNumberOfGuests());
+        assertThat(result.getEmpty()).isEqualTo(request.getEmpty());
     }
 
     @DisplayName("단체 지정이 되어있는 경우 빈 테이블 여부 업데이트 할 수 없다.")
     @Test
     void changeEmpty_table_group() {
         //given
-        OrderTable orderTable1 = new OrderTable(10L, 1L, 1, false);
-        OrderTable orderTable2 = new OrderTable(11L, 2L, 2, false);
-        tableGroupDao.save(new TableGroup(1L, LocalDateTime.now(), Arrays.asList(orderTable1, orderTable2)));
+        kitchenpos.table.domain.OrderTable orderTable1 = 테이블_만들기(0, true);
+        kitchenpos.table.domain.OrderTable orderTable2 = 테이블_만들기(0, false);
+        TableGroup tableGroup = new TableGroup(null, LocalDateTime.now());
+        tableGroup.addOrderTable(orderTable1);
+        tableGroup.addOrderTable(orderTable2);
+        tableGroupRepository.save(tableGroup);
 
-        long requestTableId = 10;
-        OrderTable request = new OrderTable(null, null, 0, true);
+        OrderTableRequest request = 테이블_요청_만들기(0, false);
 
         //when then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeEmpty(requestTableId, request));
+                .isThrownBy(() -> tableService.changeEmpty(orderTable1.getId(), request));
     }
 
     @DisplayName("방문 손님 수를 업데이트 한다.")

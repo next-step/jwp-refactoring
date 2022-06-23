@@ -3,19 +3,22 @@ package kitchenpos.application;
 import static kitchenpos.helper.TableFixtures.테이블_요청_만들기;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,8 +52,8 @@ class TableServiceTest {
         long generateTableId = 1;
         OrderTableRequest request = 테이블_요청_만들기(0, true);
         doAnswer(invocation -> new kitchenpos.table.domain.OrderTable(generateTableId,
-                    request.getNumberOfGuests(),
-                    request.getEmpty())
+                request.getNumberOfGuests(),
+                request.getEmpty())
         ).when(orderTableRepository).save(any());
 
         //when
@@ -68,20 +71,17 @@ class TableServiceTest {
     void changeEmpty() {
         //given
         long requestTableId = 1L;
-        OrderTable request = new OrderTable(null, null, 0, true);
-        OrderTable orderTable = new OrderTable(1L, null, 5, false);
+        OrderTableRequest request = 테이블_요청_만들기(3, true);
 
-        given(orderTableDao.findById(requestTableId)).willReturn(Optional.of(orderTable));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(requestTableId,
-                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(false);
-        given(orderTableDao.save(orderTable)).willReturn(orderTable);
+        given(orderTableRepository.findById(requestTableId))
+                .willReturn(Optional.of(new kitchenpos.table.domain.OrderTable(1L, 0, true)));
 
         //when
-        OrderTable result = tableService.changeEmpty(requestTableId, request);
+        OrderTableResponse result = tableService.changeEmpty(requestTableId, request);
 
         //then
-        assertThat(result.isEmpty()).isEqualTo(request.isEmpty());
-        assertThat(result.getNumberOfGuests()).isEqualTo(orderTable.getNumberOfGuests());
+        assertThat(result.getEmpty()).isEqualTo(request.getEmpty());
+        assertThat(result.getNumberOfGuests()).isEqualTo(result.getNumberOfGuests());
     }
 
     @DisplayName("단체 지정이 되어있는 경우 빈 테이블 여부 업데이트 할 수 없다.")
@@ -89,10 +89,11 @@ class TableServiceTest {
     void changeEmpty_table_group() {
         //given
         long requestTableId = 1;
-        OrderTable request = new OrderTable(null, null, 0, true);
-        OrderTable orderTable = new OrderTable(1L, 1L, 5, false);
-
-        given(orderTableDao.findById(requestTableId)).willReturn(Optional.of(orderTable));
+        OrderTableRequest request = 테이블_요청_만들기(3, true);
+        kitchenpos.table.domain.OrderTable orderTable = new kitchenpos.table.domain.OrderTable(requestTableId,
+                request.getNumberOfGuests(), request.getEmpty());
+        orderTable.setTableGroup(new TableGroup(1L, null,null));
+        given(orderTableRepository.findById(requestTableId)).willReturn(Optional.of(orderTable));
 
         //when then
         assertThatIllegalArgumentException()
@@ -104,16 +105,15 @@ class TableServiceTest {
     void changeEmpty_order_stats_cooking_or_meal() {
         //given
         long requestTableId = 1;
-        OrderTable request = new OrderTable(null, null, 0, true);
-        OrderTable orderTable = new OrderTable(1L, null, 5, false);
-
-        given(orderTableDao.findById(requestTableId)).willReturn(Optional.of(orderTable));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(requestTableId,
-                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(true);
+        OrderTableRequest request = 테이블_요청_만들기(3, true);
+        kitchenpos.table.domain.OrderTable orderTable = mock(kitchenpos.table.domain.OrderTable.class);
+        given(orderTableRepository.findById(requestTableId)).willReturn(Optional.of(orderTable));
+        doThrow(new IllegalStateException()).when(orderTable).checkPossibleChangeEmpty();
 
         //when then
-        assertThatIllegalArgumentException()
+        assertThatIllegalStateException()
                 .isThrownBy(() -> tableService.changeEmpty(requestTableId, request));
+
     }
 
     @DisplayName("방문 손님 수를 업데이트 한다.")

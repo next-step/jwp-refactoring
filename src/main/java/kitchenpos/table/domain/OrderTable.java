@@ -36,12 +36,19 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public void addOrder(Order order){
+    public void addOrder(Order order) {
         orders.addOrder(order);
     }
 
-    public void checkPossibleChangeEmpty(){
+    public void checkPossibleChangeEmpty() {
+        if (tableGroup != null) {
+            throw new IllegalArgumentException("[ERROR] 단체 지정이 되어있어 업데이트 할 수 없습니다.");
+        }
         orders.checkPossibleChangeEmpty();
+    }
+
+    public void updateEmpty(boolean empty) {
+        this.empty = empty;
     }
 
     public Long getId() {
@@ -58,5 +65,9 @@ public class OrderTable {
 
     public TableGroup getTableGroup() {
         return tableGroup;
+    }
+
+    public void setTableGroup(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
     }
 }

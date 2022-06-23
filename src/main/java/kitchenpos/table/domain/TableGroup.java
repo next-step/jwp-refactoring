@@ -18,7 +18,23 @@ public class TableGroup {
     @Embedded
     private OrderTables orderTables = new OrderTables();
 
-    public TableGroup() {
+    protected TableGroup() {
+    }
+
+    public TableGroup(Long id, LocalDateTime createdDate) {
+        this.id = id;
+        this.createdDate = createdDate;
+    }
+
+    public TableGroup(Long id, LocalDateTime createdDate, OrderTables orderTables) {
+        this.id = id;
+        this.createdDate = createdDate;
+        this.orderTables = orderTables;
+    }
+
+    public void addOrderTable(OrderTable orderTable){
+        orderTables.addOrderTable(orderTable);
+        orderTable.setTableGroup(this);
     }
 
     public Long getId() {
