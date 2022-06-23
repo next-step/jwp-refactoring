@@ -34,6 +34,10 @@ public class TableGroup {
         this.orderTables = orderTables;
     }
 
+    public void ungroupingTable() {
+        
+    }
+
     public void groupingTables(OrderTables emptyTables, int requestCount) {
         checkPossibleGrouping(emptyTables, requestCount);
         orderTables.groupingTableGroup(emptyTables, this);
@@ -64,4 +68,5 @@ public class TableGroup {
     public OrderTables getOrderTables() {
         return orderTables;
     }
+
 }

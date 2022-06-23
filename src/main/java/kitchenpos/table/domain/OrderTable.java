@@ -37,6 +37,10 @@ public class OrderTable {
         this.empty = empty;
     }
 
+    public void ungroupingTableGroup(){
+
+    }
+
     public void assignTableGroup(TableGroup tableGroup) {
         checkPossibleGrouping();
         this.tableGroup = tableGroup;

@@ -28,4 +28,20 @@ class OrderTest {
                 .isThrownBy(order3::checkPossibleChangeEmpty);
     }
 
+    @DisplayName("주문 상태가 조리, 식사 인 경우 단체 지정 해제 할 수 없다.")
+    @Test
+    void checkPossibleUngroupingOrderStatus() {
+        //given
+        Order order1 = new Order(null, OrderStatus.MEAL, LocalDateTime.now());
+        Order order2 = new Order(null, OrderStatus.COOKING, LocalDateTime.now());
+        Order order3 = new Order(null, OrderStatus.COMPLETION, LocalDateTime.now());
+
+        //when then
+        assertThatIllegalStateException()
+                .isThrownBy(order1::checkPossibleUngroupingOrderStatus);
+        assertThatIllegalStateException()
+                .isThrownBy(order2::checkPossibleUngroupingOrderStatus);
+        assertThatNoException()
+                .isThrownBy(order3::checkPossibleUngroupingOrderStatus);
+    }
 }

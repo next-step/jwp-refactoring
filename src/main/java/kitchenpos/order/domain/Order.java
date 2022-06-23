@@ -41,6 +41,10 @@ public class Order {
         this.orderedTime = orderedTime;
     }
 
+    public void checkPossibleUngroupingOrderStatus(){
+
+    }
+
     public Long getId() {
         return id;
     }

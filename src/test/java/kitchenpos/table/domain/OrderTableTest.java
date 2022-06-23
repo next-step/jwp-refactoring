@@ -96,4 +96,32 @@ class OrderTableTest {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> orderTable.assignTableGroup(new TableGroup(2L, null)));
     }
+
+    @DisplayName("단체 지정을 해제한다.")
+    @Test
+    void ungroupingTableGroup() {
+        //given
+        OrderTable orderTable = new OrderTable(null, 3, true);
+        orderTable.assignTableGroup(new TableGroup(1L, null));
+
+        //then
+        orderTable.ungroupingTableGroup();
+
+        //then
+        assertThat(orderTable.getTableGroup()).isNull();
+    }
+
+    @DisplayName("주문 상태가 조리, 식사 인 경우 단체 지정 해제 할 수 없다.")
+    @Test
+    void ungroupingTableGroup_order_status_cooking_meal() {
+        //given
+        OrderTable orderTable = new OrderTable(null, 3, true);
+
+        orderTable.assignTableGroup(new TableGroup(1L, null));
+
+        //when then
+        assertThatIllegalArgumentException()
+                .isThrownBy(orderTable::ungroupingTableGroup);
+
+    }
 }

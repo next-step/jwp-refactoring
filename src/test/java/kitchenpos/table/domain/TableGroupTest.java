@@ -40,4 +40,24 @@ class TableGroupTest {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableGroup.groupingTables(orderTables,1));
     }
+
+    @DisplayName("단체 지정을 해제 한다.")
+    @Test
+    void ungroupingTable(){
+        //given
+        TableGroup tableGroup = new TableGroup(null, null);
+        OrderTables orderTables = new OrderTables();
+        orderTables.addOrderTable(new OrderTable(null, 3, true));
+        orderTables.addOrderTable(new OrderTable(null, 5, true));
+        tableGroup.groupingTables(orderTables, 2);
+
+        //when
+        tableGroup.ungroupingTable();
+
+        //then
+        assertThat(orderTables.getOrderTables().get(0).getTableGroup()).isNull();
+        assertThat(orderTables.getOrderTables().get(1).getTableGroup()).isNull();
+        assertThat(orderTables.getOrderTables().get(0).getEmpty()).isFalse();
+        assertThat(orderTables.getOrderTables().get(1).getEmpty()).isFalse();
+    }
 }
