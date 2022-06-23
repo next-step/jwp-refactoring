@@ -11,7 +11,7 @@ class NumberOfGuestTest {
     @DisplayName("손님수는 0명 이상이어야 한다.")
     void validationTest() {
         assertThatThrownBy(
-                () -> new NumberOfGuest(-1)
+                () -> new NumberOfGuests(-1)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 }

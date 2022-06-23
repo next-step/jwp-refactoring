@@ -2,14 +2,14 @@ package kitchenpos.domain.common;
 
 import java.util.Objects;
 
-public class NumberOfGuest {
+public class NumberOfGuests {
 
     private int numberOfGuests;
 
-    public NumberOfGuest() {
+    public NumberOfGuests() {
     }
 
-    public NumberOfGuest(int numberOfGuests) {
+    public NumberOfGuests(int numberOfGuests) {
         validateNumberOfGuest(numberOfGuests);
         this.numberOfGuests = numberOfGuests;
     }
@@ -20,6 +20,10 @@ public class NumberOfGuest {
         }
     }
 
+    public int getValue() {
+        return numberOfGuests;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -28,7 +32,7 @@ public class NumberOfGuest {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        NumberOfGuest that = (NumberOfGuest) o;
+        NumberOfGuests that = (NumberOfGuests) o;
         return numberOfGuests == that.numberOfGuests;
     }
 

@@ -13,6 +13,10 @@ public class Empty {
         this.empty = empty;
     }
 
+    public boolean isTrue() {
+        return empty;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
