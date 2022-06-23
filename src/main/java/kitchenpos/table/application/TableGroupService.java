@@ -2,17 +2,13 @@ package kitchenpos.table.application;
 
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.table.domain.*;
+import kitchenpos.table.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,39 +24,29 @@ public class TableGroupService {
     }
 
     @Transactional
-    public TableGroup create(final TableGroup tableGroup) {
-        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroup.getId());
+    public TableGroupResponse create(final OrderTables orderTables) {
+        final OrderTables savedOrderTables = OrderTables.of(orderTableRepository.findAllByIdIn(orderTables.getIds()));
 
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException();
-        }
+//        if (orderTables.size() != savedOrderTables.size()) {
+//            throw new IllegalArgumentException();
+//        }
 
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
+//        for (final OrderTable savedOrderTable : savedOrderTables) {
+//            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
+//                throw new IllegalArgumentException();
+//            }
+//        }
 
-        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
-
-        if (orderTables.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
-        }
-
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup.create());
+        final TableGroup savedTableGroup = tableGroupRepository.save(TableGroup.create());
 
         final Long tableGroupId = savedTableGroup.getId();
-        for (final OrderTable savedOrderTable : savedOrderTables) {
+        for (final OrderTable savedOrderTable : savedOrderTables.getValues()) {
             savedOrderTable.setTableGroupId(tableGroupId);
             savedOrderTable.changeEmpty(false);
             orderTableRepository.save(savedOrderTable);
         }
 
-        return savedTableGroup;
+        return TableGroupResponse.from(savedTableGroup, savedOrderTables);
     }
 
     @Transactional
