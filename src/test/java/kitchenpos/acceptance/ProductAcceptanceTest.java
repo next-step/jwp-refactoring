@@ -56,6 +56,11 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         상품_목록_포함됨(response, Arrays.asList(createResponse1, createResponse2));
     }
 
+    public static ExtractableResponse<Response> 상품_생성되어_있음(String name, int price) {
+        Product product = ProductServiceTest.상품_생성(null, name, price);
+        return 상품_생성_요청(product);
+    }
+
     public static ExtractableResponse<Response> 상품_생성_요청(Product product) {
         return RestAssured
                 .given().log().all()

@@ -43,7 +43,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("메뉴 그룹 목록을 조회한다.")
     @Test
-    void 주문_테이블_목록_조회() {
+    void 메뉴_목록_조회() {
         // given
         ExtractableResponse<Response> createResponse1 = 메뉴_그룹_생성_요청(menuGroup1);
         ExtractableResponse<Response> createResponse2 = 메뉴_그룹_생성_요청(menuGroup2);
@@ -54,6 +54,11 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
         // then
         메뉴_그룹_목록_응답됨(response);
         메뉴_그룹_목록_포함됨(response, Arrays.asList(createResponse1, createResponse2));
+    }
+
+    public static ExtractableResponse<Response> 메뉴_그룹_생성되어_있음(String name) {
+        MenuGroup menuGroup = MenuGroupServiceTest.메뉴_그룹_생성(null, name);
+        return 메뉴_그룹_생성_요청(menuGroup);
     }
 
     public static ExtractableResponse<Response> 메뉴_그룹_생성_요청(MenuGroup menuGroup) {
