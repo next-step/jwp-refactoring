@@ -12,9 +12,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 
 import java.util.Optional;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.table.application.TableService;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -31,16 +30,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class TableServiceTest {
 
     @Mock
-    private OrderDao orderDao;
-    @Mock
-    private OrderTableDao orderTableDao;
-    @Mock
     private OrderTableRepository orderTableRepository;
     private TableService tableService;
 
     @BeforeEach
     void setUp() {
-        tableService = new TableService(orderDao, orderTableDao, orderTableRepository);
+        tableService = new TableService(orderTableRepository);
     }
 
     @DisplayName("테이블을 생성한다.")
@@ -49,7 +44,7 @@ class TableServiceTest {
         //given
         long generateTableId = 1;
         OrderTableRequest request = 테이블_요청_만들기(0, true);
-        doAnswer(invocation -> new kitchenpos.table.domain.OrderTable(generateTableId,
+        doAnswer(invocation -> new OrderTable(generateTableId,
                 request.getNumberOfGuests(),
                 request.getEmpty())
         ).when(orderTableRepository).save(any());
@@ -72,7 +67,7 @@ class TableServiceTest {
         OrderTableRequest request = 테이블_요청_만들기(3, true);
 
         given(orderTableRepository.findById(requestTableId))
-                .willReturn(Optional.of(new kitchenpos.table.domain.OrderTable(1L, 0, true)));
+                .willReturn(Optional.of(new OrderTable(1L, 0, true)));
 
         //when
         OrderTableResponse result = tableService.changeEmpty(requestTableId, request);
@@ -88,8 +83,7 @@ class TableServiceTest {
         //given
         long requestTableId = 1;
         OrderTableRequest request = 테이블_요청_만들기(3, true);
-        kitchenpos.table.domain.OrderTable orderTable = new kitchenpos.table.domain.OrderTable(requestTableId,
-                request.getNumberOfGuests(), request.getEmpty());
+        OrderTable orderTable = new OrderTable(requestTableId, request.getNumberOfGuests(), request.getEmpty());
         orderTable.setTableGroup(new TableGroup(1L, null, null));
         given(orderTableRepository.findById(requestTableId)).willReturn(Optional.of(orderTable));
 
@@ -104,7 +98,7 @@ class TableServiceTest {
         //given
         long requestTableId = 1;
         OrderTableRequest request = 테이블_요청_만들기(3, true);
-        kitchenpos.table.domain.OrderTable orderTable = mock(kitchenpos.table.domain.OrderTable.class);
+        OrderTable orderTable = mock(OrderTable.class);
         given(orderTableRepository.findById(requestTableId)).willReturn(Optional.of(orderTable));
         doThrow(new IllegalStateException()).when(orderTable).checkPossibleChangeEmpty();
 
@@ -121,7 +115,7 @@ class TableServiceTest {
         long requestTableId = 1;
         OrderTableRequest request = 테이블_요청_만들기(3);
 
-        kitchenpos.table.domain.OrderTable orderTable = spy(kitchenpos.table.domain.OrderTable.class);
+        OrderTable orderTable = spy(OrderTable.class);
         given(orderTableRepository.findById(requestTableId)).willReturn(Optional.of(orderTable));
 
         //when
@@ -149,8 +143,7 @@ class TableServiceTest {
         //given
         long requestTableId = 1;
         OrderTableRequest request = 테이블_요청_만들기(3);
-        kitchenpos.table.domain.OrderTable orderTable = new kitchenpos.table.domain.OrderTable(requestTableId,
-                request.getNumberOfGuests(), true);
+        OrderTable orderTable = new OrderTable(requestTableId, request.getNumberOfGuests(), true);
 
         given(orderTableRepository.findById(requestTableId)).willReturn(Optional.of(orderTable));
 

@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.time.LocalDateTime;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
@@ -65,8 +66,8 @@ class TableServiceTest {
     @Test
     void changeEmpty_table_group() {
         //given
-        kitchenpos.table.domain.OrderTable orderTable1 = 테이블_만들기(0, true);
-        kitchenpos.table.domain.OrderTable orderTable2 = 테이블_만들기(0, false);
+        OrderTable orderTable1 = 테이블_만들기(0, true);
+        OrderTable orderTable2 = 테이블_만들기(0, false);
         TableGroup tableGroup = new TableGroup(null, LocalDateTime.now());
         tableGroup.addOrderTable(orderTable1);
         tableGroup.addOrderTable(orderTable2);
@@ -83,7 +84,7 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests() {
         //given
-        kitchenpos.table.domain.OrderTable orderTable = 테이블_만들기(3, false);
+        OrderTable orderTable = 테이블_만들기(3, false);
         orderTableRepository.save(orderTable);
         long requestTableId = orderTable.getId();
         OrderTableRequest request = 테이블_요청_만들기(3);
@@ -99,7 +100,7 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests_less_than_zero() {
         //given
-        kitchenpos.table.domain.OrderTable orderTable = 테이블_만들기(3, false);
+        OrderTable orderTable = 테이블_만들기(3, false);
         orderTableRepository.save(orderTable);
         long requestTableId = orderTable.getId();
         OrderTableRequest request = 테이블_요청_만들기(-1);
@@ -114,7 +115,7 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests_empty_table() {
         //given
-        kitchenpos.table.domain.OrderTable orderTable = 테이블_만들기(3, true);
+        OrderTable orderTable = 테이블_만들기(3, true);
         orderTableRepository.save(orderTable);
         long requestTableId = orderTable.getId();
         OrderTableRequest request = 테이블_요청_만들기(5);
