@@ -53,24 +53,36 @@
     - 상품
       - domain
         - 엔티티 변환
-        - price wrapping 처리
-        - name wrapping 처리
+        - Price wrapping 처리
+        - Name wrapping 처리
       - application
-      - ui       
-      - dto
+      - ui package 이동       
+      - dto 추가
   
     - 메뉴
       - domain
-          - menu/menuGroup 엔티티 변환 및 관계 처리
-          - price wrapping 처리
-          - name wrapping 처리
-          - menuProducts 일급 컬랙션으로 변경
+          - Menu/MenuGroup 엔티티 변환 및 관계 처리
+          - Price wrapping 처리
+          - Name wrapping 처리
+          - <enuProducts 일급 컬랙션으로 변경
       - application
-      - ui
-      - dto
-  
-    - 테이블
+      - ui package 이동
+      - dto 추가
     - 주문
+      - domain
+          - Order/OrderLineItem 엔티티 변환 및 관계 처리
+          - OrderLineItems 일급 컬랙션으로 변경
+      - application
+      - ui package 이동
+      - dto 추가
+    - 테이블
+      - domain
+          - TableGroup/OrderTable 엔티티 변환 및 관계 처리
+          - OrderTables 일급 컬렉션 추가
+          - NumberOfGuests wrapping 처리
+      - application
+      - ui package 이동
+      - dto 추가
 
 ## 용어 사전
 
