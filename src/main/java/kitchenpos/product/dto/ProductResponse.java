@@ -12,7 +12,7 @@ public class ProductResponse {
     protected ProductResponse() {
     }
 
-    public ProductResponse(Long id, String name, Integer price) {
+    private ProductResponse(Long id, String name, Integer price) {
         this.id = id;
         this.name = name;
         this.price = price;

@@ -10,9 +10,13 @@ public class ProductRequest {
     protected ProductRequest() {
     }
 
-    public ProductRequest(String name, Integer price) {
+    private ProductRequest(String name, Integer price) {
         this.name = name;
         this.price = price;
+    }
+
+    public static ProductRequest of(String name, Integer price) {
+        return new ProductRequest(name, price);
     }
 
     public Product toEntity() {

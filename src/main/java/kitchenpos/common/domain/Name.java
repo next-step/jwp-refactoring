@@ -2,6 +2,7 @@ package kitchenpos.common.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.util.Objects;
 
 @Embeddable
 public class Name {
@@ -13,9 +14,7 @@ public class Name {
     }
 
     private Name(String name) {
-        if (null == name) {
-            throw new IllegalArgumentException("이름이 존재 해야합니다.");
-        }
+        validate(name);
         this.name = name;
     }
 
@@ -27,10 +26,9 @@ public class Name {
         return name;
     }
 
-    @Override
-    public String toString() {
-        return "Name{" +
-                "name='" + name + '\'' +
-                '}';
+    private void validate(String name) {
+        if (Objects.isNull(name)) {
+            throw new IllegalArgumentException("이름이 존재 해야합니다.");
+        }
     }
 }
