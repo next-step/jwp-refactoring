@@ -1,8 +1,9 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.orderTable.OrderTable;
+import kitchenpos.domain.orderTable.OrderTableRepository;
+import kitchenpos.domain.tableGroup.TableGroup;
 import kitchenpos.dto.orderTable.OrderTableRequest;
 import kitchenpos.dto.orderTable.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -12,10 +13,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static kitchenpos.application.TableGroupServiceTest.테이블_그룹_데이터_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -31,7 +34,7 @@ class TableServiceTest {
     OrderDao orderDao;
 
     @Mock
-    OrderTableDao orderTableDao;
+    OrderTableRepository orderTableRepository;
 
     @InjectMocks
     TableService tableService;
@@ -42,7 +45,7 @@ class TableServiceTest {
         // given
         OrderTableRequest request = 주문_테이블_요청_데이터_생성(null, 2, false);
         OrderTable 예상값 = 주문_테이블_데이터_생성(1L, null, 2, false);
-        given(orderTableDao.save(any(OrderTable.class))).willReturn(예상값);
+        given(orderTableRepository.save(any(OrderTable.class))).willReturn(예상값);
 
         // when
         OrderTableResponse 주문_테이블_생성_결과 = tableService.create(request);
@@ -59,7 +62,7 @@ class TableServiceTest {
                 주문_테이블_데이터_생성(1L, null, 2, false),
                 주문_테이블_데이터_생성(2L, null, 3, false)
         );
-        given(orderTableDao.findAll()).willReturn(예상값);
+        given(orderTableRepository.findAll()).willReturn(예상값);
 
         // when
         List<OrderTableResponse> 주문_테이블_목록_조회_결과 = tableService.list();
@@ -76,9 +79,9 @@ class TableServiceTest {
     void changeEmpty() {
         // given
         OrderTable orderTable = 주문_테이블_데이터_생성(1L, null, 2, true);
-        given(orderTableDao.findById(1L)).willReturn(Optional.of(orderTable));
+        given(orderTableRepository.findById(1L)).willReturn(Optional.of(orderTable));
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(false);
-        given(orderTableDao.save(orderTable)).willReturn(orderTable);
+        given(orderTableRepository.save(orderTable)).willReturn(orderTable);
 
         // when
         OrderTableResponse 주문상태_변경_결과 = 주문_상태_변경(1L, orderTable);
@@ -91,8 +94,8 @@ class TableServiceTest {
     @Test
     void changeEmpty_exception1() {
         // given
-        OrderTable orderTable = 주문_테이블_데이터_생성(1L,1L, 2, true);
-        given(orderTableDao.findById(1L)).willReturn(Optional.of(orderTable));
+        OrderTable orderTable = 주문_테이블_데이터_생성(1L,테이블_그룹_데이터_생성(1L, LocalDateTime.now(), null), 2, true);
+        given(orderTableRepository.findById(1L)).willReturn(Optional.of(orderTable));
 
         // when && then
         assertThatThrownBy(() -> 주문_상태_변경(1L, orderTable))
@@ -104,7 +107,7 @@ class TableServiceTest {
     void changeEmpty_exception2() {
         // given
         OrderTable orderTable = 주문_테이블_데이터_생성(1L, null, 2, true);
-        given(orderTableDao.findById(1L)).willReturn(Optional.of(orderTable));
+        given(orderTableRepository.findById(1L)).willReturn(Optional.of(orderTable));
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(true);
 
         // when && then
@@ -118,8 +121,8 @@ class TableServiceTest {
         // given
         OrderTable 변경전_주문_테이블 = 주문_테이블_데이터_생성(1L, null, 2, false);
         OrderTable 변경후_주문_테이블 = 주문_테이블_데이터_생성(1L, null, 4, false);
-        given(orderTableDao.findById(1L)).willReturn(Optional.of(변경전_주문_테이블));
-        given(orderTableDao.save(any())).willReturn(변경후_주문_테이블);
+        given(orderTableRepository.findById(1L)).willReturn(Optional.of(변경전_주문_테이블));
+        given(orderTableRepository.save(any())).willReturn(변경후_주문_테이블);
 
         // when
         OrderTableResponse 방문_손님_수_변경_결과 = 방문_손님_수_변경(1L, 변경후_주문_테이블);
@@ -145,7 +148,7 @@ class TableServiceTest {
         // given
         OrderTable 변경전_주문_테이블 = 주문_테이블_데이터_생성(1L, null, 2, true);
         OrderTable 변경후_주문_테이블 = 주문_테이블_데이터_생성(1L, null, 4, false);
-        given(orderTableDao.findById(1L)).willReturn(Optional.of(변경전_주문_테이블));
+        given(orderTableRepository.findById(1L)).willReturn(Optional.of(변경전_주문_테이블));
 
         // when && then
         assertThatThrownBy(() -> 방문_손님_수_변경(1L, 변경후_주문_테이블))
@@ -156,8 +159,8 @@ class TableServiceTest {
         return new OrderTableRequest(tableGroupId, numberOfGuests, empty);
     }
 
-    public static OrderTable 주문_테이블_데이터_생성(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
-        return new OrderTable(id, tableGroupId, numberOfGuests, empty);
+    public static OrderTable 주문_테이블_데이터_생성(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+        return new OrderTable(id, tableGroup, numberOfGuests, empty);
     }
 
     private OrderTableResponse 주문_상태_변경(long orderTableId, OrderTable orderTable) {

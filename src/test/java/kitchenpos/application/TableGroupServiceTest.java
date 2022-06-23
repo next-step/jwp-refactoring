@@ -1,9 +1,9 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.orderTable.OrderTable;
+import kitchenpos.domain.orderTable.OrderTableRepository;
 import kitchenpos.domain.tableGroup.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ class TableGroupServiceTest {
     OrderDao orderDao;
 
     @Mock
-    OrderTableDao orderTableDao;
+    OrderTableRepository orderTableRepository;
 
     @Mock
     TableGroupDao tableGroupDao;
@@ -49,7 +49,7 @@ class TableGroupServiceTest {
         List<OrderTable> orderTables = Arrays.asList(orderTableId1, orderTableId2);
         TableGroup request = 테이블_그룹_데이터_생성(null, LocalDateTime.now(), orderTables);
         TableGroup 예상값 = 테이블_그룹_데이터_생성(1L, LocalDateTime.now(), orderTables);
-        given(orderTableDao.findAllByIdIn(anyList())).willReturn(orderTables);
+        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(orderTables);
         given(tableGroupDao.save(request)).willReturn(예상값);
 
         // when
@@ -67,7 +67,7 @@ class TableGroupServiceTest {
         OrderTable orderTableId2 = 주문_테이블_데이터_생성(2L, null, 4, false);
         List<OrderTable> orderTables = Arrays.asList(orderTableId1, orderTableId2);
         TableGroup request = 테이블_그룹_데이터_생성(null, LocalDateTime.now(), orderTables);
-        given(orderTableDao.findAllByIdIn(anyList())).willReturn(orderTables);
+        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(orderTables);
 
         // when && then
         assertThatThrownBy(() -> 테이블_그룹_생성(request))
@@ -92,10 +92,10 @@ class TableGroupServiceTest {
     void create_exception3() {
         // given
         OrderTable orderTableId1 = 주문_테이블_데이터_생성(1L, null, 2, false);
-        OrderTable orderTableId2 = 주문_테이블_데이터_생성(2L, 1L, 4, false);
+        OrderTable orderTableId2 = 주문_테이블_데이터_생성(2L, 테이블_그룹_데이터_생성(1L, LocalDateTime.now(), null), 4, false);
         List<OrderTable> orderTables = Arrays.asList(orderTableId1, orderTableId2);
         TableGroup request = 테이블_그룹_데이터_생성(null, LocalDateTime.now(), orderTables);
-        given(orderTableDao.findAllByIdIn(anyList())).willReturn(orderTables);
+        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(orderTables);
 
         // when && then
         assertThatThrownBy(() -> 테이블_그룹_생성(request))
@@ -106,11 +106,11 @@ class TableGroupServiceTest {
     @Test
     void ungroup() {
         // given
-        OrderTable orderTableId1 = 주문_테이블_데이터_생성(1L, 1L, 2, true);
-        OrderTable orderTableId2 = 주문_테이블_데이터_생성(2L, 1L, 4, true);
+        OrderTable orderTableId1 = 주문_테이블_데이터_생성(1L, 테이블_그룹_데이터_생성(1L, LocalDateTime.now(), null), 2, true);
+        OrderTable orderTableId2 = 주문_테이블_데이터_생성(2L, 테이블_그룹_데이터_생성(1L, LocalDateTime.now(), null), 4, true);
         List<OrderTable> orderTables = Arrays.asList(orderTableId1, orderTableId2);
 
-        given(orderTableDao.findAllByTableGroupId(1L)).willReturn(orderTables);
+        given(orderTableRepository.findAllByTableGroupId(1L)).willReturn(orderTables);
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
 
         // when & then
@@ -122,11 +122,11 @@ class TableGroupServiceTest {
     @Test
     void ungroup_exception1() {
         // given
-        OrderTable orderTableId1 = 주문_테이블_데이터_생성(1L, 1L, 2, true);
-        OrderTable orderTableId2 = 주문_테이블_데이터_생성(2L, 1L, 4, true);
+        OrderTable orderTableId1 = 주문_테이블_데이터_생성(1L, 테이블_그룹_데이터_생성(1L, LocalDateTime.now(), null), 2, true);
+        OrderTable orderTableId2 = 주문_테이블_데이터_생성(2L, 테이블_그룹_데이터_생성(1L, LocalDateTime.now(), null), 4, true);
         List<OrderTable> orderTables = Arrays.asList(orderTableId1, orderTableId2);
 
-        given(orderTableDao.findAllByTableGroupId(1L)).willReturn(orderTables);
+        given(orderTableRepository.findAllByTableGroupId(1L)).willReturn(orderTables);
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
 
         // when & then
@@ -134,7 +134,7 @@ class TableGroupServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    private TableGroup 테이블_그룹_데이터_생성(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
+    public static TableGroup 테이블_그룹_데이터_생성(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
         return new TableGroup(id, createdDate, orderTables);
     }
 

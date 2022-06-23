@@ -3,11 +3,11 @@ package kitchenpos.application;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.order.Order;
-import kitchenpos.domain.orderLineItem.OrderLineItem;
 import kitchenpos.domain.order.OrderStatus;
+import kitchenpos.domain.orderLineItem.OrderLineItem;
 import kitchenpos.domain.orderTable.OrderTable;
+import kitchenpos.domain.orderTable.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,7 +42,7 @@ class OrderServiceTest {
     OrderLineItemDao orderLineItemDao;
 
     @Mock
-    OrderTableDao orderTableDao;
+    OrderTableRepository orderTableRepository;
 
     @InjectMocks
     OrderService orderService;
@@ -56,7 +56,7 @@ class OrderServiceTest {
         Order request = 주문_데이터_생성(null, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItems);
         Order 예상값 = 주문_데이터_생성(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItems);
         given(menuDao.countByIdIn(anyList())).willReturn(2L);
-        given(orderTableDao.findById(1L)).willReturn(Optional.of(orderTable));
+        given(orderTableRepository.findById(1L)).willReturn(Optional.of(orderTable));
         given(orderDao.save(request)).willReturn(예상값);
 
         // when
@@ -98,7 +98,7 @@ class OrderServiceTest {
         OrderTable orderTable = 주문_테이블_데이터_생성(1L, null, 2, true);
         Order request = 주문_데이터_생성(null, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), 주문_항목_목록_데이터_생성());
         given(menuDao.countByIdIn(anyList())).willReturn(2L);
-        given(orderTableDao.findById(1L)).willReturn(Optional.of(orderTable));
+        given(orderTableRepository.findById(1L)).willReturn(Optional.of(orderTable));
 
         // when && then
         assertThatThrownBy(() -> orderService.create(request))
@@ -109,8 +109,7 @@ class OrderServiceTest {
     @Test
     void create_exception4() {
         // given
-        List<OrderLineItem> orderLineItems = new ArrayList<>();
-        orderLineItems.addAll(주문_항목_목록_데이터_생성());
+        List<OrderLineItem> orderLineItems = new ArrayList<>(주문_항목_목록_데이터_생성());
         orderLineItems.add(주문_항목_데이터_생성(3L, 1L, 2L, 3));
         Order request = 주문_데이터_생성(null, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItems);
         given(menuDao.countByIdIn(anyList())).willReturn(2L);
