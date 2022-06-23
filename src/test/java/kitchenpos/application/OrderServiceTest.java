@@ -167,15 +167,12 @@ class OrderServiceTest {
         assertThat(result.getOrderStatus()).isEqualTo(주문_request.getOrderStatus());
     }
 
-    @DisplayName("주문상태를 변경할 주문이 이미 계산완료된 상태라면 예외가 발생한다")
+    @DisplayName("주문상태를 변경할 주문이 없다면 예외가 발생한다")
     @Test
     void change_order_exception_test() {
         // given
-        주문 = mock(OrderEntity.class);
-        when(주문.getOrderStatus())
-            .thenReturn(OrderStatus.COMPLETION);
         when(orderRepository.findById(주문.getId()))
-            .thenReturn(Optional.of(주문));
+            .thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> {
             orderService.changeOrderStatus(주문.getId(), 주문_request);
