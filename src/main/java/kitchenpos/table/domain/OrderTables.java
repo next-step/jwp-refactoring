@@ -29,6 +29,20 @@ public class OrderTables {
                 .collect(Collectors.toList());
     }
 
+    public void groupBy(TableGroup tableGroup) {
+        for (OrderTable orderTable : orderTables) {
+            orderTable.groupBy(tableGroup);
+        }
+    }
+
+    public void checkGroupable() {
+        for (final OrderTable orderTable : orderTables) {
+            if (!orderTable.isGroupable()) {
+                throw new IllegalArgumentException("테이블이 그룹할 수 없는 상태입니다");
+            }
+        }
+    }
+
     private void validate(List<OrderTable> orderTables) {
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
             throw new IllegalArgumentException("테이블이 두 개 이상 있어야 합니다");

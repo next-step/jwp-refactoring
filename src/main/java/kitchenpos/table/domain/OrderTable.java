@@ -3,6 +3,7 @@ package kitchenpos.table.domain;
 import kitchenpos.common.domain.NumberOfGuests;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class OrderTable {
@@ -71,19 +72,28 @@ public class OrderTable {
         return empty;
     }
 
-    public void changeNumberOfGuests(int numberOfGuests) {
-        this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
+    public boolean isGroupable() {
+        return isEmpty() && Objects.isNull(getTableGroupId());
     }
 
-    public void changeEmpty(final boolean empty) {
-        this.empty = empty;
+    public void setTableGroupId(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
     }
 
     public void ungroup() {
         this.tableGroupId = null;
     }
 
-    public void setTableGroupId(Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
+    public void groupBy(TableGroup tableGroup) {
+        changeEmpty(false);
+        this.tableGroupId = tableGroup.getId();
+    }
+
+    public void changeNumberOfGuests(int numberOfGuests) {
+        this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
+    }
+
+    public void changeEmpty(final boolean empty) {
+        this.empty = empty;
     }
 }

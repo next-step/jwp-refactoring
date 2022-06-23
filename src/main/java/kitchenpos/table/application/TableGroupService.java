@@ -25,26 +25,13 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final OrderTables orderTables) {
-        final OrderTables savedOrderTables = OrderTables.of(orderTableRepository.findAllByIdIn(orderTables.getIds()));
-
-//        if (orderTables.size() != savedOrderTables.size()) {
-//            throw new IllegalArgumentException();
-//        }
-
-//        for (final OrderTable savedOrderTable : savedOrderTables) {
-//            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
-//                throw new IllegalArgumentException();
-//            }
-//        }
+        final OrderTables savedOrderTables = OrderTables.of(
+                orderTableRepository.findAllByIdIn(orderTables.getIds()));
+        savedOrderTables.checkGroupable();
 
         final TableGroup savedTableGroup = tableGroupRepository.save(TableGroup.create());
-
-        final Long tableGroupId = savedTableGroup.getId();
-        for (final OrderTable savedOrderTable : savedOrderTables.getValues()) {
-            savedOrderTable.setTableGroupId(tableGroupId);
-            savedOrderTable.changeEmpty(false);
-            orderTableRepository.save(savedOrderTable);
-        }
+        savedOrderTables.groupBy(savedTableGroup);
+        orderTableRepository.saveAll(savedOrderTables.getValues());
 
         return TableGroupResponse.from(savedTableGroup, savedOrderTables);
     }

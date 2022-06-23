@@ -74,18 +74,17 @@ public class TableGroupServiceTest {
         assertThatThrownBy(() -> tableGroupService.create(orderTables)).isInstanceOf(IllegalArgumentException.class);
     }
 
-//    @Test
-//    @DisplayName("테이블 그룹으로 등록하려는 테이블이 비어있지 않거나 다른 그룹에 등록되어 있으면 실패한다.")
-//    void createWithNotEmptyOrderTableOrNonNullTableGroupId() {
-//        // given
-//        orderTable1.changeEmpty(false);
-//        OrderTables orderTables = 단체_지정(1L, Arrays.asList(orderTable1, orderTable2));
-////        given(orderTableRepository.findAllByTableGroupId(any())).willReturn(Arrays.asList(orderTable1, orderTable2));
-//        given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(orderTable1, orderTable2));
-//
-//        // when-then
-//        assertThatThrownBy(() -> tableGroupService.create(orderTables)).isInstanceOf(IllegalArgumentException.class);
-//    }
+    @Test
+    @DisplayName("테이블 그룹으로 등록하려는 테이블이 비어있지 않거나 다른 그룹에 등록되어 있으면 실패한다.")
+    void createWithNotEmptyOrderTableOrNonNullTableGroupId() {
+        // given
+        orderTable1.changeEmpty(false);
+        OrderTables orderTables = 단체_지정(1L, Arrays.asList(orderTable1, orderTable2));
+        given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(orderTable1, orderTable2));
+//        tableGroupService.create(orderTables);
+        // when-then
+        assertThatThrownBy(() -> tableGroupService.create(orderTables)).isInstanceOf(IllegalArgumentException.class);
+    }
 
     @Test
     @DisplayName("단체 지정을 해제한다.")

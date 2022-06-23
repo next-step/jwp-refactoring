@@ -1,7 +1,5 @@
 package kitchenpos.order.domain;
 
-import org.springframework.util.CollectionUtils;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
