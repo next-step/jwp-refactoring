@@ -52,8 +52,8 @@ public class OrderTable {
         if (numberOfGuests < EMPTY_GEUST) {
             throw new IllegalArgumentException("[ERROR] 방문 손님 수는 0명 미만으로 변경할 수 없습니다.");
         }
-        if (Boolean.FALSE.equals(empty)) {
-            throw new IllegalArgumentException("[ERROR] 빈테이블이 아닌 경우 방문 손님 수를 변경할 수 없습니다.");
+        if (Boolean.TRUE.equals(empty)) {
+            throw new IllegalArgumentException("[ERROR] 빈 테이블은 방문 손님 수를 변경할 수 없습니다.");
         }
         this.numberOfGuests = numberOfGuests;
     }

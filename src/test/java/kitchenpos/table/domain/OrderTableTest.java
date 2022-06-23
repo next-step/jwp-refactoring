@@ -47,15 +47,15 @@ class OrderTableTest {
                 .isThrownBy(()->orderTable1.updateNumberOfGuests(-1));
     }
 
-    @DisplayName("빈 테이블이 아닌 경우 방문 손님 수 업데이트 할 수 없다. ")
+    @DisplayName("빈 테이블인 경우 방문 손님 수 업데이트 할 수 없다. ")
     @Test
     void updateNumberOfGuests_not_empty_table() {
 
         //given
-        OrderTable orderTable1 = new OrderTable(null, 3, false);
+        OrderTable orderTable1 = new OrderTable(null, 3, true);
 
         //when then
         assertThatIllegalArgumentException()
-                .isThrownBy(()->orderTable1.updateNumberOfGuests(-1));
+                .isThrownBy(()->orderTable1.updateNumberOfGuests(5));
     }
 }
