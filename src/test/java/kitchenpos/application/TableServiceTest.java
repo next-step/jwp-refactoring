@@ -28,7 +28,7 @@ import static org.mockito.BDDMockito.given;
 
 @DisplayName("주문 테이블 관련 테스트")
 @ExtendWith(MockitoExtension.class)
-class TableServiceTest {
+public class TableServiceTest {
 
     @Mock
     OrderDao orderDao;
