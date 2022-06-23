@@ -4,6 +4,7 @@ import kitchenpos.domain.tableGroup.TableGroup;
 import kitchenpos.dto.orderTable.OrderTableRequest;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class OrderTable {
@@ -34,6 +35,32 @@ public class OrderTable {
 
     public static OrderTable ofCreate(OrderTableRequest orderTableRequest) {
         return new OrderTable(null, null, orderTableRequest.getNumberOfGuests(), orderTableRequest.isEmpty());
+    }
+
+    public void updateEmpty(boolean empty) {
+        valdateForUpdateEmpty();
+        this.empty = empty;
+    }
+
+    public void updateNumberOfGuests(int numberOfGuests) {
+        valdateForUpdateNumberOfGuests(numberOfGuests);
+        this.numberOfGuests = numberOfGuests;
+    }
+
+    private void valdateForUpdateEmpty() {
+        if (Objects.nonNull(tableGroup)) {
+            throw new IllegalArgumentException("단체 지정된 테이블 입니다.");
+        }
+    }
+
+    private void valdateForUpdateNumberOfGuests(int numberOfGuests) {
+        if (numberOfGuests < 0) {
+            throw new IllegalArgumentException("방문 손님 수는 0 미만일 수 없습니다.");
+        }
+
+        if (empty) {
+            throw new IllegalArgumentException("비어있는 테이블 입니다.");
+        }
     }
 
     public Long getId() {
