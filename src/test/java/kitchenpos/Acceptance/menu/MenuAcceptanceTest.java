@@ -39,7 +39,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void createMenuByMinusPriceTest() {
         // when
-        ExtractableResponse<Response> 메뉴_생성_결과 = 메뉴_생성("메뉴", -1, menuGroup.getId(), Collections.emptyList());
+        ExtractableResponse<Response> 메뉴_생성_결과 = 메뉴_생성_요청("메뉴", -1, menuGroup.getId(), Collections.emptyList());
 
         // then
         메뉴_생성_실패됨(메뉴_생성_결과);
@@ -50,9 +50,9 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     void createMenuByNotSavedMenuGroupTest() {
         // when
         ExtractableResponse<Response> 없는_메뉴_그룹으로_메뉴_생성_결과
-                = 메뉴_생성("메뉴", 1_000, -1L, Collections.emptyList());
+                = 메뉴_생성_요청("메뉴", 1_000, -1L, Collections.emptyList());
         ExtractableResponse<Response> 메뉴_그룹_정보_없이_메뉴_생성_결과
-                = 메뉴_생성("메뉴", 1_000, null, Collections.emptyList());
+                = 메뉴_생성_요청("메뉴", 1_000, null, Collections.emptyList());
 
         // then
         메뉴_생성_실패됨(없는_메뉴_그룹으로_메뉴_생성_결과);
@@ -68,9 +68,9 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> 상품_정보가_없는_메뉴_상품_메뉴_생성_결과 =
-                메뉴_생성("메뉴", 1_000, menuGroup.getId(), Collections.singletonList(상품_정보가_없는_메뉴_상품));
+                메뉴_생성_요청("메뉴", 1_000, menuGroup.getId(), Collections.singletonList(상품_정보가_없는_메뉴_상품));
         ExtractableResponse<Response> 없는_상품이_포함된_메뉴_상품_메뉴_생성_결과 =
-                메뉴_생성("메뉴", 1_000, menuGroup.getId(), Collections.singletonList(없는_상품이_포함된_메뉴_상품));
+                메뉴_생성_요청("메뉴", 1_000, menuGroup.getId(), Collections.singletonList(없는_상품이_포함된_메뉴_상품));
 
         // then
         메뉴_생성_실패됨(상품_정보가_없는_메뉴_상품_메뉴_생성_결과);
@@ -86,7 +86,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> 메뉴_생성_결과 =
-                메뉴_생성("메뉴", 3_000, menuGroup.getId(), Collections.singletonList(메뉴_상품));
+                메뉴_생성_요청("메뉴", 3_000, menuGroup.getId(), Collections.singletonList(메뉴_상품));
 
         // then
         메뉴_생성_실패됨(메뉴_생성_결과);
@@ -102,7 +102,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> 메뉴_생성_결과 =
-                메뉴_생성("메뉴", PRODUCT_PRICE * menuProductQuantity, menuGroup.getId(), Collections.singletonList(메뉴_상품));
+                메뉴_생성_요청("메뉴", PRODUCT_PRICE * menuProductQuantity, menuGroup.getId(), Collections.singletonList(메뉴_상품));
 
         // then
         메뉴_생성_성공됨(메뉴_생성_결과, 메뉴_이름, PRODUCT_PRICE * menuProductQuantity);
@@ -114,16 +114,16 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         // given
         List<String> 메뉴_이름들 = Arrays.asList("메뉴 1", "메뉴 2", "메뉴 3", "메뉴 4", "메뉴 5");
         MenuProduct 메뉴_상품 = 메뉴_상품_생성(null, product.getId(), PRODUCT_PRICE);
-        메뉴_이름들.forEach(name -> 메뉴_생성(name, PRODUCT_PRICE, menuGroup.getId(), Collections.singletonList(메뉴_상품)));
+        메뉴_이름들.forEach(name -> 메뉴_생성_요청(name, PRODUCT_PRICE, menuGroup.getId(), Collections.singletonList(메뉴_상품)));
 
         // when
-        ExtractableResponse<Response> 상품_생성_결과 = 메뉴_목록_조회();
+        ExtractableResponse<Response> 상품_생성_결과 = 메뉴_목록_조회_요청();
 
         // then
         메뉴_목록_조회_성공됨(상품_생성_결과, 메뉴_이름들);
     }
 
-    public static ExtractableResponse<Response> 메뉴_생성(
+    public static ExtractableResponse<Response> 메뉴_생성_요청(
             String name, int menuPrice, Long menuGroupId, List<MenuProduct> menuProducts
     ) {
         Map<String, Object> body = new HashMap<>();
@@ -136,7 +136,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         return RestAssuredRequest.postRequest(PATH, Collections.emptyMap(), body);
     }
 
-    public static ExtractableResponse<Response> 메뉴_목록_조회() {
+    public static ExtractableResponse<Response> 메뉴_목록_조회_요청() {
         return RestAssuredRequest.getRequest(PATH, Collections.emptyMap());
     }
 
