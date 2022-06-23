@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.domain.menuGroup;
 
 public class MenuGroup {
     private Long id;
