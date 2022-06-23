@@ -33,4 +33,16 @@ public class ProductRestController {
     public ResponseEntity<List<Product>> list() {
         return ResponseEntity.ok().body(productService.list());
     }
+
+    @PostMapping("/copy")
+    public ResponseEntity<Product> createCopy(@RequestBody final Product product) {
+        final Product created = productService.createCopy(product);
+        final URI uri = URI.create("/api/products/" + created.getId());
+        return ResponseEntity.created(uri).body(created);
+    }
+
+    @GetMapping("/copy")
+    public ResponseEntity<List<Product>> listCopy() {
+        return ResponseEntity.ok().body(productService.listCopy());
+    }
 }

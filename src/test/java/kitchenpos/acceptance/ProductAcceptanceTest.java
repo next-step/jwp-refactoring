@@ -2,8 +2,11 @@ package kitchenpos.acceptance;
 
 import static kitchenpos.acceptance.support.ProductAcceptanceSupport.상품_등록됨;
 import static kitchenpos.acceptance.support.ProductAcceptanceSupport.상품_등록요청;
+import static kitchenpos.acceptance.support.ProductAcceptanceSupport.상품_등록요청_copy;
 import static kitchenpos.acceptance.support.ProductAcceptanceSupport.상품목록_조회됨;
+import static kitchenpos.acceptance.support.ProductAcceptanceSupport.상품목록_조회됨_copy;
 import static kitchenpos.acceptance.support.ProductAcceptanceSupport.상품목록_조회요청;
+import static kitchenpos.acceptance.support.ProductAcceptanceSupport.상품목록_조회요청_copy;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -48,5 +51,29 @@ class ProductAcceptanceTest extends AcceptanceTest {
 
         // then
         상품목록_조회됨(response, 2);
+    }
+
+    @DisplayName("상품을 등록한다")
+    @Test
+    void create_test_copy() {
+        // when
+        ExtractableResponse<Response> response = 상품_등록요청_copy(상품);
+
+        // then
+        상품_등록됨(response);
+    }
+
+    @DisplayName("상품목록을 조회한다")
+    @Test
+    void find_test_copy() {
+        // given
+        상품_등록요청_copy(상품);
+        상품_등록요청_copy(상품2);
+
+        // when
+        ExtractableResponse<Response> response = 상품목록_조회요청_copy();
+
+        // then
+        상품목록_조회됨_copy(response, 2);
     }
 }

@@ -22,6 +22,16 @@ public class ProductAcceptanceSupport {
             .extract();
     }
 
+    public static ExtractableResponse<Response> 상품_등록요청_copy(Product product) {
+        return RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(product)
+            .when().post("/api/products/copy")
+            .then().log().all()
+            .extract();
+    }
+
     public static void 상품_등록됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
@@ -36,7 +46,24 @@ public class ProductAcceptanceSupport {
             extract();
     }
 
+    public static ExtractableResponse<Response> 상품목록_조회요청_copy() {
+        return RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/api/products/copy")
+            .then().log().all().
+            extract();
+    }
+
     public static void 상품목록_조회됨(ExtractableResponse<Response> response, int size) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        List<Product> result = response.jsonPath().getList(".", Product.class);
+        assertThat(result).isNotNull();
+        assertThat(result).hasSize(size);
+    }
+
+    public static void 상품목록_조회됨_copy(ExtractableResponse<Response> response, int size) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
         List<Product> result = response.jsonPath().getList(".", Product.class);

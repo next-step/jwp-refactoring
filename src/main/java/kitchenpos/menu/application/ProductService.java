@@ -31,4 +31,19 @@ public class ProductService {
     public List<Product> list() {
         return productDao.findAll();
     }
+
+    @Transactional
+    public Product createCopy(final Product product) {
+        final BigDecimal price = product.getPrice();
+
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException();
+        }
+
+        return productDao.save(product);
+    }
+
+    public List<Product> listCopy() {
+        return productDao.findAll();
+    }
 }
