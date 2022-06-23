@@ -26,7 +26,7 @@ class MenuGroupServiceTest {
     @InjectMocks
     MenuGroupService menuGroupService;
 
-    @DisplayName("메뉴 그룹 생성")
+    @DisplayName("메뉴 그룹을 생성할 수 있다")
     @Test
     void create() {
         // given
@@ -41,7 +41,7 @@ class MenuGroupServiceTest {
         메뉴_그룹_값_비교(메뉴_그룹_생성_결과, 예상값);
     }
 
-    @DisplayName("메뉴 그룹 목록 조회")
+    @DisplayName("메뉴 그룹 목록을 조회할 수 있다")
     @Test
     void list() {
         // given

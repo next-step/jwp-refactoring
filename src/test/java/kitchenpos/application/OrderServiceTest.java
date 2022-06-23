@@ -47,7 +47,7 @@ class OrderServiceTest {
     @InjectMocks
     OrderService orderService;
 
-    @DisplayName("주문 생성")
+    @DisplayName("주문을 생성할 수 있다")
     @Test
     void create() {
         // given
@@ -66,7 +66,7 @@ class OrderServiceTest {
         주문_데이터_비교(주문_생성_결과, 예상값);
     }
 
-    @DisplayName("주문 생성 - 주문 항목 없을 경우")
+    @DisplayName("주문을 생성할 수 있다 - 주문 항목 1개 이상 있어야 한다")
     @Test
     void create_exception1() {
         // given
@@ -78,7 +78,7 @@ class OrderServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("주문 생성 - 유효한 메뉴 id가 아닐 경우")
+    @DisplayName("주문을 생성할 수 있다 - 유효한 메뉴이어야 한다")
     @Test
     void create_exception2() {
         // given
@@ -91,7 +91,7 @@ class OrderServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("주문 생성 - 주문 테이블이 빈 테이블일 경우")
+    @DisplayName("주문을 생성할 수 있다 - 주문 테이블이 빈 테이블이 아니어야 한다")
     @Test
     void create_exception3() {
         // given
@@ -105,7 +105,7 @@ class OrderServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("주문 생성 - 중복된 메뉴가 있어서는 안된다.")
+    @DisplayName("주문을 생성할 수 있다 - 중복된 메뉴가 있어서는 안된다")
     @Test
     void create_exception4() {
         // given
@@ -120,7 +120,7 @@ class OrderServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("주문 목록 조회")
+    @DisplayName("주문 목록을 조회할 수 있다")
     @Test
     void list() {
         // given
@@ -140,7 +140,7 @@ class OrderServiceTest {
         );
     }
 
-    @DisplayName("주문 상태 변경")
+    @DisplayName("주문 상태를 변경할 수 있다")
     @Test
     void changeOrderStatus() {
         // given
@@ -155,7 +155,7 @@ class OrderServiceTest {
         assertThat(주문_상태_변경_결과.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
     }
 
-    @DisplayName("주문 상태 변경 - 변경전 주문 상태가 '계산 완료' 상태인 경우")
+    @DisplayName("주문 상태를 변경할 수 있다 - 주문 상태가 '계산 완료' 상태가 아니어야 한다")
     @Test
     void changeOrderStatus_exception1() {
         // given

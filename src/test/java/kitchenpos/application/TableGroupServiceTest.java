@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 
-@DisplayName("단체 주문 테이블 관련 테스트")
+@DisplayName("단체 지정 관련 테스트")
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
 
@@ -40,7 +40,7 @@ class TableGroupServiceTest {
     @InjectMocks
     TableGroupService tableGroupService;
 
-    @DisplayName("테이블 그룹 생성")
+    @DisplayName("단체 지정을 할 수 있다")
     @Test
     void create() {
         // given
@@ -59,7 +59,7 @@ class TableGroupServiceTest {
         테이블_그룹_데이터_비교(테이블_그룹_생성_결과, 예상값);
     }
 
-    @DisplayName("테이블 그룹 생성 - 주문 테이블이 빈 테이블이 아닐 경우")
+    @DisplayName("단체 지정을 할 수 있다 - 주문 테이블이 빈 테이블이어야 한다")
     @Test
     void create_exception1() {
         // given
@@ -74,7 +74,7 @@ class TableGroupServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("테이블 그룹 생성 - 주문 테이블의 수가 2개 미만일 경우")
+    @DisplayName("단체 지정을 할 수 있다 - 주문 테이블의 수가 2개 이상이어야 한다")
     @Test
     void create_exception2() {
         // given
@@ -87,7 +87,7 @@ class TableGroupServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("테이블 그룹 생성 - 주문 테이블이 이미 그룹이 있는 경우")
+    @DisplayName("단체 지정을 할 수 있다 - 그룹으로 지정되지 않은 테이블이어야 한다")
     @Test
     void create_exception3() {
         // given
@@ -102,7 +102,7 @@ class TableGroupServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("테이블 그룹 해제")
+    @DisplayName("단체 지정을 해제할 수 있다")
     @Test
     void ungroup() {
         // given
@@ -117,7 +117,8 @@ class TableGroupServiceTest {
         테이블_그룹_해제(1L);
     }
 
-    @DisplayName("테이블 그룹 해제 - 주문 상태가 '조리' 또는 '식사' 상태일 경우")
+    @DisplayName("단체 지정을 해제할 수 있다" +
+            " - 해당 주문 테이블들의 주문 상태가 '조리' 또는 '식사' 상태가 아니어야 한다")
     @Test
     void ungroup_exception1() {
         // given

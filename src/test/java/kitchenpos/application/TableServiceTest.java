@@ -34,7 +34,7 @@ class TableServiceTest {
     @InjectMocks
     TableService tableService;
 
-    @DisplayName("주문 테이블 생성")
+    @DisplayName("주문 테이블을 생성할 수 있다")
     @Test
     void create() {
         // given
@@ -49,7 +49,7 @@ class TableServiceTest {
         주문_테이블_데이터_비교(주문_테이블_생성_결과, 예상값);
     }
 
-    @DisplayName("주문 테이블 목록 조회")
+    @DisplayName("주문 테이블 목록을 조회할 수 있다")
     @Test
     void list() {
         // given
@@ -69,7 +69,7 @@ class TableServiceTest {
         );
     }
 
-    @DisplayName("빈 테이블로 상태 변경")
+    @DisplayName("빈 테이블로 변경할 수 있다")
     @Test
     void changeEmpty() {
         // given
@@ -85,7 +85,7 @@ class TableServiceTest {
         assertThat(주문상태_변경_결과.isEmpty()).isTrue();
     }
 
-    @DisplayName("빈 테이블로 상태 변경 - 그룹으로 지정되어 있는 테이블일 경우")
+    @DisplayName("빈 테이블로 변경할 수 있다 - 그룹으로 지정되지 않은 테이블이어야 한다")
     @Test
     void changeEmpty_exception1() {
         // given
@@ -97,7 +97,7 @@ class TableServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("빈 테이블로 상태 변경 - 주문 상태가 '조리' 또는 '식사' 인 테이블일 경우")
+    @DisplayName("빈 테이블로 변경할 수 있다 - 주문 상태가 '조리' 또는 '식사' 상태가 아니어야 한다")
     @Test
     void changeEmpty_exception2() {
         // given
@@ -110,7 +110,7 @@ class TableServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("방문 손님 수 변경")
+    @DisplayName("방문 손님 수를 변경할 수 있다")
     @Test
     void changeNumberOfGuests() {
         // given
@@ -126,7 +126,7 @@ class TableServiceTest {
         assertThat(방문_손님_수_변경_결과.getNumberOfGuests()).isEqualTo(변경후_주문_테이블.getNumberOfGuests());
     }
 
-    @DisplayName("방문 손님 수 변경 - 변경 하려는 주문 테이블의 방문 손님 수가 0보다 작을 경우")
+    @DisplayName("방문 손님 수를 변경할 수 있다 - 방문 손님의 수는 0명 이상이어야 한다")
     @Test
     void changeNumberOfGuests_exception1() {
         // given
@@ -137,7 +137,7 @@ class TableServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("방문 손님 수 변경 - 주문 테이블이 빈 테이블일 경우")
+    @DisplayName("방문 손님 수를 변경할 수 있다 - 주문 테이블이 빈 테이블이 아니어야 한다")
     @Test
     void changeNumberOfGuests_exception2() {
         // given

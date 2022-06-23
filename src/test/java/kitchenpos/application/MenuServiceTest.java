@@ -57,7 +57,7 @@ class MenuServiceTest {
         menuProducts = Arrays.asList(menuProductSeq1, menuProductSeq2);
     }
 
-    @DisplayName("메뉴 생성")
+    @DisplayName("메뉴를 생성할 수 있다")
     @Test
     void create() {
         // given
@@ -77,31 +77,27 @@ class MenuServiceTest {
         메뉴_값_비교(예상값, 메뉴_생성_결과);
     }
 
-    @DisplayName("메뉴 생성 - price가 값이 없는 경우")
+    @DisplayName("메뉴를 생성할 수 있다 - 메뉴의 가격은 0원 이상이어야 한다")
     @Test
     void create_exception1() {
         // given
-        Menu request = 메뉴_데이터_생성(null, null);
+        Menu request1 = 메뉴_데이터_생성(null, null);
 
         // when && then
-        assertThatThrownBy(() -> 메뉴_생성(request))
+        assertThatThrownBy(() -> 메뉴_생성(request1))
+                .isInstanceOf(IllegalArgumentException.class);
+
+        // given
+        Menu request2 = 메뉴_데이터_생성(null, BigDecimal.valueOf(-1));
+
+        // when && then
+        assertThatThrownBy(() -> 메뉴_생성(request2))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("메뉴 생성 - price 값이 0 미만일 경우")
+    @DisplayName("메뉴를 생성할 수 있다 - 유효한 메뉴 그룹이 지정되어야 한다")
     @Test
     void create_exception2() {
-        // given
-        Menu request = 메뉴_데이터_생성(null, BigDecimal.valueOf(-1));
-
-        // when && then
-        assertThatThrownBy(() -> 메뉴_생성(request))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("메뉴 생성 - 메뉴 그룹이 유효하지 않은 경우")
-    @Test
-    void create_exception3() {
         // given
         Menu request = 메뉴_데이터_생성(null, BigDecimal.valueOf(25000));
         given(메뉴_그룹_유효성_확인()).willReturn(false);
@@ -111,9 +107,9 @@ class MenuServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("메뉴 생성 - 상품이 유효하지 않은 경우")
+    @DisplayName("메뉴를 생성할 수 있다 - 유효한 상품들이 지정되어야 한다")
     @Test
-    void create_exception4() {
+    void create_exception3() {
         // given
         Menu request = 메뉴_데이터_생성(null, BigDecimal.valueOf(25000));
         given(메뉴_그룹_유효성_확인()).willReturn(true);
@@ -124,9 +120,10 @@ class MenuServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("메뉴 생성 - 메뉴의 가격이 포함된 상품들의 가격(수량*가격)보다 클 경우")
+    @DisplayName("메뉴를 생성할 수 있다" +
+            " - 메뉴의 가격은 포함된 상품들의 금액에 합보다 작거나 같아야 한다")
     @Test
-    void create_exception5() {
+    void create_exception4() {
         // given
         Menu request = 메뉴_데이터_생성(null, BigDecimal.valueOf(26001));
         given(메뉴_그룹_유효성_확인()).willReturn(true);
@@ -138,7 +135,7 @@ class MenuServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("메뉴 목록 조회")
+    @DisplayName("메뉴 목록을 조회할 수 있다")
     @Test
     void list() {
         // given

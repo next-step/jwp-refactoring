@@ -28,7 +28,7 @@ class ProductServiceTest {
     @InjectMocks
     ProductService productService;
 
-    @DisplayName("상품 생성")
+    @DisplayName("상품을 생성할 수 있다")
     @Test
     void create() {
         // given
@@ -43,29 +43,25 @@ class ProductServiceTest {
         상품_값_비교(상품_생성_결과, 예상값);
     }
 
-    @DisplayName("상품 생성 - price 값이 없는 상품일 경우")
+    @DisplayName("상품을 생성할 수 있다 - 상품의 가격은 0원 이상이어야 한다")
     @Test
     void create_exception1() {
         // given
-        Product request = new Product(1L, "초밥", null);
+        Product request1 = new Product(1L, "초밥", null);
 
         // when && then
-        assertThatThrownBy(() -> 상품_생성(request))
+        assertThatThrownBy(() -> 상품_생성(request1))
                 .isInstanceOf(IllegalArgumentException.class);
-    }
 
-    @DisplayName("상품 생성 - price 값이 0 미만인 상품일 경우")
-    @Test
-    void create_exception2() {
         // given
-        Product request = new Product(1L, "초밥", BigDecimal.valueOf(-1));
+        Product request2 = new Product(1L, "초밥", BigDecimal.valueOf(-1));
 
         // when && then
-        assertThatThrownBy(() -> 상품_생성(request))
+        assertThatThrownBy(() -> 상품_생성(request2))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("상품 목록 조회")
+    @DisplayName("상품 목록을 조회할 수 있다")
     @Test
     void list() {
         // given
