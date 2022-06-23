@@ -56,4 +56,20 @@ public class OrderTable {
     public static OrderTable of(int numberOfGuests, boolean empty) {
         return new OrderTable(null, numberOfGuests, empty);
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Long getTableGroupId() {
+        return tableGroupId;
+    }
+
+    public NumberOfGuests getNumberOfGuests() {
+        return numberOfGuests;
+    }
+
+    public boolean isEmpty() {
+        return empty;
+    }
 }
