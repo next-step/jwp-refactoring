@@ -82,4 +82,8 @@ public class OrderTable {
     public void ungroup() {
         this.tableGroupId = null;
     }
+
+    public void setTableGroupId(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
+    }
 }

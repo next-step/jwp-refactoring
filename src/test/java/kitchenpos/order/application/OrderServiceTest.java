@@ -1,8 +1,6 @@
 package kitchenpos.order.application;
 
 
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuRepository;
@@ -13,6 +11,8 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.product.domain.Product;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -44,7 +44,7 @@ public class OrderServiceTest {
     OrderService orderService;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @Mock
     private MenuRepository menuRepository;
@@ -65,7 +65,7 @@ public class OrderServiceTest {
         추천메뉴 = 메뉴_등록(1L, "추천메뉴", 강정치킨.getPrice(), 치킨메뉴.getId(),
                 Arrays.asList(메뉴_상품_등록(1L, 강정치킨.getId(), 1L)));
 
-        테이블 = 테이블_등록(1L, true);
+        테이블 = 테이블_등록(1L, 4, true);
         주문항목 = Arrays.asList(주문_항목_등록(1L, 추천메뉴.getId(), 1L));
     }
 
@@ -106,7 +106,7 @@ public class OrderServiceTest {
         // given
         Order order = 주문_등록(1L, 테이블.getId(), 주문항목);
         given(menuRepository.countByIdIn(any())).willReturn(1);
-        given(orderTableDao.findById(any())).willReturn(Optional.ofNullable(테이블));
+        given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(테이블));
 
         // when-then
         assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
@@ -117,9 +117,9 @@ public class OrderServiceTest {
     void createOrder() {
         // given
         Order order = 주문_등록(1L, 테이블.getId(), 주문항목);
-        테이블.setEmpty(false);
+        테이블.changeEmpty(false);
         given(menuRepository.countByIdIn(any())).willReturn(1);
-        given(orderTableDao.findById(any())).willReturn(Optional.ofNullable(테이블));
+        given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(테이블));
         given(orderRepository.save(any())).willReturn(order);
 
         // when-then

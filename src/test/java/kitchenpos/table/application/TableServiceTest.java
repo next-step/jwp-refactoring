@@ -5,7 +5,6 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableResponse;
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -143,11 +142,12 @@ public class TableServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    public static kitchenpos.domain.OrderTable 테이블_등록(Long id, boolean empty) {
-        kitchenpos.domain.OrderTable orderTable = new kitchenpos.domain.OrderTable();
-        orderTable.setId(id);
-        orderTable.setEmpty(empty);
-        return orderTable;
+    public static OrderTable 테이블_등록(long tableGroupId, int numberOfGuests, boolean empty) {
+        return OrderTable.of(tableGroupId, numberOfGuests, empty);
+    }
+
+    public static OrderTable 테이블_등록(int numberOfGuests, boolean empty) {
+        return OrderTable.of(numberOfGuests, empty);
     }
 
     public static OrderTable 테이블_등록2(long tableGroupId, int numberOfGuests, boolean empty) {
