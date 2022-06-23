@@ -35,6 +35,12 @@ public class OrderTables {
         }
     }
 
+    public void ungroup() {
+        for (OrderTable orderTable : orderTables) {
+            orderTable.ungroup();
+        }
+    }
+
     public void checkGroupable() {
         for (final OrderTable orderTable : orderTables) {
             if (!orderTable.isGroupable()) {

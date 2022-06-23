@@ -92,8 +92,6 @@ public class TableGroupServiceTest {
         // given
         TableGroupResponse tableGroup = 단체_지정_등록();
         given(orderTableRepository.findAllByTableGroupId(any())).willReturn(Arrays.asList(orderTable1, orderTable2));
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(false);
-        given(orderTableRepository.save(any())).willReturn(orderTable1);
 
         // when
         tableGroupService.ungroup(tableGroup.getId());

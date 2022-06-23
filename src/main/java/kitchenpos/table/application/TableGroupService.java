@@ -1,15 +1,15 @@
 package kitchenpos.table.application;
 
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.*;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.OrderTables;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.domain.TableGroupRepository;
 import kitchenpos.table.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import static kitchenpos.common.domain.OrderStatus.UNCOMPLETED_STATUSES;
 
 @Service
 public class TableGroupService {
@@ -38,20 +38,18 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
+        final OrderTables orderTables = OrderTables.of(orderTableRepository.findAllByTableGroupId(
+                tableGroupId));
 
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
+        validateOfUngroup(orderTables);
+        orderTables.ungroup();
 
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
-        }
+        orderTableRepository.saveAll(orderTables.getValues());
+    }
 
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.setTableGroupId(null);
-            orderTableRepository.save(orderTable);
+    private void validateOfUngroup(OrderTables orderTables) {
+        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTables.getIds(), UNCOMPLETED_STATUSES)) {
+            throw new IllegalArgumentException("조리중 또는 식사중 상태에서는 그룹 해제가 불가능합니다");
         }
     }
 }
