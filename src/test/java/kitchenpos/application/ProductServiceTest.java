@@ -9,6 +9,9 @@ import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 class ProductServiceTest extends ServiceTest{
@@ -17,16 +20,7 @@ class ProductServiceTest extends ServiceTest{
     private ProductDao productDao;
     @Autowired
     private ProductService productService;
-
-    @Test
-    @DisplayName("상품 생성시 가격이 음수가 입력되는 경우 예외를 던진다.")
-    void createFail() {
-        assertThatIllegalArgumentException()
-            .isThrownBy(() -> this.productService.create(new Product("후라이드", BigDecimal.valueOf(-1))));
-        assertThatIllegalArgumentException()
-            .isThrownBy(() -> this.productService.create(new Product("후라이드", null)));
-    }
-
+    
     @Test
     @DisplayName("상품이 정상적으로 생성된다.")
     void create() {
@@ -36,6 +30,15 @@ class ProductServiceTest extends ServiceTest{
 
         assertThat(createdProduct.getId()).isNotNull();
         assertThat(createdProduct.getPrice().intValue()).isEqualTo(16000);
+    }
+
+    @ParameterizedTest(name = "가격이 {0}일 경우")
+    @DisplayName("상품 생성시 가격이 음수가 입력되는 경우 예외를 던진다.")
+    @NullSource
+    @ValueSource(strings = {"-1"})
+    void createFail(BigDecimal price) {
+        assertThatIllegalArgumentException()
+            .isThrownBy(() -> this.productService.create(new Product("후라이드", price)));
     }
 
     @Test
