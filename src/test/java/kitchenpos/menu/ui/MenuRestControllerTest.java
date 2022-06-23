@@ -16,7 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.math.BigDecimal;
 import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -40,7 +39,7 @@ class MenuRestControllerTest {
     void setUp() {
         this.objectMapper = new ObjectMapper();
         this.mockMvc = MockMvcBuilders.standaloneSetup(menuRestController).build();
-        this.menuResponse = new MenuResponse(new Menu("menu1", BigDecimal.valueOf(10000), new MenuGroup(1L, "group")));
+        this.menuResponse = new MenuResponse(new Menu("menu1", 10000L, new MenuGroup(1L, "group")));
     }
 
     @Test
@@ -61,7 +60,7 @@ class MenuRestControllerTest {
 
         //then
         mockMvc.perform(post("/api/menus").content(objectMapper.writeValueAsString(new MenuRequest("menu1",
-                                BigDecimal.valueOf(10000), 1L, Collections.emptyList())))
+                                10000L, 1L, Collections.emptyList())))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isCreated());

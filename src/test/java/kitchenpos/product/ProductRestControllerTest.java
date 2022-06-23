@@ -15,7 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.math.BigDecimal;
 import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -56,7 +55,7 @@ class ProductRestControllerTest {
 
         //then
         mockMvc.perform(post("/api/products")
-                .content(objectMapper.writeValueAsString(new ProductRequest("product", BigDecimal.TEN)))
+                .content(objectMapper.writeValueAsString(new ProductRequest("product", 0)))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isCreated());

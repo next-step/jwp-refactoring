@@ -18,7 +18,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
@@ -46,8 +45,8 @@ class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        product1 = new Product(1L, "product1", BigDecimal.valueOf(100));
-        product2 = new Product(2L, "product2", BigDecimal.valueOf(500));
+        product1 = new Product(1L, "product1", 100L);
+        product2 = new Product(2L, "product2", 500L);
         group = new MenuGroup(1L, "group");
     }
 
@@ -55,10 +54,10 @@ class MenuServiceTest {
     @DisplayName("메뉴 그룹을 생성할 수 있다.")
     void create() {
         //given
-        MenuRequest request = new MenuRequest("menu1", BigDecimal.valueOf(10000), 1L,
+        MenuRequest request = new MenuRequest("menu1", 10000L, 1L,
                 Arrays.asList(new MenuProductRequest(product1.getId(), 10),
                         new MenuProductRequest(product2.getId(), 20)));
-        Menu menu = new Menu("menu1", BigDecimal.valueOf(10000), new MenuGroup(1L, "group"));
+        Menu menu = new Menu("menu1", 10000L, new MenuGroup(1L, "group"));
         menu.add(product1, 10);
         menu.add(product2, 20);
         given(menuGroupDao.findById(any())).willReturn(Optional.of(group));
@@ -83,7 +82,7 @@ class MenuServiceTest {
 
         //then
         assertThatThrownBy(() -> menuService.create(
-                new MenuRequest("name", BigDecimal.TEN, 0L, Collections.emptyList()))).isExactlyInstanceOf(
+                new MenuRequest("name", 10L, 0L, Collections.emptyList()))).isExactlyInstanceOf(
                 IllegalArgumentException.class);
     }
 
@@ -96,7 +95,7 @@ class MenuServiceTest {
         given(productDao.findById(product2.getId())).willReturn(Optional.of(product2));
 
         //then
-        assertThatThrownBy(() -> menuService.create(new MenuRequest("name", BigDecimal.valueOf(10000), 0L,
+        assertThatThrownBy(() -> menuService.create(new MenuRequest("name", 10000L, 0L,
                 Arrays.asList(new MenuProductRequest(1L, 5), new MenuProductRequest(2L, 3))))).isExactlyInstanceOf(
                 IllegalArgumentException.class);
     }
@@ -109,7 +108,7 @@ class MenuServiceTest {
         given(productDao.findById(3L)).willReturn(Optional.empty());
 
         //then
-        assertThatThrownBy(() -> menuService.create(new MenuRequest("name", BigDecimal.valueOf(10000), 0L,
+        assertThatThrownBy(() -> menuService.create(new MenuRequest("name", 10000L, 0L,
                 Arrays.asList(new MenuProductRequest(3L, 5), new MenuProductRequest(2L, 3))))).isExactlyInstanceOf(
                 IllegalArgumentException.class);
     }
@@ -118,7 +117,7 @@ class MenuServiceTest {
     @DisplayName("전체 메뉴 그룹을 조회할 수 있다.")
     void list() {
         //given
-        Menu menu = new Menu("menu1", BigDecimal.valueOf(10000), new MenuGroup(1L, "group"));
+        Menu menu = new Menu("menu1", 10000L, new MenuGroup(1L, "group"));
         menu.add(product1, 10);
         menu.add(product2, 20);
         given(menuDao.findAll()).willReturn(Arrays.asList(menu));

@@ -20,7 +20,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Optional;
@@ -55,9 +54,9 @@ class OrdersServiceTest {
         menuGroup = new MenuGroup(1L, "menuGroup");
         비어있지_않은_주문_테이블 = new OrderTable(1L, new TableGroup(), 5, false);
         비어있는_주문_테이블 = new OrderTable(2L, new TableGroup(), 10, true);
-        product1 = new Product(1L, "product1", BigDecimal.valueOf(100));
-        product2 = new Product(2L, "product2", BigDecimal.valueOf(500));
-        menu = new Menu(1L, "menu1", BigDecimal.valueOf(1000), menuGroup);
+        product1 = new Product(1L, "product1", 100L);
+        product2 = new Product(2L, "product2", 500L);
+        menu = new Menu(1L, "menu1", 1000L, menuGroup);
         menu.add(product1, 1);
         menu.add(product2, 2);
         orders = new Orders(비어있지_않은_주문_테이블, OrderStatus.COOKING, LocalDateTime.now());
