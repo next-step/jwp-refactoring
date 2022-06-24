@@ -9,12 +9,13 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 import java.util.Arrays;
-import kitchenpos.dao.TableGroupDao;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
+import kitchenpos.order.domain.OrderTables;
 import kitchenpos.order.domain.TableGroup;
+import kitchenpos.order.domain.TableGroupRepository;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,7 +32,7 @@ class TableGroupServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
     @InjectMocks
     private TableGroupService tableGroupService;
 
@@ -45,7 +46,7 @@ class TableGroupServiceTest {
     void setUp() {
         치킨주문테이블 = createOrderTable(1L, null, 2, true);
         피자주문테이블 = createOrderTable(2L, null, 3, true);
-        단체지정 = createTableGroup(1L, null, Lists.newArrayList(치킨주문테이블, 피자주문테이블));
+        단체지정 = createTableGroup(1L, Lists.newArrayList(치킨주문테이블, 피자주문테이블));
         단체지정_치킨주문테이블 = createOrderTable(1L, 단체지정, 2, true);
         단체지정_피자주문테이블 = createOrderTable(2L, 단체지정, 3, true);
     }
@@ -55,21 +56,21 @@ class TableGroupServiceTest {
     void create() {
         given(orderTableRepository.findAllByIdIn(Lists.newArrayList(치킨주문테이블.id(), 피자주문테이블.id()))).willReturn(
                 Lists.newArrayList(치킨주문테이블, 피자주문테이블));
-        given(tableGroupDao.save(단체지정)).willReturn(단체지정);
+        given(tableGroupRepository.save(단체지정)).willReturn(단체지정);
         given(orderTableRepository.save(단체지정_치킨주문테이블)).willReturn(단체지정_치킨주문테이블);
         given(orderTableRepository.save(단체지정_피자주문테이블)).willReturn(단체지정_피자주문테이블);
         TableGroup tableGroup = tableGroupService.create(단체지정);
         assertAll(
-                () -> assertThat(tableGroup.getOrderTables()).containsExactlyElementsOf(
+                () -> assertThat(tableGroup.orderTables().readOnlyOrderTables()).containsExactlyElementsOf(
                         Lists.newArrayList(치킨주문테이블, 피자주문테이블)),
-                () -> assertThat(tableGroup.getId()).isEqualTo(단체지정.getId())
+                () -> assertThat(tableGroup.id()).isEqualTo(단체지정.id())
         );
     }
 
     @DisplayName("단체지정 생성시 주문테이블이 2 미만인 경우 테스트")
     @Test
     void createWithOrderTableSizeUnderTwo() {
-        단체지정.setOrderTables(Lists.newArrayList(치킨주문테이블));
+        단체지정.setOrderTables(OrderTables.of(Lists.newArrayList(치킨주문테이블)));
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableGroupService.create(단체지정));
     }
@@ -113,11 +114,11 @@ class TableGroupServiceTest {
     @DisplayName("단체지정 해제 테스트")
     @Test
     void ungroup() {
-        given(orderTableRepository.findAllByTableGroupId(단체지정.getId())).willReturn(
+        given(orderTableRepository.findAllByTableGroupId(단체지정.id())).willReturn(
                 Lists.newArrayList(단체지정_치킨주문테이블, 단체지정_피자주문테이블));
         given(orderRepository.existsByOrderTableInAndOrderStatusIn(Lists.newArrayList(치킨주문테이블, 피자주문테이블),
                 Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).willReturn(false);
-        tableGroupService.ungroup(단체지정.getId());
+        tableGroupService.ungroup(단체지정.id());
         verify(orderTableRepository).save(치킨주문테이블);
         verify(orderTableRepository).save(피자주문테이블);
     }
@@ -125,12 +126,12 @@ class TableGroupServiceTest {
     @DisplayName("단체지정 해제시 단체지정의 주문테이블들 중 주문상태가 조리, 식사인 것이 있는 경우 테스트")
     @Test
     void ungroupWithCookingOrMealOrderStatus() {
-        given(orderTableRepository.findAllByTableGroupId(단체지정.getId())).willReturn(
+        given(orderTableRepository.findAllByTableGroupId(단체지정.id())).willReturn(
                 Lists.newArrayList(단체지정_치킨주문테이블, 단체지정_피자주문테이블));
         given(orderRepository.existsByOrderTableInAndOrderStatusIn(Lists.newArrayList(치킨주문테이블, 피자주문테이블),
                 Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).willReturn(true);
 
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.ungroup(단체지정.getId()));
+                .isThrownBy(() -> tableGroupService.ungroup(단체지정.id()));
     }
 }

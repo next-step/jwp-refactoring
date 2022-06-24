@@ -38,7 +38,7 @@ class TableServiceTest {
 
     @BeforeEach
     void setUp() {
-        단체지정 = createTableGroup(1L, null, null);
+        단체지정 = createTableGroup(1L, null);
         주문테이블 = createOrderTable(1L, null, 2, false);
     }
 

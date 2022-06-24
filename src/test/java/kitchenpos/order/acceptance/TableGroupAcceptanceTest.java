@@ -28,7 +28,7 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
 
         OrderTable 치킨주문테이블 = 주문테이블_등록_요청(createOrderTable(null, null, 2, true)).as(OrderTable.class);
         OrderTable 피자주문테이블 = 주문테이블_등록_요청(createOrderTable(null, null, 3, true)).as(OrderTable.class);
-        단체지정 = createTableGroup(1L, null, Lists.newArrayList(치킨주문테이블, 피자주문테이블));
+        단체지정 = createTableGroup(1L, Lists.newArrayList(치킨주문테이블, 피자주문테이블));
     }
 
     /**
@@ -57,7 +57,7 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
         TableGroup 등록한_단체지정 = 단체지정_등록_요청(단체지정).as(TableGroup.class);
 
         // when
-        ExtractableResponse<Response> response = 단체지정_해제_요청(등록한_단체지정.getId());
+        ExtractableResponse<Response> response = 단체지정_해제_요청(등록한_단체지정.id());
 
         // then
         단체지정_해제됨(response);

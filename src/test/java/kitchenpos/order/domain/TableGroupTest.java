@@ -9,20 +9,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class OrderTest {
-    private OrderLineItem 주문항목;
+class TableGroupTest {
     private OrderTable 주문테이블;
 
     @BeforeEach
     void setUp() {
-        주문항목 = createOrderLineItem(1L, null, null, 2L);
         주문테이블 = createOrderTable(1L, null, 2, false);
     }
 
     @DisplayName("초기화 테스트")
     @Test
     void of() {
-        Order order = Order.of(1L, 주문테이블, OrderStatus.COOKING, Lists.newArrayList(주문항목));
-        assertThat(order).isEqualTo(order);
+        TableGroup tableGroup = TableGroup.of(1L, Lists.newArrayList(주문테이블));
+        assertThat(tableGroup).isEqualTo(tableGroup);
     }
 }

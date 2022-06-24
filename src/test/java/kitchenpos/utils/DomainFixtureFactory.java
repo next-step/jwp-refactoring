@@ -43,7 +43,7 @@ public class DomainFixtureFactory {
         return OrderLineItem.of(seq, order, menu, quantity);
     }
 
-    public static TableGroup createTableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
-        return TableGroup.of(id, createdDate, orderTables);
+    public static TableGroup createTableGroup(Long id, List<OrderTable> orderTables) {
+        return TableGroup.of(id, orderTables);
     }
 }
