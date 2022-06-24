@@ -2,7 +2,6 @@ package kitchenpos.menu.domain;
 
 import java.math.BigDecimal;
 import java.util.Objects;
-import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,8 +17,8 @@ public class ProductEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String name;
+    @Embedded
+    private Name name;
 
     @Embedded
     private Price price;
@@ -28,15 +27,13 @@ public class ProductEntity {
     }
 
     private ProductEntity(Long id, String name, Price price) {
-        validateProduct(name);
         this.id = id;
-        this.name = name;
+        this.name = new Name(name);
         this.price = price;
     }
 
     private ProductEntity(String name, Price price) {
-        validateProduct(name);
-        this.name = name;
+        this.name = new Name(name);
         this.price = price;
     }
 
@@ -48,18 +45,12 @@ public class ProductEntity {
         return new ProductEntity(id, name, new Price(price));
     }
 
-    private void validateProduct(String name) {
-        if (Objects.isNull(name)) {
-            throw new IllegalArgumentException();
-        }
-    }
-
     public Long getId() {
         return id;
     }
 
     public String getName() {
-        return name;
+        return name.getValue();
     }
 
     public BigDecimal getPrice() {

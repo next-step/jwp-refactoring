@@ -20,7 +20,8 @@ public class MenuEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    @Embedded
+    private Name name;
 
     @Embedded
     private Price price;
@@ -36,7 +37,7 @@ public class MenuEntity {
     }
 
     private MenuEntity(String name, BigDecimal price, MenuGroupEntity menuGroup) {
-        this.name = name;
+        this.name = new Name(name);
         this.price = new Price(price);
         this.menuGroup = menuGroup;
     }
@@ -55,7 +56,7 @@ public class MenuEntity {
     }
 
     public String getName() {
-        return name;
+        return name.getValue();
     }
 
     public BigDecimal getPrice() {

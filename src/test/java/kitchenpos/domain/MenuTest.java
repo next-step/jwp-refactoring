@@ -1,6 +1,7 @@
 package kitchenpos.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -28,5 +29,21 @@ class MenuTest {
         // then
         assertThat(메뉴_상품.getMenu()).isEqualTo(메뉴);
         assertThat(메뉴_상품2.getMenu()).isEqualTo(메뉴);
+    }
+
+    @DisplayName("메뉴의 이름이 null 이면 예외갑 발생한다")
+    @Test
+    void exception_test() {
+        assertThatThrownBy(() -> {
+            MenuEntity.of(null, BigDecimal.valueOf(500L), null);
+        }).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("메뉴의 이름이 공백이면 예외갑 발생한다")
+    @Test
+    void exception_test2() {
+        assertThatThrownBy(() -> {
+            MenuEntity.of("", BigDecimal.valueOf(500L), null);
+        }).isInstanceOf(IllegalArgumentException.class);
     }
 }

@@ -10,6 +10,9 @@ public class Name {
     @Column(nullable = false, name = "name")
     private String value;
 
+    protected Name() {
+    }
+
     public Name(String value) {
         if (!StringUtils.hasText(value)) {
             throw new IllegalArgumentException();
