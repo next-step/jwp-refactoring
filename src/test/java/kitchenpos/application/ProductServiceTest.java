@@ -4,9 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.repository.ProductRepository;
+import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,16 +20,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 class ProductServiceTest extends ServiceTest{
 
     @Autowired
-    private ProductRepository productRepository;
-    @Autowired
     private ProductService productService;
 
     @Test
     @DisplayName("상품이 정상적으로 생성된다.")
     void create() {
-        Product product = new Product("후라이드", BigDecimal.valueOf(16000.00));
+        ProductRequest productRequest = new ProductRequest("후라이드", BigDecimal.valueOf(16000.00));
 
-        Product createdProduct = this.productService.create(product);
+        ProductResponse createdProduct = this.productService.create(productRequest);
 
         assertThat(createdProduct.getId()).isNotNull();
         assertThat(createdProduct.getPrice().intValue()).isEqualTo(16000);
@@ -38,18 +39,18 @@ class ProductServiceTest extends ServiceTest{
     @ValueSource(strings = {"-1"})
     void createFail(BigDecimal price) {
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> this.productService.create(new Product("후라이드", price)));
+            .isThrownBy(() -> this.productService.create(new ProductRequest("후라이드", price)));
     }
 
     @Test
     @DisplayName("상품을 모두 조회한다.")
     void list() {
-        Product product1 = this.productRepository.save(new Product("후라이드", BigDecimal.valueOf(16000.00)));
-        Product product2 = this.productRepository.save(new Product("양념치킨", BigDecimal.valueOf(16000.00)));
+        ProductResponse product1 = this.productService.create(new ProductRequest("후라이드", BigDecimal.valueOf(16000.00)));
+        ProductResponse product2 = this.productService.create(new ProductRequest("양념치킨", BigDecimal.valueOf(16000.00)));
 
-        List<Product> products = this.productService.list();
+        List<ProductResponse> products = this.productService.list();
 
-        assertThat(products).containsExactly(product1, product2);
+        assertThat(products).containsAll(Arrays.asList(product1, product2));
     }
 
 }
