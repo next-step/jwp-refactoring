@@ -38,19 +38,27 @@ public class OrderTable {
     }
 
     public void registerOrder(Order order) {
-        if (Boolean.TRUE.equals(empty)) {
-            throw new IllegalArgumentException("[ERROR] 빈테이블에는 주문등록을 할 수 없습니다.");
-        }
+        validateOrderTable();
         orders.registerOrder(order);
         order.setOrderTable(this);
     }
 
+    private void validateOrderTable() {
+        if (Boolean.TRUE.equals(empty)) {
+            throw new IllegalArgumentException("[ERROR] 빈테이블에는 주문등록을 할 수 없습니다.");
+        }
+    }
+
     public void ungroupingTableGroup() {
         orders.checkPossibleUngroupingOrderStatus();
+        validateTableGroup();
+        tableGroup = null;
+    }
+
+    private void validateTableGroup() {
         if (tableGroup == null) {
             throw new IllegalArgumentException("[ERROR] 단체 지정이 되어있지 않아 해제할 수 없습니다.");
         }
-        tableGroup = null;
     }
 
     public void assignTableGroup(TableGroup tableGroup) {
@@ -76,14 +84,18 @@ public class OrderTable {
     }
 
     public void updateNumberOfGuests(Integer numberOfGuests) {
+        validateUpdateNumberOfGuests(numberOfGuests);
+        orders.checkPossibleChangeEmpty();
+        this.numberOfGuests = numberOfGuests;
+    }
+
+    private void validateUpdateNumberOfGuests(Integer numberOfGuests) {
         if (numberOfGuests < EMPTY_GEUST) {
             throw new IllegalArgumentException("[ERROR] 방문 손님 수는 0명 미만으로 변경할 수 없습니다.");
         }
         if (Boolean.TRUE.equals(empty)) {
             throw new IllegalArgumentException("[ERROR] 빈 테이블은 방문 손님 수를 변경할 수 없습니다.");
         }
-        orders.checkPossibleChangeEmpty();
-        this.numberOfGuests = numberOfGuests;
     }
 
     public void updateEmpty(boolean empty) {

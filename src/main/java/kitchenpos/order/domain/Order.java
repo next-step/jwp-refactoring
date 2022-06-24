@@ -60,13 +60,17 @@ public class Order {
     }
 
     public void registerOrderLineItems(OrderLineItems orderLineItems, int requestSize) {
+        validateOrderLineItems(orderLineItems, requestSize);
+        this.orderLineItems.addOrderLineItems(orderLineItems, this);
+    }
+
+    private void validateOrderLineItems(OrderLineItems orderLineItems, int requestSize) {
         if (orderLineItems.isEmpty()) {
             throw new IllegalArgumentException("[ERROR] 주문 항목이 없습니다.");
         }
         if (orderLineItems.size() != requestSize) {
             throw new IllegalArgumentException("[ERROR] 등록 되어있지 않는 주문 항목이 있습니다.");
         }
-        this.orderLineItems.addOrderLineItems(orderLineItems, this);
     }
 
     public void checkPossibleUngroupingOrderStatus() {
@@ -97,11 +101,6 @@ public class Order {
 
     public void setOrderTable(OrderTable orderTable) {
         this.orderTable = orderTable;
-    }
-
-    public void addOrderLineItems(OrderLineItem orderLineItem) {
-        orderLineItems.addOrderLineItems(orderLineItem);
-        orderLineItem.setOrder(this);
     }
 
     public void checkPossibleChangeEmpty() {
