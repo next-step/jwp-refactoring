@@ -1,12 +1,12 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuRepository;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.orderLineItem.OrderLineItem;
+import kitchenpos.domain.orderLineItem.OrderLineItemRepository;
 import kitchenpos.domain.orderTable.OrderTable;
 import kitchenpos.domain.orderTable.OrderTableRepository;
 import kitchenpos.dto.order.OrderRequest;
@@ -42,7 +42,7 @@ class OrderServiceTest {
     OrderRepository orderRepository;
 
     @Mock
-    OrderLineItemDao orderLineItemDao;
+    OrderLineItemRepository orderLineItemRepository;
 
     @Mock
     OrderTableRepository orderTableRepository;
