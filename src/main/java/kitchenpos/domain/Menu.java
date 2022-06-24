@@ -1,23 +1,43 @@
 package kitchenpos.domain;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
+@Entity
 public class Menu {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
-    private BigDecimal price;
-    private Long menuGroupId;
-    private List<MenuProduct> menuProducts;
+
+    @Embedded
+    private Price price;
+
+    @ManyToOne
+    @JoinColumn(name = "menu_group_id")
+    private MenuGroup menuGroup;
+
+    @OneToMany(mappedBy = "menu", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
+    private List<MenuProduct> menuProducts = new ArrayList<>();
 
     public Menu() {
     }
 
-    public Menu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
+        this.name = name;
+        this.price = new Price(price);
+        this.menuGroup = menuGroup;
+    }
+
+    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = name;
-        this.price = price;
-        this.menuGroupId = menuGroupId;
+        this.price = new Price(price);
+        this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
     }
 
@@ -38,19 +58,11 @@ public class Menu {
     }
 
     public BigDecimal getPrice() {
-        return price;
+        return price.getPrice();
     }
 
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
-    }
-
-    public Long getMenuGroupId() {
-        return menuGroupId;
-    }
-
-    public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
+    public MenuGroup getMenuGroup() {
+        return menuGroup;
     }
 
     public List<MenuProduct> getMenuProducts() {
@@ -59,5 +71,25 @@ public class Menu {
 
     public void setMenuProducts(final List<MenuProduct> menuProducts) {
         this.menuProducts = menuProducts;
+    }
+
+    public void addMenuProducts(List<MenuProduct> menuProducts) {
+        checkValidPrice(menuProducts);
+        addAll(menuProducts);
+    }
+
+    private void checkValidPrice(List<MenuProduct> menuProducts) {
+        BigDecimal sum = menuProducts.stream()
+                .map(MenuProduct::getTotalPrice)
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
+        if (price.getPrice().compareTo(sum) > 0) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private void addAll(List<MenuProduct> menuProducts) {
+        menuProducts.addAll(menuProducts);
+        menuProducts.forEach(menuProduct -> menuProduct.setMenu(this));
     }
 }

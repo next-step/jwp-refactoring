@@ -1,7 +1,7 @@
 package kitchenpos.ui;
 
 import kitchenpos.application.ProductService;
-import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductRequestDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,8 +12,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.math.BigDecimal;
 import java.util.Arrays;
 
-import static kitchenpos.fixture.ProductFixture.상품_데이터_생성;
 import static kitchenpos.fixture.ProductFixture.상품_요청_데이터_생성;
+import static kitchenpos.fixture.ProductFixture.상품_응답_데이터_생성;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -36,10 +36,10 @@ public class ProductRestControllerTest extends BaseRestControllerTest {
     @Test
     void create() throws Exception {
         //given
-        Product product = 상품_요청_데이터_생성("product", BigDecimal.valueOf(1000));
-        String requestBody = objectMapper.writeValueAsString(product);
+        ProductRequestDto request = 상품_요청_데이터_생성("product", BigDecimal.valueOf(1000));
+        String requestBody = objectMapper.writeValueAsString(request);
 
-        given(productService.create(any())).willReturn(상품_데이터_생성(1L, "product", BigDecimal.valueOf(1000)));
+        given(productService.create(any())).willReturn(상품_응답_데이터_생성(1L, "product", BigDecimal.valueOf(1000)));
 
         //when then
         mockMvc.perform(post("/api/products")
@@ -55,7 +55,7 @@ public class ProductRestControllerTest extends BaseRestControllerTest {
     @Test
     void list() throws Exception {
         //given
-        given(productService.list()).willReturn(Arrays.asList(상품_데이터_생성(1L, "product", BigDecimal.valueOf(1000))));
+        given(productService.list()).willReturn(Arrays.asList(상품_응답_데이터_생성(1L, "product", BigDecimal.valueOf(1000))));
 
         //when then
         mockMvc.perform(get("/api/products"))

@@ -1,19 +1,44 @@
 package kitchenpos.domain;
 
+import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Objects;
 
+@Entity
 public class MenuProduct {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
-    private Long menuId;
-    private Long productId;
+
+    @ManyToOne
+    @JoinColumn(name = "menu_id")
+    private Menu menu;
+
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
+
     private long quantity;
 
-    public MenuProduct() {
+    protected MenuProduct() {
     }
 
-    public MenuProduct(Long seq, Long productId, long quantity) {
+    public MenuProduct(Product product, long quantity) {
+        this.product = product;
+        this.quantity = quantity;
+    }
+
+    public MenuProduct(Long seq, Product product, long quantity) {
         this.seq = seq;
-        this.productId = productId;
+        this.product = product;
+        this.quantity = quantity;
+    }
+
+    public MenuProduct(Long seq, Menu menu, Product product, long quantity) {
+        this.seq = seq;
+        this.menu = menu;
+        this.product = product;
         this.quantity = quantity;
     }
 
@@ -25,20 +50,16 @@ public class MenuProduct {
         this.seq = seq;
     }
 
-    public Long getMenuId() {
-        return menuId;
+    public Menu getMenu() {
+        return menu;
     }
 
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
+    public void setMenu(Menu menu) {
+        this.menu = menu;
     }
 
-    public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(final Long productId) {
-        this.productId = productId;
+    public Product getProduct() {
+        return product;
     }
 
     public long getQuantity() {
@@ -47,6 +68,10 @@ public class MenuProduct {
 
     public void setQuantity(final long quantity) {
         this.quantity = quantity;
+    }
+
+    public BigDecimal getTotalPrice() {
+        return product.getPrice().multiply(BigDecimal.valueOf(quantity));
     }
 
     @Override
