@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -47,34 +48,34 @@ class TableServiceTest {
         then(orderTableDao).should(times(1)).save(any(OrderTable.class));
     }
 
-    @DisplayName("")
+    @DisplayName("테이블의 주문 등록 상태를 변경한다.")
     @Test
     void changeEmpty() {
         // given
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(new OrderTable.Builder().build()));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(1L, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(false);
-        given(orderTableDao.save(any(OrderTable.class))).willReturn(new OrderTable.Builder().id(1L).empty(true).build());
+        List<String> orderStatuses = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
 
-        OrderTable created = tableService.create(new OrderTable.Builder(0, true).build());
+        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(new OrderTable.Builder().empty(false).build()));
+        given(orderDao.existsByOrderTableIdAndOrderStatusIn(1L, orderStatuses)).willReturn(false);
+        given(orderTableDao.save(any(OrderTable.class))).willReturn(new OrderTable.Builder().empty(true).build());
 
         // when
-        OrderTable changed = tableService.changeEmpty(created.getId(), new OrderTable.Builder().empty(true).build());
+        OrderTable changed = tableService.changeEmpty(1L, new OrderTable.Builder().empty(true).build());
 
         // then
         assertThat(changed.isEmpty()).isTrue();
 
         // verify
         then(orderTableDao).should(times(1)).findById(anyLong());
-        then(orderDao).should(times(1)).existsByOrderTableIdAndOrderStatusIn(1L, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()));
-        then(orderTableDao).should(times(2)).save(any(OrderTable.class)); // create, changeEmpty
+        then(orderDao).should(times(1)).existsByOrderTableIdAndOrderStatusIn(1L, orderStatuses);
+        then(orderTableDao).should(times(1)).save(any(OrderTable.class));
     }
 
-    @DisplayName("")
+    @DisplayName("테이블의 방문한 손님 수를 변경한다.")
     @Test
     void changeNumberOfGuests() {
         // given
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(new OrderTable.Builder(4, false).id(1L).build()));
-        given(orderTableDao.save(any(OrderTable.class))).willReturn(new OrderTable.Builder(8, false).id(1L).build());
+        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(new OrderTable.Builder().numberOfGuests(4).empty(false).build()));
+        given(orderTableDao.save(any(OrderTable.class))).willReturn(new OrderTable.Builder().numberOfGuests(8).build());
 
         // when
         OrderTable changed = tableService.changeNumberOfGuests(1L, new OrderTable.Builder().numberOfGuests(8).build());
