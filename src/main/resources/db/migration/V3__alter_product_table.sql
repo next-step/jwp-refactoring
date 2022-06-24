@@ -1,1 +1,0 @@
-ALTER TABLE product ALTER COLUMN price INT
