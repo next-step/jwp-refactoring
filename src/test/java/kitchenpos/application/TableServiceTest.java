@@ -62,7 +62,7 @@ class TableServiceTest {
         Long id = 1L;
         Long tableGroupId = 1L;
         int numberOfGuests = 4;
-        given(orderTableDao.findAll()).willReturn(Arrays.asList(주문테이블_데이터_생성(id, tableGroupId, numberOfGuests, false)));
+        given(orderTableDao.findAll()).willReturn(Arrays.asList(주문테이블_데이터_생성(id, null, numberOfGuests, false)));
 
         //when
         List<OrderTable> list = tableService.list();
@@ -112,7 +112,7 @@ class TableServiceTest {
         OrderTable request = 주문테이블_비우기_데이터_생성(true);
 
         given(orderTableDao.findById(orderTableId))
-                .willReturn(Optional.of(주문테이블_데이터_생성(orderTableId, 1L, 4, false)));
+                .willReturn(Optional.of(주문테이블_데이터_생성(orderTableId, null, 4, false)));
 
         //when //then
         assertThatIllegalArgumentException().isThrownBy(() -> tableService.changeEmpty(orderTableId, request));
@@ -193,7 +193,7 @@ class TableServiceTest {
     private void 주문테이블_데이터_확인(OrderTable orderTable, Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         assertAll(
                 () -> assertEquals(id, orderTable.getId()),
-                () -> assertEquals(tableGroupId, orderTable.getTableGroupId()),
+                () -> assertEquals(tableGroupId, orderTable.getTableGroup().getId()),
                 () -> assertEquals(numberOfGuests, orderTable.getNumberOfGuests()),
                 () -> assertEquals(empty, orderTable.isEmpty())
         );

@@ -1,9 +1,11 @@
 package kitchenpos.ui;
 
 import kitchenpos.application.OrderService;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
+import kitchenpos.dto.OrderLineItemRequestDto;
+import kitchenpos.dto.OrderLineItemResponseDto;
+import kitchenpos.dto.OrderRequestDto;
+import kitchenpos.dto.OrderResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +18,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import static kitchenpos.fixture.OrderFixture.주문_요청_데이터_생성;
-import static kitchenpos.fixture.OrderLineItemFixture.주문항목_데이터_생성;
+import static kitchenpos.fixture.OrderFixture.주문_응답_데이터_생성;
+import static kitchenpos.fixture.OrderLineItemFixture.주문항목_요청_데이터_생성;
+import static kitchenpos.fixture.OrderLineItemFixture.주문항목_응답_데이터_생성;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -38,12 +42,13 @@ class OrderRestControllerTest extends BaseRestControllerTest {
     @Test
     void create() throws Exception {
         //given
-        List<OrderLineItem> orderLineItems = Arrays.asList(주문항목_데이터_생성());
-        Order request = 주문_요청_데이터_생성(orderLineItems);
+        List<OrderLineItemRequestDto> orderLineItemRequests = Arrays.asList(주문항목_요청_데이터_생성(1L, 1));
+        OrderRequestDto request = 주문_요청_데이터_생성(orderLineItemRequests);
         String requestBody = objectMapper.writeValueAsString(request);
 
-        Order order = new Order(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItems);
-        given(orderService.create(any())).willReturn(order);
+        List<OrderLineItemResponseDto> orderLineItems = Arrays.asList(주문항목_응답_데이터_생성(1L, 1L, 1));
+        OrderResponseDto response = 주문_응답_데이터_생성(1L, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
+        given(orderService.create(any())).willReturn(response);
 
         //when //then
         mockMvc.perform(post("/api/orders")
@@ -63,9 +68,9 @@ class OrderRestControllerTest extends BaseRestControllerTest {
     @Test
     void list() throws Exception {
         //given
-        List<OrderLineItem> orderLineItems = Arrays.asList(new OrderLineItem(1L, 1L, 1L, 1));
-        Order order = new Order(1L, 1L, OrderStatus.COMPLETION.name(), LocalDateTime.now(), orderLineItems);
-        given(orderService.list()).willReturn(Arrays.asList(order));
+        List<OrderLineItemResponseDto> orderLineItems = Arrays.asList(주문항목_응답_데이터_생성(1L, 1L, 1));
+        OrderResponseDto response = 주문_응답_데이터_생성(1L, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
+        given(orderService.list()).willReturn(Arrays.asList(response));
 
         //when //then
         mockMvc.perform(get("/api/orders"))
@@ -78,13 +83,12 @@ class OrderRestControllerTest extends BaseRestControllerTest {
     @Test
     void changeOrderStatus() throws Exception {
         //given
-        Long orderId = 1L;
-        Order request = new Order(null, null, OrderStatus.MEAL.name(), null, null);
-        String requestBody = objectMapper.writeValueAsString(request);
+        Object orderId = 1L;
+        String requestBody = objectMapper.writeValueAsString(OrderStatus.COMPLETION);
 
-        List<OrderLineItem> orderLineItems = Arrays.asList(new OrderLineItem(1L, 1L, 1L, 1));
-        Order order = new Order(orderId, 1L, OrderStatus.MEAL.name(), LocalDateTime.now(), orderLineItems);
-        given(orderService.changeOrderStatus(any(), any())).willReturn(order);
+        List<OrderLineItemResponseDto> orderLineItems = Arrays.asList(주문항목_응답_데이터_생성(1L, 1L, 1));
+        OrderResponseDto response = 주문_응답_데이터_생성(1L, OrderStatus.COMPLETION, LocalDateTime.now(), orderLineItems);
+        given(orderService.changeOrderStatus(any(), any())).willReturn(response);
 
         //when //then
         mockMvc.perform(put("/api/orders/{orderId}/order-status", orderId)
@@ -94,6 +98,6 @@ class OrderRestControllerTest extends BaseRestControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(orderId))
-                .andExpect(jsonPath("$.orderStatus").value(OrderStatus.MEAL.name()));
+                .andExpect(jsonPath("$.orderStatus").value(OrderStatus.COMPLETION.name()));
     }
 }

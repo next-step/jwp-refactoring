@@ -58,9 +58,9 @@ class TableGroupServiceTest {
         given(orderTableDao.findAllByIdIn(anyList())).willReturn(orderTables);
         Long tableGroupId = 1L;
         LocalDateTime createdDate = LocalDateTime.now();
-        given(tableGroupDao.save(any())).willReturn(단체_데이터_생성(tableGroupId, createdDate, orderTables));
-        OrderTable groupingTable1 = 주문테이블_데이터_생성(1L, tableGroupId, 4, true);
-        OrderTable groupingTable2 = 주문테이블_데이터_생성(2L, tableGroupId, 3, true);
+        given(tableGroupDao.save(any())).willReturn(단체_데이터_생성(tableGroupId));
+        OrderTable groupingTable1 = 주문테이블_데이터_생성(1L, null, 4, true);
+        OrderTable groupingTable2 = 주문테이블_데이터_생성(2L, null, 3, true);
         given(orderTableDao.save(any())).willReturn(groupingTable1, groupingTable2);
 
         //when
@@ -125,8 +125,8 @@ class TableGroupServiceTest {
     void ungroup() {
         //given
         Long tableGroupId = 1L;
-        OrderTable table1 = 주문테이블_데이터_생성(1L, tableGroupId, 4, true);
-        OrderTable table2 = 주문테이블_데이터_생성(2L, tableGroupId, 4, true);
+        OrderTable table1 = 주문테이블_데이터_생성(1L, null, 4, true);
+        OrderTable table2 = 주문테이블_데이터_생성(2L, null, 4, true);
         given(orderTableDao.findAllByTableGroupId(tableGroupId)).willReturn(Arrays.asList(table1, table2));
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
 
@@ -139,8 +139,8 @@ class TableGroupServiceTest {
     void ungroup_fail_invalidOrderStatus() {
         //given
         Long tableGroupId = 1L;
-        OrderTable table1 = 주문테이블_데이터_생성(1L, tableGroupId, 4, true);
-        OrderTable table2 = 주문테이블_데이터_생성(2L, tableGroupId, 4, true);
+        OrderTable table1 = 주문테이블_데이터_생성(1L, null, 4, true);
+        OrderTable table2 = 주문테이블_데이터_생성(2L, null, 4, true);
         given(orderTableDao.findAllByTableGroupId(tableGroupId)).willReturn(Arrays.asList(table1, table2));
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
 

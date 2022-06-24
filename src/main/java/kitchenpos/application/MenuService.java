@@ -53,6 +53,7 @@ public class MenuService {
         return new MenuProduct(product, menuProductRequest.getQuantity());
     }
 
+    @Transactional(readOnly = true)
     public List<MenuResponseDto> list() {
         final List<Menu> menus = menuRepository.findAll();
         return menus.stream()

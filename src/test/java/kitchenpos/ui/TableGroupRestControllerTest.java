@@ -10,7 +10,6 @@ import org.mockito.Mock;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -45,7 +44,7 @@ class TableGroupRestControllerTest extends BaseRestControllerTest {
         TableGroup request = 단체_지정_데이터_생성(orderTables);
         String requestBody = objectMapper.writeValueAsString(request);
 
-        given(tableGroupService.create(any())).willReturn(단체_데이터_생성(1L, LocalDateTime.now(), orderTables));
+        given(tableGroupService.create(any())).willReturn(단체_데이터_생성(1L));
 
         //when //then
         mockMvc.perform(post("/api/table-groups")

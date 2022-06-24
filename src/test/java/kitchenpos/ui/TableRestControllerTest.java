@@ -36,7 +36,7 @@ class TableRestControllerTest extends BaseRestControllerTest {
         OrderTable request = 주문테이블_생성요청_데이터_생성(4);
         String requestBody = objectMapper.writeValueAsString(request);
 
-        given(tableService.create(any())).willReturn(주문테이블_데이터_생성(1L, 1L, 4, false));
+        given(tableService.create(any())).willReturn(주문테이블_데이터_생성(1L, null, 4, false));
 
         //when //then
         mockMvc.perform(post("/api/tables")
@@ -52,7 +52,7 @@ class TableRestControllerTest extends BaseRestControllerTest {
     @Test
     void list() throws Exception {
         //given
-        given(tableService.list()).willReturn(Arrays.asList(주문테이블_데이터_생성(1L, 1L, 4, false)));
+        given(tableService.list()).willReturn(Arrays.asList(주문테이블_데이터_생성(1L, null, 4, false)));
 
         //when //then
         mockMvc.perform(get("/api/tables"))
@@ -70,7 +70,7 @@ class TableRestControllerTest extends BaseRestControllerTest {
         String requestBody = objectMapper.writeValueAsString(request);
 
         given(tableService.changeEmpty(any(), any()))
-                .willReturn(주문테이블_데이터_생성(1L, 1L, 4, true));
+                .willReturn(주문테이블_데이터_생성(1L, null, 4, true));
 
         //when //then
         mockMvc.perform(put("/api/tables/{orderTableId}/empty", orderTableId)
@@ -91,7 +91,7 @@ class TableRestControllerTest extends BaseRestControllerTest {
         String requestBody = objectMapper.writeValueAsString(request);
 
         given(tableService.changeNumberOfGuests(any(), any()))
-                .willReturn(주문테이블_데이터_생성(1L, 1L, 3, false));
+                .willReturn(주문테이블_데이터_생성(1L, null, 3, false));
 
         //when //then
         mockMvc.perform(put("/api/tables/{orderTableId}/number-of-guests", orderTableId)
