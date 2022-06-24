@@ -46,9 +46,12 @@ class ProductServiceTest {
     @DisplayName("0원 보다 작은 금액으로 상품을 생성할 수 없다.")
     @Test
     void create_throwException_ifWrongPrice() {
+        // given
+        Product product = new Product.Builder("마늘치킨", -1000).build();
+
         // when
         // then
-        assertThatIllegalArgumentException().isThrownBy(() -> productService.create(new Product.Builder("마늘치킨", -1000).build()));
+        assertThatIllegalArgumentException().isThrownBy(() -> productService.create(product));
 
         // verify
         then(productDao).should(never()).save(any(Product.class));
