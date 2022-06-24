@@ -3,7 +3,6 @@ package kitchenpos.application;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,8 +14,10 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
+import static kitchenpos.fixture.ProductFixture.치킨;
+import static kitchenpos.fixture.ProductFixture.피자;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,20 +28,6 @@ class ProductServiceTest {
 
     @Mock
     private ProductDao productDao;
-
-    private Product 피자;
-    private Product 치킨;
-
-    @BeforeEach
-    void setUp() {
-        피자 = new Product();
-        피자.setName("피자");
-        피자.setPrice(BigDecimal.valueOf(26_000));
-
-        치킨 = new Product();
-        치킨.setName("치킨");
-        치킨.setPrice(BigDecimal.valueOf(10_000));
-    }
 
     @Test
     @DisplayName("상품 등록시 정상 테스트")
