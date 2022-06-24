@@ -96,7 +96,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         assertThat(resultProductIds).containsAll(expectedProductIds);
     }
 
-    private Product createProduct(Long id, String name, long price) {
+    public static Product createProduct(Long id, String name, long price) {
         Product product = new Product();
         product.setId(id);
         product.setName(name);

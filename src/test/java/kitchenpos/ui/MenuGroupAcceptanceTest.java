@@ -95,7 +95,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
         assertThat(resultMenuGroupIds).containsAll(expectedMenuGroupIds);
     }
 
-    private MenuGroup createMenuGroup(Long id, String name) {
+    public static MenuGroup createMenuGroup(Long id, String name) {
         MenuGroup menuGroup = new MenuGroup();
         menuGroup.setId(id);
         menuGroup.setName(name);
