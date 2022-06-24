@@ -94,7 +94,7 @@ class TableServiceTest {
     @DisplayName("주문 테이블이 단체 지정 되어 있으면 빈테이블로 지정 할 수 없다.")
     void changeEmptyFailWithTableGroupTest() {
         //given
-        주문_테이블1.setTableGroupId(단체.getId());
+        주문_테이블1.setTableGroup(단체);
         given(orderTableDao.findById(주문_테이블1.getId())).willReturn(Optional.of(주문_테이블1));
 
         //when & then

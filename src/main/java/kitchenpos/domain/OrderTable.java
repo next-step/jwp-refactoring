@@ -1,12 +1,35 @@
 package kitchenpos.domain;
 
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import kitchenpos.domain.common.Empty;
 import kitchenpos.domain.common.NumberOfGuests;
 
+@Entity
 public class OrderTable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
+    private TableGroup tableGroup;
+
+    @Transient
     private Long tableGroupId;
+
+    @Embedded
     private NumberOfGuests numberOfGuests;
+
+    @Embedded
     private Empty empty;
 
     public OrderTable() {
@@ -17,9 +40,9 @@ public class OrderTable {
         this.empty = new Empty(empty);
     }
 
-    public OrderTable(Long id, Long tableGroupId, boolean empty) {
+    public OrderTable(Long id, TableGroup tableGroup, boolean empty) {
         this.id = id;
-        this.tableGroupId = tableGroupId;
+        this.tableGroup = tableGroup;
         this.empty = new Empty(empty);
     }
 
@@ -37,12 +60,20 @@ public class OrderTable {
         this.id = id;
     }
 
+    public void setTableGroupId(final Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
+    }
+
     public Long getTableGroupId() {
         return tableGroupId;
     }
 
-    public void setTableGroupId(final Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
+    public TableGroup getTableGroup() {
+        return tableGroup;
+    }
+
+    public void setTableGroup(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
     }
 
     public int getNumberOfGuests() {

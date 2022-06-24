@@ -1,6 +1,7 @@
 package kitchenpos.application.fixture;
 
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.TableGroup;
 
 public class OrderTableFixtureFactory {
 
@@ -11,8 +12,8 @@ public class OrderTableFixtureFactory {
         return new OrderTable(id, empty);
     }
 
-    public static OrderTable createWithTableGroup(final Long id, final Long tableGroupId, final boolean empty) {
-        return new OrderTable(id, tableGroupId, empty);
+    public static OrderTable createWithTableGroup(final Long id, final TableGroup tableGroup, final boolean empty) {
+        return new OrderTable(id, tableGroup, empty);
     }
 
     public static OrderTable createByGuestNumber(final Long id, final int numberOfGuests, final boolean empty) {

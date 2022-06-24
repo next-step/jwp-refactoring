@@ -114,8 +114,8 @@ class TableGroupServiceTest {
     void createFailWithTableGroupTest() {
         //given
         TableGroup tableGroup = new TableGroup(1L);
-        OrderTable orderTable1 = new OrderTable(1L, tableGroup.getId(), true);
-        OrderTable orderTable2 = new OrderTable(2L, tableGroup.getId(), true);
+        OrderTable orderTable1 = new OrderTable(1L, tableGroup, true);
+        OrderTable orderTable2 = new OrderTable(2L, tableGroup, true);
         tableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
 
         given(orderTableDao.findAllByIdIn(Arrays.asList(orderTable1.getId(), orderTable2.getId()))).willReturn(
