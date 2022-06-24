@@ -165,7 +165,7 @@ class OrderServiceTest {
 
         //then
         assertThat(order).isEqualTo(주문1);
-        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING.toString());
+        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
     }
 
     @Test
@@ -197,7 +197,7 @@ class OrderServiceTest {
     @DisplayName("주문이 완료 상태이면 변경 할 수 없다.")
     void changeOrderStatusFailWithCompleteStatusTest() {
         //given
-        주문1.setOrderStatus(String.valueOf(OrderStatus.COMPLETION));
+        주문1.setOrderStatus(OrderStatus.COMPLETION);
         given(orderDao.findById(주문1.getId())).willReturn(Optional.of(주문1));
 
         //when & then
@@ -211,8 +211,8 @@ class OrderServiceTest {
     void changeOrderStatusTest() {
 
         //given
-        주문1.setOrderStatus(String.valueOf(OrderStatus.COOKING));
-        주문2.setOrderStatus(String.valueOf(OrderStatus.MEAL));
+        주문1.setOrderStatus(OrderStatus.COOKING);
+        주문2.setOrderStatus(OrderStatus.MEAL);
         given(orderDao.findById(주문1.getId())).willReturn(Optional.of(주문1));
 
         //when
