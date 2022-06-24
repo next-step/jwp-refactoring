@@ -1,7 +1,13 @@
 package kitchenpos.application;
 
+import static kitchenpos.helper.MenuFixtures.메뉴_만들기;
+import static kitchenpos.helper.OrderFixtures.주문_요청_만들기;
+import static kitchenpos.helper.OrderLineItemFixtures.주문_항목_요청_만들기;
+import static kitchenpos.helper.TableFixtures.테이블_만들기;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doAnswer;
 
@@ -10,15 +16,19 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.application.OrderService;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,56 +41,60 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class OrderServiceTest {
 
     @Mock
-    private MenuDao menuDao;
-    @Mock
     private OrderDao orderDao;
     @Mock
     private OrderLineItemDao orderLineItemDao;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderRepository orderRepository;
+    @Mock
+    private OrderTableRepository orderTableRepository;
+    @Mock
+    private MenuRepository menuRepository;
+
     private OrderService orderService;
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(menuDao, orderDao, orderLineItemDao, orderTableDao);
+        orderService = new OrderService(orderDao, orderLineItemDao, orderRepository, orderTableRepository,
+                menuRepository);
     }
 
     @DisplayName("주문을 등록한다.")
     @Test
     void create() {
         //given
-        OrderLineItem orderLineItem1 = new OrderLineItem(null, null, 1L, 10);
-        OrderLineItem orderLineItem2 = new OrderLineItem(null, null, 3L, 5);
-        OrderTable orderTable = new OrderTable(3L, null, 3, false);
-        Order request = new Order(null, orderTable.getId(), null, null, Arrays.asList(orderLineItem1, orderLineItem2));
-        long registeredMenuCount = 2;
         long generateNewOrderId = 5;
+        Menu menu = 메뉴_만들기(1L, "테스트 메뉴", 15000);
+        OrderLineItemRequest orderLineItem1 = 주문_항목_요청_만들기(menu.getId(), 1);
+        OrderLineItemRequest orderLineItem2 = 주문_항목_요청_만들기(menu.getId(), 2);
+        kitchenpos.table.domain.OrderTable orderTable = 테이블_만들기(1L, 3, false);
+        OrderRequest request = 주문_요청_만들기(orderTable.getId(), Arrays.asList(orderLineItem1, orderLineItem2));
 
-        given(menuDao.countByIdIn(Arrays.asList(orderLineItem1.getMenuId(), orderLineItem2.getMenuId())))
-                .willReturn(registeredMenuCount);
-        given(orderTableDao.findById(request.getOrderTableId())).willReturn(Optional.of(orderTable));
-        doAnswer(invocation -> new Order(generateNewOrderId, request.getOrderTableId(), request.getOrderStatus(),
-                request.getOrderedTime(), Arrays.asList(orderLineItem1, orderLineItem2)))
-                .when(orderDao).save(request);
-        given(orderLineItemDao.save(orderLineItem1)).willReturn(orderLineItem1);
-        given(orderLineItemDao.save(orderLineItem2)).willReturn(orderLineItem2);
+        given(orderTableRepository.findById(request.getOrderTableId())).willReturn(Optional.of(orderTable));
+        given(menuRepository.findById(orderLineItem1.getMenuId())).willReturn(Optional.of(menu));
+
+        doAnswer(invocation -> {
+            kitchenpos.order.domain.Order order = new kitchenpos.order.domain.Order(generateNewOrderId,
+                    OrderStatus.COOKING, LocalDateTime.now(), orderTable);
+            return order;
+        }).when(orderRepository).save(any());
 
         //when
-        Order result = orderService.create(request);
+        OrderResponse result = orderService.create(request);
 
         //then
         assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
         assertThat(result.getOrderTableId()).isEqualTo(orderTable.getId());
-        assertThat(result.getOrderLineItems().get(0).getOrderId()).isEqualTo(generateNewOrderId);
-        assertThat(result.getOrderLineItems().get(1).getOrderId()).isEqualTo(generateNewOrderId);
     }
+
 
     @DisplayName("주문 항목이 없거나 null이면 주문을 등록 할 수 없다.")
     @Test
     void create_empty_or_null() {
         //given
-        Order emptyRequest = new Order(null, 1L, null, null, Collections.emptyList());
-        Order nullRequest = new Order(null, 1L, null, null, null);
+        kitchenpos.table.domain.OrderTable orderTable = 테이블_만들기(1L, 3, false);
+        OrderRequest emptyRequest = 주문_요청_만들기(orderTable.getId(), Collections.emptyList());
+        OrderRequest nullRequest = 주문_요청_만들기(orderTable.getId(), null);
 
         //when then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(emptyRequest));
@@ -91,31 +105,32 @@ class OrderServiceTest {
     @Test
     void create_not_registered_menu() {
         //given
-        OrderLineItem orderLineItem1 = new OrderLineItem(null, null, 1L, 10);
-        OrderLineItem orderLineItem2 = new OrderLineItem(null, null, 9999999L, 5);
-        Order request = new Order(null, 1L, null, null, Arrays.asList(orderLineItem1, orderLineItem2));
-        long registeredMenuCount = 1;
+        Menu menu = 메뉴_만들기(1L, "테스트 메뉴", 15000);
+        OrderLineItemRequest orderLineItem1 = 주문_항목_요청_만들기(menu.getId(), 1);
+        OrderLineItemRequest orderLineItem2 = 주문_항목_요청_만들기(menu.getId(), 2);
+        kitchenpos.table.domain.OrderTable orderTable = 테이블_만들기(1L, 3, false);
+        OrderRequest request = 주문_요청_만들기(orderTable.getId(), Arrays.asList(orderLineItem1, orderLineItem2));
 
-        given(menuDao.countByIdIn(Arrays.asList(orderLineItem1.getMenuId(), orderLineItem2.getMenuId())))
-                .willReturn(registeredMenuCount);
+        given(orderTableRepository.findById(request.getOrderTableId())).willReturn(Optional.of(orderTable));
+        given(menuRepository.findById(anyLong())).willReturn(Optional.empty());
 
         //when then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(request));
     }
 
+
     @DisplayName("빈 테이블인 경우 주문을 등록 할 수 없다.")
     @Test
     void create_empty_table() {
         //given
-        OrderLineItem orderLineItem1 = new OrderLineItem(null, null, 1L, 10);
-        OrderLineItem orderLineItem2 = new OrderLineItem(null, null, 2L, 5);
-        OrderTable emptyTable = new OrderTable(3L, null, 0, true);
-        Order request = new Order(null, emptyTable.getId(), null, null, Arrays.asList(orderLineItem1, orderLineItem2));
-        long registeredMenuCount = 2;
+        Menu menu = 메뉴_만들기(1L, "테스트 메뉴", 15000);
+        OrderLineItemRequest orderLineItem1 = 주문_항목_요청_만들기(menu.getId(), 1);
+        OrderLineItemRequest orderLineItem2 = 주문_항목_요청_만들기(menu.getId(), 2);
+        kitchenpos.table.domain.OrderTable orderTable = 테이블_만들기(1L, 3, true);
+        OrderRequest request = 주문_요청_만들기(orderTable.getId(), Arrays.asList(orderLineItem1, orderLineItem2));
 
-        given(menuDao.countByIdIn(Arrays.asList(orderLineItem1.getMenuId(), orderLineItem2.getMenuId())))
-                .willReturn(registeredMenuCount);
-        given(orderTableDao.findById(request.getOrderTableId())).willReturn(Optional.of(emptyTable));
+        given(orderTableRepository.findById(request.getOrderTableId())).willReturn(Optional.of(orderTable));
+        given(menuRepository.findById(anyLong())).willReturn(Optional.of(menu));
 
         //when then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(request));
@@ -125,14 +140,13 @@ class OrderServiceTest {
     @Test
     void create_not_exist_order_table() {
         //given
-        OrderLineItem orderLineItem1 = new OrderLineItem(null, null, 1L, 10);
-        OrderLineItem orderLineItem2 = new OrderLineItem(null, null, 2L, 5);
-        Order request = new Order(null, 99999L, null, null, Arrays.asList(orderLineItem1, orderLineItem2));
-        long registeredMenuCount = 2;
+        Menu menu = 메뉴_만들기(1L, "테스트 메뉴", 15000);
+        OrderLineItemRequest orderLineItem1 = 주문_항목_요청_만들기(menu.getId(), 1);
+        OrderLineItemRequest orderLineItem2 = 주문_항목_요청_만들기(menu.getId(), 2);
+        kitchenpos.table.domain.OrderTable orderTable = 테이블_만들기(1L, 3, true);
+        OrderRequest request = 주문_요청_만들기(orderTable.getId(), Arrays.asList(orderLineItem1, orderLineItem2));
 
-        given(menuDao.countByIdIn(Arrays.asList(orderLineItem1.getMenuId(), orderLineItem2.getMenuId())))
-                .willReturn(registeredMenuCount);
-        given(orderTableDao.findById(request.getOrderTableId())).willReturn(Optional.empty());
+        given(orderTableRepository.findById(request.getOrderTableId())).willReturn(Optional.empty());
 
         //when then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(request));

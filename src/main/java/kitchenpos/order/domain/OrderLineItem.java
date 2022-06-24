@@ -36,7 +36,19 @@ public class OrderLineItem {
         return order;
     }
 
+    public Menu getMenu() {
+        return menu;
+    }
+
+    public Integer getQuantity(){
+        return quantity;
+    }
+
     public void setOrder(Order order) {
         this.order = order;
+    }
+
+    public void setMenu(Menu menu) {
+        this.menu = menu;
     }
 }

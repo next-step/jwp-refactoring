@@ -39,4 +39,8 @@ public class OrderLineItems {
     public int size() {
         return orderLineItems.size();
     }
+
+    public List<OrderLineItem> getOrderLineItems() {
+        return orderLineItems;
+    }
 }
