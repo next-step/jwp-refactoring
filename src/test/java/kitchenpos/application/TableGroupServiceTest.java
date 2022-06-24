@@ -14,10 +14,9 @@ import static org.mockito.Mockito.doAnswer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.table.application.TableGroupService;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
@@ -37,10 +36,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class TableGroupServiceTest {
 
     @Mock
-    private OrderDao orderDao;
-    @Mock
-    private OrderTableDao orderTableDao;
-    @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
     private TableGroupRepository tableGroupRepository;
@@ -48,7 +43,7 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        tableGroupService = new TableGroupService(orderDao, orderTableDao, orderTableRepository, tableGroupRepository);
+        tableGroupService = new TableGroupService(orderTableRepository, tableGroupRepository);
     }
 
     @DisplayName("단체 지정을 등록 한다.")
@@ -80,7 +75,7 @@ class TableGroupServiceTest {
     void create_less_then_two() {
         //given
         TableGroupRequest request = 테이블_그룹_요청_만들기(Arrays.asList(테이블_요청_만들기(1L)));
-        kitchenpos.table.domain.OrderTable emptyTable1 = 테이블_만들기(1L, 0, true);
+        OrderTable emptyTable1 = 테이블_만들기(1L, 0, true);
         given(orderTableRepository.findAllById(Arrays.asList(1L))).willReturn(Arrays.asList(emptyTable1));
 
         //when then
@@ -93,8 +88,8 @@ class TableGroupServiceTest {
     void create_not_registered_table() {
         //given
         TableGroupRequest request = 테이블_그룹_요청_만들기(Arrays.asList(테이블_요청_만들기(1L), 테이블_요청_만들기(2L), 테이블_요청_만들기(3L)));
-        kitchenpos.table.domain.OrderTable emptyTable1 = 테이블_만들기(1L, 0, true);
-        kitchenpos.table.domain.OrderTable emptyTable2 = 테이블_만들기(2L, 0, true);
+        OrderTable emptyTable1 = 테이블_만들기(1L, 0, true);
+        OrderTable emptyTable2 = 테이블_만들기(2L, 0, true);
         given(orderTableRepository.findAllById(request.getRequestOrderTableIds()))
                 .willReturn(Arrays.asList(emptyTable1, emptyTable2));
 
@@ -108,8 +103,8 @@ class TableGroupServiceTest {
     void create_in_order_table() {
         //given
         TableGroupRequest request = 테이블_그룹_요청_만들기(Arrays.asList(테이블_요청_만들기(1L), 테이블_요청_만들기(2L)));
-        kitchenpos.table.domain.OrderTable emptyTable1 = 테이블_만들기(1L, 0, true);
-        kitchenpos.table.domain.OrderTable orderTable2 = 테이블_만들기(2L, 3, false);
+        OrderTable emptyTable1 = 테이블_만들기(1L, 0, true);
+        OrderTable orderTable2 = 테이블_만들기(2L, 3, false);
         given(orderTableRepository.findAllById(request.getRequestOrderTableIds()))
                 .willReturn(Arrays.asList(emptyTable1, orderTable2));
 
@@ -122,8 +117,8 @@ class TableGroupServiceTest {
     @Test
     void create_already() {
         //given
-        kitchenpos.table.domain.OrderTable emptyTable1 = 테이블_만들기(1L, 0, true);
-        kitchenpos.table.domain.OrderTable emptyTable2 = 테이블_만들기(2L, 0, true);
+        OrderTable emptyTable1 = 테이블_만들기(1L, 0, true);
+        OrderTable emptyTable2 = 테이블_만들기(2L, 0, true);
         emptyTable2.setTableGroup(테이블_그룹_만들기(1L, Arrays.asList(emptyTable1, emptyTable2)));
 
         TableGroupRequest request = 테이블_그룹_요청_만들기(Arrays.asList(테이블_요청_만들기(2L), 테이블_요청_만들기(3L)));
@@ -141,8 +136,8 @@ class TableGroupServiceTest {
     void ungroup() {
         //given
         long requestTableGroupId = 1L;
-        kitchenpos.table.domain.OrderTable emptyTable1 = 테이블_만들기(0, true);
-        kitchenpos.table.domain.OrderTable orderTable2 = 테이블_만들기(0, true);
+        OrderTable emptyTable1 = 테이블_만들기(0, true);
+        OrderTable orderTable2 = 테이블_만들기(0, true);
         TableGroup tableGroup = 테이블_그룹_만들기(requestTableGroupId);
         tableGroup.groupingTables(new OrderTables(Arrays.asList(emptyTable1, orderTable2)), 2);
         orderTable2.addOrder(주문_만들기(OrderStatus.COMPLETION));
@@ -163,15 +158,15 @@ class TableGroupServiceTest {
     void ungroup_order_status_cooking_meal() {
         //given
         long requestTableGroupId = 1L;
-        kitchenpos.table.domain.OrderTable emptyTable1 = 테이블_만들기(0, true);
-        kitchenpos.table.domain.OrderTable emptyTable2 = 테이블_만들기(0, true);
+        OrderTable emptyTable1 = 테이블_만들기(0, true);
+        OrderTable emptyTable2 = 테이블_만들기(0, true);
         TableGroup tableGroup1 = 테이블_그룹_만들기(requestTableGroupId);
         tableGroup1.groupingTables(new OrderTables(Arrays.asList(emptyTable1, emptyTable2)), 2);
         emptyTable1.addOrder(주문_만들기(OrderStatus.COMPLETION));
         emptyTable2.addOrder(주문_만들기(OrderStatus.MEAL));
 
-        kitchenpos.table.domain.OrderTable emptyTable3 = 테이블_만들기(0, true);
-        kitchenpos.table.domain.OrderTable emptyTable4 = 테이블_만들기(0, true);
+        OrderTable emptyTable3 = 테이블_만들기(0, true);
+        OrderTable emptyTable4 = 테이블_만들기(0, true);
         TableGroup tableGroup2 = 테이블_그룹_만들기(requestTableGroupId);
         tableGroup2.groupingTables(new OrderTables(Arrays.asList(emptyTable3, emptyTable4)), 2);
         emptyTable3.addOrder(주문_만들기(OrderStatus.COOKING));

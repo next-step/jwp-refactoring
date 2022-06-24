@@ -90,8 +90,7 @@ class TableGroupServiceTest {
     @Test
     void create_in_order_table() {
         //given
-        kitchenpos.table.domain.OrderTable orderTable = orderTableRepository
-                .save(new kitchenpos.table.domain.OrderTable(null, 3, false));
+        OrderTable orderTable = orderTableRepository.save(new OrderTable(null, 3, false));
         OrderTableRequest orderTable1 = 테이블_요청_만들기(orderTable.getId());
         OrderTableRequest emptyTable1 = 테이블_요청_만들기(3L);
         TableGroupRequest request = 테이블_그룹_요청_만들기(Arrays.asList(orderTable1, emptyTable1));
