@@ -8,10 +8,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 import kitchenpos.domain.common.Quantity;
 
 @Entity
+@Table(name = "menu_product")
 public class MenuProduct {
 
     @Id

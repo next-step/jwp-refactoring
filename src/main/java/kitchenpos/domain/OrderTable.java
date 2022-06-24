@@ -8,11 +8,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 import kitchenpos.domain.common.Empty;
 import kitchenpos.domain.common.NumberOfGuests;
 
 @Entity
+@Table(name = "order_table")
 public class OrderTable {
 
     @Id
@@ -48,6 +50,11 @@ public class OrderTable {
 
     public OrderTable(Long id, int numberOfGuests, boolean empty) {
         this.id = id;
+        this.numberOfGuests = new NumberOfGuests(numberOfGuests);
+        this.empty = new Empty(empty);
+    }
+
+    public OrderTable(int numberOfGuests, boolean empty) {
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
         this.empty = new Empty(empty);
     }

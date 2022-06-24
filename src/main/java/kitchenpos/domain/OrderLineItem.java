@@ -7,10 +7,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 import kitchenpos.domain.common.Quantity;
 
 @Entity
+@Table(name = "order_line_item")
 public class OrderLineItem {
 
     @Id

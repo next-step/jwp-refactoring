@@ -12,11 +12,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 import kitchenpos.domain.common.Name;
 import kitchenpos.domain.common.Price;
 
 @Entity
+@Table(name = "menu")
 public class Menu {
 
     @Id
