@@ -90,7 +90,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
      * */
     @DisplayName("주문 기능을 관리한다.")
     @TestFactory
-    Stream<DynamicTest> manageMenu() {
+    Stream<DynamicTest> manageOrder() {
         return Stream.of(
                 dynamicTest("주문을 등록 한다.", () -> {
                     //given

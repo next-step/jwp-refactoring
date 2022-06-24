@@ -72,7 +72,7 @@ class TableAcceptanceTest extends AcceptanceTest {
      * */
     @DisplayName("테이블 기능을 관리한다.")
     @TestFactory
-    Stream<DynamicTest> manageOrderTable() {
+    Stream<DynamicTest> manageTable() {
         return Stream.of(
                 dynamicTest("주문 테이블 기능을 관리한다.", () -> {
                     //given

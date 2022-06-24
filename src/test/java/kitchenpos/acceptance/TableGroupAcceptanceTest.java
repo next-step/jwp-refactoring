@@ -76,7 +76,7 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
      * */
     @DisplayName("단체 지정 기능을 관리한다.")
     @TestFactory
-    Stream<DynamicTest> manageOrderTable() {
+    Stream<DynamicTest> manageTableGroup() {
         return Stream.of(
                 dynamicTest("단체 지정을 등록 한다.", () -> {
                     //given
