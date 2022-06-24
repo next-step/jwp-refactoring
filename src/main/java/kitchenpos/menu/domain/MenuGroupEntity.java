@@ -21,7 +21,7 @@ public class MenuGroupEntity {
     protected MenuGroupEntity() {
     }
 
-    protected MenuGroupEntity(String name) {
+    private MenuGroupEntity(String name) {
         this.name = new Name(name);
     }
 

@@ -3,6 +3,9 @@ package kitchenpos.menu.domain.request;
 public class MenuGroupRequest {
     private String name;
 
+    protected MenuGroupRequest() {
+    }
+
     public MenuGroupRequest(String name) {
         this.name = name;
     }
