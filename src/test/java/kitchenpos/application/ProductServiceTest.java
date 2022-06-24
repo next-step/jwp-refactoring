@@ -14,9 +14,9 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
@@ -39,7 +39,7 @@ class ProductServiceTest {
     void 상품_등록(){
         //given
         Product product = new Product("치킨", BigDecimal.valueOf(15000L));
-        when(productDao.save(product)).thenReturn(치킨);
+        given(productDao.save(product)).willReturn(치킨);
 
         //when
         Product savedProduct = productService.create(product);
@@ -53,17 +53,17 @@ class ProductServiceTest {
     @Test
     void 상품_가격_검증(){
         //given
-        Product product = new Product("치킨", BigDecimal.valueOf(-15000L));
+        Product invalidProduct = new Product("치킨", BigDecimal.valueOf(-15000L));
 
         //then
-       assertThrows(IllegalArgumentException.class, () -> productService.create(product));
+       assertThrows(IllegalArgumentException.class, () -> productService.create(invalidProduct));
     }
 
     @DisplayName("상품의 목록을 조회할 수 있다")
     @Test
     void 상품_목록_조회() {
         //given
-        when(productDao.findAll()).thenReturn(Arrays.asList(치킨, 피자));
+        given(productDao.findAll()).willReturn(Arrays.asList(치킨, 피자));
 
         //when
         List<Product> list = productService.list();
