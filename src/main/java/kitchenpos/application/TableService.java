@@ -2,8 +2,14 @@ package kitchenpos.application;
 
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
+import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTableRepository;
+import kitchenpos.dto.IdRequest;
+import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +22,12 @@ public class TableService {
     private final OrderDao orderDao;
     private final OrderTableDao orderTableDao;
 
+    @Autowired
+    private OrderRepository orderRepository;
+
+    @Autowired
+    private OrderTableRepository orderTableRepository;
+
     public TableService(final OrderDao orderDao, final OrderTableDao orderTableDao) {
         this.orderDao = orderDao;
         this.orderTableDao = orderTableDao;
@@ -26,6 +38,16 @@ public class TableService {
         orderTable.setTableGroup(null);
 
         return orderTableDao.save(orderTable);
+    }
+
+    @Transactional
+    public OrderTableResponse create2(final OrderTableRequest request) {
+        OrderTable savedOrderTable = orderTableRepository.save(request.toOrderTable());
+        return new OrderTableResponse(
+                savedOrderTable.getId(),
+                savedOrderTable.getTableGroupId(),
+                savedOrderTable.getNumberOfGuests(),
+                savedOrderTable.isEmpty());
     }
 
     public List<OrderTable> list() {
