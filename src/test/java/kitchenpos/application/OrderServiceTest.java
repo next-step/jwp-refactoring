@@ -23,10 +23,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static kitchenpos.application.TableServiceTest.주문_테이블_데이터_생성;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -91,7 +88,7 @@ class OrderServiceTest {
 
         // when && then
         assertThatThrownBy(() -> orderService.create(request))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(NoSuchElementException.class);
     }
 
     @DisplayName("주문을 생성할 수 있다 - 유효한 메뉴이어야 한다")
@@ -118,7 +115,7 @@ class OrderServiceTest {
 
         // when && then
         assertThatThrownBy(() -> orderService.create(request))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(NoSuchElementException.class);
     }
 
     @DisplayName("주문을 생성할 수 있다 - 중복된 메뉴가 있어서는 안된다")
@@ -131,7 +128,7 @@ class OrderServiceTest {
 
         // when && then
         assertThatThrownBy(() -> orderService.create(request))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(NoSuchElementException.class);
     }
 
     @DisplayName("주문 목록을 조회할 수 있다")

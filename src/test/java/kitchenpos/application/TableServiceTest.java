@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static kitchenpos.application.TableGroupServiceTest.테이블_그룹_데이터_생성;
@@ -146,7 +147,7 @@ public class TableServiceTest {
 
         // when && then
         assertThatThrownBy(() -> 방문_손님_수_변경(1L, 변경할_주문_테이블))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(NoSuchElementException.class);
     }
 
     @DisplayName("방문 손님 수를 변경할 수 있다 - 주문 테이블이 빈 테이블이 아니어야 한다")

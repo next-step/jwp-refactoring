@@ -21,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -92,14 +93,14 @@ class MenuServiceTest {
 
         // when && then
         assertThatThrownBy(() -> 메뉴_생성(request1))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(NoSuchElementException.class);
 
         // given
         MenuRequest request2 = 메뉴_요청_데이터_생성(BigDecimal.valueOf(-1));
 
         // when && then
         assertThatThrownBy(() -> 메뉴_생성(request2))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(NoSuchElementException.class);
     }
 
     @DisplayName("메뉴를 생성할 수 있다 - 유효한 메뉴 그룹이 지정되어야 한다")
@@ -111,7 +112,7 @@ class MenuServiceTest {
 
         // when && then
         assertThatThrownBy(() -> 메뉴_생성(request))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(NoSuchElementException.class);
     }
 
     @DisplayName("메뉴를 생성할 수 있다 - 유효한 상품들이 지정되어야 한다")

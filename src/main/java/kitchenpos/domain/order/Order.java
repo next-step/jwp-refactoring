@@ -57,7 +57,7 @@ public class Order extends BaseEntity {
     }
 
     public void updateOrderStatus(OrderStatus orderStatus) {
-        if (Objects.equals(OrderStatus.COMPLETION, orderStatus)) {
+        if (Objects.equals(OrderStatus.COMPLETION, this.orderStatus)) {
             throw new IllegalArgumentException("주문 상태가 이미 '계산 완료' 상태입니다.");
         }
 
