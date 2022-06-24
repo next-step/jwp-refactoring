@@ -63,7 +63,7 @@ class OrderTest {
         OrderLineItem orderLineItem2 = 주문_항목_만들기(menu2,2);
 
         //when
-        order.registerOrderLineItems(new OrderLineItems(Arrays.asList(orderLineItem1, orderLineItem2)));
+        order.registerOrderLineItems(new OrderLineItems(Arrays.asList(orderLineItem1, orderLineItem2)), 2);
 
         //then
         assertThat(orderLineItem1.getOrder()).isEqualTo(order);
@@ -78,7 +78,24 @@ class OrderTest {
 
         //when then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> order.registerOrderLineItems(new OrderLineItems()));
+                .isThrownBy(() -> order.registerOrderLineItems(new OrderLineItems(), 0));
 
     }
+
+
+    @DisplayName("요청개수와 주문 항목 수가 다른 경우 등록 할 수 없다.")
+    @Test
+    void registerOrderLineItems_not_registered(){
+        //given
+        Order order = 주문_만들기(1L,null, null);
+        Menu menu1 = 메뉴_만들기(1L, "테스트 메뉴1", 13000);
+        Menu menu2 = 메뉴_만들기(2L, "테스트 메뉴2", 12000);
+        OrderLineItem orderLineItem1 = 주문_항목_만들기(menu1,1);
+        OrderLineItem orderLineItem2 = 주문_항목_만들기(menu2,2);
+
+        //when then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> order.registerOrderLineItems(new OrderLineItems(Arrays.asList(orderLineItem1, orderLineItem2)), 3));
+    }
+
 }

@@ -52,9 +52,12 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
-    public void registerOrderLineItems(OrderLineItems orderLineItems) {
+    public void registerOrderLineItems(OrderLineItems orderLineItems, int requestSize) {
         if (orderLineItems.isEmpty()) {
             throw new IllegalArgumentException("[ERROR] 주문 항목이 없습니다.");
+        }
+        if (orderLineItems.size() != requestSize) {
+            throw new IllegalArgumentException("[ERROR] 등록 되어있지 않는 주문 항목이 있습니다.");
         }
         this.orderLineItems.addOrderLineItems(orderLineItems, this);
     }

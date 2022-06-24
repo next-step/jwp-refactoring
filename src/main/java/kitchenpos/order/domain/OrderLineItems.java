@@ -12,7 +12,7 @@ public class OrderLineItems {
     @OneToMany(mappedBy = "order",cascade = CascadeType.ALL)
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
-    protected OrderLineItems() {
+    public OrderLineItems() {
     }
 
     public OrderLineItems(List<OrderLineItem> orderLineItems) {
@@ -36,4 +36,7 @@ public class OrderLineItems {
         return orderLineItems.isEmpty();
     }
 
+    public int size() {
+        return orderLineItems.size();
+    }
 }
