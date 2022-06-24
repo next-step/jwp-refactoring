@@ -91,4 +91,8 @@ public class OrderTable {
     public void setEmpty(final boolean empty) {
         this.empty = new Empty(empty);
     }
+
+    public boolean isInTableGroup() {
+        return tableGroup != null;
+    }
 }

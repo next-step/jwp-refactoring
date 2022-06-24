@@ -38,13 +38,32 @@ public class TableGroup {
 
     public TableGroup(Long id, List<OrderTable> orderTables) {
         this.id = id;
-        this.orderTables = orderTables;
+        addOrderTables(orderTables);
     }
 
     public TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
         this.id = id;
         this.createdDate = createdDate;
+        addOrderTables(orderTables);
+    }
+
+    public void addOrderTables(final List<OrderTable> orderTables) {
+        validateAddingOrderTables(orderTables);
         this.orderTables = orderTables;
+    }
+
+    private void validateAddingOrderTables(final List<OrderTable> orderTables) {
+        if (orderTables.size() < 2) {
+            throw new IllegalArgumentException();
+        }
+
+        if (validateOrderTableEmptyOrInTableGroup(orderTables)) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private boolean validateOrderTableEmptyOrInTableGroup(final List<OrderTable> orderTables) {
+        return orderTables.stream().anyMatch(orderTable -> !orderTable.isEmpty() || orderTable.isInTableGroup());
     }
 
     public Long getId() {
@@ -65,9 +84,5 @@ public class TableGroup {
 
     public List<OrderTable> getOrderTables() {
         return orderTables;
-    }
-
-    public void setOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
     }
 }
