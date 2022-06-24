@@ -132,18 +132,6 @@ class TableServiceTest {
     }
 
     @Test
-    @DisplayName("변경하려는 손님수가 0 보다 작을 수 없다.")
-    void changeNumberOfGuestsFailWithUnderTest() {
-        //given
-        OrderTable orderTable = new OrderTable(1L, -1, false);
-
-        //when & then
-        assertThatThrownBy(
-                () -> tableService.changeNumberOfGuests(orderTable.getId(), orderTable)
-        ).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
     @DisplayName("주문 테이블이 시스템에 등록 되어 있지 않으면 손님수를 변경 할 수 없다.")
     void changeNumberOfGuestsFailWithOrderTableNotExistTest() {
         //given

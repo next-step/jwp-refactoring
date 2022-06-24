@@ -2,7 +2,6 @@ package kitchenpos.application;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -36,28 +35,6 @@ class ProductServiceTest {
     void before() {
         짬뽕 = ProductFixtureFactory.create(1L, "상품1", BigDecimal.valueOf(1000));
         짜장 = ProductFixtureFactory.create(2L, "상품2", BigDecimal.valueOf(1000));
-    }
-
-    @Test
-    @DisplayName("생성하려는 상품에서 상품 가격 항목이 null이면 생성 할 수 없다.")
-    void createFailWithNullTest() {
-        //given
-        Product 저장할_상품 = new Product(1L, "상품1", null);
-
-        //when & then
-        assertThatThrownBy(() -> productService.create(저장할_상품)).
-                isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    @DisplayName("생성하려는 상품에서 상품 가격이 음수라면 생성 할 수 없다.")
-    void createFailWithPriceNegativeTest() {
-        //given
-        Product 저장할_상품 = new Product(1L, "상품1", BigDecimal.valueOf(-1));
-
-        //when & then
-        assertThatThrownBy(() -> productService.create(저장할_상품)).
-                isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test

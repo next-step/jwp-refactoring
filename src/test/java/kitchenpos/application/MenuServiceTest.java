@@ -70,30 +70,6 @@ class MenuServiceTest {
     }
 
     @Test
-    @DisplayName("생성 하려는 메뉴 가격은 null일 수 없다.")
-    void createFailWithNullTest() {
-        //given
-        Menu 잘못된_메뉴 = new Menu(1L, "잘못된 메뉴", null, 중식.getId());
-
-        //when & then
-        assertThatThrownBy(
-                () -> menuService.create(잘못된_메뉴)
-        ).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    @DisplayName("생성 하려는 메뉴 가격은 음수일 수 없다.")
-    void createFailNegativePriceTest() {
-        //given
-        Menu 잘못된_메뉴 = new Menu(1L, "잘못된 메뉴", BigDecimal.valueOf(-1), 중식.getId());
-
-        //when & then
-        assertThatThrownBy(
-                () -> menuService.create(잘못된_메뉴)
-        ).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
     @DisplayName("생성 하려는 메뉴의 메뉴 그룹이 시스템에 존재 하지 않으면 추가 할 수 없다.")
     void createTestFailWithMenuGroupNotExist() {
         //given
