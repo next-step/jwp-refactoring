@@ -16,7 +16,7 @@ import org.springframework.http.MediaType;
 @DisplayName("상품 관련 인수테스트")
 public class ProductAcceptanceTest extends AcceptanceTest{
 
-    static private final String PRODUCT_URL = "/v2/api/products";
+    static private final String PRODUCT_URL = "/api/products";
     @BeforeEach
     void before() {
         super.setUp();

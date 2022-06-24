@@ -14,14 +14,13 @@ import kitchenpos.application.fixture.MenuFixtureFactory;
 import kitchenpos.application.fixture.MenuGroupFixtureFactory;
 import kitchenpos.application.fixture.MenuProductFixtureFactory;
 import kitchenpos.application.fixture.ProductFixtureFactory;
-import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,16 +33,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class MenuServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
     private MenuGroupDao menuGroupDao;
 
     @Mock
-    private MenuProductDao menuProductDao;
-
-    @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private MenuService menuService;
@@ -58,7 +54,7 @@ class MenuServiceTest {
     @BeforeEach
     void before() {
         중식 = MenuGroupFixtureFactory.create(1L, "메뉴그룹1");
-        중식메뉴 = MenuFixtureFactory.create(1L, "메뉴1", BigDecimal.valueOf(3000), 중식.getId());
+        중식메뉴 = MenuFixtureFactory.create(1L, "메뉴1", BigDecimal.valueOf(3000), 중식);
 
         짬뽕 = ProductFixtureFactory.create(1L, "상품1", BigDecimal.valueOf(1000));
         짜장 = ProductFixtureFactory.create(2L, "상품2", BigDecimal.valueOf(2000));
@@ -86,7 +82,7 @@ class MenuServiceTest {
     void createTestFailWithMenuProductNotExist() {
         //given
         given(menuGroupDao.existsById(중식.getId())).willReturn(true);
-        given(productDao.findById(중식_메뉴_짬뽕.getProduct().getId())).willThrow(IllegalArgumentException.class);
+        given(productRepository.findById(중식_메뉴_짬뽕.getProduct().getId())).willThrow(IllegalArgumentException.class);
 
         //when & then
         assertThatThrownBy(
@@ -99,9 +95,9 @@ class MenuServiceTest {
     void createTestFailWithAmount() {
         //given
         given(menuGroupDao.existsById(중식.getId())).willReturn(true);
-        given(productDao.findById(중식_메뉴_짬뽕.getProduct().getId())).willReturn(Optional.of(짬뽕));
-        given(productDao.findById(중식_메뉴_짜장.getProduct().getId())).willReturn(Optional.of(짜장));
-        Menu 잘못된_메뉴 = new Menu(1L, "잘못된 메뉴", BigDecimal.valueOf(100_000), 중식.getId());
+        given(productRepository.findById(중식_메뉴_짬뽕.getProduct().getId())).willReturn(Optional.of(짬뽕));
+        given(productRepository.findById(중식_메뉴_짜장.getProduct().getId())).willReturn(Optional.of(짜장));
+        Menu 잘못된_메뉴 = new Menu(1L, "잘못된 메뉴", BigDecimal.valueOf(100_000), 중식);
         잘못된_메뉴.setMenuProducts(Arrays.asList(중식_메뉴_짬뽕, 중식_메뉴_짜장));
         //when & then
         assertThatThrownBy(
@@ -114,9 +110,9 @@ class MenuServiceTest {
     void createTest() {
         //given
         given(menuGroupDao.existsById(중식.getId())).willReturn(true);
-        given(productDao.findById(중식_메뉴_짬뽕.getProduct().getId())).willReturn(Optional.of(짬뽕));
-        given(productDao.findById(중식_메뉴_짜장.getProduct().getId())).willReturn(Optional.of(짜장));
-        given(menuDao.save(any(Menu.class))).willReturn(중식메뉴);
+        given(productRepository.findById(중식_메뉴_짬뽕.getProduct().getId())).willReturn(Optional.of(짬뽕));
+        given(productRepository.findById(중식_메뉴_짜장.getProduct().getId())).willReturn(Optional.of(짜장));
+        given(menuRepository.save(any(Menu.class))).willReturn(중식메뉴);
 
 
         //when
@@ -130,7 +126,7 @@ class MenuServiceTest {
     @DisplayName("메뉴의 목록을 조회 할 수 있다.")
     void listTest() {
         //given
-        given(menuDao.findAll()).willReturn(Arrays.asList(중식메뉴));
+        given(menuRepository.findAll()).willReturn(Arrays.asList(중식메뉴));
 
         //when
         List<Menu> menus = menuService.list();
