@@ -150,7 +150,7 @@ class OrderTableTest {
 
     }
 
-    @DisplayName("주문을 등록한다.")
+    @DisplayName("주문을 등록한다.(주문상태는 조리로 변경된다.)")
     @Test
     void registerOrder() {
         //given
@@ -162,6 +162,7 @@ class OrderTableTest {
 
         //then
         assertThat(order.getOrderTable().getId()).isEqualTo(orderTable.getId());
+        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
 
     }
 

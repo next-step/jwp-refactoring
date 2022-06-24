@@ -48,6 +48,10 @@ public class Order {
         this.orderTable = orderTable;
     }
 
+    public void updateOrder(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
     public void registerOrderLineItems(OrderLineItems orderLineItems) {
         if (orderLineItems.isEmpty()) {
             throw new IllegalArgumentException("[ERROR] 주문 항목이 없습니다.");

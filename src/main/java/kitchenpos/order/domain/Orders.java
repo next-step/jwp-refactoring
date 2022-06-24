@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import kitchenpos.domain.OrderStatus;
 
 @Embeddable
 public class Orders {
@@ -16,10 +17,14 @@ public class Orders {
         return orders;
     }
 
-    public void addOrder(Order order){
+    public void registerOrder(Order order){
+        order.updateOrder(OrderStatus.COOKING);
         orders.add(order);
     }
 
+    public void addOrder(Order order){
+        orders.add(order);
+    }
     public void checkPossibleUngroupingOrderStatus(){
         for (Order order : orders) {
             order.checkPossibleUngroupingOrderStatus();

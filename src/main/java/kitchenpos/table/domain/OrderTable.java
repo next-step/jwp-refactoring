@@ -41,7 +41,7 @@ public class OrderTable {
         if (Boolean.TRUE.equals(empty)) {
             throw new IllegalArgumentException("[ERROR] 빈테이블에는 주문등록을 할 수 없습니다.");
         }
-        orders.addOrder(order);
+        orders.registerOrder(order);
         order.setOrderTable(this);
     }
 
