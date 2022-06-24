@@ -70,4 +70,15 @@ class OrderTest {
         assertThat(orderLineItem2.getOrder()).isEqualTo(order);
     }
 
+    @DisplayName("주문 항목이 없으면 주문 등록 할 수 없다.")
+    @Test
+    void registerOrderLineItems_empty() {
+        //given
+        Order order = 주문_만들기(1L, null, null);
+
+        //when then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> order.registerOrderLineItems(new OrderLineItems()));
+
+    }
 }

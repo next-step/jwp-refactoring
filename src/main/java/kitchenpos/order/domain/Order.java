@@ -48,12 +48,15 @@ public class Order {
         this.orderTable = orderTable;
     }
 
-    public void registerOrderLineItems(OrderLineItems orderLineItems){
-
+    public void registerOrderLineItems(OrderLineItems orderLineItems) {
+        if (orderLineItems.isEmpty()) {
+            throw new IllegalArgumentException("[ERROR] 주문 항목이 없습니다.");
+        }
+        this.orderLineItems.addOrderLineItems(orderLineItems, this);
     }
 
-    public void checkPossibleUngroupingOrderStatus(){
-        if(OrderStatus.MEAL.equals(orderStatus) || OrderStatus.COOKING.equals(orderStatus)){
+    public void checkPossibleUngroupingOrderStatus() {
+        if (OrderStatus.MEAL.equals(orderStatus) || OrderStatus.COOKING.equals(orderStatus)) {
             throw new IllegalArgumentException("[ERROR] 주문 상태가 조리, 식사 인 경우 단체 지정 해제 할 수 없습니다.");
         }
     }
@@ -88,7 +91,7 @@ public class Order {
     }
 
     public void checkPossibleChangeEmpty() {
-        if(!OrderStatus.COMPLETION.equals(orderStatus)){
+        if (!OrderStatus.COMPLETION.equals(orderStatus)) {
             throw new IllegalStateException("[ERROR] 주문이 계산완료 상태가 아닙니다.");
         }
     }

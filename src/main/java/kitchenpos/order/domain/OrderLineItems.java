@@ -19,7 +19,21 @@ public class OrderLineItems {
         this.orderLineItems = orderLineItems;
     }
 
+
+    public void addOrderLineItems(OrderLineItems orderLineItems, Order order) {
+        for (OrderLineItem orderLineItem : orderLineItems.orderLineItems){
+            orderLineItem.setOrder(order);
+            this.orderLineItems.add(orderLineItem);
+        }
+
+    }
+
     public void addOrderLineItems(OrderLineItem orderLineItem) {
         orderLineItems.add(orderLineItem);
     }
+
+    public boolean isEmpty() {
+        return orderLineItems.isEmpty();
+    }
+
 }
