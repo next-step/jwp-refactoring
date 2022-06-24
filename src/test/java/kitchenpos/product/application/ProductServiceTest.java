@@ -43,24 +43,22 @@ class ProductServiceTest {
         Product product = productService.create(피자);
         assertAll(
                 () -> assertThat(product.name()).isEqualTo(Name.of("피자")),
-                () -> assertThat(product.price()).isEqualTo(Price.of(BigDecimal.valueOf(20000L))
-                ));
+                () -> assertThat(product.price()).isEqualTo(Price.of(BigDecimal.valueOf(20000L)))
+        );
     }
 
     @DisplayName("상품 생성시 가격이 없는 경우 테스트")
     @Test
     void createWithPriceNull() {
-        Product product = createProduct(1L, "스파게티", null);
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> productService.create(product));
+                .isThrownBy(() -> productService.create(createProduct(1L, "스파게티", null)));
     }
 
     @DisplayName("상품 생성시 가격이 0원 아래인 경우 테스트")
     @Test
     void createWithPriceUnderZero() {
-        Product product = createProduct(1L, "스파게티", BigDecimal.valueOf(-100L));
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> productService.create(product));
+                .isThrownBy(() -> productService.create(createProduct(1L, "스파게티", BigDecimal.valueOf(-100L))));
     }
 
     @DisplayName("상품 목록 조회 테스트")

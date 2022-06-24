@@ -2,15 +2,16 @@ package kitchenpos.product.acceptance;
 
 import static kitchenpos.product.acceptance.ProductRestAssured.상품_등록_요청;
 import static kitchenpos.product.acceptance.ProductRestAssured.상품_목록_조회_요청;
-import static kitchenpos.utils.DomainFixtureFactory.createProduct;
+import static kitchenpos.utils.DomainFixtureFactory.createProductRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.List;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.utils.AcceptanceTest;
-import kitchenpos.product.domain.Product;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,15 +20,15 @@ import org.springframework.http.HttpStatus;
 
 @DisplayName("상품 관련 기능")
 class ProductAcceptanceTest extends AcceptanceTest {
-    private Product 피자;
-    private Product 스파게티;
+    private ProductRequest 피자;
+    private ProductRequest 스파게티;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        피자 = createProduct(1L, "피자", BigDecimal.valueOf(20000L));
-        스파게티 = createProduct(2L, "스파게티", BigDecimal.valueOf(20000L));
+        피자 = createProductRequest( "피자", BigDecimal.valueOf(20000L));
+        스파게티 = createProductRequest("스파게티", BigDecimal.valueOf(20000L));
     }
 
     /**
@@ -52,7 +53,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
     @Test
     void createWithPriceUnderZero() {
         // when
-        ExtractableResponse<Response> response = 상품_등록_요청(createProduct(1L, "스파게티", BigDecimal.valueOf(-100L)));
+        ExtractableResponse<Response> response = 상품_등록_요청(createProductRequest( "스파게티", BigDecimal.valueOf(-100L)));
 
         // then
         상품_등록_실패됨(response);
@@ -67,8 +68,8 @@ class ProductAcceptanceTest extends AcceptanceTest {
     @Test
     void lists() {
         // given
-        Product 등록한_피자 = 상품_등록_요청(피자).as(Product.class);
-        Product 등록한_스파게티 = 상품_등록_요청(스파게티).as(Product.class);
+        ProductResponse 등록한_피자 = 상품_등록_요청(피자).as(ProductResponse.class);
+        ProductResponse 등록한_스파게티 = 상품_등록_요청(스파게티).as(ProductResponse.class);
 
         // when
         ExtractableResponse<Response> response = 상품_목록_조회_요청();
@@ -85,8 +86,8 @@ class ProductAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
-    private void 상품_목록_조회됨(ExtractableResponse<Response> response, List<Product> expectedProducts) {
-        List<Product> products = response.jsonPath().getList(".", Product.class);
+    private void 상품_목록_조회됨(ExtractableResponse<Response> response, List<ProductResponse> expectedProducts) {
+        List<ProductResponse> products = response.jsonPath().getList(".", ProductResponse.class);
         assertThat(products).containsExactlyElementsOf(expectedProducts);
     }
 }

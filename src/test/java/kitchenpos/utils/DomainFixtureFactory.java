@@ -12,10 +12,15 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.TableGroup;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
 
 public class DomainFixtureFactory {
     public static Product createProduct(Long id, String name, BigDecimal price) {
         return Product.of(id, name, price);
+    }
+
+    public static ProductRequest createProductRequest(String name, BigDecimal price) {
+        return new ProductRequest(name, price);
     }
 
     public static MenuGroup createMenuGroup(Long id, String name) {
