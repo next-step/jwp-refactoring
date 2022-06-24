@@ -1,7 +1,7 @@
 package kitchenpos.menu.acceptance;
 
 import kitchenpos.AcceptanceTest;
-import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.TestFactory;

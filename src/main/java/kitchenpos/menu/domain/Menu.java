@@ -1,9 +1,7 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.core.domain.Amount;
 import kitchenpos.core.domain.Name;
 import kitchenpos.core.domain.Price;
-import kitchenpos.core.exception.InvalidPriceException;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
