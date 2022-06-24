@@ -5,6 +5,9 @@ import kitchenpos.table.dto.OrderTableRequest;
 
 public class TableFixtures {
 
+    public static final OrderTable 주문_테이블 = 테이블_만들기(3, false);
+    public static final OrderTable 빈_테이블 = 테이블_만들기(0, true);
+
     public static OrderTableRequest 테이블_요청_만들기(Long id, Integer numberOfGuests, Boolean isEmpty) {
         return new OrderTableRequest(id, null, numberOfGuests, isEmpty);
     }

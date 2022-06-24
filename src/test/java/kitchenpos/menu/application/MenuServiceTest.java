@@ -16,14 +16,12 @@ import kitchenpos.menu.dto.MenuResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 
 @DisplayName("메뉴 관련 Service 기능 테스트")
-@DirtiesContext(classMode = ClassMode.BEFORE_CLASS)
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@DataJpaTest
+@Import({MenuService.class})
 class MenuServiceTest {
 
     @Autowired
