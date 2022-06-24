@@ -22,7 +22,8 @@ public class MenuService {
     private final MenuGroupRepository menuGroupRepository;
     private final ProductRepository productRepository;
 
-    public MenuService(MenuRepository menuRepository, MenuGroupRepository menuGroupRepository,
+    public MenuService(MenuRepository menuRepository,
+                       MenuGroupRepository menuGroupRepository,
                        ProductRepository productRepository) {
         this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
@@ -31,14 +32,13 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 메뉴 그룹이 등록되어있지 않습니다."));
+        MenuGroup menuGroup = findMenuGroup(menuRequest);
 
         Menu menu = menuRequest.toMenu();
         menu.setMenuGroup(menuGroup);
 
         for (final MenuProductRequest menuProductRequest : menuRequest.getMenuProducts()) {
-            final Product product = productRepository.findById(menuProductRequest.getProductId()).orElseThrow(IllegalArgumentException::new);
+            final Product product = findProduct(menuProductRequest);
             menu.addMenuProduct(new MenuProduct(menuProductRequest.getQuantity(), menu, product));
         }
 
@@ -57,5 +57,15 @@ public class MenuService {
             menuResponses.add(menuResponse);
         }
         return menuResponses;
+    }
+
+    private Product findProduct(MenuProductRequest menuProductRequest) {
+        return productRepository.findById(menuProductRequest.getProductId())
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 상품이 등록되어있지 않습니다."));
+    }
+
+    private MenuGroup findMenuGroup(MenuRequest menuRequest) {
+        return menuGroupRepository.findById(menuRequest.getMenuGroupId())
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 메뉴 그룹이 등록되어있지 않습니다."));
     }
 }

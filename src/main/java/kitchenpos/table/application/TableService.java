@@ -34,8 +34,7 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+        final OrderTable savedOrderTable = findOrderTable(orderTableId);
 
         savedOrderTable.checkPossibleChangeEmpty();
         savedOrderTable.updateEmpty(orderTableRequest.getEmpty());
@@ -45,9 +44,13 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
 
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+        final OrderTable savedOrderTable = findOrderTable(orderTableId);
         savedOrderTable.updateNumberOfGuests(orderTableRequest.getNumberOfGuests());
         return OrderTableResponse.from(savedOrderTable);
+    }
+
+    private OrderTable findOrderTable(Long orderTableId) {
+        return orderTableRepository.findById(orderTableId)
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 테이블이 등록되어있지 않습니다."));
     }
 }

@@ -27,8 +27,7 @@ public class TableGroupService {
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         TableGroup tableGroup = new TableGroup(null, LocalDateTime.now());
 
-        List<OrderTable> emptyTables = orderTableRepository
-                .findAllById(tableGroupRequest.getRequestOrderTableIds());
+        List<OrderTable> emptyTables = orderTableRepository.findAllById(tableGroupRequest.getRequestOrderTableIds());
         tableGroup.groupingTables(new OrderTables(emptyTables), tableGroupRequest.getRequestOrderTableIds().size());
 
         TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
@@ -37,7 +36,11 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        TableGroup tableGroup = tableGroupRepository.findById(tableGroupId).orElseThrow(IllegalArgumentException::new);
+        TableGroup tableGroup = findTableGroup(tableGroupId);
         tableGroup.ungroupingTableGroup();
+    }
+
+    private TableGroup findTableGroup(Long tableGroupId) {
+        return tableGroupRepository.findById(tableGroupId).orElseThrow(IllegalArgumentException::new);
     }
 }

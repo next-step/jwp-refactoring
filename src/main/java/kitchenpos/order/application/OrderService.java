@@ -34,14 +34,12 @@ public class OrderService {
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
         Order order = orderRequest.toOrder();
-        OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
-                .orElseThrow(IllegalArgumentException::new);
+        OrderTable orderTable = findOrderTable(orderRequest);
 
         OrderLineItems orderLineItems = new OrderLineItems();
         for (OrderLineItemRequest orderLineItemRequest : orderRequest.getOrderLineItems()) {
             OrderLineItem orderLineItem = orderLineItemRequest.toOrderLineItem();
-            Menu menu = menuRepository.findById(orderLineItemRequest.getMenuId())
-                    .orElseThrow(IllegalArgumentException::new);
+            Menu menu = findMenu(orderLineItemRequest);
 
             orderLineItem.setMenu(menu);
             orderLineItems.addOrderLineItems(orderLineItem);
@@ -63,9 +61,25 @@ public class OrderService {
 
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
-        final Order order = orderRepository.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
+        final Order order = findOrder(orderId);
         order.changeOrderStatus(OrderStatus.valueOf(orderRequest.getOrderStatus()));
         return OrderResponse.from(order);
     }
+
+
+    private Menu findMenu(OrderLineItemRequest orderLineItemRequest) {
+        return menuRepository.findById(orderLineItemRequest.getMenuId())
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 메뉴가 등록되어있지 않습니다."));
+    }
+
+    private Order findOrder(Long orderId) {
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 주문이 등록되어있지 않습니다."));
+    }
+
+    private OrderTable findOrderTable(OrderRequest orderRequest) {
+        return orderTableRepository.findById(orderRequest.getOrderTableId())
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 테이블이 등록되어있지 않습니다."));
+    }
+
 }
