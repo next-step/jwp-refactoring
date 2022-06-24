@@ -8,8 +8,8 @@ import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
@@ -18,6 +18,8 @@ import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -52,38 +54,41 @@ class MenuServiceTest {
         menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
         menuProduct = new MenuProduct(1L, 1L, 1L, 2);
         menu = new Menu("후라이드+후라이드", BigDecimal.valueOf(1_000), 1L, Arrays.asList(menuProduct));
-        product = new Product("후라이드", BigDecimal.valueOf(500));
+        product = new Product(1L, "후라이드", BigDecimal.valueOf(500));
     }
 
     @Test
     @DisplayName("메뉴를 생성할 수 있다.")
     void createMenu() {
         // given
+        final MenuProductRequest menuProductRequest = new MenuProductRequest(1L, 2L);
+        final MenuRequest menuRequest = new MenuRequest("후라이드+후라이드", BigDecimal.valueOf(1_000), 1L,
+                Arrays.asList(menuProductRequest));
         when(menuGroupDao.existsById(any())).thenReturn(true);
-        when(productDao.findById(any())).thenReturn(Optional.of(product));
+        when(productDao.findAll()).thenReturn(Arrays.asList(product));
         when(menuDao.save(any())).thenReturn(menu);
         when(menuProductDao.save(any())).thenReturn(menuProduct);
         // when
-        final Menu actual = menuService.create(menu);
+        final Menu actual = menuService.create(menuRequest);
         // then
         assertThat(actual).isEqualTo(new Menu("후라이드+후라이드", BigDecimal.valueOf(1_000), 1L, Arrays.asList(menuProduct)));
     }
 
     @ParameterizedTest(name = "메뉴의 가격은 음수이거나 없으면 예외 발생")
     @MethodSource("nullAndNegativePriceMenuParameter")
-    void invalidPriceMenu(Menu menu) {
+    void invalidPriceMenu(MenuRequest menuRequest) {
         // when && then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> menuService.create(menu));
+                .isThrownBy(() -> menuService.create(menuRequest));
     }
 
     public static Stream<Arguments> nullAndNegativePriceMenuParameter() {
         return Stream.of(
                 Arguments.of(
-                        new Menu("후라이드", null, 1L, null)
+                        new MenuRequest("후라이드", null, 1L, null)
                 ),
                 Arguments.of(
-                        new Menu("후라이드", BigDecimal.valueOf(-1_000), 1L, null)
+                        new MenuRequest("후라이드", BigDecimal.valueOf(-1_000), 1L, null)
                 )
         );
     }
@@ -92,33 +97,39 @@ class MenuServiceTest {
     @DisplayName("생성하려는 메뉴는 현존하는 메뉴 그룹에 없으면 에러 발생")
     void invalidNotContainMenuGroup() {
         // given
+        final MenuRequest menuRequest = new MenuRequest("후라이드+후라이드", BigDecimal.valueOf(1_000), 99L, null);
         when(menuGroupDao.existsById(any())).thenReturn(false);
         // when && then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> menuService.create(menu));
+                .isThrownBy(() -> menuService.create(menuRequest));
     }
 
     @Test
     @DisplayName("메뉴를 구성하는 상품들이 존재하지 않으면 에러 발생")
     void invalidNotExistProduct() {
         // given
+        final MenuProductRequest menuProductRequest = new MenuProductRequest(1L, 2L);
+        final MenuRequest menuRequest = new MenuRequest("후라이드+후라이드", BigDecimal.valueOf(1_000), 1L,
+                Arrays.asList(menuProductRequest));
         when(menuGroupDao.existsById(any())).thenReturn(true);
-        when(productDao.findById(any())).thenReturn(Optional.empty());
+        when(productDao.findAll()).thenReturn(Collections.emptyList());
         // when && then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> menuService.create(menu));
+                .isThrownBy(() -> menuService.create(menuRequest));
     }
 
     @Test
     @DisplayName("메뉴 가격은 구성하는 상품들의 합보다 크면 에러 발생")
     void invalidPriceMoreThenProductSum() {
         // given
-        final Menu invalidMenu = new Menu("잘못된_메뉴", BigDecimal.valueOf(100_000), 1L, Arrays.asList(menuProduct));
+        final MenuProductRequest menuProductRequest = new MenuProductRequest(1L, 2L);
+        final MenuRequest invalidMenuRequest = new MenuRequest("잘못된_메뉴", BigDecimal.valueOf(100_000), 1L,
+                Arrays.asList(menuProductRequest));
         when(menuGroupDao.existsById(any())).thenReturn(true);
-        when(productDao.findById(any())).thenReturn(Optional.of(product));
+        when(productDao.findAll()).thenReturn(Arrays.asList(product));
         // when && then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> menuService.create(invalidMenu));
+                .isThrownBy(() -> menuService.create(invalidMenuRequest));
     }
 
     @Test

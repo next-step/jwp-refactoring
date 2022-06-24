@@ -15,6 +15,7 @@ import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
+import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
 import kitchenpos.dto.OrderTableResponse;
@@ -35,7 +36,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
         // given
         메뉴_그룹_생성_요청("후라이드세트");
         제품_생성_요청("후라이드", 16_000);
-        final List<MenuProduct> 메뉴_제품들 = Arrays.asList(new MenuProduct(1L, 1L, 1L, 2));
+        final List<MenuProductRequest> 메뉴_제품들 = Arrays.asList(new MenuProductRequest(1L, 2));
         메뉴_생성_요청("반반후라이드", 16_000, 1L, 메뉴_제품들);
         테이블_주문_번호_생성_요청(3, false);
     }

@@ -12,6 +12,8 @@ import java.util.Arrays;
 import java.util.List;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuRequest;
 import kitchenpos.utils.RestAssuredHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -39,7 +41,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
         // given
         메뉴_그룹_생성_요청("후라이드세트");
         제품_생성_요청("후라이드", 16_000);
-        final List<MenuProduct> 메뉴_제품들 = Arrays.asList(new MenuProduct(1L, 1L, 1L, 2));
+        final List<MenuProductRequest> 메뉴_제품들 = Arrays.asList(new MenuProductRequest(1L, 2));
 
         // when
         final ExtractableResponse<Response> 메뉴_생성_요청_결과 = 메뉴_생성_요청("반반후라이드", 16_000, 1L, 메뉴_제품들);
@@ -47,13 +49,15 @@ class MenuAcceptanceTest extends AcceptanceTest {
 
         // then
         final ExtractableResponse<Response> 메뉴_조회_결과 = 메뉴_조회();
-        메뉴_조회_확인(메뉴_조회_결과, Arrays.asList(new Menu("반반후라이드", BigDecimal.valueOf(16_000.0), 1L, 메뉴_제품들)));
+        final MenuProduct 예상된_메뉴_제품들 = new MenuProduct(1L, 1L, 1L, 2);
+        메뉴_조회_확인(메뉴_조회_결과, Arrays.asList(new Menu("반반후라이드", BigDecimal.valueOf(16_000.0), 1L,
+                Arrays.asList(예상된_메뉴_제품들))));
     }
 
     public static ExtractableResponse<Response> 메뉴_생성_요청(String 메뉴명, Integer 메뉴_금액, Long 메뉴_그룹_아이디,
-                                                         List<MenuProduct> 메뉴_제품들) {
-        final Menu menu = new Menu(메뉴명, BigDecimal.valueOf(메뉴_금액), 메뉴_그룹_아이디, 메뉴_제품들);
-        return RestAssuredHelper.post(MENU_URI, menu);
+                                                         List<MenuProductRequest> 메뉴_제품들) {
+        final MenuRequest menuRequest = new MenuRequest(메뉴명, BigDecimal.valueOf(메뉴_금액), 메뉴_그룹_아이디, 메뉴_제품들);
+        return RestAssuredHelper.post(MENU_URI, menuRequest);
     }
 
     public static void 메뉴_생성_요청_확인(ExtractableResponse<Response> 메뉴_생성_요청_결과) {
