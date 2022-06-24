@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.product.application.ProductService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ import org.springframework.context.annotation.Import;
 
 @DisplayName("메뉴 관련 Service 기능 테스트")
 @DataJpaTest
-@Import({MenuService.class})
+@Import({MenuService.class, ProductService.class, MenuGroupService.class})
 class MenuServiceTest {
 
     @Autowired

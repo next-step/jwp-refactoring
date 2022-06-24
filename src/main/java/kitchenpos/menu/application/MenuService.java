@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,26 +18,26 @@ import org.springframework.transaction.annotation.Transactional;
 public class MenuService {
 
     private final MenuRepository menuRepository;
-    private final MenuGroupRepository menuGroupRepository;
-    private final ProductRepository productRepository;
+    private final ProductService productService;
+    private final MenuGroupService menuGroupService;
 
     public MenuService(MenuRepository menuRepository,
-                       MenuGroupRepository menuGroupRepository,
-                       ProductRepository productRepository) {
+                       ProductService productService,
+                       MenuGroupService menuGroupService) {
         this.menuRepository = menuRepository;
-        this.menuGroupRepository = menuGroupRepository;
-        this.productRepository = productRepository;
+        this.productService = productService;
+        this.menuGroupService = menuGroupService;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        MenuGroup menuGroup = findMenuGroup(menuRequest);
+        MenuGroup menuGroup = menuGroupService.findMenuGroup(menuRequest.getMenuGroupId());
 
         Menu menu = menuRequest.toMenu();
         menu.setMenuGroup(menuGroup);
 
         for (final MenuProductRequest menuProductRequest : menuRequest.getMenuProducts()) {
-            final Product product = findProduct(menuProductRequest);
+            final Product product = productService.findProduct(menuProductRequest.getProductId());
             menu.addMenuProduct(new MenuProduct(menuProductRequest.getQuantity(), menu, product));
         }
 
@@ -59,13 +58,9 @@ public class MenuService {
         return menuResponses;
     }
 
-    private Product findProduct(MenuProductRequest menuProductRequest) {
-        return productRepository.findById(menuProductRequest.getProductId())
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 상품이 등록되어있지 않습니다."));
+    public Menu findMenu(Long menuId) {
+        return menuRepository.findById(menuId)
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 메뉴가 등록되어있지 않습니다."));
     }
 
-    private MenuGroup findMenuGroup(MenuRequest menuRequest) {
-        return menuGroupRepository.findById(menuRequest.getMenuGroupId())
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 메뉴 그룹이 등록되어있지 않습니다."));
-    }
 }

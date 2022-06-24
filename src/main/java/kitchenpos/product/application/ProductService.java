@@ -23,10 +23,17 @@ public class ProductService {
         return ProductResponse.from(product);
     }
 
+    @Transactional(readOnly = true)
     public List<ProductResponse> list() {
         List<Product> products = productRepository.findAll();
         return products.stream()
                 .map(ProductResponse::from)
                 .collect(Collectors.toList());
     }
+
+    public Product findProduct(Long menuProductId) {
+        return productRepository.findById(menuProductId)
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 상품이 등록되어있지 않습니다."));
+    }
+
 }
