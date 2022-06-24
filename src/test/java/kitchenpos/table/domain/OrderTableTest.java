@@ -1,5 +1,7 @@
 package kitchenpos.table.domain;
 
+import static kitchenpos.helper.OrderFixtures.주문_만들기;
+import static kitchenpos.helper.TableFixtures.테이블_만들기;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
@@ -145,6 +147,21 @@ class OrderTableTest {
                 .isThrownBy(orderTable2::ungroupingTableGroup);
         assertThatNoException()
                 .isThrownBy(orderTable3::ungroupingTableGroup);
+
+    }
+
+    @DisplayName("주문을 등록한다.")
+    @Test
+    void registerOrder() {
+        //given
+        OrderTable orderTable = 테이블_만들기(1L,3, false);
+        Order order = 주문_만들기(null);
+
+        //when
+        orderTable.registerOrder(order);
+
+        //then
+        assertThat(order.getOrderTable().getId()).isEqualTo(orderTable.getId());
 
     }
 }

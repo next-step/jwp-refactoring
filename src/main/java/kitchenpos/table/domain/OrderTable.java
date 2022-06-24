@@ -37,6 +37,10 @@ public class OrderTable {
         this.empty = empty;
     }
 
+    public void registerOrder(Order order) {
+
+    }
+
     public void ungroupingTableGroup(){
         orders.checkPossibleUngroupingOrderStatus();
         if(tableGroup == null){

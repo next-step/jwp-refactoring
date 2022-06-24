@@ -70,6 +70,10 @@ public class Order {
         return orderLineItems;
     }
 
+    public OrderTable getOrderTable() {
+        return orderTable;
+    }
+
     public void addOrderLineItems(OrderLineItem orderLineItem) {
         orderLineItems.addOrderLineItems(orderLineItem);
         orderLineItem.setOrder(this);
