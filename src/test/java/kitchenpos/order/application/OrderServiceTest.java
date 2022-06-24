@@ -13,7 +13,6 @@ import static org.mockito.BDDMockito.given;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -21,6 +20,7 @@ import kitchenpos.order.domain.OrderLineItemRepository;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.OrderTableRepository;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -39,7 +39,7 @@ class OrderServiceTest {
     @Mock
     private OrderLineItemRepository orderLineItemRepository;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
     @InjectMocks
     private OrderService orderService;
 
@@ -59,7 +59,7 @@ class OrderServiceTest {
     void create() {
         주문항목.setOrder(주문);
         given(menuRepository.countByIdIn(Lists.newArrayList(주문항목.menu().id()))).willReturn(주문항목.menu().id());
-        given(orderTableDao.findById(주문테이블.getId())).willReturn(Optional.ofNullable(주문테이블));
+        given(orderTableRepository.findById(주문테이블.id())).willReturn(Optional.ofNullable(주문테이블));
         given(orderRepository.save(주문)).willReturn(주문);
         given(orderLineItemRepository.save(주문항목)).willReturn(주문항목);
         Order order = orderService.create(주문);
@@ -90,7 +90,7 @@ class OrderServiceTest {
     @Test
     void createNotFoundOrderTable() {
         given(menuRepository.countByIdIn(Lists.newArrayList(주문항목.menu().id()))).willReturn(주문항목.menu().id());
-        given(orderTableDao.findById(주문테이블.getId())).willReturn(Optional.empty());
+        given(orderTableRepository.findById(주문테이블.id())).willReturn(Optional.empty());
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> orderService.create(주문));
     }
@@ -101,7 +101,7 @@ class OrderServiceTest {
         주문항목.setOrder(주문);
         주문테이블.setEmpty(true);
         given(menuRepository.countByIdIn(Lists.newArrayList(주문항목.menu().id()))).willReturn(주문항목.menu().id());
-        given(orderTableDao.findById(주문테이블.getId())).willReturn(Optional.ofNullable(주문테이블));
+        given(orderTableRepository.findById(주문테이블.id())).willReturn(Optional.ofNullable(주문테이블));
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> orderService.create(주문));
     }

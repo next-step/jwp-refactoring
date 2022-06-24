@@ -3,6 +3,7 @@ package kitchenpos.order.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import kitchenpos.domain.NumberOfGuests;
 import kitchenpos.order.domain.OrderTable;
 import org.springframework.http.MediaType;
 
@@ -27,25 +28,23 @@ public class TableRestAssured {
     }
 
     public static ExtractableResponse<Response> 주문테이블_비어있는지여부_변경_요청(OrderTable targetOrderTable, boolean empty) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setEmpty(empty);
+        targetOrderTable.setEmpty(empty);
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(orderTable)
-                .when().put("/api/tables/{orderTableId}/empty", targetOrderTable.getId())
+                .body(targetOrderTable)
+                .when().put("/api/tables/{orderTableId}/empty", targetOrderTable.id())
                 .then().log().all()
                 .extract();
     }
 
     public static ExtractableResponse<Response> 주문테이블_손님수_변경_요청(OrderTable targetOrderTable, int numberOfGuests) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(numberOfGuests);
+        targetOrderTable.setNumberOfGuests(NumberOfGuests.of(numberOfGuests));
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(orderTable)
-                .when().put("/api/tables/{orderTableId}/number-of-guests", targetOrderTable.getId())
+                .body(targetOrderTable)
+                .when().put("/api/tables/{orderTableId}/number-of-guests", targetOrderTable.id())
                 .then().log().all()
                 .extract();
     }

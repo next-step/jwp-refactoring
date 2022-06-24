@@ -113,6 +113,6 @@ class TableAcceptanceTest extends AcceptanceTest {
     }
 
     private void 주문테이블_손님수_변경됨(ExtractableResponse<Response> response, int numberOfGuests) {
-        assertThat(response.as(OrderTable.class).getNumberOfGuests()).isEqualTo(numberOfGuests);
+        assertThat(response.as(OrderTable.class).numberOfGuests()).isEqualTo(numberOfGuests);
     }
 }
