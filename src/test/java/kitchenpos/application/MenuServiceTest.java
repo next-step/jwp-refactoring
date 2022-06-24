@@ -23,9 +23,9 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
@@ -33,8 +33,6 @@ class MenuServiceTest {
     private MenuDao menuDao;
     @Mock
     private MenuGroupDao menuGroupDao;
-    @Mock
-    private MenuProductDao menuProductDao;
     @Mock
     private ProductDao productDao;
     @InjectMocks
@@ -137,5 +135,11 @@ class MenuServiceTest {
 
         //then
         assertThat(list).containsExactly(메뉴_김치찌개세트);
+    }
+    @DisplayName("주문이 발생함")
+    @Test
+    void 주문_등록() {
+        //given
+        given(menuDao.countByIdIn(anyList())).willReturn(1L);
     }
 }
