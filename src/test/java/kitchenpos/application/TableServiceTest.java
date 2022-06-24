@@ -12,6 +12,7 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderTableRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,12 +39,11 @@ class TableServiceTest {
     @DisplayName("주문 테이블을 생성한다.")
     void createOrderTable() {
         // given
-        final OrderTable 주문_테이블 = new OrderTable(5);
-        when(orderTableDao.save(any())).thenReturn(주문_테이블);
+        when(orderTableDao.save(any())).thenReturn(new OrderTable(5));
         // when
-        final OrderTable actual = tableService.create(주문_테이블);
+        final OrderTable actual = tableService.create(new OrderTableRequest(5, false));
         // then
-        assertThat(주문_테이블).isEqualTo(new OrderTable(5));
+        assertThat(actual).isEqualTo(new OrderTable(5));
     }
 
     @Test
@@ -71,7 +71,7 @@ class TableServiceTest {
                 List.of(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(false);
         when(orderTableDao.save(any())).thenReturn(emptyOrderTable);
         // when
-        final OrderTable actual = tableService.changeEmpty(1L, new OrderTable(null, null, 0, false));
+        final OrderTable actual = tableService.changeEmpty(1L, new OrderTableRequest(null, true));
         // then
         assertThat(actual.isEmpty()).isTrue();
     }
@@ -81,7 +81,7 @@ class TableServiceTest {
     void notExistOrderTableId() {
         // when && then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeEmpty(1L, new OrderTable()));
+                .isThrownBy(() -> tableService.changeEmpty(1L, new OrderTableRequest()));
     }
 
     @Test
@@ -92,7 +92,7 @@ class TableServiceTest {
         when(orderTableDao.findById(any())).thenReturn(Optional.of(fullOrderTableGroup));
         // when && then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeEmpty(1L, new OrderTable()));
+                .isThrownBy(() -> tableService.changeEmpty(1L, new OrderTableRequest()));
     }
 
     @Test
@@ -105,7 +105,7 @@ class TableServiceTest {
                 List.of(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(true);
         // when && then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeEmpty(1L, new OrderTable()));
+                .isThrownBy(() -> tableService.changeEmpty(1L, new OrderTableRequest()));
     }
 
     @Test
@@ -117,7 +117,7 @@ class TableServiceTest {
         when(orderTableDao.findById(any())).thenReturn(Optional.of(orderTable5Guests));
         when(orderTableDao.save(any())).thenReturn(orderTable3Guests);
         // when
-        final OrderTable actual = tableService.changeNumberOfGuests(1L, new OrderTable(null, null, 3, false));
+        final OrderTable actual = tableService.changeNumberOfGuests(1L, new OrderTableRequest(3, null));
         // then
         assertThat(actual.getNumberOfGuests()).isEqualTo(orderTable3Guests.getNumberOfGuests());
     }
@@ -127,7 +127,7 @@ class TableServiceTest {
     void negativeNumberOfGuests() {
         // when && then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeNumberOfGuests(1L, new OrderTable(null, null, -1, false)));
+                .isThrownBy(() -> tableService.changeNumberOfGuests(1L, new OrderTableRequest(-1, null)));
     }
 
     @Test
@@ -135,7 +135,7 @@ class TableServiceTest {
     void notExistOrderTableIdByNumberOfGuests() {
         // when && then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeNumberOfGuests(1L, new OrderTable(null, null, 3, false)));
+                .isThrownBy(() -> tableService.changeNumberOfGuests(1L, new OrderTableRequest(3, null)));
     }
 
     @Test
@@ -146,6 +146,6 @@ class TableServiceTest {
         when(orderTableDao.findById(any())).thenReturn(Optional.of(emptyOrderTable));
         // when && then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeNumberOfGuests(1L, new OrderTable(null, null, 1, false)));
+                .isThrownBy(() -> tableService.changeNumberOfGuests(1L, new OrderTableRequest(1, null)));
     }
 }

@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.utils.RestAssuredHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -72,8 +73,8 @@ class TableAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 테이블_주문_번호_생성_요청(Integer 손님수, boolean 빈_테이블_유무) {
-        final OrderTable 주문테이블 = new OrderTable(null, null, 손님수, 빈_테이블_유무);
-        return RestAssuredHelper.post(TABLE_URI, 주문테이블);
+        final OrderTableRequest 요청할_주문_테이블 = new OrderTableRequest(손님수, 빈_테이블_유무);
+        return RestAssuredHelper.post(TABLE_URI, 요청할_주문_테이블);
     }
 
     public static void 테이블_주문_번호_생성_확인(ExtractableResponse<Response> 테이블_주문_번호_생성_요청_결과) {
@@ -82,8 +83,8 @@ class TableAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 빈_테이블_변경(Integer 변경할_주문_테이블_번호) {
         final String uri = TABLE_URI + "/{orderTableId}/empty";
-        final OrderTable orderTable = new OrderTable(null, null, 0, true);
-        return RestAssuredHelper.put(uri, orderTable, 변경할_주문_테이블_번호);
+        final OrderTableRequest 변경할_주문_테이블 = new OrderTableRequest(0, true);
+        return RestAssuredHelper.put(uri, 변경할_주문_테이블, 변경할_주문_테이블_번호);
     }
 
     public void 빈_테이블_확인(ExtractableResponse<Response> 빈_테이블_변경_결과) {
@@ -97,8 +98,8 @@ class TableAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 테이블_방문_고객수_변경(Integer 변경할_주문_테이블_번호, Integer 변경할_고객_수) {
         final String uri = TABLE_URI + "/{orderTableId}/number-of-guests";
-        final OrderTable orderTable = new OrderTable(null, null, 변경할_고객_수, false);
-        return RestAssuredHelper.put(uri, orderTable, 변경할_주문_테이블_번호);
+        final OrderTableRequest 변경할_주문_테이블 = new OrderTableRequest(변경할_고객_수, false);
+        return RestAssuredHelper.put(uri, 변경할_주문_테이블, 변경할_주문_테이블_번호);
     }
 
     public static void 테이블_방문_고객수_확인(ExtractableResponse<Response> 테이블_방문_고객수_변경_결과, Integer 예상된_변경_고객수) {
