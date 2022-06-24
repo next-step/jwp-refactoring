@@ -5,18 +5,17 @@ import static kitchenpos.acceptance.ProductAcceptanceTest.제품_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.List;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.utils.RestAssuredHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 @DisplayName("메뉴 인수테스트 기능")
 class MenuAcceptanceTest extends AcceptanceTest {
@@ -53,13 +52,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 메뉴_생성_요청(String 메뉴명, Integer 메뉴_금액, Long 메뉴_그룹_아이디,
                                                          List<MenuProduct> 메뉴_제품들) {
         final Menu menu = new Menu(메뉴명, BigDecimal.valueOf(메뉴_금액), 메뉴_그룹_아이디, 메뉴_제품들);
-
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(menu)
-                .when().post(MENU_URI)
-                .then().log().all()
-                .extract();
+        return RestAssuredHelper.post(MENU_URI, menu);
     }
 
     public static void 메뉴_생성_요청_확인(ExtractableResponse<Response> 메뉴_생성_요청_결과) {
@@ -67,11 +60,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 메뉴_조회() {
-        return RestAssured.given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get(MENU_URI)
-                .then().log().all()
-                .extract();
+        return RestAssuredHelper.get(MENU_URI);
     }
 
     private void 메뉴_조회_확인(ExtractableResponse<Response> 메뉴_조회_결과, List<Menu> 예상된_메뉴_조회_결과) {

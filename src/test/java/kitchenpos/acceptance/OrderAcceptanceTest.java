@@ -7,7 +7,6 @@ import static kitchenpos.acceptance.TableAcceptanceTest.테이블_주문_번호_
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
@@ -15,11 +14,11 @@ import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
+import kitchenpos.utils.RestAssuredHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 @DisplayName("주문 인수테스트 기능")
 class OrderAcceptanceTest extends AcceptanceTest {
@@ -85,13 +84,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 주문_요청(Long 테이블_번호, Long 메뉴_번호, Long 갯수) {
         final OrderLineItem 메뉴_번호_및_갯수 = new OrderLineItem(메뉴_번호, 갯수);
-
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new Order(테이블_번호, List.of(메뉴_번호_및_갯수)))
-                .when().post(ORDER_URI)
-                .then().log().all()
-                .extract();
+        return RestAssuredHelper.post(ORDER_URI, new Order(테이블_번호, List.of(메뉴_번호_및_갯수)));
     }
 
     public static void 주문_요청_결과_확인(ExtractableResponse<Response> 주문_요청_결과) {
@@ -99,11 +92,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 주문_조회() {
-        return RestAssured.given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get(ORDER_URI)
-                .then().log().all()
-                .extract();
+        return RestAssuredHelper.get(ORDER_URI);
     }
 
     public static void 주문_조회_결과_확인(ExtractableResponse<Response> 주문_조회_결과, List<Order> 예상된_주문_결과) {
@@ -128,12 +117,8 @@ class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 주문_상태_변경(Long 주문_번호, OrderStatus 변경할_상태) {
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new Order(변경할_상태.name()))
-                .when().put(ORDER_URI + "/{orderId}/order-status", 주문_번호)
-                .then().log().all()
-                .extract();
+        final String uri = ORDER_URI + "/{orderId}/order-status";
+        return RestAssuredHelper.put(uri, new Order(변경할_상태.name()), 주문_번호);
     }
 
     private void 주문_상태_변경_결과_확인(ExtractableResponse<Response> 주문_상태_변경_결과, OrderStatus 상태) {

@@ -59,7 +59,8 @@ completePayment() vs setOrderState()
 ```
 
 ## 📚 Todo List 📚
-- [ ] 리뷰사항 반영하기
+- [x] 리뷰사항 반영하기
 - [ ] DTO (request/response) 추가
 - [ ] JdbcTemplate에서 JPA 사용하도록 Entity & Repository 변경
+  - [ ] Entity Builder Pattern으로 사용하도록 개선
 - [ ] 비즈니스 로직 Service Layer에서 Domain으로 이동

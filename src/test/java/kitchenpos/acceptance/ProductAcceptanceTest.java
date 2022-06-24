@@ -3,18 +3,17 @@ package kitchenpos.acceptance;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.domain.Product;
+import kitchenpos.utils.RestAssuredHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 @DisplayName("제품(상품) 인수테스트 기능")
 public class ProductAcceptanceTest extends AcceptanceTest {
@@ -43,13 +42,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 제품_생성_요청(String 제품명, Integer 금액) {
         final Product 생성할_제품 = new Product(제품명, BigDecimal.valueOf(금액));
-
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(생성할_제품)
-                .when().post(PRODUCT_URI)
-                .then().log().all()
-                .extract();
+        return RestAssuredHelper.post(PRODUCT_URI, 생성할_제품);
     }
 
     public static void 제품_생성_요청_확인(ExtractableResponse<Response> 제품_생성_요청_결과) {
@@ -57,10 +50,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 제품_조회() {
-        return RestAssured.given().log().all()
-                .when().get(PRODUCT_URI)
-                .then().log().all()
-                .extract();
+        return RestAssuredHelper.get(PRODUCT_URI);
     }
 
     public static void 제품_조회_확인(ExtractableResponse<Response> 제품_조회_결과, List<Product> 예상된_제품_조회_결과) {
