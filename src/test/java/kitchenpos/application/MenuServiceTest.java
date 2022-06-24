@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
+import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
@@ -31,6 +32,8 @@ class MenuServiceTest {
     private MenuDao menuDao;
     @Mock
     private MenuGroupDao menuGroupDao;
+    @Mock
+    private MenuProductDao menuProductDao;
     @Mock
     private ProductDao productDao;
     @InjectMocks
