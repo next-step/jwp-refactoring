@@ -1,8 +1,6 @@
 package kitchenpos.table.domain;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Embeddable;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -12,25 +10,26 @@ import static java.util.Objects.requireNonNull;
 @Embeddable
 public class OrderTables {
 
-    @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "tableGroupId")
     private List<OrderTable> orderTables = new ArrayList<>();
 
-    protected OrderTables() {
+    public OrderTables() {
     }
 
-    public void addAll(TableGroup tableGroup, List<OrderTable> orderTables) {
-        requireNonNull(tableGroup, "tableGroup");
+    public void addAll(Long tableGroupId, List<OrderTable> orderTables) {
+        requireNonNull(tableGroupId, "tableGroupId");
         requireNonNull(orderTables, "orderTables");
         for (OrderTable orderTable : orderTables) {
-            add(tableGroup, orderTable);
+            add(tableGroupId, orderTable);
         }
     }
 
-    private void add(TableGroup tableGroup, OrderTable orderTable) {
+    private void add(Long tableGroupId, OrderTable orderTable) {
         if (!this.orderTables.contains(orderTable)) {
             orderTables.add(orderTable);
         }
-        orderTable.bindTo(tableGroup);
+        orderTable.bindTo(tableGroupId);
     }
 
     public List<Long> getIds() {

@@ -1,6 +1,6 @@
 package kitchenpos.table.application;
 
-import kitchenpos.menu.application.MenuServiceTestSupport;
+import kitchenpos.menu.domain.MenuServiceTestSupport;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;

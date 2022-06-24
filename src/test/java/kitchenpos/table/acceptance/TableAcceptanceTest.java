@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static kitchenpos.table.acceptance.TableAcceptanceUtil.주문이_들어간_테이블_가져오기;
-import static kitchenpos.table.acceptance.TableGroupAcceptanceTest.단체_지정_등록됨;
+import static kitchenpos.tablegroup.acceptance.TableGroupAcceptanceTest.단체_지정_등록됨;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 

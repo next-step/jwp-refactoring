@@ -1,12 +1,12 @@
 package kitchenpos.menu.acceptance;
 
-import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.dto.ProductResponse;
 
 import java.math.BigDecimal;
 
-import static kitchenpos.menu.acceptance.MenuAcceptanceTest.메뉴_등록됨;
+import static kitchenpos.menugroup.acceptance.MenuAcceptanceTest.메뉴_등록됨;
 import static kitchenpos.menu.acceptance.MenuGroupAcceptanceTest.메뉴_그룹_등록됨;
 import static kitchenpos.product.acceptance.ProductAcceptanceTest.상품_등록됨;
 

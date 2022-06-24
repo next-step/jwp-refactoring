@@ -1,9 +1,9 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.ServiceTest;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuGroupRepository;
-import kitchenpos.menu.exception.NotFoundMenuGroupException;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
+import kitchenpos.menugroup.exception.NotFoundMenuGroupException;
 import kitchenpos.product.exception.NotFoundProductException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;

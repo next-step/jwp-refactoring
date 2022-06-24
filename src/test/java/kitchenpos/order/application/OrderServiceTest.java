@@ -1,7 +1,7 @@
 package kitchenpos.order.application;
 
 import kitchenpos.ServiceTest;
-import kitchenpos.menu.application.MenuServiceTestSupport;
+import kitchenpos.menu.domain.MenuServiceTestSupport;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;

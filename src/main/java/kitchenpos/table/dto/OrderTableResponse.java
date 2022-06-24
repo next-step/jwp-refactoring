@@ -22,15 +22,8 @@ public class OrderTableResponse {
     }
 
     public static OrderTableResponse of(OrderTable orderTable) {
-        return new OrderTableResponse(orderTable.getId(), getTableGroupId(orderTable),
+        return new OrderTableResponse(orderTable.getId(), orderTable.getTableGroupId(),
                                       orderTable.getNumberOfGuests().getValue(), orderTable.isEmpty());
-    }
-
-    private static Long getTableGroupId(OrderTable orderTable) {
-        if (orderTable.getTableGroup() == null) {
-            return null;
-        }
-        return orderTable.getTableGroup().getId();
     }
 
     public static List<OrderTableResponse> of(List<OrderTable> orderTables) {

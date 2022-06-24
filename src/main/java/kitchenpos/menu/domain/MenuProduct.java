@@ -1,8 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.core.domain.Amount;
 import kitchenpos.core.domain.Quantity;
-import kitchenpos.product.domain.Product;
 import javax.persistence.*;
 import static java.util.Objects.requireNonNull;
 
@@ -14,14 +12,13 @@ public class MenuProduct {
     @ManyToOne
     @JoinColumn(name = "menu_id", nullable = false)
     private Menu menu;
-    @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
+    private Long productId;
     @Embedded
     private Quantity quantity;
 
-    public MenuProduct(Product product, long quantity) {
-        this.product = requireNonNull(product, "product");
+    public MenuProduct(Long productId, long quantity) {
+        this.productId = requireNonNull(productId, "product");
         this.quantity = new Quantity(quantity);
     }
 
@@ -32,10 +29,6 @@ public class MenuProduct {
         this.menu = menu;
     }
 
-    public Amount calculateAmount() {
-        return product.getPrice().multiply(quantity);
-    }
-
     public Long getSeq() {
         return seq;
     }
@@ -44,8 +37,8 @@ public class MenuProduct {
         return menu;
     }
 
-    public Product getProduct() {
-        return product;
+    public Long getProductId() {
+        return productId;
     }
 
     public Quantity getQuantity() {

@@ -1,6 +1,5 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
@@ -13,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class MenuProductsTest {
 
     private final Menu menu = new Menu("강정치킨", BigDecimal.TEN, 1L);
-    private final List<MenuProduct> menuProducts = Arrays.asList(new MenuProduct(new Product("강정치킨", BigDecimal.TEN), 1L));
+    private final List<MenuProduct> menuProducts = Arrays.asList(new MenuProduct(1L, 1L));
 
     @DisplayName("1개의 MenuProduct를 MenuProducts에 추가한다.")
     @Test
