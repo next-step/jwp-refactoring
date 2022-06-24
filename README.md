@@ -86,13 +86,13 @@
 ### 리팩토링 리스트
 - [x] 패키지 나누기
 - [x] JPA 설정
-- [ ] Request, Response DTO 생성
+- [x] Request, Response DTO 생성
   - [x] product
   - [x] menu
   - [x] menu group
   - [x] menu product
-  - [ ] order
-  - [ ] order line item
+  - [x] order
+  - [x] order line item
   - [x] order table
   - [x] table group
 - [ ] Service 비즈니스 로직 도메인으로 책임 위임
@@ -102,12 +102,13 @@
   - [ ] OrderService
   - [x] TableService
   - [x] TableGroupService
-- [ ] DAO -> Repository 변경
+- [x] DAO -> Repository 변경
   - [x] product
   - [x] menu
   - [x] menu group
   - [x] menu product
-  - [ ] order
+  - [x] order
+  - [x] order line item
   - [x] order table
   - [x] table group
 - [ ] 불필요한 getter, setter 제거
