@@ -7,11 +7,11 @@ public class Amounts {
 
     private final List<Amount> amounts = new ArrayList<>();
 
-    public void addAmount(Amount amount){
+    public void addAmount(Amount amount) {
         amounts.add(amount);
     }
 
-    public int calculateTotalAmount(){
+    public int calculateTotalAmount() {
         return amounts.stream()
                 .mapToInt(Amount::calculateAmount)
                 .sum();

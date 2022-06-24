@@ -49,10 +49,14 @@ public class Order {
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
+        validatePossibleChangOrder();
+        this.orderStatus = orderStatus;
+    }
+
+    private void validatePossibleChangOrder() {
         if (OrderStatus.COMPLETION.equals(this.orderStatus)) {
             throw new IllegalArgumentException("[ERROR] 계산완료상태에서 주문 상태를 변경할 수 없습니다.");
         }
-        this.orderStatus = orderStatus;
     }
 
     public void updateOrder(OrderStatus orderStatus) {
@@ -70,6 +74,12 @@ public class Order {
         }
         if (orderLineItems.size() != requestSize) {
             throw new IllegalArgumentException("[ERROR] 등록 되어있지 않는 주문 항목이 있습니다.");
+        }
+    }
+
+    public void checkPossibleChangeEmpty() {
+        if (!OrderStatus.COMPLETION.equals(orderStatus)) {
+            throw new IllegalStateException("[ERROR] 주문이 계산완료 상태가 아닙니다.");
         }
     }
 
@@ -103,9 +113,4 @@ public class Order {
         this.orderTable = orderTable;
     }
 
-    public void checkPossibleChangeEmpty() {
-        if (!OrderStatus.COMPLETION.equals(orderStatus)) {
-            throw new IllegalStateException("[ERROR] 주문이 계산완료 상태가 아닙니다.");
-        }
-    }
 }

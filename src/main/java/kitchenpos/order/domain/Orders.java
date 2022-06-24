@@ -12,20 +12,21 @@ public class Orders {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "orderTable")
     private final List<Order> orders = new ArrayList<>();
-    
+
     public List<Order> getOrders() {
         return orders;
     }
 
-    public void registerOrder(Order order){
+    public void registerOrder(Order order) {
         order.updateOrder(OrderStatus.COOKING);
         orders.add(order);
     }
 
-    public void addOrder(Order order){
+    public void addOrder(Order order) {
         orders.add(order);
     }
-    public void checkPossibleUngroupingOrderStatus(){
+
+    public void checkPossibleUngroupingOrderStatus() {
         for (Order order : orders) {
             order.checkPossibleUngroupingOrderStatus();
         }

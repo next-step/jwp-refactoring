@@ -1,8 +1,8 @@
 package kitchenpos.menu.domain;
 
 public class Amount {
-    private int price;
-    private int quantity;
+    private final int price;
+    private final int quantity;
 
     public Amount(int price, int quantity) {
         this.price = price;
