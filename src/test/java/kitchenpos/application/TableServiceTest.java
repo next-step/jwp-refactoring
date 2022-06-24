@@ -39,7 +39,7 @@ class TableServiceTest {
         given(orderTableDao.save(any(OrderTable.class))).willReturn(new OrderTable.Builder().id(1L).build());
 
         // when
-        OrderTable created = tableService.create(new OrderTable.Builder(0, true).build());
+        OrderTable created = tableService.create(createOrderTable(0, true));
 
         // then
         assertThat(created.getId()).isNotNull();
@@ -52,21 +52,19 @@ class TableServiceTest {
     @Test
     void changeEmpty() {
         // given
-        List<String> orderStatuses = Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
-
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(new OrderTable.Builder().empty(false).build()));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(1L, orderStatuses)).willReturn(false);
-        given(orderTableDao.save(any(OrderTable.class))).willReturn(new OrderTable.Builder().empty(true).build());
+        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(createOrderTable(4, false)));
+        given(orderDao.existsByOrderTableIdAndOrderStatusIn(1L, createOrderStatuses())).willReturn(false);
+        given(orderTableDao.save(any(OrderTable.class))).willReturn(createOrderTable(4, true));
 
         // when
-        OrderTable changed = tableService.changeEmpty(1L, new OrderTable.Builder().empty(true).build());
+        OrderTable changed = tableService.changeEmpty(1L, createOrderTable(4, true));
 
         // then
         assertThat(changed.isEmpty()).isTrue();
 
         // verify
         then(orderTableDao).should(times(1)).findById(anyLong());
-        then(orderDao).should(times(1)).existsByOrderTableIdAndOrderStatusIn(1L, orderStatuses);
+        then(orderDao).should(times(1)).existsByOrderTableIdAndOrderStatusIn(1L, createOrderStatuses());
         then(orderTableDao).should(times(1)).save(any(OrderTable.class));
     }
 
@@ -74,11 +72,11 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests() {
         // given
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(new OrderTable.Builder().numberOfGuests(4).empty(false).build()));
-        given(orderTableDao.save(any(OrderTable.class))).willReturn(new OrderTable.Builder().numberOfGuests(8).build());
+        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(createOrderTable(4, false)));
+        given(orderTableDao.save(any(OrderTable.class))).willReturn(createOrderTable(8, false));
 
         // when
-        OrderTable changed = tableService.changeNumberOfGuests(1L, new OrderTable.Builder().numberOfGuests(8).build());
+        OrderTable changed = tableService.changeNumberOfGuests(1L, createOrderTable(8, false));
 
         // then
         assertThat(changed.getNumberOfGuests()).isEqualTo(8);
@@ -86,5 +84,13 @@ class TableServiceTest {
         // verify
         then(orderTableDao).should(times(1)).findById(anyLong());
         then(orderTableDao).should(times(1)).save(any(OrderTable.class));
+    }
+
+    List<String> createOrderStatuses() {
+        return Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
+    }
+
+    OrderTable createOrderTable(int numberOfGuests, boolean empty) {
+        return new OrderTable.Builder(numberOfGuests, empty).build();
     }
 }
