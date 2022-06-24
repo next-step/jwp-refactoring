@@ -9,6 +9,7 @@ import kitchenpos.dto.order.OrderRequest;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "orders")
@@ -53,6 +54,14 @@ public class Order extends BaseEntity {
                 orderTable,
                 orderRequest.getOrderStatus(),
                 orderRequest.getOrderLineItems());
+    }
+
+    public void updateOrderStatus(OrderStatus orderStatus) {
+        if (Objects.equals(OrderStatus.COMPLETION, orderStatus)) {
+            throw new IllegalArgumentException("주문 상태가 이미 '계산 완료' 상태입니다.");
+        }
+
+        this.orderStatus = orderStatus;
     }
 
     public Long getId() {
