@@ -17,12 +17,17 @@ public class TableGroup extends AbstractAggregateRoot<TableGroup> {
     @Embedded
     private OrderTables orderTables = new OrderTables();
 
-    public TableGroup() {
+    protected TableGroup(Long id) {
+        this.id = id;
         this.createdDate = LocalDateTime.now();
     }
 
+    public TableGroup() {
+        this(null);
+    }
+
     public void addOrderTables(List<OrderTable> orderTableIds) {
-        this.orderTables.addAll(this, orderTableIds);
+        this.orderTables.addAll(id, orderTableIds);
     }
 
     public void ungroup() {

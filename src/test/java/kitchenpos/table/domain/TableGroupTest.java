@@ -11,19 +11,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 class TableGroupTest {
 
     private final List<OrderTable> orderTables = Arrays.asList(new OrderTable(0, true),
-                                                                     new OrderTable(0, true),
-                                                                     new OrderTable(0, true));
+                                                               new OrderTable(0, true),
+                                                               new OrderTable(0, true));
     @DisplayName("단체 지정을 생성한다.")
     @Test
     void create() {
-        TableGroup tableGroup = new TableGroup();
+        TableGroup tableGroup = new FixtureTableGroup();
         assertThat(tableGroup.getCreatedDate()).isNotNull();
     }
 
     @DisplayName("단체 지정에 테이블들을 추가한다.")
     @Test
     void addOrderTables() {
-        TableGroup tableGroup = new TableGroup();
+        TableGroup tableGroup = new FixtureTableGroup();
 
         tableGroup.addOrderTables(orderTables);
 
@@ -33,7 +33,7 @@ class TableGroupTest {
     @DisplayName("단체 지정을 해지한다.")
     @Test
     void ungroup() {
-        TableGroup tableGroup = new TableGroup();
+        TableGroup tableGroup = new FixtureTableGroup();
         tableGroup.addOrderTables(orderTables);
 
         tableGroup.ungroup();

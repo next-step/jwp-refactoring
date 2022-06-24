@@ -9,8 +9,7 @@ public class OrderTable extends AbstractAggregateRoot<OrderTable> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
-    private TableGroup tableGroup;
+    private Long tableGroupId;
     @Embedded
     private NumberOfGuests numberOfGuests;
     @Embedded
@@ -24,17 +23,17 @@ public class OrderTable extends AbstractAggregateRoot<OrderTable> {
     protected OrderTable() {
     }
 
-    public void bindTo(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
+    public void bindTo(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
         this.empty = new Empty(false);
     }
 
     public void unbind() {
-        tableGroup = null;
+        tableGroupId = null;
     }
 
     public boolean isGrouped() {
-        return tableGroup != null;
+        return tableGroupId != null;
     }
 
     public boolean isEmpty() {
@@ -57,8 +56,8 @@ public class OrderTable extends AbstractAggregateRoot<OrderTable> {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public NumberOfGuests getNumberOfGuests() {
