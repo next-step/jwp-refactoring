@@ -7,13 +7,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.repository.OrderRepository;
+import kitchenpos.domain.repository.OrderTableRepository;
+import kitchenpos.domain.repository.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,11 +22,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 class TableGroupServiceTest extends ServiceTest {
 
     @Autowired
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Autowired
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
     @Autowired
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
     @Autowired
     private TableGroupService tableGroupService;
 
@@ -37,16 +37,16 @@ class TableGroupServiceTest extends ServiceTest {
     @BeforeEach
     void setUp() {
         super.setUp();
-        orderTable1 = this.orderTableDao.save(new OrderTable(0, true));
-        orderTable2 = this.orderTableDao.save(new OrderTable(0, true));
+        orderTable1 = this.orderTableRepository.save(new OrderTable(0, true));
+        orderTable2 = this.orderTableRepository.save(new OrderTable(0, true));
         tableGroup = this.tableGroupService.create(new TableGroup(Arrays.asList(orderTable1, orderTable2)));
     }
 
     @Test
     @DisplayName("테이블 그룹이 정상적으로 생성된다.")
     void createTableGroup() {
-        OrderTable orderTable1 = this.orderTableDao.save(new OrderTable(0, true));
-        OrderTable orderTable2 = this.orderTableDao.save(new OrderTable(0, true));
+        OrderTable orderTable1 = this.orderTableRepository.save(new OrderTable(0, true));
+        OrderTable orderTable2 = this.orderTableRepository.save(new OrderTable(0, true));
         TableGroup tableGroup = this.tableGroupService.create(new TableGroup(Arrays.asList(orderTable1, orderTable2)));
 
         assertThat(tableGroup.getId()).isNotNull();
@@ -68,7 +68,7 @@ class TableGroupServiceTest extends ServiceTest {
     @Test
     @DisplayName("테이블 중 비어있지 않은 테이블이 존재할 경우 생성될 수 없다.")
     void createFail_orderTableEmptyStatus() {
-        OrderTable orderTable = this.orderTableDao.save(new OrderTable(4, false));
+        OrderTable orderTable = this.orderTableRepository.save(new OrderTable(4, false));
 
         assertThatIllegalArgumentException()
             .isThrownBy(() -> this.tableGroupService.create(new TableGroup(Collections.singletonList(orderTable))));
@@ -77,8 +77,8 @@ class TableGroupServiceTest extends ServiceTest {
     @Test
     @DisplayName("테이블 중 이미 테이블 그룹에 속한 테이블이 존재할 경우 생성될 수 없다.")
     void createFail_alreadyContainTableGroup() {
-        OrderTable orderTable = this.orderTableDao.save(new OrderTable(0, true));
-        this.tableGroupDao.save(new TableGroup(Collections.singletonList(orderTable)));
+        OrderTable orderTable = this.orderTableRepository.save(new OrderTable(0, true));
+        this.tableGroupRepository.save(new TableGroup(Collections.singletonList(orderTable)));
 
         assertThatIllegalArgumentException()
             .isThrownBy(() -> this.tableGroupService.create(new TableGroup(Collections.singletonList(orderTable))));
@@ -89,8 +89,8 @@ class TableGroupServiceTest extends ServiceTest {
     void ungroup() {
         this.tableGroupService.ungroup(tableGroup.getId());
 
-        List<OrderTable> orderTables = this.orderTableDao.findAll();
-        assertTrue(orderTables.stream().anyMatch(orderTable -> orderTable.getTableGroupId() == null));
+        List<OrderTable> orderTables = this.orderTableRepository.findAll();
+        assertTrue(orderTables.stream().anyMatch(orderTable -> orderTable.getTableGroup() == null));
     }
 
     @Test
@@ -98,7 +98,7 @@ class TableGroupServiceTest extends ServiceTest {
     void ungroupFail() {
         Order order = new Order(orderTable1.getId(), null);
         order.setOrderStatus(OrderStatus.COOKING.name());
-        this.orderDao.save(order);
+        this.orderRepository.save(order);
 
         assertThatIllegalArgumentException()
             .isThrownBy(() -> this.tableGroupService.ungroup(tableGroup.getId()));

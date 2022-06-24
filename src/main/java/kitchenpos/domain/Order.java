@@ -1,16 +1,33 @@
 package kitchenpos.domain;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
+@Entity
+@Table(name = "orders")
 public class Order {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "order_table_id", nullable = false)
     private Long orderTableId;
+    @Column(name = "order_status", nullable = false)
     private String orderStatus;
+    @Column(name = "ordered_time", nullable = false)
     private LocalDateTime orderedTime;
-    private List<OrderLineItem> orderLineItems;
+    @OneToMany(mappedBy = "order",fetch = FetchType.LAZY)
+    private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     public Order() {
     }

@@ -1,17 +1,13 @@
 package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
@@ -20,23 +16,29 @@ import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.repository.MenuGroupRepository;
+import kitchenpos.domain.repository.MenuRepository;
+import kitchenpos.domain.repository.OrderRepository;
+import kitchenpos.domain.repository.OrderTableRepository;
+import kitchenpos.domain.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 
 class OrderServiceTest extends ServiceTest {
 
     @Autowired
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
     @Autowired
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Autowired
-    private ProductDao productDao;
+    private ProductRepository productRepository;
     @Autowired
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
     @Autowired
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Autowired
     private OrderService orderService;
 
@@ -51,24 +53,24 @@ class OrderServiceTest extends ServiceTest {
     void setUp() {
         super.setUp();
 
-        Product 후라이드 = this.productDao.save(new Product("후라이드", BigDecimal.valueOf(16000)));
-        Product 양념치킨 = this.productDao.save(new Product("양념치킨", BigDecimal.valueOf(16000)));
-        Product 콜라 = this.productDao.save(new Product("콜라", BigDecimal.valueOf(2500)));
+        Product 후라이드 = this.productRepository.save(new Product("후라이드", BigDecimal.valueOf(16000)));
+        Product 양념치킨 = this.productRepository.save(new Product("양념치킨", BigDecimal.valueOf(16000)));
+        Product 콜라 = this.productRepository.save(new Product("콜라", BigDecimal.valueOf(2500)));
         MenuProduct 후라이드_메뉴상품 = new MenuProduct(후라이드.getId(), 1);
         MenuProduct 양념치킨_메뉴상품 = new MenuProduct(양념치킨.getId(), 2);
         MenuProduct 콜라_메뉴상품 = new MenuProduct(콜라.getId(), 1);
-        MenuGroup 두마리메뉴 = this.menuGroupDao.save(new MenuGroup("두마리메뉴"));
-        MenuGroup 한마리메뉴 = this.menuGroupDao.save(new MenuGroup("한마리메뉴"));
-        후라이드_양념_세트 = this.menuDao.save(
+        MenuGroup 두마리메뉴 = this.menuGroupRepository.save(new MenuGroup("두마리메뉴"));
+        MenuGroup 한마리메뉴 = this.menuGroupRepository.save(new MenuGroup("한마리메뉴"));
+        후라이드_양념_세트 = this.menuRepository.save(
             new Menu("후라이드_양념_세트", BigDecimal.valueOf(22000),
                 두마리메뉴.getId(), Arrays.asList(후라이드_메뉴상품, 양념치킨_메뉴상품))
         );
-        후라이드_단품_세트 = this.menuDao.save(
+        후라이드_단품_세트 = this.menuRepository.save(
             new Menu("후라이드_단품_세트", BigDecimal.valueOf(17500),
                 한마리메뉴.getId(), Arrays.asList(후라이드_메뉴상품, 콜라_메뉴상품))
         );
 
-        테이블_A = this.orderTableDao.save(new OrderTable(4, false));
+        테이블_A = this.orderTableRepository.save(new OrderTable(4, false));
 
         후라이드_양념_세트_주문 = new OrderLineItem(후라이드_양념_세트.getId(), 1);
         후라이드_단품_세트_주문 = new OrderLineItem(후라이드_단품_세트.getId(), 1);
@@ -109,7 +111,7 @@ class OrderServiceTest extends ServiceTest {
     @Test
     @DisplayName("주문한 테이블 정보가 존재하지 않을 경우 예외를 던진다.")
     void createFail_orderTableEmpty() {
-        assertThatIllegalArgumentException()
+        assertThatExceptionOfType(InvalidDataAccessApiUsageException.class)
             .isThrownBy(() -> this.orderService.create(new Order(null, Arrays.asList(후라이드_양념_세트_주문, 후라이드_단품_세트_주문))));
     }
 
@@ -118,7 +120,7 @@ class OrderServiceTest extends ServiceTest {
     void list() {
         Order 주문_추가 = new Order(테이블_A.getId(), Collections.singletonList(후라이드_양념_세트_주문));
         주문_추가.setOrderStatus(OrderStatus.COOKING.name());
-        주문_추가 = this.orderDao.save(주문_추가);
+        주문_추가 = this.orderRepository.save(주문_추가);
         주문_추가.setOrderLineItems(Collections.emptyList());
 
         List<Order> list = this.orderService.list();
@@ -134,7 +136,7 @@ class OrderServiceTest extends ServiceTest {
 
         this.orderService.changeOrderStatus(주문.getId(), statusOrder);
 
-        Order expectedOrder = this.orderDao.findById(주문.getId()).orElse(null);
+        Order expectedOrder = this.orderRepository.findById(주문.getId()).orElse(null);
         assertThat(expectedOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
     }
 
@@ -143,7 +145,7 @@ class OrderServiceTest extends ServiceTest {
     @DisplayName("주문 상태가 완료된 건 변경할 수 없다.")
     void changeOrderStatusFail() {
         주문.setOrderStatus(OrderStatus.COMPLETION.name());
-        this.orderDao.save(주문);
+        this.orderRepository.save(주문);
 
         assertThatIllegalArgumentException()
             .isThrownBy(() -> this.orderService.changeOrderStatus(주문.getId(), null));

@@ -2,39 +2,36 @@ package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.repository.MenuGroupRepository;
+import kitchenpos.domain.repository.MenuRepository;
+import kitchenpos.domain.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 
 class MenuServiceTest extends ServiceTest{
 
     @Autowired
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Autowired
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
     @Autowired
-    private ProductDao productDao;
+    private ProductRepository productRepository;
     @Autowired
     private MenuService menuService;
 
@@ -48,11 +45,11 @@ class MenuServiceTest extends ServiceTest{
     void setUp() {
         super.setUp();
 
-        후라이드 = this.productDao.save(new Product("후라이드", BigDecimal.valueOf(16000)));
-        양념치킨 = this.productDao.save(new Product("양념치킨", BigDecimal.valueOf(16000)));
+        후라이드 = this.productRepository.save(new Product("후라이드", BigDecimal.valueOf(16000)));
+        양념치킨 = this.productRepository.save(new Product("양념치킨", BigDecimal.valueOf(16000)));
         후라이드_메뉴상품 = new MenuProduct(후라이드.getId(), 1);
         양념치킨_메뉴상품 = new MenuProduct(양념치킨.getId(), 1);
-        두마리메뉴 = this.menuGroupDao.save(new MenuGroup("두마리메뉴"));
+        두마리메뉴 = this.menuGroupRepository.save(new MenuGroup("두마리메뉴"));
     }
 
     @Test
@@ -80,7 +77,7 @@ class MenuServiceTest extends ServiceTest{
             }),
             DynamicTest.dynamicTest("메뉴 그룹이 없는 경우", () -> {
                 Menu 후라이드_양념_세트 = new Menu("후라이드_양념_세트", BigDecimal.valueOf(31000), null, Arrays.asList(후라이드_메뉴상품, 양념치킨_메뉴상품));
-                메뉴그룹_생성_실패(후라이드_양념_세트, IllegalArgumentException.class);
+                메뉴그룹_생성_실패(후라이드_양념_세트, InvalidDataAccessApiUsageException.class);
             }),
             DynamicTest.dynamicTest("상품이 없는 경우", () -> {
                 Menu 후라이드_양념_세트 = new Menu("후라이드_양념_세트", BigDecimal.valueOf(31000), 두마리메뉴.getId(), null);
@@ -102,8 +99,8 @@ class MenuServiceTest extends ServiceTest{
     void list() {
         Menu 후라이드_양념_세트 = new Menu("후라이드_양념_세트", BigDecimal.valueOf(31000), 두마리메뉴.getId(), Arrays.asList(후라이드_메뉴상품, 양념치킨_메뉴상품));
         Menu 임시_메뉴 = new Menu("닭강정", BigDecimal.valueOf(5000), 두마리메뉴.getId(), Collections.singletonList(후라이드_메뉴상품));
-        후라이드_양념_세트 = this.menuDao.save(후라이드_양념_세트);
-        임시_메뉴 = this.menuDao.save(임시_메뉴);
+        후라이드_양념_세트 = this.menuRepository.save(후라이드_양념_세트);
+        임시_메뉴 = this.menuRepository.save(임시_메뉴);
         후라이드_양념_세트.setMenuProducts(Collections.emptyList());
         임시_메뉴.setMenuProducts(Collections.emptyList());
 

@@ -1,12 +1,27 @@
 package kitchenpos.domain;
 
 import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
+@Entity
 public class OrderLineItem {
 
-    private Long seq;
-    private Long orderId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
+    private Order order;
+    @Column(name = "menu_id", nullable = false)
     private Long menuId;
+    @Column(name = "quantity", nullable = false)
     private long quantity;
 
     public OrderLineItem() {
@@ -17,20 +32,20 @@ public class OrderLineItem {
         this.quantity = quantity;
     }
 
-    public Long getSeq() {
-        return seq;
+    public Long getId() {
+        return id;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
+    public void setId(final Long id) {
+        this.id = id;
     }
 
-    public Long getOrderId() {
-        return orderId;
+    public Order getOrder() {
+        return order;
     }
 
-    public void setOrderId(final Long orderId) {
-        this.orderId = orderId;
+    public void setOrder(Order order) {
+        this.order = order;
     }
 
     public Long getMenuId() {
@@ -58,19 +73,19 @@ public class OrderLineItem {
             return false;
         }
         OrderLineItem that = (OrderLineItem) o;
-        return Objects.equals(seq, that.seq);
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(seq);
+        return Objects.hash(id);
     }
 
     @Override
     public String toString() {
         return "OrderLineItem{" +
-            "seq=" + seq +
-            ", orderId=" + orderId +
+            "id=" + id +
+            ", orderId=" + order.getId() +
             ", menuId=" + menuId +
             ", quantity=" + quantity +
             '}';
