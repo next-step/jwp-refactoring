@@ -1,5 +1,7 @@
-package kitchenpos.table.domain;
+package kitchenpos.tablegroup.domain;
 
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTables;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
 import javax.persistence.*;

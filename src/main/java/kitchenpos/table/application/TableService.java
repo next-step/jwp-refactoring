@@ -47,5 +47,7 @@ public class TableService {
         return OrderTableResponse.of(orderTableRepository.save(orderTable));
     }
 
-
+    public List<OrderTable> findAllIdIn(List<Long> ids) {
+        return tableDomainService.findAllIdIn(ids);
+    }
 }

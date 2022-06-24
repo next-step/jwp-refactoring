@@ -14,7 +14,7 @@ public class OrderTables {
     @JoinColumn(name = "tableGroupId")
     private List<OrderTable> orderTables = new ArrayList<>();
 
-    protected OrderTables() {
+    public OrderTables() {
     }
 
     public void addAll(Long tableGroupId, List<OrderTable> orderTables) {

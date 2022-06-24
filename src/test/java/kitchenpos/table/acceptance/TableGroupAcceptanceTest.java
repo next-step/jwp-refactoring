@@ -1,9 +1,9 @@
 package kitchenpos.table.acceptance;
 
 import kitchenpos.AcceptanceTest;
-import kitchenpos.table.dto.OrderTableIdRequest;
+import kitchenpos.tablegroup.dto.OrderTableIdRequest;
 import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.TestFactory;

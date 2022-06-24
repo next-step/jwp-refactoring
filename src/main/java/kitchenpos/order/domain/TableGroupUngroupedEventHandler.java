@@ -1,7 +1,7 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.core.domain.DomainService;
-import kitchenpos.table.domain.TableGroupUngroupedEvent;
+import kitchenpos.tablegroup.domain.TableGroupUngroupedEvent;
 import kitchenpos.table.exception.CannotUngroupException;
 import org.springframework.context.event.EventListener;
 import org.springframework.transaction.annotation.Transactional;

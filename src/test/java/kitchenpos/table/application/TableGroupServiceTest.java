@@ -1,15 +1,16 @@
 package kitchenpos.table.application;
 
 import kitchenpos.ServiceTest;
-import kitchenpos.table.dto.OrderTableIdRequest;
+import kitchenpos.tablegroup.dto.OrderTableIdRequest;
 import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.table.dto.TableGroupRequest;
-import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.exception.CannotUngroupException;
-import kitchenpos.table.exception.InvalidTableGroupException;
-import kitchenpos.table.exception.NotFoundTableGroupException;
+import kitchenpos.tablegroup.exception.InvalidTableGroupException;
+import kitchenpos.tablegroup.exception.NotFoundTableGroupException;
+import kitchenpos.tablegroup.application.TableGroupService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

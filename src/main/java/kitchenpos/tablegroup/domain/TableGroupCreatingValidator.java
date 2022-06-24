@@ -1,9 +1,9 @@
-package kitchenpos.table.domain;
+package kitchenpos.tablegroup.domain;
 
 import kitchenpos.core.domain.DomainService;
-import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.exception.InvalidOrderTablesException;
-import kitchenpos.table.exception.InvalidTableGroupException;
+import kitchenpos.tablegroup.exception.InvalidTableGroupException;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -13,9 +13,9 @@ public class TableGroupCreatingValidator {
 
     private static final int MIN_SIZE = 2;
 
-    public void validate(TableGroupRequest tableGroup, List<OrderTable> orderTables) {
+    public void validate(List<Long> orderTableIds, List<OrderTable> orderTables) {
         validateNotEmptyIds(orderTables);
-        validateExistsAllOrderTables(tableGroup.toOrderTableIds(), orderTables);
+        validateExistsAllOrderTables(orderTableIds, orderTables);
         validateOrderTables(orderTables);
     }
 
