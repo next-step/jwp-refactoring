@@ -90,7 +90,7 @@ class TableServiceTest {
         return Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
     }
 
-    OrderTable createOrderTable(int numberOfGuests, boolean empty) {
+    public static OrderTable createOrderTable(int numberOfGuests, boolean empty) {
         return new OrderTable.Builder(numberOfGuests, empty).build();
     }
 }
