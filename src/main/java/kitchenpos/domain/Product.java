@@ -2,6 +2,7 @@ package kitchenpos.domain;
 
 import java.math.BigDecimal;
 import java.util.Objects;
+import kitchenpos.dto.ProductResponse;
 
 public class Product {
     private Long id;
@@ -38,6 +39,10 @@ public class Product {
 
     public void setPrice(final BigDecimal price) {
         this.price = price;
+    }
+
+    public ProductResponse toProductResponse() {
+        return new ProductResponse(this.id, this.name, this.price);
     }
 
     @Override

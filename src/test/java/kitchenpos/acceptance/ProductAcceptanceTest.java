@@ -8,8 +8,8 @@ import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.domain.Product;
 import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
 import kitchenpos.utils.RestAssuredHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -38,7 +38,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 
         // then
         final ExtractableResponse<Response> 제품_조회_결과 = 제품_조회();
-        제품_조회_확인(제품_조회_결과, Arrays.asList(new Product("강정치킨", BigDecimal.valueOf(17_000.0))));
+        제품_조회_확인(제품_조회_결과, Arrays.asList(new ProductResponse(1L, "강정치킨", BigDecimal.valueOf(17_000.0))));
     }
 
     public static ExtractableResponse<Response> 제품_생성_요청(String 제품명, Integer 금액) {
@@ -54,8 +54,8 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         return RestAssuredHelper.get(PRODUCT_URI);
     }
 
-    public static void 제품_조회_확인(ExtractableResponse<Response> 제품_조회_결과, List<Product> 예상된_제품_조회_결과) {
-        final List<Product> actual = 제품_조회_결과.body().jsonPath().getList(".", Product.class);
+    public static void 제품_조회_확인(ExtractableResponse<Response> 제품_조회_결과, List<ProductResponse> 예상된_제품_조회_결과) {
+        final List<ProductResponse> actual = 제품_조회_결과.body().jsonPath().getList(".", ProductResponse.class);
 
         assertAll(
                 () -> assertThat(제품_조회_결과.statusCode()).isEqualTo(HttpStatus.OK.value()),
@@ -64,7 +64,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    public static void 제품_내용_확인(List<Product> 제품_리스트1, List<Product> 제품_리스트2) {
+    public static void 제품_내용_확인(List<ProductResponse> 제품_리스트1, List<ProductResponse> 제품_리스트2) {
         for (int idx = 0; idx < 제품_리스트1.size(); idx++) {
             int innerIdx = idx;
             assertAll(

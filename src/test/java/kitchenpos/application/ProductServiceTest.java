@@ -12,6 +12,7 @@ import java.util.List;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,9 +41,12 @@ class ProductServiceTest {
         Product 강정치킨 = new Product("강정치킨", BigDecimal.valueOf(17_000));
         when(productDao.save(any())).thenReturn(강정치킨);
         // when
-        final Product actual = productService.create(new ProductRequest("강정치킨", BigDecimal.valueOf(17_000)));
+        final ProductResponse actual = productService.create(new ProductRequest("강정치킨", BigDecimal.valueOf(17_000)));
         // given
-        assertThat(actual).isEqualTo(new Product("강정치킨", BigDecimal.valueOf(17_000)));
+        assertAll(
+                () -> assertThat(actual.getName()).isEqualTo(강정치킨.getName()),
+                () -> assertThat(actual.getPrice()).isEqualTo(강정치킨.getPrice())
+        );
     }
 
     @Test
@@ -67,7 +71,7 @@ class ProductServiceTest {
         // given
         when(productDao.findAll()).thenReturn(Arrays.asList(new Product(), new Product()));
         // when
-        final List<Product> actual = productService.list();
+        final List<ProductResponse> actual = productService.list();
         // then
         assertAll(
                 () -> assertThat(actual).isNotNull(),
