@@ -88,25 +88,25 @@
 - [x] JPA 설정
 - [ ] Request, Response DTO 생성
   - [x] product
-  - [ ] menu
+  - [x] menu
   - [x] menu group
-  - [ ] menu product
+  - [x] menu product
   - [ ] order
   - [ ] order line item
   - [x] order table
   - [x] table group
 - [ ] Service 비즈니스 로직 도메인으로 책임 위임
   - [x] ProductService
-  - [ ] MenuService
+  - [x] MenuService
   - [x] MenuGroupService
   - [ ] OrderService
   - [x] TableService
   - [x] TableGroupService
 - [ ] DAO -> Repository 변경
   - [x] product
-  - [ ] menu
+  - [x] menu
   - [x] menu group
-  - [ ] menu product
+  - [x] menu product
   - [ ] order
   - [x] order table
   - [x] table group
