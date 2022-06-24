@@ -3,6 +3,9 @@ package kitchenpos.domain;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.dto.TableGroupResponse;
 
 public class TableGroup {
     private Long id;
@@ -44,6 +47,13 @@ public class TableGroup {
 
     public void setOrderTables(final List<OrderTable> orderTables) {
         this.orderTables = orderTables;
+    }
+
+    public TableGroupResponse toTableGroupResponse() {
+        final List<OrderTableResponse> orderTableResponses = this.orderTables.stream()
+                .map(OrderTable::toOrderTableResponse)
+                .collect(Collectors.toList());
+        return new TableGroupResponse(this.id, this.createdDate, orderTableResponses);
     }
 
     @Override

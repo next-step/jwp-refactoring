@@ -15,7 +15,9 @@ import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -54,11 +56,34 @@ class TableGroupServiceTest {
         when(orderTableDao.findAllByIdIn(any())).thenReturn(Arrays.asList(orderTableOf5Guests, orderTableOf3Guests));
         when(tableGroupDao.save(any())).thenReturn(tableGroup);
         // when
-        final TableGroup actual = tableGroupService.create(new kitchenpos.dto.TableGroupRequest(Arrays.asList(1L, 2L)));
+        final TableGroupResponse actual = tableGroupService.create(
+                new kitchenpos.dto.TableGroupRequest(Arrays.asList(1L, 2L)));
         // then
         assertAll(
                 () -> assertThat(actual).isNotNull(),
-                () -> assertThat(actual.getOrderTables()).containsExactly(orderTableOf5Guests, orderTableOf3Guests)
+                () -> assertThat(actual.getOrderTables()).hasSize(2),
+                () -> verifyEqualsOrderTables(actual.getOrderTables(),
+                        Arrays.asList(orderTableOf5Guests.toOrderTableResponse(),
+                                orderTableOf3Guests.toOrderTableResponse()))
+        );
+    }
+
+    private void verifyEqualsOrderTables(List<OrderTableResponse> orderTableResponse1,
+                                         List<OrderTableResponse> orderTableResponse2) {
+        for (int idx = 0; idx < orderTableResponse1.size(); idx++) {
+            verifyEqualsOrderTable(orderTableResponse1.get(idx), orderTableResponse2.get(idx));
+        }
+    }
+
+    private void verifyEqualsOrderTable(OrderTableResponse orderTableResponse1,
+                                        OrderTableResponse orderTableResponse2) {
+        assertAll(
+                () -> assertThat(orderTableResponse1.getId()).isEqualTo(
+                        orderTableResponse2.getId()),
+                () -> assertThat(orderTableResponse1.getTableGroupId()).isEqualTo(
+                        orderTableResponse2.getTableGroupId()),
+                () -> assertThat(orderTableResponse1.getNumberOfGuests()).isEqualTo(
+                        orderTableResponse2.getNumberOfGuests())
         );
     }
 
@@ -66,7 +91,8 @@ class TableGroupServiceTest {
     @DisplayName("엮을 테이블은 한 개 이하면 예외 발생")
     void invalidLessThen2OrderTable() {
         // given
-        final kitchenpos.dto.TableGroupRequest tableGroupRequest = new kitchenpos.dto.TableGroupRequest(Arrays.asList(1L));
+        final kitchenpos.dto.TableGroupRequest tableGroupRequest = new kitchenpos.dto.TableGroupRequest(
+                Arrays.asList(1L));
         // when && then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableGroupService.create(tableGroupRequest));
@@ -76,7 +102,8 @@ class TableGroupServiceTest {
     @DisplayName("엮을 주문 테이블이 존재하지 않으면 예외 발생")
     void notExistOrderTableId() {
         // given
-        final kitchenpos.dto.TableGroupRequest tableGroupRequest = new kitchenpos.dto.TableGroupRequest(Arrays.asList(1L, 2L));
+        final kitchenpos.dto.TableGroupRequest tableGroupRequest = new kitchenpos.dto.TableGroupRequest(
+                Arrays.asList(1L, 2L));
         // when && then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableGroupService.create(tableGroupRequest));
@@ -114,7 +141,8 @@ class TableGroupServiceTest {
         // given
         final OrderTable groupingOneOrderTable = new OrderTable(1L, 1L, 5, false);
         final OrderTable groupingTwoOrderTable = new OrderTable(2L, 1L, 3, true);
-        when(orderTableDao.findAllByTableGroupId(any())).thenReturn(Arrays.asList(groupingOneOrderTable, groupingTwoOrderTable));
+        when(orderTableDao.findAllByTableGroupId(any())).thenReturn(
+                Arrays.asList(groupingOneOrderTable, groupingTwoOrderTable));
         when(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(1L, 2L),
                 Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(false);
         when(orderTableDao.save(any())).thenReturn(any());
@@ -128,7 +156,8 @@ class TableGroupServiceTest {
         // given
         final OrderTable groupingOneOrderTable = new OrderTable(1L, 1L, 5, false);
         final OrderTable groupingTwoOrderTable = new OrderTable(2L, 1L, 3, true);
-        when(orderTableDao.findAllByTableGroupId(any())).thenReturn(Arrays.asList(groupingOneOrderTable, groupingTwoOrderTable));
+        when(orderTableDao.findAllByTableGroupId(any())).thenReturn(
+                Arrays.asList(groupingOneOrderTable, groupingTwoOrderTable));
         when(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(1L, 2L),
                 Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(true);
 
