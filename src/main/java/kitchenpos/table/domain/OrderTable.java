@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import kitchenpos.core.exception.BadRequestException;
+import kitchenpos.core.exception.ExceptionType;
 
 @Entity
 @Table(name = "order_table")
@@ -63,13 +65,13 @@ public class OrderTable {
 
     public void validateHasTableGroupId() {
         if (isGrouped()) {
-            throw new IllegalArgumentException();
+            throw new BadRequestException(ExceptionType.TABLE_IS_GROUPED);
         }
     }
 
     public void validateIsEmpty() {
         if (isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new BadRequestException(ExceptionType.EMPTY_TABLE);
         }
     }
 

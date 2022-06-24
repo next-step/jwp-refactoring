@@ -1,5 +1,9 @@
 package kitchenpos.order.application;
 
+import kitchenpos.core.exception.BadRequestException;
+import kitchenpos.core.exception.CannotCreateException;
+import kitchenpos.core.exception.ExceptionType;
+import kitchenpos.core.exception.NotFoundException;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -38,7 +42,7 @@ public class OrderService {
         List<OrderLineItem> orderLineItems = validateOrderLineItems(orderLineItemRequests);
 
         final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(() -> new NotFoundException(ExceptionType.NOT_EXIST_ORDER_TABLE));
 
         Order order = Order.of(null, orderTable);
         order = orderRepository.save(order);
@@ -49,7 +53,7 @@ public class OrderService {
 
     private List<OrderLineItem> validateOrderLineItems(List<OrderLineItemRequest> orderLineItemRequests) {
         if (CollectionUtils.isEmpty(orderLineItemRequests)) {
-            throw new IllegalArgumentException();
+            throw new BadRequestException(ExceptionType.EMPTY_ORDER_LINE_ITEM);
         }
 
         validateExistMenu(orderLineItemRequests);
@@ -64,7 +68,7 @@ public class OrderService {
             .collect(Collectors.toList());
 
         if (orderLineItemRequests.size() != menuRepository.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException();
+            throw new CannotCreateException(ExceptionType.CONTAINS_NOT_EXIST_MENU);
         }
     }
 
@@ -80,9 +84,9 @@ public class OrderService {
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
         Order savedOrder = orderRepository.findById(orderId)
-            .orElseThrow(IllegalArgumentException::new);
-        savedOrder.validateMustNotBeCompletionStatus();
+            .orElseThrow(() -> new NotFoundException(ExceptionType.NOT_EXIST_ORDER.getMessage(orderId)));
 
+        savedOrder.validateMustNotBeCompletionStatus();
         savedOrder.changeOrderStatus(orderRequest.getOrderStatus());
         orderRepository.save(savedOrder);
 

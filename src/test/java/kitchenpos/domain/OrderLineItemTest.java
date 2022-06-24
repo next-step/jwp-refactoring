@@ -34,15 +34,4 @@ class OrderLineItemTest {
         assertThat(주문_항목.getOrder()).isEqualTo(주문);
         assertThat(주문.getOrderLineItems()).contains(주문_항목);
     }
-
-    @DisplayName("주문항목내의 유효성검사시 메뉴가 없으면 예외가 발생한다")
-    @Test
-    void z() {
-        // given
-        OrderLineItem 주문_항목 = OrderLineItem.of(1L, null, null, 1);
-
-        // then
-        assertThatThrownBy(주문_항목::validateMenu)
-            .isInstanceOf(IllegalArgumentException.class);
-    }
 }

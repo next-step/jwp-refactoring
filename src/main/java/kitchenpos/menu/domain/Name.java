@@ -2,6 +2,8 @@ package kitchenpos.menu.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import kitchenpos.core.exception.BadRequestException;
+import kitchenpos.core.exception.ExceptionType;
 import org.springframework.util.StringUtils;
 
 @Embeddable
@@ -15,7 +17,7 @@ public class Name {
 
     public Name(String value) {
         if (!StringUtils.hasText(value)) {
-            throw new IllegalArgumentException();
+            throw new BadRequestException(ExceptionType.INVALID_NAME);
         }
 
         this.value = value;

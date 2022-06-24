@@ -1,6 +1,7 @@
 package kitchenpos.menu.domain.request;
 
 public class MenuProductRequest {
+
     private Long productId;
     private long quantity;
 

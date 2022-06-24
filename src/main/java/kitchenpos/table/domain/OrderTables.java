@@ -6,6 +6,8 @@ import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import kitchenpos.core.exception.CannotCreateException;
+import kitchenpos.core.exception.ExceptionType;
 
 @Embeddable
 public class OrderTables {
@@ -26,7 +28,7 @@ public class OrderTables {
             .filter(it -> !it.isEmpty() || it.isGrouped())
             .findFirst()
             .ifPresent(e -> {
-                throw new IllegalArgumentException();
+                throw new CannotCreateException(ExceptionType.MUST_NOT_BE_EMPTY_OR_GROUPED_TABLE);
             });
     }
 

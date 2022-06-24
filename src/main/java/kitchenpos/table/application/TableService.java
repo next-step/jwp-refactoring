@@ -1,6 +1,10 @@
 package kitchenpos.table.application;
 
 import java.util.stream.Collectors;
+import kitchenpos.core.exception.BadRequestException;
+import kitchenpos.core.exception.CannotUpdateException;
+import kitchenpos.core.exception.ExceptionType;
+import kitchenpos.core.exception.NotFoundException;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
@@ -41,12 +45,12 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId) {
         OrderTable orderTable = orderTableRepository.findById(orderTableId)
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(() -> new NotFoundException(ExceptionType.NOT_EXIST_ORDER_TABLE));
         orderTable.validateHasTableGroupId();
 
         if (orderRepository.existsByOrderTableAndOrderStatusIn(
             orderTable, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
+            throw new CannotUpdateException(ExceptionType.CAN_NOT_UPDATE_TABLE_IN_COOKING_AND_MEAL_STATUS);
         }
 
         orderTable.setEmpty(true);
@@ -60,7 +64,7 @@ public class TableService {
         validateNumberOfGuests(numberOfGuests);
 
         OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(() -> new NotFoundException(ExceptionType.NOT_EXIST_ORDER_TABLE));
         savedOrderTable.validateIsEmpty();
 
         savedOrderTable.changeNumberOfGuests(numberOfGuests);
@@ -69,7 +73,7 @@ public class TableService {
 
     private void validateNumberOfGuests(int numberOfGuests) {
         if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
+            throw new BadRequestException(ExceptionType.CAN_NOT_LESS_THAN_ZERO_GUESTS);
         }
     }
 }

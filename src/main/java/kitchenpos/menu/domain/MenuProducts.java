@@ -7,6 +7,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import kitchenpos.core.exception.CannotCreateException;
+import kitchenpos.core.exception.ExceptionType;
 
 @Embeddable
 public class MenuProducts {
@@ -34,7 +36,7 @@ public class MenuProducts {
         }
 
         if (price.isOverThan(sum)) {
-            throw new IllegalArgumentException();
+            throw new CannotCreateException(ExceptionType.IS_NOT_OVER_THAN_MENU_PRICE);
         }
     }
 

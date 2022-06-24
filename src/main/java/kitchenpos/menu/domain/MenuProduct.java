@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import kitchenpos.core.exception.CannotCreateException;
+import kitchenpos.core.exception.ExceptionType;
 
 @Entity
 @Table(name = "menu_product")
@@ -45,7 +47,7 @@ public class MenuProduct {
 
     public void validateHasProduct() {
         if (Objects.isNull(product)) {
-            throw new IllegalArgumentException();
+            throw new CannotCreateException(ExceptionType.CONTAINS_NOT_EXIST_PRODUCT);
         }
     }
 

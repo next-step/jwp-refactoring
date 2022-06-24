@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import kitchenpos.core.exception.BadRequestException;
+import kitchenpos.core.exception.ExceptionType;
 
 @Embeddable
 public class Price {
@@ -21,7 +23,7 @@ public class Price {
 
     private void validatePrice(BigDecimal value) {
         if (Objects.isNull(value) || value.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
+            throw new BadRequestException(ExceptionType.INVALID_PRICE);
         }
     }
 

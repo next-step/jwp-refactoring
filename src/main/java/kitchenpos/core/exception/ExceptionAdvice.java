@@ -7,8 +7,9 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @RestController
 public class ExceptionAdvice extends ResponseEntityExceptionHandler {
+
     @ExceptionHandler(KitchenPosException.class)
     public ResponseEntity handleException(KitchenPosException e) {
-        return new ResponseEntity<>(e.getMessage() , e.getStatus());
+        return new ResponseEntity<>(e.getMessage(), e.getStatus());
     }
 }

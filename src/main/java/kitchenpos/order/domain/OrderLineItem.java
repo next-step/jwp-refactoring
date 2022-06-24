@@ -1,6 +1,5 @@
 package kitchenpos.order.domain;
 
-import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -47,12 +46,6 @@ public class OrderLineItem {
     public void mapIntoOrder(Order order) {
         this.order = order;
         order.addOrderLineItem(this);
-    }
-
-    public void validateMenu() {
-        if (Objects.isNull(menuId)) {
-            throw new IllegalArgumentException();
-        }
     }
 
     public Long getId() {

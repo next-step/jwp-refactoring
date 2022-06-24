@@ -16,6 +16,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import kitchenpos.core.exception.CannotUpdateException;
+import kitchenpos.core.exception.ExceptionType;
 import kitchenpos.table.domain.OrderTable;
 
 @Entity
@@ -65,7 +67,7 @@ public class Order {
 
     public void validateMustNotBeCompletionStatus() {
         if (OrderStatus.COMPLETION.equals(orderStatus)) {
-            throw new IllegalArgumentException();
+            throw new CannotUpdateException(ExceptionType.COMPLETION_STATUS_CAN_NOT_CHANGE);
         }
     }
 

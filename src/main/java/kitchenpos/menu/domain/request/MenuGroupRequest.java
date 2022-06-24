@@ -1,6 +1,7 @@
 package kitchenpos.menu.domain.request;
 
 public class MenuGroupRequest {
+
     private String name;
 
     protected MenuGroupRequest() {

@@ -3,6 +3,7 @@ package kitchenpos.core.exception;
 import org.springframework.http.HttpStatus;
 
 public class KitchenPosException extends RuntimeException {
+
     private final HttpStatus status;
     private final String message;
 

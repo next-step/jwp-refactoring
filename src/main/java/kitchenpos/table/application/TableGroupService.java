@@ -1,5 +1,10 @@
 package kitchenpos.table.application;
 
+import kitchenpos.core.exception.BadRequestException;
+import kitchenpos.core.exception.CannotCreateException;
+import kitchenpos.core.exception.CannotUpdateException;
+import kitchenpos.core.exception.ExceptionType;
+import kitchenpos.core.exception.NotFoundException;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
@@ -50,20 +55,20 @@ public class TableGroupService {
 
     private void validateOrderTableSize(List<Long> orderTableIds) {
         if (CollectionUtils.isEmpty(orderTableIds) || orderTableIds.size() < 2) {
-            throw new IllegalArgumentException();
+            throw new CannotCreateException(ExceptionType.ORDER_TABLE_AT_LEAST_TWO);
         }
     }
 
     private void validateOrderTableEqualsSize(List<OrderTable> savedOrderTables, List<Long> orderTableIds)  {
         if (savedOrderTables.size() != orderTableIds.size()) {
-            throw new IllegalArgumentException();
+            throw new BadRequestException(ExceptionType.CONTAINS_NOT_EXIST_ORDER_TABLE);
         }
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(() -> new NotFoundException(ExceptionType.NOT_EXIST_TABLE_GROUP));
 
         final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroup(tableGroup);
         validateOrderTablesStatus(orderTables);
@@ -73,7 +78,7 @@ public class TableGroupService {
     private void validateOrderTablesStatus(List<OrderTable> orderTables) {
         if (orderRepository.existsByOrderTableInAndOrderStatusIn(
             orderTables, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
+            throw new CannotUpdateException(ExceptionType.CAN_NOT_UPDATE_TABLE_IN_COOKING_AND_MEAL_STATUS);
         }
     }
 }
