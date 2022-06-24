@@ -48,8 +48,11 @@ public class Order {
         this.orderTable = orderTable;
     }
 
-    public void changeOrderStatus(OrderStatus orderStatus){
-
+    public void changeOrderStatus(OrderStatus orderStatus) {
+        if (OrderStatus.COMPLETION.equals(orderStatus)) {
+            throw new IllegalArgumentException("[ERROR] 계산완료상태에서 주문 상태를 변경할 수 없습니다.");
+        }
+        this.orderStatus = orderStatus;
     }
 
     public void updateOrder(OrderStatus orderStatus) {
