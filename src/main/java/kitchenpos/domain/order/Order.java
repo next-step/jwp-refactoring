@@ -2,6 +2,7 @@ package kitchenpos.domain.order;
 
 import kitchenpos.domain.common.BaseEntity;
 import kitchenpos.domain.orderLineItem.OrderLineItem;
+import kitchenpos.domain.orderLineItem.OrderLineItems;
 import kitchenpos.domain.orderTable.OrderTable;
 import kitchenpos.dto.order.OrderRequest;
 
@@ -25,14 +26,22 @@ public class Order extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
-    @OneToMany(mappedBy = "order")
-    private List<OrderLineItem> orderLineItems;
+    @Embedded
+    private OrderLineItems orderLineItems;
 
     public Order() {
 
     }
 
+    public Order(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        this(null, orderTable, orderStatus, new OrderLineItems(orderLineItems));
+    }
+
     public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        this(id, orderTable, orderStatus, new OrderLineItems(orderLineItems));
+    }
+
+    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, OrderLineItems orderLineItems) {
         this.id = id;
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
@@ -54,12 +63,8 @@ public class Order extends BaseEntity {
         this.id = id;
     }
 
-    public Long getOrderTableId() {
-        return orderTable.getId();
-    }
-
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTable.setId(orderTableId);
+    public OrderTable getOrderTable() {
+        return orderTable;
     }
 
     public OrderStatus getOrderStatus() {
@@ -74,11 +79,7 @@ public class Order extends BaseEntity {
         return super.getCreatedDate();
     }
 
-    public List<OrderLineItem> getOrderLineItems() {
+    public OrderLineItems getOrderLineItems() {
         return orderLineItems;
-    }
-
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
     }
 }

@@ -2,6 +2,8 @@ package kitchenpos.dto.orderLineItem;
 
 import kitchenpos.domain.orderLineItem.OrderLineItem;
 
+import java.util.Objects;
+
 public class OrderLineItemResponse {
     private final Long seq;
     private final Long orderId;
@@ -15,8 +17,8 @@ public class OrderLineItemResponse {
         this.quantity = quantity;
     }
 
-    public static OrderLineItemResponse of(OrderLineItem orderLineItem) {
-        return new OrderLineItemResponse(orderLineItem.getSeq(), orderLineItem.getOrder().getId(), orderLineItem.getMenu().getId(), orderLineItem.getQuantity());
+    public static OrderLineItemResponse of(OrderLineItem orderLineItem, Long orderId) {
+        return new OrderLineItemResponse(orderLineItem.getSeq(), orderId, orderLineItem.getMenu().getId(), orderLineItem.getQuantity());
     }
 
     public Long getSeq() {
@@ -33,5 +35,19 @@ public class OrderLineItemResponse {
 
     public long getQuantity() {
         return quantity;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof OrderLineItemResponse)) return false;
+        OrderLineItemResponse that = (OrderLineItemResponse) o;
+        if (Objects.equals(getSeq(), that.getSeq())) return true;
+        return getQuantity() == that.getQuantity() && Objects.equals(getOrderId(), that.getOrderId()) && Objects.equals(getMenuId(), that.getMenuId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getSeq(), getOrderId(), getMenuId(), getQuantity());
     }
 }

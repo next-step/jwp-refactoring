@@ -26,12 +26,13 @@ public class OrderResponse {
     public static OrderResponse of(Order order) {
         return new OrderResponse(
                 order.getId(),
-                order.getOrderTableId(),
+                order.getOrderTable().getId(),
                 order.getOrderStatus(),
                 order.getOrderedTime(),
                 order.getOrderLineItems()
+                        .getOrderLineItems()
                         .stream()
-                        .map(OrderLineItemResponse::of)
+                        .map(orderLineItem -> OrderLineItemResponse.of(orderLineItem, order.getId()))
                         .collect(Collectors.toList()));
     }
 

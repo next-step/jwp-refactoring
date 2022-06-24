@@ -58,6 +58,10 @@ public class Menu {
         }
     }
 
+    public void bindMenuProducts() {
+        menuProducts.updateMenu(this);
+    }
+
     public Long getId() {
         return id;
     }
@@ -88,9 +92,5 @@ public class Menu {
 
     public MenuProducts getMenuProducts() {
         return menuProducts;
-    }
-
-    public void bindMenuProducts() {
-        menuProducts.updateMenu(this);
     }
 }

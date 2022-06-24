@@ -6,6 +6,7 @@ import kitchenpos.domain.orderTable.OrderTableRepository;
 import kitchenpos.domain.tableGroup.TableGroup;
 import kitchenpos.dto.orderTable.OrderTableRequest;
 import kitchenpos.dto.orderTable.OrderTableResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,6 +38,13 @@ public class TableServiceTest {
 
     @InjectMocks
     TableService tableService;
+
+    private OrderTable orderTable;
+
+    @BeforeEach
+    void setUp() {
+        orderTable = 주문_테이블_데이터_생성(1L, null, 2, false);
+    }
 
     @DisplayName("주문 테이블을 생성할 수 있다")
     @Test
@@ -93,7 +101,7 @@ public class TableServiceTest {
     @Test
     void changeEmpty_exception1() {
         // given
-        OrderTable orderTable = 주문_테이블_데이터_생성(1L,테이블_그룹_데이터_생성(1L, null), 2, true);
+        OrderTable orderTable = 주문_테이블_데이터_생성(1L, TableGroupServiceTest.테이블_그룹_데이터_생성(), 2, true);
         given(orderTableRepository.findById(1L)).willReturn(Optional.of(orderTable));
 
         // when && then

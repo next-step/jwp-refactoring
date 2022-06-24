@@ -93,8 +93,8 @@ class TableGroupServiceTest {
     @Test
     void create_exception3() {
         // given
-        OrderTable orderTableId1 = 주문_테이블_데이터_생성(1L, null, 2, false);
-        OrderTable orderTableId2 = 주문_테이블_데이터_생성(2L, 테이블_그룹_데이터_생성(1L, null), 4, false);
+        OrderTable orderTableId1 = 주문_테이블_데이터_생성(1L, 테이블_그룹_데이터_생성(), 2, false);
+        OrderTable orderTableId2 = 주문_테이블_데이터_생성(2L, 테이블_그룹_데이터_생성(), 4, false);
         List<OrderTable> orderTables = Arrays.asList(orderTableId1, orderTableId2);
         TableGroupRequest request = 테이블_그룹_요청_데이터_생성(orderTables);
         given(orderTableRepository.findAllByIdIn(anyList())).willReturn(orderTables);
@@ -108,8 +108,8 @@ class TableGroupServiceTest {
     @Test
     void ungroup() {
         // given
-        OrderTable orderTableId1 = 주문_테이블_데이터_생성(1L, 테이블_그룹_데이터_생성(1L, null), 2, true);
-        OrderTable orderTableId2 = 주문_테이블_데이터_생성(2L, 테이블_그룹_데이터_생성(1L, null), 4, true);
+        OrderTable orderTableId1 = 주문_테이블_데이터_생성(1L, 테이블_그룹_데이터_생성(), 2, true);
+        OrderTable orderTableId2 = 주문_테이블_데이터_생성(2L, 테이블_그룹_데이터_생성(), 4, true);
         List<OrderTable> orderTables = Arrays.asList(orderTableId1, orderTableId2);
 
         given(orderTableRepository.findAllByTableGroupId(1L)).willReturn(orderTables);
@@ -124,8 +124,8 @@ class TableGroupServiceTest {
     @Test
     void ungroup_exception1() {
         // given
-        OrderTable orderTableId1 = 주문_테이블_데이터_생성(1L, 테이블_그룹_데이터_생성(1L, null), 2, true);
-        OrderTable orderTableId2 = 주문_테이블_데이터_생성(2L, 테이블_그룹_데이터_생성(1L, null), 4, true);
+        OrderTable orderTableId1 = 주문_테이블_데이터_생성(1L, 테이블_그룹_데이터_생성(), 2, true);
+        OrderTable orderTableId2 = 주문_테이블_데이터_생성(2L, 테이블_그룹_데이터_생성(), 4, true);
         List<OrderTable> orderTables = Arrays.asList(orderTableId1, orderTableId2);
 
         given(orderTableRepository.findAllByTableGroupId(1L)).willReturn(orderTables);
@@ -138,6 +138,10 @@ class TableGroupServiceTest {
 
     public static TableGroup 테이블_그룹_데이터_생성(Long id, List<OrderTable> orderTables) {
         return new TableGroup(id, orderTables);
+    }
+
+    public static TableGroup 테이블_그룹_데이터_생성() {
+        return new TableGroup();
     }
 
     public static TableGroupRequest 테이블_그룹_요청_데이터_생성(List<OrderTable> orderTables) {
