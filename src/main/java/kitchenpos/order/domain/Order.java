@@ -48,6 +48,10 @@ public class Order {
         this.orderTable = orderTable;
     }
 
+    public void changeOrderStatus(OrderStatus orderStatus){
+
+    }
+
     public void updateOrder(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }

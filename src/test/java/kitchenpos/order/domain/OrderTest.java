@@ -98,4 +98,29 @@ class OrderTest {
                 .isThrownBy(() -> order.registerOrderLineItems(new OrderLineItems(Arrays.asList(orderLineItem1, orderLineItem2)), 3));
     }
 
+    @DisplayName("주문 상태를 업데이트 한다.")
+    @Test
+    void changeOrderStatus() {
+        //given
+        Order order = 주문_만들기(1L, OrderStatus.COOKING, null);
+
+        //when
+        order.changeOrderStatus(OrderStatus.MEAL);
+
+        //then
+        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
+    }
+
+    @DisplayName("주문 상태가 계산완료인 경우 업데이트 할 수 없다.")
+    @Test
+    void changeOrderStatus_completion() {
+        //given
+        Order order = 주문_만들기(1L, OrderStatus.COMPLETION, null);
+
+        //when
+        order.changeOrderStatus(OrderStatus.MEAL);
+
+        //then
+        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
+    }
 }
