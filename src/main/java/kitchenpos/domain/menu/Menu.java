@@ -35,11 +35,15 @@ public class Menu {
     }
 
     public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        this(id, name, price, menuGroup, new MenuProducts(menuProducts));
+    }
+
+    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
-        this.menuProducts = new MenuProducts(menuProducts);
+        this.menuProducts = menuProducts;
     }
 
     public static Menu of(MenuRequest menuRequest, MenuGroup menuGroup) {
