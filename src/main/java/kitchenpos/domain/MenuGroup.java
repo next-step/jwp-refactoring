@@ -2,6 +2,7 @@ package kitchenpos.domain;
 
 import java.util.Objects;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,14 +14,14 @@ public class MenuGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Embedded
+    private Name name;
 
     public MenuGroup() {
     }
 
     public MenuGroup(String name) {
-        this.name = name;
+        this.name = new Name(name);
     }
 
     public Long getId() {
@@ -32,11 +33,7 @@ public class MenuGroup {
     }
 
     public String getName() {
-        return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
+        return name.getName();
     }
 
     @Override

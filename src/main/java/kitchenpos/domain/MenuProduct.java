@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,17 +20,22 @@ public class MenuProduct {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id", nullable = false)
     private Menu menu;
-    @Column(name = "product_id", nullable = false)
-    private Long productId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
     @Column(name = "quantity", nullable = false)
     private long quantity;
 
     public MenuProduct() {
     }
 
-    public MenuProduct(Long productId, long quantity) {
-        this.productId = productId;
+    public MenuProduct(Product product, long quantity) {
+        this.product = product;
         this.quantity = quantity;
+    }
+
+    public BigDecimal totalPrice() {
+        return product.getPrice().multiply(BigDecimal.valueOf(quantity));
     }
 
     public Long getId() {
@@ -49,11 +55,7 @@ public class MenuProduct {
     }
 
     public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(final Long productId) {
-        this.productId = productId;
+        return product.getId();
     }
 
     public long getQuantity() {
@@ -86,7 +88,7 @@ public class MenuProduct {
         return "MenuProduct{" +
             "id=" + id +
             ", menuId=" + menu.getId() +
-            ", productId=" + productId +
+            ", productId=" + product.getId() +
             ", quantity=" + quantity +
             '}';
     }

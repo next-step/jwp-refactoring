@@ -56,9 +56,9 @@ class OrderServiceTest extends ServiceTest {
         Product 후라이드 = this.productRepository.save(new Product("후라이드", BigDecimal.valueOf(16000)));
         Product 양념치킨 = this.productRepository.save(new Product("양념치킨", BigDecimal.valueOf(16000)));
         Product 콜라 = this.productRepository.save(new Product("콜라", BigDecimal.valueOf(2500)));
-        MenuProduct 후라이드_메뉴상품 = new MenuProduct(후라이드.getId(), 1);
-        MenuProduct 양념치킨_메뉴상품 = new MenuProduct(양념치킨.getId(), 2);
-        MenuProduct 콜라_메뉴상품 = new MenuProduct(콜라.getId(), 1);
+        MenuProduct 후라이드_메뉴상품 = new MenuProduct(후라이드, 1);
+        MenuProduct 양념치킨_메뉴상품 = new MenuProduct(양념치킨, 2);
+        MenuProduct 콜라_메뉴상품 = new MenuProduct(콜라, 1);
         MenuGroup 두마리메뉴 = this.menuGroupRepository.save(new MenuGroup("두마리메뉴"));
         MenuGroup 한마리메뉴 = this.menuGroupRepository.save(new MenuGroup("한마리메뉴"));
         후라이드_양념_세트 = this.menuRepository.save(

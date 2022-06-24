@@ -16,10 +16,6 @@ public class MenuProductRequest {
         return new MenuProductRequest(menuProduct.getProductId(), menuProduct.getQuantity());
     }
 
-    public MenuProduct toMenuProduct() {
-        return new MenuProduct(productId, quantity);
-    }
-
     public Long getProductId() {
         return productId;
     }

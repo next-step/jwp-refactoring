@@ -27,8 +27,8 @@ public class MenuRequest {
         return new MenuRequest(menu.getName(), menu.getPrice(), menu.getMenuGroupId(), menuProductRequests);
     }
 
-    public Menu toMenu() {
-        return new Menu(name, price, menuGroupId);
+    public String getName() {
+        return name;
     }
 
     public BigDecimal getPrice() {
