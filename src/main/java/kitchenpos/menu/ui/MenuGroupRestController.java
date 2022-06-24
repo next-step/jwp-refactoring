@@ -33,4 +33,16 @@ public class MenuGroupRestController {
     public ResponseEntity<List<MenuGroup>> list() {
         return ResponseEntity.ok().body(menuGroupService.list());
     }
+
+    @PostMapping("/copy")
+    public ResponseEntity<MenuGroup> createCopy(@RequestBody final MenuGroup menuGroup) {
+        final MenuGroup created = menuGroupService.createCopy(menuGroup);
+        final URI uri = URI.create("/api/menu-groups/" + created.getId());
+        return ResponseEntity.created(uri).body(created);
+    }
+
+    @GetMapping("/copy")
+    public ResponseEntity<List<MenuGroup>> listCopy() {
+        return ResponseEntity.ok().body(menuGroupService.listCopy());
+    }
 }

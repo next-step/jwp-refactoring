@@ -22,6 +22,16 @@ public class MenuGroupAcceptanceSupport {
             extract();
     }
 
+    public static ExtractableResponse<Response> 메뉴_그룹_등록요청_copy(MenuGroup menuGroup) {
+        return RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(menuGroup)
+            .when().post("/api/menu-groups/copy")
+            .then().log().all().
+            extract();
+    }
+
     public static void 메뉴_그룹_등록됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
@@ -37,6 +47,23 @@ public class MenuGroupAcceptanceSupport {
     }
 
     public static void 메뉴_그룹목록_조회됨(ExtractableResponse<Response> response, int size) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        List<MenuGroup> result = response.jsonPath().getList(".", MenuGroup.class);
+        assertThat(result).isNotNull();
+        assertThat(result).hasSize(size);
+    }
+
+    public static ExtractableResponse<Response> 메뉴_그룹목록_조회요청_copy() {
+        return RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/api/menu-groups/copy")
+            .then().log().all().
+            extract();
+    }
+
+    public static void 메뉴_그룹목록_조회됨_copy(ExtractableResponse<Response> response, int size) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
         List<MenuGroup> result = response.jsonPath().getList(".", MenuGroup.class);

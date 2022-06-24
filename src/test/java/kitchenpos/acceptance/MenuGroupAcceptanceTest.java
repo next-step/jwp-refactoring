@@ -2,8 +2,10 @@ package kitchenpos.acceptance;
 
 import static kitchenpos.acceptance.support.MenuGroupAcceptanceSupport.메뉴_그룹_등록됨;
 import static kitchenpos.acceptance.support.MenuGroupAcceptanceSupport.메뉴_그룹_등록요청;
+import static kitchenpos.acceptance.support.MenuGroupAcceptanceSupport.메뉴_그룹_등록요청_copy;
 import static kitchenpos.acceptance.support.MenuGroupAcceptanceSupport.메뉴_그룹목록_조회됨;
 import static kitchenpos.acceptance.support.MenuGroupAcceptanceSupport.메뉴_그룹목록_조회요청;
+import static kitchenpos.acceptance.support.MenuGroupAcceptanceSupport.메뉴_그룹목록_조회요청_copy;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -44,6 +46,30 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = 메뉴_그룹목록_조회요청();
+
+        // then
+        메뉴_그룹목록_조회됨(response, 2);
+    }
+
+    @DisplayName("메뉴그룹을 등록한다")
+    @Test
+    void create_Test_copy() {
+        // when
+        ExtractableResponse<Response> response = 메뉴_그룹_등록요청_copy(메뉴_그룹);
+
+        // then
+        메뉴_그룹_등록됨(response);
+    }
+
+    @DisplayName("모든 메뉴그룹을 조회한다")
+    @Test
+    void find_Test_copy() {
+        // given
+        메뉴_그룹_등록요청_copy(메뉴_그룹);
+        메뉴_그룹_등록요청_copy(메뉴_그룹2);
+
+        // when
+        ExtractableResponse<Response> response = 메뉴_그룹목록_조회요청_copy();
 
         // then
         메뉴_그룹목록_조회됨(response, 2);

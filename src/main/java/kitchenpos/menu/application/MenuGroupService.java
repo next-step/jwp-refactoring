@@ -23,4 +23,13 @@ public class MenuGroupService {
     public List<MenuGroup> list() {
         return menuGroupDao.findAll();
     }
+
+    @Transactional
+    public MenuGroup createCopy(final MenuGroup menuGroup) {
+        return menuGroupDao.save(menuGroup);
+    }
+
+    public List<MenuGroup> listCopy() {
+        return menuGroupDao.findAll();
+    }
 }
