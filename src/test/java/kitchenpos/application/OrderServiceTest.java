@@ -74,8 +74,8 @@ class OrderServiceTest {
         짬뽕 = ProductFixtureFactory.create(1L, "상품1", BigDecimal.valueOf(1000));
         짜장 = ProductFixtureFactory.create(2L, "상품2", BigDecimal.valueOf(2000));
 
-        중식_메뉴_짬뽕 = MenuProductFixtureFactory.create(1L, 중식_메뉴.getId(), 짬뽕.getId(), 3);
-        중식_메뉴_짜장 = MenuProductFixtureFactory.create(2L, 중식_메뉴.getId(), 짜장.getId(), 1);
+        중식_메뉴_짬뽕 = MenuProductFixtureFactory.create(1L, 중식_메뉴, 짬뽕, 3);
+        중식_메뉴_짜장 = MenuProductFixtureFactory.create(2L, 중식_메뉴, 짜장, 1);
 
         중식_메뉴.setMenuProducts(Arrays.asList(중식_메뉴_짬뽕, 중식_메뉴_짜장));
 

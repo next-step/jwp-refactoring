@@ -63,8 +63,8 @@ class MenuServiceTest {
         짬뽕 = ProductFixtureFactory.create(1L, "상품1", BigDecimal.valueOf(1000));
         짜장 = ProductFixtureFactory.create(2L, "상품2", BigDecimal.valueOf(2000));
 
-        중식_메뉴_짬뽕 = MenuProductFixtureFactory.create(1L, 중식메뉴.getId(), 짬뽕.getId(), 3);
-        중식_메뉴_짜장 = MenuProductFixtureFactory.create(2L, 중식메뉴.getId(), 짜장.getId(), 1);
+        중식_메뉴_짬뽕 = MenuProductFixtureFactory.create(1L, 중식메뉴, 짬뽕, 3);
+        중식_메뉴_짜장 = MenuProductFixtureFactory.create(2L, 중식메뉴, 짜장, 1);
 
         중식메뉴.setMenuProducts(Arrays.asList(중식_메뉴_짬뽕, 중식_메뉴_짜장));
     }
@@ -86,7 +86,7 @@ class MenuServiceTest {
     void createTestFailWithMenuProductNotExist() {
         //given
         given(menuGroupDao.existsById(중식.getId())).willReturn(true);
-        given(productDao.findById(중식_메뉴_짬뽕.getProductId())).willThrow(IllegalArgumentException.class);
+        given(productDao.findById(중식_메뉴_짬뽕.getProduct().getId())).willThrow(IllegalArgumentException.class);
 
         //when & then
         assertThatThrownBy(
@@ -99,8 +99,8 @@ class MenuServiceTest {
     void createTestFailWithAmount() {
         //given
         given(menuGroupDao.existsById(중식.getId())).willReturn(true);
-        given(productDao.findById(중식_메뉴_짬뽕.getProductId())).willReturn(Optional.of(짬뽕));
-        given(productDao.findById(중식_메뉴_짜장.getProductId())).willReturn(Optional.of(짜장));
+        given(productDao.findById(중식_메뉴_짬뽕.getProduct().getId())).willReturn(Optional.of(짬뽕));
+        given(productDao.findById(중식_메뉴_짜장.getProduct().getId())).willReturn(Optional.of(짜장));
         Menu 잘못된_메뉴 = new Menu(1L, "잘못된 메뉴", BigDecimal.valueOf(100_000), 중식.getId());
         잘못된_메뉴.setMenuProducts(Arrays.asList(중식_메뉴_짬뽕, 중식_메뉴_짜장));
         //when & then
@@ -114,8 +114,8 @@ class MenuServiceTest {
     void createTest() {
         //given
         given(menuGroupDao.existsById(중식.getId())).willReturn(true);
-        given(productDao.findById(중식_메뉴_짬뽕.getProductId())).willReturn(Optional.of(짬뽕));
-        given(productDao.findById(중식_메뉴_짜장.getProductId())).willReturn(Optional.of(짜장));
+        given(productDao.findById(중식_메뉴_짬뽕.getProduct().getId())).willReturn(Optional.of(짬뽕));
+        given(productDao.findById(중식_메뉴_짜장.getProduct().getId())).willReturn(Optional.of(짜장));
         given(menuDao.save(any(Menu.class))).willReturn(중식메뉴);
 
 
