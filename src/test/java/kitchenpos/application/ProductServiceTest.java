@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,7 +40,7 @@ class ProductServiceTest {
         Product 강정치킨 = new Product("강정치킨", BigDecimal.valueOf(17_000));
         when(productDao.save(any())).thenReturn(강정치킨);
         // when
-        final Product actual = productService.create(강정치킨);
+        final Product actual = productService.create(new ProductRequest("강정치킨", BigDecimal.valueOf(17_000)));
         // given
         assertThat(actual).isEqualTo(new Product("강정치킨", BigDecimal.valueOf(17_000)));
     }
@@ -49,7 +50,7 @@ class ProductServiceTest {
     void createNegativePriceProduct() {
         // when && given
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> productService.create(new Product("음수치킨", BigDecimal.valueOf(-100))));
+                .isThrownBy(() -> productService.create(new ProductRequest("음수치킨", BigDecimal.valueOf(-100))));
     }
 
     @ParameterizedTest(name = "상품(제품)의 가격이 비어있다면 예외가 발생한다.")
@@ -57,7 +58,7 @@ class ProductServiceTest {
     void createEmptyPriceProduct(BigDecimal empty) {
         // when && given
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> productService.create(new Product("비어있는치킨", empty)));
+                .isThrownBy(() -> productService.create(new ProductRequest("비어있는치킨", empty)));
     }
 
     @Test

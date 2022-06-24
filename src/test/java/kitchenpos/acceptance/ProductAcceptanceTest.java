@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductRequest;
 import kitchenpos.utils.RestAssuredHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -41,7 +42,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 제품_생성_요청(String 제품명, Integer 금액) {
-        final Product 생성할_제품 = new Product(제품명, BigDecimal.valueOf(금액));
+        final ProductRequest 생성할_제품 = new ProductRequest(제품명, BigDecimal.valueOf(금액));
         return RestAssuredHelper.post(PRODUCT_URI, 생성할_제품);
     }
 
