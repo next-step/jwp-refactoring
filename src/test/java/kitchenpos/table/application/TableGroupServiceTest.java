@@ -1,5 +1,6 @@
 package kitchenpos.table.application;
 
+import static kitchenpos.helper.OrderFixtures.주문_만들기;
 import static kitchenpos.helper.TableFixtures.테이블_요청_만들기;
 import static kitchenpos.helper.TableGroupFixtures.테이블_그룹_요청_만들기;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -8,7 +9,9 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import jdk.nashorn.internal.ir.annotations.Ignore;
+import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
@@ -27,6 +30,8 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class TableGroupServiceTest {
 
+    @Autowired
+    private OrderRepository orderRepository;
     @Autowired
     private OrderTableRepository orderTableRepository;
     @Autowired
@@ -85,7 +90,8 @@ class TableGroupServiceTest {
     @Test
     void create_in_order_table() {
         //given
-        kitchenpos.table.domain.OrderTable orderTable = orderTableRepository.save(new kitchenpos.table.domain.OrderTable(null, 3, false));
+        kitchenpos.table.domain.OrderTable orderTable = orderTableRepository
+                .save(new kitchenpos.table.domain.OrderTable(null, 3, false));
         OrderTableRequest orderTable1 = 테이블_요청_만들기(orderTable.getId());
         OrderTableRequest emptyTable1 = 테이블_요청_만들기(3L);
         TableGroupRequest request = 테이블_그룹_요청_만들기(Arrays.asList(orderTable1, emptyTable1));
@@ -112,22 +118,39 @@ class TableGroupServiceTest {
                 .isThrownBy(() -> tableGroupService.create(request2));
     }
 
-    @Ignore
     @DisplayName("단체 지정을 해제 한다.")
     @Test
     void ungroup() {
         //given
-//        OrderTable emptyTable4 = new OrderTable(5L, null, 0, true);
-//        OrderTable emptyTable5 = new OrderTable(6L, null, 0, true);
-//        TableGroup tableGroup = tableGroupService
-//                .create(new TableGroup(null, null, Arrays.asList(emptyTable4, emptyTable5)));
-//
-//        //when
-//        tableGroupService.ungroup(tableGroup.getId());
-//
-//        //then
-//        List<OrderTable> results = orderTableDao.findAllByTableGroupId(tableGroup.getId());
-//        assertThat(results).isEmpty();
+        OrderTableRequest emptyTable1 = 테이블_요청_만들기(5L);
+        OrderTableRequest emptyTable2 = 테이블_요청_만들기(6L);
+        TableGroupResponse request = tableGroupService.create(테이블_그룹_요청_만들기(Arrays.asList(emptyTable1, emptyTable2)));
+
+        //when
+        tableGroupService.ungroup(request.getId());
+
+        //then
+        OrderTable order1 = orderTableRepository.findById(5L).orElseThrow(IllegalArgumentException::new);
+        OrderTable order2 = orderTableRepository.findById(6L).orElseThrow(IllegalArgumentException::new);
+        assertThat(order1.getTableGroup()).isNull();
+        assertThat(order2.getTableGroup()).isNull();
+    }
+
+    @DisplayName("주문 상태가 조리, 식사인 경우가 있으면 단체 지정 해제 할 수 없다.")
+    @Test
+    void ungroup_order_status_cooking_meal() {
+        //given
+        OrderTableRequest emptyTable1 = 테이블_요청_만들기(7L);
+        OrderTableRequest emptyTable2 = 테이블_요청_만들기(8L);
+        TableGroupResponse request = tableGroupService.create(테이블_그룹_요청_만들기(Arrays.asList(emptyTable1, emptyTable2)));
+        OrderTable orderTable = orderTableRepository.findById(emptyTable1.getId()).orElseThrow(IllegalArgumentException::new);
+        orderRepository.save(주문_만들기(request.getId(), OrderStatus.MEAL, orderTable));
+        orderRepository.save(주문_만들기(request.getId(), OrderStatus.COOKING, orderTable));
+
+        //when then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> tableGroupService.ungroup(request.getId()));
+
     }
 
 }

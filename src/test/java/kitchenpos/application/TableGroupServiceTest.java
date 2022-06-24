@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import static kitchenpos.helper.OrderFixtures.주문_만들기;
 import static kitchenpos.helper.TableFixtures.테이블_만들기;
 import static kitchenpos.helper.TableFixtures.테이블_요청_만들기;
 import static kitchenpos.helper.TableGroupFixtures.테이블_그룹_만들기;
@@ -12,12 +13,14 @@ import static org.mockito.Mockito.doAnswer;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.OrderTables;
+import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupRequest;
@@ -138,22 +141,21 @@ class TableGroupServiceTest {
     void ungroup() {
         //given
         long requestTableGroupId = 1L;
-        OrderTable orderTable1 = new OrderTable(1L, 1L, 2, false);
-        OrderTable orderTable2 = new OrderTable(2L, 1L, 3, false);
+        kitchenpos.table.domain.OrderTable emptyTable1 = 테이블_만들기(0, true);
+        kitchenpos.table.domain.OrderTable orderTable2 = 테이블_만들기(0, true);
+        TableGroup tableGroup = 테이블_그룹_만들기(requestTableGroupId);
+        tableGroup.groupingTables(new OrderTables(Arrays.asList(emptyTable1, orderTable2)), 2);
+        orderTable2.addOrder(주문_만들기(OrderStatus.COMPLETION));
+        emptyTable1.addOrder(주문_만들기(null));
 
-        given(orderTableDao.findAllByTableGroupId(requestTableGroupId))
-                .willReturn(Arrays.asList(orderTable1, orderTable2));
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(
-                Arrays.asList(orderTable1.getId(), orderTable2.getId())
-                , Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
-                .willReturn(false);
+        given(tableGroupRepository.findById(requestTableGroupId)).willReturn(Optional.of(tableGroup));
 
         //when
         tableGroupService.ungroup(requestTableGroupId);
 
         //then
-        assertThat(orderTable1.getTableGroupId()).isNull();
-        assertThat(orderTable2.getTableGroupId()).isNull();
+        assertThat(emptyTable1.getTableGroup()).isNull();
+        assertThat(orderTable2.getTableGroup()).isNull();
     }
 
     @DisplayName("주문 상태가 조리, 식사인 경우가 있으면 단체 지정 해제 할 수 없다.")
@@ -161,16 +163,27 @@ class TableGroupServiceTest {
     void ungroup_order_status_cooking_meal() {
         //given
         long requestTableGroupId = 1L;
-        OrderTable orderTable1 = new OrderTable(1L, 1L, 2, false);
-        OrderTable orderTable2 = new OrderTable(2L, 1L, 3, false);
+        kitchenpos.table.domain.OrderTable emptyTable1 = 테이블_만들기(0, true);
+        kitchenpos.table.domain.OrderTable emptyTable2 = 테이블_만들기(0, true);
+        TableGroup tableGroup1 = 테이블_그룹_만들기(requestTableGroupId);
+        tableGroup1.groupingTables(new OrderTables(Arrays.asList(emptyTable1, emptyTable2)), 2);
+        emptyTable1.addOrder(주문_만들기(OrderStatus.COMPLETION));
+        emptyTable2.addOrder(주문_만들기(OrderStatus.MEAL));
 
-        given(orderTableDao.findAllByTableGroupId(requestTableGroupId))
-                .willReturn(Arrays.asList(orderTable1, orderTable2));
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(orderTable1.getId(), orderTable2.getId())
-                , Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
-                .willReturn(true);
+        kitchenpos.table.domain.OrderTable emptyTable3 = 테이블_만들기(0, true);
+        kitchenpos.table.domain.OrderTable emptyTable4 = 테이블_만들기(0, true);
+        TableGroup tableGroup2 = 테이블_그룹_만들기(requestTableGroupId);
+        tableGroup2.groupingTables(new OrderTables(Arrays.asList(emptyTable3, emptyTable4)), 2);
+        emptyTable3.addOrder(주문_만들기(OrderStatus.COOKING));
+        emptyTable4.addOrder(주문_만들기(OrderStatus.COMPLETION));
+
+        given(tableGroupRepository.findById(requestTableGroupId))
+                .willReturn(Optional.of(tableGroup1))
+                .willReturn(Optional.of(tableGroup2));
 
         //when then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> tableGroupService.ungroup(requestTableGroupId));
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableGroupService.ungroup(requestTableGroupId));
     }

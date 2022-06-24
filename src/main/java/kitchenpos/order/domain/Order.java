@@ -41,6 +41,13 @@ public class Order {
         this.orderedTime = orderedTime;
     }
 
+    public Order(Long id, OrderStatus orderStatus, LocalDateTime orderedTime, OrderTable orderTable) {
+        this.id = id;
+        this.orderStatus = orderStatus;
+        this.orderedTime = orderedTime;
+        this.orderTable = orderTable;
+    }
+
     public void checkPossibleUngroupingOrderStatus(){
         if(OrderStatus.MEAL.equals(orderStatus) || OrderStatus.COOKING.equals(orderStatus)){
             throw new IllegalArgumentException("[ERROR] 주문 상태가 조리, 식사 인 경우 단체 지정 해제 할 수 없습니다.");

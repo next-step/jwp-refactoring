@@ -1,6 +1,7 @@
 package kitchenpos.helper;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
@@ -15,5 +16,9 @@ public class TableGroupFixtures {
 
     public static TableGroup 테이블_그룹_만들기(Long id, List<OrderTable> orderTables) {
         return new TableGroup(id, LocalDateTime.now(), new OrderTables(orderTables));
+    }
+
+    public static TableGroup 테이블_그룹_만들기(Long id) {
+        return 테이블_그룹_만들기(id, new ArrayList<>());
     }
 }
