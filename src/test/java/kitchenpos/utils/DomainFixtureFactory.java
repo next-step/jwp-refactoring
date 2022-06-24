@@ -21,9 +21,9 @@ public class DomainFixtureFactory {
         return MenuGroup.of(id, name);
     }
 
-    public static Menu createMenu(Long id, String name, BigDecimal price, Long menuGroupId,
+    public static Menu createMenu(Long id, String name, BigDecimal price, MenuGroup menuGroup,
                                   List<MenuProduct> menuProducts) {
-        return Menu.of(id, name, price, menuGroupId, menuProducts);
+        return Menu.of(id, name, price, menuGroup, menuProducts);
     }
 
     public static MenuProduct createMenuProduct(Long seq, Long menuId, Long productId, long quantity) {

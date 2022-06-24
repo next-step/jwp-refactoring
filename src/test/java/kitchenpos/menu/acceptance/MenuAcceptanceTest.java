@@ -36,7 +36,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
         MenuGroup 한마리메뉴 = 메뉴그룹_등록_요청(createMenuGroup(null, "한마리메뉴")).as(MenuGroup.class);
         Product 양념 = 상품_등록_요청(createProduct(null, "양념", BigDecimal.valueOf(20000L))).as(Product.class);
         MenuProduct 양념치킨상품 = createMenuProduct(1L, null, 양념.getId(), 2L);
-        양념치킨 = createMenu(null, "양념치킨", BigDecimal.valueOf(40000L), 한마리메뉴.getId(), Lists.newArrayList(양념치킨상품));
+        양념치킨 = createMenu(null, "양념치킨", BigDecimal.valueOf(40000L), 한마리메뉴, Lists.newArrayList(양념치킨상품));
     }
 
     /**

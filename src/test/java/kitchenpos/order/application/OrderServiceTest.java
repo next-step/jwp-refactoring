@@ -11,11 +11,10 @@ import static org.mockito.BDDMockito.given;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.order.application.OrderService;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
@@ -32,7 +31,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Mock
     private OrderDao orderDao;
     @Mock
@@ -57,7 +56,7 @@ class OrderServiceTest {
     @Test
     void create() {
         주문항목.setOrderId(주문.getId());
-        given(menuDao.countByIdIn(Lists.newArrayList(주문항목.getMenuId()))).willReturn(주문항목.getMenuId());
+        given(menuRepository.countByIdIn(Lists.newArrayList(주문항목.getMenuId()))).willReturn(주문항목.getMenuId());
         given(orderTableDao.findById(주문테이블.getId())).willReturn(Optional.ofNullable(주문테이블));
         given(orderDao.save(주문)).willReturn(주문);
         given(orderLineItemDao.save(주문항목)).willReturn(주문항목);
@@ -80,7 +79,7 @@ class OrderServiceTest {
     @DisplayName("주문 생성시 주문에 속하는 주문항목 수와 등록된 메뉴들 중 주문에 속한 주문항목의 메뉴들을 실제 조회했을 때 수가 불일치하는 경우 테스트")
     @Test
     void createNotEqualOrderLineItemsSize() {
-        given(menuDao.countByIdIn(Lists.newArrayList(주문항목.getMenuId()))).willReturn(0L);
+        given(menuRepository.countByIdIn(Lists.newArrayList(주문항목.getMenuId()))).willReturn(0L);
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> orderService.create(주문));
     }
@@ -88,7 +87,7 @@ class OrderServiceTest {
     @DisplayName("주문 생성시 주문테이블이 등록이 안된 경우 테스트")
     @Test
     void createNotFoundOrderTable() {
-        given(menuDao.countByIdIn(Lists.newArrayList(주문항목.getMenuId()))).willReturn(주문항목.getMenuId());
+        given(menuRepository.countByIdIn(Lists.newArrayList(주문항목.getMenuId()))).willReturn(주문항목.getMenuId());
         given(orderTableDao.findById(주문테이블.getId())).willReturn(Optional.empty());
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> orderService.create(주문));
@@ -99,7 +98,7 @@ class OrderServiceTest {
     void createWithEmptyOrderTable() {
         주문항목.setOrderId(주문.getId());
         주문테이블.setEmpty(true);
-        given(menuDao.countByIdIn(Lists.newArrayList(주문항목.getMenuId()))).willReturn(주문항목.getMenuId());
+        given(menuRepository.countByIdIn(Lists.newArrayList(주문항목.getMenuId()))).willReturn(주문항목.getMenuId());
         given(orderTableDao.findById(주문테이블.getId())).willReturn(Optional.ofNullable(주문테이블));
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> orderService.create(주문));
