@@ -9,4 +9,6 @@ public interface MenuRepository extends JpaRepository<MenuEntity, Long> {
     @Query(value = "select m from MenuEntity m "
         + "join fetch m.menuProducts")
     List<MenuEntity> findAllMenuAndProducts();
+
+    long countByIdIn(List<Long> ids);
 }

@@ -1,6 +1,6 @@
 package kitchenpos.order.application;
 
-import kitchenpos.menu.dao.MenuDao;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
@@ -18,18 +18,18 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
-    private final MenuDao menuDao;
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
+    private final MenuRepository menuRepository;
 
     public OrderService(
-            final MenuDao menuDao,
             final OrderRepository orderRepository,
-            final OrderTableRepository orderTableRepository
+            final OrderTableRepository orderTableRepository,
+            final MenuRepository menuRepository
     ) {
-        this.menuDao = menuDao;
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
+        this.menuRepository = menuRepository;
     }
 
     @Transactional
@@ -63,7 +63,7 @@ public class OrderService {
             .map(OrderLineItemRequest::getMenuId)
             .collect(Collectors.toList());
 
-        if (orderLineItemRequests.size() != menuDao.countByIdIn(menuIds)) {
+        if (orderLineItemRequests.size() != menuRepository.countByIdIn(menuIds)) {
             throw new IllegalArgumentException();
         }
     }

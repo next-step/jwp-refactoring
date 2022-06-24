@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.menu.dao.MenuDao;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.request.OrderRequest;
@@ -34,11 +34,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class OrderServiceTest {
 
     @Mock
-    private MenuDao menuDao;
-    @Mock
     private OrderRepository orderRepository;
     @Mock
     private OrderTableRepository orderTableRepository;
+    @Mock
+    private MenuRepository menuRepository;
 
     @InjectMocks
     private OrderService orderService;
@@ -66,7 +66,7 @@ class OrderServiceTest {
     @Test
     void create_test() {
         // given
-        when(menuDao.countByIdIn(
+        when(menuRepository.countByIdIn(
             Arrays.asList(주문_항목_request.getMenuId(), 주문_항목_request2.getMenuId())))
             .thenReturn(2L);
         when(orderTableRepository.findById(주문_request.getOrderTableId()))
@@ -101,7 +101,7 @@ class OrderServiceTest {
     @Test
     void create_exception_test2() {
         // given
-        when(menuDao.countByIdIn(Arrays.asList(
+        when(menuRepository.countByIdIn(Arrays.asList(
             주문_항목_request.getMenuId(), 주문_항목_request2.getMenuId())))
             .thenReturn(1L);
 
@@ -115,7 +115,7 @@ class OrderServiceTest {
     @Test
     void create_exception_test3() {
         // given
-        when(menuDao.countByIdIn(Arrays.asList(
+        when(menuRepository.countByIdIn(Arrays.asList(
             주문_항목_request.getMenuId(), 주문_항목_request2.getMenuId())))
             .thenReturn(2L);
         when(orderTableRepository.findById(주문_request.getOrderTableId()))
