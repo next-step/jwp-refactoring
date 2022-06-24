@@ -4,14 +4,15 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.dto.MenuRequest;
 import org.springframework.http.MediaType;
 
 public class MenuRestAssured {
-    public static ExtractableResponse<Response> 메뉴_등록_요청(Menu menu) {
+    public static ExtractableResponse<Response> 메뉴_등록_요청(MenuRequest menuRequest) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(menu)
+                .body(menuRequest)
                 .when().post("/api/menus")
                 .then().log().all()
                 .extract();

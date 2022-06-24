@@ -1,7 +1,6 @@
 package kitchenpos.menu.domain;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Objects;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -33,17 +32,16 @@ public class Menu {
     protected Menu() {
     }
 
-    private Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+    private Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup) {
         validateMenuGroup(menuGroup);
         this.id = id;
         this.name = Name.of(name);
         this.price = Price.of(price);
         this.menuGroup = menuGroup;
-        this.menuProducts = MenuProducts.of(menuProducts);
     }
 
-    public static Menu of(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        return new Menu(id, name, price, menuGroup, menuProducts);
+    public static Menu of(Long id, String name, BigDecimal price, MenuGroup menuGroup) {
+        return new Menu(id, name, price, menuGroup);
     }
 
     private static void validateMenuGroup(MenuGroup menuGroup) {
@@ -80,7 +78,7 @@ public class Menu {
         return menuGroup;
     }
 
-    public void setMenuGroupId(final MenuGroup menuGroup) {
+    public void setMenuGroup(final MenuGroup menuGroup) {
         this.menuGroup = menuGroup;
     }
 

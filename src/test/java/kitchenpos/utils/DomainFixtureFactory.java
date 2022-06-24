@@ -6,6 +6,8 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
@@ -31,9 +33,13 @@ public class DomainFixtureFactory {
         return new MenuGroupRequest(name);
     }
 
-    public static Menu createMenu(Long id, String name, BigDecimal price, MenuGroup menuGroup,
-                                  List<MenuProduct> menuProducts) {
-        return Menu.of(id, name, price, menuGroup, menuProducts);
+    public static Menu createMenu(Long id, String name, BigDecimal price, MenuGroup menuGroup) {
+        return Menu.of(id, name, price, menuGroup);
+    }
+
+    public static MenuRequest createMenuRequest(String name, BigDecimal price, long menuGroupId,
+                                  List<MenuProductRequest> menuProducts) {
+        return new MenuRequest(name, price, menuGroupId, menuProducts);
     }
 
     public static MenuProduct createMenuProduct(Long seq, Menu menu, Product product, long quantity) {

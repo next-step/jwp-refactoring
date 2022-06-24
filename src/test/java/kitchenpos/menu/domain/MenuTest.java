@@ -27,7 +27,7 @@ class MenuTest {
     @DisplayName("초기화 테스트")
     @Test
     void of() {
-        Menu menu = Menu.of(1L, "양념치킨", BigDecimal.valueOf(40000L), 한마리메뉴, Lists.newArrayList(양념치킨상품));
+        Menu menu = Menu.of(1L, "양념치킨", BigDecimal.valueOf(40000L), 한마리메뉴);
         assertThat(menu).isEqualTo(menu);
     }
 
@@ -35,7 +35,7 @@ class MenuTest {
     @Test
     void ofWithNullMenuGroup() {
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> Menu.of(1L, "양념치킨", BigDecimal.valueOf(40000L), null, Lists.newArrayList(양념치킨상품)))
+                .isThrownBy(() -> Menu.of(1L, "양념치킨", BigDecimal.valueOf(40000L), null))
                 .withMessage("메뉴그룹이 있어야 합니다.");
     }
 }
