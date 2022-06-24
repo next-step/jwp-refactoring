@@ -1,35 +1,48 @@
 package kitchenpos.domain.order;
 
+import kitchenpos.domain.common.BaseEntity;
 import kitchenpos.domain.orderLineItem.OrderLineItem;
+import kitchenpos.domain.orderTable.OrderTable;
 import kitchenpos.dto.order.OrderRequest;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class Order {
+@Entity
+@Table(name = "orders")
+@AttributeOverride(name = "createdDate", column = @Column(name = "ordered_time"))
+public class Order extends BaseEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long orderTableId;
-    private String orderStatus;
-    private LocalDateTime orderedTime;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false, name = "order_table_id")
+    private OrderTable orderTable;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
+
+    @OneToMany(mappedBy = "order")
     private List<OrderLineItem> orderLineItems;
 
     public Order() {
 
     }
 
-    public Order(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
         this.id = id;
-        this.orderTableId = orderTableId;
+        this.orderTable = orderTable;
         this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
     }
 
-    public static Order of(OrderRequest orderRequest) {
+    public static Order of(OrderRequest orderRequest, OrderTable orderTable) {
         return new Order(null,
-                orderRequest.getOrderTableId(),
+                orderTable,
                 orderRequest.getOrderStatus(),
-                null,
                 orderRequest.getOrderLineItems());
     }
 
@@ -42,27 +55,23 @@ public class Order {
     }
 
     public Long getOrderTableId() {
-        return orderTableId;
+        return orderTable.getId();
     }
 
     public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
+        this.orderTable.setId(orderTableId);
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(final String orderStatus) {
+    public void setOrderStatus(final OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
     public LocalDateTime getOrderedTime() {
-        return orderedTime;
-    }
-
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
+        return super.getCreatedDate();
     }
 
     public List<OrderLineItem> getOrderLineItems() {

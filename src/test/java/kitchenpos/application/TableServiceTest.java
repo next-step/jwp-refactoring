@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
+import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.domain.orderTable.OrderTable;
 import kitchenpos.domain.orderTable.OrderTableRepository;
 import kitchenpos.domain.tableGroup.TableGroup;
@@ -13,7 +13,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -31,7 +30,7 @@ import static org.mockito.BDDMockito.given;
 public class TableServiceTest {
 
     @Mock
-    OrderDao orderDao;
+    OrderRepository orderRepository;
 
     @Mock
     OrderTableRepository orderTableRepository;
@@ -80,7 +79,7 @@ public class TableServiceTest {
         // given
         OrderTable orderTable = 주문_테이블_데이터_생성(1L, null, 2, true);
         given(orderTableRepository.findById(1L)).willReturn(Optional.of(orderTable));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(false);
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(false);
         given(orderTableRepository.save(orderTable)).willReturn(orderTable);
 
         // when
@@ -108,7 +107,7 @@ public class TableServiceTest {
         // given
         OrderTable orderTable = 주문_테이블_데이터_생성(1L, null, 2, true);
         given(orderTableRepository.findById(1L)).willReturn(Optional.of(orderTable));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(true);
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(true);
 
         // when && then
         assertThatThrownBy(() -> 주문_상태_변경(1L, orderTable))

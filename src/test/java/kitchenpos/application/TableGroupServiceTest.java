@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
+import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.domain.orderTable.OrderTable;
 import kitchenpos.domain.orderTable.OrderTableRepository;
 import kitchenpos.domain.tableGroup.TableGroup;
@@ -31,7 +31,7 @@ import static org.mockito.BDDMockito.given;
 class TableGroupServiceTest {
 
     @Mock
-    OrderDao orderDao;
+    OrderRepository orderRepository;
 
     @Mock
     OrderTableRepository orderTableRepository;
@@ -113,7 +113,7 @@ class TableGroupServiceTest {
         List<OrderTable> orderTables = Arrays.asList(orderTableId1, orderTableId2);
 
         given(orderTableRepository.findAllByTableGroupId(1L)).willReturn(orderTables);
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
 
         // when & then
         테이블_그룹_해제(1L);
@@ -129,7 +129,7 @@ class TableGroupServiceTest {
         List<OrderTable> orderTables = Arrays.asList(orderTableId1, orderTableId2);
 
         given(orderTableRepository.findAllByTableGroupId(1L)).willReturn(orderTables);
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
 
         // when & then
         assertThatThrownBy(() -> 테이블_그룹_해제(1L))
