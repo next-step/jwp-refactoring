@@ -16,7 +16,9 @@ public class MenuFixture {
     }
 
     public static Menu 메뉴_데이터_생성(Long id, String name, BigDecimal menuPrice, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        return new Menu(id, name, menuPrice, menuGroup, menuProducts);
+        Menu menu = new Menu(id, name, menuPrice, menuGroup);
+        menu.addMenuProducts(menuProducts);
+        return menu;
     }
 
 }

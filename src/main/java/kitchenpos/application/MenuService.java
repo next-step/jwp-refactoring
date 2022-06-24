@@ -6,6 +6,7 @@ import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuProductRequestDto;
 import kitchenpos.dto.MenuRequestDto;
+import kitchenpos.dto.MenuResponseDto;
 import kitchenpos.repository.MenuGroupRepository;
 import kitchenpos.repository.MenuRepository;
 import kitchenpos.repository.ProductRepository;
@@ -28,11 +29,11 @@ public class MenuService {
     }
 
     @Transactional
-    public Menu create(final MenuRequestDto request) {
+    public MenuResponseDto create(final MenuRequestDto request) {
         MenuGroup menuGroup = getMenuGroup(request.getMenuGroupId());
         Menu menu = new Menu(request.getName(), request.getPrice(), menuGroup);
         menu.addMenuProducts(createMenuProducts(request));
-        return menuRepository.save(menu);
+        return new MenuResponseDto(menuRepository.save(menu));
     }
 
     private MenuGroup getMenuGroup(Long menuGroupId) {
@@ -52,13 +53,10 @@ public class MenuService {
         return new MenuProduct(product, menuProductRequest.getQuantity());
     }
 
-    public List<Menu> list() {
+    public List<MenuResponseDto> list() {
         final List<Menu> menus = menuRepository.findAll();
-
-//        for (final Menu menu : menus) {
-//            menu.setMenuProducts(menuProductDao.findAllByMenuId(menu.getId()));
-//        }
-
-        return menus;
+        return menus.stream()
+                .map(MenuResponseDto::new)
+                .collect(Collectors.toList());
     }
 }

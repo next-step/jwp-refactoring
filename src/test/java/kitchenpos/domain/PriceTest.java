@@ -7,18 +7,18 @@ import java.math.BigDecimal;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 
-class ProductTest {
+class PriceTest {
 
     @Test
     void create_fail_priceNull() {
         assertThatNullPointerException()
-                .isThrownBy(() -> new Product("name", null));
+                .isThrownBy(() -> new Price(null));
     }
 
     @Test
     void create_fail_priceNegative() {
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> new Product("name", BigDecimal.valueOf(-1)));
+                .isThrownBy(() -> new Price(BigDecimal.valueOf(-1)));
     }
 
 }
