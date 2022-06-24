@@ -6,7 +6,6 @@ import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
-import kitchenpos.dto.IdRequest;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.OrderTableResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,11 +42,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse create2(final OrderTableRequest request) {
         OrderTable savedOrderTable = orderTableRepository.save(request.toOrderTable());
-        return new OrderTableResponse(
-                savedOrderTable.getId(),
-                savedOrderTable.getTableGroupId(),
-                savedOrderTable.getNumberOfGuests(),
-                savedOrderTable.isEmpty());
+        return  OrderTableResponse.of(savedOrderTable);
     }
 
     public List<OrderTable> list() {

@@ -9,7 +9,7 @@ import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.dto.IdRequest;
+import kitchenpos.dto.IdOfOrderTableRequest;
 import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.dto.TableGroupRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,9 +41,9 @@ public class TableGroupAcceptanceTest extends AcceptanceTest{
     }
 
     public static ExtractableResponse<Response> 단체_지정_요청(List<OrderTableResponse> orderTables) {
-        List<IdRequest> ids = orderTables.stream().
+        List<IdOfOrderTableRequest> ids = orderTables.stream().
                 map(o -> o.getId()).
-                map(IdRequest::new).
+                map(IdOfOrderTableRequest::new).
                 collect(Collectors.toList());
         return RestAssured
                 .given().log().all()

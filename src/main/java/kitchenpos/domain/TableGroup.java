@@ -51,7 +51,20 @@ public class TableGroup {
 
     public void addOrderTables(final List<OrderTable> orderTables) {
         validateAddingOrderTables(orderTables);
-        this.orderTables = orderTables;
+        addAll(orderTables);
+    }
+
+    private void addAll(List<OrderTable> orderTables) {
+        for (OrderTable orderTable : orderTables) {
+            add(orderTable);
+        }
+    }
+
+    private void add(OrderTable orderTable) {
+        if (!orderTables.contains(orderTable)) {
+            orderTables.add(orderTable);
+        }
+        orderTable.setTableGroup(this);
     }
 
     private void validateAddingOrderTables(final List<OrderTable> orderTables) {
