@@ -4,6 +4,7 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,6 +21,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 
+@DisplayName("주문 테이블 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
     @Mock
@@ -29,6 +31,7 @@ class TableServiceTest {
     @InjectMocks
     private TableService tableService;
 
+    @DisplayName("개별 주문 테이블을 생성한다")
     @Test
     void create() {
         // given
@@ -44,6 +47,7 @@ class TableServiceTest {
         then(orderTableDao).should(times(1)).save(any(OrderTable.class));
     }
 
+    @DisplayName("")
     @Test
     void changeEmpty() {
         // given
@@ -65,6 +69,7 @@ class TableServiceTest {
         then(orderTableDao).should(times(2)).save(any(OrderTable.class)); // create, changeEmpty
     }
 
+    @DisplayName("")
     @Test
     void changeNumberOfGuests() {
         // given
