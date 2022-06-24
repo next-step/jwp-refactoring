@@ -6,9 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
 
 import java.util.List;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroupRepository;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,7 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
     @InjectMocks
     private MenuGroupService menuGroupService;
     private MenuGroup 두마리메뉴;
@@ -36,18 +35,18 @@ class MenuGroupServiceTest {
     @DisplayName("메뉴 그룹 생성 테스트")
     @Test
     void create() {
-        given(menuGroupDao.save(두마리메뉴)).willReturn(두마리메뉴);
+        given(menuGroupRepository.save(두마리메뉴)).willReturn(두마리메뉴);
         MenuGroup menuGroup = menuGroupService.create(두마리메뉴);
         assertAll(
-                () -> assertThat(menuGroup.getName()).isEqualTo("두마리메뉴"),
-                () -> assertThat(menuGroup.getId()).isEqualTo(두마리메뉴.getId())
+                () -> assertThat(menuGroup.name()).isEqualTo("두마리메뉴"),
+                () -> assertThat(menuGroup.id()).isEqualTo(두마리메뉴.id())
         );
     }
 
     @DisplayName("메뉴 그룹 목록 조회 테스트")
     @Test
     void list() {
-        given(menuGroupDao.findAll()).willReturn(Lists.newArrayList(두마리메뉴, 한마리메뉴));
+        given(menuGroupRepository.findAll()).willReturn(Lists.newArrayList(두마리메뉴, 한마리메뉴));
         List<MenuGroup> menuGroups = menuGroupService.list();
         assertThat(menuGroups).containsExactlyElementsOf(Lists.newArrayList(두마리메뉴, 한마리메뉴));
     }
