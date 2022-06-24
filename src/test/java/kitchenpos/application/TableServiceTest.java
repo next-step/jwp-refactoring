@@ -2,10 +2,14 @@ package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.Mockito.when;
 
+import java.util.Collections;
 import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.Product;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.domain.repository.OrderRepository;
 import kitchenpos.domain.repository.OrderTableRepository;
@@ -13,9 +17,12 @@ import kitchenpos.domain.repository.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 
-class TableServiceTest extends ServiceTest{
+@ExtendWith(MockitoExtension.class)
+class TableServiceTest extends ServiceTest {
 
     @Autowired
     private OrderRepository orderRepository;
@@ -77,8 +84,7 @@ class TableServiceTest extends ServiceTest{
     @Test
     @DisplayName("주문 상태가 식사중이거나 조리중인 테이블이 있다면 빈 상태를 바꿀 수 없다.")
     void changeEmptyFail_existOrderCookingOrMeal() {
-        Order order = new Order(orderTable1.getId(), null);
-        order.setOrderStatus(OrderStatus.COOKING.name());
+        Order order = new Order(orderTable1.getId(), Collections.singletonList(new OrderLineItem(1L, 1)));
         this.orderRepository.save(order);
 
         assertThatIllegalArgumentException()

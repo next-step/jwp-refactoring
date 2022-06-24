@@ -1,7 +1,6 @@
 package kitchenpos.domain;
 
 import java.util.Objects;
-import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,7 +16,8 @@ public class MenuGroup {
     @Embedded
     private Name name;
 
-    public MenuGroup() {
+    // entity 기본생성자 이므로 사용 금지
+    protected MenuGroup() {
     }
 
     public MenuGroup(String name) {

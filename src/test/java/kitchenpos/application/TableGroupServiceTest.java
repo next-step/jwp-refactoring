@@ -97,7 +97,6 @@ class TableGroupServiceTest extends ServiceTest {
     @DisplayName("테이블 중 식사중이거나 조리중인 테이블이 있다면 해제할 수 없다.")
     void ungroupFail() {
         Order order = new Order(orderTable1.getId(), null);
-        order.setOrderStatus(OrderStatus.COOKING.name());
         this.orderRepository.save(order);
 
         assertThatIllegalArgumentException()

@@ -1,16 +1,16 @@
 package kitchenpos.domain;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -22,60 +22,61 @@ public class Order {
     private Long id;
     @Column(name = "order_table_id", nullable = false)
     private Long orderTableId;
+    @Enumerated(EnumType.STRING)
     @Column(name = "order_status", nullable = false)
-    private String orderStatus;
+    private OrderStatus orderStatus;
     @Column(name = "ordered_time", nullable = false)
     private LocalDateTime orderedTime;
-    @OneToMany(mappedBy = "order",fetch = FetchType.LAZY)
-    private List<OrderLineItem> orderLineItems = new ArrayList<>();
+    @Embedded
+    private OrderLineItems orderLineItems = new OrderLineItems();
 
-    public Order() {
+    // entity 기본생성자 이므로 사용 금지
+    protected Order() {
     }
 
     public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        if (orderTableId == null || orderTableId < 1) {
+            throw new IllegalArgumentException("테이블 정보가 올바르지 않습니다.");
+        }
+
         this.orderTableId = orderTableId;
-        this.orderLineItems = orderLineItems;
         this.orderedTime = LocalDateTime.now();
+        this.orderStatus = OrderStatus.COOKING;
+
+        addOrderLineItems(orderLineItems);
+    }
+
+    public void changeOrderStatus(OrderStatus orderStatus) {
+        if (this.orderStatus.isCompletion()) {
+            throw new IllegalArgumentException("이미 완료된 주문은 상태를 바꿀 수 없습니다.");
+        }
+
+        this.orderStatus = orderStatus;
+    }
+
+    private void addOrderLineItems(List<OrderLineItem> orderLineItems) {
+        this.orderLineItems.addOrderLineItems(orderLineItems);
+        orderLineItems.forEach(orderLineItem -> orderLineItem.setOrder(this));
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public Long getOrderTableId() {
         return orderTableId;
     }
 
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
-    }
-
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
-    }
-
-    public void setOrderStatus(final String orderStatus) {
-        this.orderStatus = orderStatus;
     }
 
     public LocalDateTime getOrderedTime() {
         return orderedTime;
     }
 
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
-    }
-
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
-    }
-
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
+        return orderLineItems.getOrderLineItems();
     }
 
     @Override

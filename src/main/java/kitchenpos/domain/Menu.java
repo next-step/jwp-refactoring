@@ -27,7 +27,6 @@ public class Menu {
 
     // entity 기본생성자 이므로 사용 금지
     protected Menu() {
-
     }
 
     public Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
@@ -59,10 +58,6 @@ public class Menu {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
     }
 
     public String getName() {

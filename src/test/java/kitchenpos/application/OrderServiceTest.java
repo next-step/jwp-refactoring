@@ -11,16 +11,17 @@ import java.util.List;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.repository.MenuGroupRepository;
 import kitchenpos.domain.repository.MenuRepository;
-import kitchenpos.domain.repository.OrderRepository;
 import kitchenpos.domain.repository.OrderTableRepository;
 import kitchenpos.domain.repository.ProductRepository;
+import kitchenpos.dto.OrderLineItemRequest;
+import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,8 +39,6 @@ class OrderServiceTest extends ServiceTest {
     @Autowired
     private OrderTableRepository orderTableRepository;
     @Autowired
-    private OrderRepository orderRepository;
-    @Autowired
     private OrderService orderService;
 
     private Menu 후라이드_양념_세트;
@@ -47,7 +46,7 @@ class OrderServiceTest extends ServiceTest {
     private OrderTable 테이블_A;
     private OrderLineItem 후라이드_양념_세트_주문;
     private OrderLineItem 후라이드_단품_세트_주문;
-    private Order 주문;
+    private OrderResponse 주문;
 
     @BeforeEach
     void setUp() {
@@ -75,80 +74,76 @@ class OrderServiceTest extends ServiceTest {
         후라이드_양념_세트_주문 = new OrderLineItem(후라이드_양념_세트.getId(), 1);
         후라이드_단품_세트_주문 = new OrderLineItem(후라이드_단품_세트.getId(), 1);
 
-        주문 = this.orderService.create(new Order(테이블_A.getId(), Arrays.asList(후라이드_양념_세트_주문, 후라이드_단품_세트_주문)));
+        주문 = this.orderService.create(new OrderRequest(테이블_A.getId(), OrderLineItemRequest.of(후라이드_양념_세트_주문, 후라이드_단품_세트_주문)));
     }
 
     @Test
     @DisplayName("주문시 주문정보가 생성된디.")
     void create() {
-        Order order = this.orderService.create(new Order(테이블_A.getId(), Arrays.asList(후라이드_양념_세트_주문, 후라이드_단품_세트_주문)));
+        OrderResponse orderResponse =
+            this.orderService.create(new OrderRequest(테이블_A.getId(), OrderLineItemRequest.of(후라이드_양념_세트_주문, 후라이드_단품_세트_주문)));
 
-        assertThat(order.getId()).isNotNull();
-        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
-        assertThat(order.getOrderedTime()).isNotNull();
-        assertThat(order.getOrderLineItems()).hasSize(2);
+        assertThat(orderResponse.getId()).isNotNull();
+        assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(orderResponse.getOrderedTime()).isNotNull();
+        assertThat(orderResponse.getOrderLineItems()).hasSize(2);
     }
 
     @Test
     @DisplayName("주문한 메뉴가 0개일 경우 예외를 던진다.")
     void createFail_orderLineItemsEmpty() {
-        Order order = new Order(테이블_A.getId(), Collections.emptyList());
+        OrderRequest orderRequest = new OrderRequest(테이블_A.getId(), Collections.emptyList());
 
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> this.orderService.create(order));
+            .isThrownBy(() -> this.orderService.create(orderRequest));
     }
 
     @Test
     @DisplayName("주문한 메뉴가 실제 존재하지 않는 경우 예외를 던진다.")
     void createFail_orderLineItems() {
         OrderLineItem 없는_주문 = new OrderLineItem(1000L, 1);
-        Order order = new Order(테이블_A.getId(), Arrays.asList(후라이드_양념_세트_주문, 없는_주문));
+        OrderRequest orderRequest = new OrderRequest(테이블_A.getId(), OrderLineItemRequest.of(후라이드_양념_세트_주문, 없는_주문));
 
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> this.orderService.create(order));
+            .isThrownBy(() -> this.orderService.create(orderRequest));
     }
 
     @Test
     @DisplayName("주문한 테이블 정보가 존재하지 않을 경우 예외를 던진다.")
     void createFail_orderTableEmpty() {
         assertThatExceptionOfType(InvalidDataAccessApiUsageException.class)
-            .isThrownBy(() -> this.orderService.create(new Order(null, Arrays.asList(후라이드_양념_세트_주문, 후라이드_단품_세트_주문))));
+            .isThrownBy(() -> this.orderService.create(new OrderRequest(null, OrderLineItemRequest.of(후라이드_양념_세트_주문, 후라이드_단품_세트_주문))));
     }
 
     @Test
     @DisplayName("주문을 모두 조회한다.")
     void list() {
-        Order 주문_추가 = new Order(테이블_A.getId(), Collections.singletonList(후라이드_양념_세트_주문));
-        주문_추가.setOrderStatus(OrderStatus.COOKING.name());
-        주문_추가 = this.orderRepository.save(주문_추가);
-        주문_추가.setOrderLineItems(Collections.emptyList());
+        OrderResponse 주문_추가 =
+            this.orderService.create(new OrderRequest(테이블_A.getId(), OrderLineItemRequest.of(후라이드_양념_세트_주문, 후라이드_단품_세트_주문)));
 
-        List<Order> list = this.orderService.list();
+        List<OrderResponse> list = this.orderService.list();
 
-        assertThat(list).containsExactly(주문, 주문_추가);
+        assertThat(list).containsAll(Arrays.asList(주문, 주문_추가));
     }
 
     @Test
     @DisplayName("주문 상태를 변경한다.")
     void changeOrderStatus() {
-        Order statusOrder = new Order();
-        statusOrder.setOrderStatus(OrderStatus.MEAL.name());
+        OrderRequest orderRequest = new OrderRequest(OrderStatus.MEAL);
 
-        this.orderService.changeOrderStatus(주문.getId(), statusOrder);
+        OrderResponse orderResponse = this.orderService.changeOrderStatus(주문.getId(), orderRequest);
 
-        Order expectedOrder = this.orderRepository.findById(주문.getId()).orElse(null);
-        assertThat(expectedOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
+        assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
     }
 
 
     @Test
     @DisplayName("주문 상태가 완료된 건 변경할 수 없다.")
     void changeOrderStatusFail() {
-        주문.setOrderStatus(OrderStatus.COMPLETION.name());
-        this.orderRepository.save(주문);
+        this.orderService.changeOrderStatus(주문.getId(), new OrderRequest(OrderStatus.COMPLETION));
 
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> this.orderService.changeOrderStatus(주문.getId(), null));
+            .isThrownBy(() -> this.orderService.changeOrderStatus(주문.getId(), new OrderRequest(OrderStatus.COOKING)));
     }
 
 }
