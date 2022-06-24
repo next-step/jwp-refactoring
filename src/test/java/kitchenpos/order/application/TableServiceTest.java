@@ -10,6 +10,7 @@ import static org.mockito.BDDMockito.given;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import kitchenpos.domain.NumberOfGuests;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
@@ -38,8 +39,8 @@ class TableServiceTest {
 
     @BeforeEach
     void setUp() {
-        단체지정 = createTableGroup(1L, null);
         주문테이블 = createOrderTable(1L, null, 2, false);
+        단체지정 = createTableGroup(1L, Lists.newArrayList(주문테이블));
     }
 
     @DisplayName("주문테이블 생성 테스트")
@@ -73,7 +74,7 @@ class TableServiceTest {
         OrderTable changedOrderTable = tableService.changeEmpty(주문테이블.id(), orderTable);
         assertAll(
                 () -> assertThat(changedOrderTable.tableGroup()).isNull(),
-                () -> assertThat(changedOrderTable.numberOfGuests()).isEqualTo(2),
+                () -> assertThat(changedOrderTable.numberOfGuests()).isEqualTo(NumberOfGuests.of(2)),
                 () -> assertThat(changedOrderTable.isEmpty()).isTrue()
         );
     }
@@ -120,15 +121,6 @@ class TableServiceTest {
                 () -> assertThat(changedOrderTable.numberOfGuests()).isEqualTo(4),
                 () -> assertThat(changedOrderTable.isEmpty()).isFalse()
         );
-    }
-
-    @DisplayName("주문테이블이 손님 수가 0보다 적은 경우 손님 수 변경 테스트")
-    @Test
-    void changeNumberOfGuestsWithGuestUnderZero() {
-        주문테이블 = createOrderTable(1L, null, 2, true);
-        OrderTable orderTable = createOrderTable(1L, null, -1, true);
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeNumberOfGuests(주문테이블.id(), orderTable));
     }
 
     @DisplayName("주문테이블이 등록이 안되어있을 때 손님 수 변경 테스트")

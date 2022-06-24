@@ -72,6 +72,13 @@ public class OrderTable {
         this.empty = empty;
     }
 
+    public Long tableGroupId() {
+        if (this.tableGroup == null) {
+            return null;
+        }
+        return this.tableGroup.id();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

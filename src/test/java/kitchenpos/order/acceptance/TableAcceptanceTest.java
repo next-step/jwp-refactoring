@@ -4,14 +4,15 @@ import static kitchenpos.order.acceptance.TableRestAssured.주문테이블_등�
 import static kitchenpos.order.acceptance.TableRestAssured.주문테이블_목록_조회_요청;
 import static kitchenpos.order.acceptance.TableRestAssured.주문테이블_비어있는지여부_변경_요청;
 import static kitchenpos.order.acceptance.TableRestAssured.주문테이블_손님수_변경_요청;
-import static kitchenpos.utils.DomainFixtureFactory.createOrderTable;
+import static kitchenpos.utils.DomainFixtureFactory.createOrderTableRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
+import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.utils.AcceptanceTest;
-import kitchenpos.order.domain.OrderTable;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,13 +21,13 @@ import org.springframework.http.HttpStatus;
 
 @DisplayName("주문테이블 관련 기능")
 class TableAcceptanceTest extends AcceptanceTest {
-    private OrderTable 주문테이블;
+    private OrderTableRequest 주문테이블;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        주문테이블 = createOrderTable(null, null, 2, false);
+        주문테이블 = createOrderTableRequest(2, false);
     }
 
     /**
@@ -52,7 +53,7 @@ class TableAcceptanceTest extends AcceptanceTest {
     @Test
     void lists() {
         // given
-        OrderTable 등록한_주문테이블 = 주문테이블_등록_요청(주문테이블).as(OrderTable.class);
+        OrderTableResponse 등록한_주문테이블 = 주문테이블_등록_요청(주문테이블).as(OrderTableResponse.class);
 
         // when
         ExtractableResponse<Response> response = 주문테이블_목록_조회_요청();
@@ -70,11 +71,11 @@ class TableAcceptanceTest extends AcceptanceTest {
     @Test
     void changeEmpty() {
         // given
-        OrderTable 등록한_주문테이블 = 주문테이블_등록_요청(주문테이블).as(OrderTable.class);
+        OrderTableResponse 등록한_주문테이블 = 주문테이블_등록_요청(주문테이블).as(OrderTableResponse.class);
 
         // when
         boolean empty = true;
-        ExtractableResponse<Response> response = 주문테이블_비어있는지여부_변경_요청(등록한_주문테이블, empty);
+        ExtractableResponse<Response> response = 주문테이블_비어있는지여부_변경_요청(등록한_주문테이블, 주문테이블, empty);
 
         // then
         주문테이블_비어있는지여부_변경됨(response, empty);
@@ -89,11 +90,11 @@ class TableAcceptanceTest extends AcceptanceTest {
     @Test
     void changeNumberOfGuests() {
         // given
-        OrderTable 등록한_주문테이블 = 주문테이블_등록_요청(주문테이블).as(OrderTable.class);
+        OrderTableResponse 등록한_주문테이블 = 주문테이블_등록_요청(주문테이블).as(OrderTableResponse.class);
 
         // when
         int numberOfGuests = 4;
-        ExtractableResponse<Response> response = 주문테이블_손님수_변경_요청(등록한_주문테이블, numberOfGuests);
+        ExtractableResponse<Response> response = 주문테이블_손님수_변경_요청(등록한_주문테이블, 주문테이블, numberOfGuests);
 
         // then
         주문테이블_손님수_변경됨(response, numberOfGuests);
@@ -103,16 +104,16 @@ class TableAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    private void 주문테이블_목록_조회됨(ExtractableResponse<Response> response, List<OrderTable> expectedOrderTables) {
-        List<OrderTable> orderTables = response.jsonPath().getList(".", OrderTable.class);
+    private void 주문테이블_목록_조회됨(ExtractableResponse<Response> response, List<OrderTableResponse> expectedOrderTables) {
+        List<OrderTableResponse> orderTables = response.jsonPath().getList(".", OrderTableResponse.class);
         assertThat(orderTables).containsExactlyElementsOf(expectedOrderTables);
     }
 
     private void 주문테이블_비어있는지여부_변경됨(ExtractableResponse<Response> response, boolean empty) {
-        assertThat(response.as(OrderTable.class).isEmpty()).isEqualTo(empty);
+        assertThat(response.as(OrderTableResponse.class).isEmpty()).isEqualTo(empty);
     }
 
     private void 주문테이블_손님수_변경됨(ExtractableResponse<Response> response, int numberOfGuests) {
-        assertThat(response.as(OrderTable.class).numberOfGuests()).isEqualTo(numberOfGuests);
+        assertThat(response.as(OrderTableResponse.class).getNumberOfGuests()).isEqualTo(numberOfGuests);
     }
 }

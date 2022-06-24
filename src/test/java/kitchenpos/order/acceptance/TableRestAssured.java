@@ -3,12 +3,12 @@ package kitchenpos.order.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.NumberOfGuests;
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.order.dto.OrderTableResponse;
 import org.springframework.http.MediaType;
 
 public class TableRestAssured {
-    public static ExtractableResponse<Response> 주문테이블_등록_요청(OrderTable orderTable) {
+    public static ExtractableResponse<Response> 주문테이블_등록_요청(OrderTableRequest orderTable) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -27,24 +27,24 @@ public class TableRestAssured {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 주문테이블_비어있는지여부_변경_요청(OrderTable targetOrderTable, boolean empty) {
-        targetOrderTable.setEmpty(empty);
+    public static ExtractableResponse<Response> 주문테이블_비어있는지여부_변경_요청(OrderTableResponse targetOrderTable, OrderTableRequest orderTableRequest, boolean empty) {
+        orderTableRequest.setEmpty(empty);
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(targetOrderTable)
-                .when().put("/api/tables/{orderTableId}/empty", targetOrderTable.id())
+                .body(orderTableRequest)
+                .when().put("/api/tables/{orderTableId}/empty", targetOrderTable.getId())
                 .then().log().all()
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 주문테이블_손님수_변경_요청(OrderTable targetOrderTable, int numberOfGuests) {
-        targetOrderTable.setNumberOfGuests(NumberOfGuests.of(numberOfGuests));
+    public static ExtractableResponse<Response> 주문테이블_손님수_변경_요청(OrderTableResponse targetOrderTable, OrderTableRequest orderTableRequest, int numberOfGuests) {
+        orderTableRequest.setNumberOfGuests(numberOfGuests);
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(targetOrderTable)
-                .when().put("/api/tables/{orderTableId}/number-of-guests", targetOrderTable.id())
+                .body(orderTableRequest)
+                .when().put("/api/tables/{orderTableId}/number-of-guests", targetOrderTable.getId())
                 .then().log().all()
                 .extract();
     }

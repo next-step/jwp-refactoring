@@ -13,6 +13,7 @@ import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.TableGroup;
+import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
 
@@ -48,6 +49,10 @@ public class DomainFixtureFactory {
 
     public static OrderTable createOrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
         return OrderTable.of(id, tableGroup, numberOfGuests, empty);
+    }
+
+    public static OrderTableRequest createOrderTableRequest(int numberOfGuests, boolean empty) {
+        return new OrderTableRequest(numberOfGuests, empty);
     }
 
     public static Order createOrder(Long id, OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {

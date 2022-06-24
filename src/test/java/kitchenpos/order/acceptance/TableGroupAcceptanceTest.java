@@ -1,16 +1,16 @@
 package kitchenpos.order.acceptance;
 
 import static kitchenpos.order.acceptance.TableRestAssured.주문테이블_등록_요청;
-import static kitchenpos.utils.DomainFixtureFactory.createOrderTable;
+import static kitchenpos.utils.DomainFixtureFactory.createOrderTableRequest;
 import static kitchenpos.utils.DomainFixtureFactory.createTableGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.utils.AcceptanceTest;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.TableGroup;
+import kitchenpos.utils.AcceptanceTest;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,8 +26,8 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        OrderTable 치킨주문테이블 = 주문테이블_등록_요청(createOrderTable(null, null, 2, true)).as(OrderTable.class);
-        OrderTable 피자주문테이블 = 주문테이블_등록_요청(createOrderTable(null, null, 3, true)).as(OrderTable.class);
+        OrderTable 치킨주문테이블 = 주문테이블_등록_요청(createOrderTableRequest(2, true)).as(OrderTable.class);
+        OrderTable 피자주문테이블 = 주문테이블_등록_요청(createOrderTableRequest(3, true)).as(OrderTable.class);
         단체지정 = createTableGroup(1L, Lists.newArrayList(치킨주문테이블, 피자주문테이블));
     }
 

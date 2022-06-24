@@ -12,6 +12,7 @@ import static kitchenpos.utils.DomainFixtureFactory.createMenuRequest;
 import static kitchenpos.utils.DomainFixtureFactory.createOrder;
 import static kitchenpos.utils.DomainFixtureFactory.createOrderLineItem;
 import static kitchenpos.utils.DomainFixtureFactory.createOrderTable;
+import static kitchenpos.utils.DomainFixtureFactory.createOrderTableRequest;
 import static kitchenpos.utils.DomainFixtureFactory.createProduct;
 import static kitchenpos.utils.DomainFixtureFactory.createProductRequest;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,6 +25,7 @@ import java.util.List;
 import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.utils.AcceptanceTest;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
@@ -50,8 +52,8 @@ class OrderAcceptanceTest extends AcceptanceTest {
         Product 양념 = 상품_등록_요청(createProductRequest( "양념", BigDecimal.valueOf(20000L))).as(Product.class);
         MenuResponse 양념치킨 = 메뉴_등록_요청(createMenuRequest( "양념치킨", BigDecimal.valueOf(40000L), 한마리메뉴.getId(),
                 Lists.newArrayList(new MenuProductRequest(양념.id(), 2L)))).as(MenuResponse.class);
-        OrderTable 주문테이블 = 주문테이블_등록_요청(createOrderTable(null, null, 2, false)).as(OrderTable.class);
-        주문 = createOrder(null, 주문테이블, null, Lists.newArrayList(createOrderLineItem(1L, null, null, 2L)));
+        OrderTableResponse 주문테이블 = 주문테이블_등록_요청(createOrderTableRequest(2, false)).as(OrderTableResponse.class);
+        주문 = createOrder(null, null, null, Lists.newArrayList(createOrderLineItem(1L, null, null, 2L)));
     }
 
     /**
