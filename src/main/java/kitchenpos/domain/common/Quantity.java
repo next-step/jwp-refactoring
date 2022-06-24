@@ -1,12 +1,17 @@
 package kitchenpos.domain.common;
 
 import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 
+@Embeddable
 public class Quantity {
 
+
+    @Column(nullable = false)
     private long quantity;
 
-    public Quantity() {
+    protected Quantity() {
     }
 
     public Quantity(long quantity) {

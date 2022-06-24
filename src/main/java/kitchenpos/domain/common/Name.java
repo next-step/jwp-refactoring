@@ -1,12 +1,16 @@
 package kitchenpos.domain.common;
 
 import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 
+@Embeddable
 public class Name {
 
+    @Column(nullable = false)
     private String name;
 
-    public Name() {
+    protected Name() {
     }
 
     public Name(String name) {

@@ -1,9 +1,11 @@
 package kitchenpos.domain.common;
 
 import java.util.Objects;
+import javax.persistence.Column;
 
 public class NumberOfGuests {
 
+    @Column(nullable = false)
     private int numberOfGuests;
 
     public NumberOfGuests() {
