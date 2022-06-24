@@ -1,6 +1,7 @@
 package kitchenpos.domain.order;
 
 import kitchenpos.domain.orderLineItem.OrderLineItem;
+import kitchenpos.dto.order.OrderRequest;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,6 +23,14 @@ public class Order {
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
+    }
+
+    public static Order of(OrderRequest orderRequest) {
+        return new Order(null,
+                orderRequest.getOrderTableId(),
+                orderRequest.getOrderStatus(),
+                null,
+                orderRequest.getOrderLineItems());
     }
 
     public Long getId() {

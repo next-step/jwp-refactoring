@@ -8,6 +8,8 @@ import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.orderLineItem.OrderLineItem;
 import kitchenpos.domain.orderTable.OrderTable;
 import kitchenpos.domain.orderTable.OrderTableRepository;
+import kitchenpos.dto.order.OrderRequest;
+import kitchenpos.dto.order.OrderResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,6 +27,7 @@ import static kitchenpos.application.TableServiceTest.주문_테이블_데이터
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 
@@ -53,17 +56,17 @@ class OrderServiceTest {
         // given
         OrderTable orderTable = 주문_테이블_데이터_생성(1L, null, 2, false);
         List<OrderLineItem> orderLineItems = 주문_항목_목록_데이터_생성();
-        Order request = 주문_데이터_생성(null, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItems);
+        OrderRequest request = 주문_요청_데이터_생성(1L, OrderStatus.COOKING.name(), orderLineItems);
         Order 예상값 = 주문_데이터_생성(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItems);
         given(menuRepository.countByIdIn(anyList())).willReturn(2L);
         given(orderTableRepository.findById(1L)).willReturn(Optional.of(orderTable));
-        given(orderDao.save(request)).willReturn(예상값);
+        given(orderDao.save(any(Order.class))).willReturn(예상값);
 
         // when
-        Order 주문_생성_결과 = 주문_생성(request);
+        OrderResponse 주문_생성_결과 = 주문_생성(request);
 
         // then
-        주문_데이터_비교(주문_생성_결과, 예상값);
+        주문_데이터_비교(주문_생성_결과, OrderResponse.of(예상값));
     }
 
     @DisplayName("주문을 생성할 수 있다 - 주문 항목 1개 이상 있어야 한다")
@@ -71,7 +74,7 @@ class OrderServiceTest {
     void create_exception1() {
         // given
         List<OrderLineItem> orderLineItems = new ArrayList<>();
-        Order request = 주문_데이터_생성(null, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItems);
+        OrderRequest request = 주문_요청_데이터_생성(1L, OrderStatus.COOKING.name(), orderLineItems);
 
         // when && then
         assertThatThrownBy(() -> orderService.create(request))
@@ -83,7 +86,7 @@ class OrderServiceTest {
     void create_exception2() {
         // given
         List<OrderLineItem> orderLineItems = 주문_항목_목록_데이터_생성();
-        Order request = 주문_데이터_생성(null, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItems);
+        OrderRequest request = 주문_요청_데이터_생성(1L, OrderStatus.COOKING.name(), orderLineItems);
         given(menuRepository.countByIdIn(anyList())).willReturn(1L);
 
         // when && then
@@ -96,7 +99,7 @@ class OrderServiceTest {
     void create_exception3() {
         // given
         OrderTable orderTable = 주문_테이블_데이터_생성(1L, null, 2, true);
-        Order request = 주문_데이터_생성(null, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), 주문_항목_목록_데이터_생성());
+        OrderRequest request = 주문_요청_데이터_생성(1L, OrderStatus.COOKING.name(), 주문_항목_목록_데이터_생성());
         given(menuRepository.countByIdIn(anyList())).willReturn(2L);
         given(orderTableRepository.findById(1L)).willReturn(Optional.of(orderTable));
 
@@ -111,7 +114,7 @@ class OrderServiceTest {
         // given
         List<OrderLineItem> orderLineItems = new ArrayList<>(주문_항목_목록_데이터_생성());
         orderLineItems.add(주문_항목_데이터_생성(3L, 1L, 2L, 3));
-        Order request = 주문_데이터_생성(null, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItems);
+        OrderRequest request = 주문_요청_데이터_생성(1L, OrderStatus.COOKING.name(), orderLineItems);
         given(menuRepository.countByIdIn(anyList())).willReturn(2L);
 
         // when && then
@@ -130,12 +133,12 @@ class OrderServiceTest {
         given(orderDao.findAll()).willReturn(예상값);
 
         // when
-        List<Order> 주문_목록_조회_결과 = 주문_목록_조회();
+        List<OrderResponse> 주문_목록_조회_결과 = 주문_목록_조회();
 
         // then
         assertAll(
-                () -> 주문_데이터_비교(주문_목록_조회_결과.get(0), 예상값.get(0)),
-                () -> 주문_데이터_비교(주문_목록_조회_결과.get(1), 예상값.get(1))
+                () -> 주문_데이터_비교(주문_목록_조회_결과.get(0), OrderResponse.of(예상값.get(0))),
+                () -> 주문_데이터_비교(주문_목록_조회_결과.get(1), OrderResponse.of(예상값.get(1)))
         );
     }
 
@@ -144,11 +147,11 @@ class OrderServiceTest {
     void changeOrderStatus() {
         // given
         Order 변경전_주문 = 주문_데이터_생성(1L, 1L, OrderStatus.MEAL.name(), LocalDateTime.now(), 주문_항목_목록_데이터_생성());
-        Order 변경후_주문 = 주문_데이터_생성(1L, 1L, OrderStatus.MEAL.name(), LocalDateTime.now(), 주문_항목_목록_데이터_생성());
+        OrderRequest 변경후_주문 = 주문_요청_데이터_생성(1L, OrderStatus.MEAL.name(), 주문_항목_목록_데이터_생성());
         given(orderDao.findById(1L)).willReturn(Optional.of(변경전_주문));
 
         // when
-        Order 주문_상태_변경_결과 = 주문_상태_변경(1L, 변경후_주문);
+        OrderResponse 주문_상태_변경_결과 = 주문_상태_변경(1L, 변경후_주문);
 
         // then
         assertThat(주문_상태_변경_결과.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
@@ -159,7 +162,7 @@ class OrderServiceTest {
     void changeOrderStatus_exception1() {
         // given
         Order 변경전_주문 = 주문_데이터_생성(1L, 1L, OrderStatus.COMPLETION.name(), LocalDateTime.now(), 주문_항목_목록_데이터_생성());
-        Order 변경후_주문 = 주문_데이터_생성(1L, 1L, OrderStatus.MEAL.name(), LocalDateTime.now(), 주문_항목_목록_데이터_생성());
+        OrderRequest 변경후_주문 = 주문_요청_데이터_생성(1L, OrderStatus.MEAL.name(), 주문_항목_목록_데이터_생성());
         given(orderDao.findById(1L)).willReturn(Optional.of(변경전_주문));
 
         // when && then
@@ -168,6 +171,10 @@ class OrderServiceTest {
 
     private OrderLineItem 주문_항목_데이터_생성(Long seq, Long orderId, Long menuId, long quantity) {
         return new OrderLineItem(seq, orderId, menuId, quantity);
+    }
+
+    private OrderRequest 주문_요청_데이터_생성(Long orderTableId, String orderStatus, List<OrderLineItem> orderLineItems) {
+        return new OrderRequest(orderTableId, orderStatus, orderLineItems);
     }
 
     private Order 주문_데이터_생성(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
@@ -180,19 +187,19 @@ class OrderServiceTest {
         return Arrays.asList(orderLineItemId1, orderLineItemId2);
     }
 
-    private Order 주문_생성(Order order) {
-        return orderService.create(order);
+    private OrderResponse 주문_생성(OrderRequest orderRequest) {
+        return orderService.create(orderRequest);
     }
 
-    private List<Order> 주문_목록_조회() {
+    private List<OrderResponse> 주문_목록_조회() {
         return orderService.list();
     }
 
-    private Order 주문_상태_변경(Long orderId, Order order) {
-        return orderService.changeOrderStatus(orderId, order);
+    private OrderResponse 주문_상태_변경(Long orderId, OrderRequest orderRequest) {
+        return orderService.changeOrderStatus(orderId, orderRequest);
     }
 
-    private void 주문_데이터_비교(Order 주문_생성_결과, Order 예상값) {
+    private void 주문_데이터_비교(OrderResponse 주문_생성_결과, OrderResponse 예상값) {
         assertAll(
                 () -> assertThat(주문_생성_결과.getId()).isEqualTo(예상값.getId()),
                 () -> assertThat(주문_생성_결과.getOrderTableId()).isEqualTo(예상값.getOrderTableId()),
