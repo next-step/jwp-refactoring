@@ -37,6 +37,15 @@ public class OrderService {
         OrderTable orderTable = tableService.findOrderTable(orderRequest.getOrderTableId());
 
         OrderLineItems orderLineItems = new OrderLineItems();
+        addOrderLineItems(orderRequest, orderLineItems);
+        order.registerOrderLineItems(orderLineItems, orderRequest.getOrderLineItems().size());
+        orderTable.registerOrder(order);
+
+        Order savedOrder = orderRepository.save(order);
+        return OrderResponse.from(savedOrder);
+    }
+
+    private void addOrderLineItems(OrderRequest orderRequest, OrderLineItems orderLineItems) {
         for (OrderLineItemRequest orderLineItemRequest : orderRequest.getOrderLineItems()) {
             OrderLineItem orderLineItem = orderLineItemRequest.toOrderLineItem();
             Menu menu = menuService.findMenu(orderLineItemRequest.getMenuId());
@@ -44,11 +53,6 @@ public class OrderService {
             orderLineItem.setMenu(menu);
             orderLineItems.addOrderLineItems(orderLineItem);
         }
-
-        order.registerOrderLineItems(orderLineItems, orderRequest.getOrderLineItems().size());
-        orderTable.registerOrder(order);
-        Order savedOrder = orderRepository.save(order);
-        return OrderResponse.from(savedOrder);
     }
 
     @Transactional(readOnly = true)

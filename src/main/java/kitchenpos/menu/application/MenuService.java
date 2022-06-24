@@ -32,19 +32,20 @@ public class MenuService {
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
         MenuGroup menuGroup = menuGroupService.findMenuGroup(menuRequest.getMenuGroupId());
-
         Menu menu = menuRequest.toMenu();
         menu.setMenuGroup(menuGroup);
-
-        for (final MenuProductRequest menuProductRequest : menuRequest.getMenuProducts()) {
-            final Product product = productService.findProduct(menuProductRequest.getProductId());
-            menu.addMenuProduct(new MenuProduct(menuProductRequest.getQuantity(), menu, product));
-        }
-
+        addMenuProduct(menuRequest, menu);
         menu.checkAmount();
 
         final Menu savedMenu = menuRepository.save(menu);
         return MenuResponse.from(savedMenu);
+    }
+
+    private void addMenuProduct(MenuRequest menuRequest, Menu menu) {
+        for (final MenuProductRequest menuProductRequest : menuRequest.getMenuProducts()) {
+            final Product product = productService.findProduct(menuProductRequest.getProductId());
+            menu.addMenuProduct(new MenuProduct(menuProductRequest.getQuantity(), menu, product));
+        }
     }
 
     @Transactional(readOnly = true)
