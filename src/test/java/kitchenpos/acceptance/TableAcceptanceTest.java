@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.utils.RestAssuredHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -88,7 +88,8 @@ class TableAcceptanceTest extends AcceptanceTest {
     }
 
     public void 빈_테이블_확인(ExtractableResponse<Response> 빈_테이블_변경_결과) {
-        final OrderTable 빈_테이블 = 빈_테이블_변경_결과.body().jsonPath().getObject(".", OrderTable.class);
+        final OrderTableResponse 빈_테이블 = 빈_테이블_변경_결과.body().jsonPath()
+                .getObject(".", OrderTableResponse.class);
 
         assertAll(
                 () -> assertThat(빈_테이블_변경_결과.statusCode()).isEqualTo(HttpStatus.OK.value()),
@@ -103,7 +104,8 @@ class TableAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 테이블_방문_고객수_확인(ExtractableResponse<Response> 테이블_방문_고객수_변경_결과, Integer 예상된_변경_고객수) {
-        final OrderTable 변경된_고객_테이블 = 테이블_방문_고객수_변경_결과.body().jsonPath().getObject(".", OrderTable.class);
+        final OrderTableResponse 변경된_고객_테이블 = 테이블_방문_고객수_변경_결과.body().jsonPath()
+                .getObject(".", OrderTableResponse.class);
 
         assertAll(
                 () -> assertThat(테이블_방문_고객수_변경_결과.statusCode()).isEqualTo(HttpStatus.OK.value()),

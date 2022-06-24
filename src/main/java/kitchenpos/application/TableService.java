@@ -5,6 +5,7 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,9 +24,10 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTable create(final OrderTableRequest orderTableRequest) {
+    public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
         final OrderTable orderTable = orderTableRequest.toOrderTable();
-        return orderTableDao.save(orderTable);
+        final OrderTable persist = orderTableDao.save(orderTable);
+        return persist.toOrderTableResponse();
     }
 
     public List<OrderTable> list() {
@@ -33,7 +35,7 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTable changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
+    public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
@@ -47,12 +49,13 @@ public class TableService {
         }
 
         savedOrderTable.setEmpty(orderTableRequest.isEmpty());
+        final OrderTable updateOrderTable = orderTableDao.save(savedOrderTable);
 
-        return orderTableDao.save(savedOrderTable);
+        return updateOrderTable.toOrderTableResponse();
     }
 
     @Transactional
-    public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
+    public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final int numberOfGuests = orderTableRequest.getNumberOfGuests();
 
         if (numberOfGuests < 0) {
@@ -67,7 +70,8 @@ public class TableService {
         }
 
         savedOrderTable.setNumberOfGuests(numberOfGuests);
+        final OrderTable updateOrderTable = orderTableDao.save(savedOrderTable);
 
-        return orderTableDao.save(savedOrderTable);
+        return updateOrderTable.toOrderTableResponse();
     }
 }

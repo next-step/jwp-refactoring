@@ -13,6 +13,7 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,9 +42,12 @@ class TableServiceTest {
         // given
         when(orderTableDao.save(any())).thenReturn(new OrderTable(5));
         // when
-        final OrderTable actual = tableService.create(new OrderTableRequest(5, false));
+        final OrderTableResponse actual = tableService.create(new OrderTableRequest(5, false));
         // then
-        assertThat(actual).isEqualTo(new OrderTable(5));
+        assertAll(
+                () -> assertThat(actual.getNumberOfGuests()).isEqualTo(5),
+                () -> assertThat(actual.isEmpty()).isFalse()
+        );
     }
 
     @Test
@@ -71,7 +75,7 @@ class TableServiceTest {
                 List.of(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(false);
         when(orderTableDao.save(any())).thenReturn(emptyOrderTable);
         // when
-        final OrderTable actual = tableService.changeEmpty(1L, new OrderTableRequest(null, true));
+        final OrderTableResponse actual = tableService.changeEmpty(1L, new OrderTableRequest(null, true));
         // then
         assertThat(actual.isEmpty()).isTrue();
     }
@@ -117,7 +121,7 @@ class TableServiceTest {
         when(orderTableDao.findById(any())).thenReturn(Optional.of(orderTable5Guests));
         when(orderTableDao.save(any())).thenReturn(orderTable3Guests);
         // when
-        final OrderTable actual = tableService.changeNumberOfGuests(1L, new OrderTableRequest(3, null));
+        final OrderTableResponse actual = tableService.changeNumberOfGuests(1L, new OrderTableRequest(3, null));
         // then
         assertThat(actual.getNumberOfGuests()).isEqualTo(orderTable3Guests.getNumberOfGuests());
     }

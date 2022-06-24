@@ -1,6 +1,7 @@
 package kitchenpos.domain;
 
 import java.util.Objects;
+import kitchenpos.dto.OrderTableResponse;
 
 public class OrderTable {
     private Long id;
@@ -53,6 +54,10 @@ public class OrderTable {
 
     public void setEmpty(final boolean empty) {
         this.empty = empty;
+    }
+
+    public OrderTableResponse toOrderTableResponse() {
+        return new OrderTableResponse(this.id, this.tableGroupId, this.numberOfGuests, this.empty);
     }
 
     @Override
