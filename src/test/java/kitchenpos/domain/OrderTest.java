@@ -5,6 +5,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Arrays;
+import kitchenpos.core.exception.BadRequestException;
+import kitchenpos.core.exception.CannotUpdateException;
+import kitchenpos.core.exception.ExceptionType;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
@@ -71,7 +74,8 @@ class OrderTest {
 
         // then
         assertThatThrownBy(주문::validateMustNotBeCompletionStatus)
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(CannotUpdateException.class)
+            .hasMessageContaining(ExceptionType.COMPLETION_STATUS_CAN_NOT_CHANGE.getMessage());
     }
 
     @DisplayName("빈 주문 테이블을 주문에 넘기면 예외가 발생한다")
@@ -83,6 +87,7 @@ class OrderTest {
         // then
         assertThatThrownBy(() -> {
             Order.of(null, 빈_주문_테이블);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(BadRequestException.class)
+            .hasMessageContaining(ExceptionType.EMPTY_TABLE.getMessage());
     }
 }

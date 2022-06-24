@@ -13,6 +13,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import kitchenpos.core.exception.BadRequestException;
+import kitchenpos.core.exception.CannotCreateException;
+import kitchenpos.core.exception.CannotUpdateException;
+import kitchenpos.core.exception.ExceptionType;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
@@ -104,7 +108,8 @@ class TableGroupServiceTest {
         // then
         assertThatThrownBy(() -> {
             tableGroupService.create(테이블_그룹_request);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(CannotCreateException.class)
+            .hasMessageContaining(ExceptionType.ORDER_TABLE_AT_LEAST_TWO.getMessage());
     }
 
     @DisplayName("테이블 단체지정시 단체지정할 테이블이 없거나 2개 미만이면 예외가 발생한다")
@@ -116,7 +121,8 @@ class TableGroupServiceTest {
         // then
         assertThatThrownBy(() -> {
             tableGroupService.create(테이블_그룹_request);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(CannotCreateException.class)
+            .hasMessageContaining(ExceptionType.ORDER_TABLE_AT_LEAST_TWO.getMessage());
     }
 
     @DisplayName("테이블 단체지정시 단체지정할 테이블이 모두 존재하지 않으면 예외갑 발생한다")
@@ -129,7 +135,8 @@ class TableGroupServiceTest {
         // then
         assertThatThrownBy(() -> {
             tableGroupService.create(테이블_그룹_request);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(BadRequestException.class)
+            .hasMessageContaining(ExceptionType.CONTAINS_NOT_EXIST_ORDER_TABLE.getMessage());
     }
 
     @DisplayName("테이블 단체지정시 단체지정할 테이블이 비어있지 않거나 "
@@ -145,7 +152,8 @@ class TableGroupServiceTest {
         // then
         assertThatThrownBy(() -> {
             tableGroupService.create(테이블_그룹_request);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(CannotCreateException.class)
+            .hasMessageContaining(ExceptionType.MUST_NOT_BE_EMPTY_OR_GROUPED_TABLE.getMessage());
     }
 
     @DisplayName("테이블 단체지정을 해제하면 정상적으로 해제되어야 한다")
@@ -181,6 +189,7 @@ class TableGroupServiceTest {
         // then
         assertThatThrownBy(() -> {
             tableGroupService.ungroup(테이블_그룹.getId());
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(CannotUpdateException.class)
+            .hasMessageContaining(ExceptionType.CAN_NOT_UPDATE_TABLE_IN_COOKING_AND_MEAL_STATUS.getMessage());
     }
 }

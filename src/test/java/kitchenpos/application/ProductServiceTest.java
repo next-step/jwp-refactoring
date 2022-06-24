@@ -9,6 +9,8 @@ import static org.mockito.Mockito.when;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import kitchenpos.core.exception.BadRequestException;
+import kitchenpos.core.exception.ExceptionType;
 import kitchenpos.menu.application.ProductService;
 import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.domain.ProductRepository;
@@ -59,7 +61,7 @@ class ProductServiceTest {
         );
     }
 
-    @DisplayName("상품의 가격이 없으면 예외가 발생해야 한다")
+    @DisplayName("상품의 이름이 없으면 예외가 발생해야 한다")
     @Test
     void create_exception_test() {
         // given
@@ -68,7 +70,8 @@ class ProductServiceTest {
         // then
         assertThatThrownBy(() -> {
             productService.create(상품_request);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(BadRequestException.class)
+            .hasMessageContaining(ExceptionType.INVALID_NAME.getMessage());
     }
 
     @DisplayName("상품의 가격이 없으면 예외가 발생해야 한다")
@@ -80,7 +83,8 @@ class ProductServiceTest {
         // then
         assertThatThrownBy(() -> {
             productService.create(상품_request);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(BadRequestException.class)
+            .hasMessageContaining(ExceptionType.INVALID_PRICE.getMessage());
     }
 
     @DisplayName("상품의 가격이 음수이면 예외가 발생해야 한다")
@@ -92,7 +96,8 @@ class ProductServiceTest {
         // then
         assertThatThrownBy(() -> {
             productService.create(상품_request);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(BadRequestException.class)
+            .hasMessageContaining(ExceptionType.INVALID_PRICE.getMessage());
     }
 
     @DisplayName("상품목록을 조회한다")

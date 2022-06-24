@@ -11,6 +11,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import kitchenpos.core.exception.BadRequestException;
+import kitchenpos.core.exception.CannotCreateException;
+import kitchenpos.core.exception.ExceptionType;
+import kitchenpos.core.exception.NotFoundException;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
@@ -94,7 +98,8 @@ class OrderServiceTest {
         // then
         assertThatThrownBy(() -> {
             orderService.create(주문_request);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(BadRequestException.class)
+            .hasMessageContaining(ExceptionType.EMPTY_ORDER_LINE_ITEM.getMessage());
     }
 
     @DisplayName("주문등록시 주문 항목의 메뉴중 존재하지 않는 메뉴가 있다면 예외가 발생한다")
@@ -108,7 +113,8 @@ class OrderServiceTest {
         // then
         assertThatThrownBy(() -> {
             orderService.create(주문_request);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(CannotCreateException.class)
+            .hasMessageContaining(ExceptionType.CONTAINS_NOT_EXIST_MENU.getMessage());
     }
 
     @DisplayName("주문등록시 주문 테이블이 존재하지 테이블이라면 예외가 발생한다")
@@ -124,7 +130,8 @@ class OrderServiceTest {
         // then
         assertThatThrownBy(() -> {
             orderService.create(주문_request);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(NotFoundException.class)
+            .hasMessageContaining(ExceptionType.NOT_EXIST_ORDER_TABLE.getMessage());
     }
 
     @DisplayName("주문상태를 변경하면 정상적으로 변경되어야 한다")
@@ -152,9 +159,11 @@ class OrderServiceTest {
         when(orderRepository.findById(주문.getId()))
             .thenReturn(Optional.empty());
 
+        // then
         assertThatThrownBy(() -> {
             orderService.changeOrderStatus(주문.getId(), 주문_request);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(NotFoundException.class)
+            .hasMessageContaining(ExceptionType.NOT_EXIST_ORDER.getMessage());
     }
 
     @DisplayName("주문목록을 조회한다")

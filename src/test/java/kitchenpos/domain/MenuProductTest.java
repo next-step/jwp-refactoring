@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.math.BigDecimal;
+import kitchenpos.core.exception.CannotCreateException;
+import kitchenpos.core.exception.ExceptionType;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.Price;
@@ -23,7 +25,8 @@ class MenuProductTest {
 
         // then
         assertThatThrownBy(menuProduct::validateHasProduct)
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(CannotCreateException.class)
+            .hasMessageContaining(ExceptionType.CONTAINS_NOT_EXIST_PRODUCT.getMessage());
     }
 
     @DisplayName("상품의 가격, 개수의 합을 정상적으로 반환해야 한다")

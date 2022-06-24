@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Arrays;
 import java.util.Collections;
+import kitchenpos.core.exception.CannotCreateException;
+import kitchenpos.core.exception.ExceptionType;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
@@ -81,7 +83,8 @@ class OrderTablesTest {
 
         // then
         assertThatThrownBy(주문테이블_목록::validateTablesEmpty)
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(CannotCreateException.class)
+            .hasMessageContaining(ExceptionType.MUST_NOT_BE_EMPTY_OR_GROUPED_TABLE.getMessage());
     }
 
     @DisplayName("주문 테이블목록에 이미 그룹에 포함된 테이블이 있으면 예외가 발생한다")
@@ -93,6 +96,7 @@ class OrderTablesTest {
 
         // then
         assertThatThrownBy(주문테이블_목록::validateTablesEmpty)
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(CannotCreateException.class)
+            .hasMessageContaining(ExceptionType.MUST_NOT_BE_EMPTY_OR_GROUPED_TABLE.getMessage());
     }
 }

@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import kitchenpos.core.exception.BadRequestException;
+import kitchenpos.core.exception.ExceptionType;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.Product;
@@ -31,12 +33,13 @@ class MenuTest {
         assertThat(메뉴_상품2.getMenu()).isEqualTo(메뉴);
     }
 
-    @DisplayName("메뉴의 이름이 null 이면 예외갑 발생한다")
+    @DisplayName("메뉴의 이름이 null 이면 예외가 발생한다")
     @Test
     void exception_test() {
         assertThatThrownBy(() -> {
             Menu.of(null, BigDecimal.valueOf(500L), null);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(BadRequestException.class)
+            .hasMessageContaining(ExceptionType.INVALID_NAME.getMessage());
     }
 
     @DisplayName("메뉴의 이름이 공백이면 예외갑 발생한다")
@@ -44,6 +47,7 @@ class MenuTest {
     void exception_test2() {
         assertThatThrownBy(() -> {
             Menu.of("", BigDecimal.valueOf(500L), null);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(BadRequestException.class)
+            .hasMessageContaining(ExceptionType.INVALID_NAME.getMessage());
     }
 }

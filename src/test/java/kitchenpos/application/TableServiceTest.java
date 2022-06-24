@@ -9,6 +9,10 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import kitchenpos.core.exception.BadRequestException;
+import kitchenpos.core.exception.CannotUpdateException;
+import kitchenpos.core.exception.ExceptionType;
+import kitchenpos.core.exception.NotFoundException;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.application.TableService;
@@ -107,7 +111,8 @@ class TableServiceTest {
         // then
         assertThatThrownBy(() -> {
             tableService.changeEmpty(주문_테이블.getId());
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(NotFoundException.class)
+            .hasMessageContaining(ExceptionType.NOT_EXIST_ORDER_TABLE.getMessage());
     }
 
     @DisplayName("주문 테이블을 빈 테이블로 변경시 요리중, 식사중인 테이블이 있다면 예외가 발생한다")
@@ -123,7 +128,8 @@ class TableServiceTest {
         // then
         assertThatThrownBy(() -> {
             tableService.changeEmpty(주문_테이블.getId());
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(CannotUpdateException.class)
+            .hasMessageContaining(ExceptionType.CAN_NOT_UPDATE_TABLE_IN_COOKING_AND_MEAL_STATUS.getMessage());
     }
 
     @DisplayName("주문 테이블의 손님 수를 변경하면 정상적으로 변경된다")
@@ -152,7 +158,8 @@ class TableServiceTest {
         // then
         assertThatThrownBy(() -> {
             tableService.changeNumberOfGuests(주문_테이블.getId(), 주문_테이블_request);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(BadRequestException.class)
+            .hasMessageContaining(ExceptionType.CAN_NOT_LESS_THAN_ZERO_GUESTS.getMessage());
     }
 
     @DisplayName("주문 테이블의 손님 수 변경시 변경할 주문 테이블이 존재하지 않으면 예외가 발생한다")
@@ -165,7 +172,8 @@ class TableServiceTest {
         // then
         assertThatThrownBy(() -> {
             tableService.changeNumberOfGuests(주문_테이블.getId(), 주문_테이블_request);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(NotFoundException.class)
+            .hasMessageContaining(ExceptionType.NOT_EXIST_ORDER_TABLE.getMessage());
     }
 
     @DisplayName("주문 테이블의 손님 수 변경시 변경할 주문 테이블이 비어있다면 예외가 발생한다")
@@ -178,6 +186,7 @@ class TableServiceTest {
         // then
         assertThatThrownBy(() -> {
             tableService.changeNumberOfGuests(주문_테이블.getId(), 주문_테이블_request);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(BadRequestException.class)
+            .hasMessageContaining(ExceptionType.EMPTY_TABLE.getMessage());
     }
 }

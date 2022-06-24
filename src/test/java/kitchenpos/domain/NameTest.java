@@ -2,6 +2,8 @@ package kitchenpos.domain;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import kitchenpos.core.exception.BadRequestException;
+import kitchenpos.core.exception.ExceptionType;
 import kitchenpos.menu.domain.Name;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +18,8 @@ class NameTest {
 
         assertThatThrownBy(() -> {
             new Name(value);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(BadRequestException.class)
+            .hasMessageContaining(ExceptionType.INVALID_NAME.getMessage());
     }
 
     @DisplayName("이름이 공백이면 예외가 발생한다")
@@ -26,6 +29,7 @@ class NameTest {
 
         assertThatThrownBy(() -> {
             new Name(value);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(BadRequestException.class)
+            .hasMessageContaining(ExceptionType.INVALID_NAME.getMessage());
     }
 }

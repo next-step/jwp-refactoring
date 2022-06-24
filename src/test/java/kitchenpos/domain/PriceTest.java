@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
+import kitchenpos.core.exception.BadRequestException;
+import kitchenpos.core.exception.ExceptionType;
 import kitchenpos.menu.domain.Price;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +23,8 @@ class PriceTest {
         // then
         assertThatThrownBy(() -> {
             new Price(value);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(BadRequestException.class)
+            .hasMessageContaining(ExceptionType.INVALID_PRICE.getMessage());
     }
 
     @DisplayName("금액에 음수를 전달하면 예외가 발생한다")
@@ -33,7 +36,8 @@ class PriceTest {
         // then
         assertThatThrownBy(() -> {
             new Price(value);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(BadRequestException.class)
+            .hasMessageContaining(ExceptionType.INVALID_PRICE.getMessage());
     }
 
     @DisplayName("금액을 더하면 정상적으로 계산된다")

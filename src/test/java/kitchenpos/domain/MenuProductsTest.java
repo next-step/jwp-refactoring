@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import kitchenpos.core.exception.CannotCreateException;
+import kitchenpos.core.exception.ExceptionType;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.Price;
@@ -33,7 +35,8 @@ class MenuProductsTest {
         // then
         assertThatThrownBy(() -> {
             new MenuProducts(Arrays.asList(menuProduct, menuProduct2), null);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(CannotCreateException.class)
+            .hasMessageContaining(ExceptionType.CONTAINS_NOT_EXIST_PRODUCT.getMessage());
     }
 
     @DisplayName("메뉴 상품들의 가격의 합보다 메뉴 가격이 높으면 예외가 발생한다")
@@ -47,6 +50,7 @@ class MenuProductsTest {
         Price menuPrice = new Price(BigDecimal.valueOf(2410L));
         assertThatThrownBy(() -> {
             new MenuProducts(Arrays.asList(menuProduct, menuProduct2), menuPrice);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(CannotCreateException.class)
+            .hasMessageContaining(ExceptionType.IS_NOT_OVER_THAN_MENU_PRICE.getMessage());
     }
 }

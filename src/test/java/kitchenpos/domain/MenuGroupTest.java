@@ -3,6 +3,8 @@ package kitchenpos.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import kitchenpos.core.exception.BadRequestException;
+import kitchenpos.core.exception.ExceptionType;
 import kitchenpos.menu.domain.MenuGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +27,8 @@ class MenuGroupTest {
     void exception_test() {
         assertThatThrownBy(() -> {
             MenuGroup.of(null);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(BadRequestException.class)
+            .hasMessageContaining(ExceptionType.INVALID_NAME.getMessage());
     }
 
     @DisplayName("메뉴 그룹의 이름이 공백이면 예외가 발생한다")
@@ -33,6 +36,7 @@ class MenuGroupTest {
     void exception_test2() {
         assertThatThrownBy(() -> {
             MenuGroup.of("");
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(BadRequestException.class)
+            .hasMessageContaining(ExceptionType.INVALID_NAME.getMessage());
     }
 }

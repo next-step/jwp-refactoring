@@ -18,6 +18,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import kitchenpos.core.exception.BadRequestException;
+import kitchenpos.core.exception.CannotCreateException;
+import kitchenpos.core.exception.ExceptionType;
+import kitchenpos.core.exception.NotFoundException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
@@ -99,7 +103,8 @@ class MenuServiceTest {
         // then
         assertThatThrownBy(() -> {
             menuService.create(치킨_메뉴);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(NotFoundException.class)
+            .hasMessageContaining(ExceptionType.NOT_EXIST_MENU.getMessage());
     }
 
     @DisplayName("메뉴 등록시 메뉴의 금액이 없으면 예외가 발생한다")
@@ -112,7 +117,8 @@ class MenuServiceTest {
         // then
         assertThatThrownBy(() -> {
             menuService.create(치킨_메뉴);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(BadRequestException.class)
+            .hasMessageContaining(ExceptionType.INVALID_PRICE.getMessage());
     }
 
     @DisplayName("메뉴 등록시 메뉴의 금액이 0 미만이면 예외가 발생한다")
@@ -125,7 +131,8 @@ class MenuServiceTest {
         // then
         assertThatThrownBy(() -> {
             menuService.create(치킨_메뉴);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(BadRequestException.class)
+            .hasMessageContaining(ExceptionType.INVALID_PRICE.getMessage());
     }
 
     @DisplayName("메뉴 등록시 등록할 메뉴의 상품이 존재하지 않으면 예외가 발생한다")
@@ -141,7 +148,8 @@ class MenuServiceTest {
         // then
         assertThatThrownBy(() -> {
             menuService.create(치킨_메뉴);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(CannotCreateException.class)
+            .hasMessageContaining(ExceptionType.CONTAINS_NOT_EXIST_PRODUCT.getMessage());
     }
 
     @DisplayName("등록할 메뉴의 상품들의 금액의 합보다 메뉴의 금액이 더 크면 예외가 발생한다")
@@ -157,7 +165,8 @@ class MenuServiceTest {
         // then
         assertThatThrownBy(() -> {
             menuService.create(치킨_메뉴);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(CannotCreateException.class)
+            .hasMessageContaining(ExceptionType.IS_NOT_OVER_THAN_MENU_PRICE.getMessage());
     }
 
     @DisplayName("모든 메뉴 목록을 조회한다")

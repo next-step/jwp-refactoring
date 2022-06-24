@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Collections;
+import kitchenpos.core.exception.BadRequestException;
+import kitchenpos.core.exception.ExceptionType;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,7 +56,8 @@ class OrderTableTest {
 
         // then
         assertThatThrownBy(orderTable::validateHasTableGroupId)
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(BadRequestException.class)
+            .hasMessageContaining(ExceptionType.TABLE_IS_GROUPED.getMessage());
     }
 
     @DisplayName("주문 테이블이 빈 테이블인지 확인시 테이블이 비었다면 예외가 발생한다")
@@ -65,6 +68,7 @@ class OrderTableTest {
 
         // then
         assertThatThrownBy(orderTable::validateIsEmpty)
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(BadRequestException.class)
+            .hasMessageContaining(ExceptionType.EMPTY_TABLE.getMessage());
     }
 }

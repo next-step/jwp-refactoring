@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
+import kitchenpos.core.exception.BadRequestException;
+import kitchenpos.core.exception.ExceptionType;
 import kitchenpos.menu.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,7 +38,8 @@ class ProductTest {
         // then
         assertThatThrownBy(() -> {
             Product.of(name, price);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(BadRequestException.class)
+            .hasMessageContaining(ExceptionType.INVALID_NAME.getMessage());
     }
 
     @DisplayName("상품에 가격을 null 로 전달하면 예외가 발생한다")
@@ -49,7 +52,8 @@ class ProductTest {
         // then
         assertThatThrownBy(() -> {
             Product.of(name, price);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(BadRequestException.class)
+            .hasMessageContaining(ExceptionType.INVALID_PRICE.getMessage());
     }
 
     @DisplayName("상품에 가격을 음수로 전달하면 예외가 발생한다")
@@ -62,6 +66,7 @@ class ProductTest {
         // then
         assertThatThrownBy(() -> {
             Product.of(name, price);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(BadRequestException.class)
+            .hasMessageContaining(ExceptionType.INVALID_PRICE.getMessage());
     }
 }
