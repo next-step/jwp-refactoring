@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -50,7 +51,7 @@ class MenuServiceTest {
     void setUp() {
         menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
         menuProduct = new MenuProduct(1L, 1L, 1L, 2);
-        menu = new Menu("후라이드+후라이드", BigDecimal.valueOf(1_000), 1L, List.of(menuProduct));
+        menu = new Menu("후라이드+후라이드", BigDecimal.valueOf(1_000), 1L, Arrays.asList(menuProduct));
         product = new Product("후라이드", BigDecimal.valueOf(500));
     }
 
@@ -65,7 +66,7 @@ class MenuServiceTest {
         // when
         final Menu actual = menuService.create(menu);
         // then
-        assertThat(actual).isEqualTo(new Menu("후라이드+후라이드", BigDecimal.valueOf(1_000), 1L, List.of(menuProduct)));
+        assertThat(actual).isEqualTo(new Menu("후라이드+후라이드", BigDecimal.valueOf(1_000), 1L, Arrays.asList(menuProduct)));
     }
 
     @ParameterizedTest(name = "메뉴의 가격은 음수이거나 없으면 예외 발생")
@@ -112,7 +113,7 @@ class MenuServiceTest {
     @DisplayName("메뉴 가격은 구성하는 상품들의 합보다 크면 에러 발생")
     void invalidPriceMoreThenProductSum() {
         // given
-        final Menu invalidMenu = new Menu("잘못된_메뉴", BigDecimal.valueOf(100_000), 1L, List.of(menuProduct));
+        final Menu invalidMenu = new Menu("잘못된_메뉴", BigDecimal.valueOf(100_000), 1L, Arrays.asList(menuProduct));
         when(menuGroupDao.existsById(any())).thenReturn(true);
         when(productDao.findById(any())).thenReturn(Optional.of(product));
         // when && then
@@ -124,8 +125,8 @@ class MenuServiceTest {
     @DisplayName("메뉴를 조회할 수 있다.")
     void searchMenus() {
         // given
-        when(menuDao.findAll()).thenReturn(List.of(menu));
-        when(menuProductDao.findAllByMenuId(any())).thenReturn(List.of(menuProduct));
+        when(menuDao.findAll()).thenReturn(Arrays.asList(menu));
+        when(menuProductDao.findAllByMenuId(any())).thenReturn(Arrays.asList(menuProduct));
         // when
         final List<Menu> actual = menuService.list();
         // then

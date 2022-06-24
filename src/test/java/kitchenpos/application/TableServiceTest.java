@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.dao.OrderDao;
@@ -54,7 +55,7 @@ class TableServiceTest {
     @DisplayName("주문 테이블들을 조회한다.")
     void searchOrderTable() {
         // given
-        when(orderTableDao.findAll()).thenReturn(List.of(new OrderTable()));
+        when(orderTableDao.findAll()).thenReturn(Arrays.asList(new OrderTable()));
         // when
         final List<OrderTable> actual = tableService.list();
         // then
@@ -72,7 +73,7 @@ class TableServiceTest {
         final OrderTable emptyOrderTable = new OrderTable(1L, null, 5, true);
         when(orderTableDao.findById(any())).thenReturn(Optional.of(fullOrderTable));
         when(orderDao.existsByOrderTableIdAndOrderStatusIn(1L,
-                List.of(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(false);
+                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(false);
         when(orderTableDao.save(any())).thenReturn(emptyOrderTable);
         // when
         final OrderTableResponse actual = tableService.changeEmpty(1L, new OrderTableRequest(null, true));
@@ -106,7 +107,7 @@ class TableServiceTest {
         final OrderTable fullOrderTable = new OrderTable(1L, null, 5, false);
         when(orderTableDao.findById(any())).thenReturn(Optional.of(fullOrderTable));
         when(orderDao.existsByOrderTableIdAndOrderStatusIn(1L,
-                List.of(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(true);
+                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(true);
         // when && then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableService.changeEmpty(1L, new OrderTableRequest()));

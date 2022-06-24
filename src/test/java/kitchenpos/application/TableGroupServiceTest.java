@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 import kitchenpos.dao.OrderDao;
@@ -49,11 +50,11 @@ class TableGroupServiceTest {
         // given
         final OrderTable orderTableOf5Guests = new OrderTable(1L, null, 5, true);
         final OrderTable orderTableOf3Guests = new OrderTable(2L, null, 3, true);
-        final TableGroup tableGroup = new TableGroup(List.of(orderTableOf5Guests, orderTableOf3Guests));
-        when(orderTableDao.findAllByIdIn(any())).thenReturn(List.of(orderTableOf5Guests, orderTableOf3Guests));
+        final TableGroup tableGroup = new TableGroup(Arrays.asList(orderTableOf5Guests, orderTableOf3Guests));
+        when(orderTableDao.findAllByIdIn(any())).thenReturn(Arrays.asList(orderTableOf5Guests, orderTableOf3Guests));
         when(tableGroupDao.save(any())).thenReturn(tableGroup);
         // when
-        final TableGroup actual = tableGroupService.create(new kitchenpos.dto.TableGroupRequest(List.of(1L, 2L)));
+        final TableGroup actual = tableGroupService.create(new kitchenpos.dto.TableGroupRequest(Arrays.asList(1L, 2L)));
         // then
         assertAll(
                 () -> assertThat(actual).isNotNull(),
@@ -65,7 +66,7 @@ class TableGroupServiceTest {
     @DisplayName("엮을 테이블은 한 개 이하면 예외 발생")
     void invalidLessThen2OrderTable() {
         // given
-        final kitchenpos.dto.TableGroupRequest tableGroupRequest = new kitchenpos.dto.TableGroupRequest(List.of(1L));
+        final kitchenpos.dto.TableGroupRequest tableGroupRequest = new kitchenpos.dto.TableGroupRequest(Arrays.asList(1L));
         // when && then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableGroupService.create(tableGroupRequest));
@@ -75,7 +76,7 @@ class TableGroupServiceTest {
     @DisplayName("엮을 주문 테이블이 존재하지 않으면 예외 발생")
     void notExistOrderTableId() {
         // given
-        final kitchenpos.dto.TableGroupRequest tableGroupRequest = new kitchenpos.dto.TableGroupRequest(List.of(1L, 2L));
+        final kitchenpos.dto.TableGroupRequest tableGroupRequest = new kitchenpos.dto.TableGroupRequest(Arrays.asList(1L, 2L));
         // when && then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableGroupService.create(tableGroupRequest));
@@ -85,7 +86,7 @@ class TableGroupServiceTest {
     @MethodSource("invalidEmptyOrGroupingOrderTableParameter")
     void emptyOrGroupingOrderTable(List<OrderTable> orderTables) {
         // given
-        final TableGroupRequest tableGroupRequest = new TableGroupRequest(List.of(1L, 2L));
+        final TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(1L, 2L));
         when(orderTableDao.findAllByIdIn(any())).thenReturn(orderTables);
         // when && then
         assertThatIllegalArgumentException()
@@ -99,10 +100,10 @@ class TableGroupServiceTest {
 
         return Stream.of(
                 Arguments.of(
-                        List.of(groupingOrderTable, groupingOrderTable)
+                        Arrays.asList(groupingOrderTable, groupingOrderTable)
                 ),
                 Arguments.of(
-                        List.of(notEmptyOrderTable, notEmptyOrderTable)
+                        Arrays.asList(notEmptyOrderTable, notEmptyOrderTable)
                 )
         );
     }
@@ -113,9 +114,9 @@ class TableGroupServiceTest {
         // given
         final OrderTable groupingOneOrderTable = new OrderTable(1L, 1L, 5, false);
         final OrderTable groupingTwoOrderTable = new OrderTable(2L, 1L, 3, true);
-        when(orderTableDao.findAllByTableGroupId(any())).thenReturn(List.of(groupingOneOrderTable, groupingTwoOrderTable));
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(List.of(1L, 2L),
-                List.of(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(false);
+        when(orderTableDao.findAllByTableGroupId(any())).thenReturn(Arrays.asList(groupingOneOrderTable, groupingTwoOrderTable));
+        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(1L, 2L),
+                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(false);
         when(orderTableDao.save(any())).thenReturn(any());
         // when && then
         tableGroupService.ungroup(1L);
@@ -127,9 +128,9 @@ class TableGroupServiceTest {
         // given
         final OrderTable groupingOneOrderTable = new OrderTable(1L, 1L, 5, false);
         final OrderTable groupingTwoOrderTable = new OrderTable(2L, 1L, 3, true);
-        when(orderTableDao.findAllByTableGroupId(any())).thenReturn(List.of(groupingOneOrderTable, groupingTwoOrderTable));
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(List.of(1L, 2L),
-                List.of(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(true);
+        when(orderTableDao.findAllByTableGroupId(any())).thenReturn(Arrays.asList(groupingOneOrderTable, groupingTwoOrderTable));
+        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(1L, 2L),
+                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(true);
 
         // when && then
         assertThatIllegalArgumentException()

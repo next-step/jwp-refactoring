@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
@@ -38,7 +39,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
         // given
         메뉴_그룹_생성_요청("후라이드세트");
         제품_생성_요청("후라이드", 16_000);
-        final List<MenuProduct> 메뉴_제품들 = List.of(new MenuProduct(1L, 1L, 1L, 2));
+        final List<MenuProduct> 메뉴_제품들 = Arrays.asList(new MenuProduct(1L, 1L, 1L, 2));
 
         // when
         final ExtractableResponse<Response> 메뉴_생성_요청_결과 = 메뉴_생성_요청("반반후라이드", 16_000, 1L, 메뉴_제품들);
@@ -46,7 +47,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
 
         // then
         final ExtractableResponse<Response> 메뉴_조회_결과 = 메뉴_조회();
-        메뉴_조회_확인(메뉴_조회_결과, List.of(new Menu("반반후라이드", BigDecimal.valueOf(16_000.0), 1L, 메뉴_제품들)));
+        메뉴_조회_확인(메뉴_조회_결과, Arrays.asList(new Menu("반반후라이드", BigDecimal.valueOf(16_000.0), 1L, 메뉴_제품들)));
     }
 
     public static ExtractableResponse<Response> 메뉴_생성_요청(String 메뉴명, Integer 메뉴_금액, Long 메뉴_그룹_아이디,

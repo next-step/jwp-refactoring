@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.dao.MenuDao;
@@ -52,8 +53,8 @@ class OrderServiceTest {
     @DisplayName("주문을 생성한다.")
     void createOrder() {
         // given
-        final Order order = new Order(1L, List.of(orderLineItem));
-        when(menuDao.countByIdIn(List.of(1L))).thenReturn(1L);
+        final Order order = new Order(1L, Arrays.asList(orderLineItem));
+        when(menuDao.countByIdIn(Arrays.asList(1L))).thenReturn(1L);
         when(orderTableDao.findById(any())).thenReturn(Optional.of(new OrderTable(1L, null, 3, false)));
         when(orderDao.save(order)).thenReturn(order);
         when(orderLineItemDao.save(orderLineItem)).thenReturn(orderLineItem);
@@ -82,7 +83,7 @@ class OrderServiceTest {
     @DisplayName("등록되지 않은 메뉴 주문시 에러 발생")
     void orderNotExistMenu() {
         // given
-        final Order notExistMenuOrder = new Order(1L, List.of(orderLineItem));
+        final Order notExistMenuOrder = new Order(1L, Arrays.asList(orderLineItem));
 
         // when && then
         assertThatIllegalArgumentException()
@@ -93,8 +94,8 @@ class OrderServiceTest {
     @DisplayName("주문 테이블이 존재하지 않으면 에러 발생")
     void notExistOrderTable() {
         // given
-        final Order order = new Order(1L, List.of(orderLineItem));
-        when(menuDao.countByIdIn(List.of(1L))).thenReturn(1L);
+        final Order order = new Order(1L, Arrays.asList(orderLineItem));
+        when(menuDao.countByIdIn(Arrays.asList(1L))).thenReturn(1L);
         when(orderTableDao.findById(any())).thenReturn(Optional.empty());
 
         // when && then
@@ -106,9 +107,9 @@ class OrderServiceTest {
     @DisplayName("주문 내역을 조회할 수 있다.")
     void searchOrders() {
         // given
-        final Order order = new Order(1L, List.of(orderLineItem));
-        when(orderDao.findAll()).thenReturn(List.of(order));
-        when(orderLineItemDao.findAllByOrderId(any())).thenReturn(List.of(orderLineItem));
+        final Order order = new Order(1L, Arrays.asList(orderLineItem));
+        when(orderDao.findAll()).thenReturn(Arrays.asList(order));
+        when(orderLineItemDao.findAllByOrderId(any())).thenReturn(Arrays.asList(orderLineItem));
         // when
         final List<Order> actual = orderService.list();
         // then
@@ -123,10 +124,10 @@ class OrderServiceTest {
     @DisplayName("주문의 상태를 변경할 수 있다.")
     void changeOrderStatus() {
         // given
-        final Order order = new Order(1L, List.of(orderLineItem));
+        final Order order = new Order(1L, Arrays.asList(orderLineItem));
         when(orderDao.findById(any())).thenReturn(Optional.of(order));
         when(orderDao.save(any())).thenReturn(order);
-        when(orderLineItemDao.findAllByOrderId(any())).thenReturn(List.of(orderLineItem));
+        when(orderLineItemDao.findAllByOrderId(any())).thenReturn(Arrays.asList(orderLineItem));
         // when
         final Order actual = orderService.changeOrderStatus(1L, new Order(OrderStatus.COOKING.name()));
         // then
@@ -145,7 +146,7 @@ class OrderServiceTest {
     @DisplayName("완료된 주문을 주문 상태 변경시 에러 발생")
     void changeOrderStatusCompletionOrder() {
         // given
-        final Order order = new Order(null, 1L, OrderStatus.COMPLETION.name(), null, List.of(orderLineItem));
+        final Order order = new Order(null, 1L, OrderStatus.COMPLETION.name(), null, Arrays.asList(orderLineItem));
         when(orderDao.findById(any())).thenReturn(Optional.of(order));
 
         // when && then
