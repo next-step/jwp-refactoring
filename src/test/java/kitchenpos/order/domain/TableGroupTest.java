@@ -1,6 +1,5 @@
 package kitchenpos.order.domain;
 
-import static kitchenpos.utils.DomainFixtureFactory.createOrderLineItem;
 import static kitchenpos.utils.DomainFixtureFactory.createOrderTable;
 import static org.assertj.core.api.Assertions.assertThat;
 
