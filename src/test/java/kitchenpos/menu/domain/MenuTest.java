@@ -2,10 +2,12 @@ package kitchenpos.menu.domain;
 
 import static kitchenpos.utils.DomainFixtureFactory.createMenuGroup;
 import static kitchenpos.utils.DomainFixtureFactory.createMenuProduct;
+import static kitchenpos.utils.DomainFixtureFactory.createProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.math.BigDecimal;
+import kitchenpos.product.domain.Product;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,7 +19,8 @@ class MenuTest {
 
     @BeforeEach
     void setUp() {
-        양념치킨상품 = createMenuProduct(1L, 1L, 1L, 2L);
+        Product 양념 = createProduct(1L, "양념", BigDecimal.valueOf(20000L));
+        양념치킨상품 = createMenuProduct(1L, null, 양념, 2L);
         한마리메뉴 = createMenuGroup(1L, "한마리메뉴");
     }
 

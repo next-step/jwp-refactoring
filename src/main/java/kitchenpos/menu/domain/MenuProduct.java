@@ -1,28 +1,47 @@
 package kitchenpos.menu.domain;
 
 import java.util.Objects;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import kitchenpos.domain.Quantity;
+import kitchenpos.product.domain.Product;
 
+@Entity
 public class MenuProduct {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
-    private Long menuId;
-    private Long productId;
-    private long quantity;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_menu_product_menu"), nullable = false)
+    private Menu menu;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_menu_product_product"), nullable = false)
+    private Product product;
+    @Embedded
+    private Quantity quantity;
 
     public MenuProduct() {
     }
 
-    private MenuProduct(Long seq, Long menuId, Long productId, long quantity) {
+    private MenuProduct(Long seq, Menu menu, Product product, long quantity) {
         this.seq = seq;
-        this.menuId = menuId;
-        this.productId = productId;
-        this.quantity = quantity;
+        this.menu = menu;
+        this.product = product;
+        this.quantity = Quantity.of(quantity);
     }
 
-    public static MenuProduct of(Long seq, Long menuId, Long productId, long quantity) {
-        return new MenuProduct(seq, menuId, productId, quantity);
+    public static MenuProduct of(Long seq, Menu menu, Product product, long quantity) {
+        return new MenuProduct(seq, menu, product, quantity);
     }
 
-    public Long getSeq() {
+    public Long seq() {
         return seq;
     }
 
@@ -30,27 +49,27 @@ public class MenuProduct {
         this.seq = seq;
     }
 
-    public Long getMenuId() {
-        return menuId;
+    public Menu menu() {
+        return menu;
     }
 
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
+    public void setMenu(final Menu menu) {
+        this.menu = menu;
     }
 
-    public Long getProductId() {
-        return productId;
+    public Product product() {
+        return product;
     }
 
-    public void setProductId(final Long productId) {
-        this.productId = productId;
+    public void setProduct(final Product product) {
+        this.product = product;
     }
 
-    public long getQuantity() {
+    public Quantity quantity() {
         return quantity;
     }
 
-    public void setQuantity(final long quantity) {
+    public void setQuantity(final Quantity quantity) {
         this.quantity = quantity;
     }
 

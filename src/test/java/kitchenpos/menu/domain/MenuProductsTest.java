@@ -1,20 +1,25 @@
 package kitchenpos.menu.domain;
 
 import static kitchenpos.utils.DomainFixtureFactory.createMenuProduct;
+import static kitchenpos.utils.DomainFixtureFactory.createProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
+import java.math.BigDecimal;
+import kitchenpos.product.domain.Product;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class MenuProductsTest {
-    MenuProduct 양념치킨상품;
+    private MenuProduct 양념치킨상품;
+    private Product 양념;
 
     @BeforeEach
     void setUp() {
-        양념치킨상품 = createMenuProduct(1L, null, 1L, 2L);
+        양념 = createProduct(1L, "양념", BigDecimal.valueOf(20000L));
+        양념치킨상품 = createMenuProduct(1L, null, 양념, 2L);
     }
 
     @DisplayName("초기화 테스트")
