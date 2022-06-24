@@ -1,5 +1,7 @@
 package kitchenpos.domain;
 
+import static javax.persistence.CascadeType.ALL;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +26,22 @@ public class Menu {
     private BigDecimal price;
     @Column(name = "menu_group_id", nullable = false)
     private Long menuGroupId;
-    @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY, cascade = ALL)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
     public Menu() {
     }
+
+    public Menu(String name, BigDecimal price) {
+        this.name = name;
+        this.price = price;
+    }
+    public Menu(String name, BigDecimal price, Long menuGroupId) {
+        this.name = name;
+        this.price = price;
+        this.menuGroupId = menuGroupId;
+    }
+
 
     public Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         this.name = name;

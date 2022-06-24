@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
@@ -15,6 +16,8 @@ import kitchenpos.domain.Product;
 import kitchenpos.domain.repository.MenuGroupRepository;
 import kitchenpos.domain.repository.MenuRepository;
 import kitchenpos.domain.repository.ProductRepository;
+import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.MenuResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
@@ -55,12 +58,13 @@ class MenuServiceTest extends ServiceTest{
     @Test
     @DisplayName("메뉴 등록에 성공한다.")
     void create() {
-        Menu 후라이드_양념_세트 = new Menu("후라이드_양념_세트", BigDecimal.valueOf(31000), 두마리메뉴.getId(), Arrays.asList(후라이드_메뉴상품, 양념치킨_메뉴상품));
+        Menu 후라이드_양념_세트 =
+            new Menu("후라이드_양념_세트", BigDecimal.valueOf(31000), 두마리메뉴.getId(), Arrays.asList(후라이드_메뉴상품, 양념치킨_메뉴상품));
 
-        후라이드_양념_세트 = this.menuService.create(후라이드_양념_세트);
+        MenuResponse menuResponse = this.menuService.create(MenuRequest.of(후라이드_양념_세트));
 
-        assertThat(후라이드_양념_세트.getId()).isNotNull();
-        assertThat(후라이드_양념_세트.getMenuProducts()).hasSize(2);
+        assertThat(menuResponse.getId()).isNotNull();
+        assertThat(menuResponse.getMenuProducts()).hasSize(2);
     }
 
     @TestFactory
@@ -97,23 +101,18 @@ class MenuServiceTest extends ServiceTest{
     @Test
     @DisplayName("메뉴를 모두 조회한다.")
     void list() {
-        Menu 후라이드_양념_세트 = new Menu("후라이드_양념_세트", BigDecimal.valueOf(31000), 두마리메뉴.getId(), Arrays.asList(후라이드_메뉴상품, 양념치킨_메뉴상품));
-        Menu 임시_메뉴 = new Menu("닭강정", BigDecimal.valueOf(5000), 두마리메뉴.getId(), Collections.singletonList(후라이드_메뉴상품));
-        후라이드_양념_세트 = this.menuRepository.save(후라이드_양념_세트);
-        임시_메뉴 = this.menuRepository.save(임시_메뉴);
-        후라이드_양념_세트.setMenuProducts(Collections.emptyList());
-        임시_메뉴.setMenuProducts(Collections.emptyList());
+        Menu 후라이드_양념_세트 = new Menu("후라이드_양념_세트", BigDecimal.valueOf(31000), 두마리메뉴.getId(), Collections.emptyList());
+        Menu 임시_메뉴 = new Menu("닭강정", BigDecimal.valueOf(5000), 두마리메뉴.getId(), Collections.emptyList());
+        List<Menu> menus = this.menuRepository.saveAll(Arrays.asList(후라이드_양념_세트, 임시_메뉴));
 
-        List<Menu> list = this.menuService.list();
+        List<MenuResponse> menuResponses = this.menuService.list();
 
-        assertThat(list).containsExactly(후라이드_양념_세트, 임시_메뉴);
+        assertThat(menuResponses).containsAll(menus.stream().map(MenuResponse::of).collect(Collectors.toList()));
     }
-
-
 
     private void 메뉴그룹_생성_실패(Menu menu, Class<? extends Exception> exception) {
         assertThatExceptionOfType(exception)
-            .isThrownBy(() -> this.menuService.create(menu));
+            .isThrownBy(() -> this.menuService.create(MenuRequest.of(menu)));
     }
 
 }
