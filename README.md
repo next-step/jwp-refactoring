@@ -95,11 +95,11 @@
   - [x] order line item
   - [x] order table
   - [x] table group
-- [ ] Service 비즈니스 로직 도메인으로 책임 위임
+- [x] Service 비즈니스 로직 도메인으로 책임 위임
   - [x] ProductService
   - [x] MenuService
   - [x] MenuGroupService
-  - [ ] OrderService
+  - [x] OrderService
   - [x] TableService
   - [x] TableGroupService
 - [x] DAO -> Repository 변경
@@ -111,8 +111,8 @@
   - [x] order line item
   - [x] order table
   - [x] table group
-- [ ] 불필요한 getter, setter 제거
-- [ ] 모든 원시 값과 문자열 포장
+- [x] 불필요한 getter, setter 제거
+- [x] 모든 원시 값과 문자열 포장
 
 ---
 ### 프로그래밍 요구 사항
