@@ -63,8 +63,7 @@ class TableGroupServiceTest {
     @Test
     void create_throwException_ifIncorrectSize() {
         // given
-        TableGroup tableGroup = new TableGroup.Builder().orderTables(
-                Collections.singletonList(new OrderTable.Builder().id(1L).numberOfGuests(0).empty(true).build())).build();
+        TableGroup tableGroup = new TableGroup.Builder().orderTables(Arrays.asList(createOrderTable(1L, 0, true))).build();
 
         // when
         // then
@@ -79,12 +78,9 @@ class TableGroupServiceTest {
     void ungroup() {
         // given
         given(orderTableDao.findAllByTableGroupId(1L))
-                .willReturn(
-                        Arrays.asList(new OrderTable.Builder().id(1L).numberOfGuests(4).empty(false).build(),
-                                new OrderTable.Builder().id(2L).numberOfGuests(0).empty(false).build()));
+                .willReturn(Arrays.asList(createOrderTable(1L, 4, false), createOrderTable(2L, 0, false)));
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(
-                Arrays.asList(1L, 2L),
-                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(false);
+                Arrays.asList(1L, 2L), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(false);
 
         // when
         tableGroupService.ungroup(1L);
@@ -100,12 +96,9 @@ class TableGroupServiceTest {
     void ungroup_throwException_ifOrderStatusInCookingAndMeal() {
         // given
         given(orderTableDao.findAllByTableGroupId(1L))
-                .willReturn(
-                        Arrays.asList(new OrderTable.Builder(4, false).id(1L).build(),
-                                new OrderTable.Builder(0, false).id(2L).build()));
+                .willReturn(Arrays.asList(createOrderTable(1L, 4, false), createOrderTable(2L, 0, false)));
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(
-                Arrays.asList(1L, 2L),
-                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(true);
+                Arrays.asList(1L, 2L), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(true);
 
         // when
         // then
@@ -115,5 +108,9 @@ class TableGroupServiceTest {
 
         // verify
         then(orderTableDao).should(never()).save(any(OrderTable.class));
+    }
+
+    public static OrderTable createOrderTable(Long id, int numberOfGuests, boolean empty) {
+        return new OrderTable.Builder().id(id).numberOfGuests(numberOfGuests).empty(empty).build();
     }
 }
