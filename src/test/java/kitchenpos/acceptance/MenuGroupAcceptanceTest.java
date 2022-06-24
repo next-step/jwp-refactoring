@@ -28,7 +28,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
         메뉴_그룹_목록_조회됨(메뉴_그룹_목록_조회_요청_결과);
     }
 
-    private ExtractableResponse<Response> 메뉴_그룹_생성_요청(String name) {
+    private static ExtractableResponse<Response> 메뉴_그룹_생성_요청(String name) {
         MenuGroup menuGroup = new MenuGroup();
         menuGroup.setName(name);
 
@@ -41,11 +41,11 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 메뉴_그룹_생성됨(ExtractableResponse<Response> response) {
+    private static void 메뉴_그룹_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    private ExtractableResponse<Response> 메뉴_그룹_목록_조회_요청() {
+    private static ExtractableResponse<Response> 메뉴_그룹_목록_조회_요청() {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -54,8 +54,13 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 메뉴_그룹_목록_조회됨(ExtractableResponse<Response> response) {
+    private static void 메뉴_그룹_목록_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
+    public static MenuGroup 메뉴_그룹_등록_되어_있음(String name) {
+        ExtractableResponse<Response> response = 메뉴_그룹_생성_요청(name);
+
+        return response.as(MenuGroup.class);
+    }
 }

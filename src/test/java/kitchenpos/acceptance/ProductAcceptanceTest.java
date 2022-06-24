@@ -33,7 +33,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         상품_목록_조회됨(상품_조회_요청_결과);
     }
 
-    private ExtractableResponse<Response> 상품_생성_요청(String name, BigDecimal price) {
+    private static ExtractableResponse<Response> 상품_생성_요청(String name, BigDecimal price) {
         Product product = new Product();
         product.setName(name);
         product.setPrice(price);
@@ -62,5 +62,11 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 
     private void 상품_목록_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static Product 상품_등록_되어_있음(String name, BigDecimal price) {
+        ExtractableResponse<Response> response = 상품_생성_요청(name, price);
+
+        return response.as(Product.class);
     }
 }
