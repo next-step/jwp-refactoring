@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -17,23 +18,20 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
-
     @Mock
     private ProductDao productDao;
+    @InjectMocks
+    ProductService productService;
+
     private Product 치킨;
     private Product 피자;
-
-    ProductService productService;
 
     @BeforeEach
     void setUp() {
         치킨 = new Product( 1L, "치킨", BigDecimal.valueOf(15000L));
         피자 = new Product(2L, "피자", BigDecimal.valueOf(20000L));
-
-        productService = new ProductService(productDao);
     }
 
     @DisplayName("상품을 등록할 수 있다")
