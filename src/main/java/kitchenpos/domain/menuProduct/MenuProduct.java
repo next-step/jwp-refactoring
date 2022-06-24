@@ -20,8 +20,8 @@ public class MenuProduct {
     @JoinColumn(nullable = false, name = "product_id")
     private Product product;
 
-    @Column(nullable = false)
-    private long quantity;
+    @Embedded
+    private MenuProductQuantity quantity;
 
     public MenuProduct() {
 
@@ -31,11 +31,11 @@ public class MenuProduct {
         this.seq = seq;
         this.menu = menu;
         this.product = product;
-        this.quantity = quantity;
+        this.quantity = new MenuProductQuantity(quantity);
     }
 
     public BigDecimal calculateAmount() {
-        return product.calculateAmount(quantity);
+        return product.calculateAmount(quantity.getQuantity());
     }
 
     public void updateMenu(Menu menu) {
@@ -55,6 +55,6 @@ public class MenuProduct {
     }
 
     public long getQuantity() {
-        return quantity;
+        return quantity.getQuantity();
     }
 }

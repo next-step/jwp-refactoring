@@ -16,8 +16,8 @@ public class Menu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String name;
+    @Embedded
+    private MenuName name;
 
     @Column(nullable = false)
     private BigDecimal price;
@@ -39,7 +39,7 @@ public class Menu {
 
     public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
         this.id = id;
-        this.name = name;
+        this.name = new MenuName(name);
         this.price = price;
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
@@ -70,7 +70,7 @@ public class Menu {
     }
 
     public String getName() {
-        return name;
+        return name.getName();
     }
 
     public BigDecimal getPrice() {

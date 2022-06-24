@@ -19,8 +19,8 @@ public class OrderLineItem {
     @JoinColumn(nullable = false, name = "menu_id")
     private Menu menu;
 
-    @Column(nullable = false)
-    private long quantity;
+    @Embedded
+    private OrderLineItemQuantity quantity;
 
     public OrderLineItem() {
 
@@ -30,7 +30,7 @@ public class OrderLineItem {
         this.seq = seq;
         this.order = order;
         this.menu = menu;
-        this.quantity = quantity;
+        this.quantity = new OrderLineItemQuantity(quantity);
     }
 
     public Long getSeq() {
@@ -42,6 +42,6 @@ public class OrderLineItem {
     }
 
     public long getQuantity() {
-        return quantity;
+        return quantity.getQuantity();
     }
 }

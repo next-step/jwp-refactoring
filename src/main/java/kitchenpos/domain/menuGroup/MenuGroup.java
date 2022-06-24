@@ -10,15 +10,15 @@ public class MenuGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String name;
+    @Embedded
+    private MenuGroupName name;
 
     public MenuGroup() {
     }
 
     public MenuGroup(Long id, String name) {
         this.id = id;
-        this.name = name;
+        this.name = new MenuGroupName(name);
     }
 
     public static MenuGroup of(MenuGroupRequest menuGroupRequest) {
@@ -30,6 +30,6 @@ public class MenuGroup {
     }
 
     public String getName() {
-        return name;
+        return name.getName();
     }
 }

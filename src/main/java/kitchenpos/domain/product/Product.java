@@ -4,7 +4,6 @@ import kitchenpos.dto.product.ProductResponse;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.Objects;
 
 @Entity
 public class Product {
@@ -12,11 +11,11 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String name;
+    @Embedded
+    private ProductName name;
 
-    @Column(nullable = false)
-    private BigDecimal price;
+    @Embedded
+    private ProductPrice price;
 
     public Product() {
 
@@ -28,8 +27,8 @@ public class Product {
 
     public Product(Long id, String name, BigDecimal price) {
         this.id = id;
-        this.name = name;
-        this.price = price;
+        this.name = new ProductName(name);
+        this.price = new ProductPrice(price);
     }
 
     public static Product of(ProductResponse productResponse) {
@@ -37,13 +36,11 @@ public class Product {
     }
 
     public void validate() {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("상품의 가격은 0원 미만일 수 없습니다.");
-        }
+        price.minimumCheck();
     }
 
     public BigDecimal calculateAmount(long quantity) {
-        return price.multiply(BigDecimal.valueOf(quantity));
+        return price.calculateAmount(quantity);
     }
 
     public Long getId() {
@@ -51,10 +48,10 @@ public class Product {
     }
 
     public String getName() {
-        return name;
+        return name.getName();
     }
 
     public BigDecimal getPrice() {
-        return price;
+        return price.getPrice();
     }
 }

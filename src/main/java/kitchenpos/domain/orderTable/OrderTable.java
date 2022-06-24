@@ -16,8 +16,8 @@ public class OrderTable {
     @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
     private TableGroup tableGroup;
 
-    @Column(nullable = false)
-    private int numberOfGuests;
+    @Embedded
+    private OrderTableNumberOfGuests numberOfGuests;
 
     @Column(nullable = false)
     private boolean empty;
@@ -29,7 +29,7 @@ public class OrderTable {
     public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
         this.id = id;
         this.tableGroup = tableGroup;
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = new OrderTableNumberOfGuests(numberOfGuests);
         this.empty = empty;
     }
 
@@ -44,7 +44,7 @@ public class OrderTable {
 
     public void updateNumberOfGuests(int numberOfGuests) {
         valdateForUpdateNumberOfGuests(numberOfGuests);
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = new OrderTableNumberOfGuests(numberOfGuests);
     }
 
     private void valdateForUpdateEmpty() {
@@ -68,7 +68,7 @@ public class OrderTable {
     }
 
     public int getNumberOfGuests() {
-        return numberOfGuests;
+        return numberOfGuests.getNumberOfGuests();
     }
 
     public boolean isEmpty() {
