@@ -15,6 +15,7 @@ import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
+import kitchenpos.dto.OrderRequest;
 import kitchenpos.utils.RestAssuredHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -84,8 +85,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 주문_요청(Long 테이블_번호, Long 메뉴_번호, Long 갯수) {
-        final OrderLineItem 메뉴_번호_및_갯수 = new OrderLineItem(메뉴_번호, 갯수);
-        return RestAssuredHelper.post(ORDER_URI, new Order(테이블_번호, Arrays.asList(메뉴_번호_및_갯수)));
+        return RestAssuredHelper.post(ORDER_URI, new OrderRequest(테이블_번호, Arrays.asList(메뉴_번호)));
     }
 
     public static void 주문_요청_결과_확인(ExtractableResponse<Response> 주문_요청_결과) {

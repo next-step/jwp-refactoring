@@ -2,11 +2,12 @@ package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.dao.MenuDao;
@@ -17,6 +18,7 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -53,13 +55,13 @@ class OrderServiceTest {
     @DisplayName("주문을 생성한다.")
     void createOrder() {
         // given
-        final Order order = new Order(1L, Arrays.asList(orderLineItem));
+        final Order order = new Order(null, 1L, OrderStatus.COOKING.name(), null, null);
         when(menuDao.countByIdIn(Arrays.asList(1L))).thenReturn(1L);
         when(orderTableDao.findById(any())).thenReturn(Optional.of(new OrderTable(1L, null, 3, false)));
-        when(orderDao.save(order)).thenReturn(order);
+        when(orderDao.save(any())).thenReturn(order);
         when(orderLineItemDao.save(orderLineItem)).thenReturn(orderLineItem);
         // when
-        final Order actual = orderService.create(order);
+        final Order actual = orderService.create(new OrderRequest(1L, Arrays.asList(1L)));
         // then
         assertAll(
                 () -> assertThat(actual.getOrderLineItems()).hasSize(1),
@@ -72,35 +74,35 @@ class OrderServiceTest {
     @DisplayName("주문 할 메뉴가 없으면 에러 발생")
     void invalidZeroOfOrderLineItem() {
         // given
-        final Order invalidOrder = new Order(1L, null);
+        final OrderRequest invalidOrderRequest = new OrderRequest(1L, Collections.emptyList());
 
         // when && then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderService.create(invalidOrder));
+                .isThrownBy(() -> orderService.create(invalidOrderRequest));
     }
 
     @Test
     @DisplayName("등록되지 않은 메뉴 주문시 에러 발생")
     void orderNotExistMenu() {
         // given
-        final Order notExistMenuOrder = new Order(1L, Arrays.asList(orderLineItem));
+        final OrderRequest notExistMenuOrderRequest = new OrderRequest(1L, Arrays.asList(1L));
 
         // when && then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderService.create(notExistMenuOrder));
+                .isThrownBy(() -> orderService.create(notExistMenuOrderRequest));
     }
 
     @Test
     @DisplayName("주문 테이블이 존재하지 않으면 에러 발생")
     void notExistOrderTable() {
         // given
-        final Order order = new Order(1L, Arrays.asList(orderLineItem));
+        final Order order = new Order(null, 1L, OrderStatus.COOKING.name(), null, null);
         when(menuDao.countByIdIn(Arrays.asList(1L))).thenReturn(1L);
         when(orderTableDao.findById(any())).thenReturn(Optional.empty());
 
         // when && then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderService.create(order));
+                .isThrownBy(() -> orderService.create(new OrderRequest(1L, Arrays.asList(1L))));
     }
 
     @Test
