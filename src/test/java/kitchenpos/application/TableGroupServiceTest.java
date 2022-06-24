@@ -14,6 +14,7 @@ import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.TableGroupRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -52,7 +53,7 @@ class TableGroupServiceTest {
         when(orderTableDao.findAllByIdIn(any())).thenReturn(List.of(orderTableOf5Guests, orderTableOf3Guests));
         when(tableGroupDao.save(any())).thenReturn(tableGroup);
         // when
-        final TableGroup actual = tableGroupService.create(tableGroup);
+        final TableGroup actual = tableGroupService.create(new kitchenpos.dto.TableGroupRequest(List.of(1L, 2L)));
         // then
         assertAll(
                 () -> assertThat(actual).isNotNull(),
@@ -64,45 +65,44 @@ class TableGroupServiceTest {
     @DisplayName("엮을 테이블은 한 개 이하면 예외 발생")
     void invalidLessThen2OrderTable() {
         // given
-        final OrderTable orderTableOf5Guests = new OrderTable(1L, null, 5, true);
-        final TableGroup tableGroup = new TableGroup(List.of(orderTableOf5Guests));
+        final kitchenpos.dto.TableGroupRequest tableGroupRequest = new kitchenpos.dto.TableGroupRequest(List.of(1L));
         // when && then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.create(tableGroup));
+                .isThrownBy(() -> tableGroupService.create(tableGroupRequest));
     }
 
     @Test
     @DisplayName("엮을 주문 테이블이 존재하지 않으면 예외 발생")
     void notExistOrderTableId() {
         // given
-        final OrderTable orderTableOf5Guests = new OrderTable(1L, null, 5, true);
-        final OrderTable orderTableOf3Guests = new OrderTable(2L, null, 3, true);
-        final TableGroup tableGroup = new TableGroup(List.of(orderTableOf5Guests, orderTableOf3Guests));
+        final kitchenpos.dto.TableGroupRequest tableGroupRequest = new kitchenpos.dto.TableGroupRequest(List.of(1L, 2L));
         // when && then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.create(tableGroup));
+                .isThrownBy(() -> tableGroupService.create(tableGroupRequest));
     }
 
     @ParameterizedTest(name = "빈 테이블이거나 다른 테이블에 그룹화 되어 있으면 예외 발생")
     @MethodSource("invalidEmptyOrGroupingOrderTableParameter")
-    void emptyOrGroupingOrderTable(TableGroup tableGroup) {
-        when(orderTableDao.findAllByIdIn(any())).thenReturn(List.of(new OrderTable(), new OrderTable()));
+    void emptyOrGroupingOrderTable(List<OrderTable> orderTables) {
+        // given
+        final TableGroupRequest tableGroupRequest = new TableGroupRequest(List.of(1L, 2L));
+        when(orderTableDao.findAllByIdIn(any())).thenReturn(orderTables);
         // when && then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.create(tableGroup));
+                .isThrownBy(() -> tableGroupService.create(tableGroupRequest));
     }
 
     public static Stream<Arguments> invalidEmptyOrGroupingOrderTableParameter() {
         // given
         final OrderTable groupingOrderTable = new OrderTable(1L, 2L, 5, false);
-        final OrderTable emptyOrderTable = new OrderTable(2L, null, 3, true);
+        final OrderTable notEmptyOrderTable = new OrderTable(2L, null, 3, false);
 
         return Stream.of(
                 Arguments.of(
-                        new TableGroup(List.of(groupingOrderTable, groupingOrderTable))
+                        List.of(groupingOrderTable, groupingOrderTable)
                 ),
                 Arguments.of(
-                        new TableGroup(List.of(emptyOrderTable, emptyOrderTable))
+                        List.of(notEmptyOrderTable, notEmptyOrderTable)
                 )
         );
     }

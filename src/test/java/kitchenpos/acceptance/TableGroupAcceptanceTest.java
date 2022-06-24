@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.utils.RestAssuredHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -66,10 +66,11 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 테이블_단체_그룹_요청(List<ExtractableResponse<Response>> 테이블_주문_결과들) {
-        final List<OrderTable> 테이블_주문 = 테이블_주문_결과들.stream()
+        final List<Long> 테이블_주문 = 테이블_주문_결과들.stream()
                 .map(it -> it.body().jsonPath().getObject(".", OrderTable.class))
+                .map(OrderTable::getId)
                 .collect(Collectors.toList());
-        return RestAssuredHelper.post(TABLE_GROUP_URI, new TableGroup(테이블_주문));
+        return RestAssuredHelper.post(TABLE_GROUP_URI, new TableGroupRequest(테이블_주문));
     }
 
     public static void 테이블_단체_그룹_요청_확인(ExtractableResponse<Response> 테이블_단체_그룹_요청_결과) {
