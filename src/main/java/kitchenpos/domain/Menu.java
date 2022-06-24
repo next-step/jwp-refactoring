@@ -10,6 +10,17 @@ public class Menu {
     private Long menuGroupId;
     private List<MenuProduct> menuProducts;
 
+    public Menu() {
+    }
+
+    public Menu(Builder builder) {
+        this.id = builder.id;
+        this.name = builder.name;
+        this.price = builder.price;
+        this.menuGroupId = builder.menuGroupId;
+        this.menuProducts = builder.menuProducts;
+    }
+
     public Long getId() {
         return id;
     }
@@ -48,5 +59,52 @@ public class Menu {
 
     public void setMenuProducts(final List<MenuProduct> menuProducts) {
         this.menuProducts = menuProducts;
+    }
+
+    public static class Builder {
+        private Long id;
+        private String name;
+        private BigDecimal price;
+        private Long menuGroupId;
+        private List<MenuProduct> menuProducts;
+
+        public Builder() {
+        }
+
+        public Builder(String name, long price, Long menuGroupId, List<MenuProduct> menuProducts) {
+            this.name = name;
+            this.price = BigDecimal.valueOf(price);
+            this.menuGroupId = menuGroupId;
+            this.menuProducts = menuProducts;
+        }
+
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder price(long price) {
+            this.price = BigDecimal.valueOf(price);
+            return this;
+        }
+
+        public Builder menuGroupId(Long menuGroupId) {
+            this.menuGroupId = menuGroupId;
+            return this;
+        }
+
+        public Builder menuProducts(List<MenuProduct> menuProducts) {
+            this.menuProducts = menuProducts;
+            return this;
+        }
+
+        public Menu build() {
+            return new Menu(this);
+        }
     }
 }

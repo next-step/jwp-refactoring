@@ -7,6 +7,15 @@ public class Product {
     private String name;
     private BigDecimal price;
 
+    public Product() {
+    }
+
+    public Product(Builder builder) {
+        this.id = builder.id;
+        this.name = builder.name;
+        this.price = builder.price;
+    }
+
     public Long getId() {
         return id;
     }
@@ -29,5 +38,38 @@ public class Product {
 
     public void setPrice(final BigDecimal price) {
         this.price = price;
+    }
+
+    public static class Builder {
+        private Long id;
+        private String name;
+        private BigDecimal price;
+
+        public Builder() {
+        }
+
+        public Builder(String name, long price) {
+            this.name = name;
+            this.price = BigDecimal.valueOf(price);
+        }
+
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder price(long price) {
+            this.price = BigDecimal.valueOf(price);
+            return this;
+        }
+
+        public Product build() {
+            return new Product(this);
+        }
     }
 }
