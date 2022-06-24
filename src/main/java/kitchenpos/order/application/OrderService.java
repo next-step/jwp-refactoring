@@ -37,7 +37,7 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(OrderRequest request) {
-        orderCreatingValidator.validate(request);
+        orderCreatingValidator.validate(request.toMenuIds(), request.getOrderTableId());
         Order order = orderRepository.save(request.toOrder());
         order.addOrderLineItems(toOrderLineItems(request.getOrderLineItems()));
         return OrderResponse.of(order);

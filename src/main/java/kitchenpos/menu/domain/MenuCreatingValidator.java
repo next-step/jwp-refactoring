@@ -5,8 +5,6 @@ import kitchenpos.core.domain.DomainService;
 import kitchenpos.core.domain.Price;
 import kitchenpos.core.domain.Quantity;
 import kitchenpos.core.exception.InvalidPriceException;
-import kitchenpos.menu.dto.MenuProductRequest;
-import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menugroup.exception.NotFoundMenuGroupException;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
@@ -26,9 +24,9 @@ public class MenuCreatingValidator {
         this.productRepository = productRepository;
     }
 
-    public void validate(MenuRequest menu) {
-        validateExistMenuGroup(menu.getMenuGroupId());
-        validateAmount(new Price( menu.getPrice()), menu.getMenuProducts());
+    public void validate(Long menuGroupId, Price price, List<MenuProduct> menuProducts) {
+        validateExistMenuGroup(menuGroupId);
+        validateAmount(price, menuProducts);
     }
 
     private void validateExistMenuGroup(Long menuGroupId) {
@@ -37,18 +35,18 @@ public class MenuCreatingValidator {
         }
     }
 
-    private void validateAmount(Price price, List<MenuProductRequest> menuProductRequests) {
-        Amount amount = calculateTotalAmount(menuProductRequests);
+    private void validateAmount(Price price, List<MenuProduct> menuProducts) {
+        Amount amount = calculateTotalAmount(menuProducts);
         if (price.toAmount().isGatherThan(amount)) {
             throw new InvalidPriceException("상품들 금액의 합이 메뉴 가격보다 클 수 없습니다.");
         }
     }
 
-    private Amount calculateTotalAmount(List<MenuProductRequest> menuProductRequests) {
+    private Amount calculateTotalAmount(List<MenuProduct> menuProducts) {
         Amount totalAmount = Amount.ZERO;
-        for (MenuProductRequest menuProductRequest : menuProductRequests) {
-            Product product = findProductById(menuProductRequest.getProductId());
-            Amount amount = calculateAmount(product.getPrice(), new Quantity(menuProductRequest.getQuantity()));
+        for (MenuProduct menuProduct: menuProducts) {
+            Product product = findProductById(menuProduct.getProductId());
+            Amount amount = calculateAmount(product.getPrice(), menuProduct.getQuantity());
             totalAmount = totalAmount.add(amount);
         }
         return totalAmount;

@@ -2,8 +2,6 @@ package kitchenpos.order.domain;
 
 import kitchenpos.core.domain.DomainService;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.dto.OrderLineItemRequest;
-import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.exception.EmptyOrderLineItemsException;
 import kitchenpos.order.exception.InvalidOrderException;
 import kitchenpos.table.domain.OrderTable;
@@ -24,16 +22,14 @@ public class OrderCreatingValidator {
         this.tableDomainService = tableDomainService;
     }
 
-    public void validate(OrderRequest request) {
-        List<OrderLineItemRequest> orderLineItems = request.getOrderLineItems();
-        List<Long> menuIds = request.toMenuIds();
-        validateNotEmptyOrderLineItems(orderLineItems);
+    public void validate(List<Long> menuIds, Long orderTableId) {
+        validateNotEmptyMenuIds(menuIds);
         validateExistsAllMenus(menuIds);
-        validateNotEmptyOrderTable(request.getOrderTableId());
+        validateNotEmptyOrderTable(orderTableId);
     }
 
-    private void validateNotEmptyOrderLineItems(List<OrderLineItemRequest> orderLineItems) {
-        if (CollectionUtils.isEmpty(orderLineItems)) {
+    private void validateNotEmptyMenuIds(List<Long> menuIds) {
+        if (CollectionUtils.isEmpty(menuIds)) {
             throw new EmptyOrderLineItemsException();
         }
     }
