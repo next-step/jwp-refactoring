@@ -8,7 +8,6 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 
 import java.util.Arrays;
 import java.util.Collections;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
@@ -28,8 +27,6 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class OrderServiceTest {
 
-    @Autowired
-    private OrderTableDao orderTableDao;
     @Autowired
     private OrderTableRepository orderTableRepository;
     @Autowired
@@ -91,38 +88,38 @@ class OrderServiceTest {
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(request));
     }
 
-//
-//    @DisplayName("주문 상태를 업데이트 한다.")
-//    @Test
-//    void changeOrderStatus() {
-//        //given
-//        OrderTable orderTable = orderTableDao.save(new OrderTable(2L, null, 3, false));
-//        OrderLineItem orderLineItem1 = new OrderLineItem(null, null, 1L, 1);
-//        OrderLineItem orderLineItem2 = new OrderLineItem(null, null, 3L, 1);
-//        Order order = orderService.create(new Order(null, orderTable.getId(), null, null, Arrays.asList(orderLineItem1, orderLineItem2)));
-//        Order request = new Order(null, null, OrderStatus.MEAL.name(), null, null);
-//
-//        //when
-//        Order result = orderService.changeOrderStatus(order.getId(), request);
-//
-//        //then
-//        assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
-//    }
-//
-//    @DisplayName("주문 상태가 계산완료인 경우 주문 상태를 업데이트 할 수 없다.")
-//    @Test
-//    void changeOrderStatus_completion() {
-//        //given
-//        OrderTable orderTable = orderTableDao.save(new OrderTable(3L, null, 3, false));
-//        OrderLineItem orderLineItem1 = new OrderLineItem(null, null, 1L, 1);
-//        OrderLineItem orderLineItem2 = new OrderLineItem(null, null, 3L, 1);
-//        Order order = orderService.create(new Order(null, orderTable.getId(), null, null, Arrays.asList(orderLineItem1, orderLineItem2)));
-//        orderService.changeOrderStatus(order.getId(), new Order(null, null, OrderStatus.COMPLETION.name(), null, null));
-//
-//        Order request = new Order(null, null, OrderStatus.MEAL.name(), null, null);
-//
-//        //when then
-//        assertThatIllegalArgumentException().isThrownBy(() -> orderService.changeOrderStatus(order.getId(), request));
-//    }
+
+    @DisplayName("주문 상태를 업데이트 한다.")
+    @Test
+    void changeOrderStatus() {
+        //given
+        OrderLineItemRequest orderLineItem1 = 주문_항목_요청_만들기(1L, 1);
+        OrderLineItemRequest orderLineItem2 = 주문_항목_요청_만들기(2L, 2);
+        OrderTable orderTable = orderTableRepository.save(테이블_만들기(3, false));
+        OrderResponse request = orderService
+                .create(주문_요청_만들기(orderTable.getId(), Arrays.asList(orderLineItem1, orderLineItem2)));
+
+        //when
+        OrderResponse result = orderService.changeOrderStatus(request.getId(), 주문_요청_만들기(OrderStatus.MEAL));
+
+        //then
+        assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
+    }
+
+    @DisplayName("주문 상태가 계산완료인 경우 주문 상태를 업데이트 할 수 없다.")
+    @Test
+    void changeOrderStatus_completion() {
+        //given
+        OrderLineItemRequest orderLineItem1 = 주문_항목_요청_만들기(1L, 1);
+        OrderLineItemRequest orderLineItem2 = 주문_항목_요청_만들기(2L, 2);
+        OrderTable orderTable = orderTableRepository.save(테이블_만들기(3, false));
+        OrderResponse orderResponse = orderService
+                .create(주문_요청_만들기(orderTable.getId(), Arrays.asList(orderLineItem1, orderLineItem2)));
+        orderService.changeOrderStatus(orderResponse.getId(), 주문_요청_만들기(OrderStatus.COMPLETION));
+
+        //when then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> orderService.changeOrderStatus(orderResponse.getId(), 주문_요청_만들기(OrderStatus.COOKING)));
+    }
 
 }

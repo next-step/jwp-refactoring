@@ -17,6 +17,10 @@ public class OrderFixtures {
         return 주문_요청_만들기(null, orderTableId, null, orderLineItems);
     }
 
+    public static OrderRequest 주문_요청_만들기(OrderStatus orderStatus){
+        return 주문_요청_만들기(null, null, orderStatus.name(), null);
+    }
+
     public static Order 주문_만들기(OrderStatus orderStatus){
         return 주문_만들기(null, orderStatus, null);
     }

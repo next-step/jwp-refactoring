@@ -14,12 +14,9 @@ import static org.mockito.Mockito.doAnswer;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
@@ -152,64 +149,5 @@ class OrderServiceTest {
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(request));
     }
 
-    @DisplayName("주문 상태를 업데이트 한다.")
-    @Test
-    void changeOrderStatus() {
-        //given
-        long requestOrderId = 1;
-        Order request = new Order(null, null, OrderStatus.MEAL.name(), null, null);
-        OrderLineItem orderLineItem1 = new OrderLineItem(1L, 1L, 1L, 10);
-        OrderLineItem orderLineItem2 = new OrderLineItem(2L, 1L, 3L, 5);
-
-        given(orderDao.findById(requestOrderId))
-                .willReturn(Optional.of(new Order(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), null)));
-        given(orderLineItemDao.findAllByOrderId(requestOrderId))
-                .willReturn(Arrays.asList(orderLineItem1, orderLineItem2));
-
-        //when
-        Order result = orderService.changeOrderStatus(requestOrderId, request);
-
-        //then
-        assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
-    }
-
-
-    @DisplayName("주문 상태가 계산완료인 경우 주문 상태를 업데이트 할 수 없다.")
-    @Test
-    void changeOrderStatus_completion() {
-        //given
-        long requestOrderId = 1;
-        Order request = new Order(null, null, OrderStatus.MEAL.name(), null, null);
-
-        given(orderDao.findById(requestOrderId))
-                .willReturn(Optional.of(new Order(1L, 1L, OrderStatus.COMPLETION.name(), LocalDateTime.now(), null)));
-
-        //when then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.changeOrderStatus(requestOrderId, request));
-    }
-
-
-    @DisplayName("주문 목록을 조회한다.")
-    @Test
-    void list() {
-        //given
-        OrderLineItem orderLineItem1 = new OrderLineItem(null, null, 1L, 10);
-        OrderLineItem orderLineItem2 = new OrderLineItem(null, null, 3L, 5);
-        OrderLineItem orderLineItem3 = new OrderLineItem(null, null, 1L, 10);
-        Order order1 = new Order(1L, 1L, OrderStatus.MEAL.name(), LocalDateTime.now(), null);
-        Order order2 = new Order(2L, 2L, OrderStatus.COMPLETION.name(), LocalDateTime.now(), null);
-
-        given(orderDao.findAll()).willReturn(Arrays.asList(order1, order2));
-        given(orderLineItemDao.findAllByOrderId(order1.getId()))
-                .willReturn(Arrays.asList(orderLineItem1, orderLineItem2));
-        given(orderLineItemDao.findAllByOrderId(order2.getId())).willReturn(Arrays.asList(orderLineItem3));
-
-        //when
-        List<Order> results = orderService.list();
-
-        //then
-        assertThat(results.get(0).getOrderLineItems()).hasSize(2);
-        assertThat(results.get(1).getOrderLineItems()).hasSize(1);
-    }
 
 }
