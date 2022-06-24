@@ -28,7 +28,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("상품을 등록한다")
     @Test
-    void create_test_copy() {
+    void create_test() {
         // when
         ExtractableResponse<Response> response = 상품_등록요청(상품);
 
@@ -38,7 +38,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("상품목록을 조회한다")
     @Test
-    void find_test_copy() {
+    void find_test() {
         // given
         상품_등록요청(상품);
         상품_등록요청(상품2);

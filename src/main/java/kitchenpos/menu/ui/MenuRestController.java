@@ -24,14 +24,14 @@ public class MenuRestController {
     }
 
     @PostMapping
-    public ResponseEntity<MenuResponse> createCopy(@RequestBody final MenuRequest menuRequest) {
+    public ResponseEntity<MenuResponse> create(@RequestBody final MenuRequest menuRequest) {
         final MenuResponse created = menuService.create(menuRequest);
         final URI uri = URI.create("/api/menus/" + created.getId());
         return ResponseEntity.created(uri).body(created);
     }
 
     @GetMapping
-    public ResponseEntity<List<MenuResponse>> listCopy() {
+    public ResponseEntity<List<MenuResponse>> list() {
         return ResponseEntity.ok().body(menuService.list());
     }
 }

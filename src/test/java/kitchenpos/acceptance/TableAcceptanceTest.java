@@ -33,7 +33,7 @@ class TableAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("주문 테이블을 등록한다")
     @Test
-    void create_test_copy() {
+    void create_test() {
         // when
         ExtractableResponse<Response> response = 주문_테이블_등록요청(주문_테이블_request);
 
@@ -43,7 +43,7 @@ class TableAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("주문 테이블 목록을 조회한다")
     @Test
-    void find_test_copy() {
+    void find_test() {
         // given
         주문_테이블_등록요청(주문_테이블_request);
         주문_테이블_등록요청(주문_테이블2_request);
@@ -57,7 +57,7 @@ class TableAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("주문 테이블을 빈 테이블로 변경한다")
     @Test
-    void change_empty_test_copy() {
+    void change_empty_test() {
         // given
         OrderTableResponse orderTable = 주문_테이블_등록요청(주문_테이블_request).as(OrderTableResponse.class);
 
@@ -70,7 +70,7 @@ class TableAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("주문 테이블의 손님 수를 변경한다")
     @Test
-    void change_number_of_guests_test_copy() {
+    void change_number_of_guests_test() {
         // given
         주문_테이블_request = new OrderTableRequest(null, null, 3, false);
         OrderTableResponse orderTable = 주문_테이블_등록요청(주문_테이블_request).as(OrderTableResponse.class);

@@ -13,9 +13,10 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.Arrays;
-import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.request.MenuGroupRequest;
 import kitchenpos.menu.domain.request.MenuProductRequest;
 import kitchenpos.menu.domain.request.MenuRequest;
+import kitchenpos.menu.domain.response.MenuGroupResponse;
 import kitchenpos.menu.domain.response.MenuResponse;
 import kitchenpos.menu.domain.response.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -69,7 +70,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
         MenuProductRequest 메뉴_상품_후라이드_치킨 = new MenuProductRequest(후라이드_치킨.getId(), 1);
         MenuProductRequest 메뉴_상품_감자튀김 = new MenuProductRequest(감자튀김.getId(), 1);
-        MenuGroup 치킨_메뉴_그룹 = 메뉴_그룹_등록요청(MenuGroup.of(null, "치킨_메뉴")).as(MenuGroup.class);
+        MenuGroupResponse 치킨_메뉴_그룹 = 메뉴_그룹_등록요청(new MenuGroupRequest("치킨_메뉴")).as(MenuGroupResponse.class);
 
         MenuRequest 치킨_메뉴 = new MenuRequest("후라이드치킨 세트", BigDecimal.valueOf(18000L), 치킨_메뉴_그룹.getId(),
             Arrays.asList(메뉴_상품_후라이드_치킨, 메뉴_상품_감자튀김));
