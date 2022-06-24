@@ -2,11 +2,14 @@ package kitchenpos.domain.menu;
 
 import kitchenpos.domain.menuGroup.MenuGroup;
 import kitchenpos.domain.menuProduct.MenuProduct;
+import kitchenpos.domain.menuProduct.MenuProducts;
+import kitchenpos.domain.product.Product;
 import kitchenpos.dto.menu.MenuRequest;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Menu {
@@ -24,8 +27,8 @@ public class Menu {
     @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"))
     private MenuGroup menuGroup;
 
-    @OneToMany(mappedBy = "menu")
-    private List<MenuProduct> menuProducts;
+    @Embedded
+    private MenuProducts menuProducts;
 
     public Menu() {
 
@@ -36,7 +39,7 @@ public class Menu {
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
-        this.menuProducts = menuProducts;
+        this.menuProducts = new MenuProducts(menuProducts);
     }
 
     public static Menu of(MenuRequest menuRequest, MenuGroup menuGroup) {
@@ -44,7 +47,15 @@ public class Menu {
     }
 
     public void validateForCreate() {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException();
+        }
 
+        BigDecimal sum = menuProducts.calculateProductsSum();
+
+        if (price.compareTo(sum) > 0) {
+            throw new IllegalArgumentException();
+        }
     }
 
     public Long getId() {
@@ -75,11 +86,11 @@ public class Menu {
         return menuGroup;
     }
 
-    public List<MenuProduct> getMenuProducts() {
+    public MenuProducts getMenuProducts() {
         return menuProducts;
     }
 
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
+    public void bindMenuProducts() {
+        menuProducts.updateMenu(this);
     }
 }

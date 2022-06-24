@@ -2,6 +2,8 @@ package kitchenpos.dto.menuProduct;
 
 import kitchenpos.domain.menuProduct.MenuProduct;
 
+import java.util.Objects;
+
 public class MenuProductResponse {
     private final Long seq;
     private final Long menuId;
@@ -37,5 +39,19 @@ public class MenuProductResponse {
 
     public long getQuantity() {
         return quantity;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MenuProductResponse)) return false;
+        MenuProductResponse that = (MenuProductResponse) o;
+        if (Objects.equals(getSeq(), that.getSeq())) return true;
+        return getQuantity() == that.getQuantity() && Objects.equals(getMenuId(), that.getMenuId()) && Objects.equals(getProductId(), that.getProductId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getSeq(), getMenuId(), getProductId(), getQuantity());
     }
 }

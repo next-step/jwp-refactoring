@@ -27,6 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 
 @DisplayName("메뉴 관련 테스트")
@@ -58,11 +59,11 @@ class MenuServiceTest {
     @BeforeEach
     void setUp() {
         초밥 = new Product(1L, "초밥", BigDecimal.valueOf(10000));
-        우동 = new Product(2L, "우동", BigDecimal.valueOf(30000));
+        우동 = new Product(2L, "우동", BigDecimal.valueOf(3000));
         menuGroup = new MenuGroup(1L, "런치메뉴");
 
-        requestMenuProductSeq1 = new MenuProduct(1L, null, null, 2);
-        requestMenuProductSeq2 = new MenuProduct(2L, null, null, 2);
+        requestMenuProductSeq1 = new MenuProduct(1L, null, 초밥, 2);
+        requestMenuProductSeq2 = new MenuProduct(2L, null, 우동, 2);
         menuProducts = Arrays.asList(requestMenuProductSeq1, requestMenuProductSeq2);
     }
 
@@ -72,13 +73,8 @@ class MenuServiceTest {
         // given
         MenuRequest request = 메뉴_요청_데이터_생성(BigDecimal.valueOf(26000));
         Menu 예상값 = 메뉴_데이터_생성(1L, BigDecimal.valueOf(26000));
-        MenuProduct menuProductSeq1 = new MenuProduct(1L, 예상값, 초밥, 2);
-        MenuProduct menuProductSeq2 = new MenuProduct(2L, 예상값, 우동, 2);
         given(menuGroupRepository.findById(any())).willReturn(Optional.ofNullable(menuGroup));
-        given(상품_조회(1L)).willReturn(Optional.of(초밥));
-        given(상품_조회(2L)).willReturn(Optional.of(우동));
-        given(메뉴_상품_생성(requestMenuProductSeq1)).willReturn(menuProductSeq1);
-        given(메뉴_상품_생성(requestMenuProductSeq2)).willReturn(menuProductSeq2);
+        given(productRepository.existsAllByIdIn(anyList())).willReturn(true);
         given(menuRepository.save(any(Menu.class))).willReturn(예상값);
 
         // when
@@ -124,7 +120,7 @@ class MenuServiceTest {
         // given
         MenuRequest request = 메뉴_요청_데이터_생성(BigDecimal.valueOf(25000));
         given(menuGroupRepository.findById(any())).willReturn(Optional.ofNullable(menuGroup));
-        given(상품_조회(1L)).willReturn(Optional.empty());
+        given(productRepository.existsAllByIdIn(anyList())).willReturn(false);
 
         // when && then
         assertThatThrownBy(() -> 메뉴_생성(request))
@@ -138,8 +134,6 @@ class MenuServiceTest {
         // given
         MenuRequest request = 메뉴_요청_데이터_생성(BigDecimal.valueOf(26001));
         given(menuGroupRepository.findById(any())).willReturn(Optional.ofNullable(menuGroup));
-        given(상품_조회(1L)).willReturn(Optional.of(초밥));
-        given(상품_조회(2L)).willReturn(Optional.of(우동));
 
         // when && then
         assertThatThrownBy(() -> 메뉴_생성(request))
