@@ -12,14 +12,14 @@ import java.util.stream.Collectors;
 @Embeddable
 public class OrderTables {
     @OneToMany(mappedBy = "tableGroup")
-    private final List<OrderTable> orderTables;
+    private final List<OrderTable> orderTables = new ArrayList<>();
 
     protected OrderTables() {
-        orderTables = new ArrayList<>();
+
     }
 
     public OrderTables(List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
+        addOrderTables(orderTables);
     }
 
     public void validateForCreateTableGroup(OrderTables orderTables) {
@@ -44,7 +44,11 @@ public class OrderTables {
     }
 
     public void addOrderTables(OrderTables orderTables) {
-        this.orderTables.addAll(orderTables.getOrderTables());
+        addOrderTables(orderTables.getOrderTables());
+    }
+
+    private void addOrderTables(List<OrderTable> orderTables) {
+        this.orderTables.addAll(orderTables);
     }
 
     private void validateMinimumCount() {

@@ -12,14 +12,14 @@ import java.util.stream.Collectors;
 @Embeddable
 public class MenuProducts {
     @OneToMany(mappedBy = "menu")
-    private final List<MenuProduct> menuProducts;
+    private final List<MenuProduct> menuProducts = new ArrayList<>();
 
     protected MenuProducts() {
-        menuProducts = new ArrayList<>();
+
     }
 
     public MenuProducts(List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
+        addMenuProducts(menuProducts);
     }
 
     public List<MenuProduct> getMenuProducts() {
@@ -43,5 +43,9 @@ public class MenuProducts {
         return menuProducts.stream()
                 .map(menuProduct -> menuProduct.getProduct().getId())
                 .collect(Collectors.toList());
+    }
+
+    private void addMenuProducts(List<MenuProduct> menuProducts) {
+        this.menuProducts.addAll(menuProducts);
     }
 }
