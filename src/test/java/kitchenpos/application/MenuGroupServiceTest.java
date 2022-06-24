@@ -7,7 +7,7 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.menu.application.MenuGroupService;
-import kitchenpos.menu.domain.MenuGroupEntity;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.request.MenuGroupRequest;
 import kitchenpos.menu.domain.response.MenuGroupResponse;
@@ -30,15 +30,15 @@ class MenuGroupServiceTest {
 
     private MenuGroupRequest 치킨_그룹;
 
-    private MenuGroupEntity 치킨_그룹_entity;
-    private MenuGroupEntity 피자_그룹_entity;
+    private MenuGroup 치킨_그룹_entity;
+    private MenuGroup 피자_그룹_entity;
 
     @BeforeEach
     void setUp() {
         치킨_그룹 = new MenuGroupRequest("치킨 그룹");
 
-        치킨_그룹_entity = MenuGroupEntity.of("치킨 그룹");
-        피자_그룹_entity = MenuGroupEntity.of("피자 그룹");
+        치킨_그룹_entity = MenuGroup.of("치킨 그룹");
+        피자_그룹_entity = MenuGroup.of("피자 그룹");
     }
 
     @DisplayName("메뉴그룹을 등록하면 정상적으로 등록되어야 한다")

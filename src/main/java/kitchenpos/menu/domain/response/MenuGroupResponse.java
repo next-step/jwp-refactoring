@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain.response;
 
-import kitchenpos.menu.domain.MenuGroupEntity;
+import kitchenpos.menu.domain.MenuGroup;
 
 public class MenuGroupResponse {
     private Long id;
@@ -11,7 +11,7 @@ public class MenuGroupResponse {
         this.name = name;
     }
 
-    public static MenuGroupResponse of(MenuGroupEntity menuGroup) {
+    public static MenuGroupResponse of(MenuGroup menuGroup) {
         return new MenuGroupResponse(menuGroup.getId(), menuGroup.getName());
     }
 

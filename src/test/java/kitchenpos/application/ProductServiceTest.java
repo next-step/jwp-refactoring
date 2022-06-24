@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.menu.application.ProductService;
-import kitchenpos.menu.domain.ProductEntity;
+import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.domain.ProductRepository;
 import kitchenpos.menu.domain.request.ProductRequest;
 import kitchenpos.menu.domain.response.ProductResponse;
@@ -32,14 +32,14 @@ class ProductServiceTest {
     private ProductService productService;
 
     private ProductRequest 상품_request;
-    private ProductEntity 후라이드_치킨_entity;
-    private ProductEntity 감자튀김_entity;
+    private Product 후라이드_치킨_entity;
+    private Product 감자튀김_entity;
 
     @BeforeEach
     void setUp() {
         상품_request = new ProductRequest("후라이드 치킨", BigDecimal.valueOf(10000L));
-        후라이드_치킨_entity = ProductEntity.of("후라이드 치킨", BigDecimal.valueOf(10000L));
-        감자튀김_entity = ProductEntity.of("감자튀김", BigDecimal.valueOf(5000L));
+        후라이드_치킨_entity = Product.of("후라이드 치킨", BigDecimal.valueOf(10000L));
+        감자튀김_entity = Product.of("감자튀김", BigDecimal.valueOf(5000L));
     }
 
     @DisplayName("상품을 등록하면 정상적으로 등록되어야 한다")

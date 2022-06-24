@@ -5,12 +5,12 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.Map;
 import java.util.stream.Collectors;
-import kitchenpos.menu.domain.MenuEntity;
-import kitchenpos.menu.domain.MenuGroupEntity;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
-import kitchenpos.menu.domain.MenuProductEntity;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.domain.ProductEntity;
+import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.domain.ProductRepository;
 import kitchenpos.menu.domain.request.MenuProductRequest;
 import kitchenpos.menu.domain.request.MenuRequest;
@@ -40,38 +40,38 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        MenuGroupEntity menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
+        MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
             .orElseThrow(IllegalArgumentException::new);
 
-        MenuEntity menu = MenuEntity.of(menuRequest.getName(), menuRequest.getPrice(), menuGroup);
-        List<MenuProductEntity> menuProducts = convertToEntityIncludeProduct(menuRequest.getMenuProductRequests());
+        Menu menu = Menu.of(menuRequest.getName(), menuRequest.getPrice(), menuGroup);
+        List<MenuProduct> menuProducts = convertToEntityIncludeProduct(menuRequest.getMenuProductRequests());
         menu.registerMenuProducts(menuProducts);
 
-        MenuEntity savedMenu = menuRepository.save(menu);
+        Menu savedMenu = menuRepository.save(menu);
         return MenuResponse.of(savedMenu);
     }
 
-    private List<MenuProductEntity> convertToEntityIncludeProduct(List<MenuProductRequest> menuProductRequests) {
+    private List<MenuProduct> convertToEntityIncludeProduct(List<MenuProductRequest> menuProductRequests) {
         List<Long> productIds = menuProductRequests.stream()
             .map(MenuProductRequest::getProductId)
             .collect(toList());
 
-        List<ProductEntity> products = productRepository.findByIdIn(productIds);
+        List<Product> products = productRepository.findByIdIn(productIds);
         if (products.size() != menuProductRequests.size()) {
             throw new IllegalArgumentException();
         }
 
-        Map<Long, List<ProductEntity>> productMap = products.stream()
-            .collect(groupingBy(ProductEntity::getId));
+        Map<Long, List<Product>> productMap = products.stream()
+            .collect(groupingBy(Product::getId));
 
         return menuProductRequests.stream()
-            .map(it -> MenuProductEntity.of(productMap.get(it.getProductId()).get(FIRST_INDEX) , it.getQuantity()))
+            .map(it -> MenuProduct.of(productMap.get(it.getProductId()).get(FIRST_INDEX) , it.getQuantity()))
             .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public List<MenuResponse> list() {
-        final List<MenuEntity> menus = menuRepository.findAllMenuAndProducts();
+        final List<Menu> menus = menuRepository.findAllMenuAndProducts();
 
         return menus.stream()
             .map(MenuResponse::of)

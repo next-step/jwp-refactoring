@@ -1,54 +1,76 @@
 package kitchenpos.menu.domain;
 
+import java.math.BigDecimal;
+import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "menu_product")
 public class MenuProduct {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "seq")
     private Long seq;
-    private Long menuId;
-    private Long productId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_id")
+    private Menu menu;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    private Product product;
+
     private long quantity;
 
-    public MenuProduct() {
+    protected MenuProduct() {
     }
 
-    private MenuProduct(Long seq, Long menuId, Long productId, long quantity) {
-        this.seq = seq;
-        this.menuId = menuId;
-        this.productId = productId;
+    private MenuProduct(Product product, long quantity) {
+        this.product = product;
         this.quantity = quantity;
     }
 
-    public static MenuProduct of(Long seq, Long menuId, Long productId, long quantity) {
-        return new MenuProduct(seq, menuId, productId, quantity);
+    public static MenuProduct of(Product product, long quantity) {
+        return new MenuProduct(product, quantity);
+    }
+
+    public void validateHasProduct() {
+        if (Objects.isNull(product)) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public Price getTotalPrice() {
+        BigDecimal totalPrice = product.getPrice().multiply(BigDecimal.valueOf(quantity));
+        return new Price(totalPrice);
+    }
+
+    public void mapInto(Menu menu) {
+        this.menu = menu;
     }
 
     public Long getSeq() {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
+    public Menu getMenu() {
+        return menu;
     }
 
-    public Long getMenuId() {
-        return menuId;
-    }
-
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
-    }
-
-    public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(final Long productId) {
-        this.productId = productId;
+    public Product getProduct() {
+        return product;
     }
 
     public long getQuantity() {
         return quantity;
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
     }
 }

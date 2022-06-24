@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
-import kitchenpos.menu.domain.ProductEntity;
+import kitchenpos.menu.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +19,7 @@ class ProductTest {
         BigDecimal price = BigDecimal.valueOf(5000L);
 
         // when
-        ProductEntity result = ProductEntity.of(name, price);
+        Product result = Product.of(name, price);
 
         // then
         assertThat(result.getName()).isEqualTo(name);
@@ -35,7 +35,7 @@ class ProductTest {
 
         // then
         assertThatThrownBy(() -> {
-            ProductEntity.of(name, price);
+            Product.of(name, price);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -48,7 +48,7 @@ class ProductTest {
 
         // then
         assertThatThrownBy(() -> {
-            ProductEntity.of(name, price);
+            Product.of(name, price);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -61,7 +61,7 @@ class ProductTest {
 
         // then
         assertThatThrownBy(() -> {
-            ProductEntity.of(name, price);
+            Product.of(name, price);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 }

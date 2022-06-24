@@ -12,24 +12,24 @@ import javax.persistence.OneToMany;
 public class MenuProducts {
 
     @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    private List<MenuProductEntity> items = new ArrayList<>();
+    private List<MenuProduct> items = new ArrayList<>();
 
     protected MenuProducts() {
     }
 
-    public MenuProducts(List<MenuProductEntity> items, Price price) {
+    public MenuProducts(List<MenuProduct> items, Price price) {
         validateMenuProducts(items, price);
         this.items = items;
     }
 
-    private void validateMenuProducts(List<MenuProductEntity> items, Price price) {
-        items.forEach(MenuProductEntity::validateHasProduct);
+    private void validateMenuProducts(List<MenuProduct> items, Price price) {
+        items.forEach(MenuProduct::validateHasProduct);
         validatePriceOverMenuPrice(items, price);
     }
 
-    private void validatePriceOverMenuPrice(List<MenuProductEntity> items, Price price) {
+    private void validatePriceOverMenuPrice(List<MenuProduct> items, Price price) {
         Price sum = new Price(BigDecimal.ZERO);
-        for (MenuProductEntity item : items) {
+        for (MenuProduct item : items) {
             sum = sum.add(item.getTotalPrice());
         }
 
@@ -38,11 +38,11 @@ public class MenuProducts {
         }
     }
 
-    public List<MenuProductEntity> getItems() {
+    public List<MenuProduct> getItems() {
         return items;
     }
 
-    public void mapInto(MenuEntity menu) {
+    public void mapInto(Menu menu) {
         this.items.forEach(it -> it.mapInto(menu));
     }
 }

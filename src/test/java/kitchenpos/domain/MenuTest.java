@@ -5,9 +5,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import kitchenpos.menu.domain.MenuEntity;
-import kitchenpos.menu.domain.MenuProductEntity;
-import kitchenpos.menu.domain.ProductEntity;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -18,10 +18,10 @@ class MenuTest {
     @Test
     void mapping_test() {
         // given
-        ProductEntity 상품 = ProductEntity.of("test", BigDecimal.valueOf(500L));
-        MenuProductEntity 메뉴_상품 = MenuProductEntity.of(상품, 3);
-        MenuProductEntity 메뉴_상품2 = MenuProductEntity.of(상품, 2);
-        MenuEntity 메뉴 = MenuEntity.of("menu", BigDecimal.valueOf(500L), null);
+        Product 상품 = Product.of("test", BigDecimal.valueOf(500L));
+        MenuProduct 메뉴_상품 = MenuProduct.of(상품, 3);
+        MenuProduct 메뉴_상품2 = MenuProduct.of(상품, 2);
+        Menu 메뉴 = Menu.of("menu", BigDecimal.valueOf(500L), null);
 
         // when
         메뉴.registerMenuProducts(Arrays.asList(메뉴_상품, 메뉴_상품2));
@@ -35,7 +35,7 @@ class MenuTest {
     @Test
     void exception_test() {
         assertThatThrownBy(() -> {
-            MenuEntity.of(null, BigDecimal.valueOf(500L), null);
+            Menu.of(null, BigDecimal.valueOf(500L), null);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -43,7 +43,7 @@ class MenuTest {
     @Test
     void exception_test2() {
         assertThatThrownBy(() -> {
-            MenuEntity.of("", BigDecimal.valueOf(500L), null);
+            Menu.of("", BigDecimal.valueOf(500L), null);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 }

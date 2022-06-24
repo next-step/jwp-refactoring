@@ -1,7 +1,7 @@
 package kitchenpos.menu.domain.response;
 
 import java.math.BigDecimal;
-import kitchenpos.menu.domain.ProductEntity;
+import kitchenpos.menu.domain.Product;
 
 public class ProductResponse {
     private Long id;
@@ -14,7 +14,7 @@ public class ProductResponse {
         this.price = price;
     }
 
-    public static ProductResponse of(ProductEntity product) {
+    public static ProductResponse of(Product product) {
         return new ProductResponse(product.getId(), product.getName(), product.getPrice());
     }
 

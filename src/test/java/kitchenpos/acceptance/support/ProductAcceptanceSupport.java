@@ -6,7 +6,6 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
-import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.domain.request.ProductRequest;
 import kitchenpos.menu.domain.response.ProductResponse;
 import org.springframework.http.HttpStatus;

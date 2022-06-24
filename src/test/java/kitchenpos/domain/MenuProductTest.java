@@ -5,10 +5,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.math.BigDecimal;
-import kitchenpos.menu.domain.MenuEntity;
-import kitchenpos.menu.domain.MenuProductEntity;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.Price;
-import kitchenpos.menu.domain.ProductEntity;
+import kitchenpos.menu.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +19,7 @@ class MenuProductTest {
     @Test
     void exception_test() {
         // given
-        MenuProductEntity menuProduct = MenuProductEntity.of(null, 3);
+        MenuProduct menuProduct = MenuProduct.of(null, 3);
 
         // then
         assertThatThrownBy(menuProduct::validateHasProduct)
@@ -30,8 +30,8 @@ class MenuProductTest {
     @Test
     void total_price_test() {
         // given
-        ProductEntity product = ProductEntity.of("test", BigDecimal.valueOf(500L));
-        MenuProductEntity menuProduct = MenuProductEntity.of(product, 3);
+        Product product = Product.of("test", BigDecimal.valueOf(500L));
+        MenuProduct menuProduct = MenuProduct.of(product, 3);
 
         // then
         assertThat(menuProduct.getTotalPrice()).isEqualTo(new Price(BigDecimal.valueOf(1500L)));
@@ -41,8 +41,8 @@ class MenuProductTest {
     @Test
     void mapping_test() {
         // given
-        MenuEntity menu = MenuEntity.of("menu", BigDecimal.valueOf(500L), null);
-        MenuProductEntity menuProduct = MenuProductEntity.of(null, 3);
+        Menu menu = Menu.of("menu", BigDecimal.valueOf(500L), null);
+        MenuProduct menuProduct = MenuProduct.of(null, 3);
 
         // when
         menuProduct.mapInto(menu);

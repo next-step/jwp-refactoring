@@ -1,7 +1,7 @@
 package kitchenpos.menu.application;
 
 import java.util.stream.Collectors;
-import kitchenpos.menu.domain.ProductEntity;
+import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.domain.ProductRepository;
 import kitchenpos.menu.domain.request.ProductRequest;
 import kitchenpos.menu.domain.response.ProductResponse;
@@ -20,13 +20,13 @@ public class ProductService {
 
     @Transactional
     public ProductResponse create(final ProductRequest productRequest) {
-        ProductEntity product = ProductEntity.of(productRequest.getName(), productRequest.getPrice());
+        Product product = Product.of(productRequest.getName(), productRequest.getPrice());
         product = productRepository.save(product);
         return ProductResponse.of(product);
     }
 
     public List<ProductResponse> list() {
-        List<ProductEntity> products = productRepository.findAll();
+        List<Product> products = productRepository.findAll();
         return products.stream()
             .map(ProductResponse::of)
             .collect(Collectors.toList());

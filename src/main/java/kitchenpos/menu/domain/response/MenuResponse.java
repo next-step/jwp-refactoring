@@ -3,7 +3,7 @@ package kitchenpos.menu.domain.response;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.menu.domain.MenuEntity;
+import kitchenpos.menu.domain.Menu;
 
 public class MenuResponse {
 
@@ -25,7 +25,7 @@ public class MenuResponse {
         this.menuProducts = menuProducts;
     }
 
-    public static MenuResponse of(MenuEntity menu) {
+    public static MenuResponse of(Menu menu) {
         List<MenuProductResponse> menuProducts = menu.getMenuProducts().stream()
             .map(MenuProductResponse::of)
             .collect(Collectors.toList());

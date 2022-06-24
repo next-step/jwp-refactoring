@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain.response;
 
-import kitchenpos.menu.domain.MenuProductEntity;
+import kitchenpos.menu.domain.MenuProduct;
 
 public class MenuProductResponse {
     private Long seq;
@@ -16,7 +16,7 @@ public class MenuProductResponse {
         this.quantity = quantity;
     }
 
-    public static MenuProductResponse of(MenuProductEntity menuProduct) {
+    public static MenuProductResponse of(MenuProduct menuProduct) {
         return new MenuProductResponse(
             menuProduct.getSeq(),
             ProductResponse.of(menuProduct.getProduct()),

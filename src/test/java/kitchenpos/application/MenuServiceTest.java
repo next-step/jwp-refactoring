@@ -18,12 +18,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import kitchenpos.menu.domain.MenuEntity;
-import kitchenpos.menu.domain.MenuGroupEntity;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.domain.ProductEntity;
+import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.domain.ProductRepository;
 import kitchenpos.menu.domain.request.MenuRequest;
 import kitchenpos.menu.domain.response.MenuResponse;
@@ -51,20 +51,20 @@ class MenuServiceTest {
 
     private MenuRequest 치킨_메뉴;
 
-    private MenuGroupEntity 메뉴_그룹;
-    private ProductEntity 후라이드_치킨;
-    private ProductEntity 감자튀김;
-    private MenuEntity 치킨_메뉴_entity;
+    private MenuGroup 메뉴_그룹;
+    private Product 후라이드_치킨;
+    private Product 감자튀김;
+    private Menu 치킨_메뉴_entity;
 
     @BeforeEach
     void setUp() {
-        메뉴_그룹 = MenuGroupEntity.of("치킨그룹");
+        메뉴_그룹 = MenuGroup.of("치킨그룹");
 
-        후라이드_치킨 = ProductEntity.of(1L, 후라이드_치킨_FIXTURE.getName(), 후라이드_치킨_FIXTURE.getPrice());
-        감자튀김 = ProductEntity.of(2L, 감자튀김_FIXTURE.getName(), 감자튀김_FIXTURE.getPrice());
+        후라이드_치킨 = Product.of(1L, 후라이드_치킨_FIXTURE.getName(), 후라이드_치킨_FIXTURE.getPrice());
+        감자튀김 = Product.of(2L, 감자튀김_FIXTURE.getName(), 감자튀김_FIXTURE.getPrice());
 
         치킨_메뉴 = 치킨_메뉴_FIXTURE;
-        치킨_메뉴_entity = MenuEntity.of(치킨_메뉴.getName(), 치킨_메뉴.getPrice(), null);
+        치킨_메뉴_entity = Menu.of(치킨_메뉴.getName(), 치킨_메뉴.getPrice(), null);
     }
 
     @DisplayName("메뉴를 등록한다")

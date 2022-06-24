@@ -3,7 +3,7 @@ package kitchenpos.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import kitchenpos.menu.domain.MenuGroupEntity;
+import kitchenpos.menu.domain.MenuGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +14,7 @@ class MenuGroupTest {
     @Test
     void create_test() {
         // when
-        MenuGroupEntity menuGroup = MenuGroupEntity.of("치킨");
+        MenuGroup menuGroup = MenuGroup.of("치킨");
 
         // then
         assertThat(menuGroup.getName()).isEqualTo("치킨");
@@ -24,7 +24,7 @@ class MenuGroupTest {
     @Test
     void exception_test() {
         assertThatThrownBy(() -> {
-            MenuGroupEntity.of(null);
+            MenuGroup.of(null);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -32,7 +32,7 @@ class MenuGroupTest {
     @Test
     void exception_test2() {
         assertThatThrownBy(() -> {
-            MenuGroupEntity.of("");
+            MenuGroup.of("");
         }).isInstanceOf(IllegalArgumentException.class);
     }
 }
