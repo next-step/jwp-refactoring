@@ -27,7 +27,7 @@ public class MenuResponse {
                 menu.getId(),
                 menu.getName(),
                 menu.getPrice(),
-                menu.getMenuGroupId(),
+                menu.getMenuGroup().getId(),
                 menu.getMenuProducts().stream()
                         .map(MenuProductResponse::of)
                         .collect(Collectors.toList()));

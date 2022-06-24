@@ -1,7 +1,8 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
 import kitchenpos.domain.menu.Menu;
+import kitchenpos.domain.menu.MenuRepository;
+import kitchenpos.domain.menuGroup.MenuGroup;
 import kitchenpos.domain.menuGroup.MenuGroupRepository;
 import kitchenpos.domain.menuProduct.MenuProduct;
 import kitchenpos.domain.menuProduct.MenuProductRepository;
@@ -20,18 +21,18 @@ import java.util.stream.Collectors;
 
 @Service
 public class MenuService {
-    private final MenuDao menuDao;
+    private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
     private final MenuProductRepository menuProductRepository;
     private final ProductRepository productRepository;
 
     public MenuService(
-            final MenuDao menuDao,
+            final MenuRepository menuRepository,
             final MenuGroupRepository menuGroupRepository,
             final MenuProductRepository menuProductRepository,
             final ProductRepository productRepository
     ) {
-        this.menuDao = menuDao;
+        this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
         this.menuProductRepository = menuProductRepository;
         this.productRepository = productRepository;
@@ -39,17 +40,15 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        Menu menu = Menu.of(menuRequest);
+        MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
+                .orElseThrow(IllegalArgumentException::new);
+        Menu menu = Menu.of(menuRequest, menuGroup);
 
         menu.validateForCreate();
 
         final BigDecimal price = menu.getPrice();
 
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
-
-        if (!menuGroupRepository.existsById(menu.getMenuGroupId())) {
             throw new IllegalArgumentException();
         }
 
@@ -66,7 +65,7 @@ public class MenuService {
             throw new IllegalArgumentException();
         }
 
-        final Menu savedMenu = menuDao.save(menu);
+        final Menu savedMenu = menuRepository.save(menu);
 
         final Long menuId = savedMenu.getId();
         final List<MenuProduct> savedMenuProducts = new ArrayList<>();
@@ -80,7 +79,7 @@ public class MenuService {
     }
 
     public List<MenuResponse> list() {
-        final List<Menu> menus = menuDao.findAll();
+        final List<Menu> menus = menuRepository.findAll();
 
         for (final Menu menu : menus) {
             menu.setMenuProducts(menuProductRepository.findAllByMenuId(menu.getId()));

@@ -1,8 +1,8 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
+import kitchenpos.domain.menu.MenuRepository;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.orderLineItem.OrderLineItem;
@@ -33,7 +33,7 @@ import static org.mockito.BDDMockito.given;
 class OrderServiceTest {
 
     @Mock
-    MenuDao menuDao;
+    MenuRepository menuRepository;
 
     @Mock
     OrderDao orderDao;
@@ -55,7 +55,7 @@ class OrderServiceTest {
         List<OrderLineItem> orderLineItems = 주문_항목_목록_데이터_생성();
         Order request = 주문_데이터_생성(null, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItems);
         Order 예상값 = 주문_데이터_생성(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItems);
-        given(menuDao.countByIdIn(anyList())).willReturn(2L);
+        given(menuRepository.countByIdIn(anyList())).willReturn(2L);
         given(orderTableRepository.findById(1L)).willReturn(Optional.of(orderTable));
         given(orderDao.save(request)).willReturn(예상값);
 
@@ -84,7 +84,7 @@ class OrderServiceTest {
         // given
         List<OrderLineItem> orderLineItems = 주문_항목_목록_데이터_생성();
         Order request = 주문_데이터_생성(null, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItems);
-        given(menuDao.countByIdIn(anyList())).willReturn(1L);
+        given(menuRepository.countByIdIn(anyList())).willReturn(1L);
 
         // when && then
         assertThatThrownBy(() -> orderService.create(request))
@@ -97,7 +97,7 @@ class OrderServiceTest {
         // given
         OrderTable orderTable = 주문_테이블_데이터_생성(1L, null, 2, true);
         Order request = 주문_데이터_생성(null, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), 주문_항목_목록_데이터_생성());
-        given(menuDao.countByIdIn(anyList())).willReturn(2L);
+        given(menuRepository.countByIdIn(anyList())).willReturn(2L);
         given(orderTableRepository.findById(1L)).willReturn(Optional.of(orderTable));
 
         // when && then
@@ -112,7 +112,7 @@ class OrderServiceTest {
         List<OrderLineItem> orderLineItems = new ArrayList<>(주문_항목_목록_데이터_생성());
         orderLineItems.add(주문_항목_데이터_생성(3L, 1L, 2L, 3));
         Order request = 주문_데이터_생성(null, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItems);
-        given(menuDao.countByIdIn(anyList())).willReturn(2L);
+        given(menuRepository.countByIdIn(anyList())).willReturn(2L);
 
         // when && then
         assertThatThrownBy(() -> orderService.create(request))

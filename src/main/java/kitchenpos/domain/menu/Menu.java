@@ -1,5 +1,6 @@
 package kitchenpos.domain.menu;
 
+import kitchenpos.domain.menuGroup.MenuGroup;
 import kitchenpos.domain.menuProduct.MenuProduct;
 import kitchenpos.dto.menu.MenuRequest;
 
@@ -19,7 +20,9 @@ public class Menu {
     @Column(nullable = false)
     private BigDecimal price;
 
-    private Long menuGroupId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"))
+    private MenuGroup menuGroup;
 
     @OneToMany(mappedBy = "menu")
     private List<MenuProduct> menuProducts;
@@ -28,16 +31,16 @@ public class Menu {
 
     }
 
-    public Menu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
-        this.menuGroupId = menuGroupId;
+        this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
     }
 
-    public static Menu of(MenuRequest menuRequest) {
-        return new Menu(null, menuRequest.getName(), menuRequest.getPrice(), menuRequest.getMenuGroupId(), null);
+    public static Menu of(MenuRequest menuRequest, MenuGroup menuGroup) {
+        return new Menu(null, menuRequest.getName(), menuRequest.getPrice(), menuGroup, menuRequest.getMenuProducts());
     }
 
     public void validateForCreate() {
@@ -68,12 +71,8 @@ public class Menu {
         this.price = price;
     }
 
-    public Long getMenuGroupId() {
-        return menuGroupId;
-    }
-
-    public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
+    public MenuGroup getMenuGroup() {
+        return menuGroup;
     }
 
     public List<MenuProduct> getMenuProducts() {

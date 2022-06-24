@@ -1,7 +1,8 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
 import kitchenpos.domain.menu.Menu;
+import kitchenpos.domain.menu.MenuRepository;
+import kitchenpos.domain.menuGroup.MenuGroup;
 import kitchenpos.domain.menuGroup.MenuGroupRepository;
 import kitchenpos.domain.menuProduct.MenuProduct;
 import kitchenpos.domain.menuProduct.MenuProductRepository;
@@ -33,7 +34,7 @@ import static org.mockito.BDDMockito.given;
 class MenuServiceTest {
 
     @Mock
-    MenuDao menuDao;
+    MenuRepository menuRepository;
 
     @Mock
     MenuGroupRepository menuGroupRepository;
@@ -52,11 +53,13 @@ class MenuServiceTest {
     private List<MenuProduct> menuProducts;
     private Product 초밥;
     private Product 우동;
+    private MenuGroup menuGroup;
 
     @BeforeEach
     void setUp() {
         초밥 = new Product(1L, "초밥", BigDecimal.valueOf(10000));
         우동 = new Product(2L, "우동", BigDecimal.valueOf(30000));
+        menuGroup = new MenuGroup(1L, "런치메뉴");
 
         requestMenuProductSeq1 = new MenuProduct(1L, null, null, 2);
         requestMenuProductSeq2 = new MenuProduct(2L, null, null, 2);
@@ -71,12 +74,12 @@ class MenuServiceTest {
         Menu 예상값 = 메뉴_데이터_생성(1L, BigDecimal.valueOf(26000));
         MenuProduct menuProductSeq1 = new MenuProduct(1L, 예상값, 초밥, 2);
         MenuProduct menuProductSeq2 = new MenuProduct(2L, 예상값, 우동, 2);
-        given(메뉴_그룹_유효성_확인()).willReturn(true);
+        given(menuGroupRepository.findById(any())).willReturn(Optional.ofNullable(menuGroup));
         given(상품_조회(1L)).willReturn(Optional.of(초밥));
         given(상품_조회(2L)).willReturn(Optional.of(우동));
         given(메뉴_상품_생성(requestMenuProductSeq1)).willReturn(menuProductSeq1);
         given(메뉴_상품_생성(requestMenuProductSeq2)).willReturn(menuProductSeq2);
-        given(menuDao.save(any(Menu.class))).willReturn(예상값);
+        given(menuRepository.save(any(Menu.class))).willReturn(예상값);
 
         // when
         MenuResponse 메뉴_생성_결과 = 메뉴_생성(request);
@@ -108,7 +111,7 @@ class MenuServiceTest {
     void create_exception2() {
         // given
         MenuRequest request = 메뉴_요청_데이터_생성( BigDecimal.valueOf(25000));
-        given(메뉴_그룹_유효성_확인()).willReturn(false);
+        given(menuGroupRepository.findById(any())).willReturn(Optional.empty());
 
         // when && then
         assertThatThrownBy(() -> 메뉴_생성(request))
@@ -120,7 +123,7 @@ class MenuServiceTest {
     void create_exception3() {
         // given
         MenuRequest request = 메뉴_요청_데이터_생성(BigDecimal.valueOf(25000));
-        given(메뉴_그룹_유효성_확인()).willReturn(true);
+        given(menuGroupRepository.findById(any())).willReturn(Optional.ofNullable(menuGroup));
         given(상품_조회(1L)).willReturn(Optional.empty());
 
         // when && then
@@ -134,7 +137,7 @@ class MenuServiceTest {
     void create_exception4() {
         // given
         MenuRequest request = 메뉴_요청_데이터_생성(BigDecimal.valueOf(26001));
-        given(메뉴_그룹_유효성_확인()).willReturn(true);
+        given(menuGroupRepository.findById(any())).willReturn(Optional.ofNullable(menuGroup));
         given(상품_조회(1L)).willReturn(Optional.of(초밥));
         given(상품_조회(2L)).willReturn(Optional.of(우동));
 
@@ -151,7 +154,7 @@ class MenuServiceTest {
                 메뉴_데이터_생성(1L, BigDecimal.valueOf(10000)),
                 메뉴_데이터_생성(2L, BigDecimal.valueOf(20000))
         );
-        given(menuDao.findAll()).willReturn(예상값);
+        given(menuRepository.findAll()).willReturn(예상값);
 
         // when
         List<MenuResponse> 메뉴_목록_조회_결과 = menuService.list();
@@ -168,7 +171,7 @@ class MenuServiceTest {
     }
 
     private Menu 메뉴_데이터_생성(Long id, BigDecimal price) {
-        return new Menu(id, "메뉴이름", price, 1L, menuProducts);
+        return new Menu(id, "메뉴이름", price, new MenuGroup(1L, "런치메뉴"), menuProducts);
     }
 
     private void 메뉴_값_비교(MenuResponse result, MenuResponse expectation) {
@@ -191,9 +194,5 @@ class MenuServiceTest {
 
     private MenuResponse 메뉴_생성(MenuRequest menuRequest) {
         return menuService.create(menuRequest);
-    }
-
-    private boolean 메뉴_그룹_유효성_확인() {
-        return menuGroupRepository.existsById(any());
     }
 }
