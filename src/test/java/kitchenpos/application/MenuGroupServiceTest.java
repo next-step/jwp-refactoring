@@ -10,6 +10,7 @@ import java.util.List;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,7 +37,7 @@ class MenuGroupServiceTest {
         final MenuGroup 세트메뉴 = new MenuGroup(1L, "세트메뉴");
         when(menuGroupDao.save(any())).thenReturn(세트메뉴);
         // when
-        final MenuGroup actual = menuGroupService.create(new MenuGroupRequest("세트메뉴"));
+        final MenuGroupResponse actual = menuGroupService.create(new MenuGroupRequest("세트메뉴"));
         // then
         assertAll(
                 () -> assertThat(actual).isNotNull(),
@@ -51,7 +52,7 @@ class MenuGroupServiceTest {
         // given
         when(menuGroupDao.findAll()).thenReturn(Arrays.asList(new MenuGroup(), new MenuGroup()));
         // when
-        final List<MenuGroup> actual = menuGroupService.list();
+        final List<MenuGroupResponse> actual = menuGroupService.list();
         // then
         assertAll(
                 () -> assertThat(actual).isNotNull(),

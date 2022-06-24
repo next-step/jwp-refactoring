@@ -1,6 +1,7 @@
 package kitchenpos.domain;
 
 import java.util.Objects;
+import kitchenpos.dto.MenuGroupResponse;
 
 public class MenuGroup {
     private Long id;
@@ -32,6 +33,10 @@ public class MenuGroup {
 
     public void setName(final String name) {
         this.name = name;
+    }
+
+    public MenuGroupResponse toMenuGroupResponse() {
+        return new MenuGroupResponse(this.id, this.name);
     }
 
     @Override
