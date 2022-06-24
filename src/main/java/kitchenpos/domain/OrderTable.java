@@ -43,6 +43,10 @@ public class OrderTable {
         this(null, null, numberOfGuests, empty);
     }
 
+    public void ungroup() {
+        this.tableGroup = null;
+    }
+
     public Long getId() {
         return id;
     }

@@ -3,24 +3,32 @@ package kitchenpos.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
 import kitchenpos.domain.repository.OrderRepository;
 import kitchenpos.domain.repository.OrderTableRepository;
 import kitchenpos.domain.repository.TableGroupRepository;
+import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 
+@ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest extends ServiceTest {
 
+    @Mock
+    private OrderRepository mockOrderRepository;
     @Autowired
     private OrderRepository orderRepository;
     @Autowired
@@ -32,14 +40,14 @@ class TableGroupServiceTest extends ServiceTest {
 
     private OrderTable orderTable1;
     private OrderTable orderTable2;
-    private TableGroup tableGroup;
+    private TableGroupResponse tableGroupResponse;
 
     @BeforeEach
     void setUp() {
         super.setUp();
         orderTable1 = this.orderTableRepository.save(new OrderTable(0, true));
         orderTable2 = this.orderTableRepository.save(new OrderTable(0, true));
-        tableGroup = this.tableGroupService.create(new TableGroup(Arrays.asList(orderTable1, orderTable2)));
+        tableGroupResponse = this.tableGroupService.create(new TableGroupRequest(OrderTableRequest.of(orderTable1, orderTable2)));
     }
 
     @Test
@@ -47,11 +55,12 @@ class TableGroupServiceTest extends ServiceTest {
     void createTableGroup() {
         OrderTable orderTable1 = this.orderTableRepository.save(new OrderTable(0, true));
         OrderTable orderTable2 = this.orderTableRepository.save(new OrderTable(0, true));
-        TableGroup tableGroup = this.tableGroupService.create(new TableGroup(Arrays.asList(orderTable1, orderTable2)));
+
+        TableGroupResponse tableGroup = this.tableGroupService.create(new TableGroupRequest(OrderTableRequest.of(orderTable1, orderTable2)));
 
         assertThat(tableGroup.getId()).isNotNull();
         assertThat(tableGroup.getOrderTables()).hasSize(2);
-        assertTrue(tableGroup.getOrderTables().stream().anyMatch(orderTable -> !orderTable.isEmpty()));
+        assertTrue(tableGroup.getOrderTables().stream().anyMatch(OrderTableResponse::isEmpty));
     }
 
     @Test
@@ -60,9 +69,9 @@ class TableGroupServiceTest extends ServiceTest {
         OrderTable orderTable = new OrderTable(100L, null, 0, true);
 
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> this.tableGroupService.create(new TableGroup(Collections.emptyList())));
+            .isThrownBy(() -> this.tableGroupService.create(new TableGroupRequest(Collections.emptyList())));
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> this.tableGroupService.create(new TableGroup(Collections.singletonList(orderTable))));
+            .isThrownBy(() -> this.tableGroupService.create(new TableGroupRequest(OrderTableRequest.of(orderTable))));
     }
 
     @Test
@@ -71,23 +80,20 @@ class TableGroupServiceTest extends ServiceTest {
         OrderTable orderTable = this.orderTableRepository.save(new OrderTable(4, false));
 
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> this.tableGroupService.create(new TableGroup(Collections.singletonList(orderTable))));
+            .isThrownBy(() -> this.tableGroupService.create(new TableGroupRequest(OrderTableRequest.of(orderTable))));
     }
 
     @Test
     @DisplayName("테이블 중 이미 테이블 그룹에 속한 테이블이 존재할 경우 생성될 수 없다.")
     void createFail_alreadyContainTableGroup() {
-        OrderTable orderTable = this.orderTableRepository.save(new OrderTable(0, true));
-        this.tableGroupRepository.save(new TableGroup(Collections.singletonList(orderTable)));
-
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> this.tableGroupService.create(new TableGroup(Collections.singletonList(orderTable))));
+            .isThrownBy(() -> this.tableGroupService.create(new TableGroupRequest(OrderTableRequest.of(this.orderTable1))));
     }
 
     @Test
     @DisplayName("테이블 그룹을 해제한다.")
     void ungroup() {
-        this.tableGroupService.ungroup(tableGroup.getId());
+        this.tableGroupService.ungroup(tableGroupResponse.getId());
 
         List<OrderTable> orderTables = this.orderTableRepository.findAll();
         assertTrue(orderTables.stream().anyMatch(orderTable -> orderTable.getTableGroup() == null));
@@ -96,11 +102,12 @@ class TableGroupServiceTest extends ServiceTest {
     @Test
     @DisplayName("테이블 중 식사중이거나 조리중인 테이블이 있다면 해제할 수 없다.")
     void ungroupFail() {
-        Order order = new Order(orderTable1.getId(), null);
-        this.orderRepository.save(order);
+        TableGroupService service = new TableGroupService(mockOrderRepository, orderTableRepository, tableGroupRepository);
+        when(this.mockOrderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList()))
+            .thenReturn(true);
 
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> this.tableGroupService.ungroup(tableGroup.getId()));
+            .isThrownBy(() -> service.ungroup(tableGroupResponse.getId()));
     }
 
 }
