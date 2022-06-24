@@ -65,8 +65,13 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 테이블_단체지정_등록요청(TableGroupRequest tableGroup) {
-        return RestAssured.given().log().all().contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(tableGroup).when().post("/api/table-groups").then().log().all().extract();
+        return RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(tableGroup)
+            .when().post("/api/table-groups")
+            .then().log().all()
+            .extract();
     }
 
     private void 테이블_단체지정_등록됨(ExtractableResponse<Response> response) {
@@ -85,8 +90,12 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 테이블_단체지정_해제요청(Long tableGroupId) {
-        return RestAssured.given().log().all().contentType(MediaType.APPLICATION_JSON_VALUE).when()
-            .delete("/api/table-groups/{tableGroupId}", tableGroupId).then().log().all().extract();
+        return RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().delete("/api/table-groups/{tableGroupId}", tableGroupId)
+            .then().log().all()
+            .extract();
     }
 
     private void 테이블_단체지정_해제됨(ExtractableResponse<Response> response) {
