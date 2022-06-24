@@ -40,9 +40,8 @@ class TableGroupServiceTest {
     void create() {
         // given
         TableGroup tableGroup = new TableGroup.Builder().orderTables(
-                Arrays.asList(new OrderTable.Builder().id(1L).numberOfGuests(0).empty(true).build(),
-                        new OrderTable.Builder().id(2L).numberOfGuests(0).empty(true).build(),
-                        new OrderTable.Builder().id(3L).numberOfGuests(0).empty(true).build())).build();
+                Arrays.asList(createOrderTable(1L, 0, true),
+                        createOrderTable(2L, 0, true), createOrderTable(3L, 0, true))).build();
 
         given(orderTableDao.findAllByIdIn(anyList())).willReturn(tableGroup.getOrderTables());
         given(tableGroupDao.save(any(TableGroup.class))).willReturn(new TableGroup.Builder().id(1L).build());
