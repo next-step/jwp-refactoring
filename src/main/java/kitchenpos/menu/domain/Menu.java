@@ -48,7 +48,15 @@ public class Menu {
         for (MenuProduct menuProduct : menuProducts) {
             menu.setMenuProduct(menuProduct);
         }
+        validateMenuPrice(price, menu);
         return menu;
+    }
+
+    private static void validateMenuPrice(Price price, Menu menu) {
+        Price sum = menu.calculateTotalPrice();
+        if (price.isBiggerThan(sum)) {
+            throw new IllegalArgumentException("메뉴의 가격은 상품 가격의 총합보다 클 수 없습니다.");
+        }
     }
 
     private void setMenuProduct(MenuProduct menuProduct) {
@@ -74,6 +82,14 @@ public class Menu {
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
+    }
+
+    public Price calculateTotalPrice() {
+        Price sum = Price.from(BigDecimal.ZERO);
+        for (MenuProduct menuProduct : menuProducts) {
+            sum.add(menuProduct.getProductPrice());
+        }
+        return sum;
     }
 
     private void setMenuGroup(MenuGroup menuGroup) {

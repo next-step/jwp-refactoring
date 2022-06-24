@@ -32,48 +32,68 @@ public class JdbcTemplateMenuProductDao implements MenuProductDao {
     }
 
     @Override
-    public MenuProduct save(final MenuProduct entity) {
-        final SqlParameterSource parameters = new BeanPropertySqlParameterSource(entity);
-        final Number key = jdbcInsert.executeAndReturnKey(parameters);
-        return select(key.longValue());
+    public MenuProduct save(MenuProduct entity) {
+        return null;
     }
 
     @Override
-    public Optional<MenuProduct> findById(final Long id) {
-        try {
-            return Optional.of(select(id));
-        } catch (final EmptyResultDataAccessException e) {
-            return Optional.empty();
-        }
+    public Optional<MenuProduct> findById(Long id) {
+        return Optional.empty();
     }
 
     @Override
     public List<MenuProduct> findAll() {
-        final String sql = "SELECT seq, menu_id, product_id, quantity FROM menu_product";
-        return jdbcTemplate.query(sql, (resultSet, rowNumber) -> toEntity(resultSet));
+        return null;
     }
 
     @Override
-    public List<MenuProduct> findAllByMenuId(final Long menuId) {
-        final String sql = "SELECT seq, menu_id, product_id, quantity FROM menu_product WHERE menu_id = (:menuId)";
-        final SqlParameterSource parameters = new MapSqlParameterSource()
-                .addValue("menuId", menuId);
-        return jdbcTemplate.query(sql, parameters, (resultSet, rowNumber) -> toEntity(resultSet));
+    public List<MenuProduct> findAllByMenuId(Long menuId) {
+        return null;
     }
 
-    private MenuProduct select(final Long id) {
-        final String sql = "SELECT seq, menu_id, product_id, quantity FROM menu_product WHERE seq = (:seq)";
-        final SqlParameterSource parameters = new MapSqlParameterSource()
-                .addValue("seq", id);
-        return jdbcTemplate.queryForObject(sql, parameters, (resultSet, rowNumber) -> toEntity(resultSet));
-    }
-
-    private MenuProduct toEntity(final ResultSet resultSet) throws SQLException {
-        final MenuProduct entity = new MenuProduct();
-        entity.setSeq(resultSet.getLong(KEY_COLUMN_NAME));
-        entity.setMenuId(resultSet.getLong("menu_id"));
-        entity.setProductId(resultSet.getLong("product_id"));
-        entity.setQuantity(resultSet.getLong("quantity"));
-        return entity;
-    }
+//    @Override
+//    public MenuProduct save(final MenuProduct entity) {
+//        final SqlParameterSource parameters = new BeanPropertySqlParameterSource(entity);
+//        final Number key = jdbcInsert.executeAndReturnKey(parameters);
+//        return select(key.longValue());
+//    }
+//
+//    @Override
+//    public Optional<MenuProduct> findById(final Long id) {
+//        try {
+//            return Optional.of(select(id));
+//        } catch (final EmptyResultDataAccessException e) {
+//            return Optional.empty();
+//        }
+//    }
+//
+//    @Override
+//    public List<MenuProduct> findAll() {
+//        final String sql = "SELECT seq, menu_id, product_id, quantity FROM menu_product";
+//        return jdbcTemplate.query(sql, (resultSet, rowNumber) -> toEntity(resultSet));
+//    }
+//
+//    @Override
+//    public List<MenuProduct> findAllByMenuId(final Long menuId) {
+//        final String sql = "SELECT seq, menu_id, product_id, quantity FROM menu_product WHERE menu_id = (:menuId)";
+//        final SqlParameterSource parameters = new MapSqlParameterSource()
+//                .addValue("menuId", menuId);
+//        return jdbcTemplate.query(sql, parameters, (resultSet, rowNumber) -> toEntity(resultSet));
+//    }
+//
+//    private MenuProduct select(final Long id) {
+//        final String sql = "SELECT seq, menu_id, product_id, quantity FROM menu_product WHERE seq = (:seq)";
+//        final SqlParameterSource parameters = new MapSqlParameterSource()
+//                .addValue("seq", id);
+//        return jdbcTemplate.queryForObject(sql, parameters, (resultSet, rowNumber) -> toEntity(resultSet));
+//    }
+//
+//    private MenuProduct toEntity(final ResultSet resultSet) throws SQLException {
+//        final MenuProduct entity = new MenuProduct();
+//        entity.setSeq(resultSet.getLong(KEY_COLUMN_NAME));
+//        entity.setMenuId(resultSet.getLong("menu_id"));
+//        entity.setProductId(resultSet.getLong("product_id"));
+//        entity.setQuantity(resultSet.getLong("quantity"));
+//        return entity;
+//    }
 }

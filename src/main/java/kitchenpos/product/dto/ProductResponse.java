@@ -1,5 +1,6 @@
 package kitchenpos.product.dto;
 
+import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.Product;
 
 public class ProductResponse {
@@ -16,7 +17,7 @@ public class ProductResponse {
     }
 
     public static ProductResponse of(Product product) {
-        return new ProductResponse(product.getId(), product.getName(), product.getPrice().longValue());
+        return new ProductResponse(product.getId(), product.getName(), mapToLongValue(product.getPrice()));
     }
 
     public Long getId() {
@@ -29,5 +30,9 @@ public class ProductResponse {
 
     public long getPrice() {
         return price;
+    }
+    
+    private static long mapToLongValue(Price price) {
+        return price.getPrice().longValue();
     }
 }

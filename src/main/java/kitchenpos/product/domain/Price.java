@@ -25,6 +25,14 @@ public class Price {
         return price;
     }
 
+    public boolean isBiggerThan(Price value) {
+        return price.compareTo(value.getPrice()) > 0;
+    }
+
+    public void add(Price value) {
+        price = price.add(value.getPrice());
+    }
+
     public void multiply(long value) {
         BigDecimal multiply = price.multiply(BigDecimal.valueOf(value));
         validatePrice(multiply);
