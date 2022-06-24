@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.consts.OrderStatus;
 import kitchenpos.menu.domain.Menu;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

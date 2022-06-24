@@ -2,7 +2,7 @@ package kitchenpos.helper;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.consts.OrderStatus;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;

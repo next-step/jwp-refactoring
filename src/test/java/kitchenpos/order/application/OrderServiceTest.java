@@ -8,7 +8,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 
 import java.util.Arrays;
 import java.util.Collections;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.consts.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;

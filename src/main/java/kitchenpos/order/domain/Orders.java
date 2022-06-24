@@ -5,7 +5,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.consts.OrderStatus;
 
 @Embeddable
 public class Orders {

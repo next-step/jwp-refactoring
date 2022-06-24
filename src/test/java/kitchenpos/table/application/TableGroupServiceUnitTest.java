@@ -14,7 +14,7 @@ import static org.mockito.Mockito.doAnswer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.consts.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTables;
