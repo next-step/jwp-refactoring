@@ -12,6 +12,7 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.product.domain.Product;
 import kitchenpos.order.domain.TableGroup;
+import org.aspectj.weaver.ast.Or;
 
 public class DomainFixtureFactory {
     public static Product createProduct(Long id, String name, BigDecimal price) {
@@ -39,8 +40,8 @@ public class DomainFixtureFactory {
         return Order.of(id, orderTable, orderStatus, orderLineItems);
     }
 
-    public static OrderLineItem createOrderLineItem(Long seq, Long orderId, Long menuId, long quantity) {
-        return OrderLineItem.of(seq, orderId, menuId, quantity);
+    public static OrderLineItem createOrderLineItem(Long seq, Order order, Menu menu, long quantity) {
+        return OrderLineItem.of(seq, order, menu, quantity);
     }
 
     public static TableGroup createTableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {

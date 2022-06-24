@@ -14,7 +14,7 @@ class OrderLineItemsTest {
 
     @BeforeEach
     void setUp() {
-        주문항목 = createOrderLineItem(1L, null, 1L, 2L);
+        주문항목 = createOrderLineItem(1L, null, null, 2L);
     }
 
     @DisplayName("초기화 테스트")

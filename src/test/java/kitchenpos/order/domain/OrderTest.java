@@ -15,7 +15,7 @@ class OrderTest {
 
     @BeforeEach
     void setUp() {
-        주문항목 = createOrderLineItem(1L, null, 1L, 2L);
+        주문항목 = createOrderLineItem(1L, null, null, 2L);
         주문테이블 = createOrderTable(1L, null, 2, false);
 
     }

@@ -45,7 +45,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
         Menu 양념치킨 = 메뉴_등록_요청(createMenu(1L, "양념치킨", BigDecimal.valueOf(40000L), 한마리메뉴,
                 Lists.newArrayList(createMenuProduct(1L, null, 양념, 2L)))).as(Menu.class);
         OrderTable 주문테이블 = 주문테이블_등록_요청(createOrderTable(null, null, 2, false)).as(OrderTable.class);
-        주문 = createOrder(null, 주문테이블, null, Lists.newArrayList(createOrderLineItem(1L, null, 양념치킨.id(), 2L)));
+        주문 = createOrder(null, 주문테이블, null, Lists.newArrayList(createOrderLineItem(1L, null, 양념치킨, 2L)));
     }
 
     /**

@@ -3,11 +3,12 @@ package kitchenpos.order.application;
 import static kitchenpos.order.domain.OrderStatus.COMPLETION;
 import static kitchenpos.order.domain.OrderStatus.COOKING;
 
-import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItemRepository;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
@@ -26,18 +27,18 @@ import java.util.stream.Collectors;
 public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
-    private final OrderLineItemDao orderLineItemDao;
+    private final OrderLineItemRepository orderLineItemRepository;
     private final OrderTableDao orderTableDao;
 
     public OrderService(
             final MenuRepository menuRepository,
             final OrderRepository orderRepository,
-            final OrderLineItemDao orderLineItemDao,
+            final OrderLineItemRepository orderLineItemRepository,
             final OrderTableDao orderTableDao
     ) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
-        this.orderLineItemDao = orderLineItemDao;
+        this.orderLineItemRepository = orderLineItemRepository;
         this.orderTableDao = orderTableDao;
     }
 
@@ -50,7 +51,8 @@ public class OrderService {
         }
 
         final List<Long> menuIds = orderLineItems.stream()
-                .map(OrderLineItem::getMenuId)
+                .map(OrderLineItem::menu)
+                .map(Menu::id)
                 .collect(Collectors.toList());
 
         if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
@@ -69,12 +71,11 @@ public class OrderService {
         order.setOrderedTime(LocalDateTime.now());
 
         final Order savedOrder = orderRepository.save(order);
-
-        final Long orderId = savedOrder.id();
+        
         final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
         for (final OrderLineItem orderLineItem : orderLineItems) {
-            orderLineItem.setOrderId(orderId);
-            savedOrderLineItems.add(orderLineItemDao.save(orderLineItem));
+            orderLineItem.setOrder(savedOrder);
+            savedOrderLineItems.add(orderLineItemRepository.save(orderLineItem));
         }
         savedOrder.setOrderLineItems(OrderLineItems.of(savedOrderLineItems));
 
@@ -85,7 +86,7 @@ public class OrderService {
         final List<Order> orders = orderRepository.findAll();
 
         for (final Order order : orders) {
-            order.setOrderLineItems(OrderLineItems.of(orderLineItemDao.findAllByOrderId(order.id())));
+            order.setOrderLineItems(OrderLineItems.of(orderLineItemRepository.findAllByOrderId(order.id())));
         }
 
         return orders;
@@ -105,7 +106,7 @@ public class OrderService {
 
         orderRepository.save(savedOrder);
 
-        savedOrder.setOrderLineItems(OrderLineItems.of(orderLineItemDao.findAllByOrderId(orderId)));
+        savedOrder.setOrderLineItems(OrderLineItems.of(orderLineItemRepository.findAllByOrderId(orderId)));
 
         return savedOrder;
     }
