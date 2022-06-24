@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.table.application;
 
 import static kitchenpos.helper.TableFixtures.테이블_요청_만들기;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -12,7 +12,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 
 import java.util.Optional;
-import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
@@ -27,7 +26,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @DisplayName("테이블 관련 Service 단위 테스트 - Stub")
 @ExtendWith(MockitoExtension.class)
-class TableServiceTest {
+class TableServiceUnitTest {
 
     @Mock
     private OrderTableRepository orderTableRepository;

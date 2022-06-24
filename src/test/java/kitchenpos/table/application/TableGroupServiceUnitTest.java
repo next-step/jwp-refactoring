@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.table.application;
 
 import static kitchenpos.helper.OrderFixtures.주문_만들기;
 import static kitchenpos.helper.TableFixtures.테이블_만들기;
@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTables;
@@ -33,7 +32,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @DisplayName("단체 지정 Service 단위 테스트 - Stub")
 @ExtendWith(MockitoExtension.class)
-class TableGroupServiceTest {
+class TableGroupServiceUnitTest {
 
     @Mock
     private OrderTableRepository orderTableRepository;

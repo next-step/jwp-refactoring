@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.order.application;
 
 import static kitchenpos.helper.MenuFixtures.메뉴_만들기;
 import static kitchenpos.helper.OrderFixtures.주문_요청_만들기;
@@ -13,7 +13,6 @@ import java.util.Collections;
 import java.util.Optional;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
@@ -28,7 +27,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @DisplayName("주문 관련 Service 단위 테스트 - Stub")
 @ExtendWith(MockitoExtension.class)
-class OrderServiceTest {
+class OrderServiceUnitTest {
 
     @Mock
     private OrderRepository orderRepository;
