@@ -12,7 +12,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.*;
 import static org.mockito.Mockito.times;
@@ -29,7 +29,7 @@ class MenuGroupServiceTest {
     @Test
     void create() {
         // given
-        MenuGroup menuGroup = new MenuGroup.Builder().name("두마리통닭메뉴").build();
+        MenuGroup menuGroup = new MenuGroup.Builder("두마리통닭메뉴").build();
 
         given(menuGroupDao.save(any(MenuGroup.class))).willReturn(new MenuGroup.Builder().id(1L).build());
 
@@ -52,7 +52,7 @@ class MenuGroupServiceTest {
 
         // when
         // then
-        assertThatThrownBy(() -> menuGroupService.create(menuGroup)).isInstanceOf(IllegalArgumentException.class);
+        assertThatIllegalArgumentException().isThrownBy(() -> menuGroupService.create(menuGroup));
 
         // verify
         then(jdbcTemplate).should(never()).queryForObject(anyString(), any(SqlParameterSource.class), any(RowMapper.class));

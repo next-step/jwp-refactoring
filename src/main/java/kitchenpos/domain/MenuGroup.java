@@ -32,6 +32,13 @@ public class MenuGroup {
         private Long id;
         private String name;
 
+        public Builder() {
+        }
+
+        public Builder(String name) {
+            this.name = name;
+        }
+
         public Builder id(Long id) {
             this.id = id;
             return this;
