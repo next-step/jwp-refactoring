@@ -38,12 +38,16 @@ public class OrderTable {
     }
 
     public void registerOrder(Order order) {
-
+        if (Boolean.TRUE.equals(empty)) {
+            throw new IllegalArgumentException("[ERROR] 빈테이블에는 주문등록을 할 수 없습니다.");
+        }
+        orders.addOrder(order);
+        order.setOrderTable(this);
     }
 
-    public void ungroupingTableGroup(){
+    public void ungroupingTableGroup() {
         orders.checkPossibleUngroupingOrderStatus();
-        if(tableGroup == null){
+        if (tableGroup == null) {
             throw new IllegalArgumentException("[ERROR] 단체 지정이 되어있지 않아 해제할 수 없습니다.");
         }
         tableGroup = null;

@@ -74,6 +74,10 @@ public class Order {
         return orderTable;
     }
 
+    public void setOrderTable(OrderTable orderTable) {
+        this.orderTable = orderTable;
+    }
+
     public void addOrderLineItems(OrderLineItem orderLineItem) {
         orderLineItems.addOrderLineItems(orderLineItem);
         orderLineItem.setOrder(this);

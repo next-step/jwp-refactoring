@@ -154,7 +154,7 @@ class OrderTableTest {
     @Test
     void registerOrder() {
         //given
-        OrderTable orderTable = 테이블_만들기(1L,3, false);
+        OrderTable orderTable = 테이블_만들기(1L, 3, false);
         Order order = 주문_만들기(null);
 
         //when
@@ -162,6 +162,19 @@ class OrderTableTest {
 
         //then
         assertThat(order.getOrderTable().getId()).isEqualTo(orderTable.getId());
+
+    }
+
+    @DisplayName("빈테이블은 주문을 등록할 수 없다.")
+    @Test
+    void registerOrder_empty_table() {
+        //given
+        OrderTable emptyTable = 테이블_만들기(1L, 0, true);
+        Order order = 주문_만들기(null);
+
+        //when the
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> emptyTable.registerOrder(order));
 
     }
 }
