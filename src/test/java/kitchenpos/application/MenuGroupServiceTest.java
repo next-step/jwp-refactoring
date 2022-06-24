@@ -22,8 +22,8 @@ class MenuGroupServiceTest {
     private MenuGroupDao menuGroupDao;
     @InjectMocks
     private MenuGroupService menuGroupService;
-    MenuGroup 빅맥세트;
-    MenuGroup 상하이버거세트;
+    private MenuGroup 빅맥세트;
+    private MenuGroup 상하이버거세트;
 
     @BeforeEach
     void setUp() {
@@ -48,7 +48,7 @@ class MenuGroupServiceTest {
         assertThat(toIdList(result)).containsExactlyElementsOf(toIdList(Arrays.asList(빅맥세트, 상하이버거세트)));
     }
 
-    private MenuGroup createMenuGroup(Long id, String name) {
+    public static MenuGroup createMenuGroup(Long id, String name) {
         MenuGroup menuGroup = new MenuGroup();
         menuGroup.setId(id);
         menuGroup.setName(name);

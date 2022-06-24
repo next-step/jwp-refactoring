@@ -24,8 +24,8 @@ class ProductServiceTest {
     private ProductDao productDao;
     @InjectMocks
     private ProductService productService;
-    Product 토마토;
-    Product 감자;
+    private Product 토마토;
+    private Product 감자;
 
     @BeforeEach
     void setUp() {
@@ -65,7 +65,7 @@ class ProductServiceTest {
         assertThat(toIdList(result)).containsExactlyElementsOf(toIdList(Arrays.asList(토마토, 감자)));
     }
 
-    private Product createProduct(Long id, String name, long price) {
+    public static Product createProduct(Long id, String name, long price) {
         Product product = new Product();
         product.setId(id);
         product.setName(name);
