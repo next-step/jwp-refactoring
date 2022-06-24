@@ -7,10 +7,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.ServiceTestFactory.HONEY_RED_COMBO;
-
 public class FakeMenuDao implements MenuDao {
-    private final List<Menu> menus = Arrays.asList(HONEY_RED_COMBO);
+    private final List<Menu> menus = Arrays.asList();
 
     @Override
     public Menu save(Menu entity) {

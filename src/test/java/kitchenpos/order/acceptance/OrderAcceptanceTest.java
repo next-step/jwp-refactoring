@@ -9,12 +9,11 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.*;
@@ -34,7 +33,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     private MenuGroupResponse 추천메뉴;
     private ProductResponse 허니콤보;
     private ProductResponse 레드콤보;
-    private Menu 허니레드콤보;
+    private MenuResponse 허니레드콤보;
     private OrderTable 손님_4명_테이블;
     private Order 주문;
 
@@ -46,7 +45,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                     추천메뉴 = 메뉴_그룹_등록되어_있음("추천메뉴");
                     허니콤보 = 상품_등록_되어있음("허니콤보", 20_000L);
                     레드콤보 = 상품_등록_되어있음("레드콤보", 19_000L);
-                    허니레드콤보 = 메뉴_등록_되어있음(추천메뉴, "허니레드콤보", 39_000L, 허니콤보, 레드콤보);
+                    허니레드콤보 = 메뉴_등록_되어있음(추천메뉴, "허니레드콤보", 39_000L, 허니콤보, 1L);
                     손님_4명_테이블 = 테이블_등록_되어있음(4, false);
 
                     ResponseEntity<Order> 주문_등록_요청_결과 = 주문_등록_요청(손님_4명_테이블, 허니레드콤보);
@@ -76,7 +75,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                     추천메뉴 = 메뉴_그룹_등록되어_있음("추천메뉴");
                     허니콤보 = 상품_등록_되어있음("허니콤보", 20_000L);
                     레드콤보 = 상품_등록_되어있음("레드콤보", 19_000L);
-                    허니레드콤보 = 메뉴_등록_되어있음(추천메뉴, "허니레드콤보", 39_000L, 허니콤보, 레드콤보);
+                    허니레드콤보 = 메뉴_등록_되어있음(추천메뉴, "허니레드콤보", 39_000L, 허니콤보, 1L);
                     손님_4명_테이블 = 테이블_등록_되어있음(4, false);
                     주문 = 주문_등록_되어있음(손님_4명_테이블, 허니레드콤보);
                     주문_상태_변경_요청(주문, OrderStatus.COMPLETION.name());
@@ -102,11 +101,11 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 params);
     }
 
-    public static Order 주문_등록_되어있음(OrderTable orderTable, Menu... menus) {
+    public static Order 주문_등록_되어있음(OrderTable orderTable, MenuResponse... menus) {
         return 주문_등록_요청(orderTable, menus).getBody();
     }
 
-    public static ResponseEntity<Order> 주문_등록_요청(OrderTable orderTable, Menu... menus) {
+    public static ResponseEntity<Order> 주문_등록_요청(OrderTable orderTable, MenuResponse... menus) {
         List<OrderLineItem> orderLineItems = 주문_항목_생성(menus);
 
         Order order = new Order();
@@ -124,10 +123,10 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
-    private void 주문_목록_조회됨(ResponseEntity<List<Order>> response, Menu... menus) {
+    private void 주문_목록_조회됨(ResponseEntity<List<Order>> response, MenuResponse... menus) {
         List<Long> actualMenuIds = 주문_항목_메뉴_아이디_추출(response);
         List<Long> expectedMenuIds = Arrays.stream(menus)
-                .map(Menu::getId)
+                .map(MenuResponse::getId)
                 .collect(Collectors.toList());
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -159,7 +158,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         assertThat(response.getHeaders().get("Location")).isNotNull();
     }
 
-    private static List<OrderLineItem> 주문_항목_생성(Menu[] menus) {
+    private static List<OrderLineItem> 주문_항목_생성(MenuResponse[] menus) {
         return Arrays.stream(menus)
                 .map(menu -> {
                     OrderLineItem orderLineItem = new OrderLineItem();

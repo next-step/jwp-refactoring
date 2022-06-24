@@ -12,6 +12,7 @@ import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.order.domain.Order;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductResponse;
@@ -77,7 +78,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
                     MenuGroupResponse 추천메뉴 = 메뉴_그룹_등록되어_있음("추천메뉴");
                     ProductResponse 허니콤보 = 상품_등록_되어있음("허니콤보", 20_000L);
                     ProductResponse 레드콤보 = 상품_등록_되어있음("레드콤보", 19_000L);
-                    Menu 허니레드콤보 = 메뉴_등록_되어있음(추천메뉴, "허니레드콤보", 39_000L, 허니콤보, 레드콤보);
+                    MenuResponse 허니레드콤보 = 메뉴_등록_되어있음(추천메뉴, "허니레드콤보", 39_000L, 허니콤보, 1L);
                     빈_테이블 = 테이블_등록_되어있음(0, true);
                     다른_빈_테이블 = 테이블_등록_되어있음(0, true);
                     테이블_그룹 = 단체_지정_되어있음(빈_테이블, 다른_빈_테이블);
