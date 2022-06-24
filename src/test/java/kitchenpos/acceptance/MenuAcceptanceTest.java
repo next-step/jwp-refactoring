@@ -10,10 +10,10 @@ import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.MenuResponse;
 import kitchenpos.utils.RestAssuredHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -50,8 +50,9 @@ class MenuAcceptanceTest extends AcceptanceTest {
         // then
         final ExtractableResponse<Response> 메뉴_조회_결과 = 메뉴_조회();
         final MenuProduct 예상된_메뉴_제품들 = new MenuProduct(1L, 1L, 1L, 2);
-        메뉴_조회_확인(메뉴_조회_결과, Arrays.asList(new Menu("반반후라이드", BigDecimal.valueOf(16_000.0), 1L,
-                Arrays.asList(예상된_메뉴_제품들))));
+        final MenuResponse 예상된_메뉴_결과 = new MenuResponse(1L, "반반후라이드", BigDecimal.valueOf(16_000.0), 1L,
+                Arrays.asList(예상된_메뉴_제품들));
+        메뉴_조회_확인(메뉴_조회_결과, Arrays.asList(예상된_메뉴_결과));
     }
 
     public static ExtractableResponse<Response> 메뉴_생성_요청(String 메뉴명, Integer 메뉴_금액, Long 메뉴_그룹_아이디,
@@ -68,8 +69,8 @@ class MenuAcceptanceTest extends AcceptanceTest {
         return RestAssuredHelper.get(MENU_URI);
     }
 
-    private void 메뉴_조회_확인(ExtractableResponse<Response> 메뉴_조회_결과, List<Menu> 예상된_메뉴_조회_결과) {
-        final List<Menu> actual = 메뉴_조회_결과.body().jsonPath().getList(".", Menu.class);
+    private void 메뉴_조회_확인(ExtractableResponse<Response> 메뉴_조회_결과, List<MenuResponse> 예상된_메뉴_조회_결과) {
+        final List<MenuResponse> actual = 메뉴_조회_결과.body().jsonPath().getList(".", MenuResponse.class);
 
         assertAll(
                 () -> assertThat(메뉴_조회_결과.statusCode()).isEqualTo(HttpStatus.OK.value()),
@@ -78,7 +79,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    private void 메뉴_내용_확인(List<Menu> 메뉴_리스트1, List<Menu> 메뉴_리스트2) {
+    private void 메뉴_내용_확인(List<MenuResponse> 메뉴_리스트1, List<MenuResponse> 메뉴_리스트2) {
         for (int idx = 0; idx < 메뉴_리스트1.size(); idx++) {
             int innerIdx = idx;
             assertAll(

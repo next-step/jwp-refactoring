@@ -3,6 +3,7 @@ package kitchenpos.domain;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import kitchenpos.dto.MenuResponse;
 
 public class Menu {
     private Long id;
@@ -59,6 +60,10 @@ public class Menu {
 
     public void setMenuProducts(final List<MenuProduct> menuProducts) {
         this.menuProducts = menuProducts;
+    }
+
+    public MenuResponse toMenuResponse() {
+        return new MenuResponse(this.id, this.name, this.price, this.menuGroupId, this.menuProducts);
     }
 
     @Override

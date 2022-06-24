@@ -14,6 +14,7 @@ import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.MenuResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,7 +38,7 @@ public class MenuService {
     }
 
     @Transactional
-    public Menu create(final MenuRequest menuRequest) {
+    public MenuResponse create(final MenuRequest menuRequest) {
         final BigDecimal price = menuRequest.getPrice();
 
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
@@ -86,16 +87,18 @@ public class MenuService {
         }
 
         savedMenu.setMenuProducts(savedMenuProducts);
-        return savedMenu;
+        return savedMenu.toMenuResponse();
     }
 
-    public List<Menu> list() {
+    public List<MenuResponse> list() {
         final List<Menu> menus = menuDao.findAll();
 
         for (final Menu menu : menus) {
             menu.setMenuProducts(menuProductDao.findAllByMenuId(menu.getId()));
         }
 
-        return menus;
+        return menus.stream()
+                .map(Menu::toMenuResponse)
+                .collect(Collectors.toList());
     }
 }
