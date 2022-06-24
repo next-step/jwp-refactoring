@@ -1,5 +1,7 @@
 package kitchenpos.dto.menuProduct;
 
+import kitchenpos.domain.menuProduct.MenuProduct;
+
 public class MenuProductResponse {
     private final Long seq;
     private final Long menuId;
@@ -11,6 +13,14 @@ public class MenuProductResponse {
         this.menuId = menuId;
         this.productId = productId;
         this.quantity = quantity;
+    }
+
+    public static MenuProductResponse of(MenuProduct menuProduct) {
+        return new MenuProductResponse(
+                menuProduct.getSeq(),
+                menuProduct.getMenu().getId(),
+                menuProduct.getProduct().getId(),
+                menuProduct.getQuantity());
     }
 
     public Long getSeq() {

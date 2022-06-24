@@ -1,6 +1,7 @@
 package kitchenpos.domain.menu;
 
 import kitchenpos.domain.menuProduct.MenuProduct;
+import kitchenpos.dto.menu.MenuRequest;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -11,8 +12,13 @@ public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private BigDecimal price;
+
     private Long menuGroupId;
 
     @OneToMany(mappedBy = "menu")
@@ -28,6 +34,10 @@ public class Menu {
         this.price = price;
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
+    }
+
+    public static Menu of(MenuRequest menuRequest) {
+        return new Menu(null, menuRequest.getName(), menuRequest.getPrice(), menuRequest.getMenuGroupId(), null);
     }
 
     public void validateForCreate() {

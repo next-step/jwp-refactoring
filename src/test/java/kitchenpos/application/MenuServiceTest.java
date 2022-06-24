@@ -7,6 +7,8 @@ import kitchenpos.domain.menuProduct.MenuProduct;
 import kitchenpos.domain.menuProduct.MenuProductRepository;
 import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.ProductRepository;
+import kitchenpos.dto.menu.MenuRequest;
+import kitchenpos.dto.menu.MenuResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -65,7 +67,7 @@ class MenuServiceTest {
     @Test
     void create() {
         // given
-        Menu request = 메뉴_데이터_생성(null, BigDecimal.valueOf(26000));
+        MenuRequest request = 메뉴_요청_데이터_생성(BigDecimal.valueOf(26000));
         Menu 예상값 = 메뉴_데이터_생성(1L, BigDecimal.valueOf(26000));
         MenuProduct menuProductSeq1 = new MenuProduct(1L, 예상값, 초밥, 2);
         MenuProduct menuProductSeq2 = new MenuProduct(2L, 예상값, 우동, 2);
@@ -74,27 +76,27 @@ class MenuServiceTest {
         given(상품_조회(2L)).willReturn(Optional.of(우동));
         given(메뉴_상품_생성(requestMenuProductSeq1)).willReturn(menuProductSeq1);
         given(메뉴_상품_생성(requestMenuProductSeq2)).willReturn(menuProductSeq2);
-        given(menuDao.save(request)).willReturn(예상값);
+        given(menuDao.save(any(Menu.class))).willReturn(예상값);
 
         // when
-        Menu 메뉴_생성_결과 = 메뉴_생성(request);
+        MenuResponse 메뉴_생성_결과 = 메뉴_생성(request);
 
         // then
-        메뉴_값_비교(예상값, 메뉴_생성_결과);
+        메뉴_값_비교(메뉴_생성_결과, MenuResponse.of(예상값));
     }
 
     @DisplayName("메뉴를 생성할 수 있다 - 메뉴의 가격은 0원 이상이어야 한다")
     @Test
     void create_exception1() {
         // given
-        Menu request1 = 메뉴_데이터_생성(null, null);
+        MenuRequest request1 = 메뉴_요청_데이터_생성(null);
 
         // when && then
         assertThatThrownBy(() -> 메뉴_생성(request1))
                 .isInstanceOf(IllegalArgumentException.class);
 
         // given
-        Menu request2 = 메뉴_데이터_생성(null, BigDecimal.valueOf(-1));
+        MenuRequest request2 = 메뉴_요청_데이터_생성(BigDecimal.valueOf(-1));
 
         // when && then
         assertThatThrownBy(() -> 메뉴_생성(request2))
@@ -105,7 +107,7 @@ class MenuServiceTest {
     @Test
     void create_exception2() {
         // given
-        Menu request = 메뉴_데이터_생성(null, BigDecimal.valueOf(25000));
+        MenuRequest request = 메뉴_요청_데이터_생성( BigDecimal.valueOf(25000));
         given(메뉴_그룹_유효성_확인()).willReturn(false);
 
         // when && then
@@ -117,7 +119,7 @@ class MenuServiceTest {
     @Test
     void create_exception3() {
         // given
-        Menu request = 메뉴_데이터_생성(null, BigDecimal.valueOf(25000));
+        MenuRequest request = 메뉴_요청_데이터_생성(BigDecimal.valueOf(25000));
         given(메뉴_그룹_유효성_확인()).willReturn(true);
         given(상품_조회(1L)).willReturn(Optional.empty());
 
@@ -131,7 +133,7 @@ class MenuServiceTest {
     @Test
     void create_exception4() {
         // given
-        Menu request = 메뉴_데이터_생성(null, BigDecimal.valueOf(26001));
+        MenuRequest request = 메뉴_요청_데이터_생성(BigDecimal.valueOf(26001));
         given(메뉴_그룹_유효성_확인()).willReturn(true);
         given(상품_조회(1L)).willReturn(Optional.of(초밥));
         given(상품_조회(2L)).willReturn(Optional.of(우동));
@@ -152,20 +154,24 @@ class MenuServiceTest {
         given(menuDao.findAll()).willReturn(예상값);
 
         // when
-        List<Menu> 메뉴_목록_조회_결과 = menuService.list();
+        List<MenuResponse> 메뉴_목록_조회_결과 = menuService.list();
 
         // then
         assertAll(
-                () -> 메뉴_값_비교(예상값.get(0), 메뉴_목록_조회_결과.get(0)),
-                () -> 메뉴_값_비교(예상값.get(1), 메뉴_목록_조회_결과.get(1))
+                () -> 메뉴_값_비교(메뉴_목록_조회_결과.get(0), MenuResponse.of(예상값.get(0))),
+                () -> 메뉴_값_비교(메뉴_목록_조회_결과.get(1), MenuResponse.of(예상값.get(1)))
         );
+    }
+
+    private MenuRequest 메뉴_요청_데이터_생성(BigDecimal price) {
+        return new MenuRequest("메뉴이름", price, 1L, menuProducts);
     }
 
     private Menu 메뉴_데이터_생성(Long id, BigDecimal price) {
         return new Menu(id, "메뉴이름", price, 1L, menuProducts);
     }
 
-    private void 메뉴_값_비교(Menu result, Menu expectation) {
+    private void 메뉴_값_비교(MenuResponse result, MenuResponse expectation) {
         assertAll(
                 () -> assertThat(result.getId()).isEqualTo(expectation.getId()),
                 () -> assertThat(result.getName()).isEqualTo(expectation.getName()),
@@ -183,8 +189,8 @@ class MenuServiceTest {
         return menuProductRepository.save(menuProduct);
     }
 
-    private Menu 메뉴_생성(Menu menu) {
-        return menuService.create(menu);
+    private MenuResponse 메뉴_생성(MenuRequest menuRequest) {
+        return menuService.create(menuRequest);
     }
 
     private boolean 메뉴_그룹_유효성_확인() {
