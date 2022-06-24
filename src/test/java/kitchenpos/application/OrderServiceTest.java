@@ -4,27 +4,20 @@ import static kitchenpos.helper.MenuFixtures.메뉴_만들기;
 import static kitchenpos.helper.OrderFixtures.주문_요청_만들기;
 import static kitchenpos.helper.OrderLineItemFixtures.주문_항목_요청_만들기;
 import static kitchenpos.helper.TableFixtures.테이블_만들기;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doAnswer;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
-import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -38,10 +31,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class OrderServiceTest {
 
     @Mock
-    private OrderDao orderDao;
-    @Mock
-    private OrderLineItemDao orderLineItemDao;
-    @Mock
     private OrderRepository orderRepository;
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -52,36 +41,7 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(orderDao, orderLineItemDao, orderRepository, orderTableRepository,
-                menuRepository);
-    }
-
-    @DisplayName("주문을 등록한다.")
-    @Test
-    void create() {
-        //given
-        long generateNewOrderId = 5;
-        Menu menu = 메뉴_만들기(1L, "테스트 메뉴", 15000);
-        OrderLineItemRequest orderLineItem1 = 주문_항목_요청_만들기(menu.getId(), 1);
-        OrderLineItemRequest orderLineItem2 = 주문_항목_요청_만들기(menu.getId(), 2);
-        kitchenpos.table.domain.OrderTable orderTable = 테이블_만들기(1L, 3, false);
-        OrderRequest request = 주문_요청_만들기(orderTable.getId(), Arrays.asList(orderLineItem1, orderLineItem2));
-
-        given(orderTableRepository.findById(request.getOrderTableId())).willReturn(Optional.of(orderTable));
-        given(menuRepository.findById(orderLineItem1.getMenuId())).willReturn(Optional.of(menu));
-
-        doAnswer(invocation -> {
-            kitchenpos.order.domain.Order order = new kitchenpos.order.domain.Order(generateNewOrderId,
-                    OrderStatus.COOKING, LocalDateTime.now(), orderTable);
-            return order;
-        }).when(orderRepository).save(any());
-
-        //when
-        OrderResponse result = orderService.create(request);
-
-        //then
-        assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
-        assertThat(result.getOrderTableId()).isEqualTo(orderTable.getId());
+        orderService = new OrderService(orderRepository, orderTableRepository, menuRepository);
     }
 
 
@@ -89,7 +49,7 @@ class OrderServiceTest {
     @Test
     void create_empty_or_null() {
         //given
-        kitchenpos.table.domain.OrderTable orderTable = 테이블_만들기(1L, 3, false);
+        OrderTable orderTable = 테이블_만들기(1L, 3, false);
         OrderRequest emptyRequest = 주문_요청_만들기(orderTable.getId(), Collections.emptyList());
         OrderRequest nullRequest = 주문_요청_만들기(orderTable.getId(), null);
 
@@ -105,7 +65,7 @@ class OrderServiceTest {
         Menu menu = 메뉴_만들기(1L, "테스트 메뉴", 15000);
         OrderLineItemRequest orderLineItem1 = 주문_항목_요청_만들기(menu.getId(), 1);
         OrderLineItemRequest orderLineItem2 = 주문_항목_요청_만들기(menu.getId(), 2);
-        kitchenpos.table.domain.OrderTable orderTable = 테이블_만들기(1L, 3, false);
+        OrderTable orderTable = 테이블_만들기(1L, 3, false);
         OrderRequest request = 주문_요청_만들기(orderTable.getId(), Arrays.asList(orderLineItem1, orderLineItem2));
 
         given(orderTableRepository.findById(request.getOrderTableId())).willReturn(Optional.of(orderTable));
@@ -123,7 +83,7 @@ class OrderServiceTest {
         Menu menu = 메뉴_만들기(1L, "테스트 메뉴", 15000);
         OrderLineItemRequest orderLineItem1 = 주문_항목_요청_만들기(menu.getId(), 1);
         OrderLineItemRequest orderLineItem2 = 주문_항목_요청_만들기(menu.getId(), 2);
-        kitchenpos.table.domain.OrderTable orderTable = 테이블_만들기(1L, 3, true);
+        OrderTable orderTable = 테이블_만들기(1L, 3, true);
         OrderRequest request = 주문_요청_만들기(orderTable.getId(), Arrays.asList(orderLineItem1, orderLineItem2));
 
         given(orderTableRepository.findById(request.getOrderTableId())).willReturn(Optional.of(orderTable));
@@ -140,7 +100,7 @@ class OrderServiceTest {
         Menu menu = 메뉴_만들기(1L, "테스트 메뉴", 15000);
         OrderLineItemRequest orderLineItem1 = 주문_항목_요청_만들기(menu.getId(), 1);
         OrderLineItemRequest orderLineItem2 = 주문_항목_요청_만들기(menu.getId(), 2);
-        kitchenpos.table.domain.OrderTable orderTable = 테이블_만들기(1L, 3, true);
+        OrderTable orderTable = 테이블_만들기(1L, 3, true);
         OrderRequest request = 주문_요청_만들기(orderTable.getId(), Arrays.asList(orderLineItem1, orderLineItem2));
 
         given(orderTableRepository.findById(request.getOrderTableId())).willReturn(Optional.empty());
