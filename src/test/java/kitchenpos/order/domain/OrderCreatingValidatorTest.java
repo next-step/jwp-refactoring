@@ -1,7 +1,7 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.DomainServiceTest;
-import kitchenpos.menu.application.MenuServiceTestSupport;
+import kitchenpos.menu.domain.MenuServiceTestSupport;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.exception.EmptyOrderLineItemsException;
 import kitchenpos.order.exception.InvalidOrderException;
