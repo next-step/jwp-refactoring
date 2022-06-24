@@ -63,11 +63,11 @@ public class OrderTables {
         }
     }
 
-    public List<OrderTable> getOrderTables() {
-        return orderTables;
-    }
-
     public void updateTableGroup(TableGroup tableGroup) {
         orderTables.forEach(orderTable -> orderTable.updateTableGroup(tableGroup));
+    }
+
+    public List<OrderTable> getOrderTables() {
+        return orderTables;
     }
 }
