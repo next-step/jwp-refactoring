@@ -49,7 +49,7 @@ public class Order {
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
-        if (OrderStatus.COMPLETION.equals(orderStatus)) {
+        if (OrderStatus.COMPLETION.equals(this.orderStatus)) {
             throw new IllegalArgumentException("[ERROR] 계산완료상태에서 주문 상태를 변경할 수 없습니다.");
         }
         this.orderStatus = orderStatus;

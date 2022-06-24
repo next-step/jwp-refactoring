@@ -118,9 +118,7 @@ class OrderTest {
         Order order = 주문_만들기(1L, OrderStatus.COMPLETION, null);
 
         //when
-        order.changeOrderStatus(OrderStatus.MEAL);
-
-        //then
-        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> order.changeOrderStatus(OrderStatus.MEAL));
     }
 }
