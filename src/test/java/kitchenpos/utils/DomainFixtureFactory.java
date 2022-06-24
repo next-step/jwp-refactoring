@@ -1,11 +1,11 @@
 package kitchenpos.utils;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
@@ -25,6 +25,10 @@ public class DomainFixtureFactory {
 
     public static MenuGroup createMenuGroup(Long id, String name) {
         return MenuGroup.of(id, name);
+    }
+
+    public static MenuGroupRequest createMenuGroupRequest(String name) {
+        return new MenuGroupRequest(name);
     }
 
     public static Menu createMenu(Long id, String name, BigDecimal price, MenuGroup menuGroup,

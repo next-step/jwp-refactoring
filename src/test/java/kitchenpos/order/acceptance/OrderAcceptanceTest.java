@@ -6,6 +6,7 @@ import static kitchenpos.product.acceptance.ProductRestAssured.상품_등록_요
 import static kitchenpos.order.acceptance.TableRestAssured.주문테이블_등록_요청;
 import static kitchenpos.utils.DomainFixtureFactory.createMenu;
 import static kitchenpos.utils.DomainFixtureFactory.createMenuGroup;
+import static kitchenpos.utils.DomainFixtureFactory.createMenuGroupRequest;
 import static kitchenpos.utils.DomainFixtureFactory.createMenuProduct;
 import static kitchenpos.utils.DomainFixtureFactory.createOrder;
 import static kitchenpos.utils.DomainFixtureFactory.createOrderLineItem;
@@ -19,6 +20,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.List;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.utils.AcceptanceTest;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
@@ -41,9 +43,9 @@ class OrderAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        MenuGroup 한마리메뉴 = 메뉴그룹_등록_요청(createMenuGroup(1L, "한마리메뉴")).as(MenuGroup.class);
+        MenuGroupResponse 한마리메뉴 = 메뉴그룹_등록_요청(createMenuGroupRequest("한마리메뉴")).as(MenuGroupResponse.class);
         Product 양념 = 상품_등록_요청(createProductRequest( "양념", BigDecimal.valueOf(20000L))).as(Product.class);
-        Menu 양념치킨 = 메뉴_등록_요청(createMenu(1L, "양념치킨", BigDecimal.valueOf(40000L), 한마리메뉴,
+        Menu 양념치킨 = 메뉴_등록_요청(createMenu(1L, "양념치킨", BigDecimal.valueOf(40000L), null,
                 Lists.newArrayList(createMenuProduct(1L, null, 양념, 2L)))).as(Menu.class);
         OrderTable 주문테이블 = 주문테이블_등록_요청(createOrderTable(null, null, 2, false)).as(OrderTable.class);
         주문 = createOrder(null, 주문테이블, null, Lists.newArrayList(createOrderLineItem(1L, null, 양념치킨, 2L)));

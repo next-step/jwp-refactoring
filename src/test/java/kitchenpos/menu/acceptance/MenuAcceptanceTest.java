@@ -5,7 +5,7 @@ import static kitchenpos.menu.acceptance.MenuRestAssured.메뉴_등록_요청;
 import static kitchenpos.menu.acceptance.MenuRestAssured.메뉴_목록_조회_요청;
 import static kitchenpos.product.acceptance.ProductRestAssured.상품_등록_요청;
 import static kitchenpos.utils.DomainFixtureFactory.createMenu;
-import static kitchenpos.utils.DomainFixtureFactory.createMenuGroup;
+import static kitchenpos.utils.DomainFixtureFactory.createMenuGroupRequest;
 import static kitchenpos.utils.DomainFixtureFactory.createMenuProduct;
 import static kitchenpos.utils.DomainFixtureFactory.createProductRequest;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -15,8 +15,8 @@ import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.List;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.product.domain.Product;
 import kitchenpos.utils.AcceptanceTest;
 import org.assertj.core.util.Lists;
@@ -33,10 +33,10 @@ class MenuAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        MenuGroup 한마리메뉴 = 메뉴그룹_등록_요청(createMenuGroup(null, "한마리메뉴")).as(MenuGroup.class);
+        MenuGroupResponse 한마리메뉴 = 메뉴그룹_등록_요청(createMenuGroupRequest("한마리메뉴")).as(MenuGroupResponse.class);
         Product 양념 = 상품_등록_요청(createProductRequest( "양념", BigDecimal.valueOf(20000L))).as(Product.class);
         MenuProduct 양념치킨상품 = createMenuProduct(1L, null, 양념, 2L);
-        양념치킨 = createMenu(null, "양념치킨", BigDecimal.valueOf(40000L), 한마리메뉴, Lists.newArrayList(양념치킨상품));
+        양념치킨 = createMenu(null, "양념치킨", BigDecimal.valueOf(40000L), null, Lists.newArrayList(양념치킨상품));
     }
 
     /**

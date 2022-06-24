@@ -2,14 +2,15 @@ package kitchenpos.menu.acceptance;
 
 import static kitchenpos.menu.acceptance.MenuGroupRestAssured.메뉴그룹_등록_요청;
 import static kitchenpos.menu.acceptance.MenuGroupRestAssured.메뉴그룹_목록_조회_요청;
-import static kitchenpos.utils.DomainFixtureFactory.createMenuGroup;
+import static kitchenpos.utils.DomainFixtureFactory.createMenuGroupRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
+import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.utils.AcceptanceTest;
-import kitchenpos.menu.domain.MenuGroup;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,15 +19,15 @@ import org.springframework.http.HttpStatus;
 
 @DisplayName("메뉴그룹 관련 기능")
 class MenuGroupAcceptanceTest extends AcceptanceTest {
-    private MenuGroup 두마리메뉴;
-    private MenuGroup 한마리메뉴;
+    private MenuGroupRequest 두마리메뉴;
+    private MenuGroupRequest 한마리메뉴;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        두마리메뉴 = createMenuGroup(1L, "두마리메뉴");
-        한마리메뉴 = createMenuGroup(2L, "한마리메뉴");
+        두마리메뉴 = createMenuGroupRequest("두마리메뉴");
+        한마리메뉴 = createMenuGroupRequest("한마리메뉴");
     }
 
     /**
@@ -52,8 +53,8 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void lists() {
         // given
-        MenuGroup 등록한_두마리메뉴 = 메뉴그룹_등록_요청(두마리메뉴).as(MenuGroup.class);
-        MenuGroup 등록한_한마리메뉴 = 메뉴그룹_등록_요청(한마리메뉴).as(MenuGroup.class);
+        MenuGroupResponse 등록한_두마리메뉴 = 메뉴그룹_등록_요청(두마리메뉴).as(MenuGroupResponse.class);
+        MenuGroupResponse 등록한_한마리메뉴 = 메뉴그룹_등록_요청(한마리메뉴).as(MenuGroupResponse.class);
 
         // when
         ExtractableResponse<Response> response = 메뉴그룹_목록_조회_요청();
@@ -66,8 +67,8 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    private void 메뉴그룹_목록_조회됨(ExtractableResponse<Response> response, List<MenuGroup> expectedMenuGroups) {
-        List<MenuGroup> menuGroups = response.jsonPath().getList(".", MenuGroup.class);
+    private void 메뉴그룹_목록_조회됨(ExtractableResponse<Response> response, List<MenuGroupResponse> expectedMenuGroups) {
+        List<MenuGroupResponse> menuGroups = response.jsonPath().getList(".", MenuGroupResponse.class);
         assertThat(menuGroups).containsExactlyElementsOf(expectedMenuGroups);
     }
 }
