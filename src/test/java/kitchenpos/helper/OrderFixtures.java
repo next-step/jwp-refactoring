@@ -10,6 +10,10 @@ import kitchenpos.table.domain.OrderTable;
 
 public class OrderFixtures {
 
+    public static OrderRequest 주문_상태_조리_요청 = 주문_요청_만들기(OrderStatus.COMPLETION);
+    public static OrderRequest 주문_상태_식사_요청 = 주문_요청_만들기(OrderStatus.MEAL);
+    public static OrderRequest 주문_상태_계산완료_요청 = 주문_요청_만들기(OrderStatus.COMPLETION);
+    
     public static OrderRequest 주문_요청_만들기(Long id, Long orderTableId, String orderStatus,List<OrderLineItemRequest> orderLineItems){
         return new OrderRequest(id, orderTableId, orderStatus, LocalDateTime.now(),orderLineItems);
     }

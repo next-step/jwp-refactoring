@@ -1,15 +1,23 @@
 package kitchenpos.order.application;
 
+import static kitchenpos.helper.OrderFixtures.주문_상태_계산완료_요청;
+import static kitchenpos.helper.OrderFixtures.주문_상태_식사_요청;
+import static kitchenpos.helper.OrderFixtures.주문_상태_조리_요청;
 import static kitchenpos.helper.OrderFixtures.주문_요청_만들기;
-import static kitchenpos.helper.OrderLineItemFixtures.주문_항목_요청_만들기;
+import static kitchenpos.helper.OrderLineItemFixtures.없는_주문_항목_요청;
+import static kitchenpos.helper.OrderLineItemFixtures.주문_항목_요청1;
+import static kitchenpos.helper.OrderLineItemFixtures.주문_항목_요청2;
+import static kitchenpos.helper.TableFixtures.빈_테이블;
+import static kitchenpos.helper.TableFixtures.주문_테이블;
 import static kitchenpos.helper.TableFixtures.테이블_만들기;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 import kitchenpos.order.consts.OrderStatus;
-import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.domain.OrderTable;
@@ -17,14 +25,12 @@ import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 
 @DisplayName("주문 관련 Service 기능 테스트")
-@DirtiesContext(classMode = ClassMode.BEFORE_CLASS)
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@DataJpaTest
+@Import({OrderService.class})
 class OrderServiceTest {
 
     @Autowired
@@ -36,10 +42,8 @@ class OrderServiceTest {
     @Test
     void create() {
         //given
-        OrderLineItemRequest orderLineItem1 = 주문_항목_요청_만들기(1L, 1);
-        OrderLineItemRequest orderLineItem2 = 주문_항목_요청_만들기(2L, 2);
         OrderTable orderTable = orderTableRepository.save(테이블_만들기(3, false));
-        OrderRequest request = 주문_요청_만들기(orderTable.getId(), Arrays.asList(orderLineItem1, orderLineItem2));
+        OrderRequest request = 주문_요청_만들기(orderTable.getId(), Arrays.asList(주문_항목_요청1, 주문_항목_요청2));
 
         //when
         OrderResponse result = orderService.create(request);
@@ -55,7 +59,7 @@ class OrderServiceTest {
     @Test
     void create_empty() {
         //given
-        OrderTable orderTable = orderTableRepository.save(테이블_만들기(3, false));
+        OrderTable orderTable = orderTableRepository.save(주문_테이블);
         OrderRequest emptyRequest = 주문_요청_만들기(orderTable.getId(), Collections.emptyList());
 
         //when then
@@ -66,10 +70,8 @@ class OrderServiceTest {
     @Test
     void create_not_registered_menu() {
         //given
-        OrderLineItemRequest orderLineItem1 = 주문_항목_요청_만들기(1L, 1);
-        OrderLineItemRequest orderLineItem2 = 주문_항목_요청_만들기(999999999L, 2);
-        OrderTable orderTable = orderTableRepository.save(테이블_만들기(3, false));
-        OrderRequest request = 주문_요청_만들기(orderTable.getId(), Arrays.asList(orderLineItem1, orderLineItem2));
+        OrderTable orderTable = orderTableRepository.save(주문_테이블);
+        OrderRequest request = 주문_요청_만들기(orderTable.getId(), Arrays.asList(주문_항목_요청1, 없는_주문_항목_요청));
 
         //when then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(request));
@@ -79,10 +81,8 @@ class OrderServiceTest {
     @Test
     void create_empty_table() {
         //given
-        OrderLineItemRequest orderLineItem1 = 주문_항목_요청_만들기(1L, 1);
-        OrderLineItemRequest orderLineItem2 = 주문_항목_요청_만들기(2L, 2);
-        OrderTable emptyTable = orderTableRepository.save(테이블_만들기(0, true));
-        OrderRequest request = 주문_요청_만들기(emptyTable.getId(), Arrays.asList(orderLineItem1, orderLineItem2));
+        OrderTable emptyTable = orderTableRepository.save(빈_테이블);
+        OrderRequest request = 주문_요청_만들기(emptyTable.getId(), Arrays.asList(주문_항목_요청1, 주문_항목_요청2));
 
         //when then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(request));
@@ -93,14 +93,11 @@ class OrderServiceTest {
     @Test
     void changeOrderStatus() {
         //given
-        OrderLineItemRequest orderLineItem1 = 주문_항목_요청_만들기(1L, 1);
-        OrderLineItemRequest orderLineItem2 = 주문_항목_요청_만들기(2L, 2);
-        OrderTable orderTable = orderTableRepository.save(테이블_만들기(3, false));
-        OrderResponse request = orderService
-                .create(주문_요청_만들기(orderTable.getId(), Arrays.asList(orderLineItem1, orderLineItem2)));
+        OrderTable orderTable = orderTableRepository.save(주문_테이블);
+        OrderResponse request = orderService.create(주문_요청_만들기(orderTable.getId(), Arrays.asList(주문_항목_요청1, 주문_항목_요청2)));
 
         //when
-        OrderResponse result = orderService.changeOrderStatus(request.getId(), 주문_요청_만들기(OrderStatus.MEAL));
+        OrderResponse result = orderService.changeOrderStatus(request.getId(), 주문_상태_식사_요청);
 
         //then
         assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
@@ -110,16 +107,30 @@ class OrderServiceTest {
     @Test
     void changeOrderStatus_completion() {
         //given
-        OrderLineItemRequest orderLineItem1 = 주문_항목_요청_만들기(1L, 1);
-        OrderLineItemRequest orderLineItem2 = 주문_항목_요청_만들기(2L, 2);
-        OrderTable orderTable = orderTableRepository.save(테이블_만들기(3, false));
+        OrderTable orderTable = orderTableRepository.save(주문_테이블);
         OrderResponse orderResponse = orderService
-                .create(주문_요청_만들기(orderTable.getId(), Arrays.asList(orderLineItem1, orderLineItem2)));
-        orderService.changeOrderStatus(orderResponse.getId(), 주문_요청_만들기(OrderStatus.COMPLETION));
+                .create(주문_요청_만들기(orderTable.getId(), Arrays.asList(주문_항목_요청1, 주문_항목_요청2)));
+        orderService.changeOrderStatus(orderResponse.getId(), 주문_상태_계산완료_요청);
 
         //when then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderService.changeOrderStatus(orderResponse.getId(), 주문_요청_만들기(OrderStatus.COOKING)));
+                .isThrownBy(() -> orderService.changeOrderStatus(orderResponse.getId(), 주문_상태_조리_요청));
+    }
+
+    @DisplayName("주문 목록을 조회한다.")
+    @Test
+    void list() {
+        //given
+        OrderTable orderTable = orderTableRepository.save(테이블_만들기(3, false));
+        OrderRequest request = 주문_요청_만들기(orderTable.getId(), Arrays.asList(주문_항목_요청1, 주문_항목_요청2));
+        OrderResponse orderResponse = orderService.create(request);
+
+        //when
+        List<OrderResponse> results = orderService.list();
+
+        //then
+        assertThat(results.stream().map(OrderResponse::getId).collect(Collectors.toList()))
+                .contains(orderResponse.getId());
     }
 
 }
