@@ -16,6 +16,8 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderResponse;
+import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.utils.RestAssuredHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -50,7 +52,8 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @DisplayName("주문을 하면 주문내역에서 조회할 수 있다.")
     void createOrder() {
         // given
-        final Order 예상된_주문_결과 = new Order(1L, 1L, OrderStatus.COOKING.name(), null, Arrays.asList(new OrderLineItem(1L, 1L)));
+        final OrderTableResponse 주문_테이블_결과 = new OrderTableResponse(1L, null, 3, false);
+        final OrderResponse 예상된_주문_결과 = new OrderResponse(1L, 주문_테이블_결과, OrderStatus.COOKING.name(), null, Arrays.asList(new OrderLineItem(1L, 1L)));
 
         // when
         final ExtractableResponse<Response> 주문_요청_결과 = 주문_요청(1L, 1L, 1L);
@@ -96,8 +99,8 @@ class OrderAcceptanceTest extends AcceptanceTest {
         return RestAssuredHelper.get(ORDER_URI);
     }
 
-    public static void 주문_조회_결과_확인(ExtractableResponse<Response> 주문_조회_결과, List<Order> 예상된_주문_결과) {
-        final List<Order> 실제_주문 = 주문_조회_결과.body().jsonPath().getList(".", Order.class);
+    public static void 주문_조회_결과_확인(ExtractableResponse<Response> 주문_조회_결과, List<OrderResponse> 예상된_주문_결과) {
+        final List<OrderResponse> 실제_주문 = 주문_조회_결과.body().jsonPath().getList(".", OrderResponse.class);
 
         assertAll(
                 () -> assertThat(주문_조회_결과.statusCode()).isEqualTo(HttpStatus.OK.value()),
@@ -106,13 +109,14 @@ class OrderAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    private static void 주문_결과_비교(List<Order> 주문1, List<Order> 주문2) {
+    private static void 주문_결과_비교(List<OrderResponse> 주문1, List<OrderResponse> 주문2) {
         for (int idx = 0; idx < 주문1.size(); idx++) {
             int innerIdx = idx;
             assertAll(
                     () -> assertThat(주문1.get(innerIdx).getOrderStatus()).isEqualTo(주문2.get(innerIdx).getOrderStatus()),
                     () -> assertThat(주문1.get(innerIdx).getId()).isEqualTo(주문2.get(innerIdx).getId()),
-                    () -> assertThat(주문1.get(innerIdx).getOrderTableId()).isEqualTo(주문2.get(innerIdx).getOrderTableId())
+                    () -> assertThat(주문1.get(innerIdx).getOrderTable().getId())
+                            .isEqualTo(주문2.get(innerIdx).getOrderTable().getId())
             );
         }
     }
@@ -123,7 +127,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     private void 주문_상태_변경_결과_확인(ExtractableResponse<Response> 주문_상태_변경_결과, OrderStatus 상태) {
-        final Order 변경된_주문 = 주문_상태_변경_결과.body().jsonPath().getObject(".", Order.class);
+        final OrderResponse 변경된_주문 = 주문_상태_변경_결과.body().jsonPath().getObject(".", OrderResponse.class);
 
         assertAll(
                 () -> assertThat(주문_상태_변경_결과.statusCode()).isEqualTo(HttpStatus.OK.value()),

@@ -19,6 +19,7 @@ import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -61,12 +62,12 @@ class OrderServiceTest {
         when(orderDao.save(any())).thenReturn(order);
         when(orderLineItemDao.save(orderLineItem)).thenReturn(orderLineItem);
         // when
-        final Order actual = orderService.create(new OrderRequest(1L, Arrays.asList(1L)));
+        final OrderResponse actual = orderService.create(new OrderRequest(1L, Arrays.asList(1L)));
         // then
         assertAll(
                 () -> assertThat(actual.getOrderLineItems()).hasSize(1),
                 () -> assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name()),
-                () -> assertThat(actual.getOrderTableId()).isEqualTo(1L)
+                () -> assertThat(actual.getOrderTable().getId()).isEqualTo(1L)
         );
     }
 
@@ -112,8 +113,9 @@ class OrderServiceTest {
         final Order order = new Order(1L, Arrays.asList(orderLineItem));
         when(orderDao.findAll()).thenReturn(Arrays.asList(order));
         when(orderLineItemDao.findAllByOrderId(any())).thenReturn(Arrays.asList(orderLineItem));
+        when(orderTableDao.findById(any())).thenReturn(Optional.of(new OrderTable(1L, null, 3, false)));
         // when
-        final List<Order> actual = orderService.list();
+        final List<OrderResponse> actual = orderService.list();
         // then
         assertAll(
                 () -> assertThat(actual).hasSize(1),
@@ -130,8 +132,9 @@ class OrderServiceTest {
         when(orderDao.findById(any())).thenReturn(Optional.of(order));
         when(orderDao.save(any())).thenReturn(order);
         when(orderLineItemDao.findAllByOrderId(any())).thenReturn(Arrays.asList(orderLineItem));
+        when(orderTableDao.findById(any())).thenReturn(Optional.of(new OrderTable(1L, null, 3, false)));
         // when
-        final Order actual = orderService.changeOrderStatus(1L, new Order(OrderStatus.COOKING.name()));
+        final OrderResponse actual = orderService.changeOrderStatus(1L, new Order(OrderStatus.COOKING.name()));
         // then
         assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
     }

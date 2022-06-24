@@ -9,6 +9,7 @@ import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -39,7 +40,7 @@ public class OrderService {
     }
 
     @Transactional
-    public Order create(final OrderRequest orderRequest) {
+    public OrderResponse create(final OrderRequest orderRequest) {
         final List<Long> menuIds = orderRequest.getMenuIds();
 
         if (menuIds.isEmpty()) {
@@ -70,22 +71,27 @@ public class OrderService {
         }
 
         savedOrder.setOrderLineItems(savedOrderLineItems);
-
-        return savedOrder;
+        return savedOrder.toOrderResponse(orderTable);
     }
 
-    public List<Order> list() {
+    public List<OrderResponse> list() {
         final List<Order> orders = orderDao.findAll();
 
         for (final Order order : orders) {
             order.setOrderLineItems(orderLineItemDao.findAllByOrderId(order.getId()));
         }
 
-        return orders;
+        return orders.stream()
+                .map(it -> {
+                    final OrderTable orderTable = orderTableDao.findById(it.getOrderTableId())
+                            .orElseThrow(IllegalArgumentException::new);
+                    return it.toOrderResponse(orderTable);
+                })
+                .collect(Collectors.toList());
     }
 
     @Transactional
-    public Order changeOrderStatus(final Long orderId, final Order order) {
+    public OrderResponse changeOrderStatus(final Long orderId, final Order order) {
         final Order savedOrder = orderDao.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
 
@@ -100,6 +106,9 @@ public class OrderService {
 
         savedOrder.setOrderLineItems(orderLineItemDao.findAllByOrderId(orderId));
 
-        return savedOrder;
+        final OrderTable orderTable = orderTableDao.findById(savedOrder.getOrderTableId())
+                .orElseThrow(IllegalArgumentException::new);
+
+        return savedOrder.toOrderResponse(orderTable);
     }
 }

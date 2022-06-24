@@ -3,6 +3,8 @@ package kitchenpos.domain;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import kitchenpos.dto.OrderResponse;
+import kitchenpos.dto.OrderTableResponse;
 
 public class Order {
     private Long id;
@@ -69,6 +71,11 @@ public class Order {
 
     public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
         this.orderLineItems = orderLineItems;
+    }
+
+    public OrderResponse toOrderResponse(OrderTable orderTable) {
+        final OrderTableResponse orderTableResponse = orderTable.toOrderTableResponse();
+        return new OrderResponse(this.id, orderTableResponse, this.orderStatus, this.orderedTime, this.orderLineItems);
     }
 
     @Override
