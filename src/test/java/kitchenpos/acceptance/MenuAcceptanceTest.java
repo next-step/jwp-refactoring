@@ -13,9 +13,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.Product;
+import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
@@ -29,9 +29,9 @@ class MenuAcceptanceTest extends AcceptanceTest {
     private static final String MENU_PATH = "/api/menus";
     private static final int PRODUCT_QUANTITY_DEFAULT = 1;
 
-    private Product 뿌링클;
-    private Product 투움바;
-    private MenuGroup 인기메뉴;
+    private ProductResponse 뿌링클;
+    private ProductResponse 투움바;
+    private MenuGroupResponse 인기메뉴;
 
     @BeforeEach
     public void setUp(){
@@ -113,12 +113,12 @@ class MenuAcceptanceTest extends AcceptanceTest {
     }
 
 
-    public static Menu 메뉴_등록_되어있음(String menuName, int menuPrice, List<Product> products, MenuGroup menuGroup) {
+    public static MenuResponse 메뉴_등록_되어있음(String menuName, int menuPrice, List<ProductResponse> products, MenuGroupResponse menuGroup) {
         Map<String, Object> params = 요청할_메뉴_생성(menuName, menuPrice, products, menuGroup);
-        return 메뉴_등록_요청(params).as(Menu.class);
+        return 메뉴_등록_요청(params).as(MenuResponse.class);
     }
 
-    private static Map<String, Object> 요청할_메뉴_생성(String name, int price, List<Product> products, MenuGroup menuGroup) {
+    private static Map<String, Object> 요청할_메뉴_생성(String name, int price, List<ProductResponse> products, MenuGroupResponse menuGroup) {
         Map<String, Object> params = new HashMap<>();
         params.put("price", price);
         params.put("menuGroupId", menuGroup.getId());
@@ -127,10 +127,10 @@ class MenuAcceptanceTest extends AcceptanceTest {
         return params;
     }
 
-    private static List<Map<String, Object>> 요청할_메뉴_상품_리스트_생성(List<Product> products) {
+    private static List<Map<String, Object>> 요청할_메뉴_상품_리스트_생성(List<ProductResponse> products) {
         List<Map<String, Object>> menuProducts = new ArrayList<>();
 
-        for (Product product : products) {
+        for (ProductResponse product : products) {
             Map<String, Object> menuProduct = new HashMap<>();
             menuProduct.put("productId", product.getId());
             menuProduct.put("quantity", PRODUCT_QUANTITY_DEFAULT);

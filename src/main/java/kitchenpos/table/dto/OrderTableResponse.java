@@ -3,10 +3,13 @@ package kitchenpos.table.dto;
 import kitchenpos.table.domain.OrderTable;
 
 public class OrderTableResponse {
-    private final Long id;
-    private final Integer numberOfGuests;
-    private final Boolean empty;
+    private Long id;
+    private Integer numberOfGuests;
+    private Boolean empty;
     private Long tableGroupId;
+
+    public OrderTableResponse() {
+    }
 
     public OrderTableResponse(Long id, Integer numberOfGuests, Boolean empty) {
         this.id = id;

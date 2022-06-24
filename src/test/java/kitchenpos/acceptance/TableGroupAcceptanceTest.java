@@ -13,11 +13,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
+import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.order.consts.OrderStatus;
+import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
@@ -30,9 +30,9 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
 
     private static final String ORDER_TABLE_GROUP_PATH = "/api/table-groups";
 
-    private Product 뿌링클;
-    private MenuGroup 인기메뉴;
-    private Menu 메뉴_뿌링클;
+    private ProductResponse 뿌링클;
+    private MenuGroupResponse 인기메뉴;
+    private MenuResponse 메뉴_뿌링클;
 
     @BeforeEach
     public void setUp(){
@@ -80,8 +80,8 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
         return Stream.of(
                 dynamicTest("단체 지정을 등록 한다.", () -> {
                     //given
-                    OrderTable emptyTable1 = TableAcceptanceTest.빈_테이블_등록_되어있음(3);
-                    OrderTable emptyTable2 = TableAcceptanceTest.빈_테이블_등록_되어있음(5);
+                    OrderTableResponse emptyTable1 = TableAcceptanceTest.빈_테이블_등록_되어있음(3);
+                    OrderTableResponse emptyTable2 = TableAcceptanceTest.빈_테이블_등록_되어있음(5);
 
                     //when
                     ExtractableResponse<Response> response = 단체_지정_등록_요청(Collections.singletonList(emptyTable1));
@@ -102,7 +102,7 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
                     단체_지정_등록_실패됨(response3);
 
                     //given
-                    OrderTable orderTable1 = TableAcceptanceTest.주문_테이블_등록_되어있음(3);
+                    OrderTableResponse orderTable1 = TableAcceptanceTest.주문_테이블_등록_되어있음(3);
 
                     //when
                     ExtractableResponse<Response> response4 = 단체_지정_등록_요청(Arrays.asList(orderTable1, emptyTable2));
@@ -115,8 +115,8 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
 
                 dynamicTest("단체 지정을 해제 한다. ", () -> {
                     //given
-                    OrderTable emptyTable1 = TableAcceptanceTest.빈_테이블_등록_되어있음(3);
-                    OrderTable emptyTable2 = TableAcceptanceTest.빈_테이블_등록_되어있음(5);
+                    OrderTableResponse emptyTable1 = TableAcceptanceTest.빈_테이블_등록_되어있음(3);
+                    OrderTableResponse emptyTable2 = TableAcceptanceTest.빈_테이블_등록_되어있음(5);
                     ExtractableResponse<Response> created = 단체_지정_등록_요청(Arrays.asList(emptyTable1, emptyTable2));
 
                     //when
@@ -126,8 +126,8 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
                     단체_지정_해제됨(response);
 
                     //given
-                    OrderTable emptyTable3 = TableAcceptanceTest.빈_테이블_등록_되어있음(1);
-                    OrderTable emptyTable4 = TableAcceptanceTest.빈_테이블_등록_되어있음(2);
+                    OrderTableResponse emptyTable3 = TableAcceptanceTest.빈_테이블_등록_되어있음(1);
+                    OrderTableResponse emptyTable4 = TableAcceptanceTest.빈_테이블_등록_되어있음(2);
                     ExtractableResponse<Response> created2 = 단체_지정_등록_요청(Arrays.asList(emptyTable3, emptyTable4));
                     OrderAcceptanceTest.주문_동록_및_주문_상태_업데이트_되어있음(emptyTable3, Collections.singletonList(메뉴_뿌링클), OrderStatus.MEAL);
 
@@ -152,12 +152,12 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> 단체_지정_등록_요청(List<OrderTable> orderTables) {
+    private ExtractableResponse<Response> 단체_지정_등록_요청(List<OrderTableResponse> orderTables) {
 
         Map<String, Object> params = new HashMap<>();
         List<Map<String, Object>> listParams = new ArrayList<>();
 
-        for (OrderTable emptyTable : orderTables) {
+        for (OrderTableResponse emptyTable : orderTables) {
             Map<String, Object> oneParams = new HashMap<>();
             oneParams.put("id", emptyTable.getId());
             listParams.add(oneParams);

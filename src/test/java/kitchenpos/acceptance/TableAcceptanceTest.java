@@ -12,11 +12,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
+import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.order.consts.OrderStatus;
+import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
@@ -29,9 +29,9 @@ class TableAcceptanceTest extends AcceptanceTest {
 
     private static final String ORDER_TABLE_PATH = "/api/tables";
 
-    private Product 뿌링클;
-    private MenuGroup 인기메뉴;
-    private Menu 메뉴_뿌링클;
+    private ProductResponse 뿌링클;
+    private MenuGroupResponse 인기메뉴;
+    private MenuResponse 메뉴_뿌링클;
 
     @BeforeEach
     public void setUp(){
@@ -94,7 +94,7 @@ class TableAcceptanceTest extends AcceptanceTest {
 
 
                     //given
-                    OrderTable 주문테이블 = TableAcceptanceTest.주문_테이블_등록_되어있음(6);
+                    OrderTableResponse 주문테이블 = TableAcceptanceTest.주문_테이블_등록_되어있음(6);
                     OrderAcceptanceTest.주문_동록_및_주문_상태_업데이트_되어있음(주문테이블, Collections.singletonList(메뉴_뿌링클), OrderStatus.MEAL);
 
                     //when
@@ -140,14 +140,14 @@ class TableAcceptanceTest extends AcceptanceTest {
 
     }
 
-    public static OrderTable 빈_테이블_등록_되어있음(int numberOfGuests) {
+    public static OrderTableResponse 빈_테이블_등록_되어있음(int numberOfGuests) {
         Map<String, Object> params = 요청할_빈_테이블_생성(numberOfGuests);
-        return 테이블_등록_요청(params).as(OrderTable.class);
+        return 테이블_등록_요청(params).as(OrderTableResponse.class);
     }
 
-    public static OrderTable 주문_테이블_등록_되어있음(int numberOfGuests) {
+    public static OrderTableResponse 주문_테이블_등록_되어있음(int numberOfGuests) {
         Map<String, Object> params = 요청할_주문_테이블_생성(numberOfGuests);
-        return 테이블_등록_요청(params).as(OrderTable.class);
+        return 테이블_등록_요청(params).as(OrderTableResponse.class);
     }
 
     private ExtractableResponse<Response> 방문_손님_수_업데이트_요청(ExtractableResponse<Response> response, int numberOfGuests) {
@@ -178,7 +178,7 @@ class TableAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> 빈_테이블_여부_업데이트_요청(OrderTable orderTable, boolean isEmpty) {
+    private ExtractableResponse<Response> 빈_테이블_여부_업데이트_요청(OrderTableResponse orderTable, boolean isEmpty) {
 
         Map<String, Object> params = new HashMap<>();
         params.put("empty", isEmpty);
