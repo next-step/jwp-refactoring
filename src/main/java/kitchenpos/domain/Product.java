@@ -63,8 +63,8 @@ public class Product {
             return this;
         }
 
-        public Builder price(BigDecimal price) {
-            this.price = price;
+        public Builder price(long price) {
+            this.price = BigDecimal.valueOf(price);
             return this;
         }
 
