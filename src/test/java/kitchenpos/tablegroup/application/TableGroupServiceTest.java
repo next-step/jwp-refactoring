@@ -1,6 +1,7 @@
-package kitchenpos.table.application;
+package kitchenpos.tablegroup.application;
 
 import kitchenpos.ServiceTest;
+import kitchenpos.table.application.OrderTableServiceTestSupport;
 import kitchenpos.tablegroup.dto.OrderTableIdRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
