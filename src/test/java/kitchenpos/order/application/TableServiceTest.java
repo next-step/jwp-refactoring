@@ -9,9 +9,8 @@ import static org.mockito.BDDMockito.given;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.order.application.TableService;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import org.assertj.core.util.Lists;
@@ -26,7 +25,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
     private OrderTableDao orderTableDao;
     @InjectMocks
@@ -64,8 +63,8 @@ class TableServiceTest {
     void changeEmpty() {
         OrderTable orderTable = createOrderTable(1L, null, 2, true);
         given(orderTableDao.findById(주문테이블.getId())).willReturn(Optional.ofNullable(주문테이블));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(주문테이블.getId(),
-                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(false);
+        given(orderRepository.existsByOrderTableAndOrderStatusIn(주문테이블,
+                Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).willReturn(false);
         given(orderTableDao.save(주문테이블)).willReturn(주문테이블);
         OrderTable changedOrderTable = tableService.changeEmpty(주문테이블.getId(), orderTable);
         assertAll(
@@ -99,8 +98,8 @@ class TableServiceTest {
     void changeEmptyWithCookingOrMeal() {
         OrderTable orderTable = createOrderTable(1L, null, 2, true);
         given(orderTableDao.findById(주문테이블.getId())).willReturn(Optional.ofNullable(주문테이블));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(주문테이블.getId(),
-                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(true);
+        given(orderRepository.existsByOrderTableAndOrderStatusIn(주문테이블,
+                Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).willReturn(true);
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableService.changeEmpty(주문테이블.getId(), orderTable));
     }

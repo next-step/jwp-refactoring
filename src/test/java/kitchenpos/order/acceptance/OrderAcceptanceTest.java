@@ -45,8 +45,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
         Menu 양념치킨 = 메뉴_등록_요청(createMenu(1L, "양념치킨", BigDecimal.valueOf(40000L), 한마리메뉴,
                 Lists.newArrayList(createMenuProduct(1L, null, 양념, 2L)))).as(Menu.class);
         OrderTable 주문테이블 = 주문테이블_등록_요청(createOrderTable(null, null, 2, false)).as(OrderTable.class);
-        주문 = createOrder(null, 주문테이블.getId(), null, null,
-                Lists.newArrayList(createOrderLineItem(1L, null, 양념치킨.id(), 2L)));
+        주문 = createOrder(null, 주문테이블, null, Lists.newArrayList(createOrderLineItem(1L, null, 양념치킨.id(), 2L)));
     }
 
     /**
@@ -93,7 +92,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
         Order 등록한_주문 = 주문_등록_요청(주문).as(Order.class);
 
         // when
-        String orderStatus = OrderStatus.COMPLETION.name();
+        OrderStatus orderStatus = OrderStatus.COMPLETION;
         ExtractableResponse<Response> response = 주문_상태_변경_요청(등록한_주문, orderStatus);
 
         // then
@@ -109,8 +108,8 @@ class OrderAcceptanceTest extends AcceptanceTest {
         assertThat(orders).containsExactlyElementsOf(expectedOrders);
     }
 
-    private void 주문_상태_변경됨(ExtractableResponse<Response> response, String orderStatus) {
-        assertThat(response.as(Order.class).getOrderStatus()).isEqualTo(orderStatus);
+    private void 주문_상태_변경됨(ExtractableResponse<Response> response, OrderStatus orderStatus) {
+        assertThat(response.as(Order.class).orderStatus()).isEqualTo(orderStatus);
     }
 
     private ExtractableResponse<Response> 주문_등록_요청(Order order) {
@@ -132,13 +131,13 @@ class OrderAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> 주문_상태_변경_요청(Order targetOrder, String orderStatus) {
-        Order order = createOrder(1L, null, orderStatus, null, null);
+    private ExtractableResponse<Response> 주문_상태_변경_요청(Order targetOrder, OrderStatus orderStatus) {
+        Order order = createOrder(1L, null, orderStatus, null);
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(order)
-                .when().put("/api/orders/{orderId}/order-status", targetOrder.getId())
+                .when().put("/api/orders/{orderId}/order-status", targetOrder.id())
                 .then().log().all()
                 .extract();
     }

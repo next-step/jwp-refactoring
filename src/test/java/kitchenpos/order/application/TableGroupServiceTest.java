@@ -9,10 +9,9 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 import java.util.Arrays;
-import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
-import kitchenpos.order.application.TableGroupService;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.TableGroup;
@@ -28,7 +27,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
     private OrderTableDao orderTableDao;
     @Mock
@@ -116,8 +115,8 @@ class TableGroupServiceTest {
     void ungroup() {
         given(orderTableDao.findAllByTableGroupId(단체지정.getId())).willReturn(
                 Lists.newArrayList(단체지정_치킨주문테이블, 단체지정_피자주문테이블));
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(Lists.newArrayList(치킨주문테이블.getId(), 피자주문테이블.getId()),
-                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(false);
+        given(orderRepository.existsByOrderTableInAndOrderStatusIn(Lists.newArrayList(치킨주문테이블, 피자주문테이블),
+                Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).willReturn(false);
         tableGroupService.ungroup(단체지정.getId());
         verify(orderTableDao).save(치킨주문테이블);
         verify(orderTableDao).save(피자주문테이블);
@@ -128,8 +127,8 @@ class TableGroupServiceTest {
     void ungroupWithCookingOrMealOrderStatus() {
         given(orderTableDao.findAllByTableGroupId(단체지정.getId())).willReturn(
                 Lists.newArrayList(단체지정_치킨주문테이블, 단체지정_피자주문테이블));
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(Lists.newArrayList(치킨주문테이블.getId(), 피자주문테이블.getId()),
-                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(true);
+        given(orderRepository.existsByOrderTableInAndOrderStatusIn(Lists.newArrayList(치킨주문테이블, 피자주문테이블),
+                Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).willReturn(true);
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableGroupService.ungroup(단체지정.getId()));

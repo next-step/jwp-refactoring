@@ -8,6 +8,7 @@ import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.product.domain.Product;
 import kitchenpos.order.domain.TableGroup;
@@ -34,9 +35,8 @@ public class DomainFixtureFactory {
         return OrderTable.of(id, tableGroupId, numberOfGuests, empty);
     }
 
-    public static Order createOrder(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime,
-                                    List<OrderLineItem> orderLineItems) {
-        return Order.of(id, orderTableId, orderStatus, orderedTime, orderLineItems);
+    public static Order createOrder(Long id, OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        return Order.of(id, orderTable, orderStatus, orderLineItems);
     }
 
     public static OrderLineItem createOrderLineItem(Long seq, Long orderId, Long menuId, long quantity) {
