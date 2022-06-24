@@ -15,7 +15,8 @@ import org.springframework.http.MediaType;
 @DisplayName("테이블 관련 인수테스트")
 public class TableAcceptanceTest extends AcceptanceTest{
 
-     private static final String TABLE_URL = "/api/v2/tables";
+    private static final String TABLE_URL = "/v2/api/tables";
+
     @BeforeEach
     void before() {
         super.setUp();
