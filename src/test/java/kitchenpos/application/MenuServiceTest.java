@@ -9,6 +9,7 @@ import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,6 +28,7 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 
+@DisplayName("메뉴 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
     @Mock
@@ -41,6 +43,7 @@ class MenuServiceTest {
     private MenuService menuService;
 
     private Product product;
+    private MenuProduct menuProduct;
     private List<MenuProduct> menuProducts;
     private MenuGroup menuGroup;
     private Menu menu;
@@ -48,21 +51,20 @@ class MenuServiceTest {
     @BeforeEach
     void beforeEach() {
         product = new Product.Builder("소불고기", 1000).id(1L).build();
-        menuProducts = Arrays.asList(
-                new MenuProduct.Builder(product.getId(), 1).build(),
-                new MenuProduct.Builder(product.getId(), 1).build()
-        );
+        menuProduct = new MenuProduct.Builder(product.getId(), 1).build();
+        menuProducts = Arrays.asList(menuProduct, menuProduct);
         menuGroup = new MenuGroup.Builder().id(1L).name("점심메뉴").build();
         menu = new Menu.Builder("점심특선", 2000, menuGroup.getId(), menuProducts).build();
     }
 
+    @DisplayName("메뉴를 생성한다.")
     @Test
     void create() {
         // given
         given(menuGroupDao.existsById(anyLong())).willReturn(true);
         given(productDao.findById(anyLong())).willReturn(Optional.of(product));
         given(menuDao.save(any(Menu.class))).willReturn(new Menu.Builder().id(1L).build());
-        given(menuProductDao.save(any(MenuProduct.class))).willReturn(new MenuProduct.Builder().build());
+        given(menuProductDao.save(any(MenuProduct.class))).willReturn(new MenuProduct.Builder().seq(1L).build());
 
         // when
         Menu created = menuService.create(menu);
@@ -77,29 +79,32 @@ class MenuServiceTest {
         then(menuProductDao).should(times(2)).save(any(MenuProduct.class));
     }
 
+    @DisplayName("0원 보다 작은 금액으로 메뉴를 생성할 수 없다.")
     @Test
     void create_throwsException_ifPriceLessThanZero() {
+        // given
+        Menu menu = new Menu.Builder("점심특선", -1000, menuGroup.getId(), menuProducts).build();
+
         // when
         // then
-        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(
-                new Menu.Builder("점심특선", -1000, menuGroup.getId(), menuProducts).build())
-        );
+        assertThatIllegalArgumentException().isThrownBy(() -> menuService.create(menu));
 
         // verify
         then(menuGroupDao).should(never()).existsById(anyLong());
     }
 
+    @DisplayName("메뉴를 구성하는 상품의 가격 * 수량의 합계는 메뉴 가격과 일치해야 한다.")
     @Test
-    void create_throwsException_ifWrongAmount() {
+    void create_throwsException_ifWrongPrice() {
         // given
         given(menuGroupDao.existsById(anyLong())).willReturn(true);
         given(productDao.findById(anyLong())).willReturn(Optional.of(product));
 
+        Menu menu = new Menu.Builder("점심특선", 4000, menuGroup.getId(), menuProducts).build();
+
         // when
         // then
-        assertThatThrownBy(() -> menuService.create(
-                new Menu.Builder("점심특선", 4000, menuGroup.getId(), menuProducts).build())
-        ).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuService.create(menu)).isInstanceOf(IllegalArgumentException.class);
 
         // verify
         then(menuDao).should(never()).save(any(Menu.class));
