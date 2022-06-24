@@ -8,7 +8,6 @@ import static org.mockito.BDDMockito.given;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import kitchenpos.application.fixture.ProductFixtureFactory;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductRepository;
@@ -36,8 +35,8 @@ class ProductServiceTest {
 
     @BeforeEach
     void before() {
-        짬뽕 = ProductFixtureFactory.create(1L, "짬뽕", BigDecimal.valueOf(1000));
-        짜장 = ProductFixtureFactory.create(2L, "짜장", BigDecimal.valueOf(1000));
+        짬뽕 = ProductFixtureFactory.create("짬뽕", BigDecimal.valueOf(1000));
+        짜장 = ProductFixtureFactory.create("짜장", BigDecimal.valueOf(1000));
     }
 
     @Test
@@ -49,12 +48,8 @@ class ProductServiceTest {
 
         //when
         ProductResponse productResponse = productService.create(저장할_상품);
-
-        Product product = new Product(productResponse.getId(),
-                productResponse.getName(),
-                productResponse.getPrice());
         //then
-        assertThat(product).isEqualTo(짬뽕);
+        assertThat(productResponse).isEqualTo(ProductResponse.of(짬뽕));
     }
 
     @Test
@@ -65,11 +60,8 @@ class ProductServiceTest {
 
         //when
         List<ProductResponse> products = productService.list();
-        List<Product> productList = products.stream().map(productResponse -> new Product(productResponse.getId(),
-                productResponse.getName(),
-                productResponse.getPrice())).collect(Collectors.toList());
 
         //then
-        assertThat(productList).containsExactly(짬뽕, 짜장);
+        assertThat(products).containsExactly(ProductResponse.of(짬뽕), ProductResponse.of(짜장));
     }
 }
