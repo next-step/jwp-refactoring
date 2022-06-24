@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,6 +18,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.*;
 import static org.mockito.Mockito.times;
 
+@DisplayName("메뉴 그룹 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
     @Mock
@@ -26,6 +28,7 @@ class MenuGroupServiceTest {
     @InjectMocks
     private MenuGroupService menuGroupService;
 
+    @DisplayName("메뉴 그룹을 생성한다.")
     @Test
     void create() {
         // given
@@ -43,6 +46,7 @@ class MenuGroupServiceTest {
         then(menuGroupDao).should(times(1)).save(any(MenuGroup.class));
     }
 
+    @DisplayName("이름을 입력하지 않으면 메뉴 그룹을 생성할 수 없다.")
     @Test
     void create_throwException_ifMissingName() {
         // given
