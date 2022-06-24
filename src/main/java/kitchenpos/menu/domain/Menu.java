@@ -37,6 +37,14 @@ public class Menu {
         this.price = price;
     }
 
+    public Menu(Long id, String name, Integer price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.menuGroup = menuGroup;
+        this.menuProducts = menuProducts;
+    }
+
     public void addMenuProduct(MenuProduct menuProduct) {
         menuProducts.addMenuProduct(menuProduct);
         menuProduct.setMenu(this);
