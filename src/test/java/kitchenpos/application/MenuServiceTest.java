@@ -2,7 +2,6 @@ package kitchenpos.application;
 
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
@@ -23,7 +22,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
@@ -135,11 +133,5 @@ class MenuServiceTest {
 
         //then
         assertThat(list).containsExactly(메뉴_김치찌개세트);
-    }
-    @DisplayName("주문이 발생함")
-    @Test
-    void 주문_등록() {
-        //given
-        given(menuDao.countByIdIn(anyList())).willReturn(1L);
     }
 }
