@@ -6,8 +6,9 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface MenuRepository extends JpaRepository<Menu, Long> {
 
-    @Query(value = "select m from Menu m "
-        + "join fetch m.menuProducts")
+    @Query(value = "select distinct m from Menu m "
+        + "join fetch m.menuProducts.items item "
+        + "join fetch item.product ")
     List<Menu> findAllMenuAndProducts();
 
     long countByIdIn(List<Long> ids);
