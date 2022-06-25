@@ -20,6 +20,10 @@ public class ProductResponse {
         this.price = price;
     }
 
+    public static ProductResponse of(Long id, String name, BigDecimal price) {
+        return new ProductResponse(id, name, price);
+    }
+
     public static ProductResponse of(Product product) {
         return new ProductResponse(
                 product.getId(),

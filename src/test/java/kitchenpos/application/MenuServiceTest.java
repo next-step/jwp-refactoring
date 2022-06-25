@@ -22,6 +22,8 @@ import kitchenpos.domain.MenuProductRepository;
 import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductRepository;
+import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.MenuResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -67,7 +69,7 @@ class MenuServiceTest {
         중식_메뉴_짬뽕 = MenuProductFixtureFactory.create(1L, 중식메뉴, 짬뽕, 3);
         중식_메뉴_짜장 = MenuProductFixtureFactory.create(2L, 중식메뉴, 짜장, 1);
 
-        중식메뉴.setMenuProducts(Arrays.asList(중식_메뉴_짬뽕, 중식_메뉴_짜장));
+        중식메뉴.addMenuProduct(Arrays.asList(중식_메뉴_짬뽕, 중식_메뉴_짜장));
     }
 
     @Test
@@ -78,7 +80,7 @@ class MenuServiceTest {
 
         //when & then
         assertThatThrownBy(
-                () -> menuService.create(중식메뉴)
+                () -> menuService.create(MenuRequest.from(중식메뉴))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -91,7 +93,7 @@ class MenuServiceTest {
 
         //when & then
         assertThatThrownBy(
-                () -> menuService.create(중식메뉴)
+                () -> menuService.create(MenuRequest.from(중식메뉴))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -103,10 +105,10 @@ class MenuServiceTest {
         given(productRepository.findById(중식_메뉴_짬뽕.getProduct().getId())).willReturn(Optional.of(짬뽕));
         given(productRepository.findById(중식_메뉴_짜장.getProduct().getId())).willReturn(Optional.of(짜장));
         Menu 잘못된_메뉴 = new Menu(1L, "잘못된 메뉴", BigDecimal.valueOf(100_000), 중식);
-        잘못된_메뉴.setMenuProducts(Arrays.asList(중식_메뉴_짬뽕, 중식_메뉴_짜장));
+        잘못된_메뉴.addMenuProduct(Arrays.asList(중식_메뉴_짬뽕, 중식_메뉴_짜장));
         //when & then
         assertThatThrownBy(
-                () -> menuService.create(잘못된_메뉴)
+                () -> menuService.create(MenuRequest.from(잘못된_메뉴))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -114,17 +116,17 @@ class MenuServiceTest {
     @DisplayName("메뉴를 생성 할 수 있다.")
     void createTest() {
         //given
-        given(menuGroupRepository.existsById(중식.getId())).willReturn(true);
+        given(menuGroupRepository.findById(중식.getId())).willReturn(Optional.of(중식));
         given(productRepository.findById(중식_메뉴_짬뽕.getProduct().getId())).willReturn(Optional.of(짬뽕));
         given(productRepository.findById(중식_메뉴_짜장.getProduct().getId())).willReturn(Optional.of(짜장));
         given(menuRepository.save(any(Menu.class))).willReturn(중식메뉴);
-        given(menuProductRepository.save(any(MenuProduct.class))).willReturn(중식_메뉴_짬뽕);
+        중식메뉴.addMenuProduct(Arrays.asList(중식_메뉴_짬뽕, 중식_메뉴_짜장));
 
         //when
-        Menu menu = menuService.create(중식메뉴);
+        MenuResponse menu = menuService.create(MenuRequest.from(중식메뉴));
 
         //then
-        assertThat(menu).isEqualTo(중식메뉴);
+        assertThat(menu).isEqualTo(MenuRequest.from(중식메뉴));
     }
 
     @Test
@@ -134,9 +136,9 @@ class MenuServiceTest {
         given(menuRepository.findAll()).willReturn(Arrays.asList(중식메뉴));
 
         //when
-        List<Menu> menus = menuService.list();
+        List<MenuResponse> menus = menuService.list();
 
         //then
-        assertThat(menus).containsExactly(중식메뉴);
+        assertThat(menus).containsExactly(MenuResponse.from(중식메뉴));
     }
 }

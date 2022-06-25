@@ -22,17 +22,8 @@ public class MenuRestController {
     }
 
     @PostMapping("/api/menus")
-    public ResponseEntity<Menu> create(@RequestBody final Menu menu) {
-        final Menu created = menuService.create(menu);
-        final URI uri = URI.create("/api/menus/" + created.getId());
-        return ResponseEntity.created(uri)
-                .body(created)
-                ;
-    }
-
-    @PostMapping("/v2/api/menus")
-    public ResponseEntity<MenuResponse> create2(@RequestBody final MenuRequest request) {
-        final MenuResponse created = menuService.create2(request);
+    public ResponseEntity<MenuResponse> create(@RequestBody final MenuRequest request) {
+        final MenuResponse created = menuService.create(request);
         final URI uri = URI.create("/api/menus/" + created.getId());
         return ResponseEntity.created(uri)
                 .body(created)
@@ -40,15 +31,9 @@ public class MenuRestController {
     }
 
     @GetMapping("/api/menus")
-    public ResponseEntity<List<Menu>> list() {
+    public ResponseEntity<List<MenuResponse>> list() {
         return ResponseEntity.ok()
                 .body(menuService.list())
-                ;
-    }
-    @GetMapping("/v2/api/menus")
-    public ResponseEntity<List<MenuResponse>> list2() {
-        return ResponseEntity.ok()
-                .body(menuService.list2())
                 ;
     }
 }

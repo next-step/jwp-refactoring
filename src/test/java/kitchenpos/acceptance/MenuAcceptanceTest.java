@@ -27,7 +27,7 @@ import org.springframework.http.MediaType;
 @DisplayName("메뉴 관련 기능 인수 테스트")
 public class MenuAcceptanceTest extends AcceptanceTest {
 
-    static private final String MENU_URL = "/v2/api/menus";
+    static private final String MENU_URL = "/api/menus";
 
     private ProductResponse 짬뽕;
     private ProductResponse 짜장;
