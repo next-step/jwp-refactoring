@@ -1,119 +1,131 @@
 package kitchenpos.table.application;
 
-import static kitchenpos.ServiceTestFactory.createOrderTableBy;
-import static kitchenpos.ServiceTestFactory.createTableGroupBy;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
-import kitchenpos.order.dao.FakeOrderDao;
-import kitchenpos.table.dao.FakeOrderTableDao;
-import kitchenpos.table.dao.FakeTableGroupDao;
-import org.junit.jupiter.api.BeforeEach;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.infrastructure.OrderTableRepository;
+import kitchenpos.table.infrastructure.TableGroupRepository;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 public class TableGroupServiceTest {
-    private final TableGroupService tableGroupService = new TableGroupService(new FakeOrderDao(),
-            new FakeOrderTableDao(), new FakeTableGroupDao());
+    @Mock
+    private TableGroupRepository tableGroupRepository;
 
-    private OrderTable firstTable;
-    private OrderTable secondTable;
-    private OrderTable thirdTable;
-    private OrderTable fourthTable;
-    private TableGroup tableGroup;
-    private TableGroup secondTableGroup;
+    @Mock
+    private OrderTableRepository orderTableRepository;
 
-    @BeforeEach
-    void setUp() {
-        firstTable = createOrderTableBy(1L, 4, true, null);
-        secondTable = createOrderTableBy(2L, 3, true, null);
-        thirdTable = createOrderTableBy(3L, 2, false, null);
-        fourthTable = createOrderTableBy(4L, 1, false, null);
-        tableGroup = createTableGroupBy(1L, Arrays.asList(firstTable, secondTable));
-        secondTableGroup = createTableGroupBy(2L, Arrays.asList(thirdTable, fourthTable));
+    @InjectMocks
+    private TableGroupService tableGroupService;
+
+    @Test
+    @DisplayName("주문 테이블이 하나인 경우, 단체지정할 수 없다.")
+    void createWithOneOrderTable() {
+        OrderTableRequest orderTableRequest = new OrderTableRequest(4, false);
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(Lists.list(orderTableRequest));
+
+        assertThatThrownBy(() -> {
+            tableGroupService.create(tableGroupRequest);
+        }).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("주문 테이블이 없는 경우, 단체지정할 수 없다.")
     void createWithNoExistingOrderTables() {
-        TableGroup tableGroup = new TableGroup();
-        //when, then
+        OrderTableRequest orderTableRequest = new OrderTableRequest(4, false);
+        OrderTableRequest secondOrderTableRequest = new OrderTableRequest(2, false);
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(Lists.list(orderTableRequest, secondOrderTableRequest));
+        when(orderTableRepository.findAllByIdIn(any())).thenReturn(Lists.emptyList());
+
         assertThatThrownBy(() -> {
-            tableGroupService.create(tableGroup);
+            tableGroupService.create(tableGroupRequest);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    @DisplayName("주문 테이블이 하나인 경우, 단체지정할 수 없다.")
-    void createWithOneOrderTable() {
-        //given
+    @DisplayName("이미 단체 지정된 경우, 단체지정할 수 없다.")
+    void createWithAlreadyGrouped() {
+        OrderTableRequest orderTableRequest = new OrderTableRequest(4, true);
+        OrderTableRequest secondOrderTableRequest = new OrderTableRequest(2, true);
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(Lists.list(orderTableRequest, secondOrderTableRequest));
+        OrderTable table = OrderTable.of(4, true);
+        OrderTable secondTable = OrderTable.of(2, true);
         TableGroup tableGroup = new TableGroup();
-        List<OrderTable> orderTables = Collections.singletonList(firstTable);
-        tableGroup.setOrderTables(orderTables);
+        table.registerGroupTable(tableGroup);
+        secondTable.registerGroupTable(tableGroup);
+        when(orderTableRepository.findAllByIdIn(any())).thenReturn(Lists.list(table, secondTable));
 
-        //when, then
         assertThatThrownBy(() -> {
-            tableGroupService.create(tableGroup);
+            tableGroupService.create(tableGroupRequest);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    @DisplayName("저장된 주문 테이블이 아닌 경우, 단체지정할 수 없다.")
-    void createWithNoSavedOrderTables() {
-        //given
-        TableGroup newGroup = new TableGroup();
-        OrderTable table = createOrderTableBy(98L, 4, false, null);
-        OrderTable anotherTable = createOrderTableBy(99L, 3, false, null);
-        List<OrderTable> orderTables = Arrays.asList(table, anotherTable);
-        newGroup.setOrderTables(orderTables);
-        //when, then
+    @DisplayName("빈 테이블이 아닌 경우, 단체지정할 수 없다.")
+    void createWithNotEmptyTable() {
+        OrderTableRequest orderTableRequest = new OrderTableRequest(4, false);
+        OrderTableRequest secondOrderTableRequest = new OrderTableRequest(2, false);
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(Lists.list(orderTableRequest, secondOrderTableRequest));
+        OrderTable table = OrderTable.of(4, false);
+        OrderTable secondTable = OrderTable.of(2, false);
+        when(orderTableRepository.findAllByIdIn(any())).thenReturn(Lists.list(table, secondTable));
+
         assertThatThrownBy(() -> {
-            tableGroupService.create(newGroup);
+            tableGroupService.create(tableGroupRequest);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("단체지정할 수 있다.")
     void create() {
-        //given
-        List<Long> expectedIds = findOrderTableIds(Arrays.asList(firstTable, secondTable));
-        //when
-        TableGroup saved = tableGroupService.create(tableGroup);
-        List<Long> actualIds = findOrderTableIds(saved.getOrderTables());
-        //then
-        assertThat(actualIds).containsExactlyElementsOf(expectedIds);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(4, true);
+        OrderTableRequest secondOrderTableRequest = new OrderTableRequest(2, true);
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(Lists.list(orderTableRequest, secondOrderTableRequest));
+        OrderTable table = OrderTable.of(4, true);
+        OrderTable secondTable = OrderTable.of(2, true);
+        TableGroup tableGroup = new TableGroup();
+        when(orderTableRepository.findAllByIdIn(any())).thenReturn(Lists.list(table, secondTable));
+        when(tableGroupRepository.save(any())).thenReturn(tableGroup);
+
+        tableGroupService.create(tableGroupRequest);
+
+        assertThat(table.getTableGroup()).isEqualTo(tableGroup);
+        assertThat(secondTable.getTableGroup()).isEqualTo(tableGroup);
     }
 
-    private List<Long> findOrderTableIds(List<OrderTable> orderTables) {
-        return orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-    }
-
-    @Test
-    @DisplayName("테이블이 조리, 식사 중이면 단체 지정을 해제할 수 없다.")
-    void unGroupWithInvalidOrderStatus() {
-        //given
-        TableGroup saved = tableGroupService.create(secondTableGroup);
-        //when, then
-        assertThatThrownBy(() -> {
-            tableGroupService.ungroup(saved.getId());
-        }).isInstanceOf(IllegalArgumentException.class);
-    }
+//    @Test
+//    @DisplayName("테이블이 조리, 식사 중이면 단체 지정을 해제할 수 없다.")
+//    void unGroupWithInvalidOrderStatus() {
+//        //given
+//        TableGroup saved = tableGroupService.create(secondTableGroup);
+//        //when, then
+//        assertThatThrownBy(() -> {
+//            tableGroupService.ungroup(saved.getId());
+//        }).isInstanceOf(IllegalArgumentException.class);
+//    }
 
     @Test
     @DisplayName("단체 지정을 해제할 수 있다.")
     void unGroup() {
-        //given
-        TableGroup saved = tableGroupService.create(tableGroup);
-        //when, then
-        tableGroupService.ungroup(saved.getId());
+        OrderTable table = OrderTable.of(4, true);
+        OrderTable secondTable = OrderTable.of(2, true);
+        when(orderTableRepository.findAllByTableGroupId(any())).thenReturn(Lists.list(table, secondTable));
+
+        tableGroupService.ungroup(1L);
+
+        assertThat(table.getTableGroup()).isNull();
+        assertThat(secondTable.getTableGroup()).isNull();
     }
 }

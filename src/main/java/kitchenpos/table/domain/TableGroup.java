@@ -1,9 +1,8 @@
 package kitchenpos.table.domain;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -17,7 +16,11 @@ public class TableGroup extends BaseEntity {
     private Long id;
 
     @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL)
-    private List<OrderTable> orderTables;
+    private List<OrderTable> orderTables = new ArrayList<>();
+
+    public void addOrderTable(OrderTable orderTable) {
+        orderTables.add(orderTable);
+    }
 
     public Long getId() {
         return id;
