@@ -10,11 +10,11 @@ public class OrderLineItem {
     private Long seq;
 
     @ManyToOne
-    @JoinColumn(name = "order")
+    @JoinColumn(name = "order_id")
     private Order order;
 
     @ManyToOne
-    @JoinColumn(name = "menu")
+    @JoinColumn(name = "menu_id")
     private Menu menu;
 
     private long quantity;
