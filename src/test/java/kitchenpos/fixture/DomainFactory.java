@@ -1,10 +1,13 @@
 package kitchenpos.fixture;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
 
@@ -74,5 +77,26 @@ public class DomainFactory {
         orderTable.setEmpty(empty);
 
         return orderTable;
+    }
+
+    public static Order createOrder(Long orderTableId, String orderStatus, LocalDateTime orderedTime,
+                                    List<OrderLineItem> orderLineItems) {
+        Order order = new Order();
+        order.setOrderTableId(orderTableId);
+        order.setOrderStatus(orderStatus);
+        order.setOrderedTime(orderedTime);
+        order.setOrderLineItems(orderLineItems);
+
+        return order;
+    }
+
+    public static OrderLineItem createOrderLineItem(Long seq, Long orderId, Long menuId, long quantity) {
+        OrderLineItem orderLineItem = new OrderLineItem();
+        orderLineItem.setSeq(seq);
+        orderLineItem.setOrderId(orderId);
+        orderLineItem.setMenuId(menuId);
+        orderLineItem.setQuantity(quantity);
+
+        return orderLineItem;
     }
 }
