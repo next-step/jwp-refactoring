@@ -10,6 +10,7 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.TableGroup;
 
 public class DomainFactory {
     public static Product createProduct(Long id, String name, long price) {
@@ -98,5 +99,13 @@ public class DomainFactory {
         orderLineItem.setQuantity(quantity);
 
         return orderLineItem;
+    }
+
+    public static TableGroup createTableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
+        TableGroup tableGroup = new TableGroup();
+        tableGroup.setCreatedDate(createdDate);
+        tableGroup.setOrderTables(orderTables);
+
+        return tableGroup;
     }
 }
