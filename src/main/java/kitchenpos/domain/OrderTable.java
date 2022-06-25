@@ -1,12 +1,8 @@
 package kitchenpos.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import kitchenpos.dto.OrderTableRequestDto;
+
+import javax.persistence.*;
 
 @Entity
 public class OrderTable {
@@ -18,7 +14,7 @@ public class OrderTable {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "table_group")
+    @JoinColumn(name = "table_group_id")
     private TableGroup tableGroup;
 
     private int numberOfGuests;
@@ -78,4 +74,12 @@ public class OrderTable {
         }
     }
 
+    public void group(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
+        this.empty = false;
+    }
+
+    public void ungroup() {
+        this.tableGroup = null;
+    }
 }

@@ -46,10 +46,6 @@ public class MenuProduct {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
-    }
-
     public Menu getMenu() {
         return menu;
     }
@@ -64,10 +60,6 @@ public class MenuProduct {
 
     public long getQuantity() {
         return quantity;
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
     }
 
     public BigDecimal getTotalPrice() {
