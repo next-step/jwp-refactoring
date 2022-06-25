@@ -61,11 +61,10 @@ completePayment() vs setOrderState()
 ## 📚 Todo List 📚
 - [x] 리뷰사항 반영하기
 - [x] DTO (request/response) 추가
-- [ ] JdbcTemplate에서 JPA 사용하도록 Entity & Repository 변경
+- [x] JdbcTemplate에서 JPA 사용하도록 Entity & Repository 변경
   - [ ] Entity Builder Pattern으로 사용하도록 개선
 - [ ] 비즈니스 로직 Service Layer에서 Domain으로 이동
 - [ ] Table id가 `seq` 변경
-- [ ] Table BigDecimal인 DECIMAL(19, 2) -> BIGINT로 변경
+- [x] Table BigDecimal인 DECIMAL(19, 2) -> BIGINT로 변경
 
-- order에 넣을 때 menuId만 받고 있는데, OrderLineItem에 넣을 수량이 없어도 되나? -> 수량 넣도록 개선 
-- 
+- order에 넣을 때 menuId만 받고 있는데, OrderLineItem에 넣을 수량이 없어도 되나? -> 수량 넣도록 개선

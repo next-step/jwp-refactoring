@@ -43,7 +43,7 @@ class ProductServiceTest {
         final ProductResponse expected = 강정치킨.toProductResponse();
         when(productRepository.save(any())).thenReturn(강정치킨);
         // when
-        final ProductResponse actual = productService.create(new ProductRequest("강정치킨", BigDecimal.valueOf(17_000)));
+        final ProductResponse actual = productService.create(new ProductRequest("강정치킨", 17_000L));
         // given
         assertAll(
                 () -> assertThat(actual.getName()).isEqualTo(expected.getName()),
@@ -56,12 +56,12 @@ class ProductServiceTest {
     void createNegativePriceProduct() {
         // when && given
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> productService.create(new ProductRequest("음수치킨", BigDecimal.valueOf(-100))));
+                .isThrownBy(() -> productService.create(new ProductRequest("음수치킨", -100L)));
     }
 
     @ParameterizedTest(name = "상품(제품)의 가격이 비어있다면 예외가 발생한다.")
     @NullSource
-    void createEmptyPriceProduct(BigDecimal empty) {
+    void createEmptyPriceProduct(Long empty) {
         // when && given
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> productService.create(new ProductRequest("비어있는치킨", empty)));

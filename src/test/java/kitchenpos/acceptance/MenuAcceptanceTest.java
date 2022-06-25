@@ -41,25 +41,25 @@ class MenuAcceptanceTest extends AcceptanceTest {
     void searchMenu() {
         // given
         메뉴_그룹_생성_요청("후라이드세트");
-        제품_생성_요청("후라이드", 16_000);
+        제품_생성_요청("후라이드", 16_000L);
         final List<MenuProductRequest> 메뉴_제품들 = Arrays.asList(new MenuProductRequest(1L, 2));
 
         // when
-        final ExtractableResponse<Response> 메뉴_생성_요청_결과 = 메뉴_생성_요청("반반후라이드", 16_000, 1L, 메뉴_제품들);
+        final ExtractableResponse<Response> 메뉴_생성_요청_결과 = 메뉴_생성_요청("반반후라이드", 16_000L, 1L, 메뉴_제품들);
         메뉴_생성_요청_확인(메뉴_생성_요청_결과);
 
         // then
         final ExtractableResponse<Response> 메뉴_조회_결과 = 메뉴_조회();
         final MenuV2 예상된_메뉴 = new MenuV2(1L, "후라이드", 16_000L, 1L, Arrays.asList(new MenuProductV2(1L, null, 1L, 2L)));
         final MenuProductV2 예상된_메뉴_제품들 = new MenuProductV2(1L, 예상된_메뉴, 1L, 2L);
-        final MenuResponse 예상된_메뉴_결과 = new MenuResponse(1L, "반반후라이드", BigDecimal.valueOf(16_000), 1L,
+        final MenuResponse 예상된_메뉴_결과 = new MenuResponse(1L, "반반후라이드", 16_000L, 1L,
                 Arrays.asList(예상된_메뉴_제품들));
         메뉴_조회_확인(메뉴_조회_결과, Arrays.asList(예상된_메뉴_결과));
     }
 
-    public static ExtractableResponse<Response> 메뉴_생성_요청(String 메뉴명, Integer 메뉴_금액, Long 메뉴_그룹_아이디,
+    public static ExtractableResponse<Response> 메뉴_생성_요청(String 메뉴명, Long 메뉴_금액, Long 메뉴_그룹_아이디,
                                                          List<MenuProductRequest> 메뉴_제품들) {
-        final MenuRequest menuRequest = new MenuRequest(메뉴명, BigDecimal.valueOf(메뉴_금액), 메뉴_그룹_아이디, 메뉴_제품들);
+        final MenuRequest menuRequest = new MenuRequest(메뉴명, 메뉴_금액, 메뉴_그룹_아이디, 메뉴_제품들);
         return RestAssuredHelper.post(MENU_URI, menuRequest);
     }
 

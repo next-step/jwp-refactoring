@@ -33,16 +33,16 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     @DisplayName("제품(상품)을 만들면 조회 할 수 있다.")
     void createProduct() {
         // when
-        final ExtractableResponse<Response> 제품_생성_요청_결과 = 제품_생성_요청("강정치킨", 17_000);
+        final ExtractableResponse<Response> 제품_생성_요청_결과 = 제품_생성_요청("강정치킨", 17_000L);
         제품_생성_요청_확인(제품_생성_요청_결과);
 
         // then
         final ExtractableResponse<Response> 제품_조회_결과 = 제품_조회();
-        제품_조회_확인(제품_조회_결과, Arrays.asList(new ProductResponse(1L, "강정치킨", BigDecimal.valueOf(17_000))));
+        제품_조회_확인(제품_조회_결과, Arrays.asList(new ProductResponse(1L, "강정치킨", 17_000L)));
     }
 
-    public static ExtractableResponse<Response> 제품_생성_요청(String 제품명, Integer 금액) {
-        final ProductRequest 생성할_제품 = new ProductRequest(제품명, BigDecimal.valueOf(금액));
+    public static ExtractableResponse<Response> 제품_생성_요청(String 제품명, Long 금액) {
+        final ProductRequest 생성할_제품 = new ProductRequest(제품명, 금액);
         return RestAssuredHelper.post(PRODUCT_URI, 생성할_제품);
     }
 

@@ -58,7 +58,7 @@ class MenuServiceTest {
         menu = new MenuV2(1L, "후라이드+후라이드", 1_000L, 1L, Arrays.asList(menuProduct));
         menuProduct = new MenuProductV2(1L, menu, 1L, 2L);
         product = new ProductV2(1L, "후라이드", 500L);
-        expected = new MenuResponse(null, "후라이드+후라이드", BigDecimal.valueOf(1_000), 1L,
+        expected = new MenuResponse(null, "후라이드+후라이드", 1_000L, 1L,
                 Arrays.asList(menuProduct));
     }
 
@@ -67,7 +67,7 @@ class MenuServiceTest {
     void createMenu() {
         // given
         final MenuProductRequest menuProductRequest = new MenuProductRequest(1L, 2L);
-        final MenuRequest menuRequest = new MenuRequest("후라이드+후라이드", BigDecimal.valueOf(1_000), 1L,
+        final MenuRequest menuRequest = new MenuRequest("후라이드+후라이드", 1_000L, 1L,
                 Arrays.asList(menuProductRequest));
         when(menuGroupRepository.existsById(any())).thenReturn(true);
         when(productRepository.findAll()).thenReturn(Arrays.asList(product));
@@ -93,7 +93,7 @@ class MenuServiceTest {
                         new MenuRequest("후라이드", null, 1L, null)
                 ),
                 Arguments.of(
-                        new MenuRequest("후라이드", BigDecimal.valueOf(-1_000), 1L, null)
+                        new MenuRequest("후라이드", -1_000L, 1L, null)
                 )
         );
     }
@@ -102,7 +102,7 @@ class MenuServiceTest {
     @DisplayName("생성하려는 메뉴는 현존하는 메뉴 그룹에 없으면 에러 발생")
     void invalidNotContainMenuGroup() {
         // given
-        final MenuRequest menuRequest = new MenuRequest("후라이드+후라이드", BigDecimal.valueOf(1_000), 99L, null);
+        final MenuRequest menuRequest = new MenuRequest("후라이드+후라이드", 1_000L, 99L, null);
         when(menuGroupRepository.existsById(any())).thenReturn(false);
         // when && then
         assertThatIllegalArgumentException()
@@ -114,7 +114,7 @@ class MenuServiceTest {
     void invalidNotExistProduct() {
         // given
         final MenuProductRequest menuProductRequest = new MenuProductRequest(1L, 2L);
-        final MenuRequest menuRequest = new MenuRequest("후라이드+후라이드", BigDecimal.valueOf(1_000), 1L,
+        final MenuRequest menuRequest = new MenuRequest("후라이드+후라이드", 1_000L, 1L,
                 Arrays.asList(menuProductRequest));
         when(menuGroupRepository.existsById(any())).thenReturn(true);
         when(productRepository.findAll()).thenReturn(Collections.emptyList());
@@ -128,7 +128,7 @@ class MenuServiceTest {
     void invalidPriceMoreThenProductSum() {
         // given
         final MenuProductRequest menuProductRequest = new MenuProductRequest(1L, 2L);
-        final MenuRequest invalidMenuRequest = new MenuRequest("잘못된_메뉴", BigDecimal.valueOf(100_000), 1L,
+        final MenuRequest invalidMenuRequest = new MenuRequest("잘못된_메뉴", 100_000L, 1L,
                 Arrays.asList(menuProductRequest));
         when(menuGroupRepository.existsById(any())).thenReturn(true);
         when(productRepository.findAll()).thenReturn(Arrays.asList(product));

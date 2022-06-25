@@ -42,7 +42,7 @@ public class ProductV2 {
     }
 
     public ProductResponse toProductResponse() {
-        return new ProductResponse(this.id, this.name, BigDecimal.valueOf(this.price));
+        return new ProductResponse(this.id, this.name, this.price);
     }
 
     @Override

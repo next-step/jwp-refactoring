@@ -56,7 +56,7 @@ public class MenuV2 {
     }
 
     public MenuResponse toMenuResponse() {
-        return new MenuResponse(this.id, this.name, BigDecimal.valueOf(this.price), this.menuGroupId, this.menuProducts);
+        return new MenuResponse(this.id, this.name, this.price, this.menuGroupId, this.menuProducts);
     }
 
     @Override
