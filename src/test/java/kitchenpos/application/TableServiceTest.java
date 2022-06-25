@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.Optional;
 import kitchenpos.application.fixture.OrderTableFixtureFactory;
 import kitchenpos.application.fixture.TableGroupFixtureFactory;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,10 +28,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class TableServiceTest {
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableDao;
 
     @InjectMocks
     private TableService tableService;
@@ -108,7 +108,7 @@ class TableServiceTest {
     void changeEmptyFailWithStatusTest() {
         //given
         given(orderTableDao.findById(주문_테이블1.getId())).willReturn(Optional.of(주문_테이블1));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(true);
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(true);
 
         //when & then
         assertThatThrownBy(
@@ -121,7 +121,7 @@ class TableServiceTest {
     void changeEmptyTest() {
         //given
         given(orderTableDao.findById(주문_테이블1.getId())).willReturn(Optional.of(주문_테이블1));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(false);
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(false);
         given(orderTableDao.save(any(OrderTable.class))).willReturn(주문_테이블1);
 
         //when

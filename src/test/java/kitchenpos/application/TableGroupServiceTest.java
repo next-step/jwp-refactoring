@@ -12,11 +12,11 @@ import static org.mockito.Mockito.verify;
 import java.util.Arrays;
 import kitchenpos.application.fixture.OrderTableFixtureFactory;
 import kitchenpos.application.fixture.TableGroupFixtureFactory;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
+import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,13 +29,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class TableGroupServiceTest {
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -58,7 +58,7 @@ class TableGroupServiceTest {
 
         //given
         TableGroup tableGroup = new TableGroup(1L, Arrays.asList(주문_테이블1, 주문_테이블2));
-        given(orderTableDao.findAllByIdIn(Arrays.asList(주문_테이블1.getId(), 주문_테이블2.getId()))).willReturn(
+        given(orderTableRepository.findAllByIdIn(Arrays.asList(주문_테이블1.getId(), 주문_테이블2.getId()))).willReturn(
                 Arrays.asList(주문_테이블1));
 
         //when & then
@@ -71,10 +71,10 @@ class TableGroupServiceTest {
     @DisplayName("테이블 그룹을 지정 할 수 있다.")
     void createTest() {
         //given
-        given(orderTableDao.findAllByIdIn(Arrays.asList(주문_테이블1.getId(), 주문_테이블2.getId()))).willReturn(
+        given(orderTableRepository.findAllByIdIn(Arrays.asList(주문_테이블1.getId(), 주문_테이블2.getId()))).willReturn(
                 Arrays.asList(주문_테이블1, 주문_테이블1));
-        given(tableGroupDao.save(any(TableGroup.class))).willReturn(단체);
-        given(orderTableDao.save(any(OrderTable.class))).willReturn(any(OrderTable.class));
+        given(tableGroupRepository.save(any(TableGroup.class))).willReturn(단체);
+        given(orderTableRepository.save(any(OrderTable.class))).willReturn(any(OrderTable.class));
 
         //when
         TableGroup tableGroup = tableGroupService.create(단체);
@@ -87,8 +87,8 @@ class TableGroupServiceTest {
     @DisplayName("주문 상태가 조리중(COOKING), 식사중(MEAL)인 경우에는 해제 할 수 없다.")
     void ungroupFailWithStatusTest() {
         //given
-        given(orderTableDao.findAllByTableGroupId(단체.getId())).willReturn(Arrays.asList(주문_테이블1, 주문_테이블2));
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
+        given(orderTableRepository.findAllByTableGroupId(단체.getId())).willReturn(Arrays.asList(주문_테이블1, 주문_테이블2));
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
 
         //when & then
         assertThatThrownBy(
@@ -100,13 +100,13 @@ class TableGroupServiceTest {
     @DisplayName("지정된 테이블 그룹을 해제 할 수 있다.")
     void ungroupTest() {
         //given
-        given(orderTableDao.findAllByTableGroupId(단체.getId())).willReturn(Arrays.asList(주문_테이블1, 주문_테이블2));
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
+        given(orderTableRepository.findAllByTableGroupId(단체.getId())).willReturn(Arrays.asList(주문_테이블1, 주문_테이블2));
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
 
         //when
         tableGroupService.ungroup(단체.getId());
 
         //then
-        verify(orderTableDao, times(2)).save(any(OrderTable.class));
+        verify(orderTableRepository, times(2)).save(any(OrderTable.class));
     }
 }
