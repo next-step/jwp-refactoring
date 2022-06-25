@@ -6,6 +6,7 @@ import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,17 +34,31 @@ class TableGroupServiceTest {
     @MockBean
     TableGroupDao tableGroupDao;
 
-    Long orderTableId1 = 1L;
-    Long orderTableId2 = 2L;
-    OrderTable orderTable1 = new OrderTable(orderTableId1, null, 1, true);
-    OrderTable orderTable2 = new OrderTable(orderTableId2, null, 1, true);
+    Long orderTableId1;
+    Long orderTableId2;
+    OrderTable orderTable1;
+    OrderTable orderTable2;
+
+    @BeforeEach
+    void setUp() {
+        setOrderTable();
+    }
+
+    void setOrderTable() {
+        orderTableId1 = 1L;
+        orderTableId2 = 2L;
+        orderTable1 = new OrderTable(orderTableId1, null, 1, true);
+        orderTable2 = new OrderTable(orderTableId2, null, 1, true);
+        when(orderTableDao.findAllByIdIn(singletonList(orderTableId1))).thenReturn(singletonList(orderTable1));
+        when(orderTableDao.findAllByIdIn(singletonList(orderTableId2))).thenReturn(singletonList(orderTable2));
+        when(orderTableDao.findAllByIdIn(Arrays.asList(orderTableId1, orderTableId2))).thenReturn(Arrays.asList(orderTable1, orderTable2));
+    }
 
     @DisplayName("여러 주문 테이블을 단체 지정할 수 있다")
     @Test
     void create() {
         // given
         TableGroup tableGroup = new TableGroup(null, null, Arrays.asList(orderTable1, orderTable2));
-        when(orderTableDao.findAllByIdIn(Arrays.asList(orderTableId1, orderTableId2))).thenReturn(Arrays.asList(orderTable1, orderTable2));
         when(tableGroupDao.save(tableGroup)).thenReturn(new TableGroup(1L, LocalDateTime.now(), null));
 
         // when
@@ -68,8 +83,6 @@ class TableGroupServiceTest {
     void orderTable_size_2_over() {
         // given
         TableGroup tableGroup = new TableGroup(null, null, singletonList(orderTable1));
-        when(orderTableDao.findAllByIdIn(singletonList(orderTableId1))).thenReturn(singletonList(orderTable1));
-        when(tableGroupDao.save(tableGroup)).thenReturn(new TableGroup(1L, LocalDateTime.now(), null));
 
         // when
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
@@ -80,10 +93,8 @@ class TableGroupServiceTest {
     @Test
     void orderTable_is_exists() {
         // given
-        Long notExistsOrderTableId = 1000L;
-        OrderTable notExistsOrderTable = new OrderTable(notExistsOrderTableId, null, 1, true);
+        OrderTable notExistsOrderTable = new OrderTable(1000L, null, 1, true);
         TableGroup tableGroup = new TableGroup(null, null, Arrays.asList(orderTable1, notExistsOrderTable));
-        when(orderTableDao.findAllByIdIn(Arrays.asList(orderTableId1, notExistsOrderTableId))).thenReturn(singletonList(orderTable1));
 
         // when
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
@@ -96,8 +107,8 @@ class TableGroupServiceTest {
         // given
         Long notEmptyTableId = 1000L;
         OrderTable notEmptyTable = new OrderTable(notEmptyTableId, null, 1, false);
-        TableGroup tableGroup = new TableGroup(null, null, Arrays.asList(orderTable1, notEmptyTable));
         when(orderTableDao.findAllByIdIn(Arrays.asList(orderTableId1, notEmptyTableId))).thenReturn(Arrays.asList(orderTable1, notEmptyTable));
+        TableGroup tableGroup = new TableGroup(null, null, Arrays.asList(orderTable1, notEmptyTable));
 
         // when
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
@@ -110,8 +121,8 @@ class TableGroupServiceTest {
         // given
         Long groupedTableId = 1000L;
         OrderTable groupedTable = new OrderTable(groupedTableId, 1L, 1, true);
-        TableGroup tableGroup = new TableGroup(null, null, Arrays.asList(orderTable1, groupedTable));
         when(orderTableDao.findAllByIdIn(Arrays.asList(orderTableId1, groupedTableId))).thenReturn(Arrays.asList(orderTable1, groupedTable));
+        TableGroup tableGroup = new TableGroup(null, null, Arrays.asList(orderTable1, groupedTable));
 
         // when
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
