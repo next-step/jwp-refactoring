@@ -16,7 +16,7 @@ public class Quantity {
         this.quantity = quantity;
     }
 
-    public static Quantity of(long quantity) {
+    public static Quantity from(long quantity) {
         return new Quantity(quantity);
     }
 

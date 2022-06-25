@@ -34,7 +34,7 @@ public class MenuProducts {
     }
 
     public Price getTotalPrice() {
-        Price totalPrice = Price.of(0);
+        Price totalPrice = Price.from(0);
         for (MenuProduct menuProduct : menuProducts) {
             totalPrice = totalPrice.add(menuProduct.calculateProductsPrice());
         }

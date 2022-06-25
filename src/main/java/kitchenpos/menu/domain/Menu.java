@@ -32,7 +32,7 @@ public class Menu {
     public Menu(String name, Integer price, Long menuGroupId,
                 List<MenuProduct> menuProducts) {
         this.name = Name.of(name);
-        this.price = Price.of(price);
+        this.price = Price.from(price);
         this.menuGroup = MenuGroup.of(menuGroupId);
         this.menuProducts = MenuProducts.of(this, menuProducts);
     }

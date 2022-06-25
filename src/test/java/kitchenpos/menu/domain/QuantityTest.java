@@ -14,6 +14,6 @@ public class QuantityTest {
         // when
         long quantity = -1L;
         // then
-        assertThatThrownBy(() -> Quantity.of(quantity)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> Quantity.from(quantity)).isInstanceOf(IllegalArgumentException.class);
     }
 }

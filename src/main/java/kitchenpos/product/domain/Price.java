@@ -9,6 +9,8 @@ import java.util.Objects;
 
 @Embeddable
 public class Price {
+    private static final BigDecimal ZERO = BigDecimal.ZERO;
+
     @Column(name = "price")
     private BigDecimal price;
 
@@ -20,11 +22,11 @@ public class Price {
         this.price = price;
     }
 
-    public static Price of(BigDecimal price) {
+    public static Price from(BigDecimal price) {
         return new Price(price);
     }
 
-    public static Price of(Integer price) {
+    public static Price from(Integer price) {
         return new Price(BigDecimal.valueOf(price));
     }
 
@@ -33,17 +35,17 @@ public class Price {
     }
 
     private void validate(BigDecimal price) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+        if (Objects.isNull(price) || price.compareTo(ZERO) < 0) {
             throw new IllegalArgumentException("가격이 0보다 작을 수 없습니다.");
         }
     }
 
     public Price add(Price other) {
-        return Price.of(price.add(other.price));
+        return Price.from(price.add(other.price));
     }
 
     public static Price multiply(Product product, Quantity quantity) {
-        return Price.of(product.getPriceValue()
+        return Price.from(product.getPriceValue()
                 .multiply(BigDecimal.valueOf(quantity.getValue())));
     }
 

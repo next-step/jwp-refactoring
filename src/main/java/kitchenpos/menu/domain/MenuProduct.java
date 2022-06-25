@@ -28,12 +28,12 @@ public class MenuProduct {
     private MenuProduct(Long menuId, Long productId, long quantity) {
         this.menu = Menu.of(menuId);
         this.product = Product.of(productId);
-        this.quantity = Quantity.of(quantity);
+        this.quantity = Quantity.from(quantity);
     }
 
     private MenuProduct(Long productId, long quantity) {
         this.product = Product.of(productId);
-        this.quantity = Quantity.of(quantity);
+        this.quantity = Quantity.from(quantity);
     }
 
     public static MenuProduct of(Long productId, long quantity) {

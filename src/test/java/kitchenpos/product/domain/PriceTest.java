@@ -14,6 +14,6 @@ public class PriceTest {
         // when
         Integer price = -10;
         // then
-        assertThatThrownBy(() -> Price.of(price)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> Price.from(price)).isInstanceOf(IllegalArgumentException.class);
     }
 }
