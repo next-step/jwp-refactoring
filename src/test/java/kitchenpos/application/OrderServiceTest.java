@@ -3,8 +3,8 @@ package kitchenpos.application;
 import kitchenpos.menu.dao.MenuRepository;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.application.OrderService;
-import kitchenpos.order.dao.OrderDao;
-import kitchenpos.order.dao.OrderLineItemDao;
+import kitchenpos.order.dao.OrderLineItemRepository;
+import kitchenpos.order.dao.OrderRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
@@ -38,10 +38,10 @@ class OrderServiceTest {
     private MenuRepository menuRepository;
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
-    private OrderLineItemDao orderLineItemDao;
+    private OrderLineItemRepository orderLineItemRepository;
 
     @Mock
     private OrderTableDao orderTableDao;
@@ -107,8 +107,8 @@ class OrderServiceTest {
         Order 주문 = 주문_생성(0L, OrderStatus.COOKING, Collections.singletonList(주문_목록));
         when(menuRepository.countByIdIn(any())).thenReturn(1L);
         when(orderTableDao.findById(any())).thenReturn(Optional.of(주문_테이블));
-        when(orderDao.save(주문)).thenReturn(주문);
-        when(orderLineItemDao.save(주문_목록)).thenReturn(주문_목록);
+        when(orderRepository.save(주문)).thenReturn(주문);
+        when(orderLineItemRepository.save(주문_목록)).thenReturn(주문_목록);
 
         // when
         Order 생성_주문 = orderService.create(주문);
@@ -127,7 +127,7 @@ class OrderServiceTest {
                 주문_생성(0L, OrderStatus.COOKING, Collections.emptyList()),
                 주문_생성(0L, OrderStatus.COOKING, Collections.emptyList())
         );
-        when(orderDao.findAll()).thenReturn(주문_리스트);
+        when(orderRepository.findAll()).thenReturn(주문_리스트);
 
         // when
         List<Order> 주문_목록_조회_리스트 = orderService.list();
@@ -148,7 +148,7 @@ class OrderServiceTest {
     void changeOrderStatueByCompletionOrderTest() {
         // given
         Order 주문 = 주문_생성(0L, OrderStatus.COMPLETION, Collections.emptyList());
-        when(orderDao.findById(any())).thenReturn(Optional.of(주문));
+        when(orderRepository.findById(any())).thenReturn(Optional.of(주문));
 
         // then
         주문_상태_변경_실패됨(() -> orderService.changeOrderStatus(주문.getId(), 주문));
@@ -160,7 +160,8 @@ class OrderServiceTest {
         // given
         Order 주문 = 주문_생성(0L, OrderStatus.COOKING, Collections.emptyList());
         Order 변경할_주문 = 주문_생성(0L, OrderStatus.MEAL, Collections.emptyList());
-        when(orderDao.findById(any())).thenReturn(Optional.of(주문));
+        when(orderRepository.findById(any())).thenReturn(Optional.of(주문));
+        when(orderRepository.save(any())).then(it -> it.getArgument(0));
 
         // when
         Order 주문_상태_변경_결과 = orderService.changeOrderStatus(0L, 변경할_주문);

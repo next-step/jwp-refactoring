@@ -1,11 +1,11 @@
 package kitchenpos.application;
 
-import kitchenpos.order.dao.OrderDao;
+import kitchenpos.order.dao.OrderRepository;
+import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.table.dao.TableGroupDao;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.application.TableGroupService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,7 +28,7 @@ import static org.mockito.Mockito.when;
 class TableGroupServiceTest {
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
     private OrderTableDao orderTableDao;
@@ -115,7 +115,7 @@ class TableGroupServiceTest {
     void ungroupByCookingOrMealStatusTableGroupTest() {
         // given
         when(orderTableDao.findAllByTableGroupId(any())).thenReturn(Collections.singletonList(주문_테이블_생성(0L, 10, false)));
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(true);
+        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(true);
 
         // then
         테이블_그룹_해제_실패(() -> tableGroupService.ungroup(0L));
@@ -131,7 +131,7 @@ class TableGroupServiceTest {
                 주문_테이블_생성(0L, 3, false)
         );
         when(orderTableDao.findAllByTableGroupId(any())).thenReturn(주문_테이블_리스트);
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(false);
+        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(false);
 
         // when
         tableGroupService.ungroup(0L);

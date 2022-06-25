@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.order.dao.OrderDao;
+import kitchenpos.order.dao.OrderRepository;
 import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.application.TableService;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 public class TableServiceTest {
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
     private OrderTableDao orderTableDao;
@@ -98,7 +98,7 @@ public class TableServiceTest {
         OrderTable 원본_주문_테이블 = 주문_테이블_생성(null, 1, false);
         OrderTable 변경_될_주문_테이블 = 주문_테이블_생성(null, 1, true);
         when(orderTableDao.findById(any())).thenReturn(Optional.of(원본_주문_테이블));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(true);
+        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(true);
 
         // then
         주문_테이블_인원_변경_실패됨(() -> tableService.changeEmpty(0L, 변경_될_주문_테이블));
@@ -111,7 +111,7 @@ public class TableServiceTest {
         OrderTable 원본_주문_테이블 = 주문_테이블_생성(null, 1, false);
         OrderTable 변경_될_주문_테이블 = 주문_테이블_생성(null, 1, true);
         when(orderTableDao.findById(any())).thenReturn(Optional.of(원본_주문_테이블));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(false);
+        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(false);
         when(orderTableDao.save(any())).then(it -> it.getArgument(0));
 
         // when
