@@ -95,6 +95,7 @@ public class OrderTable {
     }
 
     public void changeEmpty(final boolean empty) {
+        validateTableGroupNull();
         this.empty = empty;
     }
 

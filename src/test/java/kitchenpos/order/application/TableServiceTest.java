@@ -69,7 +69,7 @@ class TableServiceTest {
     @Test
     void changeEmpty() {
         OrderTableRequest orderTableRequest = createOrderTableRequest(2, true);
-        OrderTable orderTable = createOrderTable(1L, 2, false);
+        OrderTable orderTable = createOrderTable(1L, 2, true);
         given(orderTableRepository.findById(1L)).willReturn(Optional.ofNullable(주문테이블));
         given(orderTableRepository.save(any(OrderTable.class))).willReturn(orderTable);
         OrderTableResponse changedOrderTable = tableService.changeEmpty(1L, orderTableRequest);
@@ -84,7 +84,7 @@ class TableServiceTest {
     @DisplayName("주문테이블이 등록이 안되어있을 때 주문테이블 비어있는지 여부 변경 테스트")
     @Test
     void changeEmptyWithNotFoundOrderTable() {
-        OrderTableRequest orderTableRequest = createOrderTableRequest(2, false);
+        OrderTableRequest orderTableRequest = createOrderTableRequest(2, true);
         given(orderTableRepository.findById(1L)).willReturn(Optional.empty());
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableService.changeEmpty(1L, orderTableRequest))
@@ -94,8 +94,8 @@ class TableServiceTest {
     @DisplayName("주문테이블의 단체지정이 있는 경우 주문테이블 비어있는지 여부 변경 테스트")
     @Test
     void changeEmptyWithTableGroup() {
-        OrderTableRequest orderTableRequest = createOrderTableRequest(2, false);
-        OrderTable orderTable = createOrderTable(1L, 2, false);
+        OrderTableRequest orderTableRequest = createOrderTableRequest(2, true);
+        OrderTable orderTable = createOrderTable(1L, 2, true);
         orderTable.addTableGroup(단체지정);
         given(orderTableRepository.findById(1L)).willReturn(Optional.of(orderTable));
         assertThatIllegalArgumentException()
