@@ -1,5 +1,8 @@
 package kitchenpos.table.application;
 
+import java.util.Arrays;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.infrastructure.OrderRepository;
 import kitchenpos.table.dto.OrderTableIdRequest;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
@@ -19,10 +22,14 @@ public class TableGroupService {
     private static final int MINIMUM_SIZE = 2;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
+    private final OrderRepository orderRepository;
 
-    public TableGroupService(final OrderTableRepository orderTableRepository, final TableGroupRepository tableGroupRepository) {
+    public TableGroupService(final OrderTableRepository orderTableRepository,
+                             final TableGroupRepository tableGroupRepository,
+                             OrderRepository orderRepository) {
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
+        this.orderRepository = orderRepository;
     }
 
     @Transactional
@@ -58,20 +65,27 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
-
-        //to-do
-//        final List<Long> orderTableIds = orderTables.stream()
-//                .map(OrderTable::getId)
-//                .collect(Collectors.toList());
-//
-//        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
-//                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-//            throw new IllegalArgumentException();
-//        }
+        final List<OrderTable> orderTables = findCompleteOrderTable(tableGroupId);
 
         for (final OrderTable orderTable : orderTables) {
             orderTable.unGroupTable();
+        }
+    }
+
+    private List<OrderTable> findCompleteOrderTable(Long tableGroupId) {
+        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
+        validateOrderStatus(orderTables);
+        return orderTables;
+    }
+
+    private void validateOrderStatus(List<OrderTable> orderTables) {
+        final List<Long> orderTableIds = orderTables.stream()
+                .map(OrderTable::getId)
+                .collect(Collectors.toList());
+
+        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
+                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+            throw new IllegalArgumentException("계산 완료하여야 단체 지정을 해제할 수 있습니다.");
         }
     }
 }

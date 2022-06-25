@@ -5,16 +5,16 @@ import static kitchenpos.menu.acceptance.MenuGroupAcceptanceTest.메뉴_그룹_�
 import static kitchenpos.order.acceptance.OrderAcceptanceTest.주문_등록_되어있음;
 import static kitchenpos.product.acceptance.ProductAcceptanceTest.상품_등록_되어있음;
 import static kitchenpos.table.acceptance.TableAcceptanceTest.테이블_등록_되어있음;
+import static kitchenpos.table.acceptance.TableAcceptanceTest.테이블_빈_테이블_여부_수정_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.order.domain.Order;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.table.dto.OrderTableIdRequest;
-import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
@@ -77,11 +77,11 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
                 dynamicTest("주문이 조리, 식사 중일경우, 단체 지정 해제 요청하면 단체 지정 해제에 실패한다.", () -> {
                     MenuGroupResponse 추천메뉴 = 메뉴_그룹_등록되어_있음("추천메뉴");
                     ProductResponse 허니콤보 = 상품_등록_되어있음("허니콤보", 20_000L);
-                    MenuResponse 허니레드콤보 = 메뉴_등록_되어있음(추천메뉴, "허니레드콤보", 39_000L, 허니콤보, 1L);
+                    MenuResponse 허니레드콤보 = 메뉴_등록_되어있음(추천메뉴, "허니레드콤보", 19_000L, 허니콤보, 1L);
                     빈_테이블 = 테이블_등록_되어있음(0, true);
                     다른_빈_테이블 = 테이블_등록_되어있음(0, true);
                     테이블_그룹 = 단체_지정_되어있음(빈_테이블, 다른_빈_테이블);
-                    Order 주문 = 주문_등록_되어있음(빈_테이블, 허니레드콤보);
+                    OrderResponse 주문 = 주문_등록_되어있음(빈_테이블, 1L, 허니레드콤보);
 
                     ResponseEntity<Void> 주문_있는_테이블_단체_해제_요청_결과 = 단체_지정_해제_요청(테이블_그룹);
 

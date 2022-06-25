@@ -128,7 +128,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
         assertThat(actual.isEmpty()).isNotEqualTo(expected.isEmpty());
     }
 
-    private ResponseEntity<OrderTableResponse> 테이블_빈_테이블_여부_수정_요청(OrderTableResponse orderTable, boolean empty) {
+    public static ResponseEntity<OrderTableResponse> 테이블_빈_테이블_여부_수정_요청(OrderTableResponse orderTable, boolean empty) {
         OrderTableRequest orderTableRequest = new OrderTableRequest(5, empty);
         HttpEntity<OrderTableRequest> httpEntity = new HttpEntity<>(orderTableRequest);
 
