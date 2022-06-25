@@ -38,10 +38,18 @@ class TableAcceptanceTest extends AcceptanceTest {
     public static final String 비어있음 = "true";
     public static final String 사용중 = "false";
     private Menu 양념두마리_메뉴;
+    private OrderLineItem 주문;
 
     @BeforeEach
     public void init(){
         메뉴_설정하기();
+        주문_설정하기();
+    }
+
+    private void 주문_설정하기(){
+        주문 = new OrderLineItem();
+        주문.setMenuId(양념두마리_메뉴.getId());
+        주문.setQuantity(2);
     }
 
     private void 메뉴_설정하기() {
@@ -170,7 +178,7 @@ class TableAcceptanceTest extends AcceptanceTest {
     /**
       * background
          * given : 메뉴를 생성하고
-     * given : 주문을 생성하여
+         * given : 주문을 생성하여
      * given : 테이블을 생성 후
      * given : 해당 테이블에 주문을 매핑 후
      * when : 테이블 빈테이블 설정시
@@ -181,10 +189,6 @@ class TableAcceptanceTest extends AcceptanceTest {
         //given(테이블생성)
         OrderTable 테이블_1_정보 = 빈테이블_생성하기().as(OrderTable.class);
         유휴테이블_여부_설정하기(사용중, 테이블_1_정보.getId());
-        //given(주문생성)
-        OrderLineItem 주문 = new OrderLineItem();
-        주문.setMenuId(양념두마리_메뉴.getId());
-        주문.setQuantity(2);
         //given(테이블-주문 매핑)
         주문_생성하기(테이블_1_정보.getId(), Arrays.asList(주문)).as(Order.class);
         주문_상태_변경하기(먹는중, 테이블_1_정보.getId());

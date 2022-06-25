@@ -39,12 +39,19 @@ class OrderAcceptanceTest extends AcceptanceTest {
     private OrderTable 테이블_1;
     private OrderTable 테이블_2;
     private OrderTable 빈테이블;
-    Menu 양념두마리_메뉴;
-
+    private Menu 양념두마리_메뉴;
+    private OrderLineItem 주문;
     @BeforeEach
     public void init() {
         테이블_설정하기();
         메뉴_설정하기();
+        주문_설정하기();
+    }
+
+    private void 주문_설정하기(){
+        주문 = new OrderLineItem();
+        주문.setMenuId(양념두마리_메뉴.getId());
+        주문.setQuantity(2);
     }
 
     private void 메뉴_설정하기() {
@@ -70,19 +77,14 @@ class OrderAcceptanceTest extends AcceptanceTest {
 
     /**
      * background
-         * given : 테이블을 생성하고
-         * given : 메뉴를 생성한뒤
-     * given : 주문넣을 메뉴를 설정하고
+        * given : 테이블을 생성하고
+        * given : 메뉴를 생성한뒤
+        * given : 주문넣을 메뉴를 설정하고
      * when : 주문을 생성하면
      * then : 정상적으로 생성된다.
      */
     @Test
     public void 주문_생성하기_테스트() {
-        //given
-        OrderLineItem 주문 = new OrderLineItem();
-        주문.setMenuId(양념두마리_메뉴.getId());
-        주문.setQuantity(2);
-
         //when
         ExtractableResponse<Response> 오더_생성하기_response = 주문_생성하기(테이블_1.getId(),
             Arrays.asList(주문));
@@ -96,7 +98,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
      * background
          * given : 테이블을 생성하고
          * given : 메뉴를 생성한뒤
-     * given : 주문넣을 메뉴를 설정하고
+         * given : 주문넣을 메뉴를 설정하고
      * given : 주문 3개를 생성 뒤
      * when : 주문 리스트를 받아오면
      * then : 정상적으로 조회된다
@@ -104,9 +106,6 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     public void 주문_리스트_조회하기_테스트() {
         //given
-        OrderLineItem 주문 = new OrderLineItem();
-        주문.setMenuId(양념두마리_메뉴.getId());
-        주문.setQuantity(2);
         Order 주문_1 = 주문_생성하기(테이블_1.getId(), Arrays.asList(주문)).as(Order.class);
         Order 주문_2 = 주문_생성하기(테이블_1.getId(), Arrays.asList(주문)).as(Order.class);
         Order 주문_3 = 주문_생성하기(테이블_2.getId(), Arrays.asList(주문)).as(Order.class);
@@ -122,7 +121,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
      * background
          * given : 테이블을 생성하고
          * given : 메뉴를 생성한뒤
-     * given : 주문넣을 메뉴를 설정하고
+         * given : 주문넣을 메뉴를 설정하고
      * given : 주문을 저장하고
      * when : 주문 상태를 변경시
      * then : 정상적으로 변경된다.
@@ -130,9 +129,6 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     public void 주문_상태_변경하기_MEAL() {
         //given
-        OrderLineItem 주문 = new OrderLineItem();
-        주문.setMenuId(양념두마리_메뉴.getId());
-        주문.setQuantity(2);
         Order 주문_1 = 주문_생성하기(테이블_1.getId(), Arrays.asList(주문)).as(Order.class);
 
         //when
@@ -146,7 +142,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
      * background
          * given : 테이블을 생성하고
          * given : 메뉴를 생성한뒤
-     * given : 주문넣을 메뉴를 설정하고
+         * given : 주문넣을 메뉴를 설정하고
      * given : 주문을 저장하고
      * when : 주문 상태를 변경시
      * then : 정상적으로 변경된다.
@@ -154,9 +150,6 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     public void 주문_상태_변경하기_COMPLETION() {
         //given
-        OrderLineItem 주문 = new OrderLineItem();
-        주문.setMenuId(양념두마리_메뉴.getId());
-        주문.setQuantity(2);
         Order 주문_1 = 주문_생성하기(테이블_1.getId(), Arrays.asList(주문)).as(Order.class);
 
         //when
@@ -206,9 +199,6 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     public void 없는테이블에_주문넣을때_에러발생() {
         //when
-        OrderLineItem 주문 = new OrderLineItem();
-        주문.setMenuId(양념두마리_메뉴.getId());
-        주문.setQuantity(2);
         ExtractableResponse<Response> 오더_생성하기_response = 주문_생성하기(-1, Arrays.asList(주문));
 
         //then
@@ -222,9 +212,6 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     public void 비어있는테이블에_주문넣을때_에러발생() {
         //when
-        OrderLineItem 주문 = new OrderLineItem();
-        주문.setMenuId(양념두마리_메뉴.getId());
-        주문.setQuantity(2);
         ExtractableResponse<Response> 오더_생성하기_response = 주문_생성하기(빈테이블.getId(), Arrays.asList(주문));
 
         //then

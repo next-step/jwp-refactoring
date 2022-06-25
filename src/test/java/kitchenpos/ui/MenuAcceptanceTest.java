@@ -22,7 +22,6 @@ import org.springframework.test.context.jdbc.Sql;
 
 @Sql(scripts = {"/test/db/cleanUp.sql"})
 class MenuAcceptanceTest  extends AcceptanceTest {
-
     private Product 후라이드;
     private Product 양념;
     private MenuGroup 두마리메뉴;
@@ -31,7 +30,6 @@ class MenuAcceptanceTest  extends AcceptanceTest {
     @BeforeEach
     public void init(){
         후라이드 = 상품_등록하기("후라이드", 17000).as(Product.class);
-
         양념 = 상품_등록하기("양념", 15000).as(Product.class);
 
         두마리메뉴 = 메뉴그룹_등록하기("두마리메뉴").as(MenuGroup.class);

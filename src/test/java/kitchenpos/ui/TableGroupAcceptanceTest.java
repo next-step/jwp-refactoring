@@ -40,13 +40,20 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     private OrderTable 빈테이블_2;
     private OrderTable 사용중인테이블;
     private Menu 양념두마리_메뉴;
+    private OrderLineItem 주문;
 
     @BeforeEach
     public void init() {
         테이블_설정하기();
         메뉴_설정하기();
+        주문_설정하기();
     }
 
+    private void 주문_설정하기(){
+        주문 = new OrderLineItem();
+        주문.setMenuId(양념두마리_메뉴.getId());
+        주문.setQuantity(2);
+    }
     private void 메뉴_설정하기() {
         Product 양념 = 상품_등록하기("양념", 15000).as(Product.class);
         MenuGroup 두마리메뉴 = 메뉴그룹_등록하기("두마리메뉴").as(MenuGroup.class);
@@ -163,10 +170,6 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     public void 테이블그룹_다먹지않은테이블_삭제시_에러발생() {
         //given
         TableGroup 단체테이블 = 단체_테이블_등록하기(Arrays.asList(빈테이블_1, 빈테이블_2)).as(TableGroup.class);
-        OrderLineItem 주문 = new OrderLineItem();
-        주문.setMenuId(양념두마리_메뉴.getId());
-        주문.setQuantity(2);
-
         주문_생성하기(빈테이블_1.getId(), Arrays.asList(주문)).as(Order.class);
         주문_생성하기(빈테이블_2.getId(), Arrays.asList(주문)).as(Order.class);
         주문_상태_변경하기(먹는중, 빈테이블_1.getId());
