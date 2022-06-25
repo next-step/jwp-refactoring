@@ -1,15 +1,15 @@
 package kitchenpos.dto;
 
 public class TableRequest {
-    private Boolean empty;
     private Integer numberOfGuests;
+    private Boolean empty;
 
     protected TableRequest() {
     }
 
-    public TableRequest(Boolean empty, Integer numberOfGuests) {
-        this.empty = empty;
+    public TableRequest(Integer numberOfGuests, Boolean empty) {
         this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
     }
 
     public Boolean getEmpty() {

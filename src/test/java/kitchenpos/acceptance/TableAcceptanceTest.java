@@ -33,8 +33,8 @@ public class TableAcceptanceTest extends AcceptanceTest {
 
         orderTable1 = TableServiceTest.주문_테이블_생성(null, null, false, 0);
         orderTable2 = TableServiceTest.주문_테이블_생성(null, null, false, 0);
-        tableRequest1 = new TableRequest(false, 0);
-        tableRequest2 = new TableRequest(false, 0);
+        tableRequest1 = new TableRequest(0, false);
+        tableRequest2 = new TableRequest(0, false);
     }
 
     @DisplayName("주문 테이블을 생성한다.")
@@ -66,7 +66,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
     @Test
     void 빈_테이블_설정() {
         // given
-        ExtractableResponse<Response> createResponse = 주문_테이블_생성_요청(orderTable1);
+        ExtractableResponse<Response> createResponse = 주문_테이블_생성_요청(tableRequest1);
 
         // when
         ExtractableResponse<Response> response = 빈_테이블_설정_변경_요청(createResponse, true);
@@ -79,7 +79,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
     @Test
     void 손님_수_변경() {
         // given
-        ExtractableResponse<Response> createResponse = 주문_테이블_생성_요청(orderTable1);
+        ExtractableResponse<Response> createResponse = 주문_테이블_생성_요청(tableRequest1);
 
         // when
         ExtractableResponse<Response> response = 손님_수_변경_요청(createResponse, 7);
@@ -125,15 +125,15 @@ public class TableAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 빈_테이블_설정_변경_요청(ExtractableResponse<Response> response, boolean isEmpty) {
+    public static ExtractableResponse<Response> 빈_테이블_설정_변경_요청(ExtractableResponse<Response> response, boolean empty) {
         String location = response.header("Location");
-        OrderTable orderTable = response.as(OrderTable.class);
-        orderTable.setEmpty(isEmpty);
+        TableResponse orderTable = response.as(TableResponse.class);
+        TableRequest params = new TableRequest(orderTable.getNumberOfGuests(), empty);
 
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(orderTable)
+                .body(params)
                 .when().put(location + "/empty")
                 .then().log().all()
                 .extract();
@@ -141,13 +141,13 @@ public class TableAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 손님_수_변경_요청(ExtractableResponse<Response> response, int numberOfGuests) {
         String location = response.header("Location");
-        OrderTable orderTable = response.as(OrderTable.class);
-        orderTable.setNumberOfGuests(numberOfGuests);
+        TableResponse orderTable = response.as(TableResponse.class);
+        TableRequest params = new TableRequest(numberOfGuests, orderTable.getEmpty());
 
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(orderTable)
+                .body(params)
                 .when().put(location + "/number-of-guests")
                 .then().log().all()
                 .extract();

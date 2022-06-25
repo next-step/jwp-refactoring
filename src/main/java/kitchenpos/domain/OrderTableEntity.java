@@ -48,4 +48,27 @@ public class OrderTableEntity {
     public Boolean getEmpty() {
         return empty;
     }
+
+    public void changeNumberOfGuests(int numberOfGuests) {
+        if (numberOfGuests < 0) {
+            throw new IllegalArgumentException("손님 수는 0 이상이어야 합니다.");
+        }
+
+        if (empty) {
+            throw new IllegalStateException("빈 테이블이어서 손님 수를 변경할 수 없습니다.");
+        }
+
+        this.numberOfGuests = numberOfGuests;
+    }
+
+    public void changeEmpty(boolean empty) {
+        if (tableGroup != null) {
+            throw new IllegalStateException("단체 지정되어 빈 테이블로 설정할 수 없습니다.");
+        }
+        this.empty = empty;
+    }
+
+    public boolean isEmpty() {
+        return empty;
+    }
 }
