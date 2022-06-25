@@ -21,6 +21,13 @@ import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.MenuResponse;
+import kitchenpos.menu.domain.MenuProductV2;
+import kitchenpos.menu.domain.MenuV2;
+import kitchenpos.menu.repository.MenuGroupRepository;
+import kitchenpos.menu.repository.MenuProductRepository;
+import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.product.domain.ProductV2;
+import kitchenpos.product.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,29 +41,29 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
     private MenuService menuService;
-    private MenuProduct menuProduct;
-    private Menu menu;
-    private Product product;
+    private MenuProductV2 menuProduct;
+    private MenuV2 menu;
+    private ProductV2 product;
     private MenuResponse expected;
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @Mock
-    private MenuProductDao menuProductDao;
+    private MenuProductRepository menuProductRepository;
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @BeforeEach
     void setUp() {
-        menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
-        menuProduct = new MenuProduct(1L, 1L, 1L, 2);
-        menu = new Menu("후라이드+후라이드", BigDecimal.valueOf(1_000), 1L, Arrays.asList(menuProduct));
-        product = new Product(1L, "후라이드", BigDecimal.valueOf(500));
+        menuService = new MenuService(menuRepository, menuGroupRepository, menuProductRepository, productRepository);
+        menu = new MenuV2(1L, "후라이드+후라이드", 1_000L, 1L, Arrays.asList(menuProduct));
+        menuProduct = new MenuProductV2(1L, menu, 1L, 2L);
+        product = new ProductV2(1L, "후라이드", 500L);
         expected = new MenuResponse(null, "후라이드+후라이드", BigDecimal.valueOf(1_000), 1L,
                 Arrays.asList(menuProduct));
     }
@@ -68,10 +75,10 @@ class MenuServiceTest {
         final MenuProductRequest menuProductRequest = new MenuProductRequest(1L, 2L);
         final MenuRequest menuRequest = new MenuRequest("후라이드+후라이드", BigDecimal.valueOf(1_000), 1L,
                 Arrays.asList(menuProductRequest));
-        when(menuGroupDao.existsById(any())).thenReturn(true);
-        when(productDao.findAll()).thenReturn(Arrays.asList(product));
-        when(menuDao.save(any())).thenReturn(menu);
-        when(menuProductDao.save(any())).thenReturn(menuProduct);
+        when(menuGroupRepository.existsById(any())).thenReturn(true);
+        when(productRepository.findAll()).thenReturn(Arrays.asList(product));
+        when(menuRepository.save(any())).thenReturn(menu);
+        when(menuProductRepository.save(any())).thenReturn(menuProduct);
         // when
         final MenuResponse actual = menuService.create(menuRequest);
         // then
@@ -102,7 +109,7 @@ class MenuServiceTest {
     void invalidNotContainMenuGroup() {
         // given
         final MenuRequest menuRequest = new MenuRequest("후라이드+후라이드", BigDecimal.valueOf(1_000), 99L, null);
-        when(menuGroupDao.existsById(any())).thenReturn(false);
+        when(menuGroupRepository.existsById(any())).thenReturn(false);
         // when && then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuService.create(menuRequest));
@@ -115,8 +122,8 @@ class MenuServiceTest {
         final MenuProductRequest menuProductRequest = new MenuProductRequest(1L, 2L);
         final MenuRequest menuRequest = new MenuRequest("후라이드+후라이드", BigDecimal.valueOf(1_000), 1L,
                 Arrays.asList(menuProductRequest));
-        when(menuGroupDao.existsById(any())).thenReturn(true);
-        when(productDao.findAll()).thenReturn(Collections.emptyList());
+        when(menuGroupRepository.existsById(any())).thenReturn(true);
+        when(productRepository.findAll()).thenReturn(Collections.emptyList());
         // when && then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuService.create(menuRequest));
@@ -129,8 +136,8 @@ class MenuServiceTest {
         final MenuProductRequest menuProductRequest = new MenuProductRequest(1L, 2L);
         final MenuRequest invalidMenuRequest = new MenuRequest("잘못된_메뉴", BigDecimal.valueOf(100_000), 1L,
                 Arrays.asList(menuProductRequest));
-        when(menuGroupDao.existsById(any())).thenReturn(true);
-        when(productDao.findAll()).thenReturn(Arrays.asList(product));
+        when(menuGroupRepository.existsById(any())).thenReturn(true);
+        when(productRepository.findAll()).thenReturn(Arrays.asList(product));
         // when && then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuService.create(invalidMenuRequest));
@@ -140,8 +147,7 @@ class MenuServiceTest {
     @DisplayName("메뉴를 조회할 수 있다.")
     void searchMenus() {
         // given
-        when(menuDao.findAll()).thenReturn(Arrays.asList(menu));
-        when(menuProductDao.findAllByMenuId(any())).thenReturn(Arrays.asList(menuProduct));
+        when(menuRepository.findAll()).thenReturn(Arrays.asList(menu));
         // when
         final List<MenuResponse> actual = menuService.list();
         // then

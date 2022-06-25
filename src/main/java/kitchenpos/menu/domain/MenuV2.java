@@ -1,20 +1,26 @@
 package kitchenpos.menu.domain;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import kitchenpos.dto.MenuResponse;
 
 @Entity
 @Table(name = "menu")
 public class MenuV2 {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column
@@ -26,8 +32,8 @@ public class MenuV2 {
     @Column
     private Long menuGroupId;
 
-    @OneToMany
-    private List<MenuProductV2> menuProducts;
+    @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MenuProductV2> menuProducts = new ArrayList<>();
 
     protected MenuV2() {
     }
@@ -39,6 +45,18 @@ public class MenuV2 {
         this.price = price;
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setMenuProducts(List<MenuProductV2> savedMenuProducts) {
+        this.menuProducts = savedMenuProducts;
+    }
+
+    public MenuResponse toMenuResponse() {
+        return new MenuResponse(this.id, this.name, BigDecimal.valueOf(this.price), this.menuGroupId, this.menuProducts);
     }
 
     @Override

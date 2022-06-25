@@ -33,6 +33,14 @@ public class ProductV2 {
         this.price = price;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public Long getPrice() {
+        return price;
+    }
+
     public ProductResponse toProductResponse() {
         return new ProductResponse(this.id, this.name, BigDecimal.valueOf(this.price));
     }

@@ -1,9 +1,11 @@
 package kitchenpos.domain;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import kitchenpos.dto.MenuResponse;
+import kitchenpos.menu.domain.MenuProductV2;
 
 public class Menu {
     private Long id;
@@ -63,7 +65,8 @@ public class Menu {
     }
 
     public MenuResponse toMenuResponse() {
-        return new MenuResponse(this.id, this.name, this.price, this.menuGroupId, this.menuProducts);
+        final MenuProductV2 menuProduct = new MenuProductV2(null, null, null, null);
+        return new MenuResponse(this.id, this.name, this.price, this.menuGroupId, Arrays.asList(menuProduct));
     }
 
     @Override

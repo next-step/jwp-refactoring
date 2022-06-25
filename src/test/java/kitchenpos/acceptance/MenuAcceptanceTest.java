@@ -10,10 +10,11 @@ import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.domain.MenuProduct;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.MenuResponse;
+import kitchenpos.menu.domain.MenuProductV2;
+import kitchenpos.menu.domain.MenuV2;
 import kitchenpos.utils.RestAssuredHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -49,8 +50,9 @@ class MenuAcceptanceTest extends AcceptanceTest {
 
         // then
         final ExtractableResponse<Response> 메뉴_조회_결과 = 메뉴_조회();
-        final MenuProduct 예상된_메뉴_제품들 = new MenuProduct(1L, 1L, 1L, 2);
-        final MenuResponse 예상된_메뉴_결과 = new MenuResponse(1L, "반반후라이드", BigDecimal.valueOf(16_000.0), 1L,
+        final MenuV2 예상된_메뉴 = new MenuV2(1L, "후라이드", 16_000L, 1L, Arrays.asList(new MenuProductV2(1L, null, 1L, 2L)));
+        final MenuProductV2 예상된_메뉴_제품들 = new MenuProductV2(1L, 예상된_메뉴, 1L, 2L);
+        final MenuResponse 예상된_메뉴_결과 = new MenuResponse(1L, "반반후라이드", BigDecimal.valueOf(16_000), 1L,
                 Arrays.asList(예상된_메뉴_제품들));
         메뉴_조회_확인(메뉴_조회_결과, Arrays.asList(예상된_메뉴_결과));
     }

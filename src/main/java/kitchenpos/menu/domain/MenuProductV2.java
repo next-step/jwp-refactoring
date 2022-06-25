@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -16,8 +18,9 @@ public class MenuProductV2 {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
 
-    @Column(nullable = false)
-    private Long menuId;
+    @ManyToOne
+    @JoinColumn(name = "menu_id", nullable = false)
+    private MenuV2 menu;
 
     @Column(nullable = false)
     private Long productId;
@@ -28,9 +31,9 @@ public class MenuProductV2 {
     protected MenuProductV2() {
     }
 
-    public MenuProductV2(Long seq, Long menuId, Long productId, Long quantity) {
+    public MenuProductV2(Long seq, MenuV2 menu, Long productId, Long quantity) {
         this.seq = seq;
-        this.menuId = menuId;
+        this.menu = menu;
         this.productId = productId;
         this.quantity = quantity;
     }
@@ -44,12 +47,12 @@ public class MenuProductV2 {
             return false;
         }
         MenuProductV2 that = (MenuProductV2) o;
-        return Objects.equals(seq, that.seq) && Objects.equals(menuId, that.menuId)
+        return Objects.equals(seq, that.seq) && Objects.equals(menu, that.menu)
                 && Objects.equals(productId, that.productId) && Objects.equals(quantity, that.quantity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(seq, menuId, productId, quantity);
+        return Objects.hash(seq, menu, productId, quantity);
     }
 }
