@@ -1,6 +1,7 @@
 package kitchenpos.order.ui;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.List;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.dto.OrderRequest;
@@ -23,7 +24,7 @@ public class OrderRestController {
 
     @PostMapping("/api/orders")
     public ResponseEntity<OrderResponse> create(@RequestBody final OrderRequest orderRequest) {
-        final OrderResponse created = orderService.create(orderRequest);
+        final OrderResponse created = orderService.create(orderRequest, LocalDateTime.now());
         final URI uri = URI.create("/api/orders/" + created.getId());
         return ResponseEntity.created(uri).body(created);
     }

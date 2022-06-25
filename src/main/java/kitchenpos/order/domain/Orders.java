@@ -4,13 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import kitchenpos.order.consts.OrderStatus;
 
 @Embeddable
 public class Orders {
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "orderTable")
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "order_table_id")
     private final List<Order> orders = new ArrayList<>();
 
     public List<Order> getOrders() {

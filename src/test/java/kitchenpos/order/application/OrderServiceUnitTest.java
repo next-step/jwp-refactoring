@@ -8,6 +8,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
@@ -51,7 +52,7 @@ class OrderServiceUnitTest {
         OrderRequest emptyRequest = 주문_요청_만들기(orderTable.getId(), Collections.emptyList());
 
         //when then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(emptyRequest));
+        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(emptyRequest, LocalDateTime.now()));
     }
 
     @DisplayName("등록 되어있지 않은 메뉴가 있는 경우 주문을 등록 할 수 없다.")
@@ -68,7 +69,7 @@ class OrderServiceUnitTest {
         given(menuRepository.findById(anyLong())).willThrow(IllegalArgumentException.class);
 
         //when then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(request));
+        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(request, LocalDateTime.now()));
     }
 
 
@@ -86,7 +87,7 @@ class OrderServiceUnitTest {
         given(menuRepository.findById(anyLong())).willThrow(IllegalArgumentException.class);
 
         //when then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(request));
+        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(request, LocalDateTime.now()));
     }
 
     @DisplayName("주문 테이블 없는 경우 주문을 등록 할 수 없다.")
@@ -102,7 +103,7 @@ class OrderServiceUnitTest {
         given(orderTableRepository.findById(request.getOrderTableId())).willReturn(Optional.of(orderTable));
 
         //when then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(request));
+        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(request, LocalDateTime.now()));
     }
 
 

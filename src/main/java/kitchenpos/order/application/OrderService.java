@@ -1,5 +1,6 @@
 package kitchenpos.order.application;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.menu.domain.Menu;
@@ -7,6 +8,7 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.consts.OrderStatus;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItemQuantity;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
@@ -32,27 +34,23 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponse create(final OrderRequest orderRequest) {
-        Order order = orderRequest.toOrder();
+    public OrderResponse create(final OrderRequest orderRequest, LocalDateTime orderedTime) {
         OrderTable orderTable = findOrderTable(orderRequest.getOrderTableId());
-
-        OrderLineItems orderLineItems = new OrderLineItems();
-        addOrderLineItems(orderRequest, orderLineItems);
-        order.registerOrderLineItems(orderLineItems, orderRequest.getOrderLineItems().size());
-        orderTable.registerOrder(order);
-
+        OrderLineItems orderLineItems = createOrderLineItems(orderRequest);
+        Order order = new Order(OrderStatus.COOKING, orderLineItems, orderedTime, orderTable);
         Order savedOrder = orderRepository.save(order);
         return OrderResponse.from(savedOrder);
     }
 
-    private void addOrderLineItems(OrderRequest orderRequest, OrderLineItems orderLineItems) {
+    private OrderLineItems createOrderLineItems(OrderRequest orderRequest) {
+        OrderLineItems orderLineItems = new OrderLineItems();
         for (OrderLineItemRequest orderLineItemRequest : orderRequest.getOrderLineItems()) {
-            OrderLineItem orderLineItem = orderLineItemRequest.toOrderLineItem();
             Menu menu = findMenu(orderLineItemRequest.getMenuId());
-
-            orderLineItem.setMenu(menu);
-            orderLineItems.addOrderLineItems(orderLineItem);
+            OrderLineItem orderLineItem =
+                    new OrderLineItem(menu, new OrderLineItemQuantity(orderLineItemRequest.getQuantity()));
+            orderLineItems.add(orderLineItem);
         }
+        return orderLineItems;
     }
 
     @Transactional(readOnly = true)

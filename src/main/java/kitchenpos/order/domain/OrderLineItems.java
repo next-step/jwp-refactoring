@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 @Embeddable
 public class OrderLineItems {
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "order_id")
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     public OrderLineItems() {
@@ -18,16 +20,8 @@ public class OrderLineItems {
     public OrderLineItems(List<OrderLineItem> orderLineItems) {
         this.orderLineItems = orderLineItems;
     }
-
-
-    public void addOrderLineItems(OrderLineItems orderLineItems, Order order) {
-        for (OrderLineItem orderLineItem : orderLineItems.orderLineItems) {
-            orderLineItem.setOrder(order);
-            this.orderLineItems.add(orderLineItem);
-        }
-    }
-
-    public void addOrderLineItems(OrderLineItem orderLineItem) {
+    
+    public void add(OrderLineItem orderLineItem) {
         orderLineItems.add(orderLineItem);
     }
 

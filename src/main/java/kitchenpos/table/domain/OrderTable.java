@@ -93,6 +93,10 @@ public class OrderTable {
         }
     }
 
+    public boolean isEmptyTable() {
+        return empty.isEmpty();
+    }
+
     public void updateEmpty(TableEmpty empty) {
         this.empty = empty;
     }

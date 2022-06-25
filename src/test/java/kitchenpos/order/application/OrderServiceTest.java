@@ -13,6 +13,7 @@ import static kitchenpos.helper.TableFixtures.테이블_만들기;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -46,7 +47,7 @@ class OrderServiceTest {
         OrderRequest request = 주문_요청_만들기(orderTable.getId(), Arrays.asList(주문_항목_요청1, 주문_항목_요청2));
 
         //when
-        OrderResponse result = orderService.create(request);
+        OrderResponse result = orderService.create(request, LocalDateTime.now());
 
         //then
         assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
@@ -63,7 +64,7 @@ class OrderServiceTest {
         OrderRequest emptyRequest = 주문_요청_만들기(orderTable.getId(), Collections.emptyList());
 
         //when then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(emptyRequest));
+        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(emptyRequest, LocalDateTime.now()));
     }
 
     @DisplayName("등록 되어있지 않은 메뉴가 있는 경우 주문을 등록 할 수 없다.")
@@ -74,7 +75,7 @@ class OrderServiceTest {
         OrderRequest request = 주문_요청_만들기(orderTable.getId(), Arrays.asList(주문_항목_요청1, 없는_주문_항목_요청));
 
         //when then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(request));
+        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(request, LocalDateTime.now()));
     }
 
     @DisplayName("빈 테이블인 경우 주문을 등록 할 수 없다.")
@@ -85,7 +86,7 @@ class OrderServiceTest {
         OrderRequest request = 주문_요청_만들기(emptyTable.getId(), Arrays.asList(주문_항목_요청1, 주문_항목_요청2));
 
         //when then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(request));
+        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(request, LocalDateTime.now()));
     }
 
 
@@ -94,7 +95,8 @@ class OrderServiceTest {
     void changeOrderStatus() {
         //given
         OrderTable orderTable = orderTableRepository.save(주문_테이블);
-        OrderResponse request = orderService.create(주문_요청_만들기(orderTable.getId(), Arrays.asList(주문_항목_요청1, 주문_항목_요청2)));
+        OrderResponse request = orderService
+                .create(주문_요청_만들기(orderTable.getId(), Arrays.asList(주문_항목_요청1, 주문_항목_요청2)), LocalDateTime.now());
 
         //when
         OrderResponse result = orderService.changeOrderStatus(request.getId(), 주문_상태_식사_요청);
@@ -109,7 +111,7 @@ class OrderServiceTest {
         //given
         OrderTable orderTable = orderTableRepository.save(주문_테이블);
         OrderResponse orderResponse = orderService
-                .create(주문_요청_만들기(orderTable.getId(), Arrays.asList(주문_항목_요청1, 주문_항목_요청2)));
+                .create(주문_요청_만들기(orderTable.getId(), Arrays.asList(주문_항목_요청1, 주문_항목_요청2)), LocalDateTime.now());
         orderService.changeOrderStatus(orderResponse.getId(), 주문_상태_계산완료_요청);
 
         //when then
@@ -123,7 +125,7 @@ class OrderServiceTest {
         //given
         OrderTable orderTable = orderTableRepository.save(테이블_만들기(3, false));
         OrderRequest request = 주문_요청_만들기(orderTable.getId(), Arrays.asList(주문_항목_요청1, 주문_항목_요청2));
-        OrderResponse orderResponse = orderService.create(request);
+        OrderResponse orderResponse = orderService.create(request, LocalDateTime.now());
 
         //when
         List<OrderResponse> results = orderService.list();
