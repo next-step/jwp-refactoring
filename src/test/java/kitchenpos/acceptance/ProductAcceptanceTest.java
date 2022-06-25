@@ -27,8 +27,8 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     public void init() {
         super.init();
 
-        productRequest1 = new ProductRequest("샐러드", 100L);
-        productRequest2 = new ProductRequest("스테이크", 100L);
+        productRequest1 = new ProductRequest("샐러드", 100);
+        productRequest2 = new ProductRequest("스테이크", 100);
     }
 
     @DisplayName("상품을 생성한다.")

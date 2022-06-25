@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
 import kitchenpos.domain.MenuGroupEntity;
-import kitchenpos.domain.MenuGroupRepository;
+import kitchenpos.repository.MenuGroupRepository;
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
 import org.springframework.stereotype.Service;

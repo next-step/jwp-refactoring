@@ -7,7 +7,6 @@ import kitchenpos.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -25,7 +24,7 @@ public class ProductService {
         ProductEntity product = productRepository.save(
                 new ProductEntity(
                         request.getName(),
-                        BigDecimal.valueOf(request.getPrice())
+                        request.getPrice()
                 )
         );
         return ProductResponse.of(product);

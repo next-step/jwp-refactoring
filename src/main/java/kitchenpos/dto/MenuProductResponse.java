@@ -2,18 +2,19 @@ package kitchenpos.dto;
 
 import kitchenpos.domain.MenuProductEntity;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 public class MenuProductResponse {
     private Long id;
     private String name;
-    private Long price;
+    private BigDecimal price;
     private Integer quantity;
 
     protected MenuProductResponse() {
     }
 
-    public MenuProductResponse(Long id, String name, Long price, Integer quantity) {
+    public MenuProductResponse(Long id, String name, BigDecimal price, Integer quantity) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -37,7 +38,7 @@ public class MenuProductResponse {
         return name;
     }
 
-    public Long getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
