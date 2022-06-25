@@ -23,6 +23,14 @@ public class ProductResponse {
         return id;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

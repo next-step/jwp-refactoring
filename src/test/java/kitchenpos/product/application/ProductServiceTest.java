@@ -1,6 +1,7 @@
 package kitchenpos.product.application;
 
 import static kitchenpos.utils.DomainFixtureFactory.createProduct;
+import static kitchenpos.utils.DomainFixtureFactory.createProductRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -8,10 +9,10 @@ import static org.mockito.BDDMockito.given;
 
 import java.math.BigDecimal;
 import java.util.List;
-import kitchenpos.domain.Name;
-import kitchenpos.domain.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -32,40 +33,44 @@ class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
-        피자 = createProduct(1L, "피자", BigDecimal.valueOf(20000L));
+        피자 = createProduct(null, "피자", BigDecimal.valueOf(20000L));
         스파게티 = createProduct(2L, "스파게티", BigDecimal.valueOf(20000L));
     }
 
     @DisplayName("상품 생성 테스트")
     @Test
     void create() {
-        given(productRepository.save(피자)).willReturn(피자);
-        Product product = productService.create(피자);
+        ProductRequest productRequest = createProductRequest("피자", BigDecimal.valueOf(20000L));
+        given(productRepository.save(productRequest.toProduct())).willReturn(피자);
+        ProductResponse productResponse = productService.create(productRequest);
         assertAll(
-                () -> assertThat(product.name()).isEqualTo(Name.from("피자")),
-                () -> assertThat(product.price()).isEqualTo(Price.from(BigDecimal.valueOf(20000L)))
+                () -> assertThat(productResponse.getName()).isEqualTo("피자"),
+                () -> assertThat(productResponse.getPrice()).isEqualTo(BigDecimal.valueOf(20000L))
         );
     }
 
     @DisplayName("상품 생성시 가격이 없는 경우 테스트")
     @Test
     void createWithPriceNull() {
+        ProductRequest productRequest = createProductRequest("피자", null);
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> productService.create(createProduct(1L, "스파게티", null)));
+                .isThrownBy(() -> productService.create(productRequest));
     }
 
     @DisplayName("상품 생성시 가격이 0원 아래인 경우 테스트")
     @Test
     void createWithPriceUnderZero() {
+        ProductRequest productRequest = createProductRequest("피자", BigDecimal.valueOf(-100));
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> productService.create(createProduct(1L, "스파게티", BigDecimal.valueOf(-100L))));
+                .isThrownBy(() -> productService.create(productRequest));
     }
 
     @DisplayName("상품 목록 조회 테스트")
     @Test
     void list() {
         given(productRepository.findAll()).willReturn(Lists.newArrayList(피자, 스파게티));
-        List<Product> products = productService.list();
-        assertThat(products).containsExactlyElementsOf(Lists.newArrayList(피자, 스파게티));
+        List<ProductResponse> products = productService.list();
+        assertThat(products).containsExactlyElementsOf(
+                Lists.newArrayList(ProductResponse.from(피자), ProductResponse.from(스파게티)));
     }
 }
