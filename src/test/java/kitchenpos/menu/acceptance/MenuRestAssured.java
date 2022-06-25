@@ -3,7 +3,6 @@ package kitchenpos.menu.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.dto.MenuRequest;
 import org.springframework.http.MediaType;
 

@@ -4,8 +4,8 @@ import java.util.Objects;
 import kitchenpos.menu.domain.MenuGroup;
 
 public class MenuGroupResponse {
-    private Long id;
-    private String name;
+    private final Long id;
+    private final String name;
 
     private MenuGroupResponse(Long id, String name) {
         this.id = id;
@@ -13,7 +13,7 @@ public class MenuGroupResponse {
     }
 
     public static MenuGroupResponse from(MenuGroup menuGroup) {
-        return new MenuGroupResponse(menuGroup.id(), menuGroup.name().value());
+        return new MenuGroupResponse(menuGroup.id(), menuGroup.nameValue());
     }
 
     public Long getId() {

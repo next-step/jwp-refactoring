@@ -4,10 +4,10 @@ import java.util.Objects;
 import kitchenpos.menu.domain.MenuProduct;
 
 public class MenuProductResponse {
-    private Long seq;
-    private Long menuId;
-    private Long productId;
-    private Long quantity;
+    private final Long seq;
+    private final Long menuId;
+    private final Long productId;
+    private final Long quantity;
 
     private MenuProductResponse(Long seq, Long menuId, Long productId, Long quantity) {
         this.seq = seq;
@@ -18,9 +18,9 @@ public class MenuProductResponse {
 
     public static MenuProductResponse from(MenuProduct menuProduct) {
         return new MenuProductResponse(menuProduct.seq(),
-                menuProduct.menu().id(),
-                menuProduct.product().id(),
-                menuProduct.quantity().value());
+                menuProduct.menuId(),
+                menuProduct.productId(),
+                menuProduct.quantityValue());
     }
 
     public Long getSeq() {

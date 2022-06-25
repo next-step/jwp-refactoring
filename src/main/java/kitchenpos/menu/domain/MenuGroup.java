@@ -32,16 +32,8 @@ public class MenuGroup {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public Name name() {
-        return name;
-    }
-
-    public void setName(final Name name) {
-        this.name = name;
+    public String nameValue() {
+        return name.value();
     }
 
     @Override

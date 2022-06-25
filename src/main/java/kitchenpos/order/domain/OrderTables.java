@@ -39,7 +39,7 @@ public class OrderTables {
     }
 
     public void reserve() {
-        orderTables.forEach(orderTable -> orderTable.reserve());
+        orderTables.forEach(OrderTable::reserve);
     }
 
     public boolean isNotEqualSize(int size) {

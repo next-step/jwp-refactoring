@@ -15,11 +15,10 @@ import org.junit.jupiter.api.Test;
 
 class MenuProductsTest {
     private MenuProduct 양념치킨상품;
-    private Product 양념;
 
     @BeforeEach
     void setUp() {
-        양념 = createProduct(1L, "양념", BigDecimal.valueOf(20000L));
+        Product 양념 = createProduct(1L, "양념", BigDecimal.valueOf(20000L));
         양념치킨상품 = createMenuProduct(양념, 2L);
     }
 

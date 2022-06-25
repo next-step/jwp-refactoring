@@ -43,24 +43,20 @@ public class OrderLineItem {
         return seq;
     }
 
-    public Order order() {
-        return order;
+    public long orderId() {
+        return order.id();
     }
 
     public void addOrder(final Order order) {
         this.order = order;
     }
 
-    public Menu menu() {
-        return menu;
+    public long menuId() {
+        return menu.id();
     }
 
-    public Quantity quantity() {
-        return quantity;
-    }
-
-    public void setQuantity(final Quantity quantity) {
-        this.quantity = quantity;
+    public long quantityValue() {
+        return quantity.value();
     }
 
     @Override

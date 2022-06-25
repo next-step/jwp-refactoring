@@ -44,8 +44,8 @@ public class MenuProduct {
         return seq;
     }
 
-    public Menu menu() {
-        return menu;
+    public Long menuId() {
+        return menu.id();
     }
 
     public void addMenu(final Menu menu) {
@@ -56,12 +56,16 @@ public class MenuProduct {
         return product.price();
     }
 
-    public Product product() {
-        return product;
+    public Long productId() {
+        return product.id();
     }
 
     public Quantity quantity() {
         return quantity;
+    }
+
+    public long quantityValue() {
+        return quantity.value();
     }
 
     @Override

@@ -23,7 +23,7 @@ public class MenuResponse {
     }
 
     public static MenuResponse from(Menu menu) {
-        return new MenuResponse(menu.id(), menu.name().value(), menu.price().value(), menu.menuGroup().id(),
+        return new MenuResponse(menu.id(), menu.nameValue(), menu.priceValue(), menu.menuGroupId(),
                 menu.readOnlyMenuProducts()
                         .stream()
                         .map(MenuProductResponse::from)

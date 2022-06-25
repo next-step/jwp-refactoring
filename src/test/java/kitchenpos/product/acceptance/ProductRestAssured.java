@@ -4,7 +4,6 @@ package kitchenpos.product.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
 import org.springframework.http.MediaType;
 

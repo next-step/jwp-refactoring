@@ -69,24 +69,16 @@ public class Menu {
         this.id = id;
     }
 
-    public Name name() {
-        return name;
+    public String nameValue() {
+        return name.value();
     }
 
-    public void setName(final Name name) {
-        this.name = name;
+    public BigDecimal priceValue() {
+        return price.value();
     }
 
-    public Price price() {
-        return price;
-    }
-
-    public void setPrice(final Price price) {
-        this.price = price;
-    }
-
-    public MenuGroup menuGroup() {
-        return menuGroup;
+    public long menuGroupId() {
+        return menuGroup.id();
     }
 
     public List<MenuProduct> readOnlyMenuProducts() {

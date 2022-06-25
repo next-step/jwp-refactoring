@@ -52,12 +52,12 @@ public class OrderTable {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    public int numberOfGuestsValue() {
+        return numberOfGuests.value();
     }
 
-    public TableGroup tableGroup() {
-        return tableGroup;
+    public boolean isEmpty() {
+        return empty;
     }
 
     public void addTableGroup(final TableGroup tableGroup) {
@@ -65,22 +65,19 @@ public class OrderTable {
         this.tableGroup = tableGroup;
     }
 
-    public void unGroup() {
-        this.tableGroup = null;
+    public void changeEmpty(final boolean empty) {
+        validateTableGroupNull();
+        this.empty = empty;
     }
 
     private void validateTableGroupNull() {
-        if(Objects.nonNull(tableGroup)) {
+        if (Objects.nonNull(tableGroup)) {
             throw new IllegalArgumentException("단체지정이 없어야 합니다.");
         }
     }
 
-    public NumberOfGuests numberOfGuests() {
-        return numberOfGuests;
-    }
-
-    public boolean isEmpty() {
-        return empty;
+    public void unGroup() {
+        this.tableGroup = null;
     }
 
     public void changeNumberOfGuests(final int numberOfGuests) {
@@ -92,11 +89,6 @@ public class OrderTable {
         if (empty) {
             throw new IllegalArgumentException("주문테이블이 비어있으면 안됩니다.");
         }
-    }
-
-    public void changeEmpty(final boolean empty) {
-        validateTableGroupNull();
-        this.empty = empty;
     }
 
     public void reserve() {

@@ -27,7 +27,9 @@ public class TableRestAssured {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 주문테이블_비어있는지여부_변경_요청(OrderTableResponse targetOrderTable, OrderTableRequest orderTableRequest, boolean empty) {
+    public static ExtractableResponse<Response> 주문테이블_비어있는지여부_변경_요청(OrderTableResponse targetOrderTable,
+                                                                    OrderTableRequest orderTableRequest,
+                                                                    boolean empty) {
         orderTableRequest.setEmpty(empty);
         return RestAssured
                 .given().log().all()
@@ -38,7 +40,9 @@ public class TableRestAssured {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 주문테이블_손님수_변경_요청(OrderTableResponse targetOrderTable, OrderTableRequest orderTableRequest, int numberOfGuests) {
+    public static ExtractableResponse<Response> 주문테이블_손님수_변경_요청(OrderTableResponse targetOrderTable,
+                                                                OrderTableRequest orderTableRequest,
+                                                                int numberOfGuests) {
         orderTableRequest.setNumberOfGuests(numberOfGuests);
         return RestAssured
                 .given().log().all()

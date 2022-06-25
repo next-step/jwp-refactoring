@@ -37,24 +37,16 @@ public class Product {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public Name name() {
-        return name;
-    }
-
-    public void setName(final Name name) {
-        this.name = name;
+    public String nameValue() {
+        return name.value();
     }
 
     public Price price() {
         return price;
     }
 
-    public void setPrice(final Price price) {
-        this.price = price;
+    public BigDecimal priceValue() {
+        return price.value();
     }
 
     @Override

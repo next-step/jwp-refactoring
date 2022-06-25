@@ -38,12 +38,12 @@ public class TableGroup {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    public List<OrderTable> readOnlyOrderTables() {
+        return orderTables.readOnlyOrderTables();
     }
 
-    public OrderTables orderTables() {
-        return orderTables;
+    public LocalDateTime createdDate() {
+        return createdDate;
     }
 
     public void addOrderTables(final OrderTables orderTables, List<Long> orderTableIds) {
@@ -64,10 +64,6 @@ public class TableGroup {
         if (orderTables.isNotEqualSize(size)) {
             throw new IllegalArgumentException("비교하는 수와 주문 테이블의 수가 일치하지 않습니다.");
         }
-    }
-
-    public LocalDateTime createdDate() {
-        return createdDate;
     }
 
     @Override

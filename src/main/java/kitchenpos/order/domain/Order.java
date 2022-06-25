@@ -45,12 +45,12 @@ public class Order {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    public long orderTableId() {
+        return orderTable.id();
     }
 
-    public OrderTable orderTable() {
-        return orderTable;
+    public LocalDateTime orderedTime() {
+        return orderedTime;
     }
 
     public void addOrderTable(final OrderTable orderTable) {
@@ -75,10 +75,6 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
-    public LocalDateTime orderedTime() {
-        return orderedTime;
-    }
-
     public void addOrderLineItems(final OrderLineItems orderLineItems, int size) {
         validateOrderLineItemsSize(orderLineItems, size);
         orderLineItems.addOrder(this);
@@ -86,7 +82,7 @@ public class Order {
     }
 
     private void validateOrderLineItemsSize(OrderLineItems orderLineItems, int size) {
-        if(orderLineItems.isNotEqualSize(size)) {
+        if (orderLineItems.isNotEqualSize(size)) {
             throw new IllegalArgumentException("비교하는 수와 주문 항목의 수가 일치하지 않습니다.");
         }
     }

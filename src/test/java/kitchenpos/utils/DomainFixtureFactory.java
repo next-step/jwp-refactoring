@@ -42,7 +42,7 @@ public class DomainFixtureFactory {
     }
 
     public static MenuRequest createMenuRequest(String name, BigDecimal price, long menuGroupId,
-                                  List<MenuProductRequest> menuProducts) {
+                                                List<MenuProductRequest> menuProducts) {
         return new MenuRequest(name, price, menuGroupId, menuProducts);
     }
 
@@ -62,7 +62,8 @@ public class DomainFixtureFactory {
         return new Order();
     }
 
-    public static OrderRequest createOrderRequest(Long orderTableId, OrderStatus orderStatus, List<OrderLineItemRequest> orderLineItems) {
+    public static OrderRequest createOrderRequest(Long orderTableId, OrderStatus orderStatus,
+                                                  List<OrderLineItemRequest> orderLineItems) {
         return new OrderRequest(orderTableId, orderStatus, orderLineItems);
     }
 
