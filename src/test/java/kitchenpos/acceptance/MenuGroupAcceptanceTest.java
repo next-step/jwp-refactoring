@@ -1,4 +1,4 @@
-package kitchenpos.ui;
+package kitchenpos.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -14,6 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 
 @DisplayName("메뉴 그룹 관련 기능")
 public class MenuGroupAcceptanceTest extends AcceptanceTest {
