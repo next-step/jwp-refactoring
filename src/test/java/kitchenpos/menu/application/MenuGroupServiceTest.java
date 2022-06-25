@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
 
 import java.util.List;
+import java.util.Optional;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.dto.MenuGroupRequest;
@@ -45,11 +46,19 @@ class MenuGroupServiceTest {
         );
     }
 
-    @DisplayName("메뉴 그룹 목록 조회  테스트")
+    @DisplayName("메뉴 그룹 목록 조회 테스트")
     @Test
     void list() {
         given(menuGroupRepository.findAll()).willReturn(Lists.newArrayList(한마리메뉴));
         List<MenuGroupResponse> menuGroups = menuGroupService.list();
         assertThat(menuGroups).containsExactlyElementsOf(Lists.newArrayList(MenuGroupResponse.from(한마리메뉴)));
+    }
+
+    @DisplayName("메뉴 그룹 찾기 테스트")
+    @Test
+    void findMenuGroup() {
+        given(menuGroupRepository.findById(한마리메뉴.id())).willReturn(Optional.ofNullable(한마리메뉴));
+        MenuGroup menuGroup = menuGroupService.findMenuGroup(한마리메뉴.id());
+        assertThat(menuGroup).isEqualTo(한마리메뉴);
     }
 }
