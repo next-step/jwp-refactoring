@@ -19,8 +19,8 @@ public class OrderLineItemRequest {
         this.quantity = quantity;
     }
 
-    public static List<OrderLineItemRequest> of(OrderLineItem... orderLineItems) {
-        return Arrays.stream(orderLineItems)
+    public static List<OrderLineItemRequest> of(List<OrderLineItem> orderLineItems) {
+        return orderLineItems.stream()
             .map(orderLineItem ->
                 new OrderLineItemRequest(orderLineItem.getId(), null,
                     orderLineItem.getMenuId(), orderLineItem.getQuantity()))

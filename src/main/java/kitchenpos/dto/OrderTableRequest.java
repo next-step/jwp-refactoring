@@ -20,6 +20,18 @@ public class OrderTableRequest {
         this.empty = empty;
     }
 
+    public OrderTableRequest(int numberOfGuests, boolean empty) {
+        this(null, null, numberOfGuests, empty);
+    }
+
+    public OrderTableRequest(boolean empty) {
+        this(null, null, 0, empty);
+    }
+
+    public OrderTableRequest(int numberOfGuests) {
+        this.numberOfGuests = numberOfGuests;
+    }
+
     public static List<OrderTableRequest> of(OrderTable... orderTables) {
         return Arrays.stream(orderTables)
             .map(orderTable -> new OrderTableRequest(
@@ -28,6 +40,10 @@ public class OrderTableRequest {
                 orderTable.getNumberOfGuests(),
                 orderTable.isEmpty()))
             .collect(Collectors.toList());
+    }
+
+    public OrderTable toOrderTable() {
+        return new OrderTable(numberOfGuests, empty);
     }
 
     public Long getId() {

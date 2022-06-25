@@ -1,12 +1,14 @@
 package kitchenpos.application;
 
-import java.util.Arrays;
+import static kitchenpos.domain.OrderStatus.STARTED_ORDER_READY_STATUS;
+
 import java.util.List;
-import java.util.Objects;
-import kitchenpos.domain.OrderStatus;
+import java.util.stream.Collectors;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.repository.OrderRepository;
 import kitchenpos.domain.repository.OrderTableRepository;
+import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,52 +24,49 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTable create(final OrderTable orderTable) {
-        orderTable.setTableGroup(null);
+    public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
+        OrderTable orderTable = orderTableRequest.toOrderTable();
+        orderTable.ungroup();
 
-        return orderTableRepository.save(orderTable);
+        orderTableRepository.save(orderTable);
+
+        return OrderTableResponse.of(orderTable);
     }
 
-    public List<OrderTable> list() {
-        return orderTableRepository.findAll();
-    }
-
-    @Transactional
-    public OrderTable changeEmpty(final Long orderTableId, final OrderTable orderTable) {
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (Objects.nonNull(savedOrderTable.getTableGroup())) {
-            throw new IllegalArgumentException();
-        }
-
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
-        }
-
-        savedOrderTable.setEmpty(orderTable.isEmpty());
-
-        return orderTableRepository.save(savedOrderTable);
+    public List<OrderTableResponse> list() {
+        List<OrderTable> orderTables = orderTableRepository.findAll();
+        return orderTables.stream()
+            .map(OrderTableResponse::of)
+            .collect(Collectors.toList());
     }
 
     @Transactional
-    public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTable orderTable) {
-        final int numberOfGuests = orderTable.getNumberOfGuests();
+    public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
+        final OrderTable orderTable = this.findById(orderTableId);
+        validateExistStartedOrderReadyStatus(orderTableId);
 
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
-        }
+        orderTable.changeEmpty(orderTableRequest.isEmpty());
 
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        savedOrderTable.setNumberOfGuests(numberOfGuests);
-
-        return orderTableRepository.save(savedOrderTable);
+        return OrderTableResponse.of(orderTable);
     }
+
+    @Transactional
+    public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
+        final OrderTable orderTable = this.findById(orderTableId);
+        orderTable.updateNumberOfGuests(orderTableRequest.getNumberOfGuests());
+
+        return OrderTableResponse.of(orderTable);
+    }
+
+    private OrderTable findById(Long id) {
+        return this.orderTableRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("테이블이 존재하지 않습니다."));
+    }
+
+    private void validateExistStartedOrderReadyStatus(Long orderTableId) {
+        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId, STARTED_ORDER_READY_STATUS)) {
+            throw new IllegalArgumentException("이미 주문 준비를 시작한 테이블이 있습니다.");
+        }
+    }
+
 }

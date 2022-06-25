@@ -20,7 +20,7 @@ public class OrderTable {
     @JoinColumn(name = "table_group_id")
     private TableGroup tableGroup;
     @Column(name = "number_of_guests", nullable = false)
-    private int numberOfGuests;
+    private NumberOfGuests numberOfGuests;
     @Column(name = "empty", nullable = false)
     private boolean empty;
 
@@ -28,31 +28,38 @@ public class OrderTable {
     public OrderTable() {
     }
 
-    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroup = tableGroup;
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = new NumberOfGuests(numberOfGuests);
         this.empty = empty;
     }
 
-    public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
-        this(null, tableGroup, numberOfGuests, empty);
-    }
-
     public OrderTable(int numberOfGuests, boolean empty) {
-        this(null, null, numberOfGuests, empty);
+        this(null, numberOfGuests, empty);
     }
 
     public void ungroup() {
         this.tableGroup = null;
     }
 
-    public Long getId() {
-        return id;
+    public void changeEmpty(final boolean empty) {
+        if (Objects.nonNull(tableGroup)) {
+            throw new IllegalArgumentException("그룹에 속해있는 테이블은 빈 상태로 변경할 수 없습니다.");
+        }
+
+        this.empty = empty;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    public void updateNumberOfGuests(int numberOfGuests) {
+        if (empty) {
+            throw new IllegalArgumentException("비어있는 테이블은 손님이 존재할 수 없습니다.");
+        }
+
+        this.numberOfGuests = new NumberOfGuests(numberOfGuests);
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public TableGroup getTableGroup() {
@@ -64,19 +71,11 @@ public class OrderTable {
     }
 
     public int getNumberOfGuests() {
-        return numberOfGuests;
-    }
-
-    public void setNumberOfGuests(final int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
+        return numberOfGuests.getNumberOfGuests();
     }
 
     public boolean isEmpty() {
         return empty;
-    }
-
-    public void setEmpty(final boolean empty) {
-        this.empty = empty;
     }
 
     @Override

@@ -1,5 +1,7 @@
 package kitchenpos.application;
 
+import static kitchenpos.domain.OrderStatus.STARTED_ORDER_READY_STATUS;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -60,6 +62,7 @@ public class OrderService {
         order.changeOrderStatus(orderRequest.getOrderStatus());
         return OrderResponse.of(order);
     }
+
 
     private List<OrderLineItem> convertOrderLineItemEntity(List<OrderLineItemRequest> orderLineItemRequests) {
         List<OrderLineItem> orderLineItems = new ArrayList<>();

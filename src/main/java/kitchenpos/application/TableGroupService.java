@@ -1,9 +1,12 @@
 package kitchenpos.application;
 
+import static kitchenpos.domain.OrderStatus.STARTED_ORDER_READY_STATUS;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
@@ -38,7 +41,7 @@ public class TableGroupService {
 
         validateTableGroup(orderTables, savedOrderTables);
 
-        TableGroup tableGroup = tableGroupRequest.toTableGroup();
+        TableGroup tableGroup = new TableGroup(savedOrderTables);
         tableGroupRepository.save(tableGroup);
 
         return TableGroupResponse.of(tableGroup);
@@ -47,18 +50,20 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
+        validateTableGroupUnGroup(orderTables);
 
+        for (final OrderTable orderTable : orderTables) {
+            orderTable.ungroup();
+        }
+    }
+
+    private void validateTableGroupUnGroup(List<OrderTable> orderTables) {
         final List<Long> orderTableIds = orderTables.stream()
             .map(OrderTable::getId)
             .collect(Collectors.toList());
 
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-            orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, STARTED_ORDER_READY_STATUS)) {
             throw new IllegalArgumentException();
-        }
-
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.ungroup();
         }
     }
 
