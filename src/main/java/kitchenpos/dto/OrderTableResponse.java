@@ -20,17 +20,17 @@ public class OrderTableResponse {
         this.empty = empty;
     }
 
-    public static OrderTableResponse of(OrderTable orderTable) {
+    public static OrderTableResponse from(OrderTable orderTable) {
         return new OrderTableResponse(orderTable.getId(),
                 orderTable.getTableGroup() == null ? null : orderTable.getTableGroup().getId(),
                 orderTable.getNumberOfGuests(),
                 orderTable.isEmpty());
     }
 
-    public static List<OrderTableResponse> of(List<OrderTable> orderTables) {
+    public static List<OrderTableResponse> from(List<OrderTable> orderTables) {
         return orderTables.
                 stream().
-                map(OrderTableResponse::of).
+                map(OrderTableResponse::from).
                 collect(Collectors.toList());
     }
 
