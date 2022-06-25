@@ -6,6 +6,7 @@ import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,6 +23,7 @@ import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @DisplayName("주문 관련")
@@ -38,20 +40,25 @@ class OrderServiceTest {
     @MockBean
     OrderTableDao orderTableDao;
 
-    Long orderTableId = 1L;
-    OrderTable orderTable = new OrderTable(orderTableId, null, 0, false);
-    Long orderId = 1L;
-    Long menuId = 1L;
-    OrderLineItem orderLineItem = new OrderLineItem(1L, orderId, menuId, 1);
-    Order order = new Order(orderId, orderTableId, "COOKING", LocalDateTime.now(), null);
+    Long orderTableId;
+    OrderTable orderTable;
+    Long menuId;
 
     @BeforeEach
     void setUp() {
-        when(menuDao.countByIdIn(singletonList(menuId))).thenReturn(1L);
+        setOrderTable();
+        setMenu();
+    }
+
+    void setOrderTable() {
+        orderTableId = 1L;
+        orderTable = new OrderTable(orderTableId, null, 0, false);
         when(orderTableDao.findById(orderTableId)).thenReturn(Optional.of(orderTable));
-        when(orderDao.findById(orderId)).thenReturn(Optional.of(order));
-        when(orderDao.findAll()).thenReturn(singletonList(order));
-        when(orderLineItemDao.findAllByOrderId(orderId)).thenReturn(singletonList(orderLineItem));
+    }
+
+    void setMenu() {
+        menuId = 1L;
+        when(menuDao.countByIdIn(singletonList(menuId))).thenReturn(1L);
     }
 
     @DisplayName("주문을 생성할 수 있다")
@@ -60,8 +67,8 @@ class OrderServiceTest {
         // given
         OrderLineItem createOrderLineItem = new OrderLineItem(1L, null, menuId, 1);
         Order createOrder = new Order(null, orderTableId, null, null, singletonList(createOrderLineItem));
-        when(orderDao.save(createOrder)).thenReturn(order);
-        when(orderLineItemDao.save(createOrderLineItem)).thenReturn(orderLineItem);
+        when(orderDao.save(createOrder)).thenReturn(new Order(1L, orderTableId, OrderStatus.COOKING.name(), LocalDateTime.now(), null));
+        when(orderLineItemDao.save(createOrderLineItem)).thenReturn(new OrderLineItem(1L, 1L, menuId, 1));
 
         // when
         Order actual = orderService.create(createOrder);
@@ -69,7 +76,7 @@ class OrderServiceTest {
         // then
         assertSoftly(softAssertions -> {
             softAssertions.assertThat(actual.getId()).isNotNull();
-            softAssertions.assertThat(actual.getOrderStatus()).isEqualTo("COOKING");
+            softAssertions.assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
             softAssertions.assertThat(actual.getOrderedTime()).isNotNull();
             softAssertions.assertThat(actual.getOrderLineItems()).hasSize(1);
             softAssertions.assertThat(actual.getOrderLineItems()).allSatisfy(orderLineItem1 -> assertThat(orderLineItem1.getOrderId()).isNotNull());
@@ -144,6 +151,10 @@ class OrderServiceTest {
     @Test
     void list() {
         // when
+        Long orderId = 1L;
+        Order order = new Order(orderId, orderTableId, OrderStatus.COOKING.name(), LocalDateTime.now(), null);
+        when(orderDao.findAll()).thenReturn(singletonList(order));
+        when(orderLineItemDao.findAllByOrderId(orderId)).thenReturn(singletonList(new OrderLineItem(1L, orderId, menuId, 1)));
         List<Order> actual = orderService.list();
 
         // then
@@ -157,13 +168,18 @@ class OrderServiceTest {
     @Test
     void changeOrderStatus() {
         // given
-        Order changeStatus = new Order(null, null, "MEAL", null, null);
+        Long orderId = 1L;
+        Order order = new Order(orderId, orderTableId, OrderStatus.COOKING.name(), LocalDateTime.now(), null);
+        when(orderDao.findById(orderId)).thenReturn(Optional.of(order));
+        when(orderLineItemDao.findAllByOrderId(orderId)).thenReturn(singletonList(new OrderLineItem(1L, orderId, menuId, 1)));
+        Order changeStatus = new Order(null, null, OrderStatus.MEAL.name(), null, null);
 
         // when
         Order actual = orderService.changeOrderStatus(orderId, changeStatus);
 
         // then
-        assertThat(actual.getOrderStatus()).isEqualTo("MEAL");
+        verify(orderDao).save(order);
+        assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
     }
 
     @DisplayName("없는 주문은 상태를 변경할 수 없다")
@@ -171,7 +187,7 @@ class OrderServiceTest {
     void order_is_exists() {
         // given
         Long notExistsOrderId = 1000L;
-        Order changeStatus = new Order(null, null, "MEAL", null, null);
+        Order changeStatus = new Order(null, null, OrderStatus.MEAL.name(), null, null);
 
         // when then
         assertThatThrownBy(() -> orderService.changeOrderStatus(notExistsOrderId, changeStatus))
@@ -183,9 +199,9 @@ class OrderServiceTest {
     void completion_order_cannot_change() {
         // given
         Long completionOrderId = 1000L;
-        Order completionOrder = new Order(completionOrderId, orderTableId, "COMPLETION", LocalDateTime.now(), null);
+        Order completionOrder = new Order(completionOrderId, orderTableId, OrderStatus.COMPLETION.name(), LocalDateTime.now(), null);
         when(orderDao.findById(completionOrderId)).thenReturn(Optional.of(completionOrder));
-        Order changeStatus = new Order(null, null, "MEAL", null, null);
+        Order changeStatus = new Order(null, null, OrderStatus.MEAL.name(), null, null);
 
         // when then
         assertThatThrownBy(() -> orderService.changeOrderStatus(completionOrderId, changeStatus))
