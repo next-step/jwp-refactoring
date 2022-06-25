@@ -28,26 +28,26 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("메뉴를 생성한다.")
     @Test
-    public void createMenu() {
+    public void create() {
         // when
-        ExtractableResponse<Response> response = 메뉴_등록되어_있음(테스트_메뉴_생성());
+        ExtractableResponse<Response> 등록된_메뉴 = 메뉴_등록되어_있음(테스트_메뉴_생성());
 
         // then
-        메뉴_생성됨(response);
+        메뉴_생성_검증됨(등록된_메뉴);
     }
 
     @DisplayName("메뉴 목록을 조회한다.")
     @Test
-    void getMenus() {
+    void list() {
         // given
-        ExtractableResponse<Response> createResponse = 메뉴_등록되어_있음(테스트_메뉴_생성());
+        ExtractableResponse<Response> 등록된_메뉴 = 메뉴_등록되어_있음(테스트_메뉴_생성());
 
         // when
-        ExtractableResponse<Response> response = 메뉴_목록_조회_요청();
+        ExtractableResponse<Response> 메뉴_목록 = 메뉴_목록_조회_요청();
 
         // then
-        메뉴_목록_응답됨(response);
-        메뉴_목록_포함됨(response, Arrays.asList(createResponse));
+        메뉴_목록_검증됨(메뉴_목록);
+        메뉴_목록_포함됨(메뉴_목록, Arrays.asList(등록된_메뉴));
     }
 
     private static Menu 테스트_메뉴_생성() {
@@ -71,7 +71,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static void 메뉴_생성됨(ExtractableResponse response) {
+    public static void 메뉴_생성_검증됨(ExtractableResponse response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
     }
@@ -84,7 +84,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static void 메뉴_목록_응답됨(ExtractableResponse<Response> response) {
+    public static void 메뉴_목록_검증됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 

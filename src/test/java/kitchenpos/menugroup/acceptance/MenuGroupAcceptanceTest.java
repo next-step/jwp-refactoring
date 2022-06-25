@@ -4,7 +4,6 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,27 +23,27 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("메뉴 그룹을 생성한다.")
     @Test
-    void createProduct() {
+    void create() {
         // when
-        ExtractableResponse<Response> response = 메뉴_그룹_등록되어_있음(MENU_GROUP_NAME01);
+        ExtractableResponse<Response> 등록된_메뉴_그룹 = 메뉴_그룹_등록되어_있음(MENU_GROUP_NAME01);
 
         // then
-        메뉴_그룹_생성됨(response);
+        메뉴_그룹_생성_검증됨(등록된_메뉴_그룹);
     }
 
     @DisplayName("메뉴 그룹 목록을 조회한다.")
     @Test
-    void getMenuGroups() {
+    void list() {
         // given
-        ExtractableResponse<Response> createResponse1 = 메뉴_그룹_등록되어_있음(MENU_GROUP_NAME01);
-        ExtractableResponse<Response> createResponse2 = 메뉴_그룹_등록되어_있음(MENU_GROUP_NAME02);
+        ExtractableResponse<Response> 등록된_메뉴_그룹1 = 메뉴_그룹_등록되어_있음(MENU_GROUP_NAME01);
+        ExtractableResponse<Response> 등록된_메뉴_그룹2 = 메뉴_그룹_등록되어_있음(MENU_GROUP_NAME02);
 
         // when
-        ExtractableResponse<Response> response = 메뉴_그룹_목록_조회_요청();
+        ExtractableResponse<Response> 메뉴_그룹_목록 = 메뉴_그룹_목록_조회_요청();
 
         // then
-        메뉴_그룹_목록_응답됨(response);
-        메뉴_그룹_목록_포함됨(response, Arrays.asList(createResponse1, createResponse2));
+        메뉴_그룹_목록_검증됨(메뉴_그룹_목록);
+        메뉴_그룹_목록_포함됨(메뉴_그룹_목록, Arrays.asList(등록된_메뉴_그룹1, 등록된_메뉴_그룹2));
     }
 
     public static ExtractableResponse<Response> 메뉴_그룹_등록되어_있음(String name) {
@@ -62,7 +61,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static void 메뉴_그룹_생성됨(ExtractableResponse response) {
+    public static void 메뉴_그룹_생성_검증됨(ExtractableResponse response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
     }
@@ -75,7 +74,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static void 메뉴_그룹_목록_응답됨(ExtractableResponse<Response> response) {
+    public static void 메뉴_그룹_목록_검증됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 

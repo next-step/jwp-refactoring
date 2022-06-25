@@ -28,25 +28,25 @@ public class TableAcceptanceTest extends AcceptanceTest {
     @Test
     void create() {
         // when
-        ExtractableResponse<Response> response = 주문_테이블_등록되어_있음(테이블_인원01, 테이블_착석_여부01);
+        ExtractableResponse<Response> 등록된_주문_테이블 = 주문_테이블_등록되어_있음(테이블_인원01, 테이블_착석_여부01);
 
         // then
-        주문_테이블_생성됨(response);
+        주문_테이블_생성_검증됨(등록된_주문_테이블);
     }
 
     @DisplayName("주문 테이블 목록을 조회한다.")
     @Test
     void list() {
         // given
-        ExtractableResponse<Response> createResponse1 = 주문_테이블_등록되어_있음(테이블_인원01, 테이블_착석_여부01);
-        ExtractableResponse<Response> createResponse2 = 주문_테이블_등록되어_있음(테이블_인원02, 테이블_착석_여부02);
+        ExtractableResponse<Response> 등록된_주문_테이블1 = 주문_테이블_등록되어_있음(테이블_인원01, 테이블_착석_여부01);
+        ExtractableResponse<Response> 등록된_주문_테이블2 = 주문_테이블_등록되어_있음(테이블_인원02, 테이블_착석_여부02);
 
         // when
-        ExtractableResponse<Response> response = 주문_테이블_목록_조회_요청();
+        ExtractableResponse<Response> 주문_테이블_목록 = 주문_테이블_목록_조회_요청();
 
         // then
-        주문_테이블_목록_응답됨(response);
-        주문_테이블_목록_포함됨(response, Arrays.asList(createResponse1, createResponse2));
+        주문_테이블_목록_검증됨(주문_테이블_목록);
+        주문_테이블_목록_포함됨(주문_테이블_목록, Arrays.asList(등록된_주문_테이블1, 등록된_주문_테이블2));
     }
 
     @Test
@@ -83,7 +83,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static void 주문_테이블_생성됨(ExtractableResponse response) {
+    public static void 주문_테이블_생성_검증됨(ExtractableResponse response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
     }
@@ -96,7 +96,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static void 주문_테이블_목록_응답됨(ExtractableResponse<Response> response) {
+    public static void 주문_테이블_목록_검증됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 

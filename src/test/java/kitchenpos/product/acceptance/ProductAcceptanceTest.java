@@ -27,27 +27,27 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("상품을 생성한다.")
     @Test
-    void createProduct() {
+    void create() {
         // when
-        ExtractableResponse<Response> response = 상품_등록되어_있음(PRODUCT_NAME01, PRODUCT_PRICE01);
+        ExtractableResponse<Response> 등록된_상품 = 상품_등록되어_있음(PRODUCT_NAME01, PRODUCT_PRICE01);
 
         // then
-        상품_생성됨(response);
+        상품_등록_검증됨(등록된_상품);
     }
 
     @DisplayName("상품 목록을 조회한다.")
     @Test
-    void getProducts() {
+    void list() {
         // given
-        ExtractableResponse<Response> createResponse1 = 상품_등록되어_있음(PRODUCT_NAME01, PRODUCT_PRICE01);
-        ExtractableResponse<Response> createResponse2 = 상품_등록되어_있음(PRODUCT_NAME02, PRODUCT_PRICE02);
+        ExtractableResponse<Response> 등록된_상품1 = 상품_등록되어_있음(PRODUCT_NAME01, PRODUCT_PRICE01);
+        ExtractableResponse<Response> 등록된_상품2 = 상품_등록되어_있음(PRODUCT_NAME02, PRODUCT_PRICE02);
 
         // when
-        ExtractableResponse<Response> response = 상품_목록_조회_요청();
+        ExtractableResponse<Response> 상품_목록 = 상품_목록_조회_요청();
 
         // then
-        상품_목록_응답됨(response);
-        상품_목록_포함됨(response, Arrays.asList(createResponse1, createResponse2));
+        상품_목록_검증됨(상품_목록);
+        상품_목록_포함됨(상품_목록, Arrays.asList(등록된_상품1, 등록된_상품2));
     }
 
     public static ExtractableResponse<Response> 상품_등록되어_있음(String name, BigDecimal price) {
@@ -65,7 +65,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static void 상품_생성됨(ExtractableResponse response) {
+    public static void 상품_등록_검증됨(ExtractableResponse response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
     }
@@ -78,7 +78,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static void 상품_목록_응답됨(ExtractableResponse<Response> response) {
+    public static void 상품_목록_검증됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
