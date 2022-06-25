@@ -1,6 +1,8 @@
 package kitchenpos.application;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -13,6 +15,7 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
@@ -88,6 +91,29 @@ class OrderServiceTest {
     }
 
     @Test
+    @DisplayName("주문 생성 정상로직")
+    void createOrderHappyCase() {
+        //given
+        order.setOrderLineItems(Arrays.asList(chickenOrder, hamOrder));
+        order.setOrderTableId(1L);
+        orderTable.setEmpty(false);
+
+        when(menuDao.countByIdIn(
+            Arrays.asList(chickenOrder.getMenuId(), hamOrder.getMenuId()))).thenReturn(2L);
+        when(orderTableDao.findById(1L)).thenReturn(Optional.of(orderTable));
+        when(orderDao.save(order)).thenReturn(order);
+
+        //when
+        Order order_created = orderService.create(order);
+
+        //then
+        assertAll(
+            () -> assertThat(order_created.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name()),
+            () -> assertThat(order_created.getOrderLineItems()).hasSize(2)
+        );
+    }
+
+    @Test
     @DisplayName("주문 상품 없이 주문을 하면 에러 발생")
     void createWithoutItemsThrowError() {
         //when && then
@@ -135,6 +161,19 @@ class OrderServiceTest {
         //when && then
         assertThatThrownBy(() -> orderService.create(order))
             .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("오더 상태 수정 정상로직")
+    void changeOrderStatusHappyCase(){
+        //given
+        order.setOrderStatus("COOKING");
+        when(orderDao.findById(1L)).thenReturn(Optional.of(order));
+
+        //when
+        Order order_updated = orderService.changeOrderStatus(1L, order);
+
+        assertThat(order_updated.getOrderStatus()).isEqualTo("COOKING");
     }
 
     @Test
