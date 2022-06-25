@@ -59,9 +59,10 @@ class OrderServiceTest {
     void setUp() {
         양념치킨 = createMenu(1L, "양념치킨", BigDecimal.valueOf(10000L), createMenuGroup(2L, "한마리메뉴"));
         주문테이블 = createOrderTable(1L, 2, false);
-        주문항목 = createOrderLineItem(양념치킨, 2L);
         주문 = createOrder();
         주문.addOrderTable(주문테이블);
+        주문항목 = createOrderLineItem(양념치킨, 2L);
+        주문항목.addOrder(주문);
         주문.addOrderLineItems(OrderLineItems.from(Lists.newArrayList(주문항목)), 1);
     }
 
@@ -70,7 +71,6 @@ class OrderServiceTest {
     void create() {
         OrderRequest orderRequest = createOrderRequest(주문테이블.id(), null,
                 Lists.newArrayList(new OrderLineItemRequest(양념치킨.id(), 2L)));
-        주문항목.addOrder(주문);
         given(menuService.findMenu(양념치킨.id())).willReturn(양념치킨);
         given(orderTableRepository.findById(orderRequest.getOrderTableId())).willReturn(Optional.ofNullable(주문테이블));
         given(orderRepository.save(주문)).willReturn(주문);

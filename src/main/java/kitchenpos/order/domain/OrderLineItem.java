@@ -43,7 +43,10 @@ public class OrderLineItem {
         return seq;
     }
 
-    public long orderId() {
+    public Long orderId() {
+        if (this.order == null) {
+            return null;
+        }
         return order.id();
     }
 
