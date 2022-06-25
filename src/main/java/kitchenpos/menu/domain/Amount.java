@@ -4,9 +4,9 @@ import kitchenpos.product.domain.ProductPrice;
 
 public class Amount {
     private final ProductPrice price;
-    private final int quantity;
+    private final MenuProductQuantity quantity;
 
-    public Amount(ProductPrice price, int quantity) {
+    public Amount(ProductPrice price, MenuProductQuantity quantity) {
         this.price = price;
         this.quantity = quantity;
     }

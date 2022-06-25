@@ -15,12 +15,12 @@ class MenuPriceTest {
     void overTo() {
         //given
         Amounts amounts1 = new Amounts();
-        amounts1.addAmount(new Amount(new ProductPrice(5000), 1));
-        amounts1.addAmount(new Amount(new ProductPrice(5000), 2));
+        amounts1.addAmount(new Amount(new ProductPrice(5000), new MenuProductQuantity(1)));
+        amounts1.addAmount(new Amount(new ProductPrice(5000), new MenuProductQuantity(2)));
 
         Amounts amounts2 = new Amounts();
-        amounts2.addAmount(new Amount(new ProductPrice(10000), 1));
-        amounts2.addAmount(new Amount(new ProductPrice(10000), 1));
+        amounts2.addAmount(new Amount(new ProductPrice(10000), new MenuProductQuantity(1)));
+        amounts2.addAmount(new Amount(new ProductPrice(10000), new MenuProductQuantity(1)));
 
         //when
         MenuPrice menuPrice = new MenuPrice(20000);

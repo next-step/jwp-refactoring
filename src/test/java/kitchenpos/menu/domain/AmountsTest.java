@@ -14,8 +14,8 @@ class AmountsTest {
     void calculateTotalAmount(){
         //given
         Amounts amounts = new Amounts();
-        amounts.addAmount(new Amount(new ProductPrice(1000), 5));
-        amounts.addAmount(new Amount(new ProductPrice(2000), 5));
+        amounts.addAmount(new Amount(new ProductPrice(1000), new MenuProductQuantity(5)));
+        amounts.addAmount(new Amount(new ProductPrice(2000), new MenuProductQuantity(5)));
 
         //when then
         assertThat(amounts.calculateTotalAmount()).isEqualTo(15_000);

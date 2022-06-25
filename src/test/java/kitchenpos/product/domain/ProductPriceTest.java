@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.*;
 
+import kitchenpos.menu.domain.MenuProductQuantity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -17,8 +18,8 @@ class ProductPriceTest {
         ProductPrice price = new ProductPrice(1000);
 
         //when
-        int amount1 = price.calculateAmount(10);
-        int amount2 = price.calculateAmount(7);
+        int amount1 = price.calculateAmount(new MenuProductQuantity(10));
+        int amount2 = price.calculateAmount(new MenuProductQuantity(7));
 
         //then
         assertThat(amount1).isEqualTo(10_000);

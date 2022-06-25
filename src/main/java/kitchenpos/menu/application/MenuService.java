@@ -5,6 +5,7 @@ import java.util.List;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProductQuantity;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -44,7 +45,7 @@ public class MenuService {
     private void addMenuProduct(MenuRequest menuRequest, Menu menu) {
         for (final MenuProductRequest menuProductRequest : menuRequest.getMenuProducts()) {
             final Product product = productService.findProduct(menuProductRequest.getProductId());
-            menu.addMenuProduct(new MenuProduct(menuProductRequest.getQuantity(), menu, product));
+            menu.addMenuProduct(new MenuProduct(new MenuProductQuantity(menuProductRequest.getQuantity()), menu, product));
         }
     }
 

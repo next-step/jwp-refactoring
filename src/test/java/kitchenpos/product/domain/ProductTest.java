@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 
 import kitchenpos.helper.ProductFixtures;
 import kitchenpos.menu.domain.Amount;
+import kitchenpos.menu.domain.MenuProductQuantity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -20,7 +21,7 @@ class ProductTest {
         Product product = ProductFixtures.제육덮밥_요청.toProduct();
 
         //when
-        Amount amount = product.createAmount(quantity);
+        Amount amount = product.createAmount(new MenuProductQuantity(quantity));
 
         //then
         assertThat(amount.calculateAmount()).isEqualTo(80_000);

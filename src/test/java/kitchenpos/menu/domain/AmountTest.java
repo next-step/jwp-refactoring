@@ -15,7 +15,7 @@ class AmountTest {
         //given
         int quantity = 10;
         int price = 10000;
-        Amount amount = new Amount(new ProductPrice(price), quantity);
+        Amount amount = new Amount(new ProductPrice(price), new MenuProductQuantity(quantity));
 
         //when then
         assertThat(amount.calculateAmount()).isEqualTo(100_000);
