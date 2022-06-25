@@ -21,8 +21,9 @@ import java.util.Optional;
 
 import static kitchenpos.fixture.MenuFixture.기본_메뉴;
 import static kitchenpos.fixture.MenuFixture.추천_기본_메뉴;
+import static kitchenpos.fixture.MenuProductFixture.메뉴_양념_치킨;
 import static kitchenpos.fixture.MenuProductFixture.메뉴_치킨;
-import static kitchenpos.fixture.ProductFixture.치킨;
+import static kitchenpos.fixture.ProductFixture.양념_치킨;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
@@ -49,39 +50,41 @@ class MenuServiceTest {
     @Test
     @DisplayName("메뉴 등록 테스트")
     void create() {
-        when(menuGroupDao.existsById(기본_메뉴.getMenuGroupId())).thenReturn(true);
-        when(productDao.findById(치킨.getId())).thenReturn(Optional.of(치킨));
-        when(menuDao.save(기본_메뉴)).thenReturn(기본_메뉴);
-        when(menuProductDao.save(any(MenuProduct.class))).thenReturn(메뉴_치킨);
+        when(menuGroupDao.existsById(추천_기본_메뉴.getMenuGroupId())).thenReturn(true);
+        when(productDao.findById(양념_치킨.getId())).thenReturn(Optional.of(양념_치킨));
+        when(menuDao.save(추천_기본_메뉴)).thenReturn(추천_기본_메뉴);
+        when(menuProductDao.save(any(MenuProduct.class))).thenReturn(메뉴_양념_치킨);
 
-        Menu 메뉴_등록_결과 = menuService.create(기본_메뉴);
+        Menu 메뉴_등록_결과 = menuService.create(추천_기본_메뉴);
 
-        Assertions.assertThat(메뉴_등록_결과).isEqualTo(기본_메뉴);
+        Assertions.assertThat(메뉴_등록_결과).isEqualTo(추천_기본_메뉴);
     }
 
     @Test
     @DisplayName("메뉴 등록시 가격이 0원보다 미만인 경우 실패 테스트")
     void create2() {
-        기본_메뉴.setPrice(BigDecimal.valueOf(-1000));
+        Menu 테스트_메뉴 = new Menu();
+        테스트_메뉴.setPrice(BigDecimal.valueOf(-1000));
 
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> menuService.create(기본_메뉴));
+                .isThrownBy(() -> menuService.create(테스트_메뉴));
     }
 
     @Test
     @DisplayName("메뉴 등록시 메뉴 그룹 ID가 없는 경우 실패 테스트")
     void create3() {
-        기본_메뉴.setMenuGroupId(null);
+        Menu 테스트_메뉴 = new Menu();
+        테스트_메뉴.setMenuGroupId(null);
 
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> menuService.create(기본_메뉴));
+                .isThrownBy(() -> menuService.create(테스트_메뉴));
     }
 
     @Test
     @DisplayName("메뉴 등록시 상품 정보가 없는 경우 실패 테스트")
     void create4() {
         when(menuGroupDao.existsById(추천_기본_메뉴.getMenuGroupId())).thenReturn(true);
-        when(productDao.findById(치킨.getId())).thenReturn(Optional.empty());
+        when(productDao.findById(양념_치킨.getId())).thenReturn(Optional.empty());
 
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> menuService.create(추천_기본_메뉴));
@@ -90,13 +93,15 @@ class MenuServiceTest {
     @Test
     @DisplayName("메뉴 등록시 상품 가격의 합보다 메뉴가격이 큰 경우 실패 테스트")
     void create5() {
-        기본_메뉴.setPrice(BigDecimal.valueOf(50_000));
+        Menu 테스트_메뉴 = new Menu();
+        테스트_메뉴.setPrice(BigDecimal.valueOf(50_000));
+        테스트_메뉴.setMenuProducts(Arrays.asList(메뉴_양념_치킨));
 
-        when(menuGroupDao.existsById(기본_메뉴.getMenuGroupId())).thenReturn(true);
-        when(productDao.findById(치킨.getId())).thenReturn(Optional.of(치킨));
+        when(menuGroupDao.existsById(테스트_메뉴.getMenuGroupId())).thenReturn(true);
+        when(productDao.findById(양념_치킨.getId())).thenReturn(Optional.of(양념_치킨));
 
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> menuService.create(기본_메뉴));
+                .isThrownBy(() -> menuService.create(테스트_메뉴));
     }
 
     @Test
