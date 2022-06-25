@@ -1,5 +1,6 @@
 package kitchenpos.menu.application;
 
+import static kitchenpos.helper.MenuGroupFixtures.메뉴_그룹_만들기;
 import static kitchenpos.helper.MenuGroupFixtures.인기메뉴_그룹_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -39,7 +40,7 @@ class MenuGroupServiceUnitTest {
         //given
         long generateMenuGroupId = 1;
         MenuGroupRequest request = 인기메뉴_그룹_요청;
-        doAnswer(invocation -> new MenuGroup(generateMenuGroupId, request.getName()))
+        doAnswer(invocation -> 메뉴_그룹_만들기(generateMenuGroupId, request.getName()))
                 .when(menuGroupRepository).save(any());
 
         //when
@@ -54,9 +55,9 @@ class MenuGroupServiceUnitTest {
     @Test
     void list() {
         //given
-        MenuGroup menuGroup1 = new MenuGroup(null, "인기 메뉴");
-        MenuGroup menuGroup2 = new MenuGroup(null, "단품 메뉴");
-        MenuGroup menuGroup3 = new MenuGroup(null, "세트 메뉴");
+        MenuGroup menuGroup1 = 메뉴_그룹_만들기("인기 메뉴");
+        MenuGroup menuGroup2 = 메뉴_그룹_만들기("단품 메뉴");
+        MenuGroup menuGroup3 = 메뉴_그룹_만들기("세트 메뉴");
         given(menuGroupRepository.findAll()).willReturn(Arrays.asList(menuGroup1, menuGroup2, menuGroup3));
 
         //when

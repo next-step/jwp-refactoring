@@ -1,7 +1,7 @@
 package kitchenpos.menu.application;
 
 import static kitchenpos.helper.MenuFixtures.메뉴_만들기;
-import static kitchenpos.helper.MenuFixtures.통반세트_요청_만들기;
+import static kitchenpos.helper.MenuFixtures.통반세트_메뉴_요청_만들기;
 import static kitchenpos.helper.MenuGroupFixtures.두마리메뉴_그룹;
 import static kitchenpos.helper.MenuProductFixtures.반반치킨_메뉴상품;
 import static kitchenpos.helper.MenuProductFixtures.통구이_메뉴상품;
@@ -48,7 +48,7 @@ class MenuServiceUnitTest {
     void create() {
         //given
         long generateMenuId = 1;
-        MenuRequest request = 통반세트_요청_만들기(30000);
+        MenuRequest request = 통반세트_메뉴_요청_만들기(두마리메뉴_그룹.getId(),30000);
 
         given(menuGroupService.findMenuGroup(request.getMenuGroupId())).willReturn(두마리메뉴_그룹);
         given(productService.findProduct(any())).willReturn(통구이_상품).willReturn(반반치킨_상품);
@@ -76,7 +76,7 @@ class MenuServiceUnitTest {
     @Test
     void create_empty_menu_group_id() {
         //given
-        MenuRequest request = 통반세트_요청_만들기(30000);
+        MenuRequest request = 통반세트_메뉴_요청_만들기(두마리메뉴_그룹.getId(), 30000);
         given(menuGroupService.findMenuGroup(request.getMenuGroupId())).willThrow(IllegalArgumentException.class);
 
         //when then
@@ -89,7 +89,7 @@ class MenuServiceUnitTest {
     @Test
     void create_price_greater_than_amount() {
         //given
-        MenuRequest request = 통반세트_요청_만들기(36000);
+        MenuRequest request = 통반세트_메뉴_요청_만들기(두마리메뉴_그룹.getId(),36000);
 
         given(menuGroupService.findMenuGroup(request.getMenuGroupId())).willReturn(두마리메뉴_그룹);
         given(productService.findProduct(any())).willReturn(통구이_상품).willReturn(반반치킨_상품);
@@ -104,8 +104,8 @@ class MenuServiceUnitTest {
     @Test
     void create_price_null_or_less_then_zero() {
         //given
-        MenuRequest request_price_less_then_zero = 통반세트_요청_만들기(-1);
-        MenuRequest request_price_null = 통반세트_요청_만들기(null);
+        MenuRequest request_price_less_then_zero = 통반세트_메뉴_요청_만들기(두마리메뉴_그룹.getId(),-1);
+        MenuRequest request_price_null = 통반세트_메뉴_요청_만들기(두마리메뉴_그룹.getId(), null);
 
         //when then
         assertAll(
