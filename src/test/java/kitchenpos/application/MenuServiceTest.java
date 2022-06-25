@@ -14,10 +14,11 @@ import kitchenpos.application.fixture.MenuFixtureFactory;
 import kitchenpos.application.fixture.MenuGroupFixtureFactory;
 import kitchenpos.application.fixture.MenuProductFixtureFactory;
 import kitchenpos.application.fixture.ProductFixtureFactory;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.MenuProductRepository;
 import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductRepository;
@@ -36,7 +37,11 @@ class MenuServiceTest {
     private MenuRepository menuRepository;
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
+
+    @Mock
+    private MenuProductRepository menuProductRepository;
+
 
     @Mock
     private ProductRepository productRepository;
@@ -69,7 +74,7 @@ class MenuServiceTest {
     @DisplayName("생성 하려는 메뉴의 메뉴 그룹이 시스템에 존재 하지 않으면 추가 할 수 없다.")
     void createTestFailWithMenuGroupNotExist() {
         //given
-        given(menuGroupDao.existsById(중식.getId())).willReturn(false);
+        given(menuGroupRepository.existsById(중식.getId())).willReturn(false);
 
         //when & then
         assertThatThrownBy(
@@ -81,7 +86,7 @@ class MenuServiceTest {
     @DisplayName("생성 하려는 메뉴의 메뉴 상품이 시스템에 등록 되어 있지 않으면 추가 할 수 없다.")
     void createTestFailWithMenuProductNotExist() {
         //given
-        given(menuGroupDao.existsById(중식.getId())).willReturn(true);
+        given(menuGroupRepository.existsById(중식.getId())).willReturn(true);
         given(productRepository.findById(중식_메뉴_짬뽕.getProduct().getId())).willThrow(IllegalArgumentException.class);
 
         //when & then
@@ -94,7 +99,7 @@ class MenuServiceTest {
     @DisplayName("생성 하려는 메뉴 가격이 전체 메뉴상품의 전체 금액(가격 * 수량의 총합)보다 클 수 없다.")
     void createTestFailWithAmount() {
         //given
-        given(menuGroupDao.existsById(중식.getId())).willReturn(true);
+        given(menuGroupRepository.existsById(중식.getId())).willReturn(true);
         given(productRepository.findById(중식_메뉴_짬뽕.getProduct().getId())).willReturn(Optional.of(짬뽕));
         given(productRepository.findById(중식_메뉴_짜장.getProduct().getId())).willReturn(Optional.of(짜장));
         Menu 잘못된_메뉴 = new Menu(1L, "잘못된 메뉴", BigDecimal.valueOf(100_000), 중식);
@@ -109,11 +114,11 @@ class MenuServiceTest {
     @DisplayName("메뉴를 생성 할 수 있다.")
     void createTest() {
         //given
-        given(menuGroupDao.existsById(중식.getId())).willReturn(true);
+        given(menuGroupRepository.existsById(중식.getId())).willReturn(true);
         given(productRepository.findById(중식_메뉴_짬뽕.getProduct().getId())).willReturn(Optional.of(짬뽕));
         given(productRepository.findById(중식_메뉴_짜장.getProduct().getId())).willReturn(Optional.of(짜장));
         given(menuRepository.save(any(Menu.class))).willReturn(중식메뉴);
-
+        given(menuProductRepository.save(any(MenuProduct.class))).willReturn(중식_메뉴_짬뽕);
 
         //when
         Menu menu = menuService.create(중식메뉴);

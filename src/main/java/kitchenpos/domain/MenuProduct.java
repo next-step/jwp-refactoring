@@ -9,7 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import kitchenpos.domain.common.Quantity;
 
 @Entity
@@ -28,22 +27,14 @@ public class MenuProduct {
     @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_menu_product_product"))
     private Product product;
 
-    @Transient
-    private Long menuId;
-
-    @Transient
-    private Long productId;
-
     @Embedded
     private Quantity quantity;
 
     public MenuProduct() {
     }
 
-    public MenuProduct(Long seq, Long menuId, Long productId, long quantity) {
+    public MenuProduct(Long seq, long quantity) {
         this.seq = seq;
-        this.menuId = menuId;
-        this.productId = productId;
         this.quantity = new Quantity(quantity);
     }
 
@@ -72,13 +63,5 @@ public class MenuProduct {
 
     public long getQuantity() {
         return quantity.getValue();
-    }
-
-    public Long getMenuId() {
-        return menuId;
-    }
-
-    public Long getProductId() {
-        return productId;
     }
 }
