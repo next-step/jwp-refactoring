@@ -50,4 +50,8 @@ public class TableAssertionHelper {
     public static void 테이블_손님수_설정_에러(ExtractableResponse<Response> 설정결과) {
         assertThat(설정결과.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
+
+    public static void 테이블_유휴여부_설정_에러(ExtractableResponse<Response> 설정결과) {
+        assertThat(설정결과.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
 }

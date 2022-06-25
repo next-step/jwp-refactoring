@@ -1,5 +1,10 @@
 package kitchenpos.ui;
 
+import static kitchenpos.helper.AcceptanceApiHelper.MenuApiHelper.메뉴_추가하기;
+import static kitchenpos.helper.AcceptanceApiHelper.MenuGroupApiHelper.메뉴그룹_등록하기;
+import static kitchenpos.helper.AcceptanceApiHelper.OrderApiHelper.주문_상태_변경하기;
+import static kitchenpos.helper.AcceptanceApiHelper.OrderApiHelper.주문_생성하기;
+import static kitchenpos.helper.AcceptanceApiHelper.ProductApiHelper.상품_등록하기;
 import static kitchenpos.helper.AcceptanceApiHelper.TableApiHelper.유휴테이블_여부_설정하기;
 import static kitchenpos.helper.AcceptanceApiHelper.TableApiHelper.빈테이블_생성하기;
 import static kitchenpos.helper.AcceptanceApiHelper.TableApiHelper.테이블_리스트_조회하기;
@@ -7,13 +12,20 @@ import static kitchenpos.helper.AcceptanceApiHelper.TableApiHelper.테이블_손
 import static kitchenpos.helper.AcceptanceAssertionHelper.TableAssertionHelper.테이블_리스트_조회됨;
 import static kitchenpos.helper.AcceptanceAssertionHelper.TableAssertionHelper.테이블_손님수_설정_에러;
 import static kitchenpos.helper.AcceptanceAssertionHelper.TableAssertionHelper.테이블_손님수_설정됨;
+import static kitchenpos.helper.AcceptanceAssertionHelper.TableAssertionHelper.테이블_유휴여부_설정_에러;
 import static kitchenpos.helper.AcceptanceAssertionHelper.TableAssertionHelper.테이블_유휴여부_설정됨;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
 import kitchenpos.AcceptanceTest;
+import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.Product;
 import kitchenpos.helper.AcceptanceApiHelper.TableApiHelper;
 import kitchenpos.helper.AcceptanceAssertionHelper.TableAssertionHelper;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,6 +34,22 @@ import org.springframework.test.context.jdbc.Sql;
 
 @Sql(scripts = {"/test/db/cleanUp.sql"})
 class TableAcceptanceTest extends AcceptanceTest {
+
+    private Menu 양념두마리_메뉴;
+
+    @BeforeEach
+    public void init(){
+        메뉴_설정하기();
+    }
+
+    private void 메뉴_설정하기() {
+        Product 양념 = 상품_등록하기("양념", 15000).as(Product.class);
+        MenuGroup 두마리메뉴 = 메뉴그룹_등록하기("두마리메뉴").as(MenuGroup.class);
+        MenuProduct 양념_한마리 = new MenuProduct();
+        양념_한마리.setProductId(양념.getId());
+        양념_한마리.setQuantity(2);
+        양념두마리_메뉴 = 메뉴_추가하기("양념두마리", 25000, 두마리메뉴.getId(), Arrays.asList(양념_한마리)).as(Menu.class);
+    }
 
     /**
      * when : 빈 테이블 저장시
@@ -140,5 +168,33 @@ class TableAcceptanceTest extends AcceptanceTest {
         테이블_손님수_설정_에러(테이블_손님_인원_설정하기_response);
     }
 
-    // TODO: 2022/06/25  주문 상태가 먹고있거나(MEAL), 요리중일때(COOKING) 빈테이블 설정 불가 예외처리 필요
+    /**
+      * background
+         * given : 메뉴를 생성하고
+     * given : 주문을 생성하여
+     * given : 테이블을 생성 후
+     * given : 해당 테이블에 주문을 매핑 후
+     * when : 테이블 빈테이블 설정시
+     * then : 에러발생
+    */
+    @Test
+    public void 테이블_먹고있거나_요리중에_빈테이블_삭제시_에러발생_테스트(){
+        //given(테이블생성)
+        OrderTable 테이블_1_정보 = 빈테이블_생성하기().as(OrderTable.class);
+        유휴테이블_여부_설정하기("false", 테이블_1_정보.getId());
+        //given(주문생성)
+        OrderLineItem 주문 = new OrderLineItem();
+        주문.setMenuId(양념두마리_메뉴.getId());
+        주문.setQuantity(2);
+        //given(테이블-주문 매핑)
+        주문_생성하기(테이블_1_정보.getId(), Arrays.asList(주문)).as(Order.class);
+        주문_상태_변경하기("MEAL", 테이블_1_정보.getId());
+
+        //when
+        ExtractableResponse<Response> 유휴테이블_여부_설정하기_response = 유휴테이블_여부_설정하기("true", 테이블_1_정보.getId());
+
+        //then
+        테이블_유휴여부_설정_에러(유휴테이블_여부_설정하기_response);
+    }
+
 }
