@@ -2,7 +2,6 @@ package kitchenpos.menu.ui;
 
 import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -31,8 +30,6 @@ public class MenuRestController {
     @GetMapping("/api/menus")
     public ResponseEntity<List<MenuResponse>> list() {
         return ResponseEntity.ok()
-                .body(menuService.list().stream()
-                        .map(MenuResponse::from)
-                        .collect(Collectors.toList()));
+                .body(menuService.list());
     }
 }
