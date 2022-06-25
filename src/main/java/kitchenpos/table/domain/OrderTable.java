@@ -13,13 +13,11 @@ import kitchenpos.order.domain.Orders;
 
 @Entity
 public class OrderTable {
-    private static final int EMPTY_GEUST = 0;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
-    private Integer numberOfGuests;
+    @Embedded
+    private NumberOfGuest numberOfGuests;
     @Column(nullable = false)
     private Boolean empty;
     @ManyToOne
@@ -31,7 +29,7 @@ public class OrderTable {
     protected OrderTable() {
     }
 
-    public OrderTable(Long id, Integer numberOfGuests, Boolean empty) {
+    public OrderTable(Long id, NumberOfGuest numberOfGuests, Boolean empty) {
         this.id = id;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
@@ -83,16 +81,13 @@ public class OrderTable {
         orders.checkPossibleChangeEmpty();
     }
 
-    public void updateNumberOfGuests(Integer numberOfGuests) {
-        validateUpdateNumberOfGuests(numberOfGuests);
+    public void updateNumberOfGuests(NumberOfGuest numberOfGuests) {
+        validateUpdate();
         orders.checkPossibleChangeEmpty();
         this.numberOfGuests = numberOfGuests;
     }
 
-    private void validateUpdateNumberOfGuests(Integer numberOfGuests) {
-        if (numberOfGuests < EMPTY_GEUST) {
-            throw new IllegalArgumentException("[ERROR] 방문 손님 수는 0명 미만으로 변경할 수 없습니다.");
-        }
+    private void validateUpdate() {
         if (Boolean.TRUE.equals(empty)) {
             throw new IllegalArgumentException("[ERROR] 빈 테이블은 방문 손님 수를 변경할 수 없습니다.");
         }
@@ -110,7 +105,7 @@ public class OrderTable {
         return id;
     }
 
-    public Integer getNumberOfGuests() {
+    public NumberOfGuest getNumberOfGuests() {
         return numberOfGuests;
     }
 

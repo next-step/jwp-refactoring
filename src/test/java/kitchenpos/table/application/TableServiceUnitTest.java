@@ -1,5 +1,7 @@
 package kitchenpos.table.application;
 
+import static kitchenpos.helper.TableFixtures.빈_테이블_만들기;
+import static kitchenpos.helper.TableFixtures.테이블_만들기;
 import static kitchenpos.helper.TableFixtures.테이블_요청_만들기;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -43,10 +45,8 @@ class TableServiceUnitTest {
         //given
         long generateTableId = 1;
         OrderTableRequest request = 테이블_요청_만들기(0, true);
-        doAnswer(invocation -> new OrderTable(generateTableId,
-                request.getNumberOfGuests(),
-                request.getEmpty())
-        ).when(orderTableRepository).save(any());
+        doAnswer(invocation -> 테이블_만들기(generateTableId, request.getNumberOfGuests(), request.getEmpty()))
+                .when(orderTableRepository).save(any());
 
         //when
         OrderTableResponse result = tableService.create(request);
@@ -66,7 +66,7 @@ class TableServiceUnitTest {
         OrderTableRequest request = 테이블_요청_만들기(3, true);
 
         given(orderTableRepository.findById(requestTableId))
-                .willReturn(Optional.of(new OrderTable(1L, 0, true)));
+                .willReturn(Optional.of(테이블_만들기(1L, 0, true)));
 
         //when
         OrderTableResponse result = tableService.changeEmpty(requestTableId, request);
@@ -82,7 +82,7 @@ class TableServiceUnitTest {
         //given
         long requestTableId = 1;
         OrderTableRequest request = 테이블_요청_만들기(3, true);
-        OrderTable orderTable = new OrderTable(requestTableId, request.getNumberOfGuests(), request.getEmpty());
+        OrderTable orderTable = 테이블_만들기(requestTableId, request.getNumberOfGuests(), request.getEmpty());
         orderTable.setTableGroup(new TableGroup(1L, null, null));
         given(orderTableRepository.findById(requestTableId)).willReturn(Optional.of(orderTable));
 
@@ -142,7 +142,7 @@ class TableServiceUnitTest {
         //given
         long requestTableId = 1;
         OrderTableRequest request = 테이블_요청_만들기(3);
-        OrderTable orderTable = new OrderTable(requestTableId, request.getNumberOfGuests(), true);
+        OrderTable orderTable = 빈_테이블_만들기();
 
         given(orderTableRepository.findById(requestTableId)).willReturn(Optional.of(orderTable));
 

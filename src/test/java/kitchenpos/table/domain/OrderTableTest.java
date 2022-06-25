@@ -1,7 +1,9 @@
 package kitchenpos.table.domain;
 
 import static kitchenpos.helper.OrderFixtures.주문_만들기;
+import static kitchenpos.helper.TableFixtures.빈_테이블_만들기;
 import static kitchenpos.helper.TableFixtures.테이블_만들기;
+import static kitchenpos.helper.TableGroupFixtures.테이블_그룹_만들기;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
@@ -20,12 +22,12 @@ class OrderTableTest {
     void checkPossibleChangeEmpty() {
 
         //given
-        OrderTable orderTable1 = new OrderTable(null, 3, false);
+        OrderTable orderTable1 = 테이블_만들기(3, false);
         orderTable1.addOrder(new Order(null, OrderStatus.MEAL, null));
         orderTable1.addOrder(new Order(null, OrderStatus.COMPLETION, null));
         orderTable1.addOrder(new Order(null, OrderStatus.COOKING, null));
 
-        OrderTable orderTable2 = new OrderTable(null, 3, false);
+        OrderTable orderTable2 = 테이블_만들기(2, false);
         orderTable2.addOrder(new Order(null, OrderStatus.COMPLETION, null));
         orderTable2.addOrder(new Order(null, OrderStatus.COMPLETION, null));
         orderTable2.addOrder(new Order(null, OrderStatus.COMPLETION, null));
@@ -38,16 +40,16 @@ class OrderTableTest {
 
     }
 
-    @DisplayName("방문 손님 수가 0명미만으로 업데이트 할 수 없다.")
+    @DisplayName("방문 손님 수를 0명 미만으로 업데이트 할 수 없다.")
     @Test
     void updateNumberOfGuests_less_then_one() {
 
         //given
-        OrderTable orderTable = new OrderTable(null, 0, true);
+        OrderTable orderTable = 테이블_만들기(3, false);
 
         //when then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderTable.updateNumberOfGuests(-1));
+                .isThrownBy(() -> orderTable.updateNumberOfGuests(new NumberOfGuest(-1)));
     }
 
     @DisplayName("빈 테이블인 경우 방문 손님 수 업데이트 할 수 없다. ")
@@ -55,56 +57,56 @@ class OrderTableTest {
     void updateNumberOfGuests_not_empty_table() {
 
         //given
-        OrderTable orderTable = new OrderTable(null, 3, true);
+        OrderTable orderTable= 빈_테이블_만들기();
 
         //when then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderTable.updateNumberOfGuests(5));
+                .isThrownBy(() -> orderTable.updateNumberOfGuests(new NumberOfGuest(5)));
     }
 
     @DisplayName("단체 지정을 등록한다.")
     @Test
     void assignTableGroup() {
         //given
-        OrderTable orderTable = new OrderTable(null, 3, true);
+        OrderTable emptyTable = 빈_테이블_만들기();
 
         //when
-        orderTable.assignTableGroup(new TableGroup(1L, null));
+        emptyTable.assignTableGroup(테이블_그룹_만들기(1L, null));
 
         // then
-        assertThat(orderTable.getTableGroup()).isNotNull();
-        assertThat(orderTable.getEmpty()).isFalse();
+        assertThat(emptyTable.getTableGroup()).isNotNull();
+        assertThat(emptyTable.getEmpty()).isFalse();
     }
 
     @DisplayName("빈 테이블이 아닌 경우 단체지정 할 수 없다.")
     @Test
     void assignTableGroup_not_empty() {
         //given
-        OrderTable orderTable = new OrderTable(null, 3, false);
+        OrderTable orderTable = 테이블_만들기(3, false);
 
         //when then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderTable.assignTableGroup(new TableGroup(2L, null)));
+                .isThrownBy(() -> orderTable.assignTableGroup(테이블_그룹_만들기(2L, null)));
     }
 
     @DisplayName("이미 단체 지정이 되어있으면 단체지정 할 수 없다.")
     @Test
     void assignTableGroup_already() {
         //given
-        OrderTable orderTable = new OrderTable(null, 3, true);
-        orderTable.setTableGroup(new TableGroup(1L, null));
+        OrderTable orderTable = 빈_테이블_만들기();
+        orderTable.setTableGroup(테이블_그룹_만들기(1L, null));
 
         //when then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderTable.assignTableGroup(new TableGroup(2L, null)));
+                .isThrownBy(() -> orderTable.assignTableGroup(테이블_그룹_만들기(2L, null)));
     }
 
     @DisplayName("단체 지정을 해제한다.")
     @Test
     void ungroupingTableGroup() {
         //given
-        OrderTable orderTable = new OrderTable(null, 3, true);
-        orderTable.assignTableGroup(new TableGroup(1L, null));
+        OrderTable orderTable = 빈_테이블_만들기();
+        orderTable.assignTableGroup(테이블_그룹_만들기(1L, null));
 
         //then
         orderTable.ungroupingTableGroup();
@@ -117,7 +119,7 @@ class OrderTableTest {
     @Test
     void ungroupingTableGroup_not_registered() {
         //given
-        OrderTable orderTable = new OrderTable(null, 3, true);
+        OrderTable orderTable = 빈_테이블_만들기();
 
         //when then
         assertThatIllegalArgumentException()
@@ -128,15 +130,15 @@ class OrderTableTest {
     @Test
     void ungroupingTableGroup_order_status_cooking_meal() {
         //given
-        OrderTable orderTable1 = new OrderTable(null, 3, true);
+        OrderTable orderTable1 = 빈_테이블_만들기();
         orderTable1.addOrder(new Order(null, OrderStatus.MEAL, null));
         orderTable1.assignTableGroup(new TableGroup(1L, null));
 
-        OrderTable orderTable2 = new OrderTable(null, 3, true);
+        OrderTable orderTable2 = 빈_테이블_만들기();
         orderTable2.addOrder(new Order(null, OrderStatus.COOKING, null));
         orderTable2.assignTableGroup(new TableGroup(1L, null));
 
-        OrderTable orderTable3 = new OrderTable(null, 3, true);
+        OrderTable orderTable3 = 빈_테이블_만들기();
         orderTable3.addOrder(new Order(null, OrderStatus.COMPLETION, null));
         orderTable3.assignTableGroup(new TableGroup(1L, null));
 

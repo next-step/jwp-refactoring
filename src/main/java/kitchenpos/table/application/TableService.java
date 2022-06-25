@@ -2,6 +2,7 @@ package kitchenpos.table.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import kitchenpos.table.domain.NumberOfGuest;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -45,7 +46,7 @@ public class TableService {
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
 
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
-        savedOrderTable.updateNumberOfGuests(orderTableRequest.getNumberOfGuests());
+        savedOrderTable.updateNumberOfGuests(new NumberOfGuest(orderTableRequest.getNumberOfGuests()));
         return OrderTableResponse.from(savedOrderTable);
     }
 

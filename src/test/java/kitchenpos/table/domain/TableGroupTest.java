@@ -1,5 +1,6 @@
 package kitchenpos.table.domain;
 
+import static kitchenpos.helper.TableFixtures.빈_테이블_만들기;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
@@ -15,8 +16,8 @@ class TableGroupTest {
         //given
         TableGroup tableGroup = new TableGroup(null, null);
         OrderTables orderTables = new OrderTables();
-        orderTables.addOrderTable(new OrderTable(null, 3, true));
-        orderTables.addOrderTable(new OrderTable(null, 5, true));
+        orderTables.addOrderTable(빈_테이블_만들기());
+        orderTables.addOrderTable(빈_테이블_만들기());
 
         //when
         tableGroup.groupingTables(orderTables, 2);
@@ -34,7 +35,7 @@ class TableGroupTest {
         //given
         TableGroup tableGroup = new TableGroup(null, null);
         OrderTables orderTables = new OrderTables();
-        orderTables.addOrderTable(new OrderTable(null, 3, true));
+        orderTables.addOrderTable(빈_테이블_만들기());
 
         // when then
         assertThatIllegalArgumentException()
@@ -47,8 +48,8 @@ class TableGroupTest {
         //given
         TableGroup tableGroup = new TableGroup(null, null);
         OrderTables orderTables = new OrderTables();
-        orderTables.addOrderTable(new OrderTable(null, 3, true));
-        orderTables.addOrderTable(new OrderTable(null, 5, true));
+        orderTables.addOrderTable(빈_테이블_만들기());
+        orderTables.addOrderTable(빈_테이블_만들기());
         tableGroup.groupingTables(orderTables, 2);
 
         //when

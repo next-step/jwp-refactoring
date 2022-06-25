@@ -107,7 +107,7 @@ class TableServiceTest {
         //when then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableService.changeNumberOfGuests(requestTableId, request))
-                .withMessageContaining("방문 손님 수는 0명 미만으로 변경할 수 없습니다");
+                .withMessageContaining("방문 손님 수가 0명 미만일 수 없습니다.");
     }
 
     @DisplayName("빈 테이블인 경우 방문 손님 수를 업데이트 할 수 없다.")

@@ -1,5 +1,6 @@
 package kitchenpos.helper;
 
+import kitchenpos.table.domain.NumberOfGuest;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequest;
 
@@ -26,12 +27,16 @@ public class TableFixtures {
         return 테이블_요청_만들기(id, null, null);
     }
 
+    public static OrderTable 빈_테이블_만들기() {
+        return 테이블_만들기(null, 0, true);
+    }
+
     public static OrderTable 테이블_만들기(Integer numberOfGuests, Boolean isEmpty) {
         return 테이블_만들기(null, numberOfGuests, isEmpty);
     }
 
     public static OrderTable 테이블_만들기(Long id, Integer numberOfGuests, Boolean isEmpty) {
-        return new OrderTable(id, numberOfGuests, isEmpty);
+        return new OrderTable(id, new NumberOfGuest(numberOfGuests), isEmpty);
     }
 
 }
