@@ -41,6 +41,10 @@ public class OrderTableEntity {
         return tableGroup;
     }
 
+    public void setTableGroup(TableGroupEntity tableGroup) {
+        this.tableGroup = tableGroup;
+    }
+
     public int getNumberOfGuests() {
         return numberOfGuests;
     }
@@ -70,5 +74,9 @@ public class OrderTableEntity {
 
     public boolean isEmpty() {
         return empty;
+    }
+
+    public boolean hasGroup() {
+        return tableGroup != null;
     }
 }
