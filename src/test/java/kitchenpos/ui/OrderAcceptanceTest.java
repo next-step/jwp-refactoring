@@ -11,6 +11,7 @@ import static kitchenpos.helper.AcceptanceAssertionHelper.OrderAssertionHelper.�
 import static kitchenpos.helper.AcceptanceAssertionHelper.OrderAssertionHelper.오더_리스트_조회됨;
 import static kitchenpos.helper.AcceptanceAssertionHelper.OrderAssertionHelper.오더_상태_설정됨;
 import static kitchenpos.helper.AcceptanceAssertionHelper.OrderAssertionHelper.오더_설정_에러;
+import static kitchenpos.ui.TableAcceptanceTest.사용중;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -31,6 +32,9 @@ import org.springframework.test.context.jdbc.Sql;
 
 @Sql(scripts = {"/test/db/cleanUp.sql"})
 class OrderAcceptanceTest extends AcceptanceTest {
+
+    public final static String 먹는중 = "MEAL";
+    public static final String 요리중 = "COOKING";
 
     private OrderTable 테이블_1;
     private OrderTable 테이블_2;
@@ -57,8 +61,8 @@ class OrderAcceptanceTest extends AcceptanceTest {
         테이블_2 = TableApiHelper.빈테이블_생성하기().as(OrderTable.class);
         빈테이블 = TableApiHelper.빈테이블_생성하기().as(OrderTable.class);
 
-        유휴테이블_여부_설정하기("false", 테이블_1.getId());
-        유휴테이블_여부_설정하기("false", 테이블_2.getId());
+        유휴테이블_여부_설정하기(사용중, 테이블_1.getId());
+        유휴테이블_여부_설정하기(사용중, 테이블_2.getId());
         TableApiHelper.테이블_손님_인원_설정하기(2, 테이블_1.getId());
         TableApiHelper.테이블_손님_인원_설정하기(3, 테이블_2.getId());
     }
@@ -132,10 +136,10 @@ class OrderAcceptanceTest extends AcceptanceTest {
         Order 주문_1 = 주문_생성하기(테이블_1.getId(), Arrays.asList(주문)).as(Order.class);
 
         //when
-        ExtractableResponse<Response> 주문_상태_변경하기_response = 주문_상태_변경하기("MEAL", 주문_1.getId());
+        ExtractableResponse<Response> 주문_상태_변경하기_response = 주문_상태_변경하기(먹는중, 주문_1.getId());
 
         //then
-        오더_상태_설정됨(주문_상태_변경하기_response, "MEAL");
+        오더_상태_설정됨(주문_상태_변경하기_response, 먹는중);
     }
 
     /**

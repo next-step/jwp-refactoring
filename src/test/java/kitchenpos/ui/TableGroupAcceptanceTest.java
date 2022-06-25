@@ -11,6 +11,8 @@ import static kitchenpos.helper.AcceptanceApiHelper.TableGroupApiHelper.단체_�
 import static kitchenpos.helper.AcceptanceApiHelper.TableGroupApiHelper.단체_테이블_삭제하기;
 import static kitchenpos.helper.AcceptanceAssertionHelper.TableGroupAssertionHelper.단체_테이블_등록되어있음;
 import static kitchenpos.helper.AcceptanceAssertionHelper.TableGroupAssertionHelper.단체_테이블_에러발생;
+import static kitchenpos.ui.OrderAcceptanceTest.먹는중;
+import static kitchenpos.ui.TableAcceptanceTest.사용중;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -59,7 +61,7 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
         빈테이블_2 = TableApiHelper.빈테이블_생성하기().as(OrderTable.class);
         사용중인테이블 = TableApiHelper.빈테이블_생성하기().as(OrderTable.class);
 
-        유휴테이블_여부_설정하기("false", 사용중인테이블.getId());
+        유휴테이블_여부_설정하기(사용중, 사용중인테이블.getId());
         테이블_손님_인원_설정하기(2, 사용중인테이블.getId());
     }
 
@@ -167,7 +169,7 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
 
         주문_생성하기(빈테이블_1.getId(), Arrays.asList(주문)).as(Order.class);
         주문_생성하기(빈테이블_2.getId(), Arrays.asList(주문)).as(Order.class);
-        주문_상태_변경하기("MEAL", 빈테이블_1.getId());
+        주문_상태_변경하기(먹는중, 빈테이블_1.getId());
 
         //when
         ExtractableResponse<Response> 단체_테이블_삭제하기_response = 단체_테이블_삭제하기(단체테이블.getId());

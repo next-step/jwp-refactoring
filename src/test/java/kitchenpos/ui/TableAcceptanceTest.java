@@ -14,6 +14,7 @@ import static kitchenpos.helper.AcceptanceAssertionHelper.TableAssertionHelper.�
 import static kitchenpos.helper.AcceptanceAssertionHelper.TableAssertionHelper.테이블_손님수_설정됨;
 import static kitchenpos.helper.AcceptanceAssertionHelper.TableAssertionHelper.테이블_유휴여부_설정_에러;
 import static kitchenpos.helper.AcceptanceAssertionHelper.TableAssertionHelper.테이블_유휴여부_설정됨;
+import static kitchenpos.ui.OrderAcceptanceTest.먹는중;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -34,7 +35,8 @@ import org.springframework.test.context.jdbc.Sql;
 
 @Sql(scripts = {"/test/db/cleanUp.sql"})
 class TableAcceptanceTest extends AcceptanceTest {
-
+    public static final String 비어있음 = "true";
+    public static final String 사용중 = "false";
     private Menu 양념두마리_메뉴;
 
     @BeforeEach
@@ -94,7 +96,6 @@ class TableAcceptanceTest extends AcceptanceTest {
     @Test
     public void 유휴테이블_설정하기_테스트() {
         //given
-        String 비어있음 = "true";
         OrderTable 테이블_1_정보 = 빈테이블_생성하기().as(OrderTable.class);
 
         //when
@@ -115,7 +116,6 @@ class TableAcceptanceTest extends AcceptanceTest {
     public void 테이블_손님수_설정하기_테스트() {
         //given
         int 손님수 = 4;
-        String 사용중 = "false";
         OrderTable 테이블_1_정보 = 빈테이블_생성하기().as(OrderTable.class);
         유휴테이블_여부_설정하기(사용중, 테이블_1_정보.getId());
 
@@ -155,7 +155,6 @@ class TableAcceptanceTest extends AcceptanceTest {
     @Test
     public void 테이블_손님수_설정_손님_음수일때_에러발생_테스트() {
         //given
-        String 사용중 = "false";
         int 손님수 = -1;
         OrderTable 테이블_1_정보 = 빈테이블_생성하기().as(OrderTable.class);
         유휴테이블_여부_설정하기(사용중, 테이블_1_정보.getId());
@@ -181,17 +180,17 @@ class TableAcceptanceTest extends AcceptanceTest {
     public void 테이블_먹고있거나_요리중에_빈테이블_삭제시_에러발생_테스트(){
         //given(테이블생성)
         OrderTable 테이블_1_정보 = 빈테이블_생성하기().as(OrderTable.class);
-        유휴테이블_여부_설정하기("false", 테이블_1_정보.getId());
+        유휴테이블_여부_설정하기(사용중, 테이블_1_정보.getId());
         //given(주문생성)
         OrderLineItem 주문 = new OrderLineItem();
         주문.setMenuId(양념두마리_메뉴.getId());
         주문.setQuantity(2);
         //given(테이블-주문 매핑)
         주문_생성하기(테이블_1_정보.getId(), Arrays.asList(주문)).as(Order.class);
-        주문_상태_변경하기("MEAL", 테이블_1_정보.getId());
+        주문_상태_변경하기(먹는중, 테이블_1_정보.getId());
 
         //when
-        ExtractableResponse<Response> 유휴테이블_여부_설정하기_response = 유휴테이블_여부_설정하기("true", 테이블_1_정보.getId());
+        ExtractableResponse<Response> 유휴테이블_여부_설정하기_response = 유휴테이블_여부_설정하기(비어있음, 테이블_1_정보.getId());
 
         //then
         테이블_유휴여부_설정_에러(유휴테이블_여부_설정하기_response);
