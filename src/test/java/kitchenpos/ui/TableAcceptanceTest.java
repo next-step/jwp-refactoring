@@ -7,11 +7,9 @@ import static kitchenpos.helper.AcceptanceAssertionHelper.TableAssertionHelper.�
 import static kitchenpos.helper.AcceptanceAssertionHelper.TableAssertionHelper.테이블_손님수_설정됨;
 import static kitchenpos.helper.AcceptanceAssertionHelper.TableAssertionHelper.테이블_유휴여부_설정됨;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
-import java.util.HashMap;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.helper.AcceptanceApiHelper.TableApiHelper;
@@ -28,7 +26,7 @@ class TableAcceptanceTest extends AcceptanceTest {
     OrderTable 테이블_3;
 
     @BeforeEach
-    public void init(){
+    public void init() {
         테이블_1 = new OrderTable();
         테이블_1.setNumberOfGuests(0);
         테이블_1.setEmpty(true);
@@ -49,7 +47,7 @@ class TableAcceptanceTest extends AcceptanceTest {
      * then : 성공적으로 저장되고 테이블 정보가 반환된다.
     */
     @Test
-    public void 테이블_생성하기_테스트(){
+    public void 테이블_생성하기_테스트() {
         //when
         ExtractableResponse<Response> 테이블_등록하기_response = 테이블_등록하기(테이블_1);
 
@@ -66,7 +64,7 @@ class TableAcceptanceTest extends AcceptanceTest {
      * then : 정상적으로 조회가 된다.
     */
     @Test
-    public void 테이블_리스트_조회하기_테스트(){
+    public void 테이블_리스트_조회하기_테스트() {
         //given
         OrderTable 테이블_1_정보 = 테이블_등록하기(테이블_1).as(OrderTable.class);
         OrderTable 테이블_2_정보 = 테이블_등록하기(테이블_2).as(OrderTable.class);
@@ -85,13 +83,14 @@ class TableAcceptanceTest extends AcceptanceTest {
      * then : 정상적으로 빈테이블로 설정된다.
     */
     @Test
-    public void 유휴테이블_설정하기_테스트(){
+    public void 유휴테이블_설정하기_테스트() {
         //given
         String 비어있음 = "true";
         OrderTable 테이블_1_정보 = 테이블_등록하기(테이블_1).as(OrderTable.class);
 
         //when
-        ExtractableResponse<Response> 유휴테이블_여부_설정하기_response = 유휴테이블_여부_설정하기(비어있음, 테이블_1_정보.getId());
+        ExtractableResponse<Response> 유휴테이블_여부_설정하기_response = 유휴테이블_여부_설정하기(비어있음,
+            테이블_1_정보.getId());
 
         //then
         테이블_유휴여부_설정됨(유휴테이블_여부_설정하기_response, 비어있음);
@@ -104,7 +103,7 @@ class TableAcceptanceTest extends AcceptanceTest {
      * then : 정상적으로 손님 수가 설정된다.
     */
     @Test
-    public void 테이블_손님수_설정하기_테스트(){
+    public void 테이블_손님수_설정하기_테스트() {
         //given
         int 손님수 = 4;
         String 사용중 = "false";
@@ -125,7 +124,7 @@ class TableAcceptanceTest extends AcceptanceTest {
      * then : 에러가 발생한다
      */
     @Test
-    public void 테이블_손님수_설정_빈테이블일때_에러발생_테스트(){
+    public void 테이블_손님수_설정_빈테이블일때_에러발생_테스트() {
         //given
         int 손님수 = 4;
         OrderTable 테이블_1_정보 = 테이블_등록하기(테이블_1).as(OrderTable.class);
@@ -145,7 +144,7 @@ class TableAcceptanceTest extends AcceptanceTest {
      * then : 에러가 발생한다
      */
     @Test
-    public void 테이블_손님수_설정_손님_음수일때_에러발생_테스트(){
+    public void 테이블_손님수_설정_손님_음수일때_에러발생_테스트() {
         //given
         String 사용중 = "false";
         int 손님수 = -1;

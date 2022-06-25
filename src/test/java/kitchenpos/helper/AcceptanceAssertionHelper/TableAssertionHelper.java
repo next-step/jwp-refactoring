@@ -8,7 +8,6 @@ import io.restassured.response.Response;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
 import org.springframework.http.HttpStatus;
 
 public class TableAssertionHelper {
@@ -33,21 +32,22 @@ public class TableAssertionHelper {
         );
     }
 
-    public static void 테이블_유휴여부_설정됨(ExtractableResponse<Response> 설정결과, String 유휴여부){
+    public static void 테이블_유휴여부_설정됨(ExtractableResponse<Response> 설정결과, String 유휴여부) {
         assertAll(
             () -> assertThat(설정결과.statusCode()).isEqualTo(HttpStatus.OK.value()),
             () -> assertThat(설정결과.jsonPath().get("empty").toString()).isEqualTo(유휴여부)
         );
     }
 
-    public static void 테이블_손님수_설정됨(ExtractableResponse<Response> 설정결과, int 손님수){
+    public static void 테이블_손님수_설정됨(ExtractableResponse<Response> 설정결과, int 손님수) {
         assertAll(
             () -> assertThat(설정결과.statusCode()).isEqualTo(HttpStatus.OK.value()),
-            () -> assertThat(설정결과.jsonPath().get("numberOfGuests").toString()).isEqualTo(String.valueOf(손님수))
+            () -> assertThat(설정결과.jsonPath().get("numberOfGuests").toString()).isEqualTo(
+                String.valueOf(손님수))
         );
     }
 
-    public static void 테이블_손님수_설정_에러(ExtractableResponse<Response> 설정결과){
+    public static void 테이블_손님수_설정_에러(ExtractableResponse<Response> 설정결과) {
         assertThat(설정결과.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }
