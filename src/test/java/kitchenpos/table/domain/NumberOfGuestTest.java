@@ -11,7 +11,6 @@ class NumberOfGuestTest {
     @DisplayName("방문 손님 수는 0명 미만일 수 없다.")
     @Test
     void updateNumberOfGuests_less_then_one() {
-
         //when then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new NumberOfGuest(-1));
