@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import kitchenpos.dto.OrderTableResponse;
 
@@ -17,8 +19,9 @@ public class OrderTableV2 {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
-    private Long tableGroupId;
+    @ManyToOne
+    @JoinColumn(name = "table_group_id")
+    private TableGroupV2 tableGroup;
 
     @Column
     private int numberOfGuests;
@@ -29,15 +32,23 @@ public class OrderTableV2 {
     protected OrderTableV2(){
     }
 
-    public OrderTableV2(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+    public OrderTableV2(Long id, TableGroupV2 tableGroup, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroupId = tableGroupId;
+        this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public boolean existTableGroupId() {
-        return tableGroupId != null;
+        return tableGroup != null;
+    }
+
+    public void mappingTableGroupId(TableGroupV2 tableGroup) {
+        this.tableGroup = tableGroup;
     }
 
     public boolean isEmpty() {
@@ -48,12 +59,23 @@ public class OrderTableV2 {
         this.empty = true;
     }
 
+    public void notEmpty() {
+        this.empty = false;
+    }
+
     public void changeNumberOfGuests(int numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
     }
 
+    public void ungroupTable() {
+        this.tableGroup = null;
+    }
+
     public OrderTableResponse toOrderTableResponse() {
-        return new OrderTableResponse(this.id, this.tableGroupId, this.numberOfGuests, this.empty);
+        if (this.tableGroup == null) {
+            return new OrderTableResponse(this.id, null, this.numberOfGuests, this.empty);
+        }
+        return new OrderTableResponse(this.id, this.tableGroup.getId(), this.numberOfGuests, this.empty);
     }
 
     @Override
@@ -66,11 +88,11 @@ public class OrderTableV2 {
         }
         OrderTableV2 that = (OrderTableV2) o;
         return numberOfGuests == that.numberOfGuests && empty == that.empty && Objects.equals(id, that.id)
-                && Objects.equals(tableGroupId, that.tableGroupId);
+                && Objects.equals(tableGroup, that.tableGroup);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, tableGroupId, numberOfGuests, empty);
+        return Objects.hash(id, tableGroup, numberOfGuests, empty);
     }
 }

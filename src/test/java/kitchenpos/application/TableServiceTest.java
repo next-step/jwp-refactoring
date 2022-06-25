@@ -14,6 +14,7 @@ import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.order.domain.OrderStatusV2;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTableV2;
+import kitchenpos.table.domain.TableGroupV2;
 import kitchenpos.table.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -98,7 +99,8 @@ class TableServiceTest {
     @DisplayName("빈 테이블로 변경할 테이블이 단체 그룹이면 예외 발생")
     void notTableGroup() {
         // given
-        final OrderTableV2 fullOrderTableGroup = new OrderTableV2(1L, 1L, 5, false);
+        final TableGroupV2 tableGroup = new TableGroupV2(1L, null, null);
+        final OrderTableV2 fullOrderTableGroup = new OrderTableV2(1L, tableGroup, 5, false);
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(fullOrderTableGroup));
         // when && then
         assertThatIllegalArgumentException()

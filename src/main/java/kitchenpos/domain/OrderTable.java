@@ -2,6 +2,7 @@ package kitchenpos.domain;
 
 import java.util.Objects;
 import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.dto.TableGroupResponse;
 
 public class OrderTable {
     private Long id;
