@@ -9,9 +9,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupService menuGroupService;
@@ -53,5 +55,10 @@ public class MenuService {
                 .stream()
                 .map(menu -> MenuResponse.of(menu))
                 .collect(Collectors.toList());
+    }
+
+    public MenuEntity findMenuById(Long id) {
+        return menuRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("메뉴를 찾을 수 없습니다: " + id));
     }
 }

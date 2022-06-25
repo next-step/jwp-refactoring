@@ -18,6 +18,7 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class TableGroupService {
     private final OrderDao orderDao;
     private final OrderTableDao orderTableDao;

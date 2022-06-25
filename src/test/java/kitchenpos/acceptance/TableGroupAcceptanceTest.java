@@ -33,8 +33,8 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         OrderTable 주문_테이블1 = TableAcceptanceTest.주문_테이블_생성_요청(orderTable).as(OrderTable.class);
         OrderTable 주문_테이블2 = TableAcceptanceTest.주문_테이블_생성_요청(orderTable).as(OrderTable.class);
         tableGroup = TableGroupServiceTest.테이블_단체_지정(null, 주문_테이블1, 주문_테이블2);
-        TableResponse 테이블1 = TableAcceptanceTest.주문_테이블_생성되어_있음(null, true, 0).as(TableResponse.class);
-        TableResponse 테이블2 = TableAcceptanceTest.주문_테이블_생성되어_있음(null, true, 0).as(TableResponse.class);
+        TableResponse 테이블1 = TableAcceptanceTest.주문_테이블_생성되어_있음(0, true).as(TableResponse.class);
+        TableResponse 테이블2 = TableAcceptanceTest.주문_테이블_생성되어_있음(0, true).as(TableResponse.class);
         tableGroupRequest = new TableGroupRequest(Arrays.asList(테이블1.getId(), 테이블2.getId()));
     }
 

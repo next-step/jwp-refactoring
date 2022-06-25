@@ -87,7 +87,7 @@ public class OrderTest {
         order.changeOrderStatus(OrderStatus.MEAL);
 
         // then
-        assertThat(order.getStatus()).isEqualTo(OrderStatus.MEAL);
+        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
     }
 
     @DisplayName("계산 완료라서 상태 변경에 실패한다.")

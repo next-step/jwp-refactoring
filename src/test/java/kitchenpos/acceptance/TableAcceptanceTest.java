@@ -89,11 +89,9 @@ public class TableAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 주문_테이블_생성되어_있음(
-            Long tableGroupId,
-            boolean isEmpty,
-            int numberOfGuests) {
-        OrderTable orderTable = TableServiceTest.주문_테이블_생성(tableGroupId, null, isEmpty, numberOfGuests);
-        return 주문_테이블_생성_요청(orderTable);
+            int numberOfGuests,
+            boolean empty) {
+        return 주문_테이블_생성_요청(new TableRequest(numberOfGuests, empty));
     }
 
     public static ExtractableResponse<Response> 주문_테이블_생성_요청(TableRequest params) {
