@@ -82,12 +82,12 @@ public class OrderTable {
     }
 
     public void updateNumberOfGuests(NumberOfGuest numberOfGuests) {
-        validateUpdate();
+        validateUpdateNumberOfGuests();
         orders.checkPossibleChangeEmpty();
         this.numberOfGuests = numberOfGuests;
     }
 
-    private void validateUpdate() {
+    private void validateUpdateNumberOfGuests() {
         if (Boolean.TRUE.equals(empty)) {
             throw new IllegalArgumentException("[ERROR] 빈 테이블은 방문 손님 수를 변경할 수 없습니다.");
         }
