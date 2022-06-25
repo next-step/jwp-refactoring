@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import kitchenpos.dto.MenuGroupResponse;
 
 @Entity
 @Table(name = "menu_group")
@@ -25,6 +26,10 @@ public class MenuGroupV2 {
     public MenuGroupV2(Long id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public MenuGroupResponse toMenuGroupResponse() {
+        return new MenuGroupResponse(this.id, this.name);
     }
 
     @Override

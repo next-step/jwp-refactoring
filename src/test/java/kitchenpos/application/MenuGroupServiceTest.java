@@ -7,10 +7,10 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
+import kitchenpos.menu.domain.MenuGroupV2;
+import kitchenpos.menu.repository.MenuGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,26 +23,27 @@ class MenuGroupServiceTest {
     private MenuGroupService menuGroupService;
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @BeforeEach
     void setUp() {
-        menuGroupService = new MenuGroupService(menuGroupDao);
+        menuGroupService = new MenuGroupService(menuGroupRepository);
     }
 
     @Test
     @DisplayName("메뉴 그룹을 생성한다.")
     void createMenuGroup() {
         // given
-        final MenuGroup 세트메뉴 = new MenuGroup(1L, "세트메뉴");
-        when(menuGroupDao.save(any())).thenReturn(세트메뉴);
+        final MenuGroupV2 menuGroup = new MenuGroupV2(1L, "세트메뉴");
+        final MenuGroupResponse expectedMenuGroupResponse = menuGroup.toMenuGroupResponse();
+        when(menuGroupRepository.save(any())).thenReturn(menuGroup);
         // when
         final MenuGroupResponse actual = menuGroupService.create(new MenuGroupRequest("세트메뉴"));
         // then
         assertAll(
                 () -> assertThat(actual).isNotNull(),
-                () -> assertThat(actual.getId()).isEqualTo(세트메뉴.getId()),
-                () -> assertThat(actual.getName()).isEqualTo(세트메뉴.getName())
+                () -> assertThat(actual.getId()).isEqualTo(expectedMenuGroupResponse.getId()),
+                () -> assertThat(actual.getName()).isEqualTo(expectedMenuGroupResponse.getName())
         );
     }
 
@@ -50,7 +51,9 @@ class MenuGroupServiceTest {
     @DisplayName("메뉴 그룹들을 조회한다.")
     void searchMenuGroups() {
         // given
-        when(menuGroupDao.findAll()).thenReturn(Arrays.asList(new MenuGroup(), new MenuGroup()));
+        final MenuGroupV2 menuGroup1 = new MenuGroupV2(1L, "세트메뉴1");
+        final MenuGroupV2 menuGroup2 = new MenuGroupV2(2L, "세트메뉴2");
+        when(menuGroupRepository.findAll()).thenReturn(Arrays.asList(menuGroup1, menuGroup2));
         // when
         final List<MenuGroupResponse> actual = menuGroupService.list();
         // then
