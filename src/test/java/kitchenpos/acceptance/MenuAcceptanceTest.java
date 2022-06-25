@@ -58,7 +58,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         메뉴_목록_조회됨(메뉴_목록_조회_요청_결과);
     }
 
-    private ExtractableResponse<Response> 메뉴_생성_요청(
+    private static ExtractableResponse<Response> 메뉴_생성_요청(
             String name,
             BigDecimal price,
             Long menuGroupId,
@@ -94,5 +94,11 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
     private void 메뉴_목록_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static Menu 메뉴_등록되어_있음(String name, long price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        ExtractableResponse<Response> response = 메뉴_생성_요청(name, BigDecimal.valueOf(price), menuGroupId, menuProducts);
+
+        return response.as(Menu.class);
     }
 }
