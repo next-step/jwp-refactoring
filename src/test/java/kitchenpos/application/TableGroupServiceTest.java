@@ -5,11 +5,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.Arrays;
+import java.util.Optional;
 import kitchenpos.application.fixture.OrderTableFixtureFactory;
 import kitchenpos.application.fixture.TableGroupFixtureFactory;
 import kitchenpos.domain.OrderRepository;
@@ -17,6 +19,8 @@ import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.domain.TableGroupRepository;
+import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,9 +51,9 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void before() {
-        주문_테이블1 = OrderTableFixtureFactory.createWithTableGroup(1L, null, true);
-        주문_테이블2 = OrderTableFixtureFactory.createWithTableGroup(2L, null, true);
-        단체 = TableGroupFixtureFactory.create(1L, Arrays.asList(주문_테이블1, 주문_테이블2));
+        주문_테이블1 = OrderTableFixtureFactory.createByGuestNumber(1L, 2, true);
+        주문_테이블2 = OrderTableFixtureFactory.createByGuestNumber(2L, 3, true);
+        단체 = TableGroupFixtureFactory.create(1L);
     }
 
     @Test
@@ -63,7 +67,7 @@ class TableGroupServiceTest {
 
         //when & then
         assertThatThrownBy(
-                () -> tableGroupService.create(tableGroup)
+                () -> tableGroupService.create(TableGroupRequest.from(Arrays.asList(주문_테이블1.getId(), 주문_테이블2.getId())))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -74,12 +78,11 @@ class TableGroupServiceTest {
         given(orderTableRepository.findAllByIdIn(Arrays.asList(주문_테이블1.getId(), 주문_테이블2.getId()))).willReturn(
                 Arrays.asList(주문_테이블1, 주문_테이블1));
         given(tableGroupRepository.save(any(TableGroup.class))).willReturn(단체);
-        given(orderTableRepository.save(any(OrderTable.class))).willReturn(any(OrderTable.class));
 
         //when
-        TableGroup tableGroup = tableGroupService.create(단체);
+        TableGroupResponse response = tableGroupService.create(TableGroupRequest.from(Arrays.asList(주문_테이블1.getId(), 주문_테이블2.getId())));
         //then
-        assertThat(tableGroup).isEqualTo(단체);
+        assertThat(response.getId()).isEqualTo(TableGroupResponse.of(단체).getId());
     }
 
 
@@ -87,6 +90,7 @@ class TableGroupServiceTest {
     @DisplayName("주문 상태가 조리중(COOKING), 식사중(MEAL)인 경우에는 해제 할 수 없다.")
     void ungroupFailWithStatusTest() {
         //given
+        given(tableGroupRepository.findById(anyLong())).willReturn(Optional.of(단체));
         given(orderTableRepository.findAllByTableGroupId(단체.getId())).willReturn(Arrays.asList(주문_테이블1, 주문_테이블2));
         given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
 
@@ -100,6 +104,7 @@ class TableGroupServiceTest {
     @DisplayName("지정된 테이블 그룹을 해제 할 수 있다.")
     void ungroupTest() {
         //given
+        given(tableGroupRepository.findById(anyLong())).willReturn(Optional.of(단체));
         given(orderTableRepository.findAllByTableGroupId(단체.getId())).willReturn(Arrays.asList(주문_테이블1, 주문_테이블2));
         given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
 
@@ -107,6 +112,6 @@ class TableGroupServiceTest {
         tableGroupService.ungroup(단체.getId());
 
         //then
-        verify(orderTableRepository, times(2)).save(any(OrderTable.class));
+        assertThat(단체.getOrderTables()).isEmpty();
     }
 }
