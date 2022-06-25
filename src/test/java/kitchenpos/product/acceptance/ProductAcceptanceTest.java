@@ -3,6 +3,7 @@ package kitchenpos.product.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("상품 관련 기능")
-public class ProductAcceptanceTest {
+public class ProductAcceptanceTest extends AcceptanceTest {
     public static final Product 바베큐치킨 = new Product("바베큐치킨", new BigDecimal(30000));
     public static final Product 치즈볼 = new Product("치즈볼", new BigDecimal(5000));
 

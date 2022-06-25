@@ -3,6 +3,7 @@ package kitchenpos.menugroup.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.MenuGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("메뉴 그룹 관련 기능")
-public class MenuGroupAcceptanceTest {
+public class MenuGroupAcceptanceTest extends AcceptanceTest {
     public static final MenuGroup 점심특선메뉴 = new MenuGroup("점심특선메뉴");
     public static final MenuGroup 어린이전용메뉴 = new MenuGroup("어린이전용메뉴");
 
