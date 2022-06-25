@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 import kitchenpos.dto.IdOfOrderTableRequest;
 import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
@@ -23,12 +24,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 @DisplayName("단체 관련 인수 테스트")
-public class TableGroupAcceptanceTest extends AcceptanceTest{
+public class TableGroupAcceptanceTest extends AcceptanceTest {
 
     private static final String TABLE_GROUP_URL = "/v2/api/table-groups";
 
     OrderTableResponse 테이블1;
     OrderTableResponse 테이블2;
+    ExtractableResponse<Response> 단체_지정_요청_응답;
 
     @TestFactory
     Stream<DynamicTest> menuGroupTest() {
@@ -36,12 +38,21 @@ public class TableGroupAcceptanceTest extends AcceptanceTest{
                 dynamicTest("테이블들을 단체 지정 할 수 있다.", () -> {
                     테이블1 = 테이블_생성_요청(0, true).as(OrderTableResponse.class);
                     테이블2 = 테이블_생성_요청(0, true).as(OrderTableResponse.class);
-                    ExtractableResponse<Response> 단체_지정_요청_응답 = 단체_지정_요청(Arrays.asList(테이블1, 테이블2));
+                    단체_지정_요청_응답 = 단체_지정_요청(Arrays.asList(테이블1, 테이블2));
                     단체가_지정됨(단체_지정_요청_응답);
                 }),
-                dynamicTest("테이블들을 단체 해제 할 수 있다.", ()->{
-                    ExtractableResponse<Response> 단체_지정_요청_응답 = 단체_지정_요청(Arrays.asList(테이블1, 테이블2));
-
+                dynamicTest("하나의 테이블 단체 지정", () -> {
+                    OrderTableResponse 하나의_테이블 = 테이블_생성_요청(0, true).as(OrderTableResponse.class);
+                    ExtractableResponse<Response> 단체_지정_요청 = 단체_지정_요청(Arrays.asList(하나의_테이블));
+                    단체가_지정_실패됨(단체_지정_요청);
+                }),
+                dynamicTest("안빈테이블이 포함된 단체 지정", () -> {
+                    OrderTableResponse 안빈_테이블 = 테이블_생성_요청(0, false).as(OrderTableResponse.class);
+                    OrderTableResponse 빈_테이블 = 테이블_생성_요청(0, true).as(OrderTableResponse.class);
+                    ExtractableResponse<Response> 단체_지정_요청 = 단체_지정_요청(Arrays.asList(빈_테이블, 안빈_테이블));
+                    단체가_지정_실패됨(단체_지정_요청);
+                }),
+                dynamicTest("테이블들을 단체 해제 할 수 있다.", () -> {
                     ExtractableResponse<Response> 단체_해제_요청_응답 = 단체_해제_요청(단체_지정_요청_응답);
                     단체가_해제됨(단체_해제_요청_응답);
                 })
@@ -49,14 +60,13 @@ public class TableGroupAcceptanceTest extends AcceptanceTest{
     }
 
     public static ExtractableResponse<Response> 단체_지정_요청(List<OrderTableResponse> orderTables) {
-        List<IdOfOrderTableRequest> ids = orderTables.stream().
+        List<Long> ids = orderTables.stream().
                 map(o -> o.getId()).
-                map(IdOfOrderTableRequest::new).
                 collect(Collectors.toList());
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new TableGroupRequest(ids))
+                .body(TableGroupRequest.from(ids))
                 .when().post(TABLE_GROUP_URL)
                 .then().log().all().
                 extract();
@@ -74,6 +84,10 @@ public class TableGroupAcceptanceTest extends AcceptanceTest{
 
     public static void 단체가_지정됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    public static void 단체가_지정_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     public static void 단체가_해제됨(ExtractableResponse<Response> response) {

@@ -7,11 +7,18 @@ public class TableGroupRequest {
 
     private List<IdOfOrderTableRequest> orderTables;
 
-    public TableGroupRequest() {
+    protected TableGroupRequest() {
     }
 
-    public TableGroupRequest(List<IdOfOrderTableRequest> orderTables) {
+    protected TableGroupRequest(List<IdOfOrderTableRequest> orderTables) {
         this.orderTables = orderTables;
+    }
+
+    public static TableGroupRequest from(List<Long> ids) {
+        List<IdOfOrderTableRequest> idOfOrderTableRequests = ids.stream().
+                map(IdOfOrderTableRequest::new).
+                collect(Collectors.toList());
+        return new TableGroupRequest(idOfOrderTableRequests);
     }
 
     public List<Long> toOrderTableIds() {

@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import java.util.NoSuchElementException;
 import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
@@ -62,7 +63,7 @@ public class TableGroupService {
         final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
 
         for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.setTableGroup(savedTableGroup);
+            savedOrderTable.attachToTableGroup(savedTableGroup);
             savedOrderTable.setEmpty(false);
             orderTableRepository.save(savedOrderTable);
         }
@@ -107,14 +108,27 @@ public class TableGroupService {
         }
 
         for (final OrderTable orderTable : orderTables) {
-            orderTable.setTableGroup(null);
+            orderTable.attachToTableGroup(null);
             orderTableRepository.save(orderTable);
         }
     }
 
     @Transactional
     public void ungroup2(final Long tableGroupId) {
+        TableGroup tableGroup = tableGroupRepository.findById(tableGroupId).orElseThrow(NoSuchElementException::new);
+        validateOrderTablesStatus(tableGroupId);
+        tableGroup.ungroup();
+    }
 
+    private void validateOrderTablesStatus(Long tableGroupId) {
+        List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
+        List<Long> orderTableIds = orderTables.stream()
+                .map(OrderTable::getId)
+                .collect(Collectors.toList());
+        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
+                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+            throw new IllegalArgumentException("조리중, 식사중 상태에서는 단체를 해제 할 수 없습니다.");
+        }
     }
 
 }
