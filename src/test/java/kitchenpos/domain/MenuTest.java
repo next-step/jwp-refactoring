@@ -23,10 +23,9 @@ class MenuTest {
         Product 상품 = Product.of("test", BigDecimal.valueOf(500L));
         MenuProduct 메뉴_상품 = MenuProduct.of(상품, 3);
         MenuProduct 메뉴_상품2 = MenuProduct.of(상품, 2);
-        Menu 메뉴 = Menu.of("menu", BigDecimal.valueOf(500L), null);
 
         // when
-        메뉴.registerMenuProducts(Arrays.asList(메뉴_상품, 메뉴_상품2));
+        Menu 메뉴 = Menu.of("menu", BigDecimal.valueOf(500L), null, Arrays.asList(메뉴_상품, 메뉴_상품2));
 
         // then
         assertThat(메뉴_상품.getMenu()).isEqualTo(메뉴);
@@ -37,7 +36,7 @@ class MenuTest {
     @Test
     void exception_test() {
         assertThatThrownBy(() -> {
-            Menu.of(null, BigDecimal.valueOf(500L), null);
+            Menu.of(null, BigDecimal.valueOf(500L), null, null);
         }).isInstanceOf(BadRequestException.class)
             .hasMessageContaining(ExceptionType.INVALID_NAME.getMessage());
     }
@@ -46,7 +45,7 @@ class MenuTest {
     @Test
     void exception_test2() {
         assertThatThrownBy(() -> {
-            Menu.of("", BigDecimal.valueOf(500L), null);
+            Menu.of("", BigDecimal.valueOf(500L), null, null);
         }).isInstanceOf(BadRequestException.class)
             .hasMessageContaining(ExceptionType.INVALID_NAME.getMessage());
     }

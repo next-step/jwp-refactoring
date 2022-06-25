@@ -36,19 +36,15 @@ public class Menu {
     protected Menu() {
     }
 
-    private Menu(String name, BigDecimal price, MenuGroup menuGroup) {
+    private Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.name = new Name(name);
         this.price = new Price(price);
         this.menuGroup = menuGroup;
+        this.menuProducts = new MenuProducts(menuProducts, this.price, this);
     }
 
-    public static Menu of(String name, BigDecimal price, MenuGroup menuGroup) {
-        return new Menu(name, price, menuGroup);
-    }
-
-    public void registerMenuProducts(List<MenuProduct> menuProducts) {
-        this.menuProducts = new MenuProducts(menuProducts, price);
-        this.menuProducts.mapInto(this);
+    public static Menu of(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        return new Menu(name, price, menuGroup, menuProducts);
     }
 
     public Long getId() {

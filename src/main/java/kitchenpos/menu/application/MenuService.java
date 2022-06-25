@@ -48,17 +48,15 @@ public class MenuService {
             .orElseThrow(() -> new NotFoundException(ExceptionType.NOT_EXIST_MENU.getMessage(
                 menuRequest.getMenuGroupId())));
 
-        Menu menu = Menu.of(menuRequest.getName(), menuRequest.getPrice(), menuGroup);
         List<MenuProduct> menuProducts = convertToEntityIncludeProduct(
             menuRequest.getMenuProductRequests());
-        menu.registerMenuProducts(menuProducts);
 
+        Menu menu = Menu.of(menuRequest.getName(), menuRequest.getPrice(), menuGroup, menuProducts);
         Menu savedMenu = menuRepository.save(menu);
         return MenuResponse.of(savedMenu);
     }
 
-    private List<MenuProduct> convertToEntityIncludeProduct(
-        List<MenuProductRequest> menuProductRequests) {
+    private List<MenuProduct> convertToEntityIncludeProduct(List<MenuProductRequest> menuProductRequests) {
         List<Long> productIds = menuProductRequests.stream()
             .map(MenuProductRequest::getProductId)
             .collect(toList());

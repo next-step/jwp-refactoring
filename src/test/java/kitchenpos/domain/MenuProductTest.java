@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import kitchenpos.core.exception.CannotCreateException;
 import kitchenpos.core.exception.ExceptionType;
 import kitchenpos.menu.domain.Menu;
@@ -44,11 +45,11 @@ class MenuProductTest {
     @Test
     void mapping_test() {
         // given
-        Menu menu = Menu.of("menu", BigDecimal.valueOf(500L), null);
-        MenuProduct menuProduct = MenuProduct.of(null, 3);
+        Product product = Product.of("test", BigDecimal.valueOf(500L));
+        MenuProduct menuProduct = MenuProduct.of(product, 3);
 
         // when
-        menuProduct.mapInto(menu);
+        Menu menu = Menu.of("menu", BigDecimal.valueOf(500L), null, Collections.singletonList(menuProduct));
 
         // then
         assertNotNull(menuProduct.getMenu());

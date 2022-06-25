@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -25,6 +26,7 @@ import kitchenpos.core.exception.NotFoundException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Product;
@@ -58,6 +60,9 @@ class MenuServiceTest {
     private MenuGroup 메뉴_그룹;
     private Product 후라이드_치킨;
     private Product 감자튀김;
+    private Product 테스트_상품;
+    private MenuProduct 테스트_메뉴_항목;
+
     private Menu 치킨_메뉴_entity;
 
     @BeforeEach
@@ -66,9 +71,11 @@ class MenuServiceTest {
 
         후라이드_치킨 = Product.of(1L, 후라이드_치킨_FIXTURE.getName(), 후라이드_치킨_FIXTURE.getPrice());
         감자튀김 = Product.of(2L, 감자튀김_FIXTURE.getName(), 감자튀김_FIXTURE.getPrice());
+        테스트_상품 = Product.of(3L, "테스트_상품", BigDecimal.valueOf(50000L));
 
         치킨_메뉴 = 치킨_메뉴_FIXTURE;
-        치킨_메뉴_entity = Menu.of(치킨_메뉴.getName(), 치킨_메뉴.getPrice(), null);
+        테스트_메뉴_항목 = MenuProduct.of(테스트_상품, 1);
+        치킨_메뉴_entity = Menu.of(치킨_메뉴.getName(), 치킨_메뉴.getPrice(), null, Collections.singletonList(테스트_메뉴_항목));
     }
 
     @DisplayName("메뉴를 등록한다")
@@ -110,9 +117,11 @@ class MenuServiceTest {
     @DisplayName("메뉴 등록시 메뉴의 금액이 없으면 예외가 발생한다")
     @Test
     void create_exception_test2() {
-        치킨_메뉴 = new MenuRequest("test", null, 1L, null);
+        치킨_메뉴 = new MenuRequest("test", null, 1L, Collections.emptyList());
         when(menuGroupRepository.findById(치킨_메뉴.getMenuGroupId()))
             .thenReturn(Optional.of(메뉴_그룹));
+        when(productRepository.findByIdIn(anyList()))
+            .thenReturn(Collections.emptyList());
 
         // then
         assertThatThrownBy(() -> {
@@ -124,9 +133,11 @@ class MenuServiceTest {
     @DisplayName("메뉴 등록시 메뉴의 금액이 0 미만이면 예외가 발생한다")
     @Test
     void create_exception_test3() {
-        치킨_메뉴 = new MenuRequest("test", BigDecimal.valueOf(-300L), 1L, null);
+        치킨_메뉴 = new MenuRequest("test", BigDecimal.valueOf(-300L), 1L, Collections.emptyList());
         when(menuGroupRepository.findById(치킨_메뉴.getMenuGroupId()))
             .thenReturn(Optional.of(메뉴_그룹));
+        when(productRepository.findByIdIn(anyList()))
+            .thenReturn(Collections.emptyList());
 
         // then
         assertThatThrownBy(() -> {

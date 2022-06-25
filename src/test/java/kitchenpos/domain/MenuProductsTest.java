@@ -34,7 +34,7 @@ class MenuProductsTest {
 
         // then
         assertThatThrownBy(() -> {
-            new MenuProducts(Arrays.asList(menuProduct, menuProduct2), null);
+            new MenuProducts(Arrays.asList(menuProduct, menuProduct2), null, null);
         }).isInstanceOf(CannotCreateException.class)
             .hasMessageContaining(ExceptionType.CONTAINS_NOT_EXIST_PRODUCT.getMessage());
     }
@@ -49,7 +49,7 @@ class MenuProductsTest {
         // then
         Price menuPrice = new Price(BigDecimal.valueOf(2410L));
         assertThatThrownBy(() -> {
-            new MenuProducts(Arrays.asList(menuProduct, menuProduct2), menuPrice);
+            new MenuProducts(Arrays.asList(menuProduct, menuProduct2), menuPrice, null);
         }).isInstanceOf(CannotCreateException.class)
             .hasMessageContaining(ExceptionType.IS_NOT_OVER_THAN_MENU_PRICE.getMessage());
     }

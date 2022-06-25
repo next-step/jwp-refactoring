@@ -19,8 +19,9 @@ public class MenuProducts {
     protected MenuProducts() {
     }
 
-    public MenuProducts(List<MenuProduct> items, Price price) {
+    public MenuProducts(List<MenuProduct> items, Price price, Menu menu) {
         validateMenuProducts(items, price);
+        mapInto(items, menu);
         this.items = items;
     }
 
@@ -44,7 +45,7 @@ public class MenuProducts {
         return items;
     }
 
-    public void mapInto(Menu menu) {
-        this.items.forEach(it -> it.mapInto(menu));
+    public void mapInto(List<MenuProduct> items, Menu menu) {
+        items.forEach(it -> it.mapInto(menu));
     }
 }
