@@ -4,7 +4,6 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableEntity;
 import kitchenpos.domain.TableGroupEntity;
 import kitchenpos.dto.TableGroupRequest;
@@ -15,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,20 +47,23 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableDao.findAllByTableGroupId(tableGroupId);
+        TableGroupEntity tableGroup = findTableGroupById(tableGroupId);
 
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
+        final List<Long> orderTableIds = tableGroup.getOrderTables()
+                .stream()
+                .map(OrderTableEntity::getId)
                 .collect(Collectors.toList());
 
         if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문 테이블들의 상태가 조리 혹은 식사이기 때문에 단체 지정 해제할 수 없습니다.");
         }
 
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.setTableGroupId(null);
-            orderTableDao.save(orderTable);
-        }
+        tableGroup.ungroup();
+    }
+
+    public TableGroupEntity findTableGroupById(Long id) {
+        return tableGroupRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("테이블 그룹을 찾을 수 없습니다: " + id));
     }
 }

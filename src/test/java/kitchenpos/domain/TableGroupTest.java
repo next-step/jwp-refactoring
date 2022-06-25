@@ -16,6 +16,7 @@ public class TableGroupTest {
     OrderTableEntity 테이블;
     OrderTableEntity 단체_지정_테이블1;
     OrderTableEntity 단체_지정_테이블2;
+    TableGroupEntity 기존_테이블_그룹;
 
     @BeforeEach
     void init() {
@@ -25,7 +26,7 @@ public class TableGroupTest {
         테이블 = new OrderTableEntity(null, 0, false);
         단체_지정_테이블1 = new OrderTableEntity(null, 0, true);
         단체_지정_테이블2 = new OrderTableEntity(null, 0, true);
-        TableGroupEntity 기존_테이블_그룹 = new TableGroupEntity(Arrays.asList(단체_지정_테이블1, 단체_지정_테이블2));
+        기존_테이블_그룹 = new TableGroupEntity(Arrays.asList(단체_지정_테이블1, 단체_지정_테이블2));
     }
 
     @DisplayName("주문 테이블을 단체 지정한다.")
@@ -65,5 +66,20 @@ public class TableGroupTest {
         assertThatThrownBy(() -> new TableGroupEntity(Arrays.asList(단체_지정_테이블1, 단체_지정_테이블2)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("이미 단체 지정된 테이블이 있어서 단체 지정할 수 없습니다.");
+    }
+
+    @DisplayName("주문 테이블 단체 지정을 해제한다.")
+    @Test
+    void 단체_지정_해제() {
+        // given
+        assertThat(단체_지정_테이블1.getTableGroup()).isNotNull();
+        assertThat(단체_지정_테이블2.getTableGroup()).isNotNull();
+
+        // when
+        기존_테이블_그룹.ungroup();
+
+        // then
+        assertThat(단체_지정_테이블1.getTableGroup()).isNull();
+        assertThat(단체_지정_테이블2.getTableGroup()).isNull();
     }
 }

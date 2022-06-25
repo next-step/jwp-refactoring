@@ -38,6 +38,11 @@ public class TableGroupEntity {
         orderTables.forEach(table -> addOrderTable(table));
     }
 
+    public TableGroupEntity(Long id, List<OrderTableEntity> orderTables) {
+        this.id = id;
+        this.orderTables = orderTables;
+    }
+
     private void validateTables(List<OrderTableEntity> orderTables) {
         if (orderTables.size() < MINIMUM_GROUP_TABLE_SIZE) {
             throw new IllegalArgumentException("테이블 수가 2개 이상이어야 단체 지정할 수 있습니다");
@@ -67,5 +72,9 @@ public class TableGroupEntity {
 
     public List<OrderTableEntity> getOrderTables() {
         return orderTables;
+    }
+
+    public void ungroup() {
+        orderTables.forEach(table -> table.setTableGroup(null));
     }
 }

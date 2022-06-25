@@ -34,4 +34,12 @@ public class TableGroupResponse {
     public Long getId() {
         return id;
     }
+
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public List<TableResponse> getOrderTables() {
+        return orderTables;
+    }
 }
