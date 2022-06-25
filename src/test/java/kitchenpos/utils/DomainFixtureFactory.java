@@ -58,16 +58,16 @@ public class DomainFixtureFactory {
         return new OrderTableRequest(numberOfGuests, empty);
     }
 
-    public static Order createOrder(Long id, OrderTable orderTable, OrderStatus orderStatus) {
-        return Order.from(id, orderTable, orderStatus);
+    public static Order createOrder() {
+        return new Order();
     }
 
     public static OrderRequest createOrderRequest(Long orderTableId, OrderStatus orderStatus, List<OrderLineItemRequest> orderLineItems) {
         return new OrderRequest(orderTableId, orderStatus, orderLineItems);
     }
 
-    public static OrderLineItem createOrderLineItem(Long seq, Order order, Menu menu, long quantity) {
-        return OrderLineItem.from(seq, order, menu, quantity);
+    public static OrderLineItem createOrderLineItem(Menu menu, long quantity) {
+        return OrderLineItem.from(menu, quantity);
     }
 
     public static OrderLineItemRequest createOrderLineItemRequest(long menuId, long quantity) {

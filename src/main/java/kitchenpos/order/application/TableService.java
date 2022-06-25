@@ -2,7 +2,6 @@ package kitchenpos.order.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.domain.NumberOfGuests;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.dto.OrderTableRequest;
@@ -49,7 +48,7 @@ public class TableService {
         return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
     }
 
-    private OrderTable findOrderTable(Long orderTableId) {
+    public OrderTable findOrderTable(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
                 .orElseThrow(() -> new IllegalArgumentException("주문테이블을 찾을 수 없습니다."));
     }

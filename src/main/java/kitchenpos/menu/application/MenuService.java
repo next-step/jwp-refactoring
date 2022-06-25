@@ -11,6 +11,7 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import org.springframework.stereotype.Service;
@@ -56,5 +57,9 @@ public class MenuService {
         return menus.stream()
                 .map(MenuResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    public Menu findMenu(long menuId) {
+        return menuRepository.findById(menuId).orElseThrow(() -> new IllegalArgumentException("메뉴를 조회할 수 없습니다."));
     }
 }

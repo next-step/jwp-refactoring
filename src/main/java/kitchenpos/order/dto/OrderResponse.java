@@ -25,7 +25,7 @@ public class OrderResponse {
 
     public static OrderResponse from(Order order) {
         return new OrderResponse(order.id(), order.orderTable().id(), order.orderStatus(), order.orderedTime(),
-                order.orderLineItems().readOnlyOrderLineItems()
+                order.readOnlyOrderLineItems()
                         .stream()
                         .map(OrderLineItemResponse::from)
                         .collect(Collectors.toList()));

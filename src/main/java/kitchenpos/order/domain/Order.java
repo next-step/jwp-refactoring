@@ -1,6 +1,10 @@
 package kitchenpos.order.domain;
 
+import static kitchenpos.order.domain.OrderStatus.COMPLETION;
+import static kitchenpos.order.domain.OrderStatus.COOKING;
+
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -28,22 +32,13 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
     @Column(nullable = false)
-    private LocalDateTime orderedTime;
+    private final LocalDateTime orderedTime;
     @Embedded
     private OrderLineItems orderLineItems;
 
-    protected Order() {
-    }
-
-    private Order(Long id, OrderTable orderTable, OrderStatus orderStatus) {
-        this.id = id;
-        this.orderTable = orderTable;
-        this.orderStatus = orderStatus;
+    public Order() {
+        this.orderStatus = COOKING;
         this.orderedTime = LocalDateTime.now();
-    }
-
-    public static Order from(Long id, OrderTable orderTable, OrderStatus orderStatus) {
-        return new Order(id, orderTable, orderStatus);
     }
 
     public Long id() {
@@ -58,15 +53,25 @@ public class Order {
         return orderTable;
     }
 
-    public void setOrderTable(final OrderTable orderTable) {
+    public void addOrderTable(final OrderTable orderTable) {
+        validateNotEmpty(orderTable);
         this.orderTable = orderTable;
+    }
+
+    private void validateNotEmpty(OrderTable orderTable) {
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException("주문테이블이 비어있으면 안됩니다.");
+        }
     }
 
     public OrderStatus orderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(final OrderStatus orderStatus) {
+    public void changeOrderStatus(final OrderStatus orderStatus) {
+        if (Objects.equals(COMPLETION, this.orderStatus)) {
+            throw new IllegalArgumentException("완료된 주문은 상태를 변경할 수 없습니다.");
+        }
         this.orderStatus = orderStatus;
     }
 
@@ -74,16 +79,20 @@ public class Order {
         return orderedTime;
     }
 
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
-    }
-
-    public OrderLineItems orderLineItems() {
-        return orderLineItems;
-    }
-
-    public void setOrderLineItems(final OrderLineItems orderLineItems) {
+    public void addOrderLineItems(final OrderLineItems orderLineItems, int size) {
+        validateOrderLineItemsSize(orderLineItems, size);
+        orderLineItems.addOrder(this);
         this.orderLineItems = orderLineItems;
+    }
+
+    private void validateOrderLineItemsSize(OrderLineItems orderLineItems, int size) {
+        if(orderLineItems.isNotEqualSize(size)) {
+            throw new IllegalArgumentException("비교하는 수와 주문 항목의 수가 일치하지 않습니다.");
+        }
+    }
+
+    public List<OrderLineItem> readOnlyOrderLineItems() {
+        return orderLineItems.readOnlyOrderLineItems();
     }
 
     @Override

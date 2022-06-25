@@ -30,39 +30,29 @@ public class OrderLineItem {
     protected OrderLineItem() {
     }
 
-    public OrderLineItem(Long seq, Order order, Menu menu, long quantity) {
-        this.seq = seq;
-        this.order = order;
+    public OrderLineItem(Menu menu, long quantity) {
         this.menu = menu;
         this.quantity = Quantity.from(quantity);
     }
 
-    public static OrderLineItem from(Long seq, Order order, Menu menu, long quantity) {
-        return new OrderLineItem(seq, order, menu, quantity);
+    public static OrderLineItem from(Menu menu, long quantity) {
+        return new OrderLineItem(menu, quantity);
     }
 
     public Long seq() {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
-    }
-
     public Order order() {
         return order;
     }
 
-    public void setOrder(final Order order) {
+    public void addOrder(final Order order) {
         this.order = order;
     }
 
     public Menu menu() {
         return menu;
-    }
-
-    public void setMenu(final Menu menu) {
-        this.menu = menu;
     }
 
     public Quantity quantity() {

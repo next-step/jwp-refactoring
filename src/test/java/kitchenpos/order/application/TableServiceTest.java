@@ -85,7 +85,7 @@ class TableServiceTest {
     @Test
     void changeEmptyWithNotFoundOrderTable() {
         OrderTableRequest orderTableRequest = createOrderTableRequest(2, false);
-        given(orderTableRepository.findById(1L)).willReturn(Optional.ofNullable(주문테이블));
+        given(orderTableRepository.findById(1L)).willReturn(Optional.empty());
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableService.changeEmpty(1L, orderTableRequest))
                 .withMessage("주문테이블을 찾을 수 없습니다.");
@@ -135,5 +135,22 @@ class TableServiceTest {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableService.changeNumberOfGuests(1L, orderTableRequest))
                 .withMessage("주문테이블이 비어있으면 안됩니다.");
+    }
+
+    @DisplayName("주문테이블 찾기 테스트")
+    @Test
+    void findOrderTable() {
+        given(orderTableRepository.findById(1L)).willReturn(Optional.ofNullable(주문테이블));
+        OrderTable orderTable = tableService.findOrderTable(1L);
+        assertThat(orderTable).isEqualTo(주문테이블);
+    }
+
+    @DisplayName("주문테이블 찾을 수 없음")
+    @Test
+    void findOrderTableEmpty() {
+        given(orderTableRepository.findById(1L)).willReturn(Optional.empty());
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> tableService.findOrderTable(1L))
+                .withMessage("주문테이블을 찾을 수 없습니다.");
     }
 }
