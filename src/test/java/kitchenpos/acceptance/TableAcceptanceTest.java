@@ -5,6 +5,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.application.TableServiceTest;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.TableRequest;
+import kitchenpos.dto.TableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,6 +24,8 @@ public class TableAcceptanceTest extends AcceptanceTest {
 
     OrderTable orderTable1;
     OrderTable orderTable2;
+    TableRequest tableRequest1;
+    TableRequest tableRequest2;
 
     @BeforeEach
     public void init() {
@@ -29,13 +33,15 @@ public class TableAcceptanceTest extends AcceptanceTest {
 
         orderTable1 = TableServiceTest.주문_테이블_생성(null, null, false, 0);
         orderTable2 = TableServiceTest.주문_테이블_생성(null, null, false, 0);
+        tableRequest1 = new TableRequest(false, 0);
+        tableRequest2 = new TableRequest(false, 0);
     }
 
     @DisplayName("주문 테이블을 생성한다.")
     @Test
     void 주문_테이블_생성() {
         // when
-        ExtractableResponse<Response> response = 주문_테이블_생성_요청(orderTable1);
+        ExtractableResponse<Response> response = 주문_테이블_생성_요청(tableRequest1);
 
         // then
         주문_테이블_생성됨(response);
@@ -45,8 +51,8 @@ public class TableAcceptanceTest extends AcceptanceTest {
     @Test
     void 주문_테이블_목록_조회() {
         // given
-        ExtractableResponse<Response> createResponse1 = 주문_테이블_생성_요청(orderTable1);
-        ExtractableResponse<Response> createResponse2 = 주문_테이블_생성_요청(orderTable2);
+        ExtractableResponse<Response> createResponse1 = 주문_테이블_생성_요청(tableRequest1);
+        ExtractableResponse<Response> createResponse2 = 주문_테이블_생성_요청(tableRequest2);
 
         // when
         ExtractableResponse<Response> response = 주문_테이블_목록_조회_요청();
@@ -88,6 +94,16 @@ public class TableAcceptanceTest extends AcceptanceTest {
             int numberOfGuests) {
         OrderTable orderTable = TableServiceTest.주문_테이블_생성(tableGroupId, null, isEmpty, numberOfGuests);
         return 주문_테이블_생성_요청(orderTable);
+    }
+
+    public static ExtractableResponse<Response> 주문_테이블_생성_요청(TableRequest params) {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/api/tables")
+                .then().log().all()
+                .extract();
     }
 
     public static ExtractableResponse<Response> 주문_테이블_생성_요청(OrderTable orderTable) {
@@ -151,8 +167,8 @@ public class TableAcceptanceTest extends AcceptanceTest {
                 .map(it -> Long.parseLong(it.header("Location").split("/")[3]))
                 .collect(Collectors.toList());
 
-        List<Long> resultLineIds = response.jsonPath().getList(".", OrderTable.class).stream()
-                .map(OrderTable::getId)
+        List<Long> resultLineIds = response.jsonPath().getList(".", TableResponse.class).stream()
+                .map(TableResponse::getId)
                 .collect(Collectors.toList());
 
         assertThat(resultLineIds).containsAll(expectedLineIds);

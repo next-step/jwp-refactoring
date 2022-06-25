@@ -4,32 +4,48 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTableEntity;
+import kitchenpos.dto.TableRequest;
+import kitchenpos.dto.TableResponse;
+import kitchenpos.repository.TableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class TableService {
     private final OrderDao orderDao;
     private final OrderTableDao orderTableDao;
+    private final TableRepository tableRepository;
 
-    public TableService(final OrderDao orderDao, final OrderTableDao orderTableDao) {
+    public TableService(final OrderDao orderDao, final OrderTableDao orderTableDao, TableRepository tableRepository) {
         this.orderDao = orderDao;
         this.orderTableDao = orderTableDao;
+        this.tableRepository = tableRepository;
     }
 
     @Transactional
-    public OrderTable create(final OrderTable orderTable) {
-        orderTable.setTableGroupId(null);
+    public TableResponse create(final TableRequest request) {
+        OrderTableEntity orderTable = tableRepository.save(
+                new OrderTableEntity(
+                        null,
+                        request.getNumberOfGuests(),
+                        request.getEmpty()
+                )
+        );
 
-        return orderTableDao.save(orderTable);
+        return TableResponse.of(orderTable);
     }
 
-    public List<OrderTable> list() {
-        return orderTableDao.findAll();
+    public List<TableResponse> list() {
+        return tableRepository.findAll()
+                .stream()
+                .map(orderTable -> TableResponse.of(orderTable))
+                .collect(Collectors.toList());
     }
 
     @Transactional

@@ -3,6 +3,10 @@ package kitchenpos.application;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTableEntity;
+import kitchenpos.dto.TableRequest;
+import kitchenpos.dto.TableResponse;
+import kitchenpos.repository.TableRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,6 +31,9 @@ public class TableServiceTest {
     OrderTableDao orderTableDao;
 
     @Mock
+    TableRepository tableRepository;
+
+    @Mock
     OrderDao orderDao;
 
     @InjectMocks
@@ -36,30 +43,29 @@ public class TableServiceTest {
     @Test
     void 테이블_생성_성공() {
         // given
-        OrderTable 테이블 = 주문_테이블_생성(null, 1L, false, 0);
-        given(orderTableDao.save(any(OrderTable.class))).willReturn(테이블);
+        OrderTableEntity 테이블 = new OrderTableEntity(null, 0, false);
+        given(tableRepository.save(any(OrderTableEntity.class))).willReturn(테이블);
 
         // when
-        OrderTable saved = tableService.create(테이블);
+        TableResponse saved = tableService.create(new TableRequest(테이블.getEmpty(), 테이블.getNumberOfGuests()));
 
         // then
         assertThat(saved).isNotNull();
-        assertThat(saved.getId()).isEqualTo(1L);
     }
 
     @DisplayName("주문 테이블 목록을 조회한다.")
     @Test
     void 테이블_목록_조회() {
         // given
-        OrderTable 테이블1 = 주문_테이블_생성(null, 1L, false, 0);
-        OrderTable 테이블2 = 주문_테이블_생성(null, 2L, false, 0);
-        given(orderTableDao.findAll()).willReturn(Arrays.asList(테이블1, 테이블2));
+        OrderTableEntity 테이블1 = new OrderTableEntity(null, 0, false);
+        OrderTableEntity 테이블2 = new OrderTableEntity(null, 0, false);
+        given(tableRepository.findAll()).willReturn(Arrays.asList(테이블1, 테이블2));
 
         // when
-        List<OrderTable> 주문_테이블_목록 = tableService.list();
+        List<TableResponse> 주문_테이블_목록 = tableService.list();
 
         // then
-        assertThat(주문_테이블_목록).containsExactly(테이블1, 테이블2);
+        assertThat(주문_테이블_목록).containsExactly(TableResponse.of(테이블1), TableResponse.of(테이블2));
 
     }
 
