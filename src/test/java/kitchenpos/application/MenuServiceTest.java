@@ -38,37 +38,51 @@ class MenuServiceTest {
     @MockBean
     ProductDao productDao;
 
-    Long 짜장면id = 1L;
-    Long 짬뽕id = 2L;
-    Product 짜장면 = new Product(짜장면id, "짜장면", BigDecimal.valueOf(6000));
-    Product 짬뽕 = new Product(짬뽕id, "짬뽕", BigDecimal.valueOf(7000));
-    MenuProduct 메뉴_짜장면_2 = new MenuProduct(1L, null, 짜장면id, 2);
-    MenuProduct 메뉴_짬뽕_1 = new MenuProduct(2L, null, 짬뽕id, 1);
-    Long menuGroupId = 1L;
+    Long menuGroupId;
+    Long productId1;
+    Long productId2;
+    Product product1;
+    Product product2;
 
     @BeforeEach
     void setUp() {
+        setMenuGroup();
+        setProduct();
+    }
+
+    void setMenuGroup() {
+        menuGroupId = 1L;
         when(menuGroupDao.existsById(menuGroupId)).thenReturn(true);
-        when(productDao.findById(짜장면id)).thenReturn(Optional.of(짜장면));
-        when(productDao.findById(짬뽕id)).thenReturn(Optional.of(짬뽕));
+    }
+
+    void setProduct() {
+        productId1 = 1L;
+        productId2 = 2L;
+        product1 = new Product(productId1, "짜장면", BigDecimal.valueOf(6000));
+        product2 = new Product(productId2, "짬뽕", BigDecimal.valueOf(7000));
+
+        when(productDao.findById(productId1)).thenReturn(Optional.of(product1));
+        when(productDao.findById(productId2)).thenReturn(Optional.of(product2));
     }
 
     @DisplayName("메뉴를 등록할 수 있다")
     @Test
     void create() {
         // given
-        Menu 메뉴 = new Menu("메뉴", BigDecimal.valueOf(19000), menuGroupId, Arrays.asList(메뉴_짜장면_2, 메뉴_짬뽕_1));
-        when(menuDao.save(메뉴)).thenReturn(new Menu(1L, "메뉴", BigDecimal.valueOf(19000), menuGroupId));
-        when(menuProductDao.save(메뉴_짜장면_2)).thenReturn(메뉴_짜장면_2);
-        when(menuProductDao.save(메뉴_짬뽕_1)).thenReturn(메뉴_짬뽕_1);
+        MenuProduct menuProduct1 = new MenuProduct(1L, null, productId1, 2);
+        MenuProduct menuProduct2 = new MenuProduct(2L, null, productId2, 1);
+        Menu menu = new Menu("메뉴", BigDecimal.valueOf(19000), menuGroupId, Arrays.asList(menuProduct1, menuProduct2));
+        when(menuDao.save(menu)).thenReturn(new Menu(1L, "메뉴", BigDecimal.valueOf(19000), menuGroupId));
+        when(menuProductDao.save(menuProduct1)).thenReturn(menuProduct1);
+        when(menuProductDao.save(menuProduct2)).thenReturn(menuProduct2);
 
         // when
-        Menu actual = menuService.create(메뉴);
+        Menu actual = menuService.create(menu);
 
         // then
         assertSoftly(softAssertions -> {
             softAssertions.assertThat(actual.getId()).isNotNull();
-            softAssertions.assertThat(actual.getMenuProducts()).containsExactly(메뉴_짜장면_2, 메뉴_짬뽕_1);
+            softAssertions.assertThat(actual.getMenuProducts()).containsExactly(menuProduct1, menuProduct2);
         });
     }
 
@@ -100,7 +114,9 @@ class MenuServiceTest {
     @Test
     void price_less_then_products() {
         // given
-        Menu priceMore = new Menu("메뉴", BigDecimal.valueOf(20000), menuGroupId, Arrays.asList(메뉴_짜장면_2, 메뉴_짬뽕_1));
+        MenuProduct menuProduct1 = new MenuProduct(1L, null, productId1, 2); // 6000 * 2
+        MenuProduct menuProduct2 = new MenuProduct(2L, null, productId2, 1); // 7000 * 1
+        Menu priceMore = new Menu("메뉴", BigDecimal.valueOf(19001), menuGroupId, Arrays.asList(menuProduct1, menuProduct2));
 
         // when then
         assertThatThrownBy(() -> menuService.create(priceMore))
@@ -124,13 +140,15 @@ class MenuServiceTest {
         // when
         Long menuId = 1L;
         when(menuDao.findAll()).thenReturn(singletonList(new Menu(menuId, "메뉴", BigDecimal.valueOf(19000), menuGroupId)));
-        when(menuProductDao.findAllByMenuId(menuId)).thenReturn(Arrays.asList(메뉴_짜장면_2, 메뉴_짬뽕_1));
+        MenuProduct menuProduct1 = new MenuProduct(1L, null, productId1, 2);
+        MenuProduct menuProduct2 = new MenuProduct(2L, null, productId2, 1);
+        when(menuProductDao.findAllByMenuId(menuId)).thenReturn(Arrays.asList(menuProduct1, menuProduct2));
         List<Menu> menus = menuService.list();
 
         // then
         assertSoftly(softAssertions -> {
             softAssertions.assertThat(menus).hasSize(1);
-            softAssertions.assertThat(menus.get(0).getMenuProducts()).containsExactly(메뉴_짜장면_2, 메뉴_짬뽕_1);
+            softAssertions.assertThat(menus.get(0).getMenuProducts()).containsExactly(menuProduct1, menuProduct2);
         });
     }
 }
