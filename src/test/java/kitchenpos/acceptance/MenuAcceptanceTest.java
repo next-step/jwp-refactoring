@@ -7,14 +7,13 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.domain.MenuProductV2;
-import kitchenpos.menu.domain.MenuV2;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.utils.RestAssuredHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -50,8 +49,8 @@ class MenuAcceptanceTest extends AcceptanceTest {
 
         // then
         final ExtractableResponse<Response> 메뉴_조회_결과 = 메뉴_조회();
-        final MenuV2 예상된_메뉴 = new MenuV2(1L, "후라이드", 16_000L, 1L, Arrays.asList(new MenuProductV2(1L, null, 1L, 2L)));
-        final MenuProductV2 예상된_메뉴_제품들 = new MenuProductV2(1L, 예상된_메뉴, 1L, 2L);
+        final Menu 예상된_메뉴 = new Menu(1L, "후라이드", 16_000L, 1L, Arrays.asList(new MenuProduct(1L, null, 1L, 2L)));
+        final MenuProduct 예상된_메뉴_제품들 = new MenuProduct(1L, 예상된_메뉴, 1L, 2L);
         final MenuResponse 예상된_메뉴_결과 = new MenuResponse(1L, "반반후라이드", 16_000L, 1L,
                 Arrays.asList(예상된_메뉴_제품들));
         메뉴_조회_확인(메뉴_조회_결과, Arrays.asList(예상된_메뉴_결과));

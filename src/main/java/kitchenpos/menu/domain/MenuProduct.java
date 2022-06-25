@@ -12,7 +12,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "menu_product")
-public class MenuProductV2 {
+public class MenuProduct {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,7 +20,7 @@ public class MenuProductV2 {
 
     @ManyToOne
     @JoinColumn(name = "menu_id", nullable = false)
-    private MenuV2 menu;
+    private Menu menu;
 
     @Column(nullable = false)
     private Long productId;
@@ -28,10 +28,10 @@ public class MenuProductV2 {
     @Column(nullable = false)
     private Long quantity;
 
-    protected MenuProductV2() {
+    protected MenuProduct() {
     }
 
-    public MenuProductV2(Long seq, MenuV2 menu, Long productId, Long quantity) {
+    public MenuProduct(Long seq, Menu menu, Long productId, Long quantity) {
         this.seq = seq;
         this.menu = menu;
         this.productId = productId;
@@ -46,7 +46,7 @@ public class MenuProductV2 {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        MenuProductV2 that = (MenuProductV2) o;
+        MenuProduct that = (MenuProduct) o;
         return Objects.equals(seq, that.seq) && Objects.equals(menu, that.menu)
                 && Objects.equals(productId, that.productId) && Objects.equals(quantity, that.quantity);
     }

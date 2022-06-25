@@ -16,12 +16,12 @@ import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.application.OrderService;
-import kitchenpos.order.domain.OrderLineItemV2;
-import kitchenpos.order.domain.OrderStatusV2;
-import kitchenpos.order.domain.OrdersV2;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.Orders;
 import kitchenpos.order.repository.OrderLineItemRepository;
 import kitchenpos.order.repository.OrderRepository;
-import kitchenpos.table.domain.OrderTableV2;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -55,18 +55,18 @@ class OrderServiceTest {
     @DisplayName("주문을 생성한다.")
     void createOrder() {
         // given
-        final OrdersV2 order = new OrdersV2(null, 1L, OrderStatusV2.COOKING, null, null);
-        final OrderLineItemV2 orderLineItemV2 = new OrderLineItemV2(1L, order, 1L, 1L);
+        final Orders order = new Orders(null, 1L, OrderStatus.COOKING, null, null);
+        final OrderLineItem orderLineItem = new OrderLineItem(1L, order, 1L, 1L);
         when(menuRepository.countByIdIn(any())).thenReturn(1L);
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(new OrderTableV2(1L, null, 3, false)));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(new OrderTable(1L, null, 3, false)));
         when(orderRepository.save(any())).thenReturn(order);
-        when(orderLineItemRepository.save(any())).thenReturn(orderLineItemV2);
+        when(orderLineItemRepository.save(any())).thenReturn(orderLineItem);
         // when
         final OrderResponse actual = orderService.create(new OrderRequest(1L, Arrays.asList(1L)));
         // then
         assertAll(
                 () -> assertThat(actual.getOrderLineItems()).hasSize(1),
-                () -> assertThat(actual.getOrderStatus()).isEqualTo(OrderStatusV2.COOKING.name()),
+                () -> assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name()),
                 () -> assertThat(actual.getOrderTable().getId()).isEqualTo(1L)
         );
     }
@@ -109,9 +109,9 @@ class OrderServiceTest {
     @DisplayName("주문 내역을 조회할 수 있다.")
     void searchOrders() {
         // given
-        final OrdersV2 order = new OrdersV2(1L, 1L, OrderStatusV2.COOKING, LocalDateTime.now(), null);
+        final Orders order = new Orders(1L, 1L, OrderStatus.COOKING, LocalDateTime.now(), null);
         when(orderRepository.findAll()).thenReturn(Arrays.asList(order));
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(new OrderTableV2(1L, null, 3, false)));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(new OrderTable(1L, null, 3, false)));
         // when
         final List<OrderResponse> actual = orderService.list();
         // then
@@ -122,13 +122,13 @@ class OrderServiceTest {
     @DisplayName("주문의 상태를 변경할 수 있다.")
     void changeOrderStatus() {
         // given
-        final OrdersV2 order = new OrdersV2(1L, 1L, OrderStatusV2.COOKING, LocalDateTime.now(), null);
+        final Orders order = new Orders(1L, 1L, OrderStatus.COOKING, LocalDateTime.now(), null);
         when(orderRepository.findById(any())).thenReturn(Optional.of(order));
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(new OrderTableV2(1L, null, 3, false)));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(new OrderTable(1L, null, 3, false)));
         // when
-        final OrderResponse actual = orderService.changeOrderStatus(1L, new OrderStatusRequest(OrderStatusV2.COOKING));
+        final OrderResponse actual = orderService.changeOrderStatus(1L, new OrderStatusRequest(OrderStatus.COOKING));
         // then
-        assertThat(actual.getOrderStatus()).isEqualTo(OrderStatusV2.COOKING.name());
+        assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
     }
 
     @Test
@@ -136,18 +136,18 @@ class OrderServiceTest {
     void changeOrderStatusNotExistOrder() {
         // when && then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderService.changeOrderStatus(1L, new OrderStatusRequest(OrderStatusV2.COOKING)));
+                .isThrownBy(() -> orderService.changeOrderStatus(1L, new OrderStatusRequest(OrderStatus.COOKING)));
     }
 
     @Test
     @DisplayName("완료된 주문을 주문 상태 변경시 에러 발생")
     void changeOrderStatusCompletionOrder() {
         // given
-        final OrdersV2 order = new OrdersV2(1L, 1L, OrderStatusV2.COMPLETION, LocalDateTime.now(), null);
+        final Orders order = new Orders(1L, 1L, OrderStatus.COMPLETION, LocalDateTime.now(), null);
         when(orderRepository.findById(any())).thenReturn(Optional.of(order));
 
         // when && then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderService.changeOrderStatus(1L, new OrderStatusRequest(OrderStatusV2.COOKING)));
+                .isThrownBy(() -> orderService.changeOrderStatus(1L, new OrderStatusRequest(OrderStatus.COOKING)));
     }
 }

@@ -17,12 +17,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderTableResponse;
-import kitchenpos.table.domain.OrderTableV2;
+import kitchenpos.table.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
 
 @Entity
 @Table(name = "orders")
-public class OrdersV2 {
+public class Orders {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,20 +33,20 @@ public class OrdersV2 {
 
     @Column
     @Enumerated(EnumType.STRING)
-    private OrderStatusV2 orderStatus;
+    private OrderStatus orderStatus;
 
     @Column
     @CreatedDate
     private LocalDateTime orderedTime;
 
-    @OneToMany(mappedBy = "orders", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderLineItemV2> orderLineItems = new ArrayList<>();
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
-    protected OrdersV2() {
+    protected Orders() {
     }
 
-    public OrdersV2(Long id, Long orderTableId, OrderStatusV2 orderStatus, LocalDateTime orderedTime,
-                    List<OrderLineItemV2> orderLineItems) {
+    public Orders(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime,
+                  List<OrderLineItem> orderLineItems) {
         this.id = id;
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
@@ -58,7 +58,7 @@ public class OrdersV2 {
         return id;
     }
 
-    public void setOrderLineItems(List<OrderLineItemV2> orderLineItems) {
+    public void setOrderLineItems(List<OrderLineItem> orderLineItems) {
         this.orderLineItems = orderLineItems;
     }
 
@@ -67,14 +67,14 @@ public class OrdersV2 {
     }
 
     public boolean isCompletion() {
-        return this.orderStatus == OrderStatusV2.COMPLETION;
+        return this.orderStatus == OrderStatus.COMPLETION;
     }
 
-    public void changeStatus(OrderStatusV2 orderStatus) {
+    public void changeStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
-    public OrderResponse toOrderResponse(OrderTableV2 orderTable) {
+    public OrderResponse toOrderResponse(OrderTable orderTable) {
         final OrderTableResponse orderTableResponse = orderTable.toOrderTableResponse();
         return new OrderResponse(this.id, orderTableResponse, this.orderStatus.name(), this.orderedTime, this.orderLineItems);
     }
@@ -87,7 +87,7 @@ public class OrdersV2 {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        OrdersV2 order = (OrdersV2) o;
+        Orders order = (Orders) o;
         return Objects.equals(id, order.id) && Objects.equals(orderTableId, order.orderTableId)
                 && orderStatus == order.orderStatus && Objects.equals(orderedTime, order.orderedTime);
     }

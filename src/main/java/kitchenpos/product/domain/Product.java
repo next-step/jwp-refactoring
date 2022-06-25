@@ -1,6 +1,5 @@
 package kitchenpos.product.domain;
 
-import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,7 +11,7 @@ import kitchenpos.product.dto.ProductResponse;
 
 @Entity
 @Table(name = "product")
-public class ProductV2 {
+public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,10 +23,10 @@ public class ProductV2 {
     @Column
     private Long price;
 
-    protected ProductV2() {
+    protected Product() {
     }
 
-    public ProductV2(Long id, String name, Long price) {
+    public Product(Long id, String name, Long price) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -53,7 +52,7 @@ public class ProductV2 {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ProductV2 product = (ProductV2) o;
+        Product product = (Product) o;
         return Objects.equals(id, product.id) && Objects.equals(name, product.name)
                 && Objects.equals(price, product.price);
     }

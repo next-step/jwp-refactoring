@@ -1,7 +1,7 @@
 package kitchenpos.menu.dto;
 
 import java.util.List;
-import kitchenpos.menu.domain.MenuV2;
+import kitchenpos.menu.domain.Menu;
 
 public class MenuRequest {
     private String name;
@@ -36,7 +36,7 @@ public class MenuRequest {
         return menuProducts;
     }
 
-    public MenuV2 toMenu() {
-        return new MenuV2(null, this.name, this.price, this.menuGroupId, null);
+    public Menu toMenu() {
+        return new Menu(null, this.name, this.price, this.menuGroupId, null);
     }
 }

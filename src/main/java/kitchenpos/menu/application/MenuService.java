@@ -1,6 +1,5 @@
 package kitchenpos.menu.application;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -8,12 +7,12 @@ import java.util.stream.Collectors;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.domain.MenuProductV2;
-import kitchenpos.menu.domain.MenuV2;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.repository.MenuGroupRepository;
 import kitchenpos.menu.repository.MenuProductRepository;
 import kitchenpos.menu.repository.MenuRepository;
-import kitchenpos.product.domain.ProductV2;
+import kitchenpos.product.domain.Product;
 import kitchenpos.product.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,12 +53,12 @@ public class MenuService {
                 .map(MenuProductRequest::getProductId)
                 .collect(Collectors.toList());
 
-        final List<ProductV2> products = productRepository.findAll().stream()
+        final List<Product> products = productRepository.findAll().stream()
                 .filter(it -> productIds.contains(it.getId()))
                 .collect(Collectors.toList());
 
         long sum = 0L;
-        for (ProductV2 product : products) {
+        for (Product product : products) {
             final Long productId = product.getId();
             final MenuProductRequest filterMenuProductRequest = menuRequest.getMenuProducts().stream()
                     .filter(it -> it.getProductId().equals(productId))
@@ -72,11 +71,11 @@ public class MenuService {
             throw new IllegalArgumentException();
         }
 
-        final MenuV2 savedMenu = menuRepository.save(menuRequest.toMenu());
-        final List<MenuProductV2> savedMenuProducts = new ArrayList<>();
+        final Menu savedMenu = menuRepository.save(menuRequest.toMenu());
+        final List<MenuProduct> savedMenuProducts = new ArrayList<>();
 
         for (MenuProductRequest menuProductRequest : menuRequest.getMenuProducts()) {
-            final MenuProductV2 menuProduct = new MenuProductV2(null, savedMenu, menuProductRequest.getProductId(),
+            final MenuProduct menuProduct = new MenuProduct(null, savedMenu, menuProductRequest.getProductId(),
                     menuProductRequest.getQuantity());
             savedMenuProducts.add(menuProductRepository.save(menuProduct));
         }
@@ -86,10 +85,10 @@ public class MenuService {
     }
 
     public List<MenuResponse> list() {
-        final List<MenuV2> menus = menuRepository.findAll();
+        final List<Menu> menus = menuRepository.findAll();
 
         return menus.stream()
-                .map(MenuV2::toMenuResponse)
+                .map(Menu::toMenuResponse)
                 .collect(Collectors.toList());
     }
 }

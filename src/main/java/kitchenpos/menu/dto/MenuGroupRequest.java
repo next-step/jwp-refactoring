@@ -1,6 +1,6 @@
 package kitchenpos.menu.dto;
 
-import kitchenpos.menu.domain.MenuGroupV2;
+import kitchenpos.menu.domain.MenuGroup;
 
 public class MenuGroupRequest {
     private String name;
@@ -16,7 +16,7 @@ public class MenuGroupRequest {
         return name;
     }
 
-    public MenuGroupV2 toMenuGroup() {
-        return new MenuGroupV2(null, name);
+    public MenuGroup toMenuGroup() {
+        return new MenuGroup(null, name);
     }
 }

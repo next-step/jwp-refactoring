@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
-import kitchenpos.order.domain.OrderStatusV2;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
-import kitchenpos.table.domain.OrderTableV2;
-import kitchenpos.table.domain.TableGroupV2;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.table.repository.TableGroupRepository;
 import org.springframework.stereotype.Service;
@@ -36,22 +36,22 @@ public class TableGroupService {
             throw new IllegalArgumentException();
         }
 
-        final List<OrderTableV2> savedOrderTables = orderTableRepository.findAllById(orderTableIds);
+        final List<OrderTable> savedOrderTables = orderTableRepository.findAllById(orderTableIds);
 
         if (orderTableIds.size() != savedOrderTables.size()) {
             throw new IllegalArgumentException();
         }
 
-        for (final OrderTableV2 savedOrderTable : savedOrderTables) {
+        for (final OrderTable savedOrderTable : savedOrderTables) {
             if (!savedOrderTable.isEmpty() || savedOrderTable.existTableGroupId()) {
                 throw new IllegalArgumentException();
             }
         }
 
-        final TableGroupV2 tableGroup = tableGroupRequest.toTableGroup();
-        final TableGroupV2 savedTableGroup = tableGroupRepository.save(tableGroup);
+        final TableGroup tableGroup = tableGroupRequest.toTableGroup();
+        final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
 
-        for (final OrderTableV2 savedOrderTable : savedOrderTables) {
+        for (final OrderTable savedOrderTable : savedOrderTables) {
             savedOrderTable.mappingTableGroupId(savedTableGroup);
             savedOrderTable.notEmpty();
             savedTableGroup.addOrderTable(savedOrderTable);
@@ -62,16 +62,16 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final List<OrderTableV2> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
+        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
 
         final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTableV2::getId)
+                .map(OrderTable::getId)
                 .collect(Collectors.toList());
 
-        if (orderRepository.existsOrdersV2ByOrderTableIdInAndOrderStatusNot(orderTableIds, OrderStatusV2.COMPLETION)) {
+        if (orderRepository.existsOrdersV2ByOrderTableIdInAndOrderStatusNot(orderTableIds, OrderStatus.COMPLETION)) {
             throw new IllegalArgumentException();
         }
 
-        orderTables.forEach(OrderTableV2::ungroupTable);
+        orderTables.forEach(OrderTable::ungroupTable);
     }
 }

@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -15,12 +14,12 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.domain.MenuProductV2;
-import kitchenpos.menu.domain.MenuV2;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.repository.MenuGroupRepository;
 import kitchenpos.menu.repository.MenuProductRepository;
 import kitchenpos.menu.repository.MenuRepository;
-import kitchenpos.product.domain.ProductV2;
+import kitchenpos.product.domain.Product;
 import kitchenpos.product.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,9 +34,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
     private MenuService menuService;
-    private MenuProductV2 menuProduct;
-    private MenuV2 menu;
-    private ProductV2 product;
+    private MenuProduct menuProduct;
+    private Menu menu;
+    private Product product;
     private MenuResponse expected;
 
     @Mock
@@ -55,9 +54,9 @@ class MenuServiceTest {
     @BeforeEach
     void setUp() {
         menuService = new MenuService(menuRepository, menuGroupRepository, menuProductRepository, productRepository);
-        menu = new MenuV2(1L, "후라이드+후라이드", 1_000L, 1L, Arrays.asList(menuProduct));
-        menuProduct = new MenuProductV2(1L, menu, 1L, 2L);
-        product = new ProductV2(1L, "후라이드", 500L);
+        menu = new Menu(1L, "후라이드+후라이드", 1_000L, 1L, Arrays.asList(menuProduct));
+        menuProduct = new MenuProduct(1L, menu, 1L, 2L);
+        product = new Product(1L, "후라이드", 500L);
         expected = new MenuResponse(null, "후라이드+후라이드", 1_000L, 1L,
                 Arrays.asList(menuProduct));
     }

@@ -11,7 +11,7 @@ import kitchenpos.menu.dto.MenuGroupResponse;
 
 @Entity
 @Table(name = "menu_group")
-public class MenuGroupV2 {
+public class MenuGroup {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,10 +20,10 @@ public class MenuGroupV2 {
     @Column(nullable = false)
     private String name;
 
-    protected MenuGroupV2() {
+    protected MenuGroup() {
     }
 
-    public MenuGroupV2(Long id, String name) {
+    public MenuGroup(Long id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -40,7 +40,7 @@ public class MenuGroupV2 {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        MenuGroupV2 menuGroup = (MenuGroupV2) o;
+        MenuGroup menuGroup = (MenuGroup) o;
         return Objects.equals(id, menuGroup.id) && Objects.equals(name, menuGroup.name);
     }
 

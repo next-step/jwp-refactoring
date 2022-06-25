@@ -10,7 +10,7 @@ import java.util.List;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.application.MenuGroupService;
-import kitchenpos.menu.domain.MenuGroupV2;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.repository.MenuGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,7 +35,7 @@ class MenuGroupServiceTest {
     @DisplayName("메뉴 그룹을 생성한다.")
     void createMenuGroup() {
         // given
-        final MenuGroupV2 menuGroup = new MenuGroupV2(1L, "세트메뉴");
+        final MenuGroup menuGroup = new MenuGroup(1L, "세트메뉴");
         final MenuGroupResponse expectedMenuGroupResponse = menuGroup.toMenuGroupResponse();
         when(menuGroupRepository.save(any())).thenReturn(menuGroup);
         // when
@@ -52,8 +52,8 @@ class MenuGroupServiceTest {
     @DisplayName("메뉴 그룹들을 조회한다.")
     void searchMenuGroups() {
         // given
-        final MenuGroupV2 menuGroup1 = new MenuGroupV2(1L, "세트메뉴1");
-        final MenuGroupV2 menuGroup2 = new MenuGroupV2(2L, "세트메뉴2");
+        final MenuGroup menuGroup1 = new MenuGroup(1L, "세트메뉴1");
+        final MenuGroup menuGroup2 = new MenuGroup(2L, "세트메뉴2");
         when(menuGroupRepository.findAll()).thenReturn(Arrays.asList(menuGroup1, menuGroup2));
         // when
         final List<MenuGroupResponse> actual = menuGroupService.list();

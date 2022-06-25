@@ -13,7 +13,7 @@ import kitchenpos.order.dto.OrderTableResponse;
 
 @Entity
 @Table(name = "order_table")
-public class OrderTableV2 {
+public class OrderTable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +21,7 @@ public class OrderTableV2 {
 
     @ManyToOne
     @JoinColumn(name = "table_group_id")
-    private TableGroupV2 tableGroup;
+    private TableGroup tableGroup;
 
     @Column
     private int numberOfGuests;
@@ -29,10 +29,10 @@ public class OrderTableV2 {
     @Column
     private boolean empty;
 
-    protected OrderTableV2(){
+    protected OrderTable(){
     }
 
-    public OrderTableV2(Long id, TableGroupV2 tableGroup, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
         this.id = id;
         this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
@@ -47,7 +47,7 @@ public class OrderTableV2 {
         return tableGroup != null;
     }
 
-    public void mappingTableGroupId(TableGroupV2 tableGroup) {
+    public void mappingTableGroupId(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
     }
 
@@ -86,7 +86,7 @@ public class OrderTableV2 {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        OrderTableV2 that = (OrderTableV2) o;
+        OrderTable that = (OrderTable) o;
         return numberOfGuests == that.numberOfGuests && empty == that.empty && Objects.equals(id, that.id)
                 && Objects.equals(tableGroup, that.tableGroup);
     }

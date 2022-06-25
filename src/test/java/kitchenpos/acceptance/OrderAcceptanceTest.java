@@ -17,9 +17,9 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.order.dto.OrderTableResponse;
-import kitchenpos.order.domain.OrderLineItemV2;
-import kitchenpos.order.domain.OrderStatusV2;
-import kitchenpos.order.domain.OrdersV2;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.Orders;
 import kitchenpos.utils.RestAssuredHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -55,8 +55,8 @@ class OrderAcceptanceTest extends AcceptanceTest {
     void createOrder() {
         // given
         final OrderTableResponse 주문_테이블_결과 = new OrderTableResponse(1L, null, 3, false);
-        final OrdersV2 order = new OrdersV2(1L, 1L, OrderStatusV2.COOKING, LocalDateTime.now(), null);
-        final OrderResponse 예상된_주문_결과 = new OrderResponse(1L, 주문_테이블_결과, OrderStatusV2.COOKING.name(), null, Arrays.asList(new OrderLineItemV2(1L, order, 1L, 2L)));
+        final Orders order = new Orders(1L, 1L, OrderStatus.COOKING, LocalDateTime.now(), null);
+        final OrderResponse 예상된_주문_결과 = new OrderResponse(1L, 주문_테이블_결과, OrderStatus.COOKING.name(), null, Arrays.asList(new OrderLineItem(1L, order, 1L, 2L)));
 
         // when
         final ExtractableResponse<Response> 주문_요청_결과 = 주문_요청(1L, 1L, 1L);
@@ -80,7 +80,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @DisplayName("주문 상태를 변경하면 주문 상태가 변경된다.")
     void changeOrderStatus() {
         // given
-        final OrderStatusV2 완료_상태 = OrderStatusV2.COMPLETION;
+        final OrderStatus 완료_상태 = OrderStatus.COMPLETION;
         주문_요청(1L, 1L, 1L);
 
         // when
@@ -124,12 +124,12 @@ class OrderAcceptanceTest extends AcceptanceTest {
         }
     }
 
-    public static ExtractableResponse<Response> 주문_상태_변경(Long 주문_번호, OrderStatusV2 변경할_상태) {
+    public static ExtractableResponse<Response> 주문_상태_변경(Long 주문_번호, OrderStatus 변경할_상태) {
         final String uri = ORDER_URI + "/{orderId}/order-status";
         return RestAssuredHelper.putContainBody(uri, new OrderStatusRequest(변경할_상태), 주문_번호);
     }
 
-    private void 주문_상태_변경_결과_확인(ExtractableResponse<Response> 주문_상태_변경_결과, OrderStatusV2 상태) {
+    private void 주문_상태_변경_결과_확인(ExtractableResponse<Response> 주문_상태_변경_결과, OrderStatus 상태) {
         final OrderResponse 변경된_주문 = 주문_상태_변경_결과.body().jsonPath().getObject(".", OrderResponse.class);
 
         assertAll(

@@ -20,7 +20,7 @@ import org.springframework.data.annotation.CreatedDate;
 
 @Entity
 @Table(name = "table_group")
-public class TableGroupV2 {
+public class TableGroup {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,27 +31,27 @@ public class TableGroupV2 {
     private LocalDateTime createdDate;
 
     @OneToMany(mappedBy = "tableGroup", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderTableV2> orderTables = new ArrayList<>();
+    private List<OrderTable> orderTables = new ArrayList<>();
 
-    protected TableGroupV2() {
+    protected TableGroup() {
     }
 
-    public TableGroupV2(Long id, LocalDateTime createdDate) {
+    public TableGroup(Long id, LocalDateTime createdDate) {
         this.id = id;
         this.createdDate = createdDate;
     }
 
-    public TableGroupV2(Long id, LocalDateTime createdDate, List<OrderTableV2> orderTables) {
+    public TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
         this.id = id;
         this.createdDate = createdDate;
         this.orderTables = orderTables;
     }
 
-    public TableGroupV2(LocalDateTime createdDate) {
+    public TableGroup(LocalDateTime createdDate) {
         this(null, createdDate, null);
     }
 
-    public void addOrderTable(OrderTableV2 orderTable) {
+    public void addOrderTable(OrderTable orderTable) {
         if (this.orderTables == null) {
             this.orderTables = new ArrayList<>();
         }
@@ -64,7 +64,7 @@ public class TableGroupV2 {
 
     public TableGroupResponse toTableGroupResponse() {
         final List<OrderTableResponse> orderTableResponses = this.orderTables.stream()
-                .map(OrderTableV2::toOrderTableResponse)
+                .map(OrderTable::toOrderTableResponse)
                 .collect(Collectors.toList());
         return new TableGroupResponse(this.id, this.createdDate, orderTableResponses);
     }
@@ -77,7 +77,7 @@ public class TableGroupV2 {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        TableGroupV2 that = (TableGroupV2) o;
+        TableGroup that = (TableGroup) o;
         return Objects.equals(id, that.id);
     }
 

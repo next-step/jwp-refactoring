@@ -1,17 +1,17 @@
 package kitchenpos.menu.dto;
 
 import java.util.List;
-import kitchenpos.menu.domain.MenuProductV2;
+import kitchenpos.menu.domain.MenuProduct;
 
 public class MenuResponse {
     private Long id;
     private String name;
     private Long price;
     private Long menuGroupId;
-    private List<MenuProductV2> menuProducts;
+    private List<MenuProduct> menuProducts;
 
     public MenuResponse(Long id, String name, Long price, Long menuGroupId,
-                        List<MenuProductV2> menuProducts) {
+                        List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -35,7 +35,7 @@ public class MenuResponse {
         return menuGroupId;
     }
 
-    public List<MenuProductV2> getMenuProducts() {
+    public List<MenuProduct> getMenuProducts() {
         return menuProducts;
     }
 }

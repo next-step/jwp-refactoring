@@ -1,6 +1,5 @@
 package kitchenpos.menu.domain;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -17,7 +16,7 @@ import kitchenpos.menu.dto.MenuResponse;
 
 @Entity
 @Table(name = "menu")
-public class MenuV2 {
+public class Menu {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,13 +32,13 @@ public class MenuV2 {
     private Long menuGroupId;
 
     @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MenuProductV2> menuProducts = new ArrayList<>();
+    private List<MenuProduct> menuProducts = new ArrayList<>();
 
-    protected MenuV2() {
+    protected Menu() {
     }
 
-    public MenuV2(Long id, String name, Long price, Long menuGroupId,
-                  List<MenuProductV2> menuProducts) {
+    public Menu(Long id, String name, Long price, Long menuGroupId,
+                List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -51,7 +50,7 @@ public class MenuV2 {
         return id;
     }
 
-    public void setMenuProducts(List<MenuProductV2> savedMenuProducts) {
+    public void setMenuProducts(List<MenuProduct> savedMenuProducts) {
         this.menuProducts = savedMenuProducts;
     }
 
@@ -67,7 +66,7 @@ public class MenuV2 {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        MenuV2 menu = (MenuV2) o;
+        Menu menu = (Menu) o;
         return Objects.equals(id, menu.id) && Objects.equals(name, menu.name)
                 && Objects.equals(price, menu.price) && Objects.equals(menuGroupId, menu.menuGroupId);
     }

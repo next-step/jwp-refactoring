@@ -1,6 +1,6 @@
 package kitchenpos.product.dto;
 
-import kitchenpos.product.domain.ProductV2;
+import kitchenpos.product.domain.Product;
 
 public class ProductRequest {
     private String name;
@@ -22,7 +22,7 @@ public class ProductRequest {
         return price;
     }
 
-    public ProductV2 toProduct() {
-        return new ProductV2(null, this.name, this.price);
+    public Product toProduct() {
+        return new Product(null, this.name, this.price);
     }
 }

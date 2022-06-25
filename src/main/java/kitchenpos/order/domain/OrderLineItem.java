@@ -12,7 +12,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "order_line_item")
-public class OrderLineItemV2 {
+public class OrderLineItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,7 +20,7 @@ public class OrderLineItemV2 {
 
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
-    private OrdersV2 orders;
+    private Orders order;
 
     @Column
     private Long menuId;
@@ -28,12 +28,12 @@ public class OrderLineItemV2 {
     @Column
     private Long quantity;
 
-    protected OrderLineItemV2(){
+    protected OrderLineItem(){
     }
 
-    public OrderLineItemV2(Long seq, OrdersV2 orders, Long menuId, Long quantity) {
+    public OrderLineItem(Long seq, Orders order, Long menuId, Long quantity) {
         this.seq = seq;
-        this.orders = orders;
+        this.order = order;
         this.menuId = menuId;
         this.quantity = quantity;
     }
@@ -46,13 +46,13 @@ public class OrderLineItemV2 {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        OrderLineItemV2 that = (OrderLineItemV2) o;
-        return Objects.equals(seq, that.seq) && Objects.equals(orders, that.orders)
+        OrderLineItem that = (OrderLineItem) o;
+        return Objects.equals(seq, that.seq) && Objects.equals(order, that.order)
                 && Objects.equals(menuId, that.menuId) && Objects.equals(quantity, that.quantity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(seq, orders, menuId, quantity);
+        return Objects.hash(seq, order, menuId, quantity);
     }
 }
