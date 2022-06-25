@@ -17,18 +17,12 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TableAcceptanceTest extends AcceptanceTest {
-    public static final int 테이블_인원01 = 3;
-    public static final boolean 테이블_착석_여부01 = false;
-
-    public static final int 테이블_인원02 = 2;
-    public static final boolean 테이블_착석_여부02 = false;
-
 
     @DisplayName("주문 테이블 생성한다.")
     @Test
     void create() {
         // when
-        ExtractableResponse<Response> 등록된_주문_테이블 = 주문_테이블_등록되어_있음(테이블_인원01, 테이블_착석_여부01);
+        ExtractableResponse<Response> 등록된_주문_테이블 = 주문_테이블_등록되어_있음(3, false);
 
         // then
         주문_테이블_생성_검증됨(등록된_주문_테이블);
@@ -38,8 +32,8 @@ public class TableAcceptanceTest extends AcceptanceTest {
     @Test
     void list() {
         // given
-        ExtractableResponse<Response> 등록된_주문_테이블1 = 주문_테이블_등록되어_있음(테이블_인원01, 테이블_착석_여부01);
-        ExtractableResponse<Response> 등록된_주문_테이블2 = 주문_테이블_등록되어_있음(테이블_인원02, 테이블_착석_여부02);
+        ExtractableResponse<Response> 등록된_주문_테이블1 = 주문_테이블_등록되어_있음(3, false);
+        ExtractableResponse<Response> 등록된_주문_테이블2 = 주문_테이블_등록되어_있음(2, false);
 
         // when
         ExtractableResponse<Response> 주문_테이블_목록 = 주문_테이블_목록_조회_요청();
@@ -58,7 +52,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
     @Test
     void changeNumberOfGuests() {
         // given
-        ExtractableResponse<Response> 등록된_주문_테이블 = 주문_테이블_등록되어_있음(테이블_인원01, 테이블_착석_여부01);
+        ExtractableResponse<Response> 등록된_주문_테이블 = 주문_테이블_등록되어_있음(3, false);
         final int 변경할_인원 = 5;
 
         // when

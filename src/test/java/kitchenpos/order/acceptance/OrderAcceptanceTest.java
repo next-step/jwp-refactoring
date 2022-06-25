@@ -61,7 +61,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     private static Order 테스트_주문_생성() {
         Menu 등록된_메뉴 = 메뉴_가져옴(메뉴_등록되어_있음(테스트_메뉴_생성()));
         OrderLineItem 생성된_주문_항목 = new OrderLineItem(등록된_메뉴.getId(), 1);
-        OrderTable 등록된_주문_테이블 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(테이블_인원01, 테이블_착석_여부01));
+        OrderTable 등록된_주문_테이블 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, false));
         return new Order(등록된_주문_테이블.getId(), Arrays.asList(생성된_주문_항목));
     }
 
