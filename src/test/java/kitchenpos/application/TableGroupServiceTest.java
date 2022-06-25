@@ -1,6 +1,9 @@
 package kitchenpos.application;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -14,7 +17,6 @@ import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.TableGroup;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,7 +45,7 @@ class TableGroupServiceTest {
 
 
     @BeforeEach
-    public void init(){
+    public void init() {
         setOrderTable();
         setMenu();
         setOrderLineItem();
@@ -52,6 +54,7 @@ class TableGroupServiceTest {
         tableGroup = new TableGroup();
 
     }
+
     private void setOrderTable() {
         orderTable_1 = new OrderTable();
         orderTable_1.setEmpty(true);
@@ -83,6 +86,26 @@ class TableGroupServiceTest {
         hamOrder = new OrderLineItem();
         hamOrder.setMenuId(ham_menuProduct.getMenuId());
         hamOrder.setQuantity(2);
+    }
+
+    @Test
+    @DisplayName("단체 테이블 생성 정상 로직")
+    void createTableGroupHappyCase() {
+        //given
+        tableGroup.setOrderTables(Arrays.asList(orderTable_1, orderTable_2));
+
+        when(orderTableDao.findAllByIdIn(Arrays.asList(orderTable_1.getId(), orderTable_2.getId())))
+            .thenReturn(Arrays.asList(orderTable_1, orderTable_2));
+        when(tableGroupDao.save(tableGroup)).thenReturn(tableGroup);
+
+        //when
+        TableGroup tableGroup_created = tableGroupService.create(tableGroup);
+
+        //then
+        assertAll(
+            () -> assertThat(tableGroup_created.getCreatedDate()).isNotNull(),
+            () -> assertThat(tableGroup_created.getOrderTables()).hasSize(2)
+        );
     }
 
     @Test
@@ -126,13 +149,28 @@ class TableGroupServiceTest {
     }
 
     @Test
+    @DisplayName("단체 테이블 해체 정상로직")
+    void ungroupHappyCase() {
+        //given
+        when(orderTableDao.findAllByTableGroupId(tableGroup.getId()))
+            .thenReturn(Arrays.asList(orderTable_1, orderTable_2));
+        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(
+            Arrays.asList(orderTable_1.getId(), orderTable_2.getId()),
+            Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
+            .thenReturn(false);
+
+        assertDoesNotThrow(() -> tableGroupService.ungroup(tableGroup.getId()));
+    }
+
+    @Test
     @DisplayName("단체 테이블 해체시 요리중이거나 먹고있는 오더가 있으면 에러가 발생한다")
     void ungroupWithCookingMealOrderThrowError() {
         //given
         when(orderTableDao.findAllByTableGroupId(tableGroup.getId()))
             .thenReturn(Arrays.asList(orderTable_1, orderTable_2));
         when(orderDao.existsByOrderTableIdInAndOrderStatusIn(
-            Arrays.asList(orderTable_1.getId(), orderTable_2.getId()), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
+            Arrays.asList(orderTable_1.getId(), orderTable_2.getId()),
+            Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
             .thenReturn(true);
 
         //when & then
