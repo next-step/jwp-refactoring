@@ -1,10 +1,12 @@
 package kitchenpos.domain;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import kitchenpos.dto.OrderResponse;
 import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.order.domain.OrderLineItemV2;
 
 public class Order {
     private Long id;
@@ -75,7 +77,8 @@ public class Order {
 
     public OrderResponse toOrderResponse(OrderTable orderTable) {
         final OrderTableResponse orderTableResponse = orderTable.toOrderTableResponse();
-        return new OrderResponse(this.id, orderTableResponse, this.orderStatus, this.orderedTime, this.orderLineItems);
+        final OrderLineItemV2 orderLineItemV2 = new OrderLineItemV2(null, null, null, null);
+        return new OrderResponse(this.id, orderTableResponse, this.orderStatus, this.orderedTime, Arrays.asList(orderLineItemV2));
     }
 
     @Override

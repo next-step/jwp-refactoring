@@ -3,6 +3,7 @@ package kitchenpos.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItemV2;
 
 public class OrderResponse {
     private Long id;
@@ -10,10 +11,10 @@ public class OrderResponse {
     private String orderStatus;
     private LocalDateTime orderedTime;
     // TODO : Menu DTO 개발 후 OrderLineItemResponse 개발
-    private List<OrderLineItem> orderLineItems;
+    private List<OrderLineItemV2> orderLineItems;
 
     public OrderResponse(Long id, OrderTableResponse orderTable, String orderStatus, LocalDateTime orderedTime,
-                         List<OrderLineItem> orderLineItems) {
+                         List<OrderLineItemV2> orderLineItems) {
         this.id = id;
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
@@ -37,7 +38,7 @@ public class OrderResponse {
         return orderedTime;
     }
 
-    public List<OrderLineItem> getOrderLineItems() {
+    public List<OrderLineItemV2> getOrderLineItems() {
         return orderLineItems;
     }
 }

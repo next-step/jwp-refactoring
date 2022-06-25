@@ -2,9 +2,8 @@ package kitchenpos.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.OrderStatusV2;
+import kitchenpos.order.domain.OrdersV2;
 
 public class OrderRequest {
     private Long orderTableId;
@@ -26,7 +25,7 @@ public class OrderRequest {
         return menuIds;
     }
 
-    public Order toOrder() {
-        return new Order(null, this.orderTableId, OrderStatus.COOKING.name(), null, null);
+    public OrdersV2 toOrders() {
+        return new OrdersV2(null, this.orderTableId, OrderStatusV2.COOKING, LocalDateTime.now(), null);
     }
 }

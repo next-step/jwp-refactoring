@@ -6,20 +6,23 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
+import kitchenpos.dto.OrderStatusRequest;
+import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.order.domain.OrderLineItemV2;
+import kitchenpos.order.domain.OrderStatusV2;
+import kitchenpos.order.domain.OrdersV2;
+import kitchenpos.order.repository.OrderLineItemRepository;
+import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.table.domain.OrderTableV2;
+import kitchenpos.table.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,37 +33,34 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     private OrderService orderService;
-    private OrderLineItem orderLineItem;
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
-    private OrderLineItemDao orderLineItemDao;
+    private OrderLineItemRepository orderLineItemRepository;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(menuDao, orderDao, orderLineItemDao, orderTableDao);
-
-        // given
-        orderLineItem = new OrderLineItem(1L, 1L);
+        orderService = new OrderService(menuRepository, orderRepository, orderLineItemRepository, orderTableRepository);
     }
 
     @Test
     @DisplayName("주문을 생성한다.")
     void createOrder() {
         // given
-        final Order order = new Order(null, 1L, OrderStatus.COOKING.name(), null, null);
-        when(menuDao.countByIdIn(Arrays.asList(1L))).thenReturn(1L);
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(new OrderTable(1L, null, 3, false)));
-        when(orderDao.save(any())).thenReturn(order);
-        when(orderLineItemDao.save(orderLineItem)).thenReturn(orderLineItem);
+        final OrdersV2 order = new OrdersV2(null, 1L, OrderStatusV2.COOKING, null, null);
+        final OrderLineItemV2 orderLineItemV2 = new OrderLineItemV2(1L, order, 1L, 1L);
+        when(menuRepository.countByIdIn(any())).thenReturn(1L);
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(new OrderTableV2(1L, null, 3, false)));
+        when(orderRepository.save(any())).thenReturn(order);
+        when(orderLineItemRepository.save(any())).thenReturn(orderLineItemV2);
         // when
         final OrderResponse actual = orderService.create(new OrderRequest(1L, Arrays.asList(1L)));
         // then
@@ -97,9 +97,8 @@ class OrderServiceTest {
     @DisplayName("주문 테이블이 존재하지 않으면 에러 발생")
     void notExistOrderTable() {
         // given
-        final Order order = new Order(null, 1L, OrderStatus.COOKING.name(), null, null);
-        when(menuDao.countByIdIn(Arrays.asList(1L))).thenReturn(1L);
-        when(orderTableDao.findById(any())).thenReturn(Optional.empty());
+        when(menuRepository.countByIdIn(any())).thenReturn(1L);
+        when(orderTableRepository.findById(any())).thenReturn(Optional.empty());
 
         // when && then
         assertThatIllegalArgumentException()
@@ -110,31 +109,24 @@ class OrderServiceTest {
     @DisplayName("주문 내역을 조회할 수 있다.")
     void searchOrders() {
         // given
-        final Order order = new Order(1L, Arrays.asList(orderLineItem));
-        when(orderDao.findAll()).thenReturn(Arrays.asList(order));
-        when(orderLineItemDao.findAllByOrderId(any())).thenReturn(Arrays.asList(orderLineItem));
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(new OrderTable(1L, null, 3, false)));
+        final OrdersV2 order = new OrdersV2(1L, 1L, OrderStatusV2.COOKING, LocalDateTime.now(), null);
+        when(orderRepository.findAll()).thenReturn(Arrays.asList(order));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(new OrderTableV2(1L, null, 3, false)));
         // when
         final List<OrderResponse> actual = orderService.list();
         // then
-        assertAll(
-                () -> assertThat(actual).hasSize(1),
-                () -> assertThat(actual.get(0).getOrderLineItems()).hasSize(1),
-                () -> assertThat(actual.get(0).getOrderLineItems()).contains(orderLineItem)
-        );
+        assertThat(actual).hasSize(1);
     }
 
     @Test
     @DisplayName("주문의 상태를 변경할 수 있다.")
     void changeOrderStatus() {
         // given
-        final Order order = new Order(1L, Arrays.asList(orderLineItem));
-        when(orderDao.findById(any())).thenReturn(Optional.of(order));
-        when(orderDao.save(any())).thenReturn(order);
-        when(orderLineItemDao.findAllByOrderId(any())).thenReturn(Arrays.asList(orderLineItem));
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(new OrderTable(1L, null, 3, false)));
+        final OrdersV2 order = new OrdersV2(1L, 1L, OrderStatusV2.COOKING, LocalDateTime.now(), null);
+        when(orderRepository.findById(any())).thenReturn(Optional.of(order));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(new OrderTableV2(1L, null, 3, false)));
         // when
-        final OrderResponse actual = orderService.changeOrderStatus(1L, new Order(OrderStatus.COOKING.name()));
+        final OrderResponse actual = orderService.changeOrderStatus(1L, new OrderStatusRequest(OrderStatusV2.COOKING));
         // then
         assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
     }
@@ -144,18 +136,18 @@ class OrderServiceTest {
     void changeOrderStatusNotExistOrder() {
         // when && then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderService.changeOrderStatus(1L, new Order(OrderStatus.COOKING.name())));
+                .isThrownBy(() -> orderService.changeOrderStatus(1L, new OrderStatusRequest(OrderStatusV2.COOKING)));
     }
 
     @Test
     @DisplayName("완료된 주문을 주문 상태 변경시 에러 발생")
     void changeOrderStatusCompletionOrder() {
         // given
-        final Order order = new Order(null, 1L, OrderStatus.COMPLETION.name(), null, Arrays.asList(orderLineItem));
-        when(orderDao.findById(any())).thenReturn(Optional.of(order));
+        final OrdersV2 order = new OrdersV2(1L, 1L, OrderStatusV2.COMPLETION, LocalDateTime.now(), null);
+        when(orderRepository.findById(any())).thenReturn(Optional.of(order));
 
         // when && then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderService.changeOrderStatus(1L, new Order(OrderStatus.COOKING.name())));
+                .isThrownBy(() -> orderService.changeOrderStatus(1L, new OrderStatusRequest(OrderStatusV2.COOKING)));
     }
 }
