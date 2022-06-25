@@ -12,11 +12,11 @@ import org.springframework.http.HttpStatus;
 
 public class ProductAssertionHelper {
 
-    public static void 상품_등록되어있음(ExtractableResponse<Response> 등록결과, Product 등록상품) {
+    public static void 상품_등록되어있음(ExtractableResponse<Response> 등록결과, String 상품명) {
         assertAll(
             () -> assertThat(등록결과.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
             () -> assertThat(등록결과.jsonPath().get("id").toString()).isNotNull(),
-            () -> assertThat(등록결과.jsonPath().get("name").toString()).isEqualTo(등록상품.getName())
+            () -> assertThat(등록결과.jsonPath().get("name").toString()).isEqualTo(상품명)
         );
     }
 

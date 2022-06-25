@@ -18,30 +18,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 @Sql(scripts = {"/test/db/cleanUp.sql"})
 class ProductAcceptanceTest extends AcceptanceTest {
-
-    private Product 강정치킨;
-    private Product 간장치킨;
-    private Product 카레치킨;
-
-    @BeforeEach
-    public void init() {
-        강정치킨 = new Product();
-        강정치킨.setName("강정치킨");
-        강정치킨.setPrice(BigDecimal.valueOf(18000));
-
-        간장치킨 = new Product();
-        간장치킨.setName("간장치킨");
-        간장치킨.setPrice(BigDecimal.valueOf(17000));
-
-        카레치킨 = new Product();
-        카레치킨.setName("카레치킨");
-        카레치킨.setPrice(BigDecimal.valueOf(16000));
-    }
-
-
     /**
-     * background
-        * given : 상품 정보를 생성하고
      * when : 상품 정보를 등록하면
      * then : 정상적으로 등록이 되며(201 CREATED), ID가 설정되어 반환된다
     */
@@ -49,10 +26,10 @@ class ProductAcceptanceTest extends AcceptanceTest {
     @Test
     public void 상품_등록하기_테스트() {
         //when
-        ExtractableResponse<Response> 상품_등록하기_response = 상품_등록하기(간장치킨);
+        ExtractableResponse<Response> 상품_등록하기_response = 상품_등록하기("간장치킨",18000);
 
         //then
-        상품_등록되어있음(상품_등록하기_response, 간장치킨);
+        상품_등록되어있음(상품_등록하기_response, "간장치킨");
     }
 
     /**
@@ -63,9 +40,9 @@ class ProductAcceptanceTest extends AcceptanceTest {
     @Test
     public void 상품_리스트_조회하기_테스트() {
         //given
-        상품_등록하기(강정치킨);
-        상품_등록하기(카레치킨);
-        상품_등록하기(간장치킨);
+        Product 강정치킨 = 상품_등록하기("강정치킨", 18000).as(Product.class);
+        Product 카레치킨 = 상품_등록하기("카레치킨", 17000).as(Product.class);
+        Product 간장치킨 = 상품_등록하기("간장치킨", 16000).as(Product.class);
 
         //when
         ExtractableResponse<Response> 상품_리스트_조회하기_response = 상품_리스트_조회하기();
@@ -83,10 +60,10 @@ class ProductAcceptanceTest extends AcceptanceTest {
     @Test
     public void 상품_등록_에러발생_테스트() {
         //given
-        강정치킨.setPrice(BigDecimal.valueOf(-1));
+        int 가격 = -1;
 
         //when + then
-        ExtractableResponse<Response> 상품_등록하기_response = 상품_등록하기(강정치킨);
+        ExtractableResponse<Response> 상품_등록하기_response = 상품_등록하기("강정치킨", 가격);
 
         //then
         상품_등록_에러발생(상품_등록하기_response);
