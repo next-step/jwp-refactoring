@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import static kitchenpos.order.domain.OrderStatus.UNCOMPLETED_STATUSES;
 
 @Service
+@Transactional
 public class TableService {
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
@@ -22,19 +23,18 @@ public class TableService {
         this.orderTableRepository = orderTableRepository;
     }
 
-    @Transactional
     public OrderTableResponse create(final OrderTable orderTable) {
         orderTable.ungroup();
         return OrderTableResponse.from(orderTableRepository.save(orderTable));
     }
 
+    @Transactional(readOnly = true)
     public List<OrderTableResponse> list() {
         return orderTableRepository.findAll().stream()
                 .map(OrderTableResponse::from)
                 .collect(Collectors.toList());
     }
 
-    @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTable orderTable) {
         final OrderTable savedOrderTable = getOrderTable(orderTableId);
 
@@ -44,7 +44,6 @@ public class TableService {
         return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
     }
 
-    @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTable orderTable) {
         final OrderTable savedOrderTable = getOrderTable(orderTableId);
 
