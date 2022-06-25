@@ -25,6 +25,9 @@ public class MenuFixtures {
         return new Menu(id, name, new MenuPrice(price), menuGroup, menuProducts);
     }
 
+    public static Menu 메뉴_만들기(String name, Integer price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        return new Menu(name, new MenuPrice(price), menuGroup, menuProducts);
+    }
     public static Menu 메뉴_만들기(Long id, String name, Integer price, MenuProducts menuProducts) {
         return 메뉴_만들기(id, name, price, null, menuProducts);
     }

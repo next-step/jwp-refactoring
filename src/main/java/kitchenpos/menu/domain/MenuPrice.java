@@ -24,15 +24,12 @@ public class MenuPrice {
         }
     }
 
-    public boolean overTo(Amounts amounts) {
-        return price > amounts.calculateTotalAmount();
+    public boolean overTo(MenuProducts menuProducts) {
+        return price > menuProducts.getTotalPrice();
     }
 
     public int getPrice() {
         return price;
     }
 
-    public boolean overTo(MenuProducts menuProducts) {
-        return price > menuProducts.getTotalPrice();
-    }
 }

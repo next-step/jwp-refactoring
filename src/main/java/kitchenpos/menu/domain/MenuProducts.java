@@ -21,15 +21,7 @@ public class MenuProducts {
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
     }
-
-    public Amounts getAmounts() {
-        Amounts amounts = new Amounts();
-        for (MenuProduct menuProduct : menuProducts) {
-            amounts.addAmount(menuProduct.createAmount());
-        }
-        return amounts;
-    }
-
+    
     public int getTotalPrice(){
         return menuProducts.stream()
                 .map(MenuProduct::createAmount)
