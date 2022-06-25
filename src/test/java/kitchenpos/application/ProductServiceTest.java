@@ -60,7 +60,7 @@ class ProductServiceTest {
 
         //when
         assertThatThrownBy(() -> productService.create(minusProduct)).isInstanceOf(
-            RuntimeException.class);
+            IllegalArgumentException.class);
     }
 
     @Test
@@ -73,7 +73,7 @@ class ProductServiceTest {
 
         //when
         assertThatThrownBy(() -> productService.create(minusProduct)).isInstanceOf(
-            RuntimeException.class);
+            IllegalArgumentException.class);
     }
 
 }

@@ -90,14 +90,14 @@ class TableGroupServiceTest {
     void createWithUnderOneTableThrowError() {
         //when & then 0개의 테이블로 단체 테이블 생성시 에러 발생
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
-            .isInstanceOf(RuntimeException.class);
+            .isInstanceOf(IllegalArgumentException.class);
 
         //given
         tableGroup.setOrderTables(Arrays.asList(orderTable_1));
 
         //when & then 1개의 테이블로 단체 테이블 생성시 에러 발생
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
-            .isInstanceOf(RuntimeException.class);
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -108,7 +108,7 @@ class TableGroupServiceTest {
 
         //when & then
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
-            .isInstanceOf(RuntimeException.class);
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -122,7 +122,7 @@ class TableGroupServiceTest {
 
         //when & then
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
-            .isInstanceOf(RuntimeException.class);
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -137,6 +137,6 @@ class TableGroupServiceTest {
 
         //when & then
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
-            .isInstanceOf(RuntimeException.class);
+            .isInstanceOf(IllegalArgumentException.class);
     }
 }

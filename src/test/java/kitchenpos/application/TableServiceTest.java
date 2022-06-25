@@ -60,7 +60,7 @@ class TableServiceTest {
 
         //when & then
         assertThatThrownBy(() -> tableService.changeEmpty(1L, orderTable))
-            .isInstanceOf(RuntimeException.class);
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -68,7 +68,7 @@ class TableServiceTest {
     void changeEmptyWithNotSavedTableThrowError() {
         //when & then
         assertThatThrownBy(() -> tableService.changeEmpty(1L, orderTable))
-            .isInstanceOf(RuntimeException.class);
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -82,7 +82,7 @@ class TableServiceTest {
 
         //when & then
         assertThatThrownBy(() -> tableService.changeEmpty(1L, orderTable))
-            .isInstanceOf(RuntimeException.class);
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -93,7 +93,7 @@ class TableServiceTest {
 
         //when & then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, orderTable))
-            .isInstanceOf(RuntimeException.class);
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -104,7 +104,7 @@ class TableServiceTest {
 
         //when & then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, orderTable))
-            .isInstanceOf(RuntimeException.class);
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -117,6 +117,6 @@ class TableServiceTest {
 
         //when & then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, orderTable))
-            .isInstanceOf(RuntimeException.class);
+            .isInstanceOf(IllegalArgumentException.class);
     }
 }

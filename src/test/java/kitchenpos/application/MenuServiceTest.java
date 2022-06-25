@@ -75,9 +75,9 @@ class MenuServiceTest {
         //when
         assertAll(
             () -> assertThatThrownBy(() -> menuService.create(menu_minusPrice)).isInstanceOf(
-                RuntimeException.class),
+                IllegalArgumentException.class),
             () -> assertThatThrownBy(() -> menuService.create(menu_nullPrice)).isInstanceOf(
-                RuntimeException.class)
+                IllegalArgumentException.class)
         );
     }
 
@@ -90,7 +90,7 @@ class MenuServiceTest {
 
         //when & then
         assertThatThrownBy(() -> menuService.create(menu)).isInstanceOf(
-            RuntimeException.class);
+            IllegalArgumentException.class);
     }
 
     @Test
@@ -107,7 +107,7 @@ class MenuServiceTest {
 
         //when & then
         assertThatThrownBy(() -> menuService.create(menu)).isInstanceOf(
-            RuntimeException.class);
+            IllegalArgumentException.class);
     }
 
 }

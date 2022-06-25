@@ -91,7 +91,7 @@ class OrderServiceTest {
     @DisplayName("주문 상품 없이 주문을 하면 에러 발생")
     void createWithoutItemsThrowError() {
         //when && then
-        assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -105,7 +105,7 @@ class OrderServiceTest {
 
         //when && then
         assertThatThrownBy(() -> orderService.create(order))
-            .isInstanceOf(RuntimeException.class);
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -119,7 +119,7 @@ class OrderServiceTest {
 
         //when && then
         assertThatThrownBy(() -> orderService.create(order))
-            .isInstanceOf(RuntimeException.class);
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -134,7 +134,7 @@ class OrderServiceTest {
 
         //when && then
         assertThatThrownBy(() -> orderService.create(order))
-            .isInstanceOf(RuntimeException.class);
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -146,6 +146,6 @@ class OrderServiceTest {
 
         //when & then
         assertThatThrownBy(() -> orderService.changeOrderStatus(1L, order))
-            .isInstanceOf(RuntimeException.class);
+            .isInstanceOf(IllegalArgumentException.class);
     }
 }
