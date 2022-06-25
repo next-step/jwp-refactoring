@@ -74,7 +74,7 @@ class MenuServiceTest {
                 () -> assertThat(menuResponse.getName()).isEqualTo("양념치킨"),
                 () -> assertThat(menuResponse.getPrice()).isEqualTo(BigDecimal.valueOf(40000L)),
                 () -> assertThat(menuResponse.getMenuGroupId()).isEqualTo(한마리메뉴.id()),
-                () -> assertThat(menuResponse.getMenuProducts()).isEqualTo(Lists.newArrayList(MenuProductResponse.of(양념치킨상품)))
+                () -> assertThat(menuResponse.getMenuProducts()).isEqualTo(Lists.newArrayList(MenuProductResponse.from(양념치킨상품)))
         );
     }
 

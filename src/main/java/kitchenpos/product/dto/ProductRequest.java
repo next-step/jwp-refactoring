@@ -13,7 +13,7 @@ public class ProductRequest {
     }
 
     public Product toProduct() {
-        return Product.of(null, name, price);
+        return Product.from(null, name, price);
     }
 
     public String getName() {

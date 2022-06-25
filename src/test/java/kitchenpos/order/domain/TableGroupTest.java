@@ -18,8 +18,8 @@ class TableGroupTest {
 
     @DisplayName("초기화 테스트")
     @Test
-    void of() {
-        TableGroup tableGroup = TableGroup.of(1L, Lists.newArrayList(주문테이블));
+    void from() {
+        TableGroup tableGroup = TableGroup.from(1L, Lists.newArrayList(주문테이블));
         assertThat(tableGroup).isEqualTo(tableGroup);
     }
 }

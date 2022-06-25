@@ -26,7 +26,7 @@ public class TableRestController {
     @PostMapping("/api/tables")
     public ResponseEntity<OrderTableResponse> create(@RequestBody final OrderTableRequest orderTableRequest) {
         final OrderTable created = tableService.create(orderTableRequest.toOrderTable());
-        OrderTableResponse orderTableResponse = OrderTableResponse.of(created);
+        OrderTableResponse orderTableResponse = OrderTableResponse.from(created);
         final URI uri = URI.create("/api/tables/" + created.id());
         return ResponseEntity.created(uri)
                 .body(orderTableResponse);
@@ -36,7 +36,7 @@ public class TableRestController {
     public ResponseEntity<List<OrderTableResponse>> list() {
         return ResponseEntity.ok()
                 .body(tableService.list().stream()
-                        .map(OrderTableResponse::of)
+                        .map(OrderTableResponse::from)
                         .collect(Collectors.toList()));
     }
 
@@ -46,7 +46,7 @@ public class TableRestController {
             @RequestBody final OrderTableRequest orderTableRequest
     ) {
         return ResponseEntity.ok()
-                .body(OrderTableResponse.of(
+                .body(OrderTableResponse.from(
                         tableService.changeEmpty(orderTableId, orderTableRequest.toOrderTable())));
     }
 
@@ -56,7 +56,7 @@ public class TableRestController {
             @RequestBody final OrderTableRequest orderTableRequest
     ) {
         return ResponseEntity.ok()
-                .body(OrderTableResponse.of(
+                .body(OrderTableResponse.from(
                         tableService.changeNumberOfGuests(orderTableId, orderTableRequest.toOrderTable())));
     }
 }

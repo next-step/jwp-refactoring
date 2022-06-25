@@ -20,7 +20,7 @@ public class MenuProducts {
         this.menuProducts = menuProducts;
     }
 
-    public static MenuProducts of(List<MenuProduct> menuProducts) {
+    public static MenuProducts from(List<MenuProduct> menuProducts) {
         return new MenuProducts(menuProducts);
     }
 

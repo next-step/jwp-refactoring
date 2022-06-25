@@ -59,7 +59,7 @@ public class TableGroupService {
             savedOrderTable.setEmpty(false);
             orderTableRepository.save(savedOrderTable);
         }
-        savedTableGroup.setOrderTables(OrderTables.of(savedOrderTables));
+        savedTableGroup.setOrderTables(OrderTables.from(savedOrderTables));
 
         return savedTableGroup;
     }

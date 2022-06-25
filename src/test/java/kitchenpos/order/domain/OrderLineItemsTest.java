@@ -19,8 +19,8 @@ class OrderLineItemsTest {
 
     @DisplayName("초기화 테스트")
     @Test
-    void of() {
-        OrderLineItems orderLineItems = OrderLineItems.of(Lists.newArrayList(주문항목));
+    void from() {
+        OrderLineItems orderLineItems = OrderLineItems.from(Lists.newArrayList(주문항목));
         assertThat(orderLineItems.readOnlyOrderLineItems()).isEqualTo(Lists.newArrayList(주문항목));
     }
 
@@ -28,7 +28,7 @@ class OrderLineItemsTest {
     @Test
     void ofWithNull() {
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> OrderLineItems.of(null))
+                .isThrownBy(() -> OrderLineItems.from(null))
                 .withMessage("주문 항목이 필요합니다.");
     }
 }

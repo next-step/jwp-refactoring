@@ -35,12 +35,12 @@ public class Menu {
     private Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup) {
         validateMenuGroup(menuGroup);
         this.id = id;
-        this.name = Name.of(name);
-        this.price = Price.of(price);
+        this.name = Name.from(name);
+        this.price = Price.from(price);
         this.menuGroup = menuGroup;
     }
 
-    public static Menu of(Long id, String name, BigDecimal price, MenuGroup menuGroup) {
+    public static Menu from(Long id, String name, BigDecimal price, MenuGroup menuGroup) {
         return new Menu(id, name, price, menuGroup);
     }
 

@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 class NameTest {
     @DisplayName("초기화 테스트")
     @Test
-    void of() {
-        Name name = Name.of("name");
+    void from() {
+        Name name = Name.from("name");
         assertThat(name.value()).isEqualTo("name");
     }
 
@@ -18,7 +18,7 @@ class NameTest {
     @Test
     void ofWithNull() {
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> Name.of(null))
+                .isThrownBy(() -> Name.from(null))
                 .withMessage("이름을 지정해야 합니다.");
     }
 }

@@ -25,11 +25,11 @@ public class Product {
 
     private Product(Long id, String name, BigDecimal price) {
         this.id = id;
-        this.name = Name.of(name);
-        this.price = Price.of(price);
+        this.name = Name.from(name);
+        this.price = Price.from(price);
     }
 
-    public static Product of(Long id, String name, BigDecimal price) {
+    public static Product from(Long id, String name, BigDecimal price) {
         return new Product(id, name, price);
     }
 

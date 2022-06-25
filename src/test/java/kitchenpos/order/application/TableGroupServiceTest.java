@@ -70,7 +70,7 @@ class TableGroupServiceTest {
     @DisplayName("단체지정 생성시 주문테이블이 2 미만인 경우 테스트")
     @Test
     void createWithOrderTableSizeUnderTwo() {
-        단체지정.setOrderTables(OrderTables.of(Lists.newArrayList(치킨주문테이블)));
+        단체지정.setOrderTables(OrderTables.from(Lists.newArrayList(치킨주문테이블)));
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableGroupService.create(단체지정));
     }

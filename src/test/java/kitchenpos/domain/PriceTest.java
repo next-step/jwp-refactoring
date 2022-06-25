@@ -10,8 +10,8 @@ import org.junit.jupiter.api.Test;
 class PriceTest {
     @DisplayName("초기화 테스트")
     @Test
-    void of() {
-        Price price = Price.of(BigDecimal.TEN);
+    void from() {
+        Price price = Price.from(BigDecimal.TEN);
         assertThat(price.value()).isEqualTo(BigDecimal.TEN);
     }
 
@@ -19,7 +19,7 @@ class PriceTest {
     @Test
     void ofWithNull() {
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> Price.of(null))
+                .isThrownBy(() -> Price.from(null))
                 .withMessage("금액을 지정해야 합니다.");
     }
 
@@ -27,7 +27,7 @@ class PriceTest {
     @Test
     void ofWithUnderMin() {
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> Price.of(BigDecimal.valueOf(-100)))
+                .isThrownBy(() -> Price.from(BigDecimal.valueOf(-100)))
                 .withMessage("금액은 " + Price.MIN + "원 이하가 될 수 없습니다.");
     }
 }

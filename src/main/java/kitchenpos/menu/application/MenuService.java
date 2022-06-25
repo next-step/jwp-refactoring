@@ -41,8 +41,8 @@ public class MenuService {
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
         MenuGroup menuGroup = findMenuGroup(menuRequest);
-        final List<MenuProduct> menuProducts = toMenuProduct(menuRequest.getMenuProducts());
-        Menu menu = Menu.of(null, menuRequest.getName(), menuRequest.getPrice(), menuGroup);
+        final List<MenuProduct> menuProducts = findMenuProducts(menuRequest.getMenuProducts());
+        Menu menu = Menu.from(null, menuRequest.getName(), menuRequest.getPrice(), menuGroup);
 
         if (!menuGroupRepository.existsById(menu.menuGroup().id())) {
             throw new IllegalArgumentException();
@@ -64,8 +64,8 @@ public class MenuService {
             menuProduct.setMenu(savedMenu);
             savedMenuProducts.add(menuProductRepository.save(menuProduct));
         }
-        savedMenu.setMenuProducts(MenuProducts.of(savedMenuProducts));
-        return MenuResponse.of(savedMenu);
+        savedMenu.setMenuProducts(MenuProducts.from(savedMenuProducts));
+        return MenuResponse.from(savedMenu);
     }
 
     private Product findProduct(MenuProduct menuProduct) {
@@ -77,11 +77,11 @@ public class MenuService {
         return menuGroupRepository.findById(menuRequest.getMenuGroupId()).orElseThrow(() -> new IllegalArgumentException("메뉴그룹을 찾을 수 없습니다."));
     }
 
-    private List<MenuProduct> toMenuProduct(List<MenuProductRequest> menuProductRequests) {
+    private List<MenuProduct> findMenuProducts(List<MenuProductRequest> menuProductRequests) {
         List<MenuProduct> menuProducts = new ArrayList<>();
         for (MenuProductRequest menuProductRequest : menuProductRequests) {
             Product product = findProduct(menuProductRequest.getProductId());
-            menuProducts.add(MenuProduct.of(null, null, product, menuProductRequest.getQuantity()));
+            menuProducts.add(MenuProduct.from(null, null, product, menuProductRequest.getQuantity()));
         }
         return menuProducts;
     }
@@ -94,7 +94,7 @@ public class MenuService {
         final List<Menu> menus = menuRepository.findAll();
 
         for (final Menu menu : menus) {
-            menu.setMenuProducts(MenuProducts.of(menuProductRepository.findAllByMenuId(menu.id())));
+            menu.setMenuProducts(MenuProducts.from(menuProductRepository.findAllByMenuId(menu.id())));
         }
 
         return menus;

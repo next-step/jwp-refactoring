@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 class QuantityTest {
     @DisplayName("초기화 테스트")
     @Test
-    void of() {
-        Quantity quantity = Quantity.of(10);
+    void from() {
+        Quantity quantity = Quantity.from(10);
         assertThat(quantity.value()).isEqualTo(10);
     }
 
@@ -18,7 +18,7 @@ class QuantityTest {
     @Test
     void ofWithUnderMin() {
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> Quantity.of(-100))
+                .isThrownBy(() -> Quantity.from(-100))
                 .withMessage("수량은 " + Quantity.MIN + "미만일 수 없습니다.");
     }
 }

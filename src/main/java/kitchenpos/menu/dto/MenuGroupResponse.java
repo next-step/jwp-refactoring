@@ -12,7 +12,7 @@ public class MenuGroupResponse {
         this.name = name;
     }
 
-    public static MenuGroupResponse of(MenuGroup menuGroup) {
+    public static MenuGroupResponse from(MenuGroup menuGroup) {
         return new MenuGroupResponse(menuGroup.id(), menuGroup.name().value());
     }
 

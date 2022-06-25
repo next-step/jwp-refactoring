@@ -8,7 +8,6 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 
 import java.math.BigDecimal;
 import kitchenpos.product.domain.Product;
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,8 +25,8 @@ class MenuTest {
 
     @DisplayName("초기화 테스트")
     @Test
-    void of() {
-        Menu menu = Menu.of(1L, "양념치킨", BigDecimal.valueOf(40000L), 한마리메뉴);
+    void from() {
+        Menu menu = Menu.from(1L, "양념치킨", BigDecimal.valueOf(40000L), 한마리메뉴);
         assertThat(menu).isEqualTo(menu);
     }
 
@@ -35,7 +34,7 @@ class MenuTest {
     @Test
     void ofWithNullMenuGroup() {
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> Menu.of(1L, "양념치킨", BigDecimal.valueOf(40000L), null))
+                .isThrownBy(() -> Menu.from(1L, "양념치킨", BigDecimal.valueOf(40000L), null))
                 .withMessage("메뉴그룹이 있어야 합니다.");
     }
 }

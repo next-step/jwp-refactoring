@@ -42,8 +42,8 @@ class ProductServiceTest {
         given(productRepository.save(피자)).willReturn(피자);
         Product product = productService.create(피자);
         assertAll(
-                () -> assertThat(product.name()).isEqualTo(Name.of("피자")),
-                () -> assertThat(product.price()).isEqualTo(Price.of(BigDecimal.valueOf(20000L)))
+                () -> assertThat(product.name()).isEqualTo(Name.from("피자")),
+                () -> assertThat(product.price()).isEqualTo(Price.from(BigDecimal.valueOf(20000L)))
         );
     }
 

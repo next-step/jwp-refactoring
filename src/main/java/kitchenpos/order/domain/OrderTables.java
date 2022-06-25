@@ -20,7 +20,7 @@ public class OrderTables {
         this.orderTables = orderTables;
     }
 
-    public static OrderTables of(List<OrderTable> orderTables) {
+    public static OrderTables from(List<OrderTable> orderTables) {
         return new OrderTables(orderTables);
     }
 

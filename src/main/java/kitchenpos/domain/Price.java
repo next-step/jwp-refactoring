@@ -19,7 +19,7 @@ public class Price {
         this.price = price;
     }
 
-    public static Price of(BigDecimal price) {
+    public static Price from(BigDecimal price) {
         return new Price(price);
     }
 

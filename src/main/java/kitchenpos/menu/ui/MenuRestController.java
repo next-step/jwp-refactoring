@@ -32,7 +32,7 @@ public class MenuRestController {
     public ResponseEntity<List<MenuResponse>> list() {
         return ResponseEntity.ok()
                 .body(menuService.list().stream()
-                        .map(MenuResponse::of)
+                        .map(MenuResponse::from)
                         .collect(Collectors.toList()));
     }
 }

@@ -24,8 +24,8 @@ class MenuProductsTest {
 
     @DisplayName("초기화 테스트")
     @Test
-    void of() {
-        MenuProducts menuProducts = MenuProducts.of(Lists.newArrayList(양념치킨상품));
+    void from() {
+        MenuProducts menuProducts = MenuProducts.from(Lists.newArrayList(양념치킨상품));
         assertThat(menuProducts.readOnlyMenuProducts()).isEqualTo(Lists.newArrayList(양념치킨상품));
     }
 
@@ -33,7 +33,7 @@ class MenuProductsTest {
     @Test
     void ofWithNull() {
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> MenuProducts.of(null))
+                .isThrownBy(() -> MenuProducts.from(null))
                 .withMessage("메뉴상품들이 필요 합니다.");
     }
 }

@@ -13,7 +13,7 @@ public class MenuGroupRequest {
     }
 
     public MenuGroup toMenuGroup() {
-        return MenuGroup.of(null, name);
+        return MenuGroup.from(null, name);
     }
 
     public String getName() {

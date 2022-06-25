@@ -16,7 +16,7 @@ public class OrderTableResponse {
         this.empty = empty;
     }
 
-    public static OrderTableResponse of(OrderTable orderTable) {
+    public static OrderTableResponse from(OrderTable orderTable) {
         return new OrderTableResponse(orderTable.id(), orderTable.tableGroupId(),
                 orderTable.numberOfGuests().value(), orderTable.isEmpty());
     }

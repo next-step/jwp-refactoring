@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 class ProductTest {
     @DisplayName("초기화 테스트")
     @Test
-    void of() {
-        Product product = Product.of(1L, "양념", BigDecimal.TEN);
+    void from() {
+        Product product = Product.from(1L, "양념", BigDecimal.TEN);
         assertThat(product).isEqualTo(product);
     }
 }

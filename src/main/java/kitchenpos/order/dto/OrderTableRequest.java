@@ -11,10 +11,6 @@ public class OrderTableRequest {
         this.empty = empty;
     }
 
-    public static OrderTableRequest of(int numberOfGuests, boolean empty) {
-        return new OrderTableRequest(numberOfGuests, empty);
-    }
-
     public int getNumberOfGuests() {
         return numberOfGuests;
     }
@@ -32,6 +28,6 @@ public class OrderTableRequest {
     }
 
     public OrderTable toOrderTable() {
-        return OrderTable.of(null, null, numberOfGuests, empty);
+        return OrderTable.from(null, null, numberOfGuests, empty);
     }
 }

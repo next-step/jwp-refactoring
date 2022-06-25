@@ -21,10 +21,10 @@ public class MenuGroup {
 
     private MenuGroup(Long id, String name) {
         this.id = id;
-        this.name = Name.of(name);
+        this.name = Name.from(name);
     }
 
-    public static MenuGroup of(Long id, String name) {
+    public static MenuGroup from(Long id, String name) {
         return new MenuGroup(id, name);
     }
 

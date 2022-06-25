@@ -34,10 +34,10 @@ public class MenuProduct {
         this.seq = seq;
         this.menu = menu;
         this.product = product;
-        this.quantity = Quantity.of(quantity);
+        this.quantity = Quantity.from(quantity);
     }
 
-    public static MenuProduct of(Long seq, Menu menu, Product product, long quantity) {
+    public static MenuProduct from(Long seq, Menu menu, Product product, long quantity) {
         return new MenuProduct(seq, menu, product, quantity);
     }
 

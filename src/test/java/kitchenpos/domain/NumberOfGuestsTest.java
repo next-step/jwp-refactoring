@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 class NumberOfGuestsTest {
     @DisplayName("초기화 테스트")
     @Test
-    void of() {
-        NumberOfGuests numberOfGuests = NumberOfGuests.of(10);
+    void from() {
+        NumberOfGuests numberOfGuests = NumberOfGuests.from(10);
         assertThat(numberOfGuests.value()).isEqualTo(10);
     }
 
@@ -18,7 +18,7 @@ class NumberOfGuestsTest {
     @Test
     void ofWithUnderMin() {
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> NumberOfGuests.of(-100))
+                .isThrownBy(() -> NumberOfGuests.from(-100))
                 .withMessage("손님수가 " + NumberOfGuests.MIN + "미만일 수 없습니다.");
     }
 }

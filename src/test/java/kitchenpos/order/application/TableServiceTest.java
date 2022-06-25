@@ -74,7 +74,7 @@ class TableServiceTest {
         OrderTable changedOrderTable = tableService.changeEmpty(주문테이블.id(), orderTable);
         assertAll(
                 () -> assertThat(changedOrderTable.tableGroup()).isNull(),
-                () -> assertThat(changedOrderTable.numberOfGuests()).isEqualTo(NumberOfGuests.of(2)),
+                () -> assertThat(changedOrderTable.numberOfGuests()).isEqualTo(NumberOfGuests.from(2)),
                 () -> assertThat(changedOrderTable.isEmpty()).isTrue()
         );
     }

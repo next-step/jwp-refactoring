@@ -19,8 +19,8 @@ class OrderTablesTest {
 
     @DisplayName("초기화 테스트")
     @Test
-    void of() {
-        OrderTables orderTables = OrderTables.of(Lists.newArrayList(치킨주문테이블));
+    void from() {
+        OrderTables orderTables = OrderTables.from(Lists.newArrayList(치킨주문테이블));
         assertThat(orderTables.readOnlyOrderTables()).isEqualTo(Lists.newArrayList(치킨주문테이블));
     }
 
@@ -28,7 +28,7 @@ class OrderTablesTest {
     @Test
     void ofWithNull() {
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> OrderTables.of(null))
+                .isThrownBy(() -> OrderTables.from(null))
                 .withMessage("주문 테이블들이 필요합니다.");
     }
 }

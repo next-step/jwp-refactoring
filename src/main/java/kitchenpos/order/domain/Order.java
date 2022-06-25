@@ -1,7 +1,6 @@
 package kitchenpos.order.domain;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -36,17 +35,15 @@ public class Order {
     protected Order() {
     }
 
-    private Order(Long id, OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+    private Order(Long id, OrderTable orderTable, OrderStatus orderStatus) {
         this.id = id;
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = LocalDateTime.now();
-        this.orderLineItems = OrderLineItems.of(orderLineItems);
     }
 
-    public static Order of(Long id, OrderTable orderTable, OrderStatus orderStatus,
-                           List<OrderLineItem> orderLineItems) {
-        return new Order(id, orderTable, orderStatus, orderLineItems);
+    public static Order from(Long id, OrderTable orderTable, OrderStatus orderStatus) {
+        return new Order(id, orderTable, orderStatus);
     }
 
     public Long id() {

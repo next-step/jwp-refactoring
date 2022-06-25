@@ -18,7 +18,7 @@ public class NumberOfGuests {
         this.numberOfGuests = numberOfGuests;
     }
 
-    public static NumberOfGuests of(int numberOfGuests) {
+    public static NumberOfGuests from(int numberOfGuests) {
         return new NumberOfGuests(numberOfGuests);
     }
 

@@ -22,11 +22,11 @@ public class MenuResponse {
         this.menuProducts = menuProducts;
     }
 
-    public static MenuResponse of(Menu menu) {
+    public static MenuResponse from(Menu menu) {
         return new MenuResponse(menu.id(), menu.name().value(), menu.price().value(), menu.menuGroup().id(),
                 menu.menuProducts().readOnlyMenuProducts()
                         .stream()
-                        .map(MenuProductResponse::of)
+                        .map(MenuProductResponse::from)
                         .collect(Collectors.toList())
         );
     }

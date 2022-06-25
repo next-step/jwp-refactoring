@@ -20,7 +20,7 @@ public class OrderLineItems {
         this.orderLineItems = orderLineItems;
     }
 
-    public static OrderLineItems of(List<OrderLineItem> orderLineItems) {
+    public static OrderLineItems from(List<OrderLineItem> orderLineItems) {
         return new OrderLineItems(orderLineItems);
     }
 

@@ -34,10 +34,10 @@ public class OrderLineItem {
         this.seq = seq;
         this.order = order;
         this.menu = menu;
-        this.quantity = Quantity.of(quantity);
+        this.quantity = Quantity.from(quantity);
     }
 
-    public static OrderLineItem of(Long seq, Order order, Menu menu, long quantity) {
+    public static OrderLineItem from(Long seq, Order order, Menu menu, long quantity) {
         return new OrderLineItem(seq, order, menu, quantity);
     }
 

@@ -32,11 +32,11 @@ public class OrderTable {
     private OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
         this.id = id;
         this.tableGroup = tableGroup;
-        this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
+        this.numberOfGuests = NumberOfGuests.from(numberOfGuests);
         this.empty = empty;
     }
 
-    public static OrderTable of(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+    public static OrderTable from(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
         return new OrderTable(id, tableGroup, numberOfGuests, empty);
     }
 

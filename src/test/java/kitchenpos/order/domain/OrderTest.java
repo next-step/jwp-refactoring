@@ -21,8 +21,8 @@ class OrderTest {
 
     @DisplayName("초기화 테스트")
     @Test
-    void of() {
-        Order order = Order.of(1L, 주문테이블, OrderStatus.COOKING, Lists.newArrayList(주문항목));
+    void from() {
+        Order order = Order.from(1L, 주문테이블, OrderStatus.COOKING);
         assertThat(order).isEqualTo(order);
     }
 }

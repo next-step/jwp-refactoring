@@ -26,10 +26,10 @@ public class TableGroup {
     private TableGroup(Long id, List<OrderTable> orderTables) {
         this.id = id;
         this.createdDate = LocalDateTime.now();
-        this.orderTables = OrderTables.of(orderTables);
+        this.orderTables = OrderTables.from(orderTables);
     }
 
-    public static TableGroup of(Long id, List<OrderTable> orderTables) {
+    public static TableGroup from(Long id, List<OrderTable> orderTables) {
         return new TableGroup(id, orderTables);
     }
 
