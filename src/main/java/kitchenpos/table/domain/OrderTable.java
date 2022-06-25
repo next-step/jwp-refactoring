@@ -29,14 +29,9 @@ public class OrderTable {
     public OrderTable() {
     }
 
-    public OrderTable(Long id, int numberOfGuests, boolean empty) {
-        this.id = id;
+    public OrderTable(int numberOfGuests, boolean empty) {
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
         this.empty = empty;
-    }
-
-    public OrderTable(int numberOfGuests, boolean empty) {
-        this(null, numberOfGuests, empty);
     }
 
     public void ungroup() {

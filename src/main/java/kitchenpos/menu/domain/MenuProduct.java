@@ -33,6 +33,10 @@ public class MenuProduct {
     }
 
     public MenuProduct(Product product, long quantity) {
+        if (product == null) {
+            throw new IllegalArgumentException("상품이 존재하지 않습니다.");
+        }
+
         this.product = product;
         this.quantity = new Quantity(quantity);
     }
@@ -45,10 +49,6 @@ public class MenuProduct {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public Menu getMenu() {
         return menu;
     }
@@ -59,6 +59,10 @@ public class MenuProduct {
 
     public Long getProductId() {
         return product.getId();
+    }
+
+    public Product getProduct() {
+        return product;
     }
 
     public long getQuantity() {

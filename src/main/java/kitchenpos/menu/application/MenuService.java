@@ -31,8 +31,7 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        if (menuRequest.getMenuGroupId() == null ||
-            !menuGroupRepository.existsById(menuRequest.getMenuGroupId())) {
+        if (menuRequest.getMenuGroupId() == null || !menuGroupRepository.existsById(menuRequest.getMenuGroupId())) {
             throw new IllegalArgumentException("메뉴 그룹이 설정되지 않았습니다.");
         }
 
