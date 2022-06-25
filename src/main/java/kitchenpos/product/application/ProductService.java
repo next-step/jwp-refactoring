@@ -2,6 +2,7 @@ package kitchenpos.product.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
@@ -26,5 +27,9 @@ public class ProductService {
         return productRepository.findAll().stream()
                 .map(ProductResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    public Product findProduct(long productId) {
+        return productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다."));
     }
 }

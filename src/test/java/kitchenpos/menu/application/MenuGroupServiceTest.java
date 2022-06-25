@@ -3,6 +3,7 @@ package kitchenpos.menu.application;
 import static kitchenpos.utils.DomainFixtureFactory.createMenuGroup;
 import static kitchenpos.utils.DomainFixtureFactory.createMenuGroupRequest;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
 
@@ -60,5 +61,14 @@ class MenuGroupServiceTest {
         given(menuGroupRepository.findById(한마리메뉴.id())).willReturn(Optional.ofNullable(한마리메뉴));
         MenuGroup menuGroup = menuGroupService.findMenuGroup(한마리메뉴.id());
         assertThat(menuGroup).isEqualTo(한마리메뉴);
+    }
+
+    @DisplayName("메뉴 그룹 찾을 수 없음")
+    @Test
+    void findMenuGroupEmpty() {
+        given(menuGroupRepository.findById(한마리메뉴.id())).willReturn(Optional.empty());
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> menuGroupService.findMenuGroup(한마리메뉴.id()))
+                .withMessage("메뉴그룹을 찾을 수 없습니다.");
     }
 }

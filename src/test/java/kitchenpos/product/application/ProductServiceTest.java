@@ -9,6 +9,7 @@ import static org.mockito.BDDMockito.given;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
@@ -72,5 +73,22 @@ class ProductServiceTest {
         List<ProductResponse> products = productService.list();
         assertThat(products).containsExactlyElementsOf(
                 Lists.newArrayList(ProductResponse.from(피자), ProductResponse.from(스파게티)));
+    }
+
+    @DisplayName("상품 찾기 테스트")
+    @Test
+    void findProduct() {
+        given(productRepository.findById(1L)).willReturn(Optional.ofNullable(피자));
+        Product product = productService.findProduct(1L);
+        assertThat(product).isEqualTo(피자);
+    }
+
+    @DisplayName("상품 찾을 수 없음")
+    @Test
+    void findProductEmpty() {
+        given(productRepository.findById(1L)).willReturn(Optional.empty());
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> productService.findProduct(1L))
+                .withMessage("상품을 찾을 수 없습니다.");
     }
 }
