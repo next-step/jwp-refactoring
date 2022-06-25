@@ -3,6 +3,7 @@ package kitchenpos.domain;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -35,7 +36,7 @@ public class Menu {
     @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"))
     private MenuGroup menuGroup;
 
-    @OneToMany(mappedBy = "menu")
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
     public Menu() {
@@ -44,6 +45,12 @@ public class Menu {
     public Menu(String name, BigDecimal price) {
         this.name = new Name(name);
         this.price = new Price(price);
+    }
+
+    public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
+        this.name = new Name(name);
+        this.price = new Price(price);
+        this.menuGroup = menuGroup;
     }
 
     public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup) {
@@ -59,6 +66,20 @@ public class Menu {
         this.price = new Price(price);
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
+    }
+
+    public void addMenuProduct(List<MenuProduct> source) {
+        validateAmount(source);
+        menuProducts.addAll(source);
+    }
+
+    private void validateAmount(List<MenuProduct> source) {
+        BigDecimal sum = source.stream().
+                map(MenuProduct::calculateAmount).
+                reduce(BigDecimal.ZERO, BigDecimal::add);
+        if (price.greaterThan(sum)) {
+            throw new IllegalArgumentException("상품 가격의 합계 보다 비싼 메뉴 가격을 추가 할 수 업습니다.");
+        }
     }
 
     public Long getId() {
@@ -81,6 +102,10 @@ public class Menu {
         return menuGroup;
     }
 
+    public void registerMenuGroup(MenuGroup menuGroup) {
+        this.menuGroup = menuGroup;
+    }
+
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
     }
@@ -88,4 +113,6 @@ public class Menu {
     public void setMenuProducts(final List<MenuProduct> menuProducts) {
         this.menuProducts = menuProducts;
     }
+
+
 }

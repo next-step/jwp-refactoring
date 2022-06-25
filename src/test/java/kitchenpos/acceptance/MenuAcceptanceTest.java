@@ -46,7 +46,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                     중식 = 중식_생성_요청_응답.as(MenuGroupResponse.class);
 
                     //when & then
-                    ExtractableResponse<Response> 메뉴_생성_요청_응답 = 메뉴_생성_요청("중식_메뉴", 500L,
+                    ExtractableResponse<Response> 메뉴_생성_요청_응답 = 메뉴_생성_요청("중식_메뉴", 5000L,
                             중식.getId(),
                             makeMenuProductRequests(짬뽕, 짜장));
                     메뉴_생성됨(메뉴_생성_요청_응답);
