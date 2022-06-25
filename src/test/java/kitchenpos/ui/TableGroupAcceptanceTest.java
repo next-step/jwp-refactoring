@@ -24,7 +24,6 @@ import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.TableGroup;
-import kitchenpos.helper.AcceptanceApiHelper.OrderApiHelper;
 import kitchenpos.helper.AcceptanceApiHelper.TableApiHelper;
 import kitchenpos.helper.AcceptanceApiHelper.TableGroupApiHelper;
 import kitchenpos.helper.AcceptanceAssertionHelper.TableGroupAssertionHelper;
@@ -33,14 +32,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
 
 @Sql(scripts = {"/test/db/cleanUp.sql"})
-class TableGroupAcceptanceTest  extends AcceptanceTest {
+class TableGroupAcceptanceTest extends AcceptanceTest {
 
     private OrderTable 빈테이블_1;
     private OrderTable 빈테이블_2;
     private OrderTable 사용중인테이블;
     private Menu 양념두마리_메뉴;
+
     @BeforeEach
-    public void init(){
+    public void init() {
         테이블_설정하기();
         메뉴_설정하기();
     }
@@ -53,6 +53,7 @@ class TableGroupAcceptanceTest  extends AcceptanceTest {
         양념_한마리.setQuantity(2);
         양념두마리_메뉴 = 메뉴_추가하기("양념두마리", 25000, 두마리메뉴.getId(), Arrays.asList(양념_한마리)).as(Menu.class);
     }
+
     private void 테이블_설정하기() {
         빈테이블_1 = TableApiHelper.빈테이블_생성하기().as(OrderTable.class);
         빈테이블_2 = TableApiHelper.빈테이블_생성하기().as(OrderTable.class);
@@ -63,13 +64,10 @@ class TableGroupAcceptanceTest  extends AcceptanceTest {
     }
 
     /**
-      *background
-         * given : 빈테이블 2개를 생성하고
-     * when : 테이블 2개를 단체로 설정시
-     * then : 정상적으로 등록된다.
-    */
+     * background given : 빈테이블 2개를 생성하고 when : 테이블 2개를 단체로 설정시 then : 정상적으로 등록된다.
+     */
     @Test
-    public void 테이블그룹_생성하기_테스트(){
+    public void 테이블그룹_생성하기_테스트() {
         //when
         ExtractableResponse<Response> 단체_테이블_등록하기_response = 단체_테이블_등록하기(
             Arrays.asList(빈테이블_1, 빈테이블_2));
@@ -79,33 +77,28 @@ class TableGroupAcceptanceTest  extends AcceptanceTest {
     }
 
     /**
-     *background
-         * given : 빈테이블 2개를 생성하고
-     * given : 테이블 2개를 단체로 설정하고
-     * when : 단체테이블 삭제시
-     * then : 정상적으로 삭제된다.
+     * background given : 빈테이블 2개를 생성하고 given : 테이블 2개를 단체로 설정하고 when : 단체테이블 삭제시 then : 정상적으로
+     * 삭제된다.
      */
     @Test
-    public void 테이블그룹_삭제하기_테스트(){
+    public void 테이블그룹_삭제하기_테스트() {
         //given
         TableGroup 단체테이블 = 단체_테이블_등록하기(Arrays.asList(빈테이블_1, 빈테이블_2)).as(TableGroup.class);
 
         //when
-        ExtractableResponse<Response> 단체_테이블_삭제하기_response = TableGroupApiHelper.단체_테이블_삭제하기(단체테이블.getId());
+        ExtractableResponse<Response> 단체_테이블_삭제하기_response = TableGroupApiHelper.단체_테이블_삭제하기(
+            단체테이블.getId());
 
         //then
         TableGroupAssertionHelper.단체_테이블_삭제됨(단체_테이블_삭제하기_response);
     }
 
     /**
-     *background
-         * given : 빈테이블 2개를 생성하고
-         * given : 사용중인 테이블 1개를 생성후
-     * when : 테이블 3개를 단체로 설정시
-     * then : 에러가 발생한다
+     * background given : 빈테이블 2개를 생성하고 given : 사용중인 테이블 1개를 생성후 when : 테이블 3개를 단체로 설정시 then : 에러가
+     * 발생한다
      */
     @Test
-    public void 테이블그룹_사용중인테이블있을시_에러발생(){
+    public void 테이블그룹_사용중인테이블있을시_에러발생() {
         //when
         ExtractableResponse<Response> 단체_테이블_등록하기_response = 단체_테이블_등록하기(
             Arrays.asList(빈테이블_1, 빈테이블_2, 사용중인테이블));
@@ -115,13 +108,10 @@ class TableGroupAcceptanceTest  extends AcceptanceTest {
     }
 
     /**
-     *background
-        * given : 빈테이블 1개를 생성하고
-     * when : 테이블 1개를 단체로 설정시
-     * then : 에러가 발생한다
+     * background given : 빈테이블 1개를 생성하고 when : 테이블 1개를 단체로 설정시 then : 에러가 발생한다
      */
     @Test
-    public void 테이블그룹_1개이하테이블_등록시_에러발생(){
+    public void 테이블그룹_1개이하테이블_등록시_에러발생() {
         //when
         ExtractableResponse<Response> 단체_테이블_등록하기_response = 단체_테이블_등록하기(
             Arrays.asList(빈테이블_1));
@@ -131,12 +121,10 @@ class TableGroupAcceptanceTest  extends AcceptanceTest {
     }
 
     /**
-     * given : 없는 테이블 2개 생성후
-     * when : 없는 테이블을 단체로 설정시
-     * then : 에러가 발생한다
+     * given : 없는 테이블 2개 생성후 when : 없는 테이블을 단체로 설정시 then : 에러가 발생한다
      */
     @Test
-    public void 테이블그룹_없는테이블_등록시_에러발생(){
+    public void 테이블그룹_없는테이블_등록시_에러발생() {
         //given
         OrderTable 없는테이블_1 = new OrderTable();
         OrderTable 없는테이블_2 = new OrderTable();
@@ -150,13 +138,11 @@ class TableGroupAcceptanceTest  extends AcceptanceTest {
     }
 
     /**
-     * given : 테이블 2개 그룹으로 생성하고
-     * given: 한개의 테이블은 주문완료, 한개의 테이블은 주문요리중으로 설정후
-     * when : 테이블 그룹 삭제시
-     * then : 에러가 발생한다
+     * given : 테이블 2개 그룹으로 생성하고 given: 한개의 테이블은 주문완료, 한개의 테이블은 주문요리중으로 설정후 when : 테이블 그룹 삭제시 then :
+     * 에러가 발생한다
      */
     @Test
-    public void 테이블그룹_다먹지않은테이블_삭제시_에러발생(){
+    public void 테이블그룹_다먹지않은테이블_삭제시_에러발생() {
         //given
         TableGroup 단체테이블 = 단체_테이블_등록하기(Arrays.asList(빈테이블_1, 빈테이블_2)).as(TableGroup.class);
         OrderLineItem 주문 = new OrderLineItem();

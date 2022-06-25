@@ -3,11 +3,8 @@ package kitchenpos.helper.AcceptanceApiHelper;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.List;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
 import kitchenpos.domain.TableGroup;
 import org.springframework.http.MediaType;
 
