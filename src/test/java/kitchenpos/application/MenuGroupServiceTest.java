@@ -20,7 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class 용 {
+class MenuGroupServiceTest {
 
     @Mock
     private MenuGroupRepository menuGroupRepository;
