@@ -50,7 +50,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         메뉴_목록_포함됨(메뉴_목록, Arrays.asList(등록된_메뉴));
     }
 
-    private static Menu 테스트_메뉴_생성() {
+    public static Menu 테스트_메뉴_생성() {
         MenuGroup menuGroup = 메뉴_그룹_가져옴(메뉴_그룹_등록되어_있음(MENU_GROUP_NAME01));
         Product product = 상품_가져옴(상품_등록되어_있음(PRODUCT_NAME01, PRODUCT_PRICE01));
         MenuProduct menuProduct = new MenuProduct(product.getId(), 1);
@@ -98,5 +98,9 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 .collect(Collectors.toList());
 
         assertThat(resultLineIds).containsAll(expectedLineIds);
+    }
+
+    public static Menu 메뉴_가져옴(ExtractableResponse<Response> response) {
+        return response.as(Menu.class);
     }
 }
