@@ -2,25 +2,23 @@ package kitchenpos.application;
 
 import java.util.List;
 import kitchenpos.ServiceTest;
+import kitchenpos.application.helper.ServiceTestHelper;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
 import kitchenpos.fixture.OrderTableFixtureFactory;
-import kitchenpos.fixture.TableGroupFixtureFactory;
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import static org.assertj.core.api.Assertions.*;
 class TableServiceTest extends ServiceTest {
     @Autowired
-    TableService tableService;
+    ServiceTestHelper serviceTestHelper;
 
     @Autowired
-    TableGroupService tableGroupService;
+    TableService tableService;
 
     @Test
     void 빈_테이블_생성(){
-        OrderTable orderTable = OrderTableFixtureFactory.createEmptyOrderTable();
-        OrderTable savedOrderTable = tableService.create(orderTable);
+        OrderTable savedOrderTable = serviceTestHelper.빈테이블_생성됨();
+
         assertThat(savedOrderTable.getTableGroupId()).isNull();
         assertThat(savedOrderTable.getId()).isNotNull();
         assertThat(savedOrderTable.getNumberOfGuests()).isZero();
@@ -29,8 +27,8 @@ class TableServiceTest extends ServiceTest {
     @Test
     void 비어있지않은_테이블_생성(){
         int numberOfGuests = 4;
-        OrderTable orderTable = OrderTableFixtureFactory.createNotEmptyOrderTable(numberOfGuests);
-        OrderTable savedOrderTable = tableService.create(orderTable);
+        OrderTable savedOrderTable = serviceTestHelper.비어있지않은테이블_생성됨(numberOfGuests);
+
         assertThat(savedOrderTable.getTableGroupId()).isNull();
         assertThat(savedOrderTable.getId()).isNotNull();
         assertThat(savedOrderTable.getNumberOfGuests()).isEqualTo(numberOfGuests);
@@ -38,8 +36,8 @@ class TableServiceTest extends ServiceTest {
 
     @Test
     void 테이블_목록_조회(){
-        tableService.create(OrderTableFixtureFactory.createEmptyOrderTable());
-        tableService.create(OrderTableFixtureFactory.createEmptyOrderTable());
+        serviceTestHelper.빈테이블_생성됨();
+        serviceTestHelper.빈테이블_생성됨();
         List<OrderTable> orderTables = tableService.list();
         assertThat(orderTables).hasSize(2);
     }
@@ -47,8 +45,9 @@ class TableServiceTest extends ServiceTest {
     @Test
     void 빈_테이블로_변경(){
         int numberOfGuests = 4;
-        OrderTable orderTable = tableService.create(OrderTableFixtureFactory.createNotEmptyOrderTable(numberOfGuests));
-        OrderTable param = OrderTableFixtureFactory.createEmptyOrderTable();
+        OrderTable orderTable = serviceTestHelper.비어있지않은테이블_생성됨(numberOfGuests);
+
+        OrderTable param = OrderTableFixtureFactory.createParamForChangeEmptyState(true);
         OrderTable updatedOrderTable = tableService.changeEmpty(orderTable.getId(),param);
 
         assertThat(updatedOrderTable.getId()).isEqualTo(orderTable.getId());
@@ -58,9 +57,9 @@ class TableServiceTest extends ServiceTest {
 
     @Test
     void 비어있지않은_테이블로_변경(){
-        OrderTable orderTable = tableService.create(OrderTableFixtureFactory.createEmptyOrderTable());
-        int numberOfGuests = 4;
-        OrderTable param = OrderTableFixtureFactory.createNotEmptyOrderTable(numberOfGuests);
+        OrderTable orderTable = serviceTestHelper.빈테이블_생성됨();
+
+        OrderTable param = OrderTableFixtureFactory.createParamForChangeEmptyState(false);
         OrderTable updatedOrderTable = tableService.changeEmpty(orderTable.getId(),param);
 
         assertThat(updatedOrderTable.getId()).isEqualTo(orderTable.getId());
@@ -70,24 +69,23 @@ class TableServiceTest extends ServiceTest {
 
     @Test
     void 테이블_공석상태변경_테이블이_존재하지않는경우(){
-        OrderTable orderTable = OrderTableFixtureFactory.createEmptyOrderTable();
-        int numberOfGuests = 4;
-        OrderTable param = OrderTableFixtureFactory.createNotEmptyOrderTable(numberOfGuests);
+        OrderTable notSavedOrderTable = OrderTableFixtureFactory.createEmptyOrderTable();
+
+        OrderTable param = OrderTableFixtureFactory.createParamForChangeEmptyState(false);
         assertThatIllegalArgumentException().isThrownBy(()->{
-            tableService.changeEmpty(orderTable.getId(),param);
+            tableService.changeEmpty(notSavedOrderTable.getId(),param);
         });
     }
 
     @Test
     void 테이블_공석상태변경_테이블그룹에_포함된경우(){
-        OrderTable savedOrderTable = tableService.create(OrderTableFixtureFactory.createEmptyOrderTable());
-        OrderTable savedOrderTable2 = tableService.create(OrderTableFixtureFactory.createEmptyOrderTable());
-        TableGroup tableGroup = TableGroupFixtureFactory.createTableGroup(Lists.newArrayList(savedOrderTable,savedOrderTable2));
-        TableGroup savedTableGroup = tableGroupService.create(tableGroup);
-        int numberOfGuests = 4;
-        OrderTable param = OrderTableFixtureFactory.createNotEmptyOrderTable(numberOfGuests);
+        OrderTable emptyTable = serviceTestHelper.빈테이블_생성됨();
+        OrderTable emptyTable2 = serviceTestHelper.빈테이블_생성됨();
+        serviceTestHelper.테이블그룹_지정됨(emptyTable,emptyTable2);
+
+        OrderTable param = OrderTableFixtureFactory.createParamForChangeEmptyState(false);
         assertThatIllegalArgumentException().isThrownBy(()->{
-            tableService.changeEmpty(savedOrderTable.getId(),param);
+            tableService.changeEmpty(emptyTable.getId(),param);
         });
     }
 
@@ -98,10 +96,10 @@ class TableServiceTest extends ServiceTest {
 
     @Test
     void 테이블_인원수_변경(){
-        int numberOfGuests = 4;
-        OrderTable savedOrderTable = tableService.create(OrderTableFixtureFactory.createNotEmptyOrderTable(numberOfGuests));
+        OrderTable savedOrderTable = serviceTestHelper.비어있지않은테이블_생성됨(4);
+
         int updatedNumberOfGuests = 3;
-        OrderTable param = OrderTableFixtureFactory.createNotEmptyOrderTable(updatedNumberOfGuests);
+        OrderTable param = OrderTableFixtureFactory.createParamForChangeNumberOfGuests(updatedNumberOfGuests);
         OrderTable updatedOrderTable = tableService.changeNumberOfGuests(savedOrderTable.getId(),param);
 
         assertThat(updatedOrderTable.getId()).isEqualTo(savedOrderTable.getId());
@@ -110,22 +108,23 @@ class TableServiceTest extends ServiceTest {
 
     @Test
     void 테이블_인원수_변경_음수로_변경시도(){
-        int numberOfGuests = 4;
-        OrderTable savedOrderTable = tableService.create(OrderTableFixtureFactory.createNotEmptyOrderTable(numberOfGuests));
+        OrderTable savedOrderTable = serviceTestHelper.비어있지않은테이블_생성됨(4);
+
         int invalidNumberOfGuests = -5;
-        OrderTable param = OrderTableFixtureFactory.createNotEmptyOrderTable(invalidNumberOfGuests);
-        assertThatIllegalArgumentException().isThrownBy(()->{
-            tableService.changeNumberOfGuests(savedOrderTable.getId(),param);
-        });
+        OrderTable param = OrderTableFixtureFactory.createParamForChangeNumberOfGuests(invalidNumberOfGuests);
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(()-> tableService.changeNumberOfGuests(savedOrderTable.getId(),param));
     }
 
     @Test
     void 테이블_인원수_변경_빈테이블인_경우(){
-        OrderTable savedOrderTable = tableService.create(OrderTableFixtureFactory.createEmptyOrderTable());
-        int numberOfGuests = 4;
-        OrderTable param = OrderTableFixtureFactory.createNotEmptyOrderTable(numberOfGuests);
-        assertThatIllegalArgumentException().isThrownBy(()->{
-            tableService.changeNumberOfGuests(savedOrderTable.getId(),param);
-        });
+        OrderTable savedOrderTable = serviceTestHelper.빈테이블_생성됨();
+
+        OrderTable param = OrderTableFixtureFactory.createParamForChangeNumberOfGuests(4);
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(()-> tableService.changeNumberOfGuests(savedOrderTable.getId(),param));
     }
+
 }

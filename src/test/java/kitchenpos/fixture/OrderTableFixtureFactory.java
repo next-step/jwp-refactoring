@@ -18,4 +18,16 @@ public class OrderTableFixtureFactory {
         orderTable.setNumberOfGuests(numberOfGuests);
         return orderTable;
     }
+
+    public static OrderTable createParamForChangeEmptyState(boolean empty) {
+        OrderTable orderTable = new OrderTable();
+        orderTable.setEmpty(empty);
+        return orderTable;
+    }
+
+    public static OrderTable createParamForChangeNumberOfGuests(int numberOfGuests) {
+        OrderTable orderTable = new OrderTable();
+        orderTable.setNumberOfGuests(numberOfGuests);
+        return orderTable;
+    }
 }
