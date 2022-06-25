@@ -12,14 +12,11 @@ import io.restassured.response.Response;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.dto.MenuProductRequest;
-import kitchenpos.dto.OrderRequest;
-import kitchenpos.dto.OrderResponse;
-import kitchenpos.dto.OrderStatusRequest;
-import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.dto.OrderStatusRequest;
+import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.order.domain.OrderLineItemV2;
 import kitchenpos.order.domain.OrderStatusV2;
 import kitchenpos.order.domain.OrdersV2;
@@ -59,7 +56,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
         // given
         final OrderTableResponse 주문_테이블_결과 = new OrderTableResponse(1L, null, 3, false);
         final OrdersV2 order = new OrdersV2(1L, 1L, OrderStatusV2.COOKING, LocalDateTime.now(), null);
-        final OrderResponse 예상된_주문_결과 = new OrderResponse(1L, 주문_테이블_결과, OrderStatus.COOKING.name(), null, Arrays.asList(new OrderLineItemV2(1L, order, 1L, 2L)));
+        final OrderResponse 예상된_주문_결과 = new OrderResponse(1L, 주문_테이블_결과, OrderStatusV2.COOKING.name(), null, Arrays.asList(new OrderLineItemV2(1L, order, 1L, 2L)));
 
         // when
         final ExtractableResponse<Response> 주문_요청_결과 = 주문_요청(1L, 1L, 1L);

@@ -8,8 +8,8 @@ import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.utils.RestAssuredHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -67,8 +67,8 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 테이블_단체_그룹_요청(List<ExtractableResponse<Response>> 테이블_주문_결과들) {
         final List<Long> 테이블_주문 = 테이블_주문_결과들.stream()
-                .map(it -> it.body().jsonPath().getObject(".", OrderTable.class))
-                .map(OrderTable::getId)
+                .map(it -> it.body().jsonPath().getObject(".", OrderTableResponse.class))
+                .map(OrderTableResponse::getId)
                 .collect(Collectors.toList());
         return RestAssuredHelper.post(TABLE_GROUP_URI, new TableGroupRequest(테이블_주문));
     }

@@ -11,11 +11,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.dto.OrderRequest;
-import kitchenpos.dto.OrderResponse;
-import kitchenpos.dto.OrderStatusRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.OrderLineItemV2;
 import kitchenpos.order.domain.OrderStatusV2;
 import kitchenpos.order.domain.OrdersV2;
@@ -66,7 +66,7 @@ class OrderServiceTest {
         // then
         assertAll(
                 () -> assertThat(actual.getOrderLineItems()).hasSize(1),
-                () -> assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name()),
+                () -> assertThat(actual.getOrderStatus()).isEqualTo(OrderStatusV2.COOKING.name()),
                 () -> assertThat(actual.getOrderTable().getId()).isEqualTo(1L)
         );
     }
@@ -128,7 +128,7 @@ class OrderServiceTest {
         // when
         final OrderResponse actual = orderService.changeOrderStatus(1L, new OrderStatusRequest(OrderStatusV2.COOKING));
         // then
-        assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(actual.getOrderStatus()).isEqualTo(OrderStatusV2.COOKING.name());
     }
 
     @Test

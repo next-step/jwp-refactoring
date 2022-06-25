@@ -9,11 +9,12 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
-import kitchenpos.dto.OrderTableResponse;
-import kitchenpos.dto.TableGroupRequest;
-import kitchenpos.dto.TableGroupResponse;
+import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupResponse;
 import kitchenpos.order.domain.OrderStatusV2;
 import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.domain.OrderTableV2;
 import kitchenpos.table.domain.TableGroupV2;
 import kitchenpos.table.repository.OrderTableRepository;
@@ -57,7 +58,7 @@ class TableGroupServiceTest {
         when(tableGroupRepository.save(any())).thenReturn(tableGroup);
         // when
         final TableGroupResponse actual = tableGroupService.create(
-                new kitchenpos.dto.TableGroupRequest(Arrays.asList(1L, 2L)));
+                new TableGroupRequest(Arrays.asList(1L, 2L)));
         // then
         assertAll(
                 () -> assertThat(actual).isNotNull(),
@@ -91,7 +92,7 @@ class TableGroupServiceTest {
     @DisplayName("엮을 테이블은 한 개 이하면 예외 발생")
     void invalidLessThen2OrderTable() {
         // given
-        final kitchenpos.dto.TableGroupRequest tableGroupRequest = new kitchenpos.dto.TableGroupRequest(
+        final TableGroupRequest tableGroupRequest = new TableGroupRequest(
                 Arrays.asList(1L));
         // when && then
         assertThatIllegalArgumentException()
@@ -102,7 +103,7 @@ class TableGroupServiceTest {
     @DisplayName("엮을 주문 테이블이 존재하지 않으면 예외 발생")
     void notExistOrderTableId() {
         // given
-        final kitchenpos.dto.TableGroupRequest tableGroupRequest = new kitchenpos.dto.TableGroupRequest(
+        final TableGroupRequest tableGroupRequest = new TableGroupRequest(
                 Arrays.asList(1L, 2L));
         // when && then
         assertThatIllegalArgumentException()

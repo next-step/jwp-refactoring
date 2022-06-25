@@ -14,8 +14,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import kitchenpos.dto.OrderTableResponse;
-import kitchenpos.dto.TableGroupResponse;
+import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.table.dto.TableGroupResponse;
 import org.springframework.data.annotation.CreatedDate;
 
 @Entity

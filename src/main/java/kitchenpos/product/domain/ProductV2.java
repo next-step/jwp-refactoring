@@ -8,7 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import kitchenpos.dto.ProductResponse;
+import kitchenpos.product.dto.ProductResponse;
 
 @Entity
 @Table(name = "product")

@@ -7,7 +7,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Collections;
 import java.util.List;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.utils.RestAssuredHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -40,8 +40,8 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 메뉴_그룹_생성_요청(String 메뉴_그룹명) {
-        final MenuGroup menuGroup = new MenuGroup(메뉴_그룹명);
-        return RestAssuredHelper.post(MENU_GROUPS_URI, menuGroup);
+        final MenuGroupRequest menuGroupRequest = new MenuGroupRequest(메뉴_그룹명);
+        return RestAssuredHelper.post(MENU_GROUPS_URI, menuGroupRequest);
     }
 
     public static void 메뉴_그룹_생성_확인(ExtractableResponse<Response> 메뉴_그룹_생성_결과) {

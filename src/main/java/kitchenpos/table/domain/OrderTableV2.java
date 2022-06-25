@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.order.dto.OrderTableResponse;
 
 @Entity
 @Table(name = "order_table")

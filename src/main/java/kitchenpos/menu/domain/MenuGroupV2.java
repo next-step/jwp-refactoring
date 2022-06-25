@@ -7,7 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import kitchenpos.dto.MenuGroupResponse;
+import kitchenpos.menu.dto.MenuGroupResponse;
 
 @Entity
 @Table(name = "menu_group")
