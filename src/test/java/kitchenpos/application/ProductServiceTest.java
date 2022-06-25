@@ -1,7 +1,10 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.ProductEntity;
+import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
+import kitchenpos.repository.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +25,7 @@ import static org.mockito.BDDMockito.given;
 public class ProductServiceTest {
 
     @Mock
-    ProductDao productDao;
+    ProductRepository productRepository;
 
     @InjectMocks
     ProductService productService;
@@ -31,24 +34,23 @@ public class ProductServiceTest {
     @Test
     void 상품_생성_성공() {
         // given
-        Product 뿌링클윙 = 상품_생성(1L, "뿌링클윙", 20_000);
-        given(productDao.save(any(Product.class))).willReturn(뿌링클윙);
+        ProductEntity 뿌링클윙 = new ProductEntity("뿌링클윙", BigDecimal.valueOf(20_000));
+        given(productRepository.save(any(ProductEntity.class))).willReturn(뿌링클윙);
 
         // when
-        Product saved = productService.create(뿌링클윙);
+        ProductResponse saved = productService.create(new ProductRequest(뿌링클윙.getName(), 뿌링클윙.getUnitPrice()));
 
         // then
         assertThat(saved).isNotNull();
         assertThat(saved.getName()).isEqualTo(뿌링클윙.getName());
-        assertThat(saved.getPrice()).isEqualTo(뿌링클윙.getPrice());
+        assertThat(saved.getPrice()).isEqualTo(뿌링클윙.getUnitPrice());
     }
 
     @DisplayName("상품 생성에 실패한다.")
     @Test
     void 상품_생성_예외() {
-        Product 뿌링클순살 = 상품_생성(1L, "뿌링클 순살", -7);
-
-        assertThatThrownBy(() -> productService.create(뿌링클순살))
+        // when, then
+        assertThatThrownBy(() -> productService.create(new ProductRequest("뿌링클순살", -7L)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -56,15 +58,15 @@ public class ProductServiceTest {
     @Test
     void 상품_목록_조회() {
         // given
-        Product 팔당보쌈 = 상품_생성(1L, "팔당보쌈", 28_000);
-        Product 파파존스피자 = 상품_생성(2L, "파파존스 피자", 22_000);
-        given(productDao.findAll()).willReturn(Arrays.asList(팔당보쌈, 파파존스피자));
+        ProductEntity 팔당보쌈 = new ProductEntity(1L, "팔당보쌈", 28_000L);
+        ProductEntity 파파존스_피자 = new ProductEntity(2L, "파파존스 피자", 22_000L);
+        given(productRepository.findAll()).willReturn(Arrays.asList(팔당보쌈, 파파존스_피자));
 
         // when
-        List<Product> products = productService.list();
+        List<ProductResponse> products = productService.list();
 
         // then
-        assertThat(products).containsExactly(팔당보쌈, 파파존스피자);
+        assertThat(products).hasSize(2);
     }
 
     public static Product 상품_생성(Long id, String name, int price) {

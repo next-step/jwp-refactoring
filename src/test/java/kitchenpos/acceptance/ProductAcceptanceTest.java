@@ -3,8 +3,8 @@ package kitchenpos.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.application.ProductServiceTest;
-import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,22 +20,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("상품 관련 기능")
 public class ProductAcceptanceTest extends AcceptanceTest {
 
-    Product product1;
-    Product product2;
+    ProductRequest productRequest1;
+    ProductRequest productRequest2;
 
     @BeforeEach
     public void init() {
         super.init();
 
-        product1 = ProductServiceTest.상품_생성(1L, "샐러드", 100);
-        product2 = ProductServiceTest.상품_생성(2L, "스테이크", 200);
+        productRequest1 = new ProductRequest("샐러드", 100L);
+        productRequest2 = new ProductRequest("스테이크", 100L);
     }
 
     @DisplayName("상품을 생성한다.")
     @Test
     void 상품_생성() {
         // when
-        ExtractableResponse<Response> response = 상품_생성_요청(product1);
+        ExtractableResponse<Response> response = 상품_생성_요청(productRequest1);
 
         // then
         상품_생성됨(response);
@@ -45,8 +45,8 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     @Test
     void 상품_목록_조회() {
         // given
-        ExtractableResponse<Response> createResponse1 = 상품_생성_요청(product1);
-        ExtractableResponse<Response> createResponse2 = 상품_생성_요청(product2);
+        ExtractableResponse<Response> createResponse1 = 상품_생성_요청(productRequest1);
+        ExtractableResponse<Response> createResponse2 = 상품_생성_요청(productRequest2);
 
         // when
         ExtractableResponse<Response> response = 상품_목록_조회_요청();
@@ -56,12 +56,11 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         상품_목록_포함됨(response, Arrays.asList(createResponse1, createResponse2));
     }
 
-    public static ExtractableResponse<Response> 상품_생성되어_있음(String name, int price) {
-        Product product = ProductServiceTest.상품_생성(null, name, price);
-        return 상품_생성_요청(product);
+    public static ExtractableResponse<Response> 상품_생성되어_있음(String name, long price) {
+        return 상품_생성_요청(new ProductRequest(name, price));
     }
 
-    public static ExtractableResponse<Response> 상품_생성_요청(Product product) {
+    public static ExtractableResponse<Response> 상품_생성_요청(ProductRequest product) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -94,8 +93,8 @@ public class ProductAcceptanceTest extends AcceptanceTest {
                 .map(it -> Long.parseLong(it.header("Location").split("/")[3]))
                 .collect(Collectors.toList());
 
-        List<Long> resultLineIds = response.jsonPath().getList(".", Product.class).stream()
-                .map(Product::getId)
+        List<Long> resultLineIds = response.jsonPath().getList(".", ProductResponse.class).stream()
+                .map(ProductResponse::getId)
                 .collect(Collectors.toList());
 
         assertThat(resultLineIds).containsAll(expectedLineIds);
