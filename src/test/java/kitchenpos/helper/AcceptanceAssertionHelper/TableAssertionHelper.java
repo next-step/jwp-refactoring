@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
 
 public class TableAssertionHelper {
 
-    public static void 테이블_등록되어있음(ExtractableResponse<Response> 등록결과, OrderTable 테이블_정보) {
+    public static void 테이블_등록되어있음(ExtractableResponse<Response> 등록결과) {
         assertAll(
             () -> assertThat(등록결과.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
             () -> assertThat(등록결과.jsonPath().get("id").toString()).isNotNull()

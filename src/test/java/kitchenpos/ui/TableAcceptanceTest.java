@@ -1,7 +1,7 @@
 package kitchenpos.ui;
 
 import static kitchenpos.helper.AcceptanceApiHelper.TableApiHelper.유휴테이블_여부_설정하기;
-import static kitchenpos.helper.AcceptanceApiHelper.TableApiHelper.테이블_등록하기;
+import static kitchenpos.helper.AcceptanceApiHelper.TableApiHelper.빈테이블_생성하기;
 import static kitchenpos.helper.AcceptanceApiHelper.TableApiHelper.테이블_리스트_조회하기;
 import static kitchenpos.helper.AcceptanceAssertionHelper.TableAssertionHelper.테이블_리스트_조회됨;
 import static kitchenpos.helper.AcceptanceAssertionHelper.TableAssertionHelper.테이블_손님수_설정됨;
@@ -21,38 +21,17 @@ import org.springframework.test.context.jdbc.Sql;
 @Sql(scripts = {"/test/db/cleanUp.sql"})
 class TableAcceptanceTest extends AcceptanceTest {
 
-    OrderTable 테이블_1;
-    OrderTable 테이블_2;
-    OrderTable 테이블_3;
-
-    @BeforeEach
-    public void init() {
-        테이블_1 = new OrderTable();
-        테이블_1.setNumberOfGuests(0);
-        테이블_1.setEmpty(true);
-
-        테이블_2 = new OrderTable();
-        테이블_2.setNumberOfGuests(0);
-        테이블_2.setEmpty(true);
-
-        테이블_3 = new OrderTable();
-        테이블_3.setNumberOfGuests(0);
-        테이블_3.setEmpty(true);
-    }
-
     /**
-     * background
-         * given : 빈 테이블 정보 1개를 생성하고
-     * when : 테이블 저장시
+     * when : 빈 테이블 저장시
      * then : 성공적으로 저장되고 테이블 정보가 반환된다.
     */
     @Test
     public void 테이블_생성하기_테스트() {
         //when
-        ExtractableResponse<Response> 테이블_등록하기_response = 테이블_등록하기(테이블_1);
+        ExtractableResponse<Response> 테이블_등록하기_response = 빈테이블_생성하기();
 
         //then
-        TableAssertionHelper.테이블_등록되어있음(테이블_등록하기_response, 테이블_1);
+        TableAssertionHelper.테이블_등록되어있음(테이블_등록하기_response);
     }
 
 
@@ -66,9 +45,9 @@ class TableAcceptanceTest extends AcceptanceTest {
     @Test
     public void 테이블_리스트_조회하기_테스트() {
         //given
-        OrderTable 테이블_1_정보 = 테이블_등록하기(테이블_1).as(OrderTable.class);
-        OrderTable 테이블_2_정보 = 테이블_등록하기(테이블_2).as(OrderTable.class);
-        OrderTable 테이블_3_정보 = 테이블_등록하기(테이블_3).as(OrderTable.class);
+        OrderTable 테이블_1_정보 = 빈테이블_생성하기().as(OrderTable.class);
+        OrderTable 테이블_2_정보 = 빈테이블_생성하기().as(OrderTable.class);
+        OrderTable 테이블_3_정보 = 빈테이블_생성하기().as(OrderTable.class);
 
         //when
         ExtractableResponse<Response> 테이블_리스트_조회하기_response = 테이블_리스트_조회하기();
@@ -86,7 +65,7 @@ class TableAcceptanceTest extends AcceptanceTest {
     public void 유휴테이블_설정하기_테스트() {
         //given
         String 비어있음 = "true";
-        OrderTable 테이블_1_정보 = 테이블_등록하기(테이블_1).as(OrderTable.class);
+        OrderTable 테이블_1_정보 = 빈테이블_생성하기().as(OrderTable.class);
 
         //when
         ExtractableResponse<Response> 유휴테이블_여부_설정하기_response = 유휴테이블_여부_설정하기(비어있음,
@@ -107,7 +86,7 @@ class TableAcceptanceTest extends AcceptanceTest {
         //given
         int 손님수 = 4;
         String 사용중 = "false";
-        OrderTable 테이블_1_정보 = 테이블_등록하기(테이블_1).as(OrderTable.class);
+        OrderTable 테이블_1_정보 = 빈테이블_생성하기().as(OrderTable.class);
         유휴테이블_여부_설정하기(사용중, 테이블_1_정보.getId());
 
         //when
@@ -127,7 +106,7 @@ class TableAcceptanceTest extends AcceptanceTest {
     public void 테이블_손님수_설정_빈테이블일때_에러발생_테스트() {
         //given
         int 손님수 = 4;
-        OrderTable 테이블_1_정보 = 테이블_등록하기(테이블_1).as(OrderTable.class);
+        OrderTable 테이블_1_정보 = 빈테이블_생성하기().as(OrderTable.class);
 
         //when
         ExtractableResponse<Response> 테이블_손님_인원_설정하기_response = TableApiHelper.테이블_손님_인원_설정하기(손님수,
@@ -148,7 +127,7 @@ class TableAcceptanceTest extends AcceptanceTest {
         //given
         String 사용중 = "false";
         int 손님수 = -1;
-        OrderTable 테이블_1_정보 = 테이블_등록하기(테이블_1).as(OrderTable.class);
+        OrderTable 테이블_1_정보 = 빈테이블_생성하기().as(OrderTable.class);
         유휴테이블_여부_설정하기(사용중, 테이블_1_정보.getId());
 
         //when

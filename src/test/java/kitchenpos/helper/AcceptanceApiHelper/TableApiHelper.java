@@ -10,11 +10,15 @@ import org.springframework.http.MediaType;
 
 public class TableApiHelper {
 
-    public static ExtractableResponse<Response> 테이블_등록하기(OrderTable 테이블_정보) {
+    public static ExtractableResponse<Response> 빈테이블_생성하기() {
+        OrderTable 테이블 = new OrderTable();
+        테이블.setNumberOfGuests(0);
+        테이블.setEmpty(true);
+
         return RestAssured
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(테이블_정보)
+            .body(테이블)
             .when().post("/api/tables")
             .then().log().all().
             extract();
