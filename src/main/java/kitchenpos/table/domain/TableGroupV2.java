@@ -9,9 +9,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import org.springframework.data.annotation.CreatedDate;
 
 @Entity
+@Table(name = "table_group")
 public class TableGroupV2 {
 
     @Id

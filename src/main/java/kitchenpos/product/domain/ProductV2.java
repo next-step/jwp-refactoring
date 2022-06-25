@@ -1,13 +1,17 @@
 package kitchenpos.product.domain;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
+import kitchenpos.dto.ProductResponse;
 
 @Entity
+@Table(name = "product")
 public class ProductV2 {
 
     @Id
@@ -27,6 +31,10 @@ public class ProductV2 {
         this.id = id;
         this.name = name;
         this.price = price;
+    }
+
+    public ProductResponse toProductResponse() {
+        return new ProductResponse(this.id, this.name, BigDecimal.valueOf(this.price));
     }
 
     @Override
