@@ -1,137 +1,139 @@
 package kitchenpos.table.application;
 
-import static kitchenpos.ServiceTestFactory.createOrderTableBy;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 
+import java.util.Optional;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.order.dao.FakeOrderDao;
-import kitchenpos.table.dao.FakeOrderTableDao;
-import org.junit.jupiter.api.BeforeEach;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.infrastructure.OrderTableRepository;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 public class TableServiceTest {
-    private final TableService tableService = new TableService(new FakeOrderDao(), new FakeOrderTableDao());
-    private OrderTable firstTable;
-    private OrderTable secondTable;
-    private OrderTable thirdTable;
-    private OrderTable emptyTable;
+    @Mock
+    private OrderTableRepository orderTableRepository;
 
-    @BeforeEach
-    void setUp() {
-        firstTable = createOrderTableBy(1L, 4, false, 1L);
-        secondTable = createOrderTableBy(2L, 3, false, null);
-        thirdTable = createOrderTableBy(3L, 2, false, null);
-        emptyTable = createOrderTableBy(4L, 0, true, null);
-    }
+    @InjectMocks
+    private TableService tableService;
 
     @Test
     @DisplayName("테이블을 등록한다.")
     void create() {
-        //when
-        OrderTable saved = tableService.create(firstTable);
-        //then
-        assertThat(saved.getTableGroupId()).isNull();
-        assertThat(saved.getNumberOfGuests()).isEqualTo(firstTable.getNumberOfGuests());
-        assertThat(saved.isEmpty()).isEqualTo(firstTable.isEmpty());
+        OrderTable orderTable = OrderTable.of(4, true);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(4, true);
+        when(orderTableRepository.save(any())).thenReturn(orderTable);
+
+        OrderTableResponse saved = tableService.create(orderTableRequest);
+
+        assertThat(saved.getNumberOfGuests()).isEqualTo(orderTable.getNumberOfGuests());
+        assertThat(saved.isEmpty()).isEqualTo(orderTable.isEmpty());
     }
 
     @Test
     @DisplayName("테이블 목록을 조회한다.")
     void findAll() {
-        //given
-        tableService.create(firstTable);
-        //when
-        List<OrderTable> tables = tableService.list();
-        //then
+        OrderTable orderTable = OrderTable.of(4, true);
+        when(orderTableRepository.findAll()).thenReturn(Lists.list(orderTable));
+
+        List<OrderTableResponse> tables = tableService.list();
+
         assertThat(tables).hasSize(1);
     }
 
     @Test
     @DisplayName("존재하지 않는 테이블의 빈 테이블 여부를 수정하려고 하면 예외를 반환한다.")
     void changeEmptyWithNoExistingOrderTable() {
-        //when, then
+        OrderTableRequest orderTableRequest = new OrderTableRequest(4, false);
+
         assertThatThrownBy(() -> {
-            tableService.changeEmpty(99L, firstTable);
+            tableService.changeEmpty(99L, orderTableRequest);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("테이블이 이미 단체 지정되어있으면 예외를 반환한다.")
     void changeEmptyWithGroupedOrderTable() {
-        //given
-        OrderTable saved = tableService.create(firstTable);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(4, false);
+        OrderTable orderTable =  OrderTable.of(4, true);
+        orderTable.registerGroupTable(new TableGroup());
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
 
-        //when, then
         assertThatThrownBy(() -> {
-            tableService.changeEmpty(saved.getId(), saved);
+            tableService.changeEmpty(1L, orderTableRequest);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @Test
-    @DisplayName("테이블이 조리, 식사 중이면 예외를 반환한다.")
-    void changeEmptyWithOrderStatus() {
-        //given
-        tableService.create(firstTable);
-        tableService.create(secondTable);
-        OrderTable saved = tableService.create(thirdTable);
-        //when, then
-        assertThatThrownBy(() -> {
-            tableService.changeEmpty(saved.getId(), saved);
-        }).isInstanceOf(IllegalArgumentException.class);
-    }
+//    @Test
+//    @DisplayName("테이블이 조리, 식사 중이면 예외를 반환한다.")
+//    void changeEmptyWithOrderStatus() {
+//        //given
+//        tableService.create(firstTable);
+//        tableService.create(secondTable);
+//        OrderTable saved = tableService.create(thirdTable);
+//        //when, then
+//        assertThatThrownBy(() -> {
+//            tableService.changeEmpty(saved.getId(), saved);
+//        }).isInstanceOf(IllegalArgumentException.class);
+//    }
 
     @Test
     @DisplayName("테이블 빈 테이블 여부가 수정된다.")
     void changeEmpty() {
-        //given
-        tableService.create(firstTable);
-        OrderTable saved = tableService.create(secondTable);
-        //when
-        OrderTable changed = tableService.changeEmpty(saved.getId(), emptyTable);
-        //then
-        assertThat(changed.isEmpty()).isTrue();
-    }
+        OrderTableRequest orderTableRequest = new OrderTableRequest(4, false);
+        OrderTable orderTable =  OrderTable.of(4, true);
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
 
-    @Test
-    @DisplayName("0명 미만으로 손님수를 수정할 수 없다.")
-    void changeNumberOfGuestsWithInvalidNumber() {
-        //given
-        OrderTable saved = tableService.create(firstTable);
-        OrderTable orderTable = createOrderTableBy(99L, -1, false, null);
-        //when, then
-        assertThatThrownBy(() -> {
-            tableService.changeNumberOfGuests(saved.getId(), orderTable);
-        }).isInstanceOf(IllegalArgumentException.class);
+        tableService.changeEmpty(1L, orderTableRequest);
+
+        assertThat(orderTable.isEmpty()).isFalse();
     }
 
     @Test
     @DisplayName("빈 테이블은 손님수를 수정할 수 없다.")
     void changeNumberOfGuestsWithEmptyTable() {
-        //given
-        tableService.create(firstTable);
-        tableService.create(secondTable);
-        tableService.create(thirdTable);
-        OrderTable saved = tableService.create(emptyTable);
+        OrderTableRequest orderTableRequest = new OrderTableRequest(5, true);
+        OrderTable orderTable =  OrderTable.of(4, true);
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
 
-        //when, then
         assertThatThrownBy(() -> {
-            tableService.changeNumberOfGuests(saved.getId(), firstTable);
+            tableService.changeNumberOfGuests(1L, orderTableRequest);
         }).isInstanceOf(IllegalArgumentException.class);
+    }
 
+    @Test
+    @DisplayName("0명 미만으로 손님수를 수정할 수 없다.")
+    void changeNumberOfGuestsWithInvalidNumber() {
+        OrderTableRequest orderTableRequest = new OrderTableRequest(-1, false);
+        OrderTable orderTable =  OrderTable.of(4, true);
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
+
+        assertThatThrownBy(() -> {
+            tableService.changeNumberOfGuests(1L, orderTableRequest);
+        }).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("손님수를 수정한다.")
     void changeNumber() {
-        //given
-        OrderTable saved = tableService.create(firstTable);
-        //when
-        OrderTable changed = tableService.changeNumberOfGuests(saved.getId(), firstTable);
-        //then
-        assertThat(changed.getNumberOfGuests()).isEqualTo(firstTable.getNumberOfGuests());
+        OrderTableRequest orderTableRequest = new OrderTableRequest(5, true);
+        OrderTable orderTable =  OrderTable.of(4, false);
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
+
+        tableService.changeNumberOfGuests(1L, orderTableRequest);
+
+        assertThat(orderTable.getNumberOfGuests()).isEqualTo(orderTableRequest.getNumberOfGuests());
     }
 }

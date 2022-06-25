@@ -13,7 +13,8 @@ public class OrderTableTest {
         OrderTable orderTable = OrderTable.of(4, true);
         OrderTable updateTable = OrderTable.of(5, false);
 
-        orderTable.updateOrderTable(updateTable);
+        orderTable.updateEmpty(updateTable);
+        orderTable.updateNumberOfGuests(updateTable);
 
         assertThat(orderTable.getNumberOfGuests()).isEqualTo(updateTable.getNumberOfGuests());
         assertThat(orderTable.isEmpty()).isEqualTo(updateTable.isEmpty());
