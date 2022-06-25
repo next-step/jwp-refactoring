@@ -30,7 +30,7 @@ public class OrderTable {
     @Embedded
     private Empty empty;
 
-    public OrderTable() {
+    protected OrderTable() {
     }
 
     public OrderTable(Long id, boolean empty) {
@@ -71,7 +71,10 @@ public class OrderTable {
         return numberOfGuests.getValue();
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
+    public void updateNumberOfGuests(final int numberOfGuests) {
+        if (!isEmpty()) {
+            throw new IllegalArgumentException("손님수를 변경 할 수 없습니다. 빈 테이블이 아닙니다.");
+        }
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
     }
 
@@ -79,7 +82,10 @@ public class OrderTable {
         return empty.isTrue();
     }
 
-    public void setEmpty(final boolean empty) {
+    public void switchEmpty(boolean empty) {
+        if (isInTableGroup()){
+            throw new IllegalArgumentException("빈테이블로 지정 할 수 없습니다. 단체 지정이 되어 있는 주문 테이블 입니다.");
+        }
         this.empty = new Empty(empty);
     }
 

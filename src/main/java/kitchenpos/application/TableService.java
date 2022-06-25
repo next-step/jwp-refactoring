@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import java.util.NoSuchElementException;
 import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
@@ -32,11 +33,15 @@ public class TableService {
     @Transactional
     public OrderTableResponse create2(final OrderTableRequest request) {
         OrderTable savedOrderTable = orderTableRepository.save(request.toOrderTable());
-        return  OrderTableResponse.of(savedOrderTable);
+        return  OrderTableResponse.from(savedOrderTable);
     }
 
     public List<OrderTable> list() {
         return orderTableRepository.findAll();
+    }
+
+    public List<OrderTableResponse> list2() {
+        return OrderTableResponse.from(orderTableRepository.findAll());
     }
 
     @Transactional
@@ -53,10 +58,32 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-        savedOrderTable.setEmpty(orderTable.isEmpty());
+        savedOrderTable.switchEmpty(orderTable.isEmpty());
 
         return orderTableRepository.save(savedOrderTable);
     }
+
+    @Transactional
+    public OrderTableResponse changeEmpty2(final Long orderTableId, final OrderTableRequest orderTable) {
+        final OrderTable savedOrderTable = findOrderTable(orderTableId);
+        validateOrderTablesStatus(orderTableId);
+        savedOrderTable.switchEmpty(orderTable.isEmpty());
+
+        return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
+    }
+
+    private void validateOrderTablesStatus(Long orderTableId) {
+        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
+                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private OrderTable findOrderTable(Long orderTableId) {
+        return orderTableRepository.findById(orderTableId)
+                .orElseThrow(NoSuchElementException::new);
+    }
+
 
     @Transactional
     public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTable orderTable) {
@@ -73,8 +100,17 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-        savedOrderTable.setNumberOfGuests(numberOfGuests);
+        savedOrderTable.updateNumberOfGuests(numberOfGuests);
 
         return orderTableRepository.save(savedOrderTable);
+    }
+
+
+    @Transactional
+    public OrderTableResponse changeNumberOfGuests2(final Long orderTableId, final OrderTableRequest orderTable) {
+        final OrderTable savedOrderTable = findOrderTable(orderTableId);
+        savedOrderTable.updateNumberOfGuests(orderTable.getNumberOfGuests());
+
+        return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
     }
 }

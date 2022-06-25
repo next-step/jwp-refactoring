@@ -30,7 +30,7 @@ public class TableRestController {
     @PostMapping("/v2/api/tables")
     public ResponseEntity<OrderTableResponse> createV2(@RequestBody final OrderTableRequest request) {
         OrderTableResponse response = tableService.create2(request);
-        final URI uri = URI.create("/api/v2/tables/" + response.getId());
+        final URI uri = URI.create("/v2/api/tables/" + response.getId());
         return ResponseEntity.created(uri)
                 .body(response)
                 ;
@@ -40,6 +40,13 @@ public class TableRestController {
     public ResponseEntity<List<OrderTable>> list() {
         return ResponseEntity.ok()
                 .body(tableService.list())
+                ;
+    }
+
+    @GetMapping("/v2/api/tables")
+    public ResponseEntity<List<OrderTableResponse>> list2() {
+        return ResponseEntity.ok()
+                .body(tableService.list2())
                 ;
     }
 
@@ -53,6 +60,16 @@ public class TableRestController {
                 ;
     }
 
+    @PutMapping("/v2/api/tables/{orderTableId}/empty")
+    public ResponseEntity<OrderTableResponse> changeEmpty2(
+            @PathVariable final Long orderTableId,
+            @RequestBody final OrderTableRequest orderTable
+    ) {
+        return ResponseEntity.ok()
+                .body(tableService.changeEmpty2(orderTableId, orderTable))
+                ;
+    }
+
     @PutMapping("/api/tables/{orderTableId}/number-of-guests")
     public ResponseEntity<OrderTable> changeNumberOfGuests(
             @PathVariable final Long orderTableId,
@@ -60,6 +77,16 @@ public class TableRestController {
     ) {
         return ResponseEntity.ok()
                 .body(tableService.changeNumberOfGuests(orderTableId, orderTable))
+                ;
+    }
+
+    @PutMapping("/v2/api/tables/{orderTableId}/number-of-guests")
+    public ResponseEntity<OrderTableResponse> changeNumberOfGuests2(
+            @PathVariable final Long orderTableId,
+            @RequestBody final OrderTableRequest orderTable
+    ) {
+        return ResponseEntity.ok()
+                .body(tableService.changeNumberOfGuests2(orderTableId, orderTable))
                 ;
     }
 }
