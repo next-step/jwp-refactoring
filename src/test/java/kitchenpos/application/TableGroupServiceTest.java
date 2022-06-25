@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 class TableGroupServiceTest extends ServiceTest {
-    
+
     @Autowired
     ServiceTestHelper serviceTestHelper;
 
@@ -32,8 +32,7 @@ class TableGroupServiceTest extends ServiceTest {
         List<OrderTable> orderTables = savedTableGroup.getOrderTables();
         assertThat(savedTableGroup.getId()).isNotNull();
         assertThat(orderTables).hasSize(numberOfTables);
-        orderTables.stream()
-                .forEach(table -> assertThat(table.getTableGroupId()).isEqualTo(savedTableGroup.getId()));
+        orderTables.forEach(table -> assertThat(table.getTableGroupId()).isEqualTo(savedTableGroup.getId()));
     }
 
     @Test
@@ -41,17 +40,15 @@ class TableGroupServiceTest extends ServiceTest {
         OrderTable newOrderTable = OrderTableFixtureFactory.createEmptyOrderTable();
         OrderTable newOrderTable2 = OrderTableFixtureFactory.createEmptyOrderTable();
 
-        assertThatIllegalArgumentException().isThrownBy(()->{
-            serviceTestHelper.테이블그룹_지정됨(newOrderTable,newOrderTable2);
-        });
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> serviceTestHelper.테이블그룹_지정됨(newOrderTable, newOrderTable2));
     }
 
     @Test
     void 테이블그룹_지정_테이블이_2개미만인경우() {
         int numberOfTables = 1;
-        assertThatIllegalArgumentException().isThrownBy(()->{
-            serviceTestHelper.테이블그룹_지정됨(numberOfTables);
-        });
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> serviceTestHelper.테이블그룹_지정됨(numberOfTables));
     }
 
     @Test
@@ -59,9 +56,8 @@ class TableGroupServiceTest extends ServiceTest {
         OrderTable emptyTable = serviceTestHelper.빈테이블_생성됨();
         OrderTable notEmptyTable = serviceTestHelper.비어있지않은테이블_생성됨(3);
 
-        assertThatIllegalArgumentException().isThrownBy(()->{
-            serviceTestHelper.테이블그룹_지정됨(emptyTable,notEmptyTable);
-        });
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> serviceTestHelper.테이블그룹_지정됨(emptyTable, notEmptyTable));
     }
 
     @Test
@@ -69,33 +65,33 @@ class TableGroupServiceTest extends ServiceTest {
         OrderTable emptyTable1 = serviceTestHelper.빈테이블_생성됨();
         OrderTable emptyTable2 = serviceTestHelper.빈테이블_생성됨();
         OrderTable emptyTable3 = serviceTestHelper.빈테이블_생성됨();
-        serviceTestHelper.테이블그룹_지정됨(emptyTable1,emptyTable2);
+        serviceTestHelper.테이블그룹_지정됨(emptyTable1, emptyTable2);
 
-        assertThatIllegalArgumentException().isThrownBy(() -> serviceTestHelper.테이블그룹_지정됨(emptyTable2,emptyTable3));
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> serviceTestHelper.테이블그룹_지정됨(emptyTable2, emptyTable3));
     }
 
     @Test
     void 테이블그룹_지정해제_빈테이블인_경우() {
         OrderTable table1 = serviceTestHelper.빈테이블_생성됨();
         OrderTable table2 = serviceTestHelper.빈테이블_생성됨();
-        TableGroup tableGroup = serviceTestHelper.테이블그룹_지정됨(table1,table2);
+        TableGroup tableGroup = serviceTestHelper.테이블그룹_지정됨(table1, table2);
 
         tableGroupService.ungroup(tableGroup.getId());
 
-        테이블그룹_해제여부확인(Lists.newArrayList(table1,table2));
+        테이블그룹_해제여부확인(Lists.newArrayList(table1, table2));
     }
 
 
-
-    private void 테이블그룹_해제여부확인(List<OrderTable> ungroupedTables){
+    private void 테이블그룹_해제여부확인(List<OrderTable> ungroupedTables) {
         List<OrderTable> tables = tableService.list();
-        ungroupedTables.stream().forEach(orderTable -> {
-            OrderTable foundTable = findOrderTableById(orderTable.getId(),tables);
+        ungroupedTables.forEach(orderTable -> {
+            OrderTable foundTable = findOrderTableById(orderTable.getId(), tables);
             assertThat(foundTable.getTableGroupId()).isNull();
         });
     }
 
-    private OrderTable findOrderTableById(Long tableId, List<OrderTable> tables){
+    private OrderTable findOrderTableById(Long tableId, List<OrderTable> tables) {
         return tables.stream()
                 .filter(orderTable -> tableId.equals(orderTable.getId()))
                 .findFirst()

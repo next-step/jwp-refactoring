@@ -21,28 +21,22 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     OrderTable table2;
 
     @BeforeEach
-    public void setUp(){
+    public void setUp() {
         super.setUp();
         table1 = KitchenPosBehaviors.테이블_생성됨(OrderTableFixtureFactory.createEmptyOrderTable());
         table2 = KitchenPosBehaviors.테이블_생성됨(OrderTableFixtureFactory.createEmptyOrderTable());
     }
 
     /**
-     * Given 빈 테이블이 2개 등록되어 있다.
-     * When 테이블 그룹 지정을 시도한다.
-     * Then 그룹이 지정된다.
-     * When 테이블 그룹을 조회한다.
-     * Then 테이블 그룹이 조회된다.
-     * When 테이블 그룹을 해제한다.
-     * Then 테이블 그룹이 해제된다.
+     * Given 빈 테이블이 2개 등록되어 있다. When 테이블 그룹 지정을 시도한다. Then 그룹이 지정된다. When 테이블 그룹을 조회한다. Then 테이블 그룹이 조회된다. When 테이블 그룹을
+     * 해제한다. Then 테이블 그룹이 해제된다.
      */
     @Test
-    void 테이블그룹_인수테스트(){
-        TableGroup tableGroup = TableGroupFixtureFactory.createTableGroup(Lists.newArrayList(table1,table2));
+    void 테이블그룹_인수테스트() {
+        TableGroup tableGroup = TableGroupFixtureFactory.createTableGroup(Lists.newArrayList(table1, table2));
 
         ExtractableResponse<Response> createResponse = KitchenPosBehaviors.테이블그룹_생성_요청(tableGroup);
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-
 
         TableGroup savedTableGroup = createResponse.as(TableGroup.class);
         ExtractableResponse<Response> deleteResponse = KitchenPosBehaviors.테이블그룹_해제_요청(savedTableGroup.getId());

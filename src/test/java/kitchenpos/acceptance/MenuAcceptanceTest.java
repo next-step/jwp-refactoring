@@ -19,18 +19,14 @@ import org.springframework.http.HttpStatus;
 
 class MenuAcceptanceTest extends AcceptanceTest {
     /**
-     * Given 메뉴그룹 및 상품이 생성되어 있다.
-     * When 메뉴를 생성한다.
-     * Then 메뉴가 생성된다.
-     * When 메뉴목록을 조회한다.
-     * Then 메뉴목록이 조회된다.
+     * Given 메뉴그룹 및 상품이 생성되어 있다. When 메뉴를 생성한다. Then 메뉴가 생성된다. When 메뉴목록을 조회한다. Then 메뉴목록이 조회된다.
      */
     @Test
-    void 메뉴를_생성하고_조회한다(){
+    void 메뉴를_생성하고_조회한다() {
         MenuGroup menuGroup = KitchenPosBehaviors.메뉴그룹_생성됨("치킨");
-        Product product = KitchenPosBehaviors.상품_생성됨("강정치킨",10000);
-        MenuProduct menuProduct = MenuProductFixtureFactory.createMenuProduct(product.getId(),1);
-        Menu menu = MenuFixtureFactory.createMenu(menuGroup,"강정치킨 한마리",10000, Lists.newArrayList(menuProduct));
+        Product product = KitchenPosBehaviors.상품_생성됨("강정치킨", 10000);
+        MenuProduct menuProduct = MenuProductFixtureFactory.createMenuProduct(product.getId(), 1);
+        Menu menu = MenuFixtureFactory.createMenu(menuGroup, "강정치킨 한마리", 10000, Lists.newArrayList(menuProduct));
 
         ExtractableResponse<Response> createResponse = KitchenPosBehaviors.메뉴_생성_요청(menu);
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());

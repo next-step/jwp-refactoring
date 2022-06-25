@@ -19,9 +19,9 @@ public class KitchenPosBehaviors {
     }
 
     public static ExtractableResponse<Response> 상품_생성_요청(String name, int price) {
-        Map<String,Object> params = new HashMap<>();
-        params.put("name",name);
-        params.put("price",price);
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", name);
+        params.put("price", price);
 
         return RestAssured
                 .given().contentType(ContentType.JSON).log().all()
@@ -31,7 +31,7 @@ public class KitchenPosBehaviors {
     }
 
     public static Product 상품_생성됨(String name, int price) {
-        return 상품_생성_요청(name,price).as(Product.class);
+        return 상품_생성_요청(name, price).as(Product.class);
     }
 
     public static ExtractableResponse<Response> 상품목록_조회_요청() {
@@ -47,8 +47,8 @@ public class KitchenPosBehaviors {
     }
 
     public static ExtractableResponse<Response> 메뉴그룹_생성_요청(String name) {
-        Map<String,Object> params = new HashMap<>();
-        params.put("name",name);
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", name);
         return RestAssured
                 .given().contentType(ContentType.JSON).log().all()
                 .when().body(params).post("/api/menu-groups")
@@ -69,7 +69,7 @@ public class KitchenPosBehaviors {
     }
 
     public static List<MenuGroup> 메뉴그룹_목록조회() {
-        return 메뉴그룹_목록조회_요청().jsonPath().getList("$",MenuGroup.class);
+        return 메뉴그룹_목록조회_요청().jsonPath().getList("$", MenuGroup.class);
     }
 
     public static ExtractableResponse<Response> 메뉴_생성_요청(Menu menu) {
@@ -93,8 +93,9 @@ public class KitchenPosBehaviors {
     }
 
     public static List<Menu> 메뉴_목록조회() {
-        return 메뉴_목록조회_요청().jsonPath().getList("$",Menu.class);
+        return 메뉴_목록조회_요청().jsonPath().getList("$", Menu.class);
     }
+
     public static ExtractableResponse<Response> 테이블_생성_요청(OrderTable orderTable) {
         return RestAssured
                 .given().contentType(ContentType.JSON).log().all()
@@ -114,13 +115,14 @@ public class KitchenPosBehaviors {
                 .then().log().all()
                 .extract();
     }
+
     public static List<OrderTable> 테이블_목록조회() {
         ExtractableResponse<Response> response = KitchenPosBehaviors.테이블_목록조회_요청();
         return response.jsonPath().getList("$", OrderTable.class);
     }
 
     public static ExtractableResponse<Response> 테이블_공석여부_변경_요청(Long orderTableId, OrderTable param) {
-        String uri = String.format("/api/tables/%d/empty",orderTableId);
+        String uri = String.format("/api/tables/%d/empty", orderTableId);
         return RestAssured
                 .given().contentType(ContentType.JSON).log().all()
                 .when().body(param).put(uri)
@@ -129,7 +131,7 @@ public class KitchenPosBehaviors {
     }
 
     public static ExtractableResponse<Response> 테이블_인원수_변경_요청(Long orderTableId, OrderTable param) {
-        String uri = String.format("/api/tables/%d/number-of-guests",orderTableId);
+        String uri = String.format("/api/tables/%d/number-of-guests", orderTableId);
         return RestAssured
                 .given().contentType(ContentType.JSON).log().all()
                 .when().body(param).put(uri)
@@ -150,7 +152,7 @@ public class KitchenPosBehaviors {
     }
 
     public static ExtractableResponse<Response> 테이블그룹_해제_요청(Long tableGroupId) {
-        String uri = String.format("/api/table-groups/%d",tableGroupId);
+        String uri = String.format("/api/table-groups/%d", tableGroupId);
         return RestAssured
                 .given().contentType(ContentType.JSON).log().all()
                 .when().delete(uri)
@@ -171,7 +173,7 @@ public class KitchenPosBehaviors {
     }
 
     public static ExtractableResponse<Response> 주문상태변경_요청(Long orderId, Order param) {
-        String uri = String.format("/api/orders/%d/order-status",orderId);
+        String uri = String.format("/api/orders/%d/order-status", orderId);
 
         return RestAssured
                 .given().contentType(ContentType.JSON).log().all()

@@ -49,25 +49,25 @@ public class ServiceTestHelper {
     @Autowired
     private OrderService orderService;
 
-    public MenuGroup 메뉴그룹_생성됨(String name){
+    public MenuGroup 메뉴그룹_생성됨(String name) {
         return menuGroupService.create(MenuGroupFixtureFactory.createMenuGroup(name));
     }
 
-    public Product 상품_생성됨(String name, int price){
-        return productService.create(ProductFixtureFactory.createProduct(name,price));
+    public Product 상품_생성됨(String name, int price) {
+        return productService.create(ProductFixtureFactory.createProduct(name, price));
     }
 
-    public Menu 메뉴_생성됨(MenuGroup menuGroup, String menuName, int menuPrice, List<MenuProduct> menuProducts){
-        return menuService.create(MenuFixtureFactory.createMenu(menuGroup,menuName,menuPrice, menuProducts));
+    public Menu 메뉴_생성됨(MenuGroup menuGroup, String menuName, int menuPrice, List<MenuProduct> menuProducts) {
+        return menuService.create(MenuFixtureFactory.createMenu(menuGroup, menuName, menuPrice, menuProducts));
     }
 
-    public TableGroup 테이블그룹_지정됨(int numberOfTables){
-        List<OrderTable> orderTables = IntStream.range(0,numberOfTables)
-                .mapToObj((index)-> 빈테이블_생성됨()).collect(toList());
+    public TableGroup 테이블그룹_지정됨(int numberOfTables) {
+        List<OrderTable> orderTables = IntStream.range(0, numberOfTables)
+                .mapToObj((index) -> 빈테이블_생성됨()).collect(toList());
         return tableGroupService.create(TableGroupFixtureFactory.createTableGroup(orderTables));
     }
 
-    public TableGroup 테이블그룹_지정됨(OrderTable... orderTables){
+    public TableGroup 테이블그룹_지정됨(OrderTable... orderTables) {
         return tableGroupService.create(TableGroupFixtureFactory.createTableGroup(Arrays.asList(orderTables)));
     }
 
@@ -75,35 +75,32 @@ public class ServiceTestHelper {
         return tableService.create(OrderTableFixtureFactory.createEmptyOrderTable());
     }
 
-    public OrderTable 비어있지않은테이블로_변경(Long orderTableId){
+    public OrderTable 비어있지않은테이블로_변경(Long orderTableId) {
         OrderTable param = OrderTableFixtureFactory.createParamForChangeEmptyState(false);
-        OrderTable updatedOrderTable = tableService.changeEmpty(orderTableId,param);
-        return updatedOrderTable;
+        return tableService.changeEmpty(orderTableId, param);
     }
 
     public OrderTable 비어있지않은테이블_생성됨(int numberOfGuests) {
         return tableService.create(OrderTableFixtureFactory.createNotEmptyOrderTable(numberOfGuests));
     }
 
-    public OrderTable 빈테이블로_변경(Long orderTableId){
+    public OrderTable 빈테이블로_변경(Long orderTableId) {
         OrderTable param = OrderTableFixtureFactory.createParamForChangeEmptyState(true);
-        OrderTable updatedOrderTable = tableService.changeEmpty(orderTableId,param);
-        return updatedOrderTable;
+        return tableService.changeEmpty(orderTableId, param);
     }
 
-    public OrderTable 테이블_인원수_변경(Long orderTableId, int updatedNumberOfGuests){
+    public OrderTable 테이블_인원수_변경(Long orderTableId, int updatedNumberOfGuests) {
         OrderTable param = OrderTableFixtureFactory.createParamForChangeNumberOfGuests(updatedNumberOfGuests);
-        OrderTable updatedOrderTable = tableService.changeNumberOfGuests(orderTableId,param);
-        return updatedOrderTable;
+        return tableService.changeNumberOfGuests(orderTableId, param);
     }
 
-    public Order 주문_생성됨(Long orderTableId, List<OrderLineItem> orderLineItems){
+    public Order 주문_생성됨(Long orderTableId, List<OrderLineItem> orderLineItems) {
         return orderService.create(OrderFixtureFactory.createOrder(orderTableId, orderLineItems));
     }
 
-    public Order 주문상태_변경(Long orderId,OrderStatus orderStatus){
+    public Order 주문상태_변경(Long orderId, OrderStatus orderStatus) {
         Order param = OrderFixtureFactory.createParamForUpdateStatus(orderStatus);
-        return orderService.changeOrderStatus(orderId,param);
+        return orderService.changeOrderStatus(orderId, param);
     }
 
 
