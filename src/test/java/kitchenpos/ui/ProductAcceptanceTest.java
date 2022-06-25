@@ -1,30 +1,30 @@
 package kitchenpos.ui;
 
-import static kitchenpos.helper.AcceptanceApiHelper.ProductApiHelper.*;
-import static kitchenpos.helper.AcceptanceAssertionHelper.ProductAssertionHelper.*;
-import io.restassured.RestAssured;
+import static kitchenpos.helper.AcceptanceApiHelper.ProductApiHelper.상품_등록하기;
+import static kitchenpos.helper.AcceptanceApiHelper.ProductApiHelper.상품_리스트_조회하기;
+import static kitchenpos.helper.AcceptanceAssertionHelper.ProductAssertionHelper.상품_등록_에러발생;
+import static kitchenpos.helper.AcceptanceAssertionHelper.ProductAssertionHelper.상품_등록되어있음;
+import static kitchenpos.helper.AcceptanceAssertionHelper.ProductAssertionHelper.상품_리스트_조회됨;
+
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.Product;
-import kitchenpos.helper.AcceptanceApiHelper.ProductApiHelper;
-import kitchenpos.helper.AcceptanceAssertionHelper.ProductAssertionHelper;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
 @Sql(scripts = {"/test/db/cleanUp.sql"})
 class ProductAcceptanceTest extends AcceptanceTest {
+
     private Product 강정치킨;
     private Product 간장치킨;
     private Product 카레치킨;
 
     @BeforeEach
-    public void init(){
+    public void init() {
         강정치킨 = new Product();
         강정치킨.setName("강정치킨");
         강정치킨.setPrice(BigDecimal.valueOf(18000));
@@ -37,7 +37,6 @@ class ProductAcceptanceTest extends AcceptanceTest {
         카레치킨.setName("카레치킨");
         카레치킨.setPrice(BigDecimal.valueOf(16000));
     }
-
 
 
     /**
@@ -62,7 +61,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
      * then : 정상적으로 조회가 된다.(200 OK)
     */
     @Test
-    public void 상품_리스트_조회하기_테스트(){
+    public void 상품_리스트_조회하기_테스트() {
         //given
         상품_등록하기(강정치킨);
         상품_등록하기(카레치킨);
@@ -82,7 +81,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
      * then : 에러가 발생한다
     */
     @Test
-    public void 상품_등록_에러발생_테스트(){
+    public void 상품_등록_에러발생_테스트() {
         //given
         강정치킨.setPrice(BigDecimal.valueOf(-1));
 

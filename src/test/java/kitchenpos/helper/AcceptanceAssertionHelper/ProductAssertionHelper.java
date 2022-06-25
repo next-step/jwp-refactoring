@@ -20,16 +20,16 @@ public class ProductAssertionHelper {
         );
     }
 
-    public static void 상품_리스트_조회됨(ExtractableResponse<Response> 조회결과, List<Product> 등록상품_리스트){
+    public static void 상품_리스트_조회됨(ExtractableResponse<Response> 조회결과, List<Product> 등록상품_리스트) {
         assertAll(
             () -> assertThat(조회결과.statusCode()).isEqualTo(HttpStatus.OK.value()),
             () -> assertThat(조회결과.jsonPath().getList("."))
-                    .hasSize(등록상품_리스트.size())
-                    .extracting("name").isEqualTo(
-                        등록상품_리스트.stream()
-                            .map(Product::getName)
-                            .collect(Collectors.toList())
-                    )
+                .hasSize(등록상품_리스트.size())
+                .extracting("name").isEqualTo(
+                    등록상품_리스트.stream()
+                        .map(Product::getName)
+                        .collect(Collectors.toList())
+                )
         );
     }
 
