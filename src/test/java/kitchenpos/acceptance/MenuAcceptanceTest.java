@@ -40,17 +40,15 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        빅맥세트 = createMenuGroup(1L, "빅맥세트");
-        메뉴그룹_등록_요청(빅맥세트);
+        빅맥세트 = 메뉴그룹_등록_요청(createMenuGroup(null, "빅맥세트")).as(MenuGroup.class);
 
-        토마토 = createProduct(1L, "토마토", 1000);
-        상품_등록_요청(토마토);
+        토마토 = 상품_등록_요청(createProduct(null, "토마토", 1000)).as(Product.class);
 
-        양상추 = createProduct(2L, "양상추", 500);
-        상품_등록_요청(양상추);
+        양상추 = 상품_등록_요청(createProduct(null, "양상추", 500)).as(Product.class);
 
-        빅맥버거 = createMenu(1L, "빅맥버거", 3000, 빅맥세트.getId(),
-                Arrays.asList(createMenuProduct(1L, 1L, 토마토.getId(), 1), createMenuProduct(2L, 1L, 양상추.getId(), 4)));
+        빅맥버거 = createMenu(null, "빅맥버거", 3000, 빅맥세트.getId(),
+                Arrays.asList(createMenuProduct(1L, null, 토마토.getId(), 1),
+                        createMenuProduct(2L, null, 양상추.getId(), 4)));
     }
 
     /**
@@ -73,6 +71,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         response = 메뉴_등록_요청(빅맥버거);
         // then 메뉴그룹 등록됨
         메뉴_등록됨(response);
+        빅맥버거 = response.as(Menu.class);
 
         // when 메뉴그룹 목록 조회 요청
         response = 메뉴_목록_조회();

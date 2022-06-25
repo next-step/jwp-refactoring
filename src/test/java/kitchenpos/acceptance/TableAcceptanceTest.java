@@ -23,7 +23,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        orderTable = createOrderTable(1L, null, 5, false);
+        orderTable = createOrderTable(null, null, 5, false);
     }
 
     /**
@@ -58,6 +58,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
         response = 주문테이블_등록_요청(orderTable);
         // then 주문테이블 등록됨
         주문테이블_등록됨(response);
+        orderTable = response.as(OrderTable.class);
 
         // when 주문테이블 목록 조회 요청
         response = 주문테이블_목록_조회();

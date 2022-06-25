@@ -59,13 +59,13 @@ class OrderServiceTest {
                 Arrays.asList(createMenuProduct(1L, 1L, 토마토.getId(), 1), createMenuProduct(2L, 1L, 양상추.getId(), 4)));
         주문테이블 = createOrderTable(1L, null, 5, false);
 
-        주문 = createOrder(주문테이블.getId(), null, null, Arrays.asList(createOrderLineItem(1L, 1L, 빅맥버거.getId(), 1)));
+        주문 = createOrder(1L, 주문테이블.getId(), null, null, Arrays.asList(createOrderLineItem(1L, 1L, 빅맥버거.getId(), 1)));
 
     }
 
     @Test
     void 주문_생성_주문_항목_없음_예외() {
-        Order 주문항목없는주문 = createOrder(주문테이블.getId(), null, null, null);
+        Order 주문항목없는주문 = createOrder(null, 주문테이블.getId(), null, null, null);
 
         assertThatThrownBy(
                 () -> orderService.create(주문항목없는주문)
@@ -75,7 +75,7 @@ class OrderServiceTest {
     @Test
     void 주문_생성_없는_메뉴_예외() {
         when(menuDao.countByIdIn(Arrays.asList(100L))).thenReturn(0L);
-        Order 없는메뉴주문 = createOrder(주문테이블.getId(), null, null, Arrays.asList(createOrderLineItem(1L, 1L, 100L, 1)));
+        Order 없는메뉴주문 = createOrder(2L, 주문테이블.getId(), null, null, Arrays.asList(createOrderLineItem(1L, 1L, 100L, 1)));
 
         assertThatThrownBy(
                 () -> orderService.create(없는메뉴주문)
@@ -86,7 +86,8 @@ class OrderServiceTest {
     void 주문_생성_존재하지_않는_주문_테이블_예외() {
         when(menuDao.countByIdIn(Arrays.asList(빅맥버거.getId()))).thenReturn(1L);
         when(orderTableDao.findById(100L)).thenThrow(IllegalArgumentException.class);
-        Order 없는_테이블_주문 = createOrder(100L, null, null, Arrays.asList(createOrderLineItem(1L, 1L, 빅맥버거.getId(), 1)));
+        Order 없는_테이블_주문 = createOrder(2L, 100L, null, null,
+                Arrays.asList(createOrderLineItem(1L, 1L, 빅맥버거.getId(), 1)));
         assertThatThrownBy(
                 () -> orderService.create(없는_테이블_주문)
         ).isInstanceOf(IllegalArgumentException.class);
@@ -135,7 +136,7 @@ class OrderServiceTest {
         주문.setOrderStatus(OrderStatus.COMPLETION.name());
         when(orderDao.findById(주문.getId())).thenReturn(Optional.ofNullable(주문));
 
-        Order ChangedOrder = createOrder(주문테이블.getId(), OrderStatus.COOKING.name(), null, null);
+        Order ChangedOrder = createOrder(2L, 주문테이블.getId(), OrderStatus.COOKING.name(), null, null);
         assertThatThrownBy(
                 () -> orderService.changeOrderStatus(주문.getId(), ChangedOrder)
         ).isInstanceOf(IllegalArgumentException.class);
@@ -146,7 +147,7 @@ class OrderServiceTest {
         when(orderDao.findById(주문.getId())).thenReturn(Optional.ofNullable(주문));
         when(orderLineItemDao.findAllByOrderId(주문.getId())).thenReturn(주문.getOrderLineItems());
 
-        Order ChangedOrder = createOrder(주문테이블.getId(), OrderStatus.COMPLETION.name(), null, null);
+        Order ChangedOrder = createOrder(2L, 주문테이블.getId(), OrderStatus.COMPLETION.name(), null, null);
         assertThat(orderService.changeOrderStatus(주문.getId(), ChangedOrder)).isEqualTo(주문);
 
     }

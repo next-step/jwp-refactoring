@@ -23,7 +23,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        빅맥세트 = createMenuGroup(1L, "빅맥세트");
+        빅맥세트 = createMenuGroup(null, "빅맥세트");
     }
 
     /**
@@ -47,6 +47,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
         response = 메뉴그룹_등록_요청(빅맥세트);
         // then 메뉴그룹 등록됨
         메뉴그룹_등록됨(response);
+        빅맥세트 = response.as(MenuGroup.class);
 
         // when 메뉴그룹 목록 조회 요청
         response = 메뉴그룹_목록_조회();

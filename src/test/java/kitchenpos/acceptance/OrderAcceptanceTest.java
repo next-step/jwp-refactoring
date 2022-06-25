@@ -39,16 +39,17 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        OrderTable 주문테이블 = 주문테이블_등록_요청(createOrderTable(1L, null, 5, false)).as(OrderTable.class);
+        OrderTable 주문테이블 = 주문테이블_등록_요청(createOrderTable(null, null, 5, false)).as(OrderTable.class);
 
-        MenuGroup 빅맥세트 = 메뉴그룹_등록_요청(createMenuGroup(1L, "빅맥세트")).as(MenuGroup.class);
-        Product 토마토 = 상품_등록_요청(createProduct(1L, "토마토", 1000)).as(Product.class);
-        Product 양상추 = 상품_등록_요청(createProduct(2L, "양상추", 500)).as(Product.class);
-        Menu 빅맥버거 = 메뉴_등록_요청(createMenu(1L, "빅맥버거", 3000, 빅맥세트.getId(),
-                Arrays.asList(createMenuProduct(1L, 1L, 토마토.getId(), 1),
-                        createMenuProduct(2L, 1L, 양상추.getId(), 4)))).as(Menu.class);
+        MenuGroup 빅맥세트 = 메뉴그룹_등록_요청(createMenuGroup(null, "빅맥세트")).as(MenuGroup.class);
+        Product 토마토 = 상품_등록_요청(createProduct(null, "토마토", 1000)).as(Product.class);
+        Product 양상추 = 상품_등록_요청(createProduct(null, "양상추", 500)).as(Product.class);
+        Menu 빅맥버거 = 메뉴_등록_요청(createMenu(null, "빅맥버거", 3000, 빅맥세트.getId(),
+                Arrays.asList(createMenuProduct(1L, null, 토마토.getId(), 1),
+                        createMenuProduct(2L, null, 양상추.getId(), 4)))).as(Menu.class);
 
-        주문 = createOrder(주문테이블.getId(), null, null, Arrays.asList(createOrderLineItem(1L, 1L, 빅맥버거.getId(), 1)));
+        주문 = createOrder(null, 주문테이블.getId(), null, null,
+                Arrays.asList(createOrderLineItem(1L, null, 빅맥버거.getId(), 1)));
     }
 
     /**
@@ -76,7 +77,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         // then 주문테이블 등록됨
         주문_등록됨(response);
         주문 = response.as(Order.class);
-        
+
         // when 주문테이블 목록 조회 요청
         response = 주문_목록_조회();
         // then 주문테이블 목록이 조회됨
