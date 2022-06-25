@@ -57,15 +57,14 @@ public class TableAcceptanceTest extends AcceptanceTest {
     @Test
     void changeNumberOfGuests() {
         // given
-        ExtractableResponse<Response> createResponse = 주문_테이블_등록되어_있음(테이블_인원01, 테이블_착석_여부01);
-        final int NEW_NUMBER_OF_GUEST = 5;
+        ExtractableResponse<Response> 등록된_주문_테이블 = 주문_테이블_등록되어_있음(테이블_인원01, 테이블_착석_여부01);
+        final int 변경할_인원 = 5;
 
         // when
-        ExtractableResponse<Response> updateResponse = 주문_테이블_인원_수정_요청(createResponse, NEW_NUMBER_OF_GUEST);
+        ExtractableResponse<Response> 변경된_주문_테이블 = 주문_테이블_인원_수정_요청(등록된_주문_테이블, 변경할_인원);
         
         // then
-        OrderTable updateOrderTable = 주문_테이블_가져옴(updateResponse);
-        assertThat(updateOrderTable.getNumberOfGuests()).isEqualTo(NEW_NUMBER_OF_GUEST);
+        assertThat(주문_테이블_가져옴(변경된_주문_테이블).getNumberOfGuests()).isEqualTo(변경할_인원);
     }
 
     public static ExtractableResponse<Response> 주문_테이블_등록되어_있음(int numberOfGuests, boolean empty) {
