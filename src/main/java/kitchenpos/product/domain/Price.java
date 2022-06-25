@@ -34,6 +34,10 @@ public class Price {
         return price;
     }
 
+    public Integer getIntValue() {
+        return price.intValue();
+    }
+
     private void validate(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(ZERO) < 0) {
             throw new IllegalArgumentException("가격이 0보다 작을 수 없습니다.");
