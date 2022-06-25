@@ -27,12 +27,6 @@ public class MenuProducts {
         return menuProducts;
     }
 
-    public List<Long> getProductIds() {
-        return getValues().stream()
-                .map(MenuProduct::getProductId)
-                .collect(Collectors.toList());
-    }
-
     public Price getTotalPrice() {
         Price totalPrice = Price.from(0);
         for (MenuProduct menuProduct : menuProducts) {
