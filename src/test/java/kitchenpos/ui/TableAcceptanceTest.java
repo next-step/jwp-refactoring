@@ -3,7 +3,9 @@ package kitchenpos.ui;
 import static kitchenpos.helper.AcceptanceApiHelper.TableApiHelper.유휴테이블_여부_설정하기;
 import static kitchenpos.helper.AcceptanceApiHelper.TableApiHelper.빈테이블_생성하기;
 import static kitchenpos.helper.AcceptanceApiHelper.TableApiHelper.테이블_리스트_조회하기;
+import static kitchenpos.helper.AcceptanceApiHelper.TableApiHelper.테이블_손님_인원_설정하기;
 import static kitchenpos.helper.AcceptanceAssertionHelper.TableAssertionHelper.테이블_리스트_조회됨;
+import static kitchenpos.helper.AcceptanceAssertionHelper.TableAssertionHelper.테이블_손님수_설정_에러;
 import static kitchenpos.helper.AcceptanceAssertionHelper.TableAssertionHelper.테이블_손님수_설정됨;
 import static kitchenpos.helper.AcceptanceAssertionHelper.TableAssertionHelper.테이블_유휴여부_설정됨;
 
@@ -90,7 +92,7 @@ class TableAcceptanceTest extends AcceptanceTest {
         유휴테이블_여부_설정하기(사용중, 테이블_1_정보.getId());
 
         //when
-        ExtractableResponse<Response> 테이블_손님_인원_설정하기_response = TableApiHelper.테이블_손님_인원_설정하기(손님수,
+        ExtractableResponse<Response> 테이블_손님_인원_설정하기_response = 테이블_손님_인원_설정하기(손님수,
             테이블_1_정보.getId());
 
         //then
@@ -109,11 +111,11 @@ class TableAcceptanceTest extends AcceptanceTest {
         OrderTable 테이블_1_정보 = 빈테이블_생성하기().as(OrderTable.class);
 
         //when
-        ExtractableResponse<Response> 테이블_손님_인원_설정하기_response = TableApiHelper.테이블_손님_인원_설정하기(손님수,
+        ExtractableResponse<Response> 테이블_손님_인원_설정하기_response = 테이블_손님_인원_설정하기(손님수,
             테이블_1_정보.getId());
 
         //then
-        TableAssertionHelper.테이블_손님수_설정_에러(테이블_손님_인원_설정하기_response);
+        테이블_손님수_설정_에러(테이블_손님_인원_설정하기_response);
     }
 
     /**
@@ -131,11 +133,11 @@ class TableAcceptanceTest extends AcceptanceTest {
         유휴테이블_여부_설정하기(사용중, 테이블_1_정보.getId());
 
         //when
-        ExtractableResponse<Response> 테이블_손님_인원_설정하기_response = TableApiHelper.테이블_손님_인원_설정하기(손님수,
+        ExtractableResponse<Response> 테이블_손님_인원_설정하기_response = 테이블_손님_인원_설정하기(손님수,
             테이블_1_정보.getId());
 
         //then
-        TableAssertionHelper.테이블_손님수_설정_에러(테이블_손님_인원_설정하기_response);
+        테이블_손님수_설정_에러(테이블_손님_인원_설정하기_response);
     }
 
     // TODO: 2022/06/25  주문 상태가 먹고있거나(MEAL), 요리중일때(COOKING) 빈테이블 설정 불가 예외처리 필요
