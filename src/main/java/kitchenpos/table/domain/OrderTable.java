@@ -1,7 +1,5 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.common.domain.NumberOfGuests;
-
 import javax.persistence.*;
 import java.util.Objects;
 

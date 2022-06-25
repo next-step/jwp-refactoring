@@ -9,7 +9,7 @@ import kitchenpos.table.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static kitchenpos.common.domain.OrderStatus.UNCOMPLETED_STATUSES;
+import static kitchenpos.order.domain.OrderStatus.UNCOMPLETED_STATUSES;
 
 @Service
 public class TableGroupService {

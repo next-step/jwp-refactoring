@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static kitchenpos.common.domain.OrderStatus.UNCOMPLETED_STATUSES;
+import static kitchenpos.order.domain.OrderStatus.UNCOMPLETED_STATUSES;
 
 @Service
 public class TableService {
