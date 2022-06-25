@@ -10,8 +10,9 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
-    private Long tableGroupId;
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
+    private TableGroup tableGroup;
 
     @Embedded
     private NumberOfGuests numberOfGuests;
@@ -25,15 +26,13 @@ public class OrderTable {
         this.id = id;
     }
 
-    private OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
-        this.tableGroupId = tableGroupId;
+    private OrderTable(int numberOfGuests, boolean empty) {
         this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
         this.empty = empty;
     }
 
-    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
-        this.id = id;
-        this.tableGroupId = tableGroupId;
+    public OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
+        this.tableGroup = TableGroup.of(tableGroupId);
         this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
         this.empty = empty;
     }
@@ -47,7 +46,7 @@ public class OrderTable {
     }
 
     public static OrderTable of(int numberOfGuests, boolean empty) {
-        return new OrderTable(null, numberOfGuests, empty);
+        return new OrderTable(numberOfGuests, empty);
     }
 
     public static OrderTable of(long tableGroupId, int numberOfGuests, boolean empty) {
@@ -58,8 +57,8 @@ public class OrderTable {
         return id;
     }
 
-    public Long getTableGroupId() {
-        return tableGroupId;
+    public TableGroup getTableGroup() {
+        return tableGroup;
     }
 
     public NumberOfGuests getNumberOfGuests() {
@@ -71,16 +70,16 @@ public class OrderTable {
     }
 
     public boolean isGroupable() {
-        return isEmpty() && Objects.isNull(getTableGroupId());
+        return isEmpty() && Objects.isNull(tableGroup);
     }
 
     public void ungroup() {
-        this.tableGroupId = null;
+        this.tableGroup = null;
     }
 
     public void groupBy(TableGroup tableGroup) {
         changeEmpty(false);
-        this.tableGroupId = tableGroup.getId();
+        this.tableGroup = tableGroup;
     }
 
     public void changeNumberOfGuests(NumberOfGuests numberOfGuests) {
@@ -94,7 +93,7 @@ public class OrderTable {
     }
 
     private void validateOfChangeEmpty() {
-        if (Objects.nonNull(tableGroupId)) {
+        if (Objects.nonNull(tableGroup)) {
             throw new IllegalArgumentException("그룹이 있는 테이블은 빈 상태로 변경할 수 없습니다");
         }
     }

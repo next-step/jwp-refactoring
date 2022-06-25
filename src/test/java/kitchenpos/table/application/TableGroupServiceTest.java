@@ -60,14 +60,14 @@ public class TableGroupServiceTest {
     @DisplayName("테이블 그룹을 등록시, 테이블 갯수가 2보다 작으면 실패한다.")
     void createWithUnderTwoOrderTable() {
         // when-then
-        assertThatThrownBy(() -> 단체_지정(1L, Arrays.asList())).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> 단체_지정(Arrays.asList())).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("테이블 그룹으로 등록하려는 테이블이 등록되어 있지 않으면 실패한다.")
     void createWithDifferentOrderTable() {
         // given
-        OrderTables orderTables = 단체_지정(1L, Arrays.asList(orderTable1, orderTable2));
+        OrderTables orderTables = 단체_지정( Arrays.asList(orderTable1, orderTable2));
         given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(orderTable1));
 
         // when-then
@@ -79,9 +79,9 @@ public class TableGroupServiceTest {
     void createWithNotEmptyOrderTableOrNonNullTableGroupId() {
         // given
         orderTable1.changeEmpty(false);
-        OrderTables orderTables = 단체_지정(1L, Arrays.asList(orderTable1, orderTable2));
+        OrderTables orderTables = 단체_지정(Arrays.asList(orderTable1, orderTable2));
         given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(orderTable1, orderTable2));
-//        tableGroupService.create(orderTables);
+
         // when-then
         assertThatThrownBy(() -> tableGroupService.create(orderTables)).isInstanceOf(IllegalArgumentException.class);
     }
@@ -97,7 +97,7 @@ public class TableGroupServiceTest {
         tableGroupService.ungroup(tableGroup.getId());
 
         // then
-        assertThat(orderTable1.getTableGroupId()).isNull();
+        assertThat(orderTable1.getTableGroup()).isNull();
     }
 
     @Test
@@ -113,13 +113,13 @@ public class TableGroupServiceTest {
     }
 
     public TableGroupResponse 단체_지정_등록() {
-        OrderTables orderTables = 단체_지정(1L, Arrays.asList(orderTable1, orderTable2));
+        OrderTables orderTables = 단체_지정(Arrays.asList(orderTable1, orderTable2));
         given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(orderTable1, orderTable2));
         given(tableGroupRepository.save(any())).willReturn(TableGroup.of(1L));
         return tableGroupService.create(orderTables);
     }
 
-    public static OrderTables 단체_지정(long id, List<OrderTable> orderTables) {
+    public static OrderTables 단체_지정(List<OrderTable> orderTables) {
         return OrderTables.of(orderTables);
     }
 }
