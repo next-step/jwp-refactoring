@@ -31,8 +31,4 @@ public class MenuGroupService {
                 .collect(Collectors.toList());
     }
 
-    public MenuGroup findMenuGroup(Long menuGroupId) {
-        return menuGroupRepository.findById(menuGroupId)
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 메뉴 그룹이 등록되어있지 않습니다."));
-    }
 }

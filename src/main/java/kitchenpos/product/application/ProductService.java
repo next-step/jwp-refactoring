@@ -31,9 +31,4 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-    public Product findProduct(Long menuProductId) {
-        return productRepository.findById(menuProductId)
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 상품이 등록되어있지 않습니다."));
-    }
-
 }

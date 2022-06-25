@@ -40,7 +40,7 @@ public class TableGroupService {
         tableGroup.ungroupingTableGroup();
     }
 
-    public TableGroup findTableGroup(Long tableGroupId) {
+    private TableGroup findTableGroup(Long tableGroupId) {
         return tableGroupRepository.findById(tableGroupId)
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 단체 지정이 등록되어있지 않습니다."));
     }

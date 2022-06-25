@@ -51,7 +51,7 @@ public class TableService {
         return OrderTableResponse.from(savedOrderTable);
     }
 
-    public OrderTable findOrderTable(Long orderTableId) {
+    private OrderTable findOrderTable(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 테이블이 등록되어있지 않습니다."));
     }

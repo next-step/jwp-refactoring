@@ -10,13 +10,14 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
 import java.util.Collections;
-import kitchenpos.menu.application.MenuService;
+import java.util.Optional;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
-import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,14 +32,14 @@ class OrderServiceUnitTest {
     @Mock
     private OrderRepository orderRepository;
     @Mock
-    private MenuService menuService;
+    private MenuRepository menuRepository;
     @Mock
-    private TableService tableService;
+    private OrderTableRepository orderTableRepository;
     private OrderService orderService;
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(orderRepository, tableService, menuService);
+        orderService = new OrderService(orderRepository, orderTableRepository, menuRepository);
     }
 
 
@@ -63,8 +64,8 @@ class OrderServiceUnitTest {
         OrderTable orderTable = 테이블_만들기(1L, 3, false);
         OrderRequest request = 주문_요청_만들기(orderTable.getId(), Arrays.asList(orderLineItem1, orderLineItem2));
 
-        given(tableService.findOrderTable(request.getOrderTableId())).willReturn(orderTable);
-        given(menuService.findMenu(anyLong())).willThrow(IllegalArgumentException.class);
+        given(orderTableRepository.findById(request.getOrderTableId())).willReturn(Optional.of(orderTable));
+        given(menuRepository.findById(anyLong())).willThrow(IllegalArgumentException.class);
 
         //when then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(request));
@@ -81,8 +82,8 @@ class OrderServiceUnitTest {
         OrderTable orderTable = 테이블_만들기(1L, 3, true);
         OrderRequest request = 주문_요청_만들기(orderTable.getId(), Arrays.asList(orderLineItem1, orderLineItem2));
 
-        given(tableService.findOrderTable(request.getOrderTableId())).willReturn(orderTable);
-        given(menuService.findMenu(anyLong())).willThrow(IllegalArgumentException.class);
+        given(orderTableRepository.findById(request.getOrderTableId())).willReturn(Optional.of(orderTable));
+        given(menuRepository.findById(anyLong())).willThrow(IllegalArgumentException.class);
 
         //when then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(request));
@@ -98,7 +99,7 @@ class OrderServiceUnitTest {
         OrderTable orderTable = 테이블_만들기(1L, 3, true);
         OrderRequest request = 주문_요청_만들기(orderTable.getId(), Arrays.asList(orderLineItem1, orderLineItem2));
 
-        given(tableService.findOrderTable(request.getOrderTableId())).willReturn(orderTable);
+        given(orderTableRepository.findById(request.getOrderTableId())).willReturn(Optional.of(orderTable));
 
         //when then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(request));

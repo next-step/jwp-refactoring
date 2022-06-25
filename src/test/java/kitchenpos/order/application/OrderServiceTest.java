@@ -17,13 +17,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.menu.application.MenuGroupService;
-import kitchenpos.menu.application.MenuService;
 import kitchenpos.order.consts.OrderStatus;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.product.application.ProductService;
-import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -34,7 +30,7 @@ import org.springframework.context.annotation.Import;
 
 @DisplayName("주문 관련 Service 기능 테스트")
 @DataJpaTest
-@Import({OrderService.class, TableService.class, MenuService.class, ProductService.class, MenuGroupService.class})
+@Import({OrderService.class})
 class OrderServiceTest {
 
     @Autowired
