@@ -1,6 +1,7 @@
 package kitchenpos.menu.domain;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -40,10 +41,20 @@ public class Menu {
         this.menuGroup = menuGroup;
     }
 
+    private Menu(String name, BigDecimal price, MenuGroup menuGroup) {
+        validateMenuGroup(menuGroup);
+        this.name = Name.from(name);
+        this.price = Price.from(price);
+        this.menuGroup = menuGroup;
+    }
+
     public static Menu from(Long id, String name, BigDecimal price, MenuGroup menuGroup) {
         return new Menu(id, name, price, menuGroup);
     }
 
+    public static Menu from(String name, BigDecimal price, MenuGroup menuGroup) {
+        return new Menu(name, price, menuGroup);
+    }
     private static void validateMenuGroup(MenuGroup menuGroup) {
         if (Objects.isNull(menuGroup)) {
             throw new IllegalArgumentException("메뉴그룹이 있어야 합니다.");
@@ -78,16 +89,20 @@ public class Menu {
         return menuGroup;
     }
 
-    public void setMenuGroup(final MenuGroup menuGroup) {
-        this.menuGroup = menuGroup;
+    public List<MenuProduct> readOnlyMenuProducts() {
+        return menuProducts.readOnlyMenuProducts();
     }
 
-    public MenuProducts menuProducts() {
-        return menuProducts;
-    }
-
-    public void setMenuProducts(final MenuProducts menuProducts) {
+    public void addMenuProducts(MenuProducts menuProducts) {
+        validateMenuProducts(menuProducts);
+        menuProducts.addMenu(this);
         this.menuProducts = menuProducts;
+    }
+
+    private void validateMenuProducts(MenuProducts menuProducts) {
+        if (price.compareTo(menuProducts.totalPrice()) > 0) {
+            throw new IllegalArgumentException("메뉴 가격은 상품의 총 금액을 넘길 수 없습니다.");
+        }
     }
 
     @Override

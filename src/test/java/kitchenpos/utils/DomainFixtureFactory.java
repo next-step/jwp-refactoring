@@ -46,8 +46,8 @@ public class DomainFixtureFactory {
         return new MenuRequest(name, price, menuGroupId, menuProducts);
     }
 
-    public static MenuProduct createMenuProduct(Long seq, Menu menu, Product product, long quantity) {
-        return MenuProduct.from(seq, menu, product, quantity);
+    public static MenuProduct createMenuProduct(Product product, long quantity) {
+        return MenuProduct.from(product, quantity);
     }
 
     public static OrderTable createOrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {

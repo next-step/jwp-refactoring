@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import kitchenpos.domain.Price;
 import kitchenpos.domain.Quantity;
 import kitchenpos.product.domain.Product;
 
@@ -30,47 +31,37 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
-    private MenuProduct(Long seq, Menu menu, Product product, long quantity) {
-        this.seq = seq;
-        this.menu = menu;
+    private MenuProduct(Product product, long quantity) {
         this.product = product;
         this.quantity = Quantity.from(quantity);
     }
 
-    public static MenuProduct from(Long seq, Menu menu, Product product, long quantity) {
-        return new MenuProduct(seq, menu, product, quantity);
+    public static MenuProduct from(Product product, long quantity) {
+        return new MenuProduct(product, quantity);
     }
 
     public Long seq() {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
-    }
-
     public Menu menu() {
         return menu;
     }
 
-    public void setMenu(final Menu menu) {
+    public void addMenu(final Menu menu) {
         this.menu = menu;
+    }
+
+    public Price productPrice() {
+        return product.price();
     }
 
     public Product product() {
         return product;
     }
 
-    public void setProduct(final Product product) {
-        this.product = product;
-    }
-
     public Quantity quantity() {
         return quantity;
-    }
-
-    public void setQuantity(final Quantity quantity) {
-        this.quantity = quantity;
     }
 
     @Override
