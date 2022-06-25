@@ -34,7 +34,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("메뉴 그룹 목록을 조회한다.")
     @Test
-    void getProducts() {
+    void getMenuGroups() {
         // given
         ExtractableResponse<Response> createResponse1 = 메뉴_그룹_등록되어_있음(MENU_GROUP_NAME01);
         ExtractableResponse<Response> createResponse2 = 메뉴_그룹_등록되어_있음(MENU_GROUP_NAME02);
