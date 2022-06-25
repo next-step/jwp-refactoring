@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import kitchenpos.dto.OrderTableResponse;
 
 @Entity
 @Table(name = "order_table")
@@ -33,6 +34,26 @@ public class OrderTableV2 {
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
+    }
+
+    public boolean existTableGroupId() {
+        return tableGroupId != null;
+    }
+
+    public boolean isEmpty() {
+        return this.empty;
+    }
+
+    public void empty() {
+        this.empty = true;
+    }
+
+    public void changeNumberOfGuests(int numberOfGuests) {
+        this.numberOfGuests = numberOfGuests;
+    }
+
+    public OrderTableResponse toOrderTableResponse() {
+        return new OrderTableResponse(this.id, this.tableGroupId, this.numberOfGuests, this.empty);
     }
 
     @Override

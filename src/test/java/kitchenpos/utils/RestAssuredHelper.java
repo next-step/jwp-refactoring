@@ -27,10 +27,17 @@ public final class RestAssuredHelper {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> put(String uri, Object body, Object... params) {
+    public static ExtractableResponse<Response> putContainBody(String uri, Object body, Object... params) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
+                .when().put(uri, params)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> put(String uri, Object... params) {
+        return RestAssured.given().log().all()
                 .when().put(uri, params)
                 .then().log().all()
                 .extract();

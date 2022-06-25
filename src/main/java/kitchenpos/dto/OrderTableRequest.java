@@ -1,6 +1,7 @@
 package kitchenpos.dto;
 
 import kitchenpos.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableV2;
 
 public class OrderTableRequest {
     private Integer numberOfGuests;
@@ -22,7 +23,7 @@ public class OrderTableRequest {
         return empty;
     }
 
-    public OrderTable toOrderTable() {
-        return new OrderTable(null, null, numberOfGuests, empty);
+    public OrderTableV2 toOrderTable() {
+        return new OrderTableV2(null, null, numberOfGuests, empty);
     }
 }

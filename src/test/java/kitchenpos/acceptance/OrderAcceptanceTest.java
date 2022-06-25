@@ -11,7 +11,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
@@ -124,7 +123,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 주문_상태_변경(Long 주문_번호, OrderStatus 변경할_상태) {
         final String uri = ORDER_URI + "/{orderId}/order-status";
-        return RestAssuredHelper.put(uri, new Order(변경할_상태.name()), 주문_번호);
+        return RestAssuredHelper.putContainBody(uri, new Order(변경할_상태.name()), 주문_번호);
     }
 
     private void 주문_상태_변경_결과_확인(ExtractableResponse<Response> 주문_상태_변경_결과, OrderStatus 상태) {

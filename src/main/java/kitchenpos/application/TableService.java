@@ -1,57 +1,55 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import java.util.List;
+import java.util.stream.Collectors;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.order.domain.OrderStatusV2;
+import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.table.domain.OrderTableV2;
+import kitchenpos.table.repository.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-
 @Service
 public class TableService {
-    private final OrderDao orderDao;
-    private final OrderTableDao orderTableDao;
+    private final OrderRepository orderRepository;
+    private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderDao orderDao, final OrderTableDao orderTableDao) {
-        this.orderDao = orderDao;
-        this.orderTableDao = orderTableDao;
+    public TableService(OrderRepository orderRepository,
+                        OrderTableRepository orderTableRepository) {
+        this.orderRepository = orderRepository;
+        this.orderTableRepository = orderTableRepository;
     }
 
     @Transactional
     public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
-        final OrderTable orderTable = orderTableRequest.toOrderTable();
-        final OrderTable persist = orderTableDao.save(orderTable);
+        final OrderTableV2 orderTable = orderTableRequest.toOrderTable();
+        final OrderTableV2 persist = orderTableRepository.save(orderTable);
         return persist.toOrderTableResponse();
     }
 
-    public List<OrderTable> list() {
-        return orderTableDao.findAll();
+    public List<OrderTableResponse> list() {
+        return orderTableRepository.findAll().stream()
+                .map(OrderTableV2::toOrderTableResponse)
+                .collect(Collectors.toList());
     }
 
     @Transactional
-    public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
+    public OrderTableResponse changeEmpty(final Long orderTableId) {
+        final OrderTableV2 savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
+        if (savedOrderTable.existTableGroupId()) {
             throw new IllegalArgumentException();
         }
 
-        if (orderDao.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+        if (orderRepository.existsOrdersV2ByOrderTableIdAndOrderStatusNot(orderTableId, OrderStatusV2.COMPLETION)) {
             throw new IllegalArgumentException();
         }
 
-        savedOrderTable.setEmpty(orderTableRequest.isEmpty());
-        final OrderTable updateOrderTable = orderTableDao.save(savedOrderTable);
-
-        return updateOrderTable.toOrderTableResponse();
+        savedOrderTable.empty();
+        return savedOrderTable.toOrderTableResponse();
     }
 
     @Transactional
@@ -62,16 +60,14 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
+        final OrderTableV2 savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
         if (savedOrderTable.isEmpty()) {
             throw new IllegalArgumentException();
         }
 
-        savedOrderTable.setNumberOfGuests(numberOfGuests);
-        final OrderTable updateOrderTable = orderTableDao.save(savedOrderTable);
-
-        return updateOrderTable.toOrderTableResponse();
+        savedOrderTable.changeNumberOfGuests(numberOfGuests);
+        return savedOrderTable.toOrderTableResponse();
     }
 }
