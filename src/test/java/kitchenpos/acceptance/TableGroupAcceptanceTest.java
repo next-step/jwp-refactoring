@@ -26,7 +26,7 @@ import org.springframework.http.MediaType;
 @DisplayName("단체 관련 인수 테스트")
 public class TableGroupAcceptanceTest extends AcceptanceTest {
 
-    private static final String TABLE_GROUP_URL = "/v2/api/table-groups";
+    private static final String TABLE_GROUP_URL = "/api/table-groups";
 
     OrderTableResponse 테이블1;
     OrderTableResponse 테이블2;

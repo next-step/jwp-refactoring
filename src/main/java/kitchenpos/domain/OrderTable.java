@@ -9,7 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import kitchenpos.domain.common.Empty;
 import kitchenpos.domain.common.NumberOfGuests;
 
@@ -24,9 +23,6 @@ public class OrderTable {
     @ManyToOne
     @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
     private TableGroup tableGroup;
-
-    @Transient
-    private Long tableGroupId;
 
     @Embedded
     private NumberOfGuests numberOfGuests;
@@ -63,23 +59,11 @@ public class OrderTable {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public void setTableGroupId(final Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
-    }
-
-    public Long getTableGroupId() {
-        return tableGroupId;
-    }
-
     public TableGroup getTableGroup() {
         return tableGroup;
     }
 
-    public void setTableGroup(TableGroup tableGroup) {
+    public void attachToTableGroup(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
     }
 
@@ -101,5 +85,9 @@ public class OrderTable {
 
     public boolean isInTableGroup() {
         return tableGroup != null;
+    }
+
+    public void detachFromTableGroup() {
+        this.tableGroup = null;
     }
 }

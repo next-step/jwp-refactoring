@@ -45,11 +45,6 @@ public class TableGroup {
         addOrderTables(orderTables);
     }
 
-    public TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
-        this.id = id;
-        this.createdDate = createdDate;
-        addOrderTables(orderTables);
-    }
 
     public void addOrderTables(final List<OrderTable> orderTables) {
         validateAddingOrderTables(orderTables);
