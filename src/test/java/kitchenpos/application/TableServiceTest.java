@@ -1,13 +1,25 @@
 package kitchenpos.application;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+
 import java.util.List;
 import kitchenpos.ServiceTest;
 import kitchenpos.application.helper.ServiceTestHelper;
+import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.Product;
+import kitchenpos.fixture.MenuProductFixtureFactory;
+import kitchenpos.fixture.OrderLineItemFixtureFactory;
 import kitchenpos.fixture.OrderTableFixtureFactory;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import static org.assertj.core.api.Assertions.*;
 class TableServiceTest extends ServiceTest {
     @Autowired
     ServiceTestHelper serviceTestHelper;
@@ -46,9 +58,7 @@ class TableServiceTest extends ServiceTest {
     void 빈_테이블로_변경(){
         int numberOfGuests = 4;
         OrderTable orderTable = serviceTestHelper.비어있지않은테이블_생성됨(numberOfGuests);
-
-        OrderTable param = OrderTableFixtureFactory.createParamForChangeEmptyState(true);
-        OrderTable updatedOrderTable = tableService.changeEmpty(orderTable.getId(),param);
+        OrderTable updatedOrderTable = serviceTestHelper.빈테이블로_변경(orderTable.getId());
 
         assertThat(updatedOrderTable.getId()).isEqualTo(orderTable.getId());
         assertThat(updatedOrderTable.isEmpty()).isTrue();
@@ -58,9 +68,7 @@ class TableServiceTest extends ServiceTest {
     @Test
     void 비어있지않은_테이블로_변경(){
         OrderTable orderTable = serviceTestHelper.빈테이블_생성됨();
-
-        OrderTable param = OrderTableFixtureFactory.createParamForChangeEmptyState(false);
-        OrderTable updatedOrderTable = tableService.changeEmpty(orderTable.getId(),param);
+        OrderTable updatedOrderTable = serviceTestHelper.비어있지않은테이블로_변경(orderTable.getId());
 
         assertThat(updatedOrderTable.getId()).isEqualTo(orderTable.getId());
         assertThat(updatedOrderTable.isEmpty()).isFalse();
@@ -71,10 +79,8 @@ class TableServiceTest extends ServiceTest {
     void 테이블_공석상태변경_테이블이_존재하지않는경우(){
         OrderTable notSavedOrderTable = OrderTableFixtureFactory.createEmptyOrderTable();
 
-        OrderTable param = OrderTableFixtureFactory.createParamForChangeEmptyState(false);
-        assertThatIllegalArgumentException().isThrownBy(()->{
-            tableService.changeEmpty(notSavedOrderTable.getId(),param);
-        });
+        assertThatIllegalArgumentException()
+                .isThrownBy(()-> serviceTestHelper.비어있지않은테이블로_변경(notSavedOrderTable.getId()));
     }
 
     @Test
@@ -83,24 +89,24 @@ class TableServiceTest extends ServiceTest {
         OrderTable emptyTable2 = serviceTestHelper.빈테이블_생성됨();
         serviceTestHelper.테이블그룹_지정됨(emptyTable,emptyTable2);
 
-        OrderTable param = OrderTableFixtureFactory.createParamForChangeEmptyState(false);
-        assertThatIllegalArgumentException().isThrownBy(()->{
-            tableService.changeEmpty(emptyTable.getId(),param);
-        });
+        assertThatIllegalArgumentException()
+                .isThrownBy(()-> serviceTestHelper.비어있지않은테이블로_변경(emptyTable.getId()));
     }
 
     @Test
     void 테이블_공석상태변경_주문이_조리_식사상태인경우(){
-        //TODO 주문 테스트 작성 후
+        OrderTable table = serviceTestHelper.비어있지않은테이블_생성됨(3);
+        Order order = 테이블에_임시_주문_추가(table.getId());
+        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThatIllegalArgumentException()
+                .isThrownBy(()-> serviceTestHelper.빈테이블로_변경(table.getId()));
     }
 
     @Test
     void 테이블_인원수_변경(){
         OrderTable savedOrderTable = serviceTestHelper.비어있지않은테이블_생성됨(4);
-
         int updatedNumberOfGuests = 3;
-        OrderTable param = OrderTableFixtureFactory.createParamForChangeNumberOfGuests(updatedNumberOfGuests);
-        OrderTable updatedOrderTable = tableService.changeNumberOfGuests(savedOrderTable.getId(),param);
+        OrderTable updatedOrderTable = serviceTestHelper.테이블_인원수_변경(savedOrderTable.getId(),updatedNumberOfGuests);
 
         assertThat(updatedOrderTable.getId()).isEqualTo(savedOrderTable.getId());
         assertThat(updatedOrderTable.getNumberOfGuests()).isEqualTo(updatedNumberOfGuests);
@@ -111,20 +117,24 @@ class TableServiceTest extends ServiceTest {
         OrderTable savedOrderTable = serviceTestHelper.비어있지않은테이블_생성됨(4);
 
         int invalidNumberOfGuests = -5;
-        OrderTable param = OrderTableFixtureFactory.createParamForChangeNumberOfGuests(invalidNumberOfGuests);
-
         assertThatIllegalArgumentException()
-                .isThrownBy(()-> tableService.changeNumberOfGuests(savedOrderTable.getId(),param));
+                .isThrownBy(()->serviceTestHelper.테이블_인원수_변경(savedOrderTable.getId(),invalidNumberOfGuests));
     }
 
     @Test
     void 테이블_인원수_변경_빈테이블인_경우(){
         OrderTable savedOrderTable = serviceTestHelper.빈테이블_생성됨();
-
-        OrderTable param = OrderTableFixtureFactory.createParamForChangeNumberOfGuests(4);
-
+        int updatedNumberOfGuests = 4;
         assertThatIllegalArgumentException()
-                .isThrownBy(()-> tableService.changeNumberOfGuests(savedOrderTable.getId(),param));
+                .isThrownBy(()-> serviceTestHelper.테이블_인원수_변경(savedOrderTable.getId(),updatedNumberOfGuests));
     }
 
+    private Order 테이블에_임시_주문_추가(Long tableId){
+        MenuGroup menuGroup = serviceTestHelper.메뉴그룹_생성됨("메뉴그룹1");
+        Product product1 = serviceTestHelper.상품_생성됨("상품1",1000);
+        MenuProduct menuProduct = MenuProductFixtureFactory.createMenuProduct(product1.getId(),4);
+        Menu menu = serviceTestHelper.메뉴_생성됨(menuGroup,"메뉴1",4000, Lists.newArrayList(menuProduct));
+        OrderLineItem orderLineItem =  OrderLineItemFixtureFactory.createOrderLine(menu.getId(),3);
+        return serviceTestHelper.주문_생성됨(tableId, Lists.newArrayList(orderLineItem));
+    }
 }

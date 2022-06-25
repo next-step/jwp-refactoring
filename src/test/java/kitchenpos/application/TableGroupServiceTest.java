@@ -1,26 +1,39 @@
 package kitchenpos.application;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+
+import java.util.List;
 import kitchenpos.ServiceTest;
 import kitchenpos.application.helper.ServiceTestHelper;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.fixture.OrderTableFixtureFactory;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import static org.assertj.core.api.Assertions.*;
 
 class TableGroupServiceTest extends ServiceTest {
     
     @Autowired
     ServiceTestHelper serviceTestHelper;
 
+    @Autowired
+    TableService tableService;
+
+    @Autowired
+    TableGroupService tableGroupService;
+
     @Test
     void 테이블그룹_지정() {
         int numberOfTables = 2;
         TableGroup savedTableGroup = serviceTestHelper.테이블그룹_지정됨(numberOfTables);
 
+        List<OrderTable> orderTables = savedTableGroup.getOrderTables();
         assertThat(savedTableGroup.getId()).isNotNull();
-        assertThat(savedTableGroup.getOrderTables()).hasSize(numberOfTables);
+        assertThat(orderTables).hasSize(numberOfTables);
+        orderTables.stream()
+                .forEach(table -> assertThat(table.getTableGroupId()).isEqualTo(savedTableGroup.getId()));
     }
 
     @Test
@@ -62,12 +75,31 @@ class TableGroupServiceTest extends ServiceTest {
     }
 
     @Test
-    void 테이블그룹_지정해제() {
-        //TODO: 주문 테스트 작성 후
+    void 테이블그룹_지정해제_빈테이블인_경우() {
+        OrderTable table1 = serviceTestHelper.빈테이블_생성됨();
+        OrderTable table2 = serviceTestHelper.빈테이블_생성됨();
+        TableGroup tableGroup = serviceTestHelper.테이블그룹_지정됨(table1,table2);
+
+        tableGroupService.ungroup(tableGroup.getId());
+
+        테이블그룹_해제여부확인(Lists.newArrayList(table1,table2));
     }
 
-    @Test
-    void 테이블그룹_지정해제_어떤테이블의_상태가_계산완료가_아닌경우() {
-        //TODO: 주문 테스트 작성 후
+
+
+    private void 테이블그룹_해제여부확인(List<OrderTable> ungroupedTables){
+        List<OrderTable> tables = tableService.list();
+        ungroupedTables.stream().forEach(orderTable -> {
+            OrderTable foundTable = findOrderTableById(orderTable.getId(),tables);
+            assertThat(foundTable.getTableGroupId()).isNull();
+        });
     }
+
+    private OrderTable findOrderTableById(Long tableId, List<OrderTable> tables){
+        return tables.stream()
+                .filter(orderTable -> tableId.equals(orderTable.getId()))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
+    }
+
 }

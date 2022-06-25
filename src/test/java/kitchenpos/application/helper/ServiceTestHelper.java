@@ -16,17 +16,16 @@ import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.fixture.MenuFixtureFactory;
 import kitchenpos.fixture.MenuGroupFixtureFactory;
-import kitchenpos.fixture.MenuProductFixtureFactory;
 import kitchenpos.fixture.OrderFixtureFactory;
 import kitchenpos.fixture.OrderTableFixtureFactory;
 import kitchenpos.fixture.ProductFixtureFactory;
 import kitchenpos.fixture.TableGroupFixtureFactory;
-import org.assertj.core.util.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -75,12 +74,37 @@ public class ServiceTestHelper {
     public OrderTable 빈테이블_생성됨() {
         return tableService.create(OrderTableFixtureFactory.createEmptyOrderTable());
     }
+
+    public OrderTable 비어있지않은테이블로_변경(Long orderTableId){
+        OrderTable param = OrderTableFixtureFactory.createParamForChangeEmptyState(false);
+        OrderTable updatedOrderTable = tableService.changeEmpty(orderTableId,param);
+        return updatedOrderTable;
+    }
+
     public OrderTable 비어있지않은테이블_생성됨(int numberOfGuests) {
         return tableService.create(OrderTableFixtureFactory.createNotEmptyOrderTable(numberOfGuests));
+    }
+
+    public OrderTable 빈테이블로_변경(Long orderTableId){
+        OrderTable param = OrderTableFixtureFactory.createParamForChangeEmptyState(true);
+        OrderTable updatedOrderTable = tableService.changeEmpty(orderTableId,param);
+        return updatedOrderTable;
+    }
+
+    public OrderTable 테이블_인원수_변경(Long orderTableId, int updatedNumberOfGuests){
+        OrderTable param = OrderTableFixtureFactory.createParamForChangeNumberOfGuests(updatedNumberOfGuests);
+        OrderTable updatedOrderTable = tableService.changeNumberOfGuests(orderTableId,param);
+        return updatedOrderTable;
     }
 
     public Order 주문_생성됨(Long orderTableId, List<OrderLineItem> orderLineItems){
         return orderService.create(OrderFixtureFactory.createOrder(orderTableId, orderLineItems));
     }
+
+    public Order 주문상태_변경(Long orderId,OrderStatus orderStatus){
+        Order param = OrderFixtureFactory.createParamForUpdateStatus(orderStatus);
+        return orderService.changeOrderStatus(orderId,param);
+    }
+
 
 }
