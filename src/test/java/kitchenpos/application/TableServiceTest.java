@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
 import kitchenpos.order.dao.OrderRepository;
-import kitchenpos.table.dao.OrderTableDao;
+import kitchenpos.table.dao.OrderTableRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.application.TableService;
 import org.junit.jupiter.api.DisplayName;
@@ -28,7 +28,7 @@ public class TableServiceTest {
     private OrderRepository orderRepository;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private TableService tableService;
@@ -73,7 +73,7 @@ public class TableServiceTest {
     void changeEmptyByBeforeSavedOrderTableTest() {
         // given
         OrderTable 변경_될_주문_테이블 = 주문_테이블_생성(null, 1, true);
-        when(orderTableDao.findById(any())).thenReturn(Optional.empty());
+        when(orderTableRepository.findById(any())).thenReturn(Optional.empty());
 
         // then
         주문_테이블_인원_변경_실패됨(() -> tableService.changeEmpty(0L, 변경_될_주문_테이블));
@@ -85,7 +85,7 @@ public class TableServiceTest {
         // given
         OrderTable Id_값이_없는_주문_테이블 = 주문_테이블_생성(0L, 1, false);
         OrderTable 변경_될_주문_테이블 = 주문_테이블_생성(0L, 1, true);
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(Id_값이_없는_주문_테이블));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(Id_값이_없는_주문_테이블));
 
         // then
         주문_테이블_인원_변경_실패됨(() -> tableService.changeEmpty(0L, 변경_될_주문_테이블));
@@ -97,7 +97,7 @@ public class TableServiceTest {
         // given
         OrderTable 원본_주문_테이블 = 주문_테이블_생성(null, 1, false);
         OrderTable 변경_될_주문_테이블 = 주문_테이블_생성(null, 1, true);
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(원본_주문_테이블));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(원본_주문_테이블));
         when(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(true);
 
         // then
@@ -110,9 +110,9 @@ public class TableServiceTest {
         // given
         OrderTable 원본_주문_테이블 = 주문_테이블_생성(null, 1, false);
         OrderTable 변경_될_주문_테이블 = 주문_테이블_생성(null, 1, true);
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(원본_주문_테이블));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(원본_주문_테이블));
         when(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(false);
-        when(orderTableDao.save(any())).then(it -> it.getArgument(0));
+        when(orderTableRepository.save(any())).then(it -> it.getArgument(0));
 
         // when
         OrderTable 빈_자리_상태_변경_된_주문_테이블 = tableService.changeEmpty(0L, 변경_될_주문_테이블);
@@ -136,7 +136,7 @@ public class TableServiceTest {
     void changeNumberOfGuestsByBeforeSavedOrderTableTest() {
         // given
         OrderTable 변경_될_주문_테이블 = 주문_테이블_생성(null, 10, true);
-        when(orderTableDao.findById(any())).thenReturn(Optional.empty());
+        when(orderTableRepository.findById(any())).thenReturn(Optional.empty());
 
         // then
         주문_테이블_인원_변경_실패됨(() -> tableService.changeNumberOfGuests(0L, 변경_될_주문_테이블));
@@ -148,7 +148,7 @@ public class TableServiceTest {
         // given
         OrderTable 원본_주문_테이블 = 주문_테이블_생성(null, 1, true);
         OrderTable 변경_될_주문_테이블 = 주문_테이블_생성(null, 10, true);
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(원본_주문_테이블));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(원본_주문_테이블));
 
         // then
         주문_테이블_인원_변경_실패됨(() -> tableService.changeNumberOfGuests(0L, 변경_될_주문_테이블));
@@ -160,8 +160,8 @@ public class TableServiceTest {
         // given
         OrderTable 원본_주문_테이블 = 주문_테이블_생성(null, 1, false);
         OrderTable 변경_될_주문_테이블 = 주문_테이블_생성(null, 10, false);
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(원본_주문_테이블));
-        when(orderTableDao.save(any())).then(it -> it.getArgument(0));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(원본_주문_테이블));
+        when(orderTableRepository.save(any())).then(it -> it.getArgument(0));
 
         // when
         OrderTable 인원_변경_된_주문_테이블 = tableService.changeNumberOfGuests(0L, 변경_될_주문_테이블);

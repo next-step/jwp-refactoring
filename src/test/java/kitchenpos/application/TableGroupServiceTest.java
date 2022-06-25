@@ -2,8 +2,8 @@ package kitchenpos.application;
 
 import kitchenpos.order.dao.OrderRepository;
 import kitchenpos.table.application.TableGroupService;
-import kitchenpos.table.dao.OrderTableDao;
-import kitchenpos.table.dao.TableGroupDao;
+import kitchenpos.table.dao.OrderTableRepository;
+import kitchenpos.table.dao.TableGroupRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
@@ -31,10 +31,10 @@ class TableGroupServiceTest {
     private OrderRepository orderRepository;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -60,7 +60,7 @@ class TableGroupServiceTest {
                 주문_테이블_생성(null, 0, false)
         );
         TableGroup 테이블_그룹 = 테이블_그룹_생성(주문_테이블_목록);
-        when(orderTableDao.findAllByIdIn(any())).thenReturn(Collections.emptyList());
+        when(orderTableRepository.findAllByIdIn(any())).thenReturn(Collections.emptyList());
 
         // then
         테이블_그룹_생성_실패(() -> tableGroupService.create(테이블_그룹));
@@ -82,7 +82,7 @@ class TableGroupServiceTest {
         );
         TableGroup 이미_주문된_테이블_그룹 = 테이블_그룹_생성(이미_주문_된_테이블_리스트);
         TableGroup 비어_있지_않은_테이블_그룹 = 테이블_그룹_생성(비어_있지_않은_테이블_리스트);
-        when(orderTableDao.findAllByIdIn(any())).thenReturn(이미_주문_된_테이블_리스트);
+        when(orderTableRepository.findAllByIdIn(any())).thenReturn(이미_주문_된_테이블_리스트);
 
         테이블_그룹_생성_실패(() -> tableGroupService.create(이미_주문된_테이블_그룹));
         테이블_그룹_생성_실패(() -> tableGroupService.create(비어_있지_않은_테이블_그룹));
@@ -99,9 +99,9 @@ class TableGroupServiceTest {
                 주문_테이블_생성(null, 0, true)
         );
         TableGroup 테이블_그룹 = 테이블_그룹_생성(주문_테이블_목록);
-        when(orderTableDao.findAllByIdIn(any())).thenReturn(주문_테이블_목록);
-        when(tableGroupDao.save(테이블_그룹)).thenReturn(테이블_그룹);
-        when(orderTableDao.save(any())).then(it -> it.getArgument(0));
+        when(orderTableRepository.findAllByIdIn(any())).thenReturn(주문_테이블_목록);
+        when(tableGroupRepository.save(테이블_그룹)).thenReturn(테이블_그룹);
+        when(orderTableRepository.save(any())).then(it -> it.getArgument(0));
 
         // when
         TableGroup 테이블_그룹_생성_결과 = tableGroupService.create(테이블_그룹);
@@ -114,7 +114,8 @@ class TableGroupServiceTest {
     @Test
     void ungroupByCookingOrMealStatusTableGroupTest() {
         // given
-        when(orderTableDao.findAllByTableGroupId(any())).thenReturn(Collections.singletonList(주문_테이블_생성(0L, 10, false)));
+        when(orderTableRepository.findAllByTableGroupId(any()))
+                .thenReturn(Collections.singletonList(주문_테이블_생성(0L, 10, false)));
         when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(true);
 
         // then
@@ -130,7 +131,7 @@ class TableGroupServiceTest {
                 주문_테이블_생성(0L, 2, false),
                 주문_테이블_생성(0L, 3, false)
         );
-        when(orderTableDao.findAllByTableGroupId(any())).thenReturn(주문_테이블_리스트);
+        when(orderTableRepository.findAllByTableGroupId(any())).thenReturn(주문_테이블_리스트);
         when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(false);
 
         // when

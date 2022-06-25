@@ -8,7 +8,7 @@ import kitchenpos.order.dao.OrderRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.dao.OrderTableDao;
+import kitchenpos.table.dao.OrderTableRepository;
 import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,7 +44,7 @@ class OrderServiceTest {
     private OrderLineItemRepository orderLineItemRepository;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private OrderService orderService;
@@ -79,7 +79,7 @@ class OrderServiceTest {
         // given
         Order 주문 = 주문_생성(0L, OrderStatus.COOKING, Collections.singletonList(주문_목록_생성(0L, 1L, 1)));
         when(menuRepository.countByIdIn(any())).thenReturn(1L);
-        when(orderTableDao.findById(any())).thenReturn(Optional.empty());
+        when(orderTableRepository.findById(any())).thenReturn(Optional.empty());
 
         // then
         주문_생성_실패됨(() -> orderService.create(주문));
@@ -91,7 +91,7 @@ class OrderServiceTest {
         // given
         Order 주문 = 주문_생성(0L, OrderStatus.COOKING, Collections.singletonList(주문_목록_생성(0L, 1L, 1)));
         when(menuRepository.countByIdIn(any())).thenReturn(1L);
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(주문_테이블_생성(0L, 1, true)));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(주문_테이블_생성(0L, 1, true)));
 
         // then
         주문_생성_실패됨(() -> orderService.create(주문));
@@ -106,7 +106,7 @@ class OrderServiceTest {
         OrderLineItem 주문_목록 = 주문_목록_생성(0L, 메뉴.getId(), 1);
         Order 주문 = 주문_생성(0L, OrderStatus.COOKING, Collections.singletonList(주문_목록));
         when(menuRepository.countByIdIn(any())).thenReturn(1L);
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(주문_테이블));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(주문_테이블));
         when(orderRepository.save(주문)).thenReturn(주문);
         when(orderLineItemRepository.save(주문_목록)).thenReturn(주문_목록);
 

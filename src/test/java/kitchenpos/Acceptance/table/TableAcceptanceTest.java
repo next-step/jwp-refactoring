@@ -74,7 +74,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
                 테이블_생성_요청(3).as(OrderTable.class),
                 테이블_생성_요청(3).as(OrderTable.class)
         );
-        OrderTable 변경_될_테이블 = 주문_테이블_생성(1L, 1, false);
+        OrderTable 변경_될_테이블 = 주문_테이블_생성(null, 1, false);
         테이블_그룹_생성_요청(저장_된_테이블들);
 
         // when
