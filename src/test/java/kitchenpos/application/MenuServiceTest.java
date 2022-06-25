@@ -9,6 +9,7 @@ import static org.mockito.BDDMockito.given;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import kitchenpos.application.fixture.MenuFixtureFactory;
 import kitchenpos.application.fixture.MenuGroupFixtureFactory;
@@ -22,6 +23,7 @@ import kitchenpos.domain.MenuProductRepository;
 import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductRepository;
+import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.MenuResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -75,40 +77,48 @@ class MenuServiceTest {
     @Test
     @DisplayName("생성 하려는 메뉴의 메뉴 그룹이 시스템에 존재 하지 않으면 추가 할 수 없다.")
     void createTestFailWithMenuGroupNotExist() {
-        //given
-        given(menuGroupRepository.existsById(중식.getId())).willReturn(false);
 
         //when & then
         assertThatThrownBy(
                 () -> menuService.create(MenuRequest.from(중식메뉴))
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
     @DisplayName("생성 하려는 메뉴의 메뉴 상품이 시스템에 등록 되어 있지 않으면 추가 할 수 없다.")
     void createTestFailWithMenuProductNotExist() {
-        //given
-        given(menuGroupRepository.existsById(중식.getId())).willReturn(true);
-        given(productRepository.findById(중식_메뉴_짬뽕.getProduct().getId())).willThrow(IllegalArgumentException.class);
-
+        Product 잘못된_상품 = new Product("잘못된 상품", BigDecimal.valueOf(10));
+        MenuProduct 잘못된_메뉴_상품 = new MenuProduct(중식메뉴, 잘못된_상품, 10);
         //when & then
         assertThatThrownBy(
-                () -> menuService.create(MenuRequest.from(중식메뉴))
-        ).isInstanceOf(IllegalArgumentException.class);
+                () -> menuService.create(MenuRequest.of(
+                        중식메뉴.getName(),
+                        중식메뉴.getPrice().longValue(),
+                        중식.getId(),
+                        Arrays.asList(
+                                MenuProductRequest.of(잘못된_메뉴_상품.getProduct().getId(), 잘못된_메뉴_상품.getQuantity())
+                        )
+        ))).isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
     @DisplayName("생성 하려는 메뉴 가격이 전체 메뉴상품의 전체 금액(가격 * 수량의 총합)보다 클 수 없다.")
     void createTestFailWithAmount() {
         //given
-        given(menuGroupRepository.existsById(중식.getId())).willReturn(true);
+        given(menuGroupRepository.findById(중식.getId())).willReturn(Optional.of(중식));
         given(productRepository.findById(중식_메뉴_짬뽕.getProduct().getId())).willReturn(Optional.of(짬뽕));
         given(productRepository.findById(중식_메뉴_짜장.getProduct().getId())).willReturn(Optional.of(짜장));
         Menu 잘못된_메뉴 = new Menu(1L, "잘못된 메뉴", BigDecimal.valueOf(100_000), 중식);
-        잘못된_메뉴.addMenuProduct(Arrays.asList(중식_메뉴_짬뽕, 중식_메뉴_짜장));
+
         //when & then
         assertThatThrownBy(
-                () -> menuService.create(MenuRequest.from(잘못된_메뉴))
+                () -> menuService.create(MenuRequest.of(
+                        잘못된_메뉴.getName(),
+                        잘못된_메뉴.getPrice().longValue(),
+                        중식.getId(),
+                        Arrays.asList(
+                                MenuProductRequest.of(중식_메뉴_짬뽕.getProduct().getId(), 중식_메뉴_짬뽕.getQuantity()),
+                                MenuProductRequest.of(중식_메뉴_짜장.getProduct().getId(), 중식_메뉴_짜장.getQuantity()))))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -123,10 +133,18 @@ class MenuServiceTest {
         중식메뉴.addMenuProduct(Arrays.asList(중식_메뉴_짬뽕, 중식_메뉴_짜장));
 
         //when
-        MenuResponse menu = menuService.create(MenuRequest.from(중식메뉴));
+        MenuResponse menu = menuService.create(
+                MenuRequest.of(
+                        중식메뉴.getName(),
+                        중식메뉴.getPrice().longValue(),
+                        중식.getId(),
+                        Arrays.asList(
+                                MenuProductRequest.of(중식_메뉴_짬뽕.getProduct().getId(), 중식_메뉴_짬뽕.getQuantity()),
+                                MenuProductRequest.of(중식_메뉴_짜장.getProduct().getId(), 중식_메뉴_짜장.getQuantity())))
+        );
 
         //then
-        assertThat(menu).isEqualTo(MenuRequest.from(중식메뉴));
+        assertThat(menu.getId()).isEqualTo(MenuResponse.from(중식메뉴).getId());
     }
 
     @Test
@@ -139,6 +157,6 @@ class MenuServiceTest {
         List<MenuResponse> menus = menuService.list();
 
         //then
-        assertThat(menus).containsExactly(MenuResponse.from(중식메뉴));
+        assertThat(menus).hasSize(1);
     }
 }
