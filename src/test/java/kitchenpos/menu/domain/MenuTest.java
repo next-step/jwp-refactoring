@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import static kitchenpos.helper.MenuFixtures.메뉴_만들기;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import kitchenpos.helper.MenuProductFixtures;
@@ -13,7 +14,7 @@ class MenuTest {
     @Test
     void checkAmount() {
         //given
-        Menu menu = new Menu(1L, "반반치킨 세트", 50_000);
+        Menu menu = 메뉴_만들기("반반치킨 세트", 50_000);
         menu.addMenuProduct(MenuProductFixtures.양념치킨_메뉴);
         menu.addMenuProduct(MenuProductFixtures.후라이드치킨_메뉴상품);
 
@@ -26,8 +27,8 @@ class MenuTest {
     @Test
     void validate() {
         //when then
-        assertThatIllegalArgumentException().isThrownBy(() -> new Menu(null, "빅맥세트", -1));
-        assertThatIllegalArgumentException().isThrownBy(() -> new Menu(null, "빅맥세트", null));
+        assertThatIllegalArgumentException().isThrownBy(() ->  메뉴_만들기("반반치킨 세트", -1000));
+        assertThatIllegalArgumentException().isThrownBy(() ->  메뉴_만들기("반반치킨 세트", null));
     }
 
 }

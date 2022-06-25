@@ -1,5 +1,6 @@
 package kitchenpos.menu.application;
 
+import static kitchenpos.helper.MenuFixtures.메뉴_만들기;
 import static kitchenpos.helper.MenuFixtures.통반세트_요청_만들기;
 import static kitchenpos.helper.MenuGroupFixtures.두마리메뉴_그룹;
 import static kitchenpos.helper.MenuProductFixtures.반반치킨_메뉴상품;
@@ -52,7 +53,7 @@ class MenuServiceUnitTest {
         given(menuGroupService.findMenuGroup(request.getMenuGroupId())).willReturn(두마리메뉴_그룹);
         given(productService.findProduct(any())).willReturn(통구이_상품).willReturn(반반치킨_상품);
         doAnswer(invocation -> {
-            Menu savedMenu = new Menu(generateMenuId, request.getName(), request.getPrice());
+            Menu savedMenu = 메뉴_만들기(generateMenuId, request.getName(), request.getPrice());
             savedMenu.setMenuGroup(두마리메뉴_그룹);
             savedMenu.addMenuProduct(통구이_메뉴상품);
             savedMenu.addMenuProduct(반반치킨_메뉴상품);

@@ -12,15 +12,13 @@ import javax.persistence.ManyToOne;
 
 @Entity
 public class Menu {
-    private static final int FREE = 0;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
     private String name;
-    @Column(nullable = false)
-    private Integer price;
+    @Embedded
+    private MenuPrice menuPrice;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
@@ -30,17 +28,16 @@ public class Menu {
     protected Menu() {
     }
 
-    public Menu(Long id, String name, Integer price) {
-        validatePrice(price);
+    public Menu(Long id, String name, MenuPrice menuPrice) {
         this.id = id;
         this.name = name;
-        this.price = price;
+        this.menuPrice = menuPrice;
     }
 
-    public Menu(Long id, String name, Integer price, MenuGroup menuGroup, MenuProducts menuProducts) {
+    public Menu(Long id, String name, MenuPrice price, MenuGroup menuGroup, MenuProducts menuProducts) {
         this.id = id;
         this.name = name;
-        this.price = price;
+        this.menuPrice = price;
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
     }
@@ -56,14 +53,8 @@ public class Menu {
     }
 
     private void validateAmount(Amounts amounts) {
-        if (price > amounts.calculateTotalAmount()) {
+        if (menuPrice.overTo(amounts)){
             throw new IllegalArgumentException("[ERROR] 메뉴 가격은 총 금액을 넘을 수 없습니다.");
-        }
-    }
-
-    private void validatePrice(Integer price) {
-        if (price == null || price < FREE) {
-            throw new IllegalArgumentException("[ERROR] 메뉴 가격은 0원 이상 이어야 합니다.");
         }
     }
 
@@ -75,8 +66,8 @@ public class Menu {
         return name;
     }
 
-    public Integer getPrice() {
-        return price;
+    public MenuPrice getPrice() {
+        return menuPrice;
     }
 
     public MenuGroup getMenuGroup() {
