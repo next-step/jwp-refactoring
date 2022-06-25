@@ -29,13 +29,13 @@ public class TableGroup {
 
     private TableGroup(List<OrderTable> orderTables) {
         this.createdDate = LocalDateTime.now();
-        this.orderTables.addAll(orderTables);
+        this.orderTables = new OrderTables(orderTables, this);
     }
 
     private TableGroup(Long id, List<OrderTable> orderTables) {
         this.id = id;
         this.createdDate = LocalDateTime.now();
-        this.orderTables.addAll(orderTables);
+        this.orderTables = new OrderTables(orderTables, this);
     }
 
     public static TableGroup of(Long id, List<OrderTable> orderTables) {
@@ -44,14 +44,6 @@ public class TableGroup {
 
     public static TableGroup from(List<OrderTable> orderTables) {
         return new TableGroup(orderTables);
-    }
-
-    public void validateTablesEmpty() {
-        this.orderTables.validateTablesEmpty();
-    }
-
-    public void tablesMapIntoGroup() {
-        this.orderTables.tablesMapIntoGroup(this);
     }
 
     public Long getId() {

@@ -37,11 +37,7 @@ public class TableGroupService {
         final List<OrderTable> orderTables = validateOrderTables(request.getOrderTableIds());
 
         TableGroup tableGroup = TableGroup.from(orderTables);
-        tableGroup.validateTablesEmpty();
-
         final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
-        savedTableGroup.tablesMapIntoGroup();
-
         return TableGroupResponse.toResponse(savedTableGroup);
     }
 

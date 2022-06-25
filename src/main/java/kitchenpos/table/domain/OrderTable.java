@@ -75,6 +75,14 @@ public class OrderTable {
         }
     }
 
+    public void emptyTheTable() {
+        this.empty = true;
+    }
+
+    public void fillTheTable() {
+        this.empty = false;
+    }
+
     public Long getId() {
         return id;
     }
@@ -97,10 +105,6 @@ public class OrderTable {
 
     public boolean isEmpty() {
         return empty;
-    }
-
-    public void setEmpty(final boolean empty) {
-        this.empty = empty;
     }
 
     public void unGroup() {

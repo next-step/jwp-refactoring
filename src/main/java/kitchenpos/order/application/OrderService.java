@@ -44,9 +44,8 @@ public class OrderService {
         final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
             .orElseThrow(() -> new NotFoundException(ExceptionType.NOT_EXIST_ORDER_TABLE));
 
-        Order order = Order.of(null, orderTable);
+        Order order = Order.of(orderTable, orderLineItems);
         order = orderRepository.save(order);
-        order.mapIntoLineItems(orderLineItems);
 
         return OrderResponse.of(order);
     }

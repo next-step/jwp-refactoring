@@ -17,6 +17,7 @@ import kitchenpos.core.exception.ExceptionType;
 import kitchenpos.core.exception.NotFoundException;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.request.OrderRequest;
 import kitchenpos.order.domain.response.OrderResponse;
@@ -53,6 +54,8 @@ class OrderServiceTest {
     private OrderLineItemRequest 주문_항목_request2;
     private OrderRequest 주문_request;
 
+    private OrderLineItem 주문_항목;
+    private OrderLineItem 주문_항목2;
     private Order 주문;
 
     @BeforeEach
@@ -63,7 +66,9 @@ class OrderServiceTest {
         주문_항목_request2 = new OrderLineItemRequest(2L, 1);
         주문_request = new OrderRequest(1L, null, null, Arrays.asList(주문_항목_request, 주문_항목_request2));
 
-        주문 = Order.of(1L, 주문_테이블_entity);
+        주문_항목 = OrderLineItem.of(1L, 주문, 1L, 1);
+        주문_항목2 = OrderLineItem.of(2L, 주문, 1L, 1);
+        주문 = Order.of(주문_테이블_entity, Arrays.asList(주문_항목, 주문_항목2));
     }
 
     @DisplayName("주문을 등록하면 정상적으로 등록되어야 한다")

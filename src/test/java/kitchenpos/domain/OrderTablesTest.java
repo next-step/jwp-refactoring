@@ -27,15 +27,13 @@ class OrderTablesTest {
     void setUp() {
         주문_테이블 = OrderTable.of(null, 1, true);
         주문_테이블2 = OrderTable.of(null, 1, true);
-        주문테이블_목록 = new OrderTables();
-        테이블_그룹 = TableGroup.of(1L, Arrays.asList(주문_테이블, 주문_테이블2));
     }
 
     @DisplayName("주문 테이블목록 객체에 주문 테이블을 넣으면 정상적으로 들어간다")
     @Test
     void tables_add_test() {
         // when
-        주문테이블_목록.addAll(Arrays.asList(주문_테이블, 주문_테이블2));
+        주문테이블_목록 = new OrderTables((Arrays.asList(주문_테이블, 주문_테이블2)), null);
 
         // then
         assertThat(주문테이블_목록.getItems()).hasSize(2);
@@ -45,14 +43,11 @@ class OrderTablesTest {
         + "테이블 상태가 빈 테이블이 아니게 된다")
     @Test
     void tables_mapped_test() {
-        // given
-        주문테이블_목록.addAll(Arrays.asList(주문_테이블, 주문_테이블2));
-
         // when
-        주문테이블_목록.tablesMapIntoGroup(테이블_그룹);
+        테이블_그룹 = TableGroup.of(1L, Arrays.asList(주문_테이블, 주문_테이블2));
 
         // then
-        for (OrderTable orderTable : 주문테이블_목록.getItems()) {
+        for (OrderTable orderTable : 테이블_그룹.getOrderTables()) {
             assertThat(orderTable.getTableGroup()).isEqualTo(테이블_그룹);
             assertFalse(orderTable.isEmpty());
         }
@@ -62,8 +57,7 @@ class OrderTablesTest {
     @Test
     void tables_unGroup_test() {
         // given
-        주문테이블_목록.addAll(Arrays.asList(주문_테이블, 주문_테이블2));
-        주문테이블_목록.tablesMapIntoGroup(테이블_그룹);
+        주문테이블_목록 = new OrderTables((Arrays.asList(주문_테이블, 주문_테이블2)), 테이블_그룹);
 
         // when
         주문테이블_목록.unGroup();
@@ -79,11 +73,11 @@ class OrderTablesTest {
     void tables_validate_test() {
         // given
         주문_테이블 = OrderTable.of(null, 1, false);
-        주문테이블_목록.addAll(Collections.singletonList(주문_테이블));
 
         // then
-        assertThatThrownBy(주문테이블_목록::validateTablesEmpty)
-            .isInstanceOf(CannotCreateException.class)
+        assertThatThrownBy(() -> {
+            new OrderTables(Collections.singletonList(주문_테이블), null);
+        }).isInstanceOf(CannotCreateException.class)
             .hasMessageContaining(ExceptionType.MUST_NOT_BE_EMPTY_OR_GROUPED_TABLE.getMessage());
     }
 
@@ -91,12 +85,13 @@ class OrderTablesTest {
     @Test
     void tables_validate_test2() {
         // given
+        테이블_그룹 = TableGroup.of(1L, Arrays.asList(주문_테이블, 주문_테이블2));
         주문_테이블 = OrderTable.of(테이블_그룹, 1, true);
-        주문테이블_목록.addAll(Collections.singletonList(주문_테이블));
 
         // then
-        assertThatThrownBy(주문테이블_목록::validateTablesEmpty)
-            .isInstanceOf(CannotCreateException.class)
+        assertThatThrownBy(() -> {
+            new OrderTables((Collections.singletonList(주문_테이블)), null);
+        }).isInstanceOf(CannotCreateException.class)
             .hasMessageContaining(ExceptionType.MUST_NOT_BE_EMPTY_OR_GROUPED_TABLE.getMessage());
     }
 }

@@ -45,6 +45,13 @@ public class Order {
     protected Order() {
     }
 
+    private Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        mapIntoLineItems(orderLineItems);
+        this.orderTable = orderTable;
+        this.orderStatus = OrderStatus.COOKING;
+        this.orderedTime = LocalDateTime.now();
+    }
+
     private Order(Long id, OrderTable orderTable) {
         this.id = id;
         this.orderTable = orderTable;
@@ -57,7 +64,12 @@ public class Order {
         return new Order(id, orderTable);
     }
 
-    public void mapIntoLineItems(List<OrderLineItem> orderLineItems) {
+    public static Order of(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        orderTable.validateIsEmpty();
+        return new Order(orderTable, orderLineItems);
+    }
+
+    private void mapIntoLineItems(List<OrderLineItem> orderLineItems) {
         orderLineItems.forEach(it -> it.mapIntoOrder(this));
     }
 

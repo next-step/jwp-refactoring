@@ -42,10 +42,9 @@ class OrderTest {
         // given
         OrderLineItem 주문_항목 = OrderLineItem.of(1L, null, 1L, 1);
         OrderLineItem 주문_항목2 = OrderLineItem.of(2L, null, 2L, 1);
-        Order 주문 = Order.of(null, 주문_테이블);
 
         // when
-        주문.mapIntoLineItems(Arrays.asList(주문_항목, 주문_항목2));
+        Order 주문 = Order.of(주문_테이블, Arrays.asList(주문_항목, 주문_항목2));
 
         // then
         assertThat(주문_항목.getOrder()).isEqualTo(주문);

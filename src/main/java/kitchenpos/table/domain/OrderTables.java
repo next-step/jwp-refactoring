@@ -15,16 +15,21 @@ public class OrderTables {
     @JoinColumn(name = "table_group_id")
     private List<OrderTable> items = new ArrayList<>();
 
-    public void addAll(List<OrderTable> orderTables) {
-        this.items.addAll(orderTables);
+    protected OrderTables() {
+    }
+
+    public OrderTables(List<OrderTable> items, TableGroup tableGroup) {
+        validateTablesEmpty(items);
+        tablesMapIntoGroup(items, tableGroup);
+        this.items = items;
     }
 
     public List<OrderTable> getItems() {
         return items;
     }
 
-    public void validateTablesEmpty() {
-        this.items.stream()
+    private void validateTablesEmpty(List<OrderTable> items) {
+        items.stream()
             .filter(it -> !it.isEmpty() || it.isGrouped())
             .findFirst()
             .ifPresent(e -> {
@@ -32,7 +37,7 @@ public class OrderTables {
             });
     }
 
-    public void tablesMapIntoGroup(TableGroup tableGroup) {
+    private void tablesMapIntoGroup(List<OrderTable> items, TableGroup tableGroup) {
         items.forEach(it -> it.mapIntoGroup(tableGroup));
     }
 

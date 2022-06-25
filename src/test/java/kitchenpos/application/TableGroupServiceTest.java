@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -66,22 +67,22 @@ class TableGroupServiceTest {
 
         주문_테이블 = OrderTable.of(1L, null, 3, true);
         주문_테이블2 = OrderTable.of(2L, null, 5, true);
-
-        테이블_그룹 = TableGroup.from(Arrays.asList(주문_테이블, 주문_테이블2));
     }
 
     @DisplayName("주문 테이블을 단체지정하면 정상적으로 단체지정 되어야한다")
     @Test
     void create_test() {
         // given
-        List<OrderTable> 주문_테이블_목록 = Arrays.asList(주문_테이블, 주문_테이블2);
-        TableGroup 테이블_그룹 = TableGroup.of(1L, 주문_테이블_목록);
+        OrderTable new_주문_테이블 = OrderTable.of(1L, null, 3, true);
+        OrderTable new_주문_테이블2 = OrderTable.of(2L, null, 3, true);
+        List<OrderTable> 주문_테이블_목록 = Arrays.asList(new_주문_테이블, new_주문_테이블2);
 
         // given
         when(orderTableRepository.findAllByIdIn(Arrays.asList(주문_테이블_request.getId(), 주문_테이블_2_request.getId())))
             .thenReturn(주문_테이블_목록);
+
         when(tableGroupRepository.save(any()))
-            .thenReturn(테이블_그룹);
+            .thenReturn(TableGroup.of(1L, Arrays.asList(주문_테이블, 주문_테이블2)));
 
         // when
         TableGroupResponse result = tableGroupService.create(테이블_그룹_request);
@@ -160,6 +161,8 @@ class TableGroupServiceTest {
     @Test
     void ungroup_test() {
         // given
+        테이블_그룹 = TableGroup.from(Arrays.asList(주문_테이블, 주문_테이블2));
+
         when(tableGroupRepository.findById(테이블_그룹.getId()))
             .thenReturn(Optional.of(테이블_그룹));
         when(orderTableRepository.findAllByTableGroup(테이블_그룹))
@@ -177,6 +180,8 @@ class TableGroupServiceTest {
     @Test
     void ungroup_exception_test() {
         // given
+        테이블_그룹 = TableGroup.from(Arrays.asList(주문_테이블, 주문_테이블2));
+
         when(tableGroupRepository.findById(테이블_그룹.getId()))
             .thenReturn(Optional.of(테이블_그룹));
         when(orderTableRepository.findAllByTableGroup(테이블_그룹))

@@ -29,14 +29,14 @@ public class OrderLineItemResponse {
             orderLineItem.getId(),
             OrderResponse.of(orderLineItem.getOrder()),
             orderLineItem.getMenuId(),
-            orderLineItem.getMenuId());
+            orderLineItem.getQuantity());
     }
 
     public static OrderLineItemResponse toResponseWithoutOrder(OrderLineItem orderLineItem) {
         return new OrderLineItemResponse(
             orderLineItem.getId(),
             orderLineItem.getMenuId(),
-            orderLineItem.getMenuId());
+            orderLineItem.getQuantity());
     }
 
     public Long getId() {
