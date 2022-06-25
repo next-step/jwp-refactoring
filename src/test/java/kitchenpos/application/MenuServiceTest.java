@@ -1,13 +1,13 @@
 package kitchenpos.application;
 
-import kitchenpos.menu.dao.MenuDao;
-import kitchenpos.menu.dao.MenuGroupDao;
-import kitchenpos.menu.dao.MenuProductDao;
-import kitchenpos.product.dao.ProductDao;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.dao.MenuGroupRepository;
+import kitchenpos.menu.dao.MenuProductRepository;
+import kitchenpos.menu.dao.MenuRepository;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.product.dao.ProductDao;
 import kitchenpos.product.domain.Product;
-import kitchenpos.menu.application.MenuService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,13 +32,13 @@ import static org.mockito.Mockito.when;
 class MenuServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @Mock
-    private MenuProductDao menuProductDao;
+    private MenuProductRepository menuProductRepository;
 
     @Mock
     private ProductDao productDao;
@@ -78,7 +78,7 @@ class MenuServiceTest {
                 null,
                 Collections.singletonList(메뉴_상품_생성(0L, 0L, 1))
         );
-        when(menuGroupDao.existsById(noneExistMenuGroupId)).thenReturn(false);
+        when(menuGroupRepository.existsById(noneExistMenuGroupId)).thenReturn(false);
 
         // then
         메뉴_생성_실패됨(() -> menuService.create(없는_메뉴_그룹의_메뉴));
@@ -97,7 +97,7 @@ class MenuServiceTest {
                 existMenuGroupId,
                 Collections.singletonList(메뉴_상품_생성(0L, 0L, 1))
         );
-        when(menuGroupDao.existsById(existMenuGroupId)).thenReturn(true);
+        when(menuGroupRepository.existsById(existMenuGroupId)).thenReturn(true);
         when(productDao.findById(any())).thenReturn(Optional.of(상품));
 
         // then
@@ -117,10 +117,10 @@ class MenuServiceTest {
                 existMenuGroupId,
                 Collections.singletonList(메뉴_상품)
         );
-        when(menuGroupDao.existsById(existMenuGroupId)).thenReturn(true);
+        when(menuGroupRepository.existsById(existMenuGroupId)).thenReturn(true);
         when(productDao.findById(any())).thenReturn(Optional.of(상품));
-        when(menuDao.save(메뉴)).thenReturn(메뉴);
-        when(menuProductDao.save(메뉴_상품)).thenReturn(메뉴_상품);
+        when(menuRepository.save(메뉴)).thenReturn(메뉴);
+        when(menuProductRepository.save(메뉴_상품)).thenReturn(메뉴_상품);
 
         // when
         Menu 생성_메뉴 = menuService.create(메뉴);
@@ -140,7 +140,7 @@ class MenuServiceTest {
                 메뉴_생성("메뉴 4", 1_000, null, Collections.emptyList()),
                 메뉴_생성("메뉴 5", 1_000, null, Collections.emptyList())
         );
-        when(menuDao.findAll()).thenReturn(메뉴_리스트);
+        when(menuRepository.findAll()).thenReturn(메뉴_리스트);
 
         // when
         List<Menu> 메뉴_조회_결과 = menuService.list();
