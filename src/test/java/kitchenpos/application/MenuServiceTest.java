@@ -5,14 +5,12 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 import kitchenpos.ServiceTest;
+import kitchenpos.application.helper.ServiceTestHelper;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
-import kitchenpos.fixture.MenuFixtureFactory;
-import kitchenpos.fixture.MenuGroupFixtureFactory;
 import kitchenpos.fixture.MenuProductFixtureFactory;
-import kitchenpos.fixture.ProductFixtureFactory;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,13 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 class MenuServiceTest extends ServiceTest {
     @Autowired
+    private ServiceTestHelper serviceTestHelper;
+
+    @Autowired
     private MenuService menuService;
-
-    @Autowired
-    private ProductService productService;
-
-    @Autowired
-    private MenuGroupService menuGroupService;
 
     private MenuGroup menuGroup;
     private Product product1;
@@ -34,9 +29,9 @@ class MenuServiceTest extends ServiceTest {
 
     @BeforeEach
     void setUp(){
-        menuGroup = menuGroupService.create(MenuGroupFixtureFactory.createMenuGroup("메뉴그룹1"));
-        product1 = productService.create(ProductFixtureFactory.createProduct("상품1",1000));
-        product2 = productService.create(ProductFixtureFactory.createProduct("상품2",2000));
+        menuGroup = serviceTestHelper.메뉴그룹_생성됨("메뉴그룹1");
+        product1 = serviceTestHelper.상품_생성됨("상품1",1000);
+        product2 = serviceTestHelper.상품_생성됨("상품2",2000);
     }
 
     @Test
@@ -56,15 +51,6 @@ class MenuServiceTest extends ServiceTest {
                 .collect(toList());
         assertThat(menuProducts).hasSize(2);
         assertThat(menuProductIds).containsExactlyInAnyOrder(product1.getId(), product2.getId());
-    }
-
-    private Menu 테스트_메뉴_생성(MenuGroup menuGroup, String menuName, int menuPrice){
-        MenuProduct menuProduct1 = MenuProductFixtureFactory.createMenuProduct(product1.getId(),4);
-        MenuProduct menuProduct2 = MenuProductFixtureFactory.createMenuProduct(product2.getId(),1);
-
-        Menu menu = MenuFixtureFactory.createMenu(menuGroup,menuName,menuPrice, Lists.newArrayList(menuProduct1,menuProduct2));
-
-        return menuService.create(menu);
     }
 
     @Test
@@ -103,4 +89,11 @@ class MenuServiceTest extends ServiceTest {
         List<Menu> menus = menuService.list();
         assertThat(menus).hasSize(2);
     }
+
+    private Menu 테스트_메뉴_생성(MenuGroup menuGroup, String menuName, int menuPrice){
+        MenuProduct menuProduct1 = MenuProductFixtureFactory.createMenuProduct(product1.getId(),4);
+        MenuProduct menuProduct2 = MenuProductFixtureFactory.createMenuProduct(product2.getId(),1);
+        return serviceTestHelper.메뉴_생성됨(menuGroup,menuName,menuPrice, Lists.newArrayList(menuProduct1,menuProduct2));
+    }
+
 }
