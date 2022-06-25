@@ -25,7 +25,6 @@ import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
 import kitchenpos.helper.AcceptanceApiHelper.TableApiHelper;
-import kitchenpos.helper.AcceptanceAssertionHelper.OrderAssertionHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
@@ -39,7 +38,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
     Menu 양념두마리_메뉴;
 
     @BeforeEach
-    public void init(){
+    public void init() {
         테이블_설정하기();
         메뉴_설정하기();
     }
@@ -56,7 +55,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
     private void 테이블_설정하기() {
         테이블_1 = TableApiHelper.빈테이블_생성하기().as(OrderTable.class);
         테이블_2 = TableApiHelper.빈테이블_생성하기().as(OrderTable.class);
-        빈테이블= TableApiHelper.빈테이블_생성하기().as(OrderTable.class);
+        빈테이블 = TableApiHelper.빈테이블_생성하기().as(OrderTable.class);
 
         유휴테이블_여부_설정하기("false", 테이블_1.getId());
         유휴테이블_여부_설정하기("false", 테이블_2.getId());
@@ -125,7 +124,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
      * then : 정상적으로 변경된다.
      */
     @Test
-    public void 주문_상태_변경하기_MEAL(){
+    public void 주문_상태_변경하기_MEAL() {
         //given
         OrderLineItem 주문 = new OrderLineItem();
         주문.setMenuId(양념두마리_메뉴.getId());
@@ -149,7 +148,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
      * then : 정상적으로 변경된다.
      */
     @Test
-    public void 주문_상태_변경하기_COMPLETION(){
+    public void 주문_상태_변경하기_COMPLETION() {
         //given
         OrderLineItem 주문 = new OrderLineItem();
         주문.setMenuId(양념두마리_메뉴.getId());
@@ -168,7 +167,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
      * then : 에러가 발생한다
      */
     @Test
-    public void 없는_메뉴로_주문할때_에러발생(){
+    public void 없는_메뉴로_주문할때_에러발생() {
         //given
         OrderLineItem 주문 = new OrderLineItem();
         주문.setMenuId(-1L);
@@ -187,7 +186,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
      * then : 에러가 발생한다
      */
     @Test
-    public void 주문이_없을때_에러발생(){
+    public void 주문이_없을때_에러발생() {
         //when
         ExtractableResponse<Response> 오더_생성하기_response = 주문_생성하기(테이블_1.getId(),
             new ArrayList<>());
@@ -201,7 +200,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
      * then : 에러가 발생한다
      */
     @Test
-    public void 없는테이블에_주문넣을때_에러발생(){
+    public void 없는테이블에_주문넣을때_에러발생() {
         //when
         OrderLineItem 주문 = new OrderLineItem();
         주문.setMenuId(양념두마리_메뉴.getId());
@@ -217,7 +216,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
      * then : 에러가 발생한다
      */
     @Test
-    public void 비어있는테이블에_주문넣을때_에러발생(){
+    public void 비어있는테이블에_주문넣을때_에러발생() {
         //when
         OrderLineItem 주문 = new OrderLineItem();
         주문.setMenuId(양념두마리_메뉴.getId());

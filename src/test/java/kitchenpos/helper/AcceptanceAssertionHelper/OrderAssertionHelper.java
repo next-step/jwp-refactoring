@@ -8,7 +8,6 @@ import io.restassured.response.Response;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderTable;
 import org.springframework.http.HttpStatus;
 
 public class OrderAssertionHelper {

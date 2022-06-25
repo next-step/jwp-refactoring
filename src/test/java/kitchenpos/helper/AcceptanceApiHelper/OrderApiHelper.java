@@ -17,7 +17,6 @@ public class OrderApiHelper {
         오더.setOrderTableId(테이블_ID);
         오더.setOrderLineItems(주문메뉴);
 
-
         return RestAssured
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -43,7 +42,7 @@ public class OrderApiHelper {
             .given().log().all()
             .body(요청전문)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when().put("/api/orders/"+ 오더_번호 +"/order-status")
+            .when().put("/api/orders/" + 오더_번호 + "/order-status")
             .then().log().all().
             extract();
     }
