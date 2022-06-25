@@ -16,20 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 public class TableAcceptanceTest extends AcceptanceTest {
     private static final String API_URL = "/api/tables";
 
-    private static ExtractableResponse<Response> 테이블_생성_요청(int numberOfGuests, boolean empty) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(numberOfGuests);
-        orderTable.setEmpty(empty);
-
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(orderTable)
-                .when().post(API_URL)
-                .then().log().all()
-                .extract();
-    }
-
     @Test
     @DisplayName("테이블 생성, 조회, 상태 수정 테스트")
     void table() {
@@ -52,6 +38,20 @@ public class TableAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 테이블_인원_수정_결과 = 테이블_인원_수정(테이블_ID, 인원수);
 
         테이블_인원_수정됨(테이블_인원_수정_결과, 인원수);
+    }
+
+    private static ExtractableResponse<Response> 테이블_생성_요청(int numberOfGuests, boolean empty) {
+        OrderTable orderTable = new OrderTable();
+        orderTable.setNumberOfGuests(numberOfGuests);
+        orderTable.setEmpty(empty);
+
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(orderTable)
+                .when().post(API_URL)
+                .then().log().all()
+                .extract();
     }
 
     private void 테이블_생성됨(ExtractableResponse<Response> response) {
@@ -113,5 +113,11 @@ public class TableAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.jsonPath().getInt("numberOfGuests")).isEqualTo(expect)
         );
+    }
+
+    public static OrderTable 주문_테이블_등록되어_있음(int numberOfGuests, boolean empty) {
+        ExtractableResponse<Response> response = 테이블_생성_요청(numberOfGuests, empty);
+
+        return response.as(OrderTable.class);
     }
 }
