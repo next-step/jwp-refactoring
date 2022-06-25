@@ -6,7 +6,7 @@ import kitchenpos.menu.dao.MenuProductRepository;
 import kitchenpos.menu.dao.MenuRepository;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.product.dao.ProductDao;
+import kitchenpos.product.dao.ProductRepository;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,7 +41,7 @@ class MenuServiceTest {
     private MenuProductRepository menuProductRepository;
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private MenuService menuService;
@@ -98,7 +98,7 @@ class MenuServiceTest {
                 Collections.singletonList(메뉴_상품_생성(0L, 0L, 1))
         );
         when(menuGroupRepository.existsById(existMenuGroupId)).thenReturn(true);
-        when(productDao.findById(any())).thenReturn(Optional.of(상품));
+        when(productRepository.findById(any())).thenReturn(Optional.of(상품));
 
         // then
         메뉴_생성_실패됨(() -> menuService.create(메뉴_가격과_포함된_상품의_가격이_맞지_않는_메뉴));
@@ -118,7 +118,7 @@ class MenuServiceTest {
                 Collections.singletonList(메뉴_상품)
         );
         when(menuGroupRepository.existsById(existMenuGroupId)).thenReturn(true);
-        when(productDao.findById(any())).thenReturn(Optional.of(상품));
+        when(productRepository.findById(any())).thenReturn(Optional.of(상품));
         when(menuRepository.save(메뉴)).thenReturn(메뉴);
         when(menuProductRepository.save(메뉴_상품)).thenReturn(메뉴_상품);
 
