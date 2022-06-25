@@ -1,16 +1,19 @@
 package kitchenpos.application;
 
+import static kitchenpos.fixture.DomainFactory.createEmptyPriceProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+
+import static kitchenpos.fixture.DomainFactory.createProduct;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -47,7 +50,7 @@ class ProductServiceTest {
     @Test
     void 상품_생성_가격_없는_경우_예외() {
         assertThatThrownBy(
-                () -> productService.create(createProduct(3L, "공기"))
+                () -> productService.create(createEmptyPriceProduct(3L, "공기"))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -63,23 +66,6 @@ class ProductServiceTest {
         when(productDao.findAll()).thenReturn(Arrays.asList(토마토, 감자));
         List<Product> result = productService.list();
         assertThat(toIdList(result)).containsExactlyElementsOf(toIdList(Arrays.asList(토마토, 감자)));
-    }
-
-    public static Product createProduct(Long id, String name, long price) {
-        Product product = new Product();
-        product.setId(id);
-        product.setName(name);
-        product.setPrice(BigDecimal.valueOf(price));
-
-        return product;
-    }
-
-    private Product createProduct(Long id, String name) {
-        Product product = new Product();
-        product.setId(id);
-        product.setName(name);
-
-        return product;
     }
 
     private List<Long> toIdList(List<Product> products) {

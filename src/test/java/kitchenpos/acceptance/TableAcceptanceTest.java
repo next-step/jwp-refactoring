@@ -1,5 +1,6 @@
 package kitchenpos.acceptance;
 
+import static kitchenpos.fixture.DomainFactory.createOrderTable;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
@@ -164,16 +165,4 @@ public class TableAcceptanceTest extends AcceptanceTest {
     private static void 테이블_손님_수_변경됨(ExtractableResponse<Response> response, OrderTable orderTable) {
         assertThat(response.as(OrderTable.class).getNumberOfGuests()).isEqualTo(orderTable.getNumberOfGuests());
     }
-
-    private static OrderTable createOrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setId(id);
-        orderTable.setTableGroupId(tableGroupId);
-        orderTable.setNumberOfGuests(numberOfGuests);
-        orderTable.setEmpty(empty);
-
-        return orderTable;
-    }
-
-
 }

@@ -1,11 +1,11 @@
 package kitchenpos.acceptance;
 
+import static kitchenpos.fixture.DomainFactory.createProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -94,14 +94,5 @@ public class ProductAcceptanceTest extends AcceptanceTest {
                 .collect(Collectors.toList());
 
         assertThat(resultProductIds).containsAll(expectedProductIds);
-    }
-
-    public static Product createProduct(Long id, String name, long price) {
-        Product product = new Product();
-        product.setId(id);
-        product.setName(name);
-        product.setPrice(BigDecimal.valueOf(price));
-
-        return product;
     }
 }

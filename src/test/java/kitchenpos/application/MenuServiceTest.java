@@ -1,12 +1,14 @@
 package kitchenpos.application;
 
-import static kitchenpos.application.MenuGroupServiceTest.createMenuGroup;
-import static kitchenpos.application.ProductServiceTest.createProduct;
+import static kitchenpos.fixture.DomainFactory.createEmptyPriceMenu;
+import static kitchenpos.fixture.DomainFactory.createMenu;
+import static kitchenpos.fixture.DomainFactory.createMenuGroup;
+import static kitchenpos.fixture.DomainFactory.createMenuProduct;
+import static kitchenpos.fixture.DomainFactory.createProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +19,6 @@ import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -140,38 +141,6 @@ class MenuServiceTest {
 
         List<Menu> result = menuService.list();
         assertThat(toIdList(result)).containsExactlyElementsOf(toIdList(Arrays.asList(빅맥버거, 감자튀김)));
-    }
-
-    private Menu createMenu(Long id, String name, long price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        Menu menu = new Menu();
-        menu.setId(id);
-        menu.setName(name);
-        menu.setPrice(BigDecimal.valueOf(price));
-        menu.setMenuGroupId(menuGroupId);
-        menu.setMenuProducts(menuProducts);
-
-        return menu;
-    }
-
-    private Menu createEmptyPriceMenu(Long id, String name, Long menuGroupId, List<MenuProduct> menuProducts) {
-        Menu menu = new Menu();
-        menu.setId(id);
-        menu.setName(name);
-        menu.setPrice(null);
-        menu.setMenuGroupId(menuGroupId);
-        menu.setMenuProducts(menuProducts);
-
-        return menu;
-    }
-
-    private MenuProduct createMenuProduct(Long seq, Long menuId, Long productId, long quantity) {
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setSeq(seq);
-        menuProduct.setMenuId(menuId);
-        menuProduct.setProductId(productId);
-        menuProduct.setQuantity(quantity);
-
-        return menuProduct;
     }
 
     private List<Long> toIdList(List<Menu> menus) {

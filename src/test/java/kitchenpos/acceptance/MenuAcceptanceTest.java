@@ -1,9 +1,9 @@
 package kitchenpos.acceptance;
 
-import static kitchenpos.acceptance.MenuGroupAcceptanceTest.createMenuGroup;
 import static kitchenpos.acceptance.MenuGroupAcceptanceTest.메뉴그룹_등록_요청;
-import static kitchenpos.acceptance.ProductAcceptanceTest.createProduct;
 import static kitchenpos.acceptance.ProductAcceptanceTest.상품_등록_요청;
+import static kitchenpos.fixture.DomainFactory.createMenuGroup;
+import static kitchenpos.fixture.DomainFactory.createProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;

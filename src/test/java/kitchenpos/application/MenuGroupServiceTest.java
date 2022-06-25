@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import static kitchenpos.fixture.DomainFactory.createMenuGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -46,14 +47,6 @@ class MenuGroupServiceTest {
         when(menuGroupDao.findAll()).thenReturn(Arrays.asList(빅맥세트, 상하이버거세트));
         List<MenuGroup> result = menuGroupService.list();
         assertThat(toIdList(result)).containsExactlyElementsOf(toIdList(Arrays.asList(빅맥세트, 상하이버거세트)));
-    }
-
-    public static MenuGroup createMenuGroup(Long id, String name) {
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setId(id);
-        menuGroup.setName(name);
-
-        return menuGroup;
     }
 
     private List<Long> toIdList(List<MenuGroup> products) {
