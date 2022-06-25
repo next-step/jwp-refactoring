@@ -9,9 +9,7 @@ import io.restassured.response.Response;
 import java.util.Arrays;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.MenuGroup;
-import kitchenpos.helper.AcceptanceApiHelper.MenuGroupApiHelper;
 import kitchenpos.helper.AcceptanceAssertionHelper.MenuGroupAssertionHelper;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -24,7 +22,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
      *  then : 정상적으로 저장된다.
     */
     @Test
-    public void 메뉴그룹_생성하기_테스트(){
+    public void 메뉴그룹_생성하기_테스트() {
         //given
         String 메뉴그룹_이름 = "반반세트";
 
@@ -41,7 +39,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
      *  then : 정상적으로 조회된다.
      */
     @Test
-    public void 메뉴그룹_조회하기_테스트(){
+    public void 메뉴그룹_조회하기_테스트() {
         //given
         MenuGroup 반반세트 = 메뉴그룹_등록하기("반반세트").as(MenuGroup.class);
         MenuGroup 큰세트 = 메뉴그룹_등록하기("큰세트").as(MenuGroup.class);
