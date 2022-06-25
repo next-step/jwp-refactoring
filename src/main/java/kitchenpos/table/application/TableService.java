@@ -1,27 +1,20 @@
 package kitchenpos.table.application;
 
 import java.util.stream.Collectors;
-import kitchenpos.order.infrastructure.OrderDao;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.table.infrastructure.OrderTableDao;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.infrastructure.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class TableService {
-    private final OrderDao orderDao;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderDao orderDao, final OrderTableRepository orderTableRepository) {
-        this.orderDao = orderDao;
+    public TableService(final OrderTableRepository orderTableRepository) {
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -39,7 +32,7 @@ public class TableService {
     }
 
     @Transactional
-    public void changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
+    public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         OrderTable orderTable = findOrderTable(orderTableId);
 
         if (orderTable.hasGroup()) {
@@ -53,10 +46,11 @@ public class TableService {
 //        }
 
         orderTable.updateEmpty(orderTableRequest.toEntity());
+        return OrderTableResponse.of(orderTableRepository.save(orderTable));
     }
 
     @Transactional
-    public void changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
+    public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         OrderTable orderTable = findOrderTable(orderTableId);
 
         if (orderTable.isEmpty()) {
@@ -64,6 +58,7 @@ public class TableService {
         }
 
         orderTable.updateNumberOfGuests(orderTableRequest.toEntity());
+        return OrderTableResponse.of(orderTableRepository.save(orderTable));
     }
 
     private OrderTable findOrderTable(Long orderTableId) {

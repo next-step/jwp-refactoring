@@ -9,15 +9,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 import kitchenpos.AcceptanceTest;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.order.domain.Order;
-import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductResponse;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.OrderTableIdRequest;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupResponse;
 import org.junit.jupiter.api.*;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -32,11 +32,11 @@ import java.util.stream.Stream;
 
 @DisplayName("단체 지정 관련 기능 인수테스트")
 public class TableGroupAcceptanceTest extends AcceptanceTest {
-    private OrderTable 빈_테이블;
-    private OrderTable 다른_빈_테이블;
-    private TableGroup 테이블_그룹;
-    private OrderTable 손님_4명_테이블;
-    private OrderTable 손님_3명_테이블;
+    private OrderTableResponse 빈_테이블;
+    private OrderTableResponse 다른_빈_테이블;
+    private TableGroupResponse 테이블_그룹;
+    private OrderTableResponse 손님_4명_테이블;
+    private OrderTableResponse 손님_3명_테이블;
 
     @TestFactory
     @DisplayName("단체 지정 관련 기능 정상 시나리오")
@@ -46,7 +46,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
                     빈_테이블 = 테이블_등록_되어있음(0, true);
                     다른_빈_테이블 = 테이블_등록_되어있음(0, true);
 
-                    ResponseEntity<TableGroup> 빈_테이블_그룹_등록_요청_결과 = 단체_지정_등록_요청(빈_테이블, 다른_빈_테이블);
+                    ResponseEntity<TableGroupResponse> 빈_테이블_그룹_등록_요청_결과 = 단체_지정_등록_요청(빈_테이블, 다른_빈_테이블);
 
                     단체_지정_등록됨(빈_테이블_그룹_등록_요청_결과);
                 }),
@@ -70,14 +70,13 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
                     손님_4명_테이블 = 테이블_등록_되어있음(4, false);
                     손님_3명_테이블 = 테이블_등록_되어있음(3, false);
 
-                    ResponseEntity<TableGroup> 손님_테이블_단체_지정_등록_요청_결과 = 단체_지정_등록_요청(손님_4명_테이블, 손님_3명_테이블);
+                    ResponseEntity<TableGroupResponse> 손님_테이블_단체_지정_등록_요청_결과 = 단체_지정_등록_요청(손님_4명_테이블, 손님_3명_테이블);
 
                     테이블_그룹_등록_실패됨(손님_테이블_단체_지정_등록_요청_결과);
                 }),
                 dynamicTest("주문이 조리, 식사 중일경우, 단체 지정 해제 요청하면 단체 지정 해제에 실패한다.", () -> {
                     MenuGroupResponse 추천메뉴 = 메뉴_그룹_등록되어_있음("추천메뉴");
                     ProductResponse 허니콤보 = 상품_등록_되어있음("허니콤보", 20_000L);
-                    ProductResponse 레드콤보 = 상품_등록_되어있음("레드콤보", 19_000L);
                     MenuResponse 허니레드콤보 = 메뉴_등록_되어있음(추천메뉴, "허니레드콤보", 39_000L, 허니콤보, 1L);
                     빈_테이블 = 테이블_등록_되어있음(0, true);
                     다른_빈_테이블 = 테이블_등록_되어있음(0, true);
@@ -99,7 +98,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    private ResponseEntity<Void> 단체_지정_해제_요청(TableGroup tableGroup) {
+    private ResponseEntity<Void> 단체_지정_해제_요청(TableGroupResponse tableGroup) {
         Map<String, Object> params = new HashMap<>();
         params.put("tableGroupId", tableGroup.getId());
 
@@ -110,28 +109,31 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
                 params);
     }
 
-    private void 테이블_그룹_등록_실패됨(ResponseEntity<TableGroup> response) {
+    private void 테이블_그룹_등록_실패됨(ResponseEntity<TableGroupResponse> response) {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    private TableGroup 단체_지정_되어있음(OrderTable... orderTables) {
+    private TableGroupResponse 단체_지정_되어있음(OrderTableResponse... orderTables) {
         return 단체_지정_등록_요청(orderTables).getBody();
     }
 
-    private void 단체_지정_등록됨(ResponseEntity<TableGroup> response) {
+    private void 단체_지정_등록됨(ResponseEntity<TableGroupResponse> response) {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getHeaders().get("Location")).isNotNull();
     }
 
-    private ResponseEntity<TableGroup> 단체_지정_등록_요청(OrderTable... orderTables) {
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(주문_테이블_변환(orderTables));
+    private ResponseEntity<TableGroupResponse> 단체_지정_등록_요청(OrderTableResponse... orderTables) {
+        List<OrderTableIdRequest> orderTableRequests = 주문_테이블_변환(orderTables);
+        TableGroupRequest tableGroup = new TableGroupRequest(orderTableRequests);
 
-        return testRestTemplate.postForEntity("/api/table-groups/", tableGroup, TableGroup.class);
+        return testRestTemplate.postForEntity("/api/table-groups/", tableGroup, TableGroupResponse.class);
     }
 
-    private List<OrderTable> 주문_테이블_변환(OrderTable[] orderTables) {
+    private List<OrderTableIdRequest> 주문_테이블_변환(OrderTableResponse[] orderTables) {
         return Arrays.stream(orderTables)
+                .map(orderTableResponse -> {
+                    return new OrderTableIdRequest(orderTableResponse.getId());
+                })
                 .collect(Collectors.toList());
     }
 }

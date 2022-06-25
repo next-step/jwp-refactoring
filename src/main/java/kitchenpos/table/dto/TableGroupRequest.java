@@ -4,16 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TableGroupRequest {
-    private List<OrderTableRequest> orderTables = new ArrayList<>();
+    private List<OrderTableIdRequest> orderTables = new ArrayList<>();
 
     public TableGroupRequest() {
     }
 
-    public TableGroupRequest(List<OrderTableRequest> orderTables) {
+    public TableGroupRequest(List<OrderTableIdRequest> orderTables) {
         this.orderTables = orderTables;
     }
 
-    public List<OrderTableRequest> getOrderTables() {
+    public List<OrderTableIdRequest> getOrderTables() {
         return orderTables;
     }
 }

@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.OrderTableIdRequest;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.infrastructure.OrderTableRepository;
@@ -33,8 +34,8 @@ public class TableGroupServiceTest {
     @Test
     @DisplayName("주문 테이블이 하나인 경우, 단체지정할 수 없다.")
     void createWithOneOrderTable() {
-        OrderTableRequest orderTableRequest = new OrderTableRequest(4, false);
-        TableGroupRequest tableGroupRequest = new TableGroupRequest(Lists.list(orderTableRequest));
+        OrderTableIdRequest orderTableIdRequest = new OrderTableIdRequest(1L);
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(Lists.list(orderTableIdRequest));
 
         assertThatThrownBy(() -> {
             tableGroupService.create(tableGroupRequest);
@@ -44,9 +45,9 @@ public class TableGroupServiceTest {
     @Test
     @DisplayName("주문 테이블이 없는 경우, 단체지정할 수 없다.")
     void createWithNoExistingOrderTables() {
-        OrderTableRequest orderTableRequest = new OrderTableRequest(4, false);
-        OrderTableRequest secondOrderTableRequest = new OrderTableRequest(2, false);
-        TableGroupRequest tableGroupRequest = new TableGroupRequest(Lists.list(orderTableRequest, secondOrderTableRequest));
+        OrderTableIdRequest orderTableIdRequest = new OrderTableIdRequest(1L);
+        OrderTableIdRequest otherOrderTableIdRequest = new OrderTableIdRequest(2L);
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(Lists.list(orderTableIdRequest, otherOrderTableIdRequest));
         when(orderTableRepository.findAllByIdIn(any())).thenReturn(Lists.emptyList());
 
         assertThatThrownBy(() -> {
@@ -57,9 +58,9 @@ public class TableGroupServiceTest {
     @Test
     @DisplayName("이미 단체 지정된 경우, 단체지정할 수 없다.")
     void createWithAlreadyGrouped() {
-        OrderTableRequest orderTableRequest = new OrderTableRequest(4, true);
-        OrderTableRequest secondOrderTableRequest = new OrderTableRequest(2, true);
-        TableGroupRequest tableGroupRequest = new TableGroupRequest(Lists.list(orderTableRequest, secondOrderTableRequest));
+        OrderTableIdRequest orderTableIdRequest = new OrderTableIdRequest(1L);
+        OrderTableIdRequest otherOrderTableIdRequest = new OrderTableIdRequest(2L);
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(Lists.list(orderTableIdRequest, otherOrderTableIdRequest));
         OrderTable table = OrderTable.of(4, true);
         OrderTable secondTable = OrderTable.of(2, true);
         TableGroup tableGroup = new TableGroup();
@@ -75,9 +76,9 @@ public class TableGroupServiceTest {
     @Test
     @DisplayName("빈 테이블이 아닌 경우, 단체지정할 수 없다.")
     void createWithNotEmptyTable() {
-        OrderTableRequest orderTableRequest = new OrderTableRequest(4, false);
-        OrderTableRequest secondOrderTableRequest = new OrderTableRequest(2, false);
-        TableGroupRequest tableGroupRequest = new TableGroupRequest(Lists.list(orderTableRequest, secondOrderTableRequest));
+        OrderTableIdRequest orderTableIdRequest = new OrderTableIdRequest(1L);
+        OrderTableIdRequest otherOrderTableIdRequest = new OrderTableIdRequest(2L);
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(Lists.list(orderTableIdRequest, otherOrderTableIdRequest));
         OrderTable table = OrderTable.of(4, false);
         OrderTable secondTable = OrderTable.of(2, false);
         when(orderTableRepository.findAllByIdIn(any())).thenReturn(Lists.list(table, secondTable));
@@ -90,9 +91,9 @@ public class TableGroupServiceTest {
     @Test
     @DisplayName("단체지정할 수 있다.")
     void create() {
-        OrderTableRequest orderTableRequest = new OrderTableRequest(4, true);
-        OrderTableRequest secondOrderTableRequest = new OrderTableRequest(2, true);
-        TableGroupRequest tableGroupRequest = new TableGroupRequest(Lists.list(orderTableRequest, secondOrderTableRequest));
+        OrderTableIdRequest orderTableIdRequest = new OrderTableIdRequest(1L);
+        OrderTableIdRequest otherOrderTableIdRequest = new OrderTableIdRequest(2L);
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(Lists.list(orderTableIdRequest, otherOrderTableIdRequest));
         OrderTable table = OrderTable.of(4, true);
         OrderTable secondTable = OrderTable.of(2, true);
         TableGroup tableGroup = new TableGroup();

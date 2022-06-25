@@ -15,7 +15,7 @@ public class MenuGroup {
     @Column(nullable = false)
     private String name;
 
-    public MenuGroup() {}
+    protected MenuGroup() {}
 
     private MenuGroup(String name) {
         this.name = name;
