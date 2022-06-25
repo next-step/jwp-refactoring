@@ -11,8 +11,8 @@ class TableGroupTest {
     @Test
     @DisplayName("테이블그룹 객체가 같은지 검증")
     void verifyEqualsTableGroup() {
-        final TableGroup tableGroup = new TableGroup(1L, null, Collections.emptyList());
+        final TableGroupV2 tableGroup = new TableGroupV2(1L, null, Collections.emptyList());
 
-        assertThat(tableGroup).isEqualTo(new TableGroup(1L, null, Collections.emptyList()));
+        assertThat(tableGroup).isEqualTo(new TableGroupV2(1L, null, Collections.emptyList()));
     }
 }

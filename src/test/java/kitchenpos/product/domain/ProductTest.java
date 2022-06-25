@@ -10,8 +10,8 @@ class ProductTest {
     @Test
     @DisplayName("제품이 동일한지 검증")
     void verifyEqualsProduct() {
-        final Product product = new Product(1L, "상품이름", 1_000L);
+        final ProductV2 product = new ProductV2(1L, "상품이름", 1_000L);
 
-        assertThat(product).isEqualTo(new Product(1L, "상품이름", 1_000L));
+        assertThat(product).isEqualTo(new ProductV2(1L, "상품이름", 1_000L));
     }
 }

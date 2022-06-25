@@ -10,8 +10,8 @@ class OrderLineItemTest {
     @Test
     @DisplayName("주문항목 객체가 같은지 검증")
     void verifyEqualsOrderLineItem() {
-        final OrderLineItem orderLineItem = new OrderLineItem(1L, 1L, 1L, 1L);
+        final OrderLineItemV2 orderLineItem = new OrderLineItemV2(1L, 1L, 1L, 1L);
 
-        assertThat(orderLineItem).isEqualTo(new OrderLineItem(1L, 1L, 1L, 1L));
+        assertThat(orderLineItem).isEqualTo(new OrderLineItemV2(1L, 1L, 1L, 1L));
     }
 }

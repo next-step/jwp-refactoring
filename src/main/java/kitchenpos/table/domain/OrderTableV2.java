@@ -8,7 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class OrderTable {
+public class OrderTableV2 {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,10 +23,10 @@ public class OrderTable {
     @Column
     private boolean empty;
 
-    protected OrderTable(){
+    protected OrderTableV2(){
     }
 
-    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+    public OrderTableV2(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
@@ -41,7 +41,7 @@ public class OrderTable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        OrderTable that = (OrderTable) o;
+        OrderTableV2 that = (OrderTableV2) o;
         return numberOfGuests == that.numberOfGuests && empty == that.empty && Objects.equals(id, that.id)
                 && Objects.equals(tableGroupId, that.tableGroupId);
     }

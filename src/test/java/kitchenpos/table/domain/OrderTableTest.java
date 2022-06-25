@@ -10,8 +10,8 @@ class OrderTableTest {
     @Test
     @DisplayName("주문 테이블 객체가 같은지 검증")
     void verifyEqualsOrderTable() {
-        final OrderTable orderTable = new OrderTable(1L, 1L, 5, false);
+        final OrderTableV2 orderTable = new OrderTableV2(1L, 1L, 5, false);
 
-        assertThat(orderTable).isEqualTo(new OrderTable(1L, 1L, 5, false));
+        assertThat(orderTable).isEqualTo(new OrderTableV2(1L, 1L, 5, false));
     }
 }

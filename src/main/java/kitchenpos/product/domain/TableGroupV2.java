@@ -9,11 +9,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableV2;
 import org.springframework.data.annotation.CreatedDate;
 
 @Entity
-public class TableGroup {
+public class TableGroupV2 {
 
     @Id
     @GeneratedValue
@@ -24,12 +24,12 @@ public class TableGroup {
     private LocalDateTime createdDate;
 
     @OneToMany
-    private List<OrderTable> orderTables = new ArrayList<>();
+    private List<OrderTableV2> orderTables = new ArrayList<>();
 
-    protected TableGroup() {
+    protected TableGroupV2() {
     }
 
-    public TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
+    public TableGroupV2(Long id, LocalDateTime createdDate, List<OrderTableV2> orderTables) {
         this.id = id;
         this.createdDate = createdDate;
         this.orderTables = orderTables;
@@ -43,7 +43,7 @@ public class TableGroup {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        TableGroup that = (TableGroup) o;
+        TableGroupV2 that = (TableGroupV2) o;
         return Objects.equals(id, that.id);
     }
 

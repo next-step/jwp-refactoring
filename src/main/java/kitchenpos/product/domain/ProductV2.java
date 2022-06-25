@@ -1,4 +1,4 @@
-package kitchenpos.menu.domain;
+package kitchenpos.product.domain;
 
 import java.util.Objects;
 import javax.persistence.Column;
@@ -8,21 +8,25 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class MenuGroup {
+public class ProductV2 {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column
     private String name;
 
-    protected MenuGroup() {
+    @Column
+    private Long price;
+
+    protected ProductV2() {
     }
 
-    public MenuGroup(Long id, String name) {
+    public ProductV2(Long id, String name, Long price) {
         this.id = id;
         this.name = name;
+        this.price = price;
     }
 
     @Override
@@ -33,12 +37,13 @@ public class MenuGroup {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        MenuGroup menuGroup = (MenuGroup) o;
-        return Objects.equals(id, menuGroup.id) && Objects.equals(name, menuGroup.name);
+        ProductV2 product = (ProductV2) o;
+        return Objects.equals(id, product.id) && Objects.equals(name, product.name)
+                && Objects.equals(price, product.price);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(id, name, price);
     }
 }

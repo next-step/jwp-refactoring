@@ -8,7 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class OrderLineItem {
+public class OrderLineItemV2 {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,10 +23,10 @@ public class OrderLineItem {
     @Column
     private long quantity;
 
-    protected OrderLineItem(){
+    protected OrderLineItemV2(){
     }
 
-    public OrderLineItem(Long seq, Long orderId, Long menuId, long quantity) {
+    public OrderLineItemV2(Long seq, Long orderId, Long menuId, long quantity) {
         this.seq = seq;
         this.orderId = orderId;
         this.menuId = menuId;
@@ -41,7 +41,7 @@ public class OrderLineItem {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        OrderLineItem that = (OrderLineItem) o;
+        OrderLineItemV2 that = (OrderLineItemV2) o;
         return quantity == that.quantity && Objects.equals(seq, that.seq) && Objects.equals(orderId,
                 that.orderId) && Objects.equals(menuId, that.menuId);
     }

@@ -1,6 +1,5 @@
 package kitchenpos.menu.domain;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
@@ -10,7 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 @Entity
-public class Menu {
+public class MenuV2 {
 
     @Id
     @GeneratedValue
@@ -26,13 +25,13 @@ public class Menu {
     private Long menuGroupId;
 
     @OneToMany
-    private List<MenuProduct> menuProducts;
+    private List<MenuProductV2> menuProducts;
 
-    protected Menu() {
+    protected MenuV2() {
     }
 
-    public Menu(Long id, String name, Long price, Long menuGroupId,
-                List<MenuProduct> menuProducts) {
+    public MenuV2(Long id, String name, Long price, Long menuGroupId,
+                  List<MenuProductV2> menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -48,7 +47,7 @@ public class Menu {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Menu menu = (Menu) o;
+        MenuV2 menu = (MenuV2) o;
         return Objects.equals(id, menu.id) && Objects.equals(name, menu.name)
                 && Objects.equals(price, menu.price) && Objects.equals(menuGroupId, menu.menuGroupId);
     }
