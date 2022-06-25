@@ -2,7 +2,9 @@ package kitchenpos.order.application;
 
 import static kitchenpos.order.domain.OrderStatus.COMPLETION;
 import static kitchenpos.order.domain.OrderStatus.COOKING;
+import static kitchenpos.order.domain.OrderStatus.MEAL;
 
+import java.util.Arrays;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
@@ -126,5 +128,12 @@ public class OrderService {
     private Order findOrder(Long orderId) {
         return orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없습니다."));
+    }
+
+    public void validateComplete(OrderTable orderTable) {
+        if (orderRepository.existsByOrderTableAndOrderStatusIn(orderTable,
+                Arrays.asList(COOKING, MEAL))) {
+            throw new IllegalArgumentException("주문테이블의 주문이 완료상태가 아닙니다.");
+        }
     }
 }

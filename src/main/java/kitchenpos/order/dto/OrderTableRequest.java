@@ -28,6 +28,6 @@ public class OrderTableRequest {
     }
 
     public OrderTable toOrderTable() {
-        return OrderTable.from(null, null, numberOfGuests, empty);
+        return OrderTable.from(numberOfGuests, empty);
     }
 }

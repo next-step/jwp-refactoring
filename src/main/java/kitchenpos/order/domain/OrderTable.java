@@ -29,15 +29,23 @@ public class OrderTable {
     protected OrderTable() {
     }
 
-    private OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+    private OrderTable(Long id, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroup = tableGroup;
         this.numberOfGuests = NumberOfGuests.from(numberOfGuests);
         this.empty = empty;
     }
 
-    public static OrderTable from(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
-        return new OrderTable(id, tableGroup, numberOfGuests, empty);
+    private OrderTable(int numberOfGuests, boolean empty) {
+        this.numberOfGuests = NumberOfGuests.from(numberOfGuests);
+        this.empty = empty;
+    }
+
+    public static OrderTable from(Long id, int numberOfGuests, boolean empty) {
+        return new OrderTable(id, numberOfGuests, empty);
+    }
+
+    public static OrderTable from(int numberOfGuests, boolean empty) {
+        return new OrderTable(numberOfGuests, empty);
     }
 
     public Long id() {
@@ -52,7 +60,7 @@ public class OrderTable {
         return tableGroup;
     }
 
-    public void setTableGroup(final TableGroup tableGroup) {
+    public void addTableGroup(final TableGroup tableGroup) {
         this.tableGroup = tableGroup;
     }
 
@@ -60,16 +68,30 @@ public class OrderTable {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(final NumberOfGuests numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
-    }
-
     public boolean isEmpty() {
         return empty;
     }
 
-    public void setEmpty(final boolean empty) {
+    public void changeNumberOfGuests(final int numberOfGuests) {
+        validateNotEmpty();
+        this.numberOfGuests = NumberOfGuests.from(numberOfGuests);
+    }
+
+    private void validateNotEmpty() {
+        if (empty) {
+            throw new IllegalArgumentException("주문테이블이 비어있으면 안됩니다.");
+        }
+    }
+
+    public void changeEmpty(final boolean empty) {
+        validateTableGroupNull();
         this.empty = empty;
+    }
+
+    private void validateTableGroupNull() {
+        if (Objects.nonNull(this.tableGroup())) {
+            throw new IllegalArgumentException("단체지정이 없어야 합니다.");
+        }
     }
 
     public Long tableGroupId() {

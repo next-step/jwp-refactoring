@@ -14,7 +14,7 @@ class OrderTablesTest {
 
     @BeforeEach
     void setUp() {
-        치킨주문테이블 = createOrderTable(1L, null, 2, true);
+        치킨주문테이블 = createOrderTable(1L, 2, true);
     }
 
     @DisplayName("초기화 테스트")

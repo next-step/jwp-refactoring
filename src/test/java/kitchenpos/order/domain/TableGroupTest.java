@@ -13,7 +13,7 @@ class TableGroupTest {
 
     @BeforeEach
     void setUp() {
-        주문테이블 = createOrderTable(1L, null, 2, false);
+        주문테이블 = createOrderTable(1L, 2, false);
     }
 
     @DisplayName("초기화 테스트")

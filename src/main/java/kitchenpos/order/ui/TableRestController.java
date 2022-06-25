@@ -2,9 +2,7 @@ package kitchenpos.order.ui;
 
 import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
 import kitchenpos.order.application.TableService;
-import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
 import org.springframework.http.ResponseEntity;
@@ -25,19 +23,16 @@ public class TableRestController {
 
     @PostMapping("/api/tables")
     public ResponseEntity<OrderTableResponse> create(@RequestBody final OrderTableRequest orderTableRequest) {
-        final OrderTable created = tableService.create(orderTableRequest.toOrderTable());
-        OrderTableResponse orderTableResponse = OrderTableResponse.from(created);
-        final URI uri = URI.create("/api/tables/" + created.id());
+        final OrderTableResponse created = tableService.create(orderTableRequest);
+        final URI uri = URI.create("/api/tables/" + created.getId());
         return ResponseEntity.created(uri)
-                .body(orderTableResponse);
+                .body(created);
     }
 
     @GetMapping("/api/tables")
     public ResponseEntity<List<OrderTableResponse>> list() {
         return ResponseEntity.ok()
-                .body(tableService.list().stream()
-                        .map(OrderTableResponse::from)
-                        .collect(Collectors.toList()));
+                .body(tableService.list());
     }
 
     @PutMapping("/api/tables/{orderTableId}/empty")
@@ -46,8 +41,7 @@ public class TableRestController {
             @RequestBody final OrderTableRequest orderTableRequest
     ) {
         return ResponseEntity.ok()
-                .body(OrderTableResponse.from(
-                        tableService.changeEmpty(orderTableId, orderTableRequest.toOrderTable())));
+                .body(tableService.changeEmpty(orderTableId, orderTableRequest));
     }
 
     @PutMapping("/api/tables/{orderTableId}/number-of-guests")
@@ -56,7 +50,6 @@ public class TableRestController {
             @RequestBody final OrderTableRequest orderTableRequest
     ) {
         return ResponseEntity.ok()
-                .body(OrderTableResponse.from(
-                        tableService.changeNumberOfGuests(orderTableId, orderTableRequest.toOrderTable())));
+                .body(tableService.changeNumberOfGuests(orderTableId, orderTableRequest));
     }
 }

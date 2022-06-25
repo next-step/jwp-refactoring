@@ -50,8 +50,8 @@ public class DomainFixtureFactory {
         return MenuProduct.from(product, quantity);
     }
 
-    public static OrderTable createOrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
-        return OrderTable.from(id, tableGroup, numberOfGuests, empty);
+    public static OrderTable createOrderTable(Long id, int numberOfGuests, boolean empty) {
+        return OrderTable.from(id, numberOfGuests, empty);
     }
 
     public static OrderTableRequest createOrderTableRequest(int numberOfGuests, boolean empty) {

@@ -2,6 +2,7 @@ package kitchenpos.order.application;
 
 import static kitchenpos.order.domain.OrderStatus.COMPLETION;
 import static kitchenpos.order.domain.OrderStatus.COOKING;
+import static kitchenpos.order.domain.OrderStatus.MEAL;
 import static kitchenpos.utils.DomainFixtureFactory.createOrder;
 import static kitchenpos.utils.DomainFixtureFactory.createOrderLineItem;
 import static kitchenpos.utils.DomainFixtureFactory.createOrderRequest;
@@ -12,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.menu.domain.MenuRepository;
@@ -53,7 +55,7 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        주문테이블 = createOrderTable(1L, null, 2, false);
+        주문테이블 = createOrderTable(1L, 2, false);
         주문항목 = createOrderLineItem(1L, null, null, 2L);
         주문 = createOrder(1L, 주문테이블, null);
     }
@@ -113,7 +115,7 @@ class OrderServiceTest {
         OrderRequest orderRequest = createOrderRequest(주문테이블.id(), null, Lists.newArrayList(new OrderLineItemRequest(주문항목.menu()
                 .id(), 주문항목.quantity().value())));
         주문항목.setOrder(주문);
-        주문테이블.setEmpty(true);
+        주문테이블.changeEmpty(true);
         given(menuRepository.countByIdIn(Lists.newArrayList(주문항목.menu().id()))).willReturn(주문항목.menu().id());
         given(orderTableRepository.findById(주문테이블.id())).willReturn(Optional.ofNullable(주문테이블));
         assertThatIllegalArgumentException()
@@ -156,5 +158,14 @@ class OrderServiceTest {
         given(orderRepository.findById(주문.id())).willReturn(Optional.ofNullable(주문));
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> orderService.changeOrderStatus(주문.id(), orderRequest));
+    }
+
+    @DisplayName("주문상태가 조리, 식사인 것이 있는 주문테이블의 비어있는지 여부 변경 테스트")
+    @Test
+    void validateComplete() {
+        given(orderRepository.existsByOrderTableAndOrderStatusIn(주문테이블, Arrays.asList(COOKING, MEAL))).willReturn(true);
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> orderService.validateComplete(주문테이블))
+                .withMessage("주문테이블의 주문이 완료상태가 아닙니다.");
     }
 }

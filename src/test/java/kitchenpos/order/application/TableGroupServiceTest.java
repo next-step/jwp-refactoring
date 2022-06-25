@@ -48,11 +48,11 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        치킨주문테이블 = createOrderTable(1L, null, 2, true);
-        피자주문테이블 = createOrderTable(2L, null, 3, true);
+        치킨주문테이블 = createOrderTable(1L, 2, true);
+        피자주문테이블 = createOrderTable(2L, 3, true);
         단체지정 = createTableGroup(1L, Lists.newArrayList(치킨주문테이블, 피자주문테이블));
-        단체지정_치킨주문테이블 = createOrderTable(1L, 단체지정, 2, true);
-        단체지정_피자주문테이블 = createOrderTable(2L, 단체지정, 3, true);
+        단체지정_치킨주문테이블 = createOrderTable(1L, 2, true);
+        단체지정_피자주문테이블 = createOrderTable(2L, 3, true);
     }
 
     @DisplayName("단체지정 생성 테스트")
@@ -101,7 +101,7 @@ class TableGroupServiceTest {
     @DisplayName("단체지정 생성시 주문테이블이 비어있지 않는 경우 테스트")
     @Test
     void createWithOrderTableNotEmpty() {
-        피자주문테이블 = createOrderTable(2L, null, 3, false);
+        피자주문테이블 = createOrderTable(2L,  3, false);
         TableGroupRequest tableGroupRequest = createTableGroupRequest(Lists.newArrayList(치킨주문테이블.id(), 피자주문테이블.id()));
         given(orderTableRepository.findAllByIdIn(Lists.newArrayList(치킨주문테이블.id(), 피자주문테이블.id()))).willReturn(
                 Lists.newArrayList(치킨주문테이블, 피자주문테이블));
