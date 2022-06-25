@@ -42,4 +42,12 @@ public class TableGroupRestController {
                 .build()
                 ;
     }
+
+    @DeleteMapping("/v2/api/table-groups/{tableGroupId}")
+    public ResponseEntity<Void> ungroupV2(@PathVariable final Long tableGroupId) {
+        tableGroupService.ungroup2(tableGroupId);
+        return ResponseEntity.noContent()
+                .build()
+                ;
+    }
 }
