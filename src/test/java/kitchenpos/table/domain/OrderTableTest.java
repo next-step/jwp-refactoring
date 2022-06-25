@@ -75,7 +75,7 @@ class OrderTableTest {
 
         // then
         assertThat(emptyTable.getTableGroup()).isNotNull();
-        assertThat(emptyTable.getEmpty()).isFalse();
+        assertThat(emptyTable.getEmpty().isOrderTable()).isTrue();
     }
 
     @DisplayName("빈 테이블이 아닌 경우 단체지정 할 수 없다.")

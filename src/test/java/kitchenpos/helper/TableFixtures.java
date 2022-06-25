@@ -2,6 +2,7 @@ package kitchenpos.helper;
 
 import kitchenpos.table.domain.NumberOfGuest;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableEmpty;
 import kitchenpos.table.dto.OrderTableRequest;
 
 public class TableFixtures {
@@ -36,7 +37,7 @@ public class TableFixtures {
     }
 
     public static OrderTable 테이블_만들기(Long id, Integer numberOfGuests, Boolean isEmpty) {
-        return new OrderTable(id, new NumberOfGuest(numberOfGuests), isEmpty);
+        return new OrderTable(id, new NumberOfGuest(numberOfGuests), new TableEmpty(isEmpty));
     }
 
 }

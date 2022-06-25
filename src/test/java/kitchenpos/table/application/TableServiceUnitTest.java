@@ -11,7 +11,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 
 import java.util.Optional;
 import kitchenpos.table.domain.OrderTable;
@@ -114,7 +113,7 @@ class TableServiceUnitTest {
         long requestTableId = 1;
         OrderTableRequest request = 테이블_요청_만들기(3);
 
-        OrderTable orderTable = spy(OrderTable.class);
+        OrderTable orderTable = 테이블_만들기(0, false);
         given(orderTableRepository.findById(requestTableId)).willReturn(Optional.of(orderTable));
 
         //when

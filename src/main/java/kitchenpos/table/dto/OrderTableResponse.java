@@ -28,12 +28,12 @@ public class OrderTableResponse {
         if (orderTable.getTableGroup() != null) {
             return new OrderTableResponse(orderTable.getId(),
                     orderTable.getNumberOfGuests().getNumberOfGuests(),
-                    orderTable.getEmpty(),
+                    orderTable.getEmpty().isEmpty(),
                     orderTable.getTableGroup().getId());
         }
         return new OrderTableResponse(orderTable.getId(),
                 orderTable.getNumberOfGuests().getNumberOfGuests(),
-                orderTable.getEmpty());
+                orderTable.getEmpty().isEmpty());
     }
 
     public Long getId() {

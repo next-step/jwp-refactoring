@@ -25,8 +25,8 @@ class TableGroupTest {
         //then
         assertThat(orderTables.getOrderTables().get(0).getTableGroup()).isNotNull();
         assertThat(orderTables.getOrderTables().get(1).getTableGroup()).isNotNull();
-        assertThat(orderTables.getOrderTables().get(0).getEmpty()).isFalse();
-        assertThat(orderTables.getOrderTables().get(1).getEmpty()).isFalse();
+        assertThat(orderTables.getOrderTables().get(0).getEmpty().isOrderTable()).isTrue();
+        assertThat(orderTables.getOrderTables().get(1).getEmpty().isOrderTable()).isTrue();
     }
 
     @DisplayName("테이블이 2개 미만인 경우 단체지정 할 수 없다.")
@@ -58,7 +58,7 @@ class TableGroupTest {
         //then
         assertThat(orderTables.getOrderTables().get(0).getTableGroup()).isNull();
         assertThat(orderTables.getOrderTables().get(1).getTableGroup()).isNull();
-        assertThat(orderTables.getOrderTables().get(0).getEmpty()).isFalse();
-        assertThat(orderTables.getOrderTables().get(1).getEmpty()).isFalse();
+        assertThat(orderTables.getOrderTables().get(0).getEmpty().isOrderTable()).isTrue();
+        assertThat(orderTables.getOrderTables().get(1).getEmpty().isOrderTable()).isTrue();
     }
 }

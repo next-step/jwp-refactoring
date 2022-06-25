@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import kitchenpos.table.domain.NumberOfGuest;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.TableEmpty;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
@@ -38,7 +39,7 @@ public class TableService {
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
 
         savedOrderTable.checkPossibleChangeEmpty();
-        savedOrderTable.updateEmpty(orderTableRequest.getEmpty());
+        savedOrderTable.updateEmpty(new TableEmpty(orderTableRequest.getEmpty()));
         return OrderTableResponse.from(savedOrderTable);
     }
 
