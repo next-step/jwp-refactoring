@@ -1,23 +1,27 @@
 package kitchenpos.ui;
 
+import static kitchenpos.fixture.OrderTableFixture.주문테이블_요청_데이터_생성;
+import static kitchenpos.fixture.OrderTableFixture.주문테이블_응답_데이터_생성;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.Arrays;
 import kitchenpos.application.TableService;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderTableRequestDto;
+import kitchenpos.dto.OrderTableResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import java.util.Arrays;
-
-import static kitchenpos.fixture.OrderTableFixture.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class TableRestControllerTest extends BaseRestControllerTest {
 
@@ -33,10 +37,11 @@ class TableRestControllerTest extends BaseRestControllerTest {
     @Test
     void create() throws Exception {
         //given
-        OrderTable request = 주문테이블_생성요청_데이터_생성(4);
+        OrderTableRequestDto request = 주문테이블_요청_데이터_생성(4);
         String requestBody = objectMapper.writeValueAsString(request);
 
-        given(tableService.create(any())).willReturn(주문테이블_데이터_생성(1L, null, 4, false));
+        OrderTableResponseDto response = 주문테이블_응답_데이터_생성(1L, 4, false, null);
+        given(tableService.create(any())).willReturn(response);
 
         //when //then
         mockMvc.perform(post("/api/tables")
@@ -52,7 +57,8 @@ class TableRestControllerTest extends BaseRestControllerTest {
     @Test
     void list() throws Exception {
         //given
-        given(tableService.list()).willReturn(Arrays.asList(주문테이블_데이터_생성(1L, null, 4, false)));
+        OrderTableResponseDto response = 주문테이블_응답_데이터_생성(1L, 4, false, null);
+        given(tableService.list()).willReturn(Arrays.asList(response));
 
         //when //then
         mockMvc.perform(get("/api/tables"))
@@ -66,16 +72,12 @@ class TableRestControllerTest extends BaseRestControllerTest {
     void changeEmpty() throws Exception {
         //given
         Long orderTableId = 1L;
-        OrderTable request = 주문테이블_비우기_데이터_생성(true);
-        String requestBody = objectMapper.writeValueAsString(request);
 
-        given(tableService.changeEmpty(any(), any()))
-                .willReturn(주문테이블_데이터_생성(1L, null, 4, true));
+        OrderTableResponseDto response = 주문테이블_응답_데이터_생성(1L, 4, true, null);
+        given(tableService.changeEmpty(any())).willReturn(response);
 
         //when //then
         mockMvc.perform(put("/api/tables/{orderTableId}/empty", orderTableId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody)
         )
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -87,11 +89,12 @@ class TableRestControllerTest extends BaseRestControllerTest {
     void changeNumberOfGuests() throws Exception {
         //given
         Long orderTableId = 1L;
-        OrderTable request = 주문테이블_손님수변경_데이터_생성(3);
+        int numberOfGuest = 4;
+        OrderTableRequestDto request = 주문테이블_요청_데이터_생성(numberOfGuest);
         String requestBody = objectMapper.writeValueAsString(request);
 
-        given(tableService.changeNumberOfGuests(any(), any()))
-                .willReturn(주문테이블_데이터_생성(1L, null, 3, false));
+        OrderTableResponseDto response = 주문테이블_응답_데이터_생성(1L, numberOfGuest, false, null);
+        given(tableService.changeNumberOfGuests(any(), anyInt())).willReturn(response);
 
         //when //then
         mockMvc.perform(put("/api/tables/{orderTableId}/number-of-guests", orderTableId)
@@ -100,6 +103,6 @@ class TableRestControllerTest extends BaseRestControllerTest {
         )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.numberOfGuests").value(3));
+                .andExpect(jsonPath("$.numberOfGuests").value(numberOfGuest));
     }
 }

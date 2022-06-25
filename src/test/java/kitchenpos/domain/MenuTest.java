@@ -1,18 +1,19 @@
 package kitchenpos.domain;
 
-import org.junit.jupiter.api.Test;
-
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
-
 import static kitchenpos.fixture.MenuGroupFixture.메뉴묶음_데이터_생성;
 import static kitchenpos.fixture.MenuProductFixture.메뉴상품_데이터_생성;
 import static kitchenpos.fixture.ProductFixture.상품_데이터_생성;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
 class MenuTest {
 
+    @DisplayName("가격이 상품가격의 합보다 크면 생성할 수 없다.")
     @Test
     void checkValidPrice_fail_menuPriceGe() {
         //given

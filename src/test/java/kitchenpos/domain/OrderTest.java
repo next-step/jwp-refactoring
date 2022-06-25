@@ -1,14 +1,15 @@
 package kitchenpos.domain;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 class OrderTest {
 
+    @DisplayName("계산완료 상태 주문의 상태는 변경할 수 없다.")
     @Test
     void changeStatus_fail_statusComplete() {
         //given
