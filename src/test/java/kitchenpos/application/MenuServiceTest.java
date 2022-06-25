@@ -85,8 +85,8 @@ class MenuServiceTest {
 
         //then
         메뉴_데이터_확인(response, menuId, name, menuGroupId, menuPrice);
-        메뉴상품_데이터_확인(response.getMenuProducts().get(0), 1L, 1L, 1L);
-        메뉴상품_데이터_확인(response.getMenuProducts().get(1), 2L, 1L, 2L);
+        메뉴상품_데이터_확인(response.getMenuProducts().get(0), 1L, 1L, 1L, 2);
+        메뉴상품_데이터_확인(response.getMenuProducts().get(1), 2L, 1L, 2L, 2);
     }
 
     @DisplayName("메뉴묶음이 존재하지 않으면 생성할 수 없다.")
@@ -160,11 +160,12 @@ class MenuServiceTest {
         );
     }
 
-    private void 메뉴상품_데이터_확인(MenuProductResponseDto menuProduct, Long seq, Long menuId, Long productId) {
+    private void 메뉴상품_데이터_확인(MenuProductResponseDto menuProduct, Long seq, Long menuId, Long productId, int quantity) {
         assertAll(
                 () -> assertEquals(seq, menuProduct.getSeq()),
                 () -> assertEquals(menuId, menuProduct.getMenuId()),
-                () -> assertEquals(productId, menuProduct.getProductId())
+                () -> assertEquals(productId, menuProduct.getProductId()),
+                () -> assertEquals(quantity, menuProduct.getQuantity())
         );
     }
 }
