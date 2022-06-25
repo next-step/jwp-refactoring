@@ -194,7 +194,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         Order order = response.as(Order.class);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.SC_CREATED);
-        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
     }
 
     void 주문_목록_조회_성공됨(ExtractableResponse<Response> response) {
@@ -208,7 +208,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.SC_INTERNAL_SERVER_ERROR);
     }
 
-    void 주문_상태_변경됨(ExtractableResponse<Response> response, String expectedOrderState) {
+    void 주문_상태_변경됨(ExtractableResponse<Response> response, OrderStatus expectedOrderState) {
         Order order = response.as(Order.class);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.SC_OK);

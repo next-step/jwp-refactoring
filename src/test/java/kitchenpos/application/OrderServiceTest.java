@@ -53,11 +53,9 @@ class OrderServiceTest {
     @Test
     void createOrderByNotIncludeOrderLinesTest() {
         // given
-        Order 주문_목록이_없는_주문 = 주문_생성(0L, OrderStatus.COOKING, null);
         Order 빈_주문_목록이_포함된_주문 = 주문_생성(0L, OrderStatus.COOKING, Collections.emptyList());
 
         // then
-        주문_생성_실패됨(() -> orderService.create(주문_목록이_없는_주문));
         주문_생성_실패됨(() -> orderService.create(빈_주문_목록이_포함된_주문));
     }
 
@@ -177,7 +175,7 @@ class OrderServiceTest {
 
     void 주문_정상_생성됨(Order source, Order target) {
         assertThat(source.getOrderTableId()).isEqualTo(target.getOrderTableId());
-        assertThat(source.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(source.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
         assertThat(source.getOrderLineItems()).isEqualTo(target.getOrderLineItems());
     }
 
@@ -185,7 +183,7 @@ class OrderServiceTest {
         assertThatIllegalArgumentException().isThrownBy(runnable::run);
     }
 
-    void 주문_상태_변경_성공됨(String sourceStatus, String targetSource) {
+    void 주문_상태_변경_성공됨(OrderStatus sourceStatus, OrderStatus targetSource) {
         assertThat(sourceStatus).isEqualTo(targetSource);
     }
 }
