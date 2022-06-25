@@ -134,11 +134,11 @@ class MenuServiceTest {
     void findAllMenuTest() {
         // given
         List<Menu> 메뉴_리스트 = Arrays.asList(
-                메뉴_생성("메뉴 1", 1_000, null, null),
-                메뉴_생성("메뉴 2", 1_000, null, null),
-                메뉴_생성("메뉴 3", 1_000, null, null),
-                메뉴_생성("메뉴 4", 1_000, null, null),
-                메뉴_생성("메뉴 5", 1_000, null, null)
+                메뉴_생성("메뉴 1", 1_000, null, Collections.emptyList()),
+                메뉴_생성("메뉴 2", 1_000, null, Collections.emptyList()),
+                메뉴_생성("메뉴 3", 1_000, null, Collections.emptyList()),
+                메뉴_생성("메뉴 4", 1_000, null, Collections.emptyList()),
+                메뉴_생성("메뉴 5", 1_000, null, Collections.emptyList())
         );
         when(menuDao.findAll()).thenReturn(메뉴_리스트);
 
