@@ -7,13 +7,13 @@ public class ProductResponse {
     private String name;
     private Long price;
 
+    protected ProductResponse() {
+    }
+
     public ProductResponse(Long id, String name, long unitPrice) {
         this.id = id;
         this.name = name;
         this.price = unitPrice;
-    }
-
-    protected ProductResponse() {
     }
 
     public static ProductResponse of(ProductEntity product) {

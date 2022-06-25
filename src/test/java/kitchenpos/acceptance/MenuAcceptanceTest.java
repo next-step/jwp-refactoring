@@ -3,11 +3,12 @@ package kitchenpos.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.application.MenuServiceTest;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.dto.MenuGroupResponse;
+import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.MenuResponse;
+import kitchenpos.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,28 +23,41 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("메뉴 관련 기능")
 public class MenuAcceptanceTest extends AcceptanceTest {
-    
-    Menu menu1;
-    Menu menu2;
+
+    MenuRequest menuRequest1;
+    MenuRequest menuRequest2;
 
     @BeforeEach
     public void init() {
         super.init();
 
-        MenuGroup 양식 = MenuGroupAcceptanceTest.메뉴_그룹_생성되어_있음("양식").as(MenuGroup.class);
-        Product 샐러드 = ProductAcceptanceTest.상품_생성되어_있음("샐러드", 100).as(Product.class);
-        Product 스테이크 = ProductAcceptanceTest.상품_생성되어_있음("스테이크", 200).as(Product.class);
-        MenuProduct 메뉴_샐러드 = MenuServiceTest.메뉴_상품_생성(샐러드.getId(), 1);
-        MenuProduct 메뉴_스테이크 = MenuServiceTest.메뉴_상품_생성(스테이크.getId(), 2);
-        menu1 = MenuServiceTest.메뉴_생성(양식.getId(), "스테이크 샐러드 세트 메뉴", 500, 메뉴_샐러드, 메뉴_스테이크);
-        menu2 = MenuServiceTest.메뉴_생성(양식.getId(), "샐러드 메뉴", 100, 메뉴_샐러드);
+        ProductResponse 샐러드 = ProductAcceptanceTest.상품_생성되어_있음("샐러드", 100).as(ProductResponse.class);
+        ProductResponse 스테이크 = ProductAcceptanceTest.상품_생성되어_있음("스테이크", 200).as(ProductResponse.class);
+        ProductResponse 에이드 = ProductAcceptanceTest.상품_생성되어_있음("에이드", 50).as(ProductResponse.class);
+        MenuProductRequest 샐러드_1개 = new MenuProductRequest(샐러드.getId(), 1);
+        MenuProductRequest 스테이크_1개 = new MenuProductRequest(스테이크.getId(), 1);
+        MenuProductRequest 에이드_2개 = new MenuProductRequest(에이드.getId(), 2);
+        MenuProductRequest 에이드_1개 = new MenuProductRequest(에이드.getId(), 1);
+        MenuGroupResponse 양식 = MenuGroupAcceptanceTest.메뉴_그룹_생성되어_있음("양식").as(MenuGroupResponse.class);
+        menuRequest1 = new MenuRequest(
+                "커플 메뉴",
+                400,
+                양식.getId(),
+                Arrays.asList(스테이크_1개, 샐러드_1개, 에이드_2개)
+        );
+        menuRequest2 = new MenuRequest(
+                "싱글 메뉴",
+                250,
+                양식.getId(),
+                Arrays.asList(스테이크_1개, 에이드_1개)
+        );
     }
 
     @DisplayName("메뉴를 생성한다.")
     @Test
     void 메뉴_생성() {
         // when
-        ExtractableResponse<Response> response = 메뉴_생성_요청(menu1);
+        ExtractableResponse<Response> response = 메뉴_생성_요청(menuRequest1);
 
         // then
         메뉴_생성됨(response);
@@ -53,8 +67,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @Test
     void 메뉴_목록_조회() {
         // given
-        ExtractableResponse<Response> createResponse1 = 메뉴_생성_요청(menu1);
-        ExtractableResponse<Response> createResponse2 = 메뉴_생성_요청(menu2);
+        ExtractableResponse<Response> createResponse1 = 메뉴_생성_요청(menuRequest1);
+        ExtractableResponse<Response> createResponse2 = 메뉴_생성_요청(menuRequest2);
 
         // when
         ExtractableResponse<Response> response = 메뉴_목록_조회_요청();
@@ -65,12 +79,21 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 메뉴_생성되어_있음(
-            MenuGroup menuGroup,
             String menuName,
-            int menuPrice,
-            MenuProduct... menuProducts) {
-        Menu menu = MenuServiceTest.메뉴_생성(menuGroup.getId(), menuName, menuPrice, menuProducts);
-        return 메뉴_생성_요청(menu);
+            long menuPrice,
+            Long menuGroupId,
+            List<MenuProductRequest> menuProducts) {
+        return 메뉴_생성_요청(new MenuRequest(menuName, menuPrice, menuGroupId, menuProducts));
+    }
+
+    public static ExtractableResponse<Response> 메뉴_생성_요청(MenuRequest menu) {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(menu)
+                .when().post("/api/menus")
+                .then().log().all()
+                .extract();
     }
 
     public static ExtractableResponse<Response> 메뉴_생성_요청(Menu menu) {
@@ -106,8 +129,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 .map(it -> Long.parseLong(it.header("Location").split("/")[3]))
                 .collect(Collectors.toList());
 
-        List<Long> resultLineIds = response.jsonPath().getList(".", Menu.class).stream()
-                .map(Menu::getId)
+        List<Long> resultLineIds = response.jsonPath().getList(".", MenuResponse.class).stream()
+                .map(MenuResponse::getId)
                 .collect(Collectors.toList());
 
         assertThat(resultLineIds).containsAll(expectedLineIds);

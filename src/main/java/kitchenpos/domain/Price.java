@@ -20,11 +20,15 @@ public class Price {
 
     private void validate(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("가격은 0 이상이어야 합니다.");
         }
     }
 
     public BigDecimal getValue() {
         return value;
+    }
+
+    public BigDecimal getPrice(int quantity) {
+        return value.multiply(BigDecimal.valueOf(quantity));
     }
 }

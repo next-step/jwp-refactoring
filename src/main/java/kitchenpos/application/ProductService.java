@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,5 +36,10 @@ public class ProductService {
                 .stream()
                 .map(product -> ProductResponse.of(product))
                 .collect(Collectors.toList());
+    }
+
+    public ProductEntity findProductById(Long id) {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("상품을 찾을 수 없습니다: " + id));
     }
 }

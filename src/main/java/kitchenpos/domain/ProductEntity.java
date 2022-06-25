@@ -45,4 +45,8 @@ public class ProductEntity {
     public Long getUnitPrice() {
         return unitPrice.getValue().longValue();
     }
+
+    public BigDecimal getPrice(int quantity) {
+        return unitPrice.getPrice(quantity);
+    }
 }
