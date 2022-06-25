@@ -2,6 +2,7 @@ package kitchenpos.order.application;
 
 import static kitchenpos.utils.DomainFixtureFactory.createOrderTable;
 import static kitchenpos.utils.DomainFixtureFactory.createTableGroup;
+import static kitchenpos.utils.DomainFixtureFactory.createTableGroupRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -16,6 +17,9 @@ import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.domain.OrderTables;
 import kitchenpos.order.domain.TableGroup;
 import kitchenpos.order.domain.TableGroupRepository;
+import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.order.dto.TableGroupRequest;
+import kitchenpos.order.dto.TableGroupResponse;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -54,61 +58,65 @@ class TableGroupServiceTest {
     @DisplayName("단체지정 생성 테스트")
     @Test
     void create() {
+        TableGroupRequest tableGroupRequest = createTableGroupRequest(Lists.newArrayList(치킨주문테이블.id(), 피자주문테이블.id()));
         given(orderTableRepository.findAllByIdIn(Lists.newArrayList(치킨주문테이블.id(), 피자주문테이블.id()))).willReturn(
                 Lists.newArrayList(치킨주문테이블, 피자주문테이블));
         given(tableGroupRepository.save(단체지정)).willReturn(단체지정);
         given(orderTableRepository.save(단체지정_치킨주문테이블)).willReturn(단체지정_치킨주문테이블);
         given(orderTableRepository.save(단체지정_피자주문테이블)).willReturn(단체지정_피자주문테이블);
-        TableGroup tableGroup = tableGroupService.create(단체지정);
+        TableGroupResponse tableGroupResponse = tableGroupService.create(tableGroupRequest);
         assertAll(
-                () -> assertThat(tableGroup.orderTables().readOnlyOrderTables()).containsExactlyElementsOf(
-                        Lists.newArrayList(치킨주문테이블, 피자주문테이블)),
-                () -> assertThat(tableGroup.id()).isEqualTo(단체지정.id())
+                () -> assertThat(tableGroupResponse.getOrderTables()).containsExactlyElementsOf(
+                        Lists.newArrayList(OrderTableResponse.from(치킨주문테이블), OrderTableResponse.from(피자주문테이블))),
+                () -> assertThat(tableGroupResponse.getId()).isEqualTo(단체지정.id())
         );
     }
 
     @DisplayName("단체지정 생성시 주문테이블이 2 미만인 경우 테스트")
     @Test
     void createWithOrderTableSizeUnderTwo() {
-        단체지정.setOrderTables(OrderTables.from(Lists.newArrayList(치킨주문테이블)));
+        TableGroupRequest tableGroupRequest = createTableGroupRequest(Lists.newArrayList(치킨주문테이블.id()));
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.create(단체지정));
+                .isThrownBy(() -> tableGroupService.create(tableGroupRequest));
     }
 
     @DisplayName("단체지정 생성시 주문테이블이 null 인 경우 테스트")
     @Test
     void createWithOrderTableNull() {
-        단체지정.setOrderTables(null);
+        TableGroupRequest tableGroupRequest = createTableGroupRequest(null);
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.create(단체지정));
+                .isThrownBy(() -> tableGroupService.create(tableGroupRequest));
     }
 
     @DisplayName("단체지정 생성시 단체지정의 주문테이블 수와 등록된 주문테이블에서 조회된 단체지정의 주문테이블 수가 일치하지 않는 경우 테스트")
     @Test
     void createWithNotEqualOrderTableSize() {
+        TableGroupRequest tableGroupRequest = createTableGroupRequest(Lists.newArrayList(치킨주문테이블.id(), 피자주문테이블.id()));
         given(orderTableRepository.findAllByIdIn(Lists.newArrayList(치킨주문테이블.id(), 피자주문테이블.id()))).willReturn(
                 Lists.newArrayList(치킨주문테이블));
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.create(단체지정));
+                .isThrownBy(() -> tableGroupService.create(tableGroupRequest));
     }
 
     @DisplayName("단체지정 생성시 주문테이블이 비어있지 않는 경우 테스트")
     @Test
     void createWithOrderTableNotEmpty() {
         피자주문테이블 = createOrderTable(2L, null, 3, false);
+        TableGroupRequest tableGroupRequest = createTableGroupRequest(Lists.newArrayList(치킨주문테이블.id(), 피자주문테이블.id()));
         given(orderTableRepository.findAllByIdIn(Lists.newArrayList(치킨주문테이블.id(), 피자주문테이블.id()))).willReturn(
                 Lists.newArrayList(치킨주문테이블, 피자주문테이블));
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.create(단체지정));
+                .isThrownBy(() -> tableGroupService.create(tableGroupRequest));
     }
 
     @DisplayName("단체지정 생성시 주문테이블이 테이블 그룹이 이미 있는 경우 테스트")
     @Test
     void createWithOrderTableAlreadyContainTableGroup() {
+        TableGroupRequest tableGroupRequest = createTableGroupRequest(Lists.newArrayList(치킨주문테이블.id(), 피자주문테이블.id()));
         given(orderTableRepository.findAllByIdIn(Lists.newArrayList(치킨주문테이블.id(), 단체지정_피자주문테이블.id()))).willReturn(
                 Lists.newArrayList(치킨주문테이블, 단체지정_피자주문테이블));
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.create(단체지정));
+                .isThrownBy(() -> tableGroupService.create(tableGroupRequest));
     }
 
     @DisplayName("단체지정 해제 테스트")

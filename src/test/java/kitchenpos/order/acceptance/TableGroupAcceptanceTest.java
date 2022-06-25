@@ -2,14 +2,15 @@ package kitchenpos.order.acceptance;
 
 import static kitchenpos.order.acceptance.TableRestAssured.주문테이블_등록_요청;
 import static kitchenpos.utils.DomainFixtureFactory.createOrderTableRequest;
-import static kitchenpos.utils.DomainFixtureFactory.createTableGroup;
+import static kitchenpos.utils.DomainFixtureFactory.createTableGroupRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.TableGroup;
+import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.order.dto.TableGroupRequest;
+import kitchenpos.order.dto.TableGroupResponse;
 import kitchenpos.utils.AcceptanceTest;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,15 +21,15 @@ import org.springframework.http.MediaType;
 
 @DisplayName("단체지정 관련 기능")
 class TableGroupAcceptanceTest extends AcceptanceTest {
-    private TableGroup 단체지정;
+    private TableGroupRequest 단체지정;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        OrderTable 치킨주문테이블 = 주문테이블_등록_요청(createOrderTableRequest(2, true)).as(OrderTable.class);
-        OrderTable 피자주문테이블 = 주문테이블_등록_요청(createOrderTableRequest(3, true)).as(OrderTable.class);
-        단체지정 = createTableGroup(1L, Lists.newArrayList(치킨주문테이블, 피자주문테이블));
+        OrderTableResponse 치킨주문테이블 = 주문테이블_등록_요청(createOrderTableRequest(2, true)).as(OrderTableResponse.class);
+        OrderTableResponse 피자주문테이블 = 주문테이블_등록_요청(createOrderTableRequest(3, true)).as(OrderTableResponse.class);
+        단체지정 = createTableGroupRequest(Lists.newArrayList(치킨주문테이블.getId(), 피자주문테이블.getId()));
     }
 
     /**
@@ -54,10 +55,10 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void ungroup() {
         // given
-        TableGroup 등록한_단체지정 = 단체지정_등록_요청(단체지정).as(TableGroup.class);
+        TableGroupResponse 등록한_단체지정 = 단체지정_등록_요청(단체지정).as(TableGroupResponse.class);
 
         // when
-        ExtractableResponse<Response> response = 단체지정_해제_요청(등록한_단체지정.id());
+        ExtractableResponse<Response> response = 단체지정_해제_요청(등록한_단체지정.getId());
 
         // then
         단체지정_해제됨(response);
@@ -71,7 +72,7 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    private ExtractableResponse<Response> 단체지정_등록_요청(TableGroup tableGroup) {
+    private ExtractableResponse<Response> 단체지정_등록_요청(TableGroupRequest tableGroup) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

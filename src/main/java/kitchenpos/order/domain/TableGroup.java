@@ -49,6 +49,10 @@ public class TableGroup {
         this.orderTables = orderTables;
     }
 
+    public LocalDateTime createdDate() {
+        return createdDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

@@ -11,6 +11,8 @@ import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.domain.OrderTables;
 import kitchenpos.order.domain.TableGroup;
 import kitchenpos.order.domain.TableGroupRepository;
+import kitchenpos.order.dto.TableGroupRequest;
+import kitchenpos.order.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -29,18 +31,13 @@ public class TableGroupService {
     }
 
     @Transactional
-    public TableGroup create(final TableGroup tableGroup) {
-        final List<OrderTable> orderTables = tableGroup.orderTables().readOnlyOrderTables();
+    public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
+        List<Long> orderTables = tableGroupRequest.getOrderTables();
+        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTables);
 
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
             throw new IllegalArgumentException();
         }
-
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::id)
-                .collect(Collectors.toList());
-
-        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
 
         if (orderTables.size() != savedOrderTables.size()) {
             throw new IllegalArgumentException();
@@ -51,7 +48,7 @@ public class TableGroupService {
                 throw new IllegalArgumentException();
             }
         }
-
+        TableGroup tableGroup = TableGroup.from(null, savedOrderTables);
         final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
 
         for (final OrderTable savedOrderTable : savedOrderTables) {
@@ -61,7 +58,7 @@ public class TableGroupService {
         }
         savedTableGroup.setOrderTables(OrderTables.from(savedOrderTables));
 
-        return savedTableGroup;
+        return TableGroupResponse.from(savedTableGroup);
     }
 
     @Transactional
