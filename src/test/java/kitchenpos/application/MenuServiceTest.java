@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
@@ -63,6 +64,30 @@ class MenuServiceTest {
     }
 
     @Test
+    @DisplayName("메뉴 생성 정상로직")
+    void createMenuHappyCase() {
+        //given
+        Menu menu = new Menu();
+        menu.setPrice(BigDecimal.valueOf(1000));
+        menu.setMenuProducts(Arrays.asList(chicken_menuProduct, ham_menuProduct));
+
+        when(productDao.findById(1L)).thenReturn(Optional.of(chicken));
+        when(productDao.findById(2L)).thenReturn(Optional.of(ham));
+        when(menuGroupDao.existsById(menu.getMenuGroupId())).thenReturn(true);
+        when(menuDao.save(menu)).thenReturn(menu);
+
+        //when
+        Menu menu_created = menuService.create(menu);
+
+        //then
+        assertAll(
+            () -> assertThat(menu_created.getPrice().toString()).isEqualTo(String.valueOf(1000)),
+            () -> assertThat(menu_created.getMenuProducts()).hasSize(2)
+        );
+
+    }
+
+    @Test
     @DisplayName("음수의 가격 및 Null로 메뉴 생성시 에러 발생")
     void createWithMinusPriceThrowError() {
         //given
@@ -74,10 +99,10 @@ class MenuServiceTest {
 
         //when
         assertAll(
-            () -> assertThatThrownBy(() -> menuService.create(menu_minusPrice)).isInstanceOf(
-                IllegalArgumentException.class),
-            () -> assertThatThrownBy(() -> menuService.create(menu_nullPrice)).isInstanceOf(
-                IllegalArgumentException.class)
+            () -> assertThatThrownBy(() -> menuService.create(menu_minusPrice))
+                .isInstanceOf(IllegalArgumentException.class),
+            () -> assertThatThrownBy(() -> menuService.create(menu_nullPrice))
+                .isInstanceOf(IllegalArgumentException.class)
         );
     }
 
@@ -89,8 +114,8 @@ class MenuServiceTest {
         menu.setPrice(BigDecimal.valueOf(1000));
 
         //when & then
-        assertThatThrownBy(() -> menuService.create(menu)).isInstanceOf(
-            IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuService.create(menu))
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -106,8 +131,8 @@ class MenuServiceTest {
         when(menuGroupDao.existsById(menu.getMenuGroupId())).thenReturn(true);
 
         //when & then
-        assertThatThrownBy(() -> menuService.create(menu)).isInstanceOf(
-            IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuService.create(menu))
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
 }
