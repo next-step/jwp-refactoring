@@ -9,12 +9,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
 
 @DisplayName("상품 서비스 관련")
 @SpringBootTest
@@ -29,13 +26,12 @@ class ProductServiceTest {
     void create() {
         // given
         Product given = new Product("짜장면", BigDecimal.valueOf(6000));
-        when(productDao.save(given)).thenReturn(given);
 
         // when
-        Product actual = productService.create(given);
+        productService.create(given);
 
         // then
-        assertThat(actual).isSameAs(given);
+        verify(productDao).save(given);
     }
 
     @DisplayName("상품의 가격은 0원 이상이어야 한다")
@@ -57,14 +53,10 @@ class ProductServiceTest {
     @DisplayName("상품의 목록을 조회할 수 있다")
     @Test
     void list() {
-        // given
-        List<Product> given = Collections.emptyList();
-        when(productDao.findAll()).thenReturn(given);
-
         // when
-        List<Product> actual = productService.list();
+        productService.list();
 
         // then
-        assertThat(actual).isSameAs(given);
+        verify(productDao).findAll();
     }
 }
