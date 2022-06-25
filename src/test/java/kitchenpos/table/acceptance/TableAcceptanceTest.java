@@ -54,6 +54,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
         // order 생성 API가 먼저 개발되어야 함
     }
 
+    @DisplayName("주문 테이블 인원 수 변경한다.")
     @Test
     void changeNumberOfGuests() {
         // given
