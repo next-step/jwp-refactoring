@@ -1,9 +1,7 @@
 package kitchenpos.acceptance;
 
 import static kitchenpos.acceptance.MenuGroupAcceptanceTest.메뉴그룹_생성_요청;
-import static kitchenpos.acceptance.MenuGroupAcceptanceTest.메뉴그룹_생성됨;
 import static kitchenpos.acceptance.ProductAcceptanceTest.상품_생성_요청;
-import static kitchenpos.acceptance.ProductAcceptanceTest.상품_생성됨;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
@@ -60,6 +58,12 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 }),
                 dynamicTest("상품의 총합계보다 비싼 메뉴 가격을 등록 할 수 없다.", () -> {
                     ExtractableResponse<Response> 잘못된_메뉴_생성_요청_응답 = 메뉴_생성_요청("잘못된_메뉴", 50000L,
+                            중식.getId(),
+                            makeMenuProductRequests(짬뽕, 짜장));
+                    메뉴_생성_실패됨(잘못된_메뉴_생성_요청_응답);
+                }),
+                dynamicTest("생성 하려는 메뉴 가격은 0원 이상이어야 한다.", () -> {
+                    ExtractableResponse<Response> 잘못된_메뉴_생성_요청_응답 = 메뉴_생성_요청("잘못된_메뉴", -1L,
                             중식.getId(),
                             makeMenuProductRequests(짬뽕, 짜장));
                     메뉴_생성_실패됨(잘못된_메뉴_생성_요청_응답);
