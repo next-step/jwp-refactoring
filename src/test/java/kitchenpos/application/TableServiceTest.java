@@ -86,6 +86,19 @@ class TableServiceTest {
     }
 
     @Test
+    @DisplayName("손님 수 변경 정상로직")
+    void changeNumberHappyCase(){
+        //given
+        when(orderTableDao.findById(1L)).thenReturn(Optional.of(orderTable));
+
+        orderTable.setNumberOfGuests(3);
+        orderTable.setEmpty(false);
+
+        //when
+        assertDoesNotThrow(() -> tableService.changeNumberOfGuests(1L, orderTable));
+    }
+
+    @Test
     @DisplayName("음수의 손님 수 등록시 에러발생")
     void changeNumberOfGuestsWithMinusNumberThrowError() {
         //given
