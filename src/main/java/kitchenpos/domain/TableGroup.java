@@ -20,6 +20,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Table(name = "table_group")
 public class TableGroup {
 
+    private static final int MIN_ORDER_TABLE_COUNT = 2;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -64,16 +66,21 @@ public class TableGroup {
         if (!orderTables.contains(orderTable)) {
             orderTables.add(orderTable);
         }
-        orderTable.setTableGroup(this);
+        orderTable.attachToTableGroup(this);
+    }
+
+    public void ungroup() {
+        orderTables.stream().forEach(OrderTable::detachFromTableGroup);
+        orderTables.clear();
     }
 
     private void validateAddingOrderTables(final List<OrderTable> orderTables) {
-        if (orderTables.size() < 2) {
+        if (orderTables.size() < MIN_ORDER_TABLE_COUNT) {
             throw new IllegalArgumentException();
         }
 
         if (validateOrderTableEmptyOrInTableGroup(orderTables)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("단체 지정을 위해서는 주문 테이블이 필요 합니다.");
         }
     }
 

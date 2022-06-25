@@ -25,8 +25,7 @@ public class TableService {
 
     @Transactional
     public OrderTable create(final OrderTable orderTable) {
-        orderTable.setTableGroup(null);
-
+        orderTable.attachToTableGroup(null);
         return orderTableRepository.save(orderTable);
     }
 

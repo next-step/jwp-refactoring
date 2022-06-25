@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 
@@ -32,9 +33,10 @@ class TableGroupTest {
     @DisplayName("이미 테이블 그룹에 속해 있으면 테이블 그룹을 지정 할 수 없다.")
     void createFailWithTableGroupTest() {
         //given
-        TableGroup tableGroup = new TableGroup(1L);
-        OrderTable orderTable1 = new OrderTable(1L, tableGroup, true);
-        OrderTable orderTable2 = new OrderTable(2L, tableGroup, true);
+        TableGroup otherTableGroup = new TableGroup(1L);
+        TableGroup tableGroup = new TableGroup(2L);
+        OrderTable orderTable1 = new OrderTable(1L, otherTableGroup, true);
+        OrderTable orderTable2 = new OrderTable(2L, otherTableGroup, true);
 
         //when & then
         assertThatThrownBy(
@@ -56,4 +58,17 @@ class TableGroupTest {
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
+    @Test
+    @DisplayName("단체 지정을 해지한다.")
+    void ungroupTest() {
+        //given
+        TableGroup tableGroup = new TableGroup(1L);
+        OrderTable orderTable1 = new OrderTable(1L, true);
+        OrderTable orderTable2 = new OrderTable(2L, true);
+        tableGroup.addOrderTables(Arrays.asList(orderTable1, orderTable2));
+
+        //when & then
+        tableGroup.ungroup();
+        assertThat(tableGroup.getOrderTables()).isEmpty();
+    }
 }
