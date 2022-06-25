@@ -2,6 +2,8 @@ package kitchenpos.menu.application;
 
 
 import kitchenpos.menu.domain.*;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
@@ -54,12 +56,15 @@ public class MenuServiceTest {
     @DisplayName("메뉴를 등록한다.")
     void createMenu() {
         // given
+        MenuRequest menuRequest = 메뉴_등록_요청("추천메뉴", 강정치킨.getPrice(), 치킨메뉴.getId(),
+                Arrays.asList(메뉴_상품_등록_요청(강정치킨.getId(), 1L)));
+
         given(menuGroupRepository.existsById(any())).willReturn(true);
         given(productRepository.findById(any())).willReturn(Optional.ofNullable(강정치킨));
         given(menuRepository.save(any())).willReturn(추천메뉴);
 
         // when
-        MenuResponse createdMenu = menuService.create(추천메뉴);
+        MenuResponse createdMenu = menuService.create(menuRequest);
 
         // then
         assertThat(createdMenu).isNotNull();
@@ -71,5 +76,13 @@ public class MenuServiceTest {
 
     public static MenuProduct 메뉴_상품_등록(Long seq, Long productId, long quantity) {
         return MenuProduct.of(productId, quantity);
+    }
+
+    public static MenuRequest 메뉴_등록_요청(String name, Integer price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
+        return MenuRequest.of(name, price, menuGroupId, menuProducts);
+    }
+
+    public static MenuProductRequest 메뉴_상품_등록_요청(Long productId, long quantity) {
+        return MenuProductRequest.of(productId, quantity);
     }
 }

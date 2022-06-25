@@ -1,6 +1,7 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.*;
+import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
@@ -24,11 +25,15 @@ public class MenuService {
     }
 
     @Transactional
-    public MenuResponse create(final Menu menu) {
+    public MenuResponse create(final MenuRequest menuRequest) {
+        Menu menu = menuRequest.toEntity();
         validateOfMenuGroup(menu.getMenuGroupId());
 
         MenuProducts menuProducts = bindProducts(menu.getMenuProducts());
         menu.validateMenuPrice(menuProducts.getTotalPrice());
+
+        System.out.println(menuRepository.save(menu));
+        System.out.println("-----");
 
         return MenuResponse.from(menuRepository.save(menu));
     }

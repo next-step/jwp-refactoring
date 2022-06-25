@@ -3,6 +3,7 @@ package kitchenpos.table.application;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +24,8 @@ public class TableService {
         this.orderTableRepository = orderTableRepository;
     }
 
-    public OrderTableResponse create(final OrderTable orderTable) {
+    public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
+        OrderTable orderTable = orderTableRequest.toEntity();
         orderTable.ungroup();
         return OrderTableResponse.from(orderTableRepository.save(orderTable));
     }

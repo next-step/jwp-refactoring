@@ -5,6 +5,7 @@ import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +25,8 @@ public class TableGroupService {
     }
 
     @Transactional
-    public TableGroupResponse create(final OrderTables orderTables) {
+    public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
+        OrderTables orderTables = tableGroupRequest.toEntity();
         final OrderTables savedOrderTables = OrderTables.of(
                 orderTableRepository.findAllByIdIn(orderTables.getIds()));
         savedOrderTables.checkGroupable();

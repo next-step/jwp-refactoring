@@ -2,6 +2,7 @@ package kitchenpos.product.application;
 
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,7 +38,7 @@ public class ProductServiceTest {
         given(productRepository.save(any())).willReturn(product);
 
         // when
-        ProductResponse createProduct = productService.create(product);
+        ProductResponse createProduct = productService.create(상품_등록_요청("강정치킨", 17000));
 
         // then
         assertThat(createProduct).isNotNull();
@@ -65,5 +66,9 @@ public class ProductServiceTest {
 
     public static Product 상품_등록(Long id, String name, Integer price) {
         return Product.of(name, price);
+    }
+
+    public static ProductRequest 상품_등록_요청(String name, Integer price) {
+        return ProductRequest.of(name, price);
     }
 }

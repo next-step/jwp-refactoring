@@ -8,6 +8,8 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.product.domain.Product;
@@ -75,7 +77,7 @@ public class OrderServiceTest {
     @DisplayName("주문을 등록할 때 주문 항목이 비어있으면 실패한다.")
     void createWithNoOrder() {
         // given
-        Order order = 주문_등록(1L, 빈테이블.getId(), Lists.emptyList());
+        OrderRequest order = 주문_등록_요청(빈테이블.getId(), Lists.emptyList());
 
         // when-then
         assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
@@ -85,7 +87,8 @@ public class OrderServiceTest {
     @DisplayName("주문을 등록할 때 메뉴가 등록 되어있지 않으면 실패한다.")
     void createWithInvalidMenuId() {
         // given
-        Order order = 주문_등록(1L, 빈테이블.getId(), 주문항목);
+        OrderRequest order = 주문_등록_요청(빈테이블.getId(),
+                Arrays.asList(주문_항목_등록_요청(추천메뉴.getId(), 1)));
 
         // when-then
         assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
@@ -95,7 +98,8 @@ public class OrderServiceTest {
     @DisplayName("주문을 등록할 때 주문 테이블 정보가 등록 되어있지 않으면 실패한다.")
     void createWithInvalidOrderTable() {
         // given
-        Order order = 주문_등록(1L, 빈테이블.getId(), 주문항목);
+        OrderRequest order = 주문_등록_요청(빈테이블.getId(),
+                Arrays.asList(주문_항목_등록_요청(추천메뉴.getId(), 1)));
         given(menuRepository.countByIdIn(any())).willReturn(1);
 
         // when-then
@@ -106,7 +110,8 @@ public class OrderServiceTest {
     @DisplayName("주문을 등록할 때 주문 테이블이 비어있으면 실패한다.")
     void createWithEmptyOrderTable() {
         // given
-        Order order = 주문_등록(1L, 빈테이블.getId(), 주문항목);
+        OrderRequest order = 주문_등록_요청(빈테이블.getId(),
+                Arrays.asList(주문_항목_등록_요청(추천메뉴.getId(), 1)));
         given(menuRepository.countByIdIn(any())).willReturn(1);
         given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(빈테이블));
 
@@ -118,14 +123,15 @@ public class OrderServiceTest {
     @DisplayName("주문을 등록한다.")
     void createOrder() {
         // given
-        Order order = 주문_등록(1L, 테이블.getId(), 주문항목);
+        OrderRequest order = 주문_등록_요청(빈테이블.getId(),
+                Arrays.asList(주문_항목_등록_요청(추천메뉴.getId(), 1)));
 
         given(menuRepository.countByIdIn(any())).willReturn(1);
         given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(테이블));
-        given(orderRepository.save(any())).willReturn(order);
+        given(orderRepository.save(any())).willReturn(주문_등록(1L, 빈테이블.getId(), 주문항목));
 
-        // when-then
-        assertThat(orderService.create(order).getOrderStatus()).isEqualTo(order.getOrderStatus());
+        // when-the
+        assertThat(orderService.create(order).getOrderStatus()).isEqualTo(OrderStatus.COOKING);
     }
 
     @Test
@@ -180,5 +186,13 @@ public class OrderServiceTest {
 
     private Order 주문_등록(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
         return Order.of(orderTableId, orderLineItems);
+    }
+
+    private OrderLineItemRequest 주문_항목_등록_요청(Long menuId, Integer quantity) {
+        return OrderLineItemRequest.of(menuId, quantity);
+    }
+
+    private OrderRequest 주문_등록_요청(Long orderTableId, List<OrderLineItemRequest> orderLineItems) {
+        return OrderRequest.of(orderTableId, orderLineItems);
     }
 }

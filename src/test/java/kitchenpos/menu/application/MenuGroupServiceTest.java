@@ -2,6 +2,7 @@ package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
+import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -41,7 +42,7 @@ public class MenuGroupServiceTest {
         given(menuGroupRepository.save(any())).willReturn(menuGroup);
 
         // when
-        MenuGroupResponse createMenuGroup = menuGroupService.create(menuGroup);
+        MenuGroupResponse createMenuGroup = menuGroupService.create(메뉴_그룹_등록_요청("추천메뉴"));
 
         // then
         assertThat(createMenuGroup).isNotNull();
@@ -62,5 +63,9 @@ public class MenuGroupServiceTest {
 
     public static MenuGroup 메뉴_그룹_등록(Long id, String name) {
         return MenuGroup.of(name);
+    }
+
+    public static MenuGroupRequest 메뉴_그룹_등록_요청(String name) {
+        return MenuGroupRequest.of(name);
     }
 }

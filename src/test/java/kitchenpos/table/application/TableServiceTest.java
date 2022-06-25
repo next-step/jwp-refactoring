@@ -1,9 +1,10 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,11 +38,12 @@ public class TableServiceTest {
     @DisplayName("테이블을 등록한다.")
     void createTable() {
         // given
+        OrderTableRequest orderTableRequest = OrderTableRequest.of(true, 1);
         OrderTable orderTable = 테이블_등록(1L, 4, true);
         given(orderTableRepository.save(any())).willReturn(orderTable);
 
         // when-then
-        assertThat(tableService.create(orderTable)).isNotNull();
+        assertThat(tableService.create(orderTableRequest)).isNotNull();
     }
 
     @Test

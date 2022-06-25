@@ -4,6 +4,7 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.table.domain.OrderTable;
@@ -27,7 +28,8 @@ public class OrderService {
         this.orderTableRepository = orderTableRepository;
     }
 
-    public OrderResponse create(final Order order) {
+    public OrderResponse create(final OrderRequest orderRequest) {
+        Order order = orderRequest.toEntity();
         validate(order.getOrderLineItems());
 
         final OrderTable orderTable = orderTableRepository.findById(order.getOrderTableId())
