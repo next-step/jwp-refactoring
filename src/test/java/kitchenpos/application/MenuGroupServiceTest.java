@@ -7,8 +7,10 @@ import static org.mockito.BDDMockito.given;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.application.fixture.MenuGroupFixtureFactory;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuGroupRepository;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,10 +20,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class MenuGroupServiceTest {
+class 용 {
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @InjectMocks
     private MenuGroupService menuGroupService;
@@ -32,9 +34,9 @@ class MenuGroupServiceTest {
 
     @BeforeEach
     void before() {
-        한식 = MenuGroupFixtureFactory.create(1L, "한식");
-        중식 = MenuGroupFixtureFactory.create(2L, "중식");
-        양식 = MenuGroupFixtureFactory.create(3L, "양식");
+        한식 = MenuGroupFixtureFactory.create("한식");
+        중식 = MenuGroupFixtureFactory.create("중식");
+        양식 = MenuGroupFixtureFactory.create("양식");
     }
 
     @DisplayName("메뉴 그룹을 생성 할 수 있다.")
@@ -42,14 +44,14 @@ class MenuGroupServiceTest {
     void createTest() {
 
         //given
-        MenuGroup 저장할_메뉴그룹 = new MenuGroup(1L, "메뉴그룹1");
-        given(menuGroupDao.save(any(MenuGroup.class))).willReturn(한식);
+        MenuGroupRequest 저장할_메뉴그룹 = MenuGroupRequest.from( "메뉴그룹1");
+        given(menuGroupRepository.save(any(MenuGroup.class))).willReturn(한식);
 
         //when
-        MenuGroup menuGroup = menuGroupService.create(저장할_메뉴그룹);
+        MenuGroupResponse menuGroup = menuGroupService.create(저장할_메뉴그룹);
 
         //then
-        assertThat(menuGroup).isEqualTo(한식);
+        assertThat(menuGroup).isEqualTo(MenuGroupResponse.from(한식));
     }
 
     @DisplayName("메뉴 그릅의 목록을 조회 할 수 있다.")
@@ -57,12 +59,16 @@ class MenuGroupServiceTest {
     void listTest() {
 
         //given
-        given(menuGroupDao.findAll()).willReturn(Arrays.asList(한식, 중식, 양식));
+        given(menuGroupRepository.findAll()).willReturn(Arrays.asList(한식, 중식, 양식));
 
         //when
-        List<MenuGroup> menuGroups = menuGroupService.list();
+        List<MenuGroupResponse> menuGroups = menuGroupService.list();
 
         //then
-        assertThat(menuGroups).containsExactly(한식, 중식, 양식);
+        assertThat(menuGroups).containsExactly(
+                MenuGroupResponse.from(한식),
+                MenuGroupResponse.from(중식),
+                MenuGroupResponse.from(양식)
+        );
     }
 }
