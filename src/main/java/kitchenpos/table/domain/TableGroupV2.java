@@ -1,4 +1,4 @@
-package kitchenpos.product.domain;
+package kitchenpos.table.domain;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -9,7 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import kitchenpos.table.domain.OrderTableV2;
 import org.springframework.data.annotation.CreatedDate;
 
 @Entity
