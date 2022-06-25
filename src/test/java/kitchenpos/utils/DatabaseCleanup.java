@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Table;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 import org.springframework.test.context.ActiveProfiles;
@@ -26,7 +27,7 @@ public class DatabaseCleanup implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
-        tableNames = extractTableNamesByEntityAnnotation();
+        tableNames = extractTableNamesByTableAnnotation();
         // Entity Annotation 없어서 비어있는 경우 fix
         if (tableNames.isEmpty()) {
             tableNames = fixKnownTables();
@@ -37,6 +38,14 @@ public class DatabaseCleanup implements InitializingBean {
         return entityManager.getMetamodel().getEntities().stream()
                 .filter(e -> e.getJavaType().getAnnotation(Entity.class) != null)
                 .map(e -> CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, e.getName()))
+                .collect(Collectors.toList());
+    }
+
+    private List<String> extractTableNamesByTableAnnotation() {
+        return entityManager.getMetamodel().getEntities().stream()
+                .filter(e -> e.getJavaType().getAnnotation(Table.class) != null)
+                .map(e -> CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, e.getName()))
+                .map(it -> it.replace("_v2", ""))
                 .collect(Collectors.toList());
     }
 
@@ -55,6 +64,7 @@ public class DatabaseCleanup implements InitializingBean {
     }
 
     private String getColumnNameSeqOrId(String tableName) {
+        tableName = tableName.toUpperCase();
         if (SEQ_TABLE_SET.contains(tableName)) {
             return "SEQ";
         }

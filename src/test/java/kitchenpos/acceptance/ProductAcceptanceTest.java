@@ -38,7 +38,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 
         // then
         final ExtractableResponse<Response> 제품_조회_결과 = 제품_조회();
-        제품_조회_확인(제품_조회_결과, Arrays.asList(new ProductResponse(1L, "강정치킨", BigDecimal.valueOf(17_000.0))));
+        제품_조회_확인(제품_조회_결과, Arrays.asList(new ProductResponse(1L, "강정치킨", BigDecimal.valueOf(17_000))));
     }
 
     public static ExtractableResponse<Response> 제품_생성_요청(String 제품명, Integer 금액) {

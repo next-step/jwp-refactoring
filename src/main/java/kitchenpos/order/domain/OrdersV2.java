@@ -16,8 +16,8 @@ import javax.persistence.Table;
 import org.springframework.data.annotation.CreatedDate;
 
 @Entity
-@Table(name = "order")
-public class OrderV2 {
+@Table(name = "orders")
+public class OrdersV2 {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,11 +37,11 @@ public class OrderV2 {
     @OneToMany
     private List<OrderLineItemV2> orderLineItems = new ArrayList<>();
 
-    protected OrderV2() {
+    protected OrdersV2() {
     }
 
-    public OrderV2(Long id, Long orderTableId, OrderStatusV2 orderStatus, LocalDateTime orderedTime,
-                   List<OrderLineItemV2> orderLineItems) {
+    public OrdersV2(Long id, Long orderTableId, OrderStatusV2 orderStatus, LocalDateTime orderedTime,
+                    List<OrderLineItemV2> orderLineItems) {
         this.id = id;
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
@@ -57,7 +57,7 @@ public class OrderV2 {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        OrderV2 order = (OrderV2) o;
+        OrdersV2 order = (OrdersV2) o;
         return Objects.equals(id, order.id) && Objects.equals(orderTableId, order.orderTableId)
                 && orderStatus == order.orderStatus && Objects.equals(orderedTime, order.orderedTime);
     }

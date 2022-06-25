@@ -10,8 +10,8 @@ class OrderTest {
     @Test
     @DisplayName("주문 객체가 같은지 검증")
     void verifyEqualsOrder() {
-        final OrderV2 order = new OrderV2(1L, 1L, OrderStatusV2.COOKING, null, null);
+        final OrdersV2 order = new OrdersV2(1L, 1L, OrderStatusV2.COOKING, null, null);
 
-        assertThat(order).isEqualTo(new OrderV2(1L, 1L, OrderStatusV2.COOKING, null, null));
+        assertThat(order).isEqualTo(new OrdersV2(1L, 1L, OrderStatusV2.COOKING, null, null));
     }
 }
