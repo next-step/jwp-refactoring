@@ -85,7 +85,7 @@ class TableServiceTest {
     @Test
     void change_empty_test() {
         // given
-        주문_테이블.setEmpty(false);
+        주문_테이블.fillTheTable();
         when(orderTableRepository.findById(주문_테이블.getId()))
             .thenReturn(Optional.of(주문_테이블));
         when(orderRepository.existsByOrderTableAndOrderStatusIn(주문_테이블, Arrays.asList(
@@ -136,7 +136,7 @@ class TableServiceTest {
     @Test
     void change_number_of_guests_test() {
         // given
-        주문_테이블.setEmpty(false);
+        주문_테이블.fillTheTable();
         when(orderTableRepository.findById(주문_테이블.getId()))
             .thenReturn(Optional.of(주문_테이블));
         when(orderTableRepository.save(주문_테이블))

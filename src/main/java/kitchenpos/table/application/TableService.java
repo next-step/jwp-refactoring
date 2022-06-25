@@ -53,7 +53,7 @@ public class TableService {
             throw new CannotUpdateException(ExceptionType.CAN_NOT_UPDATE_TABLE_IN_COOKING_AND_MEAL_STATUS);
         }
 
-        orderTable.setEmpty(true);
+        orderTable.emptyTheTable();
         orderTable = orderTableRepository.save(orderTable);
         return OrderTableResponse.of(orderTable);
     }
