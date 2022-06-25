@@ -8,6 +8,10 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.factory.MenuFixtureFactory;
+import kitchenpos.factory.MenuGroupFixtureFactory;
+import kitchenpos.factory.MenuProductFixtureFactory;
+import kitchenpos.factory.ProductFixtureFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,6 +25,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static kitchenpos.factory.MenuFixtureFactory.*;
+import static kitchenpos.factory.MenuGroupFixtureFactory.*;
+import static kitchenpos.factory.MenuProductFixtureFactory.*;
+import static kitchenpos.factory.ProductFixtureFactory.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -48,13 +56,13 @@ class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        메뉴그룹_한식 = new MenuGroup(1L, "한식메뉴");
-        김치찌개 = new Product(1L, "김치찌개", BigDecimal.valueOf(8000L));
-        공기밥 = new Product(2L, "공기밥", BigDecimal.valueOf(1000L));
-        메뉴_김치찌개세트 = new Menu("김치찌개세트", BigDecimal.valueOf(15000L), 메뉴그룹_한식.getId());
+        메뉴그룹_한식 = createMenuGroup(1L, "한식메뉴");
+        김치찌개 = createProduct(1L, "김치찌개", BigDecimal.valueOf(8000L));
+        공기밥 = createProduct(2L, "공기밥", BigDecimal.valueOf(1000L));
+        메뉴_김치찌개세트 = createMenu(1L, "김치찌개세트", BigDecimal.valueOf(15000L), 메뉴그룹_한식.getId());
 
-        김치찌개세트_김치찌개 = new MenuProduct(1L, 메뉴_김치찌개세트.getId(), 김치찌개.getId(), 2);
-        김치찌개세트_공기밥 = new MenuProduct(1L, 메뉴_김치찌개세트.getId(), 공기밥.getId(), 2);
+        김치찌개세트_김치찌개 = createMenuProduct(1L, 메뉴_김치찌개세트.getId(), 김치찌개.getId(), 2);
+        김치찌개세트_공기밥 = createMenuProduct(1L, 메뉴_김치찌개세트.getId(), 공기밥.getId(), 2);
         메뉴_김치찌개세트.setMenuProducts(Arrays.asList(김치찌개세트_김치찌개, 김치찌개세트_공기밥));
     }
 
@@ -78,7 +86,7 @@ class MenuServiceTest {
     @Test
     void 메뉴_등록_가격_검증_0이상(){
         //when
-        Menu invalidMenu = new Menu("김치찌개세트", BigDecimal.valueOf(-15000L), 메뉴그룹_한식.getId());
+        Menu invalidMenu = createMenu("김치찌개세트", BigDecimal.valueOf(-15000L), 메뉴그룹_한식.getId());
 
         //then
         assertThrows(IllegalArgumentException.class, () -> menuService.create(invalidMenu));
@@ -93,7 +101,7 @@ class MenuServiceTest {
         given(productDao.findById(공기밥.getId())).willReturn(Optional.of(공기밥));
 
         //when
-        Menu invalidMenu = new Menu("김치찌개세트", BigDecimal.valueOf(20000L), 메뉴그룹_한식.getId());
+        Menu invalidMenu = createMenu("김치찌개세트", BigDecimal.valueOf(20000L), 메뉴그룹_한식.getId());
         invalidMenu.setMenuProducts(Arrays.asList(김치찌개세트_김치찌개, 김치찌개세트_공기밥));
 
         //then
@@ -104,10 +112,10 @@ class MenuServiceTest {
     @Test
     void 메뉴_등록_메뉴그룹_검증(){
         //given
-        given(menuGroupDao.existsById(anyLong())).willReturn(true);
+        given(menuGroupDao.existsById(anyLong())).willReturn(false);
 
         //when
-        Menu invalidMenu = new Menu("김치찌개세트", BigDecimal.valueOf(15000L), 메뉴그룹_한식.getId());
+        Menu invalidMenu = createMenu("김치찌개세트", BigDecimal.valueOf(15000L), 메뉴그룹_한식.getId());
         invalidMenu.setMenuProducts(Arrays.asList(김치찌개세트_김치찌개, 김치찌개세트_공기밥));
 
         //then

@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import kitchenpos.factory.ProductFixtureFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
+import static kitchenpos.factory.ProductFixtureFactory.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
@@ -30,19 +32,18 @@ class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
-        치킨 = new Product( 1L, "치킨", BigDecimal.valueOf(15000L));
-        피자 = new Product(2L, "피자", BigDecimal.valueOf(20000L));
+        치킨 = createProduct( 1L, "치킨", BigDecimal.valueOf(15000L));
+        피자 = createProduct(2L, "피자", BigDecimal.valueOf(20000L));
     }
 
     @DisplayName("상품을 등록할 수 있다")
     @Test
     void 상품_등록(){
         //given
-        Product product = new Product("치킨", BigDecimal.valueOf(15000L));
-        given(productDao.save(product)).willReturn(치킨);
+        given(productDao.save(치킨)).willReturn(치킨);
 
         //when
-        Product savedProduct = productService.create(product);
+        Product savedProduct = productService.create(치킨);
 
         //then
         assertThat(savedProduct.getId()).isEqualTo(치킨.getId());
@@ -53,7 +54,7 @@ class ProductServiceTest {
     @Test
     void 상품_가격_검증(){
         //given
-        Product invalidProduct = new Product("치킨", BigDecimal.valueOf(-15000L));
+        Product invalidProduct = createProduct("치킨", BigDecimal.valueOf(-15000L));
 
         //then
        assertThrows(IllegalArgumentException.class, () -> productService.create(invalidProduct));

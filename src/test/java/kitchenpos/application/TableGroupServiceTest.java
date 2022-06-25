@@ -5,6 +5,8 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.factory.OrderTableFixtureFactory;
+import kitchenpos.factory.TableGroupFixtureFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,6 +19,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
+import static kitchenpos.factory.OrderTableFixtureFactory.*;
+import static kitchenpos.factory.TableGroupFixtureFactory.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -35,16 +39,22 @@ class TableGroupServiceTest {
     private TableGroupService tableGroupService;
 
     private TableGroup 단체_테이블;
+    private TableGroup 단체_테이블_2;
     private OrderTable 테이블_1;
     private OrderTable 테이블_2;
     private OrderTable 테이블_3;
+    private OrderTable 테이블_Full;
+    private OrderTable 테이블_Grouped;
 
     @BeforeEach
     void setUp() {
-        테이블_1 = new OrderTable(1L, null, 0, true);
-        테이블_2 = new OrderTable(2L, null, 0, true);
-        테이블_3 = new OrderTable(3L, null, 0, true);
-        단체_테이블 = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(테이블_1, 테이블_2, 테이블_3));
+        테이블_1 = createOrderTable(1L, null, 0, true);
+        테이블_2 = createOrderTable(2L, null, 0, true);
+        테이블_3 = createOrderTable(3L, null, 0, true);
+        단체_테이블 = createTableGroup(1L, LocalDateTime.now(), Arrays.asList(테이블_1, 테이블_2, 테이블_3));
+
+        테이블_Full = createOrderTable(4L, null, 4, false);
+        테이블_Grouped = createOrderTable(4L, 2L, 4, false);
     }
 
     @DisplayName("테이블그룹을 등록할 수 있다")
@@ -65,7 +75,7 @@ class TableGroupServiceTest {
     @Test
     void 테이블그룹_등록_주문테이블_두개_이상_검증(){
         //given
-        TableGroup invalidTable = new TableGroup(2L, LocalDateTime.now(), Arrays.asList(테이블_1));
+        TableGroup invalidTable = createTableGroup(LocalDateTime.now(), Arrays.asList(테이블_1));
 
         //then
         assertThrows(IllegalArgumentException.class, () -> tableGroupService.create(invalidTable));
@@ -85,8 +95,6 @@ class TableGroupServiceTest {
     @Test
     void 테이블그룹_등록_주문테이블_Empty_검증(){
         //given
-        OrderTable 테이블_Full = new OrderTable(4L, null, 4, false);
-        단체_테이블.setOrderTables(Arrays.asList(테이블_1, 테이블_2, 테이블_Full));
         given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(테이블_1, 테이블_2, 테이블_Full));
 
         //then
@@ -97,9 +105,7 @@ class TableGroupServiceTest {
     @Test
     void 테이블그룹_등록_주문테이블_이미_테이블그룹에_속해있는지_검증(){
         //given
-        OrderTable 테이블_AlreadyGroup = new OrderTable(4L, 2L, 4, false);
-        단체_테이블.setOrderTables(Arrays.asList(테이블_1, 테이블_2, 테이블_AlreadyGroup));
-        given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(테이블_1, 테이블_2, 테이블_AlreadyGroup));
+        given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(테이블_1, 테이블_2, 테이블_Grouped));
 
         //then
         assertThrows(IllegalArgumentException.class, () -> tableGroupService.create(단체_테이블));

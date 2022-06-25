@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.factory.MenuGroupFixtureFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.List;
 
+import static kitchenpos.factory.MenuGroupFixtureFactory.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
@@ -28,8 +30,8 @@ class MenuGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        양식_메뉴 = new MenuGroup( 1L, "양식메뉴");
-        한식_메뉴 = new MenuGroup(2L, "한식메뉴");
+        양식_메뉴 = createMenuGroup( 1L, "양식메뉴");
+        한식_메뉴 = createMenuGroup(2L, "한식메뉴");
     }
 
     @DisplayName("메뉴그룹을 등록할 수 있다")
