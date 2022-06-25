@@ -18,6 +18,6 @@ class MenuProductTest {
         Amount amount = menuProduct.createAmount();
 
         //then
-        assertThat(amount.calculateAmount()).isEqualTo(16_000);
+        assertThat(amount.getAmount()).isEqualTo(16_000);
     }
 }

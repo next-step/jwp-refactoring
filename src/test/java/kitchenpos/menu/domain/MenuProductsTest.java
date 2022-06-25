@@ -14,8 +14,8 @@ class MenuProductsTest {
     void getTotalAmount() {
         //given
         MenuProducts menuProducts = new MenuProducts();
-        menuProducts.addMenuProduct(MenuProductFixtures.후라이드치킨_메뉴상품);
-        menuProducts.addMenuProduct(MenuProductFixtures.양념치킨_메뉴);
+        menuProducts.add(MenuProductFixtures.후라이드치킨_메뉴상품);
+        menuProducts.add(MenuProductFixtures.양념치킨_메뉴);
 
         //when
         Amounts totalAmount = menuProducts.getAmounts();

@@ -2,7 +2,6 @@ package kitchenpos.product.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import kitchenpos.menu.domain.MenuProductQuantity;
 
 @Embeddable
 public class ProductPrice {
@@ -28,9 +27,5 @@ public class ProductPrice {
 
     public int getPrice() {
         return price;
-    }
-
-    public int calculateAmount(MenuProductQuantity quantity) {
-        return price * quantity.getQuantity();
     }
 }

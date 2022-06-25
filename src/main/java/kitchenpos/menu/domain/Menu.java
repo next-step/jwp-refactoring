@@ -28,6 +28,14 @@ public class Menu {
     protected Menu() {
     }
 
+    public Menu(String name, MenuPrice menuPrice, MenuGroup menuGroup, MenuProducts menuProducts) {
+        validate(menuPrice, menuProducts);
+        this.name = name;
+        this.menuPrice = menuPrice;
+        this.menuGroup = menuGroup;
+        this.menuProducts = menuProducts;
+    }
+
     public Menu(Long id, String name, MenuPrice menuPrice) {
         this.id = id;
         this.name = name;
@@ -42,9 +50,10 @@ public class Menu {
         this.menuProducts = menuProducts;
     }
 
-    public void addMenuProduct(MenuProduct menuProduct) {
-        menuProducts.addMenuProduct(menuProduct);
-        menuProduct.setMenu(this);
+    private void validate(MenuPrice menuPrice, MenuProducts menuProducts) {
+        if(menuPrice.overTo(menuProducts)){
+            throw new IllegalArgumentException("[ERROR] 메뉴 가격은 총 상품 가격보다 클 수 없습니다.");
+        }
     }
 
     public void checkAmount() {
@@ -76,10 +85,6 @@ public class Menu {
 
     public MenuProducts getMenuProducts() {
         return menuProducts;
-    }
-
-    public void setMenuGroup(MenuGroup menuGroup) {
-        this.menuGroup = menuGroup;
     }
 
 }

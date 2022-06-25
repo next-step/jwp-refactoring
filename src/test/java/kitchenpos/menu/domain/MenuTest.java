@@ -14,9 +14,10 @@ class MenuTest {
     @Test
     void checkAmount() {
         //given
-        Menu menu = 메뉴_만들기("반반치킨 세트", 50_000);
-        menu.addMenuProduct(MenuProductFixtures.양념치킨_메뉴);
-        menu.addMenuProduct(MenuProductFixtures.후라이드치킨_메뉴상품);
+        MenuProducts menuProducts = new MenuProducts();
+        menuProducts.add(MenuProductFixtures.양념치킨_메뉴);
+        menuProducts.add(MenuProductFixtures.후라이드치킨_메뉴상품);
+        Menu menu = 메뉴_만들기(1L,"반반치킨 세트", 50_000, null, menuProducts );
 
         //when then
         assertThatIllegalArgumentException()

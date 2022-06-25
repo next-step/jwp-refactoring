@@ -18,6 +18,6 @@ class AmountTest {
         Amount amount = new Amount(new ProductPrice(price), new MenuProductQuantity(quantity));
 
         //when then
-        assertThat(amount.calculateAmount()).isEqualTo(100_000);
+        assertThat(amount.getAmount()).isEqualTo(100_000);
     }
 }

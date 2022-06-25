@@ -5,8 +5,10 @@ import java.util.List;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
+import kitchenpos.menu.domain.MenuPrice;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProductQuantity;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -33,21 +35,10 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        MenuGroup menuGroup = findMenuGroup(menuRequest.getMenuGroupId());
-        Menu menu = menuRequest.toMenu();
-        menu.setMenuGroup(menuGroup);
-        addMenuProduct(menuRequest, menu);
-        menu.checkAmount();
-
+        MenuProducts menuProducts = createMenuProducts(menuRequest.getMenuProducts());
+        Menu menu = createMenu(menuRequest, menuProducts);
         final Menu savedMenu = menuRepository.save(menu);
         return MenuResponse.from(savedMenu);
-    }
-
-    private void addMenuProduct(MenuRequest menuRequest, Menu menu) {
-        for (final MenuProductRequest menuProductRequest : menuRequest.getMenuProducts()) {
-            final Product product = findProduct(menuProductRequest.getProductId());
-            menu.addMenuProduct(new MenuProduct(new MenuProductQuantity(menuProductRequest.getQuantity()), menu, product));
-        }
     }
 
     @Transactional(readOnly = true)
@@ -59,6 +50,24 @@ public class MenuService {
             menuResponses.add(menuResponse);
         }
         return menuResponses;
+    }
+
+    private MenuProducts createMenuProducts(List<MenuProductRequest> menuProductRequests){
+        MenuProducts menuProducts = new MenuProducts();
+        for (MenuProductRequest menuProductRequest : menuProductRequests) {
+            final MenuProductQuantity menuProductQuantity = new MenuProductQuantity(menuProductRequest.getQuantity());
+            final Product product = findProduct(menuProductRequest.getProductId());
+            final MenuProduct menuProduct = new MenuProduct(menuProductQuantity, product);
+            menuProducts.add(menuProduct);
+        }
+        return menuProducts;
+    }
+
+    private Menu createMenu(MenuRequest menuRequest, MenuProducts menuProducts) {
+        final MenuPrice menuPrice = new MenuPrice(menuRequest.getPrice());
+        final MenuGroup menuGroup = findMenuGroup(menuRequest.getMenuGroupId());
+
+        return new Menu(menuRequest.getName(), menuPrice, menuGroup, menuProducts);
     }
 
     private Product findProduct(Long productId) {

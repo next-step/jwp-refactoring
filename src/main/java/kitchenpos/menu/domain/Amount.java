@@ -11,7 +11,7 @@ public class Amount {
         this.quantity = quantity;
     }
 
-    public int calculateAmount() {
-        return price.calculateAmount(quantity);
+    public int getAmount() {
+        return price.getPrice() * quantity.getQuantity();
     }
 }

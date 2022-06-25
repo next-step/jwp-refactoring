@@ -24,7 +24,7 @@ class ProductTest {
         Amount amount = product.createAmount(new MenuProductQuantity(quantity));
 
         //then
-        assertThat(amount.calculateAmount()).isEqualTo(80_000);
+        assertThat(amount.getAmount()).isEqualTo(80_000);
 
     }
 

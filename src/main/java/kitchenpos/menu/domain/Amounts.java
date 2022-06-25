@@ -13,7 +13,7 @@ public class Amounts {
 
     public int calculateTotalAmount() {
         return amounts.stream()
-                .mapToInt(Amount::calculateAmount)
+                .mapToInt(Amount::getAmount)
                 .sum();
     }
 

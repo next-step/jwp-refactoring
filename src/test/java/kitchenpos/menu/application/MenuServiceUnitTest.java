@@ -15,8 +15,8 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doAnswer;
 
 import java.util.Optional;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroupRepository;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -55,11 +55,10 @@ class MenuServiceUnitTest {
         given(menuGroupRepository.findById(request.getMenuGroupId())).willReturn(Optional.of(두마리메뉴_그룹));
         given(productRepository.findById(any())).willReturn(Optional.of(통구이_상품)).willReturn(Optional.of(반반치킨_상품));
         doAnswer(invocation -> {
-            Menu savedMenu = 메뉴_만들기(generateMenuId, request.getName(), request.getPrice());
-            savedMenu.setMenuGroup(두마리메뉴_그룹);
-            savedMenu.addMenuProduct(통구이_메뉴상품);
-            savedMenu.addMenuProduct(반반치킨_메뉴상품);
-            return savedMenu;
+            MenuProducts menuProducts = new MenuProducts();
+            menuProducts.add(통구이_메뉴상품);
+            menuProducts.add(반반치킨_메뉴상품);
+            return 메뉴_만들기(generateMenuId, request.getName(), request.getPrice(),두마리메뉴_그룹, menuProducts);
         }).when(menuRepository).save(any());
 
         //when
@@ -79,6 +78,7 @@ class MenuServiceUnitTest {
     void create_empty_menu_group_id() {
         //given
         MenuRequest request = 통반세트_메뉴_요청_만들기(두마리메뉴_그룹.getId(), 30000);
+        given(productRepository.findById(any())).willReturn(Optional.of(통구이_상품)).willReturn(Optional.of(반반치킨_상품));
         given(menuGroupRepository.findById(request.getMenuGroupId())).willThrow(IllegalArgumentException.class);
 
         //when then

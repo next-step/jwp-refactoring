@@ -31,4 +31,8 @@ public class MenuPrice {
     public int getPrice() {
         return price;
     }
+
+    public boolean overTo(MenuProducts menuProducts) {
+        return price > menuProducts.getTotalPrice();
+    }
 }
