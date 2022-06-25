@@ -29,11 +29,17 @@ class TableServiceTest {
     @MockBean
     OrderTableDao orderTableDao;
 
-    Long orderTableId = 1L;
-    OrderTable orderTable = new OrderTable(orderTableId, null, 0, false);
+    Long orderTableId;
+    OrderTable orderTable;
 
     @BeforeEach
     void setUp() {
+        setOrderTable();
+    }
+
+    void setOrderTable() {
+        orderTableId = 1L;
+        orderTable = new OrderTable(orderTableId, null, 0, false);
         when(orderTableDao.findById(orderTableId)).thenReturn(Optional.of(orderTable));
     }
 
