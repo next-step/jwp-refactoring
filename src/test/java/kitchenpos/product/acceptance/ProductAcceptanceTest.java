@@ -19,14 +19,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("상품 관련 기능")
 public class ProductAcceptanceTest extends AcceptanceTest {
-    public static final Product 바베큐치킨 = new Product("바베큐치킨", new BigDecimal(30000));
-    public static final Product 치즈볼 = new Product("치즈볼", new BigDecimal(5000));
+    public static final String PRODUCT_NAME01 = "바베큐치킨";
+    public static final BigDecimal PRODUCT_PRICE01 = new BigDecimal(30000);
+
+    public static final String PRODUCT_NAME02 = "치즈볼";
+    public static final BigDecimal PRODUCT_PRICE02 = new BigDecimal(5000);
 
     @DisplayName("상품을 생성한다.")
     @Test
     void createProduct() {
         // when
-        ExtractableResponse<Response> response = 상품_등록되어_있음(바베큐치킨);
+        ExtractableResponse<Response> response = 상품_등록되어_있음(PRODUCT_NAME01, PRODUCT_PRICE01);
 
         // then
         상품_생성됨(response);
@@ -36,8 +39,8 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     @Test
     void getProducts() {
         // given
-        ExtractableResponse<Response> createResponse1 = 상품_등록되어_있음(바베큐치킨);
-        ExtractableResponse<Response> createResponse2 = 상품_등록되어_있음(치즈볼);
+        ExtractableResponse<Response> createResponse1 = 상품_등록되어_있음(PRODUCT_NAME01, PRODUCT_PRICE01);
+        ExtractableResponse<Response> createResponse2 = 상품_등록되어_있음(PRODUCT_NAME02, PRODUCT_PRICE02);
 
         // when
         ExtractableResponse<Response> response = 상품_목록_조회_요청();
@@ -47,7 +50,8 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         상품_목록_포함됨(response, Arrays.asList(createResponse1, createResponse2));
     }
 
-    public static ExtractableResponse<Response> 상품_등록되어_있음(Product product) {
+    public static ExtractableResponse<Response> 상품_등록되어_있음(String name, BigDecimal price) {
+        Product product = new Product(name, price);
         return 상품_생성_요청(product);
     }
 
@@ -88,5 +92,9 @@ public class ProductAcceptanceTest extends AcceptanceTest {
                 .collect(Collectors.toList());
 
         assertThat(resultLineIds).containsAll(expectedLineIds);
+    }
+
+    public static Product 상품_가져옴(ExtractableResponse<Response> response) {
+        return response.as(Product.class);
     }
 }

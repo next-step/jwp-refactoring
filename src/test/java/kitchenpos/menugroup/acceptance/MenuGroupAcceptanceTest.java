@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
+import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,14 +19,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("메뉴 그룹 관련 기능")
 public class MenuGroupAcceptanceTest extends AcceptanceTest {
-    public static final MenuGroup 점심특선메뉴 = new MenuGroup("점심특선메뉴");
-    public static final MenuGroup 어린이전용메뉴 = new MenuGroup("어린이전용메뉴");
+    public static final String MENU_GROUP_NAME01 = "점심특선메뉴";
+    public static final String MENU_GROUP_NAME02 = "어린이전용메뉴";
 
     @DisplayName("메뉴 그룹을 생성한다.")
     @Test
     void createProduct() {
         // when
-        ExtractableResponse<Response> response = 메뉴_그룹_등록되어_있음(점심특선메뉴);
+        ExtractableResponse<Response> response = 메뉴_그룹_등록되어_있음(MENU_GROUP_NAME01);
 
         // then
         메뉴_그룹_생성됨(response);
@@ -35,8 +36,8 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void getProducts() {
         // given
-        ExtractableResponse<Response> createResponse1 = 메뉴_그룹_등록되어_있음(점심특선메뉴);
-        ExtractableResponse<Response> createResponse2 = 메뉴_그룹_등록되어_있음(어린이전용메뉴);
+        ExtractableResponse<Response> createResponse1 = 메뉴_그룹_등록되어_있음(MENU_GROUP_NAME01);
+        ExtractableResponse<Response> createResponse2 = 메뉴_그룹_등록되어_있음(MENU_GROUP_NAME02);
 
         // when
         ExtractableResponse<Response> response = 메뉴_그룹_목록_조회_요청();
@@ -46,7 +47,8 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
         메뉴_그룹_목록_포함됨(response, Arrays.asList(createResponse1, createResponse2));
     }
 
-    public static ExtractableResponse<Response> 메뉴_그룹_등록되어_있음(MenuGroup menuGroup) {
+    public static ExtractableResponse<Response> 메뉴_그룹_등록되어_있음(String name) {
+        MenuGroup menuGroup = new MenuGroup(name);
         return 메뉴_그룹_생성_요청(menuGroup);
     }
 
@@ -87,5 +89,9 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
                 .collect(Collectors.toList());
 
         assertThat(resultLineIds).containsAll(expectedLineIds);
+    }
+
+    public static MenuGroup 메뉴_그룹_가져옴(ExtractableResponse<Response> response) {
+        return response.as(MenuGroup.class);
     }
 }
