@@ -1,5 +1,6 @@
 package kitchenpos.product.application;
 
+import static kitchenpos.helper.ProductFixtures.상품_만들기;
 import static kitchenpos.helper.ProductFixtures.제육덮밥_요청;
 import static kitchenpos.helper.ProductFixtures.제육덮밥_가격NULL_요청;
 import static kitchenpos.helper.ProductFixtures.제육덮밥_가격마이너스_요청;
@@ -43,7 +44,7 @@ class ProductServiceUnitTest {
         //given
         long generateProductId = 1;
         ProductRequest request = 제육덮밥_요청;
-        doAnswer(invocation -> new Product(generateProductId, 제육덮밥_요청.getName(), 제육덮밥_요청.getPrice()))
+        doAnswer(invocation -> 상품_만들기(generateProductId, 제육덮밥_요청.getName(), 제육덮밥_요청.getPrice()))
                 .when(productRepository).save(any());
 
         //when
@@ -68,9 +69,9 @@ class ProductServiceUnitTest {
     @Test
     void list() {
         //given
-        Product product1 = new Product("돈까스",9000);
-        Product product2 = new Product("나베",15000);
-        Product product3 = new Product("김치찌개",13000);
+        Product product1 = 상품_만들기("돈까스",9000);
+        Product product2 = 상품_만들기("나베",15000);
+        Product product3 = 상품_만들기("김치찌개",13000);
         given(productRepository.findAll()).willReturn(Arrays.asList(product1, product2, product3));
 
         //when

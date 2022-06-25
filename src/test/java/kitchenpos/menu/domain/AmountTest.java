@@ -2,6 +2,7 @@ package kitchenpos.menu.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import kitchenpos.product.domain.ProductPrice;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +15,7 @@ class AmountTest {
         //given
         int quantity = 10;
         int price = 10000;
-        Amount amount = new Amount(price, quantity);
+        Amount amount = new Amount(new ProductPrice(price), quantity);
 
         //when then
         assertThat(amount.calculateAmount()).isEqualTo(100_000);

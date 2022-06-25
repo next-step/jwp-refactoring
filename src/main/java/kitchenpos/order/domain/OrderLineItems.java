@@ -25,7 +25,6 @@ public class OrderLineItems {
             orderLineItem.setOrder(order);
             this.orderLineItems.add(orderLineItem);
         }
-
     }
 
     public void addOrderLineItems(OrderLineItem orderLineItem) {

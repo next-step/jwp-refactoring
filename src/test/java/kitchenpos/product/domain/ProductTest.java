@@ -1,5 +1,6 @@
 package kitchenpos.product.domain;
 
+import static kitchenpos.helper.ProductFixtures.상품_만들기;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
@@ -30,7 +31,7 @@ class ProductTest {
     @Test
     void validate() {
         //when then
-        assertThatIllegalArgumentException().isThrownBy(() -> new Product("제육덮밥", -1));
-        assertThatIllegalArgumentException().isThrownBy(() -> new Product("제육덮밥", null));
+        assertThatIllegalArgumentException().isThrownBy(() -> 상품_만들기("제육덮밥", -1));
+        assertThatIllegalArgumentException().isThrownBy(() -> 상품_만들기("제육덮밥", null));
     }
 }
