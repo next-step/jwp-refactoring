@@ -35,8 +35,7 @@ public class Order {
     @OneToMany
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
-    protected Order(long id, long orderTableId, kitchenpos.domain.OrderStatus cooking, Object orderedTime,
-                    Object orderLineItems) {
+    protected Order() {
     }
 
     public Order(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime,
