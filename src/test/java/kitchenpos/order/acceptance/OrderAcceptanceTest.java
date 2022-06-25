@@ -24,7 +24,7 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderTableResponse;
-import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.utils.AcceptanceTest;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,9 +42,9 @@ class OrderAcceptanceTest extends AcceptanceTest {
         super.setUp();
 
         MenuGroupResponse 한마리메뉴 = 메뉴그룹_등록_요청(createMenuGroupRequest("한마리메뉴")).as(MenuGroupResponse.class);
-        Product 양념 = 상품_등록_요청(createProductRequest( "양념", BigDecimal.valueOf(20000L))).as(Product.class);
+        ProductResponse 양념 = 상품_등록_요청(createProductRequest( "양념", BigDecimal.valueOf(20000L))).as(ProductResponse.class);
         MenuResponse 양념치킨 = 메뉴_등록_요청(createMenuRequest( "양념치킨", BigDecimal.valueOf(40000L), 한마리메뉴.getId(),
-                Lists.newArrayList(new MenuProductRequest(양념.id(), 2L)))).as(MenuResponse.class);
+                Lists.newArrayList(new MenuProductRequest(양념.getId(), 2L)))).as(MenuResponse.class);
         OrderTableResponse 주문테이블 = 주문테이블_등록_요청(createOrderTableRequest(2, false)).as(OrderTableResponse.class);
         주문 = createOrderRequest(주문테이블.getId(), null, Lists.newArrayList(createOrderLineItemRequest(양념치킨.getId(), 2L)));
     }

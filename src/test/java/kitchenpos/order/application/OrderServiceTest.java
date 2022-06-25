@@ -158,4 +158,14 @@ class OrderServiceTest {
                 .isThrownBy(() -> orderService.validateComplete(주문테이블))
                 .withMessage("주문테이블의 주문이 완료상태가 아닙니다.");
     }
+
+    @DisplayName("주문테이블의 주문이 완료상태가 아닌경우 테스트")
+    @Test
+    void validateComplete2() {
+        given(orderRepository.existsByOrderTableInAndOrderStatusIn(Lists.newArrayList(주문테이블),
+                Arrays.asList(COOKING, MEAL))).willReturn(true);
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> orderService.validateComplete(Lists.newArrayList(주문테이블)))
+                .withMessage("주문테이블들의 주문이 완료상태가 아닙니다.");
+    }
 }

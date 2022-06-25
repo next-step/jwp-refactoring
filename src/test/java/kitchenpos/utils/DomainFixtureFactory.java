@@ -74,8 +74,8 @@ public class DomainFixtureFactory {
         return new OrderLineItemRequest(menuId, quantity);
     }
 
-    public static TableGroup createTableGroup(Long id, List<OrderTable> orderTables) {
-        return TableGroup.from(id, orderTables);
+    public static TableGroup createTableGroup(List<OrderTable> orderTables) {
+        return TableGroup.from(orderTables);
     }
 
     public static TableGroupRequest createTableGroupRequest(List<Long> orderTables) {

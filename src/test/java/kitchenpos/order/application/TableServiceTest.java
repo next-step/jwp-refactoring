@@ -41,7 +41,7 @@ class TableServiceTest {
     @BeforeEach
     void setUp() {
         주문테이블 = createOrderTable(1L, 2, false);
-        단체지정 = createTableGroup(1L, Lists.newArrayList(주문테이블));
+        단체지정 = createTableGroup(Lists.newArrayList(주문테이블));
     }
 
     @DisplayName("주문테이블 생성 테스트")
@@ -68,8 +68,8 @@ class TableServiceTest {
     @DisplayName("주문테이블 비어있는지 여부 변경 테스트")
     @Test
     void changeEmpty() {
-        OrderTableRequest orderTableRequest = createOrderTableRequest(2, false);
-        OrderTable orderTable = createOrderTable(1L, 2, true);
+        OrderTableRequest orderTableRequest = createOrderTableRequest(2, true);
+        OrderTable orderTable = createOrderTable(1L, 2, false);
         given(orderTableRepository.findById(1L)).willReturn(Optional.ofNullable(주문테이블));
         given(orderTableRepository.save(any(OrderTable.class))).willReturn(orderTable);
         OrderTableResponse changedOrderTable = tableService.changeEmpty(1L, orderTableRequest);

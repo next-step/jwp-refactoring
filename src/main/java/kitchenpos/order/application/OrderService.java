@@ -13,6 +13,7 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
@@ -87,6 +88,13 @@ public class OrderService {
         if (orderRepository.existsByOrderTableAndOrderStatusIn(orderTable,
                 Arrays.asList(COOKING, MEAL))) {
             throw new IllegalArgumentException("주문테이블의 주문이 완료상태가 아닙니다.");
+        }
+    }
+
+    public void validateComplete(List<OrderTable> orderTables) {
+        if (orderRepository.existsByOrderTableInAndOrderStatusIn(
+                orderTables, Arrays.asList(COOKING, MEAL))) {
+            throw new IllegalArgumentException("주문테이블들의 주문이 완료상태가 아닙니다.");
         }
     }
 }

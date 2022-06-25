@@ -1,20 +1,18 @@
 package kitchenpos.order.application;
 
+import static kitchenpos.order.domain.TableGroup.ORDER_TABLE_REQUEST_MIN;
 import static kitchenpos.utils.DomainFixtureFactory.createOrderTable;
 import static kitchenpos.utils.DomainFixtureFactory.createTableGroup;
 import static kitchenpos.utils.DomainFixtureFactory.createTableGroupRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
-import java.util.Arrays;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
-import kitchenpos.order.domain.OrderTables;
 import kitchenpos.order.domain.TableGroup;
 import kitchenpos.order.domain.TableGroupRepository;
 import kitchenpos.order.dto.OrderTableResponse;
@@ -32,7 +30,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    private OrderRepository orderRepository;
+    private OrderService orderService;
     @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
@@ -42,17 +40,13 @@ class TableGroupServiceTest {
 
     private OrderTable 치킨주문테이블;
     private OrderTable 피자주문테이블;
-    private OrderTable 단체지정_치킨주문테이블;
-    private OrderTable 단체지정_피자주문테이블;
     private TableGroup 단체지정;
 
     @BeforeEach
     void setUp() {
         치킨주문테이블 = createOrderTable(1L, 2, true);
         피자주문테이블 = createOrderTable(2L, 3, true);
-        단체지정 = createTableGroup(1L, Lists.newArrayList(치킨주문테이블, 피자주문테이블));
-        단체지정_치킨주문테이블 = createOrderTable(1L, 2, true);
-        단체지정_피자주문테이블 = createOrderTable(2L, 3, true);
+        단체지정 = createTableGroup(Lists.newArrayList(치킨주문테이블, 피자주문테이블));
     }
 
     @DisplayName("단체지정 생성 테스트")
@@ -61,9 +55,7 @@ class TableGroupServiceTest {
         TableGroupRequest tableGroupRequest = createTableGroupRequest(Lists.newArrayList(치킨주문테이블.id(), 피자주문테이블.id()));
         given(orderTableRepository.findAllByIdIn(Lists.newArrayList(치킨주문테이블.id(), 피자주문테이블.id()))).willReturn(
                 Lists.newArrayList(치킨주문테이블, 피자주문테이블));
-        given(tableGroupRepository.save(단체지정)).willReturn(단체지정);
-        given(orderTableRepository.save(단체지정_치킨주문테이블)).willReturn(단체지정_치킨주문테이블);
-        given(orderTableRepository.save(단체지정_피자주문테이블)).willReturn(단체지정_피자주문테이블);
+        given(tableGroupRepository.save(any(TableGroup.class))).willReturn(단체지정);
         TableGroupResponse tableGroupResponse = tableGroupService.create(tableGroupRequest);
         assertAll(
                 () -> assertThat(tableGroupResponse.getOrderTables()).containsExactlyElementsOf(
@@ -77,7 +69,8 @@ class TableGroupServiceTest {
     void createWithOrderTableSizeUnderTwo() {
         TableGroupRequest tableGroupRequest = createTableGroupRequest(Lists.newArrayList(치킨주문테이블.id()));
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.create(tableGroupRequest));
+                .isThrownBy(() -> tableGroupService.create(tableGroupRequest))
+                .withMessage(ORDER_TABLE_REQUEST_MIN + "이상 주문테이블이 필요합니다.");
     }
 
     @DisplayName("단체지정 생성시 주문테이블이 null 인 경우 테스트")
@@ -85,7 +78,8 @@ class TableGroupServiceTest {
     void createWithOrderTableNull() {
         TableGroupRequest tableGroupRequest = createTableGroupRequest(null);
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.create(tableGroupRequest));
+                .isThrownBy(() -> tableGroupService.create(tableGroupRequest))
+                .withMessage(ORDER_TABLE_REQUEST_MIN + "이상 주문테이블이 필요합니다.");
     }
 
     @DisplayName("단체지정 생성시 단체지정의 주문테이블 수와 등록된 주문테이블에서 조회된 단체지정의 주문테이블 수가 일치하지 않는 경우 테스트")
@@ -95,51 +89,44 @@ class TableGroupServiceTest {
         given(orderTableRepository.findAllByIdIn(Lists.newArrayList(치킨주문테이블.id(), 피자주문테이블.id()))).willReturn(
                 Lists.newArrayList(치킨주문테이블));
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.create(tableGroupRequest));
+                .isThrownBy(() -> tableGroupService.create(tableGroupRequest))
+                .withMessage("비교하는 수와 주문 테이블의 수가 일치하지 않습니다.");
     }
 
     @DisplayName("단체지정 생성시 주문테이블이 비어있지 않는 경우 테스트")
     @Test
     void createWithOrderTableNotEmpty() {
-        피자주문테이블 = createOrderTable(2L,  3, false);
+        피자주문테이블 = createOrderTable(2L, 3, false);
         TableGroupRequest tableGroupRequest = createTableGroupRequest(Lists.newArrayList(치킨주문테이블.id(), 피자주문테이블.id()));
         given(orderTableRepository.findAllByIdIn(Lists.newArrayList(치킨주문테이블.id(), 피자주문테이블.id()))).willReturn(
                 Lists.newArrayList(치킨주문테이블, 피자주문테이블));
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.create(tableGroupRequest));
+                .isThrownBy(() -> tableGroupService.create(tableGroupRequest))
+                .withMessage("주문테이블이 비어있어야 합니다.");
     }
 
     @DisplayName("단체지정 생성시 주문테이블이 테이블 그룹이 이미 있는 경우 테스트")
     @Test
     void createWithOrderTableAlreadyContainTableGroup() {
+        피자주문테이블.addTableGroup(단체지정);
         TableGroupRequest tableGroupRequest = createTableGroupRequest(Lists.newArrayList(치킨주문테이블.id(), 피자주문테이블.id()));
-        given(orderTableRepository.findAllByIdIn(Lists.newArrayList(치킨주문테이블.id(), 단체지정_피자주문테이블.id()))).willReturn(
-                Lists.newArrayList(치킨주문테이블, 단체지정_피자주문테이블));
+        given(orderTableRepository.findAllByIdIn(Lists.newArrayList(치킨주문테이블.id(), 피자주문테이블.id()))).willReturn(
+                Lists.newArrayList(치킨주문테이블, 피자주문테이블));
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.create(tableGroupRequest));
+                .isThrownBy(() -> tableGroupService.create(tableGroupRequest))
+                .withMessage("단체지정이 없어야 합니다.");
     }
 
     @DisplayName("단체지정 해제 테스트")
     @Test
     void ungroup() {
-        given(orderTableRepository.findAllByTableGroupId(단체지정.id())).willReturn(
-                Lists.newArrayList(단체지정_치킨주문테이블, 단체지정_피자주문테이블));
-        given(orderRepository.existsByOrderTableInAndOrderStatusIn(Lists.newArrayList(치킨주문테이블, 피자주문테이블),
-                Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).willReturn(false);
-        tableGroupService.ungroup(단체지정.id());
+        치킨주문테이블.addTableGroup(단체지정);
+        피자주문테이블.addTableGroup(단체지정);
+        given(orderTableRepository.findAllByTableGroupId(1L)).willReturn(
+                Lists.newArrayList(치킨주문테이블, 피자주문테이블));
+        tableGroupService.ungroup(1L);
+        verify(orderService).validateComplete(Lists.newArrayList(치킨주문테이블, 피자주문테이블));
         verify(orderTableRepository).save(치킨주문테이블);
         verify(orderTableRepository).save(피자주문테이블);
-    }
-
-    @DisplayName("단체지정 해제시 단체지정의 주문테이블들 중 주문상태가 조리, 식사인 것이 있는 경우 테스트")
-    @Test
-    void ungroupWithCookingOrMealOrderStatus() {
-        given(orderTableRepository.findAllByTableGroupId(단체지정.id())).willReturn(
-                Lists.newArrayList(단체지정_치킨주문테이블, 단체지정_피자주문테이블));
-        given(orderRepository.existsByOrderTableInAndOrderStatusIn(Lists.newArrayList(치킨주문테이블, 피자주문테이블),
-                Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).willReturn(true);
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.ungroup(단체지정.id()));
     }
 }

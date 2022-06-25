@@ -33,4 +33,16 @@ public class OrderTables {
     public List<OrderTable> readOnlyOrderTables() {
         return Collections.unmodifiableList(this.orderTables);
     }
+
+    public void addTableGroup(TableGroup tableGroup) {
+        orderTables.forEach(orderTable -> orderTable.addTableGroup(tableGroup));
+    }
+
+    public void reserve() {
+        orderTables.forEach(orderTable -> orderTable.reserve());
+    }
+
+    public boolean isNotEqualSize(int size) {
+        return orderTables.size() != size;
+    }
 }

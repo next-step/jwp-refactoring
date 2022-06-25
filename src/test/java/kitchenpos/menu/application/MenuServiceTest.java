@@ -138,6 +138,6 @@ class MenuServiceTest {
         given(menuRepository.findById(1L)).willReturn(Optional.empty());
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuService.findMenu(1L))
-                .withMessage("메뉴를 찾을 수 없습니다.");
+                .withMessage("메뉴를 조회할 수 없습니다.");
     }
 }

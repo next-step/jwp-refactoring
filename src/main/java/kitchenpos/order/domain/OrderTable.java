@@ -61,7 +61,18 @@ public class OrderTable {
     }
 
     public void addTableGroup(final TableGroup tableGroup) {
+        validateTableGroupNull();
         this.tableGroup = tableGroup;
+    }
+
+    public void unGroup() {
+        this.tableGroup = null;
+    }
+
+    private void validateTableGroupNull() {
+        if(Objects.nonNull(tableGroup)) {
+            throw new IllegalArgumentException("단체지정이 없어야 합니다.");
+        }
     }
 
     public NumberOfGuests numberOfGuests() {
@@ -84,13 +95,17 @@ public class OrderTable {
     }
 
     public void changeEmpty(final boolean empty) {
-        validateTableGroupNull();
         this.empty = empty;
     }
 
-    private void validateTableGroupNull() {
-        if (Objects.nonNull(this.tableGroup())) {
-            throw new IllegalArgumentException("단체지정이 없어야 합니다.");
+    public void reserve() {
+        validateEmpty();
+        this.empty = false;
+    }
+
+    private void validateEmpty() {
+        if (!empty) {
+            throw new IllegalArgumentException("주문테이블이 비어있어야 합니다.");
         }
     }
 
