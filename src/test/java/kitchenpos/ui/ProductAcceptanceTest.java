@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.response.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
@@ -40,9 +41,9 @@ class ProductAcceptanceTest extends AcceptanceTest {
     @Test
     public void 상품_리스트_조회하기_테스트() {
         //given
-        Product 강정치킨 = 상품_등록하기("강정치킨", 18000).as(Product.class);
-        Product 카레치킨 = 상품_등록하기("카레치킨", 17000).as(Product.class);
-        Product 간장치킨 = 상품_등록하기("간장치킨", 16000).as(Product.class);
+        ProductResponse 강정치킨 = 상품_등록하기("강정치킨", 18000).as(ProductResponse.class);
+        ProductResponse 카레치킨 = 상품_등록하기("카레치킨", 17000).as(ProductResponse.class);
+        ProductResponse 간장치킨 = 상품_등록하기("간장치킨", 16000).as(ProductResponse.class);
 
         //when
         ExtractableResponse<Response> 상품_리스트_조회하기_response = 상품_리스트_조회하기();
