@@ -18,7 +18,7 @@ import org.springframework.http.MediaType;
 @DisplayName("테이블 관련 인수테스트")
 public class TableAcceptanceTest extends AcceptanceTest{
 
-    private static final String TABLE_URL = "/v2/api/tables/";
+    private static final String TABLE_URL = "/api/tables/";
 
     private OrderTableResponse 빈테이블;
     private OrderTableResponse 손님_테이블;
@@ -36,6 +36,11 @@ public class TableAcceptanceTest extends AcceptanceTest{
                     주문_테이블_등록됨(테이블_생성_요청_응답);
                     손님_테이블 = 테이블_생성_요청_응답.as(OrderTableResponse.class);
                 }),
+                dynamicTest("손님수가 음수인 주문 테이블을 생성 한다.", () -> {
+                    ExtractableResponse<Response> 테이블_생성_요청_응답 = 테이블_생성_요청(-1, false);
+                    테이블_생성_실패됨(테이블_생성_요청_응답);
+
+                }),
                 dynamicTest("빈 주문 테이블의 손님수를 변경 한다.", () -> {
                     ExtractableResponse<Response> 테이블_손님수_변경_요청 = 테이블_손님수_변경_요청(빈테이블.getId(), 5);
                     테이블_손님수_변경됨(테이블_손님수_변경_요청);
@@ -50,7 +55,7 @@ public class TableAcceptanceTest extends AcceptanceTest{
                 }),
                 dynamicTest("주문 테이블 목록을 조회 한다.", ()->{
                     ExtractableResponse<Response> 테이블_목록_조회_요청 = 테이블_목록_조회_요청();
-                    테이블_목록__조회됨(테이블_목록_조회_요청);
+                    테이블_목록_조회됨(테이블_목록_조회_요청);
                 })
                 );
     }
@@ -63,8 +68,12 @@ public class TableAcceptanceTest extends AcceptanceTest{
                 .extract();
     }
 
-    public static void 테이블_목록__조회됨(ExtractableResponse<Response> response) {
+    public static void 테이블_목록_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 테이블_생성_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     public static ExtractableResponse<Response> 테이블_손님수_변경_요청(Long orderTableId, int numberOfGuests) {
