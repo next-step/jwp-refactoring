@@ -34,7 +34,7 @@ public class MenuService {
         validateCreateRequest(menuRequest);
 
         if (!menuGroupRepository.existsById(menuRequest.getMenuGroupId())) {
-            throw new IllegalArgumentException("메뉴 그룹이 설정되지 않았습니다.");
+            throw new IllegalArgumentException("메뉴 그룹이 존재하지 않습니다.");
         }
 
         Menu menu = new Menu(
