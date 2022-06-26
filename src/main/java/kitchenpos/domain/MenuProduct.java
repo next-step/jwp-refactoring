@@ -52,6 +52,11 @@ public class MenuProduct {
         this.quantity = new Quantity(quantity);
     }
 
+    public MenuProduct(Product product, long quantity) {
+        this.product = product;
+        this.quantity = new Quantity(quantity);
+    }
+
     BigDecimal calculateAmount() {
         return product.getPrice().multiply(quantity);
     }
