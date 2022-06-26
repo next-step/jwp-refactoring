@@ -27,10 +27,6 @@ public class TableGroup extends BaseEntity {
         this.orderTables = new OrderTables(orderTables);
     }
 
-    public static TableGroup of(TableGroupRequest tableGroupRequest) {
-        return new TableGroup(null,  tableGroupRequest.getOrderTables());
-    }
-
     public void addOrderTables(OrderTables orderTables) {
         this.orderTables.addOrderTables(orderTables);
     }

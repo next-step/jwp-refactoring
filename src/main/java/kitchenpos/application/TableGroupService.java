@@ -36,7 +36,7 @@ public class TableGroupService {
         orderTables.validateForCreateTableGroup(savedOrderTables);
         savedOrderTables.updateEmpty(false);
 
-        TableGroup tableGroup = TableGroup.of(tableGroupRequest);
+        TableGroup tableGroup = tableGroupRequest.toTableGroup();
         tableGroup.addOrderTables(savedOrderTables);
 
         return TableGroupResponse.of(tableGroupRepository.save(tableGroup));

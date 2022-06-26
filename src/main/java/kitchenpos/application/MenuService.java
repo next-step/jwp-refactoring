@@ -35,7 +35,7 @@ public class MenuService {
         MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
                 .orElseThrow(NoSuchElementException::new);
 
-        Menu menu = Menu.of(menuRequest, menuGroup);
+        Menu menu = menuRequest.toMenu(menuGroup);
         menu.validateForCreate();
         menu.bindMenuProducts();
 

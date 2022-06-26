@@ -20,7 +20,7 @@ public class MenuGroupService {
 
     @Transactional
     public MenuGroupResponse create(final MenuGroupRequest menuGroupRequest) {
-        MenuGroup menuGroup = MenuGroup.of(menuGroupRequest);
+        MenuGroup menuGroup = menuGroupRequest.toMenuGroup();
         return MenuGroupResponse.of(menuGroupRepository.save(menuGroup));
     }
 

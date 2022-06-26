@@ -3,7 +3,6 @@ package kitchenpos.domain.menu;
 import kitchenpos.domain.menuGroup.MenuGroup;
 import kitchenpos.domain.menuProduct.MenuProduct;
 import kitchenpos.domain.menuProduct.MenuProducts;
-import kitchenpos.dto.menu.MenuRequest;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -43,10 +42,6 @@ public class Menu {
         this.price = price;
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
-    }
-
-    public static Menu of(MenuRequest menuRequest, MenuGroup menuGroup) {
-        return new Menu(null, menuRequest.getName(), menuRequest.getPrice(), menuGroup, menuRequest.getMenuProducts());
     }
 
     public void validateForCreate() {

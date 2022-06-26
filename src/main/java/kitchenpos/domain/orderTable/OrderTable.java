@@ -1,7 +1,6 @@
 package kitchenpos.domain.orderTable;
 
 import kitchenpos.domain.tableGroup.TableGroup;
-import kitchenpos.dto.orderTable.OrderTableRequest;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -31,10 +30,6 @@ public class OrderTable {
         this.tableGroup = tableGroup;
         this.numberOfGuests = new OrderTableNumberOfGuests(numberOfGuests);
         this.empty = empty;
-    }
-
-    public static OrderTable ofCreate(OrderTableRequest orderTableRequest) {
-        return new OrderTable(null, null, orderTableRequest.getNumberOfGuests(), orderTableRequest.isEmpty());
     }
 
     public void updateEmpty(boolean empty) {

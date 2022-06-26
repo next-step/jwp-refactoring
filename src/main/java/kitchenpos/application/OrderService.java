@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuRepository;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderRepository;
@@ -14,12 +13,10 @@ import kitchenpos.dto.order.OrderRequest;
 import kitchenpos.dto.order.OrderResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,7 +42,7 @@ public class OrderService {
     public OrderResponse create(final OrderRequest orderRequest) {
         final OrderTable orderTable = orderTableRepository.findByIdAndEmptyIsFalse(orderRequest.getOrderTableId())
                 .orElseThrow(NoSuchElementException::new);
-        Order order = Order.of(orderRequest, orderTable);
+        Order order = orderRequest.toOrder(orderTable);
 
         final OrderLineItems orderLineItems = new OrderLineItems(order.getOrderLineItems().getOrderLineItems());
         final List<Long> menuIds = orderLineItems.findMenuIds();
@@ -74,7 +71,7 @@ public class OrderService {
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
         OrderTable ordertable = orderTableRepository.findById(orderRequest.getOrderTableId())
                 .orElseThrow(NoSuchElementException::new);
-        Order order = Order.of(orderRequest, ordertable);
+        Order order = orderRequest.toOrder(ordertable);
 
         final Order savedOrder = orderRepository.findById(orderId)
                 .orElseThrow(NoSuchElementException::new);

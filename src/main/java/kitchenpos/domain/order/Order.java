@@ -49,13 +49,6 @@ public class Order extends BaseEntity {
         this.orderLineItems = orderLineItems;
     }
 
-    public static Order of(OrderRequest orderRequest, OrderTable orderTable) {
-        return new Order(null,
-                orderTable,
-                orderRequest.getOrderStatus(),
-                orderRequest.getOrderLineItems());
-    }
-
     public void updateOrderStatus(OrderStatus orderStatus) {
         if (Objects.equals(OrderStatus.COMPLETION, this.orderStatus)) {
             throw new IllegalArgumentException("주문 상태가 이미 '계산 완료' 상태입니다.");
