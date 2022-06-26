@@ -43,23 +43,32 @@ public class TableAcceptanceTest extends AcceptanceTest {
         주문_테이블_목록_포함됨(주문_테이블_목록, Arrays.asList(등록된_주문_테이블1, 등록된_주문_테이블2));
     }
 
+    @DisplayName("주문 테이블 이용 여부를 변경한다.")
     @Test
     void changeEmpty() {
-        // order 생성 API가 먼저 개발되어야 함
+        // given
+        ExtractableResponse<Response> 등록된_주문_테이블 = 주문_테이블_등록되어_있음(3, true);
+        final boolean 테이블_사용중 = false;
+
+        // when
+        OrderTable 변경된_주문_테이블 = 주문_테이블_상태_수정_요청(등록된_주문_테이블, 테이블_사용중).as(OrderTable.class);
+
+        // then
+        테이블_상태_검증됨(변경된_주문_테이블, 테이블_사용중);
     }
 
-    @DisplayName("주문 테이블 인원 수 변경한다.")
+    @DisplayName("주문 테이블 손님 수 변경한다.")
     @Test
     void changeNumberOfGuests() {
         // given
         ExtractableResponse<Response> 등록된_주문_테이블 = 주문_테이블_등록되어_있음(3, false);
-        final int 변경할_인원 = 5;
+        final int 변경된_테이블_손님수 = 5;
 
         // when
-        ExtractableResponse<Response> 변경된_주문_테이블 = 주문_테이블_인원_수정_요청(등록된_주문_테이블, 변경할_인원);
+        OrderTable 변경된_주문_테이블 = 주문_테이블_인원_수정_요청(등록된_주문_테이블, 변경된_테이블_손님수).as(OrderTable.class);
         
         // then
-        assertThat(주문_테이블_가져옴(변경된_주문_테이블).getNumberOfGuests()).isEqualTo(변경할_인원);
+        테이블_손님수_검증됨(변경된_주문_테이블, 변경된_테이블_손님수);
     }
 
     public static ExtractableResponse<Response> 주문_테이블_등록되어_있음(int numberOfGuests, boolean empty) {
@@ -119,7 +128,28 @@ public class TableAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 주문_테이블_상태_수정_요청(ExtractableResponse<Response> response, boolean isEmpty) {
+        OrderTable responseOrderTable = response.as(OrderTable.class);
+        OrderTable changedOrderTable = new OrderTable(isEmpty);
+
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(changedOrderTable)
+                .when().put("/api/tables/{orderTableId}/empty", responseOrderTable.getId())
+                .then().log().all()
+                .extract();
+    }
+
     public static OrderTable 주문_테이블_가져옴(ExtractableResponse<Response> response) {
         return response.as(OrderTable.class);
+    }
+
+    public static void 테이블_상태_검증됨(OrderTable 변경된_주문_테이블, boolean 테이블_사용중) {
+        assertThat(변경된_주문_테이블.isEmpty()).isEqualTo(테이블_사용중);
+    }
+
+    public static void 테이블_손님수_검증됨(OrderTable 변경된_주문_테이블, int 변경된_테이블_손님수) {
+        assertThat(변경된_주문_테이블.getNumberOfGuests()).isEqualTo(변경된_테이블_손님수);
     }
 }
