@@ -1,7 +1,6 @@
 package kitchenpos.table.domain;
 
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -11,27 +10,25 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 import kitchenpos.exception.ExistGroupTableException;
 import kitchenpos.exception.NotExistException;
 import kitchenpos.order.dto.OrderTableResponse;
 
 @Entity
-@Table(name = "order_table")
 public class OrderTable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "table_group_id")
     private TableGroup tableGroup;
 
     @Embedded
     private GuestNumber guestNumber;
 
-    @Column
+    @Column(nullable = false)
     private boolean empty;
 
     protected OrderTable() {

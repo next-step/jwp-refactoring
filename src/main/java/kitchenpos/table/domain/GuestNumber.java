@@ -9,7 +9,7 @@ import kitchenpos.exception.InvalidGuestNumberException;
 public class GuestNumber {
     private static final int MIN_NUMBER = 0;
 
-    @Column
+    @Column(nullable = false)
     private int numberOfGuests;
 
     protected GuestNumber() {

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
-import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import kitchenpos.exception.ExistGroupTableException;
 import kitchenpos.exception.InvalidTableNumberException;
@@ -14,7 +13,7 @@ import kitchenpos.order.dto.OrderTableResponse;
 
 @Embeddable
 public class OrderTables {
-    @OneToMany(mappedBy = "tableGroup", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderTable> orderTables = new ArrayList<>();
 
     protected OrderTables() {

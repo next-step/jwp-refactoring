@@ -9,7 +9,7 @@ import kitchenpos.exception.InvalidQuantityException;
 public class Quantity {
     private static final Long MIN_QUANTITY = 1L;
 
-    @Column
+    @Column(nullable = false)
     private Long quantity;
 
     protected Quantity() {

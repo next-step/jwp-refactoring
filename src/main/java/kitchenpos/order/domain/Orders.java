@@ -26,7 +26,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
-@Table(name = "orders")
 @EntityListeners(AuditingEntityListener.class)
 public class Orders {
 
@@ -37,11 +36,11 @@ public class Orders {
     @ManyToOne(fetch = FetchType.LAZY)
     private OrderTable orderTable;
 
-    @Column
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
-    @Column
+    @Column(nullable = false)
     @CreatedDate
     private LocalDateTime orderedTime;
 

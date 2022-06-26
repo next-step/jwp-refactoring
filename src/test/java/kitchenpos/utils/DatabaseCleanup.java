@@ -27,7 +27,7 @@ public class DatabaseCleanup implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
-        tableNames = extractTableNamesByTableAnnotation();
+        tableNames = extractTableNamesByEntityAnnotation();
         // Entity Annotation 없어서 비어있는 경우 fix
         if (tableNames.isEmpty()) {
             tableNames = fixKnownTables();
@@ -38,14 +38,6 @@ public class DatabaseCleanup implements InitializingBean {
         return entityManager.getMetamodel().getEntities().stream()
                 .filter(e -> e.getJavaType().getAnnotation(Entity.class) != null)
                 .map(e -> CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, e.getName()))
-                .collect(Collectors.toList());
-    }
-
-    private List<String> extractTableNamesByTableAnnotation() {
-        return entityManager.getMetamodel().getEntities().stream()
-                .filter(e -> e.getJavaType().getAnnotation(Table.class) != null)
-                .map(e -> CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, e.getName()))
-                .map(it -> it.replace("_v2", ""))
                 .collect(Collectors.toList());
     }
 

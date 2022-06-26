@@ -10,14 +10,12 @@ import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
 import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupResponse;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
-@Table(name = "table_group")
 @EntityListeners(AuditingEntityListener.class)
 public class TableGroup {
 
@@ -25,7 +23,7 @@ public class TableGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     @CreatedDate
     private LocalDateTime createdDate;
 
