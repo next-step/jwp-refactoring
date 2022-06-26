@@ -84,7 +84,7 @@ public class ProductServiceTest {
     }
 
     public static Product createProduct02() {
-        return new Product(1L, PRODUCT_NAME02, PRODUCT_PRICE02);
+        return new Product(2L, PRODUCT_NAME02, PRODUCT_PRICE02);
     }
 
     public static List<Product> createProductList() {
