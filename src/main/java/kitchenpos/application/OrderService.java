@@ -3,6 +3,7 @@ package kitchenpos.application;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
+import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
 import kitchenpos.repository.OrderRepository;
@@ -31,24 +32,23 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest request) {
-        Order order = Order.createOrder(
-                tableService.findOrderTableById(request.getOrderTableId()),
-                request.getOrderLineItems()
-                        .stream()
-                        .map(itemRequest -> new OrderLineItem(
-                                menuService.findMenuById(itemRequest.getMenuId()),
-                                itemRequest.getQuantity()))
-                        .collect(Collectors.toList())
-        );
+        Order persistOrder = orderRepository.save(toEntity(request));
+        return OrderResponse.of(persistOrder);
+    }
 
-        orderRepository.save(order);
+    private Order toEntity(OrderRequest request) {
+        OrderTable orderTable = tableService.findOrderTableById(request.getOrderTableId());
+        List<OrderLineItem> orderLineItems = request.getOrderLineItems().stream()
+                .map(itemRequest -> new OrderLineItem(
+                        menuService.findMenuById(itemRequest.getMenuId()),
+                        itemRequest.getQuantity()))
+                .collect(Collectors.toList());
 
-        return OrderResponse.of(order);
+        return Order.createOrder(orderTable, orderLineItems);
     }
 
     public List<OrderResponse> list() {
-        return orderRepository.findAll()
-                .stream()
+        return orderRepository.findAll().stream()
                 .map(order -> OrderResponse.of(order))
                 .collect(Collectors.toList());
     }

@@ -22,18 +22,16 @@ public class ProductService {
 
     @Transactional
     public ProductResponse create(final ProductRequest request) {
-        Product product = productRepository.save(
-                new Product(
-                        request.getName(),
-                        request.getPrice()
-                )
-        );
+        Product product = productRepository.save(toEntity(request));
         return ProductResponse.of(product);
     }
 
+    private Product toEntity(ProductRequest request) {
+        return new Product(request.getName(), request.getPrice());
+    }
+
     public List<ProductResponse> list() {
-        return productRepository.findAll()
-                .stream()
+        return productRepository.findAll().stream()
                 .map(product -> ProductResponse.of(product))
                 .collect(Collectors.toList());
     }

@@ -25,14 +25,16 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest request) {
-        List<OrderTable> orderTables = request.getOrderTableIds()
-                .stream()
+        TableGroup tableGroup = tableGroupRepository.save(toEntity(request));
+        return TableGroupResponse.of(tableGroup);
+    }
+
+    private TableGroup toEntity(final TableGroupRequest request) {
+        List<OrderTable> orderTables = request.getOrderTableIds().stream()
                 .map(id -> tableService.findOrderTableById(id))
                 .collect(Collectors.toList());
 
-        TableGroup tableGroup = tableGroupRepository.save(new TableGroup(orderTables));
-
-        return TableGroupResponse.of(tableGroup);
+        return new TableGroup(orderTables);
     }
 
     @Transactional

@@ -23,13 +23,11 @@ public class MenuGroupService {
     @Transactional
     public MenuGroupResponse create(MenuGroupRequest request) {
         MenuGroup persistedMenuGroup = menuGroupRepository.save(new MenuGroup(request.getName()));
-
         return MenuGroupResponse.of(persistedMenuGroup);
     }
 
     public List<MenuGroupResponse> list() {
-        return menuGroupRepository.findAll()
-                .stream()
+        return menuGroupRepository.findAll().stream()
                 .map(menuGroup -> MenuGroupResponse.of(menuGroup))
                 .collect(Collectors.toList());
     }

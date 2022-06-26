@@ -26,15 +26,15 @@ public class TableService {
 
     @Transactional
     public TableResponse create(final TableRequest request) {
-        OrderTable orderTable = tableRepository.save(
-                new OrderTable(
-                        null,
-                        request.getNumberOfGuests(),
-                        request.getEmpty()
-                )
-        );
-
+        OrderTable orderTable = tableRepository.save(toEntity(request));
         return TableResponse.of(orderTable);
+    }
+
+    private OrderTable toEntity(final TableRequest request) {
+        return new OrderTable(
+                null,
+                request.getNumberOfGuests(),
+                request.getEmpty());
     }
 
     public List<TableResponse> list() {
