@@ -36,10 +36,6 @@ public class Price {
         return new Price(this.price + other.price);
     }
 
-    public Long compareTo(long total) {
-        return this.price - total;
-    }
-
     public Long compareTo(Price totalPrice) {
         return this.price - totalPrice.price;
     }
