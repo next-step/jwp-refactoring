@@ -115,4 +115,8 @@ public class TableAcceptanceTest extends AcceptanceTest {
     public static void 테이블_수정됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
+
+    public static ExtractableResponse<Response> 테이블_등록되어_있음(int numberOfGuests, boolean empty) {
+        return 테이블_등록_요청(OrderTableRequest.of(numberOfGuests, empty));
+    }
 }

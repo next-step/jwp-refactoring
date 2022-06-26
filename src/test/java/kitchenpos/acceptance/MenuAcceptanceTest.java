@@ -146,4 +146,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     public static void 메뉴_등록_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
+
+    public static ExtractableResponse<Response> 메뉴_등록되어_있음(String name, int price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
+        return 메뉴_등록_요청(MenuRequest.of(name, price, menuGroupId, menuProducts));
+    }
 }
