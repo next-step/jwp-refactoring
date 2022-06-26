@@ -9,29 +9,39 @@ public class MenuResponse {
     private final Long id;
     private final String name;
     private final Integer price;
-    private final Long menuGroupId;
-
+    private final MenuGroupResponse menuGroup;
     private final List<MenuProductResponse> menuProducts;
 
-    public MenuResponse(Long id, String name, Integer price, Long menuGroupId,
+    public MenuResponse(Long id,
+                        String name,
+                        Integer price,
+                        MenuGroupResponse menuGroupResponse,
                         List<MenuProductResponse> menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
-        this.menuGroupId = menuGroupId;
+        this.menuGroup = menuGroupResponse;
         this.menuProducts = menuProducts;
     }
 
     public static MenuResponse from(Menu menu) {
         MenuProducts menuProducts = menu.getMenuProducts();
         List<MenuProductResponse> menuProductResponses = menuProducts.getMenuProducts().stream()
-                .map(menuProduct -> MenuProductResponse.of(menuProduct, menu.getId()))
+                .map(MenuProductResponse::from)
                 .collect(Collectors.toList());
+
+        if (menu.getMenuGroup() != null) {
+            return new MenuResponse(menu.getId(),
+                    menu.getName(),
+                    menu.getPrice().getPrice(),
+                    MenuGroupResponse.from(menu.getMenuGroup()),
+                    menuProductResponses);
+        }
 
         return new MenuResponse(menu.getId(),
                 menu.getName(),
                 menu.getPrice().getPrice(),
-                menu.getMenuGroup().getId(),
+                null,
                 menuProductResponses);
     }
 
@@ -47,8 +57,8 @@ public class MenuResponse {
         return price;
     }
 
-    public Long getMenuGroupId() {
-        return menuGroupId;
+    public MenuGroupResponse getMenuGroup() {
+        return menuGroup;
     }
 
     public List<MenuProductResponse> getMenuProducts() {

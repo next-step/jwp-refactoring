@@ -67,8 +67,8 @@ class MenuServiceUnitTest {
         //then
         assertAll(
                 () -> assertThat(result.getId()).isEqualTo(generateMenuId),
-                () -> assertThat(result.getMenuProducts().get(0).getMenuId()).isEqualTo(generateMenuId),
-                () -> assertThat(result.getMenuProducts().get(1).getMenuId()).isEqualTo(generateMenuId)
+                () -> assertThat(result.getMenuProducts().get(0).getProduct().getId()).isEqualTo(통구이_상품.getId()),
+                () -> assertThat(result.getMenuProducts().get(1).getProduct().getId()).isEqualTo(반반치킨_상품.getId())
         );
 
     }

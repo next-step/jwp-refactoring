@@ -11,8 +11,8 @@ public class MenuGroupResponse {
         this.name = name;
     }
 
-    public static MenuGroupResponse from(MenuGroup savedMenuGroup) {
-        return new MenuGroupResponse(savedMenuGroup.getId(), savedMenuGroup.getName());
+    public static MenuGroupResponse from(MenuGroup menuGroup) {
+        return new MenuGroupResponse(menuGroup.getId(), menuGroup.getName());
     }
 
     public Long getId() {

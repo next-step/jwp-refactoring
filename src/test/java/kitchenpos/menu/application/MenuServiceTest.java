@@ -3,6 +3,8 @@ package kitchenpos.menu.application;
 import static kitchenpos.helper.MenuFixtures.통반세트_메뉴_요청_만들기;
 import static kitchenpos.helper.MenuGroupFixtures.두마리메뉴_그룹;
 import static kitchenpos.helper.MenuGroupFixtures.없는메뉴_그룹;
+import static kitchenpos.helper.ProductFixtures.반반치킨_상품;
+import static kitchenpos.helper.ProductFixtures.통구이_상품;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -38,8 +40,8 @@ class MenuServiceTest {
         //then
         assertAll(
                 () -> assertThat(result.getId()).isNotNull(),
-                () -> assertThat(result.getMenuProducts().get(0).getMenuId()).isEqualTo(result.getId()),
-                () -> assertThat(result.getMenuProducts().get(1).getMenuId()).isEqualTo(result.getId())
+                () -> assertThat(result.getMenuProducts().get(0).getProduct().getId()).isEqualTo(통구이_상품.getId()),
+                () -> assertThat(result.getMenuProducts().get(1).getProduct().getId()).isEqualTo(반반치킨_상품.getId())
         );
     }
 
