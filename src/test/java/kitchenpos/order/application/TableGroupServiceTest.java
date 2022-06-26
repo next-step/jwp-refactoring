@@ -13,6 +13,7 @@ import static org.mockito.Mockito.verify;
 
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
+import kitchenpos.order.domain.OrderTables;
 import kitchenpos.order.domain.TableGroup;
 import kitchenpos.order.domain.TableGroupRepository;
 import kitchenpos.order.dto.OrderTableResponse;
@@ -39,14 +40,16 @@ class TableGroupServiceTest {
     private TableGroupService tableGroupService;
 
     private OrderTable 치킨주문테이블;
+    private OrderTable 단체지정_치킨주문테이블;
     private OrderTable 피자주문테이블;
-    private TableGroup 단체지정;
+    private OrderTable 단체지정_피자주문테이블;
 
     @BeforeEach
     void setUp() {
         치킨주문테이블 = createOrderTable(1L, 2, true);
         피자주문테이블 = createOrderTable(2L, 3, true);
-        단체지정 = createTableGroup(Lists.newArrayList(치킨주문테이블, 피자주문테이블));
+        단체지정_치킨주문테이블 = createOrderTable(1L, 2, true);
+        단체지정_피자주문테이블 = createOrderTable(2L, 3, true);
     }
 
     @DisplayName("단체지정 생성 테스트")
@@ -55,6 +58,8 @@ class TableGroupServiceTest {
         TableGroupRequest tableGroupRequest = createTableGroupRequest(Lists.newArrayList(치킨주문테이블.id(), 피자주문테이블.id()));
         given(orderTableRepository.findAllByIdIn(Lists.newArrayList(치킨주문테이블.id(), 피자주문테이블.id()))).willReturn(
                 Lists.newArrayList(치킨주문테이블, 피자주문테이블));
+        TableGroup 단체지정 = createTableGroup(OrderTables.from(Lists.newArrayList(단체지정_치킨주문테이블, 단체지정_피자주문테이블)),
+                Lists.newArrayList(단체지정_치킨주문테이블.id(), 단체지정_피자주문테이블.id()));
         given(tableGroupRepository.save(any(TableGroup.class))).willReturn(단체지정);
         TableGroupResponse tableGroupResponse = tableGroupService.create(tableGroupRequest);
         assertAll(
@@ -105,13 +110,14 @@ class TableGroupServiceTest {
                 .withMessage("주문테이블이 비어있어야 합니다.");
     }
 
-    @DisplayName("단체지정 생성시 주문테이블이 테이블 그룹이 이미 있는 경우 테스트")
+    @DisplayName("단체지정 생성시 주문테이블의 테이블 그룹이 이미 있는 경우 테스트")
     @Test
     void createWithOrderTableAlreadyContainTableGroup() {
-        피자주문테이블.addTableGroup(단체지정);
         TableGroupRequest tableGroupRequest = createTableGroupRequest(Lists.newArrayList(치킨주문테이블.id(), 피자주문테이블.id()));
+        createTableGroup(OrderTables.from(Lists.newArrayList(단체지정_치킨주문테이블, 단체지정_피자주문테이블)),
+                Lists.newArrayList(단체지정_치킨주문테이블.id(), 단체지정_피자주문테이블.id()));
         given(orderTableRepository.findAllByIdIn(Lists.newArrayList(치킨주문테이블.id(), 피자주문테이블.id()))).willReturn(
-                Lists.newArrayList(치킨주문테이블, 피자주문테이블));
+                Lists.newArrayList(단체지정_치킨주문테이블, 단체지정_피자주문테이블));
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableGroupService.create(tableGroupRequest))
                 .withMessage("단체지정이 없어야 합니다.");
@@ -120,8 +126,6 @@ class TableGroupServiceTest {
     @DisplayName("단체지정 해제 테스트")
     @Test
     void ungroup() {
-        치킨주문테이블.addTableGroup(단체지정);
-        피자주문테이블.addTableGroup(단체지정);
         given(orderTableRepository.findAllByTableGroupId(1L)).willReturn(
                 Lists.newArrayList(치킨주문테이블, 피자주문테이블));
         tableGroupService.ungroup(1L);

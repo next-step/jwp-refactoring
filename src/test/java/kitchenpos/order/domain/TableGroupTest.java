@@ -9,17 +9,20 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class TableGroupTest {
-    private OrderTable 주문테이블;
+    private OrderTable 치킨주문테이블;
+    private OrderTable 피자주문테이블;
 
     @BeforeEach
     void setUp() {
-        주문테이블 = createOrderTable(1L, 2, false);
+        치킨주문테이블 = createOrderTable(1L, 2, false);
+        피자주문테이블 = createOrderTable(2L, 2, false);
     }
 
     @DisplayName("초기화 테스트")
     @Test
     void from() {
-        TableGroup tableGroup = TableGroup.from(Lists.newArrayList(주문테이블));
+        TableGroup tableGroup = TableGroup.from(OrderTables.from(Lists.newArrayList(치킨주문테이블, 피자주문테이블))
+                , Lists.newArrayList(치킨주문테이블.id(), 피자주문테이블.id()));
         assertThat(tableGroup).isEqualTo(tableGroup);
     }
 }

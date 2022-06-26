@@ -99,7 +99,7 @@ class MenuServiceTest {
         given(menuGroupService.findMenuGroup(한마리메뉴.id())).willReturn(한마리메뉴);
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuService.create(menuRequest))
-                .withMessage("금액은 " + Price.MIN + "원 이하가 될 수 없습니다.");
+                .withMessage("금액은 " + Price.MIN + "원 미만이 될 수 없습니다.");
     }
 
     @DisplayName("메뉴가 갖는 상품들 각각의 가격과 수량을 곱해서 더한 총 금액이 메뉴 가격보다 낮은 경우 테스트")

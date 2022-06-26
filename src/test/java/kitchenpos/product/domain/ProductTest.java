@@ -29,6 +29,6 @@ class ProductTest {
     void ofWithUnderMin() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> Product.from(1L, "양념", BigDecimal.valueOf(-100)))
-                .withMessage("금액은 " + Price.MIN + "원 이하가 될 수 없습니다.");
+                .withMessage("금액은 " + Price.MIN + "원 미만이 될 수 없습니다.");
     }
 }

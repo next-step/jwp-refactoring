@@ -30,7 +30,7 @@ class PriceTest {
     void ofWithUnderMin() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> Price.from(BigDecimal.valueOf(-100)))
-                .withMessage("금액은 " + Price.MIN + "원 이하가 될 수 없습니다.");
+                .withMessage("금액은 " + Price.MIN + "원 미만이 될 수 없습니다.");
     }
 
     @DisplayName("금액 끼리는 더할 수 있다.")

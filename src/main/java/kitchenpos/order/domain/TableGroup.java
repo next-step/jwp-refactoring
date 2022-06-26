@@ -25,13 +25,17 @@ public class TableGroup {
     protected TableGroup() {
     }
 
-    private TableGroup(List<OrderTable> orderTables) {
+    private TableGroup(OrderTables orderTables, List<Long> orderTableIds) {
+        validateOrderTableIds(orderTableIds);
+        validateOrderTablesSize(orderTables, orderTableIds.size());
+        orderTables.addTableGroup(this);
+        orderTables.reserve();
         this.createdDate = LocalDateTime.now();
-        this.orderTables = OrderTables.from(orderTables);
+        this.orderTables = orderTables;
     }
 
-    public static TableGroup from(List<OrderTable> orderTables) {
-        return new TableGroup(orderTables);
+    public static TableGroup from(OrderTables orderTables, List<Long> orderTableIds) {
+        return new TableGroup(orderTables, orderTableIds);
     }
 
     public Long id() {
@@ -46,13 +50,6 @@ public class TableGroup {
         return createdDate;
     }
 
-    public void addOrderTables(final OrderTables orderTables, List<Long> orderTableIds) {
-        validateOrderTableIds(orderTableIds);
-        validateOrderTablesSize(orderTables, orderTableIds.size());
-        orderTables.addTableGroup(this);
-        orderTables.reserve();
-        this.orderTables = orderTables;
-    }
 
     private void validateOrderTableIds(List<Long> orderTableIds) {
         if (CollectionUtils.isEmpty(orderTableIds) || orderTableIds.size() < ORDER_TABLE_REQUEST_MIN) {

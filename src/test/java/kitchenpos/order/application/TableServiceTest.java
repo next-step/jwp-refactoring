@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
+import kitchenpos.order.domain.OrderTables;
 import kitchenpos.order.domain.TableGroup;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
@@ -34,14 +35,16 @@ class TableServiceTest {
     private OrderTableRepository orderTableRepository;
     @InjectMocks
     private TableService tableService;
-
     private TableGroup 단체지정;
     private OrderTable 주문테이블;
+    private OrderTable 치킨주문테이블;
+    private OrderTable 피자주문테이블;
 
     @BeforeEach
     void setUp() {
         주문테이블 = createOrderTable(1L, 2, false);
-        단체지정 = createTableGroup(Lists.newArrayList(주문테이블));
+        단체지정 = createTableGroup(OrderTables.from(Lists.newArrayList(치킨주문테이블, 피자주문테이블)),
+                Lists.newArrayList(치킨주문테이블.id(), 피자주문테이블.id()));
     }
 
     @DisplayName("주문테이블 생성 테스트")
