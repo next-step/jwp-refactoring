@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional(readOnly = true)
 public class MenuGroupService {
     private final MenuGroupRepository menuGroupRepository;
 
@@ -20,10 +19,12 @@ public class MenuGroupService {
         return this.menuGroupRepository.save(menuGroup);
     }
 
+    @Transactional(readOnly = true)
     public List<MenuGroup> list() {
         return this.menuGroupRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public boolean existsMenuGroup(Long menuGroupId) {
         return menuGroupRepository.existsById(menuGroupId);
     }

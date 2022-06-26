@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional(readOnly = true)
 public class OrderService {
     private final OrderRepository orderRepository;
     private final MenuService menuService;
@@ -45,6 +44,7 @@ public class OrderService {
         return OrderResponse.of(order);
     }
 
+    @Transactional(readOnly = true)
     public List<OrderResponse> list() {
         final List<Order> orders = orderRepository.findAll();
 
@@ -62,14 +62,15 @@ public class OrderService {
         return OrderResponse.of(order);
     }
 
+    @Transactional(readOnly = true)
     public boolean existsUnCompleteStatusByOrderTableIdIn(List<Long> orderTableIds) {
         return orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, STARTED_ORDER_READY_STATUS);
     }
 
+    @Transactional(readOnly = true)
     public boolean existsUnCompleteStatusByOrderTableId(Long orderTableId) {
         return orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId, STARTED_ORDER_READY_STATUS);
     }
-
 
     private List<OrderLineItem> convertOrderLineItemEntity(List<OrderLineItemRequest> orderLineItemRequests) {
         List<OrderLineItem> orderLineItems = new ArrayList<>();

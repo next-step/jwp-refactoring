@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional(readOnly = true)
 public class ProductService {
 
     private final ProductRepository productRepository;
@@ -27,6 +26,7 @@ public class ProductService {
         return ProductResponse.of(product);
     }
 
+    @Transactional(readOnly = true)
     public List<ProductResponse> list() {
         List<Product> products = productRepository.findAll();
         return products.stream()
@@ -34,6 +34,7 @@ public class ProductService {
             .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public Product findProductById(Long id) {
         return productRepository.findById(id).orElseThrow(IllegalArgumentException::new);
     }

@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional(readOnly = true)
 public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupService menuGroupService;
@@ -49,6 +48,7 @@ public class MenuService {
         return MenuResponse.of(menu);
     }
 
+    @Transactional(readOnly = true)
     public List<MenuResponse> list() {
         List<Menu> menus = menuRepository.findAll();
 
@@ -57,6 +57,7 @@ public class MenuService {
             .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public Menu findMenuById(Long menuId) {
         return menuRepository.findById(menuId)
             .orElseThrow(IllegalArgumentException::new);

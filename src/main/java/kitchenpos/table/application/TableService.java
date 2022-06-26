@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional(readOnly = true)
 public class TableService {
     private final OrderService orderService;
     private final OrderTableRepository orderTableRepository;
@@ -31,6 +30,7 @@ public class TableService {
         return OrderTableResponse.of(orderTable);
     }
 
+    @Transactional(readOnly = true)
     public List<OrderTableResponse> list() {
         List<OrderTable> orderTables = orderTableRepository.findAll();
         return orderTables.stream()
@@ -56,10 +56,12 @@ public class TableService {
         return OrderTableResponse.of(orderTable);
     }
 
+    @Transactional(readOnly = true)
     public List<OrderTable> findAllByTableGroupId(Long tableGroupId) {
         return orderTableRepository.findAllByTableGroupId(tableGroupId);
     }
 
+    @Transactional(readOnly = true)
     public List<OrderTable> findAllByIdIn(List<Long> orderTableIds) {
         return orderTableRepository.findAllByIdIn(orderTableIds);
     }
