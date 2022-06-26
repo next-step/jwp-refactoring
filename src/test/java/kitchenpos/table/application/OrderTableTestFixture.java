@@ -8,28 +8,28 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.util.dto.SaveMenuDto;
 import org.springframework.stereotype.Component;
 
 @Component
 public class OrderTableTestFixture {
 
-    private final MenuTestFixture menuServiceTestSupport;
     private final OrderRepository orderRepository;
+    private final MenuTestFixture menuTestFixture;
 
-    public OrderTableTestFixture(MenuTestFixture menuServiceTestSupport,
-        OrderRepository orderRepository) {
-        this.menuServiceTestSupport = menuServiceTestSupport;
+    public OrderTableTestFixture(OrderRepository orderRepository, MenuTestFixture menuTestFixture) {
         this.orderRepository = orderRepository;
+        this.menuTestFixture = menuTestFixture;
     }
 
     @Transactional
-    public OrderTable 후라이드_양념_세트_주문하기(OrderTable orderTable) {
-        Menu 후라이드_양념_세트 = menuServiceTestSupport.후라이드_양념_세트_가져오기();
-        OrderLineItem 후라이드_양념_세트_주문 = new OrderLineItem(후라이드_양념_세트.getId(), 1);
+    public OrderTable 메뉴_만들고_주문하기(SaveMenuDto saveMenuDto, int quantity, OrderTable orderTable) {
+        Menu menu = menuTestFixture.메뉴_만들기(saveMenuDto);
+        OrderLineItem orderLineItem = new OrderLineItem(menu.getId(), quantity);
 
-        Order 주문 = new Order(orderTable.getId(), Collections.singletonList(후라이드_양념_세트_주문));
+        Order order = new Order(orderTable.getId(), Collections.singletonList(orderLineItem));
 
-        orderRepository.save(주문);
+        orderRepository.save(order);
         return orderTable;
     }
 

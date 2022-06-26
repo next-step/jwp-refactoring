@@ -3,15 +3,20 @@ package kitchenpos.table.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.ServiceTest;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.util.dto.SaveMenuDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -80,10 +85,15 @@ class TableServiceTest extends ServiceTest {
     @Test
     @DisplayName("주문 상태가 식사중이거나 조리중인 테이블이 있다면 빈 상태를 바꿀 수 없다.")
     void changeEmptyFail_existOrderCookingOrMeal() {
-        OrderTable orderTable = orderTableTestFixture.후라이드_양념_세트_주문하기(this.orderTable);
+        MenuProduct menuProduct1 = new MenuProduct(new Product("후라이드", BigDecimal.valueOf(16000)), 1);
+        MenuProduct menuProduct2 = new MenuProduct(new Product("양념치킨", BigDecimal.valueOf(16000)), 1);
+        List<MenuProduct> menuProducts = Arrays.asList(menuProduct1, menuProduct2);
+
+        SaveMenuDto saveMenuDto = new SaveMenuDto(menuProducts, new MenuGroup("메뉴 그룹"), "메뉴", 32000);
+        orderTableTestFixture.메뉴_만들고_주문하기(saveMenuDto, 1, orderTable);
 
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> this.tableService.changeEmpty(orderTable.getId(), new OrderTableRequest(true)));
+            .isThrownBy(() -> this.tableService.changeEmpty(this.orderTable.getId(), new OrderTableRequest(true)));
     }
 
     @Test

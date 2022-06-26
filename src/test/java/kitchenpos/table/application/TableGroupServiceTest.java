@@ -4,15 +4,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import kitchenpos.ServiceTest;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.util.dto.SaveMenuDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -89,7 +95,13 @@ class TableGroupServiceTest extends ServiceTest {
     @DisplayName("테이블 중 식사중이거나 조리중인 테이블이 있다면 해제할 수 없다.")
     void ungroupFail() {
         TableGroupResponse tableGroupResponse = this.tableGroupService.create(new TableGroupRequest(OrderTableRequest.of(orderTable1, orderTable2)));
-        orderTableTestFixture.후라이드_양념_세트_주문하기(orderTable1);
+
+        MenuProduct menuProduct1 = new MenuProduct(new Product("후라이드", BigDecimal.valueOf(16000)), 1);
+        MenuProduct menuProduct2 = new MenuProduct(new Product("양념치킨", BigDecimal.valueOf(16000)), 1);
+        List<MenuProduct> menuProducts = Arrays.asList(menuProduct1, menuProduct2);
+
+        SaveMenuDto saveMenuDto = new SaveMenuDto(menuProducts, new MenuGroup("메뉴 그룹"), "메뉴", 32000);
+        orderTableTestFixture.메뉴_만들고_주문하기(saveMenuDto, 1, orderTable1);
 
         assertThatIllegalArgumentException()
             .isThrownBy(() -> tableGroupService.ungroup(tableGroupResponse.getId()));
