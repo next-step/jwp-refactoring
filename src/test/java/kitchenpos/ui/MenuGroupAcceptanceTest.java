@@ -13,7 +13,7 @@ import kitchenpos.helper.AcceptanceAssertionHelper.MenuGroupAssertionHelper;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
 
-@Sql(scripts = {"/test/db/cleanUp.sql"})
+
 public class MenuGroupAcceptanceTest extends AcceptanceTest {
 
     /**

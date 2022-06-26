@@ -33,7 +33,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
 
-@Sql(scripts = {"/test/db/cleanUp.sql"})
+
 class TableGroupAcceptanceTest extends AcceptanceTest {
 
     private OrderTable 빈테이블_1;

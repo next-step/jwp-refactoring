@@ -16,7 +16,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
 
-@Sql(scripts = {"/test/db/cleanUp.sql"})
+
 class ProductAcceptanceTest extends AcceptanceTest {
     /**
      * when : 상품 정보를 등록하면

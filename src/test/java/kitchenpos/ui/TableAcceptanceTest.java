@@ -33,7 +33,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
 
-@Sql(scripts = {"/test/db/cleanUp.sql"})
+
 class TableAcceptanceTest extends AcceptanceTest {
     public static final String 비어있음 = "true";
     public static final String 사용중 = "false";

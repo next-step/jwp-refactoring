@@ -28,6 +28,8 @@ dependencies {
 
     //test - RestAssured
     testImplementation 'io.rest-assured:rest-assured:3.3.0'
+
+    implementation('com.google.guava:guava:29.0-jre')
 }
 
 test {
