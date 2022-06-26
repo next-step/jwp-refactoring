@@ -4,7 +4,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.Acceptance.AcceptanceTest;
 import kitchenpos.Acceptance.utils.RestAssuredRequest;
-import kitchenpos.menu.domain.Price;
+import kitchenpos.common.domain.Price;
 import kitchenpos.product.domain.Product;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.DisplayName;

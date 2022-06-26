@@ -5,7 +5,7 @@ import kitchenpos.menu.dao.MenuGroupRepository;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.Menus;
-import kitchenpos.menu.domain.Price;
+import kitchenpos.common.domain.Price;
 import kitchenpos.menu.dto.MenuCreateRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.product.ProductGenerator;
@@ -22,13 +22,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static kitchenpos.common.domain.PriceTest.가격_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 @SpringBootTest
 @ActiveProfiles("test")
 class MenuServiceTest {
-    private static final int PRODUCT_DEFAULT_PRICE = 1_000;
+    private static final Price PRODUCT_DEFAULT_PRICE = 가격_생성(1_000);
 
     @Autowired
     private MenuService menuService;

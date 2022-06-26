@@ -1,4 +1,6 @@
-package kitchenpos.menu.domain;
+package kitchenpos.common.domain;
+
+import kitchenpos.menu.domain.Quantity;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -23,8 +25,10 @@ public class Price {
         return new Price(this.value.add(target.value));
     }
 
-    public Price multiply(BigDecimal value) {
-        return new Price(this.value.multiply(value));
+    public Price multiplyByQuantity(Quantity value) {
+        BigDecimal multiplyValue = new BigDecimal(value.getValue());
+
+        return new Price(this.value.multiply(multiplyValue));
     }
 
     public boolean isNotSame(Price target) {

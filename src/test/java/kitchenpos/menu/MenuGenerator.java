@@ -3,6 +3,7 @@ package kitchenpos.menu;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.Acceptance.utils.RestAssuredRequest;
+import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuCreateRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
@@ -25,7 +26,7 @@ public class MenuGenerator {
         return new MenuGroup(name);
     }
 
-    public static MenuProduct 메뉴_상품_생성(Product product, Long quantity) {
+    public static MenuProduct 메뉴_상품_생성(Product product, Quantity quantity) {
         return new MenuProduct(null, product, quantity);
     }
 
@@ -41,7 +42,7 @@ public class MenuGenerator {
         return new MenuProductRequest(productId, quantity);
     }
 
-    public static ExtractableResponse<Response> 메뉴_생성_API(
+    public static ExtractableResponse<Response> 메뉴_생성_API_호출(
             String name, int menuPrice, Long menuGroupId, List<MenuProductRequest> menuProducts
     ) {
         MenuCreateRequest body = 메뉴_생성_요청(name, menuPrice, menuGroupId, menuProducts);
@@ -49,7 +50,7 @@ public class MenuGenerator {
         return RestAssuredRequest.postRequest(PATH, Collections.emptyMap(), body);
     }
 
-    public static ExtractableResponse<Response> 메뉴_목록_조회_API() {
+    public static ExtractableResponse<Response> 메뉴_목록_조회_API_호출() {
         return RestAssuredRequest.getRequest(PATH, Collections.emptyMap());
     }
 }
