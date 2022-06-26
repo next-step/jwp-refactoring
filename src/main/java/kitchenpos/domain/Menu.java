@@ -26,6 +26,15 @@ public class Menu {
     @OneToMany(mappedBy = "menu", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private List<MenuProduct> menuProducts = new LinkedList<>();
 
+    protected Menu() {
+    }
+
+    public Menu(String name, BigDecimal price, Long menuGroupId) {
+        this.name = name;
+        this.price = price;
+        this.menuGroupId = menuGroupId;
+    }
+
     public Long getId() {
         return id;
     }
