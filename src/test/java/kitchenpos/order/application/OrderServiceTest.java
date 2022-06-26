@@ -4,10 +4,7 @@ package kitchenpos.order.application;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
@@ -46,10 +43,10 @@ public class OrderServiceTest {
     OrderService orderService;
 
     @Mock
-    private OrderTableRepository orderTableRepository;
+    OrderValidator orderValidator;
 
     @Mock
-    private MenuRepository menuRepository;
+    private OrderTableRepository orderTableRepository;
 
     @Mock
     private OrderRepository orderRepository;
@@ -100,7 +97,6 @@ public class OrderServiceTest {
         // given
         OrderRequest order = 주문_등록_요청(빈테이블.getId(),
                 Arrays.asList(주문_항목_등록_요청(추천메뉴.getId(), 1)));
-        given(menuRepository.countByIdIn(any())).willReturn(1);
 
         // when-then
         assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
@@ -112,7 +108,6 @@ public class OrderServiceTest {
         // given
         OrderRequest order = 주문_등록_요청(빈테이블.getId(),
                 Arrays.asList(주문_항목_등록_요청(추천메뉴.getId(), 1)));
-        given(menuRepository.countByIdIn(any())).willReturn(1);
         given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(빈테이블));
 
         // when-then
@@ -126,7 +121,6 @@ public class OrderServiceTest {
         OrderRequest order = 주문_등록_요청(빈테이블.getId(),
                 Arrays.asList(주문_항목_등록_요청(추천메뉴.getId(), 1)));
 
-        given(menuRepository.countByIdIn(any())).willReturn(1);
         given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(테이블));
         given(orderRepository.save(any())).willReturn(주문_등록(1L, 빈테이블.getId(), 주문항목));
 
