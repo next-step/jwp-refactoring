@@ -34,18 +34,19 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     @DisplayName("테이블 그룹과 주문 정보 간에 관계를 해지한다.")
     @Test
     void ungroup() {
+        // given
+        TableGroup 등록된_테이블_그룹 = 테이블_그룹_가져옴(테이블_그룹_등록되어_있음(테스트_테이블_그룹_생성()));
+
+        // when
+        ExtractableResponse<Response> 테이블_그룹_해지 = 테이블_그룹_해지_요청(등록된_테이블_그룹.getId());
+
+        // then
 
     }
 
     private static TableGroup 테스트_테이블_그룹_생성() {
-        Menu 등록된_메뉴 = 메뉴_가져옴(메뉴_등록되어_있음(테스트_메뉴_생성()));
-        OrderLineItem 생성된_주문_항목 = new OrderLineItem(등록된_메뉴.getId(), 1);
-
         OrderTable 등록된_주문_테이블1 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, true));
         OrderTable 등록된_주문_테이블2 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(5, true));
-
-        주문_등록되어_있음(new Order(등록된_주문_테이블1.getId(), Arrays.asList(생성된_주문_항목)));
-        주문_등록되어_있음(new Order(등록된_주문_테이블2.getId(), Arrays.asList(생성된_주문_항목)));
 
         return new TableGroup(Arrays.asList(등록된_주문_테이블1, 등록된_주문_테이블2));
     }
@@ -76,5 +77,9 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
                 .when().delete("/api/table-groups/{tableGroupId}", tableGroupId)
                 .then().log().all()
                 .extract();
+    }
+
+    public static TableGroup 테이블_그룹_가져옴(ExtractableResponse<Response> response) {
+        return response.as(TableGroup.class);
     }
 }
