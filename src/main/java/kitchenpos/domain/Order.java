@@ -73,6 +73,10 @@ public class Order {
         }
     }
 
+    public boolean checkOrderComplete() {
+        return orderStatus.equals(OrderStatus.COMPLETION);
+    }
+
     public Long getId() {
         return id;
     }
@@ -93,7 +97,10 @@ public class Order {
         return orderStatus;
     }
 
-    public void setOrderStatus(OrderStatus orderStatus) {
+    public void changeOrderStatus(OrderStatus orderStatus) {
+        if (checkOrderComplete()) {
+            throw new IllegalArgumentException("주문 완료 상태입니다.");
+        }
         this.orderStatus = orderStatus;
     }
 

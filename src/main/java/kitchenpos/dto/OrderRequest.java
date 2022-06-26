@@ -7,7 +7,13 @@ import kitchenpos.domain.OrderLineItem;
 
 public class OrderRequest {
     private Long orderTableId;
+    private String orderStatus;
     private List<OrderLineItemRequest> orderLineItems;
+
+    protected OrderRequest(Long orderTableId, String orderStatus) {
+        this.orderTableId = orderTableId;
+        this.orderStatus = orderStatus;
+    }
 
     protected OrderRequest(Long orderTableId, List<OrderLineItemRequest> orderLineItems) {
         this.orderTableId = orderTableId;
@@ -15,6 +21,10 @@ public class OrderRequest {
     }
 
     protected OrderRequest() {
+    }
+
+    public static OrderRequest of(Long orderTableId, String orderStatus) {
+        return new OrderRequest(orderTableId, orderStatus);
     }
 
     public static OrderRequest of(Long orderTableId, List<OrderLineItemRequest> orderLineItems) {
@@ -29,6 +39,10 @@ public class OrderRequest {
         return orderLineItems.stream().
                 map(OrderLineItemRequest::toOrderLineItem).
                 collect(Collectors.toList());
+    }
+
+    public String getOrderStatus() {
+        return orderStatus;
     }
 
     public Long getOrderTableId() {
