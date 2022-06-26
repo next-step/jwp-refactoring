@@ -9,11 +9,10 @@ public class OrderResponse {
     private OrderTableResponse orderTable;
     private String orderStatus;
     private LocalDateTime orderedTime;
-    // TODO : Menu DTO 개발 후 OrderLineItemResponse 개발
-    private List<OrderLineItem> orderLineItems;
+    private List<OrderLineItemResponse> orderLineItems;
 
     public OrderResponse(Long id, OrderTableResponse orderTable, String orderStatus, LocalDateTime orderedTime,
-                         List<OrderLineItem> orderLineItems) {
+                         List<OrderLineItemResponse> orderLineItems) {
         this.id = id;
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
@@ -37,7 +36,7 @@ public class OrderResponse {
         return orderedTime;
     }
 
-    public List<OrderLineItem> getOrderLineItems() {
+    public List<OrderLineItemResponse> getOrderLineItems() {
         return orderLineItems;
     }
 }

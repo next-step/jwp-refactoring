@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,6 +21,7 @@ import javax.persistence.Table;
 import kitchenpos.exception.EmptyTableException;
 import kitchenpos.exception.InvalidOrderStatusException;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.order.dto.OrderLineItemResponse;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.table.domain.OrderTable;
@@ -96,7 +98,10 @@ public class Orders {
 
     public OrderResponse toOrderResponse() {
         final OrderTableResponse orderTableResponse = this.orderTable.toOrderTableResponse();
-        return new OrderResponse(this.id, orderTableResponse, this.orderStatus.name(), this.orderedTime, this.orderLineItems);
+        final List<OrderLineItemResponse> orderLineItemResponses = this.orderLineItems.stream()
+                .map(OrderLineItem::toOrderLineItemResponse)
+                .collect(Collectors.toList());
+        return new OrderResponse(this.id, orderTableResponse, this.orderStatus.name(), this.orderedTime, orderLineItemResponses);
     }
 
     private void validateOrderTable(OrderTable orderTable) {

@@ -12,16 +12,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.order.dto.OrderLineItemRequest;
-import kitchenpos.order.dto.OrderRequest;
-import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.Orders;
-import kitchenpos.order.repository.OrderLineItemRepository;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.repository.OrderTableRepository;
@@ -114,7 +113,8 @@ class OrderServiceTest {
     void searchOrders() {
         // given
         final OrderTable orderTable = new OrderTable(1L, null, 5, false);
-        final Orders order = new Orders(1L, orderTable, OrderStatus.COOKING, LocalDateTime.now(), null);
+        final OrderLineItem orderLineItem = new OrderLineItem(1L, null, 1L, 1L);
+        final Orders order = new Orders(1L, orderTable, OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(orderLineItem));
         when(orderRepository.findAll()).thenReturn(Arrays.asList(order));
         // when
         final List<OrderResponse> actual = orderService.list();
@@ -127,7 +127,8 @@ class OrderServiceTest {
     void changeOrderStatus() {
         // given
         final OrderTable orderTable = new OrderTable(1L, null, 5, false);
-        final Orders order = new Orders(1L, orderTable, OrderStatus.COOKING, LocalDateTime.now(), null);
+        final OrderLineItem orderLineItem = new OrderLineItem(1L, null, 1L, 1L);
+        final Orders order = new Orders(1L, orderTable, OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(orderLineItem));
         when(orderRepository.findById(any())).thenReturn(Optional.of(order));
         // when
         final OrderResponse actual = orderService.changeOrderStatus(1L, new OrderStatusRequest(OrderStatus.COOKING));

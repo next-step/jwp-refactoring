@@ -59,7 +59,8 @@ class OrderAcceptanceTest extends AcceptanceTest {
         final OrderTableResponse 주문_테이블_결과 = new OrderTableResponse(1L, null, 3, false);
         final OrderTable orderTable = new OrderTable(1L, null, 5, false);
         final Orders order = new Orders(1L, orderTable, OrderStatus.COOKING, LocalDateTime.now(), null);
-        final OrderResponse 예상된_주문_결과 = new OrderResponse(1L, 주문_테이블_결과, OrderStatus.COOKING.name(), null, Arrays.asList(new OrderLineItem(1L, order, 1L, 2L)));
+        final OrderLineItem orderLineItem = new OrderLineItem(1L, order, 1L, 2L);
+        final OrderResponse 예상된_주문_결과 = new OrderResponse(1L, 주문_테이블_결과, OrderStatus.COOKING.name(), null, Arrays.asList(orderLineItem.toOrderLineItemResponse()));
 
         // when
         final ExtractableResponse<Response> 주문_요청_결과 = 주문_요청(1L, 1L, 1L);

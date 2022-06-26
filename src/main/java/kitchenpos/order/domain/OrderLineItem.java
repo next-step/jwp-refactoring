@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import kitchenpos.exception.InvalidQuantityException;
+import kitchenpos.order.dto.OrderLineItemResponse;
 
 @Entity
 @Table(name = "order_line_item")
@@ -51,6 +52,10 @@ public class OrderLineItem {
         if (quantity < MIN_QUANTITY) {
             throw new InvalidQuantityException();
         }
+    }
+
+    public OrderLineItemResponse toOrderLineItemResponse() {
+        return new OrderLineItemResponse(this.seq, this.menuId, this.quantity);
     }
 
     @Override
