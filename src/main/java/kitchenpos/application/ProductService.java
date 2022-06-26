@@ -21,7 +21,6 @@ public class ProductService {
     @Transactional
     public ProductResponse create(final ProductRequest productRequest) {
         Product product = productRequest.toProduct();
-        product.validate();
         Product saveProduct = saveProduct(product);
 
         return ProductResponse.of(saveProduct);

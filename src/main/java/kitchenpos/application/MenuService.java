@@ -35,7 +35,6 @@ public class MenuService {
         MenuGroup menuGroup = findMenuGroup(menuRequest.getMenuGroupId());
 
         Menu menu = menuRequest.toMenu(menuGroup);
-        menu.validateForCreate();
         menu.bindMenuProducts();
 
         List<Long> productIds = menu.getMenuProducts().findProductIds();

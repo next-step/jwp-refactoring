@@ -12,28 +12,19 @@ class ProductTest {
     @DisplayName("유효성 검사 테스트")
     @Test
     void validate() {
-        // given
-        Product product = new Product(1L, "상품", BigDecimal.valueOf(0));
-
         // when && then
-        product.validate();
+        new Product(1L, "상품", BigDecimal.valueOf(0));
     }
 
     @DisplayName("유효성 검사 테스트 - price 값이 없거나 0 미만 일 경우 에러")
     @Test
     void validate_exception() {
-        // given
-        Product product1 = new Product(1L, "상품", null);
-
         // when && then
-        assertThatThrownBy(product1::validate)
+        assertThatThrownBy(() -> new Product(1L, "상품", null))
                 .isInstanceOf(IllegalArgumentException.class);
 
-        // given
-        Product product2 = new Product(1L, "상품", BigDecimal.valueOf(-1));
-
         // when && then
-        assertThatThrownBy(product2::validate)
+        assertThatThrownBy(() -> new Product(1L, "상품", BigDecimal.valueOf(-1)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

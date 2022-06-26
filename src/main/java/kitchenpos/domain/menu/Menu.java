@@ -42,9 +42,10 @@ public class Menu {
         this.price = price;
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
+        validateForCreate();
     }
 
-    public void validateForCreate() {
+    private void validateForCreate() {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException();
         }

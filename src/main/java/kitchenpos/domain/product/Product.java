@@ -27,9 +27,10 @@ public class Product {
         this.id = id;
         this.name = new ProductName(name);
         this.price = new ProductPrice(price);
+        validatePrice();
     }
 
-    public void validate() {
+    private void validatePrice() {
         price.minimumCheck();
     }
 

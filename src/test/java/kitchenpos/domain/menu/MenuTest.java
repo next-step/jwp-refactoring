@@ -14,18 +14,12 @@ class MenuTest {
     @DisplayName("price가 null이거나 0보다 작을 경우 예외 발생")
     @Test
     void validateForCreate() {
-        // given
-        Menu menu1 = new Menu(1L, "test", null, new MenuGroup(), new MenuProducts());
-
         // when && then
-        assertThatThrownBy(() -> menu1.validateForCreate())
+        assertThatThrownBy(() -> new Menu(1L, "test", null, new MenuGroup(), new MenuProducts()))
                 .isInstanceOf(IllegalArgumentException.class);
 
-        // given
-        Menu menu2 = new Menu(1L, "test", BigDecimal.valueOf(-1), new MenuGroup(), new MenuProducts());
-
         // when && then
-        assertThatThrownBy(() -> menu2.validateForCreate())
+        assertThatThrownBy(() -> new Menu(1L, "test", BigDecimal.valueOf(-1), new MenuGroup(), new MenuProducts()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }
