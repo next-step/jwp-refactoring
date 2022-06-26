@@ -20,6 +20,10 @@ public class MenuProducts {
     }
 
     public void addMenuProducts(List<MenuProduct> menuProducts) {
+        if (menuProducts == null || menuProducts.isEmpty()) {
+            throw new IllegalArgumentException("메뉴에 사용할 상품이 존재하지 않습니다.");
+        }
+
         menuProducts.forEach(this::addMenuProduct);
     }
 
@@ -29,14 +33,11 @@ public class MenuProducts {
             .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    private void validateIfNull(List<MenuProduct> menuProducts) {
-        if (menuProducts == null || menuProducts.isEmpty()) {
+    private void addMenuProduct(MenuProduct menuProduct) {
+        if (menuProduct == null) {
             throw new IllegalArgumentException("메뉴에 사용할 상품이 존재하지 않습니다.");
         }
-    }
 
-    private void addMenuProduct(MenuProduct menuProduct) {
-        validateIfNull(Collections.singletonList(menuProduct));
         menuProducts.add(menuProduct);
     }
 
