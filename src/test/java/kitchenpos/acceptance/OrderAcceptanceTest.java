@@ -33,7 +33,7 @@ import org.springframework.http.MediaType;
 @DisplayName("주문 관련 인수 테스트")
 public class OrderAcceptanceTest extends AcceptanceTest {
 
-    private static final String ORDER_URL = "/v2/api/orders/";
+    private static final String ORDER_URL = "/api/orders/";
     private ProductResponse 짬뽕;
     private MenuGroupResponse 중식;
     private MenuResponse 중식_메뉴;
