@@ -37,11 +37,14 @@ class TableServiceTest {
     private TableService tableService;
     private TableGroup 단체지정;
     private OrderTable 주문테이블;
-    private OrderTable 치킨주문테이블;
-    private OrderTable 피자주문테이블;
+
+    TableServiceTest() {
+    }
 
     @BeforeEach
     void setUp() {
+        OrderTable 치킨주문테이블 = createOrderTable(1L, 2, true);
+        OrderTable 피자주문테이블 = createOrderTable(2L, 3, true);
         주문테이블 = createOrderTable(1L, 2, false);
         단체지정 = createTableGroup(OrderTables.from(Lists.newArrayList(치킨주문테이블, 피자주문테이블)),
                 Lists.newArrayList(치킨주문테이블.id(), 피자주문테이블.id()));

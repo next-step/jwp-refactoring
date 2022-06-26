@@ -33,28 +33,20 @@ public class Menu {
     protected Menu() {
     }
 
-    private Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup) {
+    private Menu(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        validateMenuProducts(Price.from(price), menuProducts);
         validateMenuGroup(menuGroup);
-        this.id = id;
+        menuProducts.addMenu(this);
         this.name = Name.from(name);
         this.price = Price.from(price);
         this.menuGroup = menuGroup;
+        this.menuProducts = menuProducts;
     }
 
-    private Menu(String name, BigDecimal price, MenuGroup menuGroup) {
-        validateMenuGroup(menuGroup);
-        this.name = Name.from(name);
-        this.price = Price.from(price);
-        this.menuGroup = menuGroup;
+    public static Menu from(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        return new Menu(name, price, menuGroup, menuProducts);
     }
 
-    public static Menu from(Long id, String name, BigDecimal price, MenuGroup menuGroup) {
-        return new Menu(id, name, price, menuGroup);
-    }
-
-    public static Menu from(String name, BigDecimal price, MenuGroup menuGroup) {
-        return new Menu(name, price, menuGroup);
-    }
     private static void validateMenuGroup(MenuGroup menuGroup) {
         if (Objects.isNull(menuGroup)) {
             throw new IllegalArgumentException("메뉴그룹이 있어야 합니다.");
@@ -85,13 +77,7 @@ public class Menu {
         return menuProducts.readOnlyMenuProducts();
     }
 
-    public void addMenuProducts(MenuProducts menuProducts) {
-        validateMenuProducts(menuProducts);
-        menuProducts.addMenu(this);
-        this.menuProducts = menuProducts;
-    }
-
-    private void validateMenuProducts(MenuProducts menuProducts) {
+    private void validateMenuProducts(Price price, MenuProducts menuProducts) {
         if (price.compareTo(menuProducts.totalPrice()) > 0) {
             throw new IllegalArgumentException("메뉴 가격은 상품의 총 금액을 넘길 수 없습니다.");
         }

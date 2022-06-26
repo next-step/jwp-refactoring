@@ -14,8 +14,8 @@ class TableGroupTest {
 
     @BeforeEach
     void setUp() {
-        치킨주문테이블 = createOrderTable(1L, 2, false);
-        피자주문테이블 = createOrderTable(2L, 2, false);
+        치킨주문테이블 = createOrderTable(1L, 2, true);
+        피자주문테이블 = createOrderTable(2L, 2, true);
     }
 
     @DisplayName("초기화 테스트")

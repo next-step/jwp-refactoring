@@ -54,7 +54,10 @@ public class OrderLineItem {
         this.order = order;
     }
 
-    public long menuId() {
+    public Long menuId() {
+        if (this.menu == null) {
+            return null;
+        }
         return menu.id();
     }
 

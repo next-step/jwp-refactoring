@@ -56,10 +56,8 @@ class MenuServiceTest {
     void setUp() {
         양념 = createProduct(1L, "양념", BigDecimal.valueOf(20000L));
         한마리메뉴 = createMenuGroup(1L, "한마리메뉴");
-        양념치킨 = createMenu(1L, "양념치킨", BigDecimal.valueOf(40000L), 한마리메뉴);
         양념치킨상품 = createMenuProduct(양념, 2L);
-        양념치킨상품.addMenu(양념치킨);
-        양념치킨.addMenuProducts(MenuProducts.from(Lists.newArrayList(양념치킨상품)));
+        양념치킨 = createMenu("양념치킨", BigDecimal.valueOf(40000L), 한마리메뉴, MenuProducts.from(Lists.newArrayList(양념치킨상품)));
     }
 
     @DisplayName("메뉴 생성 테스트")
