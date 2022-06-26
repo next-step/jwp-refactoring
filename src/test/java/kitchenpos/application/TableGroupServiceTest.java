@@ -43,7 +43,6 @@ class TableGroupServiceTest extends ServiceTest {
     void before() {
         주문_테이블1 = orderTableRepository.save(OrderTableFixtureFactory.createByGuestNumberWithoutId( 2, true));
         주문_테이블2 = orderTableRepository.save(OrderTableFixtureFactory.createByGuestNumberWithoutId( 3, true));
-//        단체 = tableGroupRepository.save(new TableGroup(Arrays.asList(주문_테이블1, 주문_테이블2)));
     }
 
     @Test
