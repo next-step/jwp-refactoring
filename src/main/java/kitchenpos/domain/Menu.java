@@ -27,15 +27,22 @@ public class Menu {
     private MenuGroup menuGroup;
 
     @Embedded
-    private MenuProducts menuProducts = new MenuProducts();
+    private final MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {
     }
 
     private Menu(String name, BigDecimal price, MenuGroup menuGroup) {
+        validateMenuGroup(menuGroup);
         this.name = name;
         this.price = new Price(price);
         this.menuGroup = menuGroup;
+    }
+
+    private void validateMenuGroup(MenuGroup menuGroup) {
+        if (menuGroup == null) {
+            throw new IllegalArgumentException("메뉴 그룹이 필요합니다.");
+        }
     }
 
     public static Menu createMenu(
@@ -44,35 +51,14 @@ public class Menu {
             MenuGroup menuGroup,
             List<MenuProduct> menuProducts
     ) {
-        if (menuGroup == null) {
-            throw new IllegalArgumentException("메뉴 그룹이 필요합니다.");
-        }
-
-        validatePrice(price, menuProducts);
-
         Menu menu = new Menu(name, price, menuGroup);
-        for (MenuProduct menuProduct : menuProducts) {
-            menu.addMenuProduct(menuProduct);
-        }
+        menu.addMenuProducts(menuProducts);
 
         return menu;
     }
 
-    private static void validatePrice(BigDecimal menuPrice, List<MenuProduct> menuProducts) {
-        if (menuPrice.compareTo(totalPriceOf(menuProducts)) > 0) {
-            throw new IllegalArgumentException("메뉴 가격은 상품의 총 가격보다 클 수 없습니다.");
-        }
-    }
-
-    private static BigDecimal totalPriceOf(List<MenuProduct> menuProducts) {
-        return menuProducts.stream()
-                .map(menuProduct -> menuProduct.getPrice())
-                .reduce(BigDecimal.ZERO, (acc, price) -> acc.add(price));
-    }
-
-    public void addMenuProduct(MenuProduct menuProduct) {
-        menuProducts.add(menuProduct);
-        menuProduct.setMenu(this);
+    private void addMenuProducts(List<MenuProduct> menuProducts) {
+        this.menuProducts.addAll(this, menuProducts);
     }
 
     public Long getId() {
@@ -93,5 +79,9 @@ public class Menu {
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts.getElements();
+    }
+
+    public boolean hasPriceGreaterThan(BigDecimal totalPrice) {
+        return price.isGreaterThan(totalPrice);
     }
 }

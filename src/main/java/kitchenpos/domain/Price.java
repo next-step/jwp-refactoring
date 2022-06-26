@@ -31,4 +31,12 @@ public class Price {
     public BigDecimal getPrice(int quantity) {
         return value.multiply(BigDecimal.valueOf(quantity));
     }
+
+    public boolean isGreaterThan(BigDecimal val) {
+        if (value.compareTo(val) > 0) {
+            return true;
+        }
+
+        return false;
+    }
 }
