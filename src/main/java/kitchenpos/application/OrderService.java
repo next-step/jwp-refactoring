@@ -80,10 +80,6 @@ public class OrderService {
         return orderRepository.save(saveOrder);
     }
 
-    private OrderLineItem saveOrderLineItem(OrderLineItem orderLineItem) {
-        return orderLineItemRepository.save(orderLineItem);
-    }
-
     private long menuCountByIdIn(List<Long> menuIds) {
         return menuRepository.countByIdIn(menuIds);
     }

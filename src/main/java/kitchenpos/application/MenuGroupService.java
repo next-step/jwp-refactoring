@@ -34,11 +34,6 @@ public class MenuGroupService {
                 .collect(Collectors.toList());
     }
 
-    public MenuGroup findMenuGroup(Long menuGroupId) {
-        return menuGroupRepository.findById(menuGroupId)
-                .orElseThrow(NoSuchElementException::new);
-    }
-
     private MenuGroup saveMenuGroup(MenuGroup menuGroup) {
         return menuGroupRepository.save(menuGroup);
     }
