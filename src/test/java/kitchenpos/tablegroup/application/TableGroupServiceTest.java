@@ -138,8 +138,8 @@ public class TableGroupServiceTest {
     }
 
     public static TableGroup createTableGroupWithMappingWithOtherTableGroup() {
-        OrderTable orderTable1 = new OrderTable(1L, 1L, 3, false);
-        OrderTable orderTable2 = new OrderTable(2L, 1L,5, false);
+        OrderTable orderTable1 = new OrderTable(1L, 1L, 3, true);
+        OrderTable orderTable2 = new OrderTable(2L, 1L,5, true);
         return new TableGroup(1L, Arrays.asList(orderTable1, orderTable2));
     }
 }
