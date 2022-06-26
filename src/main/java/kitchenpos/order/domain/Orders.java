@@ -17,6 +17,9 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import kitchenpos.exception.EmptyTableException;
+import kitchenpos.exception.InvalidOrderStatusException;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.table.domain.OrderTable;
@@ -49,8 +52,17 @@ public class Orders {
     protected Orders() {
     }
 
+    public Orders(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
+        validateOrderTable(orderTable);
+        this.id = id;
+        this.orderTable = orderTable;
+        this.orderStatus = orderStatus;
+        this.orderedTime = orderedTime;
+    }
+
     public Orders(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
                   List<OrderLineItem> orderLineItems) {
+        validateOrderTable(orderTable);
         this.id = id;
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
@@ -58,29 +70,39 @@ public class Orders {
         this.orderLineItems = orderLineItems;
     }
 
-    public Long getId() {
-        return id;
+    public Orders(OrderTable orderTable) {
+        this(null, orderTable, OrderStatus.COOKING, null);
     }
 
-    public void setOrderLineItems(List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
+    public Long getId() {
+        return id;
     }
 
     public OrderTable getOrderTable() {
         return orderTable;
     }
 
-    public boolean isCompletion() {
-        return this.orderStatus == OrderStatus.COMPLETION;
-    }
-
     public void changeStatus(OrderStatus orderStatus) {
+        if (this.orderStatus == OrderStatus.COMPLETION) {
+            throw new InvalidOrderStatusException();
+        }
         this.orderStatus = orderStatus;
     }
 
-    public OrderResponse toOrderResponse(OrderTable orderTable) {
-        final OrderTableResponse orderTableResponse = orderTable.toOrderTableResponse();
+    public void addOrderMenu(Menu menu, Long quantity) {
+        final OrderLineItem orderLineItem = new OrderLineItem(this, menu.getId(), quantity);
+        this.orderLineItems.add(orderLineItem);
+    }
+
+    public OrderResponse toOrderResponse() {
+        final OrderTableResponse orderTableResponse = this.orderTable.toOrderTableResponse();
         return new OrderResponse(this.id, orderTableResponse, this.orderStatus.name(), this.orderedTime, this.orderLineItems);
+    }
+
+    private void validateOrderTable(OrderTable orderTable) {
+        if (orderTable.isEmpty()) {
+            throw new EmptyTableException();
+        }
     }
 
     @Override

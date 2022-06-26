@@ -9,10 +9,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import kitchenpos.exception.InvalidQuantityException;
 
 @Entity
 @Table(name = "order_line_item")
 public class OrderLineItem {
+    private static final Long MIN_QUANTITY = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,11 +33,24 @@ public class OrderLineItem {
     protected OrderLineItem(){
     }
 
+    public OrderLineItem(Orders order, Long menuId, Long quantity) {
+        validateQuantity(quantity);
+        this.order = order;
+        this.menuId = menuId;
+        this.quantity = quantity;
+    }
+
     public OrderLineItem(Long seq, Orders order, Long menuId, Long quantity) {
         this.seq = seq;
         this.order = order;
         this.menuId = menuId;
         this.quantity = quantity;
+    }
+
+    private void validateQuantity(Long quantity) {
+        if (quantity < MIN_QUANTITY) {
+            throw new InvalidQuantityException();
+        }
     }
 
     @Override

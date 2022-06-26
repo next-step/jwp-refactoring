@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
@@ -56,7 +57,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
     void createOrder() {
         // given
         final OrderTableResponse 주문_테이블_결과 = new OrderTableResponse(1L, null, 3, false);
-        final OrderTable orderTable = new OrderTable(1L, null, 5, true);
+        final OrderTable orderTable = new OrderTable(1L, null, 5, false);
         final Orders order = new Orders(1L, orderTable, OrderStatus.COOKING, LocalDateTime.now(), null);
         final OrderResponse 예상된_주문_결과 = new OrderResponse(1L, 주문_테이블_결과, OrderStatus.COOKING.name(), null, Arrays.asList(new OrderLineItem(1L, order, 1L, 2L)));
 
@@ -93,7 +94,8 @@ class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 주문_요청(Long 테이블_번호, Long 메뉴_번호, Long 갯수) {
-        return RestAssuredHelper.post(ORDER_URI, new OrderRequest(테이블_번호, Arrays.asList(메뉴_번호)));
+        final OrderLineItemRequest 요청할_메뉴 = new OrderLineItemRequest(메뉴_번호, 갯수);
+        return RestAssuredHelper.post(ORDER_URI, new OrderRequest(테이블_번호, Arrays.asList(요청할_메뉴)));
     }
 
     public static void 주문_요청_결과_확인(ExtractableResponse<Response> 주문_요청_결과) {
