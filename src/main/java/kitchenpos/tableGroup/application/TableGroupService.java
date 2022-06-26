@@ -1,4 +1,4 @@
-package kitchenpos.table.application;
+package kitchenpos.tableGroup.application;
 
 import kitchenpos.core.exception.BadRequestException;
 import kitchenpos.core.exception.CannotCreateException;
@@ -7,10 +7,10 @@ import kitchenpos.core.exception.NotFoundException;
 import kitchenpos.order.application.OrderTableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.domain.TableGroupRepository;
-import kitchenpos.table.domain.request.TableGroupRequest;
-import kitchenpos.table.domain.response.TableGroupResponse;
+import kitchenpos.tableGroup.domain.TableGroup;
+import kitchenpos.tableGroup.domain.TableGroupRepository;
+import kitchenpos.tableGroup.dto.request.TableGroupRequest;
+import kitchenpos.tableGroup.dto.response.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;

@@ -11,7 +11,7 @@ import kitchenpos.core.exception.CannotCreateException;
 import kitchenpos.core.exception.ExceptionType;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
-import kitchenpos.table.domain.TableGroup;
+import kitchenpos.tableGroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

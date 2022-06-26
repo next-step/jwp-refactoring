@@ -8,7 +8,7 @@ import java.util.Collections;
 import kitchenpos.core.exception.BadRequestException;
 import kitchenpos.core.exception.ExceptionType;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.TableGroup;
+import kitchenpos.tableGroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

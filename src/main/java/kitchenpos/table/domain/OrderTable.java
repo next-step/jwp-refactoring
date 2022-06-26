@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import kitchenpos.core.exception.BadRequestException;
 import kitchenpos.core.exception.ExceptionType;
+import kitchenpos.tableGroup.domain.TableGroup;
 
 @Entity
 @Table(name = "order_table")

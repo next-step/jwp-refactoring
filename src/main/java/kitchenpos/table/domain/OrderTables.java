@@ -8,6 +8,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import kitchenpos.core.exception.CannotCreateException;
 import kitchenpos.core.exception.ExceptionType;
+import kitchenpos.tableGroup.domain.TableGroup;
 
 @Embeddable
 public class OrderTables {
