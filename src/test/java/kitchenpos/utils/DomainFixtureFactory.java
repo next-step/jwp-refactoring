@@ -10,6 +10,7 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTables;
@@ -59,8 +60,8 @@ public class DomainFixtureFactory {
         return new OrderTableRequest(numberOfGuests, empty);
     }
 
-    public static Order createOrder() {
-        return new Order();
+    public static Order createOrder(OrderTable orderTable, OrderLineItems orderLineItems, int size) {
+        return Order.from(orderTable, orderLineItems, size);
     }
 
     public static OrderRequest createOrderRequest(Long orderTableId, OrderStatus orderStatus,

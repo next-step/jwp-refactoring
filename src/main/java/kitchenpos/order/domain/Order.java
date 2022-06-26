@@ -32,13 +32,25 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
     @Column(nullable = false)
-    private final LocalDateTime orderedTime;
+    private LocalDateTime orderedTime;
     @Embedded
     private OrderLineItems orderLineItems;
 
-    public Order() {
+    protected Order() {
+    }
+
+    private Order(OrderTable orderTable, OrderLineItems orderLineItems, int size) {
+        validateNotEmpty(orderTable);
+        validateOrderLineItemsSize(orderLineItems, size);
+        orderLineItems.addOrder(this);
+        this.orderTable = orderTable;
+        this.orderLineItems = orderLineItems;
         this.orderStatus = COOKING;
         this.orderedTime = LocalDateTime.now();
+    }
+
+    public static Order from(OrderTable orderTable, OrderLineItems orderLineItems, int size) {
+        return new Order(orderTable, orderLineItems, size);
     }
 
     public Long id() {
@@ -51,11 +63,6 @@ public class Order {
 
     public LocalDateTime orderedTime() {
         return orderedTime;
-    }
-
-    public void addOrderTable(final OrderTable orderTable) {
-        validateNotEmpty(orderTable);
-        this.orderTable = orderTable;
     }
 
     private void validateNotEmpty(OrderTable orderTable) {
@@ -73,12 +80,6 @@ public class Order {
             throw new IllegalArgumentException("완료된 주문은 상태를 변경할 수 없습니다.");
         }
         this.orderStatus = orderStatus;
-    }
-
-    public void addOrderLineItems(final OrderLineItems orderLineItems, int size) {
-        validateOrderLineItemsSize(orderLineItems, size);
-        orderLineItems.addOrder(this);
-        this.orderLineItems = orderLineItems;
     }
 
     private void validateOrderLineItemsSize(OrderLineItems orderLineItems, int size) {

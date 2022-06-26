@@ -59,11 +59,9 @@ class OrderServiceTest {
     void setUp() {
         양념치킨 = createMenu(1L, "양념치킨", BigDecimal.valueOf(10000L), createMenuGroup(2L, "한마리메뉴"));
         주문테이블 = createOrderTable(1L, 2, false);
-        주문 = createOrder();
-        주문.addOrderTable(주문테이블);
         주문항목 = createOrderLineItem(양념치킨, 2L);
         주문항목.addOrder(주문);
-        주문.addOrderLineItems(OrderLineItems.from(Lists.newArrayList(주문항목)), 1);
+        주문 = createOrder(주문테이블, OrderLineItems.from(Lists.newArrayList(주문항목)), 1);
     }
 
     @DisplayName("주문 생성 테스트")
