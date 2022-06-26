@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Transactional
 @Service
 public class MenuService {
 
@@ -24,7 +25,6 @@ public class MenuService {
         this.productRepository = productRepository;
     }
 
-    @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
         Menu menu = menuRequest.toEntity();
         validateOfMenuGroup(menu.getMenuGroupId());
@@ -32,12 +32,10 @@ public class MenuService {
         MenuProducts menuProducts = bindProducts(menu.getMenuProducts());
         menu.validateMenuPrice(menuProducts.getTotalPrice());
 
-        System.out.println(menuRepository.save(menu));
-        System.out.println("-----");
-
         return MenuResponse.from(menuRepository.save(menu));
     }
 
+    @Transactional(readOnly = true)
     public List<MenuResponse> list() {
         return menuRepository.findAll().stream()
                 .map(MenuResponse::from)
