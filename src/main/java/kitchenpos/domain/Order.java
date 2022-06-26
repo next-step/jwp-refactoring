@@ -1,52 +1,63 @@
 package kitchenpos.domain;
 
-import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
-public class Order {
+@Entity
+public class Order extends BaseTimeEntity {
+
+    @Id
+    @Column(name = "ORDER_ID")
     private Long id;
     private Long orderTableId;
-    private String orderStatus;
-    private LocalDateTime orderedTime;
-    private List<OrderLineItem> orderLineItems;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.ALL}, orphanRemoval = true)
+    private List<OrderLineItem> orderLineItems = new LinkedList<>();
+
+    public Order() {
+    }
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
     }
 
     public Long getOrderTableId() {
         return orderTableId;
     }
 
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
-    }
-
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
-    }
-
-    public void setOrderStatus(final String orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    public LocalDateTime getOrderedTime() {
-        return orderedTime;
-    }
-
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
     }
 
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
     }
 
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Order)) {
+            return false;
+        }
+        Order order = (Order) o;
+        return Objects.equals(id, order.id) && Objects.equals(orderTableId,
+            order.orderTableId) && orderStatus == order.orderStatus && Objects.equals(
+            orderLineItems, order.orderLineItems);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, orderTableId, orderStatus, orderLineItems);
     }
 }

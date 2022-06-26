@@ -1,8 +1,23 @@
 package kitchenpos.domain;
 
+import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+@Entity
 public class OrderLineItem {
+
+    @Id
+    @Column(name = "ORDER_LINE_ITEM")
     private Long seq;
-    private Long orderId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ORDER_ID", foreignKey = @ForeignKey(name = "fk_OrderLineItem_Order"))
+    private Order order;
     private Long menuId;
     private long quantity;
 
@@ -10,31 +25,34 @@ public class OrderLineItem {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
-    }
-
-    public Long getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(final Long orderId) {
-        this.orderId = orderId;
+    public Order getOrder() {
+        return order;
     }
 
     public Long getMenuId() {
         return menuId;
     }
 
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
-    }
-
     public long getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof OrderLineItem)) {
+            return false;
+        }
+        OrderLineItem that = (OrderLineItem) o;
+        return quantity == that.quantity && Objects.equals(seq, that.seq)
+            && Objects.equals(order, that.order) && Objects.equals(menuId,
+            that.menuId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(seq, order, menuId, quantity);
     }
 }
