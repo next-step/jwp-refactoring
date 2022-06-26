@@ -72,7 +72,7 @@ class OrderTest {
         주문.changeOrderStatus(OrderStatus.COMPLETION);
 
         // then
-        assertThatThrownBy(주문::validateMustNotBeCompletionStatus)
+        assertThatThrownBy(() -> 주문.changeOrderStatus(OrderStatus.COMPLETION))
             .isInstanceOf(CannotUpdateException.class)
             .hasMessageContaining(ExceptionType.COMPLETION_STATUS_CAN_NOT_CHANGE.getMessage());
     }

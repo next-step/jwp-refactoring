@@ -85,7 +85,6 @@ public class OrderService {
         Order savedOrder = orderRepository.findById(orderId)
             .orElseThrow(() -> new NotFoundException(ExceptionType.NOT_EXIST_ORDER.getMessage(orderId)));
 
-        savedOrder.validateMustNotBeCompletionStatus();
         savedOrder.changeOrderStatus(orderRequest.getOrderStatus());
         orderRepository.save(savedOrder);
 

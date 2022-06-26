@@ -77,14 +77,15 @@ public class Order {
         this.orderLineItems.add(orderLineItem);
     }
 
-    public void validateMustNotBeCompletionStatus() {
+    public void changeOrderStatus(OrderStatus orderStatus) {
+        validateMustNotBeCompletionStatus();
+        this.orderStatus = orderStatus;
+    }
+
+    private void validateMustNotBeCompletionStatus() {
         if (OrderStatus.COMPLETION.equals(orderStatus)) {
             throw new CannotUpdateException(ExceptionType.COMPLETION_STATUS_CAN_NOT_CHANGE);
         }
-    }
-
-    public void changeOrderStatus(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
     }
 
     public Long getId() {
