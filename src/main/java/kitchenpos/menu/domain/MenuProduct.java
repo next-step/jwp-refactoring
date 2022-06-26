@@ -1,5 +1,7 @@
 package kitchenpos.menu.domain;
 
+import static java.util.Objects.requireNonNull;
+
 import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.Embedded;
@@ -33,9 +35,7 @@ public class MenuProduct {
     }
 
     public MenuProduct(Product product, long quantity) {
-        if (product == null) {
-            throw new IllegalArgumentException("상품이 존재하지 않습니다.");
-        }
+        requireNonNull(product, "상품이 존재하지 않습니다.");
 
         this.product = product;
         this.quantity = new Quantity(quantity);

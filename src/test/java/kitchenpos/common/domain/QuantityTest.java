@@ -1,21 +1,28 @@
 package kitchenpos.common.domain;
 
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullSource;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class QuantityTest {
 
-    @ParameterizedTest(name = "\"{0}\" 일 경우")
+    @ParameterizedTest(name = "\"{0}\" 일 경우 {1} 발생한다.")
     @DisplayName("Quantity 생성시 유효성 검사를 체크한다.")
-    @NullSource
-    @ValueSource(longs = -1)
-    void createFail(Long quantity) {
-        assertThatIllegalArgumentException()
+    @MethodSource("providerCreateFailCase")
+    void createFail(Long quantity, Class<? extends Exception> exception) {
+        assertThatExceptionOfType(exception)
             .isThrownBy(() -> new Quantity(quantity));
+    }
+
+    private static Stream<Arguments> providerCreateFailCase() {
+        return Stream.of(
+            Arguments.of(null, NullPointerException.class),
+            Arguments.of(-1L, IllegalArgumentException.class)
+        );
     }
 
 }

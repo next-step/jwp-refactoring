@@ -1,19 +1,20 @@
 package kitchenpos.product.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 import kitchenpos.ServiceTest;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullSource;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 class ProductServiceTest extends ServiceTest {
@@ -34,10 +35,9 @@ class ProductServiceTest extends ServiceTest {
 
     @ParameterizedTest(name = "가격이 {0}일 경우")
     @DisplayName("상품 생성시 가격이 음수가 입력되는 경우 예외를 던진다.")
-    @NullSource
-    @ValueSource(strings = {"-1"})
-    void createFail(BigDecimal price) {
-        assertThatIllegalArgumentException()
+    @MethodSource("providerCreateFailCase")
+    void createFail(BigDecimal price, Class<? extends Exception> exception) {
+        assertThatExceptionOfType(exception)
             .isThrownBy(() -> this.productService.create(new ProductRequest("후라이드", price)));
     }
 
@@ -50,6 +50,13 @@ class ProductServiceTest extends ServiceTest {
         List<ProductResponse> products = this.productService.list();
 
         assertThat(products).containsAll(Arrays.asList(product1, product2));
+    }
+
+    private static Stream<Arguments> providerCreateFailCase() {
+        return Stream.of(
+            Arguments.of(null, NullPointerException.class),
+            Arguments.of(BigDecimal.valueOf(-1), IllegalArgumentException.class)
+        );
     }
 
 }

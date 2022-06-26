@@ -1,5 +1,7 @@
 package kitchenpos.table.domain;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -18,9 +20,7 @@ public class OrderTables {
     }
 
     public void addOrderTables(List<OrderTable> orderTables) {
-        if (orderTables == null || orderTables.isEmpty()) {
-            throw new IllegalArgumentException("테이블이 존재하지 않습니다.");
-        }
+        validateAddOrderTables(orderTables);
 
         orderTables.forEach(this::addOrderTable);
 
@@ -29,10 +29,15 @@ public class OrderTables {
         }
     }
 
-    private void addOrderTable(OrderTable orderTable) {
-        if (orderTable == null) {
+    private void validateAddOrderTables(List<OrderTable> orderTables) {
+        requireNonNull(orderTables, "테이블이 존재하지 않습니다.");
+        if (orderTables.isEmpty()) {
             throw new IllegalArgumentException("테이블이 존재하지 않습니다.");
         }
+    }
+
+    private void addOrderTable(OrderTable orderTable) {
+        requireNonNull(orderTable, "테이블이 존재하지 않습니다.");
 
         this.orderTables.add(orderTable);
     }

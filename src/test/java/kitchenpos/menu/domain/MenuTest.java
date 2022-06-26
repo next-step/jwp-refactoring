@@ -1,7 +1,7 @@
 package kitchenpos.menu.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -28,11 +28,11 @@ class MenuTest {
         assertThat(menu.getMenuProducts()).hasSize(1);
     }
 
-    @ParameterizedTest(name = "{0}")
+    @ParameterizedTest(name = "{0}, {1}, {3}, {4} -> {5}")
     @DisplayName("Menu 생성시 실페 케이스를 체크한다.")
     @MethodSource("providerCreateMenuFailCase")
-    void createMenuFail(String testName, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        assertThatIllegalArgumentException()
+    void createMenuFail(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts, Class<? extends Exception> exception) {
+        assertThatExceptionOfType(exception)
             .isThrownBy(() -> new Menu(name, price, menuGroupId, menuProducts));
     }
 
@@ -40,11 +40,11 @@ class MenuTest {
         MenuProduct menuProduct = new MenuProduct(new Product("상품", BigDecimal.valueOf(10000L)), 1);
 
         return Stream.of(
-            Arguments.of("이름이 존재하지 않을 경우", null, BigDecimal.TEN, 10L, Collections.singletonList(menuProduct)),
-            Arguments.of("가격이 존재하지 않을 경우", "상품", null, 10L, Collections.singletonList(menuProduct)),
-            Arguments.of("메뉴 그룹 정보가 존재하지 않을 경우", "상품", BigDecimal.TEN, null, Collections.singletonList(menuProduct)),
-            Arguments.of("상품이 존재하지 않았을 경우", "상품", BigDecimal.TEN, 10L, Collections.emptyList()),
-            Arguments.of("메뉴의 금액이 상품의 총합보다 클 경우", "상품", BigDecimal.valueOf(20000L), 10L, Collections.singletonList(menuProduct))
+            Arguments.of(null, BigDecimal.TEN, 10L, Collections.singletonList(menuProduct), NullPointerException.class),
+            Arguments.of("상품", null, 10L, Collections.singletonList(menuProduct), NullPointerException.class),
+            Arguments.of("상품", BigDecimal.TEN, null, Collections.singletonList(menuProduct), NullPointerException.class),
+            Arguments.of("상품", BigDecimal.TEN, 10L, Collections.emptyList(), IllegalArgumentException.class),
+            Arguments.of("상품", BigDecimal.valueOf(20000L), 10L, Collections.singletonList(menuProduct), IllegalArgumentException.class)
         );
     }
 

@@ -1,22 +1,22 @@
 package kitchenpos.common.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.math.BigDecimal;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullSource;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class PriceTest {
 
     @ParameterizedTest(name = "{0} 일 경우")
-    @NullSource
-    @ValueSource(strings = "-1")
-    void createFail(BigDecimal value) {
-        assertThatIllegalArgumentException()
+    @MethodSource("providerCreateFailCase")
+    void createFail(BigDecimal value, Class<? extends Exception> exception) {
+        assertThatExceptionOfType(exception)
             .isThrownBy(() -> new Price(value));
     }
 
@@ -25,6 +25,13 @@ class PriceTest {
     void isGreaterThan() {
         Price price = new Price(BigDecimal.ONE);
         assertThat(price.isGreaterThan(BigDecimal.ZERO)).isTrue();
+    }
+
+    private static Stream<Arguments> providerCreateFailCase() {
+        return Stream.of(
+            Arguments.of(null, NullPointerException.class),
+            Arguments.of(BigDecimal.valueOf(-1), IllegalArgumentException.class)
+        );
     }
 
 }

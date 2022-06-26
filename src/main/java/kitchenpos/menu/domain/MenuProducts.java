@@ -1,5 +1,7 @@
 package kitchenpos.menu.domain;
 
+import static java.util.Objects.requireNonNull;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,9 +22,7 @@ public class MenuProducts {
     }
 
     public void addMenuProducts(List<MenuProduct> menuProducts) {
-        if (menuProducts == null || menuProducts.isEmpty()) {
-            throw new IllegalArgumentException("메뉴에 사용할 상품이 존재하지 않습니다.");
-        }
+        validateAddMenuProducts(menuProducts);
 
         menuProducts.forEach(this::addMenuProduct);
     }
@@ -33,10 +33,16 @@ public class MenuProducts {
             .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    private void addMenuProduct(MenuProduct menuProduct) {
-        if (menuProduct == null) {
+    private void validateAddMenuProducts(List<MenuProduct> menuProducts) {
+        requireNonNull(menuProducts, "메뉴에 사용할 상품이 존재하지 않습니다.");
+
+        if (menuProducts.isEmpty()) {
             throw new IllegalArgumentException("메뉴에 사용할 상품이 존재하지 않습니다.");
         }
+    }
+
+    private void addMenuProduct(MenuProduct menuProduct) {
+        requireNonNull(menuProduct, "메뉴에 사용할 상품이 존재하지 않습니다.");
 
         menuProducts.add(menuProduct);
     }

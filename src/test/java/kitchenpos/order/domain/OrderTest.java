@@ -1,6 +1,7 @@
 package kitchenpos.order.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.util.Collections;
@@ -26,11 +27,11 @@ class OrderTest {
         assertThat(order.getOrderLineItems()).hasSize(1);
     }
 
-    @ParameterizedTest(name = "{0}")
+    @ParameterizedTest(name = "{0}, {1} -> {2}")
     @DisplayName("Order 생성시 실페 케이스를 체크한다.")
     @MethodSource("providerCreateOrderFailCase")
-    void createOrderFail(String testName, Long orderTableId, List<OrderLineItem> orderLineItems) {
-        assertThatIllegalArgumentException()
+    void createOrderFail(Long orderTableId, List<OrderLineItem> orderLineItems, Class<? extends Exception> exception) {
+        assertThatExceptionOfType(exception)
             .isThrownBy(() -> new Order(orderTableId, orderLineItems));
     }
 
@@ -38,8 +39,8 @@ class OrderTest {
         OrderLineItem orderLineItem = new OrderLineItem(1L, 10);
 
         return Stream.of(
-            Arguments.of("테이블이 존재하지 않을 경우", null, Collections.singletonList(orderLineItem)),
-            Arguments.of("주문 메뉴가 존재하지 않았을 경우", 10L, Collections.emptyList())
+            Arguments.of(null, Collections.singletonList(orderLineItem), NullPointerException.class),
+            Arguments.of(10L, Collections.emptyList(), IllegalArgumentException.class)
         );
     }
 

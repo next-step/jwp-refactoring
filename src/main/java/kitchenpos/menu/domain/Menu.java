@@ -1,5 +1,7 @@
 package kitchenpos.menu.domain;
 
+import static java.util.Objects.requireNonNull;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
@@ -32,15 +34,20 @@ public class Menu {
     }
 
     public Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        if (menuGroupId == null || menuGroupId <= 0) {
-            throw new IllegalArgumentException("메뉴 그룹 설정이 잘못 되었습니다.");
-        }
+        validateMenu(menuGroupId);
 
         this.name = new Name(name);
         this.price = new Price(price);
         this.menuGroupId = menuGroupId;
 
         addMenuProducts(menuProducts);
+    }
+
+    private void validateMenu(Long menuGroupId) {
+        requireNonNull(menuGroupId, "메뉴 그룹이 존재하지 않습니다.");
+        if (menuGroupId <= 0) {
+            throw new IllegalArgumentException("메뉴 그룹 설정이 잘못 되었습니다.");
+        }
     }
 
     private void addMenuProducts(List<MenuProduct> menuProducts) {

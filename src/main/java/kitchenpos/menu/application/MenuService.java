@@ -1,5 +1,7 @@
 package kitchenpos.menu.application;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -68,12 +70,7 @@ public class MenuService {
     }
 
     private void validateCreateRequest(MenuRequest menuRequest) {
-        if (menuRequest.getMenuProducts() == null) {
-            throw new IllegalArgumentException("상품이 설정되지 않았습니다.");
-        }
-
-        if (menuRequest.getMenuGroupId() == null) {
-            throw new IllegalArgumentException("메뉴 그룹이 설정되지 않았습니다.");
-        }
+        requireNonNull(menuRequest.getMenuProducts(), "상품이 설정되지 않았습니다.");
+        requireNonNull(menuRequest.getMenuGroupId(), "메뉴 그룹이 설정되지 않았습니다.");
     }
 }

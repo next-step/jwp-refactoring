@@ -1,5 +1,7 @@
 package kitchenpos.common.domain;
 
+import static java.util.Objects.requireNonNull;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -15,11 +17,16 @@ public class Quantity {
     }
 
     public Quantity(Long quantity) {
-        if (quantity == null || quantity < 0) {
-            throw new IllegalArgumentException("수량은 양수값 이어야 합니다.");
-        }
+        validateQuantity(quantity);
 
         this.quantity = quantity;
+    }
+
+    private void validateQuantity(Long quantity) {
+        requireNonNull(quantity, "수량이 존재하지 않습니다.");
+        if (quantity < 0) {
+            throw new IllegalArgumentException("수량은 양수값 이어야 합니다.");
+        }
     }
 
     public Long getQuantity() {

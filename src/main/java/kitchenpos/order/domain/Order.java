@@ -1,5 +1,7 @@
 package kitchenpos.order.domain;
 
+import static java.util.Objects.requireNonNull;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -35,9 +37,7 @@ public class Order {
     }
 
     public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
-        if (orderTableId == null || orderTableId < 1) {
-            throw new IllegalArgumentException("테이블 정보가 올바르지 않습니다.");
-        }
+        validateOrder(orderTableId);
 
         this.orderTableId = orderTableId;
         this.orderedTime = LocalDateTime.now();
@@ -52,6 +52,13 @@ public class Order {
         }
 
         this.orderStatus = orderStatus;
+    }
+
+    private void validateOrder(Long orderTableId) {
+        requireNonNull(orderTableId, "테이블 정보가 올바르지 않습니다.");
+        if (orderTableId < 1) {
+            throw new IllegalArgumentException("테이블 정보가 올바르지 않습니다.");
+        }
     }
 
     private void addOrderLineItems(List<OrderLineItem> orderLineItems) {

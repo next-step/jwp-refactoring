@@ -71,22 +71,22 @@ class MenuServiceTest extends ServiceTest {
         List<MenuProductRequest> menuProducts = Arrays.asList(MenuProductRequest.of(후라이드_메뉴상품), MenuProductRequest.of(양념치킨_메뉴상품));
         return Stream.of(
             DynamicTest.dynamicTest("메뉴 이름이 없는 경우", () -> {
-                메뉴그룹_생성_실패(null, BigDecimal.valueOf(31000), 두마리메뉴.getId(), menuProducts);
+                메뉴그룹_생성_실패(null, BigDecimal.valueOf(31000), 두마리메뉴.getId(), menuProducts, NullPointerException.class);
             }),
             DynamicTest.dynamicTest("가격이 없는 경우", () -> {
-                메뉴그룹_생성_실패("후라이드_양념_세트", null, 두마리메뉴.getId(), menuProducts);
+                메뉴그룹_생성_실패("후라이드_양념_세트", null, 두마리메뉴.getId(), menuProducts, NullPointerException.class);
             }),
             DynamicTest.dynamicTest("메뉴 그룹이 없는 경우", () -> {
-                메뉴그룹_생성_실패("후라이드_양념_세트", BigDecimal.valueOf(31000), null, menuProducts);
+                메뉴그룹_생성_실패("후라이드_양념_세트", BigDecimal.valueOf(31000), null, menuProducts, NullPointerException.class);
             }),
             DynamicTest.dynamicTest("상품이 없는 경우", () -> {
-                메뉴그룹_생성_실패("후라이드_양념_세트", BigDecimal.valueOf(31000), 두마리메뉴.getId(), null);
+                메뉴그룹_생성_실패("후라이드_양념_세트", BigDecimal.valueOf(31000), 두마리메뉴.getId(), null, NullPointerException.class);
             }),
             DynamicTest.dynamicTest("가격이 0원 미만일 경우", () -> {
-                메뉴그룹_생성_실패("후라이드_양념_세트", BigDecimal.valueOf(-1), 두마리메뉴.getId(), menuProducts);
+                메뉴그룹_생성_실패("후라이드_양념_세트", BigDecimal.valueOf(-1), 두마리메뉴.getId(), menuProducts, IllegalArgumentException.class);
             }),
             DynamicTest.dynamicTest("상품의 가격 합보다 메뉴의 가격이 클 경우", () -> {
-                메뉴그룹_생성_실패("후라이드_양념_세트", BigDecimal.valueOf(33000), 두마리메뉴.getId(), menuProducts);
+                메뉴그룹_생성_실패("후라이드_양념_세트", BigDecimal.valueOf(33000), 두마리메뉴.getId(), menuProducts, IllegalArgumentException.class);
             })
         );
     }
@@ -103,10 +103,11 @@ class MenuServiceTest extends ServiceTest {
         assertThat(menuResponses).contains(MenuResponse.of(menu));
     }
 
-    private void 메뉴그룹_생성_실패(String name, BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProductRequests) {
+    private void 메뉴그룹_생성_실패(String name, BigDecimal price, Long menuGroupId,
+        List<MenuProductRequest> menuProductRequests, Class<? extends Exception> exception) {
         MenuRequest menuRequest = new MenuRequest(name, price, menuGroupId, menuProductRequests);
 
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(exception)
             .isThrownBy(() -> this.menuService.create(menuRequest));
     }
 

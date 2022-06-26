@@ -1,5 +1,7 @@
 package kitchenpos.common.domain;
 
+import static java.util.Objects.requireNonNull;
+
 import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.Column;
@@ -26,7 +28,8 @@ public class Price {
     }
 
     private void validate(BigDecimal value) {
-        if (Objects.isNull(value) || value.compareTo(BigDecimal.ZERO) < 0) {
+        requireNonNull(value, "금액이 존재하지 않습니다.");
+        if (value.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("금액은 양수이어야 합니다.");
         }
     }
