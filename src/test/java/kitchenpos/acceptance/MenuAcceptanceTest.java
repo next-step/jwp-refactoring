@@ -19,6 +19,7 @@ import static kitchenpos.utils.RestAssuredMethods.get;
 import static kitchenpos.utils.RestAssuredMethods.post;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("메뉴 관련 기능")
 public class MenuAcceptanceTest extends AcceptanceTest {
     private ProductResponse 김치찌개_product;
     private ProductResponse 공기밥_product;
@@ -48,6 +49,31 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 Arrays.asList(김치찌개_menuProduct_1인, 공기밥_menuProduct_1인));
         김치찌개2인세트_menu = MenuRequest.of("김치찌개2인세트", 15000, 한식_menuGroup.getId(),
                 Arrays.asList(김치찌개_menuProduct_2인, 공기밥_menuProduct_2인));
+    }
+
+    /**
+     * Feature: 메뉴 관련 기능
+     *
+     *   Scenario: 메뉴를 관리
+     *     When 김치찌개 1인세트 메뉴 등록 요청
+     *     Then 김치찌개 1인세트 메뉴 등록됨
+     *     When 김치찌개 2인세트 메뉴 등록 요청
+     *     Then 김치찌개 2인세트 메뉴 등록됨
+     *     When 메뉴 조회 요청
+     *     Then 김치찌개 1인세트, 김치찌개 2인세트 메뉴 조회됨
+     */
+    @DisplayName("메뉴를 관리한다")
+    @Test
+    void 메뉴_관리_정상_시나리오() {
+        ExtractableResponse<Response> 김치찌개_1인세트_등록 = 메뉴_등록_요청(김치찌개1인세트_menu);
+        메뉴_등록됨(김치찌개_1인세트_등록);
+
+        ExtractableResponse<Response> 김치찌개_2인세트_등록 = 메뉴_등록_요청(김치찌개2인세트_menu);
+        메뉴_등록됨(김치찌개_2인세트_등록);
+
+        ExtractableResponse<Response> 메뉴_목록_조회 = 메뉴_목록_조회_요청();
+        메뉴_목록_응답됨(메뉴_목록_조회);
+        메뉴_목록_포함됨(메뉴_목록_조회, Arrays.asList(김치찌개_1인세트_등록, 김치찌개_2인세트_등록));
     }
 
     /**
@@ -86,31 +112,6 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 Arrays.asList(김치찌개_menuProduct_1인, 공기밥_menuProduct_1인));
         ExtractableResponse<Response> 정가보다_비싼_메뉴_등록 = 메뉴_등록_요청(정가보다_비싼_메뉴_menuRequest);
         메뉴_등록_실패됨(정가보다_비싼_메뉴_등록);
-    }
-
-    /**
-     * Feature: 메뉴 관련 기능
-     *
-     *   Scenario: 메뉴를 관리
-     *     When 김치찌개 1인세트 메뉴 등록 요청
-     *     Then 김치찌개 1인세트 메뉴 등록됨
-     *     When 김치찌개 2인세트 메뉴 등록 요청
-     *     Then 김치찌개 2인세트 메뉴 등록됨
-     *     When 메뉴 조회 요청
-     *     Then 김치찌개 1인세트, 김치찌개 2인세트 메뉴 조회됨
-     */
-    @DisplayName("메뉴를 관리한다")
-    @Test
-    void 메뉴_관리_정상_시나리오() {
-        ExtractableResponse<Response> 김치찌개_1인세트_등록 = 메뉴_등록_요청(김치찌개1인세트_menu);
-        메뉴_등록됨(김치찌개_1인세트_등록);
-
-        ExtractableResponse<Response> 김치찌개_2인세트_등록 = 메뉴_등록_요청(김치찌개2인세트_menu);
-        메뉴_등록됨(김치찌개_2인세트_등록);
-
-        ExtractableResponse<Response> 메뉴_목록_조회 = 메뉴_목록_조회_요청();
-        메뉴_목록_응답됨(메뉴_목록_조회);
-        메뉴_목록_포함됨(메뉴_목록_조회, Arrays.asList(김치찌개_1인세트_등록, 김치찌개_2인세트_등록));
     }
 
     public static ExtractableResponse<Response> 메뉴_등록_요청(MenuRequest params) {
