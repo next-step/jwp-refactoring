@@ -55,7 +55,8 @@ class OrderServiceTest {
     @DisplayName("주문을 생성한다.")
     void createOrder() {
         // given
-        final Orders order = new Orders(null, 1L, OrderStatus.COOKING, null, null);
+        final OrderTable orderTable = new OrderTable(1L, null, 5, true);
+        final Orders order = new Orders(null, orderTable, OrderStatus.COOKING, null, null);
         final OrderLineItem orderLineItem = new OrderLineItem(1L, order, 1L, 1L);
         when(menuRepository.countByIdIn(any())).thenReturn(1L);
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(new OrderTable(1L, null, 3, false)));
@@ -109,7 +110,8 @@ class OrderServiceTest {
     @DisplayName("주문 내역을 조회할 수 있다.")
     void searchOrders() {
         // given
-        final Orders order = new Orders(1L, 1L, OrderStatus.COOKING, LocalDateTime.now(), null);
+        final OrderTable orderTable = new OrderTable(1L, null, 5, true);
+        final Orders order = new Orders(1L, orderTable, OrderStatus.COOKING, LocalDateTime.now(), null);
         when(orderRepository.findAll()).thenReturn(Arrays.asList(order));
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(new OrderTable(1L, null, 3, false)));
         // when
@@ -122,7 +124,8 @@ class OrderServiceTest {
     @DisplayName("주문의 상태를 변경할 수 있다.")
     void changeOrderStatus() {
         // given
-        final Orders order = new Orders(1L, 1L, OrderStatus.COOKING, LocalDateTime.now(), null);
+        final OrderTable orderTable = new OrderTable(1L, null, 5, true);
+        final Orders order = new Orders(1L, orderTable, OrderStatus.COOKING, LocalDateTime.now(), null);
         when(orderRepository.findById(any())).thenReturn(Optional.of(order));
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(new OrderTable(1L, null, 3, false)));
         // when
@@ -143,7 +146,8 @@ class OrderServiceTest {
     @DisplayName("완료된 주문을 주문 상태 변경시 에러 발생")
     void changeOrderStatusCompletionOrder() {
         // given
-        final Orders order = new Orders(1L, 1L, OrderStatus.COMPLETION, LocalDateTime.now(), null);
+        final OrderTable orderTable = new OrderTable(1L, null, 5, true);
+        final Orders order = new Orders(1L, orderTable, OrderStatus.COMPLETION, LocalDateTime.now(), null);
         when(orderRepository.findById(any())).thenReturn(Optional.of(order));
 
         // when && then

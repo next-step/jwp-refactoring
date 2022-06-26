@@ -46,13 +46,13 @@ public class TableController {
                 .body(tableService.changeEmpty(orderTableId));
     }
 
-    @PutMapping("/{orderTableId}/number-of-guests")
+    @PutMapping("/{orderTableId}/number-of-guests/{guestNumber}")
     public ResponseEntity<OrderTableResponse> changeNumberOfGuests(
             @PathVariable final Long orderTableId,
-            @RequestBody final OrderTableRequest orderTableRequest
+            @PathVariable final Integer guestNumber
     ) {
         return ResponseEntity
                 .ok()
-                .body(tableService.changeNumberOfGuests(orderTableId, orderTableRequest));
+                .body(tableService.changeNumberOfGuests(orderTableId, guestNumber));
     }
 }

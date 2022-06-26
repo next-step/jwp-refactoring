@@ -1,14 +1,19 @@
 package kitchenpos.table.domain;
 
 import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import kitchenpos.exception.ExistGroupTableException;
+import kitchenpos.exception.InvalidGuestNumberException;
+import kitchenpos.exception.NotExistException;
 import kitchenpos.order.dto.OrderTableResponse;
 
 @Entity
@@ -19,7 +24,7 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinColumn(name = "table_group_id")
     private TableGroup tableGroup;
 
@@ -29,7 +34,7 @@ public class OrderTable {
     @Column
     private boolean empty;
 
-    protected OrderTable(){
+    protected OrderTable() {
     }
 
     public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
@@ -43,8 +48,14 @@ public class OrderTable {
         return id;
     }
 
-    public boolean existTableGroupId() {
-        return tableGroup != null;
+    public boolean existTableGroup() {
+        return this.tableGroup != null;
+    }
+
+    public void validateGroupingTable() {
+        if (this.tableGroup != null) {
+            throw new ExistGroupTableException();
+        }
     }
 
     public void mappingTableGroupId(TableGroup tableGroup) {
@@ -63,12 +74,26 @@ public class OrderTable {
         this.empty = false;
     }
 
-    public void changeNumberOfGuests(int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
+    public void changeGuestNumber(int guestNumber) {
+        validateEmpty();
+        validateGuestNumber(guestNumber);
+        this.numberOfGuests = guestNumber;
     }
 
     public void ungroupTable() {
         this.tableGroup = null;
+    }
+
+    private void validateEmpty() {
+        if (this.empty) {
+            throw new NotExistException("비어있는 테이블입니다.");
+        }
+    }
+
+    private void validateGuestNumber(int guestNumber) {
+        if (guestNumber < 1) {
+            throw new InvalidGuestNumberException();
+        }
     }
 
     public OrderTableResponse toOrderTableResponse() {

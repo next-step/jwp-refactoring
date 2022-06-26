@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -9,9 +10,9 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
@@ -80,7 +81,7 @@ class TableServiceTest {
         // given
         final OrderTable fullOrderTable = new OrderTable(1L, null, 5, false);
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(fullOrderTable));
-        when(orderRepository.existsOrdersV2ByOrderTableIdAndOrderStatusNot(1L, OrderStatus.COMPLETION))
+        when(orderRepository.existsOrdersByOrderTableIdAndOrderStatusNot(1L, OrderStatus.COMPLETION))
                 .thenReturn(false);
         // when
         final OrderTableResponse actual = tableService.changeEmpty(1L);
@@ -100,7 +101,7 @@ class TableServiceTest {
     @DisplayName("빈 테이블로 변경할 테이블이 단체 그룹이면 예외 발생")
     void notTableGroup() {
         // given
-        final TableGroup tableGroup = new TableGroup(1L, null, null);
+        final TableGroup tableGroup = new TableGroup(1L, null);
         final OrderTable fullOrderTableGroup = new OrderTable(1L, tableGroup, 5, false);
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(fullOrderTableGroup));
         // when && then
@@ -114,10 +115,10 @@ class TableServiceTest {
         // given
         final OrderTable fullOrderTable = new OrderTable(1L, null, 5, false);
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(fullOrderTable));
-        when(orderRepository.existsOrdersV2ByOrderTableIdAndOrderStatusNot(1L, OrderStatus.COMPLETION))
+        when(orderRepository.existsOrdersByOrderTableIdAndOrderStatusNot(1L, OrderStatus.COMPLETION))
                 .thenReturn(true);
         // when && then
-        assertThatIllegalArgumentException()
+        assertThatIllegalStateException()
                 .isThrownBy(() -> tableService.changeEmpty(1L));
     }
 
@@ -128,7 +129,7 @@ class TableServiceTest {
         final OrderTable orderTable5Guests = new OrderTable(1L, null, 5, false);
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable5Guests));
         // when
-        final OrderTableResponse actual = tableService.changeNumberOfGuests(1L, new OrderTableRequest(3, null));
+        final OrderTableResponse actual = tableService.changeNumberOfGuests(1L, 3);
         // then
         assertThat(actual.getNumberOfGuests()).isEqualTo(3);
     }
@@ -138,7 +139,7 @@ class TableServiceTest {
     void negativeNumberOfGuests() {
         // when && then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeNumberOfGuests(1L, new OrderTableRequest(-1, null)));
+                .isThrownBy(() -> tableService.changeNumberOfGuests(1L, -1));
     }
 
     @Test
@@ -146,7 +147,7 @@ class TableServiceTest {
     void notExistOrderTableIdByNumberOfGuests() {
         // when && then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeNumberOfGuests(1L, new OrderTableRequest(3, null)));
+                .isThrownBy(() -> tableService.changeNumberOfGuests(1L, 3));
     }
 
     @Test
@@ -157,6 +158,6 @@ class TableServiceTest {
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(emptyOrderTable));
         // when && then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableService.changeNumberOfGuests(1L, new OrderTableRequest(1, null)));
+                .isThrownBy(() -> tableService.changeNumberOfGuests(1L, 1));
     }
 }

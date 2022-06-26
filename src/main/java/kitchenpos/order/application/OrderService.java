@@ -71,7 +71,7 @@ public class OrderService {
 
         return orders.stream()
                 .map(it -> {
-                    final OrderTable orderTable = orderTableRepository.findById(it.getOrderTableId())
+                    final OrderTable orderTable = orderTableRepository.findById(it.getOrderTable().getId())
                             .orElseThrow(IllegalArgumentException::new);
                     return it.toOrderResponse(orderTable);
                 })
@@ -88,7 +88,7 @@ public class OrderService {
 
         savedOrder.changeStatus(orderStatusRequest.getOrderStatus());
 
-        final OrderTable orderTable = orderTableRepository.findById(savedOrder.getOrderTableId())
+        final OrderTable orderTable = orderTableRepository.findById(savedOrder.getOrderTable().getId())
                 .orElseThrow(IllegalArgumentException::new);
 
         return savedOrder.toOrderResponse(orderTable);

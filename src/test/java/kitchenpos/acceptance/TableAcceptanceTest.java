@@ -97,9 +97,8 @@ class TableAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 테이블_방문_고객수_변경(Integer 변경할_주문_테이블_번호, Integer 변경할_고객_수) {
-        final String uri = TABLE_URI + "/{orderTableId}/number-of-guests";
-        final OrderTableRequest 변경할_주문_테이블 = new OrderTableRequest(변경할_고객_수, false);
-        return RestAssuredHelper.putContainBody(uri, 변경할_주문_테이블, 변경할_주문_테이블_번호);
+        final String uri = TABLE_URI + "/{orderTableId}/number-of-guests/{guestNumber}";
+        return RestAssuredHelper.put(uri, 변경할_주문_테이블_번호, 변경할_고객_수);
     }
 
     public static void 테이블_방문_고객수_확인(ExtractableResponse<Response> 테이블_방문_고객수_변경_결과, Integer 예상된_변경_고객수) {

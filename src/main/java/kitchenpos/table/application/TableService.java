@@ -2,6 +2,8 @@ package kitchenpos.table.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import kitchenpos.exception.NotCompletionStatusException;
+import kitchenpos.exception.NotExistException;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.order.domain.OrderStatus;
@@ -16,8 +18,7 @@ public class TableService {
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(OrderRepository orderRepository,
-                        OrderTableRepository orderTableRepository) {
+    public TableService(OrderRepository orderRepository, OrderTableRepository orderTableRepository) {
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
     }
@@ -37,37 +38,26 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId) {
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+        final OrderTable persistOrderTable = getOrderTable(orderTableId);
 
-        if (savedOrderTable.existTableGroupId()) {
-            throw new IllegalArgumentException();
+        if (orderRepository.existsOrdersByOrderTableIdAndOrderStatusNot(orderTableId, OrderStatus.COMPLETION)) {
+            throw new NotCompletionStatusException();
         }
 
-        if (orderRepository.existsOrdersV2ByOrderTableIdAndOrderStatusNot(orderTableId, OrderStatus.COMPLETION)) {
-            throw new IllegalArgumentException();
-        }
-
-        savedOrderTable.empty();
-        return savedOrderTable.toOrderTableResponse();
+        persistOrderTable.validateGroupingTable();
+        persistOrderTable.empty();
+        return persistOrderTable.toOrderTableResponse();
     }
 
     @Transactional
-    public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
-        final int numberOfGuests = orderTableRequest.getNumberOfGuests();
+    public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final Integer guestNumber) {
+        final OrderTable persistOrderTable = getOrderTable(orderTableId);
+        persistOrderTable.changeGuestNumber(guestNumber);
+        return persistOrderTable.toOrderTableResponse();
+    }
 
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
-        }
-
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        savedOrderTable.changeNumberOfGuests(numberOfGuests);
-        return savedOrderTable.toOrderTableResponse();
+    private OrderTable getOrderTable(Long orderTableId) {
+        return orderTableRepository.findById(orderTableId)
+                .orElseThrow(() -> new NotExistException("존재하지 않은 주문테이블입니다."));
     }
 }
