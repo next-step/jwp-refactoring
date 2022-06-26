@@ -42,23 +42,11 @@ public class Product {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public Name getName() {
         return name;
     }
 
-    public void setName(final String name) {
-        this.name = new Name(name);
-    }
-
     public Price getPrice() {
         return price;
-    }
-
-    public void setPrice(final BigDecimal price) {
-        this.price = new Price(price);
     }
 }
