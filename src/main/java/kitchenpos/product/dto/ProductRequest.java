@@ -1,7 +1,7 @@
 package kitchenpos.product.dto;
 
+import kitchenpos.common.domain.Price;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductPrice;
 
 public class ProductRequest {
     private final String name;
@@ -13,7 +13,7 @@ public class ProductRequest {
     }
 
     public Product toProduct(){
-        return new Product(name, new ProductPrice(price));
+        return new Product(name, new Price(price));
     }
 
     public String getName() {

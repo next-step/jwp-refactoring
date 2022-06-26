@@ -5,9 +5,9 @@ import static kitchenpos.helper.MenuProductFixtures.통구이_메뉴상품_요�
 
 import java.util.Arrays;
 import java.util.List;
+import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuPrice;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -22,11 +22,11 @@ public class MenuFixtures {
     }
 
     public static Menu 메뉴_만들기(Long id, String name, Integer price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        return new Menu(id, name, new MenuPrice(price), menuGroup, menuProducts);
+        return new Menu(id, name, new Price(price), menuGroup, menuProducts);
     }
 
     public static Menu 메뉴_만들기(String name, Integer price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        return new Menu(name, new MenuPrice(price), menuGroup, menuProducts);
+        return new Menu(name, new Price(price), menuGroup, menuProducts);
     }
     public static Menu 메뉴_만들기(Long id, String name, Integer price, MenuProducts menuProducts) {
         return 메뉴_만들기(id, name, price, null, menuProducts);

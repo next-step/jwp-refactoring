@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.Amount;
 import kitchenpos.menu.domain.MenuProductQuantity;
 
@@ -18,17 +19,17 @@ public class Product {
     @Column(nullable = false)
     private String name;
     @Embedded
-    private ProductPrice price;
+    private Price price;
 
     protected Product() {
     }
 
-    public Product(String name, ProductPrice price) {
+    public Product(String name, Price price) {
         this.name = name;
         this.price = price;
     }
 
-    public Product(Long id, String name, ProductPrice price) {
+    public Product(Long id, String name, Price price) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -42,7 +43,7 @@ public class Product {
         return name;
     }
 
-    public ProductPrice getPrice() {
+    public Price getPrice() {
         return price;
     }
 

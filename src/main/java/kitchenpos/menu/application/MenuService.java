@@ -2,13 +2,13 @@ package kitchenpos.menu.application;
 
 import java.util.ArrayList;
 import java.util.List;
+import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.repository.MenuGroupRepository;
-import kitchenpos.menu.domain.MenuPrice;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProductQuantity;
 import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.menu.domain.repository.MenuGroupRepository;
 import kitchenpos.menu.domain.repository.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -64,10 +64,10 @@ public class MenuService {
     }
 
     private Menu createMenu(MenuRequest menuRequest, MenuProducts menuProducts) {
-        final MenuPrice menuPrice = new MenuPrice(menuRequest.getPrice());
+        final Price price = new Price(menuRequest.getPrice());
         final MenuGroup menuGroup = findMenuGroup(menuRequest.getMenuGroupId());
 
-        return new Menu(menuRequest.getName(), menuPrice, menuGroup, menuProducts);
+        return new Menu(menuRequest.getName(), price, menuGroup, menuProducts);
     }
 
     private Product findProduct(Long productId) {

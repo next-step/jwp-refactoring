@@ -1,12 +1,12 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.product.domain.ProductPrice;
+import kitchenpos.common.domain.Price;
 
 public class Amount {
-    private final ProductPrice price;
+    private final Price price;
     private final MenuProductQuantity quantity;
 
-    public Amount(ProductPrice price, MenuProductQuantity quantity) {
+    public Amount(Price price, MenuProductQuantity quantity) {
         this.price = price;
         this.quantity = quantity;
     }

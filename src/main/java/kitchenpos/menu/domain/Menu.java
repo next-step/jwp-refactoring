@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import kitchenpos.common.domain.Price;
 
 @Entity
 public class Menu {
@@ -18,7 +19,7 @@ public class Menu {
     @Column(nullable = false)
     private String name;
     @Embedded
-    private MenuPrice menuPrice;
+    private Price price;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
@@ -28,24 +29,24 @@ public class Menu {
     protected Menu() {
     }
 
-    public Menu(String name, MenuPrice menuPrice, MenuGroup menuGroup, MenuProducts menuProducts) {
-        validate(menuPrice, menuProducts);
+    public Menu(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        validate(price, menuProducts);
         this.name = name;
-        this.menuPrice = menuPrice;
+        this.price = price;
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
     }
 
-    public Menu(Long id, String name, MenuPrice menuPrice, MenuGroup menuGroup, MenuProducts menuProducts) {
-        validate(menuPrice, menuProducts);
+    public Menu(Long id, String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        validate(price, menuProducts);
         this.id = id;
         this.name = name;
-        this.menuPrice = menuPrice;
+        this.price = price;
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
     }
 
-    private void validate(MenuPrice menuPrice, MenuProducts menuProducts) {
+    private void validate(Price menuPrice, MenuProducts menuProducts) {
         if(menuPrice.overTo(menuProducts)){
             throw new IllegalArgumentException("[ERROR] 메뉴 가격은 총 상품 가격보다 클 수 없습니다.");
         }
@@ -59,8 +60,8 @@ public class Menu {
         return name;
     }
 
-    public MenuPrice getPrice() {
-        return menuPrice;
+    public Price getPrice() {
+        return price;
     }
 
     public MenuGroup getMenuGroup() {

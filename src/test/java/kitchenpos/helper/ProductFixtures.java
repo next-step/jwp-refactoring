@@ -1,7 +1,7 @@
 package kitchenpos.helper;
 
+import kitchenpos.common.domain.Price;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductPrice;
 import kitchenpos.product.dto.ProductRequest;
 
 public class ProductFixtures {
@@ -20,7 +20,7 @@ public class ProductFixtures {
     }
 
     public static Product 상품_만들기(Long id, String name, Integer price) {
-        return new Product(id, name, new ProductPrice(price));
+        return new Product(id, name, new Price(price));
     }
 
     public static Product 상품_만들기(String name, Integer price) {
