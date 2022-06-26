@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import org.springframework.util.ObjectUtils;
 
 @Entity
 public class MenuGroup {
@@ -16,6 +17,20 @@ public class MenuGroup {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private String name;
+
+    protected MenuGroup() {
+    }
+
+    public MenuGroup(String name) {
+        validateName(name);
+        this.name = name;
+    }
+
+    public void validateName(String name) {
+        if (ObjectUtils.isEmpty(name)) {
+            throw new IllegalArgumentException("이름은 필수입니다");
+        }
+    }
 
     public Long getId() {
         return id;
