@@ -70,7 +70,11 @@ class OrderAcceptanceTest extends AcceptanceTest {
                 .setPrice(Price.of(16_000L))
                 .setMenuGroup(menuGroup)
                 .build();
-        final OrderLineItem orderLineItem = new OrderLineItem(1L, order, menu, Quantity.of(2L));
+        final OrderLineItem orderLineItem = new OrderLineItem.Builder(order)
+                .setSeq(1L)
+                .setMenu(menu)
+                .setQuantity(Quantity.of(2L))
+                .builder();
         final OrderResponse 예상된_주문_결과 = new OrderResponse(1L, 주문_테이블_결과, OrderStatus.COOKING.name(), null, Arrays.asList(orderLineItem.toOrderLineItemResponse()));
 
         // when

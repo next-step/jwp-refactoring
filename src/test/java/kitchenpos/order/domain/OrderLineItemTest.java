@@ -19,8 +19,16 @@ class OrderLineItemTest {
                 .build();
         final OrderTable orderTable = new OrderTable(null, null, GuestNumber.of(2), false);
         final Orders order = new Orders(null, orderTable, null, null, null);
-        final OrderLineItem orderLineItem = new OrderLineItem(1L, order, menu, Quantity.of(1L));
+        final OrderLineItem orderLineItem = new OrderLineItem.Builder(order)
+                .setSeq(1L)
+                .setMenu(menu)
+                .setQuantity(Quantity.of(1L))
+                .builder();
 
-        assertThat(orderLineItem).isEqualTo(new OrderLineItem(1L, order, menu, Quantity.of(1L)));
+        assertThat(orderLineItem).isEqualTo(new OrderLineItem.Builder(order)
+                .setSeq(1L)
+                .setMenu(menu)
+                .setQuantity(Quantity.of(1L))
+                .builder());
     }
 }

@@ -37,8 +37,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
-    private MenuGroup menuGroup;
     private Menu menu;
+    private OrderLineItem orderLineItem;
 
 
     private OrderService orderService;
@@ -56,12 +56,17 @@ class OrderServiceTest {
     void setUp() {
         orderService = new OrderService(menuRepository, orderRepository, orderTableRepository);
 
-        menuGroup = new MenuGroup(1L, "메뉴그룹");
+        MenuGroup menuGroup = new MenuGroup(1L, "메뉴그룹");
         menu = new Menu.Builder("메뉴")
                 .setId(1L)
                 .setPrice(Price.of(1_000L))
                 .setMenuGroup(menuGroup)
                 .build();
+        orderLineItem = new OrderLineItem.Builder(null)
+                .setSeq(1L)
+                .setMenu(menu)
+                .setQuantity(Quantity.of(1L))
+                .builder();
     }
 
     @Test
@@ -69,7 +74,6 @@ class OrderServiceTest {
     void createOrder() {
         // given
         final OrderTable orderTable = new OrderTable(1L, null, GuestNumber.of(5), false);
-        final OrderLineItem orderLineItem = new OrderLineItem(1L, null, menu, Quantity.of(1L));
         final Orders order = new Orders(1L, orderTable, OrderStatus.COOKING, null, Arrays.asList(orderLineItem));
         when(menuRepository.countByIdIn(any())).thenReturn(1L);
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(new OrderTable(1L, null, GuestNumber.of(3), false)));
@@ -127,7 +131,6 @@ class OrderServiceTest {
     void searchOrders() {
         // given
         final OrderTable orderTable = new OrderTable(1L, null, GuestNumber.of(5), false);
-        final OrderLineItem orderLineItem = new OrderLineItem(1L, null, menu, Quantity.of(1L));
         final Orders order = new Orders(1L, orderTable, OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(orderLineItem));
         when(orderRepository.findAll()).thenReturn(Arrays.asList(order));
         // when
@@ -141,7 +144,6 @@ class OrderServiceTest {
     void changeOrderStatus() {
         // given
         final OrderTable orderTable = new OrderTable(1L, null, GuestNumber.of(5), false);
-        final OrderLineItem orderLineItem = new OrderLineItem(1L, null, menu, Quantity.of(1L));
         final Orders order = new Orders(1L, orderTable, OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(orderLineItem));
         when(orderRepository.findById(any())).thenReturn(Optional.of(order));
         // when

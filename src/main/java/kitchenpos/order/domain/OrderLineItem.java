@@ -34,17 +34,11 @@ public class OrderLineItem {
     protected OrderLineItem(){
     }
 
-    public OrderLineItem(Orders order, Menu menu, Quantity quantity) {
-        this.order = order;
-        this.menu = menu;
-        this.quantity = quantity;
-    }
-
-    public OrderLineItem(Long seq, Orders order, Menu menu, Quantity quantity) {
-        this.seq = seq;
-        this.order = order;
-        this.menu = menu;
-        this.quantity = quantity;
+    OrderLineItem(Builder builder) {
+        this.seq = builder.seq;
+        this.order = builder.order;
+        this.menu = builder.menu;
+        this.quantity = builder.quantity;
     }
 
     public OrderLineItemResponse toOrderLineItemResponse() {
@@ -67,5 +61,40 @@ public class OrderLineItem {
     @Override
     public int hashCode() {
         return Objects.hash(seq, order, menu, quantity);
+    }
+
+    public static class Builder {
+        private Long seq;
+        private Orders order;
+        private Menu menu;
+        private Quantity quantity;
+
+        public Builder(Orders order) {
+            this.order = order;
+        }
+
+        public Builder setSeq(Long seq) {
+            this.seq = seq;
+            return this;
+        }
+
+        public Builder setOrder(Orders order) {
+            this.order = order;
+            return this;
+        }
+
+        public Builder setMenu(Menu menu) {
+            this.menu = menu;
+            return this;
+        }
+
+        public Builder setQuantity(Quantity quantity) {
+            this.quantity = quantity;
+            return this;
+        }
+
+        public OrderLineItem builder() {
+            return new OrderLineItem(this);
+        }
     }
 }
