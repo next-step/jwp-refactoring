@@ -9,9 +9,13 @@ public class MenuGroupResponse {
     protected MenuGroupResponse() {
     }
 
-    public MenuGroupResponse(Long id, String name) {
+    public MenuGroupResponse(final Long id, final String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public static MenuGroupResponse of(final MenuGroup menuGroup) {
+        return new MenuGroupResponse(menuGroup.getId(), menuGroup.getName());
     }
 
     public Long getId() {
@@ -20,9 +24,5 @@ public class MenuGroupResponse {
 
     public String getName() {
         return name;
-    }
-
-    public static MenuGroupResponse of(MenuGroup menuGroup) {
-        return new MenuGroupResponse(menuGroup.getId(), menuGroup.getName());
     }
 }

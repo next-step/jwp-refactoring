@@ -23,12 +23,12 @@ public class Product {
     protected Product() {
     }
 
-    public Product(String name, BigDecimal unitPrice) {
+    public Product(final String name, final BigDecimal unitPrice) {
         this.name = name;
         this.unitPrice = new Price(unitPrice);
     }
 
-    public Product(Long id, String name, Long unitPrice) {
+    public Product(final Long id, final String name, final Long unitPrice) {
         this.id = id;
         this.name = name;
         this.unitPrice = new Price(BigDecimal.valueOf(unitPrice));
@@ -46,7 +46,7 @@ public class Product {
         return unitPrice.getValue();
     }
 
-    public BigDecimal getPrice(Quantity quantity) {
+    public BigDecimal getPrice(final Quantity quantity) {
         return unitPrice.getPrice(quantity);
     }
 }

@@ -34,24 +34,24 @@ public class Menu {
     protected Menu() {
     }
 
-    private Menu(String name, BigDecimal price, MenuGroup menuGroup) {
+    private Menu(final String name, final BigDecimal price, final MenuGroup menuGroup) {
         validateMenuGroup(menuGroup);
         this.name = name;
         this.price = new Price(price);
         this.menuGroup = menuGroup;
     }
 
-    private void validateMenuGroup(MenuGroup menuGroup) {
+    private void validateMenuGroup(final MenuGroup menuGroup) {
         if (menuGroup == null) {
             throw new IllegalArgumentException("메뉴 그룹이 필요합니다.");
         }
     }
 
     public static Menu createMenu(
-            String name,
-            BigDecimal price,
-            MenuGroup menuGroup,
-            List<MenuProduct> menuProducts
+            final String name,
+            final BigDecimal price,
+            final MenuGroup menuGroup,
+            final List<MenuProduct> menuProducts
     ) {
         Menu menu = new Menu(name, price, menuGroup);
         menu.addMenuProducts(menuProducts);
@@ -59,7 +59,7 @@ public class Menu {
         return menu;
     }
 
-    private void addMenuProducts(List<MenuProduct> menuProducts) {
+    private void addMenuProducts(final List<MenuProduct> menuProducts) {
         this.menuProducts.addAll(this, menuProducts);
     }
 
@@ -83,7 +83,7 @@ public class Menu {
         return menuProducts.getElements();
     }
 
-    public boolean hasPriceGreaterThan(BigDecimal totalPrice) {
+    public boolean hasPriceGreaterThan(final BigDecimal totalPrice) {
         if (totalPrice == null) {
             throw new IllegalArgumentException("총 상품 금액은 null일 수 없습니다.");
         }

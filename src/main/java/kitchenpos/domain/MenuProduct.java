@@ -32,18 +32,18 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
-    public MenuProduct(Product product, Long quantity) {
+    public MenuProduct(final Product product, final Long quantity) {
         this.product = product;
         this.quantity = new Quantity(quantity);
     }
 
     // for test
-    public MenuProduct(Product product, long quantity) {
+    public MenuProduct(final Product product, final long quantity) {
         this.product = product;
         this.quantity = new Quantity(quantity);
     }
 
-    public void setMenu(Menu menu) {
+    public void setMenu(final Menu menu) {
         this.menu = menu;
     }
 

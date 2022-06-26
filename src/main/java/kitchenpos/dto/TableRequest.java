@@ -7,7 +7,7 @@ public class TableRequest {
     protected TableRequest() {
     }
 
-    public TableRequest(Integer numberOfGuests, Boolean empty) {
+    public TableRequest(final Integer numberOfGuests, final Boolean empty) {
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }

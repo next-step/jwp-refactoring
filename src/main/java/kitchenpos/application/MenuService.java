@@ -58,7 +58,7 @@ public class MenuService {
                 .collect(Collectors.toList());
     }
 
-    public Menu findMenuById(Long id) {
+    public Menu findMenuById(final Long id) {
         return menuRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("메뉴를 찾을 수 없습니다. id: " + id));
     }

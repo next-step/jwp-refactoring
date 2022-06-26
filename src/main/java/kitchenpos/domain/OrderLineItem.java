@@ -31,18 +31,18 @@ public class OrderLineItem {
     protected OrderLineItem() {
     }
 
-    public OrderLineItem(Menu menu, Long quantity) {
+    public OrderLineItem(final Menu menu, final Long quantity) {
         this.menu = menu;
         this.quantity = new Quantity(quantity);
     }
 
     // for test
-    public OrderLineItem(Menu menu, long quantity) {
+    public OrderLineItem(final Menu menu, final long quantity) {
         this.menu = menu;
         this.quantity = new Quantity(quantity);
     }
 
-    public void setOrder(Order order) {
+    public void setOrder(final Order order) {
         this.order = order;
     }
 

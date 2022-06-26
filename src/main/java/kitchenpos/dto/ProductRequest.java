@@ -9,14 +9,9 @@ public class ProductRequest {
     protected ProductRequest() {
     }
 
-    public ProductRequest(String name, long price) {
+    public ProductRequest(final String name, final long price) {
         this.name = name;
         this.price = BigDecimal.valueOf(price);
-    }
-
-    public ProductRequest(String name, BigDecimal price) {
-        this.name = name;
-        this.price = price;
     }
 
     public String getName() {

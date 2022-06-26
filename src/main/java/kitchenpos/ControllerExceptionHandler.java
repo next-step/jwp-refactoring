@@ -12,26 +12,26 @@ public class ControllerExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(IllegalStateException.class)
-    public ErrorResult handleIllegalStateException(IllegalStateException e) {
+    public ErrorResult handleIllegalStateException(final IllegalStateException e) {
         return new ErrorResult(e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(IllegalArgumentException.class)
-    public ErrorResult handleIllegalArgumentException(IllegalArgumentException e) {
+    public ErrorResult handleIllegalArgumentException(final IllegalArgumentException e) {
         return new ErrorResult(e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(NoSuchElementException.class)
-    public ErrorResult handleNoSuchElementException(NoSuchElementException e) {
+    public ErrorResult handleNoSuchElementException(final NoSuchElementException e) {
         return new ErrorResult(e.getMessage());
     }
 
     static class ErrorResult {
         private final String message;
 
-        public ErrorResult(String message) {
+        public ErrorResult(final String message) {
             this.message = message;
         }
 

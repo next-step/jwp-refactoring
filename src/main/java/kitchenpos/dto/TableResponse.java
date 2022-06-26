@@ -13,14 +13,18 @@ public class TableResponse {
     protected TableResponse() {
     }
 
-    public TableResponse(Long id, Long tableGroupId, Integer numberOfGuests, Boolean empty) {
+    public TableResponse(
+            final Long id,
+            final Long tableGroupId,
+            final Integer numberOfGuests,
+            final Boolean empty) {
         this.id = id;
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
 
-    public static TableResponse of(OrderTable orderTable) {
+    public static TableResponse of(final OrderTable orderTable) {
         Long tableGroupId = null;
         if (orderTable.getTableGroup() != null) {
             tableGroupId = orderTable.getTableGroup().getId();
@@ -51,7 +55,7 @@ public class TableResponse {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TableResponse that = (TableResponse) o;

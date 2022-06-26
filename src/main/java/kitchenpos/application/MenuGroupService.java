@@ -21,7 +21,7 @@ public class MenuGroupService {
     }
 
     @Transactional
-    public MenuGroupResponse create(MenuGroupRequest request) {
+    public MenuGroupResponse create(final MenuGroupRequest request) {
         MenuGroup persistedMenuGroup = menuGroupRepository.save(new MenuGroup(request.getName()));
         return MenuGroupResponse.of(persistedMenuGroup);
     }
@@ -32,7 +32,7 @@ public class MenuGroupService {
                 .collect(Collectors.toList());
     }
 
-    public MenuGroup findMenuGroupById(Long id) {
+    public MenuGroup findMenuGroupById(final Long id) {
         return menuGroupRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("메뉴 그룹을 찾을 수 없습니다. id: " + id));
     }

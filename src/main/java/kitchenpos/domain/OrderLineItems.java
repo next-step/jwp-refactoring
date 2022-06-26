@@ -13,7 +13,7 @@ public class OrderLineItems {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderLineItem> elements = new ArrayList<>();
 
-    public void add(OrderLineItem orderLineItem) {
+    public void add(final OrderLineItem orderLineItem) {
         elements.add(orderLineItem);
     }
 
@@ -21,7 +21,7 @@ public class OrderLineItems {
         return elements;
     }
 
-    public void addAll(Order order, List<OrderLineItem> orderLineItems) {
+    public void addAll(final Order order, final List<OrderLineItem> orderLineItems) {
         if (orderLineItems.size() < MINIMUM_ITEM_SIZE) {
             throw new IllegalArgumentException("주문 항목은 하나 이상이어야 합니다.");
         }

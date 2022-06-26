@@ -6,7 +6,7 @@ public class MenuGroupRequest {
     protected MenuGroupRequest() {
     }
 
-    public MenuGroupRequest(String name) {
+    public MenuGroupRequest(final String name) {
         this.name = name;
     }
 

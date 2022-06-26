@@ -12,7 +12,10 @@ public class ChangeOrderStatusRequest {
     protected ChangeOrderStatusRequest() {
     }
 
-    public ChangeOrderStatusRequest(Long orderTableId, OrderStatus orderStatus, List<OrderLineItemRequest> orderLineItems) {
+    public ChangeOrderStatusRequest(
+            final Long orderTableId,
+            final OrderStatus orderStatus,
+            final List<OrderLineItemRequest> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderLineItems = orderLineItems;

@@ -7,7 +7,7 @@ public class MenuProductRequest {
     protected MenuProductRequest() {
     }
 
-    public MenuProductRequest(Long id, long quantity) {
+    public MenuProductRequest(final Long id, final long quantity) {
         this.id = id;
         this.quantity = quantity;
     }

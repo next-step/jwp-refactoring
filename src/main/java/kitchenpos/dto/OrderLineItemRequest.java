@@ -7,7 +7,7 @@ public class OrderLineItemRequest {
     protected OrderLineItemRequest() {
     }
 
-    public OrderLineItemRequest(Long menuId, long quantity) {
+    public OrderLineItemRequest(final Long menuId, final long quantity) {
         this.menuId = menuId;
         this.quantity = quantity;
     }

@@ -55,7 +55,7 @@ public class TableService {
         orderTable.changeEmpty(empty);
     }
 
-    public boolean hasCookingOrMeal(OrderTable orderTable) {
+    public boolean hasCookingOrMeal(final OrderTable orderTable) {
         return orderRepository.existsByOrderTableAndOrderStatusIn(orderTable, OrderStatus.NOT_COMPLETED);
     }
 
@@ -65,7 +65,7 @@ public class TableService {
         orderTable.changeNumberOfGuests(numberOfGuests);
     }
 
-    public OrderTable findOrderTableById(Long id) {
+    public OrderTable findOrderTableById(final Long id) {
         return tableRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("주문 테이블을 찾을 수 없습니다. id: " + id));
     }

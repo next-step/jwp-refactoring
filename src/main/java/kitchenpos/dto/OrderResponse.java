@@ -18,11 +18,11 @@ public class OrderResponse {
     }
 
     public OrderResponse(
-            Long id,
-            Long orderTableId,
-            OrderStatus orderStatus,
-            LocalDateTime orderedTime,
-            List<OrderLineItemResponse> orderLineItems) {
+            final Long id,
+            final Long orderTableId,
+            final OrderStatus orderStatus,
+            final LocalDateTime orderedTime,
+            final List<OrderLineItemResponse> orderLineItems) {
         this.id = id;
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
@@ -30,7 +30,7 @@ public class OrderResponse {
         this.orderLineItems = orderLineItems;
     }
 
-    public static OrderResponse of(Order order) {
+    public static OrderResponse of(final Order order) {
         return new OrderResponse(
                 order.getId(),
                 order.getOrderTable().getId(),

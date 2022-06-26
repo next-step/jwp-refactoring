@@ -12,13 +12,13 @@ public class ProductResponse {
     protected ProductResponse() {
     }
 
-    public ProductResponse(Long id, String name, BigDecimal unitPrice) {
+    public ProductResponse(final Long id, final String name, final BigDecimal unitPrice) {
         this.id = id;
         this.name = name;
         this.price = unitPrice;
     }
 
-    public static ProductResponse of(Product product) {
+    public static ProductResponse of(final Product product) {
         return new ProductResponse(
                 product.getId(),
                 product.getName(),

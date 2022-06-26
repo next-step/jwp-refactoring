@@ -22,9 +22,9 @@ public class OrderService {
     private final TableService tableService;
 
     public OrderService(
-            OrderRepository orderRepository,
-            MenuService menuService,
-            TableService tableService) {
+            final OrderRepository orderRepository,
+            final MenuService menuService,
+            final TableService tableService) {
         this.orderRepository = orderRepository;
         this.menuService = menuService;
         this.tableService = tableService;
@@ -36,7 +36,7 @@ public class OrderService {
         return OrderResponse.of(persistOrder);
     }
 
-    private Order toEntity(OrderRequest request) {
+    private Order toEntity(final OrderRequest request) {
         OrderTable orderTable = tableService.findOrderTableById(request.getOrderTableId());
         List<OrderLineItem> orderLineItems = request.getOrderLineItems().stream()
                 .map(itemRequest -> new OrderLineItem(
@@ -59,7 +59,7 @@ public class OrderService {
         order.changeOrderStatus(status);
     }
 
-    public Order findOrderById(Long id) {
+    public Order findOrderById(final Long id) {
         return orderRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("주문을 찾을 수 없습니다. id: " + id));
     }

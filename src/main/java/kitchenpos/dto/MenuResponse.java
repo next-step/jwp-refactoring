@@ -17,7 +17,12 @@ public class MenuResponse {
     protected MenuResponse() {
     }
 
-    public MenuResponse(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProductResponse> products) {
+    public MenuResponse(
+            final Long id,
+            final String name,
+            final BigDecimal price,
+            final Long menuGroupId,
+            final List<MenuProductResponse> products) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -25,7 +30,7 @@ public class MenuResponse {
         this.products = products;
     }
 
-    public static MenuResponse of(Menu menu) {
+    public static MenuResponse of(final Menu menu) {
         return new MenuResponse(
                 menu.getId(),
                 menu.getName(),
@@ -58,7 +63,7 @@ public class MenuResponse {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MenuResponse that = (MenuResponse) o;

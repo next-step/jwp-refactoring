@@ -14,13 +14,16 @@ public class TableGroupResponse {
     protected TableGroupResponse() {
     }
 
-    public TableGroupResponse(Long id, LocalDateTime createdDate, List<TableResponse> orderTables) {
+    public TableGroupResponse(
+            final Long id,
+            final LocalDateTime createdDate,
+            final List<TableResponse> orderTables) {
         this.id = id;
         this.createdDate = createdDate;
         this.orderTables = orderTables;
     }
 
-    public static TableGroupResponse of(TableGroup tableGroup) {
+    public static TableGroupResponse of(final TableGroup tableGroup) {
         return new TableGroupResponse(
                 tableGroup.getId(),
                 tableGroup.getCreatedDate(),

@@ -11,12 +11,12 @@ public class Quantity {
     protected Quantity() {
     }
 
-    public Quantity(Long value) {
+    public Quantity(final Long value) {
         validate(value);
         this.value = value;
     }
 
-    private void validate(Long value) {
+    private void validate(final Long value) {
         if (value < 0) {
             throw new IllegalArgumentException("수량은 0 이상이어야 합니다.");
         }

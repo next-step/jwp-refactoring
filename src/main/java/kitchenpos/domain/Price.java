@@ -13,12 +13,12 @@ public class Price {
     protected Price() {
     }
 
-    public Price(BigDecimal price) {
+    public Price(final BigDecimal price) {
         validate(price);
         this.value = price;
     }
 
-    private void validate(BigDecimal price) {
+    private void validate(final BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("가격은 0 이상이어야 합니다.");
         }
@@ -28,11 +28,11 @@ public class Price {
         return value;
     }
 
-    public BigDecimal getPrice(Quantity quantity) {
+    public BigDecimal getPrice(final Quantity quantity) {
         return value.multiply(BigDecimal.valueOf(quantity.getValue()));
     }
 
-    public boolean isGreaterThan(BigDecimal val) {
+    public boolean isGreaterThan(final BigDecimal val) {
         if (val == null) {
             throw new IllegalArgumentException("인자가 null이라 비교할 수 없습니다.");
         }

@@ -13,14 +13,18 @@ public class OrderLineItemResponse {
     protected OrderLineItemResponse() {
     }
 
-    public OrderLineItemResponse(Long id, String menuName, BigDecimal menuPrice, Long quantity) {
+    public OrderLineItemResponse(
+            final Long id,
+            final String menuName,
+            final BigDecimal menuPrice,
+            final Long quantity) {
         this.id = id;
         this.menuName = menuName;
         this.menuPrice = menuPrice;
         this.quantity = quantity;
     }
 
-    public static OrderLineItemResponse of(OrderLineItem orderLineItem) {
+    public static OrderLineItemResponse of(final OrderLineItem orderLineItem) {
         return new OrderLineItemResponse(
                 orderLineItem.getId(),
                 orderLineItem.getMenu().getName(),

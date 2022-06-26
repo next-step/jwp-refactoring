@@ -27,7 +27,7 @@ public class OrderTable {
     protected OrderTable() {
     }
 
-    public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
+    public OrderTable(final TableGroup tableGroup, final int numberOfGuests, final boolean empty) {
         this.tableGroup = tableGroup;
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
         this.empty = empty;
@@ -41,7 +41,7 @@ public class OrderTable {
         return tableGroup;
     }
 
-    public void setTableGroup(TableGroup tableGroup) {
+    public void setTableGroup(final TableGroup tableGroup) {
         this.tableGroup = tableGroup;
     }
 
@@ -53,14 +53,14 @@ public class OrderTable {
         return empty;
     }
 
-    public void changeNumberOfGuests(int numberOfGuests) {
+    public void changeNumberOfGuests(final int numberOfGuests) {
         if (empty) {
             throw new IllegalStateException("빈 테이블이어서 손님 수를 변경할 수 없습니다.");
         }
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
     }
 
-    public void changeEmpty(boolean empty) {
+    public void changeEmpty(final boolean empty) {
         if (tableGroup != null) {
             throw new IllegalStateException("단체 지정되어 빈 테이블로 설정할 수 없습니다.");
         }

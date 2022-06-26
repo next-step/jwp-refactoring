@@ -16,7 +16,7 @@ public class MenuProducts {
         return elements;
     }
 
-    public void addAll(Menu menu, List<MenuProduct> menuProducts) {
+    public void addAll(final Menu menu, final List<MenuProduct> menuProducts) {
         if (menu.hasPriceGreaterThan(totalPriceOf(menuProducts))) {
             throw new IllegalArgumentException("메뉴 가격은 구성 상품 총 가격보다 클 수 없습니다.");
         }
@@ -27,7 +27,7 @@ public class MenuProducts {
         }
     }
 
-    private BigDecimal totalPriceOf(List<MenuProduct> menuProducts) {
+    private BigDecimal totalPriceOf(final List<MenuProduct> menuProducts) {
         return menuProducts.stream()
                 .map(menuProduct -> menuProduct.getPrice())
                 .reduce(BigDecimal.ZERO, (acc, price) -> acc.add(price));

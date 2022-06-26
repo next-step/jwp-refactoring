@@ -26,7 +26,7 @@ public class ProductService {
         return ProductResponse.of(product);
     }
 
-    private Product toEntity(ProductRequest request) {
+    private Product toEntity(final ProductRequest request) {
         return new Product(request.getName(), request.getPrice());
     }
 
@@ -36,7 +36,7 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-    public Product findProductById(Long id) {
+    public Product findProductById(final Long id) {
         return productRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("상품을 찾을 수 없습니다. id: " + id));
     }

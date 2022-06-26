@@ -43,30 +43,30 @@ public class Order {
     protected Order() {
     }
 
-    private Order(OrderTable orderTable, OrderStatus orderStatus) {
+    private Order(final OrderTable orderTable, final OrderStatus orderStatus) {
         validateOrderTable(orderTable);
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
     }
 
-    private void validateOrderTable(OrderTable orderTable) {
+    private void validateOrderTable(final OrderTable orderTable) {
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException("빈 테이블에는 주문을 등록할 수 없습니다.");
         }
     }
 
-    public static Order createOrder(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+    public static Order createOrder(final OrderTable orderTable, final List<OrderLineItem> orderLineItems) {
         Order order = new Order(orderTable, OrderStatus.DEFAULT);
         order.addOrderLineItems(orderLineItems);
 
         return order;
     }
 
-    private void addOrderLineItems(List<OrderLineItem> orderLineItems) {
+    private void addOrderLineItems(final List<OrderLineItem> orderLineItems) {
         this.orderLineItems.addAll(this, orderLineItems);
     }
 
-    public void changeOrderStatus(OrderStatus orderStatus) {
+    public void changeOrderStatus(final OrderStatus orderStatus) {
         if (this.orderStatus == OrderStatus.COMPLETION) {
             throw new IllegalStateException("계산이 완료되어 상태를 변경할 수 없습니다.");
         }
