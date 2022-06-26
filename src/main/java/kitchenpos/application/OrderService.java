@@ -128,6 +128,11 @@ public class OrderService {
         return orders;
     }
 
+    @Transactional(readOnly = true)
+    public List<OrderResponse> list2() {
+        return OrderResponse.from(orderRepository.findAll());
+    }
+
     @Transactional
     public Order changeOrderStatus(final Long orderId, final Order order) {
         final Order savedOrder = orderRepository.findById(orderId)
