@@ -9,6 +9,23 @@
 - 상품(Product) 기본 기능
     - 상품 추가
     - 상품 리스트 출력
+    
+### 단체 지정(TableGroup)
+- 통합 계산을 위해 개별 주문 테이블을 그룹화하는 기능이다.
+- 식별자(id), 생성 날짜(createdDate), 주문 테이블 목록(orderTables) 정보 포함한다.
+
+- `단체 지정(TableGroup)` 추가 기능
+    - `단체 지정(TableGroup)`을 DB에 저장한다.
+    - `단체 지정(TableGroup)`과 연관된 `주문 테이블(OrderTable)` 상태를 `Not Empty` 상태로 변경한다.
+    - `단체 지정(TableGroup)`과 연관된 `주문 테이블(OrderTable)` DB 외래키에 저장한다.
+    - (조건) 연관된 `주문 테이블(OrderTable)`이 2개 이상 존재해야 한다.
+    - (조건) 연관된 `주문 테이블(OrderTable)`이 데이터베이스에 저장된 상태여야 한다.
+    - (조건) 연관된 `주문 테이블(OrderTable)`이 상태가 `Eempty`있어야 한다.
+    - (조건) 연관된 `주문 테이블(OrderTable)`이 기존에 다른 `단체 지정(TableGroup)`과 매핑되지 않은 상태여야 한다.
+    
+- `단체 지정(TableGroup)`과 `주문 테이블(OrderTable)` 간 그룹 해제 기능
+    - `단체 지정(TableGroup)`과 연관된 `주문 테이블(OrderTable)` DB 외래키를 `null`로 업데이트 한다.
+    - (조건) 연관된 `주문 테이블(OrTable)`과 매핑된 `주문(Order)`이 `계산 완료(COMPLETION)` 상태여야 한다.
 
 ## 용어 사전
 
