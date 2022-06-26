@@ -11,7 +11,7 @@ import kitchenpos.application.helper.ServiceTestHelper;
 import kitchenpos.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
 import kitchenpos.fixture.MenuProductFixtureFactory;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;

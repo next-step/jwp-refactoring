@@ -11,7 +11,7 @@ import kitchenpos.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
 import kitchenpos.domain.TableGroup;
 
 public class KitchenPosBehaviors {
