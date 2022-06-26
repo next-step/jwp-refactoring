@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -14,7 +13,6 @@ import kitchenpos.application.fixture.MenuFixtureFactory;
 import kitchenpos.application.fixture.MenuGroupFixtureFactory;
 import kitchenpos.application.fixture.MenuProductFixtureFactory;
 import kitchenpos.application.fixture.OrderFixtureFactory;
-import kitchenpos.application.fixture.OrderLineItemFixtureFactory;
 import kitchenpos.application.fixture.OrderTableFixtureFactory;
 import kitchenpos.application.fixture.ProductFixtureFactory;
 import kitchenpos.domain.Menu;
@@ -69,7 +67,6 @@ class OrderServiceTest extends ServiceTest {
     private Product 짬뽕;
     private Product 짜장;
     private Order 주문1;
-    private Order 주문2;
     private OrderTable 주문_테이블;
     private OrderTable 빈주문_테이블;
     private OrderLineItem 중식_주문_항목;
@@ -90,26 +87,11 @@ class OrderServiceTest extends ServiceTest {
         주문_테이블 = orderTableRepository.save(OrderTableFixtureFactory.createByGuestNumberWithoutId(1, false));
         빈주문_테이블 = orderTableRepository.save(OrderTableFixtureFactory.createByGuestNumberWithoutId(0, true));
 
-        주문1 = orderRepository.save(OrderFixtureFactory.createWithoutId(주문_테이블.getId()));
-        주문2 = orderRepository.save(OrderFixtureFactory.createWithoutId(주문_테이블.getId()));
-        중식_주문_항목 = OrderLineItemFixtureFactory.createWithoutId(주문1, 중식_메뉴.getId(), 1);
+        중식_주문_항목 = new OrderLineItem(중식_메뉴.getId(), 1);
 
-        주문1.addOrderLineItems(Arrays.asList(중식_주문_항목));
-        주문2.addOrderLineItems(Arrays.asList(중식_주문_항목));
+        주문1 = orderRepository.save(OrderFixtureFactory.createWithoutIdOneLineItem(주문_테이블.getId(), 중식_주문_항목));
     }
 
-    @Test
-    @DisplayName("생성하려는 주문에서 주문 항목이 비어있으면 주문을 생성 할 수 없다.")
-    void createFailWithEmptyTest() {
-        //given
-        Order order = new Order(주문_테이블.getId(), Collections.emptyList());
-
-        //when & then
-        assertThatThrownBy(
-                () -> orderService.create(
-                        OrderRequest.of(order.getOrderTableId(), toOrderLineItemRequests(order.getOrderLineItems())))
-        ).isInstanceOf(IllegalArgumentException.class);
-    }
 
     private List<OrderLineItemRequest> toOrderLineItemRequests(List<OrderLineItem> orderLineItems) {
         return orderLineItems.stream().
@@ -122,12 +104,12 @@ class OrderServiceTest extends ServiceTest {
     void createFailWithMenuNotExistTest() {
         //given
         OrderLineItem orderLineItem = new OrderLineItem(100L, 100);
-        주문1.addOrderLineItems(Arrays.asList(orderLineItem));
+        Order order = new Order(주문_테이블.getId(), orderLineItem);
 
         //when & then
         assertThatThrownBy(
                 () -> orderService.create(
-                        OrderRequest.of(주문1.getOrderTableId(), toOrderLineItemRequests(주문1.getOrderLineItems())))
+                        OrderRequest.of(order.getOrderTableId(), toOrderLineItemRequests(order.getOrderLineItems())))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -148,8 +130,7 @@ class OrderServiceTest extends ServiceTest {
     @DisplayName("생성하려는 주문에서 주문 테이블이 빈주문 테이블이면 생성 할 수 없다.")
     void createFailWithEmptyOrderTableTest() {
         //given
-        Order order = new Order(10L, 빈주문_테이블.getId());
-        order.addOrderLineItems(Arrays.asList(중식_주문_항목));
+        Order order = new Order(빈주문_테이블.getId(), 중식_주문_항목);
 
         //when & then
         assertThatThrownBy(
@@ -178,7 +159,7 @@ class OrderServiceTest extends ServiceTest {
         List<OrderResponse> orders = orderService.list();
 
         //then
-        assertThat(orders).hasSize(2);
+        assertThat(orders).hasSize(1);
     }
 
     @Test

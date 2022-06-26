@@ -3,7 +3,6 @@ package kitchenpos.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.util.Arrays;
 import java.util.Collections;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,10 +14,9 @@ class OrderTest {
     void addOrderLineTest() {
         //given
         OrderTable orderTable = new OrderTable(1L, 10, false);
-        Order order = new Order(orderTable.getId());
 
         //when
-        order.addOrderLineItems(Arrays.asList(new OrderLineItem(1L, 10)));
+        Order order = new Order(orderTable.getId(), new OrderLineItem(1L, 10));
 
         //then
         assertThat(order.getOrderLineItems()).hasSize(1);
@@ -29,11 +27,10 @@ class OrderTest {
     void addEmptyOrderLineTest() {
         //given
         OrderTable orderTable = new OrderTable(1L, 10, false);
-        Order order = new Order(orderTable.getId());
 
         //when & then
         assertThatThrownBy(
-                () -> order.addOrderLineItems(Collections.emptyList())
+                () -> new Order(orderTable.getId(),Collections.emptyList())
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -42,7 +39,7 @@ class OrderTest {
     void changeOrderStatusTest() {
         //given
         OrderTable orderTable = new OrderTable(1L, 10, false);
-        Order order = new Order(orderTable.getId());
+        Order order = new Order(orderTable.getId(), new OrderLineItem(1L, 10));
 
         //when
         order.changeOrderStatus(OrderStatus.COMPLETION);

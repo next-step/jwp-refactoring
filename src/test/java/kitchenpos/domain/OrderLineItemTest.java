@@ -14,12 +14,10 @@ class OrderLineItemTest {
 
         //given
         OrderTable orderTable = new OrderTable(10, false);
-        Order order = new Order(orderTable.getId());
-
         OrderLineItem orderLineItem = new OrderLineItem(1L, 10);
 
         //when
-        orderLineItem.registerOrder(order);
+        Order order = new Order(orderTable.getId(), orderLineItem);
 
         //then
         assertThat(orderLineItem.getOrder()).isNotNull();

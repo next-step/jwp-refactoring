@@ -40,7 +40,6 @@ public class OrderService {
     public OrderResponse create(final OrderRequest request) {
         validate(request);
         final Order savedOrder = orderRepository.save(request.toOrder());
-        savedOrder.addOrderLineItems(request.toOrderLineItems());
         return OrderResponse.from(savedOrder);
     }
 

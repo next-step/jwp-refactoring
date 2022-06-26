@@ -32,7 +32,7 @@ public class OrderRequest {
     }
 
     public Order toOrder() {
-        return new Order(orderTableId);
+        return new Order(orderTableId, toOrderLineItems());
     }
 
     public List<OrderLineItem> toOrderLineItems() {

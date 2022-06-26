@@ -2,12 +2,19 @@ package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import kitchenpos.application.fixture.OrderTableFixtureFactory;
+import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuGroupRepository;
+import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
@@ -35,13 +42,11 @@ class TableServiceTest extends ServiceTest {
     private OrderRepository orderRepository;
 
     private OrderTable 주문_테이블1;
-    private OrderTable 주문_테이블2;
 
 
     @BeforeEach
     void before() {
         주문_테이블1 = orderTableRepository.save(OrderTableFixtureFactory.createByGuestNumberWithoutId(3, false));
-        주문_테이블2 = orderTableRepository.save(OrderTableFixtureFactory.createByGuestNumberWithoutId(3, false));
     }
 
     @Test
@@ -52,6 +57,11 @@ class TableServiceTest extends ServiceTest {
                 OrderTableRequest.of(주문_테이블1.getNumberOfGuests(), 주문_테이블1.isEmpty()));
 
         //then
+        assertAll(
+                () -> assertThat(orderTable).isNotNull(),
+                () -> assertThat(orderTable.getNumberOfGuests()).isEqualTo(주문_테이블1.getNumberOfGuests()),
+                () -> assertThat(orderTable.isEmpty()).isEqualTo(주문_테이블1.isEmpty())
+        );
         assertThat(orderTable).isNotNull();
         assertThat(orderTable.getNumberOfGuests()).isEqualTo(주문_테이블1.getNumberOfGuests());
         assertThat(orderTable.isEmpty()).isEqualTo(주문_테이블1.isEmpty());
@@ -63,8 +73,10 @@ class TableServiceTest extends ServiceTest {
 
         List<OrderTableResponse> orderTables = tableService.list();
         //then
-        assertThat(orderTables).isNotNull();
-        assertThat(orderTables).hasSize(2);
+        assertAll(
+                () -> assertThat(orderTables).isNotNull(),
+                () -> assertThat(orderTables).hasSize(1)
+        );
     }
 
     @Test
@@ -95,9 +107,13 @@ class TableServiceTest extends ServiceTest {
 
     @Test
     @DisplayName("조리 중(COOKING), 식사 중(MEAL) 상태에 있으면 빈테이블로 지정 할 수 없다.")
-    void changeEmptyFailWithStatusTest() {
+    void changeEmptyFailWithStatusTest(@Autowired MenuRepository menuRepository,
+                                       @Autowired MenuGroupRepository menuGroupRepository) {
+        //given : 주문 생성
+        MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup("중식"));
+        Menu menu = menuRepository.save(new Menu("볶음밥", BigDecimal.valueOf(1000L), menuGroup));
 
-        Order order = new Order(주문_테이블1.getId());
+        Order order = new Order(주문_테이블1.getId(), new OrderLineItem(menu.getId(), 1));
         orderRepository.save(order);
 
         //when & then

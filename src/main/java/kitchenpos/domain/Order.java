@@ -2,6 +2,7 @@ package kitchenpos.domain;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -42,24 +43,19 @@ public class Order {
     protected Order() {
     }
 
-    public Order(Long orderTableId) {
-        this.orderTableId = orderTableId;
-        this.orderStatus = OrderStatus.COOKING;
-    }
-
-    public Order(Long id, Long orderTableId) {
-        this.id = id;
-        this.orderTableId = orderTableId;
-        this.orderStatus = OrderStatus.COOKING;
-    }
-
     public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderStatus = OrderStatus.COOKING;
-        this.orderLineItems = orderLineItems;
+        addOrderLineItems(orderLineItems);
     }
 
-    public void addOrderLineItems(List<OrderLineItem> orderLineItems) {
+    public Order(Long orderTableId, OrderLineItem orderLineItem) {
+        this.orderTableId = orderTableId;
+        this.orderStatus = OrderStatus.COOKING;
+        addOrderLineItems(Arrays.asList(orderLineItem));
+    }
+
+    private void addOrderLineItems(List<OrderLineItem> orderLineItems) {
         validateOrderLineItemsEmpty(orderLineItems);
         for (OrderLineItem orderLineItem : orderLineItems) {
             checkContainAndAdd(orderLineItem);

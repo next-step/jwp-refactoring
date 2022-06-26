@@ -4,9 +4,15 @@ package kitchenpos.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import kitchenpos.application.fixture.OrderTableFixtureFactory;
+import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuGroupRepository;
+import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
@@ -41,8 +47,8 @@ class TableGroupServiceTest extends ServiceTest {
 
     @BeforeEach
     void before() {
-        주문_테이블1 = orderTableRepository.save(OrderTableFixtureFactory.createByGuestNumberWithoutId( 2, true));
-        주문_테이블2 = orderTableRepository.save(OrderTableFixtureFactory.createByGuestNumberWithoutId( 3, true));
+        주문_테이블1 = orderTableRepository.save(OrderTableFixtureFactory.createByGuestNumberWithoutId(2, true));
+        주문_테이블2 = orderTableRepository.save(OrderTableFixtureFactory.createByGuestNumberWithoutId(3, true));
     }
 
     @Test
@@ -55,7 +61,8 @@ class TableGroupServiceTest extends ServiceTest {
 
         //when & then
         assertThatThrownBy(
-                () -> tableGroupService.create(TableGroupRequest.from(Arrays.asList(wrongOrderTable1.getId(), wrongOrderTable2.getId())))
+                () -> tableGroupService.create(
+                        TableGroupRequest.from(Arrays.asList(wrongOrderTable1.getId(), wrongOrderTable2.getId())))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -72,10 +79,13 @@ class TableGroupServiceTest extends ServiceTest {
 
     @Test
     @DisplayName("주문 상태가 조리중(COOKING), 식사중(MEAL)인 경우에는 해제 할 수 없다.")
-    void ungroupFailWithStatusTest() {
+    void ungroupFailWithStatusTest(@Autowired MenuRepository menuRepository,
+                                   @Autowired MenuGroupRepository menuGroupRepository) {
+        //given : 주문 생성
+        MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup("중식"));
+        Menu menu = menuRepository.save(new Menu( "볶음밥", BigDecimal.valueOf(1000L), menuGroup));
 
-        //given
-        Order order = new Order(주문_테이블1.getId());
+        Order order = new Order(주문_테이블1.getId(), new OrderLineItem(menu.getId(), 1));
         orderRepository.save(order);
         TableGroupResponse response = tableGroupService.create(
                 TableGroupRequest.from(Arrays.asList(주문_테이블1.getId(), 주문_테이블2.getId())));
