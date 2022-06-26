@@ -10,7 +10,7 @@ import javax.persistence.OneToMany;
 @Embeddable
 public class OrderLineItems {
 
-    @OneToMany(mappedBy = "order",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order",fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     // entity 기본생성자 이므로 사용 금지
