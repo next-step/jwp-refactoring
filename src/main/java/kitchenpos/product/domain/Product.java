@@ -7,8 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import kitchenpos.menu.domain.Name;
-import kitchenpos.menu.domain.Price;
+import kitchenpos.core.domain.Name;
+import kitchenpos.core.domain.Price;
 
 @Entity
 @Table(name = "product")

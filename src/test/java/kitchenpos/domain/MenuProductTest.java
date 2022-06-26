@@ -10,7 +10,7 @@ import kitchenpos.core.exception.CannotCreateException;
 import kitchenpos.core.exception.ExceptionType;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.Price;
+import kitchenpos.core.domain.Price;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

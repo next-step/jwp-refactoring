@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import kitchenpos.core.exception.BadRequestException;
 import kitchenpos.core.exception.ExceptionType;
-import kitchenpos.menu.domain.Name;
+import kitchenpos.core.domain.Name;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

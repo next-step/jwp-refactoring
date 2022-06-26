@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.math.BigDecimal;
 import kitchenpos.core.exception.BadRequestException;
 import kitchenpos.core.exception.ExceptionType;
-import kitchenpos.menu.domain.Price;
+import kitchenpos.core.domain.Price;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
