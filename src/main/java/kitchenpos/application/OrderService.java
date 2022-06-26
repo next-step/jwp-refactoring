@@ -40,28 +40,27 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        final OrderTable orderTable = orderTableRepository.findByIdAndEmptyIsFalse(orderRequest.getOrderTableId())
-                .orElseThrow(NoSuchElementException::new);
+        final OrderTable orderTable = findOrderTableAndEmptyIsFalse(orderRequest.getOrderTableId());
         Order order = orderRequest.toOrder(orderTable);
 
         final OrderLineItems orderLineItems = new OrderLineItems(order.getOrderLineItems().getOrderLineItems());
         final List<Long> menuIds = orderLineItems.findMenuIds();
-        orderLineItems.vaildateSize(menuRepository.countByIdIn(menuIds));
+        orderLineItems.vaildateSize(menuCountByIdIn(menuIds));
 
         final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
         for (final OrderLineItem orderLineItem : orderLineItems.getOrderLineItems()) {
-            savedOrderLineItems.add(orderLineItemRepository.save(orderLineItem));
+            savedOrderLineItems.add(saveOrderLineItem(orderLineItem));
         }
 
         Order saveOrder = new Order(orderTable, OrderStatus.COOKING, savedOrderLineItems);
-        final Order savedOrder = orderRepository.save(saveOrder);
+        final Order savedOrder = saveOrder(saveOrder);
 
         return OrderResponse.of(savedOrder);
     }
 
     @Transactional(readOnly = true)
     public List<OrderResponse> list() {
-        final List<Order> orders = orderRepository.findAll();
+        final List<Order> orders = findOrders();
 
         return orders.stream()
                 .map(OrderResponse::of)
@@ -70,17 +69,46 @@ public class OrderService {
 
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
-        OrderTable ordertable = orderTableRepository.findById(orderRequest.getOrderTableId())
-                .orElseThrow(NoSuchElementException::new);
+        OrderTable ordertable = findOrderTable(orderRequest.getOrderTableId());
         Order order = orderRequest.toOrder(ordertable);
 
-        final Order savedOrder = orderRepository.findById(orderId)
-                .orElseThrow(NoSuchElementException::new);
+        final Order savedOrder = findOrder(orderId);
 
         savedOrder.updateOrderStatus(order.getOrderStatus());
 
-        orderRepository.save(savedOrder);
+        saveOrder(savedOrder);
 
         return OrderResponse.of(savedOrder);
+    }
+
+    private Order saveOrder(Order saveOrder) {
+        return orderRepository.save(saveOrder);
+    }
+
+    private OrderLineItem saveOrderLineItem(OrderLineItem orderLineItem) {
+        return orderLineItemRepository.save(orderLineItem);
+    }
+
+    private long menuCountByIdIn(List<Long> menuIds) {
+        return menuRepository.countByIdIn(menuIds);
+    }
+
+    private OrderTable findOrderTableAndEmptyIsFalse(Long orderTableId) {
+        return orderTableRepository.findByIdAndEmptyIsFalse(orderTableId)
+                .orElseThrow(NoSuchElementException::new);
+    }
+
+    private Order findOrder(Long orderId) {
+        return orderRepository.findById(orderId)
+                .orElseThrow(NoSuchElementException::new);
+    }
+
+    private List<Order> findOrders() {
+        return orderRepository.findAll();
+    }
+
+    private OrderTable findOrderTable(Long orderTableId) {
+        return orderTableRepository.findById(orderTableId)
+                .orElseThrow(NoSuchElementException::new);
     }
 }

@@ -22,17 +22,25 @@ public class ProductService {
     public ProductResponse create(final ProductRequest productRequest) {
         Product product = productRequest.toProduct();
         product.validate();
-        Product saveProduct = productRepository.save(product);
+        Product saveProduct = saveProduct(product);
 
         return ProductResponse.of(saveProduct);
     }
 
     @Transactional(readOnly = true)
     public List<ProductResponse> list() {
-        List<Product> products = productRepository.findAll();
+        List<Product> products = findProducts();
 
         return products.stream()
                 .map(ProductResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    private Product saveProduct(Product product) {
+        return productRepository.save(product);
+    }
+
+    private List<Product> findProducts() {
+        return productRepository.findAll();
     }
 }

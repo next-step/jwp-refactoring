@@ -32,8 +32,7 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
-                .orElseThrow(NoSuchElementException::new);
+        MenuGroup menuGroup = findMenuGroup(menuRequest.getMenuGroupId());
 
         Menu menu = menuRequest.toMenu(menuGroup);
         menu.validateForCreate();
@@ -42,12 +41,12 @@ public class MenuService {
         List<Long> productIds = menu.getMenuProducts().findProductIds();
         extractedProducts(productIds);
 
-        return MenuResponse.of(menuRepository.save(menu));
+        return MenuResponse.of(saveMenu(menu));
     }
 
     @Transactional(readOnly = true)
     public List<MenuResponse> list() {
-        final List<Menu> menus = menuRepository.findAll();
+        final List<Menu> menus = findMenus();
 
         return menus.stream()
                 .map(MenuResponse::of)
@@ -58,5 +57,18 @@ public class MenuService {
         if (!productRepository.existsAllByIdIn(productIds)) {
             throw new IllegalArgumentException("잘못된 상품 정보 입니다.");
         }
+    }
+
+    private MenuGroup findMenuGroup(Long menuGroupId) {
+        return menuGroupRepository.findById(menuGroupId)
+                .orElseThrow(NoSuchElementException::new);
+    }
+
+    private Menu saveMenu(Menu menu) {
+        return menuRepository.save(menu);
+    }
+
+    private List<Menu> findMenus() {
+        return menuRepository.findAll();
     }
 }

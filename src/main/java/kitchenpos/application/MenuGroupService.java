@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,15 +22,28 @@ public class MenuGroupService {
     @Transactional
     public MenuGroupResponse create(final MenuGroupRequest menuGroupRequest) {
         MenuGroup menuGroup = menuGroupRequest.toMenuGroup();
-        return MenuGroupResponse.of(menuGroupRepository.save(menuGroup));
+        return MenuGroupResponse.of(saveMenuGroup(menuGroup));
     }
 
     @Transactional(readOnly = true)
     public List<MenuGroupResponse> list() {
-        List<MenuGroup> menuGroups = menuGroupRepository.findAll();
+        List<MenuGroup> menuGroups = findMenuGroups();
 
         return menuGroups.stream()
                 .map(MenuGroupResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    public MenuGroup findMenuGroup(Long menuGroupId) {
+        return menuGroupRepository.findById(menuGroupId)
+                .orElseThrow(NoSuchElementException::new);
+    }
+
+    private MenuGroup saveMenuGroup(MenuGroup menuGroup) {
+        return menuGroupRepository.save(menuGroup);
+    }
+
+    private List<MenuGroup> findMenuGroups() {
+        return menuGroupRepository.findAll();
     }
 }

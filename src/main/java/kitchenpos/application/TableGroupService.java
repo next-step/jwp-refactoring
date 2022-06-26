@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.domain.order.OrderStatus;
+import kitchenpos.domain.orderTable.OrderTable;
 import kitchenpos.domain.orderTable.OrderTableRepository;
 import kitchenpos.domain.orderTable.OrderTables;
 import kitchenpos.domain.tableGroup.TableGroup;
@@ -31,7 +32,7 @@ public class TableGroupService {
         OrderTables orderTables = new OrderTables(tableGroupRequest.getOrderTables());
 
         final List<Long> orderTableIds = orderTables.findOrderTableIds();
-        final OrderTables savedOrderTables = new OrderTables(orderTableRepository.findAllByIdIn(orderTableIds));
+        final OrderTables savedOrderTables = new OrderTables(findOrderTablesByIdIn(orderTableIds));
 
         orderTables.validateForCreateTableGroup(savedOrderTables);
         savedOrderTables.updateEmpty(false);
@@ -39,18 +40,34 @@ public class TableGroupService {
         TableGroup tableGroup = tableGroupRequest.toTableGroup();
         tableGroup.addOrderTables(savedOrderTables);
 
-        return TableGroupResponse.of(tableGroupRepository.save(tableGroup));
+        return TableGroupResponse.of(saveTableGroup(tableGroup));
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final OrderTables orderTables = new OrderTables(orderTableRepository.findAllByTableGroupId(tableGroupId));
+        final OrderTables orderTables = new OrderTables(findOrderTablesByTableGroupId(tableGroupId));
 
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTables.findOrderTableIds(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+        if (isExistsOrderTablesAndNotCompletion(orderTables)) {
             throw new IllegalArgumentException();
         }
 
         orderTables.updateTableGroup(null);
+    }
+
+    private List<OrderTable> findOrderTablesByTableGroupId(Long tableGroupId) {
+        return orderTableRepository.findAllByTableGroupId(tableGroupId);
+    }
+
+    private TableGroup saveTableGroup(TableGroup tableGroup) {
+        return tableGroupRepository.save(tableGroup);
+    }
+
+    private List<OrderTable> findOrderTablesByIdIn(List<Long> orderTableIds) {
+        return orderTableRepository.findAllByIdIn(orderTableIds);
+    }
+
+    private boolean isExistsOrderTablesAndNotCompletion(OrderTables orderTables) {
+        return orderRepository.existsByOrderTableIdInAndOrderStatusIn(
+                orderTables.findOrderTableIds(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()));
     }
 }
