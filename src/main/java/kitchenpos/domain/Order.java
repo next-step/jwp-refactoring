@@ -3,7 +3,7 @@ package kitchenpos.domain;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
@@ -13,10 +13,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @EntityListeners(AuditingEntityListener.class)
@@ -38,8 +36,8 @@ public class Order {
     @CreatedDate
     private LocalDateTime orderedTime;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderLineItem> orderLineItems = new ArrayList<>();
+    @Embedded
+    private OrderLineItems orderLineItems = new OrderLineItems();
 
     protected Order() {
     }
@@ -97,6 +95,6 @@ public class Order {
     }
 
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
+        return orderLineItems.getElements();
     }
 }
