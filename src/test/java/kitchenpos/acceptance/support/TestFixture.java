@@ -2,10 +2,10 @@ package kitchenpos.acceptance.support;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.menu.domain.request.MenuProductRequest;
 import kitchenpos.menu.domain.request.MenuRequest;
-import kitchenpos.menu.domain.request.ProductRequest;
+import kitchenpos.product.dto.request.ProductRequest;
 import kitchenpos.table.dto.request.OrderTableRequest;
 
 public class TestFixture {

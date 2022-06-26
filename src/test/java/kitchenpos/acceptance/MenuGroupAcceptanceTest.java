@@ -7,7 +7,7 @@ import static kitchenpos.acceptance.support.MenuGroupAcceptanceSupport.메뉴_�
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.menu.domain.request.MenuGroupRequest;
+import kitchenpos.menuGroup.dto.request.MenuGroupRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

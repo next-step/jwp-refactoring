@@ -9,7 +9,7 @@ import kitchenpos.core.exception.BadRequestException;
 import kitchenpos.core.exception.ExceptionType;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.Product;
+import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
