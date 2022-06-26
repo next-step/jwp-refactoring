@@ -51,7 +51,7 @@ public class OrderServiceTest {
     @Test
     void create() {
         when(menuDao.countByIdIn(any())).thenReturn(1L);
-        OrderTable orderTable = TableServiceTest.createOrderTable(3, false);
+        OrderTable orderTable = new OrderTable(1L, 3, false);
         when(orderTableDao.findById(any())).thenReturn(Optional.of(orderTable));
         when(orderDao.save(any())).thenReturn(createOrder());
         when(orderListItemDao.save(any())).thenReturn(createOrderListItem());
@@ -161,18 +161,18 @@ public class OrderServiceTest {
 
     public static Order createOrder() {
         OrderLineItem orderListItem = createOrderListItem();
-        OrderTable orderTable = TableServiceTest.createOrderTable(3, false);
+        OrderTable orderTable = new OrderTable(1L, 3, false);
         return new Order(1L, orderTable.getId(), Arrays.asList(orderListItem));
     }
 
     public static Order createOrderWithoutOrderListItem() {
-        OrderTable orderTable = TableServiceTest.createOrderTable(3, false);
+        OrderTable orderTable = new OrderTable(1L, 3, false);
         return new Order(1L, orderTable.getId(), null);
     }
 
     public static Order createOrderWithCompletion() {
         OrderLineItem orderListItem = createOrderListItem();
-        OrderTable orderTable = TableServiceTest.createOrderTable(3, false);
+        OrderTable orderTable = new OrderTable(1L, 3, false);
         return new Order(1L, orderTable.getId(), OrderStatus.COMPLETION.name(), Arrays.asList(orderListItem));
     }
 

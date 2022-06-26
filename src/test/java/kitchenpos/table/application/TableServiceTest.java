@@ -39,7 +39,7 @@ public class TableServiceTest {
     @DisplayName("주문 테이블 생성한다.")
     @Test
     void create() {
-        Mockito.when(orderTableDao.save(any())).thenReturn(createOrderTable(3, false));
+        Mockito.when(orderTableDao.save(any())).thenReturn(new OrderTable(1L, 3, false));
 
         // when
         OrderTable created = tableService.create(new OrderTable(3, false));
@@ -63,9 +63,9 @@ public class TableServiceTest {
     @DisplayName("주문 테이블 이용 여부를 변경한다.")
     @Test
     void changeEmpty() {
-        Mockito.when(orderTableDao.findById(any())).thenReturn(Optional.of(createOrderTable(3, false)));
+        Mockito.when(orderTableDao.findById(any())).thenReturn(Optional.of(new OrderTable(1L, 3, false)));
         Mockito.when(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(false);
-        Mockito.when(orderTableDao.save(any())).thenReturn(createOrderTable(3, true));
+        Mockito.when(orderTableDao.save(any())).thenReturn(new OrderTable(1L, 3, true));
 
         // when
         OrderTable changeOrderTable = new OrderTable(true);
@@ -91,7 +91,7 @@ public class TableServiceTest {
     @DisplayName("[예외] 테이블 그룹에 매핑된 주문 테이블의 상태를 변경한다.")
     @Test
     void changeEmpty_with_mapping_with_table_group() {
-        Mockito.when(orderTableDao.findById(any())).thenReturn(Optional.of(createOrderTableWithTableGroupId(3, 1L, false)));
+        Mockito.when(orderTableDao.findById(any())).thenReturn(Optional.of(new OrderTable(1L,1L, 3, false)));
 
         // when, then
         assertThatThrownBy(() -> {
@@ -103,7 +103,7 @@ public class TableServiceTest {
     @DisplayName("[예외] 요리 중인 주문 테이블의 상태를 변경한다.")
     @Test
     void changeEmpty_with_cooking_order_table() {
-        Mockito.when(orderTableDao.findById(any())).thenReturn(Optional.of(createOrderTable(3, false)));
+        Mockito.when(orderTableDao.findById(any())).thenReturn(Optional.of(new OrderTable(1L, 3, false)));
         Mockito.when(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(true);
 
         // when, then
@@ -116,8 +116,8 @@ public class TableServiceTest {
     @DisplayName("주문 테이블의 손님 수 변경한다.")
     @Test
     void changeNumberOfGuests() {
-        Mockito.when(orderTableDao.findById(any())).thenReturn(Optional.of(createOrderTable(3, false)));
-        Mockito.when(orderTableDao.save(any())).thenReturn(createOrderTable(5, false));
+        Mockito.when(orderTableDao.findById(any())).thenReturn(Optional.of(new OrderTable(1L, 3, false)));
+        Mockito.when(orderTableDao.save(any())).thenReturn(new OrderTable(1L, 5, false));
 
         // when
         OrderTable orderTable = tableService.changeNumberOfGuests(1L, new OrderTable(5, false));
@@ -130,7 +130,7 @@ public class TableServiceTest {
     @DisplayName("[예외] 현재 비어 있는 주문 테이블의 손님 수 변경한다.")
     @Test
     void changeNumberOfGuests_empty() {
-        Mockito.when(orderTableDao.findById(any())).thenReturn(Optional.of(createOrderTable(3, true)));
+        Mockito.when(orderTableDao.findById(any())).thenReturn(Optional.of(new OrderTable(1L, 3, true)));
 
         // when, then
         assertThatThrownBy(() -> {
@@ -138,16 +138,8 @@ public class TableServiceTest {
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
-    public static OrderTable createOrderTable(int numberOfGuests, boolean empty) {
-        return new OrderTable(1L, numberOfGuests, empty);
-    }
-
-    public static OrderTable createOrderTableWithTableGroupId(int numberOfGuests, long tableGroupId, boolean empty) {
-        return new OrderTable(1L, tableGroupId, numberOfGuests, empty);
-    }
-
     public static List<OrderTable> createOrderTableList() {
-        return Arrays.asList(createOrderTable(3, false), createOrderTable(2, false));
+        return Arrays.asList(new OrderTable(1L, 3, false), new OrderTable(2L, 2, false));
     }
 
 }
