@@ -1,6 +1,7 @@
 package kitchenpos.domain;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -17,7 +18,8 @@ public class OrderTable {
     @ManyToOne(fetch = FetchType.LAZY)
     private TableGroup tableGroup;
 
-    private int numberOfGuests;
+    @Embedded
+    private NumberOfGuests numberOfGuests;
 
     @Column(nullable = false)
     private Boolean empty;
@@ -27,7 +29,7 @@ public class OrderTable {
 
     public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
         this.tableGroup = tableGroup;
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = new NumberOfGuests(numberOfGuests);
         this.empty = empty;
     }
 
@@ -44,7 +46,7 @@ public class OrderTable {
     }
 
     public int getNumberOfGuests() {
-        return numberOfGuests;
+        return numberOfGuests.getValue();
     }
 
     public Boolean getEmpty() {
@@ -52,15 +54,10 @@ public class OrderTable {
     }
 
     public void changeNumberOfGuests(int numberOfGuests) {
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException("손님 수는 0 이상이어야 합니다.");
-        }
-
         if (empty) {
             throw new IllegalStateException("빈 테이블이어서 손님 수를 변경할 수 없습니다.");
         }
-
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = new NumberOfGuests(numberOfGuests);
     }
 
     public void changeEmpty(boolean empty) {
