@@ -4,7 +4,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Embeddable
 public class MenuProducts {
@@ -25,13 +24,5 @@ public class MenuProducts {
 
     public List<MenuProduct> getValues() {
         return menuProducts;
-    }
-
-    public Price getTotalPrice() {
-        Price totalPrice = Price.from(0);
-        for (MenuProduct menuProduct : menuProducts) {
-            totalPrice = totalPrice.add(menuProduct.calculateProductsPrice());
-        }
-        return totalPrice;
     }
 }

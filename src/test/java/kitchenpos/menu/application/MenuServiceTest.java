@@ -6,7 +6,6 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,7 +45,7 @@ public class MenuServiceTest {
     void setUp() {
         강정치킨 = 상품_등록(1L, "강정치킨", 17000);
         치킨메뉴 = 메뉴_그룹_등록(1L, "치킨메뉴");
-        추천메뉴 = 메뉴_등록(1L, "추천메뉴", 강정치킨.getPrice(), 치킨메뉴.getId(),
+        추천메뉴 = 메뉴_등록(1L, "추천메뉴", 강정치킨.getPriceIntValue(), 치킨메뉴.getId(),
                 Arrays.asList(메뉴_상품_등록(1L, 강정치킨.getId(), 1L)));
     }
 
@@ -54,7 +53,7 @@ public class MenuServiceTest {
     @DisplayName("메뉴를 등록한다.")
     void createMenu() {
         // given
-        MenuRequest menuRequest = 메뉴_등록_요청("추천메뉴", 강정치킨.getPrice(), 치킨메뉴.getId(),
+        MenuRequest menuRequest = 메뉴_등록_요청("추천메뉴", 강정치킨.getPriceIntValue(), 치킨메뉴.getId(),
                 Arrays.asList(메뉴_상품_등록_요청(강정치킨.getId(), 1L)));
 
         given(menuRepository.save(any())).willReturn(추천메뉴);
