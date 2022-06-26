@@ -1,49 +1,88 @@
 package kitchenpos.utils;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.order.domain.OrderTables;
+import kitchenpos.order.domain.TableGroup;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.order.dto.TableGroupRequest;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
 
 public class DomainFixtureFactory {
     public static Product createProduct(Long id, String name, BigDecimal price) {
-        return Product.of(id, name, price);
+        return Product.from(id, name, price);
+    }
+
+    public static ProductRequest createProductRequest(String name, BigDecimal price) {
+        return new ProductRequest(name, price);
     }
 
     public static MenuGroup createMenuGroup(Long id, String name) {
-        return MenuGroup.of(id, name);
+        return MenuGroup.from(id, name);
     }
 
-    public static Menu createMenu(Long id, String name, BigDecimal price, Long menuGroupId,
-                                  List<MenuProduct> menuProducts) {
-        return Menu.of(id, name, price, menuGroupId, menuProducts);
+    public static MenuGroupRequest createMenuGroupRequest(String name) {
+        return new MenuGroupRequest(name);
     }
 
-    public static MenuProduct createMenuProduct(Long seq, Long menuId, Long productId, long quantity) {
-        return MenuProduct.of(seq, menuId, productId, quantity);
+    public static Menu createMenu(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        return Menu.from(name, price, menuGroup, menuProducts);
     }
 
-    public static OrderTable createOrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
-        return OrderTable.of(id, tableGroupId, numberOfGuests, empty);
+    public static MenuRequest createMenuRequest(String name, BigDecimal price, long menuGroupId,
+                                                List<MenuProductRequest> menuProducts) {
+        return new MenuRequest(name, price, menuGroupId, menuProducts);
     }
 
-    public static Order createOrder(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime,
-                                    List<OrderLineItem> orderLineItems) {
-        return Order.of(id, orderTableId, orderStatus, orderedTime, orderLineItems);
+    public static MenuProduct createMenuProduct(Product product, long quantity) {
+        return MenuProduct.from(product, quantity);
     }
 
-    public static OrderLineItem createOrderLineItem(Long seq, Long orderId, Long menuId, long quantity) {
-        return OrderLineItem.of(seq, orderId, menuId, quantity);
+    public static OrderTable createOrderTable(Long id, int numberOfGuests, boolean empty) {
+        return OrderTable.from(id, numberOfGuests, empty);
     }
 
-    public static TableGroup createTableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
-        return TableGroup.of(id, createdDate, orderTables);
+    public static OrderTableRequest createOrderTableRequest(int numberOfGuests, boolean empty) {
+        return new OrderTableRequest(numberOfGuests, empty);
+    }
+
+    public static Order createOrder(OrderTable orderTable, OrderLineItems orderLineItems, int size) {
+        return Order.from(orderTable, orderLineItems, size);
+    }
+
+    public static OrderRequest createOrderRequest(Long orderTableId, OrderStatus orderStatus,
+                                                  List<OrderLineItemRequest> orderLineItems) {
+        return new OrderRequest(orderTableId, orderStatus, orderLineItems);
+    }
+
+    public static OrderLineItem createOrderLineItem(Menu menu, long quantity) {
+        return OrderLineItem.from(menu, quantity);
+    }
+
+    public static OrderLineItemRequest createOrderLineItemRequest(long menuId, long quantity) {
+        return new OrderLineItemRequest(menuId, quantity);
+    }
+
+    public static TableGroup createTableGroup(OrderTables orderTables, List<Long> orderTableIds) {
+        return TableGroup.from(orderTables, orderTableIds);
+    }
+
+    public static TableGroupRequest createTableGroupRequest(List<Long> orderTables) {
+        return new TableGroupRequest(orderTables);
     }
 }
