@@ -15,12 +15,12 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doAnswer;
 
 import java.util.Optional;
-import kitchenpos.menu.domain.MenuGroupRepository;
+import kitchenpos.menu.domain.repository.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.domain.repository.MenuRepository;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.domain.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
