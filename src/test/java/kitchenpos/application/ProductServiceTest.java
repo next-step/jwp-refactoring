@@ -3,13 +3,19 @@ package kitchenpos.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.core.exception.BadRequestException;
+import kitchenpos.core.exception.ExceptionType;
+import kitchenpos.menu.application.ProductService;
+import kitchenpos.menu.domain.Product;
+import kitchenpos.menu.domain.ProductRepository;
+import kitchenpos.menu.domain.request.ProductRequest;
+import kitchenpos.menu.domain.response.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,59 +28,87 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private ProductService productService;
 
-    private Product 후라이드_치킨;
-    private Product 감자튀김;
+    private ProductRequest 상품_request;
+    private Product 후라이드_치킨_entity;
+    private Product 감자튀김_entity;
 
     @BeforeEach
     void setUp() {
-        후라이드_치킨 = Product.of(1L, "후라이드 치킨", BigDecimal.valueOf(10000L));
-        감자튀김 = Product.of(1L, "감자튀김", BigDecimal.valueOf(5000L));
+        상품_request = new ProductRequest("후라이드 치킨", BigDecimal.valueOf(10000L));
+        후라이드_치킨_entity = Product.of("후라이드 치킨", BigDecimal.valueOf(10000L));
+        감자튀김_entity = Product.of("감자튀김", BigDecimal.valueOf(5000L));
     }
 
     @DisplayName("상품을 등록하면 정상적으로 등록되어야 한다")
     @Test
     void create_test() {
         // given
-        when(productDao.save(후라이드_치킨))
-            .thenReturn(후라이드_치킨);
+        when(productRepository.save(any()))
+            .thenReturn(후라이드_치킨_entity);
 
         // when
-        Product result = productService.create(후라이드_치킨);
+        ProductResponse result = productService.create(상품_request);
 
         // then
         assertAll(
-            () -> assertThat(result.getId()).isEqualTo(후라이드_치킨.getId()),
-            () -> assertThat(result.getName()).isEqualTo(후라이드_치킨.getName()),
-            () -> assertThat(result.getPrice()).isEqualTo(후라이드_치킨.getPrice())
+            () -> assertThat(result.getName()).isEqualTo(후라이드_치킨_entity.getName()),
+            () -> assertThat(result.getPrice()).isEqualTo(후라이드_치킨_entity.getPrice())
         );
     }
 
-    @DisplayName("상품의 가격이 없거나 0미만이면 예외가 발생해야 한다")
+    @DisplayName("상품의 이름이 없으면 예외가 발생해야 한다")
     @Test
     void create_exception_test() {
         // given
-        후라이드_치킨.setPrice(BigDecimal.valueOf(-50L));
+        상품_request = new ProductRequest(null, BigDecimal.valueOf(5000L));
 
         // then
         assertThatThrownBy(() -> {
-            productService.create(후라이드_치킨);
-        }).isInstanceOf(IllegalArgumentException.class);
+            productService.create(상품_request);
+        }).isInstanceOf(BadRequestException.class)
+            .hasMessageContaining(ExceptionType.INVALID_NAME.getMessage());
+    }
+
+    @DisplayName("상품의 가격이 없으면 예외가 발생해야 한다")
+    @Test
+    void create_exception_test2() {
+        // given
+        상품_request = new ProductRequest("후라이드 치킨", null);
+
+        // then
+        assertThatThrownBy(() -> {
+            productService.create(상품_request);
+        }).isInstanceOf(BadRequestException.class)
+            .hasMessageContaining(ExceptionType.INVALID_PRICE.getMessage());
+    }
+
+    @DisplayName("상품의 가격이 음수이면 예외가 발생해야 한다")
+    @Test
+    void create_exception_test3() {
+        // given
+        상품_request = new ProductRequest("후라이드 치킨", BigDecimal.valueOf(-3000L));
+
+        // then
+        assertThatThrownBy(() -> {
+            productService.create(상품_request);
+        }).isInstanceOf(BadRequestException.class)
+            .hasMessageContaining(ExceptionType.INVALID_PRICE.getMessage());
     }
 
     @DisplayName("상품목록을 조회한다")
     @Test
     void findAll_test() {
         // given
-        when(productDao.findAll())
-            .thenReturn(Arrays.asList(후라이드_치킨, 감자튀김));
+        when(productRepository.findAll())
+            .thenReturn(Arrays.asList(후라이드_치킨_entity, 감자튀김_entity));
 
         // when
-        List<Product> result = productService.list();
+        List<ProductResponse> result = productService.list();
 
         // then
         assertThat(result).hasSize(2);
