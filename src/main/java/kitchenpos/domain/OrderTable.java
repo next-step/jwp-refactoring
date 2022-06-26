@@ -22,28 +22,25 @@ public class OrderTable {
     public OrderTable() {
     }
 
-    private OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
-        this.tableGroupId = tableGroupId;
+    public OrderTable(int numberOfGuests, boolean empty) {
+        this.tableGroupId = null;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
 
-    public static OrderTable createEmpty(){
-        return new OrderTable(null, 0, true);
-    }
-
-    public void useTable(){
+    public void useTable() {
         this.empty = false;
     }
 
-    public void unUseTable(){
+    public void unUseTable() {
         this.empty = true;
     }
-    public void mapToTableGroup(long tableGroupId){
+
+    public void mapToTableGroup(long tableGroupId) {
         this.tableGroupId = tableGroupId;
     }
 
-    public void setNumberOfGuests(int numberOfGuests){
+    public void setNumberOfGuests(int numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
     }
 
