@@ -3,6 +3,7 @@ package kitchenpos.application;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import kitchenpos.ServiceTest;
@@ -17,6 +18,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 
 class MenuServiceTest extends ServiceTest {
     @Autowired
@@ -59,11 +61,11 @@ class MenuServiceTest extends ServiceTest {
     @Test
     @DisplayName("메뉴그룹이 존재하지 않을 경우 메뉴 등록 실패")
     void 메뉴그룹에_메뉴추가_존재하지않는_메뉴그룹의_경우() {
-        MenuGroup notSavedMenuGroup = new MenuGroup();
+        MenuGroup notSavedMenuGroup = new MenuGroup("메뉴그룹1");
         String menuName = "메뉴1";
         int menuPrice = 5000;
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> 테스트_메뉴_생성(notSavedMenuGroup, menuName, menuPrice));
+        assertThatThrownBy(()-> 테스트_메뉴_생성(notSavedMenuGroup, menuName, menuPrice)).isInstanceOf(
+                InvalidDataAccessApiUsageException.class);
     }
 
     @Test

@@ -7,8 +7,6 @@ public class MenuGroupFixtureFactory {
     }
 
     public static MenuGroup createMenuGroup(String name) {
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setName(name);
-        return menuGroup;
+        return new MenuGroup(name);
     }
 }
