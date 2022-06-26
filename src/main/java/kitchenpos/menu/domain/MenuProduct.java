@@ -2,6 +2,7 @@ package kitchenpos.menu.domain;
 
 import java.util.Objects;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -10,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import kitchenpos.exception.InvalidQuantityException;
+import kitchenpos.order.domain.Quantity;
 import kitchenpos.product.domain.Product;
 
 @Entity
@@ -29,32 +31,25 @@ public class MenuProduct {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    @Column(nullable = false)
-    private Long quantity;
+    @Embedded
+    private Quantity quantity;
 
     protected MenuProduct() {
     }
 
-    public MenuProduct(Menu menu, Product product, Long quantity) {
+    public MenuProduct(Menu menu, Product product, Quantity quantity) {
         this(null, menu, product, quantity);
     }
 
-    public MenuProduct(Long seq, Menu menu, Product product, Long quantity) {
-        validateQuantity(quantity);
+    public MenuProduct(Long seq, Menu menu, Product product, Quantity quantity) {
         this.seq = seq;
         this.menu = menu;
         this.product = product;
         this.quantity = quantity;
     }
 
-    private void validateQuantity(Long quantity) {
-        if (quantity < MIN_QUANTITY) {
-            throw new InvalidQuantityException();
-        }
-    }
-
     public Price price() {
-        return this.product.multiply(quantity);
+        return this.product.multiply(quantity.value());
     }
 
     @Override

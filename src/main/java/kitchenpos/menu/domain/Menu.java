@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import kitchenpos.exception.InvalidPriceException;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.order.domain.Quantity;
 import kitchenpos.product.domain.Product;
 
 @Entity
@@ -38,7 +39,7 @@ public class Menu {
     protected Menu() {
     }
 
-    public void addProduct(Product product, Long quantity) {
+    public void addProduct(Product product, Quantity quantity) {
         final MenuProduct menuProduct = new MenuProduct(this, product, quantity);
         this.menuProducts.add(menuProduct);
     }

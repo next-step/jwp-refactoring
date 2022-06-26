@@ -11,6 +11,7 @@ import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.repository.MenuGroupRepository;
 import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.order.domain.Quantity;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.repository.ProductRepository;
 import org.springframework.stereotype.Service;
@@ -41,7 +42,7 @@ public class MenuService {
         for (MenuProductRequest menuProduct : menuRequest.getMenuProducts()) {
             final Product persistProduct = productRepository.findById(menuProduct.getProductId())
                     .orElseThrow(() -> new NotExistException("제품이 존재하지 않습니다."));
-            menu.addProduct(persistProduct, menuProduct.getQuantity());
+            menu.addProduct(persistProduct, Quantity.of(menuProduct.getQuantity()));
         }
 
         menu.validateProductsTotalPrice();

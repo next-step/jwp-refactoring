@@ -17,6 +17,7 @@ import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.order.domain.Quantity;
 import kitchenpos.product.domain.Product;
 import kitchenpos.utils.RestAssuredHelper;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,13 +46,13 @@ class MenuAcceptanceTest extends AcceptanceTest {
         // given
         final MenuGroup 예상된_메뉴그룹= new MenuGroup(1L, "후라이드세트");
         final Product 예상된_제품 = new Product(1L, "후라이드", Price.of(16_000L));
-        final List<MenuProduct> menuProducts = Arrays.asList(new MenuProduct(1L, null, 예상된_제품, 2L));
+        final List<MenuProduct> menuProducts = Arrays.asList(new MenuProduct(1L, null, 예상된_제품, Quantity.of(2L)));
         final Menu 예상된_메뉴 = new Menu.Builder("후라이드")
                 .setPrice(Price.of(16_000L))
                 .setMenuGroup(예상된_메뉴그룹)
                 .setMenuProducts(new MenuProducts(menuProducts))
                 .build();
-        final MenuProduct 예상된_메뉴_제품들 = new MenuProduct(1L, 예상된_메뉴, 예상된_제품, 2L);
+        final MenuProduct 예상된_메뉴_제품들 = new MenuProduct(1L, 예상된_메뉴, 예상된_제품, Quantity.of(2L));
         final MenuResponse 예상된_메뉴_결과 = new MenuResponse(1L, "반반후라이드", Price.of(16_000L), 예상된_메뉴그룹.toMenuGroupResponse(),
                 Arrays.asList(예상된_메뉴_제품들));
         메뉴_그룹_생성_요청("후라이드세트");

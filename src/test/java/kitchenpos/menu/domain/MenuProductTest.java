@@ -2,6 +2,7 @@ package kitchenpos.menu.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import kitchenpos.order.domain.Quantity;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,8 +17,8 @@ class MenuProductTest {
                 .setId(1L)
                 .setPrice(Price.of(100L))
                 .build();
-        final MenuProduct menuProduct = new MenuProduct(1L, menu, product, 1L);
+        final MenuProduct menuProduct = new MenuProduct(1L, menu, product, Quantity.of(1L));
 
-        assertThat(menuProduct).isEqualTo(new MenuProduct(1L, menu, product, 1L));
+        assertThat(menuProduct).isEqualTo(new MenuProduct(1L, menu, product, Quantity.of(1L)));
     }
 }

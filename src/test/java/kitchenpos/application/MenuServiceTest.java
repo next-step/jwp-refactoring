@@ -21,6 +21,7 @@ import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.repository.MenuGroupRepository;
 import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.order.domain.Quantity;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -65,7 +66,7 @@ class MenuServiceTest {
                 .setMenuProducts(menuProducts)
                 .build();
 
-        menuProduct = new MenuProduct(1L, menu, product, 2L);
+        menuProduct = new MenuProduct(1L, menu, product, Quantity.of(2L));
         expected = new MenuResponse(null, "후라이드+후라이드", Price.of(1_000L), menuGroup.toMenuGroupResponse(),
                 menuProducts.get());
     }
