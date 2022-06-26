@@ -1,10 +1,10 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTableEntity;
 import kitchenpos.dto.TableRequest;
 import kitchenpos.dto.TableResponse;
+import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.TableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,12 +17,12 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 public class TableService {
-    private final OrderDao orderDao;
     private final TableRepository tableRepository;
+    private final OrderRepository orderRepository;
 
-    public TableService(final OrderDao orderDao, TableRepository tableRepository) {
-        this.orderDao = orderDao;
+    public TableService(final TableRepository tableRepository, final OrderRepository orderRepository) {
         this.tableRepository = tableRepository;
+        this.orderRepository = orderRepository;
     }
 
     @Transactional
@@ -47,13 +47,17 @@ public class TableService {
 
     @Transactional
     public void changeEmpty(final Long orderTableId, final boolean empty) {
-        if (orderDao.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
+        OrderTableEntity orderTable = findOrderTableById(orderTableId);
+
+        if (hasCookingOrMeal(orderTable)) {
+            throw new IllegalStateException("조리 혹은 식사 상태인 테이블이 있어서 빈 테이블로 설정할 수 없습니다: " + orderTableId);
         }
 
-        OrderTableEntity orderTable = findOrderTableById(orderTableId);
         orderTable.changeEmpty(empty);
+    }
+
+    public boolean hasCookingOrMeal(OrderTableEntity orderTable) {
+        return orderRepository.existsByOrderTableAndOrderStatusIn(orderTable, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
     }
 
     @Transactional

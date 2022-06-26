@@ -1,7 +1,5 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTableEntity;
 import kitchenpos.domain.TableGroupEntity;
 import kitchenpos.dto.TableGroupRequest;
@@ -10,7 +8,6 @@ import kitchenpos.repository.TableGroupRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -18,12 +15,10 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 public class TableGroupService {
-    private final OrderDao orderDao;
     private final TableService tableService;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final OrderDao orderDao, TableService tableService, TableGroupRepository tableGroupRepository) {
-        this.orderDao = orderDao;
+    public TableGroupService(final TableService tableService, final TableGroupRepository tableGroupRepository) {
         this.tableService = tableService;
         this.tableGroupRepository = tableGroupRepository;
     }
@@ -49,9 +44,9 @@ public class TableGroupService {
                 .map(OrderTableEntity::getId)
                 .collect(Collectors.toList());
 
-        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException("주문 테이블들의 상태가 조리 혹은 식사이기 때문에 단체 지정 해제할 수 없습니다.");
+        if (tableGroup.getOrderTables().stream()
+                .anyMatch(table -> tableService.hasCookingOrMeal(table))) {
+            throw new IllegalStateException("조리 혹은 식사 상태인 테이블이 있어서 단체 지정 해제할 수 없습니다: " + tableGroupId);
         }
 
         tableGroup.ungroup();

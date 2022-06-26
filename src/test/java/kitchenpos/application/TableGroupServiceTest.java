@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
 import kitchenpos.domain.OrderTableEntity;
 import kitchenpos.domain.TableGroupEntity;
 import kitchenpos.repository.TableGroupRepository;
@@ -16,18 +15,16 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
 public class TableGroupServiceTest {
 
     @Mock
-    OrderDao orderDao;
+    TableGroupRepository tableGroupRepository;
 
     @Mock
-    TableGroupRepository tableGroupRepository;
+    TableService tableService;
 
     @InjectMocks
     TableGroupService tableGroupService;
@@ -40,11 +37,11 @@ public class TableGroupServiceTest {
         OrderTableEntity 빈_테이블2 = new OrderTableEntity(null, 0, true);
         TableGroupEntity 테이블_그룹 = new TableGroupEntity(1L, Arrays.asList(빈_테이블1, 빈_테이블2));
         doReturn(Optional.of(테이블_그룹)).when(tableGroupRepository).findById(any(Long.class));
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
+        doReturn(true).when(tableService).hasCookingOrMeal(any(OrderTableEntity.class));
 
         // when, then
         assertThatThrownBy(() -> tableGroupService.ungroup(테이블_그룹.getId()))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("주문 테이블들의 상태가 조리 혹은 식사이기 때문에 단체 지정 해제할 수 없습니다.");
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("조리 혹은 식사 상태인 테이블이 있어서 단체 지정 해제할 수 없습니다: " + 테이블_그룹.getId());
     }
 }

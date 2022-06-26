@@ -1,8 +1,8 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
 import kitchenpos.domain.OrderTableEntity;
 import kitchenpos.dto.TableResponse;
+import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.TableRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,11 +13,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,7 +27,8 @@ public class TableServiceTest {
     TableRepository tableRepository;
 
     @Mock
-    OrderDao orderDao;
+    private OrderRepository orderRepository;
+
 
     @InjectMocks
     TableService tableService;
@@ -51,11 +52,13 @@ public class TableServiceTest {
     @Test
     void 빈_테이블로_설정_예외_잘못된_주문_상태() {
         // given
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(Long.class), anyList()))
-                .willReturn(true);
+        OrderTableEntity 테이블 = new OrderTableEntity(null, 0, false);
+        given(tableRepository.findById(any(Long.class))).willReturn(Optional.of(테이블));
+        given(orderRepository.existsByOrderTableAndOrderStatusIn(any(), any())).willReturn(true);
 
         // when, then
         assertThatThrownBy(() -> tableService.changeEmpty(1L, true))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("조리 혹은 식사 상태인 테이블이 있어서 빈 테이블로 설정할 수 없습니다: " + 1L);
     }
 }
