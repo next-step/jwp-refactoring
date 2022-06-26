@@ -2,6 +2,8 @@ package kitchenpos.ui;
 
 import kitchenpos.application.TableGroupService;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,8 +18,8 @@ public class TableGroupRestController {
     }
 
     @PostMapping("/api/table-groups")
-    public ResponseEntity<TableGroup> create(@RequestBody final TableGroup tableGroup) {
-        final TableGroup created = tableGroupService.create(tableGroup);
+    public ResponseEntity<TableGroupResponse> create(@RequestBody final TableGroupRequest tableGroup) {
+        final TableGroupResponse created = tableGroupService.create(tableGroup);
         final URI uri = URI.create("/api/table-groups/" + created.getId());
         return ResponseEntity.created(uri)
                 .body(created)
@@ -30,5 +32,10 @@ public class TableGroupRestController {
         return ResponseEntity.noContent()
                 .build()
                 ;
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity handleIllegalArgsException(IllegalArgumentException e) {
+        return ResponseEntity.badRequest().build();
     }
 }
