@@ -2,6 +2,7 @@ package kitchenpos.table.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -41,5 +42,22 @@ public class OrderTables {
         return this.orderTables.stream()
                 .map(OrderTable::toOrderTableResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        OrderTables that = (OrderTables) o;
+        return Objects.equals(orderTables, that.orderTables);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(orderTables);
     }
 }
