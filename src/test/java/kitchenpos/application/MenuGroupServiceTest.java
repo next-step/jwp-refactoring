@@ -1,10 +1,7 @@
 package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 
-import java.util.Arrays;
 import java.util.List;
 import kitchenpos.application.fixture.MenuGroupFixtureFactory;
 import kitchenpos.domain.MenuGroup;
@@ -14,18 +11,14 @@ import kitchenpos.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 
-@ExtendWith(MockitoExtension.class)
-class MenuGroupServiceTest {
+class MenuGroupServiceTest extends ServiceTest {
 
-    @Mock
+    @Autowired
     private MenuGroupRepository menuGroupRepository;
 
-    @InjectMocks
+    @Autowired
     private MenuGroupService menuGroupService;
 
     private MenuGroup 한식;
@@ -34,9 +27,11 @@ class MenuGroupServiceTest {
 
     @BeforeEach
     void before() {
-        한식 = MenuGroupFixtureFactory.create("한식");
-        중식 = MenuGroupFixtureFactory.create("중식");
-        양식 = MenuGroupFixtureFactory.create("양식");
+
+        //given
+        한식 = menuGroupRepository.save(MenuGroupFixtureFactory.create("한식"));
+        중식 = menuGroupRepository.save(MenuGroupFixtureFactory.create("중식"));
+        양식 = menuGroupRepository.save(MenuGroupFixtureFactory.create("양식"));
     }
 
     @DisplayName("메뉴 그룹을 생성 할 수 있다.")
@@ -44,22 +39,18 @@ class MenuGroupServiceTest {
     void createTest() {
 
         //given
-        MenuGroupRequest 저장할_메뉴그룹 = MenuGroupRequest.from( "메뉴그룹1");
-        given(menuGroupRepository.save(any(MenuGroup.class))).willReturn(한식);
+        MenuGroupRequest 저장할_메뉴그룹 = MenuGroupRequest.from("메뉴그룹1");
 
         //when
         MenuGroupResponse menuGroup = menuGroupService.create(저장할_메뉴그룹);
 
         //then
-        assertThat(menuGroup).isEqualTo(MenuGroupResponse.from(한식));
+        assertThat(menuGroup).isNotNull();
     }
 
     @DisplayName("메뉴 그릅의 목록을 조회 할 수 있다.")
     @Test
     void listTest() {
-
-        //given
-        given(menuGroupRepository.findAll()).willReturn(Arrays.asList(한식, 중식, 양식));
 
         //when
         List<MenuGroupResponse> menuGroups = menuGroupService.list();

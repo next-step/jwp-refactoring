@@ -12,4 +12,7 @@ public class MenuFixtureFactory {
     public static Menu create(final Long id, final String name, final BigDecimal price, final MenuGroup menuGroup) {
         return new Menu(id, name, price, menuGroup);
     }
+    public static Menu createWithoutId(final String name, final BigDecimal price, final MenuGroup menuGroup) {
+        return new Menu(name, price, menuGroup);
+    }
 }

@@ -11,4 +11,8 @@ public class MenuProductFixtureFactory {
     public static MenuProduct create(final Long seq, final Menu menu, final Product product, final long quantity) {
         return new MenuProduct(seq, menu, product, quantity);
     }
+
+    public static MenuProduct createWithoutId( final Menu menu, final Product product, final long quantity) {
+        return new MenuProduct(menu, product, quantity);
+    }
 }
