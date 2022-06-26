@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import kitchenpos.exception.InvalidQuantityException;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.dto.OrderLineItemResponse;
 
 @Entity
@@ -25,8 +26,9 @@ public class OrderLineItem {
     @JoinColumn(name = "order_id", nullable = false)
     private Orders order;
 
-    @Column
-    private Long menuId;
+    @ManyToOne
+    @JoinColumn(name = "menu_id", nullable = false)
+    private Menu menu;
 
     @Column
     private Long quantity;
@@ -34,17 +36,17 @@ public class OrderLineItem {
     protected OrderLineItem(){
     }
 
-    public OrderLineItem(Orders order, Long menuId, Long quantity) {
+    public OrderLineItem(Orders order, Menu menu, Long quantity) {
         validateQuantity(quantity);
         this.order = order;
-        this.menuId = menuId;
+        this.menu = menu;
         this.quantity = quantity;
     }
 
-    public OrderLineItem(Long seq, Orders order, Long menuId, Long quantity) {
+    public OrderLineItem(Long seq, Orders order, Menu menu, Long quantity) {
         this.seq = seq;
         this.order = order;
-        this.menuId = menuId;
+        this.menu = menu;
         this.quantity = quantity;
     }
 
@@ -55,7 +57,7 @@ public class OrderLineItem {
     }
 
     public OrderLineItemResponse toOrderLineItemResponse() {
-        return new OrderLineItemResponse(this.seq, this.menuId, this.quantity);
+        return new OrderLineItemResponse(this.seq, this.menu.toMenuResponse(), this.quantity);
     }
 
     @Override
@@ -68,11 +70,11 @@ public class OrderLineItem {
         }
         OrderLineItem that = (OrderLineItem) o;
         return Objects.equals(seq, that.seq) && Objects.equals(order, that.order)
-                && Objects.equals(menuId, that.menuId) && Objects.equals(quantity, that.quantity);
+                && Objects.equals(menu, that.menu) && Objects.equals(quantity, that.quantity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(seq, order, menuId, quantity);
+        return Objects.hash(seq, order, menu, quantity);
     }
 }

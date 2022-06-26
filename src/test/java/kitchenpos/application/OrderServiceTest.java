@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.OrderLineItem;
@@ -53,9 +54,10 @@ class OrderServiceTest {
     @DisplayName("주문을 생성한다.")
     void createOrder() {
         // given
-        final Menu menu = new Menu(1L, "메뉴", 1_000L, null, null);
+        final MenuGroup menuGroup = new MenuGroup(1L, "메뉴그룹");
+        final Menu menu = new Menu(1L, "메뉴", 1_000L, menuGroup, null);
         final OrderTable orderTable = new OrderTable(1L, null, 5, false);
-        final OrderLineItem orderLineItem = new OrderLineItem(1L, null, 1L, 1L);
+        final OrderLineItem orderLineItem = new OrderLineItem(1L, null, menu, 1L);
         final Orders order = new Orders(1L, orderTable, OrderStatus.COOKING, null, Arrays.asList(orderLineItem));
         when(menuRepository.countByIdIn(any())).thenReturn(1L);
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(new OrderTable(1L, null, 3, false)));
@@ -112,8 +114,10 @@ class OrderServiceTest {
     @DisplayName("주문 내역을 조회할 수 있다.")
     void searchOrders() {
         // given
+        final MenuGroup menuGroup = new MenuGroup(1L, "메뉴그룹");
         final OrderTable orderTable = new OrderTable(1L, null, 5, false);
-        final OrderLineItem orderLineItem = new OrderLineItem(1L, null, 1L, 1L);
+        final Menu menu = new Menu(1L, "메뉴", 1_000L, menuGroup, null);
+        final OrderLineItem orderLineItem = new OrderLineItem(1L, null, menu, 1L);
         final Orders order = new Orders(1L, orderTable, OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(orderLineItem));
         when(orderRepository.findAll()).thenReturn(Arrays.asList(order));
         // when
@@ -126,8 +130,10 @@ class OrderServiceTest {
     @DisplayName("주문의 상태를 변경할 수 있다.")
     void changeOrderStatus() {
         // given
+        final MenuGroup menuGroup = new MenuGroup(1L, "메뉴그룹");
         final OrderTable orderTable = new OrderTable(1L, null, 5, false);
-        final OrderLineItem orderLineItem = new OrderLineItem(1L, null, 1L, 1L);
+        final Menu menu = new Menu(1L, "메뉴", 1_000L, menuGroup, null);
+        final OrderLineItem orderLineItem = new OrderLineItem(1L, null, menu, 1L);
         final Orders order = new Orders(1L, orderTable, OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(orderLineItem));
         when(orderRepository.findById(any())).thenReturn(Optional.of(order));
         // when

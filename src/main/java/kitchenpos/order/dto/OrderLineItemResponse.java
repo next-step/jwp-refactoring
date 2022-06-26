@@ -1,13 +1,15 @@
 package kitchenpos.order.dto;
 
+import kitchenpos.menu.dto.MenuResponse;
+
 public class OrderLineItemResponse {
     private Long seq;
-    private Long menuId;
+    private MenuResponse menu;
     private Long quantity;
 
-    public OrderLineItemResponse(Long seq, Long menuId, Long quantity) {
+    public OrderLineItemResponse(Long seq, MenuResponse menu, Long quantity) {
         this.seq = seq;
-        this.menuId = menuId;
+        this.menu = menu;
         this.quantity = quantity;
     }
 
@@ -15,8 +17,8 @@ public class OrderLineItemResponse {
         return seq;
     }
 
-    public Long getMenuId() {
-        return menuId;
+    public MenuResponse getMenu() {
+        return menu;
     }
 
     public Long getQuantity() {
