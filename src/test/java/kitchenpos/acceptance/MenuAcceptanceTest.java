@@ -32,7 +32,6 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     private MenuProductRequest 김치찌개_menuProduct_2인;
     private MenuProductRequest 공기밥_menuProduct_2인;
 
-
     @BeforeEach
     public void setUp() {
         super.setUp();

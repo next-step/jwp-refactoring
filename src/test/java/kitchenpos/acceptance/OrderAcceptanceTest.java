@@ -10,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -100,6 +101,48 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         주문_수정됨(주문_업데이트_to_완료);
     }
 
+    /**
+     * Feature: 주문 관련 기능
+     *
+     *   Scenario: 주문 관리실패
+     *     When 주문항목이 비어있는 주문 등록 요청
+     *     Then 주문 등록 실패함
+     *     When 존재하지 않는 메뉴로 주문 등록 요청
+     *     Then 주문 등록 실패함
+     *     When 중복된 메뉴로 주문 등록 요청
+     *     Then 주문 등록 실패함
+     *     When 존재하지 않는 주문테이블로 주문 등록 요청
+     *     Then 주문 등록 실패함
+     *     When 비어있는 주문테이블로 주문 등록 요청
+     *     Then 주문 등록 실패함
+     */
+    @DisplayName("주문 관리에 실패한다")
+    @Test
+    void 주문_관리_비정상_시나리오() {
+        OrderRequest 주문항목_비어있음 = OrderRequest.of(테이블1_table.getId(), new ArrayList<>());
+        ExtractableResponse<Response> 주문항목_비어있음_등록 = 주문_등록_요청(주문항목_비어있음);
+        주문_등록_실패됨(주문항목_비어있음_등록);
+
+        OrderLineItemRequest 없는_메뉴 = OrderLineItemRequest.of(0L, 1);
+        OrderRequest 없는_메뉴_주문 = OrderRequest.of(테이블1_table.getId(), Arrays.asList(없는_메뉴));
+        ExtractableResponse<Response> 없는_메뉴_주문_등록 = 주문_등록_요청(없는_메뉴_주문);
+        주문_등록_실패됨(없는_메뉴_주문_등록);
+
+        OrderLineItemRequest 중복_메뉴 = OrderLineItemRequest.of(김치찌개1인세트_menu.getId(), 1);
+        OrderRequest 중복_메뉴_주문 = OrderRequest.of(테이블1_table.getId(), Arrays.asList(중복_메뉴, 중복_메뉴));
+        ExtractableResponse<Response> 중복_메뉴_주문_등록 = 주문_등록_요청(중복_메뉴_주문);
+        주문_등록_실패됨(중복_메뉴_주문_등록);
+
+        OrderRequest 없는_테이블_주문 = OrderRequest.of(0L, Arrays.asList(없는_메뉴));
+        ExtractableResponse<Response> 없는_테이블_주문_등록 = 주문_등록_요청(없는_테이블_주문);
+        주문_등록_실패됨(없는_테이블_주문_등록);
+
+        OrderTableResponse 비어있는_테이블 = TableAcceptanceTest.테이블_등록되어_있음(0, true).as(OrderTableResponse.class);
+        OrderRequest 비어있는_테이블_주문 = OrderRequest.of(비어있는_테이블.getId(), Arrays.asList(없는_메뉴));
+        ExtractableResponse<Response> 비어있는_테이블_주문_등록 = 주문_등록_요청(비어있는_테이블_주문);
+        주문_등록_실패됨(비어있는_테이블_주문_등록);
+    }
+
     public static ExtractableResponse<Response> 주문_등록_요청(OrderRequest params) {
         return post("/api/orders", params);
     }
@@ -136,5 +179,9 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
     public static void 주문_수정됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 주문_등록_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
