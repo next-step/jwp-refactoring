@@ -24,10 +24,21 @@ public class Price {
         return new Price(price);
     }
 
+    public static Price zero() {
+        return new Price(0L);
+    }
+
+    public Price multiply(Long quantity) {
+        return new Price(this.price * quantity);
+    }
+
+    public Price sum(Price other) {
+        return new Price(this.price + other.price);
+    }
+
     public Long compareTo(long total) {
         return this.price - total;
     }
-
 
     public Long compareTo(Price totalPrice) {
         return this.price - totalPrice.price;

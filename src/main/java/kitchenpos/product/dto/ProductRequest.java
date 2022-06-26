@@ -1,5 +1,6 @@
 package kitchenpos.product.dto;
 
+import kitchenpos.menu.domain.Price;
 import kitchenpos.product.domain.Product;
 
 public class ProductRequest {
@@ -23,6 +24,6 @@ public class ProductRequest {
     }
 
     public Product toProduct() {
-        return new Product(null, this.name, this.price);
+        return new Product(null, this.name, Price.of(this.price));
     }
 }

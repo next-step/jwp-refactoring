@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
+import kitchenpos.menu.domain.Price;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.product.application.ProductService;
@@ -38,7 +39,7 @@ class ProductServiceTest {
     @DisplayName("상품(제품)을 만든다.")
     void createProduct() {
         // given
-        final Product 강정치킨 = new Product(1L, "강정치킨", 17_000L);
+        final Product 강정치킨 = new Product(1L, "강정치킨", Price.of(17_000L));
         final ProductResponse expected = 강정치킨.toProductResponse();
         when(productRepository.save(any())).thenReturn(강정치킨);
         // when
@@ -70,7 +71,7 @@ class ProductServiceTest {
     @DisplayName("상품(제품)들을 조회한다.")
     void searchProducts() {
         // given
-        final Product product = new Product(1L, "제품", 1_000L);
+        final Product product = new Product(1L, "제품", Price.of(1_000L));
         when(productRepository.findAll()).thenReturn(Arrays.asList(product, product));
         // when
         final List<ProductResponse> actual = productService.list();

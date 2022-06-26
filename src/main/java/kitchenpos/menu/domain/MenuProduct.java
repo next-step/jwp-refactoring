@@ -53,8 +53,8 @@ public class MenuProduct {
         }
     }
 
-    public Long price() {
-        return this.product.getPrice() * quantity;
+    public Price price() {
+        return this.product.multiply(quantity);
     }
 
     @Override

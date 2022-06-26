@@ -55,7 +55,7 @@ class MenuServiceTest {
     @BeforeEach
     void setUp() {
         menuService = new MenuService(menuRepository, menuGroupRepository, productRepository);
-        product = new Product(1L, "후라이드", 500L);
+        product = new Product(1L, "후라이드", Price.of(500L));
         menuGroup = new MenuGroup(1L, "후라이드세트");
         menuProducts = new MenuProducts(Arrays.asList(menuProduct));
         menu = new Menu(1L, "후라이드+후라이드", Price.of(1_000L), menuGroup, menuProducts);

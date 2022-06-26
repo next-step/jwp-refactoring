@@ -28,9 +28,10 @@ public class MenuProducts {
     }
 
     public Price totalPrice() {
-        final long total = this.menuProducts.stream()
-                .map(MenuProduct::price)
-                .mapToLong(Long::intValue).sum();
-        return Price.of(total);
+        Price total = Price.zero();
+        for (MenuProduct menuProduct : menuProducts) {
+            total = total.sum(menuProduct.price());
+        }
+        return total;
     }
 }
