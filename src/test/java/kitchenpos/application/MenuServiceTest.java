@@ -1,9 +1,9 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.MenuEntity;
-import kitchenpos.domain.MenuGroupEntity;
-import kitchenpos.domain.MenuProductEntity;
-import kitchenpos.domain.ProductEntity;
+import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuResponse;
 import kitchenpos.repository.MenuRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,39 +30,39 @@ public class MenuServiceTest {
     @InjectMocks
     MenuService menuService;
 
-    ProductEntity 스테이크;
-    ProductEntity 샐러드;
-    ProductEntity 에이드;
-    MenuProductEntity 스테이크_1개;
-    MenuProductEntity 샐러드_1개;
-    MenuProductEntity 에이드_1개;
-    MenuProductEntity 에이드_2개;
-    MenuGroupEntity 양식;
+    Product 스테이크;
+    Product 샐러드;
+    Product 에이드;
+    MenuProduct 스테이크_1개;
+    MenuProduct 샐러드_1개;
+    MenuProduct 에이드_1개;
+    MenuProduct 에이드_2개;
+    MenuGroup 양식;
 
     @BeforeEach
     void init() {
         // given
-        스테이크 = new ProductEntity(1L, "스테이크", 200L);
-        샐러드 = new ProductEntity(2L, "샐러드", 100L);
-        에이드 = new ProductEntity(3L, "에이드", 50L);
-        스테이크_1개 = new MenuProductEntity(스테이크, 1);
-        샐러드_1개 = new MenuProductEntity(샐러드, 1);
-        에이드_1개 = new MenuProductEntity(에이드, 1);
-        에이드_2개 = new MenuProductEntity(에이드, 2);
-        양식 = new MenuGroupEntity(1L, "양식");
+        스테이크 = new Product(1L, "스테이크", 200L);
+        샐러드 = new Product(2L, "샐러드", 100L);
+        에이드 = new Product(3L, "에이드", 50L);
+        스테이크_1개 = new MenuProduct(스테이크, 1);
+        샐러드_1개 = new MenuProduct(샐러드, 1);
+        에이드_1개 = new MenuProduct(에이드, 1);
+        에이드_2개 = new MenuProduct(에이드, 2);
+        양식 = new MenuGroup(1L, "양식");
     }
 
     @DisplayName("메뉴 목록을 조회한다.")
     @Test
     void 목록_조회() {
         // given
-        MenuEntity 커플_메뉴 = MenuEntity.createMenu(
+        Menu 커플_메뉴 = Menu.createMenu(
                 "커플 메뉴",
                 BigDecimal.valueOf(400),
                 양식,
                 Arrays.asList(스테이크_1개, 샐러드_1개, 에이드_2개)
         );
-        MenuEntity 싱글_메뉴 = MenuEntity.createMenu(
+        Menu 싱글_메뉴 = Menu.createMenu(
                 "커플 메뉴",
                 BigDecimal.valueOf(350),
                 양식,

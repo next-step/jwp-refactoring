@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.MenuEntity;
-import kitchenpos.domain.MenuProductEntity;
+import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuProduct;
 import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.MenuResponse;
 import kitchenpos.repository.MenuRepository;
@@ -31,15 +31,15 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest request) {
-        List<MenuProductEntity> menuProducts = request.getMenuProducts().stream()
+        List<MenuProduct> menuProducts = request.getMenuProducts().stream()
                 .map(menuProduct ->
-                        new MenuProductEntity(
+                        new MenuProduct(
                                 productService.findProductById(menuProduct.getId()),
                                 menuProduct.getQuantity()
                         )
                 ).collect(Collectors.toList());
-        MenuEntity persistMenu = menuRepository.save(
-                MenuEntity.createMenu(
+        Menu persistMenu = menuRepository.save(
+                Menu.createMenu(
                         request.getName(),
                         request.getPrice(),
                         menuGroupService.findMenuGroupById(request.getMenuGroupId()),
@@ -57,7 +57,7 @@ public class MenuService {
                 .collect(Collectors.toList());
     }
 
-    public MenuEntity findMenuById(Long id) {
+    public Menu findMenuById(Long id) {
         return menuRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("메뉴를 찾을 수 없습니다: " + id));
     }

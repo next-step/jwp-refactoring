@@ -14,7 +14,7 @@ public class ProductTest {
     @Test
     void 생성() {
         // when
-        ProductEntity 샐러드 = new ProductEntity("샐러드", BigDecimal.valueOf(100));
+        Product 샐러드 = new Product("샐러드", BigDecimal.valueOf(100));
 
         // then
         assertThat(샐러드).isNotNull();
@@ -26,7 +26,7 @@ public class ProductTest {
     @Test
     void 생성_예외() {
         // when, then
-        assertThatThrownBy(() -> new ProductEntity("샐러드", BigDecimal.ZERO.subtract(BigDecimal.ONE)))
+        assertThatThrownBy(() -> new Product("샐러드", BigDecimal.ZERO.subtract(BigDecimal.ONE)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

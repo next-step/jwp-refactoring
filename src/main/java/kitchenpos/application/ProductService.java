@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.ProductEntity;
+import kitchenpos.domain.Product;
 import kitchenpos.dto.ProductRequest;
 import kitchenpos.dto.ProductResponse;
 import kitchenpos.repository.ProductRepository;
@@ -22,8 +22,8 @@ public class ProductService {
 
     @Transactional
     public ProductResponse create(final ProductRequest request) {
-        ProductEntity product = productRepository.save(
-                new ProductEntity(
+        Product product = productRepository.save(
+                new Product(
                         request.getName(),
                         request.getPrice()
                 )
@@ -38,7 +38,7 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-    public ProductEntity findProductById(Long id) {
+    public Product findProductById(Long id) {
         return productRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("상품을 찾을 수 없습니다: " + id));
     }

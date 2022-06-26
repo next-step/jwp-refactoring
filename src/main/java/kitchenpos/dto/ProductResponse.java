@@ -1,6 +1,6 @@
 package kitchenpos.dto;
 
-import kitchenpos.domain.ProductEntity;
+import kitchenpos.domain.Product;
 
 import java.math.BigDecimal;
 
@@ -18,7 +18,7 @@ public class ProductResponse {
         this.price = unitPrice;
     }
 
-    public static ProductResponse of(ProductEntity product) {
+    public static ProductResponse of(Product product) {
         return new ProductResponse(
                 product.getId(),
                 product.getName(),

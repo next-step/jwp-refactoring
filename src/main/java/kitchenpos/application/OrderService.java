@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.OrderEntity;
-import kitchenpos.domain.OrderLineItemEntity;
+import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
@@ -31,11 +31,11 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest request) {
-        OrderEntity order = OrderEntity.createOrder(
+        Order order = Order.createOrder(
                 tableService.findOrderTableById(request.getOrderTableId()),
                 request.getOrderLineItems()
                         .stream()
-                        .map(itemRequest -> new OrderLineItemEntity(
+                        .map(itemRequest -> new OrderLineItem(
                                 menuService.findMenuById(itemRequest.getMenuId()),
                                 itemRequest.getQuantity()))
                         .collect(Collectors.toList())
@@ -55,11 +55,11 @@ public class OrderService {
 
     @Transactional
     public void changeOrderStatus(final Long orderId, final OrderStatus status) {
-        OrderEntity order = findOrderById(orderId);
+        Order order = findOrderById(orderId);
         order.changeOrderStatus(status);
     }
 
-    public OrderEntity findOrderById(Long id) {
+    public Order findOrderById(Long id) {
         return orderRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("주문을 찾을 수 없습니다: " + id));
     }

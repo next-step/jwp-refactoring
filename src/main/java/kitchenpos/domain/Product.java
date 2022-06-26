@@ -5,12 +5,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "product")
-public class ProductEntity {
+public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,15 +18,15 @@ public class ProductEntity {
     @Embedded
     private Price unitPrice;
 
-    protected ProductEntity() {
+    protected Product() {
     }
 
-    public ProductEntity(String name, BigDecimal unitPrice) {
+    public Product(String name, BigDecimal unitPrice) {
         this.name = name;
         this.unitPrice = new Price(unitPrice);
     }
 
-    public ProductEntity(Long id, String name, Long unitPrice) {
+    public Product(Long id, String name, Long unitPrice) {
         this.id = id;
         this.name = name;
         this.unitPrice = new Price(BigDecimal.valueOf(unitPrice));

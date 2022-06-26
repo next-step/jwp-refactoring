@@ -7,33 +7,31 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 
 @Entity
-@Table(name = "order_line_item")
-public class OrderLineItemEntity {
+public class OrderLineItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "seq")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private OrderEntity order;
+    private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private MenuEntity menu;
+    private Menu menu;
 
     private Long quantity;
 
-    protected OrderLineItemEntity() {
+    protected OrderLineItem() {
     }
 
-    public OrderLineItemEntity(MenuEntity menu, long quantity) {
+    public OrderLineItem(Menu menu, long quantity) {
         this.menu = menu;
         this.quantity = quantity;
     }
 
-    public void setOrder(OrderEntity order) {
+    public void setOrder(Order order) {
         this.order = order;
     }
 
@@ -41,11 +39,11 @@ public class OrderLineItemEntity {
         return id;
     }
 
-    public OrderEntity getOrder() {
+    public Order getOrder() {
         return order;
     }
 
-    public MenuEntity getMenu() {
+    public Menu getMenu() {
         return menu;
     }
 

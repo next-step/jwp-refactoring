@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.OrderTableEntity;
+import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.TableResponse;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.TableRepository;
@@ -37,8 +37,8 @@ public class TableServiceTest {
     @Test
     void 목록_조회() {
         // given
-        OrderTableEntity 테이블1 = new OrderTableEntity(null, 0, false);
-        OrderTableEntity 테이블2 = new OrderTableEntity(null, 0, false);
+        OrderTable 테이블1 = new OrderTable(null, 0, false);
+        OrderTable 테이블2 = new OrderTable(null, 0, false);
         given(tableRepository.findAll()).willReturn(Arrays.asList(테이블1, 테이블2));
 
         // when
@@ -52,7 +52,7 @@ public class TableServiceTest {
     @Test
     void 빈_테이블로_설정_예외_잘못된_주문_상태() {
         // given
-        OrderTableEntity 테이블 = new OrderTableEntity(null, 0, false);
+        OrderTable 테이블 = new OrderTable(null, 0, false);
         given(tableRepository.findById(any(Long.class))).willReturn(Optional.of(테이블));
         given(orderRepository.existsByOrderTableAndOrderStatusIn(any(), any())).willReturn(true);
 

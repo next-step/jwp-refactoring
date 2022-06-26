@@ -12,7 +12,7 @@ public class OrderTableTest {
     @Test
     void 생성() {
         // when
-        OrderTableEntity orderTable = new OrderTableEntity(null, 0, false);
+        OrderTable orderTable = new OrderTable(null, 0, false);
 
         // then
         assertThat(orderTable).isNotNull();
@@ -24,7 +24,7 @@ public class OrderTableTest {
     @Test
     void 빈_테이블로_설정() {
         // given
-        OrderTableEntity orderTable = new OrderTableEntity(null, 0, false);
+        OrderTable orderTable = new OrderTable(null, 0, false);
 
         // when
         orderTable.changeEmpty(true);
@@ -38,8 +38,8 @@ public class OrderTableTest {
     @Test
     void 빈_테이블로_설정_예외_단체_지정됨() {
         // given
-        TableGroupEntity tableGroup = new TableGroupEntity();
-        OrderTableEntity orderTable = new OrderTableEntity(tableGroup, 0, false);
+        TableGroup tableGroup = new TableGroup();
+        OrderTable orderTable = new OrderTable(tableGroup, 0, false);
 
         // when, then
         assertThatThrownBy(() -> orderTable.changeEmpty(true))
@@ -50,7 +50,7 @@ public class OrderTableTest {
     @Test
     void 손님_수_변경() {
         // given
-        OrderTableEntity orderTable = new OrderTableEntity(null, 0, false);
+        OrderTable orderTable = new OrderTable(null, 0, false);
 
         // when
         orderTable.changeNumberOfGuests(7);
@@ -63,7 +63,7 @@ public class OrderTableTest {
     @Test
     void 손님_수_변경_예외_0_미만() {
         // given
-        OrderTableEntity orderTable = new OrderTableEntity(null, 0, false);
+        OrderTable orderTable = new OrderTable(null, 0, false);
 
         // when, then
         assertThatThrownBy(() -> orderTable.changeNumberOfGuests(-1))
@@ -74,7 +74,7 @@ public class OrderTableTest {
     @Test
     void 손님_수_변경_예외_빈_테이블() {
         // given
-        OrderTableEntity orderTable = new OrderTableEntity(null, 0, true);
+        OrderTable orderTable = new OrderTable(null, 0, true);
 
         // when, then
         assertThatThrownBy(() -> orderTable.changeNumberOfGuests(7))

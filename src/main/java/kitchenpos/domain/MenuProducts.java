@@ -9,13 +9,13 @@ import java.util.List;
 @Embeddable
 public class MenuProducts {
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MenuProductEntity> elements = new ArrayList<>();
+    private List<MenuProduct> elements = new ArrayList<>();
 
-    public void add(MenuProductEntity menuProduct) {
+    public void add(MenuProduct menuProduct) {
         elements.add(menuProduct);
     }
 
-    public List<MenuProductEntity> getElements() {
+    public List<MenuProduct> getElements() {
         return elements;
     }
 }

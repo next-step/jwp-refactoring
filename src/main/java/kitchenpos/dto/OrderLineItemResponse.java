@@ -1,6 +1,6 @@
 package kitchenpos.dto;
 
-import kitchenpos.domain.OrderLineItemEntity;
+import kitchenpos.domain.OrderLineItem;
 
 import java.math.BigDecimal;
 
@@ -20,7 +20,7 @@ public class OrderLineItemResponse {
         this.quantity = quantity;
     }
 
-    public static OrderLineItemResponse of(OrderLineItemEntity orderLineItem) {
+    public static OrderLineItemResponse of(OrderLineItem orderLineItem) {
         return new OrderLineItemResponse(
                 orderLineItem.getId(),
                 orderLineItem.getMenu().getName(),

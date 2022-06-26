@@ -1,6 +1,6 @@
 package kitchenpos.dto;
 
-import kitchenpos.domain.OrderTableEntity;
+import kitchenpos.domain.OrderTable;
 
 import java.util.Objects;
 
@@ -20,7 +20,7 @@ public class TableResponse {
         this.empty = empty;
     }
 
-    public static TableResponse of(OrderTableEntity orderTable) {
+    public static TableResponse of(OrderTable orderTable) {
         Long tableGroupId = null;
         if (orderTable.getTableGroup() != null) {
             tableGroupId = orderTable.getTableGroup().getId();

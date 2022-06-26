@@ -8,13 +8,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
-@Table(name = "menu")
-public class MenuEntity {
+public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,26 +23,26 @@ public class MenuEntity {
     private Price price;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_group_id", nullable = false)
-    private MenuGroupEntity menuGroup;
+    @JoinColumn(nullable = false)
+    private MenuGroup menuGroup;
 
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
 
-    protected MenuEntity() {
+    protected Menu() {
     }
 
-    private MenuEntity(String name, BigDecimal price, MenuGroupEntity menuGroup) {
+    private Menu(String name, BigDecimal price, MenuGroup menuGroup) {
         this.name = name;
         this.price = new Price(price);
         this.menuGroup = menuGroup;
     }
 
-    public static MenuEntity createMenu(
+    public static Menu createMenu(
             String name,
             BigDecimal price,
-            MenuGroupEntity menuGroup,
-            List<MenuProductEntity> menuProducts
+            MenuGroup menuGroup,
+            List<MenuProduct> menuProducts
     ) {
         if (menuGroup == null) {
             throw new IllegalArgumentException("메뉴 그룹이 필요합니다.");
@@ -52,27 +50,27 @@ public class MenuEntity {
 
         validatePrice(price, menuProducts);
 
-        MenuEntity menu = new MenuEntity(name, price, menuGroup);
-        for (MenuProductEntity menuProduct : menuProducts) {
+        Menu menu = new Menu(name, price, menuGroup);
+        for (MenuProduct menuProduct : menuProducts) {
             menu.addMenuProduct(menuProduct);
         }
 
         return menu;
     }
 
-    private static void validatePrice(BigDecimal menuPrice, List<MenuProductEntity> menuProducts) {
+    private static void validatePrice(BigDecimal menuPrice, List<MenuProduct> menuProducts) {
         if (menuPrice.compareTo(totalPriceOf(menuProducts)) > 0) {
             throw new IllegalArgumentException("메뉴 가격은 상품의 총 가격보다 클 수 없습니다.");
         }
     }
 
-    private static BigDecimal totalPriceOf(List<MenuProductEntity> menuProducts) {
+    private static BigDecimal totalPriceOf(List<MenuProduct> menuProducts) {
         return menuProducts.stream()
                 .map(menuProduct -> menuProduct.getPrice())
                 .reduce(BigDecimal.ZERO, (acc, price) -> acc.add(price));
     }
 
-    public void addMenuProduct(MenuProductEntity menuProduct) {
+    public void addMenuProduct(MenuProduct menuProduct) {
         menuProducts.add(menuProduct);
         menuProduct.setMenu(this);
     }
@@ -89,11 +87,11 @@ public class MenuEntity {
         return price.getValue();
     }
 
-    public MenuGroupEntity getMenuGroup() {
+    public MenuGroup getMenuGroup() {
         return menuGroup;
     }
 
-    public List<MenuProductEntity> getMenuProducts() {
+    public List<MenuProduct> getMenuProducts() {
         return menuProducts.getElements();
     }
 }

@@ -7,27 +7,25 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 
 @Entity
-@Table(name = "order_table")
-public class OrderTableEntity {
+public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private TableGroupEntity tableGroup;
+    private TableGroup tableGroup;
 
     private int numberOfGuests;
 
     @Column(nullable = false)
     private Boolean empty;
 
-    protected OrderTableEntity() {
+    protected OrderTable() {
     }
 
-    public OrderTableEntity(TableGroupEntity tableGroup, int numberOfGuests, boolean empty) {
+    public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
         this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
@@ -37,11 +35,11 @@ public class OrderTableEntity {
         return id;
     }
 
-    public TableGroupEntity getTableGroup() {
+    public TableGroup getTableGroup() {
         return tableGroup;
     }
 
-    public void setTableGroup(TableGroupEntity tableGroup) {
+    public void setTableGroup(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
     }
 

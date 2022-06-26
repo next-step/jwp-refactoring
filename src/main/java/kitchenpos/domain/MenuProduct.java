@@ -8,36 +8,34 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "menu_product")
-public class MenuProductEntity {
+public class MenuProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "seq")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id", nullable = false)
-    private MenuEntity menu;
+    @JoinColumn(nullable = false)
+    private Menu menu;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
-    private ProductEntity product;
+    @JoinColumn(nullable = false)
+    private Product product;
 
     private int quantity;
 
-    protected MenuProductEntity() {
+    protected MenuProduct() {
     }
 
-    public MenuProductEntity(ProductEntity product, int quantity) {
+    public MenuProduct(Product product, int quantity) {
         this.product = product;
         this.quantity = quantity;
     }
 
-    public void setMenu(MenuEntity menu) {
+    public void setMenu(Menu menu) {
         this.menu = menu;
     }
 
@@ -45,11 +43,11 @@ public class MenuProductEntity {
         return id;
     }
 
-    public MenuEntity getMenu() {
+    public Menu getMenu() {
         return menu;
     }
 
-    public ProductEntity getProduct() {
+    public Product getProduct() {
         return product;
     }
 

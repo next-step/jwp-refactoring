@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.ProductEntity;
+import kitchenpos.domain.Product;
 import kitchenpos.dto.ProductResponse;
 import kitchenpos.repository.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -29,8 +29,8 @@ public class ProductServiceTest {
     @Test
     void 목록_조회() {
         // given
-        ProductEntity 팔당보쌈 = new ProductEntity(1L, "팔당보쌈", 28_000L);
-        ProductEntity 파파존스_피자 = new ProductEntity(2L, "파파존스 피자", 22_000L);
+        Product 팔당보쌈 = new Product(1L, "팔당보쌈", 28_000L);
+        Product 파파존스_피자 = new Product(2L, "파파존스 피자", 22_000L);
         given(productRepository.findAll()).willReturn(Arrays.asList(팔당보쌈, 파파존스_피자));
 
         // when

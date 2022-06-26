@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.MenuGroupEntity;
+import kitchenpos.domain.MenuGroup;
 import kitchenpos.repository.MenuGroupRepository;
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
@@ -22,7 +22,7 @@ public class MenuGroupService {
 
     @Transactional
     public MenuGroupResponse create(MenuGroupRequest request) {
-        MenuGroupEntity persistedMenuGroup = menuGroupRepository.save(new MenuGroupEntity(request.getName()));
+        MenuGroup persistedMenuGroup = menuGroupRepository.save(new MenuGroup(request.getName()));
 
         return MenuGroupResponse.of(persistedMenuGroup);
     }
@@ -34,7 +34,7 @@ public class MenuGroupService {
                 .collect(Collectors.toList());
     }
 
-    public MenuGroupEntity findMenuGroupById(Long id) {
+    public MenuGroup findMenuGroupById(Long id) {
         return menuGroupRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("메뉴 그룹을 찾을 수 없습니다: " + id));
     }

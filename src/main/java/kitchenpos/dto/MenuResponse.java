@@ -1,6 +1,6 @@
 package kitchenpos.dto;
 
-import kitchenpos.domain.MenuEntity;
+import kitchenpos.domain.Menu;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -25,7 +25,7 @@ public class MenuResponse {
         this.products = products;
     }
 
-    public static MenuResponse of(MenuEntity menu) {
+    public static MenuResponse of(Menu menu) {
         return new MenuResponse(
                 menu.getId(),
                 menu.getName(),

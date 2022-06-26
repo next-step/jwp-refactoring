@@ -22,7 +22,7 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class)
 @Entity
 @Table(name = "orders")
-public class OrderEntity {
+public class Order {
     private static final int MINIMUM_ITEM_SIZE = 1;
 
     @Id
@@ -30,7 +30,7 @@ public class OrderEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private OrderTableEntity orderTable;
+    private OrderTable orderTable;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
@@ -39,17 +39,17 @@ public class OrderEntity {
     private LocalDateTime orderedTime;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderLineItemEntity> orderLineItems = new ArrayList<>();
+    private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
-    protected OrderEntity() {
+    protected Order() {
     }
 
-    private OrderEntity(OrderTableEntity orderTable, OrderStatus orderStatus) {
+    private Order(OrderTable orderTable, OrderStatus orderStatus) {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
     }
 
-    public static OrderEntity createOrder(OrderTableEntity orderTable, List<OrderLineItemEntity> orderLineItems) {
+    public static Order createOrder(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException("빈 테이블에는 주문을 등록할 수 없습니다.");
         }
@@ -58,16 +58,16 @@ public class OrderEntity {
             throw new IllegalArgumentException("주문 항목은 하나 이상이어야 합니다.");
         }
 
-        OrderEntity orderEntity = new OrderEntity(orderTable, OrderStatus.COOKING);
+        Order order = new Order(orderTable, OrderStatus.COOKING);
 
-        for (OrderLineItemEntity orderLineItem : orderLineItems) {
-            orderEntity.addOrderLineItem(orderLineItem);
+        for (OrderLineItem orderLineItem : orderLineItems) {
+            order.addOrderLineItem(orderLineItem);
         }
 
-        return orderEntity;
+        return order;
     }
 
-    private void addOrderLineItem(OrderLineItemEntity orderLineItem) {
+    private void addOrderLineItem(OrderLineItem orderLineItem) {
         orderLineItems.add(orderLineItem);
         orderLineItem.setOrder(this);
     }
@@ -84,7 +84,7 @@ public class OrderEntity {
         return id;
     }
 
-    public OrderTableEntity getOrderTable() {
+    public OrderTable getOrderTable() {
         return orderTable;
     }
 
@@ -96,7 +96,7 @@ public class OrderEntity {
         return orderedTime;
     }
 
-    public List<OrderLineItemEntity> getOrderLineItems() {
+    public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
     }
 }

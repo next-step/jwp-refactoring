@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.MenuGroupEntity;
+import kitchenpos.domain.MenuGroup;
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
 import kitchenpos.repository.MenuGroupRepository;
@@ -31,8 +31,8 @@ public class MenuGroupServiceTest {
     @Test
     void 생성_성공() {
         // given
-        MenuGroupEntity menuGroup = new MenuGroupEntity("양식");
-        given(menuGroupRepository.save(any(MenuGroupEntity.class))).willReturn(menuGroup);
+        MenuGroup menuGroup = new MenuGroup("양식");
+        given(menuGroupRepository.save(any(MenuGroup.class))).willReturn(menuGroup);
 
         // when
         MenuGroupResponse result = menuGroupService.create(new MenuGroupRequest("양식"));
@@ -46,8 +46,8 @@ public class MenuGroupServiceTest {
     @Test
     void 목록_조회() {
         // given
-        MenuGroupEntity 양식 = new MenuGroupEntity(1L, "양식");
-        MenuGroupEntity 한식 = new MenuGroupEntity(2L, "한식");
+        MenuGroup 양식 = new MenuGroup(1L, "양식");
+        MenuGroup 한식 = new MenuGroup(2L, "한식");
         given(menuGroupRepository.findAll()).willReturn(Arrays.asList(양식, 한식));
 
         // when

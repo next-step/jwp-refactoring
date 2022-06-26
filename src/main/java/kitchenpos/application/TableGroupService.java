@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.OrderTableEntity;
-import kitchenpos.domain.TableGroupEntity;
+import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.dto.TableGroupResponse;
 import kitchenpos.repository.TableGroupRepository;
@@ -25,23 +25,23 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest request) {
-        List<OrderTableEntity> orderTables = request.getOrderTableIds()
+        List<OrderTable> orderTables = request.getOrderTableIds()
                 .stream()
                 .map(id -> tableService.findOrderTableById(id))
                 .collect(Collectors.toList());
 
-        TableGroupEntity tableGroup = tableGroupRepository.save(new TableGroupEntity(orderTables));
+        TableGroup tableGroup = tableGroupRepository.save(new TableGroup(orderTables));
 
         return TableGroupResponse.of(tableGroup);
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        TableGroupEntity tableGroup = findTableGroupById(tableGroupId);
+        TableGroup tableGroup = findTableGroupById(tableGroupId);
 
         final List<Long> orderTableIds = tableGroup.getOrderTables()
                 .stream()
-                .map(OrderTableEntity::getId)
+                .map(OrderTable::getId)
                 .collect(Collectors.toList());
 
         if (tableGroup.getOrderTables().stream()
@@ -52,7 +52,7 @@ public class TableGroupService {
         tableGroup.ungroup();
     }
 
-    public TableGroupEntity findTableGroupById(Long id) {
+    public TableGroup findTableGroupById(Long id) {
         return tableGroupRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("테이블 그룹을 찾을 수 없습니다: " + id));
     }

@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.OrderTableEntity;
-import kitchenpos.domain.TableGroupEntity;
+import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.TableGroup;
 import kitchenpos.repository.TableGroupRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,11 +33,11 @@ public class TableGroupServiceTest {
     @Test
     void 단체_지정_해제_예외() {
         // given
-        OrderTableEntity 빈_테이블1 = new OrderTableEntity(null, 0, true);
-        OrderTableEntity 빈_테이블2 = new OrderTableEntity(null, 0, true);
-        TableGroupEntity 테이블_그룹 = new TableGroupEntity(1L, Arrays.asList(빈_테이블1, 빈_테이블2));
+        OrderTable 빈_테이블1 = new OrderTable(null, 0, true);
+        OrderTable 빈_테이블2 = new OrderTable(null, 0, true);
+        TableGroup 테이블_그룹 = new TableGroup(1L, Arrays.asList(빈_테이블1, 빈_테이블2));
         doReturn(Optional.of(테이블_그룹)).when(tableGroupRepository).findById(any(Long.class));
-        doReturn(true).when(tableService).hasCookingOrMeal(any(OrderTableEntity.class));
+        doReturn(true).when(tableService).hasCookingOrMeal(any(OrderTable.class));
 
         // when, then
         assertThatThrownBy(() -> tableGroupService.ungroup(테이블_그룹.getId()))
