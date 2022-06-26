@@ -17,7 +17,10 @@ class OrderLineItemTest {
         final Menu menu = new Menu.Builder("menu")
                 .setPrice(Price.of(1_000L))
                 .build();
-        final OrderTable orderTable = new OrderTable(null, null, GuestNumber.of(2), false);
+        final OrderTable orderTable = new OrderTable.Builder()
+                .setGuestNumber(GuestNumber.of(2))
+                .setEmpty(false)
+                .build();
         final Orders order = new Orders.Builder(orderTable)
                 .build();
         final OrderLineItem orderLineItem = new OrderLineItem.Builder(order)

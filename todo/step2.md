@@ -62,7 +62,7 @@ completePayment() vs setOrderState()
 - [x] 리뷰사항 반영하기
 - [x] DTO (request/response) 추가
 - [x] JdbcTemplate에서 JPA 사용하도록 Entity & Repository 변경
-  - [ ] Entity Builder Pattern으로 사용하도록 개선
+  - [x] Entity Builder Pattern으로 사용하도록 개선
 - [x] 비즈니스 로직 Service Layer에서 Domain으로 이동
 ~~- [ ] Table id가 `seq` 변경~~
 - [x] Table BigDecimal인 DECIMAL(19, 2) -> BIGINT로 변경

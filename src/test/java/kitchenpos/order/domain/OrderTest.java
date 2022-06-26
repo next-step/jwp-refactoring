@@ -12,7 +12,11 @@ class OrderTest {
     @Test
     @DisplayName("주문 객체가 같은지 검증")
     void verifyEqualsOrder() {
-        final OrderTable orderTable = new OrderTable(1L, null, GuestNumber.of(5), false);
+        final OrderTable orderTable = new OrderTable.Builder()
+                .setId(1L)
+                .setGuestNumber(GuestNumber.of(5))
+                .setEmpty(false)
+                .build();
         final Orders order = new Orders.Builder(orderTable)
                 .setId(1L)
                 .setOrderStatus(OrderStatus.COOKING)

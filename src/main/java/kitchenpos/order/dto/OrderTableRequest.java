@@ -28,6 +28,9 @@ public class OrderTableRequest {
     }
 
     public OrderTable toOrderTable() {
-        return new OrderTable(null, null, GuestNumber.of(numberOfGuests), empty);
+        return new OrderTable.Builder()
+                .setGuestNumber(GuestNumber.of(numberOfGuests))
+                .setEmpty(empty)
+                .build();
     }
 }

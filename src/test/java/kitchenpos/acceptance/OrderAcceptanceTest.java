@@ -62,7 +62,11 @@ class OrderAcceptanceTest extends AcceptanceTest {
     void createOrder() {
         // given
         final OrderTableResponse 주문_테이블_결과 = new OrderTableResponse(1L, null, 3, false);
-        final OrderTable orderTable = new OrderTable(1L, null, GuestNumber.of(5), false);
+        final OrderTable orderTable = new OrderTable.Builder()
+                .setId(1L)
+                .setGuestNumber(GuestNumber.of(5))
+                .setEmpty(false)
+                .build();
         final Orders order = new Orders.Builder(orderTable)
                 .setId(1L)
                 .setOrderStatus(OrderStatus.COOKING)

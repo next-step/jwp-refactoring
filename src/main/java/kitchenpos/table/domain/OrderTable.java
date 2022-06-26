@@ -37,11 +37,11 @@ public class OrderTable {
     protected OrderTable() {
     }
 
-    public OrderTable(Long id, TableGroup tableGroup, GuestNumber guestNumber, boolean empty) {
-        this.id = id;
-        this.tableGroup = tableGroup;
-        this.guestNumber = guestNumber;
-        this.empty = empty;
+    OrderTable(Builder builder) {
+        this.id = builder.id;
+        this.tableGroup = builder.tableGroup;
+        this.guestNumber = builder.guestNumber;
+        this.empty = builder.empty;
     }
 
     public Long getId() {
@@ -58,20 +58,12 @@ public class OrderTable {
         }
     }
 
-    public void mappingTableGroupId(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
-    }
-
     public boolean isEmpty() {
         return this.empty;
     }
 
     public void empty() {
         this.empty = true;
-    }
-
-    public void notEmpty() {
-        this.empty = false;
     }
 
     public void changeGuestNumber(int guestNumber) {
@@ -112,5 +104,39 @@ public class OrderTable {
     @Override
     public int hashCode() {
         return Objects.hash(id, tableGroup, guestNumber, empty);
+    }
+
+    public static class Builder {
+        private Long id;
+        private TableGroup tableGroup;
+        private GuestNumber guestNumber;
+        private boolean empty;
+
+        public Builder() {
+        }
+
+        public Builder setId(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder setTableGroup(TableGroup tableGroup) {
+            this.tableGroup = tableGroup;
+            return this;
+        }
+
+        public Builder setGuestNumber(GuestNumber guestNumber) {
+            this.guestNumber = guestNumber;
+            return this;
+        }
+
+        public Builder setEmpty(boolean empty) {
+            this.empty = empty;
+            return this;
+        }
+
+        public OrderTable build() {
+            return new OrderTable(this);
+        }
     }
 }

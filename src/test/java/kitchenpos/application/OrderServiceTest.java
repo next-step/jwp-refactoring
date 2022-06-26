@@ -41,6 +41,7 @@ class OrderServiceTest {
     private Menu menu;
     private OrderLineItem orderLineItem;
     private Orders order;
+    private OrderTable orderTable;
 
 
     private OrderService orderService;
@@ -69,7 +70,11 @@ class OrderServiceTest {
                 .setMenu(menu)
                 .setQuantity(Quantity.of(1L))
                 .builder();
-        OrderTable orderTable = new OrderTable(1L, null, GuestNumber.of(5), false);
+        orderTable = new OrderTable.Builder()
+                .setId(1L)
+                .setGuestNumber(GuestNumber.of(5))
+                .setEmpty(false)
+                .build();
         OrderLineItems orderLineItems = new OrderLineItems(Arrays.asList(orderLineItem));
         order = new Orders.Builder(orderTable)
                 .setId(1L)
@@ -84,7 +89,7 @@ class OrderServiceTest {
         // given
         when(menuRepository.countByIdIn(any())).thenReturn(1L);
         when(orderTableRepository.findById(any())).thenReturn(
-                Optional.of(new OrderTable(1L, null, GuestNumber.of(3), false)));
+                Optional.of(orderTable));
         when(menuRepository.findById(any())).thenReturn(Optional.of(menu));
         when(orderRepository.save(any())).thenReturn(order);
         // when
@@ -168,7 +173,6 @@ class OrderServiceTest {
     @DisplayName("완료된 주문을 주문 상태 변경시 에러 발생")
     void changeOrderStatusCompletionOrder() {
         // given
-        final OrderTable orderTable = new OrderTable(1L, null, GuestNumber.of(5), false);
         final Orders order = new Orders.Builder(orderTable)
                 .setOrderStatus(OrderStatus.COMPLETION)
                 .build();
