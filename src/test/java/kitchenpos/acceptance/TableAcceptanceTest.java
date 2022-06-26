@@ -3,7 +3,6 @@ package kitchenpos.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.dto.TableRequest;
 import kitchenpos.dto.TableResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -93,7 +92,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
     void 빈_테이블_설정_예외_주문_상태_오류() {
         // given
         ExtractableResponse<Response> createResponse = 주문_테이블_생성_요청(테이블_요청);
-        OrderAcceptanceTest.주문_생성되어_있음(createResponse, OrderStatus.MEAL);
+        OrderAcceptanceTest.주문_생성되어_있음(createResponse);
 
         // when
         ExtractableResponse<Response> response = 빈_테이블_설정_변경_요청(createResponse, true);

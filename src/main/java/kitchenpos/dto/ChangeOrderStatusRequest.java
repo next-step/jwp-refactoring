@@ -1,21 +1,29 @@
 package kitchenpos.dto;
 
+import kitchenpos.domain.OrderStatus;
+
 import java.util.List;
 
-public class OrderRequest {
+public class ChangeOrderStatusRequest {
     private Long orderTableId;
+    private OrderStatus orderStatus;
     private List<OrderLineItemRequest> orderLineItems;
 
-    protected OrderRequest() {
+    protected ChangeOrderStatusRequest() {
     }
 
-    public OrderRequest(Long orderTableId, List<OrderLineItemRequest> orderLineItems) {
+    public ChangeOrderStatusRequest(Long orderTableId, OrderStatus orderStatus, List<OrderLineItemRequest> orderLineItems) {
         this.orderTableId = orderTableId;
+        this.orderStatus = orderStatus;
         this.orderLineItems = orderLineItems;
     }
 
     public Long getOrderTableId() {
         return orderTableId;
+    }
+
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
     }
 
     public List<OrderLineItemRequest> getOrderLineItems() {
