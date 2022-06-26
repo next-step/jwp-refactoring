@@ -34,24 +34,10 @@
     - (조건) `메뉴(Menu)` 가격은 `메뉴 상품(MenuProduct)` 합친 가격보다 같거나 작다.
 
 - (기능) `메뉴(Menu)` 조회 기능
-    
-### 주문(Order)
-- 매장에서 발생하는 주문
-- 식별자(id), 주문 테이블(orderTableId), 주문 상태(orderStatus)\
-주문 시각(orderedTime), 주문 항목 목록(orderLineItems) 정보 포함한다.
 
-- (기능) `주문(Order)` 저장 기능
-    - `주문 항목(OrderListItem)`을 같이 저장한다. 
-    - (조건) 연관된 `주문 항목(OrderListItem)`이 1개 이상 존재한다.
-    - (조건) 연관된 `주문 항목(OrderListItem)`의 개수와 `메뉴(Menu)`의 개수가 일치한다.
-    - (조건) 연관된 `주문 테이블(OrderTable)`이 데이터베이스에 저장된 상태다.
-    - (조건) 연관된 `주문 테이블(OrderTable)`이 이용(Not empty) 상태이다.
-    
-- (기능) `주문(Order)` 조회 기능
-    
-- (기능) `주문(Order)`의 주문 상태 변경 기능
-    - (조건) `주문(Order)`이 데이터베이스에 저장된 상태다.
-    - (조건) `주문(Order)`의 주문 상태가 `COMPLETION`이 아니다.
+### 메뉴 상품(MenuProduct)
+- 메뉴에 속하는 수량이 있는 상품
+- 시퀀스(seq), 메뉴(menuId), 제품(productId), 수량(quantity) 정보 포함한다.
 
 ### 주문 테이블(OrderTable)
 - 매장에서 주문이 발생하는 영역
@@ -71,6 +57,28 @@
     - (조건) 변경할 `주문 테이블(OrderTable)`이 데이터베이스에 저장된 상태다.
     - (조건) 변경할 `주문 테이블(OrderTable)`은 이용(Not empty) 상태다.
     
+### 주문(Order)
+- 매장에서 발생하는 주문
+- 식별자(id), 주문 테이블(orderTableId), 주문 상태(orderStatus)\
+주문 시각(orderedTime), 주문 항목 목록(orderLineItems) 정보 포함한다.
+
+- (기능) `주문(Order)` 저장 기능
+    - `주문 항목(OrderListItem)`을 같이 저장한다. 
+    - (조건) 연관된 `주문 항목(OrderListItem)`이 1개 이상 존재한다.
+    - (조건) 연관된 `주문 항목(OrderListItem)`의 개수와 `메뉴(Menu)`의 개수가 일치한다.
+    - (조건) 연관된 `주문 테이블(OrderTable)`이 데이터베이스에 저장된 상태다.
+    - (조건) 연관된 `주문 테이블(OrderTable)`이 이용(Not empty) 상태이다.
+    
+- (기능) `주문(Order)` 조회 기능
+    
+- (기능) `주문(Order)`의 주문 상태 변경 기능
+    - (조건) `주문(Order)`이 데이터베이스에 저장된 상태다.
+    - (조건) `주문(Order)`의 주문 상태가 `COMPLETION`이 아니다.
+
+### 주문 상태(OrderStatus)
+- 주문은 조리 ➜ 식사 ➜ 계산 완료 순서로 진행된다.
+- 조리(COOKING), 식사(MEAL), 계산 완료(COMPLETION)
+
 ### 단체 지정(TableGroup)
 - 통합 계산을 위해 개별 주문 테이블을 그룹화하는 기능
 - 식별자(id), 생성 날짜(createdDate), 주문 테이블 목록(orderTables) 정보 포함한다.
@@ -86,6 +94,10 @@
 - (기능) `단체 지정(TableGroup)`과 `주문 테이블(OrderTable)` 간 그룹 해제 기능
     - `단체 지정(TableGroup)`과 연관된 `주문 테이블(OrderTable)` DB 외래키를 `null`로 업데이트 한다.
     - (조건) 연관된 `주문 테이블(OrTable)`과 연관된 `주문(Order)`이 `계산 완료(COMPLETION)` 상태다.
+    
+### 주문 항목(OrderLineItem)
+- 주문에 속하는 수량이 있는 메뉴
+- 시퀀스(seq), 주문(orderId), 메뉴(menuId), 수량(quantity) 정보 포함한다.
 
 ## 용어 사전
 
