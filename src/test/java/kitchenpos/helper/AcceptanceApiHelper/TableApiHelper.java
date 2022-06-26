@@ -6,12 +6,13 @@ import io.restassured.response.Response;
 import java.util.HashMap;
 import java.util.Map;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.request.OrderTableRequest;
 import org.springframework.http.MediaType;
 
 public class TableApiHelper {
 
     public static ExtractableResponse<Response> 빈테이블_생성하기() {
-        OrderTable 테이블 = new OrderTable();
+        OrderTableRequest 테이블 = new OrderTableRequest();
         테이블.setNumberOfGuests(0);
         테이블.setEmpty(true);
 
