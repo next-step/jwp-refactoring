@@ -47,6 +47,6 @@ class PriceTest {
         final Price price1 = Price.of(10L);
         final Price price2 = Price.of(20L);
 
-        assertThat(price1.compareTo(price2)).isNegative();
+        assertThat(price1.isMoreThan(price2)).isFalse();
     }
 }

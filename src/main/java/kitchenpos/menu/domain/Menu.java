@@ -48,13 +48,13 @@ public class Menu {
 
     public void validateProductsTotalPrice() {
         final Price totalPrice = this.menuProducts.totalPrice();
-        if (this.price.compareTo(totalPrice) > 0) {
+        if (this.price.isMoreThan(totalPrice)) {
             throw new InvalidPriceException("제품의 합은 메뉴 가격보다 클 수 없습니다.");
         }
     }
 
-    public Long getId() {
-        return id;
+    public MenuProducts products() {
+        return menuProducts;
     }
 
     public MenuResponse toMenuResponse() {

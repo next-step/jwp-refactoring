@@ -36,8 +36,8 @@ public class Price {
         return new Price(this.price + other.price);
     }
 
-    public Long compareTo(Price totalPrice) {
-        return this.price - totalPrice.price;
+    public Boolean isMoreThan(Price totalPrice) {
+        return this.price > totalPrice.price;
     }
 
     public Long value() {
