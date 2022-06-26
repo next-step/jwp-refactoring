@@ -47,7 +47,6 @@ public class MenuService {
 
     public List<MenuResponse> list() {
         final List<Menu> menus = menuRepository.findAll();
-        menus.forEach(Menu::bindMenuProducts);
 
         return menus.stream()
                 .map(MenuResponse::of)

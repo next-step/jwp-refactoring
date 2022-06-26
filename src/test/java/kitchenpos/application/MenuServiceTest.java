@@ -63,6 +63,9 @@ class MenuServiceTest {
         우동 = new Product(2L, "우동", BigDecimal.valueOf(3000));
         menuGroup = new MenuGroup(1L, "런치메뉴");
 
+        //Menu menu1 = 메뉴_데이터_생성(1L, BigDecimal.valueOf(10000));
+        //Menu menu2 = 메뉴_데이터_생성(2L, BigDecimal.valueOf(20000));
+
         requestMenuProductSeq1 = new MenuProduct(1L, null, 초밥, 2);
         requestMenuProductSeq2 = new MenuProduct(2L, null, 우동, 2);
         menuProducts = Arrays.asList(requestMenuProductSeq1, requestMenuProductSeq2);
@@ -145,9 +148,13 @@ class MenuServiceTest {
     @Test
     void list() {
         // given
+        Menu menuId1 = 메뉴_데이터_생성(1L, BigDecimal.valueOf(10000));
+        Menu menuId2 = 메뉴_데이터_생성(2L, BigDecimal.valueOf(20000));
+        menuId1.bindMenuProducts();
+        menuId2.bindMenuProducts();
         List<Menu> 예상값 = Arrays.asList(
-                메뉴_데이터_생성(1L, BigDecimal.valueOf(10000)),
-                메뉴_데이터_생성(2L, BigDecimal.valueOf(20000))
+                menuId1,
+                menuId2
         );
         given(menuRepository.findAll()).willReturn(예상값);
 
