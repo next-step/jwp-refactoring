@@ -10,6 +10,7 @@ import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.Price;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -43,9 +44,9 @@ class MenuAcceptanceTest extends AcceptanceTest {
         // given
         final MenuGroup 예상된_메뉴그룹= new MenuGroup(1L, "후라이드세트");
         final Product 예상된_제품 = new Product(1L, "후라이드", 16_000L);
-        final Menu 예상된_메뉴 = new Menu(1L, "후라이드", 16_000L, 예상된_메뉴그룹, Arrays.asList(new MenuProduct(1L, null, 예상된_제품, 2L)));
+        final Menu 예상된_메뉴 = new Menu(1L, "후라이드", Price.of(16_000L), 예상된_메뉴그룹, Arrays.asList(new MenuProduct(1L, null, 예상된_제품, 2L)));
         final MenuProduct 예상된_메뉴_제품들 = new MenuProduct(1L, 예상된_메뉴, 예상된_제품, 2L);
-        final MenuResponse 예상된_메뉴_결과 = new MenuResponse(1L, "반반후라이드", 16_000L, 예상된_메뉴그룹.toMenuGroupResponse(),
+        final MenuResponse 예상된_메뉴_결과 = new MenuResponse(1L, "반반후라이드", Price.of(16_000L), 예상된_메뉴그룹.toMenuGroupResponse(),
                 Arrays.asList(예상된_메뉴_제품들));
         메뉴_그룹_생성_요청("후라이드세트");
         제품_생성_요청("후라이드", 16_000L);

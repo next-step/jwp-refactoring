@@ -2,6 +2,7 @@ package kitchenpos.menu.dto;
 
 import java.util.List;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.Price;
 
 public class MenuResponse {
     private Long id;
@@ -10,11 +11,11 @@ public class MenuResponse {
     private MenuGroupResponse menuGroup;
     private List<MenuProduct> menuProducts;
 
-    public MenuResponse(Long id, String name, Long price, MenuGroupResponse menuGroup,
+    public MenuResponse(Long id, String name, Price price, MenuGroupResponse menuGroup,
                         List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = name;
-        this.price = price;
+        this.price = price.value();
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
     }

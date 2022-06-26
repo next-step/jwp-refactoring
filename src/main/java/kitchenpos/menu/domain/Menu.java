@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -22,7 +23,6 @@ import kitchenpos.product.domain.Product;
 @Entity
 @Table(name = "menu")
 public class Menu {
-    private static final Long MIN_PRICE = 0L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,8 +31,8 @@ public class Menu {
     @Column
     private String name;
 
-    @Column
-    private Long price;
+    @Embedded
+    private Price price;
 
     @ManyToOne
     @JoinColumn(name = "menu_group_id")
@@ -44,26 +44,19 @@ public class Menu {
     protected Menu() {
     }
 
-    public Menu(String name, Long price, MenuGroup menuGroup) {
+    public Menu(String name, Price price, MenuGroup menuGroup) {
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
     }
 
-    public Menu(Long id, String name, Long price, MenuGroup menuGroup,
+    public Menu(Long id, String name, Price price, MenuGroup menuGroup,
                 List<MenuProduct> menuProducts) {
-        validatePrice(price);
         this.id = id;
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
-    }
-
-    private void validatePrice(Long price) {
-        if (price == null || price < MIN_PRICE) {
-            throw new InvalidPriceException();
-        }
     }
 
     public void addProduct(Product product, Long quantity) {
@@ -75,7 +68,7 @@ public class Menu {
         final long total = this.menuProducts.stream()
                 .map(MenuProduct::price)
                 .mapToLong(Long::intValue).sum();
-        if (total < this.price) {
+        if (this.price.compareTo(total) > 0) {
             throw new InvalidPriceException("제품의 합은 메뉴 가격보다 클 수 없습니다.");
         }
     }

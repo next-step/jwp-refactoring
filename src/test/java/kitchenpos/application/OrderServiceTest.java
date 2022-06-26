@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.Price;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.OrderLineItem;
@@ -55,7 +56,7 @@ class OrderServiceTest {
     void createOrder() {
         // given
         final MenuGroup menuGroup = new MenuGroup(1L, "메뉴그룹");
-        final Menu menu = new Menu(1L, "메뉴", 1_000L, menuGroup, null);
+        final Menu menu = new Menu(1L, "메뉴", Price.of(1_000L), menuGroup, null);
         final OrderTable orderTable = new OrderTable(1L, null, 5, false);
         final OrderLineItem orderLineItem = new OrderLineItem(1L, null, menu, 1L);
         final Orders order = new Orders(1L, orderTable, OrderStatus.COOKING, null, Arrays.asList(orderLineItem));
@@ -116,7 +117,7 @@ class OrderServiceTest {
         // given
         final MenuGroup menuGroup = new MenuGroup(1L, "메뉴그룹");
         final OrderTable orderTable = new OrderTable(1L, null, 5, false);
-        final Menu menu = new Menu(1L, "메뉴", 1_000L, menuGroup, null);
+        final Menu menu = new Menu(1L, "메뉴", Price.of(1_000L), menuGroup, null);
         final OrderLineItem orderLineItem = new OrderLineItem(1L, null, menu, 1L);
         final Orders order = new Orders(1L, orderTable, OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(orderLineItem));
         when(orderRepository.findAll()).thenReturn(Arrays.asList(order));
@@ -132,7 +133,7 @@ class OrderServiceTest {
         // given
         final MenuGroup menuGroup = new MenuGroup(1L, "메뉴그룹");
         final OrderTable orderTable = new OrderTable(1L, null, 5, false);
-        final Menu menu = new Menu(1L, "메뉴", 1_000L, menuGroup, null);
+        final Menu menu = new Menu(1L, "메뉴", Price.of(1_000L), menuGroup, null);
         final OrderLineItem orderLineItem = new OrderLineItem(1L, null, menu, 1L);
         final Orders order = new Orders(1L, orderTable, OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(orderLineItem));
         when(orderRepository.findById(any())).thenReturn(Optional.of(order));

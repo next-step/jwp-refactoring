@@ -1,7 +1,6 @@
 package kitchenpos.menu.dto;
 
 import java.util.List;
-import kitchenpos.menu.domain.Menu;
 
 public class MenuRequest {
     private String name;
@@ -34,9 +33,5 @@ public class MenuRequest {
 
     public List<MenuProductRequest> getMenuProducts() {
         return menuProducts;
-    }
-
-    public Menu toMenu() {
-        return new Menu(null, this.name, this.price, null, null);
     }
 }

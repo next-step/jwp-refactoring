@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import kitchenpos.exception.NotExistException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.Price;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -32,7 +33,7 @@ public class MenuService {
     public MenuResponse create(final MenuRequest menuRequest) {
         final MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
                 .orElseThrow(() -> new NotExistException("메뉴 그룹이 존재하지 않습니다."));
-        final Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup);
+        final Menu menu = new Menu(menuRequest.getName(), Price.of(menuRequest.getPrice()), menuGroup);
 
         for (MenuProductRequest menuProduct : menuRequest.getMenuProducts()) {
             final Product persistProduct = productRepository.findById(menuProduct.getProductId())
