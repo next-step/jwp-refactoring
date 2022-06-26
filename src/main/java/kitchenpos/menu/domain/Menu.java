@@ -40,7 +40,10 @@ public class Menu {
     }
 
     public void addProduct(Product product, Quantity quantity) {
-        final MenuProduct menuProduct = new MenuProduct(this, product, quantity);
+        final MenuProduct menuProduct = new MenuProduct.Builder(this)
+                .setProduct(product)
+                .setQuantity(quantity)
+                .build();
         this.menuProducts.add(menuProduct);
     }
 

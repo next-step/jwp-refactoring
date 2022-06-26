@@ -37,15 +37,11 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
-    public MenuProduct(Menu menu, Product product, Quantity quantity) {
-        this(null, menu, product, quantity);
-    }
-
-    public MenuProduct(Long seq, Menu menu, Product product, Quantity quantity) {
-        this.seq = seq;
-        this.menu = menu;
-        this.product = product;
-        this.quantity = quantity;
+    MenuProduct(Builder builder) {
+        this.seq = builder.seq;
+        this.menu = builder.menu;
+        this.product = builder.product;
+        this.quantity = builder.quantity;
     }
 
     public Price price() {
@@ -68,5 +64,40 @@ public class MenuProduct {
     @Override
     public int hashCode() {
         return Objects.hash(seq, menu, product, quantity);
+    }
+
+    public static class Builder {
+        private Long seq;
+        private Menu menu;
+        private Product product;
+        private Quantity quantity;
+
+        public Builder(Menu menu) {
+            this.menu = menu;
+        }
+
+        public Builder setSeq(Long seq) {
+            this.seq = seq;
+            return this;
+        }
+
+        public Builder setMenu(Menu menu) {
+            this.menu = menu;
+            return this;
+        }
+
+        public Builder setProduct(Product product) {
+            this.product = product;
+            return this;
+        }
+
+        public Builder setQuantity(Quantity quantity) {
+            this.quantity = quantity;
+            return this;
+        }
+
+        public MenuProduct build() {
+            return new MenuProduct(this);
+        }
     }
 }

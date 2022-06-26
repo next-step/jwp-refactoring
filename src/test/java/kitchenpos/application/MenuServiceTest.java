@@ -65,8 +65,11 @@ class MenuServiceTest {
                 .setMenuGroup(menuGroup)
                 .setMenuProducts(menuProducts)
                 .build();
-
-        menuProduct = new MenuProduct(1L, menu, product, Quantity.of(2L));
+        menuProduct = new MenuProduct.Builder(menu)
+                .setSeq(1L)
+                .setProduct(product)
+                .setQuantity(Quantity.of(2L))
+                .build();
         expected = new MenuResponse(null, "후라이드+후라이드", Price.of(1_000L), menuGroup.toMenuGroupResponse(),
                 menuProducts.get());
     }

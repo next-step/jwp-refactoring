@@ -17,8 +17,16 @@ class MenuProductTest {
                 .setId(1L)
                 .setPrice(Price.of(100L))
                 .build();
-        final MenuProduct menuProduct = new MenuProduct(1L, menu, product, Quantity.of(1L));
+        final MenuProduct menuProduct = new MenuProduct.Builder(menu)
+                .setSeq(1L)
+                .setProduct(product)
+                .setQuantity(Quantity.of(1L))
+                .build();
 
-        assertThat(menuProduct).isEqualTo(new MenuProduct(1L, menu, product, Quantity.of(1L)));
+        assertThat(menuProduct).isEqualTo(new MenuProduct.Builder(menu)
+                .setSeq(1L)
+                .setProduct(product)
+                .setQuantity(Quantity.of(1L))
+                .build());
     }
 }
