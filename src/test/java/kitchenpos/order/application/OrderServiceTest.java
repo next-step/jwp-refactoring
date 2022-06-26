@@ -20,6 +20,7 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.util.dto.SaveMenuDto;
@@ -36,6 +37,8 @@ class OrderServiceTest extends ServiceTest {
     @Autowired
     private OrderTableRepository orderTableRepository;
     @Autowired
+    private ProductRepository productRepository;
+    @Autowired
     private OrderService orderService;
     @Autowired
     private MenuTestFixture menuTestFixture;
@@ -47,9 +50,10 @@ class OrderServiceTest extends ServiceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-
-        MenuProduct menuProduct1 = new MenuProduct(new Product("후라이드", BigDecimal.valueOf(16000)), 1);
-        MenuProduct menuProduct2 = new MenuProduct(new Product("양념치킨", BigDecimal.valueOf(16000)), 1);
+        Product 후라이드 = this.productRepository.save(new Product("후라이드", BigDecimal.valueOf(16000)));
+        Product 양념치킨 = this.productRepository.save(new Product("양념치킨", BigDecimal.valueOf(16000)));
+        MenuProduct menuProduct1 = new MenuProduct(후라이드.getId(), 1);
+        MenuProduct menuProduct2 = new MenuProduct(양념치킨.getId(), 1);
         List<MenuProduct> menuProducts = Arrays.asList(menuProduct1, menuProduct2);
 
         Menu menu = menuTestFixture.메뉴_만들기(new SaveMenuDto(menuProducts, new MenuGroup("메뉴 그룹"), "메뉴", 32000));

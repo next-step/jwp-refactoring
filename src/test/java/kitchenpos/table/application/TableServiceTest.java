@@ -10,6 +10,7 @@ import kitchenpos.ServiceTest;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -28,6 +29,8 @@ class TableServiceTest extends ServiceTest {
     private OrderTableRepository orderTableRepository;
     @Autowired
     private TableGroupRepository tableGroupRepository;
+    @Autowired
+    private ProductRepository productRepository;
     @Autowired
     private TableService tableService;
     @Autowired
@@ -87,8 +90,9 @@ class TableServiceTest extends ServiceTest {
     @Test
     @DisplayName("주문 상태가 식사중이거나 조리중인 테이블이 있다면 빈 상태를 바꿀 수 없다.")
     void changeEmptyFail_existOrderCookingOrMeal() {
-        MenuProduct menuProduct1 = new MenuProduct(new Product("후라이드", BigDecimal.valueOf(16000)), 1);
-        MenuProduct menuProduct2 = new MenuProduct(new Product("양념치킨", BigDecimal.valueOf(16000)), 1);
+        Product product = this.productRepository.save(new Product("후라이드", BigDecimal.valueOf(16000)));
+        MenuProduct menuProduct1 = new MenuProduct(product.getId(), 1);
+        MenuProduct menuProduct2 = new MenuProduct(product.getId(), 1);
         List<MenuProduct> menuProducts = Arrays.asList(menuProduct1, menuProduct2);
 
         SaveMenuDto saveMenuDto = new SaveMenuDto(menuProducts, new MenuGroup("메뉴 그룹"), "메뉴", 32000);

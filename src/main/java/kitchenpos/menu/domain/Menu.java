@@ -52,16 +52,6 @@ public class Menu {
     private void addMenuProducts(List<MenuProduct> menuProducts) {
         menuProducts.forEach(menuProduct -> menuProduct.setMenu(this));
         this.menuProducts.addMenuProducts(menuProducts);
-
-        validateMenuPrice();
-    }
-
-    private void validateMenuPrice() {
-        BigDecimal sum = menuProducts.totalPrice();
-
-        if (price.isGreaterThan(sum)) {
-            throw new IllegalArgumentException("메뉴의 금액은 상품의 총합보다 클 수 없습니다.");
-        }
     }
 
     public Long getId() {

@@ -48,8 +48,8 @@ class MenuServiceTest extends ServiceTest {
 
         후라이드 = this.productRepository.save(new Product("후라이드", BigDecimal.valueOf(16000)));
         양념치킨 = this.productRepository.save(new Product("양념치킨", BigDecimal.valueOf(16000)));
-        후라이드_메뉴상품 = new MenuProduct(후라이드, 1);
-        양념치킨_메뉴상품 = new MenuProduct(양념치킨, 1);
+        후라이드_메뉴상품 = new MenuProduct(후라이드.getId(), 1);
+        양념치킨_메뉴상품 = new MenuProduct(양념치킨.getId(), 1);
         두마리메뉴 = this.menuGroupRepository.save(new MenuGroup("두마리메뉴"));
     }
 

@@ -2,8 +2,8 @@ package kitchenpos.menu.domain;
 
 import static java.util.Objects.requireNonNull;
 
-import java.math.BigDecimal;
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,7 +13,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import kitchenpos.common.domain.Quantity;
-import kitchenpos.product.domain.Product;
 
 @Entity
 public class MenuProduct {
@@ -24,24 +23,19 @@ public class MenuProduct {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id", nullable = false)
     private Menu menu;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
+    @Column(name = "product_id", nullable = false)
+    private Long productId;
     @Embedded
     private Quantity quantity;
 
     protected MenuProduct() {
     }
 
-    public MenuProduct(Product product, long quantity) {
-        requireNonNull(product, "상품이 존재하지 않습니다.");
+    public MenuProduct(Long productId, long quantity) {
+        requireNonNull(productId, "상품이 존재하지 않습니다.");
 
-        this.product = product;
+        this.productId = productId;
         this.quantity = new Quantity(quantity);
-    }
-
-    public BigDecimal totalPrice() {
-        return product.getPrice().multiply(BigDecimal.valueOf(quantity.getQuantity()));
     }
 
     public Long getId() {
@@ -57,11 +51,7 @@ public class MenuProduct {
     }
 
     public Long getProductId() {
-        return product.getId();
-    }
-
-    public Product getProduct() {
-        return product;
+        return productId;
     }
 
     public long getQuantity() {
@@ -89,8 +79,8 @@ public class MenuProduct {
     public String toString() {
         return "MenuProduct{" +
             "id=" + id +
-            ", menuId=" + menu.getId() +
-            ", productId=" + product.getId() +
+            ", menu=" + menu +
+            ", productId=" + productId +
             ", quantity=" + quantity +
             '}';
     }
