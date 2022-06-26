@@ -7,6 +7,7 @@ import kitchenpos.exception.NotExistException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.domain.Orders;
+import kitchenpos.order.domain.Quantity;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
@@ -44,7 +45,7 @@ public class OrderService {
         for (OrderLineItemRequest orderLineItemRequest : orderRequest.getOrderLineItems()) {
             final Menu menu = menuRepository.findById(orderLineItemRequest.getMenuId())
                     .orElseThrow(NotExistException::new);
-            order.addOrderMenu(menu, orderLineItemRequest.getQuantity());
+            order.addOrderMenu(menu, Quantity.of(orderLineItemRequest.getQuantity()));
         }
 
         final Orders persist = orderRepository.save(order);

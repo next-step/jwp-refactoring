@@ -91,7 +91,7 @@ public class Orders {
         this.orderStatus = orderStatus;
     }
 
-    public void addOrderMenu(Menu menu, Long quantity) {
+    public void addOrderMenu(Menu menu, Quantity quantity) {
         final OrderLineItem orderLineItem = new OrderLineItem(this, menu, quantity);
         this.orderLineItems.add(orderLineItem);
     }

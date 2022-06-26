@@ -16,6 +16,7 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.Price;
 import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.order.domain.Quantity;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
@@ -65,7 +66,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
         final Orders order = new Orders(1L, orderTable, OrderStatus.COOKING, LocalDateTime.now(), null);
         final MenuGroup menuGroup = new MenuGroup(1L, "후라이드세트");
         final Menu menu = new Menu(1L, "후라이드", Price.of(16_000L), menuGroup);
-        final OrderLineItem orderLineItem = new OrderLineItem(1L, order, menu, 2L);
+        final OrderLineItem orderLineItem = new OrderLineItem(1L, order, menu, Quantity.of(2L));
         final OrderResponse 예상된_주문_결과 = new OrderResponse(1L, 주문_테이블_결과, OrderStatus.COOKING.name(), null, Arrays.asList(orderLineItem.toOrderLineItemResponse()));
 
         // when

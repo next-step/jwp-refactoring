@@ -17,8 +17,8 @@ class OrderLineItemTest {
         final Menu menu = new Menu(null, "menu", Price.of(1_000L), null, null);
         final OrderTable orderTable = new OrderTable(null, null, GuestNumber.of(2), false);
         final Orders order = new Orders(null, orderTable, null, null, null);
-        final OrderLineItem orderLineItem = new OrderLineItem(1L, order, menu, 1L);
+        final OrderLineItem orderLineItem = new OrderLineItem(1L, order, menu, Quantity.of(1L));
 
-        assertThat(orderLineItem).isEqualTo(new OrderLineItem(1L, order, menu, 1L));
+        assertThat(orderLineItem).isEqualTo(new OrderLineItem(1L, order, menu, Quantity.of(1L)));
     }
 }

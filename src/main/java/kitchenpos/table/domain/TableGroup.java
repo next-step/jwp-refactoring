@@ -1,24 +1,16 @@
 package kitchenpos.table.domain;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import kitchenpos.exception.ExistGroupTableException;
-import kitchenpos.exception.InvalidTableNumberException;
-import kitchenpos.exception.NotEmptyException;
 import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupResponse;
 import org.springframework.data.annotation.CreatedDate;
