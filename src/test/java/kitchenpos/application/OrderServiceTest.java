@@ -17,6 +17,7 @@ import kitchenpos.menu.domain.Price;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.Orders;
 import kitchenpos.order.domain.Quantity;
@@ -39,6 +40,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class OrderServiceTest {
     private Menu menu;
     private OrderLineItem orderLineItem;
+    private Orders order;
 
 
     private OrderService orderService;
@@ -67,14 +69,15 @@ class OrderServiceTest {
                 .setMenu(menu)
                 .setQuantity(Quantity.of(1L))
                 .builder();
+        OrderTable orderTable = new OrderTable(1L, null, GuestNumber.of(5), false);
+        OrderLineItems orderLineItems = new OrderLineItems(Arrays.asList(orderLineItem));
+        order = new Orders(1L, orderTable, OrderStatus.COOKING, null, orderLineItems);
     }
 
     @Test
     @DisplayName("주문을 생성한다.")
     void createOrder() {
         // given
-        final OrderTable orderTable = new OrderTable(1L, null, GuestNumber.of(5), false);
-        final Orders order = new Orders(1L, orderTable, OrderStatus.COOKING, null, Arrays.asList(orderLineItem));
         when(menuRepository.countByIdIn(any())).thenReturn(1L);
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(new OrderTable(1L, null, GuestNumber.of(3), false)));
         when(menuRepository.findById(any())).thenReturn(Optional.of(menu));
@@ -130,8 +133,6 @@ class OrderServiceTest {
     @DisplayName("주문 내역을 조회할 수 있다.")
     void searchOrders() {
         // given
-        final OrderTable orderTable = new OrderTable(1L, null, GuestNumber.of(5), false);
-        final Orders order = new Orders(1L, orderTable, OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(orderLineItem));
         when(orderRepository.findAll()).thenReturn(Arrays.asList(order));
         // when
         final List<OrderResponse> actual = orderService.list();
@@ -143,8 +144,6 @@ class OrderServiceTest {
     @DisplayName("주문의 상태를 변경할 수 있다.")
     void changeOrderStatus() {
         // given
-        final OrderTable orderTable = new OrderTable(1L, null, GuestNumber.of(5), false);
-        final Orders order = new Orders(1L, orderTable, OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(orderLineItem));
         when(orderRepository.findById(any())).thenReturn(Optional.of(order));
         // when
         final OrderResponse actual = orderService.changeOrderStatus(1L, new OrderStatusRequest(OrderStatus.COOKING));

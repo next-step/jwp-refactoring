@@ -1,12 +1,10 @@
 package kitchenpos.order.domain;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
@@ -16,7 +14,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import kitchenpos.exception.EmptyTableException;
 import kitchenpos.exception.InvalidOrderStatusException;
@@ -48,8 +45,8 @@ public class Orders {
     @CreatedDate
     private LocalDateTime orderedTime;
 
-    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderLineItem> orderLineItems = new ArrayList<>();
+    @Embedded
+    private OrderLineItems orderLineItems = new OrderLineItems();
 
     protected Orders() {
     }
@@ -63,7 +60,7 @@ public class Orders {
     }
 
     public Orders(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
-                  List<OrderLineItem> orderLineItems) {
+                  OrderLineItems orderLineItems) {
         validateOrderTable(orderTable);
         this.id = id;
         this.orderTable = orderTable;
@@ -101,9 +98,7 @@ public class Orders {
 
     public OrderResponse toOrderResponse() {
         final OrderTableResponse orderTableResponse = this.orderTable.toOrderTableResponse();
-        final List<OrderLineItemResponse> orderLineItemResponses = this.orderLineItems.stream()
-                .map(OrderLineItem::toOrderLineItemResponse)
-                .collect(Collectors.toList());
+        final List<OrderLineItemResponse> orderLineItemResponses = this.orderLineItems.toOrderLineItemResponses();
         return new OrderResponse(this.id, orderTableResponse, this.orderStatus.name(), this.orderedTime, orderLineItemResponses);
     }
 
