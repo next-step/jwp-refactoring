@@ -89,9 +89,7 @@ public class Orders {
     }
 
     private void validateOrderTable(OrderTable orderTable) {
-        if (orderTable.isEmpty()) {
-            throw new EmptyTableException();
-        }
+        orderTable.validateEmpty();
     }
 
     @Override

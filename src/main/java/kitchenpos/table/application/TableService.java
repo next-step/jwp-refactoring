@@ -44,8 +44,8 @@ public class TableService {
             throw new NotCompletionStatusException();
         }
 
-        persistOrderTable.validateGroupingTable();
-        persistOrderTable.empty();
+        persistOrderTable.validateExistGroupingTable();
+        persistOrderTable.changeEmpty();
         return persistOrderTable.toOrderTableResponse();
     }
 

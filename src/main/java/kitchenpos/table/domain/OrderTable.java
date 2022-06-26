@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import kitchenpos.exception.EmptyTableException;
 import kitchenpos.exception.ExistGroupTableException;
 import kitchenpos.exception.NotEmptyException;
 import kitchenpos.exception.NotExistException;
@@ -46,28 +47,27 @@ public class OrderTable {
         return id;
     }
 
-    public boolean existTableGroup() {
-        return this.tableGroup != null;
-    }
-
-    public void validateGroupingTable() {
+    public void validateExistGroupingTable() {
         if (this.tableGroup != null) {
             throw new ExistGroupTableException();
         }
     }
 
     public void validateGrouping() {
-        validateGroupingTable();
+        validateExistGroupingTable();
+
         if (!this.empty) {
             throw new NotEmptyException();
         }
     }
 
-    public boolean isEmpty() {
-        return this.empty;
+    public void validateEmpty() {
+        if (this.empty) {
+            throw new EmptyTableException();
+        }
     }
 
-    public void empty() {
+    public void changeEmpty() {
         this.empty = true;
     }
 
@@ -87,6 +87,18 @@ public class OrderTable {
             return new OrderTableResponse(this.id, null, this.guestNumber.number(), this.empty);
         }
         return new OrderTableResponse(this.id, this.tableGroup.getId(), this.guestNumber.number(), this.empty);
+    }
+
+    boolean isEmpty() {
+        return this.empty;
+    }
+
+    GuestNumber guestNumber() {
+        return this.guestNumber;
+    }
+
+    TableGroup tableGroup() {
+        return this.tableGroup;
     }
 
     @Override
