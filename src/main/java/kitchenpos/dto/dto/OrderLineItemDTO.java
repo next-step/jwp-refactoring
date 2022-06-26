@@ -7,7 +7,7 @@ public class OrderLineItemDTO {
     private Long menuId;
     private Long quantity;
 
-    protected OrderLineItemDTO() {
+    public OrderLineItemDTO() {
     }
 
     protected OrderLineItemDTO(Long menuId, Long quantity) {
