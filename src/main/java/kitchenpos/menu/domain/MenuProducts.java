@@ -2,9 +2,9 @@ package kitchenpos.menu.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
-import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 
 @Embeddable
@@ -33,5 +33,22 @@ public class MenuProducts {
             total = total.sum(menuProduct.price());
         }
         return total;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        MenuProducts that = (MenuProducts) o;
+        return Objects.equals(menuProducts, that.menuProducts);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(menuProducts);
     }
 }
