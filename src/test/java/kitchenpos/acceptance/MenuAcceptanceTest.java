@@ -44,7 +44,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         김치찌개_menuProduct_2인 = MenuProductRequest.of(김치찌개_product.getId(), 2);
         공기밥_menuProduct_2인 = MenuProductRequest.of(공기밥_product.getId(), 2);
 
-        김치찌개1인세트_menu = MenuRequest.of("김치찌개1인세트", 85000, 한식_menuGroup.getId(),
+        김치찌개1인세트_menu = MenuRequest.of("김치찌개1인세트", 8500, 한식_menuGroup.getId(),
                 Arrays.asList(김치찌개_menuProduct_1인, 공기밥_menuProduct_1인));
         김치찌개2인세트_menu = MenuRequest.of("김치찌개2인세트", 15000, 한식_menuGroup.getId(),
                 Arrays.asList(김치찌개_menuProduct_2인, 공기밥_menuProduct_2인));
@@ -132,7 +132,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
     public static void 메뉴_목록_포함됨(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> createdResponses) {
         List<Long> expectedMenuIds = createdResponses.stream()
-                .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
+                .map(it -> Long.parseLong(it.header("Location").split("/")[3]))
                 .collect(Collectors.toList());
 
         List<Long> resultMenuIds = response.jsonPath().getList(".", MenuResponse.class).stream()
