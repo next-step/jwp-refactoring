@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import kitchenpos.exception.ExistGroupTableException;
+import kitchenpos.exception.NotEmptyException;
 import kitchenpos.exception.NotExistException;
 import kitchenpos.order.dto.OrderTableResponse;
 
@@ -55,6 +56,13 @@ public class OrderTable {
         }
     }
 
+    public void validateGrouping() {
+        validateGroupingTable();
+        if (!this.empty) {
+            throw new NotEmptyException();
+        }
+    }
+
     public boolean isEmpty() {
         return this.empty;
     }
@@ -64,18 +72,14 @@ public class OrderTable {
     }
 
     public void changeGuestNumber(int guestNumber) {
-        validateEmpty();
+        if (this.empty) {
+            throw new NotExistException("비어있는 테이블입니다.");
+        }
         this.guestNumber = GuestNumber.of(guestNumber);
     }
 
     public void ungroupTable() {
         this.tableGroup = null;
-    }
-
-    private void validateEmpty() {
-        if (this.empty) {
-            throw new NotExistException("비어있는 테이블입니다.");
-        }
     }
 
     public OrderTableResponse toOrderTableResponse() {

@@ -6,9 +6,7 @@ import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import kitchenpos.exception.ExistGroupTableException;
 import kitchenpos.exception.InvalidTableNumberException;
-import kitchenpos.exception.NotEmptyException;
 import kitchenpos.order.dto.OrderTableResponse;
 
 @Embeddable
@@ -20,26 +18,15 @@ public class OrderTables {
     }
 
     public OrderTables(List<OrderTable> orderTables) {
-        validateOrderTables(orderTables);
+        validateGrouping(orderTables);
         this.orderTables = orderTables;
     }
 
-    private void validateOrderTables(List<OrderTable> orderTables) {
+    private void validateGrouping(List<OrderTable> orderTables) {
         if (orderTables.size() < 2) {
             throw new InvalidTableNumberException();
         }
-        for (OrderTable orderTable : orderTables) {
-            validateOrderTable(orderTable);
-        }
-    }
-
-    private void validateOrderTable(OrderTable orderTable) {
-        if (orderTable.existTableGroup()) {
-            throw new ExistGroupTableException();
-        }
-        if (!orderTable.isEmpty()) {
-            throw new NotEmptyException();
-        }
+        orderTables.forEach(OrderTable::validateGrouping);
     }
 
     public List<OrderTable> get() {
