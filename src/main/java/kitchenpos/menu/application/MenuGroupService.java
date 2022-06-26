@@ -24,4 +24,13 @@ public class MenuGroupService {
     public List<MenuGroup> list() {
         return menuGroupRepository.findAll();
     }
+
+    public MenuGroup getMenuGroup(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("id 는 null 이 아니여야 합니다.");
+        }
+
+        return menuGroupRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(id + " 에 해당하는 메뉴 그룹을 찾을 수 없습니다."));
+    }
 }

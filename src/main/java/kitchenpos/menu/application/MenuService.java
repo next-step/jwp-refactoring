@@ -2,82 +2,52 @@ package kitchenpos.menu.application;
 
 import kitchenpos.menu.dao.*;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.product.dao.ProductRepository;
-import kitchenpos.product.domain.Product;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.menu.domain.Menus;
+import kitchenpos.menu.dto.MenuCreateRequest;
+import kitchenpos.product.application.ProductService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @Transactional(readOnly = true)
 public class MenuService {
     private final MenuRepository menuRepository;
-    private final MenuGroupRepository menuGroupRepository;
+    private final MenuGroupService menuGroupService;
+    private final ProductService productService;
+
     private final MenuProductRepository menuProductRepository;
-    private final ProductRepository productRepository;
 
     public MenuService(
             final MenuRepository menuRepository,
-            final MenuGroupRepository menuGroupRepository,
+            final MenuGroupService menuGroupService,
             final MenuProductRepository menuProductRepository,
-            final ProductRepository productRepository
+            final ProductService productService
     ) {
         this.menuRepository = menuRepository;
-        this.menuGroupRepository = menuGroupRepository;
+        this.menuGroupService = menuGroupService;
         this.menuProductRepository = menuProductRepository;
-        this.productRepository = productRepository;
+        this.productService = productService;
     }
 
     @Transactional
-    public Menu create(final Menu menu) {
-        final BigDecimal price = menu.getPrice();
+    public Menu create(final MenuCreateRequest request) {
+        MenuGroup menuGroup = menuGroupService.getMenuGroup(request.getMenuGroupId());
+        Menu menu = request.of(menuGroup);
+        MenuProducts menuProducts = request.convertMenuProducts(menuProductRequest -> {
+            return menuProductRequest.of(menu, productService.getProduct(menuProductRequest.getProductId()));
+        });
+        menu.addMenuProducts(menuProducts);
 
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
+        menu.validateMenuAndProductTotalPrice();
 
-        if (!menuGroupRepository.existsById(menu.getMenuGroupId())) {
-            throw new IllegalArgumentException();
-        }
-
-        final List<MenuProduct> menuProducts = menu.getMenuProducts();
-
-        BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProduct menuProduct : menuProducts) {
-            final Product product = productRepository.findById(menuProduct.getProductId())
-                    .orElseThrow(IllegalArgumentException::new);
-            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
-        }
-
-        if (price.compareTo(sum) > 0) {
-            throw new IllegalArgumentException();
-        }
-
-        final Menu savedMenu = menuRepository.save(menu);
-
-        final Long menuId = savedMenu.getId();
-        final List<MenuProduct> savedMenuProducts = new ArrayList<>();
-        for (final MenuProduct menuProduct : menuProducts) {
-            menuProduct.setMenuId(menuId);
-            savedMenuProducts.add(menuProductRepository.save(menuProduct));
-        }
-        savedMenu.setMenuProducts(savedMenuProducts);
-
-        return savedMenu;
+        return menuRepository.save(menu);
     }
 
-    public List<Menu> list() {
-        final List<Menu> menus = menuRepository.findAll();
-
-        for (final Menu menu : menus) {
-            menu.setMenuProducts(menuProductRepository.findAllByMenuId(menu.getId()));
-        }
-
-        return menus;
+    public Menus list() {
+        return new Menus(menuRepository.findAll());
     }
 }

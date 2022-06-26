@@ -2,6 +2,8 @@ package kitchenpos.application;
 
 import kitchenpos.menu.dao.MenuRepository;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.dao.OrderLineItemRepository;
 import kitchenpos.order.dao.OrderRepository;
@@ -22,10 +24,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.domain.MenuTest.메뉴_생성;
 import static kitchenpos.domain.OrderLineItemTest.주문_목록_생성;
 import static kitchenpos.domain.OrderTableTest.주문_테이블_생성;
 import static kitchenpos.domain.OrderTest.주문_생성;
+import static kitchenpos.menu.MenuGenerator.메뉴_그룹_생성;
+import static kitchenpos.menu.MenuGenerator.메뉴_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
@@ -101,7 +104,8 @@ class OrderServiceTest {
     @Test
     void createOrderTest() {
         // given
-        Menu 메뉴 = 메뉴_생성("메뉴", 1_000, 0L, Collections.emptyList());
+        MenuGroup 메뉴_그룹 = 메뉴_그룹_생성("메뉴 그룹");
+        Menu 메뉴 = 메뉴_생성("메뉴", 1_000, 메뉴_그룹, new MenuProducts(Collections.emptyList()));
         OrderTable 주문_테이블 = 주문_테이블_생성(0L, 2, false);
         OrderLineItem 주문_목록 = 주문_목록_생성(0L, 메뉴.getId(), 1);
         Order 주문 = 주문_생성(0L, OrderStatus.COOKING, Collections.singletonList(주문_목록));

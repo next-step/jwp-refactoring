@@ -4,6 +4,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.Acceptance.AcceptanceTest;
 import kitchenpos.Acceptance.utils.RestAssuredRequest;
+import kitchenpos.menu.domain.Price;
 import kitchenpos.product.domain.Product;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.DisplayName;
@@ -77,7 +78,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.SC_CREATED);
         assertThat(product.getId()).isNotNull();
         assertThat(product.getName()).isEqualTo(expectedName);
-        assertThat(product.getPrice().compareTo(new BigDecimal(expectedPrice))).isEqualTo(0);
+        assertThat(product.getPrice()).isEqualTo(new Price(new BigDecimal(expectedPrice)));
     }
 
     void 상품_목록_조회됨(ExtractableResponse<Response> response, List<String> expectedNames) {

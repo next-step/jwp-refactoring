@@ -4,38 +4,37 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.Acceptance.AcceptanceTest;
 import kitchenpos.Acceptance.utils.RestAssuredRequest;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.product.domain.Product;
+import kitchenpos.table.domain.OrderTable;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static kitchenpos.Acceptance.menu.MenuAcceptanceTest.메뉴_생성_요청;
 import static kitchenpos.Acceptance.menuGroup.MenuGroupAcceptanceTest.메뉴_그룹_생성_요청;
 import static kitchenpos.Acceptance.product.ProductAcceptanceTest.상품_생성_요청;
 import static kitchenpos.Acceptance.table.TableAcceptanceTest.빈_테이블_변경_요청;
 import static kitchenpos.Acceptance.table.TableAcceptanceTest.테이블_생성_요청;
-import static kitchenpos.domain.MenuProductTest.메뉴_상품_생성;
 import static kitchenpos.domain.OrderLineItemTest.주문_목록_생성;
 import static kitchenpos.domain.OrderTableTest.주문_테이블_생성;
 import static kitchenpos.domain.OrderTest.주문_생성;
+import static kitchenpos.menu.MenuGenerator.메뉴_상품_생성_요청;
+import static kitchenpos.menu.MenuGenerator.메뉴_생성_API;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class OrderAcceptanceTest extends AcceptanceTest {
     private static final String PATH = "/api/orders";
 
-    private List<Menu> menus = new ArrayList<>();
+    private Long menuId;
     private OrderTable orderTable;
 
     @BeforeEach
@@ -45,11 +44,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         orderTable = 테이블_생성_요청(10).as(OrderTable.class);
         MenuGroup menuGroup = 메뉴_그룹_생성_요청("메뉴 그룹").as(MenuGroup.class);
         Product product = 상품_생성_요청("상품", 1_000).as(Product.class);
-        MenuProduct menuProduct = 메뉴_상품_생성(null, product.getId(), 1_000);
-        menus.clear();
-        for (int i = 0; i < 5; i++) {
-            menus.add(메뉴_생성_요청("메뉴 " + i, 1_000, menuGroup.getId(), Collections.singletonList(menuProduct)).as(Menu.class));
-        }
+        MenuProductRequest 메뉴_상품_생성_요청 = 메뉴_상품_생성_요청(product.getId(), 1L);
+        menuId = 메뉴_생성_API("메뉴", 1_000, menuGroup.getId(), Collections.singletonList(메뉴_상품_생성_요청)).body().jsonPath().getLong("id");
     }
 
     @DisplayName("주문 생성시 주문 물품 리스트가 없으면 예외가 발생해야 한다")
@@ -79,7 +75,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void createOrderByNotSavedOrderTableTest() {
         // given
-        List<OrderLineItem> 주문_목록 = Collections.singletonList(주문_목록_생성(null, menus.get(1).getId(), 1));
+        List<OrderLineItem> 주문_목록 = Collections.singletonList(주문_목록_생성(null, menuId, 1));
 
         // when
         ExtractableResponse<Response> 주문_생성_요청_결과 = 주문_생성_요청(-1L, 주문_목록);
@@ -92,7 +88,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void createOrderByNotEmptyOrderTableTest() {
         // given
-        List<OrderLineItem> 주문_목록 = Collections.singletonList(주문_목록_생성(null, menus.get(1).getId(), 1));
+        List<OrderLineItem> 주문_목록 = Collections.singletonList(주문_목록_생성(null, menuId, 1));
 
         // when
         ExtractableResponse<Response> 주문_생성_요청_결과 = 주문_생성_요청(orderTable.getId(), 주문_목록);
@@ -107,7 +103,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         // given
         OrderTable 변경_될_테이블 = 주문_테이블_생성(null, 10, false);
         빈_테이블_변경_요청(orderTable.getId(), 변경_될_테이블);
-        List<OrderLineItem> 주문_목록 = Collections.singletonList(주문_목록_생성(null, menus.get(1).getId(), 1));
+        List<OrderLineItem> 주문_목록 = Collections.singletonList(주문_목록_생성(null, menuId, 1));
 
         // when
         ExtractableResponse<Response> 주문_생성_요청_결과 = 주문_생성_요청(orderTable.getId(), 주문_목록);
@@ -122,7 +118,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         // given
         OrderTable 변경_될_테이블 = 주문_테이블_생성(null, 10, false);
         빈_테이블_변경_요청(orderTable.getId(), 변경_될_테이블);
-        List<OrderLineItem> 주문_목록 = Collections.singletonList(주문_목록_생성(null, menus.get(1).getId(), 1));
+        List<OrderLineItem> 주문_목록 = Collections.singletonList(주문_목록_생성(null, menuId, 1));
         주문_생성_요청(orderTable.getId(), 주문_목록);
 
         // when
@@ -151,7 +147,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         // given
         OrderTable 변경_될_테이블 = 주문_테이블_생성(null, 10, false);
         빈_테이블_변경_요청(orderTable.getId(), 변경_될_테이블);
-        List<OrderLineItem> 주문_목록 = Collections.singletonList(주문_목록_생성(null, menus.get(1).getId(), 1));
+        List<OrderLineItem> 주문_목록 = Collections.singletonList(주문_목록_생성(null, menuId, 1));
         Order 변경될_주문 = 주문_생성(null, OrderStatus.MEAL, Collections.emptyList());
         Long orderId = 주문_생성_요청(orderTable.getId(), 주문_목록).body().jsonPath().getLong("id");
 
@@ -170,9 +166,9 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
     public static Long 주문_테이블에_새로운_주문_생성(OrderTable orderTable) {
         Product product = 상품_생성_요청("상품", 1_000).as(Product.class);
-        MenuProduct menuProduct = 메뉴_상품_생성(null, product.getId(), 1_000);
+        MenuProductRequest menuProductRequest = 메뉴_상품_생성_요청(product.getId(), 1L);
         MenuGroup menuGroup = 메뉴_그룹_생성_요청("메뉴 그룹").as(MenuGroup.class);
-        Menu menu = 메뉴_생성_요청("메뉴", 1_000, menuGroup.getId(), Collections.singletonList(menuProduct)).as(Menu.class);
+        MenuResponse menu = 메뉴_생성_API("메뉴", 1_000, menuGroup.getId(), Collections.singletonList(menuProductRequest)).as(MenuResponse.class);
         List<OrderLineItem> orderLineItems = Collections.singletonList(주문_목록_생성(null, menu.getId(), 1));
 
         return 주문_생성_요청(orderTable.getId(), orderLineItems).body().jsonPath().getLong("id");

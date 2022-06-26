@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.menu.application;
 
 import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.dao.MenuGroupRepository;
@@ -9,15 +9,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.domain.MenuGroupTest.메뉴_그룹_생성;
+import static kitchenpos.menu.MenuGenerator.메뉴_그룹_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@ActiveProfiles("test")
 class MenuGroupServiceTest {
 
     @Mock

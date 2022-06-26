@@ -1,10 +1,6 @@
 package kitchenpos.menu.domain;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 @Entity
 public class Menu {
@@ -15,31 +11,37 @@ public class Menu {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private BigDecimal price;
+    @Embedded
+    private Price price;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-    private Long menuGroupId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private MenuGroup menuGroup;
 
-    @OneToMany(mappedBy = "menuId", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<MenuProduct> menuProducts = new ArrayList<>();
+    @Embedded
+    private MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {}
 
-    public Menu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    public Menu(Long id, String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
-        this.menuGroupId = menuGroupId;
-        this.menuProducts.addAll(menuProducts);
+        this.menuGroup = menuGroup;
+        this.menuProducts.addMenuProducts(menuProducts);
     }
 
-    public Menu(Long id, String name, BigDecimal price, Long menuGroupId) {
-        this(id, name, price, menuGroupId, Collections.emptyList());
+    public Menu(String name, Price price, MenuGroup menuGroup) {
+        this(null, name, price, menuGroup, new MenuProducts());
     }
 
-    public Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        this(null, name, price, menuGroupId, menuProducts);
+    public void validateMenuAndProductTotalPrice() {
+        if (isNotSameMenuAndProductTotalPrice()) {
+            throw new IllegalArgumentException("메뉴의 가격과 상품의 총 가격이 일치하지 않습니다.");
+        }
+    }
+
+    public void addMenuProducts(MenuProducts menuProducts) {
+        this.menuProducts.addMenuProducts(menuProducts);
     }
 
     public Long getId() {
@@ -50,20 +52,21 @@ public class Menu {
         return name;
     }
 
-    public BigDecimal getPrice() {
+    public Price getPrice() {
         return price;
     }
 
-    public Long getMenuGroupId() {
-        return menuGroupId;
+    public MenuGroup getMenuGroup() {
+        return menuGroup;
     }
 
-    public List<MenuProduct> getMenuProducts() {
+    public MenuProducts getMenuProducts() {
         return menuProducts;
     }
 
-    @Deprecated
-    public void setMenuProducts(List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
+    private boolean isNotSameMenuAndProductTotalPrice() {
+        return this.menuProducts
+                .getTotalProductPrice()
+                .isNotSame(this.price);
     }
 }
