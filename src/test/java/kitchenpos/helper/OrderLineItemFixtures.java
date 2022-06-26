@@ -1,8 +1,8 @@
 package kitchenpos.helper;
 
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderLineItemQuantity;
 import kitchenpos.order.dto.OrderLineItemRequest;
 
 public class OrderLineItemFixtures {
@@ -16,6 +16,6 @@ public class OrderLineItemFixtures {
     }
 
     public static OrderLineItem 주문_항목_만들기(Menu menu, Integer quantity) {
-        return new OrderLineItem(menu, new OrderLineItemQuantity(quantity));
+        return new OrderLineItem(menu, new Quantity(quantity));
     }
 }

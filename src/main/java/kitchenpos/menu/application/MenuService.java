@@ -3,10 +3,10 @@ package kitchenpos.menu.application;
 import java.util.ArrayList;
 import java.util.List;
 import kitchenpos.common.domain.Price;
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProductQuantity;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.repository.MenuGroupRepository;
 import kitchenpos.menu.domain.repository.MenuRepository;
@@ -55,7 +55,7 @@ public class MenuService {
     private MenuProducts createMenuProducts(List<MenuProductRequest> menuProductRequests) {
         MenuProducts menuProducts = new MenuProducts();
         for (MenuProductRequest menuProductRequest : menuProductRequests) {
-            final MenuProductQuantity menuProductQuantity = new MenuProductQuantity(menuProductRequest.getQuantity());
+            final Quantity menuProductQuantity = new Quantity(menuProductRequest.getQuantity());
             final Product product = findProduct(menuProductRequest.getProductId());
             final MenuProduct menuProduct = new MenuProduct(menuProductQuantity, product);
             menuProducts.add(menuProduct);

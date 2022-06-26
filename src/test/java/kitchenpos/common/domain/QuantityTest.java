@@ -5,18 +5,17 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("가격 관련 Domain 단위 테스트")
-class PriceTest {
+@DisplayName("수량 관련 Domain 단위 테스트")
+class QuantityTest {
 
-    @DisplayName("가격은 0원 미만 이거나 null 일 수 없다.")
+    @DisplayName("수량은 1개 이상이어야 한다.")
     @Test
     void validate() {
 
-        //when then
+        //then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> new Price(-1000));
+                .isThrownBy(() -> new Quantity(-100));
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> new Price(null));
+                .isThrownBy(() -> new Quantity(null));
     }
-
 }

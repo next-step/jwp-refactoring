@@ -4,9 +4,9 @@ import static kitchenpos.helper.ProductFixtures.상품_만들기;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.helper.ProductFixtures;
 import kitchenpos.menu.domain.Amount;
-import kitchenpos.menu.domain.MenuProductQuantity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +21,7 @@ class ProductTest {
         Product product = ProductFixtures.제육덮밥_요청.toProduct();
 
         //when
-        Amount amount = product.createAmount(new MenuProductQuantity(quantity));
+        Amount amount = product.createAmount(new Quantity(quantity));
 
         //then
         assertThat(amount.getAmount()).isEqualTo(80_000);

@@ -3,12 +3,12 @@ package kitchenpos.order.application;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.repository.MenuRepository;
 import kitchenpos.order.consts.OrderStatus;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderLineItemQuantity;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.repository.OrderRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
@@ -47,7 +47,7 @@ public class OrderService {
         for (OrderLineItemRequest orderLineItemRequest : orderRequest.getOrderLineItems()) {
             Menu menu = findMenu(orderLineItemRequest.getMenuId());
             OrderLineItem orderLineItem =
-                    new OrderLineItem(menu, new OrderLineItemQuantity(orderLineItemRequest.getQuantity()));
+                    new OrderLineItem(menu, new Quantity(orderLineItemRequest.getQuantity()));
             orderLineItems.add(orderLineItem);
         }
         return orderLineItems;

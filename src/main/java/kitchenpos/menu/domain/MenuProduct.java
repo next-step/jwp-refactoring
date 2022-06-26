@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.product.domain.Product;
 
 @Entity
@@ -16,7 +17,7 @@ public class MenuProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
     @Column(nullable = false)
-    private MenuProductQuantity quantity;
+    private Quantity quantity;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product product;
@@ -24,7 +25,7 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
-    public MenuProduct(MenuProductQuantity quantity, Product product) {
+    public MenuProduct(Quantity quantity, Product product) {
         this.quantity = quantity;
         this.product = product;
     }
@@ -37,7 +38,7 @@ public class MenuProduct {
         return seq;
     }
 
-    public MenuProductQuantity getQuantity() {
+    public Quantity getQuantity() {
         return quantity;
     }
 
