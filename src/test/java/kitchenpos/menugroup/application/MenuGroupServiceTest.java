@@ -63,7 +63,7 @@ public class MenuGroupServiceTest {
     }
 
     public static MenuGroup createMenuGroup02() {
-        return new MenuGroup(1L, MENU_GROUP_NAME01);
+        return new MenuGroup(1L, MENU_GROUP_NAME02);
     }
 
     public static List<MenuGroup> createMenuGroupList() {
