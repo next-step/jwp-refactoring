@@ -9,7 +9,6 @@ import kitchenpos.repository.TableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -57,7 +56,7 @@ public class TableService {
     }
 
     public boolean hasCookingOrMeal(OrderTable orderTable) {
-        return orderRepository.existsByOrderTableAndOrderStatusIn(orderTable, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL));
+        return orderRepository.existsByOrderTableAndOrderStatusIn(orderTable, OrderStatus.NOT_COMPLETED);
     }
 
     @Transactional

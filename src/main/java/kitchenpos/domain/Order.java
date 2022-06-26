@@ -56,7 +56,7 @@ public class Order {
             throw new IllegalArgumentException("주문 항목은 하나 이상이어야 합니다.");
         }
 
-        Order order = new Order(orderTable, OrderStatus.COOKING);
+        Order order = new Order(orderTable, OrderStatus.DEFAULT);
 
         for (OrderLineItem orderLineItem : orderLineItems) {
             order.addOrderLineItem(orderLineItem);
