@@ -29,7 +29,6 @@ public class Menu {
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
 
-    // entity 기본생성자 이므로 사용 금지
     protected Menu() {
     }
 

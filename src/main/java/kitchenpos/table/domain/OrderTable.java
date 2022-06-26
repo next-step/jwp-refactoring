@@ -25,7 +25,6 @@ public class OrderTable {
     @Column(name = "empty", nullable = false)
     private boolean empty;
 
-    // entity 기본생성자 이므로 사용 금지
     public OrderTable() {
     }
 

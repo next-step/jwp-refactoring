@@ -17,7 +17,6 @@ public class MenuGroup {
     @Embedded
     private Name name;
 
-    // entity 기본생성자 이므로 사용 금지
     protected MenuGroup() {
     }
 

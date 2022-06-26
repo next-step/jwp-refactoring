@@ -15,7 +15,6 @@ public class OrderTables {
     @OneToMany(mappedBy = "tableGroup", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private List<OrderTable> orderTables = new ArrayList<>();
 
-    // entity 기본생성자 이므로 사용 금지
     protected OrderTables() {
     }
 

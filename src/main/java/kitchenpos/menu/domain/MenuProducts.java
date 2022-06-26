@@ -16,7 +16,6 @@ public class MenuProducts {
     @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<MenuProduct> menuProducts = new ArrayList<>();
 
-    // JPA 기본 생성자 이므로 사용 금지
     protected MenuProducts() {
     }
 

@@ -11,7 +11,6 @@ public class Name {
     @Column(name = "name", nullable = false)
     private String name;
 
-    // JPA 기본 생성자 이므로 사용 금지
     protected Name() {
     }
 

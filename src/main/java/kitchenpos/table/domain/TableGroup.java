@@ -21,7 +21,6 @@ public class TableGroup {
     @Embedded
     private OrderTables orderTables = new OrderTables();
 
-    // entity 기본생성자 이므로 사용 금지
     protected TableGroup() {
     }
 

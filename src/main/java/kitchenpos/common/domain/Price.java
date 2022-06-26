@@ -12,7 +12,6 @@ public class Price {
     @Column(name = "price", nullable = false)
     private final BigDecimal value;
 
-    // JPA 기본 생성자 이므로 사용 금지
     protected Price() {
         this.value = BigDecimal.ZERO;
     }

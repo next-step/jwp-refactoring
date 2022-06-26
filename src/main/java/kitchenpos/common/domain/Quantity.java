@@ -11,7 +11,6 @@ public class Quantity {
     @Column(name = "quantity", nullable = false)
     private final Long quantity;
 
-    // entity 기본생성자 이므로 사용 금지
     protected Quantity() {
         quantity = 0L;
     }

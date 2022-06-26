@@ -32,7 +32,6 @@ public class Order {
     @Embedded
     private OrderLineItems orderLineItems = new OrderLineItems();
 
-    // entity 기본생성자 이므로 사용 금지
     protected Order() {
     }
 
