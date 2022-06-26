@@ -1,5 +1,23 @@
 package kitchenpos.application;
 
+import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.OrderTableRequestDto;
+import kitchenpos.dto.OrderTableResponseDto;
+import kitchenpos.exception.InvalidOrderStatusException;
+import kitchenpos.repository.OrderRepository;
+import kitchenpos.repository.OrderTableRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import javax.persistence.EntityNotFoundException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
 import static kitchenpos.fixture.OrderTableFixture.주문테이블_데이터_생성;
 import static kitchenpos.fixture.OrderTableFixture.주문테이블_요청_데이터_생성;
 import static kitchenpos.fixture.TableGroupFixture.단체_데이터_생성;
@@ -10,22 +28,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import javax.persistence.EntityNotFoundException;
-import kitchenpos.domain.TableGroup;
-import kitchenpos.dto.OrderTableRequestDto;
-import kitchenpos.dto.OrderTableResponseDto;
-import kitchenpos.repository.OrderRepository;
-import kitchenpos.repository.OrderTableRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
@@ -132,7 +134,8 @@ class TableServiceTest {
         given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(true);
 
         //when //then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableService.changeEmpty(orderTableId));
+        assertThatExceptionOfType(InvalidOrderStatusException.class)
+                .isThrownBy(() -> tableService.changeEmpty(orderTableId));
     }
 
     @DisplayName("테이블의 손님수를 변경한다.")

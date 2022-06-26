@@ -1,18 +1,20 @@
 package kitchenpos.application;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import javax.persistence.EntityNotFoundException;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderTableRequestDto;
 import kitchenpos.dto.OrderTableResponseDto;
+import kitchenpos.exception.InvalidOrderStatusException;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityNotFoundException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class TableService {
@@ -49,7 +51,7 @@ public class TableService {
 
         if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
             orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
+            throw new InvalidOrderStatusException();
         }
         orderTable.changeEmpty();
         return new OrderTableResponseDto(orderTable);

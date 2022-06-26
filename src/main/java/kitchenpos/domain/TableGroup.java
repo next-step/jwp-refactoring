@@ -13,6 +13,8 @@ import java.util.Objects;
 @EntityListeners(AuditingEntityListener.class)
 public class TableGroup {
 
+    private static final int MIN_TABLE_SIZE = 2;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -49,14 +51,18 @@ public class TableGroup {
     }
 
     private void checkAddable(List<OrderTable> orderTables) {
-        if (orderTables.size() < 2) {
+        if (orderTables.size() < MIN_TABLE_SIZE) {
             throw new IllegalArgumentException();
         }
 
         for (final OrderTable orderTable : orderTables) {
-            if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup())) {
-                throw new IllegalArgumentException();
-            }
+            checkEmptyOrGrouped(orderTable);
+        }
+    }
+
+    private void checkEmptyOrGrouped(OrderTable orderTable) {
+        if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup())) {
+            throw new IllegalArgumentException();
         }
     }
 

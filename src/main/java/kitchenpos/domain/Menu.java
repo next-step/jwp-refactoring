@@ -1,5 +1,7 @@
 package kitchenpos.domain;
 
+import kitchenpos.exception.InvalidPriceException;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -50,7 +52,7 @@ public class Menu {
 
 
     public BigDecimal getPrice() {
-        return price.getPrice();
+        return price.getValue();
     }
 
     public MenuGroup getMenuGroup() {
@@ -71,8 +73,8 @@ public class Menu {
                 .map(MenuProduct::getTotalPrice)
                 .reduce(BigDecimal::add)
                 .orElse(BigDecimal.ZERO);
-        if (price.getPrice().compareTo(sum) > 0) {
-            throw new IllegalArgumentException();
+        if (price.greaterThan(sum)) {
+            throw new InvalidPriceException(price);
         }
     }
 

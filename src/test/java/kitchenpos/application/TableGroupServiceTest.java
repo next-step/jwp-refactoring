@@ -4,6 +4,7 @@ import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.TableGroupRequestDto;
 import kitchenpos.dto.TableGroupResponseDto;
+import kitchenpos.exception.InvalidOrderStatusException;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.repository.TableGroupRepository;
@@ -20,6 +21,7 @@ import java.util.Optional;
 import static kitchenpos.fixture.OrderTableFixture.주문테이블_데이터_생성;
 import static kitchenpos.fixture.TableGroupFixture.단체_데이터_생성;
 import static kitchenpos.fixture.TableGroupFixture.단체_지정_데이터_생성;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -109,7 +111,8 @@ class TableGroupServiceTest {
         given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
 
         //when //then
-        assertThatIllegalArgumentException().isThrownBy(() -> tableGroupService.ungroup(tableGroupId));
+        assertThatExceptionOfType(InvalidOrderStatusException.class)
+                .isThrownBy(() -> tableGroupService.ungroup(tableGroupId));
     }
 
     private void 단체_데이터_확인(TableGroupResponseDto response, Long tableGroupId) {

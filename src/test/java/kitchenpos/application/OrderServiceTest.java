@@ -5,6 +5,7 @@ import kitchenpos.dto.OrderLineItemRequestDto;
 import kitchenpos.dto.OrderLineItemResponseDto;
 import kitchenpos.dto.OrderRequestDto;
 import kitchenpos.dto.OrderResponseDto;
+import kitchenpos.exception.InvalidOrderStatusException;
 import kitchenpos.repository.MenuRepository;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
@@ -183,7 +184,7 @@ class OrderServiceTest {
         given(orderRepository.findById(any())).willReturn(Optional.of(주문_데이터_통합_생성(OrderStatus.COMPLETION)));
 
         //when //then
-        assertThatExceptionOfType(IllegalArgumentException.class)
+        assertThatExceptionOfType(InvalidOrderStatusException.class)
                 .isThrownBy(() -> orderService.changeOrderStatus(1L, OrderStatus.MEAL));
     }
 

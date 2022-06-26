@@ -5,6 +5,7 @@ import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.TableGroupRequestDto;
 import kitchenpos.dto.TableGroupResponseDto;
+import kitchenpos.exception.InvalidOrderStatusException;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.repository.TableGroupRepository;
@@ -58,7 +59,7 @@ public class TableGroupService {
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
+            throw new InvalidOrderStatusException();
         }
     }
 }

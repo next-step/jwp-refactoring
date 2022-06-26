@@ -1,5 +1,7 @@
 package kitchenpos.domain;
 
+import kitchenpos.exception.InvalidPriceException;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.math.BigDecimal;
@@ -10,21 +12,25 @@ import static java.util.Objects.requireNonNull;
 @Embeddable
 public class Price {
 
-    @Column
-    private BigDecimal price;
+    @Column(name = "price")
+    private BigDecimal value;
 
     protected Price() {
     }
 
-    public Price(BigDecimal price) {
-        if (price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
+    public Price(BigDecimal value) {
+        if (value.compareTo(BigDecimal.ZERO) < 0) {
+            throw new InvalidPriceException(this);
         }
-        this.price = requireNonNull(price);
+        this.value = requireNonNull(value);
     }
 
-    public BigDecimal getPrice() {
-        return price;
+    public BigDecimal getValue() {
+        return value;
+    }
+
+    public boolean greaterThan(BigDecimal compare) {
+        return value.compareTo(compare) > 0;
     }
 
     @Override
@@ -32,11 +38,18 @@ public class Price {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Price price1 = (Price) o;
-        return Objects.equals(price, price1.price);
+        return Objects.equals(value, price1.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(price);
+        return Objects.hash(value);
+    }
+
+    @Override
+    public String toString() {
+        return "Price{" +
+                "value=" + value +
+                '}';
     }
 }

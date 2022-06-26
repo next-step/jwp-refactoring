@@ -1,25 +1,19 @@
 package kitchenpos.domain;
 
+import kitchenpos.exception.InvalidOrderStatusException;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity(name = "orders")
 @EntityListeners(AuditingEntityListener.class)
 public class Order {
+
+    private static final int ORDER_LINE_ITEMS_MIN_SIZE = 1;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,6 +42,9 @@ public class Order {
     }
 
     public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        if (orderLineItems.size() < ORDER_LINE_ITEMS_MIN_SIZE) {
+            throw new IllegalArgumentException();
+        }
         this.orderStatus = OrderStatus.COOKING;
         this.orderTable = orderTable;
         this.orderLineItems = orderLineItems;
@@ -75,13 +72,9 @@ public class Order {
 
     public void changeStatus(OrderStatus status) {
         if (OrderStatus.COMPLETION.equals(this.orderStatus)) {
-            throw new IllegalArgumentException();
+            throw new InvalidOrderStatusException();
         }
         this.orderStatus = status;
     }
 
-    public void addOrderLineItems(List<OrderLineItem> orderLineItems) {
-        this.orderLineItems.addAll(orderLineItems);
-        orderLineItems.forEach(orderLineItem -> orderLineItem.setOrder(this));
-    }
 }
