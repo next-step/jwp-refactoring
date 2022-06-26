@@ -5,9 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import kitchenpos.ServiceTest;
 import kitchenpos.menu.domain.Menu;
@@ -96,13 +94,13 @@ class MenuServiceTest extends ServiceTest {
     @Test
     @DisplayName("메뉴를 모두 조회한다.")
     void list() {
-        Menu 후라이드_양념_세트 = new Menu("후라이드_양념_세트", BigDecimal.valueOf(0), 두마리메뉴.getId(), Collections.emptyList());
-        Menu 임시_메뉴 = new Menu("닭강정", BigDecimal.valueOf(0), 두마리메뉴.getId(), Collections.emptyList());
-        List<Menu> menus = this.menuRepository.saveAll(Arrays.asList(후라이드_양념_세트, 임시_메뉴));
+        List<MenuProduct> menuProducts = Arrays.asList(후라이드_메뉴상품, 양념치킨_메뉴상품);
+        Menu 후라이드_양념_세트 = new Menu("후라이드_양념_세트", BigDecimal.valueOf(0), 두마리메뉴.getId(), menuProducts);
+        Menu menu = this.menuRepository.save(후라이드_양념_세트);
 
         List<MenuResponse> menuResponses = this.menuService.list();
 
-        assertThat(menuResponses).containsAll(menus.stream().map(MenuResponse::of).collect(Collectors.toList()));
+        assertThat(menuResponses).contains(MenuResponse.of(menu));
     }
 
     private void 메뉴그룹_생성_실패(String name, BigDecimal price, Long menuGroupId, List<MenuProductRequest> menuProductRequests) {

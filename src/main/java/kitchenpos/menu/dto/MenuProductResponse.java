@@ -1,5 +1,6 @@
 package kitchenpos.menu.dto;
 
+import java.util.Objects;
 import kitchenpos.menu.domain.MenuProduct;
 
 public class MenuProductResponse {
@@ -23,6 +24,34 @@ public class MenuProductResponse {
             menuProduct.getProductId(),
             menuProduct.getQuantity()
         );
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        MenuProductResponse that = (MenuProductResponse) o;
+        return Objects.equals(id, that.id) && Objects.equals(menuId, that.menuId)
+            && Objects.equals(productId, that.productId) && Objects.equals(quantity, that.quantity);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, menuId, productId, quantity);
+    }
+
+    @Override
+    public String toString() {
+        return "MenuProductResponse{" +
+            "id=" + id +
+            ", menuId=" + menuId +
+            ", productId=" + productId +
+            ", quantity=" + quantity +
+            '}';
     }
 
 }
