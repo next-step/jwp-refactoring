@@ -6,7 +6,6 @@ import java.util.List;
 import kitchenpos.ServiceTest;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
-import kitchenpos.menugroup.application.MenuGroupService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
