@@ -128,7 +128,7 @@ class OrderServiceTest {
         OrderResponse orderResponse = orderService.create(request, LocalDateTime.now());
 
         //when
-        List<OrderResponse> results = orderService.list();
+        List<OrderResponse> results = orderService.findAllOrders();
 
         //then
         assertThat(results.stream().map(OrderResponse::getId).collect(Collectors.toList()))

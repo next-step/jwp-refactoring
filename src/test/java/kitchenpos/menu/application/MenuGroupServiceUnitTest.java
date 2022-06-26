@@ -61,7 +61,7 @@ class MenuGroupServiceUnitTest {
         given(menuGroupRepository.findAll()).willReturn(Arrays.asList(menuGroup1, menuGroup2, menuGroup3));
 
         //when
-        List<MenuGroupResponse> results = menuGroupService.list();
+        List<MenuGroupResponse> results = menuGroupService.findAllMenuGroups();
 
         //then
         assertThat(results.stream().map(MenuGroupResponse::getName).collect(Collectors.toList()))

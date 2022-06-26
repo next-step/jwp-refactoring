@@ -35,7 +35,7 @@ class MenuGroupServiceTest {
     @Test
     void list() {
         //when
-        List<MenuGroupResponse> results = menuGroupService.list();
+        List<MenuGroupResponse> results = menuGroupService.findAllMenuGroups();
 
         //then
         assertThat(results.stream().map(MenuGroupResponse::getName).collect(Collectors.toList()))

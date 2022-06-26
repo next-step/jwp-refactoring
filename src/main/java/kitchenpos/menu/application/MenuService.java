@@ -42,7 +42,7 @@ public class MenuService {
     }
 
     @Transactional(readOnly = true)
-    public List<MenuResponse> list() {
+    public List<MenuResponse> findAllMenus() {
         List<MenuResponse> menuResponses = new ArrayList<>();
         final List<Menu> menus = menuRepository.findAll();
         for (Menu menu : menus) {

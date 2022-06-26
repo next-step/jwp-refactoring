@@ -50,7 +50,7 @@ class MenuServiceTest {
     void list() {
 
         //when
-        List<MenuResponse> results = menuService.list();
+        List<MenuResponse> results = menuService.findAllMenus();
 
         //then
         assertThat(results.stream().map(MenuResponse::getName).collect(Collectors.toList()))

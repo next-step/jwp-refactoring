@@ -33,7 +33,7 @@ public class TableService {
     }
 
     @Transactional(readOnly = true)
-    public List<OrderTableResponse> list() {
+    public List<OrderTableResponse> findAllTables() {
         List<OrderTable> orderTables = orderTableRepository.findAll();
         return orderTables.stream()
                 .map(OrderTableResponse::from)

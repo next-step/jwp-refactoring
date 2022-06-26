@@ -24,7 +24,7 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProductResponse> list() {
+    public List<ProductResponse> findAllProducts() {
         List<Product> products = productRepository.findAll();
         return products.stream()
                 .map(ProductResponse::from)

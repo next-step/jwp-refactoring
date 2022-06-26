@@ -75,7 +75,7 @@ class ProductServiceUnitTest {
         given(productRepository.findAll()).willReturn(Arrays.asList(product1, product2, product3));
 
         //when
-        List<ProductResponse> results = productService.list();
+        List<ProductResponse> results = productService.findAllProducts();
 
         //then
         assertThat(results.stream().map(ProductResponse::getName).collect(Collectors.toList()))

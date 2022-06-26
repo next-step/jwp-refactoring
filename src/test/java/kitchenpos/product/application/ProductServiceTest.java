@@ -49,7 +49,7 @@ class ProductServiceTest {
     @Test
     void list() {
         //when
-        List<ProductResponse> result = productService.list();
+        List<ProductResponse> result = productService.findAllProducts();
 
         //then
         assertThat(result.stream().map(ProductResponse::getName).collect(Collectors.toList()))
