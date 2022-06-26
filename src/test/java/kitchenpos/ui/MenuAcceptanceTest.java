@@ -14,6 +14,10 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.dto.MenuProductDTO;
+import kitchenpos.dto.response.MenuGroupResponse;
+import kitchenpos.dto.response.MenuResponse;
+import kitchenpos.dto.response.ProductResponse;
 import kitchenpos.helper.AcceptanceApiHelper.MenuApiHelper;
 import kitchenpos.helper.AcceptanceAssertionHelper.MenuAssertionHelper;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,19 +26,19 @@ import org.springframework.test.context.jdbc.Sql;
 
 
 class MenuAcceptanceTest  extends AcceptanceTest {
-    private Product 후라이드;
-    private Product 양념;
-    private MenuGroup 두마리메뉴;
-    private MenuGroup 반반메뉴;
-    private MenuGroup 세마리메뉴;
+    private ProductResponse 후라이드;
+    private ProductResponse 양념;
+    private MenuGroupResponse  두마리메뉴;
+    private MenuGroupResponse  반반메뉴;
+    private MenuGroupResponse  세마리메뉴;
     @BeforeEach
     public void init(){
-        후라이드 = 상품_등록하기("후라이드", 17000).as(Product.class);
-        양념 = 상품_등록하기("양념", 15000).as(Product.class);
+        후라이드 = 상품_등록하기("후라이드", 17000).as(ProductResponse.class);
+        양념 = 상품_등록하기("양념", 15000).as(ProductResponse.class);
 
-        두마리메뉴 = 메뉴그룹_등록하기("두마리메뉴").as(MenuGroup.class);
-        세마리메뉴 = 메뉴그룹_등록하기("세마리메뉴").as(MenuGroup.class);
-        반반메뉴 = 메뉴그룹_등록하기("반반메뉴").as(MenuGroup.class);
+        두마리메뉴 = 메뉴그룹_등록하기("두마리메뉴").as(MenuGroupResponse.class);
+        세마리메뉴 = 메뉴그룹_등록하기("세마리메뉴").as(MenuGroupResponse.class);
+        반반메뉴 = 메뉴그룹_등록하기("반반메뉴").as(MenuGroupResponse.class);
     }
 
     /**
@@ -48,13 +52,9 @@ class MenuAcceptanceTest  extends AcceptanceTest {
     @Test
     public void 메뉴_추가하기_테스트() {
         //given
-        MenuProduct 양념_한마리 = new MenuProduct();
-        양념_한마리.setProductId(양념.getId());
-        양념_한마리.setQuantity(1);
+        MenuProductDTO 양념_한마리 = new MenuProductDTO(양념.getId(),1L);
 
-        MenuProduct 후라이드_한마리 = new MenuProduct();
-        후라이드_한마리.setProductId(후라이드.getId());
-        후라이드_한마리.setQuantity(1);
+        MenuProductDTO 후라이드_한마리 = new MenuProductDTO(후라이드.getId(), 1L);
 
         //when
         ExtractableResponse<Response> 메뉴_추가하기_response = 메뉴_추가하기("양념후라이드", 30000, 두마리메뉴.getId(),
@@ -76,23 +76,17 @@ class MenuAcceptanceTest  extends AcceptanceTest {
     @Test
     public void 메뉴_리스트_조회하기_테스트(){
         //given
-        MenuProduct 양념_한마리 = new MenuProduct();
-        양념_한마리.setProductId(양념.getId());
-        양념_한마리.setQuantity(1);
+        MenuProductDTO 양념_한마리 = new MenuProductDTO(양념.getId(), 1L);
 
-        MenuProduct 후라이드_한마리 = new MenuProduct();
-        후라이드_한마리.setProductId(후라이드.getId());
-        후라이드_한마리.setQuantity(1);
+        MenuProductDTO 후라이드_한마리 = new MenuProductDTO(후라이드.getId(), 1L);
 
-        MenuProduct 양념_세마리 = new MenuProduct();
-        양념_세마리.setProductId(양념.getId());
-        양념_세마리.setQuantity(3);
+        MenuProductDTO 양념_세마리 = new MenuProductDTO(양념.getId(), 3L);
 
-        Menu 양념세마리_메뉴 = 메뉴_추가하기("양념세마리", 40000, 세마리메뉴.getId(), Arrays.asList(양념_세마리)).as(Menu.class);
-        Menu 두마리_메뉴 = 메뉴_추가하기("양념후라이드", 30000, 두마리메뉴.getId(), Arrays.asList(양념_한마리, 양념_한마리)).as(
-            Menu.class);
-        Menu 반반_메뉴 = 메뉴_추가하기("양념후라이드", 30000, 두마리메뉴.getId(), Arrays.asList(양념_한마리, 후라이드_한마리)).as(
-            Menu.class);
+        MenuResponse 양념세마리_메뉴 = 메뉴_추가하기("양념세마리", 40000, 세마리메뉴.getId(), Arrays.asList(양념_세마리)).as(MenuResponse.class);
+        MenuResponse 두마리_메뉴 = 메뉴_추가하기("양념후라이드", 30000, 두마리메뉴.getId(), Arrays.asList(양념_한마리, 양념_한마리)).as(
+            MenuResponse.class);
+        MenuResponse 반반_메뉴 = 메뉴_추가하기("양념후라이드", 30000, 두마리메뉴.getId(), Arrays.asList(양념_한마리, 후라이드_한마리)).as(
+            MenuResponse.class);
 
         //when
         ExtractableResponse<Response> 메뉴_리스트_조회하기 = 메뉴_리스트_조회하기();
@@ -112,9 +106,7 @@ class MenuAcceptanceTest  extends AcceptanceTest {
     @Test
     public void 메뉴가격_음수_에러발생_테스트(){
         //given
-        MenuProduct 양념_한마리 = new MenuProduct();
-        양념_한마리.setProductId(양념.getId());
-        양념_한마리.setQuantity(1);
+        MenuProductDTO 양념_한마리 = new MenuProductDTO(양념.getId(), 1L);
 
         //when
         ExtractableResponse<Response> 메뉴_추가하기_response = 메뉴_추가하기("양념세마리", -1, 세마리메뉴.getId(),
@@ -135,9 +127,7 @@ class MenuAcceptanceTest  extends AcceptanceTest {
     @Test
     public void 메뉴가격_상품들_가격보다_클때_에러발생_테스트(){
         //given
-        MenuProduct 양념_한마리 = new MenuProduct();
-        양념_한마리.setProductId(양념.getId());
-        양념_한마리.setQuantity(2);
+        MenuProductDTO 양념_한마리 = new MenuProductDTO(양념.getId(), 2L);
 
         //when
         ExtractableResponse<Response> 메뉴_추가하기_response = 메뉴_추가하기("양념세마리", 양념.getPrice().intValue() * 3, 세마리메뉴.getId(),
