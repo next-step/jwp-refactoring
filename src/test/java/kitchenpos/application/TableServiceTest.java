@@ -53,79 +53,79 @@ class TableServiceTest {
     @Test
     void 주문_테이블_목록을_조회할_수_있어야_한다() {
         // given
-        when(orderTableDao.findAll()).thenReturn(Arrays.asList(식당_포스.테이블1, 식당_포스.테이블2, 식당_포스.빈_테이블));
+        when(orderTableDao.findAll()).thenReturn(Arrays.asList(식당_포스.테이블, 식당_포스.빈_테이블1));
 
         // when
         final List<OrderTable> actual = tableService.list();
 
         // then
-        assertThat(actual).containsExactly(식당_포스.테이블1, 식당_포스.테이블2, 식당_포스.빈_테이블);
+        assertThat(actual).containsExactly(식당_포스.테이블, 식당_포스.빈_테이블1);
     }
 
     @Test
     void 주문_테이블이_비었는지_여부를_변경할_수_있어야_한다() {
         // given
-        when(orderTableDao.findById(식당_포스.테이블1.getId())).thenReturn(Optional.of(식당_포스.테이블1));
+        when(orderTableDao.findById(식당_포스.테이블.getId())).thenReturn(Optional.of(식당_포스.테이블));
 
         // when
-        tableService.changeEmpty(식당_포스.테이블1.getId(),
-                new OrderTable(식당_포스.테이블1.getId(), 식당_포스.테이블1.getTableGroupId(), 0, true));
+        tableService.changeEmpty(식당_포스.테이블.getId(),
+                new OrderTable(식당_포스.테이블.getId(), 식당_포스.테이블.getTableGroupId(), 0, true));
 
         // then
-        assertThat(식당_포스.테이블1.isEmpty()).isTrue();
+        assertThat(식당_포스.테이블.isEmpty()).isTrue();
     }
 
     @Test
     void 비었는지_여부_변경_시_주문_테이블이_단체_등록_테이블이면_에러가_발생해야_한다() {
         // given
-        when(orderTableDao.findById(식당_포스.단체1_테이블1.getId())).thenReturn(Optional.of(식당_포스.단체1_테이블1));
+        when(orderTableDao.findById(식당_포스.단체_지정_테이블1.getId())).thenReturn(Optional.of(식당_포스.단체_지정_테이블1));
 
         // when and then
-        assertThatThrownBy(() -> tableService.changeEmpty(식당_포스.단체1_테이블1.getId(), new OrderTable()))
+        assertThatThrownBy(() -> tableService.changeEmpty(식당_포스.단체_지정_테이블1.getId(), new OrderTable()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void 비었는지_여부_변경_시_주문_테이블의_주문이_결제완료_상태가_아니면_에러가_발생해야_한다() {
         // given
-        when(orderTableDao.findById(식당_포스.테이블1.getId())).thenReturn(Optional.of(식당_포스.테이블1));
+        when(orderTableDao.findById(식당_포스.테이블.getId())).thenReturn(Optional.of(식당_포스.테이블));
         when(orderDao.existsByOrderTableIdAndOrderStatusIn(
-                식당_포스.테이블1.getId(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
+                식당_포스.테이블.getId(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
                 .thenReturn(true);
 
         // when and then
-        assertThatThrownBy(() -> tableService.changeEmpty(식당_포스.테이블1.getId(), new OrderTable()))
+        assertThatThrownBy(() -> tableService.changeEmpty(식당_포스.테이블.getId(), new OrderTable()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void 주문_테이블의_손님_수를_변경할_수_있어야_한다() {
         // given
-        when(orderTableDao.findById(식당_포스.테이블1.getId())).thenReturn(Optional.of(식당_포스.테이블1));
+        when(orderTableDao.findById(식당_포스.테이블.getId())).thenReturn(Optional.of(식당_포스.테이블));
 
         // when
-        tableService.changeNumberOfGuests(식당_포스.테이블1.getId(),
-                new OrderTable(식당_포스.테이블1.getId(), 식당_포스.테이블1.getTableGroupId(), 1, false));
+        tableService.changeNumberOfGuests(식당_포스.테이블.getId(),
+                new OrderTable(식당_포스.테이블.getId(), 식당_포스.테이블.getTableGroupId(), 1, false));
 
         // then
-        assertThat(식당_포스.테이블1.getNumberOfGuests()).isEqualTo(1);
+        assertThat(식당_포스.테이블.getNumberOfGuests()).isEqualTo(1);
     }
 
     @Test
     void 손님_수_변경_시_0명보다_적은_수로_변경하려고_하면_에러가_발생한다() {
         // when and then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(식당_포스.테이블1.getId(),
-                new OrderTable(식당_포스.테이블1.getId(), 식당_포스.테이블1.getTableGroupId(), -1, false)))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(식당_포스.테이블.getId(),
+                new OrderTable(식당_포스.테이블.getId(), 식당_포스.테이블.getTableGroupId(), -1, false)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void 손님_수_변경_시_주문_테이블의_빈_테이블이면_에러가_발생해야_한다() {
         // given
-        when(orderTableDao.findById(식당_포스.빈_테이블.getId())).thenReturn(Optional.of(식당_포스.빈_테이블));
+        when(orderTableDao.findById(식당_포스.빈_테이블1.getId())).thenReturn(Optional.of(식당_포스.빈_테이블1));
 
         // when and then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(식당_포스.빈_테이블.getId(), new OrderTable()))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(식당_포스.빈_테이블1.getId(), new OrderTable()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

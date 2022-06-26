@@ -52,12 +52,12 @@ class OrderServiceTest {
         // given
         final Order given = new Order(
                 1L,
-                식당_포스.테이블1.getId(),
+                식당_포스.테이블.getId(),
                 OrderStatus.COOKING.name(),
                 LocalDateTime.now(),
-                Arrays.asList(식당_포스.주문1_항목1, 식당_포스.주문1_항목2));
-        when(menuDao.countByIdIn(Arrays.asList(식당_포스.주문1_항목1.getMenuId(), 식당_포스.주문1_항목2.getMenuId()))).thenReturn(2L);
-        when(orderTableDao.findById(식당_포스.테이블1.getId())).thenReturn(Optional.of(식당_포스.테이블1));
+                Arrays.asList(식당_포스.주문_항목1, 식당_포스.주문_항목2));
+        when(menuDao.countByIdIn(Arrays.asList(식당_포스.주문_항목1.getMenuId(), 식당_포스.주문_항목2.getMenuId()))).thenReturn(2L);
+        when(orderTableDao.findById(식당_포스.테이블.getId())).thenReturn(Optional.of(식당_포스.테이블));
         when(orderDao.save(given)).thenReturn(given);
 
         // when
@@ -72,7 +72,7 @@ class OrderServiceTest {
         // given
         final Order given = new Order(
                 1L,
-                식당_포스.테이블1.getId(),
+                식당_포스.테이블.getId(),
                 OrderStatus.COOKING.name(),
                 LocalDateTime.now(),
                 new ArrayList<>());
@@ -88,11 +88,11 @@ class OrderServiceTest {
         final Long invalidMenuId = -1L;
         final Order given = new Order(
                 1L,
-                식당_포스.테이블1.getId(),
+                식당_포스.테이블.getId(),
                 OrderStatus.COOKING.name(),
                 LocalDateTime.now(),
-                Arrays.asList(식당_포스.주문1_항목1, new OrderLineItem(3L, 1L, invalidMenuId, 1)));
-        when(menuDao.countByIdIn(Arrays.asList(식당_포스.주문1_항목1.getMenuId(), invalidMenuId))).thenReturn(1L);
+                Arrays.asList(식당_포스.주문_항목1, new OrderLineItem(3L, 1L, invalidMenuId, 1)));
+        when(menuDao.countByIdIn(Arrays.asList(식당_포스.주문_항목1.getMenuId(), invalidMenuId))).thenReturn(1L);
 
         // when and then
         assertThatThrownBy(() -> orderService.create(given))
@@ -108,8 +108,8 @@ class OrderServiceTest {
                 invalidOrderTableId,
                 OrderStatus.COOKING.name(),
                 LocalDateTime.now(),
-                Arrays.asList(식당_포스.주문1_항목1, 식당_포스.주문1_항목2));
-        when(menuDao.countByIdIn(Arrays.asList(식당_포스.주문1_항목1.getMenuId(), 식당_포스.주문1_항목2.getMenuId()))).thenReturn(2L);
+                Arrays.asList(식당_포스.주문_항목1, 식당_포스.주문_항목2));
+        when(menuDao.countByIdIn(Arrays.asList(식당_포스.주문_항목1.getMenuId(), 식당_포스.주문_항목2.getMenuId()))).thenReturn(2L);
 
         // when and then
         assertThatThrownBy(() -> orderService.create(given))
@@ -121,12 +121,12 @@ class OrderServiceTest {
         // given
         final Order given = new Order(
                 1L,
-                식당_포스.빈_테이블.getId(),
+                식당_포스.빈_테이블1.getId(),
                 OrderStatus.COOKING.name(),
                 LocalDateTime.now(),
-                Arrays.asList(식당_포스.주문1_항목1, 식당_포스.주문1_항목2));
-        when(menuDao.countByIdIn(Arrays.asList(식당_포스.주문1_항목1.getMenuId(), 식당_포스.주문1_항목2.getMenuId()))).thenReturn(2L);
-        when(orderTableDao.findById(식당_포스.빈_테이블.getId())).thenReturn(Optional.of(식당_포스.빈_테이블));
+                Arrays.asList(식당_포스.주문_항목1, 식당_포스.주문_항목2));
+        when(menuDao.countByIdIn(Arrays.asList(식당_포스.주문_항목1.getMenuId(), 식당_포스.주문_항목2.getMenuId()))).thenReturn(2L);
+        when(orderTableDao.findById(식당_포스.빈_테이블1.getId())).thenReturn(Optional.of(식당_포스.빈_테이블1));
 
         // when and then
         assertThatThrownBy(() -> orderService.create(given))
@@ -136,32 +136,32 @@ class OrderServiceTest {
     @Test
     void 주문_목록을_조회할_수_있어야_한다() {
         // given
-        when(orderDao.findAll()).thenReturn(Arrays.asList(식당_포스.주문1, 식당_포스.주문2));
+        when(orderDao.findAll()).thenReturn(Arrays.asList(식당_포스.주문, 식당_포스.완료된_주문));
 
         // when
         final List<Order> actual = orderService.list();
 
         // then
-        assertThat(actual).containsExactly(식당_포스.주문1, 식당_포스.주문2);
+        assertThat(actual).containsExactly(식당_포스.주문, 식당_포스.완료된_주문);
     }
 
     @Test
     void 주문_상태를_변경할_수_있어야_한다() {
         // given
-        when(orderDao.findById(식당_포스.주문1.getId())).thenReturn(Optional.of(식당_포스.주문1));
+        when(orderDao.findById(식당_포스.주문.getId())).thenReturn(Optional.of(식당_포스.주문));
 
         // when
         orderService.changeOrderStatus(
-                식당_포스.주문1.getId(),
+                식당_포스.주문.getId(),
                 new Order(
-                        식당_포스.주문1.getId(),
-                        식당_포스.주문1.getOrderTableId(),
+                        식당_포스.주문.getId(),
+                        식당_포스.주문.getOrderTableId(),
                         OrderStatus.MEAL.name(),
-                        식당_포스.주문1.getOrderedTime(),
-                        식당_포스.주문1.getOrderLineItems()));
+                        식당_포스.주문.getOrderedTime(),
+                        식당_포스.주문.getOrderLineItems()));
 
         // then
-        assertThat(식당_포스.주문1.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
+        assertThat(식당_포스.주문.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
     }
 
     @Test
