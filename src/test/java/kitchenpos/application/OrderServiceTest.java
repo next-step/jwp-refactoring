@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
@@ -78,7 +78,7 @@ class OrderServiceTest {
                     .map(OrderLineItem::getMenuId)
                     .collect(Collectors.toList()))
                     .containsExactlyInAnyOrderElementsOf(Arrays.asList(주문상품1.getMenuId(), 주문상품2.getMenuId()));
-            assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.toString());
+            assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
             assertThat(savedOrder.getOrderTableId()).isEqualTo(주문테이블.getId());
         });
     }
@@ -162,7 +162,7 @@ class OrderServiceTest {
     @Test
     @DisplayName("주문상태를 변경한다 (Happy Path)")
     void changeOrderStatus() {
-        내주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING.toString(), LocalDateTime.now(), Arrays.asList(주문상품1, 주문상품2));
+        내주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), Arrays.asList(주문상품1, 주문상품2));
         Order 변경주문 = new Order();
         변경주문.setOrderStatus(OrderStatus.MEAL.name());
         given(orderDao.findById(anyLong())).willReturn(Optional.of(내주문));
@@ -178,7 +178,7 @@ class OrderServiceTest {
     @Test
     @DisplayName("변경하려는 주문이 유효하지 않을 때 주문상태 변경불가")
     void changeOrderStatusInvalidOrder() {
-        내주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING.toString(), LocalDateTime.now(), Arrays.asList(주문상품1, 주문상품2));
+        내주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), Arrays.asList(주문상품1, 주문상품2));
         Order 변경주문 = new Order();
         변경주문.setOrderStatus(OrderStatus.MEAL.name());
         given(orderDao.findById(anyLong())).willReturn(Optional.empty());
@@ -191,7 +191,7 @@ class OrderServiceTest {
     @Test
     @DisplayName("변경하려는 주문이 완료 상태일 때 주문상태 변경불가")
     void changeOrderStatusAlreadyCompleted() {
-        내주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COMPLETION.toString(), LocalDateTime.now(), Arrays.asList(주문상품1, 주문상품2));
+        내주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COMPLETION.name(), LocalDateTime.now(), Arrays.asList(주문상품1, 주문상품2));
         Order 변경주문 = new Order();
         변경주문.setOrderStatus(OrderStatus.MEAL.name());
         given(orderDao.findById(anyLong())).willReturn(Optional.of(내주문));
