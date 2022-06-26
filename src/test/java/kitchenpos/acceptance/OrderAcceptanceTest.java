@@ -52,8 +52,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                             Arrays.asList(MenuProductRequest.of(짬뽕.getId(), 1L))).as(MenuResponse.class);
                 }),
                 dynamicTest("주문 생성", () -> {
-                    ExtractableResponse<Response> 주문_생성_요청 = 주문_생성_요청(테이블.getId(),
-                            Lists.newArrayList(OrderLineItemRequest.of(중식_메뉴.getId(), 1L)));
+                    ExtractableResponse<Response> 주문_생성_요청 = 주문_생성_하기(테이블.getId(), 중식_메뉴.getId(), 1L);
                     주문_생성됨(주문_생성_요청);
                     주문 = 주문_생성_요청.as(OrderResponse.class);
                 }),
@@ -72,6 +71,11 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    private ExtractableResponse<Response> 주문_생성_하기(Long tableId, Long menuId, Long quantity) {
+        return 주문_생성_요청(tableId,
+                Lists.newArrayList(OrderLineItemRequest.of(menuId, quantity)));
+    }
+
     public static void 주문_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
@@ -83,6 +87,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     public static void 주문_수정_실패(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
+
     public static void 주문_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
