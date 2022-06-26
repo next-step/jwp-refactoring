@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -18,8 +20,10 @@ import kitchenpos.core.exception.BadRequestException;
 import kitchenpos.core.exception.CannotCreateException;
 import kitchenpos.core.exception.CannotUpdateException;
 import kitchenpos.core.exception.ExceptionType;
+import kitchenpos.order.application.OrderTableService;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.table.application.OrderTableServiceImpl;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.application.TableGroupService;
@@ -45,7 +49,7 @@ class TableGroupServiceTest {
     @Mock
     private TableGroupRepository tableGroupRepository;
     @Mock
-    private OrderRepository orderRepository;
+    private OrderTableService orderTableService;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -167,6 +171,8 @@ class TableGroupServiceTest {
             .thenReturn(Optional.of(테이블_그룹));
         when(orderTableRepository.findAllByTableGroup(테이블_그룹))
             .thenReturn(Arrays.asList(주문_테이블, 주문_테이블2));
+        doNothing().when(orderTableService)
+            .validateOrderTablesStatus(Arrays.asList(주문_테이블, 주문_테이블2));
 
         // when
         tableGroupService.ungroup(테이블_그룹.getId());
@@ -181,6 +187,10 @@ class TableGroupServiceTest {
     void ungroup_exception_test() {
         // given
         테이블_그룹 = TableGroup.from(Arrays.asList(주문_테이블, 주문_테이블2));
+
+        OrderRepository orderRepository = mock(OrderRepository.class);
+        OrderTableService orderTableService = new OrderTableServiceImpl(orderRepository);
+        TableGroupService tableGroupService = new TableGroupService(orderTableRepository, tableGroupRepository, orderTableService);
 
         when(tableGroupRepository.findById(테이블_그룹.getId()))
             .thenReturn(Optional.of(테이블_그룹));

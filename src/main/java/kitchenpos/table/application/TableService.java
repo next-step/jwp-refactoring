@@ -2,11 +2,9 @@ package kitchenpos.table.application;
 
 import java.util.stream.Collectors;
 import kitchenpos.core.exception.BadRequestException;
-import kitchenpos.core.exception.CannotUpdateException;
 import kitchenpos.core.exception.ExceptionType;
 import kitchenpos.core.exception.NotFoundException;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.application.OrderTableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.request.OrderTableRequest;
@@ -14,17 +12,16 @@ import kitchenpos.table.domain.response.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class TableService {
     private final OrderTableRepository orderTableRepository;
-    private final OrderRepository orderRepository;
+    private final OrderTableService orderTableService;
 
-    public TableService(OrderTableRepository orderTableRepository, OrderRepository orderRepository) {
+    public TableService(OrderTableRepository orderTableRepository, OrderTableService orderTableService) {
         this.orderTableRepository = orderTableRepository;
-        this.orderRepository = orderRepository;
+        this.orderTableService = orderTableService;
     }
 
     @Transactional
@@ -48,10 +45,7 @@ public class TableService {
             .orElseThrow(() -> new NotFoundException(ExceptionType.NOT_EXIST_ORDER_TABLE));
         orderTable.validateHasTableGroupId();
 
-        if (orderRepository.existsByOrderTableAndOrderStatusIn(
-            orderTable, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new CannotUpdateException(ExceptionType.CAN_NOT_UPDATE_TABLE_IN_COOKING_AND_MEAL_STATUS);
-        }
+        orderTableService.validateOrderTableStatus(orderTable);
 
         orderTable.emptyTheTable();
         orderTable = orderTableRepository.save(orderTable);

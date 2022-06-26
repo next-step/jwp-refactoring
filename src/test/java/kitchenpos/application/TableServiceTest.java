@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -13,8 +15,10 @@ import kitchenpos.core.exception.BadRequestException;
 import kitchenpos.core.exception.CannotUpdateException;
 import kitchenpos.core.exception.ExceptionType;
 import kitchenpos.core.exception.NotFoundException;
+import kitchenpos.order.application.OrderTableService;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.table.application.OrderTableServiceImpl;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -35,7 +39,8 @@ class TableServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
-    private OrderRepository orderRepository;
+    private OrderTableService orderTableService;
+
 
     @InjectMocks
     private TableService tableService;
@@ -88,9 +93,8 @@ class TableServiceTest {
         주문_테이블.fillTheTable();
         when(orderTableRepository.findById(주문_테이블.getId()))
             .thenReturn(Optional.of(주문_테이블));
-        when(orderRepository.existsByOrderTableAndOrderStatusIn(주문_테이블, Arrays.asList(
-            OrderStatus.COOKING, OrderStatus.MEAL)))
-            .thenReturn(false);
+        doNothing().when(orderTableService)
+            .validateOrderTableStatus(주문_테이블);
         when(orderTableRepository.save(주문_테이블))
             .thenReturn(주문_테이블);
 
@@ -119,11 +123,15 @@ class TableServiceTest {
     @Test
     void change_empty_exception_test2() {
         // given
+        OrderRepository orderRepository = mock(OrderRepository.class);
+        OrderTableService orderTableService = new OrderTableServiceImpl(orderRepository);
         when(orderTableRepository.findById(주문_테이블.getId()))
             .thenReturn(Optional.of(주문_테이블));
         when(orderRepository.existsByOrderTableAndOrderStatusIn(주문_테이블, Arrays.asList(
             OrderStatus.COOKING, OrderStatus.MEAL)))
             .thenReturn(true);
+
+        TableService tableService = new TableService(orderTableRepository, orderTableService);
 
         // then
         assertThatThrownBy(() -> {

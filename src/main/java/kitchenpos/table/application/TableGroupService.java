@@ -2,11 +2,9 @@ package kitchenpos.table.application;
 
 import kitchenpos.core.exception.BadRequestException;
 import kitchenpos.core.exception.CannotCreateException;
-import kitchenpos.core.exception.CannotUpdateException;
 import kitchenpos.core.exception.ExceptionType;
 import kitchenpos.core.exception.NotFoundException;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.application.OrderTableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
@@ -17,19 +15,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class TableGroupService {
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
-    private final OrderRepository orderRepository;
+    private final OrderTableService orderTableService;
 
-    public TableGroupService(OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository, OrderRepository orderRepository) {
+    public TableGroupService(OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository, OrderTableService orderTableService) {
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
-        this.orderRepository = orderRepository;
+        this.orderTableService = orderTableService;
     }
 
     @Transactional
@@ -67,14 +64,7 @@ public class TableGroupService {
             .orElseThrow(() -> new NotFoundException(ExceptionType.NOT_EXIST_TABLE_GROUP));
 
         final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroup(tableGroup);
-        validateOrderTablesStatus(orderTables);
+        orderTableService.validateOrderTablesStatus(orderTables);
         tableGroup.unGroup();
-    }
-
-    private void validateOrderTablesStatus(List<OrderTable> orderTables) {
-        if (orderRepository.existsByOrderTableInAndOrderStatusIn(
-            orderTables, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new CannotUpdateException(ExceptionType.CAN_NOT_UPDATE_TABLE_IN_COOKING_AND_MEAL_STATUS);
-        }
     }
 }
