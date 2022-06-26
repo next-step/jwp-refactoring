@@ -11,9 +11,6 @@ public class OrderRequest {
     private List<OrderLineItemDTO> orderLineItems = new LinkedList<>();
     private OrderStatus orderStatus;
 
-    public OrderRequest() {
-    }
-
     public Long getOrderTableId() {
         return orderTableId;
     }

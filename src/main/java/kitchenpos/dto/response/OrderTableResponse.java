@@ -9,16 +9,16 @@ public class OrderTableResponse {
     private int numberOfGuests;
     private boolean empty;
 
-    public static OrderTableResponse of(OrderTable orderTable) {
-        return new OrderTableResponse(orderTable.getId(), orderTable.getTableGroupId(),
-            orderTable.getNumberOfGuests(), orderTable.isEmpty());
-    }
-
     protected OrderTableResponse(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
+    }
+
+    public static OrderTableResponse of(OrderTable orderTable) {
+        return new OrderTableResponse(orderTable.getId(), orderTable.getTableGroupId(),
+            orderTable.getNumberOfGuests(), orderTable.isEmpty());
     }
 
     public Long getId() {

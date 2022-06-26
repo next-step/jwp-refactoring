@@ -7,9 +7,6 @@ public class ProductRequest {
     private String name;
     private BigDecimal price;
 
-    public ProductRequest() {
-    }
-
     public String getName() {
         return name;
     }

@@ -12,9 +12,6 @@ public class MenuRequest {
     private Long menuGroupId;
     private List<MenuProductDTO> menuProducts = new LinkedList<>();
 
-    public MenuRequest() {
-    }
-
     public String getName() {
         return name;
     }
