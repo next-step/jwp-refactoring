@@ -32,7 +32,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
         menuGroupRequest2 = new MenuGroupRequest("양식");
     }
 
-    @DisplayName("메뉴 그룹을 생성한다.")
+    @DisplayName("메뉴 그룹 생성에 성공한다.")
     @Test
     void 생성() {
         // when
@@ -42,7 +42,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
         메뉴_그룹_생성됨(response);
     }
 
-    @DisplayName("메뉴 그룹 목록을 조회한다.")
+    @DisplayName("메뉴 그룹 목록 조회에 성공한다.")
     @Test
     void 목록_조회() {
         // given

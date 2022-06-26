@@ -28,18 +28,18 @@ public class OrderTest {
         MenuProduct 스테이크_1개 = new MenuProduct(스테이크, 1);
         MenuProduct 에이드_1개 = new MenuProduct(에이드, 2);
         MenuProduct 에이드_2개 = new MenuProduct(에이드, 2);
-        BigDecimal 메뉴_구성_상품_가격_총합 = 샐러드_1개.getPrice()
+        BigDecimal 메뉴_구성_상품_금액_총합 = 샐러드_1개.getPrice()
                 .add(스테이크_1개.getPrice())
                 .add(에이드_2개.getPrice());
         Menu 커플_메뉴 = Menu.createMenu(
                 "커플 메뉴",
-                메뉴_구성_상품_가격_총합,
+                메뉴_구성_상품_금액_총합,
                 양식,
                 Arrays.asList(샐러드_1개, 스테이크_1개, 에이드_2개)
         );
         Menu 싱글_메뉴 = Menu.createMenu(
                 "커플 메뉴",
-                메뉴_구성_상품_가격_총합,
+                메뉴_구성_상품_금액_총합,
                 양식,
                 Arrays.asList(샐러드_1개, 스테이크_1개, 에이드_1개)
         );
@@ -49,7 +49,7 @@ public class OrderTest {
         빈_테이블 = new OrderTable(null, 0, true);
     }
 
-    @DisplayName("주문을 생성한다.")
+    @DisplayName("주문 생성에 성공한다.")
     @Test
     void 생성() {
         // when
@@ -59,7 +59,7 @@ public class OrderTest {
         assertThat(order).isNotNull();
     }
 
-    @DisplayName("주문 항목이 1개 미만이라 주문 생성에 실패한다")
+    @DisplayName("주문 항목이 1개 미만이면 주문 생성에 실패한다.")
     @Test
     void 생성_예외_주문_항목_1개_미만() {
         // when, then
@@ -69,7 +69,7 @@ public class OrderTest {
 
     }
 
-    @DisplayName("빈 테이블이라 주문 생성에 실패한다")
+    @DisplayName("빈 테이블이면 주문 생성에 실패한다.")
     @Test
     void 생성_예외_빈_테이블() {
         // when, then
@@ -91,7 +91,7 @@ public class OrderTest {
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
     }
 
-    @DisplayName("계산 완료라서 상태 변경에 실패한다.")
+    @DisplayName("계산 완료 상태이면 상태 변경에 실패한다.")
     @Test
     void 상태_변경_예외_계산_완료() {
         // given

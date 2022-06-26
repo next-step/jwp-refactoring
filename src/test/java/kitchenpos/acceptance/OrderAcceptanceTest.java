@@ -69,7 +69,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         changeOrderStatusRequest = new ChangeOrderStatusRequest(주문_테이블.getId(), OrderStatus.MEAL, Arrays.asList(기본_메뉴_1개));
     }
 
-    @DisplayName("주문을 생성한다.")
+    @DisplayName("주문 생성에 성공한다.")
     @Test
     void 생성() {
         // when
@@ -79,7 +79,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         주문_생성됨(response);
     }
 
-    @DisplayName("주문 목록을 조회한다.")
+    @DisplayName("주문 목록 조회에 성공한다.")
     @Test
     void 목록_조회() {
         // given
@@ -94,7 +94,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         주문_목록_포함됨(response, Arrays.asList(createResponse1, createResponse2));
     }
 
-    @DisplayName("주문 상태를 변경한다.")
+    @DisplayName("주문 상태 변경에 성공한다.")
     @Test
     void 주문_상태_변경() {
         // given

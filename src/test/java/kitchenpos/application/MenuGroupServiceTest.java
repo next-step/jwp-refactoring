@@ -27,7 +27,7 @@ public class MenuGroupServiceTest {
     @InjectMocks
     MenuGroupService menuGroupService;
 
-    @DisplayName("메뉴 그룹을 생성한다.")
+    @DisplayName("메뉴 그룹 생성에 성공한다.")
     @Test
     void 생성_성공() {
         // given
@@ -42,7 +42,7 @@ public class MenuGroupServiceTest {
         assertThat(result.getName()).isEqualTo(menuGroup.getName());
     }
 
-    @DisplayName("메뉴 그룹 목록을 조회한다.")
+    @DisplayName("메뉴 그룹 목록 조회에 성공한다.")
     @Test
     void 목록_조회() {
         // given

@@ -29,7 +29,7 @@ public class TableGroupTest {
         기존_테이블_그룹 = new TableGroup(Arrays.asList(단체_지정_테이블1, 단체_지정_테이블2));
     }
 
-    @DisplayName("주문 테이블을 단체 지정한다.")
+    @DisplayName("주문 테이블 단체 지정에 성공한다.")
     @Test
     void 단체_지정() {
         // when
@@ -40,7 +40,7 @@ public class TableGroupTest {
         assertThat(테이블_그룹.getOrderTables()).containsExactly(빈_테이블1, 빈_테이블2);
     }
 
-    @DisplayName("빈 테이블이 아니라 주문 테이블 단체 지정에 실패한다.")
+    @DisplayName("빈 테이블이 아닌 테이블이 있으면 단체 지정에 실패한다.")
     @Test
     void 단체_지정_예외_빈_테이블_아님() {
         // when, then
@@ -50,7 +50,7 @@ public class TableGroupTest {
                 .hasMessage("빈 테이블들만 단체 지정할 수 있습니다.");
     }
 
-    @DisplayName("테이블이 2개 미만이라 주문 테이블 단체 지정에 실패한다.")
+    @DisplayName("테이블이 2개 미만이면 단체 지정에 실패한다.")
     @Test
     void 단체_지정_예외_테이블_하나() {
         // when, then
@@ -59,7 +59,7 @@ public class TableGroupTest {
                 .hasMessage("테이블 수가 2개 이상이어야 단체 지정할 수 있습니다");
     }
 
-    @DisplayName("이미 단체 지정되어 있어서 지정에 실패한다.")
+    @DisplayName("이미 단체 지정된 테이블이 있으면 단체 지정에 실패한다.")
     @Test
     void 단체_지정_예외_이미_단체_지정() {
         // when, then
@@ -68,7 +68,7 @@ public class TableGroupTest {
                 .hasMessage("이미 단체 지정된 테이블이 있어서 단체 지정할 수 없습니다.");
     }
 
-    @DisplayName("주문 테이블 단체 지정을 해제한다.")
+    @DisplayName("주문 테이블 단체 지정 해제에 성공한다.")
     @Test
     void 단체_지정_해제() {
         // given

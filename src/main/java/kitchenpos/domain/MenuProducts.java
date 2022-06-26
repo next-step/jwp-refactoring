@@ -18,7 +18,7 @@ public class MenuProducts {
 
     public void addAll(final Menu menu, final List<MenuProduct> menuProducts) {
         if (menu.hasPriceGreaterThan(totalPriceOf(menuProducts))) {
-            throw new IllegalArgumentException("메뉴 가격은 구성 상품 총 가격보다 클 수 없습니다.");
+            throw new IllegalArgumentException("메뉴 가격은 구성 상품 금액 총합보다 크면 안 됩니다.");
         }
 
         for (MenuProduct menuProduct : menuProducts) {

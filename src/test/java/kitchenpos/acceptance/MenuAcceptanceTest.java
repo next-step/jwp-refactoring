@@ -74,7 +74,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    @DisplayName("메뉴를 생성한다.")
+    @DisplayName("메뉴 생성에 성공한다.")
     @Test
     void 생성() {
         // when
@@ -84,7 +84,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         메뉴_생성됨(response);
     }
 
-    @DisplayName("메뉴 그룹이 잘못되어 메뉴 생성에 실패한다.")
+    @DisplayName("메뉴 그룹 ID가 null이거나 ID에 해당하는 메뉴 그룹이 존재하지 않으면 메뉴 생성에 실패한다.")
     @Test
     void 생성_예외_메뉴_그룹_오류() {
         // when
@@ -98,9 +98,9 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         메뉴_생성_실패됨(createResponse2);
     }
 
-    @DisplayName("메뉴 금액이 커서 메뉴 생성에 실패한다.")
+    @DisplayName("메뉴 가격이 구성 상품 금액 총합을 초과하면 메뉴 생성에 실패한다.")
     @Test
-    void 생성_예외_메뉴_금액_오류() {
+    void 생성_예외_메뉴_가격_오류() {
         // when
         ExtractableResponse<Response> response = 메뉴_생성_요청(menuRequest_금액_초과);
 
@@ -108,7 +108,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         메뉴_생성_실패됨(response);
     }
 
-    @DisplayName("메뉴 목록을 조회한다.")
+    @DisplayName("메뉴 목록 조회에 성공한다.")
     @Test
     void 목록_조회() {
         // given

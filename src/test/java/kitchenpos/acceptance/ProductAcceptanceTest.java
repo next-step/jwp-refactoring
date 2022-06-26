@@ -34,7 +34,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         productRequest3 = new ProductRequest("에이드", -5);
     }
 
-    @DisplayName("상품을 생성한다.")
+    @DisplayName("상품 생성에 성공한다.")
     @Test
     void 생성() {
         // when
@@ -44,9 +44,9 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         상품_생성됨(response);
     }
 
-    @DisplayName("상품 금액이 0원 미만이라 생성에 실패한다.")
+    @DisplayName("상품 가격이 0보다 작으면 생성에 실패한다.")
     @Test
-    void 생성_예외_금액_오류() {
+    void 생성_예외_가격_오류() {
         // when
         ExtractableResponse<Response> response = 상품_생성_요청(productRequest3);
 
@@ -54,7 +54,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         상품_생성_실패됨(response);
     }
 
-    @DisplayName("상품 목록을 조회한다.")
+    @DisplayName("상품 목록 조회에 성공한다.")
     @Test
     void 목록_조회() {
         // given

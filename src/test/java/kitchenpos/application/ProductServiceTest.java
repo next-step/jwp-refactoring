@@ -25,7 +25,7 @@ public class ProductServiceTest {
     @InjectMocks
     ProductService productService;
 
-    @DisplayName("상품 목록을 조회한다.")
+    @DisplayName("상품 목록 조회에 성공한다.")
     @Test
     void 목록_조회() {
         // given

@@ -33,7 +33,7 @@ public class TableServiceTest {
     @InjectMocks
     TableService tableService;
 
-    @DisplayName("주문 테이블 목록을 조회한다.")
+    @DisplayName("주문 테이블 목록 조회에 성공한다.")
     @Test
     void 목록_조회() {
         // given
@@ -48,7 +48,7 @@ public class TableServiceTest {
         assertThat(주문_테이블_목록).containsExactly(TableResponse.of(테이블1), TableResponse.of(테이블2));
     }
 
-    @DisplayName("주문 상태가 올바르지 않아 빈 테이블로 설정하는 데 실패한다")
+    @DisplayName("어떤 테이블의 주문 상태가 '조리'나 '식사'면 빈 테이블로 설정하는 데 실패한다.")
     @Test
     void 빈_테이블로_설정_예외_잘못된_주문_상태() {
         // given

@@ -52,7 +52,7 @@ public class MenuServiceTest {
         양식 = new MenuGroup(1L, "양식");
     }
 
-    @DisplayName("메뉴 목록을 조회한다.")
+    @DisplayName("메뉴 목록 조회에 성공한다.")
     @Test
     void 목록_조회() {
         // given

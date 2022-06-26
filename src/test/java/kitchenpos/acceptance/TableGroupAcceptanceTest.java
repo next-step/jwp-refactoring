@@ -32,7 +32,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         tableGroupRequest = new TableGroupRequest(Arrays.asList(테이블1.getId(), 테이블2.getId()));
     }
 
-    @DisplayName("주문 테이블들을 단체 지정한다.")
+    @DisplayName("주문 테이블들 단체 지정에 성공한다.")
     @Test
     void 단체_지정() {
         // when
@@ -42,7 +42,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         단체_지정됨(response);
     }
 
-    @DisplayName("주문 테이블 단체 지정을 해제한다.")
+    @DisplayName("주문 테이블 단체 지정 해제에 성공한다.")
     @Test
     void 단체_지정_해제() {
         // given

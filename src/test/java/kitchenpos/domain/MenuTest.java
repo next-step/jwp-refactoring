@@ -16,7 +16,7 @@ public class MenuTest {
     MenuProduct 샐러드_1개;
     MenuProduct 스테이크_1개;
     MenuProduct 에이드_2개;
-    BigDecimal 메뉴_구성_상품_가격_총합;
+    BigDecimal 메뉴_구성_상품_금액_총합;
 
     @BeforeEach
     void init() {
@@ -28,18 +28,18 @@ public class MenuTest {
         샐러드_1개 = new MenuProduct(샐러드, 1);
         스테이크_1개 = new MenuProduct(스테이크, 1);
         에이드_2개 = new MenuProduct(에이드, 2);
-        메뉴_구성_상품_가격_총합 = 샐러드_1개.getPrice()
+        메뉴_구성_상품_금액_총합 = 샐러드_1개.getPrice()
                 .add(스테이크_1개.getPrice())
                 .add(에이드_2개.getPrice());
     }
 
-    @DisplayName("메뉴를 생성한다.")
+    @DisplayName("메뉴 생성에 성공한다.")
     @Test
     void 생성() {
         // when
         Menu 커플_메뉴 = Menu.createMenu(
                 "커플 메뉴",
-                메뉴_구성_상품_가격_총합,
+                메뉴_구성_상품_금액_총합,
                 양식,
                 Arrays.asList(샐러드_1개, 스테이크_1개, 에이드_2개)
         );
@@ -48,7 +48,7 @@ public class MenuTest {
         assertThat(커플_메뉴).isNotNull();
     }
 
-    @DisplayName("메뉴 금액이 0보다 작아서 생성에 실패한다.")
+    @DisplayName("메뉴 가격이 0보다 작으면 생성에 실패한다.")
     @Test
     void 생성_예외_가격_음수() {
         // when, then
@@ -62,28 +62,28 @@ public class MenuTest {
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("메뉴 금액이 구성 상품 금액 총합보다 커서 생성에 실패한다.")
+    @DisplayName("메뉴 구성 상품들의 금액 총합보다 메뉴 가격이 더 크면 생성에 실패한다.")
     @Test
     void 생성_예외_가격_초과() {
         // when, then
         assertThatThrownBy(
                 () -> Menu.createMenu(
                         "커플 메뉴",
-                        메뉴_구성_상품_가격_총합.add(BigDecimal.ONE),
+                        메뉴_구성_상품_금액_총합.add(BigDecimal.ONE),
                         양식,
                         Arrays.asList(샐러드_1개, 스테이크_1개, 에이드_2개)
                 )
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("메뉴가 속한 그룹이 올바르지 않아 생성에 실패한다.")
+    @DisplayName("메뉴 그룹이 null이면 메뉴 생성에 실패한다.")
     @Test
     void 생성_예외_잘못된_그룹() {
         // when, then
         assertThatThrownBy(
                 () -> Menu.createMenu(
                         "커플 메뉴",
-                        메뉴_구성_상품_가격_총합.add(BigDecimal.ONE),
+                        메뉴_구성_상품_금액_총합.add(BigDecimal.ONE),
                         null,
                         Arrays.asList(샐러드_1개, 스테이크_1개, 에이드_2개)))
                 .isInstanceOf(IllegalArgumentException.class)

@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class ProductTest {
 
-    @DisplayName("상품을 생성한다.")
+    @DisplayName("상품 생성에 성공한다.")
     @Test
     void 생성() {
         // when
@@ -22,9 +22,9 @@ public class ProductTest {
         assertThat(샐러드.getUnitPrice()).isEqualTo(BigDecimal.valueOf(100));
     }
 
-    @DisplayName("상품 가격이 0보다 작아서 생성에 실패한다.")
+    @DisplayName("상품 가격이 0보다 작으면 상품 생성에 실패한다.")
     @Test
-    void 생성_예외() {
+    void 생성_예외_가격_오류() {
         // when, then
         assertThatThrownBy(() -> new Product("샐러드", BigDecimal.ZERO.subtract(BigDecimal.ONE)))
                 .isInstanceOf(IllegalArgumentException.class);
