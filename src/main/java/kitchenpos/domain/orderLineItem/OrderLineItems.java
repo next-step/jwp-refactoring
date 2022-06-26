@@ -2,6 +2,7 @@ package kitchenpos.domain.orderLineItem;
 
 import org.springframework.util.CollectionUtils;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import java.util.stream.Collectors;
 
 @Embeddable
 public class OrderLineItems {
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private final List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     protected OrderLineItems() {

@@ -47,12 +47,7 @@ public class OrderService {
         final List<Long> menuIds = orderLineItems.findMenuIds();
         orderLineItems.vaildateSize(menuCountByIdIn(menuIds));
 
-        final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
-        for (final OrderLineItem orderLineItem : orderLineItems.getOrderLineItems()) {
-            savedOrderLineItems.add(saveOrderLineItem(orderLineItem));
-        }
-
-        Order saveOrder = new Order(orderTable, OrderStatus.COOKING, savedOrderLineItems);
+        Order saveOrder = new Order(orderTable, OrderStatus.COOKING, orderLineItems);
         final Order savedOrder = saveOrder(saveOrder);
 
         return OrderResponse.of(savedOrder);

@@ -34,8 +34,8 @@ public class Order extends BaseEntity {
 
     }
 
-    public Order(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-        this(null, orderTable, orderStatus, new OrderLineItems(orderLineItems));
+    public Order(OrderTable orderTable, OrderStatus orderStatus, OrderLineItems orderLineItems) {
+        this(null, orderTable, orderStatus, orderLineItems);
     }
 
     public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
