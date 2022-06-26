@@ -13,6 +13,10 @@ public class Order {
     public Order() {
     }
 
+    public Order(Long id) {
+        this.id = id;
+    }
+
     public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderLineItems = orderLineItems;

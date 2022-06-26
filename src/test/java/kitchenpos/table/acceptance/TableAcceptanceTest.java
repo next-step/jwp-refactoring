@@ -5,7 +5,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
@@ -18,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static kitchenpos.order.acceptance.OrderAcceptanceTest.주문_등록되어_있음;
-import static kitchenpos.order.acceptance.OrderAcceptanceTest.테스트_주문_생성;
+import static kitchenpos.order.acceptance.OrderAcceptanceTest.주문_생성;
 import static kitchenpos.tablegroup.acceptance.TableGroupAcceptanceTest.테이블_그룹_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -93,15 +92,15 @@ public class TableAcceptanceTest extends AcceptanceTest {
         주문_테이블_상태_수정_실패(변경된_주문_테이블);
     }
 
-    @DisplayName("[예외] 식사 중인 주문 테이블의 상태를 변경한다.")
+    @DisplayName("[예외] 요리 중인 주문 테이블의 상태를 변경한다.")
     @Test
-    void changeEmpty_with_meal_order_table() {
-        Order 등록된_식사중_주문 = 주문_등록되어_있음(테스트_주문_생성(OrderStatus.MEAL)).as(Order.class);
-        OrderTable 등록된_식사중_주문_테이블 = new OrderTable(등록된_식사중_주문.getOrderTableId());
+    void changeEmpty_with_cooking_order_table() {
+        Order 등록된_요리중인_주문 = 주문_등록되어_있음(주문_생성()).as(Order.class);
+        OrderTable 등록된_요리중인_주문_테이블 = new OrderTable(등록된_요리중인_주문.getOrderTableId());
         final boolean 테이블_사용중 = false;
 
         // when
-        ExtractableResponse<Response> 변경된_주문_테이블 = 주문_테이블_상태_수정_요청(등록된_식사중_주문_테이블, 테이블_사용중);
+        ExtractableResponse<Response> 변경된_주문_테이블 = 주문_테이블_상태_수정_요청(등록된_요리중인_주문_테이블, 테이블_사용중);
 
         // then
         주문_테이블_상태_수정_실패(변경된_주문_테이블);
