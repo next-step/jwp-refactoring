@@ -7,12 +7,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
 import kitchenpos.menu.domain.Price;
 import kitchenpos.product.dto.ProductResponse;
 
 @Entity
-@Table(name = "product")
 public class Product {
 
     @Id
@@ -40,10 +38,6 @@ public class Product {
 
     public Price multiply(Long quantity) {
         return this.price.multiply(quantity);
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public Price getPrice() {
