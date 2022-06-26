@@ -52,12 +52,20 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                     ExtractableResponse<Response> 주문_생성_요청 = 주문_생성_요청(테이블.getId(),
                             Lists.newArrayList(OrderLineItemRequest.of(중식_메뉴.getId(), 1L)));
                     주문_생성됨(주문_생성_요청);
+                }),
+                dynamicTest("주문 조회", () -> {
+                    ExtractableResponse<Response> 주문_조회_요청 = 주문_조회_요청();
+                    주문_조회됨(주문_조회_요청);
                 })
-                );
+        );
     }
 
     public static void 주문_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    public static void 주문_조회됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     public static ExtractableResponse<Response> 주문_생성_요청(Long
@@ -71,5 +79,14 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 .then().log().all().
                 extract();
     }
+
+    public static ExtractableResponse<Response> 주문_조회_요청() {
+        return RestAssured
+                .given().log().all()
+                .when().get(ORDER_URL)
+                .then().log().all()
+                .extract();
+    }
+
 
 }
