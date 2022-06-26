@@ -18,16 +18,18 @@ public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
     private final ProductRepository productRepository;
+    private final MenuValidator menuValidator;
 
-    public MenuService(MenuRepository menuRepository, MenuGroupRepository menuGroupRepository, ProductRepository productRepository) {
+    public MenuService(MenuRepository menuRepository, MenuGroupRepository menuGroupRepository, ProductRepository productRepository, MenuValidator menuValidator) {
         this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
         this.productRepository = productRepository;
+        this.menuValidator = menuValidator;
     }
 
     public MenuResponse create(final MenuRequest menuRequest) {
         Menu menu = menuRequest.toEntity();
-        validateOfMenuGroup(menu.getMenuGroupId());
+        menuValidator.validate(menu.getMenuGroupId());
 
         MenuProducts menuProducts = bindProducts(menu.getMenuProducts());
         menu.validateMenuPrice(menuProducts.getTotalPrice());
@@ -40,12 +42,6 @@ public class MenuService {
         return menuRepository.findAll().stream()
                 .map(MenuResponse::from)
                 .collect(Collectors.toList());
-    }
-
-    private void validateOfMenuGroup(Long menuGroupId) {
-        if (!menuGroupRepository.existsById(menuGroupId)) {
-            throw new IllegalArgumentException("메뉴 그룹이 존재하지 않습니다.");
-        }
     }
 
     private MenuProducts bindProducts(MenuProducts menuProducts) {

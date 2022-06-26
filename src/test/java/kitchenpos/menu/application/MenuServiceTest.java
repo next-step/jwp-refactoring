@@ -38,6 +38,9 @@ public class MenuServiceTest {
     @Mock
     ProductRepository productRepository;
 
+    @Mock
+    MenuValidator menuValidator;
+
     @InjectMocks
     MenuService menuService;
 
@@ -60,7 +63,6 @@ public class MenuServiceTest {
         MenuRequest menuRequest = 메뉴_등록_요청("추천메뉴", 강정치킨.getPrice(), 치킨메뉴.getId(),
                 Arrays.asList(메뉴_상품_등록_요청(강정치킨.getId(), 1L)));
 
-        given(menuGroupRepository.existsById(any())).willReturn(true);
         given(productRepository.findById(any())).willReturn(Optional.ofNullable(강정치킨));
         given(menuRepository.save(any())).willReturn(추천메뉴);
 
@@ -78,7 +80,6 @@ public class MenuServiceTest {
         MenuRequest menuRequest = 메뉴_등록_요청("추천메뉴", 1000, 치킨메뉴.getId(),
                 Arrays.asList(메뉴_상품_등록_요청(강정치킨.getId(), 1L)));
 
-        given(menuGroupRepository.existsById(any())).willReturn(true);
         given(productRepository.findById(any())).willReturn(Optional.ofNullable(강정치킨));
 
         // when-then
