@@ -14,11 +14,13 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.dto.MenuGroupResponse;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuResponse;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderResponse;
 import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.dto.ProductResponse;
 import org.assertj.core.util.Lists;
@@ -36,6 +38,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     private MenuGroupResponse 중식;
     private MenuResponse 중식_메뉴;
     private OrderTableResponse 테이블;
+    private OrderResponse 주문;
 
     @TestFactory
     Stream<DynamicTest> orderTest() {
@@ -52,10 +55,19 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                     ExtractableResponse<Response> 주문_생성_요청 = 주문_생성_요청(테이블.getId(),
                             Lists.newArrayList(OrderLineItemRequest.of(중식_메뉴.getId(), 1L)));
                     주문_생성됨(주문_생성_요청);
+                    주문 = 주문_생성_요청.as(OrderResponse.class);
                 }),
                 dynamicTest("주문 조회", () -> {
                     ExtractableResponse<Response> 주문_조회_요청 = 주문_조회_요청();
                     주문_조회됨(주문_조회_요청);
+                }),
+                dynamicTest("주문 상태 수정(식사)", () -> {
+                    ExtractableResponse<Response> 주문_상태_수정_요청 = 주문_상태_수정_요청(주문.getId(), OrderStatus.MEAL);
+                    주문_수정됨(주문_상태_수정_요청);
+                }),
+                dynamicTest("시스템에 없는 주문 상태 수정", () -> {
+                    ExtractableResponse<Response> 주문_상태_수정_요청 = 주문_상태_수정_요청(1000L, OrderStatus.MEAL);
+                    주문_수정_실패(주문_상태_수정_요청);
                 })
         );
     }
@@ -64,6 +76,13 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
+    public static void 주문_수정됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 주문_수정_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
     public static void 주문_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
@@ -76,6 +95,18 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(OrderRequest.of(orderTableId, orderLineItems))
                 .when().post(ORDER_URL)
+                .then().log().all().
+                extract();
+    }
+
+    public static ExtractableResponse<Response> 주문_상태_수정_요청(Long
+                                                                    orderTableId,
+                                                            OrderStatus status) {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(OrderRequest.of(orderTableId, status.name()))
+                .when().put(ORDER_URL + orderTableId + "/order-status")
                 .then().log().all().
                 extract();
     }
