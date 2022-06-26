@@ -22,6 +22,7 @@ import java.util.Optional;
 import static kitchenpos.menu.application.MenuGroupServiceTest.메뉴_그룹_등록;
 import static kitchenpos.product.application.ProductServiceTest.상품_등록;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -68,6 +69,20 @@ public class MenuServiceTest {
 
         // then
         assertThat(createdMenu).isNotNull();
+    }
+
+    @Test
+    @DisplayName("메뉴등록 실패한다. - (상품 금액합이 메뉴가격보다 클때)")
+    void createMenuFail() {
+        // given
+        MenuRequest menuRequest = 메뉴_등록_요청("추천메뉴", 1000, 치킨메뉴.getId(),
+                Arrays.asList(메뉴_상품_등록_요청(강정치킨.getId(), 1L)));
+
+        given(menuGroupRepository.existsById(any())).willReturn(true);
+        given(productRepository.findById(any())).willReturn(Optional.ofNullable(강정치킨));
+
+        // when-then
+        assertThatThrownBy(() -> menuService.create(menuRequest)).isInstanceOf(IllegalArgumentException.class);
     }
 
     public static Menu 메뉴_등록(Long id, String name, Integer price, Long menuGroupId, List<MenuProduct> menuProducts) {
