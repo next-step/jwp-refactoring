@@ -40,7 +40,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
      *     When 공기밥 상품 등록 요청
      *     Then 공기밥 상품 등록됨
      *     When 상품 조회 요청
-     *     Then 상품 조회됨
+     *     Then 김치찌개, 공기밥 상품 조회됨
      */
     @DisplayName("상품을 관리한다")
     @Test
@@ -70,6 +70,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 비정상_등록 = 상품_등록_요청(김치찌개_productRequest);
         상품_등록_실패됨(비정상_등록);
     }
+
     public static ExtractableResponse<Response> 상품_등록_요청(ProductRequest params) {
         return post("/api/products", params);
     }
