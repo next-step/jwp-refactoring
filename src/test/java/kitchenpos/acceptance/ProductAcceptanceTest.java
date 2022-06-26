@@ -1,6 +1,7 @@
 package kitchenpos.acceptance;
 
 import static kitchenpos.fixture.DomainFactory.createProduct;
+import static kitchenpos.fixture.ProductFactory.createProductRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
@@ -52,7 +53,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 상품_등록_요청(String name, double price) {
-        ProductRequest request = new ProductRequest(name, BigDecimal.valueOf(price));
+        ProductRequest request = createProductRequest(name, BigDecimal.valueOf(price));
 
         return RestAssured
                 .given().log().all()

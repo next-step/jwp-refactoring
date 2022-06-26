@@ -56,7 +56,7 @@ class OrderServiceTest {
         Product 양상추 = createProduct(3L, "양상추", 500);
 
         빅맥버거 = createMenu(1L, "빅맥버거", 3000, 1L,
-                Arrays.asList(createMenuProduct(1L, 1L, 토마토.getId(), 1), createMenuProduct(2L, 1L, 양상추.getId(), 4)));
+                Arrays.asList(createMenuProduct(1L, null, 토마토, 1), createMenuProduct(2L, null, 양상추, 4)));
         주문테이블 = createOrderTable(1L, null, 5, false);
 
         주문 = createOrder(1L, 주문테이블.getId(), null, null, Arrays.asList(createOrderLineItem(1L, 1L, 빅맥버거.getId(), 1)));

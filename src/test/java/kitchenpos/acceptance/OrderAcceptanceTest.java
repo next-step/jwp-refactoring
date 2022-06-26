@@ -45,8 +45,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         Product 토마토 = 상품_등록_요청(createProduct(null, "토마토", 1000)).as(Product.class);
         Product 양상추 = 상품_등록_요청(createProduct(null, "양상추", 500)).as(Product.class);
         Menu 빅맥버거 = 메뉴_등록_요청(createMenu(null, "빅맥버거", 3000, 빅맥세트.getId(),
-                Arrays.asList(createMenuProduct(1L, null, 토마토.getId(), 1),
-                        createMenuProduct(2L, null, 양상추.getId(), 4)))).as(Menu.class);
+                Arrays.asList(createMenuProduct(1L, null, 토마토, 1),
+                        createMenuProduct(2L, null, 양상추, 4)))).as(Menu.class);
 
         주문 = createOrder(null, 주문테이블.getId(), null, null,
                 Arrays.asList(createOrderLineItem(1L, null, 빅맥버거.getId(), 1)));
