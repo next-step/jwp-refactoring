@@ -134,7 +134,17 @@ public class TableAcceptanceTest extends AcceptanceTest {
         주문_테이블_손님수_수정_실패(인원_수정된_주문_테이블);
     }
 
-    @DisplayName("[예외] 현재 손님이 없는 주문 테이블의 손님 수 변경한다.")
+    @DisplayName("[예외] 저장하지 않은 주문 테이블의 손님 수를 변경한다.")
+    @Test
+    void changeNumberOfGuests_with_not_saved_order_table() {
+        // when
+        ExtractableResponse<Response> 인원_수정된_주문_테이블 = 주문_테이블_인원_수정_요청(new OrderTable(9999L), 5);
+
+        // then
+        주문_테이블_손님수_수정_실패(인원_수정된_주문_테이블);
+    }
+
+    @DisplayName("[예외] 현재 비어 있는 주문 테이블의 손님 수 변경한다.")
     @Test
     void changeNumberOfGuests_empty() {
         // given
@@ -201,6 +211,18 @@ public class TableAcceptanceTest extends AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(changedOrderTable)
                 .when().put("/api/tables/{orderTableId}/number-of-guests", responseOrderTable.getId())
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 주문_테이블_인원_수정_요청(OrderTable orderTable, int numberOfGuests) {
+        OrderTable changedOrderTable = new OrderTable(numberOfGuests, false);
+
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(changedOrderTable)
+                .when().put("/api/tables/{orderTableId}/number-of-guests", orderTable.getId())
                 .then().log().all()
                 .extract();
     }
