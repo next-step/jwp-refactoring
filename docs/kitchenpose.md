@@ -31,7 +31,7 @@
 - [X] Spring Data JPA 의존성 추가
 - [ ] 응용서비스에서 도메인 로직을 분리
   - [ ] Menu Domain Context > MenuGroup
-    - [ ] 패키지 생성 및 기존 클래스 이동
+    - [X] 패키지 생성 및 기존 클래스 이동
     - [ ] MenuGroup을 JPA Entity로 변경한 후 JPARepository 생성
     - [ ] 응용서비스에서 JdbcTemplete -> JPARepository로 교체
     - [ ] 응용서비스에서 도메인레이어로 로직 이동 (with 단위테스트 작성)
