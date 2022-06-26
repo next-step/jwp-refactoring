@@ -37,6 +37,12 @@ public class OrderLineItem {
         this.quantity = new Quantity(quantity);
     }
 
+    public OrderLineItem(Order order, Long menuId, long quantity) {
+        this.order = order;
+        this.menuId = menuId;
+        this.quantity = new Quantity(quantity);
+    }
+
     public OrderLineItem(Long menuId, long quantity) {
         this.menuId = menuId;
         this.quantity = new Quantity(quantity);

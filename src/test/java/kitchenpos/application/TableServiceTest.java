@@ -6,6 +6,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.util.List;
 import java.util.NoSuchElementException;
 import kitchenpos.application.fixture.OrderTableFixtureFactory;
+import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.domain.TableGroup;
@@ -13,7 +15,6 @@ import kitchenpos.domain.TableGroupRepository;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,8 +33,10 @@ class TableServiceTest extends ServiceTest{
     @Autowired
     private TableGroupRepository tableGroupRepository;
 
+    @Autowired
+    private OrderRepository orderRepository;
+
     private OrderTable 주문_테이블1;
-    private OrderTable 손님수5명_테이블;
 
     private TableGroup 단체;
 
@@ -41,7 +44,6 @@ class TableServiceTest extends ServiceTest{
     void before() {
         단체 = tableGroupRepository.save(new TableGroup());
         주문_테이블1 = orderTableRepository.save(OrderTableFixtureFactory.createByGuestNumberWithoutId(3,false));
-        손님수5명_테이블 = orderTableRepository.save(OrderTableFixtureFactory.createByGuestNumberWithoutId(5,false));
 
     }
 
@@ -65,7 +67,7 @@ class TableServiceTest extends ServiceTest{
         List<OrderTableResponse> orderTables = tableService.list();
         //then
         assertThat(orderTables).isNotNull();
-        assertThat(orderTables).hasSize(2);
+        assertThat(orderTables).hasSize(1);
     }
 
     @Test
@@ -83,18 +85,20 @@ class TableServiceTest extends ServiceTest{
     @DisplayName("주문 테이블이 단체 지정 되어 있으면 빈테이블로 지정 할 수 없다.")
     void changeEmptyFailWithTableGroupTest() {
         //given
-        주문_테이블1.attachToTableGroup(단체);
+        OrderTable savedOrdertable = orderTableRepository.save(new OrderTable(단체, 10, false));
 
         //when & then
         assertThatThrownBy(
-                () -> tableService.changeEmpty(주문_테이블1.getId(), OrderTableRequest.of(true))
+                () -> tableService.changeEmpty(savedOrdertable.getId(), OrderTableRequest.of(true))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    @Disabled
     @DisplayName("조리 중(COOKING), 식사 중(MEAL) 상태에 있으면 빈테이블로 지정 할 수 없다.")
     void changeEmptyFailWithStatusTest() {
+
+        Order order = new Order(주문_테이블1.getId());
+        orderRepository.save(order);
 
         //when & then
         assertThatThrownBy(

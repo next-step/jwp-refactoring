@@ -9,4 +9,8 @@ public class OrderFixtureFactory {
     public static Order create(final Long id, final Long orderTableId) {
         return new Order(id, orderTableId);
     }
+
+    public static Order createWithoutId(final Long orderTableId) {
+        return new Order(orderTableId);
+    }
 }

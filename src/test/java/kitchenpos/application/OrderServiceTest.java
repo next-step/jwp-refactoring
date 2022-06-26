@@ -3,15 +3,13 @@ package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.BDDMockito.given;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 import kitchenpos.application.fixture.MenuFixtureFactory;
 import kitchenpos.application.fixture.MenuGroupFixtureFactory;
 import kitchenpos.application.fixture.MenuProductFixtureFactory;
@@ -21,37 +19,47 @@ import kitchenpos.application.fixture.OrderTableFixtureFactory;
 import kitchenpos.application.fixture.ProductFixtureFactory;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.MenuProductRepository;
 import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderLineItemRepository;
 import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.ProductRepository;
+import kitchenpos.dto.OrderLineItemRequest;
+import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 
-@ExtendWith(MockitoExtension.class)
-class OrderServiceTest {
+class OrderServiceTest extends ServiceTest {
 
-    @Mock
+    @Autowired
     private MenuRepository menuRepository;
-    @Mock
+
+    @Autowired
+    private MenuGroupRepository menuGroupRepository;
+
+    @Autowired
+    private MenuProductRepository menuProductRepository;
+
+    @Autowired
     private OrderRepository orderRepository;
-    @Mock
-    private OrderLineItemRepository orderLineItemRepository;
-    @Mock
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
     private OrderTableRepository orderTableRepository;
 
-    @InjectMocks
+    @Autowired
     private OrderService orderService;
 
     private Menu 중식_메뉴;
@@ -68,54 +76,58 @@ class OrderServiceTest {
 
     @BeforeEach
     void before() {
-        중식 = MenuGroupFixtureFactory.create(1L, "메뉴그룹1");
-        중식_메뉴 = MenuFixtureFactory.create(1L, "메뉴1", BigDecimal.valueOf(3000), 중식);
+        중식 = menuGroupRepository.save(MenuGroupFixtureFactory.create("중식"));
+        중식_메뉴 = menuRepository.save(MenuFixtureFactory.createWithoutId("중식_메뉴", BigDecimal.valueOf(3000), 중식));
 
-        짬뽕 = ProductFixtureFactory.create(1L, "상품1", BigDecimal.valueOf(1000));
-        짜장 = ProductFixtureFactory.create(2L, "상품2", BigDecimal.valueOf(2000));
+        짬뽕 = productRepository.save(ProductFixtureFactory.create("짬뽕", BigDecimal.valueOf(1000)));
+        짜장 = productRepository.save(ProductFixtureFactory.create("짜장", BigDecimal.valueOf(2000)));
 
-        중식_메뉴_짬뽕 = MenuProductFixtureFactory.create(1L, 중식_메뉴, 짬뽕, 3);
-        중식_메뉴_짜장 = MenuProductFixtureFactory.create(2L, 중식_메뉴, 짜장, 1);
+        중식_메뉴_짬뽕 = menuProductRepository.save(MenuProductFixtureFactory.createWithoutId(중식_메뉴, 짬뽕, 3));
+        중식_메뉴_짜장 = menuProductRepository.save(MenuProductFixtureFactory.createWithoutId(중식_메뉴, 짜장, 1));
 
         중식_메뉴.addMenuProduct(Arrays.asList(중식_메뉴_짬뽕, 중식_메뉴_짜장));
 
-        주문_테이블 = OrderTableFixtureFactory.create(1L, false);
-        빈주문_테이블 = OrderTableFixtureFactory.create(1L, true);
+        주문_테이블 = orderTableRepository.save(OrderTableFixtureFactory.createByGuestNumberWithoutId(1, false));
+        빈주문_테이블 = orderTableRepository.save(OrderTableFixtureFactory.createByGuestNumberWithoutId(0, true));
 
-        주문1 = OrderFixtureFactory.create(1L, 주문_테이블.getId());
-        주문2 = OrderFixtureFactory.create(2L, 주문_테이블.getId());
-        중식_주문_항목 = OrderLineItemFixtureFactory.create(1L, 주문1, 중식_메뉴.getId(), 1);
+        주문1 = orderRepository.save(OrderFixtureFactory.createWithoutId(주문_테이블.getId()));
+        주문2 = orderRepository.save(OrderFixtureFactory.createWithoutId(주문_테이블.getId()));
+        중식_주문_항목 = OrderLineItemFixtureFactory.createWithoutId(주문1, 중식_메뉴.getId(), 1);
 
-        주문1.setOrderLineItems(Arrays.asList(중식_주문_항목));
-        주문2.setOrderLineItems(Arrays.asList(중식_주문_항목));
+        주문1.addOrderLineItems(Arrays.asList(중식_주문_항목));
+        주문2.addOrderLineItems(Arrays.asList(중식_주문_항목));
     }
 
     @Test
     @DisplayName("생성하려는 주문에서 주문 항목이 비어있으면 주문을 생성 할 수 없다.")
     void createFailWithEmptyTest() {
         //given
-        Order order = new Order(1L, 주문_테이블.getId());
-        order.setOrderLineItems(Collections.emptyList());
+        Order order = new Order(주문_테이블.getId(), Collections.emptyList());
 
         //when & then
         assertThatThrownBy(
-                () -> orderService.create(order)
+                () -> orderService.create(
+                        OrderRequest.of(order.getOrderTableId(), toOrderLineItemRequests(order.getOrderLineItems())))
         ).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    private List<OrderLineItemRequest> toOrderLineItemRequests(List<OrderLineItem> orderLineItems) {
+        return orderLineItems.stream().
+                map(o -> OrderLineItemRequest.of(o.getMenuId(), o.getQuantity().getValue()))
+                .collect(Collectors.toList());
     }
 
     @Test
     @DisplayName("생성하려는 주문에서 주문 항목의 메뉴가 시스템에 등록 되어 있지 않으면 주문을 생성 할 수 없다.")
     void createFailWithMenuNotExistTest() {
-
         //given
-        Order order = new Order(1L, 주문_테이블.getId());
-        order.setOrderLineItems(Arrays.asList(중식_주문_항목));
-
-        given(menuRepository.countByIdIn(anyList())).willReturn(0L);
+        OrderLineItem orderLineItem = new OrderLineItem(100L, 100);
+        주문1.addOrderLineItems(Arrays.asList(orderLineItem));
 
         //when & then
         assertThatThrownBy(
-                () -> orderService.create(order)
+                () -> orderService.create(
+                        OrderRequest.of(주문1.getOrderTableId(), toOrderLineItemRequests(주문1.getOrderLineItems())))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -123,102 +135,81 @@ class OrderServiceTest {
     @DisplayName("생성하려는 주문에서 주문 테이블이 시스템에 등록 되어 있지 않으면 주문을 생성 할 수 없다.")
     void createFailWithOrderNotExistTest() {
         //given
-        Order order = new Order(1L, 주문_테이블.getId());
-        order.setOrderLineItems(Arrays.asList(중식_주문_항목));
-
-        given(menuRepository.countByIdIn(Arrays.asList(중식_메뉴.getId()))).willReturn(1L);
-        given(orderTableRepository.findById(order.getOrderTableId())).willReturn(Optional.empty());
+        OrderTable orderTable = new OrderTable(100L, 10, false);
 
         //when & then
         assertThatThrownBy(
-                () -> orderService.create(order)
-        ).isInstanceOf(IllegalArgumentException.class);
+                () -> orderService.create(
+                        OrderRequest.of(orderTable.getId(), toOrderLineItemRequests(주문1.getOrderLineItems())))
+        ).isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
     @DisplayName("생성하려는 주문에서 주문 테이블이 빈주문 테이블이면 생성 할 수 없다.")
     void createFailWithEmptyOrderTableTest() {
         //given
-        Order order = new Order(1L, 빈주문_테이블.getId());
-        order.setOrderLineItems(Arrays.asList(중식_주문_항목));
-
-        given(menuRepository.countByIdIn(Arrays.asList(중식_메뉴.getId()))).willReturn(1L);
-        given(orderTableRepository.findById(order.getOrderTableId())).willReturn(Optional.of(빈주문_테이블));
+        Order order = new Order(10L, 빈주문_테이블.getId());
+        order.addOrderLineItems(Arrays.asList(중식_주문_항목));
 
         //when & then
         assertThatThrownBy(
-                () -> orderService.create(order)
+                () -> orderService.create(
+                        OrderRequest.of(order.getOrderTableId(), toOrderLineItemRequests(order.getOrderLineItems())))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("주문을 생성 할 수 있다.")
     void createTest() {
-        //given
-        given(menuRepository.countByIdIn(Arrays.asList(중식_메뉴.getId()))).willReturn(1L);
-        given(orderTableRepository.findById(주문_테이블.getId())).willReturn(Optional.of(주문_테이블));
-        given(orderRepository.save(any(Order.class))).willReturn(주문1);
-        given(orderLineItemRepository.save(any(OrderLineItem.class))).willReturn(중식_주문_항목);
-
         //when
-        Order order = orderService.create(주문1);
+        OrderResponse orderResponse = orderService.create(
+                OrderRequest.of(주문1.getOrderTableId(), toOrderLineItemRequests(주문1.getOrderLineItems()))
+        );
 
         //then
-        assertThat(order).isEqualTo(주문1);
-        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
+        assertThat(orderResponse).isNotNull();
+        assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
     }
 
     @Test
     @DisplayName("주문 목록을 조회 할 수 있다.")
     void listTest() {
-        //given
-        given(orderRepository.findAll()).willReturn(Arrays.asList(주문1));
-
         //when
-        List<Order> orders = orderService.list();
+        List<OrderResponse> orders = orderService.list();
 
         //then
-        assertThat(orders).containsExactly(주문1);
+        assertThat(orders).hasSize(2);
     }
 
     @Test
     @DisplayName("주문이 시스템에 등록 되어 있지 않으면 변경 할 수 없다.")
     void changeOrderStatusFailWithOrderNotExistTest() {
-        //given
-        given(orderRepository.findById(주문1.getId())).willThrow(IllegalArgumentException.class);
-
         //when & then
         assertThatThrownBy(
-                () -> orderService.changeOrderStatus(주문1.getId(), 주문1)
-        ).isInstanceOf(IllegalArgumentException.class);
+                () -> orderService.changeOrderStatus(1000L, OrderRequest.of(주문_테이블.getId(), OrderStatus.MEAL.name()))
+        ).isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
     @DisplayName("주문이 완료 상태이면 변경 할 수 없다.")
     void changeOrderStatusFailWithCompleteStatusTest() {
         //given
-        주문1.setOrderStatus(OrderStatus.COMPLETION);
-        given(orderRepository.findById(주문1.getId())).willReturn(Optional.of(주문1));
+        orderService.changeOrderStatus(주문1.getId(), OrderRequest.of(주문_테이블.getId(), OrderStatus.COMPLETION.name()));
 
         //when & then
         assertThatThrownBy(
-                () -> orderService.changeOrderStatus(주문1.getId(), 주문2)
+                () -> orderService.changeOrderStatus(주문1.getId(), OrderRequest.of(주문_테이블.getId(), OrderStatus.MEAL.name()))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("주문의 상태를 변경 할 수 있다.")
     void changeOrderStatusTest() {
-
-        //given
-        주문1.setOrderStatus(OrderStatus.COOKING);
-        주문2.setOrderStatus(OrderStatus.MEAL);
-        given(orderRepository.findById(주문1.getId())).willReturn(Optional.of(주문1));
-
         //when
-        Order changedOrder = orderService.changeOrderStatus(주문1.getId(), 주문2);
+        OrderResponse orderResponse = orderService.changeOrderStatus(주문1.getId(),
+                OrderRequest.of(주문_테이블.getId(), OrderStatus.MEAL.name()));
 
         //then
-        assertThat(changedOrder).isEqualTo(주문1);
+        assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
     }
 }

@@ -53,6 +53,12 @@ public class Order {
         this.orderStatus = OrderStatus.COOKING;
     }
 
+    public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        this.orderTableId = orderTableId;
+        this.orderStatus = OrderStatus.COOKING;
+        this.orderLineItems = orderLineItems;
+    }
+
     public void addOrderLineItems(List<OrderLineItem> orderLineItems) {
         validateOrderLineItemsEmpty(orderLineItems);
         for (OrderLineItem orderLineItem : orderLineItems) {
@@ -81,16 +87,9 @@ public class Order {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
 
     public Long getOrderTableId() {
         return orderTableId;
-    }
-
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
     }
 
     public OrderStatus getOrderStatus() {
@@ -108,16 +107,9 @@ public class Order {
         return orderedTime;
     }
 
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
-    }
 
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
-    }
-
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
     }
 
 }

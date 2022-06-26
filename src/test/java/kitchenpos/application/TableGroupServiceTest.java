@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
 import kitchenpos.application.fixture.OrderTableFixtureFactory;
+import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
@@ -14,7 +15,6 @@ import kitchenpos.domain.TableGroupRepository;
 import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +61,6 @@ class TableGroupServiceTest extends ServiceTest {
     @Test
     @DisplayName("테이블 그룹을 지정 할 수 있다.")
     void createTest() {
-
         //when
         TableGroupResponse response = tableGroupService.create(
                 TableGroupRequest.from(Arrays.asList(주문_테이블1.getId(), 주문_테이블2.getId())));
@@ -71,13 +70,17 @@ class TableGroupServiceTest extends ServiceTest {
 
 
     @Test
-    @Disabled
     @DisplayName("주문 상태가 조리중(COOKING), 식사중(MEAL)인 경우에는 해제 할 수 없다.")
     void ungroupFailWithStatusTest() {
 
+        Order order = new Order(주문_테이블1.getId());
+        orderRepository.save(order);
+        TableGroupResponse response = tableGroupService.create(
+                TableGroupRequest.from(Arrays.asList(주문_테이블1.getId(), 주문_테이블2.getId())));
+
         //when & then
         assertThatThrownBy(
-                () -> tableGroupService.ungroup(단체.getId())
+                () -> tableGroupService.ungroup(response.getId())
         ).isInstanceOf(IllegalArgumentException.class);
     }
 

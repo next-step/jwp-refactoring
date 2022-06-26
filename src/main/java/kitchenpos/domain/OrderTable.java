@@ -44,6 +44,12 @@ public class OrderTable {
         this.empty = new Empty(empty);
     }
 
+    public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
+        this.tableGroup = tableGroup;
+        this.numberOfGuests = new NumberOfGuests(numberOfGuests);
+        this.empty = new Empty(empty);
+    }
+
     public OrderTable(Long id, int numberOfGuests, boolean empty) {
         this.id = id;
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
@@ -83,7 +89,7 @@ public class OrderTable {
     }
 
     public void switchEmpty(boolean empty) {
-        if (isInTableGroup()){
+        if (isInTableGroup()) {
             throw new IllegalArgumentException("빈테이블로 지정 할 수 없습니다. 단체 지정이 되어 있는 주문 테이블 입니다.");
         }
         this.empty = new Empty(empty);

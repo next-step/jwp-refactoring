@@ -10,4 +10,8 @@ public class OrderLineItemFixtureFactory {
     public static OrderLineItem create(final Long seq, final Order order, final Long menuId, final long quantity) {
         return new OrderLineItem(seq, order, menuId, quantity);
     }
+
+    public static OrderLineItem createWithoutId(final Order order, final Long menuId, final long quantity) {
+        return new OrderLineItem(order, menuId, quantity);
+    }
 }
