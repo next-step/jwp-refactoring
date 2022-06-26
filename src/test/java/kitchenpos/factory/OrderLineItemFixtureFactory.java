@@ -1,6 +1,6 @@
 package kitchenpos.factory;
 
-import kitchenpos.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItem;
 
 public class OrderLineItemFixtureFactory {
     public static OrderLineItem createOrderLineItem(Long seq, Long orderId, Long menuId, long quantity) {

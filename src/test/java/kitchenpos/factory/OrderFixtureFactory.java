@@ -1,6 +1,6 @@
 package kitchenpos.factory;
 
-import kitchenpos.domain.Order;
+import kitchenpos.order.domain.Order;
 
 import java.time.LocalDateTime;
 
