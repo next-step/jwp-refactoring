@@ -3,6 +3,7 @@ package kitchenpos.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.dto.TableRequest;
 import kitchenpos.dto.TableResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,23 +21,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("주문 테이블 관련 기능")
 public class TableAcceptanceTest extends AcceptanceTest {
 
-    TableRequest tableRequest1;
-    TableRequest tableRequest2;
+    TableRequest 빈_테이블_요청1;
+    TableRequest 빈_테이블_요청2;
+    TableRequest 테이블_요청;
 
     @BeforeEach
     public void init() {
         super.init();
 
         // given
-        tableRequest1 = new TableRequest(0, false);
-        tableRequest2 = new TableRequest(0, false);
+        빈_테이블_요청1 = new TableRequest(0, true);
+        빈_테이블_요청2 = new TableRequest(0, true);
+        테이블_요청 = new TableRequest(0, false);
     }
 
     @DisplayName("주문 테이블을 생성한다.")
     @Test
     void 생성() {
         // when
-        ExtractableResponse<Response> response = 주문_테이블_생성_요청(tableRequest1);
+        ExtractableResponse<Response> response = 주문_테이블_생성_요청(빈_테이블_요청1);
 
         // then
         주문_테이블_생성됨(response);
@@ -46,8 +49,8 @@ public class TableAcceptanceTest extends AcceptanceTest {
     @Test
     void 목록_조회() {
         // given
-        ExtractableResponse<Response> createResponse1 = 주문_테이블_생성_요청(tableRequest1);
-        ExtractableResponse<Response> createResponse2 = 주문_테이블_생성_요청(tableRequest2);
+        ExtractableResponse<Response> createResponse1 = 주문_테이블_생성_요청(빈_테이블_요청1);
+        ExtractableResponse<Response> createResponse2 = 주문_테이블_생성_요청(테이블_요청);
 
         // when
         ExtractableResponse<Response> response = 주문_테이블_목록_조회_요청();
@@ -61,7 +64,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
     @Test
     void 빈_테이블_설정() {
         // given
-        ExtractableResponse<Response> createResponse = 주문_테이블_생성_요청(tableRequest1);
+        ExtractableResponse<Response> createResponse = 주문_테이블_생성_요청(테이블_요청);
 
         // when
         ExtractableResponse<Response> response = 빈_테이블_설정_변경_요청(createResponse, true);
@@ -70,17 +73,72 @@ public class TableAcceptanceTest extends AcceptanceTest {
         빈_테이블_설정됨(response);
     }
 
+    @DisplayName("단체 지정되어 빈 테이블 설정에 실패한다.")
+    @Test
+    void 빈_테이블_설정_예외_단체_지정됨() {
+        // given
+        ExtractableResponse<Response> createResponse1 = 주문_테이블_생성_요청(빈_테이블_요청1);
+        ExtractableResponse<Response> createResponse2 = 주문_테이블_생성_요청(빈_테이블_요청2);
+        TableGroupAcceptanceTest.주문_테이블들_단체_지정되어_있음(createResponse1, createResponse2);
+
+        // when
+        ExtractableResponse<Response> response = 빈_테이블_설정_변경_요청(createResponse1, true);
+
+        // then
+        빈_테이블_설정_실패됨(response);
+    }
+
+    @DisplayName("주문 상태가 조리 혹은 식사라서 빈 테이블 설정에 실패한다.")
+    @Test
+    void 빈_테이블_설정_예외_주문_상태_오류() {
+        // given
+        ExtractableResponse<Response> createResponse = 주문_테이블_생성_요청(테이블_요청);
+        OrderAcceptanceTest.주문_생성되어_있음(createResponse, OrderStatus.MEAL);
+
+        // when
+        ExtractableResponse<Response> response = 빈_테이블_설정_변경_요청(createResponse, true);
+
+        // then
+        빈_테이블_설정_실패됨(response);
+    }
+
     @DisplayName("주문 테이블의 손님 수를 변경한다.")
     @Test
     void 손님_수_변경() {
         // given
-        ExtractableResponse<Response> createResponse = 주문_테이블_생성_요청(tableRequest1);
+        ExtractableResponse<Response> createResponse = 주문_테이블_생성_요청(테이블_요청);
 
         // when
         ExtractableResponse<Response> response = 손님_수_변경_요청(createResponse, 7);
 
         // then
         손님_수_변경됨(response);
+    }
+
+    @DisplayName("손님 수가 0 미만이라 주문 테이블 손님 수 변경에 실패한다.")
+    @Test
+    void 손님_수_변경_예외_손님_수_오류() {
+        // given
+        ExtractableResponse<Response> createResponse = 주문_테이블_생성_요청(테이블_요청);
+
+        // when
+        ExtractableResponse<Response> response = 손님_수_변경_요청(createResponse, -5);
+
+        // then
+        손님_수_변경_실패됨(response);
+    }
+
+    @DisplayName("빈 테이블이라 주문 테이블 손님 수 변경에 실패한다.")
+    @Test
+    void 손님_수_변경_예외_빈_테이블() {
+        // given
+        ExtractableResponse<Response> createResponse = 주문_테이블_생성_요청(빈_테이블_요청1);
+
+        // when
+        ExtractableResponse<Response> response = 손님_수_변경_요청(createResponse, 7);
+
+        // then
+        손님_수_변경_실패됨(response);
     }
 
     public static ExtractableResponse<Response> 주문_테이블_생성되어_있음(
@@ -161,7 +219,15 @@ public class TableAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
+    public static void 빈_테이블_설정_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
     public static void 손님_수_변경됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 손님_수_변경_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }

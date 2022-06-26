@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -51,6 +53,14 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
 
         // then
         단체_지정_해제됨(response);
+    }
+
+    public static ExtractableResponse<Response> 주문_테이블들_단체_지정되어_있음(ExtractableResponse<Response>... responses) {
+        List<Long> tableIds = Arrays.stream(responses)
+                .map(response -> response.as(TableResponse.class))
+                .map(table -> table.getId())
+                .collect(Collectors.toList());
+        return 주문_테이블들_단체_지정_요청(new TableGroupRequest(tableIds));
     }
 
     public static ExtractableResponse<Response> 주문_테이블들_단체_지정_요청(TableGroupRequest tableGroup) {
