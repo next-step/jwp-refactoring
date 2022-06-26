@@ -11,8 +11,16 @@ class MenuTest {
     @DisplayName("메뉴가 같은지 검증")
     void verifyEqualsMenu() {
         final MenuGroup menuGroup = new MenuGroup();
-        final Menu menu = new Menu(1L, "메뉴이름", Price.of(10_000L), menuGroup, null);
+        final Menu menu = new Menu.Builder("메뉴이름")
+                .setId(1L)
+                .setPrice(Price.of(10_000L))
+                .setMenuGroup(menuGroup)
+                .build();
 
-        assertThat(menu).isEqualTo(new Menu(1L, "메뉴이름", Price.of(10_000L), menuGroup, null));
+        assertThat(menu).isEqualTo(new Menu.Builder("메뉴이름")
+                .setId(1L)
+                .setPrice(Price.of(10_000L))
+                .setMenuGroup(menuGroup)
+                .build());
     }
 }

@@ -65,7 +65,11 @@ class OrderAcceptanceTest extends AcceptanceTest {
         final OrderTable orderTable = new OrderTable(1L, null, GuestNumber.of(5), false);
         final Orders order = new Orders(1L, orderTable, OrderStatus.COOKING, LocalDateTime.now(), null);
         final MenuGroup menuGroup = new MenuGroup(1L, "후라이드세트");
-        final Menu menu = new Menu(1L, "후라이드", Price.of(16_000L), menuGroup);
+        final Menu menu = new Menu.Builder("후라이드")
+                .setId(1L)
+                .setPrice(Price.of(16_000L))
+                .setMenuGroup(menuGroup)
+                .build();
         final OrderLineItem orderLineItem = new OrderLineItem(1L, order, menu, Quantity.of(2L));
         final OrderResponse 예상된_주문_결과 = new OrderResponse(1L, 주문_테이블_결과, OrderStatus.COOKING.name(), null, Arrays.asList(orderLineItem.toOrderLineItemResponse()));
 

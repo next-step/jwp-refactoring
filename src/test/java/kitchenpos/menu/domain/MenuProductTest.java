@@ -12,7 +12,10 @@ class MenuProductTest {
     @DisplayName("메뉴 상품이 같은지 검증")
     void verifyEqualsMenuProduct() {
         final Product product = new Product(null, null, Price.of(100L));
-        final Menu menu = new Menu(1L, null, Price.of(100L), null, null);
+        final Menu menu = new Menu.Builder("메뉴")
+                .setId(1L)
+                .setPrice(Price.of(100L))
+                .build();
         final MenuProduct menuProduct = new MenuProduct(1L, menu, product, 1L);
 
         assertThat(menuProduct).isEqualTo(new MenuProduct(1L, menu, product, 1L));

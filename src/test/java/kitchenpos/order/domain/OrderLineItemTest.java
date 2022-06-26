@@ -14,7 +14,9 @@ class OrderLineItemTest {
     @Test
     @DisplayName("주문항목 객체가 같은지 검증")
     void verifyEqualsOrderLineItem() {
-        final Menu menu = new Menu(null, "menu", Price.of(1_000L), null, null);
+        final Menu menu = new Menu.Builder("menu")
+                .setPrice(Price.of(1_000L))
+                .build();
         final OrderTable orderTable = new OrderTable(null, null, GuestNumber.of(2), false);
         final Orders order = new Orders(null, orderTable, null, null, null);
         final OrderLineItem orderLineItem = new OrderLineItem(1L, order, menu, Quantity.of(1L));

@@ -37,6 +37,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
+    private MenuGroup menuGroup;
+    private Menu menu;
+
+
     private OrderService orderService;
 
     @Mock
@@ -51,14 +55,19 @@ class OrderServiceTest {
     @BeforeEach
     void setUp() {
         orderService = new OrderService(menuRepository, orderRepository, orderTableRepository);
+
+        menuGroup = new MenuGroup(1L, "메뉴그룹");
+        menu = new Menu.Builder("메뉴")
+                .setId(1L)
+                .setPrice(Price.of(1_000L))
+                .setMenuGroup(menuGroup)
+                .build();
     }
 
     @Test
     @DisplayName("주문을 생성한다.")
     void createOrder() {
         // given
-        final MenuGroup menuGroup = new MenuGroup(1L, "메뉴그룹");
-        final Menu menu = new Menu(1L, "메뉴", Price.of(1_000L), menuGroup);
         final OrderTable orderTable = new OrderTable(1L, null, GuestNumber.of(5), false);
         final OrderLineItem orderLineItem = new OrderLineItem(1L, null, menu, Quantity.of(1L));
         final Orders order = new Orders(1L, orderTable, OrderStatus.COOKING, null, Arrays.asList(orderLineItem));
@@ -117,9 +126,7 @@ class OrderServiceTest {
     @DisplayName("주문 내역을 조회할 수 있다.")
     void searchOrders() {
         // given
-        final MenuGroup menuGroup = new MenuGroup(1L, "메뉴그룹");
         final OrderTable orderTable = new OrderTable(1L, null, GuestNumber.of(5), false);
-        final Menu menu = new Menu(1L, "메뉴", Price.of(1_000L), menuGroup);
         final OrderLineItem orderLineItem = new OrderLineItem(1L, null, menu, Quantity.of(1L));
         final Orders order = new Orders(1L, orderTable, OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(orderLineItem));
         when(orderRepository.findAll()).thenReturn(Arrays.asList(order));
@@ -133,9 +140,7 @@ class OrderServiceTest {
     @DisplayName("주문의 상태를 변경할 수 있다.")
     void changeOrderStatus() {
         // given
-        final MenuGroup menuGroup = new MenuGroup(1L, "메뉴그룹");
         final OrderTable orderTable = new OrderTable(1L, null, GuestNumber.of(5), false);
-        final Menu menu = new Menu(1L, "메뉴", Price.of(1_000L), menuGroup);
         final OrderLineItem orderLineItem = new OrderLineItem(1L, null, menu, Quantity.of(1L));
         final Orders order = new Orders(1L, orderTable, OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(orderLineItem));
         when(orderRepository.findById(any())).thenReturn(Optional.of(order));

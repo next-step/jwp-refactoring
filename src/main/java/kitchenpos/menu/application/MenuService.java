@@ -33,7 +33,10 @@ public class MenuService {
     public MenuResponse create(final MenuRequest menuRequest) {
         final MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
                 .orElseThrow(() -> new NotExistException("메뉴 그룹이 존재하지 않습니다."));
-        final Menu menu = new Menu(menuRequest.getName(), Price.of(menuRequest.getPrice()), menuGroup);
+        final Menu menu = new Menu.Builder(menuRequest.getName())
+                .setPrice(Price.of(menuRequest.getPrice()))
+                .setMenuGroup(menuGroup)
+                .build();
 
         for (MenuProductRequest menuProduct : menuRequest.getMenuProducts()) {
             final Product persistProduct = productRepository.findById(menuProduct.getProductId())

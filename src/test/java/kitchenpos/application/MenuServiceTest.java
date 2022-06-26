@@ -58,7 +58,13 @@ class MenuServiceTest {
         product = new Product(1L, "후라이드", Price.of(500L));
         menuGroup = new MenuGroup(1L, "후라이드세트");
         menuProducts = new MenuProducts(Arrays.asList(menuProduct));
-        menu = new Menu(1L, "후라이드+후라이드", Price.of(1_000L), menuGroup, menuProducts);
+        menu = new Menu.Builder("후라이드+후라이드")
+                .setId(1L)
+                .setPrice(Price.of(1_000L))
+                .setMenuGroup(menuGroup)
+                .setMenuProducts(menuProducts)
+                .build();
+
         menuProduct = new MenuProduct(1L, menu, product, 2L);
         expected = new MenuResponse(null, "후라이드+후라이드", Price.of(1_000L), menuGroup.toMenuGroupResponse(),
                 menuProducts.get());

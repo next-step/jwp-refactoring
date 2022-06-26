@@ -38,27 +38,6 @@ public class Menu {
     protected Menu() {
     }
 
-    public Menu(String name, Price price, MenuGroup menuGroup) {
-        this.name = name;
-        this.price = price;
-        this.menuGroup = menuGroup;
-    }
-
-    public Menu(Long id, String name, Price price, MenuGroup menuGroup) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.menuGroup = menuGroup;
-    }
-
-    public Menu(Long id, String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.menuGroup = menuGroup;
-        this.menuProducts = menuProducts;
-    }
-
     public void addProduct(Product product, Long quantity) {
         final MenuProduct menuProduct = new MenuProduct(this, product, quantity);
         this.menuProducts.add(menuProduct);
@@ -90,12 +69,60 @@ public class Menu {
         }
         Menu menu = (Menu) o;
         return Objects.equals(id, menu.id) && Objects.equals(name, menu.name)
-                && Objects.equals(price, menu.price) && Objects.equals(menuGroup, menu.menuGroup)
-                && Objects.equals(menuProducts, menu.menuProducts);
+                && Objects.equals(price, menu.price);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, price, menuGroup, menuProducts);
+        return Objects.hash(id, name, price);
+    }
+
+    Menu(Builder builder) {
+        this.id = builder.id;
+        this.name = builder.name;
+        this.price = builder.price;
+        this.menuGroup = builder.menuGroup;
+        this.menuProducts = builder.menuProducts;
+    }
+
+    public static class Builder {
+        private Long id;
+        private String name;
+        private Price price;
+        private MenuGroup menuGroup;
+        private MenuProducts menuProducts = new MenuProducts();
+
+        public Builder(String name) {
+            this.name = name;
+        }
+
+        public Builder setId(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder setName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder setPrice(Price price) {
+            this.price = price;
+            return this;
+        }
+
+        public Builder setMenuGroup(MenuGroup menuGroup) {
+            this.menuGroup = menuGroup;
+            return this;
+        }
+
+        public Builder setMenuProducts(MenuProducts menuProducts) {
+            this.menuProducts = menuProducts;
+            return this;
+        }
+
+        public Menu build() {
+            return new Menu(this);
+        }
     }
 }
