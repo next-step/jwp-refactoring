@@ -5,17 +5,14 @@ import static kitchenpos.helper.TableFixtures.테이블_만들기;
 import static kitchenpos.helper.TableFixtures.테이블_요청_만들기;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
 
 import java.util.Optional;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,11 +28,13 @@ class TableServiceUnitTest {
 
     @Mock
     private OrderTableRepository orderTableRepository;
+    @Mock
+    private OrderRepository orderRepository;
     private TableService tableService;
 
     @BeforeEach
     void setUp() {
-        tableService = new TableService(orderTableRepository);
+        tableService = new TableService(orderTableRepository, orderRepository);
     }
 
     @DisplayName("테이블을 생성한다.")
@@ -64,8 +63,8 @@ class TableServiceUnitTest {
         long requestTableId = 1L;
         OrderTableRequest request = 테이블_요청_만들기(3, true);
 
-        given(orderTableRepository.findById(requestTableId))
-                .willReturn(Optional.of(테이블_만들기(1L, 0, true)));
+        given(orderTableRepository.findById(requestTableId)).willReturn(Optional.of(테이블_만들기(1L, 0, true)));
+        given(orderTableRepository.findTableGroupId(requestTableId)).willReturn(null);
 
         //when
         OrderTableResponse result = tableService.changeEmpty(requestTableId, request);
@@ -82,29 +81,14 @@ class TableServiceUnitTest {
         long requestTableId = 1;
         OrderTableRequest request = 테이블_요청_만들기(3, true);
         OrderTable orderTable = 테이블_만들기(requestTableId, request.getNumberOfGuests(), request.getEmpty());
-        orderTable.setTableGroup(new TableGroup(1L, null, null));
-        given(orderTableRepository.findById(requestTableId)).willReturn(Optional.of(orderTable));
+        given(orderTableRepository.findById(requestTableId)).willReturn(Optional.of(테이블_만들기(1L, 0, true)));
+        given(orderTableRepository.findTableGroupId(requestTableId)).willReturn(1L);
 
         //when then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableService.changeEmpty(requestTableId, request));
     }
 
-    @DisplayName("주문 상태가 조리, 식사 단계인 경우 빈 테이블 여부 업데이트 할 수 없다.")
-    @Test
-    void changeEmpty_order_stats_cooking_or_meal() {
-        //given
-        long requestTableId = 1;
-        OrderTableRequest request = 테이블_요청_만들기(3, true);
-        OrderTable orderTable = mock(OrderTable.class);
-        given(orderTableRepository.findById(requestTableId)).willReturn(Optional.of(orderTable));
-        doThrow(new IllegalStateException()).when(orderTable).checkPossibleChangeEmpty();
-
-        //when then
-        assertThatIllegalStateException()
-                .isThrownBy(() -> tableService.changeEmpty(requestTableId, request));
-
-    }
 
     @DisplayName("방문 손님 수를 업데이트 한다.")
     @Test

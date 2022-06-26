@@ -7,6 +7,7 @@ import static kitchenpos.helper.TableGroupFixtures.테이블_그룹_요청_만�
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -45,7 +46,7 @@ class TableGroupServiceTest {
         TableGroupRequest request = 테이블_그룹_요청_만들기(Arrays.asList(emptyTable1, emptyTable2));
 
         //when
-        TableGroupResponse result = tableGroupService.create(request);
+        TableGroupResponse result = tableGroupService.create(request, LocalDateTime.now());
 
         //then
         List<OrderTableResponse> orderTables = result.getOrderTables();
@@ -65,9 +66,9 @@ class TableGroupServiceTest {
 
         //when then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.create(request_single));
+                .isThrownBy(() -> tableGroupService.create(request_single, LocalDateTime.now()));
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.create(request_empty));
+                .isThrownBy(() -> tableGroupService.create(request_empty, LocalDateTime.now()));
     }
 
 
@@ -81,7 +82,7 @@ class TableGroupServiceTest {
 
         //when then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.create(request));
+                .isThrownBy(() -> tableGroupService.create(request, LocalDateTime.now()));
     }
 
 
@@ -96,7 +97,7 @@ class TableGroupServiceTest {
 
         //when then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.create(request));
+                .isThrownBy(() -> tableGroupService.create(request, LocalDateTime.now()));
     }
 
 
@@ -107,13 +108,12 @@ class TableGroupServiceTest {
         OrderTableRequest emptyTable1 = 테이블_요청_만들기(3L);
         OrderTableRequest emptyTable2 = 테이블_요청_만들기(4L);
         OrderTableRequest emptyTable3 = 테이블_요청_만들기(5L);
-        TableGroupRequest request1 = 테이블_그룹_요청_만들기(Arrays.asList(emptyTable1, emptyTable2));
-        tableGroupService.create(request1);
+        tableGroupService.create(테이블_그룹_요청_만들기(Arrays.asList(emptyTable1, emptyTable2)), LocalDateTime.now());
         TableGroupRequest request2 = 테이블_그룹_요청_만들기(Arrays.asList(emptyTable1, emptyTable3));
 
         //when then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.create(request2));
+                .isThrownBy(() -> tableGroupService.create(request2, LocalDateTime.now()));
     }
 
     @DisplayName("단체 지정을 해제 한다.")
@@ -122,16 +122,14 @@ class TableGroupServiceTest {
         //given
         OrderTableRequest emptyTable1 = 테이블_요청_만들기(5L);
         OrderTableRequest emptyTable2 = 테이블_요청_만들기(6L);
-        TableGroupResponse request = tableGroupService.create(테이블_그룹_요청_만들기(Arrays.asList(emptyTable1, emptyTable2)));
+        TableGroupResponse request = tableGroupService.create(테이블_그룹_요청_만들기(Arrays.asList(emptyTable1, emptyTable2)),LocalDateTime.now());
 
         //when
         tableGroupService.ungroup(request.getId());
 
         //then
-        OrderTable order1 = orderTableRepository.findById(5L).orElseThrow(IllegalArgumentException::new);
-        OrderTable order2 = orderTableRepository.findById(6L).orElseThrow(IllegalArgumentException::new);
-        assertThat(order1.getTableGroup()).isNull();
-        assertThat(order2.getTableGroup()).isNull();
+        assertThat(orderTableRepository.findTableGroupId(5L)).isNull();
+        assertThat(orderTableRepository.findTableGroupId(6L)).isNull();
     }
 
     @DisplayName("주문 상태가 조리, 식사인 경우가 있으면 단체 지정 해제 할 수 없다.")
@@ -140,8 +138,9 @@ class TableGroupServiceTest {
         //given
         OrderTableRequest emptyTable1 = 테이블_요청_만들기(7L);
         OrderTableRequest emptyTable2 = 테이블_요청_만들기(8L);
-        TableGroupResponse request = tableGroupService.create(테이블_그룹_요청_만들기(Arrays.asList(emptyTable1, emptyTable2)));
+        TableGroupResponse request = tableGroupService.create(테이블_그룹_요청_만들기(Arrays.asList(emptyTable1, emptyTable2)), LocalDateTime.now());
         OrderTable orderTable = orderTableRepository.findById(emptyTable1.getId()).orElseThrow(IllegalArgumentException::new);
+
         orderRepository.save(주문_만들기(request.getId(), OrderStatus.MEAL, orderTable));
         orderRepository.save(주문_만들기(request.getId(), OrderStatus.COOKING, orderTable));
 

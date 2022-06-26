@@ -6,9 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import kitchenpos.order.domain.Order;
+import kitchenpos.order.consts.OrderStatus;
 import kitchenpos.order.domain.Orders;
 
 @Entity
@@ -20,13 +18,13 @@ public class OrderTable {
     private NumberOfGuest numberOfGuests;
     @Column(nullable = false)
     private TableEmpty empty;
-    @ManyToOne
-    @JoinColumn(name = "table_group_id")
-    private TableGroup tableGroup;
-    @Embedded
-    private Orders orders = new Orders();
 
     protected OrderTable() {
+    }
+
+    public OrderTable(NumberOfGuest numberOfGuests, TableEmpty empty) {
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
     }
 
     public OrderTable(Long id, NumberOfGuest numberOfGuests, TableEmpty empty) {
@@ -35,74 +33,41 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public void registerOrder(Order order) {
-        validateOrderTable();
-        orders.registerOrder(order);
-        order.setOrderTable(this);
-    }
-
-    private void validateOrderTable() {
-        if (empty.isEmptyTable()) {
-            throw new IllegalArgumentException("[ERROR] 빈테이블에는 주문등록을 할 수 없습니다.");
-        }
-    }
-
-    public void ungroupingTableGroup() {
-        orders.checkPossibleUngroupingOrderStatus();
-        validateTableGroup();
-        tableGroup = null;
-    }
-
-    private void validateTableGroup() {
-        if (tableGroup == null) {
-            throw new IllegalArgumentException("[ERROR] 단체 지정이 되어있지 않아 해제할 수 없습니다.");
-        }
-    }
-
-    public void assignTableGroup(TableGroup tableGroup) {
-        checkPossibleGrouping();
-        this.tableGroup = tableGroup;
-        empty.changeOrderTable();
-    }
-
-    private void checkPossibleGrouping() {
-        if (tableGroup != null) {
-            throw new IllegalArgumentException("[ERROR] 이미 단체지정이 되어있습니다.");
-        }
-        if (empty.isOrderTable()) {
-            throw new IllegalArgumentException("[ERROR] 빈 테이블이 아닌 경우 단체 지정 할 수 없습니다.");
-        }
-    }
-
-    public void checkPossibleChangeEmpty() {
-        if (tableGroup != null) {
-            throw new IllegalArgumentException("[ERROR] 단체 지정이 되어있어 업데이트 할 수 없습니다.");
-        }
-        orders.checkPossibleChangeEmpty();
-    }
-
-    public void updateNumberOfGuests(NumberOfGuest numberOfGuests) {
-        validateUpdateNumberOfGuests();
-        orders.checkPossibleChangeEmpty();
+    public void changeNumberOfGuests(NumberOfGuest numberOfGuests) {
+        validateChangeNumberOfGuests();
         this.numberOfGuests = numberOfGuests;
     }
 
-    private void validateUpdateNumberOfGuests() {
-        if (empty.isEmptyTable()) {
-            throw new IllegalArgumentException("[ERROR] 빈 테이블은 방문 손님 수를 변경할 수 없습니다.");
-        }
+    public void changeOrderTable() {
+        empty = new TableEmpty(false);
     }
 
     public boolean isEmptyTable() {
         return empty.isEmpty();
     }
 
-    public void updateEmpty(TableEmpty empty) {
+    public boolean isOrderTable() {
+        return !empty.isEmpty();
+    }
+
+    public void changEmpty(TableEmpty empty, Orders orders) {
+        validateChangeEmpty(orders);
         this.empty = empty;
     }
 
-    public void addOrder(Order order) {
-        orders.addOrder(order);
+    private void validateChangeNumberOfGuests() {
+        if (empty.isEmptyTable()) {
+            throw new IllegalArgumentException("[ERROR] 빈 테이블은 방문 손님 수를 변경할 수 없습니다.");
+        }
+    }
+
+    private void validateChangeEmpty(Orders orders) {
+        if (orders.containOrderStatus(OrderStatus.COOKING)) {
+            throw new IllegalArgumentException("[ERROR] 조리 상태인 주문이 있어 빈 테이블 여부 업데이트 할 수 없습니다. ");
+        }
+        if (orders.containOrderStatus(OrderStatus.MEAL)) {
+            throw new IllegalArgumentException("[ERROR] 식사 상태인 주문이 있어 빈 테이블 여부 업데이트 할 수 없습니다.");
+        }
     }
 
     public Long getId() {
@@ -117,11 +82,4 @@ public class OrderTable {
         return empty;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
-    }
-
-    public void setTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
-    }
 }

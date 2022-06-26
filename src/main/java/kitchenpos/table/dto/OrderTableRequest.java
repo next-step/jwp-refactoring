@@ -1,9 +1,5 @@
 package kitchenpos.table.dto;
 
-import kitchenpos.table.domain.NumberOfGuest;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.TableEmpty;
-
 public class OrderTableRequest {
     private final Long id;
     private final Long tableGroupId;
@@ -15,10 +11,6 @@ public class OrderTableRequest {
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
-    }
-
-    public OrderTable toOrderTable(){
-        return new OrderTable(null, new NumberOfGuest(numberOfGuests), new TableEmpty(empty));
     }
 
     public Long getId() {

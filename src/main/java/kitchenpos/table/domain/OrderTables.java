@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 @Embeddable
 public class OrderTables {
 
-    @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "table_group_id")
     private List<OrderTable> orderTables = new ArrayList<>();
 
     protected OrderTables() {
@@ -19,21 +21,15 @@ public class OrderTables {
         this.orderTables = orderTables;
     }
 
-    public void addOrderTable(OrderTable orderTable) {
-        orderTables.add(orderTable);
-    }
-
-    public void ungroupingTableGroup(){
-        for (OrderTable orderTable : orderTables){
-            orderTable.ungroupingTableGroup();
+    public void changeOrderTable() {
+        for (OrderTable emptyTable : orderTables) {
+            emptyTable.changeOrderTable();
         }
     }
 
-    public void groupingTableGroup(OrderTables emptyTables, TableGroup tableGroup) {
-        for (OrderTable emptyTable : emptyTables.orderTables) {
-            emptyTable.assignTableGroup(tableGroup);
-            orderTables.add(emptyTable);
-        }
+    public boolean containsOrderTable() {
+        return orderTables.stream()
+                .anyMatch(OrderTable::isOrderTable);
     }
 
     public List<OrderTable> getOrderTables() {
@@ -43,4 +39,9 @@ public class OrderTables {
     public int size() {
         return orderTables.size();
     }
+
+    public void clear() {
+        orderTables.clear();
+    }
+
 }

@@ -1,42 +1,23 @@
 package kitchenpos.order.domain;
 
-import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.CascadeType;
-import javax.persistence.Embeddable;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import kitchenpos.order.consts.OrderStatus;
 
-@Embeddable
 public class Orders {
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "order_table_id")
-    private final List<Order> orders = new ArrayList<>();
+    private final List<Order> orders;
+
+    public Orders(List<Order> orders) {
+        this.orders = orders;
+    }
+
+    public boolean containOrderStatus(OrderStatus orderStatus) {
+        return orders.stream()
+                .map(Order::getOrderStatus)
+                .anyMatch(orderStatus::equals);
+    }
 
     public List<Order> getOrders() {
         return orders;
-    }
-
-    public void registerOrder(Order order) {
-        order.updateOrder(OrderStatus.COOKING);
-        orders.add(order);
-    }
-
-    public void addOrder(Order order) {
-        orders.add(order);
-    }
-
-    public void checkPossibleUngroupingOrderStatus() {
-        for (Order order : orders) {
-            order.checkPossibleUngroupingOrderStatus();
-        }
-    }
-
-    public void checkPossibleChangeEmpty() {
-        for (Order order : orders) {
-            order.checkPossibleChangeEmpty();
-        }
     }
 }

@@ -21,7 +21,11 @@ public class TableFixtures {
     }
 
     public static OrderTableRequest 테이블_요청_만들기(Integer numberOfGuests) {
-        return 테이블_요청_만들기(numberOfGuests, null);
+        return 테이블_요청_만들기(null, numberOfGuests, null);
+    }
+
+    public static OrderTableRequest 테이블_요청_만들기(Boolean isEmpty) {
+        return 테이블_요청_만들기(null,null, isEmpty);
     }
 
     public static OrderTableRequest 테이블_요청_만들기(Long id) {

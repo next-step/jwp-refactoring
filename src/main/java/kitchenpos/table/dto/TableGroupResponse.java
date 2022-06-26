@@ -23,7 +23,7 @@ public class TableGroupResponse {
         List<OrderTableResponse> orderTableResponses = tableGroup.getOrderTables()
                 .getOrderTables()
                 .stream()
-                .map(OrderTableResponse::from)
+                .map(orderTable -> OrderTableResponse.of(orderTable, tableGroup))
                 .collect(Collectors.toList());
 
         return new TableGroupResponse(tableGroup.getId(), tableGroup.getCreatedDate(), orderTableResponses);

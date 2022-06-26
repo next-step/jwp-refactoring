@@ -23,9 +23,11 @@ public class TableGroup {
     protected TableGroup() {
     }
 
-    public TableGroup(Long id, LocalDateTime createdDate) {
-        this.id = id;
+    public TableGroup(LocalDateTime createdDate, OrderTables emptyTables) {
+        validate(emptyTables);
         this.createdDate = createdDate;
+        this.orderTables = emptyTables;
+        emptyTables.changeOrderTable();
     }
 
     public TableGroup(Long id, LocalDateTime createdDate, OrderTables orderTables) {
@@ -35,26 +37,16 @@ public class TableGroup {
     }
 
     public void ungroupingTableGroup() {
-        orderTables.ungroupingTableGroup();
+        orderTables.clear();
     }
 
-    public void groupingTables(OrderTables emptyTables, int requestCount) {
-        checkPossibleGrouping(emptyTables, requestCount);
-        orderTables.groupingTableGroup(emptyTables, this);
-    }
-
-    private void checkPossibleGrouping(OrderTables emptyTables, int requestCount) {
-        if (emptyTables.size() < MIN_TABLE_SIZE) {
+    private void validate(OrderTables tables) {
+        if (tables.size() < MIN_TABLE_SIZE) {
             throw new IllegalArgumentException("[ERROR] 단체 지정에는 최소 2개의 테이블이 필요합니다.");
         }
-        if (emptyTables.size() != requestCount) {
-            throw new IllegalArgumentException("[ERROR] 등록 되어있지 않은 테이블이 존재합니다.");
+        if (tables.containsOrderTable()) {
+            throw new IllegalArgumentException("[ERROR] 주문 테이블 있는 경우 단체 지정 할 수 없습니다.");
         }
-    }
-
-    public void addOrderTable(OrderTable orderTable) {
-        orderTables.addOrderTable(orderTable);
-        orderTable.setTableGroup(this);
     }
 
     public Long getId() {
