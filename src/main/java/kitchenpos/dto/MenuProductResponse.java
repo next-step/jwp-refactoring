@@ -3,6 +3,7 @@ package kitchenpos.dto;
 import kitchenpos.domain.MenuProduct;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class MenuProductResponse {
@@ -36,5 +37,21 @@ public class MenuProductResponse {
 
     public int getQuantity() {
         return quantity;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MenuProductResponse that = (MenuProductResponse) o;
+        return getQuantity() == that.getQuantity()
+                && Objects.equals(getSeq(), that.getSeq())
+                && Objects.equals(getProductId(), that.getProductId())
+                && Objects.equals(menuId, that.menuId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getSeq(), getProductId(), menuId, getQuantity());
     }
 }

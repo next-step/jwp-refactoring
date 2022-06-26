@@ -102,7 +102,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
 
     public static void 테이블_목록_포함됨(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> createdResponses) {
         List<Long> expectedOrderTableIds = createdResponses.stream()
-                .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
+                .map(it -> Long.parseLong(it.header("Location").split("/")[3]))
                 .collect(Collectors.toList());
 
         List<Long> resultOrderTableIds = response.jsonPath().getList(".", OrderTableResponse.class).stream()

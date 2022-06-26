@@ -9,6 +9,7 @@ import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuProductResponse;
 import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.MenuResponse;
 import kitchenpos.factory.MenuFixtureFactory;
@@ -93,7 +94,7 @@ class MenuServiceTest {
         MenuResponse savedMenu = menuService.create(메뉴_김치찌개세트_request);
 
         //then
-        assertThat(savedMenu.getId()).isEqualTo(메뉴_김치찌개세트.getId());
+        assertThat(savedMenu).isEqualTo(MenuResponse.from(메뉴_김치찌개세트));
     }
 
     @DisplayName("메뉴의 가격은 0 이상이어야 한다")

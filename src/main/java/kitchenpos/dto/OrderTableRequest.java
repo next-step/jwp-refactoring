@@ -1,5 +1,7 @@
 package kitchenpos.dto;
 
+import kitchenpos.domain.OrderTable;
+
 public class OrderTableRequest {
     int numberOfGuests;
     boolean empty;
@@ -14,6 +16,10 @@ public class OrderTableRequest {
 
     public static OrderTableRequest of(int numberOfGuests, boolean empty) {
         return new OrderTableRequest(numberOfGuests, empty);
+    }
+
+    public OrderTable toOrderTable() {
+        return new OrderTable(numberOfGuests, empty);
     }
 
     public int getNumberOfGuests() {

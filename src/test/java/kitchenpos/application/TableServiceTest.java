@@ -3,6 +3,10 @@ package kitchenpos.application;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderTableEmptyRequest;
+import kitchenpos.dto.OrderTableNumOfGuestRequest;
+import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.factory.OrderTableFixtureFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,8 +23,7 @@ import java.util.Optional;
 import static kitchenpos.factory.OrderTableFixtureFactory.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -47,13 +50,15 @@ public class TableServiceTest {
     @Test
     void 주문테이블_등록(){
         //given
-        given(orderTableDao.save(테이블_EMPTY)).willReturn(테이블_EMPTY);
+        given(orderTableDao.save(any(OrderTable.class))).willReturn(테이블_EMPTY);
 
         //when
-        OrderTable savedTable = tableService.create(테이블_EMPTY);
+        OrderTableResponse savedTable = tableService.create(
+                OrderTableRequest.of(테이블_EMPTY.getNumberOfGuests(), 테이블_EMPTY.isEmpty())
+        );
 
         //then
-        assertThat(savedTable).isEqualTo(테이블_EMPTY);
+        assertThat(savedTable).isEqualTo(OrderTableResponse.from(테이블_EMPTY));
     }
 
     @DisplayName("주문테이블의 목록을 조회할 수 있다")
@@ -63,10 +68,10 @@ public class TableServiceTest {
         given(orderTableDao.findAll()).willReturn(Arrays.asList(테이블_EMPTY));
 
         //when
-        List<OrderTable> list = tableService.list();
+        List<OrderTableResponse> list = tableService.list();
 
         //then
-        assertThat(list).containsExactly(테이블_EMPTY);
+        assertThat(list).containsExactly(OrderTableResponse.from(테이블_EMPTY));
     }
 
     @DisplayName("주문테이블의 비어있음 여부를 업데이트할 수 있다")
@@ -74,10 +79,12 @@ public class TableServiceTest {
     void 주문테이블_Empty_업데이트(){
         //given
         given(orderTableDao.findById(anyLong())).willReturn(Optional.of(테이블_EMPTY));
+        given(orderTableDao.save(any(OrderTable.class))).willReturn(createOrderTable(테이블_EMPTY.getId(),
+                테이블_EMPTY.getTableGroupId(), 테이블_EMPTY.getNumberOfGuests(), true));
 
         //when
-        OrderTable orderTable_empty = createOrderTable(0, true);
-        tableService.changeEmpty(테이블_EMPTY.getId(), orderTable_empty);
+        OrderTableEmptyRequest emptyRequest = OrderTableEmptyRequest.from(true);
+        tableService.changeEmpty(테이블_EMPTY.getId(), emptyRequest);
 
         //then
         assertThat(테이블_EMPTY.isEmpty()).isTrue();
@@ -90,10 +97,10 @@ public class TableServiceTest {
         given(orderTableDao.findById(anyLong())).willReturn(Optional.ofNullable(null));
 
         //when
-        OrderTable orderTable_empty = createOrderTable(0, true);
+        OrderTableEmptyRequest emptyRequest = OrderTableEmptyRequest.from(true);
 
         //then
-        assertThrows(IllegalArgumentException.class, () -> tableService.changeEmpty(테이블_EMPTY.getId(), orderTable_empty));
+        assertThrows(IllegalArgumentException.class, () -> tableService.changeEmpty(테이블_EMPTY.getId(), emptyRequest));
     }
 
     @DisplayName("주문테이블의 비어있음 여부를 업데이트시, 주문테이블이 테이블그룹에 등록되어있으면 안된다")
@@ -101,10 +108,10 @@ public class TableServiceTest {
     void 주문테이블_Empty_업데이트_주문테이블_테이블그룹_등록_검증(){
         //given
         given(orderTableDao.findById(anyLong())).willReturn(Optional.of(테이블_GROUPED));
-        OrderTable orderTable_empty = createOrderTable(0, true);
+        OrderTableEmptyRequest emptyRequest = OrderTableEmptyRequest.from(true);
 
         //then
-        assertThrows(IllegalArgumentException.class, () -> tableService.changeEmpty(테이블_GROUPED.getId(), orderTable_empty));
+        assertThrows(IllegalArgumentException.class, () -> tableService.changeEmpty(테이블_GROUPED.getId(), emptyRequest));
     }
 
     @DisplayName("주문테이블의 비어있음 여부를 업데이트시, 주문테이블에 COOKING이나 MEAL 상태의 주문이 있으면 안된다")
@@ -115,10 +122,10 @@ public class TableServiceTest {
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(true);
 
         //when
-        OrderTable orderTable_empty = createOrderTable(0, true);
+        OrderTableEmptyRequest emptyRequest = OrderTableEmptyRequest.from(true);
 
         //then
-        assertThrows(IllegalArgumentException.class, () -> tableService.changeEmpty(테이블_EMPTY.getId(), orderTable_empty));
+        assertThrows(IllegalArgumentException.class, () -> tableService.changeEmpty(테이블_EMPTY.getId(), emptyRequest));
     }
 
     @DisplayName("주문테이블의 손님 수를 업데이트할 수 있다")
@@ -126,10 +133,12 @@ public class TableServiceTest {
     void 주문테이블_손님수_업데이트(){
         //given
         given(orderTableDao.findById(anyLong())).willReturn(Optional.of(테이블_NOT_EMPTY));
+        given(orderTableDao.save(any(OrderTable.class))).willReturn(createOrderTable(테이블_NOT_EMPTY.getId(),
+                테이블_NOT_EMPTY.getTableGroupId(), 1, false));
 
         //when
-        OrderTable orderTable_oneGuest = createOrderTable(1, false);
-        tableService.changeNumberOfGuests(테이블_NOT_EMPTY.getId(), orderTable_oneGuest);
+        OrderTableNumOfGuestRequest oneGuestRequest = OrderTableNumOfGuestRequest.from(1);
+        tableService.changeNumberOfGuests(테이블_NOT_EMPTY.getId(), oneGuestRequest);
 
         //then
         assertThat(테이블_NOT_EMPTY.getNumberOfGuests()).isEqualTo(1);
@@ -139,11 +148,11 @@ public class TableServiceTest {
     @Test
     void 주문테이블_손님수_업데이트_손님수_검증(){
         //when
-        OrderTable invalidOrderTable = createOrderTable(-1, false);
+        OrderTableNumOfGuestRequest invalidRequest = OrderTableNumOfGuestRequest.from(-1);
 
         //then
         assertThrows(IllegalArgumentException.class,
-                () -> tableService.changeNumberOfGuests(테이블_NOT_EMPTY.getId(), invalidOrderTable));
+                () -> tableService.changeNumberOfGuests(테이블_NOT_EMPTY.getId(), invalidRequest));
     }
 
     @DisplayName("주문테이블의 손님 수를 업데이트 시, 업데이트할 주문테이블이 존재해야 한다")
@@ -153,11 +162,11 @@ public class TableServiceTest {
         given(orderTableDao.findById(anyLong())).willReturn(Optional.ofNullable(null));
 
         //when
-        OrderTable orderTable_oneGuest = createOrderTable(1, false);
+        OrderTableNumOfGuestRequest oneGuestRequest = OrderTableNumOfGuestRequest.from(1);
 
         //then
         assertThrows(IllegalArgumentException.class,
-                () -> tableService.changeNumberOfGuests(테이블_NOT_EMPTY.getId(), orderTable_oneGuest));
+                () -> tableService.changeNumberOfGuests(테이블_NOT_EMPTY.getId(), oneGuestRequest));
     }
 
     @DisplayName("주문테이블의 손님 수를 업데이트 시, 주문테이블이 비어있으면 안된다")
@@ -167,10 +176,10 @@ public class TableServiceTest {
         given(orderTableDao.findById(anyLong())).willReturn(Optional.of(테이블_EMPTY));
 
         //when
-        OrderTable orderTable_oneGuest = createOrderTable(1, false);
+        OrderTableNumOfGuestRequest oneGuestRequest = OrderTableNumOfGuestRequest.from(1);
 
         //then
         assertThrows(IllegalArgumentException.class,
-                () -> tableService.changeNumberOfGuests(테이블_EMPTY.getId(), orderTable_oneGuest));
+                () -> tableService.changeNumberOfGuests(테이블_EMPTY.getId(), oneGuestRequest));
     }
 }
