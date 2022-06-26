@@ -22,6 +22,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 
     ProductRequest productRequest1;
     ProductRequest productRequest2;
+    ProductRequest productRequest3;
 
     @BeforeEach
     public void init() {
@@ -30,6 +31,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         // given
         productRequest1 = new ProductRequest("샐러드", 100);
         productRequest2 = new ProductRequest("스테이크", 100);
+        productRequest3 = new ProductRequest("에이드", -5);
     }
 
     @DisplayName("상품을 생성한다.")
@@ -40,6 +42,16 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 
         // then
         상품_생성됨(response);
+    }
+
+    @DisplayName("상품 금액이 0원 미만이라 생성에 실패한다.")
+    @Test
+    void 생성_예외_금액_오류() {
+        // when
+        ExtractableResponse<Response> response = 상품_생성_요청(productRequest3);
+
+        // then
+        상품_생성_실패됨(response);
     }
 
     @DisplayName("상품 목록을 조회한다.")
@@ -83,6 +95,10 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     public static void 상품_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
+    }
+
+    public static void 상품_생성_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static void 상품_목록_응답됨(ExtractableResponse<Response> response) {

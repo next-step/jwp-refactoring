@@ -25,6 +25,9 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
     MenuRequest menuRequest1;
     MenuRequest menuRequest2;
+    MenuRequest menuRequest_그룹_null;
+    MenuRequest menuRequest_그룹_잘못된_id;
+    MenuRequest menuRequest_금액_초과;
 
     @BeforeEach
     public void init() {
@@ -51,6 +54,24 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 양식.getId(),
                 Arrays.asList(스테이크_1개, 에이드_1개)
         );
+        menuRequest_그룹_null = new MenuRequest(
+                "싱글 메뉴",
+                400,
+                null,
+                Arrays.asList(스테이크_1개, 샐러드_1개, 에이드_2개)
+        );
+        menuRequest_그룹_잘못된_id = new MenuRequest(
+                "싱글 메뉴",
+                400,
+                100L,
+                Arrays.asList(스테이크_1개, 샐러드_1개, 에이드_2개)
+        );
+        menuRequest_금액_초과 = new MenuRequest(
+                "싱글 메뉴",
+                401,
+                양식.getId(),
+                Arrays.asList(스테이크_1개, 샐러드_1개, 에이드_2개)
+        );
     }
 
     @DisplayName("메뉴를 생성한다.")
@@ -61,6 +82,30 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
         // then
         메뉴_생성됨(response);
+    }
+
+    @DisplayName("메뉴 그룹이 잘못되어 메뉴 생성에 실패한다.")
+    @Test
+    void 생성_예외_메뉴_그룹_오류() {
+        // when
+        ExtractableResponse<Response> createResponse1 = 메뉴_생성_요청(menuRequest_그룹_null);
+        // then
+        메뉴_생성_실패됨(createResponse1);
+
+        // when
+        ExtractableResponse<Response> createResponse2 = 메뉴_생성_요청(menuRequest_그룹_잘못된_id);
+        // then
+        메뉴_생성_실패됨(createResponse2);
+    }
+
+    @DisplayName("메뉴 금액이 커서 메뉴 생성에 실패한다.")
+    @Test
+    void 생성_예외_메뉴_금액_오류() {
+        // when
+        ExtractableResponse<Response> response = 메뉴_생성_요청(menuRequest_금액_초과);
+
+        // then
+        메뉴_생성_실패됨(response);
     }
 
     @DisplayName("메뉴 목록을 조회한다.")
@@ -108,6 +153,10 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     public static void 메뉴_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
+    }
+
+    public static void 메뉴_생성_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static void 메뉴_목록_응답됨(ExtractableResponse<Response> response) {
