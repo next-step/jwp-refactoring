@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
+import kitchenpos.product.dto.ProductRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -30,7 +31,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("상품 가격이 0미만이면 등록 실패한다.")
-    void createProduct2() {
+    void createProductOfUnderZeroPrice() {
         // when
         ExtractableResponse<Response> response = 상품_등록_요청("강정치킨", new BigDecimal(-1000));
 

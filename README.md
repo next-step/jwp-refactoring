@@ -11,6 +11,7 @@
       
     - 메뉴 그룹 테스트
       - 메뉴 그룹을 생성한다
+        - 이름이 반드시 있어야 한다.
       - 메뉴 그룹 목록을 조회한다
       
     - 메뉴 테스트
@@ -18,6 +19,7 @@
         - 메뉴 가격이 0 이상이어야 한다
         - 메뉴 그룹 지정을 해야 한다
         - 메뉴의 상품이 모두 등록되어 있어야 한다
+        - 상품들 금액의 합이 메뉴 가격보다 클 수 없다
       - 메뉴 목록을 조회한다
   
     - 테이블(주문 테이블, 빈 테이블) 테스트    
@@ -48,6 +50,40 @@
       - 주문 상태를 변경한다
           - 주문 상태가 완료가 아니어야 한다
 
+- 2단계 (서비스 리팩터링)
+    - 상품
+      - domain
+        - 엔티티 변환
+        - Price wrapping 처리
+        - Name wrapping 처리
+      - application
+      - ui package 이동       
+      - dto 추가
+  
+    - 메뉴
+      - domain
+          - Menu/MenuGroup 엔티티 변환 및 관계 처리
+          - Price wrapping 처리
+          - Name wrapping 처리
+          - <enuProducts 일급 컬랙션으로 변경
+      - application
+      - ui package 이동
+      - dto 추가
+    - 주문
+      - domain
+          - Order/OrderLineItem 엔티티 변환 및 관계 처리
+          - OrderLineItems 일급 컬랙션으로 변경
+      - application
+      - ui package 이동
+      - dto 추가
+    - 테이블
+      - domain
+          - TableGroup/OrderTable 엔티티 변환 및 관계 처리
+          - OrderTables 일급 컬렉션 추가
+          - NumberOfGuests wrapping 처리
+      - application
+      - ui package 이동
+      - dto 추가
 
 ## 용어 사전
 

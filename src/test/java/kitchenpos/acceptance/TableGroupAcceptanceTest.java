@@ -4,8 +4,10 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.table.dto.OrderTableIdRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,8 +22,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("단체 지정 관련 기능")
 public class TableGroupAcceptanceTest extends AcceptanceTest {
 
-    private OrderTable orderTable1;
-    private OrderTable orderTable2;
+    private OrderTableResponse orderTable1;
+    private OrderTableResponse orderTable2;
 
     @BeforeEach
     public void setUp() {
@@ -34,12 +36,13 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     @DisplayName("단체 지정 관리")
     void tableGroup() {
         // when
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
-        ExtractableResponse<Response> response = 단체_지정_등록_요청(tableGroup);
+        TableGroupRequest tableGroupRequest = TableGroupRequest.of(Arrays.asList(
+                OrderTableIdRequest.of(orderTable1.getId()),
+                OrderTableIdRequest.of(orderTable2.getId())));
+        ExtractableResponse<Response> response = 단체_지정_등록_요청(tableGroupRequest);
         // then
         단체_지정_등록됨(response);
-        TableGroup createdTableGroup = response.as(TableGroup.class);
+        TableGroupResponse createdTableGroup = response.as(TableGroupResponse.class);
 
         // when
         response = 단체_지정_해제_요청(createdTableGroup.getId());
@@ -47,12 +50,11 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         단체_지정_해제됨(response);
     }
 
-    public static OrderTable 빈_테이블_등록_되어있음(int numberOfGuests) {
-        return 주문_테이블_등록_요청(true, numberOfGuests).as(OrderTable.class);
+    public static OrderTableResponse 빈_테이블_등록_되어있음(int numberOfGuests) {
+        return 주문_테이블_등록_요청(true, numberOfGuests).as(OrderTableResponse.class);
     }
 
-    public static ExtractableResponse<Response> 단체_지정_등록_요청(TableGroup tableGroup) {
-
+    public static ExtractableResponse<Response> 단체_지정_등록_요청(TableGroupRequest tableGroup) {
         return RestAssured
                 .given().log().all()
                 .body(tableGroup)
