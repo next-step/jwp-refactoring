@@ -9,11 +9,13 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.product.domain.Product;
 import kitchenpos.utils.RestAssuredHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -39,6 +41,12 @@ class MenuAcceptanceTest extends AcceptanceTest {
     @DisplayName("메뉴를 생성하면 메뉴를 조회 할 수 있다.")
     void searchMenu() {
         // given
+        final MenuGroup 예상된_메뉴그룹= new MenuGroup(1L, "후라이드세트");
+        final Product 예상된_제품 = new Product(1L, "후라이드", 16_000L);
+        final Menu 예상된_메뉴 = new Menu(1L, "후라이드", 16_000L, 예상된_메뉴그룹, Arrays.asList(new MenuProduct(1L, null, 예상된_제품, 2L)));
+        final MenuProduct 예상된_메뉴_제품들 = new MenuProduct(1L, 예상된_메뉴, 예상된_제품, 2L);
+        final MenuResponse 예상된_메뉴_결과 = new MenuResponse(1L, "반반후라이드", 16_000L, 예상된_메뉴그룹.toMenuGroupResponse(),
+                Arrays.asList(예상된_메뉴_제품들));
         메뉴_그룹_생성_요청("후라이드세트");
         제품_생성_요청("후라이드", 16_000L);
         final List<MenuProductRequest> 메뉴_제품들 = Arrays.asList(new MenuProductRequest(1L, 2));
@@ -49,10 +57,6 @@ class MenuAcceptanceTest extends AcceptanceTest {
 
         // then
         final ExtractableResponse<Response> 메뉴_조회_결과 = 메뉴_조회();
-        final Menu 예상된_메뉴 = new Menu(1L, "후라이드", 16_000L, 1L, Arrays.asList(new MenuProduct(1L, null, 1L, 2L)));
-        final MenuProduct 예상된_메뉴_제품들 = new MenuProduct(1L, 예상된_메뉴, 1L, 2L);
-        final MenuResponse 예상된_메뉴_결과 = new MenuResponse(1L, "반반후라이드", 16_000L, 1L,
-                Arrays.asList(예상된_메뉴_제품들));
         메뉴_조회_확인(메뉴_조회_결과, Arrays.asList(예상된_메뉴_결과));
     }
 
@@ -86,8 +90,8 @@ class MenuAcceptanceTest extends AcceptanceTest {
             assertAll(
                     () -> assertThat(메뉴_리스트1.get(innerIdx).getName()).isEqualTo(메뉴_리스트2.get(innerIdx).getName()),
                     () -> assertThat(메뉴_리스트1.get(innerIdx).getPrice()).isEqualTo(메뉴_리스트2.get(innerIdx).getPrice()),
-                    () -> assertThat(메뉴_리스트1.get(innerIdx).getMenuGroupId())
-                            .isEqualTo(메뉴_리스트2.get(innerIdx).getMenuGroupId()),
+                    () -> assertThat(메뉴_리스트1.get(innerIdx).getMenuGroup().getId())
+                            .isEqualTo(메뉴_리스트2.get(innerIdx).getMenuGroup().getId()),
                     () -> assertThat(메뉴_리스트1.get(innerIdx).getMenuProducts())
                             .hasSize(메뉴_리스트2.get(innerIdx).getMenuProducts().size())
             );

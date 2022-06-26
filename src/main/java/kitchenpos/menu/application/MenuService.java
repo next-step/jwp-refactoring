@@ -1,16 +1,14 @@
 package kitchenpos.menu.application;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
+import kitchenpos.exception.NotExistException;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.repository.MenuGroupRepository;
-import kitchenpos.menu.repository.MenuProductRepository;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.repository.ProductRepository;
@@ -21,73 +19,34 @@ import org.springframework.transaction.annotation.Transactional;
 public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
-    private final MenuProductRepository menuProductRepository;
     private final ProductRepository productRepository;
 
     public MenuService(MenuRepository menuRepository, MenuGroupRepository menuGroupRepository,
-                       MenuProductRepository menuProductRepository,
                        ProductRepository productRepository) {
         this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
-        this.menuProductRepository = menuProductRepository;
         this.productRepository = productRepository;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        final Long price = menuRequest.getPrice();
+        final MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
+                .orElseThrow(() -> new NotExistException("메뉴 그룹이 존재하지 않습니다."));
+        final Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup);
 
-        if (Objects.isNull(price) || price < 0) {
-            throw new IllegalArgumentException();
+        for (MenuProductRequest menuProduct : menuRequest.getMenuProducts()) {
+            final Product persistProduct = productRepository.findById(menuProduct.getProductId())
+                    .orElseThrow(() -> new NotExistException("제품이 존재하지 않습니다."));
+            menu.addProduct(persistProduct, menuProduct.getQuantity());
         }
 
-        if (!menuGroupRepository.existsById(menuRequest.getMenuGroupId())) {
-            throw new IllegalArgumentException();
-        }
-
-        if (menuRequest.getMenuProducts().isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        final List<Long> productIds = menuRequest.getMenuProducts().stream()
-                .map(MenuProductRequest::getProductId)
-                .collect(Collectors.toList());
-
-        final List<Product> products = productRepository.findAll().stream()
-                .filter(it -> productIds.contains(it.getId()))
-                .collect(Collectors.toList());
-
-        long sum = 0L;
-        for (Product product : products) {
-            final Long productId = product.getId();
-            final MenuProductRequest filterMenuProductRequest = menuRequest.getMenuProducts().stream()
-                    .filter(it -> it.getProductId().equals(productId))
-                    .findFirst()
-                    .orElseThrow(IllegalArgumentException::new);
-            sum = sum + product.getPrice() * filterMenuProductRequest.getQuantity();
-        }
-
-        if (price.longValue() > sum) {
-            throw new IllegalArgumentException();
-        }
-
-        final Menu savedMenu = menuRepository.save(menuRequest.toMenu());
-        final List<MenuProduct> savedMenuProducts = new ArrayList<>();
-
-        for (MenuProductRequest menuProductRequest : menuRequest.getMenuProducts()) {
-            final MenuProduct menuProduct = new MenuProduct(null, savedMenu, menuProductRequest.getProductId(),
-                    menuProductRequest.getQuantity());
-            savedMenuProducts.add(menuProductRepository.save(menuProduct));
-        }
-
-        savedMenu.setMenuProducts(savedMenuProducts);
-        return savedMenu.toMenuResponse();
+        menu.validateProductsTotalPrice();
+        final Menu persist = menuRepository.save(menu);
+        return persist.toMenuResponse();
     }
 
     public List<MenuResponse> list() {
-        final List<Menu> menus = menuRepository.findAll();
-
-        return menus.stream()
+        return menuRepository.findAll().stream()
                 .map(Menu::toMenuResponse)
                 .collect(Collectors.toList());
     }

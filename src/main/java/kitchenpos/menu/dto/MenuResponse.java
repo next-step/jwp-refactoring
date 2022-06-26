@@ -7,15 +7,15 @@ public class MenuResponse {
     private Long id;
     private String name;
     private Long price;
-    private Long menuGroupId;
+    private MenuGroupResponse menuGroup;
     private List<MenuProduct> menuProducts;
 
-    public MenuResponse(Long id, String name, Long price, Long menuGroupId,
+    public MenuResponse(Long id, String name, Long price, MenuGroupResponse menuGroup,
                         List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
-        this.menuGroupId = menuGroupId;
+        this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
     }
 
@@ -31,8 +31,8 @@ public class MenuResponse {
         return price;
     }
 
-    public Long getMenuGroupId() {
-        return menuGroupId;
+    public MenuGroupResponse getMenuGroup() {
+        return menuGroup;
     }
 
     public List<MenuProduct> getMenuProducts() {

@@ -7,17 +7,17 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.repository.MenuGroupRepository;
-import kitchenpos.menu.repository.MenuProductRepository;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.repository.ProductRepository;
@@ -34,6 +34,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
     private MenuService menuService;
+    private MenuGroup menuGroup;
     private MenuProduct menuProduct;
     private Menu menu;
     private Product product;
@@ -46,18 +47,16 @@ class MenuServiceTest {
     private MenuGroupRepository menuGroupRepository;
 
     @Mock
-    private MenuProductRepository menuProductRepository;
-
-    @Mock
     private ProductRepository productRepository;
 
     @BeforeEach
     void setUp() {
-        menuService = new MenuService(menuRepository, menuGroupRepository, menuProductRepository, productRepository);
-        menu = new Menu(1L, "후라이드+후라이드", 1_000L, 1L, Arrays.asList(menuProduct));
-        menuProduct = new MenuProduct(1L, menu, 1L, 2L);
+        menuService = new MenuService(menuRepository, menuGroupRepository, productRepository);
         product = new Product(1L, "후라이드", 500L);
-        expected = new MenuResponse(null, "후라이드+후라이드", 1_000L, 1L,
+        menuGroup = new MenuGroup(1L, "후라이드세트");
+        menu = new Menu(1L, "후라이드+후라이드", 1_000L, menuGroup, Arrays.asList(menuProduct));
+        menuProduct = new MenuProduct(1L, menu, product, 2L);
+        expected = new MenuResponse(null, "후라이드+후라이드", 1_000L, menuGroup.toMenuGroupResponse(),
                 Arrays.asList(menuProduct));
     }
 
@@ -68,10 +67,9 @@ class MenuServiceTest {
         final MenuProductRequest menuProductRequest = new MenuProductRequest(1L, 2L);
         final MenuRequest menuRequest = new MenuRequest("후라이드+후라이드", 1_000L, 1L,
                 Arrays.asList(menuProductRequest));
-        when(menuGroupRepository.existsById(any())).thenReturn(true);
-        when(productRepository.findAll()).thenReturn(Arrays.asList(product));
+        when(menuGroupRepository.findById(any())).thenReturn(Optional.of(menuGroup));
+        when(productRepository.findById(any())).thenReturn(Optional.of(product));
         when(menuRepository.save(any())).thenReturn(menu);
-        when(menuProductRepository.save(any())).thenReturn(menuProduct);
         // when
         final MenuResponse actual = menuService.create(menuRequest);
         // then
@@ -102,7 +100,7 @@ class MenuServiceTest {
     void invalidNotContainMenuGroup() {
         // given
         final MenuRequest menuRequest = new MenuRequest("후라이드+후라이드", 1_000L, 99L, null);
-        when(menuGroupRepository.existsById(any())).thenReturn(false);
+        when(menuGroupRepository.findById(any())).thenReturn(Optional.empty());
         // when && then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuService.create(menuRequest));
@@ -115,8 +113,8 @@ class MenuServiceTest {
         final MenuProductRequest menuProductRequest = new MenuProductRequest(1L, 2L);
         final MenuRequest menuRequest = new MenuRequest("후라이드+후라이드", 1_000L, 1L,
                 Arrays.asList(menuProductRequest));
-        when(menuGroupRepository.existsById(any())).thenReturn(true);
-        when(productRepository.findAll()).thenReturn(Collections.emptyList());
+        when(menuGroupRepository.findById(any())).thenReturn(Optional.of(menuGroup));
+        when(productRepository.findById(any())).thenReturn(Optional.empty());
         // when && then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuService.create(menuRequest));
@@ -129,8 +127,8 @@ class MenuServiceTest {
         final MenuProductRequest menuProductRequest = new MenuProductRequest(1L, 2L);
         final MenuRequest invalidMenuRequest = new MenuRequest("잘못된_메뉴", 100_000L, 1L,
                 Arrays.asList(menuProductRequest));
-        when(menuGroupRepository.existsById(any())).thenReturn(true);
-        when(productRepository.findAll()).thenReturn(Arrays.asList(product));
+        when(menuGroupRepository.findById(any())).thenReturn(Optional.of(menuGroup));
+        when(productRepository.findById(any())).thenReturn(Optional.of(product));
         // when && then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuService.create(invalidMenuRequest));
@@ -154,7 +152,7 @@ class MenuServiceTest {
         assertAll(
                 () -> assertThat(menuResponse1.getName()).isEqualTo(menuResponse2.getName()),
                 () -> assertThat(menuResponse1.getPrice()).isEqualTo(menuResponse2.getPrice()),
-                () -> assertThat(menuResponse1.getMenuGroupId()).isEqualTo(menuResponse2.getMenuGroupId()),
+                () -> assertThat(menuResponse1.getMenuGroup().getId()).isEqualTo(menuResponse2.getMenuGroup().getId()),
                 () -> assertThat(menuResponse1.getMenuProducts()).hasSize(menuResponse2.getMenuProducts().size())
         );
     }
