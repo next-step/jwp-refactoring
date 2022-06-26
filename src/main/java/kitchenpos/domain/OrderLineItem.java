@@ -21,20 +21,21 @@ public class OrderLineItem {
     @ManyToOne(fetch = FetchType.LAZY)
     private Menu menu;
 
-    private Long quantity;
+    @Embedded
+    private Quantity quantity;
 
     protected OrderLineItem() {
     }
 
     public OrderLineItem(Menu menu, Long quantity) {
         this.menu = menu;
-        this.quantity = quantity;
+        this.quantity = new Quantity(quantity);
     }
 
     // for test
     public OrderLineItem(Menu menu, long quantity) {
         this.menu = menu;
-        this.quantity = quantity;
+        this.quantity = new Quantity(quantity);
     }
 
     public void setOrder(Order order) {
@@ -54,6 +55,6 @@ public class OrderLineItem {
     }
 
     public Long getQuantity() {
-        return quantity;
+        return quantity.getValue();
     }
 }
