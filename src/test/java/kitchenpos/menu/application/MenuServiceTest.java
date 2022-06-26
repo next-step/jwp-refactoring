@@ -11,6 +11,7 @@ import java.util.Optional;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.infrastructure.MenuGroupRepository;
@@ -46,12 +47,13 @@ public class MenuServiceTest {
         Product product = Product.of("허니콤보", BigDecimal.valueOf(19_000L));
         MenuProduct menuProduct = MenuProduct.createMenuProduct(product, 1L);
         MenuGroup menuGroup = MenuGroup.from("한마리메뉴");
-        Menu menu = Menu.createMenu("허니콤보", Price.from(BigDecimal.valueOf(19_000L)), menuGroup, menuProduct);
+        Menu menu = Menu.createMenu("허니콤보", Price.from(BigDecimal.valueOf(19_000L)), menuGroup, Lists.list(menuProduct));
         when(productRepository.findById(any())).thenReturn(Optional.of(product));
         when(menuGroupRepository.findById(any())).thenReturn(Optional.of(menuGroup));
         when(menuRepository.save(any())).thenReturn(menu);
 
-        MenuRequest menuRequest = new MenuRequest("허니콤보", 19_000L, menuGroup.getId(), product.getId(), 1L);
+        MenuProductRequest menuProductRequest = new MenuProductRequest(product.getId(), 1L);
+        MenuRequest menuRequest = new MenuRequest("허니콤보", 19_000L, menuGroup.getId(), Lists.list(menuProductRequest));
         MenuResponse actual = menuService.create(menuRequest);
 
         assertThat(actual).isNotNull();
@@ -61,7 +63,8 @@ public class MenuServiceTest {
     @Test
     @DisplayName("가격이 0원 미만인 경우, 예외를 반환한다.")
     void createWithInvalidPrice() {
-        MenuRequest menuRequest = new MenuRequest("허니콤보", -1L, 1L, 1L, 1L);
+        MenuProductRequest menuProductRequest = new MenuProductRequest(1L, 1L);
+        MenuRequest menuRequest = new MenuRequest("허니콤보", -1L, 1L, Lists.list(menuProductRequest));
         assertThatThrownBy(() -> {
             menuService.create(menuRequest);
         }).isInstanceOf(IllegalArgumentException.class);
@@ -70,7 +73,8 @@ public class MenuServiceTest {
     @Test
     @DisplayName("메뉴 상품이 존재하지 않으면, 예외를 반환한다.")
     void createWithNotExistingMenuProducts() {
-        MenuRequest menuRequest = new MenuRequest("허니콤보", 19_000L, 1L, 1L, 1L);
+        MenuProductRequest menuProductRequest = new MenuProductRequest(1L, 1L);
+        MenuRequest menuRequest = new MenuRequest("허니콤보", 19_000L, 1L, Lists.list(menuProductRequest));
 
         assertThatThrownBy(() -> {
             menuService.create(menuRequest);
@@ -81,8 +85,9 @@ public class MenuServiceTest {
     @DisplayName("메뉴 그룹이 존재하지 않으면, 예외를 반환한다.")
     void createWithNotExistingMenuGroup() {
         Product product = Product.of("허니콤보", BigDecimal.valueOf(19_000L));
-        when(productRepository.findById(any())).thenReturn(Optional.of(product));
-        MenuRequest menuRequest = new MenuRequest("허니콤보", 19_000L, 1L, product.getId(), 1L);
+        MenuProductRequest menuProductRequest = new MenuProductRequest(product.getId(), 1L);
+        MenuRequest menuRequest = new MenuRequest("허니콤보", 19_000L, 1L, Lists.list(menuProductRequest));
+        when(menuGroupRepository.findById(any())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> {
             menuService.create(menuRequest);
@@ -93,11 +98,11 @@ public class MenuServiceTest {
     @DisplayName("메뉴 가격이 메뉴 상품 가격 총합보다 크면 예외를 반환한다.")
     void createOverPrice() {
         Product product = Product.of("허니콤보", BigDecimal.valueOf(19_000L));
-        MenuProduct menuProduct = MenuProduct.createMenuProduct(product, 1L);
         MenuGroup menuGroup = MenuGroup.from("한마리메뉴");
         when(productRepository.findById(any())).thenReturn(Optional.of(product));
         when(menuGroupRepository.findById(any())).thenReturn(Optional.of(menuGroup));
-        MenuRequest menuRequest = new MenuRequest("허니콤보", 20_000L, 1L, product.getId(), 1L);
+        MenuProductRequest menuProductRequest = new MenuProductRequest(product.getId(), 1L);
+        MenuRequest menuRequest = new MenuRequest("허니콤보", 20_000L, menuGroup.getId(), Lists.list(menuProductRequest));
 
         assertThatThrownBy(() -> {
             menuService.create(menuRequest);
@@ -110,7 +115,7 @@ public class MenuServiceTest {
         Product product = Product.of("허니콤보", BigDecimal.valueOf(19_000L));
         MenuProduct menuProduct = MenuProduct.createMenuProduct(product, 1L);
         MenuGroup menuGroup = MenuGroup.from("한마리메뉴");
-        Menu menu = Menu.createMenu("허니콤보", Price.from(BigDecimal.valueOf(19_000L)), menuGroup, menuProduct);
+        Menu menu = Menu.createMenu("허니콤보", Price.from(BigDecimal.valueOf(19_000L)), menuGroup, Lists.list(menuProduct));
         when(menuRepository.findAll()).thenReturn(Lists.list(menu));
 
         List<MenuResponse> menus = menuService.list();

@@ -1,7 +1,9 @@
 package kitchenpos.menu.application;
 
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.infrastructure.MenuGroupRepository;
@@ -35,16 +37,25 @@ public class MenuService {
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
         Price price = Price.from(BigDecimal.valueOf(menuRequest.getPrice()));
-        Product product = findProduct(menuRequest);
         MenuGroup menuGroup = findMenuGroup(menuRequest);
-        MenuProduct menuProduct = MenuProduct.createMenuProduct(product, menuRequest.getQuantity());
-        Menu menu = Menu.createMenu(menuRequest.getName(), price, menuGroup, menuProduct);
+        List<MenuProduct> menuProducts = createMenuProducts(menuRequest.getMenuProducts());
+        Menu menu = Menu.createMenu(menuRequest.getName(), price, menuGroup, menuProducts);
 
         return MenuResponse.of(menuRepository.save(menu));
     }
 
-    private Product findProduct(MenuRequest menuRequest) {
-        return productRepository.findById(menuRequest.getProductId())
+    private List<MenuProduct> createMenuProducts(List<MenuProductRequest> menuProductRequests) {
+        List<MenuProduct> menuProducts = new ArrayList<>();
+        menuProductRequests.forEach(menuProductRequest -> {
+            Product product = findProduct(menuProductRequest);
+            MenuProduct menuProduct = MenuProduct.createMenuProduct(product, menuProductRequest.getQuantity());
+            menuProducts.add(menuProduct);
+        });
+        return menuProducts;
+    }
+    
+    private Product findProduct(MenuProductRequest menuProductRequests) {
+        return productRepository.findById(menuProductRequests.getProductId())
                 .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다."));
     }
 

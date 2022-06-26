@@ -13,11 +13,13 @@ import java.util.stream.Stream;
 
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuProductResponse;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 
 import kitchenpos.product.dto.ProductResponse;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.*;
 
 import org.springframework.core.ParameterizedTypeReference;
@@ -90,7 +92,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     }
 
     public static ResponseEntity<MenuResponse> 메뉴_등록_요청(MenuGroupResponse menuGroup, String name, long price, ProductResponse product, long quantity) {
-        MenuRequest menuRequest = new MenuRequest(name, price, menuGroup.getId(), product.getId(), quantity);
+        MenuProductRequest menuProductRequest = new MenuProductRequest(product.getId(), quantity);
+        MenuRequest menuRequest = new MenuRequest(name, price, menuGroup.getId(), Lists.list(menuProductRequest));
         return testRestTemplate.postForEntity("/api/menus", menuRequest, MenuResponse.class);
     }
 

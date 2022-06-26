@@ -1,20 +1,20 @@
 package kitchenpos.menu.dto;
 
+import java.util.List;
+
 public class MenuRequest {
     private String name;
     private long price;
     private Long menuGroupId;
-    private Long productId;
-    private long quantity;
+    private List<MenuProductRequest> menuProducts;
 
     public MenuRequest() {}
 
-    public MenuRequest(String name, long price, Long menuGroupId, Long productId, long quantity) {
+    public MenuRequest(String name, long price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
-        this.productId = productId;
-        this.quantity = quantity;
+        this.menuProducts = menuProducts;
     }
 
     public String getName() {
@@ -29,11 +29,7 @@ public class MenuRequest {
         return menuGroupId;
     }
 
-    public Long getProductId() {
-        return productId;
-    }
-
-    public long getQuantity() {
-        return quantity;
+    public List<MenuProductRequest> getMenuProducts() {
+        return menuProducts;
     }
 }
