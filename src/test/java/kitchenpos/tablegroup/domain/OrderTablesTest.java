@@ -1,4 +1,4 @@
-package kitchenpos.table.domain;
+package kitchenpos.tablegroup.domain;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
+import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

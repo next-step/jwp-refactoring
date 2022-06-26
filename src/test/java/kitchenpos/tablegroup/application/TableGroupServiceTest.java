@@ -1,4 +1,4 @@
-package kitchenpos.table.application;
+package kitchenpos.tablegroup.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -11,13 +11,14 @@ import java.util.List;
 import kitchenpos.ServiceTest;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.product.domain.Product;
+import kitchenpos.table.application.OrderTableTestFixture;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.dto.TableGroupRequest;
-import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import kitchenpos.util.dto.SaveMenuDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -88,7 +89,7 @@ class TableGroupServiceTest extends ServiceTest {
         this.tableGroupService.ungroup(tableGroupResponse.getId());
 
         List<OrderTable> orderTables = this.orderTableRepository.findAll();
-        assertTrue(orderTables.stream().anyMatch(orderTable -> orderTable.getTableGroup() == null));
+        assertTrue(orderTables.stream().anyMatch(orderTable -> orderTable.getTableGroupId() == null));
     }
 
     @Test

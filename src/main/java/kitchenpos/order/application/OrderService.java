@@ -15,7 +15,6 @@ import kitchenpos.order.domain.OrderTableValidateEvent;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -9,13 +9,13 @@ import java.util.List;
 import kitchenpos.ServiceTest;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.util.dto.SaveMenuDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -74,12 +74,14 @@ class TableServiceTest extends ServiceTest {
     @Test
     @DisplayName("테이블 그룹에 포함될 경우 테이블의 빈 상태를 바꿀 수 없다.")
     void changeEmptyFail_existTableGroup() {
-        OrderTable orderTable1 = new OrderTable(4, false);
-        OrderTable orderTable2 = new OrderTable(4, false);
-        this.tableGroupRepository.save(new TableGroup(Arrays.asList(orderTable1, orderTable2)));
+        TableGroup tableGroup = this.tableGroupRepository.save(new TableGroup());
+        List<OrderTable> orderTables = Arrays.asList(
+            new OrderTable(tableGroup.getId(), 4, false),
+            new OrderTable(tableGroup.getId(), 4, false));
+        orderTableRepository.saveAll(orderTables);
 
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> this.tableService.changeEmpty(orderTable1.getId(), new OrderTableRequest(true)));
+            .isThrownBy(() -> this.tableService.changeEmpty(orderTables.get(0).getId(), new OrderTableRequest(true)));
     }
 
     @Test

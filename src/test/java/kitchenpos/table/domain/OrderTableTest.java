@@ -37,7 +37,7 @@ class OrderTableTest {
     @DisplayName("그룹에 속해있는 테이블일 경우 빈 상태를 변경할 수 없다.")
     void changeEmptyFail() {
         OrderTable orderTable = new OrderTable(10, false);
-        orderTable.setTableGroup(new TableGroup());
+        orderTable.changeTableGroup(10L);
 
         assertThatIllegalArgumentException()
             .isThrownBy(() -> orderTable.changeEmpty(true));
