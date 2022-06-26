@@ -13,12 +13,6 @@ public class Menu {
     public Menu() {
     }
 
-    public Menu(final Long id, final String name, final BigDecimal price) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-    }
-
     public Menu(final Long id, final String name, final BigDecimal price, final Long menuGroupId, final List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = name;

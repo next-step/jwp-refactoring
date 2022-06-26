@@ -33,6 +33,8 @@ class MenuServiceTest {
     @Mock
     private MenuGroupDao menuGroupDao;
     @Mock
+    private MenuProductDao menuProductDao;
+    @Mock
     private ProductDao productDao;
 
     @InjectMocks
@@ -69,7 +71,7 @@ class MenuServiceTest {
     @ParameterizedTest
     @NullSource
     @ValueSource(longs = -1L)
-    void 메뉴_등록_시_메뉴의_가격이_없거나_0보다_작으면_익셉션이_발생해야_한다(final Long price) {
+    void 메뉴_등록_시_메뉴의_가격이_없거나_0보다_작으면_에러가_발생해야_한다(final Long price) {
         // given
         final Menu given = new Menu(
                 1L,
@@ -84,7 +86,7 @@ class MenuServiceTest {
     }
 
     @Test
-    void 메뉴_등록_시_메뉴_그룹이_존재하지_않으면_익셉션이_발생해야_한다() {
+    void 메뉴_등록_시_메뉴_그룹이_존재하지_않으면_에러가_발생해야_한다() {
         // given
         final Long invalidMenuGroupId = -1L;
         final Menu given = new Menu(
@@ -101,7 +103,7 @@ class MenuServiceTest {
     }
 
     @Test
-    void 메뉴_등록_시_상품이_없으면_익셉션이_발생해야_한다() {
+    void 메뉴_등록_시_상품이_없으면_에러가_발생해야_한다() {
         // given
         final Long invalidProductId = -1L;
         final Menu given = new Menu(
@@ -119,7 +121,7 @@ class MenuServiceTest {
     }
 
     @Test
-    void 메뉴_등록_시_메뉴_가격이_상품들의_금액_총합보다_크면_익셉션이_발생해야_한다() {
+    void 메뉴_등록_시_메뉴_가격이_상품들의_금액_총합보다_크면_에러가_발생해야_한다() {
         // given
         final Menu given = new Menu(
                 1L,
