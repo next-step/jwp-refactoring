@@ -27,6 +27,12 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.dto.MenuProductDTO;
+import kitchenpos.dto.dto.OrderLineItemDTO;
+import kitchenpos.dto.response.MenuGroupResponse;
+import kitchenpos.dto.response.MenuResponse;
+import kitchenpos.dto.response.OrderTableResponse;
+import kitchenpos.dto.response.ProductResponse;
 import kitchenpos.helper.AcceptanceApiHelper.TableApiHelper;
 import kitchenpos.helper.AcceptanceAssertionHelper.TableAssertionHelper;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,8 +43,8 @@ import org.springframework.test.context.jdbc.Sql;
 class TableAcceptanceTest extends AcceptanceTest {
     public static final String 비어있음 = "true";
     public static final String 사용중 = "false";
-    private Menu 양념두마리_메뉴;
-    private OrderLineItem 주문;
+    private MenuResponse 양념두마리_메뉴;
+    private OrderLineItemDTO 주문;
 
     @BeforeEach
     public void init(){
@@ -47,18 +53,19 @@ class TableAcceptanceTest extends AcceptanceTest {
     }
 
     private void 주문_설정하기(){
-        주문 = new OrderLineItem();
+        주문 = new OrderLineItemDTO();
         주문.setMenuId(양념두마리_메뉴.getId());
-        주문.setQuantity(2);
+        주문.setQuantity(2L);
     }
 
     private void 메뉴_설정하기() {
-        Product 양념 = 상품_등록하기("양념", 15000).as(Product.class);
-        MenuGroup 두마리메뉴 = 메뉴그룹_등록하기("두마리메뉴").as(MenuGroup.class);
-        MenuProduct 양념_한마리 = new MenuProduct();
+        ProductResponse 양념 = 상품_등록하기("양념", 15000).as(ProductResponse.class);
+        MenuGroupResponse 두마리메뉴 = 메뉴그룹_등록하기("두마리메뉴").as(MenuGroupResponse.class);
+        MenuProductDTO 양념_한마리 = new MenuProductDTO();
         양념_한마리.setProductId(양념.getId());
-        양념_한마리.setQuantity(2);
-        양념두마리_메뉴 = 메뉴_추가하기("양념두마리", 25000, 두마리메뉴.getId(), Arrays.asList(양념_한마리)).as(Menu.class);
+        양념_한마리.setQuantity(2L);
+
+        양념두마리_메뉴 = 메뉴_추가하기("양념두마리", 25000, 두마리메뉴.getId(), Arrays.asList(양념_한마리)).as(MenuResponse.class);
     }
 
     /**
@@ -85,9 +92,9 @@ class TableAcceptanceTest extends AcceptanceTest {
     @Test
     public void 테이블_리스트_조회하기_테스트() {
         //given
-        OrderTable 테이블_1_정보 = 빈테이블_생성하기().as(OrderTable.class);
-        OrderTable 테이블_2_정보 = 빈테이블_생성하기().as(OrderTable.class);
-        OrderTable 테이블_3_정보 = 빈테이블_생성하기().as(OrderTable.class);
+        OrderTableResponse 테이블_1_정보 = 빈테이블_생성하기().as(OrderTableResponse.class);
+        OrderTableResponse 테이블_2_정보 = 빈테이블_생성하기().as(OrderTableResponse.class);
+        OrderTableResponse 테이블_3_정보 = 빈테이블_생성하기().as(OrderTableResponse.class);
 
         //when
         ExtractableResponse<Response> 테이블_리스트_조회하기_response = 테이블_리스트_조회하기();
@@ -104,7 +111,7 @@ class TableAcceptanceTest extends AcceptanceTest {
     @Test
     public void 유휴테이블_설정하기_테스트() {
         //given
-        OrderTable 테이블_1_정보 = 빈테이블_생성하기().as(OrderTable.class);
+        OrderTableResponse 테이블_1_정보 = 빈테이블_생성하기().as(OrderTableResponse.class);
 
         //when
         ExtractableResponse<Response> 유휴테이블_여부_설정하기_response = 유휴테이블_여부_설정하기(비어있음,
@@ -124,7 +131,7 @@ class TableAcceptanceTest extends AcceptanceTest {
     public void 테이블_손님수_설정하기_테스트() {
         //given
         int 손님수 = 4;
-        OrderTable 테이블_1_정보 = 빈테이블_생성하기().as(OrderTable.class);
+        OrderTableResponse 테이블_1_정보 = 빈테이블_생성하기().as(OrderTableResponse.class);
         유휴테이블_여부_설정하기(사용중, 테이블_1_정보.getId());
 
         //when
@@ -144,7 +151,7 @@ class TableAcceptanceTest extends AcceptanceTest {
     public void 테이블_손님수_설정_빈테이블일때_에러발생_테스트() {
         //given
         int 손님수 = 4;
-        OrderTable 테이블_1_정보 = 빈테이블_생성하기().as(OrderTable.class);
+        OrderTableResponse 테이블_1_정보 = 빈테이블_생성하기().as(OrderTableResponse.class);
 
         //when
         ExtractableResponse<Response> 테이블_손님_인원_설정하기_response = 테이블_손님_인원_설정하기(손님수,
@@ -164,7 +171,7 @@ class TableAcceptanceTest extends AcceptanceTest {
     public void 테이블_손님수_설정_손님_음수일때_에러발생_테스트() {
         //given
         int 손님수 = -1;
-        OrderTable 테이블_1_정보 = 빈테이블_생성하기().as(OrderTable.class);
+        OrderTableResponse 테이블_1_정보 = 빈테이블_생성하기().as(OrderTableResponse.class);
         유휴테이블_여부_설정하기(사용중, 테이블_1_정보.getId());
 
         //when
@@ -187,7 +194,7 @@ class TableAcceptanceTest extends AcceptanceTest {
     @Test
     public void 테이블_먹고있거나_요리중에_빈테이블_삭제시_에러발생_테스트(){
         //given(테이블생성)
-        OrderTable 테이블_1_정보 = 빈테이블_생성하기().as(OrderTable.class);
+        OrderTableResponse 테이블_1_정보 = 빈테이블_생성하기().as(OrderTableResponse.class);
         유휴테이블_여부_설정하기(사용중, 테이블_1_정보.getId());
         //given(테이블-주문 매핑)
         주문_생성하기(테이블_1_정보.getId(), Arrays.asList(주문)).as(Order.class);
