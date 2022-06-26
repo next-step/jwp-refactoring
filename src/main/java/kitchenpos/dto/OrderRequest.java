@@ -1,5 +1,9 @@
 package kitchenpos.dto;
 
+import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderStatus;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class OrderRequest {
@@ -24,5 +28,9 @@ public class OrderRequest {
 
     public List<OrderLineItemRequest> getOrderLineItems() {
         return orderLineItems;
+    }
+
+    public Order toOrder() {
+        return new Order(orderTableId, OrderStatus.COOKING.name(), LocalDateTime.now());
     }
 }

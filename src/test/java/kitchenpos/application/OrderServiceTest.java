@@ -5,6 +5,10 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.*;
+import kitchenpos.dto.OrderLineItemRequest;
+import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderResponse;
+import kitchenpos.dto.OrderStatusRequest;
 import kitchenpos.factory.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,9 +23,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static kitchenpos.factory.MenuFixtureFactory.*;
@@ -33,8 +39,7 @@ import static kitchenpos.factory.OrderTableFixtureFactory.*;
 import static kitchenpos.factory.ProductFixtureFactory.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -95,36 +100,40 @@ class OrderServiceTest {
         //given
         given(menuDao.countByIdIn(anyList())).willReturn(1L);
         given(orderTableDao.findById(테이블_1.getId())).willReturn(Optional.of(테이블_1));
-        given(orderDao.save(접수된_주문)).willReturn(접수된_주문);
+        given(orderDao.save(any(Order.class))).willReturn(접수된_주문);
+        OrderRequest 접수된_주문_request = OrderRequest.of(
+                접수된_주문.getOrderTableId(),
+                접수된_주문.getOrderLineItems().stream()
+                        .map(orderLineItem -> OrderLineItemRequest.of(orderLineItem.getMenuId(), (int) orderLineItem.getQuantity()))
+                        .collect(Collectors.toList())
+        );
 
         //when
-        Order savedOrder = orderService.create(접수된_주문);
+        OrderResponse savedOrder = orderService.create(접수된_주문_request);
 
         //then
-        assertThat(savedOrder).isEqualTo(접수된_주문);
+        assertThat(savedOrder).isEqualTo(OrderResponse.from(접수된_주문));
     }
 
     @DisplayName("주문항목은 비어있을 수 없다")
     @Test
     void 주문_주문항목_검증(){
         //given
-        Order invalidOrder = createOrder(테이블_1.getId(), OrderStatus.COOKING.name(), LocalDateTime.now());
-
+        OrderRequest invalidRequest = OrderRequest.of(테이블_1.getId(), new ArrayList<>());
         //then
-        assertThrows(IllegalArgumentException.class, () -> orderService.create(invalidOrder));
+        assertThrows(IllegalArgumentException.class, () -> orderService.create(invalidRequest));
     }
 
     @DisplayName("주문항목간 메뉴는 중복될 수 없다")
     @Test
     void 주문_주문항목_메뉴_중복_검증(){
         //given
-        Order invalidOrder = createOrder(테이블_1.getId(), OrderStatus.COOKING.name(), LocalDateTime.now());
-        OrderLineItem item1 = createOrderLineItem(접수된_주문.getId(), 메뉴_김치찌개세트.getId(), 1);
-        OrderLineItem item2 = createOrderLineItem(접수된_주문.getId(), 메뉴_김치찌개세트.getId(), 1);
-        invalidOrder.setOrderLineItems(Arrays.asList(item1, item2));
+        OrderLineItemRequest 중복_메뉴 = OrderLineItemRequest.of(접수된주문_김치찌개세트.getMenuId(),
+                (int) 접수된주문_김치찌개세트.getQuantity());
+        OrderRequest invalidRequest = OrderRequest.of(접수된_주문.getId(), Arrays.asList(중복_메뉴, 중복_메뉴));
 
         //then
-        assertThrows(IllegalArgumentException.class, () -> orderService.create(invalidOrder));
+        assertThrows(IllegalArgumentException.class, () -> orderService.create(invalidRequest));
     }
 
     @DisplayName("등록하려는 주문테이블이 존재해야 한다")
@@ -133,9 +142,15 @@ class OrderServiceTest {
         //given
         given(menuDao.countByIdIn(anyList())).willReturn(1L);
         given(orderTableDao.findById(테이블_1.getId())).willReturn(Optional.ofNullable(null));
+        OrderRequest 접수된_주문_request = OrderRequest.of(
+                접수된_주문.getOrderTableId(),
+                접수된_주문.getOrderLineItems().stream()
+                        .map(orderLineItem -> OrderLineItemRequest.of(orderLineItem.getMenuId(), (int) orderLineItem.getQuantity()))
+                        .collect(Collectors.toList())
+        );
 
         //then
-        assertThrows(IllegalArgumentException.class, () -> orderService.create(접수된_주문));
+        assertThrows(IllegalArgumentException.class, () -> orderService.create(접수된_주문_request));
     }
 
     @DisplayName("등록하려는 주문테이블은 비어있을 수 없다")
@@ -144,10 +159,10 @@ class OrderServiceTest {
         //given
         given(menuDao.countByIdIn(anyList())).willReturn(1L);
         given(orderTableDao.findById(테이블_EMPTY.getId())).willReturn(Optional.of(테이블_EMPTY));
-
-        Order invalidOrder = createOrder(테이블_EMPTY.getId(), OrderStatus.COOKING.name(), LocalDateTime.now());
-        OrderLineItem item1 = createOrderLineItem(접수된_주문.getId(), 메뉴_김치찌개세트.getId(), 1);
-        invalidOrder.setOrderLineItems(Arrays.asList(item1));
+        OrderRequest invalidOrder = OrderRequest.of(
+                테이블_EMPTY.getId(),
+                Arrays.asList(OrderLineItemRequest.of(메뉴_김치찌개세트.getId(), 1))
+        );
 
         //then
         assertThrows(IllegalArgumentException.class, () -> orderService.create(invalidOrder));
@@ -158,9 +173,15 @@ class OrderServiceTest {
     void 주문_주문항목_메뉴_검증(){
         //given
         given(menuDao.countByIdIn(anyList())).willReturn(2L);
+        OrderRequest 접수된_주문_request = OrderRequest.of(
+                접수된_주문.getOrderTableId(),
+                접수된_주문.getOrderLineItems().stream()
+                        .map(orderLineItem -> OrderLineItemRequest.of(orderLineItem.getMenuId(), (int) orderLineItem.getQuantity()))
+                        .collect(Collectors.toList())
+        );
 
         //then
-        assertThrows(IllegalArgumentException.class, () -> orderService.create(접수된_주문));
+        assertThrows(IllegalArgumentException.class, () -> orderService.create(접수된_주문_request));
     }
 
     @DisplayName("주문의 목록을 조회할 수 있다")
@@ -170,10 +191,10 @@ class OrderServiceTest {
         given(orderDao.findAll()).willReturn(Arrays.asList(접수된_주문));
 
         //when
-        List<Order> list = orderService.list();
+        List<OrderResponse> list = orderService.list();
 
         //then
-        assertThat(list).containsExactly(접수된_주문);
+        assertThat(list).containsExactly(OrderResponse.from(접수된_주문));
     }
 
     @DisplayName("주문의 상태를 업데이트할 수 있다")
@@ -185,8 +206,8 @@ class OrderServiceTest {
         given(orderDao.findById(anyLong())).willReturn(Optional.of(order));
 
         //when
-        Order newOrder = createOrder(테이블_1.getId(), afterStatus, LocalDateTime.now());
-        Order changedOrder = orderService.changeOrderStatus(order.getId(), newOrder);
+        OrderStatusRequest newStatus = OrderStatusRequest.from(afterStatus);
+        OrderResponse changedOrder = orderService.changeOrderStatus(order.getId(), newStatus);
 
         //then
         assertThat(changedOrder.getOrderStatus()).isEqualTo(afterStatus);
@@ -206,10 +227,10 @@ class OrderServiceTest {
         given(orderDao.findById(anyLong())).willReturn(Optional.ofNullable(null));
 
         //when
-        Order 주문_MEAL = createOrder(테이블_1.getId(), OrderStatus.MEAL.name(), LocalDateTime.now());
+        OrderStatusRequest status_MEAL = OrderStatusRequest.from(OrderStatus.MEAL.name());
 
         //then
-        assertThrows(IllegalArgumentException.class, () -> orderService.changeOrderStatus(접수된_주문.getId(), 주문_MEAL));
+        assertThrows(IllegalArgumentException.class, () -> orderService.changeOrderStatus(접수된_주문.getId(), status_MEAL));
     }
 
     @DisplayName("주문상태가 COMPLETION이면 주문상태를 업데이트할 수 없다")
@@ -219,9 +240,9 @@ class OrderServiceTest {
         given(orderDao.findById(anyLong())).willReturn(Optional.of(완료된_주문));
 
         //when
-        Order 주문_MEAL = createOrder(테이블_1.getId(), OrderStatus.MEAL.name(), LocalDateTime.now());
+        OrderStatusRequest status_MEAL = OrderStatusRequest.from(OrderStatus.MEAL.name());
 
         //then
-        assertThrows(IllegalArgumentException.class, () -> orderService.changeOrderStatus(완료된_주문.getId(), 주문_MEAL));
+        assertThrows(IllegalArgumentException.class, () -> orderService.changeOrderStatus(완료된_주문.getId(), status_MEAL));
     }
 }

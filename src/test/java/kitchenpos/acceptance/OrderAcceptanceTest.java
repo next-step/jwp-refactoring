@@ -167,7 +167,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
     public static void 주문_목록_포함됨(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> createdResponses) {
         List<Long> expectedOrderIds = createdResponses.stream()
-                .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
+                .map(it -> Long.parseLong(it.header("Location").split("/")[3]))
                 .collect(Collectors.toList());
 
         List<Long> resultOrderIds = response.jsonPath().getList(".", OrderResponse.class).stream()
