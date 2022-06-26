@@ -29,7 +29,7 @@ public class MenuGroupServiceTest {
 
     @DisplayName("메뉴 그룹을 생성한다.")
     @Test
-    void 메뉴_그룹_생성_성공() {
+    void 생성_성공() {
         // given
         MenuGroupEntity menuGroup = new MenuGroupEntity("양식");
         given(menuGroupRepository.save(any(MenuGroupEntity.class))).willReturn(menuGroup);
@@ -44,7 +44,7 @@ public class MenuGroupServiceTest {
 
     @DisplayName("메뉴 그룹 목록을 조회한다.")
     @Test
-    void 메뉴_그룹_목록_조회() {
+    void 목록_조회() {
         // given
         MenuGroupEntity 양식 = new MenuGroupEntity(1L, "양식");
         MenuGroupEntity 한식 = new MenuGroupEntity(2L, "한식");

@@ -27,13 +27,14 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     public void init() {
         super.init();
 
+        // given
         menuGroupRequest1 = new MenuGroupRequest("채식");
         menuGroupRequest2 = new MenuGroupRequest("양식");
     }
 
     @DisplayName("메뉴 그룹을 생성한다.")
     @Test
-    void 메뉴_그룹_생성() {
+    void 생성() {
         // when
         ExtractableResponse<Response> response = 메뉴_그룹_생성_요청(menuGroupRequest1);
 
@@ -43,7 +44,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("메뉴 그룹 목록을 조회한다.")
     @Test
-    void 메뉴_그룹_목록_조회() {
+    void 목록_조회() {
         // given
         ExtractableResponse<Response> createResponse1 = 메뉴_그룹_생성_요청(menuGroupRequest1);
         ExtractableResponse<Response> createResponse2 = 메뉴_그룹_생성_요청(menuGroupRequest2);

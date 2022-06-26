@@ -8,6 +8,18 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class OrderTableTest {
 
+    @DisplayName("주문 테이블을 생성한다.")
+    @Test
+    void 생성() {
+        // when
+        OrderTableEntity orderTable = new OrderTableEntity(null, 0, false);
+
+        // then
+        assertThat(orderTable).isNotNull();
+        assertThat(orderTable.getNumberOfGuests()).isZero();
+        assertThat(orderTable.getEmpty()).isFalse();
+    }
+
     @DisplayName("주문 테이블을 빈 테이블로 설정한다.")
     @Test
     void 빈_테이블로_설정() {
@@ -17,6 +29,7 @@ public class OrderTableTest {
         // when
         orderTable.changeEmpty(true);
 
+        // then
         assertThat(orderTable.isEmpty()).isTrue();
     }
 
@@ -24,10 +37,11 @@ public class OrderTableTest {
     @DisplayName("단체 지정되어 빈 테이블로 설정하는 데 실패한다")
     @Test
     void 빈_테이블로_설정_예외_단체_지정됨() {
-        TableGroupEntity tableGroup = new TableGroupEntity();
         // given
+        TableGroupEntity tableGroup = new TableGroupEntity();
         OrderTableEntity orderTable = new OrderTableEntity(tableGroup, 0, false);
 
+        // when, then
         assertThatThrownBy(() -> orderTable.changeEmpty(true))
                 .isInstanceOf(IllegalStateException.class);
     }

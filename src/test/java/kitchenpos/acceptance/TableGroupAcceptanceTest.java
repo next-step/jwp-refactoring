@@ -24,6 +24,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     public void init() {
         super.init();
 
+        // given
         TableResponse 테이블1 = TableAcceptanceTest.주문_테이블_생성되어_있음(0, true).as(TableResponse.class);
         TableResponse 테이블2 = TableAcceptanceTest.주문_테이블_생성되어_있음(0, true).as(TableResponse.class);
         tableGroupRequest = new TableGroupRequest(Arrays.asList(테이블1.getId(), 테이블2.getId()));
@@ -31,7 +32,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("주문 테이블들을 단체 지정한다.")
     @Test
-    void 주문_테이블들_단체_지정() {
+    void 단체_지정() {
         // when
         ExtractableResponse<Response> response = 주문_테이블들_단체_지정_요청(tableGroupRequest);
 

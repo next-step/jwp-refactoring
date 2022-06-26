@@ -27,13 +27,14 @@ public class TableAcceptanceTest extends AcceptanceTest {
     public void init() {
         super.init();
 
+        // given
         tableRequest1 = new TableRequest(0, false);
         tableRequest2 = new TableRequest(0, false);
     }
 
     @DisplayName("주문 테이블을 생성한다.")
     @Test
-    void 주문_테이블_생성() {
+    void 생성() {
         // when
         ExtractableResponse<Response> response = 주문_테이블_생성_요청(tableRequest1);
 
@@ -43,7 +44,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("주문 테이블 목록을 조회한다.")
     @Test
-    void 주문_테이블_목록_조회() {
+    void 목록_조회() {
         // given
         ExtractableResponse<Response> createResponse1 = 주문_테이블_생성_요청(tableRequest1);
         ExtractableResponse<Response> createResponse2 = 주문_테이블_생성_요청(tableRequest2);

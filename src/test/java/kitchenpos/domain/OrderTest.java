@@ -19,6 +19,7 @@ public class OrderTest {
 
     @BeforeEach
     void init() {
+        // given
         ProductEntity 샐러드 = new ProductEntity("샐러드", BigDecimal.valueOf(100));
         ProductEntity 스테이크 = new ProductEntity("스테이크", BigDecimal.valueOf(200));
         ProductEntity 에이드 = new ProductEntity("에이드", BigDecimal.valueOf(50));
@@ -50,7 +51,7 @@ public class OrderTest {
 
     @DisplayName("주문을 생성한다.")
     @Test
-    void 주문_생성() {
+    void 생성() {
         // when
         OrderEntity order = OrderEntity.createOrder(테이블, Arrays.asList(커플_메뉴_1개, 싱글_메뉴_2개));
 
@@ -60,7 +61,7 @@ public class OrderTest {
 
     @DisplayName("주문 항목이 1개 미만이라 주문 생성에 실패한다")
     @Test
-    void 주문_생성_예외_주문_항목_1개_미만() {
+    void 생성_예외_주문_항목_1개_미만() {
         // when, then
         assertThatThrownBy(() -> OrderEntity.createOrder(테이블, Arrays.asList()))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -70,7 +71,7 @@ public class OrderTest {
 
     @DisplayName("빈 테이블이라 주문 생성에 실패한다")
     @Test
-    void 주문_생성_예외_빈_테이블() {
+    void 생성_예외_빈_테이블() {
         // when, then
         assertThatThrownBy(() -> OrderEntity.createOrder(빈_테이블, Arrays.asList(커플_메뉴_1개, 싱글_메뉴_2개)))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -79,7 +80,7 @@ public class OrderTest {
 
     @DisplayName("주문의 상태를 변경한다.")
     @Test
-    void 주문_상태_변경() {
+    void 상태_변경() {
         // given
         OrderEntity order = OrderEntity.createOrder(테이블, Arrays.asList(커플_메뉴_1개, 싱글_메뉴_2개));
 
@@ -92,7 +93,7 @@ public class OrderTest {
 
     @DisplayName("계산 완료라서 상태 변경에 실패한다.")
     @Test
-    void 주문_상태_변경_예외_계산_완료() {
+    void 상태_변경_예외_계산_완료() {
         // given
         OrderEntity order = OrderEntity.createOrder(테이블, Arrays.asList(커플_메뉴_1개, 싱글_메뉴_2개));
         order.changeOrderStatus(OrderStatus.COMPLETION);

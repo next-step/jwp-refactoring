@@ -27,13 +27,14 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     public void init() {
         super.init();
 
+        // given
         productRequest1 = new ProductRequest("샐러드", 100);
         productRequest2 = new ProductRequest("스테이크", 100);
     }
 
     @DisplayName("상품을 생성한다.")
     @Test
-    void 상품_생성() {
+    void 생성() {
         // when
         ExtractableResponse<Response> response = 상품_생성_요청(productRequest1);
 
@@ -43,7 +44,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("상품 목록을 조회한다.")
     @Test
-    void 상품_목록_조회() {
+    void 목록_조회() {
         // given
         ExtractableResponse<Response> createResponse1 = 상품_생성_요청(productRequest1);
         ExtractableResponse<Response> createResponse2 = 상품_생성_요청(productRequest2);

@@ -31,7 +31,7 @@ public class TableGroupTest {
 
     @DisplayName("주문 테이블을 단체 지정한다.")
     @Test
-    void 주문_테이블_단체_지정() {
+    void 단체_지정() {
         // when
         TableGroupEntity 테이블_그룹 = new TableGroupEntity(Arrays.asList(빈_테이블1, 빈_테이블2));
 
@@ -42,7 +42,7 @@ public class TableGroupTest {
 
     @DisplayName("빈 테이블이 아니라 주문 테이블 단체 지정에 실패한다.")
     @Test
-    void 주문_테이블_단체_지정_예외_빈_테이블_아님() {
+    void 단체_지정_예외_빈_테이블_아님() {
         // when, then
         System.out.println();
         assertThatThrownBy(() -> new TableGroupEntity(Arrays.asList(테이블, 빈_테이블1)))
@@ -52,7 +52,7 @@ public class TableGroupTest {
 
     @DisplayName("테이블이 2개 미만이라 주문 테이블 단체 지정에 실패한다.")
     @Test
-    void 주문_테이블_단체_지정_예외_테이블_하나() {
+    void 단체_지정_예외_테이블_하나() {
         // when, then
         assertThatThrownBy(() -> new TableGroupEntity(Arrays.asList(빈_테이블1)))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -61,7 +61,7 @@ public class TableGroupTest {
 
     @DisplayName("이미 단체 지정되어 있어서 지정에 실패한다.")
     @Test
-    void 주문_테이블_단체_지정_예외_이미_단체_지정() {
+    void 단체_지정_예외_이미_단체_지정() {
         // when, then
         assertThatThrownBy(() -> new TableGroupEntity(Arrays.asList(단체_지정_테이블1, 단체_지정_테이블2)))
                 .isInstanceOf(IllegalArgumentException.class)

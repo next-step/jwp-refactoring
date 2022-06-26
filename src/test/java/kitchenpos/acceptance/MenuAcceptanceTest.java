@@ -30,6 +30,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     public void init() {
         super.init();
 
+        // given
         ProductResponse 샐러드 = ProductAcceptanceTest.상품_생성되어_있음("샐러드", 100).as(ProductResponse.class);
         ProductResponse 스테이크 = ProductAcceptanceTest.상품_생성되어_있음("스테이크", 200).as(ProductResponse.class);
         ProductResponse 에이드 = ProductAcceptanceTest.상품_생성되어_있음("에이드", 50).as(ProductResponse.class);
@@ -54,7 +55,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("메뉴를 생성한다.")
     @Test
-    void 메뉴_생성() {
+    void 생성() {
         // when
         ExtractableResponse<Response> response = 메뉴_생성_요청(menuRequest1);
 
@@ -64,7 +65,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("메뉴 목록을 조회한다.")
     @Test
-    void 메뉴_목록_조회() {
+    void 목록_조회() {
         // given
         ExtractableResponse<Response> createResponse1 = 메뉴_생성_요청(menuRequest1);
         ExtractableResponse<Response> createResponse2 = 메뉴_생성_요청(menuRequest2);

@@ -38,6 +38,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     public void init() {
         super.init();
 
+        // given
         TableResponse 주문_테이블 = 주문_테이블_생성되어_있음(0, false).as(TableResponse.class);
         ProductResponse 샐러드 = 상품_생성되어_있음("샐러드", 100).as(ProductResponse.class);
         MenuGroupResponse 채식_메뉴_그룹 = 메뉴_그룹_생성되어_있음("채식").as(MenuGroupResponse.class);
@@ -52,7 +53,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("주문을 생성한다.")
     @Test
-    void 주문_생성() {
+    void 생성() {
         // when
         ExtractableResponse<Response> response = 주문_생성_요청(orderRequest1);
 
@@ -62,7 +63,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("주문 목록을 조회한다.")
     @Test
-    void 주문_목록_조회() {
+    void 목록_조회() {
         // given
         ExtractableResponse<Response> createResponse1 = 주문_생성_요청(orderRequest1);
         ExtractableResponse<Response> createResponse2 = 주문_생성_요청(orderRequest2);

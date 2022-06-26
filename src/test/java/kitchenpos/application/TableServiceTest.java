@@ -2,7 +2,6 @@ package kitchenpos.application;
 
 import kitchenpos.dao.OrderDao;
 import kitchenpos.domain.OrderTableEntity;
-import kitchenpos.dto.TableRequest;
 import kitchenpos.dto.TableResponse;
 import kitchenpos.repository.TableRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -33,23 +32,9 @@ public class TableServiceTest {
     @InjectMocks
     TableService tableService;
 
-    @DisplayName("주문 테이블을 생성한다.")
-    @Test
-    void 테이블_생성_성공() {
-        // given
-        OrderTableEntity 테이블 = new OrderTableEntity(null, 0, false);
-        given(tableRepository.save(any(OrderTableEntity.class))).willReturn(테이블);
-
-        // when
-        TableResponse saved = tableService.create(new TableRequest(테이블.getNumberOfGuests(), 테이블.getEmpty()));
-
-        // then
-        assertThat(saved).isNotNull();
-    }
-
     @DisplayName("주문 테이블 목록을 조회한다.")
     @Test
-    void 테이블_목록_조회() {
+    void 목록_조회() {
         // given
         OrderTableEntity 테이블1 = new OrderTableEntity(null, 0, false);
         OrderTableEntity 테이블2 = new OrderTableEntity(null, 0, false);
