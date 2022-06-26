@@ -35,12 +35,6 @@ public class Order {
     protected Order() {
     }
 
-    public Order(Long id, OrderStatus orderStatus, LocalDateTime orderedTime) {
-        this.id = id;
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
-    }
-
     public Order(OrderStatus orderStatus, OrderLineItems orderLineItems, LocalDateTime orderedTime, OrderTable orderTable) {
         validate(orderTable, orderLineItems);
         this.orderStatus = orderStatus;
@@ -57,10 +51,10 @@ public class Order {
     }
 
     private void validate(OrderTable orderTable, OrderLineItems orderLineItems) {
-        if(orderTable.isEmptyTable()){
+        if (orderTable.isEmptyTable()) {
             throw new IllegalArgumentException("[ERROR] 빈테이블인 경우 주문을 등록 할 수 없습니다.");
         }
-        if(orderLineItems.isEmpty()){
+        if (orderLineItems.isEmpty()) {
             throw new IllegalArgumentException("[ERROR] 주문 항목이 없는 경우 주문을 등록 할 수 없습니다.");
         }
     }
@@ -73,22 +67,6 @@ public class Order {
     private void validatePossibleChangOrder() {
         if (OrderStatus.COMPLETION.equals(this.orderStatus)) {
             throw new IllegalArgumentException("[ERROR] 계산완료상태에서 주문 상태를 변경할 수 없습니다.");
-        }
-    }
-
-    public void updateOrder(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    public void checkPossibleChangeEmpty() {
-        if (!OrderStatus.COMPLETION.equals(orderStatus)) {
-            throw new IllegalStateException("[ERROR] 주문이 계산완료 상태가 아닙니다.");
-        }
-    }
-
-    public void checkPossibleUngroupingOrderStatus() {
-        if (OrderStatus.MEAL.equals(orderStatus) || OrderStatus.COOKING.equals(orderStatus)) {
-            throw new IllegalArgumentException("[ERROR] 주문 상태가 조리, 식사 인 경우 단체 지정 해제 할 수 없습니다.");
         }
     }
 

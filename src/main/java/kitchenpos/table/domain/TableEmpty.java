@@ -31,10 +31,6 @@ public class TableEmpty {
         return !empty;
     }
 
-    public void changeOrderTable() {
-        this.empty = false;
-    }
-
     public boolean isEmpty() {
         return empty;
     }

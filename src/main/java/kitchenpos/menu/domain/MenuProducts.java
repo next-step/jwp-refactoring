@@ -21,8 +21,8 @@ public class MenuProducts {
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
     }
-    
-    public int getTotalPrice(){
+
+    public int getTotalPrice() {
         return menuProducts.stream()
                 .map(MenuProduct::createAmount)
                 .mapToInt(Amount::getAmount)

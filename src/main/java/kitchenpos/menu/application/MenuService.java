@@ -45,14 +45,14 @@ public class MenuService {
     public List<MenuResponse> list() {
         List<MenuResponse> menuResponses = new ArrayList<>();
         final List<Menu> menus = menuRepository.findAll();
-        for (Menu menu : menus){
+        for (Menu menu : menus) {
             MenuResponse menuResponse = MenuResponse.from(menu);
             menuResponses.add(menuResponse);
         }
         return menuResponses;
     }
 
-    private MenuProducts createMenuProducts(List<MenuProductRequest> menuProductRequests){
+    private MenuProducts createMenuProducts(List<MenuProductRequest> menuProductRequests) {
         MenuProducts menuProducts = new MenuProducts();
         for (MenuProductRequest menuProductRequest : menuProductRequests) {
             final MenuProductQuantity menuProductQuantity = new MenuProductQuantity(menuProductRequest.getQuantity());

@@ -1,51 +1,47 @@
 package kitchenpos.order.domain;
 
+import static kitchenpos.helper.MenuFixtures.메뉴_만들기;
 import static kitchenpos.helper.OrderFixtures.주문_만들기;
+import static kitchenpos.helper.OrderLineItemFixtures.주문_항목_만들기;
+import static kitchenpos.helper.TableFixtures.빈_테이블_만들기;
+import static kitchenpos.helper.TableFixtures.주문_테이블_만들기;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-import static org.assertj.core.api.Assertions.assertThatNoException;
 
 import java.time.LocalDateTime;
 import kitchenpos.order.consts.OrderStatus;
+import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("주문 관련 Domain 단위 테스트")
 class OrderTest {
 
-    @DisplayName("주문 테이블 상태 일치 여부를 확인한다.")
+    @DisplayName("빈테이블인 경우 주문을 등록 할 수 없다.")
     @Test
-    void checkChangeEmpty() {
+    void order_empty_table() {
         //given
-        Order order1 = new Order(null, OrderStatus.MEAL, LocalDateTime.now());
-        Order order2 = new Order(null, OrderStatus.COOKING, LocalDateTime.now());
-        Order order3 = new Order(null, OrderStatus.COMPLETION, LocalDateTime.now());
+        OrderTable emptyTable = 빈_테이블_만들기();
+        OrderLineItem orderLineItem = 주문_항목_만들기(메뉴_만들기("닭", 0), 1);
+        OrderLineItems orderLineItems = new OrderLineItems();
+        orderLineItems.add(orderLineItem);
 
         //when then
-        assertThatIllegalStateException()
-                .isThrownBy(order1::checkPossibleChangeEmpty);
-        assertThatIllegalStateException()
-                .isThrownBy(order2::checkPossibleChangeEmpty);
-        assertThatNoException()
-                .isThrownBy(order3::checkPossibleChangeEmpty);
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new Order(OrderStatus.COMPLETION, orderLineItems, LocalDateTime.now(), emptyTable))
+                .withMessageContaining("빈테이블인 경우 주문을 등록 할 수 없습니다.");
     }
 
-    @DisplayName("주문 상태가 조리, 식사 인 경우 단체 지정 해제 할 수 없다.")
+    @DisplayName("주문 항목이 없는 경우 주문을 등록 할 수 없다.")
     @Test
-    void checkPossibleUngroupingOrderStatus() {
+    void order_not_item() {
         //given
-        Order order1 = new Order(null, OrderStatus.MEAL, LocalDateTime.now());
-        Order order2 = new Order(null, OrderStatus.COOKING, LocalDateTime.now());
-        Order order3 = new Order(null, OrderStatus.COMPLETION, LocalDateTime.now());
+        OrderTable orderTable = 주문_테이블_만들기();
 
         //when then
         assertThatIllegalArgumentException()
-                .isThrownBy(order1::checkPossibleUngroupingOrderStatus);
-        assertThatIllegalArgumentException()
-                .isThrownBy(order2::checkPossibleUngroupingOrderStatus);
-        assertThatNoException()
-                .isThrownBy(order3::checkPossibleUngroupingOrderStatus);
+                .isThrownBy(() -> new Order(OrderStatus.COMPLETION, new OrderLineItems(), LocalDateTime.now(), orderTable))
+                .withMessageContaining("주문 항목이 없는 경우 주문을 등록 할 수 없습니다.");
     }
 
 

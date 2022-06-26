@@ -20,7 +20,7 @@ public class OrderLineItemQuantity {
     }
 
     private void validate(Integer quantity) {
-        if(quantity == null || quantity <= NO_ORDER_COUNT){
+        if (quantity == null || quantity <= NO_ORDER_COUNT) {
             throw new IllegalArgumentException("[ERROR] 주문 수량은 1개이상 이어야 합니다.");
         }
     }

@@ -59,7 +59,7 @@ class OrderServiceUnitTest {
     @Test
     void create_not_registered_menu() {
         //given
-        Menu menu = 메뉴_만들기(1L, "테스트 메뉴", 15000);
+        Menu menu = 메뉴_만들기(1L, "테스트 메뉴", 0);
         OrderLineItemRequest orderLineItem1 = 주문_항목_요청_만들기(menu.getId(), 1);
         OrderLineItemRequest orderLineItem2 = 주문_항목_요청_만들기(menu.getId(), 2);
         OrderTable orderTable = 테이블_만들기(1L, 3, false);
@@ -77,7 +77,7 @@ class OrderServiceUnitTest {
     @Test
     void create_empty_table() {
         //given
-        Menu menu = 메뉴_만들기(1L, "테스트 메뉴", 15000);
+        Menu menu = 메뉴_만들기(1L, "테스트 메뉴", 0);
         OrderLineItemRequest orderLineItem1 = 주문_항목_요청_만들기(menu.getId(), 1);
         OrderLineItemRequest orderLineItem2 = 주문_항목_요청_만들기(menu.getId(), 2);
         OrderTable orderTable = 테이블_만들기(1L, 3, true);
@@ -94,7 +94,7 @@ class OrderServiceUnitTest {
     @Test
     void create_not_exist_order_table() {
         //given
-        Menu menu = 메뉴_만들기(1L, "테스트 메뉴", 15000);
+        Menu menu = 메뉴_만들기(1L, "테스트 메뉴", 0);
         OrderLineItemRequest orderLineItem1 = 주문_항목_요청_만들기(menu.getId(), 1);
         OrderLineItemRequest orderLineItem2 = 주문_항목_요청_만들기(menu.getId(), 2);
         OrderTable orderTable = 테이블_만들기(1L, 3, true);

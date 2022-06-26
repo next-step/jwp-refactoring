@@ -36,6 +36,10 @@ public class TableFixtures {
         return 테이블_만들기(null, 0, true);
     }
 
+    public static OrderTable 주문_테이블_만들기() {
+        return 테이블_만들기(null, 1, false);
+    }
+
     public static OrderTable 테이블_만들기(Integer numberOfGuests, Boolean isEmpty) {
         return 테이블_만들기(null, numberOfGuests, isEmpty);
     }

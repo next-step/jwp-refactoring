@@ -28,12 +28,6 @@ public class Menu {
     protected Menu() {
     }
 
-    public Menu(Long id, String name, MenuPrice menuPrice) {
-        this.id = id;
-        this.name = name;
-        this.menuPrice = menuPrice;
-    }
-
     public Menu(String name, MenuPrice menuPrice, MenuGroup menuGroup, MenuProducts menuProducts) {
         validate(menuPrice, menuProducts);
         this.name = name;
@@ -42,10 +36,11 @@ public class Menu {
         this.menuProducts = menuProducts;
     }
 
-    public Menu(Long id, String name, MenuPrice price, MenuGroup menuGroup, MenuProducts menuProducts) {
+    public Menu(Long id, String name, MenuPrice menuPrice, MenuGroup menuGroup, MenuProducts menuProducts) {
+        validate(menuPrice, menuProducts);
         this.id = id;
         this.name = name;
-        this.menuPrice = price;
+        this.menuPrice = menuPrice;
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
     }
