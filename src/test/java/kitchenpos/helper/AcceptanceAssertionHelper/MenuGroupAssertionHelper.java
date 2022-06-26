@@ -7,7 +7,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.response.MenuGroupResponse;
 import org.springframework.http.HttpStatus;
 
 public class MenuGroupAssertionHelper {
@@ -21,14 +21,14 @@ public class MenuGroupAssertionHelper {
     }
 
     public static void 메뉴그룹_리스트_조회됨(ExtractableResponse<Response> 조회결과,
-        List<MenuGroup> 등록메뉴그룹_리스트) {
+        List<MenuGroupResponse> 등록메뉴그룹_리스트) {
         assertAll(
             () -> assertThat(조회결과.statusCode()).isEqualTo(HttpStatus.OK.value()),
             () -> assertThat(조회결과.jsonPath().getList("."))
                 .hasSize(등록메뉴그룹_리스트.size())
                 .extracting("name").isEqualTo(
                     등록메뉴그룹_리스트.stream()
-                        .map(MenuGroup::getName)
+                        .map(MenuGroupResponse::getName)
                         .collect(Collectors.toList())
                 )
         );

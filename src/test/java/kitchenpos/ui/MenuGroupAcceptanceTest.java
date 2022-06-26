@@ -8,10 +8,9 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.response.MenuGroupResponse;
 import kitchenpos.helper.AcceptanceAssertionHelper.MenuGroupAssertionHelper;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.context.jdbc.Sql;
 
 
 public class MenuGroupAcceptanceTest extends AcceptanceTest {
@@ -41,9 +40,9 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     @Test
     public void 메뉴그룹_조회하기_테스트() {
         //given
-        MenuGroup 반반세트 = 메뉴그룹_등록하기("반반세트").as(MenuGroup.class);
-        MenuGroup 큰세트 = 메뉴그룹_등록하기("큰세트").as(MenuGroup.class);
-        MenuGroup 반마리세트 = 메뉴그룹_등록하기("반마리세트").as(MenuGroup.class);
+        MenuGroupResponse 반반세트 = 메뉴그룹_등록하기("반반세트").as(MenuGroupResponse.class);
+        MenuGroupResponse 큰세트 = 메뉴그룹_등록하기("큰세트").as(MenuGroupResponse.class);
+        MenuGroupResponse 반마리세트 = 메뉴그룹_등록하기("반마리세트").as(MenuGroupResponse.class);
 
         //when
         ExtractableResponse<Response> 메뉴그룹_리스트_조회하기_response = 메뉴그룹_리스트_조회하기();
