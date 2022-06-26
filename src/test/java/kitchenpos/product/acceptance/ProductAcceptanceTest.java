@@ -35,6 +35,26 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         상품_등록_검증됨(등록된_상품);
     }
 
+    @DisplayName("[예외] 가격 없이 상품을 생성한다.")
+    @Test
+    void create_price_null() {
+        // when
+        ExtractableResponse<Response> 등록된_상품 = 상품_등록되어_있음(PRODUCT_NAME01, null);
+
+        // then
+        상품_등록_실패함(등록된_상품);
+    }
+
+    @DisplayName("[예외] 0원 미만으로 상품을 생성한다.")
+    @Test
+    void create_price_under_zero() {
+        // when
+        ExtractableResponse<Response> 등록된_상품 = 상품_등록되어_있음(PRODUCT_NAME01, new BigDecimal(-1));
+
+        // then
+        상품_등록_실패함(등록된_상품);
+    }
+
     @DisplayName("상품 목록을 조회한다.")
     @Test
     void list() {
@@ -68,6 +88,10 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     public static void 상품_등록_검증됨(ExtractableResponse response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
+    }
+
+    public static void 상품_등록_실패함(ExtractableResponse response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     public static ExtractableResponse<Response> 상품_목록_조회_요청() {
