@@ -30,15 +30,23 @@ class ProductServiceTest {
     @InjectMocks
     ProductService productService;
 
+    private Product 치킨;
+    private Product 피자;
+
+    @BeforeEach
+    void setUp() {
+        치킨 = createProduct( 1L, "치킨", BigDecimal.valueOf(15000L));
+        피자 = createProduct(2L, "피자", BigDecimal.valueOf(20000L));
+    }
+
     @DisplayName("상품을 등록할 수 있다")
     @Test
     void 상품_등록(){
         //given
-        Product 치킨 = createProduct( 1L, "치킨", BigDecimal.valueOf(15000L));
         given(productDao.save(any(Product.class))).willReturn(치킨);
 
         //when
-        ProductResponse savedProduct = productService.create(ProductRequest.from(치킨));
+        ProductResponse savedProduct = productService.create(ProductRequest.of(치킨.getName(), 치킨.getPrice().intValue()));
 
         //then
         assertThat(savedProduct.getId()).isEqualTo(치킨.getId());
@@ -52,15 +60,15 @@ class ProductServiceTest {
         Product invalidProduct = createProduct("치킨", BigDecimal.valueOf(-15000L));
 
         //then
-       assertThrows(IllegalArgumentException.class, () -> productService.create(ProductRequest.from(invalidProduct)));
+       assertThrows(IllegalArgumentException.class, () -> productService.create(
+               ProductRequest.of(invalidProduct.getName(), invalidProduct.getPrice().intValue())
+       ));
     }
 
     @DisplayName("상품의 목록을 조회할 수 있다")
     @Test
     void 상품_목록_조회() {
         //given
-        Product 치킨 = createProduct( 1L, "치킨", BigDecimal.valueOf(15000L));
-        Product 피자 = createProduct(2L, "피자", BigDecimal.valueOf(20000L));
         given(productDao.findAll()).willReturn(Arrays.asList(치킨, 피자));
 
         //when

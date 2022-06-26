@@ -34,7 +34,6 @@ public class ProductService {
 
     public List<ProductResponse> list() {
         List<Product> products = productDao.findAll();
-
         return products.stream()
                 .map(product -> ProductResponse.from(product))
                 .collect(Collectors.toList());

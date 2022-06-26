@@ -20,10 +20,6 @@ public class ProductRequest {
         return new ProductRequest(name, price);
     }
 
-    public static ProductRequest from(Product product) {
-        return new ProductRequest(product.getName(), product.getPrice().intValue());
-    }
-
     public String getName() {
         return name;
     }
