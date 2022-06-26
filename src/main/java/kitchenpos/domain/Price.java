@@ -36,7 +36,7 @@ public class Price implements Comparable<Price> {
 
     private static void validateNotUnderMin(BigDecimal price) {
         if (price.compareTo(MIN) < 0) {
-            throw new IllegalArgumentException("금액은 " + MIN + "원 이하가 될 수 없습니다.");
+            throw new IllegalArgumentException("금액은 " + MIN + "원 미만이 될 수 없습니다.");
         }
     }
 
