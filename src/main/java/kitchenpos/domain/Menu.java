@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -17,6 +18,7 @@ public class Menu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String name;
 
     @Embedded
@@ -82,6 +84,10 @@ public class Menu {
     }
 
     public boolean hasPriceGreaterThan(BigDecimal totalPrice) {
+        if (totalPrice == null) {
+            throw new IllegalArgumentException("총 상품 금액은 null일 수 없습니다.");
+        }
+
         return price.isGreaterThan(totalPrice);
     }
 }

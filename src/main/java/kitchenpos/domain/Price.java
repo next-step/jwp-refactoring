@@ -7,7 +7,7 @@ import java.util.Objects;
 
 @Embeddable
 public class Price {
-    @Column(name = "price")
+    @Column(name = "price", nullable = false)
     private BigDecimal value;
 
     protected Price() {
@@ -33,6 +33,10 @@ public class Price {
     }
 
     public boolean isGreaterThan(BigDecimal val) {
+        if (val == null) {
+            throw new IllegalArgumentException("인자가 null이라 비교할 수 없습니다.");
+        }
+
         return value.compareTo(val) > 0;
     }
 }

@@ -12,6 +12,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
@@ -26,9 +27,11 @@ public class Order {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
     private OrderTable orderTable;
 
     @Enumerated(EnumType.STRING)
+    @JoinColumn(nullable = false)
     private OrderStatus orderStatus;
 
     @CreatedDate
@@ -55,7 +58,7 @@ public class Order {
     public static Order createOrder(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         Order order = new Order(orderTable, OrderStatus.DEFAULT);
         order.addOrderLineItems(orderLineItems);
-        
+
         return order;
     }
 
