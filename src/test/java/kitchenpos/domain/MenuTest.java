@@ -21,8 +21,8 @@ class MenuTest {
     void mapping_test() {
         // given
         Product 상품 = Product.of("test", BigDecimal.valueOf(500L));
-        MenuProduct 메뉴_상품 = MenuProduct.of(상품, 3);
-        MenuProduct 메뉴_상품2 = MenuProduct.of(상품, 2);
+        MenuProduct 메뉴_상품 = MenuProduct.of(1L, 3);
+        MenuProduct 메뉴_상품2 = MenuProduct.of(1L, 2);
 
         // when
         Menu 메뉴 = Menu.of("menu", BigDecimal.valueOf(500L), null, Arrays.asList(메뉴_상품, 메뉴_상품2));

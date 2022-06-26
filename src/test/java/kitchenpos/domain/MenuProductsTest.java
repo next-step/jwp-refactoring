@@ -29,7 +29,7 @@ class MenuProductsTest {
     @Test
     void exception_test() {
         // given
-        MenuProduct menuProduct = MenuProduct.of(상품, 3);
+        MenuProduct menuProduct = MenuProduct.of(1L, 3);
         MenuProduct menuProduct2 = MenuProduct.of(null, 3);
 
         // then
@@ -43,8 +43,8 @@ class MenuProductsTest {
     @Test
     void exception_test2() {
         // given
-        MenuProduct menuProduct = MenuProduct.of(상품, 3);
-        MenuProduct menuProduct2 = MenuProduct.of(상품2, 3);
+        MenuProduct menuProduct = MenuProduct.of(1L, 3);
+        MenuProduct menuProduct2 = MenuProduct.of(2L, 3);
 
         // then
         Price menuPrice = new Price(BigDecimal.valueOf(2410L));

@@ -60,7 +60,6 @@ class MenuServiceTest {
     private MenuGroup 메뉴_그룹;
     private Product 후라이드_치킨;
     private Product 감자튀김;
-    private Product 테스트_상품;
     private MenuProduct 테스트_메뉴_항목;
 
     private Menu 치킨_메뉴_entity;
@@ -71,10 +70,9 @@ class MenuServiceTest {
 
         후라이드_치킨 = Product.of(1L, 후라이드_치킨_FIXTURE.getName(), 후라이드_치킨_FIXTURE.getPrice());
         감자튀김 = Product.of(2L, 감자튀김_FIXTURE.getName(), 감자튀김_FIXTURE.getPrice());
-        테스트_상품 = Product.of(3L, "테스트_상품", BigDecimal.valueOf(50000L));
 
         치킨_메뉴 = 치킨_메뉴_FIXTURE;
-        테스트_메뉴_항목 = MenuProduct.of(테스트_상품, 1);
+        테스트_메뉴_항목 = MenuProduct.of(1L, 1);
         치킨_메뉴_entity = Menu.of(치킨_메뉴.getName(), 치킨_메뉴.getPrice(), null, Collections.singletonList(테스트_메뉴_항목));
     }
 

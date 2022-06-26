@@ -11,7 +11,6 @@ import kitchenpos.core.exception.ExceptionType;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.Price;
-import kitchenpos.menu.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -34,8 +33,7 @@ class MenuProductTest {
     @Test
     void total_price_test() {
         // given
-        Product product = Product.of("test", BigDecimal.valueOf(500L));
-        MenuProduct menuProduct = MenuProduct.of(product, 3);
+        MenuProduct menuProduct = MenuProduct.of(1L, 3);
 
         // then
         assertThat(menuProduct.getTotalPrice()).isEqualTo(new Price(BigDecimal.valueOf(1500L)));
@@ -45,8 +43,7 @@ class MenuProductTest {
     @Test
     void mapping_test() {
         // given
-        Product product = Product.of("test", BigDecimal.valueOf(500L));
-        MenuProduct menuProduct = MenuProduct.of(product, 3);
+        MenuProduct menuProduct = MenuProduct.of(1L, 3);
 
         // when
         Menu menu = Menu.of("menu", BigDecimal.valueOf(500L), null, Collections.singletonList(menuProduct));

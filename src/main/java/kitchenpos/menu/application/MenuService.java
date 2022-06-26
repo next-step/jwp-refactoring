@@ -1,9 +1,7 @@
 package kitchenpos.menu.application;
 
-import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
-import java.util.Map;
 import java.util.stream.Collectors;
 import kitchenpos.core.exception.CannotCreateException;
 import kitchenpos.core.exception.ExceptionType;
@@ -25,8 +23,6 @@ import java.util.List;
 
 @Service
 public class MenuService {
-
-    private static final int FIRST_INDEX = 0;
 
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
@@ -51,7 +47,7 @@ public class MenuService {
         List<MenuProduct> menuProducts = convertToEntityIncludeProduct(
             menuRequest.getMenuProductRequests());
 
-        Menu menu = Menu.of(menuRequest.getName(), menuRequest.getPrice(), menuGroup, menuProducts);
+        Menu menu = Menu.of(menuRequest.getName(), menuRequest.getPrice(), menuGroup.getId(), menuProducts);
         Menu savedMenu = menuRepository.save(menu);
         return MenuResponse.of(savedMenu);
     }
@@ -66,12 +62,8 @@ public class MenuService {
             throw new CannotCreateException(ExceptionType.CONTAINS_NOT_EXIST_PRODUCT);
         }
 
-        Map<Long, List<Product>> productMap = products.stream()
-            .collect(groupingBy(Product::getId));
-
         return menuProductRequests.stream()
-            .map(it -> MenuProduct.of(productMap.get(it.getProductId()).get(FIRST_INDEX),
-                it.getQuantity()))
+            .map(it -> MenuProduct.of(it.getProductId(), it.getQuantity()))
             .collect(Collectors.toList());
     }
 
