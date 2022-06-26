@@ -31,12 +31,10 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        if (menuRequest.getMenuGroupId() == null || !menuGroupRepository.existsById(menuRequest.getMenuGroupId())) {
-            throw new IllegalArgumentException("메뉴 그룹이 설정되지 않았습니다.");
-        }
+        validateCreateRequest(menuRequest);
 
-        if (menuRequest.getMenuProducts() == null) {
-            throw new IllegalArgumentException("상품이 설정되지 않았습니다.");
+        if (!menuGroupRepository.existsById(menuRequest.getMenuGroupId())) {
+            throw new IllegalArgumentException("메뉴 그룹이 설정되지 않았습니다.");
         }
 
         Menu menu = new Menu(
@@ -67,5 +65,15 @@ public class MenuService {
             menuProducts.add(new MenuProduct(product, menuProductRequest.getQuantity()));
         }
         return menuProducts;
+    }
+
+    private void validateCreateRequest(MenuRequest menuRequest) {
+        if (menuRequest.getMenuProducts() == null) {
+            throw new IllegalArgumentException("상품이 설정되지 않았습니다.");
+        }
+
+        if (menuRequest.getMenuGroupId() == null) {
+            throw new IllegalArgumentException("메뉴 그룹이 설정되지 않았습니다.");
+        }
     }
 }
