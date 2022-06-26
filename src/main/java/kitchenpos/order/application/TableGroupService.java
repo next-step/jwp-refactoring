@@ -27,9 +27,9 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        List<Long> orderTables = tableGroupRequest.getOrderTables();
-        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTables);
-        TableGroup tableGroup = TableGroup.from(OrderTables.from(savedOrderTables), orderTables);
+        List<Long> orderTablesId = tableGroupRequest.getOrderTables();
+        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTablesId);
+        TableGroup tableGroup = TableGroup.from(OrderTables.from(savedOrderTables), orderTablesId);
         final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
         return TableGroupResponse.from(savedTableGroup);
     }
