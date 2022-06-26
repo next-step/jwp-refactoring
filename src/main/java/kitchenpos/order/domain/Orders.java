@@ -51,26 +51,13 @@ public class Orders {
     protected Orders() {
     }
 
-    public Orders(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
-        validateOrderTable(orderTable);
-        this.id = id;
-        this.orderTable = orderTable;
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
-    }
-
-    public Orders(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
-                  OrderLineItems orderLineItems) {
-        validateOrderTable(orderTable);
-        this.id = id;
-        this.orderTable = orderTable;
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
-        this.orderLineItems = orderLineItems;
-    }
-
-    public Orders(OrderTable orderTable) {
-        this(null, orderTable, OrderStatus.COOKING, null);
+    Orders(Builder builder) {
+        validateOrderTable(builder.orderTable);
+        this.id = builder.id;
+        this.orderTable = builder.orderTable;
+        this.orderStatus = builder.orderStatus;
+        this.orderedTime = builder.orderedTime;
+        this.orderLineItems = builder.orderLineItems;
     }
 
     public Long getId() {
@@ -117,13 +104,53 @@ public class Orders {
             return false;
         }
         Orders orders = (Orders) o;
-        return Objects.equals(id, orders.id) && Objects.equals(orderTable, orders.orderTable)
-                && orderStatus == orders.orderStatus && Objects.equals(orderedTime, orders.orderedTime)
-                && Objects.equals(orderLineItems, orders.orderLineItems);
+        return Objects.equals(id, orders.id) && Objects.equals(orderTable.getId(), orders.orderTable.getId())
+                && orderStatus == orders.orderStatus && Objects.equals(orderedTime, orders.orderedTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, orderTable, orderStatus, orderedTime, orderLineItems);
+        return Objects.hash(id, orderTable, orderStatus, orderedTime);
+    }
+
+    public static class Builder {
+        private Long id;
+        private OrderTable orderTable;
+        private OrderStatus orderStatus;
+        private LocalDateTime orderedTime;
+        private OrderLineItems orderLineItems = new OrderLineItems();
+
+        public Builder(OrderTable orderTable) {
+            this.orderTable = orderTable;
+        }
+
+        public Builder setId(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder setOrderTable(OrderTable orderTable) {
+            this.orderTable = orderTable;
+            return this;
+        }
+
+        public Builder setOrderStatus(OrderStatus orderStatus) {
+            this.orderStatus = orderStatus;
+            return this;
+        }
+
+        public Builder setOrderedTime(LocalDateTime orderedTime) {
+            this.orderedTime = orderedTime;
+            return this;
+        }
+
+        public Builder setOrderLineItems(OrderLineItems orderLineItems) {
+            this.orderLineItems = orderLineItems;
+            return this;
+        }
+
+        public Orders build() {
+            return new Orders(this);
+        }
     }
 }

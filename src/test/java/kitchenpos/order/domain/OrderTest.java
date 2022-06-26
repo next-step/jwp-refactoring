@@ -13,8 +13,14 @@ class OrderTest {
     @DisplayName("주문 객체가 같은지 검증")
     void verifyEqualsOrder() {
         final OrderTable orderTable = new OrderTable(1L, null, GuestNumber.of(5), false);
-        final Orders order = new Orders(1L, orderTable, OrderStatus.COOKING, null, null);
+        final Orders order = new Orders.Builder(orderTable)
+                .setId(1L)
+                .setOrderStatus(OrderStatus.COOKING)
+                .build();
 
-        assertThat(order).isEqualTo(new Orders(1L, orderTable, OrderStatus.COOKING, null, null));
+        assertThat(order).isEqualTo(new Orders.Builder(orderTable)
+                .setId(1L)
+                .setOrderStatus(OrderStatus.COOKING)
+                .build());
     }
 }

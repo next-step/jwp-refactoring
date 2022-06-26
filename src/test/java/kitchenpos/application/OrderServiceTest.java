@@ -71,7 +71,11 @@ class OrderServiceTest {
                 .builder();
         OrderTable orderTable = new OrderTable(1L, null, GuestNumber.of(5), false);
         OrderLineItems orderLineItems = new OrderLineItems(Arrays.asList(orderLineItem));
-        order = new Orders(1L, orderTable, OrderStatus.COOKING, null, orderLineItems);
+        order = new Orders.Builder(orderTable)
+                .setId(1L)
+                .setOrderStatus(OrderStatus.COOKING)
+                .setOrderLineItems(orderLineItems)
+                .build();
     }
 
     @Test
@@ -79,7 +83,8 @@ class OrderServiceTest {
     void createOrder() {
         // given
         when(menuRepository.countByIdIn(any())).thenReturn(1L);
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(new OrderTable(1L, null, GuestNumber.of(3), false)));
+        when(orderTableRepository.findById(any())).thenReturn(
+                Optional.of(new OrderTable(1L, null, GuestNumber.of(3), false)));
         when(menuRepository.findById(any())).thenReturn(Optional.of(menu));
         when(orderRepository.save(any())).thenReturn(order);
         // when
@@ -164,7 +169,9 @@ class OrderServiceTest {
     void changeOrderStatusCompletionOrder() {
         // given
         final OrderTable orderTable = new OrderTable(1L, null, GuestNumber.of(5), false);
-        final Orders order = new Orders(1L, orderTable, OrderStatus.COMPLETION, LocalDateTime.now(), null);
+        final Orders order = new Orders.Builder(orderTable)
+                .setOrderStatus(OrderStatus.COMPLETION)
+                .build();
         when(orderRepository.findById(any())).thenReturn(Optional.of(order));
 
         // when && then

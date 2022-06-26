@@ -6,6 +6,7 @@ import kitchenpos.exception.InvalidMenuNumberException;
 import kitchenpos.exception.NotExistException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.Orders;
 import kitchenpos.order.domain.Quantity;
 import kitchenpos.order.dto.OrderLineItemRequest;
@@ -40,7 +41,9 @@ public class OrderService {
 
         final OrderTable persistOrderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
                 .orElseThrow(NotExistException::new);
-        final Orders order = new Orders(persistOrderTable);
+        final Orders order = new Orders.Builder(persistOrderTable)
+                .setOrderStatus(OrderStatus.COOKING)
+                .build();
 
         for (OrderLineItemRequest orderLineItemRequest : orderRequest.getOrderLineItems()) {
             final Menu menu = menuRepository.findById(orderLineItemRequest.getMenuId())

@@ -63,7 +63,11 @@ class OrderAcceptanceTest extends AcceptanceTest {
         // given
         final OrderTableResponse 주문_테이블_결과 = new OrderTableResponse(1L, null, 3, false);
         final OrderTable orderTable = new OrderTable(1L, null, GuestNumber.of(5), false);
-        final Orders order = new Orders(1L, orderTable, OrderStatus.COOKING, LocalDateTime.now(), null);
+        final Orders order = new Orders.Builder(orderTable)
+                .setId(1L)
+                .setOrderStatus(OrderStatus.COOKING)
+                .setOrderedTime(LocalDateTime.now())
+                .build();
         final MenuGroup menuGroup = new MenuGroup(1L, "후라이드세트");
         final Menu menu = new Menu.Builder("후라이드")
                 .setId(1L)
