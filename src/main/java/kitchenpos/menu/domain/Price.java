@@ -28,6 +28,11 @@ public class Price {
         return this.price - total;
     }
 
+
+    public Long compareTo(Price totalPrice) {
+        return this.price - totalPrice.price;
+    }
+
     public Long value() {
         return this.price;
     }

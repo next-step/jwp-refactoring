@@ -1,20 +1,14 @@
 package kitchenpos.menu.domain;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import kitchenpos.exception.InvalidPriceException;
 import kitchenpos.menu.dto.MenuResponse;
@@ -38,8 +32,8 @@ public class Menu {
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
 
-    @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MenuProduct> menuProducts = new ArrayList<>();
+    @Embedded
+    private MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {
     }
@@ -50,8 +44,14 @@ public class Menu {
         this.menuGroup = menuGroup;
     }
 
-    public Menu(Long id, String name, Price price, MenuGroup menuGroup,
-                List<MenuProduct> menuProducts) {
+    public Menu(Long id, String name, Price price, MenuGroup menuGroup) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.menuGroup = menuGroup;
+    }
+
+    public Menu(Long id, String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -65,10 +65,8 @@ public class Menu {
     }
 
     public void validateProductsTotalPrice() {
-        final long total = this.menuProducts.stream()
-                .map(MenuProduct::price)
-                .mapToLong(Long::intValue).sum();
-        if (this.price.compareTo(total) > 0) {
+        final Price totalPrice = this.menuProducts.totalPrice();
+        if (this.price.compareTo(totalPrice) > 0) {
             throw new InvalidPriceException("제품의 합은 메뉴 가격보다 클 수 없습니다.");
         }
     }
@@ -79,7 +77,7 @@ public class Menu {
 
     public MenuResponse toMenuResponse() {
         return new MenuResponse(this.id, this.name, this.price, this.menuGroup.toMenuGroupResponse(),
-                this.menuProducts);
+                this.menuProducts.get());
     }
 
     @Override

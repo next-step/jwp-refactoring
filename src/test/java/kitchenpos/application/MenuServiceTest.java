@@ -14,6 +14,7 @@ import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.Price;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -37,6 +38,7 @@ class MenuServiceTest {
     private MenuService menuService;
     private MenuGroup menuGroup;
     private MenuProduct menuProduct;
+    private MenuProducts menuProducts;
     private Menu menu;
     private Product product;
     private MenuResponse expected;
@@ -55,10 +57,11 @@ class MenuServiceTest {
         menuService = new MenuService(menuRepository, menuGroupRepository, productRepository);
         product = new Product(1L, "후라이드", 500L);
         menuGroup = new MenuGroup(1L, "후라이드세트");
-        menu = new Menu(1L, "후라이드+후라이드", Price.of(1_000L), menuGroup, Arrays.asList(menuProduct));
+        menuProducts = new MenuProducts(Arrays.asList(menuProduct));
+        menu = new Menu(1L, "후라이드+후라이드", Price.of(1_000L), menuGroup, menuProducts);
         menuProduct = new MenuProduct(1L, menu, product, 2L);
         expected = new MenuResponse(null, "후라이드+후라이드", Price.of(1_000L), menuGroup.toMenuGroupResponse(),
-                Arrays.asList(menuProduct));
+                menuProducts.get());
     }
 
     @Test
