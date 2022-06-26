@@ -50,7 +50,7 @@ public class TableGroup extends AbstractAggregateRoot<TableGroup> {
         registerEvent(new TableGroupingEvent(this, orderTableIds));
     }
 
-    public void upgroup() {
+    public void ungroup() {
         registerEvent(new TableUngroupEvent(this));
     }
 }

@@ -28,7 +28,7 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = this.findById(tableGroupId);
-        tableGroup.upgroup();
+        tableGroup.ungroup();
     }
 
     private TableGroup findById(Long tableGroupId) {
