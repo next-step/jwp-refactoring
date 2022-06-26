@@ -61,7 +61,7 @@ public class OrderService {
         }
 
         order.setOrderTableId(orderTable.getId());
-        order.setOrderStatus(OrderStatus.COOKING);
+        order.changeOrderStatus(OrderStatus.COOKING);
         order.setOrderedTime(LocalDateTime.now());
 
         final Order savedOrder = orderRepository.save(order);
@@ -143,12 +143,20 @@ public class OrderService {
         }
 
         final OrderStatus orderStatus = order.getOrderStatus();
-        savedOrder.setOrderStatus(orderStatus);
+        savedOrder.changeOrderStatus(orderStatus);
 
         orderRepository.save(savedOrder);
 
         savedOrder.setOrderLineItems(orderLineItemRepository.findAllByOrderId(orderId));
 
         return savedOrder;
+    }
+
+    @Transactional
+    public OrderResponse changeOrderStatus2(final Long orderId, final OrderRequest request) {
+        final Order findOrder = orderRepository.findById(orderId)
+                .orElseThrow(NoSuchElementException::new);
+        findOrder.changeOrderStatus(OrderStatus.valueOf(request.getOrderStatus()));
+        return OrderResponse.from(findOrder);
     }
 }
