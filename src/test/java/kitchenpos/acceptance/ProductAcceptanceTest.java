@@ -21,7 +21,7 @@ public class ProductAcceptanceTest extends AcceptanceTest{
     static private final String PRODUCT_URL = "/api/products";
 
     @TestFactory
-    Stream<DynamicTest> menuGroupTest() {
+    Stream<DynamicTest> productTest() {
         return Stream.of(
                 dynamicTest("상품을 생성 할 수 있다.", () -> {
                     ExtractableResponse<Response> 짬뽕_생성_요청 = 상품_생성_요청("짬뽕", BigDecimal.valueOf(1000));

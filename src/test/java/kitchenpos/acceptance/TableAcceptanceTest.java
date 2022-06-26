@@ -24,7 +24,7 @@ public class TableAcceptanceTest extends AcceptanceTest{
     private OrderTableResponse 손님_테이블;
 
     @TestFactory
-    Stream<DynamicTest> menuTest() {
+    Stream<DynamicTest> tableTest() {
         return Stream.of(
                 dynamicTest("빈 주문 테이블을 생성 한다.", () -> {
                     ExtractableResponse<Response> 테이블_생성_요청_응답 = 테이블_생성_요청(0, true);

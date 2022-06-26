@@ -11,14 +11,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import kitchenpos.dto.IdOfOrderTableRequest;
 import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.dto.TableGroupRequest;
-import kitchenpos.dto.TableGroupResponse;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,7 +29,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     ExtractableResponse<Response> 단체_지정_요청_응답;
 
     @TestFactory
-    Stream<DynamicTest> menuGroupTest() {
+    Stream<DynamicTest> tableGroupTest() {
         return Stream.of(
                 dynamicTest("테이블들을 단체 지정 할 수 있다.", () -> {
                     테이블1 = 테이블_생성_요청(0, true).as(OrderTableResponse.class);
