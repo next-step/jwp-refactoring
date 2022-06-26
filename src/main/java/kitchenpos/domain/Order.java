@@ -1,5 +1,7 @@
 package kitchenpos.domain;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -8,14 +10,17 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import org.springframework.util.ObjectUtils;
 
 @Entity
 public class Order extends BaseTimeEntity {
 
     @Id
     @Column(name = "ORDER_ID")
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private Long orderTableId;
     @Enumerated(EnumType.STRING)
