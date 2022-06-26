@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import java.util.NoSuchElementException;
 import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
@@ -8,6 +9,8 @@ import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
+import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -40,9 +43,7 @@ public class OrderService {
     public Order create(final Order order) {
         final List<OrderLineItem> orderLineItems = order.getOrderLineItems();
 
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
-        }
+        validateOrderLineItemsEmpty(orderLineItems);
 
         final List<Long> menuIds = orderLineItems.stream()
                 .map(OrderLineItem::getMenuId)
@@ -67,7 +68,7 @@ public class OrderService {
 
         final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
         for (final OrderLineItem orderLineItem : orderLineItems) {
-            orderLineItem.setOrder(savedOrder);
+            orderLineItem.registerOrder(savedOrder);
             savedOrderLineItems.add(orderLineItemRepository.save(orderLineItem));
         }
         savedOrder.setOrderLineItems(savedOrderLineItems);
@@ -75,6 +76,48 @@ public class OrderService {
         return savedOrder;
     }
 
+
+    @Transactional
+    public OrderResponse create2(final OrderRequest request) {
+        validate(request);
+        final Order savedOrder = orderRepository.save(request.toOrder());
+        savedOrder.addOrderLineItems(request.toOrderLineItems());
+        return OrderResponse.from(savedOrder);
+    }
+
+    private void validate(OrderRequest request) {
+        final List<OrderLineItem> orderLineItems = request.toOrderLineItems();
+        validateOrderLineItemsEmpty(orderLineItems);
+        validateExistingOrderLineItems(orderLineItems);
+        validateOrderTableIsEmpty(request);
+    }
+
+    private void validateOrderTableIsEmpty(OrderRequest request) {
+        final OrderTable orderTable = orderTableRepository.findById(request.getOrderTableId())
+                .orElseThrow(NoSuchElementException::new);
+
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private void validateExistingOrderLineItems(List<OrderLineItem> orderLineItems) {
+        final List<Long> menuIds = orderLineItems.stream()
+                .map(OrderLineItem::getMenuId)
+                .collect(Collectors.toList());
+        if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private void validateOrderLineItemsEmpty(List<OrderLineItem> orderLineItems) {
+        if (CollectionUtils.isEmpty(orderLineItems)) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+
+    @Transactional(readOnly = true)
     public List<Order> list() {
         final List<Order> orders = orderRepository.findAll();
 

@@ -37,7 +37,12 @@ public class OrderLineItem {
         this.quantity = new Quantity(quantity);
     }
 
-    public void setOrder(Order order) {
+    public OrderLineItem(Long menuId, long quantity) {
+        this.menuId = menuId;
+        this.quantity = new Quantity(quantity);
+    }
+
+    public void registerOrder(Order order) {
         this.order = order;
     }
 
@@ -45,7 +50,15 @@ public class OrderLineItem {
         return menuId;
     }
 
-    public void setQuantity(final long quantity) {
-        this.quantity = new Quantity(quantity);
+    public Long getSeq() {
+        return seq;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public Quantity getQuantity() {
+        return quantity;
     }
 }
