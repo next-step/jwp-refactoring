@@ -14,6 +14,7 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
@@ -53,7 +54,7 @@ class OrderServiceTest extends ServiceTest {
 
         Menu menu = menuTestFixture.메뉴_만들기(new SaveMenuDto(menuProducts, new MenuGroup("메뉴 그룹"), "메뉴", 32000));
 
-        orderLineItem = new OrderLineItem(menu.getId(), 1);
+        orderLineItem = new OrderLineItem(OrderMenu.of(menu), 1);
         orderTable = this.orderTableRepository.save(new OrderTable(4, false));
     }
 
@@ -77,8 +78,11 @@ class OrderServiceTest extends ServiceTest {
                     .isThrownBy(() -> createOrder(orderTable.getId()));
             }),
             DynamicTest.dynamicTest("주문한 메뉴가 실제 존재하지 않는 경우", () -> {
+                OrderMenu orderMenu = new OrderMenu(Long.MAX_VALUE, "test", BigDecimal.TEN);
+                OrderLineItem orderLineItem = new OrderLineItem(orderMenu, 1);
+
                 assertThatIllegalArgumentException()
-                    .isThrownBy(() -> createOrder(orderTable.getId(), new OrderLineItem(Long.MAX_VALUE, 1)));
+                    .isThrownBy(() -> {createOrder(orderTable.getId(), orderLineItem);});
             }),
             DynamicTest.dynamicTest("테이블 정보가 없는 경우", () -> {
                 assertThatExceptionOfType(InvalidDataAccessApiUsageException.class)

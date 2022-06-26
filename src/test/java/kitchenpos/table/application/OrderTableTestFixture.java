@@ -6,6 +6,7 @@ import kitchenpos.menu.application.MenuTestFixture;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.util.dto.SaveMenuDto;
@@ -25,7 +26,7 @@ public class OrderTableTestFixture {
     @Transactional
     public OrderTable 메뉴_만들고_주문하기(SaveMenuDto saveMenuDto, int quantity, OrderTable orderTable) {
         Menu menu = menuTestFixture.메뉴_만들기(saveMenuDto);
-        OrderLineItem orderLineItem = new OrderLineItem(menu.getId(), quantity);
+        OrderLineItem orderLineItem = new OrderLineItem(OrderMenu.of(menu), quantity);
 
         Order order = new Order(orderTable.getId(), Collections.singletonList(orderLineItem));
 

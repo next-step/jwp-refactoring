@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
@@ -18,7 +19,8 @@ class OrderTest {
     @Test
     @DisplayName("Order의 정상 생성을 확인한다.")
     void createOrder() {
-        OrderLineItem orderLineItem = new OrderLineItem(1L, 10);
+        OrderMenu orderMenu = new OrderMenu(1L, "Test", BigDecimal.ONE);
+        OrderLineItem orderLineItem = new OrderLineItem(orderMenu, 10);
         Order order = new Order(10L, Collections.singletonList(orderLineItem));
 
         assertThat(order.getOrderTableId()).isEqualTo(10L);
@@ -36,7 +38,8 @@ class OrderTest {
     }
 
     private static Stream<Arguments> providerCreateOrderFailCase() {
-        OrderLineItem orderLineItem = new OrderLineItem(1L, 10);
+        OrderMenu orderMenu = new OrderMenu(1L, "Test", BigDecimal.ONE);
+        OrderLineItem orderLineItem = new OrderLineItem(orderMenu, 10);
 
         return Stream.of(
             Arguments.of(null, Collections.singletonList(orderLineItem), NullPointerException.class),
@@ -47,7 +50,8 @@ class OrderTest {
     @Test
     @DisplayName("주문의 상태를 변경한다.")
     void changeOrderStatus() {
-        OrderLineItem orderLineItem = new OrderLineItem(1L, 10);
+        OrderMenu orderMenu = new OrderMenu(1L, "Test", BigDecimal.ONE);
+        OrderLineItem orderLineItem = new OrderLineItem(orderMenu, 10);
         Order order = new Order(10L, Collections.singletonList(orderLineItem));
         order.changeOrderStatus(OrderStatus.COMPLETION);
 
@@ -57,7 +61,8 @@ class OrderTest {
     @Test
     @DisplayName("이미 완료된 주문은 상태를 변경할 수 없다.")
     void changeOrderStatusFail() {
-        OrderLineItem orderLineItem = new OrderLineItem(1L, 10);
+        OrderMenu orderMenu = new OrderMenu(1L, "Test", BigDecimal.ONE);
+        OrderLineItem orderLineItem = new OrderLineItem(orderMenu, 10);
         Order order = new Order(10L, Collections.singletonList(orderLineItem));
         order.changeOrderStatus(OrderStatus.COMPLETION);
 
