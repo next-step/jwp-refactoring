@@ -38,7 +38,7 @@ public class Menu {
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
-    public Menu() {
+    protected Menu() {
     }
 
     public Menu(String name, BigDecimal price) {
