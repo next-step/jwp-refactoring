@@ -1,7 +1,6 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTableEntity;
 import kitchenpos.dto.TableRequest;
@@ -19,12 +18,10 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class TableService {
     private final OrderDao orderDao;
-    private final OrderTableDao orderTableDao;
     private final TableRepository tableRepository;
 
-    public TableService(final OrderDao orderDao, final OrderTableDao orderTableDao, TableRepository tableRepository) {
+    public TableService(final OrderDao orderDao, TableRepository tableRepository) {
         this.orderDao = orderDao;
-        this.orderTableDao = orderTableDao;
         this.tableRepository = tableRepository;
     }
 

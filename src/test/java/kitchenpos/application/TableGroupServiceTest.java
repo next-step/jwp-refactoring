@@ -1,11 +1,7 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableEntity;
-import kitchenpos.domain.TableGroup;
 import kitchenpos.domain.TableGroupEntity;
 import kitchenpos.repository.TableGroupRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -26,12 +22,6 @@ import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
 public class TableGroupServiceTest {
-
-    @Mock
-    OrderTableDao orderTableDao;
-
-    @Mock
-    TableGroupDao tableGroupDao;
 
     @Mock
     OrderDao orderDao;
@@ -56,12 +46,5 @@ public class TableGroupServiceTest {
         assertThatThrownBy(() -> tableGroupService.ungroup(테이블_그룹.getId()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("주문 테이블들의 상태가 조리 혹은 식사이기 때문에 단체 지정 해제할 수 없습니다.");
-    }
-
-    public static TableGroup 테이블_단체_지정(Long tableGroupId, OrderTable... orderTables) {
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setId(tableGroupId);
-        tableGroup.setOrderTables(Arrays.asList(orderTables));
-        return tableGroup;
     }
 }

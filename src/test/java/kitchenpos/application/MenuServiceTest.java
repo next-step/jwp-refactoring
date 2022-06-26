@@ -1,9 +1,7 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuEntity;
 import kitchenpos.domain.MenuGroupEntity;
-import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.MenuProductEntity;
 import kitchenpos.domain.ProductEntity;
 import kitchenpos.dto.MenuProductRequest;
@@ -181,21 +179,5 @@ public class MenuServiceTest {
 
         // then
         assertThat(menuList).containsExactly(MenuResponse.of(커플_메뉴), MenuResponse.of(싱글_메뉴));
-    }
-
-    public static Menu 메뉴_생성(Long menuGroupId, String name, int price, MenuProduct... menuProducts) {
-        Menu menu = new Menu();
-        menu.setMenuGroupId(menuGroupId);
-        menu.setName(name);
-        menu.setPrice(BigDecimal.valueOf(price));
-        menu.setMenuProducts(Arrays.asList(menuProducts));
-        return menu;
-    }
-
-    public static MenuProduct 메뉴_상품_생성(Long productId, int quantity) {
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setProductId(productId);
-        menuProduct.setQuantity(quantity);
-        return menuProduct;
     }
 }

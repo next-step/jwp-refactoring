@@ -3,8 +3,6 @@ package kitchenpos.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.application.TableServiceTest;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.TableRequest;
 import kitchenpos.dto.TableResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,8 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("주문 테이블 관련 기능")
 public class TableAcceptanceTest extends AcceptanceTest {
 
-    OrderTable orderTable1;
-    OrderTable orderTable2;
     TableRequest tableRequest1;
     TableRequest tableRequest2;
 
@@ -31,8 +27,6 @@ public class TableAcceptanceTest extends AcceptanceTest {
     public void init() {
         super.init();
 
-        orderTable1 = TableServiceTest.주문_테이블_생성(null, null, false, 0);
-        orderTable2 = TableServiceTest.주문_테이블_생성(null, null, false, 0);
         tableRequest1 = new TableRequest(0, false);
         tableRequest2 = new TableRequest(0, false);
     }
@@ -99,16 +93,6 @@ public class TableAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
-                .when().post("/api/tables")
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 주문_테이블_생성_요청(OrderTable orderTable) {
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(orderTable)
                 .when().post("/api/tables")
                 .then().log().all()
                 .extract();

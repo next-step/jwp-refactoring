@@ -1,8 +1,6 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTableEntity;
 import kitchenpos.domain.TableGroupEntity;
@@ -21,15 +19,11 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class TableGroupService {
     private final OrderDao orderDao;
-    private final OrderTableDao orderTableDao;
-    private final TableGroupDao tableGroupDao;
     private final TableService tableService;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final OrderDao orderDao, final OrderTableDao orderTableDao, final TableGroupDao tableGroupDao, TableService tableService, TableGroupRepository tableGroupRepository) {
+    public TableGroupService(final OrderDao orderDao, TableService tableService, TableGroupRepository tableGroupRepository) {
         this.orderDao = orderDao;
-        this.orderTableDao = orderTableDao;
-        this.tableGroupDao = tableGroupDao;
         this.tableService = tableService;
         this.tableGroupRepository = tableGroupRepository;
     }

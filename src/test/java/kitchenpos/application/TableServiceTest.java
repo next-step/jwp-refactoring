@@ -1,8 +1,6 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableEntity;
 import kitchenpos.dto.TableRequest;
 import kitchenpos.dto.TableResponse;
@@ -25,9 +23,6 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 public class TableServiceTest {
-
-    @Mock
-    OrderTableDao orderTableDao;
 
     @Mock
     TableRepository tableRepository;
@@ -77,14 +72,5 @@ public class TableServiceTest {
         // when, then
         assertThatThrownBy(() -> tableService.changeEmpty(1L, true))
                 .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    public static OrderTable 주문_테이블_생성(Long tableGroupId, Long tableId, boolean isEmpty, int numberOfGuests) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setTableGroupId(tableGroupId);
-        orderTable.setId(tableId);
-        orderTable.setEmpty(isEmpty);
-        orderTable.setNumberOfGuests(numberOfGuests);
-        return orderTable;
     }
 }

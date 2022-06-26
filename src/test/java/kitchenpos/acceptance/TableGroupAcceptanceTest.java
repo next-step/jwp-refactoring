@@ -3,10 +3,6 @@ package kitchenpos.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.application.TableGroupServiceTest;
-import kitchenpos.application.TableServiceTest;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.dto.TableResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,17 +18,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("단체 지정 관련 기능")
 public class TableGroupAcceptanceTest extends AcceptanceTest {
 
-    TableGroup tableGroup;
     TableGroupRequest tableGroupRequest;
 
     @BeforeEach
     public void init() {
         super.init();
 
-        OrderTable orderTable = TableServiceTest.주문_테이블_생성(null, null, true, 0);
-        OrderTable 주문_테이블1 = TableAcceptanceTest.주문_테이블_생성_요청(orderTable).as(OrderTable.class);
-        OrderTable 주문_테이블2 = TableAcceptanceTest.주문_테이블_생성_요청(orderTable).as(OrderTable.class);
-        tableGroup = TableGroupServiceTest.테이블_단체_지정(null, 주문_테이블1, 주문_테이블2);
         TableResponse 테이블1 = TableAcceptanceTest.주문_테이블_생성되어_있음(0, true).as(TableResponse.class);
         TableResponse 테이블2 = TableAcceptanceTest.주문_테이블_생성되어_있음(0, true).as(TableResponse.class);
         tableGroupRequest = new TableGroupRequest(Arrays.asList(테이블1.getId(), 테이블2.getId()));

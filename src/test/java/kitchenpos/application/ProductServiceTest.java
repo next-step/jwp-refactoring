@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductEntity;
 import kitchenpos.dto.ProductRequest;
 import kitchenpos.dto.ProductResponse;
@@ -67,13 +66,5 @@ public class ProductServiceTest {
 
         // then
         assertThat(products).hasSize(2);
-    }
-
-    public static Product 상품_생성(Long id, String name, int price) {
-        Product product = new Product();
-        product.setId(id);
-        product.setName(name);
-        product.setPrice(BigDecimal.valueOf(price));
-        return product;
     }
 }

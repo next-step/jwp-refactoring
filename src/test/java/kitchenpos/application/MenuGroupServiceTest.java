@@ -1,10 +1,9 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuGroupEntity;
-import kitchenpos.repository.MenuGroupRepository;
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
+import kitchenpos.repository.MenuGroupRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -56,12 +55,5 @@ public class MenuGroupServiceTest {
 
         // then
         assertThat(메뉴_그룹_목록).hasSize(2);
-    }
-
-    public static MenuGroup 메뉴_그룹_생성(Long id, String name) {
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setId(id);
-        menuGroup.setName(name);
-        return menuGroup;
     }
 }
