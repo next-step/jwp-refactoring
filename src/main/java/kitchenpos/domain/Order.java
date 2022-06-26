@@ -33,6 +33,29 @@ public class Order extends BaseTimeEntity {
     public Order() {
     }
 
+    public void mapToTable(Long orderTableId){
+        this.orderTableId = orderTableId;
+    }
+
+    public void startCooking(){
+        this.orderStatus = OrderStatus.COOKING;
+    }
+
+    public void changeOrderStatus(OrderStatus orderStatus){
+
+    }
+
+    public void mapOrderLineItem(OrderLineItem orderLineItem){
+        if(!ObjectUtils.isEmpty(orderLineItem.getOrder())){
+            orderLineItem.getOrder().removeOrderLineItem(orderLineItem);
+        }
+
+        orderLineItems.add(orderLineItem);
+    }
+
+    public void removeOrderLineItem(OrderLineItem orderLineItem){
+        orderLineItems.remove(orderLineItem);
+    }
     public Long getId() {
         return id;
     }

@@ -22,6 +22,31 @@ public class OrderTable {
     public OrderTable() {
     }
 
+    private OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
+        this.tableGroupId = tableGroupId;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
+    public static OrderTable createEmpty(){
+        return new OrderTable(null, 0, true);
+    }
+
+    public void useTable(){
+        this.empty = false;
+    }
+
+    public void unUseTable(){
+        this.empty = true;
+    }
+    public void mapToTableGroup(long tableGroupId){
+        this.tableGroupId = tableGroupId;
+    }
+
+    public void setNumberOfGuests(int numberOfGuests){
+        this.numberOfGuests = numberOfGuests;
+    }
+
     public Long getId() {
         return id;
     }

@@ -46,4 +46,7 @@ public class Menu {
         return menuProducts;
     }
 
+    public void addMenuProduct(MenuProduct menuProduct){
+        menuProducts.add(menuProduct);
+    }
 }
