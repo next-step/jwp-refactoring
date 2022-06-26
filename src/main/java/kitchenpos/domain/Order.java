@@ -21,8 +21,6 @@ import java.util.List;
 @Entity
 @Table(name = "orders")
 public class Order {
-    private static final int MINIMUM_ITEM_SIZE = 1;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -43,31 +41,26 @@ public class Order {
     }
 
     private Order(OrderTable orderTable, OrderStatus orderStatus) {
+        validateOrderTable(orderTable);
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
     }
 
-    public static Order createOrder(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+    private void validateOrderTable(OrderTable orderTable) {
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException("빈 테이블에는 주문을 등록할 수 없습니다.");
         }
+    }
 
-        if (orderLineItems.size() < MINIMUM_ITEM_SIZE) {
-            throw new IllegalArgumentException("주문 항목은 하나 이상이어야 합니다.");
-        }
-
+    public static Order createOrder(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         Order order = new Order(orderTable, OrderStatus.DEFAULT);
-
-        for (OrderLineItem orderLineItem : orderLineItems) {
-            order.addOrderLineItem(orderLineItem);
-        }
-
+        order.addOrderLineItems(orderLineItems);
+        
         return order;
     }
 
-    private void addOrderLineItem(OrderLineItem orderLineItem) {
-        orderLineItems.add(orderLineItem);
-        orderLineItem.setOrder(this);
+    private void addOrderLineItems(List<OrderLineItem> orderLineItems) {
+        this.orderLineItems.addAll(this, orderLineItems);
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
