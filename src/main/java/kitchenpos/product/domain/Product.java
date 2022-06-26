@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import kitchenpos.exception.InvalidPriceException;
 import kitchenpos.product.dto.ProductResponse;
 
 @Entity
@@ -26,10 +27,21 @@ public class Product {
     protected Product() {
     }
 
+    public Product(String name, Long price) {
+        this(null, name, price);
+    }
+
     public Product(Long id, String name, Long price) {
+        validatePrice(price);
         this.id = id;
         this.name = name;
         this.price = price;
+    }
+
+    private void validatePrice(Long price) {
+        if (price == null || price < 0) {
+            throw new InvalidPriceException();
+        }
     }
 
     public Long getId() {
