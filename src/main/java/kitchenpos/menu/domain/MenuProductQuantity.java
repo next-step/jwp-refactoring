@@ -12,7 +12,7 @@ public class MenuProductQuantity {
     @Column(nullable = false)
     private int quantity;
 
-    public MenuProductQuantity() {
+    protected MenuProductQuantity() {
     }
 
     public MenuProductQuantity(Integer quantity) {

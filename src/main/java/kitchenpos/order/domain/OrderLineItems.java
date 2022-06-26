@@ -17,10 +17,6 @@ public class OrderLineItems {
     public OrderLineItems() {
     }
 
-    public OrderLineItems(List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
-    }
-    
     public void add(OrderLineItem orderLineItem) {
         orderLineItems.add(orderLineItem);
     }
