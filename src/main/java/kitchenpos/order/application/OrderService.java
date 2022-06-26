@@ -9,12 +9,14 @@ import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderTableValidateEvent;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,23 +24,21 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final MenuService menuService;
-    private final OrderTableRepository orderTableRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public OrderService(OrderRepository orderRepository, MenuService menuService, OrderTableRepository orderTableRepository) {
+    public OrderService(OrderRepository orderRepository, MenuService menuService,
+        ApplicationEventPublisher eventPublisher) {
         this.menuService = menuService;
         this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
         List<OrderLineItem> orderLineItems = this.convertOrderLineItemEntity(orderRequest.getOrderLineItems());
+        eventPublisher.publishEvent(new OrderTableValidateEvent(orderRequest.getOrderTableId()));
 
-        OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
-            .orElseThrow(IllegalArgumentException::new);
-
-        Order order = new Order(orderTable.getId(), orderLineItems);
-
+        Order order = new Order(orderRequest.getOrderTableId(), orderLineItems);
         orderRepository.save(order);
 
         return OrderResponse.of(order);
@@ -76,7 +76,7 @@ public class OrderService {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         for (OrderLineItemRequest orderLineItemRequest : orderLineItemRequests) {
             Menu menu = menuService.findMenuById(orderLineItemRequest.getMenuId());
-            orderLineItems.add(new OrderLineItem(menu.getId(), orderLineItemRequest.getQuantity()));
+            orderLineItems.add(new OrderLineItem(OrderMenu.of(menu), orderLineItemRequest.getQuantity()));
         }
         return orderLineItems;
     }
