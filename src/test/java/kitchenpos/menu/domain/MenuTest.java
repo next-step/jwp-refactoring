@@ -1,26 +1,54 @@
 package kitchenpos.menu.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
+import kitchenpos.order.domain.Quantity;
+import kitchenpos.product.domain.Product;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class MenuTest {
+    private Menu menu;
+    private MenuGroup menuGroup;
 
-    @Test
-    @DisplayName("메뉴가 같은지 검증")
-    void verifyEqualsMenu() {
-        final MenuGroup menuGroup = new MenuGroup();
-        final Menu menu = new Menu.Builder("메뉴이름")
+    @BeforeEach
+    void setUp() {
+        menuGroup = new MenuGroup("menu group");
+        menu = new Menu.Builder("메뉴이름")
                 .setId(1L)
                 .setPrice(Price.of(10_000L))
                 .setMenuGroup(menuGroup)
                 .build();
+    }
 
+    @Test
+    @DisplayName("메뉴가 같은지 검증")
+    void verifyEqualsMenu() {
         assertThat(menu).isEqualTo(new Menu.Builder("메뉴이름")
                 .setId(1L)
                 .setPrice(Price.of(10_000L))
                 .setMenuGroup(menuGroup)
                 .build());
+    }
+
+    @Test
+    @DisplayName("메뉴에 메뉴 제품들이 잘 들어가는지 검증")
+    void addMenuProduct() {
+        final Product product = new Product("product", Price.of(10L));
+        menu.addProduct(product, Quantity.of(1L));
+
+        assertThat(menu.products().get()).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("메뉴 제품의 합이 메뉴 가격보다 클 때 에러 발생")
+    void productsTotalMoreThanMenuPrice() {
+        final Product product = new Product("product", Price.of(100L));
+        menu.addProduct(product, Quantity.of(10L));
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> menu.validateProductsTotalPrice());
     }
 }
