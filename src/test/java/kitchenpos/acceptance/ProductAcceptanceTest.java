@@ -13,8 +13,7 @@ import static kitchenpos.acceptance.ProductAcceptanceFactory.상품_등록_요�
 import static kitchenpos.acceptance.ProductAcceptanceFactory.상품_조회_성공;
 import static kitchenpos.acceptance.ProductAcceptanceFactory.상품_조회_요청;
 
-@DisplayName("상품관련")
-
+@DisplayName("상품 관련")
 public class ProductAcceptanceTest extends AcceptanceTest {
 
     @Test
