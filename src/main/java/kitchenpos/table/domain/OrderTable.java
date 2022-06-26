@@ -3,6 +3,7 @@ package kitchenpos.table.domain;
 import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -12,7 +13,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import kitchenpos.exception.ExistGroupTableException;
-import kitchenpos.exception.InvalidGuestNumberException;
 import kitchenpos.exception.NotExistException;
 import kitchenpos.order.dto.OrderTableResponse;
 
@@ -28,8 +28,8 @@ public class OrderTable {
     @JoinColumn(name = "table_group_id")
     private TableGroup tableGroup;
 
-    @Column
-    private int numberOfGuests;
+    @Embedded
+    private GuestNumber guestNumber;
 
     @Column
     private boolean empty;
@@ -37,10 +37,10 @@ public class OrderTable {
     protected OrderTable() {
     }
 
-    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, TableGroup tableGroup, GuestNumber guestNumber, boolean empty) {
         this.id = id;
         this.tableGroup = tableGroup;
-        this.numberOfGuests = numberOfGuests;
+        this.guestNumber = guestNumber;
         this.empty = empty;
     }
 
@@ -76,8 +76,7 @@ public class OrderTable {
 
     public void changeGuestNumber(int guestNumber) {
         validateEmpty();
-        validateGuestNumber(guestNumber);
-        this.numberOfGuests = guestNumber;
+        this.guestNumber = GuestNumber.of(guestNumber);
     }
 
     public void ungroupTable() {
@@ -90,17 +89,11 @@ public class OrderTable {
         }
     }
 
-    private void validateGuestNumber(int guestNumber) {
-        if (guestNumber < 1) {
-            throw new InvalidGuestNumberException();
-        }
-    }
-
     public OrderTableResponse toOrderTableResponse() {
         if (this.tableGroup == null) {
-            return new OrderTableResponse(this.id, null, this.numberOfGuests, this.empty);
+            return new OrderTableResponse(this.id, null, this.guestNumber.number(), this.empty);
         }
-        return new OrderTableResponse(this.id, this.tableGroup.getId(), this.numberOfGuests, this.empty);
+        return new OrderTableResponse(this.id, this.tableGroup.getId(), this.guestNumber.number(), this.empty);
     }
 
     @Override
@@ -112,12 +105,12 @@ public class OrderTable {
             return false;
         }
         OrderTable that = (OrderTable) o;
-        return numberOfGuests == that.numberOfGuests && empty == that.empty && Objects.equals(id, that.id)
-                && Objects.equals(tableGroup, that.tableGroup);
+        return empty == that.empty && Objects.equals(id, that.id) && Objects.equals(tableGroup,
+                that.tableGroup) && Objects.equals(guestNumber, that.guestNumber);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, tableGroup, numberOfGuests, empty);
+        return Objects.hash(id, tableGroup, guestNumber, empty);
     }
 }

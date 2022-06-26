@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.table.domain.GuestNumber;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import kitchenpos.order.domain.OrderStatus;
@@ -54,8 +55,8 @@ class TableGroupServiceTest {
     @DisplayName("주문 테이블을 단체로 엮는 테이블 그룹을 생성한다.")
     void createTableGroup() {
         // given
-        final OrderTable orderTableOf5Guests = new OrderTable(1L, null, 5, true);
-        final OrderTable orderTableOf3Guests = new OrderTable(2L, null, 3, true);
+        final OrderTable orderTableOf5Guests = new OrderTable(1L, null, GuestNumber.of(5), true);
+        final OrderTable orderTableOf3Guests = new OrderTable(2L, null, GuestNumber.of(3), true);
         final TableGroup tableGroup = new TableGroup(1L, LocalDateTime.now(),
                 Arrays.asList(orderTableOf5Guests, orderTableOf3Guests));
         when(orderTableRepository.findAllById(any())).thenReturn(
@@ -97,7 +98,7 @@ class TableGroupServiceTest {
     @DisplayName("엮을 테이블은 한 개 이하면 예외 발생")
     void invalidLessThen2OrderTable() {
         // given
-        final OrderTable orderTableOf5Guests = new OrderTable(1L, null, 5, true);
+        final OrderTable orderTableOf5Guests = new OrderTable(1L, null, GuestNumber.of(5), true);
         when(orderTableRepository.findAllById(any())).thenReturn(Arrays.asList(orderTableOf5Guests));
         final TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(1L));
         // when && then
@@ -129,10 +130,10 @@ class TableGroupServiceTest {
 
     public static Stream<Arguments> invalidEmptyOrGroupingOrderTableParameter() {
         // given
-        final OrderTable orderTable = new OrderTable(99L, null, 5, true);
+        final OrderTable orderTable = new OrderTable(99L, null, GuestNumber.of(5), true);
         final TableGroup existTableGroup = new TableGroup(2L, null, Arrays.asList(orderTable, orderTable));
-        final OrderTable groupingOrderTable = new OrderTable(1L, existTableGroup, 5, false);
-        final OrderTable notEmptyOrderTable = new OrderTable(2L, null, 3, false);
+        final OrderTable groupingOrderTable = new OrderTable(1L, existTableGroup, GuestNumber.of(5), false);
+        final OrderTable notEmptyOrderTable = new OrderTable(2L, null, GuestNumber.of(3), false);
 
         return Stream.of(
                 Arguments.of(
@@ -148,8 +149,8 @@ class TableGroupServiceTest {
     @DisplayName("그룹화된 테이블을 해제한다.")
     void ungroupGroupTable() {
         // given
-        final OrderTable groupingOneOrderTable = new OrderTable(1L, null, 5, true);
-        final OrderTable groupingTwoOrderTable = new OrderTable(2L, null, 3, true);
+        final OrderTable groupingOneOrderTable = new OrderTable(1L, null, GuestNumber.of(5), true);
+        final OrderTable groupingTwoOrderTable = new OrderTable(2L, null, GuestNumber.of(3), true);
         final TableGroup tableGroup = new TableGroup(1L, null,
                 Arrays.asList(groupingOneOrderTable, groupingTwoOrderTable));
         when(tableGroupRepository.findById(any())).thenReturn(Optional.of(tableGroup));
@@ -163,8 +164,8 @@ class TableGroupServiceTest {
     @DisplayName("식사가 완료되지 않은 상태에서 그룹화된 테이블을 해제시 예외 발생")
     void ungroupCookingAndMealGroupTable() {
         // given
-        final OrderTable groupingOneOrderTable = new OrderTable(1L, null, 5, true);
-        final OrderTable groupingTwoOrderTable = new OrderTable(2L, null, 3, true);
+        final OrderTable groupingOneOrderTable = new OrderTable(1L, null, GuestNumber.of(5), true);
+        final OrderTable groupingTwoOrderTable = new OrderTable(2L, null, GuestNumber.of(3), true);
         final TableGroup tableGroup = new TableGroup(1L, null,
                 Arrays.asList(groupingOneOrderTable, groupingTwoOrderTable));
         when(tableGroupRepository.findById(any())).thenReturn(Optional.of(tableGroup));

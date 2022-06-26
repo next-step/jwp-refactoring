@@ -24,6 +24,7 @@ import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.Orders;
+import kitchenpos.table.domain.GuestNumber;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.utils.RestAssuredHelper;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,7 +61,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
     void createOrder() {
         // given
         final OrderTableResponse 주문_테이블_결과 = new OrderTableResponse(1L, null, 3, false);
-        final OrderTable orderTable = new OrderTable(1L, null, 5, false);
+        final OrderTable orderTable = new OrderTable(1L, null, GuestNumber.of(5), false);
         final Orders order = new Orders(1L, orderTable, OrderStatus.COOKING, LocalDateTime.now(), null);
         final MenuGroup menuGroup = new MenuGroup(1L, "후라이드세트");
         final Menu menu = new Menu(1L, "후라이드", Price.of(16_000L), menuGroup);

@@ -15,6 +15,7 @@ import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.application.TableService;
+import kitchenpos.table.domain.GuestNumber;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.repository.OrderTableRepository;
@@ -44,7 +45,7 @@ class TableServiceTest {
     @DisplayName("주문 테이블을 생성한다.")
     void createOrderTable() {
         // given
-        final OrderTable orderTable = new OrderTable(1L, null, 5, false);
+        final OrderTable orderTable = new OrderTable(1L, null, GuestNumber.of(5), false);
         final OrderTableResponse expectedOrderTableResponse = orderTable.toOrderTableResponse();
         when(orderTableRepository.save((any()))).thenReturn(orderTable);
         // when
@@ -61,7 +62,7 @@ class TableServiceTest {
     @DisplayName("주문 테이블들을 조회한다.")
     void searchOrderTable() {
         // given
-        final OrderTable orderTable = new OrderTable(1L, null, 5, false);
+        final OrderTable orderTable = new OrderTable(1L, null, GuestNumber.of(5), false);
         final OrderTableResponse expectedOrderTableResponse = orderTable.toOrderTableResponse();
         when(orderTableRepository.findAll()).thenReturn(Arrays.asList(orderTable));
         // when
@@ -79,7 +80,7 @@ class TableServiceTest {
     @DisplayName("주문 테이블을 빈 테이블로 변경한다.")
     void changeEmptyOrderTable() {
         // given
-        final OrderTable fullOrderTable = new OrderTable(1L, null, 5, false);
+        final OrderTable fullOrderTable = new OrderTable(1L, null, GuestNumber.of(5), false);
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(fullOrderTable));
         when(orderRepository.existsOrdersByOrderTableIdAndOrderStatusNot(1L, OrderStatus.COMPLETION))
                 .thenReturn(false);
@@ -102,7 +103,7 @@ class TableServiceTest {
     void notTableGroup() {
         // given
         final TableGroup tableGroup = new TableGroup(1L, null);
-        final OrderTable fullOrderTableGroup = new OrderTable(1L, tableGroup, 5, false);
+        final OrderTable fullOrderTableGroup = new OrderTable(1L, tableGroup, GuestNumber.of(5), false);
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(fullOrderTableGroup));
         // when && then
         assertThatIllegalArgumentException()
@@ -113,7 +114,7 @@ class TableServiceTest {
     @DisplayName("주문 테이블이 요리중이거나 식사중이면 예외 발생")
     void cookingAndMealOrderTable() {
         // given
-        final OrderTable fullOrderTable = new OrderTable(1L, null, 5, false);
+        final OrderTable fullOrderTable = new OrderTable(1L, null, GuestNumber.of(5), false);
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(fullOrderTable));
         when(orderRepository.existsOrdersByOrderTableIdAndOrderStatusNot(1L, OrderStatus.COMPLETION))
                 .thenReturn(true);
@@ -126,7 +127,7 @@ class TableServiceTest {
     @DisplayName("주문 테이블의 방문 고객수를 변경한다.")
     void changeNumberOfGuests() {
         // given
-        final OrderTable orderTable5Guests = new OrderTable(1L, null, 5, false);
+        final OrderTable orderTable5Guests = new OrderTable(1L, null, GuestNumber.of(5), false);
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable5Guests));
         // when
         final OrderTableResponse actual = tableService.changeNumberOfGuests(1L, 3);
@@ -154,7 +155,7 @@ class TableServiceTest {
     @DisplayName("빈 테이블의 고객 수는 변경시 예외 발생")
     void notChangeEmptyOrderTable() {
         // given
-        final OrderTable emptyOrderTable = new OrderTable(1L, null, 0, true);
+        final OrderTable emptyOrderTable = new OrderTable(1L, null, GuestNumber.of(0), true);
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(emptyOrderTable));
         // when && then
         assertThatIllegalArgumentException()

@@ -24,6 +24,7 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.table.domain.GuestNumber;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,11 +58,11 @@ class OrderServiceTest {
         // given
         final MenuGroup menuGroup = new MenuGroup(1L, "메뉴그룹");
         final Menu menu = new Menu(1L, "메뉴", Price.of(1_000L), menuGroup);
-        final OrderTable orderTable = new OrderTable(1L, null, 5, false);
+        final OrderTable orderTable = new OrderTable(1L, null, GuestNumber.of(5), false);
         final OrderLineItem orderLineItem = new OrderLineItem(1L, null, menu, 1L);
         final Orders order = new Orders(1L, orderTable, OrderStatus.COOKING, null, Arrays.asList(orderLineItem));
         when(menuRepository.countByIdIn(any())).thenReturn(1L);
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(new OrderTable(1L, null, 3, false)));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(new OrderTable(1L, null, GuestNumber.of(3), false)));
         when(menuRepository.findById(any())).thenReturn(Optional.of(menu));
         when(orderRepository.save(any())).thenReturn(order);
         // when
@@ -116,7 +117,7 @@ class OrderServiceTest {
     void searchOrders() {
         // given
         final MenuGroup menuGroup = new MenuGroup(1L, "메뉴그룹");
-        final OrderTable orderTable = new OrderTable(1L, null, 5, false);
+        final OrderTable orderTable = new OrderTable(1L, null, GuestNumber.of(5), false);
         final Menu menu = new Menu(1L, "메뉴", Price.of(1_000L), menuGroup);
         final OrderLineItem orderLineItem = new OrderLineItem(1L, null, menu, 1L);
         final Orders order = new Orders(1L, orderTable, OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(orderLineItem));
@@ -132,7 +133,7 @@ class OrderServiceTest {
     void changeOrderStatus() {
         // given
         final MenuGroup menuGroup = new MenuGroup(1L, "메뉴그룹");
-        final OrderTable orderTable = new OrderTable(1L, null, 5, false);
+        final OrderTable orderTable = new OrderTable(1L, null, GuestNumber.of(5), false);
         final Menu menu = new Menu(1L, "메뉴", Price.of(1_000L), menuGroup);
         final OrderLineItem orderLineItem = new OrderLineItem(1L, null, menu, 1L);
         final Orders order = new Orders(1L, orderTable, OrderStatus.COOKING, LocalDateTime.now(), Arrays.asList(orderLineItem));
@@ -155,7 +156,7 @@ class OrderServiceTest {
     @DisplayName("완료된 주문을 주문 상태 변경시 에러 발생")
     void changeOrderStatusCompletionOrder() {
         // given
-        final OrderTable orderTable = new OrderTable(1L, null, 5, false);
+        final OrderTable orderTable = new OrderTable(1L, null, GuestNumber.of(5), false);
         final Orders order = new Orders(1L, orderTable, OrderStatus.COMPLETION, LocalDateTime.now(), null);
         when(orderRepository.findById(any())).thenReturn(Optional.of(order));
 
