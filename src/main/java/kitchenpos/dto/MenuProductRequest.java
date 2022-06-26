@@ -2,12 +2,12 @@ package kitchenpos.dto;
 
 public class MenuProductRequest {
     private Long id;
-    private int quantity;
+    private Long quantity;
 
     protected MenuProductRequest() {
     }
 
-    public MenuProductRequest(Long id, int quantity) {
+    public MenuProductRequest(Long id, long quantity) {
         this.id = id;
         this.quantity = quantity;
     }
@@ -16,7 +16,7 @@ public class MenuProductRequest {
         return id;
     }
 
-    public int getQuantity() {
+    public Long getQuantity() {
         return quantity;
     }
 }

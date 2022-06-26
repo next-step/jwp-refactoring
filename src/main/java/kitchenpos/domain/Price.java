@@ -28,15 +28,11 @@ public class Price {
         return value;
     }
 
-    public BigDecimal getPrice(int quantity) {
+    public BigDecimal getPrice(Long quantity) {
         return value.multiply(BigDecimal.valueOf(quantity));
     }
 
     public boolean isGreaterThan(BigDecimal val) {
-        if (value.compareTo(val) > 0) {
-            return true;
-        }
-
-        return false;
+        return value.compareTo(val) > 0;
     }
 }

@@ -9,12 +9,12 @@ public class MenuProductResponse {
     private Long id;
     private String name;
     private BigDecimal price;
-    private Integer quantity;
+    private Long quantity;
 
     protected MenuProductResponse() {
     }
 
-    public MenuProductResponse(Long id, String name, BigDecimal price, Integer quantity) {
+    public MenuProductResponse(Long id, String name, BigDecimal price, Long quantity) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -42,7 +42,7 @@ public class MenuProductResponse {
         return price;
     }
 
-    public Integer getQuantity() {
+    public Long getQuantity() {
         return quantity;
     }
 

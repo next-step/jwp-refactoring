@@ -44,7 +44,7 @@ public class Product {
         return unitPrice.getValue();
     }
 
-    public BigDecimal getPrice(int quantity) {
+    public BigDecimal getPrice(Long quantity) {
         return unitPrice.getPrice(quantity);
     }
 }

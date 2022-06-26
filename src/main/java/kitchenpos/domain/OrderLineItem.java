@@ -26,6 +26,12 @@ public class OrderLineItem {
     protected OrderLineItem() {
     }
 
+    public OrderLineItem(Menu menu, Long quantity) {
+        this.menu = menu;
+        this.quantity = quantity;
+    }
+
+    // for test
     public OrderLineItem(Menu menu, long quantity) {
         this.menu = menu;
         this.quantity = quantity;

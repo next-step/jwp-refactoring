@@ -25,12 +25,18 @@ public class MenuProduct {
     @JoinColumn(nullable = false)
     private Product product;
 
-    private int quantity;
+    private Long quantity;
 
     protected MenuProduct() {
     }
 
-    public MenuProduct(Product product, int quantity) {
+    public MenuProduct(Product product, Long quantity) {
+        this.product = product;
+        this.quantity = quantity;
+    }
+
+    // for test
+    public MenuProduct(Product product, long quantity) {
         this.product = product;
         this.quantity = quantity;
     }
@@ -51,7 +57,7 @@ public class MenuProduct {
         return product;
     }
 
-    public int getQuantity() {
+    public Long getQuantity() {
         return quantity;
     }
 
