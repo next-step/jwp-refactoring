@@ -24,7 +24,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void create() {
         // when
-        ExtractableResponse<Response> 등록된_주문 = 주문_생성_요청(테스트_주문_생성());
+        ExtractableResponse<Response> 등록된_주문 = 주문_등록되어_있음(테스트_주문_생성());
 
         // then
         주문_생성_검증됨(등록된_주문);
@@ -34,7 +34,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void list() {
         // given
-        ExtractableResponse<Response> 등록된_주문 = 주문_생성_요청(테스트_주문_생성());
+        ExtractableResponse<Response> 등록된_주문 = 주문_등록되어_있음(테스트_주문_생성());
 
         // when
         ExtractableResponse<Response> 주문_목록 = 주문_목록_조회_요청();
@@ -48,7 +48,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     @Test
     void changeOrderStatus() {
         // given
-        ExtractableResponse<Response> 등록된_주문 = 주문_생성_요청(테스트_주문_생성());
+        ExtractableResponse<Response> 등록된_주문 = 주문_등록되어_있음(테스트_주문_생성());
         final OrderStatus 주문_완료_상태 = OrderStatus.COMPLETION;
 
         // when
@@ -58,11 +58,18 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         assertThat(주문_가져옴(변경된_주문).getOrderStatus()).isEqualTo(주문_완료_상태.name());
     }
 
-    private static Order 테스트_주문_생성() {
+    public static Order 테스트_주문_생성() {
         Menu 등록된_메뉴 = 메뉴_가져옴(메뉴_등록되어_있음(테스트_메뉴_생성(MENU_NAME01, MENU_PRICE01)));
         OrderLineItem 생성된_주문_항목 = new OrderLineItem(등록된_메뉴.getId(), 1);
         OrderTable 등록된_주문_테이블 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, false));
         return new Order(등록된_주문_테이블.getId(), Arrays.asList(생성된_주문_항목));
+    }
+
+    public static Order 테스트_주문_생성(OrderStatus orderStatus) {
+        Menu 등록된_메뉴 = 메뉴_가져옴(메뉴_등록되어_있음(테스트_메뉴_생성(MENU_NAME01, MENU_PRICE01)));
+        OrderLineItem 생성된_주문_항목 = new OrderLineItem(등록된_메뉴.getId(), 1);
+        OrderTable 등록된_주문_테이블 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, false));
+        return new Order(등록된_주문_테이블.getId(), orderStatus.name(), Arrays.asList(생성된_주문_항목));
     }
 
     public static ExtractableResponse<Response> 주문_등록되어_있음(Order order) {
