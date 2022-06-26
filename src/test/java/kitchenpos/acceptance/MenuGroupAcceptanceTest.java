@@ -84,4 +84,8 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
 
         assertThat(resultMenuGroupIds).containsAll(expectedMenuGroupIds);
     }
+
+    public static ExtractableResponse<Response> 메뉴그룹_등록되어_있음(String name) {
+        return 메뉴그룹_등록_요청(MenuGroupRequest.from(name));
+    }
 }

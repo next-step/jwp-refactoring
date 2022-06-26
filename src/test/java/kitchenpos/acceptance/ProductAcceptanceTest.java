@@ -59,7 +59,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     /**
      * Feature: 상품 관련 기능
      *
-     *   Scenario: 상품을 관리
+     *   Scenario: 상품을 관리 실패
      *     When 가격 0 미만 상품 등록 요청
      *     Then 상품 등록 실패함
      */
@@ -102,5 +102,9 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 
     public static void 상품_등록_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    public static ExtractableResponse<Response> 상품_등록되어_있음(String name, int price) {
+        return 상품_등록_요청(ProductRequest.of(name, price));
     }
 }
