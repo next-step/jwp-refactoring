@@ -34,4 +34,8 @@ public class ProductService {
             .collect(Collectors.toList());
     }
 
+    public Product findProductById(Long id) {
+        return productRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+    }
+
 }

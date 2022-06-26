@@ -1,10 +1,8 @@
 package kitchenpos.table.application;
 
-import static kitchenpos.order.domain.OrderStatus.STARTED_ORDER_READY_STATUS;
-
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.application.OrderService;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.table.domain.OrderTable;
@@ -15,12 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 public class TableService {
-    private final OrderRepository orderRepository;
+    private final OrderService orderService;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(OrderRepository orderRepository,
-        OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
+    public TableService(OrderService orderService, OrderTableRepository orderTableRepository) {
+        this.orderService = orderService;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -59,13 +56,21 @@ public class TableService {
         return OrderTableResponse.of(orderTable);
     }
 
+    public List<OrderTable> findAllByTableGroupId(Long tableGroupId) {
+        return orderTableRepository.findAllByTableGroupId(tableGroupId);
+    }
+
+    public List<OrderTable> findAllByIdIn(List<Long> orderTableIds) {
+        return orderTableRepository.findAllByIdIn(orderTableIds);
+    }
+
     private OrderTable findById(Long id) {
         return this.orderTableRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("테이블이 존재하지 않습니다."));
     }
 
     private void validateExistStartedOrderReadyStatus(Long orderTableId) {
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId, STARTED_ORDER_READY_STATUS)) {
+        if (orderService.existsUnCompleteStatusByOrderTableId(orderTableId)) {
             throw new IllegalArgumentException("이미 주문 준비를 시작한 테이블이 있습니다.");
         }
     }

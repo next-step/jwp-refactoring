@@ -1,14 +1,11 @@
 package kitchenpos.table.application;
 
-import static kitchenpos.order.domain.OrderStatus.STARTED_ORDER_READY_STATUS;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.application.OrderService;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
 import kitchenpos.table.dto.TableGroupRequest;
@@ -20,15 +17,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class TableGroupService {
 
-    private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
+    private final OrderService orderService;
+    private final TableService tableService;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(OrderRepository orderRepository,
-        OrderTableRepository orderTableRepository,
-        TableGroupRepository tableGroupRepository) {
-        this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
+    public TableGroupService(OrderService orderService, TableService tableService, TableGroupRepository tableGroupRepository) {
+        this.orderService = orderService;
+        this.tableService = tableService;
         this.tableGroupRepository = tableGroupRepository;
     }
 
@@ -47,7 +42,7 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
+        final List<OrderTable> orderTables = tableService.findAllByTableGroupId(tableGroupId);
         validateTableGroupUnGroup(orderTables);
 
         for (final OrderTable orderTable : orderTables) {
@@ -60,7 +55,7 @@ public class TableGroupService {
             .map(OrderTable::getId)
             .collect(Collectors.toList());
 
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, STARTED_ORDER_READY_STATUS)) {
+        if (orderService.existsUnCompleteStatusByOrderTableIdIn(orderTableIds)) {
             throw new IllegalArgumentException();
         }
     }
@@ -82,7 +77,7 @@ public class TableGroupService {
             .map(OrderTableRequest::getId)
             .collect(Collectors.toList());
 
-        return orderTableRepository.findAllByIdIn(orderTableIds);
+        return tableService.findAllByIdIn(orderTableIds);
     }
 
 }

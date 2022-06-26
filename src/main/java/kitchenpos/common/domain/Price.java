@@ -3,7 +3,6 @@ package kitchenpos.common.domain;
 import static java.util.Objects.requireNonNull;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 

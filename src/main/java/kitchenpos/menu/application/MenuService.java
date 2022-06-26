@@ -6,14 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,21 +20,20 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class MenuService {
     private final MenuRepository menuRepository;
-    private final MenuGroupRepository menuGroupRepository;
-    private final ProductRepository productRepository;
+    private final MenuGroupService menuGroupService;
+    private final ProductService productService;
 
-    public MenuService(MenuRepository menuRepository, MenuGroupRepository menuGroupRepository,
-        ProductRepository productRepository) {
+    public MenuService(MenuRepository menuRepository, MenuGroupService menuGroupService, ProductService productService) {
         this.menuRepository = menuRepository;
-        this.menuGroupRepository = menuGroupRepository;
-        this.productRepository = productRepository;
+        this.menuGroupService = menuGroupService;
+        this.productService = productService;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
         validateCreateRequest(menuRequest);
 
-        if (!menuGroupRepository.existsById(menuRequest.getMenuGroupId())) {
+        if (!menuGroupService.existsMenuGroup(menuRequest.getMenuGroupId())) {
             throw new IllegalArgumentException("메뉴 그룹이 존재하지 않습니다.");
         }
 
@@ -59,11 +57,15 @@ public class MenuService {
             .collect(Collectors.toList());
     }
 
+    public Menu findMenuById(Long menuId) {
+        return menuRepository.findById(menuId)
+            .orElseThrow(IllegalArgumentException::new);
+    }
+
     private List<MenuProduct> convertMenuProductEntity(List<MenuProductRequest> menuProductRequests) {
         List<MenuProduct> menuProducts = new ArrayList<>();
         for (MenuProductRequest menuProductRequest : menuProductRequests) {
-            Product product = productRepository.findById(menuProductRequest.getProductId())
-                .orElseThrow(IllegalArgumentException::new);
+            Product product = productService.findProductById(menuProductRequest.getProductId());
             menuProducts.add(new MenuProduct(product, menuProductRequest.getQuantity()));
         }
         return menuProducts;
