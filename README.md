@@ -10,22 +10,44 @@
     - 상품 추가
     - 상품 리스트 출력
     
+### 주문 테이블(OrderTable)
+- 매장에서 주문이 발생하는 영역이다
+- 식별자(id), 단체 지정 그룹(tableGroupId), 손님 수(numberOfGuests), 테이블 이용 여부(empty) 정보 포함한다. 
+
+- (기능) `주문 테이블(OrderTable)` 생성 기능
+    - `주문 테이블(OrderTable)`을 저장한다.
+    
+- (기능) `주문 테이블(OrderTable)` 조회 기능
+    - `주문 테이블(OrderTable)` 목록을 가져온다.
+    
+- (기능) `주문 테이블(OrderTable)`의 `이용 여부(empty)` 상태 변경 기능
+    - `주문 테이블(OrderTable)`의 `이용 여부(empty)` 상태를 변경한다.
+    - (조건) `주문 테이블(OrderTable)`이 데이터베이스에 저장된 상태다.
+    - (조건) 연관된 `단체 지정(TableGroup)` 정보가 존재하지 않는다. (null)
+    - (조건) `주문 테이블(OrderTable)`와 연관된 `주문(Order)`이 `계산 완료(COMPLETION)` 상태다.
+    
+- (기능) `주문 테이블(OrderTable)`의 손님 수 변경 기능
+    - `주문 테이블(OrderTable)`의 손님 수를 변경한다.
+    - (조건) 0명 미만으로 변경할 수 없다.
+    - (조건) 변경할 `주문 테이블(OrderTable)`이 데이터베이스에 저장된 상태다.
+    - (조건) 변경할 `주문 테이블(OrderTable)`이 이용 중인 상태다. (Not empty)
+    
 ### 단체 지정(TableGroup)
 - 통합 계산을 위해 개별 주문 테이블을 그룹화하는 기능이다.
 - 식별자(id), 생성 날짜(createdDate), 주문 테이블 목록(orderTables) 정보 포함한다.
 
-- `단체 지정(TableGroup)` 추가 기능
-    - `단체 지정(TableGroup)`을 DB에 저장한다.
+- (기능) `단체 지정(TableGroup)` 생성 기능
+    - `단체 지정(TableGroup)`를 저장한다.
     - `단체 지정(TableGroup)`과 연관된 `주문 테이블(OrderTable)` 상태를 `Not Empty` 상태로 변경한다.
-    - `단체 지정(TableGroup)`과 연관된 `주문 테이블(OrderTable)` DB 외래키에 저장한다.
-    - (조건) 연관된 `주문 테이블(OrderTable)`이 2개 이상 존재해야 한다.
-    - (조건) 연관된 `주문 테이블(OrderTable)`이 데이터베이스에 저장된 상태여야 한다.
-    - (조건) 연관된 `주문 테이블(OrderTable)`이 상태가 `Eempty`있어야 한다.
-    - (조건) 연관된 `주문 테이블(OrderTable)`이 기존에 다른 `단체 지정(TableGroup)`과 매핑되지 않은 상태여야 한다.
+    - `단체 지정(TableGroup)`과 연관된 `주문 테이블(OrderTable)` 외래키에 `단체 지정(TableGroup)` 정보를 업데이트한다.
+    - (조건) 연관된 `주문 테이블(OrderTable)`이 2개 이상 존재한다.
+    - (조건) 연관된 `주문 테이블(OrderTable)`이 데이터베이스에 저장된 상태다.
+    - (조건) 연관된 `주문 테이블(OrderTable)`이 비어있는 상태다(empty).
+    - (조건) 연관된 `주문 테이블(OrderTable)`이 기존에 다른 `단체 지정(TableGroup)`과 매핑되지 않은 상태다.
     
-- `단체 지정(TableGroup)`과 `주문 테이블(OrderTable)` 간 그룹 해제 기능
+- (기능) `단체 지정(TableGroup)`과 `주문 테이블(OrderTable)` 간 그룹 해제 기능
     - `단체 지정(TableGroup)`과 연관된 `주문 테이블(OrderTable)` DB 외래키를 `null`로 업데이트 한다.
-    - (조건) 연관된 `주문 테이블(OrTable)`과 매핑된 `주문(Order)`이 `계산 완료(COMPLETION)` 상태여야 한다.
+    - (조건) 연관된 `주문 테이블(OrTable)`과 연관된 `주문(Order)`이 `계산 완료(COMPLETION)` 상태다.
 
 ## 용어 사전
 
