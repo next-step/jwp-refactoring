@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
@@ -36,8 +37,8 @@ public class TableGroup {
     @CreatedDate
     private LocalDateTime createdDate;
 
-    @OneToMany(mappedBy = "tableGroup", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderTable> orderTables = new ArrayList<>();
+    @Embedded
+    private OrderTables orderTables = new OrderTables();
 
     protected TableGroup() {
     }
@@ -48,28 +49,9 @@ public class TableGroup {
     }
 
     public TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
-        validateOrderTables(orderTables);
         this.id = id;
         this.createdDate = createdDate;
-        this.orderTables = orderTables;
-    }
-
-    private void validateOrderTables(List<OrderTable> orderTables) {
-        if (orderTables.size() < 2) {
-            throw new InvalidTableNumberException();
-        }
-        for (OrderTable orderTable : orderTables) {
-            validateOrderTable(orderTable);
-        }
-    }
-
-    private void validateOrderTable(OrderTable orderTable) {
-        if (orderTable.existTableGroup()) {
-            throw new ExistGroupTableException();
-        }
-        if (!orderTable.isEmpty()) {
-            throw new NotEmptyException();
-        }
+        this.orderTables = new OrderTables(orderTables);
     }
 
     public TableGroup(LocalDateTime createdDate) {
@@ -80,29 +62,20 @@ public class TableGroup {
         this(null, null, orderTables);
     }
 
-    public void addOrderTable(OrderTable orderTable) {
-        if (this.orderTables == null) {
-            this.orderTables = new ArrayList<>();
-        }
-        this.orderTables.add(orderTable);
-    }
-
     public Long getId() {
         return id;
     }
 
-    public List<OrderTable> getOrderTables() {
+    public OrderTables getOrderTables() {
         return orderTables;
     }
 
     public void ungroup() {
-        this.orderTables.forEach(OrderTable::ungroupTable);
+        this.orderTables.ungroup();
     }
 
     public TableGroupResponse toTableGroupResponse() {
-        final List<OrderTableResponse> orderTableResponses = this.orderTables.stream()
-                .map(OrderTable::toOrderTableResponse)
-                .collect(Collectors.toList());
+        final List<OrderTableResponse> orderTableResponses = this.orderTables.toOrderTableResponses();
         return new TableGroupResponse(this.id, this.createdDate, orderTableResponses);
     }
 
