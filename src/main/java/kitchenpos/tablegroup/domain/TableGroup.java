@@ -2,22 +2,25 @@ package kitchenpos.tablegroup.domain;
 
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@EntityListeners(AuditingEntityListener.class)
 @Entity
 public class TableGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @CreatedDate
     private LocalDateTime createdDate;
     @Embedded
     private OrderTables orderTables = new OrderTables();
 
     protected TableGroup() {
-        this.createdDate = LocalDateTime.now();
     }
 
     public static TableGroup empty() {
@@ -27,9 +30,6 @@ public class TableGroup {
     public static TableGroup group(OrderTables orderTables) {
         TableGroup tableGroup = TableGroup.empty();
         for (OrderTable orderTable : orderTables) {
-            if (!orderTable.isEmpty() || orderTable.hasTableGroup()) {
-                throw new IllegalArgumentException("적절하지 않은 테이블이 포함되어 있습니다.");
-            }
             orderTable.group(tableGroup);
             tableGroup.add(orderTable);
         }

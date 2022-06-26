@@ -11,7 +11,6 @@ import kitchenpos.order.dto.*;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,43 +43,39 @@ class OrdersServiceTest {
 
     private Product product1;
     private Product product2;
-    private Orders orders;
-    private OrderTable 비어있지_않은_주문_테이블;
-    private OrderTable 비어있는_주문_테이블;
     private MenuGroup menuGroup;
     private Menu menu;
 
     @BeforeEach
     void setUp() {
         menuGroup = new MenuGroup(1L, "menuGroup");
-        비어있지_않은_주문_테이블 = new OrderTable(1L, TableGroup.empty(), 5, false);
-        비어있는_주문_테이블 = new OrderTable(2L, TableGroup.empty(), 10, true);
         product1 = new Product(1L, "product1", 100L);
         product2 = new Product(2L, "product2", 500L);
         menu = new Menu(1L, "menu1", 1000L, menuGroup);
         menu.add(product1, 1);
         menu.add(product2, 2);
-        orders = new Orders(비어있지_않은_주문_테이블, OrderStatus.COOKING, LocalDateTime.now());
     }
 
     @Test
     @DisplayName("주문을 생성할 수 있다.")
     void create() {
         //given
-        Orders savedOrder = new Orders(비어있지_않은_주문_테이블, OrderStatus.COOKING, LocalDateTime.now());
+        OrderTable orderTable = new OrderTable(5, false);
+        Orders savedOrder = new Orders(orderTable, OrderStatus.COOKING, LocalDateTime.now());
         savedOrder.add(menu, 1);
         given(menuRepository.countByIdIn(any())).willReturn(1L);
         given(menuRepository.findById(any())).willReturn(Optional.of(menu));
-        given(orderTableRepository.findByIdAndEmptyIsFalse(any())).willReturn(Optional.of(비어있지_않은_주문_테이블));
+        given(orderTableRepository.findByIdAndEmptyIsFalse(any())).willReturn(Optional.of(orderTable));
         given(ordersRepository.save(any())).willReturn(savedOrder);
 
         //when
-        OrderResponse response = orderService.create(
-                new OrdersRequest(비어있지_않은_주문_테이블.getId(), Arrays.asList(new OrderLineItemRequest(menu.getId(), 1))));
+        OrderResponse response =
+                orderService.create(new OrdersRequest(0L, Arrays.asList(new OrderLineItemRequest(menu.getId(), 1))));
 
         //then
         assertThat(response.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
-        assertThat(response.getOrderLineItems().stream().map(OrderLineItemResponse::getQuantity).collect(Collectors.toList())).containsExactlyInAnyOrder(1L);
+        assertThat(response.getOrderLineItems().stream().map(OrderLineItemResponse::getQuantity)
+                .collect(Collectors.toList())).containsExactlyInAnyOrder(1L);
     }
 
     @Test
@@ -90,8 +85,8 @@ class OrdersServiceTest {
         given(menuRepository.countByIdIn(any())).willReturn(2L);
 
         //then
-        assertThatThrownBy(() -> orderService.create(new OrdersRequest(비어있지_않은_주문_테이블.getId(),
-                Arrays.asList(new OrderLineItemRequest(menu.getId(), 1))))).isExactlyInstanceOf(
+        assertThatThrownBy(() -> orderService.create(
+                new OrdersRequest(0L, Arrays.asList(new OrderLineItemRequest(menu.getId(), 1))))).isExactlyInstanceOf(
                 IllegalArgumentException.class);
     }
 
@@ -103,8 +98,8 @@ class OrdersServiceTest {
         given(orderTableRepository.findByIdAndEmptyIsFalse(any())).willReturn(Optional.empty());
 
         //then
-        assertThatThrownBy(() -> orderService.create(new OrdersRequest(비어있지_않은_주문_테이블.getId(),
-                Arrays.asList(new OrderLineItemRequest(menu.getId(), 1))))).isExactlyInstanceOf(
+        assertThatThrownBy(() -> orderService.create(
+                new OrdersRequest(0L, Arrays.asList(new OrderLineItemRequest(menu.getId(), 1))))).isExactlyInstanceOf(
                 NoSuchElementException.class);
     }
 
@@ -113,11 +108,11 @@ class OrdersServiceTest {
     void create_fail_4() {
         //given
         given(menuRepository.countByIdIn(any())).willReturn(1L);
-        given(orderTableRepository.findByIdAndEmptyIsFalse(any())).willReturn(Optional.of(비어있는_주문_테이블));
+        given(orderTableRepository.findByIdAndEmptyIsFalse(any())).willReturn(Optional.of(new OrderTable(1, true)));
 
         //then
-        assertThatThrownBy(() -> orderService.create(new OrdersRequest(비어있는_주문_테이블.getId(),
-                Arrays.asList(new OrderLineItemRequest(menu.getId(), 1))))).isExactlyInstanceOf(
+        assertThatThrownBy(() -> orderService.create(
+                new OrdersRequest(0L, Arrays.asList(new OrderLineItemRequest(menu.getId(), 1))))).isExactlyInstanceOf(
                 NoSuchElementException.class);
     }
 
@@ -125,7 +120,8 @@ class OrdersServiceTest {
     @DisplayName("전체 주문을 조회할 수 있다.")
     void list() {
         //given
-        given(ordersRepository.findAll()).willReturn(Arrays.asList(orders));
+        given(ordersRepository.findAll()).willReturn(
+                Arrays.asList(new Orders(new OrderTable(), OrderStatus.COOKING, LocalDateTime.now())));
 
         //then
         assertThat(orderService.list().stream().map(OrderResponse::getOrderStatus)
@@ -136,6 +132,7 @@ class OrdersServiceTest {
     @DisplayName("주문 상태를 변경할 수 있다.")
     void changeOrderStatus() {
         //given
+        Orders orders = new Orders(new OrderTable(), OrderStatus.COOKING, LocalDateTime.now());
         given(ordersRepository.findById(any())).willReturn(Optional.of(orders));
 
         //when
@@ -161,7 +158,7 @@ class OrdersServiceTest {
     void changeOrderStatus_failed_3() {
         //given
         given(ordersRepository.findById(any())).willReturn(
-                Optional.of(new Orders(비어있지_않은_주문_테이블, OrderStatus.COMPLETION, LocalDateTime.now())));
+                Optional.of(new Orders(new OrderTable(5, false), OrderStatus.COMPLETION, LocalDateTime.now())));
 
         //then
         assertThatThrownBy(() -> orderService.changeOrderStatus(0L,
