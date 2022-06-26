@@ -7,6 +7,5 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface MenuRepository extends JpaRepository<Menu, Long> {
-    @Query("SELECT COUNT(m) FROM Menu m WHERE m.id in :ids")
     Integer countByIdIn(@Param("ids") List<Long> ids);
 }
