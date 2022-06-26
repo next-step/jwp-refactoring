@@ -14,7 +14,7 @@ import kitchenpos.table.domain.OrderTable;
 @Embeddable
 public class OrderTables {
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "table_group_id")
     private List<OrderTable> orderTables = new ArrayList<>();
 
