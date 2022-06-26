@@ -11,7 +11,7 @@ class OrderTest {
     @Test
     @DisplayName("주문 객체가 같은지 검증")
     void verifyEqualsOrder() {
-        final OrderTable orderTable = new OrderTable(1L, null, 5, true);
+        final OrderTable orderTable = new OrderTable(1L, null, 5, false);
         final Orders order = new Orders(1L, orderTable, OrderStatus.COOKING, null, null);
 
         assertThat(order).isEqualTo(new Orders(1L, orderTable, OrderStatus.COOKING, null, null));
