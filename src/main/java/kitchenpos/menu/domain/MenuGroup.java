@@ -32,8 +32,8 @@ public class MenuGroup {
         return id;
     }
 
-    public String nameValue() {
-        return name.value();
+    public Name name() {
+        return name;
     }
 
     @Override

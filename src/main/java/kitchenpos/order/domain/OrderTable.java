@@ -52,8 +52,8 @@ public class OrderTable {
         return id;
     }
 
-    public int numberOfGuestsValue() {
-        return numberOfGuests.value();
+    public NumberOfGuests numberOfGuests() {
+        return numberOfGuests;
     }
 
     public boolean isEmpty() {

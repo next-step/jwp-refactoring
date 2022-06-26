@@ -46,8 +46,8 @@ class ProductServiceTest {
         ProductResponse productResponse = productService.create(productRequest);
         assertAll(
                 () -> assertThat(productResponse.getName()).isEqualTo("피자"),
-                () -> assertThat(productResponse.getPrice()).isEqualTo(BigDecimal.valueOf(20000L))
-        );
+                () -> assertThat(productResponse.getPrice()).isEqualTo(BigDecimal.valueOf(20000L)
+                ));
     }
 
     @DisplayName("상품 생성시 가격이 없는 경우 테스트")

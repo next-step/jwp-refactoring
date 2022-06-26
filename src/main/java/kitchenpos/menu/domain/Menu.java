@@ -61,12 +61,12 @@ public class Menu {
         this.id = id;
     }
 
-    public String nameValue() {
-        return name.value();
+    public Name name() {
+        return name;
     }
 
-    public BigDecimal priceValue() {
-        return price.value();
+    public Price price() {
+        return price;
     }
 
     public long menuGroupId() {

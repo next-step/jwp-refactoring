@@ -1,6 +1,7 @@
 package kitchenpos.order.dto;
 
 import java.util.Objects;
+import kitchenpos.domain.NumberOfGuests;
 import kitchenpos.order.domain.OrderTable;
 
 public class OrderTableResponse {
@@ -9,16 +10,16 @@ public class OrderTableResponse {
     private final int numberOfGuests;
     private final boolean empty;
 
-    private OrderTableResponse(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+    private OrderTableResponse(Long id, Long tableGroupId, NumberOfGuests numberOfGuests, boolean empty) {
         this.id = id;
         this.tableGroupId = tableGroupId;
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = numberOfGuests.value();
         this.empty = empty;
     }
 
     public static OrderTableResponse from(OrderTable orderTable) {
         return new OrderTableResponse(orderTable.id(), orderTable.tableGroupId(),
-                orderTable.numberOfGuestsValue(), orderTable.isEmpty());
+                orderTable.numberOfGuests(), orderTable.isEmpty());
     }
 
     public Long getId() {

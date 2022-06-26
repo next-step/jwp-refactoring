@@ -37,16 +37,12 @@ public class Product {
         return id;
     }
 
-    public String nameValue() {
-        return name.value();
+    public Name name() {
+        return name;
     }
 
     public Price price() {
         return price;
-    }
-
-    public BigDecimal priceValue() {
-        return price.value();
     }
 
     @Override

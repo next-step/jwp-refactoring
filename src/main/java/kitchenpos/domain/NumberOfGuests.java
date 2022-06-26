@@ -48,4 +48,9 @@ public class NumberOfGuests {
     public int hashCode() {
         return Objects.hash(numberOfGuests);
     }
+
+    @Override
+    public String toString() {
+        return String.valueOf(numberOfGuests);
+    }
 }

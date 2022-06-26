@@ -61,8 +61,8 @@ public class OrderLineItem {
         return menu.id();
     }
 
-    public long quantityValue() {
-        return quantity.value();
+    public Quantity quantity() {
+        return quantity;
     }
 
     @Override

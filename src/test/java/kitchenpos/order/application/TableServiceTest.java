@@ -12,6 +12,7 @@ import static org.mockito.Mockito.verify;
 
 import java.util.List;
 import java.util.Optional;
+import kitchenpos.domain.NumberOfGuests;
 import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.OrderTableRepository;
 import kitchenpos.order.domain.OrderTables;

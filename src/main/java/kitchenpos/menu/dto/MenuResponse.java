@@ -4,26 +4,31 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import kitchenpos.domain.Name;
+import kitchenpos.domain.Price;
 import kitchenpos.menu.domain.Menu;
 
 public class MenuResponse {
-    private final Long id;
-    private final String name;
-    private final BigDecimal price;
-    private final Long menuGroupId;
-    private final List<MenuProductResponse> menuProducts;
+    private Long id;
+    private String name;
+    private BigDecimal price;
+    private Long menuGroupId;
+    private List<MenuProductResponse> menuProducts;
 
-    private MenuResponse(Long id, String name, BigDecimal price, Long menuGroupId,
+    protected MenuResponse() {
+    }
+
+    private MenuResponse(Long id, Name name, Price price, Long menuGroupId,
                          List<MenuProductResponse> menuProducts) {
         this.id = id;
-        this.name = name;
-        this.price = price;
+        this.name = name.value();
+        this.price = price.value();
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
     }
 
     public static MenuResponse from(Menu menu) {
-        return new MenuResponse(menu.id(), menu.nameValue(), menu.priceValue(), menu.menuGroupId(),
+        return new MenuResponse(menu.id(), menu.name(), menu.price(), menu.menuGroupId(),
                 menu.readOnlyMenuProducts()
                         .stream()
                         .map(MenuProductResponse::from)

@@ -64,10 +64,6 @@ public class MenuProduct {
         return quantity;
     }
 
-    public long quantityValue() {
-        return quantity.value();
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {

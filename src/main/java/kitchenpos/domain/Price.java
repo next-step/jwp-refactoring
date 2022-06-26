@@ -45,7 +45,7 @@ public class Price implements Comparable<Price> {
     }
 
     public Price multiply(Quantity quantity) {
-        return Price.from(this.value().multiply(BigDecimal.valueOf(quantity.value())));
+        return Price.from(price.multiply(BigDecimal.valueOf(quantity.value())));
     }
 
     public void add(Price price) {

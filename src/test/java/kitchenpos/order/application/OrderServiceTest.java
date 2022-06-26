@@ -57,15 +57,13 @@ class OrderServiceTest {
 
     private OrderTable 주문테이블;
     private Menu 양념치킨;
-    private MenuProduct 양념치킨상품;
-    private Product 양념;
     private OrderLineItem 주문항목;
     private Order 주문;
 
     @BeforeEach
     void setUp() {
-        양념 = createProduct(1L, "양념", BigDecimal.valueOf(20000L));
-        양념치킨상품 = createMenuProduct(양념, 2L);
+        Product 양념 = createProduct(1L, "양념", BigDecimal.valueOf(20000L));
+        MenuProduct 양념치킨상품 = createMenuProduct(양념, 2L);
         양념치킨 = createMenu("양념치킨", BigDecimal.valueOf(10000L), createMenuGroup(2L, "한마리메뉴"),
                 MenuProducts.from(Lists.newArrayList(양념치킨상품)));
         주문테이블 = createOrderTable(1L, 2, false);
