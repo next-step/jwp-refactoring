@@ -6,11 +6,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.domain.Product;
-import org.junit.jupiter.api.BeforeEach;
+import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -18,13 +20,6 @@ import org.springframework.http.MediaType;
 
 @DisplayName("상품 관련 기능")
 public class ProductAcceptanceTest extends AcceptanceTest {
-    private Product 상품;
-
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
-        상품 = createProduct(1L, "상품", 1000);
-    }
 
     /**
      * Feature: 상품을 관리한다.
@@ -44,16 +39,28 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     void 상품_관리() {
         ExtractableResponse<Response> response;
         // when 상품 등록 요청
-        response = 상품_등록_요청(상품);
+        ExtractableResponse<Response> createdResponse = 상품_등록_요청("상품", 1000);
         // then 상품 등록됨
-        상품_등록됨(response);
+        상품_등록됨(createdResponse);
 
         // when 상품 목록 조회 요청
         response = 상품_목록_조회();
         // then 상품 목록이 조회됨
         상품_목록_조회됨(response);
         // then 상품 목록이 조회됨
-        상품_목록_포함됨(response, Arrays.asList(상품));
+        상품_목록_포함됨(response, Arrays.asList(createdResponse.as(ProductResponse.class)));
+    }
+
+    public static ExtractableResponse<Response> 상품_등록_요청(String name, double price) {
+        ProductRequest request = new ProductRequest(name, BigDecimal.valueOf(price));
+
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().post("/api/products")
+                .then().log().all()
+                .extract();
     }
 
     public static ExtractableResponse<Response> 상품_등록_요청(Product product) {
@@ -84,13 +91,13 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static void 상품_목록_포함됨(ExtractableResponse<Response> response, List<Product> expectedProducts) {
-        List<Long> resultProductIds = response.jsonPath().getList(".", Product.class).stream()
-                .map(Product::getId)
+    public static void 상품_목록_포함됨(ExtractableResponse<Response> response, List<ProductResponse> expectedProducts) {
+        List<Long> resultProductIds = response.jsonPath().getList(".", ProductResponse.class).stream()
+                .map(ProductResponse::getId)
                 .collect(Collectors.toList());
 
         List<Long> expectedProductIds = expectedProducts.stream()
-                .map(Product::getId)
+                .map(ProductResponse::getId)
                 .collect(Collectors.toList());
 
         assertThat(resultProductIds).containsAll(expectedProductIds);

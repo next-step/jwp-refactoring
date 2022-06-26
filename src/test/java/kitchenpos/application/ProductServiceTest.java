@@ -1,19 +1,23 @@
 package kitchenpos.application;
 
-import static kitchenpos.fixture.DomainFactory.createEmptyPriceProduct;
+import static kitchenpos.fixture.ProductFactory.createProductRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
 
 import static kitchenpos.fixture.DomainFactory.createProduct;
 
+import kitchenpos.domain.ProductRepository;
+import kitchenpos.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,10 +25,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
     @InjectMocks
     private ProductService productService;
     private Product 토마토;
@@ -38,39 +43,48 @@ class ProductServiceTest {
 
     @Test
     void 상품_생성() {
-        when(productDao.save(토마토)).thenReturn(토마토);
-        Product result = productService.create(토마토);
+        // given
+        given(productRepository.save(any(Product.class))).willReturn(토마토);
+
+        // when
+        ProductResponse result = productService.create(
+                createProductRequest(토마토.getName().getValue(), 토마토.getPrice().getValue())
+        );
+
+        // then
         assertAll(
                 () -> assertThat(result.getId()).isEqualTo(토마토.getId()),
-                () -> assertThat(result.getName()).isEqualTo(토마토.getName()),
-                () -> assertThat(result.getPrice()).isEqualTo(토마토.getPrice())
+                () -> assertThat(result.getName()).isEqualTo(토마토.getName().getValue()),
+                () -> assertThat(result.getPrice()).isEqualTo(토마토.getPrice().getValue())
         );
     }
 
     @Test
     void 상품_생성_가격_없는_경우_예외() {
         assertThatThrownBy(
-                () -> productService.create(createEmptyPriceProduct(3L, "공기"))
+                () -> productService.create(createProductRequest("공기", null))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void 상품_생성_가격_0_미만_예외() {
         assertThatThrownBy(
-                () -> productService.create(createProduct(3L, "공기", -1))
+                () -> productService.create(createProductRequest("공기", BigDecimal.valueOf(-1)))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void 상품_목록_조회() {
-        when(productDao.findAll()).thenReturn(Arrays.asList(토마토, 감자));
-        List<Product> result = productService.list();
-        assertThat(toIdList(result)).containsExactlyElementsOf(toIdList(Arrays.asList(토마토, 감자)));
+        // given
+        given(productRepository.findAll()).willReturn(Arrays.asList(토마토, 감자));
+
+        List<ProductResponse> result = productService.list();
+        assertThat(toIdList(result)).containsExactlyElementsOf(Arrays.asList(토마토.getId(), 감자.getId()));
     }
 
-    private List<Long> toIdList(List<Product> products) {
-        return products.stream()
-                .map(Product::getId)
+    private List<Long> toIdList(List<ProductResponse> productResponses) {
+        return productResponses.stream()
+                .map(ProductResponse::getId)
                 .collect(Collectors.toList());
     }
 }

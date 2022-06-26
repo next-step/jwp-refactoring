@@ -9,23 +9,20 @@ import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.ProductName;
 import kitchenpos.domain.TableGroup;
 
 public class DomainFactory {
     public static Product createProduct(Long id, String name, long price) {
-        Product product = new Product();
-        product.setId(id);
-        product.setName(name);
-        product.setPrice(BigDecimal.valueOf(price));
+        Product product = new Product(id, ProductName.from(name), Price.from(price));
 
         return product;
     }
 
     public static Product createEmptyPriceProduct(Long id, String name) {
-        Product product = new Product();
-        product.setId(id);
-        product.setName(name);
+        Product product = new Product(id, ProductName.from(name), null);
 
         return product;
     }
