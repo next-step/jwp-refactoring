@@ -18,6 +18,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 class TableGroupServiceTest extends ServiceTest {
 
@@ -42,7 +43,7 @@ class TableGroupServiceTest extends ServiceTest {
     void before() {
         주문_테이블1 = orderTableRepository.save(OrderTableFixtureFactory.createByGuestNumberWithoutId( 2, true));
         주문_테이블2 = orderTableRepository.save(OrderTableFixtureFactory.createByGuestNumberWithoutId( 3, true));
-        단체 = tableGroupRepository.save(new TableGroup());
+//        단체 = tableGroupRepository.save(new TableGroup(Arrays.asList(주문_테이블1, 주문_테이블2)));
     }
 
     @Test
@@ -50,11 +51,12 @@ class TableGroupServiceTest extends ServiceTest {
     void createFailWithOrderTableNotExistTest() {
 
         //given
-        OrderTable wrongOrderTable = new OrderTable(5L, 5, false);
+        OrderTable wrongOrderTable1 = new OrderTable(5L, 5, false);
+        OrderTable wrongOrderTable2 = new OrderTable(5L, 5, false);
 
         //when & then
         assertThatThrownBy(
-                () -> tableGroupService.create(TableGroupRequest.from(Arrays.asList(wrongOrderTable.getId(), 주문_테이블2.getId())))
+                () -> tableGroupService.create(TableGroupRequest.from(Arrays.asList(wrongOrderTable1.getId(), wrongOrderTable2.getId())))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -73,6 +75,7 @@ class TableGroupServiceTest extends ServiceTest {
     @DisplayName("주문 상태가 조리중(COOKING), 식사중(MEAL)인 경우에는 해제 할 수 없다.")
     void ungroupFailWithStatusTest() {
 
+        //given
         Order order = new Order(주문_테이블1.getId());
         orderRepository.save(order);
         TableGroupResponse response = tableGroupService.create(
@@ -86,12 +89,17 @@ class TableGroupServiceTest extends ServiceTest {
 
     @Test
     @DisplayName("지정된 테이블 그룹을 해제 할 수 있다.")
+    @Transactional(readOnly = true)
     void ungroupTest() {
+        //given
+        TableGroupResponse response = tableGroupService.create(
+                TableGroupRequest.from(Arrays.asList(주문_테이블1.getId(), 주문_테이블2.getId())));
 
         //when
-        tableGroupService.ungroup(단체.getId());
+        tableGroupService.ungroup(response.getId());
 
         //then
-        assertThat(단체.getOrderTables()).isEmpty();
+        TableGroup tableGroup = tableGroupRepository.findById(response.getId()).get();
+        assertThat(tableGroup.getOrderTables()).isEmpty();
     }
 }

@@ -33,11 +33,7 @@ public class TableGroup {
     @OneToMany(mappedBy = "tableGroup", cascade = CascadeType.ALL)
     private List<OrderTable> orderTables = new ArrayList<>();
 
-    public TableGroup() {
-    }
-
-    public TableGroup(Long id) {
-        this.id = id;
+    protected TableGroup() {
     }
 
     public TableGroup(Long id, List<OrderTable> orderTables) {
@@ -45,8 +41,11 @@ public class TableGroup {
         addOrderTables(orderTables);
     }
 
+    public TableGroup(List<OrderTable> orderTables) {
+        addOrderTables(orderTables);
+    }
 
-    public void addOrderTables(final List<OrderTable> orderTables) {
+    private void addOrderTables(final List<OrderTable> orderTables) {
         validateAddingOrderTables(orderTables);
         addAll(orderTables);
     }

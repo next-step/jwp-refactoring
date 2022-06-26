@@ -3,6 +3,7 @@ package kitchenpos.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import kitchenpos.application.fixture.OrderTableFixtureFactory;
@@ -17,12 +18,9 @@ import kitchenpos.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@ExtendWith(MockitoExtension.class)
-class TableServiceTest extends ServiceTest{
+class TableServiceTest extends ServiceTest {
 
     @Autowired
     private TableService tableService;
@@ -37,14 +35,13 @@ class TableServiceTest extends ServiceTest{
     private OrderRepository orderRepository;
 
     private OrderTable 주문_테이블1;
+    private OrderTable 주문_테이블2;
 
-    private TableGroup 단체;
 
     @BeforeEach
     void before() {
-        단체 = tableGroupRepository.save(new TableGroup());
-        주문_테이블1 = orderTableRepository.save(OrderTableFixtureFactory.createByGuestNumberWithoutId(3,false));
-
+        주문_테이블1 = orderTableRepository.save(OrderTableFixtureFactory.createByGuestNumberWithoutId(3, false));
+        주문_테이블2 = orderTableRepository.save(OrderTableFixtureFactory.createByGuestNumberWithoutId(3, false));
     }
 
     @Test
@@ -67,7 +64,7 @@ class TableServiceTest extends ServiceTest{
         List<OrderTableResponse> orderTables = tableService.list();
         //then
         assertThat(orderTables).isNotNull();
-        assertThat(orderTables).hasSize(1);
+        assertThat(orderTables).hasSize(2);
     }
 
     @Test
@@ -85,7 +82,10 @@ class TableServiceTest extends ServiceTest{
     @DisplayName("주문 테이블이 단체 지정 되어 있으면 빈테이블로 지정 할 수 없다.")
     void changeEmptyFailWithTableGroupTest() {
         //given
-        OrderTable savedOrdertable = orderTableRepository.save(new OrderTable(단체, 10, false));
+        TableGroup tableGroup = tableGroupRepository.save(new TableGroup(Arrays.asList(
+                new OrderTable(3, true),
+                new OrderTable(4, true))));
+        OrderTable savedOrdertable = orderTableRepository.save(new OrderTable(tableGroup, 10, false));
 
         //when & then
         assertThatThrownBy(
@@ -135,7 +135,7 @@ class TableServiceTest extends ServiceTest{
     @DisplayName("빈테이블이 아니면 손님수를 변경 할 수 없다.")
     void changeNumberOfGuestsFailWithEmptyTableTest() {
         //given
-        OrderTable orderTable =  orderTableRepository.save(new OrderTable(1L, 5, false));
+        OrderTable orderTable = orderTableRepository.save(new OrderTable(1L, 5, false));
 
         //when & then
         assertThatThrownBy(

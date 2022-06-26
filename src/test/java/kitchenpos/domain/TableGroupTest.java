@@ -32,14 +32,13 @@ class TableGroupTest {
     @DisplayName("이미 테이블 그룹에 속해 있으면 테이블 그룹을 지정 할 수 없다.")
     void createFailWithTableGroupTest() {
         //given
-        TableGroup otherTableGroup = new TableGroup(1L);
-        TableGroup tableGroup = new TableGroup(2L);
-        OrderTable orderTable1 = new OrderTable(1L, otherTableGroup, true);
-        OrderTable orderTable2 = new OrderTable(2L, otherTableGroup, true);
+        OrderTable orderTable1 = new OrderTable(1L, 10,true);
+        OrderTable orderTable2 = new OrderTable(2L, 20,true);
+        TableGroup otherTableGroup = new TableGroup(1L, Arrays.asList(orderTable1, orderTable2));
 
         //when & then
         assertThatThrownBy(
-                () -> tableGroup.addOrderTables(Arrays.asList(orderTable1, orderTable2))
+                () -> new TableGroup(2L, Arrays.asList(orderTable1, orderTable2))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -47,13 +46,12 @@ class TableGroupTest {
     @DisplayName("주문 테이블이 빈테이블이 아니면 테이블 그룹을 지정 할 수 없다.")
     void createFailWithEmptyTableTest() {
         //given
-        TableGroup tableGroup = new TableGroup(1L);
-        OrderTable orderTable1 = new OrderTable(1L, false);
-        OrderTable orderTable2 = new OrderTable(2L, false);
+        OrderTable orderTable1 = new OrderTable(1L, 10,false);
+        OrderTable orderTable2 = new OrderTable(2L, 20,false);
 
         //when & then
         assertThatThrownBy(
-                () -> tableGroup.addOrderTables(Arrays.asList(orderTable1, orderTable2))
+                () -> new TableGroup(1L,Arrays.asList(orderTable1, orderTable2))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -61,10 +59,10 @@ class TableGroupTest {
     @DisplayName("단체 지정을 해지한다.")
     void ungroupTest() {
         //given
-        TableGroup tableGroup = new TableGroup(1L);
-        OrderTable orderTable1 = new OrderTable(1L, true);
-        OrderTable orderTable2 = new OrderTable(2L, true);
-        tableGroup.addOrderTables(Arrays.asList(orderTable1, orderTable2));
+
+        OrderTable orderTable1 = new OrderTable(1L, 10,true);
+        OrderTable orderTable2 = new OrderTable(2L, 20,true);
+        TableGroup tableGroup = new TableGroup(1L,Arrays.asList(orderTable1, orderTable2));
 
         //when & then
         tableGroup.ungroup();
