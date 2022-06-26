@@ -7,8 +7,8 @@ import kitchenpos.core.exception.NotFoundException;
 import kitchenpos.order.application.OrderTableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.request.OrderTableRequest;
-import kitchenpos.table.domain.response.OrderTableResponse;
+import kitchenpos.table.dto.request.OrderTableRequest;
+import kitchenpos.table.dto.response.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

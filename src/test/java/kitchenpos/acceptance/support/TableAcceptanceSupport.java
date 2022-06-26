@@ -7,8 +7,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
-import kitchenpos.table.domain.request.OrderTableRequest;
-import kitchenpos.table.domain.response.OrderTableResponse;
+import kitchenpos.table.dto.request.OrderTableRequest;
+import kitchenpos.table.dto.response.OrderTableResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 

@@ -6,7 +6,7 @@ import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.request.MenuProductRequest;
 import kitchenpos.menu.domain.request.MenuRequest;
 import kitchenpos.menu.domain.request.ProductRequest;
-import kitchenpos.table.domain.request.OrderTableRequest;
+import kitchenpos.table.dto.request.OrderTableRequest;
 
 public class TestFixture {
     public static final ProductRequest 후라이드_치킨_FIXTURE = new ProductRequest("후라이드 치킨", BigDecimal.valueOf(15000L));

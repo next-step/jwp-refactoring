@@ -3,7 +3,6 @@ package kitchenpos.order.domain.request;
 import java.time.LocalDateTime;
 import java.util.List;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.request.OrderLineItemRequest;
 
 public class OrderRequest {
     private Long orderTableId;

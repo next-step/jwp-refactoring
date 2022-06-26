@@ -25,7 +25,7 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.request.OrderLineItemRequest;
+import kitchenpos.order.domain.request.OrderLineItemRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
