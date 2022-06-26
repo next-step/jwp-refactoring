@@ -15,6 +15,8 @@ import kitchenpos.application.fixture.OrderLineItemFixtureFactory;
 import kitchenpos.application.fixture.OrderTableFixtureFactory;
 import kitchenpos.application.fixture.ProductFixtureFactory;
 import kitchenpos.application.fixture.TableGroupFixtureFactory;
+import kitchenpos.application.table.OrderTableGroupingEventHandler;
+import kitchenpos.application.table.OrderTableUngroupEventHandler;
 import kitchenpos.application.tablegroup.TableGroupService;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuProduct;
@@ -43,7 +45,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.stereotype.Component;
@@ -73,7 +74,10 @@ class TableGroupServiceTest {
     private TableGroupService tableGroupService;
 
     @Autowired
-    private ApplicationEventPublisher publisher;
+    private OrderTableGroupingEventHandler groupingEventHandler;
+
+    @Autowired
+    private OrderTableUngroupEventHandler ungroupEventHandler;
 
     private MenuGroup 초밥_메뉴그룹;
     private Product 우아한_초밥_1;
@@ -150,7 +154,7 @@ class TableGroupServiceTest {
         List<Long> orderTableIds = Collections.emptyList();
 
         // when & then
-        assertThrows(CreateTableGroupException.class, () -> publisher.publishEvent(new TableGroupingEvent(단체_1, orderTableIds)));
+        assertThrows(CreateTableGroupException.class, () -> groupingEventHandler.handle(new TableGroupingEvent(단체_1, orderTableIds)));
     }
 
     @DisplayName("주문 테이블이 1개이면 테이블을 단체로 지정할 수 없다.")
@@ -160,7 +164,7 @@ class TableGroupServiceTest {
         List<Long> orderTableIds = Lists.newArrayList(주문_1_테이블.getId());
 
         // when & then
-        assertThrows(CreateTableGroupException.class, () -> publisher.publishEvent(new TableGroupingEvent(단체_1, orderTableIds)));
+        assertThrows(CreateTableGroupException.class, () -> groupingEventHandler.handle(new TableGroupingEvent(단체_1, orderTableIds)));
     }
 
     @DisplayName("단체에 속하는 주문 테이블이 빈 테이블이 아니면 단체로 지정할 수 없다.")
@@ -170,7 +174,7 @@ class TableGroupServiceTest {
         List<Long> orderTableIds = Lists.newArrayList(주문_테이블_10명.getId(), 주문_1_테이블.getId());
 
         // when & then
-        assertThrows(CreateTableGroupException.class, () -> publisher.publishEvent(new TableGroupingEvent(단체_1, orderTableIds)));
+        assertThrows(CreateTableGroupException.class, () -> groupingEventHandler.handle(new TableGroupingEvent(단체_1, orderTableIds)));
     }
 
     @DisplayName("단체에 속하는 주문 테이블이 이미 테이블 그룹에 속해있으면 단체로 지정할 수 없다.")
@@ -181,7 +185,7 @@ class TableGroupServiceTest {
         List<Long> orderTableIds = Lists.newArrayList(주문_1_테이블.getId(), 주문_2_테이블.getId());
 
         // when & then
-        assertThrows(CreateTableGroupException.class, () -> publisher.publishEvent(new TableGroupingEvent(단체_1, orderTableIds)));
+        assertThrows(CreateTableGroupException.class, () -> groupingEventHandler.handle(new TableGroupingEvent(단체_1, orderTableIds)));
     }
 
     @DisplayName("단체를 해제할 수 있다.")
@@ -192,7 +196,7 @@ class TableGroupServiceTest {
         주문_2_테이블.mappedByTableGroup(단체_1.getId());
 
         // when
-        publisher.publishEvent(new TableUngroupEvent(단체_1));
+        ungroupEventHandler.handle(new TableUngroupEvent(단체_1));
 
         // then
         assertAll(
@@ -209,6 +213,6 @@ class TableGroupServiceTest {
         주문_테이블_10명.mappedByTableGroup(단체_1.getId());
 
         // when & then
-        assertThrows(DontUnGroupException.class, () -> publisher.publishEvent(new TableUngroupEvent(단체_1)));
+        assertThrows(DontUnGroupException.class, () -> ungroupEventHandler.handle(new TableUngroupEvent(단체_1)));
     }
 }

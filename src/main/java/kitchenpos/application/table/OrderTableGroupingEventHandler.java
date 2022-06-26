@@ -5,11 +5,11 @@ import kitchenpos.application.tablegroup.TableGroupValidator;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.domain.tablegroup.event.TableGroupingEvent;
-import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionalEventListener;
 
+@Transactional(readOnly = true)
 @Component
 public class OrderTableGroupingEventHandler {
 
@@ -22,8 +22,7 @@ public class OrderTableGroupingEventHandler {
         this.tableGroupValidator = tableGroupValidator;
     }
 
-    @Async
-    @EventListener
+    @TransactionalEventListener
     @Transactional
     public void handle(TableGroupingEvent event) {
         List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(event.getOrderTableIds());
