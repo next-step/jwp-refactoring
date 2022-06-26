@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuGroupName;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
@@ -60,10 +61,7 @@ public class DomainFactory {
     }
 
     public static MenuGroup createMenuGroup(Long id, String name) {
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setId(id);
-        menuGroup.setName(name);
-
+        MenuGroup menuGroup = new MenuGroup(id, MenuGroupName.from(name));
         return menuGroup;
     }
 
