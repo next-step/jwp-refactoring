@@ -42,6 +42,6 @@ public class TableGroupServiceTest {
         // when, then
         assertThatThrownBy(() -> tableGroupService.ungroup(테이블_그룹.getId()))
                 .isInstanceOf(IllegalStateException.class)
-                .hasMessage("조리 혹은 식사 상태인 테이블이 있어서 단체 지정 해제할 수 없습니다: " + 테이블_그룹.getId());
+                .hasMessage("조리 혹은 식사 상태인 테이블이 있어서 단체 지정 해제할 수 없습니다. id: " + 테이블_그룹.getId());
     }
 }

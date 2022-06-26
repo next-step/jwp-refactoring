@@ -36,6 +36,6 @@ public class MenuGroupService {
 
     public MenuGroup findMenuGroupById(Long id) {
         return menuGroupRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("메뉴 그룹을 찾을 수 없습니다: " + id));
+                .orElseThrow(() -> new NoSuchElementException("메뉴 그룹을 찾을 수 없습니다. id: " + id));
     }
 }

@@ -59,6 +59,6 @@ public class TableServiceTest {
         // when, then
         assertThatThrownBy(() -> tableService.changeEmpty(1L, true))
                 .isInstanceOf(IllegalStateException.class)
-                .hasMessage("조리 혹은 식사 상태인 테이블이 있어서 빈 테이블로 설정할 수 없습니다: " + 1L);
+                .hasMessage("조리 혹은 식사 상태인 테이블이 있어서 빈 테이블로 설정할 수 없습니다. id: " + 1L);
     }
 }

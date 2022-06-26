@@ -46,7 +46,7 @@ public class TableGroupService {
 
         if (tableGroup.getOrderTables().stream()
                 .anyMatch(table -> tableService.hasCookingOrMeal(table))) {
-            throw new IllegalStateException("조리 혹은 식사 상태인 테이블이 있어서 단체 지정 해제할 수 없습니다: " + tableGroupId);
+            throw new IllegalStateException("조리 혹은 식사 상태인 테이블이 있어서 단체 지정 해제할 수 없습니다. id: " + tableGroupId);
         }
 
         tableGroup.ungroup();
@@ -54,6 +54,6 @@ public class TableGroupService {
 
     public TableGroup findTableGroupById(Long id) {
         return tableGroupRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("테이블 그룹을 찾을 수 없습니다: " + id));
+                .orElseThrow(() -> new NoSuchElementException("테이블 그룹을 찾을 수 없습니다. id: " + id));
     }
 }

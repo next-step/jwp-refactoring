@@ -61,6 +61,6 @@ public class OrderService {
 
     public Order findOrderById(Long id) {
         return orderRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("주문을 찾을 수 없습니다: " + id));
+                .orElseThrow(() -> new NoSuchElementException("주문을 찾을 수 없습니다. id: " + id));
     }
 }

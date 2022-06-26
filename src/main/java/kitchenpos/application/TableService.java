@@ -50,7 +50,7 @@ public class TableService {
         OrderTable orderTable = findOrderTableById(orderTableId);
 
         if (hasCookingOrMeal(orderTable)) {
-            throw new IllegalStateException("조리 혹은 식사 상태인 테이블이 있어서 빈 테이블로 설정할 수 없습니다: " + orderTableId);
+            throw new IllegalStateException("조리 혹은 식사 상태인 테이블이 있어서 빈 테이블로 설정할 수 없습니다. id: " + orderTableId);
         }
 
         orderTable.changeEmpty(empty);
@@ -68,6 +68,6 @@ public class TableService {
 
     public OrderTable findOrderTableById(Long id) {
         return tableRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("주문 테이블을 찾을 수 없습니다: " + id));
+                .orElseThrow(() -> new NoSuchElementException("주문 테이블을 찾을 수 없습니다. id: " + id));
     }
 }
