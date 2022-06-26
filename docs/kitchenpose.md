@@ -17,9 +17,21 @@
   - @SpringBootTest를 이용한 통합 테스트 코드 또는 @ExtendWith(MockitoExtension.class)를 이용한 단위 테스트 코드를 작성한다.
 - Lombok 없이 미션을 진행한다.
 
+### 2단계
+- 단위 테스트하기 어려운 코드와 단위 테스트 가능한 코드를 분리해 단위 테스트 가능한 코드에 대해 단위 테스트를 구현한다.
+
 ## 작업목록
 ### 1단계
 - [X] 키친포스 요구사항 작성 
 - [X] 안정적인 리팩토링을 위한 테스트 코드 작성
   - [X] 응용 Service 테스트
   - [X] 시나리오 기반 인수테스트 작성  
+
+### 2단계 
+- [X] Spring Data JPA 의존성 추가
+- [ ] 응용서비스에서 도메인 로직을 분리
+  - [ ] Menu Domain Context > MenuGroup
+    - [ ] 패키지 생성 및 기존 클래스 이동
+    - [ ] MenuGroup을 JPA Entity로 변경한 후 JPARepository 생성
+    - [ ] 응용서비스에서 JdbcTemplete -> JPARepository로 교체
+    - [ ] 응용서비스에서 도메인레이어로 로직 이동 (with 단위테스트 작성)
