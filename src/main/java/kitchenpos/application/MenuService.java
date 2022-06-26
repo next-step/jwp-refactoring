@@ -45,6 +45,7 @@ public class MenuService {
         return MenuResponse.of(menuRepository.save(menu));
     }
 
+    @Transactional(readOnly = true)
     public List<MenuResponse> list() {
         final List<Menu> menus = menuRepository.findAll();
 

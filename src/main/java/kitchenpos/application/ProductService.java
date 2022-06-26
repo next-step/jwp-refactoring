@@ -27,6 +27,7 @@ public class ProductService {
         return ProductResponse.of(saveProduct);
     }
 
+    @Transactional(readOnly = true)
     public List<ProductResponse> list() {
         List<Product> products = productRepository.findAll();
 
