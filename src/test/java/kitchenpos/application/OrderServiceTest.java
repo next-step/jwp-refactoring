@@ -55,6 +55,7 @@ class OrderServiceTest {
     private MenuProduct 김치찌개세트_공기밥;
     private OrderTable 테이블_1;
     private OrderTable 테이블_2;
+    private OrderTable 테이블_EMPTY;
     private Order 접수된_주문;
     private Order 완료된_주문;
     private OrderLineItem 접수된주문_김치찌개세트;
@@ -80,6 +81,8 @@ class OrderServiceTest {
         완료된_주문 = createOrder(2L, 테이블_2.getId(), OrderStatus.COMPLETION.name(), LocalDateTime.now());
         완료된주문_김치찌개세트 = createOrderLineItem(2L, 접수된_주문.getId(), 메뉴_김치찌개세트.getId(), 1);
         완료된_주문.setOrderLineItems(Arrays.asList(완료된주문_김치찌개세트));
+
+        테이블_EMPTY = createOrderTable(3L, null, 0, true);
     }
 
     @DisplayName("주문을 등록할 수 있다")
@@ -129,6 +132,21 @@ class OrderServiceTest {
 
         //then
         assertThrows(IllegalArgumentException.class, () -> orderService.create(접수된_주문));
+    }
+
+    @DisplayName("등록하려는 주문테이블은 비어있을 수 없다")
+    @Test
+    void 주문_주문테이블_Empty_검증(){
+        //given
+        given(menuDao.countByIdIn(anyList())).willReturn(1L);
+        given(orderTableDao.findById(테이블_EMPTY.getId())).willReturn(Optional.of(테이블_EMPTY));
+
+        Order invalidOrder = createOrder(테이블_EMPTY.getId(), OrderStatus.COOKING.name(), LocalDateTime.now());
+        OrderLineItem item1 = createOrderLineItem(접수된_주문.getId(), 메뉴_김치찌개세트.getId(), 1);
+        invalidOrder.setOrderLineItems(Arrays.asList(item1));
+
+        //then
+        assertThrows(IllegalArgumentException.class, () -> orderService.create(invalidOrder));
     }
 
     @DisplayName("등록하려는 주문항목의 메뉴가 존재해야 한다")

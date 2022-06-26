@@ -100,7 +100,7 @@ public class TableServiceTest {
     @Test
     void 주문테이블_Empty_업데이트_주문테이블_테이블그룹_등록_검증(){
         //given
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.ofNullable(null));
+        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(테이블_GROUPED));
         OrderTable orderTable_empty = createOrderTable(0, true);
 
         //then
