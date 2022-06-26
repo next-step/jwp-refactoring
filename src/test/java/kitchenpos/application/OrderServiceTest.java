@@ -10,6 +10,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -19,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static kitchenpos.factory.MenuFixtureFactory.*;
 import static kitchenpos.factory.MenuGroupFixtureFactory.*;
@@ -173,17 +177,26 @@ class OrderServiceTest {
     }
 
     @DisplayName("주문의 상태를 업데이트할 수 있다")
-    @Test
-    void 주문_상태_업데이트(){
+    @ParameterizedTest(name = "이전 주문상태: {0}, 새로운 주문상태: {1}")
+    @MethodSource("provideParametersForOrderStateUpdate")
+    void 주문_상태_업데이트(String beforeStatus, String afterStatus){
         //given
-        given(orderDao.findById(anyLong())).willReturn(Optional.of(접수된_주문));
+        Order order = createOrder(3L, 테이블_1.getId(), beforeStatus, LocalDateTime.now());
+        given(orderDao.findById(anyLong())).willReturn(Optional.of(order));
 
         //when
-        Order 주문_MEAL = createOrder(테이블_1.getId(), OrderStatus.MEAL.name(), LocalDateTime.now());
-        Order changedOrder = orderService.changeOrderStatus(접수된_주문.getId(), 주문_MEAL);
+        Order newOrder = createOrder(테이블_1.getId(), afterStatus, LocalDateTime.now());
+        Order changedOrder = orderService.changeOrderStatus(order.getId(), newOrder);
 
         //then
-        assertThat(changedOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
+        assertThat(changedOrder.getOrderStatus()).isEqualTo(afterStatus);
+    }
+
+    private static Stream<Arguments> provideParametersForOrderStateUpdate() {
+        return Stream.of(
+                Arguments.of(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()),
+                Arguments.of(OrderStatus.MEAL.name(), OrderStatus.COMPLETION.name())
+        );
     }
 
     @DisplayName("주문이 존재해야 주문상태를 업데이트할 수 있다")
