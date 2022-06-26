@@ -5,10 +5,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import kitchenpos.order.infrastructure.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableIdRequest;
-import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.infrastructure.OrderTableRepository;
 import kitchenpos.table.infrastructure.TableGroupRepository;
@@ -27,6 +27,9 @@ public class TableGroupServiceTest {
 
     @Mock
     private OrderTableRepository orderTableRepository;
+
+    @Mock
+    private OrderRepository orderRepository;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -106,16 +109,18 @@ public class TableGroupServiceTest {
         assertThat(secondTable.getTableGroup()).isEqualTo(tableGroup);
     }
 
-//    @Test
-//    @DisplayName("테이블이 조리, 식사 중이면 단체 지정을 해제할 수 없다.")
-//    void unGroupWithInvalidOrderStatus() {
-//        //given
-//        TableGroup saved = tableGroupService.create(secondTableGroup);
-//        //when, then
-//        assertThatThrownBy(() -> {
-//            tableGroupService.ungroup(saved.getId());
-//        }).isInstanceOf(IllegalArgumentException.class);
-//    }
+    @Test
+    @DisplayName("테이블이 조리, 식사 중이면 단체 지정을 해제할 수 없다.")
+    void unGroupWithInvalidOrderStatus() {
+        OrderTable table = OrderTable.of(4, true);
+        OrderTable secondTable = OrderTable.of(2, true);
+        when(orderTableRepository.findAllByTableGroupId(any())).thenReturn(Lists.list(table, secondTable));
+        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(true);
+
+        assertThatThrownBy(() -> {
+            tableGroupService.ungroup(1L);
+        }).isInstanceOf(IllegalArgumentException.class);
+    }
 
     @Test
     @DisplayName("단체 지정을 해제할 수 있다.")
@@ -123,6 +128,7 @@ public class TableGroupServiceTest {
         OrderTable table = OrderTable.of(4, true);
         OrderTable secondTable = OrderTable.of(2, true);
         when(orderTableRepository.findAllByTableGroupId(any())).thenReturn(Lists.list(table, secondTable));
+        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(false);
 
         tableGroupService.ungroup(1L);
 

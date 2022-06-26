@@ -3,6 +3,7 @@ package kitchenpos.table.application;
 import java.util.Arrays;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.infrastructure.OrderRepository;
+import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.dto.OrderTableIdRequest;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
@@ -34,24 +35,20 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        List<Long> orderTableIds = validateEmpty(tableGroupRequest);
+        List<Long> orderTableIds = mapToOrderTableIds(tableGroupRequest);
         final List<OrderTable> savedOrderTables = validateExistsOrderTables(orderTableIds);
+        OrderTables orderTables = OrderTables.of(savedOrderTables);
+
         final TableGroup tableGroup = tableGroupRepository.save(new TableGroup());
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.registerGroupTable(tableGroup);
-        }
+        orderTables.addTableGroup(tableGroup);
+
         return TableGroupResponse.of(tableGroup);
     }
 
-    private List<Long> validateEmpty(TableGroupRequest tableGroupRequest) {
-        List<Long> orderTableIds = tableGroupRequest.getOrderTables().stream()
+    private List<Long> mapToOrderTableIds(TableGroupRequest tableGroupRequest) {
+        return tableGroupRequest.getOrderTables().stream()
                 .map(OrderTableIdRequest::getId)
                 .collect(Collectors.toList());
-
-        if (CollectionUtils.isEmpty(orderTableIds) || orderTableIds.size() < MINIMUM_SIZE) {
-            throw new IllegalArgumentException("단체 지정은 최소 2개 테이블 이상이어야 합니다.");
-        }
-        return orderTableIds;
     }
 
     private List<OrderTable> validateExistsOrderTables(List<Long> orderTableIds) {

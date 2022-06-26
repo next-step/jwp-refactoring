@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 
 import java.util.Optional;
+import kitchenpos.order.infrastructure.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -25,6 +26,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class TableServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
+
+    @Mock
+    private OrderRepository orderRepository;
 
     @InjectMocks
     private TableService tableService;
@@ -76,25 +80,29 @@ public class TableServiceTest {
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
-//    @Test
-//    @DisplayName("테이블이 조리, 식사 중이면 예외를 반환한다.")
-//    void changeEmptyWithOrderStatus() {
-//        //given
-//        tableService.create(firstTable);
-//        tableService.create(secondTable);
-//        OrderTable saved = tableService.create(thirdTable);
-//        //when, then
-//        assertThatThrownBy(() -> {
-//            tableService.changeEmpty(saved.getId(), saved);
-//        }).isInstanceOf(IllegalArgumentException.class);
-//    }
+    @Test
+    @DisplayName("테이블이 조리, 식사 중이면 예외를 반환한다.")
+    void changeEmptyWithOrderStatus() {
+        OrderTableRequest orderTableRequest = new OrderTableRequest(4, false);
+        OrderTable orderTable =  OrderTable.of(4, true);
+        OrderTable updateTable =  OrderTable.of(4, false);
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
+        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(true);
+
+        assertThatThrownBy(() -> {
+            tableService.changeEmpty(1L, orderTableRequest);
+        }).isInstanceOf(IllegalArgumentException.class);
+    }
 
     @Test
     @DisplayName("테이블 빈 테이블 여부가 수정된다.")
     void changeEmpty() {
         OrderTableRequest orderTableRequest = new OrderTableRequest(4, false);
         OrderTable orderTable =  OrderTable.of(4, true);
+        OrderTable updateTable =  OrderTable.of(4, false);
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
+        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(false);
+        when(orderTableRepository.save(any())).thenReturn(updateTable);
 
         tableService.changeEmpty(1L, orderTableRequest);
 
@@ -130,7 +138,9 @@ public class TableServiceTest {
     void changeNumber() {
         OrderTableRequest orderTableRequest = new OrderTableRequest(5, true);
         OrderTable orderTable =  OrderTable.of(4, false);
+        OrderTable updateTable = OrderTable.of(5, false);
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
+        when(orderTableRepository.save(any())).thenReturn(updateTable);
 
         tableService.changeNumberOfGuests(1L, orderTableRequest);
 
