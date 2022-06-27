@@ -37,6 +37,10 @@ public class Price implements Comparable<Price> {
         return new Price(this.value.add(o.value));
     }
 
+    public BigDecimal getValue() {
+        return value;
+    }
+
     @Override
     public int compareTo(Price o) {
         return this.value.compareTo(o.value);
