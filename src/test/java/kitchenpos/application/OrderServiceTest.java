@@ -52,7 +52,7 @@ class OrderServiceTest {
         메뉴 = 메뉴_생성됨("점심특선", 2000, 메뉴_그룹, 메뉴_상품들);
     }
 
-    @DisplayName("주문을 생성한다.")
+    @DisplayName("주문을 생성하면 최초의 주문 상태는 조리로 설정된다.")
     @Test
     void create() {
         // given
