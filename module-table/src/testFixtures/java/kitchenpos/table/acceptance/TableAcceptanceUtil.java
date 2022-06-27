@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import static kitchenpos.AcceptanceTest.restTemplate;
+import static kitchenpos.menu.acceptance.MenuAcceptanceUtil.신메뉴_강정치킨_가져오기;
+import static kitchenpos.order.acceptance.OrderAcceptanceTestUtil.주문_등록됨;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public final class TableAcceptanceUtil {
@@ -22,7 +24,7 @@ public final class TableAcceptanceUtil {
 
     public static OrderTableResponse 주문이_들어간_테이블_가져오기() {
         OrderTableResponse 주문이_들어간_테이블 = 테이블_등록됨(false, 5);
-//        주문_등록됨(주문이_들어간_테이블, 신메뉴_강정치킨_가져오기());
+        주문_등록됨(주문이_들어간_테이블, 신메뉴_강정치킨_가져오기());
         return 주문이_들어간_테이블;
     }
 

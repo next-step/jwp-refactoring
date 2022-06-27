@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.stream.Stream;
 
+import static kitchenpos.menu.acceptance.MenuAcceptanceUtil.신메뉴_강정치킨_가져오기;
+import static kitchenpos.order.acceptance.OrderAcceptanceTestUtil.주문_등록됨;
 import static kitchenpos.table.acceptance.TableAcceptanceUtil.주문이_들어간_테이블_가져오기;
 import static kitchenpos.table.acceptance.TableAcceptanceUtil.테이블_등록됨;
 import static kitchenpos.tablegroup.acceptance.TableGroupAcceptanceTestUtil.단체_지정_생성_실패됨;
@@ -81,7 +83,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
                     단체_지정_해지됨(response);
                 }),
                 dynamicTest("주문이 들어간 테이블이 포함된 단체 지정은 단체 지정을 해지할 수 없다.", () -> {
-//                    주문_등록됨(테이블3, 신메뉴_강정치킨_가져오기());
+                    주문_등록됨(테이블3, 신메뉴_강정치킨_가져오기());
 
                     ResponseEntity<Void> response = 단체_지정_해지_요청(단체_지정2);
 

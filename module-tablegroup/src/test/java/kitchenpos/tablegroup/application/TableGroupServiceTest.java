@@ -11,7 +11,6 @@ import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.exception.CannotUngroupException;
 import kitchenpos.tablegroup.exception.InvalidTableGroupException;
 import kitchenpos.tablegroup.exception.NotFoundTableGroupException;
-import kitchenpos.tablegroup.application.TableGroupService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
