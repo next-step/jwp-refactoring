@@ -9,6 +9,7 @@ import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,9 +20,16 @@ import java.util.stream.Collectors;
 
 @Service
 public class MenuService {
-    private MenuGroupRepository menuGroupRepository;
-    private MenuRepository menuRepository;
-    private ProductRepository productRepository;
+    private final MenuGroupRepository menuGroupRepository;
+    private final MenuRepository menuRepository;
+    private final ProductRepository productRepository;
+
+    @Autowired
+    public MenuService(MenuGroupRepository menuGroupRepository, MenuRepository menuRepository, ProductRepository productRepository) {
+        this.menuGroupRepository = menuGroupRepository;
+        this.menuRepository = menuRepository;
+        this.productRepository = productRepository;
+    }
 
     @Transactional
     public Menu create(final MenuRequest request) {
@@ -49,10 +57,8 @@ public class MenuService {
         return menuRepository.save(new Menu(request.getName(), request.getPrice(), menuGroup, menuProducts));
     }
 
+    @Transactional(readOnly = true)
     public List<Menu> list() {
-//        for (final Menu menu : menus) {
-//            menu.setMenuProducts(menuProductDao.findAllByMenuId(menu.getId()));
-//        }
         return menuRepository.findAll();
     }
 }
