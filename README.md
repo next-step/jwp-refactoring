@@ -91,7 +91,8 @@
     - orderValidator 생성
   - 직접 참조 -> 간접 참조 개선   
     - MenuProduct -> Product id 참조 변경
-    - OrderLineItem -> Order id 참조 변경
+    - OrderTable -> TableGroup id 참조 변경
+
 
 ## 용어 사전
 

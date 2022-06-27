@@ -1,5 +1,6 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.tablegroup.domain.TableGroup;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -31,7 +32,7 @@ public class OrderTables {
 
     public void groupBy(TableGroup tableGroup) {
         for (OrderTable orderTable : orderTables) {
-            orderTable.groupBy(tableGroup);
+            orderTable.groupBy(tableGroup.getId());
         }
     }
 

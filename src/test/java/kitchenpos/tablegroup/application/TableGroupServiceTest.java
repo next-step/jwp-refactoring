@@ -1,12 +1,14 @@
-package kitchenpos.table.application;
+package kitchenpos.tablegroup.application;
 
 
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.*;
 import kitchenpos.table.dto.OrderTableIdRequest;
-import kitchenpos.table.dto.OrderTableRequest;
-import kitchenpos.table.dto.TableGroupRequest;
-import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
+import kitchenpos.tablegroup.application.TableGroupService;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
