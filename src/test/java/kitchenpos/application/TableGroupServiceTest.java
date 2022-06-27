@@ -1,14 +1,13 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.TableGroupDao;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.orderTable.domain.OrderTable;
 import kitchenpos.orderTable.domain.OrderTableRepository;
+import kitchenpos.tableGroup.application.TableGroupService;
 import kitchenpos.tableGroup.domain.TableGroup;
 import kitchenpos.tableGroup.domain.TableGroupRepository;
 import kitchenpos.tableGroup.dto.TableGroupRequest;
 import kitchenpos.tableGroup.dto.TableGroupResponse;
-import kitchenpos.tableGroup.application.TableGroupService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,8 +20,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
-import static kitchenpos.factory.OrderTableFixtureFactory.*;
-import static kitchenpos.factory.TableGroupFixtureFactory.*;
+import static kitchenpos.factory.OrderTableFixtureFactory.createOrderTable;
+import static kitchenpos.factory.TableGroupFixtureFactory.createTableGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
@@ -31,7 +30,7 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
@@ -146,7 +145,7 @@ class TableGroupServiceTest {
     void 테이블그룹_삭제_주문상태_검증(){
         //given
         given(orderTableRepository.findAllByTableGroupId(anyLong())).willReturn(Arrays.asList(테이블_1, 테이블_2, 테이블_3));
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
 
         //then
         assertThrows(IllegalArgumentException.class, () -> tableGroupService.ungroup(단체_테이블.getId()));

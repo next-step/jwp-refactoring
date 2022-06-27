@@ -1,14 +1,13 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.orderTable.application.TableService;
 import kitchenpos.orderTable.domain.OrderTable;
 import kitchenpos.orderTable.domain.OrderTableRepository;
 import kitchenpos.orderTable.dto.OrderTableEmptyRequest;
 import kitchenpos.orderTable.dto.OrderTableNumOfGuestRequest;
 import kitchenpos.orderTable.dto.OrderTableRequest;
 import kitchenpos.orderTable.dto.OrderTableResponse;
-import kitchenpos.orderTable.application.TableService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.factory.OrderTableFixtureFactory.*;
+import static kitchenpos.factory.OrderTableFixtureFactory.createOrderTable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
@@ -30,7 +29,7 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 public class TableServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
     private OrderTableRepository orderTableRepository;
     @InjectMocks
@@ -120,7 +119,7 @@ public class TableServiceTest {
     void 주문테이블_Empty_업데이트_주문_상태_검증(){
         //given
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(테이블_EMPTY));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(true);
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(true);
 
         //when
         OrderTableEmptyRequest emptyRequest = OrderTableEmptyRequest.from(true);

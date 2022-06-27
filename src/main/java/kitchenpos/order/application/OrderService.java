@@ -1,6 +1,5 @@
 package kitchenpos.order.application;
 
-import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
