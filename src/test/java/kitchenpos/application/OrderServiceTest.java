@@ -102,7 +102,7 @@ class OrderServiceTest {
     }
 
     public static MenuGroup 메뉴_그룹_생성됨(String name) {
-        return new MenuGroup.Builder().id(1L).name(name).build();
+        return MenuGroup.builder().id(1L).name(name).build();
     }
 
     public static Menu 메뉴_생성됨(String name, long price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {

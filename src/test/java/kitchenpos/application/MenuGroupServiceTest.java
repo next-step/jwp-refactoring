@@ -32,9 +32,9 @@ class MenuGroupServiceTest {
     @Test
     void create() {
         // given
-        MenuGroup menuGroup = new MenuGroup.Builder("두마리통닭메뉴").build();
+        MenuGroup menuGroup = MenuGroup.builder().name("두마리통닭메뉴").build();
 
-        given(menuGroupDao.save(any(MenuGroup.class))).willReturn(new MenuGroup.Builder().id(1L).build());
+        given(menuGroupDao.save(any(MenuGroup.class))).willReturn(MenuGroup.builder().id(1L).build());
 
         // when
         MenuGroup created = menuGroupService.create(menuGroup);
@@ -50,7 +50,7 @@ class MenuGroupServiceTest {
     @Test
     void create_throwException_ifMissingName() {
         // given
-        MenuGroup menuGroup = new MenuGroup.Builder().build();
+        MenuGroup menuGroup = MenuGroup.builder().build();
 
         willThrow(new IllegalArgumentException()).given(menuGroupDao).save(menuGroup);
 

@@ -7,7 +7,7 @@ public class MenuGroup {
     public MenuGroup() {
     }
 
-    public MenuGroup(Builder builder) {
+    private MenuGroup(Builder builder) {
         this.id = builder.id;
         this.name = builder.name;
     }
@@ -32,13 +32,6 @@ public class MenuGroup {
         private Long id;
         private String name;
 
-        public Builder() {
-        }
-
-        public Builder(String name) {
-            this.name = name;
-        }
-
         public Builder id(Long id) {
             this.id = id;
             return this;
@@ -52,5 +45,9 @@ public class MenuGroup {
         public MenuGroup build() {
             return new MenuGroup(this);
         }
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 }
