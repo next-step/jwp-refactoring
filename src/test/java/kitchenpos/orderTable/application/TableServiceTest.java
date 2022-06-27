@@ -1,8 +1,7 @@
-package kitchenpos.order.application;
+package kitchenpos.orderTable.application;
 
 import static kitchenpos.utils.DomainFixtureFactory.createOrderTable;
 import static kitchenpos.utils.DomainFixtureFactory.createOrderTableRequest;
-import static kitchenpos.utils.DomainFixtureFactory.createTableGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -12,13 +11,11 @@ import static org.mockito.Mockito.verify;
 
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.orderTable.application.TableService;
 import kitchenpos.orderTable.domain.OrderTable;
 import kitchenpos.orderTable.domain.OrderTableRepository;
-import kitchenpos.orderTable.domain.OrderTables;
-import kitchenpos.orderTable.domain.TableGroup;
 import kitchenpos.orderTable.dto.OrderTableRequest;
 import kitchenpos.orderTable.dto.OrderTableResponse;
+import kitchenpos.orderTable.validator.OrderTableValidator;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,24 +28,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
     @Mock
-    private OrderService orderService;
-    @Mock
     private OrderTableRepository orderTableRepository;
+    @Mock
+    private OrderTableValidator orderTableValidator;
     @InjectMocks
     private TableService tableService;
-    private TableGroup 단체지정;
     private OrderTable 주문테이블;
-
-    TableServiceTest() {
-    }
 
     @BeforeEach
     void setUp() {
-        OrderTable 치킨주문테이블 = createOrderTable(1L, 2, true);
-        OrderTable 피자주문테이블 = createOrderTable(2L, 3, true);
         주문테이블 = createOrderTable(1L, 2, false);
-        단체지정 = createTableGroup(OrderTables.from(Lists.newArrayList(치킨주문테이블, 피자주문테이블)),
-                Lists.newArrayList(치킨주문테이블.id(), 피자주문테이블.id()));
     }
 
     @DisplayName("주문테이블 생성 테스트")
@@ -80,7 +69,7 @@ class TableServiceTest {
         given(orderTableRepository.findById(1L)).willReturn(Optional.ofNullable(주문테이블));
         given(orderTableRepository.save(any(OrderTable.class))).willReturn(orderTable);
         OrderTableResponse changedOrderTable = tableService.changeEmpty(1L, orderTableRequest);
-        verify(orderService).validateComplete(주문테이블.id());
+        verify(orderTableValidator).validateComplete(주문테이블.id());
         assertAll(
                 () -> assertThat(changedOrderTable.getTableGroupId()).isNull(),
                 () -> assertThat(changedOrderTable.getNumberOfGuests()).isEqualTo(2),
@@ -103,7 +92,7 @@ class TableServiceTest {
     void changeEmptyWithTableGroup() {
         OrderTableRequest orderTableRequest = createOrderTableRequest(2, true);
         OrderTable orderTable = createOrderTable(1L, 2, true);
-        orderTable.addTableGroup(단체지정);
+        orderTable.addTableGroup(1L);
         given(orderTableRepository.findById(1L)).willReturn(Optional.of(orderTable));
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableService.changeEmpty(1L, orderTableRequest))

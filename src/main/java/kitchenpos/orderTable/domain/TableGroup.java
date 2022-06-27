@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,8 +18,6 @@ public class TableGroup {
     private Long id;
     @Column
     private LocalDateTime createdDate;
-    @Embedded
-    private OrderTables orderTables;
 
     protected TableGroup() {
     }
@@ -28,10 +25,9 @@ public class TableGroup {
     private TableGroup(OrderTables orderTables, List<Long> orderTableIds) {
         validateOrderTableIds(orderTableIds);
         validateOrderTablesSize(orderTables, orderTableIds.size());
-        orderTables.addTableGroup(this);
+        orderTables.addTableGroup(id);
         orderTables.reserve();
         this.createdDate = LocalDateTime.now();
-        this.orderTables = orderTables;
     }
 
     public static TableGroup from(OrderTables orderTables, List<Long> orderTableIds) {
@@ -40,10 +36,6 @@ public class TableGroup {
 
     public Long id() {
         return id;
-    }
-
-    public List<OrderTable> readOnlyOrderTables() {
-        return orderTables.readOnlyOrderTables();
     }
 
     public LocalDateTime createdDate() {

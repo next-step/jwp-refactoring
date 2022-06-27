@@ -33,7 +33,7 @@ public class OrderValidator {
     }
 
     private void validateOrderLineItemsSize(List<OrderLineItemRequest> orderLineItems) {
-        if (orderLineItems.size() == menuService.countByIdIn(findMenuIds(orderLineItems))) {
+        if (orderLineItems.size() != menuService.countByIdIn(findMenuIds(orderLineItems))) {
             throw new IllegalArgumentException("주문 항목들의 수와 조회된 메뉴 수가 일치하지 않습니다.");
         }
     }

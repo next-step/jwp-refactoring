@@ -50,18 +50,4 @@ public class OrderService {
         return orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없습니다."));
     }
-
-    public void validateComplete(Long orderTableId) {
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId,
-                Arrays.asList(COOKING, MEAL))) {
-            throw new IllegalArgumentException("주문테이블의 주문이 완료상태가 아닙니다.");
-        }
-    }
-
-    public void validateComplete(List<Long> orderTableIds) {
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(COOKING, MEAL))) {
-            throw new IllegalArgumentException("주문테이블들의 주문이 완료상태가 아닙니다.");
-        }
-    }
 }

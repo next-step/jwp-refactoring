@@ -1,9 +1,9 @@
-package kitchenpos.order.acceptance;
+package kitchenpos.orderTable.acceptance;
 
-import static kitchenpos.order.acceptance.TableRestAssured.주문테이블_등록_요청;
-import static kitchenpos.order.acceptance.TableRestAssured.주문테이블_목록_조회_요청;
-import static kitchenpos.order.acceptance.TableRestAssured.주문테이블_비어있는지여부_변경_요청;
-import static kitchenpos.order.acceptance.TableRestAssured.주문테이블_손님수_변경_요청;
+import static kitchenpos.orderTable.acceptance.TableRestAssured.주문테이블_등록_요청;
+import static kitchenpos.orderTable.acceptance.TableRestAssured.주문테이블_목록_조회_요청;
+import static kitchenpos.orderTable.acceptance.TableRestAssured.주문테이블_비어있는지여부_변경_요청;
+import static kitchenpos.orderTable.acceptance.TableRestAssured.주문테이블_손님수_변경_요청;
 import static kitchenpos.utils.DomainFixtureFactory.createOrderTableRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 

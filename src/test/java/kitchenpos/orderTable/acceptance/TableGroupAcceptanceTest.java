@@ -1,6 +1,6 @@
-package kitchenpos.order.acceptance;
+package kitchenpos.orderTable.acceptance;
 
-import static kitchenpos.order.acceptance.TableRestAssured.주문테이블_등록_요청;
+import static kitchenpos.orderTable.acceptance.TableRestAssured.주문테이블_등록_요청;
 import static kitchenpos.utils.DomainFixtureFactory.createOrderTableRequest;
 import static kitchenpos.utils.DomainFixtureFactory.createTableGroupRequest;
 import static org.assertj.core.api.Assertions.assertThat;

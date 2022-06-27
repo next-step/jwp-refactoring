@@ -53,7 +53,7 @@ class OrderValidatorTest {
         OrderRequest orderRequest = createOrderRequest(주문테이블.id(), null,
                 Lists.newArrayList(new OrderLineItemRequest(1L, 2L)));
         given(tableService.findOrderTable(orderRequest.getOrderTableId())).willReturn(주문테이블);
-        given(menuService.countByIdIn(Lists.newArrayList(1L))).willReturn(1);
+        given(menuService.countByIdIn(Lists.newArrayList(1L))).willReturn(2);
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> orderValidator.validate(orderRequest))
                 .withMessage("주문 항목들의 수와 조회된 메뉴 수가 일치하지 않습니다.");

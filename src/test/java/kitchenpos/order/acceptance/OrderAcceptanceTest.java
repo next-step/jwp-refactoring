@@ -2,7 +2,7 @@ package kitchenpos.order.acceptance;
 
 import static kitchenpos.menuGroup.acceptance.MenuGroupRestAssured.메뉴그룹_등록_요청;
 import static kitchenpos.menu.acceptance.MenuRestAssured.메뉴_등록_요청;
-import static kitchenpos.order.acceptance.TableRestAssured.주문테이블_등록_요청;
+import static kitchenpos.orderTable.acceptance.TableRestAssured.주문테이블_등록_요청;
 import static kitchenpos.product.acceptance.ProductRestAssured.상품_등록_요청;
 import static kitchenpos.utils.DomainFixtureFactory.createMenuGroupRequest;
 import static kitchenpos.utils.DomainFixtureFactory.createMenuRequest;

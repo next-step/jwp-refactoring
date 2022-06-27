@@ -1,4 +1,4 @@
-package kitchenpos.order.application;
+package kitchenpos.orderTable.application;
 
 import static kitchenpos.orderTable.domain.TableGroup.ORDER_TABLE_REQUEST_MIN;
 import static kitchenpos.utils.DomainFixtureFactory.createOrderTable;
@@ -6,20 +6,19 @@ import static kitchenpos.utils.DomainFixtureFactory.createTableGroup;
 import static kitchenpos.utils.DomainFixtureFactory.createTableGroupRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
-import kitchenpos.orderTable.application.TableGroupService;
+import kitchenpos.order.application.OrderService;
 import kitchenpos.orderTable.domain.OrderTable;
 import kitchenpos.orderTable.domain.OrderTableRepository;
 import kitchenpos.orderTable.domain.OrderTables;
 import kitchenpos.orderTable.domain.TableGroup;
 import kitchenpos.orderTable.domain.TableGroupRepository;
-import kitchenpos.orderTable.dto.OrderTableResponse;
 import kitchenpos.orderTable.dto.TableGroupRequest;
 import kitchenpos.orderTable.dto.TableGroupResponse;
+import kitchenpos.orderTable.validator.TableGroupValidator;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,6 +36,7 @@ class TableGroupServiceTest {
     private OrderTableRepository orderTableRepository;
     @Mock
     private TableGroupRepository tableGroupRepository;
+    private TableGroupValidator tableGroupValidator;
     @InjectMocks
     private TableGroupService tableGroupService;
 
@@ -63,11 +63,7 @@ class TableGroupServiceTest {
                 Lists.newArrayList(단체지정_치킨주문테이블.id(), 단체지정_피자주문테이블.id()));
         given(tableGroupRepository.save(any(TableGroup.class))).willReturn(단체지정);
         TableGroupResponse tableGroupResponse = tableGroupService.create(tableGroupRequest);
-        assertAll(
-                () -> assertThat(tableGroupResponse.getOrderTables()).containsExactlyElementsOf(
-                        Lists.newArrayList(OrderTableResponse.from(치킨주문테이블), OrderTableResponse.from(피자주문테이블))),
-                () -> assertThat(tableGroupResponse.getId()).isEqualTo(단체지정.id())
-        );
+        assertThat(tableGroupResponse.getId()).isEqualTo(단체지정.id());
     }
 
     @DisplayName("단체지정 생성시 주문테이블이 2 미만인 경우 테스트")
@@ -130,7 +126,7 @@ class TableGroupServiceTest {
         given(orderTableRepository.findAllByTableGroupId(1L)).willReturn(
                 Lists.newArrayList(치킨주문테이블, 피자주문테이블));
         tableGroupService.ungroup(1L);
-        verify(orderService).validateComplete(Lists.newArrayList(치킨주문테이블.id(), 피자주문테이블.id()));
+        verify(tableGroupValidator).validateComplete(Lists.newArrayList(치킨주문테이블.id(), 피자주문테이블.id()));
         verify(orderTableRepository).save(치킨주문테이블);
         verify(orderTableRepository).save(피자주문테이블);
     }

@@ -130,23 +130,4 @@ class OrderServiceTest {
                 .isThrownBy(() -> orderService.changeOrderStatus(주문.id(), orderRequest))
                 .withMessage("완료된 주문은 상태를 변경할 수 없습니다.");
     }
-
-    @DisplayName("주문테이블의 주문이 완료상태가 아닌경우 테스트")
-    @Test
-    void validateComplete() {
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(주문테이블.id(), Arrays.asList(COOKING, MEAL))).willReturn(true);
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderService.validateComplete(주문테이블.id()))
-                .withMessage("주문테이블의 주문이 완료상태가 아닙니다.");
-    }
-
-    @DisplayName("주문테이블의 주문이 완료상태가 아닌경우 테스트")
-    @Test
-    void validateComplete2() {
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(Lists.newArrayList(주문테이블.id()),
-                Arrays.asList(COOKING, MEAL))).willReturn(true);
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderService.validateComplete(Lists.newArrayList(주문테이블.id())))
-                .withMessage("주문테이블들의 주문이 완료상태가 아닙니다.");
-    }
 }

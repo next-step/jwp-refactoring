@@ -4,13 +4,11 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import kitchenpos.domain.NumberOfGuests;
 
 @Entity
@@ -18,9 +16,8 @@ public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
-    private TableGroup tableGroup;
+    private Long tableGroupId;
     @Embedded
     private NumberOfGuests numberOfGuests;
     @Column(nullable = false)
@@ -60,9 +57,9 @@ public class OrderTable {
         return empty;
     }
 
-    public void addTableGroup(final TableGroup tableGroup) {
+    public void addTableGroup(final Long tableGroupId) {
         validateTableGroupNull();
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
     }
 
     public void changeEmpty(final boolean empty) {
@@ -71,13 +68,9 @@ public class OrderTable {
     }
 
     private void validateTableGroupNull() {
-        if (Objects.nonNull(tableGroup)) {
+        if (Objects.nonNull(tableGroupId)) {
             throw new IllegalArgumentException("단체지정이 없어야 합니다.");
         }
-    }
-
-    public void unGroup() {
-        this.tableGroup = null;
     }
 
     public void changeNumberOfGuests(final int numberOfGuests) {
@@ -89,6 +82,10 @@ public class OrderTable {
         if (empty) {
             throw new IllegalArgumentException("주문테이블이 비어있으면 안됩니다.");
         }
+    }
+
+    public void unGroup() {
+        this.tableGroupId = null;
     }
 
     public void reserve() {
@@ -103,10 +100,10 @@ public class OrderTable {
     }
 
     public Long tableGroupId() {
-        if (this.tableGroup == null) {
+        if (tableGroupId == null) {
             return null;
         }
-        return this.tableGroup.id();
+        return tableGroupId;
     }
 
     @Override

@@ -2,22 +2,23 @@ package kitchenpos.orderTable.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.order.application.OrderService;
 import kitchenpos.orderTable.domain.OrderTable;
 import kitchenpos.orderTable.domain.OrderTableRepository;
 import kitchenpos.orderTable.dto.OrderTableRequest;
 import kitchenpos.orderTable.dto.OrderTableResponse;
+import kitchenpos.orderTable.validator.OrderTableValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
 public class TableService {
-    private final OrderService orderService;
     private final OrderTableRepository orderTableRepository;
+    private final OrderTableValidator orderTableValidator;
 
-    public TableService(final OrderService orderService, final OrderTableRepository orderTableRepository) {
-        this.orderService = orderService;
+    public TableService(final OrderTableValidator orderTableValidator,
+                        final OrderTableRepository orderTableRepository) {
+        this.orderTableValidator = orderTableValidator;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -36,7 +37,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
-        orderService.validateComplete(savedOrderTable.id());
+        orderTableValidator.validateComplete(savedOrderTable.id());
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
         return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
     }

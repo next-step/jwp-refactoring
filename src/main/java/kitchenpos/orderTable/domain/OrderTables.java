@@ -34,8 +34,8 @@ public class OrderTables {
         return Collections.unmodifiableList(this.orderTables);
     }
 
-    public void addTableGroup(TableGroup tableGroup) {
-        orderTables.forEach(orderTable -> orderTable.addTableGroup(tableGroup));
+    public void addTableGroup(Long tableGroupId) {
+        orderTables.forEach(orderTable -> orderTable.addTableGroup(tableGroupId));
     }
 
     public void reserve() {
