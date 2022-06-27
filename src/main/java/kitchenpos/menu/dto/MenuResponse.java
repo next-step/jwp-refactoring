@@ -28,7 +28,7 @@ public class MenuResponse {
         List<MenuProductResponse> menuProductResponses = savedMenu.getMenuProducts().stream()
                 .map(menuProduct -> MenuProductResponse.from(menuProduct))
                 .collect(Collectors.toList());
-        return new MenuResponse(savedMenu.getId(), savedMenu.getName(), savedMenu.getPrice().intValue(),
+        return new MenuResponse(savedMenu.getId(), savedMenu.getName(), savedMenu.getPrice(),
                 savedMenu.getMenuGroup().getId(), menuProductResponses);
     }
 

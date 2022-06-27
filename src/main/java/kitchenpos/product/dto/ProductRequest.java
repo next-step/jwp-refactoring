@@ -29,6 +29,6 @@ public class ProductRequest {
     }
 
     public Product toProduct() {
-        return new Product(name, BigDecimal.valueOf(price));
+        return new Product(name, price);
     }
 }

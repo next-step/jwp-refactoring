@@ -35,8 +35,8 @@ class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
-        치킨 = createProduct( 1L, "치킨", BigDecimal.valueOf(15000L));
-        피자 = createProduct(2L, "피자", BigDecimal.valueOf(20000L));
+        치킨 = createProduct( 1L, "치킨", 15000);
+        피자 = createProduct(2L, "피자", 20000);
     }
 
     @DisplayName("상품을 등록할 수 있다")
@@ -46,7 +46,7 @@ class ProductServiceTest {
         given(productRepository.save(any(Product.class))).willReturn(치킨);
 
         //when
-        ProductResponse savedProduct = productService.create(ProductRequest.of(치킨.getName(), 치킨.getPrice().intValue()));
+        ProductResponse savedProduct = productService.create(ProductRequest.of(치킨.getName(), 치킨.getPrice()));
 
         //then
         assertThat(savedProduct.getId()).isEqualTo(치킨.getId());
@@ -57,11 +57,11 @@ class ProductServiceTest {
     @Test
     void 상품_가격_검증(){
         //given
-        Product invalidProduct = createProduct("치킨", BigDecimal.valueOf(-15000L));
+        Product invalidProduct = createProduct("치킨", -15000);
 
         //then
        assertThrows(IllegalArgumentException.class, () -> productService.create(
-               ProductRequest.of(invalidProduct.getName(), invalidProduct.getPrice().intValue())
+               ProductRequest.of(invalidProduct.getName(), invalidProduct.getPrice())
        ));
     }
 

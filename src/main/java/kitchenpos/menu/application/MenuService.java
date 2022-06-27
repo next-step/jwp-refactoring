@@ -41,9 +41,9 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest menu) {
-        final BigDecimal price = BigDecimal.valueOf(menu.getPrice());
+        final int price = menu.getPrice();
 
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+        if (price < 0) {
             throw new IllegalArgumentException();
         }
 
@@ -53,14 +53,14 @@ public class MenuService {
 
         final List<MenuProductRequest> menuProducts = menu.getMenuProducts();
 
-        BigDecimal sum = BigDecimal.ZERO;
+        int sum = 0;
         for (final MenuProductRequest menuProduct : menuProducts) {
             final Product product = productRepository.findById(menuProduct.getProductId())
                     .orElseThrow(IllegalArgumentException::new);
-            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
+            sum = sum + (product.getPrice() * menuProduct.getQuantity());
         }
 
-        if (price.compareTo(sum) > 0) {
+        if (price > sum) {
             throw new IllegalArgumentException();
         }
 

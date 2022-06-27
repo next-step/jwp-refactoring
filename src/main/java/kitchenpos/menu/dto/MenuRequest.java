@@ -43,6 +43,6 @@ public class MenuRequest {
     }
 
     public Menu toMenu(MenuGroup menuGroup) {
-        return new Menu(name, BigDecimal.valueOf(price), menuGroup);
+        return new Menu(name, price, menuGroup);
     }
 }
