@@ -1,40 +1,78 @@
 package kitchenpos.domain;
 
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import org.springframework.transaction.annotation.Transactional;
+
+@Entity
+@Transactional(readOnly = true)
 public class OrderTable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long tableGroupId;
-    private int numberOfGuests;
+    @Embedded
+    private NumberOfGuests numberOfGuests;
     private boolean empty;
+
+    protected OrderTable() {
+    }
+
+    public OrderTable(NumberOfGuests numberOfGuests, boolean empty) {
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
+    public OrderTable(Long id, Long tableGroupId, NumberOfGuests numberOfGuests, boolean empty) {
+        this.id = id;
+        this.tableGroupId = tableGroupId;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
+    public void changeEmpty(boolean empty) {
+        validateTableGroup();
+        this.empty = empty;
+    }
+
+
+    public void changeNumberOfGuests(NumberOfGuests numberOfGuests) {
+        validateEmpty();
+        this.numberOfGuests = numberOfGuests;
+    }
+
+    public void groupByTableGroupId(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
+    }
+
+    private void validateTableGroup() {
+        if (tableGroupId != null) {
+            throw new IllegalArgumentException("단체 지정인 테이블은 빈 테이블로 지정할 수 없습니다.");
+        }
+    }
+
+    private void validateEmpty() {
+        if (isEmpty()) {
+            throw new IllegalArgumentException("빈 테이블인 경우에는 손님을 받을 수 없습니다.");
+        }
+    }
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
     }
 
     public Long getTableGroupId() {
         return tableGroupId;
     }
 
-    public void setTableGroupId(final Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
-    }
-
-    public int getNumberOfGuests() {
+    public NumberOfGuests getNumberOfGuests() {
         return numberOfGuests;
-    }
-
-    public void setNumberOfGuests(final int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
     }
 
     public boolean isEmpty() {
         return empty;
-    }
-
-    public void setEmpty(final boolean empty) {
-        this.empty = empty;
     }
 }

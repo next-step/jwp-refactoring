@@ -9,6 +9,7 @@ import kitchenpos.domain.MenuGroupName;
 import kitchenpos.domain.MenuName;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.MenuProducts;
+import kitchenpos.domain.NumberOfGuests;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderTable;
@@ -52,12 +53,7 @@ public class DomainFactory {
     }
 
     public static OrderTable createOrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setId(id);
-        orderTable.setTableGroupId(tableGroupId);
-        orderTable.setNumberOfGuests(numberOfGuests);
-        orderTable.setEmpty(empty);
-
+        OrderTable orderTable = new OrderTable(id, tableGroupId, NumberOfGuests.from(numberOfGuests), empty);
         return orderTable;
     }
 
