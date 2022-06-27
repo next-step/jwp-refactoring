@@ -3,15 +3,12 @@ package kitchenpos.domain;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.math.BigDecimal;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 
 @Entity
 public class Menu {
@@ -23,9 +20,8 @@ public class Menu {
     @Embedded
     private Price price;
     private Long menuGroupId;
-
-    @OneToMany(mappedBy = "menu", cascade = {CascadeType.ALL}, orphanRemoval = true)
-    private List<MenuProduct> menuProducts = new LinkedList<>();
+    @Embedded
+    private MenuProductsManager menuProducts = new MenuProductsManager();
 
     protected Menu() {
     }
@@ -53,10 +49,10 @@ public class Menu {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
+        return menuProducts.getMenuProducts();
     }
 
-    public void addMenuProduct(MenuProduct menuProduct){
+    public void addMenuProduct(MenuProduct menuProduct) {
         menuProducts.add(menuProduct);
     }
 
