@@ -36,7 +36,7 @@ public class Product {
     }
 
     public BigDecimal getPrice() {
-        return price.extractRealPrice();
+        return price.getPrice();
     }
 
     @Override
