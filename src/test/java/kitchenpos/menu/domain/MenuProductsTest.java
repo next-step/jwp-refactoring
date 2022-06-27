@@ -2,6 +2,7 @@ package kitchenpos.menu.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import kitchenpos.common.domain.Price;
 import kitchenpos.helper.MenuProductFixtures;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ class MenuProductsTest {
         menuProducts.add(MenuProductFixtures.양념치킨_메뉴);
 
         //when then
-        assertThat(menuProducts.getTotalPrice()).isEqualTo(32_000);
+        Price totalPrice = menuProducts.getTotalPrice();
+        assertThat(totalPrice.getPrice()).isEqualTo(32_000);
     }
 }

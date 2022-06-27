@@ -6,6 +6,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import kitchenpos.common.domain.Price;
 
 @Embeddable
 public class MenuProducts {
@@ -22,10 +23,12 @@ public class MenuProducts {
         return menuProducts;
     }
 
-    public int getTotalPrice() {
-        return menuProducts.stream()
-                .map(MenuProduct::createAmount)
-                .mapToInt(Amount::getAmount)
-                .sum();
+    public Price getTotalPrice() {
+        int totalPrice = 0;
+        for (MenuProduct menuProduct : menuProducts) {
+            Price price = menuProduct.getTotalPrice();
+            totalPrice += price.getPrice();
+        }
+        return new Price(totalPrice);
     }
 }

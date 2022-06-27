@@ -2,7 +2,6 @@ package kitchenpos.common.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import kitchenpos.menu.domain.MenuProducts;
 
 @Embeddable
 public class Price {
@@ -19,8 +18,8 @@ public class Price {
         this.price = price;
     }
 
-    public boolean overTo(MenuProducts menuProducts) {
-        return price > menuProducts.getTotalPrice();
+    public boolean overTo(Price otherPrice) {
+        return price > otherPrice.getPrice();
     }
 
     private void validate(Integer price) {

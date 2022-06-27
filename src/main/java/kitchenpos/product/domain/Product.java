@@ -7,8 +7,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import kitchenpos.common.domain.Price;
-import kitchenpos.common.domain.Quantity;
-import kitchenpos.menu.domain.Amount;
 
 @Entity
 public class Product {
@@ -45,9 +43,5 @@ public class Product {
 
     public Price getPrice() {
         return price;
-    }
-
-    public Amount createAmount(Quantity quantity) {
-        return new Amount(price, quantity);
     }
 }

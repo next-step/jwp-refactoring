@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
 import kitchenpos.product.domain.Product;
 
@@ -30,8 +31,9 @@ public class MenuProduct {
         this.product = product;
     }
 
-    public Amount createAmount() {
-        return product.createAmount(quantity);
+    public Price getTotalPrice() {
+        Price price = product.getPrice();
+        return new Price(price.getPrice() * quantity.getQuantity());
     }
 
     public Long getSeq() {

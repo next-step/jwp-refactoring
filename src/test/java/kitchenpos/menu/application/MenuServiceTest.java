@@ -80,7 +80,7 @@ class MenuServiceTest {
         //when then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuService.create(request))
-                .withMessageContaining("메뉴 가격은 총 상품 가격보다 클 수 없습니다.");
+                .withMessageContaining("메뉴 가격은 메뉴 상품들의 총 금액보다 클 수 없습니다.");
 
     }
 

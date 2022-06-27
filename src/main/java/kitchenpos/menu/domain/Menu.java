@@ -42,9 +42,10 @@ public class Menu {
         this.menuProducts = menuProducts;
     }
 
-    private void validate(Price menuPrice, MenuProducts menuProducts) {
-        if (menuPrice.overTo(menuProducts)) {
-            throw new IllegalArgumentException("[ERROR] 메뉴 가격은 총 상품 가격보다 클 수 없습니다.");
+    private void validate(Price price, MenuProducts menuProducts) {
+        Price totalPrice = menuProducts.getTotalPrice();
+        if (price.overTo(totalPrice)) {
+            throw new IllegalArgumentException("[ERROR] 메뉴 가격은 메뉴 상품들의 총 금액보다 클 수 없습니다.");
         }
     }
 
