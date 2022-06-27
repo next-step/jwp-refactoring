@@ -7,45 +7,35 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.domainService.MenuOrderLineDomainService;
 import kitchenpos.dto.dto.OrderLineItemDTO;
 import kitchenpos.dto.request.OrderRequest;
 import kitchenpos.dto.response.OrderResponse;
-import kitchenpos.repository.MenuRepository;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 @Service
 public class OrderService {
 
-    private final MenuRepository menuRepository;
+    private final MenuOrderLineDomainService menuOrderLineDomainService;
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
 
-    public OrderService(MenuRepository menuRepository, OrderRepository orderRepository,
-        OrderTableRepository orderTableRepository) {
-        this.menuRepository = menuRepository;
+    public OrderService(MenuOrderLineDomainService menuOrderLineDomainService,
+        OrderRepository orderRepository, OrderTableRepository orderTableRepository) {
+        this.menuOrderLineDomainService = menuOrderLineDomainService;
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
+
+        menuOrderLineDomainService.validateComponentForCreateOrder(orderRequest);
+
         final List<OrderLineItemDTO> orderLineItems = orderRequest.getOrderLineItems();
-
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
-        }
-
-        final List<Long> menuIds = orderLineItems.stream()
-            .map(OrderLineItemDTO::getMenuId)
-            .collect(Collectors.toList());
-
-        if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException();
-        }
 
         final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
             .orElseThrow(IllegalArgumentException::new);

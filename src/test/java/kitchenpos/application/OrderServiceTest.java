@@ -7,6 +7,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -19,6 +21,7 @@ import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.domainService.MenuOrderLineDomainService;
 import kitchenpos.dto.dto.OrderLineItemDTO;
 import kitchenpos.dto.request.OrderRequest;
 import kitchenpos.dto.response.OrderResponse;
@@ -38,7 +41,7 @@ class OrderServiceTest {
     private OrderService orderService;
 
     @Mock
-    private MenuRepository menuRepository;
+    private MenuOrderLineDomainService menuOrderLineDomainService;
 
     @Mock
     private OrderRepository orderRepository;
@@ -58,7 +61,7 @@ class OrderServiceTest {
         setMenu();
         setOrderLineItem();
         setOrderTable();
-        orderService = new OrderService(menuRepository, orderRepository, orderTableRepository);
+        orderService = new OrderService(menuOrderLineDomainService, orderRepository, orderTableRepository);
 
         order = new Order();
         setOrderId(1L, order);
@@ -111,10 +114,8 @@ class OrderServiceTest {
         orderRequest.setOrderTableId(1L);
         orderTable.useTable();
 
-        when(menuRepository.countByIdIn(
-            Arrays.asList(chickenOrder.getMenuId(), hamOrder.getMenuId()))).thenReturn(2);
+        doNothing().when(menuOrderLineDomainService).validateComponentForCreateOrder(orderRequest);
         when(orderTableRepository.findById(1L)).thenReturn(Optional.of(orderTable));
-
         when(orderRepository.save(any())).thenReturn(order);
 
         //when
@@ -145,9 +146,8 @@ class OrderServiceTest {
         OrderRequest orderRequest = new OrderRequest();
         orderRequest.setOrderLineItems(Arrays.asList(chickenOrder, hamOrder));
 
-        when(menuRepository.countByIdIn(
-            Arrays.asList(chickenOrder.getMenuId(), hamOrder.getMenuId())))
-            .thenReturn(1);
+        doThrow(IllegalArgumentException.class).when(menuOrderLineDomainService)
+            .validateComponentForCreateOrder(orderRequest);
 
         //when && then
         assertThatThrownBy(() -> orderService.create(orderRequest))
@@ -161,9 +161,8 @@ class OrderServiceTest {
         OrderRequest orderRequest = new OrderRequest();
         orderRequest.setOrderLineItems(Arrays.asList(chickenOrder, hamOrder));
 
-        when(menuRepository.countByIdIn(
-            Arrays.asList(chickenOrder.getMenuId(), hamOrder.getMenuId())))
-            .thenReturn(2);
+        doThrow(IllegalArgumentException.class).when(menuOrderLineDomainService)
+            .validateComponentForCreateOrder(orderRequest);
 
         //when && then
         assertThatThrownBy(() -> orderService.create(orderRequest))
@@ -178,8 +177,7 @@ class OrderServiceTest {
         orderRequest.setOrderLineItems(Arrays.asList(chickenOrder, hamOrder));
         orderRequest.setOrderTableId(1L);
 
-        when(menuRepository.countByIdIn(
-            Arrays.asList(chickenOrder.getMenuId(), hamOrder.getMenuId()))).thenReturn(2);
+        doNothing().when(menuOrderLineDomainService).validateComponentForCreateOrder(orderRequest);
         when(orderTableRepository.findById(1L)).thenReturn(Optional.of(orderTable));
 
         //when && then
