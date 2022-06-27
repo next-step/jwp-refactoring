@@ -29,15 +29,14 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        OrderTables orderTables = new OrderTables(tableGroupRequest.getOrderTables());
-
-        final List<Long> orderTableIds = orderTables.findOrderTableIds();
+        List<Long> orderTableIds = tableGroupRequest.getOrderTableIds();
+        OrderTables orderTables = new OrderTables(findOrderTablesByIdIn(orderTableIds));
         final OrderTables savedOrderTables = new OrderTables(findOrderTablesByIdIn(orderTableIds));
 
         orderTables.validateForCreateTableGroup(savedOrderTables);
         savedOrderTables.updateEmpty(false);
 
-        TableGroup tableGroup = tableGroupRequest.toTableGroup();
+        TableGroup tableGroup = tableGroupRequest.toTableGroup(orderTables);
         tableGroup.addOrderTables(savedOrderTables);
 
         return TableGroupResponse.of(saveTableGroup(tableGroup));

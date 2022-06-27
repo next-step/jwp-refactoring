@@ -22,9 +22,9 @@ public class TableGroup extends BaseEntity {
 
     }
 
-    public TableGroup(Long id, List<OrderTable> orderTables) {
+    public TableGroup(Long id, OrderTables orderTables) {
         this.id = id;
-        this.orderTables = new OrderTables(orderTables);
+        this.orderTables = orderTables;
     }
 
     public void addOrderTables(OrderTables orderTables) {

@@ -3,6 +3,7 @@ package kitchenpos.application;
 import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.domain.orderTable.OrderTable;
 import kitchenpos.domain.orderTable.OrderTableRepository;
+import kitchenpos.domain.orderTable.OrderTables;
 import kitchenpos.domain.tableGroup.TableGroup;
 import kitchenpos.domain.tableGroup.TableGroupRepository;
 import kitchenpos.dto.tableGroup.TableGroupRequest;
@@ -17,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static kitchenpos.application.TableServiceTest.주문_테이블_데이터_생성;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -137,7 +139,7 @@ class TableGroupServiceTest {
     }
 
     public static TableGroup 테이블_그룹_데이터_생성(Long id, List<OrderTable> orderTables) {
-        return new TableGroup(id, orderTables);
+        return new TableGroup(id, new OrderTables(orderTables));
     }
 
     public static TableGroup 테이블_그룹_데이터_생성() {
@@ -145,7 +147,9 @@ class TableGroupServiceTest {
     }
 
     public static TableGroupRequest 테이블_그룹_요청_데이터_생성(List<OrderTable> orderTables) {
-        return new TableGroupRequest(orderTables);
+        return new TableGroupRequest(orderTables.stream()
+                .map(OrderTable::getId)
+                .collect(Collectors.toList()));
     }
 
     private TableGroupResponse 테이블_그룹_생성(TableGroupRequest tableGroupRequest) {
