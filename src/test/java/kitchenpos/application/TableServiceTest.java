@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
-import kitchenpos.application.fixture.OrderTableFixtureFactory;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuGroupRepository;
@@ -46,7 +45,7 @@ class TableServiceTest extends ServiceTest {
 
     @BeforeEach
     void before() {
-        주문_테이블1 = orderTableRepository.save(OrderTableFixtureFactory.createByGuestNumberWithoutId(3, false));
+        주문_테이블1 = orderTableRepository.save(new OrderTable(3, false));
     }
 
     @Test

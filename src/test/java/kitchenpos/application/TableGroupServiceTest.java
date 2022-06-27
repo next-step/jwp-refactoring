@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import kitchenpos.application.fixture.OrderTableFixtureFactory;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuGroupRepository;
@@ -47,8 +46,8 @@ class TableGroupServiceTest extends ServiceTest {
 
     @BeforeEach
     void before() {
-        주문_테이블1 = orderTableRepository.save(OrderTableFixtureFactory.createByGuestNumberWithoutId(2, true));
-        주문_테이블2 = orderTableRepository.save(OrderTableFixtureFactory.createByGuestNumberWithoutId(3, true));
+        주문_테이블1 = orderTableRepository.save(new OrderTable(2, true));
+        주문_테이블2 = orderTableRepository.save(new OrderTable(3, true));
     }
 
     @Test

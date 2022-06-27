@@ -9,12 +9,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-import kitchenpos.application.fixture.MenuFixtureFactory;
-import kitchenpos.application.fixture.MenuGroupFixtureFactory;
-import kitchenpos.application.fixture.MenuProductFixtureFactory;
-import kitchenpos.application.fixture.OrderFixtureFactory;
-import kitchenpos.application.fixture.OrderTableFixtureFactory;
-import kitchenpos.application.fixture.ProductFixtureFactory;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuGroupRepository;
@@ -73,23 +67,23 @@ class OrderServiceTest extends ServiceTest {
 
     @BeforeEach
     void before() {
-        중식 = menuGroupRepository.save(MenuGroupFixtureFactory.create("중식"));
-        중식_메뉴 = menuRepository.save(MenuFixtureFactory.createWithoutId("중식_메뉴", BigDecimal.valueOf(3000), 중식));
+        중식 = menuGroupRepository.save(new MenuGroup("중식"));
+        중식_메뉴 = menuRepository.save(new Menu("중식_메뉴", BigDecimal.valueOf(3000), 중식));
 
-        짬뽕 = productRepository.save(ProductFixtureFactory.create("짬뽕", BigDecimal.valueOf(1000)));
-        짜장 = productRepository.save(ProductFixtureFactory.create("짜장", BigDecimal.valueOf(2000)));
+        짬뽕 = productRepository.save(new Product("짬뽕", BigDecimal.valueOf(1000)));
+        짜장 = productRepository.save(new Product("짜장", BigDecimal.valueOf(2000)));
 
-        중식_메뉴_짬뽕 = menuProductRepository.save(MenuProductFixtureFactory.createWithoutId(중식_메뉴, 짬뽕, 3));
-        중식_메뉴_짜장 = menuProductRepository.save(MenuProductFixtureFactory.createWithoutId(중식_메뉴, 짜장, 1));
+        중식_메뉴_짬뽕 = menuProductRepository.save(new MenuProduct(중식_메뉴, 짬뽕, 3));
+        중식_메뉴_짜장 = menuProductRepository.save(new MenuProduct(중식_메뉴, 짜장, 1));
 
         중식_메뉴.addMenuProduct(Arrays.asList(중식_메뉴_짬뽕, 중식_메뉴_짜장));
 
-        주문_테이블 = orderTableRepository.save(OrderTableFixtureFactory.createByGuestNumberWithoutId(1, false));
-        빈주문_테이블 = orderTableRepository.save(OrderTableFixtureFactory.createByGuestNumberWithoutId(0, true));
+        주문_테이블 = orderTableRepository.save(new OrderTable(1, false));
+        빈주문_테이블 = orderTableRepository.save(new OrderTable(0, true));
 
         중식_주문_항목 = new OrderLineItem(중식_메뉴.getId(), 1);
 
-        주문1 = orderRepository.save(OrderFixtureFactory.createWithoutIdOneLineItem(주문_테이블.getId(), 중식_주문_항목));
+        주문1 = orderRepository.save(new Order(주문_테이블.getId(), 중식_주문_항목));
     }
 
 

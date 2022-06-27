@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
 import java.util.List;
-import kitchenpos.application.fixture.ProductFixtureFactory;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductRepository;
 import kitchenpos.dto.ProductRequest;
@@ -28,8 +27,8 @@ class ProductServiceTest extends ServiceTest{
 
     @BeforeEach
     void before() {
-        짬뽕 = productRepository.save(ProductFixtureFactory.create("짬뽕", BigDecimal.valueOf(1000)));
-        짜장 = productRepository.save(ProductFixtureFactory.create("짜장", BigDecimal.valueOf(1000)));
+        짬뽕 = productRepository.save(new Product("짬뽕", BigDecimal.valueOf(1000)));
+        짜장 = productRepository.save(new Product("짜장", BigDecimal.valueOf(1000)));
     }
 
     @Test

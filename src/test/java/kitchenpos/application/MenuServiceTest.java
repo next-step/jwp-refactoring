@@ -8,10 +8,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
-import kitchenpos.application.fixture.MenuFixtureFactory;
-import kitchenpos.application.fixture.MenuGroupFixtureFactory;
-import kitchenpos.application.fixture.MenuProductFixtureFactory;
-import kitchenpos.application.fixture.ProductFixtureFactory;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuGroupRepository;
@@ -54,14 +50,14 @@ class MenuServiceTest extends ServiceTest{
 
     @BeforeEach
     void before() {
-        중식 = menuGroupRepository.save(MenuGroupFixtureFactory.create("중식"));
-        중식메뉴 = menuRepository.save(MenuFixtureFactory.createWithoutId( "메뉴1", BigDecimal.valueOf(3000), 중식));
+        중식 = menuGroupRepository.save(new MenuGroup("중식"));
+        중식메뉴 = menuRepository.save(new Menu( "메뉴1", BigDecimal.valueOf(3000), 중식));
 
-        짬뽕 = productRepository.save(ProductFixtureFactory.create("상품1", BigDecimal.valueOf(1000)));
-        짜장 = productRepository.save(ProductFixtureFactory.create("상품2", BigDecimal.valueOf(2000)));
+        짬뽕 = productRepository.save(new Product("상품1", BigDecimal.valueOf(1000)));
+        짜장 = productRepository.save(new Product("상품2", BigDecimal.valueOf(2000)));
 
-        중식_메뉴_짬뽕 = menuProductRepository.save(MenuProductFixtureFactory.createWithoutId( 중식메뉴, 짬뽕, 3));
-        중식_메뉴_짜장 = menuProductRepository.save(MenuProductFixtureFactory.createWithoutId( 중식메뉴, 짜장, 1));
+        중식_메뉴_짬뽕 = menuProductRepository.save(new MenuProduct( 중식메뉴, 짬뽕, 3));
+        중식_메뉴_짜장 = menuProductRepository.save(new MenuProduct( 중식메뉴, 짜장, 1));
 
         중식메뉴.addMenuProduct(Arrays.asList(중식_메뉴_짬뽕, 중식_메뉴_짜장));
     }
