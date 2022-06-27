@@ -70,10 +70,6 @@ public class TableService {
         final OrderTableRequest orderTableRequest) {
         final int numberOfGuests = orderTableRequest.getNumberOfGuests();
 
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
-        }
-
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
             .orElseThrow(IllegalArgumentException::new);
 
@@ -81,7 +77,7 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-        savedOrderTable.setNumberOfGuests(numberOfGuests);
+        savedOrderTable.changeNumberOfGuests(numberOfGuests);
 
         return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
     }

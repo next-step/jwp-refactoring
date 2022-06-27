@@ -3,7 +3,7 @@ package kitchenpos.domain;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.util.Objects;
-import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -15,15 +15,16 @@ public class OrderTable {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private Long tableGroupId;
-    private int numberOfGuests;
+    @Embedded
+    private NumberOfGuests numberOfGuests;
     private boolean empty;
 
-    public OrderTable() {
+    protected OrderTable() {
     }
 
     public OrderTable(int numberOfGuests, boolean empty) {
         this.tableGroupId = null;
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = new NumberOfGuests(numberOfGuests);
         this.empty = empty;
     }
 
@@ -39,8 +40,8 @@ public class OrderTable {
         this.tableGroupId = tableGroupId;
     }
 
-    public void setNumberOfGuests(int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
+    public void changeNumberOfGuests(int numberOfGuests) {
+        this.numberOfGuests.changeNumberOfGuests(numberOfGuests);
     }
 
     public Long getId() {
@@ -52,7 +53,7 @@ public class OrderTable {
     }
 
     public int getNumberOfGuests() {
-        return numberOfGuests;
+        return numberOfGuests.getGuests();
     }
 
     public boolean isEmpty() {
