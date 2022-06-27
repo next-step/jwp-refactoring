@@ -1,43 +1,73 @@
 package kitchenpos.domain;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+@Entity
+@EntityListeners(AuditingEntityListener.class)
 public class TableGroup {
+
+    private static final int MIN_TABLE_SIZE = 2;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @CreatedDate
     private LocalDateTime createdDate;
-    private List<OrderTable> orderTables;
+
+    @OneToMany(mappedBy = "tableGroup")
+    private List<OrderTable> orderTables = new ArrayList<>();
 
     public TableGroup() {
     }
 
-    public TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
+    public TableGroup(Long id) {
         this.id = id;
-        this.createdDate = createdDate;
-        this.orderTables = orderTables;
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public LocalDateTime getCreatedDate() {
         return createdDate;
-    }
-
-    public void setCreatedDate(final LocalDateTime createdDate) {
-        this.createdDate = createdDate;
     }
 
     public List<OrderTable> getOrderTables() {
         return orderTables;
     }
 
-    public void setOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
+    public void group(List<OrderTable> orderTables) {
+        checkAddable(orderTables);
+        this.orderTables.addAll(orderTables);
+        orderTables.forEach(orderTable -> orderTable.group(this));
+    }
+
+    private void checkAddable(List<OrderTable> orderTables) {
+        if (orderTables.size() < MIN_TABLE_SIZE) {
+            throw new IllegalArgumentException();
+        }
+
+        for (final OrderTable orderTable : orderTables) {
+            checkEmptyOrGrouped(orderTable);
+        }
+    }
+
+    private void checkEmptyOrGrouped(OrderTable orderTable) {
+        if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup())) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public void ungroup() {
+        this.orderTables.forEach(OrderTable::ungroup);
+        this.orderTables.clear();
     }
 }

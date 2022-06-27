@@ -1,8 +1,10 @@
 package kitchenpos.ui;
 
 import kitchenpos.application.MenuService;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.dto.MenuProductRequestDto;
+import kitchenpos.dto.MenuProductResponseDto;
+import kitchenpos.dto.MenuRequestDto;
+import kitchenpos.dto.MenuResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +16,10 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
+import static kitchenpos.fixture.MenuFixture.메뉴_요청_데이터_생성;
+import static kitchenpos.fixture.MenuFixture.메뉴_응답_데이터_생성;
+import static kitchenpos.fixture.MenuProductFixture.메뉴상품_요청_데이터_생성;
+import static kitchenpos.fixture.MenuProductFixture.메뉴상품_응답_데이터_생성;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -39,12 +45,14 @@ class MenuRestControllerTest extends BaseRestControllerTest {
         String name = "menu";
         BigDecimal price = BigDecimal.valueOf(1000);
         Long menuGroupId = 1L;
-        List<MenuProduct> menuProducts = Arrays.asList(createMenuProduct());
-        Menu request = new Menu(null, name, price, menuGroupId, menuProducts);
+        List<MenuProductRequestDto> menuProducts = Arrays.asList(메뉴상품_요청_데이터_생성(1L, 2));
+        MenuRequestDto request = 메뉴_요청_데이터_생성(name, price, menuGroupId, menuProducts);
         String requestBody = objectMapper.writeValueAsString(request);
 
         Long id = 1L;
-        given(menuService.create(any())).willReturn(new Menu(id, name, price, menuGroupId, menuProducts));
+        MenuProductResponseDto menuProduct = 메뉴상품_응답_데이터_생성(1L, 1L, 1L, 2);
+        MenuResponseDto menu = 메뉴_응답_데이터_생성(id, "menu", price, menuGroupId, Arrays.asList(menuProduct));
+        given(menuService.create(any())).willReturn(menu);
 
         //when //then
         mockMvc.perform(post("/api/menus")
@@ -61,12 +69,12 @@ class MenuRestControllerTest extends BaseRestControllerTest {
     void list() throws Exception {
         //given
         Long id = 1L;
-        String name = "menu";
-        BigDecimal price = BigDecimal.valueOf(1000);
         Long menuGroupId = 1L;
-        List<MenuProduct> menuProducts = Arrays.asList(createMenuProduct());
+        BigDecimal price = BigDecimal.valueOf(1000);
+        MenuProductResponseDto menuProduct = 메뉴상품_응답_데이터_생성(1L, 1L, 1L, 2);
+        MenuResponseDto menu = 메뉴_응답_데이터_생성(id, "menu", price, menuGroupId, Arrays.asList(menuProduct));
 
-        given(menuService.list()).willReturn(Arrays.asList(new Menu(id, name, price, menuGroupId, menuProducts)));
+        given(menuService.list()).willReturn(Arrays.asList(menu));
 
         //when //then
         mockMvc.perform(get("/api/menus"))
@@ -75,7 +83,4 @@ class MenuRestControllerTest extends BaseRestControllerTest {
                 .andExpect(jsonPath("$.size()").value(1));
     }
 
-    private MenuProduct createMenuProduct() {
-        return new MenuProduct(1L, 1L, 1);
-    }
 }

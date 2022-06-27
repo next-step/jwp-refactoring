@@ -1,17 +1,41 @@
 package kitchenpos.domain;
 
+import kitchenpos.dto.OrderTableRequestDto;
+
+import javax.persistence.*;
+
+@Entity
 public class OrderTable {
+
+    private static final int MIN_GUEST = 0;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long tableGroupId;
+
+    @ManyToOne
+    @JoinColumn(name = "table_group_id")
+    private TableGroup tableGroup;
+
     private int numberOfGuests;
     private boolean empty;
 
-    public OrderTable() {
+    protected OrderTable() {
     }
 
-    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+    public OrderTable(OrderTableRequestDto request) {
+        this(null, null, request.getNumberOfGuests(), request.isEmpty());
+    }
+
+    public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
+        this.tableGroup = tableGroup;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
+    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroupId = tableGroupId;
+        this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
@@ -20,31 +44,42 @@ public class OrderTable {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public Long getTableGroupId() {
-        return tableGroupId;
-    }
-
-    public void setTableGroupId(final Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
+    public TableGroup getTableGroup() {
+        return tableGroup;
     }
 
     public int getNumberOfGuests() {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
-    }
-
     public boolean isEmpty() {
         return empty;
     }
 
-    public void setEmpty(final boolean empty) {
-        this.empty = empty;
+    public void changeEmpty() {
+        this.empty = true;
+    }
+
+    public void changeNumberOfGuest(int numberOfGuests) {
+        checkChangeable(numberOfGuests);
+        this.numberOfGuests = numberOfGuests;
+    }
+
+    private void checkChangeable(int numberOfGuests) {
+        if (numberOfGuests < MIN_GUEST) {
+            throw new IllegalArgumentException();
+        }
+        if (this.empty) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public void group(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
+        this.empty = false;
+    }
+
+    public void ungroup() {
+        this.tableGroup = null;
     }
 }

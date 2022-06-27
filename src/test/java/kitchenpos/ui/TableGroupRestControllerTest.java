@@ -1,8 +1,7 @@
 package kitchenpos.ui;
 
 import kitchenpos.application.TableGroupService;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.TableGroupRequestDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,12 +9,7 @@ import org.mockito.Mock;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-
-import static kitchenpos.fixture.OrderTableFixture.주문테이블_데이터_생성;
-import static kitchenpos.fixture.TableGroupFixture.단체_데이터_생성;
+import static kitchenpos.fixture.TableGroupFixture.단체_응답_데이터_생성;
 import static kitchenpos.fixture.TableGroupFixture.단체_지정_데이터_생성;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -39,13 +33,10 @@ class TableGroupRestControllerTest extends BaseRestControllerTest {
     @Test
     void create() throws Exception {
         //given
-        OrderTable table1 = 주문테이블_데이터_생성(1L, null, 4, false);
-        OrderTable table2 = 주문테이블_데이터_생성(2L, null, 3, false);
-        List<OrderTable> orderTables = Arrays.asList(table1, table2);
-        TableGroup request = 단체_지정_데이터_생성(orderTables);
+        TableGroupRequestDto request = 단체_지정_데이터_생성(1L, 2L);
         String requestBody = objectMapper.writeValueAsString(request);
-
-        given(tableGroupService.create(any())).willReturn(단체_데이터_생성(1L, LocalDateTime.now(), orderTables));
+//
+        given(tableGroupService.create(any())).willReturn(단체_응답_데이터_생성(1L));
 
         //when //then
         mockMvc.perform(post("/api/table-groups")

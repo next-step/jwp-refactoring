@@ -10,8 +10,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
 
-import static kitchenpos.fixture.MenuGroupFixture.메뉴묶음_데이터_생성;
 import static kitchenpos.fixture.MenuGroupFixture.메뉴묶음_요청데이터_생성;
+import static kitchenpos.fixture.MenuGroupFixture.메뉴묶음_응답_데이터_생성;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -37,7 +37,7 @@ class MenuGroupRestControllerTest extends BaseRestControllerTest {
         String name = "menuGroup";
         String requestBody = objectMapper.writeValueAsString(메뉴묶음_요청데이터_생성(name));
 
-        given(menuGroupService.create(any())).willReturn(메뉴묶음_데이터_생성(1L, name));
+        given(menuGroupService.create(any())).willReturn(메뉴묶음_응답_데이터_생성(1L, name));
 
         //when //then
         mockMvc.perform(post("/api/menu-groups")
@@ -51,10 +51,11 @@ class MenuGroupRestControllerTest extends BaseRestControllerTest {
     }
 
     @DisplayName("메뉴 묶음을 전체 조회한다.")
+    @Test
     void list() throws Exception {
         //given
         String name = "menuGroup";
-        given(menuGroupService.list()).willReturn(Arrays.asList(메뉴묶음_데이터_생성(1L, name)));
+        given(menuGroupService.list()).willReturn(Arrays.asList(메뉴묶음_응답_데이터_생성(1L, name)));
 
         //when //then
         mockMvc.perform(get("/api/menu-groups"))
