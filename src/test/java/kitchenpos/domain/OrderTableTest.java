@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class OrderTableTest {
+class OrderTableTest {
 
     @DisplayName("주문 테이블 생성에 성공한다.")
     @Test

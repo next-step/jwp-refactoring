@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("단체 지정 관련 기능")
-public class TableGroupAcceptanceTest extends AcceptanceTest {
+class TableGroupAcceptanceTest extends AcceptanceTest {
 
     TableGroupRequest tableGroupRequest;
 

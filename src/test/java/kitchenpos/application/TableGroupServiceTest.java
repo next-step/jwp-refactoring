@@ -18,7 +18,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
-public class TableGroupServiceTest {
+class TableGroupServiceTest {
 
     @Mock
     TableGroupRepository tableGroupRepository;

@@ -10,7 +10,7 @@ import java.util.Arrays;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class MenuTest {
+class MenuTest {
 
     MenuGroup 양식;
     MenuProduct 샐러드_1개;

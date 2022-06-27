@@ -18,14 +18,14 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("주문 테이블 관련 기능")
-public class TableAcceptanceTest extends AcceptanceTest {
+class TableAcceptanceTest extends AcceptanceTest {
 
     TableRequest 빈_테이블_요청1;
     TableRequest 빈_테이블_요청2;
     TableRequest 테이블_요청;
 
     @BeforeEach
-    public void init() {
+    void init() {
         super.init();
 
         // given

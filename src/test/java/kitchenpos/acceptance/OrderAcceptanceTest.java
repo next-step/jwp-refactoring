@@ -29,30 +29,15 @@ import static kitchenpos.acceptance.TableAcceptanceTest.주문_테이블_생성�
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("주문 관련 기능")
-public class OrderAcceptanceTest extends AcceptanceTest {
+class OrderAcceptanceTest extends AcceptanceTest {
 
     OrderRequest orderRequest1;
     OrderRequest orderRequest2;
     OrderRequest orderRequest3;
     ChangeOrderStatusRequest changeOrderStatusRequest;
 
-    public static void 주문_생성되어_있음(ExtractableResponse<Response> createResponse) {
-        TableResponse 테이블 = createResponse.as(TableResponse.class);
-        ProductResponse 샐러드 = ProductAcceptanceTest.상품_생성되어_있음("샐러드", 100).as(ProductResponse.class);
-        MenuGroupResponse 기본_메뉴_그룹 = MenuGroupAcceptanceTest.메뉴_그룹_생성되어_있음("기본 메뉴 그룹").as(MenuGroupResponse.class);
-        MenuResponse 기본_메뉴 = MenuAcceptanceTest.메뉴_생성되어_있음(
-                        "기본 메뉴",
-                        100,
-                        기본_메뉴_그룹.getId(),
-                        Arrays.asList(new MenuProductRequest(샐러드.getId(), 1)))
-                .as(MenuResponse.class);
-        주문_생성_요청(new OrderRequest(
-                테이블.getId(),
-                Arrays.asList(new OrderLineItemRequest(기본_메뉴.getId(), 1))));
-    }
-
     @BeforeEach
-    public void init() {
+    void init() {
         super.init();
 
         // given
@@ -105,6 +90,21 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
         // then
         주문_상태_변경됨(response);
+    }
+
+    public static void 주문_생성되어_있음(ExtractableResponse<Response> createResponse) {
+        TableResponse 테이블 = createResponse.as(TableResponse.class);
+        ProductResponse 샐러드 = ProductAcceptanceTest.상품_생성되어_있음("샐러드", 100).as(ProductResponse.class);
+        MenuGroupResponse 기본_메뉴_그룹 = MenuGroupAcceptanceTest.메뉴_그룹_생성되어_있음("기본 메뉴 그룹").as(MenuGroupResponse.class);
+        MenuResponse 기본_메뉴 = MenuAcceptanceTest.메뉴_생성되어_있음(
+                        "기본 메뉴",
+                        100,
+                        기본_메뉴_그룹.getId(),
+                        Arrays.asList(new MenuProductRequest(샐러드.getId(), 1)))
+                .as(MenuResponse.class);
+        주문_생성_요청(new OrderRequest(
+                테이블.getId(),
+                Arrays.asList(new OrderLineItemRequest(기본_메뉴.getId(), 1))));
     }
 
     public static ExtractableResponse<Response> 주문_생성_요청(OrderRequest order) {

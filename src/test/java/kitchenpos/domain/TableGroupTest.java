@@ -9,7 +9,7 @@ import java.util.Arrays;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class TableGroupTest {
+class TableGroupTest {
 
     OrderTable 빈_테이블1;
     OrderTable 빈_테이블2;

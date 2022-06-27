@@ -6,13 +6,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class AcceptanceTest {
+class AcceptanceTest {
 
     @LocalServerPort
     int port;
 
     @BeforeEach
-    public void init() {
+    void init() {
         RestAssured.port = port;
     }
 }

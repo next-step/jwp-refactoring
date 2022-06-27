@@ -10,7 +10,7 @@ import java.util.Arrays;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class OrderTest {
+class OrderTest {
 
     OrderTable 테이블;
     OrderTable 빈_테이블;

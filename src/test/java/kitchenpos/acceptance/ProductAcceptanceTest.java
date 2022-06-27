@@ -18,14 +18,14 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("상품 관련 기능")
-public class ProductAcceptanceTest extends AcceptanceTest {
+class ProductAcceptanceTest extends AcceptanceTest {
 
     ProductRequest productRequest1;
     ProductRequest productRequest2;
     ProductRequest productRequest3;
 
     @BeforeEach
-    public void init() {
+    void init() {
         super.init();
 
         // given

@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class ProductTest {
+class ProductTest {
 
     @DisplayName("상품 생성에 성공한다.")
     @Test

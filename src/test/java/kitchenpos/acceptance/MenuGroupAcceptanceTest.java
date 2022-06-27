@@ -18,13 +18,13 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("메뉴 그룹 관련 기능")
-public class MenuGroupAcceptanceTest extends AcceptanceTest {
+class MenuGroupAcceptanceTest extends AcceptanceTest {
 
     MenuGroupRequest menuGroupRequest1;
     MenuGroupRequest menuGroupRequest2;
 
     @BeforeEach
-    public void init() {
+    void init() {
         super.init();
 
         // given

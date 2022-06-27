@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("메뉴 관련 기능")
-public class MenuAcceptanceTest extends AcceptanceTest {
+class MenuAcceptanceTest extends AcceptanceTest {
 
     MenuRequest menuRequest1;
     MenuRequest menuRequest2;
@@ -30,7 +30,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     MenuRequest menuRequest_금액_초과;
 
     @BeforeEach
-    public void init() {
+    void init() {
         super.init();
 
         // given
