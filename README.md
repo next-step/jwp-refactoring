@@ -60,7 +60,8 @@
 ---
 
 ---
-- step2 : 서비스 리팩토링
+step2 
+- 서비스 리팩토링
   - Controller - Domain 의존성 삭제
     - Controller에서 @RequestBody로 요청 받을때, domain이 아닌 RequestDTO 객체로 받음
     - Controller에서 Domain을 Body로 반환할때, domain이 아닌 ResponseDTO 객체로 반환
@@ -82,7 +83,22 @@
 | OrderTable | 1:N | Order         | ID참조   |                                      |
 | TableGroup | 1:N | OrderTable    | ID참조   |                                      |
  
-   
+- 개발순서
+1. JPA기능 사용
+   1. 모든 domain을 Entity화
+   2. dao -> JpaReposiory로 변경
+      1. dao 기능 중 custom query를 JpaRepository에 동일하게 구현 
+   3. 모든 서비스 로직에 dao 대신 JPARepository 주입, repository 사용 코드로 변경
+2. Controller - Domain 격리
+   1. Controller가 Domain객체를 사용하는것이 아닌, 용도에 맞는 Request/Response DTO를 사용
+3. Service Layer Test 수정
+   1. Domain Layer엔 비즈니스 로직이 없어 Service Layer부터 시작한다
+   2. 인수테스트는 큰 범위의 테스트이므로 그보다 작은 Service Layer부터 시작한다.
+   3. 기존과 동일하게 해당하는 Service Layer을 제외한 모든 객체들로부터 격리한다(Mock)
+4. Acception Test 수정 
+    1. Controller의 받는 데이터 타입이 변경되어(Response/Request DTO) 해당 부분 수정 
+5. .http/ 파일들 수정 
+         
 
 ## 용어 사전
 
