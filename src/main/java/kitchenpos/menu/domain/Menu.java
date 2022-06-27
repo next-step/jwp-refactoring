@@ -5,13 +5,11 @@ import java.util.List;
 import java.util.Objects;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import kitchenpos.domain.Name;
 import kitchenpos.domain.Price;
 
@@ -24,33 +22,24 @@ public class Menu {
     private Name name;
     @Embedded
     private Price price;
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"), nullable = false)
-    private MenuGroup menuGroup;
+    private Long menuGroupId;
     @Embedded
     private MenuProducts menuProducts;
 
     protected Menu() {
     }
 
-    private Menu(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        validateMenuProducts(Price.from(price), menuProducts);
-        validateMenuGroup(menuGroup);
+    private Menu(String name, BigDecimal price, Long menuGroupId, MenuProducts menuProducts) {
         menuProducts.addMenu(this);
         this.name = Name.from(name);
         this.price = Price.from(price);
-        this.menuGroup = menuGroup;
+        this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
     }
 
-    public static Menu from(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        return new Menu(name, price, menuGroup, menuProducts);
-    }
-
-    private static void validateMenuGroup(MenuGroup menuGroup) {
-        if (Objects.isNull(menuGroup)) {
-            throw new IllegalArgumentException("메뉴그룹이 있어야 합니다.");
-        }
+    public static Menu from(String name, BigDecimal price, Long menuGroupId, MenuProducts menuProducts) {
+        return new Menu(name, price, menuGroupId, menuProducts);
     }
 
     public Long id() {
@@ -69,18 +58,12 @@ public class Menu {
         return price;
     }
 
-    public long menuGroupId() {
-        return menuGroup.id();
+    public Long menuGroupId() {
+        return menuGroupId;
     }
 
     public List<MenuProduct> readOnlyMenuProducts() {
         return menuProducts.readOnlyMenuProducts();
-    }
-
-    private void validateMenuProducts(Price price, MenuProducts menuProducts) {
-        if (price.compareTo(menuProducts.totalPrice()) > 0) {
-            throw new IllegalArgumentException("메뉴 가격은 상품의 총 금액을 넘길 수 없습니다.");
-        }
     }
 
     @Override

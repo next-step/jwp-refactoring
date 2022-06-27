@@ -3,10 +3,10 @@ package kitchenpos.utils;
 import java.math.BigDecimal;
 import java.util.List;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menuGroup.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.order.domain.Order;
@@ -40,8 +40,8 @@ public class DomainFixtureFactory {
         return new MenuGroupRequest(name);
     }
 
-    public static Menu createMenu(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        return Menu.from(name, price, menuGroup, menuProducts);
+    public static Menu createMenu(String name, BigDecimal price, Long menuGroupId, MenuProducts menuProducts) {
+        return Menu.from(name, price, menuGroupId, menuProducts);
     }
 
     public static MenuRequest createMenuRequest(String name, BigDecimal price, long menuGroupId,
@@ -49,8 +49,8 @@ public class DomainFixtureFactory {
         return new MenuRequest(name, price, menuGroupId, menuProducts);
     }
 
-    public static MenuProduct createMenuProduct(Product product, long quantity) {
-        return MenuProduct.from(product, quantity);
+    public static MenuProduct createMenuProduct(Long productId, long quantity) {
+        return MenuProduct.from(productId, quantity);
     }
 
     public static OrderTable createOrderTable(Long id, int numberOfGuests, boolean empty) {

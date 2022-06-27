@@ -1,6 +1,6 @@
 package kitchenpos.menu.acceptance;
 
-import static kitchenpos.menu.acceptance.MenuGroupRestAssured.메뉴그룹_등록_요청;
+import static kitchenpos.menuGroup.acceptance.MenuGroupRestAssured.메뉴그룹_등록_요청;
 import static kitchenpos.menu.acceptance.MenuRestAssured.메뉴_등록_요청;
 import static kitchenpos.menu.acceptance.MenuRestAssured.메뉴_목록_조회_요청;
 import static kitchenpos.product.acceptance.ProductRestAssured.상품_등록_요청;
@@ -13,7 +13,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.List;
-import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menuGroup.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;

@@ -1,4 +1,4 @@
-package kitchenpos.menu.application;
+package kitchenpos.menuGroup.application;
 
 import static kitchenpos.utils.DomainFixtureFactory.createMenuGroup;
 import static kitchenpos.utils.DomainFixtureFactory.createMenuGroupRequest;
@@ -9,11 +9,11 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.domain.Name;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuGroupRepository;
-import kitchenpos.menu.dto.MenuGroupRequest;
-import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menuGroup.application.MenuGroupService;
+import kitchenpos.menuGroup.domain.MenuGroup;
+import kitchenpos.menuGroup.domain.MenuGroupRepository;
+import kitchenpos.menuGroup.dto.MenuGroupRequest;
+import kitchenpos.menuGroup.dto.MenuGroupResponse;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

@@ -4,7 +4,6 @@ import static kitchenpos.order.domain.OrderStatus.COMPLETION;
 import static kitchenpos.order.domain.OrderStatus.COOKING;
 import static kitchenpos.order.domain.OrderStatus.MEAL;
 import static kitchenpos.utils.DomainFixtureFactory.createMenu;
-import static kitchenpos.utils.DomainFixtureFactory.createMenuGroup;
 import static kitchenpos.utils.DomainFixtureFactory.createMenuProduct;
 import static kitchenpos.utils.DomainFixtureFactory.createOrder;
 import static kitchenpos.utils.DomainFixtureFactory.createOrderLineItem;
@@ -63,8 +62,8 @@ class OrderServiceTest {
     @BeforeEach
     void setUp() {
         Product 양념 = createProduct(1L, "양념", BigDecimal.valueOf(20000L));
-        MenuProduct 양념치킨상품 = createMenuProduct(양념, 2L);
-        양념치킨 = createMenu("양념치킨", BigDecimal.valueOf(10000L), createMenuGroup(2L, "한마리메뉴"),
+        MenuProduct 양념치킨상품 = createMenuProduct(양념.id(), 2L);
+        양념치킨 = createMenu("양념치킨", BigDecimal.valueOf(10000L), 2L,
                 MenuProducts.from(Lists.newArrayList(양념치킨상품)));
         주문테이블 = createOrderTable(1L, 2, false);
         주문항목 = createOrderLineItem(양념치킨, 2L);

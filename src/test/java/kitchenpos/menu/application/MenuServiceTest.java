@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -17,7 +18,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import kitchenpos.domain.Price;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.MenuRepository;
@@ -25,7 +25,8 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuProductResponse;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.product.application.ProductService;
+import kitchenpos.menu.validator.MenuValidator;
+import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,9 +42,7 @@ class MenuServiceTest {
     @Mock
     private MenuRepository menuRepository;
     @Mock
-    private MenuGroupService menuGroupService;
-    @Mock
-    private ProductService productService;
+    private MenuValidator menuValidator;
     @InjectMocks
     private MenuService menuService;
 
@@ -56,8 +55,8 @@ class MenuServiceTest {
     void setUp() {
         양념 = createProduct(1L, "양념", BigDecimal.valueOf(20000L));
         한마리메뉴 = createMenuGroup(1L, "한마리메뉴");
-        양념치킨상품 = createMenuProduct(양념, 2L);
-        양념치킨 = createMenu("양념치킨", BigDecimal.valueOf(40000L), 한마리메뉴, MenuProducts.from(Lists.newArrayList(양념치킨상품)));
+        양념치킨상품 = createMenuProduct(양념.id(), 2L);
+        양념치킨 = createMenu("양념치킨", BigDecimal.valueOf(40000L), 한마리메뉴.id(), MenuProducts.from(Lists.newArrayList(양념치킨상품)));
     }
 
     @DisplayName("메뉴 생성 테스트")
@@ -65,8 +64,6 @@ class MenuServiceTest {
     void create() {
         MenuRequest menuRequest = createMenuRequest("양념치킨", BigDecimal.valueOf(40000L), 한마리메뉴.id(),
                 Lists.newArrayList(new MenuProductRequest(양념.id(), 2L)));
-        given(menuGroupService.findMenuGroup(한마리메뉴.id())).willReturn(한마리메뉴);
-        given(productService.findProduct(양념.id())).willReturn(양념);
         given(menuRepository.save(any(Menu.class))).willReturn(양념치킨);
         MenuResponse menuResponse = menuService.create(menuRequest);
         assertAll(
@@ -83,7 +80,7 @@ class MenuServiceTest {
     void createWithPriceNull() {
         MenuRequest menuRequest = createMenuRequest("양념치킨", null, 한마리메뉴.id(),
                 Lists.newArrayList(new MenuProductRequest(양념.id(), 2L)));
-        given(menuGroupService.findMenuGroup(한마리메뉴.id())).willReturn(한마리메뉴);
+        willThrow(new IllegalArgumentException("금액을 지정해야 합니다.")).given(menuValidator).validate(menuRequest);
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuService.create(menuRequest))
                 .withMessage("금액을 지정해야 합니다.");
@@ -94,7 +91,7 @@ class MenuServiceTest {
     void createWithPriceUnderZero() {
         MenuRequest menuRequest = createMenuRequest("양념치킨", BigDecimal.valueOf(-40000L), 한마리메뉴.id(),
                 Lists.newArrayList(new MenuProductRequest(양념.id(), 2L)));
-        given(menuGroupService.findMenuGroup(한마리메뉴.id())).willReturn(한마리메뉴);
+        willThrow(new IllegalArgumentException("금액은 " + Price.MIN + "원 미만이 될 수 없습니다.")).given(menuValidator).validate(menuRequest);
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuService.create(menuRequest))
                 .withMessage("금액은 " + Price.MIN + "원 미만이 될 수 없습니다.");
@@ -105,8 +102,7 @@ class MenuServiceTest {
     void createWithTotalPriceLessThanMenuPrice() {
         MenuRequest menuRequest = createMenuRequest("양념치킨", BigDecimal.valueOf(60000L), 한마리메뉴.id(),
                 Lists.newArrayList(new MenuProductRequest(양념.id(), 2L)));
-        given(menuGroupService.findMenuGroup(한마리메뉴.id())).willReturn(한마리메뉴);
-        given(productService.findProduct(양념.id())).willReturn(양념);
+        willThrow(new IllegalArgumentException("메뉴 가격은 상품의 총 금액을 넘길 수 없습니다.")).given(menuValidator).validate(menuRequest);
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuService.create(menuRequest))
                 .withMessage("메뉴 가격은 상품의 총 금액을 넘길 수 없습니다.");

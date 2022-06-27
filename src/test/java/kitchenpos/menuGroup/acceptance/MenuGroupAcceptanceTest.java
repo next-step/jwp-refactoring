@@ -1,15 +1,15 @@
-package kitchenpos.menu.acceptance;
+package kitchenpos.menuGroup.acceptance;
 
-import static kitchenpos.menu.acceptance.MenuGroupRestAssured.메뉴그룹_등록_요청;
-import static kitchenpos.menu.acceptance.MenuGroupRestAssured.메뉴그룹_목록_조회_요청;
+import static kitchenpos.menuGroup.acceptance.MenuGroupRestAssured.메뉴그룹_등록_요청;
+import static kitchenpos.menuGroup.acceptance.MenuGroupRestAssured.메뉴그룹_목록_조회_요청;
 import static kitchenpos.utils.DomainFixtureFactory.createMenuGroupRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
-import kitchenpos.menu.dto.MenuGroupRequest;
-import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menuGroup.dto.MenuGroupRequest;
+import kitchenpos.menuGroup.dto.MenuGroupResponse;
 import kitchenpos.utils.AcceptanceTest;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
