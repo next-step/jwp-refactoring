@@ -80,7 +80,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
         assertThat(response.header(HttpHeaders.LOCATION)).isNotEmpty();
     }
 
-    private ExtractableResponse<Response> 주문_테이블을_조회한다() {
+    public static ExtractableResponse<Response> 주문_테이블을_조회한다() {
         return RestAssured.given().log().all()
                 .when().get("/api/tables")
                 .then()
