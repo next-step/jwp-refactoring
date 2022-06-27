@@ -14,9 +14,8 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.flywaydb:flyway-core'
+
     runtimeOnly 'com.h2database:h2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
@@ -30,6 +29,7 @@ dependencies {
     testImplementation 'io.rest-assured:rest-assured:3.3.0'
 
     implementation('com.google.guava:guava:29.0-jre')
+
 }
 
 test {
