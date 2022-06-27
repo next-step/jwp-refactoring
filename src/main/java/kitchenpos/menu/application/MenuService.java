@@ -36,7 +36,7 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        Price price = Price.from(BigDecimal.valueOf(menuRequest.getPrice()));
+        Price price = Price.from(menuRequest.getPrice());
         MenuGroup menuGroup = findMenuGroup(menuRequest);
         List<MenuProduct> menuProducts = createMenuProducts(menuRequest.getMenuProducts());
         Menu menu = Menu.createMenu(menuRequest.getName(), price, menuGroup, menuProducts);

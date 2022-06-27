@@ -2,7 +2,6 @@ package kitchenpos.menu.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.math.BigDecimal;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,7 +10,7 @@ public class MenuProductTest {
     @Test
     @DisplayName("메뉴 상품을 생성한다.")
     void createMenuProduct() {
-        Product product = Product.of("허니콤보", BigDecimal.valueOf(19_000L));
+        Product product = Product.of("허니콤보", 19_000L);
 
         MenuProduct menuProduct = MenuProduct.createMenuProduct(product, 1L);
 

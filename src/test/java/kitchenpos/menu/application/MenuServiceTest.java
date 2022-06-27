@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.menu.domain.Menu;
@@ -44,10 +43,10 @@ public class MenuServiceTest {
     @Test
     @DisplayName("메뉴 등록한다.")
     void createMenu() {
-        Product product = Product.of("허니콤보", BigDecimal.valueOf(19_000L));
+        Product product = Product.of("허니콤보", 19_000L);
         MenuProduct menuProduct = MenuProduct.createMenuProduct(product, 1L);
         MenuGroup menuGroup = MenuGroup.from("한마리메뉴");
-        Menu menu = Menu.createMenu("허니콤보", Price.from(BigDecimal.valueOf(19_000L)), menuGroup, Lists.list(menuProduct));
+        Menu menu = Menu.createMenu("허니콤보", Price.from(19_000L), menuGroup, Lists.list(menuProduct));
         when(productRepository.findById(any())).thenReturn(Optional.of(product));
         when(menuGroupRepository.findById(any())).thenReturn(Optional.of(menuGroup));
         when(menuRepository.save(any())).thenReturn(menu);
@@ -84,7 +83,7 @@ public class MenuServiceTest {
     @Test
     @DisplayName("메뉴 그룹이 존재하지 않으면, 예외를 반환한다.")
     void createWithNotExistingMenuGroup() {
-        Product product = Product.of("허니콤보", BigDecimal.valueOf(19_000L));
+        Product product = Product.of("허니콤보", 19_000L);
         MenuProductRequest menuProductRequest = new MenuProductRequest(product.getId(), 1L);
         MenuRequest menuRequest = new MenuRequest("허니콤보", 19_000L, 1L, Lists.list(menuProductRequest));
         when(menuGroupRepository.findById(any())).thenReturn(Optional.empty());
@@ -97,7 +96,7 @@ public class MenuServiceTest {
     @Test
     @DisplayName("메뉴 가격이 메뉴 상품 가격 총합보다 크면 예외를 반환한다.")
     void createOverPrice() {
-        Product product = Product.of("허니콤보", BigDecimal.valueOf(19_000L));
+        Product product = Product.of("허니콤보", 19_000L);
         MenuGroup menuGroup = MenuGroup.from("한마리메뉴");
         when(productRepository.findById(any())).thenReturn(Optional.of(product));
         when(menuGroupRepository.findById(any())).thenReturn(Optional.of(menuGroup));
@@ -112,10 +111,10 @@ public class MenuServiceTest {
     @Test
     @DisplayName("메뉴 목록을 조회한다.")
     void findAll() {
-        Product product = Product.of("허니콤보", BigDecimal.valueOf(19_000L));
+        Product product = Product.of("허니콤보", 19_000L);
         MenuProduct menuProduct = MenuProduct.createMenuProduct(product, 1L);
         MenuGroup menuGroup = MenuGroup.from("한마리메뉴");
-        Menu menu = Menu.createMenu("허니콤보", Price.from(BigDecimal.valueOf(19_000L)), menuGroup, Lists.list(menuProduct));
+        Menu menu = Menu.createMenu("허니콤보", Price.from(19_000L), menuGroup, Lists.list(menuProduct));
         when(menuRepository.findAll()).thenReturn(Lists.list(menu));
 
         List<MenuResponse> menus = menuService.list();

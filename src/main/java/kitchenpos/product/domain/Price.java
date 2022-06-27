@@ -7,6 +7,8 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class Price {
+    public static final Price ZERO = Price.from(0);
+
     @Column(nullable = false)
     private BigDecimal price;
 
@@ -17,15 +19,15 @@ public class Price {
         this.price = value;
     }
 
-    public static Price from(BigDecimal value) {
-        return new Price(value);
+    public static Price from(long value) {
+        return new Price(BigDecimal.valueOf(value));
     }
 
     public BigDecimal getPrice() {
         return price;
     }
 
-    public boolean isBiggerThan(Price value) {
+    public boolean isGreaterThan(Price value) {
         return price.compareTo(value.getPrice()) > 0;
     }
 

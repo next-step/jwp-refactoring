@@ -28,7 +28,7 @@ public class Product {
         this.price = price;
     }
 
-    public static Product of(String name, BigDecimal price) {
+    public static Product of(String name, long price) {
         return new Product(name, Price.from(price));
     }
 

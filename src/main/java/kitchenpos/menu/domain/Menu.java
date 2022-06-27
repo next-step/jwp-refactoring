@@ -40,7 +40,7 @@ public class Menu {
 
     private static void validateMenuPrice(Price price, Menu menu) {
         Price sum = menu.calculateTotalPrice();
-        if (price.isBiggerThan(sum)) {
+        if (price.isGreaterThan(sum)) {
             throw new IllegalArgumentException("메뉴의 가격은 상품 가격의 총합보다 클 수 없습니다.");
         }
     }
