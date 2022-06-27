@@ -2,10 +2,8 @@ package kitchenpos.order.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class OrdersRequest {
     private long orderTableId;
@@ -14,9 +12,6 @@ public class OrdersRequest {
     @JsonCreator
     public OrdersRequest(@JsonProperty("orderTableId") long orderTableId,
             @JsonProperty("orderLineItems") List<OrderLineItemRequest> orderLineItems) {
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException("주문 항목은 반드시 존재해야 합니다.");
-        }
         this.orderTableId = orderTableId;
         this.orderLineItems = orderLineItems;
     }
@@ -27,9 +22,5 @@ public class OrdersRequest {
 
     public List<OrderLineItemRequest> getOrderLineItems() {
         return orderLineItems;
-    }
-
-    public List<Long> getOrderLineItemIds() {
-        return this.orderLineItems.stream().map(OrderLineItemRequest::getMenuId).collect(Collectors.toList());
     }
 }

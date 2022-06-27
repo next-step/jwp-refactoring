@@ -1,33 +1,39 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+@EntityListeners(AuditingEntityListener.class)
 @Entity
 public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
-    private OrderTable orderTable;
+    @Column(nullable = false)
+    private Long orderTableId;
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
+    @CreatedDate
     private LocalDateTime orderedTime;
     @Embedded
     private OrderLineItems orderLineItems = new OrderLineItems();
 
-    public Orders(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
-        this.orderTable = orderTable;
+    public Orders(long orderTableId, OrderStatus orderStatus, List<OrderLineItemRequest> orderLineItemRequests) {
+        this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
+
+        for (final OrderLineItemRequest orderLineItem : orderLineItemRequests) {
+            this.orderLineItems.add(new OrderLineItem(this.id, orderLineItem.getMenuId(), orderLineItem.getQuantity()));
+        }
     }
 
-    public Orders() {
+    protected Orders() {
     }
 
     public Long getId() {
@@ -42,10 +48,6 @@ public class Orders {
         return orderedTime;
     }
 
-    public void add(Menu menu, long quantity) {
-        this.orderLineItems.add(new OrderLineItem(this, menu, quantity));
-    }
-
     public List<OrderLineItem> getOrderLineItems() {
         return this.orderLineItems.getAll();
     }
@@ -57,7 +59,7 @@ public class Orders {
         this.orderStatus = orderStatus;
     }
 
-    public OrderTable getOrderTable() {
-        return this.orderTable;
+    public Long getOrderTableId() {
+        return this.orderTableId;
     }
 }
