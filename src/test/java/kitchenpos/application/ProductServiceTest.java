@@ -1,14 +1,13 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.ProductDao;
+import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-
-import java.math.BigDecimal;
 
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.mockito.Mockito.verify;
@@ -25,7 +24,7 @@ class ProductServiceTest {
     @Test
     void create() {
         // given
-        Product given = new Product("짜장면", BigDecimal.valueOf(6000));
+        Product given = new Product("짜장면", Price.valueOf(6000));
 
         // when
         productService.create(given);
@@ -39,7 +38,7 @@ class ProductServiceTest {
     void createPriceZero() {
         // given
         Product nullPrice = new Product("짬뽕", null);
-        Product minusPrice = new Product("탕수육", BigDecimal.valueOf(-1));
+        Product minusPrice = new Product("탕수육", Price.valueOf(-1));
 
         // when then
         assertSoftly(softAssertions -> {

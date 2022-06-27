@@ -1,18 +1,19 @@
 package kitchenpos.domain;
 
-import java.math.BigDecimal;
-
 public class Product {
     private Long id;
     private String name;
-    private BigDecimal price;
+    private Price price;
 
-    public Product(String name, BigDecimal price) {
+    protected Product() {
+    }
+
+    public Product(String name, Price price) {
         this.name = name;
         this.price = price;
     }
 
-    public Product(Long id, String name, BigDecimal price) {
+    public Product(Long id, String name, Price price) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -26,7 +27,7 @@ public class Product {
         return name;
     }
 
-    public BigDecimal getPrice() {
+    public Price getPrice() {
         return price;
     }
 }
