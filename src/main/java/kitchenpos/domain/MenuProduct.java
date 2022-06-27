@@ -1,6 +1,5 @@
 package kitchenpos.domain;
 
-import java.math.BigDecimal;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -10,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import kitchenpos.domain.common.Price;
 import kitchenpos.domain.common.Quantity;
 
 @Entity
@@ -52,7 +52,7 @@ public class MenuProduct {
         this.quantity = new Quantity(quantity);
     }
 
-    BigDecimal calculateAmount() {
+    Price calculateAmount() {
         return product.getPrice().multiply(quantity);
     }
 

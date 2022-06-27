@@ -29,12 +29,16 @@ public class Price {
         return price;
     }
 
-    public BigDecimal multiply(Quantity quantity) {
-        return price.multiply(BigDecimal.valueOf(quantity.getValue()));
+    public Price multiply(Quantity quantity) {
+        return new Price(price.multiply(BigDecimal.valueOf(quantity.getValue())));
     }
 
-    public boolean greaterThan(BigDecimal source) {
-        return price.compareTo(source) > 0;
+    public Price add(Price price) {
+        return new Price(this.price.add(price.getValue()));
+    }
+
+    public boolean greaterThan(Price source) {
+        return price.compareTo(source.getValue()) > 0;
     }
 
     @Override

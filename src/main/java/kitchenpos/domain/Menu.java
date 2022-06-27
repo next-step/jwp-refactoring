@@ -73,9 +73,9 @@ public class Menu {
     }
 
     private void validateAmount(List<MenuProduct> source) {
-        BigDecimal sum = source.stream().
+        Price sum = source.stream().
                 map(MenuProduct::calculateAmount).
-                reduce(BigDecimal.ZERO, BigDecimal::add);
+                reduce(new Price(BigDecimal.ZERO), Price::add);
         if (price.greaterThan(sum)) {
             throw new IllegalArgumentException("상품 가격의 합계 보다 비싼 메뉴 가격을 추가 할 수 업습니다.");
         }
