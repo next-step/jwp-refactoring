@@ -20,19 +20,22 @@ public class Product {
     }
 
     public Product(Long id, String name, double price) {
-        if (isNull(price) || isLessThanZero(price)) {
-            throw new IllegalArgumentException("메뉴 가격은 0원 보다 작을 수 없습니다.");
+        if (isLessThanZero(BigDecimal.valueOf(price))) {
+            throw new IllegalArgumentException("상품 가격은 0원 보다 작을 수 없습니다.");
         }
         this.id = id;
         this.name = name;
         this.price = BigDecimal.valueOf(price);
     }
 
-    public Product(String name, long price) {
+    public Product(String name, double price) {
         this(null, name, price);
     }
 
     public Product(String name, BigDecimal price) {
+        if (isNull(price) || isLessThanZero(price)) {
+            throw new IllegalArgumentException("상품 가격은 0원 보다 작을 수 없습니다.");
+        }
         this.name = name;
         this.price = price;
     }
@@ -61,12 +64,12 @@ public class Product {
         this.price = price;
     }
 
-    private boolean isNull(double price) {
+    private boolean isNull(BigDecimal price) {
         return Objects.isNull(price);
     }
 
-    private boolean isLessThanZero(double price) {
-        return price < 0;
+    private boolean isLessThanZero(BigDecimal price) {
+        return price.compareTo(BigDecimal.ZERO) < 0;
     }
 
     @Override
