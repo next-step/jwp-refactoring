@@ -22,8 +22,6 @@ public class ProductService {
 
     @Transactional
     public ProductResponse create(final ProductRequest productRequest) {
-        final BigDecimal price = productRequest.getPrice();
-
         Product product = new Product(productRequest.getName(), productRequest.getPrice());
 
         return ProductResponse.of(productRepository.save(product));
