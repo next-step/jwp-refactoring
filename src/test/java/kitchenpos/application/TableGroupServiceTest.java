@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static kitchenpos.factory.OrderTableFixtureFactory.createOrderTable;
@@ -53,7 +54,8 @@ class TableGroupServiceTest {
         단체_테이블 = createTableGroup(1L, LocalDateTime.now(), Arrays.asList(테이블_1, 테이블_2, 테이블_3));
 
         테이블_Full = createOrderTable(4L, null, 4, false);
-        테이블_Grouped = createOrderTable(4L, 2L, 4, false);
+        테이블_Grouped = createOrderTable(4L, createTableGroup(2L, LocalDateTime.now(), new ArrayList<>()),
+                4, false);
     }
 
     @DisplayName("테이블그룹을 등록할 수 있다")
@@ -126,8 +128,8 @@ class TableGroupServiceTest {
     @Test
     void 테이블그룹_삭제(){
         //given
-        테이블_1.setTableGroupId(단체_테이블.getId());
-        테이블_2.setTableGroupId(단체_테이블.getId());
+        테이블_1.setTableGroup(단체_테이블);
+        테이블_2.setTableGroup(단체_테이블);
         given(orderTableRepository.findAllByTableGroupId(anyLong())).willReturn(Arrays.asList(테이블_1, 테이블_2));
 
         //when
@@ -135,8 +137,8 @@ class TableGroupServiceTest {
 
         //then
         Assertions.assertAll(
-                () -> assertThat(테이블_1.getTableGroupId()).isNull(),
-                () -> assertThat(테이블_2.getTableGroupId()).isNull()
+                () -> assertThat(테이블_1.getTableGroup()).isNull(),
+                () -> assertThat(테이블_2.getTableGroup()).isNull()
         );
     }
 

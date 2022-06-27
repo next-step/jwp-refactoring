@@ -16,11 +16,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static kitchenpos.factory.OrderTableFixtureFactory.createOrderTable;
+import static kitchenpos.factory.TableGroupFixtureFactory.createTableGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
@@ -43,7 +46,7 @@ public class TableServiceTest {
     void setUp() {
         테이블_EMPTY = createOrderTable(1L, null, 0, true);
         테이블_NOT_EMPTY = createOrderTable(2L, null, 4, false);
-        테이블_GROUPED = createOrderTable(3L, 1L, 0, true);
+        테이블_GROUPED = createOrderTable(3L, createTableGroup(1L, LocalDateTime.now(), new ArrayList<>()), 0, true);
     }
 
     @DisplayName("주문테이블을 등록할 수 있다")
@@ -80,7 +83,7 @@ public class TableServiceTest {
         //given
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(테이블_EMPTY));
         given(orderTableRepository.save(any(OrderTable.class))).willReturn(createOrderTable(테이블_EMPTY.getId(),
-                테이블_EMPTY.getTableGroupId(), 테이블_EMPTY.getNumberOfGuests(), true));
+                테이블_EMPTY.getTableGroup(), 테이블_EMPTY.getNumberOfGuests(), true));
 
         //when
         OrderTableEmptyRequest emptyRequest = OrderTableEmptyRequest.from(true);
@@ -134,7 +137,7 @@ public class TableServiceTest {
         //given
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(테이블_NOT_EMPTY));
         given(orderTableRepository.save(any(OrderTable.class))).willReturn(createOrderTable(테이블_NOT_EMPTY.getId(),
-                테이블_NOT_EMPTY.getTableGroupId(), 1, false));
+                테이블_NOT_EMPTY.getTableGroup(), 1, false));
 
         //when
         OrderTableNumOfGuestRequest oneGuestRequest = OrderTableNumOfGuestRequest.from(1);

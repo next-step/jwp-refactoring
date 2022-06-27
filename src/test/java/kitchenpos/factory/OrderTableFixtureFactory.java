@@ -1,9 +1,10 @@
 package kitchenpos.factory;
 
 import kitchenpos.orderTable.domain.OrderTable;
+import kitchenpos.tableGroup.domain.TableGroup;
 
 public class OrderTableFixtureFactory {
-    public static OrderTable createOrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+    public static OrderTable createOrderTable(Long id, TableGroup tableGroupId, int numberOfGuests, boolean empty) {
         return new OrderTable(id, tableGroupId, numberOfGuests, empty);
     }
 
