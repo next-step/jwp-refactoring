@@ -98,7 +98,9 @@ step2
 4. Acception Test 수정 
     1. Controller의 받는 데이터 타입이 변경되어(Response/Request DTO) 해당 부분 수정 
 5. .http/ 파일들 수정 
-         
+6. Embedded, Embeddable을 통해 Price / NumberOfGuest 검증로직 도메인으로 이동
+7. 간접참조 객체들에 대한 검증 로직을 도메인서비스로 추출
+8. 검증기능, 비즈니스 로직을 가진 도메인들에 대한 테스트코드 작성 
 
 ## 용어 사전
 
