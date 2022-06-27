@@ -63,6 +63,7 @@ class OrderServiceTest {
     @Test
     @DisplayName("주문을 생성한다 (Happy Path)")
     void create() {
+        //given
         내주문 = new Order(1L, 주문테이블.getId());
         내주문.setOrderLineItems(Arrays.asList(주문상품1, 주문상품2));
         given(menuDao.countByIdIn(anyList())).willReturn(Long.valueOf(내주문.getOrderLineItems().size()));
@@ -71,8 +72,10 @@ class OrderServiceTest {
         given(orderLineItemDao.save(주문상품1)).willReturn(주문상품1);
         given(orderLineItemDao.save(주문상품2)).willReturn(주문상품2);
 
+        //when
         Order savedOrder = orderService.create(내주문);
 
+        //then
         assertAll(() -> {
             assertThat(savedOrder.getOrderLineItems().stream()
                     .map(OrderLineItem::getMenuId)
@@ -86,8 +89,10 @@ class OrderServiceTest {
     @Test
     @DisplayName("주문 메뉴가 없을 경우 주문 생성 불가")
     void createEmptyOrderLineItems() {
+        //given
         내주문 = new Order(1L, 주문테이블.getId());
 
+        //then
         assertThatThrownBy(() -> {
             orderService.create(내주문);
         }).isInstanceOf(IllegalArgumentException.class);
@@ -96,11 +101,13 @@ class OrderServiceTest {
     @Test
     @DisplayName("주문에 포함된 주문 메뉴가 유효하지 않은 메뉴가 있을 경우 주문 생성 불가")
     void createInvalidOrderLineItems() {
+        //given
         OrderLineItem 유효하지않은메뉴 = new OrderLineItem();
         내주문 = new Order(1L, 주문테이블.getId());
         내주문.setOrderLineItems(Arrays.asList(주문상품1, 주문상품2));
         given(menuDao.countByIdIn(anyList())).willReturn(Long.valueOf(Arrays.asList(주문상품1, 주문상품2, 유효하지않은메뉴).size()));
 
+        //then
         assertThatThrownBy(() -> {
             orderService.create(내주문);
         }).isInstanceOf(IllegalArgumentException.class);
@@ -109,11 +116,13 @@ class OrderServiceTest {
     @Test
     @DisplayName("주문 테이블이 유효하지 않을 경우 주문 생성 불가")
     void createInvalidOrderTable() {
+        //given
         내주문 = new Order(1L, 주문테이블.getId());
         내주문.setOrderLineItems(Arrays.asList(주문상품1, 주문상품2));
         given(menuDao.countByIdIn(anyList())).willReturn(Long.valueOf(내주문.getOrderLineItems().size()));
         given(orderTableDao.findById(anyLong())).willReturn(Optional.empty());
 
+        //then
         assertThatThrownBy(() -> {
             orderService.create(내주문);
         }).isInstanceOf(IllegalArgumentException.class);
@@ -122,12 +131,14 @@ class OrderServiceTest {
     @Test
     @DisplayName("주문한 주문 테이블이 비어있는 경우 주문 생성 불가")
     void createIsEmptyOrderTable() {
+        //given
         내주문 = new Order(1L, 주문테이블.getId());
         내주문.setOrderLineItems(Arrays.asList(주문상품1, 주문상품2));
         given(menuDao.countByIdIn(anyList())).willReturn(Long.valueOf(내주문.getOrderLineItems().size()));
         주문테이블.setEmpty(true);
         given(orderTableDao.findById(anyLong())).willReturn(Optional.of(주문테이블));
 
+        //then
         assertThatThrownBy(() -> {
             orderService.create(내주문);
         }).isInstanceOf(IllegalArgumentException.class);
@@ -136,12 +147,15 @@ class OrderServiceTest {
     @Test
     @DisplayName("주문리스트를 조회한다 (Happy Path)")
     void list() {
+        //given
         내주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), Arrays.asList(주문상품1, 주문상품2));
         given(orderDao.findAll()).willReturn(Arrays.asList(내주문));
         given(orderLineItemDao.findAllByOrderId(내주문.getId())).willReturn(Arrays.asList(주문상품1, 주문상품2));
 
+        //when
         List<Order> orders = orderService.list();
 
+        //then
         assertAll(() -> {
             assertThat(orders).containsExactlyInAnyOrderElementsOf(Arrays.asList(내주문));
             assertThat(orders.stream()
@@ -162,6 +176,7 @@ class OrderServiceTest {
     @Test
     @DisplayName("주문상태를 변경한다 (Happy Path)")
     void changeOrderStatus() {
+        //given
         내주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), Arrays.asList(주문상품1, 주문상품2));
         Order 변경주문 = new Order();
         변경주문.setOrderStatus(OrderStatus.MEAL.name());
@@ -169,8 +184,10 @@ class OrderServiceTest {
         given(orderDao.save(any(Order.class))).willReturn(내주문);
         given(orderLineItemDao.findAllByOrderId(anyLong())).willReturn(내주문.getOrderLineItems());
 
+        //when
         Order changedOrder = orderService.changeOrderStatus(내주문.getId(), 변경주문);
 
+        //then
         assertThat(changedOrder.getId()).isEqualTo(내주문.getId());
         assertThat(changedOrder.getOrderStatus()).isEqualTo(변경주문.getOrderStatus());
     }
@@ -178,11 +195,13 @@ class OrderServiceTest {
     @Test
     @DisplayName("변경하려는 주문이 유효하지 않을 때 주문상태 변경불가")
     void changeOrderStatusInvalidOrder() {
+        //given
         내주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), Arrays.asList(주문상품1, 주문상품2));
         Order 변경주문 = new Order();
         변경주문.setOrderStatus(OrderStatus.MEAL.name());
         given(orderDao.findById(anyLong())).willReturn(Optional.empty());
 
+        //then
         assertThatThrownBy(() -> {
             orderService.changeOrderStatus(내주문.getId(), 변경주문);
         }).isInstanceOf(IllegalArgumentException.class);
@@ -191,11 +210,13 @@ class OrderServiceTest {
     @Test
     @DisplayName("변경하려는 주문이 완료 상태일 때 주문상태 변경불가")
     void changeOrderStatusAlreadyCompleted() {
+        //given
         내주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COMPLETION.name(), LocalDateTime.now(), Arrays.asList(주문상품1, 주문상품2));
         Order 변경주문 = new Order();
         변경주문.setOrderStatus(OrderStatus.MEAL.name());
         given(orderDao.findById(anyLong())).willReturn(Optional.of(내주문));
 
+        //then
         assertThatThrownBy(() -> {
             orderService.changeOrderStatus(내주문.getId(), 변경주문);
         }).isInstanceOf(IllegalArgumentException.class);

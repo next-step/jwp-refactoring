@@ -66,14 +66,17 @@ class MenuServiceTest {
     @Test
     @DisplayName("메뉴를 생성한다 (Happy Path)")
     void create() {
+        //given
         치킨 = new Menu(1L, "치킨", new BigDecimal(15000), 한마리메뉴.getId(), Arrays.asList(양념치킨한마리, 간장치킨한마리));
         given(menuDao.save(any(Menu.class))).willReturn(치킨);
         given(menuGroupDao.existsById(anyLong())).willReturn(true);
         given(productDao.findById(양념치킨한마리.getProductId())).willReturn(Optional.of(양념치킨));
         given(productDao.findById(간장치킨한마리.getProductId())).willReturn(Optional.of(간장치킨));
 
+        //when
         Menu savedMenu = menuService.create(치킨);
 
+        //then
         assertThat(savedMenu).isNotNull()
                 .satisfies(menu -> {
                             menu.getId().equals(치킨.getId());
@@ -87,9 +90,11 @@ class MenuServiceTest {
     @Test
     @DisplayName("유효하지 않은 메뉴그룹으로 메뉴 생성은 불가능하다.")
     void createInvalidMenuGroup() {
+        //given
         치킨 = new Menu(1L, "치킨", new BigDecimal(15000), 2L, Arrays.asList(양념치킨한마리, 간장치킨한마리));
         given(menuGroupDao.existsById(anyLong())).willReturn(false);
 
+        //then
         assertThatThrownBy(() -> {
             menuService.create(치킨);
         }).isInstanceOf(IllegalArgumentException.class);
@@ -98,8 +103,10 @@ class MenuServiceTest {
     @Test
     @DisplayName("유효하지 않은 금액(0원 미만)으로 메뉴 생성은 불가능하다.")
     void createInvalidPrice() {
+        //given
         치킨 = new Menu(1L, "치킨", new BigDecimal(-1), 2L, Arrays.asList(양념치킨한마리, 간장치킨한마리));
 
+        //then
         assertThatThrownBy(() -> {
             menuService.create(치킨);
         }).isInstanceOf(IllegalArgumentException.class);
@@ -108,11 +115,13 @@ class MenuServiceTest {
     @Test
     @DisplayName("메뉴 가격이, 메뉴에 포함된 상품들의 합보다 비싸면 메뉴 생성이 불가")
     void createInvalidProduct() {
+        //given
         치킨 = new Menu(1L, "치킨", new BigDecimal(50000), 2L, Arrays.asList(양념치킨한마리, 간장치킨한마리));
         given(menuGroupDao.existsById(anyLong())).willReturn(true);
         given(productDao.findById(양념치킨한마리.getProductId())).willReturn(Optional.of(양념치킨));
         given(productDao.findById(간장치킨한마리.getProductId())).willReturn(Optional.of(간장치킨));
 
+        //then
         assertThatThrownBy(() -> {
             menuService.create(치킨);
         }).isInstanceOf(IllegalArgumentException.class);
@@ -121,10 +130,12 @@ class MenuServiceTest {
     @Test
     @DisplayName("유효하지 않은 상품으로 메뉴 생성은 불가능하다.")
     void createDiffMenuProductSum() {
+        //given
         치킨 = new Menu(1L, "치킨", new BigDecimal(15000), 2L, Arrays.asList(양념치킨한마리, 간장치킨한마리));
         given(menuGroupDao.existsById(anyLong())).willReturn(true);
         given(productDao.findById(양념치킨한마리.getProductId())).willReturn(Optional.empty());
 
+        //then
         assertThatThrownBy(() -> {
             menuService.create(치킨);
         }).isInstanceOf(IllegalArgumentException.class);
@@ -132,11 +143,14 @@ class MenuServiceTest {
 
     @Test
     void list() {
+        //given
         치킨 = new Menu(1L, "치킨", new BigDecimal(15000), 한마리메뉴.getId(), Arrays.asList(양념치킨한마리, 간장치킨한마리));
         given(menuDao.findAll()).willReturn(Arrays.asList(치킨));
 
+        //when
         List<Menu> menus = menuService.list();
 
+        //then
         assertThat(menus).containsExactlyInAnyOrderElementsOf(Arrays.asList(치킨));
     }
 }
