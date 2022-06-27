@@ -4,6 +4,7 @@ import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuRepository;
 import kitchenpos.domain.menuGroup.MenuGroup;
 import kitchenpos.domain.menuProduct.MenuProduct;
+import kitchenpos.domain.menuProduct.MenuProducts;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.domain.order.OrderStatus;
@@ -14,6 +15,7 @@ import kitchenpos.domain.orderTable.OrderTableRepository;
 import kitchenpos.domain.product.Product;
 import kitchenpos.dto.order.OrderRequest;
 import kitchenpos.dto.order.OrderResponse;
+import kitchenpos.dto.orderLineItem.OrderLineItemRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,6 +26,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static kitchenpos.application.TableServiceTest.주문_테이블_데이터_생성;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -54,11 +57,13 @@ class OrderServiceTest {
 
     private OrderTable orderTable1;
     private OrderTable orderTable2;
+    private Menu menu;
 
     @BeforeEach
     void setUp() {
         orderTable1 = 주문_테이블_데이터_생성(1L, null, 2, false);
         orderTable2 = 주문_테이블_데이터_생성(2L, null, 2, false);
+        menu = new Menu(1L, "메뉴", BigDecimal.valueOf(20000), new MenuGroup(), new MenuProducts());
     }
 
     @DisplayName("주문을 생성할 수 있다")
@@ -69,6 +74,8 @@ class OrderServiceTest {
         OrderRequest request = 주문_요청_데이터_생성(1L, OrderStatus.COOKING, orderLineItems);
         Order 예상값 = 주문_데이터_생성(1L, orderTable1, OrderStatus.COOKING, orderLineItems);
         given(orderTableRepository.findByIdAndEmptyIsFalse(1L)).willReturn(Optional.of(orderTable1));
+        given(menuRepository.findById(any())).willReturn(Optional.ofNullable(menu));
+        given(menuRepository.findById(any())).willReturn(Optional.ofNullable(menu));
         given(menuRepository.countByIdIn(anyList())).willReturn(2L);
         given(orderRepository.save(any(Order.class))).willReturn(예상값);
 
@@ -98,6 +105,8 @@ class OrderServiceTest {
         List<OrderLineItem> orderLineItems = 주문_항목_목록_데이터_생성();
         OrderRequest request = 주문_요청_데이터_생성(1L, OrderStatus.COOKING, orderLineItems);
         given(orderTableRepository.findByIdAndEmptyIsFalse(1L)).willReturn(Optional.of(orderTable1));
+        given(menuRepository.findById(any())).willReturn(Optional.ofNullable(menu));
+        given(menuRepository.findById(any())).willReturn(Optional.ofNullable(menu));
         given(menuRepository.countByIdIn(anyList())).willReturn(1L);
 
         // when && then
@@ -111,7 +120,6 @@ class OrderServiceTest {
         // given
         List<OrderLineItem> orderLineItems = 주문_항목_목록_데이터_생성();
         OrderRequest request = 주문_요청_데이터_생성(1L, OrderStatus.COOKING, orderLineItems);
-        given(orderTableRepository.findByIdAndEmptyIsFalse(1L)).willReturn(Optional.empty());
 
         // when && then
         assertThatThrownBy(() -> orderService.create(request))
@@ -123,7 +131,7 @@ class OrderServiceTest {
     void create_exception4() {
         // given
         List<OrderLineItem> orderLineItems = new ArrayList<>(주문_항목_목록_데이터_생성());
-        orderLineItems.add(주문_항목_데이터_생성(2L, null, null, 3));
+        orderLineItems.add(주문_항목_데이터_생성(2L, null, menu, 3));
         OrderRequest request = 주문_요청_데이터_생성(1L, OrderStatus.COOKING, orderLineItems);
 
         // when && then
@@ -158,6 +166,8 @@ class OrderServiceTest {
         Order 변경전_주문 = 주문_데이터_생성(1L, orderTable1, OrderStatus.MEAL, 주문_항목_목록_데이터_생성());
         OrderRequest 변경후_주문 = 주문_요청_데이터_생성(1L, OrderStatus.MEAL, 주문_항목_목록_데이터_생성());
         given(orderTableRepository.findById(1L)).willReturn(Optional.ofNullable(orderTable1));
+        given(menuRepository.findById(any())).willReturn(Optional.ofNullable(menu));
+        given(menuRepository.findById(any())).willReturn(Optional.ofNullable(menu));
         given(orderRepository.findById(1L)).willReturn(Optional.of(변경전_주문));
 
         // when
@@ -174,6 +184,8 @@ class OrderServiceTest {
         Order 변경전_주문 = 주문_데이터_생성(1L, orderTable1, OrderStatus.COMPLETION, 주문_항목_목록_데이터_생성());
         OrderRequest 변경후_주문 = 주문_요청_데이터_생성(1L, OrderStatus.MEAL, 주문_항목_목록_데이터_생성());
         given(orderTableRepository.findById(1L)).willReturn(Optional.ofNullable(orderTable1));
+        given(menuRepository.findById(any())).willReturn(Optional.ofNullable(menu));
+        given(menuRepository.findById(any())).willReturn(Optional.ofNullable(menu));
         given(orderRepository.findById(1L)).willReturn(Optional.of(변경전_주문));
 
         // when && then
@@ -185,7 +197,10 @@ class OrderServiceTest {
     }
 
     private OrderRequest 주문_요청_데이터_생성(Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-        return new OrderRequest(orderTableId, orderStatus, orderLineItems);
+        return new OrderRequest(orderTableId, orderStatus,
+                orderLineItems.stream()
+                        .map(orderLineItem -> OrderLineItemRequest.of(orderLineItem))
+                        .collect(Collectors.toList()));
     }
 
     private Order 주문_데이터_생성(Long id, OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
@@ -193,14 +208,6 @@ class OrderServiceTest {
     }
 
     private List<OrderLineItem> 주문_항목_목록_데이터_생성() {
-        Product 초밥 = new Product(1L, "초밥", BigDecimal.valueOf(10000));
-        Product 우동 = new Product(2L, "우동", BigDecimal.valueOf(3000));
-
-        MenuProduct requestMenuProductSeq1 = new MenuProduct(1L, null, 초밥, 2);
-        MenuProduct requestMenuProductSeq2 = new MenuProduct(2L, null, 우동, 2);
-        List<MenuProduct> menuProducts = Arrays.asList(requestMenuProductSeq1, requestMenuProductSeq2);
-
-        Menu menu = new Menu(1L, "메뉴이름", BigDecimal.valueOf(26000), new MenuGroup(1L, "런치메뉴"), menuProducts);
         OrderLineItem orderLineItemId1 = 주문_항목_데이터_생성(1L, null, menu, 3);
         OrderLineItem orderLineItemId2 = 주문_항목_데이터_생성(2L, null, menu, 3);
         return Arrays.asList(orderLineItemId1, orderLineItemId2);

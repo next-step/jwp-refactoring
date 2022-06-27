@@ -1,6 +1,9 @@
 package kitchenpos.application;
 
+import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuRepository;
+import kitchenpos.domain.menuProduct.MenuProduct;
+import kitchenpos.domain.menuProduct.MenuProducts;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.domain.order.OrderStatus;
@@ -9,8 +12,11 @@ import kitchenpos.domain.orderLineItem.OrderLineItemRepository;
 import kitchenpos.domain.orderLineItem.OrderLineItems;
 import kitchenpos.domain.orderTable.OrderTable;
 import kitchenpos.domain.orderTable.OrderTableRepository;
+import kitchenpos.domain.product.Product;
+import kitchenpos.dto.menuProduct.MenuProductRequest;
 import kitchenpos.dto.order.OrderRequest;
 import kitchenpos.dto.order.OrderResponse;
+import kitchenpos.dto.orderLineItem.OrderLineItemRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,9 +47,10 @@ public class OrderService {
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
         final OrderTable orderTable = findOrderTableAndEmptyIsFalse(orderRequest.getOrderTableId());
-        Order order = orderRequest.toOrder(orderTable);
+        OrderLineItems orderLineItems = findOrderLineItems(orderRequest.getOrderLineItems());
+        //Order order = orderRequest.toOrder(orderTable, orderLineItems);
 
-        final OrderLineItems orderLineItems = new OrderLineItems(order.getOrderLineItems().getOrderLineItems());
+        //final OrderLineItems orderLineItems = new OrderLineItems(order.getOrderLineItems().getOrderLineItems());
         final List<Long> menuIds = orderLineItems.findMenuIds();
         orderLineItems.vaildateSize(menuCountByIdIn(menuIds));
 
@@ -65,7 +72,8 @@ public class OrderService {
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
         OrderTable ordertable = findOrderTable(orderRequest.getOrderTableId());
-        Order order = orderRequest.toOrder(ordertable);
+        OrderLineItems orderLineItems = findOrderLineItems(orderRequest.getOrderLineItems());
+        Order order = orderRequest.toOrder(ordertable, orderLineItems);
 
         final Order savedOrder = findOrder(orderId);
 
@@ -100,6 +108,22 @@ public class OrderService {
 
     private OrderTable findOrderTable(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
+                .orElseThrow(NoSuchElementException::new);
+    }
+
+    private OrderLineItems findOrderLineItems(List<OrderLineItemRequest> orderLineItems) {
+        return new OrderLineItems(orderLineItems.stream()
+                .map(this::createOrderLineItem)
+                .collect(Collectors.toList()));
+    }
+
+    private OrderLineItem createOrderLineItem(OrderLineItemRequest orderLineItemRequest) {
+        Menu menu = findMenu(orderLineItemRequest.getMenuId());
+        return new OrderLineItem(null, null, menu, orderLineItemRequest.getQuantity());
+    }
+
+    private Menu findMenu(Long menuId) {
+        return menuRepository.findById(menuId)
                 .orElseThrow(NoSuchElementException::new);
     }
 }

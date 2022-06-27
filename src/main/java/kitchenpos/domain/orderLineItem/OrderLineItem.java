@@ -37,6 +37,10 @@ public class OrderLineItem {
         return seq;
     }
 
+    public Order getOrder() {
+        return order;
+    }
+
     public Menu getMenu() {
         return menu;
     }
