@@ -37,6 +37,9 @@ public class Order extends BaseTimeEntity {
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
+        if (Objects.equals(OrderStatus.COMPLETION, this.orderStatus)) {
+            throw new IllegalArgumentException();
+        }
         this.orderStatus = orderStatus;
     }
 

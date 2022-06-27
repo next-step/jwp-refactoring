@@ -68,10 +68,6 @@ public class OrderService {
         final Order savedOrder = orderRepository.findById(orderId)
             .orElseThrow(IllegalArgumentException::new);
 
-        if (Objects.equals(OrderStatus.COMPLETION, savedOrder.getOrderStatus())) {
-            throw new IllegalArgumentException();
-        }
-
         savedOrder.changeOrderStatus(orderRequest.getOrderStatus());
 
         return OrderResponse.of(orderRepository.save(savedOrder));
