@@ -46,7 +46,7 @@ class ProductServiceTest {
         상품_값_비교(상품_생성_결과, ProductResponse.of(예상값));
     }
 
-    @DisplayName("상품을 생성할 수 있다 - 상품의 가격은 0원 이상이어야 한다")
+    @DisplayName("상품을 생성할 수 있다 - 상품은 0원 이상의 가격을 가져야 한다")
     @Test
     void create_exception1() {
         // given

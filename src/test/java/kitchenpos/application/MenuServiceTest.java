@@ -92,7 +92,7 @@ class MenuServiceTest {
         메뉴_값_비교(메뉴_생성_결과, MenuResponse.of(예상값));
     }
 
-    @DisplayName("메뉴를 생성할 수 있다 - 메뉴의 가격은 0원 이상이어야 한다")
+    @DisplayName("메뉴를 생성할 수 있다 - 메뉴는 0원 이상의 가격을 가져야 한다.")
     @Test
     void create_exception1() {
         // given
@@ -110,7 +110,7 @@ class MenuServiceTest {
                 .isInstanceOf(NoSuchElementException.class);
     }
 
-    @DisplayName("메뉴를 생성할 수 있다 - 유효한 메뉴 그룹이 지정되어야 한다")
+    @DisplayName("메뉴를 생성할 수 있다 - 메뉴는 메뉴그룹에 속해있어야만 한다")
     @Test
     void create_exception2() {
         // given
@@ -122,7 +122,7 @@ class MenuServiceTest {
                 .isInstanceOf(NoSuchElementException.class);
     }
 
-    @DisplayName("메뉴를 생성할 수 있다 - 유효한 상품들이 지정되어야 한다")
+    @DisplayName("메뉴를 생성할 수 있다 - 존재하는 상품이어야 한다.")
     @Test
     void create_exception3() {
         // given

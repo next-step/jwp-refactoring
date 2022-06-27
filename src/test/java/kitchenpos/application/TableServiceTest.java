@@ -140,7 +140,7 @@ public class TableServiceTest {
         assertThat(방문_손님_수_변경_결과.getNumberOfGuests()).isEqualTo(변경후_주문_테이블.getNumberOfGuests());
     }
 
-    @DisplayName("방문 손님 수를 변경할 수 있다 - 방문 손님의 수는 0명 이상이어야 한다")
+    @DisplayName("방문 손님 수를 변경할 수 있다 - 방문 손님의 수는 0 보다 작지 않아야 한다")
     @Test
     void changeNumberOfGuests_exception1() {
         // given

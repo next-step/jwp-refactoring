@@ -97,7 +97,7 @@ class OrderServiceTest {
                 .isInstanceOf(NoSuchElementException.class);
     }
 
-    @DisplayName("주문을 생성할 수 있다 - 유효한 메뉴이어야 한다")
+    @DisplayName("주문을 생성할 수 있다 - 존재하는 메뉴이어야 한다")
     @Test
     void create_exception2() {
         // given
