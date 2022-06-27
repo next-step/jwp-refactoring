@@ -2,6 +2,7 @@ plugins {
     id 'org.springframework.boot' version '2.4.1'
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
     id 'java'
+    id 'java-test-fixtures'
 }
 
 group = 'camp.nextstep.edu'
@@ -34,6 +35,7 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'org.springframework.boot'
+    apply plugin: 'java-test-fixtures'
 
     repositories {
         mavenCentral()
@@ -71,7 +73,7 @@ subprojects.findAll { it.name != 'module-core' }.forEach({
 subprojects.findAll { it.name != 'module-test' }.forEach({
     project("${it.name}") {
         dependencies {
-            testImplementation(testFixtures(project(':module-test')))
+            testFixturesApi(testFixtures(project(':module-test')))
         }
     }
 })
