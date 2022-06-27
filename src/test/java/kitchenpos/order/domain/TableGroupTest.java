@@ -3,6 +3,9 @@ package kitchenpos.order.domain;
 import static kitchenpos.utils.DomainFixtureFactory.createOrderTable;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import kitchenpos.orderTable.domain.OrderTable;
+import kitchenpos.orderTable.domain.OrderTables;
+import kitchenpos.orderTable.domain.TableGroup;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

@@ -3,8 +3,8 @@ package kitchenpos.order.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.orderTable.dto.OrderTableRequest;
+import kitchenpos.orderTable.dto.OrderTableResponse;
 import org.springframework.http.MediaType;
 
 public class TableRestAssured {

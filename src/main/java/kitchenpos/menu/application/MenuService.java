@@ -4,11 +4,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.validator.MenuValidator;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.validator.MenuValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 @Service
 @Transactional(readOnly = true)
 public class MenuService {
@@ -36,7 +37,7 @@ public class MenuService {
                 .collect(Collectors.toList());
     }
 
-    public Menu findMenu(long menuId) {
-        return menuRepository.findById(menuId).orElseThrow(() -> new IllegalArgumentException("메뉴를 조회할 수 없습니다."));
+    public int countByIdIn(List<Long> menuIds) {
+        return menuRepository.countByIdIn(menuIds);
     }
 }

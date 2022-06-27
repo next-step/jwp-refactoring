@@ -38,8 +38,4 @@ public class OrderLineItems {
     public void addOrder(Order order) {
         orderLineItems.forEach(orderLineItem -> orderLineItem.addOrder(order));
     }
-
-    public boolean isNotEqualSize(int size) {
-        return orderLineItems.size() != size;
-    }
 }

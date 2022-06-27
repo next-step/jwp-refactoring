@@ -1,11 +1,12 @@
-package kitchenpos.order.application;
+package kitchenpos.orderTable.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.orderTable.domain.OrderTable;
+import kitchenpos.orderTable.domain.OrderTableRepository;
+import kitchenpos.orderTable.dto.OrderTableRequest;
+import kitchenpos.orderTable.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +36,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
-        orderService.validateComplete(savedOrderTable);
+        orderService.validateComplete(savedOrderTable.id());
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
         return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
     }

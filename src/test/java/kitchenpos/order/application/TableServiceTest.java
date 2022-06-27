@@ -12,13 +12,13 @@ import static org.mockito.Mockito.verify;
 
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.domain.NumberOfGuests;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
-import kitchenpos.order.domain.OrderTables;
-import kitchenpos.order.domain.TableGroup;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.orderTable.application.TableService;
+import kitchenpos.orderTable.domain.OrderTable;
+import kitchenpos.orderTable.domain.OrderTableRepository;
+import kitchenpos.orderTable.domain.OrderTables;
+import kitchenpos.orderTable.domain.TableGroup;
+import kitchenpos.orderTable.dto.OrderTableRequest;
+import kitchenpos.orderTable.dto.OrderTableResponse;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -80,7 +80,7 @@ class TableServiceTest {
         given(orderTableRepository.findById(1L)).willReturn(Optional.ofNullable(주문테이블));
         given(orderTableRepository.save(any(OrderTable.class))).willReturn(orderTable);
         OrderTableResponse changedOrderTable = tableService.changeEmpty(1L, orderTableRequest);
-        verify(orderService).validateComplete(주문테이블);
+        verify(orderService).validateComplete(주문테이블.id());
         assertAll(
                 () -> assertThat(changedOrderTable.getTableGroupId()).isNull(),
                 () -> assertThat(changedOrderTable.getNumberOfGuests()).isEqualTo(2),

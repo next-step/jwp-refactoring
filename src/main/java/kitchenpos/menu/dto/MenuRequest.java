@@ -37,7 +37,7 @@ public class MenuRequest {
 
     public Menu toMenu() {
         return Menu.from(name, price, menuGroupId, MenuProducts.from(menuProducts.stream()
-                .map(menuProductRequest -> menuProductRequest.toMenuProduct())
+                .map(MenuProductRequest::toMenuProduct)
                 .collect(Collectors.toList())));
     }
 }

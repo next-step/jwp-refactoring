@@ -1,13 +1,15 @@
-package kitchenpos.order.application;
+package kitchenpos.orderTable.application;
 
 import java.util.List;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
-import kitchenpos.order.domain.OrderTables;
-import kitchenpos.order.domain.TableGroup;
-import kitchenpos.order.domain.TableGroupRepository;
-import kitchenpos.order.dto.TableGroupRequest;
-import kitchenpos.order.dto.TableGroupResponse;
+import java.util.stream.Collectors;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.orderTable.domain.OrderTable;
+import kitchenpos.orderTable.domain.OrderTableRepository;
+import kitchenpos.orderTable.domain.OrderTables;
+import kitchenpos.orderTable.domain.TableGroup;
+import kitchenpos.orderTable.domain.TableGroupRepository;
+import kitchenpos.orderTable.dto.TableGroupRequest;
+import kitchenpos.orderTable.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,7 +39,9 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
-        orderService.validateComplete(orderTables);
+        orderService.validateComplete(orderTables.stream()
+                .map(orderTable -> orderTable.id())
+                .collect(Collectors.toList()));
         for (final OrderTable orderTable : orderTables) {
             orderTable.unGroup();
             orderTableRepository.save(orderTable);

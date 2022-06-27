@@ -1,8 +1,8 @@
-package kitchenpos.order.dto;
+package kitchenpos.orderTable.dto;
 
 import java.util.Objects;
 import kitchenpos.domain.NumberOfGuests;
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.orderTable.domain.OrderTable;
 
 public class OrderTableResponse {
     private final Long id;

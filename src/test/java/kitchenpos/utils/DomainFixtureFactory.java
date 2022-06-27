@@ -3,23 +3,23 @@ package kitchenpos.utils;
 import java.math.BigDecimal;
 import java.util.List;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.menuGroup.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menuGroup.domain.MenuGroup;
+import kitchenpos.menuGroup.dto.MenuGroupRequest;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTables;
-import kitchenpos.order.domain.TableGroup;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.TableGroupRequest;
+import kitchenpos.orderTable.domain.OrderTable;
+import kitchenpos.orderTable.domain.OrderTables;
+import kitchenpos.orderTable.domain.TableGroup;
+import kitchenpos.orderTable.dto.OrderTableRequest;
+import kitchenpos.orderTable.dto.TableGroupRequest;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
 
@@ -61,8 +61,8 @@ public class DomainFixtureFactory {
         return new OrderTableRequest(numberOfGuests, empty);
     }
 
-    public static Order createOrder(OrderTable orderTable, OrderLineItems orderLineItems, int size) {
-        return Order.from(orderTable, orderLineItems, size);
+    public static Order createOrder(Long orderTableId, OrderLineItems orderLineItems) {
+        return Order.from(orderTableId, orderLineItems);
     }
 
     public static OrderRequest createOrderRequest(Long orderTableId, OrderStatus orderStatus,
@@ -70,8 +70,8 @@ public class DomainFixtureFactory {
         return new OrderRequest(orderTableId, orderStatus, orderLineItems);
     }
 
-    public static OrderLineItem createOrderLineItem(Menu menu, long quantity) {
-        return OrderLineItem.from(menu, quantity);
+    public static OrderLineItem createOrderLineItem(Long menuId, long quantity) {
+        return OrderLineItem.from(menuId, quantity);
     }
 
     public static OrderLineItemRequest createOrderLineItemRequest(long menuId, long quantity) {

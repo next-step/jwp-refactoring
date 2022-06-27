@@ -14,7 +14,6 @@ import static org.mockito.BDDMockito.willThrow;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import kitchenpos.domain.Price;
 import kitchenpos.menu.domain.Menu;
@@ -116,22 +115,5 @@ class MenuServiceTest {
         assertThat(menus).containsExactlyElementsOf(Lists.newArrayList(양념치킨).stream()
                 .map(MenuResponse::from)
                 .collect(Collectors.toList()));
-    }
-
-    @DisplayName("메뉴 찾기 테스트")
-    @Test
-    void findMenu() {
-        given(menuRepository.findById(1L)).willReturn(Optional.ofNullable(양념치킨));
-        Menu menu = menuService.findMenu(1L);
-        assertThat(menu).isEqualTo(양념치킨);
-    }
-
-    @DisplayName("메뉴 찾을 수 없음")
-    @Test
-    void findMenuEmpty() {
-        given(menuRepository.findById(1L)).willReturn(Optional.empty());
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> menuService.findMenu(1L))
-                .withMessage("메뉴를 조회할 수 없습니다.");
     }
 }

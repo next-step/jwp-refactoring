@@ -1,6 +1,6 @@
 package kitchenpos.order.application;
 
-import static kitchenpos.order.domain.TableGroup.ORDER_TABLE_REQUEST_MIN;
+import static kitchenpos.orderTable.domain.TableGroup.ORDER_TABLE_REQUEST_MIN;
 import static kitchenpos.utils.DomainFixtureFactory.createOrderTable;
 import static kitchenpos.utils.DomainFixtureFactory.createTableGroup;
 import static kitchenpos.utils.DomainFixtureFactory.createTableGroupRequest;
@@ -11,14 +11,15 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTableRepository;
-import kitchenpos.order.domain.OrderTables;
-import kitchenpos.order.domain.TableGroup;
-import kitchenpos.order.domain.TableGroupRepository;
-import kitchenpos.order.dto.OrderTableResponse;
-import kitchenpos.order.dto.TableGroupRequest;
-import kitchenpos.order.dto.TableGroupResponse;
+import kitchenpos.orderTable.application.TableGroupService;
+import kitchenpos.orderTable.domain.OrderTable;
+import kitchenpos.orderTable.domain.OrderTableRepository;
+import kitchenpos.orderTable.domain.OrderTables;
+import kitchenpos.orderTable.domain.TableGroup;
+import kitchenpos.orderTable.domain.TableGroupRepository;
+import kitchenpos.orderTable.dto.OrderTableResponse;
+import kitchenpos.orderTable.dto.TableGroupRequest;
+import kitchenpos.orderTable.dto.TableGroupResponse;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -129,7 +130,7 @@ class TableGroupServiceTest {
         given(orderTableRepository.findAllByTableGroupId(1L)).willReturn(
                 Lists.newArrayList(치킨주문테이블, 피자주문테이블));
         tableGroupService.ungroup(1L);
-        verify(orderService).validateComplete(Lists.newArrayList(치킨주문테이블, 피자주문테이블));
+        verify(orderService).validateComplete(Lists.newArrayList(치킨주문테이블.id(), 피자주문테이블.id()));
         verify(orderTableRepository).save(치킨주문테이블);
         verify(orderTableRepository).save(피자주문테이블);
     }

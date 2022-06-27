@@ -50,7 +50,7 @@ class MenuValidatorTest {
                 .withMessage("메뉴그룹이 있어야 합니다.");
     }
 
-    @DisplayName("메뉴가 갖는 상품들 각각의 가격과 수량을 곱해서 더한 총 금액이 메뉴 가격보다 낮은 경우 테스트")
+    @DisplayName("메뉴 가격은 상품의 총 금액 비교 테스트")
     @Test
     void createWithTotalPriceLessThanMenuPrice() {
         MenuRequest menuRequest = createMenuRequest("양념치킨", BigDecimal.valueOf(60000L), 한마리메뉴.id(),

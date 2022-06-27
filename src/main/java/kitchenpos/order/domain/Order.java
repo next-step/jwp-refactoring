@@ -11,13 +11,11 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -26,9 +24,8 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_table_id", foreignKey = @ForeignKey(name = "fk_orders_order_table"), nullable = false)
-    private OrderTable orderTable;
+    private Long orderTableId;
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
     @Column(nullable = false)
@@ -39,36 +36,28 @@ public class Order {
     protected Order() {
     }
 
-    private Order(OrderTable orderTable, OrderLineItems orderLineItems, int size) {
-        validateNotEmpty(orderTable);
-        validateOrderLineItemsSize(orderLineItems, size);
+    private Order(Long orderTableId, OrderLineItems orderLineItems) {
         orderLineItems.addOrder(this);
-        this.orderTable = orderTable;
+        this.orderTableId = orderTableId;
         this.orderLineItems = orderLineItems;
         this.orderStatus = COOKING;
         this.orderedTime = LocalDateTime.now();
     }
 
-    public static Order from(OrderTable orderTable, OrderLineItems orderLineItems, int size) {
-        return new Order(orderTable, orderLineItems, size);
+    public static Order from(Long orderTableId, OrderLineItems orderLineItems) {
+        return new Order(orderTableId, orderLineItems);
     }
 
     public Long id() {
         return id;
     }
 
-    public long orderTableId() {
-        return orderTable.id();
+    public Long orderTableId() {
+        return orderTableId;
     }
 
     public LocalDateTime orderedTime() {
         return orderedTime;
-    }
-
-    private void validateNotEmpty(OrderTable orderTable) {
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException("주문테이블이 비어있으면 안됩니다.");
-        }
     }
 
     public OrderStatus orderStatus() {
@@ -80,12 +69,6 @@ public class Order {
             throw new IllegalArgumentException("완료된 주문은 상태를 변경할 수 없습니다.");
         }
         this.orderStatus = orderStatus;
-    }
-
-    private void validateOrderLineItemsSize(OrderLineItems orderLineItems, int size) {
-        if (orderLineItems.isNotEqualSize(size)) {
-            throw new IllegalArgumentException("비교하는 수와 주문 항목의 수가 일치하지 않습니다.");
-        }
     }
 
     public List<OrderLineItem> readOnlyOrderLineItems() {
