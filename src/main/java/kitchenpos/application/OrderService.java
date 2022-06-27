@@ -64,13 +64,13 @@ public class OrderService {
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
         if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("등록되어 있지 않은 주문 항목이 존재 합니다.");
         }
     }
 
     private void validateOrderLineItemsEmpty(List<OrderLineItem> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문을 하려면 주문 항목이 존재 하여야 합니다.");
         }
     }
 

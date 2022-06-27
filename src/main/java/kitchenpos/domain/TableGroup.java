@@ -63,9 +63,18 @@ public class TableGroup {
         orderTable.attachToTableGroup(this);
     }
 
-    public void ungroup() {
-        orderTables.stream().forEach(OrderTable::detachFromTableGroup);
-        orderTables.clear();
+    public void ungroup(List<Order> orders) {
+        validateOrderStatus(orders);
+        this.orderTables.stream().forEach(OrderTable::detachFromTableGroup);
+        this.orderTables.clear();
+    }
+
+    private void validateOrderStatus(List<Order> orders) {
+        for (Order order : orders) {
+            if (!order.checkOrderComplete()) {
+                throw new IllegalArgumentException("주문의 상태가 COOKING, MEAL 입니다.");
+            }
+        }
     }
 
     private void validateAddingOrderTables(final List<OrderTable> orderTables) {

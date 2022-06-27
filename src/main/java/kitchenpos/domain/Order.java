@@ -55,6 +55,12 @@ public class Order {
         addOrderLineItems(Arrays.asList(orderLineItem));
     }
 
+    public Order(Long orderTableId,OrderStatus orderStatus, OrderLineItem orderLineItem) {
+        this.orderTableId = orderTableId;
+        this.orderStatus = orderStatus;
+        addOrderLineItems(Arrays.asList(orderLineItem));
+    }
+
     private void addOrderLineItems(List<OrderLineItem> orderLineItems) {
         validateOrderLineItemsEmpty(orderLineItems);
         for (OrderLineItem orderLineItem : orderLineItems) {

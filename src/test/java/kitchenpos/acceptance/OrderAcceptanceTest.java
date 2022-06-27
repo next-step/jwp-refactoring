@@ -71,7 +71,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    private ExtractableResponse<Response> 주문_생성_하기(Long tableId, Long menuId, Long quantity) {
+    public static ExtractableResponse<Response> 주문_생성_하기(Long tableId, Long menuId, Long quantity) {
         return 주문_생성_요청(tableId,
                 Lists.newArrayList(OrderLineItemRequest.of(menuId, quantity)));
     }
@@ -103,6 +103,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 .then().log().all().
                 extract();
     }
+
 
     public static ExtractableResponse<Response> 주문_상태_수정_요청(Long
                                                                     orderTableId,

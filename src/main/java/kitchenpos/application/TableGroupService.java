@@ -1,8 +1,10 @@
 package kitchenpos.application;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
+import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderRepository;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.domain.TableGroup;
@@ -11,9 +13,6 @@ import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class TableGroupService {
@@ -54,19 +53,21 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId).orElseThrow(NoSuchElementException::new);
-        validateOrderTablesStatus(tableGroupId);
-        tableGroup.ungroup();
+        List<Order> ordersInTableGroup = findOrdersInTableGroup(tableGroupId);
+        tableGroup.ungroup(ordersInTableGroup);
     }
 
-    private void validateOrderTablesStatus(Long tableGroupId) {
+    private List<Order> findOrdersInTableGroup(Long tableGroupId) {
         List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
-        List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException("조리중, 식사중 상태에서는 단체를 해제 할 수 없습니다.");
+        List<Order> result = new ArrayList<>();
+        for (OrderTable orderTable : orderTables) {
+            result.addAll(findOrderByOrderTableId(orderTable.getId()));
         }
+        return result;
+    }
+
+    private List<Order> findOrderByOrderTableId(Long orderTableId) {
+        return orderRepository.findAllByOrderTableId(orderTableId);
     }
 
 }

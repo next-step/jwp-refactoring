@@ -1,10 +1,9 @@
 package kitchenpos.application;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderRepository;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.dto.OrderTableRequest;
@@ -35,17 +34,14 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTable) {
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
-        validateOrderTablesStatus(orderTableId);
+        Order order = findOrderByOrderTableId(savedOrderTable.getId());
+        savedOrderTable.validateOrderTablesStatus(order);
         savedOrderTable.switchEmpty(orderTable.isEmpty());
-
         return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
     }
 
-    private void validateOrderTablesStatus(Long orderTableId) {
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
-        }
+    private Order findOrderByOrderTableId(Long orderTableId) {
+        return orderRepository.findByOrderTableId(orderTableId).orElseThrow(NoSuchElementException::new);
     }
 
     private OrderTable findOrderTable(Long orderTableId) {

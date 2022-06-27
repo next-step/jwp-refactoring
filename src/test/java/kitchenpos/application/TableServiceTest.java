@@ -15,6 +15,7 @@ import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderRepository;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.domain.TableGroup;
@@ -91,12 +92,18 @@ class TableServiceTest extends ServiceTest {
 
     @Test
     @DisplayName("주문 테이블이 단체 지정 되어 있으면 빈테이블로 지정 할 수 없다.")
-    void changeEmptyFailWithTableGroupTest() {
-        //given
+    void changeEmptyFailWithTableGroupTest(@Autowired MenuRepository menuRepository,
+                                           @Autowired MenuGroupRepository menuGroupRepository) {
+
+        //given : 테이블 그룹 생성
         TableGroup tableGroup = tableGroupRepository.save(new TableGroup(Arrays.asList(
                 new OrderTable(3, true),
                 new OrderTable(4, true))));
         OrderTable savedOrdertable = orderTableRepository.save(new OrderTable(tableGroup, 10, false));
+        // 주문 생성
+        MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup("중식"));
+        Menu menu = menuRepository.save(new Menu("볶음밥", BigDecimal.valueOf(1000L), menuGroup));
+        Order order = orderRepository.save(new Order(savedOrdertable.getId(), new OrderLineItem(menu.getId(), 10)));
 
         //when & then
         assertThatThrownBy(
@@ -123,10 +130,19 @@ class TableServiceTest extends ServiceTest {
 
     @Test
     @DisplayName("주문 테이블을 빈테이블로 변경 할 수 있다.")
-    void changeEmptyTest() {
+    void changeEmptyTest(@Autowired MenuRepository menuRepository,
+                         @Autowired MenuGroupRepository menuGroupRepository) {
+
+        //given : 테이블 생성
+        OrderTable savedOrdertable = orderTableRepository.save(new OrderTable( 10, false));
+
+        // 주문 생성
+        MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup("중식"));
+        Menu menu = menuRepository.save(new Menu("볶음밥", BigDecimal.valueOf(1000L), menuGroup));
+        Order order = orderRepository.save(new Order(savedOrdertable.getId(), OrderStatus.COMPLETION, new OrderLineItem(menu.getId(), 10)));
 
         //when
-        OrderTableResponse orderTable = tableService.changeEmpty(주문_테이블1.getId(),
+        OrderTableResponse orderTable = tableService.changeEmpty(savedOrdertable.getId(),
                 OrderTableRequest.of(true));
 
         //then

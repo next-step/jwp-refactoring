@@ -102,4 +102,10 @@ public class OrderTable {
     public void detachFromTableGroup() {
         this.tableGroup = null;
     }
+
+    public void validateOrderTablesStatus(Order order) {
+        if (!order.checkOrderComplete()) {
+            throw new IllegalArgumentException("주문 상태가 COMPLETION이 아닙니다.");
+        }
+    }
 }
