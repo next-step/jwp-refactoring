@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -20,6 +20,7 @@ public class Menu {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private String name;
+    @Embedded
     private Price price;
     private Long menuGroupId;
 

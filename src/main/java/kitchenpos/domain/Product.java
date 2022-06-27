@@ -4,7 +4,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import java.math.BigDecimal;
 import java.util.Objects;
-import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -16,6 +16,7 @@ public class Product {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private String name;
+    @Embedded
     private Price price;
 
     protected Product() {
