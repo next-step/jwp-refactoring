@@ -78,7 +78,7 @@ class OrderServiceTest {
         메뉴그룹_한식 = createMenuGroup(1L, "한식메뉴");
         김치찌개 = createProduct(1L, "김치찌개", BigDecimal.valueOf(8000L));
         공기밥 = createProduct(2L, "공기밥", BigDecimal.valueOf(1000L));
-        메뉴_김치찌개세트 = createMenu("김치찌개세트", BigDecimal.valueOf(15000L), 메뉴그룹_한식.getId());
+        메뉴_김치찌개세트 = createMenu(1L, "김치찌개세트", BigDecimal.valueOf(15000L), 메뉴그룹_한식.getId());
 
         김치찌개세트_김치찌개 = createMenuProduct(1L, 메뉴_김치찌개세트.getId(), 김치찌개.getId(), 2);
         김치찌개세트_공기밥 = createMenuProduct(1L, 메뉴_김치찌개세트.getId(), 공기밥.getId(), 2);
@@ -86,12 +86,12 @@ class OrderServiceTest {
 
         테이블_1 = createOrderTable(1L, null, 4, false);
         접수된_주문 = createOrder(1L, 테이블_1, OrderStatus.COOKING.name(), LocalDateTime.now());
-        접수된주문_김치찌개세트 = createOrderLineItem(1L, 접수된_주문.getId(), 메뉴_김치찌개세트.getId(), 1);
+        접수된주문_김치찌개세트 = createOrderLineItem(1L, 접수된_주문, 메뉴_김치찌개세트, 1);
         접수된_주문.setOrderLineItems(Arrays.asList(접수된주문_김치찌개세트));
 
         테이블_2 = createOrderTable(2L, null, 4, false);
         완료된_주문 = createOrder(2L, 테이블_2, OrderStatus.COMPLETION.name(), LocalDateTime.now());
-        완료된주문_김치찌개세트 = createOrderLineItem(2L, 접수된_주문.getId(), 메뉴_김치찌개세트.getId(), 1);
+        완료된주문_김치찌개세트 = createOrderLineItem(2L, 접수된_주문, 메뉴_김치찌개세트, 1);
         완료된_주문.setOrderLineItems(Arrays.asList(완료된주문_김치찌개세트));
 
         테이블_EMPTY = createOrderTable(3L, null, 0, true);
@@ -103,11 +103,12 @@ class OrderServiceTest {
         //given
         given(menuRepository.countByIdIn(anyList())).willReturn(1);
         given(orderTableRepository.findById(테이블_1.getId())).willReturn(Optional.of(테이블_1));
+        given(menuRepository.findById(메뉴_김치찌개세트.getId())).willReturn(Optional.of(메뉴_김치찌개세트));
         given(orderRepository.save(any(Order.class))).willReturn(접수된_주문);
         OrderRequest 접수된_주문_request = OrderRequest.of(
                 접수된_주문.getOrderTable().getId(),
                 접수된_주문.getOrderLineItems().stream()
-                        .map(orderLineItem -> OrderLineItemRequest.of(orderLineItem.getMenuId(), (int) orderLineItem.getQuantity()))
+                        .map(orderLineItem -> OrderLineItemRequest.of(orderLineItem.getMenu().getId(), (int) orderLineItem.getQuantity()))
                         .collect(Collectors.toList())
         );
 
@@ -131,7 +132,7 @@ class OrderServiceTest {
     @Test
     void 주문_주문항목_메뉴_중복_검증(){
         //given
-        OrderLineItemRequest 중복_메뉴 = OrderLineItemRequest.of(접수된주문_김치찌개세트.getMenuId(),
+        OrderLineItemRequest 중복_메뉴 = OrderLineItemRequest.of(접수된주문_김치찌개세트.getMenu().getId(),
                 (int) 접수된주문_김치찌개세트.getQuantity());
         OrderRequest invalidRequest = OrderRequest.of(접수된_주문.getId(), Arrays.asList(중복_메뉴, 중복_메뉴));
 
@@ -148,7 +149,7 @@ class OrderServiceTest {
         OrderRequest 접수된_주문_request = OrderRequest.of(
                 접수된_주문.getOrderTable().getId(),
                 접수된_주문.getOrderLineItems().stream()
-                        .map(orderLineItem -> OrderLineItemRequest.of(orderLineItem.getMenuId(), (int) orderLineItem.getQuantity()))
+                        .map(orderLineItem -> OrderLineItemRequest.of(orderLineItem.getMenu().getId(), (int) orderLineItem.getQuantity()))
                         .collect(Collectors.toList())
         );
 
@@ -179,7 +180,7 @@ class OrderServiceTest {
         OrderRequest 접수된_주문_request = OrderRequest.of(
                 접수된_주문.getOrderTable().getId(),
                 접수된_주문.getOrderLineItems().stream()
-                        .map(orderLineItem -> OrderLineItemRequest.of(orderLineItem.getMenuId(), (int) orderLineItem.getQuantity()))
+                        .map(orderLineItem -> OrderLineItemRequest.of(orderLineItem.getMenu().getId(), (int) orderLineItem.getQuantity()))
                         .collect(Collectors.toList())
         );
 
