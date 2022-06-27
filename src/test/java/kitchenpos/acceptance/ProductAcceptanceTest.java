@@ -58,7 +58,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     }
 
 
-    private ExtractableResponse<Response> 상품_등록을_요청(Product product) {
+    public static ExtractableResponse<Response> 상품_등록을_요청(Product product) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(product)
