@@ -1,10 +1,10 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.ProductDao;
+import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
-import kitchenpos.product.application.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.factory.ProductFixtureFactory.*;
+import static kitchenpos.factory.ProductFixtureFactory.createProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -26,7 +26,7 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
     @InjectMocks
     ProductService productService;
 
@@ -43,7 +43,7 @@ class ProductServiceTest {
     @Test
     void 상품_등록(){
         //given
-        given(productDao.save(any(Product.class))).willReturn(치킨);
+        given(productRepository.save(any(Product.class))).willReturn(치킨);
 
         //when
         ProductResponse savedProduct = productService.create(ProductRequest.of(치킨.getName(), 치킨.getPrice().intValue()));
@@ -69,7 +69,7 @@ class ProductServiceTest {
     @Test
     void 상품_목록_조회() {
         //given
-        given(productDao.findAll()).willReturn(Arrays.asList(치킨, 피자));
+        given(productRepository.findAll()).willReturn(Arrays.asList(치킨, 피자));
 
         //when
         List<ProductResponse> list = productService.list();

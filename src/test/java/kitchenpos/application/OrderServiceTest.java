@@ -1,9 +1,8 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
+import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
@@ -12,10 +11,8 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.order.application.OrderService;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.orderTable.domain.OrderTable;
+import kitchenpos.orderTable.domain.OrderTableRepository;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -52,13 +49,13 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
-    MenuDao menuDao;
+    MenuRepository menuRepository;
     @Mock
-    OrderDao orderDao;
+    OrderRepository orderRepository;
     @Mock
-    OrderLineItemDao orderLineItemDao;
+    OrderLineItemRepository orderLineItem;
     @Mock
-    OrderTableDao orderTableDao;
+    OrderTableRepository orderTableRepository;
     @InjectMocks
     OrderService orderService;
 
@@ -105,9 +102,9 @@ class OrderServiceTest {
     @Test
     void 주문_등록(){
         //given
-        given(menuDao.countByIdIn(anyList())).willReturn(1L);
-        given(orderTableDao.findById(테이블_1.getId())).willReturn(Optional.of(테이블_1));
-        given(orderDao.save(any(Order.class))).willReturn(접수된_주문);
+        given(menuRepository.countByIdIn(anyList())).willReturn(1);
+        given(orderTableRepository.findById(테이블_1.getId())).willReturn(Optional.of(테이블_1));
+        given(orderRepository.save(any(Order.class))).willReturn(접수된_주문);
         OrderRequest 접수된_주문_request = OrderRequest.of(
                 접수된_주문.getOrderTableId(),
                 접수된_주문.getOrderLineItems().stream()
@@ -147,8 +144,8 @@ class OrderServiceTest {
     @Test
     void 주문_주문테이블_검증(){
         //given
-        given(menuDao.countByIdIn(anyList())).willReturn(1L);
-        given(orderTableDao.findById(테이블_1.getId())).willReturn(Optional.ofNullable(null));
+        given(menuRepository.countByIdIn(anyList())).willReturn(1);
+        given(orderTableRepository.findById(테이블_1.getId())).willReturn(Optional.ofNullable(null));
         OrderRequest 접수된_주문_request = OrderRequest.of(
                 접수된_주문.getOrderTableId(),
                 접수된_주문.getOrderLineItems().stream()
@@ -164,8 +161,8 @@ class OrderServiceTest {
     @Test
     void 주문_주문테이블_Empty_검증(){
         //given
-        given(menuDao.countByIdIn(anyList())).willReturn(1L);
-        given(orderTableDao.findById(테이블_EMPTY.getId())).willReturn(Optional.of(테이블_EMPTY));
+        given(menuRepository.countByIdIn(anyList())).willReturn(1);
+        given(orderTableRepository.findById(테이블_EMPTY.getId())).willReturn(Optional.of(테이블_EMPTY));
         OrderRequest invalidOrder = OrderRequest.of(
                 테이블_EMPTY.getId(),
                 Arrays.asList(OrderLineItemRequest.of(메뉴_김치찌개세트.getId(), 1))
@@ -179,7 +176,7 @@ class OrderServiceTest {
     @Test
     void 주문_주문항목_메뉴_검증(){
         //given
-        given(menuDao.countByIdIn(anyList())).willReturn(2L);
+        given(menuRepository.countByIdIn(anyList())).willReturn(2);
         OrderRequest 접수된_주문_request = OrderRequest.of(
                 접수된_주문.getOrderTableId(),
                 접수된_주문.getOrderLineItems().stream()
@@ -195,7 +192,7 @@ class OrderServiceTest {
     @Test
     void 주문_목록_조회(){
         //given
-        given(orderDao.findAll()).willReturn(Arrays.asList(접수된_주문));
+        given(orderRepository.findAll()).willReturn(Arrays.asList(접수된_주문));
 
         //when
         List<OrderResponse> list = orderService.list();
@@ -210,7 +207,7 @@ class OrderServiceTest {
     void 주문_상태_업데이트(String beforeStatus, String afterStatus){
         //given
         Order order = createOrder(3L, 테이블_1.getId(), beforeStatus, LocalDateTime.now());
-        given(orderDao.findById(anyLong())).willReturn(Optional.of(order));
+        given(orderRepository.findById(anyLong())).willReturn(Optional.of(order));
 
         //when
         OrderStatusRequest newStatus = OrderStatusRequest.from(afterStatus);
@@ -231,7 +228,7 @@ class OrderServiceTest {
     @Test
     void 주문_상태_업데이트_주문_검증(){
         //given
-        given(orderDao.findById(anyLong())).willReturn(Optional.ofNullable(null));
+        given(orderRepository.findById(anyLong())).willReturn(Optional.ofNullable(null));
 
         //when
         OrderStatusRequest status_MEAL = OrderStatusRequest.from(OrderStatus.MEAL.name());
@@ -244,7 +241,7 @@ class OrderServiceTest {
     @Test
     void 주문_상태_업데이트_COMPLETION_검증(){
         //given
-        given(orderDao.findById(anyLong())).willReturn(Optional.of(완료된_주문));
+        given(orderRepository.findById(anyLong())).willReturn(Optional.of(완료된_주문));
 
         //when
         OrderStatusRequest status_MEAL = OrderStatusRequest.from(OrderStatus.MEAL.name());

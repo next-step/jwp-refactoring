@@ -1,9 +1,14 @@
 package kitchenpos.product.domain;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 
+@Entity
 public class Product {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
     private String name;
     private BigDecimal price;
 

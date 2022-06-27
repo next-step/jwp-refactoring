@@ -4,6 +4,7 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.orderTable.domain.OrderTable;
+import kitchenpos.orderTable.domain.OrderTableRepository;
 import kitchenpos.orderTable.dto.OrderTableEmptyRequest;
 import kitchenpos.orderTable.dto.OrderTableNumOfGuestRequest;
 import kitchenpos.orderTable.dto.OrderTableRequest;
@@ -19,21 +20,21 @@ import java.util.stream.Collectors;
 @Service
 public class TableService {
     private final OrderDao orderDao;
-    private final OrderTableDao orderTableDao;
+    private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderDao orderDao, final OrderTableDao orderTableDao) {
+    public TableService(final OrderDao orderDao, final OrderTableRepository orderTableRepository) {
         this.orderDao = orderDao;
-        this.orderTableDao = orderTableDao;
+        this.orderTableRepository = orderTableRepository;
     }
 
     @Transactional
     public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
-        OrderTable savedOrderTable = orderTableDao.save(orderTableRequest.toOrderTable());
+        OrderTable savedOrderTable = orderTableRepository.save(orderTableRequest.toOrderTable());
         return OrderTableResponse.from(savedOrderTable);
     }
 
     public List<OrderTableResponse> list() {
-        List<OrderTable> orderTables = orderTableDao.findAll();
+        List<OrderTable> orderTables = orderTableRepository.findAll();
         return orderTables.stream()
                 .map(orderTable -> OrderTableResponse.from(orderTable))
                 .collect(Collectors.toList());
@@ -41,7 +42,7 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableEmptyRequest orderTableRequest) {
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
+        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
         if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
@@ -55,7 +56,7 @@ public class TableService {
 
         savedOrderTable.setEmpty(orderTableRequest.isEmpty());
 
-        OrderTable changedOrderTable = orderTableDao.save(savedOrderTable);
+        OrderTable changedOrderTable = orderTableRepository.save(savedOrderTable);
         return OrderTableResponse.from(changedOrderTable);
     }
 
@@ -67,7 +68,7 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-        final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
+        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
         if (savedOrderTable.isEmpty()) {
@@ -76,7 +77,7 @@ public class TableService {
 
         savedOrderTable.setNumberOfGuests(numberOfGuests);
 
-        OrderTable changedOrderTable = orderTableDao.save(savedOrderTable);
+        OrderTable changedOrderTable = orderTableRepository.save(savedOrderTable);
         return OrderTableResponse.from(changedOrderTable);
     }
 }

@@ -1,10 +1,11 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.orderTable.domain.OrderTable;
+import kitchenpos.orderTable.domain.OrderTableRepository;
 import kitchenpos.tableGroup.domain.TableGroup;
+import kitchenpos.tableGroup.domain.TableGroupRepository;
 import kitchenpos.tableGroup.dto.TableGroupRequest;
 import kitchenpos.tableGroup.dto.TableGroupResponse;
 import kitchenpos.tableGroup.application.TableGroupService;
@@ -32,9 +33,9 @@ class TableGroupServiceTest {
     @Mock
     private OrderDao orderDao;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
     @InjectMocks
     private TableGroupService tableGroupService;
 
@@ -60,8 +61,8 @@ class TableGroupServiceTest {
     @Test
     void 테이블그룹_등록(){
         //given
-        given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(테이블_1, 테이블_2, 테이블_3));
-        given(tableGroupDao.save(any(TableGroup.class))).willReturn(단체_테이블);
+        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(Arrays.asList(테이블_1, 테이블_2, 테이블_3));
+        given(tableGroupRepository.save(any(TableGroup.class))).willReturn(단체_테이블);
         TableGroupRequest 단체_테이블_request = TableGroupRequest.from(
                 Arrays.asList(테이블_1.getId(), 테이블_2.getId(), 테이블_3.getId())
         );
@@ -87,7 +88,7 @@ class TableGroupServiceTest {
     @Test
     void 테이블그룹_등록_주문테이블_검증(){
         //given
-        given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(테이블_1, 테이블_2));
+        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(Arrays.asList(테이블_1, 테이블_2));
         TableGroupRequest invalidRequest = TableGroupRequest.from(
                 Arrays.asList(테이블_1.getId(), 테이블_2.getId(), 테이블_3.getId())
         );
@@ -100,7 +101,7 @@ class TableGroupServiceTest {
     @Test
     void 테이블그룹_등록_주문테이블_Empty_검증(){
         //given
-        given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(테이블_1, 테이블_2, 테이블_Full));
+        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(Arrays.asList(테이블_1, 테이블_2, 테이블_Full));
         TableGroupRequest invalidRequest = TableGroupRequest.from(
                 Arrays.asList(테이블_1.getId(), 테이블_2.getId(), 테이블_Full.getId())
         );
@@ -113,7 +114,7 @@ class TableGroupServiceTest {
     @Test
     void 테이블그룹_등록_주문테이블_이미_테이블그룹에_속해있는지_검증(){
         //given
-        given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(테이블_1, 테이블_2, 테이블_Grouped));
+        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(Arrays.asList(테이블_1, 테이블_2, 테이블_Grouped));
         TableGroupRequest invalidRequest = TableGroupRequest.from(
                 Arrays.asList(테이블_1.getId(), 테이블_2.getId(), 테이블_Grouped.getId())
         );
@@ -128,7 +129,7 @@ class TableGroupServiceTest {
         //given
         테이블_1.setTableGroupId(단체_테이블.getId());
         테이블_2.setTableGroupId(단체_테이블.getId());
-        given(orderTableDao.findAllByTableGroupId(anyLong())).willReturn(Arrays.asList(테이블_1, 테이블_2));
+        given(orderTableRepository.findAllByTableGroupId(anyLong())).willReturn(Arrays.asList(테이블_1, 테이블_2));
 
         //when
         tableGroupService.ungroup(단체_테이블.getId());
@@ -144,7 +145,7 @@ class TableGroupServiceTest {
     @Test
     void 테이블그룹_삭제_주문상태_검증(){
         //given
-        given(orderTableDao.findAllByTableGroupId(anyLong())).willReturn(Arrays.asList(테이블_1, 테이블_2, 테이블_3));
+        given(orderTableRepository.findAllByTableGroupId(anyLong())).willReturn(Arrays.asList(테이블_1, 테이블_2, 테이블_3));
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
 
         //then

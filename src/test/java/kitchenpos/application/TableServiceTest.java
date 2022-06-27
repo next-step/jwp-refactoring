@@ -3,6 +3,7 @@ package kitchenpos.application;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.orderTable.domain.OrderTable;
+import kitchenpos.orderTable.domain.OrderTableRepository;
 import kitchenpos.orderTable.dto.OrderTableEmptyRequest;
 import kitchenpos.orderTable.dto.OrderTableNumOfGuestRequest;
 import kitchenpos.orderTable.dto.OrderTableRequest;
@@ -31,7 +32,7 @@ public class TableServiceTest {
     @Mock
     private OrderDao orderDao;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
     @InjectMocks
     private TableService tableService;
 
@@ -50,7 +51,7 @@ public class TableServiceTest {
     @Test
     void 주문테이블_등록(){
         //given
-        given(orderTableDao.save(any(OrderTable.class))).willReturn(테이블_EMPTY);
+        given(orderTableRepository.save(any(OrderTable.class))).willReturn(테이블_EMPTY);
 
         //when
         OrderTableResponse savedTable = tableService.create(
@@ -65,7 +66,7 @@ public class TableServiceTest {
     @Test
     void 주문테이블_목록_조회(){
         //given
-        given(orderTableDao.findAll()).willReturn(Arrays.asList(테이블_EMPTY));
+        given(orderTableRepository.findAll()).willReturn(Arrays.asList(테이블_EMPTY));
 
         //when
         List<OrderTableResponse> list = tableService.list();
@@ -78,8 +79,8 @@ public class TableServiceTest {
     @Test
     void 주문테이블_Empty_업데이트(){
         //given
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(테이블_EMPTY));
-        given(orderTableDao.save(any(OrderTable.class))).willReturn(createOrderTable(테이블_EMPTY.getId(),
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(테이블_EMPTY));
+        given(orderTableRepository.save(any(OrderTable.class))).willReturn(createOrderTable(테이블_EMPTY.getId(),
                 테이블_EMPTY.getTableGroupId(), 테이블_EMPTY.getNumberOfGuests(), true));
 
         //when
@@ -94,7 +95,7 @@ public class TableServiceTest {
     @Test
     void 주문테이블_Empty_업데이트_주문테이블_검증(){
         //given
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.ofNullable(null));
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.ofNullable(null));
 
         //when
         OrderTableEmptyRequest emptyRequest = OrderTableEmptyRequest.from(true);
@@ -107,7 +108,7 @@ public class TableServiceTest {
     @Test
     void 주문테이블_Empty_업데이트_주문테이블_테이블그룹_등록_검증(){
         //given
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(테이블_GROUPED));
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(테이블_GROUPED));
         OrderTableEmptyRequest emptyRequest = OrderTableEmptyRequest.from(true);
 
         //then
@@ -118,7 +119,7 @@ public class TableServiceTest {
     @Test
     void 주문테이블_Empty_업데이트_주문_상태_검증(){
         //given
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(테이블_EMPTY));
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(테이블_EMPTY));
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(true);
 
         //when
@@ -132,8 +133,8 @@ public class TableServiceTest {
     @Test
     void 주문테이블_손님수_업데이트(){
         //given
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(테이블_NOT_EMPTY));
-        given(orderTableDao.save(any(OrderTable.class))).willReturn(createOrderTable(테이블_NOT_EMPTY.getId(),
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(테이블_NOT_EMPTY));
+        given(orderTableRepository.save(any(OrderTable.class))).willReturn(createOrderTable(테이블_NOT_EMPTY.getId(),
                 테이블_NOT_EMPTY.getTableGroupId(), 1, false));
 
         //when
@@ -159,7 +160,7 @@ public class TableServiceTest {
     @Test
     void 주문테이블_손님수_업데이트_주문테이블_검증(){
         //given
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.ofNullable(null));
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.ofNullable(null));
 
         //when
         OrderTableNumOfGuestRequest oneGuestRequest = OrderTableNumOfGuestRequest.from(1);
@@ -173,7 +174,7 @@ public class TableServiceTest {
     @Test
     void 주문테이블_손님수_업데이트_주문테이블_Empty_검증(){
         //given
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(테이블_EMPTY));
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(테이블_EMPTY));
 
         //when
         OrderTableNumOfGuestRequest oneGuestRequest = OrderTableNumOfGuestRequest.from(1);

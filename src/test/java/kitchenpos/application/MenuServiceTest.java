@@ -1,17 +1,17 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
+import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.product.domain.Product;
+import kitchenpos.menu.domain.MenuProductRepository;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.application.MenuService;
+import kitchenpos.menuGroup.domain.MenuGroup;
+import kitchenpos.menuGroup.domain.MenuGroupRepository;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,10 +26,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static kitchenpos.factory.MenuFixtureFactory.*;
-import static kitchenpos.factory.MenuGroupFixtureFactory.*;
-import static kitchenpos.factory.MenuProductFixtureFactory.*;
-import static kitchenpos.factory.ProductFixtureFactory.*;
+import static kitchenpos.factory.MenuFixtureFactory.createMenu;
+import static kitchenpos.factory.MenuGroupFixtureFactory.createMenuGroup;
+import static kitchenpos.factory.MenuProductFixtureFactory.createMenuProduct;
+import static kitchenpos.factory.ProductFixtureFactory.createProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -39,13 +39,13 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
     @Mock
-    private MenuProductDao menuProductDao;
+    private MenuProductRepository menuProductRepository;
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
     @InjectMocks
     private MenuService menuService;
 
@@ -72,10 +72,10 @@ class MenuServiceTest {
     @Test
     void 메뉴_등록(){
         //given
-        given(menuGroupDao.existsById(anyLong())).willReturn(true);
-        given(productDao.findById(김치찌개.getId())).willReturn(Optional.of(김치찌개));
-        given(productDao.findById(공기밥.getId())).willReturn(Optional.of(공기밥));
-        given(menuDao.save(any(Menu.class))).willReturn(메뉴_김치찌개세트);
+        given(menuGroupRepository.existsById(anyLong())).willReturn(true);
+        given(productRepository.findById(김치찌개.getId())).willReturn(Optional.of(김치찌개));
+        given(productRepository.findById(공기밥.getId())).willReturn(Optional.of(공기밥));
+        given(menuRepository.save(any(Menu.class))).willReturn(메뉴_김치찌개세트);
         MenuRequest 메뉴_김치찌개세트_request = MenuRequest.of(
                 메뉴_김치찌개세트.getName(),
                 메뉴_김치찌개세트.getPrice().intValue(),
@@ -113,9 +113,9 @@ class MenuServiceTest {
     @Test
     void 메뉴_등록_가격_검증_정가이하(){
         //given
-        given(menuGroupDao.existsById(anyLong())).willReturn(true);
-        given(productDao.findById(김치찌개.getId())).willReturn(Optional.of(김치찌개));
-        given(productDao.findById(공기밥.getId())).willReturn(Optional.of(공기밥));
+        given(menuGroupRepository.existsById(anyLong())).willReturn(true);
+        given(productRepository.findById(김치찌개.getId())).willReturn(Optional.of(김치찌개));
+        given(productRepository.findById(공기밥.getId())).willReturn(Optional.of(공기밥));
 
         //when
         MenuRequest invalidMenu = MenuRequest.of(
@@ -135,7 +135,7 @@ class MenuServiceTest {
     @Test
     void 메뉴_등록_메뉴그룹_검증(){
         //given
-        given(menuGroupDao.existsById(anyLong())).willReturn(false);
+        given(menuGroupRepository.existsById(anyLong())).willReturn(false);
 
         //when
         MenuRequest invalidMenu = MenuRequest.of(
@@ -155,8 +155,8 @@ class MenuServiceTest {
     @Test
     void 메뉴_등록_메뉴상품_검증(){
         //given
-        given(menuGroupDao.existsById(anyLong())).willReturn(true);
-        given(productDao.findById(김치찌개.getId())).willReturn(Optional.ofNullable(null));
+        given(menuGroupRepository.existsById(anyLong())).willReturn(true);
+        given(productRepository.findById(김치찌개.getId())).willReturn(Optional.ofNullable(null));
         MenuRequest invalidMenu = MenuRequest.of(
                 메뉴_김치찌개세트.getName(),
                 메뉴_김치찌개세트.getPrice().intValue(),
@@ -174,7 +174,7 @@ class MenuServiceTest {
     @Test
     void 메뉴_목록_조회(){
         //given
-        given(menuDao.findAll()).willReturn(Arrays.asList(메뉴_김치찌개세트));
+        given(menuRepository.findAll()).willReturn(Arrays.asList(메뉴_김치찌개세트));
 
         //when
         List<MenuResponse> list = menuService.list();
