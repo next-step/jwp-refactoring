@@ -45,6 +45,12 @@ public class MenuResponse {
                 menuProductResponses);
     }
 
+    public static List<MenuResponse> ofList(List<Menu> menus) {
+       return menus.stream()
+                .map(MenuResponse::from)
+                .collect(Collectors.toList());
+    }
+
     public Long getId() {
         return id;
     }

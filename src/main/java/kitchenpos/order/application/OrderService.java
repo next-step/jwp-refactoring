@@ -2,7 +2,6 @@ package kitchenpos.order.application;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.repository.MenuRepository;
@@ -44,9 +43,7 @@ public class OrderService {
     @Transactional(readOnly = true)
     public List<OrderResponse> findAllOrders() {
         final List<Order> orders = orderRepository.findAll();
-        return orders.stream()
-                .map(OrderResponse::from)
-                .collect(Collectors.toList());
+        return OrderResponse.ofList(orders);
     }
 
     @Transactional

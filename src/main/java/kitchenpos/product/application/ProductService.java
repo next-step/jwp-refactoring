@@ -1,7 +1,6 @@
 package kitchenpos.product.application;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.repository.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
@@ -26,9 +25,7 @@ public class ProductService {
     @Transactional(readOnly = true)
     public List<ProductResponse> findAllProducts() {
         List<Product> products = productRepository.findAll();
-        return products.stream()
-                .map(ProductResponse::from)
-                .collect(Collectors.toList());
+        return ProductResponse.ofList(products);
     }
 
 }

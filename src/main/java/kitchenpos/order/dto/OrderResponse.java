@@ -37,6 +37,12 @@ public class OrderResponse {
                 orderLineItems);
     }
 
+    public static List<OrderResponse> ofList(List<Order> orders) {
+        return  orders.stream()
+                .map(OrderResponse::from)
+                .collect(Collectors.toList());
+    }
+
     public Long getId() {
         return id;
     }

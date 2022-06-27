@@ -1,6 +1,5 @@
 package kitchenpos.menu.application;
 
-import java.util.ArrayList;
 import java.util.List;
 import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
@@ -43,13 +42,8 @@ public class MenuService {
 
     @Transactional(readOnly = true)
     public List<MenuResponse> findAllMenus() {
-        List<MenuResponse> menuResponses = new ArrayList<>();
         final List<Menu> menus = menuRepository.findAll();
-        for (Menu menu : menus) {
-            MenuResponse menuResponse = MenuResponse.from(menu);
-            menuResponses.add(menuResponse);
-        }
-        return menuResponses;
+        return MenuResponse.ofList(menus);
     }
 
     private MenuProducts createMenuProducts(List<MenuProductRequest> menuProductRequests) {

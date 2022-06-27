@@ -1,5 +1,7 @@
 package kitchenpos.product.dto;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import kitchenpos.product.domain.Product;
 
 public class ProductResponse {
@@ -15,6 +17,12 @@ public class ProductResponse {
 
     public static ProductResponse from(Product product) {
         return new ProductResponse(product.getId(), product.getName(), product.getPrice().getPrice());
+    }
+
+    public static List<ProductResponse> ofList(List<Product> products) {
+        return products.stream()
+                .map(ProductResponse::from)
+                .collect(Collectors.toList());
     }
 
     public Long getId() {

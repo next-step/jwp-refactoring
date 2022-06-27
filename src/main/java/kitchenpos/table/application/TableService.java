@@ -1,14 +1,13 @@
 package kitchenpos.table.application;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.repository.OrderRepository;
 import kitchenpos.order.domain.Orders;
+import kitchenpos.order.domain.repository.OrderRepository;
 import kitchenpos.table.domain.NumberOfGuest;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.repository.OrderTableRepository;
 import kitchenpos.table.domain.TableEmpty;
+import kitchenpos.table.domain.repository.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
@@ -35,9 +34,7 @@ public class TableService {
     @Transactional(readOnly = true)
     public List<OrderTableResponse> findAllTables() {
         List<OrderTable> orderTables = orderTableRepository.findAll();
-        return orderTables.stream()
-                .map(OrderTableResponse::from)
-                .collect(Collectors.toList());
+        return OrderTableResponse.ofList(orderTables);
     }
 
     @Transactional
