@@ -26,6 +26,15 @@ public class TableGroupValidator {
         validateTablesEmpty(orderTables);
     }
 
+    public void validateOrderTablesStatus(TableGroup tableGroup) {
+        List<OrderTable> orderTables = tableGroup.getOrderTables();
+
+        if (orderRepository.existsByOrderTableInAndOrderStatusIn(
+            orderTables, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+            throw new CannotUpdateException(ExceptionType.CAN_NOT_UPDATE_TABLE_IN_COOKING_AND_MEAL_STATUS);
+        }
+    }
+
     private void validateOrderTableSize(List<Long> orderTableIds) {
         if (CollectionUtils.isEmpty(orderTableIds) || orderTableIds.size() < 2) {
             throw new CannotCreateException(ExceptionType.ORDER_TABLE_AT_LEAST_TWO);
@@ -44,15 +53,6 @@ public class TableGroupValidator {
     private void validateOrderTableEqualsSize(List<OrderTable> savedOrderTables, List<Long> orderTableIds)  {
         if (savedOrderTables.size() != orderTableIds.size()) {
             throw new BadRequestException(ExceptionType.CONTAINS_NOT_EXIST_ORDER_TABLE);
-        }
-    }
-
-    public void validateOrderTablesStatus(TableGroup tableGroup) {
-        List<OrderTable> orderTables = tableGroup.getOrderTables();
-
-        if (orderRepository.existsByOrderTableInAndOrderStatusIn(
-            orderTables, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new CannotUpdateException(ExceptionType.CAN_NOT_UPDATE_TABLE_IN_COOKING_AND_MEAL_STATUS);
         }
     }
 }
