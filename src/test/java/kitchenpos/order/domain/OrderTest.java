@@ -28,7 +28,7 @@ class OrderTest {
 
         //when then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> new Order(OrderStatus.COMPLETION, orderLineItems, LocalDateTime.now(), emptyTable))
+                .isThrownBy(() -> new Order(LocalDateTime.now(), emptyTable))
                 .withMessageContaining("빈테이블인 경우 주문을 등록 할 수 없습니다.");
     }
 
@@ -37,11 +37,15 @@ class OrderTest {
     void order_not_item() {
         //given
         OrderTable orderTable = 주문_테이블_만들기();
+        Order order = new Order(LocalDateTime.now(), orderTable);
 
         //when then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> new Order(OrderStatus.COMPLETION, new OrderLineItems(), LocalDateTime.now(), orderTable))
-                .withMessageContaining("주문 항목이 없는 경우 주문을 등록 할 수 없습니다.");
+                .isThrownBy(() -> order.addOrderLineItem(new OrderLineItem()))
+                .withMessageContaining("주문 항목이 없는 경우 주문에 등록 할 수 없습니다.");
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> order.addOrderLineItem(null))
+                .withMessageContaining("주문 항목이 없는 경우 주문에 등록 할 수 없습니다.");
     }
 
 
@@ -49,7 +53,7 @@ class OrderTest {
     @Test
     void changeOrderStatus() {
         //given
-        Order order = 주문_만들기(1L, OrderStatus.COOKING, null);
+        Order order = 주문_만들기(OrderStatus.COOKING, 주문_테이블_만들기());
 
         //when
         order.changeOrderStatus(OrderStatus.MEAL);
@@ -62,7 +66,7 @@ class OrderTest {
     @Test
     void changeOrderStatus_completion() {
         //given
-        Order order = 주문_만들기(1L, OrderStatus.COMPLETION, null);
+        Order order = 주문_만들기(1L, OrderStatus.COMPLETION, 주문_테이블_만들기());
 
         //when
         assertThatIllegalArgumentException()

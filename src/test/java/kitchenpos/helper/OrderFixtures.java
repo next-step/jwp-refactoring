@@ -21,16 +21,13 @@ public class OrderFixtures {
         return new OrderRequest(id, orderTableId, orderStatus, orderLineItems);
     }
 
+
     public static OrderRequest 주문_요청_만들기(Long orderTableId, List<OrderLineItemRequest> orderLineItems) {
         return 주문_요청_만들기(null, orderTableId, null, orderLineItems);
     }
 
     public static OrderRequest 주문_요청_만들기(OrderStatus orderStatus) {
         return 주문_요청_만들기(null, null, orderStatus.name(), null);
-    }
-
-    public static Order 주문_만들기(OrderStatus orderStatus) {
-        return 주문_만들기(null, orderStatus, null);
     }
 
     public static Order 주문_만들기(OrderStatus orderStatus, OrderTable orderTable) {

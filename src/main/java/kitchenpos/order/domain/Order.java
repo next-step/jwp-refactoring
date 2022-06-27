@@ -35,33 +35,38 @@ public class Order {
     protected Order() {
     }
 
-    public Order(OrderStatus orderStatus, OrderLineItems orderLineItems, LocalDateTime orderedTime, OrderTable orderTable) {
-        validate(orderTable, orderLineItems);
-        this.orderStatus = orderStatus;
-        this.orderLineItems = orderLineItems;
-        this.orderedTime = orderedTime;
-        this.orderTable = orderTable;
+    public Order(LocalDateTime orderedTime, OrderTable orderTable) {
+        this(null, OrderStatus.COOKING, orderedTime, orderTable);
     }
 
     public Order(Long id, OrderStatus orderStatus, LocalDateTime orderedTime, OrderTable orderTable) {
+        validate(orderTable);
         this.id = id;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderTable = orderTable;
     }
 
-    private void validate(OrderTable orderTable, OrderLineItems orderLineItems) {
-        if (orderTable.isEmptyTable()) {
-            throw new IllegalArgumentException("[ERROR] 빈테이블인 경우 주문을 등록 할 수 없습니다.");
-        }
-        if (orderLineItems.isEmpty()) {
-            throw new IllegalArgumentException("[ERROR] 주문 항목이 없는 경우 주문을 등록 할 수 없습니다.");
-        }
+    public void addOrderLineItem(OrderLineItem orderLineItem) {
+        validateOrderLineItem(orderLineItem);
+        orderLineItems.add(orderLineItem);
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
         validatePossibleChangOrder();
         this.orderStatus = orderStatus;
+    }
+
+    private void validate(OrderTable orderTable) {
+        if (orderTable.isEmptyTable()) {
+            throw new IllegalArgumentException("[ERROR] 빈테이블인 경우 주문을 등록 할 수 없습니다.");
+        }
+    }
+
+    private void validateOrderLineItem(OrderLineItem orderLineItem) {
+        if (orderLineItem == null || orderLineItem.isEmptyOrderLineItem()) {
+            throw new IllegalArgumentException("[ERROR] 주문 항목이 없는 경우 주문에 등록 할 수 없습니다.");
+        }
     }
 
     private void validatePossibleChangOrder() {
@@ -90,8 +95,5 @@ public class Order {
         return orderTable;
     }
 
-    public void setOrderTable(OrderTable orderTable) {
-        this.orderTable = orderTable;
-    }
 
 }

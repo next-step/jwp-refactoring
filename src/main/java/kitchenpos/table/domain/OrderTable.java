@@ -23,8 +23,7 @@ public class OrderTable {
     }
 
     public OrderTable(NumberOfGuest numberOfGuests, TableEmpty empty) {
-        this.numberOfGuests = numberOfGuests;
-        this.empty = empty;
+        this(null, numberOfGuests, empty);
     }
 
     public OrderTable(Long id, NumberOfGuest numberOfGuests, TableEmpty empty) {
@@ -50,7 +49,7 @@ public class OrderTable {
         return !empty.isEmpty();
     }
 
-    public void changEmpty(TableEmpty empty, Orders orders) {
+    public void changeEmpty(TableEmpty empty, Orders orders) {
         validateChangeEmpty(orders);
         this.empty = empty;
     }

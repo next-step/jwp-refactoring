@@ -8,13 +8,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doAnswer;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import kitchenpos.order.domain.Orders;
 import kitchenpos.order.domain.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableEmpty;
+import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.repository.OrderTableRepository;
 import kitchenpos.table.domain.repository.TableGroupRepository;
 import kitchenpos.table.dto.OrderTableResponse;
@@ -48,16 +51,16 @@ class TableGroupServiceUnitTest {
     @Test
     void create() {
         //given
-        long generateTableGroupId = 1;
         TableGroupRequest request = 테이블_그룹_요청_만들기(Arrays.asList(테이블_요청_만들기(1L), 테이블_요청_만들기(2L)));
         kitchenpos.table.domain.OrderTable emptyTable1 = 테이블_만들기(1L, 0, true);
         kitchenpos.table.domain.OrderTable emptyTable2 = 테이블_만들기(2L, 0, true);
+        TableGroup tableGroup = 테이블_그룹_만들기(1L, Arrays.asList(emptyTable1, emptyTable2));
+        emptyTable1.changeEmpty(new TableEmpty(true), new Orders(Collections.emptyList()));
+        emptyTable2.changeEmpty(new TableEmpty(true), new Orders(Collections.emptyList()));
 
         given(orderTableRepository.findAllById(request.getRequestOrderTableIds()))
                 .willReturn(Arrays.asList(emptyTable1, emptyTable2));
-
-        doAnswer(invocation -> 테이블_그룹_만들기(generateTableGroupId, Arrays.asList(emptyTable1, emptyTable2)))
-                .when(tableGroupRepository).save(any());
+        given(tableGroupRepository.save(any())).willReturn(tableGroup);
 
         //when
         TableGroupResponse result = tableGroupService.create(request, LocalDateTime.now());

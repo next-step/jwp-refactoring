@@ -84,7 +84,6 @@ class OrderServiceUnitTest {
         OrderRequest request = 주문_요청_만들기(orderTable.getId(), Arrays.asList(orderLineItem1, orderLineItem2));
 
         given(orderTableRepository.findById(request.getOrderTableId())).willReturn(Optional.of(orderTable));
-        given(menuRepository.findById(anyLong())).willThrow(IllegalArgumentException.class);
 
         //when then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(request, LocalDateTime.now()));

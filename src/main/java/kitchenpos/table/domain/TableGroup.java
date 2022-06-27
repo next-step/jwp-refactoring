@@ -24,16 +24,15 @@ public class TableGroup {
     }
 
     public TableGroup(LocalDateTime createdDate, OrderTables emptyTables) {
+        this(null, createdDate, emptyTables);
+    }
+
+    public TableGroup(Long id, LocalDateTime createdDate, OrderTables emptyTables) {
         validate(emptyTables);
+        this.id = id;
         this.createdDate = createdDate;
         this.orderTables = emptyTables;
         emptyTables.changeOrderTable();
-    }
-
-    public TableGroup(Long id, LocalDateTime createdDate, OrderTables orderTables) {
-        this.id = id;
-        this.createdDate = createdDate;
-        this.orderTables = orderTables;
     }
 
     public void ungroupingTableGroup() {

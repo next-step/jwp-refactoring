@@ -45,7 +45,7 @@ public class TableService {
         final OrderTable orderTable = findOrderTable(orderTableId);
         checkExistTableGroup(orderTable.getId());
         Orders orders = findOrders(orderTable);
-        orderTable.changEmpty(new TableEmpty(orderTableRequest.getEmpty()), orders);
+        orderTable.changeEmpty(new TableEmpty(orderTableRequest.getEmpty()), orders);
         return OrderTableResponse.from(orderTable);
     }
 

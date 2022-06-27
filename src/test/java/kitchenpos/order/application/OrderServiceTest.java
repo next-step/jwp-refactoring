@@ -8,7 +8,7 @@ import static kitchenpos.helper.OrderLineItemFixtures.없는_주문_항목_요�
 import static kitchenpos.helper.OrderLineItemFixtures.주문_항목_요청1;
 import static kitchenpos.helper.OrderLineItemFixtures.주문_항목_요청2;
 import static kitchenpos.helper.TableFixtures.빈_테이블;
-import static kitchenpos.helper.TableFixtures.주문_테이블;
+import static kitchenpos.helper.TableFixtures.주문_테이블_만들기;
 import static kitchenpos.helper.TableFixtures.테이블_만들기;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -60,7 +60,7 @@ class OrderServiceTest {
     @Test
     void create_empty() {
         //given
-        OrderTable orderTable = orderTableRepository.save(주문_테이블);
+        OrderTable orderTable = orderTableRepository.save(주문_테이블_만들기());
         OrderRequest emptyRequest = 주문_요청_만들기(orderTable.getId(), Collections.emptyList());
 
         //when then
@@ -71,7 +71,7 @@ class OrderServiceTest {
     @Test
     void create_not_registered_menu() {
         //given
-        OrderTable orderTable = orderTableRepository.save(주문_테이블);
+        OrderTable orderTable = orderTableRepository.save(주문_테이블_만들기());
         OrderRequest request = 주문_요청_만들기(orderTable.getId(), Arrays.asList(주문_항목_요청1, 없는_주문_항목_요청));
 
         //when then
@@ -94,7 +94,7 @@ class OrderServiceTest {
     @Test
     void changeOrderStatus() {
         //given
-        OrderTable orderTable = orderTableRepository.save(주문_테이블);
+        OrderTable orderTable = orderTableRepository.save(주문_테이블_만들기());
         OrderResponse request = orderService
                 .create(주문_요청_만들기(orderTable.getId(), Arrays.asList(주문_항목_요청1, 주문_항목_요청2)), LocalDateTime.now());
 
@@ -109,7 +109,7 @@ class OrderServiceTest {
     @Test
     void changeOrderStatus_completion() {
         //given
-        OrderTable orderTable = orderTableRepository.save(주문_테이블);
+        OrderTable orderTable = orderTableRepository.save(주문_테이블_만들기());
         OrderResponse orderResponse = orderService
                 .create(주문_요청_만들기(orderTable.getId(), Arrays.asList(주문_항목_요청1, 주문_항목_요청2)), LocalDateTime.now());
         orderService.changeOrderStatus(orderResponse.getId(), 주문_상태_계산완료_요청);
@@ -123,7 +123,7 @@ class OrderServiceTest {
     @Test
     void list() {
         //given
-        OrderTable orderTable = orderTableRepository.save(테이블_만들기(3, false));
+        OrderTable orderTable = orderTableRepository.save(주문_테이블_만들기());
         OrderRequest request = 주문_요청_만들기(orderTable.getId(), Arrays.asList(주문_항목_요청1, 주문_항목_요청2));
         OrderResponse orderResponse = orderService.create(request, LocalDateTime.now());
 

@@ -34,11 +34,15 @@ public class OrderLineItem {
         return menu;
     }
 
-    public Quantity getQuantity(){
+    public Quantity getQuantity() {
         return quantity;
     }
 
     public void setMenu(Menu menu) {
         this.menu = menu;
+    }
+
+    public boolean isEmptyOrderLineItem() {
+        return menu == null || quantity == null;
     }
 }

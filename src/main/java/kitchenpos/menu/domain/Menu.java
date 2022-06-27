@@ -30,11 +30,7 @@ public class Menu {
     }
 
     public Menu(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        validate(price, menuProducts);
-        this.name = name;
-        this.price = price;
-        this.menuGroup = menuGroup;
-        this.menuProducts = menuProducts;
+        this(null, name, price, menuGroup, menuProducts);
     }
 
     public Menu(Long id, String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
@@ -47,7 +43,7 @@ public class Menu {
     }
 
     private void validate(Price menuPrice, MenuProducts menuProducts) {
-        if(menuPrice.overTo(menuProducts)){
+        if (menuPrice.overTo(menuProducts)) {
             throw new IllegalArgumentException("[ERROR] 메뉴 가격은 총 상품 가격보다 클 수 없습니다.");
         }
     }
