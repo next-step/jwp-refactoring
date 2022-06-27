@@ -19,10 +19,19 @@ public class TableGroupResponse {
     protected TableGroupResponse() {
     }
 
+    public TableGroupResponse(Long id, LocalDateTime createdDate) {
+        this.id = id;
+        this.createdDate = createdDate;
+    }
+
     public TableGroupResponse(Long id, LocalDateTime createdDate, List<OrderTableResponse> orderTables) {
         this.id = id;
         this.createdDate = createdDate;
         this.orderTables = orderTables;
+    }
+
+    public static TableGroupResponse of(TableGroup tableGroup) {
+        return new TableGroupResponse(tableGroup.getId(), tableGroup.getCreatedDate());
     }
 
     public static TableGroupResponse from(TableGroup tableGroup, OrderTables orderTables) {

@@ -30,9 +30,9 @@ public class OrderTables {
                 .collect(Collectors.toList());
     }
 
-    public void groupBy(TableGroup tableGroup) {
+    public void groupBy(Long tableGroupId) {
         for (OrderTable orderTable : orderTables) {
-            orderTable.groupBy(tableGroup.getId());
+            orderTable.groupBy(tableGroupId);
         }
     }
 
