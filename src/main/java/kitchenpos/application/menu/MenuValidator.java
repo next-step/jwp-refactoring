@@ -7,15 +7,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import kitchenpos.application.menugroup.MenuGroupService;
-import kitchenpos.application.product.ProductService;
-import kitchenpos.domain.Price;
+import kitchenpos.product.application.ProductService;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.domain.menugroup.MenuGroup;
-import kitchenpos.domain.product.Product;
+import kitchenpos.product.domain.Product;
 import kitchenpos.exception.CreateMenuException;
 import kitchenpos.exception.CreateMenuProductException;
 import kitchenpos.exception.MenuPriceException;
+import kitchenpos.product.domain.ProductPrice;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -57,7 +57,7 @@ public class MenuValidator {
     private void validateMenuPrice(Menu menu) {
         List<Long> productIds = menu.findMenuProducts().stream().map(MenuProduct::getProductId).collect(Collectors.toList());
         List<Product> findProducts = productService.findProducts(productIds);
-        Map<Long, Price> productIdPriceMap = findProducts.stream().collect(toMap(Product::getId, Product::getPrice));
+        Map<Long, ProductPrice> productIdPriceMap = findProducts.stream().collect(toMap(Product::getId, Product::getPrice));
 
         BigDecimal sum = menu.findMenuProducts()
                 .stream()

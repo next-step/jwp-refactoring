@@ -12,8 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import kitchenpos.domain.Price;
 import kitchenpos.domain.Quantity;
+import kitchenpos.product.domain.ProductPrice;
 
 @Entity
 @Table(name = "menu_product")
@@ -72,7 +72,7 @@ public class MenuProduct {
         this.menu = menu;
     }
 
-    public BigDecimal calculateTotalPrice(Price price) {
+    public BigDecimal calculateTotalPrice(ProductPrice price) {
         return price.getValue().multiply(BigDecimal.valueOf(this.findQuantity()));
     }
 }

@@ -11,7 +11,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.dto.product.ProductRequest;
+import kitchenpos.product.dto.ProductRequest;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

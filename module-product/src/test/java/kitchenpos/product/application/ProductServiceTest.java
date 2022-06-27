@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.product.application;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -8,13 +8,12 @@ import static org.mockito.BDDMockito.given;
 
 import java.math.BigDecimal;
 import java.util.List;
-import kitchenpos.fixture.ProductFixtureFactory;
-import kitchenpos.application.product.ProductService;
-import kitchenpos.domain.product.Product;
-import kitchenpos.domain.product.ProductRepository;
-import kitchenpos.dto.product.ProductRequest;
-import kitchenpos.dto.product.ProductResponse;
-import kitchenpos.exception.NegativePriceException;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.product.exception.NegativePriceException;
+import kitchenpos.product.fixture.ProductFixtureFactory;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
