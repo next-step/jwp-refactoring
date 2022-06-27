@@ -112,7 +112,7 @@ class OrderServiceTest {
         orderRequest.setOrderLineItems(Arrays.asList(chickenOrder, hamOrder));
 
         orderRequest.setOrderTableId(1L);
-        orderTable.useTable();
+        orderTable.changeIsEmpty(false);
 
         doNothing().when(menuOrderLineDomainService).validateComponentForCreateOrder(orderRequest);
         when(orderTableRepository.findById(1L)).thenReturn(Optional.of(orderTable));
