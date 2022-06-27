@@ -50,7 +50,7 @@ class MenuServiceTest {
 
     @BeforeEach
     void beforeEach() {
-        product = new Product.Builder("소불고기", 1000).id(1L).build();
+        product = 상품_생성됨(1L, "소불고기", 1000);
         menuProduct = new MenuProduct.Builder(product.getId(), 1).build();
         menuProducts = Arrays.asList(menuProduct, menuProduct);
         menuGroup = MenuGroup.builder().id(1L).name("점심메뉴").build();
@@ -108,5 +108,9 @@ class MenuServiceTest {
 
         // verify
         then(menuDao).should(never()).save(any(Menu.class));
+    }
+
+    public static Product 상품_생성됨(Long id, String name, long price) {
+        return new Product(id, name, price);
     }
 }

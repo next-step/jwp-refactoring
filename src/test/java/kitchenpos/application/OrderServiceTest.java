@@ -45,7 +45,7 @@ class OrderServiceTest {
 
     @BeforeEach
     void beforeEach() {
-        상품 = 상품_생성됨("소불고기", 1000);
+        상품 = 상품_생성됨(1L, "소불고기", 1000);
         메뉴_상품 = 메뉴_상품_생성됨(상품);
         메뉴_상품들 = Arrays.asList(메뉴_상품, 메뉴_상품);
         메뉴_그룹 = 메뉴_그룹_생성됨("점심메뉴");
@@ -93,8 +93,8 @@ class OrderServiceTest {
         then(orderLineItemDao).should(times(1)).findAllByOrderId(anyLong());
     }
 
-    public static Product 상품_생성됨(String name, long price) {
-        return new Product.Builder().id(1L).name(name).price(price).build();
+    public static Product 상품_생성됨(Long id, String name, long price) {
+        return new Product(id, name, price);
     }
 
     public static MenuProduct 메뉴_상품_생성됨(Product product) {
