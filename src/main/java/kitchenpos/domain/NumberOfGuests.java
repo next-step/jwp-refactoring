@@ -9,14 +9,14 @@ import javax.persistence.Embeddable;
 public class NumberOfGuests {
 
     @Column
-    private int guests;
+    private int numberOfGuests;
 
     public NumberOfGuests() {
     }
 
-    public NumberOfGuests(int guests) {
-        validate(guests);
-        this.guests = guests;
+    public NumberOfGuests(int numberOfGuests) {
+        validate(numberOfGuests);
+        this.numberOfGuests = numberOfGuests;
     }
 
     private void validate(int guests) {
@@ -25,13 +25,13 @@ public class NumberOfGuests {
         }
     }
 
-    public int getGuests() {
-        return guests;
+    public int getNumberOfGuests() {
+        return numberOfGuests;
     }
 
     public void changeNumberOfGuests(int guests) {
         validate(guests);
-        this.guests = guests;
+        this.numberOfGuests = guests;
     }
 
     @Override
@@ -43,11 +43,11 @@ public class NumberOfGuests {
             return false;
         }
         NumberOfGuests that = (NumberOfGuests) o;
-        return guests == that.guests;
+        return numberOfGuests == that.numberOfGuests;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(guests);
+        return Objects.hash(numberOfGuests);
     }
 }

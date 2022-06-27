@@ -61,7 +61,7 @@ public class OrderTable {
     }
 
     public int getNumberOfGuests() {
-        return numberOfGuests.getGuests();
+        return numberOfGuests.getNumberOfGuests();
     }
 
     public boolean isEmpty() {
