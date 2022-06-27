@@ -1,40 +1,64 @@
 package kitchenpos.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+@Entity
 public class OrderLineItem {
-    private Long seq;
-    private Long orderId;
-    private Long menuId;
-    private long quantity;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "seq")
+    private Long id;
 
-    public Long getSeq() {
-        return seq;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
+    private Order order;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
+    private Menu menu;
+
+    @Embedded
+    private Quantity quantity;
+
+    protected OrderLineItem() {
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
+    public OrderLineItem(final Menu menu, final Long quantity) {
+        this.menu = menu;
+        this.quantity = new Quantity(quantity);
     }
 
-    public Long getOrderId() {
-        return orderId;
+    // for test
+    public OrderLineItem(final Menu menu, final long quantity) {
+        this.menu = menu;
+        this.quantity = new Quantity(quantity);
     }
 
-    public void setOrderId(final Long orderId) {
-        this.orderId = orderId;
+    public void setOrder(final Order order) {
+        this.order = order;
     }
 
-    public Long getMenuId() {
-        return menuId;
+    public Long getId() {
+        return id;
     }
 
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
+    public Order getOrder() {
+        return order;
     }
 
-    public long getQuantity() {
-        return quantity;
+    public Menu getMenu() {
+        return menu;
     }
 
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
+    public Long getQuantity() {
+        return quantity.getValue();
     }
 }

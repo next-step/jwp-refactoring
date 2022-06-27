@@ -3,16 +3,16 @@ package kitchenpos.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.application.MenuServiceTest;
-import kitchenpos.application.OrderServiceTest;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
+import kitchenpos.dto.ChangeOrderStatusRequest;
+import kitchenpos.dto.MenuGroupResponse;
+import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuResponse;
+import kitchenpos.dto.OrderLineItemRequest;
+import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderResponse;
+import kitchenpos.dto.ProductResponse;
+import kitchenpos.dto.TableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,40 +31,60 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("주문 관련 기능")
 public class OrderAcceptanceTest extends AcceptanceTest {
 
-    Order order1;
-    Order order2;
+    OrderRequest orderRequest1;
+    OrderRequest orderRequest2;
+    OrderRequest orderRequest3;
+    ChangeOrderStatusRequest changeOrderStatusRequest;
+
+    public static void 주문_생성되어_있음(ExtractableResponse<Response> createResponse) {
+        TableResponse 테이블 = createResponse.as(TableResponse.class);
+        ProductResponse 샐러드 = ProductAcceptanceTest.상품_생성되어_있음("샐러드", 100).as(ProductResponse.class);
+        MenuGroupResponse 기본_메뉴_그룹 = MenuGroupAcceptanceTest.메뉴_그룹_생성되어_있음("기본 메뉴 그룹").as(MenuGroupResponse.class);
+        MenuResponse 기본_메뉴 = MenuAcceptanceTest.메뉴_생성되어_있음(
+                        "기본 메뉴",
+                        100,
+                        기본_메뉴_그룹.getId(),
+                        Arrays.asList(new MenuProductRequest(샐러드.getId(), 1)))
+                .as(MenuResponse.class);
+        주문_생성_요청(new OrderRequest(
+                테이블.getId(),
+                Arrays.asList(new OrderLineItemRequest(기본_메뉴.getId(), 1))));
+    }
 
     @BeforeEach
     public void init() {
         super.init();
 
-        OrderTable 주문_테이블 = 주문_테이블_생성되어_있음(null, false, 0).as(OrderTable.class);
-        Product 샐러드 = 상품_생성되어_있음("샐러드", 100).as(Product.class);
-        MenuGroup 채식_메뉴_그룹 = 메뉴_그룹_생성되어_있음("채식").as(MenuGroup.class);
-        MenuProduct 샐러드_2인 = MenuServiceTest.메뉴_상품_생성(샐러드.getId(), 2);
-        Menu 기본_메뉴 = MenuAcceptanceTest.메뉴_생성되어_있음(채식_메뉴_그룹, "기본 메뉴", 200, 샐러드_2인).as(Menu.class);
-        OrderLineItem 주문_항목1 = OrderServiceTest.주문_항목_생성(기본_메뉴.getId(), 1);
-        OrderLineItem 주문_항목2 = OrderServiceTest.주문_항목_생성(기본_메뉴.getId(), 2);
-        order1 = OrderServiceTest.주문_생성(주문_테이블.getId(), null, null, 주문_항목1);
-        order2 = OrderServiceTest.주문_생성(주문_테이블.getId(), null, null, 주문_항목2);
+        // given
+        TableResponse 주문_테이블 = 주문_테이블_생성되어_있음(0, false).as(TableResponse.class);
+        ProductResponse 샐러드 = 상품_생성되어_있음("샐러드", 100).as(ProductResponse.class);
+        MenuGroupResponse 채식_메뉴_그룹 = 메뉴_그룹_생성되어_있음("채식").as(MenuGroupResponse.class);
+        MenuProductRequest 샐러드_2인 = new MenuProductRequest(샐러드.getId(), 2);
+        MenuResponse 기본_메뉴 = MenuAcceptanceTest.메뉴_생성되어_있음("기본 메뉴", 200, 채식_메뉴_그룹.getId(), Arrays.asList(샐러드_2인)).as(MenuResponse.class);
+        OrderLineItemRequest 기본_메뉴_1개 = new OrderLineItemRequest(기본_메뉴.getId(), 1);
+        OrderLineItemRequest 기본_메뉴_2개 = new OrderLineItemRequest(기본_메뉴.getId(), 2);
+        orderRequest1 = new OrderRequest(주문_테이블.getId(), Arrays.asList(기본_메뉴_1개));
+        orderRequest2 = new OrderRequest(주문_테이블.getId(), Arrays.asList(기본_메뉴_1개, 기본_메뉴_2개));
+        orderRequest3 = new OrderRequest(주문_테이블.getId(), Arrays.asList(기본_메뉴_1개));
+        changeOrderStatusRequest = new ChangeOrderStatusRequest(주문_테이블.getId(), OrderStatus.MEAL, Arrays.asList(기본_메뉴_1개));
     }
 
-    @DisplayName("주문을 생성한다.")
+    @DisplayName("주문 생성에 성공한다.")
     @Test
-    void 주문_생성() {
+    void 생성() {
         // when
-        ExtractableResponse<Response> response = 주문_생성_요청(order1);
+        ExtractableResponse<Response> response = 주문_생성_요청(orderRequest1);
 
         // then
         주문_생성됨(response);
     }
 
-    @DisplayName("주문 목록을 조회한다.")
+    @DisplayName("주문 목록 조회에 성공한다.")
     @Test
-    void 주문_목록_조회() {
+    void 목록_조회() {
         // given
-        ExtractableResponse<Response> createResponse1 = 주문_생성_요청(order1);
-        ExtractableResponse<Response> createResponse2 = 주문_생성_요청(order2);
+        ExtractableResponse<Response> createResponse1 = 주문_생성_요청(orderRequest1);
+        ExtractableResponse<Response> createResponse2 = 주문_생성_요청(orderRequest2);
 
         // when
         ExtractableResponse<Response> response = 주문_목록_조회_요청();
@@ -74,21 +94,20 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         주문_목록_포함됨(response, Arrays.asList(createResponse1, createResponse2));
     }
 
-    @DisplayName("주문 상태를 변경한다.")
+    @DisplayName("주문 상태 변경에 성공한다.")
     @Test
     void 주문_상태_변경() {
         // given
-        ExtractableResponse<Response> createResponse = 주문_생성_요청(order1);
+        ExtractableResponse<Response> createResponse = 주문_생성_요청(orderRequest1);
 
         // when
-        String 변경할_상태 = OrderStatus.MEAL.name();
-        ExtractableResponse<Response> response = 주문_상태_변경_요청(createResponse, 변경할_상태);
+        ExtractableResponse<Response> response = 주문_상태_변경_요청(createResponse, changeOrderStatusRequest);
 
         // then
-        주문_상태_변경됨(response, 변경할_상태);
+        주문_상태_변경됨(response);
     }
 
-    public static ExtractableResponse<Response> 주문_생성_요청(Order order) {
+    public static ExtractableResponse<Response> 주문_생성_요청(OrderRequest order) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -107,15 +126,13 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 주문_상태_변경_요청(ExtractableResponse<Response> response, String orderStatus) {
+    public static ExtractableResponse<Response> 주문_상태_변경_요청(ExtractableResponse<Response> response, ChangeOrderStatusRequest params) {
         String location = response.header("Location");
-        Order order = response.as(Order.class);
-        order.setOrderStatus(orderStatus);
 
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(order)
+                .body(params)
                 .when().put(location + "/order-status")
                 .then().log().all()
                 .extract();
@@ -135,16 +152,14 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 .map(it -> Long.parseLong(it.header("Location").split("/")[3]))
                 .collect(Collectors.toList());
 
-        List<Long> resultLineIds = response.jsonPath().getList(".", Order.class).stream()
-                .map(Order::getId)
+        List<Long> resultLineIds = response.jsonPath().getList(".", OrderResponse.class).stream()
+                .map(OrderResponse::getId)
                 .collect(Collectors.toList());
 
         assertThat(resultLineIds).containsAll(expectedLineIds);
     }
 
-    public static void 주문_상태_변경됨(ExtractableResponse<Response> response, String orderStatus) {
+    public static void 주문_상태_변경됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        Order order = response.as(Order.class);
-        assertThat(order.getOrderStatus()).isEqualTo(orderStatus);
     }
 }
