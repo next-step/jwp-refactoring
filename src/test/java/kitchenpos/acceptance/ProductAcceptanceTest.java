@@ -1,6 +1,9 @@
 package kitchenpos.acceptance;
 
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -9,15 +12,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
-import kitchenpos.domain.Product;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.DynamicTest.*;
 
 @DisplayName("상품 관련 인수테스트")
 class ProductAcceptanceTest extends AcceptanceTest {
@@ -73,12 +73,12 @@ class ProductAcceptanceTest extends AcceptanceTest {
 
   }
 
-    public static Product 상품_등록_되어있음(String productName, int price) {
+    public static ProductResponse 상품_등록_되어있음(String productName, int price) {
         Map<String, Object> params = new HashMap<>();
         params.put("name", productName);
         params.put("price", price);
 
-        return 상품_등록_요청(params).as(Product.class);
+        return 상품_등록_요청(params).as(ProductResponse.class);
     }
 
     private Map<String, Object> 요청할_상품_생성(String name, int price) {

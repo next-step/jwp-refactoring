@@ -15,11 +15,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
+import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.order.consts.OrderStatus;
+import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
@@ -33,15 +33,15 @@ class OrderAcceptanceTest extends AcceptanceTest {
 
     private static final String ORDER_PATH = "/api/orders";
 
-    private Product 뿌링클;
-    private Product 투움바;
-    private Product 로제떡볶이;
-    private MenuGroup 인기메뉴;
-    private Menu 메뉴_뿌링클;
-    private Menu 메뉴_투움바;
-    private Menu 메뉴_로제떡볶이;
-    private Menu 메뉴_등록안됨;
-    private OrderTable 주문테이블;
+    private ProductResponse 뿌링클;
+    private ProductResponse 투움바;
+    private ProductResponse 로제떡볶이;
+    private MenuGroupResponse 인기메뉴;
+    private MenuResponse 메뉴_뿌링클;
+    private MenuResponse 메뉴_투움바;
+    private MenuResponse 메뉴_로제떡볶이;
+    private MenuResponse 메뉴_등록안됨;
+    private OrderTableResponse 주문테이블;
 
     @BeforeEach
     public void setUp(){
@@ -53,10 +53,10 @@ class OrderAcceptanceTest extends AcceptanceTest {
         
         인기메뉴 = MenuGroupAcceptanceTest.메뉴_그룹_등록_되어있음("인기 메뉴");
 
-        메뉴_뿌링클 = MenuAcceptanceTest.메뉴_등록_되어있음(뿌링클, 인기메뉴);
-        메뉴_투움바 = MenuAcceptanceTest.메뉴_등록_되어있음(투움바, 인기메뉴);
-        메뉴_로제떡볶이 = MenuAcceptanceTest.메뉴_등록_되어있음(로제떡볶이, 인기메뉴);
-        메뉴_등록안됨 = new Menu(99999999L);
+        메뉴_뿌링클 = MenuAcceptanceTest.메뉴_등록_되어있음("뿌링클", 27000, Arrays.asList(뿌링클), 인기메뉴);
+        메뉴_투움바 = MenuAcceptanceTest.메뉴_등록_되어있음("투움바", 30000, Arrays.asList(투움바), 인기메뉴);
+        메뉴_로제떡볶이 = MenuAcceptanceTest.메뉴_등록_되어있음("로제떡볶이", 19000, Arrays.asList(로제떡볶이), 인기메뉴);
+        메뉴_등록안됨 = new MenuResponse(99999999L,null,null,null, null);
         주문테이블  = TableAcceptanceTest.주문_테이블_등록_되어있음(3);
     }
 
@@ -90,7 +90,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
      * */
     @DisplayName("주문 기능을 관리한다.")
     @TestFactory
-    Stream<DynamicTest> manageMenu() {
+    Stream<DynamicTest> manageOrder() {
         return Stream.of(
                 dynamicTest("주문을 등록 한다.", () -> {
                     //given
@@ -103,7 +103,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
                     주문_등록됨(response1, Arrays.asList(메뉴_뿌링클, 메뉴_투움바));
 
                     //given
-                    OrderTable 빈테이블 = TableAcceptanceTest.빈_테이블_등록_되어있음(3);
+                    OrderTableResponse 빈테이블 = TableAcceptanceTest.빈_테이블_등록_되어있음(3);
                     Map<String, Object> params2 = 요청할_주문_생성(빈테이블, Arrays.asList(메뉴_뿌링클, 메뉴_투움바));
 
                     //when
@@ -156,21 +156,21 @@ class OrderAcceptanceTest extends AcceptanceTest {
     }
 
 
-    public static void 주문_동록_및_주문_상태_업데이트_되어있음(OrderTable orderTable, List<Menu> menus, OrderStatus orderStatus) {
+    public static void 주문_동록_및_주문_상태_업데이트_되어있음(OrderTableResponse orderTable, List<MenuResponse> menus, OrderStatus orderStatus) {
         Map<String, Object> params = 요청할_주문_생성(orderTable, menus);
         주문_상태_업데이트_요청(주문_등록_요청(params), orderStatus);
     }
 
-    private static Map<String, Object> 요청할_주문_생성(OrderTable orderTable, List<Menu> menus) {
+    private static Map<String, Object> 요청할_주문_생성(OrderTableResponse orderTable, List<MenuResponse> menus) {
         Map<String, Object> params = new HashMap<>();
         params.put("orderTableId", orderTable.getId());
         params.put("orderLineItems", 요청할_주문_항목_리스트_생성(menus));
         return params;
     }
 
-    private static List<Map<String, Object>> 요청할_주문_항목_리스트_생성(List<Menu> menus) {
+    private static List<Map<String, Object>> 요청할_주문_항목_리스트_생성(List<MenuResponse> menus) {
         List<Map<String, Object>> params = new ArrayList<>();
-        for (Menu menu : menus) {
+        for (MenuResponse menu : menus) {
             Map<String, Object> orderLineItemParam = new HashMap<>();
             orderLineItemParam.put("menuId", menu.getId());
             orderLineItemParam.put("quantity", 10);
@@ -210,11 +210,11 @@ class OrderAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 주문_등록됨(ExtractableResponse<Response> response, List<Menu> menus) {
+    private void 주문_등록됨(ExtractableResponse<Response> response, List<MenuResponse> menus) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.body().jsonPath().getString("orderStatus")).isEqualTo(OrderStatus.COOKING.name());
         assertThat(response.body().jsonPath().getList("orderLineItems.menuId", Long.class))
-                .containsExactlyInAnyOrderElementsOf(menus.stream().map(Menu::getId).collect(Collectors.toList()));
+                .containsExactlyInAnyOrderElementsOf(menus.stream().map(MenuResponse::getId).collect(Collectors.toList()));
     }
 
     private void 주문_등록_실패됨(ExtractableResponse<Response> response) {

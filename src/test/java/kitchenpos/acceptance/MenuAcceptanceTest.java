@@ -9,15 +9,13 @@ import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.Product;
+import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
@@ -29,11 +27,11 @@ import org.springframework.http.MediaType;
 class MenuAcceptanceTest extends AcceptanceTest {
 
     private static final String MENU_PATH = "/api/menus";
-    private static final int PRODUCT_QUANTITY_DEFAULT = 100;
+    private static final int PRODUCT_QUANTITY_DEFAULT = 1;
 
-    private Product 뿌링클;
-    private Product 투움바;
-    private MenuGroup 인기메뉴;
+    private ProductResponse 뿌링클;
+    private ProductResponse 투움바;
+    private MenuGroupResponse 인기메뉴;
 
     @BeforeEach
     public void setUp(){
@@ -56,6 +54,12 @@ class MenuAcceptanceTest extends AcceptanceTest {
      *     Given  요청할 메뉴를 생성하고
      *     When   메뉴 등록 요청하면
      *     Then   메뉴가 등록된다.
+     *     Given  메뉴 상품이 N개인 메뉴를 생성하고
+     *     When   메뉴 등록 요청하면
+     *     Then   메뉴가 등록된다.
+     *     Given  메뉴 가격이 금액(가격 * 수량)보다 큰 메뉴를 생성하고
+     *     When   메뉴 등록 요청하면
+     *     Then   메뉴 등록 실패된다.
      *
      *     When   메뉴 목록을 조회하면
      *     Then   메뉴 목록이 조회된다.
@@ -66,8 +70,8 @@ class MenuAcceptanceTest extends AcceptanceTest {
         return Stream.of(
                 dynamicTest("메뉴를 등록 한다.", () -> {
                     //given
-                    Map<String, Object> params1 = 요청할_메뉴_생성(뿌링클, 인기메뉴);
-                    Map<String, Object> params2 = 요청할_메뉴_생성(투움바, 인기메뉴);
+                    Map<String, Object> params1 = 요청할_메뉴_생성("뿌링클", 27000 ,Arrays.asList(뿌링클), 인기메뉴);
+                    Map<String, Object> params2 = 요청할_메뉴_생성("투움바", 30000 ,Arrays.asList(투움바), 인기메뉴);
 
                     //when
                     ExtractableResponse<Response> response1 = 메뉴_등록_요청(params1);
@@ -76,6 +80,25 @@ class MenuAcceptanceTest extends AcceptanceTest {
                     //then
                     메뉴_등록됨(response1);
                     메뉴_등록됨(response2);
+
+                    //given
+                    Map<String, Object> params3 = 요청할_메뉴_생성("인기치킨 두마리 세트", 50000, Arrays.asList(뿌링클, 투움바), 인기메뉴);
+
+                    //when
+                    ExtractableResponse<Response> response3 = 메뉴_등록_요청(params3);
+
+                    //then
+                    메뉴_등록됨(response3);
+
+                    //given
+                    Map<String, Object> params4 = 요청할_메뉴_생성("합친게 더 비싼 세트", 60000, Arrays.asList(뿌링클, 투움바), 인기메뉴);
+
+                    //when
+                    ExtractableResponse<Response> response4 = 메뉴_등록_요청(params4);
+
+                    //then
+                    메뉴_등록_실패됨(response4);
+
                 }),
 
                 dynamicTest("메뉴 그룹 목록 조회한다.", () -> {
@@ -83,32 +106,31 @@ class MenuAcceptanceTest extends AcceptanceTest {
                     ExtractableResponse<Response> response = 메뉴_목록_조회_요청();
 
                     //then
-                    메뉴_목록_조회됨(response, Arrays.asList(뿌링클, 투움바));
+                    메뉴_목록_조회됨(response, Arrays.asList("뿌링클", "투움바", "인기치킨 두마리 세트"), 27000, 30000, 50000);
                 })
         );
 
     }
 
 
-    public static Menu 메뉴_등록_되어있음(Product product, MenuGroup menuGroup) {
-        Map<String, Object> params = 요청할_메뉴_생성(product, menuGroup);
-        return 메뉴_등록_요청(params).as(Menu.class);
+    public static MenuResponse 메뉴_등록_되어있음(String menuName, int menuPrice, List<ProductResponse> products, MenuGroupResponse menuGroup) {
+        Map<String, Object> params = 요청할_메뉴_생성(menuName, menuPrice, products, menuGroup);
+        return 메뉴_등록_요청(params).as(MenuResponse.class);
     }
 
-
-    private static Map<String, Object> 요청할_메뉴_생성(Product product, MenuGroup menuGroup) {
+    private static Map<String, Object> 요청할_메뉴_생성(String name, int price, List<ProductResponse> products, MenuGroupResponse menuGroup) {
         Map<String, Object> params = new HashMap<>();
-        params.put("price", product.getPrice());
+        params.put("price", price);
         params.put("menuGroupId", menuGroup.getId());
-        params.put("menuProducts", 요청할_메뉴_상품_리스트_생성(Collections.singletonList(product)));
-        params.put("name", product.getName());
+        params.put("menuProducts", 요청할_메뉴_상품_리스트_생성(products));
+        params.put("name", name);
         return params;
     }
 
-    private static List<Map<String, Object>> 요청할_메뉴_상품_리스트_생성(List<Product> products) {
+    private static List<Map<String, Object>> 요청할_메뉴_상품_리스트_생성(List<ProductResponse> products) {
         List<Map<String, Object>> menuProducts = new ArrayList<>();
 
-        for (Product product : products) {
+        for (ProductResponse product : products) {
             Map<String, Object> menuProduct = new HashMap<>();
             menuProduct.put("productId", product.getId());
             menuProduct.put("quantity", PRODUCT_QUANTITY_DEFAULT);
@@ -137,14 +159,17 @@ class MenuAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    private void 메뉴_목록_조회됨(ExtractableResponse<Response> response, List<Product> products) {
+    private void 메뉴_등록_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    private void 메뉴_목록_조회됨(ExtractableResponse<Response> response, List<String> menuNames, int ...menuPrices) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.body().jsonPath().getList("name", String.class))
-                .containsExactlyInAnyOrderElementsOf(
-                        products.stream().map(Product::getName).collect(Collectors.toList()));
+                .containsExactlyInAnyOrderElementsOf(menuNames);
         assertThat(response.body().jsonPath().getList("price", BigDecimal.class)
                 .stream().mapToInt(BigDecimal::intValue).toArray())
-                .containsExactly(products.stream().map(Product::getPrice).mapToInt(BigDecimal::intValue).toArray());
+                .containsExactly(menuPrices);
 
     }
 

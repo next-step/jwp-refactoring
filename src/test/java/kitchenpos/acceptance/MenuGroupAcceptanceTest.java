@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
@@ -64,10 +64,10 @@ class MenuGroupAcceptanceTest extends AcceptanceTest {
     }
 
 
-    public static MenuGroup 메뉴_그룹_등록_되어있음(String menuGroupName) {
+    public static MenuGroupResponse 메뉴_그룹_등록_되어있음(String menuGroupName) {
         Map<String, Object> params = new HashMap<>();
         params.put("name", menuGroupName);
-        return 메뉴_그룹_등록_요청(params).as(MenuGroup.class);
+        return 메뉴_그룹_등록_요청(params).as(MenuGroupResponse.class);
     }
 
     private Map<String, Object> 요청할_메뉴_그룹_생성(String name) {
