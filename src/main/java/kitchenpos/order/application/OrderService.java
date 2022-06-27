@@ -1,21 +1,15 @@
 package kitchenpos.order.application;
 
-import kitchenpos.core.exception.BadRequestException;
-import kitchenpos.core.exception.CannotCreateException;
 import kitchenpos.core.exception.ExceptionType;
 import kitchenpos.core.exception.NotFoundException;
-import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.request.OrderRequest;
 import kitchenpos.order.domain.response.OrderResponse;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.order.domain.request.OrderLineItemRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,51 +18,22 @@ import java.util.stream.Collectors;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
-    private final MenuRepository menuRepository;
+    private final OrderValidator orderValidator;
 
-    public OrderService(
-            final OrderRepository orderRepository,
-            final OrderTableRepository orderTableRepository,
-            final MenuRepository menuRepository
-    ) {
+    public OrderService(OrderRepository orderRepository, OrderTableRepository orderTableRepository, OrderValidator orderValidator) {
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
-        this.menuRepository = menuRepository;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        final List<OrderLineItemRequest> orderLineItemRequests = orderRequest.getOrderLineItemRequests();
-        List<OrderLineItem> orderLineItems = validateOrderLineItems(orderLineItemRequests);
-
-        final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
-            .orElseThrow(() -> new NotFoundException(ExceptionType.NOT_EXIST_ORDER_TABLE));
-
-        Order order = Order.of(orderTable, orderLineItems);
+        Order order = Order.of(orderValidator, orderRequest);
         order = orderRepository.save(order);
 
-        return OrderResponse.of(order);
-    }
-
-    private List<OrderLineItem> validateOrderLineItems(List<OrderLineItemRequest> orderLineItemRequests) {
-        if (CollectionUtils.isEmpty(orderLineItemRequests)) {
-            throw new BadRequestException(ExceptionType.EMPTY_ORDER_LINE_ITEM);
-        }
-
-        validateExistMenu(orderLineItemRequests);
-        return orderLineItemRequests.stream()
-            .map(OrderLineItemRequest::toEntity)
-            .collect(Collectors.toList());
-    }
-
-    private void validateExistMenu(List<OrderLineItemRequest> orderLineItemRequests) {
-        List<Long> menuIds = orderLineItemRequests.stream()
-            .map(OrderLineItemRequest::getMenuId)
-            .collect(Collectors.toList());
-
-        if (orderLineItemRequests.size() != menuRepository.countByIdIn(menuIds)) {
-            throw new CannotCreateException(ExceptionType.CONTAINS_NOT_EXIST_MENU);
-        }
+        OrderTable orderTable = orderTableRepository.findById(order.getOrderTableId())
+            .orElseThrow(() -> new NotFoundException(ExceptionType.NOT_EXIST_ORDER_TABLE));
+        return OrderResponse.of(order, orderTable);
     }
 
     @Transactional(readOnly = true)
@@ -76,7 +41,7 @@ public class OrderService {
         final List<Order> orders = orderRepository.findAllOrderAndItems();
 
         return orders.stream()
-            .map(OrderResponse::of)
+            .map(OrderResponse::toResponseWithoutOrderTable)
             .collect(Collectors.toList());
     }
 
@@ -89,6 +54,6 @@ public class OrderService {
         orderRepository.save(savedOrder);
 
         savedOrder = orderRepository.findAllOrderAndItemsByOrder(savedOrder);
-        return OrderResponse.of(savedOrder);
+        return OrderResponse.toResponseWithoutOrderTable(savedOrder);
     }
 }
