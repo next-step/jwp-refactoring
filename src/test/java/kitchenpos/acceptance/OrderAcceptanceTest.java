@@ -66,7 +66,7 @@ public class OrderAcceptanceTest extends BaseAcceptanceTest {
     public static ExtractableResponse<Response> 주문_생성_요청(final Long orderTableId, final Map<Menu, Long> menuQuantity) {
         final Map<String, Object> body = new HashMap<>();
         body.put("orderTableId", orderTableId);
-        body.put("menuProducts", convertToOrderLineItemsParam(menuQuantity));
+        body.put("orderLineItems", convertToOrderLineItemsParam(menuQuantity));
 
         return RestAssured
                 .given().log().all()
@@ -110,7 +110,7 @@ public class OrderAcceptanceTest extends BaseAcceptanceTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(body)
-                .when().post("/api/orders/{orderId}/order-status", order.getId())
+                .when().put("/api/orders/{orderId}/order-status", order.getId())
                 .then().log().all()
                 .extract();
     }
