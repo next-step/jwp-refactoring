@@ -4,9 +4,13 @@ import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuRepository;
 import kitchenpos.domain.menuGroup.MenuGroup;
 import kitchenpos.domain.menuGroup.MenuGroupRepository;
+import kitchenpos.domain.menuProduct.MenuProduct;
+import kitchenpos.domain.menuProduct.MenuProducts;
+import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.ProductRepository;
 import kitchenpos.dto.menu.MenuRequest;
 import kitchenpos.dto.menu.MenuResponse;
+import kitchenpos.dto.menuProduct.MenuProductRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,7 +38,9 @@ public class MenuService {
     public MenuResponse create(final MenuRequest menuRequest) {
         MenuGroup menuGroup = findMenuGroup(menuRequest.getMenuGroupId());
 
-        Menu menu = menuRequest.toMenu(menuGroup);
+        MenuProducts menuProducts = findMenuProducts(menuRequest.getMenuProducts());
+        Menu menu = menuRequest.toMenu(menuGroup, menuProducts);
+
         menu.bindMenuProducts();
 
         List<Long> productIds = menu.getMenuProducts().findProductIds();
@@ -69,5 +75,21 @@ public class MenuService {
 
     private List<Menu> findMenus() {
         return menuRepository.findAll();
+    }
+
+    private MenuProducts findMenuProducts(List<MenuProductRequest> menuProducts) {
+        return new MenuProducts(menuProducts.stream()
+                .map(this::createMenuProduct)
+                .collect(Collectors.toList()));
+    }
+
+    private MenuProduct createMenuProduct(MenuProductRequest menuProductRequest) {
+        Product product = findProduct(menuProductRequest.getProductId());
+        return new MenuProduct(product, menuProductRequest.getQuantity());
+    }
+
+    private Product findProduct(Long productId) {
+        return productRepository.findById(productId)
+                .orElseThrow(NoSuchElementException::new);
     }
 }

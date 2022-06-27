@@ -10,6 +10,7 @@ import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.ProductRepository;
 import kitchenpos.dto.menu.MenuRequest;
 import kitchenpos.dto.menu.MenuResponse;
+import kitchenpos.dto.menuProduct.MenuProductRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -78,6 +80,8 @@ class MenuServiceTest {
         MenuRequest request = 메뉴_요청_데이터_생성(BigDecimal.valueOf(26000));
         Menu 예상값 = 메뉴_데이터_생성(1L, BigDecimal.valueOf(26000));
         given(menuGroupRepository.findById(any())).willReturn(Optional.ofNullable(menuGroup));
+        given(productRepository.findById(1L)).willReturn(Optional.ofNullable(초밥));
+        given(productRepository.findById(2L)).willReturn(Optional.ofNullable(우동));
         given(productRepository.existsAllByIdIn(anyList())).willReturn(true);
         given(menuRepository.save(any(Menu.class))).willReturn(예상값);
 
@@ -125,6 +129,8 @@ class MenuServiceTest {
         MenuRequest request = 메뉴_요청_데이터_생성(BigDecimal.valueOf(25000));
         given(menuGroupRepository.findById(any())).willReturn(Optional.ofNullable(menuGroup));
         given(productRepository.existsAllByIdIn(anyList())).willReturn(false);
+        given(productRepository.findById(1L)).willReturn(Optional.ofNullable(초밥));
+        given(productRepository.findById(2L)).willReturn(Optional.ofNullable(우동));
 
         // when && then
         assertThatThrownBy(() -> 메뉴_생성(request))
@@ -138,6 +144,8 @@ class MenuServiceTest {
         // given
         MenuRequest request = 메뉴_요청_데이터_생성(BigDecimal.valueOf(26001));
         given(menuGroupRepository.findById(any())).willReturn(Optional.ofNullable(menuGroup));
+        given(productRepository.findById(1L)).willReturn(Optional.ofNullable(초밥));
+        given(productRepository.findById(2L)).willReturn(Optional.ofNullable(우동));
 
         // when && then
         assertThatThrownBy(() -> 메뉴_생성(request))
@@ -169,7 +177,10 @@ class MenuServiceTest {
     }
 
     private MenuRequest 메뉴_요청_데이터_생성(BigDecimal price) {
-        return new MenuRequest("메뉴이름", price, 1L, menuProducts);
+        return new MenuRequest("메뉴이름", price, 1L,
+                menuProducts.stream()
+                        .map(MenuProductRequest::of)
+                        .collect(Collectors.toList()));
     }
 
     private Menu 메뉴_데이터_생성(Long id, BigDecimal price) {

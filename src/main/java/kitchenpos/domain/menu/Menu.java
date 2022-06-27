@@ -32,8 +32,13 @@ public class Menu {
 
     }
 
+    public Menu(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        this(null, name, price, menuGroup, menuProducts);
+    }
+
     public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this(id, name, price, menuGroup, new MenuProducts(menuProducts));
+        validateMenuProductsAmount();
     }
 
     public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
@@ -42,23 +47,25 @@ public class Menu {
         this.price = price;
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
-        validateForCreate();
-    }
-
-    private void validateForCreate() {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
-
-        BigDecimal sum = menuProducts.calculateProductsSum();
-
-        if (price.compareTo(sum) > 0) {
-            throw new IllegalArgumentException();
-        }
+        validatePriceAmount();
     }
 
     public void bindMenuProducts() {
         menuProducts.updateMenu(this);
+    }
+
+    private void validateMenuProductsAmount() {
+        BigDecimal sum = menuProducts.calculateProductsSum();
+
+        if (price.compareTo(sum) > 0) {
+            throw new IllegalArgumentException("메뉴의 가격은 상품 가격의 합보다 작거나 같아야 합니다.");
+        }
+    }
+
+    private void validatePriceAmount() {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("메뉴는 0원 이상의 가격을 가져야 합니다.");
+        }
     }
 
     public Long getId() {
