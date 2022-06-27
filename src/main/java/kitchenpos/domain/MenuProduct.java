@@ -6,19 +6,14 @@ public class MenuProduct {
     private Long productId;
     private long quantity;
 
-    public Long getSeq() {
-        return seq;
-    }
-
-    public void setSeq(final Long seq) {
+    public MenuProduct(Long seq, Long menuId, Long productId, long quantity) {
         this.seq = seq;
+        this.menuId = menuId;
+        this.productId = productId;
+        this.quantity = quantity;
     }
 
-    public Long getMenuId() {
-        return menuId;
-    }
-
-    public void setMenuId(final Long menuId) {
+    public void updateMenuId(final Long menuId) {
         this.menuId = menuId;
     }
 
@@ -26,15 +21,7 @@ public class MenuProduct {
         return productId;
     }
 
-    public void setProductId(final Long productId) {
-        this.productId = productId;
-    }
-
     public long getQuantity() {
         return quantity;
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
     }
 }
