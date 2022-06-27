@@ -28,15 +28,14 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public void useTable() {
-        this.empty = false;
+    public void changeIsEmpty(boolean isEmpty) {
+        if (Objects.isNull(isEmpty) || Objects.nonNull(tableGroupId)) {
+            throw new IllegalArgumentException();
+        }
+        this.empty = isEmpty;
     }
 
-    public void unUseTable() {
-        this.empty = true;
-    }
-
-    public void unGroupTable(){
+    public void unGroupTable() {
         this.empty = true;
         this.numberOfGuests.changeNumberOfGuests(0);
         this.tableGroupId = null;
@@ -47,6 +46,9 @@ public class OrderTable {
     }
 
     public void changeNumberOfGuests(int numberOfGuests) {
+        if (empty) {
+            throw new IllegalArgumentException();
+        }
         this.numberOfGuests.changeNumberOfGuests(numberOfGuests);
     }
 
