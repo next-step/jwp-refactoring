@@ -100,6 +100,19 @@ class TableGroupServiceTest {
     }
 
     @Test
+    @DisplayName("테이블 그룹내 테이블이 중복되어 있을 경우 그룹 생성 불가")
+    void createDuplicateTable() {
+        주문테이블1.setTableGroupId(1L);
+        주문테이블2.setTableGroupId(1L);
+        주문테이블그룹 = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(주문테이블1, 주문테이블1, 주문테이블2));
+        given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(주문테이블1, 주문테이블2));
+
+        assertThatThrownBy(() -> {
+            tableGroupService.create(주문테이블그룹);
+        }).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
     @DisplayName("주문테이블 그룹에 포함된 주물테이블들 그룹 해제(Happy Path)")
     void ungroup() {
         주문테이블그룹 = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(주문테이블1, 주문테이블2));
