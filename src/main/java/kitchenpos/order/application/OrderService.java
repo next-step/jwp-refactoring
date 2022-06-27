@@ -43,7 +43,7 @@ public class OrderService {
         List<OrderLineItemRequest> orderLineItemRequests = orderRequest.getOrderLineItems();
         List<OrderLineItem> orderLineItems = findOrderLineItems(orderLineItemRequests);
         OrderTable orderTable = findOrderTable(orderRequest.getOrderTableId());
-        Order order = orderRequest.toOrder(orderTable, OrderLineItems.from(orderLineItems), orderLineItemRequests.size());
+        Order order = Order.from(orderTable, OrderLineItems.from(orderLineItems), orderLineItemRequests.size());
         return OrderResponse.from(orderRepository.save(order));
     }
 
