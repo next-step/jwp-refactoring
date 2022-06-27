@@ -18,12 +18,12 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Order;
 import kitchenpos.dto.dto.MenuProductDTO;
 import kitchenpos.dto.dto.OrderLineItemDTO;
 import kitchenpos.dto.request.OrderTableRequest;
 import kitchenpos.dto.response.MenuGroupResponse;
 import kitchenpos.dto.response.MenuResponse;
+import kitchenpos.dto.response.OrderResponse;
 import kitchenpos.dto.response.OrderTableResponse;
 import kitchenpos.dto.response.ProductResponse;
 import kitchenpos.dto.response.TableGroupResponse;
@@ -194,8 +194,8 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
 
         TableGroupResponse 단체테이블 = 단체_테이블_등록하기(Arrays.asList(빈테이블_1_request, 빈테이블_2_request)).as(
             TableGroupResponse.class);
-        주문_생성하기(빈테이블_1.getId(), Arrays.asList(주문)).as(Order.class);
-        주문_생성하기(빈테이블_2.getId(), Arrays.asList(주문)).as(Order.class);
+        주문_생성하기(빈테이블_1.getId(), Arrays.asList(주문)).as(OrderResponse.class);
+        주문_생성하기(빈테이블_2.getId(), Arrays.asList(주문)).as(OrderResponse.class);
         주문_상태_변경하기(먹는중, 빈테이블_1.getId());
 
         //when

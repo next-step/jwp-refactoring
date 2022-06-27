@@ -5,8 +5,8 @@ import static kitchenpos.helper.AcceptanceApiHelper.MenuGroupApiHelper.메뉴그
 import static kitchenpos.helper.AcceptanceApiHelper.OrderApiHelper.주문_상태_변경하기;
 import static kitchenpos.helper.AcceptanceApiHelper.OrderApiHelper.주문_생성하기;
 import static kitchenpos.helper.AcceptanceApiHelper.ProductApiHelper.상품_등록하기;
-import static kitchenpos.helper.AcceptanceApiHelper.TableApiHelper.유휴테이블_여부_설정하기;
 import static kitchenpos.helper.AcceptanceApiHelper.TableApiHelper.빈테이블_생성하기;
+import static kitchenpos.helper.AcceptanceApiHelper.TableApiHelper.유휴테이블_여부_설정하기;
 import static kitchenpos.helper.AcceptanceApiHelper.TableApiHelper.테이블_리스트_조회하기;
 import static kitchenpos.helper.AcceptanceApiHelper.TableApiHelper.테이블_손님_인원_설정하기;
 import static kitchenpos.helper.AcceptanceAssertionHelper.TableAssertionHelper.테이블_리스트_조회됨;
@@ -20,39 +20,32 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
 import kitchenpos.dto.dto.MenuProductDTO;
 import kitchenpos.dto.dto.OrderLineItemDTO;
 import kitchenpos.dto.response.MenuGroupResponse;
 import kitchenpos.dto.response.MenuResponse;
+import kitchenpos.dto.response.OrderResponse;
 import kitchenpos.dto.response.OrderTableResponse;
 import kitchenpos.dto.response.ProductResponse;
-import kitchenpos.helper.AcceptanceApiHelper.TableApiHelper;
 import kitchenpos.helper.AcceptanceAssertionHelper.TableAssertionHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.context.jdbc.Sql;
 
 
 class TableAcceptanceTest extends AcceptanceTest {
+
     public static final String 비어있음 = "true";
     public static final String 사용중 = "false";
     private MenuResponse 양념두마리_메뉴;
     private OrderLineItemDTO 주문;
 
     @BeforeEach
-    public void init(){
+    public void init() {
         메뉴_설정하기();
         주문_설정하기();
     }
 
-    private void 주문_설정하기(){
+    private void 주문_설정하기() {
         주문 = new OrderLineItemDTO();
         주문.setMenuId(양념두마리_메뉴.getId());
         주문.setQuantity(2L);
@@ -65,7 +58,8 @@ class TableAcceptanceTest extends AcceptanceTest {
         양념_한마리.setProductId(양념.getId());
         양념_한마리.setQuantity(2L);
 
-        양념두마리_메뉴 = 메뉴_추가하기("양념두마리", 25000, 두마리메뉴.getId(), Arrays.asList(양념_한마리)).as(MenuResponse.class);
+        양념두마리_메뉴 = 메뉴_추가하기("양념두마리", 25000, 두마리메뉴.getId(), Arrays.asList(양념_한마리)).as(
+            MenuResponse.class);
     }
 
     /**
@@ -104,10 +98,8 @@ class TableAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * given : 인원이 없는 테이블 1개 저장후
-     * when : 테이블을 빈 테이블로 설정하면
-     * then : 정상적으로 빈테이블로 설정된다.
-    */
+     * given : 인원이 없는 테이블 1개 저장후 when : 테이블을 빈 테이블로 설정하면 then : 정상적으로 빈테이블로 설정된다.
+     */
     @Test
     public void 유휴테이블_설정하기_테스트() {
         //given
@@ -192,16 +184,17 @@ class TableAcceptanceTest extends AcceptanceTest {
      * then : 에러발생
     */
     @Test
-    public void 테이블_먹고있거나_요리중에_빈테이블_삭제시_에러발생_테스트(){
+    public void 테이블_먹고있거나_요리중에_빈테이블_삭제시_에러발생_테스트() {
         //given(테이블생성)
         OrderTableResponse 테이블_1_정보 = 빈테이블_생성하기().as(OrderTableResponse.class);
         유휴테이블_여부_설정하기(사용중, 테이블_1_정보.getId());
         //given(테이블-주문 매핑)
-        주문_생성하기(테이블_1_정보.getId(), Arrays.asList(주문)).as(Order.class);
+        주문_생성하기(테이블_1_정보.getId(), Arrays.asList(주문)).as(OrderResponse.class);
         주문_상태_변경하기(먹는중, 테이블_1_정보.getId());
 
         //when
-        ExtractableResponse<Response> 유휴테이블_여부_설정하기_response = 유휴테이블_여부_설정하기(비어있음, 테이블_1_정보.getId());
+        ExtractableResponse<Response> 유휴테이블_여부_설정하기_response = 유휴테이블_여부_설정하기(비어있음,
+            테이블_1_정보.getId());
 
         //then
         테이블_유휴여부_설정_에러(유휴테이블_여부_설정하기_response);
