@@ -15,6 +15,7 @@ public class NumberOfGuests {
     }
 
     public NumberOfGuests(int guests) {
+        validate(guests);
         this.guests = guests;
     }
 
