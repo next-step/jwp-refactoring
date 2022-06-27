@@ -37,7 +37,7 @@ public class DatabaseCleanup implements InitializingBean {
 
         for (String tableName : tableNames) {
             if(tableName.equals("order")){
-                tableName = "order_info";
+                tableName = "orders";
             }
 
             entityManager.createNativeQuery("TRUNCATE TABLE " + tableName).executeUpdate();

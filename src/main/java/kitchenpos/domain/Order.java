@@ -13,7 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "OrderInfo")
+@Table(name = "Orders")
 public class Order extends BaseTimeEntity {
 
     @Id
