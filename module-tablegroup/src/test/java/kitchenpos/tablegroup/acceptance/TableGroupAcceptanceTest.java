@@ -1,28 +1,23 @@
 package kitchenpos.tablegroup.acceptance;
 
 import kitchenpos.AcceptanceTest;
-import kitchenpos.tablegroup.dto.OrderTableIdRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.TestFactory;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static kitchenpos.menu.acceptance.MenuAcceptanceUtil.신메뉴_강정치킨_가져오기;
-import static kitchenpos.order.acceptance.OrderAcceptanceTest.주문_등록됨;
-import static kitchenpos.table.acceptance.TableAcceptanceTest.테이블_등록됨;
 import static kitchenpos.table.acceptance.TableAcceptanceUtil.주문이_들어간_테이블_가져오기;
-import static org.assertj.core.api.Assertions.assertThat;
+import static kitchenpos.table.acceptance.TableAcceptanceUtil.테이블_등록됨;
+import static kitchenpos.tablegroup.acceptance.TableGroupAcceptanceTestUtil.단체_지정_생성_실패됨;
+import static kitchenpos.tablegroup.acceptance.TableGroupAcceptanceTestUtil.단체_지정_생성_요청;
+import static kitchenpos.tablegroup.acceptance.TableGroupAcceptanceTestUtil.단체_지정_생성됨;
+import static kitchenpos.tablegroup.acceptance.TableGroupAcceptanceTestUtil.단체_지정_해지_실패됨;
+import static kitchenpos.tablegroup.acceptance.TableGroupAcceptanceTestUtil.단체_지정_해지_요청;
+import static kitchenpos.tablegroup.acceptance.TableGroupAcceptanceTestUtil.단체_지정_해지됨;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 @DisplayName("단체 지정 관련 기능")
@@ -86,60 +81,12 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
                     단체_지정_해지됨(response);
                 }),
                 dynamicTest("주문이 들어간 테이블이 포함된 단체 지정은 단체 지정을 해지할 수 없다.", () -> {
-                    주문_등록됨(테이블3, 신메뉴_강정치킨_가져오기());
+//                    주문_등록됨(테이블3, 신메뉴_강정치킨_가져오기());
 
                     ResponseEntity<Void> response = 단체_지정_해지_요청(단체_지정2);
 
                     단체_지정_해지_실패됨(response);
                 })
         );
-    }
-
-    public static TableGroupResponse 단체_지정_등록됨(OrderTableResponse... orderTables) {
-        return 단체_지정_생성_요청(orderTables).getBody();
-    }
-
-
-
-    public static ResponseEntity<TableGroupResponse> 단체_지정_생성_요청(OrderTableResponse... orderTables) {
-        return 단체_지정_생성_요청(Arrays.stream(orderTables)
-                                         .map(OrderTableResponse::getId)
-                                         .collect(Collectors.toList()));
-    }
-
-    public static ResponseEntity<TableGroupResponse> 단체_지정_생성_요청(Long... orderTableIds) {
-        return 단체_지정_생성_요청(Arrays.stream(orderTableIds)
-                .collect(Collectors.toList()));
-    }
-
-    public static ResponseEntity<TableGroupResponse> 단체_지정_생성_요청(List<Long> ids) {
-        Map<String, Object> request = new HashMap<>();
-        request.put("orderTables", ids.stream()
-                .map(OrderTableIdRequest::new)
-                .collect(Collectors.toList()));
-        return restTemplate().postForEntity("/api/table-groups", request, TableGroupResponse.class);
-    }
-
-    public static ResponseEntity<Void> 단체_지정_해지_요청(TableGroupResponse tableGroup) {
-        Map<String, Long> urlVariables = new HashMap<>();
-        urlVariables.put("tableGroupId", tableGroup.getId());
-        return restTemplate().exchange("/api/table-groups/{tableGroupId}", HttpMethod.DELETE,
-                                       null, Void.class, urlVariables);
-    }
-
-    public static void 단체_지정_생성됨(ResponseEntity<TableGroupResponse> response) {
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-    }
-
-    public static void 단체_지정_생성_실패됨(ResponseEntity<TableGroupResponse> response) {
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    public static void 단체_지정_해지됨(ResponseEntity<Void> response) {
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-    }
-
-    public static void 단체_지정_해지_실패됨(ResponseEntity<Void> response) {
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

@@ -12,6 +12,7 @@ import kitchenpos.table.exception.CannotUngroupException;
 import kitchenpos.tablegroup.exception.InvalidTableGroupException;
 import kitchenpos.tablegroup.exception.NotFoundTableGroupException;
 import kitchenpos.tablegroup.application.TableGroupService;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -73,8 +74,8 @@ class TableGroupServiceTest extends ServiceTest {
     }
 
     private void assertGroupedTable(OrderTableResponse it) {
-        assertThat(it.getTableGroupId()).isNotNull();
-        assertThat(it.isEmpty()).isFalse();
+        Assertions.assertThat(it.getTableGroupId()).isNotNull();
+        Assertions.assertThat(it.isEmpty()).isFalse();
     }
 
     @DisplayName("단체 지정을 해지한다.")
