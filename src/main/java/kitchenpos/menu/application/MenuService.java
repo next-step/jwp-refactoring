@@ -2,25 +2,24 @@ package kitchenpos.menu.application;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
+import java.util.List;
+
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.infrastructure.MenuGroupRepository;
 import kitchenpos.menu.infrastructure.MenuRepository;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.infrastructure.ProductRepository;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.util.List;
-
 @Service
-@Transactional(readOnly = true)
 public class MenuService {
     private final MenuRepository menuRepository;
     private final ProductRepository productRepository;
@@ -64,6 +63,7 @@ public class MenuService {
                 .orElseThrow(() -> new IllegalArgumentException("메뉴 그룹이 존재하지 않습니다."));
     }
 
+    @Transactional(readOnly = true)
     public List<MenuResponse> list() {
         List<Menu> menus = menuRepository.findAll();
         return menus.stream()

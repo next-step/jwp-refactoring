@@ -16,7 +16,6 @@ import org.springframework.util.CollectionUtils;
 import java.util.List;
 
 @Service
-@Transactional(readOnly = true)
 public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderTableRepository orderTableRepository;
@@ -65,6 +64,7 @@ public class OrderService {
         }
     }
 
+    @Transactional(readOnly = true)
     public List<OrderResponse> list() {
         List<Order> orders = orderRepository.findAll();
         return orders.stream()

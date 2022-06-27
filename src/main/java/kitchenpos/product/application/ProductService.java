@@ -12,7 +12,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Service
-@Transactional(readOnly = true)
 public class ProductService {
     private final ProductRepository productRepository;
 
@@ -22,11 +21,12 @@ public class ProductService {
 
     @Transactional
     public ProductResponse create(final ProductRequest productRequest) {
-        Product product = Product.of(productRequest.getName(), BigDecimal.valueOf(productRequest.getPrice()));
+        Product product = Product.of(productRequest.getName(), productRequest.getPrice());
         Product saved = productRepository.save(product);
         return ProductResponse.of(saved);
     }
 
+    @Transactional(readOnly = true)
     public List<ProductResponse> list() {
         List<Product> products = productRepository.findAll();
         return products.stream()

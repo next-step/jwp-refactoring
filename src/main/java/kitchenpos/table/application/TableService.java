@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@Transactional(readOnly = true)
 public class TableService {
     private final OrderTableRepository orderTableRepository;
     private final OrderRepository orderRepository;
@@ -31,6 +30,7 @@ public class TableService {
         return OrderTableResponse.of(orderTableRepository.save(orderTable));
     }
 
+    @Transactional(readOnly = true)
     public List<OrderTableResponse> list() {
         List<OrderTable> orderTables = orderTableRepository.findAll();
         return orderTables.stream()
