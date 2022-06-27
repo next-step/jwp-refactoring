@@ -30,6 +30,11 @@ public class Price {
         return price;
     }
 
+    public void changePrice(BigDecimal price) {
+        validatePrice(price);
+        this.price = price;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
