@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.application.product;
 
 import java.util.List;
 import kitchenpos.domain.product.Product;
@@ -31,5 +31,9 @@ public class ProductService {
     public Product findProduct(Long productId) {
         return productRepository.findById(productId)
                 .orElseThrow(() -> new NotFoundProductException(productId));
+    }
+
+    public List<Product> findProducts(List<Long> productIds) {
+        return productRepository.findAllById(productIds);
     }
 }

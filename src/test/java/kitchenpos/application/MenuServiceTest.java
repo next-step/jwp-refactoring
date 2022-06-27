@@ -2,8 +2,6 @@ package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -11,17 +9,21 @@ import kitchenpos.application.fixture.MenuFixtureFactory;
 import kitchenpos.application.fixture.MenuGroupFixtureFactory;
 import kitchenpos.application.fixture.MenuProductFixtureFactory;
 import kitchenpos.application.fixture.ProductFixtureFactory;
+import kitchenpos.application.menu.MenuService;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.domain.menu.MenuRepository;
 import kitchenpos.domain.menugroup.MenuGroup;
+import kitchenpos.domain.menugroup.MenuGroupRepository;
 import kitchenpos.domain.product.Product;
+import kitchenpos.domain.product.ProductRepository;
 import kitchenpos.dto.menu.MenuProductRequest;
 import kitchenpos.dto.menu.MenuRequest;
 import kitchenpos.dto.menu.MenuResponse;
+import kitchenpos.exception.CreateMenuProductException;
 import kitchenpos.exception.MenuPriceException;
 import kitchenpos.exception.NegativePriceException;
-import kitchenpos.exception.NotFoundProductException;
+import kitchenpos.exception.NotFoundMenuGroupException;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,23 +32,27 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
+import org.springframework.stereotype.Component;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith(SpringExtension.class)
+@DataJpaTest(includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = Component.class))
 class MenuServiceTest {
 
-    @Mock
+    @Autowired
     private MenuRepository menuRepository;
 
-    @Mock
-    private MenuGroupService menuGroupService;
+    @Autowired
+    private MenuGroupRepository menuGroupRepository;
 
-    @Mock
-    private ProductService productService;
+    @Autowired
+    private ProductRepository productRepository;
 
-    @InjectMocks
+    @Autowired
     private MenuService menuService;
 
     private MenuGroup 초밥_메뉴그룹;
@@ -61,13 +67,18 @@ class MenuServiceTest {
         초밥_메뉴그룹 = MenuGroupFixtureFactory.create(1L, "초밥_메뉴그룹");
         우아한_초밥_1 = ProductFixtureFactory.create(1L, "우아한_초밥_1", BigDecimal.valueOf(10_000));
         우아한_초밥_2 = ProductFixtureFactory.create(2L, "우아한_초밥_2", BigDecimal.valueOf(20_000));
-        A = MenuFixtureFactory.create("A", BigDecimal.valueOf(30_000), 초밥_메뉴그룹);
+        A = MenuFixtureFactory.create("A", BigDecimal.valueOf(30_000), 초밥_메뉴그룹.getId());
 
-        A_우아한_초밥_1 = MenuProductFixtureFactory.create(1L, A, 우아한_초밥_1, 1);
-        A_우아한_초밥_2 = MenuProductFixtureFactory.create(2L, A, 우아한_초밥_2, 2);
+        A_우아한_초밥_1 = MenuProductFixtureFactory.create(1L, A, 우아한_초밥_1.getId(), 1);
+        A_우아한_초밥_2 = MenuProductFixtureFactory.create(2L, A, 우아한_초밥_2.getId(), 2);
 
         A_우아한_초밥_1.mappedByMenu(A);
         A_우아한_초밥_2.mappedByMenu(A);
+
+        menuGroupRepository.save(초밥_메뉴그룹);
+        productRepository.save(우아한_초밥_1);
+        productRepository.save(우아한_초밥_2);
+        menuRepository.save(A);
     }
 
     @DisplayName("메뉴를 등록할 수 있다.")
@@ -82,16 +93,12 @@ class MenuServiceTest {
                         MenuProductRequest.of(A_우아한_초밥_2.getProductId(), A_우아한_초밥_2.findQuantity()))
         );
 
-        given(menuGroupService.findMenuGroup(초밥_메뉴그룹.getId())).willReturn(초밥_메뉴그룹);
-        given(productService.findProduct(A_우아한_초밥_1.getProductId())).willReturn(우아한_초밥_1);
-        given(productService.findProduct(A_우아한_초밥_2.getProductId())).willReturn(우아한_초밥_2);
-        given(menuRepository.save(any(Menu.class))).willReturn(A);
-
         // when
         MenuResponse response = menuService.create(menuRequest);
 
         // then
-        assertThat(response).isEqualTo(MenuResponse.from(A));
+        Menu findMenu = menuRepository.findById(response.getId()).get();
+        assertThat(response).isEqualTo(MenuResponse.from(findMenu));
     }
 
     @DisplayName("메뉴 가격은 0원 이상이어야 한다. (null)")
@@ -106,8 +113,6 @@ class MenuServiceTest {
                         MenuProductRequest.of(A_우아한_초밥_1.getProductId(), A_우아한_초밥_1.findQuantity()),
                         MenuProductRequest.of(A_우아한_초밥_2.getProductId(), A_우아한_초밥_2.findQuantity()))
         );
-
-        given(menuGroupService.findMenuGroup(초밥_메뉴그룹.getId())).willReturn(초밥_메뉴그룹);
 
         // when & then
         assertThatExceptionOfType(NegativePriceException.class).isThrownBy(() -> menuService.create(menuRequest));
@@ -126,8 +131,6 @@ class MenuServiceTest {
                         MenuProductRequest.of(A_우아한_초밥_2.getProductId(), A_우아한_초밥_2.findQuantity()))
         );
 
-        given(menuGroupService.findMenuGroup(초밥_메뉴그룹.getId())).willReturn(초밥_메뉴그룹);
-
         // when & then
         assertThatExceptionOfType(NegativePriceException.class).isThrownBy(() -> menuService.create(menuRequest));
     }
@@ -138,16 +141,13 @@ class MenuServiceTest {
         // given
         MenuRequest menuRequest = MenuRequest.of("A",
                 BigDecimal.valueOf(30_000),
-                초밥_메뉴그룹.getId(),
+                0L,
                 Lists.newArrayList(
                         MenuProductRequest.of(A_우아한_초밥_1.getProductId(), A_우아한_초밥_1.findQuantity()))
         );
 
-        given(productService.findProduct(A_우아한_초밥_1.getProductId())).willReturn(우아한_초밥_1);
-        given(menuGroupService.findMenuGroup(초밥_메뉴그룹.getId())).willReturn(초밥_메뉴그룹);
-
         // when & then
-        assertThatExceptionOfType(MenuPriceException.class)
+        assertThatExceptionOfType(NotFoundMenuGroupException.class)
                 .isThrownBy(() -> menuService.create(menuRequest));
     }
 
@@ -159,14 +159,11 @@ class MenuServiceTest {
                 BigDecimal.valueOf(30_000),
                 초밥_메뉴그룹.getId(),
                 Lists.newArrayList(
-                        MenuProductRequest.of(A_우아한_초밥_1.getProductId(), A_우아한_초밥_1.findQuantity()))
+                        MenuProductRequest.of(0L, 0L))
         );
 
-        given(menuGroupService.findMenuGroup(초밥_메뉴그룹.getId())).willReturn(초밥_메뉴그룹);
-        given(productService.findProduct(A_우아한_초밥_1.getProductId())).willThrow(NotFoundProductException.class);
-
         // when & then
-        assertThatExceptionOfType(NotFoundProductException.class)
+        assertThatExceptionOfType(CreateMenuProductException.class)
                 .isThrownBy(() -> menuService.create(menuRequest));
     }
 
@@ -181,9 +178,6 @@ class MenuServiceTest {
                         MenuProductRequest.of(A_우아한_초밥_1.getProductId(), A_우아한_초밥_1.findQuantity()))
         );
 
-        given(productService.findProduct(A_우아한_초밥_1.getProductId())).willReturn(우아한_초밥_1);
-        given(menuGroupService.findMenuGroup(초밥_메뉴그룹.getId())).willReturn(초밥_메뉴그룹);
-
         // when & then
         assertThatExceptionOfType(MenuPriceException.class)
                 .isThrownBy(() -> menuService.create(menuRequest));
@@ -192,13 +186,10 @@ class MenuServiceTest {
     @DisplayName("메뉴 목록을 조회할 수 있다.")
     @Test
     void find01() {
-        // given
-        given(menuRepository.findAll()).willReturn(Lists.newArrayList(A));
-
         // when
         List<MenuResponse> menus = menuService.list();
 
         // then
-        assertThat(menus).containsExactly(MenuResponse.from(A));
+        assertThat(menus).contains(MenuResponse.from(A));
     }
 }

@@ -12,8 +12,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import kitchenpos.domain.Quantity;
-import kitchenpos.domain.menu.Menu;
-import kitchenpos.exception.CreateOrderLineItemException;
 
 @Entity
 @Table(name = "order_line_item")
@@ -25,28 +23,20 @@ public class OrderLineItem {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"), nullable = false)
     private Order order;
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_order_line_item_menu"), nullable = false)
-    private Menu menu;
+    private Long menuId;
     @Embedded
     private Quantity quantity;
 
     protected OrderLineItem() {}
 
-    private OrderLineItem(Menu menu, Long quantity) {
-        this.menu = menu;
+    private OrderLineItem(Long menuId, Long quantity) {
+        this.menuId = menuId;
         this.quantity = Quantity.from(quantity);
     }
 
-    public static OrderLineItem of(Menu menu, Long quantity) {
-        validateOrderLineItem(menu);
-        return new OrderLineItem(menu, quantity);
-    }
-
-    private static void validateOrderLineItem(Menu menu) {
-        if (menu == null) {
-            throw new CreateOrderLineItemException();
-        }
+    public static OrderLineItem of(Long menuId, Long quantity) {
+        return new OrderLineItem(menuId, quantity);
     }
 
     public Long getSeq() {
@@ -58,7 +48,7 @@ public class OrderLineItem {
     }
 
     public Long getMenuId() {
-        return this.menu.getId();
+        return this.menuId;
     }
 
     public long findQuantity() {

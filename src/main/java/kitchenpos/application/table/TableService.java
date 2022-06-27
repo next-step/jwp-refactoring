@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.application.table;
 
 import java.util.List;
 import kitchenpos.domain.table.OrderTable;
@@ -11,11 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 public class TableService {
-    private final OrderService orderService;
+    private final TableValidator tableValidator;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderService orderService, final OrderTableRepository orderTableRepository) {
-        this.orderService = orderService;
+    public TableService(final TableValidator tableValidator, final OrderTableRepository orderTableRepository) {
+        this.tableValidator = tableValidator;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -33,7 +33,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         OrderTable orderTable = this.findOrderTable(orderTableId);
-        validateChangeEmpty(orderTable);
+        tableValidator.changeEmpty(orderTable);
 
         orderTable.changeEmpty(orderTableRequest.isEmpty());
         return OrderTableResponse.from(orderTable);
@@ -49,30 +49,13 @@ public class TableService {
         return OrderTableResponse.from(orderTable);
     }
 
+    public OrderTable findOrderTable(Long orderTableId) {
+        return orderTableRepository.findById(orderTableId).orElseThrow(IllegalArgumentException::new);
+    }
+
     private void validateChangeNumberOfGuests(OrderTable orderTable) {
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException();
         }
-    }
-
-    private void validateChangeEmpty(OrderTable orderTable) {
-        validateExistTableGroup(orderTable);
-        validateOrderTableStatus(orderTable);
-    }
-
-    private void validateOrderTableStatus(OrderTable orderTable) {
-        if (orderService.isExistDontUnGroupState(orderTable)) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    private void validateExistTableGroup(OrderTable orderTable) {
-        if (orderTable.getTableGroup() != null) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    private OrderTable findOrderTable(Long orderTableId) {
-        return orderTableRepository.findById(orderTableId).orElseThrow(IllegalArgumentException::new);
     }
 }

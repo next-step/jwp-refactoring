@@ -11,7 +11,7 @@ public class OrderFixtureFactory {
 
     private OrderFixtureFactory() {}
 
-    public static Order create(Long id, OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-        return Order.of(id, orderTable, orderStatus, LocalDateTime.now(), orderLineItems);
+    public static Order create(Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        return Order.of(orderTableId, orderStatus, LocalDateTime.now(), orderLineItems);
     }
 }

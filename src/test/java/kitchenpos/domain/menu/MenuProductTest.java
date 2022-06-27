@@ -9,17 +9,40 @@ import java.math.BigDecimal;
 import kitchenpos.application.fixture.MenuFixtureFactory;
 import kitchenpos.application.fixture.MenuGroupFixtureFactory;
 import kitchenpos.application.fixture.ProductFixtureFactory;
+import kitchenpos.application.menu.MenuValidator;
+import kitchenpos.domain.Price;
 import kitchenpos.domain.menugroup.MenuGroup;
+import kitchenpos.domain.menugroup.MenuGroupRepository;
 import kitchenpos.domain.product.Product;
+import kitchenpos.domain.product.ProductRepository;
 import kitchenpos.exception.CreateMenuProductException;
+import kitchenpos.exception.NotFoundProductException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
+import org.springframework.stereotype.Component;
 
+@DataJpaTest(includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = Component.class))
 class MenuProductTest {
+
+    @Autowired
+    private MenuGroupRepository menuGroupRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private MenuRepository menuRepository;
+
+    @Autowired
+    private MenuValidator menuValidator;
 
     private MenuGroup 메뉴그룹;
     private Menu 메뉴;
@@ -28,15 +51,20 @@ class MenuProductTest {
     @BeforeEach
     void setUp() {
         메뉴그룹 = MenuGroupFixtureFactory.create("메뉴그룹");
-        메뉴 = MenuFixtureFactory.create("메뉴", BigDecimal.valueOf(20_000), 메뉴그룹);
         상품_1 = ProductFixtureFactory.create("상품_1", BigDecimal.valueOf(20_000));
+
+        메뉴그룹 = menuGroupRepository.save(메뉴그룹);
+        상품_1 = productRepository.save(상품_1);
+
+        메뉴 = MenuFixtureFactory.create("메뉴", BigDecimal.valueOf(20_000), 메뉴그룹.getId());
+        메뉴 = menuRepository.save(메뉴);
     }
 
     @DisplayName("MenuProduct를 생성할 수 있다. (Menu, Product, Quantity)")
     @Test
     void create01() {
         // when
-        MenuProduct menuProduct = MenuProduct.of(상품_1, 1L);
+        MenuProduct menuProduct = MenuProduct.of(상품_1.getId(), 1L);
         메뉴.appendMenuProduct(menuProduct);
 
         // then
@@ -48,11 +76,15 @@ class MenuProductTest {
     }
 
     @DisplayName("MenuProduct 생성 시 Product가 존재하지 않으면 생성할 수 없다.")
-    @ParameterizedTest
-    @NullSource
-    void create02(Product product) {
+    @Test
+    void create02() {
+        // given
+        Menu menu = MenuFixtureFactory.create("메뉴", BigDecimal.valueOf(20_000), 메뉴그룹.getId());
+        MenuProduct menuProduct = MenuProduct.of(0L, 1L);
+        menu.appendMenuProduct(menuProduct);
+
         // when & then
-        assertThrows(CreateMenuProductException.class, () -> MenuProduct.of(product, 1L));
+        assertThrows(CreateMenuProductException.class, () -> menuValidator.validate(menu));
     }
 
     @DisplayName("구성하고 있는 상품 정보를 바탕으로 총 금액을 계산할 수 있다.")
@@ -60,10 +92,10 @@ class MenuProductTest {
     @CsvSource(value = {"1, 20000", "2, 40000", "3, 60000"})
     void calculate01(long quantity, long price) {
         // given
-        MenuProduct menuProduct = MenuProduct.of(상품_1, quantity);
+        MenuProduct menuProduct = MenuProduct.of(상품_1.getId(), quantity);
 
         // when
-        BigDecimal totalPrice = menuProduct.calculateTotalPrice();
+        BigDecimal totalPrice = menuProduct.calculateTotalPrice(상품_1.getPrice());
 
         // then
         assertThat(totalPrice).isEqualTo(BigDecimal.valueOf(price));
