@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.acceptance.table;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -11,7 +11,7 @@ import kitchenpos.dto.table.OrderTableRequest;
 import kitchenpos.dto.table.OrderTableResponse;
 import org.springframework.http.HttpStatus;
 
-class TableAcceptanceTestMethod extends AcceptanceTest {
+public class TableAcceptanceTestMethod extends AcceptanceTest {
 
     private static final String TABLE_PATH = "/api/tables";
     private static final String TABLE_EMPTY_PATH_FORMAT = "/api/tables/%s/empty";

@@ -1,15 +1,15 @@
-package kitchenpos.domain;
+package kitchenpos.acceptance.table;
 
-import static kitchenpos.domain.TableAcceptanceTestMethod.빈_테이블_변경_요청;
-import static kitchenpos.domain.TableAcceptanceTestMethod.빈_테이블_변경됨;
-import static kitchenpos.domain.TableAcceptanceTestMethod.테이블_등록_요청;
-import static kitchenpos.domain.TableAcceptanceTestMethod.테이블_등록되어_있음;
-import static kitchenpos.domain.TableAcceptanceTestMethod.테이블_등록됨;
-import static kitchenpos.domain.TableAcceptanceTestMethod.테이블_목록_응답됨;
-import static kitchenpos.domain.TableAcceptanceTestMethod.테이블_목록_조회_요청;
-import static kitchenpos.domain.TableAcceptanceTestMethod.테이블_목록_포함됨;
-import static kitchenpos.domain.TableAcceptanceTestMethod.테이블_손님_수_변경_요청;
-import static kitchenpos.domain.TableAcceptanceTestMethod.테이블_손님_수_변경됨;
+import static kitchenpos.acceptance.table.TableAcceptanceTestMethod.빈_테이블_변경_요청;
+import static kitchenpos.acceptance.table.TableAcceptanceTestMethod.빈_테이블_변경됨;
+import static kitchenpos.acceptance.table.TableAcceptanceTestMethod.테이블_등록_요청;
+import static kitchenpos.acceptance.table.TableAcceptanceTestMethod.테이블_등록되어_있음;
+import static kitchenpos.acceptance.table.TableAcceptanceTestMethod.테이블_등록됨;
+import static kitchenpos.acceptance.table.TableAcceptanceTestMethod.테이블_목록_응답됨;
+import static kitchenpos.acceptance.table.TableAcceptanceTestMethod.테이블_목록_조회_요청;
+import static kitchenpos.acceptance.table.TableAcceptanceTestMethod.테이블_목록_포함됨;
+import static kitchenpos.acceptance.table.TableAcceptanceTestMethod.테이블_손님_수_변경_요청;
+import static kitchenpos.acceptance.table.TableAcceptanceTestMethod.테이블_손님_수_변경됨;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;

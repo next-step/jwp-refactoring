@@ -1,11 +1,11 @@
-package kitchenpos.domain;
+package kitchenpos.acceptance.menugroup;
 
-import static kitchenpos.domain.MenuGroupAcceptanceTestMethod.메뉴_그룹_등록_요청;
-import static kitchenpos.domain.MenuGroupAcceptanceTestMethod.메뉴_그룹_등록되어_있음;
-import static kitchenpos.domain.MenuGroupAcceptanceTestMethod.메뉴_그룹_등록됨;
-import static kitchenpos.domain.MenuGroupAcceptanceTestMethod.메뉴_그룹_목록_응답됨;
-import static kitchenpos.domain.MenuGroupAcceptanceTestMethod.메뉴_그룹_목록_조회_요청;
-import static kitchenpos.domain.MenuGroupAcceptanceTestMethod.메뉴_그룹_목록_포함됨;
+import static kitchenpos.acceptance.menugroup.MenuGroupAcceptanceTestMethod.메뉴_그룹_등록_요청;
+import static kitchenpos.acceptance.menugroup.MenuGroupAcceptanceTestMethod.메뉴_그룹_등록되어_있음;
+import static kitchenpos.acceptance.menugroup.MenuGroupAcceptanceTestMethod.메뉴_그룹_등록됨;
+import static kitchenpos.acceptance.menugroup.MenuGroupAcceptanceTestMethod.메뉴_그룹_목록_응답됨;
+import static kitchenpos.acceptance.menugroup.MenuGroupAcceptanceTestMethod.메뉴_그룹_목록_조회_요청;
+import static kitchenpos.acceptance.menugroup.MenuGroupAcceptanceTestMethod.메뉴_그룹_목록_포함됨;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;

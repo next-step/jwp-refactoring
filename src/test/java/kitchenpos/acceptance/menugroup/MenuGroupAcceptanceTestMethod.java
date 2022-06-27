@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.acceptance.menugroup;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -11,7 +11,7 @@ import kitchenpos.dto.menugroup.MenuGroupRequest;
 import kitchenpos.dto.menugroup.MenuGroupResponse;
 import org.springframework.http.HttpStatus;
 
-class MenuGroupAcceptanceTestMethod extends AcceptanceTest {
+public class MenuGroupAcceptanceTestMethod extends AcceptanceTest {
 
     private static final String MENU_GROUP_PATH = "/api/menu-groups";
     private static final String DOT = ".";

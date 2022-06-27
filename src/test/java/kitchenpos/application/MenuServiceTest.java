@@ -5,10 +5,10 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.math.BigDecimal;
 import java.util.List;
-import kitchenpos.application.fixture.MenuFixtureFactory;
-import kitchenpos.application.fixture.MenuGroupFixtureFactory;
-import kitchenpos.application.fixture.MenuProductFixtureFactory;
-import kitchenpos.application.fixture.ProductFixtureFactory;
+import kitchenpos.fixture.MenuFixtureFactory;
+import kitchenpos.fixture.MenuGroupFixtureFactory;
+import kitchenpos.fixture.MenuProductFixtureFactory;
+import kitchenpos.fixture.ProductFixtureFactory;
 import kitchenpos.application.menu.MenuService;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuProduct;

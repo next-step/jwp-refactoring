@@ -6,14 +6,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.math.BigDecimal;
 import java.util.List;
-import kitchenpos.application.fixture.MenuGroupFixtureFactory;
-import kitchenpos.application.fixture.ProductFixtureFactory;
+import kitchenpos.fixture.MenuGroupFixtureFactory;
+import kitchenpos.fixture.ProductFixtureFactory;
 import kitchenpos.application.menu.MenuValidator;
 import kitchenpos.domain.menugroup.MenuGroup;
 import kitchenpos.domain.menugroup.MenuGroupRepository;
 import kitchenpos.domain.product.Product;
 import kitchenpos.domain.product.ProductRepository;
-import kitchenpos.exception.CreateMenuException;
 import kitchenpos.exception.EmptyNameException;
 import kitchenpos.exception.MenuPriceException;
 import kitchenpos.exception.NegativePriceException;

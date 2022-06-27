@@ -1,4 +1,4 @@
-package kitchenpos.domain.menu;
+package kitchenpos.domain;
 
 import static kitchenpos.exception.NegativePriceException.INVALID_PRICE;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;

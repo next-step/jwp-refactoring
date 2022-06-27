@@ -1,11 +1,11 @@
-package kitchenpos.domain;
+package kitchenpos.acceptance.product;
 
-import static kitchenpos.domain.ProductAcceptanceTestMethod.상품_등록_요청;
-import static kitchenpos.domain.ProductAcceptanceTestMethod.상품_등록되어_있음;
-import static kitchenpos.domain.ProductAcceptanceTestMethod.상품_등록됨;
-import static kitchenpos.domain.ProductAcceptanceTestMethod.상품_목록_응답됨;
-import static kitchenpos.domain.ProductAcceptanceTestMethod.상품_목록_조회_요청;
-import static kitchenpos.domain.ProductAcceptanceTestMethod.상품_목록_포함됨;
+import static kitchenpos.acceptance.product.ProductAcceptanceTestMethod.상품_등록_요청;
+import static kitchenpos.acceptance.product.ProductAcceptanceTestMethod.상품_등록되어_있음;
+import static kitchenpos.acceptance.product.ProductAcceptanceTestMethod.상품_등록됨;
+import static kitchenpos.acceptance.product.ProductAcceptanceTestMethod.상품_목록_응답됨;
+import static kitchenpos.acceptance.product.ProductAcceptanceTestMethod.상품_목록_조회_요청;
+import static kitchenpos.acceptance.product.ProductAcceptanceTestMethod.상품_목록_포함됨;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;

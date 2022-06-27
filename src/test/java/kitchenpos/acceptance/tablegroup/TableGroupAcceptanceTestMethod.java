@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.acceptance.tablegroup;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -8,7 +8,7 @@ import kitchenpos.AcceptanceTest;
 import kitchenpos.dto.tablegroup.TableGroupRequest;
 import org.springframework.http.HttpStatus;
 
-class TableGroupAcceptanceTestMethod extends AcceptanceTest {
+public class TableGroupAcceptanceTestMethod extends AcceptanceTest {
 
     private static final String TABLE_GROUP_PATH = "/api/table-groups";
     private static final String SLASH = "/";

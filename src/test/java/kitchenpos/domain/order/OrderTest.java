@@ -8,12 +8,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.google.common.collect.Lists;
 import java.math.BigDecimal;
-import kitchenpos.application.fixture.MenuFixtureFactory;
-import kitchenpos.application.fixture.MenuGroupFixtureFactory;
-import kitchenpos.application.fixture.MenuProductFixtureFactory;
-import kitchenpos.application.fixture.OrderFixtureFactory;
-import kitchenpos.application.fixture.OrderTableFixtureFactory;
-import kitchenpos.application.fixture.ProductFixtureFactory;
+import kitchenpos.fixture.MenuFixtureFactory;
+import kitchenpos.fixture.MenuGroupFixtureFactory;
+import kitchenpos.fixture.MenuProductFixtureFactory;
+import kitchenpos.fixture.OrderFixtureFactory;
+import kitchenpos.fixture.OrderTableFixtureFactory;
+import kitchenpos.fixture.ProductFixtureFactory;
 import kitchenpos.application.order.OrderValidator;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuProduct;

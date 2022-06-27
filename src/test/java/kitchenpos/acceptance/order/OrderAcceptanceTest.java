@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.acceptance.order;
 
 import kitchenpos.AcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;

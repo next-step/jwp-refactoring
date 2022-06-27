@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Collections;
 import java.util.List;
-import kitchenpos.application.fixture.OrderTableFixtureFactory;
-import kitchenpos.application.fixture.TableGroupFixtureFactory;
+import kitchenpos.fixture.OrderTableFixtureFactory;
+import kitchenpos.fixture.TableGroupFixtureFactory;
 import kitchenpos.application.tablegroup.TableGroupValidator;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;

@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.acceptance.product;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -12,7 +12,7 @@ import kitchenpos.dto.product.ProductRequest;
 import kitchenpos.dto.product.ProductResponse;
 import org.springframework.http.HttpStatus;
 
-class ProductAcceptanceTestMethod extends AcceptanceTest {
+public class ProductAcceptanceTestMethod extends AcceptanceTest {
 
     private static final String PRODUCT_PATH = "/api/products";
     private static final String DOT = ".";

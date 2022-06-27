@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.acceptance.order;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -11,7 +11,7 @@ import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderStatus;
 import org.springframework.http.HttpStatus;
 
-class OrderAcceptanceTestMethod extends AcceptanceTest {
+public class OrderAcceptanceTestMethod extends AcceptanceTest {
 
     private static final String ORDER_PATH = "/api/orders";
     private static final String ORDER_STATUS_CHANGE_PATH_FORMAT = "/api/orders/%s/order-status";
