@@ -35,4 +35,8 @@ public class OrderTables implements Iterable<OrderTable> {
     public Iterator<OrderTable> iterator() {
         return this.orderTables.iterator();
     }
+
+    public long size() {
+        return orderTables.size();
+    }
 }

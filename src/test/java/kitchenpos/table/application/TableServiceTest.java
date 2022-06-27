@@ -3,6 +3,7 @@ package kitchenpos.table.application;
 import kitchenpos.order.domain.OrdersRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.OrderTableUpdateEmptyRequest;
@@ -51,7 +52,7 @@ class TableServiceTest {
     void list() {
         //given
         OrderTable orderTable1 = new OrderTable(1L, null, 2, true);
-        OrderTable orderTable2 = new OrderTable(2L, TableGroup.empty(), 10, false);
+        OrderTable orderTable2 = new OrderTable(2L, null, 10, true);
         given(orderTableRepository.findAll()).willReturn(Arrays.asList(orderTable1, orderTable2));
 
         //then
@@ -117,8 +118,10 @@ class TableServiceTest {
     @DisplayName("주문 테이블의 방문한 손님 수를 변경할 수 있다.")
     void changeNumberOfGuests() {
         //given
-        given(orderTableRepository.findByIdAndEmptyIsFalse(any())).willReturn(
-                Optional.of(new OrderTable(1L, TableGroup.empty(), 5, false)));
+        OrderTable orderTable1 = new OrderTable(1L, null, 5, true);
+        OrderTable orderTable2 = new OrderTable(2L, null, 1, true);
+        TableGroup tableGroup = new TableGroup(new OrderTables(2, Arrays.asList(orderTable1, orderTable2)));
+        given(orderTableRepository.findByIdAndEmptyIsFalse(any())).willReturn(Optional.of(orderTable1));
 
         //when
         OrderTableResponse updatedOrderTable =

@@ -32,7 +32,7 @@ public class TableGroupService {
     public TableGroupResponse create(final TableGroupRequest request) {
         final OrderTables savedOrderTables = new OrderTables(request.getOrderTableIds().size(),
                 orderTableRepository.findAllByIdIn(request.getOrderTableIds()));
-        TableGroup tableGroup = TableGroup.group(savedOrderTables);
+        TableGroup tableGroup = new TableGroup(savedOrderTables);
         tableGroupRepository.save(tableGroup);
         return new TableGroupResponse(tableGroup);
     }

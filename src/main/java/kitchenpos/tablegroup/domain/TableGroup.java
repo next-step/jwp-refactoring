@@ -23,17 +23,14 @@ public class TableGroup {
     protected TableGroup() {
     }
 
-    public static TableGroup empty() {
-        return new TableGroup();
-    }
-
-    public static TableGroup group(OrderTables orderTables) {
-        TableGroup tableGroup = TableGroup.empty();
-        for (OrderTable orderTable : orderTables) {
-            orderTable.group(tableGroup);
-            tableGroup.add(orderTable);
+    public TableGroup(OrderTables orderTables) {
+        if (orderTables.size() < 2) {
+            throw new IllegalArgumentException("테이블 그룹은 2개 이상의 주문 테이블을 포함해야 합니다.");
         }
-        return tableGroup;
+        for (OrderTable orderTable : orderTables) {
+            orderTable.group(this);
+            add(orderTable);
+        }
     }
 
     public Long getId() {
@@ -44,7 +41,7 @@ public class TableGroup {
         return orderTables.getAll();
     }
 
-    public void add(OrderTable orderTable) {
+    private void add(OrderTable orderTable) {
         this.orderTables.add(orderTable);
     }
 
