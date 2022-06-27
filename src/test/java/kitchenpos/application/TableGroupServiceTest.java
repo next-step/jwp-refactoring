@@ -199,8 +199,8 @@ class TableGroupServiceTest {
 
         when(tableGroupRepository.findById(테이블_그룹.getId()))
             .thenReturn(Optional.of(테이블_그룹));
-        when(orderRepository.existsByOrderTableInAndOrderStatusIn(
-            Arrays.asList(주문_테이블, 주문_테이블2),
+        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(
+            Arrays.asList(주문_테이블.getId(), 주문_테이블2.getId()),
             Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)
         )).thenReturn(true);
 

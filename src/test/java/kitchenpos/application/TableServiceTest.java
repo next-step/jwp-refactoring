@@ -127,7 +127,7 @@ class TableServiceTest {
         OrderTableService orderTableService = new OrderTableServiceImpl(orderRepository);
         when(orderTableRepository.findById(주문_테이블.getId()))
             .thenReturn(Optional.of(주문_테이블));
-        when(orderRepository.existsByOrderTableAndOrderStatusIn(주문_테이블, Arrays.asList(
+        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(주문_테이블.getId(), Arrays.asList(
             OrderStatus.COOKING, OrderStatus.MEAL)))
             .thenReturn(true);
 

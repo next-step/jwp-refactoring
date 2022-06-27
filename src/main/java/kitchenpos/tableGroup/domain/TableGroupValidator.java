@@ -2,6 +2,7 @@ package kitchenpos.tableGroup.domain;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import kitchenpos.core.exception.BadRequestException;
 import kitchenpos.core.exception.CannotCreateException;
 import kitchenpos.core.exception.CannotUpdateException;
@@ -27,10 +28,12 @@ public class TableGroupValidator {
     }
 
     public void validateOrderTablesStatus(TableGroup tableGroup) {
-        List<OrderTable> orderTables = tableGroup.getOrderTables();
+        List<Long> orderTableIds = tableGroup.getOrderTables().stream()
+            .map(OrderTable::getId)
+            .collect(Collectors.toList());
 
-        if (orderRepository.existsByOrderTableInAndOrderStatusIn(
-            orderTables, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
+            orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new CannotUpdateException(ExceptionType.CAN_NOT_UPDATE_TABLE_IN_COOKING_AND_MEAL_STATUS);
         }
     }

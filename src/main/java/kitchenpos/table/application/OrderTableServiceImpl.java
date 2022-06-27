@@ -20,8 +20,8 @@ public class OrderTableServiceImpl implements OrderTableService {
 
     @Override
     public void validateOrderTableStatus(OrderTable orderTable) {
-        if (orderRepository.existsByOrderTableAndOrderStatusIn(
-            orderTable, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
+            orderTable.getId(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new CannotUpdateException(ExceptionType.CAN_NOT_UPDATE_TABLE_IN_COOKING_AND_MEAL_STATUS);
         }
     }

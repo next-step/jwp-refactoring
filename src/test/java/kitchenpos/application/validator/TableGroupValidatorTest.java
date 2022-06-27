@@ -106,8 +106,8 @@ class TableGroupValidatorTest {
         TableGroup tableGroup = mock(TableGroup.class);
         when(tableGroup.getOrderTables())
             .thenReturn(주문_테이블_목록);
-        when(orderRepository.existsByOrderTableInAndOrderStatusIn(
-            주문_테이블_목록, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)))
+        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(
+            Arrays.asList(주문_테이블.getId(), 주문_테이블2.getId()), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)))
             .thenReturn(true);
 
         // then
