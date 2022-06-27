@@ -9,13 +9,13 @@ import java.util.List;
 import java.util.stream.Stream;
 import kitchenpos.ServiceTest;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,8 +48,8 @@ class MenuServiceTest extends ServiceTest {
 
         후라이드 = this.productRepository.save(new Product("후라이드", BigDecimal.valueOf(16000)));
         양념치킨 = this.productRepository.save(new Product("양념치킨", BigDecimal.valueOf(16000)));
-        후라이드_메뉴상품 = new MenuProduct(후라이드, 1);
-        양념치킨_메뉴상품 = new MenuProduct(양념치킨, 1);
+        후라이드_메뉴상품 = new MenuProduct(후라이드.getId(), 1);
+        양념치킨_메뉴상품 = new MenuProduct(양념치킨.getId(), 1);
         두마리메뉴 = this.menuGroupRepository.save(new MenuGroup("두마리메뉴"));
     }
 

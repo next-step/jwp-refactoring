@@ -2,7 +2,6 @@ package kitchenpos.menu.domain;
 
 import static java.util.Objects.requireNonNull;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -23,12 +22,6 @@ public class MenuProducts {
         validateAddMenuProducts(menuProducts);
 
         menuProducts.forEach(this::addMenuProduct);
-    }
-
-    public BigDecimal totalPrice() {
-        return menuProducts.stream()
-            .map(MenuProduct::totalPrice)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     private void validateAddMenuProducts(List<MenuProduct> menuProducts) {

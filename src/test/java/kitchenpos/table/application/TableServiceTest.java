@@ -7,15 +7,16 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.ServiceTest;
-import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.util.dto.SaveMenuDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,6 +29,8 @@ class TableServiceTest extends ServiceTest {
     private OrderTableRepository orderTableRepository;
     @Autowired
     private TableGroupRepository tableGroupRepository;
+    @Autowired
+    private ProductRepository productRepository;
     @Autowired
     private TableService tableService;
     @Autowired
@@ -74,19 +77,22 @@ class TableServiceTest extends ServiceTest {
     @Test
     @DisplayName("테이블 그룹에 포함될 경우 테이블의 빈 상태를 바꿀 수 없다.")
     void changeEmptyFail_existTableGroup() {
-        OrderTable orderTable1 = new OrderTable(4, false);
-        OrderTable orderTable2 = new OrderTable(4, false);
-        this.tableGroupRepository.save(new TableGroup(Arrays.asList(orderTable1, orderTable2)));
+        TableGroup tableGroup = this.tableGroupRepository.save(new TableGroup());
+        List<OrderTable> orderTables = Arrays.asList(
+            new OrderTable(tableGroup.getId(), 4, false),
+            new OrderTable(tableGroup.getId(), 4, false));
+        orderTableRepository.saveAll(orderTables);
 
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> this.tableService.changeEmpty(orderTable1.getId(), new OrderTableRequest(true)));
+            .isThrownBy(() -> this.tableService.changeEmpty(orderTables.get(0).getId(), new OrderTableRequest(true)));
     }
 
     @Test
     @DisplayName("주문 상태가 식사중이거나 조리중인 테이블이 있다면 빈 상태를 바꿀 수 없다.")
     void changeEmptyFail_existOrderCookingOrMeal() {
-        MenuProduct menuProduct1 = new MenuProduct(new Product("후라이드", BigDecimal.valueOf(16000)), 1);
-        MenuProduct menuProduct2 = new MenuProduct(new Product("양념치킨", BigDecimal.valueOf(16000)), 1);
+        Product product = this.productRepository.save(new Product("후라이드", BigDecimal.valueOf(16000)));
+        MenuProduct menuProduct1 = new MenuProduct(product.getId(), 1);
+        MenuProduct menuProduct2 = new MenuProduct(product.getId(), 1);
         List<MenuProduct> menuProducts = Arrays.asList(menuProduct1, menuProduct2);
 
         SaveMenuDto saveMenuDto = new SaveMenuDto(menuProducts, new MenuGroup("메뉴 그룹"), "메뉴", 32000);

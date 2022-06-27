@@ -1,6 +1,10 @@
 package kitchenpos.order.domain;
 
+import static java.util.Objects.requireNonNull;
+
 import java.util.Objects;
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -21,16 +25,20 @@ public class OrderLineItem {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
-    @Column(name = "menu_id", nullable = false)
-    private Long menuId;
+    @AttributeOverrides({
+        @AttributeOverride(name = "menuName.name", column = @Column(name = "menu_name", nullable = false)),
+        @AttributeOverride(name = "menuPrice.value", column = @Column(name = "menu_price", nullable = false))
+    })
+    @Embedded
+    private OrderMenu orderMenu;
     @Embedded
     private Quantity quantity;
 
     public OrderLineItem() {
     }
 
-    public OrderLineItem(Long menuId, long quantity) {
-        this.menuId = menuId;
+    public OrderLineItem(OrderMenu orderMenu, long quantity) {
+        this.orderMenu = requireNonNull(orderMenu, "주문에 메뉴가 존재하지 않습니다.");
         this.quantity = new Quantity(quantity);
     }
 
@@ -50,8 +58,8 @@ public class OrderLineItem {
         this.order = order;
     }
 
-    public Long getMenuId() {
-        return menuId;
+    public OrderMenu getOrderMenu() {
+        return orderMenu;
     }
 
     public long getQuantity() {
@@ -79,8 +87,8 @@ public class OrderLineItem {
     public String toString() {
         return "OrderLineItem{" +
             "id=" + id +
-            ", orderId=" + order.getId() +
-            ", menuId=" + menuId +
+            ", order=" + order +
+            ", orderMenu=" + orderMenu +
             ", quantity=" + quantity +
             '}';
     }

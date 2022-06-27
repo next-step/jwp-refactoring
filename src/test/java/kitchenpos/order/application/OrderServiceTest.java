@@ -11,14 +11,16 @@ import java.util.stream.Stream;
 import kitchenpos.ServiceTest;
 import kitchenpos.menu.application.MenuTestFixture;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.util.dto.SaveMenuDto;
@@ -35,6 +37,8 @@ class OrderServiceTest extends ServiceTest {
     @Autowired
     private OrderTableRepository orderTableRepository;
     @Autowired
+    private ProductRepository productRepository;
+    @Autowired
     private OrderService orderService;
     @Autowired
     private MenuTestFixture menuTestFixture;
@@ -46,14 +50,15 @@ class OrderServiceTest extends ServiceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-
-        MenuProduct menuProduct1 = new MenuProduct(new Product("후라이드", BigDecimal.valueOf(16000)), 1);
-        MenuProduct menuProduct2 = new MenuProduct(new Product("양념치킨", BigDecimal.valueOf(16000)), 1);
+        Product 후라이드 = this.productRepository.save(new Product("후라이드", BigDecimal.valueOf(16000)));
+        Product 양념치킨 = this.productRepository.save(new Product("양념치킨", BigDecimal.valueOf(16000)));
+        MenuProduct menuProduct1 = new MenuProduct(후라이드.getId(), 1);
+        MenuProduct menuProduct2 = new MenuProduct(양념치킨.getId(), 1);
         List<MenuProduct> menuProducts = Arrays.asList(menuProduct1, menuProduct2);
 
         Menu menu = menuTestFixture.메뉴_만들기(new SaveMenuDto(menuProducts, new MenuGroup("메뉴 그룹"), "메뉴", 32000));
 
-        orderLineItem = new OrderLineItem(menu.getId(), 1);
+        orderLineItem = new OrderLineItem(OrderMenu.of(menu), 1);
         orderTable = this.orderTableRepository.save(new OrderTable(4, false));
     }
 
@@ -77,8 +82,11 @@ class OrderServiceTest extends ServiceTest {
                     .isThrownBy(() -> createOrder(orderTable.getId()));
             }),
             DynamicTest.dynamicTest("주문한 메뉴가 실제 존재하지 않는 경우", () -> {
+                OrderMenu orderMenu = new OrderMenu(Long.MAX_VALUE, "test", BigDecimal.TEN);
+                OrderLineItem orderLineItem = new OrderLineItem(orderMenu, 1);
+
                 assertThatIllegalArgumentException()
-                    .isThrownBy(() -> createOrder(orderTable.getId(), new OrderLineItem(Long.MAX_VALUE, 1)));
+                    .isThrownBy(() -> {createOrder(orderTable.getId(), orderLineItem);});
             }),
             DynamicTest.dynamicTest("테이블 정보가 없는 경우", () -> {
                 assertThatExceptionOfType(InvalidDataAccessApiUsageException.class)

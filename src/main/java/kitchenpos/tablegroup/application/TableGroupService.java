@@ -1,15 +1,15 @@
-package kitchenpos.table.application;
+package kitchenpos.tablegroup.application;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import kitchenpos.order.application.OrderService;
-import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.domain.TableGroupRepository;
-import kitchenpos.table.dto.TableGroupRequest;
-import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,8 +33,9 @@ public class TableGroupService {
 
         validateTableGroup(orderTables, savedOrderTables);
 
-        TableGroup tableGroup = new TableGroup(savedOrderTables);
+        TableGroup tableGroup = new TableGroup();
         tableGroupRepository.save(tableGroup);
+        tableGroup.addOrderTables(savedOrderTables);
 
         return TableGroupResponse.of(tableGroup);
     }
@@ -62,12 +63,6 @@ public class TableGroupService {
     private void validateTableGroup(List<OrderTableRequest> orderTables, List<OrderTable> savedOrderTables) {
         if (orderTables.size() != savedOrderTables.size()) {
             throw new IllegalArgumentException();
-        }
-
-        for (OrderTable orderTable: savedOrderTables) {
-            if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup())) {
-                throw new IllegalArgumentException("테이블 중 비어있지 않거나 이미 다른 그룹에 포함되어 있는 테이블이 있습니다.");
-            }
         }
     }
 

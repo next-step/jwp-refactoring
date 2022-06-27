@@ -3,12 +3,9 @@ package kitchenpos.table.domain;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import kitchenpos.common.domain.NumberOfGuests;
 
 @Entity
@@ -17,9 +14,8 @@ public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "table_group_id")
-    private TableGroup tableGroup;
+    @Column(name = "table_group_id")
+    private Long tableGroupId;
     @Column(name = "number_of_guests", nullable = false)
     private NumberOfGuests numberOfGuests;
     @Column(name = "empty", nullable = false)
@@ -33,12 +29,22 @@ public class OrderTable {
         this.empty = empty;
     }
 
+    public OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
+        this.tableGroupId = tableGroupId;
+        this.numberOfGuests = new NumberOfGuests(numberOfGuests);
+        this.empty = empty;
+    }
+
+    public boolean hasTableGroup() {
+        return Objects.nonNull(tableGroupId);
+    }
+
     public void ungroup() {
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 
     public void changeEmpty(final boolean empty) {
-        if (Objects.nonNull(tableGroup)) {
+        if (hasTableGroup()) {
             throw new IllegalArgumentException("그룹에 속해있는 테이블은 빈 상태로 변경할 수 없습니다.");
         }
 
@@ -53,16 +59,16 @@ public class OrderTable {
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
     }
 
+    public void changeTableGroup(long tableGroupId) {
+        this.tableGroupId = tableGroupId;
+    }
+
     public Long getId() {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
-    }
-
-    public void setTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public int getNumberOfGuests() {
@@ -94,10 +100,11 @@ public class OrderTable {
     public String toString() {
         return "OrderTable{" +
             "id=" + id +
-            ", tableGroupId=" + tableGroup.getId() +
+            ", tableGroupId=" + tableGroupId +
             ", numberOfGuests=" + numberOfGuests +
             ", empty=" + empty +
             '}';
+
     }
 
 }

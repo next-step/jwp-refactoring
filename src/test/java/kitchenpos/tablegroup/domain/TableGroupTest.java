@@ -1,4 +1,4 @@
-package kitchenpos.table.domain;
+package kitchenpos.tablegroup.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
+import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -21,21 +22,21 @@ class TableGroupTest {
         List<OrderTable> orderTables = Arrays.asList(
             new OrderTable(10, false),
             new OrderTable(10, false));
-        TableGroup tableGroup = new TableGroup(orderTables);
+        TableGroup tableGroup = new TableGroup();
 
         assertThat(tableGroup.getCreatedDate()).isNotNull();
-        assertThat(tableGroup.getOrderTables()).hasSize(2);
     }
 
     @ParameterizedTest(name = "{0}")
-    @DisplayName("TableGroup 생성시 실페 케이스를 체크한다.")
-    @MethodSource("providerCreateTableGroupFailCase")
+    @DisplayName("테이블 정보에 테이블 그룹을 셋팅할 때, 실페 케이스를 체크한다.")
+    @MethodSource("providerAddOrderTablesFailCase")
     void createMenuFail(String testName, List<OrderTable> orderTables) {
+        TableGroup tableGroup = new TableGroup();
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> new TableGroup(orderTables));
+            .isThrownBy(() -> tableGroup.addOrderTables(orderTables));
     }
 
-    private static Stream<Arguments> providerCreateTableGroupFailCase() {
+    private static Stream<Arguments> providerAddOrderTablesFailCase() {
         return Stream.of(
             Arguments.of("테이블이 존재하지 않을 경우", Collections.emptyList()),
             Arguments.of("테이블이 한개 일 경우", Collections.singletonList(new OrderTable(10, false)))

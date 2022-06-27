@@ -1,4 +1,4 @@
-package kitchenpos.table.application;
+package kitchenpos.tablegroup.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -9,15 +9,17 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import kitchenpos.ServiceTest;
-import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.table.application.OrderTableTestFixture;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.dto.TableGroupRequest;
-import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import kitchenpos.util.dto.SaveMenuDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,6 +30,8 @@ class TableGroupServiceTest extends ServiceTest {
 
     @Autowired
     private OrderTableRepository orderTableRepository;
+    @Autowired
+    private ProductRepository productRepository;
     @Autowired
     private TableGroupService tableGroupService;
     @Autowired
@@ -88,16 +92,17 @@ class TableGroupServiceTest extends ServiceTest {
         this.tableGroupService.ungroup(tableGroupResponse.getId());
 
         List<OrderTable> orderTables = this.orderTableRepository.findAll();
-        assertTrue(orderTables.stream().anyMatch(orderTable -> orderTable.getTableGroup() == null));
+        assertTrue(orderTables.stream().anyMatch(orderTable -> orderTable.getTableGroupId() == null));
     }
 
     @Test
     @DisplayName("테이블 중 식사중이거나 조리중인 테이블이 있다면 해제할 수 없다.")
     void ungroupFail() {
+        Product product = this.productRepository.save(new Product("후라이드", BigDecimal.valueOf(16000)));
         TableGroupResponse tableGroupResponse = this.tableGroupService.create(new TableGroupRequest(OrderTableRequest.of(orderTable1, orderTable2)));
 
-        MenuProduct menuProduct1 = new MenuProduct(new Product("후라이드", BigDecimal.valueOf(16000)), 1);
-        MenuProduct menuProduct2 = new MenuProduct(new Product("양념치킨", BigDecimal.valueOf(16000)), 1);
+        MenuProduct menuProduct1 = new MenuProduct(product.getId(), 1);
+        MenuProduct menuProduct2 = new MenuProduct(product.getId(), 1);
         List<MenuProduct> menuProducts = Arrays.asList(menuProduct1, menuProduct2);
 
         SaveMenuDto saveMenuDto = new SaveMenuDto(menuProducts, new MenuGroup("메뉴 그룹"), "메뉴", 32000);

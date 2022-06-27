@@ -1,8 +1,8 @@
 package kitchenpos.util.dto;
 
 import java.util.List;
-import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menugroup.domain.MenuGroup;
 
 public class SaveMenuDto {
 
