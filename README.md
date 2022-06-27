@@ -1,8 +1,9 @@
 # 키친포스
 ## 3단계 작업 순서
-- [ ] 같은 패키지 내의 Entity 연관 관계는 직접 참조로 구성(cycle 제거)
-- [ ] 다른 패키지 내의 Entity 연관 관계는 간접 참조로 구성
-- [ ] entity validation 한 객체로 묶기
+![img.png](img.png)
+- [X] 같은 컨텍스트 내의 Entity 연관 관계는 직접 참조로 구성
+- [X] 다른 컨텍스트 내의 Entity 연관 관계는 간접 참조로 구성
+- [X] 연관관계를 제거하면서 나오는 entity validation 로직은 validator 생성
 
 ## 요구 사항
 
