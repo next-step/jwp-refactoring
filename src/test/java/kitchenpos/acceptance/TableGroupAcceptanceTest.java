@@ -10,8 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.TableGroup;
 import kitchenpos.fixture.acceptance.AcceptanceTestOrderTableFixture;
-import kitchenpos.fixture.acceptance.AcceptanceTestTableGroupFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,13 +20,11 @@ import org.springframework.http.MediaType;
 
 public class TableGroupAcceptanceTest extends BaseAcceptanceTest {
     private AcceptanceTestOrderTableFixture 주문_테이블;
-    private AcceptanceTestTableGroupFixture 단체;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
         주문_테이블 = new AcceptanceTestOrderTableFixture();
-        단체 = new AcceptanceTestTableGroupFixture();
     }
 
     @DisplayName("테이블 단체 지정을 관리한다")
@@ -38,7 +36,7 @@ public class TableGroupAcceptanceTest extends BaseAcceptanceTest {
         테이블_단체_지정됨(created);
 
         // when
-        ExtractableResponse<Response> list = 테이블_단체_해제_요청(단체.단체.getId());
+        ExtractableResponse<Response> list = 테이블_단체_해제_요청(created.as(TableGroup.class).getId());
         // then
         테이블_단체_해제됨(list);
     }

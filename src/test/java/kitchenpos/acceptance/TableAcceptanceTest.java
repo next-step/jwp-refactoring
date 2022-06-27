@@ -48,7 +48,7 @@ public class TableAcceptanceTest extends BaseAcceptanceTest {
         주문_테이블_비었는지_여부_변경됨(emptyUpdated);
 
         // when
-        ExtractableResponse<Response> numberOfGuestsUpdated = 주문_테이블_손님_수_변경_요청(주문_테이블.테이블, 2);
+        ExtractableResponse<Response> numberOfGuestsUpdated = 주문_테이블_손님_수_변경_요청(주문_테이블.테이블1, 2);
         // then
         주문_테이블_손님_수_변경됨(numberOfGuestsUpdated);
     }
