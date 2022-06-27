@@ -57,11 +57,11 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         Map<String, Object> request = new HashMap<>();
         request.put("name", name);
         request.put("price", price);
-        return restTemplate().postForEntity("/api/products", request, ProductResponse.class);
+        return AcceptanceTest.restTemplate().postForEntity("/api/products", request, ProductResponse.class);
     }
 
     public static ResponseEntity<List<ProductResponse>> 상품_목록_조회_요청() {
-        return restTemplate().exchange("/api/products", HttpMethod.GET, null,
+        return AcceptanceTest.restTemplate().exchange("/api/products", HttpMethod.GET, null,
                                        new ParameterizedTypeReference<List<ProductResponse>>() {});
     }
 

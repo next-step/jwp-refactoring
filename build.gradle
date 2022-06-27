@@ -43,7 +43,6 @@ subprojects {
         implementation 'org.springframework.boot:spring-boot-starter-actuator'
         implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
         implementation 'org.springframework.boot:spring-boot-starter-web'
-        implementation 'org.flywaydb:flyway-core'
         runtimeOnly 'com.h2database:h2'
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
     }
@@ -60,6 +59,22 @@ subprojects {
         enabled = true
     }
 }
+
+subprojects.findAll { it.name != 'module-core' }.forEach({
+    project("${it.name}") {
+        dependencies {
+            implementation project(':module-core')
+        }
+    }
+})
+
+subprojects.findAll { it.name != 'module-test' }.forEach({
+    project("${it.name}") {
+        dependencies {
+            testImplementation(testFixtures(project(':module-test')))
+        }
+    }
+})
 
 test {
     useJUnitPlatform()
