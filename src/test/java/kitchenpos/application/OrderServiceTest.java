@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static kitchenpos.factory.OrderFixture.주문_메뉴_생성;
+import static kitchenpos.factory.OrderFixture.주문테이블_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -53,18 +55,14 @@ class OrderServiceTest {
     OrderLineItem 주문상품1;
     OrderLineItem 주문상품2;
 
-    @BeforeEach
-    void init() {
-        주문테이블 = new OrderTable(1L, 2, false);
-        주문상품1 = new OrderLineItem(1L, 1L, 1L, 1);
-        주문상품2 = new OrderLineItem(2L, 1L, 2L, 1);
-    }
-
     @Test
     @DisplayName("주문을 생성한다 (Happy Path)")
     void create() {
         //given
         내주문 = new Order(1L, 주문테이블.getId());
+        주문테이블 = 주문테이블_생성(1L);
+        주문상품1 = 주문_메뉴_생성(1L, 내주문.getId(), 1L);
+        주문상품2 = 주문_메뉴_생성(2L, 내주문.getId(), 2L);
         내주문.setOrderLineItems(Arrays.asList(주문상품1, 주문상품2));
         given(menuDao.countByIdIn(anyList())).willReturn(Long.valueOf(내주문.getOrderLineItems().size()));
         given(orderTableDao.findById(anyLong())).willReturn(Optional.of(주문테이블));
@@ -91,6 +89,9 @@ class OrderServiceTest {
     void createEmptyOrderLineItems() {
         //given
         내주문 = new Order(1L, 주문테이블.getId());
+        주문테이블 = 주문테이블_생성(1L);
+        주문상품1 = 주문_메뉴_생성(1L, 내주문.getId(), 1L);
+        주문상품2 = 주문_메뉴_생성(2L, 내주문.getId(), 2L);
 
         //then
         assertThatThrownBy(() -> {
@@ -104,6 +105,9 @@ class OrderServiceTest {
         //given
         OrderLineItem 유효하지않은메뉴 = new OrderLineItem();
         내주문 = new Order(1L, 주문테이블.getId());
+        주문테이블 = 주문테이블_생성(1L);
+        주문상품1 = 주문_메뉴_생성(1L, 내주문.getId(), 1L);
+        주문상품2 = 주문_메뉴_생성(2L, 내주문.getId(), 2L);
         내주문.setOrderLineItems(Arrays.asList(주문상품1, 주문상품2));
         given(menuDao.countByIdIn(anyList())).willReturn(Long.valueOf(Arrays.asList(주문상품1, 주문상품2, 유효하지않은메뉴).size()));
 
@@ -118,6 +122,9 @@ class OrderServiceTest {
     void createInvalidOrderTable() {
         //given
         내주문 = new Order(1L, 주문테이블.getId());
+        주문테이블 = 주문테이블_생성(1L);
+        주문상품1 = 주문_메뉴_생성(1L, 내주문.getId(), 1L);
+        주문상품2 = 주문_메뉴_생성(2L, 내주문.getId(), 2L);
         내주문.setOrderLineItems(Arrays.asList(주문상품1, 주문상품2));
         given(menuDao.countByIdIn(anyList())).willReturn(Long.valueOf(내주문.getOrderLineItems().size()));
         given(orderTableDao.findById(anyLong())).willReturn(Optional.empty());
@@ -133,6 +140,9 @@ class OrderServiceTest {
     void createIsEmptyOrderTable() {
         //given
         내주문 = new Order(1L, 주문테이블.getId());
+        주문테이블 = 주문테이블_생성(1L);
+        주문상품1 = 주문_메뉴_생성(1L, 내주문.getId(), 1L);
+        주문상품2 = 주문_메뉴_생성(2L, 내주문.getId(), 2L);
         내주문.setOrderLineItems(Arrays.asList(주문상품1, 주문상품2));
         given(menuDao.countByIdIn(anyList())).willReturn(Long.valueOf(내주문.getOrderLineItems().size()));
         주문테이블.setEmpty(true);
@@ -149,6 +159,9 @@ class OrderServiceTest {
     void list() {
         //given
         내주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), Arrays.asList(주문상품1, 주문상품2));
+        주문테이블 = 주문테이블_생성(1L);
+        주문상품1 = 주문_메뉴_생성(1L, 내주문.getId(), 1L);
+        주문상품2 = 주문_메뉴_생성(2L, 내주문.getId(), 2L);
         given(orderDao.findAll()).willReturn(Arrays.asList(내주문));
         given(orderLineItemDao.findAllByOrderId(내주문.getId())).willReturn(Arrays.asList(주문상품1, 주문상품2));
 
@@ -178,6 +191,9 @@ class OrderServiceTest {
     void changeOrderStatus() {
         //given
         내주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), Arrays.asList(주문상품1, 주문상품2));
+        주문테이블 = 주문테이블_생성(1L);
+        주문상품1 = 주문_메뉴_생성(1L, 내주문.getId(), 1L);
+        주문상품2 = 주문_메뉴_생성(2L, 내주문.getId(), 2L);
         Order 변경주문 = new Order();
         변경주문.setOrderStatus(OrderStatus.MEAL.name());
         given(orderDao.findById(anyLong())).willReturn(Optional.of(내주문));
@@ -197,6 +213,9 @@ class OrderServiceTest {
     void changeOrderStatusInvalidOrder() {
         //given
         내주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), Arrays.asList(주문상품1, 주문상품2));
+        주문테이블 = 주문테이블_생성(1L);
+        주문상품1 = 주문_메뉴_생성(1L, 내주문.getId(), 1L);
+        주문상품2 = 주문_메뉴_생성(2L, 내주문.getId(), 2L);
         Order 변경주문 = new Order();
         변경주문.setOrderStatus(OrderStatus.MEAL.name());
         given(orderDao.findById(anyLong())).willReturn(Optional.empty());
@@ -212,6 +231,9 @@ class OrderServiceTest {
     void changeOrderStatusAlreadyCompleted() {
         //given
         내주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COMPLETION.name(), LocalDateTime.now(), Arrays.asList(주문상품1, 주문상품2));
+        주문테이블 = 주문테이블_생성(1L);
+        주문상품1 = 주문_메뉴_생성(1L, 내주문.getId(), 1L);
+        주문상품2 = 주문_메뉴_생성(2L, 내주문.getId(), 2L);
         Order 변경주문 = new Order();
         변경주문.setOrderStatus(OrderStatus.MEAL.name());
         given(orderDao.findById(anyLong())).willReturn(Optional.of(내주문));
