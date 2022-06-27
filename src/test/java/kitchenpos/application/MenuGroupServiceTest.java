@@ -4,12 +4,14 @@ import kitchenpos.domain.MenuGroup;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+@Transactional
 @SpringBootTest
 class MenuGroupServiceTest {
     @Autowired
@@ -21,6 +23,7 @@ class MenuGroupServiceTest {
         MenuGroup menuGroup = createMenuGroup();
 
         // when
+        List<MenuGroup> a = menuGroupService.list();
         MenuGroup result = menuGroupService.create(menuGroup);
 
         // then
