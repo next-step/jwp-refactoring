@@ -5,6 +5,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -57,5 +58,24 @@ public class Menu {
 
     public void addMenuProduct(MenuProduct menuProduct){
         menuProducts.add(menuProduct);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Menu)) {
+            return false;
+        }
+        Menu menu = (Menu) o;
+        return Objects.equals(id, menu.id) && Objects.equals(name, menu.name)
+            && Objects.equals(price, menu.price) && Objects.equals(menuGroupId,
+            menu.menuGroupId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, price, menuGroupId);
     }
 }

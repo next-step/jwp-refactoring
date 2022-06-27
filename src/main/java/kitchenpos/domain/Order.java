@@ -82,12 +82,11 @@ public class Order extends BaseTimeEntity {
         }
         Order order = (Order) o;
         return Objects.equals(id, order.id) && Objects.equals(orderTableId,
-            order.orderTableId) && orderStatus == order.orderStatus && Objects.equals(
-            orderLineItems, order.orderLineItems);
+            order.orderTableId) && orderStatus == order.orderStatus;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, orderTableId, orderStatus, orderLineItems);
+        return Objects.hash(id, orderTableId, orderStatus);
     }
 }
