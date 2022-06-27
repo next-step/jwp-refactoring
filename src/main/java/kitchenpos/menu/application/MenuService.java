@@ -77,7 +77,7 @@ public class MenuService {
         requireNonNull(menuRequest.getMenuProducts(), "상품이 설정되지 않았습니다.");
         requireNonNull(menuRequest.getMenuGroupId(), "메뉴 그룹이 설정되지 않았습니다.");
 
-        if (!menuGroupService.existsMenuGroup(menuRequest.getMenuGroupId())) {
+        if (menuGroupService.notExistsMenuGroup(menuRequest.getMenuGroupId())) {
             throw new IllegalArgumentException("메뉴 그룹이 존재하지 않습니다.");
         }
 

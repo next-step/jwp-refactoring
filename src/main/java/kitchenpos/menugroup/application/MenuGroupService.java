@@ -25,7 +25,8 @@ public class MenuGroupService {
     }
 
     @Transactional(readOnly = true)
-    public boolean existsMenuGroup(Long menuGroupId) {
-        return menuGroupRepository.existsById(menuGroupId);
+    public boolean notExistsMenuGroup(Long menuGroupId) {
+        return !menuGroupRepository.existsById(menuGroupId);
     }
+
 }
