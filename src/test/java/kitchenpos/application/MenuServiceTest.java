@@ -3,18 +3,24 @@ package kitchenpos.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Optional;
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.dto.MenuProductDTO;
+import kitchenpos.dto.request.MenuRequest;
+import kitchenpos.dto.response.MenuResponse;
+import kitchenpos.repository.MenuGroupRepository;
+import kitchenpos.repository.MenuRepository;
+import kitchenpos.repository.ProductRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,74 +34,66 @@ class MenuServiceTest {
     private MenuService menuService;
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @Mock
-    private MenuProductDao menuProductDao;
-
-    @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     private Product chicken;
     private Product ham;
-    private MenuProduct chicken_menuProduct;
-    private MenuProduct ham_menuProduct;
+    private MenuProductDTO chicken_menuProduct;
+    private MenuProductDTO ham_menuProduct;
 
     @BeforeEach
     public void init() {
-        menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
+        menuService = new MenuService(menuRepository, menuGroupRepository, productRepository);
 
-        chicken = new Product();
-        chicken.setPrice(BigDecimal.valueOf(5000));
-        chicken_menuProduct = new MenuProduct();
+        chicken = new Product("chicken", BigDecimal.valueOf(5000));
+
+        chicken_menuProduct = new MenuProductDTO();
         chicken_menuProduct.setProductId(1L);
-        chicken_menuProduct.setQuantity(1);
+        chicken_menuProduct.setQuantity(1L);
 
-        ham = new Product();
-        ham.setPrice(BigDecimal.valueOf(4000));
-        ham_menuProduct = new MenuProduct();
+        ham = new Product("ham", BigDecimal.valueOf(4000));
+
+        ham_menuProduct = new MenuProductDTO();
         ham_menuProduct.setProductId(2L);
-        ham_menuProduct.setQuantity(1);
-
-
+        ham_menuProduct.setQuantity(1L);
     }
 
     @Test
     @DisplayName("메뉴 생성 정상로직")
     void createMenuHappyCase() {
         //given
-        Menu menu = new Menu();
-        menu.setPrice(BigDecimal.valueOf(1000));
-        menu.setMenuProducts(Arrays.asList(chicken_menuProduct, ham_menuProduct));
+        MenuRequest menuRequest = new MenuRequest();
+        menuRequest.setName("치킨과햄");
+        menuRequest.setPrice(BigDecimal.valueOf(1000));
+        menuRequest.setMenuProducts(Arrays.asList(chicken_menuProduct, ham_menuProduct));
 
-        when(productDao.findById(1L)).thenReturn(Optional.of(chicken));
-        when(productDao.findById(2L)).thenReturn(Optional.of(ham));
-        when(menuGroupDao.existsById(menu.getMenuGroupId())).thenReturn(true);
-        when(menuDao.save(menu)).thenReturn(menu);
+        when(productRepository.findById(1L)).thenReturn(Optional.of(chicken));
+        when(productRepository.findById(2L)).thenReturn(Optional.of(ham));
+        when(menuGroupRepository.findById(menuRequest.getMenuGroupId())).thenReturn(
+            Optional.of(new MenuGroup("한마리메뉴")));
+        Menu expectedMenu = new Menu(menuRequest.getName(), menuRequest.getPrice(),
+            menuRequest.getMenuGroupId());
+        when(menuRepository.save(any())).thenReturn(expectedMenu);
 
-        //when
-        Menu menu_created = menuService.create(menu);
-
-        //then
-        assertAll(
-            () -> assertThat(menu_created.getPrice().toString()).isEqualTo(String.valueOf(1000)),
-            () -> assertThat(menu_created.getMenuProducts()).hasSize(2)
-        );
-
+        //when && then
+        assertDoesNotThrow(() -> menuService.create(menuRequest));
     }
 
     @Test
     @DisplayName("음수의 가격 및 Null로 메뉴 생성시 에러 발생")
     void createWithMinusPriceThrowError() {
         //given
-        Menu menu_minusPrice = new Menu();
+        MenuRequest menu_minusPrice = new MenuRequest();
         menu_minusPrice.setPrice(BigDecimal.valueOf(-1));
 
-        Menu menu_nullPrice = new Menu();
-        menu_minusPrice.setPrice(null);
+        MenuRequest menu_nullPrice = new MenuRequest();
+        menu_nullPrice.setPrice(null);
 
         //when
         assertAll(
@@ -110,8 +108,12 @@ class MenuServiceTest {
     @DisplayName("어느 메뉴그룹에도 속해있지 않으면 에러발생")
     void createWithNoMenuGroupThrowError() {
         //given
-        Menu menu = new Menu();
+        MenuRequest menu = new MenuRequest();
         menu.setPrice(BigDecimal.valueOf(1000));
+
+        MenuProductDTO menuProductDTONotSaved = new MenuProductDTO();
+        menuProductDTONotSaved.setProductId(999L);
+        menu.setMenuProducts(Arrays.asList(menuProductDTONotSaved));
 
         //when & then
         assertThatThrownBy(() -> menuService.create(menu))
@@ -122,13 +124,12 @@ class MenuServiceTest {
     @DisplayName("메뉴에 속해있는 상품들의 합보다 가격이 크면 에러 발생")
     void createWithTooMuchPriceThrowError() {
         //given
-        Menu menu = new Menu();
+        MenuRequest menu = new MenuRequest();
         menu.setPrice(BigDecimal.valueOf(10000));
         menu.setMenuProducts(Arrays.asList(chicken_menuProduct, ham_menuProduct));
 
-        when(productDao.findById(1L)).thenReturn(Optional.of(chicken));
-        when(productDao.findById(2L)).thenReturn(Optional.of(ham));
-        when(menuGroupDao.existsById(menu.getMenuGroupId())).thenReturn(true);
+        when(productRepository.findById(1L)).thenReturn(Optional.of(chicken));
+        when(productRepository.findById(2L)).thenReturn(Optional.of(ham));
 
         //when & then
         assertThatThrownBy(() -> menuService.create(menu))

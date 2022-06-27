@@ -1,14 +1,18 @@
 package kitchenpos.application;
 
+import static kitchenpos.helper.ReflectionHelper.SetProductId;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.request.ProductRequest;
+import kitchenpos.dto.response.ProductResponse;
 import kitchenpos.helper.ReflectionHelper;
+import kitchenpos.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,15 +26,14 @@ class ProductServiceTest {
     private ProductService productService;
     private Product product;
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @BeforeEach
     public void init() {
-        productService = new ProductService(productDao);
-        product = new Product();
-        product.setPrice(BigDecimal.valueOf(18000));
-        product.setName("치킨");
-        ReflectionHelper.SetProductId(1L, product);
+        productService = new ProductService(productRepository);
+        product = new Product("chicken", BigDecimal.valueOf(18000));
+
+        SetProductId(1L, product);
 
     }
 
@@ -38,15 +41,19 @@ class ProductServiceTest {
     @DisplayName("상품 저장 정상로직")
     void create() {
         //given
-        when(productDao.save(product)).thenReturn(product);
+        ProductRequest productRequest = new ProductRequest();
+        productRequest.setName(product.getName());
+        productRequest.setPrice(product.getPrice());
+
+        when(productRepository.save(any())).thenReturn(product);
 
         //when
-        Product product_save = productService.create(product);
+        ProductResponse productResponse = productService.create(productRequest);
 
         assertAll(
-            () -> assertThat(product.getName()).isEqualTo(product_save.getName()),
-            () -> assertThat(product.getPrice()).isEqualTo(product_save.getPrice()),
-            () -> assertThat(product_save.getId()).isNotNull()
+            () -> assertThat(productResponse.getName()).isEqualTo(productRequest.getName()),
+            () -> assertThat(productResponse.getPrice()).isEqualTo(productRequest.getPrice()),
+            () -> assertThat(productResponse.getId()).isNotNull()
         );
     }
 
@@ -54,7 +61,7 @@ class ProductServiceTest {
     @DisplayName("가격 음수일때 상품 저장 불가")
     void createProductWithMinusPriceThrowError() {
         //given
-        Product minusProduct = new Product();
+        ProductRequest minusProduct = new ProductRequest();
         minusProduct.setPrice(BigDecimal.valueOf(-1));
         minusProduct.setName("마이너스상품");
 
@@ -67,7 +74,7 @@ class ProductServiceTest {
     @DisplayName("가격이 NULL일때 상품 저장 불가")
     void createProductWithNullPriceThrowError() {
         //given
-        Product minusProduct = new Product();
+        ProductRequest minusProduct = new ProductRequest();
         minusProduct.setPrice(null);
         minusProduct.setName("널상품");
 
