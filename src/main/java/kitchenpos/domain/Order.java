@@ -42,7 +42,7 @@ public class Order extends BaseTimeEntity {
     }
 
     public void changeOrderStatus(OrderStatus orderStatus){
-
+        this.orderStatus = orderStatus;
     }
 
     public void mapOrderLineItem(OrderLineItem orderLineItem){
