@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,12 +25,14 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
     private Product 생맥주;
     private Product 닭강정;
+    private MenuGroup 일식;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
         생맥주 = 상품이_등록되어_있음(new Product("생맥주", BigDecimal.valueOf(2000)));
         닭강정 = 상품이_등록되어_있음(new Product("닭강정", BigDecimal.valueOf(3000)));
+        일식 = 메뉴그룹이_등록되어있음(new MenuGroup("일식"));
     }
 
 /*  -- 메뉴 등록 관리
@@ -49,7 +52,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         //given
         List<MenuProduct> 닭강정정식_상품들 = Arrays.asList(닭강정정식_닭강정, 닭강정정식_생맥주);
         //given
-        Menu menu = new Menu("닭강정정식", BigDecimal.valueOf(5000), 1L, 닭강정정식_상품들);
+        Menu menu = new Menu("닭강정정식", BigDecimal.valueOf(5000), 일식.getId(), 닭강정정식_상품들);
 
         //when
         final ExtractableResponse<Response> createResponse = 메뉴등록을_요청(menu);
@@ -98,6 +101,10 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     private void 등록한_메뉴가_조회됨(Menu menu, ExtractableResponse<Response> retriveResponse) {
         assertThat(retriveResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(retriveResponse.jsonPath().getList("name")).contains(menu.getName());
+    }
+
+    private MenuGroup 메뉴그룹이_등록되어있음(MenuGroup menuGroup) {
+        return MenuGroupAcceptanceTest.메뉴그룹_등록을_요청(menuGroup).as(MenuGroup.class);
     }
 
 
