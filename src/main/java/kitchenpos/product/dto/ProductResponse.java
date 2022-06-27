@@ -9,7 +9,7 @@ public class ProductResponse {
     private String name;
     private BigDecimal price;
 
-    public static ProductResponse of(Product product) {
+    public static ProductResponse from(Product product) {
         ProductResponse response = new ProductResponse();
 
         response.id = product.getId();
@@ -25,5 +25,9 @@ public class ProductResponse {
 
     public String getName() {
         return name;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
     }
 }

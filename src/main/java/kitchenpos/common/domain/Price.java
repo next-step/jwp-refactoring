@@ -12,27 +12,27 @@ public class Price {
     private static final BigDecimal MIN_VALUE = new BigDecimal(0);
 
     @Column(nullable = false)
-    private BigDecimal value;
+    private BigDecimal price;
 
     protected Price() {}
 
     public Price(BigDecimal value) {
         CheckValue(value);
-        this.value = value;
+        this.price = value;
     }
 
     public Price add(Price target) {
-        return new Price(this.value.add(target.value));
+        return new Price(this.price.add(target.price));
     }
 
     public Price multiplyByQuantity(Quantity value) {
         BigDecimal multiplyValue = new BigDecimal(value.getValue());
 
-        return new Price(this.value.multiply(multiplyValue));
+        return new Price(this.price.multiply(multiplyValue));
     }
 
     public boolean isNotSame(Price target) {
-        return this.value.compareTo(target.value) != 0;
+        return this.price.compareTo(target.price) != 0;
     }
 
     private void CheckValue(BigDecimal value) {
@@ -42,19 +42,19 @@ public class Price {
     }
 
     public BigDecimal getValue() {
-        return value;
+        return price;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Price price = (Price) o;
-        return value.compareTo(price.value) == 0;
+        Price that = (Price) o;
+        return price.compareTo(that.price) == 0;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(value);
+        return Objects.hash(price);
     }
 }

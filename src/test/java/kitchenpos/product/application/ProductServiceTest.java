@@ -2,6 +2,7 @@ package kitchenpos.product.application;
 
 import kitchenpos.common.domain.Price;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.Products;
 import kitchenpos.product.dto.ProductCreateRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -58,7 +59,7 @@ class ProductServiceTest {
         }
 
         // when
-        List<Product> 상품_조회_결과 = productService.list();
+        Products 상품_조회_결과 = productService.list();
 
         // then
         상품_목록_정상_조회됨(상품_조회_결과, 포함_되어야_할_아이디들);
@@ -73,8 +74,8 @@ class ProductServiceTest {
         assertThat(product.getPrice()).isEqualTo(new Price(request.getPrice()));
     }
 
-    void 상품_목록_정상_조회됨(List<Product> products, List<Long> containIds) {
-        assertThat(products.size()).isGreaterThanOrEqualTo(containIds.size());
-        assertThat(products.stream().mapToLong(Product::getId)).containsAll(containIds);
+    void 상품_목록_정상_조회됨(Products products, List<Long> containIds) {
+        assertThat(products.getValue().size()).isGreaterThanOrEqualTo(containIds.size());
+        assertThat(products.getValue().stream().mapToLong(Product::getId)).containsAll(containIds);
     }
 }
