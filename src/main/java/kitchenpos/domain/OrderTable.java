@@ -36,6 +36,12 @@ public class OrderTable {
         this.empty = true;
     }
 
+    public void unGroupTable(){
+        this.empty = true;
+        this.numberOfGuests.changeNumberOfGuests(0);
+        this.tableGroupId = null;
+    }
+
     public void mapToTableGroup(long tableGroupId) {
         this.tableGroupId = tableGroupId;
     }

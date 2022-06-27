@@ -6,19 +6,19 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.domainService.TableTableGroupDomainService;
 import kitchenpos.dto.request.OrderTableRequest;
 import kitchenpos.dto.request.TableGroupRequest;
 import kitchenpos.dto.response.TableGroupResponse;
-import kitchenpos.repository.OrderRepository;
-import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.repository.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,13 +31,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class TableGroupServiceTest {
 
     private TableGroupService tableGroupService;
-
-    @Mock
-    private OrderRepository orderRepository;
-    @Mock
-    private OrderTableRepository orderTableRepository;
     @Mock
     private TableGroupRepository tableGroupRepository;
+    @Mock
+    private TableTableGroupDomainService tableTableGroupDomainService;
     private TableGroup tableGroup;
     private OrderTable orderTable_1;
     private OrderTable orderTable_2;
@@ -50,10 +47,8 @@ class TableGroupServiceTest {
     @BeforeEach
     public void init() {
         setOrderTable();
-//        setMenu();
-//        setOrderLineItem();
 
-        tableGroupService = new TableGroupService(orderRepository, orderTableRepository,
+        tableGroupService = new TableGroupService(tableTableGroupDomainService,
             tableGroupRepository);
         tableGroup = new TableGroup();
         setTableGroupId(1L, tableGroup);
@@ -65,40 +60,15 @@ class TableGroupServiceTest {
         orderTable_2 = new OrderTable(0, true);
     }
 
-//    private void setMenu() {
-//        Product chicken = new Product("chicken", BigDecimal.valueOf(5000));
-//
-//        chicken_menuProduct = new MenuProduct();
-//        chicken_menuProduct.setProductId(1L);
-//        chicken_menuProduct.setQuantity(1);
-//        chicken_menuProduct.setMenuId(1L);
-//
-//        Product ham = new Product();
-//        ham.setPrice(BigDecimal.valueOf(4000));
-//        ham_menuProduct = new MenuProduct();
-//        ham_menuProduct.setProductId(2L);
-//        ham_menuProduct.setQuantity(1);
-//        ham_menuProduct.setMenuId(1L);
-//    }
-//
-//    private void setOrderLineItem() {
-//        chickenOrder = new OrderLineItem();
-//        chickenOrder.setMenuId(chicken_menuProduct.getMenuId());
-//        chickenOrder.setQuantity(1);
-//
-//        hamOrder = new OrderLineItem();
-//        hamOrder.setMenuId(ham_menuProduct.getMenuId());
-//        hamOrder.setQuantity(2);
-//    }
-
     @Test
     @DisplayName("단체 테이블 생성 정상 로직")
     void createTableGroupHappyCase() {
         //given
         TableGroupRequest tableGroupRequest = new TableGroupRequest();
 
-        when(orderTableRepository.findAllByIdIn(any()))
-            .thenReturn(Arrays.asList(orderTable_1, orderTable_2));
+        doNothing().when(tableTableGroupDomainService)
+            .checkOrderTableForCreateTableGroup(tableGroupRequest);
+        when(tableTableGroupDomainService.saveTableGroup(tableGroupRequest)).thenReturn(tableGroup);
         when(tableGroupRepository.save(any())).thenReturn(tableGroup);
 
         //when
@@ -113,6 +83,9 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("1개 이하 테이블로 단체 테이블 생성시 에러 발생")
     void createWithUnderOneTableThrowError() {
+        doThrow(IllegalArgumentException.class).when(tableTableGroupDomainService)
+            .checkOrderTableForCreateTableGroup(any());
+
         //given(0개의 테이블을 가진 tableGroupRequest)
         TableGroupRequest tableGroupRequest = new TableGroupRequest();
         //when & then 0개의 테이블로 단체 테이블 생성시 에러 발생
@@ -135,6 +108,9 @@ class TableGroupServiceTest {
         tableGroupRequest.setOrderTables(
             Arrays.asList(new OrderTableRequest(), new OrderTableRequest()));
 
+        doThrow(IllegalArgumentException.class).when(tableTableGroupDomainService)
+            .saveTableGroup(tableGroupRequest);
+
         //when & then
         assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
             .isInstanceOf(IllegalArgumentException.class);
@@ -145,9 +121,8 @@ class TableGroupServiceTest {
     void createWithEmptyTableThrowError() {
         //given
         TableGroupRequest tableGroupRequest = new TableGroupRequest();
-        when(orderTableRepository.findAllByIdIn(any()))
-            .thenReturn(Arrays.asList(orderTable_1, orderTable_2));
-        orderTable_1.useTable();
+        doThrow(IllegalArgumentException.class).when(tableTableGroupDomainService)
+            .checkOrderTableForCreateTableGroup(tableGroupRequest);
 
         //when & then
         assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
@@ -161,26 +136,18 @@ class TableGroupServiceTest {
         TableGroupRequest tableGroupRequest = new TableGroupRequest();
         tableGroupRequest.setId(1L);
 
-        when(orderTableRepository.findAllByTableGroupId(tableGroupRequest.getId()))
-            .thenReturn(Arrays.asList(orderTable_1, orderTable_2));
-        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-            Arrays.asList(orderTable_1.getId(), orderTable_2.getId()),
-            Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)))
-            .thenReturn(false);
+        doNothing().when(tableTableGroupDomainService)
+            .checkAllMenuIsCompleteInTableGroup(tableGroupRequest.getId());
 
-        assertDoesNotThrow(() -> tableGroupService.ungroup(tableGroup.getId()));
+        assertDoesNotThrow(() -> tableGroupService.ungroup(tableGroupRequest.getId()));
     }
 
     @Test
     @DisplayName("단체 테이블 해체시 요리중이거나 먹고있는 오더가 있으면 에러가 발생한다")
     void ungroupWithCookingMealOrderThrowError() {
         //given
-        when(orderTableRepository.findAllByTableGroupId(tableGroup.getId()))
-            .thenReturn(Arrays.asList(orderTable_1, orderTable_2));
-        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-            Arrays.asList(orderTable_1.getId(), orderTable_2.getId()),
-            Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)))
-            .thenReturn(true);
+        doThrow(IllegalArgumentException.class).when(tableTableGroupDomainService)
+            .checkAllMenuIsCompleteInTableGroup(tableGroup.getId());
 
         //when & then
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
