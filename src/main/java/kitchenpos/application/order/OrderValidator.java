@@ -2,7 +2,7 @@ package kitchenpos.application.order;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.domain.menu.MenuRepository;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderLineItem;
 import kitchenpos.domain.order.OrderLineItems;

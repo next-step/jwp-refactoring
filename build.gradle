@@ -45,6 +45,12 @@ allprojects {
     }
 }
 
+project(':module-menu') {
+    dependencies {
+        implementation project(':module-product')
+    }
+}
+
 project(':module-product') {
     dependencies {
     }
@@ -54,5 +60,6 @@ dependencies {
     implementation 'org.flywaydb:flyway-core'
     runtimeOnly 'com.h2database:h2'
 
+    implementation project(':module-menu')
     implementation project(':module-product')
 }

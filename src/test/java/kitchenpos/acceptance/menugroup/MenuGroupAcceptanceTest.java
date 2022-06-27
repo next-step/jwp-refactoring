@@ -10,7 +10,7 @@ import static kitchenpos.acceptance.menugroup.MenuGroupAcceptanceTestMethod.ë©”ë
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.dto.menugroup.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupRequest;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

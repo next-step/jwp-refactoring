@@ -6,11 +6,11 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.List;
 import kitchenpos.fixture.MenuGroupFixtureFactory;
-import kitchenpos.application.menugroup.MenuGroupService;
-import kitchenpos.domain.menugroup.MenuGroup;
-import kitchenpos.domain.menugroup.MenuGroupRepository;
-import kitchenpos.dto.menugroup.MenuGroupRequest;
-import kitchenpos.dto.menugroup.MenuGroupResponse;
+import kitchenpos.menu.application.MenuGroupService;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroupRepository;
+import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
