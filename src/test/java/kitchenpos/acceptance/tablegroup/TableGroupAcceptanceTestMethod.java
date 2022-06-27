@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.dto.tablegroup.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupRequest;
 import org.springframework.http.HttpStatus;
 
 public class TableGroupAcceptanceTestMethod extends AcceptanceTest {

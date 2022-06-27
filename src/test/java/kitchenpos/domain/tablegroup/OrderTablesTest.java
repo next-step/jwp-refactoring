@@ -1,13 +1,12 @@
 package kitchenpos.domain.tablegroup;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
-import java.util.Collections;
 import java.util.List;
-import kitchenpos.domain.table.OrderTable;
-import kitchenpos.exception.EmptyOrderTablesException;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTables;
+import kitchenpos.table.exception.EmptyOrderTablesException;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

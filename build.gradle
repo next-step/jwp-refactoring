@@ -33,11 +33,8 @@ allprojects {
     dependencies {
         implementation 'org.springframework.boot:spring-boot-starter-web'
         implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-
         implementation 'pl.allegro.tech.boot:handlebars-spring-boot-starter:0.3.0'
-
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
-        testImplementation 'io.rest-assured:rest-assured:3.3.0'
     }
 
     test {
@@ -51,6 +48,17 @@ project(':module-menu') {
     }
 }
 
+project(':module-order') {
+    dependencies {
+        implementation project(':module-menu')
+    }
+}
+
+project(':module-table') {
+    dependencies {
+        implementation project(':module-order')
+    }
+}
 project(':module-product') {
     dependencies {
     }
@@ -60,6 +68,10 @@ dependencies {
     implementation 'org.flywaydb:flyway-core'
     runtimeOnly 'com.h2database:h2'
 
+    testImplementation 'io.rest-assured:rest-assured:3.3.0'
+
     implementation project(':module-menu')
+    implementation project(':module-order')
+    implementation project(':module-table')
     implementation project(':module-product')
 }

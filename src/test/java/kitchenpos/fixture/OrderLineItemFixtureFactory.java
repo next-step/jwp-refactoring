@@ -1,7 +1,7 @@
 package kitchenpos.fixture;
 
 
-import kitchenpos.domain.order.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItem;
 
 public class OrderLineItemFixtureFactory {
 

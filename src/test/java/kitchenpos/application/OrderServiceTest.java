@@ -8,6 +8,10 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
+import kitchenpos.order.domain.event.OrderTableExistCheckEvent;
+import kitchenpos.table.application.handler.OrderTableEmptyCheckEventHandler;
+import kitchenpos.table.application.handler.OrderTableExistCheckEventHandler;
+import kitchenpos.table.exception.NotFoundOrderTableException;
 import kitchenpos.fixture.MenuFixtureFactory;
 import kitchenpos.fixture.MenuGroupFixtureFactory;
 import kitchenpos.fixture.MenuProductFixtureFactory;
@@ -15,26 +19,25 @@ import kitchenpos.fixture.OrderFixtureFactory;
 import kitchenpos.fixture.OrderLineItemFixtureFactory;
 import kitchenpos.fixture.OrderTableFixtureFactory;
 import kitchenpos.fixture.ProductFixtureFactory;
-import kitchenpos.application.order.OrderService;
+import kitchenpos.order.application.OrderService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
-import kitchenpos.domain.order.Order;
-import kitchenpos.domain.order.OrderLineItem;
-import kitchenpos.domain.order.OrderRepository;
-import kitchenpos.domain.order.OrderStatus;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.exception.NotEqualsMenuAndOrderLineItemMenuException;
+import kitchenpos.order.exception.NotExistOrderLineItemsException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
-import kitchenpos.domain.table.OrderTable;
-import kitchenpos.domain.table.OrderTableRepository;
-import kitchenpos.dto.order.OrderLineItemRequest;
-import kitchenpos.dto.order.OrderRequest;
-import kitchenpos.dto.order.OrderResponse;
-import kitchenpos.exception.NotEqualsMenuAndOrderLineItemMenuException;
-import kitchenpos.exception.NotExistOrderLineItemsException;
-import kitchenpos.exception.NotFoundOrderTableException;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -68,6 +71,9 @@ class OrderServiceTest {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private OrderTableExistCheckEventHandler orderTableExistCheckEventHandler;
 
     private MenuGroup 초밥_메뉴그룹;
     private Product 우아한_초밥_1;
@@ -151,14 +157,9 @@ class OrderServiceTest {
     @DisplayName("주문 테이블이 없이는 주문을 등록할 수 없다.")
     @Test
     void create04() {
-        // given
-        OrderRequest orderRequest = OrderRequest.of(0L,
-                OrderStatus.COOKING,
-                Lists.newArrayList(OrderLineItemRequest.of(A_주문항목.getMenuId(), A_주문항목.findQuantity())));
-
         // when & then
         assertThatExceptionOfType(NotFoundOrderTableException.class)
-                .isThrownBy(() -> orderService.create(orderRequest));
+                .isThrownBy(() -> orderTableExistCheckEventHandler.handle(new OrderTableExistCheckEvent(0L)));
     }
 
     @DisplayName("주문 목록을 조회할 수 있다.")

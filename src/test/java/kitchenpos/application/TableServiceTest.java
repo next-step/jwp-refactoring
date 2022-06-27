@@ -15,26 +15,26 @@ import kitchenpos.fixture.OrderLineItemFixtureFactory;
 import kitchenpos.fixture.OrderTableFixtureFactory;
 import kitchenpos.fixture.ProductFixtureFactory;
 import kitchenpos.fixture.TableGroupFixtureFactory;
-import kitchenpos.application.order.OrderService;
-import kitchenpos.application.table.TableService;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.table.application.TableService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
-import kitchenpos.domain.order.Order;
-import kitchenpos.domain.order.OrderLineItem;
-import kitchenpos.domain.order.OrderRepository;
-import kitchenpos.domain.order.OrderStatus;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
-import kitchenpos.domain.table.OrderTable;
-import kitchenpos.domain.table.OrderTableRepository;
-import kitchenpos.domain.tablegroup.TableGroup;
-import kitchenpos.domain.tablegroup.TableGroupRepository;
-import kitchenpos.dto.table.OrderTableRequest;
-import kitchenpos.dto.table.OrderTableResponse;
-import kitchenpos.exception.NegativeNumberOfGuestsException;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.exception.NegativeNumberOfGuestsException;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -226,7 +226,8 @@ class TableServiceTest {
         OrderTableRequest request = OrderTableRequest.of(numberOfGuest, true);
 
         // when & then
-        assertThrows(NegativeNumberOfGuestsException.class, () -> tableService.changeNumberOfGuests(A_주문_테이블.getId(), request));
+        assertThrows(
+                NegativeNumberOfGuestsException.class, () -> tableService.changeNumberOfGuests(A_주문_테이블.getId(), request));
     }
 
     @DisplayName("테이블이 없으면 손님 수를 변경할 수 없다.")

@@ -14,17 +14,22 @@ import kitchenpos.fixture.MenuProductFixtureFactory;
 import kitchenpos.fixture.OrderFixtureFactory;
 import kitchenpos.fixture.OrderTableFixtureFactory;
 import kitchenpos.fixture.ProductFixtureFactory;
-import kitchenpos.application.order.OrderValidator;
+import kitchenpos.order.application.OrderValidator;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.event.OrderTableExistCheckEvent;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
-import kitchenpos.domain.table.OrderTable;
-import kitchenpos.domain.table.OrderTableRepository;
-import kitchenpos.exception.NotFoundOrderTableException;
+import kitchenpos.table.application.handler.OrderTableExistCheckEventHandler;
+import kitchenpos.table.exception.NotFoundOrderTableException;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -54,6 +59,9 @@ class OrderTest {
 
     @Autowired
     private OrderValidator orderValidator;
+
+    @Autowired
+    private OrderTableExistCheckEventHandler orderTableExistCheckEventHandler;
 
     private MenuGroup 메뉴그룹;
     private Menu 메뉴;
@@ -109,7 +117,7 @@ class OrderTest {
         Order order = Order.from(0L);
 
         // when & then
-        assertThrows(NotFoundOrderTableException.class, () -> orderValidator.validate(order));
+        assertThrows(NotFoundOrderTableException.class, () -> orderTableExistCheckEventHandler.handle(new OrderTableExistCheckEvent(order.getOrderTableId())));
     }
 
     @DisplayName("Order 의 주문상태 OrderStatus를 변경할 수 있다.")
