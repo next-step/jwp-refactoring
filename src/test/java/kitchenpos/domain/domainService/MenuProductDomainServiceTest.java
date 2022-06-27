@@ -53,9 +53,11 @@ class MenuProductDomainServiceTest {
     @Test
     @DisplayName("메뉴그룹이 저장되어있지 않으면 에러가 발생한다.")
     public void saveMenuWithoutMenuGroupThrowError() {
+        //given
         when(menuGroupRepository.findById(menuRequest.getMenuGroupId()))
             .thenThrow(IllegalArgumentException.class);
 
+        //when & then
         assertThatThrownBy(
             () -> menuProductDomainService.validateComponentForCreateMenu(menuRequest))
             .isInstanceOf(IllegalArgumentException.class);
@@ -64,6 +66,7 @@ class MenuProductDomainServiceTest {
     @Test
     @DisplayName("메뉴의 가격이 전체 상품의 가격보다 크면 에러가 발생한다.")
     public void saveMenuOverAllPriceThrowError() {
+        //given
         when(menuGroupRepository.findById(menuRequest.getMenuGroupId()))
             .thenReturn(Optional.of(new MenuGroup("테스트그룹")));
         when(productRepository.findById(menuRequest.getMenuProducts().get(0).getProductId()))
@@ -71,6 +74,7 @@ class MenuProductDomainServiceTest {
         when(productRepository.findById(menuRequest.getMenuProducts().get(1).getProductId()))
             .thenReturn(Optional.of(new Product("피자", BigDecimal.valueOf(500L))));
 
+        //when & then
         assertThatThrownBy(
             () -> menuProductDomainService.validateComponentForCreateMenu(menuRequest))
             .isInstanceOf(IllegalArgumentException.class);
@@ -79,11 +83,13 @@ class MenuProductDomainServiceTest {
     @Test
     @DisplayName("상품이 존재하지 않을때 에러가 발생한다.")
     public void saveMenuWithoutPRoductThrowError() {
+        //given
         when(menuGroupRepository.findById(menuRequest.getMenuGroupId()))
             .thenReturn(Optional.of(new MenuGroup("테스트그룹")));
         when(productRepository.findById(menuRequest.getMenuProducts().get(0).getProductId()))
             .thenReturn(Optional.of(new Product("피자", BigDecimal.valueOf(500L))));
 
+        //when & then
         assertThatThrownBy(
             () -> menuProductDomainService.validateComponentForCreateMenu(menuRequest))
             .isInstanceOf(IllegalArgumentException.class);
