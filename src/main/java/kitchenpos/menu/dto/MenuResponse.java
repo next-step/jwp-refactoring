@@ -29,7 +29,7 @@ public class MenuResponse {
                 .map(menuProduct -> MenuProductResponse.from(menuProduct))
                 .collect(Collectors.toList());
         return new MenuResponse(savedMenu.getId(), savedMenu.getName(), savedMenu.getPrice().intValue(),
-                savedMenu.getMenuGroupId(), menuProductResponses);
+                savedMenu.getMenuGroup().getId(), menuProductResponses);
     }
 
     public Long getId() {

@@ -61,7 +61,7 @@ class MenuServiceTest {
         메뉴그룹_한식 = createMenuGroup(1L, "한식메뉴");
         김치찌개 = createProduct(1L, "김치찌개", BigDecimal.valueOf(8000L));
         공기밥 = createProduct(2L, "공기밥", BigDecimal.valueOf(1000L));
-        메뉴_김치찌개세트 = createMenu(1L, "김치찌개세트", BigDecimal.valueOf(15000L), 메뉴그룹_한식.getId());
+        메뉴_김치찌개세트 = createMenu(1L, "김치찌개세트", BigDecimal.valueOf(15000L), 메뉴그룹_한식);
 
         김치찌개세트_김치찌개 = createMenuProduct(1L, 메뉴_김치찌개세트.getId(), 김치찌개.getId(), 2);
         김치찌개세트_공기밥 = createMenuProduct(1L, 메뉴_김치찌개세트.getId(), 공기밥.getId(), 2);
@@ -75,11 +75,12 @@ class MenuServiceTest {
         given(menuGroupRepository.existsById(anyLong())).willReturn(true);
         given(productRepository.findById(김치찌개.getId())).willReturn(Optional.of(김치찌개));
         given(productRepository.findById(공기밥.getId())).willReturn(Optional.of(공기밥));
+        given(menuGroupRepository.findById(메뉴그룹_한식.getId())).willReturn(Optional.of(메뉴그룹_한식));
         given(menuRepository.save(any(Menu.class))).willReturn(메뉴_김치찌개세트);
         MenuRequest 메뉴_김치찌개세트_request = MenuRequest.of(
                 메뉴_김치찌개세트.getName(),
                 메뉴_김치찌개세트.getPrice().intValue(),
-                메뉴_김치찌개세트.getMenuGroupId(),
+                메뉴_김치찌개세트.getMenuGroup().getId(),
                 메뉴_김치찌개세트.getMenuProducts().stream().
                         map(menuProduct -> MenuProductRequest.of(menuProduct.getProductId(), (int) menuProduct.getQuantity()))
                         .collect(Collectors.toList())
@@ -99,7 +100,7 @@ class MenuServiceTest {
         MenuRequest invalidMenu = MenuRequest.of(
                 메뉴_김치찌개세트.getName(),
                 -15000,
-                메뉴_김치찌개세트.getMenuGroupId(),
+                메뉴_김치찌개세트.getMenuGroup().getId(),
                 메뉴_김치찌개세트.getMenuProducts().stream().
                         map(menuProduct -> MenuProductRequest.of(menuProduct.getProductId(), (int) menuProduct.getQuantity()))
                         .collect(Collectors.toList())
@@ -121,7 +122,7 @@ class MenuServiceTest {
         MenuRequest invalidMenu = MenuRequest.of(
                 메뉴_김치찌개세트.getName(),
                 20000,
-                메뉴_김치찌개세트.getMenuGroupId(),
+                메뉴_김치찌개세트.getMenuGroup().getId(),
                 메뉴_김치찌개세트.getMenuProducts().stream().
                         map(menuProduct -> MenuProductRequest.of(menuProduct.getProductId(), (int) menuProduct.getQuantity()))
                         .collect(Collectors.toList())
@@ -141,7 +142,7 @@ class MenuServiceTest {
         MenuRequest invalidMenu = MenuRequest.of(
                 메뉴_김치찌개세트.getName(),
                 메뉴_김치찌개세트.getPrice().intValue(),
-                메뉴_김치찌개세트.getMenuGroupId(),
+                메뉴_김치찌개세트.getMenuGroup().getId(),
                 메뉴_김치찌개세트.getMenuProducts().stream().
                         map(menuProduct -> MenuProductRequest.of(menuProduct.getProductId(), (int) menuProduct.getQuantity()))
                         .collect(Collectors.toList())
@@ -160,7 +161,7 @@ class MenuServiceTest {
         MenuRequest invalidMenu = MenuRequest.of(
                 메뉴_김치찌개세트.getName(),
                 메뉴_김치찌개세트.getPrice().intValue(),
-                메뉴_김치찌개세트.getMenuGroupId(),
+                메뉴_김치찌개세트.getMenuGroup().getId(),
                 메뉴_김치찌개세트.getMenuProducts().stream().
                         map(menuProduct -> MenuProductRequest.of(menuProduct.getProductId(), (int) menuProduct.getQuantity()))
                         .collect(Collectors.toList())
