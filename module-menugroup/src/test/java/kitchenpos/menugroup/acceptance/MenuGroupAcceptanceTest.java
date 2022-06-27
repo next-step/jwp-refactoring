@@ -1,4 +1,4 @@
-package kitchenpos.menu.acceptance;
+package kitchenpos.menugroup.acceptance;
 
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
