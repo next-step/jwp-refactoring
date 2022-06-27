@@ -65,6 +65,26 @@ class ProductServiceTest {
         상품_목록_정상_조회됨(상품_조회_결과, 포함_되어야_할_아이디들);
     }
 
+    @DisplayName("없는 상품을 조회하면 예외가 발생해야 한다")
+    @Test
+    void findProductByNotSavedTest() {
+        상품_조회_실패됨(() -> productService.getProduct(-1L));
+    }
+
+    @DisplayName("정상 메뉴 그룹 조회 시 정상 조회되어야 한다")
+    @Test
+    void findMenuGroupTest() {
+        // given
+        Long 상품_아이디 = productService.create(상품_생성_요청("상품", 1_000)).getId();
+
+        // when
+        Product 상품 = productService.getProduct(상품_아이디);
+
+        // then
+        assertThat(상품).isNotNull();
+        assertThat(상품.getId()).isEqualTo(상품_아이디);
+    }
+
     void 상품_생성_실패됨(Runnable runnable) {
         assertThatIllegalArgumentException().isThrownBy(runnable::run);
     }
@@ -77,5 +97,9 @@ class ProductServiceTest {
     void 상품_목록_정상_조회됨(Products products, List<Long> containIds) {
         assertThat(products.getValue().size()).isGreaterThanOrEqualTo(containIds.size());
         assertThat(products.getValue().stream().mapToLong(Product::getId)).containsAll(containIds);
+    }
+
+    void 상품_조회_실패됨(Runnable runnable) {
+        assertThatIllegalArgumentException().isThrownBy(runnable::run);
     }
 }

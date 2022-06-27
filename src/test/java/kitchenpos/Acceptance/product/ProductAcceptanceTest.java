@@ -21,7 +21,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     @Test
     void createProductByMinusPriceTest() {
         // when
-        ExtractableResponse<Response> 상품_생성_결과 = 상품_생성_API_요청(상품_생성_요청("상품", -1));
+        ExtractableResponse<Response> 상품_생성_결과 = 상품_생성_API_요청("상품", -1);
 
         // then
         상품_생성_실패됨(상품_생성_결과);
@@ -33,7 +33,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         // given
         String 상품_이름 = "상품";
         int 상품_가격 = 1_000;
-        ExtractableResponse<Response> 상품_생성_결과 = 상품_생성_API_요청(상품_생성_요청(상품_이름, 상품_가격));
+        ExtractableResponse<Response> 상품_생성_결과 = 상품_생성_API_요청(상품_이름, 상품_가격);
 
         // then
         상품_생성됨(상품_생성_결과, 상품_이름, 상품_가격);
@@ -44,7 +44,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     void findAllProductTest() {
         // given
         List<String> 상품_이름들 = Arrays.asList("상품 1", "상품 2", "상품 3", "상품 4", "상품 5");
-        상품_이름들.forEach(name -> 상품_생성_API_요청(상품_생성_요청(name, 1_000)));
+        상품_이름들.forEach(name -> 상품_생성_API_요청(name, 1_000));
 
         // when
         ExtractableResponse<Response> 상품_조회_결과 = 상품_목록_API_요청();
@@ -69,7 +69,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         // given
         String 상품_이름 = "상품";
         int 상품_가격 = 1_000;
-        Long 상품_아이디 = 상품_생성_API_요청(상품_생성_요청(상품_이름, 상품_가격)).body().jsonPath().getLong("id");
+        Long 상품_아이디 = 상품_생성_API_요청(상품_이름, 상품_가격).body().jsonPath().getLong("id");
 
         // when
         ExtractableResponse<Response> 상품_조회_결과 = 상품_조회_API_요청(상품_아이디);

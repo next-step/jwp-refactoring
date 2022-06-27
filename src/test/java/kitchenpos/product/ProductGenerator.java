@@ -23,8 +23,8 @@ public class ProductGenerator {
         return new ProductCreateRequest(name, new BigDecimal(price));
     }
 
-    public static ExtractableResponse<Response> 상품_생성_API_요청(ProductCreateRequest request) {
-        return RestAssuredRequest.postRequest(PATH, Collections.emptyMap(), request);
+    public static ExtractableResponse<Response> 상품_생성_API_요청(String name, int price) {
+        return RestAssuredRequest.postRequest(PATH, Collections.emptyMap(), 상품_생성_요청(name, price));
     }
 
     public static ExtractableResponse<Response> 상품_목록_API_요청() {
