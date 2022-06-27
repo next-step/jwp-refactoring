@@ -4,6 +4,7 @@ import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.domain.orderTable.OrderTable;
 import kitchenpos.domain.orderTable.OrderTableRepository;
 import kitchenpos.domain.tableGroup.TableGroup;
+import kitchenpos.dto.orderTable.OrderTableChangEmptyRequest;
 import kitchenpos.dto.orderTable.OrderTableRequest;
 import kitchenpos.dto.orderTable.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -92,7 +93,7 @@ public class TableServiceTest {
         given(orderTableRepository.save(orderTable)).willReturn(orderTable);
 
         // when
-        OrderTableResponse 주문상태_변경_결과 = 주문_상태_변경(1L, orderTable);
+        OrderTableResponse 주문상태_변경_결과 = 주문_상태_변경(1L, new OrderTableChangEmptyRequest(true));
 
         // then
         assertThat(주문상태_변경_결과.isEmpty()).isTrue();
@@ -106,7 +107,7 @@ public class TableServiceTest {
         given(orderTableRepository.findById(1L)).willReturn(Optional.of(orderTable));
 
         // when && then
-        assertThatThrownBy(() -> 주문_상태_변경(1L, orderTable))
+        assertThatThrownBy(() -> 주문_상태_변경(1L, new OrderTableChangEmptyRequest(true)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -119,7 +120,7 @@ public class TableServiceTest {
         given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(true);
 
         // when && then
-        assertThatThrownBy(() -> 주문_상태_변경(1L, orderTable))
+        assertThatThrownBy(() -> 주문_상태_변경(1L, new OrderTableChangEmptyRequest(true)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -171,8 +172,8 @@ public class TableServiceTest {
         return new OrderTable(id, tableGroup, numberOfGuests, empty);
     }
 
-    private OrderTableResponse 주문_상태_변경(long orderTableId, OrderTable orderTable) {
-        return tableService.changeEmpty(orderTableId, orderTable);
+    private OrderTableResponse 주문_상태_변경(long orderTableId, OrderTableChangEmptyRequest orderTableChangEmptyRequest) {
+        return tableService.changeEmpty(orderTableId, orderTableChangEmptyRequest);
     }
 
     private OrderTableResponse 방문_손님_수_변경(long orderTableId, OrderTable orderTable) {

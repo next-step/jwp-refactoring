@@ -4,6 +4,7 @@ import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.orderTable.OrderTable;
 import kitchenpos.domain.orderTable.OrderTableRepository;
+import kitchenpos.dto.orderTable.OrderTableChangEmptyRequest;
 import kitchenpos.dto.orderTable.OrderTableRequest;
 import kitchenpos.dto.orderTable.OrderTableResponse;
 import org.springframework.stereotype.Service;
@@ -40,14 +41,14 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTable orderTable) {
+    public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableChangEmptyRequest orderTableChangEmptyRequest) {
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
 
         if (isExistsOrderTableAndNotCompletion(orderTableId)) {
             throw new IllegalArgumentException();
         }
 
-        savedOrderTable.updateEmpty(orderTable.isEmpty());
+        savedOrderTable.updateEmpty(orderTableChangEmptyRequest.isEmpty());
 
         return OrderTableResponse.of(saveOrderTable(savedOrderTable));
     }
