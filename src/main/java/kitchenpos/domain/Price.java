@@ -26,4 +26,7 @@ public class Price {
         return price.compareTo(target) > 0 ;
     }
 
+    public BigDecimal extractRealPrice() {
+        return price;
+    }
 }

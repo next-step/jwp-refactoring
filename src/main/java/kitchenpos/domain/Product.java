@@ -17,14 +17,14 @@ public class Product {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private String name;
-    private BigDecimal price;
+    private Price price;
 
     protected Product() {
     }
 
     public Product(String name, BigDecimal price) {
         this.name = name;
-        this.price = price;
+        this.price = new Price(price);
     }
 
     public Long getId() {
@@ -36,7 +36,7 @@ public class Product {
     }
 
     public BigDecimal getPrice() {
-        return price;
+        return price.extractRealPrice();
     }
 
     @Override

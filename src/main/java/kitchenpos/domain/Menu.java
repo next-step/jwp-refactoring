@@ -20,7 +20,7 @@ public class Menu {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private String name;
-    private BigDecimal price;
+    private Price price;
     private Long menuGroupId;
 
     @OneToMany(mappedBy = "menu", cascade = {CascadeType.ALL}, orphanRemoval = true)
@@ -31,7 +31,7 @@ public class Menu {
 
     public Menu(String name, BigDecimal price, Long menuGroupId) {
         this.name = name;
-        this.price = price;
+        this.price = new Price(price);
         this.menuGroupId = menuGroupId;
     }
 
@@ -44,7 +44,7 @@ public class Menu {
     }
 
     public BigDecimal getPrice() {
-        return price;
+        return price.extractRealPrice();
     }
 
     public Long getMenuGroupId() {
