@@ -11,6 +11,7 @@ public enum ExceptionType {
     EMPTY_ORDER_LINE_ITEM("주문항목이 비어있습니다."),
     CONTAINS_NOT_EXIST_MENU("존재하지 않는 메뉴가 포함되어 있습니다"),
     NOT_EXIST_ORDER("존재하지 않는 주문입니다."),
+    NOT_EXIST_PRODUCT("존재하지 않는 상품입니다."),
     COMPLETION_STATUS_CAN_NOT_CHANGE("주문완료 상태는 변경할 수 없습니다."),
     NOT_EXIST_MENU("존재하지 않는 메뉴입니다."),
     ORDER_TABLE_AT_LEAST_TWO("주문 테이블은 최소 2개 이상이어야 합니다."),

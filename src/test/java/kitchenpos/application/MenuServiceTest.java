@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -23,8 +24,8 @@ import kitchenpos.core.exception.BadRequestException;
 import kitchenpos.core.exception.CannotCreateException;
 import kitchenpos.core.exception.ExceptionType;
 import kitchenpos.core.exception.NotFoundException;
+import kitchenpos.menu.application.MenuValidator;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.menuGroup.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
@@ -37,27 +38,19 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @DisplayName("메뉴 서비스에 대한 테스트")
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
-
-    @Mock
-    private MenuRepository menuRepository;
-    @Mock
     private MenuGroupRepository menuGroupRepository;
-    @Mock
     private ProductRepository productRepository;
-
-    @InjectMocks
+    private MenuRepository menuRepository;
+    private MenuValidator menuValidator;
     private MenuService menuService;
 
     private MenuRequest 치킨_메뉴;
 
-    private MenuGroup 메뉴_그룹;
     private Product 후라이드_치킨;
     private Product 감자튀김;
     private MenuProduct 테스트_메뉴_항목;
@@ -66,24 +59,34 @@ class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        메뉴_그룹 = MenuGroup.of("치킨그룹");
-
         후라이드_치킨 = Product.of(1L, 후라이드_치킨_FIXTURE.getName(), 후라이드_치킨_FIXTURE.getPrice());
         감자튀김 = Product.of(2L, 감자튀김_FIXTURE.getName(), 감자튀김_FIXTURE.getPrice());
 
         치킨_메뉴 = 치킨_메뉴_FIXTURE;
         테스트_메뉴_항목 = MenuProduct.of(1L, 1);
         치킨_메뉴_entity = Menu.of(치킨_메뉴.getName(), 치킨_메뉴.getPrice(), null, Collections.singletonList(테스트_메뉴_항목));
+
+        menuGroupRepository = mock(MenuGroupRepository.class);
+        productRepository = mock(ProductRepository.class);
+        menuRepository = mock(MenuRepository.class);
+
+        menuValidator = new MenuValidator(menuGroupRepository, productRepository);
+        menuService = new MenuService(menuRepository, menuValidator);
     }
 
     @DisplayName("메뉴를 등록한다")
     @Test
     void create_test() {
         // given
-        when(menuGroupRepository.findById(치킨_메뉴.getMenuGroupId()))
-            .thenReturn(Optional.of(메뉴_그룹));
+        치킨_메뉴 = 치킨_메뉴_FIXTURE;
+        when(menuGroupRepository.existsById(치킨_메뉴.getMenuGroupId()))
+            .thenReturn(true);
         when(productRepository.findByIdIn(Arrays.asList(후라이드_치킨.getId(), 감자튀김.getId())))
             .thenReturn(Arrays.asList(후라이드_치킨, 감자튀김));
+        when(productRepository.findById(메뉴_상품_FIXTURE.getProductId()))
+            .thenReturn(Optional.of(후라이드_치킨));
+        when(productRepository.findById(메뉴_상품_FIXTURE2.getProductId()))
+            .thenReturn(Optional.of(감자튀김));
         when(menuRepository.save(any()))
             .thenReturn(치킨_메뉴_entity);
 
@@ -102,8 +105,8 @@ class MenuServiceTest {
     void create_exception_test() {
         // given
         치킨_메뉴 = new MenuRequest("test", BigDecimal.valueOf(500L), 1L, null);
-        when(menuGroupRepository.findById(치킨_메뉴.getMenuGroupId()))
-            .thenReturn(Optional.empty());
+        when(menuGroupRepository.existsById(치킨_메뉴.getMenuGroupId()))
+            .thenReturn(false);
 
         // then
         assertThatThrownBy(() -> {
@@ -116,8 +119,8 @@ class MenuServiceTest {
     @Test
     void create_exception_test2() {
         치킨_메뉴 = new MenuRequest("test", null, 1L, Collections.emptyList());
-        when(menuGroupRepository.findById(치킨_메뉴.getMenuGroupId()))
-            .thenReturn(Optional.of(메뉴_그룹));
+        when(menuGroupRepository.existsById(치킨_메뉴.getMenuGroupId()))
+            .thenReturn(true);
         when(productRepository.findByIdIn(anyList()))
             .thenReturn(Collections.emptyList());
 
@@ -132,8 +135,8 @@ class MenuServiceTest {
     @Test
     void create_exception_test3() {
         치킨_메뉴 = new MenuRequest("test", BigDecimal.valueOf(-300L), 1L, Collections.emptyList());
-        when(menuGroupRepository.findById(치킨_메뉴.getMenuGroupId()))
-            .thenReturn(Optional.of(메뉴_그룹));
+        when(menuGroupRepository.existsById(치킨_메뉴.getMenuGroupId()))
+            .thenReturn(true);
         when(productRepository.findByIdIn(anyList()))
             .thenReturn(Collections.emptyList());
 
@@ -149,10 +152,10 @@ class MenuServiceTest {
     void create_exception_test4() {
         // given
         치킨_메뉴 = new MenuRequest("test", BigDecimal.valueOf(300L), 1L, Arrays.asList(메뉴_상품_FIXTURE, 메뉴_상품_FIXTURE2));
-        when(menuGroupRepository.findById(치킨_메뉴.getMenuGroupId()))
-            .thenReturn(Optional.of(메뉴_그룹));
+        when(menuGroupRepository.existsById(치킨_메뉴.getMenuGroupId()))
+            .thenReturn(true);
         when(productRepository.findByIdIn(Arrays.asList(메뉴_상품_FIXTURE.getProductId(), 메뉴_상품_FIXTURE2.getProductId())))
-            .thenReturn(Arrays.asList(후라이드_치킨));
+            .thenReturn(Collections.singletonList(후라이드_치킨));
 
         // then
         assertThatThrownBy(() -> {
@@ -166,10 +169,14 @@ class MenuServiceTest {
     void create_exception_test5() {
         // given
         치킨_메뉴 = 치킨_메뉴_FIXTURE2;
-        when(menuGroupRepository.findById(치킨_메뉴.getMenuGroupId()))
-            .thenReturn(Optional.of(메뉴_그룹));
+        when(menuGroupRepository.existsById(치킨_메뉴.getMenuGroupId()))
+            .thenReturn(true);
         when(productRepository.findByIdIn(Arrays.asList(후라이드_치킨.getId(), 감자튀김.getId())))
             .thenReturn(Arrays.asList(후라이드_치킨, 감자튀김));
+        when(productRepository.findById(메뉴_상품_FIXTURE.getProductId()))
+            .thenReturn(Optional.of(후라이드_치킨));
+        when(productRepository.findById(메뉴_상품_FIXTURE2.getProductId()))
+            .thenReturn(Optional.of(감자튀김));
 
         // then
         assertThatThrownBy(() -> {
