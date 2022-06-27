@@ -65,6 +65,12 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
+    public void setMenuId(long menuId) {
+    }
+
+    public void setProductId(long productId) {
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
