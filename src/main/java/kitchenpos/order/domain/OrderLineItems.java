@@ -9,7 +9,8 @@ import java.util.List;
 
 @Embeddable
 public class OrderLineItems {
-    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE },
+            orphanRemoval = true)
     private List<OrderLineItem> list = new ArrayList<>();
 
     public OrderLineItems() {

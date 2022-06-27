@@ -1,16 +1,14 @@
 package kitchenpos.table.domain;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Embeddable;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 @Embeddable
 public class OrderTables implements Iterable<OrderTable> {
-    @OneToMany(mappedBy = "tableGroup", fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, orphanRemoval = true)
+    @JoinColumn(name = "tableGroupId")
     private List<OrderTable> orderTables = new ArrayList<>();
 
     public OrderTables(long size, List<OrderTable> orderTables) {

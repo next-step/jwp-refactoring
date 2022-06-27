@@ -5,7 +5,6 @@ import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menugroup.domain.MenuGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,7 +38,7 @@ class MenuRestControllerTest {
     void setUp() {
         this.objectMapper = new ObjectMapper();
         this.mockMvc = MockMvcBuilders.standaloneSetup(menuRestController).build();
-        this.menuResponse = new MenuResponse(new Menu("menu1", 10000L, new MenuGroup(1L, "group")));
+        this.menuResponse = new MenuResponse(new Menu("menu1", 10000L, null, Collections.emptyList()));
     }
 
     @Test

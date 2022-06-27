@@ -74,7 +74,7 @@ class TableGroupServiceTest {
         OrderTable orderTable2 = new OrderTable(2L, null, 1, true);
         TableGroup tableGroup = new TableGroup(new OrderTables(2, Arrays.asList(orderTable1, orderTable2)));
         given(tableGroupRepository.findById(any())).willReturn(Optional.of(tableGroup));
-        given(ordersRepository.existsByOrderTableInAndOrderStatusIn(any(), any())).willReturn(false);
+        given(ordersRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(false);
 
         //when
         tableGroupService.ungroup(0L);
@@ -92,7 +92,7 @@ class TableGroupServiceTest {
         OrderTable orderTable2 = new OrderTable(2L, null, 1, true);
         TableGroup tableGroup = new TableGroup(new OrderTables(2, Arrays.asList(orderTable1, orderTable2)));
         given(tableGroupRepository.findById(any())).willReturn(Optional.of(tableGroup));
-        given(ordersRepository.existsByOrderTableInAndOrderStatusIn(any(), any())).willReturn(true);
+        given(ordersRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(true);
 
         //then
         assertThatThrownBy(() -> tableGroupService.ungroup(0L)).isExactlyInstanceOf(IllegalArgumentException.class);

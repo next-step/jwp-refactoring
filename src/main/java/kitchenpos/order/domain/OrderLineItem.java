@@ -7,14 +7,15 @@ public class OrderLineItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
-    @Column(nullable = false)
-    private Long orderId;
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private Orders order;
     @Column(nullable = false)
     private Long menuId;
     private long quantity;
 
-    public OrderLineItem(Long orderId, Long menuId, long quantity) {
-        this.orderId = orderId;
+    public OrderLineItem(Orders order, Long menuId, long quantity) {
+        this.order = order;
         this.menuId = menuId;
         this.quantity = quantity;
     }
@@ -35,6 +36,6 @@ public class OrderLineItem {
     }
 
     public Long getOrderId() {
-        return this.orderId;
+        return this.order.getId();
     }
 }

@@ -9,8 +9,7 @@ import java.util.List;
 
 @Embeddable
 public class MenuProducts {
-    @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE },
-            orphanRemoval = true)
+    @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, orphanRemoval = true)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
     public void add(MenuProduct menuProduct) {
@@ -19,9 +18,5 @@ public class MenuProducts {
 
     public List<MenuProduct> getAll() {
         return this.menuProducts;
-    }
-
-    public long totalPrice() {
-        return this.menuProducts.stream().mapToLong(menuProduct -> menuProduct.getQuantity() * menuProduct.getPrice()).sum();
     }
 }

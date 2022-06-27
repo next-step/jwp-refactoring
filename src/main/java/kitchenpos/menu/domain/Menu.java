@@ -1,7 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.product.domain.Product;
+import kitchenpos.menu.dto.MenuProductRequest;
 
 import javax.persistence.*;
 import java.util.List;
@@ -15,26 +14,23 @@ public class Menu {
     private String name;
     @Column(nullable = false)
     private long price;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
-    private MenuGroup menuGroup;
+    @Column(nullable = false)
+    private Long menuGroupId;
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
 
-    public Menu(String name, long price, MenuGroup menuGroup) {
+    public Menu(String name, long price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
         this.name = name;
         this.price = price;
-        this.menuGroup = menuGroup;
+        this.menuGroupId = menuGroupId;
+
+        for (final MenuProductRequest menuProductRequest : menuProducts) {
+            this.menuProducts.add(new MenuProduct(this, menuProductRequest.getProductId(), menuProductRequest.getQuantity()));
+        }
     }
 
-    public Menu(Long id, String name, long price, MenuGroup menuGroup) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.menuGroup = menuGroup;
+    protected Menu() {
     }
-
-    protected Menu() {}
 
     public Long getId() {
         return id;
@@ -48,21 +44,7 @@ public class Menu {
         return price;
     }
 
-    public MenuGroup getMenuGroup() {
-        return this.menuGroup;
-    }
-
     public List<MenuProduct> getMenuProducts() {
         return this.menuProducts.getAll();
-    }
-
-    public void add(Product product, long quantity) {
-        this.menuProducts.add(new MenuProduct(this, product, quantity));
-    }
-
-    public void checkPrice() {
-        if (this.price > this.menuProducts.totalPrice()) {
-            throw new InvalidPriceException();
-        }
     }
 }

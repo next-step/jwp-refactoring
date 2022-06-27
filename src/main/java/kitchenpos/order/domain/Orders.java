@@ -29,7 +29,7 @@ public class Orders {
         this.orderStatus = orderStatus;
 
         for (final OrderLineItemRequest orderLineItem : orderLineItemRequests) {
-            this.orderLineItems.add(new OrderLineItem(this.id, orderLineItem.getMenuId(), orderLineItem.getQuantity()));
+            this.orderLineItems.add(new OrderLineItem(this, orderLineItem.getMenuId(), orderLineItem.getQuantity()));
         }
     }
 
