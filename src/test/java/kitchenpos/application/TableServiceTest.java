@@ -34,9 +34,7 @@ class TableServiceTest {
     @BeforeEach
     public void init() {
         tableService = new TableService(orderRepository, orderTableRepository);
-        orderTable = new OrderTable();
-        orderTable.unUseTable();
-        orderTable.setNumberOfGuests(0);
+        orderTable = new OrderTable(0, true);
     }
 
 

@@ -61,10 +61,8 @@ class TableGroupServiceTest {
     }
 
     private void setOrderTable() {
-        orderTable_1 = new OrderTable();
-        orderTable_1.unUseTable();
-        orderTable_2 = new OrderTable();
-        orderTable_2.unUseTable();
+        orderTable_1 = new OrderTable(0, true);
+        orderTable_2 = new OrderTable(0, true);
     }
 
 //    private void setMenu() {

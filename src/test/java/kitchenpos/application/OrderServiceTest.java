@@ -76,8 +76,7 @@ class OrderServiceTest {
     }
 
     private void setOrderTable() {
-        orderTable = new OrderTable();
-        orderTable.unUseTable();
+        orderTable = new OrderTable(0, true);
     }
 
     private void setMenu() {
