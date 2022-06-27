@@ -1,22 +1,28 @@
 package kitchenpos.domain;
 
+import javax.persistence.*;
+
+@Entity
 public class Product {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    @Embedded
     private Price price;
 
     protected Product() {
     }
 
-    public Product(String name, Price price) {
+    public Product(String name, long price) {
         this.name = name;
-        this.price = price;
+        this.price = Price.valueOf(price);
     }
 
-    public Product(Long id, String name, Price price) {
+    public Product(Long id, String name, long price) {
         this.id = id;
         this.name = name;
-        this.price = price;
+        this.price = Price.valueOf(price);
     }
 
     public Long getId() {

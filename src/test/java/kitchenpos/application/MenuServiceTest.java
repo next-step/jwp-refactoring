@@ -58,8 +58,8 @@ class MenuServiceTest {
     void setProduct() {
         productId1 = 1L;
         productId2 = 2L;
-        product1 = new Product(productId1, "짜장면", Price.valueOf(6000));
-        product2 = new Product(productId2, "짬뽕", Price.valueOf(7000));
+        product1 = new Product(productId1, "짜장면", 6000);
+        product2 = new Product(productId2, "짬뽕", 7000);
 
         when(productDao.findById(productId1)).thenReturn(Optional.of(product1));
         when(productDao.findById(productId2)).thenReturn(Optional.of(product2));
@@ -89,11 +89,8 @@ class MenuServiceTest {
     @DisplayName("메뉴의 가격은 0원 이상이어야 한다")
     @Test
     void price_more_then_0() {
-        // given
-        Menu minusPrice = new Menu("세트1", Price.valueOf(-1), menuGroupId);
-
         // when then
-        assertThatThrownBy(() -> menuService.create(minusPrice))
+        assertThatThrownBy(() -> new Menu("세트1", Price.valueOf(-1), menuGroupId))
                         .isInstanceOf(IllegalArgumentException.class);
     }
 
