@@ -3,7 +3,6 @@ package kitchenpos.application;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuRepository;
 import kitchenpos.domain.menuGroup.MenuGroup;
-import kitchenpos.domain.menuProduct.MenuProduct;
 import kitchenpos.domain.menuProduct.MenuProducts;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderRepository;
@@ -12,7 +11,7 @@ import kitchenpos.domain.orderLineItem.OrderLineItem;
 import kitchenpos.domain.orderLineItem.OrderLineItemRepository;
 import kitchenpos.domain.orderTable.OrderTable;
 import kitchenpos.domain.orderTable.OrderTableRepository;
-import kitchenpos.domain.product.Product;
+import kitchenpos.dto.order.OrderChangeStatusRequest;
 import kitchenpos.dto.order.OrderRequest;
 import kitchenpos.dto.order.OrderResponse;
 import kitchenpos.dto.orderLineItem.OrderLineItemRequest;
@@ -164,7 +163,7 @@ class OrderServiceTest {
     void changeOrderStatus() {
         // given
         Order 변경전_주문 = 주문_데이터_생성(1L, orderTable1, OrderStatus.MEAL, 주문_항목_목록_데이터_생성());
-        OrderRequest 변경후_주문 = 주문_요청_데이터_생성(1L, OrderStatus.MEAL, 주문_항목_목록_데이터_생성());
+        OrderChangeStatusRequest 변경후_주문 = 주문_상태_수정_데이터_생성(1L, OrderStatus.MEAL, 주문_항목_목록_데이터_생성());
         given(orderTableRepository.findById(1L)).willReturn(Optional.ofNullable(orderTable1));
         given(menuRepository.findById(any())).willReturn(Optional.ofNullable(menu));
         given(menuRepository.findById(any())).willReturn(Optional.ofNullable(menu));
@@ -182,7 +181,7 @@ class OrderServiceTest {
     void changeOrderStatus_exception1() {
         // given
         Order 변경전_주문 = 주문_데이터_생성(1L, orderTable1, OrderStatus.COMPLETION, 주문_항목_목록_데이터_생성());
-        OrderRequest 변경후_주문 = 주문_요청_데이터_생성(1L, OrderStatus.MEAL, 주문_항목_목록_데이터_생성());
+        OrderChangeStatusRequest 변경후_주문 = 주문_상태_수정_데이터_생성(1L, OrderStatus.MEAL, 주문_항목_목록_데이터_생성());
         given(orderTableRepository.findById(1L)).willReturn(Optional.ofNullable(orderTable1));
         given(menuRepository.findById(any())).willReturn(Optional.ofNullable(menu));
         given(menuRepository.findById(any())).willReturn(Optional.ofNullable(menu));
@@ -199,7 +198,14 @@ class OrderServiceTest {
     private OrderRequest 주문_요청_데이터_생성(Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
         return new OrderRequest(orderTableId, orderStatus,
                 orderLineItems.stream()
-                        .map(orderLineItem -> OrderLineItemRequest.of(orderLineItem))
+                        .map(OrderLineItemRequest::of)
+                        .collect(Collectors.toList()));
+    }
+
+    private OrderChangeStatusRequest 주문_상태_수정_데이터_생성(Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        return new OrderChangeStatusRequest(orderTableId, orderStatus,
+                orderLineItems.stream()
+                        .map(OrderLineItemRequest::of)
                         .collect(Collectors.toList()));
     }
 
@@ -221,8 +227,8 @@ class OrderServiceTest {
         return orderService.list();
     }
 
-    private OrderResponse 주문_상태_변경(Long orderId, OrderRequest orderRequest) {
-        return orderService.changeOrderStatus(orderId, orderRequest);
+    private OrderResponse 주문_상태_변경(Long orderId, OrderChangeStatusRequest orderChangeStatusRequest) {
+        return orderService.changeOrderStatus(orderId, orderChangeStatusRequest);
     }
 
     private void 주문_데이터_비교(OrderResponse 주문_생성_결과, OrderResponse 예상값) {

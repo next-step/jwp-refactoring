@@ -2,8 +2,6 @@ package kitchenpos.application;
 
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuRepository;
-import kitchenpos.domain.menuProduct.MenuProduct;
-import kitchenpos.domain.menuProduct.MenuProducts;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.domain.order.OrderStatus;
@@ -12,15 +10,13 @@ import kitchenpos.domain.orderLineItem.OrderLineItemRepository;
 import kitchenpos.domain.orderLineItem.OrderLineItems;
 import kitchenpos.domain.orderTable.OrderTable;
 import kitchenpos.domain.orderTable.OrderTableRepository;
-import kitchenpos.domain.product.Product;
-import kitchenpos.dto.menuProduct.MenuProductRequest;
+import kitchenpos.dto.order.OrderChangeStatusRequest;
 import kitchenpos.dto.order.OrderRequest;
 import kitchenpos.dto.order.OrderResponse;
 import kitchenpos.dto.orderLineItem.OrderLineItemRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -70,10 +66,10 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
-        OrderTable ordertable = findOrderTable(orderRequest.getOrderTableId());
-        OrderLineItems orderLineItems = findOrderLineItems(orderRequest.getOrderLineItems());
-        Order order = orderRequest.toOrder(ordertable, orderLineItems);
+    public OrderResponse changeOrderStatus(final Long orderId, final OrderChangeStatusRequest orderChangeStatusRequest) {
+        OrderTable ordertable = findOrderTable(orderChangeStatusRequest.getOrderTableId());
+        OrderLineItems orderLineItems = findOrderLineItems(orderChangeStatusRequest.getOrderLineItems());
+        Order order = orderChangeStatusRequest.toOrder(ordertable, orderLineItems);
 
         final Order savedOrder = findOrder(orderId);
 
