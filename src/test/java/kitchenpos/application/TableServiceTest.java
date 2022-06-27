@@ -3,6 +3,7 @@ package kitchenpos.application;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.fixture.TestOrderTableFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,12 +37,8 @@ class TableServiceTest {
 
     @BeforeEach
     void setUp() {
-        주문_테이블_1 = new OrderTable();
-        주문_테이블_1.setId(1L);
-        주문_테이블_1.setNumberOfGuests(3);
-        주문_테이블_2 = new OrderTable();
-        주문_테이블_2.setId(2L);
-        주문_테이블_2.setNumberOfGuests(5);
+        주문_테이블_1 = TestOrderTableFactory.create(1L, 3);
+        주문_테이블_2 = TestOrderTableFactory.create(2L, 5);
     }
 
     @DisplayName("주문테이블을 등록한다")

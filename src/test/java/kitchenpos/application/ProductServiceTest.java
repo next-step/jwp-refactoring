@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import kitchenpos.fixture.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,13 +35,8 @@ class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
-        진매 = new Product();
-        진매.setName("진라면 매운맛");
-        진매.setPrice(BigDecimal.valueOf(5_000L));
-
-        진순이 = new Product();
-        진순이.setName("진라면 순한맛");
-        진순이.setPrice(BigDecimal.valueOf(5_000L));
+        진매 = TestProductFactory.create(1L, "진라면 매운맛", 5_000);
+        진순이 = TestProductFactory.create(2L, "진라면 순한맛", 5_000);
     }
 
     @Test

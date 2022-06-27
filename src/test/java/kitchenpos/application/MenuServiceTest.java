@@ -2,11 +2,16 @@ package kitchenpos.application;
 
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
+import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.fixture.TestMenuFactory;
+import kitchenpos.fixture.TestMenuGroupFactory;
+import kitchenpos.fixture.TestMenuProductFactory;
+import kitchenpos.fixture.TestProductFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,6 +42,8 @@ class MenuServiceTest {
     private MenuGroupDao menuGroupDao;
     @Mock
     private ProductDao productDao;
+    @Mock
+    private MenuProductDao menuProductDao;
 
     @InjectMocks
     private MenuService menuService;
@@ -50,34 +57,15 @@ class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        분식류 = new MenuGroup();
-        분식류.setId(1L);
-        분식류.setName("분식류");
+        분식류 = TestMenuGroupFactory.create(1L, "분식류");
 
-        진매 = new Product();
-        진매.setId(1L);
-        진매.setName("진라면 매운맛");
-        진매.setPrice(BigDecimal.valueOf(5_000L));
-        진순이 = new Product();
-        진순이.setId(2L);
-        진순이.setName("진라면 순한맛");
-        진순이.setPrice(BigDecimal.valueOf(5_000L));
+        진매 = TestProductFactory.create(1L, "진라면 매운맛", 5_000);
+        진순이 = TestProductFactory.create(2L, "진라면 순한맛", 5_000);
 
-        메뉴 = new Menu();
-        메뉴.setId(10L);
-        메뉴.setPrice(BigDecimal.valueOf(4_000L));
-        메뉴.setMenuGroupId(분식류.getId());
-        메뉴.setName("리먄메뉴");
+        메뉴 = TestMenuFactory.create(10L, 4_000, 분식류, "라면메뉴");
 
-        메뉴_진매 = new MenuProduct();
-        메뉴_진매.setQuantity(1);
-        메뉴_진매.setProductId(진매.getId());
-        메뉴_진매.setMenuId(메뉴.getId());
-
-        메뉴_진순이 = new MenuProduct();
-        메뉴_진순이.setMenuId(메뉴.getId());
-        메뉴_진순이.setProductId(진순이.getId());
-        메뉴_진순이.setQuantity(1);
+        메뉴_진매 = TestMenuProductFactory.create(메뉴, 진매, 1);
+        메뉴_진순이 = TestMenuProductFactory.create(메뉴, 진매, 1);
         메뉴.setMenuProducts(Arrays.asList(메뉴_진매, 메뉴_진순이));
     }
 
@@ -89,6 +77,8 @@ class MenuServiceTest {
         given(productDao.findById(anyLong())).willReturn(Optional.of(진매));
         given(productDao.findById(anyLong())).willReturn(Optional.of(진순이));
         given(menuDao.save(any(Menu.class))).willReturn(메뉴);
+        given(menuProductDao.save(any())).willReturn(메뉴_진매);
+        given(menuProductDao.save(any())).willReturn(메뉴_진순이);
 
         // when
         Menu menu = menuService.create(메뉴);

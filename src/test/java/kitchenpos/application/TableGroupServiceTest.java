@@ -5,6 +5,7 @@ import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.fixture.TestTableGroupFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,8 +43,7 @@ class TableGroupServiceTest {
     void setUp() {
         주문_테이블_1 = new OrderTable();
         주문_테이블_2 = new OrderTable();
-        단체_테이블 = new TableGroup();
-        단체_테이블.setId(1L);
+        단체_테이블 = TestTableGroupFactory.create(1L);
     }
     
     @DisplayName("단체 테이블을 등록한다")

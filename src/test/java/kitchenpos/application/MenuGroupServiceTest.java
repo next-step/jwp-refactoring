@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.fixture.TestMenuGroupFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,10 +31,8 @@ class MenuGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        분식류 = new MenuGroup();
-        분식류.setName("분식류");
-        양식류 = new MenuGroup();
-        양식류.setName("양식류");
+        분식류 = TestMenuGroupFactory.create("분식류");
+        양식류 = TestMenuGroupFactory.create("양식류");
     }
 
     @Test
