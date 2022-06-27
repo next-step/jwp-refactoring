@@ -35,6 +35,9 @@ public class MenuService {
 
         final List<MenuProductDTO> menuProducts = menuRequest.getMenuProducts();
 
+        Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(),
+            menuRequest.getMenuGroupId());
+
         BigDecimal sum = BigDecimal.ZERO;
         for (final MenuProductDTO menuProduct : menuProducts) {
             final Product product = productRepository.findById(menuProduct.getProductId())
@@ -50,8 +53,7 @@ public class MenuService {
         menuGroupRepository.findById(menuRequest.getMenuGroupId())
             .orElseThrow(IllegalArgumentException::new);
 
-        Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(),
-            menuRequest.getMenuGroupId());
+
 
         for (MenuProductDTO menuProductDTO : menuProducts) {
             menu.addMenuProduct(
