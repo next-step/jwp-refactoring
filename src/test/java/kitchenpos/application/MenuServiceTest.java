@@ -63,8 +63,8 @@ class MenuServiceTest {
         공기밥 = createProduct(2L, "공기밥", BigDecimal.valueOf(1000L));
         메뉴_김치찌개세트 = createMenu(1L, "김치찌개세트", BigDecimal.valueOf(15000L), 메뉴그룹_한식);
 
-        김치찌개세트_김치찌개 = createMenuProduct(1L, 메뉴_김치찌개세트.getId(), 김치찌개.getId(), 2);
-        김치찌개세트_공기밥 = createMenuProduct(1L, 메뉴_김치찌개세트.getId(), 공기밥.getId(), 2);
+        김치찌개세트_김치찌개 = createMenuProduct(1L, 메뉴_김치찌개세트, 김치찌개, 2);
+        김치찌개세트_공기밥 = createMenuProduct(1L, 메뉴_김치찌개세트, 공기밥, 2);
         메뉴_김치찌개세트.setMenuProducts(Arrays.asList(김치찌개세트_김치찌개, 김치찌개세트_공기밥));
     }
 
@@ -82,7 +82,7 @@ class MenuServiceTest {
                 메뉴_김치찌개세트.getPrice().intValue(),
                 메뉴_김치찌개세트.getMenuGroup().getId(),
                 메뉴_김치찌개세트.getMenuProducts().stream().
-                        map(menuProduct -> MenuProductRequest.of(menuProduct.getProductId(), (int) menuProduct.getQuantity()))
+                        map(menuProduct -> MenuProductRequest.of(menuProduct.getProduct().getId(), (int) menuProduct.getQuantity()))
                         .collect(Collectors.toList())
         );
 
@@ -102,7 +102,7 @@ class MenuServiceTest {
                 -15000,
                 메뉴_김치찌개세트.getMenuGroup().getId(),
                 메뉴_김치찌개세트.getMenuProducts().stream().
-                        map(menuProduct -> MenuProductRequest.of(menuProduct.getProductId(), (int) menuProduct.getQuantity()))
+                        map(menuProduct -> MenuProductRequest.of(menuProduct.getProduct().getId(), (int) menuProduct.getQuantity()))
                         .collect(Collectors.toList())
         );
 
@@ -124,7 +124,7 @@ class MenuServiceTest {
                 20000,
                 메뉴_김치찌개세트.getMenuGroup().getId(),
                 메뉴_김치찌개세트.getMenuProducts().stream().
-                        map(menuProduct -> MenuProductRequest.of(menuProduct.getProductId(), (int) menuProduct.getQuantity()))
+                        map(menuProduct -> MenuProductRequest.of(menuProduct.getProduct().getId(), (int) menuProduct.getQuantity()))
                         .collect(Collectors.toList())
         );
 
@@ -144,7 +144,7 @@ class MenuServiceTest {
                 메뉴_김치찌개세트.getPrice().intValue(),
                 메뉴_김치찌개세트.getMenuGroup().getId(),
                 메뉴_김치찌개세트.getMenuProducts().stream().
-                        map(menuProduct -> MenuProductRequest.of(menuProduct.getProductId(), (int) menuProduct.getQuantity()))
+                        map(menuProduct -> MenuProductRequest.of(menuProduct.getProduct().getId(), (int) menuProduct.getQuantity()))
                         .collect(Collectors.toList())
         );
 
@@ -163,7 +163,7 @@ class MenuServiceTest {
                 메뉴_김치찌개세트.getPrice().intValue(),
                 메뉴_김치찌개세트.getMenuGroup().getId(),
                 메뉴_김치찌개세트.getMenuProducts().stream().
-                        map(menuProduct -> MenuProductRequest.of(menuProduct.getProductId(), (int) menuProduct.getQuantity()))
+                        map(menuProduct -> MenuProductRequest.of(menuProduct.getProduct().getId(), (int) menuProduct.getQuantity()))
                         .collect(Collectors.toList())
         );
 

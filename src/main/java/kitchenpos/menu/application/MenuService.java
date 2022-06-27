@@ -71,12 +71,18 @@ public class MenuService {
         final Long menuId = savedMenu.getId();
         final List<MenuProduct> savedMenuProducts = new ArrayList<>();
         for (final MenuProductRequest menuProductRequest : menuProducts) {
-            MenuProduct menuProduct = menuProductRequest.toMenuProduct();
-            menuProduct.setMenuId(menuId);
+            final Product product = productRepository.findById(menuProductRequest.getProductId())
+                    .orElseThrow(IllegalArgumentException::new);
+            MenuProduct menuProduct = menuProductRequest.toMenuProduct(savedMenu, product);
+            menuProduct.setMenu(savedMenu);
             savedMenuProducts.add(menuProductRepository.save(menuProduct));
         }
         savedMenu.setMenuProducts(menuProducts.stream()
-                .map(menuProductRequest -> menuProductRequest.toMenuProduct())
+                .map(menuProductRequest -> {
+                    Product product = productRepository.findById(menuProductRequest.getProductId())
+                            .orElseThrow(IllegalArgumentException::new);
+                    return menuProductRequest.toMenuProduct(savedMenu, product);
+                })
                 .collect(Collectors.toList()));
 
         return MenuResponse.from(savedMenu);

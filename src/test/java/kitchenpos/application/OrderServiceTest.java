@@ -80,8 +80,8 @@ class OrderServiceTest {
         공기밥 = createProduct(2L, "공기밥", BigDecimal.valueOf(1000L));
         메뉴_김치찌개세트 = createMenu(1L, "김치찌개세트", BigDecimal.valueOf(15000L), 메뉴그룹_한식);
 
-        김치찌개세트_김치찌개 = createMenuProduct(1L, 메뉴_김치찌개세트.getId(), 김치찌개.getId(), 2);
-        김치찌개세트_공기밥 = createMenuProduct(1L, 메뉴_김치찌개세트.getId(), 공기밥.getId(), 2);
+        김치찌개세트_김치찌개 = createMenuProduct(1L, 메뉴_김치찌개세트, 김치찌개, 2);
+        김치찌개세트_공기밥 = createMenuProduct(1L, 메뉴_김치찌개세트, 공기밥, 2);
         메뉴_김치찌개세트.setMenuProducts(Arrays.asList(김치찌개세트_김치찌개, 김치찌개세트_공기밥));
 
         테이블_1 = createOrderTable(1L, null, 4, false);
