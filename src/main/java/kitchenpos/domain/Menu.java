@@ -17,7 +17,6 @@ import javax.persistence.OneToMany;
 public class Menu {
 
     @Id
-    @Column(name = "MENU_ID")
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private String name;

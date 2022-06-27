@@ -21,7 +21,6 @@ import org.springframework.util.ObjectUtils;
 public class Order extends BaseTimeEntity {
 
     @Id
-    @Column(name = "ORDER_ID")
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private Long orderTableId;

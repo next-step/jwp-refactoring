@@ -16,7 +16,6 @@ import javax.persistence.ManyToOne;
 public class OrderLineItem {
 
     @Id
-    @Column(name = "ORDER_LINE_ITEM")
     @GeneratedValue(strategy = IDENTITY)
     private Long seq;
     @ManyToOne(fetch = FetchType.LAZY)

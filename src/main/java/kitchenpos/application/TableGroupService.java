@@ -52,7 +52,7 @@ public class TableGroupService {
         }
 
         TableGroup tableGroup = new TableGroup();
-        tableGroupRepository.save(tableGroup);
+        tableGroup = tableGroupRepository.save(tableGroup);
         final Long tableGroupId = tableGroup.getId();
         for (final OrderTable orderTable : orderTables) {
             orderTable.useTable();

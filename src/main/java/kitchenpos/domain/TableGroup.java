@@ -12,7 +12,6 @@ public class TableGroup extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "TABLE_GROUP_ID")
     private Long id;
 
 

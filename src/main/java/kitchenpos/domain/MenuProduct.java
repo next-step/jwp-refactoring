@@ -16,7 +16,6 @@ import javax.persistence.ManyToOne;
 public class MenuProduct {
 
     @Id
-    @Column(name = "MENU_PRODUCT_ID")
     @GeneratedValue(strategy = IDENTITY)
     private Long seq;
     @ManyToOne(fetch = FetchType.LAZY)

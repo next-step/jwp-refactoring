@@ -13,7 +13,6 @@ import org.springframework.util.ObjectUtils;
 public class MenuGroup {
 
     @Id
-    @Column(name = "MENU_GROUP_ID")
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private String name;

@@ -13,7 +13,6 @@ public class OrderTable {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "ORDER_TABLE_ID")
     private Long id;
     private Long tableGroupId;
     private int numberOfGuests;
