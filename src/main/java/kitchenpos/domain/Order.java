@@ -2,19 +2,15 @@ package kitchenpos.domain;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import org.springframework.util.ObjectUtils;
 
 @Entity
 @Table(name = "OrderInfo")
@@ -26,35 +22,32 @@ public class Order extends BaseTimeEntity {
     private Long orderTableId;
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
-    @OneToMany(mappedBy = "order", cascade = {CascadeType.ALL}, orphanRemoval = true)
-    private List<OrderLineItem> orderLineItems = new LinkedList<>();
+    @Embedded
+    private OrderLineItemsManager orderLineItems = new OrderLineItemsManager();
 
     public Order() {
     }
 
-    public void mapToTable(Long orderTableId){
+    public void mapToTable(Long orderTableId) {
         this.orderTableId = orderTableId;
     }
 
-    public void startCooking(){
+    public void startCooking() {
         this.orderStatus = OrderStatus.COOKING;
     }
 
-    public void changeOrderStatus(OrderStatus orderStatus){
+    public void changeOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
-    public void mapOrderLineItem(OrderLineItem orderLineItem){
-        if(!ObjectUtils.isEmpty(orderLineItem.getOrder())){
-            orderLineItem.getOrder().removeOrderLineItem(orderLineItem);
-        }
-
+    public void mapOrderLineItem(OrderLineItem orderLineItem) {
         orderLineItems.add(orderLineItem);
     }
 
-    public void removeOrderLineItem(OrderLineItem orderLineItem){
+    public void removeOrderLineItem(OrderLineItem orderLineItem) {
         orderLineItems.remove(orderLineItem);
     }
+
     public Long getId() {
         return id;
     }
@@ -68,7 +61,7 @@ public class Order extends BaseTimeEntity {
     }
 
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
+        return orderLineItems.getOrderLineItems();
     }
 
     @Override
