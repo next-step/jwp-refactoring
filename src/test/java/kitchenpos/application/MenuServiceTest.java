@@ -1,26 +1,21 @@
 package kitchenpos.application;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Optional;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.domainService.MenuProductDomainService;
 import kitchenpos.dto.dto.MenuProductDTO;
 import kitchenpos.dto.request.MenuRequest;
-import kitchenpos.dto.response.MenuResponse;
-import kitchenpos.repository.MenuGroupRepository;
 import kitchenpos.repository.MenuRepository;
-import kitchenpos.repository.ProductRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,10 +32,7 @@ class MenuServiceTest {
     private MenuRepository menuRepository;
 
     @Mock
-    private MenuGroupRepository menuGroupRepository;
-
-    @Mock
-    private ProductRepository productRepository;
+    private MenuProductDomainService menuProductDomainService;
 
     private Product chicken;
     private Product ham;
@@ -49,7 +41,7 @@ class MenuServiceTest {
 
     @BeforeEach
     public void init() {
-        menuService = new MenuService(menuRepository, menuGroupRepository, productRepository);
+        menuService = new MenuService(menuRepository, menuProductDomainService);
 
         chicken = new Product("chicken", BigDecimal.valueOf(5000));
 
@@ -73,10 +65,7 @@ class MenuServiceTest {
         menuRequest.setPrice(BigDecimal.valueOf(1000));
         menuRequest.setMenuProducts(Arrays.asList(chicken_menuProduct, ham_menuProduct));
 
-        when(productRepository.findById(1L)).thenReturn(Optional.of(chicken));
-        when(productRepository.findById(2L)).thenReturn(Optional.of(ham));
-        when(menuGroupRepository.findById(menuRequest.getMenuGroupId())).thenReturn(
-            Optional.of(new MenuGroup("한마리메뉴")));
+        doNothing().when(menuProductDomainService).validateComponentForCreateMenu(menuRequest);
         Menu expectedMenu = new Menu(menuRequest.getName(), menuRequest.getPrice(),
             menuRequest.getMenuGroupId());
         when(menuRepository.save(any())).thenReturn(expectedMenu);
@@ -108,15 +97,17 @@ class MenuServiceTest {
     @DisplayName("어느 메뉴그룹에도 속해있지 않으면 에러발생")
     void createWithNoMenuGroupThrowError() {
         //given
-        MenuRequest menu = new MenuRequest();
-        menu.setPrice(BigDecimal.valueOf(1000));
+        MenuRequest menuRequest = new MenuRequest();
+        menuRequest.setPrice(BigDecimal.valueOf(1000));
 
         MenuProductDTO menuProductDTONotSaved = new MenuProductDTO();
         menuProductDTONotSaved.setProductId(999L);
-        menu.setMenuProducts(Arrays.asList(menuProductDTONotSaved));
+        menuRequest.setMenuProducts(Arrays.asList(menuProductDTONotSaved));
 
+        doThrow(IllegalArgumentException.class).when(menuProductDomainService)
+            .validateComponentForCreateMenu(menuRequest);
         //when & then
-        assertThatThrownBy(() -> menuService.create(menu))
+        assertThatThrownBy(() -> menuService.create(menuRequest))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -124,15 +115,15 @@ class MenuServiceTest {
     @DisplayName("메뉴에 속해있는 상품들의 합보다 가격이 크면 에러 발생")
     void createWithTooMuchPriceThrowError() {
         //given
-        MenuRequest menu = new MenuRequest();
-        menu.setPrice(BigDecimal.valueOf(10000));
-        menu.setMenuProducts(Arrays.asList(chicken_menuProduct, ham_menuProduct));
+        MenuRequest menuRequest = new MenuRequest();
+        menuRequest.setPrice(BigDecimal.valueOf(10000));
+        menuRequest.setMenuProducts(Arrays.asList(chicken_menuProduct, ham_menuProduct));
 
-        when(productRepository.findById(1L)).thenReturn(Optional.of(chicken));
-        when(productRepository.findById(2L)).thenReturn(Optional.of(ham));
+        doThrow(IllegalArgumentException.class).when(menuProductDomainService)
+            .validateComponentForCreateMenu(menuRequest);
 
         //when & then
-        assertThatThrownBy(() -> menuService.create(menu))
+        assertThatThrownBy(() -> menuService.create(menuRequest))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
