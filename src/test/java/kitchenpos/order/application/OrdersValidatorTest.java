@@ -62,7 +62,7 @@ class OrdersValidatorTest {
     @DisplayName("주문 테이블이 비어있으면 주문에 실패한다.")
     void validate_orderTable_fail_2() {
         //given
-        given(orderTableRepository.findByIdAndEmptyIsFalse(any())).willReturn(Optional.of(new OrderTable(1, true)));
+        given(orderTableRepository.findByIdAndEmptyIsFalse(any())).willReturn(Optional.of(new OrderTable(null, null, 1, true)));
 
         //then
         assertThatThrownBy(() -> ordersValidator.validateOrderTable(0L)).isExactlyInstanceOf(IllegalArgumentException.class);

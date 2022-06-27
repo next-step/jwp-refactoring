@@ -80,8 +80,8 @@ class TableGroupServiceTest {
         tableGroupService.ungroup(0L);
 
         //then
-        assertThat(orderTable1.getTableGroup()).isNull();
-        assertThat(orderTable2.getTableGroup()).isNull();
+        assertThat(orderTable1.isGrouped()).isFalse();
+        assertThat(orderTable2.isGrouped()).isFalse();
     }
 
     @Test

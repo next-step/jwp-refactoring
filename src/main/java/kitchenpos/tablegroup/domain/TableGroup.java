@@ -28,7 +28,7 @@ public class TableGroup {
             throw new IllegalArgumentException("테이블 그룹은 2개 이상의 주문 테이블을 포함해야 합니다.");
         }
         for (OrderTable orderTable : orderTables) {
-            orderTable.group(this);
+            orderTable.group(this.id);
             add(orderTable);
         }
     }

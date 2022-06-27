@@ -43,7 +43,7 @@ class TableGroupTest {
         tableGroup.unGroup();
 
         //then
-        assertThat(tableGroup.getOrderTables().stream().noneMatch(OrderTable::hasTableGroup)).isTrue();
+        assertThat(tableGroup.getOrderTables().stream().noneMatch(OrderTable::isGrouped)).isTrue();
     }
 
     @Test
@@ -68,7 +68,7 @@ class TableGroupTest {
         OrderTables orderTables = new OrderTables(
                 2,
                 Arrays.asList(
-                        new OrderTable(1L, otherTableGroup, 5, false),
+                        new OrderTable(1L, otherTableGroup.getId(), 5, false),
                         new OrderTable(2L, null, 10, true)
                 )
         );

@@ -1,8 +1,9 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.tablegroup.domain.TableGroup;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.Objects;
 
 @Entity
@@ -10,24 +11,18 @@ public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
-    private TableGroup tableGroup;
+    private Long tableGroupId;
     private int numberOfGuests;
     private boolean empty;
 
-    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
 
-    public OrderTable() {
-    }
-
-    public OrderTable(Integer numberOfGuests, Boolean empty) {
-        this.numberOfGuests = numberOfGuests;
-        this.empty = empty;
+    protected OrderTable() {
     }
 
     public Long getId() {
@@ -35,7 +30,7 @@ public class OrderTable {
     }
 
     public void unGroup() {
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 
     public int getNumberOfGuests() {
@@ -43,9 +38,6 @@ public class OrderTable {
     }
 
     public void updateNumberOfGuests(final int numberOfGuests) {
-        if (isEmpty()) {
-            throw new IllegalArgumentException("테이블이 비어 있습니다. ");
-        }
         this.numberOfGuests = numberOfGuests;
     }
 
@@ -57,19 +49,15 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public TableGroup getTableGroup() {
-        return this.tableGroup;
+    public boolean isGrouped() {
+        return !Objects.equals(this.tableGroupId, null);
     }
 
-    public boolean hasTableGroup() {
-        return !Objects.equals(this.tableGroup, null);
-    }
-
-    public void group(TableGroup tableGroup) {
-        if (!isEmpty() || hasTableGroup()) {
+    public void group(Long tableGroupId) {
+        if (!isEmpty() || isGrouped()) {
             throw new IllegalArgumentException("적절하지 않은 테이블이 포함되어 있습니다.");
         }
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
         this.empty = false;
     }
 }

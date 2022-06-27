@@ -34,8 +34,7 @@ public class OrdersValidator {
     }
 
     public void validateOrderTable(Long orderTableId) {
-        final OrderTable orderTable =
-                orderTableRepository.findByIdAndEmptyIsFalse(orderTableId).orElseThrow(NoSuchElementException::new);
+        final OrderTable orderTable = orderTableRepository.findByIdAndEmptyIsFalse(orderTableId).orElseThrow(NoSuchElementException::new);
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException("주문 테이블이 비어있으면 주문할 수 없습니다.");
         }

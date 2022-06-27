@@ -1,7 +1,5 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrdersRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -11,25 +9,25 @@ import kitchenpos.table.dto.OrderTableUpdateNumberOfGuestsRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
 public class TableService {
-    private final OrdersRepository ordersRepository;
     private final OrderTableRepository orderTableRepository;
+    private final TableValidator tableValidator;
 
-    public TableService(final OrdersRepository ordersRepository, final OrderTableRepository orderTableRepository) {
-        this.ordersRepository = ordersRepository;
+    public TableService(final OrderTableRepository orderTableRepository, final TableValidator tableValidator) {
         this.orderTableRepository = orderTableRepository;
+        this.tableValidator = tableValidator;
     }
 
     @Transactional
     public OrderTableResponse create(final OrderTableRequest request) {
-        OrderTable savedOrderTable = orderTableRepository.save(new OrderTable(request.getNumberOfGuests(), request.isEmpty()));
-        return new OrderTableResponse(savedOrderTable);
+        OrderTable orderTable = new OrderTable(null, null, request.getNumberOfGuests(), request.isEmpty());
+        orderTableRepository.save(orderTable);
+        return new OrderTableResponse(orderTable);
     }
 
     public List<OrderTableResponse> list() {
@@ -38,25 +36,17 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableUpdateEmptyRequest request) {
-        final OrderTable savedOrderTable =
-                orderTableRepository.findByIdAndTableGroupIsNull(orderTableId).orElseThrow(NoSuchElementException::new);
-
-        if (ordersRepository.existsByOrderTableInAndOrderStatusIn(Arrays.asList(savedOrderTable), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException("계산 완료 상태가 아닌 테이블이 포함되어 있습니다.");
-        }
-
+        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId).orElseThrow(NoSuchElementException::new);
+        tableValidator.validateChangeEmpty(savedOrderTable);
         savedOrderTable.updateEmpty(request.isEmpty());
-
         return new OrderTableResponse(savedOrderTable);
     }
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableUpdateNumberOfGuestsRequest request) {
-        final OrderTable savedOrderTable =
-                orderTableRepository.findByIdAndEmptyIsFalse(orderTableId).orElseThrow(NoSuchElementException::new);
-
+        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId).orElseThrow(NoSuchElementException::new);
+        tableValidator.validateChangeNumberOfGuests(savedOrderTable, request);
         savedOrderTable.updateNumberOfGuests(request.getNumberOfGuests());
-
         return new OrderTableResponse(savedOrderTable);
     }
 }
