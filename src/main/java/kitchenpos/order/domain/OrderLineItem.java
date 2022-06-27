@@ -38,10 +38,6 @@ public class OrderLineItem {
         return quantity;
     }
 
-    public void setMenu(Menu menu) {
-        this.menu = menu;
-    }
-
     public boolean isEmptyOrderLineItem() {
         return menu == null || quantity == null;
     }
