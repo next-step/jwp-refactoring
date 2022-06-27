@@ -3,6 +3,7 @@ package kitchenpos.domain;
 import static kitchenpos.fixture.DomainFactory.createOrderTable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,5 +48,28 @@ class OrderTableTest {
         // when, then
         assertThatThrownBy(() -> orderTable.changeNumberOfGuests(NumberOfGuests.from(10))).isInstanceOf(
                 IllegalArgumentException.class);
+    }
+
+    @Test
+    void 단체_지정() {
+        // when
+        orderTable.groupByTableGroupId(1L);
+        // then
+        assertAll(
+                () -> assertThat(orderTable.isGroupedByTableGroup()).isEqualTo(true),
+                () -> assertThat(orderTable.isEmpty()).isEqualTo(false)
+        );
+    }
+
+    @Test
+    void 단체_삭제() {
+        // given
+        orderTable.groupByTableGroupId(1L);
+        // when
+        orderTable.unGroup();
+        // then
+        assertAll(
+                () -> assertThat(orderTable.isGroupedByTableGroup()).isEqualTo(false)
+        );
     }
 }

@@ -80,10 +80,7 @@ public class DomainFactory {
     }
 
     public static TableGroup createTableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setCreatedDate(createdDate);
-        tableGroup.setOrderTables(orderTables);
-
+        TableGroup tableGroup = new TableGroup(id, createdDate, orderTables);
         return tableGroup;
     }
 }

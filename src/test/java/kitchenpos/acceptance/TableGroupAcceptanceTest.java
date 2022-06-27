@@ -3,14 +3,19 @@ package kitchenpos.acceptance;
 import static kitchenpos.acceptance.TableAcceptanceTest.주문테이블_등록_요청;
 import static kitchenpos.fixture.DomainFactory.createOrderTable;
 import static kitchenpos.fixture.DomainFactory.createTableGroup;
+import static kitchenpos.fixture.TableGroupFactory.createTableGroupRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
+import java.util.List;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,15 +24,14 @@ import org.springframework.http.MediaType;
 
 @DisplayName("단체 지정 관련 기능")
 public class TableGroupAcceptanceTest extends AcceptanceTest {
-    private TableGroup 단체지정;
+    private OrderTableResponse 주문테이블1;
+    private OrderTableResponse 주문테이블2;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-
-        OrderTable 주문테이블1 = 주문테이블_등록_요청(createOrderTable(null, null, 5, true)).as(OrderTable.class);
-        OrderTable 주문테이블2 = 주문테이블_등록_요청(createOrderTable(null, null, 5, true)).as(OrderTable.class);
-        단체지정 = createTableGroup(null, null, Arrays.asList(주문테이블1, 주문테이블2));
+        주문테이블1 = 주문테이블_등록_요청(5, true).as(OrderTableResponse.class);
+        주문테이블2 = 주문테이블_등록_요청(5, true).as(OrderTableResponse.class);
     }
 
     /**
@@ -47,27 +51,29 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     void 단체지정_관리() {
         ExtractableResponse<Response> response;
         // when 단체 지정 요청
-        response = 단체_지정_요청(단체지정);
+        response = 단체_지정_요청(Arrays.asList(주문테이블1.getId(), 주문테이블2.getId()));
         // then
         단체_지정_등록됨(response);
 
         // when 단체 지정 삭제 요청
-        response = 단체_지정_삭제_요청(response.as(TableGroup.class));
+        response = 단체_지정_삭제_요청(response.as(TableGroupResponse.class));
         // then
         단체_지정_삭제됨(response);
     }
 
-    public static ExtractableResponse<Response> 단체_지정_요청(TableGroup tableGroup) {
+    public static ExtractableResponse<Response> 단체_지정_요청(List<Long> orderTableIds) {
+        TableGroupRequest request = createTableGroupRequest(orderTableIds);
+
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(tableGroup)
+                .body(request)
                 .when().post("/api/table-groups")
                 .then().log().all()
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 단체_지정_삭제_요청(TableGroup tableGroup) {
+    public static ExtractableResponse<Response> 단체_지정_삭제_요청(TableGroupResponse tableGroup) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

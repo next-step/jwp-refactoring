@@ -1,5 +1,7 @@
 package kitchenpos.domain;
 
+import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,9 +15,11 @@ public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column
     private Long tableGroupId;
     @Embedded
     private NumberOfGuests numberOfGuests;
+    @Column
     private boolean empty;
 
     protected OrderTable() {
@@ -45,7 +49,12 @@ public class OrderTable {
     }
 
     public void groupByTableGroupId(Long tableGroupId) {
+        this.empty = false;
         this.tableGroupId = tableGroupId;
+    }
+
+    public void unGroup() {
+        this.tableGroupId = null;
     }
 
     private void validateTableGroup() {
@@ -74,5 +83,9 @@ public class OrderTable {
 
     public boolean isEmpty() {
         return empty;
+    }
+
+    public boolean isGroupedByTableGroup() {
+        return tableGroupId != null;
     }
 }
