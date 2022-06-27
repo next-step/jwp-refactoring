@@ -70,4 +70,16 @@ public class TableService {
             throw new BadRequestException(ExceptionType.CAN_NOT_LESS_THAN_ZERO_GUESTS);
         }
     }
+
+    public List<OrderTable> findOrderTablesByIdIn(List<Long> orderTableIds) {
+        return orderTableRepository.findAllByIdIn(orderTableIds);
+    }
+
+    public List<OrderTable> findOrderTablesByGroupId(Long tableGroupId) {
+        return orderTableRepository.findAllByTableGroupId(tableGroupId);
+    }
+
+    public void mapIntoGroupId(List<OrderTable> orderTables, Long tableGroupId) {
+        orderTables.forEach(it -> it.mapIntoGroup(tableGroupId));
+    }
 }

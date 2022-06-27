@@ -19,7 +19,8 @@ class OrderTableTest {
 
     @BeforeEach
     void setUp() {
-        테이블_그룹 = TableGroup.of(1L, Collections.emptyList());
+        테이블_그룹 = TableGroup.of(1L);
+        테이블_그룹.mapIntoTable(Collections.emptyList());
     }
 
     @DisplayName("주문 테이블을 테이블 그룹으로 매핑하면 정상적으로 매핑되어야 한다")
@@ -29,30 +30,30 @@ class OrderTableTest {
         OrderTable orderTable = OrderTable.of(null, 1, true);
 
         // when
-        orderTable.mapIntoGroup(테이블_그룹);
+        orderTable.mapIntoGroup(테이블_그룹.getId());
 
         // then
-        assertThat(orderTable.getTableGroup()).isEqualTo(테이블_그룹);
+        assertThat(orderTable.getTableGroupId()).isEqualTo(테이블_그룹.getId());
     }
 
     @DisplayName("주문 테이블을 테이블 그룹에서 해제하면 정상적으로 해제되어야 한다")
     @Test
     void order_table_unGroup_test() {
         // given
-        OrderTable orderTable = OrderTable.of(테이블_그룹, 1, true);
+        OrderTable orderTable = OrderTable.of(테이블_그룹.getId(), 1, true);
 
         // when
         orderTable.unGroup();
 
         // then
-        assertNull(orderTable.getTableGroup());
+        assertNull(orderTable.getTableGroupId());
     }
 
     @DisplayName("주문 테이블의 tableGroupId 확인시 tableGroupId 가 존재하면 예외가 발생한다")
     @Test
     void order_table_exception_test() {
         // given
-        OrderTable orderTable = OrderTable.of(테이블_그룹, 1, true);
+        OrderTable orderTable = OrderTable.of(테이블_그룹.getId(), 1, true);
 
         // then
         assertThatThrownBy(orderTable::validateHasTableGroupId)
@@ -64,7 +65,7 @@ class OrderTableTest {
     @Test
     void order_table_exception_test2() {
         // given
-        OrderTable orderTable = OrderTable.of(테이블_그룹, 1, true);
+        OrderTable orderTable = OrderTable.of(테이블_그룹.getId(), 1, true);
 
         // then
         assertThatThrownBy(orderTable::validateIsEmpty)

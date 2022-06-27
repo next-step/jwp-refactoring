@@ -10,7 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTables;
 
 @Entity
 @Table(name = "table_group")
@@ -27,25 +26,24 @@ public class TableGroup {
     private OrderTables orderTables = new OrderTables();
 
     protected TableGroup() {
-    }
-
-    private TableGroup(List<OrderTable> orderTables) {
         this.createdDate = LocalDateTime.now();
-        this.orderTables = new OrderTables(orderTables, this);
     }
 
-    private TableGroup(Long id, List<OrderTable> orderTables) {
+    private TableGroup(Long id) {
         this.id = id;
         this.createdDate = LocalDateTime.now();
-        this.orderTables = new OrderTables(orderTables, this);
     }
 
-    public static TableGroup of(Long id, List<OrderTable> orderTables) {
-        return new TableGroup(id, orderTables);
+    public static TableGroup generate() {
+        return new TableGroup();
     }
 
-    public static TableGroup from(List<OrderTable> orderTables) {
-        return new TableGroup(orderTables);
+    public static TableGroup of(Long id) {
+        return new TableGroup(id);
+    }
+
+    public void mapIntoTable(List<OrderTable> items) {
+        orderTables.addAll(id, items);
     }
 
     public Long getId() {
