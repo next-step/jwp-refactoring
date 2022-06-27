@@ -65,7 +65,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
 
 
 
-    private ExtractableResponse<Response> 주문가능한_테이블을_요청한다 (OrderTable orderTable) {
+    public static ExtractableResponse<Response> 주문가능한_테이블을_요청한다 (OrderTable orderTable) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(orderTable)

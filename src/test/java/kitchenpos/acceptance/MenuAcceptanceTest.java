@@ -67,7 +67,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
     }
 
-    private ExtractableResponse<Response> 메뉴등록을_요청(Menu menu) {
+    public static ExtractableResponse<Response> 메뉴등록을_요청(Menu menu) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(menu)
