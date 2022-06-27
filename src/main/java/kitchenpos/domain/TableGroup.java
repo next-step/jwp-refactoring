@@ -73,12 +73,12 @@ public class TableGroup {
             throw new IllegalArgumentException();
         }
 
-        if (validateOrderTableEmptyOrInTableGroup(orderTables)) {
+        if (checkOrderTableEmptyOrInTableGroup(orderTables)) {
             throw new IllegalArgumentException("단체 지정을 위해서는 주문 테이블이 필요 합니다.");
         }
     }
 
-    private boolean validateOrderTableEmptyOrInTableGroup(final List<OrderTable> orderTables) {
+    private boolean checkOrderTableEmptyOrInTableGroup(final List<OrderTable> orderTables) {
         return orderTables.stream().anyMatch(orderTable -> !orderTable.isEmpty() || orderTable.isInTableGroup());
     }
 
