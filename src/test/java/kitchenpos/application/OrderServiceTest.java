@@ -85,12 +85,12 @@ class OrderServiceTest {
         메뉴_김치찌개세트.setMenuProducts(Arrays.asList(김치찌개세트_김치찌개, 김치찌개세트_공기밥));
 
         테이블_1 = createOrderTable(1L, null, 4, false);
-        접수된_주문 = createOrder(1L, 테이블_1.getId(), OrderStatus.COOKING.name(), LocalDateTime.now());
+        접수된_주문 = createOrder(1L, 테이블_1, OrderStatus.COOKING.name(), LocalDateTime.now());
         접수된주문_김치찌개세트 = createOrderLineItem(1L, 접수된_주문.getId(), 메뉴_김치찌개세트.getId(), 1);
         접수된_주문.setOrderLineItems(Arrays.asList(접수된주문_김치찌개세트));
 
         테이블_2 = createOrderTable(2L, null, 4, false);
-        완료된_주문 = createOrder(2L, 테이블_2.getId(), OrderStatus.COMPLETION.name(), LocalDateTime.now());
+        완료된_주문 = createOrder(2L, 테이블_2, OrderStatus.COMPLETION.name(), LocalDateTime.now());
         완료된주문_김치찌개세트 = createOrderLineItem(2L, 접수된_주문.getId(), 메뉴_김치찌개세트.getId(), 1);
         완료된_주문.setOrderLineItems(Arrays.asList(완료된주문_김치찌개세트));
 
@@ -105,7 +105,7 @@ class OrderServiceTest {
         given(orderTableRepository.findById(테이블_1.getId())).willReturn(Optional.of(테이블_1));
         given(orderRepository.save(any(Order.class))).willReturn(접수된_주문);
         OrderRequest 접수된_주문_request = OrderRequest.of(
-                접수된_주문.getOrderTableId(),
+                접수된_주문.getOrderTable().getId(),
                 접수된_주문.getOrderLineItems().stream()
                         .map(orderLineItem -> OrderLineItemRequest.of(orderLineItem.getMenuId(), (int) orderLineItem.getQuantity()))
                         .collect(Collectors.toList())
@@ -146,7 +146,7 @@ class OrderServiceTest {
         given(menuRepository.countByIdIn(anyList())).willReturn(1);
         given(orderTableRepository.findById(테이블_1.getId())).willReturn(Optional.ofNullable(null));
         OrderRequest 접수된_주문_request = OrderRequest.of(
-                접수된_주문.getOrderTableId(),
+                접수된_주문.getOrderTable().getId(),
                 접수된_주문.getOrderLineItems().stream()
                         .map(orderLineItem -> OrderLineItemRequest.of(orderLineItem.getMenuId(), (int) orderLineItem.getQuantity()))
                         .collect(Collectors.toList())
@@ -177,7 +177,7 @@ class OrderServiceTest {
         //given
         given(menuRepository.countByIdIn(anyList())).willReturn(2);
         OrderRequest 접수된_주문_request = OrderRequest.of(
-                접수된_주문.getOrderTableId(),
+                접수된_주문.getOrderTable().getId(),
                 접수된_주문.getOrderLineItems().stream()
                         .map(orderLineItem -> OrderLineItemRequest.of(orderLineItem.getMenuId(), (int) orderLineItem.getQuantity()))
                         .collect(Collectors.toList())
@@ -205,7 +205,7 @@ class OrderServiceTest {
     @MethodSource("provideParametersForOrderStateUpdate")
     void 주문_상태_업데이트(String beforeStatus, String afterStatus){
         //given
-        Order order = createOrder(3L, 테이블_1.getId(), beforeStatus, LocalDateTime.now());
+        Order order = createOrder(3L, 테이블_1, beforeStatus, LocalDateTime.now());
         given(orderRepository.findById(anyLong())).willReturn(Optional.of(order));
 
         //when

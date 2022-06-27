@@ -59,7 +59,7 @@ public class OrderService {
             throw new IllegalArgumentException();
         }
 
-        final Order savedOrder = orderRepository.save(order.toOrder());
+        final Order savedOrder = orderRepository.save(order.toOrder(orderTable));
 
         final Long orderId = savedOrder.getId();
         final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();

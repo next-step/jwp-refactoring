@@ -26,7 +26,8 @@ public class OrderResponse {
         List<OrderLineItemResponse> orderLineItems = savedOrder.getOrderLineItems().stream()
                 .map(orderLineItem -> OrderLineItemResponse.from(orderLineItem))
                 .collect(Collectors.toList());
-        return new OrderResponse(savedOrder.getId(), savedOrder.getOrderTableId(), savedOrder.getOrderStatus(), orderLineItems);
+        return new OrderResponse(savedOrder.getId(), savedOrder.getOrderTable().getId(),
+                savedOrder.getOrderStatus(), orderLineItems);
     }
 
     public Long getId() {
