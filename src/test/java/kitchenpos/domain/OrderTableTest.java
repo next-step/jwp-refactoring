@@ -80,4 +80,8 @@ class OrderTableTest {
         assertThatThrownBy(() -> orderTable.changeNumberOfGuests(7))
                 .isInstanceOf(IllegalStateException.class);
     }
+
+    public static OrderTable 테이블_생성되어_있음(int numberOfGuests, boolean empty) {
+        return new OrderTable(null, numberOfGuests, empty);
+    }
 }
