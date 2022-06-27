@@ -6,6 +6,7 @@ import java.util.List;
 import kitchenpos.ServiceTest;
 import kitchenpos.application.helper.ServiceTestHelper;
 import kitchenpos.domain.MenuGroup;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -17,6 +18,7 @@ class MenuGroupServiceTest extends ServiceTest {
     private MenuGroupService menuGroupService;
 
     @Test
+    @DisplayName("메뉴그룹 생성")
     void 메뉴그룹생성() {
         String name = "메뉴그룹1";
         MenuGroup savedMenuGroup = serviceTestHelper.메뉴그룹_생성됨(name);
@@ -24,6 +26,7 @@ class MenuGroupServiceTest extends ServiceTest {
     }
 
     @Test
+    @DisplayName("메뉴그룹 조회")
     void 메뉴그룹조회() {
         serviceTestHelper.메뉴그룹_생성됨("메뉴그룹1");
         serviceTestHelper.메뉴그룹_생성됨("메뉴그룹2");

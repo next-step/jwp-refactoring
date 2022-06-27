@@ -14,6 +14,7 @@ import kitchenpos.domain.Product;
 import kitchenpos.fixture.MenuProductFixtureFactory;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -36,6 +37,7 @@ class MenuServiceTest extends ServiceTest {
     }
 
     @Test
+    @DisplayName("메뉴 등록")
     void 메뉴그룹에_메뉴추가() {
         String menuName = "메뉴1";
         int menuPrice = 5000;
@@ -55,6 +57,7 @@ class MenuServiceTest extends ServiceTest {
     }
 
     @Test
+    @DisplayName("메뉴그룹이 존재하지 않을 경우 메뉴 등록 실패")
     void 메뉴그룹에_메뉴추가_존재하지않는_메뉴그룹의_경우() {
         MenuGroup notSavedMenuGroup = new MenuGroup();
         String menuName = "메뉴1";
@@ -64,6 +67,7 @@ class MenuServiceTest extends ServiceTest {
     }
 
     @Test
+    @DisplayName("메뉴가격이 음수인 경우 메뉴 등록 실패")
     void 메뉴그룹에_메뉴추가_가격이_음수인경우() {
         String menuName = "메뉴1";
         int menuPrice = -1 * 1000;
@@ -72,6 +76,7 @@ class MenuServiceTest extends ServiceTest {
     }
 
     @Test
+    @DisplayName("메뉴가격이 상품가격의 합보다 큰 경우 메뉴 등록 실패")
     void 메뉴그룹에_메뉴추가_가격이_상품가격의_합보다_큰경우() {
         String menuName = "메뉴1";
         int menuPrice = 10000;
@@ -79,6 +84,7 @@ class MenuServiceTest extends ServiceTest {
     }
 
     @Test
+    @DisplayName("메뉴 목록 조회")
     void 메뉴목록_조회() {
         테스트_메뉴_생성(menuGroup, "menu1", 6000);
         테스트_메뉴_생성(menuGroup, "menu2", 5000);

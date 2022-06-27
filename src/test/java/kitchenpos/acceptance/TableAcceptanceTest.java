@@ -9,15 +9,22 @@ import kitchenpos.AcceptanceTest;
 import kitchenpos.acceptance.helper.KitchenPosBehaviors;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.fixture.OrderTableFixtureFactory;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 class TableAcceptanceTest extends AcceptanceTest {
     /**
-     * When 빈 테이블을 생성한다. Then 빈 테이블이 생성된다. When 테이블을 조회한다. Then 테이블이 조회된다. When 테이블의 상태를 변경한다. Then 테이블의 상태가 변경된다.
+     * When 빈 테이블을 생성한다.
+     * Then 빈 테이블이 생성된다.
+     * When 테이블을 조회한다.
+     * Then 테이블이 조회된다.
+     * When 테이블의 상태를 변경한다.
+     * Then 테이블의 상태가 변경된다.
      */
     @Test
-    void 테이블_인수테스트() {
+    @DisplayName("테이블 생성, 조회, 상태 변경 기능 인수테스트")
+    void tableAcceptanceTest() {
         OrderTable table = OrderTableFixtureFactory.createNotEmptyOrderTable(0);
         ExtractableResponse<Response> createResponse = KitchenPosBehaviors.테이블_생성_요청(table);
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -39,7 +46,7 @@ class TableAcceptanceTest extends AcceptanceTest {
         assertThat(changeEmptyStateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
 
         List<OrderTable> orderTables = KitchenPosBehaviors.테이블_목록조회();
-        OrderTable emptyTable = findOrderTableById(orderTableId, orderTables);
+        OrderTable emptyTable = orderTables.get(0);
         assertThat(emptyTable.isEmpty()).isFalse();
     }
 
@@ -49,15 +56,7 @@ class TableAcceptanceTest extends AcceptanceTest {
         assertThat(changeEmptyStateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
 
         List<OrderTable> orderTables = KitchenPosBehaviors.테이블_목록조회();
-        OrderTable changedTable = findOrderTableById(orderTableId, orderTables);
+        OrderTable changedTable = orderTables.get(0);
         assertThat(changedTable.getNumberOfGuests()).isEqualTo(numberOfGuests);
-    }
-
-
-    private OrderTable findOrderTableById(Long orderTableId, List<OrderTable> orderTables) {
-        return orderTables.stream()
-                .filter(orderTable -> orderTable.getId().equals(orderTableId))
-                .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
     }
 }

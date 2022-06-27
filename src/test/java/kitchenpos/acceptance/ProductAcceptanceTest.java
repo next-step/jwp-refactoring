@@ -8,12 +8,14 @@ import java.util.List;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.acceptance.helper.KitchenPosBehaviors;
 import kitchenpos.domain.Product;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 class ProductAcceptanceTest extends AcceptanceTest {
     @Test
-    void 상품을_등록하고_조회한다() {
+    @DisplayName("상품 생성 및 조회 기능 인수테스트")
+    void productAcceptanceTest() {
         ExtractableResponse<Response> createResponse = KitchenPosBehaviors.상품_생성_요청("강정치킨", 17000);
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 

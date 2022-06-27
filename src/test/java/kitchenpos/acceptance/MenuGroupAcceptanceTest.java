@@ -8,12 +8,20 @@ import java.util.List;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.acceptance.helper.KitchenPosBehaviors;
 import kitchenpos.domain.MenuGroup;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 class MenuGroupAcceptanceTest extends AcceptanceTest {
+    /**
+     * When 메뉴 그룹을 생성한다.
+     * Then 메뉴 그룹이 생성된다.
+     * When 메뉴그룹 목록을 조회한다.
+     * Then 메뉴그룹 목록이 조회된다.
+     */
     @Test
-    void 메뉴그룹을_생성하고_조회한다() {
+    @DisplayName("메뉴그룹 생성 및 조회 기능 인수테스트")
+    void menuGroupAcceptanceTest() {
         ExtractableResponse<Response> createResponse = KitchenPosBehaviors.메뉴그룹_생성_요청("치킨");
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 

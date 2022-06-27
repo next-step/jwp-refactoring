@@ -21,6 +21,7 @@ import kitchenpos.fixture.OrderLineItemFixtureFactory;
 import kitchenpos.fixture.OrderTableFixtureFactory;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -53,6 +54,7 @@ class OrderServiceTest extends ServiceTest {
     }
 
     @Test
+    @DisplayName("주문 등록")
     void 주문등록() {
         OrderLineItem orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
         OrderLineItem orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
@@ -67,12 +69,29 @@ class OrderServiceTest extends ServiceTest {
     }
 
     @Test
+    @DisplayName("인원수가 0명이라도 주문 등록 가능")
+    void 주문등록_인원수가0일때도_주문등록가능() {
+        OrderLineItem orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
+        OrderLineItem orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
+        OrderTable zeroGuestTable = serviceTestHelper.비어있지않은테이블_생성됨(0);
+        Order savedOrder = serviceTestHelper.주문_생성됨(zeroGuestTable.getId(),
+                Lists.newArrayList(orderLineItem1, orderLineItem2));
+
+        assertThat(savedOrder.getId()).isNotNull();
+        assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.toString());
+        assertThat(savedOrder.getOrderTableId()).isEqualTo(zeroGuestTable.getId());
+        assertThat(savedOrder.getOrderLineItems()).hasSize(2);
+    }
+
+    @Test
+    @DisplayName("주문항목이 없는경우 주문 등록 실패")
     void 주문등록_주문항목이_없는경우() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> serviceTestHelper.주문_생성됨(orderTable.getId(), emptyList()));
     }
 
     @Test
+    @DisplayName("주문항목에 표시된 메뉴가 존재하지 않는 경우 주문 등록 실패")
     void 주문등록_주문항목에_표시된_메뉴가_저장되지않은경우() {
         MenuProduct menuProduct = MenuProductFixtureFactory.createMenuProduct(product1.getId(), 1);
         Menu notSavedMenu = MenuFixtureFactory.createMenu(menuGroup, "메뉴", 4000, Lists.newArrayList(menuProduct));
@@ -83,6 +102,7 @@ class OrderServiceTest extends ServiceTest {
     }
 
     @Test
+    @DisplayName("주문테이블이 존재하지 않는 경우 주문 등록 실패")
     void 주문등록_주문테이블이_없는경우() {
         int numberOfGuests = 3;
         OrderTable notSavedOrderTable = OrderTableFixtureFactory.createNotEmptyOrderTable(numberOfGuests);
@@ -95,6 +115,7 @@ class OrderServiceTest extends ServiceTest {
     }
 
     @Test
+    @DisplayName("주문테이블이 빈 테이블인 경우 주문 등록 실패")
     void 주문등록_주문테이블이_빈테이블인_경우() {
         OrderTable orderTable = serviceTestHelper.빈테이블_생성됨();
         OrderLineItem orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
@@ -106,28 +127,21 @@ class OrderServiceTest extends ServiceTest {
     }
 
     @Test
+    @DisplayName("주문 목록 조회")
     void 주문목록_조회() {
         OrderLineItem orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
         OrderLineItem orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
         OrderLineItem orderLineItem3 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 2);
 
-        Order order1 = serviceTestHelper.주문_생성됨(orderTable.getId(), Lists.newArrayList(orderLineItem1, orderLineItem2));
-        Order order2 = serviceTestHelper.주문_생성됨(orderTable.getId(), Lists.newArrayList(orderLineItem3));
+        serviceTestHelper.주문_생성됨(orderTable.getId(), Lists.newArrayList(orderLineItem1, orderLineItem2));
+        serviceTestHelper.주문_생성됨(orderTable.getId(), Lists.newArrayList(orderLineItem3));
 
         List<Order> orders = orderService.list();
         assertThat(orders).hasSize(2);
-        Order foundOrder = findOrderById(order1.getId(), orders);
-        assertThat(foundOrder.getOrderLineItems()).hasSize(2);
-    }
-
-    private Order findOrderById(Long id, List<Order> orders) {
-        return orders.stream()
-                .filter(order -> id.equals(order.getId()))
-                .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
     }
 
     @Test
+    @DisplayName("주문 상태 변경")
     void 주문상태_변경() {
         OrderLineItem orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
         OrderLineItem orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
@@ -140,6 +154,7 @@ class OrderServiceTest extends ServiceTest {
     }
 
     @Test
+    @DisplayName("주문 상태가 계산완료인 경우 주문 상태 변경 불가")
     void 주문상태_변경_이미_계산완료상태인경우() {
         OrderLineItem orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
         OrderLineItem orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);

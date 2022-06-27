@@ -31,6 +31,10 @@ public class TableService {
         return orderTableDao.findAll();
     }
 
+    public List<OrderTable> findAllByTableGroupId(Long tableGroupId) {
+        return orderTableDao.findAllByTableGroupId(tableGroupId);
+    }
+
     @Transactional
     public OrderTable changeEmpty(final Long orderTableId, final OrderTable orderTable) {
         final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)

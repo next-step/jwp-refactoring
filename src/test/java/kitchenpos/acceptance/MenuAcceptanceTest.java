@@ -14,15 +14,21 @@ import kitchenpos.domain.Product;
 import kitchenpos.fixture.MenuFixtureFactory;
 import kitchenpos.fixture.MenuProductFixtureFactory;
 import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 class MenuAcceptanceTest extends AcceptanceTest {
     /**
-     * Given 메뉴그룹 및 상품이 생성되어 있다. When 메뉴를 생성한다. Then 메뉴가 생성된다. When 메뉴목록을 조회한다. Then 메뉴목록이 조회된다.
+     * Given 메뉴그룹 및 상품이 생성되어 있다.
+     * When 메뉴를 생성한다.
+     * Then 메뉴가 생성된다.
+     * When 메뉴목록을 조회한다.
+     * Then 메뉴목록이 조회된다.
      */
     @Test
-    void 메뉴를_생성하고_조회한다() {
+    @DisplayName("메뉴생성 및 조회 기능 인수테스트")
+    void menuAcceptanceTest() {
         MenuGroup menuGroup = KitchenPosBehaviors.메뉴그룹_생성됨("치킨");
         Product product = KitchenPosBehaviors.상품_생성됨("강정치킨", 10000);
         MenuProduct menuProduct = MenuProductFixtureFactory.createMenuProduct(product.getId(), 1);

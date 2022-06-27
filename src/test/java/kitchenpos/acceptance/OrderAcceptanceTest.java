@@ -23,6 +23,7 @@ import kitchenpos.fixture.OrderTableFixtureFactory;
 import kitchenpos.fixture.TableGroupFixtureFactory;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
@@ -47,14 +48,26 @@ class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * Scenario : 한 테이블 손님 Given 상품, 메뉴그룹, 메뉴, 테이블이 등록되어있다.
-     * <p>
-     * When / Then 3명의 손님이 와서 / 테이블의 상태를 비어있지 않은 상태로 변경한다. 주문내용을 받고 / 테이블에 주문을 추가한다.(주문1) 음식이 준비되어 / 주문1의 상태를 식사 중 상태로
-     * 바꾼다. 추가 주문내용을 받고 / 테이블에 새로운 주문을 추가한다.(주문2) 음식이 준비되어 / 주문2의 상태를 식사 중 상태로 바꾼다. 식사가 끝나면 / 모든 주문의 상태를 계산완료로 바꾼 후,
-     * 테이블의 상태를 빈 테이블로 변경한다. 결제를 완료한다.
+     * Scenario : 한 테이블 손님
+     * Given 상품, 메뉴그룹, 메뉴, 테이블이 등록되어있다.
+     *
+     * When 3명의 손님이 와서 테이블의 상태를 비어있지 않은 상태로 변경한다.
+     * Then 테이블의 상태가 비어있지 않은 상태로 변경된다.
+     * When 주문내용을 받아 테이블에 주문을 추가한다.(주문1)
+     * Then 주문1이 추가된다.
+     * When 음식이 준비되어 주문1의 상태를 식사 중 상태로 바꾼다.
+     * Then 주문1의 상태가 식사 중으로 변경된다.
+     * When 추가 주문내용을 받고 테이블에 새로운 주문을 추가한다.(주문2)
+     * Then 주문2가 추가된다
+     * When 음식이 준비되어 주문2의 상태를 식사 중 상태로 바꾼다.
+     * Then 주문2의 상태가 식사 중으로 변경된다.
+     * When 식사가 끝나고 결제가 완료되면 모든 주문의 상태를 계산완료로 바꾼 후, 테이블의 상태를 빈 테이블로 변경한다.
+     * Then 주문1, 주문2의 상태가 계산완료로 변경된다.
+     * Then 테이블이 빈 테이블이 된다.
      */
     @Test
-    void 시나리오1() {
+    @DisplayName("한 테이블 손님 시나리오")
+    void scenario1() {
         KitchenPosBehaviors.테이블_공석여부_변경_요청(orderTable1.getId(),
                 OrderTableFixtureFactory.createParamForChangeEmptyState(false));
         KitchenPosBehaviors.테이블_인원수_변경_요청(orderTable1.getId(),
@@ -93,14 +106,30 @@ class OrderAcceptanceTest extends AcceptanceTest {
 
 
     /**
-     * Scenario : 단체 손님 Given 상품, 메뉴그룹, 메뉴, 테이블이 등록되어있다.
-     * <p>
-     * When / Then 7명의 손님이 와서 4명, 3명으로 나눠 앉고 / 각 테이블의 상태를 비어있지 않은 상태로 변경한다. 테이블1의 주문내용을 받고 / 테이블1 에 주문1을 추가한다. 테이블2의
-     * 주문내용을 받고 / 테이블2에 주문2을 추가한다. 음식이 준비되어 / 주문1의 상태를 식사 중 상태로 바꾼다. 음식이 준비되어 / 주문2의 상태를 식사 중 상태로 바꾼다. 식사가 끝나면 / 모든 주문의
-     * 상태를 계산완료로, 모든 테이블의 상태를 빈 테이블로 변경한다. 통합 계산 준비를 위해 / 테이블을 그룹으로 지정한다. 결제를 완료되면 / 테이블 그룹을 해제한다.
+     * Scenario : 단체 손님
+     * Given 상품, 메뉴그룹, 메뉴, 테이블이 등록되어있다.
+     *
+     * When 7명의 손님이 와서 4명, 3명으로 나눠 앉고 각 테이블의 상태를 비어있지 않은 상태로 변경한다.
+     * Then 테이블1, 테이블2의 상태가 비어있지않은 상태로 변경된다.
+     * When 테이블1의 주문내용을 받고 테이블1 에 주문1을 추가한다.
+     * Then 테이블1에 주문1이 추가된다.
+     * When 테이블2의 주문내용을 받고 테이블2에 주문2를 추가한다.
+     * Then 테이블2에 주문2가 추가된다.
+     * When 음식이 준비되어 주문1의 상태를 식사 중 상태로 바꾼다.
+     * Then 주문1의 상태가 식사로 변경된다.
+     * When 음식이 준비되어 주문2의 상태를 식사 중 상태로 바꾼다.
+     * Then 주문2의 상태가 식사로 변경된다.
+     * When 식사가 끝나면 모든 주문의 상태를 계산완료로, 모든 테이블의 상태를 빈 테이블로 변경한다.
+     * Then 주문1, 주문2의 상태가 계산완료로 변경된다.
+     * Then 테이블1, 테이블2가 빈 테이블이 된다.
+     * When 통합 계산 준비를 위해 테이블 그룹으로 지정한다.
+     * Then 테이블1, 테이블2가 그룹으로 지정 된다.
+     * When 결제를 완료되면 테이블 그룹을 해제한다.
+     * Then 테이블 그룹이  해제된다.
      */
     @Test
-    void 시나리오2() {
+    @DisplayName("단체 손님 시나리오")
+    void scenario2() {
         KitchenPosBehaviors.테이블_공석여부_변경_요청(orderTable1.getId(),
                 OrderTableFixtureFactory.createParamForChangeEmptyState(false));
         KitchenPosBehaviors.테이블_인원수_변경_요청(orderTable1.getId(),
