@@ -82,4 +82,8 @@ public class Order {
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems.getElements();
     }
+
+    public boolean isCompleted() {
+        return orderStatus == OrderStatus.COMPLETION;
+    }
 }

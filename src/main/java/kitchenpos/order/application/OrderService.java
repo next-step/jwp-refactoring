@@ -9,8 +9,10 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemResponse;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.dto.OrderCompletionEvent;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,14 +25,17 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final MenuRepository menuRepository;
     private final TableRepository tableRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     public OrderService(
             final OrderRepository orderRepository,
             final MenuRepository menuRepository,
-            final TableRepository tableRepository) {
+            final TableRepository tableRepository,
+            final ApplicationEventPublisher eventPublisher) {
         this.orderRepository = orderRepository;
         this.menuRepository = menuRepository;
         this.tableRepository = tableRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional
@@ -61,7 +66,7 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
-    private OrderResponse toResponse(Order order) {
+    private OrderResponse toResponse(final Order order) {
         List<OrderLineItemResponse> orderLineItemResponses = order.getOrderLineItems().stream()
                 .map(orderLineItem -> {
                     Menu menu = menuRepository.getById(orderLineItem.getMenuId());
@@ -84,5 +89,9 @@ public class OrderService {
     public void changeOrderStatus(final Long orderId, final OrderStatus status) {
         Order order = orderRepository.getById(orderId);
         order.changeOrderStatus(status);
+
+        if (order.isCompleted()) {
+            eventPublisher.publishEvent(new OrderCompletionEvent(order.getOrderTableId()));
+        }
     }
 }
