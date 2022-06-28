@@ -3,163 +3,141 @@ package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-import kitchenpos.application.fixture.MenuFixtureFactory;
-import kitchenpos.application.fixture.MenuGroupFixtureFactory;
-import kitchenpos.application.fixture.MenuProductFixtureFactory;
-import kitchenpos.application.fixture.ProductFixtureFactory;
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
+import java.util.NoSuchElementException;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.MenuProductRepository;
+import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.ProductRepository;
+import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.MenuResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 
-@ExtendWith(MockitoExtension.class)
-class MenuServiceTest {
+class MenuServiceTest extends ServiceTest{
 
-    @Mock
-    private MenuDao menuDao;
+    @Autowired
+    private MenuRepository menuRepository;
 
-    @Mock
-    private MenuGroupDao menuGroupDao;
+    @Autowired
+    private MenuGroupRepository menuGroupRepository;
 
-    @Mock
-    private MenuProductDao menuProductDao;
+    @Autowired
+    private MenuProductRepository menuProductRepository;
 
-    @Mock
-    private ProductDao productDao;
+    @Autowired
+    private ProductRepository productRepository;
 
-    @InjectMocks
+    @Autowired
     private MenuService menuService;
 
-    private Menu 메뉴1;
-    private MenuGroup 메뉴그룹1;
-    private MenuProduct 메뉴상품1;
-    private MenuProduct 메뉴상품2;
-    private Product 상품1;
-    private Product 상품2;
+    private Menu 중식메뉴;
+    private MenuGroup 중식;
+    private MenuProduct 중식_메뉴_짬뽕;
+    private MenuProduct 중식_메뉴_짜장;
+    private Product 짬뽕;
+    private Product 짜장;
 
     @BeforeEach
     void before() {
-        메뉴그룹1 = MenuGroupFixtureFactory.create(1L, "메뉴그룹1");
-        메뉴1 = MenuFixtureFactory.create(1L, "메뉴1", BigDecimal.valueOf(3000), 메뉴그룹1.getId());
+        중식 = menuGroupRepository.save(new MenuGroup("중식"));
+        중식메뉴 = menuRepository.save(new Menu( "메뉴1", BigDecimal.valueOf(3000), 중식));
 
-        상품1 = ProductFixtureFactory.create(1L, "상품1", BigDecimal.valueOf(1000));
-        상품2 = ProductFixtureFactory.create(2L, "상품2", BigDecimal.valueOf(2000));
+        짬뽕 = productRepository.save(new Product("상품1", BigDecimal.valueOf(1000)));
+        짜장 = productRepository.save(new Product("상품2", BigDecimal.valueOf(2000)));
 
-        메뉴상품1 = MenuProductFixtureFactory.create(1L, 메뉴1.getId(), 상품1.getId(), 3);
-        메뉴상품2 = MenuProductFixtureFactory.create(2L, 메뉴1.getId(), 상품2.getId(), 1);
+        중식_메뉴_짬뽕 = menuProductRepository.save(new MenuProduct( 중식메뉴, 짬뽕, 3));
+        중식_메뉴_짜장 = menuProductRepository.save(new MenuProduct( 중식메뉴, 짜장, 1));
 
-        메뉴1.setMenuProducts(Arrays.asList(메뉴상품1, 메뉴상품2));
-    }
-
-    @Test
-    @DisplayName("생성 하려는 메뉴 가격은 null일 수 없다.")
-    void createFailTest01() {
-        //given
-        Menu 잘못된_메뉴 = new Menu(1L, "잘못된 메뉴", null, 메뉴그룹1.getId());
-
-        //when & then
-        assertThatThrownBy(
-                () -> menuService.create(잘못된_메뉴)
-        ).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    @DisplayName("생성 하려는 메뉴 가격은 음수일 수 없다.")
-    void createFailTest02() {
-        //given
-        Menu 잘못된_메뉴 = new Menu(1L, "잘못된 메뉴", BigDecimal.valueOf(-1), 메뉴그룹1.getId());
-
-        //when & then
-        assertThatThrownBy(
-                () -> menuService.create(잘못된_메뉴)
-        ).isInstanceOf(IllegalArgumentException.class);
+        중식메뉴.addMenuProduct(Arrays.asList(중식_메뉴_짬뽕, 중식_메뉴_짜장));
     }
 
     @Test
     @DisplayName("생성 하려는 메뉴의 메뉴 그룹이 시스템에 존재 하지 않으면 추가 할 수 없다.")
-    void createTestFail03() {
+    void createTestFailWithMenuGroupNotExist() {
+
         //given
-        given(menuGroupDao.existsById(메뉴그룹1.getId())).willReturn(false);
+        MenuGroup wrongMenuGroup = new MenuGroup(1000L,"wrong menu group");
+        Menu wrongMenu = new Menu("wrong menu", BigDecimal.valueOf(1000), wrongMenuGroup);
 
         //when & then
         assertThatThrownBy(
-                () -> menuService.create(메뉴1)
-        ).isInstanceOf(IllegalArgumentException.class);
+                () -> menuService.create(MenuRequest.from(wrongMenu))
+        ).isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
     @DisplayName("생성 하려는 메뉴의 메뉴 상품이 시스템에 등록 되어 있지 않으면 추가 할 수 없다.")
-    void createTestFail04() {
+    void createTestFailWithMenuProductNotExist() {
         //given
-        given(menuGroupDao.existsById(메뉴그룹1.getId())).willReturn(true);
-        given(productDao.findById(메뉴상품1.getProductId())).willThrow(IllegalArgumentException.class);
+        Product 잘못된_상품 = new Product(45L,"잘못된 상품", BigDecimal.valueOf(10));
+        MenuProduct 잘못된_메뉴_상품 = new MenuProduct(중식메뉴, 잘못된_상품, 10);
 
         //when & then
         assertThatThrownBy(
-                () -> menuService.create(메뉴1)
-        ).isInstanceOf(IllegalArgumentException.class);
+                () -> menuService.create(MenuRequest.of(
+                        중식메뉴.getName(),
+                        중식메뉴.getPrice().longValue(),
+                        중식.getId(),
+                        Arrays.asList(
+                                MenuProductRequest.of(잘못된_메뉴_상품.getProduct().getId(), 잘못된_메뉴_상품.getQuantity())
+                        )
+        ))).isInstanceOf(NoSuchElementException.class);
     }
 
     @Test
     @DisplayName("생성 하려는 메뉴 가격이 전체 메뉴상품의 전체 금액(가격 * 수량의 총합)보다 클 수 없다.")
-    void createTestFail05() {
-        //given
-        given(menuGroupDao.existsById(메뉴그룹1.getId())).willReturn(true);
-        given(productDao.findById(메뉴상품1.getProductId())).willReturn(Optional.of(상품1));
-        given(productDao.findById(메뉴상품2.getProductId())).willReturn(Optional.of(상품2));
-        Menu 잘못된_메뉴 = new Menu(1L, "잘못된 메뉴", BigDecimal.valueOf(100_000), 메뉴그룹1.getId());
-        잘못된_메뉴.setMenuProducts(Arrays.asList(메뉴상품1, 메뉴상품2));
+    void createTestFailWithAmount() {
+        //given;
+        Menu 잘못된_메뉴 = new Menu("잘못된 메뉴", BigDecimal.valueOf(100_000), 중식);
+
         //when & then
         assertThatThrownBy(
-                () -> menuService.create(잘못된_메뉴)
+                () -> menuService.create(MenuRequest.of(
+                        잘못된_메뉴.getName(),
+                        잘못된_메뉴.getPrice().longValue(),
+                        중식.getId(),
+                        Arrays.asList(
+                                MenuProductRequest.of(중식_메뉴_짬뽕.getProduct().getId(), 중식_메뉴_짬뽕.getQuantity()),
+                                MenuProductRequest.of(중식_메뉴_짜장.getProduct().getId(), 중식_메뉴_짜장.getQuantity()))))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("메뉴를 생성 할 수 있다.")
     void createTest() {
-        //given
-        given(menuGroupDao.existsById(메뉴그룹1.getId())).willReturn(true);
-        given(productDao.findById(메뉴상품1.getProductId())).willReturn(Optional.of(상품1));
-        given(productDao.findById(메뉴상품2.getProductId())).willReturn(Optional.of(상품2));
-        given(menuDao.save(any(Menu.class))).willReturn(메뉴1);
-
-
         //when
-        Menu menu = menuService.create(메뉴1);
+        MenuResponse menu = menuService.create(
+                MenuRequest.of(
+                        중식메뉴.getName(),
+                        중식메뉴.getPrice().longValue(),
+                        중식.getId(),
+                        Arrays.asList(
+                                MenuProductRequest.of(중식_메뉴_짬뽕.getProduct().getId(), 중식_메뉴_짬뽕.getQuantity()),
+                                MenuProductRequest.of(중식_메뉴_짜장.getProduct().getId(), 중식_메뉴_짜장.getQuantity())))
+        );
 
         //then
-        assertThat(menu).isEqualTo(메뉴1);
+        assertThat(menu).isNotNull();
     }
 
     @Test
     @DisplayName("메뉴의 목록을 조회 할 수 있다.")
     void listTest() {
-        //given
-        given(menuDao.findAll()).willReturn(Arrays.asList(메뉴1));
-
         //when
-        List<Menu> menus = menuService.list();
+        List<MenuResponse> menus = menuService.list();
 
         //then
-        assertThat(menus).containsExactly(메뉴1);
+        assertThat(menus).isNotNull();
     }
 }
