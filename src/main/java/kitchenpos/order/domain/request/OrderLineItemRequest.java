@@ -1,5 +1,6 @@
 package kitchenpos.order.domain.request;
 
+import java.math.BigDecimal;
 import kitchenpos.order.domain.OrderLineItem;
 
 public class OrderLineItemRequest {
@@ -11,8 +12,8 @@ public class OrderLineItemRequest {
         this.quantity = quantity;
     }
 
-    public static OrderLineItem toEntity(OrderLineItemRequest request) {
-        return OrderLineItem.of(null, null, request.getMenuId(), request.getQuantity());
+    public static OrderLineItem toEntity(OrderLineItemRequest request, String menuName, BigDecimal menuPrice) {
+        return OrderLineItem.of(null, null, request.getMenuId(), menuName, menuPrice, request.getQuantity());
     }
 
     public Long getMenuId() {
