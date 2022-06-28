@@ -27,7 +27,7 @@ public class MenuValidator {
     }
 
     private Price totalMenuProductsPrice(final Menu menu) {
-        return menu.getMenuProducts().stream()
+        return menu.getMenuProducts().getMenuProducts().stream()
                 .map(this::menuProductPrice)
                 .reduce(Price::add)
                 .orElse(Price.ZERO);

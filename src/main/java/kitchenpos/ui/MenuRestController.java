@@ -124,7 +124,7 @@ public class MenuRestController {
             name = menu.getName();
             price = menu.getPrice().getValue();
             menuGroupId = menu.getMenuGroupId();
-            menuProducts = menu.getMenuProducts().stream()
+            menuProducts = menu.getMenuProducts().getMenuProducts().stream()
                     .map(MenuProductResponse::new)
                     .collect(toList());
         }

@@ -21,13 +21,14 @@ public class MenuProduct {
     }
 
     public void toMenu(Menu menu) {
+        if (menu == null) {
+            throw new IllegalArgumentException();
+        }
         if (this.menu != null) {
-            this.menu.getMenuProducts().remove(this);
+            this.menu.getMenuProducts().getMenuProducts().remove(this);
         }
         this.menu = menu;
-        if (menu != null) {
-            menu.getMenuProducts().add(this);
-        }
+        menu.getMenuProducts().getMenuProducts().add(this);
     }
 
     public Long getSeq() {
