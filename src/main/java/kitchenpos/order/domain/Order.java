@@ -1,5 +1,7 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.table.domain.OrderTable;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,12 +13,15 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long orderTableId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_table_id")
+    private OrderTable orderTable;
 
     @Enumerated(EnumType.STRING)
-    @Column(unique = true)
+    @Column(name = "order_status", unique = true)
     private OrderStatus orderStatus;
 
+    @Column(name = "ordered_time")
     private LocalDateTime orderedTime;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
@@ -29,20 +34,20 @@ public class Order {
         this.id = id;
     }
 
-    public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
-        this.orderTableId = orderTableId;
+    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        this.orderTable = orderTable;
         this.orderLineItems = orderLineItems;
     }
 
-    public Order(Long id, Long orderTableId, List<OrderLineItem> orderLineItems) {
+    public Order(Long id, OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         this.id = id;
-        this.orderTableId = orderTableId;
+        this.orderTable = orderTable;
         this.orderLineItems = orderLineItems;
     }
 
-    public Order(Long id, Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
         this.id = id;
-        this.orderTableId = orderTableId;
+        this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderLineItems = orderLineItems;
     }
@@ -51,8 +56,8 @@ public class Order {
         return id;
     }
 
-    public Long getOrderTableId() {
-        return orderTableId;
+    public OrderTable getOrderTable() {
+        return orderTable;
     }
 
     public OrderStatus getOrderStatus() {
