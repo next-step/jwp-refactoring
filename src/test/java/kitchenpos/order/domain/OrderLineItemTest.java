@@ -2,8 +2,7 @@ package kitchenpos.order.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
+import java.math.BigDecimal;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +13,7 @@ class OrderLineItemTest {
     @Test
     void map_into_test() {
         // given
-        OrderLineItem 주문_항목 = OrderLineItem.of(1L, null, 1L, 1);
+        OrderLineItem 주문_항목 = OrderLineItem.of(1L, null, 1L, "test", BigDecimal.valueOf(500L), 1L);
         Order 주문 = Order.of(1L, 1L);
 
         // when

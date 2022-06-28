@@ -2,6 +2,7 @@ package kitchenpos.utils;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.menu.domain.request.MenuProductRequest;
 import kitchenpos.menu.domain.request.MenuRequest;
@@ -24,4 +25,6 @@ public class TestFixture {
     public static final OrderTableRequest 주문_테이블_REQUEST_FIXTURE = new OrderTableRequest(null, null, 3, false);
 
     public static final MenuGroup 메뉴_그룹 = MenuGroup.of("치킨그룹");
+
+    public static final MenuProduct 메뉴_상품_ENTITY_FIXTURE = MenuProduct.of(1L, 1);
 }

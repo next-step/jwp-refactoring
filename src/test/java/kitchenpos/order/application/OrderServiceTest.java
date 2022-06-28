@@ -1,5 +1,7 @@
 package kitchenpos.order.application;
 
+import static kitchenpos.utils.TestFixture.메뉴_상품_ENTITY_FIXTURE;
+import static kitchenpos.utils.TestFixture.치킨_메뉴_FIXTURE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -14,14 +16,13 @@ import kitchenpos.core.exception.BadRequestException;
 import kitchenpos.core.exception.CannotCreateException;
 import kitchenpos.core.exception.ExceptionType;
 import kitchenpos.core.exception.NotFoundException;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.application.OrderValidator;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.request.OrderRequest;
 import kitchenpos.order.domain.response.OrderResponse;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.application.OrderService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.order.domain.request.OrderLineItemRequest;
@@ -53,6 +54,8 @@ class OrderServiceTest {
     private OrderRequest 주문_request;
     private Order 주문;
 
+    private Menu 치킨_메뉴_entity;
+
     @BeforeEach
     void setUp() {
         주문_테이블 = OrderTable.of(1L, null, 3, false);
@@ -64,13 +67,19 @@ class OrderServiceTest {
         주문 = Order.of(1L, 주문_테이블.getTableGroupId());
 
         orderValidator = new OrderValidator(menuRepository, orderTableRepository);
-        orderService = new OrderService(orderRepository, orderTableRepository, orderValidator);
+        orderService = new OrderService(orderRepository, orderTableRepository, orderValidator, menuRepository);
+
+        치킨_메뉴_entity = Menu.of(치킨_메뉴_FIXTURE.getName(), 치킨_메뉴_FIXTURE.getPrice(), null, Collections.singletonList(메뉴_상품_ENTITY_FIXTURE));
     }
 
     @DisplayName("주문을 등록하면 정상적으로 등록되어야 한다")
     @Test
     void create_test() {
         // given
+        when(menuRepository.findById(주문_항목_request.getMenuId()))
+            .thenReturn(Optional.of(치킨_메뉴_entity));
+        when(menuRepository.findById(주문_항목_request2.getMenuId()))
+            .thenReturn(Optional.of(치킨_메뉴_entity));
         when(menuRepository.countByIdIn(
             Arrays.asList(주문_항목_request.getMenuId(), 주문_항목_request2.getMenuId())))
             .thenReturn(2L);
