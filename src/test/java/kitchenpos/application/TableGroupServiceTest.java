@@ -10,7 +10,6 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
 import java.util.Optional;
-import kitchenpos.dao.OrderDao;
 import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;

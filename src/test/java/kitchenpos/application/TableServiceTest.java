@@ -13,8 +13,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
