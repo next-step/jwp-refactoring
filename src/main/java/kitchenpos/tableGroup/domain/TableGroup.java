@@ -10,10 +10,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import kitchenpos.table.domain.OrderTable;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 @Entity
 @Table(name = "table_group")
-public class TableGroup {
+public class TableGroup extends AbstractAggregateRoot<TableGroup> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,6 +60,6 @@ public class TableGroup {
     }
 
     public void unGroup() {
-        this.orderTables.unGroup();
+        registerEvent(new TableUnGroupEventPublisher(orderTables.getItems()));
     }
 }

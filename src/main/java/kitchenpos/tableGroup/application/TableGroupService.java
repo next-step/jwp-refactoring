@@ -20,10 +20,10 @@ public class TableGroupService {
     private final TableGroupRepository tableGroupRepository;
     private final TableGroupValidator tableGroupValidator;
 
-    public TableGroupService(TableService tableService, TableGroupRepository tableGroupRepository, TableGroupValidator tableGroupValidator) {
+    public TableGroupService(TableService tableService, TableGroupRepository tableGroupRepository) {
         this.tableService = tableService;
         this.tableGroupRepository = tableGroupRepository;
-        this.tableGroupValidator = tableGroupValidator;
+        this.tableGroupValidator = new TableGroupValidator();
     }
 
     @Transactional
@@ -41,7 +41,7 @@ public class TableGroupService {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
             .orElseThrow(() -> new NotFoundException(ExceptionType.NOT_EXIST_TABLE_GROUP));
 
-        tableGroupValidator.validateOrderTablesStatus(tableGroup);
         tableGroup.unGroup();
+        tableGroupRepository.save(tableGroup);
     }
 }
