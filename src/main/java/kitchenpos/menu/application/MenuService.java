@@ -50,6 +50,7 @@ public class MenuService {
         return persist.toMenuResponse();
     }
 
+    @Transactional(readOnly = true)
     public List<MenuResponse> list() {
         return menuRepository.findAll().stream()
                 .map(Menu::toMenuResponse)

@@ -24,6 +24,7 @@ public class ProductService {
         return persist.toProductResponse();
     }
 
+    @Transactional(readOnly = true)
     public List<ProductResponse> list() {
         return productRepository.findAll().stream()
                 .map(Product::toProductResponse)

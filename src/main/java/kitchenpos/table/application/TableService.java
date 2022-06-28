@@ -30,6 +30,7 @@ public class TableService {
         return persist.toOrderTableResponse();
     }
 
+    @Transactional(readOnly = true)
     public List<OrderTableResponse> list() {
         return orderTableRepository.findAll().stream()
                 .map(OrderTable::toOrderTableResponse)
