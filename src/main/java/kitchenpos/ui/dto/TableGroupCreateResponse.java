@@ -11,6 +11,9 @@ public class TableGroupCreateResponse {
     private LocalDateTime createdDate;
     private List<OrderTableCreateResponse> orderTables;
 
+    private TableGroupCreateResponse() {
+    }
+
     public TableGroupCreateResponse(TableGroup tableGroup) {
         this.id = tableGroup.getId();
         this.createdDate = tableGroup.getCreatedDate();

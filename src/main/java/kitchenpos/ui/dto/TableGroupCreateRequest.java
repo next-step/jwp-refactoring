@@ -8,6 +8,13 @@ import java.util.stream.Collectors;
 public class TableGroupCreateRequest {
     private List<OrderTableCreateRequest> orderTables;
 
+    private TableGroupCreateRequest() {
+    }
+
+    public TableGroupCreateRequest(List<OrderTableCreateRequest> orderTables) {
+        this.orderTables = orderTables;
+    }
+
     public TableGroup toEntity() {
         return new TableGroup(orderTables.stream()
                 .map(OrderTableCreateRequest::toEntity)

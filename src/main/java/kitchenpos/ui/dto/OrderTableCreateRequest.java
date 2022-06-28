@@ -10,6 +10,10 @@ public class OrderTableCreateRequest {
     private OrderTableCreateRequest() {
     }
 
+    public OrderTableCreateRequest(Long id) {
+        this.id = id;
+    }
+
     public OrderTableCreateRequest(int numberOfGuests, boolean empty) {
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
