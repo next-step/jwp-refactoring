@@ -23,7 +23,7 @@ class OrderTableTest {
     @DisplayName("테이블을 비어있게 만든다")
     public void changeTableStatusEmptyTest(){
         //when
-        orderTable.changeIsEmpty(true);
+        orderTable.clearTable();
 
         //then
         assertThat(orderTable.isEmpty()).isTrue();
@@ -36,7 +36,7 @@ class OrderTableTest {
         orderTable.mapToTableGroup(1L);
 
         //when & then
-        assertThatThrownBy(() -> orderTable.changeIsEmpty(true)).isInstanceOf(
+        assertThatThrownBy(() -> orderTable.clearTable()).isInstanceOf(
             IllegalArgumentException.class);
     }
 
@@ -74,7 +74,7 @@ class OrderTableTest {
     @DisplayName("손님 수를 설정할수 있다.")
     public void changeNumberOfGuestTest(){
         //given
-        orderTable.changeIsEmpty(false);
+        orderTable.useTable();
 
         //when
         orderTable.changeNumberOfGuests(3);

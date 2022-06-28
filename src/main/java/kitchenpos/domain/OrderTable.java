@@ -28,11 +28,15 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public void changeIsEmpty(boolean isEmpty) {
-        if (Objects.isNull(isEmpty) || Objects.nonNull(tableGroupId)) {
+    public void clearTable() {
+        if (Objects.nonNull(tableGroupId)) {
             throw new IllegalArgumentException();
         }
-        this.empty = isEmpty;
+        this.empty = true;
+    }
+
+    public void useTable() {
+        this.empty = false;
     }
 
     public void unGroupTable() {

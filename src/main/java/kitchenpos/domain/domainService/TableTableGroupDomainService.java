@@ -60,7 +60,7 @@ public class TableTableGroupDomainService {
         final Long tableGroupId = tableGroup.getId();
 
         for (final OrderTable orderTable : orderTables) {
-            orderTable.changeIsEmpty(false);
+            orderTable.useTable();
             orderTable.mapToTableGroup(tableGroupId);
         }
         return tableGroup;

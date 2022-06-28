@@ -107,7 +107,7 @@ class TableServiceTest {
     void changeNumberHappyCase() {
         //given
         when(orderTableRepository.findById(1L)).thenReturn(Optional.of(orderTable));
-        orderTable.changeIsEmpty(false);
+        orderTable.useTable();
         when(orderTableRepository.save(any())).thenReturn(orderTable);
         OrderTableRequest ordertableRequest = new OrderTableRequest();
         ordertableRequest.setNumberOfGuests(4);
