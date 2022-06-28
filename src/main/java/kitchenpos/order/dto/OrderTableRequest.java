@@ -1,10 +1,16 @@
 package kitchenpos.order.dto;
 
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import kitchenpos.table.domain.GuestNumber;
 import kitchenpos.table.domain.OrderTable;
 
 public class OrderTableRequest {
+    @PositiveOrZero
     private Integer numberOfGuests;
+
+    @NotNull
     private Boolean empty;
 
     public OrderTableRequest() {

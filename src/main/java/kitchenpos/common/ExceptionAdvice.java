@@ -1,5 +1,8 @@
 package kitchenpos.common;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import kitchenpos.exception.InvalidGuestNumberException;
 import kitchenpos.exception.InvalidMenuNumberException;
 import kitchenpos.exception.InvalidOrderStatusException;
@@ -9,6 +12,9 @@ import kitchenpos.exception.InvalidTableNumberException;
 import kitchenpos.exception.NotExistException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -29,6 +35,19 @@ public class ExceptionAdvice {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(e.getMessage());
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    protected ResponseEntity handleValidationException(MethodArgumentNotValidException e) {
+        final List<ObjectError> errors = e.getBindingResult().getAllErrors();
+        final Map<String, String> body = errors.stream()
+                .collect(Collectors.toMap(
+                        field -> ((FieldError) field).getField(),
+                        message -> message.getDefaultMessage()
+                ));
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(body);
     }
 
     @ExceptionHandler(Exception.class)

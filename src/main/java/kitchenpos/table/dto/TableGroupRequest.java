@@ -2,9 +2,11 @@ package kitchenpos.table.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import javax.validation.constraints.Size;
 import kitchenpos.table.domain.TableGroup;
 
 public class TableGroupRequest {
+    @Size(min = 2)
     private List<Long> orderTableIds;
 
     public TableGroupRequest() {

@@ -1,7 +1,11 @@
 package kitchenpos.order.dto;
 
+import javax.validation.constraints.Positive;
+
 public class OrderLineItemRequest {
     private Long menuId;
+
+    @Positive
     private Long quantity;
 
     public OrderLineItemRequest() {

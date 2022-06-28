@@ -2,9 +2,11 @@ package kitchenpos.order.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import javax.validation.constraints.NotNull;
 import kitchenpos.order.domain.OrderStatus;
 
 public class OrderStatusRequest {
+    @NotNull
     private OrderStatus orderStatus;
 
     public OrderStatusRequest() {

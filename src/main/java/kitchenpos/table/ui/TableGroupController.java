@@ -1,5 +1,8 @@
 package kitchenpos.table.ui;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Positive;
 import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.dto.TableGroupResponse;
 import kitchenpos.table.dto.TableGroupRequest;
@@ -18,7 +21,7 @@ public class TableGroupController {
     }
 
     @PostMapping
-    public ResponseEntity<TableGroupResponse> create(@RequestBody final TableGroupRequest tableGroupRequest) {
+    public ResponseEntity<TableGroupResponse> create(@RequestBody @Valid final TableGroupRequest tableGroupRequest) {
         final TableGroupResponse created = tableGroupService.create(tableGroupRequest);
         final URI uri = URI.create("/api/table-groups/" + created.getId());
         return ResponseEntity
@@ -27,7 +30,7 @@ public class TableGroupController {
     }
 
     @DeleteMapping("/{tableGroupId}")
-    public ResponseEntity<Void> ungroup(@PathVariable final Long tableGroupId) {
+    public ResponseEntity<Void> ungroup(@PathVariable @Positive final Long tableGroupId) {
         tableGroupService.ungroup(tableGroupId);
         return ResponseEntity
                 .noContent()

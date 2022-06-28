@@ -1,9 +1,14 @@
 package kitchenpos.menu.dto;
 
 import java.util.List;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.PositiveOrZero;
 
 public class MenuRequest {
+    @NotEmpty
     private String name;
+
+    @PositiveOrZero
     private Long price;
     private Long menuGroupId;
     private List<MenuProductRequest> menuProducts;
