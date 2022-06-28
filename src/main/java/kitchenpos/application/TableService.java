@@ -36,7 +36,7 @@ public class TableService {
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
         Order order = findOrderByOrderTableId(savedOrderTable.getId());
         savedOrderTable.clear(order);
-        return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
+        return OrderTableResponse.from(savedOrderTable);
     }
 
     private Order findOrderByOrderTableId(Long orderTableId) {

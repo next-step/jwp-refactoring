@@ -66,14 +66,16 @@ public class OrderTable {
     }
 
     public void updateNumberOfGuests(final int numberOfGuests) {
-        if (!isEmpty()) {
+        if (!this.empty) {
             throw new IllegalArgumentException("손님수를 변경 할 수 없습니다. 빈 테이블이 아닙니다.");
         }
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
     }
 
     public void clear(Order order) {
-        if (this.empty) return;
+        if (this.empty) {
+            return;
+        }
         validateOrderTablesStatus(order);
         if (isInTableGroup()) {
             throw new IllegalArgumentException("빈테이블로 지정 할 수 없습니다. 단체 지정이 되어 있는 주문 테이블 입니다.");
