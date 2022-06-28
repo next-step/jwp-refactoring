@@ -8,6 +8,9 @@ public class OrderTableUpdateResponse {
     private int numberOfGuests;
     private boolean empty;
 
+    private OrderTableUpdateResponse() {
+    }
+
     public OrderTableUpdateResponse(OrderTable orderTable) {
         this.id = orderTable.getId();
         this.tableGroupId = orderTable.getTableGroupId();
