@@ -91,7 +91,7 @@ class OrderServiceTest {
         );
     }
 
-    @DisplayName("주문 항목 리스트가 없는 경우 등록 불가")
+    @DisplayName("주문 등록 시 주문 항목 리스트가 없는 경우 등록 불가")
     @Test
     void createOrderAndOrderLineItemEmpty() {
         // given
@@ -103,7 +103,7 @@ class OrderServiceTest {
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("테이블이 미등록인 경우 등록 불가")
+    @DisplayName("주문 등록 시 테이블이 미등록인 경우 등록 불가")
     @Test
     void createOrderAndNotExistTable() {
         // given
@@ -118,7 +118,20 @@ class OrderServiceTest {
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("빈 테이블인 경우 등록 불가")
+    @DisplayName("주문 등록 시 메뉴가 미등록인 경우 등록 불가")
+    @Test
+    void createOrderAndNotRegisterMenu() {
+        // given
+        when(menuDao.countByIdIn(Arrays.asList(주문항목_1.getMenuId(), 주문항목_2.getMenuId())))
+                .thenReturn(1L);
+
+        // then
+        assertThatThrownBy(() -> {
+            orderService.create(주문_1);
+        }).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("주문 등록 시 빈 테이블인 경우 등록 불가")
     @Test
     void createOrderAndEmptyTable() {
         // given
@@ -172,5 +185,19 @@ class OrderServiceTest {
 
         // then
         assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
+    }
+
+    @DisplayName("주문 상태 변경 시 주문 완료인 경우 변경 불가")
+    @Test
+    void changeOrderStatusAndIsOrderStatusCompletion() {
+        // given
+        when(orderDao.findById(주문_1.getId()))
+                .thenReturn(Optional.ofNullable(주문_1));
+        주문_1.setOrderStatus(OrderStatus.COMPLETION.name());
+
+        // then
+        assertThatThrownBy(() -> {
+            orderService.changeOrderStatus(주문_1.getId(), 주문_1);
+        }).isInstanceOf(IllegalArgumentException.class);
     }
 }
