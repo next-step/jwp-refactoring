@@ -6,9 +6,8 @@ import java.util.stream.Collectors;
 import kitchenpos.exception.InvalidGuestNumberException;
 import kitchenpos.exception.InvalidMenuNumberException;
 import kitchenpos.exception.InvalidOrderStatusException;
-import kitchenpos.exception.InvalidPriceException;
-import kitchenpos.exception.InvalidQuantityException;
 import kitchenpos.exception.InvalidTableNumberException;
+import kitchenpos.exception.NotCompletionStatusException;
 import kitchenpos.exception.NotExistException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,9 +28,15 @@ public class ExceptionAdvice {
     }
 
     @ExceptionHandler({InvalidGuestNumberException.class, InvalidMenuNumberException.class,
-            InvalidTableNumberException.class, InvalidOrderStatusException.class, InvalidOrderStatusException.class,
-            InvalidPriceException.class, InvalidQuantityException.class})
-    protected ResponseEntity handleInvalidNUmberException(IllegalArgumentException e) {
+            InvalidTableNumberException.class})
+    protected ResponseEntity handleInvalidNumberException(IllegalArgumentException e) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(e.getMessage());
+    }
+
+    @ExceptionHandler({InvalidOrderStatusException.class, NotCompletionStatusException.class})
+    protected ResponseEntity handleInvalidStatusException(IllegalArgumentException e) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(e.getMessage());

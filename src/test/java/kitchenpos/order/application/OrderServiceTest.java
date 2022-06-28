@@ -2,6 +2,7 @@ package kitchenpos.order.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -179,7 +180,7 @@ class OrderServiceTest {
         when(orderRepository.findById(any())).thenReturn(Optional.of(order));
 
         // when && then
-        assertThatIllegalArgumentException()
+        assertThatIllegalStateException()
                 .isThrownBy(() -> orderService.changeOrderStatus(1L, new OrderStatusRequest(OrderStatus.COOKING)));
     }
 }
