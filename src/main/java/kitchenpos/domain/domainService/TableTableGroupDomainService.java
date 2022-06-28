@@ -7,8 +7,10 @@ import java.util.stream.Collectors;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.dto.ExceptionDTO;
 import kitchenpos.dto.request.OrderTableRequest;
 import kitchenpos.dto.request.TableGroupRequest;
+import kitchenpos.exception.TableGroupException;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.repository.TableGroupRepository;
@@ -39,14 +41,14 @@ public class TableTableGroupDomainService {
 
     private void validateOrderTableOverTwo(List<OrderTable> orderTables) {
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException();
+            throw new TableGroupException("OVER 2 TABLE CAN GROUPING");
         }
     }
 
     private void validateOrderTableCanGrouping(List<OrderTable> orderTables) {
         for (final OrderTable orderTable : orderTables) {
             if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroupId())) {
-                throw new IllegalArgumentException();
+                throw new TableGroupException("TABLE ALREADY GROUPED");
             }
         }
     }
@@ -86,7 +88,7 @@ public class TableTableGroupDomainService {
 
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
             orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
+            throw new TableGroupException("TABLE_CONTAIN_NOT_COMPLETE_ORDER");
         }
     }
 

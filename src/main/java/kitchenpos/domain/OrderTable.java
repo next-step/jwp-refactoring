@@ -7,6 +7,8 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import kitchenpos.dto.dto.ExceptionDTO;
+import kitchenpos.exception.OrderTableException;
 
 @Entity
 public class OrderTable {
@@ -30,7 +32,7 @@ public class OrderTable {
 
     public void clearTable() {
         if (Objects.nonNull(tableGroupId)) {
-            throw new IllegalArgumentException();
+            throw new OrderTableException("CAN NOT CLEAR TABLE BEFORE UNGROUP");
         }
         this.empty = true;
     }

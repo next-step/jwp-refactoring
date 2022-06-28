@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
+import kitchenpos.exception.OrderTableException;
 import org.aspectj.weaver.ast.Or;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,7 +38,7 @@ class OrderTableTest {
 
         //when & then
         assertThatThrownBy(() -> orderTable.clearTable()).isInstanceOf(
-            IllegalArgumentException.class);
+            OrderTableException.class);
     }
 
     @Test

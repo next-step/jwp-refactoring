@@ -10,6 +10,7 @@ import java.util.Optional;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.request.OrderTableRequest;
+import kitchenpos.exception.OrderTableException;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -68,7 +69,7 @@ class TableServiceTest {
 
         //when & then
         assertThatThrownBy(() -> tableService.changeEmpty(1L, orderTableRequest))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(OrderTableException.class);
     }
 
     @Test
@@ -99,7 +100,7 @@ class TableServiceTest {
 
         //when & then
         assertThatThrownBy(() -> tableService.changeEmpty(1L, orderTableRequest))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(OrderTableException.class);
     }
 
     @Test

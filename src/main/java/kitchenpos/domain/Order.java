@@ -11,6 +11,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import kitchenpos.dto.dto.ExceptionDTO;
+import kitchenpos.exception.OrderException;
 
 @Entity
 @Table(name = "Orders")
@@ -38,7 +40,7 @@ public class Order extends BaseTimeEntity {
 
     public void changeOrderStatus(OrderStatus orderStatus) {
         if (Objects.equals(OrderStatus.COMPLETION, this.orderStatus)) {
-            throw new IllegalArgumentException();
+            throw new OrderException("COMPLETE ORDER CANT UPDATE STATUS");
         }
         this.orderStatus = orderStatus;
     }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.dto.dto.OrderLineItemDTO;
 import kitchenpos.dto.request.OrderRequest;
+import kitchenpos.exception.OrderException;
 import kitchenpos.repository.MenuRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -17,26 +18,26 @@ public class MenuOrderLineDomainService {
         this.menuRepository = menuRepository;
     }
 
-    public void validateComponentForCreateOrder(OrderRequest orderRequest){
+    public void validateComponentForCreateOrder(OrderRequest orderRequest) {
         List<OrderLineItemDTO> orderLineItems = orderRequest.getOrderLineItems();
 
         orderLineItemsIsEmpty(orderLineItems);
         menuMappedByOrderLineItemsIsExist(orderLineItems);
     }
 
-    private void orderLineItemsIsEmpty(List<OrderLineItemDTO> orderLineItems){
+    private void orderLineItemsIsEmpty(List<OrderLineItemDTO> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
+            throw new OrderException("MENU FOR ORDER IS EMPTY");
         }
     }
 
-    private void menuMappedByOrderLineItemsIsExist(List<OrderLineItemDTO> orderLineItems){
+    private void menuMappedByOrderLineItemsIsExist(List<OrderLineItemDTO> orderLineItems) {
         final List<Long> menuIds = orderLineItems.stream()
             .map(OrderLineItemDTO::getMenuId)
             .collect(Collectors.toList());
 
         if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException();
+            throw new OrderException("MENU FOR ORDER IS INVALID");
         }
     }
 }

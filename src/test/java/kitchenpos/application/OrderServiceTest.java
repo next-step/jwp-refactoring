@@ -25,6 +25,7 @@ import kitchenpos.domain.domainService.MenuOrderLineDomainService;
 import kitchenpos.dto.dto.OrderLineItemDTO;
 import kitchenpos.dto.request.OrderRequest;
 import kitchenpos.dto.response.OrderResponse;
+import kitchenpos.exception.OrderException;
 import kitchenpos.repository.MenuRepository;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
@@ -182,7 +183,7 @@ class OrderServiceTest {
 
         //when && then
         assertThatThrownBy(() -> orderService.create(orderRequest))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(OrderException.class);
     }
 
     @Test
@@ -212,6 +213,6 @@ class OrderServiceTest {
 
         //when & then
         assertThatThrownBy(() -> orderService.changeOrderStatus(1L, orderRequest))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(OrderException.class);
     }
 }

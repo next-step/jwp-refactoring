@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import kitchenpos.dto.dto.OrderLineItemDTO;
 import kitchenpos.dto.request.OrderRequest;
+import kitchenpos.exception.OrderException;
 import kitchenpos.repository.MenuRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -52,7 +53,7 @@ class MenuOrderLineDomainServiceTest {
         //when & then
         assertThatThrownBy(
             () -> menuOrderLineDomainService.validateComponentForCreateOrder(orderRequest))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(OrderException.class);
     }
 
     @Test
@@ -64,6 +65,6 @@ class MenuOrderLineDomainServiceTest {
         //when & then
         assertThatThrownBy(
             () -> menuOrderLineDomainService.validateComponentForCreateOrder(orderRequest))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(OrderException.class);
     }
 }
