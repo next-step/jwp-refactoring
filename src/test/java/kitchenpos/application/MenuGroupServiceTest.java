@@ -1,17 +1,15 @@
 package kitchenpos.application;
 
-import static kitchenpos.fixture.DomainFactory.createMenuGroup;
+import static kitchenpos.fixture.MenuGroupFactory.createMenuGroup;
 import static kitchenpos.fixture.MenuGroupFactory.createMenuGroupRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.dto.MenuGroupResponse;

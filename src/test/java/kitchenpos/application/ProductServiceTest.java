@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.domain.Product;
 
-import static kitchenpos.fixture.DomainFactory.createProduct;
+import static kitchenpos.fixture.ProductFactory.createProduct;
 
 import kitchenpos.domain.ProductRepository;
 import kitchenpos.dto.ProductResponse;

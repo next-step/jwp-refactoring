@@ -1,6 +1,6 @@
 package kitchenpos.domain;
 
-import static kitchenpos.fixture.DomainFactory.createOrderTable;
+import static kitchenpos.fixture.OrderTableFactory.createOrderTable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;

@@ -1,21 +1,18 @@
 package kitchenpos.application;
 
-import static kitchenpos.fixture.DomainFactory.createMenu;
-import static kitchenpos.fixture.DomainFactory.createMenuGroup;
-import static kitchenpos.fixture.DomainFactory.createMenuProduct;
-import static kitchenpos.fixture.DomainFactory.createOrder;
-import static kitchenpos.fixture.DomainFactory.createOrderLineItem;
-import static kitchenpos.fixture.DomainFactory.createOrderTable;
-import static kitchenpos.fixture.DomainFactory.createProduct;
+import static kitchenpos.fixture.MenuFactory.createMenu;
+import static kitchenpos.fixture.MenuProductFactory.createMenuProduct;
+import static kitchenpos.fixture.OrderFactory.createOrder;
+import static kitchenpos.fixture.OrderFactory.createOrderLineItem;
+import static kitchenpos.fixture.OrderTableFactory.createOrderTable;
+import static kitchenpos.fixture.ProductFactory.createProduct;
 import static kitchenpos.fixture.OrderFactory.createOrderLineItemRequest;
 import static kitchenpos.fixture.OrderFactory.createOrderRequest;
 import static kitchenpos.fixture.OrderFactory.createOrderStatusRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;

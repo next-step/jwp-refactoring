@@ -1,8 +1,5 @@
 package kitchenpos.acceptance;
 
-import static kitchenpos.fixture.DomainFactory.createMenuGroup;
-import static kitchenpos.fixture.MenuGroupFactory.createMenuGroupRequest;
-import static kitchenpos.fixture.MenuGroupFactory.createMenuGroupResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;

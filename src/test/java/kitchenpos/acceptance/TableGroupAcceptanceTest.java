@@ -1,8 +1,6 @@
 package kitchenpos.acceptance;
 
 import static kitchenpos.acceptance.TableAcceptanceTest.주문테이블_등록_요청;
-import static kitchenpos.fixture.DomainFactory.createOrderTable;
-import static kitchenpos.fixture.DomainFactory.createTableGroup;
 import static kitchenpos.fixture.TableGroupFactory.createTableGroupRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -11,8 +9,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.dto.TableGroupResponse;

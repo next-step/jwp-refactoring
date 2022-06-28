@@ -1,15 +1,13 @@
 package kitchenpos.application;
 
-import static kitchenpos.fixture.DomainFactory.createEmptyPriceMenu;
-import static kitchenpos.fixture.DomainFactory.createMenu;
-import static kitchenpos.fixture.DomainFactory.createMenuGroup;
-import static kitchenpos.fixture.DomainFactory.createMenuProduct;
-import static kitchenpos.fixture.DomainFactory.createProduct;
+import static kitchenpos.fixture.MenuFactory.createMenu;
+import static kitchenpos.fixture.MenuGroupFactory.createMenuGroup;
+import static kitchenpos.fixture.MenuProductFactory.createMenuProduct;
+import static kitchenpos.fixture.ProductFactory.createProduct;
 import static kitchenpos.fixture.MenuFactory.createMenuRequest;
 import static kitchenpos.fixture.MenuProductFactory.createMenuProductRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
