@@ -11,7 +11,8 @@ public class NumberOfGuests {
     @Column(nullable = false)
     private int numberOfGuests;
 
-    protected NumberOfGuests() {}
+    protected NumberOfGuests() {
+    }
 
     private NumberOfGuests(int numberOfGuests) {
         validateNumberOfGuests(numberOfGuests);

@@ -63,7 +63,8 @@ class TableGroupServiceTest {
     void createWithOrderTableSizeUnderTwo() {
         TableGroupRequest tableGroupRequest = createTableGroupRequest(Lists.newArrayList(치킨주문테이블.id()));
         given(tableGroupRepository.save(any(TableGroup.class))).willReturn(단체지정);
-        willThrow(new IllegalArgumentException(ORDER_TABLE_REQUEST_MIN + "이상 주문테이블이 필요합니다.")).given(applicationEventPublisher).publishEvent(any(ReserveEvent.class));
+        willThrow(new IllegalArgumentException(ORDER_TABLE_REQUEST_MIN + "이상 주문테이블이 필요합니다.")).given(
+                applicationEventPublisher).publishEvent(any(ReserveEvent.class));
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableGroupService.create(tableGroupRequest))
                 .withMessage(ORDER_TABLE_REQUEST_MIN + "이상 주문테이블이 필요합니다.");
@@ -74,7 +75,8 @@ class TableGroupServiceTest {
     void createWithOrderTableNull() {
         TableGroupRequest tableGroupRequest = createTableGroupRequest(null);
         given(tableGroupRepository.save(any(TableGroup.class))).willReturn(단체지정);
-        willThrow(new IllegalArgumentException(ORDER_TABLE_REQUEST_MIN + "이상 주문테이블이 필요합니다.")).given(applicationEventPublisher).publishEvent(any(ReserveEvent.class));
+        willThrow(new IllegalArgumentException(ORDER_TABLE_REQUEST_MIN + "이상 주문테이블이 필요합니다.")).given(
+                applicationEventPublisher).publishEvent(any(ReserveEvent.class));
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableGroupService.create(tableGroupRequest))
                 .withMessage(ORDER_TABLE_REQUEST_MIN + "이상 주문테이블이 필요합니다.");
@@ -85,7 +87,8 @@ class TableGroupServiceTest {
     void createWithNotEqualOrderTableSize() {
         TableGroupRequest tableGroupRequest = createTableGroupRequest(Lists.newArrayList(치킨주문테이블.id(), 피자주문테이블.id()));
         given(tableGroupRepository.save(any(TableGroup.class))).willReturn(단체지정);
-        willThrow(new IllegalArgumentException("비교하는 수와 주문 테이블의 수가 일치하지 않습니다.")).given(applicationEventPublisher).publishEvent(any(ReserveEvent.class));
+        willThrow(new IllegalArgumentException("비교하는 수와 주문 테이블의 수가 일치하지 않습니다.")).given(applicationEventPublisher)
+                .publishEvent(any(ReserveEvent.class));
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableGroupService.create(tableGroupRequest))
                 .withMessage("비교하는 수와 주문 테이블의 수가 일치하지 않습니다.");
@@ -97,7 +100,8 @@ class TableGroupServiceTest {
         피자주문테이블 = createOrderTable(2L, 3, false);
         TableGroupRequest tableGroupRequest = createTableGroupRequest(Lists.newArrayList(치킨주문테이블.id(), 피자주문테이블.id()));
         given(tableGroupRepository.save(any(TableGroup.class))).willReturn(단체지정);
-        willThrow(new IllegalArgumentException("주문테이블이 비어있어야 합니다.")).given(applicationEventPublisher).publishEvent(any(ReserveEvent.class));
+        willThrow(new IllegalArgumentException("주문테이블이 비어있어야 합니다.")).given(applicationEventPublisher)
+                .publishEvent(any(ReserveEvent.class));
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableGroupService.create(tableGroupRequest))
                 .withMessage("주문테이블이 비어있어야 합니다.");
@@ -108,7 +112,8 @@ class TableGroupServiceTest {
     void createWithOrderTableAlreadyContainTableGroup() {
         TableGroupRequest tableGroupRequest = createTableGroupRequest(Lists.newArrayList(치킨주문테이블.id(), 피자주문테이블.id()));
         given(tableGroupRepository.save(any(TableGroup.class))).willReturn(단체지정);
-        willThrow(new IllegalArgumentException("단체지정이 없어야 합니다.")).given(applicationEventPublisher).publishEvent(any(ReserveEvent.class));
+        willThrow(new IllegalArgumentException("단체지정이 없어야 합니다.")).given(applicationEventPublisher)
+                .publishEvent(any(ReserveEvent.class));
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableGroupService.create(tableGroupRequest))
                 .withMessage("단체지정이 없어야 합니다.");

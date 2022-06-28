@@ -55,7 +55,8 @@ class MenuServiceTest {
         양념 = createProduct(1L, "양념", BigDecimal.valueOf(20000L));
         한마리메뉴 = createMenuGroup(1L, "한마리메뉴");
         양념치킨상품 = createMenuProduct(양념.id(), 2L);
-        양념치킨 = createMenu("양념치킨", BigDecimal.valueOf(40000L), 한마리메뉴.id(), MenuProducts.from(Lists.newArrayList(양념치킨상품)));
+        양념치킨 = createMenu("양념치킨", BigDecimal.valueOf(40000L), 한마리메뉴.id(),
+                MenuProducts.from(Lists.newArrayList(양념치킨상품)));
     }
 
     @DisplayName("메뉴 생성 테스트")
@@ -90,7 +91,8 @@ class MenuServiceTest {
     void createWithPriceUnderZero() {
         MenuRequest menuRequest = createMenuRequest("양념치킨", BigDecimal.valueOf(-40000L), 한마리메뉴.id(),
                 Lists.newArrayList(new MenuProductRequest(양념.id(), 2L)));
-        willThrow(new IllegalArgumentException("금액은 " + Price.MIN + "원 미만이 될 수 없습니다.")).given(menuValidator).validate(menuRequest);
+        willThrow(new IllegalArgumentException("금액은 " + Price.MIN + "원 미만이 될 수 없습니다.")).given(menuValidator)
+                .validate(menuRequest);
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuService.create(menuRequest))
                 .withMessage("금액은 " + Price.MIN + "원 미만이 될 수 없습니다.");
@@ -101,7 +103,8 @@ class MenuServiceTest {
     void createWithTotalPriceLessThanMenuPrice() {
         MenuRequest menuRequest = createMenuRequest("양념치킨", BigDecimal.valueOf(60000L), 한마리메뉴.id(),
                 Lists.newArrayList(new MenuProductRequest(양념.id(), 2L)));
-        willThrow(new IllegalArgumentException("메뉴 가격은 상품의 총 금액을 넘길 수 없습니다.")).given(menuValidator).validate(menuRequest);
+        willThrow(new IllegalArgumentException("메뉴 가격은 상품의 총 금액을 넘길 수 없습니다.")).given(menuValidator)
+                .validate(menuRequest);
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuService.create(menuRequest))
                 .withMessage("메뉴 가격은 상품의 총 금액을 넘길 수 없습니다.");

@@ -27,7 +27,8 @@ class MenuTest {
     @DisplayName("초기화 테스트")
     @Test
     void from() {
-        Menu menu = Menu.from("양념치킨", BigDecimal.valueOf(40000L), 한마리메뉴.id(), MenuProducts.from(Lists.newArrayList(양념치킨상품)));
+        Menu menu = Menu.from("양념치킨", BigDecimal.valueOf(40000L), 한마리메뉴.id(),
+                MenuProducts.from(Lists.newArrayList(양념치킨상품)));
         assertThat(menu).isEqualTo(menu);
     }
 }

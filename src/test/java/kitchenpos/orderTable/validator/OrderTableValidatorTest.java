@@ -36,7 +36,8 @@ class OrderTableValidatorTest {
     @DisplayName("주문테이블의 주문이 완료상태가 아닌경우 테스트")
     @Test
     void validateComplete() {
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(주문테이블.id(), Arrays.asList(COOKING, MEAL))).willReturn(true);
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(주문테이블.id(),
+                Arrays.asList(COOKING, MEAL))).willReturn(true);
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> orderTableValidator.validateComplete(주문테이블.id()))
                 .withMessage("주문테이블의 주문이 완료상태가 아닙니다.");
@@ -57,7 +58,8 @@ class OrderTableValidatorTest {
     void validateReserveEvent() {
         assertThatIllegalArgumentException()
                 .isThrownBy(
-                        () -> orderTableValidator.validateReserveEvent(OrderTables.from(Lists.newArrayList(주문테이블)), Lists.newArrayList(1L)))
+                        () -> orderTableValidator.validateReserveEvent(OrderTables.from(Lists.newArrayList(주문테이블)),
+                                Lists.newArrayList(1L)))
                 .withMessage(ORDER_TABLE_REQUEST_MIN + "이상 주문테이블이 필요합니다.");
     }
 
@@ -65,7 +67,8 @@ class OrderTableValidatorTest {
     @Test
     void validateReserveEventWithOrderTableIdNull() {
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderTableValidator.validateReserveEvent(OrderTables.from(Lists.newArrayList(주문테이블)), Lists.emptyList()))
+                .isThrownBy(() -> orderTableValidator.validateReserveEvent(OrderTables.from(Lists.newArrayList(주문테이블)),
+                        Lists.emptyList()))
                 .withMessage(ORDER_TABLE_REQUEST_MIN + "이상 주문테이블이 필요합니다.");
     }
 
@@ -73,7 +76,8 @@ class OrderTableValidatorTest {
     @Test
     void validateReserveEventWithNotEqualOrderTableSize() {
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderTableValidator.validateReserveEvent(OrderTables.from(Lists.newArrayList(주문테이블)), Lists.newArrayList(1L, 2L, 3L)))
+                .isThrownBy(() -> orderTableValidator.validateReserveEvent(OrderTables.from(Lists.newArrayList(주문테이블)),
+                        Lists.newArrayList(1L, 2L, 3L)))
                 .withMessage("비교하는 수와 주문 테이블의 수가 일치하지 않습니다.");
     }
 }

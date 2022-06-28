@@ -2,7 +2,6 @@ package kitchenpos.order.application;
 
 import static kitchenpos.order.domain.OrderStatus.COMPLETION;
 import static kitchenpos.order.domain.OrderStatus.COOKING;
-import static kitchenpos.order.domain.OrderStatus.MEAL;
 import static kitchenpos.utils.DomainFixtureFactory.createOrder;
 import static kitchenpos.utils.DomainFixtureFactory.createOrderLineItem;
 import static kitchenpos.utils.DomainFixtureFactory.createOrderRequest;
@@ -13,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.order.domain.Order;

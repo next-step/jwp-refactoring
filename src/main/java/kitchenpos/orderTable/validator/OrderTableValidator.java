@@ -35,7 +35,6 @@ public class OrderTableValidator {
         }
     }
 
-
     public void validateReserveEvent(OrderTables savedOrderTables, List<Long> orderTableIds) {
         validateOrderTableIds(orderTableIds);
         validateOrderTablesSize(savedOrderTables, orderTableIds.size());

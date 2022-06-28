@@ -16,12 +16,11 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.orderTable.domain.OrderTable;
-import kitchenpos.orderTable.domain.OrderTables;
-import kitchenpos.tableGroup.domain.TableGroup;
 import kitchenpos.orderTable.dto.OrderTableRequest;
-import kitchenpos.tableGroup.dto.TableGroupRequest;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.tableGroup.domain.TableGroup;
+import kitchenpos.tableGroup.dto.TableGroupRequest;
 
 public class DomainFixtureFactory {
     public static Product createProduct(Long id, String name, BigDecimal price) {

@@ -30,6 +30,7 @@ public class MenuGroupService {
     }
 
     public MenuGroup findMenuGroup(long menuGroupId) {
-        return menuGroupRepository.findById(menuGroupId).orElseThrow(() -> new IllegalArgumentException("메뉴그룹을 찾을 수 없습니다."));
+        return menuGroupRepository.findById(menuGroupId)
+                .orElseThrow(() -> new IllegalArgumentException("메뉴그룹을 찾을 수 없습니다."));
     }
 }
