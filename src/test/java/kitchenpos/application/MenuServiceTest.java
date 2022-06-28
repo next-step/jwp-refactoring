@@ -63,7 +63,10 @@ class MenuServiceTest {
 
         Menu createdMenu = menuService.create(오늘의메뉴);
 
-        assertAll(() -> assertThat(createdMenu.getName()).isEqualTo(오늘의메뉴.getName()), () -> assertThat(createdMenu).isNotNull());
+        assertAll(
+                () -> assertThat(createdMenu.getName()).isEqualTo(오늘의메뉴.getName()),
+                () -> assertThat(createdMenu).isNotNull()
+        );
     }
 
     @Test
@@ -108,6 +111,20 @@ class MenuServiceTest {
 
         assertThatThrownBy(() -> menuService.create(신상메뉴))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void 메뉴조회() {
+        given(menuDao.findAll()).willReturn(Arrays.asList(오늘의메뉴));
+        given(menuProductDao.findAllByMenuId(오늘의메뉴.getId()))
+                .willReturn(Arrays.asList(메뉴상품));
+
+        List<Menu> list = menuService.list();
+
+        assertAll(
+                () -> assertThat(list.size()).isEqualTo(1),
+                () -> assertThat(list.get(0).getName()).isEqualTo("오늘의메뉴")
+        );
     }
 
 
