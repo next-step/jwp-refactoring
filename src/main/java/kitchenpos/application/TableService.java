@@ -29,8 +29,7 @@ public class TableService {
 
     @Transactional
     public OrderTable changeEmpty(final Long orderTableId, final boolean empty) {
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+        final OrderTable savedOrderTable = orderTableValidator.findExistsOrderTableById(orderTableId);
         orderTableValidator.checkOrderStatus(orderTableId);
         savedOrderTable.changeEmpty(empty);
         return savedOrderTable;
@@ -38,8 +37,7 @@ public class TableService {
 
     @Transactional
     public OrderTable changeNumberOfGuests(final Long orderTableId, final int numberOfGuests) {
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+        final OrderTable savedOrderTable = orderTableValidator.findExistsOrderTableById(orderTableId);
         savedOrderTable.changeNumberOfGuests(numberOfGuests);
         return savedOrderTable;
     }

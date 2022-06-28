@@ -11,8 +11,6 @@ import java.util.Optional;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
-    boolean existsByOrderTableIdInAndOrderStatusIn(List<Long> orderTableIds, List<String> orderStatuses);
-
     List<Order> findAllByOrderTableId(Long orderTableId);
 
     @Query("select distinct o from Order o join fetch o.orderLineItems")

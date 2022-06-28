@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -39,7 +37,7 @@ class TableServiceTest {
     void setOrderTable() {
         orderTableId = 1L;
         orderTable = new OrderTable(0, false);
-        when(orderTableRepository.findById(orderTableId)).thenReturn(Optional.of(orderTable));
+        when(orderTableValidator.findExistsOrderTableById(orderTableId)).thenReturn(orderTable);
     }
 
     @DisplayName("개별 주문 테이블을 생성할 수 있다")
@@ -81,6 +79,7 @@ class TableServiceTest {
     void orderTable_is_exists() {
         // given
         Long notExistsOrderTableId = 1000L;
+        when(orderTableValidator.findExistsOrderTableById(notExistsOrderTableId)).thenThrow(IllegalArgumentException.class);
 
         // when then
         assertAll(() -> {

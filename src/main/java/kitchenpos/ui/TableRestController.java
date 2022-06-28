@@ -115,7 +115,9 @@ public class TableRestController {
 
         public TableResponse(OrderTable orderTable) {
             id = orderTable.getId();
-            tableGroupId = orderTable.getTableGroupId();
+            if (orderTable.getTableGroup() != null) {
+                tableGroupId = orderTable.getTableGroup().getId();
+            }
             numberOfGuests = orderTable.getNumberOfGuests();
             empty = orderTable.isEmpty();
         }
