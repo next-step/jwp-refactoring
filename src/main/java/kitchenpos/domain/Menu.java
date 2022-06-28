@@ -13,7 +13,7 @@ public class Menu {
     @Embedded
     private Price price;
     private Long menuGroupId;
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<MenuProduct> menuProducts = new ArrayList<>();
 
     protected Menu() {
