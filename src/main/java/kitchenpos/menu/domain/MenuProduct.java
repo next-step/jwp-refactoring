@@ -1,13 +1,6 @@
 package kitchenpos.menu.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.Product;
 
@@ -32,8 +25,8 @@ public class MenuProduct {
 
     public static MenuProduct createMenuProduct(Product product, long quantity) {
         MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setProduct(product);
-        menuProduct.setQuantity(quantity);
+        menuProduct.updateProduct(product);
+        menuProduct.updateQuantity(quantity);
         return menuProduct;
     }
 
@@ -65,11 +58,11 @@ public class MenuProduct {
         this.menu = menu;
     }
 
-    private void setQuantity(long quantity) {
+    private void updateQuantity(long quantity) {
         this.quantity = quantity;
     }
 
-    private void setProduct(Product product) {
+    private void updateProduct(Product product) {
         this.product = product;
     }
 

@@ -23,17 +23,17 @@ public class Menu {
     private MenuGroup menuGroup;
 
     @Embedded
-    private MenuProducts menuProducts = new MenuProducts();
+    private final MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {
     }
 
     public static Menu createMenu(String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         Menu menu = new Menu();
-        menu.setName(name);
-        menu.setPrice(price);
-        menu.setMenuGroup(menuGroup);
-        menu.setMenuProducts(menuProducts);
+        menu.updateName(name);
+        menu.updatePrice(price);
+        menu.addMenuGroup(menuGroup);
+        menu.addMenuProducts(menuProducts);
         validateMenuPrice(price, menu);
         return menu;
     }
@@ -69,19 +69,19 @@ public class Menu {
         return menuProducts.calculateTotalPrice();
     }
 
-    private void setMenuGroup(MenuGroup menuGroup) {
+    private void addMenuGroup(MenuGroup menuGroup) {
         this.menuGroup = menuGroup;
     }
 
-    private void setPrice(Price price) {
+    private void updatePrice(Price price) {
         this.price = price;
     }
 
-    private void setName(String name) {
+    private void updateName(String name) {
         this.name = name;
     }
 
-    private void setMenuProducts(List<MenuProduct> menuProducts) {
+    private void addMenuProducts(List<MenuProduct> menuProducts) {
         this.menuProducts.addAll(this, menuProducts);
     }
 
