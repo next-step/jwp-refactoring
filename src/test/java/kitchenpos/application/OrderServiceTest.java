@@ -85,12 +85,12 @@ class OrderServiceTest {
         메뉴_김치찌개세트.setMenuProducts(Arrays.asList(김치찌개세트_김치찌개, 김치찌개세트_공기밥));
 
         테이블_1 = createOrderTable(1L, null, 4, false);
-        접수된_주문 = createOrder(1L, 테이블_1, OrderStatus.COOKING.name(), LocalDateTime.now());
+        접수된_주문 = createOrder(1L, 테이블_1, OrderStatus.COOKING, LocalDateTime.now());
         접수된주문_김치찌개세트 = createOrderLineItem(1L, 접수된_주문, 메뉴_김치찌개세트, 1);
         접수된_주문.setOrderLineItems(Arrays.asList(접수된주문_김치찌개세트));
 
         테이블_2 = createOrderTable(2L, null, 4, false);
-        완료된_주문 = createOrder(2L, 테이블_2, OrderStatus.COMPLETION.name(), LocalDateTime.now());
+        완료된_주문 = createOrder(2L, 테이블_2, OrderStatus.COMPLETION, LocalDateTime.now());
         완료된주문_김치찌개세트 = createOrderLineItem(2L, 접수된_주문, 메뉴_김치찌개세트, 1);
         완료된_주문.setOrderLineItems(Arrays.asList(완료된주문_김치찌개세트));
 
@@ -204,7 +204,7 @@ class OrderServiceTest {
     @DisplayName("주문의 상태를 업데이트할 수 있다")
     @ParameterizedTest(name = "이전 주문상태: {0}, 새로운 주문상태: {1}")
     @MethodSource("provideParametersForOrderStateUpdate")
-    void 주문_상태_업데이트(String beforeStatus, String afterStatus){
+    void 주문_상태_업데이트(OrderStatus beforeStatus, OrderStatus afterStatus){
         //given
         Order order = createOrder(3L, 테이블_1, beforeStatus, LocalDateTime.now());
         given(orderRepository.findById(anyLong())).willReturn(Optional.of(order));
@@ -219,8 +219,8 @@ class OrderServiceTest {
 
     private static Stream<Arguments> provideParametersForOrderStateUpdate() {
         return Stream.of(
-                Arguments.of(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()),
-                Arguments.of(OrderStatus.MEAL.name(), OrderStatus.COMPLETION.name())
+                Arguments.of(OrderStatus.COOKING, OrderStatus.MEAL),
+                Arguments.of(OrderStatus.MEAL, OrderStatus.COMPLETION)
         );
     }
 
@@ -231,7 +231,7 @@ class OrderServiceTest {
         given(orderRepository.findById(anyLong())).willReturn(Optional.ofNullable(null));
 
         //when
-        OrderStatusRequest status_MEAL = OrderStatusRequest.from(OrderStatus.MEAL.name());
+        OrderStatusRequest status_MEAL = OrderStatusRequest.from(OrderStatus.MEAL);
 
         //then
         assertThrows(IllegalArgumentException.class, () -> orderService.changeOrderStatus(접수된_주문.getId(), status_MEAL));
@@ -244,7 +244,7 @@ class OrderServiceTest {
         given(orderRepository.findById(anyLong())).willReturn(Optional.of(완료된_주문));
 
         //when
-        OrderStatusRequest status_MEAL = OrderStatusRequest.from(OrderStatus.MEAL.name());
+        OrderStatusRequest status_MEAL = OrderStatusRequest.from(OrderStatus.MEAL);
 
         //then
         assertThrows(IllegalArgumentException.class, () -> orderService.changeOrderStatus(완료된_주문.getId(), status_MEAL));

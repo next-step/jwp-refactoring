@@ -100,11 +100,11 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         주문_목록_응답됨(주문_목록_조회);
         주문_목록_포함됨(주문_목록_조회, Arrays.asList(테이블1_주문_등록, 테이블2_주문_등록));
 
-        OrderStatusRequest request_식사중 = OrderStatusRequest.from(OrderStatus.MEAL.name());
+        OrderStatusRequest request_식사중 = OrderStatusRequest.from(OrderStatus.MEAL);
         ExtractableResponse<Response> 주문_업데이트_to_식사중 = 주문_상태_수정_요청(테이블1_주문_등록, request_식사중);
         주문_수정됨(주문_업데이트_to_식사중);
 
-        OrderStatusRequest request_완료 = OrderStatusRequest.from(OrderStatus.MEAL.name());
+        OrderStatusRequest request_완료 = OrderStatusRequest.from(OrderStatus.MEAL);
         ExtractableResponse<Response> 주문_업데이트_to_완료 = 주문_상태_수정_요청(테이블1_주문_등록, request_완료);
         주문_수정됨(주문_업데이트_to_완료);
     }
