@@ -117,6 +117,20 @@ class TableGroupServiceTest {
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
+    @DisplayName("주문 테이블 리스트에 단체 지정이 되지 않은 경우 등록 불가")
+    @Test
+    void createTableGroupAndIsNotTableGroupId() {
+        // given
+        주문테이블1.setTableGroupId(1L);
+        when(orderTableDao.findAllByIdIn(Arrays.asList(주문테이블1.getId(), 주문테이블2.getId())))
+                .thenReturn(Arrays.asList(주문테이블1, 주문테이블2));
+
+        // then
+        assertThatThrownBy(() -> {
+            tableGroupService.create(단체지정1);
+        }).isInstanceOf(IllegalArgumentException.class);
+    }
+
     @DisplayName("단체 지정 해제")
     @Test
     void ungroupTest() {
