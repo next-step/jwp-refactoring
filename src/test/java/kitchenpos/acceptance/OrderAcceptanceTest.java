@@ -6,14 +6,10 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.acceptance.helper.KitchenPosBehaviors;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.product.domain.Product;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.fixture.MenuFixtureFactory;
 import kitchenpos.fixture.MenuProductFixtureFactory;
@@ -21,6 +17,10 @@ import kitchenpos.fixture.OrderFixtureFactory;
 import kitchenpos.fixture.OrderLineItemFixtureFactory;
 import kitchenpos.fixture.OrderTableFixtureFactory;
 import kitchenpos.fixture.TableGroupFixtureFactory;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuDto;
+import kitchenpos.product.domain.Product;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,7 +31,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
 
     Product product;
     MenuGroup menuGroup;
-    Menu menu;
+    MenuDto menuDTO;
     OrderTable orderTable1;
     OrderTable orderTable2;
 
@@ -41,7 +41,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
         product = KitchenPosBehaviors.상품_생성됨("상품1", 10000);
         menuGroup = KitchenPosBehaviors.메뉴그룹_생성됨("메뉴그룹1");
         MenuProduct menuProduct = MenuProductFixtureFactory.createMenuProduct(product.getId(), 1);
-        menu = KitchenPosBehaviors.메뉴_생성됨(
+        menuDTO = KitchenPosBehaviors.메뉴_생성됨(
                 MenuFixtureFactory.createMenu(menuGroup, "강정치킨 한마리", 10000, Lists.newArrayList(menuProduct)));
         orderTable1 = KitchenPosBehaviors.테이블_생성됨(OrderTableFixtureFactory.createEmptyOrderTable());
         orderTable2 = KitchenPosBehaviors.테이블_생성됨(OrderTableFixtureFactory.createEmptyOrderTable());
@@ -89,7 +89,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     private Order 주문을_추가하고_확인한다(Long orderTableId) {
-        OrderLineItem orderLineItem = OrderLineItemFixtureFactory.createOrderLine(menu.getId(), 3);
+        OrderLineItem orderLineItem = OrderLineItemFixtureFactory.createOrderLine(menuDTO.getId(), 3);
         Order order = OrderFixtureFactory.createOrder(orderTableId, Lists.newArrayList(orderLineItem));
 
         ExtractableResponse<Response> createResponse = KitchenPosBehaviors.주문_추가_요청(order);

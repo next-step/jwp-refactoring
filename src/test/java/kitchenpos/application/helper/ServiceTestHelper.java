@@ -5,20 +5,13 @@ import static java.util.stream.Collectors.toList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
-import kitchenpos.menu.application.MenuGroupService;
-import kitchenpos.menu.application.MenuService;
 import kitchenpos.application.OrderService;
-import kitchenpos.product.application.ProductService;
 import kitchenpos.application.TableGroupService;
 import kitchenpos.application.TableService;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.product.domain.Product;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.fixture.MenuFixtureFactory;
 import kitchenpos.fixture.MenuGroupFixtureFactory;
@@ -26,6 +19,14 @@ import kitchenpos.fixture.OrderFixtureFactory;
 import kitchenpos.fixture.OrderTableFixtureFactory;
 import kitchenpos.fixture.ProductFixtureFactory;
 import kitchenpos.fixture.TableGroupFixtureFactory;
+import kitchenpos.menu.application.MenuGroupService;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuDto;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -57,8 +58,9 @@ public class ServiceTestHelper {
         return productService.create(ProductFixtureFactory.createProduct(name, price));
     }
 
-    public Menu 메뉴_생성됨(MenuGroup menuGroup, String menuName, int menuPrice, List<MenuProduct> menuProducts) {
-        return menuService.create(MenuFixtureFactory.createMenu(menuGroup, menuName, menuPrice, menuProducts));
+    public MenuDto 메뉴_생성됨(MenuGroup menuGroup, String menuName, int menuPrice, List<MenuProduct> menuProducts) {
+        Menu menuFixture = MenuFixtureFactory.createMenu(menuGroup, menuName, menuPrice, menuProducts);
+        return menuService.create(MenuDto.of(menuFixture));
     }
 
     public TableGroup 테이블그룹_지정됨(int numberOfTables) {

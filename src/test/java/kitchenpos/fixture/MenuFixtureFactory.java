@@ -11,11 +11,6 @@ public class MenuFixtureFactory {
     }
 
     public static Menu createMenu(MenuGroup menuGroup, String menuName, int menuPrice, List<MenuProduct> menuProducts) {
-        Menu menu = new Menu();
-        menu.setMenuGroupId(menuGroup.getId());
-        menu.setName(menuName);
-        menu.setPrice(new BigDecimal(menuPrice));
-        menu.setMenuProducts(menuProducts);
-        return menu;
+        return new Menu(menuName, new BigDecimal(menuPrice), menuGroup,menuProducts);
     }
 }

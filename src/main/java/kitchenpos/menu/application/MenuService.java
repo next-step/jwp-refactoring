@@ -1,47 +1,50 @@
 package kitchenpos.menu.application;
 
+import static java.util.stream.Collectors.toList;
+
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuProductDao;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.product.domain.Product;
 import kitchenpos.menu.domain.MenuGroupRepository;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProductRepository;
+import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.dto.MenuDto;
+import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MenuService {
-    private final MenuDao menuDao;
+    private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
-    private final MenuProductDao menuProductDao;
+    private final MenuProductRepository menuProductRepository;
     private final ProductRepository productRepository;
 
     public MenuService(
-            final MenuDao menuDao,
+            final MenuRepository menuRepository,
             final MenuGroupRepository menuGroupRepository,
-            final MenuProductDao menuProductDao,
+            final MenuProductRepository menuProductRepository,
             final ProductRepository productRepository
     ) {
-        this.menuDao = menuDao;
+        this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
-        this.menuProductDao = menuProductDao;
+        this.menuProductRepository = menuProductRepository;
         this.productRepository = productRepository;
     }
 
     @Transactional
-    public Menu create(final Menu menu) {
+    public MenuDto create(final MenuDto menuDto) {
+        Menu menu = menuDto.toMenu();
         final BigDecimal price = menu.getPrice();
 
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException();
         }
 
-        if (!menuGroupRepository.existsById(menu.getMenuGroupId())) {
+        if (!menuGroupRepository.existsById(menu.getMenuGroup().getId())) {
             throw new IllegalArgumentException();
         }
 
@@ -58,26 +61,11 @@ public class MenuService {
             throw new IllegalArgumentException();
         }
 
-        final Menu savedMenu = menuDao.save(menu);
-
-        final Long menuId = savedMenu.getId();
-        final List<MenuProduct> savedMenuProducts = new ArrayList<>();
-        for (final MenuProduct menuProduct : menuProducts) {
-            menuProduct.setMenuId(menuId);
-            savedMenuProducts.add(menuProductDao.save(menuProduct));
-        }
-        savedMenu.setMenuProducts(savedMenuProducts);
-
-        return savedMenu;
+        return MenuDto.of(menuRepository.save(menu));
     }
 
-    public List<Menu> list() {
-        final List<Menu> menus = menuDao.findAll();
-
-        for (final Menu menu : menus) {
-            menu.setMenuProducts(menuProductDao.findAllByMenuId(menu.getId()));
-        }
-
-        return menus;
+    public List<MenuDto> list() {
+        List<Menu> menus = menuRepository.findAll();
+        return menus.stream().map(MenuDto::of).collect(toList());
     }
 }

@@ -8,12 +8,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.util.List;
 import kitchenpos.ServiceTest;
 import kitchenpos.application.helper.ServiceTestHelper;
+import kitchenpos.fixture.MenuProductFixtureFactory;
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuDto;
+import kitchenpos.menu.dto.MenuProductDto;
 import kitchenpos.product.domain.Product;
-import kitchenpos.fixture.MenuProductFixtureFactory;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -44,16 +45,16 @@ class MenuServiceTest extends ServiceTest {
     void 메뉴그룹에_메뉴추가() {
         String menuName = "메뉴1";
         int menuPrice = 5000;
-        Menu savedMenu = 테스트_메뉴_생성(menuGroup, menuName, menuPrice);
+        MenuDto savedMenu = 테스트_메뉴_생성(menuGroup, menuName, menuPrice);
 
-        assertThat(savedMenu.getMenuGroupId()).isEqualTo(menuGroup.getId());
+        assertThat(savedMenu.getMenuGroup().getId()).isEqualTo(menuGroup.getId());
         assertThat(savedMenu.getId()).isNotNull();
         assertThat(savedMenu.getName()).isEqualTo(menuName);
         assertThat(savedMenu.getPrice().intValue()).isEqualTo(menuPrice);
 
-        List<MenuProduct> menuProducts = savedMenu.getMenuProducts();
+        List<MenuProductDto> menuProducts = savedMenu.getMenuProductDtos();
         List<Long> menuProductIds = menuProducts.stream()
-                .map(MenuProduct::getProductId)
+                .map(MenuProductDto::getProductId)
                 .collect(toList());
         assertThat(menuProducts).hasSize(2);
         assertThat(menuProductIds).containsExactlyInAnyOrder(product1.getId(), product2.getId());
@@ -91,11 +92,11 @@ class MenuServiceTest extends ServiceTest {
     void 메뉴목록_조회() {
         테스트_메뉴_생성(menuGroup, "menu1", 6000);
         테스트_메뉴_생성(menuGroup, "menu2", 5000);
-        List<Menu> menus = menuService.list();
+        List<MenuDto> menus = menuService.list();
         assertThat(menus).hasSize(2);
     }
 
-    private Menu 테스트_메뉴_생성(MenuGroup menuGroup, String menuName, int menuPrice) {
+    private MenuDto 테스트_메뉴_생성(MenuGroup menuGroup, String menuName, int menuPrice) {
         MenuProduct menuProduct1 = MenuProductFixtureFactory.createMenuProduct(product1.getId(), 4);
         MenuProduct menuProduct2 = MenuProductFixtureFactory.createMenuProduct(product2.getId(), 1);
         return serviceTestHelper.메뉴_생성됨(menuGroup, menuName, menuPrice, Lists.newArrayList(menuProduct1, menuProduct2));

@@ -7,12 +7,13 @@ import io.restassured.response.Response;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.acceptance.helper.KitchenPosBehaviors;
+import kitchenpos.fixture.MenuFixtureFactory;
+import kitchenpos.fixture.MenuProductFixtureFactory;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuDto;
 import kitchenpos.product.domain.Product;
-import kitchenpos.fixture.MenuFixtureFactory;
-import kitchenpos.fixture.MenuProductFixtureFactory;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,7 +38,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createResponse = KitchenPosBehaviors.메뉴_생성_요청(menu);
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
-        List<Menu> menus = KitchenPosBehaviors.메뉴_목록조회();
+        List<MenuDto> menus = KitchenPosBehaviors.메뉴_목록조회();
         assertThat(menus).hasSize(1);
     }
 }

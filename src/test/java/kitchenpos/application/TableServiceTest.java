@@ -6,17 +6,17 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import java.util.List;
 import kitchenpos.ServiceTest;
 import kitchenpos.application.helper.ServiceTestHelper;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.product.domain.Product;
 import kitchenpos.fixture.MenuProductFixtureFactory;
 import kitchenpos.fixture.OrderLineItemFixtureFactory;
 import kitchenpos.fixture.OrderTableFixtureFactory;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuDto;
+import kitchenpos.product.domain.Product;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -146,7 +146,7 @@ class TableServiceTest extends ServiceTest {
         MenuGroup menuGroup = serviceTestHelper.메뉴그룹_생성됨("메뉴그룹1");
         Product product1 = serviceTestHelper.상품_생성됨("상품1", 1000);
         MenuProduct menuProduct = MenuProductFixtureFactory.createMenuProduct(product1.getId(), 4);
-        Menu menu = serviceTestHelper.메뉴_생성됨(menuGroup, "메뉴1", 4000, Lists.newArrayList(menuProduct));
+        MenuDto menu = serviceTestHelper.메뉴_생성됨(menuGroup, "메뉴1", 4000, Lists.newArrayList(menuProduct));
         OrderLineItem orderLineItem = OrderLineItemFixtureFactory.createOrderLine(menu.getId(), 3);
         return serviceTestHelper.주문_생성됨(tableId, Lists.newArrayList(orderLineItem));
     }

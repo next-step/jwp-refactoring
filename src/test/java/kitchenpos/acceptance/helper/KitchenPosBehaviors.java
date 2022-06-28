@@ -7,12 +7,13 @@ import io.restassured.response.Response;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.product.domain.Product;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuDto;
+import kitchenpos.product.domain.Product;
 
 public class KitchenPosBehaviors {
     private KitchenPosBehaviors() {
@@ -73,15 +74,16 @@ public class KitchenPosBehaviors {
     }
 
     public static ExtractableResponse<Response> 메뉴_생성_요청(Menu menu) {
+        MenuDto param = MenuDto.of(menu);
         return RestAssured
                 .given().contentType(ContentType.JSON).log().all()
-                .when().body(menu).post("/api/menus")
+                .when().body(param).post("/api/menus")
                 .then().log().all()
                 .extract();
     }
 
-    public static Menu 메뉴_생성됨(Menu menu) {
-        return 메뉴_생성_요청(menu).as(Menu.class);
+    public static MenuDto 메뉴_생성됨(Menu menu) {
+        return 메뉴_생성_요청(menu).as(MenuDto.class);
     }
 
     public static ExtractableResponse<Response> 메뉴_목록조회_요청() {
@@ -92,8 +94,8 @@ public class KitchenPosBehaviors {
                 .extract();
     }
 
-    public static List<Menu> 메뉴_목록조회() {
-        return 메뉴_목록조회_요청().jsonPath().getList("$", Menu.class);
+    public static List<MenuDto> 메뉴_목록조회() {
+        return 메뉴_목록조회_요청().jsonPath().getList("$", MenuDto.class);
     }
 
     public static ExtractableResponse<Response> 테이블_생성_요청(OrderTable orderTable) {
