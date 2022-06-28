@@ -93,7 +93,7 @@ class OrderServiceTest {
     @DisplayName("주문 목록 조회 테스트")
     @Test
     void list() {
-        given(orderRepository.findAll()).willReturn(Lists.newArrayList(주문));
+        given(orderRepository.findAllWithFetchJoin()).willReturn(Lists.newArrayList(주문));
         List<OrderResponse> orders = orderService.list();
         assertThat(orders).containsExactlyElementsOf(Lists.newArrayList(OrderResponse.from(주문)));
     }

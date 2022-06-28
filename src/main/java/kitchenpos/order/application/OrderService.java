@@ -28,7 +28,7 @@ public class OrderService {
     }
 
     public List<OrderResponse> list() {
-        final List<Order> orders = orderRepository.findAll();
+        final List<Order> orders = orderRepository.findAllWithFetchJoin();
         return orders.stream()
                 .map(OrderResponse::from)
                 .collect(Collectors.toList());

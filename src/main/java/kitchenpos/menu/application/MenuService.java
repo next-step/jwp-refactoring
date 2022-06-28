@@ -31,7 +31,7 @@ public class MenuService {
     }
 
     public List<MenuResponse> list() {
-        final List<Menu> menus = menuRepository.findAll();
+        final List<Menu> menus = menuRepository.findAllWithFetchJoin();
         return menus.stream()
                 .map(MenuResponse::from)
                 .collect(Collectors.toList());

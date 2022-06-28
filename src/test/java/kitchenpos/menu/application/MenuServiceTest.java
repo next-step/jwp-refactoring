@@ -113,7 +113,7 @@ class MenuServiceTest {
     @DisplayName("메뉴 목록 조회 테스트")
     @Test
     void list() {
-        given(menuRepository.findAll()).willReturn(Lists.newArrayList(양념치킨));
+        given(menuRepository.findAllWithFetchJoin()).willReturn(Lists.newArrayList(양념치킨));
         List<MenuResponse> menus = menuService.list();
         assertThat(menus).containsExactlyElementsOf(Lists.newArrayList(양념치킨).stream()
                 .map(MenuResponse::from)
