@@ -1,11 +1,11 @@
-package kitchenpos.table.application;
+package kitchenpos.order.application;
 
 import java.util.Arrays;
 import kitchenpos.core.exception.CannotUpdateException;
 import kitchenpos.core.exception.ExceptionType;
-import kitchenpos.order.application.OrderTableService;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.table.application.OrderTableService;
 import kitchenpos.table.domain.OrderTable;
 import org.springframework.stereotype.Component;
 

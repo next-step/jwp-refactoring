@@ -4,7 +4,6 @@ import java.util.stream.Collectors;
 import kitchenpos.core.exception.BadRequestException;
 import kitchenpos.core.exception.ExceptionType;
 import kitchenpos.core.exception.NotFoundException;
-import kitchenpos.order.application.OrderTableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.request.OrderTableRequest;
@@ -73,13 +72,5 @@ public class TableService {
 
     public List<OrderTable> findOrderTablesByIdIn(List<Long> orderTableIds) {
         return orderTableRepository.findAllByIdIn(orderTableIds);
-    }
-
-    public List<OrderTable> findOrderTablesByGroupId(Long tableGroupId) {
-        return orderTableRepository.findAllByTableGroupId(tableGroupId);
-    }
-
-    public void mapIntoGroupId(List<OrderTable> orderTables, Long tableGroupId) {
-        orderTables.forEach(it -> it.mapIntoGroup(tableGroupId));
     }
 }
