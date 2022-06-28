@@ -7,9 +7,8 @@ import static org.mockito.BDDMockito.given;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.product.application.ProductService;
-import kitchenpos.product.dao.ProductDao;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class ProductServiceTest {
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
     @InjectMocks
     private ProductService productService;
 
@@ -37,7 +36,7 @@ public class ProductServiceTest {
     @Test
     void create() {
         //given
-        given(productDao.save(any())).willReturn(product);
+        given(productRepository.save(any())).willReturn(product);
 
         //when
         Product createdProduct = productService.create(product);
@@ -63,7 +62,7 @@ public class ProductServiceTest {
     @Test
     void list() {
         //given
-        given(productDao.findAll()).willReturn(Arrays.asList(product, 상품_생성(2L, "파스타", 15000)));
+        given(productRepository.findAll()).willReturn(Arrays.asList(product, 상품_생성(2L, "파스타", 15000)));
 
         //when
         List<Product> products = productService.list();

@@ -1,16 +1,17 @@
 package kitchenpos.table.application;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.order.dao.OrderDao;
-import kitchenpos.table.dao.OrderTableDao;
-import kitchenpos.table.dao.TableGroupDao;
+import kitchenpos.order.domain.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.domain.repository.OrderTableRepository;
+import kitchenpos.table.domain.repository.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,11 +23,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
     @InjectMocks
     private TableGroupService tableGroupService;
 
@@ -45,8 +46,8 @@ class TableGroupServiceTest {
     @Test
     void create() {
         //given
-        given(orderTableDao.findAllByIdIn(any())).willReturn(Arrays.asList(orderTable_1, orderTable_2));
-        given(tableGroupDao.save(any())).willReturn(tableGroup);
+        given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(orderTable_1, orderTable_2));
+        given(tableGroupRepository.save(any())).willReturn(tableGroup);
 
         //when
         TableGroup createdTableGroup = tableGroupService.create(tableGroup);
@@ -71,7 +72,7 @@ class TableGroupServiceTest {
     @Test
     void create_invalidNotExistsOrderTable() {
         //given
-        given(orderTableDao.findAllByIdIn(any())).willReturn(Arrays.asList(orderTable_1));
+        given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(orderTable_1));
 
         //when & then
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
@@ -83,7 +84,7 @@ class TableGroupServiceTest {
     void create_invalidEmptyOrderTable() {
         //given
         orderTable_1.setEmpty(false);
-        given(orderTableDao.findAllByIdIn(any())).willReturn(Arrays.asList(orderTable_1, orderTable_2));
+        given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(orderTable_1, orderTable_2));
 
         //when & then
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
@@ -95,7 +96,7 @@ class TableGroupServiceTest {
     void create_invalidOtherGroup() {
         //given
         orderTable_1.setTableGroupId(1L);
-        given(orderTableDao.findAllByIdIn(any())).willReturn(Arrays.asList(orderTable_1, orderTable_2));
+        given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(orderTable_1, orderTable_2));
 
         //when & then
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
@@ -106,9 +107,9 @@ class TableGroupServiceTest {
     @Test
     void ungroup() {
         //given
-        given(orderTableDao.findAllByTableGroupId(any())).willReturn(Arrays.asList(orderTable_1, orderTable_2));
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(false);
-        given(orderTableDao.save(any())).willReturn(orderTable_1);
+        given(orderTableRepository.findAllByTableGroupId(any())).willReturn(Arrays.asList(orderTable_1, orderTable_2));
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(false);
+        given(orderTableRepository.save(any())).willReturn(orderTable_1);
 
         //when
         tableGroupService.ungroup(tableGroup.getId());
@@ -121,8 +122,8 @@ class TableGroupServiceTest {
     @Test
     void ungroup_invalidOrderStatus() {
         //given
-        given(orderTableDao.findAllByTableGroupId(any())).willReturn(Arrays.asList(orderTable_1, orderTable_2));
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(true);
+        given(orderTableRepository.findAllByTableGroupId(any())).willReturn(Arrays.asList(orderTable_1, orderTable_2));
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(true);
 
         //when & then
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))

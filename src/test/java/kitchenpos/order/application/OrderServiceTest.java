@@ -10,12 +10,11 @@ import java.util.List;
 import java.util.Optional;
 import kitchenpos.menu.application.MenuGroupServiceTest;
 import kitchenpos.menu.application.MenuServiceTest;
-import kitchenpos.menu.dao.MenuDao;
-import kitchenpos.order.dao.OrderDao;
-import kitchenpos.order.dao.OrderLineItemDao;
+import kitchenpos.menu.domain.repository.MenuRepository;
+import kitchenpos.order.domain.repository.OrderLineItemRepository;
+import kitchenpos.order.domain.repository.OrderRepository;
 import kitchenpos.product.application.ProductServiceTest;
 import kitchenpos.table.application.TableServiceTest;
-import kitchenpos.table.dao.OrderTableDao;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
@@ -23,6 +22,7 @@ import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.product.domain.Product;
+import kitchenpos.table.domain.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,13 +34,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
-    private OrderLineItemDao orderLineItemDao;
+    private OrderLineItemRepository orderLineItemRepository;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
     @InjectMocks
     private OrderService orderService;
 
@@ -67,9 +67,9 @@ class OrderServiceTest {
     @Test
     void create() {
         //given
-        given(menuDao.countByIdIn(any())).willReturn(menu.getId());
-        given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
-        given(orderDao.save(any())).willReturn(order);
+        given(menuRepository.countByIdIn(any())).willReturn(menu.getId());
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
+        given(orderRepository.save(any())).willReturn(order);
 
         //when
         Order createdOrder = orderService.create(order);
@@ -94,7 +94,7 @@ class OrderServiceTest {
     @Test
     void create_invalidNotExistsMenu() {
         //given
-        given(menuDao.countByIdIn(any())).willReturn(0L);
+        given(menuRepository.countByIdIn(any())).willReturn(0L);
 
         //when & then
         assertThatThrownBy(() -> orderService.create(order))
@@ -105,8 +105,8 @@ class OrderServiceTest {
     @Test
     void create_invalidNotExistsTable() {
         //given
-        given(menuDao.countByIdIn(any())).willReturn(menu.getId());
-        given(orderTableDao.findById(any())).willReturn(Optional.ofNullable(null));
+        given(menuRepository.countByIdIn(any())).willReturn(menu.getId());
+        given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(null));
 
         //when & then
         assertThatThrownBy(() -> orderService.create(order))
@@ -118,8 +118,8 @@ class OrderServiceTest {
     void create_invalidEmptyTable() {
         //given
         orderTable.setEmpty(true);
-        given(menuDao.countByIdIn(any())).willReturn(menu.getId());
-        given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
+        given(menuRepository.countByIdIn(any())).willReturn(menu.getId());
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
 
         //when & then
         assertThatThrownBy(() -> orderService.create(order))
@@ -130,7 +130,7 @@ class OrderServiceTest {
     @Test
     void list() {
         //given
-        given(orderDao.findAll()).willReturn(Arrays.asList(order));
+        given(orderRepository.findAll()).willReturn(Arrays.asList(order));
 
         //when
         List<Order> orders = orderService.list();
@@ -144,9 +144,9 @@ class OrderServiceTest {
     @Test
     void changeOrderStatus() {
         //given
-        given(orderDao.findById(any())).willReturn(Optional.of(order));
-        given(orderDao.save(any())).willReturn(order);
-        given(orderLineItemDao.findAllByOrderId(any())).willReturn(orderLineItems);
+        given(orderRepository.findById(any())).willReturn(Optional.of(order));
+        given(orderRepository.save(any())).willReturn(order);
+        given(orderLineItemRepository.findAllByOrderId(any())).willReturn(orderLineItems);
         Order newOrder = new Order();
         newOrder.setOrderStatus(OrderStatus.COOKING.name());
 
@@ -163,7 +163,7 @@ class OrderServiceTest {
     void changeOrderStatus_invalidNotExistsOrder() {
         //given
         order.setOrderStatus(OrderStatus.COMPLETION.name());
-        given(orderDao.findById(any())).willReturn(Optional.of(order));
+        given(orderRepository.findById(any())).willReturn(Optional.of(order));
 
         //when & then
         assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), new Order()))
@@ -174,7 +174,7 @@ class OrderServiceTest {
     @Test
     void changeOrderStatus_invalidCompletion() {
         //given
-        given(orderDao.findById(any())).willReturn(Optional.ofNullable(null));
+        given(orderRepository.findById(any())).willReturn(Optional.ofNullable(null));
 
         //when & then
         assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), new Order()))
