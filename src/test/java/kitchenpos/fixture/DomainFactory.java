@@ -12,6 +12,7 @@ import kitchenpos.domain.MenuProducts;
 import kitchenpos.domain.NumberOfGuests;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
@@ -57,25 +58,14 @@ public class DomainFactory {
         return orderTable;
     }
 
-    public static Order createOrder(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime,
+    public static Order createOrder(Long id, OrderTable orderTable, String orderStatus, LocalDateTime orderedTime,
                                     List<OrderLineItem> orderLineItems) {
-        Order order = new Order();
-        order.setId(id);
-        order.setOrderTableId(orderTableId);
-        order.setOrderStatus(orderStatus);
-        order.setOrderedTime(orderedTime);
-        order.setOrderLineItems(orderLineItems);
-
+        Order order = new Order(id, orderTable, OrderStatus.valueOf(orderStatus), orderedTime, orderLineItems);
         return order;
     }
 
-    public static OrderLineItem createOrderLineItem(Long seq, Long orderId, Long menuId, long quantity) {
-        OrderLineItem orderLineItem = new OrderLineItem();
-        orderLineItem.setSeq(seq);
-        orderLineItem.setOrderId(orderId);
-        orderLineItem.setMenuId(menuId);
-        orderLineItem.setQuantity(quantity);
-
+    public static OrderLineItem createOrderLineItem(Long seq, Order order, Long menuId, long quantity) {
+        OrderLineItem orderLineItem = new OrderLineItem(seq, order, menuId, quantity);
         return orderLineItem;
     }
 

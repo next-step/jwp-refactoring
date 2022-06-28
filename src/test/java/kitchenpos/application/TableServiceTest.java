@@ -15,6 +15,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
+import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
@@ -30,7 +31,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
     private OrderTableRepository orderTableRepository;
     @InjectMocks
@@ -95,8 +96,8 @@ class TableServiceTest {
     void 빈_상태_변경_주문_상태_계산완료_아닌경우_예외() {
         // given
         given(orderTableRepository.findById(orderTable.getId())).willReturn(Optional.ofNullable(orderTable));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(orderTable.getId(),
-                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(true);
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTable.getId(),
+                Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).willReturn(true);
 
         // when, then
         assertThatThrownBy(
@@ -108,8 +109,8 @@ class TableServiceTest {
     void 빈_상태_변경() {
         // given
         given(orderTableRepository.findById(orderTable.getId())).willReturn(Optional.ofNullable(orderTable));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(orderTable.getId(),
-                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(false);
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTable.getId(),
+                Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).willReturn(false);
         given(orderTableRepository.save(orderTable)).willReturn(orderTable);
 
         // when

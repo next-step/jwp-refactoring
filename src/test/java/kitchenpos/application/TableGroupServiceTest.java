@@ -11,6 +11,7 @@ import static org.mockito.BDDMockito.given;
 import java.util.Arrays;
 import java.util.Optional;
 import kitchenpos.dao.OrderDao;
+import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
@@ -28,7 +29,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
@@ -118,9 +119,9 @@ class TableGroupServiceTest {
         // given
         TableGroup 단체지정 = new TableGroup(1L, null, Arrays.asList(주문테이블1, 주문테이블2));
         given(tableGroupRepository.findById(단체지정.getId())).willReturn(Optional.of(단체지정));
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(
                 Arrays.asList(주문테이블1.getId(), 주문테이블2.getId()),
-                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())
+                Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)
         )).willReturn(true);
 
         // when, then
@@ -134,9 +135,9 @@ class TableGroupServiceTest {
         // given
         TableGroup 단체지정 = new TableGroup(1L, null, Arrays.asList(주문테이블1, 주문테이블2));
         given(tableGroupRepository.findById(단체지정.getId())).willReturn(Optional.of(단체지정));
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(
                 Arrays.asList(주문테이블1.getId(), 주문테이블2.getId()),
-                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())
+                Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)
         )).willReturn(false);
 
         tableGroupService.ungroup(단체지정.getId());
