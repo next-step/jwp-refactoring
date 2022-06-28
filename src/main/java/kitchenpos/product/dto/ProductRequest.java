@@ -1,15 +1,18 @@
 package kitchenpos.product.dto;
 
-import javax.validation.constraints.Min;
+import static kitchenpos.common.ValidationMessage.NOT_EMPTY;
+import static kitchenpos.common.ValidationMessage.POSITIVE_OR_ZERO;
+
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.PositiveOrZero;
 import kitchenpos.menu.domain.Price;
 import kitchenpos.product.domain.Product;
 
 public class ProductRequest {
-    @NotEmpty
+    @NotEmpty(message = NOT_EMPTY)
     private String name;
 
-    @Min(0)
+    @PositiveOrZero(message = POSITIVE_OR_ZERO)
     private Long price;
 
     public ProductRequest() {

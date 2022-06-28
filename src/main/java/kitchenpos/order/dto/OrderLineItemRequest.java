@@ -1,11 +1,15 @@
 package kitchenpos.order.dto;
 
+import static kitchenpos.common.ValidationMessage.POSITIVE;
+
 import javax.validation.constraints.Positive;
+import kitchenpos.common.ValidationMessage;
 
 public class OrderLineItemRequest {
+    @Positive(message = POSITIVE)
     private Long menuId;
 
-    @Positive
+    @Positive(message = POSITIVE)
     private Long quantity;
 
     public OrderLineItemRequest() {

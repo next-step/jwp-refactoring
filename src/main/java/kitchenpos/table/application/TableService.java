@@ -1,6 +1,6 @@
 package kitchenpos.table.application;
 
-import static kitchenpos.exception.ErrorMessage.NOT_EXIST_ORDER_TABLE;
+import static kitchenpos.common.ErrorMessage.NOT_EXIST_ORDER_TABLE;
 
 import java.util.List;
 import java.util.stream.Collectors;

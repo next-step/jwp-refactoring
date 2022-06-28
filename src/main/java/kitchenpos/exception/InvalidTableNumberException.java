@@ -1,6 +1,6 @@
 package kitchenpos.exception;
 
-import static kitchenpos.exception.ErrorMessage.INVALID_TABLE_NUMBER;
+import static kitchenpos.common.ErrorMessage.INVALID_TABLE_NUMBER;
 
 public class InvalidTableNumberException extends IllegalArgumentException {
     public InvalidTableNumberException() {

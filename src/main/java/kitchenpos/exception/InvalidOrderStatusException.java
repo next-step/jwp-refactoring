@@ -1,6 +1,6 @@
 package kitchenpos.exception;
 
-import static kitchenpos.exception.ErrorMessage.NOT_CHANGE_COMPLETION;
+import static kitchenpos.common.ErrorMessage.NOT_CHANGE_COMPLETION;
 
 public class InvalidOrderStatusException extends IllegalArgumentException {
     public InvalidOrderStatusException() {

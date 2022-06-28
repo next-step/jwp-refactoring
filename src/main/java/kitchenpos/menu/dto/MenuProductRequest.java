@@ -1,11 +1,14 @@
 package kitchenpos.menu.dto;
 
+import static kitchenpos.common.ValidationMessage.POSITIVE;
+
 import javax.validation.constraints.Positive;
 
 public class MenuProductRequest {
+    @Positive(message = POSITIVE)
     private Long productId;
 
-    @Positive
+    @Positive(message = POSITIVE)
     private long quantity;
 
     public MenuProductRequest() {

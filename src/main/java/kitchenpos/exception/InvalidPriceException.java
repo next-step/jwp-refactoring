@@ -1,6 +1,6 @@
 package kitchenpos.exception;
 
-import static kitchenpos.exception.ErrorMessage.INVALID_PRICE;
+import static kitchenpos.common.ErrorMessage.INVALID_PRICE;
 
 public class InvalidPriceException extends IllegalArgumentException {
 

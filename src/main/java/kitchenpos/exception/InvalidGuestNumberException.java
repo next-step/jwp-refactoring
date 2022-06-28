@@ -1,6 +1,6 @@
 package kitchenpos.exception;
 
-import static kitchenpos.exception.ErrorMessage.INVALID_GUEST_NUMBER;
+import static kitchenpos.common.ErrorMessage.INVALID_GUEST_NUMBER;
 
 public class InvalidGuestNumberException extends IllegalArgumentException {
     public InvalidGuestNumberException() {

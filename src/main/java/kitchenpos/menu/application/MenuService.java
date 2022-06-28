@@ -1,7 +1,7 @@
 package kitchenpos.menu.application;
 
-import static kitchenpos.exception.ErrorMessage.NOT_EXIST_MENU_GROUP;
-import static kitchenpos.exception.ErrorMessage.NOT_EXIST_PRODUCT;
+import static kitchenpos.common.ErrorMessage.NOT_EXIST_MENU_GROUP;
+import static kitchenpos.common.ErrorMessage.NOT_EXIST_PRODUCT;
 
 import java.util.List;
 import java.util.stream.Collectors;

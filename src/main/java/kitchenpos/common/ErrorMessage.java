@@ -1,4 +1,4 @@
-package kitchenpos.exception;
+package kitchenpos.common;
 
 public final class ErrorMessage {
     public static final String EMPTY_TABLE = "비어있는 테이블입니다.";

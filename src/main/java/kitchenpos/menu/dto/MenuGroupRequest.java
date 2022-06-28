@@ -1,10 +1,12 @@
 package kitchenpos.menu.dto;
 
+import static kitchenpos.common.ValidationMessage.NOT_EMPTY;
+
 import javax.validation.constraints.NotEmpty;
 import kitchenpos.menu.domain.MenuGroup;
 
 public class MenuGroupRequest {
-    @NotEmpty
+    @NotEmpty(message = NOT_EMPTY)
     private String name;
 
     public MenuGroupRequest() {
