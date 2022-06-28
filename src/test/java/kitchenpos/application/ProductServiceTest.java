@@ -52,19 +52,6 @@ class ProductServiceTest {
         assertThat(savedProduct.getId()).isEqualTo(치킨.getId());
     }
 
-
-    @DisplayName("상품의 가격은 0 이상이다")
-    @Test
-    void 상품_가격_검증(){
-        //given
-        Product invalidProduct = createProduct("치킨", -15000);
-
-        //then
-       assertThrows(IllegalArgumentException.class, () -> productService.create(
-               ProductRequest.of(invalidProduct.getName(), invalidProduct.getPrice())
-       ));
-    }
-
     @DisplayName("상품의 목록을 조회할 수 있다")
     @Test
     void 상품_목록_조회() {

@@ -9,20 +9,21 @@ public class Product {
     private Long id;
     @Column(unique = true)
     private String name;
-    private int price;
+    @Embedded
+    private ProductPrice price;
 
     public Product() {
     }
 
     public Product(String name, int price) {
         this.name = name;
-        this.price = price;
+        this.price = ProductPrice.from(price);
     }
 
     public Product(Long id, String name, int price) {
         this.id = id;
         this.name = name;
-        this.price = price;
+        this.price = ProductPrice.from(price);
     }
 
     public Long getId() {
@@ -42,10 +43,10 @@ public class Product {
     }
 
     public int getPrice() {
-        return price;
+        return price.getValue();
     }
 
     public void setPrice(final int price) {
-        this.price = price;
+        this.price = ProductPrice.from(price);
     }
 }
