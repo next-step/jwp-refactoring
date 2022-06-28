@@ -36,6 +36,6 @@ public class MenuAssertionHelper {
     }
 
     public static void 메뉴_등록_에러발생(ExtractableResponse<Response> 등록결과) {
-        assertThat(등록결과.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(등록결과.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
