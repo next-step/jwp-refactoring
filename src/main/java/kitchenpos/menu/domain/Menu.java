@@ -1,52 +1,86 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.common.domain.Name;
+import kitchenpos.common.domain.Price;
+import kitchenpos.menugroup.domain.MenuGroup;
+
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 
+@Entity
 public class Menu {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private BigDecimal price;
-    private Long menuGroupId;
-    private List<MenuProduct> menuProducts;
+
+    @Embedded
+    private Name name;
+
+    @Embedded
+    private Price price;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    private MenuGroup menuGroup;
+
+    @Embedded
+    private MenuProducts menuProducts = new MenuProducts();
+
+    protected Menu() {
+    }
+
+    private Menu(Long id, Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        this(name, price, menuGroup, menuProducts);
+        this.id = id;
+    }
+
+    public Menu(Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        validateExpensivePrice(price, menuProducts);
+        this.name = name;
+        this.price = price;
+        this.menuGroup = menuGroup;
+        addMenuProducts(menuProducts);
+    }
+
+    public static Menu of(Long id, Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        return new Menu(id, name, price, menuGroup, menuProducts);
+    }
+
+    public static Menu of(Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        return new Menu(name, price, menuGroup, menuProducts);
+    }
+
+    private void validateExpensivePrice(Price price, MenuProducts menuProducts) {
+        if (price.isExpensive(menuProducts.sumTotalPrice())) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private void addMenuProducts(MenuProducts menuProducts) {
+        menuProducts.getMenuProducts().forEach(menuProduct -> {
+            menuProduct.toMenu(this);
+            this.menuProducts.add(menuProduct);
+        });
+    }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public String getName() {
-        return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
+        return name.getName();
     }
 
     public BigDecimal getPrice() {
-        return price;
+        return price.getPrice();
     }
 
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
-    }
-
-    public Long getMenuGroupId() {
-        return menuGroupId;
-    }
-
-    public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
+    public MenuGroup getMenuGroup() {
+        return menuGroup;
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
-    }
-
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
+        return menuProducts.getMenuProducts();
     }
 }
