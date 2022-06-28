@@ -21,6 +21,10 @@ public class TableGroup {
         return id;
     }
 
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
     public void createdDate(final LocalDateTime createdDate) {
         this.createdDate = createdDate;
     }

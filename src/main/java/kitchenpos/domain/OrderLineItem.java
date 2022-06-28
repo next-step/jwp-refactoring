@@ -18,6 +18,10 @@ public class OrderLineItem {
         this.quantity = quantity;
     }
 
+    public Long getSeq() {
+        return seq;
+    }
+
     public Long getOrderId() {
         return orderId;
     }
