@@ -2,8 +2,6 @@ package kitchenpos.ui;
 
 import kitchenpos.application.ProductService;
 import kitchenpos.domain.Product;
-import kitchenpos.dto.ProductRequest;
-import kitchenpos.dto.ProductResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,5 +34,66 @@ public class ProductRestController {
         return ResponseEntity.ok()
                 .body(productService.list().stream().map(ProductResponse::new).collect(Collectors.toList()))
                 ;
+    }
+
+    static class ProductRequest {
+        private String name;
+        private long price;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public long getPrice() {
+            return price;
+        }
+
+        public void setPrice(long price) {
+            this.price = price;
+        }
+
+        public Product toProduct() {
+            return new Product(name, price);
+        }
+    }
+
+    static class ProductResponse {
+        private Long id;
+        private String name;
+        private long price;
+
+        public ProductResponse(Product created) {
+            this.id = created.getId();
+            this.name = created.getName();
+            this.price = created.getPrice().getValue();
+        }
+
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public long getPrice() {
+            return price;
+        }
+
+        public void setPrice(long price) {
+            this.price = price;
+        }
     }
 }

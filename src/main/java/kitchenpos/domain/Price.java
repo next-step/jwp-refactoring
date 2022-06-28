@@ -2,48 +2,47 @@ package kitchenpos.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import java.math.BigDecimal;
 import java.util.Objects;
 
 @Embeddable
 public class Price implements Comparable<Price> {
     public static final Price ZERO = Price.valueOf(0);
     @Column(name = "price")
-    private BigDecimal value;
+    private long value;
 
     protected Price() {
     }
 
-    public Price(BigDecimal value) {
+    public Price(long value) {
         if (isInvalid(value)) {
             throw new IllegalArgumentException();
         }
         this.value = value;
     }
 
-    public static Price valueOf(double value) {
-        return new Price(BigDecimal.valueOf(value));
+    public static Price valueOf(long value) {
+        return new Price(value);
     }
 
-    private boolean isInvalid(BigDecimal value) {
-        return Objects.isNull(value) || value.compareTo(BigDecimal.ZERO) < 0;
+    private boolean isInvalid(long value) {
+        return value < 0;
     }
 
     public Price multiply(Price o) {
-        return new Price(this.value.multiply(o.value));
+        return new Price(this.value * o.value);
     }
 
     public Price add(Price o) {
-        return new Price(this.value.add(o.value));
+        return new Price(this.value + o.value);
     }
 
-    public BigDecimal getValue() {
+    public long getValue() {
         return value;
     }
 
     @Override
     public int compareTo(Price o) {
-        return this.value.compareTo(o.value);
+        return (int) (this.value - o.value);
     }
 
     @Override
@@ -51,7 +50,7 @@ public class Price implements Comparable<Price> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Price price = (Price) o;
-        return Objects.equals(value, price.value);
+        return value == price.value;
     }
 
     @Override
