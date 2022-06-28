@@ -1,7 +1,5 @@
 package kitchenpos.order.dto;
 
-import kitchenpos.order.domain.OrderLineItem;
-
 import java.math.BigDecimal;
 
 public class OrderLineItemResponse {
@@ -22,15 +20,6 @@ public class OrderLineItemResponse {
         this.menuName = menuName;
         this.menuPrice = menuPrice;
         this.quantity = quantity;
-    }
-
-    public static OrderLineItemResponse of(final OrderLineItem orderLineItem) {
-        return new OrderLineItemResponse(
-                orderLineItem.getId(),
-                orderLineItem.getMenu().getName(),
-                orderLineItem.getMenu().getPrice(),
-                orderLineItem.getQuantity()
-        );
     }
 
     public Long getId() {

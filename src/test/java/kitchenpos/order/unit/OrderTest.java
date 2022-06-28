@@ -83,7 +83,7 @@ class OrderTest {
                         new MenuProduct(1L, 1),
                         new MenuProduct(2L, 1),
                         new MenuProduct(3L, 2)));
-        return new OrderLineItem(menu, 1);
+        return new OrderLineItem(menu.getId(), 1);
     }
 
     Order 주문_생성되어_있음() {

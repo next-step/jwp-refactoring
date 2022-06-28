@@ -1,14 +1,16 @@
 package kitchenpos.order.application;
 
-import kitchenpos.table.application.TableService;
 import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.order.dto.OrderLineItemResponse;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.table.application.TableService;
+import kitchenpos.table.domain.OrderTable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +37,7 @@ public class OrderService {
     @Transactional
     public OrderResponse create(final OrderRequest request) {
         Order persistOrder = orderRepository.save(toEntity(request));
-        return OrderResponse.of(persistOrder);
+        return toResponse(persistOrder);
     }
 
     private Order toEntity(final OrderRequest request) {
@@ -47,7 +49,7 @@ public class OrderService {
 
         List<OrderLineItem> orderLineItems = request.getOrderLineItems().stream()
                 .map(itemRequest -> new OrderLineItem(
-                        menuService.findMenuById(itemRequest.getMenuId()),
+                        menuService.findMenuById(itemRequest.getMenuId()).getId(),
                         itemRequest.getQuantity()))
                 .collect(Collectors.toList());
 
@@ -56,8 +58,27 @@ public class OrderService {
 
     public List<OrderResponse> list() {
         return orderRepository.findAll().stream()
-                .map(order -> OrderResponse.of(order))
+                .map(order -> toResponse(order))
                 .collect(Collectors.toList());
+    }
+
+    private OrderResponse toResponse(Order order) {
+        List<OrderLineItemResponse> orderLineItemResponses = order.getOrderLineItems().stream()
+                .map(orderLineItem -> {
+                    Menu menu = menuService.findMenuById(orderLineItem.getMenuId());
+                    return new OrderLineItemResponse(
+                            orderLineItem.getId(),
+                            menu.getName(),
+                            menu.getPrice(),
+                            orderLineItem.getQuantity());
+                })
+                .collect(Collectors.toList());
+        return new OrderResponse(
+                order.getId(),
+                order.getOrderTableId(),
+                order.getOrderStatus(),
+                order.getOrderedTime(),
+                orderLineItemResponses);
     }
 
     @Transactional
