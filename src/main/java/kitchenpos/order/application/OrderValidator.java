@@ -51,6 +51,8 @@ public class OrderValidator {
         OrderTable orderTable = orderTableRepository.findById(orderTableId)
             .orElseThrow(() -> new NotFoundException(ExceptionType.NOT_EXIST_ORDER_TABLE));
 
-        orderTable.validateIsEmpty();
+        if (orderTable.isEmpty()) {
+            throw new BadRequestException(ExceptionType.EMPTY_TABLE);
+        }
     }
 }
