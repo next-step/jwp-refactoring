@@ -8,6 +8,9 @@ public class OrderLineItemResponse {
     private Long menuId;
     private long quantity;
 
+    private OrderLineItemResponse() {
+    }
+
     public OrderLineItemResponse(OrderLineItem orderLineItem) {
         this.seq = orderLineItem.getSeq();
         this.orderId = orderLineItem.getOrderId();

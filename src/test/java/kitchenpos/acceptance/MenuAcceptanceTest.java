@@ -30,12 +30,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        Long 세마리메뉴_id = 메뉴_그룹_등록됨(세마리메뉴).getId();
-        Long 파닭_id = 상품_등록됨(파닭).getId();
-
-        MenuProductCreateRequest 메뉴상품 = new MenuProductCreateRequest(파닭_id, 2L);
-
-        파닭_메뉴 = new MenuCreateRequest("파닭", BigDecimal.valueOf(18_000), 세마리메뉴_id, Collections.singletonList(메뉴상품));
+        파닭_메뉴 = 메뉴_요청_생성();
     }
 
     @TestFactory
@@ -70,6 +65,10 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
+    public static MenuCreateResponse 메뉴_등록됨(MenuCreateRequest request) {
+        return 메뉴_등록_요청(request).as(MenuCreateResponse.class);
+    }
+
     public static ExtractableResponse<Response> 메뉴_목록_조회_요청() {
         return get("/api/menus");
     }
@@ -77,5 +76,14 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     public static void 메뉴_목록_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.as(ArrayList.class)).hasSize(1);
+    }
+
+    public static MenuCreateRequest 메뉴_요청_생성() {
+        Long 세마리메뉴_id = 메뉴_그룹_등록됨(세마리메뉴).getId();
+        Long 파닭_id = 상품_등록됨(파닭).getId();
+
+        MenuProductCreateRequest 메뉴상품 = new MenuProductCreateRequest(파닭_id, 2L);
+
+        return new MenuCreateRequest("파닭", BigDecimal.valueOf(18_000), 세마리메뉴_id, Collections.singletonList(메뉴상품));
     }
 }

@@ -18,6 +18,10 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
+    public Long getSeq() {
+        return seq;
+    }
+
     public Long getMenuId() {
         return menuId;
     }

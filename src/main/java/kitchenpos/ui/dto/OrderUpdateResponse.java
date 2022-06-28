@@ -13,6 +13,9 @@ public class OrderUpdateResponse {
     private LocalDateTime orderedTime;
     private List<OrderLineItemResponse> orderLineItems;
 
+    private OrderUpdateResponse() {
+    }
+
     public OrderUpdateResponse(Order order) {
         this.id = order.getId();
         this.orderTableId = order.getOrderTableId();

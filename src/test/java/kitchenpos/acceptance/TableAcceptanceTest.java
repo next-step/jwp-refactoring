@@ -4,6 +4,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.ui.dto.OrderTableCreateRequest;
+import kitchenpos.ui.dto.OrderTableCreateResponse;
 import kitchenpos.ui.dto.OrderTableUpdateRequest;
 import kitchenpos.ui.dto.OrderTableUpdateResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +21,7 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 @DisplayName("주문 테이블 관리")
 public class TableAcceptanceTest extends AcceptanceTest {
-    public static final OrderTableCreateRequest 주문_테이블 = new OrderTableCreateRequest(0, true);
+    public static final OrderTableCreateRequest 주문_테이블 = new OrderTableCreateRequest(0, false);
     public static final OrderTableUpdateRequest 빈_테이블 = new OrderTableUpdateRequest(0, true);
     public static final OrderTableUpdateRequest 사용중_테이블 = new OrderTableUpdateRequest(0, false);
     public static final OrderTableUpdateRequest 손님의_수_변경 = new OrderTableUpdateRequest(3, false);
@@ -81,6 +82,10 @@ public class TableAcceptanceTest extends AcceptanceTest {
 
     public static void 주문_테이블_등록됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    public static OrderTableCreateResponse 주문_테이블_등록됨(OrderTableCreateRequest request) {
+        return 주문_테이블_등록_요청(request).as(OrderTableCreateResponse.class);
     }
 
     public static ExtractableResponse<Response> 주문_테이블_목록_조회_요청() {
