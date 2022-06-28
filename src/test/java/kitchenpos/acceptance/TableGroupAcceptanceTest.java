@@ -14,6 +14,8 @@ import kitchenpos.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Arrays;
 import java.util.List;
@@ -102,8 +104,9 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         테이블그룹_삭제성공(테이블그룹_삭제_결과);
     }
 
-    @Test
-    void 테이블그룹_삭제실패_주문상태가_요리중이거나_식사중() {
+    @ParameterizedTest
+    @MethodSource("cookingAndMeal")
+    void 테이블그룹_삭제실패_주문상태가_요리중이거나_식사중(OrderStatus status) {
         TableGroup 등록된_테이블그룹 = 테이블그룹_등록_요청(Arrays.asList(테이블1, 테이블2)).as(TableGroup.class);
         OrderLineItem 주문항목 = new OrderLineItem();
         주문항목.setMenuId(후라이드메뉴.getId());
