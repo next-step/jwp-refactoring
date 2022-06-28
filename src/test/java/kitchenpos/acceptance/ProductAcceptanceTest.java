@@ -4,6 +4,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.ui.dto.ProductCreateRequest;
+import kitchenpos.ui.dto.ProductCreateResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
@@ -19,13 +20,11 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 @DisplayName("상품 관리")
 public class ProductAcceptanceTest extends AcceptanceTest {
-    private ProductCreateRequest 파닭;
+    public static final ProductCreateRequest 파닭 = new ProductCreateRequest("파닭", BigDecimal.valueOf(10_000));
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-
-        파닭 = new ProductCreateRequest("파닭", BigDecimal.valueOf(10000));
     }
 
     @TestFactory
@@ -52,19 +51,23 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         상품_목록_조회됨(상품_목록_조회_응답);
     }
 
-    private ExtractableResponse<Response> 상품_등록_요청(ProductCreateRequest request) {
+    public static ExtractableResponse<Response> 상품_등록_요청(ProductCreateRequest request) {
         return post("/api/products", request);
     }
 
-    private void 상품_등록됨(ExtractableResponse<Response> response) {
+    public static void 상품_등록됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    private ExtractableResponse<Response> 상품_목록_조회_요청() {
+    public static ProductCreateResponse 상품_등록됨(ProductCreateRequest request) {
+        return 상품_등록_요청(request).as(ProductCreateResponse.class);
+    }
+
+    public static ExtractableResponse<Response> 상품_목록_조회_요청() {
         return get("/api/products");
     }
 
-    private void 상품_목록_조회됨(ExtractableResponse<Response> response) {
+    public static void 상품_목록_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.as(ArrayList.class)).hasSize(1);
     }

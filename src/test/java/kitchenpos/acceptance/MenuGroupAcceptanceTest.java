@@ -4,6 +4,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.ui.dto.MenuGroupCreateRequest;
+import kitchenpos.ui.dto.MenuGroupCreateResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
@@ -17,13 +18,11 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 @DisplayName("메뉴 그룹 관리")
 public class MenuGroupAcceptanceTest extends AcceptanceTest {
-    private MenuGroupCreateRequest 치킨;
+    public static final MenuGroupCreateRequest 세마리메뉴 = new MenuGroupCreateRequest("세마리메뉴");
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-
-        치킨 = new MenuGroupCreateRequest("치킨");
     }
     
     @TestFactory
@@ -36,7 +35,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
 
     private void 메뉴_그룹을_등록한다() {
         // when
-        ExtractableResponse<Response> 메뉴_그룹_등록_응답 = 메뉴_그룹_등록_요청(치킨);
+        ExtractableResponse<Response> 메뉴_그룹_등록_응답 = 메뉴_그룹_등록_요청(세마리메뉴);
 
         // then
         메뉴_그룹이_등록됨(메뉴_그룹_등록_응답);
@@ -56,6 +55,10 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
 
     public static void 메뉴_그룹이_등록됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    public static MenuGroupCreateResponse 메뉴_그룹_등록됨(MenuGroupCreateRequest request) {
+        return 메뉴_그룹_등록_요청(request).as(MenuGroupCreateResponse.class);
     }
 
     public static ExtractableResponse<Response> 메뉴_그룹_목록_조회_요청() {

@@ -15,6 +15,13 @@ public class MenuCreateRequest {
     private MenuCreateRequest() {
     }
 
+    public MenuCreateRequest(String name, BigDecimal price, Long menuGroupId, List<MenuProductCreateRequest> menuProducts) {
+        this.name = name;
+        this.price = price;
+        this.menuGroupId = menuGroupId;
+        this.menuProducts = menuProducts;
+    }
+
     public Menu toEntity() {
         return new Menu(name, price, menuGroupId, menuProducts.stream()
                 .map(MenuProductCreateRequest::toEntity)
