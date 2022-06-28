@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import com.google.common.collect.ImmutableList;
 import java.util.LinkedList;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -20,6 +21,6 @@ public class MenuProductsManager {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
+        return ImmutableList.copyOf(menuProducts);
     }
 }
