@@ -2,9 +2,9 @@ package kitchenpos.menu.service;
 
 import kitchenpos.application.MenuService;
 import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuProductDao;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProductRepository;
 import kitchenpos.menugroup.application.MenuGroupServiceTest;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
@@ -42,14 +42,14 @@ public class MenuServiceTest {
     private MenuGroupRepository menuGroupRepository;
 
     @Mock
-    private MenuProductDao menuProductDao;
+    private MenuProductRepository menuProductRepository;
 
     @Mock
     private ProductRepository productRepository;
 
     @BeforeEach
     void setUp() {
-        menuService = new MenuService(menuDao, menuGroupRepository, menuProductDao, productRepository);
+        menuService = new MenuService(menuDao, menuGroupRepository, menuProductRepository, productRepository);
     }
 
     @DisplayName("메뉴를 생성한다.")
@@ -58,7 +58,7 @@ public class MenuServiceTest {
         when(menuGroupRepository.existsById(any())).thenReturn(true);
         when(productRepository.findById(any())).thenReturn(Optional.of(ProductServiceTest.createProduct01()));
         when(menuDao.save(any())).thenReturn(createMenu01());
-        when(menuProductDao.save(any())).thenReturn(createMenuProduct01());
+        when(menuProductRepository.save(any())).thenReturn(createMenuProduct01());
 
         // when
         Menu menu = menuService.create(new Menu(MENU_NAME01, MENU_PRICE01, 1L, createMenuProductList()));
@@ -135,14 +135,14 @@ public class MenuServiceTest {
     public static Menu createMenu01() {
         MenuGroup menuGroup = MenuGroupServiceTest.createMenuGroup01();
         Product product = ProductServiceTest.createProduct01();
-        MenuProduct menuProduct = new MenuProduct(product.getId(), 1);
-        return new Menu(MENU_NAME01, MENU_PRICE01, menuGroup.getId(), Collections.singletonList(menuProduct));
+        MenuProduct menuProduct = new MenuProduct(product, 1);
+        return new Menu(MENU_NAME01, MENU_PRICE01, menuGroup, Collections.singletonList(menuProduct));
     }
 
     public static MenuProduct createMenuProduct01() {
         Product product = ProductServiceTest.createProduct01();
         Menu menu = MenuServiceTest.createMenu01();
-        return new MenuProduct(1L, menu.getId(), product.getId(), 1);
+        return new MenuProduct(1L, menu, product, 1);
     }
 
     public static List<MenuProduct> createMenuProductList() {

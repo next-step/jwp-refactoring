@@ -5,7 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
@@ -105,13 +105,13 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     public static Menu 테스트_메뉴_생성(String menuName, BigDecimal menuPrice) {
         MenuGroup menuGroup = 메뉴_그룹_가져옴(메뉴_그룹_등록되어_있음(MENU_GROUP_NAME01));
         Product product = 상품_가져옴(상품_등록되어_있음(PRODUCT_NAME01, PRODUCT_PRICE01));
-        MenuProduct menuProduct = new MenuProduct(product.getId(), 1);
+        MenuProduct menuProduct = new MenuProduct(product, 1);
         return new Menu(menuName, menuPrice, menuGroup.getId(), Collections.singletonList(menuProduct));
     }
 
     public static Menu 메뉴_그룹_없는_테스트_메뉴_생성(String menuName, BigDecimal menuPrice) {
         Product product = 상품_가져옴(상품_등록되어_있음(PRODUCT_NAME01, PRODUCT_PRICE01));
-        MenuProduct menuProduct = new MenuProduct(product.getId(), 1);
+        MenuProduct menuProduct = new MenuProduct(product, 1);
         return new Menu(menuName, menuPrice, null, Collections.singletonList(menuProduct));
     }
 
