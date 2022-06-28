@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -16,17 +15,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import kitchenpos.core.exception.BadRequestException;
 import kitchenpos.core.exception.CannotCreateException;
-import kitchenpos.core.exception.CannotUpdateException;
 import kitchenpos.core.exception.ExceptionType;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.tableGroup.application.TableGroupService;
 import kitchenpos.tableGroup.domain.TableGroup;
 import kitchenpos.tableGroup.domain.TableGroupRepository;
 import kitchenpos.table.dto.request.OrderTableRequest;
-import kitchenpos.tableGroup.domain.TableGroupValidator;
 import kitchenpos.tableGroup.dto.request.TableGroupRequest;
 import kitchenpos.table.dto.response.OrderTableResponse;
 import kitchenpos.tableGroup.dto.response.TableGroupResponse;
@@ -46,8 +41,6 @@ class TableGroupServiceTest {
     private TableService tableService;
     @Mock
     private TableGroupRepository tableGroupRepository;
-    @Mock
-    private TableGroupValidator tableGroupValidator;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -60,8 +53,6 @@ class TableGroupServiceTest {
     private OrderTable 주문_테이블;
     private OrderTable 주문_테이블2;
 
-    private TableGroup 테이블_그룹;
-
     @BeforeEach
     void setUp() {
         주문_테이블_request = new OrderTableRequest(1L, null, 3, true);
@@ -71,8 +62,7 @@ class TableGroupServiceTest {
         주문_테이블 = OrderTable.of(1L, null, 3, true);
         주문_테이블2 = OrderTable.of(2L, null, 5, true);
 
-        TableGroupValidator validator = new TableGroupValidator(mock(OrderRepository.class));
-        validateTableGroupService = new TableGroupService(tableService, tableGroupRepository, validator);
+        validateTableGroupService = new TableGroupService(tableService, tableGroupRepository);
     }
 
     @DisplayName("주문 테이블을 단체지정하면 정상적으로 단체지정 되어야한다")
@@ -173,41 +163,16 @@ class TableGroupServiceTest {
         when(tableGroupRepository.findById(테이블_그룹.getId()))
             .thenReturn(Optional.of(테이블_그룹));
 
+        주문_테이블.unGroup();
+        주문_테이블2.unGroup();
+        when(tableGroupRepository.save(테이블_그룹))
+            .thenReturn(테이블_그룹);
+
         // when
         tableGroupService.ungroup(테이블_그룹.getId());
 
         // then
         assertNull(주문_테이블.getTableGroupId());
         assertNull(주문_테이블2.getTableGroupId());
-    }
-
-    @DisplayName("단체지정을 해제시 테이블의 주문이 요리중, 식사중인 상태가 있으면 예외가 발생한다")
-    @Test
-    void ungroup_exception_test() {
-        // given
-        테이블_그룹 = TableGroup.of(1L);
-        테이블_그룹.mapIntoTable(Arrays.asList(주문_테이블, 주문_테이블2));
-
-        OrderRepository orderRepository = mock(OrderRepository.class);
-        TableGroupValidator tableGroupValidator = new TableGroupValidator(orderRepository);
-
-        TableGroupService tableGroupService = new TableGroupService(
-            mock(TableService.class),
-            tableGroupRepository,
-            tableGroupValidator
-        );
-
-        when(tableGroupRepository.findById(테이블_그룹.getId()))
-            .thenReturn(Optional.of(테이블_그룹));
-        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-            Arrays.asList(주문_테이블.getId(), 주문_테이블2.getId()),
-            Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)
-        )).thenReturn(true);
-
-        // then
-        assertThatThrownBy(() -> {
-            tableGroupService.ungroup(테이블_그룹.getId());
-        }).isInstanceOf(CannotUpdateException.class)
-            .hasMessageContaining(ExceptionType.CAN_NOT_UPDATE_TABLE_IN_COOKING_AND_MEAL_STATUS.getMessage());
     }
 }
