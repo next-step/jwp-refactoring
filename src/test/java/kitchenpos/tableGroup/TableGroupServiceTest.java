@@ -4,7 +4,6 @@ import kitchenpos.application.TableGroupService;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
@@ -60,7 +59,7 @@ class TableGroupServiceTest {
 
     @DisplayName("단체 지정 등록")
     @Test
-    public void createTableGroup() {
+    void createTableGroup() {
         // given
         when(orderTableDao.findAllByIdIn(Arrays.asList(주문테이블1.getId(), 주문테이블2.getId())))
                 .thenReturn(단체지정1.getOrderTables());
@@ -139,7 +138,7 @@ class TableGroupServiceTest {
                 .filter(it -> Objects.nonNull(it.getTableGroupId()))
                 .collect(Collectors.toList());
 
-        assertThat(list).hasSize(0);
+        assertThat(list).isEmpty();
     }
 
     @DisplayName("주문 테이블 중 `조리`, `식사` 상태인 경우 해제 불가")
