@@ -2,51 +2,65 @@ package kitchenpos.domain;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long orderTableId;
-    private String orderStatus;
-    private LocalDateTime orderedTime;
-    @OneToMany
-    private List<OrderLineItem> orderLineItems;
+
+    @ManyToOne
+    @JoinColumn(name = "order_table_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_orders_order_table"))
+    private OrderTable orderTable;
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
+
+    private LocalDateTime orderedTime = LocalDateTime.now();
+
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     public Order() {
     }
 
-    public Order(Builder builder) {
-        this.id = builder.id;
-        this.orderTableId = builder.orderTableId;
-        this.orderStatus = builder.orderStatus;
-        this.orderedTime = builder.orderedTime;
-        this.orderLineItems = builder.orderLineItems;
+    public Order(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        this.orderTable = orderTable;
+        this.orderStatus = orderStatus;
+        this.orderLineItems.addAll(toOrderLineItems(orderLineItems));
+    }
+
+    private List<OrderLineItem> toOrderLineItems(List<OrderLineItem> orderLineItems) {
+        return orderLineItems.stream()
+                             .map(orderLineItem -> new OrderLineItem(this, orderLineItem.getMenu(), orderLineItem.getQuantity()))
+                             .collect(Collectors.toList());
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Long getOrderTableId() {
-        return orderTableId;
+    public OrderTable getOrderTable() {
+        return orderTable;
     }
 
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
+    public void setOrderTable(OrderTable orderTable) {
+        this.orderTable = orderTable;
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(final String orderStatus) {
+    public void changeOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
@@ -54,7 +68,7 @@ public class Order {
         return orderedTime;
     }
 
-    public void setOrderedTime(final LocalDateTime orderedTime) {
+    public void setOrderedTime(LocalDateTime orderedTime) {
         this.orderedTime = orderedTime;
     }
 
@@ -62,52 +76,31 @@ public class Order {
         return orderLineItems;
     }
 
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
+    public void setOrderLineItems(List<OrderLineItem> orderLineItems) {
         this.orderLineItems = orderLineItems;
     }
 
-    public static class Builder {
-        private Long id;
-        private Long orderTableId;
-        private String orderStatus;
-        private LocalDateTime orderedTime;
-        private List<OrderLineItem> orderLineItems;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Order order = (Order) o;
+        return Objects.equals(id, order.id) && Objects.equals(orderTable, order.orderTable) && orderStatus == order.orderStatus && Objects.equals(orderedTime, order.orderedTime) && Objects.equals(orderLineItems, order.orderLineItems);
+    }
 
-        public Builder() {
-        }
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, orderTable, orderStatus, orderedTime, orderLineItems);
+    }
 
-        public Builder(Long orderTableId, List<OrderLineItem> orderLineItems) {
-            this.orderTableId = orderTableId;
-            this.orderLineItems = orderLineItems;
-        }
-
-        public Builder id(Long id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder orderTableId(Long orderTableId) {
-            this.orderTableId = orderTableId;
-            return this;
-        }
-
-        public Builder orderStatus(String orderStatus) {
-            this.orderStatus = orderStatus;
-            return this;
-        }
-
-        public Builder orderedTime(LocalDateTime orderedTime) {
-            this.orderedTime = orderedTime;
-            return this;
-        }
-
-        public Builder orderLineItems(List<OrderLineItem> orderLineItems) {
-            this.orderLineItems = orderLineItems;
-            return this;
-        }
-
-        public Order build() {
-            return new Order(this);
-        }
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", orderTable=" + orderTable.getId() +
+                ", orderStatus=" + orderStatus +
+                ", orderedTime=" + orderedTime +
+                ", orderLineItems=" + orderLineItems +
+                '}';
     }
 }

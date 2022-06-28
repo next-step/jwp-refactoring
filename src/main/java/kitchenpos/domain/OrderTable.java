@@ -22,9 +22,14 @@ public class OrderTable {
     public OrderTable() {
     }
 
-    public OrderTable(int numberOfGuests, boolean empty) {
+    public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
+        this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
+    }
+
+    public OrderTable(int numberOfGuests, boolean empty) {
+        this(null, numberOfGuests, empty);
     }
 
     public Long getId() {
@@ -40,6 +45,10 @@ public class OrderTable {
     }
 
     public void setTableGroupId(final Long tableGroupId) {
+    }
+
+    public void changeTableGroup(final TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
     }
 
     public int getNumberOfGuests() {
@@ -92,7 +101,7 @@ public class OrderTable {
     public String toString() {
         return "OrderTable{" +
                 "id=" + id +
-                ", tableGroup=" + tableGroup +
+                ", tableGroup=" + tableGroup.getId() +
                 ", numberOfGuests=" + numberOfGuests +
                 ", empty=" + empty +
                 '}';
