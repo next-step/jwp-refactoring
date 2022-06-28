@@ -18,7 +18,6 @@ import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
-import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.repository.OrderTableRepository;
@@ -174,8 +173,8 @@ class TableGroupServiceTest {
         final TableGroup tableGroup = new TableGroup(1L, null,
                 Arrays.asList(orderTableOf5Guests, orderTableOf3Guests));
         when(tableGroupRepository.findById(any())).thenReturn(Optional.of(tableGroup));
-        when(orderRepository.existsOrdersByOrderTableInAndOrderStatusNot(
-                Arrays.asList(orderTableOf5Guests, orderTableOf3Guests), OrderStatus.COMPLETION)).thenReturn(false);
+        when(orderRepository.existNotCompletionOrderTables(Arrays.asList(orderTableOf5Guests, orderTableOf3Guests)))
+                .thenReturn(false);
         // when && then
         tableGroupService.ungroup(1L);
     }
@@ -186,8 +185,8 @@ class TableGroupServiceTest {
         final TableGroup tableGroup = new TableGroup(1L, null,
                 Arrays.asList(orderTableOf5Guests, orderTableOf3Guests));
         when(tableGroupRepository.findById(any())).thenReturn(Optional.of(tableGroup));
-        when(orderRepository.existsOrdersByOrderTableInAndOrderStatusNot(
-                Arrays.asList(orderTableOf5Guests, orderTableOf3Guests), OrderStatus.COMPLETION)).thenReturn(true);
+        when(orderRepository.existNotCompletionOrderTables(Arrays.asList(orderTableOf5Guests, orderTableOf3Guests)))
+                .thenReturn(true);
 
         // when && then
         assertThatIllegalStateException()

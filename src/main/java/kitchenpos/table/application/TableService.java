@@ -43,7 +43,7 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId) {
         final OrderTable persistOrderTable = getOrderTable(orderTableId);
 
-        if (orderRepository.existsOrdersByOrderTableIdAndOrderStatusNot(orderTableId, OrderStatus.COMPLETION)) {
+        if (orderRepository.existNotCompletionOrderTable(orderTableId)) {
             throw new NotCompletionStatusException();
         }
 

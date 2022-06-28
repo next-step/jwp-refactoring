@@ -44,8 +44,7 @@ public class TableGroupService {
                 .orElseThrow(NotExistException::new);
 
         final OrderTables orderTables = persistTableGroup.getOrderTables();
-        if (orderRepository.existsOrdersByOrderTableInAndOrderStatusNot(
-                orderTables.get(), OrderStatus.COMPLETION)) {
+        if (orderRepository.existNotCompletionOrderTables(orderTables.get())) {
             throw new NotCompletionStatusException();
         }
         persistTableGroup.ungroup();

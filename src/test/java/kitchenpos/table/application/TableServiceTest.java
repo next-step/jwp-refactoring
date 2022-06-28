@@ -14,7 +14,6 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.order.repository.OrderRepository;
-import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.GuestNumber;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
@@ -87,7 +86,7 @@ class TableServiceTest {
     void changeEmptyOrderTable() {
         // given
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
-        when(orderRepository.existsOrdersByOrderTableIdAndOrderStatusNot(1L, OrderStatus.COMPLETION))
+        when(orderRepository.existNotCompletionOrderTable(1L))
                 .thenReturn(false);
         // when
         final OrderTableResponse actual = tableService.changeEmpty(1L);
@@ -126,7 +125,7 @@ class TableServiceTest {
     void cookingAndMealOrderTable() {
         // given
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
-        when(orderRepository.existsOrdersByOrderTableIdAndOrderStatusNot(1L, OrderStatus.COMPLETION))
+        when(orderRepository.existNotCompletionOrderTable(1L))
                 .thenReturn(true);
         // when && then
         assertThatIllegalStateException()
