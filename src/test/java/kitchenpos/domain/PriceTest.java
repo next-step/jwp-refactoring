@@ -36,4 +36,14 @@ class PriceTest {
 
         assertThat(price.bigger(BigDecimal.valueOf(source))).isEqualTo(expected);
     }
+
+    @ParameterizedTest
+    @CsvSource(value = {"3:6", "4:8", "5:10"}, delimiter = ':')
+    @DisplayName("값을 곱할수 있다.")
+    public void multiplyTest(int multSource, int expected) {
+        Price price = new Price(BigDecimal.valueOf(2));
+        assertThat(price.multiply(BigDecimal.valueOf(multSource))).isEqualTo(
+            BigDecimal.valueOf(expected));
+
+    }
 }
