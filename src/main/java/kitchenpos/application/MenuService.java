@@ -42,8 +42,6 @@ public class MenuService {
         MenuProducts menuProducts = findMenuProducts(menuRequest.getMenuProducts());
         Menu menu = menuRequest.toMenu(menuGroup, menuProducts);
 
-        menu.bindMenuProducts();
-
         return MenuResponse.of(saveMenu(menu));
     }
 
