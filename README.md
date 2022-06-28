@@ -60,7 +60,7 @@
 ---
 
 ---
-step2 
+### step2 
 - 서비스 리팩토링
   - Controller - Domain 의존성 삭제
     - Controller에서 @RequestBody로 요청 받을때, domain이 아닌 RequestDTO 객체로 받음
@@ -102,6 +102,20 @@ step2
 7. 간접참조 객체들에 대한 검증 로직을 도메인서비스로 추출
 8. 검증기능, 비즈니스 로직을 가진 도메인들에 대한 테스트코드 작성 
 
+---
+
+### step3
+1. 2단계 미흡한 부분 수정
+    1. 디미터 법칙 적용
+       1. 일급 컬렉션에서 getter를 통해 받는 리스트드를 unmodif
+       2. Price domain에서 multiple 기능 구현(단 반환시 저장하고있는 Price는 접근이 되면 안됨)
+    2. 코드컨벤션 점검
+    3. 반복적인 작업 추출 후 재사용 
+    4. OrderTable에서 유휴테이블 설정 함수 명의 의미가 모호하여 분리/수정필요
+    5. 비즈니스 로직에 맞는 Exception 선언 및 Advice를 통한 Error 처리
+       1. 500Err -> 400Err
+       2. Acceptance 에러확인 함수 수정(500 -> 400)
+       3. assertThatThrowBy 에서 Catch하는 Error 객체 수정
 ## 용어 사전
 
 | 한글명 | 영문명 | 설명 |
