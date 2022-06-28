@@ -3,6 +3,7 @@ package kitchenpos.application;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.orderTable.domain.OrderTable;
 import kitchenpos.orderTable.domain.OrderTableRepository;
+import kitchenpos.orderTable.dto.OrderTableResponse;
 import kitchenpos.tableGroup.application.TableGroupService;
 import kitchenpos.tableGroup.domain.TableGroup;
 import kitchenpos.tableGroup.domain.TableGroupRepository;
@@ -16,6 +17,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -28,42 +32,33 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@Transactional
 class TableGroupServiceTest {
-    @Mock
+    @Autowired
     private OrderRepository orderRepository;
-    @Mock
+    @Autowired
     private OrderTableRepository orderTableRepository;
-    @Mock
+    @Autowired
     private TableGroupRepository tableGroupRepository;
-    @InjectMocks
+    @Autowired
     private TableGroupService tableGroupService;
 
-    private TableGroup 단체_테이블;
     private OrderTable 테이블_1;
     private OrderTable 테이블_2;
     private OrderTable 테이블_3;
-    private OrderTable 테이블_Full;
-    private OrderTable 테이블_Grouped;
 
     @BeforeEach
     void setUp() {
         테이블_1 = createOrderTable(1L, null, 0, true);
         테이블_2 = createOrderTable(2L, null, 0, true);
         테이블_3 = createOrderTable(3L, null, 0, true);
-        단체_테이블 = createTableGroup(1L, LocalDateTime.now(), Arrays.asList(테이블_1, 테이블_2, 테이블_3));
-
-        테이블_Full = createOrderTable(4L, null, 4, false);
-        테이블_Grouped = createOrderTable(4L, createTableGroup(2L, LocalDateTime.now(), new ArrayList<>()),
-                4, false);
     }
 
     @DisplayName("테이블그룹을 등록할 수 있다")
     @Test
     void 테이블그룹_등록(){
         //given
-        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(Arrays.asList(테이블_1, 테이블_2, 테이블_3));
-        given(tableGroupRepository.save(any(TableGroup.class))).willReturn(단체_테이블);
         TableGroupRequest 단체_테이블_request = TableGroupRequest.from(
                 Arrays.asList(테이블_1.getId(), 테이블_2.getId(), 테이블_3.getId())
         );
@@ -72,52 +67,20 @@ class TableGroupServiceTest {
         TableGroupResponse savedTableGroup = tableGroupService.create(단체_테이블_request);
 
         //then
-        assertThat(savedTableGroup).isEqualTo(TableGroupResponse.from(단체_테이블));
-    }
-
-    @DisplayName("테이블그룹 내 주문테이블은 2개 이상이어야 한다")
-    @Test
-    void 테이블그룹_등록_주문테이블_두개_이상_검증(){
-        //given
-        TableGroupRequest invalidRequest = TableGroupRequest.from(Arrays.asList(테이블_1.getId()));
-
-        //then
-        assertThrows(IllegalArgumentException.class, () -> tableGroupService.create(invalidRequest));
+        Assertions.assertAll(
+                () -> assertThat(savedTableGroup.getOrderTables().size()).isEqualTo(3),
+                () -> assertThat(orderTableRepository.findById(테이블_1.getId()).get().getTableGroup()).isNotNull(),
+                () -> assertThat(orderTableRepository.findById(테이블_2.getId()).get().getTableGroup()).isNotNull(),
+                () -> assertThat(orderTableRepository.findById(테이블_3.getId()).get().getTableGroup()).isNotNull()
+        );
     }
 
     @DisplayName("등록하려는 테이블그룹의 주문테이블이 모두 존재해야 한다")
     @Test
     void 테이블그룹_등록_주문테이블_검증(){
         //given
-        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(Arrays.asList(테이블_1, 테이블_2));
         TableGroupRequest invalidRequest = TableGroupRequest.from(
-                Arrays.asList(테이블_1.getId(), 테이블_2.getId(), 테이블_3.getId())
-        );
-
-        //then
-        assertThrows(IllegalArgumentException.class, () -> tableGroupService.create(invalidRequest));
-    }
-
-    @DisplayName("비어있는 주문테이블만 등록할 수 있다")
-    @Test
-    void 테이블그룹_등록_주문테이블_Empty_검증(){
-        //given
-        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(Arrays.asList(테이블_1, 테이블_2, 테이블_Full));
-        TableGroupRequest invalidRequest = TableGroupRequest.from(
-                Arrays.asList(테이블_1.getId(), 테이블_2.getId(), 테이블_Full.getId())
-        );
-
-        //then
-        assertThrows(IllegalArgumentException.class, () -> tableGroupService.create(invalidRequest));
-    }
-
-    @DisplayName("이미 테이블그룹에 속해있는 주문테이블은 등록할 수 없다")
-    @Test
-    void 테이블그룹_등록_주문테이블_이미_테이블그룹에_속해있는지_검증(){
-        //given
-        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(Arrays.asList(테이블_1, 테이블_2, 테이블_Grouped));
-        TableGroupRequest invalidRequest = TableGroupRequest.from(
-                Arrays.asList(테이블_1.getId(), 테이블_2.getId(), 테이블_Grouped.getId())
+                Arrays.asList(테이블_1.getId(), 테이블_2.getId(), 100L)
         );
 
         //then
@@ -128,17 +91,18 @@ class TableGroupServiceTest {
     @Test
     void 테이블그룹_삭제(){
         //given
-        테이블_1.setTableGroup(단체_테이블);
-        테이블_2.setTableGroup(단체_테이블);
-        given(orderTableRepository.findAllByTableGroupId(anyLong())).willReturn(Arrays.asList(테이블_1, 테이블_2));
+        TableGroupRequest 단체_테이블_request = TableGroupRequest.from(
+                Arrays.asList(테이블_1.getId(), 테이블_2.getId(), 테이블_3.getId())
+        );
+        TableGroupResponse savedTableGroup = tableGroupService.create(단체_테이블_request);
 
         //when
-        tableGroupService.ungroup(단체_테이블.getId());
+        tableGroupService.ungroup(savedTableGroup.getId());
 
         //then
         Assertions.assertAll(
-                () -> assertThat(테이블_1.getTableGroup()).isNull(),
-                () -> assertThat(테이블_2.getTableGroup()).isNull()
+                () -> assertThat(orderTableRepository.findById(테이블_1.getId()).get().getTableGroup()).isNull(),
+                () -> assertThat(orderTableRepository.findById(테이블_2.getId()).get().getTableGroup()).isNull()
         );
     }
 
@@ -146,10 +110,12 @@ class TableGroupServiceTest {
     @Test
     void 테이블그룹_삭제_주문상태_검증(){
         //given
-        given(orderTableRepository.findAllByTableGroupId(anyLong())).willReturn(Arrays.asList(테이블_1, 테이블_2, 테이블_3));
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
-
-        //then
-        assertThrows(IllegalArgumentException.class, () -> tableGroupService.ungroup(단체_테이블.getId()));
+//        TableGroupRequest 단체_테이블_request = TableGroupRequest.from(
+//                Arrays.asList(테이블_1.getId(), 테이블_2.getId(), 테이블_3.getId())
+//        );
+//        TableGroupResponse savedTableGroup = tableGroupService.create(단체_테이블_request);
+//
+//        //then
+//        assertThrows(IllegalArgumentException.class, () -> tableGroupService.ungroup(단체_테이블.getId()));
     }
 }

@@ -8,6 +8,7 @@ import kitchenpos.orderTable.dto.OrderTableEmptyRequest;
 import kitchenpos.orderTable.dto.OrderTableNumOfGuestRequest;
 import kitchenpos.orderTable.dto.OrderTableRequest;
 import kitchenpos.orderTable.dto.OrderTableResponse;
+import kitchenpos.tableGroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,13 +41,19 @@ public class TableServiceTest {
 
     private OrderTable 테이블_EMPTY;
     private OrderTable 테이블_NOT_EMPTY;
-    private OrderTable 테이블_GROUPED;
+
+    private OrderTable 테이블_1;
+    private OrderTable 테이블_2;
+    private TableGroup 테이블_그룹;
 
     @BeforeEach
     void setUp() {
         테이블_EMPTY = createOrderTable(1L, null, 0, true);
         테이블_NOT_EMPTY = createOrderTable(2L, null, 4, false);
-        테이블_GROUPED = createOrderTable(3L, createTableGroup(1L, LocalDateTime.now(), new ArrayList<>()), 0, true);
+
+        테이블_1 = createOrderTable(1L, null, 0, true);
+        테이블_2 = createOrderTable(2L, null, 0, true);
+        테이블_그룹 = createTableGroup(1L, LocalDateTime.now(), Arrays.asList(테이블_1, 테이블_2));
     }
 
     @DisplayName("주문테이블을 등록할 수 있다")
@@ -110,11 +117,11 @@ public class TableServiceTest {
     @Test
     void 주문테이블_Empty_업데이트_주문테이블_테이블그룹_등록_검증(){
         //given
-        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(테이블_GROUPED));
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(테이블_1));
         OrderTableEmptyRequest emptyRequest = OrderTableEmptyRequest.from(true);
 
         //then
-        assertThrows(IllegalArgumentException.class, () -> tableService.changeEmpty(테이블_GROUPED.getId(), emptyRequest));
+        assertThrows(IllegalArgumentException.class, () -> tableService.changeEmpty(테이블_1.getId(), emptyRequest));
     }
 
     @DisplayName("주문테이블의 비어있음 여부를 업데이트시, 주문테이블에 COOKING이나 MEAL 상태의 주문이 있으면 안된다")

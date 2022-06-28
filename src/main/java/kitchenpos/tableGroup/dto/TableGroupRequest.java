@@ -20,10 +20,6 @@ public class TableGroupRequest {
         return new TableGroupRequest(orderTables);
     }
 
-    public TableGroup toTableGroup(List<OrderTable> orderTables) {
-        return new TableGroup(LocalDateTime.now(), orderTables);
-    }
-
     public List<Long> getOrderTables() {
         return orderTables;
     }

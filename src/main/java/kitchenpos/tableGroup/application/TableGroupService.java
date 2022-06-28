@@ -1,6 +1,5 @@
 package kitchenpos.tableGroup.application;
 
-import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.orderTable.domain.OrderTable;
@@ -11,11 +10,9 @@ import kitchenpos.tableGroup.dto.TableGroupRequest;
 import kitchenpos.tableGroup.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,33 +29,8 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        final List<Long> orderTableIds = tableGroupRequest.getOrderTables();
-
-        if (CollectionUtils.isEmpty(orderTableIds) || orderTableIds.size() < 2) {
-            throw new IllegalArgumentException();
-        }
-
-        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
-
-        if (orderTableIds.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
-        }
-
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroup())) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        final TableGroup savedTableGroup = tableGroupRepository.save(tableGroupRequest.toTableGroup(savedOrderTables));
-
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.setTableGroup(savedTableGroup);
-            savedOrderTable.setEmpty(false);
-            orderTableRepository.save(savedOrderTable);
-        }
-        savedTableGroup.setOrderTables(savedOrderTables);
-
+        List<OrderTable> orderTables = findAllRequestedOrderTables(tableGroupRequest);
+        final TableGroup savedTableGroup = tableGroupRepository.save(TableGroup.from(orderTables));
         return TableGroupResponse.from(savedTableGroup);
     }
 
@@ -79,5 +51,14 @@ public class TableGroupService {
             orderTable.setTableGroup(null);
             orderTableRepository.save(orderTable);
         }
+    }
+
+    private List<OrderTable> findAllRequestedOrderTables(TableGroupRequest tableGroupRequest) {
+        final List<Long> orderTableIds = tableGroupRequest.getOrderTables();
+        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
+        if (orderTableIds.size() != savedOrderTables.size()) {
+            throw new IllegalArgumentException();
+        }
+        return savedOrderTables;
     }
 }

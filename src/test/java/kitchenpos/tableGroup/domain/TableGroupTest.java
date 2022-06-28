@@ -54,7 +54,7 @@ class TableGroupTest {
     @Test
     void TableGroup_주문테이블_다른테이블에_속하지않음_검증(){
         OrderTable orderTable = new OrderTable(1L, null, 0, true);
-        OrderTable orderTable2 = new OrderTable(2L, null, 4, false);
+        OrderTable orderTable2 = new OrderTable(2L, null, 0, true);
         TableGroup tableGroup = new TableGroup(LocalDateTime.now(), Arrays.asList(orderTable, orderTable2));
 
         OrderTable orderTable3 = new OrderTable(2L, null, 4, false);
