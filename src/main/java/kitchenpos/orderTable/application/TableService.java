@@ -39,7 +39,7 @@ public class TableService {
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
         orderTableValidator.validateComplete(savedOrderTable.id());
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
-        return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
+        return OrderTableResponse.from(savedOrderTable);
     }
 
     @Transactional
@@ -47,7 +47,7 @@ public class TableService {
         final int numberOfGuests = orderTableRequest.getNumberOfGuests();
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
         savedOrderTable.changeNumberOfGuests(numberOfGuests);
-        return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
+        return OrderTableResponse.from(savedOrderTable);
     }
 
     public OrderTable findOrderTable(Long orderTableId) {

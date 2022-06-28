@@ -1,4 +1,4 @@
-package kitchenpos.order.ui;
+package kitchenpos.orderTable.ui;
 
 import java.net.URI;
 import java.util.List;

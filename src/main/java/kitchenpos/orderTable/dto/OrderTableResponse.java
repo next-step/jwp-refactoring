@@ -6,28 +6,21 @@ import kitchenpos.orderTable.domain.OrderTable;
 
 public class OrderTableResponse {
     private final Long id;
-    private final Long tableGroupId;
     private final int numberOfGuests;
     private final boolean empty;
 
-    private OrderTableResponse(Long id, Long tableGroupId, NumberOfGuests numberOfGuests, boolean empty) {
+    private OrderTableResponse(Long id, NumberOfGuests numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests.value();
         this.empty = empty;
     }
 
     public static OrderTableResponse from(OrderTable orderTable) {
-        return new OrderTableResponse(orderTable.id(), orderTable.tableGroupId(),
-                orderTable.numberOfGuests(), orderTable.isEmpty());
+        return new OrderTableResponse(orderTable.id(), orderTable.numberOfGuests(), orderTable.isEmpty());
     }
 
     public Long getId() {
         return id;
-    }
-
-    public Long getTableGroupId() {
-        return tableGroupId;
     }
 
     public int getNumberOfGuests() {

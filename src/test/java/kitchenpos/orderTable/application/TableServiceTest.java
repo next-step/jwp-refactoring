@@ -5,7 +5,6 @@ import static kitchenpos.utils.DomainFixtureFactory.createOrderTableRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
@@ -47,7 +46,6 @@ class TableServiceTest {
         given(orderTableRepository.save(orderTableRequest.toOrderTable())).willReturn(주문테이블);
         OrderTableResponse orderTableResponse = tableService.create(orderTableRequest);
         assertAll(
-                () -> assertThat(orderTableResponse.getTableGroupId()).isNull(),
                 () -> assertThat(orderTableResponse.getNumberOfGuests()).isEqualTo(2),
                 () -> assertThat(orderTableResponse.isEmpty()).isFalse()
         );
@@ -65,13 +63,10 @@ class TableServiceTest {
     @Test
     void changeEmpty() {
         OrderTableRequest orderTableRequest = createOrderTableRequest(2, true);
-        OrderTable orderTable = createOrderTable(1L, 2, true);
         given(orderTableRepository.findById(1L)).willReturn(Optional.ofNullable(주문테이블));
-        given(orderTableRepository.save(any(OrderTable.class))).willReturn(orderTable);
         OrderTableResponse changedOrderTable = tableService.changeEmpty(1L, orderTableRequest);
         verify(orderTableValidator).validateComplete(주문테이블.id());
         assertAll(
-                () -> assertThat(changedOrderTable.getTableGroupId()).isNull(),
                 () -> assertThat(changedOrderTable.getNumberOfGuests()).isEqualTo(2),
                 () -> assertThat(changedOrderTable.isEmpty()).isTrue()
         );
@@ -90,9 +85,9 @@ class TableServiceTest {
     @DisplayName("주문테이블의 단체지정이 있는 경우 주문테이블 비어있는지 여부 변경 테스트")
     @Test
     void changeEmptyWithTableGroup() {
-        OrderTableRequest orderTableRequest = createOrderTableRequest(2, true);
+        OrderTableRequest orderTableRequest = createOrderTableRequest(2, false);
         OrderTable orderTable = createOrderTable(1L, 2, true);
-        orderTable.addTableGroup(1L);
+        orderTable.reserve(1L);
         given(orderTableRepository.findById(1L)).willReturn(Optional.of(orderTable));
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> tableService.changeEmpty(1L, orderTableRequest))
@@ -104,7 +99,6 @@ class TableServiceTest {
     void changeNumberOfGuests() {
         OrderTableRequest orderTableRequest = createOrderTableRequest(4, false);
         given(orderTableRepository.findById(1L)).willReturn(Optional.ofNullable(주문테이블));
-        given(orderTableRepository.save(any(OrderTable.class))).willReturn(주문테이블);
         OrderTableResponse changedOrderTable = tableService.changeNumberOfGuests(1L, orderTableRequest);
         assertAll(
                 () -> assertThat(changedOrderTable.getNumberOfGuests()).isEqualTo(4),

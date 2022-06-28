@@ -1,4 +1,4 @@
-package kitchenpos.orderTable.acceptance;
+package kitchenpos.tableGroup.acceptance;
 
 import static kitchenpos.orderTable.acceptance.TableRestAssured.주문테이블_등록_요청;
 import static kitchenpos.utils.DomainFixtureFactory.createOrderTableRequest;
@@ -9,8 +9,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.orderTable.dto.OrderTableResponse;
-import kitchenpos.orderTable.dto.TableGroupRequest;
-import kitchenpos.orderTable.dto.TableGroupResponse;
+import kitchenpos.tableGroup.dto.TableGroupRequest;
+import kitchenpos.tableGroup.dto.TableGroupResponse;
 import kitchenpos.utils.AcceptanceTest;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;

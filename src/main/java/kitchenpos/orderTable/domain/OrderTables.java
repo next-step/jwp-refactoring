@@ -34,12 +34,8 @@ public class OrderTables {
         return Collections.unmodifiableList(this.orderTables);
     }
 
-    public void addTableGroup(Long tableGroupId) {
-        orderTables.forEach(orderTable -> orderTable.addTableGroup(tableGroupId));
-    }
-
-    public void reserve() {
-        orderTables.forEach(OrderTable::reserve);
+    public void reserve(Long tableGroupId) {
+        orderTables.forEach(orderTable -> orderTable.reserve(tableGroupId));
     }
 
     public boolean isNotEqualSize(int size) {

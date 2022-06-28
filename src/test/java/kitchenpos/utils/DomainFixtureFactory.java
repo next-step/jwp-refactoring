@@ -17,9 +17,9 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.orderTable.domain.OrderTable;
 import kitchenpos.orderTable.domain.OrderTables;
-import kitchenpos.orderTable.domain.TableGroup;
+import kitchenpos.tableGroup.domain.TableGroup;
 import kitchenpos.orderTable.dto.OrderTableRequest;
-import kitchenpos.orderTable.dto.TableGroupRequest;
+import kitchenpos.tableGroup.dto.TableGroupRequest;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
 
@@ -78,8 +78,8 @@ public class DomainFixtureFactory {
         return new OrderLineItemRequest(menuId, quantity);
     }
 
-    public static TableGroup createTableGroup(OrderTables orderTables, List<Long> orderTableIds) {
-        return TableGroup.from(orderTables, orderTableIds);
+    public static TableGroup createTableGroup(Long id) {
+        return TableGroup.from(id);
     }
 
     public static TableGroupRequest createTableGroupRequest(List<Long> orderTables) {
