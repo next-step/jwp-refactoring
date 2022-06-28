@@ -67,14 +67,8 @@ public class OrderService {
 
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderChangeStatusRequest orderChangeStatusRequest) {
-        OrderTable ordertable = findOrderTable(orderChangeStatusRequest.getOrderTableId());
-        OrderLineItems orderLineItems = findOrderLineItems(orderChangeStatusRequest.getOrderLineItems());
-        Order order = orderChangeStatusRequest.toOrder(ordertable, orderLineItems);
-
         final Order savedOrder = findOrder(orderId);
-
-        savedOrder.updateOrderStatus(order.getOrderStatus());
-
+        savedOrder.updateOrderStatus(orderChangeStatusRequest.getOrderStatus());
         saveOrder(savedOrder);
 
         return OrderResponse.of(savedOrder);
