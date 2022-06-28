@@ -1,8 +1,18 @@
+DROP TABLE IF EXISTS order_line_item;
+DROP TABLE IF EXISTS menu_product;
+DROP TABLE IF EXISTS product;
+DROP TABLE IF EXISTS menu;
+DROP TABLE IF EXISTS menu_group;
+DROP TABLE IF EXISTS orders;
+DROP TABLE IF EXISTS order_table;
+DROP TABLE IF EXISTS table_group;
+
+
 CREATE TABLE orders (
     id BIGINT(20) NOT NULL AUTO_INCREMENT,
     order_table_id BIGINT(20) NOT NULL,
     order_status VARCHAR(255) NOT NULL,
-    ordered_time DATETIME NOT NULL,
+    created_date DATETIME NOT NULL,
     PRIMARY KEY (id)
 );
 

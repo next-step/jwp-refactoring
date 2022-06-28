@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.response.MenuResponse;
 import org.springframework.http.HttpStatus;
 
 public class MenuAssertionHelper {
@@ -21,14 +22,14 @@ public class MenuAssertionHelper {
         );
     }
 
-    public static void 메뉴_리스트_조회됨(ExtractableResponse<Response> 조회결과, List<Menu> 등록메뉴_리스트) {
+    public static void 메뉴_리스트_조회됨(ExtractableResponse<Response> 조회결과, List<MenuResponse> 등록메뉴_리스트) {
         assertAll(
             () -> assertThat(조회결과.statusCode()).isEqualTo(HttpStatus.OK.value()),
             () -> assertThat(조회결과.jsonPath().getList("."))
                 .hasSize(등록메뉴_리스트.size())
                 .extracting("name").isEqualTo(
                     등록메뉴_리스트.stream()
-                        .map(Menu::getName)
+                        .map(MenuResponse::getName)
                         .collect(Collectors.toList())
                 )
         );

@@ -4,14 +4,15 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.request.OrderTableRequest;
+import kitchenpos.dto.request.TableGroupRequest;
+import kitchenpos.dto.response.OrderTableResponse;
 import org.springframework.http.MediaType;
 
 public class TableGroupApiHelper {
 
-    public static ExtractableResponse<Response> 단체_테이블_등록하기(List<OrderTable> 테이블_정보들) {
-        TableGroup 테이블그룹 = new TableGroup();
+    public static ExtractableResponse<Response> 단체_테이블_등록하기(List<OrderTableRequest> 테이블_정보들) {
+        TableGroupRequest 테이블그룹 = new TableGroupRequest();
         테이블그룹.setOrderTables(테이블_정보들);
 
         return RestAssured

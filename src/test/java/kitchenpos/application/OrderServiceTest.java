@@ -1,23 +1,33 @@
 package kitchenpos.application;
 
+import static kitchenpos.helper.ReflectionHelper.setMenuId;
+import static kitchenpos.helper.ReflectionHelper.setOrderId;
+import static kitchenpos.helper.ReflectionHelper.setOrderLineItemId;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Optional;
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.domainService.MenuOrderLineDomainService;
+import kitchenpos.dto.dto.OrderLineItemDTO;
+import kitchenpos.dto.request.OrderRequest;
+import kitchenpos.dto.response.OrderResponse;
+import kitchenpos.repository.MenuRepository;
+import kitchenpos.repository.OrderRepository;
+import kitchenpos.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,22 +41,19 @@ class OrderServiceTest {
     private OrderService orderService;
 
     @Mock
-    private MenuDao menuDao;
+    private MenuOrderLineDomainService menuOrderLineDomainService;
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
-    private OrderLineItemDao orderLineItemDao;
-
-    @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     private Order order;
     private MenuProduct chicken_menuProduct;
     private MenuProduct ham_menuProduct;
-    private OrderLineItem chickenOrder;
-    private OrderLineItem hamOrder;
+    private OrderLineItemDTO chickenOrder;
+    private OrderLineItemDTO hamOrder;
     private OrderTable orderTable;
 
     @BeforeEach
@@ -54,83 +61,96 @@ class OrderServiceTest {
         setMenu();
         setOrderLineItem();
         setOrderTable();
-        orderService = new OrderService(menuDao, orderDao, orderLineItemDao, orderTableDao);
-        order = new Order();
+        orderService = new OrderService(menuOrderLineDomainService, orderRepository, orderTableRepository);
 
+        order = new Order();
+        setOrderId(1L, order);
+
+        OrderLineItem hamOrderLineItem = new OrderLineItem(null, ham_menuProduct.getMenu().getId(),
+            1L);
+        OrderLineItem chickenOrderLineItem = new OrderLineItem(null, chicken_menuProduct.getMenu().getId(),
+            1L);
+        setOrderLineItemId(1L, chickenOrderLineItem);
+        setOrderLineItemId(2L, hamOrderLineItem);
+        order.mapOrderLineItem(hamOrderLineItem);
+        order.mapOrderLineItem(chickenOrderLineItem);
+
+        order.startCooking();
     }
 
     private void setOrderTable() {
-        orderTable = new OrderTable();
-        orderTable.setEmpty(true);
+        orderTable = new OrderTable(0, true);
     }
 
     private void setMenu() {
-        Product chicken = new Product();
-        chicken.setPrice(BigDecimal.valueOf(5000));
-        chicken_menuProduct = new MenuProduct();
-        chicken_menuProduct.setProductId(1L);
-        chicken_menuProduct.setQuantity(1);
-        chicken_menuProduct.setMenuId(1L);
+        Product chicken = new Product("chicken", BigDecimal.valueOf(5000));
+        Menu oneChickenMenu = new Menu("치킨한마리", BigDecimal.valueOf(4000), 1L);
+        setMenuId(1L, oneChickenMenu);
+        chicken_menuProduct = new MenuProduct(oneChickenMenu, 1L, 1L);
 
-        Product ham = new Product();
-        ham.setPrice(BigDecimal.valueOf(4000));
-        ham_menuProduct = new MenuProduct();
-        ham_menuProduct.setProductId(2L);
-        ham_menuProduct.setQuantity(1);
-        ham_menuProduct.setMenuId(1L);
+        Product ham = new Product("ham", BigDecimal.valueOf(4000));
+        Menu oneHamMenu = new Menu("햄한개", BigDecimal.valueOf(3000), 1L);
+        setMenuId(2L, oneHamMenu);
+        ham_menuProduct = new MenuProduct(oneHamMenu, 2L, 1L);
     }
 
     private void setOrderLineItem() {
-        chickenOrder = new OrderLineItem();
-        chickenOrder.setMenuId(chicken_menuProduct.getMenuId());
-        chickenOrder.setQuantity(1);
+        chickenOrder = new OrderLineItemDTO();
+        chickenOrder.setMenuId(chicken_menuProduct.getMenu().getId());
+        chickenOrder.setQuantity(1L);
 
-        hamOrder = new OrderLineItem();
-        hamOrder.setMenuId(ham_menuProduct.getMenuId());
-        hamOrder.setQuantity(2);
+        hamOrder = new OrderLineItemDTO();
+        hamOrder.setMenuId(ham_menuProduct.getMenu().getId());
+        hamOrder.setQuantity(2L);
     }
 
     @Test
     @DisplayName("주문 생성 정상로직")
     void createOrderHappyCase() {
         //given
-        order.setOrderLineItems(Arrays.asList(chickenOrder, hamOrder));
-        order.setOrderTableId(1L);
-        orderTable.setEmpty(false);
+        OrderRequest orderRequest = new OrderRequest();
+        orderRequest.setOrderLineItems(Arrays.asList(chickenOrder, hamOrder));
 
-        when(menuDao.countByIdIn(
-            Arrays.asList(chickenOrder.getMenuId(), hamOrder.getMenuId()))).thenReturn(2L);
-        when(orderTableDao.findById(1L)).thenReturn(Optional.of(orderTable));
-        when(orderDao.save(order)).thenReturn(order);
+        orderRequest.setOrderTableId(1L);
+        orderTable.changeIsEmpty(false);
+
+        doNothing().when(menuOrderLineDomainService).validateComponentForCreateOrder(orderRequest);
+        when(orderTableRepository.findById(1L)).thenReturn(Optional.of(orderTable));
+        when(orderRepository.save(any())).thenReturn(order);
 
         //when
-        Order order_created = orderService.create(order);
+        OrderResponse orderResponse = orderService.create(orderRequest);
 
         //then
         assertAll(
-            () -> assertThat(order_created.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name()),
-            () -> assertThat(order_created.getOrderLineItems()).hasSize(2)
+            () -> assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name()),
+            () -> assertThat(orderResponse.getOrderLineItems()).hasSize(2)
         );
     }
 
     @Test
     @DisplayName("주문 상품 없이 주문을 하면 에러 발생")
     void createWithoutItemsThrowError() {
+        //given
+        OrderRequest orderRequest = new OrderRequest();
+
         //when && then
-        assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(orderRequest)).isInstanceOf(
+            IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("주문 상품이 존재하지 않는것이 있다면 에러 발생")
     void createWithoutOrderThrowError() {
         //given
-        order.setOrderLineItems(Arrays.asList(chickenOrder, hamOrder));
-        when(menuDao.countByIdIn(
-            Arrays.asList(chickenOrder.getMenuId(), hamOrder.getMenuId())))
-            .thenReturn(1L);
+        OrderRequest orderRequest = new OrderRequest();
+        orderRequest.setOrderLineItems(Arrays.asList(chickenOrder, hamOrder));
+
+        doThrow(IllegalArgumentException.class).when(menuOrderLineDomainService)
+            .validateComponentForCreateOrder(orderRequest);
 
         //when && then
-        assertThatThrownBy(() -> orderService.create(order))
+        assertThatThrownBy(() -> orderService.create(orderRequest))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -138,13 +158,14 @@ class OrderServiceTest {
     @DisplayName("주문할 테이블이 존재하지 않다면 에러 발생")
     void createWithNotSavedTableThrowError() {
         //given
-        order.setOrderLineItems(Arrays.asList(chickenOrder, hamOrder));
-        when(menuDao.countByIdIn(
-            Arrays.asList(chickenOrder.getMenuId(), hamOrder.getMenuId())))
-            .thenReturn(2L);
+        OrderRequest orderRequest = new OrderRequest();
+        orderRequest.setOrderLineItems(Arrays.asList(chickenOrder, hamOrder));
+
+        doThrow(IllegalArgumentException.class).when(menuOrderLineDomainService)
+            .validateComponentForCreateOrder(orderRequest);
 
         //when && then
-        assertThatThrownBy(() -> orderService.create(order))
+        assertThatThrownBy(() -> orderService.create(orderRequest))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -152,39 +173,45 @@ class OrderServiceTest {
     @DisplayName("주문할 테이블이 비어있다면 에러 발생")
     void createWithEmptyTableThrowError() {
         //given
-        order.setOrderLineItems(Arrays.asList(chickenOrder, hamOrder));
-        when(menuDao.countByIdIn(
-            Arrays.asList(chickenOrder.getMenuId(), hamOrder.getMenuId()))).thenReturn(2L);
-        order.setOrderTableId(1L);
-        when(orderTableDao.findById(1L)).thenReturn(Optional.of(orderTable));
+        OrderRequest orderRequest = new OrderRequest();
+        orderRequest.setOrderLineItems(Arrays.asList(chickenOrder, hamOrder));
+        orderRequest.setOrderTableId(1L);
+
+        doNothing().when(menuOrderLineDomainService).validateComponentForCreateOrder(orderRequest);
+        when(orderTableRepository.findById(1L)).thenReturn(Optional.of(orderTable));
 
         //when && then
-        assertThatThrownBy(() -> orderService.create(order))
+        assertThatThrownBy(() -> orderService.create(orderRequest))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("오더 상태 수정 정상로직")
-    void changeOrderStatusHappyCase(){
+    void changeOrderStatusHappyCase() {
         //given
-        order.setOrderStatus("COOKING");
-        when(orderDao.findById(1L)).thenReturn(Optional.of(order));
+        OrderRequest orderRequest = new OrderRequest();
+        orderRequest.setOrderStatus(OrderStatus.COOKING);
+        when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
+        when(orderRepository.save(any())).thenReturn(order);
 
         //when
-        Order order_updated = orderService.changeOrderStatus(1L, order);
+        OrderResponse orderResponse = orderService.changeOrderStatus(1L, orderRequest);
 
-        assertThat(order_updated.getOrderStatus()).isEqualTo("COOKING");
+        assertThat(orderResponse.getOrderStatus()).isEqualTo("COOKING");
     }
 
     @Test
     @DisplayName("이미 완료된 오더 수정시 에러 발생")
     void changeOrderStatusAlreadyCompleteThrowError() {
         //given
-        when(orderDao.findById(1L)).thenReturn(Optional.of(order));
-        order.setOrderStatus("COMPLETION");
+        OrderRequest orderRequest = new OrderRequest();
+        orderRequest.setOrderStatus(OrderStatus.COMPLETION);
+        order.changeOrderStatus(OrderStatus.COMPLETION);
+
+        when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
 
         //when & then
-        assertThatThrownBy(() -> orderService.changeOrderStatus(1L, order))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(1L, orderRequest))
             .isInstanceOf(IllegalArgumentException.class);
     }
 }

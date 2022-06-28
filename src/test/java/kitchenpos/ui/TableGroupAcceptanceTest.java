@@ -1,88 +1,68 @@
 package kitchenpos.ui;
 
-import static kitchenpos.helper.AcceptanceApiHelper.MenuApiHelper.메뉴_추가하기;
-import static kitchenpos.helper.AcceptanceApiHelper.MenuGroupApiHelper.메뉴그룹_등록하기;
 import static kitchenpos.helper.AcceptanceApiHelper.OrderApiHelper.주문_상태_변경하기;
 import static kitchenpos.helper.AcceptanceApiHelper.OrderApiHelper.주문_생성하기;
-import static kitchenpos.helper.AcceptanceApiHelper.ProductApiHelper.상품_등록하기;
-import static kitchenpos.helper.AcceptanceApiHelper.TableApiHelper.유휴테이블_여부_설정하기;
-import static kitchenpos.helper.AcceptanceApiHelper.TableApiHelper.테이블_손님_인원_설정하기;
 import static kitchenpos.helper.AcceptanceApiHelper.TableGroupApiHelper.단체_테이블_등록하기;
 import static kitchenpos.helper.AcceptanceApiHelper.TableGroupApiHelper.단체_테이블_삭제하기;
 import static kitchenpos.helper.AcceptanceAssertionHelper.TableGroupAssertionHelper.단체_테이블_등록되어있음;
 import static kitchenpos.helper.AcceptanceAssertionHelper.TableGroupAssertionHelper.단체_테이블_에러발생;
-import static kitchenpos.ui.OrderAcceptanceTest.먹는중;
-import static kitchenpos.ui.TableAcceptanceTest.사용중;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
-import kitchenpos.domain.TableGroup;
-import kitchenpos.helper.AcceptanceApiHelper.TableApiHelper;
+import kitchenpos.dto.request.OrderTableRequest;
+import kitchenpos.dto.response.OrderResponse;
+import kitchenpos.dto.response.OrderTableResponse;
+import kitchenpos.dto.response.TableGroupResponse;
 import kitchenpos.helper.AcceptanceApiHelper.TableGroupApiHelper;
 import kitchenpos.helper.AcceptanceAssertionHelper.TableGroupAssertionHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.context.jdbc.Sql;
 
-@Sql(scripts = {"/test/db/cleanUp.sql"})
+
 class TableGroupAcceptanceTest extends AcceptanceTest {
 
-    private OrderTable 빈테이블_1;
-    private OrderTable 빈테이블_2;
-    private OrderTable 사용중인테이블;
-    private Menu 양념두마리_메뉴;
-    private OrderLineItem 주문;
+    /**
+     *테이블
+         * 테이블_1 : 사용중 , 2명
+         * 테이블_2 : 사용중 , 3명
+         * 빈테이블_1 : 미사용중, 0명
+         * 빈테이블_2 : 미사용중, 0명
+     * 메뉴그룹
+         * 두마리메뉴
+         * 세마리메뉴
+         * 반반메뉴
+     * 상품
+         * 후라이드 : 17000원
+         * 양념 : 15000원
+     * 메뉴
+         * 양념두마리메뉴 : 2222원, 두마리메뉴(그룹명), 양념한마리
+         * 양념세마리메뉴 : 3333원, 세마리메뉴(그룹명), 양념세마리
+         * 반반메뉴 : 1111원, 반반메뉴(그룹명), 양념한마리&후라이드한마리
+     * 주문
+         * 양념두마리메뉴,2개
+     */
 
     @BeforeEach
-    public void init() {
-        테이블_설정하기();
-        메뉴_설정하기();
-        주문_설정하기();
-    }
-
-    private void 주문_설정하기(){
-        주문 = new OrderLineItem();
-        주문.setMenuId(양념두마리_메뉴.getId());
-        주문.setQuantity(2);
-    }
-    private void 메뉴_설정하기() {
-        Product 양념 = 상품_등록하기("양념", 15000).as(Product.class);
-        MenuGroup 두마리메뉴 = 메뉴그룹_등록하기("두마리메뉴").as(MenuGroup.class);
-        MenuProduct 양념_한마리 = new MenuProduct();
-        양념_한마리.setProductId(양념.getId());
-        양념_한마리.setQuantity(2);
-        양념두마리_메뉴 = 메뉴_추가하기("양념두마리", 25000, 두마리메뉴.getId(), Arrays.asList(양념_한마리)).as(Menu.class);
-    }
-
-    private void 테이블_설정하기() {
-        빈테이블_1 = TableApiHelper.빈테이블_생성하기().as(OrderTable.class);
-        빈테이블_2 = TableApiHelper.빈테이블_생성하기().as(OrderTable.class);
-        사용중인테이블 = TableApiHelper.빈테이블_생성하기().as(OrderTable.class);
-
-        유휴테이블_여부_설정하기(사용중, 사용중인테이블.getId());
-        테이블_손님_인원_설정하기(2, 사용중인테이블.getId());
+    public void init(){
+        super.init();
     }
 
     /**
-     * background
-        * given : 빈테이블 2개를 생성하고
+    * given : 빈테이블 2개를 생성하고
      * when : 테이블 2개를 단체로 설정시
      * then : 정상적으로 등록된다.
      */
     @Test
     public void 테이블그룹_생성하기_테스트() {
+        //given
+        OrderTableRequest 빈테이블_1_request = getOrderTableRequestFromResponse(빈테이블_1);
+        OrderTableRequest 빈테이블_2_request = getOrderTableRequestFromResponse(빈테이블_2);
+
         //when
         ExtractableResponse<Response> 단체_테이블_등록하기_response = 단체_테이블_등록하기(
-            Arrays.asList(빈테이블_1, 빈테이블_2));
+            Arrays.asList(빈테이블_1_request, 빈테이블_2_request));
 
         //then
         단체_테이블_등록되어있음(단체_테이블_등록하기_response);
@@ -98,7 +78,11 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     @Test
     public void 테이블그룹_삭제하기_테스트() {
         //given
-        TableGroup 단체테이블 = 단체_테이블_등록하기(Arrays.asList(빈테이블_1, 빈테이블_2)).as(TableGroup.class);
+        OrderTableRequest 빈테이블_1_request = getOrderTableRequestFromResponse(빈테이블_1);
+        OrderTableRequest 빈테이블_2_request = getOrderTableRequestFromResponse(빈테이블_2);
+
+        TableGroupResponse 단체테이블 = 단체_테이블_등록하기(Arrays.asList(빈테이블_1_request, 빈테이블_2_request)).as(
+            TableGroupResponse.class);
 
         //when
         ExtractableResponse<Response> 단체_테이블_삭제하기_response = TableGroupApiHelper.단체_테이블_삭제하기(
@@ -117,9 +101,14 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
      */
     @Test
     public void 테이블그룹_사용중인테이블있을시_에러발생() {
+        //given
+        OrderTableRequest 빈테이블_1_request = getOrderTableRequestFromResponse(빈테이블_1);
+        OrderTableRequest 빈테이블_2_request = getOrderTableRequestFromResponse(빈테이블_2);
+        OrderTableRequest 테이블_1_request = getOrderTableRequestFromResponse(테이블_1);
+
         //when
         ExtractableResponse<Response> 단체_테이블_등록하기_response = 단체_테이블_등록하기(
-            Arrays.asList(빈테이블_1, 빈테이블_2, 사용중인테이블));
+            Arrays.asList(빈테이블_1_request, 빈테이블_2_request, 테이블_1_request));
 
         //then
         단체_테이블_에러발생(단체_테이블_등록하기_response);
@@ -133,9 +122,12 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
      */
     @Test
     public void 테이블그룹_1개이하테이블_등록시_에러발생() {
+        //given
+        OrderTableRequest 빈테이블_1_request = getOrderTableRequestFromResponse(빈테이블_1);
+
         //when
         ExtractableResponse<Response> 단체_테이블_등록하기_response = 단체_테이블_등록하기(
-            Arrays.asList(빈테이블_1));
+            Arrays.asList(빈테이블_1_request));
 
         //then
         단체_테이블_에러발생(단체_테이블_등록하기_response);
@@ -149,8 +141,8 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     @Test
     public void 테이블그룹_없는테이블_등록시_에러발생() {
         //given
-        OrderTable 없는테이블_1 = new OrderTable();
-        OrderTable 없는테이블_2 = new OrderTable();
+        OrderTableRequest 없는테이블_1 = new OrderTableRequest();
+        OrderTableRequest 없는테이블_2 = new OrderTableRequest();
 
         //when
         ExtractableResponse<Response> 단체_테이블_등록하기_response = 단체_테이블_등록하기(
@@ -168,10 +160,15 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
      */
     @Test
     public void 테이블그룹_다먹지않은테이블_삭제시_에러발생() {
+
         //given
-        TableGroup 단체테이블 = 단체_테이블_등록하기(Arrays.asList(빈테이블_1, 빈테이블_2)).as(TableGroup.class);
-        주문_생성하기(빈테이블_1.getId(), Arrays.asList(주문)).as(Order.class);
-        주문_생성하기(빈테이블_2.getId(), Arrays.asList(주문)).as(Order.class);
+        OrderTableRequest 빈테이블_1_request = getOrderTableRequestFromResponse(빈테이블_1);
+        OrderTableRequest 빈테이블_2_request = getOrderTableRequestFromResponse(빈테이블_2);
+
+        TableGroupResponse 단체테이블 = 단체_테이블_등록하기(Arrays.asList(빈테이블_1_request, 빈테이블_2_request)).as(
+            TableGroupResponse.class);
+        주문_생성하기(빈테이블_1.getId(), Arrays.asList(주문)).as(OrderResponse.class);
+        주문_생성하기(빈테이블_2.getId(), Arrays.asList(주문)).as(OrderResponse.class);
         주문_상태_변경하기(먹는중, 빈테이블_1.getId());
 
         //when
@@ -181,4 +178,12 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
         단체_테이블_에러발생(단체_테이블_삭제하기_response);
     }
 
+    private OrderTableRequest getOrderTableRequestFromResponse(
+        OrderTableResponse orderTableResponse) {
+        OrderTableRequest orderTableRequest = new OrderTableRequest();
+        orderTableRequest.setNumberOfGuests(orderTableResponse.getNumberOfGuests());
+        orderTableRequest.setEmpty(orderTableResponse.isEmpty());
+        orderTableRequest.setId(orderTableResponse.getId());
+        return orderTableRequest;
+    }
 }

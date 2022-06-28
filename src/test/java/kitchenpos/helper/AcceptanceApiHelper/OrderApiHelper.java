@@ -8,12 +8,14 @@ import java.util.List;
 import java.util.Map;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.dto.dto.OrderLineItemDTO;
+import kitchenpos.dto.request.OrderRequest;
 import org.springframework.http.MediaType;
 
 public class OrderApiHelper {
 
-    public static ExtractableResponse<Response> 주문_생성하기(long 테이블_ID, List<OrderLineItem> 주문메뉴) {
-        Order 오더 = new Order();
+    public static ExtractableResponse<Response> 주문_생성하기(long 테이블_ID, List<OrderLineItemDTO> 주문메뉴) {
+        OrderRequest 오더 = new OrderRequest();
         오더.setOrderTableId(테이블_ID);
         오더.setOrderLineItems(주문메뉴);
 

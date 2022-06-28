@@ -59,6 +59,49 @@
 
 ---
 
+---
+step2 
+- 서비스 리팩토링
+  - Controller - Domain 의존성 삭제
+    - Controller에서 @RequestBody로 요청 받을때, domain이 아닌 RequestDTO 객체로 받음
+    - Controller에서 Domain을 Body로 반환할때, domain이 아닌 ResponseDTO 객체로 반환
+  - Exception 발생시 Advice를 통한 400Error발생
+  - JpaRepository를 통한 구현
+    - OneToMany 관계 1급 콜렉션으로 wrapping
+    - 인원수, 가격에 대한 원시값을 객체로 묶어 검증 로직 이동(@Embedded)
+    - Order, TableGroup에서 사용하는 시간값을 Auditing기능을 이용하여 삽입
+    - 불필요한 직접참조 삭제 
+      - 이로서 발생하는 ID참조 객체간 처리는 DomainService생성하여 구현
+    
+| Entity_A   | 관계  | Entity_B      | 관계구현방식 | 비고                                   |
+|------------|-----|---------------|--------|--------------------------------------|
+| Product    | 1:N | MenuProduct   | ID참조   |                                      |
+| Menu       | 1:N | MenuProduct   | 직접참조   | MenuProduct에 대한 생명주기 Menu에서 관리       |
+| MenuGroup  | 1:N | Menu          | ID참조   |                                      |
+| MENU       | 1:N | OrderLineItem | ID참조   |                                      |
+| Order      | 1:N | OrderLineItem | 직접참조   | OrderLineItem에 대한 생명주기 Order에서 관리    |
+| OrderTable | 1:N | Order         | ID참조   |                                      |
+| TableGroup | 1:N | OrderTable    | ID참조   |                                      |
+ 
+- 개발순서
+1. JPA기능 사용
+   1. 모든 domain을 Entity화
+   2. dao -> JpaReposiory로 변경
+      1. dao 기능 중 custom query를 JpaRepository에 동일하게 구현 
+   3. 모든 서비스 로직에 dao 대신 JPARepository 주입, repository 사용 코드로 변경
+2. Controller - Domain 격리
+   1. Controller가 Domain객체를 사용하는것이 아닌, 용도에 맞는 Request/Response DTO를 사용
+3. Service Layer Test 수정
+   1. Domain Layer엔 비즈니스 로직이 없어 Service Layer부터 시작한다
+   2. 인수테스트는 큰 범위의 테스트이므로 그보다 작은 Service Layer부터 시작한다.
+   3. 기존과 동일하게 해당하는 Service Layer을 제외한 모든 객체들로부터 격리한다(Mock)
+4. Acception Test 수정 
+    1. Controller의 받는 데이터 타입이 변경되어(Response/Request DTO) 해당 부분 수정 
+5. .http/ 파일들 수정 
+6. Embedded, Embeddable을 통해 Price / NumberOfGuest 검증로직 도메인으로 이동
+7. 간접참조 객체들에 대한 검증 로직을 도메인서비스로 추출
+8. 검증기능, 비즈니스 로직을 가진 도메인들에 대한 테스트코드 작성 
+
 ## 용어 사전
 
 | 한글명 | 영문명 | 설명 |
