@@ -16,8 +16,10 @@ import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductPrice;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
+@Transactional(readOnly = true)
 public class MenuValidator {
 
     private static final String MENU_GROUP_IS_NOT_NULL = "메뉴생성 시 메뉴그룹이 필수입니다.";

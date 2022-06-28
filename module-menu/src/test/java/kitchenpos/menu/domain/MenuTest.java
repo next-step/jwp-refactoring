@@ -1,4 +1,4 @@
-package kitchenpos.domain.menu;
+package kitchenpos.menu.domain;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -6,17 +6,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.math.BigDecimal;
 import java.util.List;
-import kitchenpos.fixture.MenuGroupFixtureFactory;
-import kitchenpos.fixture.ProductFixtureFactory;
 import kitchenpos.menu.application.MenuValidator;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuGroupRepository;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.exception.EmptyNameException;
 import kitchenpos.menu.exception.MenuPriceException;
 import kitchenpos.menu.exception.NegativePriceException;
 import kitchenpos.menu.exception.NotFoundMenuGroupException;
+import kitchenpos.menu.fixture.MenuGroupFixtureFactory;
+import kitchenpos.menu.fixture.ProductFixtureFactory;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.assertj.core.util.Lists;

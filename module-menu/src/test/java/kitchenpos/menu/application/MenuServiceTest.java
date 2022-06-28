@@ -1,46 +1,39 @@
-package kitchenpos.application;
+package kitchenpos.menu.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.math.BigDecimal;
 import java.util.List;
-import kitchenpos.fixture.MenuFixtureFactory;
-import kitchenpos.fixture.MenuGroupFixtureFactory;
-import kitchenpos.fixture.MenuProductFixtureFactory;
-import kitchenpos.fixture.ProductFixtureFactory;
-import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
-import kitchenpos.menu.exception.NegativePriceException;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.exception.CreateMenuProductException;
 import kitchenpos.menu.exception.MenuPriceException;
+import kitchenpos.menu.exception.NegativePriceException;
 import kitchenpos.menu.exception.NotFoundMenuGroupException;
+import kitchenpos.menu.fixture.MenuFixtureFactory;
+import kitchenpos.menu.fixture.MenuGroupFixtureFactory;
+import kitchenpos.menu.fixture.MenuProductFixtureFactory;
+import kitchenpos.menu.fixture.ProductFixtureFactory;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
-import org.springframework.stereotype.Component;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 
-@ExtendWith(SpringExtension.class)
-@DataJpaTest(includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = Component.class))
+@SpringBootTest
 class MenuServiceTest {
 
     @Autowired
@@ -98,7 +91,7 @@ class MenuServiceTest {
 
         // then
         Menu findMenu = menuRepository.findById(response.getId()).get();
-        assertThat(response).isEqualTo(MenuResponse.from(findMenu));
+        assertThat(response.getId()).isEqualTo(findMenu.getId());
     }
 
     @DisplayName("메뉴 가격은 0원 이상이어야 한다. (null)")
@@ -190,6 +183,6 @@ class MenuServiceTest {
         List<MenuResponse> menus = menuService.list();
 
         // then
-        assertThat(menus).contains(MenuResponse.from(A));
+        assertThat(menus).hasSize(1);
     }
 }

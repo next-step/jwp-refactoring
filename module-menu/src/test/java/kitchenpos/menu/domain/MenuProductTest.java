@@ -1,4 +1,4 @@
-package kitchenpos.domain.menu;
+package kitchenpos.menu.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -6,18 +6,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.math.BigDecimal;
-import kitchenpos.fixture.MenuFixtureFactory;
-import kitchenpos.fixture.MenuGroupFixtureFactory;
-import kitchenpos.fixture.ProductFixtureFactory;
 import kitchenpos.menu.application.MenuValidator;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuGroupRepository;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.exception.CreateMenuProductException;
+import kitchenpos.menu.fixture.MenuFixtureFactory;
+import kitchenpos.menu.fixture.MenuGroupFixtureFactory;
+import kitchenpos.menu.fixture.ProductFixtureFactory;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
-import kitchenpos.menu.exception.CreateMenuProductException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,9 +1,8 @@
-package kitchenpos.domain.menu;
+package kitchenpos.menu.domain;
 
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.exception.EmptyNameException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
