@@ -57,16 +57,15 @@ class MenuServiceTest {
     private List<MenuProduct> menuProducts;
     private Product 초밥;
     private Product 우동;
+    private List<Product> products;
     private MenuGroup menuGroup;
 
     @BeforeEach
     void setUp() {
         초밥 = new Product(1L, "초밥", BigDecimal.valueOf(10000));
         우동 = new Product(2L, "우동", BigDecimal.valueOf(3000));
+        products = Arrays.asList(초밥, 우동);
         menuGroup = new MenuGroup(1L, "런치메뉴");
-
-        //Menu menu1 = 메뉴_데이터_생성(1L, BigDecimal.valueOf(10000));
-        //Menu menu2 = 메뉴_데이터_생성(2L, BigDecimal.valueOf(20000));
 
         requestMenuProductSeq1 = new MenuProduct(1L, null, 초밥, 2);
         requestMenuProductSeq2 = new MenuProduct(2L, null, 우동, 2);
@@ -80,9 +79,7 @@ class MenuServiceTest {
         MenuRequest request = 메뉴_요청_데이터_생성(BigDecimal.valueOf(26000));
         Menu 예상값 = 메뉴_데이터_생성(1L, BigDecimal.valueOf(26000));
         given(menuGroupRepository.findById(any())).willReturn(Optional.ofNullable(menuGroup));
-        given(productRepository.findById(1L)).willReturn(Optional.ofNullable(초밥));
-        given(productRepository.findById(2L)).willReturn(Optional.ofNullable(우동));
-        given(productRepository.existsAllByIdIn(anyList())).willReturn(true);
+        given(productRepository.findAllByIdIn(anyList())).willReturn(products);
         given(menuRepository.save(any(Menu.class))).willReturn(예상값);
 
         // when
@@ -128,9 +125,6 @@ class MenuServiceTest {
         // given
         MenuRequest request = 메뉴_요청_데이터_생성(BigDecimal.valueOf(25000));
         given(menuGroupRepository.findById(any())).willReturn(Optional.ofNullable(menuGroup));
-        given(productRepository.existsAllByIdIn(anyList())).willReturn(false);
-        given(productRepository.findById(1L)).willReturn(Optional.ofNullable(초밥));
-        given(productRepository.findById(2L)).willReturn(Optional.ofNullable(우동));
 
         // when && then
         assertThatThrownBy(() -> 메뉴_생성(request))
@@ -144,8 +138,6 @@ class MenuServiceTest {
         // given
         MenuRequest request = 메뉴_요청_데이터_생성(BigDecimal.valueOf(26001));
         given(menuGroupRepository.findById(any())).willReturn(Optional.ofNullable(menuGroup));
-        given(productRepository.findById(1L)).willReturn(Optional.ofNullable(초밥));
-        given(productRepository.findById(2L)).willReturn(Optional.ofNullable(우동));
 
         // when && then
         assertThatThrownBy(() -> 메뉴_생성(request))

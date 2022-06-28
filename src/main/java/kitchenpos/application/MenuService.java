@@ -14,6 +14,7 @@ import kitchenpos.dto.menuProduct.MenuProductRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -43,9 +44,6 @@ public class MenuService {
 
         menu.bindMenuProducts();
 
-        List<Long> productIds = menu.getMenuProducts().findProductIds();
-        extractedProducts(productIds);
-
         return MenuResponse.of(saveMenu(menu));
     }
 
@@ -56,12 +54,6 @@ public class MenuService {
         return menus.stream()
                 .map(MenuResponse::of)
                 .collect(Collectors.toList());
-    }
-
-    private void extractedProducts(List<Long> productIds) {
-        if (!productRepository.existsAllByIdIn(productIds)) {
-            throw new IllegalArgumentException("잘못된 상품 정보 입니다.");
-        }
     }
 
     private MenuGroup findMenuGroup(Long menuGroupId) {
@@ -78,18 +70,34 @@ public class MenuService {
     }
 
     private MenuProducts findMenuProducts(List<MenuProductRequest> menuProducts) {
-        return new MenuProducts(menuProducts.stream()
-                .map(this::createMenuProduct)
-                .collect(Collectors.toList()));
+        List<Long> productIds = createProductIds(menuProducts);
+
+        List<Product> products = findProductsByIdIn(productIds);
+
+        if (isSameSize(productIds.size(), products.size())) {
+            throw new IllegalArgumentException("잘못된 상품 정보 입니다.");
+        }
+
+        List<MenuProduct> list = new ArrayList<>();
+
+        for (int i = 0; i < products.size(); i++) {
+            list.add(new MenuProduct(products.get(i), menuProducts.get(i).getQuantity()));
+        }
+
+        return new MenuProducts(list);
     }
 
-    private MenuProduct createMenuProduct(MenuProductRequest menuProductRequest) {
-        Product product = findProduct(menuProductRequest.getProductId());
-        return new MenuProduct(product, menuProductRequest.getQuantity());
+    private List<Product> findProductsByIdIn(List<Long> productIds) {
+        return productRepository.findAllByIdIn(productIds);
     }
 
-    private Product findProduct(Long productId) {
-        return productRepository.findById(productId)
-                .orElseThrow(NoSuchElementException::new);
+    private List<Long> createProductIds(List<MenuProductRequest> menuProducts) {
+        return menuProducts.stream()
+                .map(MenuProductRequest::getProductId)
+                .collect(Collectors.toList());
+    }
+
+    private boolean isSameSize(int size, int comparison) {
+        return size != comparison;
     }
 }
