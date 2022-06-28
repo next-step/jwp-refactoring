@@ -1,7 +1,7 @@
 package kitchenpos.order.application;
 
-import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
@@ -9,29 +9,28 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemResponse;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
 public class OrderService {
     private final OrderRepository orderRepository;
-    private final MenuService menuService;
-    private final TableService tableService;
+    private final MenuRepository menuRepository;
+    private final TableRepository tableRepository;
 
     public OrderService(
             final OrderRepository orderRepository,
-            final MenuService menuService,
-            final TableService tableService) {
+            final MenuRepository menuRepository,
+            final TableRepository tableRepository) {
         this.orderRepository = orderRepository;
-        this.menuService = menuService;
-        this.tableService = tableService;
+        this.menuRepository = menuRepository;
+        this.tableRepository = tableRepository;
     }
 
     @Transactional
@@ -41,7 +40,7 @@ public class OrderService {
     }
 
     private Order toEntity(final OrderRequest request) {
-        OrderTable orderTable = tableService.findOrderTableById(request.getOrderTableId());
+        OrderTable orderTable = tableRepository.getById(request.getOrderTableId());
 
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException("빈 테이블에는 주문을 등록할 수 없습니다.");
@@ -49,7 +48,7 @@ public class OrderService {
 
         List<OrderLineItem> orderLineItems = request.getOrderLineItems().stream()
                 .map(itemRequest -> new OrderLineItem(
-                        menuService.findMenuById(itemRequest.getMenuId()).getId(),
+                        menuRepository.getById(itemRequest.getMenuId()).getId(),
                         itemRequest.getQuantity()))
                 .collect(Collectors.toList());
 
@@ -65,7 +64,7 @@ public class OrderService {
     private OrderResponse toResponse(Order order) {
         List<OrderLineItemResponse> orderLineItemResponses = order.getOrderLineItems().stream()
                 .map(orderLineItem -> {
-                    Menu menu = menuService.findMenuById(orderLineItem.getMenuId());
+                    Menu menu = menuRepository.getById(orderLineItem.getMenuId());
                     return new OrderLineItemResponse(
                             orderLineItem.getId(),
                             menu.getName(),
@@ -83,12 +82,7 @@ public class OrderService {
 
     @Transactional
     public void changeOrderStatus(final Long orderId, final OrderStatus status) {
-        Order order = findOrderById(orderId);
+        Order order = orderRepository.getById(orderId);
         order.changeOrderStatus(status);
-    }
-
-    public Order findOrderById(final Long id) {
-        return orderRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("주문을 찾을 수 없습니다. id: " + id));
     }
 }

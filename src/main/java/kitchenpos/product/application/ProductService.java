@@ -1,14 +1,13 @@
 package kitchenpos.product.application;
 
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
-import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,10 +33,5 @@ public class ProductService {
         return productRepository.findAll().stream()
                 .map(product -> ProductResponse.of(product))
                 .collect(Collectors.toList());
-    }
-
-    public Product findProductById(final Long id) {
-        return productRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("상품을 찾을 수 없습니다. id: " + id));
     }
 }

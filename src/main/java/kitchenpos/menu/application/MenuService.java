@@ -2,37 +2,37 @@ package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuProductResponse;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
 public class MenuService {
     private final MenuRepository menuRepository;
-    private final MenuGroupService menuGroupService;
-    private final ProductService productService;
+    private final MenuGroupRepository menuGroupRepository;
+    private final ProductRepository productRepository;
 
     public MenuService(
             final MenuRepository menuRepository,
-            final MenuGroupService menuGroupService,
-            final ProductService productService
+            final MenuGroupRepository menuGroupRepository,
+            final ProductRepository productRepository
     ) {
         this.menuRepository = menuRepository;
-        this.menuGroupService = menuGroupService;
-        this.productService = productService;
+        this.menuGroupRepository = menuGroupRepository;
+        this.productRepository = productRepository;
     }
 
     @Transactional
@@ -49,7 +49,7 @@ public class MenuService {
     private BigDecimal totalAmount(List<MenuProductRequest> menuProductRequests) {
         return menuProductRequests.stream()
                 .map(menuProduct ->
-                        productService.findProductById(menuProduct.getProductId())
+                        productRepository.getById(menuProduct.getProductId())
                                 .getPrice(menuProduct.getQuantity()))
                 .reduce(BigDecimal.ZERO, (acc, amount) -> acc.add(amount));
     }
@@ -60,7 +60,7 @@ public class MenuService {
                         menuProduct.getProductId(),
                         menuProduct.getQuantity()))
                 .collect(Collectors.toList());
-        MenuGroup menuGroup = menuGroupService.findMenuGroupById(request.getMenuGroupId());
+        MenuGroup menuGroup = menuGroupRepository.getById(request.getMenuGroupId());
 
         return Menu.createMenu(
                 request.getName(),
@@ -79,7 +79,7 @@ public class MenuService {
     public MenuResponse toResponse(Menu menu) {
         List<MenuProductResponse> menuProductResponses = menu.getMenuProducts().stream()
                 .map(menuProduct -> {
-                    Product product = productService.findProductById(menuProduct.getProductId());
+                    Product product = productRepository.getById(menuProduct.getProductId());
                     return MenuProductResponse.of(
                             product.getId(),
                             product.getName(),
@@ -93,10 +93,5 @@ public class MenuService {
                 menu.getPrice(),
                 menu.getMenuGroup().getId(),
                 menuProductResponses);
-    }
-
-    public Menu findMenuById(final Long id) {
-        return menuRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("메뉴를 찾을 수 없습니다. id: " + id));
     }
 }

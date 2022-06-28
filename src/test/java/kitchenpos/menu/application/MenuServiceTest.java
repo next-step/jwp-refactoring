@@ -7,8 +7,8 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
@@ -33,7 +33,7 @@ class MenuServiceTest {
     MenuRepository menuRepository;
 
     @Mock
-    ProductService productService;
+    ProductRepository productRepository;
 
     @InjectMocks
     MenuService menuService;
@@ -45,7 +45,7 @@ class MenuServiceTest {
         Product 스테이크 = new Product(1L, "스테이크", 200);
         Product 샐러드 = new Product(2L, "샐러드", 100);
         Product 에이드 = new Product(3L, "에이드", 50);
-        when(productService.findProductById(any(Long.class))).thenReturn(스테이크, 샐러드, 에이드);
+        doReturn(스테이크, 샐러드, 에이드).when(productRepository).getById(any(Long.class));
 
         // when, then
         assertThatThrownBy(
@@ -80,7 +80,7 @@ class MenuServiceTest {
                 Arrays.asList(new MenuProduct(2L, 2))
         );
         given(menuRepository.findAll()).willReturn(Arrays.asList(메뉴1, 메뉴2));
-        when(productService.findProductById(any(Long.class))).thenReturn(스테이크, 샐러드, 에이드);
+        doReturn(스테이크, 샐러드, 에이드).when(productRepository).getById(any(Long.class));
 
         // when
         List<MenuResponse> menuResponses = menuService.list();

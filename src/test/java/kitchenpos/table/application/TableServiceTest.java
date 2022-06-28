@@ -13,7 +13,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -53,7 +52,7 @@ class TableServiceTest {
     void 빈_테이블로_설정_예외_잘못된_주문_상태() {
         // given
         OrderTable 테이블 = new OrderTable(null, 0, false);
-        given(tableRepository.findById(any(Long.class))).willReturn(Optional.of(테이블));
+        given(tableRepository.getById(any(Long.class))).willReturn(테이블);
         given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(true);
 
         // when, then

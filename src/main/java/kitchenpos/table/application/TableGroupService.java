@@ -2,25 +2,27 @@ package kitchenpos.table.application;
 
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.table.domain.TableRepository;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
-import kitchenpos.table.domain.TableGroupRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
 public class TableGroupService {
-    private final TableService tableService;
+    private final TableRepository tableRepository;
     private final TableGroupRepository tableGroupRepository;
+    private final TableService tableService;
 
-    public TableGroupService(final TableService tableService, final TableGroupRepository tableGroupRepository) {
-        this.tableService = tableService;
+    public TableGroupService(final TableRepository tableRepository, final TableGroupRepository tableGroupRepository, TableService tableService) {
+        this.tableRepository = tableRepository;
         this.tableGroupRepository = tableGroupRepository;
+        this.tableService = tableService;
     }
 
     @Transactional
@@ -31,7 +33,7 @@ public class TableGroupService {
 
     private TableGroup toEntity(final TableGroupRequest request) {
         List<OrderTable> orderTables = request.getOrderTableIds().stream()
-                .map(id -> tableService.findOrderTableById(id))
+                .map(id -> tableRepository.getById(id))
                 .collect(Collectors.toList());
 
         return new TableGroup(orderTables);
@@ -39,7 +41,7 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        TableGroup tableGroup = findTableGroupById(tableGroupId);
+        TableGroup tableGroup = tableGroupRepository.getById(tableGroupId);
 
         final List<Long> orderTableIds = tableGroup.getOrderTables()
                 .stream()
@@ -52,10 +54,5 @@ public class TableGroupService {
         }
 
         tableGroup.ungroup();
-    }
-
-    public TableGroup findTableGroupById(final Long id) {
-        return tableGroupRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("테이블 그룹을 찾을 수 없습니다. id: " + id));
     }
 }

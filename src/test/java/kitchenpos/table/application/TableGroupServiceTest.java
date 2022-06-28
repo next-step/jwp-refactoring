@@ -11,7 +11,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -36,7 +35,7 @@ class TableGroupServiceTest {
         OrderTable 빈_테이블1 = new OrderTable(null, 0, true);
         OrderTable 빈_테이블2 = new OrderTable(null, 0, true);
         TableGroup 테이블_그룹 = new TableGroup(1L, Arrays.asList(빈_테이블1, 빈_테이블2));
-        doReturn(Optional.of(테이블_그룹)).when(tableGroupRepository).findById(any(Long.class));
+        doReturn(테이블_그룹).when(tableGroupRepository).getById(any(Long.class));
         doReturn(true).when(tableService).hasCookingOrMeal(any(OrderTable.class));
 
         // when, then

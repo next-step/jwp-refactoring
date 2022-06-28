@@ -1,16 +1,15 @@
 package kitchenpos.table.application;
 
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableRepository;
 import kitchenpos.table.dto.TableRequest;
 import kitchenpos.table.dto.TableResponse;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.table.domain.TableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,7 +45,7 @@ public class TableService {
 
     @Transactional
     public void changeEmpty(final Long orderTableId, final boolean empty) {
-        OrderTable orderTable = findOrderTableById(orderTableId);
+        OrderTable orderTable = tableRepository.getById(orderTableId);
 
         if (empty && hasCookingOrMeal(orderTable)) {
             throw new IllegalStateException("조리 혹은 식사 상태인 테이블이 있어서 빈 테이블로 설정할 수 없습니다. id: " + orderTableId);
@@ -61,12 +60,7 @@ public class TableService {
 
     @Transactional
     public void changeNumberOfGuests(final Long orderTableId, final int numberOfGuests) {
-        OrderTable orderTable = findOrderTableById(orderTableId);
+        OrderTable orderTable = tableRepository.getById(orderTableId);
         orderTable.changeNumberOfGuests(numberOfGuests);
-    }
-
-    public OrderTable findOrderTableById(final Long id) {
-        return tableRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("주문 테이블을 찾을 수 없습니다. id: " + id));
     }
 }
