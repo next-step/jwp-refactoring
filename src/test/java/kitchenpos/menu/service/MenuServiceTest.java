@@ -3,14 +3,14 @@ package kitchenpos.menu.service;
 import kitchenpos.application.MenuService;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
 import kitchenpos.menugroup.application.MenuGroupServiceTest;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.application.ProductServiceTest;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,18 +45,18 @@ public class MenuServiceTest {
     private MenuProductDao menuProductDao;
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @BeforeEach
     void setUp() {
-        menuService = new MenuService(menuDao, menuGroupRepository, menuProductDao, productDao);
+        menuService = new MenuService(menuDao, menuGroupRepository, menuProductDao, productRepository);
     }
 
     @DisplayName("메뉴를 생성한다.")
     @Test
     public void create() {
         when(menuGroupRepository.existsById(any())).thenReturn(true);
-        when(productDao.findById(any())).thenReturn(Optional.of(ProductServiceTest.createProduct01()));
+        when(productRepository.findById(any())).thenReturn(Optional.of(ProductServiceTest.createProduct01()));
         when(menuDao.save(any())).thenReturn(createMenu01());
         when(menuProductDao.save(any())).thenReturn(createMenuProduct01());
 
@@ -100,7 +100,7 @@ public class MenuServiceTest {
     @Test
     public void create_without_product() {
         when(menuGroupRepository.existsById(any())).thenReturn(true);
-        when(productDao.findById(any())).thenReturn(Optional.empty());
+        when(productRepository.findById(any())).thenReturn(Optional.empty());
 
         // when, then
         assertThatThrownBy(() -> {
@@ -112,7 +112,7 @@ public class MenuServiceTest {
     @Test
     public void create_expensive_than_menu_products() {
         when(menuGroupRepository.existsById(any())).thenReturn(true);
-        when(productDao.findById(any())).thenReturn(Optional.of(ProductServiceTest.createProduct01()));
+        when(productRepository.findById(any())).thenReturn(Optional.of(ProductServiceTest.createProduct01()));
 
         // when, then
         assertThatThrownBy(() -> {

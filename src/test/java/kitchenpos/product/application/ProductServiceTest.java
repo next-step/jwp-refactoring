@@ -1,8 +1,8 @@
 package kitchenpos.product.application;
 
 import kitchenpos.application.ProductService;
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,17 +31,17 @@ public class ProductServiceTest {
     private ProductService productService;
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @BeforeEach
     void setUp() {
-        productService = new ProductService(productDao);
+        productService = new ProductService(productRepository);
     }
 
     @DisplayName("상품을 생성한다.")
     @Test
     void create() {
-        when(productDao.save(any())).thenReturn(createProduct01());
+        when(productRepository.save(any())).thenReturn(createProduct01());
 
         // when
         Product created = productService.create(new Product(PRODUCT_NAME01, PRODUCT_PRICE01));
