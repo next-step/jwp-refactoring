@@ -34,19 +34,11 @@ public class Menu {
     }
 
     public Menu(Long id, String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        validate(price, menuProducts);
         this.id = id;
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
-    }
-
-    private void validate(Price price, MenuProducts menuProducts) {
-        Price totalPrice = menuProducts.getTotalPrice();
-        if (price.overTo(totalPrice)) {
-            throw new IllegalArgumentException("[ERROR] 메뉴 가격은 메뉴 상품들의 총 금액보다 클 수 없습니다.");
-        }
     }
 
     public Long getId() {
