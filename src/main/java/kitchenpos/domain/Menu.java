@@ -21,7 +21,7 @@ public class Menu {
     private Price price;
     private Long menuGroupId;
     @Embedded
-    private MenuProductsManager menuProducts = new MenuProductsManager();
+    private final MenuProductsManager menuProducts = new MenuProductsManager();
 
     protected Menu() {
     }

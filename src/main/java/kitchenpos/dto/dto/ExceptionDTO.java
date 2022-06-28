@@ -2,8 +2,8 @@ package kitchenpos.dto.dto;
 
 public class ExceptionDTO {
 
-    private String classification;
-    private String message;
+    private final String classification;
+    private final String message;
 
     public ExceptionDTO(String classification, String message) {
         this.classification = classification;

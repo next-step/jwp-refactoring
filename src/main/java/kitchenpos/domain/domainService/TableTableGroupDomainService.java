@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
-import kitchenpos.dto.dto.ExceptionDTO;
 import kitchenpos.dto.request.OrderTableRequest;
 import kitchenpos.dto.request.TableGroupRequest;
 import kitchenpos.exception.TableGroupException;

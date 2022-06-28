@@ -21,12 +21,12 @@ public class OrderLineItemsManager {
         return ImmutableList.copyOf(orderLineItems);
     }
 
-    public void remove(OrderLineItem orderLineItem){
+    public void remove(OrderLineItem orderLineItem) {
         orderLineItems.remove(orderLineItem);
     }
 
-    public void add(OrderLineItem orderLineItem){
-        if(!ObjectUtils.isEmpty(orderLineItem.getOrder())){
+    public void add(OrderLineItem orderLineItem) {
+        if (!ObjectUtils.isEmpty(orderLineItem.getOrder())) {
             orderLineItem.getOrder().removeOrderLineItem(orderLineItem);
         }
 

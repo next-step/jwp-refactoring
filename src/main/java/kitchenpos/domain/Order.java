@@ -11,7 +11,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import kitchenpos.dto.dto.ExceptionDTO;
 import kitchenpos.exception.OrderException;
 
 @Entity

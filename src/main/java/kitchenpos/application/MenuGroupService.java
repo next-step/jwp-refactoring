@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.dto.request.MenuGroupRequest;
@@ -7,8 +8,6 @@ import kitchenpos.dto.response.MenuGroupResponse;
 import kitchenpos.repository.MenuGroupRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Transactional(readOnly = true)

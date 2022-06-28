@@ -6,7 +6,6 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.domainService.MenuOrderLineDomainService;
-import kitchenpos.dto.dto.ExceptionDTO;
 import kitchenpos.dto.dto.OrderLineItemDTO;
 import kitchenpos.dto.request.OrderRequest;
 import kitchenpos.dto.response.OrderResponse;

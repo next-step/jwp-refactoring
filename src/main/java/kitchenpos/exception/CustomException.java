@@ -4,7 +4,7 @@ import kitchenpos.dto.dto.ExceptionDTO;
 
 public abstract class CustomException extends RuntimeException {
 
-    private ExceptionDTO exceptionDTO;
+    private final ExceptionDTO exceptionDTO;
 
     public CustomException(String classification, String message) {
         super(message);

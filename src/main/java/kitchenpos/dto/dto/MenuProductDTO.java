@@ -3,6 +3,7 @@ package kitchenpos.dto.dto;
 import kitchenpos.domain.MenuProduct;
 
 public class MenuProductDTO {
+
     private Long productId;
     private Long quantity;
 
@@ -14,7 +15,7 @@ public class MenuProductDTO {
         this.quantity = quantity;
     }
 
-    public static MenuProductDTO of(MenuProduct menuProduct){
+    public static MenuProductDTO of(MenuProduct menuProduct) {
         return new MenuProductDTO(menuProduct.getProductId(), menuProduct.getQuantity());
     }
 
@@ -22,12 +23,12 @@ public class MenuProductDTO {
         return productId;
     }
 
-    public Long getQuantity() {
-        return quantity;
-    }
-
     public void setProductId(Long productId) {
         this.productId = productId;
+    }
+
+    public Long getQuantity() {
+        return quantity;
     }
 
     public void setQuantity(Long quantity) {

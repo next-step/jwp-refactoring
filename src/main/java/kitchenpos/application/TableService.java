@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.dto.dto.ExceptionDTO;
 import kitchenpos.dto.request.OrderTableRequest;
 import kitchenpos.dto.response.OrderTableResponse;
 import kitchenpos.exception.OrderTableException;
@@ -47,8 +46,8 @@ public class TableService {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
             .orElseThrow(IllegalArgumentException::new);
 
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-            orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId,
+            Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new OrderTableException("TABLE_CONTAIN_NOT_COMPLETE_ORDER");
         }
 
