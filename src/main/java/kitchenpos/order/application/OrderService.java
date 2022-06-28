@@ -40,24 +40,30 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest request) {
+        validateTable(request);
         Order persistOrder = orderRepository.save(toEntity(request));
         return toResponse(persistOrder);
     }
 
-    private Order toEntity(final OrderRequest request) {
-        OrderTable orderTable = tableRepository.getById(request.getOrderTableId());
-
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException("빈 테이블에는 주문을 등록할 수 없습니다.");
+    private void validateTable(OrderRequest request) {
+        if (request.getOrderTableId() == null) {
+            throw new IllegalArgumentException("주문 테이블 아이디는 null이 아니어야 합니다.");
         }
 
+        OrderTable table = tableRepository.getById(request.getOrderTableId());
+        if (table.isEmpty()) {
+            throw new IllegalArgumentException("빈 테이블에는 주문을 등록할 수 없습니다.");
+        }
+    }
+
+    private Order toEntity(final OrderRequest request) {
         List<OrderLineItem> orderLineItems = request.getOrderLineItems().stream()
                 .map(itemRequest -> new OrderLineItem(
                         menuRepository.getById(itemRequest.getMenuId()).getId(),
                         itemRequest.getQuantity()))
                 .collect(Collectors.toList());
 
-        return Order.createOrder(orderTable.getId(), orderLineItems);
+        return Order.createOrder(request.getOrderTableId(), orderLineItems);
     }
 
     public List<OrderResponse> list() {

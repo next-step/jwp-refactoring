@@ -52,12 +52,11 @@ class TableServiceTest {
     void 빈_테이블로_설정_예외_잘못된_주문_상태() {
         // given
         OrderTable 테이블 = new OrderTable(null, 0, false);
-        given(tableRepository.getById(any(Long.class))).willReturn(테이블);
         given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(true);
 
         // when, then
         assertThatThrownBy(() -> tableService.changeEmpty(1L, true))
                 .isInstanceOf(IllegalStateException.class)
-                .hasMessage("조리 혹은 식사 상태인 테이블이 있어서 빈 테이블로 설정할 수 없습니다. id: " + 1L);
+                .hasMessage("조리 혹은 식사 상태인 주문이 있어서 빈 테이블로 설정할 수 없습니다. id: " + 1L);
     }
 }

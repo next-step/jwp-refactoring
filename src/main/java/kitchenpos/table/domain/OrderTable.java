@@ -33,6 +33,13 @@ public class OrderTable {
         this.empty = empty;
     }
 
+    public OrderTable(final Long id, final TableGroup tableGroup, final int numberOfGuests, final Boolean empty) {
+        this.id = id;
+        this.tableGroup = tableGroup;
+        this.numberOfGuests = new NumberOfGuests(numberOfGuests);
+        this.empty = empty;
+    }
+
     public Long getId() {
         return id;
     }

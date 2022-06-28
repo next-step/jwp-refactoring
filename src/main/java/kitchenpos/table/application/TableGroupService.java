@@ -1,5 +1,7 @@
 package kitchenpos.table.application;
 
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
@@ -17,12 +19,12 @@ import java.util.stream.Collectors;
 public class TableGroupService {
     private final TableRepository tableRepository;
     private final TableGroupRepository tableGroupRepository;
-    private final TableService tableService;
+    private final OrderRepository orderRepository;
 
-    public TableGroupService(final TableRepository tableRepository, final TableGroupRepository tableGroupRepository, TableService tableService) {
+    public TableGroupService(final TableRepository tableRepository, final TableGroupRepository tableGroupRepository, final OrderRepository orderRepository) {
         this.tableRepository = tableRepository;
         this.tableGroupRepository = tableGroupRepository;
-        this.tableService = tableService;
+        this.orderRepository = orderRepository;
     }
 
     @Transactional
@@ -43,16 +45,19 @@ public class TableGroupService {
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = tableGroupRepository.getById(tableGroupId);
 
-        final List<Long> orderTableIds = tableGroup.getOrderTables()
+        validateOrder(tableGroup);
+
+        tableGroup.ungroup();
+    }
+
+    private void validateOrder(TableGroup tableGroup) {
+        List<Long> orderTableIds = tableGroup.getOrderTables()
                 .stream()
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
-
-        if (tableGroup.getOrderTables().stream()
-                .anyMatch(table -> tableService.hasCookingOrMeal(table))) {
-            throw new IllegalStateException("조리 혹은 식사 상태인 테이블이 있어서 단체 지정 해제할 수 없습니다. id: " + tableGroupId);
+        if (orderTableIds.stream()
+                .anyMatch(tableId -> orderRepository.existsByOrderTableIdAndOrderStatusIn(tableId, OrderStatus.NOT_COMPLETED))) {
+            throw new IllegalStateException("조리 혹은 식사 상태의 주문이 등록된 테이블이 있어서 단체 지정을 해제할 수 없습니다.");
         }
-
-        tableGroup.ungroup();
     }
 }

@@ -45,13 +45,16 @@ public class TableService {
 
     @Transactional
     public void changeEmpty(final Long orderTableId, final boolean empty) {
+        validateOrder(orderTableId);
+
         OrderTable orderTable = tableRepository.getById(orderTableId);
-
-        if (empty && hasCookingOrMeal(orderTable)) {
-            throw new IllegalStateException("조리 혹은 식사 상태인 테이블이 있어서 빈 테이블로 설정할 수 없습니다. id: " + orderTableId);
-        }
-
         orderTable.changeEmpty(empty);
+    }
+
+    private void validateOrder(final Long orderTableId) {
+        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId, OrderStatus.NOT_COMPLETED)) {
+            throw new IllegalStateException("조리 혹은 식사 상태인 주문이 있어서 빈 테이블로 설정할 수 없습니다. id: " + orderTableId);
+        }
     }
 
     public boolean hasCookingOrMeal(final OrderTable orderTable) {
