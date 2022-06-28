@@ -34,7 +34,7 @@ public class OrderLineItems {
     }
 
     private static void validateOrderLineItems(List<OrderLineItem> orderLineItems) {
-        if (orderLineItems == null) {
+        if (orderLineItems == null || orderLineItems.isEmpty()) {
             throw new EmptyOrderLineItemsException();
         }
     }
