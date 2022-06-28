@@ -1,7 +1,10 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.fixture.TestMenuGroupRequestFactory;
+import kitchenpos.menu.application.MenuGroupService;
+import kitchenpos.menu.domain.MenuGroupRepository;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.fixture.TestMenuGroupFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,7 +24,7 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @InjectMocks
     private MenuGroupService menuGroupService;
@@ -39,25 +42,26 @@ class MenuGroupServiceTest {
     @DisplayName("메뉴 그룹을 등록할 수 있다")
     void create() {
         //given
-        given(menuGroupDao.save(any(MenuGroup.class))).willReturn(분식류);
+        given(menuGroupRepository.save(any(MenuGroup.class))).willReturn(분식류);
 
         //when
-        MenuGroup menuGroup = menuGroupService.create(분식류);
+        MenuGroupResponse menuGroupResponse = menuGroupService.create(TestMenuGroupRequestFactory.create(분식류));
 
         //then
-        assertThat(menuGroup).isEqualTo(분식류);
+        assertThat(menuGroupResponse).isEqualTo(MenuGroupResponse.of(분식류));
     }
 
     @Test
     @DisplayName("전체 메뉴 그룹을 조회할 수 있다")
     void list() {
         //given
-        given(menuGroupDao.findAll()).willReturn(Arrays.asList(분식류, 양식류));
+        given(menuGroupRepository.findAll()).willReturn(Arrays.asList(분식류, 양식류));
 
         //when
-        List<MenuGroup> results = menuGroupService.list();
+        List<MenuGroupResponse> results = menuGroupService.list();
 
         //then
-        assertThat(results).containsExactly(분식류, 양식류);
+        assertThat(results).containsExactly(MenuGroupResponse.of(분식류), MenuGroupResponse.of(양식류));
     }
+
 }

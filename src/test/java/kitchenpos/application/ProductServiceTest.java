@@ -1,7 +1,10 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.domain.Product;
 import kitchenpos.fixture.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,31 +28,31 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private ProductService productService;
 
-    private Product 진매;
-    private Product 진순이;
+    private ProductRequest 진매;
+    private ProductRequest 진순이;
 
     @BeforeEach
     void setUp() {
-        진매 = TestProductFactory.create(1L, "진라면 매운맛", 5_000);
-        진순이 = TestProductFactory.create(2L, "진라면 순한맛", 5_000);
+        진매 = TestProductRequestFactory.create("진라면 매운맛", 5_000);
+        진순이 = TestProductRequestFactory.create("진라면 순한맛", 5_000);
     }
 
     @Test
     @DisplayName("상품을 등록할 수 있다")
     void create() {
         // given
-        given(productDao.save(any(Product.class))).willReturn(진매);
+        given(productRepository.save(any(Product.class))).willReturn(진매.toProduct());
 
         //when
-        Product savedProduct = productService.create(진매);
+        ProductResponse savedProduct = productService.create(진매);
 
         //then
-        assertThat(savedProduct).isEqualTo(진매);
+        assertThat(savedProduct.getName()).isEqualTo(진매.getName());
     }
 
     @ParameterizedTest
@@ -57,24 +60,22 @@ class ProductServiceTest {
     @CsvSource(value = {"-1", "null"}, nullValues = {"null"})
     void createException1(BigDecimal price) {
         // given
-        Product product = new Product();
-        product.setName("진라면 이상한 맛");
-        product.setPrice(price);
+        진매 = TestProductRequestFactory.create("진라면 이상한 맛", price);
 
         //when & then
-        assertThatThrownBy(() -> productService.create(product)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> productService.create(진매)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("상품의 목록을 조회할 수 있다")
     void list() {
         // given
-        given(productDao.findAll()).willReturn(Arrays.asList(진매, 진순이));
+        given(productRepository.findAll()).willReturn(Arrays.asList(진매.toProduct(), 진순이.toProduct()));
 
         // when
-        List<Product> list = productService.list();
+        List<ProductResponse> list = productService.list();
 
         // then
-        assertThat(list).containsExactly(진매, 진순이);
+        assertThat(list).hasSize(2);
     }
 }

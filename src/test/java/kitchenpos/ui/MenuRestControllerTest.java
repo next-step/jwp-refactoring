@@ -1,8 +1,12 @@
 package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.application.MenuService;
-import kitchenpos.domain.Menu;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.fixture.TestMenuRequestFactory;
+import kitchenpos.menu.ui.MenuRestController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -35,19 +40,19 @@ class MenuRestControllerTest {
     private MenuRestController menuRestController;
 
     private MockMvc mockMvc;
-    private Menu 메뉴;
+    private MenuRequest 메뉴;
 
     @BeforeEach
     void setUp() {
         this.mockMvc = MockMvcBuilders.standaloneSetup(menuRestController).build();
-        메뉴 = new Menu();
-        메뉴.setName("메뉴");
+        MenuProductRequest 메뉴_진매 = new MenuProductRequest(1L, 1);
+        메뉴 = TestMenuRequestFactory.toMenuRequest("메뉴", 5000, 1L, Arrays.asList(메뉴_진매));
     }
 
     @Test
     void post() throws Exception {
         //given
-        given(menuService.create(any())).willReturn(메뉴);
+        given(menuService.create(any())).willReturn(MenuResponse.of(메뉴.toMenu()));
 
         //when & then
         mockMvc.perform(MockMvcRequestBuilders.post(URI)
@@ -61,7 +66,7 @@ class MenuRestControllerTest {
     @Test
     void get() throws Exception {
         // given
-        given(menuService.list()).willReturn(Collections.singletonList(메뉴));
+        given(menuService.list()).willReturn(Collections.singletonList(MenuResponse.of(메뉴.toMenu())));
 
         // when & then
         mockMvc.perform(MockMvcRequestBuilders.get(URI)

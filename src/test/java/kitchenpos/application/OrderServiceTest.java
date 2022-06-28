@@ -1,12 +1,24 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.*;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.dto.OrderStatusRequest;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderLineItemRepository;
+import kitchenpos.table.domain.OrderTableRepository;
 
 import kitchenpos.fixture.*;
+import kitchenpos.product.domain.Product;
+import kitchenpos.table.dto.OrderTableRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,8 +29,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,17 +40,16 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Mock
-    private OrderLineItemDao orderLineItemDao;
+    private OrderLineItemRepository orderLineItemRepository;
 
     @InjectMocks
     private OrderService orderService;
-
 
     private MenuGroup 분식류;
     private Product 진매;
@@ -48,9 +57,9 @@ class OrderServiceTest {
     private MenuProduct 메뉴_진매;
     private MenuProduct 메뉴_진순이;
     private Menu 메뉴;
-    private Order 주문;
-    private OrderTable 주문_테이블;
-    private OrderLineItem 주문_메뉴;
+    private OrderRequest 주문;
+    private OrderTableRequest 주문_테이블;
+    private OrderLineItemRequest 주문_메뉴;
 
     @BeforeEach
     void setUp() {
@@ -63,57 +72,45 @@ class OrderServiceTest {
 
         메뉴_진매 = TestMenuProductFactory.create(메뉴, 진매, 1);
         메뉴_진순이 = TestMenuProductFactory.create(메뉴, 진매, 1);
+        메뉴.addMenuProduct(메뉴_진매);
+        메뉴.addMenuProduct(메뉴_진순이);
 
-        메뉴.setMenuProducts(Arrays.asList(메뉴_진매, 메뉴_진순이));
-
-        주문_테이블 = TestOrderTableFactory.create(1L);
-        주문 = TestOrderFactory.create(1L);
-
-        주문_메뉴 = TestOrderLineItemFactory.create(주문, 메뉴, 3);
+        주문_테이블 = TestOrderTableRequestFactory.create(1, false);
+        주문_메뉴 = new OrderLineItemRequest(1L, 메뉴.getId(), 3);
+        주문 = new OrderRequest(1L, Collections.singletonList(주문_메뉴));
     }
 
     @DisplayName("주문을 등록할 수 있다")
     @Test
     void create() throws Exception {
         // given
-        주문.setOrderStatus(OrderStatus.COOKING.toString());
-        주문.setOrderedTime(LocalDateTime.now());
-        주문.setOrderTableId(주문_테이블.getId());
-        주문.setOrderLineItems(Collections.singletonList(주문_메뉴));
-        given(menuDao.countByIdIn(any())).willReturn(1L);
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(주문_테이블));
-        given(orderLineItemDao.save(any(OrderLineItem.class))).willReturn(주문_메뉴);
-        given(orderDao.save(any(Order.class))).willReturn(주문);
+        OrderRequest orderRequest = new OrderRequest(1L, Collections.singletonList(주문_메뉴));
+        given(menuRepository.countByIdIn(any())).willReturn(1L);
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(주문_테이블.toOrderTable()));
+        given(orderRepository.save(any(Order.class))).willReturn(orderRequest.toOrder());
 
         // when
-        Order order = orderService.create(주문);
+        OrderResponse order = orderService.create(orderRequest);
 
         // then
-        assertThat(order).isEqualTo(주문);
+        assertThat(order.getId()).isEqualTo(OrderResponse.of(orderRequest.toOrder()).getId());
     }
 
     @DisplayName("주문 항목이 비어있으면 등록할 수 없다")
     @Test
     void createException1() throws Exception {
         // given
-        주문.setOrderStatus(OrderStatus.COOKING.toString());
-        주문.setOrderedTime(LocalDateTime.now());
-        주문.setOrderTableId(주문_테이블.getId());
+        OrderRequest orderRequest = new OrderRequest(1L, null);
 
         // when & then
-        assertThatThrownBy(() -> orderService.create(주문)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(orderRequest)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문 항목의 메뉴가 존재하지 않으면 등록할 수 없다")
     @Test
     void createException2() throws Exception {
         // given
-        주문.setOrderStatus(OrderStatus.COOKING.toString());
-        주문.setOrderedTime(LocalDateTime.now());
-        주문.setOrderTableId(주문_테이블.getId());
-        주문.setOrderLineItems(Collections.singletonList(주문_메뉴));
-
-        given(menuDao.countByIdIn(any())).willReturn(0L);
+        given(menuRepository.countByIdIn(any())).willReturn(0L);
 
         // when & then
         assertThatThrownBy(() -> orderService.create(주문)).isInstanceOf(IllegalArgumentException.class);
@@ -123,11 +120,10 @@ class OrderServiceTest {
     @Test
     void createException3() throws Exception {
         // given
-        주문.setOrderStatus(OrderStatus.COOKING.toString());
-        주문.setOrderedTime(LocalDateTime.now());
-        주문.setOrderLineItems(Collections.singletonList(주문_메뉴));
+        주문_테이블 = TestOrderTableRequestFactory.create(2, true);
+        given(menuRepository.countByIdIn(any())).willReturn(1L);
 
-        given(menuDao.countByIdIn(any())).willReturn(1L);
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.ofNullable(주문_테이블.toOrderTable()));
 
         // when & then
         assertThatThrownBy(() -> orderService.create(주문)).isInstanceOf(IllegalArgumentException.class);
@@ -137,12 +133,8 @@ class OrderServiceTest {
     @Test
     void createException4() throws Exception {
         // given
-        주문.setOrderStatus(OrderStatus.COOKING.toString());
-        주문.setOrderedTime(LocalDateTime.now());
-        주문.setOrderLineItems(Collections.singletonList(주문_메뉴));
-        주문.setOrderTableId(99L);
-        given(menuDao.countByIdIn(any())).willReturn(1L);
-        given(orderTableDao.findById(anyLong())).willThrow(IllegalArgumentException.class);
+        given(menuRepository.countByIdIn(any())).willReturn(1L);
+        given(orderTableRepository.findById(anyLong())).willThrow(IllegalArgumentException.class);
 
         // when & then
         assertThatThrownBy(() -> orderService.create(주문)).isInstanceOf(IllegalArgumentException.class);
@@ -152,32 +144,26 @@ class OrderServiceTest {
     @Test
     void list() throws Exception {
         // given
-        given(orderDao.findAll()).willReturn(Collections.singletonList(주문));
+        given(orderRepository.findAll()).willReturn(Collections.singletonList(주문.toOrder()));
 
         // when
-        List<Order> list = orderService.list();
+        List<OrderResponse> list = orderService.list();
 
         // then
-        assertThat(list).containsExactly(주문);
+        assertThat(list).hasSize(1);
     }
 
     @DisplayName("주문상태를 변경한다")
     @ParameterizedTest
-    @CsvSource(
-            value = {
-                    "MEAL/MEAL", "MEAL/COOKING", "MEAL/COMPLETION",
-                    "COOKING/MEAL", "COOKING/COOKING", "COOKING/COMPLETION",
-            }, delimiter = '/')
-    void change(OrderStatus baseOrderStatus, OrderStatus newOrderStatus) throws Exception {
+    @CsvSource(value = {"MEAL", "COOKING", "COMPLETION"})
+    void change(OrderStatus newOrderStatus) throws Exception {
         // given
-        주문.setOrderStatus(baseOrderStatus.toString());
-        Order order = new Order();
-        order.setOrderStatus(newOrderStatus.toString());
+        주문 = new OrderRequest(1L, Collections.singletonList(주문_메뉴));
 
-        given(orderDao.findById(anyLong())).willReturn(Optional.of(주문));
+        given(orderRepository.findById(anyLong())).willReturn(Optional.of(주문.toOrder()));
 
         // when
-        Order changedOrder = orderService.changeOrderStatus(1L, order);
+        OrderResponse changedOrder = orderService.changeOrderStatus(1L, new OrderStatusRequest(newOrderStatus));
 
         // then
         assertThat(changedOrder.getOrderStatus()).isEqualTo(newOrderStatus.toString());
@@ -188,14 +174,11 @@ class OrderServiceTest {
     @CsvSource({"MEAL", "COOKING", "COMPLETION"})
     void changeException(OrderStatus orderStatus) throws Exception {
         // given
-        주문.setOrderStatus(OrderStatus.COMPLETION.toString());
-        Order order = new Order();
-        order.setOrderStatus(orderStatus.toString());
-
-        given(orderDao.findById(anyLong())).willReturn(Optional.of(주문));
+        Order order = new Order(1L, 1L, OrderStatus.COMPLETION);
+        given(orderRepository.findById(anyLong())).willReturn(Optional.of(order));
 
         // when & then
-        assertThatThrownBy(() -> orderService.changeOrderStatus(1L, order))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(1L, new OrderStatusRequest(orderStatus)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

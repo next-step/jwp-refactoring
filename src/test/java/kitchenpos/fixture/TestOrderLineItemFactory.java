@@ -1,8 +1,8 @@
 package kitchenpos.fixture;
 
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
 
 public class TestOrderLineItemFactory {
     public static OrderLineItem create(Order order, Menu menu, long quantity) {
@@ -10,12 +10,6 @@ public class TestOrderLineItemFactory {
     }
 
     public static OrderLineItem create(Long seq, Order order, Menu menu, long quantity) {
-        OrderLineItem orderLineItem = new OrderLineItem();
-
-        orderLineItem.setSeq(seq);
-        orderLineItem.setOrderId(order.getId());
-        orderLineItem.setMenuId(menu.getId());
-        orderLineItem.setQuantity(quantity);
-        return orderLineItem;
+        return new OrderLineItem(seq, order, menu.getId(), quantity);
     }
 }

@@ -1,10 +1,12 @@
 package kitchenpos.fixture;
 
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import org.assertj.core.util.diff.myers.Snake;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TestMenuFactory {
 
@@ -16,17 +18,19 @@ public class TestMenuFactory {
         return create(id, price, menuGroup.getId(), name);
     }
 
+    public static Menu create(String name) {
+        return create(0, 0L, name);
+    }
+
     public static Menu create(int price, Long menuGroupId, String name) {
         return create(null, price, menuGroupId, name);
     }
 
     public static Menu create(Long id, int price, Long menuGroupId, String name) {
-        Menu menu = new Menu();
-        menu.setId(id);
-        menu.setPrice(BigDecimal.valueOf(price));
-        menu.setMenuGroupId(menuGroupId);
-        menu.setName(name);
+        return create(id, price, menuGroupId, name, new ArrayList<>());
+    }
 
-        return menu;
+    public static Menu create(Long id, int price, Long menuGroupId, String name, List<MenuProduct> menuProducts) {
+        return new Menu(id, name, BigDecimal.valueOf(price), menuGroupId, menuProducts);
     }
 }
