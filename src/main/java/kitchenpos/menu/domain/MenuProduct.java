@@ -19,6 +19,7 @@ public class MenuProduct {
     @JoinColumn(name = "product_id", unique=true)
     private Product product;
 
+    @Column(unique = true)
     private long quantity;
 
     protected MenuProduct() {
