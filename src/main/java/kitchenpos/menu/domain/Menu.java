@@ -29,12 +29,25 @@ public class Menu {
     protected Menu() {
     }
 
+    private Menu(Long id, String name, BigDecimal price, Long menuGroupId, MenuProducts menuProducts) {
+        menuProducts.addMenu(this);
+        this.id = id;
+        this.name = Name.from(name);
+        this.price = Price.from(price);
+        this.menuGroupId = menuGroupId;
+        this.menuProducts = menuProducts;
+    }
+
     private Menu(String name, BigDecimal price, Long menuGroupId, MenuProducts menuProducts) {
         menuProducts.addMenu(this);
         this.name = Name.from(name);
         this.price = Price.from(price);
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
+    }
+
+    public static Menu from(Long id, String name, BigDecimal price, Long menuGroupId, MenuProducts menuProducts) {
+        return new Menu(id, name, price, menuGroupId, menuProducts);
     }
 
     public static Menu from(String name, BigDecimal price, Long menuGroupId, MenuProducts menuProducts) {

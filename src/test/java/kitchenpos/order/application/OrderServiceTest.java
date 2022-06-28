@@ -2,21 +2,32 @@ package kitchenpos.order.application;
 
 import static kitchenpos.order.domain.OrderStatus.COMPLETION;
 import static kitchenpos.order.domain.OrderStatus.COOKING;
+import static kitchenpos.utils.DomainFixtureFactory.createMenu;
+import static kitchenpos.utils.DomainFixtureFactory.createMenuGroup;
+import static kitchenpos.utils.DomainFixtureFactory.createMenuProduct;
 import static kitchenpos.utils.DomainFixtureFactory.createOrder;
 import static kitchenpos.utils.DomainFixtureFactory.createOrderLineItem;
 import static kitchenpos.utils.DomainFixtureFactory.createOrderRequest;
 import static kitchenpos.utils.DomainFixtureFactory.createOrderTable;
+import static kitchenpos.utils.DomainFixtureFactory.createProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
+import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderLineItemResponse;
@@ -24,6 +35,7 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.validator.OrderValidator;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.product.domain.Product;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -38,18 +50,27 @@ class OrderServiceTest {
     @Mock
     private OrderRepository orderRepository;
     @Mock
+    private MenuService menuService;
+    @Mock
     private OrderValidator orderValidator;
     @InjectMocks
     private OrderService orderService;
 
+    private Menu 양념치킨;
     private OrderTable 주문테이블;
     private OrderLineItem 주문항목;
     private Order 주문;
 
     @BeforeEach
     void setUp() {
+        Product 양념 = createProduct(1L, "양념", BigDecimal.valueOf(20000L));
+        MenuGroup 한마리메뉴 = createMenuGroup(1L, "한마리메뉴");
+        MenuProduct 양념치킨상품 = createMenuProduct(양념.id(), 2L);
+        양념치킨 = createMenu(1L, "양념치킨", BigDecimal.valueOf(40000L), 한마리메뉴.id(),
+                MenuProducts.from(Lists.newArrayList(양념치킨상품)));
+        OrderMenu 주문메뉴 = OrderMenu.from(양념치킨);
         주문테이블 = createOrderTable(1L, 2, false);
-        주문항목 = createOrderLineItem(1L, 2L);
+        주문항목 = createOrderLineItem(주문메뉴, 2L);
         주문 = createOrder(주문테이블.id(), OrderLineItems.from(Lists.newArrayList(주문항목)));
     }
 
@@ -57,7 +78,8 @@ class OrderServiceTest {
     @Test
     void create() {
         OrderRequest orderRequest = createOrderRequest(주문테이블.id(), null,
-                Lists.newArrayList(new OrderLineItemRequest(1L, 2L)));
+                Lists.newArrayList(new OrderLineItemRequest(양념치킨.id(), 2L)));
+        given(menuService.findMenu(양념치킨.id())).willReturn(양념치킨);
         given(orderRepository.save(주문)).willReturn(주문);
         OrderResponse orderResponse = orderService.create(orderRequest);
         assertAll(

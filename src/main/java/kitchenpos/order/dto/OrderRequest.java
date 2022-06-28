@@ -33,9 +33,7 @@ public class OrderRequest {
         return orderLineItems;
     }
 
-    public Order toOrder() {
-        return Order.from(orderTableId, OrderLineItems.from(orderLineItems.stream()
-                .map(OrderLineItemRequest::toOrderLineItem)
-                .collect(Collectors.toList())));
+    public Order toOrder(OrderLineItems orderLineItems) {
+        return Order.from(orderTableId, orderLineItems);
     }
 }

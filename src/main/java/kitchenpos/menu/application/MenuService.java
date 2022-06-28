@@ -40,4 +40,8 @@ public class MenuService {
     public int countByIdIn(List<Long> menuIds) {
         return menuRepository.countByIdIn(menuIds);
     }
+
+    public Menu findMenu(long menuId) {
+        return menuRepository.findById(menuId).orElseThrow(() -> new IllegalArgumentException("메뉴를 조회할 수 없습니다."));
+    }
 }

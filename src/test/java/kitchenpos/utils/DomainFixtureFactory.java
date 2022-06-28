@@ -12,6 +12,7 @@ import kitchenpos.menuGroup.dto.MenuGroupRequest;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
+import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
@@ -43,6 +44,10 @@ public class DomainFixtureFactory {
         return Menu.from(name, price, menuGroupId, menuProducts);
     }
 
+    public static Menu createMenu(Long id, String name, BigDecimal price, Long menuGroupId, MenuProducts menuProducts) {
+        return Menu.from(id, name, price, menuGroupId, menuProducts);
+    }
+
     public static MenuRequest createMenuRequest(String name, BigDecimal price, long menuGroupId,
                                                 List<MenuProductRequest> menuProducts) {
         return new MenuRequest(name, price, menuGroupId, menuProducts);
@@ -69,8 +74,8 @@ public class DomainFixtureFactory {
         return new OrderRequest(orderTableId, orderStatus, orderLineItems);
     }
 
-    public static OrderLineItem createOrderLineItem(Long menuId, long quantity) {
-        return OrderLineItem.from(menuId, quantity);
+    public static OrderLineItem createOrderLineItem(OrderMenu orderMenu, long quantity) {
+        return OrderLineItem.from(orderMenu, quantity);
     }
 
     public static OrderLineItemRequest createOrderLineItemRequest(long menuId, long quantity) {
