@@ -19,12 +19,6 @@ public class Product {
         this.price = Price.valueOf(price);
     }
 
-    public Product(Long id, String name, long price) {
-        this.id = id;
-        this.name = name;
-        this.price = Price.valueOf(price);
-    }
-
     public Long getId() {
         return id;
     }

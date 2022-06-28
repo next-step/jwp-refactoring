@@ -44,8 +44,8 @@ class MenuValidatorTest {
     void setProduct() {
         productId1 = 1L;
         productId2 = 2L;
-        product1 = new Product(productId1, "짜장면", 6000);
-        product2 = new Product(productId2, "짬뽕", 7000);
+        product1 = new Product("짜장면", 6000);
+        product2 = new Product("짬뽕", 7000);
 
         when(productRepository.findById(productId1)).thenReturn(Optional.of(product1));
         when(productRepository.findById(productId2)).thenReturn(Optional.of(product2));
