@@ -32,7 +32,6 @@ import static kitchenpos.acceptance.ProductAcceptanceFactory.상품_등록_요�
 @DisplayName("주문 관련")
 public class OrderAcceptanceTest extends AcceptanceTest {
     private OrderTable 주문테이블1;
-    private OrderTable 주문테이블2;
 
     private Menu 후라이드메뉴;
 
@@ -41,7 +40,6 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         super.setUp();
         //테이블
         주문테이블1 = 주문테이블_등록_요청(false, 5).as(OrderTable.class);
-        주문테이블2 = 주문테이블_등록_요청(false, 5).as(OrderTable.class);
 
         //메뉴
         Product 후라이드 = 상품_등록_요청("후라이드", 16000).as(Product.class);
