@@ -1,9 +1,9 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.repository.OrderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +25,7 @@ class TableServiceTest {
     @Autowired
     TableService tableService;
     @MockBean
-    OrderDao orderDao;
+    OrderRepository orderRepository;
     @MockBean
     OrderTableDao orderTableDao;
 
@@ -70,7 +70,7 @@ class TableServiceTest {
     @Test
     void changeEmpty() {
         // given
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(false);
+        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(false);
 
         // when
         OrderTable empty = new OrderTable(null, null, 0, true);
@@ -116,7 +116,7 @@ class TableServiceTest {
     @Test
     void orderStatus_is_not_in_cooking_meal() {
         // given
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(true);
+        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(true);
 
         // when then
         OrderTable empty = new OrderTable(null, null, 0, true);

@@ -1,11 +1,11 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.repository.OrderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ class TableGroupServiceTest {
     @Autowired
     TableGroupService tableGroupService;
     @MockBean
-    OrderDao orderDao;
+    OrderRepository orderRepository;
     @MockBean
     OrderTableDao orderTableDao;
     @MockBean
@@ -139,7 +139,7 @@ class TableGroupServiceTest {
         OrderTable groupedTable1 = new OrderTable(groupedTableId1, tableGroupId, 1, false);
         OrderTable groupedTable2 = new OrderTable(groupedTableId2, tableGroupId, 1, false);
         when(orderTableDao.findAllByTableGroupId(tableGroupId)).thenReturn(Arrays.asList(groupedTable1, groupedTable2));
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(groupedTableId1, groupedTableId2), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(false);
+        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(groupedTableId1, groupedTableId2), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(false);
 
         // when
         tableGroupService.ungroup(tableGroupId);
@@ -159,7 +159,7 @@ class TableGroupServiceTest {
         OrderTable groupedTable1 = new OrderTable(groupedTableId1, tableGroupId, 1, false);
         OrderTable groupedTable2 = new OrderTable(groupedTableId2, tableGroupId, 1, false);
         when(orderTableDao.findAllByTableGroupId(tableGroupId)).thenReturn(Arrays.asList(groupedTable1, groupedTable2));
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(groupedTableId1, groupedTableId2), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(true);
+        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(groupedTableId1, groupedTableId2), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(true);
 
         // when
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroupId))

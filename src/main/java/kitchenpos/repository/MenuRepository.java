@@ -9,8 +9,6 @@ import java.util.List;
 
 @Repository
 public interface MenuRepository extends JpaRepository<Menu, Long> {
-    Long countByIdIn(List<Long> menuIds);
-
     @Query("select distinct m from Menu m join fetch m.menuProducts")
     List<Menu> findAllWithMenuProduct();
 }
