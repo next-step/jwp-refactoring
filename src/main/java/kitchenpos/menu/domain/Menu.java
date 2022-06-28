@@ -3,13 +3,12 @@ package kitchenpos.menu.domain;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import kitchenpos.domain.Name;
 import kitchenpos.domain.Price;
 
@@ -22,7 +21,7 @@ public class Menu {
     private Name name;
     @Embedded
     private Price price;
-    @JoinColumn(name = "menu_group_id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"), nullable = false)
+    @Column(nullable = false)
     private Long menuGroupId;
     @Embedded
     private MenuProducts menuProducts;
