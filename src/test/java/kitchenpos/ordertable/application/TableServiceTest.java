@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,7 +13,6 @@ import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
-import kitchenpos.ordertable.validator.OrderTableValidator;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,8 +26,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class TableServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
-    @Mock
-    private OrderTableValidator orderTableValidator;
     @InjectMocks
     private TableService tableService;
     private OrderTable 주문테이블;
@@ -65,7 +61,6 @@ class TableServiceTest {
         OrderTableRequest orderTableRequest = createOrderTableRequest(2, true);
         given(orderTableRepository.findById(1L)).willReturn(Optional.ofNullable(주문테이블));
         OrderTableResponse changedOrderTable = tableService.changeEmpty(1L, orderTableRequest);
-        verify(orderTableValidator).validateComplete(주문테이블.id());
         assertAll(
                 () -> assertThat(changedOrderTable.getNumberOfGuests()).isEqualTo(2),
                 () -> assertThat(changedOrderTable.isEmpty()).isTrue()
