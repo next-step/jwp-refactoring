@@ -45,7 +45,6 @@ class MenuServiceTest {
     ProductDao productDao;
 
     Menu 후라이드치킨 = new Menu();
-    //Menu 양념치킨 = new Menu();
     Product 후라이드 = new Product();
     MenuProduct 후라이드치킨상품 = new MenuProduct();
 

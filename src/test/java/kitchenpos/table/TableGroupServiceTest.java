@@ -2,7 +2,7 @@ package kitchenpos.table;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -70,7 +70,7 @@ class TableGroupServiceTest {
 
     @Test
     @DisplayName("단체 지정시 최소 2팀 이상 지정해야 한다")
-    void create_singleTablegroupError() {
+    void create_singleTableGroupError() {
         // given
         단체손님.setOrderTables(Collections.singletonList(주문테이블1));
 
