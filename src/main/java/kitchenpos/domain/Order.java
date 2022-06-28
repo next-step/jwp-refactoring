@@ -5,8 +5,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "orders")
@@ -21,8 +19,8 @@ public class Order {
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime orderedTime;
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<OrderLineItem> orderLineItems = new ArrayList<>();
+    @Embedded
+    private final OrderLineItems orderLineItems = new OrderLineItems();
 
     protected Order() {
     }
@@ -53,7 +51,7 @@ public class Order {
         return orderedTime;
     }
 
-    public List<OrderLineItem> getOrderLineItems() {
+    public OrderLineItems getOrderLineItems() {
         return orderLineItems;
     }
 

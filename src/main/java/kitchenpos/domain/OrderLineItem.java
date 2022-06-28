@@ -37,12 +37,13 @@ public class OrderLineItem {
     }
 
     public void toOrder(Order order) {
+        if (order == null) {
+            throw new IllegalArgumentException();
+        }
         if (this.order != null) {
-            this.order.getOrderLineItems().remove(this);
+            this.order.getOrderLineItems().getOrderLineItems().remove(this);
         }
         this.order = order;
-        if (order != null) {
-            order.getOrderLineItems().add(this);
-        }
+        order.getOrderLineItems().getOrderLineItems().add(this);
     }
 }

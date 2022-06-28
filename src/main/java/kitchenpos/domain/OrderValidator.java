@@ -24,7 +24,7 @@ public class OrderValidator {
     }
 
     private boolean isItemMenuExistsAll(final Order order) {
-        return order.getOrderLineItems().stream()
+        return order.getOrderLineItems().getOrderLineItems().stream()
                 .map(OrderLineItem::getMenuId)
                 .allMatch(this::isMenuExists);
     }

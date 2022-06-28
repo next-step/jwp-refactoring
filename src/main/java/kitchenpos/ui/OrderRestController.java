@@ -126,7 +126,7 @@ public class OrderRestController {
             orderTableId = order.getOrderTableId();
             orderStatus = order.getOrderStatus();
             orderedTime = order.getOrderedTime();
-            orderLineItems = order.getOrderLineItems().stream()
+            orderLineItems = order.getOrderLineItems().getOrderLineItems().stream()
                     .map(OrderLineItemResponse::new)
                     .collect(toList());
         }
