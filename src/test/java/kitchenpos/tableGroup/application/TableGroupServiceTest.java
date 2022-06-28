@@ -12,8 +12,8 @@ import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.verify;
 
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.event.ReserveEvent;
-import kitchenpos.ordertable.event.UngroupEvent;
 import kitchenpos.tableGroup.domain.TableGroup;
 import kitchenpos.tableGroup.domain.TableGroupRepository;
 import kitchenpos.tableGroup.dto.TableGroupRequest;
@@ -34,6 +34,8 @@ class TableGroupServiceTest {
     private ApplicationEventPublisher applicationEventPublisher;
     @Mock
     private TableGroupRepository tableGroupRepository;
+    @Mock
+    private OrderTableRepository orderTableRepository;
     @InjectMocks
     private TableGroupService tableGroupService;
 
@@ -122,7 +124,7 @@ class TableGroupServiceTest {
     @DisplayName("단체지정 해제 테스트")
     @Test
     void ungroup() {
-        tableGroupService.ungroup(1L);
-        verify(applicationEventPublisher).publishEvent(any(UngroupEvent.class));
+        given(orderTableRepository.findAllByTableGroupId(단체지정.id())).willReturn(Lists.newArrayList(치킨주문테이블, 피자주문테이블));
+        tableGroupService.ungroup(단체지정.id());
     }
 }
