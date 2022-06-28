@@ -31,7 +31,7 @@
 
 
 **4단계 멀티모듈 적용**
-- [ ] 컨텍스트 간의 독립된 모듈로 분리한다. 
+- [X] 컨텍스트 간의 독립된 모듈로 분리한다. 
   - [product], [menu & menugroup], [menu], [order], [table & tablegroup] 
 
 ---
