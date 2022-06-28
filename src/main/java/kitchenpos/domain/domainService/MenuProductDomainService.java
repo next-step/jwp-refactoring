@@ -2,6 +2,7 @@ package kitchenpos.domain.domainService;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.dto.MenuProductDTO;
 import kitchenpos.dto.request.MenuRequest;
@@ -33,6 +34,13 @@ public class MenuProductDomainService {
 
     private void validatePriceSmallThenSum(List<MenuProductDTO> menuProducts, BigDecimal price) {
         BigDecimal sum = BigDecimal.ZERO;
+
+        List<Long> productIds = menuProducts.stream()
+            .map(MenuProductDTO::getProductId)
+            .collect(Collectors.toList());
+
+        productRepository.findAllByIdIn(productIds);
+
         for (final MenuProductDTO menuProduct : menuProducts) {
             final Product product = productRepository.findById(menuProduct.getProductId())
                 .orElseThrow(IllegalArgumentException::new);
