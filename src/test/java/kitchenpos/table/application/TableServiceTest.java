@@ -54,7 +54,7 @@ class TableServiceTest {
         // given
         OrderTable 테이블 = new OrderTable(null, 0, false);
         given(tableRepository.findById(any(Long.class))).willReturn(Optional.of(테이블));
-        given(orderRepository.existsByOrderTableAndOrderStatusIn(any(), any())).willReturn(true);
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(true);
 
         // when, then
         assertThatThrownBy(() -> tableService.changeEmpty(1L, true))

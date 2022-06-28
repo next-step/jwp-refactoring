@@ -1,6 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.table.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -9,12 +8,10 @@ import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,9 +24,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
-    private OrderTable orderTable;
+    private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
     @JoinColumn(nullable = false)
@@ -44,20 +39,13 @@ public class Order {
     protected Order() {
     }
 
-    private Order(final OrderTable orderTable, final OrderStatus orderStatus) {
-        validateOrderTable(orderTable);
-        this.orderTable = orderTable;
+    private Order(final Long orderTableId, final OrderStatus orderStatus) {
+        this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
     }
 
-    private void validateOrderTable(final OrderTable orderTable) {
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException("빈 테이블에는 주문을 등록할 수 없습니다.");
-        }
-    }
-
-    public static Order createOrder(final OrderTable orderTable, final List<OrderLineItem> orderLineItems) {
-        Order order = new Order(orderTable, OrderStatus.DEFAULT);
+    public static Order createOrder(final Long orderTableId, final List<OrderLineItem> orderLineItems) {
+        Order order = new Order(orderTableId, OrderStatus.DEFAULT);
         order.addOrderLineItems(orderLineItems);
 
         return order;
@@ -79,8 +67,8 @@ public class Order {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {

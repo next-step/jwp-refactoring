@@ -40,13 +40,18 @@ public class OrderService {
 
     private Order toEntity(final OrderRequest request) {
         OrderTable orderTable = tableService.findOrderTableById(request.getOrderTableId());
+
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException("빈 테이블에는 주문을 등록할 수 없습니다.");
+        }
+
         List<OrderLineItem> orderLineItems = request.getOrderLineItems().stream()
                 .map(itemRequest -> new OrderLineItem(
                         menuService.findMenuById(itemRequest.getMenuId()),
                         itemRequest.getQuantity()))
                 .collect(Collectors.toList());
 
-        return Order.createOrder(orderTable, orderLineItems);
+        return Order.createOrder(orderTable.getId(), orderLineItems);
     }
 
     public List<OrderResponse> list() {

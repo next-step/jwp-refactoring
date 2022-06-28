@@ -28,7 +28,7 @@ class OrderTest {
         OrderLineItem 주문_항목2 = 주문_항목_생성되어_있음();
 
         // when
-        Order order = Order.createOrder(테이블, Arrays.asList(주문_항목1, 주문_항목2));
+        Order order = Order.createOrder(테이블.getId(), Arrays.asList(주문_항목1, 주문_항목2));
 
         // then
         assertThat(order).isNotNull();
@@ -42,24 +42,10 @@ class OrderTest {
         OrderLineItem 주문_항목 = 주문_항목_생성되어_있음();
 
         // when, then
-        assertThatThrownBy(() -> Order.createOrder(테이블, Arrays.asList()))
+        assertThatThrownBy(() -> Order.createOrder(테이블.getId(), Arrays.asList()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("주문 항목은 하나 이상이어야 합니다.");
 
-    }
-
-    @DisplayName("빈 테이블이면 주문 생성에 실패한다.")
-    @Test
-    void 생성_예외_빈_테이블() {
-        // given
-        OrderTable 빈_테이블 = 테이블_생성되어_있음(0, true);
-        OrderLineItem 주문_항목1 = 주문_항목_생성되어_있음();
-        OrderLineItem 주문_항목2 = 주문_항목_생성되어_있음();
-
-        // when, then
-        assertThatThrownBy(() -> Order.createOrder(빈_테이블, Arrays.asList(주문_항목1, 주문_항목2)))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("빈 테이블에는 주문을 등록할 수 없습니다.");
     }
 
     @DisplayName("주문의 상태를 변경한다.")
@@ -104,6 +90,6 @@ class OrderTest {
         OrderTable 테이블 = 테이블_생성되어_있음(0, false);
         OrderLineItem 주문_항목1 = 주문_항목_생성되어_있음();
         OrderLineItem 주문_항목2 = 주문_항목_생성되어_있음();
-        return Order.createOrder(테이블, Arrays.asList(주문_항목1, 주문_항목2));
+        return Order.createOrder(테이블.getId(), Arrays.asList(주문_항목1, 주문_항목2));
     }
 }

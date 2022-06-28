@@ -56,7 +56,7 @@ public class TableService {
     }
 
     public boolean hasCookingOrMeal(final OrderTable orderTable) {
-        return orderRepository.existsByOrderTableAndOrderStatusIn(orderTable, OrderStatus.NOT_COMPLETED);
+        return orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTable.getId(), OrderStatus.NOT_COMPLETED);
     }
 
     @Transactional
