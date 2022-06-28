@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
 
@@ -89,6 +90,59 @@ class MenuServiceTest {
                 () -> assertThat(result.getMenuGroupId()).isEqualTo(후라이드치킨.getMenuGroupId()),
                 () -> assertThat(result.getMenuProducts()).isEqualTo(후라이드치킨.getMenuProducts())
         );
+    }
+
+    @DisplayName("메뉴 등록 시 가격이 NULL인 경우 등록 불가")
+    @Test
+    void createMenuAndIsNullPrice() {
+        // given
+        후라이드치킨.setPrice(null);
+
+        // then
+        assertThatThrownBy(() -> {
+            menuService.create(후라이드치킨);
+        }).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("메뉴 등록 시 가격이 `0`보다 작은 경우 등록 불가")
+    @Test
+    void createMenuAndIsNegativePrice() {
+        // given
+        후라이드치킨.setPrice(new BigDecimal(-16000));
+
+        // then
+        assertThatThrownBy(() -> {
+            menuService.create(후라이드치킨);
+        }).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("메뉴 그룹이 등록되지 않은 경우 등록 불가")
+    @Test
+    void createMenuAndIsNotRegisterMenuGroup() {
+        // given
+        when(menuGroupDao.existsById(한마리메뉴.getId()))
+                .thenReturn(false);
+
+        // then
+        assertThatThrownBy(() -> {
+            menuService.create(후라이드치킨);
+        }).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("메뉴 가격이 상품 리스트의 총 가격보다 작은 경우 등록 불가")
+    @Test
+    void createMenuAndIsBiggerTotalProductPrice() {
+        // given
+        후라이드.setPrice(new BigDecimal(15000));
+        when(menuGroupDao.existsById(한마리메뉴.getId()))
+                .thenReturn(true);
+        when(productDao.findById(후라이드.getId()))
+                .thenReturn(Optional.ofNullable(후라이드));
+
+        // then
+        assertThatThrownBy(() -> {
+            menuService.create(후라이드치킨);
+        }).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("메뉴 전체 조회")
