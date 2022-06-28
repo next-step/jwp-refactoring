@@ -38,12 +38,16 @@ public class OrderTable {
     }
 
     public void groupBy(TableGroup tableGroup) {
-        if (!isEmpty() || this.tableGroup != null || tableGroup == null) {
+        if (!isEmpty() || isGrouped() || tableGroup == null) {
             throw new IllegalArgumentException();
         }
         this.tableGroup = tableGroup;
         tableGroup.getOrderTables().getOrderTables().add(this);
         empty = false;
+    }
+
+    private boolean isGrouped() {
+        return tableGroup != null;
     }
 
     public void ungroup() {
