@@ -2,6 +2,5 @@ dependencies {
     implementation project(':module-menu')
     implementation project(':module-table')
     implementation project(':module-tablegroup')
-    testFixturesApi(testFixtures(project(':module-table')))
     testFixturesApi(testFixtures(project(':module-menu')))
 }

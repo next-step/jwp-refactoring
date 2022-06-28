@@ -1,4 +1,4 @@
-package kitchenpos.product.acceptance;
+package kitchenpos;
 
 import kitchenpos.product.dto.ProductResponse;
 import org.springframework.core.ParameterizedTypeReference;

@@ -1,6 +1,5 @@
-package kitchenpos.tablegroup.acceptance;
+package kitchenpos;
 
-import kitchenpos.AcceptanceTest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -10,16 +9,16 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.stream.Stream;
 
-import static kitchenpos.menu.acceptance.MenuAcceptanceUtil.신메뉴_강정치킨_가져오기;
-import static kitchenpos.order.acceptance.OrderAcceptanceTestUtil.주문_등록됨;
-import static kitchenpos.table.acceptance.TableAcceptanceUtil.주문이_들어간_테이블_가져오기;
-import static kitchenpos.table.acceptance.TableAcceptanceUtil.테이블_등록됨;
-import static kitchenpos.tablegroup.acceptance.TableGroupAcceptanceTestUtil.단체_지정_생성_실패됨;
-import static kitchenpos.tablegroup.acceptance.TableGroupAcceptanceTestUtil.단체_지정_생성_요청;
-import static kitchenpos.tablegroup.acceptance.TableGroupAcceptanceTestUtil.단체_지정_생성됨;
-import static kitchenpos.tablegroup.acceptance.TableGroupAcceptanceTestUtil.단체_지정_해지_실패됨;
-import static kitchenpos.tablegroup.acceptance.TableGroupAcceptanceTestUtil.단체_지정_해지_요청;
-import static kitchenpos.tablegroup.acceptance.TableGroupAcceptanceTestUtil.단체_지정_해지됨;
+import static kitchenpos.MenuAcceptanceUtil.신메뉴_강정치킨_가져오기;
+import static kitchenpos.OrderAcceptanceTestUtil.주문_등록됨;
+import static kitchenpos.TableAcceptanceUtil.주문이_들어간_테이블_가져오기;
+import static kitchenpos.TableAcceptanceUtil.테이블_등록됨;
+import static kitchenpos.TableGroupAcceptanceTestUtil.단체_지정_생성_실패됨;
+import static kitchenpos.TableGroupAcceptanceTestUtil.단체_지정_생성_요청;
+import static kitchenpos.TableGroupAcceptanceTestUtil.단체_지정_생성됨;
+import static kitchenpos.TableGroupAcceptanceTestUtil.단체_지정_해지_실패됨;
+import static kitchenpos.TableGroupAcceptanceTestUtil.단체_지정_해지_요청;
+import static kitchenpos.TableGroupAcceptanceTestUtil.단체_지정_해지됨;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 @DisplayName("단체 지정 관련 기능")

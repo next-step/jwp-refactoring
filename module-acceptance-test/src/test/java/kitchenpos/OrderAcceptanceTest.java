@@ -1,6 +1,5 @@
-package kitchenpos.order.acceptance;
+package kitchenpos;
 
-import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
@@ -15,18 +14,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static kitchenpos.menu.acceptance.MenuAcceptanceUtil.신메뉴_강정치킨_가져오기;
-import static kitchenpos.order.acceptance.OrderAcceptanceTestUtil.주문_목록_응답됨;
-import static kitchenpos.order.acceptance.OrderAcceptanceTestUtil.주문_목록_조회_요청;
-import static kitchenpos.order.acceptance.OrderAcceptanceTestUtil.주문_목록_주문에_주문_항목이_포함됨;
-import static kitchenpos.order.acceptance.OrderAcceptanceTestUtil.주문_상태_변경_실패됨;
-import static kitchenpos.order.acceptance.OrderAcceptanceTestUtil.주문_상태_변경_요청;
-import static kitchenpos.order.acceptance.OrderAcceptanceTestUtil.주문_상태_변경됨;
-import static kitchenpos.order.acceptance.OrderAcceptanceTestUtil.주문_생성_실패됨;
-import static kitchenpos.order.acceptance.OrderAcceptanceTestUtil.주문_생성_요청;
-import static kitchenpos.order.acceptance.OrderAcceptanceTestUtil.주문_생성됨;
-import static kitchenpos.order.acceptance.OrderAcceptanceTestUtil.주문_생성시_조리상태_확인;
-import static kitchenpos.table.acceptance.TableAcceptanceUtil.테이블_등록됨;
+import static kitchenpos.MenuAcceptanceUtil.신메뉴_강정치킨_가져오기;
+import static kitchenpos.OrderAcceptanceTestUtil.주문_목록_응답됨;
+import static kitchenpos.OrderAcceptanceTestUtil.주문_목록_조회_요청;
+import static kitchenpos.OrderAcceptanceTestUtil.주문_목록_주문에_주문_항목이_포함됨;
+import static kitchenpos.OrderAcceptanceTestUtil.주문_상태_변경_실패됨;
+import static kitchenpos.OrderAcceptanceTestUtil.주문_상태_변경_요청;
+import static kitchenpos.OrderAcceptanceTestUtil.주문_상태_변경됨;
+import static kitchenpos.OrderAcceptanceTestUtil.주문_생성_실패됨;
+import static kitchenpos.OrderAcceptanceTestUtil.주문_생성_요청;
+import static kitchenpos.OrderAcceptanceTestUtil.주문_생성됨;
+import static kitchenpos.OrderAcceptanceTestUtil.주문_생성시_조리상태_확인;
+import static kitchenpos.TableAcceptanceUtil.테이블_등록됨;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 @DisplayName("주문 관련 기능")

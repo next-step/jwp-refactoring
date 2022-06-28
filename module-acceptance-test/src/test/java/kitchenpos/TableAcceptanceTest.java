@@ -1,24 +1,15 @@
-package kitchenpos.table.acceptance;
+package kitchenpos;
 
-import kitchenpos.AcceptanceTest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.TestFactory;
 import org.springframework.http.ResponseEntity;
+
 import java.util.List;
 import java.util.stream.Stream;
 
-import static kitchenpos.table.acceptance.TableAcceptanceUtil.테이블_목록_응답됨;
-import static kitchenpos.table.acceptance.TableAcceptanceUtil.테이블_목록_조회_요청;
-import static kitchenpos.table.acceptance.TableAcceptanceUtil.테이블_비움_여부_변경_실패됨;
-import static kitchenpos.table.acceptance.TableAcceptanceUtil.테이블_비움_여부_변경_요청;
-import static kitchenpos.table.acceptance.TableAcceptanceUtil.테이블_비움_여부_변경됨;
-import static kitchenpos.table.acceptance.TableAcceptanceUtil.테이블_생성_요청;
-import static kitchenpos.table.acceptance.TableAcceptanceUtil.테이블_생성됨;
-import static kitchenpos.table.acceptance.TableAcceptanceUtil.테이블_손님_수_변경_실패됨;
-import static kitchenpos.table.acceptance.TableAcceptanceUtil.테이블_손님_수_변경_요청;
-import static kitchenpos.table.acceptance.TableAcceptanceUtil.테이블_손님_수_변경됨;
+import static kitchenpos.TableAcceptanceUtil.*;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 @DisplayName("테이블 관련 기능")
@@ -89,7 +80,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
                     테이블_비움_여부_변경됨(response);
                 }),
                 dynamicTest("단체 지정된 주문 테이블의 비움 여부를 변경한다.", () -> {
-//                    TableGroupAcceptanceTest.단체_지정_등록됨(손님이_있는_테이블, 손님이_있는_테이블2);
+                    TableGroupAcceptanceTestUtil.단체_지정_등록됨(손님이_있는_테이블, 손님이_있는_테이블2);
 
                     ResponseEntity<OrderTableResponse> response = 테이블_비움_여부_변경_요청(손님이_있는_테이블, true);
 
@@ -104,4 +95,6 @@ public class TableAcceptanceTest extends AcceptanceTest {
                 })
         );
     }
+
+
 }

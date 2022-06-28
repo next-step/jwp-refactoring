@@ -1,6 +1,5 @@
-package kitchenpos.menu.acceptance;
+package kitchenpos;
 
-import kitchenpos.AcceptanceTest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.dto.ProductResponse;
@@ -13,15 +12,9 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static kitchenpos.menu.acceptance.MenuAcceptanceUtil.메뉴_목록_메뉴에_메뉴_상품이_포함됨;
-import static kitchenpos.menu.acceptance.MenuAcceptanceUtil.메뉴_목록_응답됨;
-import static kitchenpos.menu.acceptance.MenuAcceptanceUtil.메뉴_목록_조회_요청;
-import static kitchenpos.menu.acceptance.MenuAcceptanceUtil.메뉴_목록_확인됨;
-import static kitchenpos.menu.acceptance.MenuAcceptanceUtil.메뉴_생성_실패됨;
-import static kitchenpos.menu.acceptance.MenuAcceptanceUtil.메뉴_생성_요청;
-import static kitchenpos.menu.acceptance.MenuAcceptanceUtil.메뉴_생성됨;
-import static kitchenpos.menugroup.acceptance.MenuGroupAcceptanceTestUtil.메뉴_그룹_등록됨;
-import static kitchenpos.product.acceptance.ProductAcceptanceTestUtil.상품_등록됨;
+import static kitchenpos.MenuAcceptanceUtil.*;
+import static kitchenpos.MenuGroupAcceptanceTestUtil.메뉴_그룹_등록됨;
+import static kitchenpos.ProductAcceptanceTestUtil.상품_등록됨;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 @DisplayName("메뉴 관련 기능")
@@ -60,7 +53,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 }),
                 dynamicTest("메뉴 그룹 없이 메뉴을 등록한다.", () -> {
                     ResponseEntity<MenuResponse> response = 메뉴_생성_요청("강정치킨", BigDecimal.valueOf(15_000L),
-                                                              null, 강정치킨);
+                                                                           null, 강정치킨);
 
                     메뉴_생성_실패됨(response);
                 }),

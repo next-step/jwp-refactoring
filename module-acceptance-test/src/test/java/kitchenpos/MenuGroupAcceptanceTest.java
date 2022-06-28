@@ -1,6 +1,5 @@
-package kitchenpos.menugroup.acceptance;
+package kitchenpos;
 
-import kitchenpos.AcceptanceTest;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
@@ -10,12 +9,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static kitchenpos.menugroup.acceptance.MenuGroupAcceptanceTestUtil.메뉴_그룹_목록_응답됨;
-import static kitchenpos.menugroup.acceptance.MenuGroupAcceptanceTestUtil.메뉴_그룹_목록_조회_요청;
-import static kitchenpos.menugroup.acceptance.MenuGroupAcceptanceTestUtil.메뉴_그룹_목록_확인됨;
-import static kitchenpos.menugroup.acceptance.MenuGroupAcceptanceTestUtil.메뉴_그룹_생성_실패됨;
-import static kitchenpos.menugroup.acceptance.MenuGroupAcceptanceTestUtil.메뉴_그룹_생성_요청;
-import static kitchenpos.menugroup.acceptance.MenuGroupAcceptanceTestUtil.메뉴_그룹_생성됨;
+import static kitchenpos.MenuGroupAcceptanceTestUtil.*;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 @DisplayName("메뉴 그룹 관련 기능")

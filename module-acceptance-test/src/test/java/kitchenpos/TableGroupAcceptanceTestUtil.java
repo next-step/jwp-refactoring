@@ -1,4 +1,4 @@
-package kitchenpos.tablegroup.acceptance;
+package kitchenpos;
 
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.tablegroup.dto.OrderTableIdRequest;

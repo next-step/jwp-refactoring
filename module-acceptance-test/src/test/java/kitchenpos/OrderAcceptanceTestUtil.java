@@ -1,4 +1,4 @@
-package kitchenpos.order.acceptance;
+package kitchenpos;
 
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.order.domain.OrderStatus;

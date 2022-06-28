@@ -21,8 +21,6 @@ class TableServiceTest extends ServiceTest {
 
     @Autowired
     private TableService service;
-    @Autowired
-    private OrderTableServiceTestSupport orderTableServiceTestSupport;
 
     private OrderTable 테이블;
 
@@ -51,17 +49,6 @@ class TableServiceTest extends ServiceTest {
         OrderTableResponse response = service.changeEmpty(테이블.getId(), request);
 
         assertThat(response.isEmpty()).isFalse();
-    }
-
-    @DisplayName("계산이 완료되지 않은 테이블의 비움 여부를 변경한다.")
-    @Test
-    void changeEmptyWithNotCompletedOrder() {
-        orderTableServiceTestSupport.강정치킨_주문하기(테이블);
-
-        assertThatThrownBy(() -> {
-            service.changeEmpty(테이블.getId(), new EmptyRequest(true));
-        }).isInstanceOf(CannotChangeEmptyException.class)
-        .hasMessageContaining("비움 여부를 변경할 수 없습니다.");
     }
 
     @DisplayName("테이블의 손님 수를 변경한다.")

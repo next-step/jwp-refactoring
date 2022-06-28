@@ -1,17 +1,14 @@
 package kitchenpos.tablegroup.application;
 
 import kitchenpos.ServiceTest;
-import kitchenpos.table.application.OrderTableServiceTestSupport;
 import kitchenpos.tablegroup.dto.OrderTableIdRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.exception.CannotUngroupException;
 import kitchenpos.tablegroup.exception.InvalidTableGroupException;
 import kitchenpos.tablegroup.exception.NotFoundTableGroupException;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,8 +25,6 @@ class TableGroupServiceTest extends ServiceTest {
 
     @Autowired
     private TableGroupService service;
-    @Autowired
-    private OrderTableServiceTestSupport orderTableServiceTestSupport;
 
     private OrderTable 빈테이블1;
     private OrderTable 빈테이블2;
@@ -73,8 +68,8 @@ class TableGroupServiceTest extends ServiceTest {
     }
 
     private void assertGroupedTable(OrderTableResponse it) {
-        Assertions.assertThat(it.getTableGroupId()).isNotNull();
-        Assertions.assertThat(it.isEmpty()).isFalse();
+        assertThat(it.getTableGroupId()).isNotNull();
+        assertThat(it.isEmpty()).isFalse();
     }
 
     @DisplayName("단체 지정을 해지한다.")
@@ -96,17 +91,5 @@ class TableGroupServiceTest extends ServiceTest {
             service.ungroup(존재하지_않는_단체_지정_id);
         }).isInstanceOf(NotFoundTableGroupException.class)
         .hasMessageContaining("단체 지정을 찾을 수 없습니다.");
-    }
-
-    @DisplayName("계산 완료가 되지 않는 주문이 있는 단체 지정를 해지한다.")
-    @Test
-    void ungroupWithHasNotCompletedOrder() {
-        TableGroupResponse tableGroup = createTableGroup(빈테이블1, 빈테이블2);
-        orderTableServiceTestSupport.강정치킨_주문하기(빈테이블1);
-
-        assertThatThrownBy(() -> {
-            service.ungroup(tableGroup.getId());
-        }).isInstanceOf(CannotUngroupException.class)
-        .hasMessageContaining("단체 지정을 해지할 수 없습니다.");
     }
 }

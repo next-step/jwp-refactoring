@@ -1,4 +1,4 @@
-package kitchenpos.menu.acceptance;
+package kitchenpos;
 
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuProductResponse;
@@ -18,8 +18,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static kitchenpos.AcceptanceTest.restTemplate;
-import static kitchenpos.menugroup.acceptance.MenuGroupAcceptanceTestUtil.메뉴_그룹_등록됨;
-import static kitchenpos.product.acceptance.ProductAcceptanceTestUtil.상품_등록됨;
+import static kitchenpos.MenuGroupAcceptanceTestUtil.메뉴_그룹_등록됨;
+import static kitchenpos.ProductAcceptanceTestUtil.상품_등록됨;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public final class MenuAcceptanceUtil {

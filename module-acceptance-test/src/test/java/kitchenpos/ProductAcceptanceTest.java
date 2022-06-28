@@ -1,6 +1,5 @@
-package kitchenpos.product.acceptance;
+package kitchenpos;
 
-import kitchenpos.AcceptanceTest;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
@@ -9,12 +8,8 @@ import org.springframework.http.ResponseEntity;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Stream;
-import static kitchenpos.product.acceptance.ProductAcceptanceTestUtil.상품_목록_응답됨;
-import static kitchenpos.product.acceptance.ProductAcceptanceTestUtil.상품_목록_조회_요청;
-import static kitchenpos.product.acceptance.ProductAcceptanceTestUtil.상품_목록_확인됨;
-import static kitchenpos.product.acceptance.ProductAcceptanceTestUtil.상품_생성_실패됨;
-import static kitchenpos.product.acceptance.ProductAcceptanceTestUtil.상품_생성_요청;
-import static kitchenpos.product.acceptance.ProductAcceptanceTestUtil.상품_생성됨;
+
+import static kitchenpos.ProductAcceptanceTestUtil.*;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 @DisplayName("상품 관련 기능")
@@ -47,6 +42,4 @@ public class ProductAcceptanceTest extends AcceptanceTest {
                 })
         );
     }
-
-
 }

@@ -1,4 +1,4 @@
-package kitchenpos.table.acceptance;
+package kitchenpos;
 
 import kitchenpos.table.dto.OrderTableResponse;
 import org.springframework.core.ParameterizedTypeReference;
@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import static kitchenpos.AcceptanceTest.restTemplate;
-import static kitchenpos.menu.acceptance.MenuAcceptanceUtil.신메뉴_강정치킨_가져오기;
-import static kitchenpos.order.acceptance.OrderAcceptanceTestUtil.주문_등록됨;
+import static kitchenpos.MenuAcceptanceUtil.신메뉴_강정치킨_가져오기;
+import static kitchenpos.OrderAcceptanceTestUtil.주문_등록됨;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public final class TableAcceptanceUtil {

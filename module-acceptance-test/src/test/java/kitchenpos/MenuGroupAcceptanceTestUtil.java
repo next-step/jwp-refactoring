@@ -1,4 +1,4 @@
-package kitchenpos.menugroup.acceptance;
+package kitchenpos;
 
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.springframework.core.ParameterizedTypeReference;
