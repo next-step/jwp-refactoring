@@ -1,71 +1,55 @@
 package kitchenpos.domain;
 
+import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
+@Entity
 public class Menu {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    @Embedded
     private Price price;
     private Long menuGroupId;
-    private List<MenuProduct> menuProducts;
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL)
+    private final List<MenuProduct> menuProducts = new ArrayList<>();
 
-    public Menu(Long id, String name, Price price, Long menuGroupId) {
-        this.id = id;
+    protected Menu() {
+    }
+
+    public Menu(String name, long price, Long menuGroupId) {
         this.name = name;
-        this.price = price;
+        this.price = Price.valueOf(price);
         this.menuGroupId = menuGroupId;
     }
 
-    public Menu(String name, Price price, Long menuGroupId) {
-        this.name = name;
-        this.price = price;
-        this.menuGroupId = menuGroupId;
-    }
-
-    public Menu(String name, Price price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        this.name = name;
-        this.price = price;
-        this.menuGroupId = menuGroupId;
-        this.menuProducts = menuProducts;
+    public void addMenuProduct(MenuProduct menuProduct) {
+        menuProduct.toMenu(this);
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
     }
 
     public Price getPrice() {
         return price;
     }
 
-    public void setPrice(final Price price) {
-        this.price = price;
-    }
-
     public Long getMenuGroupId() {
         return menuGroupId;
-    }
-
-    public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
     }
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
     }
 
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
+    public boolean moreExpensiveThen(Price price) {
+        return this.price.compareTo(price) > 0;
     }
 }

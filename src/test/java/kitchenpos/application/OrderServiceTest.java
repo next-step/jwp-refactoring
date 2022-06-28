@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
@@ -8,6 +7,7 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.repository.MenuRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ class OrderServiceTest {
     @Autowired
     OrderService orderService;
     @MockBean
-    MenuDao menuDao;
+    MenuRepository menuRepository;
     @MockBean
     OrderDao orderDao;
     @MockBean
@@ -58,7 +58,7 @@ class OrderServiceTest {
 
     void setMenu() {
         menuId = 1L;
-        when(menuDao.countByIdIn(singletonList(menuId))).thenReturn(1L);
+        when(menuRepository.countByIdIn(singletonList(menuId))).thenReturn(1L);
     }
 
     @DisplayName("주문을 생성할 수 있다")
