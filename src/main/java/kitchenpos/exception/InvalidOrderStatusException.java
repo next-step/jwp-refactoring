@@ -1,8 +1,10 @@
 package kitchenpos.exception;
 
+import static kitchenpos.exception.ErrorMessage.NOT_CHANGE_COMPLETION;
+
 public class InvalidOrderStatusException extends IllegalArgumentException {
     public InvalidOrderStatusException() {
-        super("완성된 상태는 변경할 수 없습니다.");
+        super(NOT_CHANGE_COMPLETION);
     }
 
     public InvalidOrderStatusException(String s) {

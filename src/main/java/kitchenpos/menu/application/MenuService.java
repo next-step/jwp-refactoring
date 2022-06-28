@@ -1,5 +1,8 @@
 package kitchenpos.menu.application;
 
+import static kitchenpos.exception.ErrorMessage.NOT_EXIST_MENU_GROUP;
+import static kitchenpos.exception.ErrorMessage.NOT_EXIST_PRODUCT;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.exception.NotExistException;
@@ -33,7 +36,7 @@ public class MenuService {
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
         final MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
-                .orElseThrow(() -> new NotExistException("메뉴 그룹이 존재하지 않습니다."));
+                .orElseThrow(() -> new NotExistException(NOT_EXIST_MENU_GROUP));
         final Menu menu = new Menu.Builder(menuRequest.getName())
                 .setPrice(Price.of(menuRequest.getPrice()))
                 .setMenuGroup(menuGroup)
@@ -41,7 +44,7 @@ public class MenuService {
 
         for (MenuProductRequest menuProduct : menuRequest.getMenuProducts()) {
             final Product persistProduct = productRepository.findById(menuProduct.getProductId())
-                    .orElseThrow(() -> new NotExistException("제품이 존재하지 않습니다."));
+                    .orElseThrow(() -> new NotExistException(NOT_EXIST_PRODUCT));
             menu.addProduct(persistProduct, Quantity.of(menuProduct.getQuantity()));
         }
 

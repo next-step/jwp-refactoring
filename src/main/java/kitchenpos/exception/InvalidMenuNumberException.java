@@ -1,8 +1,10 @@
 package kitchenpos.exception;
 
+import static kitchenpos.exception.ErrorMessage.INVALID_MENU_NUMBER;
+
 public class InvalidMenuNumberException extends IllegalArgumentException {
     public InvalidMenuNumberException() {
-        super("올바르지 않은 메뉴 갯수입니다.");
+        super(INVALID_MENU_NUMBER);
     }
 
     public InvalidMenuNumberException(String s) {

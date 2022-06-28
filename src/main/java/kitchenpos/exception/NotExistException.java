@@ -1,8 +1,10 @@
 package kitchenpos.exception;
 
+import static kitchenpos.exception.ErrorMessage.NOT_EXIST_COMMON;
+
 public class NotExistException extends IllegalArgumentException {
     public NotExistException() {
-        super("존재하지 않습니다.");
+        super(NOT_EXIST_COMMON);
     }
 
     public NotExistException(String s) {

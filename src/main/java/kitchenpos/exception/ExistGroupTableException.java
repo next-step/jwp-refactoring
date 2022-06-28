@@ -1,8 +1,10 @@
 package kitchenpos.exception;
 
+import static kitchenpos.exception.ErrorMessage.EXIST_GROUP_TABLE;
+
 public class ExistGroupTableException extends IllegalArgumentException {
     public ExistGroupTableException() {
-        super("단체로 지정된 테이블입니다.");
+        super(EXIST_GROUP_TABLE);
     }
 
     public ExistGroupTableException(String s) {

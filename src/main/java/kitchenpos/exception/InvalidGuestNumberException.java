@@ -1,8 +1,10 @@
 package kitchenpos.exception;
 
+import static kitchenpos.exception.ErrorMessage.INVALID_GUEST_NUMBER;
+
 public class InvalidGuestNumberException extends IllegalArgumentException {
     public InvalidGuestNumberException() {
-        super("잘못된 고객수입니다.");
+        super(INVALID_GUEST_NUMBER);
     }
 
     public InvalidGuestNumberException(String s) {

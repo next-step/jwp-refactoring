@@ -1,8 +1,10 @@
 package kitchenpos.exception;
 
+import static kitchenpos.exception.ErrorMessage.EMPTY_TABLE;
+
 public class EmptyTableException extends IllegalStateException {
     public EmptyTableException() {
-        super("비어있는 테이블입니다.");
+        super(EMPTY_TABLE);
     }
 
     public EmptyTableException(String s) {

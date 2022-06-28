@@ -1,8 +1,10 @@
 package kitchenpos.exception;
 
+import static kitchenpos.exception.ErrorMessage.INVALID_QUANTITY;
+
 public class InvalidQuantityException extends IllegalArgumentException {
     public InvalidQuantityException() {
-        super("올바르지 않은 수량입니다.");
+        super(INVALID_QUANTITY);
     }
 
     public InvalidQuantityException(String s) {

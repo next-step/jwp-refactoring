@@ -1,5 +1,7 @@
 package kitchenpos.table.application;
 
+import static kitchenpos.exception.ErrorMessage.NOT_EXIST_ORDER_TABLE;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.exception.NotCompletionStatusException;
@@ -59,6 +61,6 @@ public class TableService {
 
     private OrderTable getOrderTable(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
-                .orElseThrow(() -> new NotExistException("존재하지 않은 주문테이블입니다."));
+                .orElseThrow(() -> new NotExistException(NOT_EXIST_ORDER_TABLE));
     }
 }
