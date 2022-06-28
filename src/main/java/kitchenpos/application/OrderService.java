@@ -41,20 +41,9 @@ public class OrderService {
         final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
                 .orElseThrow(IllegalArgumentException::new);
         validateNullOrderLineItem(orderRequest);
-
-        Order order = orderRequest.toOrder(orderTable);
-
-        List<OrderLineItem> orderLineItems = orderRequest.getOrderLineItems().stream()
-                .map(OrderLineItemRequest::toOrderLineItem)
-                .collect(Collectors.toList());
-
-        final Order savedOrder = orderRepository.save(order);
-
-        final List<Long> menuIds = orderLineItems.stream()
-                .map(OrderLineItem::getMenuId)
-                .collect(Collectors.toList());
-
-        savedOrder.addOrderLineItems(OrderLineItems.of(orderLineItems, menuRepository.countByIdIn(menuIds)));
+        
+        final Order savedOrder = orderRepository.save(orderRequest.toOrder(orderTable));
+        connectOrderToOrderLineItems(orderRequest, savedOrder);
 
         return OrderResponse.from(savedOrder);
     }
@@ -71,6 +60,17 @@ public class OrderService {
 
         savedOrder.changeOrderStatus(orderStatus);
         return OrderResponse.from(savedOrder);
+    }
+
+    private void connectOrderToOrderLineItems(OrderRequest orderRequest, Order savedOrder) {
+        List<OrderLineItem> orderLineItems = orderRequest.getOrderLineItems().stream()
+                .map(OrderLineItemRequest::toOrderLineItem)
+                .collect(Collectors.toList());
+        final List<Long> menuIds = orderLineItems.stream()
+                .map(OrderLineItem::getMenuId)
+                .collect(Collectors.toList());
+
+        savedOrder.addOrderLineItems(OrderLineItems.of(orderLineItems, menuRepository.countByIdIn(menuIds)));
     }
 
     private void validateNullOrderLineItem(OrderRequest orderRequest) {
