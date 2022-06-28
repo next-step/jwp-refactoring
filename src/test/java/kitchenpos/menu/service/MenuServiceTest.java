@@ -2,14 +2,14 @@ package kitchenpos.menu.service;
 
 import kitchenpos.application.MenuService;
 import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
 import kitchenpos.menugroup.application.MenuGroupServiceTest;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.application.ProductServiceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -39,7 +39,7 @@ public class MenuServiceTest {
     private MenuDao menuDao;
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @Mock
     private MenuProductDao menuProductDao;
@@ -49,13 +49,13 @@ public class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
+        menuService = new MenuService(menuDao, menuGroupRepository, menuProductDao, productDao);
     }
 
     @DisplayName("메뉴를 생성한다.")
     @Test
     public void create() {
-        when(menuGroupDao.existsById(any())).thenReturn(true);
+        when(menuGroupRepository.existsById(any())).thenReturn(true);
         when(productDao.findById(any())).thenReturn(Optional.of(ProductServiceTest.createProduct01()));
         when(menuDao.save(any())).thenReturn(createMenu01());
         when(menuProductDao.save(any())).thenReturn(createMenuProduct01());
@@ -88,7 +88,7 @@ public class MenuServiceTest {
     @DisplayName("[예외] 메뉴 그룹을 포함하지 않은 메뉴를 생성한다.")
     @Test
     public void create_without_menu_group() {
-        when(menuGroupDao.existsById(any())).thenReturn(false);
+        when(menuGroupRepository.existsById(any())).thenReturn(false);
 
         // when, then
         assertThatThrownBy(() -> {
@@ -99,7 +99,7 @@ public class MenuServiceTest {
     @DisplayName("[예외] 상품을 포함하지 않은 메뉴를 생성한다")
     @Test
     public void create_without_product() {
-        when(menuGroupDao.existsById(any())).thenReturn(true);
+        when(menuGroupRepository.existsById(any())).thenReturn(true);
         when(productDao.findById(any())).thenReturn(Optional.empty());
 
         // when, then
@@ -111,7 +111,7 @@ public class MenuServiceTest {
     @DisplayName("[예외] 메뉴 상품보다 가격이 비싼 메뉴를 생성한다.")
     @Test
     public void create_expensive_than_menu_products() {
-        when(menuGroupDao.existsById(any())).thenReturn(true);
+        when(menuGroupRepository.existsById(any())).thenReturn(true);
         when(productDao.findById(any())).thenReturn(Optional.of(ProductServiceTest.createProduct01()));
 
         // when, then
