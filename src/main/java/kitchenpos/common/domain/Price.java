@@ -35,6 +35,10 @@ public class Price {
         return price;
     }
 
+    public boolean isExpensive(BigDecimal sumPrice) {
+        return price.compareTo(sumPrice) > 0;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
