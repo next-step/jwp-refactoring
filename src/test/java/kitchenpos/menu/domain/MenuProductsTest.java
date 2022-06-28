@@ -17,7 +17,7 @@ public class MenuProductsTest {
         Product otherProduct = Product.of("레드콤보", 20_000L);
         MenuProduct menuProduct = MenuProduct.createMenuProduct(product, 1L);
         MenuProduct otherMenuProduct = MenuProduct.createMenuProduct(otherProduct, 1L);
-        MenuProducts menuProducts = new MenuProducts(Lists.list(menuProduct, otherMenuProduct));
+        MenuProducts menuProducts = MenuProducts.createMenuProducts(Lists.list(menuProduct, otherMenuProduct));
 
         Price totalPrice = menuProducts.calculateTotalPrice();
 

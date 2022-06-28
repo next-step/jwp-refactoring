@@ -14,9 +14,10 @@ public class MenuTest {
     void createMenu() {
         Product product = Product.of("허니콤보", 19_000L);
         MenuProduct menuProduct = MenuProduct.createMenuProduct(product, 1L);
+        MenuProducts menuProducts = MenuProducts.createMenuProducts(Lists.list(menuProduct));
         MenuGroup menuGroup = MenuGroup.from("한마리메뉴");
 
-        Menu menu = Menu.createMenu("허니콤보", Price.from(19_000L), menuGroup, Lists.list(menuProduct));
+        Menu menu = Menu.createMenu("허니콤보", Price.from(19_000L), menuGroup, menuProducts);
 
         assertThat(menu).isNotNull();
         assertThat(menu).isEqualTo(menuProduct.getMenu());

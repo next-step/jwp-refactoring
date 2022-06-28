@@ -7,9 +7,11 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
+
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -45,8 +47,9 @@ public class MenuServiceTest {
     void createMenu() {
         Product product = Product.of("허니콤보", 19_000L);
         MenuProduct menuProduct = MenuProduct.createMenuProduct(product, 1L);
+        MenuProducts menuProducts = MenuProducts.createMenuProducts(Lists.list(menuProduct));
         MenuGroup menuGroup = MenuGroup.from("한마리메뉴");
-        Menu menu = Menu.createMenu("허니콤보", Price.from(19_000L), menuGroup, Lists.list(menuProduct));
+        Menu menu = Menu.createMenu("허니콤보", Price.from(19_000L), menuGroup, menuProducts);
         when(productRepository.findById(any())).thenReturn(Optional.of(product));
         when(menuGroupRepository.findById(any())).thenReturn(Optional.of(menuGroup));
         when(menuRepository.save(any())).thenReturn(menu);
@@ -98,8 +101,9 @@ public class MenuServiceTest {
     void createOverPrice() {
         Product product = Product.of("허니콤보", 19_000L);
         MenuGroup menuGroup = MenuGroup.from("한마리메뉴");
-        when(productRepository.findById(any())).thenReturn(Optional.of(product));
         when(menuGroupRepository.findById(any())).thenReturn(Optional.of(menuGroup));
+        when(productRepository.findById(any())).thenReturn(Optional.of(product));
+
         MenuProductRequest menuProductRequest = new MenuProductRequest(product.getId(), 1L);
         MenuRequest menuRequest = new MenuRequest("허니콤보", 20_000L, menuGroup.getId(), Lists.list(menuProductRequest));
 
@@ -113,8 +117,9 @@ public class MenuServiceTest {
     void findAll() {
         Product product = Product.of("허니콤보", 19_000L);
         MenuProduct menuProduct = MenuProduct.createMenuProduct(product, 1L);
+        MenuProducts menuProducts = MenuProducts.createMenuProducts(Lists.list(menuProduct));
         MenuGroup menuGroup = MenuGroup.from("한마리메뉴");
-        Menu menu = Menu.createMenu("허니콤보", Price.from(19_000L), menuGroup, Lists.list(menuProduct));
+        Menu menu = Menu.createMenu("허니콤보", Price.from(19_000L), menuGroup, menuProducts);
         when(menuRepository.findAll()).thenReturn(Lists.list(menu));
 
         List<MenuResponse> menus = menuService.list();

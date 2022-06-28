@@ -7,8 +7,6 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class Price {
-    public static final Price ZERO = Price.from(0);
-
     @Column(nullable = false)
     private BigDecimal price;
 

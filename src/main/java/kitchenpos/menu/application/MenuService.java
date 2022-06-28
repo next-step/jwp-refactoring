@@ -1,12 +1,12 @@
 package kitchenpos.menu.application;
 
-import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.util.List;
 
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -37,30 +37,9 @@ public class MenuService {
     public MenuResponse create(final MenuRequest menuRequest) {
         Price price = Price.from(menuRequest.getPrice());
         MenuGroup menuGroup = findMenuGroup(menuRequest);
-        List<MenuProduct> menuProducts = createMenuProducts(menuRequest.getMenuProducts());
+        MenuProducts menuProducts = createMenuProducts(menuRequest.getMenuProducts());
         Menu menu = Menu.createMenu(menuRequest.getName(), price, menuGroup, menuProducts);
-
         return MenuResponse.of(menuRepository.save(menu));
-    }
-
-    private List<MenuProduct> createMenuProducts(List<MenuProductRequest> menuProductRequests) {
-        List<MenuProduct> menuProducts = new ArrayList<>();
-        menuProductRequests.forEach(menuProductRequest -> {
-            Product product = findProduct(menuProductRequest);
-            MenuProduct menuProduct = MenuProduct.createMenuProduct(product, menuProductRequest.getQuantity());
-            menuProducts.add(menuProduct);
-        });
-        return menuProducts;
-    }
-    
-    private Product findProduct(MenuProductRequest menuProductRequests) {
-        return productRepository.findById(menuProductRequests.getProductId())
-                .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다."));
-    }
-
-    private MenuGroup findMenuGroup(MenuRequest menuRequest) {
-        return menuGroupRepository.findById(menuRequest.getMenuGroupId())
-                .orElseThrow(() -> new IllegalArgumentException("메뉴 그룹이 존재하지 않습니다."));
     }
 
     @Transactional(readOnly = true)
@@ -69,5 +48,28 @@ public class MenuService {
         return menus.stream()
                 .map(MenuResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    private MenuGroup findMenuGroup(MenuRequest menuRequest) {
+        return menuGroupRepository.findById(menuRequest.getMenuGroupId())
+                .orElseThrow(() -> new IllegalArgumentException("메뉴 그룹이 존재하지 않습니다."));
+    }
+
+    private MenuProducts createMenuProducts(List<MenuProductRequest> menuProductRequests) {
+        List<MenuProduct> menuProducts = menuProductRequests.stream()
+                .map(this::createMenuProduct)
+                .collect(Collectors.toList());
+        return MenuProducts.createMenuProducts(menuProducts);
+    }
+
+    private MenuProduct createMenuProduct(MenuProductRequest menuProductRequest) {
+        Product product = findProduct(menuProductRequest);
+        return MenuProduct.createMenuProduct(product,
+                menuProductRequest.getQuantity());
+    }
+
+    private Product findProduct(MenuProductRequest menuProductRequests) {
+        return productRepository.findById(menuProductRequests.getProductId())
+                .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다."));
     }
 }

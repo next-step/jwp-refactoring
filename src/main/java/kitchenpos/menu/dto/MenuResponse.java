@@ -1,8 +1,10 @@
 package kitchenpos.menu.dto;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.product.domain.Price;
 
 public class MenuResponse {
     private Long id;
@@ -26,9 +28,14 @@ public class MenuResponse {
         List<MenuProductResponse> menuProductResponses = mapToMenuProductResponse(menu);
         return new MenuResponse(menu.getId(),
                 menu.getName(),
-                menu.getPrice().longValue(),
+                mapToLongValue(menu.getPrice()),
                 menu.getMenuGroupId(),
                 menuProductResponses);
+    }
+
+    private static long mapToLongValue(Price price) {
+        BigDecimal value = price.getPrice();
+        return value.longValue();
     }
 
     private static List<MenuProductResponse> mapToMenuProductResponse(Menu menu) {

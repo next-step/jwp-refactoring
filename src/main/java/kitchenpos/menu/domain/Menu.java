@@ -1,8 +1,7 @@
 package kitchenpos.menu.domain;
 
-import java.math.BigDecimal;
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import javax.persistence.*;
 import kitchenpos.product.domain.Price;
 
@@ -28,21 +27,16 @@ public class Menu {
     protected Menu() {
     }
 
-    public static Menu createMenu(String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        Menu menu = new Menu();
-        menu.updateName(name);
-        menu.updatePrice(price);
-        menu.addMenuGroup(menuGroup);
-        menu.addMenuProducts(menuProducts);
-        validateMenuPrice(price, menu);
-        return menu;
+    private Menu(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        validatePrice(price, menuProducts);
+        this.name = name;
+        this.price = price;
+        this.menuGroup = menuGroup;
+        this.addMenuProducts(menuProducts);
     }
 
-    private static void validateMenuPrice(Price price, Menu menu) {
-        Price sum = menu.calculateTotalPrice();
-        if (price.isGreaterThan(sum)) {
-            throw new IllegalArgumentException("메뉴의 가격은 상품 가격의 총합보다 클 수 없습니다.");
-        }
+    public static Menu createMenu(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        return new Menu(name, price, menuGroup, menuProducts);
     }
 
     public Long getId() {
@@ -53,20 +47,20 @@ public class Menu {
         return name;
     }
 
-    public BigDecimal getPrice() {
-        return price.getPrice();
+    public Price getPrice() {
+        return price;
     }
 
     public Long getMenuGroupId() {
         return menuGroup.getId();
     }
 
-    public List<MenuProduct> getMenuProducts() {
+    public Set<MenuProduct> getMenuProducts() {
         return menuProducts.getValue();
     }
 
-    public Price calculateTotalPrice() {
-        return menuProducts.calculateTotalPrice();
+    public void addMenuProducts(MenuProducts menuProducts) {
+        this.menuProducts.addAll(this, menuProducts);
     }
 
     private void addMenuGroup(MenuGroup menuGroup) {
@@ -81,8 +75,11 @@ public class Menu {
         this.name = name;
     }
 
-    private void addMenuProducts(List<MenuProduct> menuProducts) {
-        this.menuProducts.addAll(this, menuProducts);
+    private void validatePrice(Price price, MenuProducts menuProducts) {
+        Price sum = menuProducts.calculateTotalPrice();
+        if (price.isGreaterThan(sum)) {
+            throw new IllegalArgumentException("메뉴의 가격은 상품 가격의 총합보다 클 수 없습니다.");
+        }
     }
 
     @Override
