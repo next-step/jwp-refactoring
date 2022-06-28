@@ -11,7 +11,7 @@ public class MenuResponse {
     private BigDecimal price;
     private List<MenuProductResponse> products;
 
-    public static MenuResponse of(Menu menu) {
+    public static MenuResponse from(Menu menu) {
         MenuResponse response = new MenuResponse();
 
         response.id = menu.getId();

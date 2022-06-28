@@ -16,7 +16,7 @@ public class Menus {
 
     public List<MenuResponse> toResponse() {
         return this.value.stream()
-                .map(MenuResponse::of)
+                .map(MenuResponse::from)
                 .collect(Collectors.toList());
     }
 

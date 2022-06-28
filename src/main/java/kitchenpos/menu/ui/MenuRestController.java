@@ -26,7 +26,7 @@ public class MenuRestController {
         final Menu created = menuService.create(request);
         final URI uri = URI.create("/api/menus/" + created.getId());
         return ResponseEntity.created(uri)
-                .body(MenuResponse.of(created))
+                .body(MenuResponse.from(created))
                 ;
     }
 

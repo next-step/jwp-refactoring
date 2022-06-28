@@ -3,10 +3,10 @@ package kitchenpos.Acceptance.menu;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.Acceptance.AcceptanceTest;
-import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductResponse;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,22 +17,21 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static kitchenpos.Acceptance.menuGroup.MenuGroupAcceptanceTest.메뉴_그룹_생성_요청;
-import static kitchenpos.Acceptance.product.ProductAcceptanceTest.상품_생성_요청;
 import static kitchenpos.menu.MenuGenerator.*;
+import static kitchenpos.product.ProductGenerator.상품_생성_API_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MenuAcceptanceTest extends AcceptanceTest {
     private static final int PRODUCT_PRICE = 1_000;
 
-    private MenuGroup menuGroup;
-    private Product product;
+    private MenuGroupResponse menuGroup;
+    private ProductResponse product;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        menuGroup = 메뉴_그룹_생성_요청("메뉴 그룹").as(MenuGroup.class);
-        product = 상품_생성_요청("상품", PRODUCT_PRICE).as(Product.class);
+        menuGroup = 메뉴_그룹_생성_API_호출("메뉴 그룹").as(MenuGroupResponse.class);
+        product = 상품_생성_API_요청("상품", PRODUCT_PRICE).as(ProductResponse.class);
     }
 
     @DisplayName("메뉴의 가격이 0원 미만인 경우 생성 요청이 실패해야 한다")

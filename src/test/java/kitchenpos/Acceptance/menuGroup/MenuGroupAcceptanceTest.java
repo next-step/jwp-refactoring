@@ -4,18 +4,15 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.Acceptance.AcceptanceTest;
 import kitchenpos.menu.MenuGenerator;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.Acceptance.utils.RestAssuredRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 
 import static kitchenpos.menu.MenuGenerator.*;
-import static kitchenpos.product.ProductGenerator.상품_생성_API_요청;
-import static kitchenpos.product.ProductGenerator.상품_조회_API_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MenuGroupAcceptanceTest extends AcceptanceTest {
@@ -57,9 +54,9 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
         메뉴_그룹_조회_실패됨(메뉴_그룹_조회_결과);
     }
 
-    @DisplayName("정상 상품을 조회하면 정상 조회되어야 한다")
+    @DisplayName("정상 메뉴 그룹을 조회하면 정상 조회되어야 한다")
     @Test
-    void findProductTest() {
+    void findMenuGroupTest() {
         // given
         String 메뉴_그룹_이름 = "메뉴 그룹";
         Long 메뉴_그룹_아이디 = 메뉴_그룹_생성_API_호출(메뉴_그룹_이름).body().jsonPath().getLong("id");

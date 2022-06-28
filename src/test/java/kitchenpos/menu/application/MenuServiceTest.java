@@ -1,11 +1,11 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.common.domain.Price;
 import kitchenpos.menu.MenuGenerator;
 import kitchenpos.menu.dao.MenuGroupRepository;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.Menus;
-import kitchenpos.common.domain.Price;
 import kitchenpos.menu.dto.MenuCreateRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.product.ProductGenerator;
@@ -144,7 +144,7 @@ class MenuServiceTest {
         Menus 메뉴_조회_결과 = menuService.list();
 
         // then
-        메뉴_조회_성공됨(메뉴_조회_결과, 포함되어야_할_아이디들);
+        메뉴_목록_조회됨(메뉴_조회_결과, 포함되어야_할_아이디들);
     }
 
     void 메뉴_생성_실패됨(Runnable runnable) {
@@ -159,7 +159,7 @@ class MenuServiceTest {
         assertThat(menu.getMenuProducts().getTotalProductPrice()).isEqualTo(new Price(request.getPrice()));
     }
 
-    void 메뉴_조회_성공됨(Menus menus, List<Long> containIds) {
+    void 메뉴_목록_조회됨(Menus menus, List<Long> containIds) {
         assertThat(menus.getValue().size()).isGreaterThanOrEqualTo(containIds.size());
         assertThat(menus.getValue().stream().mapToLong(Menu::getId)).containsAll(containIds);
     }

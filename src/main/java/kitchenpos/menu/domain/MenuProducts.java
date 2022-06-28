@@ -37,7 +37,7 @@ public class MenuProducts {
 
     public List<MenuProductResponse> toProductResponses() {
         return this.value.stream()
-                .map(menuProduct -> MenuProductResponse.of(menuProduct.getProduct(), menuProduct.getQuantity()))
+                .map(menuProduct -> MenuProductResponse.from(menuProduct.getProduct(), menuProduct.getQuantity()))
                 .collect(Collectors.toList());
     }
 }
