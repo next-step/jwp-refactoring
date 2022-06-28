@@ -18,9 +18,9 @@ class ProductTest {
         );
     }
 
-    @DisplayName("상품 생성 실패한다: 가격 0 미만")
+    @DisplayName("상품의 가격은 0 이상이어야 한다")
     @Test
-    void Product_가격_0미만_생성실패(){
+    void Product_가격_0이상_검증(){
         assertThrows(IllegalArgumentException.class, () -> new Product("김치찌개", -8500));
     }
 }
