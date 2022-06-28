@@ -38,13 +38,6 @@ public class MenuGroupRestController {
     static class MenuGroupRequest {
         private String name;
 
-        public MenuGroupRequest() {
-        }
-
-        public MenuGroupRequest(String name) {
-            this.name = name;
-        }
-
         public String getName() {
             return name;
         }
@@ -61,14 +54,6 @@ public class MenuGroupRestController {
     static class MenuGroupResponse {
         private Long id;
         private String name;
-
-        public MenuGroupResponse() {
-        }
-
-        public MenuGroupResponse(Long id, String name) {
-            this.id = id;
-            this.name = name;
-        }
 
         public MenuGroupResponse(MenuGroup created) {
             this.id = created.getId();

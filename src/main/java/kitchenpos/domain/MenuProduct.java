@@ -15,12 +15,6 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
-    public MenuProduct(Long seq, Long productId, long quantity) {
-        this.seq = seq;
-        this.productId = productId;
-        this.quantity = quantity;
-    }
-
     public MenuProduct(Long productId, long quantity) {
         this.productId = productId;
         this.quantity = quantity;

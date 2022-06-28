@@ -27,8 +27,8 @@ class MenuServiceTest {
     void create() {
         // given
         Menu menu = new Menu("메뉴", 19000, 1L);
-        menu.addMenuProduct(new MenuProduct(1L, 1L, 2));
-        menu.addMenuProduct(new MenuProduct(2L, 2L, 1));
+        menu.addMenuProduct(new MenuProduct(1L, 2));
+        menu.addMenuProduct(new MenuProduct(2L, 1));
 
         // when
         menuService.create(menu);
