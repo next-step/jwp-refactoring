@@ -1,4 +1,4 @@
-package kitchenpos.orderTable.event;
+package kitchenpos.ordertable.event;
 
 import java.util.List;
 

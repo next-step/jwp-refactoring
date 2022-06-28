@@ -1,7 +1,7 @@
 package kitchenpos.tableGroup.application;
 
-import kitchenpos.orderTable.event.ReserveEvent;
-import kitchenpos.orderTable.event.UngroupEvent;
+import kitchenpos.ordertable.event.ReserveEvent;
+import kitchenpos.ordertable.event.UngroupEvent;
 import kitchenpos.tableGroup.domain.TableGroup;
 import kitchenpos.tableGroup.domain.TableGroupRepository;
 import kitchenpos.tableGroup.dto.TableGroupRequest;

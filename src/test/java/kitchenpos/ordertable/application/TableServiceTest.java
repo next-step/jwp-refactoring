@@ -1,4 +1,4 @@
-package kitchenpos.orderTable.application;
+package kitchenpos.ordertable.application;
 
 import static kitchenpos.utils.DomainFixtureFactory.createOrderTable;
 import static kitchenpos.utils.DomainFixtureFactory.createOrderTableRequest;
@@ -10,11 +10,11 @@ import static org.mockito.Mockito.verify;
 
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.orderTable.domain.OrderTable;
-import kitchenpos.orderTable.domain.OrderTableRepository;
-import kitchenpos.orderTable.dto.OrderTableRequest;
-import kitchenpos.orderTable.dto.OrderTableResponse;
-import kitchenpos.orderTable.validator.OrderTableValidator;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.OrderTableResponse;
+import kitchenpos.ordertable.validator.OrderTableValidator;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

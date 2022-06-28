@@ -1,4 +1,4 @@
-package kitchenpos.orderTable.domain;
+package kitchenpos.ordertable.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;

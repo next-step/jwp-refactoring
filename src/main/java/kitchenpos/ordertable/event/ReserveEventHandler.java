@@ -1,9 +1,9 @@
-package kitchenpos.orderTable.event;
+package kitchenpos.ordertable.event;
 
 import java.util.List;
-import kitchenpos.orderTable.domain.OrderTableRepository;
-import kitchenpos.orderTable.domain.OrderTables;
-import kitchenpos.orderTable.validator.OrderTableValidator;
+import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.ordertable.domain.OrderTables;
+import kitchenpos.ordertable.validator.OrderTableValidator;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;

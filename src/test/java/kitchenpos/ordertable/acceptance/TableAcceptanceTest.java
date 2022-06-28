@@ -1,17 +1,17 @@
-package kitchenpos.orderTable.acceptance;
+package kitchenpos.ordertable.acceptance;
 
-import static kitchenpos.orderTable.acceptance.TableRestAssured.주문테이블_등록_요청;
-import static kitchenpos.orderTable.acceptance.TableRestAssured.주문테이블_목록_조회_요청;
-import static kitchenpos.orderTable.acceptance.TableRestAssured.주문테이블_비어있는지여부_변경_요청;
-import static kitchenpos.orderTable.acceptance.TableRestAssured.주문테이블_손님수_변경_요청;
+import static kitchenpos.ordertable.acceptance.TableRestAssured.주문테이블_등록_요청;
+import static kitchenpos.ordertable.acceptance.TableRestAssured.주문테이블_목록_조회_요청;
+import static kitchenpos.ordertable.acceptance.TableRestAssured.주문테이블_비어있는지여부_변경_요청;
+import static kitchenpos.ordertable.acceptance.TableRestAssured.주문테이블_손님수_변경_요청;
 import static kitchenpos.utils.DomainFixtureFactory.createOrderTableRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
-import kitchenpos.orderTable.dto.OrderTableRequest;
-import kitchenpos.orderTable.dto.OrderTableResponse;
+import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.utils.AcceptanceTest;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;

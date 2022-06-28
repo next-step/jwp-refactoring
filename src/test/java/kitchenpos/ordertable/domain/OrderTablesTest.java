@@ -1,4 +1,4 @@
-package kitchenpos.orderTable.domain;
+package kitchenpos.ordertable.domain;
 
 import static kitchenpos.utils.DomainFixtureFactory.createOrderTable;
 import static org.assertj.core.api.Assertions.assertThat;

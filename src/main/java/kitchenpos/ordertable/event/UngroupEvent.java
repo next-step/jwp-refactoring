@@ -1,4 +1,4 @@
-package kitchenpos.orderTable.event;
+package kitchenpos.ordertable.event;
 
 public class UngroupEvent {
     private final Long tableGroupId;

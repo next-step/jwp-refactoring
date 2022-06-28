@@ -1,6 +1,6 @@
 package kitchenpos.tableGroup.acceptance;
 
-import static kitchenpos.orderTable.acceptance.TableRestAssured.주문테이블_등록_요청;
+import static kitchenpos.ordertable.acceptance.TableRestAssured.주문테이블_등록_요청;
 import static kitchenpos.utils.DomainFixtureFactory.createOrderTableRequest;
 import static kitchenpos.utils.DomainFixtureFactory.createTableGroupRequest;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -8,7 +8,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.orderTable.dto.OrderTableResponse;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.tableGroup.dto.TableGroupRequest;
 import kitchenpos.tableGroup.dto.TableGroupResponse;
 import kitchenpos.utils.AcceptanceTest;

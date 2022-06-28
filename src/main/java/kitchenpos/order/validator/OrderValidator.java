@@ -5,8 +5,8 @@ import java.util.stream.Collectors;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
-import kitchenpos.orderTable.application.TableService;
-import kitchenpos.orderTable.domain.OrderTable;
+import kitchenpos.ordertable.application.TableService;
+import kitchenpos.ordertable.domain.OrderTable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 

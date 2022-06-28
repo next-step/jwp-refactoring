@@ -23,7 +23,7 @@ import kitchenpos.order.dto.OrderLineItemResponse;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.validator.OrderValidator;
-import kitchenpos.orderTable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTable;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

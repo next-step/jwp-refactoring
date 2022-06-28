@@ -1,4 +1,4 @@
-package kitchenpos.orderTable.validator;
+package kitchenpos.ordertable.validator;
 
 import static kitchenpos.order.domain.OrderStatus.COOKING;
 import static kitchenpos.order.domain.OrderStatus.MEAL;
@@ -7,7 +7,7 @@ import static kitchenpos.tableGroup.domain.TableGroup.ORDER_TABLE_REQUEST_MIN;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.orderTable.domain.OrderTables;
+import kitchenpos.ordertable.domain.OrderTables;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;

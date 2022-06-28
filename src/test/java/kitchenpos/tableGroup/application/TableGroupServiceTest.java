@@ -11,9 +11,9 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.verify;
 
-import kitchenpos.orderTable.domain.OrderTable;
-import kitchenpos.orderTable.event.ReserveEvent;
-import kitchenpos.orderTable.event.UngroupEvent;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.event.ReserveEvent;
+import kitchenpos.ordertable.event.UngroupEvent;
 import kitchenpos.tableGroup.domain.TableGroup;
 import kitchenpos.tableGroup.domain.TableGroupRepository;
 import kitchenpos.tableGroup.dto.TableGroupRequest;

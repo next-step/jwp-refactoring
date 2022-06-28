@@ -1,4 +1,4 @@
-package kitchenpos.orderTable.validator;
+package kitchenpos.ordertable.validator;
 
 import static kitchenpos.order.domain.OrderStatus.COOKING;
 import static kitchenpos.order.domain.OrderStatus.MEAL;
@@ -9,8 +9,8 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.orderTable.domain.OrderTable;
-import kitchenpos.orderTable.domain.OrderTables;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTables;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
