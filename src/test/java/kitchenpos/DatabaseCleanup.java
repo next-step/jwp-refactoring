@@ -1,43 +1,44 @@
 package kitchenpos;
 
-import java.sql.PreparedStatement;
-import java.util.Arrays;
+import com.google.common.base.CaseFormat;
 import java.util.List;
-import javax.sql.DataSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import java.util.stream.Collectors;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @ActiveProfiles("test")
-public class DatabaseCleanup {
-    private final NamedParameterJdbcTemplate jdbcTemplate;
-    private final List<String> tableNames;
+public class DatabaseCleanup implements InitializingBean {
+    @PersistenceContext
+    private EntityManager entityManager;
 
-    public DatabaseCleanup(DataSource dataSource) {
-        this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-        tableNames = Arrays.asList("orders",
-                "order_line_item",
-                "menu",
-                "menu_group",
-                "menu_product",
-                "order_table",
-                "table_group",
-                "product");
+    private List<String> tableNames;
+
+    @Override
+    public void afterPropertiesSet() {
+        tableNames = entityManager.getMetamodel().getEntities().stream()
+                .filter(e -> e.getJavaType().getAnnotation(Entity.class) != null)
+                .map(e -> CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, e.getName()))
+                .collect(Collectors.toList());
     }
 
     @Transactional
     public void execute() {
-        jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY FALSE", PreparedStatement::executeUpdate);
+        entityManager.flush();
+        entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
 
         for (String tableName : tableNames) {
             String keyColumn = getKeyColumn(tableName);
-            jdbcTemplate.execute("TRUNCATE TABLE " + tableName, PreparedStatement::executeUpdate);
-            jdbcTemplate.execute("ALTER TABLE " + tableName + " ALTER COLUMN " + keyColumn + " RESTART WITH 1", PreparedStatement::executeUpdate);
+            entityManager.createNativeQuery("TRUNCATE TABLE " + tableName).executeUpdate();
+            entityManager.createNativeQuery("ALTER TABLE " + tableName + " ALTER COLUMN " + keyColumn + " RESTART WITH 1").executeUpdate();
         }
 
-        jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY TRUE", PreparedStatement::executeUpdate);
+        entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
     }
 
     private String getKeyColumn(String tableName) {

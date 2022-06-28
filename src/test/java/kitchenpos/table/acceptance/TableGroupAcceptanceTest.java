@@ -1,18 +1,15 @@
 package kitchenpos.table.acceptance;
 
-import static kitchenpos.menu.acceptance.MenuAcceptanceTest.메뉴_등록_요청;
-import static kitchenpos.menu.acceptance.MenuGroupAcceptanceTest.메뉴_그룹_등록_요청;
-import static kitchenpos.order.acceptance.OrderAcceptanceTest.주문_등록_요청;
-import static kitchenpos.order.acceptance.OrderAcceptanceTest.주문_상태_변경_요청;
-import static kitchenpos.product.acceptance.ProductAcceptanceTest.상품_등록_요청;
-import static kitchenpos.table.acceptance.TableAcceptanceTest.테이블_등록_요청;
+import static kitchenpos.table.acceptance.TableAcceptanceTest.테이블_등록_되어있음;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.*;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import kitchenpos.table.dto.OrderTableIdRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupResponse;
+import org.junit.jupiter.api.*;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,78 +19,56 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-@DisplayName("테이블 그룹 관련 기능 인수테스트")
+@DisplayName("단체 지정 관련 기능 인수테스트")
 public class TableGroupAcceptanceTest extends AcceptanceTest {
-    private OrderTable 빈_테이블;
-    private OrderTable 다른_빈_테이블;
-    private OrderTable 손님_4명_테이블;
-    private OrderTable 손님_3명_테이블;
+    private OrderTableResponse 빈_테이블;
+    private OrderTableResponse 다른_빈_테이블;
+    private TableGroupResponse 테이블_그룹;
+    private OrderTableResponse 손님_4명_테이블;
+    private OrderTableResponse 손님_3명_테이블;
 
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
+    @TestFactory
+    @DisplayName("단체 지정 관련 기능 정상 시나리오")
+    Stream<DynamicTest> successTest() {
+        return Stream.of(
+                dynamicTest("단체 지정 등록 요청하면 단체 지정된다.", () -> {
+                    빈_테이블 = 테이블_등록_되어있음(0, true);
+                    다른_빈_테이블 = 테이블_등록_되어있음(0, true);
 
-        빈_테이블 = 테이블_등록_요청(0, true).getBody();
-        다른_빈_테이블 = 테이블_등록_요청(0, true).getBody();
-        손님_4명_테이블 = 테이블_등록_요청(4, false).getBody();
-        손님_3명_테이블 = 테이블_등록_요청(3, false).getBody();
-    }
-    /**
-     * Feature 테이블 그룹 관련 기능
-     *
-     * Backgroud
-     * Given 테이블 등록되어 있음
-     *
-     * Screnario 테이블 그룹 관련 기능
-     * When 손님 테이블 그룹 등록 요청
-     * Then 테이블 그룹 등록 실패됨
-     * When 빈 테이블 그룹 등록 요청
-     * Then 테이블 그룹 등록됨
-     * 
-     * Given 주문(요리, 식사) 있음
-     * When 테이블 그룹 해제 요청
-     * Then 테이블 그룹 해제 실패됨
-     * 
-     * Given 주문(계산 완료) 있음
-     * When 테이블 그룹 해제 요청
-     * Then 테이블 그룹 해제됨
-     */
-    @Test
-    @DisplayName("테이블 그룹 관련 기능")
-    void integrationTest() {
-        //when
-        ResponseEntity<TableGroup> 손님_테이블_그룹_등록_요청_결과 = 테이블_그룹_등록_요청(손님_4명_테이블, 손님_3명_테이블);
-        //then
-        테이블_그룹_등록_실패됨(손님_테이블_그룹_등록_요청_결과);
+                    ResponseEntity<TableGroupResponse> 빈_테이블_그룹_등록_요청_결과 = 단체_지정_등록_요청(빈_테이블, 다른_빈_테이블);
 
-        //when
-        ResponseEntity<TableGroup> 빈_테이블_그룹_등록_요청_결과 = 테이블_그룹_등록_요청(빈_테이블, 다른_빈_테이블);
-        TableGroup 테이블_그룹 = 빈_테이블_그룹_등록_요청_결과.getBody();
-        //then
-        테이블_그룹_등록됨(빈_테이블_그룹_등록_요청_결과);
+                    단체_지정_등록됨(빈_테이블_그룹_등록_요청_결과);
+                }),
+                dynamicTest("단체 지정 해제 요청하면 단체 지정해제된다.", () -> {
+                    빈_테이블 = 테이블_등록_되어있음(0, true);
+                    다른_빈_테이블 = 테이블_등록_되어있음(0, true);
+                    테이블_그룹 = 단체_지정_되어있음(빈_테이블, 다른_빈_테이블);
 
-        //given
-        MenuGroup 추천메뉴 = 메뉴_그룹_등록_요청("추천메뉴").getBody();
-        Product 허니콤보 = 상품_등록_요청("허니콤보", 20_000L).getBody();
-        Product 레드콤보 = 상품_등록_요청("레드콤보", 19_000L).getBody();
-        Menu 허니레드콤보 = 메뉴_등록_요청(추천메뉴, "허니레드콤보", 39_000L, 허니콤보, 레드콤보).getBody();
-        Order 주문 = 주문_등록_요청(빈_테이블, 허니레드콤보).getBody();
-
-        //when
-        ResponseEntity<Void> 주문_있는_테이블_그룹_해제_요청_결과 = 테이블_그룹_해제_요청(테이블_그룹);
-        //then
-        테이블_그룹_해제_실패됨(주문_있는_테이블_그룹_해제_요청_결과);
-
-        //given
-        주문_상태_변경_요청(주문, OrderStatus.COMPLETION.name());
-        //when
-        ResponseEntity<Void> 테이블_그룹_해제_요청_결과 = 테이블_그룹_해제_요청(테이블_그룹);
-        //then
-        테이블_그룹_해제됨(테이블_그룹_해제_요청_결과);
+                    ResponseEntity<Void> 테이블_그룹_해제_요청_결과 = 단체_지정_해제_요청(테이블_그룹);
+                    //then
+                    단체_지정_해제됨(테이블_그룹_해제_요청_결과);
+                })
+        );
     }
 
-    private void 테이블_그룹_해제됨(ResponseEntity<Void> response) {
+    @TestFactory
+    @DisplayName("단체 지정 관련 기능 예외 시나리오")
+    Stream<DynamicTest> failTest() {
+        return Stream.of(
+                dynamicTest("손님 테이블들을 단체 지정 등록 요청하면 단체 지정에 실패한다.", () -> {
+                    손님_4명_테이블 = 테이블_등록_되어있음(4, false);
+                    손님_3명_테이블 = 테이블_등록_되어있음(3, false);
+
+                    ResponseEntity<TableGroupResponse> 손님_테이블_단체_지정_등록_요청_결과 = 단체_지정_등록_요청(손님_4명_테이블, 손님_3명_테이블);
+
+                    테이블_그룹_등록_실패됨(손님_테이블_단체_지정_등록_요청_결과);
+                })
+        );
+    }
+
+    private void 단체_지정_해제됨(ResponseEntity<Void> response) {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
 
@@ -101,7 +76,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    private ResponseEntity<Void> 테이블_그룹_해제_요청(TableGroup tableGroup) {
+    private ResponseEntity<Void> 단체_지정_해제_요청(TableGroupResponse tableGroup) {
         Map<String, Object> params = new HashMap<>();
         params.put("tableGroupId", tableGroup.getId());
 
@@ -112,24 +87,31 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
                 params);
     }
 
-    private void 테이블_그룹_등록_실패됨(ResponseEntity<TableGroup> response) {
+    private void 테이블_그룹_등록_실패됨(ResponseEntity<TableGroupResponse> response) {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    private void 테이블_그룹_등록됨(ResponseEntity<TableGroup> response) {
+    private TableGroupResponse 단체_지정_되어있음(OrderTableResponse... orderTables) {
+        return 단체_지정_등록_요청(orderTables).getBody();
+    }
+
+    private void 단체_지정_등록됨(ResponseEntity<TableGroupResponse> response) {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getHeaders().get("Location")).isNotNull();
     }
 
-    private ResponseEntity<TableGroup> 테이블_그룹_등록_요청(OrderTable... orderTables) {
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(주문_테이블_변환(orderTables));
+    private ResponseEntity<TableGroupResponse> 단체_지정_등록_요청(OrderTableResponse... orderTables) {
+        List<OrderTableIdRequest> orderTableRequests = 주문_테이블_변환(orderTables);
+        TableGroupRequest tableGroup = new TableGroupRequest(orderTableRequests);
 
-        return testRestTemplate.postForEntity("/api/table-groups/", tableGroup, TableGroup.class);
+        return testRestTemplate.postForEntity("/api/table-groups/", tableGroup, TableGroupResponse.class);
     }
 
-    private List<OrderTable> 주문_테이블_변환(OrderTable[] orderTables) {
+    private List<OrderTableIdRequest> 주문_테이블_변환(OrderTableResponse[] orderTables) {
         return Arrays.stream(orderTables)
+                .map(orderTableResponse -> {
+                    return new OrderTableIdRequest(orderTableResponse.getId());
+                })
                 .collect(Collectors.toList());
     }
 }
