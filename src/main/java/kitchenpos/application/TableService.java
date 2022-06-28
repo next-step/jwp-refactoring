@@ -35,8 +35,7 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTable) {
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
         Order order = findOrderByOrderTableId(savedOrderTable.getId());
-        savedOrderTable.validateOrderTablesStatus(order);
-        savedOrderTable.switchEmpty(orderTable.isEmpty());
+        savedOrderTable.clear(order);
         return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
     }
 

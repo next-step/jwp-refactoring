@@ -51,9 +51,10 @@ class OrderTableTest {
     void emptyTest() {
         //given
         OrderTable nonEmptyTable = new OrderTable(3, false);
+        Order order = new Order(nonEmptyTable.getId(), OrderStatus.COMPLETION, new OrderLineItem(1L, 10));
 
         //when
-        nonEmptyTable.switchEmpty(true);
+        nonEmptyTable.clear(order);
 
         //then
         assertThat(nonEmptyTable.isEmpty()).isTrue();

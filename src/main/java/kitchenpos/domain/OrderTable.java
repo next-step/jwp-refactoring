@@ -61,20 +61,8 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public TableGroup getTableGroup() {
-        return tableGroup;
-    }
-
     public void attachToTableGroup(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
-    }
-
-    public int getNumberOfGuests() {
-        return numberOfGuests.getValue();
     }
 
     public void updateNumberOfGuests(final int numberOfGuests) {
@@ -84,15 +72,13 @@ public class OrderTable {
         this.numberOfGuests = new NumberOfGuests(numberOfGuests);
     }
 
-    public boolean isEmpty() {
-        return empty;
-    }
-
-    public void switchEmpty(boolean empty) {
+    public void clear(Order order) {
+        if (this.empty) return;
+        validateOrderTablesStatus(order);
         if (isInTableGroup()) {
             throw new IllegalArgumentException("빈테이블로 지정 할 수 없습니다. 단체 지정이 되어 있는 주문 테이블 입니다.");
         }
-        this.empty = empty;
+        this.empty = true;
     }
 
     public boolean isInTableGroup() {
@@ -103,9 +89,26 @@ public class OrderTable {
         this.tableGroup = null;
     }
 
-    public void validateOrderTablesStatus(Order order) {
+    private void validateOrderTablesStatus(Order order) {
         if (!order.checkOrderComplete()) {
             throw new IllegalArgumentException("주문 상태가 COMPLETION이 아닙니다.");
         }
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public TableGroup getTableGroup() {
+        return tableGroup;
+    }
+
+    public int getNumberOfGuests() {
+        return numberOfGuests.getValue();
+    }
+
+
+    public boolean isEmpty() {
+        return empty;
     }
 }
