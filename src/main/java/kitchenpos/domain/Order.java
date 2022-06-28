@@ -64,9 +64,13 @@ public class Order {
     }
 
     public void changeStatus(OrderStatus orderStatus) {
-        if (this.orderStatus == OrderStatus.COMPLETION) {
+        if (isCompletion()) {
             throw new IllegalArgumentException();
         }
         this.orderStatus = orderStatus;
+    }
+
+    public boolean isCompletion() {
+        return orderStatus == OrderStatus.COMPLETION;
     }
 }

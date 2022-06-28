@@ -1,7 +1,7 @@
 package kitchenpos.domain;
 
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.repository.MenuRepository;
+import kitchenpos.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ class OrderValidatorTest {
     @MockBean
     MenuRepository menuRepository;
     @MockBean
-    OrderTableDao orderTableDao;
+    OrderTableRepository orderTableRepository;
 
     Long orderTableId;
     OrderTable orderTable;
@@ -36,8 +36,8 @@ class OrderValidatorTest {
 
     void setOrderTable() {
         orderTableId = 1L;
-        orderTable = new OrderTable(orderTableId, null, 0, false);
-        when(orderTableDao.findById(orderTableId)).thenReturn(Optional.of(orderTable));
+        orderTable = new OrderTable(0, false);
+        when(orderTableRepository.findById(orderTableId)).thenReturn(Optional.of(orderTable));
     }
 
     void setMenu() {
@@ -97,8 +97,8 @@ class OrderValidatorTest {
     void orderTable_is_not_empty() {
         // given
         Long emptyOrderTableId = 1001L;
-        OrderTable emptyOrderTable = new OrderTable(emptyOrderTableId, null, 0, true);
-        when(orderTableDao.findById(emptyOrderTableId)).thenReturn(Optional.of(emptyOrderTable));
+        OrderTable emptyOrderTable = new OrderTable(0, true);
+        when(orderTableRepository.findById(emptyOrderTableId)).thenReturn(Optional.of(emptyOrderTable));
         Order order = new Order(emptyOrderTableId);
 
         // when then

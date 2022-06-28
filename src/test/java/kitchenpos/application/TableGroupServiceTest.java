@@ -1,11 +1,11 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.repository.OrderRepository;
+import kitchenpos.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,7 +30,7 @@ class TableGroupServiceTest {
     @MockBean
     OrderRepository orderRepository;
     @MockBean
-    OrderTableDao orderTableDao;
+    OrderTableRepository orderTableRepository;
     @MockBean
     TableGroupDao tableGroupDao;
 
@@ -47,11 +47,11 @@ class TableGroupServiceTest {
     void setOrderTable() {
         orderTableId1 = 1L;
         orderTableId2 = 2L;
-        orderTable1 = new OrderTable(orderTableId1, null, 1, true);
-        orderTable2 = new OrderTable(orderTableId2, null, 1, true);
-        when(orderTableDao.findAllByIdIn(singletonList(orderTableId1))).thenReturn(singletonList(orderTable1));
-        when(orderTableDao.findAllByIdIn(singletonList(orderTableId2))).thenReturn(singletonList(orderTable2));
-        when(orderTableDao.findAllByIdIn(Arrays.asList(orderTableId1, orderTableId2))).thenReturn(Arrays.asList(orderTable1, orderTable2));
+        orderTable1 = new OrderTable(1, true);
+        orderTable2 = new OrderTable(1, true);
+        when(orderTableRepository.findAllByIdIn(singletonList(orderTableId1))).thenReturn(singletonList(orderTable1));
+        when(orderTableRepository.findAllByIdIn(singletonList(orderTableId2))).thenReturn(singletonList(orderTable2));
+        when(orderTableRepository.findAllByIdIn(Arrays.asList(orderTableId1, orderTableId2))).thenReturn(Arrays.asList(orderTable1, orderTable2));
     }
 
     @DisplayName("여러 주문 테이블을 단체 지정할 수 있다")
@@ -65,8 +65,8 @@ class TableGroupServiceTest {
         TableGroup actual = tableGroupService.create(tableGroup);
 
         // then
-        verify(orderTableDao).save(orderTable1);
-        verify(orderTableDao).save(orderTable2);
+        verify(orderTableRepository).save(orderTable1);
+        verify(orderTableRepository).save(orderTable2);
         assertSoftly(softAssertions -> {
             softAssertions.assertThat(actual.getId()).isNotNull();
             softAssertions.assertThat(actual.getCreatedDate()).isNotNull();
@@ -93,7 +93,7 @@ class TableGroupServiceTest {
     @Test
     void orderTable_is_exists() {
         // given
-        OrderTable notExistsOrderTable = new OrderTable(1000L, null, 1, true);
+        OrderTable notExistsOrderTable = new OrderTable(1, true);
         TableGroup tableGroup = new TableGroup(null, null, Arrays.asList(orderTable1, notExistsOrderTable));
 
         // when
@@ -106,8 +106,8 @@ class TableGroupServiceTest {
     void not_empty_table() {
         // given
         Long notEmptyTableId = 1000L;
-        OrderTable notEmptyTable = new OrderTable(notEmptyTableId, null, 1, false);
-        when(orderTableDao.findAllByIdIn(Arrays.asList(orderTableId1, notEmptyTableId))).thenReturn(Arrays.asList(orderTable1, notEmptyTable));
+        OrderTable notEmptyTable = new OrderTable(1, false);
+        when(orderTableRepository.findAllByIdIn(Arrays.asList(orderTableId1, notEmptyTableId))).thenReturn(Arrays.asList(orderTable1, notEmptyTable));
         TableGroup tableGroup = new TableGroup(null, null, Arrays.asList(orderTable1, notEmptyTable));
 
         // when
@@ -120,8 +120,8 @@ class TableGroupServiceTest {
     void grouped_table() {
         // given
         Long groupedTableId = 1000L;
-        OrderTable groupedTable = new OrderTable(groupedTableId, 1L, 1, true);
-        when(orderTableDao.findAllByIdIn(Arrays.asList(orderTableId1, groupedTableId))).thenReturn(Arrays.asList(orderTable1, groupedTable));
+        OrderTable groupedTable = new OrderTable(1, true);
+        when(orderTableRepository.findAllByIdIn(Arrays.asList(orderTableId1, groupedTableId))).thenReturn(Arrays.asList(orderTable1, groupedTable));
         TableGroup tableGroup = new TableGroup(null, null, Arrays.asList(orderTable1, groupedTable));
 
         // when
@@ -136,17 +136,17 @@ class TableGroupServiceTest {
         Long tableGroupId = 1L;
         Long groupedTableId1 = 1L;
         Long groupedTableId2 = 2L;
-        OrderTable groupedTable1 = new OrderTable(groupedTableId1, tableGroupId, 1, false);
-        OrderTable groupedTable2 = new OrderTable(groupedTableId2, tableGroupId, 1, false);
-        when(orderTableDao.findAllByTableGroupId(tableGroupId)).thenReturn(Arrays.asList(groupedTable1, groupedTable2));
+        OrderTable groupedTable1 = new OrderTable(1, false);
+        OrderTable groupedTable2 = new OrderTable(1, false);
+        when(orderTableRepository.findAllByTableGroupId(tableGroupId)).thenReturn(Arrays.asList(groupedTable1, groupedTable2));
         when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(groupedTableId1, groupedTableId2), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(false);
 
         // when
         tableGroupService.ungroup(tableGroupId);
 
         // then
-        verify(orderTableDao).save(groupedTable1);
-        verify(orderTableDao).save(groupedTable2);
+        verify(orderTableRepository).save(groupedTable1);
+        verify(orderTableRepository).save(groupedTable2);
     }
 
     @DisplayName("단체에 속한 주문 테이블에 등록된 주문의 상태가 조리, 식사인 경우 해제할 수 없다")
@@ -156,9 +156,9 @@ class TableGroupServiceTest {
         Long tableGroupId = 1L;
         Long groupedTableId1 = 1L;
         Long groupedTableId2 = 2L;
-        OrderTable groupedTable1 = new OrderTable(groupedTableId1, tableGroupId, 1, false);
-        OrderTable groupedTable2 = new OrderTable(groupedTableId2, tableGroupId, 1, false);
-        when(orderTableDao.findAllByTableGroupId(tableGroupId)).thenReturn(Arrays.asList(groupedTable1, groupedTable2));
+        OrderTable groupedTable1 = new OrderTable(1, false);
+        OrderTable groupedTable2 = new OrderTable(1, false);
+        when(orderTableRepository.findAllByTableGroupId(tableGroupId)).thenReturn(Arrays.asList(groupedTable1, groupedTable2));
         when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(groupedTableId1, groupedTableId2), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).thenReturn(true);
 
         // when

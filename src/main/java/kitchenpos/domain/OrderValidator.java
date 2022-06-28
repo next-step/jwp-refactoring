@@ -1,17 +1,17 @@
 package kitchenpos.domain;
 
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.repository.MenuRepository;
+import kitchenpos.repository.OrderTableRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 public class OrderValidator {
     private final MenuRepository menuRepository;
-    private final OrderTableDao orderTableDao;
+    private final OrderTableRepository orderTableRepository;
 
-    public OrderValidator(MenuRepository menuRepository, OrderTableDao orderTableDao) {
+    public OrderValidator(MenuRepository menuRepository, OrderTableRepository orderTableRepository) {
         this.menuRepository = menuRepository;
-        this.orderTableDao = orderTableDao;
+        this.orderTableRepository = orderTableRepository;
     }
 
     public void checkOrderLineItems(final Order order) {
@@ -34,7 +34,7 @@ public class OrderValidator {
     }
 
     public void checkOrderTable(final Order order) {
-        final OrderTable orderTable = orderTableDao.findById(order.getOrderTableId())
+        final OrderTable orderTable = orderTableRepository.findById(order.getOrderTableId())
                 .orElseThrow(IllegalArgumentException::new);
 
         if (orderTable.isEmpty()) {
