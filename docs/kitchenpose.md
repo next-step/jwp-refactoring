@@ -38,3 +38,7 @@
     - [X] 패키지 생성 및 기존 클래스 이동
     - [X] Product를 JPA Entity로 변경한 후 JPARepository 생성
     - [X] 응용서비스에서 도메인레이어로 로직 이동 (with 단위테스트 작성)
+  - [ ] Menu Domain Context > Menu, MenuProduct
+    - [X] 패키지 생성 및 기존 클래스 이동
+    - [ ] Menu, MenuProduct를 JPA Entity로 변경한 후 JPARepository 생성
+    - [ ] 응용서비스에서 도메인레이어로 로직 이동 (with 단위테스트 작성)
