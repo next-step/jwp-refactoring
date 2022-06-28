@@ -1,20 +1,30 @@
 package kitchenpos.domain;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+@Entity
 public class TableGroup {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDateTime createdDate;
-    private List<OrderTable> orderTables;
+
+    @Column(nullable = false)
+    private LocalDateTime createdDate = LocalDateTime.now();
+
+    @OneToMany(mappedBy = "tableGroup", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    private List<OrderTable> orderTables = new ArrayList<>();
 
     public TableGroup() {
     }
 
-    private TableGroup(Builder builder) {
-        id = builder.id;
-        createdDate = builder.createdDate;
-        orderTables = builder.orderTables;
+    public TableGroup(List<OrderTable> orderTables) {
+        orderTables.forEach(
+                orderTable -> orderTable.changeTableGroup(this));
+        this.orderTables.addAll(orderTables);
     }
 
     public Long getId() {
@@ -37,35 +47,29 @@ public class TableGroup {
         return orderTables;
     }
 
-    public void setOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
+    public void ungroup() {
+        this.orderTables.forEach(orderTable -> orderTable.changeTableGroup(null));
     }
 
-    public static class Builder {
-        private Long id;
-        private LocalDateTime createdDate;
-        private List<OrderTable> orderTables;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TableGroup that = (TableGroup) o;
+        return Objects.equals(id, that.id) && Objects.equals(createdDate, that.createdDate) && Objects.equals(orderTables, that.orderTables);
+    }
 
-        public Builder() {
-        }
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, createdDate, orderTables);
+    }
 
-        public Builder id(Long id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder createdDate(LocalDateTime createdDate) {
-            this.createdDate = createdDate;
-            return this;
-        }
-
-        public Builder orderTables(List<OrderTable> orderTables) {
-            this.orderTables = orderTables;
-            return this;
-        }
-
-        public TableGroup build() {
-            return new TableGroup(this);
-        }
+    @Override
+    public String toString() {
+        return "TableGroup{" +
+                "id=" + id +
+                ", createdDate=" + createdDate +
+                ", orderTables=" + orderTables +
+                '}';
     }
 }
