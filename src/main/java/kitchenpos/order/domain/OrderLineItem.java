@@ -39,7 +39,6 @@ public class OrderLineItem {
         this.quantity = new Quantity(quantity);
     }
 
-    // for test
     public OrderLineItem(final Menu menu, final long quantity) {
         this.menu = menu;
         this.quantity = new Quantity(quantity);

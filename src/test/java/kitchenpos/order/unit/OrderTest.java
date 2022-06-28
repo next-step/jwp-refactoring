@@ -1,8 +1,8 @@
 package kitchenpos.order.unit;
 
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.unit.MenuTest;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
@@ -10,9 +10,9 @@ import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 
-import static kitchenpos.menu.unit.MenuTest.메뉴_상품_생성되어_있음;
 import static kitchenpos.table.unit.OrderTableTest.테이블_생성되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -88,18 +88,19 @@ class OrderTest {
                 .isInstanceOf(IllegalStateException.class);
     }
 
-    static OrderLineItem 주문_항목_생성되어_있음() {
-        MenuProduct 스테이크_1개 = 메뉴_상품_생성되어_있음("스테이크", 200, 1);
-        MenuProduct 샐러드_1개 = 메뉴_상품_생성되어_있음("샐러드", 100, 1);
-        MenuProduct 에이드_2개 = 메뉴_상품_생성되어_있음("에이드", 50, 2);
-        Menu menu = MenuTest.메뉴_생성되어_있음(
-                "커플 메뉴",
-                "양식",
-                스테이크_1개, 샐러드_1개, 에이드_2개);
+    OrderLineItem 주문_항목_생성되어_있음() {
+        Menu menu = Menu.createMenu(
+                "메뉴",
+                BigDecimal.valueOf(400),
+                new MenuGroup("메뉴 그룹"),
+                Arrays.asList(
+                        new MenuProduct(1L, 1),
+                        new MenuProduct(2L, 1),
+                        new MenuProduct(3L, 2)));
         return new OrderLineItem(menu, 1);
     }
 
-    static Order 주문_생성되어_있음() {
+    Order 주문_생성되어_있음() {
         OrderTable 테이블 = 테이블_생성되어_있음(0, false);
         OrderLineItem 주문_항목1 = 주문_항목_생성되어_있음();
         OrderLineItem 주문_항목2 = 주문_항목_생성되어_있음();

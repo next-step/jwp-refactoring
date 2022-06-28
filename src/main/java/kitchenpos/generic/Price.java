@@ -28,8 +28,8 @@ public class Price {
         return value;
     }
 
-    public BigDecimal getPrice(final Quantity quantity) {
-        return value.multiply(BigDecimal.valueOf(quantity.getValue()));
+    public BigDecimal getPrice(final Long quantity) {
+        return value.multiply(BigDecimal.valueOf(quantity));
     }
 
     public boolean isGreaterThan(final BigDecimal val) {

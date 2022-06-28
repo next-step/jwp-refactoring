@@ -32,7 +32,6 @@ public class TableGroup {
         this.orderTables.addAll(this, orderTables);
     }
 
-    // for test
     public TableGroup(final Long id, final List<OrderTable> orderTables) {
         this.id = id;
         this.orderTables = new OrderTables(this, orderTables);

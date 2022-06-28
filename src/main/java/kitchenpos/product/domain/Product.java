@@ -1,7 +1,6 @@
 package kitchenpos.product.domain;
 
 import kitchenpos.generic.Price;
-import kitchenpos.generic.Quantity;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -31,7 +30,12 @@ public class Product {
         this.unitPrice = new Price(unitPrice);
     }
 
-    public Product(final Long id, final String name, final Long unitPrice) {
+    public Product(final String name, final long unitPrice) {
+        this.name = name;
+        this.unitPrice = new Price(BigDecimal.valueOf(unitPrice));
+    }
+
+    public Product(final Long id, final String name, final long unitPrice) {
         this.id = id;
         this.name = name;
         this.unitPrice = new Price(BigDecimal.valueOf(unitPrice));
@@ -49,7 +53,7 @@ public class Product {
         return unitPrice.getValue();
     }
 
-    public BigDecimal getPrice(final Quantity quantity) {
+    public BigDecimal getPrice(final Long quantity) {
         return unitPrice.getPrice(quantity);
     }
 }

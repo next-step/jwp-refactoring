@@ -29,8 +29,8 @@ class ProductServiceTest {
     @Test
     void 목록_조회() {
         // given
-        Product 팔당보쌈 = new Product(1L, "팔당보쌈", 28_000L);
-        Product 파파존스_피자 = new Product(2L, "파파존스 피자", 22_000L);
+        Product 팔당보쌈 = new Product(1L, "팔당보쌈", 28_000);
+        Product 파파존스_피자 = new Product(2L, "파파존스 피자", 22_000);
         given(productRepository.findAll()).willReturn(Arrays.asList(팔당보쌈, 파파존스_피자));
 
         // when
