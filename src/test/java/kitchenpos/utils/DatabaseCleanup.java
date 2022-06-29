@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Table;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 import org.springframework.test.context.ActiveProfiles;
@@ -55,6 +56,7 @@ public class DatabaseCleanup implements InitializingBean {
     }
 
     private String getColumnNameSeqOrId(String tableName) {
+        tableName = tableName.toUpperCase();
         if (SEQ_TABLE_SET.contains(tableName)) {
             return "SEQ";
         }

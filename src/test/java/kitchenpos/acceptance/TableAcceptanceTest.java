@@ -3,15 +3,15 @@ package kitchenpos.acceptance;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.utils.RestAssuredHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 @DisplayName("테이블 인수테스트 기능")
 class TableAcceptanceTest extends AcceptanceTest {
@@ -73,14 +73,8 @@ class TableAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 테이블_주문_번호_생성_요청(Integer 손님수, boolean 빈_테이블_유무) {
-        final OrderTable 주문테이블 = new OrderTable(null, null, 손님수, 빈_테이블_유무);
-
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(주문테이블)
-                .when().post(TABLE_URI)
-                .then().log().all()
-                .extract();
+        final OrderTableRequest 요청할_주문_테이블 = new OrderTableRequest(손님수, 빈_테이블_유무);
+        return RestAssuredHelper.post(TABLE_URI, 요청할_주문_테이블);
     }
 
     public static void 테이블_주문_번호_생성_확인(ExtractableResponse<Response> 테이블_주문_번호_생성_요청_결과) {
@@ -88,16 +82,13 @@ class TableAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 빈_테이블_변경(Integer 변경할_주문_테이블_번호) {
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new OrderTable(null, null, 0, true))
-                .when().put(TABLE_URI + "/{orderTableId}/empty", 변경할_주문_테이블_번호)
-                .then().log().all()
-                .extract();
+        final String uri = TABLE_URI + "/{orderTableId}/empty";
+        return RestAssuredHelper.put(uri, 변경할_주문_테이블_번호);
     }
 
     public void 빈_테이블_확인(ExtractableResponse<Response> 빈_테이블_변경_결과) {
-        final OrderTable 빈_테이블 = 빈_테이블_변경_결과.body().jsonPath().getObject(".", OrderTable.class);
+        final OrderTableResponse 빈_테이블 = 빈_테이블_변경_결과.body().jsonPath()
+                .getObject(".", OrderTableResponse.class);
 
         assertAll(
                 () -> assertThat(빈_테이블_변경_결과.statusCode()).isEqualTo(HttpStatus.OK.value()),
@@ -106,16 +97,13 @@ class TableAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 테이블_방문_고객수_변경(Integer 변경할_주문_테이블_번호, Integer 변경할_고객_수) {
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new OrderTable(null, null, 변경할_고객_수, false))
-                .when().put(TABLE_URI + "/{orderTableId}/number-of-guests", 변경할_주문_테이블_번호)
-                .then().log().all()
-                .extract();
+        final String uri = TABLE_URI + "/{orderTableId}/number-of-guests/{guestNumber}";
+        return RestAssuredHelper.put(uri, 변경할_주문_테이블_번호, 변경할_고객_수);
     }
 
     public static void 테이블_방문_고객수_확인(ExtractableResponse<Response> 테이블_방문_고객수_변경_결과, Integer 예상된_변경_고객수) {
-        final OrderTable 변경된_고객_테이블 = 테이블_방문_고객수_변경_결과.body().jsonPath().getObject(".", OrderTable.class);
+        final OrderTableResponse 변경된_고객_테이블 = 테이블_방문_고객수_변경_결과.body().jsonPath()
+                .getObject(".", OrderTableResponse.class);
 
         assertAll(
                 () -> assertThat(테이블_방문_고객수_변경_결과.statusCode()).isEqualTo(HttpStatus.OK.value()),

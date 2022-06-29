@@ -3,19 +3,18 @@ package kitchenpos.acceptance;
 import static kitchenpos.acceptance.TableAcceptanceTest.테이블_주문_번호_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.utils.RestAssuredHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 @DisplayName("단체 그룹 인수테스트 기능")
 class TableGroupAcceptanceTest extends AcceptanceTest {
@@ -67,16 +66,11 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 테이블_단체_그룹_요청(List<ExtractableResponse<Response>> 테이블_주문_결과들) {
-        final List<OrderTable> 테이블_주문 = 테이블_주문_결과들.stream()
-                .map(it -> it.body().jsonPath().getObject(".", OrderTable.class))
+        final List<Long> 테이블_주문 = 테이블_주문_결과들.stream()
+                .map(it -> it.body().jsonPath().getObject(".", OrderTableResponse.class))
+                .map(OrderTableResponse::getId)
                 .collect(Collectors.toList());
-
-        return RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new TableGroup(테이블_주문))
-                .when().post(TABLE_GROUP_URI)
-                .then().log().all()
-                .extract();
+        return RestAssuredHelper.post(TABLE_GROUP_URI, new TableGroupRequest(테이블_주문));
     }
 
     public static void 테이블_단체_그룹_요청_확인(ExtractableResponse<Response> 테이블_단체_그룹_요청_결과) {
@@ -84,10 +78,8 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 테이블_단체_그룹_해제_요청(Long 해제할_그룹_아이디) {
-        return RestAssured.given().log().all()
-                .when().delete(TABLE_GROUP_URI + "/{tableGroupId}", 해제할_그룹_아이디)
-                .then().log().all()
-                .extract();
+        String uri = TABLE_GROUP_URI + "/{tableGroupId}";
+        return RestAssuredHelper.delete(uri, 해제할_그룹_아이디);
     }
 
     public static void 테이블_단체_그룹_해제_요청_확인(ExtractableResponse<Response> 테이블_단체_그룹_해제_요청_결과) {
