@@ -8,6 +8,7 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -105,7 +106,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     }
 
     public static Menu 테스트_메뉴_생성(String menuName, BigDecimal menuPrice) {
-        MenuGroup menuGroup = 메뉴_그룹_가져옴(메뉴_그룹_등록되어_있음(MENU_GROUP_NAME01));
+        MenuGroup menuGroup = 메뉴_그룹_가져옴(메뉴_그룹_등록되어_있음(MENU_GROUP_NAME01)).toMenuGroup();
         Product product = 상품_가져옴(상품_등록되어_있음(PRODUCT_NAME01, PRODUCT_PRICE01));
         MenuProduct menuProduct = new MenuProduct(product, 1);
         List<MenuProduct> list = new ArrayList<>();
@@ -120,7 +121,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     }
 
     public static Menu 상품_없는_테스트_메뉴_생성(String menuName, BigDecimal menuPrice) {
-        MenuGroup menuGroup = 메뉴_그룹_가져옴(메뉴_그룹_등록되어_있음(MENU_GROUP_NAME01));
+        MenuGroup menuGroup = 메뉴_그룹_가져옴(메뉴_그룹_등록되어_있음(MENU_GROUP_NAME01)).toMenuGroup();
         MenuProduct menuProduct = new MenuProduct(null, 1);
         return new Menu(menuName, menuPrice, menuGroup, Collections.singletonList(menuProduct));
     }

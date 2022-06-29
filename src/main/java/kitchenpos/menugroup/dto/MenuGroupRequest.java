@@ -2,20 +2,24 @@ package kitchenpos.menugroup.dto;
 
 import kitchenpos.menugroup.domain.MenuGroup;
 
-public class MenuGroupResponse {
+public class MenuGroupRequest {
     private Long id;
     private String name;
 
-    public MenuGroupResponse() {
+    public MenuGroupRequest() {
     }
 
-    public MenuGroupResponse(Long id, String name) {
+    public MenuGroupRequest(Long id) {
         this.id = id;
+    }
+
+    public MenuGroupRequest(String name) {
         this.name = name;
     }
 
-    public static MenuGroupResponse of(MenuGroup menuGroup) {
-        return new MenuGroupResponse(menuGroup.getId(), menuGroup.getName());
+    public MenuGroupRequest(Long id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
     public MenuGroup toMenuGroup() {
