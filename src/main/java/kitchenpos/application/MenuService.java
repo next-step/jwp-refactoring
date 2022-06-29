@@ -44,7 +44,8 @@ public class MenuService {
         eventPublisher.publishEvent(new MenuCreateEvent(
             new MenuCreateEventForProductDTO(quantityPerProduct, menuRequest.getPrice())));
 
-        
+        MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
+            .orElseThrow(IllegalAccessError::new);
         Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(),
             menuGroup);
 
