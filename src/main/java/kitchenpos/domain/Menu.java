@@ -47,8 +47,7 @@ public class Menu {
     }
 
     public void addMenuProducts(List<MenuProduct> menuProducts) {
-        this.menuProducts = MenuProducts.from(menuProducts);
-        validateSumPrice(this.menuProducts);
+        setMenuProducts(MenuProducts.from(menuProducts));
         this.menuProducts.addMenu(this);
     }
 
@@ -76,5 +75,10 @@ public class Menu {
 
     public MenuProducts getMenuProducts() {
         return menuProducts;
+    }
+
+    private void setMenuProducts(MenuProducts menuProducts) {
+        validateSumPrice(menuProducts);
+        this.menuProducts = menuProducts;
     }
 }
