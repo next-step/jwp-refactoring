@@ -1,7 +1,9 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
+import kitchenpos.repository.MenuGroupRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +22,7 @@ import static org.mockito.BDDMockito.given;
 class MenuGroupServiceTest {
 
     @Mock
-    MenuGroupDao menuGroupDao;
+    MenuGroupRepository menuGroupRepository;
 
     @InjectMocks
     MenuGroupService menuGroupService;
@@ -32,14 +34,15 @@ class MenuGroupServiceTest {
     @DisplayName("메뉴그룹을 생성한다")
     void create() {
         //given
+        MenuGroupRequest 한마리메뉴Request = new MenuGroupRequest("한마리메뉴");
         한마리메뉴 = new MenuGroup(1L, "한마리메뉴");
-        given(menuGroupDao.save(any(MenuGroup.class))).willReturn(한마리메뉴);
+        given(menuGroupRepository.save(any(MenuGroup.class))).willReturn(한마리메뉴);
 
         //when
-        MenuGroup savedMenuGroup = menuGroupService.create(한마리메뉴);
+        MenuGroupResponse menuGroupResponse = menuGroupService.create(한마리메뉴Request);
 
         //then
-        assertThat(savedMenuGroup).isNotNull()
+        assertThat(menuGroupResponse).isNotNull()
                 .satisfies(menuGroup -> {
                             menuGroup.getId().equals(1L);
                             menuGroup.getName().equals("한마리메뉴");
@@ -53,12 +56,14 @@ class MenuGroupServiceTest {
         //given
         한마리메뉴 = new MenuGroup(1L, "한마리메뉴");
         두마리메뉴 = new MenuGroup(2L, "두마리메뉴");
-        given(menuGroupDao.findAll()).willReturn(Arrays.asList(한마리메뉴, 두마리메뉴));
+        given(menuGroupRepository.findAll()).willReturn(Arrays.asList(한마리메뉴, 두마리메뉴));
 
         //when
-        List<MenuGroup> menuGroups = menuGroupService.list();
+        List<MenuGroupResponse> menuGroupResponses = menuGroupService.list();
 
         //then
-        assertThat(menuGroups).containsExactlyInAnyOrderElementsOf(Arrays.asList(한마리메뉴, 두마리메뉴));
+        assertThat(menuGroupResponses.stream()
+                                     .map(MenuGroupResponse::getName))
+                                     .containsExactlyInAnyOrderElementsOf(Arrays.asList(한마리메뉴.getName(), 두마리메뉴.getName()));
     }
 }
