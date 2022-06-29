@@ -34,7 +34,7 @@ public class OrderService {
     public OrderResponse create(final OrderRequest orderRequest) {
         orderValidator.validate(orderRequest);
         List<OrderLineItem> orderLineItems = findOrderLineItems(orderRequest.getOrderLineItems());
-        return OrderResponse.from(orderRepository.save(orderRequest.toOrder(OrderLineItems.from(orderLineItems))));
+        return OrderResponse.from(orderRepository.save(Order.from(orderRequest.getOrderTableId(), OrderLineItems.from(orderLineItems))));
     }
 
     public List<OrderResponse> list() {

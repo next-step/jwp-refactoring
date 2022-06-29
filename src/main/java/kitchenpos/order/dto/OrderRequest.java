@@ -32,8 +32,4 @@ public class OrderRequest {
     public List<OrderLineItemRequest> getOrderLineItems() {
         return orderLineItems;
     }
-
-    public Order toOrder(OrderLineItems orderLineItems) {
-        return Order.from(orderTableId, orderLineItems);
-    }
 }

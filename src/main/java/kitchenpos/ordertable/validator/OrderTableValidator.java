@@ -11,10 +11,6 @@ import org.springframework.util.CollectionUtils;
 @Component
 @Transactional(readOnly = true)
 public class OrderTableValidator {
-
-    public OrderTableValidator() {
-    }
-
     public void validateReserveEvent(OrderTables savedOrderTables, List<Long> orderTableIds) {
         validateOrderTableIds(orderTableIds);
         validateOrderTablesSize(savedOrderTables, orderTableIds.size());
