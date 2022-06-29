@@ -1,9 +1,8 @@
 package kitchenpos.fixture;
 
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuProductRequestDto;
 import kitchenpos.dto.MenuProductResponseDto;
+import kitchenpos.menu.domain.MenuProduct;
 
 public class MenuProductFixture {
 
@@ -11,8 +10,8 @@ public class MenuProductFixture {
         return new MenuProductRequestDto(productId, quantity);
     }
 
-    public static MenuProduct 메뉴상품_데이터_생성(Long seq, Product product, int quantity) {
-        return new MenuProduct(seq, product, quantity);
+    public static MenuProduct 메뉴상품_데이터_생성(Long seq, Long productId, int quantity) {
+        return new MenuProduct(seq, productId, quantity);
     }
 
     public static MenuProductResponseDto 메뉴상품_응답_데이터_생성(Long seq, Long menuId, Long productId, long quantity) {

@@ -1,12 +1,18 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.*;
+import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderStatus;
+import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderLineItemRequestDto;
 import kitchenpos.dto.OrderLineItemResponseDto;
 import kitchenpos.dto.OrderRequestDto;
 import kitchenpos.dto.OrderResponseDto;
 import kitchenpos.exception.InvalidOrderStatusException;
-import kitchenpos.repository.MenuRepository;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.menu_group.domain.MenuGroup;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +36,6 @@ import static kitchenpos.fixture.OrderFixture.주문_요청_데이터_생성;
 import static kitchenpos.fixture.OrderLineItemFixture.주문항목_데이터_생성;
 import static kitchenpos.fixture.OrderLineItemFixture.주문항목_요청_데이터_생성;
 import static kitchenpos.fixture.OrderTableFixture.주문테이블_데이터_생성;
-import static kitchenpos.fixture.ProductFixture.상품_데이터_생성;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -68,9 +73,9 @@ class OrderServiceTest {
         given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
 
         Long menuId = 1L;
-        Product product = 상품_데이터_생성(1L, "product", BigDecimal.valueOf(300));
+//        Product product = 상품_데이터_생성(1L, "product", BigDecimal.valueOf(300));
         MenuGroup menuGroup = 메뉴묶음_데이터_생성(1L, "name");
-        List<MenuProduct> menuProducts = Arrays.asList(메뉴상품_데이터_생성(1L, product, 2));
+        List<MenuProduct> menuProducts = Arrays.asList(메뉴상품_데이터_생성(1L, 1L, 2));
         Menu menu = 메뉴_데이터_생성(menuId, "menu", BigDecimal.valueOf(100), menuGroup, menuProducts);
 
         given(menuRepository.findById(any())).willReturn(Optional.of(menu));
@@ -190,9 +195,9 @@ class OrderServiceTest {
 
     private Order 주문_데이터_통합_생성(OrderStatus status) {
         Long menuId = 1L;
-        Product product = 상품_데이터_생성(1L, "product", BigDecimal.valueOf(300));
+//        Product product = 상품_데이터_생성(1L, "product", BigDecimal.valueOf(300));
         MenuGroup menuGroup = 메뉴묶음_데이터_생성(1L, "name");
-        List<MenuProduct> menuProducts = Arrays.asList(메뉴상품_데이터_생성(1L, product, 2));
+        List<MenuProduct> menuProducts = Arrays.asList(메뉴상품_데이터_생성(1L, 1L, 2));
         Menu menu = 메뉴_데이터_생성(menuId, "menu", BigDecimal.valueOf(100), menuGroup, menuProducts);
 
         List<OrderLineItem> orderLineItems = Arrays.asList(주문항목_데이터_생성(1L, menu, 2));

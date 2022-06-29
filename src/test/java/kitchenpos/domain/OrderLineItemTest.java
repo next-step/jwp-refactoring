@@ -1,9 +1,12 @@
 package kitchenpos.domain;
 
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu_group.domain.MenuGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,7 +18,7 @@ class OrderLineItemTest {
     void create() {
         //given
         MenuGroup menuGroup = new MenuGroup(1L, "menuGroup");
-        Menu menu = new Menu(1L, "menu", BigDecimal.valueOf(1000), menuGroup);
+        Menu menu = new Menu(1L, "menu", BigDecimal.valueOf(1000), menuGroup, Collections.emptyList());
         int quantity = 4;
 
         //when

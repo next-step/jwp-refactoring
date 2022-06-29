@@ -1,4 +1,4 @@
-package kitchenpos.repository;
+package kitchenpos.menu.repository;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

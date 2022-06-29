@@ -1,11 +1,14 @@
 package kitchenpos.domain;
 
 import kitchenpos.exception.InvalidOrderStatusException;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu_group.domain.MenuGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -19,7 +22,7 @@ class OrderTest {
         //given
         OrderTable orderTable = new OrderTable(null, 4, false);
         MenuGroup menuGroup = new MenuGroup("menuGroup");
-        Menu menu = new Menu("menu", BigDecimal.valueOf(100), menuGroup);
+        Menu menu = new Menu("menu", BigDecimal.valueOf(100), menuGroup, Collections.emptyList());
         List<OrderLineItem> orderLineItems = Arrays.asList(new OrderLineItem(menu, 2), new OrderLineItem(menu, 2));
 
         //when
@@ -39,7 +42,7 @@ class OrderTest {
         //given
         OrderTable orderTable = new OrderTable(null, 4, false);
         MenuGroup menuGroup = new MenuGroup("menuGroup");
-        Menu menu = new Menu("menu", BigDecimal.valueOf(100), menuGroup);
+        Menu menu = new Menu("menu", BigDecimal.valueOf(100), menuGroup, Collections.emptyList());
         List<OrderLineItem> orderLineItems = Arrays.asList(new OrderLineItem(menu, 2), new OrderLineItem(menu, 2));
         Order order = new Order(1L, orderTable, OrderStatus.COMPLETION, orderLineItems);
 

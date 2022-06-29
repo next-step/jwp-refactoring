@@ -1,6 +1,7 @@
-package kitchenpos.domain;
+package kitchenpos.menu.domain;
 
-import kitchenpos.exception.InvalidPriceException;
+import kitchenpos.domain.Price;
+import kitchenpos.menu_group.domain.MenuGroup;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -28,15 +29,16 @@ public class Menu {
     public Menu() {
     }
 
-    public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
-        this(null, name, price, menuGroup);
+    public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        this(null, name, price, menuGroup, menuProducts);
     }
 
-    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup) {
+    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = name;
         this.price = new Price(price);
         this.menuGroup = menuGroup;
+        this.menuProducts.addAll(this, menuProducts);
     }
 
     public Long getId() {
@@ -61,18 +63,18 @@ public class Menu {
     }
 
     public void addMenuProducts(List<MenuProduct> menuProducts) {
-        checkValidPrice(menuProducts);
-        this.menuProducts.addAll(this, menuProducts);
+//        checkValidPrice(menuProducts);
+
     }
 
-    private void checkValidPrice(List<MenuProduct> menuProducts) {
-        BigDecimal sum = menuProducts.stream()
-                .map(MenuProduct::getAmount)
-                .reduce(BigDecimal::add)
-                .orElse(BigDecimal.ZERO);
-        if (price.greaterThan(sum)) {
-            throw new InvalidPriceException(price);
-        }
-    }
+//    private void checkValidPrice(List<MenuProduct> menuProducts) {
+//        BigDecimal sum = menuProducts.stream()
+//                .map(MenuProduct::getAmount)
+//                .reduce(BigDecimal::add)
+//                .orElse(BigDecimal.ZERO);
+//        if (price.greaterThan(sum)) {
+//            throw new InvalidPriceException(price);
+//        }
+//    }
 
 }

@@ -1,12 +1,12 @@
 package kitchenpos.fixture;
 
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
 import kitchenpos.dto.MenuProductRequestDto;
 import kitchenpos.dto.MenuProductResponseDto;
-import kitchenpos.dto.MenuRequestDto;
-import kitchenpos.dto.MenuResponseDto;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuRequestDto;
+import kitchenpos.menu.dto.MenuResponseDto;
+import kitchenpos.menu_group.domain.MenuGroup;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -18,9 +18,8 @@ public class MenuFixture {
     }
 
     public static Menu 메뉴_데이터_생성(Long id, String name, BigDecimal menuPrice, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        Menu menu = new Menu(id, name, menuPrice, menuGroup);
-        menu.addMenuProducts(menuProducts);
-        return menu;
+        return new Menu(id, name, menuPrice, menuGroup, menuProducts);
+
     }
 
     public static MenuResponseDto 메뉴_응답_데이터_생성(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProductResponseDto> menuproducts) {
