@@ -1,8 +1,6 @@
 package kitchenpos.application;
 
-import static kitchenpos.helper.ReflectionHelper.setMenuId;
-import static kitchenpos.helper.ReflectionHelper.setOrderId;
-import static kitchenpos.helper.ReflectionHelper.setOrderLineItemId;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -60,15 +58,14 @@ class OrderServiceTest {
         orderService = new OrderService(orderRepository, eventPublisher);
 
         order = new Order();
-        setOrderId(1L, order);
 
         OrderLineItem hamOrderLineItem = new OrderLineItem(null, ham_menuProduct.getMenu().getId(),
             1L);
         OrderLineItem chickenOrderLineItem = new OrderLineItem(null,
             chicken_menuProduct.getMenu().getId(),
             1L);
-        setOrderLineItemId(1L, chickenOrderLineItem);
-        setOrderLineItemId(2L, hamOrderLineItem);
+//        setOrderLineItemId(1L, chickenOrderLineItem);
+//        setOrderLineItemId(2L, hamOrderLineItem);
         order.mapOrderLineItem(hamOrderLineItem);
         order.mapOrderLineItem(chickenOrderLineItem);
 
@@ -83,12 +80,12 @@ class OrderServiceTest {
 
         Product chicken = new Product("chicken", BigDecimal.valueOf(5000));
         Menu oneChickenMenu = new Menu("치킨한마리", BigDecimal.valueOf(4000), null);
-        setMenuId(1L, oneChickenMenu);
+//        setMenuId(1L, oneChickenMenu);
         chicken_menuProduct = new MenuProduct(oneChickenMenu, 1L, 1L);
 
         Product ham = new Product("ham", BigDecimal.valueOf(4000));
         Menu oneHamMenu = new Menu("햄한개", BigDecimal.valueOf(3000), null);
-        setMenuId(2L, oneHamMenu);
+//        setMenuId(2L, oneHamMenu);
         ham_menuProduct = new MenuProduct(oneHamMenu, 2L, 1L);
     }
 

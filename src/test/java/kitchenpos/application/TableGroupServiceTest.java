@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import static kitchenpos.helper.ReflectionHelper.setTableGroupId;
+
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
@@ -53,8 +53,6 @@ class TableGroupServiceTest {
         tableGroupService = new TableGroupService(eventPublisher, tableGroupRepository,
             orderTableRepository);
         tableGroup = new TableGroup();
-        setTableGroupId(1L, tableGroup);
-
     }
 
     private void setOrderTable() {
