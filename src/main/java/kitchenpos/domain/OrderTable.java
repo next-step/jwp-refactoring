@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import kitchenpos.common.domain.NumberOfGuests;
+import kitchenpos.order.domain.Order;
 
 @Entity
 @Table(name = "order_table")
