@@ -1,10 +1,6 @@
 package kitchenpos.table.application;
 
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.OrderTables;
-import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.table.domain.*;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
@@ -31,13 +27,10 @@ public class TableGroupService {
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         List<Long> orderTableIds = tableGroupRequest.getOrderTableIds();
         OrderTables orderTables = new OrderTables(findOrderTablesByIdIn(orderTableIds));
-        final OrderTables savedOrderTables = new OrderTables(findOrderTablesByIdIn(orderTableIds));
-
-        orderTables.validateForCreateTableGroup(savedOrderTables);
-        savedOrderTables.updateEmpty(false);
+        orderTables.validateForCreateTableGroup(orderTables);
+        orderTables.updateEmpty(false);
 
         TableGroup tableGroup = tableGroupRequest.toTableGroup(orderTables);
-        tableGroup.addOrderTables(savedOrderTables);
 
         return TableGroupResponse.of(saveTableGroup(tableGroup));
     }
