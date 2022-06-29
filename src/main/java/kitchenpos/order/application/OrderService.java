@@ -24,7 +24,6 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        orderValidator.validateOrderTableEmptyIsFalse(orderRequest.getOrderTableId());
         OrderLineItems orderLineItems = findOrderLineItems(orderRequest.getOrderLineItems());
 
         final List<Long> menuIds = orderLineItems.findMenuIds();

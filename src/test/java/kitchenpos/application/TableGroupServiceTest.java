@@ -1,14 +1,10 @@
 package kitchenpos.application;
 
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.OrderTables;
-import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.table.application.TableGroupService;
+import kitchenpos.table.application.TableValidator;
+import kitchenpos.table.domain.*;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
-import kitchenpos.table.application.TableGroupService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,13 +30,13 @@ import static org.mockito.BDDMockito.given;
 class TableGroupServiceTest {
 
     @Mock
-    OrderRepository orderRepository;
-
-    @Mock
     OrderTableRepository orderTableRepository;
 
     @Mock
     TableGroupRepository tableGroupRepository;
+
+    @Mock
+    TableValidator tableValidator;
 
     @InjectMocks
     TableGroupService tableGroupService;
@@ -116,27 +112,9 @@ class TableGroupServiceTest {
         List<OrderTable> orderTables = Arrays.asList(orderTableId1, orderTableId2);
 
         given(orderTableRepository.findAllByTableGroupId(1L)).willReturn(orderTables);
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
 
         // when & then
         테이블_그룹_해제(1L);
-    }
-
-    @DisplayName("단체 지정을 해제할 수 있다" +
-            " - 해당 주문 테이블들의 주문 상태가 '조리' 또는 '식사' 상태가 아니어야 한다")
-    @Test
-    void ungroup_exception1() {
-        // given
-        OrderTable orderTableId1 = 주문_테이블_데이터_생성(1L, 테이블_그룹_데이터_생성(), 2, true);
-        OrderTable orderTableId2 = 주문_테이블_데이터_생성(2L, 테이블_그룹_데이터_생성(), 4, true);
-        List<OrderTable> orderTables = Arrays.asList(orderTableId1, orderTableId2);
-
-        given(orderTableRepository.findAllByTableGroupId(1L)).willReturn(orderTables);
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
-
-        // when & then
-        assertThatThrownBy(() -> 테이블_그룹_해제(1L))
-                .isInstanceOf(IllegalArgumentException.class);
     }
 
     public static TableGroup 테이블_그룹_데이터_생성(Long id, List<OrderTable> orderTables) {

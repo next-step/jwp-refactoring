@@ -13,7 +13,7 @@ public class OrderTables {
     @OneToMany(mappedBy = "tableGroup")
     private final List<OrderTable> orderTables = new ArrayList<>();
 
-    protected OrderTables() {
+    public OrderTables() {
 
     }
 

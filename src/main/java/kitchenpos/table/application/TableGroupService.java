@@ -1,7 +1,5 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTables;
@@ -12,19 +10,21 @@ import kitchenpos.table.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class TableGroupService {
-    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
+    private final TableValidator tableValidator;
 
-    public TableGroupService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository, final TableGroupRepository tableGroupRepository) {
-        this.orderRepository = orderRepository;
+    public TableGroupService(
+            final OrderTableRepository orderTableRepository,
+            TableGroupRepository tableGroupRepository,
+            final TableValidator tableValidator){
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
+        this.tableValidator = tableValidator;
     }
 
     @Transactional
@@ -45,10 +45,7 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         final OrderTables orderTables = new OrderTables(findOrderTablesByTableGroupId(tableGroupId));
-
-        if (isExistsOrderTablesAndNotCompletion(orderTables)) {
-            throw new IllegalArgumentException();
-        }
+        tableValidator.validateOrderTablesNotCompletion(orderTables);
 
         orderTables.updateTableGroup(null);
     }
@@ -63,10 +60,5 @@ public class TableGroupService {
 
     private List<OrderTable> findOrderTablesByIdIn(List<Long> orderTableIds) {
         return orderTableRepository.findAllByIdIn(orderTableIds);
-    }
-
-    private boolean isExistsOrderTablesAndNotCompletion(OrderTables orderTables) {
-        return orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTables.findOrderTableIds(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()));
     }
 }

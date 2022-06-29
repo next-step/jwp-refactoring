@@ -1,13 +1,13 @@
 package kitchenpos.application;
 
-import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.table.application.TableService;
+import kitchenpos.table.application.TableValidator;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableChangEmptyRequest;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.table.application.TableService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import static kitchenpos.application.TableGroupServiceTest.테이블_그룹_데이터_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -32,12 +31,11 @@ import static org.mockito.BDDMockito.given;
 @DisplayName("주문 테이블 관련 테스트")
 @ExtendWith(MockitoExtension.class)
 public class TableServiceTest {
-
-    @Mock
-    OrderRepository orderRepository;
-
     @Mock
     OrderTableRepository orderTableRepository;
+
+    @Mock
+    TableValidator tableValidator;
 
     @InjectMocks
     TableService tableService;
@@ -90,7 +88,6 @@ public class TableServiceTest {
         // given
         OrderTable orderTable = 주문_테이블_데이터_생성(1L, null, 2, true);
         given(orderTableRepository.findById(1L)).willReturn(Optional.of(orderTable));
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(false);
         given(orderTableRepository.save(orderTable)).willReturn(orderTable);
 
         // when
@@ -106,19 +103,6 @@ public class TableServiceTest {
         // given
         OrderTable orderTable = 주문_테이블_데이터_생성(1L, TableGroupServiceTest.테이블_그룹_데이터_생성(), 2, true);
         given(orderTableRepository.findById(1L)).willReturn(Optional.of(orderTable));
-
-        // when && then
-        assertThatThrownBy(() -> 주문_상태_변경(1L, new OrderTableChangEmptyRequest(true)))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("빈 테이블로 변경할 수 있다 - 주문 상태가 '조리' 또는 '식사' 상태가 아니어야 한다")
-    @Test
-    void changeEmpty_exception2() {
-        // given
-        OrderTable orderTable = 주문_테이블_데이터_생성(1L, null, 2, true);
-        given(orderTableRepository.findById(1L)).willReturn(Optional.of(orderTable));
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(true);
 
         // when && then
         assertThatThrownBy(() -> 주문_상태_변경(1L, new OrderTableChangEmptyRequest(true)))
