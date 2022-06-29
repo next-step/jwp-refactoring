@@ -8,19 +8,24 @@ public class TableGroup {
     private LocalDateTime createdDate;
     private List<OrderTable> orderTables;
 
-    public Long getId() {
-        return id;
+    public TableGroup(List<OrderTable> orderTables) {
+        this.orderTables = orderTables;
     }
 
-    public void setId(final Long id) {
+    public TableGroup(Long id, LocalDateTime createdDate) {
         this.id = id;
+        this.createdDate = createdDate;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public LocalDateTime getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(final LocalDateTime createdDate) {
+    public void createdDate(final LocalDateTime createdDate) {
         this.createdDate = createdDate;
     }
 
@@ -28,7 +33,7 @@ public class TableGroup {
         return orderTables;
     }
 
-    public void setOrderTables(final List<OrderTable> orderTables) {
+    public void changeOrderTables(final List<OrderTable> orderTables) {
         this.orderTables = orderTables;
     }
 }
