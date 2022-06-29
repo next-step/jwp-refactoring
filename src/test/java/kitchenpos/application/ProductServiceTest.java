@@ -1,6 +1,7 @@
 package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 
@@ -43,6 +44,16 @@ class ProductServiceTest {
 
         // then
         assertThat(given).isEqualTo(actual);
+    }
+
+    @Test
+    void 상품_등록_시_상품_가격이_없거나_0원_미만이면_에러가_발생해야_한다() {
+        // given
+        final Product given = new Product(1L, "new product", BigDecimal.valueOf(-1));
+
+        // when and then
+        assertThatThrownBy(() -> productService.create(given))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
