@@ -16,6 +16,8 @@ import java.util.List;
 
 @Entity
 public class Menu {
+    public static final long DEFAULT_VERSION = 0L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,17 +32,20 @@ public class Menu {
     @JoinColumn(nullable = false)
     private MenuGroup menuGroup;
 
+    private Long version;
+
     @Embedded
     private final MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {
     }
 
-    private Menu(final String name, final BigDecimal price, final MenuGroup menuGroup) {
+    private Menu(final String name, final BigDecimal price, final MenuGroup menuGroup, Long version) {
         validateMenuGroup(menuGroup);
         this.name = name;
         this.price = new Price(price);
         this.menuGroup = menuGroup;
+        this.version = version;
     }
 
     private void validateMenuGroup(final MenuGroup menuGroup) {
@@ -53,9 +58,10 @@ public class Menu {
             final String name,
             final BigDecimal price,
             final MenuGroup menuGroup,
-            final List<MenuProduct> menuProducts
+            final List<MenuProduct> menuProducts,
+            final Long version
     ) {
-        Menu menu = new Menu(name, price, menuGroup);
+        Menu menu = new Menu(name, price, menuGroup, version);
         menu.addMenuProducts(menuProducts);
 
         return menu;
@@ -85,11 +91,7 @@ public class Menu {
         return menuProducts.getElements();
     }
 
-    public boolean hasPriceGreaterThan(final BigDecimal totalPrice) {
-        if (totalPrice == null) {
-            throw new IllegalArgumentException("총 상품 금액은 null일 수 없습니다.");
-        }
-
-        return price.isGreaterThan(totalPrice);
+    public Long getVersion() {
+        return version;
     }
 }

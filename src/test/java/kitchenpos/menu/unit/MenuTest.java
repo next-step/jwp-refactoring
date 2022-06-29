@@ -49,7 +49,8 @@ public class MenuTest {
                 "커플 메뉴",
                 상품_금액_총합,
                 양식,
-                Arrays.asList(샐러드_1개, 스테이크_1개, 에이드_2개)
+                Arrays.asList(샐러드_1개, 스테이크_1개, 에이드_2개),
+                Menu.DEFAULT_VERSION
         );
 
         // then
@@ -71,7 +72,8 @@ public class MenuTest {
                         "커플 메뉴",
                         BigDecimal.ZERO.subtract(BigDecimal.ONE),
                         양식,
-                        Arrays.asList(샐러드_1개, 스테이크_1개, 에이드_2개)
+                        Arrays.asList(샐러드_1개, 스테이크_1개, 에이드_2개),
+                        Menu.DEFAULT_VERSION
                 )
         ).isInstanceOf(IllegalArgumentException.class);
     }
@@ -91,7 +93,8 @@ public class MenuTest {
                         "커플 메뉴",
                         상품_금액_총합,
                         null,
-                        Arrays.asList(샐러드_1개, 스테이크_1개, 에이드_2개)))
+                        Arrays.asList(샐러드_1개, 스테이크_1개, 에이드_2개),
+                        Menu.DEFAULT_VERSION))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("메뉴 그룹이 필요합니다.");
     }
@@ -115,11 +118,5 @@ public class MenuTest {
 
     public static MenuGroup 메뉴_그룹_생성되어_있음(String name) {
         return new MenuGroup(name);
-    }
-
-    static public Menu 메뉴_생성되어_있음(ProductRepository productRepository, String menuName, String menuGroupName, MenuProduct... menuProducts) {
-        MenuGroup menuGroup = 메뉴_그룹_생성되어_있음(menuGroupName);
-        BigDecimal totalPrice = 상품_금액_총합_계산(productRepository, menuProducts);
-        return Menu.createMenu(menuName, totalPrice, menuGroup, Arrays.asList(menuProducts));
     }
 }

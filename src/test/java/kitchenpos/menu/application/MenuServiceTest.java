@@ -71,13 +71,15 @@ class MenuServiceTest {
                 "메뉴1",
                 BigDecimal.valueOf(400),
                 new MenuGroup("그룹"),
-                Arrays.asList(new MenuProduct(1L, 1))
+                Arrays.asList(new MenuProduct(1L, 1)),
+                Menu.DEFAULT_VERSION
         );
         Menu 메뉴2 = Menu.createMenu(
                 "메뉴2",
                 BigDecimal.valueOf(350),
                 new MenuGroup("그룹"),
-                Arrays.asList(new MenuProduct(2L, 2))
+                Arrays.asList(new MenuProduct(2L, 2)),
+                Menu.DEFAULT_VERSION
         );
         given(menuRepository.findAll()).willReturn(Arrays.asList(메뉴1, 메뉴2));
         doReturn(스테이크, 샐러드, 에이드).when(productRepository).getById(any(Long.class));

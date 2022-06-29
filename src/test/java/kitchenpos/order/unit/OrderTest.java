@@ -82,7 +82,8 @@ class OrderTest {
                 Arrays.asList(
                         new MenuProduct(1L, 1),
                         new MenuProduct(2L, 1),
-                        new MenuProduct(3L, 2)));
+                        new MenuProduct(3L, 2)),
+                Menu.DEFAULT_VERSION);
         return new OrderLineItem(menu.getId(), 1);
     }
 

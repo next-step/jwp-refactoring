@@ -19,6 +19,7 @@ CREATE TABLE menu (
     name VARCHAR(255) NOT NULL,
     price DECIMAL(19, 2) NOT NULL,
     menu_group_id BIGINT(20) NOT NULL,
+    version BIGINT(20) NOT NULL,
     PRIMARY KEY (id)
 );
 

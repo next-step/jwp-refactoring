@@ -5,7 +5,7 @@ import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.ChangeMenuRequest;
 import kitchenpos.menu.dto.MenuProductResponse;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -37,21 +37,32 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest request) {
-        if (request.getPrice().compareTo(totalAmount(request.getMenuProducts())) > 0) {
-            throw new IllegalArgumentException("메뉴 가격은 구성 상품 금액 총합보다 크면 안 됩니다.");
-        }
+        validatePrice(request);
 
         Menu persistMenu = menuRepository.save(toEntity(request));
 
         return toResponse(persistMenu);
     }
 
-    private BigDecimal totalAmount(List<MenuProductRequest> menuProductRequests) {
-        return menuProductRequests.stream()
+    private void validatePrice(MenuRequest menuRequest) {
+        List<MenuProduct> menuProducts = menuRequest.getMenuProducts().stream()
+                .map(request -> new MenuProduct(request.getProductId(), request.getQuantity()))
+                .collect(Collectors.toList());
+        validatePrice(menuRequest.getPrice(), totalAmount(menuProducts));
+    }
+
+    private BigDecimal totalAmount(List<MenuProduct> menuProducts) {
+        return menuProducts.stream()
                 .map(menuProduct ->
                         productRepository.getById(menuProduct.getProductId())
                                 .getPrice(menuProduct.getQuantity()))
                 .reduce(BigDecimal.ZERO, (acc, amount) -> acc.add(amount));
+    }
+
+    private void validatePrice(BigDecimal menuPrice, BigDecimal productTotalAmount) {
+        if (menuPrice.compareTo(productTotalAmount) > 0) {
+            throw new IllegalArgumentException("메뉴 가격은 구성 상품 금액 총합보다 크면 안 됩니다.");
+        }
     }
 
     private Menu toEntity(final MenuRequest request) {
@@ -66,7 +77,8 @@ public class MenuService {
                 request.getName(),
                 request.getPrice(),
                 menuGroup,
-                menuProducts);
+                menuProducts,
+                Menu.DEFAULT_VERSION);
     }
 
     public List<MenuResponse> list() {
@@ -93,5 +105,26 @@ public class MenuService {
                 menu.getPrice(),
                 menu.getMenuGroup().getId(),
                 menuProductResponses);
+    }
+
+    public void changeName(ChangeMenuRequest request) {
+        Menu menu = menuRepository.getById(request.getId());
+        menuRepository.save(Menu.createMenu(
+                request.getName(),
+                menu.getPrice(),
+                menu.getMenuGroup(),
+                menu.getMenuProducts(),
+                menu.getVersion() + 1));
+    }
+
+    public void changePrice(ChangeMenuRequest request) {
+        Menu menu = menuRepository.getById(request.getId());
+        validatePrice(request.getPrice(), totalAmount(menu.getMenuProducts()));
+        menuRepository.save(Menu.createMenu(
+                menu.getName(),
+                request.getPrice(),
+                menu.getMenuGroup(),
+                menu.getMenuProducts(),
+                menu.getVersion() + 1));
     }
 }

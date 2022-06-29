@@ -31,12 +31,4 @@ public class Price {
     public BigDecimal getPrice(final Long quantity) {
         return value.multiply(BigDecimal.valueOf(quantity));
     }
-
-    public boolean isGreaterThan(final BigDecimal val) {
-        if (val == null) {
-            throw new IllegalArgumentException("인자가 null이라 비교할 수 없습니다.");
-        }
-
-        return value.compareTo(val) > 0;
-    }
 }
