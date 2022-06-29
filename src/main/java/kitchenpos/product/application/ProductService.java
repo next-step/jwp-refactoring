@@ -26,8 +26,7 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public List<ProductResponse> list() {
-        return productRepository.findAll()
-                .stream()
+        return productRepository.findAll().stream()
                 .map(ProductResponse::of)
                 .collect(Collectors.toList());
     }

@@ -1,7 +1,6 @@
 package kitchenpos.menu;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -10,6 +9,8 @@ import java.util.List;
 import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.dao.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,10 +36,10 @@ class MenuGroupServiceTest {
         given(menuGroupRepository.save(any())).willReturn(한마리메뉴);
 
         // when
-        MenuGroup actual = menuGroupService.create(한마리메뉴);
+        MenuGroupResponse actual = menuGroupService.create(new MenuGroupRequest("한마리메뉴"));
 
         // then
-        assertThat(actual).isEqualTo(한마리메뉴);
+        assertThat(actual.getName()).isEqualTo("한마리메뉴");
     }
 
     @Test
@@ -48,12 +49,9 @@ class MenuGroupServiceTest {
         given(menuGroupRepository.findAll()).willReturn(Collections.singletonList(한마리메뉴));
 
         // when
-        List<MenuGroup> actual = menuGroupService.list();
+        List<MenuGroupResponse> actual = menuGroupService.list();
 
         // then
-        assertAll(
-                () -> assertThat(actual).hasSize(1),
-                () -> assertThat(actual).containsExactlyInAnyOrder(한마리메뉴)
-        );
+        assertThat(actual).hasSize(1);
     }
 }
