@@ -1,6 +1,5 @@
 package kitchenpos.menu.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import kitchenpos.menugroup.domain.MenuGroup;
 
 import javax.persistence.*;
@@ -19,8 +18,8 @@ public class Menu {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private BigDecimal price;
+    @Embedded
+    private Price price;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_group_id", nullable = false)
@@ -38,7 +37,7 @@ public class Menu {
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.name = name;
-        this.price = price;
+        this.price = new Price(price);
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
     }
@@ -51,7 +50,7 @@ public class Menu {
         return name;
     }
 
-    public BigDecimal getPrice() {
+    public Price getPrice() {
         return price;
     }
 
