@@ -11,6 +11,7 @@ import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -57,8 +59,7 @@ public class MenuServiceTest {
     @DisplayName("메뉴를 생성한다.")
     @Test
     public void create() {
-        when(menuGroupRepository.existsById(1L)).thenReturn(true);
-        when(productRepository.findById(any())).thenReturn(Optional.of(new Product(PRODUCT_NAME01, PRODUCT_PRICE01)));
+        when(menuGroupRepository.findById(any())).thenReturn(Optional.of(new MenuGroup(1L)));
         when(menuRepository.save(any())).thenReturn(createMenu01());
 
         // when
@@ -101,11 +102,10 @@ public class MenuServiceTest {
     @Test
     public void create_without_product() {
         when(menuGroupRepository.existsById(1L)).thenReturn(true);
-        when(productRepository.findById(any())).thenReturn(Optional.empty());
 
         // when, then
         assertThatThrownBy(() -> {
-            menuService.create(new MenuRequest(MENU_NAME01, MENU_PRICE01, 1L, createMenuProductList()));
+            menuService.create(new MenuRequest(MENU_NAME01, MENU_PRICE01, 1L, Collections.singletonList(createMenuWithoutProduct())));
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -113,7 +113,6 @@ public class MenuServiceTest {
     @Test
     public void create_expensive_than_menu_products() {
         when(menuGroupRepository.existsById(1L)).thenReturn(true);
-        when(productRepository.findById(any())).thenReturn(Optional.of(createProduct1()));
 
         // when, then
         assertThatThrownBy(() -> {
@@ -144,6 +143,11 @@ public class MenuServiceTest {
         Product product = createProduct1();
         Menu menu = MenuServiceTest.createMenu01();
         return new MenuProduct(1L, menu, product, 1);
+    }
+
+    public static MenuProduct createMenuWithoutProduct() {
+        Menu menu = MenuServiceTest.createMenu01();
+        return new MenuProduct(1L, menu, null, 1);
     }
 
     public static List<MenuProduct> createMenuProductList() {

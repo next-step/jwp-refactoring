@@ -38,7 +38,8 @@ public class Menu {
         this.name = name;
         this.price = new Price(price);
         this.menuGroup = menuGroup;
-        this.menuProducts = new MenuProducts(menuProducts);
+        // this.menuProducts = new MenuProducts(menuProducts);
+        this.menuProducts = new MenuProducts(this, price, menuProducts);
     }
 
     public Long getId() {
