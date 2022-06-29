@@ -124,11 +124,15 @@
 - 데이터베이스 스키마 변경 및 마이그레이션이 필요하다면 아래 문서를 적극 활용한다.
   - [DB도 형상관리를 해보자!](https://meetup.toast.com/posts/173)
   
+### 의존도 draw
+- Before(https://github.com/tyakamyz/jwp-refactoring/blob/step3/docs/refactor-before.drawio.png)
+- After(https://github.com/tyakamyz/jwp-refactoring/blob/step3/docs/refactor-after.drawio.png)
+
 ### 리팩토링 리스트
 - [x] 현재 의존성 현황 정리
 - [x] 패키지 재정의
-- [ ] 클래스 사이의 의존 관계 단방향으로 리팩토링
-- [ ] 패키지 사이의 의존 관계 단방향으로 리팩토링
+- [x] 클래스 사이의 의존 관계 단방향으로 리팩토링
+- [x] 패키지 사이의 의존 관계 단방향으로 리팩토링
 
 ---
 ### 프로그래밍 요구 사항
