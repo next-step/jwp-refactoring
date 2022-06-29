@@ -27,11 +27,13 @@ public class OrderLineItem {
 
     protected OrderLineItem() {}
 
+    private OrderLineItem(Long menuId, long quantity) {
+        this.menuId = menuId;
+        this.quantity = quantity;
+    }
+
     public static OrderLineItem createOrderLineItem(Long menuId, long quantity) {
-        OrderLineItem orderLineItem = new OrderLineItem();
-        orderLineItem.updateMenuId(menuId);
-        orderLineItem.updateQuantity(quantity);
-        return orderLineItem;
+        return new OrderLineItem(menuId, quantity);
     }
 
     public Long getSeq() {
@@ -52,13 +54,5 @@ public class OrderLineItem {
 
     public void addOrder(Order order) {
         this.order = order;
-    }
-
-    private void updateQuantity(final long quantity) {
-        this.quantity = quantity;
-    }
-
-    private void updateMenuId(Long menuId) {
-        this.menuId = menuId;
     }
 }
