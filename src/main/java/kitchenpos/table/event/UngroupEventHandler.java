@@ -22,7 +22,7 @@ public class UngroupEventHandler {
 
     @Transactional
     @EventListener
-    public void onUngroupEvent(UngroupEvent event) {
+    public void ungroupEvent(UngroupEvent event) {
         final OrderTables orderTables = OrderTables.of(
                 orderTableRepository.findAllByTableGroupId(event.getTableGroupId()));
         validateOfUngroup(orderTables);
