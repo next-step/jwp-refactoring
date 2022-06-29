@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.stream.Stream;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.dto.MenuGroupResponse;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuResponse;
 import kitchenpos.dto.OrderResponse;

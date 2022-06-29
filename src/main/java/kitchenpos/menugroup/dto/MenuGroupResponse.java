@@ -1,9 +1,9 @@
-package kitchenpos.dto;
+package kitchenpos.menugroup.dto;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroup;
 
 public class MenuGroupResponse {
     private Long id;
