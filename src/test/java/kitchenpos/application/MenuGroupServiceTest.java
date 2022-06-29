@@ -23,7 +23,6 @@ class MenuGroupServiceTest {
         MenuGroup menuGroup = createMenuGroup();
 
         // when
-        List<MenuGroup> a = menuGroupService.list();
         MenuGroup result = menuGroupService.create(menuGroup);
 
         // then
