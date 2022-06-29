@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.order.application.OrderService;
-import kitchenpos.menu.dao.MenuDao;
+import kitchenpos.menu.dao.MenuRepository;
 import kitchenpos.order.dao.OrderDao;
 import kitchenpos.order.dao.OrderLineItemDao;
 import kitchenpos.order.dao.OrderTableDao;
@@ -37,7 +37,7 @@ class OrderServiceTest {
     OrderService orderService;
 
     @Mock
-    MenuDao menuDao;
+    MenuRepository menuDao;
 
     @Mock
     OrderDao orderDao;

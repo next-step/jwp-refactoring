@@ -60,11 +60,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 메뉴_생성_요청(String name, BigDecimal price, Long menuGroupId,
                                                          List<MenuProduct> menuProductList) {
-        Menu menu = new Menu();
-        menu.setName(name);
-        menu.setPrice(price);
-        menu.setMenuGroupId(menuGroupId);
-        menu.setMenuProducts(menuProductList);
+        Menu menu = new Menu(name, price, menuGroupId, menuProductList);
 
         return AcceptanceTest.doPost("/api/menus", menu);
     }

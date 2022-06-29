@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.dao.MenuDao;
+import kitchenpos.menu.dao.MenuRepository;
 import kitchenpos.menu.dao.MenuGroupRepository;
 import kitchenpos.menu.dao.MenuProductRepository;
 import kitchenpos.menu.domain.Menu;
@@ -33,7 +33,7 @@ class MenuServiceTest {
     MenuService menuService;
 
     @Mock
-    MenuDao menuDao;
+    MenuRepository menuDao;
 
     @Mock
     MenuGroupRepository menuGroupRepository;
@@ -44,7 +44,7 @@ class MenuServiceTest {
     @Mock
     ProductRepository productRepository;
 
-    Menu 후라이드치킨 = new Menu();
+    Menu 후라이드치킨;
     Product 후라이드;
     MenuProduct 후라이드치킨상품;
 
@@ -61,13 +61,11 @@ class MenuServiceTest {
     }
 
     void createMenu() {
-        후라이드치킨.setId(1L);
-        후라이드치킨.setName("후라이드치킨");
-        후라이드치킨.setPrice(new BigDecimal(15000));
+        후라이드치킨 = new Menu("후라이드치킨", BigDecimal.valueOf(15000));
     }
 
     void createMenuProduct() {
-        후라이드치킨상품 = new MenuProduct(후라이드치킨.getId(), 후라이드.getId(), 1L);
+        후라이드치킨상품 = new MenuProduct(후라이드치킨, 후라이드.getId(), 1L);
         후라이드치킨.setMenuProducts(Collections.singletonList(후라이드치킨상품));
     }
 
@@ -78,7 +76,6 @@ class MenuServiceTest {
         given(menuGroupRepository.existsById(any())).willReturn(true);
         given(productRepository.findById(any())).willReturn(Optional.ofNullable(후라이드));
         given(menuDao.save(any())).willReturn(후라이드치킨);
-        given(menuProductRepository.save(any())).willReturn(후라이드치킨상품);
 
         // when
         Menu actual = menuService.create(후라이드치킨);
@@ -91,8 +88,7 @@ class MenuServiceTest {
     @DisplayName("메뉴 저장시 메뉴의 금액은 0원 이상이다")
     void create_priceException() {
         // given
-        Menu 양념치킨 = new Menu();
-        양념치킨.setPrice(new BigDecimal(-1));
+        Menu 양념치킨 = new Menu("양념치킨", BigDecimal.valueOf(-1));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
