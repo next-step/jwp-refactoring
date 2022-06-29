@@ -14,8 +14,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import kitchenpos.domain.common.Name;
-import kitchenpos.domain.common.Price;
+import kitchenpos.common.domain.Name;
+import kitchenpos.common.domain.Price;
 
 @Entity
 @Table(name = "menu")

@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import kitchenpos.domain.common.NumberOfGuests;
+import kitchenpos.common.domain.NumberOfGuests;
 
 @Entity
 @Table(name = "order_table")

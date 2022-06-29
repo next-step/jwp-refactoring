@@ -8,7 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import kitchenpos.domain.common.Quantity;
+import kitchenpos.common.domain.Quantity;
 
 @Entity
 @Table(name = "order_line_item")
