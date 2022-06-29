@@ -1,8 +1,11 @@
 package kitchenpos.application;
 
 
+import static kitchenpos.Exception.NotFoundOrderException.NOT_FOUND_ORDER_EXCEPTION;
 import static kitchenpos.domain.OrderStatus.getCannotUngroupTableGroupStatus;
 
+import kitchenpos.Exception.NotFoundMenuException;
+import kitchenpos.Exception.NotFoundOrderException;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderLineItems;
@@ -54,7 +57,7 @@ public class OrderService {
     public OrderResponse changeOrderStatus(final Long orderId, final OrderStatusRequest orderStatusRequest) {
         OrderStatus orderStatus = orderStatusRequest.toOrderStatus();
         final Order savedOrder = orderRepository.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(NotFoundOrderException::new);
 
         savedOrder.changeOrderStatus(orderStatus);
         return OrderResponse.from(savedOrder);
@@ -89,7 +92,7 @@ public class OrderService {
                 .collect(Collectors.toList());
 
         if (orderLineItems.size() != menuService.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException("존재하지 않는 메뉴가 포함되어 있습니다.");
+            throw new NotFoundMenuException("존재하지 않는 메뉴가 포함되어 있습니다.");
         }
     }
 

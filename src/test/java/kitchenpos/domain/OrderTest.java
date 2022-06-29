@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
 import java.util.List;
+import kitchenpos.Exception.OrderStatusCompleteException;
+import kitchenpos.Exception.OrderTableAlreadyEmptyException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -39,7 +41,7 @@ class OrderTest {
         // when, then
         assertThatThrownBy(
                 () -> order.changeOrderStatus(OrderStatus.COOKING)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(OrderStatusCompleteException.class);
     }
 
     @Test
@@ -50,6 +52,6 @@ class OrderTest {
         // when, then
         assertThatThrownBy(
                 () -> new Order(orderTable)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(OrderTableAlreadyEmptyException.class);
     }
 }

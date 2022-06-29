@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import kitchenpos.Exception.InvalidMenuPriceException;
 
 @Entity
 public class Menu {
@@ -53,7 +54,7 @@ public class Menu {
 
     private void validateSumPrice(MenuProducts menuProducts) {
         if (price.compareTo(menuProducts.sumOfPrice()) > 0) {
-            throw new IllegalArgumentException("메뉴 상품 가격의 총 합은 메뉴 가격보다 클 수 없습니다.");
+            throw new InvalidMenuPriceException(price, menuProducts.sumOfPrice());
         }
     }
 

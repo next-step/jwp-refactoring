@@ -1,5 +1,7 @@
 package kitchenpos.application;
 
+import kitchenpos.Exception.NotFoundOrderTableException;
+import kitchenpos.Exception.UnCompletedOrderStatusException;
 import kitchenpos.domain.NumberOfGuests;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
@@ -33,7 +35,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(NotFoundOrderTableException::new);
 
         validateUnCompletedOrderStatus(orderTableId);
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
@@ -44,7 +46,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(NotFoundOrderTableException::new);
 
         savedOrderTable.changeNumberOfGuests(NumberOfGuests.from(orderTableRequest.getNumberOfGuests()));
 
@@ -53,7 +55,7 @@ public class TableService {
 
     private void validateUnCompletedOrderStatus(Long orderTableId) {
         if (orderService.existsByOrderTableIdUnCompletedOrderStatus(orderTableId)) {
-            throw new IllegalArgumentException();
+            throw new UnCompletedOrderStatusException("계산 완료 상태의 주문이 있는 테이블은 빈 테이블로 변경할 수 없습니다.");
         }
     }
 }

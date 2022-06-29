@@ -1,5 +1,7 @@
 package kitchenpos.domain;
 
+import static kitchenpos.Exception.OrderTableAlreadyEmptyException.ORDER_TABLE_ALREADY_EMPTY_EXCEPTION;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.Embedded;
@@ -12,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import kitchenpos.Exception.OrderStatusCompleteException;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -61,13 +64,13 @@ public class Order {
 
     private static void validateOrderTableEmpty(OrderTable orderTable) {
         if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException("주문 테이블이 빈 테이블이 아니어야 합니다.");
+            throw ORDER_TABLE_ALREADY_EMPTY_EXCEPTION;
         }
     }
 
     private void validateChangeOrderStatus() {
         if (orderStatus.equals(OrderStatus.COMPLETION)) {
-            throw new IllegalArgumentException();
+            throw new OrderStatusCompleteException("완료 주문상태인 주문은 상태를 변경할 수 없습니다.");
         }
     }
 

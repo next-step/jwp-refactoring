@@ -11,6 +11,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import kitchenpos.Exception.InvalidNumberOfGuestsException;
+import kitchenpos.Exception.NotFoundOrderTableException;
+import kitchenpos.Exception.OrderTableAlreadyEmptyException;
+import kitchenpos.Exception.OrderTableAlreadyTableGroupException;
+import kitchenpos.Exception.UnCompletedOrderStatusException;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.dto.OrderTableRequest;
@@ -66,12 +71,12 @@ class TableServiceTest {
     @Test
     void 빈_상태_변경_테이블_없음_예외() {
         // given
-        given(orderTableRepository.findById(orderTable.getId())).willThrow(IllegalArgumentException.class);
+        given(orderTableRepository.findById(orderTable.getId())).willThrow(NotFoundOrderTableException.class);
 
         // when, then
         assertThatThrownBy(
                 () -> tableService.changeEmpty(orderTable.getId(), orderTableRequest)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(NotFoundOrderTableException.class);
     }
 
     @Test
@@ -83,7 +88,7 @@ class TableServiceTest {
         // when, then
         assertThatThrownBy(
                 () -> tableService.changeEmpty(orderTable.getId(), orderTableRequest)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(OrderTableAlreadyTableGroupException.class);
     }
 
     @Test
@@ -95,7 +100,7 @@ class TableServiceTest {
         // when, then
         assertThatThrownBy(
                 () -> tableService.changeEmpty(orderTable.getId(), orderTableRequest)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(UnCompletedOrderStatusException.class);
     }
 
     @Test
@@ -115,23 +120,24 @@ class TableServiceTest {
     @Test
     void 손님_수_변경_0_미만_예외() {
         // given
+        given(orderTableRepository.findById(orderTable.getId())).willReturn(Optional.ofNullable(orderTable));
         OrderTableRequest 손님_수_음수 = createOrderTableRequest(-1, false);
 
         // when, then
         assertThatThrownBy(
                 () -> assertThat(tableService.changeNumberOfGuests(orderTable.getId(), 손님_수_음수))
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(InvalidNumberOfGuestsException.class);
     }
 
     @Test
     void 손님_수_변경_존재하지_않는_테이블_예외() {
         // given
-        given(orderTableRepository.findById(orderTable.getId())).willThrow(IllegalArgumentException.class);
+        given(orderTableRepository.findById(orderTable.getId())).willThrow(NotFoundOrderTableException.class);
 
         // when, then
         assertThatThrownBy(
                 () -> assertThat(tableService.changeNumberOfGuests(orderTable.getId(), orderTableRequest))
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(NotFoundOrderTableException.class);
     }
 
     @Test
@@ -143,7 +149,7 @@ class TableServiceTest {
         // when, then
         assertThatThrownBy(
                 () -> assertThat(tableService.changeNumberOfGuests(orderTable.getId(), orderTableRequest))
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(OrderTableAlreadyEmptyException.class);
     }
 
     @Test

@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.List;
+import kitchenpos.Exception.EmptyOrderLineItemsException;
 import org.junit.jupiter.api.Test;
 
 class OrderLineItemsTest {
@@ -32,7 +33,7 @@ class OrderLineItemsTest {
         // when, then
         assertThatThrownBy(
                 () -> OrderLineItems.from(null)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(EmptyOrderLineItemsException.class);
     }
 
     @Test
@@ -40,7 +41,7 @@ class OrderLineItemsTest {
         // when, then
         assertThatThrownBy(
                 () -> OrderLineItems.from(Arrays.asList())
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(EmptyOrderLineItemsException.class);
     }
 
 }

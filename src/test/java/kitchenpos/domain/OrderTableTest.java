@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import kitchenpos.Exception.OrderTableAlreadyEmptyException;
+import kitchenpos.Exception.OrderTableAlreadyTableGroupException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -30,7 +32,7 @@ class OrderTableTest {
         // given
         orderTable.groupByTableGroupId(1L);
         // when, then
-        assertThatThrownBy(() -> orderTable.changeEmpty(true)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderTable.changeEmpty(true)).isInstanceOf(OrderTableAlreadyTableGroupException.class);
     }
 
     @Test
@@ -47,7 +49,7 @@ class OrderTableTest {
         orderTable.changeEmpty(true);
         // when, then
         assertThatThrownBy(() -> orderTable.changeNumberOfGuests(NumberOfGuests.from(10))).isInstanceOf(
-                IllegalArgumentException.class);
+                OrderTableAlreadyEmptyException.class);
     }
 
     @Test

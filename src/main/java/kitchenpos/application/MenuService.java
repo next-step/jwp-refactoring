@@ -1,5 +1,7 @@
 package kitchenpos.application;
 
+import static kitchenpos.Exception.NotFoundMenuGroupException.NOT_FOUND_MENU_GROUP_EXCEPTION;
+
 import java.util.stream.Collectors;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
@@ -60,7 +62,7 @@ public class MenuService {
 
     private void validateNotFoundMenuGroup(MenuRequest menuRequest) {
         if (!menuGroupService.existsById(menuRequest.getMenuGroupId())) {
-            throw new IllegalArgumentException();
+            throw NOT_FOUND_MENU_GROUP_EXCEPTION;
         }
     }
 }

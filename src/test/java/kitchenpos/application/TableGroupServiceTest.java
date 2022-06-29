@@ -10,6 +10,10 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
 import java.util.Optional;
+import kitchenpos.Exception.CannotCreateOrderTableException;
+import kitchenpos.Exception.OrderTableAlreadyEmptyException;
+import kitchenpos.Exception.TableGroupSizeException;
+import kitchenpos.Exception.UnCompletedOrderStatusException;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.domain.TableGroupRepository;
@@ -54,7 +58,7 @@ class TableGroupServiceTest {
                 () -> tableGroupService.create(
                         createTableGroupRequest(Arrays.asList(1L))
                 )
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(TableGroupSizeException.class);
     }
 
     @Test
@@ -66,7 +70,7 @@ class TableGroupServiceTest {
         // when, then
         assertThatThrownBy(
                 () -> tableGroupService.create(단체지정요청)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(CannotCreateOrderTableException.class);
     }
 
     @Test
@@ -79,7 +83,7 @@ class TableGroupServiceTest {
         // when, then
         assertThatThrownBy(
                 () -> tableGroupService.create(createTableGroupRequest(Arrays.asList(주문테이블1.getId(), 빈테이블.getId())))
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(OrderTableAlreadyEmptyException.class);
     }
 
     @Test
@@ -92,7 +96,7 @@ class TableGroupServiceTest {
         // when, then
         assertThatThrownBy(
                 () -> tableGroupService.create(단체지정요청)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(OrderTableAlreadyEmptyException.class);
     }
 
     @Test
@@ -122,7 +126,7 @@ class TableGroupServiceTest {
         // when, then
         assertThatThrownBy(
                 () -> tableGroupService.ungroup(단체지정.getId())
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(UnCompletedOrderStatusException.class);
     }
 
     @Test

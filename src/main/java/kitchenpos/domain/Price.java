@@ -1,5 +1,7 @@
 package kitchenpos.domain;
 
+import static kitchenpos.Exception.InvalidPriceException.INVALID_PRICE_EXCEPTION;
+
 import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.Column;
@@ -40,7 +42,7 @@ public class Price implements Comparable<Price> {
 
     private void validate(BigDecimal price) {
         if (price == null || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("가격은 0이상 이어야 합니다.");
+            throw INVALID_PRICE_EXCEPTION;
         }
     }
 

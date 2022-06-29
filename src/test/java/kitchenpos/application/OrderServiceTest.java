@@ -18,6 +18,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import kitchenpos.Exception.EmptyOrderLineItemsException;
+import kitchenpos.Exception.NotFoundMenuException;
+import kitchenpos.Exception.NotFoundOrderException;
+import kitchenpos.Exception.NotFoundOrderTableException;
+import kitchenpos.Exception.OrderStatusCompleteException;
+import kitchenpos.Exception.OrderTableAlreadyEmptyException;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItems;
@@ -63,18 +69,6 @@ class OrderServiceTest {
     }
 
     @Test
-    void 주문_생성_주문_항목_없음_예외() {
-        // given
-        given(orderTableService.findOrderTableById(주문테이블.getId())).willReturn(주문테이블);
-
-        // when, then
-        OrderRequest 주문항목없는주문 = createOrderRequest(주문테이블.getId(), null);
-        assertThatThrownBy(
-                () -> orderService.create(주문항목없는주문)
-        ).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
     void 주문_생성_없는_메뉴_예외() {
         // given
         given(orderTableService.findOrderTableById(주문테이블.getId())).willReturn(주문테이블);
@@ -84,19 +78,19 @@ class OrderServiceTest {
         OrderRequest 없는메뉴주문 = createOrderRequest(주문테이블.getId(), Arrays.asList(createOrderLineItemRequest(100L, 1)));
         assertThatThrownBy(
                 () -> orderService.create(없는메뉴주문)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(NotFoundMenuException.class);
     }
 
     @Test
     void 주문_생성_존재하지_않는_주문_테이블_예외() {
         // given
-        given(orderTableService.findOrderTableById(2L)).willThrow(IllegalArgumentException.class);
+        given(orderTableService.findOrderTableById(2L)).willThrow(NotFoundOrderTableException.class);
 
         // when, then
         OrderRequest 없는_테이블_주문 = createOrderRequest(2L, Arrays.asList(createOrderLineItemRequest(빅맥버거.getId(), 1)));
         assertThatThrownBy(
                 () -> orderService.create(없는_테이블_주문)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(NotFoundOrderTableException.class);
     }
 
     @Test
@@ -109,7 +103,7 @@ class OrderServiceTest {
         OrderRequest 주문 = createOrderRequest(주문테이블.getId(), Arrays.asList(createOrderLineItemRequest(빅맥버거.getId(), 1)));
         assertThatThrownBy(
                 () -> orderService.create(주문)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(OrderTableAlreadyEmptyException.class);
     }
 
     @Test
@@ -140,12 +134,12 @@ class OrderServiceTest {
     @Test
     void 주문_상태_변경_존재하지_않는_주문_예외() {
         // given
-        given(orderRepository.findById(주문.getId())).willThrow(IllegalArgumentException.class);
+        given(orderRepository.findById(주문.getId())).willThrow(NotFoundOrderException.class);
 
         // when, then
         assertThatThrownBy(
                 () -> orderService.changeOrderStatus(주문.getId(), createOrderStatusRequest(OrderStatus.COMPLETION))
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(NotFoundOrderException.class);
     }
 
     @Test
@@ -159,7 +153,7 @@ class OrderServiceTest {
         // when, then
         assertThatThrownBy(
                 () -> orderService.changeOrderStatus(완료주문.getId(), createOrderStatusRequest(OrderStatus.COMPLETION))
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(OrderStatusCompleteException.class);
     }
 
     @Test

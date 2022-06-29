@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import kitchenpos.Exception.OrderTableAlreadyEmptyException;
+import kitchenpos.Exception.OrderTableAlreadyTableGroupException;
 import org.springframework.transaction.annotation.Transactional;
 
 @Entity
@@ -58,13 +60,13 @@ public class OrderTable {
 
     private void validateTableGroup() {
         if (tableGroupId != null) {
-            throw new IllegalArgumentException("단체 지정인 테이블은 빈 테이블로 지정할 수 없습니다.");
+            throw new OrderTableAlreadyTableGroupException("단체 지정인 테이블은 빈 테이블로 지정할 수 없습니다.");
         }
     }
 
     private void validateEmpty() {
         if (isEmpty()) {
-            throw new IllegalArgumentException("빈 테이블인 경우에는 손님을 받을 수 없습니다.");
+            throw new OrderTableAlreadyEmptyException("빈 테이블인 경우에는 손님을 받을 수 없습니다.");
         }
     }
 

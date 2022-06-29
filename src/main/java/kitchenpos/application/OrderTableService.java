@@ -1,6 +1,7 @@
 package kitchenpos.application;
 
 import java.util.List;
+import kitchenpos.Exception.NotFoundOrderTableException;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ public class OrderTableService {
 
     public OrderTable findOrderTableById(Long id) {
         return orderTableRepository.findById(id)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(NotFoundOrderTableException::new);
     }
 
     public List<OrderTable> findAllOrderTablesByIdIn(List<Long> ids) {

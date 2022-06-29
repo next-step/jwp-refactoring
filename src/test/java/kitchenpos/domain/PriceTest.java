@@ -3,6 +3,7 @@ package kitchenpos.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import kitchenpos.Exception.InvalidPriceException;
 import org.junit.jupiter.api.Test;
 
 class PriceTest {
@@ -10,7 +11,7 @@ class PriceTest {
     void 음수_예외() {
         assertThatThrownBy(
                 () -> Price.from(-100)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(InvalidPriceException.class);
     }
 
     @Test

@@ -1,5 +1,7 @@
 package kitchenpos.domain;
 
+import static kitchenpos.Exception.InvalidQuantityException.INVALID_QUANTITY_EXCEPTION;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -26,7 +28,7 @@ public class Quantity {
 
     private void validate(long quantity) {
         if (quantity < 1) {
-            throw new IllegalArgumentException("메뉴 상품의 수량은 1 이상이어야 합니다.");
+            throw INVALID_QUANTITY_EXCEPTION;
         }
     }
 

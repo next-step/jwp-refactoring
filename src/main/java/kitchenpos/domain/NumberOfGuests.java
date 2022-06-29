@@ -1,8 +1,11 @@
 package kitchenpos.domain;
 
+import static kitchenpos.Exception.InvalidNumberOfGuestsException.INVALID_NUMBER_OF_GUESTS;
+
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import kitchenpos.Exception.InvalidNumberOfGuestsException;
 
 @Embeddable
 public class NumberOfGuests {
@@ -27,7 +30,7 @@ public class NumberOfGuests {
 
     private void validate(int numberOfGuests) {
         if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
+            throw INVALID_NUMBER_OF_GUESTS;
         }
     }
 

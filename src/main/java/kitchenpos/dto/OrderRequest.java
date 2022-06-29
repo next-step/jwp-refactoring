@@ -1,6 +1,7 @@
 package kitchenpos.dto;
 
 import java.util.List;
+import kitchenpos.Exception.EmptyOrderLineItemsException;
 
 public class OrderRequest {
     private Long orderTableId;
@@ -25,7 +26,7 @@ public class OrderRequest {
 
     private void validateNullOrderLineItem(List<OrderLineItemRequest> orderLineItems) {
         if (orderLineItems == null) {
-            throw new IllegalArgumentException("주문 항목 목록이 있어야 합니다.");
+            throw new EmptyOrderLineItemsException("주문 항목 목록이 있어야 합니다.");
         }
     }
 }

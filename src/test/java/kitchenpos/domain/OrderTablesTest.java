@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.Arrays;
 import java.util.List;
+import kitchenpos.Exception.OrderTableAlreadyEmptyException;
+import kitchenpos.Exception.TableGroupSizeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -25,7 +27,7 @@ class OrderTablesTest {
     void 테이블_개수_2개_미만_예외() {
         assertThatThrownBy(
                 () -> OrderTables.from(Arrays.asList(orderTable1))
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(TableGroupSizeException.class);
     }
 
     @Test
@@ -33,7 +35,7 @@ class OrderTablesTest {
         orderTable1.changeEmpty(true);
         assertThatThrownBy(
                 () -> OrderTables.from(orderTables)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(OrderTableAlreadyEmptyException.class);
     }
 
     @Test
@@ -41,7 +43,7 @@ class OrderTablesTest {
         orderTable1.groupByTableGroupId(1L);
         assertThatThrownBy(
                 () -> OrderTables.from(orderTables)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(OrderTableAlreadyEmptyException.class);
     }
 
     @Test

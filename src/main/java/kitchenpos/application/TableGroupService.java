@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
-import static kitchenpos.Exception.CannotUngroupException.CANNOT_UNGROUP_EXCEPTION;
-
+import kitchenpos.Exception.CannotCreateOrderTableException;
+import kitchenpos.Exception.UnCompletedOrderStatusException;
 import kitchenpos.Exception.NotFoundTableGroupException;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTables;
@@ -60,13 +60,13 @@ public class TableGroupService {
                 .collect(Collectors.toList());
 
         if (orderService.existsByOrderTableIdUnCompletedOrderStatus(orderTableIds)) {
-            throw CANNOT_UNGROUP_EXCEPTION;
+            throw new UnCompletedOrderStatusException("단체 내 모든 테이블의 주문 상태가 주문 또는 식사 상태이면 단체 지정을 해제할 수 없습니다.");
         }
     }
 
     private void validateNotFoundOrderTables(List<OrderTable> orderTables, List<Long> orderTableIds) {
         if (orderTables.size() != orderTableIds.size()) {
-            throw new IllegalArgumentException("모든 테이블은 존재하는 테이블이어야 합니다.");
+            throw new CannotCreateOrderTableException("모든 테이블은 존재하는 테이블이어야 합니다.");
         }
     }
 }

@@ -13,6 +13,10 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import kitchenpos.Exception.InvalidMenuPriceException;
+import kitchenpos.Exception.InvalidPriceException;
+import kitchenpos.Exception.NotFoundMenuGroupException;
+import kitchenpos.Exception.NotFoundProductException;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuRepository;
@@ -72,7 +76,7 @@ class MenuServiceTest {
         // then
         assertThatThrownBy(
                 () -> menuService.create(가격없는메뉴)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(InvalidPriceException.class);
     }
 
     @Test
@@ -87,7 +91,7 @@ class MenuServiceTest {
         // then
         assertThatThrownBy(
                 () -> menuService.create(가격음수메뉴)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(InvalidPriceException.class);
     }
 
     @Test
@@ -99,7 +103,7 @@ class MenuServiceTest {
         // then
         assertThatThrownBy(
                 () -> menuService.create(메뉴그룹없음)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(NotFoundMenuGroupException.class);
     }
 
     @Test
@@ -107,7 +111,7 @@ class MenuServiceTest {
         // given
         given(menuGroupService.existsById(빅맥세트.getId())).willReturn(true);
         given(productService.findProductById(토마토.getId())).willReturn(토마토);
-        given(productService.findProductById(양상추.getId())).willThrow(IllegalArgumentException.class);
+        given(productService.findProductById(양상추.getId())).willThrow(NotFoundProductException.class);
 
         // when
         MenuRequest 상품없음 = createMenuRequest("상품없음", BigDecimal.valueOf(1000), 빅맥세트.getId(),
@@ -115,7 +119,7 @@ class MenuServiceTest {
 
         assertThatThrownBy(
                 () -> menuService.create(상품없음)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(NotFoundProductException.class);
     }
 
     @Test
@@ -132,7 +136,7 @@ class MenuServiceTest {
         // then
         assertThatThrownBy(
                 () -> menuService.create(메뉴가격큼)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(InvalidMenuPriceException.class);
     }
 
     @Test

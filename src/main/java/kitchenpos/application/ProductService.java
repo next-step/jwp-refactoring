@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.Exception.NotFoundProductException;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductRepository;
 import kitchenpos.dto.ProductRequest;
@@ -29,6 +30,6 @@ public class ProductService {
 
     public Product findProductById(Long id) {
         return productRepository.findById(id)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(NotFoundProductException::new);
     }
 }

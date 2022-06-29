@@ -1,5 +1,7 @@
 package kitchenpos.domain;
 
+import static kitchenpos.Exception.EmptyOrderLineItemsException.EMPTY_ORDER_LINE_ITEMS_EXCEPTION;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -36,7 +38,7 @@ public class OrderLineItems {
 
     private void validateOrderLineItems(List<OrderLineItem> orderLineItems) {
         if (orderLineItems == null || orderLineItems.isEmpty()) {
-            throw new IllegalArgumentException("주문 항목 목록이 있어야 합니다.");
+            throw EMPTY_ORDER_LINE_ITEMS_EXCEPTION;
         }
     }
 }

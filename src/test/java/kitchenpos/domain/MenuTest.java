@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
+import kitchenpos.Exception.InvalidMenuPriceException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +25,7 @@ class MenuTest {
         // when, then
         assertThatThrownBy(
                 () -> menu.addMenuProducts(Arrays.asList(토마토, 양상추))
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(InvalidMenuPriceException.class);
     }
 
     @Test

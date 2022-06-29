@@ -1,5 +1,7 @@
 package kitchenpos.domain;
 
+import static kitchenpos.Exception.ProductPriceEmptyException.PRODUCT_PRICE_EMPTY_EXCEPTION;
+
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -38,7 +40,7 @@ public class Product {
 
     private void validatePrice(Price price) {
         if (price == null) {
-            throw new IllegalArgumentException("상품의 가격은 필수입니다.");
+            throw PRODUCT_PRICE_EMPTY_EXCEPTION;
         }
     }
 

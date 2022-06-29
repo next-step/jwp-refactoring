@@ -1,11 +1,15 @@
 package kitchenpos.domain;
 
+import static kitchenpos.Exception.TableGroupSizeException.TABLE_GROUP_SIZE_EXCEPTION;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import kitchenpos.Exception.OrderTableAlreadyEmptyException;
+import kitchenpos.Exception.OrderTableAlreadyTableGroupException;
 import org.springframework.util.CollectionUtils;
 
 @Embeddable
@@ -45,14 +49,14 @@ public class OrderTables {
 
     private void validateSize(List<OrderTable> orderTables) {
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException("단체 지정 할 테이블 목록의 개수는 2개 이상이어야 합니다.");
+            throw TABLE_GROUP_SIZE_EXCEPTION;
         }
     }
 
     private void validateIsEmpty(List<OrderTable> orderTables) {
         for (final OrderTable orderTable : orderTables) {
             if (!orderTable.isEmpty()) {
-                throw new IllegalArgumentException("단체 지정 할 모든 테이블은 빈 테이블이 아니어야 한다");
+                throw new OrderTableAlreadyEmptyException("단체 지정 할 모든 테이블은 빈 테이블이 아니어야 한다");
             }
         }
     }
@@ -60,7 +64,7 @@ public class OrderTables {
     private void validateNonNullTableGroup(List<OrderTable> orderTables) {
         for (final OrderTable orderTable : orderTables) {
             if (orderTable.isGroupedByTableGroup()) {
-                throw new IllegalArgumentException("단체 지정 할 모든 테이블은 단체 지정 되지 않은 테이블이어야 합니다.");
+                throw new OrderTableAlreadyTableGroupException("단체 지정 할 모든 테이블은 단체 지정 되지 않은 테이블이어야 합니다.");
             }
         }
     }

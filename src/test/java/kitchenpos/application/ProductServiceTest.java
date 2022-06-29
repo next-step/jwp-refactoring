@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import kitchenpos.Exception.InvalidPriceException;
 import kitchenpos.domain.Product;
 
 import static kitchenpos.fixture.ProductFactory.createProduct;
@@ -62,14 +63,14 @@ class ProductServiceTest {
     void 상품_생성_가격_없는_경우_예외() {
         assertThatThrownBy(
                 () -> productService.create(createProductRequest("공기", null))
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(InvalidPriceException.class);
     }
 
     @Test
     void 상품_생성_가격_0_미만_예외() {
         assertThatThrownBy(
                 () -> productService.create(createProductRequest("공기", BigDecimal.valueOf(-1)))
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(InvalidPriceException.class);
     }
 
     @Test
