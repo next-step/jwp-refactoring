@@ -22,13 +22,6 @@ class OrderTablesTest {
     }
 
     @Test
-    void 존재하지_않는_테이블_예외() {
-        assertThatThrownBy(
-                () -> OrderTables.of(orderTables, Arrays.asList(1L))
-        ).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
     void 테이블_개수_2개_미만_예외() {
         assertThatThrownBy(
                 () -> OrderTables.from(Arrays.asList(orderTable1))
@@ -74,7 +67,7 @@ class OrderTablesTest {
         orderTable2.changeEmpty(true);
         OrderTables given = OrderTables.from(orderTables);
         given.group(1L);
-        
+
         // when
         given.unGroup();
 

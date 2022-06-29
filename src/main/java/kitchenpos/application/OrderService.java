@@ -78,7 +78,19 @@ public class OrderService {
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
 
-        savedOrder.addOrderLineItems(OrderLineItems.of(orderLineItems, menuService.countByIdIn(menuIds)));
+        validateNotFoundMenu(orderLineItems);
+        savedOrder.addOrderLineItems(OrderLineItems.from(orderLineItems));
+    }
+
+    private void validateNotFoundMenu(List<OrderLineItem> orderLineItems) {
+
+        final List<Long> menuIds = orderLineItems.stream()
+                .map(OrderLineItem::getMenuId)
+                .collect(Collectors.toList());
+
+        if (orderLineItems.size() != menuService.countByIdIn(menuIds)) {
+            throw new IllegalArgumentException("존재하지 않는 메뉴가 포함되어 있습니다.");
+        }
     }
 
 

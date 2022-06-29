@@ -34,7 +34,9 @@ public class TableGroupService {
         TableGroup tableGroup = new TableGroup();
         tableGroupRepository.save(tableGroup);
 
-        tableGroup.groupOrderTables(OrderTables.of(savedOrderTables, orderTableIds));
+        validateDifferent(savedOrderTables, orderTableIds);
+
+        tableGroup.groupOrderTables(OrderTables.from(savedOrderTables));
 
         return TableGroupResponse.from(tableGroupRepository.save(tableGroup));
     }
@@ -55,6 +57,12 @@ public class TableGroupService {
 
         if (orderService.existsByOrderTableIdUnCompletedOrderStatus(orderTableIds)) {
             throw new IllegalArgumentException();
+        }
+    }
+
+    private void validateDifferent(List<OrderTable> orderTables, List<Long> orderTableIds) {
+        if (orderTables.size() != orderTableIds.size()) {
+            throw new IllegalArgumentException("모든 테이블은 존재하는 테이블이어야 합니다.");
         }
     }
 }

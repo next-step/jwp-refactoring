@@ -24,11 +24,6 @@ public class OrderLineItems {
         return new OrderLineItems(orderLineItems);
     }
 
-    public static OrderLineItems of(List<OrderLineItem> orderLineItems, int menuSize) {
-        validateNotFoundMenu(orderLineItems, menuSize);
-        return new OrderLineItems(orderLineItems);
-    }
-
     public void connectToOrder(Order order) {
         for (OrderLineItem orderLineItem : orderLineItems) {
             orderLineItem.connectTo(order);
@@ -42,12 +37,6 @@ public class OrderLineItems {
     private void validateOrderLineItems(List<OrderLineItem> orderLineItems) {
         if (orderLineItems == null || orderLineItems.isEmpty()) {
             throw new IllegalArgumentException("주문 항목 목록이 있어야 합니다.");
-        }
-    }
-
-    private static void validateNotFoundMenu(List<OrderLineItem> orderLineItems, int menuSize) {
-        if (orderLineItems.size() != menuSize) {
-            throw new IllegalArgumentException("존재하지 않는 메뉴가 포함되어 있습니다.");
         }
     }
 }

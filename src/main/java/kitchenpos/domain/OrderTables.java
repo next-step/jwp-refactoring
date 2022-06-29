@@ -27,11 +27,6 @@ public class OrderTables {
         return new OrderTables(orderTables);
     }
 
-    public static OrderTables of(List<OrderTable> orderTables, List<Long> orderTableIds) {
-        validateDifferent(orderTables, orderTableIds);
-        return new OrderTables(orderTables);
-    }
-
     public void group(Long tableGroupId) {
         for (final OrderTable orderTable : orderTables) {
             orderTable.groupByTableGroupId(tableGroupId);
@@ -67,12 +62,6 @@ public class OrderTables {
             if (orderTable.isGroupedByTableGroup()) {
                 throw new IllegalArgumentException("단체 지정 할 모든 테이블은 단체 지정 되지 않은 테이블이어야 합니다.");
             }
-        }
-    }
-
-    private static void validateDifferent(List<OrderTable> orderTables, List<Long> orderTableIds) {
-        if (orderTables.size() != orderTableIds.size()) {
-            throw new IllegalArgumentException("모든 테이블은 존재하는 테이블이어야 합니다.");
         }
     }
 }

@@ -10,19 +10,6 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class OrderLineItemsTest {
-
-    @Test
-    void 존재하지_않는_메뉴_예외() {
-
-        // given
-        List<OrderLineItem> orderLineItems = Arrays.asList(new OrderLineItem());
-
-        // when, then
-        assertThatThrownBy(
-                () -> OrderLineItems.of(orderLineItems, 0)
-        ).isInstanceOf(IllegalArgumentException.class);
-    }
-
     @Test
     void 주문_연결() {
         // given
