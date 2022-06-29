@@ -21,6 +21,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static kitchenpos.application.ServiceTestFactory.메뉴fixture설정;
+import static kitchenpos.application.ServiceTestFactory.메뉴그룹fixture설정;
+import static kitchenpos.application.ServiceTestFactory.메뉴상품fixture설정;
+import static kitchenpos.application.ServiceTestFactory.상품fixture설정;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -127,39 +131,6 @@ class MenuServiceTest {
         );
     }
 
-
-    private Menu 메뉴fixture설정(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        Menu menu = new Menu();
-        menu.setId(id);
-        menu.setName("오늘의메뉴");
-        menu.setPrice(price);
-        menu.setMenuGroupId(menuGroupId);
-        menu.setMenuProducts(menuProducts);
-        return menu;
-    }
-
-    private MenuProduct 메뉴상품fixture설정(Long seq, Long productId, Long quantity) {
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setSeq(seq);
-        menuProduct.setProductId(productId);
-        menuProduct.setQuantity(quantity);
-        return menuProduct;
-    }
-
-    private MenuGroup 메뉴그룹fixture설정(Long id, String name) {
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setId(id);
-        menuGroup.setName(name);
-        return menuGroup;
-    }
-
-    private Product 상품fixture설정(Long id, String name, BigDecimal price) {
-        Product product = new Product();
-        product.setId(id);
-        product.setName(name);
-        product.setPrice(price);
-        return product;
-    }
 
 
 }
