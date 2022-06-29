@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.menu.domain;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -53,7 +53,7 @@ public class MenuProduct {
         this.quantity = new Quantity(quantity);
     }
 
-    Price calculateAmount() {
+    public Price calculateAmount() {
         return product.getPrice().multiply(quantity);
     }
 

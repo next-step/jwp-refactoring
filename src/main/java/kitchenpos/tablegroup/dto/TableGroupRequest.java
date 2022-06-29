@@ -2,7 +2,7 @@ package kitchenpos.tablegroup.dto;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.dto.IdOfOrderTableRequest;
+import kitchenpos.menu.dto.IdOfOrderTableRequest;
 
 public class TableGroupRequest {
 
