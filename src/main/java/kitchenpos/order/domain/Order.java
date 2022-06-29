@@ -35,16 +35,17 @@ public class Order {
     protected Order() {
     }
 
-    public Order(LocalDateTime orderedTime, OrderTable orderTable) {
-        this(null, OrderStatus.COOKING, orderedTime, orderTable);
+    public Order(LocalDateTime orderedTime, OrderTable orderTable, OrderLineItems orderLineItems) {
+        this(null, OrderStatus.COOKING, orderedTime, orderTable, orderLineItems);
     }
 
-    public Order(Long id, OrderStatus orderStatus, LocalDateTime orderedTime, OrderTable orderTable) {
+    public Order(Long id, OrderStatus orderStatus, LocalDateTime orderedTime, OrderTable orderTable, OrderLineItems orderLineItems) {
         validate(orderTable);
         this.id = id;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderTable = orderTable;
+        this.orderLineItems = orderLineItems;
     }
 
     public void addOrderLineItem(OrderLineItem orderLineItem) {

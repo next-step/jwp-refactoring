@@ -1,6 +1,7 @@
 package kitchenpos.table.application;
 
 import static kitchenpos.helper.OrderFixtures.주문_만들기;
+import static kitchenpos.helper.OrderLineItemFixtures.주문_항목_만들기;
 import static kitchenpos.helper.TableFixtures.테이블_만들기;
 import static kitchenpos.helper.TableFixtures.테이블_요청_만들기;
 import static kitchenpos.helper.TableGroupFixtures.테이블_그룹_요청_만들기;
@@ -11,7 +12,9 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import kitchenpos.menu.domain.repository.MenuRepository;
 import kitchenpos.order.consts.OrderStatus;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.repository.OrderTableRepository;
@@ -30,6 +33,8 @@ import org.springframework.context.annotation.Import;
 @Import(TableGroupService.class)
 class TableGroupServiceTest {
 
+    @Autowired
+    private MenuRepository menuRepository;
     @Autowired
     private OrderRepository orderRepository;
     @Autowired
@@ -140,9 +145,10 @@ class TableGroupServiceTest {
         OrderTableRequest emptyTable2 = 테이블_요청_만들기(8L);
         TableGroupResponse request = tableGroupService.create(테이블_그룹_요청_만들기(Arrays.asList(emptyTable1, emptyTable2)), LocalDateTime.now());
         OrderTable orderTable = orderTableRepository.findById(emptyTable1.getId()).orElseThrow(IllegalArgumentException::new);
+        OrderLineItems orderLineItems = new OrderLineItems(Collections.singletonList(주문_항목_만들기(1L, 3)));
 
-        orderRepository.save(주문_만들기(request.getId(), OrderStatus.MEAL, orderTable));
-        orderRepository.save(주문_만들기(request.getId(), OrderStatus.COOKING, orderTable));
+        orderRepository.save(주문_만들기(request.getId(), OrderStatus.MEAL, orderTable, orderLineItems));
+        orderRepository.save(주문_만들기(request.getId(), OrderStatus.COOKING, orderTable, orderLineItems));
 
         //when then
         assertThatIllegalArgumentException()

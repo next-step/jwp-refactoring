@@ -5,7 +5,7 @@ import static kitchenpos.helper.OrderFixtures.주문_요청_만들기;
 import static kitchenpos.helper.OrderLineItemFixtures.주문_항목_요청_만들기;
 import static kitchenpos.helper.TableFixtures.테이블_만들기;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 import java.time.LocalDateTime;
@@ -66,10 +66,11 @@ class OrderServiceUnitTest {
         OrderRequest request = 주문_요청_만들기(orderTable.getId(), Arrays.asList(orderLineItem1, orderLineItem2));
 
         given(orderTableRepository.findById(request.getOrderTableId())).willReturn(Optional.of(orderTable));
-        given(menuRepository.findById(anyLong())).willThrow(IllegalArgumentException.class);
+        given(menuRepository.findAllById(any())).willReturn(Arrays.asList(menu));
 
         //when then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(request, LocalDateTime.now()));
+        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(request, LocalDateTime.now()))
+                .withMessageContaining("등록 되어있지 않은 메뉴가 있습니다");
     }
 
 

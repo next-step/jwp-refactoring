@@ -17,7 +17,7 @@ public class OrderLineItemResponse {
     public static OrderLineItemResponse of(Order order, OrderLineItem orderLineItem) {
         return new OrderLineItemResponse(
                 order.getId(),
-                orderLineItem.getMenu().getId(),
+                orderLineItem.getMenuId(),
                 orderLineItem.getQuantity().getQuantity());
     }
 

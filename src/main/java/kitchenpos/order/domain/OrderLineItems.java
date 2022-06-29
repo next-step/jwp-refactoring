@@ -17,6 +17,11 @@ public class OrderLineItems {
     public OrderLineItems() {
     }
 
+    public OrderLineItems(List<OrderLineItem> orderLineItems) {
+        validate(orderLineItems);
+        this.orderLineItems = orderLineItems;
+    }
+
     public void add(OrderLineItem orderLineItem) {
         orderLineItems.add(orderLineItem);
     }
@@ -32,4 +37,11 @@ public class OrderLineItems {
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
     }
+
+    private void validate(List<OrderLineItem> orderLineItems) {
+        if (orderLineItems.isEmpty()) {
+            throw new IllegalArgumentException("[ERROR] 주문 항목이 비어있습니다.");
+        }
+    }
+
 }

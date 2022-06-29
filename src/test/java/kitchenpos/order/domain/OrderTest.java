@@ -3,6 +3,7 @@ package kitchenpos.order.domain;
 import static kitchenpos.helper.MenuFixtures.메뉴_만들기;
 import static kitchenpos.helper.OrderFixtures.주문_만들기;
 import static kitchenpos.helper.OrderLineItemFixtures.주문_항목_만들기;
+import static kitchenpos.helper.OrderLineItemFixtures.주문_항목들_만들기;
 import static kitchenpos.helper.TableFixtures.빈_테이블_만들기;
 import static kitchenpos.helper.TableFixtures.주문_테이블_만들기;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,7 +29,7 @@ class OrderTest {
 
         //when then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> new Order(LocalDateTime.now(), emptyTable))
+                .isThrownBy(() -> new Order(LocalDateTime.now(), emptyTable, 주문_항목들_만들기()))
                 .withMessageContaining("빈테이블인 경우 주문을 등록 할 수 없습니다.");
     }
 
@@ -37,7 +38,7 @@ class OrderTest {
     void order_not_item() {
         //given
         OrderTable orderTable = 주문_테이블_만들기();
-        Order order = new Order(LocalDateTime.now(), orderTable);
+        Order order = new Order(LocalDateTime.now(), orderTable, 주문_항목들_만들기());
 
         //when then
         assertThatIllegalArgumentException()
@@ -53,7 +54,7 @@ class OrderTest {
     @Test
     void changeOrderStatus() {
         //given
-        Order order = 주문_만들기(OrderStatus.COOKING, 주문_테이블_만들기());
+        Order order = 주문_만들기(OrderStatus.COOKING, 주문_테이블_만들기(), 주문_항목들_만들기());
 
         //when
         order.changeOrderStatus(OrderStatus.MEAL);
@@ -66,7 +67,7 @@ class OrderTest {
     @Test
     void changeOrderStatus_completion() {
         //given
-        Order order = 주문_만들기(1L, OrderStatus.COMPLETION, 주문_테이블_만들기());
+        Order order = 주문_만들기(1L, OrderStatus.COMPLETION, 주문_테이블_만들기(), 주문_항목들_만들기());
 
         //when
         assertThatIllegalArgumentException()
