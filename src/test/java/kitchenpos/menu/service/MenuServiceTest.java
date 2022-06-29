@@ -9,7 +9,6 @@ import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
-import kitchenpos.product.application.ProductServiceTest;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -59,7 +58,7 @@ public class MenuServiceTest {
     @Test
     public void create() {
         when(menuGroupRepository.existsById(1L)).thenReturn(true);
-        when(productRepository.findById(any())).thenReturn(Optional.of(createProduct01()));
+        when(productRepository.findById(any())).thenReturn(Optional.of(new Product(PRODUCT_NAME01, PRODUCT_PRICE01)));
         when(menuRepository.save(any())).thenReturn(createMenu01());
 
         // when
@@ -114,7 +113,7 @@ public class MenuServiceTest {
     @Test
     public void create_expensive_than_menu_products() {
         when(menuGroupRepository.existsById(1L)).thenReturn(true);
-        when(productRepository.findById(any())).thenReturn(Optional.of(createProduct01()));
+        when(productRepository.findById(any())).thenReturn(Optional.of(createProduct1()));
 
         // when, then
         assertThatThrownBy(() -> {
@@ -136,13 +135,13 @@ public class MenuServiceTest {
 
     public static Menu createMenu01() {
         MenuGroup menuGroup = createMenuGroup01();
-        Product product = createProduct01();
+        Product product = createProduct1();
         MenuProduct menuProduct = new MenuProduct(product, 1);
         return new Menu(MENU_NAME01, MENU_PRICE01, menuGroup, Collections.singletonList(menuProduct));
     }
 
     public static MenuProduct createMenuProduct01() {
-        Product product = createProduct01();
+        Product product = createProduct1();
         Menu menu = MenuServiceTest.createMenu01();
         return new MenuProduct(1L, menu, product, 1);
     }
