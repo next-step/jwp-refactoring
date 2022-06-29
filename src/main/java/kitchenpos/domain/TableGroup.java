@@ -12,6 +12,7 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class)
 public class TableGroup {
     private static final String ORDER_TABLE_LEAST_2 = "주문 테이블은 최소 2개 이상이어야 합니다";
+    private static final int MINIMUM_GROUP_SIZE = 2;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,7 +26,7 @@ public class TableGroup {
     }
 
     public TableGroup(List<OrderTable> orderTables) {
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
+        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < MINIMUM_GROUP_SIZE) {
             throw new IllegalArgumentException(ORDER_TABLE_LEAST_2);
         }
         orderTables.forEach(orderTable -> orderTable.groupBy(this));
