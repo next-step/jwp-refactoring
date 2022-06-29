@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.order.application;
 
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.application.OrderValidator;

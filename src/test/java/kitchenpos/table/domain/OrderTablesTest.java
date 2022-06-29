@@ -1,12 +1,11 @@
-package kitchenpos.domain.orderTable;
+package kitchenpos.table.domain;
 
-import kitchenpos.table.domain.OrderTables;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
-import static kitchenpos.application.TableServiceTest.주문_테이블_데이터_생성;
+import static kitchenpos.table.application.TableServiceTest.주문_테이블_데이터_생성;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class OrderTablesTest {

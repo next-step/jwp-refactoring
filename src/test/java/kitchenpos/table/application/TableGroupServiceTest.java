@@ -1,7 +1,5 @@
-package kitchenpos.application;
+package kitchenpos.table.application;
 
-import kitchenpos.table.application.TableGroupService;
-import kitchenpos.table.application.TableValidator;
 import kitchenpos.table.domain.*;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
@@ -17,7 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static kitchenpos.application.TableServiceTest.주문_테이블_데이터_생성;
+import static kitchenpos.table.application.TableServiceTest.주문_테이블_데이터_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
