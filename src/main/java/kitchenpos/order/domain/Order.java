@@ -1,6 +1,7 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.order.dto.OrderLineItemRequest;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -15,27 +16,28 @@ public class Order {
     private Long orderTableId;
     @Enumerated(value = EnumType.STRING)
     private OrderStatus orderStatus;
+    @CreatedDate
     private LocalDateTime orderedTime;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
-    private List<OrderLineItem> orderLineItems = new ArrayList<>();
+    @Embedded
+    private OrderLineItems orderLineItems = new OrderLineItems();
 
     public Order() {
     }
 
     public Order(Long orderTableId) {
-        this(null, orderTableId, null, null, new ArrayList<>());
+        this(null, orderTableId, null, null, new OrderLineItems());
     }
 
     public Order(Long id, Long orderTableId, OrderStatus orderStatus) {
-        this(id, orderTableId, orderStatus, null, new ArrayList<>());
+        this(id, orderTableId, orderStatus, null, new OrderLineItems());
     }
 
     public Order(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime) {
-        this(id, orderTableId, orderStatus, orderedTime, new ArrayList<>());
+        this(id, orderTableId, orderStatus, orderedTime, new OrderLineItems());
     }
 
-    public Order(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+    public Order(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, OrderLineItems orderLineItems) {
         this.id = id;
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
@@ -66,17 +68,13 @@ public class Order {
         return orderedTime;
     }
 
-    public List<OrderLineItem> getOrderLineItems() {
+    public OrderLineItems getOrderLineItems() {
         return orderLineItems;
     }
 
     public void addOrderLineItems(List<OrderLineItemRequest> orderLineItems) {
         orderLineItems.forEach(orderLineItemResponse ->
-                addOrderLineItem(orderLineItemResponse.toOrderLineItem(this)));
-    }
-
-    private void addOrderLineItem(OrderLineItem orderLineItem) {
-        this.orderLineItems.add(orderLineItem);
+                this.orderLineItems.add(orderLineItemResponse.toOrderLineItem(this)));
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
@@ -88,9 +86,5 @@ public class Order {
 
     private boolean isOrderStatusCompletion() {
         return this.orderStatus == OrderStatus.COMPLETION;
-    }
-
-    public void changeOrderedTimeToCurrentTime() {
-        this.orderedTime = LocalDateTime.now();
     }
 }

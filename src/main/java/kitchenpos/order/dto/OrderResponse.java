@@ -28,7 +28,7 @@ public class OrderResponse {
                 order.getOrderTableId(),
                 order.getOrderStatusName(),
                 order.getOrderedTime(),
-                toOrderLineItemResponses(order.getOrderLineItems()));
+                toOrderLineItemResponses(order.getOrderLineItems().values()));
     }
 
     public static List<OrderLineItemResponse> toOrderLineItemResponses(List<OrderLineItem> orderLineItems) {

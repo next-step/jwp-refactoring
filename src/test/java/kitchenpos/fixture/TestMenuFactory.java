@@ -1,8 +1,6 @@
 package kitchenpos.fixture;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -31,6 +29,6 @@ public class TestMenuFactory {
     }
 
     public static Menu create(Long id, int price, Long menuGroupId, String name, List<MenuProduct> menuProducts) {
-        return new Menu(id, name, BigDecimal.valueOf(price), menuGroupId, menuProducts);
+        return new Menu(id, new Name(name), new Price(price), menuGroupId, new MenuProducts(menuProducts));
     }
 }

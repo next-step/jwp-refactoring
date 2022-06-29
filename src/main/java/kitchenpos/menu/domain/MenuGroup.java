@@ -1,24 +1,22 @@
 package kitchenpos.menu.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class MenuGroup {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+    @Embedded
+    private Name name;
 
     protected MenuGroup() {
     }
 
     public MenuGroup(String name) {
-        this(null, name);
+        this(null, new Name(name));
     }
 
-    public MenuGroup(Long id, String name) {
+    public MenuGroup(Long id, Name name) {
         this.id = id;
         this.name = name;
     }
@@ -27,7 +25,7 @@ public class MenuGroup {
         return id;
     }
 
-    public String getName() {
+    public Name getName() {
         return name;
     }
 }

@@ -5,7 +5,7 @@ import kitchenpos.menu.dto.MenuGroupRequest;
 
 public class TestMenuGroupRequestFactory {
     public static MenuGroupRequest create(MenuGroup menuGroup) {
-        return new MenuGroupRequest(menuGroup.getName());
+        return new MenuGroupRequest(menuGroup.getName().toString());
     }
 
     public static MenuGroupRequest create(String name) {

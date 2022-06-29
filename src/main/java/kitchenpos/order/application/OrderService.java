@@ -39,7 +39,6 @@ public class OrderService {
 
         Order order = request.toOrder();
         order.changeOrderStatus(OrderStatus.COOKING);
-        order.changeOrderedTimeToCurrentTime();
         final Order persistOrder = orderRepository.save(order);
         orderRepository.flush();
         return OrderResponse.of(persistOrder);

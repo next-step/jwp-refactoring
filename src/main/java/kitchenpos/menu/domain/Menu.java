@@ -1,12 +1,14 @@
 package kitchenpos.menu.domain;
 
 import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.product.domain.Product;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static javax.persistence.CascadeType.*;
 
@@ -16,25 +18,26 @@ public class Menu {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    private String name;
-    private BigDecimal price;
+    @Embedded
+    private Name name;
+    @Embedded
+    private Price price;
     private Long menuGroupId;
-
-    @OneToMany(mappedBy = "menu", cascade = ALL)
-    private List<MenuProduct> menuProducts = new ArrayList<>();
+    @Embedded
+    private MenuProducts menuProducts = new MenuProducts();
 
     public Menu() {
     }
 
     public Menu(String name, BigDecimal price, Long menuGroupId) {
-        this(null, name, price, menuGroupId, new ArrayList<>());
+        this(null, new Name(name), new Price(price), menuGroupId, new MenuProducts());
     }
 
-    public Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        this(null, name, price, menuGroupId, menuProducts);
+    public Menu(String name, Price price, Long menuGroupId, MenuProducts menuProducts) {
+        this(null, new Name(name), price, menuGroupId, menuProducts);
     }
 
-    public Menu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    public Menu(Long id, Name name, Price price, Long menuGroupId, MenuProducts menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -51,11 +54,11 @@ public class Menu {
         return id;
     }
 
-    public String getName() {
+    public Name getName() {
         return name;
     }
 
-    public BigDecimal getPrice() {
+    public Price getPrice() {
         return price;
     }
 
@@ -63,14 +66,35 @@ public class Menu {
         return menuGroupId;
     }
 
-    public List<MenuProduct> getMenuProducts() {
+    public MenuProducts getMenuProducts() {
         return menuProducts;
     }
 
     public void addMenuProducts(List<MenuProductRequest> menuProductRequests) {
+        if (menuProductRequests == null) {
+            return;
+        }
         menuProductRequests.forEach(menuProductRequest ->
                     this.addMenuProduct(menuProductRequest.toMenuProduct(this)));
+    }
 
+    public List<Long> getProductIds() {
+        return menuProducts.getProductIds();
+    }
+
+    public void validate(List<Product> products) {
+        Price sum = sumProductsPrice(products);
+        if (price.compareTo(sum) > 0) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private Price sumProductsPrice(List<Product> products) {
+        Price sum = new Price();
+        for (final Product product : products) {
+            sum = sum.plus(product.getPrice().multiply(menuProducts.getMenuProductQuantity(product.getId())));
+        }
+        return sum;
     }
 
     @Override

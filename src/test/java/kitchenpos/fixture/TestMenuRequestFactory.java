@@ -10,12 +10,14 @@ import java.util.stream.Collectors;
 
 public class TestMenuRequestFactory {
     public static MenuRequest toMenuRequest(Menu menu) {
-        return new MenuRequest(menu.getName(),
-                menu.getPrice(),
+        return new MenuRequest(
+                menu.getName().toString(),
+                menu.getPrice().value(),
                 menu.getMenuGroupId(),
                 menu.getMenuProducts()
+                        .values()
                         .stream()
-                        .map(m -> new MenuProductRequest(m.getProductId(), m.getQuantity()))
+                        .map(m -> new MenuProductRequest(m.getProductId(), m.getQuantity().value()))
                         .collect(Collectors.toList()));
     }
 

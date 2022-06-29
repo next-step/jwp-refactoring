@@ -13,22 +13,21 @@ public class MenuProduct {
     @Id @GeneratedValue(strategy = IDENTITY)
     @Column(name = "seq")
     private Long seq;
-
     @ManyToOne(cascade = PERSIST, fetch = LAZY)
     @JoinColumn(name = "menu_id")
     private Menu menu;
-
     private Long productId;
-    private long quantity;
+    @Embedded
+    private Quantity quantity;
 
     public MenuProduct() {
     }
 
     public MenuProduct(Menu menu, Long product, long quantity) {
-        this(null, menu, product, quantity);
+        this(null, menu, product, new Quantity(quantity));
     }
 
-    public MenuProduct(Long seq, Menu menu, Long productId, long quantity) {
+    public MenuProduct(Long seq, Menu menu, Long productId, Quantity quantity) {
         this.seq = seq;
         this.menu = menu;
         this.productId = productId;
@@ -48,25 +47,18 @@ public class MenuProduct {
     }
 
     public void setMenu(final Menu menu) {
-        if (this.menu != menu) {
-            this.menu = menu;
+        if (this.menu == menu) {
+            return;
         }
+        this.menu = menu;
     }
 
     public Long getProductId() {
         return productId;
     }
 
-    public void setProductId(Long productId) {
-        this.productId = productId;
-    }
-
-    public long getQuantity() {
+    public Quantity getQuantity() {
         return quantity;
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
     }
 
     @Override

@@ -4,11 +4,7 @@ import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import static javax.persistence.CascadeType.ALL;
 
 @Entity
 public class TableGroup {
@@ -16,15 +12,14 @@ public class TableGroup {
     private Long id;
     @CreatedDate
     private LocalDateTime createdDate;
-
-    @OneToMany(mappedBy = "tableGroup", fetch = FetchType.LAZY, cascade = ALL)
-    private List<OrderTable> orderTables;
+    @Embedded
+    private OrderTables orderTables;
 
     public TableGroup() {
-        this(null, new ArrayList<>());
+        this(null, new OrderTables());
     }
 
-    public TableGroup(Long id, List<OrderTable> orderTables) {
+    public TableGroup(Long id, OrderTables orderTables) {
         this.id = id;
         this.orderTables = orderTables;
     }
@@ -37,26 +32,23 @@ public class TableGroup {
         return createdDate;
     }
 
-    public List<OrderTable> getOrderTables() {
+    public OrderTables getOrderTables() {
         return orderTables;
     }
 
     public void changeOrderTables(List<OrderTable> orderTables, boolean empty) {
-        orderTables.forEach(savedOrderTable -> {
-            savedOrderTable.changeTableGroupIdAndEmpty(this);
-            savedOrderTable.changeEmpty(empty);
-        });
-        this.orderTables = orderTables;
+        OrderTables newOrderTables = new OrderTables(orderTables);
+        newOrderTables.addTableGroupAndEmpties(empty, this);
+        this.orderTables = newOrderTables;
     }
 
     public List<Long> getOrderTableIds() {
-        return orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
+        return orderTables.getOrderTableIds();
     }
 
     public void validateEmptyAndTableGroups() {
-        orderTables.forEach(OrderTable::validateEmptyAndTableGroup);
+        orderTables.validateEmptyAndTableGroups();
+
     }
 
 }

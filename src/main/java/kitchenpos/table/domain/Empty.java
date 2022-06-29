@@ -5,15 +5,15 @@ import javax.persistence.Embeddable;
 import java.util.Objects;
 
 @Embeddable
-public class OrderTableEmpty {
+public class Empty {
     @Column(name = "empty")
     private final boolean empty;
 
-    public OrderTableEmpty() {
+    public Empty() {
         this(false);
     }
 
-    public OrderTableEmpty(boolean empty) {
+    public Empty(boolean empty) {
         this.empty = empty;
     }
 
@@ -25,7 +25,7 @@ public class OrderTableEmpty {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        OrderTableEmpty that = (OrderTableEmpty) o;
+        Empty that = (Empty) o;
         return empty == that.empty;
     }
 

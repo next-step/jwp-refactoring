@@ -1,7 +1,5 @@
 package kitchenpos.table.domain;
 
-import org.springframework.util.CollectionUtils;
-
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -14,17 +12,23 @@ public class OrderTable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "table_group_id")
     private TableGroup tableGroup;
-    private int numberOfGuests;
-    private boolean empty;
+    @Embedded
+    private NumberOfGuests numberOfGuests;
+    @Embedded
+    private Empty empty;
 
     public OrderTable() {
     }
 
     public OrderTable(int numberOfGuests, boolean empty) {
-        this(null, null, numberOfGuests, empty);
+        this(null, null, new NumberOfGuests(numberOfGuests), new Empty(empty));
     }
 
     public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+        this(id, tableGroup, new NumberOfGuests(numberOfGuests), new Empty(empty));
+    }
+
+    public OrderTable(Long id, TableGroup tableGroup, NumberOfGuests numberOfGuests, Empty empty) {
         this.id = id;
         this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
@@ -46,9 +50,12 @@ public class OrderTable {
             throw new IllegalArgumentException();
         }
     }
-
     public void changeNumberOfGuests(int numberOfGuests) {
-        if (numberOfGuests < 0) {
+        changeNumberOfGuests(new NumberOfGuests(numberOfGuests));
+    }
+
+    public void changeNumberOfGuests(NumberOfGuests numberOfGuests) {
+        if (numberOfGuests.lessThenZero()) {
             throw new IllegalArgumentException();
         }
         this.numberOfGuests = numberOfGuests;
@@ -58,11 +65,15 @@ public class OrderTable {
         return tableGroup;
     }
 
-    public int getNumberOfGuests() {
+    public NumberOfGuests getNumberOfGuests() {
         return numberOfGuests;
     }
 
     public boolean isEmpty() {
+        return empty.value();
+    }
+
+    public Empty getEmpty() {
         return empty;
     }
 
@@ -74,11 +85,15 @@ public class OrderTable {
     }
 
     public void changeEmpty(boolean empty) {
+        changeEmpty(new Empty(empty));
+    }
+
+    public void changeEmpty(Empty empty) {
         this.empty = empty;
     }
 
     public void validateEmptyAndTableGroup() {
-        if (!isEmpty() || Objects.nonNull(getTableGroup())) {
+        if (!empty.value() || Objects.nonNull(getTableGroup())) {
             throw new IllegalArgumentException();
         }
     }

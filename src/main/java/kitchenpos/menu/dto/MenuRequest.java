@@ -40,46 +40,10 @@ public class MenuRequest {
         return menuProducts;
     }
 
-    public List<Long> getProductIds() {
-        return menuProducts.stream()
-                .map(MenuProductRequest::getProductId)
-                .collect(Collectors.toList());
-    }
-
     public Menu toMenu() {
         Menu menu = new Menu(name, price, menuGroupId);
         menu.addMenuProducts(menuProducts);
         return menu;
-    }
-
-    public void validate(List<Product> products) {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
-        validateSum(products);
-    }
-
-    private void validateSum(List<Product> products) {
-        BigDecimal sum = sumProductsPrice(products);
-        if (price.compareTo(sum) > 0) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    private BigDecimal sumProductsPrice(List<Product> products) {
-        BigDecimal sum = BigDecimal.ZERO;
-        for (final Product product : products) {
-            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(getMenuProductQuantity(product.getId()))));
-        }
-        return sum;
-    }
-
-    private long getMenuProductQuantity(Long productId) {
-        return menuProducts.stream()
-                .filter(m -> Objects.equals(m.getProductId(), productId))
-                .findFirst()
-                .orElseThrow(IllegalArgumentException::new)
-                .getQuantity();
     }
 
     @Override

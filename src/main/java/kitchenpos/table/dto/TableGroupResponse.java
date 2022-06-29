@@ -25,7 +25,12 @@ public class TableGroupResponse {
     }
 
     private static List<OrderTableResponse> toOrderTableResponses(TableGroup tableGroup) {
-        return tableGroup.getOrderTables().stream().map(OrderTableResponse::of).collect(Collectors.toList());
+        return tableGroup.getOrderTables()
+                .values()
+                .stream()
+                .map(OrderTableResponse::of)
+                .collect(Collectors.toList());
+
     }
 
     public Long getId() {

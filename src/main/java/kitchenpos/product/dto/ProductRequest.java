@@ -1,5 +1,6 @@
 package kitchenpos.product.dto;
 
+import kitchenpos.menu.domain.Price;
 import kitchenpos.product.domain.Product;
 
 import java.math.BigDecimal;
@@ -32,7 +33,7 @@ public class ProductRequest {
     }
 
     public Product toProduct() {
-        return new Product(name, price);
+        return new Product(name, new Price(price));
     }
 
     @Override

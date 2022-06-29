@@ -32,26 +32,27 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest request) {
-        validate(request);
+        Menu menu = request.toMenu();
+        validate(menu);
 
-        Menu menu = menuRepository.save(request.toMenu());
+        Menu persistMenu = menuRepository.save(menu);
         menuRepository.flush();
-        return MenuResponse.of(menu);
+        return MenuResponse.of(persistMenu);
     }
 
-    private void validate(MenuRequest request) {
-        validateMenuGroupExistsById(request);
-        request.validate(findProductIds(request));
+    private void validate(Menu menu) {
+        validateMenuGroupExistsById(menu);
+        menu.validate(findProductIds(menu));
     }
 
-    private void validateMenuGroupExistsById(MenuRequest request) {
-        if (!menuGroupRepository.existsById(request.getMenuGroupId())) {
+    private void validateMenuGroupExistsById(Menu menu) {
+        if (!menuGroupRepository.existsById(menu.getMenuGroupId())) {
             throw new IllegalArgumentException();
         }
     }
 
-    private List<Product> findProductIds(MenuRequest request) {
-        return productRepository.findByIdIn(request.getProductIds());
+    private List<Product> findProductIds(Menu menu) {
+        return productRepository.findByIdIn(menu.getProductIds());
     }
 
     public List<MenuResponse> list() {

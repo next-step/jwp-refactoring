@@ -1,6 +1,7 @@
 package kitchenpos.fixture;
 
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.Name;
 
 public class TestMenuGroupFactory {
 
@@ -9,6 +10,6 @@ public class TestMenuGroupFactory {
     }
 
     public static MenuGroup create(Long id, String name) {
-        return new MenuGroup(id, name);
+        return new MenuGroup(id, new Name(name));
     }
 }
