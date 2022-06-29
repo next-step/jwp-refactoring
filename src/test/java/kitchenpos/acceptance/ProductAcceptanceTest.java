@@ -1,6 +1,5 @@
 package kitchenpos.acceptance;
 
-import static kitchenpos.fixture.ProductFactory.createProduct;
 import static kitchenpos.fixture.ProductFactory.createProductRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 

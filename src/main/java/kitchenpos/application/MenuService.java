@@ -1,7 +1,6 @@
 package kitchenpos.application;
 
 import java.util.stream.Collectors;
-import kitchenpos.dao.MenuProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.domain.MenuProduct;

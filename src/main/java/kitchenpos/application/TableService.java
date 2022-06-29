@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
 import kitchenpos.domain.NumberOfGuests;
 import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
