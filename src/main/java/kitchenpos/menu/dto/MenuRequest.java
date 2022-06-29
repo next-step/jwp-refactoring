@@ -4,23 +4,25 @@ package kitchenpos.menu.dto;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
 
 public class MenuRequest {
 
     private String name;
     private Long price;
     private Long menuGroupId;
-    private List<MenuProductRequest> menuProducts;
+    private List<MenuProductRequest> menuProductRequests;
 
     protected MenuRequest() {
     }
 
-    protected MenuRequest(String name, Long price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
+    protected MenuRequest(String name, Long price, Long menuGroupId, List<MenuProductRequest> menuProductRequests) {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
-        this.menuProducts = menuProducts;
+        this.menuProductRequests = menuProductRequests;
     }
 
     protected MenuRequest(String name, Long price, Long menuGroupId) {
@@ -38,7 +40,15 @@ public class MenuRequest {
     }
 
     public Menu toMenu() {
-        return new Menu(name, BigDecimal.valueOf(price), menuGroupId);
+        Menu menu = new Menu(name, BigDecimal.valueOf(price), menuGroupId);
+        List<MenuProduct> menuProducts = menuProductRequests.stream().map(menuProduct ->
+                new MenuProduct(
+                        menu,
+                        menuProduct.getProductId(),
+                        menuProduct.getQuantity())
+        ).collect(Collectors.toList());
+        menu.addMenuProduct(menuProducts);
+        return menu;
     }
 
     public String getName() {
@@ -53,8 +63,8 @@ public class MenuRequest {
         return menuGroupId;
     }
 
-    public List<MenuProductRequest> getMenuProducts() {
-        return menuProducts;
+    public List<MenuProductRequest> getMenuProductRequests() {
+        return menuProductRequests;
     }
 
     @Override
@@ -67,12 +77,12 @@ public class MenuRequest {
         }
         MenuRequest that = (MenuRequest) o;
         return Objects.equals(name, that.name) && Objects.equals(price, that.price)
-                && Objects.equals(menuGroupId, that.menuGroupId) && Objects.equals(menuProducts,
-                that.menuProducts);
+                && Objects.equals(menuGroupId, that.menuGroupId) && Objects.equals(menuProductRequests,
+                that.menuProductRequests);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, price, menuGroupId, menuProducts);
+        return Objects.hash(name, price, menuGroupId, menuProductRequests);
     }
 }
