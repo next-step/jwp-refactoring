@@ -5,7 +5,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,8 +21,8 @@ public class TableGroup {
     @CreatedDate
     private LocalDateTime createdDate;
 
-    @OneToMany(mappedBy = "tableGroup")
-    private List<OrderTable> orderTables = new ArrayList<>();
+    @Embedded
+    private OrderTables orderTables = new OrderTables();
 
     public TableGroup() {
     }
@@ -41,13 +40,12 @@ public class TableGroup {
     }
 
     public List<OrderTable> getOrderTables() {
-        return orderTables;
+        return orderTables.getOrderTables();
     }
 
     public void group(List<OrderTable> orderTables) {
         checkAddable(orderTables);
-        this.orderTables.addAll(orderTables);
-        orderTables.forEach(orderTable -> orderTable.group(this));
+        this.orderTables.addAll(this, orderTables);
     }
 
     private void checkAddable(List<OrderTable> orderTables) {
@@ -67,7 +65,6 @@ public class TableGroup {
     }
 
     public void ungroup() {
-        this.orderTables.forEach(OrderTable::ungroup);
-        this.orderTables.clear();
+        orderTables.ungroup();
     }
 }

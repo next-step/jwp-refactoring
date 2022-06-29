@@ -4,7 +4,6 @@ import kitchenpos.exception.InvalidPriceException;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -23,8 +22,8 @@ public class Menu {
     @JoinColumn(name = "menu_group_id")
     private MenuGroup menuGroup;
 
-    @OneToMany(mappedBy = "menu", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-    private List<MenuProduct> menuProducts = new ArrayList<>();
+    @Embedded
+    private MenuProducts menuProducts = new MenuProducts();
 
     public Menu() {
     }
@@ -58,12 +57,12 @@ public class Menu {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
+        return menuProducts.getMenuProducts();
     }
 
     public void addMenuProducts(List<MenuProduct> menuProducts) {
         checkValidPrice(menuProducts);
-        addAllMenuProducts(menuProducts);
+        this.menuProducts.addAll(this, menuProducts);
     }
 
     private void checkValidPrice(List<MenuProduct> menuProducts) {
@@ -74,11 +73,6 @@ public class Menu {
         if (price.greaterThan(sum)) {
             throw new InvalidPriceException(price);
         }
-    }
-
-    private void addAllMenuProducts(List<MenuProduct> menuProducts) {
-        this.menuProducts.addAll(menuProducts);
-        menuProducts.forEach(menuProduct -> menuProduct.setMenu(this));
     }
 
 }
