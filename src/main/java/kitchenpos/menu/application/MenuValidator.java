@@ -32,7 +32,7 @@ public class MenuValidator {
     }
 
     private void validateExistingProduct(MenuRequest request) {
-        List<MenuProductRequest> menuProducts = request.getMenuProducts();
+        List<MenuProductRequest> menuProducts = request.getMenuProductRequests();
         List<Product> findProducts = findAllProductsInMenuProduct(menuProducts);
 
         if (menuProducts.size() != findProducts.size()) {
@@ -47,7 +47,7 @@ public class MenuValidator {
     }
 
     private void validateAmount(MenuRequest request) {
-        List<MenuProductRequest> menuProducts = request.getMenuProducts();
+        List<MenuProductRequest> menuProducts = request.getMenuProductRequests();
 
         List<Product> findProducts = findAllProductsInMenuProduct(menuProducts);
         Map<Long, Price> productIdPrices = makeProductIdPriceMap(findProducts);
@@ -63,8 +63,7 @@ public class MenuValidator {
 
     private List<Product> findAllProductsInMenuProduct(List<MenuProductRequest> menuProducts) {
         List<Long> productIds = getProductIds(menuProducts);
-        List<Product> findProducts = findAllByProductsIn(productIds);
-        return findProducts;
+        return findAllByProductsIn(productIds);
     }
 
     private List<Product> findAllByProductsIn(List<Long> productIds) {
