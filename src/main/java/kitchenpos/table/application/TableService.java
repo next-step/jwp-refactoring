@@ -30,6 +30,7 @@ public class TableService {
         return new OrderTableResponse(orderTable);
     }
 
+    @Transactional(readOnly = true)
     public List<OrderTableResponse> list() {
         return orderTableRepository.findAll().stream().map(OrderTableResponse::new).collect(Collectors.toList());
     }
