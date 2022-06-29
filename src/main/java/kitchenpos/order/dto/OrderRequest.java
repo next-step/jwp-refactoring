@@ -42,6 +42,13 @@ public class OrderRequest {
                 collect(Collectors.toList());
     }
 
+    @JsonIgnore
+    public List<Long> getMenuIds() {
+        return orderLineItems.stream()
+                .map(OrderLineItemRequest::getMenuId)
+                .collect(Collectors.toList());
+    }
+
     public String getOrderStatus() {
         return orderStatus;
     }
