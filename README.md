@@ -84,9 +84,9 @@
       
 ## 의존성 분리
 - 객체 간 분리
-    * [ ] Order -/-> OrderTable
-    * [ ] OrderLineItem  -/-> Menu
-    * [ ] MenuProduct  -/-> Product
+    * [X] Order -/-> OrderTable
+    * [X] OrderLineItem  -/-> Menu
+    * [X] MenuProduct  -/-> Product
 
 
 ## 용어 사전
