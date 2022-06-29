@@ -23,4 +23,10 @@ public class MenuGroupService {
     public List<MenuGroup> list() {
         return menuGroupRepository.findAll();
     }
+
+    @Transactional(readOnly = true)
+    public MenuGroup getById(final Long id) {
+        return menuGroupRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(String.format("메뉴그룹을 찾을 수 없습니다. id: %d", id)));
+    }
 }

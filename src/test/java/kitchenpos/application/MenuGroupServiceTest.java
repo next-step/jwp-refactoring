@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.fixture.UnitTestFixture;
 import kitchenpos.repository.MenuGroupRepository;
@@ -41,7 +42,7 @@ class MenuGroupServiceTest {
         final MenuGroup actual = menuGroupService.create(given);
 
         // then
-        assertThat(given).isEqualTo(actual);
+        assertThat(actual).isEqualTo(given);
     }
 
     @Test
@@ -54,5 +55,18 @@ class MenuGroupServiceTest {
 
         // then
         assertThat(actual).containsExactly(식당_포스.구이류, 식당_포스.식사류);
+    }
+
+    @Test
+    void 아이디로_메뉴_그룹을_조회할_수_있어야_한다() {
+        // given
+        final MenuGroup given = new MenuGroup(1L, "새로운 메뉴 그룹");
+        when(menuGroupRepository.findById(given.getId())).thenReturn(Optional.of(given));
+
+        // when
+        final MenuGroup actual = menuGroupService.getById(given.getId());
+
+        // then
+        assertThat(actual).isEqualTo(given);
     }
 }

@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.ProductRequest;
@@ -46,7 +47,7 @@ class ProductServiceTest {
         final Product actual = productService.create(given);
 
         // then
-        assertThat(expected).isEqualTo(actual);
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test
@@ -59,5 +60,18 @@ class ProductServiceTest {
 
         // then
         assertThat(actual).containsExactly(식당_포스.삼겹살, 식당_포스.목살, 식당_포스.김치찌개, 식당_포스.공깃밥);
+    }
+
+    @Test
+    void 아이디로_상품을_조회할_수_있어야_한다() {
+        // given
+        final Product given = new Product(1L, "new product", BigDecimal.valueOf(15000L));
+        when(productRepository.findById(given.getId())).thenReturn(Optional.of(given));
+
+        // when
+        final Product actual = productService.getById(given.getId());
+
+        // then
+        assertThat(actual).isEqualTo(given);
     }
 }
