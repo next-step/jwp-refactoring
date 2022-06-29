@@ -21,6 +21,14 @@ public class Menu {
     public Menu() {
     }
 
+    public Menu(Long id, String name, int price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.menuGroup = menuGroup;
+        this.menuProducts = menuProducts;
+    }
+
     public Menu(Long id, String name, int price, MenuGroup menuGroup) {
         this.id = id;
         this.name = name;
