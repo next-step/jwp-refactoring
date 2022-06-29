@@ -110,7 +110,10 @@
        1. 일급 컬렉션에서 getter를 통해 받는 리스트드를 unmodif
        2. Price domain에서 multiple 기능 구현(단 반환시 저장하고있는 Price는 접근이 되면 안됨)
     2. 코드컨벤션 점검
-    3. 반복적인 작업 추출 후 재사용 
+    3. 반복적인 작업 추출 후 재사용
+        1. MenuProductDomainService.validatePriceSmallThenSum
+           1. productRepository.findbyid에서 없는 product를 체크할수 있어 필요한 로직이라고 생각됨
+           2. 그러나 product별로 select query가 발생되어, 먼저 findAllByIdIn을 통해 영속성에 한번에 등록해놓는 로직 추가 
     4. OrderTable에서 유휴테이블 설정 함수 명의 의미가 모호하여 분리/수정필요
     5. 비즈니스 로직에 맞는 Exception 선언 및 Advice를 통한 Error 처리
        1. 500Err -> 400Err
