@@ -11,6 +11,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
+
 import static kitchenpos.common.fixture.OrderTableFixture.주문테이블_데이터_생성;
 import static kitchenpos.common.fixture.TableGroupFixture.단체_데이터_생성;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -54,6 +56,23 @@ class TableValidatorTest {
         //when //then
         assertThatExceptionOfType(InvalidOrderStatusException.class)
                 .isThrownBy(() -> tableValidator.checkValidChangeEmpty(orderTable));
+    }
+
+    @DisplayName("주문상태가 조리나 식사이면 그룹 해제할 수 없다.")
+    @Test
+    void ungroup_fail_invalidOrderStatus() {
+        //given
+        Long tableGroupId = 1L;
+        TableGroup tableGroup = 단체_데이터_생성(tableGroupId);
+        OrderTable table1 = 주문테이블_데이터_생성(1L, null, 4, true);
+        OrderTable table2 = 주문테이블_데이터_생성(2L, null, 4, true);
+        tableGroup.group(Arrays.asList(table1, table2));
+
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
+
+        //when //then
+        assertThatExceptionOfType(InvalidOrderStatusException.class)
+                .isThrownBy(() -> tableValidator.checkValidUngroup(tableGroup));
     }
 
 }
