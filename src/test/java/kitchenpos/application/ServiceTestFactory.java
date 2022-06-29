@@ -3,6 +3,8 @@ package kitchenpos.application;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.TableGroup;
@@ -61,5 +63,23 @@ public class ServiceTestFactory {
         tableGroup.setCreatedDate(LocalDateTime.now());
         tableGroup.setOrderTables(orderTables);
         return tableGroup;
+    }
+
+    public static Order 주문생성(Long id, Long orderTableId, String orderStatus, List<OrderLineItem> orderLineItems) {
+        Order order = new Order();
+        order.setOrderTableId(id);
+        order.setOrderTableId(orderTableId);
+        order.setOrderStatus(orderStatus);
+        order.setOrderLineItems(orderLineItems);
+        return order;
+    }
+
+    public static OrderLineItem 주문항목생성(Long seq, Long orderId, Long menuId, long quantity) {
+        OrderLineItem orderLineItem = new OrderLineItem();
+        orderLineItem.setSeq(seq);
+        orderLineItem.setOrderId(orderId);
+        orderLineItem.setMenuId(menuId);
+        orderLineItem.setQuantity(quantity);
+        return orderLineItem;
     }
 }
