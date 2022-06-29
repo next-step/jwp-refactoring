@@ -24,4 +24,9 @@ public class ProductService {
     public List<Product> list() {
         return productRepository.findAll();
     }
+
+    public Product findProductById(Long productId){
+        return productRepository.findById(productId)
+                .orElseThrow(IllegalArgumentException::new);
+    }
 }

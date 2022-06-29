@@ -43,4 +43,4 @@
     - [X] JPA Entity로 변경 및 JPARepository 생성
       - Menu, MenuProduct는 양방향 1:N, N:1 관계
       - Menu, MenuGroup은 단방향 N:1 관계
-    - [ ] 응용서비스에서 도메인레이어로 로직 이동 (with 단위테스트 작성)
+    - [X] 응용서비스에서 도메인레이어로 로직 이동 (with 단위테스트 작성)
