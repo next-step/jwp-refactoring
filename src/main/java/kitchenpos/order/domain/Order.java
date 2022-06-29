@@ -14,14 +14,14 @@ public class Order {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_table_id")
+    @JoinColumn(name = "order_table_id", nullable = false)
     private OrderTable orderTable;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "order_status", unique = true)
+    @Column(name = "order_status", nullable = false)
     private OrderStatus orderStatus;
 
-    @Column(name = "ordered_time")
+    @Column(name = "ordered_time", nullable = false)
     private LocalDateTime orderedTime;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
@@ -54,21 +54,5 @@ public class Order {
 
     public Long getId() {
         return id;
-    }
-
-    public OrderTable getOrderTable() {
-        return orderTable;
-    }
-
-    public OrderStatus getOrderStatus() {
-        return orderStatus;
-    }
-
-    public LocalDateTime getOrderedTime() {
-        return orderedTime;
-    }
-
-    public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
     }
 }

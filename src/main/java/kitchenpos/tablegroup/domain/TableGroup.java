@@ -14,7 +14,7 @@ public class TableGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column(nullable = false)
     private LocalDateTime createdDate;
 
     @OneToMany(mappedBy = "tableGroup")
@@ -38,13 +38,5 @@ public class TableGroup {
 
     public Long getId() {
         return id;
-    }
-
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public List<OrderTable> getOrderTables() {
-        return orderTables;
     }
 }

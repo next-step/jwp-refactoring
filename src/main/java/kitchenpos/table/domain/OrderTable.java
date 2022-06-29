@@ -15,10 +15,10 @@ public class OrderTable {
     @JoinColumn(name = "table_group_id")
     private TableGroup tableGroup;
 
-    @Column(unique = true)
+    @Column(nullable = false)
     private int numberOfGuests;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private boolean empty;
 
     protected OrderTable() {
@@ -48,14 +48,6 @@ public class OrderTable {
 
     public Long getId() {
         return id;
-    }
-
-    public TableGroup getTableGroup() {
-        return tableGroup;
-    }
-
-    public int getNumberOfGuests() {
-        return numberOfGuests;
     }
 
     public boolean isEmpty() {
