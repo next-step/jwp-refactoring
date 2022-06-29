@@ -20,7 +20,7 @@ public class TableGroupRequest {
         return new TableGroup();
     }
 
-    public List<Long> getGroupIds() {
+    public List<Long> groupIds() {
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
             throw new IllegalArgumentException();
         }
@@ -30,10 +30,6 @@ public class TableGroupRequest {
     }
 
     public List<OrderTableIdRequest> getOrderTables() {
-        return orderTables;
-    }
-
-    public List<OrderTableIdRequest> getIds() {
         return orderTables;
     }
 

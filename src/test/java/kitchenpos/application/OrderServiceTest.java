@@ -76,7 +76,7 @@ class OrderServiceTest {
         메뉴.addMenuProduct(메뉴_진순이);
 
         주문_테이블 = TestOrderTableRequestFactory.create(1, false);
-        주문_메뉴 = new OrderLineItemRequest(1L, 메뉴.getId(), 3);
+        주문_메뉴 = new OrderLineItemRequest(메뉴.getId(), 3);
         주문 = new OrderRequest(1L, Collections.singletonList(주문_메뉴));
     }
 

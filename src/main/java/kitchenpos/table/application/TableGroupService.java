@@ -29,7 +29,7 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest request) {
-        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(request.getGroupIds());
+        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(request.groupIds());
 
         request.validateSize(savedOrderTables.size());
 

@@ -49,7 +49,7 @@ class OrderRestControllerTest {
     @BeforeEach
     void setUp() {
         this.mockMvc = MockMvcBuilders.standaloneSetup(orderRestController).build();
-        주문_항목 = Arrays.asList(new OrderLineItemRequest(1L, 1L, 1));
+        주문_항목 = Arrays.asList(new OrderLineItemRequest(1L, 1));
         주문_요청 = new OrderRequest(1L, 주문_항목);
         주문_응답 = new OrderResponse(1L, 1L, OrderStatus.COOKING.name(), null,
                 new ArrayList<>(Arrays.asList(new OrderLineItemResponse(1L, 1L, 1L, 1))));
