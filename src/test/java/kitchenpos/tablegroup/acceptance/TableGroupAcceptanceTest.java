@@ -9,6 +9,7 @@ import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
@@ -142,8 +143,8 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         MenuResponse 등록된_메뉴 = 메뉴_가져옴(메뉴_등록되어_있음(테스트_메뉴_생성(MENU_NAME01, MENU_PRICE01)));
         OrderLineItem 생성된_주문_항목 = new OrderLineItem(new Menu(등록된_메뉴.getId()), 1);
 
-        ExtractableResponse<Response> 등록된_주문1 = 주문_등록되어_있음(new Order(등록된_주문_테이블1, Arrays.asList(생성된_주문_항목)));
-        ExtractableResponse<Response> 등록된_주문2 = 주문_등록되어_있음(new Order(등록된_주문_테이블2, Arrays.asList(생성된_주문_항목)));
+        ExtractableResponse<Response> 등록된_주문1 = 주문_등록되어_있음(new OrderRequest(등록된_주문_테이블1.getId(), Arrays.asList(생성된_주문_항목)));
+        ExtractableResponse<Response> 등록된_주문2 = 주문_등록되어_있음(new OrderRequest(등록된_주문_테이블2.getId(), Arrays.asList(생성된_주문_항목)));
 
         주문_상태_변경_요청(등록된_주문1, OrderStatus.COMPLETION);
         주문_상태_변경_요청(등록된_주문2, OrderStatus.COMPLETION);
@@ -161,8 +162,8 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         MenuResponse 등록된_메뉴 = 메뉴_가져옴(메뉴_등록되어_있음(테스트_메뉴_생성(MENU_NAME01, MENU_PRICE01)));
         OrderLineItem 생성된_주문_항목 = new OrderLineItem(new Menu(등록된_메뉴.getId()), 1);
 
-        ExtractableResponse<Response> 등록된_주문1 = 주문_등록되어_있음(new Order(등록된_주문_테이블1, Arrays.asList(생성된_주문_항목)));
-        ExtractableResponse<Response> 등록된_주문2 = 주문_등록되어_있음(new Order(등록된_주문_테이블2, Arrays.asList(생성된_주문_항목)));
+        ExtractableResponse<Response> 등록된_주문1 = 주문_등록되어_있음(new OrderRequest(등록된_주문_테이블1.getId(), Arrays.asList(생성된_주문_항목)));
+        ExtractableResponse<Response> 등록된_주문2 = 주문_등록되어_있음(new OrderRequest(등록된_주문_테이블2.getId(), Arrays.asList(생성된_주문_항목)));
 
         주문_상태_변경_요청(등록된_주문1, OrderStatus.MEAL);
         주문_상태_변경_요청(등록된_주문2, OrderStatus.MEAL);

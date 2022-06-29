@@ -9,6 +9,7 @@ import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
@@ -129,47 +130,47 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         주문_상태_변경_실패됨(변경된_주문);
     }
 
-    public static Order 주문_생성() {
+    public static OrderRequest 주문_생성() {
         MenuResponse 등록된_메뉴 = 메뉴_가져옴(메뉴_등록되어_있음(테스트_메뉴_생성(MENU_NAME01, MENU_PRICE01)));
         OrderLineItem 생성된_주문_항목 = new OrderLineItem(new Menu(등록된_메뉴.getId()), 1);
         OrderTable 등록된_주문_테이블 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, false)).toOrderTable();
-        return new Order(등록된_주문_테이블, Arrays.asList(생성된_주문_항목));
+        return new OrderRequest(등록된_주문_테이블.getId(), Arrays.asList(생성된_주문_항목));
     }
 
-    public static Order 주문_항목_없는_주문_생성() {
+    public static OrderRequest 주문_항목_없는_주문_생성() {
         OrderTable 등록된_주문_테이블 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, false)).toOrderTable();
-        return new Order(등록된_주문_테이블, Collections.emptyList());
+        return new OrderRequest(등록된_주문_테이블.getId(), Collections.emptyList());
     }
 
-    public static Order 메뉴와_주문_항목_개수_다른_주문_생성() {
+    public static OrderRequest 메뉴와_주문_항목_개수_다른_주문_생성() {
         MenuResponse 등록된_메뉴 = 메뉴_가져옴(메뉴_등록되어_있음(테스트_메뉴_생성(MENU_NAME01, MENU_PRICE01)));
         OrderLineItem 생성된_주문_항목1 = new OrderLineItem(new Menu(등록된_메뉴.getId()), 1);
         OrderLineItem 생성된_주문_항목2 = new OrderLineItem(new Menu(등록된_메뉴.getId()), 1);
         OrderTable 등록된_주문_테이블 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, false)).toOrderTable();
-        return new Order(등록된_주문_테이블, Arrays.asList(생성된_주문_항목1, 생성된_주문_항목2));
+        return new OrderRequest(등록된_주문_테이블.getId(), Arrays.asList(생성된_주문_항목1, 생성된_주문_항목2));
     }
 
-    public static Order 주문_테이블_없는_주문_생성() {
+    public static OrderRequest 주문_테이블_없는_주문_생성() {
         MenuResponse 등록된_메뉴 = 메뉴_가져옴(메뉴_등록되어_있음(테스트_메뉴_생성(MENU_NAME01, MENU_PRICE01)));
         OrderLineItem 생성된_주문_항목 = new OrderLineItem(new Menu(등록된_메뉴.getId()), 1);
-        return new Order(null, Arrays.asList(생성된_주문_항목));
+        return new OrderRequest(null, Arrays.asList(생성된_주문_항목));
     }
 
-    public static Order 비어_있는_주문_테이블에서_주문_생성() {
+    public static OrderRequest 비어_있는_주문_테이블에서_주문_생성() {
         MenuResponse 등록된_메뉴 = 메뉴_가져옴(메뉴_등록되어_있음(테스트_메뉴_생성(MENU_NAME01, MENU_PRICE01)));
         OrderLineItem 생성된_주문_항목 = new OrderLineItem(new Menu(등록된_메뉴.getId()), 1);
         OrderTable 등록된_주문_테이블 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, true)).toOrderTable();
-        return new Order(등록된_주문_테이블, Arrays.asList(생성된_주문_항목));
+        return new OrderRequest(등록된_주문_테이블.getId(), Arrays.asList(생성된_주문_항목));
     }
 
-    public static ExtractableResponse<Response> 주문_등록되어_있음(Order order) {
-        return 주문_생성_요청(order);
+    public static ExtractableResponse<Response> 주문_등록되어_있음(OrderRequest request) {
+        return 주문_생성_요청(request);
     }
 
-    public static ExtractableResponse<Response> 주문_생성_요청(Order order) {
+    public static ExtractableResponse<Response> 주문_생성_요청(OrderRequest request) {
         return RestAssured
                 .given().log().all()
-                .body(order)
+                .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/api/orders")
                 .then().log().all()

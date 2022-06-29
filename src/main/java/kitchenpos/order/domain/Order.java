@@ -40,6 +40,13 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
+    public Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+        this.orderTable = orderTable;
+        this.orderStatus = orderStatus;
+        this.orderedTime = orderedTime;
+        this.orderLineItems = orderLineItems;
+    }
+
     public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         this.orderTable = orderTable;
         this.orderLineItems = orderLineItems;

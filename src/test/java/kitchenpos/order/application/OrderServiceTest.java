@@ -3,6 +3,8 @@ package kitchenpos.order.application;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.*;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,13 +50,13 @@ public class OrderServiceTest {
     @DisplayName("주문을 생성한다.")
     @Test
     void create() {
-        when(menuRepository.findAllById(any())).thenReturn(Arrays.asList(new Menu(1L)));
+        when(menuRepository.findAllById(any())).thenReturn(Collections.singletonList(new Menu(1L)));
         OrderTable orderTable = new OrderTable(1L, 3, false);
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
         when(orderRepository.save(any())).thenReturn(createOrder());
 
         // when
-        Order created = orderService.create(createOrder());
+        OrderResponse created = orderService.create(createOrderRequest());
 
         // then
         assertThat(created).isNotNull();
@@ -65,7 +67,7 @@ public class OrderServiceTest {
     void createOrder_without_order_list_item() {
         // when, then
         assertThatThrownBy(() -> {
-            orderService.create(createOrderWithoutOrderListItem());
+            orderService.create(createOrderRequestWithoutOrderListItem());
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -76,7 +78,7 @@ public class OrderServiceTest {
 
         // when, then
         assertThatThrownBy(() -> {
-            orderService.create(createOrder());
+            orderService.create(createOrderRequest());
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -88,7 +90,7 @@ public class OrderServiceTest {
 
         // when, then
         assertThatThrownBy(() -> {
-            orderService.create(createOrder());
+            orderService.create(createOrderRequest());
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -100,7 +102,7 @@ public class OrderServiceTest {
 
         // when, then
         assertThatThrownBy(() -> {
-            orderService.create(createOrder());
+            orderService.create(createOrderRequest());
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -110,7 +112,7 @@ public class OrderServiceTest {
         when(orderRepository.findAll()).thenReturn(createOrderList());
 
         // when
-        List<Order> list = orderService.list();
+        List<OrderResponse> list = orderService.list();
 
         // then
         assertThat(list).isNotNull();
@@ -119,16 +121,16 @@ public class OrderServiceTest {
     @DisplayName("주문 상태를 변경한다.")
     @Test
     void changeOrderStatus() {
-        when(orderRepository.findById(any())).thenReturn(Optional.of(createOrder()));
+        when(orderRepository.findById(1L)).thenReturn(Optional.of(createOrder()));
         when(orderRepository.save(any())).thenReturn(createOrder());
 
         // when
-        Order changeOrder = new Order(OrderStatus.COMPLETION);
-        Order updated = orderService.changeOrderStatus(1L, changeOrder);
+        OrderRequest request = new OrderRequest(OrderStatus.COMPLETION.name());
+        OrderResponse updated = orderService.changeOrderStatus(1L, request);
 
         // then
         assertThat(updated).isNotNull();
-        assertThat(updated.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
+        assertThat(updated.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
     }
 
     @DisplayName("[예외] 저장되지 않은 주문의 상태를 변경한다.")
@@ -138,7 +140,7 @@ public class OrderServiceTest {
 
         // when, then
         assertThatThrownBy(() -> {
-            Order changeOrder = new Order(OrderStatus.COMPLETION);
+            OrderRequest changeOrder = new OrderRequest(OrderStatus.COMPLETION.name());
             orderService.changeOrderStatus(1L, changeOrder);
         }).isInstanceOf(IllegalArgumentException.class);
     }
@@ -146,24 +148,30 @@ public class OrderServiceTest {
     @DisplayName("[예외] 계산 완료 상태에서 추가로 주문 상태를 변경한다.")
     @Test
     void changeOrderStatus_with_completion_state() {
-        when(orderRepository.findById(any())).thenReturn(Optional.of(createOrderWithCompletion()));
+        when(orderRepository.findById(1L)).thenReturn(Optional.of(createOrderWithCompletion()));
 
         // when, then
         assertThatThrownBy(() -> {
-            Order changeOrder = new Order(OrderStatus.COMPLETION);
-            orderService.changeOrderStatus(1L, changeOrder);
+            OrderRequest request = new OrderRequest(OrderStatus.COMPLETION.name());
+            orderService.changeOrderStatus(1L, request);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
     public static Order createOrder() {
         OrderLineItem orderListItem = createOrderListItem();
         OrderTable orderTable = new OrderTable(1L, 3, false);
-        return new Order(1L, orderTable, Arrays.asList(orderListItem));
+        return new Order(1L, orderTable, OrderStatus.COOKING, Arrays.asList(orderListItem));
     }
 
-    public static Order createOrderWithoutOrderListItem() {
+    public static OrderRequest createOrderRequest() {
+        OrderLineItem orderListItem = createOrderListItem();
         OrderTable orderTable = new OrderTable(1L, 3, false);
-        return new Order(1L, orderTable, null);
+        return new OrderRequest(orderTable.getId(), OrderStatus.COOKING.name(), Arrays.asList(orderListItem));
+    }
+
+    public static OrderRequest createOrderRequestWithoutOrderListItem() {
+        OrderTable orderTable = new OrderTable(1L, 3, false);
+        return new OrderRequest(orderTable.getId(), null);
     }
 
     public static Order createOrderWithCompletion() {
