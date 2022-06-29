@@ -6,6 +6,7 @@ import kitchenpos.table.domain.OrderTables;
 import kitchenpos.tablegroup.event.UngroupEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import static kitchenpos.order.domain.OrderStatus.UNCOMPLETED_STATUSES;
 
@@ -19,6 +20,7 @@ public class UngroupEventHandler {
         this.orderTableRepository = orderTableRepository;
     }
 
+    @Transactional
     @EventListener
     public void onUngroupEvent(UngroupEvent event) {
         final OrderTables orderTables = OrderTables.of(

@@ -31,7 +31,6 @@ public class TableGroupService {
         return TableGroupResponse.of(tableGroup);
     }
 
-    @Transactional
     public void ungroup(final Long tableGroupId) {
         applicationEventPublisher.publishEvent(UngroupEvent.from(tableGroupId));
     }

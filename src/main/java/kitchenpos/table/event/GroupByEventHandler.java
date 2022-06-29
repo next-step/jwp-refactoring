@@ -3,8 +3,9 @@ package kitchenpos.table.event;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.tablegroup.event.GroupByEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component
 public class GroupByEventHandler {
@@ -14,7 +15,8 @@ public class GroupByEventHandler {
         this.orderTableRepository = orderTableRepository;
     }
 
-    @EventListener
+    @Transactional
+    @TransactionalEventListener
     public void groupByEvent(GroupByEvent event) {
         final OrderTables savedOrderTables = OrderTables.of(
                 orderTableRepository.findAllByIdIn(event.getOrderTableIds()));
