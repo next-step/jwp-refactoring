@@ -3,9 +3,11 @@ package kitchenpos.order.domain;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import kitchenpos.common.domain.Quantity;
@@ -19,6 +21,7 @@ public class OrderLineItem {
     private Long seq;
 
     @ManyToOne
+    @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"))
     private Order order;
 
     @Column(nullable = false)
