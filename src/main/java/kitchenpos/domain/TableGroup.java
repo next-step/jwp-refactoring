@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import kitchenpos.table.domain.OrderTable;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -45,7 +46,7 @@ public class TableGroup {
 
     public void group(List<OrderTable> orderTables) {
         checkAddable(orderTables);
-        this.orderTables.addAll(this, orderTables);
+//        this.orderTables.addAll(this, orderTables);
     }
 
     private void checkAddable(List<OrderTable> orderTables) {
@@ -59,12 +60,12 @@ public class TableGroup {
     }
 
     private void checkEmptyOrGrouped(OrderTable orderTable) {
-        if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup())) {
+        if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroupId())) {
             throw new IllegalArgumentException();
         }
     }
 
     public void ungroup() {
-        orderTables.ungroup();
+//        orderTables.ungroup();
     }
 }

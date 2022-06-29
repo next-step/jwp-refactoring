@@ -1,11 +1,12 @@
-package kitchenpos.ui;
+package kitchenpos.order.ui;
 
-import kitchenpos.application.OrderService;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.dto.OrderLineItemRequestDto;
-import kitchenpos.dto.OrderLineItemResponseDto;
-import kitchenpos.dto.OrderRequestDto;
-import kitchenpos.dto.OrderResponseDto;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.order.dto.OrderLineItemRequestDto;
+import kitchenpos.order.dto.OrderLineItemResponseDto;
+import kitchenpos.order.dto.OrderRequestDto;
+import kitchenpos.order.dto.OrderResponseDto;
+import kitchenpos.ui.BaseRestControllerTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

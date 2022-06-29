@@ -1,5 +1,6 @@
-package kitchenpos.domain;
+package kitchenpos.order.domain;
 
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.exception.InvalidOrderStatusException;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -21,9 +22,7 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
-    @ManyToOne
-    @JoinColumn(name = "order_table_id")
-    private OrderTable orderTable;
+    private Long orderTableId;
 
     @CreatedDate
     private LocalDateTime orderedTime;
@@ -34,17 +33,17 @@ public class Order {
     public Order() {
     }
 
-    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        this(null, orderTable, OrderStatus.COOKING, orderLineItems);
+    public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        this(null, orderTableId, OrderStatus.COOKING, orderLineItems);
     }
 
-    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+    public Order(Long id, Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
         if (orderLineItems.size() < ORDER_LINE_ITEMS_MIN_SIZE) {
             throw new IllegalArgumentException();
         }
         this.id = id;
         this.orderStatus = orderStatus;
-        this.orderTable = orderTable;
+        this.orderTableId = orderTableId;
         this.orderLineItems = new OrderLineItems(orderLineItems);
     }
 
@@ -56,8 +55,8 @@ public class Order {
         return orderStatus;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public LocalDateTime getOrderedTime() {

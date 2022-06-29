@@ -1,21 +1,20 @@
 package kitchenpos.fixture;
 
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.dto.OrderLineItemRequestDto;
-import kitchenpos.dto.OrderLineItemResponseDto;
-import kitchenpos.dto.OrderRequestDto;
-import kitchenpos.dto.OrderResponseDto;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.dto.OrderLineItemRequestDto;
+import kitchenpos.order.dto.OrderLineItemResponseDto;
+import kitchenpos.order.dto.OrderRequestDto;
+import kitchenpos.order.dto.OrderResponseDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class OrderFixture {
 
-    public static Order 주문_데이터_생성(Long id, OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> requestOrderLineItems) {
-        return new Order(id, orderTable, orderStatus, requestOrderLineItems);
+    public static Order 주문_데이터_생성(Long id, Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> requestOrderLineItems) {
+        return new Order(id, orderTableId, orderStatus, requestOrderLineItems);
     }
 
     public static OrderRequestDto 주문_요청_데이터_생성(List<OrderLineItemRequestDto> orderLineItems) {

@@ -2,7 +2,7 @@ package kitchenpos.table.application;
 
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.exception.InvalidOrderStatusException;
-import kitchenpos.repository.OrderRepository;
+import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import org.springframework.stereotype.Service;
 

@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -78,14 +79,14 @@ class TableGroupTest {
 
     private void 그룹해제_확인(TableGroup tableGroup, OrderTable orderTable1, OrderTable orderTable2) {
         assertEquals(0, tableGroup.getOrderTables().size());
-        assertThat(orderTable1.getTableGroup()).isNull();
-        assertThat(orderTable2.getTableGroup()).isNull();
+        assertThat(orderTable1.getTableGroupId()).isNull();
+        assertThat(orderTable2.getTableGroupId()).isNull();
     }
 
     private void 그룹핑_확인(TableGroup tableGroup, OrderTable orderTable1, OrderTable orderTable2) {
         assertEquals(2, tableGroup.getOrderTables().size());
-        assertEquals(tableGroup.getId(), orderTable1.getTableGroup().getId());
-        assertEquals(tableGroup.getId(), orderTable2.getTableGroup().getId());
+        assertEquals(tableGroup.getId(), orderTable1.getTableGroupId());
+        assertEquals(tableGroup.getId(), orderTable2.getTableGroupId());
     }
 
 }

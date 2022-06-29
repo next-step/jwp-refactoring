@@ -1,7 +1,7 @@
 package kitchenpos.table.application;
 
 import kitchenpos.exception.InvalidOrderStatusException;
-import kitchenpos.repository.OrderRepository;
+import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

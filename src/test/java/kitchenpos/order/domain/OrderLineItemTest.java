@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.order.domain;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu_group.domain.MenuGroup;
@@ -22,12 +22,12 @@ class OrderLineItemTest {
         int quantity = 4;
 
         //when
-        OrderLineItem orderLineItem = new OrderLineItem(menu, quantity);
+        OrderLineItem orderLineItem = new OrderLineItem(1L, quantity);
 
         //then
         assertAll(
                 () -> assertEquals(quantity, orderLineItem.getQuantity()),
-                () -> assertEquals(menu.getId(), orderLineItem.getMenu().getId())
+                () -> assertEquals(menu.getId(), orderLineItem.getMenuId())
         );
     }
 }

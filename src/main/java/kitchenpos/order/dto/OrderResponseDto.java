@@ -1,7 +1,7 @@
-package kitchenpos.dto;
+package kitchenpos.order.dto;
 
-import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.Order;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,7 +17,7 @@ public class OrderResponseDto {
     public OrderResponseDto(Order order) {
         this.id = order.getId();
         this.orderStatus = order.getOrderStatus();
-        this.orderTableId = order.getOrderTable().getId();
+        this.orderTableId = order.getOrderTableId();
         this.orderedTime = order.getOrderedTime();
         this.orderLineItems = order.getOrderLineItems().stream()
                 .map(OrderLineItemResponseDto::new)

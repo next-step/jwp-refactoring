@@ -1,13 +1,13 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.TableGroupRequestDto;
 import kitchenpos.dto.TableGroupResponseDto;
 import kitchenpos.exception.InvalidOrderStatusException;
-import kitchenpos.repository.OrderRepository;
-import kitchenpos.repository.OrderTableRepository;
+import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.repository.TableGroupRepository;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
