@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class JdbcTemplateMenuDao implements MenuDao {
+public class JdbcTemplateMenuDao implements MenuRepository {
     private static final String TABLE_NAME = "menu";
     private static final String KEY_COLUMN_NAME = "id";
 

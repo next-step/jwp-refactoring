@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.ProductDao;
+import kitchenpos.dao.ProductRepository;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,7 +19,7 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
     @InjectMocks
     private ProductService productService;
 
@@ -39,7 +39,7 @@ class ProductServiceTest {
     void 상품을_등록한다() {
         // given
         Product product = new Product("치킨", BigDecimal.valueOf(10000));
-        given(productDao.save(product)).willReturn(createProduct());
+        given(productRepository.save(product)).willReturn(createProduct());
 
         // when
         Product result = productService.create(product);
@@ -51,7 +51,7 @@ class ProductServiceTest {
     @Test
     void 상품_목록을_조회한다() {
         // given
-        given(productDao.findAll()).willReturn(createProducts());
+        given(productRepository.findAll()).willReturn(createProducts());
 
         // when
         List<Product> result = productService.list();

@@ -1,8 +1,8 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
+import kitchenpos.dao.OrderRepository;
+import kitchenpos.dao.OrderTableRepository;
+import kitchenpos.dao.TableGroupRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
@@ -26,11 +26,11 @@ import static org.mockito.BDDMockito.then;
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
     @InjectMocks
     private TableGroupService tableGroupService;
     
@@ -50,7 +50,7 @@ class TableGroupServiceTest {
     void 주문_테이블이_저장되어_있지_않으면_단체를_지정할_수_없다() {
         // given
         TableGroup tableGroup = new TableGroup(createOrderTables());
-        given(orderTableDao.findAllByIdIn(createOrderTableIds()))
+        given(orderTableRepository.findAllByIdIn(createOrderTableIds()))
                 .willReturn(Collections.singletonList(new OrderTable(1L)));
 
         // when & then
@@ -64,7 +64,7 @@ class TableGroupServiceTest {
     void 주문_테이블이_빈_테이블이_아니거나_이미_단체_지정_되어_있으면_단체를_지정할_수_없다() {
         // given
         TableGroup tableGroup = new TableGroup(createOrderTables());
-        given(orderTableDao.findAllByIdIn(createOrderTableIds()))
+        given(orderTableRepository.findAllByIdIn(createOrderTableIds()))
                 .willReturn(createOrderTables());
 
         // when & then
@@ -78,9 +78,9 @@ class TableGroupServiceTest {
     void 단체_지정을_등록한다() {
         // given
         TableGroup tableGroup = new TableGroup(createOrderTables());
-        given(orderTableDao.findAllByIdIn(createOrderTableIds()))
+        given(orderTableRepository.findAllByIdIn(createOrderTableIds()))
                 .willReturn(createEmptyTables());
-        given(tableGroupDao.save(tableGroup))
+        given(tableGroupRepository.save(tableGroup))
                 .willReturn(new TableGroup(1L, LocalDateTime.now()));
         
         // when
@@ -93,9 +93,9 @@ class TableGroupServiceTest {
     @Test
     void 조리_또는_식사_중인_주문_테이블이_있을_경우_단체_지정을_해제할_수_없다() {
         // given
-        given(orderTableDao.findAllByTableGroupId(1L))
+        given(orderTableRepository.findAllByTableGroupId(1L))
                 .willReturn(createOrderTables());
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(createOrderTableIds(), createOrderStatus()))
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(createOrderTableIds(), createOrderStatus()))
                 .willReturn(true);
 
         // when & then
@@ -110,9 +110,9 @@ class TableGroupServiceTest {
         // given
         List<OrderTable> orderTables = createOrderTables();
 
-        given(orderTableDao.findAllByTableGroupId(1L))
+        given(orderTableRepository.findAllByTableGroupId(1L))
                 .willReturn(orderTables);
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(createOrderTableIds(), createOrderStatus()))
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(createOrderTableIds(), createOrderStatus()))
                 .willReturn(false);
 
         // when
@@ -120,8 +120,8 @@ class TableGroupServiceTest {
 
         // then
         assertAll(
-                () -> then(orderTableDao).should().save(orderTables.get(0)),
-                () -> then(orderTableDao).should().save(orderTables.get(1))
+                () -> then(orderTableRepository).should().save(orderTables.get(0)),
+                () -> then(orderTableRepository).should().save(orderTables.get(1))
         );
     }
 
