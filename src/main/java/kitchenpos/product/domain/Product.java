@@ -4,6 +4,7 @@ import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "product")
@@ -46,11 +47,11 @@ public class Product {
         return id;
     }
 
-    public Name getName() {
-        return name;
+    public String getName() {
+        return name.getName();
     }
 
-    public Price getPrice() {
-        return price;
+    public BigDecimal getPrice() {
+        return price.getPrice();
     }
 }

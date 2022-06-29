@@ -5,10 +5,12 @@ import kitchenpos.common.domain.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -21,15 +23,19 @@ public class ProductService {
     }
 
     @Transactional
-    public Product create(final ProductRequest productRequest) {
+    public ProductResponse create(final ProductRequest productRequest) {
         final Name name = Name.of(productRequest.getName());
         final Price price = Price.of(productRequest.getPrice());
 
-        return productRepository.save(Product.of(name, price));
+        Product product = productRepository.save(Product.of(name, price));
+
+        return ProductResponse.of(product);
     }
 
-    public List<Product> list() {
-        return productRepository.findAll();
+    public List<ProductResponse> list() {
+        List<Product> products = productRepository.findAll();
+
+        return products.stream().map(ProductResponse::of).collect(Collectors.toList());
     }
 
     public List<Product> findByIdIn(List<Long> productsIds) {
