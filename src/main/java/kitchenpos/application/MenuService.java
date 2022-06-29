@@ -25,6 +25,7 @@ public class MenuService {
         return menuRepository.save(menu);
     }
 
+    @Transactional(readOnly = true)
     public List<Menu> list() {
         return menuRepository.findAllWithMenuProduct();
     }

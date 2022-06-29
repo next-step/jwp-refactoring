@@ -26,6 +26,7 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
+    @Transactional(readOnly = true)
     public List<Order> list() {
         return orderRepository.findAllWithItem();
     }

@@ -23,6 +23,7 @@ public class TableService {
         return orderTableRepository.save(orderTable);
     }
 
+    @Transactional(readOnly = true)
     public List<OrderTable> list() {
         return orderTableRepository.findAll();
     }
