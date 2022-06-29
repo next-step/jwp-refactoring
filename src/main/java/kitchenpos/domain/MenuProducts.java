@@ -14,4 +14,8 @@ public class MenuProducts {
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
     }
+
+    public void add(MenuProduct menuProduct) {
+        menuProducts.add(menuProduct);
+    }
 }

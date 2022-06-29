@@ -18,4 +18,8 @@ public class OrderLineItems {
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
     }
+
+    public void add(OrderLineItem orderLineItem) {
+        orderLineItems.add(orderLineItem);
+    }
 }

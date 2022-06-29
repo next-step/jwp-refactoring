@@ -24,8 +24,8 @@ public class OrderLineItem {
         return seq;
     }
 
-    public Order getOrder() {
-        return order;
+    public void setOrder(Order order) {
+        this.order = order;
     }
 
     public Long getMenuId() {
@@ -34,16 +34,5 @@ public class OrderLineItem {
 
     public long getQuantity() {
         return quantity;
-    }
-
-    public void toOrder(Order order) {
-        if (order == null) {
-            throw new IllegalArgumentException();
-        }
-        if (this.order != null) {
-            this.order.getOrderLineItems().getOrderLineItems().remove(this);
-        }
-        this.order = order;
-        order.getOrderLineItems().getOrderLineItems().add(this);
     }
 }

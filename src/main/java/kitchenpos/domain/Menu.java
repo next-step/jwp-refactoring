@@ -24,7 +24,8 @@ public class Menu {
     }
 
     public void addMenuProduct(MenuProduct menuProduct) {
-        menuProduct.toMenu(this);
+        menuProducts.add(menuProduct);
+        menuProduct.setMenu(this);
     }
 
     public Long getId() {

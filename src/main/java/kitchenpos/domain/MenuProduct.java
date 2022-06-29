@@ -20,17 +20,6 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
-    public void toMenu(Menu menu) {
-        if (menu == null) {
-            throw new IllegalArgumentException();
-        }
-        if (this.menu != null) {
-            this.menu.getMenuProducts().getMenuProducts().remove(this);
-        }
-        this.menu = menu;
-        menu.getMenuProducts().getMenuProducts().add(this);
-    }
-
     public Long getSeq() {
         return seq;
     }
@@ -41,5 +30,9 @@ public class MenuProduct {
 
     public long getQuantity() {
         return quantity;
+    }
+
+    public void setMenu(Menu menu) {
+        this.menu = menu;
     }
 }

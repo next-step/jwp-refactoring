@@ -56,7 +56,8 @@ public class Order {
     }
 
     public void addOrderLineItem(OrderLineItem orderLineItem) {
-        orderLineItem.toOrder(this);
+        orderLineItems.add(orderLineItem);
+        orderLineItem.setOrder(this);
     }
 
     public boolean isEmptyItem() {
