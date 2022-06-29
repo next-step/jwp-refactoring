@@ -3,6 +3,7 @@ package kitchenpos.table.application;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,7 +44,7 @@ public class TableServiceTest {
         Mockito.when(orderTableRepository.save(any())).thenReturn(new OrderTable(1L, 3, false));
 
         // when
-        OrderTable created = tableService.create(new OrderTable(3, false)).toOrderTable();
+        OrderTableResponse created = tableService.create(new OrderTableRequest(3, false));
 
         // then
         assertThat(created).isNotNull();
@@ -69,12 +70,12 @@ public class TableServiceTest {
         Mockito.when(orderTableRepository.save(any())).thenReturn(new OrderTable(1L, 3, true));
 
         // when
-        OrderTable changeOrderTable = new OrderTable(1L, 3, true);
-        OrderTable changed = tableService.changeEmpty(1L, changeOrderTable);
+        OrderTableRequest request = new OrderTableRequest(3, true);
+        OrderTableResponse changed = tableService.changeEmpty(1L, request);
 
         // then
         assertThat(changed).isNotNull();
-        assertThat(changed.isEmpty()).isTrue();
+        assertThat(changed.getEmpty()).isTrue();
     }
 
     @DisplayName("[예외] 저장되지 않은 주문 테이블의 주문 상태 변경한다.")
@@ -84,8 +85,8 @@ public class TableServiceTest {
 
         // when, then
         assertThatThrownBy(() -> {
-            OrderTable changeOrderTable = new OrderTable(1L, 3, true);
-            tableService.changeEmpty(1L, changeOrderTable);
+            OrderTableRequest request = new OrderTableRequest(3, true);
+            tableService.changeEmpty(1L, request);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -96,8 +97,8 @@ public class TableServiceTest {
 
         // when, then
         assertThatThrownBy(() -> {
-            OrderTable changeOrderTable = new OrderTable(1L, 3, true);
-            tableService.changeEmpty(1L, changeOrderTable);
+            OrderTableRequest request = new OrderTableRequest(3, true);
+            tableService.changeEmpty(1L, request);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -109,8 +110,8 @@ public class TableServiceTest {
 
         // when, then
         assertThatThrownBy(() -> {
-            OrderTable changeOrderTable = new OrderTable(1L, 3, true);
-            tableService.changeEmpty(1L, changeOrderTable);
+            OrderTableRequest request = new OrderTableRequest(3, true);
+            tableService.changeEmpty(1L, request);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -121,7 +122,7 @@ public class TableServiceTest {
         Mockito.when(orderTableRepository.save(any())).thenReturn(new OrderTable(1L, 5, false));
 
         // when
-        OrderTable orderTable = tableService.changeNumberOfGuests(1L, new OrderTable(5, false));
+        OrderTableResponse orderTable = tableService.changeNumberOfGuests(1L, new OrderTableRequest(5, false));
 
         // then
         assertThat(orderTable).isNotNull();
@@ -135,7 +136,7 @@ public class TableServiceTest {
 
         // when, then
         assertThatThrownBy(() -> {
-            tableService.changeNumberOfGuests(1L, new OrderTable(5, true));
+            tableService.changeNumberOfGuests(1L, new OrderTableRequest(5, true));
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
