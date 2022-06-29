@@ -60,7 +60,7 @@ public class OrderTable {
         return !Objects.equals(this.tableGroupId, null);
     }
 
-    public void group(Long tableGroupId) {
+    public void belongTo(Long tableGroupId) {
         if (!isEmpty() || isGrouped()) {
             throw new IllegalArgumentException("적절하지 않은 테이블이 포함되어 있습니다.");
         }
