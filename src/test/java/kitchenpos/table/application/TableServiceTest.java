@@ -4,6 +4,7 @@ import kitchenpos.application.TableService;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -55,7 +56,7 @@ public class TableServiceTest {
         Mockito.when(orderTableRepository.findAll()).thenReturn(createOrderTableList());
 
         // when
-        List<OrderTable> list = tableService.list();
+        List<OrderTableResponse> list = tableService.list();
 
         // then
         assertThat(list).isNotNull();
