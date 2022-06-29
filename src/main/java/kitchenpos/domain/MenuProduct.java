@@ -25,8 +25,7 @@ public class MenuProduct {
     }
 
     public MenuProduct(Product product, long quantity) {
-        this.product = product;
-        this.quantity = quantity;
+        this(null, product, quantity);
     }
 
     public MenuProduct(Long seq, Product product, long quantity) {
@@ -55,7 +54,7 @@ public class MenuProduct {
         return quantity;
     }
 
-    public BigDecimal getTotalPrice() {
+    public BigDecimal getAmount() {
         return product.getPrice().multiply(BigDecimal.valueOf(quantity));
     }
 

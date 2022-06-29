@@ -30,9 +30,7 @@ public class Menu {
     }
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
-        this.name = name;
-        this.price = new Price(price);
-        this.menuGroup = menuGroup;
+        this(null, name, price, menuGroup);
     }
 
     public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup) {
@@ -70,7 +68,7 @@ public class Menu {
 
     private void checkValidPrice(List<MenuProduct> menuProducts) {
         BigDecimal sum = menuProducts.stream()
-                .map(MenuProduct::getTotalPrice)
+                .map(MenuProduct::getAmount)
                 .reduce(BigDecimal::add)
                 .orElse(BigDecimal.ZERO);
         if (price.greaterThan(sum)) {

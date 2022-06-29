@@ -35,17 +35,16 @@ public class Order {
     public Order() {
     }
 
-    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItemRequests) {
-        this(orderTable, orderLineItemRequests);
-        this.id = id;
-        this.orderStatus = orderStatus;
+    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        this(null, orderTable, OrderStatus.COOKING, orderLineItems);
     }
 
-    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
         if (orderLineItems.size() < ORDER_LINE_ITEMS_MIN_SIZE) {
             throw new IllegalArgumentException();
         }
-        this.orderStatus = OrderStatus.COOKING;
+        this.id = id;
+        this.orderStatus = orderStatus;
         this.orderTable = orderTable;
         this.orderLineItems = orderLineItems;
     }
