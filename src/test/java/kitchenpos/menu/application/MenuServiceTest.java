@@ -1,17 +1,11 @@
-package kitchenpos.application;
+package kitchenpos.menu.application;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuGroupRepository;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProductRepository;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.menu.domain.*;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.dto.MenuProductRequest;
-import kitchenpos.menu.application.MenuService;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,7 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -31,7 +24,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 
 @DisplayName("메뉴 관련 테스트")
@@ -49,6 +41,9 @@ class MenuServiceTest {
 
     @Mock
     MenuProductRepository menuProductRepository;
+
+    @Mock
+    MenuValidator menuValidator;
 
     @InjectMocks
     MenuService menuService;
@@ -68,8 +63,8 @@ class MenuServiceTest {
         products = Arrays.asList(초밥, 우동);
         menuGroup = new MenuGroup(1L, "런치메뉴");
 
-        requestMenuProductSeq1 = new MenuProduct(1L, null, 초밥, 2);
-        requestMenuProductSeq2 = new MenuProduct(2L, null, 우동, 2);
+        requestMenuProductSeq1 = new MenuProduct(1L, null, 1L, 2);
+        requestMenuProductSeq2 = new MenuProduct(2L, null, 2L, 2);
         menuProducts = Arrays.asList(requestMenuProductSeq1, requestMenuProductSeq2);
     }
 
@@ -77,10 +72,9 @@ class MenuServiceTest {
     @Test
     void create() {
         // given
-        MenuRequest request = 메뉴_요청_데이터_생성(BigDecimal.valueOf(26000));
+        MenuRequest request = 메뉴_요청_데이터_생성(BigDecimal.valueOf(26000), menuProducts);
         Menu 예상값 = 메뉴_데이터_생성(1L, BigDecimal.valueOf(26000));
         given(menuGroupRepository.findById(any())).willReturn(Optional.ofNullable(menuGroup));
-        given(productRepository.findAllByIdIn(anyList())).willReturn(products);
         given(menuRepository.save(any(Menu.class))).willReturn(예상값);
 
         // when
@@ -94,54 +88,19 @@ class MenuServiceTest {
     @Test
     void create_exception1() {
         // given
-        MenuRequest request1 = 메뉴_요청_데이터_생성(null);
+        MenuRequest request1 = 메뉴_요청_데이터_생성(null, menuProducts);
+        given(menuGroupRepository.findById(any())).willReturn(Optional.ofNullable(menuGroup));
 
         // when && then
         assertThatThrownBy(() -> 메뉴_생성(request1))
-                .isInstanceOf(NoSuchElementException.class);
+                .isInstanceOf(IllegalArgumentException.class);
 
         // given
-        MenuRequest request2 = 메뉴_요청_데이터_생성(BigDecimal.valueOf(-1));
+        MenuRequest request2 = 메뉴_요청_데이터_생성(BigDecimal.valueOf(-1), menuProducts);
+        given(menuGroupRepository.findById(any())).willReturn(Optional.ofNullable(menuGroup));
 
         // when && then
         assertThatThrownBy(() -> 메뉴_생성(request2))
-                .isInstanceOf(NoSuchElementException.class);
-    }
-
-    @DisplayName("메뉴를 생성할 수 있다 - 메뉴는 메뉴그룹에 속해있어야만 한다")
-    @Test
-    void create_exception2() {
-        // given
-        MenuRequest request = 메뉴_요청_데이터_생성( BigDecimal.valueOf(25000));
-        given(menuGroupRepository.findById(any())).willReturn(Optional.empty());
-
-        // when && then
-        assertThatThrownBy(() -> 메뉴_생성(request))
-                .isInstanceOf(NoSuchElementException.class);
-    }
-
-    @DisplayName("메뉴를 생성할 수 있다 - 존재하는 상품이어야 한다.")
-    @Test
-    void create_exception3() {
-        // given
-        MenuRequest request = 메뉴_요청_데이터_생성(BigDecimal.valueOf(25000));
-        given(menuGroupRepository.findById(any())).willReturn(Optional.ofNullable(menuGroup));
-
-        // when && then
-        assertThatThrownBy(() -> 메뉴_생성(request))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("메뉴를 생성할 수 있다" +
-            " - 메뉴의 가격은 포함된 상품들의 금액에 합보다 작거나 같아야 한다")
-    @Test
-    void create_exception4() {
-        // given
-        MenuRequest request = 메뉴_요청_데이터_생성(BigDecimal.valueOf(26001));
-        given(menuGroupRepository.findById(any())).willReturn(Optional.ofNullable(menuGroup));
-
-        // when && then
-        assertThatThrownBy(() -> 메뉴_생성(request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -169,7 +128,7 @@ class MenuServiceTest {
         );
     }
 
-    private MenuRequest 메뉴_요청_데이터_생성(BigDecimal price) {
+    public static MenuRequest 메뉴_요청_데이터_생성(BigDecimal price, List<MenuProduct> menuProducts) {
         return new MenuRequest("메뉴이름", price, 1L,
                 menuProducts.stream()
                         .map(MenuProductRequest::of)

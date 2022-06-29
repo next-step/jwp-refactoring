@@ -15,7 +15,11 @@ public class MenuProductRequest {
     }
 
     public static MenuProductRequest of(MenuProduct menuProduct) {
-        return new MenuProductRequest(toMenuId(menuProduct.getMenu()), menuProduct.getProduct().getId(), menuProduct.getQuantity());
+        return new MenuProductRequest(toMenuId(menuProduct.getMenu()), menuProduct.getProductId(), menuProduct.getQuantity());
+    }
+
+    public MenuProduct toMenuProduct() {
+        return new MenuProduct(productId, quantity);
     }
 
     private static Long toMenuId(Menu menu) {

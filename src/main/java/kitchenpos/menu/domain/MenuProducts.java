@@ -24,23 +24,8 @@ public class MenuProducts {
         return menuProducts;
     }
 
-    public BigDecimal calculateProductsSum() {
-        BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProduct menuProduct : menuProducts) {
-            sum = sum.add(menuProduct.calculateAmount());
-        }
-
-        return sum;
-    }
-
     public void updateMenu(Menu menu) {
         menuProducts.forEach(menuProduct -> menuProduct.updateMenu(menu));
-    }
-
-    public List<Long> findProductIds() {
-        return menuProducts.stream()
-                .map(menuProduct -> menuProduct.getProduct().getId())
-                .collect(Collectors.toList());
     }
 
     private void addMenuProducts(List<MenuProduct> menuProducts) {

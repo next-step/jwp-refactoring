@@ -34,7 +34,6 @@ public class Menu {
 
     public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this(id, name, price, menuGroup, new MenuProducts(menuProducts));
-        validateMenuProductsAmount();
         bindMenuProducts();
     }
 
@@ -49,14 +48,6 @@ public class Menu {
 
     public void bindMenuProducts() {
         menuProducts.updateMenu(this);
-    }
-
-    private void validateMenuProductsAmount() {
-        BigDecimal sum = menuProducts.calculateProductsSum();
-
-        if (price.compareTo(sum) > 0) {
-            throw new IllegalArgumentException("메뉴의 가격은 상품 가격의 합보다 작거나 같아야 합니다.");
-        }
     }
 
     private void validatePriceAmount() {
