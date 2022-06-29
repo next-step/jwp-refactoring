@@ -32,7 +32,7 @@ class PriceTest {
         Price price = Price.from(100);
 
         // when
-        Price result = price.multiply(10);
+        Price result = price.multiply(Quantity.from(10));
 
         // then
         assertThat(result).isEqualTo(Price.from(1000));

@@ -32,6 +32,10 @@ public class Product {
         this.price = price;
     }
 
+    public Price priceByQuantity(Quantity quantity) {
+        return price.multiply(quantity);
+    }
+
     private void validatePrice(Price price) {
         if (price == null) {
             throw new IllegalArgumentException("상품의 가격은 필수입니다.");

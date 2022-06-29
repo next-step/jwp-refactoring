@@ -39,7 +39,7 @@ public class MenuProduct {
     }
 
     public Price calculatePrice() {
-        return product.getPrice().multiply(quantity.getValue());
+        return product.priceByQuantity(quantity);
     }
 
 

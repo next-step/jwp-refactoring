@@ -30,8 +30,8 @@ public class Price implements Comparable<Price> {
         return new Price(price.add(target.price));
     }
 
-    public Price multiply(long target) {
-        return new Price(price.multiply(BigDecimal.valueOf(target)));
+    public Price multiply(Quantity quantity) {
+        return new Price(price.multiply(BigDecimal.valueOf(quantity.getValue())));
     }
 
     public BigDecimal getValue() {
