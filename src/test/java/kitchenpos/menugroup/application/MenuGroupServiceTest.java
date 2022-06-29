@@ -1,6 +1,5 @@
 package kitchenpos.menugroup.application;
 
-import kitchenpos.application.MenuGroupService;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import org.junit.jupiter.api.BeforeEach;

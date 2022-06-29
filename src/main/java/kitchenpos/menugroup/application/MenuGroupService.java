@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.menugroup.application;
 
 
 

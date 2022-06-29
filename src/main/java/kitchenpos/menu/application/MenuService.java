@@ -1,8 +1,9 @@
-package kitchenpos.application;
+package kitchenpos.menu.application;
 
-import kitchenpos.menu.domain.*;
-import kitchenpos.menu.dto.MenuProductResponse;
-import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProductRepository;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
@@ -12,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 public class MenuService {
