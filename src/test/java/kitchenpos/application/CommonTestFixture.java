@@ -21,4 +21,20 @@ public class CommonTestFixture {
     public static MenuProduct createMenuProduct(int seq, Long menuId, Long productId, int quantity) {
         return new MenuProduct((long) seq, menuId, productId, (long) quantity);
     }
+
+    public static Order createOrder(Long id, Long orderTableId, String orderStatus) {
+        return new Order(id, orderTableId, orderStatus);
+    }
+
+    public static Order createOrder(Long id, Long orderTableId, String orderStatus, List<OrderLineItem> orderLineItems) {
+        return new Order(id, orderTableId, orderStatus, orderLineItems);
+    }
+
+    public static OrderLineItem createOrderLineItem(int seq, Long orderId, Long menuId, long quantity) {
+        return new OrderLineItem((long) seq, orderId, menuId, quantity);
+    }
+
+    public static OrderTable createOrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+        return new OrderTable(id, tableGroupId, numberOfGuests, empty);
+    }
 }
