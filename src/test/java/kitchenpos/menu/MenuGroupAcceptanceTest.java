@@ -46,8 +46,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 메뉴_그룹_생성_요청(String name) {
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setName(name);
+        MenuGroup menuGroup = new MenuGroup(name);
 
         return AcceptanceTest.doPost("/api/menu-groups", menuGroup);
     }

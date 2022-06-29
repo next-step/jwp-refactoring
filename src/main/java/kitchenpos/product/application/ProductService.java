@@ -24,6 +24,7 @@ public class ProductService {
         return ProductResponse.of(product);
     }
 
+    @Transactional(readOnly = true)
     public List<ProductResponse> list() {
         return productRepository.findAll()
                 .stream()

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.dao.MenuDao;
-import kitchenpos.menu.dao.MenuGroupDao;
+import kitchenpos.menu.dao.MenuGroupRepository;
 import kitchenpos.menu.dao.MenuProductDao;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
@@ -36,7 +36,7 @@ class MenuServiceTest {
     MenuDao menuDao;
 
     @Mock
-    MenuGroupDao menuGroupDao;
+    MenuGroupRepository menuGroupRepository;
 
     @Mock
     MenuProductDao menuProductDao;
@@ -77,7 +77,7 @@ class MenuServiceTest {
     @DisplayName("메뉴를 저장한다")
     void create() {
         // given
-        given(menuGroupDao.existsById(any())).willReturn(true);
+        given(menuGroupRepository.existsById(any())).willReturn(true);
         given(productRepository.findById(any())).willReturn(Optional.ofNullable(후라이드));
         given(menuDao.save(any())).willReturn(후라이드치킨);
         given(menuProductDao.save(any())).willReturn(후라이드치킨상품);
@@ -106,7 +106,7 @@ class MenuServiceTest {
     @DisplayName("메뉴 저장시 메뉴는 존재하는 메뉴그룹 정보를 가지고 있다")
     void create_nonExistMenuGroupError() {
         // given
-        given(menuGroupDao.existsById(후라이드치킨.getMenuGroupId())).willReturn(false);
+        given(menuGroupRepository.existsById(후라이드치킨.getMenuGroupId())).willReturn(false);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
@@ -118,7 +118,7 @@ class MenuServiceTest {
     @DisplayName("메뉴 저장시 메뉴는 존재하는 상품 정보를 가져야 한다")
     void create_nonProductInfoError() {
         // given
-        given(menuGroupDao.existsById(any())).willReturn(true);
+        given(menuGroupRepository.existsById(any())).willReturn(true);
         given(productRepository.findById(후라이드치킨상품.getProductId())).willReturn(Optional.empty());
 
         // when & then
@@ -132,7 +132,7 @@ class MenuServiceTest {
     void create_totalPriceError() {
         // given
         후라이드치킨.setPrice(new BigDecimal(20000));
-        given(menuGroupDao.existsById(any())).willReturn(true);
+        given(menuGroupRepository.existsById(any())).willReturn(true);
         given(productRepository.findById(후라이드치킨상품.getProductId())).willReturn(Optional.ofNullable(후라이드));
 
         // when & then
