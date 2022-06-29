@@ -23,33 +23,34 @@ import org.springframework.boot.web.server.LocalServerPort;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class AcceptanceTest {
+
     public static final String 먹는중 = "MEAL";
     public static final String 요리중 = "COOKING";
     public static final String 비어있음 = "true";
     public static final String 사용중 = "false";
-    @LocalServerPort
-    int port;
-
-    @Autowired
-    private DatabaseCleanup databaseCleanup;
-    @BeforeEach
-    public void setUp() {
-        RestAssured.port = port;
-        databaseCleanup.execute();
-    }
     public OrderTableResponse 테이블_1;
     public OrderTableResponse 테이블_2;
     public OrderTableResponse 빈테이블_1;
     public OrderTableResponse 빈테이블_2;
     public MenuResponse 양념두마리_메뉴;
-    public MenuResponse 양념세마리_메뉴 ;
-    public MenuResponse 반반_메뉴 ;
+    public MenuResponse 양념세마리_메뉴;
+    public MenuResponse 반반_메뉴;
     public OrderLineItemDTO 주문;
     public ProductResponse 후라이드;
     public ProductResponse 양념;
-    public MenuGroupResponse  두마리메뉴;
-    public MenuGroupResponse  반반메뉴;
-    public MenuGroupResponse  세마리메뉴;
+    public MenuGroupResponse 두마리메뉴;
+    public MenuGroupResponse 반반메뉴;
+    public MenuGroupResponse 세마리메뉴;
+    @LocalServerPort
+    int port;
+    @Autowired
+    private DatabaseCleanup databaseCleanup;
+
+    @BeforeEach
+    public void setUp() {
+        RestAssured.port = port;
+        databaseCleanup.execute();
+    }
 
     /**
      *테이블
@@ -71,7 +72,7 @@ public abstract class AcceptanceTest {
      * 주문
          * 양념두마리메뉴,2개
      */
-    public void init(){
+    public void init() {
         테이블_설정하기();
         메뉴그룹_설정하기();
         상품_설정하기();
@@ -79,18 +80,19 @@ public abstract class AcceptanceTest {
         주문_설정하기();
     }
 
-    private void 메뉴그룹_설정하기(){
+    private void 메뉴그룹_설정하기() {
         두마리메뉴 = 메뉴그룹_등록하기("두마리메뉴").as(MenuGroupResponse.class);
         세마리메뉴 = 메뉴그룹_등록하기("세마리메뉴").as(MenuGroupResponse.class);
         반반메뉴 = 메뉴그룹_등록하기("반반메뉴").as(MenuGroupResponse.class);
     }
 
 
-    private void 상품_설정하기(){
+    private void 상품_설정하기() {
         후라이드 = 상품_등록하기("후라이드", 17000).as(ProductResponse.class);
         양념 = 상품_등록하기("양념", 15000).as(ProductResponse.class);
     }
-    private void 주문_설정하기(){
+
+    private void 주문_설정하기() {
         주문 = new OrderLineItemDTO();
         주문.setMenuId(양념두마리_메뉴.getId());
         주문.setQuantity(2L);
@@ -109,8 +111,10 @@ public abstract class AcceptanceTest {
         후라이드_한마리.setProductId(후라이드.getId());
         후라이드_한마리.setQuantity(1L);
 
-        양념두마리_메뉴 = 메뉴_추가하기("양념두마리", 2222, 두마리메뉴.getId(), Arrays.asList(양념_한마리)).as(MenuResponse.class);
-        양념세마리_메뉴 = 메뉴_추가하기("양념세마리", 3333, 세마리메뉴.getId(), Arrays.asList(양념_세마리)).as(MenuResponse.class);
+        양념두마리_메뉴 = 메뉴_추가하기("양념두마리", 2222, 두마리메뉴.getId(), Arrays.asList(양념_한마리)).as(
+            MenuResponse.class);
+        양념세마리_메뉴 = 메뉴_추가하기("양념세마리", 3333, 세마리메뉴.getId(), Arrays.asList(양념_세마리)).as(
+            MenuResponse.class);
         반반_메뉴 = 메뉴_추가하기("양념후라이드", 1111, 두마리메뉴.getId(), Arrays.asList(양념_한마리, 후라이드_한마리)).as(
             MenuResponse.class);
     }

@@ -2,30 +2,21 @@ package kitchenpos.ui;
 
 import static kitchenpos.helper.AcceptanceApiHelper.MenuApiHelper.메뉴_리스트_조회하기;
 import static kitchenpos.helper.AcceptanceApiHelper.MenuApiHelper.메뉴_추가하기;
-import static kitchenpos.helper.AcceptanceApiHelper.MenuGroupApiHelper.*;
-import static kitchenpos.helper.AcceptanceApiHelper.ProductApiHelper.상품_등록하기;
+import static kitchenpos.helper.AcceptanceAssertionHelper.MenuAssertionHelper.메뉴_등록_에러발생;
 import static kitchenpos.helper.AcceptanceAssertionHelper.MenuAssertionHelper.메뉴_등록되어있음;
+import static kitchenpos.helper.AcceptanceAssertionHelper.MenuAssertionHelper.메뉴_리스트_조회됨;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
 import kitchenpos.dto.dto.MenuProductDTO;
-import kitchenpos.dto.response.MenuGroupResponse;
-import kitchenpos.dto.response.MenuResponse;
-import kitchenpos.dto.response.ProductResponse;
-import kitchenpos.helper.AcceptanceApiHelper.MenuApiHelper;
 import kitchenpos.helper.AcceptanceAssertionHelper.MenuAssertionHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.context.jdbc.Sql;
 
 
-class MenuAcceptanceTest  extends AcceptanceTest {
+class MenuAcceptanceTest extends AcceptanceTest {
 
     /**
      *테이블
@@ -48,7 +39,7 @@ class MenuAcceptanceTest  extends AcceptanceTest {
          * 양념두마리메뉴,2개
      */
     @BeforeEach
-    public void init(){
+    public void init() {
         super.init();
     }
 
@@ -59,7 +50,7 @@ class MenuAcceptanceTest  extends AcceptanceTest {
      * given : 메뉴 정보를 구성한뒤
      * when : 메뉴를 저장하면
      * then : 정상적으로 저장된다.
-    */
+     */
     @Test
     public void 메뉴_추가하기_테스트() {
         //given
@@ -91,13 +82,13 @@ class MenuAcceptanceTest  extends AcceptanceTest {
      * then : 정상적으로 조회된다.
      */
     @Test
-    public void 메뉴_리스트_조회하기_테스트(){
+    public void 메뉴_리스트_조회하기_테스트() {
 
         //when
         ExtractableResponse<Response> 메뉴_리스트_조회하기 = 메뉴_리스트_조회하기();
 
         //then
-        MenuAssertionHelper.메뉴_리스트_조회됨(메뉴_리스트_조회하기, Arrays.asList(양념두마리_메뉴, 양념세마리_메뉴,  반반_메뉴));
+        메뉴_리스트_조회됨(메뉴_리스트_조회하기, Arrays.asList(양념두마리_메뉴, 양념세마리_메뉴, 반반_메뉴));
     }
 
     /**
@@ -109,7 +100,7 @@ class MenuAcceptanceTest  extends AcceptanceTest {
      * then : 에러가 발생한다.
      */
     @Test
-    public void 메뉴가격_음수_에러발생_테스트(){
+    public void 메뉴가격_음수_에러발생_테스트() {
         //given
         MenuProductDTO 양념_한마리 = new MenuProductDTO();
         양념_한마리.setProductId(양념.getId());
@@ -120,7 +111,7 @@ class MenuAcceptanceTest  extends AcceptanceTest {
             Arrays.asList(양념_한마리));
 
         //then
-        MenuAssertionHelper.메뉴_등록_에러발생(메뉴_추가하기_response);
+        메뉴_등록_에러발생(메뉴_추가하기_response);
     }
 
     /**
@@ -132,17 +123,18 @@ class MenuAcceptanceTest  extends AcceptanceTest {
      * then : 에러가 발생한다.
      */
     @Test
-    public void 메뉴가격_상품들_가격보다_클때_에러발생_테스트(){
+    public void 메뉴가격_상품들_가격보다_클때_에러발생_테스트() {
         //given
         MenuProductDTO 양념_한마리 = new MenuProductDTO();
         양념_한마리.setProductId(양념.getId());
         양념_한마리.setQuantity(2L);
         //when
-        ExtractableResponse<Response> 메뉴_추가하기_response = 메뉴_추가하기("양념세마리", 양념.getPrice().intValue() * 3, 세마리메뉴.getId(),
+        ExtractableResponse<Response> 메뉴_추가하기_response = 메뉴_추가하기("양념세마리",
+            양념.getPrice().intValue() * 3, 세마리메뉴.getId(),
             Arrays.asList(양념_한마리));
 
         //then
-        MenuAssertionHelper.메뉴_등록_에러발생(메뉴_추가하기_response);
+        메뉴_등록_에러발생(메뉴_추가하기_response);
     }
 
 }

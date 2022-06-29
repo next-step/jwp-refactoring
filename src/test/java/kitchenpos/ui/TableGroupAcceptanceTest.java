@@ -45,7 +45,7 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
      */
 
     @BeforeEach
-    public void init(){
+    public void init() {
         super.init();
     }
 

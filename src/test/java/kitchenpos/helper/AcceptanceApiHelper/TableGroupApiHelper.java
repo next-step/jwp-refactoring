@@ -6,7 +6,6 @@ import io.restassured.response.Response;
 import java.util.List;
 import kitchenpos.dto.request.OrderTableRequest;
 import kitchenpos.dto.request.TableGroupRequest;
-import kitchenpos.dto.response.OrderTableResponse;
 import org.springframework.http.MediaType;
 
 public class TableGroupApiHelper {

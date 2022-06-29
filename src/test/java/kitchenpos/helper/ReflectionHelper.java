@@ -8,7 +8,8 @@ import kitchenpos.domain.Product;
 import kitchenpos.domain.TableGroup;
 
 public class ReflectionHelper {
-    public static void SetProductId(Long id, Product product){
+
+    public static void SetProductId(Long id, Product product) {
         Field field = null;
         try {
             field = Product.class.getDeclaredField("id");
@@ -21,7 +22,7 @@ public class ReflectionHelper {
         }
     }
 
-    public static void setMenuId(Long id, Menu menu){
+    public static void setMenuId(Long id, Menu menu) {
         Field field = null;
         try {
             field = Menu.class.getDeclaredField("id");
@@ -34,7 +35,7 @@ public class ReflectionHelper {
         }
     }
 
-    public static void setOrderId(Long id, Order order){
+    public static void setOrderId(Long id, Order order) {
         Field field = null;
         try {
             field = Order.class.getDeclaredField("id");
@@ -47,7 +48,7 @@ public class ReflectionHelper {
         }
     }
 
-    public static void setOrderLineItemId(Long id, OrderLineItem orderLineItem){
+    public static void setOrderLineItemId(Long id, OrderLineItem orderLineItem) {
         Field field = null;
         try {
             field = OrderLineItem.class.getDeclaredField("seq");
@@ -60,7 +61,7 @@ public class ReflectionHelper {
         }
     }
 
-    public static void setTableGroupId(Long id, TableGroup tableGroup){
+    public static void setTableGroupId(Long id, TableGroup tableGroup) {
         Field field = null;
         try {
             field = TableGroup.class.getDeclaredField("id");

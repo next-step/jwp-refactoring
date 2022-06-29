@@ -8,7 +8,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.dto.response.MenuGroupResponse;
 import kitchenpos.helper.AcceptanceAssertionHelper.MenuGroupAssertionHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,7 +36,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
          * 양념두마리메뉴,2개
      */
     @BeforeEach
-    public void init(){
+    public void init() {
         super.init();
     }
 
