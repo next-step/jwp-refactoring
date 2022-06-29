@@ -11,35 +11,34 @@ import kitchenpos.order.consts.OrderStatus;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.domain.repository.OrderRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.repository.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class OrderService {
     private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
     private final MenuRepository menuRepository;
+    private final OrderValidator orderValidator;
 
     public OrderService(OrderRepository orderRepository,
-                        OrderTableRepository orderTableRepository,
-                        MenuRepository menuRepository) {
+                        MenuRepository menuRepository,
+                        OrderValidator orderValidator) {
         this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
         this.menuRepository = menuRepository;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest, LocalDateTime orderedTime) {
-        OrderTable orderTable = findOrderTable(orderRequest.getOrderTableId());
         Menus menus = findMenus(orderRequest.getMenuIds());
         OrderLineItems orderLineItems = createOrderLineItems(orderRequest.getOrderLineItems(), menus);
-        Order order = new Order(orderedTime, orderTable, orderLineItems);
+        Order order = new Order(orderedTime, orderRequest.getOrderTableId(), orderLineItems);
+        orderValidator.validate(order);
         Order savedOrder = orderRepository.save(order);
         return OrderResponse.from(savedOrder);
     }
@@ -61,8 +60,7 @@ public class OrderService {
         final List<OrderLineItem> orderLineItems = new ArrayList<>();
         for (OrderLineItemRequest orderLineItemRequest : requestOrderLineItems) {
             Menu menu = menus.getMenuBy(orderLineItemRequest.getMenuId());
-            OrderLineItem orderLineItem = new OrderLineItem(menu.getId(),
-                    new Quantity(orderLineItemRequest.getQuantity()));
+            OrderLineItem orderLineItem = new OrderLineItem(menu.getId(), new Quantity(orderLineItemRequest.getQuantity()));
             orderLineItems.add(orderLineItem);
         }
         return new OrderLineItems(orderLineItems);
@@ -86,11 +84,6 @@ public class OrderService {
     private Order findOrder(Long orderId) {
         return orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 주문이 등록되어있지 않습니다."));
-    }
-
-    private OrderTable findOrderTable(Long orderTableId) {
-        return orderTableRepository.findById(orderTableId)
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 테이블이 등록되어있지 않습니다."));
     }
 
 }

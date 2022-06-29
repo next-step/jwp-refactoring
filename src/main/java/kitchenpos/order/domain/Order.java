@@ -9,11 +9,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import kitchenpos.order.consts.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
 
 @Entity
 @Table(name = "orders")
@@ -28,23 +25,21 @@ public class Order {
     private LocalDateTime orderedTime;
     @Embedded
     private OrderLineItems orderLineItems = new OrderLineItems();
-    @ManyToOne
-    @JoinColumn(name = "order_table_id")
-    private OrderTable orderTable;
+    @Column(name = "order_table_id", nullable = false)
+    private Long orderTableId;
 
     protected Order() {
     }
 
-    public Order(LocalDateTime orderedTime, OrderTable orderTable, OrderLineItems orderLineItems) {
-        this(null, OrderStatus.COOKING, orderedTime, orderTable, orderLineItems);
+    public Order(LocalDateTime orderedTime, Long orderTableId, OrderLineItems orderLineItems) {
+        this(null, OrderStatus.COOKING, orderedTime, orderTableId, orderLineItems);
     }
 
-    public Order(Long id, OrderStatus orderStatus, LocalDateTime orderedTime, OrderTable orderTable, OrderLineItems orderLineItems) {
-        validate(orderTable);
+    public Order(Long id, OrderStatus orderStatus, LocalDateTime orderedTime, Long orderTableId, OrderLineItems orderLineItems) {
         this.id = id;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
-        this.orderTable = orderTable;
+        this.orderTableId = orderTableId;
         this.orderLineItems = orderLineItems;
     }
 
@@ -56,12 +51,6 @@ public class Order {
     public void changeOrderStatus(OrderStatus orderStatus) {
         validatePossibleChangOrder();
         this.orderStatus = orderStatus;
-    }
-
-    private void validate(OrderTable orderTable) {
-        if (orderTable.isEmptyTable()) {
-            throw new IllegalArgumentException("[ERROR] 빈테이블인 경우 주문을 등록 할 수 없습니다.");
-        }
     }
 
     private void validateOrderLineItem(OrderLineItem orderLineItem) {
@@ -92,8 +81,8 @@ public class Order {
         return orderLineItems;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
 

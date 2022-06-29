@@ -11,14 +11,13 @@ import static org.mockito.BDDMockito.given;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Optional;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.repository.MenuRepository;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.domain.repository.OrderRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,16 +30,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class OrderServiceUnitTest {
 
     @Mock
+    private OrderValidator orderValidator;
+    @Mock
     private OrderRepository orderRepository;
     @Mock
     private MenuRepository menuRepository;
-    @Mock
-    private OrderTableRepository orderTableRepository;
     private OrderService orderService;
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(orderRepository, orderTableRepository, menuRepository);
+        orderService = new OrderService(orderRepository, menuRepository, orderValidator);
     }
 
 
@@ -65,7 +64,6 @@ class OrderServiceUnitTest {
         OrderTable orderTable = 테이블_만들기(1L, 3, false);
         OrderRequest request = 주문_요청_만들기(orderTable.getId(), Arrays.asList(orderLineItem1, orderLineItem2));
 
-        given(orderTableRepository.findById(request.getOrderTableId())).willReturn(Optional.of(orderTable));
         given(menuRepository.findAllById(any())).willReturn(Arrays.asList(menu));
 
         //when then
@@ -84,8 +82,6 @@ class OrderServiceUnitTest {
         OrderTable orderTable = 테이블_만들기(1L, 3, true);
         OrderRequest request = 주문_요청_만들기(orderTable.getId(), Arrays.asList(orderLineItem1, orderLineItem2));
 
-        given(orderTableRepository.findById(request.getOrderTableId())).willReturn(Optional.of(orderTable));
-
         //when then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(request, LocalDateTime.now()));
     }
@@ -99,8 +95,6 @@ class OrderServiceUnitTest {
         OrderLineItemRequest orderLineItem2 = 주문_항목_요청_만들기(menu.getId(), 2);
         OrderTable orderTable = 테이블_만들기(1L, 3, true);
         OrderRequest request = 주문_요청_만들기(orderTable.getId(), Arrays.asList(orderLineItem1, orderLineItem2));
-
-        given(orderTableRepository.findById(request.getOrderTableId())).willReturn(Optional.of(orderTable));
 
         //when then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(request, LocalDateTime.now()));

@@ -54,7 +54,7 @@ public class TableGroupService {
 
     private void checkPossibleUngroup(OrderTables orderTables) {
         for (OrderTable orderTable : orderTables.getOrderTables()) {
-            Orders savedOrders = new Orders(orderRepository.findAllByOrderTable(orderTable));
+            Orders savedOrders = new Orders(orderRepository.findAllByOrderTableId(orderTable.getId()));
             checkOrderStatus(savedOrders);
         }
     }

@@ -36,6 +36,6 @@ public class OrderFixtures {
     }
 
     public static Order 주문_만들기(Long id, OrderStatus orderStatus, OrderTable orderTable, OrderLineItems orderLineItems) {
-        return new Order(id, orderStatus, LocalDateTime.now(), orderTable, orderLineItems);
+        return new Order(id, orderStatus, LocalDateTime.now(), orderTable.getId(), orderLineItems);
     }
 }
