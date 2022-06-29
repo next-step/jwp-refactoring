@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -9,9 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
-import kitchenpos.product.domain.Product;
 
 @Entity
 @Table(name = "menu_product")
@@ -25,9 +24,8 @@ public class MenuProduct {
     @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_menu_product_menu"))
     private Menu menu;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "fk_menu_product_product"))
-    private Product product;
+    @Column(nullable = false)
+    private Long productId;
 
     @Embedded
     private Quantity quantity;
@@ -35,26 +33,15 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
-    public MenuProduct(Long seq, Menu menu, Product product, long quantity) {
-        this.seq = seq;
+    public MenuProduct(Menu menu, Long productId, long quantity) {
         this.menu = menu;
-        this.product = product;
+        this.productId = productId;
         this.quantity = new Quantity(quantity);
     }
 
-    public MenuProduct(Menu menu, Product product, long quantity) {
-        this.menu = menu;
-        this.product = product;
+    public MenuProduct(Long productId, long quantity) {
+        this.productId = productId;
         this.quantity = new Quantity(quantity);
-    }
-
-    public MenuProduct(Product product, long quantity) {
-        this.product = product;
-        this.quantity = new Quantity(quantity);
-    }
-
-    public Price calculateAmount() {
-        return product.getPrice().multiply(quantity);
     }
 
     public Long getSeq() {
@@ -69,8 +56,12 @@ public class MenuProduct {
         this.menu = menu;
     }
 
-    public Product getProduct() {
-        return product;
+    public Long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
     }
 
     public long getQuantity() {

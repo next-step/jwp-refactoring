@@ -74,8 +74,8 @@ class OrderServiceTest extends ServiceTest {
         짬뽕 = productRepository.save(new Product("짬뽕", BigDecimal.valueOf(1000)));
         짜장 = productRepository.save(new Product("짜장", BigDecimal.valueOf(2000)));
 
-        중식_메뉴_짬뽕 = menuProductRepository.save(new MenuProduct(중식_메뉴, 짬뽕, 3));
-        중식_메뉴_짜장 = menuProductRepository.save(new MenuProduct(중식_메뉴, 짜장, 1));
+        중식_메뉴_짬뽕 = menuProductRepository.save(new MenuProduct(중식_메뉴, 짬뽕.getId(), 3));
+        중식_메뉴_짜장 = menuProductRepository.save(new MenuProduct(중식_메뉴, 짜장.getId(), 1));
 
         중식_메뉴.addMenuProduct(Arrays.asList(중식_메뉴_짬뽕, 중식_메뉴_짜장));
 

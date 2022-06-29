@@ -57,8 +57,8 @@ class MenuServiceTest extends ServiceTest{
         짬뽕 = productRepository.save(new Product("상품1", BigDecimal.valueOf(1000)));
         짜장 = productRepository.save(new Product("상품2", BigDecimal.valueOf(2000)));
 
-        중식_메뉴_짬뽕 = menuProductRepository.save(new MenuProduct( 중식메뉴, 짬뽕, 3));
-        중식_메뉴_짜장 = menuProductRepository.save(new MenuProduct( 중식메뉴, 짜장, 1));
+        중식_메뉴_짬뽕 = menuProductRepository.save(new MenuProduct( 중식메뉴, 짬뽕.getId(), 3));
+        중식_메뉴_짜장 = menuProductRepository.save(new MenuProduct( 중식메뉴, 짜장.getId(), 1));
 
         중식메뉴.addMenuProduct(Arrays.asList(중식_메뉴_짬뽕, 중식_메뉴_짜장));
     }
@@ -82,7 +82,7 @@ class MenuServiceTest extends ServiceTest{
     void createTestFailWithMenuProductNotExist() {
         //given
         Product 잘못된_상품 = new Product(45L,"잘못된 상품", BigDecimal.valueOf(10));
-        MenuProduct 잘못된_메뉴_상품 = new MenuProduct(중식메뉴, 잘못된_상품, 10);
+        MenuProduct 잘못된_메뉴_상품 = new MenuProduct(중식메뉴, 잘못된_상품.getId(), 10);
 
         //when & then
         assertThatThrownBy(
@@ -91,9 +91,9 @@ class MenuServiceTest extends ServiceTest{
                         중식메뉴.getPrice().longValue(),
                         중식.getId(),
                         Arrays.asList(
-                                MenuProductRequest.of(잘못된_메뉴_상품.getProduct().getId(), 잘못된_메뉴_상품.getQuantity())
+                                MenuProductRequest.of(잘못된_상품.getId(), 잘못된_메뉴_상품.getQuantity())
                         )
-        ))).isInstanceOf(NoSuchElementException.class);
+        ))).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -109,8 +109,8 @@ class MenuServiceTest extends ServiceTest{
                         잘못된_메뉴.getPrice().longValue(),
                         중식.getId(),
                         Arrays.asList(
-                                MenuProductRequest.of(중식_메뉴_짬뽕.getProduct().getId(), 중식_메뉴_짬뽕.getQuantity()),
-                                MenuProductRequest.of(중식_메뉴_짜장.getProduct().getId(), 중식_메뉴_짜장.getQuantity()))))
+                                MenuProductRequest.of(짬뽕.getId(), 중식_메뉴_짬뽕.getQuantity()),
+                                MenuProductRequest.of(짜장.getId(), 중식_메뉴_짜장.getQuantity()))))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -124,8 +124,8 @@ class MenuServiceTest extends ServiceTest{
                         중식메뉴.getPrice().longValue(),
                         중식.getId(),
                         Arrays.asList(
-                                MenuProductRequest.of(중식_메뉴_짬뽕.getProduct().getId(), 중식_메뉴_짬뽕.getQuantity()),
-                                MenuProductRequest.of(중식_메뉴_짜장.getProduct().getId(), 중식_메뉴_짜장.getQuantity())))
+                                MenuProductRequest.of(짬뽕.getId(), 중식_메뉴_짬뽕.getQuantity()),
+                                MenuProductRequest.of(짜장.getId(), 중식_메뉴_짜장.getQuantity())))
         );
 
         //then
