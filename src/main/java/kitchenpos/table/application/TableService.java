@@ -25,7 +25,7 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse create(final OrderTableRequest request) {
-        OrderTable orderTable = new OrderTable(null, null, request.getNumberOfGuests(), request.isEmpty());
+        OrderTable orderTable = OrderTable.of(request.getNumberOfGuests(), request.isEmpty());
         orderTableRepository.save(orderTable);
         return new OrderTableResponse(orderTable);
     }

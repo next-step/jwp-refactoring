@@ -42,19 +42,19 @@ class TableServiceTest {
     @DisplayName("전체 주문 테이블을 조회할 수 있다.")
     void list() {
         //given
-        OrderTable orderTable1 = new OrderTable(1L, null, 2, true);
-        OrderTable orderTable2 = new OrderTable(2L, null, 10, true);
+        OrderTable orderTable1 = OrderTable.of(2, true);
+        OrderTable orderTable2 = OrderTable.of(10, true);
         given(orderTableRepository.findAll()).willReturn(Arrays.asList(orderTable1, orderTable2));
 
         //then
-        assertThat(tableService.list().stream().map(OrderTableResponse::getId)).containsExactlyInAnyOrder(1L, 2L);
+        assertThat(tableService.list().stream().map(OrderTableResponse::getNumberOfGuests)).containsExactlyInAnyOrder(2, 10);
     }
 
     @Test
     @DisplayName("주문 테이블을 빈 테이블로 변경할 수 있다.")
     void changeEmpty() {
         //given
-        OrderTable orderTable = new OrderTable(1L, null, 2, false);
+        OrderTable orderTable = OrderTable.of(2, false);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
 
         //when
@@ -81,7 +81,7 @@ class TableServiceTest {
     @DisplayName("주문 테이블의 방문한 손님 수를 변경할 수 있다.")
     void changeNumberOfGuests() {
         //given
-        OrderTable orderTable = new OrderTable(1L, null, 5, true);
+        OrderTable orderTable = OrderTable.of(5, true);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
 
         //when

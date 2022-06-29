@@ -58,8 +58,8 @@ class TableGroupRestControllerTest {
     @Test
     void test_post() throws Exception {
         //given
-        OrderTable orderTable1 = new OrderTable(1L, null, 5, true);
-        OrderTable orderTable2 = new OrderTable(2L, null, 1, true);
+        OrderTable orderTable1 = OrderTable.of(5, true);
+        OrderTable orderTable2 = OrderTable.of(  1, true);
         TableGroup tableGroup = new TableGroup(new OrderTables(2, Arrays.asList(orderTable1, orderTable2)));
         given(tableGroupService.create(any())).willReturn(new TableGroupResponse(tableGroup));
 

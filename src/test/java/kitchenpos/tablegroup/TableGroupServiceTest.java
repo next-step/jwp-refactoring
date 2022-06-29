@@ -43,15 +43,15 @@ class TableGroupServiceTest {
     void create() {
         //given
         given(orderTableRepository.findAllByIdIn(any())).willReturn(
-                Arrays.asList(new OrderTable(1L, null, 5, true), new OrderTable(2L, null, 1, true)));
+                Arrays.asList(OrderTable.of(5, true), OrderTable.of(1, true)));
 
         //when
         TableGroupResponse savedTableGroup = tableGroupService.create(
                 new TableGroupRequest(Arrays.asList(new OrderTableRequest(1L), new OrderTableRequest(2L))));
 
         //then
-        assertThat(savedTableGroup.getOrderTables().stream().map(OrderTableResponse::getId)).isNotEmpty()
-                .containsExactlyInAnyOrder(1L, 2L);
+        assertThat(savedTableGroup.getOrderTables().stream().map(OrderTableResponse::getNumberOfGuests)).isNotEmpty()
+                .containsExactlyInAnyOrder(1, 5);
     }
 
     @Test
@@ -70,8 +70,8 @@ class TableGroupServiceTest {
     @DisplayName("단체 지정을 해제할 수 있다.")
     void ungroup() {
         //given
-        OrderTable orderTable1 = new OrderTable(1L, null, 5, true);
-        OrderTable orderTable2 = new OrderTable(2L, null, 1, true);
+        OrderTable orderTable1 = OrderTable.of(5, true);
+        OrderTable orderTable2 = OrderTable.of(1, true);
         TableGroup tableGroup = new TableGroup(new OrderTables(2, Arrays.asList(orderTable1, orderTable2)));
         given(tableGroupRepository.findById(any())).willReturn(Optional.of(tableGroup));
         given(ordersRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(false);
@@ -88,8 +88,8 @@ class TableGroupServiceTest {
     @DisplayName("단체 지정 내 주문 상태가 조리 혹은 식사 인 주문 테이블이 포함되어 있을 경우 해제할 수 없다.")
     void ungroup_failed() {
         //given
-        OrderTable orderTable1 = new OrderTable(1L, null, 5, true);
-        OrderTable orderTable2 = new OrderTable(2L, null, 1, true);
+        OrderTable orderTable1 = OrderTable.of(5, true);
+        OrderTable orderTable2 = OrderTable.of(1, true);
         TableGroup tableGroup = new TableGroup(new OrderTables(2, Arrays.asList(orderTable1, orderTable2)));
         given(tableGroupRepository.findById(any())).willReturn(Optional.of(tableGroup));
         given(ordersRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(true);

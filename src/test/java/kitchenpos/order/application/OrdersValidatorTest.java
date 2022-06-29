@@ -70,7 +70,7 @@ class OrdersValidatorTest {
         //given
         given(menuRepository.countByIdIn(any())).willReturn(1L);
         given(orderTableRepository.findByIdAndEmptyIsFalse(any())).willReturn(
-                Optional.of(new OrderTable(1L, null, 1, true)));
+                Optional.of(OrderTable.of( 1, true)));
 
         //then
         assertThatThrownBy(() -> ordersValidator.validate(

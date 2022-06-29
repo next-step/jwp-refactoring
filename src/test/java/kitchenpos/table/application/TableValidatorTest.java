@@ -25,7 +25,7 @@ class TableValidatorTest {
     @DisplayName("주문 테이블의 단체 지정이 되어있으면 빈 테이블로 변경 실패한다.")
     void validate_changeEmpty_failed_1() {
         //given
-        OrderTable orderTable = new OrderTable(1L, 2L, 5, false);
+        OrderTable orderTable = OrderTable.of(2L, 5, false);
         //then
         assertThatThrownBy(() -> tableValidator.validateChangeEmpty(orderTable)).isExactlyInstanceOf(
                 IllegalArgumentException.class);
@@ -39,7 +39,7 @@ class TableValidatorTest {
 
         //then
         assertThatThrownBy(
-                () -> tableValidator.validateChangeEmpty(new OrderTable(1L, null, 10, true))).isExactlyInstanceOf(
+                () -> tableValidator.validateChangeEmpty(OrderTable.of(10, true))).isExactlyInstanceOf(
                 IllegalArgumentException.class);
     }
 
@@ -47,7 +47,7 @@ class TableValidatorTest {
     @DisplayName("주문 테이블의 방문한 손님 수가 음수면 방문한 손님 수 변경에 실패한다.")
     void changeNumberOfGuests_failed_1() {
         //then
-        assertThatThrownBy(() -> tableValidator.validateChangeNumberOfGuests(new OrderTable(1L, 2L, 10, false),
+        assertThatThrownBy(() -> tableValidator.validateChangeNumberOfGuests(OrderTable.of(10, false),
                 new OrderTableUpdateNumberOfGuestsRequest(-1))).isExactlyInstanceOf(IllegalArgumentException.class);
 
     }
@@ -56,7 +56,7 @@ class TableValidatorTest {
     @DisplayName("주문 테이블이 비어있으면 방문한 손님 수 변경에 실패한다.")
     void changeNumberOfGuests_failed_2() {
         //then
-        assertThatThrownBy(() -> tableValidator.validateChangeNumberOfGuests(new OrderTable(1L, 2L, 10, true),
+        assertThatThrownBy(() -> tableValidator.validateChangeNumberOfGuests(OrderTable.of( 10, true),
                 new OrderTableUpdateNumberOfGuestsRequest(-1))).isExactlyInstanceOf(IllegalArgumentException.class);
 
     }
