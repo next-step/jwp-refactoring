@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.domain.Product;
 import kitchenpos.domain.ProductRepository;
 import kitchenpos.dto.ProductRequest;
 import kitchenpos.dto.ProductResponse;
@@ -24,5 +25,10 @@ public class ProductService {
 
     public List<ProductResponse> list() {
         return ProductResponse.from(productRepository.findAll());
+    }
+
+    public Product findProductById(Long id) {
+        return productRepository.findById(id)
+                .orElseThrow(IllegalArgumentException::new);
     }
 }

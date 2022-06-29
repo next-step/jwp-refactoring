@@ -2,11 +2,9 @@ package kitchenpos.application;
 
 import java.util.stream.Collectors;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.Product;
-import kitchenpos.domain.ProductRepository;
 import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.MenuResponse;
@@ -20,17 +18,17 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class MenuService {
     private final MenuRepository menuRepository;
-    private final MenuGroupRepository menuGroupRepository;
-    private final ProductRepository productRepository;
+    private final MenuGroupService menuGroupService;
+    private final ProductService productService;
 
     public MenuService(
             final MenuRepository menuRepository,
-            final MenuGroupRepository menuGroupRepository,
-            final ProductRepository productRepository
+            final MenuGroupService menuGroupService,
+            final ProductService productService
     ) {
         this.menuRepository = menuRepository;
-        this.menuGroupRepository = menuGroupRepository;
-        this.productRepository = productRepository;
+        this.menuGroupService = menuGroupService;
+        this.productService = productService;
     }
 
     @Transactional
@@ -51,15 +49,17 @@ public class MenuService {
         return MenuResponse.from(menuRepository.findAll());
     }
 
-    private MenuProduct createMenuProductAddedProduct(MenuProductRequest menuProductRequest) {
-        Product product = productRepository.findById(menuProductRequest.getProductId())
-                .orElseThrow(IllegalArgumentException::new);
+    public int countByIdIn(List<Long> ids) {
+        return menuRepository.countByIdIn(ids);
+    }
 
+    private MenuProduct createMenuProductAddedProduct(MenuProductRequest menuProductRequest) {
+        Product product = productService.findProductById(menuProductRequest.getProductId());
         return menuProductRequest.toMenuProduct(product);
     }
 
     private void validateNotFoundMenuGroup(MenuRequest menuRequest) {
-        if (!menuGroupRepository.existsById(menuRequest.getMenuGroupId())) {
+        if (!menuGroupService.existsById(menuRequest.getMenuGroupId())) {
             throw new IllegalArgumentException();
         }
     }

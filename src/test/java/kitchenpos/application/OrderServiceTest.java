@@ -19,13 +19,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItems;
 import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
@@ -39,11 +37,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
-    private MenuRepository menuRepository;
+    private MenuService menuService;
     @Mock
     private OrderRepository orderRepository;
     @Mock
-    private OrderTableRepository orderTableRepository;
+    private OrderTableService orderTableService;
     @InjectMocks
     private OrderService orderService;
     private Order 주문;
@@ -67,7 +65,7 @@ class OrderServiceTest {
     @Test
     void 주문_생성_주문_항목_없음_예외() {
         // given
-        given(orderTableRepository.findById(주문테이블.getId())).willReturn(Optional.ofNullable(주문테이블));
+        given(orderTableService.findOrderTableById(주문테이블.getId())).willReturn(주문테이블);
 
         // when, then
         OrderRequest 주문항목없는주문 = createOrderRequest(주문테이블.getId(), null);
@@ -79,8 +77,8 @@ class OrderServiceTest {
     @Test
     void 주문_생성_없는_메뉴_예외() {
         // given
-        given(orderTableRepository.findById(주문테이블.getId())).willReturn(Optional.ofNullable(주문테이블));
-        given(menuRepository.countByIdIn(Arrays.asList(100L))).willReturn(0);
+        given(orderTableService.findOrderTableById(주문테이블.getId())).willReturn(주문테이블);
+        given(menuService.countByIdIn(Arrays.asList(100L))).willReturn(0);
 
         // when, then
         OrderRequest 없는메뉴주문 = createOrderRequest(주문테이블.getId(), Arrays.asList(createOrderLineItemRequest(100L, 1)));
@@ -92,7 +90,7 @@ class OrderServiceTest {
     @Test
     void 주문_생성_존재하지_않는_주문_테이블_예외() {
         // given
-        given(orderTableRepository.findById(2L)).willThrow(IllegalArgumentException.class);
+        given(orderTableService.findOrderTableById(2L)).willThrow(IllegalArgumentException.class);
 
         // when, then
         OrderRequest 없는_테이블_주문 = createOrderRequest(2L, Arrays.asList(createOrderLineItemRequest(빅맥버거.getId(), 1)));
@@ -105,7 +103,7 @@ class OrderServiceTest {
     void 주문_생성_빈_테이블_예외() {
         // given
         주문테이블.changeEmpty(true);
-        given(orderTableRepository.findById(주문테이블.getId())).willReturn(Optional.ofNullable(주문테이블));
+        given(orderTableService.findOrderTableById(주문테이블.getId())).willReturn(주문테이블);
 
         // when, then
         OrderRequest 주문 = createOrderRequest(주문테이블.getId(), Arrays.asList(createOrderLineItemRequest(빅맥버거.getId(), 1)));
@@ -117,8 +115,8 @@ class OrderServiceTest {
     @Test
     void 주문_생성() {
         // given
-        given(orderTableRepository.findById(주문테이블.getId())).willReturn(Optional.ofNullable(주문테이블));
-        given(menuRepository.countByIdIn(Arrays.asList(빅맥버거.getId()))).willReturn(1);
+        given(orderTableService.findOrderTableById(주문테이블.getId())).willReturn(주문테이블);
+        given(menuService.countByIdIn(Arrays.asList(빅맥버거.getId()))).willReturn(1);
 
         given(orderRepository.save(any(Order.class))).willReturn(주문);
 

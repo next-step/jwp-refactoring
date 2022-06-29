@@ -1,11 +1,6 @@
 package kitchenpos.application;
 
-import static kitchenpos.domain.OrderStatus.getCannotUngroupTableGroupStatus;
-
-import kitchenpos.domain.OrderRepository;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.domain.OrderTables;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.domain.TableGroupRepository;
@@ -14,29 +9,27 @@ import kitchenpos.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
 public class TableGroupService {
-    private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
+    private final OrderService orderService;
+    private final OrderTableService orderTableService;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository,
+    public TableGroupService(final OrderService orderService, final OrderTableService orderTableService,
                              final TableGroupRepository tableGroupRepository) {
-        this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
+        this.orderService = orderService;
+        this.orderTableService = orderTableService;
         this.tableGroupRepository = tableGroupRepository;
     }
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         List<Long> orderTableIds = tableGroupRequest.toOrderTableIds();
-        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(
-                orderTableIds);
+        final List<OrderTable> savedOrderTables = orderTableService.findAllOrderTablesByIdIn(orderTableIds);
 
         TableGroup tableGroup = new TableGroup();
         tableGroupRepository.save(tableGroup);
@@ -60,8 +53,7 @@ public class TableGroupService {
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
 
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, getCannotUngroupTableGroupStatus())) {
+        if (orderService.existsByOrderTableIdUnCompletedOrderStatus(orderTableIds)) {
             throw new IllegalArgumentException();
         }
     }

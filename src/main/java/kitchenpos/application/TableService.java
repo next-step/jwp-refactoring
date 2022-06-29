@@ -1,8 +1,6 @@
 package kitchenpos.application;
 
 import kitchenpos.domain.NumberOfGuests;
-import kitchenpos.domain.OrderRepository;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.dto.OrderTableRequest;
@@ -10,17 +8,16 @@ import kitchenpos.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
 public class TableService {
-    private final OrderRepository orderRepository;
+    private final OrderService orderService;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
+    public TableService(final OrderService orderService, final OrderTableRepository orderTableRepository) {
+        this.orderService = orderService;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -55,8 +52,7 @@ public class TableService {
     }
 
     private void validateOrderStatus(Long orderTableId) {
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+        if (orderService.existsByOrderTableIdUnCompletedOrderStatus(orderTableId)) {
             throw new IllegalArgumentException();
         }
     }

@@ -10,10 +10,7 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
 import java.util.Optional;
-import kitchenpos.domain.OrderRepository;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.domain.TableGroupRepository;
 import kitchenpos.dto.TableGroupRequest;
@@ -28,9 +25,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    private OrderRepository orderRepository;
+    private OrderService orderService;
     @Mock
-    private OrderTableRepository orderTableRepository;
+    private OrderTableService orderTableService;
     @Mock
     private TableGroupRepository tableGroupRepository;
     @InjectMocks
@@ -49,7 +46,7 @@ class TableGroupServiceTest {
     @Test
     void 단체_지정_테이블_개수_2개_미만_예외() {
         // given
-        given(orderTableRepository.findAllByIdIn(Arrays.asList(1L))).willReturn(Arrays.asList(주문테이블1));
+        given(orderTableService.findAllOrderTablesByIdIn(Arrays.asList(1L))).willReturn(Arrays.asList(주문테이블1));
         given(tableGroupRepository.save(any(TableGroup.class))).willReturn(any(TableGroup.class));
 
         // when, then
@@ -63,7 +60,7 @@ class TableGroupServiceTest {
     @Test
     void 단체_지정_존재하지_않는_테이블_예외() {
         // given
-        given(orderTableRepository.findAllByIdIn(Arrays.asList(주문테이블1.getId(), 주문테이블2.getId()))).willReturn(
+        given(orderTableService.findAllOrderTablesByIdIn(Arrays.asList(주문테이블1.getId(), 주문테이블2.getId()))).willReturn(
                 Arrays.asList(주문테이블1));
 
         // when, then
@@ -76,7 +73,7 @@ class TableGroupServiceTest {
     void 단체_지정_빈_테이블_아님_예외() {
         // given
         OrderTable 빈테이블 = createOrderTable(3L, null, 5, false);
-        given(orderTableRepository.findAllByIdIn(Arrays.asList(주문테이블1.getId(), 빈테이블.getId()))).willReturn(
+        given(orderTableService.findAllOrderTablesByIdIn(Arrays.asList(주문테이블1.getId(), 빈테이블.getId()))).willReturn(
                 Arrays.asList(주문테이블1, 빈테이블));
 
         // when, then
@@ -89,7 +86,7 @@ class TableGroupServiceTest {
     void 단체_지정_이미_단체_지정_테이블_예외() {
         // given
         주문테이블1.groupByTableGroupId(2L);
-        given(orderTableRepository.findAllByIdIn(Arrays.asList(주문테이블1.getId(), 주문테이블2.getId()))).willReturn(
+        given(orderTableService.findAllOrderTablesByIdIn(Arrays.asList(주문테이블1.getId(), 주문테이블2.getId()))).willReturn(
                 Arrays.asList(주문테이블1, 주문테이블2));
 
         // when, then
@@ -102,7 +99,7 @@ class TableGroupServiceTest {
     void 단체_지정() {
         // given
         TableGroup 단체지정 = new TableGroup();
-        given(orderTableRepository.findAllByIdIn(Arrays.asList(주문테이블1.getId(), 주문테이블2.getId()))).willReturn(
+        given(orderTableService.findAllOrderTablesByIdIn(Arrays.asList(주문테이블1.getId(), 주문테이블2.getId()))).willReturn(
                 Arrays.asList(주문테이블1, 주문테이블2));
         given(tableGroupRepository.save(any(TableGroup.class))).willReturn(단체지정);
 
@@ -118,9 +115,8 @@ class TableGroupServiceTest {
         // given
         TableGroup 단체지정 = new TableGroup(1L, null, Arrays.asList(주문테이블1, 주문테이블2));
         given(tableGroupRepository.findById(단체지정.getId())).willReturn(Optional.of(단체지정));
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                Arrays.asList(주문테이블1.getId(), 주문테이블2.getId()),
-                Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)
+        given(orderService.existsByOrderTableIdUnCompletedOrderStatus(
+                Arrays.asList(주문테이블1.getId(), 주문테이블2.getId())
         )).willReturn(true);
 
         // when, then
@@ -134,9 +130,8 @@ class TableGroupServiceTest {
         // given
         TableGroup 단체지정 = new TableGroup(1L, null, Arrays.asList(주문테이블1, 주문테이블2));
         given(tableGroupRepository.findById(단체지정.getId())).willReturn(Optional.of(단체지정));
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                Arrays.asList(주문테이블1.getId(), 주문테이블2.getId()),
-                Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)
+        given(orderService.existsByOrderTableIdUnCompletedOrderStatus(
+                Arrays.asList(주문테이블1.getId(), 주문테이블2.getId())
         )).willReturn(false);
 
         tableGroupService.ungroup(단체지정.getId());

@@ -1,14 +1,14 @@
 package kitchenpos.application;
 
 
-import kitchenpos.domain.MenuRepository;
+import static kitchenpos.domain.OrderStatus.getCannotUngroupTableGroupStatus;
+
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderLineItems;
 import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.OrderTableRepository;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
@@ -22,26 +22,25 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 public class OrderService {
-    private final MenuRepository menuRepository;
+    private final MenuService menuService;
     private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
+    private final OrderTableService orderTableService;
 
     public OrderService(
-            final MenuRepository menuRepository,
+            final MenuService menuService,
             final OrderRepository orderRepository,
-            final OrderTableRepository orderTableRepository
+            final OrderTableService orderTableService
     ) {
-        this.menuRepository = menuRepository;
+        this.menuService = menuService;
         this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
+        this.orderTableService = orderTableService;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
-                .orElseThrow(IllegalArgumentException::new);
+        final OrderTable orderTable = orderTableService.findOrderTableById(orderRequest.getOrderTableId());
         validateNullOrderLineItem(orderRequest);
-        
+
         final Order savedOrder = orderRepository.save(orderRequest.toOrder(orderTable));
         connectOrderToOrderLineItems(orderRequest, savedOrder);
 
@@ -62,6 +61,16 @@ public class OrderService {
         return OrderResponse.from(savedOrder);
     }
 
+    public boolean existsByOrderTableIdUnCompletedOrderStatus(List<Long> ids) {
+        return orderRepository.existsByOrderTableIdInAndOrderStatusIn(
+                ids, getCannotUngroupTableGroupStatus());
+    }
+
+    public boolean existsByOrderTableIdUnCompletedOrderStatus(Long id) {
+        return orderRepository.existsByOrderTableIdAndOrderStatusIn(
+                id, getCannotUngroupTableGroupStatus());
+    }
+
     private void connectOrderToOrderLineItems(OrderRequest orderRequest, Order savedOrder) {
         List<OrderLineItem> orderLineItems = orderRequest.getOrderLineItems().stream()
                 .map(OrderLineItemRequest::toOrderLineItem)
@@ -70,7 +79,7 @@ public class OrderService {
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
 
-        savedOrder.addOrderLineItems(OrderLineItems.of(orderLineItems, menuRepository.countByIdIn(menuIds)));
+        savedOrder.addOrderLineItems(OrderLineItems.of(orderLineItems, menuService.countByIdIn(menuIds)));
     }
 
     private void validateNullOrderLineItem(OrderRequest orderRequest) {

@@ -12,14 +12,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.domain.MenuRepository;
 import kitchenpos.domain.Product;
-import kitchenpos.domain.ProductRepository;
 import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.MenuResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,9 +35,9 @@ class MenuServiceTest {
     @Mock
     private MenuRepository menuRepository;
     @Mock
-    private MenuGroupRepository menuGroupRepository;
+    private MenuGroupService menuGroupService;
     @Mock
-    private ProductRepository productRepository;
+    private ProductService productService;
     @InjectMocks
     private MenuService menuService;
     private MenuGroup 빅맥세트;
@@ -66,7 +63,7 @@ class MenuServiceTest {
     @Test
     void 메뉴_생성_가격_없음_예외() {
         // given
-        given(menuGroupRepository.existsById(빅맥세트.getId())).willReturn(true);
+        given(menuGroupService.existsById(빅맥세트.getId())).willReturn(true);
 
         // when
         MenuRequest 가격없는메뉴 = createMenuRequest("가격없는메뉴", null, 1L,
@@ -81,7 +78,7 @@ class MenuServiceTest {
     @Test
     void 메뉴_생성_가격_0_미만_예외() {
         // given
-        given(menuGroupRepository.existsById(빅맥세트.getId())).willReturn(true);
+        given(menuGroupService.existsById(빅맥세트.getId())).willReturn(true);
 
         // when
         MenuRequest 가격음수메뉴 = createMenuRequest("가격없는메뉴", BigDecimal.valueOf(-100), 1L,
@@ -108,9 +105,9 @@ class MenuServiceTest {
     @Test
     void 메뉴_생성_존재하지_않는_상품_예외() {
         // given
-        given(menuGroupRepository.existsById(빅맥세트.getId())).willReturn(true);
-        given(productRepository.findById(토마토.getId())).willReturn(Optional.ofNullable(토마토));
-        given(productRepository.findById(양상추.getId())).willThrow(IllegalArgumentException.class);
+        given(menuGroupService.existsById(빅맥세트.getId())).willReturn(true);
+        given(productService.findProductById(토마토.getId())).willReturn(토마토);
+        given(productService.findProductById(양상추.getId())).willThrow(IllegalArgumentException.class);
 
         // when
         MenuRequest 상품없음 = createMenuRequest("상품없음", BigDecimal.valueOf(1000), 빅맥세트.getId(),
@@ -124,9 +121,9 @@ class MenuServiceTest {
     @Test
     void 메뉴_생성_메뉴_가격이_상품_가격_합_보다_큼_예외() {
         // given
-        given(menuGroupRepository.existsById(빅맥세트.getId())).willReturn(true);
-        given(productRepository.findById(토마토.getId())).willReturn(Optional.ofNullable(토마토));
-        given(productRepository.findById(양상추.getId())).willReturn(Optional.ofNullable(양상추));
+        given(menuGroupService.existsById(빅맥세트.getId())).willReturn(true);
+        given(productService.findProductById(토마토.getId())).willReturn(토마토);
+        given(productService.findProductById(양상추.getId())).willReturn(양상추);
 
         // when
         MenuRequest 메뉴가격큼 = createMenuRequest("메뉴가격큼", BigDecimal.valueOf(5000), 빅맥세트.getId(),
@@ -141,9 +138,9 @@ class MenuServiceTest {
     @Test
     void 메뉴_생성() {
         // given
-        given(menuGroupRepository.existsById(빅맥세트.getId())).willReturn(true);
-        given(productRepository.findById(토마토.getId())).willReturn(Optional.ofNullable(토마토));
-        given(productRepository.findById(양상추.getId())).willReturn(Optional.ofNullable(양상추));
+        given(menuGroupService.existsById(빅맥세트.getId())).willReturn(true);
+        given(productService.findProductById(토마토.getId())).willReturn(토마토);
+        given(productService.findProductById(양상추.getId())).willReturn(양상추);
         when(menuRepository.save(any(Menu.class))).thenReturn(빅맥버거);
 
         // when

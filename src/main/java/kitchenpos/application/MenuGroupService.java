@@ -25,4 +25,8 @@ public class MenuGroupService {
     public List<MenuGroupResponse> list() {
         return MenuGroupResponse.from(menuGroupRepository.findAll());
     }
+
+    public boolean existsById(Long id) {
+        return menuGroupRepository.existsById(id);
+    }
 }
