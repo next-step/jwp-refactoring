@@ -70,7 +70,7 @@ public class OrderService {
             orderLineItem.setOrder(order);
             savedOrderLineItems.add(orderLineItem);
         }
-        order.setOrderLineItems(savedOrderLineItems);
+        order.setOrderLineItems(new OrderLineItems(savedOrderLineItems));
 
         return OrderResponse.of(orderRepository.save(order));
     }
