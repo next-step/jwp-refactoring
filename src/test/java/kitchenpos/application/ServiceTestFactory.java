@@ -5,8 +5,10 @@ import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
+import kitchenpos.domain.TableGroup;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class ServiceTestFactory {
@@ -18,7 +20,6 @@ public class ServiceTestFactory {
         orderTable.setEmpty(empty);
         return orderTable;
     }
-
 
 
     public static Menu 메뉴생성(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
@@ -52,5 +53,13 @@ public class ServiceTestFactory {
         product.setName(name);
         product.setPrice(price);
         return product;
+    }
+
+    public static TableGroup 테이블그룹생성(Long id, List<OrderTable> orderTables) {
+        TableGroup tableGroup = new TableGroup();
+        tableGroup.setId(id);
+        tableGroup.setCreatedDate(LocalDateTime.now());
+        tableGroup.setOrderTables(orderTables);
+        return tableGroup;
     }
 }
