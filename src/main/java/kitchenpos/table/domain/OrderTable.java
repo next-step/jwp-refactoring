@@ -1,8 +1,11 @@
-package kitchenpos.domain;
+package kitchenpos.table.domain;
 
-import kitchenpos.dto.OrderTableRequestDto;
+import kitchenpos.domain.TableGroup;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Entity
 public class OrderTable {
@@ -13,27 +16,21 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "table_group_id")
-    private TableGroup tableGroup;
 
+    private Long tableGroupId;
     private int numberOfGuests;
     private boolean empty;
 
     protected OrderTable() {
     }
 
-    public OrderTable(OrderTableRequestDto request) {
-        this(null, null, request.getNumberOfGuests(), request.isEmpty());
+    public OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
+        this(null, tableGroupId, numberOfGuests, empty);
     }
 
-    public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
-        this(null, tableGroup, numberOfGuests, empty);
-    }
-
-    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
@@ -42,8 +39,8 @@ public class OrderTable {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        return tableGroupId;
     }
 
     public int getNumberOfGuests() {
@@ -73,11 +70,11 @@ public class OrderTable {
     }
 
     public void group(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroup.getId();
         this.empty = false;
     }
 
     public void ungroup() {
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 }

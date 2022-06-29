@@ -1,27 +1,27 @@
-package kitchenpos.ui;
+package kitchenpos.table.ui;
 
-import static kitchenpos.fixture.OrderTableFixture.주문테이블_요청_데이터_생성;
-import static kitchenpos.fixture.OrderTableFixture.주문테이블_응답_데이터_생성;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.Arrays;
-import kitchenpos.application.TableService;
-import kitchenpos.dto.OrderTableRequestDto;
-import kitchenpos.dto.OrderTableResponseDto;
+import kitchenpos.table.application.TableService;
+import kitchenpos.table.dto.OrderTableRequestDto;
+import kitchenpos.table.dto.OrderTableResponseDto;
+import kitchenpos.ui.BaseRestControllerTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.Arrays;
+
+import static kitchenpos.fixture.OrderTableFixture.주문테이블_요청_데이터_생성;
+import static kitchenpos.fixture.OrderTableFixture.주문테이블_응답_데이터_생성;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class TableRestControllerTest extends BaseRestControllerTest {
 
