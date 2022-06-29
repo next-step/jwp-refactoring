@@ -90,7 +90,7 @@ public class TableGroup {
     }
 
     private boolean checkOrderTableEmptyOrInTableGroup(final List<OrderTable> orderTables) {
-        return orderTables.stream().anyMatch(orderTable -> !orderTable.isEmpty() || orderTable.isInTableGroup());
+        return orderTables.stream().anyMatch(orderTable -> !orderTable.isEmptyTable() || orderTable.isInTableGroup());
     }
 
     public Long getId() {

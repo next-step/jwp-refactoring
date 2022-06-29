@@ -20,7 +20,7 @@ public class CreateOrderTableValidationHandler {
     public void validateOrderTable(CreateOrderEvent event) {
         OrderTable orderTable = orderTableRepository.findById(event.getOrderTableId())
                 .orElseThrow(() -> new NoSuchElementException("주문 테이블이 시스템에 없습니다."));
-        if (orderTable.isEmpty()) {
+        if (orderTable.isEmptyTable()) {
             throw new IllegalArgumentException("빈 주문 테이블을 지정하셨습니다.");
         }
     }

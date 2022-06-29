@@ -55,17 +55,17 @@ class TableServiceTest extends ServiceTest {
     void createTest() {
         //when
         OrderTableResponse orderTable = tableService.create(
-                OrderTableRequest.of(주문_테이블1.getNumberOfGuests(), 주문_테이블1.isEmpty()));
+                OrderTableRequest.of(주문_테이블1.getNumberOfGuests(), 주문_테이블1.isEmptyTable()));
 
         //then
         assertAll(
                 () -> assertThat(orderTable).isNotNull(),
                 () -> assertThat(orderTable.getNumberOfGuests()).isEqualTo(주문_테이블1.getNumberOfGuests()),
-                () -> assertThat(orderTable.isEmpty()).isEqualTo(주문_테이블1.isEmpty())
+                () -> assertThat(orderTable.isEmpty()).isEqualTo(주문_테이블1.isEmptyTable())
         );
         assertThat(orderTable).isNotNull();
         assertThat(orderTable.getNumberOfGuests()).isEqualTo(주문_테이블1.getNumberOfGuests());
-        assertThat(orderTable.isEmpty()).isEqualTo(주문_테이블1.isEmpty());
+        assertThat(orderTable.isEmpty()).isEqualTo(주문_테이블1.isEmptyTable());
     }
 
     @Test
@@ -87,7 +87,7 @@ class TableServiceTest extends ServiceTest {
         OrderTable orderTable = new OrderTable(7L, 3, false);
         //when & then
         assertThatThrownBy(
-                () -> tableService.changeEmpty(orderTable.getId(), OrderTableRequest.of(orderTable.isEmpty()))
+                () -> tableService.changeEmpty(orderTable.getId(), OrderTableRequest.of(orderTable.isEmptyTable()))
         ).isInstanceOf(NoSuchElementException.class);
     }
 
@@ -125,7 +125,7 @@ class TableServiceTest extends ServiceTest {
 
         //when & then
         assertThatThrownBy(
-                () -> tableService.changeEmpty(주문_테이블1.getId(), OrderTableRequest.of(주문_테이블1.isEmpty()))
+                () -> tableService.changeEmpty(주문_테이블1.getId(), OrderTableRequest.of(주문_테이블1.isEmptyTable()))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 

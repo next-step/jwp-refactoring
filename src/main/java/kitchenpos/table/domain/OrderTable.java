@@ -112,7 +112,7 @@ public class OrderTable {
     }
 
 
-    public boolean isEmpty() {
+    public boolean isEmptyTable() {
         return empty;
     }
 }

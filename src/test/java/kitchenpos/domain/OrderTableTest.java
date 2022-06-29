@@ -62,6 +62,6 @@ class OrderTableTest {
         nonEmptyTable.clear(order);
 
         //then
-        assertThat(nonEmptyTable.isEmpty()).isTrue();
+        assertThat(nonEmptyTable.isEmptyTable()).isTrue();
     }
 }

@@ -24,7 +24,7 @@ public class OrderTableResponse {
         return new OrderTableResponse(orderTable.getId(),
                 orderTable.getTableGroup() == null ? null : orderTable.getTableGroup().getId(),
                 orderTable.getNumberOfGuests(),
-                orderTable.isEmpty());
+                orderTable.isEmptyTable());
     }
 
     public static List<OrderTableResponse> from(List<OrderTable> orderTables) {
