@@ -1,6 +1,9 @@
 package kitchenpos.order.domain;
 
 import java.util.Objects;
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,7 +14,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import kitchenpos.domain.Quantity;
-import kitchenpos.menu.domain.Menu;
 
 @Entity
 public class OrderLineItem {
@@ -21,22 +23,32 @@ public class OrderLineItem {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", foreignKey = @ForeignKey(name = "fk_order_line_item_orders"), nullable = false)
     private Order order;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id", foreignKey = @ForeignKey(name = "fk_order_line_item_menu"), nullable = false)
-    private Menu menu;
+    @AttributeOverrides({
+            @AttributeOverride(name = "menuName.name", column = @Column(name = "menu_name", nullable = false)),
+            @AttributeOverride(name = "menuPrice.price", column = @Column(name = "menu_price", nullable = false))
+    })
+    @Embedded
+    private OrderMenu orderMenu;
     @Embedded
     private Quantity quantity;
 
     protected OrderLineItem() {
     }
 
-    public OrderLineItem(Menu menu, long quantity) {
-        this.menu = menu;
+    public OrderLineItem(OrderMenu orderMenu, long quantity) {
+        validateOrderMenu(orderMenu);
         this.quantity = Quantity.from(quantity);
+        this.orderMenu = orderMenu;
     }
 
-    public static OrderLineItem from(Menu menu, long quantity) {
-        return new OrderLineItem(menu, quantity);
+    public static OrderLineItem from(OrderMenu orderMenu, long quantity) {
+        return new OrderLineItem(orderMenu, quantity);
+    }
+
+    private void validateOrderMenu(OrderMenu orderMenu) {
+        if (Objects.isNull(orderMenu)) {
+            throw new IllegalArgumentException("주문 메뉴가 필요합니다.");
+        }
     }
 
     public Long seq() {
@@ -54,15 +66,12 @@ public class OrderLineItem {
         this.order = order;
     }
 
-    public Long menuId() {
-        if (this.menu == null) {
-            return null;
-        }
-        return menu.id();
-    }
-
     public Quantity quantity() {
         return quantity;
+    }
+
+    public OrderMenu orderMenu() {
+        return orderMenu;
     }
 
     @Override

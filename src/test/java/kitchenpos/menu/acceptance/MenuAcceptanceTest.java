@@ -1,6 +1,6 @@
 package kitchenpos.menu.acceptance;
 
-import static kitchenpos.menu.acceptance.MenuGroupRestAssured.메뉴그룹_등록_요청;
+import static kitchenpos.menuGroup.acceptance.MenuGroupRestAssured.메뉴그룹_등록_요청;
 import static kitchenpos.menu.acceptance.MenuRestAssured.메뉴_등록_요청;
 import static kitchenpos.menu.acceptance.MenuRestAssured.메뉴_목록_조회_요청;
 import static kitchenpos.product.acceptance.ProductRestAssured.상품_등록_요청;
@@ -13,7 +13,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.List;
-import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menuGroup.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -35,7 +35,8 @@ class MenuAcceptanceTest extends AcceptanceTest {
 
         MenuGroupResponse 한마리메뉴 = 메뉴그룹_등록_요청(createMenuGroupRequest("한마리메뉴")).as(MenuGroupResponse.class);
         ProductResponse 양념 = 상품_등록_요청(createProductRequest( "양념", BigDecimal.valueOf(20000L))).as(ProductResponse.class);
-        양념치킨 = createMenuRequest("양념치킨", BigDecimal.valueOf(40000L), 한마리메뉴.getId(), Lists.newArrayList(new MenuProductRequest(양념.getId(), 2L)));
+        ProductResponse 후라이드 = 상품_등록_요청(createProductRequest( "후라이드", BigDecimal.valueOf(30000L))).as(ProductResponse.class);
+        양념치킨 = createMenuRequest("양념치킨", BigDecimal.valueOf(40000L), 한마리메뉴.getId(), Lists.newArrayList(new MenuProductRequest(양념.getId(), 2L), new MenuProductRequest(후라이드.getId(), 3L)));
     }
 
     /**

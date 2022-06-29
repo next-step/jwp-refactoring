@@ -4,12 +4,13 @@ import java.util.Collections;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import org.springframework.util.CollectionUtils;
 
 @Embeddable
 public class OrderLineItems {
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderLineItem> orderLineItems;
 
     protected OrderLineItems() {
@@ -36,9 +37,5 @@ public class OrderLineItems {
 
     public void addOrder(Order order) {
         orderLineItems.forEach(orderLineItem -> orderLineItem.addOrder(order));
-    }
-
-    public boolean isNotEqualSize(int size) {
-        return orderLineItems.size() != size;
     }
 }

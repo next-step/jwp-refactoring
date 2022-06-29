@@ -18,7 +18,7 @@ public class OrderLineItemResponse {
     }
 
     public static OrderLineItemResponse from(OrderLineItem orderLineItem) {
-        return new OrderLineItemResponse(orderLineItem.seq(), orderLineItem.orderId(), orderLineItem.menuId(),
+        return new OrderLineItemResponse(orderLineItem.seq(), orderLineItem.orderId(), orderLineItem.orderMenu().menuId(),
                 orderLineItem.quantity());
     }
 

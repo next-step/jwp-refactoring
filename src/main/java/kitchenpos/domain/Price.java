@@ -29,7 +29,7 @@ public class Price implements Comparable<Price> {
     }
 
     private static void validateNotNull(BigDecimal price) {
-        if(Objects.isNull(price)) {
+        if (Objects.isNull(price)) {
             throw new IllegalArgumentException("금액을 지정해야 합니다.");
         }
     }
@@ -74,4 +74,3 @@ public class Price implements Comparable<Price> {
         return price.compareTo(other.price);
     }
 }
-

@@ -50,4 +50,3 @@ public class Quantity {
         return Objects.hash(quantity);
     }
 }
-

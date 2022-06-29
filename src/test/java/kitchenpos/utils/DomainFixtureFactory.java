@@ -3,25 +3,25 @@ package kitchenpos.utils;
 import java.math.BigDecimal;
 import java.util.List;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menuGroup.domain.MenuGroup;
+import kitchenpos.menuGroup.dto.MenuGroupRequest;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
+import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.domain.OrderTables;
-import kitchenpos.order.domain.TableGroup;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.TableGroupRequest;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.tableGroup.domain.TableGroup;
+import kitchenpos.tableGroup.dto.TableGroupRequest;
 
 public class DomainFixtureFactory {
     public static Product createProduct(Long id, String name, BigDecimal price) {
@@ -40,8 +40,12 @@ public class DomainFixtureFactory {
         return new MenuGroupRequest(name);
     }
 
-    public static Menu createMenu(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        return Menu.from(name, price, menuGroup, menuProducts);
+    public static Menu createMenu(String name, BigDecimal price, Long menuGroupId, MenuProducts menuProducts) {
+        return Menu.from(name, price, menuGroupId, menuProducts);
+    }
+
+    public static Menu createMenu(Long id, String name, BigDecimal price, Long menuGroupId, MenuProducts menuProducts) {
+        return Menu.from(id, name, price, menuGroupId, menuProducts);
     }
 
     public static MenuRequest createMenuRequest(String name, BigDecimal price, long menuGroupId,
@@ -49,8 +53,8 @@ public class DomainFixtureFactory {
         return new MenuRequest(name, price, menuGroupId, menuProducts);
     }
 
-    public static MenuProduct createMenuProduct(Product product, long quantity) {
-        return MenuProduct.from(product, quantity);
+    public static MenuProduct createMenuProduct(Long productId, long quantity) {
+        return MenuProduct.from(productId, quantity);
     }
 
     public static OrderTable createOrderTable(Long id, int numberOfGuests, boolean empty) {
@@ -61,8 +65,8 @@ public class DomainFixtureFactory {
         return new OrderTableRequest(numberOfGuests, empty);
     }
 
-    public static Order createOrder(OrderTable orderTable, OrderLineItems orderLineItems, int size) {
-        return Order.from(orderTable, orderLineItems, size);
+    public static Order createOrder(Long orderTableId, OrderLineItems orderLineItems) {
+        return Order.from(orderTableId, orderLineItems);
     }
 
     public static OrderRequest createOrderRequest(Long orderTableId, OrderStatus orderStatus,
@@ -70,16 +74,16 @@ public class DomainFixtureFactory {
         return new OrderRequest(orderTableId, orderStatus, orderLineItems);
     }
 
-    public static OrderLineItem createOrderLineItem(Menu menu, long quantity) {
-        return OrderLineItem.from(menu, quantity);
+    public static OrderLineItem createOrderLineItem(OrderMenu orderMenu, long quantity) {
+        return OrderLineItem.from(orderMenu, quantity);
     }
 
     public static OrderLineItemRequest createOrderLineItemRequest(long menuId, long quantity) {
         return new OrderLineItemRequest(menuId, quantity);
     }
 
-    public static TableGroup createTableGroup(OrderTables orderTables, List<Long> orderTableIds) {
-        return TableGroup.from(orderTables, orderTableIds);
+    public static TableGroup createTableGroup(Long id) {
+        return TableGroup.from(id);
     }
 
     public static TableGroupRequest createTableGroupRequest(List<Long> orderTables) {

@@ -22,7 +22,7 @@ public class Name {
     }
 
     private static void validateName(String name) {
-        if(Objects.isNull(name)) {
+        if (Objects.isNull(name)) {
             throw new IllegalArgumentException("이름을 지정해야 합니다.");
         }
     }
@@ -53,4 +53,3 @@ public class Name {
         return name;
     }
 }
-
