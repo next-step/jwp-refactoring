@@ -1,0 +1,34 @@
+package kitchenpos.event.listener;
+
+import java.util.List;
+import kitchenpos.dto.event.OrderCreateEventDTO;
+import kitchenpos.event.customEvent.OrderCreateEvent;
+import kitchenpos.exception.OrderException;
+import kitchenpos.repository.MenuRepository;
+import org.springframework.context.ApplicationListener;
+import org.springframework.stereotype.Component;
+
+@Component
+public class OrderCreateEventListenerInMenu implements ApplicationListener<OrderCreateEvent> {
+
+    private final MenuRepository menuRepository;
+
+    public OrderCreateEventListenerInMenu(MenuRepository menuRepository) {
+        this.menuRepository = menuRepository;
+    }
+
+    @Override
+    public void onApplicationEvent(OrderCreateEvent event) {
+        OrderCreateEventDTO orderCreateEventDTO = (OrderCreateEventDTO) event.getSource();
+
+        menuMappedByOrderLineItemsIsExist(orderCreateEventDTO.getMenuIds());
+    }
+
+    private void menuMappedByOrderLineItemsIsExist(List<Long> menuIds) {
+        menuRepository.findAllById(menuIds);
+        for (Long menuId : menuIds) {
+            menuRepository.findById(menuId)
+                .orElseThrow(() -> new OrderException("MENU FOR ORDER IS INVALID"));
+        }
+    }
+}

@@ -4,47 +4,47 @@ import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.domainService.MenuOrderLineDomainService;
 import kitchenpos.dto.dto.OrderLineItemDTO;
+import kitchenpos.dto.event.OrderCreateEventDTO;
 import kitchenpos.dto.request.OrderRequest;
 import kitchenpos.dto.response.OrderResponse;
+import kitchenpos.event.customEvent.OrderCreateEvent;
 import kitchenpos.exception.OrderException;
 import kitchenpos.repository.OrderRepository;
-import kitchenpos.repository.OrderTableRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 @Service
 public class OrderService {
 
-    private final MenuOrderLineDomainService menuOrderLineDomainService;
     private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public OrderService(MenuOrderLineDomainService menuOrderLineDomainService,
-        OrderRepository orderRepository, OrderTableRepository orderTableRepository) {
-        this.menuOrderLineDomainService = menuOrderLineDomainService;
+    public OrderService(OrderRepository orderRepository, ApplicationEventPublisher eventPublisher) {
         this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
+        List<Long> menuIds = orderRequest.getOrderLineItems().stream()
+            .map(OrderLineItemDTO::getMenuId)
+            .collect(Collectors.toList());
+        OrderCreateEventDTO orderCreateEventDTO = new OrderCreateEventDTO(
+            orderRequest.getOrderTableId(),
+            menuIds);
+        eventPublisher.publishEvent(new OrderCreateEvent(orderCreateEventDTO));
 
-        menuOrderLineDomainService.validateComponentForCreateOrder(orderRequest);
+        if (CollectionUtils.isEmpty(orderRequest.getOrderLineItems())) {
+            throw new OrderException("MENU FOR ORDER IS EMPTY");
+        }
 
         final List<OrderLineItemDTO> orderLineItems = orderRequest.getOrderLineItems();
 
-        final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
-            .orElseThrow(IllegalArgumentException::new);
-
-        if (orderTable.isEmpty()) {
-            throw new OrderException("TABLE IS NOT EMPTY");
-        }
-
         Order order = new Order();
-        order.mapToTable(orderTable.getId());
+        order.mapToTable(orderRequest.getOrderTableId());
         order.startCooking();
 
         for (final OrderLineItemDTO orderLineItem : orderLineItems) {
