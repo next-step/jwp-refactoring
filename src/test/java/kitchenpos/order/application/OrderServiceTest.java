@@ -19,10 +19,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.order.consts.OrderStatus;
-import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.ValidateOrderTableEventHandler;
 import kitchenpos.table.domain.repository.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ import org.springframework.context.annotation.Import;
 
 @DisplayName("주문 관련 Service 기능 테스트")
 @DataJpaTest
-@Import({OrderService.class, OrderValidator.class})
+@Import({OrderService.class, ValidateOrderTableEventHandler.class})
 class OrderServiceTest {
 
     @Autowired

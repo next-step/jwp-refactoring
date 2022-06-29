@@ -13,7 +13,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.repository.MenuRepository;
-import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.domain.repository.OrderRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
@@ -24,22 +23,23 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 @DisplayName("주문 관련 Service 단위 테스트 - Stub")
 @ExtendWith(MockitoExtension.class)
 class OrderServiceUnitTest {
 
     @Mock
-    private OrderValidator orderValidator;
-    @Mock
     private OrderRepository orderRepository;
     @Mock
     private MenuRepository menuRepository;
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
     private OrderService orderService;
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(orderRepository, menuRepository, orderValidator);
+        orderService = new OrderService(orderRepository, menuRepository, eventPublisher);
     }
 
 

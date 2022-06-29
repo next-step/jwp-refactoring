@@ -9,13 +9,14 @@ import kitchenpos.menu.domain.Menus;
 import kitchenpos.menu.domain.repository.MenuRepository;
 import kitchenpos.order.consts.OrderStatus;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderCreateEvent;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
-import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.domain.repository.OrderRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,14 +24,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final MenuRepository menuRepository;
-    private final OrderValidator orderValidator;
+    private final ApplicationEventPublisher eventPublisher;
 
     public OrderService(OrderRepository orderRepository,
                         MenuRepository menuRepository,
-                        OrderValidator orderValidator) {
+                        ApplicationEventPublisher eventPublisher) {
         this.orderRepository = orderRepository;
         this.menuRepository = menuRepository;
-        this.orderValidator = orderValidator;
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional
@@ -38,7 +39,7 @@ public class OrderService {
         Menus menus = findMenus(orderRequest.getMenuIds());
         OrderLineItems orderLineItems = createOrderLineItems(orderRequest.getOrderLineItems(), menus);
         Order order = new Order(orderedTime, orderRequest.getOrderTableId(), orderLineItems);
-        orderValidator.validate(order);
+        eventPublisher.publishEvent(new OrderCreateEvent(order.getOrderTableId()));
         Order savedOrder = orderRepository.save(order);
         return OrderResponse.from(savedOrder);
     }

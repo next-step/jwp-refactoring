@@ -30,7 +30,8 @@ public class MenuService {
 
     public MenuService(MenuRepository menuRepository,
                        MenuGroupRepository menuGroupRepository,
-                       ProductRepository productRepository, MenuValidator menuValidator) {
+                       ProductRepository productRepository,
+                       MenuValidator menuValidator) {
         this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
         this.productRepository = productRepository;
