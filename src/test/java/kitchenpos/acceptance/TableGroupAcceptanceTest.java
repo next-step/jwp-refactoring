@@ -1,5 +1,9 @@
 package kitchenpos.acceptance;
 
+import static kitchenpos.acceptance.MenuAcceptanceTest.메뉴_생성_요청;
+import static kitchenpos.acceptance.MenuGroupAcceptanceTest.메뉴_그룹_생성_요청;
+import static kitchenpos.acceptance.OrderAcceptanceTest.주문_생성_요청;
+import static kitchenpos.acceptance.ProductAcceptanceTest.상품_생성_요청;
 import static kitchenpos.acceptance.TableAcceptanceTest.테이블_목록_조회;
 import static kitchenpos.acceptance.TableAcceptanceTest.테이블_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -9,6 +13,10 @@ import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.time.LocalDateTime;
+import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,12 +29,26 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
 
     private OrderTable 주문_테이블_1;
     private OrderTable 주문_테이블_2;
+    private Long 두마리_메뉴_아이디;
+    private Long 후라이드_아이디;
+    private Long 양념_아이디;
+    private Menu 메뉴_1;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
         주문_테이블_1 = 테이블_생성_요청(3, true).as(OrderTable.class);
         주문_테이블_2 = 테이블_생성_요청(5, true).as(OrderTable.class);
+        두마리_메뉴_아이디 = 메뉴_그룹_생성_요청("두마리메뉴").jsonPath().getLong("id");
+        후라이드_아이디 = 상품_생성_요청("후라이드", 16_000).jsonPath().getLong("id");
+        양념_아이디 = 상품_생성_요청("양념", 17_000).jsonPath().getLong("id");
+        메뉴_1 = 메뉴_생성_요청(
+                "후라이드양념",
+                31_000,
+                두마리_메뉴_아이디,
+                new MenuProduct(후라이드_아이디, 1),
+                new MenuProduct(양념_아이디, 1)
+        ).as(Menu.class);
     }
 
     @DisplayName("테이블 그룹 생성에 성공한다.")
@@ -101,6 +123,26 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
 
         //then
         assertThat(결과.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("테이블 그룹 해제 시 주문에 테이블이 존재하면서 조리중이거나 식사중 상태이면 실패한다.")
+    @Test
+    void ungroupTableGroupFailedWhenOrderExistsAndCookingOrMeal() {
+        //given
+        final TableGroup 생성된_테이블_그룹 = 테이블_그룹_생성_요청(주문_테이블_1, 주문_테이블_2).as(TableGroup.class);
+        final Long 메뉴_아이디 = 메뉴_1.getId();
+        final Long 메뉴_수량 = 메뉴_1.getMenuProducts()
+                .stream()
+                .mapToLong(menuProduct -> menuProduct.getQuantity())
+                .sum();
+        final OrderLineItem orderLineItem = new OrderLineItem(메뉴_아이디, 메뉴_수량);
+        주문_생성_요청(주문_테이블_1.getId(), "COOKING", orderLineItem).as(Order.class);
+
+        //when
+        final ExtractableResponse<Response> 결과 = 테이블_그룹_해제_요청(생성된_테이블_그룹.getId());
+
+        //then
+        assertThat(결과.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static ExtractableResponse<Response> 테이블_그룹_생성_요청(final OrderTable... orderTables) {
