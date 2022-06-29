@@ -111,8 +111,8 @@ class OrderAcceptanceTest extends AcceptanceTest {
      * Scenario : 단체 손님
      * Given 상품, 메뉴그룹, 메뉴, 테이블이 등록되어있다.
      *
-     * When 7명의 손님이 와서 4명, 3명으로 나눠 앉고 각 테이블의 상태를 비어있지 않은 상태로 변경한다.
-     * Then 테이블1, 테이블2의 상태가 비어있지않은 상태로 변경된다.
+     * When 7명의 손님이 와서 2개 테이블을 그룹지정한 후  4명, 3명으로 나눠 앉는다.
+     * Then 테이블 그룹이 생성되며 테이블1, 테이블2의 상태가 비어있지않은 상태로 변경된다.
      * When 테이블1의 주문내용을 받고 테이블1 에 주문1을 추가한다.
      * Then 테이블1에 주문1이 추가된다.
      * When 테이블2의 주문내용을 받고 테이블2에 주문2를 추가한다.
@@ -121,23 +121,18 @@ class OrderAcceptanceTest extends AcceptanceTest {
      * Then 주문1의 상태가 식사로 변경된다.
      * When 음식이 준비되어 주문2의 상태를 식사 중 상태로 바꾼다.
      * Then 주문2의 상태가 식사로 변경된다.
-     * When 식사가 끝나면 모든 주문의 상태를 계산완료로, 모든 테이블의 상태를 빈 테이블로 변경한다.
+     * When 식사가 끝나면 모든 주문의 상태를 계산완료로 변경한다.
      * Then 주문1, 주문2의 상태가 계산완료로 변경된다.
-     * Then 테이블1, 테이블2가 빈 테이블이 된다.
-     * When 통합 계산 준비를 위해 테이블 그룹으로 지정한다.
-     * Then 테이블1, 테이블2가 그룹으로 지정 된다.
-     * When 결제를 완료되면 테이블 그룹을 해제한다.
-     * Then 테이블 그룹이  해제된다.
+     * When 결제가 완료되면 테이블 그룹을 해제한다.
+     * Then 테이블 그룹이 해제된다.
      */
     @Test
     @DisplayName("단체 손님 시나리오")
     void scenario2() {
-        KitchenPosBehaviors.테이블_공석여부_변경_요청(orderTable1.getId(),
-                OrderTableFixtureFactory.createParamForChangeEmptyState(false));
+        TableGroupResponse tableGroup = KitchenPosBehaviors.테이블그룹_생성(
+                TableGroupFixtureFactory.createTableGroup(Lists.newArrayList(orderTable1, orderTable2)));
         KitchenPosBehaviors.테이블_인원수_변경_요청(orderTable1.getId(),
                 OrderTableFixtureFactory.createParamForChangeNumberOfGuests(4));
-        KitchenPosBehaviors.테이블_공석여부_변경_요청(orderTable2.getId(),
-                OrderTableFixtureFactory.createParamForChangeEmptyState(false));
         KitchenPosBehaviors.테이블_인원수_변경_요청(orderTable2.getId(),
                 OrderTableFixtureFactory.createParamForChangeNumberOfGuests(3));
 
@@ -150,19 +145,6 @@ class OrderAcceptanceTest extends AcceptanceTest {
         주문의_상태를_변경하고_확인한다(savedOrder.getId(), OrderStatus.COMPLETION);
         주문의_상태를_변경하고_확인한다(savedOrder2.getId(), OrderStatus.COMPLETION);
 
-        KitchenPosBehaviors.테이블_공석여부_변경_요청(orderTable1.getId(),
-                OrderTableFixtureFactory.createParamForChangeEmptyState(true));
-        KitchenPosBehaviors.테이블_인원수_변경_요청(orderTable1.getId(),
-                OrderTableFixtureFactory.createParamForChangeNumberOfGuests(0));
-
-        KitchenPosBehaviors.테이블_공석여부_변경_요청(orderTable2.getId(),
-                OrderTableFixtureFactory.createParamForChangeEmptyState(true));
-        KitchenPosBehaviors.테이블_인원수_변경_요청(orderTable2.getId(),
-                OrderTableFixtureFactory.createParamForChangeNumberOfGuests(0));
-
-        TableGroupResponse tableGroup = KitchenPosBehaviors.테이블그룹_생성(
-                TableGroupFixtureFactory.createTableGroup(Lists.newArrayList(orderTable1, orderTable2)));
         KitchenPosBehaviors.테이블그룹_해제_요청(tableGroup.getId());
-
     }
 }
