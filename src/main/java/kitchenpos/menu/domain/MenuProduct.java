@@ -59,12 +59,4 @@ public class MenuProduct {
     void bindMenu(Menu menu) {
         this.menu = menu;
     }
-
-//    public void bindProduct(Product product) {
-//        this.product = product;
-//    }
-
-//    public Price calculateProductsPrice() {
-//        return Price.multiply(product, quantity);
-//    }
 }
