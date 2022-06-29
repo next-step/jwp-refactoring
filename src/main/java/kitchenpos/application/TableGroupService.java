@@ -1,5 +1,7 @@
 package kitchenpos.application;
 
+import static kitchenpos.domain.OrderStatus.getCannotUngroupTableGroupStatus;
+
 import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
@@ -59,7 +61,7 @@ public class TableGroupService {
                 .collect(Collectors.toList());
 
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+                orderTableIds, getCannotUngroupTableGroupStatus())) {
             throw new IllegalArgumentException();
         }
     }
