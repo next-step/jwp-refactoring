@@ -11,5 +11,5 @@ public interface OrderTableRepository extends JpaRepository<OrderTable, Long> {
 
     List<OrderTable> findAllByTableGroupId(Long tableGroupId);
 
-    Optional<OrderTable> findByIdAndEmptyIsFalse(Long orderTableId);
+    boolean existsByIdAndEmptyIsFalse(Long orderTableId);
 }

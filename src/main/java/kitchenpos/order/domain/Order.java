@@ -1,7 +1,6 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.common.BaseEntity;
-import kitchenpos.table.domain.OrderTable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -16,9 +15,8 @@ public class Order extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, name = "order_table_id")
-    private OrderTable orderTable;
+    @Column(nullable = false)
+    private Long orderTableId;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -31,17 +29,17 @@ public class Order extends BaseEntity {
 
     }
 
-    public Order(OrderTable orderTable, OrderStatus orderStatus, OrderLineItems orderLineItems) {
-        this(null, orderTable, orderStatus, orderLineItems);
+    public Order(Long orderTableId, OrderStatus orderStatus, OrderLineItems orderLineItems) {
+        this(null, orderTableId, orderStatus, orderLineItems);
     }
 
-    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-        this(id, orderTable, orderStatus, new OrderLineItems(orderLineItems));
+    public Order(Long id, Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        this(id, orderTableId, orderStatus, new OrderLineItems(orderLineItems));
     }
 
-    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, OrderLineItems orderLineItems) {
+    public Order(Long id, Long orderTableId, OrderStatus orderStatus, OrderLineItems orderLineItems) {
         this.id = id;
-        this.orderTable = orderTable;
+        this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderLineItems = orderLineItems;
     }
@@ -58,8 +56,8 @@ public class Order extends BaseEntity {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {

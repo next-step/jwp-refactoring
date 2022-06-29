@@ -15,7 +15,7 @@ public class OrderLineItemRequest {
     }
 
     public static OrderLineItemRequest of(OrderLineItem orderLineItem) {
-        return new OrderLineItemRequest(toOrderId(orderLineItem.getOrder()), orderLineItem.getMenu().getId(), orderLineItem.getQuantity());
+        return new OrderLineItemRequest(toOrderId(orderLineItem.getOrder()), orderLineItem.getMenuId(), orderLineItem.getQuantity());
     }
 
     private static Long toOrderId(Order order) {

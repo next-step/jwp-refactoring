@@ -1,22 +1,15 @@
 package kitchenpos.application;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.order.application.OrderValidator;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderLineItemRepository;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.order.dto.OrderChangeStatusRequest;
+import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.order.dto.OrderLineItemRequest;
-import kitchenpos.order.application.OrderService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,11 +17,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static kitchenpos.application.TableServiceTest.주문_테이블_데이터_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -41,30 +35,13 @@ import static org.mockito.BDDMockito.given;
 class OrderServiceTest {
 
     @Mock
-    MenuRepository menuRepository;
-
-    @Mock
     OrderRepository orderRepository;
 
     @Mock
-    OrderLineItemRepository orderLineItemRepository;
-
-    @Mock
-    OrderTableRepository orderTableRepository;
+    OrderValidator orderValidator;
 
     @InjectMocks
     OrderService orderService;
-
-    private OrderTable orderTable1;
-    private OrderTable orderTable2;
-    private Menu menu;
-
-    @BeforeEach
-    void setUp() {
-        orderTable1 = 주문_테이블_데이터_생성(1L, null, 2, false);
-        orderTable2 = 주문_테이블_데이터_생성(2L, null, 2, false);
-        menu = new Menu(1L, "메뉴", BigDecimal.valueOf(20000), new MenuGroup(), new MenuProducts());
-    }
 
     @DisplayName("주문을 생성할 수 있다")
     @Test
@@ -72,11 +49,8 @@ class OrderServiceTest {
         // given
         List<OrderLineItem> orderLineItems = 주문_항목_목록_데이터_생성();
         OrderRequest request = 주문_요청_데이터_생성(1L, OrderStatus.COOKING, orderLineItems);
-        Order 예상값 = 주문_데이터_생성(1L, orderTable1, OrderStatus.COOKING, orderLineItems);
-        given(orderTableRepository.findByIdAndEmptyIsFalse(1L)).willReturn(Optional.of(orderTable1));
-        given(menuRepository.findById(any())).willReturn(Optional.ofNullable(menu));
-        given(menuRepository.findById(any())).willReturn(Optional.ofNullable(menu));
-        given(menuRepository.countByIdIn(anyList())).willReturn(2L);
+        Order 예상값 = 주문_데이터_생성(1L, 1L, OrderStatus.COOKING, orderLineItems);
+        given(orderValidator.menuCountByIdIn(anyList())).willReturn(2L);
         given(orderRepository.save(any(Order.class))).willReturn(예상값);
 
         // when
@@ -92,10 +66,11 @@ class OrderServiceTest {
         // given
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         OrderRequest request = 주문_요청_데이터_생성(1L, OrderStatus.COOKING, orderLineItems);
+        given(orderValidator.menuCountByIdIn(anyList())).willReturn(1L);
 
         // when && then
         assertThatThrownBy(() -> orderService.create(request))
-                .isInstanceOf(NoSuchElementException.class);
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문을 생성할 수 있다 - 존재하는 메뉴이어야 한다")
@@ -104,10 +79,7 @@ class OrderServiceTest {
         // given
         List<OrderLineItem> orderLineItems = 주문_항목_목록_데이터_생성();
         OrderRequest request = 주문_요청_데이터_생성(1L, OrderStatus.COOKING, orderLineItems);
-        given(orderTableRepository.findByIdAndEmptyIsFalse(1L)).willReturn(Optional.of(orderTable1));
-        given(menuRepository.findById(any())).willReturn(Optional.ofNullable(menu));
-        given(menuRepository.findById(any())).willReturn(Optional.ofNullable(menu));
-        given(menuRepository.countByIdIn(anyList())).willReturn(1L);
+        given(orderValidator.menuCountByIdIn(anyList())).willReturn(1L);
 
         // when && then
         assertThatThrownBy(() -> orderService.create(request))
@@ -123,7 +95,7 @@ class OrderServiceTest {
 
         // when && then
         assertThatThrownBy(() -> orderService.create(request))
-                .isInstanceOf(NoSuchElementException.class);
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문을 생성할 수 있다 - 중복된 메뉴가 있어서는 안된다")
@@ -131,12 +103,12 @@ class OrderServiceTest {
     void create_exception4() {
         // given
         List<OrderLineItem> orderLineItems = new ArrayList<>(주문_항목_목록_데이터_생성());
-        orderLineItems.add(주문_항목_데이터_생성(2L, null, menu, 3));
+        orderLineItems.add(주문_항목_데이터_생성(2L, null, 1L, 3));
         OrderRequest request = 주문_요청_데이터_생성(1L, OrderStatus.COOKING, orderLineItems);
 
         // when && then
         assertThatThrownBy(() -> orderService.create(request))
-                .isInstanceOf(NoSuchElementException.class);
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문 목록을 조회할 수 있다")
@@ -144,8 +116,8 @@ class OrderServiceTest {
     void list() {
         // given
         List<Order> 예상값 = Arrays.asList(
-                주문_데이터_생성(1L, orderTable1, OrderStatus.COOKING, 주문_항목_목록_데이터_생성()),
-                주문_데이터_생성(2L, orderTable2, OrderStatus.COOKING, 주문_항목_목록_데이터_생성())
+                주문_데이터_생성(1L, 1L, OrderStatus.COOKING, 주문_항목_목록_데이터_생성()),
+                주문_데이터_생성(2L, 2L, OrderStatus.COOKING, 주문_항목_목록_데이터_생성())
         );
         given(orderRepository.findAll()).willReturn(예상값);
 
@@ -163,7 +135,7 @@ class OrderServiceTest {
     @Test
     void changeOrderStatus() {
         // given
-        Order 변경전_주문 = 주문_데이터_생성(1L, orderTable1, OrderStatus.MEAL, 주문_항목_목록_데이터_생성());
+        Order 변경전_주문 = 주문_데이터_생성(1L, 1L, OrderStatus.MEAL, 주문_항목_목록_데이터_생성());
         OrderChangeStatusRequest 변경후_주문 = 주문_상태_수정_데이터_생성(OrderStatus.MEAL);
         given(orderRepository.findById(1L)).willReturn(Optional.of(변경전_주문));
 
@@ -178,7 +150,7 @@ class OrderServiceTest {
     @Test
     void changeOrderStatus_exception1() {
         // given
-        Order 변경전_주문 = 주문_데이터_생성(1L, orderTable1, OrderStatus.COMPLETION, 주문_항목_목록_데이터_생성());
+        Order 변경전_주문 = 주문_데이터_생성(1L, 1L, OrderStatus.COMPLETION, 주문_항목_목록_데이터_생성());
         OrderChangeStatusRequest 변경후_주문 = 주문_상태_수정_데이터_생성(OrderStatus.MEAL);
         given(orderRepository.findById(1L)).willReturn(Optional.of(변경전_주문));
 
@@ -186,8 +158,8 @@ class OrderServiceTest {
         assertThatThrownBy(() -> 주문_상태_변경(1L, 변경후_주문)).isInstanceOf(IllegalArgumentException.class);
     }
 
-    private OrderLineItem 주문_항목_데이터_생성(Long seq, Order order, Menu menu, long quantity) {
-        return new OrderLineItem(seq, order, menu, quantity);
+    private OrderLineItem 주문_항목_데이터_생성(Long seq, Order order, Long menuId, long quantity) {
+        return new OrderLineItem(seq, order, menuId, quantity);
     }
 
     private OrderRequest 주문_요청_데이터_생성(Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
@@ -201,13 +173,13 @@ class OrderServiceTest {
         return new OrderChangeStatusRequest(orderStatus);
     }
 
-    private Order 주문_데이터_생성(Long id, OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-        return new Order(id, orderTable, orderStatus, orderLineItems);
+    private Order 주문_데이터_생성(Long id, Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        return new Order(id, orderTableId, orderStatus, orderLineItems);
     }
 
     private List<OrderLineItem> 주문_항목_목록_데이터_생성() {
-        OrderLineItem orderLineItemId1 = 주문_항목_데이터_생성(1L, null, menu, 3);
-        OrderLineItem orderLineItemId2 = 주문_항목_데이터_생성(2L, null, menu, 3);
+        OrderLineItem orderLineItemId1 = 주문_항목_데이터_생성(1L, null, 1L, 3);
+        OrderLineItem orderLineItemId2 = 주문_항목_데이터_생성(2L, null, 1L, 3);
         return Arrays.asList(orderLineItemId1, orderLineItemId2);
     }
 

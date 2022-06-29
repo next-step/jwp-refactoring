@@ -24,7 +24,7 @@ public class OrderLineItems {
 
     public List<Long> findMenuIds() {
         return orderLineItems.stream()
-                .map(orderLineItem -> orderLineItem.getMenu().getId())
+                .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
     }
 
@@ -34,10 +34,6 @@ public class OrderLineItems {
 
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
-    }
-
-    public long size() {
-        return this.orderLineItems.size();
     }
 
     public void vaildateSize(long menuCount) {

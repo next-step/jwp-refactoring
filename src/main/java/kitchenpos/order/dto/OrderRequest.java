@@ -1,9 +1,8 @@
 package kitchenpos.order.dto;
 
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderLineItems;
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.order.domain.OrderStatus;
 
 import java.util.List;
 
@@ -18,8 +17,8 @@ public class OrderRequest {
         this.orderLineItems = orderLineItems;
     }
 
-    public Order toOrder(OrderTable orderTable, OrderLineItems orderLineItems) {
-        return new Order(null, orderTable, orderStatus, orderLineItems);
+    public Order toOrder(Long orderTableId, OrderLineItems orderLineItems) {
+        return new Order(null, orderTableId, orderStatus, orderLineItems);
     }
 
     public Long getOrderTableId() {
