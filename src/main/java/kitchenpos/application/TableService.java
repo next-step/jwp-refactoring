@@ -35,7 +35,7 @@ public class TableService {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        validateOrderStatus(orderTableId);
+        validateUnCompletedOrderStatus(orderTableId);
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
 
         return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
@@ -51,7 +51,7 @@ public class TableService {
         return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
     }
 
-    private void validateOrderStatus(Long orderTableId) {
+    private void validateUnCompletedOrderStatus(Long orderTableId) {
         if (orderService.existsByOrderTableIdUnCompletedOrderStatus(orderTableId)) {
             throw new IllegalArgumentException();
         }

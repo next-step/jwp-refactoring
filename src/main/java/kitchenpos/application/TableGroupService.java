@@ -44,11 +44,11 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId).orElseThrow(IllegalArgumentException::new);
-        validateOrderStatus(tableGroup);
+        validateUnCompletedOrderStatus(tableGroup);
         tableGroup.unGroupOrderTables();
     }
 
-    private void validateOrderStatus(TableGroup tableGroup) {
+    private void validateUnCompletedOrderStatus(TableGroup tableGroup) {
         List<Long> orderTableIds = tableGroup.getOrderTables()
                 .getValue()
                 .stream()
