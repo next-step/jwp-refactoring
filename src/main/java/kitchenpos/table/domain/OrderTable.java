@@ -1,8 +1,10 @@
 package kitchenpos.table.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "order_table")
@@ -13,6 +15,7 @@ public class OrderTable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "table_group_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private TableGroup tableGroup;
 
     @Column(nullable = false)
@@ -50,7 +53,44 @@ public class OrderTable {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public TableGroup getTableGroup() {
+        return tableGroup;
+    }
+
+    public void setTableGroup(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
+    }
+
+    public int getNumberOfGuests() {
+        return numberOfGuests;
+    }
+
+    public void setNumberOfGuests(int numberOfGuests) {
+        this.numberOfGuests = numberOfGuests;
+    }
+
     public boolean isEmpty() {
         return empty;
+    }
+
+    public void setEmpty(boolean empty) {
+        this.empty = empty;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderTable that = (OrderTable) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

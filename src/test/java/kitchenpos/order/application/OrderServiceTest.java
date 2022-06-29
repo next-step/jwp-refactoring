@@ -3,11 +3,11 @@ package kitchenpos.order.application;
 import kitchenpos.application.OrderService;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.*;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.service.MenuServiceTest;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,11 +41,11 @@ public class OrderServiceTest {
     private OrderLineItemDao orderListItemDao;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(menuRepository, orderDao, orderListItemDao, orderTableDao);
+        orderService = new OrderService(menuRepository, orderDao, orderListItemDao, orderTableRepository);
     }
 
     @DisplayName("주문을 생성한다.")
@@ -53,7 +53,7 @@ public class OrderServiceTest {
     void create() {
         when(menuRepository.findAllById(any())).thenReturn(Arrays.asList(new Menu(1L)));
         OrderTable orderTable = new OrderTable(1L, 3, false);
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(orderTable));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
         when(orderDao.save(any())).thenReturn(createOrder());
         when(orderListItemDao.save(any())).thenReturn(createOrderListItem());
 
@@ -88,7 +88,7 @@ public class OrderServiceTest {
     @Test
     void createOrder_without_order_table() {
         when(menuRepository.findAllById(any())).thenReturn(Arrays.asList(new Menu(1L)));
-        when(orderTableDao.findById(any())).thenReturn(Optional.empty());
+        when(orderTableRepository.findById(any())).thenReturn(Optional.empty());
 
         // when, then
         assertThatThrownBy(() -> {
@@ -100,7 +100,7 @@ public class OrderServiceTest {
     @Test
     void createOrder_with_empty_order_table() {
         when(menuRepository.findAllById(any())).thenReturn(Arrays.asList(new Menu(1L)));
-        when(orderTableDao.findById(any())).thenReturn(Optional.of(new OrderTable(true)));
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(new OrderTable(1L, 3, true)));
 
         // when, then
         assertThatThrownBy(() -> {

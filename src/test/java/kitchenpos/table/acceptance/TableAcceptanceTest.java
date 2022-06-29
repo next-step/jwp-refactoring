@@ -5,8 +5,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -229,7 +229,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 주문_테이블_상태_수정_요청(ExtractableResponse<Response> response, boolean isEmpty) {
         OrderTable responseOrderTable = response.as(OrderTable.class);
-        OrderTable changedOrderTable = new OrderTable(isEmpty);
+        OrderTable changedOrderTable = new OrderTable(1L, 3, isEmpty);
 
         return RestAssured
                 .given().log().all()

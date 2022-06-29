@@ -2,10 +2,10 @@ package kitchenpos.tablegroup.application;
 
 import kitchenpos.application.TableGroupService;
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,10 +28,10 @@ public class TableGroupServiceTest {
     private OrderDao orderDao;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableDao;
 
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupDao;
 
     @BeforeEach
     void setUp() {
@@ -41,7 +41,7 @@ public class TableGroupServiceTest {
     @DisplayName("테이블 그룹을 생성한다.")
     @Test
     void create() {
-        when(orderTableDao.findAllByIdIn(any())).thenReturn(createTableGroup().getOrderTables());
+        when(orderTableDao.findAllById(any())).thenReturn(createTableGroup().getOrderTables());
         when(tableGroupDao.save(any())).thenReturn(createTableGroup());
         when(orderTableDao.save(any())).thenReturn(new OrderTable(3, false));
 
@@ -64,7 +64,7 @@ public class TableGroupServiceTest {
     @DisplayName("[예외] 저장 안된 주문 테이블을 포함하여 테이블 그룹 생성한다.")
     @Test
     void createTableGroup_with_not_saved_order_table() {
-        when(orderTableDao.findAllByIdIn(any()))
+        when(orderTableDao.findAllById(any()))
                 .thenReturn(Arrays.asList(new OrderTable(3L), new OrderTable(4L), new OrderTable(5L)));
 
         // when, then
@@ -76,7 +76,7 @@ public class TableGroupServiceTest {
     @DisplayName("[예외] 이용 중인 주문 테이블을 포함하여 테이블 그룹 생성한다.")
     @Test
     void createTableGroup_with_not_empty_order_table() {
-        when(orderTableDao.findAllByIdIn(any()))
+        when(orderTableDao.findAllById(any()))
                 .thenReturn(createTableGroupWithNotEmptyOrderTable().getOrderTables());
 
         // when, then
@@ -88,7 +88,7 @@ public class TableGroupServiceTest {
     @DisplayName("[예외] 이미 다른 테이블 그룹과 연결된 주문 테이블로 테이블 그룹 생성한다.")
     @Test
     void createTableGroup_with_order_table_already_mapping_with_other_table_group() {
-        when(orderTableDao.findAllByIdIn(any()))
+        when(orderTableDao.findAllById(any()))
                 .thenReturn(createTableGroupWithMappingWithOtherTableGroup().getOrderTables());
 
         // when, then
@@ -100,7 +100,7 @@ public class TableGroupServiceTest {
     @DisplayName("식사 완료된 테이블 그룹과 주문 정보 간에 관계를 해지한다.")
     @Test
     void ungroup() {
-        when(orderTableDao.findAllByTableGroupId(any())).thenReturn(createTableGroup().getOrderTables());
+        when(orderTableDao.findAllByTableGroup(any())).thenReturn(createTableGroup().getOrderTables());
         when(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(false);
         when(orderTableDao.save(any())).thenReturn(new OrderTable(3, false));
 
@@ -111,7 +111,7 @@ public class TableGroupServiceTest {
     @DisplayName("[예외] 식사 중인 테이블 그룹과 주문 정보 간에 관계를 해지한다.")
     @Test
     void ungroup_not_completion_order() {
-        when(orderTableDao.findAllByTableGroupId(any())).thenReturn(createTableGroup().getOrderTables());
+        when(orderTableDao.findAllByTableGroup(any())).thenReturn(createTableGroup().getOrderTables());
         when(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(true);
 
         // when, then
@@ -138,8 +138,8 @@ public class TableGroupServiceTest {
     }
 
     public static TableGroup createTableGroupWithMappingWithOtherTableGroup() {
-        OrderTable orderTable1 = new OrderTable(1L, 1L, 3, true);
-        OrderTable orderTable2 = new OrderTable(2L, 1L,5, true);
+        OrderTable orderTable1 = new OrderTable(1L, new TableGroup(1L), 3, true);
+        OrderTable orderTable2 = new OrderTable(2L, new TableGroup(1L),5, true);
         return new TableGroup(1L, Arrays.asList(orderTable1, orderTable2));
     }
 }
