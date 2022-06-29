@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.ResultActions;
 
+@DisplayName("API:Product")
 class ProductRestControllerTest extends BaseTest {
 
     private static final String PRODUCT_API_URL_TEMPLATE = "/api/products";
