@@ -10,6 +10,7 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.TableGroup;
 
@@ -17,10 +18,10 @@ public class UnitTestFixture {
     public final MenuGroup 구이류 = new MenuGroup(1L, "구이류");
     public final MenuGroup 식사류 = new MenuGroup(2L, "식사류");
 
-    public final Product 삼겹살 = new Product(1L, "삼겹살", BigDecimal.valueOf(14000L));
-    public final Product 목살 = new Product(2L, "목살", BigDecimal.valueOf(15000L));
-    public final Product 김치찌개 = new Product(3L, "김치찌개", BigDecimal.valueOf(8000));
-    public final Product 공깃밥 = new Product(4L, "공깃밥", BigDecimal.valueOf(1000));
+    public final Product 삼겹살 = new Product(1L, "삼겹살", new Price(14000L));
+    public final Product 목살 = new Product(2L, "목살", new Price(15000L));
+    public final Product 김치찌개 = new Product(3L, "김치찌개", new Price(8000L));
+    public final Product 공깃밥 = new Product(4L, "공깃밥", new Price(1000L));
 
     public final MenuProduct 돼지모듬_삼겹살 = new MenuProduct(1L, null, 1L, 2);
     public final MenuProduct 돼지모듬_목살 = new MenuProduct(2L, null, 2L, 1);
