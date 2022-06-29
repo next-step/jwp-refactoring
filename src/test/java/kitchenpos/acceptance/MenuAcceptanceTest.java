@@ -121,8 +121,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         assertThat(메뉴_목록.jsonPath().getString("[0].name")).isEqualTo("후라이드양념");
     }
 
-    private static ExtractableResponse<Response> 메뉴_생성_요청(final String name, final int price, final Long menuGroupId,
-                                                          final MenuProduct... menuProducts) {
+    public static ExtractableResponse<Response> 메뉴_생성_요청(final String name, final int price, final Long menuGroupId,
+                                                         final MenuProduct... menuProducts) {
         final Menu menu = new Menu(name, BigDecimal.valueOf(price), menuGroupId, menuProducts);
 
         return RestAssured.given().log().all()
@@ -133,7 +133,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private static ExtractableResponse<Response> 메뉴_목록_조회() {
+    public static ExtractableResponse<Response> 메뉴_목록_조회() {
         return RestAssured.given().log().all()
                 .when().get("/api/menus")
                 .then().log().all()
