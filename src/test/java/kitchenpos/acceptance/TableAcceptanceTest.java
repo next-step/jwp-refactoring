@@ -21,7 +21,7 @@ import kitchenpos.dto.MenuResponse;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.OrderTableResponse;
-import kitchenpos.dto.ProductResponse;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;

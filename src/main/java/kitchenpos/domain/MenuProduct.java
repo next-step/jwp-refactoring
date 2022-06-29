@@ -11,6 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
+import kitchenpos.product.domain.Product;
 
 @Entity
 @Table(name = "menu_product")
