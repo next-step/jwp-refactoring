@@ -6,7 +6,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,11 +47,9 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 상품_생성_요청(String name, BigDecimal price) {
-        Product product = new Product();
-        product.setName(name);
-        product.setPrice(price);
+        ProductRequest productRequest = new ProductRequest(name, price);
 
-        return AcceptanceTest.doPost("/api/products", product);
+        return AcceptanceTest.doPost("/api/products", productRequest);
     }
 
     public static ExtractableResponse<Response> 상품_조회_요청() {

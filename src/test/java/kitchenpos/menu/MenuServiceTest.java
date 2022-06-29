@@ -14,9 +14,9 @@ import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.dao.MenuDao;
 import kitchenpos.menu.dao.MenuGroupDao;
 import kitchenpos.menu.dao.MenuProductDao;
-import kitchenpos.product.dao.ProductDao;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.product.dao.ProductRepository;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -42,10 +42,10 @@ class MenuServiceTest {
     MenuProductDao menuProductDao;
 
     @Mock
-    ProductDao productDao;
+    ProductRepository productRepository;
 
     Menu 후라이드치킨 = new Menu();
-    Product 후라이드 = new Product();
+    Product 후라이드;
     MenuProduct 후라이드치킨상품 = new MenuProduct();
 
     @BeforeEach
@@ -56,9 +56,8 @@ class MenuServiceTest {
     }
 
     void createProduct() {
+        후라이드 = new Product("후라이드", BigDecimal.valueOf(15000));
         후라이드.setId(1L);
-        후라이드.setName("후라이드");
-        후라이드.setPrice(new BigDecimal(15000));
     }
 
     void createMenu() {
@@ -79,7 +78,7 @@ class MenuServiceTest {
     void create() {
         // given
         given(menuGroupDao.existsById(any())).willReturn(true);
-        given(productDao.findById(any())).willReturn(Optional.ofNullable(후라이드));
+        given(productRepository.findById(any())).willReturn(Optional.ofNullable(후라이드));
         given(menuDao.save(any())).willReturn(후라이드치킨);
         given(menuProductDao.save(any())).willReturn(후라이드치킨상품);
 
@@ -120,7 +119,7 @@ class MenuServiceTest {
     void create_nonProductInfoError() {
         // given
         given(menuGroupDao.existsById(any())).willReturn(true);
-        given(productDao.findById(후라이드치킨상품.getProductId())).willReturn(Optional.empty());
+        given(productRepository.findById(후라이드치킨상품.getProductId())).willReturn(Optional.empty());
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
@@ -134,7 +133,7 @@ class MenuServiceTest {
         // given
         후라이드치킨.setPrice(new BigDecimal(20000));
         given(menuGroupDao.existsById(any())).willReturn(true);
-        given(productDao.findById(후라이드치킨상품.getProductId())).willReturn(Optional.ofNullable(후라이드));
+        given(productRepository.findById(후라이드치킨상품.getProductId())).willReturn(Optional.ofNullable(후라이드));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
