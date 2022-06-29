@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
@@ -8,7 +7,7 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
-import org.junit.jupiter.api.BeforeEach;
+import kitchenpos.repository.MenuRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,6 +29,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
+;
+
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
 
@@ -37,7 +38,7 @@ class OrderServiceTest {
     OrderService orderService;
 
     @Mock
-    MenuDao menuDao;
+    MenuRepository menuRepository;
 
     @Mock
     OrderDao orderDao;
@@ -64,7 +65,7 @@ class OrderServiceTest {
         주문상품1 = 주문_메뉴_생성(1L, 내주문.getId(), 1L);
         주문상품2 = 주문_메뉴_생성(2L, 내주문.getId(), 2L);
         내주문.setOrderLineItems(Arrays.asList(주문상품1, 주문상품2));
-        given(menuDao.countByIdIn(anyList())).willReturn(Long.valueOf(내주문.getOrderLineItems().size()));
+        given(menuRepository.countByIdIn(anyList())).willReturn(Math.toIntExact(Long.valueOf(내주문.getOrderLineItems().size())));
         given(orderTableDao.findById(anyLong())).willReturn(Optional.of(주문테이블));
         given(orderDao.save(any(Order.class))).willReturn(내주문);
         given(orderLineItemDao.save(주문상품1)).willReturn(주문상품1);
@@ -109,7 +110,7 @@ class OrderServiceTest {
         주문상품1 = 주문_메뉴_생성(1L, 내주문.getId(), 1L);
         주문상품2 = 주문_메뉴_생성(2L, 내주문.getId(), 2L);
         내주문.setOrderLineItems(Arrays.asList(주문상품1, 주문상품2));
-        given(menuDao.countByIdIn(anyList())).willReturn(Long.valueOf(Arrays.asList(주문상품1, 주문상품2, 유효하지않은메뉴).size()));
+        given(menuRepository.countByIdIn(anyList())).willReturn(Math.toIntExact(Long.valueOf(Arrays.asList(주문상품1, 주문상품2, 유효하지않은메뉴).size())));
 
         //then
         assertThatThrownBy(() -> {
@@ -126,7 +127,7 @@ class OrderServiceTest {
         주문상품1 = 주문_메뉴_생성(1L, 내주문.getId(), 1L);
         주문상품2 = 주문_메뉴_생성(2L, 내주문.getId(), 2L);
         내주문.setOrderLineItems(Arrays.asList(주문상품1, 주문상품2));
-        given(menuDao.countByIdIn(anyList())).willReturn(Long.valueOf(내주문.getOrderLineItems().size()));
+        given(menuRepository.countByIdIn(anyList())).willReturn(Math.toIntExact(Long.valueOf(내주문.getOrderLineItems().size())));
         given(orderTableDao.findById(anyLong())).willReturn(Optional.empty());
 
         //then
@@ -144,7 +145,7 @@ class OrderServiceTest {
         주문상품1 = 주문_메뉴_생성(1L, 내주문.getId(), 1L);
         주문상품2 = 주문_메뉴_생성(2L, 내주문.getId(), 2L);
         내주문.setOrderLineItems(Arrays.asList(주문상품1, 주문상품2));
-        given(menuDao.countByIdIn(anyList())).willReturn(Long.valueOf(내주문.getOrderLineItems().size()));
+        given(menuRepository.countByIdIn(anyList())).willReturn(Math.toIntExact(Long.valueOf(내주문.getOrderLineItems().size())));
         주문테이블.setEmpty(true);
         given(orderTableDao.findById(anyLong())).willReturn(Optional.of(주문테이블));
 

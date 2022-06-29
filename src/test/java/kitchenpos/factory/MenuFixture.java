@@ -16,6 +16,6 @@ public class MenuFixture {
     }
 
     public static MenuProduct 메뉴_상품_생성(Product product) {
-        return new MenuProduct(product.getId(), 1);
+        return new MenuProduct(product, 1);
     }
 }
