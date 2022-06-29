@@ -40,8 +40,8 @@ public class MenuGroup {
         return id;
     }
 
-    public Name getName() {
-        return name;
+    public String getName() {
+        return name.getName();
     }
 
     @Override
