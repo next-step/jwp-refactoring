@@ -10,7 +10,4 @@ import java.util.Optional;
 public interface OrderTableRepository extends JpaRepository<OrderTable, Long> {
     List<OrderTable> findAllByIdIn(List<Long> ids);
     Optional<OrderTable> findByIdAndEmptyIsFalse(Long id);
-    Optional<OrderTable> findByIdAndTableGroupIsNull(Long id);
-
-    boolean existsAllByIdIn(List<Long> orderTables);
 }

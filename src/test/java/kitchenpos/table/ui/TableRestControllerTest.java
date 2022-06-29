@@ -43,7 +43,8 @@ class TableRestControllerTest {
     @Test
     void test_get() throws Exception {
         //given
-        given(tableService.list()).willReturn(Collections.singletonList(new OrderTableResponse(new OrderTable())));
+        given(tableService.list()).willReturn(Collections.singletonList(new OrderTableResponse(OrderTable.of(1,
+                true))));
 
         //then
         mockMvc.perform(get("/api/tables"))
@@ -54,7 +55,7 @@ class TableRestControllerTest {
     @Test
     void test_post() throws Exception {
         //given
-        given(tableService.create(any())).willReturn(new OrderTableResponse(new OrderTable()));
+        given(tableService.create(any())).willReturn(new OrderTableResponse(OrderTable.of(1, true)));
 
         //then
         mockMvc.perform(post("/api/tables").content(objectMapper.writeValueAsString(new OrderTableRequest()))
@@ -66,7 +67,7 @@ class TableRestControllerTest {
     @Test
     void test_put_changeEmpty() throws Exception {
         //given
-        given(tableService.changeEmpty(any(), any())).willReturn(new OrderTableResponse(new OrderTable()));
+        given(tableService.changeEmpty(any(), any())).willReturn(new OrderTableResponse(OrderTable.of(1, true)));
 
         //then
         mockMvc.perform(put("/api/tables/{orderTableId}/empty", 0).content(objectMapper.writeValueAsString(new OrderTableUpdateEmptyRequest()))
@@ -78,7 +79,7 @@ class TableRestControllerTest {
     @Test
     void test_put_changeNumberOfGuests() throws Exception {
         //given
-        given(tableService.changeNumberOfGuests(any(), any())).willReturn(new OrderTableResponse(new OrderTable()));
+        given(tableService.changeNumberOfGuests(any(), any())).willReturn(new OrderTableResponse(OrderTable.of(1, true)));
 
         //then
         mockMvc.perform(put("/api/tables/{orderTableId}/number-of-guests", 0).content(objectMapper.writeValueAsString(new OrderTableUpdateNumberOfGuestsRequest()))

@@ -1,4 +1,4 @@
-package kitchenpos.order;
+package kitchenpos.order.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.order.application.OrderService;
@@ -7,7 +7,6 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.order.dto.OrdersRequest;
-import kitchenpos.order.ui.OrderRestController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -58,8 +57,7 @@ class OrdersRestControllerTest {
 
         //then
         mockMvc.perform(post("/api/orders").content(
-                        objectMapper.writeValueAsString(new OrdersRequest(0L,
-                                Arrays.asList(new OrderLineItemRequest(1L, 2L)))))
+                        objectMapper.writeValueAsString(new OrdersRequest(0L, Arrays.asList(new OrderLineItemRequest(1L, 2L)))))
                 .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isCreated());
     }
 

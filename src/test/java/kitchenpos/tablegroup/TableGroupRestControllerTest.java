@@ -1,6 +1,8 @@
 package kitchenpos.tablegroup;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.domain.TableGroup;
@@ -56,7 +58,10 @@ class TableGroupRestControllerTest {
     @Test
     void test_post() throws Exception {
         //given
-        given(tableGroupService.create(any())).willReturn(new TableGroupResponse(TableGroup.empty()));
+        OrderTable orderTable1 = OrderTable.of(5, true);
+        OrderTable orderTable2 = OrderTable.of(  1, true);
+        TableGroup tableGroup = new TableGroup(new OrderTables(2, Arrays.asList(orderTable1, orderTable2)));
+        given(tableGroupService.create(any())).willReturn(new TableGroupResponse(tableGroup));
 
         //then
         mockMvc.perform(post("/api/table-groups").content(objectMapper.writeValueAsString(new TableGroupRequest(

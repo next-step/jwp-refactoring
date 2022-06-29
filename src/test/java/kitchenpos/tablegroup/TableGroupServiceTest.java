@@ -3,6 +3,7 @@ package kitchenpos.tablegroup;
 import kitchenpos.order.domain.OrdersRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.tablegroup.application.TableGroupService;
@@ -41,78 +42,57 @@ class TableGroupServiceTest {
     @DisplayName("단체 지정을 할 수 있다.")
     void create() {
         //given
-        OrderTable orderTable1 = new OrderTable(1L, null, 5, true);
-        OrderTable orderTable2 = new OrderTable(2L, null, 1, true);
-        given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(orderTable1, orderTable2));
-        TableGroup tableGroup = TableGroup.empty();
-        given(tableGroupRepository.save(any())).willReturn(tableGroup);
+        given(orderTableRepository.findAllByIdIn(any())).willReturn(
+                Arrays.asList(OrderTable.of(5, true), OrderTable.of(1, true)));
 
         //when
-        TableGroupResponse savedTableGroup = tableGroupService.create(new TableGroupRequest(
-                Arrays.asList(new OrderTableRequest(1L), new OrderTableRequest(2L))));
+        TableGroupResponse savedTableGroup = tableGroupService.create(
+                new TableGroupRequest(Arrays.asList(new OrderTableRequest(1L), new OrderTableRequest(2L))));
 
         //then
-        assertThat(savedTableGroup.getOrderTables().stream().map(OrderTableResponse::getId)).isNotEmpty()
-                .containsExactlyInAnyOrder(1L, 2L);
+        assertThat(savedTableGroup.getOrderTables().stream().map(OrderTableResponse::getNumberOfGuests)).isNotEmpty()
+                .containsExactlyInAnyOrder(1, 5);
     }
 
     @Test
     @DisplayName("요청한 단체 지정의 주문 테이블 수와 실제 주문 테이블 갯수 차이가 나면 단체 지정에 실패한다.")
-    void create_failed_2() {
+    void create_failed() {
         //given
         given(orderTableRepository.findAllByIdIn(any())).willReturn(Collections.emptyList());
 
         //then
         assertThatThrownBy(() -> tableGroupService.create(new TableGroupRequest(
-                Arrays.asList(new OrderTableRequest(1L),
-                        new OrderTableRequest(2L))))).isExactlyInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    @DisplayName("단체 지정 내 속한 주문 테이블 중 이미 단체 지정이 되어있거나, 빈 테이블이 아닌 주문 테이블이 있으면 단체 지정에 실패한다.")
-    void create_failed_3() {
-        //given
-        OrderTable emptyOrderTable = new OrderTable(1L, null, 5, true);
-        OrderTable alreadyGroupedOrderTable = new OrderTable(2L, TableGroup.empty(), 5, false);
-        given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(emptyOrderTable, alreadyGroupedOrderTable));
-
-        //then
-        assertThatThrownBy(() -> tableGroupService.create(new TableGroupRequest(
-                Arrays.asList(new OrderTableRequest(1L),
-                        new OrderTableRequest(2L))))).isExactlyInstanceOf(IllegalArgumentException.class);
+                Arrays.asList(new OrderTableRequest(1L), new OrderTableRequest(2L))))).isExactlyInstanceOf(
+                IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("단체 지정을 해제할 수 있다.")
     void ungroup() {
         //given
-        TableGroup tableGroup = TableGroup.empty();
-        OrderTable orderTable1 = new OrderTable(1L, tableGroup, 5, false);
-        OrderTable orderTable2 = new OrderTable(2L, tableGroup, 1, false);
-        tableGroup.add(orderTable1);
-        tableGroup.add(orderTable2);
+        OrderTable orderTable1 = OrderTable.of(5, true);
+        OrderTable orderTable2 = OrderTable.of(1, true);
+        TableGroup tableGroup = new TableGroup(new OrderTables(2, Arrays.asList(orderTable1, orderTable2)));
         given(tableGroupRepository.findById(any())).willReturn(Optional.of(tableGroup));
-        given(ordersRepository.existsByOrderTableInAndOrderStatusIn(any(), any())).willReturn(false);
+        given(ordersRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(false);
 
         //when
         tableGroupService.ungroup(0L);
 
         //then
-        assertThat(orderTable1.getTableGroup()).isNull();
-        assertThat(orderTable2.getTableGroup()).isNull();
+        assertThat(orderTable1.isGrouped()).isFalse();
+        assertThat(orderTable2.isGrouped()).isFalse();
     }
 
     @Test
     @DisplayName("단체 지정 내 주문 상태가 조리 혹은 식사 인 주문 테이블이 포함되어 있을 경우 해제할 수 없다.")
-    void ungroup_failed_1() {
+    void ungroup_failed() {
         //given
-        TableGroup tableGroup = TableGroup.empty();
-        OrderTable orderTable1 = new OrderTable(1L, tableGroup, 5, false);
-        OrderTable orderTable2 = new OrderTable(2L, tableGroup, 1, false);
-        tableGroup.add(orderTable1);
-        tableGroup.add(orderTable2);
+        OrderTable orderTable1 = OrderTable.of(5, true);
+        OrderTable orderTable2 = OrderTable.of(1, true);
+        TableGroup tableGroup = new TableGroup(new OrderTables(2, Arrays.asList(orderTable1, orderTable2)));
         given(tableGroupRepository.findById(any())).willReturn(Optional.of(tableGroup));
-        given(ordersRepository.existsByOrderTableInAndOrderStatusIn(any(), any())).willReturn(true);
+        given(ordersRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(true);
 
         //then
         assertThatThrownBy(() -> tableGroupService.ungroup(0L)).isExactlyInstanceOf(IllegalArgumentException.class);

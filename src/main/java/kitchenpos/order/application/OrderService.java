@@ -1,7 +1,6 @@
 package kitchenpos.order.application;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.Orders;
 import kitchenpos.order.domain.OrdersRepository;
@@ -9,44 +8,35 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.order.dto.OrdersRequest;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
-    private final MenuRepository menuRepository;
+    private final OrdersValidator ordersValidator;
     private final OrdersRepository ordersRepository;
-    private final OrderTableRepository orderTableRepository;
 
-    public OrderService(
-            final MenuRepository menuRepository, final OrdersRepository ordersRepository,
-            final OrderTableRepository orderTableRepository) {
-        this.menuRepository = menuRepository;
+    public OrderService(final OrdersValidator ordersValidator, final OrdersRepository ordersRepository) {
+        this.ordersValidator = ordersValidator;
         this.ordersRepository = ordersRepository;
-        this.orderTableRepository = orderTableRepository;
     }
 
     @Transactional
     public OrderResponse create(final OrdersRequest request) {
-        if (request.getOrderLineItems().size() != menuRepository.countByIdIn(request.getOrderLineItemIds())) {
-            throw new IllegalArgumentException("주문 항목 갯수가 적절하지 않습니다.");
-        }
+        ordersValidator.validate(request);
 
-        final OrderTable orderTable = orderTableRepository.findByIdAndEmptyIsFalse(request.getOrderTableId()).orElseThrow(NoSuchElementException::new);
-        final Orders savedOrders = new Orders(orderTable, OrderStatus.COOKING, LocalDateTime.now());
+        final Orders orders = new Orders(request.getOrderTableId(), OrderStatus.COOKING);
+        ordersRepository.save(orders);
 
         for (final OrderLineItemRequest orderLineItem : request.getOrderLineItems()) {
-            Menu menu = menuRepository.findById(orderLineItem.getMenuId()).orElseThrow(NoSuchElementException::new);
-            savedOrders.add(menu, orderLineItem.getQuantity());
+            orders.add(new OrderLineItem(orders.getId(), orderLineItem.getMenuId(), orderLineItem.getQuantity()));
         }
-        return new OrderResponse(ordersRepository.save(savedOrders));
+
+        return new OrderResponse(orders);
     }
 
     @Transactional(readOnly = true)

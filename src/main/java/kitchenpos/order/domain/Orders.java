@@ -1,33 +1,34 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.table.domain.OrderTable;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+@EntityListeners(AuditingEntityListener.class)
 @Entity
 public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
-    private OrderTable orderTable;
+    @Column(nullable = false)
+    private Long orderTableId;
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
+    @CreatedDate
     private LocalDateTime orderedTime;
     @Embedded
     private OrderLineItems orderLineItems = new OrderLineItems();
 
-    public Orders(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
-        this.orderTable = orderTable;
+    public Orders(long orderTableId, OrderStatus orderStatus) {
+        this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
     }
 
-    public Orders() {
+    protected Orders() {
     }
 
     public Long getId() {
@@ -42,10 +43,6 @@ public class Orders {
         return orderedTime;
     }
 
-    public void add(Menu menu, long quantity) {
-        this.orderLineItems.add(new OrderLineItem(this, menu, quantity));
-    }
-
     public List<OrderLineItem> getOrderLineItems() {
         return this.orderLineItems.getAll();
     }
@@ -57,7 +54,11 @@ public class Orders {
         this.orderStatus = orderStatus;
     }
 
-    public OrderTable getOrderTable() {
-        return this.orderTable;
+    public void add(OrderLineItem orderLineItem) {
+        this.orderLineItems.add(orderLineItem);
+    }
+
+    public Long getOrderTableId() {
+        return this.orderTableId;
     }
 }

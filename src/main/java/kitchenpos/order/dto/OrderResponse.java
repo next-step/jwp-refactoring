@@ -16,7 +16,7 @@ public class OrderResponse {
 
     public OrderResponse(Orders orders) {
         this.id = orders.getId();
-        this.orderTableId = orders.getOrderTable().getId();
+        this.orderTableId = orders.getOrderTableId();
         this.orderStatus = OrderStatus.valueOf(orders.getOrderStatus());
         this.orderedTime = orders.getOrderedTime();
         this.orderLineItems =
@@ -28,6 +28,14 @@ public class OrderResponse {
 
     public Long getId() {
         return this.id;
+    }
+
+    public Long getOrderTableId() {
+        return orderTableId;
+    }
+
+    public LocalDateTime getOrderedTime() {
+        return orderedTime;
     }
 
     public OrderStatus getOrderStatus() {

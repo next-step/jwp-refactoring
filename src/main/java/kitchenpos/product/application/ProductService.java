@@ -22,6 +22,7 @@ public class ProductService {
         return new ProductResponse(productRepository.save(request.toProduct()));
     }
 
+    @Transactional(readOnly = true)
     public List<ProductResponse> list() {
         return productRepository.findAll().stream().map(ProductResponse::new).collect(Collectors.toList());
     }
