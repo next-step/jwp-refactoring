@@ -5,6 +5,7 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProductRepository;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.application.ProductServiceTest;
@@ -60,7 +61,7 @@ public class MenuServiceTest {
         when(menuRepository.save(any())).thenReturn(createMenu01());
 
         // when
-        Menu menu = menuService.create(new Menu(MENU_NAME01, MENU_PRICE01, createMenuGroup01(), createMenuProductList()));
+        MenuResponse menu = menuService.create(new Menu(MENU_NAME01, MENU_PRICE01, createMenuGroup01(), createMenuProductList()));
 
         // then
         assertThat(menu).isNotNull();
@@ -125,7 +126,7 @@ public class MenuServiceTest {
         when(menuRepository.findAll()).thenReturn(createMenuList());
 
         // when
-        List<Menu> list = menuService.list();
+        List<MenuResponse> list = menuService.list();
 
         // then
         assertThat(list).isNotNull();

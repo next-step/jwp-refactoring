@@ -1,7 +1,7 @@
 package kitchenpos.tablegroup.application;
 
 import kitchenpos.application.TableGroupService;
-import kitchenpos.dao.OrderDao;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroup;
@@ -25,7 +25,7 @@ public class TableGroupServiceTest {
     private TableGroupService tableGroupService;
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
     private OrderTableRepository orderTableDao;
@@ -35,7 +35,7 @@ public class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        tableGroupService = new TableGroupService(orderDao, orderTableDao, tableGroupDao);
+        tableGroupService = new TableGroupService(orderRepository, orderTableDao, tableGroupDao);
     }
 
     @DisplayName("테이블 그룹을 생성한다.")
@@ -101,7 +101,7 @@ public class TableGroupServiceTest {
     @Test
     void ungroup() {
         when(orderTableDao.findAllByTableGroup(any())).thenReturn(createTableGroup().getOrderTables());
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(false);
+        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(false);
         when(orderTableDao.save(any())).thenReturn(new OrderTable(3, false));
 
         // when, then
@@ -112,7 +112,7 @@ public class TableGroupServiceTest {
     @Test
     void ungroup_not_completion_order() {
         when(orderTableDao.findAllByTableGroup(any())).thenReturn(createTableGroup().getOrderTables());
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(true);
+        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(true);
 
         // when, then
         assertThatThrownBy(() -> {

@@ -1,7 +1,7 @@
 package kitchenpos.table.application;
 
 import kitchenpos.application.TableService;
-import kitchenpos.dao.OrderDao;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableResponse;
@@ -28,14 +28,14 @@ public class TableServiceTest {
     private TableService tableService;
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
     private OrderTableRepository orderTableRepository;
 
     @BeforeEach
     void setUp() {
-        tableService = new TableService(orderDao, orderTableRepository);
+        tableService = new TableService(orderRepository, orderTableRepository);
     }
 
     @DisplayName("주문 테이블 생성한다.")
@@ -66,7 +66,7 @@ public class TableServiceTest {
     @Test
     void changeEmpty() {
         Mockito.when(orderTableRepository.findById(any())).thenReturn(Optional.of(new OrderTable(1L, 3, false)));
-        Mockito.when(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(false);
+        Mockito.when(orderRepository.existsByOrderTableAndOrderStatusIn(any(), any())).thenReturn(false);
         Mockito.when(orderTableRepository.save(any())).thenReturn(new OrderTable(1L, 3, true));
 
         // when
@@ -106,7 +106,7 @@ public class TableServiceTest {
     @Test
     void changeEmpty_with_cooking_order_table() {
         Mockito.when(orderTableRepository.findById(any())).thenReturn(Optional.of(new OrderTable(1L, 3, false)));
-        Mockito.when(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(true);
+        Mockito.when(orderRepository.existsByOrderTableAndOrderStatusIn(any(), any())).thenReturn(true);
 
         // when, then
         assertThatThrownBy(() -> {

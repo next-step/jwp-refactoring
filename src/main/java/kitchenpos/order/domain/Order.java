@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import kitchenpos.table.domain.OrderTable;
 
 import javax.persistence.*;
@@ -15,6 +16,7 @@ public class Order {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_table_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private OrderTable orderTable;
 
     @Enumerated(EnumType.STRING)
@@ -32,6 +34,10 @@ public class Order {
 
     public Order(Long id) {
         this.id = id;
+    }
+
+    public Order(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
     public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
@@ -56,19 +62,39 @@ public class Order {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public OrderTable getOrderTable() {
         return orderTable;
+    }
+
+    public void setOrderTable(OrderTable orderTable) {
+        this.orderTable = orderTable;
     }
 
     public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
     public LocalDateTime getOrderedTime() {
         return orderedTime;
     }
 
+    public void setOrderedTime(LocalDateTime orderedTime) {
+        this.orderedTime = orderedTime;
+    }
+
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
+    }
+
+    public void setOrderLineItems(List<OrderLineItem> orderLineItems) {
+        this.orderLineItems = orderLineItems;
     }
 }

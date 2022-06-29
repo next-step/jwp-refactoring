@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
@@ -160,8 +161,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 메뉴_목록_포함됨(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> createdResponses) {
-        List<Long> resultLineIds = response.jsonPath().getList(".", Menu.class).stream()
-                .map(Menu::getId)
+        List<Long> resultLineIds = response.jsonPath().getList(".", MenuResponse.class).stream()
+                .map(MenuResponse::getId)
                 .collect(Collectors.toList());
 
         List<Long> expectedLineIds = createdResponses.stream()
@@ -171,7 +172,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         assertThat(resultLineIds).containsAll(expectedLineIds);
     }
 
-    public static Menu 메뉴_가져옴(ExtractableResponse<Response> response) {
-        return response.as(Menu.class);
+    public static MenuResponse 메뉴_가져옴(ExtractableResponse<Response> response) {
+        return response.as(MenuResponse.class);
     }
 }

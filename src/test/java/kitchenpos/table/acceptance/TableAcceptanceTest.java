@@ -4,7 +4,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Order;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.tablegroup.domain.TableGroup;
@@ -97,7 +98,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
     @DisplayName("[예외] 요리 중인 주문 테이블의 상태를 변경한다.")
     @Test
     void changeEmpty_with_cooking_order_table() {
-        Order 등록된_요리중인_주문 = 주문_등록되어_있음(주문_생성()).as(Order.class);
+        OrderResponse 등록된_요리중인_주문 = 주문_등록되어_있음(주문_생성()).as(OrderResponse.class);
         OrderTable 등록된_요리중인_주문_테이블 = new OrderTable(등록된_요리중인_주문.getOrderTableId());
         final boolean 테이블_사용중 = false;
 

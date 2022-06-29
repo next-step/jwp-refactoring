@@ -1,5 +1,7 @@
 package kitchenpos.order.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import kitchenpos.menu.domain.Menu;
 
 import javax.persistence.*;
@@ -41,15 +43,31 @@ public class OrderLineItem {
         return seq;
     }
 
+    public void setSeq(Long seq) {
+        this.seq = seq;
+    }
+
     public Order getOrder() {
         return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
     }
 
     public Menu getMenu() {
         return menu;
     }
 
+    public void setMenu(Menu menu) {
+        this.menu = menu;
+    }
+
     public long getQuantity() {
         return quantity;
+    }
+
+    public void setQuantity(long quantity) {
+        this.quantity = quantity;
     }
 }

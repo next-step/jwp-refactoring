@@ -1,11 +1,10 @@
 package kitchenpos.order.application;
 
 import kitchenpos.application.OrderService;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.domain.*;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.order.domain.*;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,17 +34,17 @@ public class OrderServiceTest {
     private MenuRepository menuRepository;
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
-    private OrderLineItemDao orderListItemDao;
+    private OrderLineItemRepository orderLineItemRepository;
 
     @Mock
     private OrderTableRepository orderTableRepository;
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(menuRepository, orderDao, orderListItemDao, orderTableRepository);
+        orderService = new OrderService(menuRepository, orderRepository, orderLineItemRepository, orderTableRepository);
     }
 
     @DisplayName("주문을 생성한다.")
@@ -54,8 +53,7 @@ public class OrderServiceTest {
         when(menuRepository.findAllById(any())).thenReturn(Arrays.asList(new Menu(1L)));
         OrderTable orderTable = new OrderTable(1L, 3, false);
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
-        when(orderDao.save(any())).thenReturn(createOrder());
-        when(orderListItemDao.save(any())).thenReturn(createOrderListItem());
+        when(orderRepository.save(any())).thenReturn(createOrder());
 
         // when
         Order created = orderService.create(createOrder());
@@ -111,7 +109,7 @@ public class OrderServiceTest {
     @DisplayName("주문 목록을 조회한다.")
     @Test
     void list() {
-        when(orderDao.findAll()).thenReturn(createOrderList());
+        when(orderRepository.findAll()).thenReturn(createOrderList());
 
         // when
         List<Order> list = orderService.list();
@@ -123,27 +121,26 @@ public class OrderServiceTest {
     @DisplayName("주문 상태를 변경한다.")
     @Test
     void changeOrderStatus() {
-        when(orderDao.findById(any())).thenReturn(Optional.of(createOrder()));
-        when(orderDao.save(any())).thenReturn(createOrder());
-        when(orderListItemDao.findAllByOrderId(any())).thenReturn(Arrays.asList(createOrderListItem()));
+        when(orderRepository.findById(any())).thenReturn(Optional.of(createOrder()));
+        when(orderRepository.save(any())).thenReturn(createOrder());
 
         // when
-        Order changeOrder = new Order(OrderStatus.COMPLETION.name());
+        Order changeOrder = new Order(OrderStatus.COMPLETION);
         Order updated = orderService.changeOrderStatus(1L, changeOrder);
 
         // then
         assertThat(updated).isNotNull();
-        assertThat(updated.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION.name());
+        assertThat(updated.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
     }
 
     @DisplayName("[예외] 저장되지 않은 주문의 상태를 변경한다.")
     @Test
     void changeOrderStatus_with_not_saved_order() {
-        when(orderDao.findById(any())).thenReturn(Optional.empty());
+        when(orderRepository.findById(any())).thenReturn(Optional.empty());
 
         // when, then
         assertThatThrownBy(() -> {
-            Order changeOrder = new Order(OrderStatus.COMPLETION.name());
+            Order changeOrder = new Order(OrderStatus.COMPLETION);
             orderService.changeOrderStatus(1L, changeOrder);
         }).isInstanceOf(IllegalArgumentException.class);
     }
@@ -151,11 +148,11 @@ public class OrderServiceTest {
     @DisplayName("[예외] 계산 완료 상태에서 추가로 주문 상태를 변경한다.")
     @Test
     void changeOrderStatus_with_completion_state() {
-        when(orderDao.findById(any())).thenReturn(Optional.of(createOrderWithCompletion()));
+        when(orderRepository.findById(any())).thenReturn(Optional.of(createOrderWithCompletion()));
 
         // when, then
         assertThatThrownBy(() -> {
-            Order changeOrder = new Order(OrderStatus.COMPLETION.name());
+            Order changeOrder = new Order(OrderStatus.COMPLETION);
             orderService.changeOrderStatus(1L, changeOrder);
         }).isInstanceOf(IllegalArgumentException.class);
     }
@@ -163,23 +160,23 @@ public class OrderServiceTest {
     public static Order createOrder() {
         OrderLineItem orderListItem = createOrderListItem();
         OrderTable orderTable = new OrderTable(1L, 3, false);
-        return new Order(1L, orderTable.getId(), Arrays.asList(orderListItem));
+        return new Order(1L, orderTable, Arrays.asList(orderListItem));
     }
 
     public static Order createOrderWithoutOrderListItem() {
         OrderTable orderTable = new OrderTable(1L, 3, false);
-        return new Order(1L, orderTable.getId(), null);
+        return new Order(1L, orderTable, null);
     }
 
     public static Order createOrderWithCompletion() {
         OrderLineItem orderListItem = createOrderListItem();
         OrderTable orderTable = new OrderTable(1L, 3, false);
-        return new Order(1L, orderTable.getId(), OrderStatus.COMPLETION.name(), Arrays.asList(orderListItem));
+        return new Order(1L, orderTable, OrderStatus.COMPLETION, Arrays.asList(orderListItem));
     }
 
     public static OrderLineItem createOrderListItem() {
         Menu menu = createMenu01();
-        return new OrderLineItem(1L, 1L, menu.getId(), 1);
+        return new OrderLineItem(1L, new Order(1L), menu, 1);
     }
 
     public static List<Order> createOrderList() {
