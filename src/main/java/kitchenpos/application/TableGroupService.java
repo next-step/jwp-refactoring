@@ -8,8 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
-import static java.util.stream.Collectors.toList;
+import java.util.stream.Collectors;
 
 @Service
 public class TableGroupService {
@@ -23,10 +22,7 @@ public class TableGroupService {
 
     @Transactional
     public TableGroup create(final List<Long> orderTableIds) {
-        final List<OrderTable> savedOrderTables = orderTableIds.stream()
-                .map(orderTableValidator::findExistsOrderTableById)
-                .collect(toList());
-
+        final List<OrderTable> savedOrderTables = orderTableValidator.findExistsOrderTableByIdIn(orderTableIds);
         return tableGroupRepository.save(TableGroup.group(savedOrderTables));
     }
 
@@ -35,9 +31,10 @@ public class TableGroupService {
         final TableGroup tableGroup = tableGroupRepository.findByIdWithOrderTable(tableGroupId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        tableGroup.getOrderTables().getOrderTables().stream()
+        List<Long> orderTableIds = tableGroup.getOrderTables().getOrderTables().stream()
                 .map(OrderTable::getId)
-                .forEach(orderTableValidator::checkOrderStatus);
+                .collect(Collectors.toList());
+        orderTableValidator.checkOrderStatusIn(orderTableIds);
 
         tableGroup.ungroup();
     }

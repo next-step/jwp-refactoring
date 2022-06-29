@@ -45,8 +45,9 @@ class TableGroupServiceTest {
         orderTableId2 = 2L;
         orderTable1 = new OrderTable(1, true);
         orderTable2 = new OrderTable(1, true);
-        when(orderTableValidator.findExistsOrderTableById(orderTableId1)).thenReturn(orderTable1);
-        when(orderTableValidator.findExistsOrderTableById(orderTableId2)).thenReturn(orderTable2);
+        when(orderTableValidator.findExistsOrderTableByIdIn(singletonList(orderTableId1))).thenReturn(singletonList(orderTable1));
+        when(orderTableValidator.findExistsOrderTableByIdIn(singletonList(orderTableId2))).thenReturn(singletonList(orderTable2));
+        when(orderTableValidator.findExistsOrderTableByIdIn(Arrays.asList(orderTableId1, orderTableId2))).thenReturn(Arrays.asList(orderTable1, orderTable2));
     }
 
     @DisplayName("여러 주문 테이블을 단체 지정할 수 있다")
@@ -84,6 +85,6 @@ class TableGroupServiceTest {
         tableGroupService.ungroup(tableGroupId);
 
         // then
-        verify(orderTableValidator, times(2)).checkOrderStatus(any());
+        verify(orderTableValidator).checkOrderStatusIn(anyList());
     }
 }

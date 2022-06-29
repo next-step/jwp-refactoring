@@ -13,6 +13,8 @@ import java.util.Optional;
 public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findAllByOrderTableId(Long orderTableId);
 
+    List<Order> findAllByOrderTableIdIn(List<Long> orderTableIds);
+
     @Query("select distinct o from Order o join fetch o.orderLineItems")
     List<Order> findAllWithItem();
 

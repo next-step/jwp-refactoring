@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.List;
+
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
@@ -28,6 +30,19 @@ class OrderTableValidatorTest {
 
         // when then
         assertThatThrownBy(() -> orderTableValidator.checkOrderStatus(orderTableId))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("등록된 주문의 주문 상태가 계산 완료인 경우에만 변경할 수 있다")
+    @Test
+    void checkOrderStatusIn() {
+        // given
+        Long orderTableId = 1L;
+        List<Long> orderTableIds = singletonList(orderTableId);
+        when(orderRepository.findAllByOrderTableIdIn(orderTableIds)).thenReturn(singletonList(new Order(orderTableId, OrderStatus.MEAL)));
+
+        // when then
+        assertThatThrownBy(() -> orderTableValidator.checkOrderStatusIn(orderTableIds))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }
