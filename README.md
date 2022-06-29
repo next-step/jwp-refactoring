@@ -108,9 +108,7 @@
 1. 2단계 미흡한 부분 수정
     1. 디미터 법칙 적용
        1. 일급 컬렉션에서 getter를 통해 받는 리스트드를 unmodif
-       2. Price domain에서 multiple 기능 구현(단 반환시 저장하고있는 Price는 접근이 되면 안됨)
-          1. #질문 : Product개수에 따른 가격 반환은 MenuProduct의 책임일것 같은데, 현재는 Menuproduct와 Product가 간접참조롣 되어있음. 
-                    Product.getTotalPrice(int quantity) -> return price * quantity; 를 하는게 맞는건지?
+       2. Price domain에서 multiple 기능 구현(단 반환시 저장하고있는 Price는 접근이 되면 안됨) 
     2. 코드컨벤션 점검
     3. 반복적인 작업 추출 후 재사용
         1. MenuProductDomainService.validatePriceSmallThenSum
@@ -121,9 +119,9 @@
        1. 500Err -> 400Err
        2. Acceptance 에러확인 함수 수정(500 -> 400)
        3. assertThatThrowBy 에서 Catch하는 Error 객체 수정
+    6. 테스트 코드 내에 ID설정을 위한 Reflection 코드 Stub으로 대체
 
-
-2. Aggregate 예상 관계도 및 생성 event 예정 내역
+3. Aggregate 예상 관계도 및 생성 event 예정 내역
 <img src="readmeSource/AggregateEntityRelationship.png">
  - Aggregate간 참조가 일어나는 부분
    - Order Create
@@ -136,12 +134,26 @@
      - Table Group에 속한 OrderTable들에 COMPLETE가 아닌 메뉴 존재여부 검증
  - 필요 Event 
    - OrderCreate
-     - Menu.validateMenuExist()
-     - OrderTable.validateAcceptOrder()
+     - Menu : 메뉴가 존재하는가
+     - Ordertable : Table이 비어있지 않는가
    - MenuCreate
-     - Product.validateCheaperMenu()
+     - Product : Menu에 포함된 Product의 총 가격이 Menu의 가격보다 높은가
    - TableUngroup
-     - Order.isComplete()
+     - Order : TableGroup에 포함된 Order중 COMPLETE가 아닌 Order가 있는가
+
+3. 엔티티 관계도(Step3기준)
+
+| Entity_A   | 관계  | Entity_B      | 관계구현방식    | 비고                                                |
+|------------|-----|---------------|-----------|---------------------------------------------------|
+| Product    | 1:N | MenuProduct   | ID참조      | 다른 Aggregate이므로 ID참조                              |
+| Menu       | 1:N | MenuProduct   | 양방향참조     | MenuProduct에 대한 생명주기 Menu에서 관리                    |
+| Menu       | N:1 | MenuGroup   | 객체참조      | Menu 조회/등록시 MenuGroup에 대한 검증, 조회가 동반됨             |
+| Menu       | 1:N | OrderLineItem | ID참조      | 다른 Aggregate이므로 ID참조                              |
+| Order      | 1:N | OrderLineItem | 양방향참조     | OrderLineItem에 대한 생명주기 Order에서 관리                 |
+| OrderTable | 1:N | Order         | ID참조      | 다른 Aggregate이므로 ID참조                              |
+| TableGroup | 1:N | OrderTable    | ID참조      | OrderTable과 TableGroup은 동시에 생성될 필요가 없어 ID참조로 진행한다 |
+
+
 ## 용어 사전
 
 | 한글명 | 영문명 | 설명 |
