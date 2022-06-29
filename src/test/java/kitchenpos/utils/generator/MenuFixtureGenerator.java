@@ -26,7 +26,7 @@ public class MenuFixtureGenerator {
         return menu;
     }
 
-    private static List<MenuProduct> generateMenuProduct(List<Product> products) {
+    public static List<MenuProduct> generateMenuProduct(List<Product> products) {
         List<MenuProduct> menuProducts = new ArrayList<>();
 
         int lastMenuGroupSeq = 7;
@@ -34,8 +34,8 @@ public class MenuFixtureGenerator {
             MenuProduct menuProduct = new MenuProduct();
             menuProduct.setProductId(product.getId());
             menuProduct.setQuantity(1);
+            menuProduct.setSeq((long) lastMenuGroupSeq);
             lastMenuGroupSeq++;
-            menuProduct.setSeq(Long.valueOf(lastMenuGroupSeq));
 
             menuProducts.add(menuProduct);
         }

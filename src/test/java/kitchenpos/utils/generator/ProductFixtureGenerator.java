@@ -43,6 +43,12 @@ public class ProductFixtureGenerator {
         return products;
     }
 
+    public static Product generateProductMock(){
+        Product product = generateProduct();
+        product.setId((long) ProductFixtureGenerator.COUNTER);
+        return product;
+    }
+
     public Product savedProduct() {
         return productDao.save(generateProduct());
     }
