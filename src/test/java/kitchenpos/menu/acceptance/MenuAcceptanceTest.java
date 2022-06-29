@@ -4,7 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Menu;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -106,7 +107,9 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         MenuGroup menuGroup = 메뉴_그룹_가져옴(메뉴_그룹_등록되어_있음(MENU_GROUP_NAME01));
         Product product = 상품_가져옴(상품_등록되어_있음(PRODUCT_NAME01, PRODUCT_PRICE01));
         MenuProduct menuProduct = new MenuProduct(product, 1);
-        return new Menu(menuName, menuPrice, menuGroup.getId(), Collections.singletonList(menuProduct));
+        List<MenuProduct> list = new ArrayList<>();
+        list.add(menuProduct);
+        return new Menu(menuName, menuPrice, menuGroup, list);
     }
 
     public static Menu 메뉴_그룹_없는_테스트_메뉴_생성(String menuName, BigDecimal menuPrice) {
@@ -118,7 +121,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     public static Menu 상품_없는_테스트_메뉴_생성(String menuName, BigDecimal menuPrice) {
         MenuGroup menuGroup = 메뉴_그룹_가져옴(메뉴_그룹_등록되어_있음(MENU_GROUP_NAME01));
         MenuProduct menuProduct = new MenuProduct(null, 1);
-        return new Menu(menuName, menuPrice, menuGroup.getId(), Collections.singletonList(menuProduct));
+        return new Menu(menuName, menuPrice, menuGroup, Collections.singletonList(menuProduct));
     }
 
     public static ExtractableResponse<Response> 메뉴_등록되어_있음(Menu menu) {

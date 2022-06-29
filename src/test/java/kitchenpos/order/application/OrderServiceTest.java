@@ -1,13 +1,13 @@
 package kitchenpos.order.application;
 
 import kitchenpos.application.OrderService;
-import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.*;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.service.MenuServiceTest;
-import kitchenpos.table.application.TableServiceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static kitchenpos.menu.service.MenuServiceTest.createMenu01;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -31,7 +32,7 @@ public class OrderServiceTest {
     private OrderService orderService;
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
     private OrderDao orderDao;
@@ -44,13 +45,13 @@ public class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(menuDao, orderDao, orderListItemDao, orderTableDao);
+        orderService = new OrderService(menuRepository, orderDao, orderListItemDao, orderTableDao);
     }
 
     @DisplayName("주문을 생성한다.")
     @Test
     void create() {
-        when(menuDao.countByIdIn(any())).thenReturn(1L);
+        when(menuRepository.findAllById(any())).thenReturn(Arrays.asList(new Menu(1L)));
         OrderTable orderTable = new OrderTable(1L, 3, false);
         when(orderTableDao.findById(any())).thenReturn(Optional.of(orderTable));
         when(orderDao.save(any())).thenReturn(createOrder());
@@ -75,7 +76,7 @@ public class OrderServiceTest {
     @DisplayName("[예외] 메뉴와 메뉴 항목이 일치하지 않는 주문을 생성한다.")
     @Test
     void createOrder_menu_and_order_list_item_not_matching() {
-        when(menuDao.countByIdIn(any())).thenReturn(2L);
+        when(menuRepository.findAllById(any())).thenReturn(Arrays.asList(new Menu(1L), new Menu(2L)));
 
         // when, then
         assertThatThrownBy(() -> {
@@ -86,7 +87,7 @@ public class OrderServiceTest {
     @DisplayName("[예외] 주문 테이블 없는 주문을 생성한다.")
     @Test
     void createOrder_without_order_table() {
-        when(menuDao.countByIdIn(any())).thenReturn(1L);
+        when(menuRepository.findAllById(any())).thenReturn(Arrays.asList(new Menu(1L)));
         when(orderTableDao.findById(any())).thenReturn(Optional.empty());
 
         // when, then
@@ -98,7 +99,7 @@ public class OrderServiceTest {
     @DisplayName("[예외] 비어 있는 주문 테이블에서 주문을 생성한다.")
     @Test
     void createOrder_with_empty_order_table() {
-        when(menuDao.countByIdIn(any())).thenReturn(1L);
+        when(menuRepository.findAllById(any())).thenReturn(Arrays.asList(new Menu(1L)));
         when(orderTableDao.findById(any())).thenReturn(Optional.of(new OrderTable(true)));
 
         // when, then
@@ -177,7 +178,7 @@ public class OrderServiceTest {
     }
 
     public static OrderLineItem createOrderListItem() {
-        Menu menu = MenuServiceTest.createMenu01();
+        Menu menu = createMenu01();
         return new OrderLineItem(1L, 1L, menu.getId(), 1);
     }
 
