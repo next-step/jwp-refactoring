@@ -3,12 +3,11 @@ package kitchenpos.application;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
-import org.junit.jupiter.api.BeforeEach;
+import kitchenpos.repository.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,7 +40,7 @@ class MenuServiceTest {
     MenuProductDao menuProductDao;
 
     @Mock
-    ProductDao productDao;
+    ProductRepository productRepository;
 
     @InjectMocks
     MenuService menuService;
@@ -66,8 +65,8 @@ class MenuServiceTest {
         치킨 = new Menu(1L, "치킨", new BigDecimal(15000), 한마리메뉴.getId(), Arrays.asList(양념치킨한마리, 간장치킨한마리));
         given(menuDao.save(any(Menu.class))).willReturn(치킨);
         given(menuGroupDao.existsById(anyLong())).willReturn(true);
-        given(productDao.findById(양념치킨한마리.getProductId())).willReturn(Optional.of(양념치킨));
-        given(productDao.findById(간장치킨한마리.getProductId())).willReturn(Optional.of(간장치킨));
+        given(productRepository.findById(양념치킨한마리.getProductId())).willReturn(Optional.of(양념치킨));
+        given(productRepository.findById(간장치킨한마리.getProductId())).willReturn(Optional.of(간장치킨));
 
         //when
         Menu savedMenu = menuService.create(치킨);
@@ -130,8 +129,8 @@ class MenuServiceTest {
         간장치킨한마리 = 메뉴_상품_생성(간장치킨);
         치킨 = new Menu(1L, "치킨", new BigDecimal(50000), 2L, Arrays.asList(양념치킨한마리, 간장치킨한마리));
         given(menuGroupDao.existsById(anyLong())).willReturn(true);
-        given(productDao.findById(양념치킨한마리.getProductId())).willReturn(Optional.of(양념치킨));
-        given(productDao.findById(간장치킨한마리.getProductId())).willReturn(Optional.of(간장치킨));
+        given(productRepository.findById(양념치킨한마리.getProductId())).willReturn(Optional.of(양념치킨));
+        given(productRepository.findById(간장치킨한마리.getProductId())).willReturn(Optional.of(간장치킨));
 
         //then
         assertThatThrownBy(() -> {
@@ -150,7 +149,7 @@ class MenuServiceTest {
         간장치킨한마리 = 메뉴_상품_생성(간장치킨);
         치킨 = new Menu(1L, "치킨", new BigDecimal(15000), 2L, Arrays.asList(양념치킨한마리, 간장치킨한마리));
         given(menuGroupDao.existsById(anyLong())).willReturn(true);
-        given(productDao.findById(양념치킨한마리.getProductId())).willReturn(Optional.empty());
+        given(productRepository.findById(양념치킨한마리.getProductId())).willReturn(Optional.empty());
 
         //then
         assertThatThrownBy(() -> {
