@@ -6,6 +6,13 @@ public class OrderLineItem {
     private Long menuId;
     private long quantity;
 
+    public OrderLineItem(Long seq, Long orderId, Long menuId, long quantity) {
+        this.seq = seq;
+        this.orderId = orderId;
+        this.menuId = menuId;
+        this.quantity = quantity;
+    }
+
     public Long getSeq() {
         return seq;
     }
@@ -18,7 +25,7 @@ public class OrderLineItem {
         return orderId;
     }
 
-    public void setOrderId(final Long orderId) {
+    public void changeOrderId(final Long orderId) {
         this.orderId = orderId;
     }
 

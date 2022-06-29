@@ -8,6 +8,14 @@ public class Menu {
     private String name;
     private BigDecimal price;
     private Long menuGroupId;
+
+    public Menu(Long id, String name, BigDecimal price, Long menuGroupId) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.menuGroupId = menuGroupId;
+    }
+
     private List<MenuProduct> menuProducts;
 
     public Long getId() {
@@ -46,7 +54,7 @@ public class Menu {
         return menuProducts;
     }
 
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
+    public void changeMenuProducts(final List<MenuProduct> menuProducts) {
         this.menuProducts = menuProducts;
     }
 }
