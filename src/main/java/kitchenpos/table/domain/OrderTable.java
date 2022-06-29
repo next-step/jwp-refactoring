@@ -15,7 +15,6 @@ public class OrderTable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "table_group_id")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private TableGroup tableGroup;
 
     @Column(nullable = false)
