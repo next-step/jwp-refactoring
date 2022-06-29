@@ -34,7 +34,7 @@ public class MenuService {
     }
 
     @Transactional
-    public MenuResponse create(final Menu menu) {
+    public Menu create(final Menu menu) {
         final BigDecimal price = menu.getPrice();
 
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
@@ -59,13 +59,10 @@ public class MenuService {
             throw new IllegalArgumentException();
         }
 
-        menuRepository.save(menu);
-        return MenuResponse.of(menu);
+        return menuRepository.save(menu);
     }
 
-    public List<MenuResponse> list() {
-        return menuRepository.findAll().stream()
-                .map(MenuResponse::of)
-                .collect(Collectors.toList());
+    public List<Menu> list() {
+        return menuRepository.findAll();
     }
 }

@@ -61,7 +61,7 @@ public class MenuServiceTest {
         when(menuRepository.save(any())).thenReturn(createMenu01());
 
         // when
-        MenuResponse menu = menuService.create(new Menu(MENU_NAME01, MENU_PRICE01, createMenuGroup01(), createMenuProductList()));
+        Menu menu = menuService.create(new Menu(MENU_NAME01, MENU_PRICE01, createMenuGroup01(), createMenuProductList()));
 
         // then
         assertThat(menu).isNotNull();
@@ -126,7 +126,7 @@ public class MenuServiceTest {
         when(menuRepository.findAll()).thenReturn(createMenuList());
 
         // when
-        List<MenuResponse> list = menuService.list();
+        List<Menu> list = menuService.list();
 
         // then
         assertThat(list).isNotNull();

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class MenuRestController {
@@ -22,13 +23,16 @@ public class MenuRestController {
 
     @PostMapping("/api/menus")
     public ResponseEntity<MenuResponse> create(@RequestBody final Menu menu) {
-        final MenuResponse created = menuService.create(menu);
+        final MenuResponse created = MenuResponse.of(menuService.create(menu));
         final URI uri = URI.create("/api/menus/" + created.getId());
         return ResponseEntity.created(uri).body(created);
     }
 
     @GetMapping("/api/menus")
     public ResponseEntity<List<MenuResponse>> list() {
-        return ResponseEntity.ok().body(menuService.list());
+        List<MenuResponse> list = menuService.list().stream()
+                .map(MenuResponse::of)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok().body(list);
     }
 }
