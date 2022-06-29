@@ -22,7 +22,7 @@ public class Price {
         }
     }
 
-    public Long getPrice() {
+    public Long value() {
         return price;
     }
 }
