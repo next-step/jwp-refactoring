@@ -53,7 +53,7 @@ public class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        menuService = new MenuService(menuRepository, menuGroupRepository, menuProductRepository, productRepository);
+        menuService = new MenuService(menuRepository, menuGroupRepository);
     }
 
     @DisplayName("메뉴를 생성한다.")
@@ -90,7 +90,7 @@ public class MenuServiceTest {
     @DisplayName("[예외] 메뉴 그룹을 포함하지 않은 메뉴를 생성한다.")
     @Test
     public void create_without_menu_group() {
-        when(menuGroupRepository.existsById(1L)).thenReturn(false);
+        when(menuGroupRepository.findById(any())).thenReturn(Optional.empty());
 
         // when, then
         assertThatThrownBy(() -> {
@@ -101,18 +101,18 @@ public class MenuServiceTest {
     @DisplayName("[예외] 상품을 포함하지 않은 메뉴를 생성한다")
     @Test
     public void create_without_product() {
-        when(menuGroupRepository.existsById(1L)).thenReturn(true);
+        when(menuGroupRepository.findById(any())).thenReturn(Optional.of(new MenuGroup(1L)));
 
         // when, then
         assertThatThrownBy(() -> {
             menuService.create(new MenuRequest(MENU_NAME01, MENU_PRICE01, 1L, Collections.singletonList(createMenuWithoutProduct())));
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(NullPointerException.class);
     }
 
     @DisplayName("[예외] 메뉴 상품보다 가격이 비싼 메뉴를 생성한다.")
     @Test
     public void create_expensive_than_menu_products() {
-        when(menuGroupRepository.existsById(1L)).thenReturn(true);
+        when(menuGroupRepository.findById(any())).thenReturn(Optional.of(new MenuGroup(1L)));
 
         // when, then
         assertThatThrownBy(() -> {
