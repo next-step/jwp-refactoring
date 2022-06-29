@@ -1,5 +1,6 @@
 package kitchenpos.order.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.order.domain.Order;
