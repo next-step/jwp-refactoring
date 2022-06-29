@@ -2,12 +2,14 @@ package kitchenpos.domain;
 
 import java.math.BigDecimal;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+// TODO: setter 제거, Price 객체 그대로 이용하도록 변경
 @Entity
 @Table(name = "product")
 public class Product {
@@ -19,13 +21,24 @@ public class Product {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "price")
-    private BigDecimal price;
+    @Embedded
+    private Price price;
 
     public Product() {
     }
 
+    public Product(String name, Price price) {
+        this.name = name;
+        this.price = price;
+    }
+
     public Product(final Long id, final String name, final BigDecimal price) {
+        this.id = id;
+        this.name = name;
+        this.price = new Price(price.longValue());
+    }
+
+    public Product(Long id, String name, Price price) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -48,10 +61,10 @@ public class Product {
     }
 
     public BigDecimal getPrice() {
-        return price;
+        return BigDecimal.valueOf(price.getPrice());
     }
 
     public void setPrice(final BigDecimal price) {
-        this.price = price;
+        this.price = new Price(price.longValue());
     }
 }

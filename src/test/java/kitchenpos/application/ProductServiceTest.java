@@ -1,14 +1,15 @@
 package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductRequest;
 import kitchenpos.fixture.UnitTestFixture;
 import kitchenpos.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,24 +37,16 @@ class ProductServiceTest {
     @Test
     void 상품을_등록할_수_있어야_한다() {
         // given
-        final Product given = new Product(1L, "new product", BigDecimal.valueOf(15000L));
-        when(productRepository.save(any(Product.class))).thenReturn(given);
+        final ProductRequest given = new ProductRequest("new product", new Price(15000L));
+
+        final Product expected = new Product(1L, "new product", BigDecimal.valueOf(15000L));
+        when(productRepository.save(any(Product.class))).thenReturn(expected);
 
         // when
         final Product actual = productService.create(given);
 
         // then
-        assertThat(given).isEqualTo(actual);
-    }
-
-    @Test
-    void 상품_등록_시_상품_가격이_없거나_0원_미만이면_에러가_발생해야_한다() {
-        // given
-        final Product given = new Product(1L, "new product", BigDecimal.valueOf(-1));
-
-        // when and then
-        assertThatThrownBy(() -> productService.create(given))
-                .isInstanceOf(IllegalArgumentException.class);
+        assertThat(expected).isEqualTo(actual);
     }
 
     @Test
