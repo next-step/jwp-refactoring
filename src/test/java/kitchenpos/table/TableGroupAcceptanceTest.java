@@ -1,9 +1,7 @@
 package kitchenpos.table;
 
 import static kitchenpos.table.TableAcceptanceTest.사용가능;
-import static kitchenpos.table.TableAcceptanceTest.사용중;
 import static kitchenpos.table.TableAcceptanceTest.손님_입장;
-import static kitchenpos.table.TableAcceptanceTest.테이블_상태_변경;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
@@ -11,8 +9,8 @@ import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.order.domain.OrderTable;
+import kitchenpos.table.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
