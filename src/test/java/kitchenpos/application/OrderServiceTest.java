@@ -19,6 +19,7 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuDto;
+import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.product.domain.Product;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,7 +40,7 @@ class OrderServiceTest extends ServiceTest {
     private Product product3;
     private MenuDto menu1;
     private MenuDto menu2;
-    private OrderTable orderTable;
+    private OrderTableResponse orderTable;
 
     @BeforeEach
     void setUp() {
@@ -74,7 +75,7 @@ class OrderServiceTest extends ServiceTest {
     void 주문등록_인원수가0일때도_주문등록가능() {
         OrderLineItem orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
         OrderLineItem orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
-        OrderTable zeroGuestTable = serviceTestHelper.비어있지않은테이블_생성됨(0);
+        OrderTableResponse zeroGuestTable = serviceTestHelper.비어있지않은테이블_생성됨(0);
         Order savedOrder = serviceTestHelper.주문_생성됨(zeroGuestTable.getId(),
                 Lists.newArrayList(orderLineItem1, orderLineItem2));
 
@@ -106,19 +107,19 @@ class OrderServiceTest extends ServiceTest {
     @DisplayName("주문테이블이 존재하지 않는 경우 주문 등록 실패")
     void 주문등록_주문테이블이_없는경우() {
         int numberOfGuests = 3;
-        OrderTable notSavedOrderTable = OrderTableFixtureFactory.createNotEmptyOrderTable(numberOfGuests);
+        Long notExistTableId = -1L;
         OrderLineItem orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
         OrderLineItem orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
 
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> serviceTestHelper.주문_생성됨(notSavedOrderTable.getId(),
+                .isThrownBy(() -> serviceTestHelper.주문_생성됨(notExistTableId,
                         Lists.newArrayList(orderLineItem1, orderLineItem2)));
     }
 
     @Test
     @DisplayName("주문테이블이 빈 테이블인 경우 주문 등록 실패")
     void 주문등록_주문테이블이_빈테이블인_경우() {
-        OrderTable orderTable = serviceTestHelper.빈테이블_생성됨();
+        OrderTableResponse orderTable = serviceTestHelper.빈테이블_생성됨();
         OrderLineItem orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
         OrderLineItem orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
 

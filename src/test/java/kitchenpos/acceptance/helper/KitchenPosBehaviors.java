@@ -13,6 +13,10 @@ import kitchenpos.order.domain.TableGroup;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuDto;
+import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.order.dto.TableGroupRequest;
+import kitchenpos.order.dto.TableGroupResponse;
 import kitchenpos.product.domain.Product;
 
 public class KitchenPosBehaviors {
@@ -98,16 +102,16 @@ public class KitchenPosBehaviors {
         return 메뉴_목록조회_요청().jsonPath().getList("$", MenuDto.class);
     }
 
-    public static ExtractableResponse<Response> 테이블_생성_요청(OrderTable orderTable) {
+    public static ExtractableResponse<Response> 테이블_생성_요청(OrderTableRequest orderTableRequest) {
         return RestAssured
                 .given().contentType(ContentType.JSON).log().all()
-                .when().body(orderTable).post("/api/tables")
+                .when().body(orderTableRequest).post("/api/tables")
                 .then().log().all()
                 .extract();
     }
 
-    public static OrderTable 테이블_생성됨(OrderTable orderTable) {
-        return 테이블_생성_요청(orderTable).as(OrderTable.class);
+    public static OrderTableResponse 테이블_생성됨(OrderTableRequest orderTableRequest) {
+        return 테이블_생성_요청(orderTableRequest).as(OrderTableResponse.class);
     }
 
     public static ExtractableResponse<Response> 테이블_목록조회_요청() {
@@ -118,12 +122,12 @@ public class KitchenPosBehaviors {
                 .extract();
     }
 
-    public static List<OrderTable> 테이블_목록조회() {
+    public static List<OrderTableResponse> 테이블_목록조회() {
         ExtractableResponse<Response> response = KitchenPosBehaviors.테이블_목록조회_요청();
-        return response.jsonPath().getList("$", OrderTable.class);
+        return response.jsonPath().getList("$", OrderTableResponse.class);
     }
 
-    public static ExtractableResponse<Response> 테이블_공석여부_변경_요청(Long orderTableId, OrderTable param) {
+    public static ExtractableResponse<Response> 테이블_공석여부_변경_요청(Long orderTableId, OrderTableRequest param) {
         String uri = String.format("/api/tables/%d/empty", orderTableId);
         return RestAssured
                 .given().contentType(ContentType.JSON).log().all()
@@ -132,7 +136,7 @@ public class KitchenPosBehaviors {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 테이블_인원수_변경_요청(Long orderTableId, OrderTable param) {
+    public static ExtractableResponse<Response> 테이블_인원수_변경_요청(Long orderTableId, OrderTableRequest param) {
         String uri = String.format("/api/tables/%d/number-of-guests", orderTableId);
         return RestAssured
                 .given().contentType(ContentType.JSON).log().all()
@@ -141,16 +145,16 @@ public class KitchenPosBehaviors {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 테이블그룹_생성_요청(TableGroup tableGroup) {
+    public static ExtractableResponse<Response> 테이블그룹_생성_요청(TableGroupRequest tableGroupRequest) {
         return RestAssured
                 .given().contentType(ContentType.JSON).log().all()
-                .when().body(tableGroup).post("/api/table-groups/")
+                .when().body(tableGroupRequest).post("/api/table-groups/")
                 .then().log().all()
                 .extract();
     }
 
-    public static TableGroup 테이블그룹_생성(TableGroup tableGroup) {
-        return 테이블그룹_생성_요청(tableGroup).as(TableGroup.class);
+    public static TableGroupResponse 테이블그룹_생성(TableGroupRequest tableGroupRequest) {
+        return 테이블그룹_생성_요청(tableGroupRequest).as(TableGroupResponse.class);
     }
 
     public static ExtractableResponse<Response> 테이블그룹_해제_요청(Long tableGroupId) {

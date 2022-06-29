@@ -20,6 +20,8 @@ import kitchenpos.fixture.TableGroupFixtureFactory;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuDto;
+import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.order.dto.TableGroupResponse;
 import kitchenpos.product.domain.Product;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,8 +34,8 @@ class OrderAcceptanceTest extends AcceptanceTest {
     Product product;
     MenuGroup menuGroup;
     MenuDto menuDTO;
-    OrderTable orderTable1;
-    OrderTable orderTable2;
+    OrderTableResponse orderTable1;
+    OrderTableResponse orderTable2;
 
     @BeforeEach
     public void setUp() {
@@ -158,7 +160,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
         KitchenPosBehaviors.테이블_인원수_변경_요청(orderTable2.getId(),
                 OrderTableFixtureFactory.createParamForChangeNumberOfGuests(0));
 
-        TableGroup tableGroup = KitchenPosBehaviors.테이블그룹_생성(
+        TableGroupResponse tableGroup = KitchenPosBehaviors.테이블그룹_생성(
                 TableGroupFixtureFactory.createTableGroup(Lists.newArrayList(orderTable1, orderTable2)));
         KitchenPosBehaviors.테이블그룹_해제_요청(tableGroup.getId());
 

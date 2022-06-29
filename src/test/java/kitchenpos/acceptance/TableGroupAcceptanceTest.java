@@ -10,6 +10,9 @@ import kitchenpos.order.domain.OrderTable;
 import kitchenpos.order.domain.TableGroup;
 import kitchenpos.fixture.OrderTableFixtureFactory;
 import kitchenpos.fixture.TableGroupFixtureFactory;
+import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.order.dto.TableGroupRequest;
+import kitchenpos.order.dto.TableGroupResponse;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,8 +21,8 @@ import org.springframework.http.HttpStatus;
 
 class TableGroupAcceptanceTest extends AcceptanceTest {
 
-    OrderTable table1;
-    OrderTable table2;
+    OrderTableResponse table1;
+    OrderTableResponse table2;
 
     @BeforeEach
     public void setUp() {
@@ -40,12 +43,12 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("테이블그룹 지정, 조회, 그룹 해제 기능 인수테스트")
     void tableGroupAcceptanceTest() {
-        TableGroup tableGroup = TableGroupFixtureFactory.createTableGroup(Lists.newArrayList(table1, table2));
+        TableGroupRequest tableGroup = TableGroupFixtureFactory.createTableGroup(Lists.newArrayList(table1, table2));
 
         ExtractableResponse<Response> createResponse = KitchenPosBehaviors.테이블그룹_생성_요청(tableGroup);
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
-        TableGroup savedTableGroup = createResponse.as(TableGroup.class);
+        TableGroupResponse savedTableGroup = createResponse.as(TableGroupResponse.class);
         ExtractableResponse<Response> deleteResponse = KitchenPosBehaviors.테이블그룹_해제_요청(savedTableGroup.getId());
         assertThat(deleteResponse.statusCode()).isEqualTo(org.springframework.http.HttpStatus.NO_CONTENT.value());
     }

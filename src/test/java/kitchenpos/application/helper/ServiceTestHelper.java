@@ -25,6 +25,9 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuDto;
+import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.order.dto.TableGroupResponse;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,37 +66,34 @@ public class ServiceTestHelper {
         return menuService.create(MenuDto.of(menuFixture));
     }
 
-    public TableGroup 테이블그룹_지정됨(int numberOfTables) {
-        List<OrderTable> orderTables = IntStream.range(0, numberOfTables)
+    public TableGroupResponse 테이블그룹_지정됨(int numberOfTables) {
+        List<OrderTableResponse> orderTables = IntStream.range(0, numberOfTables)
                 .mapToObj((index) -> 빈테이블_생성됨()).collect(toList());
         return tableGroupService.create(TableGroupFixtureFactory.createTableGroup(orderTables));
     }
 
-    public TableGroup 테이블그룹_지정됨(OrderTable... orderTables) {
+    public TableGroupResponse 테이블그룹_지정됨(OrderTableResponse... orderTables) {
         return tableGroupService.create(TableGroupFixtureFactory.createTableGroup(Arrays.asList(orderTables)));
     }
 
-    public OrderTable 빈테이블_생성됨() {
+    public OrderTableResponse 빈테이블_생성됨() {
         return tableService.create(OrderTableFixtureFactory.createEmptyOrderTable());
     }
 
-    public OrderTable 비어있지않은테이블로_변경(Long orderTableId) {
-        OrderTable param = OrderTableFixtureFactory.createParamForChangeEmptyState(false);
-        return tableService.changeEmpty(orderTableId, param);
+    public OrderTableResponse 비어있지않은테이블로_변경(Long orderTableId) {
+        return tableService.changeEmpty(orderTableId, OrderTableFixtureFactory.createParamForChangeEmptyState(false));
     }
 
-    public OrderTable 비어있지않은테이블_생성됨(int numberOfGuests) {
+    public OrderTableResponse 비어있지않은테이블_생성됨(int numberOfGuests) {
         return tableService.create(OrderTableFixtureFactory.createNotEmptyOrderTable(numberOfGuests));
     }
 
-    public OrderTable 빈테이블로_변경(Long orderTableId) {
-        OrderTable param = OrderTableFixtureFactory.createParamForChangeEmptyState(true);
-        return tableService.changeEmpty(orderTableId, param);
+    public OrderTableResponse 빈테이블로_변경(Long orderTableId) {
+        return tableService.changeEmpty(orderTableId, OrderTableFixtureFactory.createParamForChangeEmptyState(true));
     }
 
-    public OrderTable 테이블_인원수_변경(Long orderTableId, int updatedNumberOfGuests) {
-        OrderTable param = OrderTableFixtureFactory.createParamForChangeNumberOfGuests(updatedNumberOfGuests);
-        return tableService.changeNumberOfGuests(orderTableId, param);
+    public OrderTableResponse 테이블_인원수_변경(Long orderTableId, int updatedNumberOfGuests) {
+        return tableService.changeNumberOfGuests(orderTableId, OrderTableFixtureFactory.createParamForChangeNumberOfGuests(updatedNumberOfGuests));
     }
 
     public Order 주문_생성됨(Long orderTableId, List<OrderLineItem> orderLineItems) {
