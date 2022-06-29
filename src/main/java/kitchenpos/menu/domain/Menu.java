@@ -1,7 +1,5 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.menu.dto.MenuProductRequest;
-
 import javax.persistence.*;
 import java.util.List;
 
@@ -19,14 +17,10 @@ public class Menu {
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
 
-    public Menu(String name, long price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
+    public Menu(String name, long price, Long menuGroupId) {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
-
-        for (final MenuProductRequest menuProductRequest : menuProducts) {
-            this.menuProducts.add(new MenuProduct(this, menuProductRequest.getProductId(), menuProductRequest.getQuantity()));
-        }
     }
 
     protected Menu() {
@@ -46,5 +40,9 @@ public class Menu {
 
     public List<MenuProduct> getMenuProducts() {
         return this.menuProducts.getAll();
+    }
+
+    public void add(MenuProduct menuProduct) {
+        this.menuProducts.add(menuProduct);
     }
 }

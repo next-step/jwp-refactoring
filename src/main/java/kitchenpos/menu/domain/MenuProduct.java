@@ -7,16 +7,15 @@ public class MenuProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private Menu menu;
+    @Column(nullable = false)
+    private Long menuId;
     @Column(nullable = false)
     private Long productId;
     @Column(nullable = false)
     private long quantity;
 
-    public MenuProduct(Menu menu, Long productId, long quantity) {
-        this.menu = menu;
+    public MenuProduct(Long menuId, Long productId, long quantity) {
+        this.menuId = menuId;
         this.productId = productId;
         this.quantity = quantity;
     }

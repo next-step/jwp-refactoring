@@ -38,7 +38,7 @@ class MenuRestControllerTest {
     void setUp() {
         this.objectMapper = new ObjectMapper();
         this.mockMvc = MockMvcBuilders.standaloneSetup(menuRestController).build();
-        this.menuResponse = new MenuResponse(new Menu("menu1", 10000L, null, Collections.emptyList()));
+        this.menuResponse = new MenuResponse(new Menu("menu1", 10000L, 1L));
     }
 
     @Test

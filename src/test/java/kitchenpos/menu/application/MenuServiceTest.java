@@ -14,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -49,7 +48,7 @@ class MenuServiceTest {
     @DisplayName("전체 메뉴 그룹을 조회할 수 있다.")
     void list() {
         //given
-        Menu menu = new Menu("menu1", 10000L, 1L, Collections.emptyList());
+        Menu menu = new Menu("menu1", 10000L, 1L);
         given(menuDao.findAll()).willReturn(Arrays.asList(menu));
 
         //then

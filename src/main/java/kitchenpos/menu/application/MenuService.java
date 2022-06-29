@@ -1,7 +1,9 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import org.springframework.stereotype.Service;
@@ -24,8 +26,14 @@ public class MenuService {
     @Transactional
     public MenuResponse create(final MenuRequest request) {
         menuValidator.validate(request);
-        Menu menu = new Menu(request.getName(), request.getPrice(), request.getMenuGroupId(), request.getMenuProducts());
+
+        Menu menu = new Menu(request.getName(), request.getPrice(), request.getMenuGroupId());
         menuRepository.save(menu);
+
+        for (final MenuProductRequest menuProductRequest : request.getMenuProducts()) {
+            menu.add(new MenuProduct(menu.getId(), menuProductRequest.getProductId(), menuProductRequest.getQuantity()));
+        }
+
         return new MenuResponse(menu);
     }
 
