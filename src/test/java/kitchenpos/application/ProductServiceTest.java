@@ -40,12 +40,11 @@ class ProductServiceTest {
 
         // Then
         verify(productDao).save(any(Product.class));
-        assertThat(actual.getName()).isEqualTo(given.getName());
-        assertThat(actual.getPrice()).isEqualTo(given.getPrice());
+        assertThat(actual).isEqualTo(given);
     }
 
     @Test
-    @DisplayName("상품을 조회한다.")
+    @DisplayName("상품 목록을 조회한다.")
     public void getProducts() {
         // Given
         final int generateProductCount = 5;
