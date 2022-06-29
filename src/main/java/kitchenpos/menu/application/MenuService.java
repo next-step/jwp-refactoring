@@ -59,8 +59,8 @@ public class MenuService {
 
         List<Long> productsIds = new ArrayList<>(menuProductRequests.keySet());
 
-        return productService.findByIdIn(productsIds).stream().map(
-                product -> MenuProduct.of(product, Quantity.of(menuProductRequests.get(product.getId())))
-        ).collect(Collectors.toList());
+        return productService.findByIdIn(productsIds).stream()
+                .map(product -> MenuProduct.of(product, Quantity.of(menuProductRequests.get(product.getId()))))
+                .collect(Collectors.toList());
     }
 }
