@@ -100,12 +100,8 @@ public class Menu {
     private void validateTotalPrice(BigDecimal price, List<MenuProduct> menuProducts) {
         AtomicReference<BigDecimal> sum = new AtomicReference<>(BigDecimal.ZERO);
         menuProducts.forEach(
-                menuProduct -> {
-                    BigDecimal add = sum.get()
-                                        .add(menuProduct.getProduct().getPrice()
-                                                        .multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
-                    sum.set(add);
-                });
+                menuProduct -> sum.set(sum.get().add(menuProduct.getProductPrice()
+                                                                .multiply(BigDecimal.valueOf(menuProduct.getQuantity())))));
         if (sum.get().compareTo(price) != 0) {
             throw new IllegalArgumentException("메뉴 가격과 상품 합계의 가격이 일치하지 않습니다");
         }
