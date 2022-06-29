@@ -11,6 +11,7 @@ import kitchenpos.dto.event.MenuCreateEventDTO;
 import kitchenpos.dto.request.MenuRequest;
 import kitchenpos.dto.response.MenuResponse;
 import kitchenpos.event.customEvent.MenuCreateEvent;
+import kitchenpos.exception.MenuException;
 import kitchenpos.repository.MenuGroupRepository;
 import kitchenpos.repository.MenuRepository;
 import org.springframework.context.ApplicationEventPublisher;
@@ -45,7 +46,7 @@ public class MenuService {
             new MenuCreateEventDTO(quantityPerProduct, menuRequest.getPrice())));
 
         MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(() -> new MenuException("메뉴 그룹이 저장되어있어야 합니다"));
         Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(),
             menuGroup);
 

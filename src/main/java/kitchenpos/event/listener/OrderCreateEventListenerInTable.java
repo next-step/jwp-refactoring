@@ -27,10 +27,10 @@ public class OrderCreateEventListenerInTable implements ApplicationListener<Orde
 
     private void validateCanAcceptOrder(Long orderTableId) {
         OrderTable orderTable = orderTableRepository.findById(orderTableId)
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(() -> new OrderException("주문이 실행될 테이블은 저장이 되어있어야합니다"));
 
         if (orderTable.isEmpty()) {
-            throw new OrderException("TABLE MUST NOT EMPTY");
+            throw new OrderException("주문이 실행될 테이블은 비어있으면 안됩니다");
         }
     }
 }

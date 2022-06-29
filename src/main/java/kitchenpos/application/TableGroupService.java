@@ -40,11 +40,11 @@ public class TableGroupService {
         List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(orderTableIds);
 
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new TableGroupException("OVER 2 TABLE CAN GROUPING");
+            throw new TableGroupException("단체테이블은 2개 이상이여야 합니다");
         }
         for (final OrderTable orderTable : orderTables) {
             if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroupId())) {
-                throw new TableGroupException("TABLE ALREADY USED");
+                throw new TableGroupException("단체테이블은 2개 이상이여야 합니다");
             }
         }
 

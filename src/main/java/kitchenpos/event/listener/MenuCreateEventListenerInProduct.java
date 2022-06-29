@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.event.MenuCreateEventDTO;
 import kitchenpos.event.customEvent.MenuCreateEvent;
+import kitchenpos.exception.MenuException;
 import kitchenpos.repository.ProductRepository;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
@@ -35,12 +36,12 @@ public class MenuCreateEventListenerInProduct implements ApplicationListener<Men
 
         for (Entry<Long, Long> menuInfo : quantityPerProduct.entrySet()) {
             final Product product = productRepository.findById(menuInfo.getKey())
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new MenuException("상품이 저장되어있지 않습니다"));
             sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuInfo.getValue())));
         }
 
         if (menuPrice.compareTo(sum) > 0) {
-            throw new IllegalArgumentException("메뉴 가격은 상품 가격 총합보다 작아야합니다");
+            throw new MenuException("메뉴 가격은 상품 가격 총합보다 작아야합니다");
         }
     }
 }

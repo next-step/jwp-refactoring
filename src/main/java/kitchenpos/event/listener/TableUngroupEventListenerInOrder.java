@@ -29,7 +29,7 @@ public class TableUngroupEventListenerInOrder implements ApplicationListener<Tab
     private void checkAllMenuIsCompleteInTableGroup(List<Long> orderTableIds) {
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
             orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new TableGroupException("TABLE_CONTAIN_NOT_COMPLETE_ORDER");
+            throw new TableGroupException("테이블에 완료가 안된 주문이 있습니다");
         }
     }
 }

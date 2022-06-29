@@ -39,7 +39,7 @@ public class Order extends BaseTimeEntity {
 
     public void changeOrderStatus(OrderStatus orderStatus) {
         if (Objects.equals(OrderStatus.COMPLETION, this.orderStatus)) {
-            throw new OrderException("COMPLETE ORDER CANT UPDATE STATUS");
+            throw new OrderException("완료되지 않은 주문이 있으면 상태변경을 할수 없습니다");
         }
         this.orderStatus = orderStatus;
     }

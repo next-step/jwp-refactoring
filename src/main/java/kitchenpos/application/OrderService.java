@@ -38,7 +38,7 @@ public class OrderService {
         eventPublisher.publishEvent(new OrderCreateEvent(orderCreateEventDTO));
 
         if (CollectionUtils.isEmpty(orderRequest.getOrderLineItems())) {
-            throw new OrderException("MENU FOR ORDER IS EMPTY");
+            throw new OrderException("주문넣을 메뉴는 존재해야합니다");
         }
 
         final List<OrderLineItemDTO> orderLineItems = orderRequest.getOrderLineItems();
@@ -65,7 +65,7 @@ public class OrderService {
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
         final Order savedOrder = orderRepository.findById(orderId)
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(() -> new OrderException("상태 변경할 주문은 저장되어있어야 합니다"));
 
         savedOrder.changeOrderStatus(orderRequest.getOrderStatus());
 

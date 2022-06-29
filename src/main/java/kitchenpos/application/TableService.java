@@ -44,11 +44,11 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId,
         final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(() -> new OrderTableException("상태 변경할 테이블은 저장되어있어야 합니다"));
 
         if (orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId,
             Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new OrderTableException("TABLE_CONTAIN_NOT_COMPLETE_ORDER");
+            throw new OrderTableException("완료되지않은 주문이 있으면 상태변경을 할수 없습니다");
         }
 
         if (orderTableRequest.getEmpty()) {
@@ -67,7 +67,7 @@ public class TableService {
         final int numberOfGuests = orderTableRequest.getNumberOfGuests();
 
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(() -> new OrderTableException("인원수 설정할 테이블은 저장되어있어야 합니다"));
 
         savedOrderTable.changeNumberOfGuests(numberOfGuests);
 

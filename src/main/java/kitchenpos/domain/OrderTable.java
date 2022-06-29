@@ -31,7 +31,7 @@ public class OrderTable {
 
     public void clearTable() {
         if (Objects.nonNull(tableGroupId)) {
-            throw new OrderTableException("CAN NOT CLEAR TABLE BEFORE UNGROUP");
+            throw new OrderTableException("단체석이 설정된 테이블은 치울수 없습니다");
         }
         this.empty = true;
     }
@@ -52,7 +52,7 @@ public class OrderTable {
 
     public void changeNumberOfGuests(int numberOfGuests) {
         if (empty) {
-            throw new IllegalArgumentException();
+            throw new OrderTableException("비어있는 테이블은 인원수 설정을 할수 없습니다");
         }
         this.numberOfGuests.changeNumberOfGuests(numberOfGuests);
     }

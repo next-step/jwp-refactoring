@@ -28,7 +28,7 @@ public class OrderCreateEventListenerInMenu implements ApplicationListener<Order
         menuRepository.findAllById(menuIds);
         for (Long menuId : menuIds) {
             menuRepository.findById(menuId)
-                .orElseThrow(() -> new OrderException("MENU FOR ORDER IS INVALID"));
+                .orElseThrow(() -> new OrderException("메뉴가 존재하지 않습니다"));
         }
     }
 }
