@@ -121,8 +121,10 @@
        3. assertThatThrowBy 에서 Catch하는 Error 객체 수정
     6. 테스트 코드 내에 ID설정을 위한 Reflection 코드 Stub으로 대체
 
-3. Aggregate 예상 관계도 및 생성 event 예정 내역
+2. Aggregate 예상 관계도 및 생성 event 예정 내역
+
 <img src="readmeSource/AggregateEntityRelationship.png">
+
  - Aggregate간 참조가 일어나는 부분
    - Order Create
      - OrderLineItem에 속해있는 Menu검증
