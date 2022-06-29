@@ -44,7 +44,7 @@ public class TableServiceTest {
         Mockito.when(orderTableRepository.save(any())).thenReturn(new OrderTable(1L, 3, false));
 
         // when
-        OrderTable created = tableService.create(new OrderTable(3, false));
+        OrderTable created = tableService.create(new OrderTable(3, false)).toOrderTable();
 
         // then
         assertThat(created).isNotNull();

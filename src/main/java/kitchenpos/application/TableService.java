@@ -24,10 +24,10 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTable create(final OrderTable orderTable) {
+    public OrderTableResponse create(final OrderTable orderTable) {
         orderTable.setTableGroup(null);
-
-        return orderTableRepository.save(orderTable);
+        OrderTable saved = orderTableRepository.save(orderTable);
+        return OrderTableResponse.of(saved);
     }
 
     public List<OrderTableResponse> list() {

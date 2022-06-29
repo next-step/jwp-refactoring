@@ -16,6 +16,10 @@ public class OrderTableResponse {
         return new OrderTableResponse(orderTable.getId());
     }
 
+    public OrderTable toOrderTable() {
+        return new OrderTable(id);
+    }
+
     public Long getId() {
         return id;
     }
