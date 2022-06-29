@@ -10,6 +10,7 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -85,8 +86,8 @@ public class TableAcceptanceTest extends AcceptanceTest {
     void changeEmpty_with_mapping_with_table_group() {
         OrderTableResponse 테이블_그룹_매핑된_주문_테이블1 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, true));
         OrderTableResponse 테이블_그룹_매핑된_주문_테이블2 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, true));
-        List<OrderTable> orderTables = Arrays.asList(new OrderTable(테이블_그룹_매핑된_주문_테이블1.getId()), new OrderTable(테이블_그룹_매핑된_주문_테이블2.getId()));
-        테이블_그룹_생성_요청(new TableGroup(orderTables));
+        List<OrderTableResponse> orderTables = Arrays.asList(테이블_그룹_매핑된_주문_테이블1, 테이블_그룹_매핑된_주문_테이블2);
+        테이블_그룹_생성_요청(new TableGroupRequest(orderTables));
         final boolean 테이블_사용중 = false;
 
         // when

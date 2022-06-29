@@ -3,8 +3,12 @@ package kitchenpos.tablegroup.application;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,7 +49,7 @@ public class TableGroupServiceTest {
         when(orderTableDao.save(any())).thenReturn(new OrderTable(3, false));
 
         // when
-        TableGroup tableGroup = tableGroupService.create(createTableGroup());
+        TableGroupResponse tableGroup = tableGroupService.create(createTableGroupRequest());
 
         // then
         assertThat(tableGroup).isNotNull();
@@ -56,7 +60,7 @@ public class TableGroupServiceTest {
     void createTableGroup_with_one_order_table() {
         // when, then
         assertThatThrownBy(() -> {
-            tableGroupService.create(createTableGroupWithOneOrderTable());
+            tableGroupService.create(createTableGroupRequestWithOneOrderTable());
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -68,7 +72,7 @@ public class TableGroupServiceTest {
 
         // when, then
         assertThatThrownBy(() -> {
-            tableGroupService.create(createTableGroup());
+            tableGroupService.create(createTableGroupRequest());
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -80,7 +84,7 @@ public class TableGroupServiceTest {
 
         // when, then
         assertThatThrownBy(() -> {
-            tableGroupService.create(createTableGroup());
+            tableGroupService.create(createTableGroupRequest());
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -92,7 +96,7 @@ public class TableGroupServiceTest {
 
         // when, then
         assertThatThrownBy(() -> {
-            tableGroupService.create(createTableGroup());
+            tableGroupService.create(createTableGroupRequest());
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -125,9 +129,15 @@ public class TableGroupServiceTest {
         return new TableGroup(1L, Arrays.asList(orderTable1, orderTable2));
     }
 
-    public static TableGroup createTableGroupWithOneOrderTable() {
-        OrderTable orderTable1 = new OrderTable(1L,3, true);
-        return new TableGroup(1L, Arrays.asList(orderTable1));
+    public static TableGroupRequest createTableGroupRequest() {
+        OrderTableResponse request1 = new OrderTableResponse(1L,3, true);
+        OrderTableResponse request2 = new OrderTableResponse(2L,5, true);
+        return new TableGroupRequest(Arrays.asList(request1, request2));
+    }
+
+    public static TableGroupRequest createTableGroupRequestWithOneOrderTable() {
+        OrderTableResponse orderTable1 = new OrderTableResponse(1L,3, true);
+        return new TableGroupRequest(Arrays.asList(orderTable1));
     }
 
     public static TableGroup createTableGroupWithNotEmptyOrderTable() {

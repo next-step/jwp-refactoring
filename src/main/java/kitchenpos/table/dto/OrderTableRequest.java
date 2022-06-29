@@ -15,6 +15,13 @@ public class OrderTableRequest {
         this.empty = empty;
     }
 
+    public OrderTableRequest(Long id, Integer numberOfGuests, Boolean empty) {
+        this.id = id;
+        this.tableGroupId = null;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
     public OrderTableRequest(Boolean empty) {
         this.tableGroupId = null;
         this.empty = empty;

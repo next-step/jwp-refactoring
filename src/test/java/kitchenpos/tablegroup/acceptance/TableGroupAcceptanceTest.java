@@ -11,7 +11,9 @@ import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -102,42 +104,42 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         테이블_그룹_해지_요청(등록된_테이블_그룹.getId());
     }
 
-    public static TableGroup 테이블_그룹_생성() {
-        OrderTable 등록된_주문_테이블1 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, true)).toOrderTable();
-        OrderTable 등록된_주문_테이블2 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(5, true)).toOrderTable();
-        return new TableGroup(Arrays.asList(등록된_주문_테이블1, 등록된_주문_테이블2));
+    public static TableGroupRequest 테이블_그룹_생성() {
+        OrderTableResponse 등록된_주문_테이블1 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, true));
+        OrderTableResponse 등록된_주문_테이블2 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(5, true));
+        return new TableGroupRequest(Arrays.asList(등록된_주문_테이블1, 등록된_주문_테이블2));
     }
 
-    public static TableGroup 주문_테이블_하나로_테이블_그룹_생성() {
-        OrderTable 등록된_주문_테이블 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, true)).toOrderTable();
-        return new TableGroup(Collections.singletonList(등록된_주문_테이블));
+    public static TableGroupRequest 주문_테이블_하나로_테이블_그룹_생성() {
+        OrderTableResponse 등록된_주문_테이블 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, true));
+        return new TableGroupRequest(Collections.singletonList(등록된_주문_테이블));
     }
 
-    public static TableGroup 저장안한_주문_테이블_포함하여_테이블_그룹_생성() {
-        OrderTable 등록된_주문_테이블1 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, true)).toOrderTable();
-        OrderTable 등록된_주문_테이블2 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(5, true)).toOrderTable();
-        OrderTable 저장안한_주문_테이블 = new OrderTable(9999L);
-        return new TableGroup(Arrays.asList(등록된_주문_테이블1, 등록된_주문_테이블2, 저장안한_주문_테이블));
+    public static TableGroupRequest 저장안한_주문_테이블_포함하여_테이블_그룹_생성() {
+        OrderTableResponse 등록된_주문_테이블1 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, true));
+        OrderTableResponse 등록된_주문_테이블2 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(5, true));
+        OrderTableResponse 저장안한_주문_테이블 = new OrderTableResponse();
+        return new TableGroupRequest(Arrays.asList(등록된_주문_테이블1, 등록된_주문_테이블2, 저장안한_주문_테이블));
     }
 
-    public static TableGroup 사용중인_주문_테이블로_테이블_그룹_생성() {
-        OrderTable 등록된_주문_테이블1 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, false)).toOrderTable();
-        OrderTable 등록된_주문_테이블2 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(5, false)).toOrderTable();
-        return new TableGroup(Arrays.asList(등록된_주문_테이블1, 등록된_주문_테이블2));
+    public static TableGroupRequest 사용중인_주문_테이블로_테이블_그룹_생성() {
+        OrderTableResponse 등록된_주문_테이블1 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, false));
+        OrderTableResponse 등록된_주문_테이블2 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(5, false));
+        return new TableGroupRequest(Arrays.asList(등록된_주문_테이블1, 등록된_주문_테이블2));
     }
 
-    public static TableGroup 이미_다른_테이블_그룹에_포함된_주문_테이블로_테이블_그룹_생성() {
-        OrderTable 등록된_주문_테이블1 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, true)).toOrderTable();
-        OrderTable 등록된_주문_테이블2 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(5, true)).toOrderTable();
-        테이블_그룹_등록되어_있음(new TableGroup(Arrays.asList(등록된_주문_테이블1, 등록된_주문_테이블2)));
-        return new TableGroup(Arrays.asList(등록된_주문_테이블1, 등록된_주문_테이블2));
+    public static TableGroupRequest 이미_다른_테이블_그룹에_포함된_주문_테이블로_테이블_그룹_생성() {
+        OrderTableResponse 등록된_주문_테이블1 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, true));
+        OrderTableResponse 등록된_주문_테이블2 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(5, true));
+        테이블_그룹_등록되어_있음(new TableGroupRequest(Arrays.asList(등록된_주문_테이블1, 등록된_주문_테이블2)));
+        return new TableGroupRequest(Arrays.asList(등록된_주문_테이블1, 등록된_주문_테이블2));
     }
 
     public static TableGroup 식사_완료된_테이블_그룹_생성() {
-        OrderTable 등록된_주문_테이블1 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, true)).toOrderTable();
-        OrderTable 등록된_주문_테이블2 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, true)).toOrderTable();
+        OrderTableResponse 등록된_주문_테이블1 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, true));
+        OrderTableResponse 등록된_주문_테이블2 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, true));
 
-        TableGroup tableGroup = new TableGroup(Arrays.asList(등록된_주문_테이블1, 등록된_주문_테이블2));
+        TableGroupRequest tableGroup = new TableGroupRequest(Arrays.asList(등록된_주문_테이블1, 등록된_주문_테이블2));
         TableGroupResponse tableGroupResponse = 테이블_그룹_가져옴(테이블_그룹_등록되어_있음(tableGroup));
 
         MenuResponse 등록된_메뉴 = 메뉴_가져옴(메뉴_등록되어_있음(테스트_메뉴_생성(MENU_NAME01, MENU_PRICE01)));
@@ -153,11 +155,11 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     }
 
     public static TableGroup 식사_중인_테이블_그룹_생성() {
-        OrderTable 등록된_주문_테이블1 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, true)).toOrderTable();
-        OrderTable 등록된_주문_테이블2 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, true)).toOrderTable();
+        OrderTableResponse 등록된_주문_테이블1 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, true));
+        OrderTableResponse 등록된_주문_테이블2 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, true));
 
-        TableGroup tableGroup = new TableGroup(Arrays.asList(등록된_주문_테이블1, 등록된_주문_테이블2));
-        tableGroup = 테이블_그룹_등록되어_있음(tableGroup).as(TableGroup.class);
+        TableGroupRequest request = new TableGroupRequest(Arrays.asList(등록된_주문_테이블1, 등록된_주문_테이블2));
+        request = 테이블_그룹_등록되어_있음(request).as(TableGroupRequest.class);
 
         MenuResponse 등록된_메뉴 = 메뉴_가져옴(메뉴_등록되어_있음(테스트_메뉴_생성(MENU_NAME01, MENU_PRICE01)));
         OrderLineItem 생성된_주문_항목 = new OrderLineItem(new Menu(등록된_메뉴.getId()), 1);
@@ -168,17 +170,17 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         주문_상태_변경_요청(등록된_주문1, OrderStatus.MEAL);
         주문_상태_변경_요청(등록된_주문2, OrderStatus.MEAL);
 
-        return tableGroup;
+        return new TableGroup(request.getId());
     }
 
-    public static ExtractableResponse<Response> 테이블_그룹_등록되어_있음(TableGroup tableGroup) {
-        return 테이블_그룹_생성_요청(tableGroup);
+    public static ExtractableResponse<Response> 테이블_그룹_등록되어_있음(TableGroupRequest request) {
+        return 테이블_그룹_생성_요청(request);
     }
 
-    public static ExtractableResponse<Response> 테이블_그룹_생성_요청(TableGroup tableGroup) {
+    public static ExtractableResponse<Response> 테이블_그룹_생성_요청(TableGroupRequest request) {
         return RestAssured
                 .given().log().all()
-                .body(tableGroup)
+                .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/api/table-groups")
                 .then().log().all()
