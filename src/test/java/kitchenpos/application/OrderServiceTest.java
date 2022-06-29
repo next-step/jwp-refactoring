@@ -69,7 +69,7 @@ class OrderServiceTest extends ServiceTest {
     @BeforeEach
     void before() {
         중식 = menuGroupRepository.save(new MenuGroup("중식"));
-        중식_메뉴 = menuRepository.save(new Menu("중식_메뉴", BigDecimal.valueOf(3000), 중식));
+        중식_메뉴 = menuRepository.save(new Menu("중식_메뉴", BigDecimal.valueOf(3000), 중식.getId()));
 
         짬뽕 = productRepository.save(new Product("짬뽕", BigDecimal.valueOf(1000)));
         짜장 = productRepository.save(new Product("짜장", BigDecimal.valueOf(2000)));

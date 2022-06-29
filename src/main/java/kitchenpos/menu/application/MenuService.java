@@ -1,7 +1,6 @@
 package kitchenpos.menu.application;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
@@ -9,7 +8,6 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +28,7 @@ public class MenuService {
     @Transactional
     public MenuResponse create(final MenuRequest request) {
         menuValidator.validate(request);
-        Menu menu = registerMenuGroupToMenu(request);
+        Menu menu = request.toMenu();
         List<MenuProduct> menuProducts = makeMenuProductsForAdding(request, menu);
         menu.addMenuProduct(menuProducts);
         return MenuResponse.from(menuRepository.save(menu));
@@ -44,19 +42,6 @@ public class MenuService {
                 menuProduct.getProductId(),
                 menuProduct.getQuantity())
         ).collect(Collectors.toList());
-    }
-
-    private Menu registerMenuGroupToMenu(MenuRequest request) {
-        MenuGroup menuGroup = findMenuGroup(request.getMenuGroupId());
-        Menu menu = request.toMenu();
-        menu.registerMenuGroup(menuGroup);
-        return menu;
-    }
-
-    private MenuGroup findMenuGroup(Long menuGroupId) {
-        return menuGroupRepository.
-                findById(menuGroupId).
-                orElseThrow(NoSuchElementException::new);
     }
 
     @Transactional(readOnly = true)

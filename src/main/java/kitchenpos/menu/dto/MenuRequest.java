@@ -34,11 +34,11 @@ public class MenuRequest {
     }
 
     public static MenuRequest from(Menu menu) {
-        return new MenuRequest(menu.getName(), menu.getPrice().longValue(), menu.getMenuGroup().getId());
+        return new MenuRequest(menu.getName(), menu.getPrice().longValue(), menu.getMenuGroupId());
     }
 
     public Menu toMenu() {
-        return new Menu(name, BigDecimal.valueOf(price));
+        return new Menu(name, BigDecimal.valueOf(price), menuGroupId);
     }
 
     public String getName() {

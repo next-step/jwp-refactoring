@@ -52,7 +52,7 @@ class MenuServiceTest extends ServiceTest{
     @BeforeEach
     void before() {
         중식 = menuGroupRepository.save(new MenuGroup("중식"));
-        중식메뉴 = menuRepository.save(new Menu( "메뉴1", BigDecimal.valueOf(3000), 중식));
+        중식메뉴 = menuRepository.save(new Menu( "메뉴1", BigDecimal.valueOf(3000), 중식.getId()));
 
         짬뽕 = productRepository.save(new Product("상품1", BigDecimal.valueOf(1000)));
         짜장 = productRepository.save(new Product("상품2", BigDecimal.valueOf(2000)));
@@ -69,7 +69,7 @@ class MenuServiceTest extends ServiceTest{
 
         //given
         MenuGroup wrongMenuGroup = new MenuGroup(1000L,"wrong menu group");
-        Menu wrongMenu = new Menu("wrong menu", BigDecimal.valueOf(1000), wrongMenuGroup);
+        Menu wrongMenu = new Menu("wrong menu", BigDecimal.valueOf(1000), wrongMenuGroup.getId());
 
         //when & then
         assertThatThrownBy(
@@ -100,7 +100,7 @@ class MenuServiceTest extends ServiceTest{
     @DisplayName("생성 하려는 메뉴 가격이 전체 메뉴상품의 전체 금액(가격 * 수량의 총합)보다 클 수 없다.")
     void createTestFailWithAmount() {
         //given;
-        Menu 잘못된_메뉴 = new Menu("잘못된 메뉴", BigDecimal.valueOf(100_000), 중식);
+        Menu 잘못된_메뉴 = new Menu("잘못된 메뉴", BigDecimal.valueOf(100_000), 중식.getId());
 
         //when & then
         assertThatThrownBy(
