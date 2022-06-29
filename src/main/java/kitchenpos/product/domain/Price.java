@@ -25,6 +25,10 @@ public class Price {
         return price;
     }
 
+    public long mapToLongValue() {
+        return price.longValue();
+    }
+
     public boolean isGreaterThan(Price value) {
         return price.compareTo(value.getPrice()) > 0;
     }

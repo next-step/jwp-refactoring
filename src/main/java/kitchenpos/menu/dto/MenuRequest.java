@@ -1,6 +1,10 @@
 package kitchenpos.menu.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
 
 public class MenuRequest {
     private String name;
@@ -31,5 +35,17 @@ public class MenuRequest {
 
     public List<MenuProductRequest> getMenuProducts() {
         return menuProducts;
+    }
+
+    public Menu toEntity() {
+        MenuProducts menuProducts = mapToMenuProducts();
+        return Menu.createMenu(name, price, menuGroupId, menuProducts);
+    }
+
+    private MenuProducts mapToMenuProducts() {
+        List<MenuProduct> mapToMenuProducts = this.menuProducts.stream()
+                .map(MenuProductRequest::toEntity)
+                .collect(Collectors.toList());
+        return MenuProducts.createMenuProducts(mapToMenuProducts);
     }
 }

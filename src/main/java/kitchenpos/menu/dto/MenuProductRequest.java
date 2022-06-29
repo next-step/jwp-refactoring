@@ -21,4 +21,8 @@ public class MenuProductRequest {
     public long getQuantity() {
         return quantity;
     }
+
+    public MenuProduct toEntity() {
+        return MenuProduct.createMenuProduct(productId, quantity);
+    }
 }

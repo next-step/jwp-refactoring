@@ -39,10 +39,4 @@ public class MenuProducts {
     public Set<MenuProduct> getValue() {
         return menuProducts;
     }
-
-    public Price calculateTotalPrice() {
-        Price sum = Price.from(ZERO);
-        this.menuProducts.forEach(menuProduct -> sum.add(menuProduct.getProductPrice()));
-        return sum;
-    }
 }
