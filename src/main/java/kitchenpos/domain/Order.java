@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @Table(name = "orders")
 @EntityListeners(AuditingEntityListener.class)
 public class Order {
+    private static final String ORDER_STATUS_IS_COMPLETION = "계산 완료된 주문은 변경할 수 없습니다";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -66,7 +67,7 @@ public class Order {
 
     public void changeStatus(OrderStatus orderStatus) {
         if (isCompletion()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(ORDER_STATUS_IS_COMPLETION);
         }
         this.orderStatus = orderStatus;
     }

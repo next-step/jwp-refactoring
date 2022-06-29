@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class TableGroupService {
+    private static final String TABLE_GROUP_IS_NOT_EXIST = "지정된 단체를 찾을 수 없습니다";
     private final TableGroupRepository tableGroupRepository;
     private final OrderTableValidator orderTableValidator;
 
@@ -29,7 +30,7 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         final TableGroup tableGroup = tableGroupRepository.findByIdWithOrderTable(tableGroupId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException(TABLE_GROUP_IS_NOT_EXIST));
 
         List<Long> orderTableIds = tableGroup.getOrderTables().getOrderTables().stream()
                 .map(OrderTable::getId)

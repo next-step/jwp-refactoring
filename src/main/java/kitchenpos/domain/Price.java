@@ -7,6 +7,7 @@ import java.util.Objects;
 @Embeddable
 public class Price implements Comparable<Price> {
     public static final Price ZERO = Price.valueOf(0);
+    private static final String INVALID_PRICE = "가격은 마이너스가 될 수 없습니다";
     @Column(name = "price")
     private long value;
 
@@ -15,7 +16,7 @@ public class Price implements Comparable<Price> {
 
     public Price(long value) {
         if (isInvalid(value)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(INVALID_PRICE);
         }
         this.value = value;
     }

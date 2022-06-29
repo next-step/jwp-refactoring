@@ -11,6 +11,7 @@ import java.util.List;
 
 @Service
 public class OrderService {
+    private static final String ORDER_IS_NOT_EXIST = "주문이 존재하지 않습니다";
     private final OrderRepository orderRepository;
     private final OrderValidator orderValidator;
 
@@ -34,7 +35,7 @@ public class OrderService {
     @Transactional
     public Order changeOrderStatus(final Long orderId, final OrderStatus status) {
         final Order savedOrder = orderRepository.findByIdWithItem(orderId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException(ORDER_IS_NOT_EXIST));
         savedOrder.changeStatus(status);
         return savedOrder;
     }
