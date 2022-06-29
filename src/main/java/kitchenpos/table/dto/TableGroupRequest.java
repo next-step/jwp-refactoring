@@ -3,18 +3,17 @@ package kitchenpos.table.dto;
 import kitchenpos.table.domain.TableGroup;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class TableGroupRequest {
-    private List<OrderTableIdRequest> tableGroups = new ArrayList<>();
+    private List<OrderTableIdRequest> orderTables;
 
     public TableGroupRequest() {
     }
 
     public TableGroupRequest(List<OrderTableIdRequest> orderTables) {
-        this.tableGroups = orderTables;
+        this.orderTables = orderTables;
     }
 
     public TableGroup toTableGroup() {
@@ -22,20 +21,24 @@ public class TableGroupRequest {
     }
 
     public List<Long> getGroupIds() {
-        if (CollectionUtils.isEmpty(tableGroups) || tableGroups.size() < 2) {
+        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
             throw new IllegalArgumentException();
         }
-        return tableGroups.stream()
+        return orderTables.stream()
                 .map(OrderTableIdRequest::getId)
                 .collect(Collectors.toList());
     }
 
+    public List<OrderTableIdRequest> getOrderTables() {
+        return orderTables;
+    }
+
     public List<OrderTableIdRequest> getIds() {
-        return tableGroups;
+        return orderTables;
     }
 
     public void validateSize(int orderTableSize) {
-        if (tableGroups.size() != orderTableSize) {
+        if (orderTables.size() != orderTableSize) {
             throw new IllegalArgumentException();
         }
     }

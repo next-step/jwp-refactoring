@@ -125,7 +125,7 @@ class TableGroupServiceTest {
         주문_테이블_1 = new OrderTable(1L, 단체_테이블, 4, false);
         주문_테이블_2 = new OrderTable(2L, 단체_테이블, 4, false);
 
-        given(orderTableRepository.findAllByTableGroup(단체_테이블.getId())).willReturn(Arrays.asList(주문_테이블_1, 주문_테이블_2));
+        given(orderTableRepository.findAllByTableGroupId(단체_테이블.getId())).willReturn(Arrays.asList(주문_테이블_1, 주문_테이블_2));
 
         // when
         tableGroupService.ungroup(단체_테이블.getId());
@@ -140,7 +140,7 @@ class TableGroupServiceTest {
     @Test
     void ungroupException() throws Exception {
         // given
-        given(orderTableRepository.findAllByTableGroup(단체_테이블.getId())).willReturn(Arrays.asList(주문_테이블_1, 주문_테이블_2));
+        given(orderTableRepository.findAllByTableGroupId(단체_테이블.getId())).willReturn(Arrays.asList(주문_테이블_1, 주문_테이블_2));
         given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(true);
 
         // when & then

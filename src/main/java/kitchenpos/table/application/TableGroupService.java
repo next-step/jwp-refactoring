@@ -43,7 +43,7 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroup(tableGroupId);
+        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
         validateExists(getOrderTableIds(orderTables));
         changeTableGroupIdAndEmpty(orderTables);
     }
