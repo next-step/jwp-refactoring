@@ -1,36 +1,77 @@
-plugins {
-    id 'org.springframework.boot' version '2.4.1'
-    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
-    id 'java'
+buildscript {
+    ext {
+        springBootVersion = '2.4.1'
+        dependencyManagementVersion = '1.0.10.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+        classpath "io.spring.gradle:dependency-management-plugin:${dependencyManagementVersion}"
+    }
 }
-
-group = 'camp.nextstep.edu'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
 
 repositories {
     mavenCentral()
 }
 
-dependencies {
-    // spring
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+allprojects {
+    group = 'camp.nextstep.edu'
+    version = '0.0.1-SNAPSHOT'
 
-    // handlebars
-    implementation 'pl.allegro.tech.boot:handlebars-spring-boot-starter:0.3.0'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'java'
 
-    // db
-    implementation 'org.flywaydb:flyway-core'
-    runtimeOnly 'com.h2database:h2'
+    sourceCompatibility = '1.8'
 
-    // testØ
-    testImplementation 'io.rest-assured:rest-assured:3.3.0'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        implementation 'pl.allegro.tech.boot:handlebars-spring-boot-starter:0.3.0'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+        runtimeOnly 'com.h2database:h2'
+        testImplementation 'io.rest-assured:rest-assured:3.3.0'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
 }
 
-test {
-    useJUnitPlatform()
+project(':module-menu') {
+    dependencies {
+        implementation project(':module-product')
+    }
+}
+
+project(':module-order') {
+    dependencies {
+        implementation project(':module-menu')
+    }
+}
+
+project(':module-table') {
+    dependencies {
+        implementation project(':module-order')
+    }
+}
+project(':module-product') {
+    dependencies {
+    }
+}
+
+dependencies {
+    implementation 'org.flywaydb:flyway-core'
+
+    implementation project(':module-menu')
+    implementation project(':module-order')
+    implementation project(':module-table')
+    implementation project(':module-product')
 }
