@@ -2,7 +2,6 @@ package kitchenpos.menu;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -16,6 +15,8 @@ import kitchenpos.menu.dao.MenuGroupRepository;
 import kitchenpos.menu.dao.MenuProductRepository;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.dao.ProductRepository;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,26 +48,16 @@ class MenuServiceTest {
     Menu 후라이드치킨;
     Product 후라이드;
     MenuProduct 후라이드치킨상품;
+    MenuRequest 상품;
 
     @BeforeEach
     void setUp() {
-        createProduct();
-        createMenu();
-        createMenuProduct();
-    }
-
-    void createProduct() {
         후라이드 = new Product("후라이드", BigDecimal.valueOf(15000));
-        후라이드.setId(1L);
-    }
-
-    void createMenu() {
         후라이드치킨 = new Menu("후라이드치킨", BigDecimal.valueOf(15000));
-    }
-
-    void createMenuProduct() {
         후라이드치킨상품 = new MenuProduct(후라이드치킨, 후라이드.getId(), 1L);
         후라이드치킨.setMenuProducts(Collections.singletonList(후라이드치킨상품));
+
+        상품 = new MenuRequest(후라이드치킨.getName(), BigDecimal.valueOf(15000), 후라이드치킨.getMenuGroupId(), 후라이드치킨.getMenuProducts());
     }
 
     @Test
@@ -78,21 +69,21 @@ class MenuServiceTest {
         given(menuDao.save(any())).willReturn(후라이드치킨);
 
         // when
-        Menu actual = menuService.create(후라이드치킨);
+        MenuResponse actual = menuService.create(상품);
 
         // then
-        assertThat(actual).isEqualTo(후라이드치킨);
+        assertThat(actual.getName()).isEqualTo("후라이드치킨");
     }
 
     @Test
     @DisplayName("메뉴 저장시 메뉴의 금액은 0원 이상이다")
     void create_priceException() {
         // given
-        Menu 양념치킨 = new Menu("양념치킨", BigDecimal.valueOf(-1));
+        MenuRequest 양념치킨 = new MenuRequest("양념치킨", BigDecimal.valueOf(-1));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
-                () -> menuService.create(양념치킨)
+                () -> menuService.create(상품)
         );
     }
 
@@ -104,7 +95,7 @@ class MenuServiceTest {
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
-                () -> menuService.create(후라이드치킨)
+                () -> menuService.create(상품)
         );
     }
 
@@ -117,7 +108,7 @@ class MenuServiceTest {
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
-                () -> menuService.create(후라이드치킨)
+                () -> menuService.create(상품)
         );
     }
 
@@ -125,13 +116,13 @@ class MenuServiceTest {
     @DisplayName("메뉴 저장시 메뉴상품에 속한 상품들의 금액 합보다 메뉴 가격이 작아야 한다")
     void create_totalPriceError() {
         // given
-        후라이드치킨.setPrice(new BigDecimal(20000));
+        MenuRequest 상품 = new MenuRequest(후라이드치킨.getName(), BigDecimal.valueOf(20000), 후라이드치킨.getMenuGroupId(), 후라이드치킨.getMenuProducts());
         given(menuGroupRepository.existsById(any())).willReturn(true);
         given(productRepository.findById(후라이드치킨상품.getProductId())).willReturn(Optional.ofNullable(후라이드));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
-                () -> menuService.create(후라이드치킨)
+                () -> menuService.create(상품)
         );
     }
 
@@ -142,11 +133,10 @@ class MenuServiceTest {
         given(menuDao.findAll()).willReturn(Collections.singletonList(후라이드치킨));
         given(menuProductRepository.findAllByMenuId(후라이드치킨.getId())).willReturn(Collections.singletonList(후라이드치킨상품));
 
-        List<Menu> actual = menuService.list();
+        // when
+        List<MenuResponse> actual = menuService.list();
 
-        assertAll(
-                () -> assertThat(actual).hasSize(1),
-                () -> assertThat(actual).containsExactly(후라이드치킨)
-        );
+        // then
+        assertThat(actual).hasSize(1);
     }
 }

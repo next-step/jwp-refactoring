@@ -3,11 +3,14 @@ package kitchenpos.menu.application;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import kitchenpos.menu.dao.MenuGroupRepository;
 import kitchenpos.menu.dao.MenuProductRepository;
 import kitchenpos.menu.dao.MenuRepository;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.dao.ProductRepository;
 import kitchenpos.product.domain.Product;
 import org.springframework.stereotype.Service;
@@ -33,18 +36,18 @@ public class MenuService {
     }
 
     @Transactional
-    public Menu create(final Menu menu) {
-        final BigDecimal price = menu.getPrice();
+    public MenuResponse create(final MenuRequest menuRequest) {
+        final BigDecimal price = menuRequest.getPrice();
 
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException();
         }
 
-        if (!menuGroupDao.existsById(menu.getMenuGroupId())) {
+        if (!menuGroupDao.existsById(menuRequest.getMenuGroupId())) {
             throw new IllegalArgumentException();
         }
 
-        final List<MenuProduct> menuProducts = menu.getMenuProducts();
+        final List<MenuProduct> menuProducts = menuRequest.getMenuProducts();
 
         BigDecimal sum = BigDecimal.ZERO;
         for (final MenuProduct menuProduct : menuProducts) {
@@ -57,17 +60,21 @@ public class MenuService {
             throw new IllegalArgumentException();
         }
 
-        menu.setMenuProducts(menuProducts);
-        return menuRepository.save(menu);
+        menuRequest.setMenuProducts(menuProducts);
+        Menu menu = menuRepository.save(menuRequest.toMenu());
+        return MenuResponse.of(menu);
     }
 
-    public List<Menu> list() {
+    @Transactional(readOnly = true)
+    public List<MenuResponse> list() {
         final List<Menu> menus = menuRepository.findAll();
 
         for (final Menu menu : menus) {
             menu.setMenuProducts(menuProductRepository.findAllByMenuId(menu.getId()));
         }
 
-        return menus;
+        return menus.stream()
+                .map(MenuResponse::of)
+                .collect(Collectors.toList());
     }
 }
