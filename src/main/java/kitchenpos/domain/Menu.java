@@ -23,7 +23,6 @@ public class Menu {
     private String name;
     @Embedded
     private Price price;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MENU_GROUP_ID", foreignKey = @ForeignKey(name = "fk_Menu_Menu_Group"))
     private MenuGroup menuGroup;
