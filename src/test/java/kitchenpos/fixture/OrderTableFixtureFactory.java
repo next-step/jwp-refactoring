@@ -1,8 +1,8 @@
 package kitchenpos.fixture;
 
-import kitchenpos.order.domain.OrderTable;
-import kitchenpos.order.dto.OrderTableRequest;
-import kitchenpos.order.dto.OrderTableResponse;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public class OrderTableFixtureFactory {
@@ -10,8 +10,7 @@ public class OrderTableFixtureFactory {
     }
 
     public static OrderTableResponse createEmptyOrderTableResponse(Long id) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setEmpty(true);
+        OrderTable orderTable = new OrderTable(0,true);
         ReflectionTestUtils.setField(orderTable,"id",id);
         return OrderTableResponse.of(orderTable);
     }
