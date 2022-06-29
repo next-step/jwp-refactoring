@@ -7,7 +7,7 @@ import io.restassured.response.Response;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.acceptance.helper.KitchenPosBehaviors;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.order.domain.OrderTable;
 import kitchenpos.fixture.OrderTableFixtureFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

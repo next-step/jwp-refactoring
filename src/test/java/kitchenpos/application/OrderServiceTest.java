@@ -10,7 +10,7 @@ import kitchenpos.application.helper.ServiceTestHelper;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.order.domain.OrderTable;
 import kitchenpos.fixture.MenuFixtureFactory;
 import kitchenpos.fixture.MenuProductFixtureFactory;
 import kitchenpos.fixture.OrderLineItemFixtureFactory;

@@ -38,9 +38,14 @@
     - [X] 패키지 생성 및 기존 클래스 이동
     - [X] JPA Entity로 변경 및 JPARepository 생성
     - [X] 응용서비스에서 도메인레이어로 로직 이동 (with 단위테스트 작성)
-  - [ ] Menu Domain Context > Menu, MenuProduct
-    - [X] 패키지 생성 및 기존 클래스 이동
+  - [X] Menu Domain Context > Menu, MenuProduct
+    - [X] 기존 클래스 이동
     - [X] JPA Entity로 변경 및 JPARepository 생성
       - Menu, MenuProduct는 양방향 1:N, N:1 관계
       - Menu, MenuGroup은 단방향 N:1 관계
     - [X] 응용서비스에서 도메인레이어로 로직 이동 (with 단위테스트 작성)
+  - [ ] Order Domain Context > OrderTable, TableGroup
+    - [X] 패키지 생성 및 기존 클래스 이동
+    - [ ] JPA Entity로 변경 및 JPARepository 생성
+    - [ ] 요청/응답을 위한 DTO 작성
+    - [ ] 응용서비스에서 도메인레이어로 로직 이동 (with 단위테스트 작성)
