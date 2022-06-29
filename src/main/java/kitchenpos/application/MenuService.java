@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,7 +34,6 @@ public class MenuService {
 
     @Transactional
     public Menu create(final MenuRequest request) {
-        // 메뉴 그룹 id 체크
         MenuGroup menuGroup = menuGroupRepository.findById(request.getMenuGroupId())
                                                  .orElseThrow(NoSuchElementException::new);
 
@@ -45,15 +45,16 @@ public class MenuService {
         List<MenuProduct> menuProducts = new ArrayList<>();
         List<Product> products = productRepository.findByIdIn(productIds);
 
-        // 상품 합계 금액 체크
         for (MenuProductRequest menuProduct : request.getMenuProducts()) {
-            products.stream()
-                    .filter(product -> product.getId().equals(menuProduct.getProductId()))
-                    .findFirst()
-                    .ifPresent(product -> menuProducts.add(new MenuProduct(product, menuProduct.getQuantity())));
+            Optional<Product> product = products.stream()
+                                                .filter(prod -> prod.getId().equals(menuProduct.getProductId()))
+                                                .findFirst();
+            if (!product.isPresent()) {
+                throw new IllegalArgumentException("등록하고자 하는 상품이 존재하지 않습니다.");
+            }
+            menuProducts.add(new MenuProduct(product.get(), menuProduct.getQuantity()));
         }
 
-        // 저장
         return menuRepository.save(new Menu(request.getName(), request.getPrice(), menuGroup, menuProducts));
     }
 
