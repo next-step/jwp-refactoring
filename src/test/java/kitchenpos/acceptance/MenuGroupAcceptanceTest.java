@@ -39,7 +39,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
         assertThat(메뉴_그룹_목록.jsonPath().getList(".").size()).isEqualTo(2);
     }
 
-    private static ExtractableResponse<Response> 메뉴_그룹_생성_요청(final String name) {
+    public static ExtractableResponse<Response> 메뉴_그룹_생성_요청(final String name) {
         final MenuGroup menuGroup = new MenuGroup(name);
         return RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -49,7 +49,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private static ExtractableResponse<Response> 메뉴_그룹_목록_조회() {
+    public static ExtractableResponse<Response> 메뉴_그룹_목록_조회() {
         return RestAssured.given().log().all()
                 .when().get("/api/menu-groups")
                 .then().log().all()

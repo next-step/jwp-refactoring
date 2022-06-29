@@ -50,7 +50,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         assertThat(상품_목록.jsonPath().getList(".").size()).isEqualTo(2);
     }
 
-    private static ExtractableResponse<Response> 상품_생성_요청(final String name, final int price) {
+    public static ExtractableResponse<Response> 상품_생성_요청(final String name, final int price) {
         final Product product = new Product(name, BigDecimal.valueOf(price));
         return RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -60,7 +60,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private static ExtractableResponse<Response> 상품_목록_조회() {
+    public static ExtractableResponse<Response> 상품_목록_조회() {
         return RestAssured.given().log().all()
                 .when().get("/api/products")
                 .then().log().all()
