@@ -1,7 +1,5 @@
 package kitchenpos.table.application;
 
-import kitchenpos.common.exception.InvalidOrderStatusException;
-import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.TableGroupRequestDto;
@@ -21,11 +19,9 @@ import java.util.Optional;
 import static kitchenpos.common.fixture.OrderTableFixture.주문테이블_데이터_생성;
 import static kitchenpos.common.fixture.TableGroupFixture.단체_데이터_생성;
 import static kitchenpos.common.fixture.TableGroupFixture.단체_지정_데이터_생성;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,7 +30,7 @@ class TableGroupServiceTest {
     private TableGroupService tableGroupService;
 
     @Mock
-    private OrderRepository orderRepository;
+    private TableValidator tableValidator;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -44,7 +40,7 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        tableGroupService = new TableGroupService(orderRepository, orderTableRepository, tableGroupRepository);
+        tableGroupService = new TableGroupService(tableValidator, orderTableRepository, tableGroupRepository);
     }
 
     @DisplayName("테이블 그룹을 생성한다.")
@@ -91,28 +87,9 @@ class TableGroupServiceTest {
         OrderTable table2 = 주문테이블_데이터_생성(2L, null, 4, true);
         tableGroup.group(Arrays.asList(table1, table2));
         given(tableGroupRepository.findById(tableGroupId)).willReturn(Optional.of(tableGroup));
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
 
         //when //then
         tableGroupService.ungroup(tableGroupId);
-    }
-
-    @DisplayName("주문상태가 조리나 식사이면 해제할 수 없다.")
-    @Test
-    void ungroup_fail_invalidOrderStatus() {
-//given
-        Long tableGroupId = 1L;
-
-        TableGroup tableGroup = 단체_데이터_생성(tableGroupId);
-        OrderTable table1 = 주문테이블_데이터_생성(1L, null, 4, true);
-        OrderTable table2 = 주문테이블_데이터_생성(2L, null, 4, true);
-        tableGroup.group(Arrays.asList(table1, table2));
-        given(tableGroupRepository.findById(tableGroupId)).willReturn(Optional.of(tableGroup));
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
-
-        //when //then
-        assertThatExceptionOfType(InvalidOrderStatusException.class)
-                .isThrownBy(() -> tableGroupService.ungroup(tableGroupId));
     }
 
     private void 단체_데이터_확인(TableGroupResponseDto response, Long tableGroupId) {

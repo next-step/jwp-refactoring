@@ -1,13 +1,11 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.dto.MenuProductRequestDto;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuRequestDto;
 import kitchenpos.menu.dto.MenuResponseDto;
+import kitchenpos.menu.repository.MenuGroupRepository;
 import kitchenpos.menu.repository.MenuRepository;
-import kitchenpos.menu_group.domain.MenuGroup;
-import kitchenpos.menu_group.repository.MenuGroupRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,10 +34,6 @@ public class MenuService {
 
     private MenuGroup getMenuGroup(Long menuGroupId) {
         return menuGroupRepository.findById(menuGroupId).orElseThrow(IllegalArgumentException::new);
-    }
-
-    private MenuProduct getMenuProduct(MenuProductRequestDto menuProductRequest) {
-        return new MenuProduct(menuProductRequest.getProductId(), menuProductRequest.getQuantity());
     }
 
     @Transactional(readOnly = true)

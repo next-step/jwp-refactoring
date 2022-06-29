@@ -1,13 +1,13 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuProductRequestDto;
 import kitchenpos.menu.dto.MenuProductResponseDto;
 import kitchenpos.menu.dto.MenuRequestDto;
 import kitchenpos.menu.dto.MenuResponseDto;
+import kitchenpos.menu.repository.MenuGroupRepository;
 import kitchenpos.menu.repository.MenuRepository;
-import kitchenpos.menu_group.domain.MenuGroup;
-import kitchenpos.menu_group.repository.MenuGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

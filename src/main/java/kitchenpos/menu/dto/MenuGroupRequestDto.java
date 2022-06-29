@@ -1,4 +1,4 @@
-package kitchenpos.menu_group.dto;
+package kitchenpos.menu.dto;
 
 public class MenuGroupRequestDto {
 
