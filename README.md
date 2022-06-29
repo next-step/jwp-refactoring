@@ -109,6 +109,8 @@
     1. 디미터 법칙 적용
        1. 일급 컬렉션에서 getter를 통해 받는 리스트드를 unmodif
        2. Price domain에서 multiple 기능 구현(단 반환시 저장하고있는 Price는 접근이 되면 안됨)
+          1. #질문 : Product개수에 따른 가격 반환은 MenuProduct의 책임일것 같은데, 현재는 Menuproduct와 Product가 간접참조롣 되어있음. 
+                    Product.getTotalPrice(int quantity) -> return price * quantity; 를 하는게 맞는건지?
     2. 코드컨벤션 점검
     3. 반복적인 작업 추출 후 재사용
         1. MenuProductDomainService.validatePriceSmallThenSum
@@ -119,6 +121,27 @@
        1. 500Err -> 400Err
        2. Acceptance 에러확인 함수 수정(500 -> 400)
        3. assertThatThrowBy 에서 Catch하는 Error 객체 수정
+
+
+2. Aggregate 예상 관계도 및 생성 event 예정 내역
+<img src="readmeSource/AggregateEntityRelationship.png">
+ - Aggregate간 참조가 일어나는 부분
+   - Order Create
+     - OrderLineItem에 속해있는 Menu검증
+     - OrderTable 존재여부 검증
+     - OrderTable empty여부 검증 
+   - Menu Create
+     - Menu_product에 포함된 Product의 가격의 합과 Menu가격 검증 
+   - TableGroup unGrouping
+     - Table Group에 속한 OrderTable들에 COMPLETE가 아닌 메뉴 존재여부 검증
+ - 필요 Event 
+   - OrderCreate
+     - Menu.validateMenuExist()
+     - OrderTable.validateAcceptOrder()
+   - MenuCreate
+     - Product.validateCheaperMenu()
+   - TableUngroup
+     - Order.isComplete()
 ## 용어 사전
 
 | 한글명 | 영문명 | 설명 |
