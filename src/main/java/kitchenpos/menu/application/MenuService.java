@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupService menuGroupService;
