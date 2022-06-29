@@ -1,8 +1,10 @@
 package kitchenpos.order.application;
 
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.Orders;
 import kitchenpos.order.domain.OrdersRepository;
+import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.order.dto.OrdersRequest;
@@ -25,11 +27,15 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrdersRequest request) {
-        ordersValidator.validateOrderLineItem(request.getOrderLineItems());
-        ordersValidator.validateOrderTable(request.getOrderTableId());
+        ordersValidator.validate(request);
 
-        final Orders orders = new Orders(request.getOrderTableId(), OrderStatus.COOKING, request.getOrderLineItems());
+        final Orders orders = new Orders(request.getOrderTableId(), OrderStatus.COOKING);
         ordersRepository.save(orders);
+
+        for (final OrderLineItemRequest orderLineItem : request.getOrderLineItems()) {
+            orders.add(new OrderLineItem(orders.getId(), orderLineItem.getMenuId(), orderLineItem.getQuantity()));
+        }
+
         return new OrderResponse(orders);
     }
 

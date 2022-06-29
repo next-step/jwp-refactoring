@@ -12,7 +12,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -49,8 +48,8 @@ class OrdersServiceTest {
     void list() {
         //given
         given(ordersRepository.findAll()).willReturn(
-                Arrays.asList(new Orders(0L, OrderStatus.COOKING, Collections.emptyList()),
-                        new Orders(1L, OrderStatus.COMPLETION, Collections.emptyList())));
+                Arrays.asList(new Orders(0L, OrderStatus.COOKING),
+                        new Orders(1L, OrderStatus.COMPLETION)));
 
         //then
         assertThat(orderService.list().stream().map(OrderResponse::getOrderStatus)
@@ -61,7 +60,7 @@ class OrdersServiceTest {
     @DisplayName("주문 상태를 변경할 수 있다.")
     void changeOrderStatus() {
         //given
-        Orders orders = new Orders(0L, OrderStatus.COOKING, Collections.emptyList());
+        Orders orders = new Orders(0L, OrderStatus.COOKING);
         given(ordersRepository.findById(any())).willReturn(Optional.of(orders));
 
         //when
@@ -87,7 +86,7 @@ class OrdersServiceTest {
     void changeOrderStatus_failed_2() {
         //given
         given(ordersRepository.findById(any())).willReturn(
-                Optional.of(new Orders(0L, OrderStatus.COMPLETION, Collections.emptyList())));
+                Optional.of(new Orders(0L, OrderStatus.COMPLETION)));
 
         //then
         assertThatThrownBy(() -> orderService.changeOrderStatus(0L,

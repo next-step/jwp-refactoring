@@ -2,6 +2,7 @@ package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrdersRequest;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -36,36 +37,45 @@ class OrdersValidatorTest {
         given(menuRepository.countByIdIn(any())).willReturn(2L);
 
         //then
-        assertThatThrownBy(() -> ordersValidator.validateOrderLineItem(Arrays.asList(new OrderLineItemRequest(0L, 1))))
-                .isExactlyInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> ordersValidator.validate(
+                new OrdersRequest(0L, Arrays.asList(new OrderLineItemRequest(0L, 1))))).isExactlyInstanceOf(
+                IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("주문 항목의 요청 갯수가 없으면 주문에 실패한다.")
     void validate_orderLineItem_fail_2() {
         //then
-        assertThatThrownBy(() -> ordersValidator.validateOrderLineItem(Collections.emptyList()))
-                .isExactlyInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(
+                () -> ordersValidator.validate(new OrdersRequest(0L, Collections.emptyList()))).isExactlyInstanceOf(
+                IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("주문 테이블 조회 결과가 없으면 주문에 실패한다.")
     void validate_orderTable_fail_1() {
         //given
+        given(menuRepository.countByIdIn(any())).willReturn(1L);
         given(orderTableRepository.findByIdAndEmptyIsFalse(any())).willReturn(Optional.empty());
 
         //then
-        assertThatThrownBy(() -> ordersValidator.validateOrderTable(0L)).isExactlyInstanceOf(NoSuchElementException.class);
+        assertThatThrownBy(() -> ordersValidator.validate(
+                new OrdersRequest(0L, Arrays.asList(new OrderLineItemRequest(0L, 1))))).isExactlyInstanceOf(
+                NoSuchElementException.class);
     }
 
     @Test
     @DisplayName("주문 테이블이 비어있으면 주문에 실패한다.")
     void validate_orderTable_fail_2() {
         //given
-        given(orderTableRepository.findByIdAndEmptyIsFalse(any())).willReturn(Optional.of(new OrderTable(null, null, 1, true)));
+        given(menuRepository.countByIdIn(any())).willReturn(1L);
+        given(orderTableRepository.findByIdAndEmptyIsFalse(any())).willReturn(
+                Optional.of(new OrderTable(1L, null, 1, true)));
 
         //then
-        assertThatThrownBy(() -> ordersValidator.validateOrderTable(0L)).isExactlyInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> ordersValidator.validate(
+                new OrdersRequest(0L, Arrays.asList(new OrderLineItemRequest(0L, 1))))).isExactlyInstanceOf(
+                IllegalArgumentException.class);
     }
 
 }

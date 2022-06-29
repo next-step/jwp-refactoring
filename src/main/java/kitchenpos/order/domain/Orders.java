@@ -1,6 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.order.dto.OrderLineItemRequest;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -24,13 +23,9 @@ public class Orders {
     @Embedded
     private OrderLineItems orderLineItems = new OrderLineItems();
 
-    public Orders(long orderTableId, OrderStatus orderStatus, List<OrderLineItemRequest> orderLineItemRequests) {
+    public Orders(long orderTableId, OrderStatus orderStatus) {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
-
-        for (final OrderLineItemRequest orderLineItem : orderLineItemRequests) {
-            this.orderLineItems.add(new OrderLineItem(this, orderLineItem.getMenuId(), orderLineItem.getQuantity()));
-        }
     }
 
     protected Orders() {
@@ -57,6 +52,10 @@ public class Orders {
             throw new IllegalArgumentException("계산 완료 상태의 주문은 상태를 변경할 수 없습니다.");
         }
         this.orderStatus = orderStatus;
+    }
+
+    public void add(OrderLineItem orderLineItem) {
+        this.orderLineItems.add(orderLineItem);
     }
 
     public Long getOrderTableId() {
