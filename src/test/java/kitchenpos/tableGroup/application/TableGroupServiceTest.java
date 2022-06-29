@@ -36,6 +36,8 @@ class TableGroupServiceTest {
     private TableGroupRepository tableGroupRepository;
     @Mock
     private OrderTableRepository orderTableRepository;
+    @Mock
+    private OrderTableGroupService orderTableGroupService;
     @InjectMocks
     private TableGroupService tableGroupService;
 
@@ -126,5 +128,6 @@ class TableGroupServiceTest {
     void ungroup() {
         given(orderTableRepository.findAllByTableGroupId(단체지정.id())).willReturn(Lists.newArrayList(치킨주문테이블, 피자주문테이블));
         tableGroupService.ungroup(단체지정.id());
+        orderTableGroupService.validateComplete(Lists.newArrayList(치킨주문테이블.id(), 피자주문테이블.id()));
     }
 }

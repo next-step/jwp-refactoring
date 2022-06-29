@@ -1,6 +1,7 @@
 package kitchenpos.tableGroup.application;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.event.ReserveEvent;
@@ -18,12 +19,16 @@ public class TableGroupService {
     private final TableGroupRepository tableGroupRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final OrderTableRepository orderTableRepository;
+    private final OrderTableGroupService orderTableGroupService;
+
     public TableGroupService(final TableGroupRepository tableGroupRepository,
                              final ApplicationEventPublisher applicationEventPublisher,
-                             final OrderTableRepository orderTableRepository) {
+                             final OrderTableRepository orderTableRepository,
+                             final OrderTableGroupService orderTableGroupService) {
         this.tableGroupRepository = tableGroupRepository;
         this.applicationEventPublisher = applicationEventPublisher;
         this.orderTableRepository = orderTableRepository;
+        this.orderTableGroupService = orderTableGroupService;
     }
 
     @Transactional
@@ -37,6 +42,9 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
+        orderTableGroupService.validateComplete(orderTables.stream()
+                .map(OrderTable::id)
+                .collect(Collectors.toList()));
         orderTables.forEach(OrderTable::unGroup);
     }
 }

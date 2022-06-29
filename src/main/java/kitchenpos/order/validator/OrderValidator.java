@@ -5,8 +5,8 @@ import java.util.stream.Collectors;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
-import kitchenpos.ordertable.application.TableService;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTableRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,15 +14,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class OrderValidator {
     private final MenuService menuService;
-    private final TableService tableService;
+    private final OrderTableRepository orderTableRepository;
 
-    public OrderValidator(final MenuService menuService, final TableService tableService) {
+    public OrderValidator(final MenuService menuService, final OrderTableRepository orderTableRepository) {
         this.menuService = menuService;
-        this.tableService = tableService;
+        this.orderTableRepository = orderTableRepository;
     }
 
     public void validate(OrderRequest orderRequest) {
-        validateNotEmpty(tableService.findOrderTable(orderRequest.getOrderTableId()));
+        validateNotEmpty(findOrderTable(orderRequest.getOrderTableId()));
         validateOrderLineItemsSize(orderRequest.getOrderLineItems());
     }
 
@@ -42,5 +42,10 @@ public class OrderValidator {
         return orderLineItemRequests.stream()
                 .map(OrderLineItemRequest::getMenuId)
                 .collect(Collectors.toList());
+    }
+
+    private OrderTable findOrderTable(Long orderTableId) {
+        return orderTableRepository.findById(orderTableId)
+                .orElseThrow(() -> new IllegalArgumentException("주문테이블을 찾을 수 없습니다."));
     }
 }

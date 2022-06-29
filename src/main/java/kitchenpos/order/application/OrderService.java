@@ -1,6 +1,10 @@
 package kitchenpos.order.application;
 
+import static kitchenpos.order.domain.OrderStatus.COOKING;
+import static kitchenpos.order.domain.OrderStatus.MEAL;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.menu.application.MenuService;
@@ -14,17 +18,20 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.validator.OrderValidator;
+import kitchenpos.ordertable.application.OrderTableService;
+import kitchenpos.tableGroup.application.OrderTableGroupService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
-public class OrderService {
+public class OrderService implements OrderTableService, OrderTableGroupService {
     private final OrderRepository orderRepository;
     private final OrderValidator orderValidator;
     private final MenuService menuService;
 
-    public OrderService(final MenuService menuService, final OrderRepository orderRepository, final OrderValidator orderValidator) {
+    public OrderService(final MenuService menuService, final OrderRepository orderRepository,
+                        final OrderValidator orderValidator) {
         this.menuService = menuService;
         this.orderRepository = orderRepository;
         this.orderValidator = orderValidator;
@@ -34,7 +41,8 @@ public class OrderService {
     public OrderResponse create(final OrderRequest orderRequest) {
         orderValidator.validate(orderRequest);
         List<OrderLineItem> orderLineItems = findOrderLineItems(orderRequest.getOrderLineItems());
-        return OrderResponse.from(orderRepository.save(Order.from(orderRequest.getOrderTableId(), OrderLineItems.from(orderLineItems))));
+        return OrderResponse.from(
+                orderRepository.save(Order.from(orderRequest.getOrderTableId(), OrderLineItems.from(orderLineItems))));
     }
 
     public List<OrderResponse> list() {
@@ -64,5 +72,21 @@ public class OrderService {
             orderLineItems.add(OrderLineItem.from(OrderMenu.from(menu), orderLineItemRequest.getQuantity()));
         }
         return orderLineItems;
+    }
+
+    @Override
+    public void validateComplete(Long orderTableId) {
+        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId,
+                Arrays.asList(COOKING, MEAL))) {
+            throw new IllegalArgumentException("주문테이블의 주문이 완료상태가 아닙니다.");
+        }
+    }
+
+    @Override
+    public void validateComplete(List<Long> orderTableIds) {
+        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
+                orderTableIds, Arrays.asList(COOKING, MEAL))) {
+            throw new IllegalArgumentException("주문테이블들의 주문이 완료상태가 아닙니다.");
+        }
     }
 }

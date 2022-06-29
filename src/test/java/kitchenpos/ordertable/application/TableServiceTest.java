@@ -5,7 +5,9 @@ import static kitchenpos.utils.DomainFixtureFactory.createOrderTableRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +28,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class TableServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
+    @Mock
+    private OrderTableService orderTableService;
     @InjectMocks
     private TableService tableService;
     private OrderTable 주문테이블;
@@ -59,12 +63,13 @@ class TableServiceTest {
     @Test
     void changeEmpty() {
         OrderTableRequest orderTableRequest = createOrderTableRequest(2, true);
-        given(orderTableRepository.findById(1L)).willReturn(Optional.ofNullable(주문테이블));
+        given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(주문테이블));
         OrderTableResponse changedOrderTable = tableService.changeEmpty(1L, orderTableRequest);
         assertAll(
                 () -> assertThat(changedOrderTable.getNumberOfGuests()).isEqualTo(2),
                 () -> assertThat(changedOrderTable.isEmpty()).isTrue()
         );
+        verify(orderTableService).validateComplete(주문테이블.id());
     }
 
     @DisplayName("주문테이블이 등록이 안되어있을 때 주문테이블 비어있는지 여부 변경 테스트")
