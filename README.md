@@ -1,6 +1,7 @@
 # 키친포스
 ## 3단계 작업 순서
-![img.png](img.png)
+- 의존관계 정리 후 엔티티 컨텍스트 구성
+![img_1.png](img_1.png)
 - [X] 같은 컨텍스트 내의 Entity 연관 관계는 직접 참조로 구성
 - [X] 다른 컨텍스트 내의 Entity 연관 관계는 간접 참조로 구성
 - [X] 연관관계를 제거하면서 나오는 entity validation 로직은 validator 생성
