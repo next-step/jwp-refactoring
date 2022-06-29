@@ -1,9 +1,8 @@
 package kitchenpos.order.application;
 
-import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
@@ -18,20 +17,20 @@ import java.util.stream.Collectors;
 @Transactional
 @Service
 public class OrderService {
-    private final MenuRepository menuRepository;
+    private final OrderValidator orderValidator;
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
 
-    public OrderService(MenuRepository menuRepository, OrderRepository orderRepository, OrderTableRepository orderTableRepository) {
-        this.menuRepository = menuRepository;
+    public OrderService(OrderValidator orderValidator, OrderRepository orderRepository, OrderTableRepository orderTableRepository) {
+        this.orderValidator = orderValidator;
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
     }
 
     public OrderResponse create(final OrderRequest orderRequest) {
-        Order order = orderRequest.toEntity();
-        validate(order.getOrderLineItems());
+        orderValidator.validate(orderRequest);
 
+        Order order = orderRequest.toEntity();
         final OrderTable orderTable = orderTableRepository.findById(order.getOrderTableId())
                 .orElseThrow(() -> new IllegalArgumentException("주문 테이블 정보가 없습니다."));
         order.receive(orderTable);
@@ -53,12 +52,5 @@ public class OrderService {
         savedOrder.changeOrderStatus(orderStatusRequest.getStatus());
 
         return OrderResponse.from(orderRepository.save(savedOrder));
-    }
-
-    private void validate(OrderLineItems orderLineItems) {
-        Integer menuCount = menuRepository.countByIdIn(orderLineItems.extractMenuIds());
-        if (!menuCount.equals(orderLineItems.size())) {
-            throw new IllegalArgumentException("주문 항목에 메뉴가 존재해야 합니다.");
-        }
     }
 }

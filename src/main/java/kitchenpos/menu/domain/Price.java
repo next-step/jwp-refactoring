@@ -40,13 +40,13 @@ public class Price {
         }
     }
 
-    public Price add(Price other) {
-        return Price.from(price.add(other.price));
+    public void add(Price other) {
+        this.price = price.add(other.price);
     }
 
-    public static Price multiply(Product product, Quantity quantity) {
+    public static Price multiply(Product product, Long quantity) {
         return Price.from(product.getPriceValue()
-                .multiply(BigDecimal.valueOf(quantity.getValue())));
+                .multiply(BigDecimal.valueOf(quantity)));
     }
 
     public boolean isGreaterThan(Price other) {

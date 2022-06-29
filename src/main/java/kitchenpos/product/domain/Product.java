@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
-public class    Product {
+public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -43,7 +43,11 @@ public class    Product {
         return name.getName();
     }
 
-    public Integer getPrice() {
+    public Price getPrice() {
+        return price;
+    }
+
+    public Integer getPriceIntValue() {
         return price.getIntValue();
     }
 

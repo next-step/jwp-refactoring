@@ -85,6 +85,15 @@
       - ui package 이동
       - dto 추가
 
+- 3단계 (의존성 리팩터링)
+  - 객체 간 단방향 관계로 변경
+    - menuValidator 생성
+    - orderValidator 생성
+  - 직접 참조 -> 간접 참조 개선   
+    - MenuProduct -> Product id 참조 변경
+    - OrderTable -> TableGroup id 참조 변경
+
+
 ## 용어 사전
 
 | 한글명 | 영문명 | 설명 |

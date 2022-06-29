@@ -10,9 +10,8 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
-    private TableGroup tableGroup;
+    @JoinColumn(name = "table_group_id", foreignKey = @ForeignKey(name = "fk_order_table_table_group"))
+    private Long tableGroupId;
 
     @Embedded
     private NumberOfGuests numberOfGuests;
@@ -32,7 +31,7 @@ public class OrderTable {
     }
 
     public OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
-        this.tableGroup = TableGroup.of(tableGroupId);
+        this.tableGroupId = tableGroupId;
         this.numberOfGuests = NumberOfGuests.of(numberOfGuests);
         this.empty = empty;
     }
@@ -57,8 +56,8 @@ public class OrderTable {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroup() {
+        return tableGroupId;
     }
 
     public NumberOfGuests getNumberOfGuests() {
@@ -70,16 +69,16 @@ public class OrderTable {
     }
 
     public boolean isGroupable() {
-        return isEmpty() && Objects.isNull(tableGroup);
+        return isEmpty() && Objects.isNull(tableGroupId);
     }
 
     public void ungroup() {
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 
-    public void groupBy(TableGroup tableGroup) {
+    public void groupBy(Long tableGroupId) {
         changeEmpty(false);
-        this.tableGroup = tableGroup;
+        this.tableGroupId = tableGroupId;
     }
 
     public void changeNumberOfGuests(NumberOfGuests numberOfGuests) {
@@ -93,7 +92,7 @@ public class OrderTable {
     }
 
     private void validateOfChangeEmpty() {
-        if (Objects.nonNull(tableGroup)) {
+        if (Objects.nonNull(tableGroupId)) {
             throw new IllegalArgumentException("그룹이 있는 테이블은 빈 상태로 변경할 수 없습니다");
         }
     }

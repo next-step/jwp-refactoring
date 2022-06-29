@@ -1,7 +1,5 @@
 package kitchenpos.product.domain;
 
-import kitchenpos.menu.domain.Quantity;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.math.BigDecimal;
@@ -42,18 +40,5 @@ public class Price {
         if (Objects.isNull(price) || price.compareTo(ZERO) < 0) {
             throw new IllegalArgumentException("가격이 0보다 작을 수 없습니다.");
         }
-    }
-
-    public Price add(Price other) {
-        return Price.from(price.add(other.price));
-    }
-
-    public static Price multiply(Product product, Quantity quantity) {
-        return Price.from(product.getPriceValue()
-                .multiply(BigDecimal.valueOf(quantity.getValue())));
-    }
-
-    public boolean isGreaterThan(Price other) {
-        return price.compareTo(other.price) > 0;
     }
 }
