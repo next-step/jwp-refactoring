@@ -117,7 +117,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
         final int 변경된_테이블_손님수 = 5;
 
         // when
-        OrderTable 변경된_주문_테이블 = 주문_테이블_인원_수정_요청(등록된_주문_테이블, 변경된_테이블_손님수).as(OrderTable.class);
+        OrderTableResponse 변경된_주문_테이블 = 주문_테이블_인원_수정_요청(등록된_주문_테이블, 변경된_테이블_손님수).as(OrderTableResponse.class);
         
         // then
         주문_테이블_손님수_검증됨(변경된_주문_테이블, 변경된_테이블_손님수);
@@ -264,7 +264,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
         assertThat(변경된_주문_테이블.isEmpty()).isEqualTo(테이블_사용중);
     }
 
-    public static void 주문_테이블_손님수_검증됨(OrderTable 변경된_주문_테이블, int 변경된_테이블_손님수) {
+    public static void 주문_테이블_손님수_검증됨(OrderTableResponse 변경된_주문_테이블, int 변경된_테이블_손님수) {
         assertThat(변경된_주문_테이블.getNumberOfGuests()).isEqualTo(변경된_테이블_손님수);
     }
 
