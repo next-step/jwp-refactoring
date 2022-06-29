@@ -1,5 +1,8 @@
 package kitchenpos.application;
 
+import static kitchenpos.Exception.CannotUngroupException.CANNOT_UNGROUP_EXCEPTION;
+
+import kitchenpos.Exception.NotFoundTableGroupException;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTables;
 import kitchenpos.domain.TableGroup;
@@ -34,7 +37,7 @@ public class TableGroupService {
         TableGroup tableGroup = new TableGroup();
         tableGroupRepository.save(tableGroup);
 
-        validateDifferent(savedOrderTables, orderTableIds);
+        validateNotFoundOrderTables(savedOrderTables, orderTableIds);
 
         tableGroup.groupOrderTables(OrderTables.from(savedOrderTables));
 
@@ -43,7 +46,8 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        TableGroup tableGroup = tableGroupRepository.findById(tableGroupId).orElseThrow(IllegalArgumentException::new);
+        TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
+                .orElseThrow(NotFoundTableGroupException::new);
         validateUnCompletedOrderStatus(tableGroup);
         tableGroup.unGroupOrderTables();
     }
@@ -56,11 +60,11 @@ public class TableGroupService {
                 .collect(Collectors.toList());
 
         if (orderService.existsByOrderTableIdUnCompletedOrderStatus(orderTableIds)) {
-            throw new IllegalArgumentException();
+            throw CANNOT_UNGROUP_EXCEPTION;
         }
     }
 
-    private void validateDifferent(List<OrderTable> orderTables, List<Long> orderTableIds) {
+    private void validateNotFoundOrderTables(List<OrderTable> orderTables, List<Long> orderTableIds) {
         if (orderTables.size() != orderTableIds.size()) {
             throw new IllegalArgumentException("모든 테이블은 존재하는 테이블이어야 합니다.");
         }
