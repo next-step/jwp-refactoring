@@ -37,4 +37,8 @@ public class CommonTestFixture {
     public static OrderTable createOrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
         return new OrderTable(id, tableGroupId, numberOfGuests, empty);
     }
+
+    public static TableGroup createTableGroup(Long id, List<OrderTable> orderTables) {
+        return new TableGroup(id, orderTables);
+    }
 }
