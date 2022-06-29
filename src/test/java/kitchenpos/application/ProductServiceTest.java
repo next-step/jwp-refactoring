@@ -33,8 +33,8 @@ class ProductServiceTest {
     @BeforeEach
     void init() {
         // given
-        햄버거 = new Product(1L, "햄버거", BigDecimal.valueOf(9_500L));
-        피자 = new Product(2L, "피자", BigDecimal.valueOf(21_000L));
+        햄버거 = 상품_생성(1L, "햄버거", 9_500L);
+        피자 = 상품_생성(2L, "피자", 21_000L);
     }
 
     @Test
@@ -55,10 +55,10 @@ class ProductServiceTest {
     }
 
     @Test
-    @DisplayName("상품 가격이 음수일 경우-IllegalArgumentException")
+    @DisplayName("상품 가격이 음수일 경우 - 오류")
     void negativeQuantityPrice() {
         // given
-        Product 떡볶이 = new Product("떡볶이", new BigDecimal(-3_000L));
+        Product 떡볶이 = 상품_생성("떡볶이", -3_000L);
 
         // when then
         assertThatThrownBy(() -> productService.create(떡볶이))
@@ -76,5 +76,13 @@ class ProductServiceTest {
 
         // then
         assertThat(products).containsExactly(햄버거, 피자);
+    }
+
+    public static Product 상품_생성(String name, Long price) {
+        return 상품_생성(null, name, price);
+    }
+
+    public static Product 상품_생성(Long id, String name, Long price) {
+        return new Product(id, name, new BigDecimal(price));
     }
 }

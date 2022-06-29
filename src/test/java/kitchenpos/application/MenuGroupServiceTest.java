@@ -30,8 +30,8 @@ class MenuGroupServiceTest {
 
     @BeforeEach
     void init() {
-        양식 = new MenuGroup(1L, "양식");
-        한식 = new MenuGroup(2L, "한식");
+        양식 = 메뉴_그룹_생성(1L, "양식");
+        한식 = 메뉴_그룹_생성(2L, "한식");
     }
 
     @Test
@@ -61,5 +61,9 @@ class MenuGroupServiceTest {
 
         // then
         assertThat(menuGroups).containsExactly(양식, 한식);
+    }
+
+    public static MenuGroup 메뉴_그룹_생성(Long id, String name) {
+        return new MenuGroup(id, name);
     }
 }
