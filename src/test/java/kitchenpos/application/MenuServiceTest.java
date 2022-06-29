@@ -16,6 +16,7 @@ import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.dto.MenuProductDTO;
 import kitchenpos.dto.request.MenuRequest;
+import kitchenpos.exception.MenuException;
 import kitchenpos.repository.MenuGroupRepository;
 import kitchenpos.repository.MenuRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -97,9 +98,9 @@ class MenuServiceTest {
         //when
         assertAll(
             () -> assertThatThrownBy(() -> menuService.create(menu_minusPrice))
-                .isInstanceOf(IllegalArgumentException.class),
+                .isInstanceOf(MenuException.class),
             () -> assertThatThrownBy(() -> menuService.create(menu_nullPrice))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(MenuException.class)
         );
     }
 

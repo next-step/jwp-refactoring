@@ -10,6 +10,7 @@ import java.util.Optional;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.event.MenuCreateEventDTO;
 import kitchenpos.event.customEvent.MenuCreateEvent;
+import kitchenpos.exception.MenuException;
 import kitchenpos.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -54,7 +55,7 @@ class MenuCreateEventListenerInProductTest {
 
         //when & then
         assertThatThrownBy(() -> eventListener.onApplicationEvent(event))
-            .isInstanceOf(IllegalArgumentException.class)
+            .isInstanceOf(MenuException.class)
             .hasMessage("메뉴 가격은 상품 가격 총합보다 작아야합니다");
     }
 
@@ -75,7 +76,8 @@ class MenuCreateEventListenerInProductTest {
 
         //when & then
         assertThatThrownBy(() -> eventListener.onApplicationEvent(event))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(MenuException.class)
+            .hasMessage("상품이 저장되어있지 않습니다");
     }
 
 }

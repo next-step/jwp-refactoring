@@ -89,6 +89,7 @@ class OrderTableTest {
     public void cantChangeNumberOfGuestWhileEmptyTest(){
         //when & then
         assertThatThrownBy(() -> orderTable.changeNumberOfGuests(3)).isInstanceOf(
-            IllegalArgumentException.class);
+                OrderTableException.class)
+            .hasMessage("비어있는 테이블은 인원수 설정을 할수 없습니다");
     }
 }

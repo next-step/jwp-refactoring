@@ -71,7 +71,7 @@ class TableGroupServiceTest {
         //when & then 0개의 테이블로 단체 테이블 생성시 에러 발생
         assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
             .isInstanceOf(TableGroupException.class)
-            .hasMessage("OVER 2 TABLE CAN GROUPING");
+            .hasMessage("단체테이블은 2개 이상이여야 합니다");
 
         //given(1개의 테이블을 가진 tableGroupRequest)
         tableGroupRequest.setOrderTables(Arrays.asList(new OrderTableRequest()));
@@ -79,7 +79,7 @@ class TableGroupServiceTest {
         //when & then 1개의 테이블로 단체 테이블 생성시 에러 발생
         assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
             .isInstanceOf(TableGroupException.class)
-            .hasMessage("OVER 2 TABLE CAN GROUPING");
+            .hasMessage("단체테이블은 2개 이상이여야 합니다");
     }
 
     @Test
@@ -93,7 +93,7 @@ class TableGroupServiceTest {
         //when & then
         assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
             .isInstanceOf(TableGroupException.class)
-            .hasMessage("OVER 2 TABLE CAN GROUPING");
+            .hasMessage("단체테이블은 2개 이상이여야 합니다");
     }
 
     @Test
@@ -108,7 +108,7 @@ class TableGroupServiceTest {
         //when & then
         assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
             .isInstanceOf(TableGroupException.class)
-            .hasMessage("TABLE ALREADY USED");
+            .hasMessage("단체테이블은 2개 이상이여야 합니다");
     }
 
     @Test
