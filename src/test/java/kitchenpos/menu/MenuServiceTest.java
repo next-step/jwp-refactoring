@@ -13,7 +13,7 @@ import java.util.Optional;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.dao.MenuDao;
 import kitchenpos.menu.dao.MenuGroupRepository;
-import kitchenpos.menu.dao.MenuProductDao;
+import kitchenpos.menu.dao.MenuProductRepository;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.dao.ProductRepository;
@@ -39,14 +39,14 @@ class MenuServiceTest {
     MenuGroupRepository menuGroupRepository;
 
     @Mock
-    MenuProductDao menuProductDao;
+    MenuProductRepository menuProductRepository;
 
     @Mock
     ProductRepository productRepository;
 
     Menu 후라이드치킨 = new Menu();
     Product 후라이드;
-    MenuProduct 후라이드치킨상품 = new MenuProduct();
+    MenuProduct 후라이드치킨상품;
 
     @BeforeEach
     void setUp() {
@@ -67,9 +67,7 @@ class MenuServiceTest {
     }
 
     void createMenuProduct() {
-        후라이드치킨상품.setMenuId(후라이드치킨.getId());
-        후라이드치킨상품.setProductId(후라이드.getId());
-        후라이드치킨상품.setQuantity(1L);
+        후라이드치킨상품 = new MenuProduct(후라이드치킨.getId(), 후라이드.getId(), 1L);
         후라이드치킨.setMenuProducts(Collections.singletonList(후라이드치킨상품));
     }
 
@@ -80,7 +78,7 @@ class MenuServiceTest {
         given(menuGroupRepository.existsById(any())).willReturn(true);
         given(productRepository.findById(any())).willReturn(Optional.ofNullable(후라이드));
         given(menuDao.save(any())).willReturn(후라이드치킨);
-        given(menuProductDao.save(any())).willReturn(후라이드치킨상품);
+        given(menuProductRepository.save(any())).willReturn(후라이드치킨상품);
 
         // when
         Menu actual = menuService.create(후라이드치킨);
@@ -146,7 +144,7 @@ class MenuServiceTest {
     void list() {
         // given
         given(menuDao.findAll()).willReturn(Collections.singletonList(후라이드치킨));
-        given(menuProductDao.findAllByMenuId(후라이드치킨.getId())).willReturn(Collections.singletonList(후라이드치킨상품));
+        given(menuProductRepository.findAllByMenuId(후라이드치킨.getId())).willReturn(Collections.singletonList(후라이드치킨상품));
 
         List<Menu> actual = menuService.list();
 
