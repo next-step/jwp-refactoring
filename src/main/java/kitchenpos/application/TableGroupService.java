@@ -44,7 +44,7 @@ public class TableGroupService {
         }
         for (final OrderTable orderTable : orderTables) {
             if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroupId())) {
-                throw new TableGroupException("TABLE ALREADY GROUPED");
+                throw new TableGroupException("TABLE ALREADY USED");
             }
         }
 

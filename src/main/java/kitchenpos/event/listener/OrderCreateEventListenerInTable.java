@@ -30,7 +30,7 @@ public class OrderCreateEventListenerInTable implements ApplicationListener<Orde
             .orElseThrow(IllegalArgumentException::new);
 
         if (orderTable.isEmpty()) {
-            throw new OrderException("TABLE IS NOT EMPTY");
+            throw new OrderException("TABLE MUST NOT EMPTY");
         }
     }
 }

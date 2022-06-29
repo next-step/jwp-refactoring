@@ -45,7 +45,7 @@ public class MenuService {
             new MenuCreateEventForProductDTO(quantityPerProduct, menuRequest.getPrice())));
 
         MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
-            .orElseThrow(IllegalAccessError::new);
+            .orElseThrow(IllegalArgumentException::new);
         Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(),
             menuGroup);
 
