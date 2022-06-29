@@ -1,6 +1,6 @@
 package kitchenpos.order.application;
 
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.common.domain.OrderStatus;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.dto.OrderRequestDto;
 import kitchenpos.order.dto.OrderResponseDto;

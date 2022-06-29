@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.util.Collections;
 
-import static kitchenpos.fixture.MenuGroupFixture.메뉴묶음_데이터_생성;
+import static kitchenpos.common.fixture.MenuGroupFixture.메뉴묶음_데이터_생성;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

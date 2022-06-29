@@ -3,7 +3,7 @@ package kitchenpos.table.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static kitchenpos.fixture.OrderTableFixture.주문테이블_데이터_생성;
+import static kitchenpos.common.fixture.OrderTableFixture.주문테이블_데이터_생성;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;

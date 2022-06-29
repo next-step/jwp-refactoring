@@ -1,7 +1,5 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.domain.TableGroup;
-
 import javax.persistence.*;
 
 @Entity
@@ -14,21 +12,23 @@ public class OrderTable {
     private Long id;
 
 
-    @Column(name = "table_group_id")
-    private Long tableGroupId;
+    @ManyToOne
+    @JoinColumn(name = "table_group_id")
+    private TableGroup tableGroup;
+
     private int numberOfGuests;
     private boolean empty;
 
     protected OrderTable() {
     }
 
-    public OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
-        this(null, tableGroupId, numberOfGuests, empty);
+    public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
+        this(null, tableGroup, numberOfGuests, empty);
     }
 
-    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroupId = tableGroupId;
+        this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
@@ -37,8 +37,8 @@ public class OrderTable {
         return id;
     }
 
-    public Long getTableGroupId() {
-        return tableGroupId;
+    public TableGroup getTableGroup() {
+        return tableGroup;
     }
 
     public int getNumberOfGuests() {
@@ -68,11 +68,11 @@ public class OrderTable {
     }
 
     public void group(TableGroup tableGroup) {
-        this.tableGroupId = tableGroup.getId();
+        this.tableGroup = tableGroup;
         this.empty = false;
     }
 
     public void ungroup() {
-        this.tableGroupId = null;
+        this.tableGroup = null;
     }
 }

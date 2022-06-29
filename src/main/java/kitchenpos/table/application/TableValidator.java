@@ -1,7 +1,7 @@
 package kitchenpos.table.application;
 
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.exception.InvalidOrderStatusException;
+import kitchenpos.common.domain.OrderStatus;
+import kitchenpos.common.exception.InvalidOrderStatusException;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ public class TableValidator {
     }
 
     private void checkNotGroup(OrderTable orderTable) {
-        if (Objects.nonNull(orderTable.getTableGroupId())) {
+        if (Objects.nonNull(orderTable.getTableGroup())) {
             throw new IllegalArgumentException();
         }
     }

@@ -15,8 +15,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.fixture.OrderTableFixture.주문테이블_데이터_생성;
-import static kitchenpos.fixture.OrderTableFixture.주문테이블_요청_데이터_생성;
+import static kitchenpos.common.fixture.OrderTableFixture.주문테이블_데이터_생성;
+import static kitchenpos.common.fixture.OrderTableFixture.주문테이블_요청_데이터_생성;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;

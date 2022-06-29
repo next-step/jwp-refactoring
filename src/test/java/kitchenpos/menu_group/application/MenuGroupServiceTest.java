@@ -1,8 +1,8 @@
 package kitchenpos.menu_group.application;
 
-import kitchenpos.menu_group.repository.MenuGroupRepository;
 import kitchenpos.menu_group.dto.MenuGroupRequestDto;
 import kitchenpos.menu_group.dto.MenuGroupResponseDto;
+import kitchenpos.menu_group.repository.MenuGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,8 +13,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.fixture.MenuGroupFixture.메뉴묶음_데이터_생성;
-import static kitchenpos.fixture.MenuGroupFixture.메뉴묶음_요청데이터_생성;
+import static kitchenpos.common.fixture.MenuGroupFixture.메뉴묶음_데이터_생성;
+import static kitchenpos.common.fixture.MenuGroupFixture.메뉴묶음_요청데이터_생성;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;

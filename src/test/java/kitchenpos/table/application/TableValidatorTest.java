@@ -1,8 +1,9 @@
 package kitchenpos.table.application;
 
-import kitchenpos.exception.InvalidOrderStatusException;
+import kitchenpos.common.exception.InvalidOrderStatusException;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,7 +11,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static kitchenpos.fixture.OrderTableFixture.주문테이블_데이터_생성;
+import static kitchenpos.common.fixture.OrderTableFixture.주문테이블_데이터_생성;
+import static kitchenpos.common.fixture.TableGroupFixture.단체_데이터_생성;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
@@ -34,7 +36,8 @@ class TableValidatorTest {
     @Test
     void changeEmpty_fail_group() {
         //given
-        OrderTable orderTable = 주문테이블_데이터_생성(1L, 1L, 4, true);
+        TableGroup tableGroup = 단체_데이터_생성(1L);
+        OrderTable orderTable = 주문테이블_데이터_생성(1L, tableGroup, 4, true);
 
         //when //then
         assertThatIllegalArgumentException()

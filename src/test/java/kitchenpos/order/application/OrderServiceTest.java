@@ -1,7 +1,7 @@
 package kitchenpos.order.application;
 
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.exception.InvalidOrderStatusException;
+import kitchenpos.common.domain.OrderStatus;
+import kitchenpos.common.exception.InvalidOrderStatusException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.dto.OrderLineItemRequestDto;
@@ -22,10 +22,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.fixture.OrderFixture.주문_데이터_생성;
-import static kitchenpos.fixture.OrderFixture.주문_요청_데이터_생성;
-import static kitchenpos.fixture.OrderLineItemFixture.주문항목_데이터_생성;
-import static kitchenpos.fixture.OrderLineItemFixture.주문항목_요청_데이터_생성;
+import static kitchenpos.common.fixture.OrderFixture.주문_데이터_생성;
+import static kitchenpos.common.fixture.OrderFixture.주문_요청_데이터_생성;
+import static kitchenpos.common.fixture.OrderLineItemFixture.주문항목_데이터_생성;
+import static kitchenpos.common.fixture.OrderLineItemFixture.주문항목_요청_데이터_생성;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;

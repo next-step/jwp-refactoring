@@ -1,7 +1,7 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.dto.MenuProductRequestDto;
-import kitchenpos.exception.InvalidPriceException;
+import kitchenpos.common.exception.InvalidPriceException;
+import kitchenpos.menu.dto.MenuProductRequestDto;
 import kitchenpos.menu.dto.MenuRequestDto;
 import kitchenpos.product.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,9 +17,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.fixture.MenuFixture.메뉴_요청_데이터_생성;
-import static kitchenpos.fixture.MenuProductFixture.메뉴상품_요청_데이터_생성;
-import static kitchenpos.fixture.ProductFixture.상품_데이터_생성;
+import static kitchenpos.common.fixture.MenuFixture.메뉴_요청_데이터_생성;
+import static kitchenpos.common.fixture.MenuProductFixture.메뉴상품_요청_데이터_생성;
+import static kitchenpos.common.fixture.ProductFixture.상품_데이터_생성;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.BDDMockito.given;
 

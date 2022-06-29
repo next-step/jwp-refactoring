@@ -1,7 +1,7 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.exception.InvalidOrderStatusException;
+import kitchenpos.common.domain.OrderStatus;
+import kitchenpos.common.exception.InvalidOrderStatusException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

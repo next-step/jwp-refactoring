@@ -1,8 +1,8 @@
 package kitchenpos.product.application;
 
-import kitchenpos.product.repository.ProductRepository;
 import kitchenpos.product.dto.ProductRequestDto;
 import kitchenpos.product.dto.ProductResponseDto;
+import kitchenpos.product.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,8 +14,8 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.fixture.ProductFixture.상품_데이터_생성;
-import static kitchenpos.fixture.ProductFixture.상품_요청_데이터_생성;
+import static kitchenpos.common.fixture.ProductFixture.상품_데이터_생성;
+import static kitchenpos.common.fixture.ProductFixture.상품_요청_데이터_생성;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;

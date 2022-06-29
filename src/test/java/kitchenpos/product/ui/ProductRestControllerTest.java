@@ -1,8 +1,8 @@
 package kitchenpos.product.ui;
 
+import kitchenpos.common.ui.BaseRestControllerTest;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.dto.ProductRequestDto;
-import kitchenpos.ui.BaseRestControllerTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,8 +13,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.math.BigDecimal;
 import java.util.Arrays;
 
-import static kitchenpos.fixture.ProductFixture.상품_요청_데이터_생성;
-import static kitchenpos.fixture.ProductFixture.상품_응답_데이터_생성;
+import static kitchenpos.common.fixture.ProductFixture.상품_요청_데이터_생성;
+import static kitchenpos.common.fixture.ProductFixture.상품_응답_데이터_생성;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;

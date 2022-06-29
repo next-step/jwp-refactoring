@@ -1,11 +1,11 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.dto.MenuProductRequestDto;
-import kitchenpos.dto.MenuProductResponseDto;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.menu.dto.MenuProductRequestDto;
+import kitchenpos.menu.dto.MenuProductResponseDto;
 import kitchenpos.menu.dto.MenuRequestDto;
 import kitchenpos.menu.dto.MenuResponseDto;
+import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.menu_group.domain.MenuGroup;
 import kitchenpos.menu_group.repository.MenuGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,11 +20,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.fixture.MenuFixture.메뉴_데이터_생성;
-import static kitchenpos.fixture.MenuFixture.메뉴_요청_데이터_생성;
-import static kitchenpos.fixture.MenuGroupFixture.메뉴묶음_데이터_생성;
-import static kitchenpos.fixture.MenuProductFixture.메뉴상품_데이터_생성;
-import static kitchenpos.fixture.MenuProductFixture.메뉴상품_요청_데이터_생성;
+import static kitchenpos.common.fixture.MenuFixture.메뉴_데이터_생성;
+import static kitchenpos.common.fixture.MenuFixture.메뉴_요청_데이터_생성;
+import static kitchenpos.common.fixture.MenuGroupFixture.메뉴묶음_데이터_생성;
+import static kitchenpos.common.fixture.MenuProductFixture.메뉴상품_데이터_생성;
+import static kitchenpos.common.fixture.MenuProductFixture.메뉴상품_요청_데이터_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;

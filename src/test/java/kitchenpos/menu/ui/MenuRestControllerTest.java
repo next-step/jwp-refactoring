@@ -1,11 +1,11 @@
 package kitchenpos.menu.ui;
 
-import kitchenpos.dto.MenuProductRequestDto;
-import kitchenpos.dto.MenuProductResponseDto;
+import kitchenpos.common.ui.BaseRestControllerTest;
 import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.dto.MenuProductRequestDto;
+import kitchenpos.menu.dto.MenuProductResponseDto;
 import kitchenpos.menu.dto.MenuRequestDto;
 import kitchenpos.menu.dto.MenuResponseDto;
-import kitchenpos.ui.BaseRestControllerTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,10 +17,10 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.fixture.MenuFixture.메뉴_요청_데이터_생성;
-import static kitchenpos.fixture.MenuFixture.메뉴_응답_데이터_생성;
-import static kitchenpos.fixture.MenuProductFixture.메뉴상품_요청_데이터_생성;
-import static kitchenpos.fixture.MenuProductFixture.메뉴상품_응답_데이터_생성;
+import static kitchenpos.common.fixture.MenuFixture.메뉴_요청_데이터_생성;
+import static kitchenpos.common.fixture.MenuFixture.메뉴_응답_데이터_생성;
+import static kitchenpos.common.fixture.MenuProductFixture.메뉴상품_요청_데이터_생성;
+import static kitchenpos.common.fixture.MenuProductFixture.메뉴상품_응답_데이터_생성;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;

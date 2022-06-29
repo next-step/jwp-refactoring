@@ -16,9 +16,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.fixture.OrderFixture.주문_요청_데이터_생성;
-import static kitchenpos.fixture.OrderLineItemFixture.주문항목_요청_데이터_생성;
-import static kitchenpos.fixture.OrderTableFixture.주문테이블_데이터_생성;
+import static kitchenpos.common.fixture.OrderFixture.주문_요청_데이터_생성;
+import static kitchenpos.common.fixture.OrderLineItemFixture.주문항목_요청_데이터_생성;
+import static kitchenpos.common.fixture.OrderTableFixture.주문테이블_데이터_생성;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;

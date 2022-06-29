@@ -1,7 +1,7 @@
 package kitchenpos.menu_group.ui;
 
+import kitchenpos.common.ui.BaseRestControllerTest;
 import kitchenpos.menu_group.application.MenuGroupService;
-import kitchenpos.ui.BaseRestControllerTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,8 +11,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
 
-import static kitchenpos.fixture.MenuGroupFixture.메뉴묶음_요청데이터_생성;
-import static kitchenpos.fixture.MenuGroupFixture.메뉴묶음_응답_데이터_생성;
+import static kitchenpos.common.fixture.MenuGroupFixture.메뉴묶음_요청데이터_생성;
+import static kitchenpos.common.fixture.MenuGroupFixture.메뉴묶음_응답_데이터_생성;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;

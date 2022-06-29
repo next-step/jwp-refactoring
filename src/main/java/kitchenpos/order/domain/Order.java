@@ -1,7 +1,7 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.exception.InvalidOrderStatusException;
+import kitchenpos.common.domain.OrderStatus;
+import kitchenpos.common.exception.InvalidOrderStatusException;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 

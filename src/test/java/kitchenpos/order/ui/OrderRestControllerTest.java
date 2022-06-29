@@ -1,12 +1,12 @@
 package kitchenpos.order.ui;
 
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.common.domain.OrderStatus;
+import kitchenpos.common.ui.BaseRestControllerTest;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.dto.OrderLineItemRequestDto;
 import kitchenpos.order.dto.OrderLineItemResponseDto;
 import kitchenpos.order.dto.OrderRequestDto;
 import kitchenpos.order.dto.OrderResponseDto;
-import kitchenpos.ui.BaseRestControllerTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,10 +18,10 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.fixture.OrderFixture.주문_요청_데이터_생성;
-import static kitchenpos.fixture.OrderFixture.주문_응답_데이터_생성;
-import static kitchenpos.fixture.OrderLineItemFixture.주문항목_요청_데이터_생성;
-import static kitchenpos.fixture.OrderLineItemFixture.주문항목_응답_데이터_생성;
+import static kitchenpos.common.fixture.OrderFixture.주문_요청_데이터_생성;
+import static kitchenpos.common.fixture.OrderFixture.주문_응답_데이터_생성;
+import static kitchenpos.common.fixture.OrderLineItemFixture.주문항목_요청_데이터_생성;
+import static kitchenpos.common.fixture.OrderLineItemFixture.주문항목_응답_데이터_생성;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;

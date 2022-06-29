@@ -1,9 +1,9 @@
 package kitchenpos.table.ui;
 
+import kitchenpos.common.ui.BaseRestControllerTest;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.dto.OrderTableRequestDto;
 import kitchenpos.table.dto.OrderTableResponseDto;
-import kitchenpos.ui.BaseRestControllerTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,8 +13,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
 
-import static kitchenpos.fixture.OrderTableFixture.주문테이블_요청_데이터_생성;
-import static kitchenpos.fixture.OrderTableFixture.주문테이블_응답_데이터_생성;
+import static kitchenpos.common.fixture.OrderTableFixture.주문테이블_요청_데이터_생성;
+import static kitchenpos.common.fixture.OrderTableFixture.주문테이블_응답_데이터_생성;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;

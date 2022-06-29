@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.domain.Price;
+import kitchenpos.common.domain.Price;
 import kitchenpos.menu_group.domain.MenuGroup;
 
 import javax.persistence.*;
@@ -61,20 +61,5 @@ public class Menu {
     public List<MenuProduct> getMenuProducts() {
         return menuProducts.getMenuProducts();
     }
-
-    public void addMenuProducts(List<MenuProduct> menuProducts) {
-//        checkValidPrice(menuProducts);
-
-    }
-
-//    private void checkValidPrice(List<MenuProduct> menuProducts) {
-//        BigDecimal sum = menuProducts.stream()
-//                .map(MenuProduct::getAmount)
-//                .reduce(BigDecimal::add)
-//                .orElse(BigDecimal.ZERO);
-//        if (price.greaterThan(sum)) {
-//            throw new InvalidPriceException(price);
-//        }
-//    }
 
 }
