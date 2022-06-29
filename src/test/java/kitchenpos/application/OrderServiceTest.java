@@ -77,7 +77,7 @@ public class OrderServiceTest {
         );
     }
 
-    @DisplayName("주문을 등록에 실패한다. (주문항목이 비어있는 경우)")
+    @DisplayName("주문 등록에 실패한다. (주문항목이 비어있는 경우)")
     @Test
     void create_fail_empty_orderLineItem() {
         // given
@@ -89,7 +89,7 @@ public class OrderServiceTest {
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("주문을 등록에 실패한다. (주문항목중 중복된 메뉴가 있는 경우)")
+    @DisplayName("주문 등록에 실패한다. (주문 항목의 메뉴들이 서로 중복되는 경우)")
     @Test
     void create_fail_duplicated_menu() {
         // given
@@ -102,7 +102,7 @@ public class OrderServiceTest {
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("주문을 등록에 실패한다. (주문 테이블이 존재하지 않는 경우)")
+    @DisplayName("주문 등록에 실패한다. (주문 테이블이 존재하지 않는 경우)")
     @Test
     void create_fail_empty_orderTable() {
         // given
@@ -116,7 +116,7 @@ public class OrderServiceTest {
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("주문을 등록에 실패한다. (주문 테이블이 빈 테이블인 경우)")
+    @DisplayName("주문 등록에 실패한다. (주문 테이블이 빈 테이블인 경우)")
     @Test
     void create_fail_emptyTable() {
         // given
