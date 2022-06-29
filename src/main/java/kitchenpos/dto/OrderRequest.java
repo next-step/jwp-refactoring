@@ -12,6 +12,7 @@ public class OrderRequest {
     }
 
     public OrderRequest(Long orderTableId, List<OrderLineItemRequest> orderLineItems) {
+        validateNullOrderLineItem(orderLineItems);
         this.orderTableId = orderTableId;
         this.orderLineItems = orderLineItems;
     }
@@ -26,5 +27,11 @@ public class OrderRequest {
 
     public List<OrderLineItemRequest> getOrderLineItems() {
         return orderLineItems;
+    }
+
+    private void validateNullOrderLineItem(List<OrderLineItemRequest> orderLineItems) {
+        if (orderLineItems == null) {
+            throw new IllegalArgumentException("주문 항목 목록이 있어야 합니다.");
+        }
     }
 }

@@ -39,7 +39,6 @@ public class OrderService {
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
         final OrderTable orderTable = orderTableService.findOrderTableById(orderRequest.getOrderTableId());
-        validateNullOrderLineItem(orderRequest);
 
         final Order savedOrder = orderRepository.save(orderRequest.toOrder(orderTable));
         connectOrderToOrderLineItems(orderRequest, savedOrder);
@@ -82,9 +81,5 @@ public class OrderService {
         savedOrder.addOrderLineItems(OrderLineItems.of(orderLineItems, menuService.countByIdIn(menuIds)));
     }
 
-    private void validateNullOrderLineItem(OrderRequest orderRequest) {
-        if (orderRequest.getOrderLineItems() == null) {
-            throw new IllegalArgumentException("주문 항목 목록이 있어야 합니다.");
-        }
-    }
+
 }
