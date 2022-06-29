@@ -1,13 +1,12 @@
-package kitchenpos.application;
+package kitchenpos.product.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.util.List;
 import kitchenpos.ServiceTest;
-import kitchenpos.application.helper.ServiceTestHelper;
+import kitchenpos.utils.ServiceTestHelper;
 import org.junit.jupiter.api.DisplayName;
-import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package kitchenpos.domain.menu;
+package kitchenpos.menu.domain;
 
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;

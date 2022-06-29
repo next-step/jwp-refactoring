@@ -1,4 +1,4 @@
-package kitchenpos.domain.table;
+package kitchenpos.table.domain;
 
 import java.util.List;
 import kitchenpos.JpaRepositoryTest;

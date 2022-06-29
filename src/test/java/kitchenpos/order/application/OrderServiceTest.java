@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.order.application;
 
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -6,7 +6,8 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 
 import java.util.List;
 import kitchenpos.ServiceTest;
-import kitchenpos.application.helper.ServiceTestHelper;
+import kitchenpos.application.OrderService;
+import kitchenpos.utils.ServiceTestHelper;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;

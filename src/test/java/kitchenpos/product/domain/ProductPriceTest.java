@@ -1,4 +1,4 @@
-package kitchenpos.domain.product;
+package kitchenpos.product.domain;
 
 import java.math.BigDecimal;
 import kitchenpos.product.domain.ProductPrice;

@@ -1,13 +1,12 @@
-package kitchenpos.application;
+package kitchenpos.menu.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import kitchenpos.ServiceTest;
-import kitchenpos.application.helper.ServiceTestHelper;
+import kitchenpos.utils.ServiceTestHelper;
 import org.junit.jupiter.api.DisplayName;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.application.MenuGroupService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

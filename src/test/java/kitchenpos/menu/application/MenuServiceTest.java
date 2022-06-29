@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.menu.application;
 
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -7,9 +7,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import kitchenpos.ServiceTest;
-import kitchenpos.application.helper.ServiceTestHelper;
+import kitchenpos.utils.ServiceTestHelper;
 import kitchenpos.fixture.MenuProductFixtureFactory;
-import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuDto;

@@ -27,7 +27,7 @@ public class TableGroup {
     @OneToMany(mappedBy = "tableGroup", cascade = {CascadeType.MERGE})
     private List<OrderTable> orderTables = new ArrayList<>();
 
-    protected TableGroup(){
+    TableGroup(){
 
     }
 

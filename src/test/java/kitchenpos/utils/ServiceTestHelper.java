@@ -1,4 +1,4 @@
-package kitchenpos.application.helper;
+package kitchenpos.utils;
 
 import static java.util.stream.Collectors.toList;
 

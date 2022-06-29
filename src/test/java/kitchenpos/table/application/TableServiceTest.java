@@ -1,15 +1,14 @@
-package kitchenpos.application;
+package kitchenpos.table.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.util.List;
 import kitchenpos.ServiceTest;
-import kitchenpos.application.helper.ServiceTestHelper;
+import kitchenpos.utils.ServiceTestHelper;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.table.application.TableService;
 import kitchenpos.fixture.MenuProductFixtureFactory;
 import kitchenpos.fixture.OrderLineItemFixtureFactory;
 import kitchenpos.menu.domain.MenuGroup;

@@ -6,7 +6,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.acceptance.helper.KitchenPosBehaviors;
+import kitchenpos.utils.KitchenPosBehaviors;
 import kitchenpos.fixture.MenuFixtureFactory;
 import kitchenpos.fixture.MenuProductFixtureFactory;
 import kitchenpos.menu.domain.Menu;
