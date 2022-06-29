@@ -1,8 +1,6 @@
 package kitchenpos.dto;
 
 import java.util.List;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderTable;
 
 public class OrderRequest {
     private Long orderTableId;
@@ -15,10 +13,6 @@ public class OrderRequest {
         validateNullOrderLineItem(orderLineItems);
         this.orderTableId = orderTableId;
         this.orderLineItems = orderLineItems;
-    }
-
-    public Order toOrder(OrderTable orderTable) {
-        return new Order(orderTable);
     }
 
     public Long getOrderTableId() {
