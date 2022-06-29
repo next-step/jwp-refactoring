@@ -36,12 +36,33 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         assertThat(결과.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
+    @DisplayName("상품을 조회할 수 있다.")
+    @Test
+    void findProducts() {
+        //given
+        상품_생성_요청("후라이드", 16_000);
+        상품_생성_요청("양념", 17_000);
+
+        //when
+        final ExtractableResponse<Response> 상품_목록 = 상품_목록_조회();
+
+        //then
+        assertThat(상품_목록.jsonPath().getList(".").size()).isEqualTo(2);
+    }
+
     private static ExtractableResponse<Response> 상품_생성_요청(final String name, final int price) {
         final Product product = new Product(name, BigDecimal.valueOf(price));
         return RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(product)
                 .when().post("/api/products")
+                .then().log().all()
+                .extract();
+    }
+
+    private static ExtractableResponse<Response> 상품_목록_조회() {
+        return RestAssured.given().log().all()
+                .when().get("/api/products")
                 .then().log().all()
                 .extract();
     }
