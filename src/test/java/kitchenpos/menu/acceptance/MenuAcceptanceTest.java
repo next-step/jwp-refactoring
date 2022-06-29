@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
@@ -105,35 +106,35 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         메뉴_목록_포함됨(메뉴_목록, Arrays.asList(등록된_메뉴));
     }
 
-    public static Menu 테스트_메뉴_생성(String menuName, BigDecimal menuPrice) {
+    public static MenuRequest 테스트_메뉴_생성(String menuName, BigDecimal menuPrice) {
         MenuGroup menuGroup = 메뉴_그룹_가져옴(메뉴_그룹_등록되어_있음(MENU_GROUP_NAME01)).toMenuGroup();
         Product product = 상품_가져옴(상품_등록되어_있음(PRODUCT_NAME01, PRODUCT_PRICE01));
         MenuProduct menuProduct = new MenuProduct(product, 1);
         List<MenuProduct> list = new ArrayList<>();
         list.add(menuProduct);
-        return new Menu(menuName, menuPrice, menuGroup, list);
+        return new MenuRequest(menuName, menuPrice, menuGroup.getId(), list);
     }
 
-    public static Menu 메뉴_그룹_없는_테스트_메뉴_생성(String menuName, BigDecimal menuPrice) {
+    public static MenuRequest 메뉴_그룹_없는_테스트_메뉴_생성(String menuName, BigDecimal menuPrice) {
         Product product = 상품_가져옴(상품_등록되어_있음(PRODUCT_NAME01, PRODUCT_PRICE01));
         MenuProduct menuProduct = new MenuProduct(product, 1);
-        return new Menu(menuName, menuPrice, null, Collections.singletonList(menuProduct));
+        return new MenuRequest(menuName, menuPrice, null, Collections.singletonList(menuProduct));
     }
 
-    public static Menu 상품_없는_테스트_메뉴_생성(String menuName, BigDecimal menuPrice) {
+    public static MenuRequest 상품_없는_테스트_메뉴_생성(String menuName, BigDecimal menuPrice) {
         MenuGroup menuGroup = 메뉴_그룹_가져옴(메뉴_그룹_등록되어_있음(MENU_GROUP_NAME01)).toMenuGroup();
         MenuProduct menuProduct = new MenuProduct(null, 1);
-        return new Menu(menuName, menuPrice, menuGroup, Collections.singletonList(menuProduct));
+        return new MenuRequest(menuName, menuPrice, menuGroup.getId(), Collections.singletonList(menuProduct));
     }
 
-    public static ExtractableResponse<Response> 메뉴_등록되어_있음(Menu menu) {
-        return 메뉴_생성_요청(menu);
+    public static ExtractableResponse<Response> 메뉴_등록되어_있음(MenuRequest request) {
+        return 메뉴_생성_요청(request);
     }
 
-    public static ExtractableResponse<Response> 메뉴_생성_요청(Menu menu) {
+    public static ExtractableResponse<Response> 메뉴_생성_요청(MenuRequest request) {
         return RestAssured
                 .given().log().all()
-                .body(menu)
+                .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/api/menus")
                 .then().log().all()
