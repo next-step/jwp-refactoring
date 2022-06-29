@@ -16,14 +16,22 @@ public class TableGroup {
     private LocalDateTime createdDate = LocalDateTime.now();
 
     @OneToMany(mappedBy = "tableGroup", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<OrderTable> orderTables = new ArrayList<>();
+    private final List<OrderTable> orderTables = new ArrayList<>();
 
     public TableGroup() {
     }
 
     public TableGroup(List<OrderTable> orderTables) {
         orderTables.forEach(
-                orderTable -> orderTable.changeTableGroup(this));
+                orderTable -> {
+                    if (!orderTable.isEmpty()) {
+                        throw new IllegalArgumentException("빈 테이블이 아니면 단체 지정할 수 없습니다.");
+                    }
+                    if (Objects.nonNull(orderTable.getTableGroup())) {
+                        throw new IllegalArgumentException("이미 단체 지정된 테이블 입니다.");
+                    }
+                    orderTable.changeTableGroup(this);
+                });
         this.orderTables.addAll(orderTables);
     }
 

@@ -40,8 +40,12 @@ public class OrderTable {
         this.id = id;
     }
 
+    public TableGroup getTableGroup() {
+        return tableGroup;
+    }
+
     public Long getTableGroupId() {
-        return null;
+        return tableGroup.getId();
     }
 
     public void setTableGroupId(final Long tableGroupId) {

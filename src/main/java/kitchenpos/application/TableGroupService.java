@@ -34,9 +34,8 @@ public class TableGroupService {
 
     @Transactional
     public TableGroup create(final TableGroupRequest request) {
-        validateIncorrectOrderTableSize(request.getOrderTables());
+        validateIncorrectInputOrderTableSize(request.getOrderTables());
 
-        // 주문 테이블 조회
         final List<Long> orderTableIds = request.getOrderTables()
                                                 .stream()
                                                 .map(OrderTableRequest::getId)
@@ -44,7 +43,7 @@ public class TableGroupService {
 
         List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(orderTableIds);
 
-        validateOrderTableStatus(request.getOrderTables(), orderTables);
+        validatePresentOrderTableSize(request.getOrderTables(), orderTables);
 
         return tableGroupRepository.save(new TableGroup(orderTables));
     }
@@ -69,24 +68,15 @@ public class TableGroupService {
         orderTables.forEach(orderTable -> orderTable.changeTableGroup(null));
     }
 
-    private void validateIncorrectOrderTableSize(List<OrderTableRequest> orderTables) {
+    private void validateIncorrectInputOrderTableSize(List<OrderTableRequest> orderTables) {
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
             throw new IllegalArgumentException();
         }
     }
 
-    private void validateOrderTableStatus(List<OrderTableRequest> request, List<OrderTable> orderTables) {
+    private void validatePresentOrderTableSize(List<OrderTableRequest> request, List<OrderTable> orderTables) {
         if (request.size() != orderTables.size()) {
             throw new IllegalArgumentException("요청 테이블과 실제 테이블 개수가 일치하지 않습니다.");
         }
-
-        orderTables.forEach(orderTable -> {
-            if (!orderTable.isEmpty()) {
-                throw new IllegalArgumentException("빈 테이블이 아니면 단체 지정할 수 없습니다.");
-            }
-            if (Objects.nonNull(orderTable.getTableGroupId())) {
-                throw new IllegalArgumentException("이미 단체 지정된 테이블 입니다.");
-            }
-        });
     }
 }
