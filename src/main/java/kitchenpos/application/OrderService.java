@@ -92,13 +92,16 @@ public class OrderService {
         final Order savedOrder = orderDao.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
 
+        // TODO : 주문 상태 변경 로직을 주문 도메인 안쪽으로 이동 후, 해당 로직에서 주문 상태 변경 가능에 대한 유효성 검증 처리
         if (Objects.equals(OrderStatus.COMPLETION.name(), savedOrder.getOrderStatus())) {
             throw new IllegalArgumentException();
         }
 
+        // TODO : 주문 상태 변경 로직을 주문 도메인 안쪽으로 이동 하여 setter가 아닌 주문 도메인이 직접 필드값 변경
         final OrderStatus orderStatus = OrderStatus.valueOf(order.getOrderStatus());
         savedOrder.setOrderStatus(orderStatus.name());
 
+        // TODO : 트랜잭션 내에서 필드 값 변경을 감지하여 갱신 쿼리 발생하도록 유도
         orderDao.save(savedOrder);
 
         savedOrder.setOrderLineItems(orderLineItemDao.findAllByOrderId(orderId));
