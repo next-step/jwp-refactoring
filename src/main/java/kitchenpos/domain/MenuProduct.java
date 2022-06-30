@@ -42,6 +42,13 @@ public class MenuProduct {
         this.quantity = quantity;
     }
 
+    public void relateToMenu(final Menu menu) {
+        if (null != this.menu) {
+            throw new IllegalStateException("이미 메뉴와의 연관관계가 설정되어 있습니다.");
+        }
+        this.menu = menu;
+    }
+
     public Long getSeq() {
         return seq;
     }
