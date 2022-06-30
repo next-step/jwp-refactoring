@@ -1,6 +1,7 @@
 package kitchenpos.dto.response;
 
 import kitchenpos.domain.OrderTable;
+import org.springframework.util.ObjectUtils;
 
 public class OrderTableResponse {
 
@@ -17,7 +18,13 @@ public class OrderTableResponse {
     }
 
     public static OrderTableResponse of(OrderTable orderTable) {
-        return new OrderTableResponse(orderTable.getId(), orderTable.getTableGroupId(),
+        Long orderTableGroupId;
+        if (ObjectUtils.isEmpty(orderTable.getTableGroup())) {
+            orderTableGroupId = null;
+        } else {
+            orderTableGroupId = orderTable.getTableGroup().getId();
+        }
+        return new OrderTableResponse(orderTable.getId(), orderTableGroupId,
             orderTable.getNumberOfGuests(), orderTable.isEmpty());
     }
 

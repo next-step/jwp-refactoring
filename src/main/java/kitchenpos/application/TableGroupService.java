@@ -41,24 +41,23 @@ public class TableGroupService {
             throw new TableGroupException("단체테이블은 2개 이상이여야 합니다");
         }
         for (final OrderTable orderTable : orderTables) {
-            if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroupId())) {
+            if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup())) {
                 throw new TableGroupException("단체테이블은 2개 이상이여야 합니다");
             }
         }
 
         TableGroup tableGroup = new TableGroup();
         tableGroup = tableGroupRepository.save(tableGroup);
-        final Long tableGroupId = tableGroup.getId();
 
-        setOrderTables(orderTables, tableGroupId);
+        setOrderTables(orderTables, tableGroup);
 
         return TableGroupResponse.of(tableGroupRepository.save(tableGroup));
     }
 
-    private void setOrderTables(List<OrderTable> orderTables, Long tableGroupId) {
+    private void setOrderTables(List<OrderTable> orderTables, TableGroup tableGroup) {
         for (final OrderTable orderTable : orderTables) {
             orderTable.useTable();
-            orderTable.mapToTableGroup(tableGroupId);
+            orderTable.mapToTableGroup(tableGroup);
         }
     }
 

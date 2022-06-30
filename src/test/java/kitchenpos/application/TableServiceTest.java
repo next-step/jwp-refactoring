@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.request.OrderTableRequest;
 import kitchenpos.exception.OrderTableException;
 import kitchenpos.repository.OrderRepository;
@@ -64,7 +65,7 @@ class TableServiceTest {
         orderTableRequest.setEmpty(true);
         orderTableRequest.setNumberOfGuests(0);
 
-        orderTable.mapToTableGroup(1L);
+        orderTable.mapToTableGroup(new TableGroup());
         when(orderTableRepository.findById(1L)).thenReturn(Optional.of(orderTable));
 
         //when & then
