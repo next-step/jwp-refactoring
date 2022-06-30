@@ -1,6 +1,5 @@
 package kitchenpos.table.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 import javax.persistence.*;
@@ -45,6 +44,13 @@ public class OrderTable {
         this.id = id;
         this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
+    public void validateChageEmpty(Boolean empty) {
+        if (Objects.nonNull(getTableGroup())) {
+            throw new IllegalArgumentException();
+        }
         this.empty = empty;
     }
 

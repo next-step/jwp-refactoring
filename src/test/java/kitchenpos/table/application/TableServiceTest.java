@@ -67,7 +67,6 @@ public class TableServiceTest {
     void changeEmpty() {
         Mockito.when(orderTableRepository.findById(any())).thenReturn(Optional.of(new OrderTable(1L, 3, false)));
         Mockito.when(orderRepository.existsByOrderTableAndOrderStatusIn(any(), any())).thenReturn(false);
-        Mockito.when(orderTableRepository.save(any())).thenReturn(new OrderTable(1L, 3, true));
 
         // when
         OrderTableRequest request = new OrderTableRequest(3, true);
