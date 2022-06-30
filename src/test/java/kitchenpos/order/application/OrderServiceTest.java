@@ -50,7 +50,6 @@ public class OrderServiceTest {
     @DisplayName("주문을 생성한다.")
     @Test
     void create() {
-        when(menuRepository.findAllById(any())).thenReturn(Collections.singletonList(new Menu(1L)));
         OrderTable orderTable = new OrderTable(1L, 3, false);
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
         when(orderRepository.save(any())).thenReturn(createOrder());
@@ -65,6 +64,9 @@ public class OrderServiceTest {
     @DisplayName("[예외] 주문 항목이 없는 주문을 생성한다.")
     @Test
     void createOrder_without_order_list_item() {
+        OrderTable orderTable = new OrderTable(1L, 3, false);
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
+
         // when, then
         assertThatThrownBy(() -> {
             orderService.create(createOrderRequestWithoutOrderListItem());
@@ -74,18 +76,18 @@ public class OrderServiceTest {
     @DisplayName("[예외] 메뉴와 메뉴 항목이 일치하지 않는 주문을 생성한다.")
     @Test
     void createOrder_menu_and_order_list_item_not_matching() {
-        when(menuRepository.findAllById(any())).thenReturn(Arrays.asList(new Menu(1L), new Menu(2L)));
+        OrderTable orderTable = new OrderTable(1L, 3, false);
+        when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
 
         // when, then
         assertThatThrownBy(() -> {
-            orderService.create(createOrderRequest());
+            orderService.create(createOrderRequestNotMatchingOrderAndOrderListItem());
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("[예외] 주문 테이블 없는 주문을 생성한다.")
     @Test
     void createOrder_without_order_table() {
-        when(menuRepository.findAllById(any())).thenReturn(Arrays.asList(new Menu(1L)));
         when(orderTableRepository.findById(any())).thenReturn(Optional.empty());
 
         // when, then
@@ -97,7 +99,6 @@ public class OrderServiceTest {
     @DisplayName("[예외] 비어 있는 주문 테이블에서 주문을 생성한다.")
     @Test
     void createOrder_with_empty_order_table() {
-        when(menuRepository.findAllById(any())).thenReturn(Arrays.asList(new Menu(1L)));
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(new OrderTable(1L, 3, true)));
 
         // when, then
@@ -169,6 +170,13 @@ public class OrderServiceTest {
         return new OrderRequest(orderTable.getId(), OrderStatus.COOKING.name(), Arrays.asList(orderListItem));
     }
 
+    public static OrderRequest createOrderRequestNotMatchingOrderAndOrderListItem() {
+        OrderLineItem orderListItem = createOrderListItem();
+        OrderLineItem orderListItem2 = createOrderListItem2();
+        OrderTable orderTable = new OrderTable(1L, 3, false);
+        return new OrderRequest(orderTable.getId(), OrderStatus.COOKING.name(), Arrays.asList(orderListItem, orderListItem2));
+    }
+
     public static OrderRequest createOrderRequestWithoutOrderListItem() {
         OrderTable orderTable = new OrderTable(1L, 3, false);
         return new OrderRequest(orderTable.getId(), null);
@@ -183,6 +191,11 @@ public class OrderServiceTest {
     public static OrderLineItem createOrderListItem() {
         Menu menu = createMenu01();
         return new OrderLineItem(1L, new Order(1L), menu, 1);
+    }
+
+    public static OrderLineItem createOrderListItem2() {
+        Menu menu = createMenu01();
+        return new OrderLineItem(2L, new Order(1L), menu, 1);
     }
 
     public static List<Order> createOrderList() {

@@ -1,11 +1,13 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.table.domain.OrderTable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "orders")
@@ -39,29 +41,28 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
-    public Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
-        this.orderTable = orderTable;
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
-        this.orderLineItems = new OrderLineItems(orderLineItems);
-    }
-
-    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        this.orderTable = orderTable;
-        this.orderLineItems = new OrderLineItems(orderLineItems);
-    }
-
-    public Order(Long id, OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        this.id = id;
-        this.orderTable = orderTable;
-        this.orderLineItems = new OrderLineItems(orderLineItems);
-    }
-
     public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
         this.id = id;
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
-        this.orderLineItems = new OrderLineItems(orderLineItems);
+        this.orderLineItems = new OrderLineItems(this, orderLineItems);
+    }
+
+    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        this.orderTable = orderTable;
+        this.orderStatus = OrderStatus.COOKING;
+        this.orderedTime = LocalDateTime.now();
+        this.orderLineItems = new OrderLineItems(this, orderLineItems);
+    }
+
+    public List<Long> getMenuIds() {
+        return orderLineItems.getList().stream()
+                .map(OrderLineItem::getMenu)
+                .map(Menu::getId)
+                .collect(Collectors.toList());
     }
 
     public Long getId() {
