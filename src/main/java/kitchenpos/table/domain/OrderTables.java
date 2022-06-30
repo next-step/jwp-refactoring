@@ -42,13 +42,19 @@ public class OrderTables {
         }
     }
 
-    public List<OrderTable> getList() {
-        return list;
-    }
-
     public void changeEmpty(boolean empty) {
         for (OrderTable table : list) {
             table.setEmpty(empty);
         }
+    }
+
+    public void unGroupOrderTables() {
+        for (OrderTable orderTable : list) {
+            orderTable.setTableGroup(null);
+        }
+    }
+
+    public List<OrderTable> getList() {
+        return list;
     }
 }

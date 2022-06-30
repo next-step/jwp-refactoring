@@ -40,16 +40,11 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroup(new TableGroup(tableGroupId));
-
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTables, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+        List<OrderTable> list = orderTableRepository.findAllByTableGroup(new TableGroup(tableGroupId));
+        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(list, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException();
         }
-
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.setTableGroup(null);
-            orderTableRepository.save(orderTable);
-        }
+        OrderTables orderTables = new OrderTables(list);
+        orderTables.unGroupOrderTables();
     }
 }

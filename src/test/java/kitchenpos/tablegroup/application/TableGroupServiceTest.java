@@ -4,7 +4,6 @@ import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
-import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
@@ -104,7 +103,6 @@ public class TableGroupServiceTest {
     void ungroup() {
         when(orderTableDao.findAllByTableGroup(any())).thenReturn(createTableGroup().getOrderTables());
         when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(false);
-        when(orderTableDao.save(any())).thenReturn(new OrderTable(3, false));
 
         // when, then
         tableGroupService.ungroup(1L);
