@@ -6,6 +6,7 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.MenuProducts;
+import kitchenpos.domain.NumberOfGuests;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
@@ -37,12 +38,12 @@ public class UnitTestFixture {
     public final OrderLineItem 주문_항목2 = new OrderLineItem(2L, 1L, 2L, 1);
     public final OrderLineItem 완료된_주문_항목 = new OrderLineItem(3L, 3L, 2L, 2);
 
-    public final OrderTable 테이블 = new OrderTable(1L, null, 4, false);
-    public final OrderTable 빈_테이블1 = new OrderTable(2L, null, 0, true);
-    public final OrderTable 빈_테이블2 = new OrderTable(3L, null, 0, true);
-    public final OrderTable 단체_지정_빈_테이블 = new OrderTable(4L, 1L, 0, true);
-    public final OrderTable 단체_지정_테이블1 = new OrderTable(5L, 1L, 4, false);
-    public final OrderTable 단체_지정_테이블2 = new OrderTable(6L, 1L, 4, false);
+    public final OrderTable 테이블 = new OrderTable(1L, null, new NumberOfGuests(4), false);
+    public final OrderTable 빈_테이블1 = new OrderTable(2L, null, new NumberOfGuests(0), true);
+    public final OrderTable 빈_테이블2 = new OrderTable(3L, null, new NumberOfGuests(0), true);
+    public final OrderTable 단체_지정_빈_테이블 = new OrderTable(4L, 1L, new NumberOfGuests(0), true);
+    public final OrderTable 단체_지정_테이블1 = new OrderTable(5L, 1L, new NumberOfGuests(4), false);
+    public final OrderTable 단체_지정_테이블2 = new OrderTable(6L, 1L, new NumberOfGuests(4), false);
 
     public final Order 주문 = new Order(
             1L, 테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), Arrays.asList(주문_항목1, 주문_항목2));
