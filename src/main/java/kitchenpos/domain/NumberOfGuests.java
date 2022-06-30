@@ -8,6 +8,9 @@ public class NumberOfGuests {
     @Column(name = "number_of_guests")
     private int numberOfGuests;
 
+    public NumberOfGuests() {
+    }
+
     public NumberOfGuests(final int numberOfGuests) {
         validateNumberOfGuests(numberOfGuests);
         this.numberOfGuests = numberOfGuests;

@@ -13,7 +13,7 @@ class OrderLineItemsTest {
     void 메뉴와_메뉴_상품들_간의_연관관계를_설정할_수_있어야_한다() {
         // given
         final OrderLineItems orderLineItems = new OrderLineItems();
-        final Order order = new Order(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItems);
+        final Order order = new Order(1L, 1L, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
         final OrderLineItem orderLineItem1 = new OrderLineItem(1L, new Quantity(10));
         final OrderLineItem orderLineItem2 = new OrderLineItem(2L, new Quantity(20));
 

@@ -134,4 +134,14 @@ class TableServiceTest {
 //        assertThatThrownBy(() -> tableService.changeNumberOfGuests(식당_포스.빈_테이블1.getId(), new OrderTable()))
 //                .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @Test
+    void 아이디로_주문_테이블을_조회할_수_있어야_한다() {
+        // given
+        final OrderTable given = new OrderTable(1L, null, new NumberOfGuests(4), false);
+        when(orderTableRepository.findById(given.getId())).thenReturn(Optional.of(given));
+
+        // when and then
+        assertThat(tableService.getById(given.getId())).isEqualTo(given);
+    }
 }

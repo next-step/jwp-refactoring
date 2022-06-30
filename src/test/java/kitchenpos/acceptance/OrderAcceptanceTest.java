@@ -9,9 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
+import kitchenpos.dto.MenuResponse;
+import kitchenpos.dto.OrderResponse;
 import kitchenpos.fixture.acceptance.AcceptanceTestMenuFixture;
 import kitchenpos.fixture.acceptance.AcceptanceTestOrderTableFixture;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,11 +35,11 @@ public class OrderAcceptanceTest extends BaseAcceptanceTest {
     @Test
     void manageOrder() {
         // given
-        final Map<Menu, Long> 메뉴_수량1 = new HashMap<>();
+        final Map<MenuResponse, Long> 메뉴_수량1 = new HashMap<>();
         메뉴_수량1.put(메뉴.돼지모듬, 1L);
         메뉴_수량1.put(메뉴.김치찌개정식, 1L);
 
-        final Map<Menu, Long> 메뉴_수량2 = new HashMap<>();
+        final Map<MenuResponse, Long> 메뉴_수량2 = new HashMap<>();
         메뉴_수량2.put(메뉴.김치찌개정식, 2L);
 
         // when
@@ -58,12 +58,12 @@ public class OrderAcceptanceTest extends BaseAcceptanceTest {
         주문_목록_조회됨(list);
 
         // when
-        ExtractableResponse<Response> statusUpdated = 주문_상태_변경_요청(created1.as(Order.class), OrderStatus.MEAL.name());
+        ExtractableResponse<Response> statusUpdated = 주문_상태_변경_요청(created1.as(OrderResponse.class), OrderStatus.MEAL.name());
         // then
         주문_상태_변경됨(statusUpdated);
     }
 
-    public static ExtractableResponse<Response> 주문_생성_요청(final Long orderTableId, final Map<Menu, Long> menuQuantity) {
+    public static ExtractableResponse<Response> 주문_생성_요청(final Long orderTableId, final Map<MenuResponse, Long> menuQuantity) {
         final Map<String, Object> body = new HashMap<>();
         body.put("orderTableId", orderTableId);
         body.put("orderLineItems", convertToOrderLineItemsParam(menuQuantity));
@@ -77,7 +77,7 @@ public class OrderAcceptanceTest extends BaseAcceptanceTest {
                 .extract();
     }
 
-    private static List<Map<String, Object>> convertToOrderLineItemsParam(final Map<Menu, Long> productQuantity) {
+    private static List<Map<String, Object>> convertToOrderLineItemsParam(final Map<MenuResponse, Long> productQuantity) {
         return productQuantity.entrySet()
                 .stream()
                 .map(entry -> {
@@ -98,7 +98,7 @@ public class OrderAcceptanceTest extends BaseAcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 주문_상태_변경_요청(final Order order, final String orderStatus) {
+    public static ExtractableResponse<Response> 주문_상태_변경_요청(final OrderResponse order, final String orderStatus) {
         final Map<String, Object> body = new HashMap<>();
         body.put("id", order.getId());
         body.put("orderTableId", order.getOrderTableId());

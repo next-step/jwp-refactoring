@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class TableService {
     private final OrderTableRepository orderTableRepository;
     private final OrderDao orderDao;
@@ -24,12 +25,12 @@ public class TableService {
         this.orderDao = orderDao;
     }
 
-    @Transactional
     public OrderTableResponse create(final OrderTableRequest request) {
         final OrderTable persistOrderTable = orderTableRepository.save(request.toOrderTable());
         return OrderTableResponse.of(persistOrderTable);
     }
 
+    @Transactional(readOnly = true)
     public List<OrderTableResponse> list() {
         return orderTableRepository.findAll()
                 .stream()
@@ -37,7 +38,6 @@ public class TableService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
     public OrderTable changeEmpty(final Long orderTableId, final OrderTableRequest request) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
@@ -56,7 +56,6 @@ public class TableService {
         return orderTableRepository.save(savedOrderTable);
     }
 
-    @Transactional
     public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTableRequest request) {
         final int numberOfGuests = new OrderTable().getNumberOfGuests().value();
 
@@ -74,5 +73,11 @@ public class TableService {
 //        savedOrderTable.setNumberOfGuests(numberOfGuests);
 
         return orderTableRepository.save(savedOrderTable);
+    }
+
+    @Transactional(readOnly = true)
+    public OrderTable getById(final Long id) {
+        return orderTableRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(String.format("주문 테이블을 찾을 수 없습니다. id: %d", id)));
     }
 }

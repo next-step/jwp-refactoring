@@ -33,7 +33,6 @@ public class MenuService {
 
         final Menu persistMenu = menuRepository.save(
                 new Menu(request.getName(), request.getPrice(), request.getMenuGroupId()));
-
         persistMenu.addMenuProducts(getMenuProductsFromRequest(request));
 
         return MenuResponse.of(persistMenu);
@@ -55,7 +54,7 @@ public class MenuService {
                 .stream()
                 .map(menuProduct ->
                         productService.getById(menuProduct.getProductId()).getPrice().value()
-                                * menuProduct.getQuantity())
+                                * menuProduct.getQuantity().value())
                 .reduce(Long::sum)
                 .get();
         if (request.getPrice().value() > sum) {
@@ -82,5 +81,9 @@ public class MenuService {
                 .stream()
                 .map(menu -> MenuResponse.of(menu))
                 .collect(Collectors.toList());
+    }
+
+    public boolean existsById(final Long id) {
+        return menuRepository.existsById(id);
     }
 }

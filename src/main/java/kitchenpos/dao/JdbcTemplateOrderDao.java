@@ -1,5 +1,11 @@
 package kitchenpos.dao;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import javax.sql.DataSource;
 import kitchenpos.domain.Order;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -8,14 +14,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-
-import javax.sql.DataSource;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @Repository
 public class JdbcTemplateOrderDao implements OrderDao {
@@ -96,10 +94,10 @@ public class JdbcTemplateOrderDao implements OrderDao {
 
     private Order toEntity(final ResultSet resultSet) throws SQLException {
         final Order entity = new Order();
-        entity.setId(resultSet.getLong(KEY_COLUMN_NAME));
-        entity.setOrderTableId(resultSet.getLong("order_table_id"));
-        entity.setOrderStatus(resultSet.getString("order_status"));
-        entity.setOrderedTime(resultSet.getObject("ordered_time", LocalDateTime.class));
+//        entity.setId(resultSet.getLong(KEY_COLUMN_NAME));
+//        entity.setOrderTableId(resultSet.getLong("order_table_id"));
+//        entity.setOrderStatus(resultSet.getString("order_status"));
+//        entity.setOrderedTime(resultSet.getObject("ordered_time", LocalDateTime.class));
         return entity;
     }
 }
