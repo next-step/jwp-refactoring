@@ -55,14 +55,19 @@ class ProductServiceTest {
     }
 
     @Test
-    @DisplayName("상품 가격이 음수일 경우 - 오류")
-    void negativeQuantityPrice() {
+    @DisplayName("상품 가격이 null 이거나 음수일 경우 - 오류")
+    void invalidPrice() {
         // given
         Product 떡볶이 = 상품_생성("떡볶이", -3_000L);
+        Product 값이_없는_상품 = 상품_생성("떡볶이");
 
         // when then
-        assertThatThrownBy(() -> productService.create(떡볶이))
-            .isInstanceOf(IllegalArgumentException.class);
+        assertAll(
+            () -> assertThatThrownBy(() -> productService.create(떡볶이))
+                .isInstanceOf(IllegalArgumentException.class),
+            () -> assertThatThrownBy(() -> productService.create(값이_없는_상품))
+                .isInstanceOf(IllegalArgumentException.class)
+        );
     }
 
     @Test
@@ -78,8 +83,12 @@ class ProductServiceTest {
         assertThat(products).containsExactly(햄버거, 피자);
     }
 
+    public static Product 상품_생성(String name) {
+        return new Product(null, name, null);
+    }
+
     public static Product 상품_생성(String name, Long price) {
-        return 상품_생성(null, name, price);
+        return new Product(null, name, new BigDecimal(price));
     }
 
     public static Product 상품_생성(Long id, String name, Long price) {

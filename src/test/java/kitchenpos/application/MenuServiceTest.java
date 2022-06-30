@@ -89,14 +89,19 @@ class MenuServiceTest {
     }
 
     @Test
-    @DisplayName("메뉴 가격이 음일 경우 - 오류")
-    void negativeQuantityPrice() {
+    @DisplayName("메뉴 가격이 null 이거나 음수일 경우 - 오류")
+    void invalidPrice() {
         // given
-        Menu 양념치킨세트 = 메뉴_생성(2L, "반반치킨", -6_000L, 한마리메뉴.getId());
+        Menu 값이_음수인_메뉴 = 메뉴_생성(2L, "반반치킨", -6_000L, 한마리메뉴.getId());
+        Menu 값이_없는_메뉴 = 가격이_없는_메뉴_생성(2L, "반반치킨",  한마리메뉴.getId());
 
         // when then
-        assertThatThrownBy(() -> menuService.create(양념치킨세트))
-            .isInstanceOf(IllegalArgumentException.class);
+        assertAll(
+            () -> assertThatThrownBy(() -> menuService.create(값이_음수인_메뉴))
+                .isInstanceOf(IllegalArgumentException.class),
+            () -> assertThatThrownBy(() -> menuService.create(값이_없는_메뉴))
+                .isInstanceOf(IllegalArgumentException.class)
+        );
     }
 
     @Test
@@ -151,6 +156,10 @@ class MenuServiceTest {
 
     public static  Menu 메뉴_생성(Long menuId, String name, Long price, Long menuGroupId) {
         return new Menu(menuId, name, new BigDecimal(price), menuGroupId);
+    }
+
+    public static  Menu 가격이_없는_메뉴_생성(Long menuId, String name, Long menuGroupId) {
+        return new Menu(menuId, name, null, menuGroupId);
     }
 
     public static MenuProduct 메뉴_상품_생성(Long productId, long quantity) {
