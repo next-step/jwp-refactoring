@@ -1,6 +1,5 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.application.OrderStatusValidator;
 import kitchenpos.table.domain.*;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;

@@ -1,8 +1,7 @@
-package kitchenpos.order.application;
+package kitchenpos.table.application;
 
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.application.StatusValidator;
 import kitchenpos.table.domain.OrderTables;
 import org.springframework.stereotype.Component;
 
