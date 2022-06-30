@@ -39,8 +39,4 @@ public class OrderResponse {
     public String getOrderStatus() {
         return orderStatus;
     }
-
-    public List<OrderLineItemResponse> getOrderLineItems() {
-        return orderLineItems;
-    }
 }

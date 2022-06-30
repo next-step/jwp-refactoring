@@ -50,7 +50,7 @@ public class MenuProduct {
         return quantity;
     }
 
-    public void setMenu(Menu menu) {
+    public void connectedBy(Menu menu) {
         this.menu = menu;
     }
 

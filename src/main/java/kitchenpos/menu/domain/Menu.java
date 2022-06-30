@@ -38,7 +38,14 @@ public class Menu {
         this.name = name;
         this.price = new Price(price);
         this.menuGroup = menuGroup;
-        this.menuProducts = new MenuProducts(this, price, menuProducts);
+        this.menuProducts = new MenuProducts(this, menuProducts);
+        validateMenuPrice();
+    }
+
+    private void validateMenuPrice() {
+        if (price.getValue().compareTo(menuProducts.calculateTotalPrice()) > 0) {
+            throw new IllegalArgumentException();
+        }
     }
 
     public Long getId() {

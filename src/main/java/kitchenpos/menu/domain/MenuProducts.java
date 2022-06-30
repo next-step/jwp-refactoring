@@ -18,22 +18,20 @@ public class MenuProducts {
         list = new ArrayList<>();
     }
 
-    public MenuProducts(Menu menu, BigDecimal menuPrice, List<MenuProduct> list) {
-        validateMenuProducts(menu, menuPrice, list);
+    public MenuProducts(Menu menu, List<MenuProduct> list) {
         this.list = list;
+        for (final MenuProduct menuProduct : list) {
+            menuProduct.connectedBy(menu);
+        }
     }
 
-    private void validateMenuProducts(Menu menu, BigDecimal menuPrice, List<MenuProduct> list) {
+    public BigDecimal calculateTotalPrice() {
         BigDecimal sum = BigDecimal.ZERO;
         for (final MenuProduct menuProduct : list) {
             final Product product = menuProduct.getProduct();
             sum = sum.add(product.getPrice().getValue().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
-            menuProduct.setMenu(menu);
         }
-
-        if (menuPrice.compareTo(sum) > 0) {
-            throw new IllegalArgumentException();
-        }
+        return sum;
     }
 
     public List<MenuProduct> getMenuProducts() {

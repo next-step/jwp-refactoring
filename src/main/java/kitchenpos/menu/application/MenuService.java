@@ -27,8 +27,7 @@ public class MenuService {
     public MenuResponse create(final MenuRequest request) {
         MenuGroup menuGroup = menuGroupRepository.findById(request.getMenuGroupId()).orElseThrow(IllegalArgumentException::new);
         Menu menu = new Menu(request.getName(), request.getPrice(), menuGroup, request.getMenuProducts());
-        menuRepository.save(menu);
-        return MenuResponse.of(menu);
+        return MenuResponse.of(menuRepository.save(menu));
     }
 
     public List<MenuResponse> list() {
