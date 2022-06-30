@@ -215,6 +215,8 @@ class OrderServiceTest {
         Order order = createOrder(테이블_1, LocalDateTime.now());
         order.changeStatus(beforeStatus);
         orderRepository.save(order);
+        order.setOrderLineItems(Arrays.asList(접수된주문_김치찌개세트));
+
 
         //when
         OrderStatusRequest newStatus = OrderStatusRequest.from(afterStatus);

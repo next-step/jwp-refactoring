@@ -5,6 +5,7 @@ import kitchenpos.orderTable.domain.OrderTable;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "orders")
@@ -104,6 +105,9 @@ public class Order {
     }
 
     public void changeStatus(OrderStatus orderStatus) {
+        if (Objects.equals(this.orderStatus, OrderStatus.COMPLETION)) {
+            throw new IllegalArgumentException();
+        }
         this.orderStatus = orderStatus;
     }
 }
