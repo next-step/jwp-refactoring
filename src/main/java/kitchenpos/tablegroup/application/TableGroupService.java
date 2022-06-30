@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
+@Transactional
 public class TableGroupService {
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
@@ -28,7 +29,6 @@ public class TableGroupService {
         this.tableGroupRepository = tableGroupRepository;
     }
 
-    @Transactional
     public TableGroupResponse create(final TableGroupRequest request) {
         OrderTableRequests orderTableRequests = new OrderTableRequests(request.getOrderTables());
         List<Long> orderTableIds = orderTableRequests.getOrderTableIds();
@@ -37,7 +37,6 @@ public class TableGroupService {
         return TableGroupResponse.of(tableGroupRepository.save(new TableGroup(orderTables)));
     }
 
-    @Transactional
     public void ungroup(final Long tableGroupId) {
         List<OrderTable> list = orderTableRepository.findAllByTableGroup(new TableGroup(tableGroupId));
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(list, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {

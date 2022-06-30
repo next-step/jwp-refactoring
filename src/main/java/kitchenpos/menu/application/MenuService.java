@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
@@ -23,13 +24,13 @@ public class MenuService {
         this.menuGroupRepository = menuGroupRepository;
     }
 
-    @Transactional
     public MenuResponse create(final MenuRequest request) {
         MenuGroup menuGroup = menuGroupRepository.findById(request.getMenuGroupId()).orElseThrow(IllegalArgumentException::new);
         Menu menu = new Menu(request.getName(), request.getPrice(), menuGroup, request.getMenuProducts());
         return MenuResponse.of(menuRepository.save(menu));
     }
 
+    @Transactional(readOnly = true)
     public List<MenuResponse> list() {
         return menuRepository.findAll().stream()
                 .map(MenuResponse::of)
