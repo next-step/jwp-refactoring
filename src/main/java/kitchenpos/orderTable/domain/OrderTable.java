@@ -3,7 +3,6 @@ package kitchenpos.orderTable.domain;
 import kitchenpos.tableGroup.domain.TableGroup;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 public class OrderTable {

@@ -78,4 +78,24 @@ class OrderTest {
         assertThrows(IllegalArgumentException.class,
                 () ->new Order(1L, 테이블_1, LocalDateTime.now()));
     }
+
+    @DisplayName("주문의 상태를 변경할 수 있다")
+    @Test
+    void Order_주문상태_변경(){
+        OrderTable 테이블_1 = new OrderTable(1L, null, 3, false);
+        Order order = new Order(1L, 테이블_1, LocalDateTime.now());
+        order.changeStatus(OrderStatus.COMPLETION);
+
+        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
+    }
+
+    @DisplayName("주문의 상태가 COMPLETION이면 주문의 상태를 변경할 수 있다")
+    @Test
+    void Order_주문상태_변경_COMPLETION_검증(){
+        OrderTable 테이블_1 = new OrderTable(1L, null, 3, false);
+        Order order = new Order(1L, 테이블_1, LocalDateTime.now());
+        order.changeStatus(OrderStatus.COMPLETION);
+
+        assertThrows(IllegalArgumentException.class, () -> order.changeStatus(OrderStatus.COOKING));
+    }
 }
