@@ -29,6 +29,10 @@ public class Price {
         return price.compareTo(target) > 0;
     }
 
+    public BigDecimal multiply(BigDecimal source) {
+        return price.multiply(source);
+    }
+
     public BigDecimal getPrice() {
         return price;
     }
@@ -54,4 +58,6 @@ public class Price {
     public int hashCode() {
         return Objects.hash(price);
     }
+
+
 }

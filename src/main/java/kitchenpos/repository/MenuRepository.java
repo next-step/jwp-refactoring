@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MenuRepository extends JpaRepository<Menu, Long> {
 
-    public int countByIdIn(List<Long> ids);
+    int countByIdIn(List<Long> ids);
 }

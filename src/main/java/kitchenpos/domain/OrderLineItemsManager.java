@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import com.google.common.collect.ImmutableList;
 import java.util.LinkedList;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -17,15 +18,15 @@ public class OrderLineItemsManager {
     }
 
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
+        return ImmutableList.copyOf(orderLineItems);
     }
 
-    public void remove(OrderLineItem orderLineItem){
+    public void remove(OrderLineItem orderLineItem) {
         orderLineItems.remove(orderLineItem);
     }
 
-    public void add(OrderLineItem orderLineItem){
-        if(!ObjectUtils.isEmpty(orderLineItem.getOrder())){
+    public void add(OrderLineItem orderLineItem) {
+        if (!ObjectUtils.isEmpty(orderLineItem.getOrder())) {
             orderLineItem.getOrder().removeOrderLineItem(orderLineItem);
         }
 

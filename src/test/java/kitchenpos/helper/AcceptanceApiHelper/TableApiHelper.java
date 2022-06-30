@@ -5,7 +5,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.HashMap;
 import java.util.Map;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.request.OrderTableRequest;
 import org.springframework.http.MediaType;
 

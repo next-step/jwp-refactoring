@@ -7,7 +7,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.response.OrderTableResponse;
 import org.springframework.http.HttpStatus;
 
@@ -20,7 +19,8 @@ public class TableAssertionHelper {
         );
     }
 
-    public static void 테이블_리스트_조회됨(ExtractableResponse<Response> 조회결과, List<OrderTableResponse> 등록테이블_리스트) {
+    public static void 테이블_리스트_조회됨(ExtractableResponse<Response> 조회결과,
+        List<OrderTableResponse> 등록테이블_리스트) {
         assertAll(
             () -> assertThat(조회결과.statusCode()).isEqualTo(HttpStatus.OK.value()),
             () -> assertThat(조회결과.jsonPath().getList("."))
@@ -49,10 +49,10 @@ public class TableAssertionHelper {
     }
 
     public static void 테이블_손님수_설정_에러(ExtractableResponse<Response> 설정결과) {
-        assertThat(설정결과.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(설정결과.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static void 테이블_유휴여부_설정_에러(ExtractableResponse<Response> 설정결과) {
-        assertThat(설정결과.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(설정결과.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }

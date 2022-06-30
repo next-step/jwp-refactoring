@@ -2,12 +2,12 @@ package kitchenpos.application;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.request.OrderTableRequest;
 import kitchenpos.dto.response.OrderTableResponse;
+import kitchenpos.exception.OrderTableException;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import org.springframework.stereotype.Service;
@@ -44,14 +44,19 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId,
         final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(() -> new OrderTableException("상태 변경할 테이블은 저장되어있어야 합니다"));
 
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-            orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
+        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId,
+            Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+            throw new OrderTableException("완료되지않은 주문이 있으면 상태변경을 할수 없습니다");
         }
 
-        savedOrderTable.changeIsEmpty(orderTableRequest.getEmpty());
+        if (orderTableRequest.getEmpty()) {
+            savedOrderTable.clearTable();
+        }
+        if (!orderTableRequest.getEmpty()) {
+            savedOrderTable.useTable();
+        }
 
         return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
     }
@@ -62,8 +67,8 @@ public class TableService {
         final int numberOfGuests = orderTableRequest.getNumberOfGuests();
 
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-            .orElseThrow(IllegalArgumentException::new);
-        
+            .orElseThrow(() -> new OrderTableException("인원수 설정할 테이블은 저장되어있어야 합니다"));
+
         savedOrderTable.changeNumberOfGuests(numberOfGuests);
 
         return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));

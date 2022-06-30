@@ -7,7 +7,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.domain.Order;
 import kitchenpos.dto.response.OrderResponse;
 import org.springframework.http.HttpStatus;
 
@@ -20,7 +19,8 @@ public class OrderAssertionHelper {
         );
     }
 
-    public static void 오더_리스트_조회됨(ExtractableResponse<Response> 조회결과, List<OrderResponse> 등록_오더_리스트) {
+    public static void 오더_리스트_조회됨(ExtractableResponse<Response> 조회결과,
+        List<OrderResponse> 등록_오더_리스트) {
         assertAll(
             () -> assertThat(조회결과.statusCode()).isEqualTo(HttpStatus.OK.value()),
             () -> assertThat(조회결과.jsonPath().getList("."))
@@ -41,6 +41,6 @@ public class OrderAssertionHelper {
     }
 
     public static void 오더_설정_에러(ExtractableResponse<Response> 설정결과) {
-        assertThat(설정결과.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(설정결과.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }

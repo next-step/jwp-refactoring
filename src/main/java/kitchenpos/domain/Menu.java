@@ -7,8 +7,12 @@ import java.util.List;
 import java.util.Objects;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Menu {
@@ -19,17 +23,19 @@ public class Menu {
     private String name;
     @Embedded
     private Price price;
-    private Long menuGroupId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MENU_GROUP_ID", foreignKey = @ForeignKey(name = "fk_Menu_Menu_Group"))
+    private MenuGroup menuGroup;
     @Embedded
-    private MenuProductsManager menuProducts = new MenuProductsManager();
+    private final MenuProductsManager menuProducts = new MenuProductsManager();
 
     protected Menu() {
     }
 
-    public Menu(String name, BigDecimal price, Long menuGroupId) {
+    public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
         this.name = name;
         this.price = new Price(price);
-        this.menuGroupId = menuGroupId;
+        this.menuGroup = menuGroup;
     }
 
     public Long getId() {
@@ -44,8 +50,8 @@ public class Menu {
         return price.getPrice();
     }
 
-    public Long getMenuGroupId() {
-        return menuGroupId;
+    public MenuGroup getMenuGroup() {
+        return menuGroup;
     }
 
     public List<MenuProduct> getMenuProducts() {
@@ -66,12 +72,12 @@ public class Menu {
         }
         Menu menu = (Menu) o;
         return Objects.equals(id, menu.id) && Objects.equals(name, menu.name)
-            && Objects.equals(price, menu.price) && Objects.equals(menuGroupId,
-            menu.menuGroupId);
+            && Objects.equals(price, menu.price) && Objects.equals(menuGroup,
+            menu.menuGroup);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, price, menuGroupId);
+        return Objects.hash(id, name, price, menuGroup);
     }
 }

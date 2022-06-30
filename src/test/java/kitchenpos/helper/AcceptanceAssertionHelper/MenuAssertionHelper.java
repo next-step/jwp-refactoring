@@ -7,8 +7,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.Product;
 import kitchenpos.dto.response.MenuResponse;
 import org.springframework.http.HttpStatus;
 
@@ -36,6 +34,6 @@ public class MenuAssertionHelper {
     }
 
     public static void 메뉴_등록_에러발생(ExtractableResponse<Response> 등록결과) {
-        assertThat(등록결과.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(등록결과.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }

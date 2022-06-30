@@ -17,7 +17,6 @@ import io.restassured.response.Response;
 import java.util.Arrays;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.dto.response.OrderResponse;
-import kitchenpos.dto.response.OrderTableResponse;
 import kitchenpos.helper.AcceptanceAssertionHelper.TableAssertionHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,7 +49,7 @@ class TableAcceptanceTest extends AcceptanceTest {
      */
 
     @BeforeEach
-    public void init(){
+    public void init() {
         super.init();
     }
 
@@ -80,7 +79,7 @@ class TableAcceptanceTest extends AcceptanceTest {
     */
     @Test
     public void 테이블_리스트_조회하기_테스트() {
-         //when
+        //when
         ExtractableResponse<Response> 테이블_리스트_조회하기_response = 테이블_리스트_조회하기();
 
         //then

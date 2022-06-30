@@ -1,8 +1,6 @@
 package kitchenpos.application;
 
-import static kitchenpos.helper.ReflectionHelper.setMenuId;
-import static kitchenpos.helper.ReflectionHelper.setOrderId;
-import static kitchenpos.helper.ReflectionHelper.setOrderLineItemId;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -21,33 +19,29 @@ import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
-import kitchenpos.domain.domainService.MenuOrderLineDomainService;
 import kitchenpos.dto.dto.OrderLineItemDTO;
 import kitchenpos.dto.request.OrderRequest;
 import kitchenpos.dto.response.OrderResponse;
-import kitchenpos.repository.MenuRepository;
+import kitchenpos.exception.OrderException;
 import kitchenpos.repository.OrderRepository;
-import kitchenpos.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
 
     private OrderService orderService;
 
-    @Mock
-    private MenuOrderLineDomainService menuOrderLineDomainService;
 
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
     @Mock
     private OrderRepository orderRepository;
-
-    @Mock
-    private OrderTableRepository orderTableRepository;
 
     private Order order;
     private MenuProduct chicken_menuProduct;
@@ -61,17 +55,17 @@ class OrderServiceTest {
         setMenu();
         setOrderLineItem();
         setOrderTable();
-        orderService = new OrderService(menuOrderLineDomainService, orderRepository, orderTableRepository);
+        orderService = new OrderService(orderRepository, eventPublisher);
 
         order = new Order();
-        setOrderId(1L, order);
 
         OrderLineItem hamOrderLineItem = new OrderLineItem(null, ham_menuProduct.getMenu().getId(),
             1L);
-        OrderLineItem chickenOrderLineItem = new OrderLineItem(null, chicken_menuProduct.getMenu().getId(),
+        OrderLineItem chickenOrderLineItem = new OrderLineItem(null,
+            chicken_menuProduct.getMenu().getId(),
             1L);
-        setOrderLineItemId(1L, chickenOrderLineItem);
-        setOrderLineItemId(2L, hamOrderLineItem);
+//        setOrderLineItemId(1L, chickenOrderLineItem);
+//        setOrderLineItemId(2L, hamOrderLineItem);
         order.mapOrderLineItem(hamOrderLineItem);
         order.mapOrderLineItem(chickenOrderLineItem);
 
@@ -83,14 +77,15 @@ class OrderServiceTest {
     }
 
     private void setMenu() {
+
         Product chicken = new Product("chicken", BigDecimal.valueOf(5000));
-        Menu oneChickenMenu = new Menu("치킨한마리", BigDecimal.valueOf(4000), 1L);
-        setMenuId(1L, oneChickenMenu);
+        Menu oneChickenMenu = new Menu("치킨한마리", BigDecimal.valueOf(4000), null);
+//        setMenuId(1L, oneChickenMenu);
         chicken_menuProduct = new MenuProduct(oneChickenMenu, 1L, 1L);
 
         Product ham = new Product("ham", BigDecimal.valueOf(4000));
-        Menu oneHamMenu = new Menu("햄한개", BigDecimal.valueOf(3000), 1L);
-        setMenuId(2L, oneHamMenu);
+        Menu oneHamMenu = new Menu("햄한개", BigDecimal.valueOf(3000), null);
+//        setMenuId(2L, oneHamMenu);
         ham_menuProduct = new MenuProduct(oneHamMenu, 2L, 1L);
     }
 
@@ -112,10 +107,10 @@ class OrderServiceTest {
         orderRequest.setOrderLineItems(Arrays.asList(chickenOrder, hamOrder));
 
         orderRequest.setOrderTableId(1L);
-        orderTable.changeIsEmpty(false);
+        orderTable.useTable();
 
-        doNothing().when(menuOrderLineDomainService).validateComponentForCreateOrder(orderRequest);
-        when(orderTableRepository.findById(1L)).thenReturn(Optional.of(orderTable));
+        doNothing().when(eventPublisher)
+            .publishEvent(any());
         when(orderRepository.save(any())).thenReturn(order);
 
         //when
@@ -136,7 +131,7 @@ class OrderServiceTest {
 
         //when && then
         assertThatThrownBy(() -> orderService.create(orderRequest)).isInstanceOf(
-            IllegalArgumentException.class);
+            OrderException.class);
     }
 
     @Test
@@ -146,8 +141,8 @@ class OrderServiceTest {
         OrderRequest orderRequest = new OrderRequest();
         orderRequest.setOrderLineItems(Arrays.asList(chickenOrder, hamOrder));
 
-        doThrow(IllegalArgumentException.class).when(menuOrderLineDomainService)
-            .validateComponentForCreateOrder(orderRequest);
+        doThrow(IllegalArgumentException.class).when(eventPublisher)
+            .publishEvent(any());
 
         //when && then
         assertThatThrownBy(() -> orderService.create(orderRequest))
@@ -161,8 +156,8 @@ class OrderServiceTest {
         OrderRequest orderRequest = new OrderRequest();
         orderRequest.setOrderLineItems(Arrays.asList(chickenOrder, hamOrder));
 
-        doThrow(IllegalArgumentException.class).when(menuOrderLineDomainService)
-            .validateComponentForCreateOrder(orderRequest);
+        doThrow(IllegalArgumentException.class).when(eventPublisher)
+            .publishEvent(any());
 
         //when && then
         assertThatThrownBy(() -> orderService.create(orderRequest))
@@ -177,12 +172,12 @@ class OrderServiceTest {
         orderRequest.setOrderLineItems(Arrays.asList(chickenOrder, hamOrder));
         orderRequest.setOrderTableId(1L);
 
-        doNothing().when(menuOrderLineDomainService).validateComponentForCreateOrder(orderRequest);
-        when(orderTableRepository.findById(1L)).thenReturn(Optional.of(orderTable));
+        doThrow(OrderException.class).when(eventPublisher)
+            .publishEvent(any());
 
         //when && then
         assertThatThrownBy(() -> orderService.create(orderRequest))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(OrderException.class);
     }
 
     @Test
@@ -212,6 +207,6 @@ class OrderServiceTest {
 
         //when & then
         assertThatThrownBy(() -> orderService.changeOrderStatus(1L, orderRequest))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(OrderException.class);
     }
 }

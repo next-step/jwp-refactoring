@@ -42,7 +42,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
          * 양념두마리메뉴,2개
      */
     @BeforeEach
-    public void init(){
+    public void init() {
         super.init();
     }
 

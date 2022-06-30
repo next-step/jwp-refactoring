@@ -60,7 +60,7 @@
 ---
 
 ---
-step2 
+### step2 
 - 서비스 리팩토링
   - Controller - Domain 의존성 삭제
     - Controller에서 @RequestBody로 요청 받을때, domain이 아닌 RequestDTO 객체로 받음
@@ -101,6 +101,60 @@ step2
 6. Embedded, Embeddable을 통해 Price / NumberOfGuest 검증로직 도메인으로 이동
 7. 간접참조 객체들에 대한 검증 로직을 도메인서비스로 추출
 8. 검증기능, 비즈니스 로직을 가진 도메인들에 대한 테스트코드 작성 
+
+---
+
+### step3
+1. 2단계 미흡한 부분 수정
+    1. 디미터 법칙 적용
+       1. 일급 컬렉션에서 getter를 통해 받는 리스트드를 unmodif
+       2. Price domain에서 multiple 기능 구현(단 반환시 저장하고있는 Price는 접근이 되면 안됨) 
+    2. 코드컨벤션 점검
+    3. 반복적인 작업 추출 후 재사용
+        1. MenuProductDomainService.validatePriceSmallThenSum
+           1. productRepository.findbyid에서 없는 product를 체크할수 있어 필요한 로직이라고 생각됨
+           2. 그러나 product별로 select query가 발생되어, 먼저 findAllByIdIn을 통해 영속성에 한번에 등록해놓는 로직 추가 
+    4. OrderTable에서 유휴테이블 설정 함수 명의 의미가 모호하여 분리/수정필요
+    5. 비즈니스 로직에 맞는 Exception 선언 및 Advice를 통한 Error 처리
+       1. 500Err -> 400Err
+       2. Acceptance 에러확인 함수 수정(500 -> 400)
+       3. assertThatThrowBy 에서 Catch하는 Error 객체 수정
+    6. 테스트 코드 내에 ID설정을 위한 Reflection 코드 Stub으로 대체
+
+2. Aggregate 예상 관계도 및 생성 event 예정 내역
+
+<img src="readmeSource/AggregateEntityRelationship.png">
+
+ - Aggregate간 참조가 일어나는 부분
+   - Order Create
+     - OrderLineItem에 속해있는 Menu검증
+     - OrderTable 존재여부 검증
+     - OrderTable empty여부 검증 
+   - Menu Create
+     - Menu_product에 포함된 Product의 가격의 합과 Menu가격 검증 
+   - TableGroup unGrouping
+     - Table Group에 속한 OrderTable들에 COMPLETE가 아닌 메뉴 존재여부 검증
+ - 필요 Event 
+   - OrderCreate
+     - Menu : 메뉴가 존재하는가
+     - Ordertable : Table이 비어있지 않는가
+   - MenuCreate
+     - Product : Menu에 포함된 Product의 총 가격이 Menu의 가격보다 높은가
+   - TableUngroup
+     - Order : TableGroup에 포함된 Order중 COMPLETE가 아닌 Order가 있는가
+
+3. 엔티티 관계도(Step3기준)
+
+| Entity_A   | 관계  | Entity_B      | 관계구현방식    | 비고                                                |
+|------------|-----|---------------|-----------|---------------------------------------------------|
+| Product    | 1:N | MenuProduct   | ID참조      | 다른 Aggregate이므로 ID참조                              |
+| Menu       | 1:N | MenuProduct   | 양방향참조     | MenuProduct에 대한 생명주기 Menu에서 관리                    |
+| Menu       | N:1 | MenuGroup   | 객체참조      | Menu 조회/등록시 MenuGroup에 대한 검증, 조회가 동반됨             |
+| Menu       | 1:N | OrderLineItem | ID참조      | 다른 Aggregate이므로 ID참조                              |
+| Order      | 1:N | OrderLineItem | 양방향참조     | OrderLineItem에 대한 생명주기 Order에서 관리                 |
+| OrderTable | 1:N | Order         | ID참조      | 다른 Aggregate이므로 ID참조                              |
+| TableGroup | 1:N | OrderTable    | ID참조      | OrderTable과 TableGroup은 동시에 생성될 필요가 없어 ID참조로 진행한다 |
+
 
 ## 용어 사전
 

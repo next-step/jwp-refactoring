@@ -10,6 +10,7 @@ import java.util.Optional;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.request.OrderTableRequest;
+import kitchenpos.exception.OrderTableException;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -68,7 +69,7 @@ class TableServiceTest {
 
         //when & then
         assertThatThrownBy(() -> tableService.changeEmpty(1L, orderTableRequest))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(OrderTableException.class);
     }
 
     @Test
@@ -81,7 +82,8 @@ class TableServiceTest {
 
         //when & then
         assertThatThrownBy(() -> tableService.changeEmpty(1L, orderTableRequest))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(OrderTableException.class)
+            .hasMessage("상태 변경할 테이블은 저장되어있어야 합니다");
     }
 
     @Test
@@ -99,7 +101,7 @@ class TableServiceTest {
 
         //when & then
         assertThatThrownBy(() -> tableService.changeEmpty(1L, orderTableRequest))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(OrderTableException.class);
     }
 
     @Test
@@ -107,7 +109,7 @@ class TableServiceTest {
     void changeNumberHappyCase() {
         //given
         when(orderTableRepository.findById(1L)).thenReturn(Optional.of(orderTable));
-        orderTable.changeIsEmpty(false);
+        orderTable.useTable();
         when(orderTableRepository.save(any())).thenReturn(orderTable);
         OrderTableRequest ordertableRequest = new OrderTableRequest();
         ordertableRequest.setNumberOfGuests(4);
@@ -125,7 +127,8 @@ class TableServiceTest {
 
         //when & then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, orderTableRequest))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(OrderTableException.class).
+            hasMessage("인원수 설정할 테이블은 저장되어있어야 합니다");
     }
 
     @Test
@@ -137,7 +140,8 @@ class TableServiceTest {
 
         //when & then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, orderTableRequest))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(OrderTableException.class)
+            .hasMessage("인원수 설정할 테이블은 저장되어있어야 합니다");
     }
 
     @Test
@@ -150,6 +154,7 @@ class TableServiceTest {
 
         //when & then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, orderTableRequest))
-            .isInstanceOf(IllegalArgumentException.class);
+            .isInstanceOf(OrderTableException.class)
+            .hasMessage("비어있는 테이블은 인원수 설정을 할수 없습니다");
     }
 }

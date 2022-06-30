@@ -8,14 +8,10 @@ import static kitchenpos.helper.AcceptanceAssertionHelper.ProductAssertionHelper
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.math.BigDecimal;
 import java.util.Arrays;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Product;
-import kitchenpos.dto.response.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.context.jdbc.Sql;
 
 
 class ProductAcceptanceTest extends AcceptanceTest {
@@ -42,7 +38,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
      */
 
     @BeforeEach
-    public void init(){
+    public void init() {
         super.init();
     }
 
@@ -54,7 +50,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
     @Test
     public void 상품_등록하기_테스트() {
         //when
-        ExtractableResponse<Response> 상품_등록하기_response = 상품_등록하기("간장치킨",18000);
+        ExtractableResponse<Response> 상품_등록하기_response = 상품_등록하기("간장치킨", 18000);
 
         //then
         상품_등록되어있음(상품_등록하기_response, "간장치킨");

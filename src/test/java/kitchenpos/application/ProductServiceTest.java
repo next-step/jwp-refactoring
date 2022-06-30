@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import static kitchenpos.helper.ReflectionHelper.SetProductId;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -11,7 +10,6 @@ import java.math.BigDecimal;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.request.ProductRequest;
 import kitchenpos.dto.response.ProductResponse;
-import kitchenpos.helper.ReflectionHelper;
 import kitchenpos.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,11 +17,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class ProductServiceTest {
 
     private ProductService productService;
+    @Mock
     private Product product;
     @Mock
     private ProductRepository productRepository;
@@ -31,10 +33,9 @@ class ProductServiceTest {
     @BeforeEach
     public void init() {
         productService = new ProductService(productRepository);
-        product = new Product("chicken", BigDecimal.valueOf(18000));
-
-        SetProductId(1L, product);
-
+        when(product.getId()).thenReturn(1L);
+        when(product.getName()).thenReturn("chicken");
+        when(product.getPrice()).thenReturn(BigDecimal.valueOf(18000));
     }
 
     @Test

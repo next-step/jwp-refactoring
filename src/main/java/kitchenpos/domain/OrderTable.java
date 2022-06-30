@@ -7,6 +7,7 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import kitchenpos.exception.OrderTableException;
 
 @Entity
 public class OrderTable {
@@ -28,11 +29,15 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public void changeIsEmpty(boolean isEmpty) {
-        if (Objects.isNull(isEmpty) || Objects.nonNull(tableGroupId)) {
-            throw new IllegalArgumentException();
+    public void clearTable() {
+        if (Objects.nonNull(tableGroupId)) {
+            throw new OrderTableException("단체석이 설정된 테이블은 치울수 없습니다");
         }
-        this.empty = isEmpty;
+        this.empty = true;
+    }
+
+    public void useTable() {
+        this.empty = false;
     }
 
     public void unGroupTable() {
@@ -47,7 +52,7 @@ public class OrderTable {
 
     public void changeNumberOfGuests(int numberOfGuests) {
         if (empty) {
-            throw new IllegalArgumentException();
+            throw new OrderTableException("비어있는 테이블은 인원수 설정을 할수 없습니다");
         }
         this.numberOfGuests.changeNumberOfGuests(numberOfGuests);
     }
