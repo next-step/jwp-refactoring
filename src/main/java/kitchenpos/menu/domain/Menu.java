@@ -42,6 +42,15 @@ public class Menu {
         validateMenuPrice();
     }
 
+    public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        this.id = id;
+        this.name = name;
+        this.price = new Price(price);
+        this.menuGroup = menuGroup;
+        this.menuProducts = new MenuProducts(this, menuProducts);
+        validateMenuPrice();
+    }
+
     private void validateMenuPrice() {
         if (price.getValue().compareTo(menuProducts.calculateTotalPrice()) > 0) {
             throw new IllegalArgumentException();

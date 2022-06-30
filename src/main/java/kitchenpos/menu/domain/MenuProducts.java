@@ -18,6 +18,10 @@ public class MenuProducts {
         list = new ArrayList<>();
     }
 
+    public MenuProducts(List<MenuProduct> list) {
+        this.list = list;
+    }
+
     public MenuProducts(Menu menu, List<MenuProduct> list) {
         this.list = list;
         for (final MenuProduct menuProduct : list) {

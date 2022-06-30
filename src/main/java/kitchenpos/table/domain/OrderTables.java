@@ -1,6 +1,5 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 import javax.persistence.Embeddable;
@@ -30,8 +29,8 @@ public class OrderTables {
         }
     }
 
-    public void validateSizeForTableGroup(List<OrderTableRequest> orderTables) {
-        if (list.size() != orderTables.size()) {
+    public void validateSizeForTableGroup(int orderTableSize) {
+        if (list.size() != orderTableSize) {
             throw new IllegalArgumentException();
         }
 

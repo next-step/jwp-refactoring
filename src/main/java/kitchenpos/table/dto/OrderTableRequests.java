@@ -1,6 +1,5 @@
 package kitchenpos.table.dto;
 
-import kitchenpos.table.domain.OrderTable;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
@@ -23,5 +22,9 @@ public class OrderTableRequests {
         return list.stream()
                 .map(OrderTableRequest::getId)
                 .collect(Collectors.toList());
+    }
+
+    public int getSize() {
+        return list.size();
     }
 }

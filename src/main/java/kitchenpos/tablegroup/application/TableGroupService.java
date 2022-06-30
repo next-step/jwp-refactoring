@@ -33,7 +33,7 @@ public class TableGroupService {
         OrderTableRequests orderTableRequests = new OrderTableRequests(request.getOrderTables());
         List<Long> orderTableIds = orderTableRequests.getOrderTableIds();
         OrderTables orderTables = new OrderTables(orderTableRepository.findAllById(orderTableIds));
-        orderTables.validateSizeForTableGroup(request.getOrderTables());
+        orderTables.validateSizeForTableGroup(orderTableRequests.getSize());
         return TableGroupResponse.of(tableGroupRepository.save(new TableGroup(orderTables)));
     }
 
