@@ -16,6 +16,7 @@ import kitchenpos.common.exception.BadRequestException;
 import kitchenpos.common.exception.CannotCreateException;
 import kitchenpos.common.exception.ExceptionType;
 import kitchenpos.common.exception.NotFoundException;
+import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
@@ -41,8 +42,9 @@ class OrderServiceTest {
     private OrderRepository orderRepository;
     @Mock
     private OrderTableRepository orderTableRepository;
+
     @Mock
-    private MenuRepository menuRepository;
+    private MenuService menuService;
 
     private OrderValidator orderValidator;
     private OrderService orderService;
@@ -66,8 +68,8 @@ class OrderServiceTest {
 
         주문 = Order.of(1L, 주문_테이블.getTableGroupId());
 
-        orderValidator = new OrderValidator(menuRepository, orderTableRepository);
-        orderService = new OrderService(orderRepository, orderTableRepository, orderValidator, menuRepository);
+        orderValidator = new OrderValidator(menuService, orderTableRepository);
+        orderService = new OrderService(orderRepository, orderTableRepository, orderValidator, menuService);
 
         치킨_메뉴_entity = Menu.of(치킨_메뉴_FIXTURE.getName(), 치킨_메뉴_FIXTURE.getPrice(), null, Collections.singletonList(메뉴_상품_ENTITY_FIXTURE));
     }
@@ -76,11 +78,11 @@ class OrderServiceTest {
     @Test
     void create_test() {
         // given
-        when(menuRepository.findById(주문_항목_request.getMenuId()))
-            .thenReturn(Optional.of(치킨_메뉴_entity));
-        when(menuRepository.findById(주문_항목_request2.getMenuId()))
-            .thenReturn(Optional.of(치킨_메뉴_entity));
-        when(menuRepository.countByIdIn(
+        when(menuService.findMenu(주문_항목_request.getMenuId()))
+            .thenReturn(치킨_메뉴_entity);
+        when(menuService.findMenu(주문_항목_request2.getMenuId()))
+            .thenReturn(치킨_메뉴_entity);
+        when(menuService.countByIdIn(
             Arrays.asList(주문_항목_request.getMenuId(), 주문_항목_request2.getMenuId())))
             .thenReturn(2L);
         when(orderTableRepository.findById(any()))
@@ -115,7 +117,7 @@ class OrderServiceTest {
     @Test
     void create_exception_test2() {
         // given
-        when(menuRepository.countByIdIn(Arrays.asList(
+        when(menuService.countByIdIn(Arrays.asList(
             주문_항목_request.getMenuId(), 주문_항목_request2.getMenuId())))
             .thenReturn(1L);
 
@@ -130,7 +132,7 @@ class OrderServiceTest {
     @Test
     void create_exception_test3() {
         // given
-        when(menuRepository.countByIdIn(Arrays.asList(
+        when(menuService.countByIdIn(Arrays.asList(
             주문_항목_request.getMenuId(), 주문_항목_request2.getMenuId())))
             .thenReturn(2L);
         when(orderTableRepository.findById(주문_request.getOrderTableId()))

@@ -6,6 +6,7 @@ import kitchenpos.common.exception.BadRequestException;
 import kitchenpos.common.exception.CannotCreateException;
 import kitchenpos.common.exception.ExceptionType;
 import kitchenpos.common.exception.NotFoundException;
+import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.request.OrderLineItemRequest;
 import kitchenpos.order.domain.request.OrderRequest;
@@ -17,11 +18,11 @@ import org.springframework.util.CollectionUtils;
 @Component
 public class OrderValidator {
 
-    private final MenuRepository menuRepository;
+    private final MenuService menuService;
     private final OrderTableRepository orderTableRepository;
 
-    public OrderValidator(MenuRepository menuRepository, OrderTableRepository orderTableRepository) {
-        this.menuRepository = menuRepository;
+    public OrderValidator(MenuService menuService, OrderTableRepository orderTableRepository) {
+        this.menuService = menuService;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -42,7 +43,7 @@ public class OrderValidator {
             .map(OrderLineItemRequest::getMenuId)
             .collect(Collectors.toList());
 
-        if (orderLineItemRequests.size() != menuRepository.countByIdIn(menuIds)) {
+        if (orderLineItemRequests.size() != menuService.countByIdIn(menuIds)) {
             throw new CannotCreateException(ExceptionType.CONTAINS_NOT_EXIST_MENU);
         }
     }

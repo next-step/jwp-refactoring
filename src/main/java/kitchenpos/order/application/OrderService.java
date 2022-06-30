@@ -3,6 +3,7 @@ package kitchenpos.order.application;
 import kitchenpos.common.exception.CannotCreateException;
 import kitchenpos.common.exception.ExceptionType;
 import kitchenpos.common.exception.NotFoundException;
+import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
@@ -25,14 +26,14 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
     private final OrderValidator orderValidator;
-    private final MenuRepository menuRepository;
+    private final MenuService menuService;
 
     public OrderService(OrderRepository orderRepository, OrderTableRepository orderTableRepository,
-        OrderValidator orderValidator, MenuRepository menuRepository) {
+        OrderValidator orderValidator, MenuService menuService) {
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
         this.orderValidator = orderValidator;
-        this.menuRepository = menuRepository;
+        this.menuService = menuService;
     }
 
     @Transactional
@@ -49,14 +50,9 @@ public class OrderService {
     private List<OrderLineItem> toOrderLineItems(OrderRequest orderRequest) {
         return orderRequest.getOrderLineItemRequests().stream()
             .map(it -> {
-                Menu menu = findMenu(it.getMenuId());
+                Menu menu = menuService.findMenu(it.getMenuId());
                 return OrderLineItemRequest.toEntity(it, menu.getName(), menu.getPrice());
             }).collect(Collectors.toList());
-    }
-
-    private Menu findMenu(Long menuId) {
-        return menuRepository.findById(menuId)
-            .orElseThrow(() -> new CannotCreateException(ExceptionType.NOT_EXIST_MENU.getMessage(menuId)));
     }
 
     @Transactional(readOnly = true)

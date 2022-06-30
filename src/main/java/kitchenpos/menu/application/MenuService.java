@@ -2,6 +2,8 @@ package kitchenpos.menu.application;
 
 import static java.util.stream.Collectors.toList;
 
+import kitchenpos.common.exception.CannotCreateException;
+import kitchenpos.common.exception.ExceptionType;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.domain.request.MenuRequest;
@@ -37,5 +39,14 @@ public class MenuService {
         return menus.stream()
             .map(MenuResponse::of)
             .collect(toList());
+    }
+
+    public Menu findMenu(Long menuId) {
+        return menuRepository.findById(menuId)
+                .orElseThrow(() -> new CannotCreateException(ExceptionType.NOT_EXIST_MENU.getMessage(menuId)));
+    }
+
+    public long countByIdIn(List<Long> menuIds) {
+        return menuRepository.countByIdIn(menuIds);
     }
 }
