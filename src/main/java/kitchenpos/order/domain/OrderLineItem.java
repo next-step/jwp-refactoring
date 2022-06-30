@@ -55,7 +55,7 @@ public class OrderLineItem {
 
     public Long getMenuPrice() {
         return orderMenu.getMenuPrice()
-                .mapToLongValue();
+                .getPriceLongValue();
     }
 
     public long getQuantity() {

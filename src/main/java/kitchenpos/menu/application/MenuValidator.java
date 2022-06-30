@@ -44,7 +44,7 @@ public class MenuValidator {
 
         return menuProducts.stream()
                 .map(this::calculateProductPrice)
-                .mapToLong(Price::mapToLongValue)
+                .mapToLong(Price::getPriceLongValue)
                 .sum();
     }
 

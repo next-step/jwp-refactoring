@@ -25,7 +25,7 @@ public class Price {
         return price;
     }
 
-    public long mapToLongValue() {
+    public long getPriceLongValue() {
         return price.longValue();
     }
 

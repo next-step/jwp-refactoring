@@ -1,10 +1,12 @@
 package kitchenpos.order.application;
 
+import static java.util.function.Function.identity;
+
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import java.util.stream.Collectors;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.infrastructure.MenuRepository;
@@ -56,7 +58,7 @@ public class OrderValidator implements Validator {
             throw new IllegalArgumentException("주문한 메뉴가 존재하지 않습니다.");
         }
 
-        Map<Long, Menu> menus = toMap(menuIds);
+        Map<Long, Menu> menus = convertMapByMenuIds(menuIds);
         for (OrderLineItem orderLineItem : orderLineItems) {
             Menu menu = menus.get(orderLineItem.getMenuId());
             validateMenuName(orderLineItem.getMenuName(), menu);
@@ -72,17 +74,15 @@ public class OrderValidator implements Validator {
     }
 
     private void validateMenuName(String orderMenuName, Menu menu) {
-        System.out.println("ordername : " + orderMenuName);
-        System.out.println("menu : " + menu.getName());
         if (!orderMenuName.equals(menu.getName())) {
             throw new IllegalArgumentException("기본 상품이 변경되었습니다.");
         }
     }
 
-    private Map<Long, Menu> toMap(List<Long> menuIds) {
+    private Map<Long, Menu> convertMapByMenuIds(List<Long> menuIds) {
         List<Menu> allById = menuRepository.findAllById(menuIds);
         return allById.stream()
-                .collect(Collectors.toMap(Menu::getId, menu -> menu, (a, b) -> b));
+                .collect(Collectors.toMap(Menu::getId, identity()));
     }
 
     private Set<OrderLineItem> validateOrderLineItems(Order order) {
