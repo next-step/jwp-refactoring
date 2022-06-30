@@ -7,7 +7,7 @@ import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.event.TableUngroupedEvent;
 import kitchenpos.dto.request.TableGroupRequest;
 import kitchenpos.dto.response.TableGroupResponse;
-import kitchenpos.event.customEvent.TableUngroupEvent;
+import kitchenpos.event.TableUngroupEvent;
 import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.repository.TableGroupRepository;
 import org.springframework.context.ApplicationEventPublisher;

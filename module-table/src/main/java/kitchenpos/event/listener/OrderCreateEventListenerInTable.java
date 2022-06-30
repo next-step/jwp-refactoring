@@ -2,8 +2,6 @@ package kitchenpos.event.listener;
 
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.event.OrderCreatedEvent;
-import kitchenpos.event.customEvent.OrderCreateEvent;
-import kitchenpos.exception.OrderException;
 import kitchenpos.repository.OrderTableRepository;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;

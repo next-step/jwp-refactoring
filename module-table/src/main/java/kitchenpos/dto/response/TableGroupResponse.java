@@ -5,8 +5,8 @@ import kitchenpos.domain.TableGroup;
 
 public class TableGroupResponse {
 
-    private Long id;
-    private LocalDateTime createdDate;
+    private final Long id;
+    private final LocalDateTime createdDate;
 
     protected TableGroupResponse(Long id, LocalDateTime createdDate) {
         this.id = id;
