@@ -156,6 +156,44 @@
 | TableGroup | 1:N | OrderTable    | ID참조      | OrderTable과 TableGroup은 동시에 생성될 필요가 없어 ID참조로 진행한다 |
 
 
+
+
+---
+---
+
+### step4
+1. step3 미흡점
+   1. Event를 위한 DTO의 Naming 변경
+   2. DTO에서 값 정제하는 로직을 서비스단에서 DTO로 이동 
+   3. service layer에서 의미가 다른 로직을 private method로 추출
+   4. OrderTable - TableGroup 객체매핑 후 검증 로직 도메인으로 이동
+
+2. 각 모둘 별 엔티티 구성
+
+| Entity        | 모듈 명           | 
+|---------------|----------------|
+| Product       | module-product |
+| Menu          | module-menu    |
+| MenuProduct   | module-menu    |
+| MenuGroup     | module-menu    |
+| Order         | module-order   |
+| OrderLineItem | module-order   |
+| OrderTable    | module-table   |
+| TableGroup    | module-table   |
+
+3. 모듈 간 관계도 
+ - 각 모듈은 Common모듈과만 연결이 되있고 아래의 객체들을 참조한다 
+   - Exception 메세지 Object
+   - RestControllerAdvice
+   - DomainEvent Object
+
+<img src="readmeSource/ModuleRelationship.png">
+
+4. 테스트 특이사항 
+   - 인수테스트는 각 모듈 별로 경계가 떨어지지 않아, 각 모듈별 테스트 진행 시, Sub Module들을 사용함
+     - testImplementation project('Project')
+---
+
 ## 용어 사전
 
 | 한글명 | 영문명 | 설명 |
@@ -174,17 +212,6 @@
 | 주문 항목 | order line item | 주문에 속하는 수량이 있는 메뉴 |
 | 매장 식사 | eat in | 포장하지 않고 매장에서 식사하는 것 |
 
----
----
-
-### step4
-1. step3 미흡점
-   1. Event를 위한 DTO의 Naming 변경
-   2. DTO에서 값 정제하는 로직을 서비스단에서 DTO로 이동 
-   3. service layer에서 의미가 다른 로직을 private method로 추출
-   4. OrderTable - TableGroup 객체매핑 후 검증 로직 도메인으로 이동
-
----
 ---
 
 ### study
