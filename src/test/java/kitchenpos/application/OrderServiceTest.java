@@ -189,10 +189,6 @@ class OrderServiceTest {
         return new Order(id, orderTableId, orderStatus.name());
     }
 
-    public static Order 주문_생성(Long id, Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-        return new Order(id, orderTableId, orderStatus.name(), orderLineItems);
-    }
-
     public static OrderLineItem 주문_목록_생성(Long orderId, Long menuId, int quantity) {
         return new OrderLineItem(orderId, menuId, quantity);
     }
