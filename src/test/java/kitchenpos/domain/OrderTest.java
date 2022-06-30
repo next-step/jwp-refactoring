@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -60,10 +61,10 @@ public class OrderTest {
     @Test
     void create() {
         // given
-        List<OrderLineItemRequest> OrderLineItemRequests = Arrays.asList(new OrderLineItemRequest(점심특선.getId(), 1));
+        List<OrderLineItemRequest> OrderLineItems = Arrays.asList(new OrderLineItemRequest(점심특선.getId(), 1));
 
         // when
-        Order 주문 = orderRepository.save(new Order(주문_테이블, OrderStatus.COOKING, toOrderLineItems(Arrays.asList(점심특선), OrderLineItemRequests)));
+        Order 주문 = orderRepository.save(new Order(주문_테이블, OrderStatus.COOKING, toOrderLineItems(Arrays.asList(점심특선), OrderLineItems)));
 
         // then
         assertThat(주문.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
@@ -73,8 +74,8 @@ public class OrderTest {
     @Test
     void changeOrderStatus() {
         // given
-        List<OrderLineItemRequest> OrderLineItemRequests = Arrays.asList(new OrderLineItemRequest(점심특선.getId(), 1));
-        Order 주문 = orderRepository.save(new Order(주문_테이블, OrderStatus.COOKING, toOrderLineItems(Arrays.asList(점심특선), OrderLineItemRequests)));
+        List<OrderLineItemRequest> OrderLineItems = Arrays.asList(new OrderLineItemRequest(점심특선.getId(), 1));
+        Order 주문 = orderRepository.save(new Order(주문_테이블, OrderStatus.COOKING, toOrderLineItems(Arrays.asList(점심특선), OrderLineItems)));
 
         // when
         주문.changeOrderStatus(OrderStatus.MEAL);
@@ -83,12 +84,23 @@ public class OrderTest {
         assertThat(orderRepository.findById(주문.getId()).get().getOrderStatus()).isEqualTo(OrderStatus.MEAL);
     }
 
-    private List<OrderLineItem> toOrderLineItems(List<Menu> menus, List<OrderLineItemRequest> OrderLineItemRequests) {
+    @DisplayName("최종 주문 상태는 계산 완료에서 변경될 수 없다.")
+    @Test
+    void changeOrderStatus_throwException_givenCompletion() {
+        // given
+        List<OrderLineItemRequest> OrderLineItems = Arrays.asList(new OrderLineItemRequest(점심특선.getId(), 1));
+        Order 주문 = orderRepository.save(new Order(주문_테이블, OrderStatus.COMPLETION, toOrderLineItems(Arrays.asList(점심특선), OrderLineItems)));
+
+        // when
+        // then
+        assertThatIllegalArgumentException().isThrownBy(() -> 주문.changeOrderStatus(OrderStatus.MEAL));
+    }
+
+    private List<OrderLineItem> toOrderLineItems(List<Menu> menus, List<OrderLineItemRequest> OrderLineItems) {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
-        for (OrderLineItemRequest orderLineItem : OrderLineItemRequests) {
+        for (OrderLineItemRequest orderLineItem : OrderLineItems) {
             menus.stream()
-                 .filter(menu -> menu.getId()
-                                     .equals(orderLineItem.getMenuId()))
+                 .filter(menu -> menu.getId().equals(orderLineItem.getMenuId()))
                  .findFirst()
                  .ifPresent(menu -> orderLineItems.add(new OrderLineItem(menu, orderLineItem.getQuantity())));
         }

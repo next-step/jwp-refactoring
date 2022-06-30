@@ -61,6 +61,9 @@ public class Order {
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
+        if (Objects.equals(this.orderStatus, OrderStatus.COMPLETION)) {
+            throw new IllegalArgumentException();
+        }
         this.orderStatus = orderStatus;
     }
 

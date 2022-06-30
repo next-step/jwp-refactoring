@@ -14,7 +14,6 @@ import org.springframework.util.CollectionUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -57,10 +56,6 @@ public class OrderService {
     public Order changeOrderStatus(final Long orderId, final OrderRequest request) {
         Order order = orderRepository.findById(orderId)
                                      .orElseThrow(NoSuchElementException::new);
-
-        if (Objects.equals(OrderStatus.COMPLETION, order.getOrderStatus())) {
-            throw new IllegalArgumentException();
-        }
 
         order.changeOrderStatus(OrderStatus.valueOf(request.getOrderStatus()));
         return order;
