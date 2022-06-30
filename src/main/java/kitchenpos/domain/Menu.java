@@ -11,6 +11,9 @@ public class Menu {
     private Long menuGroupId;
     private List<MenuProduct> menuProducts;
 
+    public Menu() {
+    }
+
     public Menu(Long id, String name, BigDecimal price, Long menuGroupId) {
         this.id = id;
         this.name = name;
