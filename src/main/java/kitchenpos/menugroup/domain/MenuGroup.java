@@ -49,12 +49,4 @@ public class MenuGroup {
     public int hashCode() {
         return Objects.hash(id);
     }
-
-    @Override
-    public String toString() {
-        return "MenuGroup{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
-    }
 }

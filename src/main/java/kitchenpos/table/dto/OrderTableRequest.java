@@ -56,14 +56,4 @@ public class OrderTableRequest {
     public Boolean getEmpty() {
         return empty;
     }
-
-    @Override
-    public String toString() {
-        return "OrderTableRequest{" +
-                "id=" + id +
-                ", tableGroupId=" + tableGroupId +
-                ", numberOfGuests=" + numberOfGuests +
-                ", empty=" + empty +
-                '}';
-    }
 }
