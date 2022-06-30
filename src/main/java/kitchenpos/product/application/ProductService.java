@@ -7,9 +7,7 @@ import kitchenpos.product.dto.ProductResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,12 +20,6 @@ public class ProductService {
 
     @Transactional
     public ProductResponse create(final ProductRequest request) {
-        final BigDecimal price = request.getPrice();
-
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
-
         Product product = new Product(request.getId(), request.getName(), request.getPrice());
         return ProductResponse.of(productRepository.save(product));
     }

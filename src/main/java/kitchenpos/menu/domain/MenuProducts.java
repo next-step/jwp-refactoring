@@ -31,7 +31,7 @@ public class MenuProducts {
         BigDecimal sum = BigDecimal.ZERO;
         for (final MenuProduct menuProduct : list) {
             final Product product = menuProduct.getProduct();
-            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
+            sum = sum.add(product.getPrice().getValue().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
             menuProduct.setMenu(menu);
         }
 

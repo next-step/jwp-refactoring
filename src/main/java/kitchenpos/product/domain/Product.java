@@ -1,7 +1,10 @@
 package kitchenpos.product.domain;
 
+import kitchenpos.menu.domain.Price;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Entity
 @Table(name = "product")
@@ -13,21 +16,21 @@ public class Product {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private BigDecimal price;
+    @Embedded
+    private Price price;
 
     protected Product() {
     }
 
     public Product(String name, BigDecimal price) {
         this.name = name;
-        this.price = price;
+        this.price = new Price(price);
     }
 
     public Product(Long id, String name, BigDecimal price) {
         this.id = id;
         this.name = name;
-        this.price = price;
+        this.price = new Price(price);
     }
 
     public Long getId() {
@@ -38,16 +41,20 @@ public class Product {
         return name;
     }
 
-    public BigDecimal getPrice() {
+    public Price getPrice() {
         return price;
     }
 
     @Override
-    public String toString() {
-        return "Product{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", price=" + price +
-                '}';
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return Objects.equals(id, product.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
