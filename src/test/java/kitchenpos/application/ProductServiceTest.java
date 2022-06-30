@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -40,7 +39,7 @@ class ProductServiceTest {
         // given
         final ProductRequest given = new ProductRequest("new product", new Price(15000L));
 
-        final Product expected = new Product(1L, "new product", BigDecimal.valueOf(15000L));
+        final Product expected = new Product(1L, "new product", new Price(15000L));
         when(productRepository.save(any(Product.class))).thenReturn(expected);
 
         // when
@@ -65,7 +64,7 @@ class ProductServiceTest {
     @Test
     void 아이디로_상품을_조회할_수_있어야_한다() {
         // given
-        final Product given = new Product(1L, "new product", BigDecimal.valueOf(15000L));
+        final Product given = new Product(1L, "new product", new Price(15000L));
         when(productRepository.findById(given.getId())).thenReturn(Optional.of(given));
 
         // when

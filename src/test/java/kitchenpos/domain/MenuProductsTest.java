@@ -20,7 +20,7 @@ class MenuProductsTest {
         menuProducts.makeRelations(menu, Arrays.asList(menuProduct1, menuProduct2));
 
         // then
-        assertThat(menu.getMenuProducts().getResponses()
+        assertThat(menu.getMenuProducts()
                 .stream().map(MenuProductResponse::getProductId).collect(Collectors.toList()))
                 .containsExactly(menuProduct1.getProductId(), menuProduct2.getProductId());
     }

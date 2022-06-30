@@ -5,10 +5,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.Price;
 import kitchenpos.dto.MenuProductRequest;
@@ -52,7 +51,7 @@ class MenuServiceTest {
                 Arrays.asList(
                         new MenuProductRequest(식당_포스.삼겹살.getId(), 2L),
                         new MenuProductRequest(식당_포스.목살.getId(), 1L)));
-        final Menu expected = new Menu(1L);
+        final Menu expected = new Menu(1L, given.getName(), given.getPrice(), given.getMenuGroupId());
         when(menuGroupService.existsById(식당_포스.구이류.getId())).thenReturn(true);
         when(productService.getById(식당_포스.삼겹살.getId())).thenReturn(식당_포스.삼겹살);
         when(productService.getById(식당_포스.목살.getId())).thenReturn(식당_포스.목살);
@@ -94,7 +93,7 @@ class MenuServiceTest {
                 Arrays.asList(
                         new MenuProductRequest(식당_포스.삼겹살.getId(), 2L),
                         new MenuProductRequest(invalidProductId, 1L)));
-        when(menuRepository.existsById(식당_포스.구이류.getId())).thenReturn(true);
+        when(menuGroupService.existsById(식당_포스.구이류.getId())).thenReturn(true);
         when(productService.getById(식당_포스.삼겹살.getId())).thenReturn(식당_포스.삼겹살);
         when(productService.getById(invalidProductId)).thenThrow(new IllegalArgumentException());
 
@@ -106,15 +105,16 @@ class MenuServiceTest {
     @Test
     void 메뉴_등록_시_메뉴_가격이_상품들의_금액_총합보다_크면_에러가_발생해야_한다() {
         // given
-        final Menu given = new Menu(
-                1L,
+        final MenuRequest given = new MenuRequest(
                 "돼지모듬",
-                BigDecimal.valueOf(1000000L),
+                new Price(1000000L),
                 식당_포스.구이류.getId(),
-                Arrays.asList(식당_포스.돼지모듬_삼겹살, 식당_포스.돼지모듬_목살));
-        when(menuGroupDao.existsById(식당_포스.구이류.getId())).thenReturn(true);
-        when(productDao.findById(식당_포스.삼겹살.getId())).thenReturn(Optional.of(식당_포스.삼겹살));
-        when(productDao.findById(식당_포스.목살.getId())).thenReturn(Optional.of(식당_포스.목살));
+                Arrays.asList(
+                        new MenuProductRequest(식당_포스.삼겹살.getId(), 2L),
+                        new MenuProductRequest(식당_포스.목살.getId(), 1L)));
+        when(menuGroupService.existsById(식당_포스.구이류.getId())).thenReturn(true);
+        when(productService.getById(식당_포스.삼겹살.getId())).thenReturn(식당_포스.삼겹살);
+        when(productService.getById(식당_포스.목살.getId())).thenReturn(식당_포스.목살);
 
         // when and then
         assertThatThrownBy(() -> menuService.create(given))
@@ -124,12 +124,13 @@ class MenuServiceTest {
     @Test
     void 메뉴_목록을_조회할_수_있어야_한다() {
         // given
-        when(menuDao.findAll()).thenReturn(Arrays.asList(식당_포스.돼지모듬, 식당_포스.김치찌개정식));
+        when(menuRepository.findAll()).thenReturn(Arrays.asList(식당_포스.돼지모듬, 식당_포스.김치찌개정식));
 
         // when
-        final List<Menu> actual = menuService.list();
+        final List<MenuResponse> actual = menuService.list();
 
         // then
-        assertThat(actual).containsExactly(식당_포스.돼지모듬, 식당_포스.김치찌개정식);
+        assertThat(actual.stream().map(MenuResponse::getId).collect(Collectors.toList()))
+                .containsExactly(식당_포스.돼지모듬.getId(), 식당_포스.김치찌개정식.getId());
     }
 }

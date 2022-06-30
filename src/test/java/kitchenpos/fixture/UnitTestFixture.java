@@ -1,11 +1,11 @@
 package kitchenpos.fixture;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.MenuProducts;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
@@ -29,9 +29,9 @@ public class UnitTestFixture {
     public final MenuProduct 김치찌개정식_공깃밥 = new MenuProduct(4L, null, 4L, 1);
 
     public final Menu 돼지모듬 = new Menu(
-            1L, "돼지모듬", BigDecimal.valueOf(43000L), 구이류.getId(), Arrays.asList(돼지모듬_삼겹살, 돼지모듬_목살));
+            1L, "돼지모듬", new Price(43000L), 구이류.getId(), new MenuProducts(Arrays.asList(돼지모듬_삼겹살, 돼지모듬_목살)));
     public final Menu 김치찌개정식 = new Menu(
-            2L, "김치찌개정식", BigDecimal.valueOf(9000), 식사류.getId(), Arrays.asList(김치찌개정식_김치찌개, 김치찌개정식_공깃밥));
+            2L, "김치찌개정식", new Price(9000L), 식사류.getId(), new MenuProducts(Arrays.asList(김치찌개정식_김치찌개, 김치찌개정식_공깃밥)));
 
     public final OrderLineItem 주문_항목1 = new OrderLineItem(1L, 1L, 1L, 2);
     public final OrderLineItem 주문_항목2 = new OrderLineItem(2L, 1L, 2L, 1);

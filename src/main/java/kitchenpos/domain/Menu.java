@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -7,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import kitchenpos.dto.MenuProductResponse;
 
 @Entity
 @Table(name = "menu")
@@ -59,6 +61,10 @@ public class Menu {
         this.menuProducts = menuProducts;
     }
 
+    public void addMenuProducts(final List<MenuProduct> menuProducts) {
+        this.menuProducts.makeRelations(this, menuProducts);
+    }
+
     public Long getId() {
         return id;
     }
@@ -75,7 +81,7 @@ public class Menu {
         return menuGroupId;
     }
 
-    public MenuProducts getMenuProducts() {
-        return menuProducts;
+    public List<MenuProductResponse> getMenuProducts() {
+        return menuProducts.getResponses();
     }
 }

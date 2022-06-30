@@ -25,8 +25,7 @@ public class MenuGroupService {
     }
 
     @Transactional(readOnly = true)
-    public MenuGroup getById(final Long id) {
-        return menuGroupRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(String.format("메뉴그룹을 찾을 수 없습니다. id: %d", id)));
+    public boolean existsById(final Long id) {
+        return menuGroupRepository.existsById(id);
     }
 }
