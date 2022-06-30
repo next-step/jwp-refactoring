@@ -34,8 +34,7 @@ public class TableGroupService {
         List<Long> orderTableIds = orderTableRequests.getOrderTableIds();
         OrderTables orderTables = new OrderTables(orderTableRepository.findAllById(orderTableIds));
         orderTables.validateSizeForTableGroup(request.getOrderTables());
-        TableGroup tableGroup = new TableGroup(orderTables);
-        return TableGroupResponse.of(tableGroupRepository.save(tableGroup));
+        return TableGroupResponse.of(tableGroupRepository.save(new TableGroup(orderTables)));
     }
 
     @Transactional
