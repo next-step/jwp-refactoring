@@ -1,27 +1,27 @@
 package kitchenpos.application;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.event.TableEmptyChangedEvent;
 import kitchenpos.dto.request.OrderTableRequest;
 import kitchenpos.dto.response.OrderTableResponse;
+import kitchenpos.event.TableChangeEmptyEvent;
 import kitchenpos.exception.OrderTableException;
-import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TableService {
 
-    private final OrderRepository orderRepository;
+    private final ApplicationEventPublisher eventPublisher;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(OrderRepository orderRepository,
+    public TableService(ApplicationEventPublisher eventPublisher,
         OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
+        this.eventPublisher = eventPublisher;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -46,10 +46,8 @@ public class TableService {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
             .orElseThrow(() -> new OrderTableException("상태 변경할 테이블은 저장되어있어야 합니다"));
 
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId,
-            Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new OrderTableException("완료되지않은 주문이 있으면 상태변경을 할수 없습니다");
-        }
+        eventPublisher.publishEvent(
+            new TableChangeEmptyEvent(new TableEmptyChangedEvent(orderTableId)));
 
         if (orderTableRequest.getEmpty()) {
             savedOrderTable.clearTable();
