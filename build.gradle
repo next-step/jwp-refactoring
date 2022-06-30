@@ -1,37 +1,76 @@
-plugins {
-    id 'org.springframework.boot' version '2.4.1'
-    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
-    id 'java'
+buildscript {
+    ext {
+        springBootVersion = '2.4.1'
+        dependencyManagementVersion = '1.0.10.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+        classpath "io.spring.gradle:dependency-management-plugin:${dependencyManagementVersion}"
+    }
 }
-
-group = 'camp.nextstep.edu'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
 
 repositories {
     mavenCentral()
 }
 
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+allprojects { //root 프로젝트인 kitchenpos에서 시작하기때문에 allProjects로 설
+    group = 'camp.nextstep.edu'
+    version = '0.0.1-SNAPSHOT'
 
-    runtimeOnly 'com.h2database:h2'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'java'
 
-    //jpa
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    sourceCompatibility = '1.8'
 
-    //mysql connector
-    implementation("mysql:mysql-connector-java")
+    repositories {
+        mavenCentral()
+    }
 
-    //test - RestAssured
-    testImplementation 'io.rest-assured:rest-assured:3.3.0'
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+        implementation 'org.springframework.boot:spring-boot-starter-web'
 
-    implementation('com.google.guava:guava:29.0-jre')
+        runtimeOnly 'com.h2database:h2'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+        //jpa
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+        //mysql connector
+        implementation("mysql:mysql-connector-java")
+
+        //test - RestAssured
+        testImplementation 'io.rest-assured:rest-assured:3.3.0'
+
+        implementation('com.google.guava:guava:29.0-jre')
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+}
+project(':module-product') {
+    dependencies {
+        compile project(':module-common')
+    }
 }
 
-test {
-    useJUnitPlatform()
+project(':module-menu') {
+    dependencies {
+        compile project(':module-common')
+    }
+}
+project(':module-order') {
+    dependencies {
+        compile project(':module-common')
+    }
+}
+project(':module-table') {
+    dependencies {
+        compile project(':module-common')
+    }
 }
