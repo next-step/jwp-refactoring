@@ -11,7 +11,6 @@ import java.util.List;
 public class MenuPrice {
     @Column(name = "price")
     private int value;
-
     public static final int MIN_PRICE = 0;
 
     protected MenuPrice() {
@@ -26,7 +25,7 @@ public class MenuPrice {
         return new MenuPrice(price);
     }
 
-    private static void validatePrice(int value) {
+    private void validatePrice(int value) {
         if (value < MIN_PRICE) {
             throw new IllegalPriceException(String.format(ErrorMessage.ERROR_PRICE_TOO_SMALL, MIN_PRICE));
         }

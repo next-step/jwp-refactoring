@@ -29,20 +29,17 @@ public class Order {
 
     private static final int MINIMUM_ORDER_LINE_ITEM_NUMBER = 1;
 
-    public Order() {
+    protected Order() {
     }
 
-    public Order(Long id, OrderTable orderTable, LocalDateTime orderedTime) {
-        validateOrderTable(orderTable);
-        this.id = id;
-        this.orderTable = orderTable;
-        this.orderedTime = orderedTime;
-    }
-
-    public Order(OrderTable orderTable, LocalDateTime orderedTime) {
+    private Order(OrderTable orderTable, LocalDateTime orderedTime) {
         validateOrderTable(orderTable);
         this.orderTable = orderTable;
         this.orderedTime = orderedTime;
+    }
+
+    public static Order of(OrderTable orderTable, LocalDateTime orderedTime) {
+        return new Order(orderTable, orderedTime);
     }
 
     private void validateOrderTable(OrderTable orderTable) {

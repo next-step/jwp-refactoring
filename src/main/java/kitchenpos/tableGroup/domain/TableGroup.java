@@ -14,7 +14,6 @@ import java.util.List;
 
 @Entity
 public class TableGroup {
-    public static final int MIN_ORDER_TABLE_NUMBER = 2;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,22 +21,18 @@ public class TableGroup {
     @OneToMany(mappedBy = "tableGroup")
     private List<OrderTable> orderTables = new ArrayList<>();
 
-    public TableGroup() {
+    public static final int MIN_ORDER_TABLE_NUMBER = 2;
+
+    protected TableGroup() {
     }
 
-    public TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
-        this.id = id;
+    private TableGroup(LocalDateTime createdDate, List<OrderTable> orderTables) {
         this.createdDate = createdDate;
         assignOrderTables(orderTables);
     }
 
-    public TableGroup(LocalDateTime createdDate, List<OrderTable> orderTables) {
-        this.createdDate = createdDate;
-        assignOrderTables(orderTables);
-    }
-
-    public static TableGroup from(List<OrderTable> orderTables) {
-        return new TableGroup(LocalDateTime.now(), orderTables);
+    public static TableGroup of(LocalDateTime createdDate, List<OrderTable> orderTables) {
+        return new TableGroup(createdDate, orderTables);
     }
 
     private void assignOrderTables(List<OrderTable> orderTables) {

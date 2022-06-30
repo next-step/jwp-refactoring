@@ -7,23 +7,20 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
     private String name;
     @Embedded
     private ProductPrice price;
 
-    public Product() {
+    protected Product() {
     }
 
-    public Product(String name, int price) {
+    private Product(String name, int price) {
         this.name = name;
         this.price = ProductPrice.from(price);
     }
 
-    public Product(Long id, String name, int price) {
-        this.id = id;
-        this.name = name;
-        this.price = ProductPrice.from(price);
+    public static Product of(String name, int price) {
+        return new Product(name, price);
     }
 
     public Long getId() {

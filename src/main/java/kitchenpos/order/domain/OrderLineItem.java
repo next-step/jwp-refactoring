@@ -17,25 +17,21 @@ public class OrderLineItem {
     private Menu menu;
     private int quantity;
 
-    public OrderLineItem() {
+    protected OrderLineItem() {
     }
 
-    public OrderLineItem(Long seq, Order order, Menu menu, int quantity) {
-        this.seq = seq;
+    private OrderLineItem(Order order, Menu menu, int quantity) {
         this.order = order;
         this.menu = menu;
         this.quantity = quantity;
     }
 
-    public OrderLineItem(Order order, Menu menu, int quantity) {
-        this.order = order;
-        this.menu = menu;
-        this.quantity = quantity;
+    public static OrderLineItem of(Order order, Menu menu, int quantity) {
+        return new OrderLineItem(order, menu, quantity);
     }
 
-    public OrderLineItem(Menu menu, int quantity) {
-        this.menu = menu;
-        this.quantity = quantity;
+    public static OrderLineItem of(Menu menu, int quantity) {
+        return new OrderLineItem(null, menu, quantity);
     }
 
     public Long getSeq() {

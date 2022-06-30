@@ -17,25 +17,21 @@ public class MenuProduct {
     private Product product;
     private int quantity;
 
-    public MenuProduct() {
+    protected MenuProduct() {
     }
 
-    public MenuProduct(Long seq, Menu menu, Product product, int quantity) {
-        this.seq = seq;
+    private MenuProduct(Menu menu, Product product, int quantity) {
         this.menu = menu;
         this.product = product;
         this.quantity = quantity;
     }
 
-    public MenuProduct(Menu menu, Product product, int quantity) {
-        this.menu = menu;
-        this.product = product;
-        this.quantity = quantity;
+    public static MenuProduct of(Menu menu, Product product, int quantity){
+        return new MenuProduct(menu, product, quantity);
     }
 
-    public MenuProduct(Product product, int quantity) {
-        this.product = product;
-        this.quantity = quantity;
+    public static MenuProduct of(Product product, int quantity){
+        return new MenuProduct(null, product, quantity);
     }
 
     public Long getSeq() {

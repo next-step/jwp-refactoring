@@ -22,20 +22,17 @@ public class Menu {
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
-    public Menu() {
+    protected Menu() {
     }
 
-    public Menu(Long id, String name, int price, MenuGroup menuGroup) {
-        this.id = id;
+    private Menu(String name, int price, MenuGroup menuGroup) {
         this.name = name;
         this.price = MenuPrice.from(price);
         this.menuGroup = menuGroup;
     }
 
-    public Menu(String name, int price, MenuGroup menuGroup) {
-        this.name = name;
-        this.price = MenuPrice.from(price);
-        this.menuGroup = menuGroup;
+    public static Menu of(String name, int price, MenuGroup menuGroup){
+        return new Menu(name, price, menuGroup);
     }
 
     public Long getId() {

@@ -87,7 +87,7 @@ class OrderTest {
         OrderTable 테이블_1 = createOrderTable(0, true);
 
         assertThrows(IllegalOrderTableException.class,
-                () ->new Order(테이블_1, LocalDateTime.now()));
+                () -> Order.of(테이블_1, LocalDateTime.now()));
     }
 
     @DisplayName("주문의 상태를 변경할 수 있다")

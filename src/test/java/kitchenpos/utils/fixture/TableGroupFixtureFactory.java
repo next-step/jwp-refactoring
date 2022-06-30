@@ -8,6 +8,6 @@ import java.util.List;
 
 public class TableGroupFixtureFactory {
     public static TableGroup createTableGroup(LocalDateTime createdDate, List<OrderTable> orderTables) {
-        return new TableGroup(createdDate, orderTables);
+        return TableGroup.of(createdDate, orderTables);
     }
 }

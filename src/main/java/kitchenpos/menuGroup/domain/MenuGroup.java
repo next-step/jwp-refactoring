@@ -10,16 +10,15 @@ public class MenuGroup {
     @Column(unique = true)
     private String name;
 
-    public MenuGroup() {
+    protected MenuGroup() {
     }
 
-    public MenuGroup(Long id, String name) {
-        this.id = id;
+    private MenuGroup(String name) {
         this.name = name;
     }
 
-    public MenuGroup(String name) {
-        this.name = name;
+    public static MenuGroup from(String name) {
+        return new MenuGroup(name);
     }
 
     public Long getId() {

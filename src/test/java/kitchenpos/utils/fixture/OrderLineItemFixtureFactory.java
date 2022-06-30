@@ -6,6 +6,6 @@ import kitchenpos.order.domain.OrderLineItem;
 
 public class OrderLineItemFixtureFactory {
     public static OrderLineItem createOrderLineItem(Order order, Menu menu, int quantity) {
-        return new OrderLineItem(order, menu, quantity);
+        return OrderLineItem.of(order, menu, quantity);
     }
 }

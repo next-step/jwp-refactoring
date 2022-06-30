@@ -35,7 +35,7 @@ class TableGroupTest {
         OrderTable orderTable = createOrderTable(0, true);
 
         assertThrows(IllegalOrderTableException.class,
-                () -> new TableGroup(LocalDateTime.now(), Arrays.asList(orderTable)));
+                () -> TableGroup.of(LocalDateTime.now(), Arrays.asList(orderTable)));
     }
 
     @DisplayName("테이블그룹 내 주문테이블은 중복될 수 없다")
@@ -44,7 +44,7 @@ class TableGroupTest {
         OrderTable orderTable = createOrderTable(0, true);
 
         assertThrows(IllegalOrderTableException.class,
-                () -> new TableGroup(LocalDateTime.now(), Arrays.asList(orderTable, orderTable)));
+                () -> TableGroup.of(LocalDateTime.now(), Arrays.asList(orderTable, orderTable)));
     }
 
     @DisplayName("비어있는 주문테이블만 등록할 수 있다")
@@ -54,7 +54,7 @@ class TableGroupTest {
         OrderTable orderTable2 = createOrderTable(4, false);
 
         assertThrows(IllegalOrderTableException.class,
-                () -> new TableGroup(LocalDateTime.now(), Arrays.asList(orderTable, orderTable2)));
+                () -> TableGroup.of(LocalDateTime.now(), Arrays.asList(orderTable, orderTable2)));
 
     }
 
@@ -68,7 +68,7 @@ class TableGroupTest {
         OrderTable orderTable3 = createOrderTable(4, false);
 
         assertThrows(IllegalOrderTableException.class,
-                () -> new TableGroup(LocalDateTime.now(), Arrays.asList(orderTable3, orderTable)));
+                () -> TableGroup.of(LocalDateTime.now(), Arrays.asList(orderTable3, orderTable)));
 
     }
 

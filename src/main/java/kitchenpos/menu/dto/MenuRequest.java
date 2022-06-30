@@ -43,6 +43,6 @@ public class MenuRequest {
     }
 
     public Menu toMenu(MenuGroup menuGroup) {
-        return new Menu(name, price, menuGroup);
+        return Menu.of(name, price, menuGroup);
     }
 }

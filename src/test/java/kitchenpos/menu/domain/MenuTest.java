@@ -43,7 +43,7 @@ class MenuTest {
         MenuGroup menuGroup_한식 = createMenuGroup("한식");
 
         assertThrows(IllegalPriceException.class,
-                () -> new Menu("김치찌개", -8000, menuGroup_한식));
+                () -> Menu.of("김치찌개", -8000, menuGroup_한식));
     }
 
     @DisplayName("메뉴의 가격은, 메뉴상품의 정가의 합보다 클 수 없다")

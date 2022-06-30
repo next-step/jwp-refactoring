@@ -26,6 +26,6 @@ class ProductTest {
     @Test
     void Product_가격_0이상_검증(){
         assertThrows(IllegalPriceException.class,
-                () -> new Product("김치찌개", -8500));
+                () -> Product.of("김치찌개", -8500));
     }
 }

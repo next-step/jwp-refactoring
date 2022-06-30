@@ -14,6 +14,7 @@ import kitchenpos.tableGroup.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,7 +34,7 @@ public class TableGroupService {
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         List<OrderTable> orderTables = retrieveOrderTables(tableGroupRequest);
-        final TableGroup savedTableGroup = tableGroupRepository.save(TableGroup.from(orderTables));
+        final TableGroup savedTableGroup = tableGroupRepository.save(TableGroup.of(LocalDateTime.now(), orderTables));
 
         return TableGroupResponse.from(savedTableGroup);
     }

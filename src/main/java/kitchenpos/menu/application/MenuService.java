@@ -59,7 +59,7 @@ public class MenuService {
         return menuProductRequests.stream()
                 .map(menuProductRequest -> {
                     Product product = findProductById(menuProductRequest.getProductId());
-                    return new MenuProduct(product, menuProductRequest.getQuantity());
+                    return MenuProduct.of(product, menuProductRequest.getQuantity());
                 })
                 .collect(Collectors.toList());
     }
