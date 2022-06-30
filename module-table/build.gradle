@@ -1,2 +1,9 @@
 bootJar { enabled = false }
 jar { enabled = true }
+
+dependencies {
+    testImplementation project(':module-order')
+    testImplementation project(':module-menu')
+    testImplementation project(':module-product')
+    testImplementation project(':module-common')
+}
