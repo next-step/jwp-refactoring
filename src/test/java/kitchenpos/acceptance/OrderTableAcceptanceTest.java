@@ -63,21 +63,21 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 주문테이블_등록_성공() {
+    void 주문테이블을_등록할_수_있다() {
         ExtractableResponse<Response> 주문테이블_등록_결과 = 주문테이블_등록_요청(true, 5);
 
         주문테이블_등록성공(주문테이블_등록_결과);
     }
 
     @Test
-    void 주문테이블_조회_성공() {
+    void 주문테이블을_조회할_수_있다() {
         ExtractableResponse<Response> 주문테이블_조회_결과 = 주문테이블_조회_요청();
 
         주문테이블_조회성공(주문테이블_조회_결과);
     }
 
     @Test
-    void 주문테이블_빈테이블로_변경_성공() {
+    void 주문테이블을_빈테이블로_변경할_수_있다() {
         OrderTable 주문테이블 = 주문테이블_등록_요청(true, 5).as(OrderTable.class);
         ExtractableResponse<Response> 주문테이블_빈테이블로_변경_결과 = 주문테이블_빈테이블로_변경요청(주문테이블);
 
@@ -85,7 +85,7 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 주문테이블_빈테이블로_변경_실패_존재하지않는_주문테이블() {
+    void 존재하지않는_주문테이블을_빈테이블로_변경할_수_없다() {
         long 존재하지않는_주문테이블번호 = 999L;
         OrderTable 존재하지않는_주문테이블 = new OrderTable();
         존재하지않는_주문테이블.setId(존재하지않는_주문테이블번호);
@@ -96,7 +96,7 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 주문테이블_빈테이블로_변경_실패_테이블그룹에속한_주문테이블() {
+    void 테이블그룹에_속한_주문테이블은_빈테이블로_변경할_수_없다() {
         OrderTable 테이블그룹에속한_주문테이블 = 테이블그룹에속한_주문테이블_등록_요청(true, 5).as(OrderTable.class);
         OrderTable 테이블그룹에속한_주문테이블2 = 테이블그룹에속한_주문테이블_등록_요청(true, 5).as(OrderTable.class);
         List<OrderTable> 주문테이블_리스트 = Arrays.asList(테이블그룹에속한_주문테이블, 테이블그룹에속한_주문테이블2);
@@ -109,7 +109,7 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
 
     @ParameterizedTest
     @MethodSource("cookingAndMeal")
-    void 주문테이블_빈테이블로_변경_실패_주문상태가_요리중이나_식사중(OrderStatus status) {
+    void 주문테이블의_주문상태가_요리중이거나_식사중이면__빈테이블로_변경할_수_없다(OrderStatus status) {
         OrderTable 테이블그룹에속한_주문테이블 = 테이블그룹에속한_주문테이블_등록_요청(false, 5).as(OrderTable.class);
         Order 주문 = 주문_등록_요청(테이블그룹에속한_주문테이블.getId(), Arrays.asList(주문항목)).as(Order.class);
         ExtractableResponse<Response> 요리중으로_변경 = 주문_상태_변경_요청(주문, status);
@@ -120,7 +120,7 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 주문테이블_손님수변경_성공() {
+    void 주문테이블의_손님수를_변경할_수_있다() {
         OrderTable 주문테이블 = 주문테이블_등록_요청(false, 5).as(OrderTable.class);
 
         ExtractableResponse<Response> 테이블_손님수_변경_결과 = 테이블_손님수_변경_요청(주문테이블.getId(), 3);
@@ -129,7 +129,7 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 주문테이블_손님수변경_실패_손님의수를_음수로변경() {
+    void 주문테이블의_손님수를_음수로_변경할_수_없다() {
         OrderTable 주문테이블 = 주문테이블_등록_요청(false, 5).as(OrderTable.class);
 
         ExtractableResponse<Response> 테이블_손님수_변경_결과 = 테이블_손님수_변경_요청(주문테이블.getId(), -1);
@@ -138,7 +138,7 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 주문테이블_손님수변경_실패_존재하지않는_테이블() {
+    void 존재하지않는_주문테이블의_손님수를_변경할_수_없다() {
         OrderTable 존재하지않는_주문테이블 = new OrderTable();
         존재하지않는_주문테이블.setId(999L);
 
@@ -148,7 +148,7 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 주문테이블_손님수변경_실패_주문테이블이_빈경우() {
+    void 빈_주문테이블의_손님수를_변경할_수_없다() {
         OrderTable 주문테이블 = 주문테이블_등록_요청(true, 5).as(OrderTable.class);
 
         ExtractableResponse<Response> 테이블_손님수_변경_결과 = 테이블_손님수_변경_요청(주문테이블.getId(), 3);

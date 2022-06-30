@@ -37,9 +37,8 @@ class TableServiceTest {
     }
 
 
-
     @Test
-    void 테이블_생성() {
+    void 테이블을_생성할_수_있다() {
         OrderTable orderTable = 테이블생성(1L, null, 3, true);
         given(orderTableDao.save(any())).willReturn(orderTable);
 
@@ -49,7 +48,7 @@ class TableServiceTest {
     }
 
     @Test
-    void 테이블_조회() {
+    void 테이블을_조회할_수_있다() {
         OrderTable orderTable = 테이블생성(1L, null, 3, true);
         OrderTable orderTable2 = 테이블생성(2L, null, 5, true);
         List<OrderTable> orderTables = Arrays.asList(orderTable, orderTable2);
@@ -61,7 +60,7 @@ class TableServiceTest {
     }
 
     @Test
-    void 테이블_비우기() {
+    void 테이블을_비울_수_있다() {
         OrderTable orderTable = 테이블생성(1L, null, 3, false);
         OrderTable request = 테이블생성(null, null, 3, true);
         given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
@@ -74,7 +73,7 @@ class TableServiceTest {
     }
 
     @Test
-    void 테이블_비우기_실패_주문테이블이_존재하지않음() {
+    void 주문테이블이_존재하지않으면_테이블을_비울_수_없다() {
         OrderTable orderTable = 테이블생성(1L, null, 3, false);
         given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.empty());
 
@@ -83,7 +82,7 @@ class TableServiceTest {
     }
 
     @Test
-    void 테이블_비우기_실패_테이블그룹이_이미존재() {
+    void 테이블그룹이_존재하면_테이블을_비울_수_없다() {
         OrderTable orderTable = 테이블생성(1L, 1L, 3, false);
         given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
 
@@ -92,7 +91,7 @@ class TableServiceTest {
     }
 
     @Test
-    void 테이블_비우기_실패_주문상태가_요리중이거나식사중() {
+    void 주문상태가_요리중이거나_식사중이면_테이블을_비울_수_없다() {
         OrderTable orderTable = 테이블생성(1L, null, 3, false);
         given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(true);
@@ -101,7 +100,7 @@ class TableServiceTest {
     }
 
     @Test
-    void 인원수_변경() {
+    void 테이블의_인원수를_변경할_수_있다() {
         OrderTable orderTable = 테이블생성(1L, null, 3, false);
         OrderTable 인원수변경_5명 = 테이블생성(null, null, 5, false);
         given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
@@ -113,7 +112,7 @@ class TableServiceTest {
     }
 
     @Test
-    void 인원수_변경_실패_음수인원() {
+    void 테이블의_인원수를_음수로_변경할_수_없다() {
         OrderTable orderTable = 테이블생성(1L, null, 3, false);
         OrderTable 음수인원수로변경 = 테이블생성(null, null, -5, false);
 
@@ -122,7 +121,7 @@ class TableServiceTest {
     }
 
     @Test
-    void 인원수_변경_실패_존재하지않는_테이블() {
+    void 존재하지않는_테이블의_인원수를_변경할_수_없다() {
         OrderTable orderTable = 테이블생성(1L, null, 3, false);
         OrderTable 인원수변경_5명 = 테이블생성(null, null, 5, false);
         given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.empty());
@@ -130,6 +129,4 @@ class TableServiceTest {
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTable.getId(), 인원수변경_5명))
                 .isInstanceOf(IllegalArgumentException.class);
     }
-
-
 }

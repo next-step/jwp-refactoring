@@ -36,7 +36,7 @@ class MenuGroupServiceTest {
     }
 
     @Test
-    void 메뉴그룹_등록_성공() {
+    void 메뉴그룹을_등록할_수_있다() {
         given(menuGroupDao.save(메뉴그룹)).willReturn(메뉴그룹);
 
         MenuGroup createdMenuGroup = menuGroupService.create(메뉴그룹);
@@ -48,7 +48,7 @@ class MenuGroupServiceTest {
     }
 
     @Test
-    void 상품_조회_성공() {
+    void 메뉴그룹을_조회할_수_있다() {
         given(menuGroupDao.findAll()).willReturn(Arrays.asList(메뉴그룹));
 
         List<MenuGroup> 메뉴그룹리스트 = menuGroupService.list();

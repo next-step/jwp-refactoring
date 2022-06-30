@@ -53,7 +53,7 @@ class TableGroupServiceTest {
     }
 
     @Test
-    void 테이블그룹_생성() {
+    void 테이블그룹을_생성할_수_있다() {
         given(orderTableDao.findAllByIdIn(Arrays.asList(table1.getId(), table2.getId()))).willReturn(orderTables);
         given(tableGroupDao.save(any(TableGroup.class))).willReturn(tableGroup);
 
@@ -63,7 +63,7 @@ class TableGroupServiceTest {
     }
 
     @Test
-    void 테이블그룹_생성_실패_주문테이블이_2개미만() {
+    void 주문테이블이_2개미만이면_테이블그룹을_생성할_수_없다() {
         TableGroup 테이블그룹_주문테이블1개 = 테이블그룹생성(2L, Arrays.asList(table1));
 
         assertThatThrownBy(() -> tableGroupService.create(테이블그룹_주문테이블1개))
@@ -71,7 +71,7 @@ class TableGroupServiceTest {
     }
 
     @Test
-    void 테이블그룹_생성_실패_등록되지않은_주문테이블() {
+    void 주문테이블이_등록되지_않았으면_테이블그룹을_생성할_수_없다() {
         given(orderTableDao.findAllByIdIn(Arrays.asList(table1.getId(), table2.getId())))
                 .willReturn(Arrays.asList(table1));
 
@@ -80,7 +80,7 @@ class TableGroupServiceTest {
     }
 
     @Test
-    void 테이블그룹_생성_실패_빈_주문테이블() {
+    void 주문테이블이_비어있으면_테이블그룹을_생성할_수_없다() {
         OrderTable 빈테이블1 = 테이블생성(1L, null, 3, false);
         OrderTable 빈테이블2 = 테이블생성(1L, null, 3, false);
         given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(빈테이블1, 빈테이블2));
@@ -90,7 +90,7 @@ class TableGroupServiceTest {
     }
 
     @Test
-    void 테이블그룹_생성_실패_테이블그룹아이디가_설정되어있음() {
+    void 이미_테이블그룹아이디가_존재하면_테이블그룹을_생성할_수_없다() {
         OrderTable 빈테이블1 = 테이블생성(1L, 1L, 3, true);
         OrderTable 빈테이블2 = 테이블생성(1L, 1L, 3, true);
         given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(빈테이블1, 빈테이블2));
@@ -100,7 +100,7 @@ class TableGroupServiceTest {
     }
 
     @Test
-    void 테이블그룹_삭제() {
+    void 테이블그룹을_삭제할_수_있다() {
         OrderTable 그룹있는_테이블1 = 테이블생성(1L, 1L, 3, true);
         OrderTable 그룹있는_테이블2 = 테이블생성(1L, 1L, 3, true);
         given(orderTableDao.findAllByTableGroupId(1L)).willReturn(Arrays.asList(그룹있는_테이블1, 그룹있는_테이블2));
@@ -113,7 +113,7 @@ class TableGroupServiceTest {
     }
 
     @Test
-    void 테이블그룹_삭제_실패_주문상태가_요리중이거나_식사중() {
+    void 주문상태가_요리중이거나_식사중이면_테이블그룹을_삭제할_수_없다() {
         given(orderTableDao.findAllByTableGroupId(1L)).willReturn(orderTables);
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(Boolean.TRUE);
 

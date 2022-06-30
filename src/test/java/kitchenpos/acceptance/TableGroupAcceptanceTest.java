@@ -58,7 +58,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 테이블그룹_등록_성공() {
+    void 테이블그룹을_등록할_수_있다() {
         List<OrderTable> 주문테이블_리스트 = Arrays.asList(테이블1, 테이블2);
 
         ExtractableResponse<Response> 테이블그룹_등록_결과 = 테이블그룹_등록_요청(주문테이블_리스트);
@@ -67,7 +67,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 테이블그룹_등록_실패_주문테이블이_1개() {
+    void 주문테이블이_1개면_테이블그룹을_등록할_수_없다() {
         List<OrderTable> 주문테이블_리스트 = Arrays.asList(테이블1);
 
         ExtractableResponse<Response> 테이블그룹_등록_결과 = 테이블그룹_등록_요청(주문테이블_리스트);
@@ -76,7 +76,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 테이블그룹_등록_실패_존재하지않는_주문테이블이존재할때() {
+    void 주문테이블이_존재하지않으면_테이블그룹을_등록할_수_없다() {
         OrderTable 존재하지않는테이블 = new OrderTable();
         List<OrderTable> 주문테이블_리스트 = Arrays.asList(테이블1, 존재하지않는테이블);
 
@@ -86,7 +86,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 테이블그룹_등록_실패_비어있지_않은_주문테이블이_존재할때() {
+    void 비어있지_않은_주문테이블이_존재하면_테이블그룹을_등록할_수_없다() {
         List<OrderTable> 주문테이블_리스트 = Arrays.asList(테이블1, 테이블3);
 
         ExtractableResponse<Response> 테이블그룹_등록_결과 = 테이블그룹_등록_요청(주문테이블_리스트);
@@ -95,7 +95,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 테이블그룹_삭제_성공() {
+    void 테이블그룹을_삭제할_수_있다() {
         List<OrderTable> 주문테이블_리스트 = Arrays.asList(테이블1, 테이블2);
         TableGroup 등록된_테이블그룹 = 테이블그룹_등록_요청(주문테이블_리스트).as(TableGroup.class);
 
@@ -106,13 +106,13 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
 
     @ParameterizedTest
     @MethodSource("cookingAndMeal")
-    void 테이블그룹_삭제실패_주문상태가_요리중이거나_식사중(OrderStatus status) {
+    void 주문상태가_요리중이거나_식사중인_테이블그룹은_삭제할_수_없다(OrderStatus status) {
         TableGroup 등록된_테이블그룹 = 테이블그룹_등록_요청(Arrays.asList(테이블1, 테이블2)).as(TableGroup.class);
         OrderLineItem 주문항목 = new OrderLineItem();
         주문항목.setMenuId(후라이드메뉴.getId());
         주문항목.setQuantity(1);
         Order 주문 = 주문_등록_요청(테이블1.getId(), Arrays.asList(주문항목)).as(Order.class);
-        주문_상태_변경_요청(주문, OrderStatus.COOKING);
+        주문_상태_변경_요청(주문, status);
 
         ExtractableResponse<Response> 테이블그룹_삭제_결과 = 테이블그룹_삭제_요청(등록된_테이블그룹.getId());
 

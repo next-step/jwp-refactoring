@@ -39,7 +39,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void 상품을_등록_성공() {
+    void 상품을_등록할_수_있다() {
         given(productDao.save(지코바치킨)).willReturn(지코바치킨);
 
         Product createdProduct = productService.create(지코바치킨);
@@ -52,7 +52,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void 상품을_등록_실패_가격이음수() {
+    void 가격이_0보다작은_상품을_등록할_수_없다() {
         Product 음수가격의_상품 = new Product();
         음수가격의_상품.setPrice(BigDecimal.valueOf(-1000));
         음수가격의_상품.setName("음수 상품");
@@ -62,7 +62,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void 상품_조회_성공() {
+    void 상품을_조회할_수_있다() {
         given(productDao.findAll()).willReturn(Arrays.asList(지코바치킨));
 
         List<Product> 상품리스트 = productService.list();

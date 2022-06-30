@@ -34,7 +34,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 메뉴등록_성공() {
+    void 메뉴를_등록할_수_있다() {
         MenuProduct menuProduct = new MenuProduct();
         menuProduct.setMenuId(1L);
         menuProduct.setProductId(product.getId());
@@ -46,7 +46,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 메뉴등록_실패_메뉴가격_0원미만() {
+    void 메뉴가격이_0원미만이면_메뉴를_등록할_수_없다() {
         MenuProduct menuProduct = new MenuProduct();
         menuProduct.setMenuId(1L);
         menuProduct.setProductId(product.getId());
@@ -58,7 +58,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 메뉴등록_실패_메뉴그룹_존재하지않음() {
+    void 메뉴그룹이_존재하지않으면_메뉴를_등록할_수_없다() {
         MenuProduct menuProduct = new MenuProduct();
         menuProduct.setMenuId(1L);
         menuProduct.setProductId(product.getId());
@@ -70,7 +70,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 메뉴등록_실패_상품이_등록되지않음() {
+    void 상품이_등록되지_않았으면_메뉴를_등록할_수_없다() {
         MenuProduct menuProduct = new MenuProduct();
         menuProduct.setMenuId(1L);
         menuProduct.setProductId(999L);
@@ -82,7 +82,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 메뉴등록_실패_메뉴가격이_상품들가격합보다_큰경우() {
+    void 상품가격의합보다_메뉴가격이_큰경우_메뉴를_등록할_수_없다() {
         BigDecimal moreBigThanPrice = BigDecimal.valueOf(20000);
         MenuProduct menuProduct = new MenuProduct();
         menuProduct.setMenuId(1L);
@@ -95,7 +95,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 메뉴_조회() {
+    void 메뉴를_조회할_수_있다() {
         ExtractableResponse<Response> 메뉴_조회_결과 = 메뉴_조회_요청();
 
         메뉴_조회_성공(메뉴_조회_결과);

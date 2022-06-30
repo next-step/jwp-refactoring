@@ -57,7 +57,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void 주문_생성() {
+    void 주문을_생성할_수_있다() {
         long menuIds = 1L;
         OrderTable ordertable = 테이블생성(1L, 1L, 5, false);
         given(menuDao.countByIdIn(any())).willReturn(menuIds);
@@ -71,28 +71,28 @@ class OrderServiceTest {
     }
 
     @Test
-    void 주문_생성_실패_빈_주문항목() {
+    void 주문항목이_비어있으면_주문을_생성할_수_없다() {
         Order 빈주문 = 주문생성(1L, 1L, OrderStatus.COOKING.name(), Arrays.asList());
 
         assertThatThrownBy(() -> orderService.create(빈주문)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    void 주문_생성_실패_존재하지않는_메뉴() {
+    void 메뉴가_존재하지_않으면_주문을_생성할_수_없다() {
         Order 존재하지않는메뉴_주문 = 주문생성(1L, 1L, OrderStatus.COOKING.name(), Arrays.asList(new OrderLineItem()));
 
         assertThatThrownBy(() -> orderService.create(존재하지않는메뉴_주문)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    void 주문_생성_실패_존재하지않는_주문항목() {
+    void 주문항목이_존재하지_않으면_주문을_생성할_수_없다() {
         given(menuDao.countByIdIn(any())).willReturn(99L);
 
         assertThatThrownBy(() -> orderService.create(orderRequest)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    void 주문_생성_실패_존재하지않는_주문테이블() {
+    void 주문테이블이_존재하지않으면_주문을_생성할_수_없다() {
         given(menuDao.countByIdIn(any())).willReturn(1L);
         given(orderTableDao.findById(any())).willReturn(Optional.empty());
 
@@ -100,7 +100,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void 주문_생성_실패_빈_주문테이블() {
+    void 주문테이블이_비어있으면_주문을_생성할_수_없다() {
         OrderTable 빈_주문테이블 = 테이블생성(1L, 1L, 5, true);
         given(menuDao.countByIdIn(any())).willReturn(1L);
         given(orderTableDao.findById(any())).willReturn(Optional.of(빈_주문테이블));
@@ -109,7 +109,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void 주문_조회() {
+    void 주문을_조회할_수_있다() {
         Order 주문1 = 주문생성(1L, 1L, OrderStatus.MEAL.name(), null);
         List<Order> orders = Arrays.asList(주문1);
         OrderLineItem orderLineItem1 = 주문항목생성(1L, 주문1.getId(), null, 1);
@@ -122,7 +122,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void 주문상태변경() {
+    void 주문의_주문상태를_변경할_수_있다() {
         OrderLineItem orderLineItem = 주문항목생성(1L, order.getId(), null, 1);
         given(orderDao.findById(any())).willReturn(Optional.of(order));
         given(orderLineItemDao.findAllByOrderId(any())).willReturn(Arrays.asList(orderLineItem));
@@ -133,7 +133,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void 주문상태변경_실패_존재하지않는_주문() {
+    void 주문이_존재하지않으면_주문상태를_변경할_수_없다() {
         given(orderDao.findById(any())).willReturn(Optional.empty());
         orderRequest = 주문생성(null, null, OrderStatus.COMPLETION.name(), null);
 
@@ -141,7 +141,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void 주문상태변경_실패_완료된주문() {
+    void 주문의_주문상태가_완료되었으면_주문상태를_변경할_수_없다() {
         order.setOrderStatus(OrderStatus.COMPLETION.name());
         orderRequest = 주문생성(null, null, OrderStatus.COMPLETION.name(), null);
         given(orderDao.findById(order.getId())).willReturn(Optional.of(order));

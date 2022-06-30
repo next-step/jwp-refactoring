@@ -59,7 +59,7 @@ class MenuServiceTest {
     }
 
     @Test
-    void 메뉴_등록_성공() {
+    void 메뉴를_등록할_수_있다() {
         given(menuGroupDao.existsById(오늘의메뉴.getMenuGroupId())).willReturn(true);
         given(productDao.findById(메뉴상품.getProductId())).willReturn(Optional.of(지코바치킨));
         given(menuDao.save(오늘의메뉴)).willReturn(오늘의메뉴);
@@ -74,14 +74,14 @@ class MenuServiceTest {
     }
 
     @Test
-    void 메뉴_등록_실패_메뉴의_가격이_음수() {
+    void 메뉴의_가격이_음수이면_메뉴를_등록할_수_없다() {
         Menu menu = 메뉴생성(100L, "메뉴이름", BigDecimal.valueOf(-1000), 메뉴그룹.getId(), Arrays.asList(메뉴상품));
         assertThatThrownBy(() -> menuService.create(menu))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    void 메뉴_등록_실패_메뉴그룹이_존재하지않음() {
+    void 메뉴그룹이_존재하지_않으면_메뉴를_등록할_수_없다() {
         long 존재하지않는_메뉴그룹ID = 1000L;
         Menu menu = 메뉴생성(100L, "메뉴이름", BigDecimal.valueOf(1000), 존재하지않는_메뉴그룹ID, Arrays.asList(메뉴상품));
         given(menuGroupDao.existsById(menu.getMenuGroupId())).willReturn(false);
@@ -91,7 +91,7 @@ class MenuServiceTest {
     }
 
     @Test
-    void 메뉴_등록_실패_상품이_존재하지않음() {
+    void 상품이_존재하지않으면_메뉴를_등록할_수_없다() {
         MenuProduct 존재하지않는_메뉴상품 = new MenuProduct();
         Menu menu = 메뉴생성(100L, "메뉴이름", BigDecimal.valueOf(1000), 메뉴그룹.getId(), Arrays.asList(존재하지않는_메뉴상품));
         given(menuGroupDao.existsById(menu.getMenuGroupId())).willReturn(true);
@@ -102,7 +102,7 @@ class MenuServiceTest {
     }
 
     @Test
-    void 메뉴_등록_실패_메뉴price는_상품들의가격합보다_클수없음() {
+    void 상품들의_가격의_합보다_메뉴price가_크면_메뉴를_등록할_수_없다() {
         Product 특별상품 = 상품생성(2L, "특별상품", BigDecimal.valueOf(3000));
         Product 신선상품 = 상품생성(3L, "신선상품", BigDecimal.valueOf(4000));
         MenuProduct 특별메뉴상품 = 메뉴상품생성(3L, 특별상품.getId(), 1L);
@@ -118,7 +118,7 @@ class MenuServiceTest {
     }
 
     @Test
-    void 메뉴조회() {
+    void 메뉴를_조회할_수_있다() {
         given(menuDao.findAll()).willReturn(Arrays.asList(오늘의메뉴));
         given(menuProductDao.findAllByMenuId(오늘의메뉴.getId()))
                 .willReturn(Arrays.asList(메뉴상품));

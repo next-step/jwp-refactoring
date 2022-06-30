@@ -17,14 +17,14 @@ import static kitchenpos.acceptance.MenuGroupAcceptanceFactory.메뉴그룹_조�
 public class MenuGroupAcceptanceTest extends AcceptanceTest {
 
     @Test
-    void 메뉴그룹_등록() {
+    void 메뉴그룹을_등록할_수_있다() {
         ExtractableResponse<Response> 메뉴그룹_등록_결과 = 메뉴그룹_등록_요청("두마리메뉴");
 
         메뉴그룹_등록됨(메뉴그룹_등록_결과);
     }
 
     @Test
-    void 메뉴그룹_조회() {
+    void 메뉴그룹을_조회할_수_있다() {
         MenuGroup 두마리메뉴 = 메뉴그룹_등록_요청("두마리메뉴").as(MenuGroup.class);
         MenuGroup 한마리메뉴 = 메뉴그룹_등록_요청("한마리메뉴").as(MenuGroup.class);
         MenuGroup 신메뉴 = 메뉴그룹_등록_요청("신메뉴").as(MenuGroup.class);
