@@ -74,7 +74,7 @@ class MenuServiceTest {
         Product firstProduct = generateProductMock();
         Product secondProduct = generateProductMock();
         List<Product> products = Arrays.asList(firstProduct, secondProduct);
-        Menu givenMenu = generateMenu(menuGroup, products);
+        Menu givenMenu = generateMenu(menuGroup, firstProduct, secondProduct);
         List<MenuProduct> menuProducts = givenMenu.getMenuProducts();
 
         given(menuGroupDao.existsById(any())).willReturn(true);
@@ -143,8 +143,7 @@ class MenuServiceTest {
         // Given
         Menu menu = new Menu();
         menu.setPrice(new BigDecimal(1000));
-        List<Product> products = Collections.singletonList(generateProductMock());
-        List<MenuProduct> menuProducts = generateMenuProduct(products);
+        List<MenuProduct> menuProducts = generateMenuProduct(generateProductMock());
         menu.setMenuProducts(menuProducts);
 
         given(menuGroupDao.existsById(any())).willReturn(true);
@@ -164,8 +163,7 @@ class MenuServiceTest {
     public void throwException_WhenMenuPriceIsOverThanSumOfEachMenuProductsPrice() {
         MenuGroup menuGroup = generateMenuGroup();
         Product firstProduct = generateProductMock();
-        List<Product> products = Collections.singletonList(firstProduct);
-        Menu givenMenu = generateMenu(menuGroup, products);
+        Menu givenMenu = generateMenu(menuGroup, firstProduct);
 
         given(menuGroupDao.existsById(any())).willReturn(true);
         given(productDao.findById(firstProduct.getId())).willReturn(Optional.of(firstProduct));
@@ -208,7 +206,7 @@ class MenuServiceTest {
         List<Menu> menus = new ArrayList<>();
         for (int i = 0; i < count; i++) {
             Menu menu = new Menu();
-            menu.setMenuProducts(generateMenuProduct(Collections.singletonList(generateProductMock())));
+            menu.setMenuProducts(generateMenuProduct(generateProductMock()));
             menus.add(menu);
         }
         return menus;

@@ -20,7 +20,7 @@ public class MenuFixtureGenerator {
 
     public static Menu generateMenu(
         final MenuGroup menuGroup,
-        final List<Product> products
+        final Product... products
     ) {
         Menu menu = new Menu();
         menu.setName(NAME + COUNTER);
@@ -30,7 +30,7 @@ public class MenuFixtureGenerator {
         return menu;
     }
 
-    public static List<MenuProduct> generateMenuProduct(List<Product> products) {
+    public static List<MenuProduct> generateMenuProduct(Product... products) {
         List<MenuProduct> menuProducts = new ArrayList<>();
 
         int lastMenuGroupSeq = 7;
@@ -48,7 +48,7 @@ public class MenuFixtureGenerator {
 
     public static MockHttpServletRequestBuilder 메뉴_생성_요청(
         final MenuGroup savedMenuGroup,
-        final List<Product> savedProducts
+        final Product... savedProducts
     ) throws Exception {
         return postRequestBuilder(MENU_API_URL_TEMPLATE, generateMenu(savedMenuGroup, savedProducts));
     }

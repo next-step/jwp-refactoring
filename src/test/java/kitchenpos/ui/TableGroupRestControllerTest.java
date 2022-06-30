@@ -65,8 +65,7 @@ public class TableGroupRestControllerTest extends BaseTest {
     @DisplayName("특정 테이블 그룹을 해제한다.")
     public void getAllTableGroups() throws Exception {
         // Given
-        ResultActions saveTableGroupResultActions = mockMvcUtil.post(테이블_그룹_생성_요청(firstOrderTable, secondOrderTable));
-        TableGroup savedTableGroup = mockMvcUtil.as(saveTableGroupResultActions, TableGroup.class);
+        TableGroup savedTableGroup = mockMvcUtil.as(mockMvcUtil.post(테이블_그룹_생성_요청(firstOrderTable, secondOrderTable)), TableGroup.class);
 
         // When
         ResultActions resultActions = mockMvcUtil.delete(DELETE_TABLE_GROUP_API_URL_TEMPLATE, savedTableGroup.getId());

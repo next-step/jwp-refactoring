@@ -1,6 +1,8 @@
 package kitchenpos.ui;
 
 import static kitchenpos.utils.generator.OrderTableFixtureGenerator.비어있지_않은_주문_테이블_생성_요청;
+import static kitchenpos.utils.generator.OrderTableFixtureGenerator.테이블_객수_수정_요청_생성;
+import static kitchenpos.utils.generator.OrderTableFixtureGenerator.테이블_사용_가능_여부_수정_요청_생성;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -19,6 +21,9 @@ import org.springframework.test.web.servlet.ResultActions;
 public class TableRestControllerTest extends BaseTest {
 
     public static final String TABLE_API_BASE_URL = "/api/tables";
+    public static final String UPDATE_TABLE_EMPTY_URL_TEMPLATE = TABLE_API_BASE_URL.concat("/{orderTableId}/empty");
+    public static final String UPDATE_NUMBER_OF_GUEST_API_URL_TEMPLATE = TABLE_API_BASE_URL
+        .concat("/{orderTableId}/number-of-guests");
 
     @Test
     @DisplayName("주문 테이블을 생성한다.")
@@ -53,18 +58,13 @@ public class TableRestControllerTest extends BaseTest {
     @DisplayName("주문 테이블의 사용 가능 여부를 수정한다.")
     public void updateNumberOfGuests(final boolean givenEmpty, final String givenDescription) throws Exception {
         // Given
-        final String updateTableEmptyUrlTemplate = TABLE_API_BASE_URL.concat("/{orderTableId}/empty");
         OrderTable savedOrderTable = mockMvcUtil.as(mockMvcUtil.post(비어있지_않은_주문_테이블_생성_요청()), OrderTable.class);
 
         OrderTable updateOrderTableEmptyRequest = new OrderTable();
         updateOrderTableEmptyRequest.setEmpty(givenEmpty);
 
         // When
-        ResultActions resultActions = mockMvcUtil.put(
-            updateTableEmptyUrlTemplate,
-            updateOrderTableEmptyRequest,
-            savedOrderTable.getId()
-        );
+        ResultActions resultActions = mockMvcUtil.put(테이블_사용_가능_여부_수정_요청_생성(updateOrderTableEmptyRequest, savedOrderTable.getId()));
 
         // Then
         resultActions
@@ -91,7 +91,6 @@ public class TableRestControllerTest extends BaseTest {
     @DisplayName("테이블의 객수를 수정한다.")
     public void updateTableUsingStatus() throws Exception {
         // Given
-        final String updateNumberOfGuestApiUrlTemplate = TABLE_API_BASE_URL.concat("/{orderTableId}/number-of-guests");
         final OrderTable savedOrderTable = mockMvcUtil.as(mockMvcUtil.post(비어있지_않은_주문_테이블_생성_요청()), OrderTable.class);
 
         final int newNumberOfGuests = 4;
@@ -99,11 +98,7 @@ public class TableRestControllerTest extends BaseTest {
         updateNumberOfGuestsRequest.setNumberOfGuests(newNumberOfGuests);
 
         // When
-        ResultActions resultActions = mockMvcUtil.put(
-            updateNumberOfGuestApiUrlTemplate,
-            updateNumberOfGuestsRequest,
-            savedOrderTable.getId()
-        );
+        ResultActions resultActions = mockMvcUtil.put(테이블_객수_수정_요청_생성(updateNumberOfGuestsRequest, savedOrderTable.getId()));
 
         // Then
         resultActions

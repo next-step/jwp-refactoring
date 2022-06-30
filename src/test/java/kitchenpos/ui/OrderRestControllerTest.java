@@ -2,6 +2,7 @@ package kitchenpos.ui;
 
 import static kitchenpos.utils.generator.MenuFixtureGenerator.메뉴_생성_요청;
 import static kitchenpos.utils.generator.MenuGroupFixtureGenerator.메뉴_그룹_생성_요청;
+import static kitchenpos.utils.generator.OrderFixtureGenerator.주문_상태_변경_요청;
 import static kitchenpos.utils.generator.OrderFixtureGenerator.주문_생성_요청;
 import static kitchenpos.utils.generator.OrderTableFixtureGenerator.비어있지_않은_주문_테이블_생성_요청;
 import static kitchenpos.utils.generator.ProductFixtureGenerator.상품_생성_요청;
@@ -11,8 +12,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.Arrays;
-import java.util.List;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.Order;
@@ -29,9 +28,10 @@ import org.springframework.test.web.servlet.ResultActions;
 public class OrderRestControllerTest extends BaseTest {
 
     public static final String ORDER_API_BASE_URL = "/api/orders";
+    public static final String UPDATE_ORDER_STATUS_API_URL_TEMPLATE = ORDER_API_BASE_URL
+        .concat("/{orderId}/order-status");
 
     private Product savedFirstProduct, savedSecondProduct, savedThirdProduct, savedForthProduct;
-    private List<Product> firstMenuProducts, secondMenuProducts;
     private MenuGroup savedFirstMenuGroup, savedSecondMenuGroup;
     private Menu savedFirstMenu, savedSecondMenu;
     private OrderTable savedOrderTable;
@@ -50,18 +50,16 @@ public class OrderRestControllerTest extends BaseTest {
         savedThirdProduct = mockMvcUtil.as(mockMvcUtil.post(상품_생성_요청()), Product.class);
         savedForthProduct = mockMvcUtil.as(mockMvcUtil.post(상품_생성_요청()), Product.class);
 
-        firstMenuProducts = Arrays.asList(savedFirstProduct, savedSecondProduct);
-        secondMenuProducts = Arrays.asList(savedThirdProduct, savedForthProduct);
-
         savedFirstMenuGroup = mockMvcUtil.as(mockMvcUtil.post(메뉴_그룹_생성_요청()), MenuGroup.class);
         savedSecondMenuGroup = mockMvcUtil.as(mockMvcUtil.post(메뉴_그룹_생성_요청()), MenuGroup.class);
 
-        savedFirstMenu = mockMvcUtil.as(mockMvcUtil.post(메뉴_생성_요청(savedFirstMenuGroup, firstMenuProducts)), Menu.class);
-        savedSecondMenu = mockMvcUtil.as(mockMvcUtil.post(메뉴_생성_요청(savedSecondMenuGroup, secondMenuProducts)), Menu.class);
+        savedFirstMenu = mockMvcUtil
+            .as(mockMvcUtil.post(메뉴_생성_요청(savedFirstMenuGroup, savedFirstProduct, savedSecondProduct)), Menu.class);
+        savedSecondMenu = mockMvcUtil
+            .as(mockMvcUtil.post(메뉴_생성_요청(savedSecondMenuGroup, savedThirdProduct, savedForthProduct)), Menu.class);
 
         savedOrderTable = mockMvcUtil.as(mockMvcUtil.post(비어있지_않은_주문_테이블_생성_요청()), OrderTable.class);
     }
-
 
     /**
      * @When 특정 주문 테이블의 주문을 등록한다.
@@ -102,18 +100,13 @@ public class OrderRestControllerTest extends BaseTest {
     @DisplayName("주문 상태를 변경한다.")
     public void updateOrderStatus() throws Exception {
         // Given
-        final String updateOrderStatusApiUrlTemplate = ORDER_API_BASE_URL.concat("/{orderId}/order-status");
         Order savedOrder = mockMvcUtil.as(mockMvcUtil.post(주문_생성_요청(savedOrderTable, savedFirstMenu, savedSecondMenu)), Order.class);
 
         Order updateOrderStatusRequest = new Order();
         updateOrderStatusRequest.setOrderStatus(OrderStatus.MEAL.name());
 
         // When
-        ResultActions resultActions = mockMvcUtil.put(
-            updateOrderStatusApiUrlTemplate,
-            updateOrderStatusRequest,
-            savedOrder.getId()
-        );
+        ResultActions resultActions = mockMvcUtil.put(주문_상태_변경_요청(updateOrderStatusRequest, savedOrder.getId()));
 
         // Then
         resultActions

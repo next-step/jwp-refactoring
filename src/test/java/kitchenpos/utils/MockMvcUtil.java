@@ -35,11 +35,11 @@ public class MockMvcUtil {
     }
 
     public <T> ResultActions put(String urlTemplate, T body, T... path) throws Exception {
-        return mockMvc.perform(MockMvcRequestBuilders.put(urlTemplate, path)
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(body))
-        );
+        return put(putRequestBuilder(urlTemplate, body, path));
+    }
+
+    public <T> ResultActions put(MockHttpServletRequestBuilder mockHttpServletRequestBuilder) throws Exception {
+        return mockMvc.perform(mockHttpServletRequestBuilder);
     }
 
     public <T> ResultActions delete(String urlTemplate, T... path) throws Exception {
@@ -51,6 +51,13 @@ public class MockMvcUtil {
 
     public static <T> MockHttpServletRequestBuilder postRequestBuilder(String urlTemplate, T body, T... path) throws Exception {
         return MockMvcRequestBuilders.post(urlTemplate, path)
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(new ObjectMapper().writeValueAsString(body));
+    }
+
+    public static <T> MockHttpServletRequestBuilder putRequestBuilder(String urlTemplate, T body, T... path) throws Exception {
+        return MockMvcRequestBuilders.put(urlTemplate, path)
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
             .content(new ObjectMapper().writeValueAsString(body));

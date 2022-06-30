@@ -78,7 +78,7 @@ class OrderServiceTest {
         firstProduct = generateProduct();
         secondProduct = generateProduct();
         menuGroup = generateMenuGroup();
-        menu = generateMenu(menuGroup, Arrays.asList(firstProduct, secondProduct));
+        menu = generateMenu(menuGroup, firstProduct, secondProduct);
 
         orderTable = generateNotEmptyOrderTable();
         order = generateOrder(orderTable, menu);

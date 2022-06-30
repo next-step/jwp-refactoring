@@ -50,4 +50,8 @@ public class MenuGroupFixtureGenerator {
     public static MockHttpServletRequestBuilder 메뉴_그룹_생성_요청() throws Exception {
         return postRequestBuilder(MENU_GROUP_API_URL_TEMPLATE, generateMenuGroup());
     }
+
+    public static MockHttpServletRequestBuilder 메뉴_그룹_생성_요청(final String name) throws Exception {
+        return postRequestBuilder(MENU_GROUP_API_URL_TEMPLATE, generateMenuGroup(name));
+    }
 }

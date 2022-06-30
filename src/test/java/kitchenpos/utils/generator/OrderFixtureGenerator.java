@@ -1,7 +1,9 @@
 package kitchenpos.utils.generator;
 
 import static kitchenpos.ui.OrderRestControllerTest.ORDER_API_BASE_URL;
+import static kitchenpos.ui.OrderRestControllerTest.UPDATE_ORDER_STATUS_API_URL_TEMPLATE;
 import static kitchenpos.utils.MockMvcUtil.postRequestBuilder;
+import static kitchenpos.utils.MockMvcUtil.putRequestBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,5 +43,12 @@ public class OrderFixtureGenerator {
         final Menu... savedMenus
     ) throws Exception {
         return postRequestBuilder(ORDER_API_BASE_URL, generateOrder(savedOrderTable, savedMenus));
+    }
+
+    public static MockHttpServletRequestBuilder 주문_상태_변경_요청(
+        final Order updateOrderStatusRequest,
+        final Long savedOrderId
+    ) throws Exception {
+        return putRequestBuilder(UPDATE_ORDER_STATUS_API_URL_TEMPLATE, updateOrderStatusRequest, savedOrderId);
     }
 }

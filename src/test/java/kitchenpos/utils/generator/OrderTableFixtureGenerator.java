@@ -1,7 +1,10 @@
 package kitchenpos.utils.generator;
 
 import static kitchenpos.ui.TableRestControllerTest.TABLE_API_BASE_URL;
+import static kitchenpos.ui.TableRestControllerTest.UPDATE_NUMBER_OF_GUEST_API_URL_TEMPLATE;
+import static kitchenpos.ui.TableRestControllerTest.UPDATE_TABLE_EMPTY_URL_TEMPLATE;
 import static kitchenpos.utils.MockMvcUtil.postRequestBuilder;
+import static kitchenpos.utils.MockMvcUtil.putRequestBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,5 +45,19 @@ public class OrderTableFixtureGenerator {
 
     public static MockHttpServletRequestBuilder 비어있는_주문_테이블_생성_요청() throws Exception {
         return postRequestBuilder(TABLE_API_BASE_URL, generateEmptyOrderTable());
+    }
+
+    public static MockHttpServletRequestBuilder 테이블_사용_가능_여부_수정_요청_생성(
+        final OrderTable updateOrderTableEmptyRequest,
+        final Long savedOrderId
+        ) throws Exception {
+        return putRequestBuilder(UPDATE_TABLE_EMPTY_URL_TEMPLATE, updateOrderTableEmptyRequest, savedOrderId);
+    }
+
+    public static MockHttpServletRequestBuilder 테이블_객수_수정_요청_생성(
+        final OrderTable updateNumberOfGuestsRequest,
+        final Long savedOrderId
+    ) throws Exception {
+        return putRequestBuilder(UPDATE_NUMBER_OF_GUEST_API_URL_TEMPLATE, updateNumberOfGuestsRequest, savedOrderId);
     }
 }
