@@ -54,6 +54,16 @@ public class OrderTable {
         this.empty = empty;
     }
 
+    public void validateChageNumberOfGuests(Integer numberOfGuests) {
+        if (numberOfGuests < 0) {
+            throw new IllegalArgumentException();
+        }
+        if (empty) {
+            throw new IllegalArgumentException();
+        }
+        this.numberOfGuests = numberOfGuests;
+    }
+
     public Long getId() {
         return id;
     }
