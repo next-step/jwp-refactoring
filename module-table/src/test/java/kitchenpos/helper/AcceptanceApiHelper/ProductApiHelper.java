@@ -4,7 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
-import kitchenpos.helper.testDTO.request.ProductRequest;
+import kitchenpos.dto.request.ProductRequest;
 import org.springframework.http.MediaType;
 
 public class ProductApiHelper {

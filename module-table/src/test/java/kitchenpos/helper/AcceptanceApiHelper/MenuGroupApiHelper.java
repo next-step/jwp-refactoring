@@ -3,7 +3,7 @@ package kitchenpos.helper.AcceptanceApiHelper;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.helper.testDTO.request.MenuGroupRequest;
+import kitchenpos.dto.request.MenuGroupRequest;
 import org.springframework.http.MediaType;
 
 public class MenuGroupApiHelper {

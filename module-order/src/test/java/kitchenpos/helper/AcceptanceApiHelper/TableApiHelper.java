@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 public class TableApiHelper {
 
     public static ExtractableResponse<Response> 빈테이블_생성하기() {
+
         OrderTableRequest 테이블 = new OrderTableRequest();
         테이블.setNumberOfGuests(0);
         테이블.setEmpty(true);

@@ -6,8 +6,8 @@ import io.restassured.response.Response;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import kitchenpos.helper.testDTO.OrderLineItemDTO;
-import kitchenpos.helper.testDTO.request.OrderRequest;
+import kitchenpos.dto.dto.OrderLineItemDTO;
+import kitchenpos.dto.request.OrderRequest;
 import org.springframework.http.MediaType;
 
 public class OrderApiHelper {

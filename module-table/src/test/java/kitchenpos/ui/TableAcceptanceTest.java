@@ -16,8 +16,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
 import kitchenpos.AcceptanceTest;
+import kitchenpos.dto.response.OrderResponse;
 import kitchenpos.helper.AcceptanceAssertionHelper.TableAssertionHelper;
-import kitchenpos.helper.testDTO.response.OrderResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -71,8 +71,7 @@ class TableAcceptanceTest extends AcceptanceTest {
     @Test
     public void 유휴테이블_설정하기_테스트() {
         //when
-        ExtractableResponse<Response> 유휴테이블_여부_설정하기_response = 유휴테이블_여부_설정하기(비어있음,
-            빈테이블_1.getId());
+        ExtractableResponse<Response> 유휴테이블_여부_설정하기_response = 유휴테이블_여부_설정하기(비어있음, 빈테이블_1.getId());
 
         //then
         테이블_유휴여부_설정됨(유휴테이블_여부_설정하기_response, 비어있음);
@@ -89,8 +88,7 @@ class TableAcceptanceTest extends AcceptanceTest {
         유휴테이블_여부_설정하기(사용중, 빈테이블_1.getId());
 
         //when
-        ExtractableResponse<Response> 테이블_손님_인원_설정하기_response = 테이블_손님_인원_설정하기(손님수,
-            빈테이블_1.getId());
+        ExtractableResponse<Response> 테이블_손님_인원_설정하기_response = 테이블_손님_인원_설정하기(손님수, 빈테이블_1.getId());
 
         //then
         테이블_손님수_설정됨(테이블_손님_인원_설정하기_response, 손님수);
@@ -106,8 +104,7 @@ class TableAcceptanceTest extends AcceptanceTest {
         int 손님수 = 4;
 
         //when
-        ExtractableResponse<Response> 테이블_손님_인원_설정하기_response = 테이블_손님_인원_설정하기(손님수,
-            빈테이블_1.getId());
+        ExtractableResponse<Response> 테이블_손님_인원_설정하기_response = 테이블_손님_인원_설정하기(손님수, 빈테이블_1.getId());
 
         //then
         테이블_손님수_설정_에러(테이블_손님_인원_설정하기_response);
@@ -124,8 +121,7 @@ class TableAcceptanceTest extends AcceptanceTest {
         유휴테이블_여부_설정하기(사용중, 빈테이블_1.getId());
 
         //when
-        ExtractableResponse<Response> 테이블_손님_인원_설정하기_response = 테이블_손님_인원_설정하기(손님수,
-            빈테이블_1.getId());
+        ExtractableResponse<Response> 테이블_손님_인원_설정하기_response = 테이블_손님_인원_설정하기(손님수, 빈테이블_1.getId());
 
         //then
         테이블_손님수_설정_에러(테이블_손님_인원_설정하기_response);
@@ -144,8 +140,7 @@ class TableAcceptanceTest extends AcceptanceTest {
         주문_상태_변경하기(먹는중, 빈테이블_1.getId());
 
         //when
-        ExtractableResponse<Response> 유휴테이블_여부_설정하기_response = 유휴테이블_여부_설정하기(비어있음,
-            빈테이블_1.getId());
+        ExtractableResponse<Response> 유휴테이블_여부_설정하기_response = 유휴테이블_여부_설정하기(비어있음, 빈테이블_1.getId());
 
         //then
         테이블_유휴여부_설정_에러(유휴테이블_여부_설정하기_response);
