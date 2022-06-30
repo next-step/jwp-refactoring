@@ -76,7 +76,7 @@ class TableGroupServiceTest {
 
     @ParameterizedTest(name = "case[{index}] : {0} => {1}")
     @MethodSource
-    @DisplayName("그룹핑할 주문 테이블이 2개 미만인 경우 예외가 발생한다.")
+    @DisplayName("그룹핑할 주문 테이블이 2개 미만인 경우 예외 발생 검증")
     public void throwException_WhenOrderTableSizeIsLessThanMinimumGroupingTargetSize(
         final List<OrderTable> givenOrderTables,
         final String givenDescription
@@ -98,7 +98,7 @@ class TableGroupServiceTest {
     }
 
     @Test
-    @DisplayName("DB에 존재하지 않는 주문 테이블이 포함된 경우 예외 발생 검증")
+    @DisplayName("존재하지 않는 주문 테이블이 포함된 경우 예외 발생 검증")
     public void throwException_WhenOrderTableIsNotExist() {
         // Given
         given(orderTableDao.findAllByIdIn(anyList())).willReturn(Collections.emptyList());
@@ -114,7 +114,8 @@ class TableGroupServiceTest {
     @DisplayName("비어있는 주문 테이블이 포함된 경우 예외 발생 검증")
     public void throwException_WhenContainsIsNotEmptyOrderTable() {
         // Given
-        List<OrderTable> givenContainsNotEmptyOrderTables = Arrays.asList(generateNotEmptyOrderTable(), generateEmptyOrderTable());
+        List<OrderTable> givenContainsNotEmptyOrderTables = Arrays
+            .asList(generateNotEmptyOrderTable(), generateEmptyOrderTable());
         given(orderTableDao.findAllByIdIn(anyList())).willReturn(givenContainsNotEmptyOrderTables);
 
         TableGroup givenTableGroup = new TableGroup();
@@ -129,7 +130,7 @@ class TableGroupServiceTest {
 
     @Test
     @DisplayName("이미 그룹핑 된 주문 테이블이 포함된 경우 예외 발생 검증")
-    public void throwException_ContainsAlreadyHasTableGroupOrderTable(){
+    public void throwException_ContainsAlreadyHasTableGroupOrderTable() {
         // Given
         OrderTable givenAlreadyHasTableGroupOrderTable = generateEmptyOrderTable();
         givenAlreadyHasTableGroupOrderTable.setTableGroupId(1L);
@@ -147,37 +148,24 @@ class TableGroupServiceTest {
         verify(orderTableDao).findAllByIdIn(anyList());
     }
 
-    /**
-     * [x] 테이블 그룹을 생성한다.
-     * <p>
-     * - [x] 그룹핑할 주문 테이블이 2개 미만인 경우 예외 발생 검증
-     * <p>
-     * - [x] DB에 존재하지 않는 주문 테이블이 포함된 경우 예외 발생 검증
-     * <p>
-     * - [x] 그룹 대상 주문 테이블이 비어있지 않거나, 이미 그룹핑 된 경우 예외 발생 검증
-     * <p>
-     * [x] 테이블 그룹을 해제한다.
-     * <p>
-     * - [x] 조리중이거나 식사중인 주문 테이블이 포함된 경우 예외 발생 검증
-     */
     @Test
     @DisplayName("테이블 그룹을 해제한다.")
-    public void ungroupTable(){
+    public void ungroupTable() {
         // Given
         given(orderTableDao.findAllByTableGroupId(any())).willReturn(orderTables);
-    
+
         // When
         tableGroupService.ungroup(tableGroup.getId());
-    
+
         // Then
         verify(orderTableDao).findAllByTableGroupId(any());
         verify(orderDao).existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList());
         verify(orderTableDao, times(orderTables.size())).save(any(OrderTable.class));
     }
-    
+
     @Test
-    @DisplayName("그룹핑된 주문 테이블의 주문상태가 조리중이거나 식사중인 경우 예외 발생 검증")
-    public void throwException_WhenOrderTablesOrderHasMealStatusOrCookingStatus(){
+    @DisplayName("조리중이거나 식사중인 주문 테이블이 포함된 경우 예외 발생 검증")
+    public void throwException_WhenOrderTablesOrderHasMealStatusOrCookingStatus() {
         // Given
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
 

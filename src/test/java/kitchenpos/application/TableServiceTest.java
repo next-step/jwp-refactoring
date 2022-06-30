@@ -54,7 +54,7 @@ class TableServiceTest {
     }
 
     @Test
-    @DisplayName("주문 목록을 조회 한다.")
+    @DisplayName("주문 테이블 목록을 조회 한다.")
     public void getAllOrderTables() {
         // Given
         final int generateOrderTableCount = 5;
@@ -94,7 +94,7 @@ class TableServiceTest {
     }
 
     @Test
-    @DisplayName("주문 테이블이 존재하지 않는 경우 사용 가능 상태는 변경할 수 없다.")
+    @DisplayName("존재하지 않는 주문 테이블의 상태 변경 시 예외 발생 검증")
     public void throwException_WhenTargetOrderTableIsNotExist() {
         // Given
         OrderTable givenOrderTable = generateNotEmptyOrderTable();
@@ -107,7 +107,7 @@ class TableServiceTest {
     }
 
     @Test
-    @DisplayName("단체 지정된 주문 테이블의 사용 가능 상태는 변경할 수 없다.")
+    @DisplayName("단체 지정된 주문 테이블의 사용 가능 상태 변경 시 예외 발생 검증")
     public void throwException_WhenTargetOrderTableIsBindingToTableGroup() {
         // Given
         OrderTable givenOrderTable = generateNotEmptyOrderTable();
@@ -122,7 +122,7 @@ class TableServiceTest {
     }
 
     @Test
-    @DisplayName("주문 상태가 조리중이거나 식사중인 경우 주문 테이블의 사용 가능 여부를 변경할 수 없다.")
+    @DisplayName("조리중이거나 식사중인 주문테이블의 사용 가능 상태 변경 시 예외 발생 검증")
     public void throwException_WhenTargetOrderTableIsMealOrCooking() {
         // Given
         OrderTable givenOrderTable = generateNotEmptyOrderTable();
@@ -135,20 +135,6 @@ class TableServiceTest {
 
         verify(orderTableDao).findById(any());
         verify(orderDao).existsByOrderTableIdAndOrderStatusIn(any(), anyList());
-    }
-
-    @Test
-    @DisplayName("주문 테이블이 존재하지 않는 경우 객수를 변경할 수 없다.")
-    public void throwException_WhenOrderTableIsNotExist() {
-        // Given
-        OrderTable orderTable = generateNotEmptyOrderTable();
-        given(orderTableDao.findById(any())).willThrow(IllegalArgumentException.class);
-
-        // When & Then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> tableService.changeNumberOfGuests(any(), orderTable));
-
-        verify(orderTableDao).findById(any());
     }
 
     @Test
@@ -174,5 +160,19 @@ class TableServiceTest {
             .ignoringFields("numberOfGuests")
             .isEqualTo(givenOrderTable);
         assertThat(actualOrderTable.getNumberOfGuests()).isEqualTo(newNumberOfGuests);
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 주문 테이블의 객수 변경 시, 예외 발생 검증")
+    public void throwException_WhenOrderTableIsNotExist() {
+        // Given
+        OrderTable orderTable = generateNotEmptyOrderTable();
+        given(orderTableDao.findById(any())).willThrow(IllegalArgumentException.class);
+
+        // When & Then
+        assertThatExceptionOfType(IllegalArgumentException.class)
+            .isThrownBy(() -> tableService.changeNumberOfGuests(any(), orderTable));
+
+        verify(orderTableDao).findById(any());
     }
 }

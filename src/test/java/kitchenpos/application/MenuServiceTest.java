@@ -15,7 +15,6 @@ import static org.mockito.Mockito.verify;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -39,14 +38,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-/**
- * - [x] 메뉴 생성
- *   - [x] 메뉴 가격이 [null, 0, 음수]인 경우, 예외 발생 검증
- *   - [x] 존재하지 않는 메뉴 그룹 정보가 포함된 메뉴를 생성하는 경우, 예외 발생 검증
- *   - [x] 메뉴에 구성되는 메뉴 상품이 존재하지 않는 경우, 예외 발생 검증
- *   - [x] 메뉴가 가격이 메뉴에 구성된 각 메뉴 상품 가격의 총합보다 큰경우, 예외 발생 검증
- * - [x] 메뉴 목록 조회
- */
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Service:Menu")
 class MenuServiceTest {

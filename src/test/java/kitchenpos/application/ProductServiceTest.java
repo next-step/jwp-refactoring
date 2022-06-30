@@ -29,7 +29,7 @@ class ProductServiceTest {
     private ProductService productService;
 
     @Test
-    @DisplayName("상품을 추가한다.")
+    @DisplayName("상품을 생성한다.")
     public void createProduct() {
         // Given
         final Product given = generateProduct();
