@@ -47,6 +47,8 @@ allprojects { //root 프로젝트인 kitchenpos에서 시작하기때문에 allP
         testImplementation 'io.rest-assured:rest-assured:3.3.0'
 
         implementation('com.google.guava:guava:29.0-jre')
+
+
     }
 
     test {
@@ -73,4 +75,14 @@ project(':module-table') {
     dependencies {
         compile project(':module-common')
     }
+}
+bootJar { enabled = false }
+jar { enabled = true}
+
+dependencies {
+    implementation project(':module-menu')
+    implementation project(':module-order')
+    implementation project(':module-table')
+    implementation project(':module-product')
+    implementation project(':module-common')
 }
