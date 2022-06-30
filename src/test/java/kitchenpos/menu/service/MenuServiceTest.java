@@ -43,12 +43,6 @@ public class MenuServiceTest {
     @Mock
     private MenuGroupRepository menuGroupRepository;
 
-    @Mock
-    private MenuProductRepository menuProductRepository;
-
-    @Mock
-    private ProductRepository productRepository;
-
     @BeforeEach
     void setUp() {
         menuService = new MenuService(menuRepository, menuGroupRepository);
