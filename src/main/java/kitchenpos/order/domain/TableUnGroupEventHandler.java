@@ -1,4 +1,4 @@
-package kitchenpos.table.domain;
+package kitchenpos.order.domain;
 
 import java.util.Arrays;
 import java.util.List;
@@ -7,6 +7,7 @@ import kitchenpos.common.exception.CannotUpdateException;
 import kitchenpos.common.exception.ExceptionType;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.tableGroup.domain.TableUnGroupEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
