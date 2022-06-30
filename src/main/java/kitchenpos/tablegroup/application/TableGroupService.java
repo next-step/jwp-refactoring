@@ -36,7 +36,7 @@ public class TableGroupService {
         validateOrderTableIds(requestOrderTablesIds);
 
         List<OrderTable> tables = tableService.findByIdIn(requestOrderTablesIds);
-        OrderTables orderTables = OrderTables.of(tableService.findByIdIn(requestOrderTablesIds));
+        OrderTables orderTables = OrderTables.of(tables);
         orderTables.validateOrderTableGroup(tables);
 
         TableGroup tableGroup = TableGroup.of(orderTables);

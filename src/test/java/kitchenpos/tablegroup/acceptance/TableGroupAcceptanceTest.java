@@ -5,14 +5,13 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,15 +25,13 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     private OrderTable 주문_테이블_네명;
     private OrderTable 주문_테이블_여섯명;
 
-    private static ExtractableResponse<Response> 테이블_그룹_생성_요청(List<OrderTable> orderTables) {
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setCreatedDate(LocalDateTime.now());
-        tableGroup.setOrderTables(orderTables);
+    private static ExtractableResponse<Response> 테이블_그룹_생성_요청(List<Long> orderTables) {
+        TableGroupRequest tableGroupRequest = TableGroupRequest.of(orderTables);
 
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(tableGroup)
+                .body(tableGroupRequest)
                 .when().post(API_URL)
                 .then().log().all()
                 .extract();
@@ -51,7 +48,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("테이블 그룹 생성 및 해제 시나리오")
     void tableGroup() {
-        ExtractableResponse<Response> 테이블_그룹_생성_요청_결과 = 테이블_그룹_생성_요청(Arrays.asList(주문_테이블_네명, 주문_테이블_여섯명));
+        ExtractableResponse<Response> 테이블_그룹_생성_요청_결과 = 테이블_그룹_생성_요청(Arrays.asList(주문_테이블_네명.getId(), 주문_테이블_여섯명.getId()));
 
         테이블_그룹_생성됨(테이블_그룹_생성_요청_결과);
 

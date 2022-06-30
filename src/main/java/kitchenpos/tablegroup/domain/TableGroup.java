@@ -41,6 +41,10 @@ public class TableGroup {
         return new TableGroup(orderTables);
     }
 
+    public static TableGroup of(Long id, LocalDateTime createdDate, OrderTables orderTables) {
+        return new TableGroup(id, createdDate, orderTables);
+    }
+
     public Long getId() {
         return id;
     }
