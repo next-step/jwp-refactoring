@@ -10,13 +10,11 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.GuestNumber;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -108,7 +106,7 @@ class TableServiceTest {
         // given
         final OrderTable fullOrderTableGroup = new OrderTable.Builder()
                 .setId(1L)
-                .setTableGroup(1L)
+                .setTableGroupId(1L)
                 .setGuestNumber(GuestNumber.of(5))
                 .setEmpty(false)
                 .build();

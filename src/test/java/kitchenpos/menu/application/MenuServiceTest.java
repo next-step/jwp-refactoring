@@ -4,17 +4,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
-import kitchenpos.menu.application.MenuService;
+import kitchenpos.exception.InvalidPriceException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.menu.domain.MenuValidator;
 import kitchenpos.menu.domain.Price;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -53,9 +56,12 @@ class MenuServiceTest {
     @Mock
     private ProductRepository productRepository;
 
+    @Mock
+    private MenuValidator menuValidator;
+
     @BeforeEach
     void setUp() {
-        menuService = new MenuService(menuRepository, menuGroupRepository, productRepository);
+        menuService = new MenuService(menuRepository, menuGroupRepository, productRepository, menuValidator);
         product = new Product(1L, "후라이드", Price.of(500L));
         menuGroup = new MenuGroup(1L, "후라이드세트");
         menuProducts = new MenuProducts(Arrays.asList(menuProduct));
@@ -67,7 +73,7 @@ class MenuServiceTest {
                 .build();
         menuProduct = new MenuProduct.Builder(menu)
                 .setSeq(1L)
-                .setProduct(product)
+                .setProductId(product.getId())
                 .setQuantity(Quantity.of(2L))
                 .build();
         expected = new MenuResponse(null, "후라이드+후라이드", Price.of(1_000L), menuGroup.toMenuGroupResponse(),
@@ -143,6 +149,7 @@ class MenuServiceTest {
                 Arrays.asList(menuProductRequest));
         when(menuGroupRepository.findById(any())).thenReturn(Optional.of(menuGroup));
         when(productRepository.findById(any())).thenReturn(Optional.of(product));
+        doThrow(new InvalidPriceException()).when(menuValidator).validateProductsTotalPrice(any());
         // when && then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuService.create(invalidMenuRequest));

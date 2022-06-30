@@ -41,14 +41,4 @@ class MenuTest {
 
         assertThat(menu.products().get()).hasSize(1);
     }
-
-    @Test
-    @DisplayName("메뉴 제품의 합이 메뉴 가격보다 클 때 에러 발생")
-    void productsTotalMoreThanMenuPrice() {
-        final Product product = new Product("product", Price.of(100L));
-        menu.addProduct(product, Quantity.of(10L));
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> menu.validateProductsTotalPrice());
-    }
 }

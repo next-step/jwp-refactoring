@@ -40,21 +40,18 @@ public class Menu {
 
     public void addProduct(Product product, Quantity quantity) {
         final MenuProduct menuProduct = new MenuProduct.Builder(this)
-                .setProduct(product)
+                .setProductId(product.getId())
                 .setQuantity(quantity)
                 .build();
         this.menuProducts.add(menuProduct);
     }
 
-    public void validateProductsTotalPrice() {
-        final Price totalPrice = this.menuProducts.totalPrice();
-        if (this.price.isMoreThan(totalPrice)) {
-            throw new InvalidPriceException("제품의 합은 메뉴 가격보다 클 수 없습니다.");
-        }
-    }
-
     public MenuProducts products() {
         return menuProducts;
+    }
+
+    public boolean isMoreThan(Price price) {
+        return this.price.isMoreThan(price);
     }
 
     public MenuResponse toMenuResponse() {

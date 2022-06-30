@@ -48,6 +48,10 @@ public class Product {
         return new ProductResponse(this.id, this.name, this.price.value());
     }
 
+    public Long getId() {
+        return id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

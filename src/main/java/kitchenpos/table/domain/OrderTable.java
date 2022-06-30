@@ -129,7 +129,7 @@ public class OrderTable {
             return this;
         }
 
-        public Builder setTableGroup(Long tableGroupId) {
+        public Builder setTableGroupId(Long tableGroupId) {
             this.tableGroupId = tableGroupId;
             return this;
         }

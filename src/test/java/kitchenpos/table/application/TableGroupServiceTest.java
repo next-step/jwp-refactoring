@@ -16,7 +16,6 @@ import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.table.domain.GuestNumber;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
@@ -145,7 +144,7 @@ class TableGroupServiceTest {
                 .build();
         final OrderTable groupingOrderTable = new OrderTable.Builder()
                 .setId(1L)
-                .setTableGroup(2L)
+                .setTableGroupId(2L)
                 .setGuestNumber(GuestNumber.of(5))
                 .setEmpty(false)
                 .build();

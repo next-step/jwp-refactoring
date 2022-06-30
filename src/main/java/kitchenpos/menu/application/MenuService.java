@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import kitchenpos.exception.NotExistException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuValidator;
 import kitchenpos.menu.domain.Price;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -25,12 +26,14 @@ public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
     private final ProductRepository productRepository;
+    private final MenuValidator menuValidator;
 
     public MenuService(MenuRepository menuRepository, MenuGroupRepository menuGroupRepository,
-                       ProductRepository productRepository) {
+                       ProductRepository productRepository, MenuValidator menuValidator) {
         this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
         this.productRepository = productRepository;
+        this.menuValidator = menuValidator;
     }
 
     @Transactional
@@ -48,7 +51,7 @@ public class MenuService {
             menu.addProduct(persistProduct, Quantity.of(menuProduct.getQuantity()));
         }
 
-        menu.validateProductsTotalPrice();
+        menuValidator.validateProductsTotalPrice(menu);
         final Menu persist = menuRepository.save(menu);
         return persist.toMenuResponse();
     }
