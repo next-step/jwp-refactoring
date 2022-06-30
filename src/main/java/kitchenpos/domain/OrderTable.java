@@ -106,6 +106,9 @@ public class OrderTable {
         if (Objects.nonNull(tableGroup)) {
             throw new IllegalArgumentException("단체 지정된 테이블은 주문 등록 가능 상태를 변경할 수 없습니다.");
         }
+        if (orders.stream().anyMatch(order -> isOrderStatusInCookingOrMeal(order.getOrderStatus()))) {
+            throw new IllegalArgumentException("주문 상태가 조리 또는 식사인 테이블은 주문 등록 가능 상태를 변경할 수 없습니다.");
+        }
         this.empty = empty;
     }
 

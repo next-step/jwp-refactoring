@@ -39,11 +39,6 @@ public class TableService {
         OrderTable orderTable = orderTableRepository.findById(orderTableId)
                                                     .orElseThrow(NoSuchElementException::new);
 
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId
-                , Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException("주문 상태가 조리 또는 식사인 테이블은 주문 등록 가능 상태를 변경할 수 없습니다.");
-        }
-
         orderTable.changeEmpty(request.isEmpty());
 
         return orderTableRepository.save(orderTable);
