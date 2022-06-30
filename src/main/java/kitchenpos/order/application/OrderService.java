@@ -15,13 +15,16 @@ import java.util.stream.Collectors;
 @Service
 public class OrderService {
     private final OrderRepository orderRepository;
+    private final OrderValidator orderValidator;
 
-    public OrderService(OrderRepository orderRepository) {
+    public OrderService(OrderRepository orderRepository, OrderValidator orderValidator) {
         this.orderRepository = orderRepository;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
     public OrderResponseDto create(final OrderRequestDto request) {
+        orderValidator.checkCreatable(request);
         Order order = orderRepository.save(request.toEntity());
         return new OrderResponseDto(order);
     }

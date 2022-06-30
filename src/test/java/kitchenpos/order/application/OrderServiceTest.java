@@ -40,9 +40,13 @@ class OrderServiceTest {
     @Mock
     private OrderRepository orderRepository;
 
+    @Mock
+    private OrderValidator orderValidator;
+
+
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(orderRepository);
+        orderService = new OrderService(orderRepository, orderValidator);
     }
 
     @DisplayName("주문을 생성한다.")
