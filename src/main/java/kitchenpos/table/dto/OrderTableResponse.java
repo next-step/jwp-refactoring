@@ -22,7 +22,7 @@ public class OrderTableResponse {
 
     public static OrderTableResponse from(OrderTable orderTable) {
         return new OrderTableResponse(orderTable.getId(),
-                orderTable.getTableGroup() == null ? null : orderTable.getTableGroup().getId(),
+                orderTable.getTableGroupId() == null ? null : orderTable.getTableGroupId(),
                 orderTable.getNumberOfGuests(),
                 orderTable.isEmptyTable());
     }

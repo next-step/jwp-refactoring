@@ -1,27 +1,23 @@
 package kitchenpos.tablegroup.dto;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
-import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.tablegroup.domain.TableGroup;
 
 public class TableGroupResponse {
     private Long id;
     private LocalDateTime createDate;
-    private List<OrderTableResponse> orderTables;
 
     protected TableGroupResponse() {
     }
 
-    protected TableGroupResponse(Long id, LocalDateTime createDate, List<OrderTableResponse> orderTables) {
+    protected TableGroupResponse(Long id, LocalDateTime createDate) {
         this.id = id;
         this.createDate = createDate;
-        this.orderTables = orderTables;
     }
 
     public static TableGroupResponse of(TableGroup tableGroup) {
-        return new TableGroupResponse(tableGroup.getId(), tableGroup.getCreatedDate(), OrderTableResponse.from(tableGroup.getOrderTables()));
+        return new TableGroupResponse(tableGroup.getId(), tableGroup.getCreatedDate());
     }
 
     public Long getId() {
@@ -32,9 +28,6 @@ public class TableGroupResponse {
         return createDate;
     }
 
-    public List<OrderTableResponse> getOrderTables() {
-        return orderTables;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -44,13 +37,12 @@ public class TableGroupResponse {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        TableGroupResponse response = (TableGroupResponse) o;
-        return Objects.equals(id, response.id) && Objects.equals(createDate, response.createDate)
-                && Objects.equals(orderTables, response.orderTables);
+        TableGroupResponse that = (TableGroupResponse) o;
+        return Objects.equals(id, that.id) && Objects.equals(createDate, that.createDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, createDate, orderTables);
+        return Objects.hash(id, createDate);
     }
 }
