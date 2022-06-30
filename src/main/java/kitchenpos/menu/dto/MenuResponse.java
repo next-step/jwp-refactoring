@@ -32,6 +32,12 @@ public class MenuResponse {
                 savedMenu.getMenuGroup().getId(), menuProductResponses);
     }
 
+    public static List<MenuResponse> asListFrom(List<Menu> menus) {
+        return menus.stream()
+                .map(menu -> MenuResponse.from(menu))
+                .collect(Collectors.toList());
+    }
+
     public Long getId() {
         return id;
     }
@@ -57,15 +63,15 @@ public class MenuResponse {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MenuResponse that = (MenuResponse) o;
-        return getPrice() == that.getPrice()
-                && Objects.equals(getId(), that.getId())
-                && Objects.equals(getName(), that.getName())
-                && Objects.equals(getMenuGroupId(), that.getMenuGroupId())
-                && Objects.equals(getMenuProducts(), that.getMenuProducts());
+        return price == that.price
+                && Objects.equals(id, that.id)
+                && Objects.equals(name, that.name)
+                && Objects.equals(menuGroupId, that.menuGroupId)
+                && Objects.equals(menuProducts, that.menuProducts);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getName(), getPrice(), getMenuGroupId(), getMenuProducts());
+        return Objects.hash(id, name, price, menuGroupId, menuProducts);
     }
 }

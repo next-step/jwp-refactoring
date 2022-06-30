@@ -2,7 +2,9 @@ package kitchenpos.orderTable.dto;
 
 import kitchenpos.orderTable.domain.OrderTable;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class OrderTableResponse {
     Long id;
@@ -20,6 +22,12 @@ public class OrderTableResponse {
 
     public static OrderTableResponse from(OrderTable orderTable) {
         return new OrderTableResponse(orderTable.getId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
+    }
+
+    public static List<OrderTableResponse> asListFrom(List<OrderTable> orderTables) {
+        return orderTables.stream()
+                .map(orderTable -> OrderTableResponse.from(orderTable))
+                .collect(Collectors.toList());
     }
 
     public Long getId() {

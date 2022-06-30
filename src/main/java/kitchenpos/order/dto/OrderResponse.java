@@ -31,6 +31,12 @@ public class OrderResponse {
                 savedOrder.getOrderStatus(), orderLineItems);
     }
 
+    public static List<OrderResponse> asListFrom(List<Order> orders) {
+        return orders.stream()
+                .map(order -> OrderResponse.from(order))
+                .collect(Collectors.toList());
+    }
+
     public Long getId() {
         return id;
     }

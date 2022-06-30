@@ -17,6 +17,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
@@ -48,27 +49,9 @@ public class OrderService {
         return OrderResponse.from(savedOrder);
     }
 
-    private List<OrderLineItem> retrieveOrderLineItemsFromOrderRequest(OrderRequest orderRequest) {
-        final List<OrderLineItemRequest> orderLineItems = orderRequest.getOrderLineItems();
-        return orderLineItems.stream()
-                .map(orderLineItemsRequest -> {
-                    Menu menu = menuRepository.findById(orderLineItemsRequest.getMenuId())
-                            .orElseThrow(IllegalArgumentException::new);
-                    return new OrderLineItem(null, menu, orderLineItemsRequest.getQuantity());
-                })
-                .collect(Collectors.toList());
-    }
-
     public List<OrderResponse> list() {
         final List<Order> orders = orderRepository.findAll();
-
-        for (final Order order : orders) {
-            order.setOrderLineItems(orderLineItemRepository.findAllByOrderId(order.getId()));
-        }
-
-        return orders.stream()
-                .map(order -> OrderResponse.from(order))
-                .collect(Collectors.toList());
+        return OrderResponse.asListFrom(orders);
     }
 
     @Transactional
@@ -88,5 +71,16 @@ public class OrderService {
         savedOrder.setOrderLineItems(orderLineItemRepository.findAllByOrderId(orderId));
 
         return OrderResponse.from(savedOrder);
+    }
+
+    private List<OrderLineItem> retrieveOrderLineItemsFromOrderRequest(OrderRequest orderRequest) {
+        final List<OrderLineItemRequest> orderLineItems = orderRequest.getOrderLineItems();
+        return orderLineItems.stream()
+                .map(orderLineItemsRequest -> {
+                    Menu menu = menuRepository.findById(orderLineItemsRequest.getMenuId())
+                            .orElseThrow(IllegalArgumentException::new);
+                    return new OrderLineItem(null, menu, orderLineItemsRequest.getQuantity());
+                })
+                .collect(Collectors.toList());
     }
 }

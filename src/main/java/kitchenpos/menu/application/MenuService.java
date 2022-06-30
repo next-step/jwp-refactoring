@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
@@ -49,6 +50,11 @@ public class MenuService {
         return MenuResponse.from(savedMenu);
     }
 
+    public List<MenuResponse> list() {
+        final List<Menu> menus = menuRepository.findAll();
+        return MenuResponse.asListFrom(menus);
+    }
+
     private List<MenuProduct> retrieveMenuProducts(Menu savedMenu, MenuRequest menuRequest) {
         List<MenuProductRequest> menuProductRequests = menuRequest.getMenuProducts();
         return menuProductRequests.stream()
@@ -57,18 +63,6 @@ public class MenuService {
                             .orElseThrow(IllegalArgumentException::new);
                     return new MenuProduct(savedMenu, product, menuProductRequest.getQuantity());
                 })
-                .collect(Collectors.toList());
-    }
-
-    public List<MenuResponse> list() {
-        final List<Menu> menus = menuRepository.findAll();
-
-        for (final Menu menu : menus) {
-            menu.setMenuProducts(menuProductRepository.findAllByMenuId(menu.getId()));
-        }
-
-        return menus.stream()
-                .map(menu -> MenuResponse.from(menu))
                 .collect(Collectors.toList());
     }
 }

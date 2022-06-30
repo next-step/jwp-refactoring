@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class MenuGroupService {
     private final MenuGroupRepository menuGroupRepository;
 
@@ -26,8 +27,6 @@ public class MenuGroupService {
 
     public List<MenuGroupResponse> list() {
         List<MenuGroup> menuGroups = menuGroupRepository.findAll();
-        return menuGroups.stream()
-                .map(menuGroup -> MenuGroupResponse.from(menuGroup))
-                .collect(Collectors.toList());
+        return MenuGroupResponse.asListFrom(menuGroups);
     }
 }

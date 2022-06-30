@@ -2,7 +2,9 @@ package kitchenpos.menuGroup.dto;
 
 import kitchenpos.menuGroup.domain.MenuGroup;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class MenuGroupResponse {
     private Long id;
@@ -18,6 +20,12 @@ public class MenuGroupResponse {
 
     public static MenuGroupResponse from(MenuGroup menuGroup) {
         return new MenuGroupResponse(menuGroup.getId(), menuGroup.getName());
+    }
+
+    public static List<MenuGroupResponse> asListFrom(List<MenuGroup> menuGroups) {
+        return menuGroups.stream()
+                .map(menuGroup -> MenuGroupResponse.from(menuGroup))
+                .collect(Collectors.toList());
     }
 
     public Long getId() {

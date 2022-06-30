@@ -1,4 +1,4 @@
-package kitchenpos.menuGroup.application;
+package kitchenpos.menu.application;
 
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;

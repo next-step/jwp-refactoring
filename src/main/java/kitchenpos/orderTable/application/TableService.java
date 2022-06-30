@@ -14,9 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class TableService {
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
@@ -34,9 +34,7 @@ public class TableService {
 
     public List<OrderTableResponse> list() {
         List<OrderTable> orderTables = orderTableRepository.findAll();
-        return orderTables.stream()
-                .map(orderTable -> OrderTableResponse.from(orderTable))
-                .collect(Collectors.toList());
+        return OrderTableResponse.asListFrom(orderTables);
     }
 
     @Transactional
