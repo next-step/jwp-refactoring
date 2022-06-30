@@ -24,20 +24,23 @@ public class OrderLineItems {
             throw new IllegalArgumentException();
         }
 
-        final List<Long> menuIds = orderLineItems.stream()
-                .map(OrderLineItem::getMenu)
-                .map(Menu::getId)
-                .distinct()
-                .collect(Collectors.toList());
-
+        final List<Long> menuIds = getMenuIds(orderLineItems);
         if (orderLineItems.size() != menuIds.size()) {
             throw new IllegalArgumentException();
         }
 
         for (OrderLineItem item : orderLineItems) {
-            item.setOrder(order);
+            item.connectedBy(order);
         }
         this.list = orderLineItems;
+    }
+
+    private List<Long> getMenuIds(List<OrderLineItem> orderLineItems) {
+        return orderLineItems.stream()
+                .map(OrderLineItem::getMenu)
+                .map(Menu::getId)
+                .distinct()
+                .collect(Collectors.toList());
     }
 
 

@@ -47,7 +47,7 @@ public class OrderLineItem {
         return order;
     }
 
-    public void setOrder(Order order) {
+    public void connectedBy(Order order) {
         this.order = order;
     }
 

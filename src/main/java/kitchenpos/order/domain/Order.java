@@ -1,13 +1,11 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.table.domain.OrderTable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "orders")
@@ -67,10 +65,6 @@ public class Order {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public OrderTable getOrderTable() {
