@@ -32,7 +32,7 @@ public class OrderTablesManager {
         }
         for (final OrderTable orderTable : orderTables) {
             if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup())) {
-                throw new TableGroupException("단체테이블은 2개 이상이여야 합니다");
+                throw new TableGroupException("이미 사용중인 테이블입니다");
             }
         }
     }

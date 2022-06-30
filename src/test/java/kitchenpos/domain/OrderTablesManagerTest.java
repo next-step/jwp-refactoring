@@ -47,7 +47,7 @@ class OrderTablesManagerTest {
         assertThatThrownBy(
             () -> orderTablesManager.mapOrderTables(Arrays.asList(orderTable_1, orderTable_2)))
             .isInstanceOf(TableGroupException.class)
-            .hasMessage("단체테이블은 2개 이상이여야 합니다");
+            .hasMessage("이미 사용중인 테이블입니다");
     }
 
     @Test
@@ -60,6 +60,6 @@ class OrderTablesManagerTest {
         assertThatThrownBy(
             () -> orderTablesManager.mapOrderTables(Arrays.asList(orderTable_1, orderTable_2)))
             .isInstanceOf(TableGroupException.class)
-            .hasMessage("단체테이블은 2개 이상이여야 합니다");
+            .hasMessage("이미 사용중인 테이블입니다");
     }
 }
