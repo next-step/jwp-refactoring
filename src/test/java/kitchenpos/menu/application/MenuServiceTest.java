@@ -1,14 +1,12 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.common.domain.Price;
-import kitchenpos.menu.MenuGenerator;
 import kitchenpos.menu.dao.MenuGroupRepository;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.Menus;
 import kitchenpos.menu.dto.MenuCreateRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
-import kitchenpos.product.ProductGenerator;
 import kitchenpos.product.dao.ProductRepository;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,6 +21,8 @@ import java.util.Collections;
 import java.util.List;
 
 import static kitchenpos.common.domain.PriceTest.가격_생성;
+import static kitchenpos.menu.MenuGenerator.*;
+import static kitchenpos.product.ProductGenerator.상품_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
@@ -46,17 +46,17 @@ class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        저장된_메뉴_그룹 = menuGroupRepository.save(MenuGenerator.메뉴_그룹_생성("메뉴 그룹"));
-        저장된_상품 = productRepository.save(ProductGenerator.상품_생성("상품", PRODUCT_DEFAULT_PRICE));
-        메뉴_상품 = MenuGenerator.메뉴_상품_생성_요청(저장된_상품.getId(), 1L);
+        저장된_메뉴_그룹 = menuGroupRepository.save(메뉴_그룹_생성("메뉴 그룹"));
+        저장된_상품 = productRepository.save(상품_생성("상품", PRODUCT_DEFAULT_PRICE));
+        메뉴_상품 = 메뉴_상품_생성_요청(저장된_상품.getId(), 1L);
     }
 
     @DisplayName("메뉴 생성 시 0원 미만인 경우 예외가 발생해야 한다")
     @Test
     void createMenuByZeroPriceMenuTest() {
         // given
-        MenuProductRequest 메뉴_상품 = MenuGenerator.메뉴_상품_생성_요청(저장된_상품.getId(), 1L);
-        MenuCreateRequest 메뉴_생성_요청 = MenuGenerator.메뉴_생성_요청(
+        MenuProductRequest 메뉴_상품 = 메뉴_상품_생성_요청(저장된_상품.getId(), 1L);
+        MenuCreateRequest 메뉴_생성_요청 = 메뉴_생성_요청(
                 "-1원 메뉴",
                 -1,
                 0L,
@@ -72,13 +72,13 @@ class MenuServiceTest {
     void createMenuByIllegalMenuGroupTest() {
         // given
         long 없는_메뉴_그룹_아이디 = -1L;
-        MenuCreateRequest 없는_메뉴_그룹의_메뉴_생성_요청 = MenuGenerator.메뉴_생성_요청(
+        MenuCreateRequest 없는_메뉴_그룹의_메뉴_생성_요청 = 메뉴_생성_요청(
                 "없는 메뉴 그룹의 메뉴",
                 1_000,
                 없는_메뉴_그룹_아이디,
                 Collections.singletonList(메뉴_상품)
         );
-        MenuCreateRequest 메뉴_그룹_정보가_없는_메뉴_생성_요청 = MenuGenerator.메뉴_생성_요청(
+        MenuCreateRequest 메뉴_그룹_정보가_없는_메뉴_생성_요청 = 메뉴_생성_요청(
                 "메뉴 그룹 정보가 없는 메뉴",
                 1_000,
                 null,
@@ -94,7 +94,7 @@ class MenuServiceTest {
     @Test
     void createMenuByNotIncludedProductsTest() {
         // given
-        MenuCreateRequest 메뉴_가격과_포함된_상품의_가격이_맞지_않는_메뉴_생성_요청 = MenuGenerator.메뉴_생성_요청(
+        MenuCreateRequest 메뉴_가격과_포함된_상품의_가격이_맞지_않는_메뉴_생성_요청 = 메뉴_생성_요청(
                 "999원 메뉴",
                 999,
                 저장된_메뉴_그룹.getId(),
@@ -109,7 +109,7 @@ class MenuServiceTest {
     @Test
     void createMenuTest() {
         // given
-        MenuCreateRequest 메뉴_생성_요청 = MenuGenerator.메뉴_생성_요청(
+        MenuCreateRequest 메뉴_생성_요청 = 메뉴_생성_요청(
                 "1,000원 메뉴",
                 1_000,
                 저장된_메뉴_그룹.getId(),
@@ -128,10 +128,10 @@ class MenuServiceTest {
     void findAllMenuTest() {
         // given
         List<Long> 포함되어야_할_아이디들 = new ArrayList<>();
-        MenuProductRequest 메뉴_상품 = MenuGenerator.메뉴_상품_생성_요청(저장된_상품.getId(), 1L);
+        MenuProductRequest 메뉴_상품 = 메뉴_상품_생성_요청(저장된_상품.getId(), 1L);
         for (int i = 1; i < 5; i++) {
             포함되어야_할_아이디들.add(menuService.create(
-                    MenuGenerator.메뉴_생성_요청(
+                    메뉴_생성_요청(
                             "메뉴 " + i,
                             1_000,
                             저장된_메뉴_그룹.getId(),

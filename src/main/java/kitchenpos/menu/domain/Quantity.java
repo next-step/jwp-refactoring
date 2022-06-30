@@ -8,18 +8,18 @@ public class Quantity {
     private static final Long MIN_VALUE = 0L;
 
     @Column(nullable = false)
-    private Long value;
+    private Long quantity;
 
     protected Quantity() {}
 
     public Quantity(Long value) {
         checkValue(value);
 
-        this.value = value;
+        this.quantity = value;
     }
 
     public Long getValue() {
-        return value;
+        return quantity;
     }
 
     private void checkValue(Long value) {

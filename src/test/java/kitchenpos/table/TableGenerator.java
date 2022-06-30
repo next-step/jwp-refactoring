@@ -19,10 +19,6 @@ public class TableGenerator {
     private static final String TABLE_PATH = "/api/tables";
     private static final String TABLE_GROUP_PATH = "/api/table-groups";
 
-    public static OrderTable 주문_테이블_생성(TableGroup tableGroup, int numberOfGuests, boolean empty) {
-        return new OrderTable(tableGroup, new NumberOfGuests(numberOfGuests), empty);
-    }
-
     public static OrderTable 주문_테이블_생성(NumberOfGuests numberOfGuests) {
         return new OrderTable(numberOfGuests);
     }

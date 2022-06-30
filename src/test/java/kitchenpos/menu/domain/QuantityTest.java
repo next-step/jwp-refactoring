@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
-class QuantityTest {
+public class QuantityTest {
 
     @DisplayName("수량 생성 시 0보다 작은 수량을 생성하면 예외가 발생해야 한다")
     @Test

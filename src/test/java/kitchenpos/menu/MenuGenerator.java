@@ -32,6 +32,10 @@ public class MenuGenerator {
         return new MenuProduct(null, product, quantity);
     }
 
+    public static MenuProduct 메뉴_상품_생성(Menu menu, Product product, Quantity quantity) {
+        return new MenuProduct(menu, product, quantity);
+    }
+
     public static MenuProducts 메뉴_상품_목록_생성(List<MenuProduct> menuProducts) {
         return new MenuProducts(menuProducts);
     }

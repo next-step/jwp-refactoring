@@ -2,9 +2,7 @@ package kitchenpos.menu.domain;
 
 import kitchenpos.menu.dto.MenuResponse;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Menus {
@@ -18,6 +16,20 @@ public class Menus {
         return this.value.stream()
                 .map(MenuResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    public Menu findMenuById(Long id) {
+        return this.value.stream()
+                .filter(menu -> menu.getId().equals(id))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public boolean isNotAllContainIds(Collection<Long> ids) {
+        Set<Long> removeDuplicatedIds = new HashSet<>(ids);
+
+        return this.value.size() != removeDuplicatedIds.size() ||
+                this.value.stream().map(Menu::getId).anyMatch(id -> !removeDuplicatedIds.contains(id));
     }
 
     public List<Menu> getValue() {

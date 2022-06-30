@@ -1,19 +1,17 @@
 package kitchenpos.table.application;
 
 import kitchenpos.order.application.OrderService;
-import kitchenpos.order.dao.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.dao.OrderTableRepository;
 import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.dto.OrderTableCreateRequest;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @Transactional(readOnly = true)
@@ -21,7 +19,7 @@ public class TableService {
     private final OrderTableRepository orderTableRepository;
     private final OrderService orderService;
 
-    public TableService(final OrderTableRepository orderTableRepository, final OrderService orderService) {
+    public TableService(final OrderTableRepository orderTableRepository, @Lazy final OrderService orderService) {
         this.orderTableRepository = orderTableRepository;
         this.orderService = orderService;
     }
