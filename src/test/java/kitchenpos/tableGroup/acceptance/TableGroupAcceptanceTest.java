@@ -17,6 +17,7 @@ import static kitchenpos.utils.RestAssuredMethods.delete;
 import static kitchenpos.utils.RestAssuredMethods.post;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("테이블그룹 관련 기능 인수테스트")
 public class TableGroupAcceptanceTest extends AcceptanceTest {
     OrderTableResponse 테이블1;
     OrderTableResponse 테이블2;

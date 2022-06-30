@@ -1,5 +1,8 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.exception.IllegalPriceException;
+import kitchenpos.exception.NoSuchMenuGroupException;
+import kitchenpos.exception.NoSuchProductException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProductRepository;
@@ -32,6 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Transactional
+@DisplayName("메뉴 Service 테스트")
 class MenuServiceTest {
     @Autowired
     private MenuRepository menuRepository;
@@ -99,7 +103,7 @@ class MenuServiceTest {
         );
 
         //then
-        assertThrows(IllegalArgumentException.class, () -> menuService.create(invalidMenu));
+        assertThrows(IllegalPriceException.class, () -> menuService.create(invalidMenu));
     }
 
     @DisplayName("메뉴의 가격은, 메뉴상품의 정가의 합보다 클 수 없다")
@@ -116,7 +120,7 @@ class MenuServiceTest {
         );
 
         //then
-        assertThrows(IllegalArgumentException.class, () -> menuService.create(invalidMenu));
+        assertThrows(IllegalPriceException.class, () -> menuService.create(invalidMenu));
     }
 
     @DisplayName("등록하려는 메뉴그룹이 존재해야 한다")
@@ -133,7 +137,7 @@ class MenuServiceTest {
         );
 
         //then
-        assertThrows(IllegalArgumentException.class, () -> menuService.create(invalidMenu));
+        assertThrows(NoSuchMenuGroupException.class, () -> menuService.create(invalidMenu));
     }
 
     @DisplayName("등록하려는 메뉴상품의 상품이 존재해야 한다")
@@ -149,7 +153,7 @@ class MenuServiceTest {
         );
 
         //then
-        assertThrows(IllegalArgumentException.class, () -> menuService.create(invalidMenu));
+        assertThrows(NoSuchProductException.class, () -> menuService.create(invalidMenu));
     }
 
     @DisplayName("메뉴의 목록을 조회할 수 있다")

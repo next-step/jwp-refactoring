@@ -1,5 +1,6 @@
 package kitchenpos.order.application;
 
+import kitchenpos.exception.*;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProductRepository;
@@ -45,6 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Transactional
+@DisplayName("주문 Service 테스트")
 class OrderServiceTest {
     @Autowired
     MenuRepository menuRepository;
@@ -110,7 +112,8 @@ class OrderServiceTest {
         OrderRequest 접수된_주문_request = OrderRequest.of(
                 접수된_주문.getOrderTable().getId(),
                 접수된_주문.getOrderLineItems().stream()
-                        .map(orderLineItem -> OrderLineItemRequest.of(orderLineItem.getMenu().getId(), (int) orderLineItem.getQuantity()))
+                        .map(orderLineItem -> OrderLineItemRequest.of(orderLineItem.getMenu().getId(),
+                                (int) orderLineItem.getQuantity()))
                         .collect(Collectors.toList())
         );
 
@@ -130,7 +133,7 @@ class OrderServiceTest {
         //given
         OrderRequest invalidRequest = OrderRequest.of(테이블_1.getId(), new ArrayList<>());
         //then
-        assertThrows(IllegalArgumentException.class, () -> orderService.create(invalidRequest));
+        assertThrows(IllegalOrderLineItemException.class, () -> orderService.create(invalidRequest));
     }
 
     @DisplayName("주문항목간 메뉴는 중복될 수 없다")
@@ -139,10 +142,11 @@ class OrderServiceTest {
         //given
         OrderLineItemRequest 중복_메뉴 = OrderLineItemRequest.of(접수된주문_김치찌개세트.getMenu().getId(),
                 (int) 접수된주문_김치찌개세트.getQuantity());
-        OrderRequest invalidRequest = OrderRequest.of(접수된_주문.getId(), Arrays.asList(중복_메뉴, 중복_메뉴));
+        OrderRequest invalidRequest = OrderRequest.of(접수된_주문.getOrderTable().getId(),
+                Arrays.asList(중복_메뉴, 중복_메뉴));
 
         //then
-        assertThrows(IllegalArgumentException.class, () -> orderService.create(invalidRequest));
+        assertThrows(IllegalOrderLineItemException.class, () -> orderService.create(invalidRequest));
     }
 
     @DisplayName("등록하려는 주문테이블이 존재해야 한다")
@@ -152,12 +156,13 @@ class OrderServiceTest {
         OrderRequest 접수된_주문_request = OrderRequest.of(
                 0L,
                 접수된_주문.getOrderLineItems().stream()
-                        .map(orderLineItem -> OrderLineItemRequest.of(orderLineItem.getMenu().getId(), (int) orderLineItem.getQuantity()))
+                        .map(orderLineItem -> OrderLineItemRequest.of(orderLineItem.getMenu().getId(),
+                                (int) orderLineItem.getQuantity()))
                         .collect(Collectors.toList())
         );
 
         //then
-        assertThrows(IllegalArgumentException.class, () -> orderService.create(접수된_주문_request));
+        assertThrows(NoSuchOrderTableException.class, () -> orderService.create(접수된_주문_request));
     }
 
     @DisplayName("등록하려는 주문테이블은 비어있을 수 없다")
@@ -170,7 +175,7 @@ class OrderServiceTest {
         );
 
         //then
-        assertThrows(IllegalArgumentException.class, () -> orderService.create(invalidOrder));
+        assertThrows(IllegalOrderTableException.class, () -> orderService.create(invalidOrder));
     }
 
     @DisplayName("등록하려는 주문항목의 메뉴가 존재해야 한다")
@@ -180,12 +185,13 @@ class OrderServiceTest {
         OrderRequest 접수된_주문_request = OrderRequest.of(
                 접수된_주문.getOrderTable().getId(),
                 접수된_주문.getOrderLineItems().stream()
-                        .map(orderLineItem -> OrderLineItemRequest.of(0L, (int) orderLineItem.getQuantity()))
+                        .map(orderLineItem -> OrderLineItemRequest.of(0L,
+                                (int) orderLineItem.getQuantity()))
                         .collect(Collectors.toList())
         );
 
         //then
-        assertThrows(IllegalArgumentException.class, () -> orderService.create(접수된_주문_request));
+        assertThrows(NoSuchMenuException.class, () -> orderService.create(접수된_주문_request));
     }
 
     @DisplayName("주문의 목록을 조회할 수 있다")
@@ -195,7 +201,8 @@ class OrderServiceTest {
         OrderRequest 접수된_주문_request = OrderRequest.of(
                 접수된_주문.getOrderTable().getId(),
                 접수된_주문.getOrderLineItems().stream()
-                        .map(orderLineItem -> OrderLineItemRequest.of(orderLineItem.getMenu().getId(), (int) orderLineItem.getQuantity()))
+                        .map(orderLineItem -> OrderLineItemRequest.of(orderLineItem.getMenu().getId(),
+                                (int) orderLineItem.getQuantity()))
                         .collect(Collectors.toList())
         );
         OrderResponse savedOrder = orderService.create(접수된_주문_request);
@@ -240,7 +247,7 @@ class OrderServiceTest {
         OrderStatusRequest status_MEAL = OrderStatusRequest.from(OrderStatus.MEAL);
 
         //then
-        assertThrows(IllegalArgumentException.class, () -> orderService.changeOrderStatus(0L, status_MEAL));
+        assertThrows(NoSuchOrderException.class, () -> orderService.changeOrderStatus(0L, status_MEAL));
     }
 
     @DisplayName("주문상태가 COMPLETION이면 주문상태를 업데이트할 수 없다")
@@ -255,6 +262,6 @@ class OrderServiceTest {
         OrderStatusRequest status_MEAL = OrderStatusRequest.from(OrderStatus.MEAL);
 
         //then
-        assertThrows(IllegalArgumentException.class, () -> orderService.changeOrderStatus(완료된_주문.getId(), status_MEAL));
+        assertThrows(IllegalOrderException.class, () -> orderService.changeOrderStatus(order.getId(), status_MEAL));
     }
 }

@@ -1,5 +1,6 @@
 package kitchenpos.product.ui;
 
+import kitchenpos.exception.KitchenPosArgumentException;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
@@ -32,8 +33,8 @@ public class ProductRestController {
                 ;
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity handleIllegalArgsException(IllegalArgumentException e) {
+    @ExceptionHandler(KitchenPosArgumentException.class)
+    public ResponseEntity handleKitchenPosArgException(KitchenPosArgumentException e) {
         return ResponseEntity.badRequest().build();
     }
 }

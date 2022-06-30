@@ -23,7 +23,7 @@ import static kitchenpos.utils.RestAssuredMethods.get;
 import static kitchenpos.utils.RestAssuredMethods.post;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("메뉴 관련 기능")
+@DisplayName("메뉴 관련 기능 인수테스트")
 public class MenuAcceptanceTest extends AcceptanceTest {
     private ProductResponse 김치찌개_product;
     private ProductResponse 공기밥_product;

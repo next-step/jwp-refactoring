@@ -1,5 +1,6 @@
 package kitchenpos.tableGroup.domain;
 
+import kitchenpos.exception.IllegalOrderTableException;
 import kitchenpos.orderTable.domain.OrderTable;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +13,7 @@ import java.util.Arrays;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+@DisplayName("테이블그룹 도메인 테스트")
 class TableGroupTest {
     @DisplayName("테이블 그룹을 생성한다")
     @Test
@@ -28,7 +30,7 @@ class TableGroupTest {
     void TableGroup_주문테이블_2개이상_검증(){
         OrderTable orderTable = new OrderTable(1L, null, 0, true);
 
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(IllegalOrderTableException.class,
                 () -> new TableGroup(LocalDateTime.now(), Arrays.asList(orderTable)));
     }
 
@@ -37,7 +39,7 @@ class TableGroupTest {
     void TableGroup_주문테이블_중복불가_검증(){
         OrderTable orderTable = new OrderTable(1L, null, 0, true);
 
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(IllegalOrderTableException.class,
                 () -> new TableGroup(LocalDateTime.now(), Arrays.asList(orderTable, orderTable)));
     }
 
@@ -47,7 +49,7 @@ class TableGroupTest {
         OrderTable orderTable = new OrderTable(1L, null, 0, true);
         OrderTable orderTable2 = new OrderTable(2L, null, 4, false);
 
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(IllegalOrderTableException.class,
                 () -> new TableGroup(LocalDateTime.now(), Arrays.asList(orderTable, orderTable2)));
 
     }
@@ -61,7 +63,7 @@ class TableGroupTest {
 
         OrderTable orderTable3 = new OrderTable(2L, null, 4, false);
 
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(IllegalOrderTableException.class,
                 () -> new TableGroup(LocalDateTime.now(), Arrays.asList(orderTable3, orderTable)));
 
     }

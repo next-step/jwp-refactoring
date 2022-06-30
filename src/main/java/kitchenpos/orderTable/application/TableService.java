@@ -1,5 +1,6 @@
 package kitchenpos.orderTable.application;
 
+import kitchenpos.exception.NoSuchOrderTableException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.orderTable.domain.OrderTable;
@@ -54,7 +55,7 @@ public class TableService {
 
     private OrderTable findOrderTableById(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new NoSuchOrderTableException(orderTableId));
     }
 
     private List<Order> findOrdersByOrderTable(Long orderTableId) {

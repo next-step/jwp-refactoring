@@ -1,5 +1,6 @@
 package kitchenpos.menu.ui;
 
+import kitchenpos.exception.KitchenPosArgumentException;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -33,8 +34,8 @@ public class MenuRestController {
                 ;
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity handleIllegalArgsException(IllegalArgumentException e) {
+    @ExceptionHandler(KitchenPosArgumentException.class)
+    public ResponseEntity handleKitchenPosArgException(KitchenPosArgumentException e) {
         return ResponseEntity.badRequest().build();
     }
 }

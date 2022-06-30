@@ -1,6 +1,10 @@
 package kitchenpos.tableGroup.domain;
 
+import kitchenpos.exception.ErrorMessage;
+import kitchenpos.exception.IllegalOrderException;
+import kitchenpos.exception.IllegalOrderTableException;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.orderTable.domain.OrderTable;
 
 import javax.persistence.*;
@@ -9,6 +13,7 @@ import java.util.List;
 
 @Entity
 public class TableGroup {
+    public static final int MIN_ORDER_TABLE_NUMBER = 2;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -45,19 +50,21 @@ public class TableGroup {
     }
 
     private void validateOrderTables(List<OrderTable> orderTables) {
-        if (orderTables == null || orderTables.size() < 2) {
-            throw new IllegalArgumentException();
+        if (orderTables == null || orderTables.size() < MIN_ORDER_TABLE_NUMBER) {
+            throw new IllegalOrderTableException(
+                    String.format(ErrorMessage.ERROR_ORDER_TABLE_TOO_SMALL, MIN_ORDER_TABLE_NUMBER)
+            );
         }
         if(orderTables.size() != orderTables.stream().distinct().count()){
-            throw new IllegalArgumentException();
+            throw new IllegalOrderTableException(ErrorMessage.ERROR_ORDER_TABLE_DUPLICATED);
         }
         if (orderTables.stream().
                 anyMatch(orderTable -> !orderTable.isEmpty())) {
-            throw new IllegalArgumentException();
+            throw new IllegalOrderTableException(ErrorMessage.ERROR_ORDER_TABLE_NOT_EMPTY);
         }
         if (orderTables.stream().
                 anyMatch(orderTable -> orderTable.isGrouped())) {
-            throw new IllegalArgumentException();
+            throw new IllegalOrderTableException(ErrorMessage.ERROR_ORDER_TABLE_GROUPED);
         }
     }
 
@@ -95,7 +102,9 @@ public class TableGroup {
     private void validateOrdersToUngroup(List<Order> orders) {
         if (orders.stream()
                 .anyMatch(order -> order.isCooking() || order.isEating())) {
-            throw new IllegalArgumentException();
+            throw new IllegalOrderException(
+                    String.format(ErrorMessage.ERROR_ORDER_INVALID_STATUS, OrderStatus.COOKING + " " + OrderStatus.MEAL)
+            );
         }
     }
 }

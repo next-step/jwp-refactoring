@@ -1,5 +1,8 @@
 package kitchenpos.order.application;
 
+import kitchenpos.exception.NoSuchMenuException;
+import kitchenpos.exception.NoSuchOrderException;
+import kitchenpos.exception.NoSuchOrderTableException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
@@ -75,16 +78,16 @@ public class OrderService {
 
     private OrderTable findOrderTableById(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new NoSuchOrderTableException(orderTableId));
     }
 
     private Order findOrderById(Long orderId) {
         return orderRepository.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new NoSuchOrderException(orderId));
     }
 
     private Menu findMenuById(Long menuId) {
         return menuRepository.findById(menuId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new NoSuchMenuException(menuId));
     }
 }

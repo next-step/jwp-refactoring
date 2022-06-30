@@ -1,5 +1,8 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.exception.IllegalOrderException;
+import kitchenpos.exception.IllegalOrderLineItemException;
+import kitchenpos.exception.IllegalOrderTableException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menuGroup.domain.MenuGroup;
@@ -17,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@DisplayName("주문 도메인 테스트")
 class OrderTest {
     private MenuGroup menuGroup_한식;
     private Product product_김치찌개;
@@ -55,7 +59,7 @@ class OrderTest {
         Order order = new Order(1L, 테이블_1, LocalDateTime.now());
         OrderLineItem orderLineItem_김치찌개 = new OrderLineItem(order, menu, 1);
 
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(IllegalOrderLineItemException.class,
                 () -> order.registerOrderLineItems(new ArrayList<>()));
     }
 
@@ -66,7 +70,7 @@ class OrderTest {
         Order order = new Order(1L, 테이블_1, LocalDateTime.now());
         OrderLineItem orderLineItem_김치찌개 = new OrderLineItem(order, menu, 1);
 
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(IllegalOrderLineItemException.class,
                 () ->order.registerOrderLineItems(Arrays.asList(orderLineItem_김치찌개, orderLineItem_김치찌개)));
     }
 
@@ -75,7 +79,7 @@ class OrderTest {
     void Order_테이블_Empty_검증(){
         OrderTable 테이블_1 = new OrderTable(1L, null, 0, true);
 
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(IllegalOrderTableException.class,
                 () ->new Order(1L, 테이블_1, LocalDateTime.now()));
     }
 
@@ -96,6 +100,6 @@ class OrderTest {
         Order order = new Order(1L, 테이블_1, LocalDateTime.now());
         order.changeStatus(OrderStatus.COMPLETION);
 
-        assertThrows(IllegalArgumentException.class, () -> order.changeStatus(OrderStatus.COOKING));
+        assertThrows(IllegalOrderException.class, () -> order.changeStatus(OrderStatus.COOKING));
     }
 }

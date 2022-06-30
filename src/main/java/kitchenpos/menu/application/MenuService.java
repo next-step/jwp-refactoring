@@ -1,5 +1,6 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.exception.NoSuchMenuGroupException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProductRepository;
@@ -7,6 +8,7 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.exception.NoSuchProductException;
 import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.menuGroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
@@ -66,11 +68,11 @@ public class MenuService {
 
     private MenuGroup findMenuGroupById(Long menuGroupId) {
         return menuGroupRepository.findById(menuGroupId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new NoSuchMenuGroupException(menuGroupId));
     }
 
     private Product findProductById(Long productId) {
         return productRepository.findById(productId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new NoSuchProductException(productId));
     }
 }

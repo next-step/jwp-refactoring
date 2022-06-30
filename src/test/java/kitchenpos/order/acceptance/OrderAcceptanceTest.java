@@ -30,7 +30,7 @@ import static kitchenpos.product.acceptance.ProductAcceptanceTest.상품_등록�
 import static kitchenpos.utils.RestAssuredMethods.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("주문 관련 기능")
+@DisplayName("주문 관련 기능 인수테스트")
 public class OrderAcceptanceTest extends AcceptanceTest {
     private ProductResponse 김치찌개_product;
     private ProductResponse 공기밥_product;

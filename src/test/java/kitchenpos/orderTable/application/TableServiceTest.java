@@ -1,5 +1,8 @@
 package kitchenpos.orderTable.application;
 
+import kitchenpos.exception.IllegalOrderException;
+import kitchenpos.exception.IllegalOrderTableException;
+import kitchenpos.exception.NoSuchOrderTableException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
@@ -41,6 +44,7 @@ import static org.mockito.BDDMockito.given;
 
 @SpringBootTest
 @Transactional
+@DisplayName("테이블 Service 테스트")
 public class TableServiceTest {
     @Autowired
     private OrderRepository orderRepository;
@@ -113,7 +117,7 @@ public class TableServiceTest {
         OrderTableEmptyRequest emptyRequest = OrderTableEmptyRequest.from(true);
 
         //then
-        assertThrows(IllegalArgumentException.class, () -> tableService.changeEmpty(0L, emptyRequest));
+        assertThrows(NoSuchOrderTableException.class, () -> tableService.changeEmpty(0L, emptyRequest));
     }
 
     @DisplayName("주문테이블의 비어있음 여부를 업데이트시, 주문테이블이 테이블그룹에 등록되어있으면 안된다")
@@ -127,7 +131,7 @@ public class TableServiceTest {
         OrderTableEmptyRequest emptyRequest = OrderTableEmptyRequest.from(true);
 
         //then
-        assertThrows(IllegalArgumentException.class, () -> tableService.changeEmpty(테이블_1.getId(), emptyRequest));
+        assertThrows(IllegalOrderTableException.class, () -> tableService.changeEmpty(테이블_1.getId(), emptyRequest));
     }
 
     @DisplayName("주문테이블의 비어있음 여부를 업데이트시, 주문테이블에 COOKING이나 MEAL 상태의 주문이 있으면 안된다")
@@ -147,7 +151,7 @@ public class TableServiceTest {
         OrderTableEmptyRequest emptyRequest = OrderTableEmptyRequest.from(false);
 
         //then
-        assertThrows(IllegalArgumentException.class, () -> tableService.changeEmpty(savedTable.getId(), emptyRequest));
+        assertThrows(IllegalOrderException.class, () -> tableService.changeEmpty(savedTable.getId(), emptyRequest));
     }
 
     private static Stream<Arguments> provideParametersForOrderTableUpdateWithOrderState() {
@@ -185,7 +189,7 @@ public class TableServiceTest {
         OrderTableNumOfGuestRequest invalidRequest = OrderTableNumOfGuestRequest.from(-1);
 
         //then
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(IllegalOrderTableException.class,
                 () -> tableService.changeNumberOfGuests(savedTable.getId(), invalidRequest));
     }
 
@@ -196,7 +200,7 @@ public class TableServiceTest {
         OrderTableNumOfGuestRequest oneGuestRequest = OrderTableNumOfGuestRequest.from(1);
 
         //then
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(NoSuchOrderTableException.class,
                 () -> tableService.changeNumberOfGuests(0L, oneGuestRequest));
     }
 
@@ -212,7 +216,7 @@ public class TableServiceTest {
         OrderTableNumOfGuestRequest oneGuestRequest = OrderTableNumOfGuestRequest.from(1);
 
         //then
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(IllegalOrderTableException.class,
                 () -> tableService.changeNumberOfGuests(savedTable.getId(), oneGuestRequest));
     }
 }

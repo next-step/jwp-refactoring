@@ -1,5 +1,7 @@
 package kitchenpos.product.domain;
 
+import kitchenpos.exception.IllegalPriceException;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -22,7 +24,7 @@ public class ProductPrice {
 
     private void validatePrice(int price) {
         if (price < 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalPriceException("가격은 %d 미만일 수 없습니다.");
         }
     }
 

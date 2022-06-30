@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.exception.IllegalPriceException;
 import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
@@ -11,6 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@DisplayName("메뉴 도메인 테스트")
 class MenuTest {
     @DisplayName("메뉴를 생성한다")
     @Test
@@ -32,7 +34,7 @@ class MenuTest {
     void Menu_가격_0이상_검증(){
         MenuGroup menuGroup_한식 = new MenuGroup(1L, "한식");
 
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(IllegalPriceException.class,
                 () -> new Menu(1L, "김치찌개", -8000, menuGroup_한식));
     }
 
@@ -44,7 +46,7 @@ class MenuTest {
         Menu menu = new Menu(1L, "김치찌개", 10000, menuGroup_한식);
         MenuProduct menuProduct_김치찌개 = new MenuProduct(1L, menu, product_김치찌개, 1);
 
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(IllegalPriceException.class,
                 () -> menu.registerMenuProducts(Arrays.asList(menuProduct_김치찌개)));
     }
 }

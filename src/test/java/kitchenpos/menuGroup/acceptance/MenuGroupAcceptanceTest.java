@@ -18,7 +18,7 @@ import static kitchenpos.utils.RestAssuredMethods.get;
 import static kitchenpos.utils.RestAssuredMethods.post;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("메뉴그룹 관련 기능")
+@DisplayName("메뉴그룹 관련 기능 인수테스트")
 public class MenuGroupAcceptanceTest extends AcceptanceTest {
     private MenuGroupRequest 한식_menuGroupRequest;
     private MenuGroupRequest 양식_menuGroupRequest;

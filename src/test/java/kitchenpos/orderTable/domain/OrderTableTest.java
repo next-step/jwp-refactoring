@@ -1,5 +1,6 @@
 package kitchenpos.orderTable.domain;
 
+import kitchenpos.exception.IllegalOrderTableException;
 import kitchenpos.tableGroup.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@DisplayName("테이블 도메인 테스트")
 public class OrderTableTest {
     @DisplayName("주문테이블을 생성할 수 있다")
     @Test
@@ -40,6 +42,6 @@ public class OrderTableTest {
                         new OrderTable(0, true)));
         OrderTable orderTable = new OrderTable(1L, tableGroup, 4, false);
 
-        assertThrows(IllegalArgumentException.class, () -> orderTable.changeEmpty(true, new ArrayList<>()));
+        assertThrows(IllegalOrderTableException.class, () -> orderTable.changeEmpty(true, new ArrayList<>()));
     }
 }

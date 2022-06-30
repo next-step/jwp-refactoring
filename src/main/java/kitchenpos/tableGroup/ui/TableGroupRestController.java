@@ -1,5 +1,6 @@
 package kitchenpos.tableGroup.ui;
 
+import kitchenpos.exception.KitchenPosArgumentException;
 import kitchenpos.tableGroup.application.TableGroupService;
 import kitchenpos.tableGroup.dto.TableGroupRequest;
 import kitchenpos.tableGroup.dto.TableGroupResponse;
@@ -33,8 +34,8 @@ public class TableGroupRestController {
                 ;
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity handleIllegalArgsException(IllegalArgumentException e) {
+    @ExceptionHandler(KitchenPosArgumentException.class)
+    public ResponseEntity handleKitchenPosArgException(KitchenPosArgumentException e) {
         return ResponseEntity.badRequest().build();
     }
 }

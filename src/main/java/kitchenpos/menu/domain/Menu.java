@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.exception.IllegalPriceException;
 import kitchenpos.menuGroup.domain.MenuGroup;
 
 import javax.persistence.*;
@@ -87,7 +88,7 @@ public class Menu {
                 mapToInt(menuProduct -> menuProduct.getProduct().getPrice() * menuProduct.getQuantity()).
                 sum();
         if (price.isLargerThan(sumPrice)) {
-            throw new IllegalArgumentException();
+            throw new IllegalPriceException("가격은 %d 미만일 수 없습니다.");
         }
     }
 }

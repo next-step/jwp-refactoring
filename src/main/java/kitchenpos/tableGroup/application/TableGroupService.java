@@ -1,5 +1,8 @@
 package kitchenpos.tableGroup.application;
 
+import kitchenpos.exception.ErrorMessage;
+import kitchenpos.exception.IllegalOrderTableException;
+import kitchenpos.exception.NoSuchTableGroupException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.orderTable.domain.OrderTable;
@@ -60,12 +63,12 @@ public class TableGroupService {
 
     private void validateOrderTablesAllExist(List<Long> orderTableIds, List<OrderTable> savedOrderTables) {
         if (orderTableIds.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
+            throw new IllegalOrderTableException(ErrorMessage.ERROR_ORDER_TABLE_NOT_EXISTS);
         }
     }
 
     private TableGroup findTableGroupById(Long tableGroupId) {
         return tableGroupRepository.findById(tableGroupId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new NoSuchTableGroupException(tableGroupId));
     }
 }

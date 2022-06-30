@@ -1,5 +1,7 @@
 package kitchenpos.tableGroup.application;
 
+import kitchenpos.exception.IllegalOrderException;
+import kitchenpos.exception.IllegalOrderTableException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
@@ -30,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Transactional
+@DisplayName("테이블그룹 Service 테스트")
 class TableGroupServiceTest {
     @Autowired
     private OrderRepository orderRepository;
@@ -80,7 +83,7 @@ class TableGroupServiceTest {
         );
 
         //then
-        assertThrows(IllegalArgumentException.class, () -> tableGroupService.create(invalidRequest));
+        assertThrows(IllegalOrderTableException.class, () -> tableGroupService.create(invalidRequest));
     }
 
     @DisplayName("테이블 그룹을 삭제할 수 있다")
@@ -116,7 +119,7 @@ class TableGroupServiceTest {
         orderRepository.save(order);
 
         //then
-        assertThrows(IllegalArgumentException.class, () -> tableGroupService.ungroup(savedTableGroup.getId()));
+        assertThrows(IllegalOrderException.class, () -> tableGroupService.ungroup(savedTableGroup.getId()));
     }
 
     private static Stream<Arguments> provideParametersForTableGroupDeleteWithOrderState() {

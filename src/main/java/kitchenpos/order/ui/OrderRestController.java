@@ -1,5 +1,6 @@
 package kitchenpos.order.ui;
 
+import kitchenpos.exception.KitchenPosArgumentException;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
@@ -42,8 +43,8 @@ public class OrderRestController {
         return ResponseEntity.ok(orderService.changeOrderStatus(orderId, orderRequest));
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity handleIllegalArgsException(IllegalArgumentException e) {
+    @ExceptionHandler(KitchenPosArgumentException.class)
+    public ResponseEntity handleKitchenPosArgException(KitchenPosArgumentException e) {
         return ResponseEntity.badRequest().build();
     }
 }

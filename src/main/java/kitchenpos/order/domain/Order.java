@@ -1,5 +1,9 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.exception.ErrorMessage;
+import kitchenpos.exception.IllegalOrderException;
+import kitchenpos.exception.IllegalOrderLineItemException;
+import kitchenpos.exception.IllegalOrderTableException;
 import kitchenpos.orderTable.domain.OrderTable;
 
 import javax.persistence.*;
@@ -22,6 +26,8 @@ public class Order {
     @OneToMany(mappedBy = "order")
     private List<OrderLineItem> orderLineItems;
 
+    private static final int MINIMUM_ORDER_LINE_ITEM_NUMBER = 1;
+
     public Order() {
     }
 
@@ -40,7 +46,7 @@ public class Order {
 
     private void validateOrderTable(OrderTable orderTable) {
         if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new IllegalOrderTableException(ErrorMessage.ERROR_ORDER_TABLE_EMPTY);
         }
     }
 
@@ -92,21 +98,25 @@ public class Order {
     }
 
     private void validateOrderLineItems(List<OrderLineItem> orderLineItems) {
-        if (orderLineItems == null || orderLineItems.size() < 1) {
-            throw new IllegalArgumentException();
+        if (orderLineItems == null || orderLineItems.size() < MINIMUM_ORDER_LINE_ITEM_NUMBER) {
+            throw new IllegalOrderLineItemException(
+                    String.format(ErrorMessage.ERROR_ORDER_LINE_ITEM_TOO_SMALL, MINIMUM_ORDER_LINE_ITEM_NUMBER)
+            );
         }
         if(orderLineItems.size() !=
                 orderLineItems.stream()
                         .map(orderLineItem -> orderLineItem.getMenu())
                         .distinct()
                         .count()){
-            throw new IllegalArgumentException();
+            throw new IllegalOrderLineItemException(ErrorMessage.ERROR_ORDER_LINE_ITEM_DUPLICATED);
         }
     }
 
     public void changeStatus(OrderStatus orderStatus) {
         if (Objects.equals(this.orderStatus, OrderStatus.COMPLETION)) {
-            throw new IllegalArgumentException();
+            throw new IllegalOrderException(
+                    String.format(ErrorMessage.ERROR_ORDER_INVALID_STATUS, OrderStatus.COMPLETION)
+            );
         }
         this.orderStatus = orderStatus;
     }

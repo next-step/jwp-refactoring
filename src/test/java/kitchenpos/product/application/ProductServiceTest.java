@@ -4,28 +4,26 @@ import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static kitchenpos.utils.fixture.ProductFixtureFactory.createProduct;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@Transactional
+@DisplayName("상품 Service 테스트")
 class ProductServiceTest {
-    @Mock
+    @Autowired
     private ProductRepository productRepository;
-    @InjectMocks
+    @Autowired
     ProductService productService;
 
     private Product 치킨;
@@ -33,33 +31,34 @@ class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
-        치킨 = createProduct( 1L, "치킨", 15000);
-        피자 = createProduct(2L, "피자", 20000);
+        치킨 = createProduct( "치킨", 15000);
+        피자 = createProduct("피자", 20000);
     }
 
     @DisplayName("상품을 등록할 수 있다")
     @Test
     void 상품_등록(){
-        //given
-        given(productRepository.save(any(Product.class))).willReturn(치킨);
-
         //when
         ProductResponse savedProduct = productService.create(ProductRequest.of(치킨.getName(), 치킨.getPrice()));
 
         //then
-        assertThat(savedProduct.getId()).isEqualTo(치킨.getId());
+        Assertions.assertAll(
+                () -> assertThat(savedProduct.getId()).isNotNull(),
+                () -> assertThat(savedProduct.getName()).isEqualTo(치킨.getName()),
+                () -> assertThat(savedProduct.getPrice()).isEqualTo(치킨.getPrice())
+        );
     }
 
     @DisplayName("상품의 목록을 조회할 수 있다")
     @Test
     void 상품_목록_조회() {
         //given
-        given(productRepository.findAll()).willReturn(Arrays.asList(치킨, 피자));
+        ProductResponse savedProduct = productService.create(ProductRequest.of(치킨.getName(), 치킨.getPrice()));
 
         //when
         List<ProductResponse> list = productService.list();
 
         //then
-        assertThat(list).containsExactly(ProductResponse.from(치킨), ProductResponse.from(피자));
+        assertThat(list).contains(savedProduct);
     }
 }

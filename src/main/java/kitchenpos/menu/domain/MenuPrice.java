@@ -1,5 +1,7 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.exception.IllegalPriceException;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.util.List;
@@ -23,7 +25,7 @@ public class MenuPrice {
 
     private static void validatePrice(int value) {
         if (value < 0) {
-            throw new IllegalArgumentException();
+            throw new IllegalPriceException("가격은 %d 미만일 수 없습니다.");
         }
     }
 

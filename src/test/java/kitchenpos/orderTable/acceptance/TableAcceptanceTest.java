@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 import static kitchenpos.utils.RestAssuredMethods.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("테이블 관련 기능")
+@DisplayName("테이블 관련 기능 인수테스트")
 public class TableAcceptanceTest extends AcceptanceTest {
     private OrderTableRequest 테이블1_orderTableRequest;
     private OrderTableRequest 테이블2_orderTableRequest;
