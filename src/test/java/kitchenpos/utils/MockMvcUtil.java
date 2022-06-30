@@ -19,7 +19,7 @@ public class MockMvcUtil {
         this.objectMapper = objectMapper;
     }
 
-    public <T> ResultActions get(String urlTemplate, T... Params) throws Exception {
+    public <T> ResultActions get(String urlTemplate) throws Exception {
         return mockMvc.perform(MockMvcRequestBuilders.get(urlTemplate)
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
@@ -39,6 +39,13 @@ public class MockMvcUtil {
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(body))
+        );
+    }
+
+    public <T> ResultActions delete(String urlTemplate, T... path) throws Exception {
+        return mockMvc.perform(MockMvcRequestBuilders.delete(urlTemplate, path)
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
         );
     }
 
