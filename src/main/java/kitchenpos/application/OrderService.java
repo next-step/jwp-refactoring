@@ -29,29 +29,37 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
+        final List<OrderLineItemDTO> orderLineItems = orderRequest.getOrderLineItems();
+
+        orderCreateEventPublish(orderRequest);
+
+        if (CollectionUtils.isEmpty(orderRequest.getOrderLineItems())) {
+            throw new OrderException("주문넣을 메뉴는 존재해야합니다");
+        }
+
+        Order order = new Order();
+        order.mapToTable(orderRequest.getOrderTableId());
+        order.startCooking();
+
+        setOrderLineItems(orderLineItems, order);
+
+        return OrderResponse.of(orderRepository.save(order));
+    }
+
+    private void setOrderLineItems(List<OrderLineItemDTO> orderLineItems, Order order) {
+        for (final OrderLineItemDTO orderLineItem : orderLineItems) {
+            order.mapOrderLineItem(
+                new OrderLineItem(order, orderLineItem.getMenuId(), orderLineItem.getQuantity()));
+        }
+    }
+
+    private void orderCreateEventPublish(OrderRequest orderRequest) {
         final List<Long> menuIds = orderRequest.getMenuIds();
 
         OrderCreatedEvent orderCreatedEvent = new OrderCreatedEvent(
             orderRequest.getOrderTableId(),
             menuIds);
         eventPublisher.publishEvent(new OrderCreateEvent(orderCreatedEvent));
-
-        if (CollectionUtils.isEmpty(orderRequest.getOrderLineItems())) {
-            throw new OrderException("주문넣을 메뉴는 존재해야합니다");
-        }
-
-        final List<OrderLineItemDTO> orderLineItems = orderRequest.getOrderLineItems();
-
-        Order order = new Order();
-        order.mapToTable(orderRequest.getOrderTableId());
-        order.startCooking();
-
-        for (final OrderLineItemDTO orderLineItem : orderLineItems) {
-            order.mapOrderLineItem(
-                new OrderLineItem(order, orderLineItem.getMenuId(), orderLineItem.getQuantity()));
-        }
-
-        return OrderResponse.of(orderRepository.save(order));
     }
 
     public List<OrderResponse> list() {

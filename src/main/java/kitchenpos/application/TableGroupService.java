@@ -50,11 +50,16 @@ public class TableGroupService {
         tableGroup = tableGroupRepository.save(tableGroup);
         final Long tableGroupId = tableGroup.getId();
 
+        setOrderTables(orderTables, tableGroupId);
+
+        return TableGroupResponse.of(tableGroupRepository.save(tableGroup));
+    }
+
+    private void setOrderTables(List<OrderTable> orderTables, Long tableGroupId) {
         for (final OrderTable orderTable : orderTables) {
             orderTable.useTable();
             orderTable.mapToTableGroup(tableGroupId);
         }
-        return TableGroupResponse.of(tableGroupRepository.save(tableGroup));
     }
 
     @Transactional
