@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Version;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -32,6 +33,7 @@ public class Menu {
     @JoinColumn(nullable = false)
     private MenuGroup menuGroup;
 
+    @Version
     private Long version;
 
     @Embedded
