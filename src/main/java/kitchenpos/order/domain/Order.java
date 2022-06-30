@@ -23,7 +23,7 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus = OrderStatus.COOKING;
     private LocalDateTime orderedTime;
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderLineItem> orderLineItems;
 
     private static final int MINIMUM_ORDER_LINE_ITEM_NUMBER = 1;

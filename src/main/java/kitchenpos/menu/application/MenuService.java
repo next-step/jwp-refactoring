@@ -42,11 +42,9 @@ public class MenuService {
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
         final MenuGroup menuGroup = findMenuGroupById(menuRequest.getMenuGroupId());
-        final Menu savedMenu = menuRepository.save(menuRequest.toMenu(menuGroup));
-
-        List<MenuProduct> menuProducts = retrieveMenuProducts(menuRequest);
-        savedMenu.registerMenuProducts(menuProducts);
-        menuProductRepository.saveAll(menuProducts);
+        final Menu menu = menuRequest.toMenu(menuGroup);
+        menu.registerMenuProducts(retrieveMenuProducts(menuRequest));
+        final Menu savedMenu = menuRepository.save(menu);
 
         return MenuResponse.from(savedMenu);
     }

@@ -14,6 +14,7 @@ import kitchenpos.orderTable.dto.OrderTableRequest;
 import kitchenpos.orderTable.dto.OrderTableResponse;
 import kitchenpos.tableGroup.domain.TableGroup;
 import kitchenpos.tableGroup.domain.TableGroupRepository;
+import kitchenpos.utils.fixture.OrderFixtureFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,6 +35,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static kitchenpos.utils.fixture.OrderFixtureFactory.*;
 import static kitchenpos.utils.fixture.OrderTableFixtureFactory.createOrderTable;
 import static kitchenpos.utils.fixture.TableGroupFixtureFactory.createTableGroup;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -143,7 +145,7 @@ public class TableServiceTest {
                 OrderTableRequest.of(테이블_NOT_EMPTY.getNumberOfGuests(), 테이블_NOT_EMPTY.isEmpty())
         );
         OrderTable orderTable = orderTableRepository.findById(savedTable.getId()).get();
-        Order order = new Order(orderTable, LocalDateTime.now());
+        Order order = createOrder(orderTable, LocalDateTime.now());
         order.changeStatus(orderStatus);
         orderRepository.save(order);
 

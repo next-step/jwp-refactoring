@@ -5,7 +5,7 @@ import kitchenpos.order.domain.OrderLineItem;
 import java.util.Objects;
 
 public class OrderLineItemResponse {
-    private Long id;
+    private Long seq;
     private Long menuId;
     private Long orderId;
     private int quantity;
@@ -13,8 +13,8 @@ public class OrderLineItemResponse {
     protected OrderLineItemResponse() {
     }
 
-    private OrderLineItemResponse(Long id, Long menuId, Long orderId, int quantity) {
-        this.id = id;
+    private OrderLineItemResponse(Long seq, Long menuId, Long orderId, int quantity) {
+        this.seq = seq;
         this.menuId = menuId;
         this.orderId = orderId;
         this.quantity = quantity;
@@ -25,8 +25,8 @@ public class OrderLineItemResponse {
                 orderLineItem.getOrder().getId(), orderLineItem.getQuantity());
     }
 
-    public Long getId() {
-        return id;
+    public Long getSeq() {
+        return seq;
     }
 
     public Long getMenuId() {
@@ -43,13 +43,13 @@ public class OrderLineItemResponse {
         if (o == null || getClass() != o.getClass()) return false;
         OrderLineItemResponse that = (OrderLineItemResponse) o;
         return quantity == that.quantity
-                && Objects.equals(id, that.id)
+                && Objects.equals(seq, that.seq)
                 && Objects.equals(menuId, that.menuId)
                 && Objects.equals(orderId, that.orderId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, menuId, orderId, quantity);
+        return Objects.hash(seq, menuId, orderId, quantity);
     }
 }

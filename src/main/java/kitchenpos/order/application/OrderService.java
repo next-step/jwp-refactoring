@@ -5,6 +5,8 @@ import kitchenpos.exception.NoSuchOrderException;
 import kitchenpos.exception.NoSuchOrderTableException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItemRepository;
@@ -44,11 +46,9 @@ public class OrderService {
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
         final OrderTable orderTable = findOrderTableById(orderRequest.getOrderTableId());
-        final Order savedOrder = orderRepository.save(orderRequest.toOrder(orderTable));
-
-        List<OrderLineItem> orderLineItems = retrieveOrderLineItems(orderRequest);
-        savedOrder.registerOrderLineItems(orderLineItems);
-        orderLineItemRepository.saveAll(orderLineItems);
+        final Order order = orderRequest.toOrder(orderTable);
+        order.registerOrderLineItems(retrieveOrderLineItems(orderRequest));
+        final Order savedOrder = orderRepository.save(order);
 
         return OrderResponse.from(savedOrder);
     }

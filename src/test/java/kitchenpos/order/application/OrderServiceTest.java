@@ -85,21 +85,21 @@ class OrderServiceTest {
         메뉴그룹_한식 = menuGroupRepository.save(createMenuGroup("한식메뉴"));
         김치찌개 = productRepository.save(createProduct("김치찌개", 8000));
         공기밥 = productRepository.save(createProduct("공기밥", 1000));
-        메뉴_김치찌개세트 = menuRepository.save(createMenu(1L, "김치찌개세트", 15000, 메뉴그룹_한식));
+        메뉴_김치찌개세트 = menuRepository.save(createMenu("김치찌개세트", 15000, 메뉴그룹_한식));
 
         김치찌개세트_김치찌개 = menuProductRepository.save(createMenuProduct(메뉴_김치찌개세트, 김치찌개, 2));
         김치찌개세트_공기밥 = menuProductRepository.save(createMenuProduct(메뉴_김치찌개세트, 공기밥, 2));
         메뉴_김치찌개세트.setMenuProducts(Arrays.asList(김치찌개세트_김치찌개, 김치찌개세트_공기밥));
 
         테이블_1 = orderTableRepository.save(createOrderTable(4, false));
-        접수된_주문 = createOrder(1L, 테이블_1, LocalDateTime.now());
-        접수된주문_김치찌개세트 = createOrderLineItem(1L, 접수된_주문, 메뉴_김치찌개세트, 1);
+        접수된_주문 = createOrder(테이블_1, LocalDateTime.now());
+        접수된주문_김치찌개세트 = createOrderLineItem(접수된_주문, 메뉴_김치찌개세트, 1);
         접수된_주문.setOrderLineItems(Arrays.asList(접수된주문_김치찌개세트));
 
         테이블_2 = orderTableRepository.save(createOrderTable(4, false));
-        완료된_주문 = createOrder(2L, 테이블_2, LocalDateTime.now());
+        완료된_주문 = createOrder(테이블_2, LocalDateTime.now());
         완료된_주문.changeStatus(OrderStatus.COMPLETION);
-        완료된주문_김치찌개세트 = createOrderLineItem(2L, 접수된_주문, 메뉴_김치찌개세트, 1);
+        완료된주문_김치찌개세트 = createOrderLineItem(접수된_주문, 메뉴_김치찌개세트, 1);
         완료된_주문.setOrderLineItems(Arrays.asList(완료된주문_김치찌개세트));
 
         테이블_EMPTY = orderTableRepository.save(createOrderTable(0, true));

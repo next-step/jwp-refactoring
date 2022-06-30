@@ -10,6 +10,7 @@ import kitchenpos.orderTable.domain.OrderTableRepository;
 import kitchenpos.tableGroup.domain.TableGroupRepository;
 import kitchenpos.tableGroup.dto.TableGroupRequest;
 import kitchenpos.tableGroup.dto.TableGroupResponse;
+import kitchenpos.utils.fixture.OrderFixtureFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,6 +26,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
+import static kitchenpos.utils.fixture.OrderFixtureFactory.*;
 import static kitchenpos.utils.fixture.OrderTableFixtureFactory.createOrderTable;
 import static kitchenpos.utils.fixture.TableGroupFixtureFactory.createTableGroup;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -114,7 +116,7 @@ class TableGroupServiceTest {
                 Arrays.asList(테이블_1.getId(), 테이블_2.getId(), 테이블_3.getId())
         );
         TableGroupResponse savedTableGroup = tableGroupService.create(단체_테이블_request);
-        Order order = new Order(테이블_1, LocalDateTime.now());
+        Order order = createOrder(테이블_1, LocalDateTime.now());
         order.changeStatus(orderStatus);
         orderRepository.save(order);
 
