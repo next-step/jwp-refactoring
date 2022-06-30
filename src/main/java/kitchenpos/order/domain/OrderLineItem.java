@@ -34,6 +34,10 @@ public class OrderLineItem {
         return new OrderLineItem(null, menu, quantity);
     }
 
+    public void registerOrder(Order order) {
+        this.order = order;
+    }
+
     public Long getSeq() {
         return seq;
     }
@@ -48,9 +52,5 @@ public class OrderLineItem {
 
     public int getQuantity() {
         return quantity;
-    }
-
-    public void registerOrder(Order order) {
-        this.order = order;
     }
 }

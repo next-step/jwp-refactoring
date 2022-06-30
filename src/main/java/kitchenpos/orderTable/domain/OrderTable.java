@@ -40,6 +40,56 @@ public class OrderTable {
         return new OrderTable(null, numberOfGuests, empty);
     }
 
+    public void changeEmpty(boolean empty, List<Order> orders) {
+        validateOrderStatusToChangeEmpty(orders);
+        validateOrderTableNotGrouped();
+        this.empty = empty;
+    }
+
+    private void validateOrderStatusToChangeEmpty(List<Order> orders) {
+        if (orders.stream()
+                .anyMatch(order -> order.isCooking() || order.isEating())) {
+            throw new IllegalOrderException(
+                    String.format(ErrorMessage.ERROR_ORDER_INVALID_STATUS, OrderStatus.COOKING + " " + OrderStatus.MEAL)
+            );
+        }
+    }
+
+    private void validateOrderTableNotGrouped() {
+        if (isGrouped()) {
+            throw new IllegalOrderTableException(ErrorMessage.ERROR_ORDER_TABLE_GROUPED);
+        }
+    }
+
+    public void changeNumberOfGuests(int numberOfGuests) {
+        validateNumberOfGuests(numberOfGuests);
+        validateOrderTableNotEmpty();
+        this.numberOfGuests = numberOfGuests;
+    }
+
+    private void validateNumberOfGuests(int numberOfGuests) {
+        if (numberOfGuests < MIN_NUMBER_OF_GUESTS) {
+            throw new IllegalOrderTableException(
+                    String.format(ErrorMessage.ERROR_ORDER_TABLE_GUESTS_TOO_SMALL, MIN_NUMBER_OF_GUESTS)
+            );
+        }
+    }
+
+    private void validateOrderTableNotEmpty() {
+        if (isEmpty()) {
+            throw new IllegalOrderTableException(ErrorMessage.ERROR_ORDER_TABLE_EMPTY);
+        }
+    }
+
+    public void assignTableGroup(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
+        this.empty = false;
+    }
+
+    public void removeTableGroup() {
+        this.tableGroup = null;
+    }
+
     public Long getId() {
         return id;
     }
@@ -58,44 +108,5 @@ public class OrderTable {
 
     public boolean isGrouped() {
         return tableGroup != null;
-    }
-
-    public void changeEmpty(boolean empty, List<Order> orders) {
-        validateOrdersToChangeEmpty(orders);
-        if (isGrouped()) {
-            throw new IllegalOrderTableException(ErrorMessage.ERROR_ORDER_TABLE_GROUPED);
-        }
-
-        this.empty = empty;
-    }
-
-    private void validateOrdersToChangeEmpty(List<Order> orders) {
-        if (orders.stream()
-                .anyMatch(order -> order.isCooking() || order.isEating())) {
-            throw new IllegalOrderException(
-                    String.format(ErrorMessage.ERROR_ORDER_INVALID_STATUS, OrderStatus.COOKING + " " + OrderStatus.MEAL)
-            );
-        }
-    }
-
-    public void changeNumberOfGuests(int numberOfGuests) {
-        if (numberOfGuests < MIN_NUMBER_OF_GUESTS) {
-            throw new IllegalOrderTableException(
-                    String.format(ErrorMessage.ERROR_ORDER_TABLE_GUESTS_TOO_SMALL, MIN_NUMBER_OF_GUESTS)
-            );
-        }
-        if (isEmpty()) {
-            throw new IllegalOrderTableException(ErrorMessage.ERROR_ORDER_TABLE_EMPTY);
-        }
-        this.numberOfGuests = numberOfGuests;
-    }
-
-    public void assignTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
-        this.empty = false;
-    }
-
-    public void detachTableGroup() {
-        this.tableGroup = null;
     }
 }

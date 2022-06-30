@@ -38,26 +38,57 @@ public class TableGroup {
     private void assignOrderTables(List<OrderTable> orderTables) {
         validateOrderTables(orderTables);
         this.orderTables = orderTables;
-        orderTables.forEach(orderTable -> orderTable.assignTableGroup(this)
-        );
+        orderTables.forEach(orderTable -> orderTable.assignTableGroup(this));
     }
 
     private void validateOrderTables(List<OrderTable> orderTables) {
+        validateOrderTablesSize(orderTables);
+        validateOrderTablesDuplicated(orderTables);
+        validateOrderTablesEmpty(orderTables);
+        validateOrderTablesNotGrouped(orderTables);
+    }
+
+    private void validateOrderTablesSize(List<OrderTable> orderTables) {
         if (orderTables == null || orderTables.size() < MIN_ORDER_TABLE_NUMBER) {
             throw new IllegalOrderTableException(
                     String.format(ErrorMessage.ERROR_ORDER_TABLE_TOO_SMALL, MIN_ORDER_TABLE_NUMBER)
             );
         }
+    }
+
+    private void validateOrderTablesDuplicated(List<OrderTable> orderTables) {
         if(orderTables.size() != orderTables.stream().distinct().count()){
             throw new IllegalOrderTableException(ErrorMessage.ERROR_ORDER_TABLE_DUPLICATED);
         }
+    }
+
+    private void validateOrderTablesEmpty(List<OrderTable> orderTables) {
         if (orderTables.stream().
                 anyMatch(orderTable -> !orderTable.isEmpty())) {
             throw new IllegalOrderTableException(ErrorMessage.ERROR_ORDER_TABLE_NOT_EMPTY);
         }
+    }
+
+    private void validateOrderTablesNotGrouped(List<OrderTable> orderTables) {
         if (orderTables.stream().
                 anyMatch(orderTable -> orderTable.isGrouped())) {
             throw new IllegalOrderTableException(ErrorMessage.ERROR_ORDER_TABLE_GROUPED);
+        }
+    }
+
+    public void ungroup(List<Order> orders) {
+        validateOrdersToUngroup(orders);
+        for (final OrderTable orderTable : orderTables) {
+            orderTable.removeTableGroup();
+        }
+    }
+
+    private void validateOrdersToUngroup(List<Order> orders) {
+        if (orders.stream()
+                .anyMatch(order -> order.isCooking() || order.isEating())) {
+            throw new IllegalOrderException(
+                    String.format(ErrorMessage.ERROR_ORDER_INVALID_STATUS, OrderStatus.COOKING + " " + OrderStatus.MEAL)
+            );
         }
     }
 
@@ -71,21 +102,5 @@ public class TableGroup {
 
     public List<OrderTable> getOrderTables() {
         return orderTables;
-    }
-
-    public void ungroup(List<Order> orders) {
-        validateOrdersToUngroup(orders);
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.detachTableGroup();
-        }
-    }
-
-    private void validateOrdersToUngroup(List<Order> orders) {
-        if (orders.stream()
-                .anyMatch(order -> order.isCooking() || order.isEating())) {
-            throw new IllegalOrderException(
-                    String.format(ErrorMessage.ERROR_ORDER_INVALID_STATUS, OrderStatus.COOKING + " " + OrderStatus.MEAL)
-            );
-        }
     }
 }

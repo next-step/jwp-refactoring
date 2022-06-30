@@ -35,6 +35,21 @@ public class Menu {
         return new Menu(name, price, menuGroup);
     }
 
+    public void registerMenuProducts(List<MenuProduct> menuProducts) {
+        validateMenuPrice(menuProducts);
+        this.menuProducts = menuProducts;
+        menuProducts.forEach(menuProduct -> menuProduct.registerMenu(this));
+    }
+
+    private void validateMenuPrice(List<MenuProduct> menuProducts) {
+        int sumOfProductPrice = menuProducts.stream().
+                mapToInt(menuProduct -> menuProduct.getProduct().getPrice() * menuProduct.getQuantity()).
+                sum();
+        if (price.isLargerThan(sumOfProductPrice)) {
+            throw new IllegalPriceException(String.format(ErrorMessage.ERROR_PRICE_TOO_HIGH, sumOfProductPrice));
+        }
+    }
+
     public Long getId() {
         return id;
     }
@@ -53,21 +68,5 @@ public class Menu {
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
-    }
-
-    public void registerMenuProducts(List<MenuProduct> menuProducts) {
-        validateProductsPrice(menuProducts);
-        this.menuProducts = menuProducts;
-
-        menuProducts.forEach(menuProduct -> menuProduct.registerMenu(this));
-    }
-
-    private void validateProductsPrice(List<MenuProduct> menuProducts) {
-        int sumPrice = menuProducts.stream().
-                mapToInt(menuProduct -> menuProduct.getProduct().getPrice() * menuProduct.getQuantity()).
-                sum();
-        if (price.isLargerThan(sumPrice)) {
-            throw new IllegalPriceException(String.format(ErrorMessage.ERROR_PRICE_TOO_HIGH, sumPrice));
-        }
     }
 }

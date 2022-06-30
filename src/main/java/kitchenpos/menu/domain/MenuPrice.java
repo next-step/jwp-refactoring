@@ -31,11 +31,11 @@ public class MenuPrice {
         }
     }
 
-    public int getValue() {
-        return value;
-    }
-
     public boolean isLargerThan(int value) {
         return this.value > value;
+    }
+
+    public int getValue() {
+        return value;
     }
 }
