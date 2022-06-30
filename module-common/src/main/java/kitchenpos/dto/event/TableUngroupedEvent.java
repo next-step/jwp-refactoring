@@ -4,7 +4,7 @@ import java.util.List;
 
 public class TableUngroupedEvent {
 
-    private List<Long> orderTableIds;
+    private final List<Long> orderTableIds;
 
     public TableUngroupedEvent(List<Long> orderTableIds) {
         this.orderTableIds = orderTableIds;

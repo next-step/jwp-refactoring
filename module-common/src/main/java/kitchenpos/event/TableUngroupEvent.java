@@ -1,4 +1,4 @@
-package kitchenpos.event.customEvent;
+package kitchenpos.event;
 
 import org.springframework.context.ApplicationEvent;
 
