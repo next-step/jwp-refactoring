@@ -122,7 +122,7 @@ public class TableServiceTest {
         //given
         OrderTable 테이블_1 = orderTableRepository.save(createOrderTable(0, true));
         OrderTable 테이블_2 = orderTableRepository.save(createOrderTable(0, true));
-        TableGroup 테이블_그룹 = tableGroupRepository.save(createTableGroup(1L, LocalDateTime.now(), Arrays.asList(테이블_1, 테이블_2)));
+        TableGroup 테이블_그룹 = tableGroupRepository.save(createTableGroup(LocalDateTime.now(), Arrays.asList(테이블_1, 테이블_2)));
 
         OrderTableEmptyRequest emptyRequest = OrderTableEmptyRequest.from(true);
 

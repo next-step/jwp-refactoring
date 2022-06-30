@@ -39,11 +39,10 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        final MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
-                .orElseThrow(IllegalArgumentException::new);
+        final MenuGroup menuGroup = findMenuGroupById(menuRequest.getMenuGroupId());
         final Menu savedMenu = menuRepository.save(menuRequest.toMenu(menuGroup));
 
-        List<MenuProduct> menuProducts = retrieveMenuProducts(savedMenu, menuRequest);
+        List<MenuProduct> menuProducts = retrieveMenuProducts(menuRequest);
         savedMenu.registerMenuProducts(menuProducts);
         menuProductRepository.saveAll(menuProducts);
 
@@ -55,14 +54,23 @@ public class MenuService {
         return MenuResponse.asListFrom(menus);
     }
 
-    private List<MenuProduct> retrieveMenuProducts(Menu savedMenu, MenuRequest menuRequest) {
+    private List<MenuProduct> retrieveMenuProducts(MenuRequest menuRequest) {
         List<MenuProductRequest> menuProductRequests = menuRequest.getMenuProducts();
         return menuProductRequests.stream()
                 .map(menuProductRequest -> {
-                    Product product = productRepository.findById(menuProductRequest.getProductId())
-                            .orElseThrow(IllegalArgumentException::new);
-                    return new MenuProduct(savedMenu, product, menuProductRequest.getQuantity());
+                    Product product = findProductById(menuProductRequest.getProductId());
+                    return new MenuProduct(product, menuProductRequest.getQuantity());
                 })
                 .collect(Collectors.toList());
+    }
+
+    private MenuGroup findMenuGroupById(Long menuGroupId) {
+        return menuGroupRepository.findById(menuGroupId)
+                .orElseThrow(IllegalArgumentException::new);
+    }
+
+    private Product findProductById(Long productId) {
+        return productRepository.findById(productId)
+                .orElseThrow(IllegalArgumentException::new);
     }
 }

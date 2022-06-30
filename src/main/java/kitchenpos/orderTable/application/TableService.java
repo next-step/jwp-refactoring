@@ -2,7 +2,6 @@ package kitchenpos.orderTable.application;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.orderTable.domain.OrderTable;
 import kitchenpos.orderTable.domain.OrderTableRepository;
 import kitchenpos.orderTable.dto.OrderTableEmptyRequest;
@@ -12,7 +11,6 @@ import kitchenpos.orderTable.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -39,8 +37,7 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableEmptyRequest orderTableRequest) {
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+        final OrderTable savedOrderTable = findOrderTableById(orderTableId);
         List<Order> orders = findOrdersByOrderTable(orderTableId);
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty(), orders);
 
@@ -49,11 +46,15 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableNumOfGuestRequest orderTable) {
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+        final OrderTable savedOrderTable = findOrderTableById(orderTableId);
         savedOrderTable.changeNumberOfGuests(orderTable.getNumberOfGuests());
 
         return OrderTableResponse.from(savedOrderTable);
+    }
+
+    private OrderTable findOrderTableById(Long orderTableId) {
+        return orderTableRepository.findById(orderTableId)
+                .orElseThrow(IllegalArgumentException::new);
     }
 
     private List<Order> findOrdersByOrderTable(Long orderTableId) {

@@ -78,7 +78,6 @@ class MenuServiceTest {
 
         //when
         MenuResponse savedMenu = menuService.create(메뉴_김치찌개세트_request);
-
         //then
         assertAll(
                 () -> assertThat(savedMenu.getId()).isNotNull(),

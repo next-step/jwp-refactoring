@@ -2,7 +2,6 @@ package kitchenpos.tableGroup.application;
 
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.orderTable.domain.OrderTable;
 import kitchenpos.orderTable.domain.OrderTableRepository;
 import kitchenpos.tableGroup.domain.TableGroup;
@@ -12,7 +11,6 @@ import kitchenpos.tableGroup.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,33 +29,43 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        List<OrderTable> orderTables = findAllRequestedOrderTables(tableGroupRequest);
+        List<OrderTable> orderTables = retrieveOrderTables(tableGroupRequest);
         final TableGroup savedTableGroup = tableGroupRepository.save(TableGroup.from(orderTables));
+
         return TableGroupResponse.from(savedTableGroup);
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
-                .orElseThrow(IllegalArgumentException::new);
-        List<Order> orders = findOrdersInTableGroup(tableGroupId);
+        TableGroup tableGroup = findTableGroupById(tableGroupId);
+        List<Order> orders = findOrdersInTableGroup(tableGroup);
         tableGroup.ungroup(orders);
     }
 
-    private List<Order> findOrdersInTableGroup(Long tableGroupId) {
-        List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
+    private List<Order> findOrdersInTableGroup(TableGroup tableGroup) {
+        List<OrderTable> orderTables = tableGroup.getOrderTables();
         final List<Long> orderTableIds = orderTables.stream()
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
         return orderRepository.findAllByOrderTableIdIn(orderTableIds);
     }
 
-    private List<OrderTable> findAllRequestedOrderTables(TableGroupRequest tableGroupRequest) {
+    private List<OrderTable> retrieveOrderTables(TableGroupRequest tableGroupRequest) {
         final List<Long> orderTableIds = tableGroupRequest.getOrderTables();
         final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
+        validateOrderTablesAllExist(orderTableIds, savedOrderTables);
+
+        return savedOrderTables;
+    }
+
+    private void validateOrderTablesAllExist(List<Long> orderTableIds, List<OrderTable> savedOrderTables) {
         if (orderTableIds.size() != savedOrderTables.size()) {
             throw new IllegalArgumentException();
         }
-        return savedOrderTables;
+    }
+
+    private TableGroup findTableGroupById(Long tableGroupId) {
+        return tableGroupRepository.findById(tableGroupId)
+                .orElseThrow(IllegalArgumentException::new);
     }
 }

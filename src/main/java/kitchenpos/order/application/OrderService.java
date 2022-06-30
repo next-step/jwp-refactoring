@@ -2,7 +2,10 @@ package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.domain.*;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItemRepository;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
@@ -13,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,13 +40,12 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
-                .orElseThrow(IllegalArgumentException::new);
+        final OrderTable orderTable = findOrderTableById(orderRequest.getOrderTableId());
         final Order savedOrder = orderRepository.save(orderRequest.toOrder(orderTable));
 
-        List<OrderLineItem> orderLineItemList = retrieveOrderLineItemsFromOrderRequest(orderRequest);
-        savedOrder.registerOrderLineItems(orderLineItemList);
-        orderLineItemRepository.saveAll(orderLineItemList);
+        List<OrderLineItem> orderLineItems = retrieveOrderLineItems(orderRequest);
+        savedOrder.registerOrderLineItems(orderLineItems);
+        orderLineItemRepository.saveAll(orderLineItems);
 
         return OrderResponse.from(savedOrder);
     }
@@ -56,21 +57,34 @@ public class OrderService {
 
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderStatusRequest orderRequest) {
-        final Order savedOrder = orderRepository.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
+        final Order savedOrder = findOrderById(orderId);
         savedOrder.changeStatus(orderRequest.getOrderStatus());
 
         return OrderResponse.from(savedOrder);
     }
 
-    private List<OrderLineItem> retrieveOrderLineItemsFromOrderRequest(OrderRequest orderRequest) {
+    private List<OrderLineItem> retrieveOrderLineItems(OrderRequest orderRequest) {
         final List<OrderLineItemRequest> orderLineItems = orderRequest.getOrderLineItems();
         return orderLineItems.stream()
                 .map(orderLineItemsRequest -> {
-                    Menu menu = menuRepository.findById(orderLineItemsRequest.getMenuId())
-                            .orElseThrow(IllegalArgumentException::new);
-                    return new OrderLineItem(null, menu, orderLineItemsRequest.getQuantity());
+                    Menu menu = findMenuById(orderLineItemsRequest.getMenuId());
+                    return new OrderLineItem(menu, orderLineItemsRequest.getQuantity());
                 })
                 .collect(Collectors.toList());
+    }
+
+    private OrderTable findOrderTableById(Long orderTableId) {
+        return orderTableRepository.findById(orderTableId)
+                .orElseThrow(IllegalArgumentException::new);
+    }
+
+    private Order findOrderById(Long orderId) {
+        return orderRepository.findById(orderId)
+                .orElseThrow(IllegalArgumentException::new);
+    }
+
+    private Menu findMenuById(Long menuId) {
+        return menuRepository.findById(menuId)
+                .orElseThrow(IllegalArgumentException::new);
     }
 }
