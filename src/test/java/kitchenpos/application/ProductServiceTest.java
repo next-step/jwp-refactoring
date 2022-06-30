@@ -1,7 +1,7 @@
-package kitchenpos.domain;
+package kitchenpos.application;
 
-import kitchenpos.application.ProductService;
 import kitchenpos.dao.ProductDao;
+import kitchenpos.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,7 +19,7 @@ import static org.mockito.BDDMockito.given;
 
 
 @ExtendWith(MockitoExtension.class)
-class ProductTest {
+class ProductServiceTest {
     @Mock
     ProductDao productDao;
 
