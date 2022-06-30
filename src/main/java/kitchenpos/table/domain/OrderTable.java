@@ -1,40 +1,80 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.tablegroup.domain.TableGroup;
+
+import javax.persistence.*;
+import java.util.Objects;
+
+import static kitchenpos.common.Messages.HAS_ORDER_TABLE_GROUP;
+
+@Entity
+@Table
 public class OrderTable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long tableGroupId;
-    private int numberOfGuests;
-    private boolean empty;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private TableGroup tableGroup;
+
+    @Embedded
+    private NumberOfGuests numberOfGuests;
+
+    @Embedded
+    private Empty empty;
+
+    protected OrderTable() {
+    }
+
+    private OrderTable(NumberOfGuests numberOfGuests, Empty empty) {
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
+    public static OrderTable of(NumberOfGuests numberOfGuests, Empty empty) {
+        return new OrderTable(numberOfGuests, empty);
+    }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    public TableGroup getTableGroup() {
+        return tableGroup;
     }
 
-    public Long getTableGroupId() {
-        return tableGroupId;
-    }
-
-    public void setTableGroupId(final Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
+    public void setTableGroup(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
     }
 
     public int getNumberOfGuests() {
-        return numberOfGuests;
+        return numberOfGuests.getNumberOfGuests();
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
+    public void setNumberOfGuests(NumberOfGuests numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
     }
 
     public boolean isEmpty() {
-        return empty;
+        return empty.isEmpty();
     }
 
-    public void setEmpty(final boolean empty) {
+    public void setEmpty(Empty empty) {
         this.empty = empty;
+    }
+
+    public boolean isNotEmpty() {
+        return !empty.isEmpty();
+    }
+
+    public void validateHasOrderTable() {
+        if (hasOrderTableGroup()) {
+            throw new IllegalArgumentException(HAS_ORDER_TABLE_GROUP);
+        }
+    }
+
+    public boolean hasOrderTableGroup() {
+        return Objects.nonNull(tableGroup.getId());
     }
 }
