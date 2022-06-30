@@ -1,8 +1,11 @@
 package kitchenpos.menu.domain;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Menus {
+    private final Map<Long, Menu> menuCaches = new HashMap<>();
     private final List<Menu> menus;
 
     public Menus(List<Menu> menus) {
@@ -10,6 +13,10 @@ public class Menus {
     }
 
     public Menu getMenuBy(Long menuId) {
+        return menuCaches.computeIfAbsent(menuId, this::getMenu);
+    }
+
+    private Menu getMenu(Long menuId) {
         return menus.stream()
                 .filter(menu -> menuId.equals(menu.getId()))
                 .findFirst()
