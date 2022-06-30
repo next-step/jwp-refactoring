@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 @Entity
@@ -22,16 +23,7 @@ public class TableGroup {
     }
 
     public TableGroup(List<OrderTable> orderTables) {
-        orderTables.forEach(
-                orderTable -> {
-                    if (!orderTable.isEmpty()) {
-                        throw new IllegalArgumentException("빈 테이블이 아니면 단체 지정할 수 없습니다.");
-                    }
-                    if (Objects.nonNull(orderTable.getTableGroup())) {
-                        throw new IllegalArgumentException("이미 단체 지정된 테이블 입니다.");
-                    }
-                    orderTable.changeTableGroup(this);
-                });
+        group(orderTables);
         this.orderTables.addAll(orderTables);
     }
 
@@ -55,8 +47,15 @@ public class TableGroup {
         return orderTables;
     }
 
+    private void group(List<OrderTable> orderTables) {
+        orderTables.forEach(orderTable -> orderTable.includeInGroup(this));
+    }
+
     public void ungroup() {
-        this.orderTables.forEach(orderTable -> orderTable.changeTableGroup(null));
+        if (orderTables.size() == 0) {
+            throw new NoSuchElementException("단체 지정된 주문 테이블이 존재하지 않습니다.");
+        }
+        orderTables.forEach(OrderTable::excludeFromGroup);
     }
 
     @Override
