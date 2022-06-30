@@ -23,6 +23,7 @@ public class TableService {
 
     @Transactional
     public OrderTable create(final OrderTable orderTable) {
+        // TODO : 도메인 객체 생성 시점에 기본값 할당
         orderTable.setTableGroupId(null);
 
         return orderTableDao.save(orderTable);
@@ -37,6 +38,7 @@ public class TableService {
         final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
+        // TODO : 위의 쿼리 조건과 해당 로직 조건을 병합, e.g. findByIdAndTableGroupIsNull
         if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
             throw new IllegalArgumentException();
         }
@@ -46,8 +48,10 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
+        // TODO : 도메인 외부가 아닌 내부에서 필드를 수정
         savedOrderTable.setEmpty(orderTable.isEmpty());
 
+        // TODO : 도메인 내부에서 변경된 사항에 대한 감지를 통해 수정
         return orderTableDao.save(savedOrderTable);
     }
 
@@ -68,6 +72,7 @@ public class TableService {
 
         savedOrderTable.setNumberOfGuests(numberOfGuests);
 
+        // TODO : 도메인 내부에서 변경된 사항에 대한 감지를 통해 수정
         return orderTableDao.save(savedOrderTable);
     }
 }

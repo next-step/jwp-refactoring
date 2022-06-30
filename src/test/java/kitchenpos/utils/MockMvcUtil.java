@@ -26,8 +26,15 @@ public class MockMvcUtil<T> {
     }
 
     public <T> ResultActions post(String urlTemplate, T body) throws Exception {
-        // When
         return mockMvc.perform(MockMvcRequestBuilders.post(urlTemplate)
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(body))
+        );
+    }
+
+    public <T> ResultActions put(String urlTemplate, T body, T... path) throws Exception {
+        return mockMvc.perform(MockMvcRequestBuilders.put(urlTemplate, path)
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(body))
