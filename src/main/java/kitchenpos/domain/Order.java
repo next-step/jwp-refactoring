@@ -98,21 +98,20 @@ public class Order {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Order order = (Order) o;
-        return Objects.equals(id, order.id) && Objects.equals(orderTable, order.orderTable);
+        return Objects.equals(id, order.id)
+                && orderStatus == order.orderStatus;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, orderTable, orderStatus, orderedTime, orderLineItems);
+        return Objects.hash(id, orderStatus);
     }
 
     @Override
     public String toString() {
         return "Order{" +
                 "id=" + id +
-                ", orderTable=" + orderTable.getId() +
                 ", orderStatus=" + orderStatus +
-                ", orderedTime=" + orderedTime +
                 ", orderLineItems=" + orderLineItems +
                 '}';
     }

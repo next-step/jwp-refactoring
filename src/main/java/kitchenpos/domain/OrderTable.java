@@ -132,21 +132,23 @@ public class OrderTable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrderTable that = (OrderTable) o;
-        return numberOfGuests == that.numberOfGuests && empty == that.empty && Objects.equals(id, that.id) && Objects.equals(tableGroup, that.tableGroup);
+        return numberOfGuests == that.numberOfGuests
+                && empty == that.empty
+                && Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, tableGroup, numberOfGuests, empty);
+        return Objects.hash(id, numberOfGuests, empty);
     }
 
     @Override
     public String toString() {
         return "OrderTable{" +
                 "id=" + id +
-                ", tableGroup=" + tableGroup.getId() +
                 ", numberOfGuests=" + numberOfGuests +
                 ", empty=" + empty +
+                ", orders=" + orders +
                 '}';
     }
 }

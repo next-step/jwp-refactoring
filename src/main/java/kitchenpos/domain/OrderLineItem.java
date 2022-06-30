@@ -69,20 +69,19 @@ public class OrderLineItem {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrderLineItem that = (OrderLineItem) o;
-        return quantity == that.quantity && Objects.equals(seq, that.seq) && Objects.equals(order, that.order) && Objects.equals(menu, that.menu);
+        return quantity == that.quantity
+                && Objects.equals(seq, that.seq);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(seq, order, menu, quantity);
+        return Objects.hash(seq, quantity);
     }
 
     @Override
     public String toString() {
         return "OrderLineItem{" +
                 "seq=" + seq +
-                ", order=" + order.getId() +
-                ", menu=" + menu.getId() +
                 ", quantity=" + quantity +
                 '}';
     }

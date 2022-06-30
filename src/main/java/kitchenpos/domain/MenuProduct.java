@@ -30,8 +30,7 @@ public class MenuProduct {
     }
 
     public MenuProduct(Product product, long quantity) {
-        this.product = product;
-        this.quantity = quantity;
+        this(null, product, quantity);
     }
 
     public Long getSeq() {
@@ -81,20 +80,19 @@ public class MenuProduct {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MenuProduct that = (MenuProduct) o;
-        return quantity == that.quantity && Objects.equals(seq, that.seq) && Objects.equals(menu, that.menu) && Objects.equals(product, that.product);
+        return quantity == that.quantity
+                && Objects.equals(seq, that.seq);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(seq, menu, product, quantity);
+        return Objects.hash(seq, quantity);
     }
 
     @Override
     public String toString() {
         return "MenuProduct{" +
                 "seq=" + seq +
-                ", menu=" + menu +
-                ", product=" + product +
                 ", quantity=" + quantity +
                 '}';
     }

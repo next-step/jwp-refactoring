@@ -19,17 +19,8 @@ public class Product {
     public Product() {
     }
 
-    public Product(Long id, String name, double price) {
-        if (isLessThanZero(BigDecimal.valueOf(price))) {
-            throw new IllegalArgumentException("상품 가격은 0원 보다 작을 수 없습니다.");
-        }
-        this.id = id;
-        this.name = name;
-        this.price = BigDecimal.valueOf(price);
-    }
-
     public Product(String name, double price) {
-        this(null, name, price);
+        this(name, BigDecimal.valueOf(price));
     }
 
     public Product(String name, BigDecimal price) {
@@ -77,7 +68,9 @@ public class Product {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
-        return Objects.equals(id, product.id) && Objects.equals(name, product.name) && Objects.equals(price, product.price);
+        return Objects.equals(id, product.id)
+                && Objects.equals(name, product.name)
+                && Objects.equals(price, product.price);
     }
 
     @Override
