@@ -106,10 +106,9 @@ class TableServiceTest {
     @DisplayName("빈 테이블로 변경할 테이블이 단체 그룹이면 예외 발생")
     void notTableGroup() {
         // given
-        final TableGroup tableGroup = new TableGroup(1L, null);
         final OrderTable fullOrderTableGroup = new OrderTable.Builder()
                 .setId(1L)
-                .setTableGroup(tableGroup)
+                .setTableGroup(1L)
                 .setGuestNumber(GuestNumber.of(5))
                 .setEmpty(false)
                 .build();

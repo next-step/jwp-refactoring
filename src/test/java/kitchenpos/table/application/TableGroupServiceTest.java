@@ -143,10 +143,9 @@ class TableGroupServiceTest {
                 .setGuestNumber(GuestNumber.of(5))
                 .setEmpty(true)
                 .build();
-        final TableGroup existTableGroup = new TableGroup(2L, null, Arrays.asList(orderTable, orderTable));
         final OrderTable groupingOrderTable = new OrderTable.Builder()
                 .setId(1L)
-                .setTableGroup(existTableGroup)
+                .setTableGroup(2L)
                 .setGuestNumber(GuestNumber.of(5))
                 .setEmpty(false)
                 .build();
