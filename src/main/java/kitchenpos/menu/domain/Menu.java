@@ -1,6 +1,5 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menuGroup.domain.MenuGroup;
 
 import javax.persistence.*;
@@ -15,7 +14,7 @@ public class Menu {
     @Embedded
     private MenuPrice price;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_group_id")
+    @JoinColumn(name = "menu_group_id", nullable = false)
     private MenuGroup menuGroup;
     @OneToMany(mappedBy = "menu")
     private List<MenuProduct> menuProducts;

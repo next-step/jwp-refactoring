@@ -2,8 +2,10 @@ package kitchenpos.application;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProductRepository;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menuGroup.domain.MenuGroup;
+import kitchenpos.menuGroup.domain.MenuGroupRepository;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
@@ -13,6 +15,7 @@ import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.orderTable.domain.OrderTable;
 import kitchenpos.orderTable.domain.OrderTableRepository;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,6 +26,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -41,21 +47,29 @@ import static kitchenpos.factory.OrderLineItemFixtureFactory.createOrderLineItem
 import static kitchenpos.factory.OrderTableFixtureFactory.createOrderTable;
 import static kitchenpos.factory.ProductFixtureFactory.createProduct;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@Transactional
 class OrderServiceTest {
-    @Mock
+    @Autowired
     MenuRepository menuRepository;
-    @Mock
+    @Autowired
+    MenuGroupRepository menuGroupRepository;
+    @Autowired
+    ProductRepository productRepository;
+    @Autowired
+    MenuProductRepository menuProductRepository;
+    @Autowired
     OrderRepository orderRepository;
-    @Mock
-    OrderLineItemRepository orderLineItem;
-    @Mock
+    @Autowired
+    OrderLineItemRepository orderLineItemRepository;
+    @Autowired
     OrderTableRepository orderTableRepository;
-    @InjectMocks
+    @Autowired
     OrderService orderService;
 
 
@@ -75,36 +89,33 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        메뉴그룹_한식 = createMenuGroup(1L, "한식메뉴");
-        김치찌개 = createProduct(1L, "김치찌개", 8000);
-        공기밥 = createProduct(2L, "공기밥", 1000);
-        메뉴_김치찌개세트 = createMenu(1L, "김치찌개세트", 15000, 메뉴그룹_한식);
+        메뉴그룹_한식 = menuGroupRepository.save(createMenuGroup("한식메뉴"));
+        김치찌개 = productRepository.save(createProduct("김치찌개", 8000));
+        공기밥 = productRepository.save(createProduct("공기밥", 1000));
+        메뉴_김치찌개세트 = menuRepository.save(createMenu(1L, "김치찌개세트", 15000, 메뉴그룹_한식));
 
-        김치찌개세트_김치찌개 = createMenuProduct(메뉴_김치찌개세트, 김치찌개, 2);
-        김치찌개세트_공기밥 = createMenuProduct(메뉴_김치찌개세트, 공기밥, 2);
+        김치찌개세트_김치찌개 = menuProductRepository.save(createMenuProduct(메뉴_김치찌개세트, 김치찌개, 2));
+        김치찌개세트_공기밥 = menuProductRepository.save(createMenuProduct(메뉴_김치찌개세트, 공기밥, 2));
         메뉴_김치찌개세트.setMenuProducts(Arrays.asList(김치찌개세트_김치찌개, 김치찌개세트_공기밥));
 
-        테이블_1 = createOrderTable(1L, null, 4, false);
-        접수된_주문 = createOrder(1L, 테이블_1, OrderStatus.COOKING, LocalDateTime.now());
+        테이블_1 = orderTableRepository.save(createOrderTable(4, false));
+        접수된_주문 = createOrder(1L, 테이블_1, LocalDateTime.now());
         접수된주문_김치찌개세트 = createOrderLineItem(1L, 접수된_주문, 메뉴_김치찌개세트, 1);
         접수된_주문.setOrderLineItems(Arrays.asList(접수된주문_김치찌개세트));
 
-        테이블_2 = createOrderTable(2L, null, 4, false);
-        완료된_주문 = createOrder(2L, 테이블_2, OrderStatus.COMPLETION, LocalDateTime.now());
+        테이블_2 = orderTableRepository.save(createOrderTable(4, false));
+        완료된_주문 = createOrder(2L, 테이블_2, LocalDateTime.now());
+        완료된_주문.changeStatus(OrderStatus.COMPLETION);
         완료된주문_김치찌개세트 = createOrderLineItem(2L, 접수된_주문, 메뉴_김치찌개세트, 1);
         완료된_주문.setOrderLineItems(Arrays.asList(완료된주문_김치찌개세트));
 
-        테이블_EMPTY = createOrderTable(3L, null, 0, true);
+        테이블_EMPTY = orderTableRepository.save(createOrderTable(0, true));
     }
 
     @DisplayName("주문을 등록할 수 있다")
     @Test
     void 주문_등록(){
         //given
-        given(menuRepository.countByIdIn(anyList())).willReturn(1);
-        given(orderTableRepository.findById(테이블_1.getId())).willReturn(Optional.of(테이블_1));
-        given(menuRepository.findById(메뉴_김치찌개세트.getId())).willReturn(Optional.of(메뉴_김치찌개세트));
-        given(orderRepository.save(any(Order.class))).willReturn(접수된_주문);
         OrderRequest 접수된_주문_request = OrderRequest.of(
                 접수된_주문.getOrderTable().getId(),
                 접수된_주문.getOrderLineItems().stream()
@@ -116,7 +127,10 @@ class OrderServiceTest {
         OrderResponse savedOrder = orderService.create(접수된_주문_request);
 
         //then
-        assertThat(savedOrder).isEqualTo(OrderResponse.from(접수된_주문));
+        assertAll(
+                () -> assertThat(savedOrder.getId()).isNotNull(),
+                () -> assertThat(savedOrder.getOrderLineItems().size()).isEqualTo(1)
+        );
     }
 
     @DisplayName("주문항목은 비어있을 수 없다")
@@ -144,10 +158,8 @@ class OrderServiceTest {
     @Test
     void 주문_주문테이블_검증(){
         //given
-        given(menuRepository.countByIdIn(anyList())).willReturn(1);
-        given(orderTableRepository.findById(테이블_1.getId())).willReturn(Optional.ofNullable(null));
         OrderRequest 접수된_주문_request = OrderRequest.of(
-                접수된_주문.getOrderTable().getId(),
+                0L,
                 접수된_주문.getOrderLineItems().stream()
                         .map(orderLineItem -> OrderLineItemRequest.of(orderLineItem.getMenu().getId(), (int) orderLineItem.getQuantity()))
                         .collect(Collectors.toList())
@@ -161,8 +173,6 @@ class OrderServiceTest {
     @Test
     void 주문_주문테이블_Empty_검증(){
         //given
-        given(menuRepository.countByIdIn(anyList())).willReturn(1);
-        given(orderTableRepository.findById(테이블_EMPTY.getId())).willReturn(Optional.of(테이블_EMPTY));
         OrderRequest invalidOrder = OrderRequest.of(
                 테이블_EMPTY.getId(),
                 Arrays.asList(OrderLineItemRequest.of(메뉴_김치찌개세트.getId(), 1))
@@ -176,11 +186,10 @@ class OrderServiceTest {
     @Test
     void 주문_주문항목_메뉴_검증(){
         //given
-        given(menuRepository.countByIdIn(anyList())).willReturn(2);
         OrderRequest 접수된_주문_request = OrderRequest.of(
                 접수된_주문.getOrderTable().getId(),
                 접수된_주문.getOrderLineItems().stream()
-                        .map(orderLineItem -> OrderLineItemRequest.of(orderLineItem.getMenu().getId(), (int) orderLineItem.getQuantity()))
+                        .map(orderLineItem -> OrderLineItemRequest.of(0L, (int) orderLineItem.getQuantity()))
                         .collect(Collectors.toList())
         );
 
@@ -192,13 +201,19 @@ class OrderServiceTest {
     @Test
     void 주문_목록_조회(){
         //given
-        given(orderRepository.findAll()).willReturn(Arrays.asList(접수된_주문));
+        OrderRequest 접수된_주문_request = OrderRequest.of(
+                접수된_주문.getOrderTable().getId(),
+                접수된_주문.getOrderLineItems().stream()
+                        .map(orderLineItem -> OrderLineItemRequest.of(orderLineItem.getMenu().getId(), (int) orderLineItem.getQuantity()))
+                        .collect(Collectors.toList())
+        );
+        OrderResponse savedOrder = orderService.create(접수된_주문_request);
 
         //when
         List<OrderResponse> list = orderService.list();
 
         //then
-        assertThat(list).containsExactly(OrderResponse.from(접수된_주문));
+        assertThat(list).contains(savedOrder);
     }
 
     @DisplayName("주문의 상태를 업데이트할 수 있다")
@@ -206,8 +221,9 @@ class OrderServiceTest {
     @MethodSource("provideParametersForOrderStateUpdate")
     void 주문_상태_업데이트(OrderStatus beforeStatus, OrderStatus afterStatus){
         //given
-        Order order = createOrder(3L, 테이블_1, beforeStatus, LocalDateTime.now());
-        given(orderRepository.findById(anyLong())).willReturn(Optional.of(order));
+        Order order = createOrder(테이블_1, LocalDateTime.now());
+        order.changeStatus(beforeStatus);
+        orderRepository.save(order);
 
         //when
         OrderStatusRequest newStatus = OrderStatusRequest.from(afterStatus);
@@ -228,20 +244,19 @@ class OrderServiceTest {
     @Test
     void 주문_상태_업데이트_주문_검증(){
         //given
-        given(orderRepository.findById(anyLong())).willReturn(Optional.ofNullable(null));
-
-        //when
         OrderStatusRequest status_MEAL = OrderStatusRequest.from(OrderStatus.MEAL);
 
         //then
-        assertThrows(IllegalArgumentException.class, () -> orderService.changeOrderStatus(접수된_주문.getId(), status_MEAL));
+        assertThrows(IllegalArgumentException.class, () -> orderService.changeOrderStatus(0L, status_MEAL));
     }
 
     @DisplayName("주문상태가 COMPLETION이면 주문상태를 업데이트할 수 없다")
     @Test
     void 주문_상태_업데이트_COMPLETION_검증(){
         //given
-        given(orderRepository.findById(anyLong())).willReturn(Optional.of(완료된_주문));
+        Order order = createOrder(테이블_1, LocalDateTime.now());
+        order.changeStatus(OrderStatus.COMPLETION);
+        orderRepository.save(order);
 
         //when
         OrderStatusRequest status_MEAL = OrderStatusRequest.from(OrderStatus.MEAL);

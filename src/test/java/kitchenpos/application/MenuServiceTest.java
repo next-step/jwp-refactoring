@@ -82,6 +82,7 @@ class MenuServiceTest {
 
         //then
         assertAll(
+                () -> assertThat(savedMenu.getId()).isNotNull(),
                 () -> assertThat(savedMenu.getMenuProducts().size()).isEqualTo(2)
         );
     }

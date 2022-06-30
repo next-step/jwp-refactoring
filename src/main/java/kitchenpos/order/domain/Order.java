@@ -13,10 +13,10 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_table_id")
+    @JoinColumn(name = "order_table_id", nullable = false)
     private OrderTable orderTable;
     @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus;
+    private OrderStatus orderStatus = OrderStatus.COOKING;
     private LocalDateTime orderedTime;
     @OneToMany(mappedBy = "order")
     private List<OrderLineItem> orderLineItems;
@@ -24,17 +24,23 @@ public class Order {
     public Order() {
     }
 
-    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
+    public Order(Long id, OrderTable orderTable, LocalDateTime orderedTime) {
+        validateOrderTable(orderTable);
         this.id = id;
         this.orderTable = orderTable;
-        this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
     }
 
-    public Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime) {
+    public Order(OrderTable orderTable, LocalDateTime orderedTime) {
+        validateOrderTable(orderTable);
         this.orderTable = orderTable;
-        this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
+    }
+
+    private void validateOrderTable(OrderTable orderTable) {
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
     }
 
     public Long getId() {
@@ -75,5 +81,29 @@ public class Order {
 
     public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
         this.orderLineItems = orderLineItems;
+    }
+
+    public void registerOrderLineItems(List<OrderLineItem> orderLineItems) {
+        validateOrderLineItems(orderLineItems);
+        this.orderLineItems = orderLineItems;
+
+        orderLineItems.forEach(orderLineItem -> orderLineItem.setOrder(this));
+    }
+
+    private void validateOrderLineItems(List<OrderLineItem> orderLineItems) {
+        if (orderLineItems == null || orderLineItems.size() < 1) {
+            throw new IllegalArgumentException();
+        }
+        if(orderLineItems.size() !=
+                orderLineItems.stream()
+                        .map(orderLineItem -> orderLineItem.getMenu())
+                        .distinct()
+                        .count()){
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public void changeStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
     }
 }

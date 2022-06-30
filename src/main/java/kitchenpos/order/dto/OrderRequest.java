@@ -32,6 +32,6 @@ public class OrderRequest {
     }
 
     public Order toOrder(OrderTable orderTable) {
-        return new Order(orderTable, OrderStatus.COOKING, LocalDateTime.now());
+        return new Order(orderTable, LocalDateTime.now());
     }
 }
