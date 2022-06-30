@@ -110,25 +110,11 @@ public class TableGroupServiceTest {
     }
 
     @Test
-    @DisplayName("테이블이 조리, 식사 중이면 단체 지정을 해제할 수 없다.")
-    void unGroupWithInvalidOrderStatus() {
-        OrderTable table = OrderTable.of(4, true);
-        OrderTable secondTable = OrderTable.of(2, true);
-        when(orderTableRepository.findAllByTableGroupId(any())).thenReturn(Lists.list(table, secondTable));
-        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(true);
-
-        assertThatThrownBy(() -> {
-            tableGroupService.ungroup(1L);
-        }).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
     @DisplayName("단체 지정을 해제할 수 있다.")
     void unGroup() {
         OrderTable table = OrderTable.of(4, true);
         OrderTable secondTable = OrderTable.of(2, true);
         when(orderTableRepository.findAllByTableGroupId(any())).thenReturn(Lists.list(table, secondTable));
-        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(false);
 
         tableGroupService.ungroup(1L);
 

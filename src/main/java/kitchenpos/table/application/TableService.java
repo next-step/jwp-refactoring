@@ -1,9 +1,6 @@
 package kitchenpos.table.application;
 
-import java.util.Arrays;
 import java.util.stream.Collectors;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.infrastructure.OrderRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.domain.OrderTable;
@@ -16,12 +13,12 @@ import java.util.List;
 @Service
 public class TableService {
     private final OrderTableRepository orderTableRepository;
-    private final OrderRepository orderRepository;
+    private final Validator validator;
 
     public TableService(final OrderTableRepository orderTableRepository,
-                        OrderRepository orderRepository) {
+                        Validator validator) {
         this.orderTableRepository = orderTableRepository;
-        this.orderRepository = orderRepository;
+        this.validator = validator;
     }
 
     @Transactional
@@ -40,17 +37,14 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
-        OrderTable orderTable = findUnGroupedTable(orderTableId);
         validateOrderStatus(orderTableId);
+        OrderTable orderTable = findUnGroupedTable(orderTableId);
         orderTable.updateEmpty(orderTableRequest.toEntity());
         return OrderTableResponse.of(orderTableRepository.save(orderTable));
     }
 
     private void validateOrderStatus(Long orderTableId) {
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException("조리 및 식사 중일때는 변경할 수 없습니다.");
-        }
+        validator.validateOrderStatus(orderTableId);
     }
 
     private OrderTable findUnGroupedTable(Long orderTableId) {
