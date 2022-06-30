@@ -128,6 +128,7 @@
 - Before(https://github.com/tyakamyz/jwp-refactoring/blob/step3/docs/refactor-before.drawio.png)
 - After(https://github.com/tyakamyz/jwp-refactoring/blob/step3/docs/refactor-after.drawio.png)
 - After - DIP 적용 후 (https://github.com/tyakamyz/jwp-refactoring/blob/step3/docs/refactor-after.drawio_DIP적용.png)
+- After - 모듈 적용 후 (https://github.com/tyakamyz/jwp-refactoring/blob/step3/docs/refactor-after.drawio_모듈적용.png)
 
 ### 리팩토링 리스트
 - [x] 현재 의존성 현황 정리
