@@ -6,9 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
-    boolean existsByOrderTableIdAndOrderStatusIn(Long orderTableId, List<OrderStatus> asList);
-
-    List<Order> findAllByOrderTableId(Long orderTableId);
+    boolean existsByOrderTableIdInAndOrderStatusIn(List<Long> orderTableIds, List<OrderStatus> order);
 
     Optional<Order> findByOrderTableId(Long orderTableId);
 }

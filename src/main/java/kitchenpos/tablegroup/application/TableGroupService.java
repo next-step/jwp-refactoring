@@ -1,73 +1,40 @@
 package kitchenpos.tablegroup.application;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.NoSuchElementException;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.order.event.TableGroupEvent;
+import kitchenpos.order.event.TableUngroupEvent;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TableGroupService {
 
-    private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
+    private final ApplicationEventPublisher eventPublisher;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final OrderRepository orderRepository,
-                             final OrderTableRepository orderTableRepository,
-                             final TableGroupRepository tableGroupRepository) {
-        this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
+    public TableGroupService(ApplicationEventPublisher eventPublisher, TableGroupRepository tableGroupRepository) {
+        this.eventPublisher = eventPublisher;
         this.tableGroupRepository = tableGroupRepository;
     }
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest request) {
-        final List<Long> orderTableIds = request.toOrderTableIds();
-
-        final List<OrderTable> savedOrderTables = findSavedOrderTables(orderTableIds);
-        final TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup(savedOrderTables));
+        final TableGroup savedTableGroup = tableGroupRepository.save(new TableGroup());
+        eventPublisher.publishEvent(new TableGroupEvent(savedTableGroup.getId(), request.getOrderTableIds()));
         return TableGroupResponse.of(savedTableGroup);
     }
 
-    private List<OrderTable> findSavedOrderTables(List<Long> orderTableIds) {
-        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
-        validateSavedOrderTables(orderTableIds, savedOrderTables);
-        return savedOrderTables;
-    }
-
-    private void validateSavedOrderTables(List<Long> orderTableIds, List<OrderTable> savedOrderTables) {
-        if (orderTableIds.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
-        }
-    }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        TableGroup tableGroup = tableGroupRepository.findById(tableGroupId).orElseThrow(NoSuchElementException::new);
-        List<Order> ordersInTableGroup = findOrdersInTableGroup(tableGroupId);
-        tableGroup.ungroup(ordersInTableGroup);
-    }
+        TableGroup findTableGroup = tableGroupRepository.findById(tableGroupId).orElseThrow(() -> new NoSuchElementException("해당 테이블 그룹이 존재 하지 않습니다."));
+        eventPublisher.publishEvent(new TableUngroupEvent(findTableGroup.getId()));
 
-    private List<Order> findOrdersInTableGroup(Long tableGroupId) {
-        List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
-        List<Order> result = new ArrayList<>();
-        for (OrderTable orderTable : orderTables) {
-            result.addAll(findOrderByOrderTableId(orderTable.getId()));
-        }
-        return result;
-    }
-
-    private List<Order> findOrderByOrderTableId(Long orderTableId) {
-        return orderRepository.findAllByOrderTableId(orderTableId);
     }
 
 }
