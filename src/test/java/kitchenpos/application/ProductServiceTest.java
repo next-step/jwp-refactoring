@@ -25,12 +25,9 @@ class ProductServiceTest {
 
     @Test
     void 상품의_가격이_올바르지_않으면_등록할_수_없다() {
-        // given
-        Product product = new Product("치킨", BigDecimal.valueOf(-1));
-
         // when & then
         assertThatThrownBy(() ->
-                productService.create(product)
+                productService.create(new Product("치킨", BigDecimal.valueOf(-1)))
         ).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("상품 가격은 0원 이상이어야 합니다.");
     }
