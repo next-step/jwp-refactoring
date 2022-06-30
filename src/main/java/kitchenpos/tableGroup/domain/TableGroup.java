@@ -1,5 +1,6 @@
 package kitchenpos.tableGroup.domain;
 
+import kitchenpos.order.domain.Order;
 import kitchenpos.orderTable.domain.OrderTable;
 
 import javax.persistence.*;
@@ -84,9 +85,17 @@ public class TableGroup {
         this.orderTables = orderTables;
     }
 
-    public void ungroup() {
+    public void ungroup(List<Order> orders) {
+        validateOrdersToUngroup(orders);
         for (final OrderTable orderTable : orderTables) {
-            orderTable.setTableGroup(null);
+            orderTable.detachTableGroup();
+        }
+    }
+
+    private void validateOrdersToUngroup(List<Order> orders) {
+        if (orders.stream()
+                .anyMatch(order -> order.isCooking() || order.isEating())) {
+            throw new IllegalArgumentException();
         }
     }
 }

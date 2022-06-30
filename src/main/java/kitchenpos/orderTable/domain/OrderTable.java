@@ -83,4 +83,8 @@ public class OrderTable {
         }
         this.numberOfGuests = numberOfGuests;
     }
+
+    public void detachTableGroup() {
+        this.tableGroup = null;
+    }
 }

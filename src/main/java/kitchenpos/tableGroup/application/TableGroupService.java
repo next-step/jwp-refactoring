@@ -1,5 +1,6 @@
 package kitchenpos.tableGroup.application;
 
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.orderTable.domain.OrderTable;
@@ -39,8 +40,16 @@ public class TableGroupService {
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
                 .orElseThrow(IllegalArgumentException::new);
-        validateOrderStatusToUngroup(tableGroup);
-        tableGroup.ungroup();
+        List<Order> orders = findOrdersInTableGroup(tableGroupId);
+        tableGroup.ungroup(orders);
+    }
+
+    private List<Order> findOrdersInTableGroup(Long tableGroupId) {
+        List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
+        final List<Long> orderTableIds = orderTables.stream()
+                .map(OrderTable::getId)
+                .collect(Collectors.toList());
+        return orderRepository.findAllByOrderTableIdIn(orderTableIds);
     }
 
     private void validateOrderStatusToUngroup(TableGroup tableGroup) {

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -71,7 +72,7 @@ class TableGroupTest {
         OrderTable orderTable = new OrderTable(1L, null, 0, true);
         OrderTable orderTable2 = new OrderTable(2L, null, 0, true);
         TableGroup tableGroup = new TableGroup(LocalDateTime.now(), Arrays.asList(orderTable, orderTable2));
-        tableGroup.ungroup();
+        tableGroup.ungroup(new ArrayList<>());
 
         assertAll(
                 () -> assertThat(orderTable.isGrouped()).isFalse(),

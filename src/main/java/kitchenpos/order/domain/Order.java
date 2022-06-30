@@ -110,4 +110,16 @@ public class Order {
         }
         this.orderStatus = orderStatus;
     }
+
+    public boolean isCooking() {
+        return orderStatus == OrderStatus.COOKING;
+    }
+
+    public boolean isEating() {
+        return orderStatus == OrderStatus.MEAL;
+    }
+
+    public boolean isComplete() {
+        return orderStatus == OrderStatus.COMPLETION;
+    }
 }
