@@ -1,5 +1,6 @@
 package kitchenpos.orderTable.application;
 
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.orderTable.domain.OrderTable;
@@ -40,8 +41,8 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableEmptyRequest orderTableRequest) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
-        validateOrderStatusToChangeEmpty(orderTableId);
-        savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
+        List<Order> orders = findOrdersByOrderTable(orderTableId);
+        savedOrderTable.changeEmpty(orderTableRequest.isEmpty(), orders);
 
         return OrderTableResponse.from(savedOrderTable);
     }
@@ -55,10 +56,7 @@ public class TableService {
         return OrderTableResponse.from(savedOrderTable);
     }
 
-    private void validateOrderStatusToChangeEmpty(Long orderTableId) {
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
-        }
+    private List<Order> findOrdersByOrderTable(Long orderTableId) {
+        return orderRepository.findAllByOrderTableId(orderTableId);
     }
 }

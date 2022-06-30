@@ -1,8 +1,10 @@
 package kitchenpos.orderTable.domain;
 
+import kitchenpos.order.domain.Order;
 import kitchenpos.tableGroup.domain.TableGroup;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class OrderTable {
@@ -66,12 +68,20 @@ public class OrderTable {
         return tableGroup != null;
     }
 
-    public void changeEmpty(boolean empty) {
+    public void changeEmpty(boolean empty, List<Order> orders) {
+        validateOrdersToChangeEmpty(orders);
         if (isGrouped()) {
             throw new IllegalArgumentException();
         }
 
         this.empty = empty;
+    }
+
+    private void validateOrdersToChangeEmpty(List<Order> orders) {
+        if (orders.stream()
+                .anyMatch(order -> order.isCooking() || order.isEating())) {
+            throw new IllegalArgumentException();
+        }
     }
 
     public void changeNumberOfGuests(int numberOfGuests) {

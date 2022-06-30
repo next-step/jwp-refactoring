@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,7 +27,7 @@ public class OrderTableTest {
     @Test
     void OrderTable_Empty_업데이트(){
         OrderTable orderTable = new OrderTable(1L, null, 4, false);
-        orderTable.changeEmpty(true);
+        orderTable.changeEmpty(true, new ArrayList<>());
 
         assertThat(orderTable.isEmpty()).isTrue();
     }
@@ -39,6 +40,6 @@ public class OrderTableTest {
                         new OrderTable(0, true)));
         OrderTable orderTable = new OrderTable(1L, tableGroup, 4, false);
 
-        assertThrows(IllegalArgumentException.class, () -> orderTable.changeEmpty(true));
+        assertThrows(IllegalArgumentException.class, () -> orderTable.changeEmpty(true, new ArrayList<>()));
     }
 }

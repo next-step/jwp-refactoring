@@ -52,17 +52,6 @@ public class TableGroupService {
         return orderRepository.findAllByOrderTableIdIn(orderTableIds);
     }
 
-    private void validateOrderStatusToUngroup(TableGroup tableGroup) {
-        List<OrderTable> orderTables = tableGroup.getOrderTables();
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
-        }
-    }
-
     private List<OrderTable> findAllRequestedOrderTables(TableGroupRequest tableGroupRequest) {
         final List<Long> orderTableIds = tableGroupRequest.getOrderTables();
         final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
