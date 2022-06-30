@@ -46,6 +46,18 @@ class MenuTest {
                 () -> Menu.of("김치찌개", -8000, menuGroup_한식));
     }
 
+    @DisplayName("메뉴에 메뉴상품을 등록한다")
+    @Test
+    void Menu_MenuProduct_등록(){
+        MenuGroup menuGroup_한식 = createMenuGroup("한식");
+        Product product_김치찌개 = createProduct("김치찌개", 8000);
+        Menu menu = createMenu("김치찌개", 8000, menuGroup_한식);
+        MenuProduct menuProduct_김치찌개 = createMenuProduct(menu, product_김치찌개, 1);
+        menu.registerMenuProducts(Arrays.asList(menuProduct_김치찌개));
+
+        assertThat(menu.getMenuProducts()).containsExactly(menuProduct_김치찌개);
+    }
+
     @DisplayName("메뉴의 가격은, 메뉴상품의 정가의 합보다 클 수 없다")
     @Test
     void Menu_가격_정가이하_검증(){

@@ -85,17 +85,17 @@ public class OrderTable {
             );
         }
         if (isEmpty()) {
-            throw new IllegalOrderTableException("주문테이블은 비어있을 수 없습니다.");
+            throw new IllegalOrderTableException(ErrorMessage.ERROR_ORDER_TABLE_EMPTY);
         }
         this.numberOfGuests = numberOfGuests;
-    }
-
-    public void detachTableGroup() {
-        this.tableGroup = null;
     }
 
     public void assignTableGroup(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
         this.empty = false;
+    }
+
+    public void detachTableGroup() {
+        this.tableGroup = null;
     }
 }
