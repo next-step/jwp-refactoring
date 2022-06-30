@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.repository.MenuGroupRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ class MenuGroupServiceTest {
     @Autowired
     MenuGroupService menuGroupService;
     @MockBean
-    MenuGroupDao menuGroupDao;
+    MenuGroupRepository menuGroupRepository;
 
     @DisplayName("메뉴 그룹을 등록할 수 있다")
     @Test
@@ -28,7 +28,7 @@ class MenuGroupServiceTest {
         menuGroupService.create(given);
 
         // then
-        verify(menuGroupDao).save(given);
+        verify(menuGroupRepository).save(given);
     }
 
     @DisplayName("메뉴 그룹의 목록을 조회할 수 있다")
@@ -38,6 +38,6 @@ class MenuGroupServiceTest {
         menuGroupService.list();
 
         // then
-        verify(menuGroupDao).findAll();
+        verify(menuGroupRepository).findAll();
     }
 }
