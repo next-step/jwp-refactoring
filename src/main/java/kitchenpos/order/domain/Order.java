@@ -27,6 +27,8 @@ public class Order {
 
     private Order(Long orderTableId, OrderLineItems orderLineItems) {
         this.orderTableId = orderTableId;
+        this.orderStatus = OrderStatus.COOKING;
+        this.orderedTime = LocalDateTime.now();
         this.addOrderLineItems(orderLineItems);
     }
 
@@ -67,11 +69,5 @@ public class Order {
 
     public Long getOrderTableId() {
         return orderTableId;
-    }
-
-    public void validate(OrderValidator orderValidator) {
-        orderValidator.validate(this);
-        this.orderStatus = OrderStatus.COOKING;
-        this.orderedTime = LocalDateTime.now();
     }
 }

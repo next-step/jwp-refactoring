@@ -43,7 +43,6 @@ public class OrderServiceTest {
         OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(1L, "양념치킨", 19_000L, 1L);
         OrderRequest orderRequest = new OrderRequest(1L, Lists.list(orderLineItemRequest));
         Order order = orderRequest.toEntity();
-        order.validate(orderValidator);
         when(orderRepository.save(any())).thenReturn(order);
 
         OrderResponse saved = orderService.create(orderRequest);
@@ -57,7 +56,6 @@ public class OrderServiceTest {
         OrderLineItem orderLineItem = OrderLineItem.createOrderLineItem(1L, "양념치킨", 19_000L, 1L);
         OrderLineItems orderLineItems = OrderLineItems.createOrderLineItems(Lists.list(orderLineItem));
         Order order = Order.createOrder(1L, orderLineItems);
-        order.validate(orderValidator);
         when(orderRepository.findAll()).thenReturn(Lists.list(order));
 
         List<OrderResponse> actual = orderService.list();
@@ -79,7 +77,6 @@ public class OrderServiceTest {
         OrderLineItem orderLineItem = OrderLineItem.createOrderLineItem(1L, "양념치킨", 19_000L, 1L);
         OrderLineItems orderLineItems = OrderLineItems.createOrderLineItems(Lists.list(orderLineItem));
         Order order = Order.createOrder(1L, orderLineItems);
-        order.validate(orderValidator);
         order.updateOrderStatus(OrderStatus.COMPLETION);
         when(orderRepository.findById(any())).thenReturn(Optional.of(order));
 
@@ -95,7 +92,6 @@ public class OrderServiceTest {
         OrderLineItem orderLineItem = OrderLineItem.createOrderLineItem(1L, "양념치킨", 19_000L, 1L);
         OrderLineItems orderLineItems = OrderLineItems.createOrderLineItems(Lists.list(orderLineItem));
         Order order = Order.createOrder(1L, orderLineItems);
-        order.validate(orderValidator);
         when(orderRepository.findById(any())).thenReturn(Optional.of(order));
         when(orderRepository.save(any())).thenReturn(order);
 

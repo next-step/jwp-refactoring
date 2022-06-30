@@ -62,10 +62,6 @@ public class Menu {
         this.menuProducts.addAll(this, menuProducts);
     }
 
-    public void validate(MenuValidator menuValidator) {
-        menuValidator.validate(this);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
