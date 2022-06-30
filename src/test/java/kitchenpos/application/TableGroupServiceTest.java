@@ -8,6 +8,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.OrderLineItem;
@@ -24,9 +25,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.context.ApplicationEventPublisher;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class TableGroupServiceTest {
 
     private TableGroupService tableGroupService;
@@ -37,6 +41,7 @@ class TableGroupServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
 
+    @Mock
     private TableGroup tableGroup;
     private OrderTable orderTable_1;
     private OrderTable orderTable_2;
@@ -52,7 +57,8 @@ class TableGroupServiceTest {
 
         tableGroupService = new TableGroupService(eventPublisher, tableGroupRepository,
             orderTableRepository);
-        tableGroup = new TableGroup();
+        when(tableGroup.getId()).thenReturn(1L);
+        when(tableGroup.getCreatedDate()).thenReturn(LocalDateTime.now());
     }
 
     private void setOrderTable() {
