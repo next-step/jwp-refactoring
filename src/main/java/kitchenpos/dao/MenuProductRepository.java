@@ -1,5 +1,6 @@
 package kitchenpos.dao;
 
+import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 
 import java.util.List;
@@ -12,5 +13,5 @@ public interface MenuProductRepository {
 
     List<MenuProduct> findAll();
 
-    List<MenuProduct> findAllByMenuId(Long menuId);
+    List<MenuProduct> findAllByMenu(Menu menu);
 }

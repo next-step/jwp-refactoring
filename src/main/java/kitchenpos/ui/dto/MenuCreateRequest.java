@@ -4,7 +4,6 @@ import kitchenpos.domain.Menu;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class MenuCreateRequest {
     private String name;
@@ -23,9 +22,7 @@ public class MenuCreateRequest {
     }
 
     public Menu toEntity() {
-        return new Menu(name, price, menuGroupId, menuProducts.stream()
-                .map(MenuProductCreateRequest::toEntity)
-                .collect(Collectors.toList()));
+        return new Menu(name, price, menuGroupId);
     }
 
     public String getName() {
