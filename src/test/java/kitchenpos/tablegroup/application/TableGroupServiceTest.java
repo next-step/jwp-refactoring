@@ -130,13 +130,13 @@ public class TableGroupServiceTest {
     }
 
     public static TableGroupRequest createTableGroupRequest() {
-        OrderTableResponse request1 = new OrderTableResponse(1L,3, true);
-        OrderTableResponse request2 = new OrderTableResponse(2L,5, true);
+        OrderTableRequest request1 = new OrderTableRequest(1L,3, true);
+        OrderTableRequest request2 = new OrderTableRequest(2L,5, true);
         return new TableGroupRequest(Arrays.asList(request1, request2));
     }
 
     public static TableGroupRequest createTableGroupRequestWithOneOrderTable() {
-        OrderTableResponse orderTable1 = new OrderTableResponse(1L,3, true);
+        OrderTableRequest orderTable1 = new OrderTableRequest(1L,3, true);
         return new TableGroupRequest(Arrays.asList(orderTable1));
     }
 

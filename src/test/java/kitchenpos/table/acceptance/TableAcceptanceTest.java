@@ -4,12 +4,10 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.order.domain.Order;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -75,7 +73,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
         final boolean 테이블_사용중 = false;
 
         // when
-        ExtractableResponse<Response> 변경된_주문_테이블 = 주문_테이블_상태_수정_요청(OrderTableResponse.of(저장_안한_주문_테이블), 테이블_사용중);
+        ExtractableResponse<Response> 변경된_주문_테이블 = 주문_테이블_상태_수정_요청(OrderTableRequest.of(저장_안한_주문_테이블), 테이블_사용중);
 
         // then
         주문_테이블_상태_수정_실패(변경된_주문_테이블);
@@ -84,9 +82,9 @@ public class TableAcceptanceTest extends AcceptanceTest {
     @DisplayName("[예외] 테이블 그룹에 매핑된 주문 테이블의 상태를 변경한다.")
     @Test
     void changeEmpty_with_mapping_with_table_group() {
-        OrderTableResponse 테이블_그룹_매핑된_주문_테이블1 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, true));
-        OrderTableResponse 테이블_그룹_매핑된_주문_테이블2 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, true));
-        List<OrderTableResponse> orderTables = Arrays.asList(테이블_그룹_매핑된_주문_테이블1, 테이블_그룹_매핑된_주문_테이블2);
+        OrderTableRequest 테이블_그룹_매핑된_주문_테이블1 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, true));
+        OrderTableRequest 테이블_그룹_매핑된_주문_테이블2 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, true));
+        List<OrderTableRequest> orderTables = Arrays.asList(테이블_그룹_매핑된_주문_테이블1, 테이블_그룹_매핑된_주문_테이블2);
         테이블_그룹_생성_요청(new TableGroupRequest(orderTables));
         final boolean 테이블_사용중 = false;
 
@@ -105,7 +103,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
         final boolean 테이블_사용중 = false;
 
         // when
-        ExtractableResponse<Response> 변경된_주문_테이블 = 주문_테이블_상태_수정_요청(OrderTableResponse.of(등록된_요리중인_주문_테이블), 테이블_사용중);
+        ExtractableResponse<Response> 변경된_주문_테이블 = 주문_테이블_상태_수정_요청(OrderTableRequest.of(등록된_요리중인_주문_테이블), 테이블_사용중);
 
         // then
         주문_테이블_상태_수정_실패(변경된_주문_테이블);
@@ -245,7 +243,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 주문_테이블_상태_수정_요청(OrderTableResponse response, boolean isEmpty) {
+    public static ExtractableResponse<Response> 주문_테이블_상태_수정_요청(OrderTableRequest response, boolean isEmpty) {
         OrderTableRequest request = new OrderTableRequest(isEmpty);
 
         return RestAssured
@@ -257,8 +255,8 @@ public class TableAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static OrderTableResponse 주문_테이블_가져옴(ExtractableResponse<Response> response) {
-        return response.as(OrderTableResponse.class);
+    public static OrderTableRequest 주문_테이블_가져옴(ExtractableResponse<Response> response) {
+        return response.as(OrderTableRequest.class);
     }
 
     public static void 주문_테이블_상태_검증됨(OrderTable 변경된_주문_테이블, boolean 테이블_사용중) {

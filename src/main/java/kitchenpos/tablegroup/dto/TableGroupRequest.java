@@ -1,7 +1,6 @@
 package kitchenpos.tablegroup.dto;
 
 import kitchenpos.table.dto.OrderTableRequest;
-import kitchenpos.table.dto.OrderTableResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -9,12 +8,12 @@ import java.util.List;
 public class TableGroupRequest {
     private Long id;
     private LocalDateTime createdDate;
-    private List<OrderTableResponse> orderTables;
+    private List<OrderTableRequest> orderTables;
 
     public TableGroupRequest() {
     }
 
-    public TableGroupRequest(List<OrderTableResponse> orderTables) {
+    public TableGroupRequest(List<OrderTableRequest> orderTables) {
         this.orderTables = orderTables;
     }
 
@@ -34,11 +33,11 @@ public class TableGroupRequest {
         this.createdDate = createdDate;
     }
 
-    public List<OrderTableResponse> getOrderTables() {
+    public List<OrderTableRequest> getOrderTables() {
         return orderTables;
     }
 
-    public void setOrderTables(List<OrderTableResponse> orderTables) {
+    public void setOrderTables(List<OrderTableRequest> orderTables) {
         this.orderTables = orderTables;
     }
 }
