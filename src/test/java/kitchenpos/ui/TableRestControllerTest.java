@@ -1,6 +1,6 @@
 package kitchenpos.ui;
 
-import static kitchenpos.utils.generator.OrderTableFixtureGenerator.주문_테이블_생성_요청;
+import static kitchenpos.utils.generator.OrderTableFixtureGenerator.비어있지_않은_주문_테이블_생성_요청;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -24,7 +24,7 @@ public class TableRestControllerTest extends BaseTest {
     @DisplayName("주문 테이블을 생성한다.")
     public void createOrderTable() throws Exception {
         // When
-        ResultActions resultActions = mockMvcUtil.post(주문_테이블_생성_요청());
+        ResultActions resultActions = mockMvcUtil.post(비어있지_않은_주문_테이블_생성_요청());
 
         // Then
         resultActions.andDo(print())
@@ -54,7 +54,7 @@ public class TableRestControllerTest extends BaseTest {
     public void updateNumberOfGuests(final boolean givenEmpty, final String givenDescription) throws Exception {
         // Given
         final String updateTableEmptyUrlTemplate = TABLE_API_BASE_URL.concat("/{orderTableId}/empty");
-        OrderTable savedOrderTable = mockMvcUtil.as(mockMvcUtil.post(주문_테이블_생성_요청()), OrderTable.class);
+        OrderTable savedOrderTable = mockMvcUtil.as(mockMvcUtil.post(비어있지_않은_주문_테이블_생성_요청()), OrderTable.class);
 
         OrderTable updateOrderTableEmptyRequest = new OrderTable();
         updateOrderTableEmptyRequest.setEmpty(givenEmpty);
@@ -92,7 +92,7 @@ public class TableRestControllerTest extends BaseTest {
     public void updateTableUsingStatus() throws Exception {
         // Given
         final String updateNumberOfGuestApiUrlTemplate = TABLE_API_BASE_URL.concat("/{orderTableId}/number-of-guests");
-        final OrderTable savedOrderTable = mockMvcUtil.as(mockMvcUtil.post(주문_테이블_생성_요청()), OrderTable.class);
+        final OrderTable savedOrderTable = mockMvcUtil.as(mockMvcUtil.post(비어있지_않은_주문_테이블_생성_요청()), OrderTable.class);
 
         final int newNumberOfGuests = 4;
         OrderTable updateNumberOfGuestsRequest = new OrderTable();

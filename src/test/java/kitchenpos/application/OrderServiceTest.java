@@ -3,7 +3,7 @@ package kitchenpos.application;
 import static kitchenpos.utils.generator.MenuFixtureGenerator.generateMenu;
 import static kitchenpos.utils.generator.MenuGroupFixtureGenerator.generateMenuGroup;
 import static kitchenpos.utils.generator.OrderFixtureGenerator.generateOrder;
-import static kitchenpos.utils.generator.OrderTableFixtureGenerator.generateOrderTable;
+import static kitchenpos.utils.generator.OrderTableFixtureGenerator.generateNotEmptyOrderTable;
 import static kitchenpos.utils.generator.ProductFixtureGenerator.generateProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -80,7 +80,7 @@ class OrderServiceTest {
         menuGroup = generateMenuGroup();
         menu = generateMenu(menuGroup, Arrays.asList(firstProduct, secondProduct));
 
-        orderTable = generateOrderTable();
+        orderTable = generateNotEmptyOrderTable();
         order = generateOrder(orderTable, menu);
     }
 

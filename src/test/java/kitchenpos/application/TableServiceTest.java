@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import static kitchenpos.utils.generator.OrderTableFixtureGenerator.generateOrderTable;
+import static kitchenpos.utils.generator.OrderTableFixtureGenerator.generateNotEmptyOrderTable;
 import static kitchenpos.utils.generator.OrderTableFixtureGenerator.generateOrderTables;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -39,7 +39,7 @@ class TableServiceTest {
     @DisplayName("주문 테이블을 생성한다.")
     public void createOrderTable() {
         // Given
-        OrderTable givenOrderTable = generateOrderTable();
+        OrderTable givenOrderTable = generateNotEmptyOrderTable();
         given(orderTableDao.save(any(OrderTable.class))).will(AdditionalAnswers.returnsFirstArg());
 
         // When
@@ -72,13 +72,13 @@ class TableServiceTest {
     @DisplayName("테이블의 사용 가능 여부를 변경한다.")
     public void changeEmpty() {
         // Given
-        OrderTable givenOrderTable = generateOrderTable();
+        OrderTable givenOrderTable = generateNotEmptyOrderTable();
         given(orderTableDao.findById(any())).willReturn(Optional.of(givenOrderTable));
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(false);
         given(orderTableDao.save(any())).will(AdditionalAnswers.returnsFirstArg());
 
         // When
-        OrderTable updateEmptyRequest = generateOrderTable();
+        OrderTable updateEmptyRequest = generateNotEmptyOrderTable();
         updateEmptyRequest.setEmpty(true);
         OrderTable actualOrderTable = tableService.changeEmpty(givenOrderTable.getId(), updateEmptyRequest);
 
@@ -97,7 +97,7 @@ class TableServiceTest {
     @DisplayName("주문 테이블이 존재하지 않는 경우 사용 가능 상태는 변경할 수 없다.")
     public void throwException_WhenTargetOrderTableIsNotExist() {
         // Given
-        OrderTable givenOrderTable = generateOrderTable();
+        OrderTable givenOrderTable = generateNotEmptyOrderTable();
         given(orderTableDao.findById(any())).willThrow(IllegalArgumentException.class);
 
         // When & Then
@@ -110,7 +110,7 @@ class TableServiceTest {
     @DisplayName("단체 지정된 주문 테이블의 사용 가능 상태는 변경할 수 없다.")
     public void throwException_WhenTargetOrderTableIsBindingToTableGroup() {
         // Given
-        OrderTable givenOrderTable = generateOrderTable();
+        OrderTable givenOrderTable = generateNotEmptyOrderTable();
         givenOrderTable.setTableGroupId(1L);
         given(orderTableDao.findById(any())).willReturn(Optional.of(givenOrderTable));
 
@@ -125,7 +125,7 @@ class TableServiceTest {
     @DisplayName("주문 상태가 조리중이거나 식사중인 경우 주문 테이블의 사용 가능 여부를 변경할 수 없다.")
     public void throwException_WhenTargetOrderTableIsMealOrCooking() {
         // Given
-        OrderTable givenOrderTable = generateOrderTable();
+        OrderTable givenOrderTable = generateNotEmptyOrderTable();
         given(orderTableDao.findById(any())).willReturn(Optional.of(givenOrderTable));
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(true);
 
@@ -141,7 +141,7 @@ class TableServiceTest {
     @DisplayName("주문 테이블이 존재하지 않는 경우 객수를 변경할 수 없다.")
     public void throwException_WhenOrderTableIsNotExist() {
         // Given
-        OrderTable orderTable = generateOrderTable();
+        OrderTable orderTable = generateNotEmptyOrderTable();
         given(orderTableDao.findById(any())).willThrow(IllegalArgumentException.class);
 
         // When & Then
@@ -155,12 +155,12 @@ class TableServiceTest {
     @DisplayName("주문 테이블의 객수를 변경한다.")
     public void changeNumberOfGuests() {
         // Given
-        OrderTable givenOrderTable = generateOrderTable();
+        OrderTable givenOrderTable = generateNotEmptyOrderTable();
         given(orderTableDao.findById(any())).willReturn(Optional.of(givenOrderTable));
         given(orderTableDao.save(any(OrderTable.class))).will(AdditionalAnswers.returnsFirstArg());
 
         final int newNumberOfGuests = 4;
-        OrderTable updateNumberOfGuestsRequest = generateOrderTable();
+        OrderTable updateNumberOfGuestsRequest = generateNotEmptyOrderTable();
         updateNumberOfGuestsRequest.setNumberOfGuests(4);
 
         // When

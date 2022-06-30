@@ -3,7 +3,7 @@ package kitchenpos.ui;
 import static kitchenpos.utils.generator.MenuFixtureGenerator.메뉴_생성_요청;
 import static kitchenpos.utils.generator.MenuGroupFixtureGenerator.메뉴_그룹_생성_요청;
 import static kitchenpos.utils.generator.OrderFixtureGenerator.주문_생성_요청;
-import static kitchenpos.utils.generator.OrderTableFixtureGenerator.주문_테이블_생성_요청;
+import static kitchenpos.utils.generator.OrderTableFixtureGenerator.비어있지_않은_주문_테이블_생성_요청;
 import static kitchenpos.utils.generator.ProductFixtureGenerator.상품_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
@@ -59,7 +59,7 @@ public class OrderRestControllerTest extends BaseTest {
         savedFirstMenu = mockMvcUtil.as(mockMvcUtil.post(메뉴_생성_요청(savedFirstMenuGroup, firstMenuProducts)), Menu.class);
         savedSecondMenu = mockMvcUtil.as(mockMvcUtil.post(메뉴_생성_요청(savedSecondMenuGroup, secondMenuProducts)), Menu.class);
 
-        savedOrderTable = mockMvcUtil.as(mockMvcUtil.post(주문_테이블_생성_요청()), OrderTable.class);
+        savedOrderTable = mockMvcUtil.as(mockMvcUtil.post(비어있지_않은_주문_테이블_생성_요청()), OrderTable.class);
     }
 
 

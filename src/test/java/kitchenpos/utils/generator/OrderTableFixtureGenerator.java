@@ -14,10 +14,16 @@ public class OrderTableFixtureGenerator {
     private static boolean EMPTY = false;
     private static int COUNTER = 0;
 
-    public static OrderTable generateOrderTable() {
+    public static OrderTable generateEmptyOrderTable() {
         COUNTER++;
         OrderTable orderTable = new OrderTable();
         orderTable.setNumberOfGuests(NUMBER_OF_GUESTS + COUNTER);
+        orderTable.setEmpty(true);
+        return orderTable;
+    }
+
+    public static OrderTable generateNotEmptyOrderTable() {
+        OrderTable orderTable = generateEmptyOrderTable();
         orderTable.setEmpty(EMPTY);
         return orderTable;
     }
@@ -25,12 +31,16 @@ public class OrderTableFixtureGenerator {
     public static List<OrderTable> generateOrderTables(int count) {
         List<OrderTable> orderTables = new ArrayList<>();
         for (int i = 0; i < count; i++) {
-            orderTables.add(generateOrderTable());
+            orderTables.add(generateNotEmptyOrderTable());
         }
         return orderTables;
     }
 
-    public static MockHttpServletRequestBuilder 주문_테이블_생성_요청() throws Exception {
-        return postRequestBuilder(TABLE_API_BASE_URL, generateOrderTable());
+    public static MockHttpServletRequestBuilder 비어있지_않은_주문_테이블_생성_요청() throws Exception {
+        return postRequestBuilder(TABLE_API_BASE_URL, generateNotEmptyOrderTable());
+    }
+
+    public static MockHttpServletRequestBuilder 비어있는_주문_테이블_생성_요청() throws Exception {
+        return postRequestBuilder(TABLE_API_BASE_URL, generateEmptyOrderTable());
     }
 }
