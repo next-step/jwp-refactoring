@@ -6,6 +6,10 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import kitchenpos.common.domain.Quantity;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.Menus;
+import kitchenpos.order.dto.OrderLineItemRequest;
 
 @Embeddable
 public class OrderLineItems {
@@ -20,6 +24,17 @@ public class OrderLineItems {
     public OrderLineItems(List<OrderLineItem> orderLineItems) {
         validate(orderLineItems);
         this.orderLineItems = orderLineItems;
+    }
+
+    public static OrderLineItems create(List<OrderLineItemRequest> requestOrderLineItems, Menus menus) {
+        final List<OrderLineItem> orderLineItems = new ArrayList<>();
+        for (OrderLineItemRequest orderLineItemRequest : requestOrderLineItems) {
+            Menu menu = menus.getMenuBy(orderLineItemRequest.getMenuId());
+            OrderMenu orderMenu = OrderMenu.of(menu, new Quantity(orderLineItemRequest.getQuantity()));
+            OrderLineItem orderLineItem = new OrderLineItem(orderMenu);
+            orderLineItems.add(orderLineItem);
+        }
+        return new OrderLineItems(orderLineItems);
     }
 
     public void add(OrderLineItem orderLineItem) {

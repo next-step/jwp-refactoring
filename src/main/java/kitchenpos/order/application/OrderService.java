@@ -1,18 +1,14 @@
 package kitchenpos.order.application;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import kitchenpos.common.domain.Quantity;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.Menus;
 import kitchenpos.menu.domain.repository.MenuRepository;
 import kitchenpos.order.consts.OrderStatus;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderCreateEvent;
-import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
-import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.repository.OrderRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
@@ -59,14 +55,7 @@ public class OrderService {
     }
 
     private OrderLineItems createOrderLineItems(List<OrderLineItemRequest> requestOrderLineItems, Menus menus) {
-        final List<OrderLineItem> orderLineItems = new ArrayList<>();
-        for (OrderLineItemRequest orderLineItemRequest : requestOrderLineItems) {
-            Menu menu = menus.getMenuBy(orderLineItemRequest.getMenuId());
-            OrderMenu orderMenu = OrderMenu.of(menu, new Quantity(orderLineItemRequest.getQuantity()));
-            OrderLineItem orderLineItem = new OrderLineItem(orderMenu);
-            orderLineItems.add(orderLineItem);
-        }
-        return new OrderLineItems(orderLineItems);
+        return OrderLineItems.create(requestOrderLineItems, menus);
     }
 
     private Menus findMenus(List<Long> menuIds) {
