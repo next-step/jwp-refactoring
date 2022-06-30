@@ -1,5 +1,6 @@
 package kitchenpos.table.application;
 
+import static kitchenpos.helper.MenuFixtures.메뉴_만들기;
 import static kitchenpos.helper.OrderFixtures.주문_만들기;
 import static kitchenpos.helper.OrderLineItemFixtures.주문_항목_만들기;
 import static kitchenpos.helper.TableFixtures.테이블_만들기;
@@ -145,7 +146,7 @@ class TableGroupServiceTest {
         OrderTableRequest emptyTable2 = 테이블_요청_만들기(8L);
         TableGroupResponse request = tableGroupService.create(테이블_그룹_요청_만들기(Arrays.asList(emptyTable1, emptyTable2)), LocalDateTime.now());
         OrderTable orderTable = orderTableRepository.findById(emptyTable1.getId()).orElseThrow(IllegalArgumentException::new);
-        OrderLineItems orderLineItems = new OrderLineItems(Collections.singletonList(주문_항목_만들기(1L, 3)));
+        OrderLineItems orderLineItems = new OrderLineItems(Collections.singletonList(주문_항목_만들기(메뉴_만들기(1L, "후라이드치킨", 16000), 3)));
 
         orderRepository.save(주문_만들기(request.getId(), OrderStatus.MEAL, orderTable, orderLineItems));
         orderRepository.save(주문_만들기(request.getId(), OrderStatus.COOKING, orderTable, orderLineItems));

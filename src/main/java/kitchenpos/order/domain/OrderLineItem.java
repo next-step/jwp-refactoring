@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
 
 @Entity
@@ -15,15 +16,21 @@ public class OrderLineItem {
     private Long seq;
     @Column(name = "menu_id", nullable = false)
     private Long menuId;
+    @Column(nullable = false)
+    private String menuName;
+    @Embedded
+    private Price price;
     @Embedded
     private Quantity quantity;
 
     protected OrderLineItem() {
     }
 
-    public OrderLineItem(Long menuId, Quantity quantity) {
-        this.menuId = menuId;
-        this.quantity = quantity;
+    public OrderLineItem(OrderMenu orderMenu) {
+        this.menuId = orderMenu.getMenuId();
+        this.menuName = orderMenu.getMenuName();
+        this.price = orderMenu.getPrice();
+        this.quantity = orderMenu.getQuantity();
     }
 
     public boolean isEmptyOrderLineItem() {
@@ -32,6 +39,14 @@ public class OrderLineItem {
 
     public Long getMenuId() {
         return menuId;
+    }
+
+    public String getMenuName() {
+        return menuName;
+    }
+
+    public Price getPrice() {
+        return price;
     }
 
     public Quantity getQuantity() {

@@ -12,6 +12,7 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderCreateEvent;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
+import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.repository.OrderRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
@@ -61,7 +62,8 @@ public class OrderService {
         final List<OrderLineItem> orderLineItems = new ArrayList<>();
         for (OrderLineItemRequest orderLineItemRequest : requestOrderLineItems) {
             Menu menu = menus.getMenuBy(orderLineItemRequest.getMenuId());
-            OrderLineItem orderLineItem = new OrderLineItem(menu.getId(), new Quantity(orderLineItemRequest.getQuantity()));
+            OrderMenu orderMenu = OrderMenu.of(menu, new Quantity(orderLineItemRequest.getQuantity()));
+            OrderLineItem orderLineItem = new OrderLineItem(orderMenu);
             orderLineItems.add(orderLineItem);
         }
         return new OrderLineItems(orderLineItems);

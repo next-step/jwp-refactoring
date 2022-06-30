@@ -1,5 +1,6 @@
 package kitchenpos.table.domain;
 
+import static kitchenpos.helper.MenuFixtures.메뉴_만들기;
 import static kitchenpos.helper.OrderFixtures.주문_만들기;
 import static kitchenpos.helper.OrderLineItemFixtures.주문_항목_만들기;
 import static kitchenpos.helper.TableFixtures.빈_테이블_만들기;
@@ -24,7 +25,7 @@ class OrderTableTest {
 
         //given
         OrderTable orderTable1 = 주문_테이블_만들기();
-        OrderLineItems orderLineItems = new OrderLineItems(Arrays.asList(주문_항목_만들기(1L, 3)));
+        OrderLineItems orderLineItems = new OrderLineItems(Arrays.asList(주문_항목_만들기(메뉴_만들기(1L, "후라이드치킨", 16000), 3)));
         Orders orders1 = new Orders(Arrays.asList(주문_만들기(OrderStatus.MEAL, orderTable1, orderLineItems),
                 주문_만들기(OrderStatus.COMPLETION, orderTable1, orderLineItems)));
 
