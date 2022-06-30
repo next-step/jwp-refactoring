@@ -161,54 +161,58 @@ public class TableServiceTest {
     @Test
     void 주문테이블_손님수_업데이트(){
         //given
-        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(테이블_NOT_EMPTY));
-        given(orderTableRepository.save(any(OrderTable.class))).willReturn(createOrderTable(테이블_NOT_EMPTY.getId(),
-                테이블_NOT_EMPTY.getTableGroup(), 1, false));
+        OrderTableResponse savedTable = tableService.create(
+                OrderTableRequest.of(테이블_NOT_EMPTY.getNumberOfGuests(), 테이블_NOT_EMPTY.isEmpty())
+        );
 
         //when
         OrderTableNumOfGuestRequest oneGuestRequest = OrderTableNumOfGuestRequest.from(1);
-        tableService.changeNumberOfGuests(테이블_NOT_EMPTY.getId(), oneGuestRequest);
+        tableService.changeNumberOfGuests(savedTable.getId(), oneGuestRequest);
 
         //then
-        assertThat(테이블_NOT_EMPTY.getNumberOfGuests()).isEqualTo(1);
+        assertThat(orderTableRepository.findById(savedTable.getId()).get().getNumberOfGuests()).isEqualTo(1);
     }
 
     @DisplayName("주문테이블의 손님 수를 업데이트 시, 손님 수는 0 이상이다")
     @Test
     void 주문테이블_손님수_업데이트_손님수_검증(){
+        //given
+        OrderTableResponse savedTable = tableService.create(
+                OrderTableRequest.of(테이블_NOT_EMPTY.getNumberOfGuests(), 테이블_NOT_EMPTY.isEmpty())
+        );
+
         //when
         OrderTableNumOfGuestRequest invalidRequest = OrderTableNumOfGuestRequest.from(-1);
 
         //then
         assertThrows(IllegalArgumentException.class,
-                () -> tableService.changeNumberOfGuests(테이블_NOT_EMPTY.getId(), invalidRequest));
+                () -> tableService.changeNumberOfGuests(savedTable.getId(), invalidRequest));
     }
 
     @DisplayName("주문테이블의 손님 수를 업데이트 시, 업데이트할 주문테이블이 존재해야 한다")
     @Test
     void 주문테이블_손님수_업데이트_주문테이블_검증(){
-        //given
-        given(orderTableRepository.findById(anyLong())).willReturn(Optional.ofNullable(null));
-
         //when
         OrderTableNumOfGuestRequest oneGuestRequest = OrderTableNumOfGuestRequest.from(1);
 
         //then
         assertThrows(IllegalArgumentException.class,
-                () -> tableService.changeNumberOfGuests(테이블_NOT_EMPTY.getId(), oneGuestRequest));
+                () -> tableService.changeNumberOfGuests(0L, oneGuestRequest));
     }
 
     @DisplayName("주문테이블의 손님 수를 업데이트 시, 주문테이블이 비어있으면 안된다")
     @Test
     void 주문테이블_손님수_업데이트_주문테이블_Empty_검증(){
         //given
-        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(테이블_EMPTY));
+        OrderTableResponse savedTable = tableService.create(
+                OrderTableRequest.of(테이블_EMPTY.getNumberOfGuests(), 테이블_EMPTY.isEmpty())
+        );
 
         //when
         OrderTableNumOfGuestRequest oneGuestRequest = OrderTableNumOfGuestRequest.from(1);
 
         //then
         assertThrows(IllegalArgumentException.class,
-                () -> tableService.changeNumberOfGuests(테이블_EMPTY.getId(), oneGuestRequest));
+                () -> tableService.changeNumberOfGuests(savedTable.getId(), oneGuestRequest));
     }
 }

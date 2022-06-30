@@ -50,23 +50,11 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableNumOfGuestRequest orderTable) {
-        final int numberOfGuests = orderTable.getNumberOfGuests();
-
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
-        }
-
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
+        savedOrderTable.changeNumberOfGuests(orderTable.getNumberOfGuests());
 
-        if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        savedOrderTable.setNumberOfGuests(numberOfGuests);
-
-        OrderTable changedOrderTable = orderTableRepository.save(savedOrderTable);
-        return OrderTableResponse.from(changedOrderTable);
+        return OrderTableResponse.from(savedOrderTable);
     }
 
     private void validateOrderTableToChangeEmpty(Long orderTableId) {
