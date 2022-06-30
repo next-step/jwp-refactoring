@@ -3,7 +3,6 @@ package kitchenpos.Acceptance.tableGroup;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.Acceptance.AcceptanceTest;
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupCreateRequest;
 import kitchenpos.table.dto.TableGroupResponse;
@@ -67,7 +66,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     void createTableByContainAlreadyBelongOrNotEmptyTableTest() {
         // given
         테이블_그룹_생성_API_호출(테이블_그룹_생성_요청(Arrays.asList(주문_테이블_아이디들.get(0), 주문_테이블_아이디들.get(1))));
-        빈_테이블_변경_요청(주문_테이블_아이디들.get(2), false);
+        빈_테이블_변경_API_호출(주문_테이블_아이디들.get(2), false);
 
         // when
         ExtractableResponse<Response> 이미_테이블_그룹에_속한_테이블이_포함된_테이블_그룹_생성_요청_결과 = 테이블_그룹_생성_API_호출(
