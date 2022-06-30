@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 import kitchenpos.common.exception.BadRequestException;
 import kitchenpos.common.exception.CannotCreateException;
 import kitchenpos.common.exception.ExceptionType;
-import kitchenpos.table.application.TableService;
+import kitchenpos.table.application.OrderTableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.tableGroup.domain.TableGroup;
 import kitchenpos.tableGroup.domain.TableGroupRepository;
@@ -37,7 +37,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class TableGroupServiceTest {
 
     @Mock
-    private TableService tableService;
+    private OrderTableService orderTableService;
     @Mock
     private TableGroupRepository tableGroupRepository;
 
@@ -61,7 +61,7 @@ class TableGroupServiceTest {
         주문_테이블 = OrderTable.of(1L, null, 3, true);
         주문_테이블2 = OrderTable.of(2L, null, 5, true);
 
-        validateTableGroupService = new TableGroupService(tableService, tableGroupRepository);
+        validateTableGroupService = new TableGroupService(orderTableService, tableGroupRepository);
     }
 
     @DisplayName("주문 테이블을 단체지정하면 정상적으로 단체지정 되어야한다")
@@ -73,7 +73,7 @@ class TableGroupServiceTest {
         List<OrderTable> 주문_테이블_목록 = Arrays.asList(new_주문_테이블, new_주문_테이블2);
 
         // given
-        when(tableService.findOrderTablesByIdIn(Arrays.asList(주문_테이블_request.getId(), 주문_테이블_2_request.getId())))
+        when(orderTableService.findOrderTablesByIdIn(Arrays.asList(주문_테이블_request.getId(), 주문_테이블_2_request.getId())))
             .thenReturn(주문_테이블_목록);
 
         when(tableGroupRepository.save(any()))
@@ -125,7 +125,7 @@ class TableGroupServiceTest {
     @Test
     void create_exception_test3() {
         // given
-        when(tableService.findOrderTablesByIdIn(Arrays.asList(주문_테이블_request.getId(), 주문_테이블_2_request.getId())))
+        when(orderTableService.findOrderTablesByIdIn(Arrays.asList(주문_테이블_request.getId(), 주문_테이블_2_request.getId())))
             .thenReturn(Collections.singletonList(주문_테이블));
 
         // then
@@ -142,7 +142,7 @@ class TableGroupServiceTest {
         // given
         주문_테이블 = OrderTable.of(1L, null, 3, false);
         주문_테이블2 = OrderTable.of(2L, 1L, 3, true);
-        when(tableService.findOrderTablesByIdIn(Arrays.asList(주문_테이블.getId(), 주문_테이블2.getId())))
+        when(orderTableService.findOrderTablesByIdIn(Arrays.asList(주문_테이블.getId(), 주문_테이블2.getId())))
             .thenReturn(Arrays.asList(주문_테이블, 주문_테이블2));
 
         // then

@@ -5,16 +5,16 @@ import kitchenpos.common.exception.CannotUpdateException;
 import kitchenpos.common.exception.ExceptionType;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.application.OrderTableService;
+import kitchenpos.table.application.OrderTableStatusService;
 import kitchenpos.table.domain.OrderTable;
 import org.springframework.stereotype.Component;
 
 @Component
-public class OrderTableServiceImpl implements OrderTableService {
+public class OrderTableStatusServiceImpl implements OrderTableStatusService {
 
     private final OrderRepository orderRepository;
 
-    public OrderTableServiceImpl(OrderRepository orderRepository) {
+    public OrderTableStatusServiceImpl(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
     }
 

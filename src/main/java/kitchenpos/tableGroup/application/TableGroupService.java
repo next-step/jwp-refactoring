@@ -2,7 +2,7 @@ package kitchenpos.tableGroup.application;
 
 import kitchenpos.common.exception.ExceptionType;
 import kitchenpos.common.exception.NotFoundException;
-import kitchenpos.table.application.TableService;
+import kitchenpos.table.application.OrderTableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.tableGroup.domain.TableGroup;
 import kitchenpos.tableGroup.domain.TableGroupRepository;
@@ -15,19 +15,19 @@ import java.util.List;
 
 @Service
 public class TableGroupService {
-    private final TableService tableService;
+    private final OrderTableService orderTableService;
     private final TableGroupRepository tableGroupRepository;
     private final TableGroupValidator tableGroupValidator;
 
-    public TableGroupService(TableService tableService, TableGroupRepository tableGroupRepository) {
-        this.tableService = tableService;
+    public TableGroupService(OrderTableService orderTableService, TableGroupRepository tableGroupRepository) {
+        this.orderTableService = orderTableService;
         this.tableGroupRepository = tableGroupRepository;
         this.tableGroupValidator = new TableGroupValidator();
     }
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest request) {
-        final List<OrderTable> orderTables = tableService.findOrderTablesByIdIn(request.getOrderTableIds());
+        final List<OrderTable> orderTables = orderTableService.findOrderTablesByIdIn(request.getOrderTableIds());
         tableGroupValidator.validate(request.getOrderTableIds(), orderTables);
         final TableGroup savedTableGroup = tableGroupRepository.save(TableGroup.generate());
         savedTableGroup.mapIntoTable(orderTables);
