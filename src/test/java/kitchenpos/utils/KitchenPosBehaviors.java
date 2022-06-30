@@ -7,7 +7,7 @@ import io.restassured.response.Response;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import kitchenpos.domain.Order;
+import kitchenpos.order.domain.Order;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuDto;

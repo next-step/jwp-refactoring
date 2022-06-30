@@ -51,7 +51,7 @@
     - [X] 응용서비스에서 도메인레이어로 로직 이동 (with 단위테스트 작성)
     - [ ] 단위테스트 추가 작성
   - [ ] Order Domain Context > Order, OrderLineItem, OrderStatus
-    - [ ] 패키지 생성 및 기존 클래스 이동
+    - [X] 패키지 생성 및 기존 클래스 이동
     - [ ] 요청/응답을 위한 DTO 작성
     - [ ] JPA Entity로 변경 및 JPARepository 생성
     - [ ] 응용서비스에서 도메인레이어로 로직 이동 (with 단위테스트 작성)

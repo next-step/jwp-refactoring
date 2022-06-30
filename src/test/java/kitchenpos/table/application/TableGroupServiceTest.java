@@ -6,9 +6,9 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import java.util.List;
 import kitchenpos.ServiceTest;
 import kitchenpos.utils.ServiceTestHelper;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.fixture.MenuProductFixtureFactory;
 import kitchenpos.fixture.OrderLineItemFixtureFactory;
 import kitchenpos.menu.domain.MenuGroup;
