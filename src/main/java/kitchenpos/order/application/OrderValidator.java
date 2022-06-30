@@ -1,14 +1,18 @@
 package kitchenpos.order.application;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.infrastructure.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.infrastructure.OrderRepository;
+import kitchenpos.product.domain.Price;
 import kitchenpos.table.application.Validator;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.infrastructure.OrderTableRepository;
@@ -51,6 +55,34 @@ public class OrderValidator implements Validator {
         if (menuIds.size() != menuRepository.countByIdIn(menuIds)) {
             throw new IllegalArgumentException("주문한 메뉴가 존재하지 않습니다.");
         }
+
+        Map<Long, Menu> menus = toMap(menuIds);
+        for (OrderLineItem orderLineItem : orderLineItems) {
+            Menu menu = menus.get(orderLineItem.getMenuId());
+            validateMenuName(orderLineItem.getMenuName(), menu);
+            validateMenuPrice(orderLineItem.getMenuPrice(), menu);
+        }
+    }
+
+    private void validateMenuPrice(Long orderMenuPrice, Menu menu) {
+        Price menuPrice = menu.getPrice();
+        if (!menuPrice.equals(Price.from(orderMenuPrice))) {
+            throw new IllegalArgumentException("기본 상품이 변경되었습니다.");
+        }
+    }
+
+    private void validateMenuName(String orderMenuName, Menu menu) {
+        System.out.println("ordername : " + orderMenuName);
+        System.out.println("menu : " + menu.getName());
+        if (!orderMenuName.equals(menu.getName())) {
+            throw new IllegalArgumentException("기본 상품이 변경되었습니다.");
+        }
+    }
+
+    private Map<Long, Menu> toMap(List<Long> menuIds) {
+        List<Menu> allById = menuRepository.findAllById(menuIds);
+        return allById.stream()
+                .collect(Collectors.toMap(Menu::getId, menu -> menu, (a, b) -> b));
     }
 
     private Set<OrderLineItem> validateOrderLineItems(Order order) {

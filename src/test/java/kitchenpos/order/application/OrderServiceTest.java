@@ -40,7 +40,7 @@ public class OrderServiceTest {
     @Test
     @DisplayName("주문을 생성한다.")
     void create() {
-        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(1L, 1L);
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(1L, "양념치킨", 19_000L, 1L);
         OrderRequest orderRequest = new OrderRequest(1L, Lists.list(orderLineItemRequest));
         Order order = orderRequest.toEntity();
         order.validate(orderValidator);
@@ -54,7 +54,7 @@ public class OrderServiceTest {
     @Test
     @DisplayName("주문 목록을 조회한다.")
     void findAll() {
-        OrderLineItem orderLineItem = OrderLineItem.createOrderLineItem(1L, 1L);
+        OrderLineItem orderLineItem = OrderLineItem.createOrderLineItem(1L, "양념치킨", 19_000L, 1L);
         OrderLineItems orderLineItems = OrderLineItems.createOrderLineItems(Lists.list(orderLineItem));
         Order order = Order.createOrder(1L, orderLineItems);
         order.validate(orderValidator);
@@ -76,7 +76,7 @@ public class OrderServiceTest {
     @Test
     @DisplayName("주문상태가 계산완료인경우, 주문 상태를 변경할 수 없다.")
     void changeOrderStatusWithCompletion() {
-        OrderLineItem orderLineItem = OrderLineItem.createOrderLineItem(1L, 1L);
+        OrderLineItem orderLineItem = OrderLineItem.createOrderLineItem(1L, "양념치킨", 19_000L, 1L);
         OrderLineItems orderLineItems = OrderLineItems.createOrderLineItems(Lists.list(orderLineItem));
         Order order = Order.createOrder(1L, orderLineItems);
         order.validate(orderValidator);
@@ -92,7 +92,7 @@ public class OrderServiceTest {
     @DisplayName("주문 상태를 변경한다.")
     void changeOrderStatus() {
         OrderUpdateRequest orderUpdateRequest = new OrderUpdateRequest(OrderStatus.MEAL);
-        OrderLineItem orderLineItem = OrderLineItem.createOrderLineItem(1L, 1L);
+        OrderLineItem orderLineItem = OrderLineItem.createOrderLineItem(1L, "양념치킨", 19_000L, 1L);
         OrderLineItems orderLineItems = OrderLineItems.createOrderLineItems(Lists.list(orderLineItem));
         Order order = Order.createOrder(1L, orderLineItems);
         order.validate(orderValidator);
