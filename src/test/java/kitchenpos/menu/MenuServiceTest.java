@@ -38,9 +38,6 @@ class MenuServiceTest {
     MenuRepository menuRepository;
 
     @Mock
-    MenuProductRepository menuProductRepository;
-
-    @Mock
     ProductRepository productRepository;
 
     @Mock
@@ -130,7 +127,6 @@ class MenuServiceTest {
     void list() {
         // given
         given(menuRepository.findAll()).willReturn(Collections.singletonList(후라이드치킨));
-        given(menuProductRepository.findAllByMenuId(후라이드치킨.getId())).willReturn(Collections.singletonList(후라이드치킨상품));
 
         // when
         List<MenuResponse> actual = menuService.list();

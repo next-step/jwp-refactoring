@@ -3,7 +3,6 @@ package kitchenpos.menu.application;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.menu.dao.MenuProductRepository;
 import kitchenpos.menu.dao.MenuRepository;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
@@ -18,18 +17,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class MenuService {
     private final MenuRepository menuRepository;
     private final ProductRepository productRepository;
-    private final MenuProductRepository menuProductRepository;
     private final MenuGroupService menuGroupService;
 
     public MenuService(
             final MenuRepository menuRepository,
             final ProductRepository productRepository,
-            final MenuProductRepository menuProductRepository,
             final MenuGroupService menuGroupService
     ) {
         this.menuRepository = menuRepository;
         this.productRepository = productRepository;
-        this.menuProductRepository = menuProductRepository;
         this.menuGroupService = menuGroupService;
     }
 
@@ -44,10 +40,6 @@ public class MenuService {
     @Transactional(readOnly = true)
     public List<MenuResponse> list() {
         final List<Menu> menus = menuRepository.findAll();
-
-        for (final Menu menu : menus) {
-            menu.setMenuProducts(menuProductRepository.findAllByMenuId(menu.getId()));
-        }
 
         return menus.stream()
                 .map(MenuResponse::of)
