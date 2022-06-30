@@ -173,3 +173,38 @@
 | 단체 지정 | table group | 통합 계산을 위해 개별 주문 테이블을 그룹화하는 기능 |
 | 주문 항목 | order line item | 주문에 속하는 수량이 있는 메뉴 |
 | 매장 식사 | eat in | 포장하지 않고 매장에서 식사하는 것 |
+
+---
+---
+
+### step4
+1. step3 미흡점
+   1. Event를 위한 DTO의 Naming 변경
+   2. DTO에서 값 정제하는 로직을 서비스단에서 DTO로 이동 
+   3. service layer에서 의미가 다른 로직을 private method로 추출
+   4. OrderTable - TableGroup 객체매핑 후 검증 로직 도메인으로 이동
+
+---
+---
+
+### study
+1. DTO vs VO vs Entity(https://tecoble.techcourse.co.kr/post/2021-05-16-dto-vs-vo-vs-entity/)
+   1. DTO 
+      1. 데이터 전달을 위한 객체
+      2. getter/setter을 사용하며 비즈니스 로직은 포함하지 않는다
+      3. 주로 View/Controller사이에서 사용한다
+   2. VO
+      1. 값 자체를 의미하는 객체이며, 동등성이 보장되어야 한다
+   3. Entity
+      1. 실제 DB 테이블과 매핑되는 클래스
+      2. 절대 Entity를 요청이나 응답값으로 사용하면 안된다
+      3. 비즈니스 로직을 포함한다
+2. Reflection(https://velog.io/@eversong/Effective-Java-65.-리플렉션보다는-인터페이스를-사용하라)
+   1. 단점
+      1. 컴파일 단계에서 검사하는 이점을 누릴수 없다 
+      2. 코드가 지저분해진다
+      3. 리플렉션을 통한 코드 메서드호출은 일반 메서드호출보다 느리다 
+   2. 사용해야하는 시점 ?
+      1. 런타임에 존재하지 않을법한 클래스, 메서드, 필드를 관리할떄 적합함
+      2. 외부 패키지를 다룰때도 적합함 
+      
