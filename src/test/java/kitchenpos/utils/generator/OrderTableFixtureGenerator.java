@@ -18,7 +18,7 @@ public class OrderTableFixtureGenerator {
         return orderTable;
     }
 
-    public static List<OrderTable> generateOrderTables(int count){
+    public static List<OrderTable> generateOrderTables(int count) {
         List<OrderTable> orderTables = new ArrayList<>();
         for (int i = 0; i < count; i++) {
             orderTables.add(generateOrderTable());

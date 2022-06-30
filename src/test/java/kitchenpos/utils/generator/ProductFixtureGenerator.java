@@ -43,7 +43,7 @@ public class ProductFixtureGenerator {
         return products;
     }
 
-    public static Product generateProductMock(){
+    public static Product generateProductMock() {
         Product product = generateProduct();
         product.setId((long) ProductFixtureGenerator.COUNTER);
         return product;
@@ -53,7 +53,7 @@ public class ProductFixtureGenerator {
         return productDao.save(generateProduct());
     }
 
-    public List<Product> savedProducts(int count){
+    public List<Product> savedProducts(int count) {
         List<Product> product = new ArrayList<>();
         for (int i = 0; i < count; i++) {
             product.add(productDao.save(generateProduct()));

@@ -15,9 +15,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.ResultActions;
 
 @DisplayName("API:Product")
-class ProductRestControllerTest extends BaseTest {
+public class ProductRestControllerTest extends BaseTest {
 
-    private static final String PRODUCT_API_URL_TEMPLATE = "/api/products";
+    public static final String PRODUCT_API_URL_TEMPLATE = "/api/products";
 
     @Test
     @DisplayName("상품 목록을 조회한다.")
@@ -47,7 +47,7 @@ class ProductRestControllerTest extends BaseTest {
         ResultActions resultActions = mockMvcUtil.post(PRODUCT_API_URL_TEMPLATE, given);
 
         // Then
-        Product product = (Product) mockMvcUtil.as(resultActions, Product.class);
+        Product product = mockMvcUtil.as(resultActions, Product.class);
         resultActions
             .andDo(print())
             .andExpect(status().isCreated())

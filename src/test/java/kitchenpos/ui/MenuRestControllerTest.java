@@ -22,7 +22,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 @DisplayName("API:MenuGroup")
 @Import({MenuGroupFixtureGenerator.class, ProductFixtureGenerator.class})
-class MenuRestControllerTest extends BaseTest {
+public class MenuRestControllerTest extends BaseTest {
 
     private final MenuGroupFixtureGenerator menuGroupFixtureGenerator;
     private final ProductFixtureGenerator productFixtureGenerator;
@@ -35,7 +35,7 @@ class MenuRestControllerTest extends BaseTest {
         this.productFixtureGenerator = productFixtureGenerator;
     }
 
-    private static final String MENU_API_URL_TEMPLATE = "/api/menus";
+    public static final String MENU_API_URL_TEMPLATE = "/api/menus";
 
     @Test
     @DisplayName("메뉴 목록을 조회 한다.")
@@ -71,7 +71,7 @@ class MenuRestControllerTest extends BaseTest {
         ResultActions resultActions = mockMvcUtil.post(MENU_API_URL_TEMPLATE, menu);
 
         // Then
-        Menu createMenuResponse = (Menu) mockMvcUtil.as(resultActions, Menu.class);
+        Menu createMenuResponse = mockMvcUtil.as(resultActions, Menu.class);
 
         List<Long> givenProductIds = savedProducts.stream()
             .map(Product::getId)

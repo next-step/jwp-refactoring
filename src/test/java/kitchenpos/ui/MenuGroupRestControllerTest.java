@@ -12,9 +12,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.ResultActions;
 
 @DisplayName("API:MenuGroup")
-class MenuGroupRestControllerTest extends BaseTest {
+public class MenuGroupRestControllerTest extends BaseTest {
 
-    private static final String MENU_GROUP_API_URL_TEMPLATE = "/api/menu-groups";
+    public static final String MENU_GROUP_API_URL_TEMPLATE = "/api/menu-groups";
 
     @Test
     @DisplayName("메뉴 그룹을 조회한다.")

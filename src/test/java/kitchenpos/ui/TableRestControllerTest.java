@@ -16,20 +16,15 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.test.web.servlet.ResultActions;
 
 @DisplayName("API:Table")
-class TableRestControllerTest extends BaseTest {
+public class TableRestControllerTest extends BaseTest {
 
     public static final String TABLE_API_BASE_URL = "/api/tables";
 
     @Test
     @DisplayName("주문 테이블을 생성한다.")
     public void createOrderTable() throws Exception {
-        // Given
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(1);
-        orderTable.setEmpty(false);
-
         // When
-        ResultActions resultActions = mockMvcUtil.post(TABLE_API_BASE_URL, orderTable);
+        ResultActions resultActions = mockMvcUtil.post(TABLE_API_BASE_URL, generateOrderTable());
 
         // Then
         resultActions.andDo(print())
@@ -64,7 +59,7 @@ class TableRestControllerTest extends BaseTest {
         OrderTable givenOrderTable = generateOrderTable();
 
         ResultActions createOrderTableResultActions = mockMvcUtil.post(TABLE_API_BASE_URL, givenOrderTable);
-        OrderTable createdOrderTable = (OrderTable) mockMvcUtil.as(createOrderTableResultActions, OrderTable.class);
+        OrderTable createdOrderTable = mockMvcUtil.as(createOrderTableResultActions, OrderTable.class);
 
         OrderTable updateOrderTableEmptyRequest = new OrderTable();
         updateOrderTableEmptyRequest.setEmpty(givenEmpty);
@@ -106,7 +101,7 @@ class TableRestControllerTest extends BaseTest {
 
         OrderTable givenOrderTable = generateOrderTable();
         ResultActions createOrderTableResultActions = mockMvcUtil.post(TABLE_API_BASE_URL, givenOrderTable);
-        OrderTable createdOrderTable = (OrderTable) mockMvcUtil.as(createOrderTableResultActions, OrderTable.class);
+        OrderTable createdOrderTable = mockMvcUtil.as(createOrderTableResultActions, OrderTable.class);
 
         final int newNumberOfGuests = 4;
         OrderTable updateNumberOfGuestsRequest = new OrderTable();
