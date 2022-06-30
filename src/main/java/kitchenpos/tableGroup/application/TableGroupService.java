@@ -37,20 +37,20 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
+        TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
+                .orElseThrow(IllegalArgumentException::new);
+        validateOrderStatusToUngroup(tableGroup);
+        tableGroup.ungroup();
+    }
 
+    private void validateOrderStatusToUngroup(TableGroup tableGroup) {
+        List<OrderTable> orderTables = tableGroup.getOrderTables();
         final List<Long> orderTableIds = orderTables.stream()
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
-
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException();
-        }
-
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.setTableGroup(null);
-            orderTableRepository.save(orderTable);
         }
     }
 

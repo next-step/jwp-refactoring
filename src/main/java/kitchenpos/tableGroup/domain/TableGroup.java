@@ -83,4 +83,10 @@ public class TableGroup {
     public void setOrderTables(final List<OrderTable> orderTables) {
         this.orderTables = orderTables;
     }
+
+    public void ungroup() {
+        for (final OrderTable orderTable : orderTables) {
+            orderTable.setTableGroup(null);
+        }
+    }
 }

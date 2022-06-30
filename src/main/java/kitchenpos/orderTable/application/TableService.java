@@ -1,6 +1,5 @@
 package kitchenpos.orderTable.application;
 
-import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.orderTable.domain.OrderTable;
@@ -14,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @Transactional(readOnly = true)
@@ -42,7 +40,7 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableEmptyRequest orderTableRequest) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
-        validateOrderTableToChangeEmpty(orderTableId);
+        validateOrderStatusToChangeEmpty(orderTableId);
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
 
         return OrderTableResponse.from(savedOrderTable);
@@ -57,8 +55,7 @@ public class TableService {
         return OrderTableResponse.from(savedOrderTable);
     }
 
-    private void validateOrderTableToChangeEmpty(Long orderTableId) {
-        List<Order> all = orderRepository.findAll();
+    private void validateOrderStatusToChangeEmpty(Long orderTableId) {
         if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
                 orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException();

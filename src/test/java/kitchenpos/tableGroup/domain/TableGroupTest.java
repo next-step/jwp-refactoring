@@ -64,4 +64,18 @@ class TableGroupTest {
                 () -> new TableGroup(LocalDateTime.now(), Arrays.asList(orderTable3, orderTable)));
 
     }
+
+    @DisplayName("테이블 그룹을 삭제할 수 있다")
+    @Test
+    void TableGroup_삭제(){
+        OrderTable orderTable = new OrderTable(1L, null, 0, true);
+        OrderTable orderTable2 = new OrderTable(2L, null, 0, true);
+        TableGroup tableGroup = new TableGroup(LocalDateTime.now(), Arrays.asList(orderTable, orderTable2));
+        tableGroup.ungroup();
+
+        assertAll(
+                () -> assertThat(orderTable.isGrouped()).isFalse(),
+                () -> assertThat(orderTable2.isGrouped()).isFalse()
+        );
+    }
 }
