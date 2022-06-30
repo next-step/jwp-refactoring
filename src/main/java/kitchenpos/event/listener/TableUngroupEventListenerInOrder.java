@@ -3,7 +3,7 @@ package kitchenpos.event.listener;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.dto.event.TableUngroupEventDTO;
+import kitchenpos.dto.event.TableUngroupedEvent;
 import kitchenpos.event.customEvent.TableUngroupEvent;
 import kitchenpos.exception.TableGroupException;
 import kitchenpos.repository.OrderRepository;
@@ -21,9 +21,9 @@ public class TableUngroupEventListenerInOrder implements ApplicationListener<Tab
 
     @Override
     public void onApplicationEvent(TableUngroupEvent event) {
-        TableUngroupEventDTO tableUngroupEventDTO = (TableUngroupEventDTO) event.getSource();
+        TableUngroupedEvent tableUngroupedEvent = (TableUngroupedEvent) event.getSource();
 
-        checkAllMenuIsCompleteInTableGroup(tableUngroupEventDTO.getOrderTableIds());
+        checkAllMenuIsCompleteInTableGroup(tableUngroupedEvent.getOrderTableIds());
     }
 
     private void checkAllMenuIsCompleteInTableGroup(List<Long> orderTableIds) {

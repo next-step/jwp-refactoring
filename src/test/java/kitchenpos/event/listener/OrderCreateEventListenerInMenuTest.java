@@ -3,7 +3,7 @@ package kitchenpos.event.listener;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
-import kitchenpos.dto.event.OrderCreateEventDTO;
+import kitchenpos.dto.event.OrderCreatedEvent;
 import kitchenpos.event.customEvent.OrderCreateEvent;
 import kitchenpos.exception.OrderException;
 import kitchenpos.repository.MenuRepository;
@@ -31,7 +31,7 @@ class OrderCreateEventListenerInMenuTest {
     @DisplayName("주문 넣은 메뉴가 존재하지 않으면 에러를 발생한다")
     public void menuMappedByOrderLineItemsIsExistTest() {
         //given
-        OrderCreateEventDTO eventDTO = new OrderCreateEventDTO(1L, Arrays.asList(1L, 2L));
+        OrderCreatedEvent eventDTO = new OrderCreatedEvent(1L, Arrays.asList(1L, 2L));
         OrderCreateEvent event = new OrderCreateEvent(eventDTO);
 
         //when

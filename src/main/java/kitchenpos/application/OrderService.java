@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.dto.dto.OrderLineItemDTO;
-import kitchenpos.dto.event.OrderCreateEventDTO;
+import kitchenpos.dto.event.OrderCreatedEvent;
 import kitchenpos.dto.request.OrderRequest;
 import kitchenpos.dto.response.OrderResponse;
 import kitchenpos.event.customEvent.OrderCreateEvent;
@@ -32,10 +32,10 @@ public class OrderService {
         List<Long> menuIds = orderRequest.getOrderLineItems().stream()
             .map(OrderLineItemDTO::getMenuId)
             .collect(Collectors.toList());
-        OrderCreateEventDTO orderCreateEventDTO = new OrderCreateEventDTO(
+        OrderCreatedEvent orderCreatedEvent = new OrderCreatedEvent(
             orderRequest.getOrderTableId(),
             menuIds);
-        eventPublisher.publishEvent(new OrderCreateEvent(orderCreateEventDTO));
+        eventPublisher.publishEvent(new OrderCreateEvent(orderCreatedEvent));
 
         if (CollectionUtils.isEmpty(orderRequest.getOrderLineItems())) {
             throw new OrderException("주문넣을 메뉴는 존재해야합니다");

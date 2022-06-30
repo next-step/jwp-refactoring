@@ -1,7 +1,7 @@
 package kitchenpos.event.listener;
 
 import java.util.List;
-import kitchenpos.dto.event.OrderCreateEventDTO;
+import kitchenpos.dto.event.OrderCreatedEvent;
 import kitchenpos.event.customEvent.OrderCreateEvent;
 import kitchenpos.exception.OrderException;
 import kitchenpos.repository.MenuRepository;
@@ -19,9 +19,9 @@ public class OrderCreateEventListenerInMenu implements ApplicationListener<Order
 
     @Override
     public void onApplicationEvent(OrderCreateEvent event) {
-        OrderCreateEventDTO orderCreateEventDTO = (OrderCreateEventDTO) event.getSource();
+        OrderCreatedEvent orderCreatedEvent = (OrderCreatedEvent) event.getSource();
 
-        menuMappedByOrderLineItemsIsExist(orderCreateEventDTO.getMenuIds());
+        menuMappedByOrderLineItemsIsExist(orderCreatedEvent.getMenuIds());
     }
 
     private void menuMappedByOrderLineItemsIsExist(List<Long> menuIds) {

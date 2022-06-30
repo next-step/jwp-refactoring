@@ -5,7 +5,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.dto.event.TableUngroupEventDTO;
+import kitchenpos.dto.event.TableUngroupedEvent;
 import kitchenpos.event.customEvent.TableUngroupEvent;
 import kitchenpos.exception.TableGroupException;
 import kitchenpos.repository.OrderRepository;
@@ -33,7 +33,7 @@ class TableUngroupEventListenerInOrderTest {
     @DisplayName("완료가 안된 오더가 있으면 테이블 그룹 해제가 안됩니다")
     public void unGroupWithUnCompleteOrderThrowError() {
         //given
-        TableUngroupEventDTO eventDTO = new TableUngroupEventDTO(Arrays.asList(1L));
+        TableUngroupedEvent eventDTO = new TableUngroupedEvent(Arrays.asList(1L));
         TableUngroupEvent event = new TableUngroupEvent(eventDTO);
 
         when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(

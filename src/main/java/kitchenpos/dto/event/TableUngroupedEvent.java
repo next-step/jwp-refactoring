@@ -2,11 +2,11 @@ package kitchenpos.dto.event;
 
 import java.util.List;
 
-public class TableUngroupEventDTO {
+public class TableUngroupedEvent {
 
     private List<Long> orderTableIds;
 
-    public TableUngroupEventDTO(List<Long> orderTableIds) {
+    public TableUngroupedEvent(List<Long> orderTableIds) {
         this.orderTableIds = orderTableIds;
     }
 

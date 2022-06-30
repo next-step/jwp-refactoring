@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import kitchenpos.domain.Product;
-import kitchenpos.dto.event.MenuCreateEventDTO;
+import kitchenpos.dto.event.MenuCreatedEvent;
 import kitchenpos.event.customEvent.MenuCreateEvent;
 import kitchenpos.exception.MenuException;
 import kitchenpos.repository.ProductRepository;
@@ -44,7 +44,7 @@ class MenuCreateEventListenerInProductTest {
         Map<Long, Long> quantityPerProduct = new HashMap<>();
         quantityPerProduct.put(1L, 1L);
         quantityPerProduct.put(2L, 1L);
-        MenuCreateEventDTO eventDTO = new MenuCreateEventDTO(quantityPerProduct,
+        MenuCreatedEvent eventDTO = new MenuCreatedEvent(quantityPerProduct,
             BigDecimal.valueOf(3000));
         MenuCreateEvent event = new MenuCreateEvent(eventDTO);
 
@@ -67,7 +67,7 @@ class MenuCreateEventListenerInProductTest {
         Map<Long, Long> quantityPerProduct = new HashMap<>();
         quantityPerProduct.put(1L, 1L);
         quantityPerProduct.put(2L, 1L);
-        MenuCreateEventDTO eventDTO = new MenuCreateEventDTO(quantityPerProduct,
+        MenuCreatedEvent eventDTO = new MenuCreatedEvent(quantityPerProduct,
             BigDecimal.valueOf(3000));
         MenuCreateEvent event = new MenuCreateEvent(eventDTO);
 

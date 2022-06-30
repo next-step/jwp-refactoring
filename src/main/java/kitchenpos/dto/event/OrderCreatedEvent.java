@@ -2,12 +2,12 @@ package kitchenpos.dto.event;
 
 import java.util.List;
 
-public class OrderCreateEventDTO {
+public class OrderCreatedEvent {
 
     private final Long orderTableId;
     private final List<Long> menuIds;
 
-    public OrderCreateEventDTO(Long orderTableId, List<Long> menuIds) {
+    public OrderCreatedEvent(Long orderTableId, List<Long> menuIds) {
         this.orderTableId = orderTableId;
         this.menuIds = menuIds;
     }

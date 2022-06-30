@@ -1,7 +1,7 @@
 package kitchenpos.event.listener;
 
 import kitchenpos.domain.OrderTable;
-import kitchenpos.dto.event.OrderCreateEventDTO;
+import kitchenpos.dto.event.OrderCreatedEvent;
 import kitchenpos.event.customEvent.OrderCreateEvent;
 import kitchenpos.exception.OrderException;
 import kitchenpos.repository.OrderTableRepository;
@@ -19,9 +19,9 @@ public class OrderCreateEventListenerInTable implements ApplicationListener<Orde
 
     @Override
     public void onApplicationEvent(OrderCreateEvent event) {
-        OrderCreateEventDTO orderCreateEventDTO = (OrderCreateEventDTO) event.getSource();
+        OrderCreatedEvent orderCreatedEvent = (OrderCreatedEvent) event.getSource();
 
-        validateCanAcceptOrder(orderCreateEventDTO.getOrderTableId());
+        validateCanAcceptOrder(orderCreatedEvent.getOrderTableId());
 
     }
 

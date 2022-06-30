@@ -7,7 +7,7 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.dto.dto.MenuProductDTO;
-import kitchenpos.dto.event.MenuCreateEventDTO;
+import kitchenpos.dto.event.MenuCreatedEvent;
 import kitchenpos.dto.request.MenuRequest;
 import kitchenpos.dto.response.MenuResponse;
 import kitchenpos.event.customEvent.MenuCreateEvent;
@@ -43,7 +43,7 @@ public class MenuService {
             ));
 
         eventPublisher.publishEvent(new MenuCreateEvent(
-            new MenuCreateEventDTO(quantityPerProduct, menuRequest.getPrice())));
+            new MenuCreatedEvent(quantityPerProduct, menuRequest.getPrice())));
 
         MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
             .orElseThrow(() -> new MenuException("메뉴 그룹이 저장되어있어야 합니다"));

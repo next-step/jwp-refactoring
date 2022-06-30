@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
 import kitchenpos.domain.Product;
-import kitchenpos.dto.event.MenuCreateEventDTO;
+import kitchenpos.dto.event.MenuCreatedEvent;
 import kitchenpos.event.customEvent.MenuCreateEvent;
 import kitchenpos.exception.MenuException;
 import kitchenpos.repository.ProductRepository;
@@ -23,7 +23,7 @@ public class MenuCreateEventListenerInProduct implements ApplicationListener<Men
 
     @Override
     public void onApplicationEvent(MenuCreateEvent event) {
-        MenuCreateEventDTO requestData = (MenuCreateEventDTO) event.getSource();
+        MenuCreatedEvent requestData = (MenuCreatedEvent) event.getSource();
 
         validatePriceSmallThenSum(requestData.getQuantityPerProduct(), requestData.getMenuPrice());
     }

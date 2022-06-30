@@ -6,7 +6,7 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.Optional;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.dto.event.OrderCreateEventDTO;
+import kitchenpos.dto.event.OrderCreatedEvent;
 import kitchenpos.event.customEvent.OrderCreateEvent;
 import kitchenpos.exception.OrderException;
 import kitchenpos.repository.OrderTableRepository;
@@ -34,7 +34,7 @@ class OrderCreateEventListenerInTableTest {
     @DisplayName("테이블이 존재하지 않으면 에러가 발생한다")
     public void OrderCreateWithNotSavedTableThrowError() {
         //given
-        OrderCreateEventDTO eventDTO = new OrderCreateEventDTO(1L, Arrays.asList(1L, 2L));
+        OrderCreatedEvent eventDTO = new OrderCreatedEvent(1L, Arrays.asList(1L, 2L));
         OrderCreateEvent event = new OrderCreateEvent(eventDTO);
 
         //when & then
@@ -47,7 +47,7 @@ class OrderCreateEventListenerInTableTest {
     @DisplayName("테이블이 비어있으면 에러가 발생한다")
     public void OrderCreateWithEmptyTableThrowError() {
         //given
-        OrderCreateEventDTO eventDTO = new OrderCreateEventDTO(1L, Arrays.asList(1L, 2L));
+        OrderCreatedEvent eventDTO = new OrderCreatedEvent(1L, Arrays.asList(1L, 2L));
         OrderCreateEvent event = new OrderCreateEvent(eventDTO);
 
         OrderTable orderTable_not_empty = new OrderTable(1, true);

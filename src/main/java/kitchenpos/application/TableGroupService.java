@@ -5,7 +5,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
-import kitchenpos.dto.event.TableUngroupEventDTO;
+import kitchenpos.dto.event.TableUngroupedEvent;
 import kitchenpos.dto.request.OrderTableRequest;
 import kitchenpos.dto.request.TableGroupRequest;
 import kitchenpos.dto.response.TableGroupResponse;
@@ -65,8 +65,8 @@ public class TableGroupService {
         List<Long> orderTableIds = orderTables.stream().map(OrderTable::getId)
             .collect(Collectors.toList());
 
-        TableUngroupEventDTO tableUngroupEventDTO = new TableUngroupEventDTO(orderTableIds);
-        eventPublisher.publishEvent(new TableUngroupEvent(tableUngroupEventDTO));
+        TableUngroupedEvent tableUngroupedEvent = new TableUngroupedEvent(orderTableIds);
+        eventPublisher.publishEvent(new TableUngroupEvent(tableUngroupedEvent));
 
         for (OrderTable orderTable : orderTables) {
             orderTable.unGroupTable();
