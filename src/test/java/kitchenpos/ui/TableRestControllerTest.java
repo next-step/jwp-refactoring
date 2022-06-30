@@ -48,9 +48,9 @@ public class TableRestControllerTest extends BaseTest {
      * @When 주문 테이블의 사용 가능 상태를 수정하면
      * @Then 사용 가능 상태가 수정 된다.
      */
-    @ParameterizedTest(name = "[case[{index}]] : {0} => {1}")
+    @ParameterizedTest(name = "case[{index}] : {0} => {1}")
     @MethodSource
-    @DisplayName("테이블 사용 가능 여부를 수정한다.")
+    @DisplayName("주문 테이블의 사용 가능 여부를 수정한다.")
     public void updateNumberOfGuests(final boolean givenEmpty, final String givenDescription) throws Exception {
         // Given
         final String updateTableEmptyUrlTemplate = TABLE_API_BASE_URL.concat("/{orderTableId}/empty");

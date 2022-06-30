@@ -51,7 +51,7 @@ public class OrderService {
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
 
-        // DB에 존재하는 메뉴보다 주문한 메뉴가 많은 경우 예외 처리
+        // 존재하지 않는 메뉴를 주문한 경우 예외 처리
         // TODO : 문제 추적 및 파악이 용이하도록 예외 처리 시 오류 문구를 포함
         if (orderLineItems.size() != menuDao.countByIdIn(menuIds)) {
             throw new IllegalArgumentException();

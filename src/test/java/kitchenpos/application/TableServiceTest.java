@@ -69,7 +69,7 @@ class TableServiceTest {
     }
 
     @Test
-    @DisplayName("테이블의 사용 가능 상태를 변경한다.")
+    @DisplayName("테이블의 사용 가능 여부를 변경한다.")
     public void changeEmpty() {
         // Given
         OrderTable givenOrderTable = generateOrderTable();
@@ -107,7 +107,7 @@ class TableServiceTest {
     }
 
     @Test
-    @DisplayName("그룹핑된 테이블의 사용 가능 상태는 변경할 수 없다.")
+    @DisplayName("단체 지정된 주문 테이블의 사용 가능 상태는 변경할 수 없다.")
     public void throwException_WhenTargetOrderTableIsBindingToTableGroup() {
         // Given
         OrderTable givenOrderTable = generateOrderTable();
@@ -122,7 +122,7 @@ class TableServiceTest {
     }
 
     @Test
-    @DisplayName("주문 테이블의 주문 상태가 조리중이거나 식사중인 경우 테이블의 사용 가능 상태를 변경할 수 없다.")
+    @DisplayName("주문 상태가 조리중이거나 식사중인 경우 주문 테이블의 사용 가능 여부를 변경할 수 없다.")
     public void throwException_WhenTargetOrderTableIsMealOrCooking() {
         // Given
         OrderTable givenOrderTable = generateOrderTable();

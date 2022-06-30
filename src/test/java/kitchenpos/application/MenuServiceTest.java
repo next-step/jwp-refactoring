@@ -160,7 +160,7 @@ class MenuServiceTest {
     }
 
     @Test
-    @DisplayName("메뉴의 가격은 각 메뉴 상품의 가격의 합보다 큰 경우 예외가 발생한다.")
+    @DisplayName("메뉴에 포함된 상품의 가격의 총 합이 메뉴의 가격보다 큰 경우 예외가 발생한다.")
     public void throwException_WhenMenuPriceIsOverThanSumOfEachMenuProductsPrice() {
         MenuGroup menuGroup = generateMenuGroup();
         Product firstProduct = generateProductMock();

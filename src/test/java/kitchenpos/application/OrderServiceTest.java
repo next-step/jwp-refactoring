@@ -103,7 +103,7 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("주문에 주문 항목이 없는 경우 예외가 발생한다.")
+    @DisplayName("주문 항목이 없는 주문을 생성하는 경우 예외가 발생한다.")
     public void throwException_WhenOrderLineItemIsEmpty() {
         // Given
         order.setOrderLineItems(Collections.emptyList());
@@ -114,7 +114,7 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("DB에 존재하는 메뉴보다 주문한 메뉴가 많은 경우 예외가 발생한다.")
+    @DisplayName("존재하지 않는 메뉴를 주문한 경우 예외가 발생한다.")
     public void throwException_WhenOrderMenuCountIsOverThanPersistMenusCount() {
         // Given
         given(menuDao.countByIdIn(anyList())).willReturn(0L);
@@ -127,7 +127,7 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("주문에 포함된 주문 테이블이 DB에 존재하지 않는 경우 예외가 발생한다.")
+    @DisplayName("주문 테이블이 존재하지 않는 주문을 생성하는 경우 예외가 발생한다.")
     public void throwException_WhenOrderTableIsNotExist() {
         // Given
         given(menuDao.countByIdIn(anyList())).willReturn((long) order.getOrderLineItems().size());
@@ -191,7 +191,7 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("주문이 존재하지 않는 경우 예외가 발생한다.")
+    @DisplayName("존재하지 않는 주문의 주문 상태를 수정하는 경우 예외가 발생한다.")
     public void throwException_WhenOrderIsNotExist() {
         // Given
         given(orderDao.findById(any())).willThrow(IllegalArgumentException.class);
@@ -218,7 +218,7 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("주문이 완료 상태인 경우 예외가 발생한다.")
+    @DisplayName("완료 상태인 주문의 주문 상태를 수정하는 경우 예외가 발생한다.")
     public void throwException_WhenOrderStatusIsCompletion() {
         // Given
         Order order = new Order();

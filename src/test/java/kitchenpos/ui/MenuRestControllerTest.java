@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.ResultActions;
 
-@DisplayName("API:MenuGroup")
+@DisplayName("API:Menu")
 @Import({MenuGroupFixtureGenerator.class, ProductFixtureGenerator.class})
 public class MenuRestControllerTest extends BaseTest {
 
