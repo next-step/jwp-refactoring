@@ -36,12 +36,7 @@ public class MenuService {
     public MenuResponse create(final MenuRequest menuRequest) {
         final List<MenuProductDTO> menuProducts = menuRequest.getMenuProducts();
 
-        Map<Long, Long> quantityPerProduct = menuProducts.stream()
-            .collect(Collectors.toMap(
-                MenuProductDTO::getProductId,
-                MenuProductDTO::getQuantity
-            ));
-
+        Map<Long, Long> quantityPerProduct = menuRequest.getQuantityPerProduct();
         eventPublisher.publishEvent(new MenuCreateEvent(
             new MenuCreatedEvent(quantityPerProduct, menuRequest.getPrice())));
 

@@ -2,6 +2,7 @@ package kitchenpos.dto.request;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.dto.dto.OrderLineItemDTO;
 
@@ -33,5 +34,11 @@ public class OrderRequest {
 
     public void setOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
+    }
+
+    public List<Long> getMenuIds() {
+        return orderLineItems.stream()
+            .map(OrderLineItemDTO::getMenuId)
+            .collect(Collectors.toList());
     }
 }

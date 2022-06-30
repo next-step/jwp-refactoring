@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.event.TableUngroupedEvent;
-import kitchenpos.dto.request.OrderTableRequest;
 import kitchenpos.dto.request.TableGroupRequest;
 import kitchenpos.dto.response.TableGroupResponse;
 import kitchenpos.event.customEvent.TableUngroupEvent;
@@ -35,8 +34,7 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        List<Long> orderTableIds = tableGroupRequest.getOrderTables().stream()
-            .map(OrderTableRequest::getId).collect(Collectors.toList());
+        final List<Long> orderTableIds = tableGroupRequest.getOrderTableIds();
         List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(orderTableIds);
 
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
@@ -62,7 +60,8 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
-        List<Long> orderTableIds = orderTables.stream().map(OrderTable::getId)
+        List<Long> orderTableIds = orderTables.stream()
+            .map(OrderTable::getId)
             .collect(Collectors.toList());
 
         TableUngroupedEvent tableUngroupedEvent = new TableUngroupedEvent(orderTableIds);

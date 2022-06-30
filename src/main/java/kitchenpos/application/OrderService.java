@@ -29,9 +29,8 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        List<Long> menuIds = orderRequest.getOrderLineItems().stream()
-            .map(OrderLineItemDTO::getMenuId)
-            .collect(Collectors.toList());
+        final List<Long> menuIds = orderRequest.getMenuIds();
+
         OrderCreatedEvent orderCreatedEvent = new OrderCreatedEvent(
             orderRequest.getOrderTableId(),
             menuIds);

@@ -3,6 +3,8 @@ package kitchenpos.dto.request;
 import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import kitchenpos.dto.dto.MenuProductDTO;
 
 public class MenuRequest {
@@ -42,5 +44,13 @@ public class MenuRequest {
 
     public void setMenuProducts(List<MenuProductDTO> menuProducts) {
         this.menuProducts = menuProducts;
+    }
+
+    public Map<Long, Long> getQuantityPerProduct() {
+        return menuProducts.stream()
+            .collect(Collectors.toMap(
+                MenuProductDTO::getProductId,
+                MenuProductDTO::getQuantity
+            ));
     }
 }
