@@ -1,6 +1,6 @@
 package kitchenpos.ui;
 
-import static kitchenpos.utils.generator.MenuFixtureGenerator.generateMenu;
+import static kitchenpos.utils.generator.MenuFixtureGenerator.메뉴_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -54,8 +54,7 @@ public class MenuRestControllerTest extends BaseTest {
             .andExpect(jsonPath("$.[*].menuProducts[*].seq").exists())
             .andExpect(jsonPath("$.[*].menuProducts[*].menuId").exists())
             .andExpect(jsonPath("$.[*].menuProducts[*].productId").exists())
-            .andExpect(jsonPath("$.[*].menuProducts[*].quantity").exists())
-        ;
+            .andExpect(jsonPath("$.[*].menuProducts[*].quantity").exists());
     }
 
     @Test
@@ -65,22 +64,11 @@ public class MenuRestControllerTest extends BaseTest {
         final int generateProductsCount = 2;
         final MenuGroup savedMenuGroup = menuGroupFixtureGenerator.savedMenuGroup();
         final List<Product> savedProducts = productFixtureGenerator.savedProducts(generateProductsCount);
-        final Menu menu = generateMenu(savedMenuGroup, savedProducts);
 
         // When
-        ResultActions resultActions = mockMvcUtil.post(MENU_API_URL_TEMPLATE, menu);
+        ResultActions resultActions = mockMvcUtil.post(메뉴_생성_요청(savedMenuGroup, savedProducts));
 
         // Then
-        Menu createMenuResponse = mockMvcUtil.as(resultActions, Menu.class);
-
-        List<Long> givenProductIds = savedProducts.stream()
-            .map(Product::getId)
-            .collect(Collectors.toList());
-
-        assertThat(createMenuResponse.getMenuProducts())
-            .extracting(MenuProduct::getProductId)
-            .containsExactlyInAnyOrderElementsOf(givenProductIds);
-
         resultActions
             .andDo(print())
             .andExpect(status().isCreated())
@@ -90,7 +78,15 @@ public class MenuRestControllerTest extends BaseTest {
             .andExpect(jsonPath("$.menuProducts[*].seq").exists())
             .andExpect(jsonPath("$.menuProducts[*].menuId").exists())
             .andExpect(jsonPath("$.menuProducts[*].productId").exists())
-            .andExpect(jsonPath("$.menuProducts[*].quantity").exists())
-        ;
+            .andExpect(jsonPath("$.menuProducts[*].quantity").exists());
+
+        Menu createMenuResponse = mockMvcUtil.as(resultActions, Menu.class);
+        List<Long> givenProductIds = savedProducts.stream()
+            .map(Product::getId)
+            .collect(Collectors.toList());
+
+        assertThat(createMenuResponse.getMenuProducts())
+            .extracting(MenuProduct::getProductId)
+            .containsExactlyInAnyOrderElementsOf(givenProductIds);
     }
 }

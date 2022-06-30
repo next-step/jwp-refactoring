@@ -68,4 +68,8 @@ public class ProductFixtureGenerator {
     public static MockHttpServletRequestBuilder 상품_생성_요청() throws Exception {
         return postRequestBuilder(PRODUCT_API_URL_TEMPLATE, generateProduct());
     }
+
+    public static MockHttpServletRequestBuilder 상품_생성_요청(final String name, final BigDecimal price) throws Exception {
+        return postRequestBuilder(PRODUCT_API_URL_TEMPLATE, generateProduct(name, price));
+    }
 }

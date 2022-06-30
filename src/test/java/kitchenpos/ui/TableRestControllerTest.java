@@ -1,6 +1,6 @@
 package kitchenpos.ui;
 
-import static kitchenpos.utils.generator.OrderTableFixtureGenerator.generateOrderTable;
+import static kitchenpos.utils.generator.OrderTableFixtureGenerator.주문_테이블_생성_요청;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -24,12 +24,11 @@ public class TableRestControllerTest extends BaseTest {
     @DisplayName("주문 테이블을 생성한다.")
     public void createOrderTable() throws Exception {
         // When
-        ResultActions resultActions = mockMvcUtil.post(TABLE_API_BASE_URL, generateOrderTable());
+        ResultActions resultActions = mockMvcUtil.post(주문_테이블_생성_요청());
 
         // Then
         resultActions.andDo(print())
-            .andExpect(status().isCreated())
-        ;
+            .andExpect(status().isCreated());
     }
 
     @Test
@@ -41,8 +40,7 @@ public class TableRestControllerTest extends BaseTest {
         // Then
         resultActions
             .andDo(print())
-            .andExpect(status().isOk())
-        ;
+            .andExpect(status().isOk());
     }
 
     /**
@@ -56,10 +54,7 @@ public class TableRestControllerTest extends BaseTest {
     public void updateNumberOfGuests(final boolean givenEmpty, final String givenDescription) throws Exception {
         // Given
         final String updateTableEmptyUrlTemplate = TABLE_API_BASE_URL.concat("/{orderTableId}/empty");
-        OrderTable givenOrderTable = generateOrderTable();
-
-        ResultActions createOrderTableResultActions = mockMvcUtil.post(TABLE_API_BASE_URL, givenOrderTable);
-        OrderTable createdOrderTable = mockMvcUtil.as(createOrderTableResultActions, OrderTable.class);
+        OrderTable savedOrderTable = mockMvcUtil.as(mockMvcUtil.post(주문_테이블_생성_요청()), OrderTable.class);
 
         OrderTable updateOrderTableEmptyRequest = new OrderTable();
         updateOrderTableEmptyRequest.setEmpty(givenEmpty);
@@ -68,17 +63,16 @@ public class TableRestControllerTest extends BaseTest {
         ResultActions resultActions = mockMvcUtil.put(
             updateTableEmptyUrlTemplate,
             updateOrderTableEmptyRequest,
-            createdOrderTable.getId()
+            savedOrderTable.getId()
         );
 
         // Then
         resultActions
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id").value(createdOrderTable.getId()))
+            .andExpect(jsonPath("$.id").value(savedOrderTable.getId()))
             .andExpect(jsonPath("$.empty").value(givenEmpty))
-            .andExpect(jsonPath("$.numberOfGuests").value(createdOrderTable.getNumberOfGuests()))
-        ;
+            .andExpect(jsonPath("$.numberOfGuests").value(savedOrderTable.getNumberOfGuests()));
     }
 
     private static Stream<Arguments> updateNumberOfGuests() {
@@ -98,10 +92,7 @@ public class TableRestControllerTest extends BaseTest {
     public void updateTableUsingStatus() throws Exception {
         // Given
         final String updateNumberOfGuestApiUrlTemplate = TABLE_API_BASE_URL.concat("/{orderTableId}/number-of-guests");
-
-        OrderTable givenOrderTable = generateOrderTable();
-        ResultActions createOrderTableResultActions = mockMvcUtil.post(TABLE_API_BASE_URL, givenOrderTable);
-        OrderTable createdOrderTable = mockMvcUtil.as(createOrderTableResultActions, OrderTable.class);
+        final OrderTable savedOrderTable = mockMvcUtil.as(mockMvcUtil.post(주문_테이블_생성_요청()), OrderTable.class);
 
         final int newNumberOfGuests = 4;
         OrderTable updateNumberOfGuestsRequest = new OrderTable();
@@ -111,16 +102,15 @@ public class TableRestControllerTest extends BaseTest {
         ResultActions resultActions = mockMvcUtil.put(
             updateNumberOfGuestApiUrlTemplate,
             updateNumberOfGuestsRequest,
-            createdOrderTable.getId()
+            savedOrderTable.getId()
         );
 
         // Then
         resultActions
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id").value(createdOrderTable.getId()))
-            .andExpect(jsonPath("$.empty").value(createdOrderTable.isEmpty()))
-            .andExpect(jsonPath("$.numberOfGuests").value(newNumberOfGuests))
-        ;
+            .andExpect(jsonPath("$.id").value(savedOrderTable.getId()))
+            .andExpect(jsonPath("$.empty").value(savedOrderTable.isEmpty()))
+            .andExpect(jsonPath("$.numberOfGuests").value(newNumberOfGuests));
     }
 }

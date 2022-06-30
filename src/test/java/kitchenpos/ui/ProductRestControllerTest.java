@@ -1,5 +1,6 @@
 package kitchenpos.ui;
 
+import static kitchenpos.utils.generator.ProductFixtureGenerator.상품_생성_요청;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -8,7 +9,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.math.BigDecimal;
 import kitchenpos.domain.Product;
 import kitchenpos.utils.BaseTest;
-import kitchenpos.utils.generator.ProductFixtureGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
@@ -31,8 +31,7 @@ public class ProductRestControllerTest extends BaseTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.[*].id").exists())
             .andExpect(jsonPath("$.[*].name").exists())
-            .andExpect(jsonPath("$.[*].price").exists())
-        ;
+            .andExpect(jsonPath("$.[*].price").exists());
     }
 
     @Test
@@ -41,10 +40,9 @@ public class ProductRestControllerTest extends BaseTest {
         // Given
         final String name = "뽀빠이 닭강정";
         final BigDecimal price = BigDecimal.valueOf(23000);
-        final Product given = ProductFixtureGenerator.generateProduct(name, price);
 
         // When
-        ResultActions resultActions = mockMvcUtil.post(PRODUCT_API_URL_TEMPLATE, given);
+        ResultActions resultActions = mockMvcUtil.post(상품_생성_요청(name, price));
 
         // Then
         Product product = mockMvcUtil.as(resultActions, Product.class);
@@ -53,7 +51,6 @@ public class ProductRestControllerTest extends BaseTest {
             .andExpect(status().isCreated())
             .andExpect(header().string(HttpHeaders.LOCATION, "/api/products/" + product.getId()))
             .andExpect(jsonPath("$.id").exists())
-            .andExpect(jsonPath("$.name").value(name))
-        ;
+            .andExpect(jsonPath("$.name").value(name));
     }
 }
