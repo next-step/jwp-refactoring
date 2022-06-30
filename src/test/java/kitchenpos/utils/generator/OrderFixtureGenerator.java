@@ -8,6 +8,7 @@ import java.util.List;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
@@ -20,6 +21,7 @@ public class OrderFixtureGenerator {
         Order order = new Order();
         order.setOrderTableId(savedOrderTable.getId());
         order.setOrderLineItems(generateOrderLineItems(savedMenus));
+        order.setOrderStatus(OrderStatus.COOKING.name());
         return order;
     }
 
