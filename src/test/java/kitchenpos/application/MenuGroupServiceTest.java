@@ -1,15 +1,18 @@
 package kitchenpos.application;
 
-import static kitchenpos.fixture.DomainFactory.createMenuGroup;
+import static kitchenpos.fixture.MenuGroupFactory.createMenuGroup;
+import static kitchenpos.fixture.MenuGroupFactory.createMenuGroupRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuGroupRepository;
+import kitchenpos.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
     @InjectMocks
     private MenuGroupService menuGroupService;
     private MenuGroup 빅맥세트;
@@ -29,29 +32,40 @@ class MenuGroupServiceTest {
     @BeforeEach
     void setUp() {
         빅맥세트 = createMenuGroup(1L, "빅맥세트");
-        상하이버거세트 = createMenuGroup(1L, "상하이버거세트");
+        상하이버거세트 = createMenuGroup(2L, "상하이버거세트");
     }
 
     @Test
     void 메뉴그룹_생성() {
-        when(menuGroupDao.save(빅맥세트)).thenReturn(빅맥세트);
-        MenuGroup result = menuGroupService.create(빅맥세트);
+        // given
+        given(menuGroupRepository.save(any(MenuGroup.class))).willReturn(빅맥세트);
+
+        // when
+        MenuGroupResponse result = menuGroupService.create(createMenuGroupRequest(빅맥세트.getName().getValue()));
+
+        // then
         assertAll(
                 () -> assertThat(result.getId()).isEqualTo(빅맥세트.getId()),
-                () -> assertThat(result.getName()).isEqualTo(빅맥세트.getName())
+                () -> assertThat(result.getName()).isEqualTo(빅맥세트.getName().getValue())
         );
     }
 
     @Test
     void 메뉴그룹_목록_조회() {
-        when(menuGroupDao.findAll()).thenReturn(Arrays.asList(빅맥세트, 상하이버거세트));
-        List<MenuGroup> result = menuGroupService.list();
-        assertThat(toIdList(result)).containsExactlyElementsOf(toIdList(Arrays.asList(빅맥세트, 상하이버거세트)));
+        // given
+        given(menuGroupRepository.findAll()).willReturn(Arrays.asList(빅맥세트, 상하이버거세트));
+
+        // when
+        List<MenuGroupResponse> result = menuGroupService.list();
+
+        // then
+        assertThat(toIdList(result)).containsExactlyElementsOf(
+                Arrays.asList(빅맥세트.getId(), 상하이버거세트.getId()));
     }
 
-    private List<Long> toIdList(List<MenuGroup> products) {
-        return products.stream()
-                .map(MenuGroup::getId)
+    private List<Long> toIdList(List<MenuGroupResponse> menuGroupResponses) {
+        return menuGroupResponses.stream()
+                .map(MenuGroupResponse::getId)
                 .collect(Collectors.toList());
     }
 }
