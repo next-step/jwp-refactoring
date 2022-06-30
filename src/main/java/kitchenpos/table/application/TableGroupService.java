@@ -1,5 +1,6 @@
 package kitchenpos.table.application;
 
+import kitchenpos.order.application.OrderStatusValidator;
 import kitchenpos.table.domain.*;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
@@ -12,15 +13,15 @@ import java.util.List;
 public class TableGroupService {
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
-    private final TableValidator tableValidator;
+    private final StatusValidator statusValidator;
 
     public TableGroupService(
             final OrderTableRepository orderTableRepository,
             TableGroupRepository tableGroupRepository,
-            final TableValidator tableValidator){
+            OrderStatusValidator statusValidator){
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
-        this.tableValidator = tableValidator;
+        this.statusValidator = statusValidator;
     }
 
     @Transactional
@@ -38,7 +39,7 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         final OrderTables orderTables = new OrderTables(findOrderTablesByTableGroupId(tableGroupId));
-        tableValidator.validateOrderTablesNotCompletion(orderTables);
+        statusValidator.validateOrderTablesNotCompletion(orderTables);
 
         orderTables.updateTableGroup(null);
     }

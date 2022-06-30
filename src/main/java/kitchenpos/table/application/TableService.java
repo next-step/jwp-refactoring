@@ -1,5 +1,6 @@
 package kitchenpos.table.application;
 
+import kitchenpos.order.application.OrderStatusValidator;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableChangEmptyRequest;
@@ -15,11 +16,11 @@ import java.util.stream.Collectors;
 @Service
 public class TableService {
     private final OrderTableRepository orderTableRepository;
-    private final TableValidator tableValidator;
+    private final StatusValidator tableValidateInterface;
 
-    public TableService(final OrderTableRepository orderTableRepository, TableValidator tableValidator) {
+    public TableService(final OrderTableRepository orderTableRepository, OrderStatusValidator tableValidateInterface) {
         this.orderTableRepository = orderTableRepository;
-        this.tableValidator = tableValidator;
+        this.tableValidateInterface = tableValidateInterface;
     }
 
     @Transactional
@@ -40,7 +41,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableChangEmptyRequest orderTableChangEmptyRequest) {
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
-        tableValidator.validateOrderTableNotCompletion(orderTableId);
+        tableValidateInterface.validateOrderTableNotCompletion(orderTableId);
 
         savedOrderTable.updateEmpty(orderTableChangEmptyRequest.isEmpty());
 

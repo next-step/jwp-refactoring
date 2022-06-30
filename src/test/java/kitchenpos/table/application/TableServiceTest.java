@@ -1,5 +1,6 @@
 package kitchenpos.table.application;
 
+import kitchenpos.order.application.OrderStatusValidator;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
@@ -32,7 +33,7 @@ public class TableServiceTest {
     OrderTableRepository orderTableRepository;
 
     @Mock
-    TableValidator tableValidator;
+    OrderStatusValidator statusValidator;
 
     @InjectMocks
     TableService tableService;

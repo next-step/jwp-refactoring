@@ -1,4 +1,4 @@
-package kitchenpos.table.application;
+package kitchenpos.order.application;
 
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTables;
@@ -10,18 +10,17 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 
 @DisplayName("주문 테이블 유효성 관련 테스트")
 @ExtendWith(MockitoExtension.class)
-class TableValidatorTest {
+class OrderStatusValidatorTest {
     @Mock
     OrderRepository orderRepository;
 
     @InjectMocks
-    TableValidator tableValidator;
+    OrderStatusValidator statusValidator;
 
     @DisplayName("주문 테이블의 상태가 '조리' 또는 '식사' 상태일 경우 예외 발생")
     @Test
@@ -30,7 +29,7 @@ class TableValidatorTest {
         given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
 
         // when & then
-        assertThatThrownBy(() -> tableValidator.validateOrderTableNotCompletion(1L))
+        assertThatThrownBy(() -> statusValidator.validateOrderTableNotCompletion(1L))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -41,7 +40,7 @@ class TableValidatorTest {
         given(주문_조리_또는_식사_상태인지_확인()).willReturn(true);
 
         // when & then
-        assertThatThrownBy(() -> tableValidator.validateOrderTablesNotCompletion(new OrderTables()))
+        assertThatThrownBy(() -> statusValidator.validateOrderTablesNotCompletion(new OrderTables()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

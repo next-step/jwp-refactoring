@@ -1,5 +1,6 @@
 package kitchenpos.table.application;
 
+import kitchenpos.order.application.OrderStatusValidator;
 import kitchenpos.table.domain.*;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
@@ -34,7 +35,7 @@ class TableGroupServiceTest {
     TableGroupRepository tableGroupRepository;
 
     @Mock
-    TableValidator tableValidator;
+    OrderStatusValidator statusValidator;
 
     @InjectMocks
     TableGroupService tableGroupService;
