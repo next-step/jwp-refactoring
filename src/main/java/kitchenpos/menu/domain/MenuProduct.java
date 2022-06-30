@@ -1,6 +1,5 @@
 package kitchenpos.menu.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import kitchenpos.product.domain.Product;
 
 import javax.persistence.*;

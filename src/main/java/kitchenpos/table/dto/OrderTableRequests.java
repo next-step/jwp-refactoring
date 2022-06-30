@@ -24,8 +24,4 @@ public class OrderTableRequests {
                 .map(OrderTableRequest::getId)
                 .collect(Collectors.toList());
     }
-
-    public boolean isSameSize(List<OrderTable> target) {
-        return list.size() == target.size();
-    }
 }

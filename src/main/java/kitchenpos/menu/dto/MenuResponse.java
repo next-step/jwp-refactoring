@@ -33,31 +33,15 @@ public class MenuResponse {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public BigDecimal getPrice() {
         return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
     }
 
     public Long getMenuGroupId() {
         return menuGroupId;
     }
 
-    public void setMenuGroupId(Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
-    }
-
     public List<MenuProductResponse> getMenuProducts() {
         return menuProducts;
-    }
-
-    public void setMenuProducts(List<MenuProductResponse> menuProducts) {
-        this.menuProducts = menuProducts;
     }
 }

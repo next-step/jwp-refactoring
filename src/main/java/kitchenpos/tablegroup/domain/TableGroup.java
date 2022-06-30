@@ -52,16 +52,8 @@ public class TableGroup {
         return createdDate;
     }
 
-    public void setCreatedDate(LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
     public List<OrderTable> getOrderTables() {
         return orderTables.getList();
-    }
-
-    public void setOrderTables(OrderTables orderTables) {
-        this.orderTables = orderTables;
     }
 
     @Override

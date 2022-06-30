@@ -18,10 +18,6 @@ public class MenuProducts {
         list = new ArrayList<>();
     }
 
-    public MenuProducts(List<MenuProduct> list) {
-        this.list = list;
-    }
-
     public MenuProducts(Menu menu, BigDecimal menuPrice, List<MenuProduct> list) {
         validateMenuProducts(menu, menuPrice, list);
         this.list = list;
