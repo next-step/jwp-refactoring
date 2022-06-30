@@ -9,6 +9,7 @@ import kitchenpos.orderTable.domain.OrderTable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -19,7 +20,7 @@ public class TableGroup {
     private Long id;
     private LocalDateTime createdDate;
     @OneToMany(mappedBy = "tableGroup")
-    private List<OrderTable> orderTables;
+    private List<OrderTable> orderTables = new ArrayList<>();
 
     public TableGroup() {
     }
@@ -42,10 +43,7 @@ public class TableGroup {
     private void assignOrderTables(List<OrderTable> orderTables) {
         validateOrderTables(orderTables);
         this.orderTables = orderTables;
-        orderTables.forEach(orderTable -> {
-                    orderTable.setTableGroup(this);
-                    orderTable.setEmpty(false);
-                }
+        orderTables.forEach(orderTable -> orderTable.assignTableGroup(this)
         );
     }
 
@@ -72,24 +70,12 @@ public class TableGroup {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public LocalDateTime getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(final LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
     public List<OrderTable> getOrderTables() {
         return orderTables;
-    }
-
-    public void setOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
     }
 
     public void ungroup(List<Order> orders) {

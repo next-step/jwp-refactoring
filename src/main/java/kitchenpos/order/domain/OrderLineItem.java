@@ -42,31 +42,19 @@ public class OrderLineItem {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
-    }
-
     public Order getOrder() {
         return order;
-    }
-
-    public void setOrder(final Order order) {
-        this.order = order;
     }
 
     public Menu getMenu() {
         return menu;
     }
 
-    public void setMenu(final Menu menu) {
-        this.menu = menu;
-    }
-
     public int getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(final int quantity) {
-        this.quantity = quantity;
+    public void registerOrder(Order order) {
+        this.order = order;
     }
 }

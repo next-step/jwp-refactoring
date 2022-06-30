@@ -1,9 +1,11 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.exception.ErrorMessage;
 import kitchenpos.exception.IllegalPriceException;
 import kitchenpos.menuGroup.domain.MenuGroup;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,7 +20,7 @@ public class Menu {
     @JoinColumn(name = "menu_group_id", nullable = false)
     private MenuGroup menuGroup;
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MenuProduct> menuProducts;
+    private List<MenuProduct> menuProducts = new ArrayList<>();
 
     public Menu() {
     }
@@ -40,47 +42,27 @@ public class Menu {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
     }
 
     public int getPrice() {
         return price.getValue();
     }
 
-    public void setPrice(final int price) {
-        this.price = MenuPrice.from(price);
-    }
-
     public MenuGroup getMenuGroup() {
         return menuGroup;
-    }
-
-    public void setMenuGroup(final MenuGroup menuGroup) {
-        this.menuGroup = menuGroup;
     }
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
     }
 
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
-    }
-
     public void registerMenuProducts(List<MenuProduct> menuProducts) {
         validateProductsPrice(menuProducts);
         this.menuProducts = menuProducts;
 
-        menuProducts.forEach(menuProduct -> menuProduct.setMenu(this));
+        menuProducts.forEach(menuProduct -> menuProduct.registerMenu(this));
     }
 
     private void validateProductsPrice(List<MenuProduct> menuProducts) {
@@ -88,7 +70,7 @@ public class Menu {
                 mapToInt(menuProduct -> menuProduct.getProduct().getPrice() * menuProduct.getQuantity()).
                 sum();
         if (price.isLargerThan(sumPrice)) {
-            throw new IllegalPriceException("가격은 %d 미만일 수 없습니다.");
+            throw new IllegalPriceException(String.format(ErrorMessage.ERROR_PRICE_TOO_HIGH, sumPrice));
         }
     }
 }

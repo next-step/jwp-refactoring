@@ -1,5 +1,6 @@
 package kitchenpos.product.domain;
 
+import kitchenpos.exception.ErrorMessage;
 import kitchenpos.exception.IllegalPriceException;
 
 import javax.persistence.Column;
@@ -9,6 +10,8 @@ import javax.persistence.Embeddable;
 public class ProductPrice {
     @Column(name = "price")
     int value;
+
+    public static final int MIN_PRICE = 0;
 
     protected ProductPrice() {
     }
@@ -23,8 +26,8 @@ public class ProductPrice {
     }
 
     private void validatePrice(int price) {
-        if (price < 0) {
-            throw new IllegalPriceException("가격은 %d 미만일 수 없습니다.");
+        if (price < MIN_PRICE) {
+            throw new IllegalPriceException(String.format(ErrorMessage.ERROR_PRICE_TOO_SMALL, MIN_PRICE));
         }
     }
 

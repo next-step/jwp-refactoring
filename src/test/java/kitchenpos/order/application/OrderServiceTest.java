@@ -89,18 +89,18 @@ class OrderServiceTest {
 
         김치찌개세트_김치찌개 = menuProductRepository.save(createMenuProduct(메뉴_김치찌개세트, 김치찌개, 2));
         김치찌개세트_공기밥 = menuProductRepository.save(createMenuProduct(메뉴_김치찌개세트, 공기밥, 2));
-        메뉴_김치찌개세트.setMenuProducts(Arrays.asList(김치찌개세트_김치찌개, 김치찌개세트_공기밥));
+        메뉴_김치찌개세트.registerMenuProducts(Arrays.asList(김치찌개세트_김치찌개, 김치찌개세트_공기밥));
 
         테이블_1 = orderTableRepository.save(createOrderTable(4, false));
         접수된_주문 = createOrder(테이블_1, LocalDateTime.now());
         접수된주문_김치찌개세트 = createOrderLineItem(접수된_주문, 메뉴_김치찌개세트, 1);
-        접수된_주문.setOrderLineItems(Arrays.asList(접수된주문_김치찌개세트));
+        접수된_주문.registerOrderLineItems(Arrays.asList(접수된주문_김치찌개세트));
 
         테이블_2 = orderTableRepository.save(createOrderTable(4, false));
         완료된_주문 = createOrder(테이블_2, LocalDateTime.now());
         완료된_주문.changeStatus(OrderStatus.COMPLETION);
         완료된주문_김치찌개세트 = createOrderLineItem(접수된_주문, 메뉴_김치찌개세트, 1);
-        완료된_주문.setOrderLineItems(Arrays.asList(완료된주문_김치찌개세트));
+        완료된_주문.registerOrderLineItems(Arrays.asList(완료된주문_김치찌개세트));
 
         테이블_EMPTY = orderTableRepository.save(createOrderTable(0, true));
     }
@@ -222,8 +222,7 @@ class OrderServiceTest {
         Order order = createOrder(테이블_1, LocalDateTime.now());
         order.changeStatus(beforeStatus);
         orderRepository.save(order);
-        order.setOrderLineItems(Arrays.asList(접수된주문_김치찌개세트));
-
+        order.registerOrderLineItems(Arrays.asList(접수된주문_김치찌개세트));
 
         //when
         OrderStatusRequest newStatus = OrderStatusRequest.from(afterStatus);
