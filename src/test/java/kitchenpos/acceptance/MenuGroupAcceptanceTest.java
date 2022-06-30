@@ -19,7 +19,7 @@ public class MenuGroupAcceptanceTest extends BaseAcceptanceTest{
 
     @DisplayName("메뉴그룹을 관리한다")
     @Test
-    public void manageMenuGroup() {
+    public void manageMenu() {
         //메뉴 그룹 생성
         //given
         String 메뉴명 = "1번메뉴";

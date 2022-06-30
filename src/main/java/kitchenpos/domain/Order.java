@@ -11,6 +11,9 @@ public class Order {
     private LocalDateTime orderedTime;
     private List<OrderLineItem> orderLineItems;
 
+    public Order() {
+    }
+
     public Order(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime) {
         this.id = id;
         this.orderTableId = orderTableId;

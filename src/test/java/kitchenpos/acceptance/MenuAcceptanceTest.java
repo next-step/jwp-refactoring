@@ -30,10 +30,10 @@ public class MenuAcceptanceTest extends BaseAcceptanceTest{
 
         //메뉴 그룹 조회
         //when
-        ExtractableResponse<Response> 메뉴_그룹_목록_조회_요청 = 메뉴_목록_조회_요청();
+        ExtractableResponse<Response> 메뉴_목록_조회_요청 = 메뉴_목록_조회_요청();
         //then
-        응답코드_확인(메뉴_그룹_목록_조회_요청, HttpStatus.OK);
-        메뉴_그룹_조회됨(메뉴_그룹_목록_조회_요청, 메뉴.getName());
+        응답코드_확인(메뉴_목록_조회_요청, HttpStatus.OK);
+        메뉴_조회됨(메뉴_목록_조회_요청, 메뉴.getName());
     }
 
     public static ExtractableResponse<Response> 메뉴_생성_요청(Menu menu) {
@@ -59,7 +59,7 @@ public class MenuAcceptanceTest extends BaseAcceptanceTest{
         assertThat(response.statusCode()).isEqualTo(httpStatus.value());
     }
 
-    public static void 메뉴_그룹_조회됨(final ExtractableResponse<Response> response, String menuName) {
+    public static void 메뉴_조회됨(final ExtractableResponse<Response> response, String menuName) {
         assertThat(response.jsonPath().getList(".", Menu.class).stream().anyMatch(searchMenu -> searchMenu.getName().equals(menuName))).isTrue();
     }
 
