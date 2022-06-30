@@ -1,9 +1,9 @@
-package kitchenpos.core.domain;
+package kitchenpos.common.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import kitchenpos.core.exception.BadRequestException;
-import kitchenpos.core.exception.ExceptionType;
+import kitchenpos.common.exception.BadRequestException;
+import kitchenpos.common.exception.ExceptionType;
 import org.springframework.util.StringUtils;
 
 @Embeddable

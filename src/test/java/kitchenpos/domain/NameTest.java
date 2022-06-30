@@ -2,9 +2,9 @@ package kitchenpos.domain;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import kitchenpos.core.exception.BadRequestException;
-import kitchenpos.core.exception.ExceptionType;
-import kitchenpos.core.domain.Name;
+import kitchenpos.common.exception.BadRequestException;
+import kitchenpos.common.exception.ExceptionType;
+import kitchenpos.common.domain.Name;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

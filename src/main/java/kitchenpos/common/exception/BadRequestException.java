@@ -1,4 +1,4 @@
-package kitchenpos.core.exception;
+package kitchenpos.common.exception;
 
 import org.springframework.http.HttpStatus;
 

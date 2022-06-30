@@ -20,10 +20,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import kitchenpos.core.exception.BadRequestException;
-import kitchenpos.core.exception.CannotCreateException;
-import kitchenpos.core.exception.ExceptionType;
-import kitchenpos.core.exception.NotFoundException;
+import kitchenpos.common.exception.BadRequestException;
+import kitchenpos.common.exception.CannotCreateException;
+import kitchenpos.common.exception.ExceptionType;
+import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menuGroup.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;

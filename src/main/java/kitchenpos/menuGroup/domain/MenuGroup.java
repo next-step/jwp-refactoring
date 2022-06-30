@@ -6,7 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import kitchenpos.core.domain.Name;
+import kitchenpos.common.domain.Name;
 
 @Entity
 @Table(name = "menu_group")

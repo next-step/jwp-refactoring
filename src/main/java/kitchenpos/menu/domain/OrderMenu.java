@@ -3,8 +3,8 @@ package kitchenpos.menu.domain;
 import java.math.BigDecimal;
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
-import kitchenpos.core.domain.Name;
-import kitchenpos.core.domain.Price;
+import kitchenpos.common.domain.Name;
+import kitchenpos.common.domain.Price;
 
 @Embeddable
 public class OrderMenu {
