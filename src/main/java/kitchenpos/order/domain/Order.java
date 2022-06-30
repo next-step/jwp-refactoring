@@ -58,11 +58,11 @@ public class Order {
         this.orderLineItems = new OrderLineItems(this, orderLineItems);
     }
 
-    public List<Long> getMenuIds() {
-        return orderLineItems.getList().stream()
-                .map(OrderLineItem::getMenu)
-                .map(Menu::getId)
-                .collect(Collectors.toList());
+    public void changeOrderStatus(String status) {
+        if (orderStatus == OrderStatus.COMPLETION) {
+            throw new IllegalArgumentException();
+        }
+        orderStatus = OrderStatus.valueOf(status);
     }
 
     public Long getId() {

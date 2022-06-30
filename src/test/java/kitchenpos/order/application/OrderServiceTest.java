@@ -31,20 +31,14 @@ public class OrderServiceTest {
     private OrderService orderService;
 
     @Mock
-    private MenuRepository menuRepository;
-
-    @Mock
     private OrderRepository orderRepository;
-
-    @Mock
-    private OrderLineItemRepository orderLineItemRepository;
 
     @Mock
     private OrderTableRepository orderTableRepository;
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(menuRepository, orderRepository, orderLineItemRepository, orderTableRepository);
+        orderService = new OrderService(orderRepository, orderTableRepository);
     }
 
     @DisplayName("주문을 생성한다.")
@@ -123,7 +117,6 @@ public class OrderServiceTest {
     @Test
     void changeOrderStatus() {
         when(orderRepository.findById(1L)).thenReturn(Optional.of(createOrder()));
-        when(orderRepository.save(any())).thenReturn(createOrder());
 
         // when
         OrderRequest request = new OrderRequest(OrderStatus.COMPLETION.name());
