@@ -1,7 +1,6 @@
-package kitchenpos.application;
+package kitchenpos.orderTable.application;
 
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.orderTable.application.TableService;
 import kitchenpos.orderTable.domain.OrderTable;
 import kitchenpos.orderTable.domain.OrderTableRepository;
 import kitchenpos.orderTable.dto.OrderTableEmptyRequest;
@@ -18,13 +17,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.factory.OrderTableFixtureFactory.createOrderTable;
-import static kitchenpos.factory.TableGroupFixtureFactory.createTableGroup;
+import static kitchenpos.utils.fixture.OrderTableFixtureFactory.createOrderTable;
+import static kitchenpos.utils.fixture.TableGroupFixtureFactory.createTableGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;

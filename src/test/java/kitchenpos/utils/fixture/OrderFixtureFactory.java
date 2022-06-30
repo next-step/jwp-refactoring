@@ -1,7 +1,6 @@
-package kitchenpos.factory;
+package kitchenpos.utils.fixture;
 
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.orderTable.domain.OrderTable;
 
 import java.time.LocalDateTime;

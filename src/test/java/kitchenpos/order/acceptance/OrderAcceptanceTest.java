@@ -1,8 +1,9 @@
-package kitchenpos.acceptance;
+package kitchenpos.order.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
+import kitchenpos.orderTable.acceptance.TableAcceptanceTest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menuGroup.dto.MenuGroupResponse;
@@ -23,9 +24,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static kitchenpos.acceptance.MenuAcceptanceTest.메뉴_등록되어_있음;
-import static kitchenpos.acceptance.MenuGroupAcceptanceTest.메뉴그룹_등록되어_있음;
-import static kitchenpos.acceptance.ProductAcceptanceTest.상품_등록되어_있음;
+import static kitchenpos.menu.acceptance.MenuAcceptanceTest.메뉴_등록되어_있음;
+import static kitchenpos.menuGroup.acceptance.MenuGroupAcceptanceTest.메뉴그룹_등록되어_있음;
+import static kitchenpos.product.acceptance.ProductAcceptanceTest.상품_등록되어_있음;
 import static kitchenpos.utils.RestAssuredMethods.*;
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -1,8 +1,6 @@
-package kitchenpos.factory;
+package kitchenpos.utils.fixture;
 
 import kitchenpos.product.domain.Product;
-
-import java.math.BigDecimal;
 
 public class ProductFixtureFactory {
     public static Product createProduct(Long id, String name, int price) {

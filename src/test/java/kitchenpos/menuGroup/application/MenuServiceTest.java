@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.menuGroup.application;
 
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
@@ -23,10 +23,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static kitchenpos.factory.MenuFixtureFactory.createMenu;
-import static kitchenpos.factory.MenuGroupFixtureFactory.createMenuGroup;
-import static kitchenpos.factory.MenuProductFixtureFactory.createMenuProduct;
-import static kitchenpos.factory.ProductFixtureFactory.createProduct;
+import static kitchenpos.utils.fixture.MenuFixtureFactory.createMenu;
+import static kitchenpos.utils.fixture.MenuGroupFixtureFactory.createMenuGroup;
+import static kitchenpos.utils.fixture.MenuProductFixtureFactory.createMenuProduct;
+import static kitchenpos.utils.fixture.ProductFixtureFactory.createProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;

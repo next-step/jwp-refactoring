@@ -1,4 +1,4 @@
-package kitchenpos.acceptance;
+package kitchenpos.tableGroup.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
 
 import java.util.Arrays;
 
-import static kitchenpos.acceptance.TableAcceptanceTest.테이블_등록되어_있음;
+import static kitchenpos.orderTable.acceptance.TableAcceptanceTest.테이블_등록되어_있음;
 import static kitchenpos.utils.RestAssuredMethods.delete;
 import static kitchenpos.utils.RestAssuredMethods.post;
 import static org.assertj.core.api.Assertions.assertThat;

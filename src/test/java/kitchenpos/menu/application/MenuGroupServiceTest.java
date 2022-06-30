@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.menu.application;
 
 import kitchenpos.menuGroup.application.MenuGroupService;
 import kitchenpos.menuGroup.domain.MenuGroup;
@@ -16,7 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.factory.MenuGroupFixtureFactory.createMenuGroup;
+import static kitchenpos.utils.fixture.MenuGroupFixtureFactory.createMenuGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;

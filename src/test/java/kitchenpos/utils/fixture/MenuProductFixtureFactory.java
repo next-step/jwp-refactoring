@@ -1,4 +1,4 @@
-package kitchenpos.factory;
+package kitchenpos.utils.fixture;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;

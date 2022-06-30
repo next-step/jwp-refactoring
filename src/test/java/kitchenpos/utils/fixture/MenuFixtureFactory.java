@@ -1,9 +1,7 @@
-package kitchenpos.factory;
+package kitchenpos.utils.fixture;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menuGroup.domain.MenuGroup;
-
-import java.math.BigDecimal;
 
 public class MenuFixtureFactory {
     public static Menu createMenu(Long id, String name, int price, MenuGroup menuGroup) {

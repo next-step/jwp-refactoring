@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
@@ -6,7 +6,6 @@ import kitchenpos.menu.domain.MenuProductRepository;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.menuGroup.domain.MenuGroupRepository;
-import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
@@ -19,38 +18,30 @@ import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static kitchenpos.factory.MenuFixtureFactory.createMenu;
-import static kitchenpos.factory.MenuGroupFixtureFactory.createMenuGroup;
-import static kitchenpos.factory.MenuProductFixtureFactory.createMenuProduct;
-import static kitchenpos.factory.OrderFixtureFactory.createOrder;
-import static kitchenpos.factory.OrderLineItemFixtureFactory.createOrderLineItem;
-import static kitchenpos.factory.OrderTableFixtureFactory.createOrderTable;
-import static kitchenpos.factory.ProductFixtureFactory.createProduct;
+import static kitchenpos.utils.fixture.MenuFixtureFactory.createMenu;
+import static kitchenpos.utils.fixture.MenuGroupFixtureFactory.createMenuGroup;
+import static kitchenpos.utils.fixture.MenuProductFixtureFactory.createMenuProduct;
+import static kitchenpos.utils.fixture.OrderFixtureFactory.createOrder;
+import static kitchenpos.utils.fixture.OrderLineItemFixtureFactory.createOrderLineItem;
+import static kitchenpos.utils.fixture.OrderTableFixtureFactory.createOrderTable;
+import static kitchenpos.utils.fixture.ProductFixtureFactory.createProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.given;
 
 @SpringBootTest
 @Transactional
