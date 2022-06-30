@@ -32,6 +32,7 @@ public class TableGroupAcceptanceTest extends BaseAcceptanceTest{
         ExtractableResponse<Response> 단체_지정_해제_요청 = 단체_지정_해제_요청(단체_지정_요청.as(TableGroup.class).getId());
         //then
         응답코드_확인(단체_지정_해제_요청, HttpStatus.NO_CONTENT);
+
     }
 
     public static ExtractableResponse<Response> 단체_지정_요청(TableGroup tableGroup) {
