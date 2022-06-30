@@ -46,7 +46,6 @@ public class TableGroupServiceTest {
     void create() {
         when(orderTableDao.findAllById(any())).thenReturn(createTableGroup().getOrderTables());
         when(tableGroupDao.save(any())).thenReturn(createTableGroup());
-        when(orderTableDao.save(any())).thenReturn(new OrderTable(3, false));
 
         // when
         TableGroupResponse tableGroup = tableGroupService.create(createTableGroupRequest());

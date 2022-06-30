@@ -29,8 +29,10 @@ public class TableGroup {
         this.id = id;
     }
 
-    public TableGroup(List<OrderTable> orderTable) {
-        this.orderTables = new OrderTables(orderTable);
+    public TableGroup(OrderTables orderTables) {
+        this.orderTables.changeEmpty(false);
+        this.createdDate = LocalDateTime.now();
+        this.orderTables = new OrderTables(this, orderTables.getList());
     }
 
     public TableGroup(Long id, List<OrderTable> orderTable) {

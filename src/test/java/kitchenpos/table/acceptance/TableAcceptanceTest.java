@@ -9,6 +9,7 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 
 import static kitchenpos.order.acceptance.OrderAcceptanceTest.주문_등록되어_있음;
 import static kitchenpos.order.acceptance.OrderAcceptanceTest.주문_생성;
+import static kitchenpos.tablegroup.acceptance.TableGroupAcceptanceTest.테이블_그룹_가져옴;
 import static kitchenpos.tablegroup.acceptance.TableGroupAcceptanceTest.테이블_그룹_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -82,14 +84,16 @@ public class TableAcceptanceTest extends AcceptanceTest {
     @DisplayName("[예외] 테이블 그룹에 매핑된 주문 테이블의 상태를 변경한다.")
     @Test
     void changeEmpty_with_mapping_with_table_group() {
-        OrderTableRequest 테이블_그룹_매핑된_주문_테이블1 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, true));
-        OrderTableRequest 테이블_그룹_매핑된_주문_테이블2 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, true));
-        List<OrderTableRequest> orderTables = Arrays.asList(테이블_그룹_매핑된_주문_테이블1, 테이블_그룹_매핑된_주문_테이블2);
-        테이블_그룹_생성_요청(new TableGroupRequest(orderTables));
+        OrderTableRequest 등록된_주문_테이블1 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, true));
+        OrderTableRequest 등록된_주문_테이블2 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, true));
+        List<OrderTableRequest> 등록된_주문_테이블_리스트 = Arrays.asList(등록된_주문_테이블1, 등록된_주문_테이블2);
+
+        TableGroupResponse 등록된_테이블_그룹 = 테이블_그룹_가져옴(테이블_그룹_생성_요청(new TableGroupRequest(등록된_주문_테이블_리스트)));
+        OrderTableResponse 테이블_그룹과_매핑된_주문_테이블 = 등록된_테이블_그룹.getOrderTables().get(0);
         final boolean 테이블_사용중 = false;
 
         // when
-        ExtractableResponse<Response> 변경된_주문_테이블 = 주문_테이블_상태_수정_요청(테이블_그룹_매핑된_주문_테이블1, 테이블_사용중);
+        ExtractableResponse<Response> 변경된_주문_테이블 = 주문_테이블_상태_수정_요청(new OrderTableRequest(테이블_그룹과_매핑된_주문_테이블.getId()), 테이블_사용중);
 
         // then
         주문_테이블_상태_수정_실패(변경된_주문_테이블);

@@ -135,7 +135,6 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     public static TableGroup 식사_완료된_테이블_그룹_생성() {
         OrderTableRequest 등록된_주문_테이블1 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, true));
         OrderTableRequest 등록된_주문_테이블2 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, true));
-
         TableGroupRequest tableGroup = new TableGroupRequest(Arrays.asList(등록된_주문_테이블1, 등록된_주문_테이블2));
         TableGroupResponse tableGroupResponse = 테이블_그룹_가져옴(테이블_그룹_등록되어_있음(tableGroup));
 

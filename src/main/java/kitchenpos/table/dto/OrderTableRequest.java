@@ -11,6 +11,10 @@ public class OrderTableRequest {
     public OrderTableRequest() {
     }
 
+    public OrderTableRequest(Long id) {
+        this.id = id;
+    }
+
     public OrderTableRequest(Integer numberOfGuests, Boolean empty) {
         this.tableGroupId = null;
         this.numberOfGuests = numberOfGuests;
@@ -51,5 +55,15 @@ public class OrderTableRequest {
 
     public Boolean getEmpty() {
         return empty;
+    }
+
+    @Override
+    public String toString() {
+        return "OrderTableRequest{" +
+                "id=" + id +
+                ", tableGroupId=" + tableGroupId +
+                ", numberOfGuests=" + numberOfGuests +
+                ", empty=" + empty +
+                '}';
     }
 }

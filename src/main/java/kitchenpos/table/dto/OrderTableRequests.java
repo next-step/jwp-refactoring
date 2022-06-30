@@ -13,13 +13,10 @@ public class OrderTableRequests {
     }
 
     public OrderTableRequests(List<OrderTableRequest> list) {
-        this.list = list;
-    }
-
-    public void validateForTableGroupCreate() {
         if (CollectionUtils.isEmpty(list) || list.size() < 2) {
             throw new IllegalArgumentException();
         }
+        this.list = list;
     }
 
     public List<Long> getOrderTableIds() {
