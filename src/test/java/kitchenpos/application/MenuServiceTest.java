@@ -89,9 +89,9 @@ class MenuServiceTest {
 
         // Then
         verify(menuGroupDao).existsById(any());
-        verify(productDao, times(2)).findById(anyLong());
+        verify(productDao, times(products.size())).findById(anyLong());
         verify(menuDao).save(any(Menu.class));
-        verify(menuProductDao, times(2)).save(any(MenuProduct.class));
+        verify(menuProductDao, times(menuProducts.size())).save(any(MenuProduct.class));
 
         assertThat(actualMenu.getMenuProducts())
             .extracting(MenuProduct::getProductId)
