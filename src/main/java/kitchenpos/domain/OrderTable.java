@@ -1,6 +1,8 @@
 package kitchenpos.domain;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -19,17 +21,15 @@ public class OrderTable {
     @Column(nullable = false)
     private boolean empty;
 
+    @OneToMany(mappedBy = "orderTable", fetch = FetchType.EAGER)
+    private final List<Order> orders = new ArrayList<>();
+
     public OrderTable() {
     }
 
-    public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
-        this.tableGroup = tableGroup;
+    public OrderTable(int numberOfGuests, boolean empty) {
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
-    }
-
-    public OrderTable(int numberOfGuests, boolean empty) {
-        this(null, numberOfGuests, empty);
     }
 
     public Long getId() {
@@ -51,8 +51,29 @@ public class OrderTable {
     public void setTableGroupId(final Long tableGroupId) {
     }
 
-    public void changeTableGroup(final TableGroup tableGroup) {
+    public void includeInGroup(final TableGroup tableGroup) {
+        if (!isEmpty()) {
+            throw new IllegalArgumentException("빈 테이블이 아니면 단체 지정할 수 없습니다.");
+        }
+        if (isGrouped()) {
+            throw new IllegalArgumentException("이미 단체 지정된 테이블 입니다.");
+        }
         this.tableGroup = tableGroup;
+    }
+
+    private boolean isGrouped() {
+        return Objects.nonNull(tableGroup);
+    }
+
+    public void excludeFromGroup() {
+        if (orders.stream().anyMatch(order -> isOrderStatusInCookingOrMeal(order.getOrderStatus()))) {
+            throw new IllegalArgumentException("조리 또는 식사인 주문이 존재하는 테이블은 단체 지정 취소할 수 없습니다.");
+        }
+        this.tableGroup = null;
+    }
+
+    private boolean isOrderStatusInCookingOrMeal(OrderStatus orderStatus) {
+        return orderStatus.equals(OrderStatus.COOKING) || orderStatus.equals(OrderStatus.MEAL);
     }
 
     public int getNumberOfGuests() {
@@ -86,6 +107,21 @@ public class OrderTable {
             throw new IllegalArgumentException("단체 지정된 테이블은 주문 등록 가능 상태를 변경할 수 없습니다.");
         }
         this.empty = empty;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void addOrder(Order order) {
+        orders.add(order);
+        if (order.getOrderTable() != this) {
+            order.changeOrderTable(this);
+        }
+    }
+
+    public boolean contains(Order order) {
+        return orders.contains(order);
     }
 
     @Override

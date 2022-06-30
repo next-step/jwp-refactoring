@@ -83,12 +83,22 @@ public class Order {
         this.orderLineItems = orderLineItems;
     }
 
+    public void changeOrderTable(OrderTable orderTable) {
+        if (Objects.nonNull(this.orderTable)) {
+            this.orderTable.getOrders().remove(this);
+        }
+        this.orderTable = orderTable;
+        if (Objects.nonNull(orderTable) && !orderTable.contains(this)) {
+            orderTable.getOrders().add(this);
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Order order = (Order) o;
-        return Objects.equals(id, order.id) && Objects.equals(orderTable, order.orderTable) && orderStatus == order.orderStatus && Objects.equals(orderedTime, order.orderedTime) && Objects.equals(orderLineItems, order.orderLineItems);
+        return Objects.equals(id, order.id) && Objects.equals(orderTable, order.orderTable);
     }
 
     @Override
