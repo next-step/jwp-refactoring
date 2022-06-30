@@ -1,108 +1,86 @@
 package kitchenpos.order.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.common.domain.Quantity;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.order.domain.*;
+import kitchenpos.order.dto.*;
+import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+
+import static kitchenpos.common.Messages.ORDER_LINE_ITEM_REQUIRED;
 
 @Service
 public class OrderService {
-    private final MenuDao menuDao;
-    private final OrderDao orderDao;
-    private final OrderLineItemDao orderLineItemDao;
-    private final OrderTableDao orderTableDao;
+    private final OrderRepository orderRepository;
+    private final MenuService menuService;
+    private final TableService tableService;
 
-    public OrderService(
-            final MenuDao menuDao,
-            final OrderDao orderDao,
-            final OrderLineItemDao orderLineItemDao,
-            final OrderTableDao orderTableDao
+    public OrderService(OrderRepository orderRepository, MenuService menuService, TableService tableService) {
+        this.orderRepository = orderRepository;
+        this.menuService = menuService;
+        this.tableService = tableService;
+    }
+
+    @Transactional
+    public OrderResponse create(final OrderRequest orderRequest) {
+        OrderTable orderTable = tableService.findById(orderRequest.getOrderTableId());
+        validateOrderLineItems(orderRequest.getOrderLineItems());
+
+        List<OrderLineItem> requestOrderLineItems = toOrderLineItems(orderRequest.getOrderLineItems());
+        OrderLineItems orderLineItems = OrderLineItems.of(requestOrderLineItems);
+        orderLineItems.validateOrderLineItems(requestOrderLineItems);
+
+        Order order = Order.of(orderTable, orderLineItems);
+        return OrderResponse.of(orderRepository.save(order));
+    }
+
+    private void validateOrderLineItems(List<OrderLineItemRequest> orderLineItemRequest) {
+        if (CollectionUtils.isEmpty(orderLineItemRequest)) {
+            throw new IllegalArgumentException(ORDER_LINE_ITEM_REQUIRED);
+        }
+    }
+
+    public List<OrderResponse> list() {
+        List<Order> orders = orderRepository.findAll();
+        return orders.stream().map(OrderResponse::of).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public ChangeOrderStatusResponse changeOrderStatus(
+            final Long orderId,
+            final ChangeOrderStatusRequest changeOrderStatusRequest
     ) {
-        this.menuDao = menuDao;
-        this.orderDao = orderDao;
-        this.orderLineItemDao = orderLineItemDao;
-        this.orderTableDao = orderTableDao;
+        Order order = orderRepository.findById(orderId).orElseThrow(NoSuchElementException::new);
+        OrderStatus orderStatus = OrderStatus.valueOf(changeOrderStatusRequest.getOrderStatus());
+        order.changeOrderStatus(orderStatus);
+
+        return ChangeOrderStatusResponse.of(orderRepository.save(order));
     }
 
-    @Transactional
-    public Order create(final Order order) {
-        final List<OrderLineItem> orderLineItems = order.getOrderLineItems();
-
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
-        }
-
-        final List<Long> menuIds = orderLineItems.stream()
-                .map(OrderLineItem::getMenuId)
-                .collect(Collectors.toList());
-
-        if (orderLineItems.size() != menuDao.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException();
-        }
-
-        final OrderTable orderTable = orderTableDao.findById(order.getOrderTableId())
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        order.setOrderTableId(orderTable.getId());
-        order.setOrderStatus(OrderStatus.COOKING.name());
-        order.setOrderedTime(LocalDateTime.now());
-
-        final Order savedOrder = orderDao.save(order);
-
-        final Long orderId = savedOrder.getId();
-        final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
-        for (final OrderLineItem orderLineItem : orderLineItems) {
-            orderLineItem.setOrderId(orderId);
-            savedOrderLineItems.add(orderLineItemDao.save(orderLineItem));
-        }
-        savedOrder.setOrderLineItems(savedOrderLineItems);
-
-        return savedOrder;
+    public boolean isOrderTableStateCookingOrMeal(OrderTable orderTable) {
+        List<OrderStatus> orderStatuses = Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL);
+        return orderRepository.existsByOrderTableAndOrderStatusIn(orderTable, orderStatuses);
     }
 
-    public List<Order> list() {
-        final List<Order> orders = orderDao.findAll();
-
-        for (final Order order : orders) {
-            order.setOrderLineItems(orderLineItemDao.findAllByOrderId(order.getId()));
-        }
-
-        return orders;
+    public boolean isOrderTablesStateInCookingOrMeal(List<OrderTable> orderTables) {
+        List<OrderStatus> orderStatuses = Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL);
+        return orderRepository.existsByOrderTableInAndOrderStatusIn(orderTables, orderStatuses);
     }
 
-    @Transactional
-    public Order changeOrderStatus(final Long orderId, final Order order) {
-        final Order savedOrder = orderDao.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (Objects.equals(OrderStatus.COMPLETION.name(), savedOrder.getOrderStatus())) {
-            throw new IllegalArgumentException();
-        }
-
-        final OrderStatus orderStatus = OrderStatus.valueOf(order.getOrderStatus());
-        savedOrder.setOrderStatus(orderStatus.name());
-
-        orderDao.save(savedOrder);
-
-        savedOrder.setOrderLineItems(orderLineItemDao.findAllByOrderId(orderId));
-
-        return savedOrder;
+    private List<OrderLineItem> toOrderLineItems(List<OrderLineItemRequest> orderLineItemRequests) {
+        return orderLineItemRequests.stream().map(orderLineItemRequest -> {
+            Menu menu = menuService.findById(orderLineItemRequest.getMenuId());
+            Quantity quantity = Quantity.of(orderLineItemRequest.getQuantity());
+            return OrderLineItem.of(menu, quantity);
+        }).collect(Collectors.toList());
     }
 }

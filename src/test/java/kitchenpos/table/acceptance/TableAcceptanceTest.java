@@ -5,6 +5,9 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.ChangeEmptyRequest;
+import kitchenpos.table.dto.ChangeNumberOfGuestsRequest;
+import kitchenpos.table.dto.OrderTableRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -16,8 +19,20 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 public class TableAcceptanceTest extends AcceptanceTest {
     private static final String API_URL = "/api/tables";
 
+    private static ExtractableResponse<Response> 테이블_생성_요청(int numberOfGuests, boolean empty) {
+        OrderTableRequest orderTableRequest = OrderTableRequest.of(numberOfGuests, empty);
+
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(orderTableRequest)
+                .when().post(API_URL)
+                .then().log().all()
+                .extract();
+    }
+
     @Test
-    @DisplayName("테이블 생성, 조회, 상태 수정 테스트")
+    @DisplayName("테이블 관리 기능 (테이블 생성, 조회, 상태 수정)")
     void table() {
         ExtractableResponse<Response> 테이블_생성_요청_결과 = 테이블_생성_요청(4, true);
 
@@ -38,20 +53,6 @@ public class TableAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 테이블_인원_수정_결과 = 테이블_인원_수정(테이블_ID, 인원수);
 
         테이블_인원_수정됨(테이블_인원_수정_결과, 인원수);
-    }
-
-    private static ExtractableResponse<Response> 테이블_생성_요청(int numberOfGuests, boolean empty) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(numberOfGuests);
-        orderTable.setEmpty(empty);
-
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(orderTable)
-                .when().post(API_URL)
-                .then().log().all()
-                .extract();
     }
 
     private void 테이블_생성됨(ExtractableResponse<Response> response) {
@@ -76,13 +77,12 @@ public class TableAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 테이블_상태_수정(Long orderTableId, boolean empty) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setEmpty(empty);
+        ChangeEmptyRequest changeEmptyRequest = ChangeEmptyRequest.of(empty);
 
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(orderTable)
+                .body(changeEmptyRequest)
                 .when().put(String.format("%s/{orderTableId}/empty", API_URL), orderTableId)
                 .then().log().all()
                 .extract();
@@ -96,13 +96,12 @@ public class TableAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 테이블_인원_수정(Long orderTableId, int numberOfGuests) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(numberOfGuests);
+        ChangeNumberOfGuestsRequest changeNumberOfGuestsRequest = ChangeNumberOfGuestsRequest.of(numberOfGuests);
 
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(orderTable)
+                .body(changeNumberOfGuestsRequest)
                 .when().put(String.format("%s/{orderTableId}/number-of-guests", API_URL), orderTableId)
                 .then().log().all()
                 .extract();
