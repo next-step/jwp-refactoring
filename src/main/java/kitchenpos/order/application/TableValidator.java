@@ -1,4 +1,4 @@
-package kitchenpos.table.application;
+package kitchenpos.order.application;
 
 import kitchenpos.common.domain.OrderStatus;
 import kitchenpos.common.exception.InvalidOrderStatusException;

@@ -1,6 +1,7 @@
 package kitchenpos.table.application;
 
 import kitchenpos.common.exception.InvalidOrderStatusException;
+import kitchenpos.order.application.TableValidator;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
