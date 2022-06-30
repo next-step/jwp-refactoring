@@ -97,8 +97,8 @@ class TableGroupServiceTest extends ServiceTest {
     }
 
     @Test
-    @DisplayName("테이블 그룹 해제")
-    void 테이블그룹_지정해제_빈테이블인_경우() {
+    @DisplayName("테이블 그룹에 주문이 없는 경우 테이블 그룹 해제가능")
+    void 테이블그룹_지정해제_주문이_없는_경우() {
         OrderTableResponse table1 = serviceTestHelper.빈테이블_생성됨();
         OrderTableResponse table2 = serviceTestHelper.빈테이블_생성됨();
         TableGroupResponse tableGroup = serviceTestHelper.테이블그룹_지정됨(table1, table2);
@@ -108,6 +108,7 @@ class TableGroupServiceTest extends ServiceTest {
         List<OrderTableResponse> orderTables = tableService.findAllByTableGroupId(tableGroup.getId());
         assertThat(orderTables).hasSize(0);
     }
+
     @Test
     @DisplayName("모든 주문 테이블이 계산완료된 경우 테이블 그룹 해제 성공")
     void 테이블그룹_지정해제_계산완료시() {
