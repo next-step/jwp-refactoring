@@ -9,10 +9,10 @@ import kitchenpos.dto.dto.MenuProductDTO;
 
 public class MenuResponse {
 
-    private Long id;
-    private String name;
-    private BigDecimal price;
-    private Long menuGroupId;
+    private final Long id;
+    private final String name;
+    private final BigDecimal price;
+    private final Long menuGroupId;
     private List<MenuProductDTO> menuProducts = new LinkedList<>();
 
     protected MenuResponse(Long id, String name, BigDecimal price, Long menuGroupId,

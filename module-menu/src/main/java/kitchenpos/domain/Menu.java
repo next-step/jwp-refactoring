@@ -17,6 +17,8 @@ import javax.persistence.ManyToOne;
 @Entity
 public class Menu {
 
+    @Embedded
+    private final MenuProductsManager menuProducts = new MenuProductsManager();
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
@@ -26,8 +28,6 @@ public class Menu {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MENU_GROUP_ID", foreignKey = @ForeignKey(name = "fk_Menu_Menu_Group"))
     private MenuGroup menuGroup;
-    @Embedded
-    private final MenuProductsManager menuProducts = new MenuProductsManager();
 
     protected Menu() {
     }

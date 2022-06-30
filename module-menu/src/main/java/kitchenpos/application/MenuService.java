@@ -10,7 +10,7 @@ import kitchenpos.dto.dto.MenuProductDTO;
 import kitchenpos.dto.event.MenuCreatedEvent;
 import kitchenpos.dto.request.MenuRequest;
 import kitchenpos.dto.response.MenuResponse;
-import kitchenpos.event.customEvent.MenuCreateEvent;
+import kitchenpos.event.MenuCreateEvent;
 import kitchenpos.exception.MenuException;
 import kitchenpos.repository.MenuGroupRepository;
 import kitchenpos.repository.MenuRepository;

@@ -2,7 +2,7 @@ package kitchenpos.event.listener;
 
 import java.util.List;
 import kitchenpos.dto.event.OrderCreatedEvent;
-import kitchenpos.event.customEvent.OrderCreateEvent;
+import kitchenpos.event.OrderCreateEvent;
 import kitchenpos.exception.OrderException;
 import kitchenpos.repository.MenuRepository;
 import org.springframework.context.ApplicationListener;
