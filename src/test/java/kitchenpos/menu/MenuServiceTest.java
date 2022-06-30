@@ -4,14 +4,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.dao.MenuRepository;
-import kitchenpos.menu.dao.MenuGroupRepository;
 import kitchenpos.menu.dao.MenuProductRepository;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
@@ -34,16 +35,16 @@ class MenuServiceTest {
     MenuService menuService;
 
     @Mock
-    MenuRepository menuDao;
-
-    @Mock
-    MenuGroupRepository menuGroupRepository;
+    MenuRepository menuRepository;
 
     @Mock
     MenuProductRepository menuProductRepository;
 
     @Mock
     ProductRepository productRepository;
+
+    @Mock
+    MenuGroupService menuGroupService;
 
     Menu 후라이드치킨;
     Product 후라이드;
@@ -64,9 +65,8 @@ class MenuServiceTest {
     @DisplayName("메뉴를 저장한다")
     void create() {
         // given
-        given(menuGroupRepository.existsById(any())).willReturn(true);
         given(productRepository.findById(any())).willReturn(Optional.ofNullable(후라이드));
-        given(menuDao.save(any())).willReturn(후라이드치킨);
+        given(menuRepository.save(any())).willReturn(후라이드치킨);
 
         // when
         MenuResponse actual = menuService.create(상품);
@@ -79,7 +79,7 @@ class MenuServiceTest {
     @DisplayName("메뉴 저장시 메뉴의 금액은 0원 이상이다")
     void create_priceException() {
         // given
-        MenuRequest 양념치킨 = new MenuRequest("양념치킨", BigDecimal.valueOf(-1));
+        상품 = new MenuRequest(후라이드치킨.getName(), BigDecimal.valueOf(-1), 후라이드치킨.getMenuGroupId(), 후라이드치킨.getMenuProducts());
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
@@ -91,25 +91,25 @@ class MenuServiceTest {
     @DisplayName("메뉴 저장시 메뉴는 존재하는 메뉴그룹 정보를 가지고 있다")
     void create_nonExistMenuGroupError() {
         // given
-        given(menuGroupRepository.existsById(후라이드치킨.getMenuGroupId())).willReturn(false);
+        doThrow(new IllegalArgumentException("존재하지 않는 메뉴그룹입니다."))
+                .when(menuGroupService).existsById(any());
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
                 () -> menuService.create(상품)
-        );
+        ).withMessageContaining("존재하지 않는 메뉴그룹입니다.");
     }
 
     @Test
     @DisplayName("메뉴 저장시 메뉴는 존재하는 상품 정보를 가져야 한다")
     void create_nonProductInfoError() {
         // given
-        given(menuGroupRepository.existsById(any())).willReturn(true);
         given(productRepository.findById(후라이드치킨상품.getProductId())).willReturn(Optional.empty());
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
                 () -> menuService.create(상품)
-        );
+        ).withMessageContaining("존재하지 않는 상품입니다.");
     }
 
     @Test
@@ -117,20 +117,19 @@ class MenuServiceTest {
     void create_totalPriceError() {
         // given
         MenuRequest 상품 = new MenuRequest(후라이드치킨.getName(), BigDecimal.valueOf(20000), 후라이드치킨.getMenuGroupId(), 후라이드치킨.getMenuProducts());
-        given(menuGroupRepository.existsById(any())).willReturn(true);
         given(productRepository.findById(후라이드치킨상품.getProductId())).willReturn(Optional.ofNullable(후라이드));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
                 () -> menuService.create(상품)
-        );
+        ).withMessageContaining("메뉴의 금액은 상품의 합 보다 작아야합니다.");
     }
 
     @Test
     @DisplayName("메뉴 리스트를 조회한다")
     void list() {
         // given
-        given(menuDao.findAll()).willReturn(Collections.singletonList(후라이드치킨));
+        given(menuRepository.findAll()).willReturn(Collections.singletonList(후라이드치킨));
         given(menuProductRepository.findAllByMenuId(후라이드치킨.getId())).willReturn(Collections.singletonList(후라이드치킨상품));
 
         // when
