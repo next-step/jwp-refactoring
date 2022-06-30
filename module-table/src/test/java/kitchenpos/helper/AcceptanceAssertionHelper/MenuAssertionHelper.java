@@ -7,7 +7,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.dto.response.MenuResponse;
+import kitchenpos.helper.testDTO.response.MenuResponse;
 import org.springframework.http.HttpStatus;
 
 public class MenuAssertionHelper {

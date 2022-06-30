@@ -5,8 +5,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.List;
-import kitchenpos.dto.dto.MenuProductDTO;
-import kitchenpos.dto.request.MenuRequest;
+import kitchenpos.helper.testDTO.MenuProductDTO;
+import kitchenpos.helper.testDTO.request.MenuRequest;
 import org.springframework.http.MediaType;
 
 public class MenuApiHelper {

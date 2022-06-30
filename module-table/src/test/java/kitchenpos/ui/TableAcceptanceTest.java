@@ -16,8 +16,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.dto.response.OrderResponse;
 import kitchenpos.helper.AcceptanceAssertionHelper.TableAssertionHelper;
+import kitchenpos.helper.testDTO.response.OrderResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

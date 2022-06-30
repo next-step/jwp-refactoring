@@ -10,8 +10,6 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.request.OrderTableRequest;
@@ -45,10 +43,6 @@ class TableGroupServiceTest {
     private TableGroup tableGroup;
     private OrderTable orderTable_1;
     private OrderTable orderTable_2;
-    private MenuProduct chicken_menuProduct;
-    private MenuProduct ham_menuProduct;
-    private OrderLineItem chickenOrder;
-    private OrderLineItem hamOrder;
 
 
     @BeforeEach

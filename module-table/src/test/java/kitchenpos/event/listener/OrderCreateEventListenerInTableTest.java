@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.Optional;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.event.OrderCreatedEvent;
+import kitchenpos.event.OrderCreateEvent;
+import kitchenpos.exception.OrderException;
 import kitchenpos.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

@@ -8,13 +8,14 @@ import static kitchenpos.helper.AcceptanceApiHelper.TableApiHelper.테이블_손
 
 import io.restassured.RestAssured;
 import java.util.Arrays;
-import kitchenpos.dto.dto.MenuProductDTO;
-import kitchenpos.dto.dto.OrderLineItemDTO;
-import kitchenpos.dto.response.MenuGroupResponse;
-import kitchenpos.dto.response.MenuResponse;
 import kitchenpos.dto.response.OrderTableResponse;
 import kitchenpos.helper.AcceptanceApiHelper.TableApiHelper;
 import kitchenpos.helper.DatabaseCleanup;
+import kitchenpos.helper.testDTO.MenuProductDTO;
+import kitchenpos.helper.testDTO.OrderLineItemDTO;
+import kitchenpos.helper.testDTO.response.MenuGroupResponse;
+import kitchenpos.helper.testDTO.response.MenuResponse;
+import kitchenpos.helper.testDTO.response.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -3,16 +3,15 @@ package kitchenpos.application;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
 import java.util.Optional;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.request.OrderTableRequest;
 import kitchenpos.exception.OrderTableException;
-import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
@@ -27,7 +27,7 @@ class TableServiceTest {
     private TableService tableService;
 
     @Mock
-    private OrderRepository orderRepository;
+    private ApplicationEventPublisher eventPublisher;
     @Mock
     private OrderTableRepository orderTableRepository;
 
@@ -35,7 +35,7 @@ class TableServiceTest {
 
     @BeforeEach
     public void init() {
-        tableService = new TableService(orderRepository, orderTableRepository);
+        tableService = new TableService(eventPublisher, orderTableRepository);
         orderTable = new OrderTable(0, true);
     }
 
@@ -49,9 +49,8 @@ class TableServiceTest {
         orderTableRequest.setNumberOfGuests(0);
 
         when(orderTableRepository.findById(1L)).thenReturn(Optional.of(orderTable));
-        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(
-            1L, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).thenReturn(
-            false);
+        doNothing().when(eventPublisher)
+            .publishEvent(any());
         when(orderTableRepository.save(any())).thenReturn(orderTable);
         //when & then
         assertDoesNotThrow(() -> tableService.changeEmpty(1L, orderTableRequest));
@@ -96,9 +95,8 @@ class TableServiceTest {
         orderTableRequest.setNumberOfGuests(0);
 
         when(orderTableRepository.findById(1L)).thenReturn(Optional.of(orderTable));
-        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(
-            1L, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).thenReturn(
-            true);
+        doThrow(OrderTableException.class).when(eventPublisher)
+            .publishEvent(any());
 
         //when & then
         assertThatThrownBy(() -> tableService.changeEmpty(1L, orderTableRequest))

@@ -7,7 +7,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.dto.response.OrderResponse;
+import kitchenpos.helper.testDTO.response.OrderResponse;
 import org.springframework.http.HttpStatus;
 
 public class OrderAssertionHelper {

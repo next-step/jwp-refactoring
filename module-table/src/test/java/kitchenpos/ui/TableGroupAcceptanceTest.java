@@ -12,11 +12,11 @@ import io.restassured.response.Response;
 import java.util.Arrays;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.dto.request.OrderTableRequest;
-import kitchenpos.dto.response.OrderResponse;
 import kitchenpos.dto.response.OrderTableResponse;
 import kitchenpos.dto.response.TableGroupResponse;
 import kitchenpos.helper.AcceptanceApiHelper.TableGroupApiHelper;
 import kitchenpos.helper.AcceptanceAssertionHelper.TableGroupAssertionHelper;
+import kitchenpos.helper.testDTO.response.OrderResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
