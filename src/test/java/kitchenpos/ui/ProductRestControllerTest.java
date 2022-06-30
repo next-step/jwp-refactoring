@@ -1,5 +1,6 @@
 package kitchenpos.ui;
 
+import static kitchenpos.utils.MockMvcUtil.as;
 import static kitchenpos.utils.generator.ProductFixtureGenerator.상품_생성_요청;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -45,7 +46,7 @@ public class ProductRestControllerTest extends BaseTest {
         ResultActions resultActions = mockMvcUtil.post(상품_생성_요청(name, price));
 
         // Then
-        Product product = mockMvcUtil.as(resultActions, Product.class);
+        Product product = as(resultActions, Product.class);
         resultActions
             .andDo(print())
             .andExpect(status().isCreated())

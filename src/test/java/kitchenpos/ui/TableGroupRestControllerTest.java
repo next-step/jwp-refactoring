@@ -1,7 +1,7 @@
 package kitchenpos.ui;
 
+import static kitchenpos.utils.MockMvcUtil.as;
 import static kitchenpos.utils.generator.OrderTableFixtureGenerator.비어있는_주문_테이블_생성_요청;
-import static kitchenpos.utils.generator.TableGroupFixtureGenerator.generateTableGroup;
 import static kitchenpos.utils.generator.TableGroupFixtureGenerator.테이블_그룹_생성_요청;
 import static org.hamcrest.Matchers.contains;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -29,8 +29,8 @@ public class TableGroupRestControllerTest extends BaseTest {
      */
     @BeforeEach
     void setUp() throws Exception {
-        firstOrderTable = mockMvcUtil.as(mockMvcUtil.post(비어있는_주문_테이블_생성_요청()), OrderTable.class);
-        secondOrderTable = mockMvcUtil.as(mockMvcUtil.post(비어있는_주문_테이블_생성_요청()), OrderTable.class);
+        firstOrderTable = as(mockMvcUtil.post(비어있는_주문_테이블_생성_요청()), OrderTable.class);
+        secondOrderTable = as(mockMvcUtil.post(비어있는_주문_테이블_생성_요청()), OrderTable.class);
     }
 
     /**
@@ -39,11 +39,8 @@ public class TableGroupRestControllerTest extends BaseTest {
     @Test
     @DisplayName("테이블 그룹을 생성한다.")
     public void createTableGroup() throws Exception {
-        // Given
-        TableGroup tableGroup = generateTableGroup(firstOrderTable, secondOrderTable);
-
         // When
-        ResultActions resultActions = mockMvcUtil.post(TABLE_GROUP_API_BASE_URL, tableGroup);
+        ResultActions resultActions = mockMvcUtil.post(테이블_그룹_생성_요청(firstOrderTable, secondOrderTable));
 
         // Then
         resultActions
@@ -65,7 +62,7 @@ public class TableGroupRestControllerTest extends BaseTest {
     @DisplayName("특정 테이블 그룹을 해제한다.")
     public void getAllTableGroups() throws Exception {
         // Given
-        TableGroup savedTableGroup = mockMvcUtil.as(mockMvcUtil.post(테이블_그룹_생성_요청(firstOrderTable, secondOrderTable)), TableGroup.class);
+        TableGroup savedTableGroup = as(mockMvcUtil.post(테이블_그룹_생성_요청(firstOrderTable, secondOrderTable)), TableGroup.class);
 
         // When
         ResultActions resultActions = mockMvcUtil.delete(DELETE_TABLE_GROUP_API_URL_TEMPLATE, savedTableGroup.getId());

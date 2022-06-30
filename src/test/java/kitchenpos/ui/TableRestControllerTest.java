@@ -1,5 +1,6 @@
 package kitchenpos.ui;
 
+import static kitchenpos.utils.MockMvcUtil.as;
 import static kitchenpos.utils.generator.OrderTableFixtureGenerator.비어있지_않은_주문_테이블_생성_요청;
 import static kitchenpos.utils.generator.OrderTableFixtureGenerator.테이블_객수_수정_요청_생성;
 import static kitchenpos.utils.generator.OrderTableFixtureGenerator.테이블_사용_가능_여부_수정_요청_생성;
@@ -58,7 +59,7 @@ public class TableRestControllerTest extends BaseTest {
     @DisplayName("주문 테이블의 사용 가능 여부를 수정한다.")
     public void updateNumberOfGuests(final boolean givenEmpty, final String givenDescription) throws Exception {
         // Given
-        OrderTable savedOrderTable = mockMvcUtil.as(mockMvcUtil.post(비어있지_않은_주문_테이블_생성_요청()), OrderTable.class);
+        OrderTable savedOrderTable = as(mockMvcUtil.post(비어있지_않은_주문_테이블_생성_요청()), OrderTable.class);
 
         OrderTable updateOrderTableEmptyRequest = new OrderTable();
         updateOrderTableEmptyRequest.setEmpty(givenEmpty);
@@ -91,7 +92,7 @@ public class TableRestControllerTest extends BaseTest {
     @DisplayName("테이블의 객수를 수정한다.")
     public void updateTableUsingStatus() throws Exception {
         // Given
-        final OrderTable savedOrderTable = mockMvcUtil.as(mockMvcUtil.post(비어있지_않은_주문_테이블_생성_요청()), OrderTable.class);
+        final OrderTable savedOrderTable = as(mockMvcUtil.post(비어있지_않은_주문_테이블_생성_요청()), OrderTable.class);
 
         final int newNumberOfGuests = 4;
         OrderTable updateNumberOfGuestsRequest = new OrderTable();

@@ -1,5 +1,6 @@
 package kitchenpos.ui;
 
+import static kitchenpos.utils.MockMvcUtil.as;
 import static kitchenpos.utils.generator.MenuFixtureGenerator.메뉴_생성_요청;
 import static kitchenpos.utils.generator.MenuGroupFixtureGenerator.메뉴_그룹_생성_요청;
 import static kitchenpos.utils.generator.OrderFixtureGenerator.주문_상태_변경_요청;
@@ -45,20 +46,18 @@ public class OrderRestControllerTest extends BaseTest {
      */
     @BeforeEach
     void setUp() throws Exception {
-        savedFirstProduct = mockMvcUtil.as(mockMvcUtil.post(상품_생성_요청()), Product.class);
-        savedSecondProduct = mockMvcUtil.as(mockMvcUtil.post(상품_생성_요청()), Product.class);
-        savedThirdProduct = mockMvcUtil.as(mockMvcUtil.post(상품_생성_요청()), Product.class);
-        savedForthProduct = mockMvcUtil.as(mockMvcUtil.post(상품_생성_요청()), Product.class);
+        savedFirstProduct = as(mockMvcUtil.post(상품_생성_요청()), Product.class);
+        savedSecondProduct = as(mockMvcUtil.post(상품_생성_요청()), Product.class);
+        savedThirdProduct = as(mockMvcUtil.post(상품_생성_요청()), Product.class);
+        savedForthProduct = as(mockMvcUtil.post(상품_생성_요청()), Product.class);
 
-        savedFirstMenuGroup = mockMvcUtil.as(mockMvcUtil.post(메뉴_그룹_생성_요청()), MenuGroup.class);
-        savedSecondMenuGroup = mockMvcUtil.as(mockMvcUtil.post(메뉴_그룹_생성_요청()), MenuGroup.class);
+        savedFirstMenuGroup = as(mockMvcUtil.post(메뉴_그룹_생성_요청()), MenuGroup.class);
+        savedSecondMenuGroup = as(mockMvcUtil.post(메뉴_그룹_생성_요청()), MenuGroup.class);
 
-        savedFirstMenu = mockMvcUtil
-            .as(mockMvcUtil.post(메뉴_생성_요청(savedFirstMenuGroup, savedFirstProduct, savedSecondProduct)), Menu.class);
-        savedSecondMenu = mockMvcUtil
-            .as(mockMvcUtil.post(메뉴_생성_요청(savedSecondMenuGroup, savedThirdProduct, savedForthProduct)), Menu.class);
+        savedFirstMenu = as(mockMvcUtil.post(메뉴_생성_요청(savedFirstMenuGroup, savedFirstProduct, savedSecondProduct)), Menu.class);
+        savedSecondMenu = as(mockMvcUtil.post(메뉴_생성_요청(savedSecondMenuGroup, savedThirdProduct, savedForthProduct)), Menu.class);
 
-        savedOrderTable = mockMvcUtil.as(mockMvcUtil.post(비어있지_않은_주문_테이블_생성_요청()), OrderTable.class);
+        savedOrderTable = as(mockMvcUtil.post(비어있지_않은_주문_테이블_생성_요청()), OrderTable.class);
     }
 
     /**
@@ -100,7 +99,7 @@ public class OrderRestControllerTest extends BaseTest {
     @DisplayName("주문 상태를 변경한다.")
     public void updateOrderStatus() throws Exception {
         // Given
-        Order savedOrder = mockMvcUtil.as(mockMvcUtil.post(주문_생성_요청(savedOrderTable, savedFirstMenu, savedSecondMenu)), Order.class);
+        Order savedOrder = as(mockMvcUtil.post(주문_생성_요청(savedOrderTable, savedFirstMenu, savedSecondMenu)), Order.class);
 
         Order updateOrderStatusRequest = new Order();
         updateOrderStatusRequest.setOrderStatus(OrderStatus.MEAL.name());
@@ -114,7 +113,7 @@ public class OrderRestControllerTest extends BaseTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.orderStatus").value(OrderStatus.MEAL.name()));
 
-        Order updatedOrder = mockMvcUtil.as(resultActions, Order.class);
+        Order updatedOrder = as(resultActions, Order.class);
         assertThat(updatedOrder)
             .usingRecursiveComparison()
             .as("주문상태, 주문시간을 제외한 나머지 항목이 주문상태 변경 전과 동일한지 여부 검증")
