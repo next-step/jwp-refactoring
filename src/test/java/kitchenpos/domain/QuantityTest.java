@@ -14,7 +14,7 @@ class QuantityTest {
     @Test
     void 수량이_1보다_작으면_에러가_발생해야_한다() {
         // given
-        final Long invalidPrice = 0L;
+        final Integer invalidPrice = 0;
 
         // when and then
         Assertions.assertThatThrownBy(() -> new Quantity(invalidPrice))

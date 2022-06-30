@@ -31,6 +31,12 @@ public class OrderLineItem {
     public OrderLineItem() {
     }
 
+    public OrderLineItem(final Long menuId,
+                         final Quantity quantity) {
+        this.menuId = menuId;
+        this.quantity = quantity;
+    }
+
     public OrderLineItem(final Long seq,
                          final Order order,
                          final Long menuId,
@@ -39,6 +45,13 @@ public class OrderLineItem {
         this.order = order;
         this.menuId = menuId;
         this.quantity = quantity;
+    }
+
+    public void relateToOrder(final Order order) {
+        if (null != this.order) {
+            throw new IllegalStateException("이미 주문과의 연관관계가 설정되어 있습니다.");
+        }
+        this.order = order;
     }
 
     public Long getSeq() {

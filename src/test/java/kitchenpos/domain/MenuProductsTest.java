@@ -13,8 +13,8 @@ class MenuProductsTest {
         // given
         final MenuProducts menuProducts = new MenuProducts();
         final Menu menu = new Menu(1L, "menu", new Price(15000L), 1L, menuProducts);
-        final MenuProduct menuProduct1 = new MenuProduct(1L, 10L);
-        final MenuProduct menuProduct2 = new MenuProduct(2L, 20L);
+        final MenuProduct menuProduct1 = new MenuProduct(1L, new Quantity(10));
+        final MenuProduct menuProduct2 = new MenuProduct(2L, new Quantity(20));
 
         // when
         menuProducts.makeRelations(menu, Arrays.asList(menuProduct1, menuProduct2));

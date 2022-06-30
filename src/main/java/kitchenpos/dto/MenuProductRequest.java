@@ -1,14 +1,17 @@
 package kitchenpos.dto;
 
+import kitchenpos.domain.Quantity;
+
 public class MenuProductRequest {
     private Long productId;
 
-    private Long quantity;
+    private Quantity quantity;
 
     public MenuProductRequest() {
     }
 
-    public MenuProductRequest(Long productId, Long quantity) {
+    public MenuProductRequest(final Long productId,
+                              final Quantity quantity) {
         this.productId = productId;
         this.quantity = quantity;
     }
@@ -17,7 +20,7 @@ public class MenuProductRequest {
         return productId;
     }
 
-    public Long getQuantity() {
+    public Quantity getQuantity() {
         return quantity;
     }
 }
