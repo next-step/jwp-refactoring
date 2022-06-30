@@ -4,7 +4,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -16,29 +17,22 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
 
     private static final String API_URL = "/api/menu-groups";
 
-    @Test
-    @DisplayName("메뉴 그룹 생성 및 조회 시나리오")
-    void menuGroupTest() {
-        ExtractableResponse<Response> 메뉴_그룹_생성_요청_결과 = 메뉴_그룹_생성_요청("추천메뉴");
-
-        메뉴_그룹_생성됨(메뉴_그룹_생성_요청_결과);
-
-        ExtractableResponse<Response> 메뉴_그룹_목록_조회_요청_결과 = 메뉴_그룹_목록_조회_요청();
-
-        메뉴_그룹_목록_조회됨(메뉴_그룹_목록_조회_요청_결과);
-    }
-
     private static ExtractableResponse<Response> 메뉴_그룹_생성_요청(String name) {
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setName(name);
+        MenuGroupRequest menuGroupRequest = MenuGroupRequest.of(name);
 
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(menuGroup)
+                .body(menuGroupRequest)
                 .when().post(API_URL)
                 .then().log().all()
                 .extract();
+    }
+
+    public static MenuGroupResponse 메뉴_그룹_등록_되어_있음(String name) {
+        ExtractableResponse<Response> response = 메뉴_그룹_생성_요청(name);
+
+        return response.as(MenuGroupResponse.class);
     }
 
     private static void 메뉴_그룹_생성됨(ExtractableResponse<Response> response) {
@@ -58,9 +52,15 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static MenuGroup 메뉴_그룹_등록_되어_있음(String name) {
-        ExtractableResponse<Response> response = 메뉴_그룹_생성_요청(name);
+    @Test
+    @DisplayName("메뉴 관리 기능 (메뉴그룹 생성, 메뉴 그룹 조회)")
+    void menuGroupTest() {
+        ExtractableResponse<Response> 메뉴_그룹_생성_요청_결과 = 메뉴_그룹_생성_요청("추천메뉴");
 
-        return response.as(MenuGroup.class);
+        메뉴_그룹_생성됨(메뉴_그룹_생성_요청_결과);
+
+        ExtractableResponse<Response> 메뉴_그룹_목록_조회_요청_결과 = 메뉴_그룹_목록_조회_요청();
+
+        메뉴_그룹_목록_조회됨(메뉴_그룹_목록_조회_요청_결과);
     }
 }

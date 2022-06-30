@@ -4,7 +4,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -34,9 +35,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     }
 
     private static ExtractableResponse<Response> 상품_생성_요청(String name, BigDecimal price) {
-        Product product = new Product();
-        product.setName(name);
-        product.setPrice(price);
+        ProductRequest product = ProductRequest.of(name, price);
 
         return RestAssured
                 .given().log().all()
@@ -64,9 +63,9 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static Product 상품_등록_되어_있음(String name, BigDecimal price) {
+    public static ProductResponse 상품_등록_되어_있음(String name, BigDecimal price) {
         ExtractableResponse<Response> response = 상품_생성_요청(name, price);
 
-        return response.as(Product.class);
+        return response.as(ProductResponse.class);
     }
 }

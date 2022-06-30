@@ -5,12 +5,12 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,11 +36,11 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     private static final String API_URL = "/api/orders";
 
     private OrderTable 주문_테이블;
-    private MenuGroup 메뉴_그룹;
-    private MenuProduct 메뉴_치킨;
-    private MenuProduct 메뉴_피자;
-    private Product 피자;
-    private Product 치킨;
+    private MenuGroupResponse 메뉴_그룹;
+    private MenuProductRequest 메뉴_치킨;
+    private MenuProductRequest 메뉴_피자;
+    private ProductResponse 피자;
+    private ProductResponse 치킨;
     private Menu 메뉴;
 
     @BeforeEach
@@ -52,13 +52,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         피자 = 상품_등록_되어_있음("피자", BigDecimal.valueOf(10_000));
         치킨 = 상품_등록_되어_있음("치킨", BigDecimal.valueOf(10_000));
 
-        메뉴_피자 = new MenuProduct();
-        메뉴_피자.setProductId(피자.getId());
-        메뉴_피자.setQuantity(1L);
-
-        메뉴_치킨 = new MenuProduct();
-        메뉴_치킨.setProductId(치킨.getId());
-        메뉴_치킨.setQuantity(1L);
+        메뉴_피자 = MenuProductRequest.of(피자.getId(), 1L);
+        메뉴_치킨 = MenuProductRequest.of(치킨.getId(), 1L);
 
         메뉴 = 메뉴_등록되어_있음("피자_치킨_세트", 18_000, 메뉴_그룹.getId(), Arrays.asList(메뉴_치킨, 메뉴_피자));
     }

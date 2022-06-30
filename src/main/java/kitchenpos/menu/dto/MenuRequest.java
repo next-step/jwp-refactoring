@@ -20,7 +20,6 @@ public class MenuRequest {
         return new MenuRequest(name, price, menuGroupId, menuProducts);
     }
 
-
     public String getName() {
         return name;
     }

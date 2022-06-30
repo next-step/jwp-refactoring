@@ -13,13 +13,17 @@ import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.appliaction.ProductService;
+import kitchenpos.product.domain.Product;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+
+import static kitchenpos.common.Messages.PRODUCT_FIND_IN_NO_SUCH;
 
 @Service
 @Transactional(readOnly = true)
@@ -38,8 +42,8 @@ public class MenuService {
     public MenuResponse create(final MenuRequest menuRequest) {
         final Name name = Name.of(menuRequest.getName());
         final Price price = Price.of(menuRequest.getPrice());
-        final MenuProducts menuProducts = MenuProducts.of(convertToMenuProducts(menuRequest.getMenuProducts()));
         final MenuGroup menuGroup = menuGroupService.findById(menuRequest.getMenuGroupId());
+        final MenuProducts menuProducts = MenuProducts.of(convertToMenuProducts(menuRequest.getMenuProducts()));
 
         Menu menu = Menu.of(name, price, menuGroup, menuProducts);
         return MenuResponse.of(menuRepository.save(menu));
@@ -58,8 +62,13 @@ public class MenuService {
                 ));
 
         List<Long> productsIds = new ArrayList<>(menuProductRequests.keySet());
+        List<Product> products = productService.findByIdIn(productsIds);
 
-        return productService.findByIdIn(productsIds).stream()
+        if (products.size() != menuProducts.size()) {
+            throw new NoSuchElementException(PRODUCT_FIND_IN_NO_SUCH);
+        }
+
+        return products.stream()
                 .map(product -> MenuProduct.of(product, Quantity.of(menuProductRequests.get(product.getId()))))
                 .collect(Collectors.toList());
     }

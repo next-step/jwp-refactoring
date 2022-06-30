@@ -8,6 +8,8 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static kitchenpos.common.Messages.MENU_PRICE_EXPENSIVE;
+
 @Entity
 public class Menu {
 
@@ -53,7 +55,7 @@ public class Menu {
 
     private void validateExpensivePrice(Price price, MenuProducts menuProducts) {
         if (price.isExpensive(menuProducts.sumTotalPrice())) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(MENU_PRICE_EXPENSIVE);
         }
     }
 
