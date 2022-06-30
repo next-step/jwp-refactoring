@@ -1,6 +1,11 @@
 package kitchenpos.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+
+@Embeddable
 public class NumberOfGuests {
+    @Column(name = "number_of_guests")
     private int numberOfGuests;
 
     public NumberOfGuests(final int numberOfGuests) {

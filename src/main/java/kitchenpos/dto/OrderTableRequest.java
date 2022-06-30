@@ -1,6 +1,7 @@
 package kitchenpos.dto;
 
 import kitchenpos.domain.NumberOfGuests;
+import kitchenpos.domain.OrderTable;
 
 public class OrderTableRequest {
     private NumberOfGuests numberOfGuests;
@@ -21,5 +22,9 @@ public class OrderTableRequest {
 
     public boolean isEmpty() {
         return empty;
+    }
+
+    public OrderTable toOrderTable() {
+        return new OrderTable(numberOfGuests, empty);
     }
 }

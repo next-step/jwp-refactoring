@@ -1,13 +1,15 @@
 package kitchenpos.application;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
+import kitchenpos.domain.NumberOfGuests;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
@@ -68,7 +70,7 @@ class TableGroupServiceTest {
         // given
         final Long invalidOrderTableId = -1L;
         final TableGroup given = new TableGroup(
-                1L, LocalDateTime.now(), Arrays.asList(식당_포스.빈_테이블1, new OrderTable(invalidOrderTableId, null, 0, true)));
+                1L, LocalDateTime.now(), Arrays.asList(식당_포스.빈_테이블1, new OrderTable(invalidOrderTableId, null, new NumberOfGuests(0), true)));
         when(orderTableDao.findAllByIdIn(Arrays.asList(식당_포스.빈_테이블1.getId(), invalidOrderTableId)))
                 .thenReturn(Arrays.asList(식당_포스.빈_테이블1));
 

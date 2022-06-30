@@ -1,6 +1,7 @@
 package kitchenpos.domain;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,13 +19,18 @@ public class OrderTable {
     @Column(name = "table_group_id")
     private Long tableGroupId = null;
 
-    @Column(name = "number_of_guests")
+    @Embedded
     private NumberOfGuests numberOfGuests;
 
     @Column(name = "empty")
     private boolean empty;
 
     public OrderTable() {
+    }
+
+    public OrderTable(NumberOfGuests numberOfGuests, boolean empty) {
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
     }
 
     public OrderTable(final Long id,
