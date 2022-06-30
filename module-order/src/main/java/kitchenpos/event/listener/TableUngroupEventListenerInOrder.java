@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.dto.event.TableUngroupedEvent;
-import kitchenpos.event.customEvent.TableUngroupEvent;
+import kitchenpos.event.TableUngroupEvent;
 import kitchenpos.exception.TableGroupException;
 import kitchenpos.repository.OrderRepository;
 import org.springframework.context.ApplicationListener;

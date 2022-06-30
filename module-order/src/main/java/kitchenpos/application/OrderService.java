@@ -8,7 +8,7 @@ import kitchenpos.dto.dto.OrderLineItemDTO;
 import kitchenpos.dto.event.OrderCreatedEvent;
 import kitchenpos.dto.request.OrderRequest;
 import kitchenpos.dto.response.OrderResponse;
-import kitchenpos.event.customEvent.OrderCreateEvent;
+import kitchenpos.event.OrderCreateEvent;
 import kitchenpos.exception.OrderException;
 import kitchenpos.repository.OrderRepository;
 import org.springframework.context.ApplicationEventPublisher;

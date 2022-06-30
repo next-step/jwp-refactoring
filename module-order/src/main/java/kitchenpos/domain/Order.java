@@ -1,7 +1,5 @@
 package kitchenpos.domain;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Embedded;
@@ -9,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import kitchenpos.exception.OrderException;
@@ -18,7 +17,7 @@ import kitchenpos.exception.OrderException;
 public class Order extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue(strategy = IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long orderTableId;
     @Enumerated(EnumType.STRING)

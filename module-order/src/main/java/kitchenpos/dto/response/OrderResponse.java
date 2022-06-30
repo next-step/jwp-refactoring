@@ -8,9 +8,9 @@ import kitchenpos.dto.dto.OrderLineItemDTO;
 
 public class OrderResponse {
 
-    private Long id;
-    private Long orderTableId;
-    private String orderStatus;
+    private final Long id;
+    private final Long orderTableId;
+    private final String orderStatus;
     private List<OrderLineItemDTO> orderLineItems = new LinkedList<>();
 
     protected OrderResponse(Long id, Long orderTableId, String orderStatus,
