@@ -4,7 +4,6 @@ import kitchenpos.common.exception.ExceptionType;
 import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.tableGroup.domain.TableGroupValidator;
 import kitchenpos.tableGroup.domain.TableGroup;
 import kitchenpos.tableGroup.domain.TableGroupRepository;
 import kitchenpos.tableGroup.dto.request.TableGroupRequest;

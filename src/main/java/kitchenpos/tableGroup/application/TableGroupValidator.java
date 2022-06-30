@@ -1,4 +1,4 @@
-package kitchenpos.tableGroup.domain;
+package kitchenpos.tableGroup.application;
 
 import java.util.List;
 import kitchenpos.common.exception.BadRequestException;

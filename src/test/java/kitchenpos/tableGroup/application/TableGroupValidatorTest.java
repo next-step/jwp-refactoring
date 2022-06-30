@@ -1,4 +1,4 @@
-package kitchenpos.tableGroup.domain;
+package kitchenpos.tableGroup.application;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -10,6 +10,7 @@ import kitchenpos.common.exception.CannotCreateException;
 import kitchenpos.common.exception.ExceptionType;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.request.OrderTableRequest;
+import kitchenpos.tableGroup.application.TableGroupValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
