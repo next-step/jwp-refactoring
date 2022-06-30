@@ -17,14 +17,13 @@ import java.util.stream.Collectors;
 @Service
 @ActiveProfiles("test")
 public class DatabaseCleanup implements InitializingBean {
-    private final static String[] tablesWithSeq = {"menu_product", "order_line_item"};
+    private final static List<String> tableNamesWithSeq = Arrays.asList("menu_product", "order_line_item");
 
     @PersistenceContext
     private EntityManager entityManager;
 
     private List<String> tableNamesDefaultWithId;
     private List<String> tableNamesUserDefinedWithId;
-    private List<String> tableNamesWithSeq;
 
     @Override
     public void afterPropertiesSet() {
@@ -32,19 +31,15 @@ public class DatabaseCleanup implements InitializingBean {
                 .filter(e -> e.getJavaType().getAnnotation(Table.class) == null)
                 .filter(e -> e.getJavaType().getAnnotation(Entity.class) != null)
                 .map(e -> CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, e.getName()))
-                .filter(name -> !Arrays.stream(tablesWithSeq).anyMatch(s -> s.equals(name)))
+                .filter(name -> !tableNamesWithSeq.stream().anyMatch(s -> s.equals(name)))
                 .collect(Collectors.toList());
 
         tableNamesUserDefinedWithId = entityManager.getMetamodel().getEntities().stream()
                 .filter(e -> e.getJavaType().getAnnotation(Table.class) != null)
-                .map(e -> CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, e.getJavaType().getAnnotation(Table.class).name()))
-                .filter(name -> !Arrays.stream(tablesWithSeq).anyMatch(s -> s.equals(name)))
-                .collect(Collectors.toList());
-
-        tableNamesWithSeq = entityManager.getMetamodel().getEntities().stream()
-                .filter(e -> e.getJavaType().getAnnotation(Entity.class) != null)
-                .map(e -> CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, e.getName()))
-                .filter(name -> Arrays.stream(tablesWithSeq).anyMatch(s -> s.equals(name)))
+                .map(e -> CaseFormat.UPPER_CAMEL.to(
+                        CaseFormat.LOWER_UNDERSCORE, e.getJavaType().getAnnotation(Table.class).name())
+                )
+                .filter(name -> !tableNamesWithSeq.stream().anyMatch(s -> s.equals(name)))
                 .collect(Collectors.toList());
     }
 
@@ -54,20 +49,29 @@ public class DatabaseCleanup implements InitializingBean {
         entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
 
         for (String tableName : tableNamesDefaultWithId) {
-            entityManager.createNativeQuery("TRUNCATE TABLE " + tableName).executeUpdate();
-            entityManager.createNativeQuery("ALTER TABLE " + tableName + " ALTER COLUMN ID RESTART WITH 1").executeUpdate();
+            cleanupIds(tableName);
         }
 
         for (String tableName : tableNamesUserDefinedWithId) {
-            entityManager.createNativeQuery("TRUNCATE TABLE " + tableName).executeUpdate();
-            entityManager.createNativeQuery("ALTER TABLE " + tableName + " ALTER COLUMN ID RESTART WITH 1").executeUpdate();
+            cleanupIds(tableName);
         }
 
         for (String tableName : tableNamesWithSeq) {
-            entityManager.createNativeQuery("TRUNCATE TABLE " + tableName).executeUpdate();
-            entityManager.createNativeQuery("ALTER TABLE " + tableName + " ALTER COLUMN SEQ RESTART WITH 1").executeUpdate();
+            cleanupSeqs(tableName);
         }
 
         entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
+    }
+
+    private void cleanupIds(String tableName) {
+        entityManager.createNativeQuery("TRUNCATE TABLE " + tableName).executeUpdate();
+        entityManager.createNativeQuery("ALTER TABLE " + tableName + " ALTER COLUMN ID RESTART WITH 1")
+                .executeUpdate();
+    }
+
+    private void cleanupSeqs(String tableName) {
+        entityManager.createNativeQuery("TRUNCATE TABLE " + tableName).executeUpdate();
+        entityManager.createNativeQuery("ALTER TABLE " + tableName + " ALTER COLUMN SEQ RESTART WITH 1")
+                .executeUpdate();
     }
 }
