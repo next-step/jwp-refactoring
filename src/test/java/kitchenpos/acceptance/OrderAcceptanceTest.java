@@ -12,13 +12,14 @@ import java.util.Collections;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,7 +33,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     OrderTable 주문테이블;
     private Product 생맥주;
     private Product 닭강정;
-    private MenuGroup 일식;
+    private MenuGroupResponse 일식;
 
     private Menu 닭강정_안주;
     private Menu 닭강정_세트;
@@ -45,7 +46,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
         생맥주 = 상품이_등록되어_있음(new Product("생맥주", BigDecimal.valueOf(2000)));
         닭강정 = 상품이_등록되어_있음(new Product("닭강정", BigDecimal.valueOf(3000)));
-        일식 = 메뉴그룹이_등록되어있음(new MenuGroup("일식"));
+        일식 = 메뉴그룹이_등록되어있음(new MenuGroupRequest("일식"));
 
         MenuProduct 닭강정_안주_닭강정 = new MenuProduct(1L, 2L, 닭강정.getId(), 2);
         List<MenuProduct> 닭강정_안주_상품들 = Collections.singletonList(닭강정_안주_닭강정);
@@ -171,8 +172,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         return ProductAcceptanceTest.상품_등록을_요청(product).as(Product.class);
     }
 
-    private MenuGroup 메뉴그룹이_등록되어있음(MenuGroup menuGroup) {
-        return MenuGroupAcceptanceTest.메뉴그룹_등록을_요청(menuGroup).as(MenuGroup.class);
+    private MenuGroupResponse 메뉴그룹이_등록되어있음(MenuGroupRequest menuGroupRequest) {
+        return MenuGroupAcceptanceTest.메뉴그룹_등록을_요청(menuGroupRequest).as(MenuGroupResponse.class);
     }
 
     private Menu 메뉴가_등록_되어_있음(Menu menu) {

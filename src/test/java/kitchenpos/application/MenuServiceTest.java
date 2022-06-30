@@ -11,12 +11,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.repository.MenuGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,7 +31,7 @@ class MenuServiceTest {
     @Mock
     private MenuDao menuDao;
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
     @Mock
     private MenuProductDao menuProductDao;
     @Mock
@@ -62,7 +62,7 @@ class MenuServiceTest {
     void isNoneMenuGroup() {
         //given
         Menu menu = new Menu("메뉴", BigDecimal.valueOf(1), 1L, menuProducts1);
-        given(menuGroupDao.existsById(menu.getMenuGroupId())).willReturn(false);
+        given(menuGroupRepository.existsById(menu.getMenuGroupId())).willReturn(false);
 
         //when & then
         assertThatIllegalArgumentException()
@@ -89,7 +89,7 @@ class MenuServiceTest {
         Menu menu = new Menu("메뉴", BigDecimal.valueOf(5000), 1L, menuProducts1);
         final Product product1 = new Product("상품1", BigDecimal.valueOf(1000));
         final Product product2 = new Product("상품2", BigDecimal.valueOf(1000));
-        given(menuGroupDao.existsById(menu.getMenuGroupId())).willReturn(true);
+        given(menuGroupRepository.existsById(menu.getMenuGroupId())).willReturn(true);
         given(productDao.findById(menuProducts1.get(0).getProductId())).willReturn(Optional.of(product1));
         given(productDao.findById(menuProducts1.get(1).getProductId())).willReturn(Optional.of(product2));
 
@@ -107,7 +107,7 @@ class MenuServiceTest {
         Menu menu = new Menu(1L, "메뉴", BigDecimal.valueOf(2000), 1L, menuProducts1);
         final Product product1 = new Product("상품1", BigDecimal.valueOf(1000));
         final Product product2 = new Product("상품2", BigDecimal.valueOf(1000));
-        given(menuGroupDao.existsById(menu.getMenuGroupId())).willReturn(true);
+        given(menuGroupRepository.existsById(menu.getMenuGroupId())).willReturn(true);
         given(productDao.findById(menuProducts1.get(0).getProductId())).willReturn(Optional.of(product1));
         given(productDao.findById(menuProducts1.get(1).getProductId())).willReturn(Optional.of(product2));
         given(menuDao.save(menu)).willReturn(menu);

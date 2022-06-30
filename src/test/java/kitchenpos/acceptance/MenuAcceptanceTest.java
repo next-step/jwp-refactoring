@@ -13,6 +13,7 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.MenuGroupRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,7 +33,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         super.setUp();
         생맥주 = 상품이_등록되어_있음(new Product("생맥주", BigDecimal.valueOf(2000)));
         닭강정 = 상품이_등록되어_있음(new Product("닭강정", BigDecimal.valueOf(3000)));
-        일식 = 메뉴그룹이_등록되어있음(new MenuGroup("일식"));
+        일식 = 메뉴그룹이_등록되어있음(new MenuGroupRequest("일식"));
     }
 
 /*  -- 메뉴 등록 관리
@@ -103,8 +104,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         assertThat(retriveResponse.jsonPath().getList("name")).contains(menu.getName());
     }
 
-    private MenuGroup 메뉴그룹이_등록되어있음(MenuGroup menuGroup) {
-        return MenuGroupAcceptanceTest.메뉴그룹_등록을_요청(menuGroup).as(MenuGroup.class);
+    private MenuGroup 메뉴그룹이_등록되어있음(MenuGroupRequest menuGroupRequest) {
+        return MenuGroupAcceptanceTest.메뉴그룹_등록을_요청(menuGroupRequest).as(MenuGroup.class);
     }
 
 
