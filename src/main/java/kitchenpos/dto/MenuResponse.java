@@ -22,9 +22,9 @@ public class MenuResponse {
         this.menuProducts = menuProducts;
     }
 
-    public static MenuResponse of(final Menu menu, final List<MenuProductResponse> menuProducts) {
+    public static MenuResponse of(final Menu menu) {
         return new MenuResponse(
-                menu.getId(), menu.getName(), menu.getPrice().value(), menu.getMenuGroupId(), menuProducts);
+                menu.getId(), menu.getName(), menu.getPrice().value(), menu.getMenuGroupId(), menu.getMenuProducts());
     }
 
     public Long getId() {

@@ -36,7 +36,7 @@ public class MenuService {
 
         persistMenu.addMenuProducts(getMenuProductsFromRequest(request));
 
-        return MenuResponse.of(persistMenu, getMenuProductResponsesFromMenu(persistMenu));
+        return MenuResponse.of(persistMenu);
     }
 
     private void validateRequest(final MenuRequest request) {
@@ -80,7 +80,7 @@ public class MenuService {
         final List<Menu> menus = menuRepository.findAll();
         return menus
                 .stream()
-                .map(menu -> MenuResponse.of(menu, getMenuProductResponsesFromMenu(menu)))
+                .map(menu -> MenuResponse.of(menu))
                 .collect(Collectors.toList());
     }
 }
