@@ -24,6 +24,10 @@ import kitchenpos.common.exception.BadRequestException;
 import kitchenpos.common.exception.CannotCreateException;
 import kitchenpos.common.exception.ExceptionType;
 import kitchenpos.common.exception.NotFoundException;
+import kitchenpos.menu.application.validator.MenuCreationValidator;
+import kitchenpos.menu.application.validator.MenuPriceValidator;
+import kitchenpos.menu.application.validator.MenuValidator;
+import kitchenpos.menu.application.validator.MenuValidatorGroup;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menuGroup.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
@@ -44,7 +48,10 @@ class MenuServiceTest {
     private MenuGroupRepository menuGroupRepository;
     private ProductRepository productRepository;
     private MenuRepository menuRepository;
-    private MenuValidator menuValidator;
+    private MenuValidator menuCreationValidator;
+    private MenuValidator menuPriceValidator;
+    private MenuValidatorGroup validatorGroup;
+
     private MenuService menuService;
 
     private MenuRequest 치킨_메뉴;
@@ -67,9 +74,11 @@ class MenuServiceTest {
         menuGroupRepository = mock(MenuGroupRepository.class);
         productRepository = mock(ProductRepository.class);
         menuRepository = mock(MenuRepository.class);
+        menuCreationValidator = new MenuCreationValidator(menuGroupRepository, productRepository);
+        menuPriceValidator = new MenuPriceValidator(productRepository);
 
-        menuValidator = new MenuValidator(menuGroupRepository, productRepository);
-        menuService = new MenuService(menuRepository, menuValidator);
+        validatorGroup = new MenuValidatorGroup(menuCreationValidator, menuPriceValidator);
+        menuService = new MenuService(menuRepository, validatorGroup);
     }
 
     @DisplayName("메뉴를 등록한다")

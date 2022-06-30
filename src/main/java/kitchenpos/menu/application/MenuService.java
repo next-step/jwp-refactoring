@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.toList;
 
 import kitchenpos.common.exception.CannotCreateException;
 import kitchenpos.common.exception.ExceptionType;
+import kitchenpos.menu.application.validator.MenuValidatorGroup;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.domain.request.MenuRequest;
@@ -17,16 +18,16 @@ import java.util.List;
 public class MenuService {
 
     private final MenuRepository menuRepository;
-    private final MenuValidator menuValidator;
+    private final MenuValidatorGroup menuValidatorGroup;
 
-    public MenuService(final MenuRepository menuRepository, final MenuValidator menuValidator) {
+    public MenuService(final MenuRepository menuRepository, final MenuValidatorGroup menuValidatorGroup) {
         this.menuRepository = menuRepository;
-        this.menuValidator = menuValidator;
+        this.menuValidatorGroup = menuValidatorGroup;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        menuValidator.validate(menuRequest);
+        menuValidatorGroup.validate(menuRequest);
         Menu menu = menuRequest.toEntity();
         Menu savedMenu = menuRepository.save(menu);
         return MenuResponse.of(savedMenu);
