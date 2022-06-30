@@ -1,5 +1,6 @@
 package kitchenpos.orderTable.application;
 
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.orderTable.domain.OrderTable;
@@ -41,20 +42,10 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableEmptyRequest orderTableRequest) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
+        validateOrderTableToChangeEmpty(orderTableId);
+        savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
 
-        if (Objects.nonNull(savedOrderTable.getTableGroup())) {
-            throw new IllegalArgumentException();
-        }
-
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
-        }
-
-        savedOrderTable.setEmpty(orderTableRequest.isEmpty());
-
-        OrderTable changedOrderTable = orderTableRepository.save(savedOrderTable);
-        return OrderTableResponse.from(changedOrderTable);
+        return OrderTableResponse.from(savedOrderTable);
     }
 
     @Transactional
@@ -76,5 +67,13 @@ public class TableService {
 
         OrderTable changedOrderTable = orderTableRepository.save(savedOrderTable);
         return OrderTableResponse.from(changedOrderTable);
+    }
+
+    private void validateOrderTableToChangeEmpty(Long orderTableId) {
+        List<Order> all = orderRepository.findAll();
+        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
+                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+            throw new IllegalArgumentException();
+        }
     }
 }

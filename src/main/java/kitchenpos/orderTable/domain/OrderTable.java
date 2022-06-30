@@ -3,6 +3,7 @@ package kitchenpos.orderTable.domain;
 import kitchenpos.tableGroup.domain.TableGroup;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class OrderTable {
@@ -64,5 +65,13 @@ public class OrderTable {
 
     public boolean isGrouped() {
         return tableGroup != null;
+    }
+
+    public void changeEmpty(boolean empty) {
+        if (isGrouped()) {
+            throw new IllegalArgumentException();
+        }
+
+        this.empty = empty;
     }
 }
