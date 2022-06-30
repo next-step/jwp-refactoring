@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import kitchenpos.domain.Product;
 import kitchenpos.dto.event.MenuCreatedEvent;
-import kitchenpos.event.customEvent.MenuCreateEvent;
+import kitchenpos.event.MenuCreateEvent;
 import kitchenpos.exception.MenuException;
 import kitchenpos.repository.ProductRepository;
 import org.springframework.context.ApplicationListener;
