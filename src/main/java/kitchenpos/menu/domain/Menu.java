@@ -2,15 +2,18 @@ package kitchenpos.menu.domain;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import kitchenpos.common.domain.Name;
+import kitchenpos.common.domain.Price;
+import kitchenpos.menu.domain.request.MenuProductRequest;
+import kitchenpos.menu.domain.request.MenuRequest;
 
 @Entity
 @Table(name = "menu")
@@ -26,9 +29,8 @@ public class Menu {
     @Embedded
     private Price price;
 
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_group_id")
-    private MenuGroup menuGroup;
+    private Long menuGroupId;
 
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
@@ -36,15 +38,23 @@ public class Menu {
     protected Menu() {
     }
 
-    private Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+    private Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         this.name = new Name(name);
         this.price = new Price(price);
-        this.menuGroup = menuGroup;
-        this.menuProducts = new MenuProducts(menuProducts, this.price, this);
+        this.menuGroupId = menuGroupId;
+        this.menuProducts = new MenuProducts(menuProducts, this);
     }
 
-    public static Menu of(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        return new Menu(name, price, menuGroup, menuProducts);
+    public static Menu of(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        return new Menu(name, price, menuGroupId, menuProducts);
+    }
+
+    public static Menu of(MenuRequest menuRequest) {
+        List<MenuProduct> menuProducts = menuRequest.getMenuProductRequests().stream()
+            .map(MenuProductRequest::toEntity)
+            .collect(Collectors.toList());
+
+        return new Menu(menuRequest.getName(), menuRequest.getPrice(), menuRequest.getMenuGroupId(), menuProducts);
     }
 
     public Long getId() {
@@ -60,11 +70,7 @@ public class Menu {
     }
 
     public Long getMenuGroupId() {
-        if (menuGroup != null) {
-            return menuGroup.getId();
-        }
-
-        return null;
+        return menuGroupId;
     }
 
     public List<MenuProduct> getMenuProducts() {

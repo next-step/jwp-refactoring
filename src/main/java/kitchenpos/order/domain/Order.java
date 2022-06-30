@@ -13,12 +13,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import kitchenpos.core.exception.CannotUpdateException;
-import kitchenpos.core.exception.ExceptionType;
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.common.exception.CannotUpdateException;
+import kitchenpos.common.exception.ExceptionType;
+import kitchenpos.order.application.OrderValidator;
+import kitchenpos.order.domain.request.OrderRequest;
 
 @Entity
 @Table(name = "orders")
@@ -28,9 +28,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_table_id", nullable = false)
-    private OrderTable orderTable;
+    private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -45,54 +44,58 @@ public class Order {
     protected Order() {
     }
 
-    private Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        mapIntoLineItems(orderLineItems);
-        this.orderTable = orderTable;
+    private Order(Long orderTableId) {
+        this.orderTableId = orderTableId;
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
     }
 
-    private Order(Long id, OrderTable orderTable) {
+    private Order(Long id, Long orderTableId) {
         this.id = id;
-        this.orderTable = orderTable;
+        this.orderTableId = orderTableId;
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
     }
 
-    public static Order of(Long id, OrderTable orderTable) {
-        orderTable.validateIsEmpty();
-        return new Order(id, orderTable);
+    public static Order of(Long id, Long orderTableId) {
+        return new Order(id, orderTableId);
     }
 
-    public static Order of(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        orderTable.validateIsEmpty();
-        return new Order(orderTable, orderLineItems);
+    public static Order of(OrderValidator orderValidator, OrderRequest orderRequest) {
+        orderValidator.creatingValidate(orderRequest);
+        return new Order(orderRequest.getOrderTableId());
+    }
+
+    public void registerOrderLineItems(List<OrderLineItem> orderLineItems) {
+        mapIntoLineItems(orderLineItems);
+        this.orderLineItems = orderLineItems;
     }
 
     private void mapIntoLineItems(List<OrderLineItem> orderLineItems) {
         orderLineItems.forEach(it -> it.mapIntoOrder(this));
     }
 
+    public void changeOrderStatus(OrderStatus orderStatus) {
+        validateMustNotBeCompletionStatus();
+        this.orderStatus = orderStatus;
+    }
+
     public void addOrderLineItem(OrderLineItem orderLineItem) {
         this.orderLineItems.add(orderLineItem);
     }
 
-    public void validateMustNotBeCompletionStatus() {
+    private void validateMustNotBeCompletionStatus() {
         if (OrderStatus.COMPLETION.equals(orderStatus)) {
             throw new CannotUpdateException(ExceptionType.COMPLETION_STATUS_CAN_NOT_CHANGE);
         }
-    }
-
-    public void changeOrderStatus(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
     }
 
     public Long getId() {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {
