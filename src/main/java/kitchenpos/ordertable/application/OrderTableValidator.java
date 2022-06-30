@@ -1,5 +1,5 @@
 package kitchenpos.ordertable.application;
 
-public interface OrderTableService {
+public interface OrderTableValidator {
     void validateComplete(Long orderTableId);
 }

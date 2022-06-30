@@ -29,7 +29,7 @@ class TableServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
-    private OrderTableService orderTableService;
+    private OrderTableValidator orderTableValidator;
     @InjectMocks
     private TableService tableService;
     private OrderTable 주문테이블;
@@ -69,7 +69,7 @@ class TableServiceTest {
                 () -> assertThat(changedOrderTable.getNumberOfGuests()).isEqualTo(2),
                 () -> assertThat(changedOrderTable.isEmpty()).isTrue()
         );
-        verify(orderTableService).validateComplete(주문테이블.id());
+        verify(orderTableValidator).validateComplete(주문테이블.id());
     }
 
     @DisplayName("주문테이블이 등록이 안되어있을 때 주문테이블 비어있는지 여부 변경 테스트")

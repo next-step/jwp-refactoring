@@ -19,16 +19,16 @@ public class TableGroupService {
     private final TableGroupRepository tableGroupRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final OrderTableRepository orderTableRepository;
-    private final OrderTableGroupService orderTableGroupService;
+    private final TableGroupValidator tableGroupValidator;
 
     public TableGroupService(final TableGroupRepository tableGroupRepository,
                              final ApplicationEventPublisher applicationEventPublisher,
                              final OrderTableRepository orderTableRepository,
-                             final OrderTableGroupService orderTableGroupService) {
+                             final TableGroupValidator tableGroupValidator) {
         this.tableGroupRepository = tableGroupRepository;
         this.applicationEventPublisher = applicationEventPublisher;
         this.orderTableRepository = orderTableRepository;
-        this.orderTableGroupService = orderTableGroupService;
+        this.tableGroupValidator = tableGroupValidator;
     }
 
     @Transactional
@@ -42,7 +42,7 @@ public class TableGroupService {
     @Transactional
     public void ungroup(final Long tableGroupId) {
         final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
-        orderTableGroupService.validateComplete(orderTables.stream()
+        tableGroupValidator.validateComplete(orderTables.stream()
                 .map(OrderTable::id)
                 .collect(Collectors.toList()));
         orderTables.forEach(OrderTable::unGroup);

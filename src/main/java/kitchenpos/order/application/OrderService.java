@@ -18,14 +18,14 @@ import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.validator.OrderValidator;
-import kitchenpos.ordertable.application.OrderTableService;
-import kitchenpos.tableGroup.application.OrderTableGroupService;
+import kitchenpos.ordertable.application.OrderTableValidator;
+import kitchenpos.tableGroup.application.TableGroupValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
-public class OrderService implements OrderTableService, OrderTableGroupService {
+public class OrderService implements OrderTableValidator, TableGroupValidator {
     private final OrderRepository orderRepository;
     private final OrderValidator orderValidator;
     private final MenuService menuService;
