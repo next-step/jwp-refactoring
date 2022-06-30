@@ -67,6 +67,14 @@ public class Menu {
         this.price = price;
     }
 
+    public MenuGroup getMenuGroup() {
+        return menuGroup;
+    }
+
+    public void setMenuGroup(MenuGroup menuGroup) {
+        this.menuGroup = menuGroup;
+    }
+
     public Long getMenuGroupId() {
         return menuGroup.getId();
     }
