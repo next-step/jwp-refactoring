@@ -8,8 +8,6 @@ import static kitchenpos.helper.AcceptanceAssertionHelper.MenuAssertionHelper.ый
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.Arrays;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.dto.dto.MenuProductDTO;
