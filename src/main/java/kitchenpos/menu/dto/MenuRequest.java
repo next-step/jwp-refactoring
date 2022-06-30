@@ -41,8 +41,4 @@ public class MenuRequest {
     public List<MenuProductRequest> getMenuProducts() {
         return menuProducts;
     }
-
-    public Menu toMenu(MenuGroup menuGroup) {
-        return Menu.of(name, price, menuGroup);
-    }
 }

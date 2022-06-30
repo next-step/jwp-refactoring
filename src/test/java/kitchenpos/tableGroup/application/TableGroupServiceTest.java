@@ -2,6 +2,7 @@ package kitchenpos.tableGroup.application;
 
 import kitchenpos.exception.IllegalOrderException;
 import kitchenpos.exception.IllegalOrderTableException;
+import kitchenpos.exception.NoSuchTableGroupException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
@@ -105,6 +106,13 @@ class TableGroupServiceTest {
                 () -> assertThat(orderTableRepository.findById(테이블_1.getId()).get().getTableGroup()).isNull(),
                 () -> assertThat(orderTableRepository.findById(테이블_2.getId()).get().getTableGroup()).isNull()
         );
+    }
+
+    @DisplayName("존재하지 않는 테이블그룹은 삭제할 수 없다")
+    @Test
+    void 테이블그룹_삭제_테이블그룹Id_검증(){
+        //then
+        assertThrows(NoSuchTableGroupException.class, () -> tableGroupService.ungroup(0L));
     }
 
     @DisplayName("테이블그룹 삭제시, 주문테이블에 COOKING이나 MEAL 상태의 주문이 있으면 안된다")

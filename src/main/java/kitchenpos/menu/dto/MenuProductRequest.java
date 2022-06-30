@@ -27,8 +27,4 @@ public class MenuProductRequest {
     public int getQuantity() {
         return quantity;
     }
-
-    public MenuProduct toMenuProduct(Menu menu, Product product) {
-        return MenuProduct.of(menu, product, quantity);
-    }
 }

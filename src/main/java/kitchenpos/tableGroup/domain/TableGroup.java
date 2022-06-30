@@ -44,8 +44,8 @@ public class TableGroup {
     private void validateOrderTables(List<OrderTable> orderTables) {
         validateOrderTablesSize(orderTables);
         validateOrderTablesDuplicated(orderTables);
-        validateOrderTablesEmpty(orderTables);
         validateOrderTablesNotGrouped(orderTables);
+        validateOrderTablesEmpty(orderTables);
     }
 
     private void validateOrderTablesSize(List<OrderTable> orderTables) {
@@ -62,17 +62,17 @@ public class TableGroup {
         }
     }
 
-    private void validateOrderTablesEmpty(List<OrderTable> orderTables) {
-        if (orderTables.stream().
-                anyMatch(orderTable -> !orderTable.isEmpty())) {
-            throw new IllegalOrderTableException(ErrorMessage.ERROR_ORDER_TABLE_NOT_EMPTY);
-        }
-    }
-
     private void validateOrderTablesNotGrouped(List<OrderTable> orderTables) {
         if (orderTables.stream().
                 anyMatch(orderTable -> orderTable.isGrouped())) {
             throw new IllegalOrderTableException(ErrorMessage.ERROR_ORDER_TABLE_GROUPED);
+        }
+    }
+
+    private void validateOrderTablesEmpty(List<OrderTable> orderTables) {
+        if (orderTables.stream().
+                anyMatch(orderTable -> !orderTable.isEmpty())) {
+            throw new IllegalOrderTableException(ErrorMessage.ERROR_ORDER_TABLE_NOT_EMPTY);
         }
     }
 

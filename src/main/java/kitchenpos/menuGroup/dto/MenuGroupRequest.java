@@ -19,8 +19,4 @@ public class MenuGroupRequest{
     public String getName() {
         return name;
     }
-
-    public MenuGroup toMenuGroup() {
-        return MenuGroup.from(name);
-    }
 }

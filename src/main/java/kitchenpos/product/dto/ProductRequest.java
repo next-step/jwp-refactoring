@@ -27,8 +27,4 @@ public class ProductRequest {
     public int getPrice() {
         return price;
     }
-
-    public Product toProduct() {
-        return Product.of(name, price);
-    }
 }

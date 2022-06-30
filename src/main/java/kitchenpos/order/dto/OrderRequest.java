@@ -30,8 +30,4 @@ public class OrderRequest {
     public List<OrderLineItemRequest> getOrderLineItems() {
         return orderLineItems;
     }
-
-    public Order toOrder(OrderTable orderTable) {
-        return Order.of(orderTable, LocalDateTime.now());
-    }
 }

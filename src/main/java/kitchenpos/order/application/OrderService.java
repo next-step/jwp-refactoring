@@ -20,6 +20,7 @@ import kitchenpos.orderTable.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,7 +47,7 @@ public class OrderService {
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
         final OrderTable orderTable = findOrderTableById(orderRequest.getOrderTableId());
-        final Order order = orderRequest.toOrder(orderTable);
+        final Order order = Order.of(orderTable, LocalDateTime.now());
         order.registerOrderLineItems(retrieveOrderLineItems(orderRequest));
         final Order savedOrder = orderRepository.save(order);
 
