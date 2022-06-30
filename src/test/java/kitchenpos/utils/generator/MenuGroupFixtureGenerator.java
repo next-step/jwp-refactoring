@@ -1,10 +1,14 @@
 package kitchenpos.utils.generator;
 
+import static kitchenpos.ui.MenuGroupRestControllerTest.MENU_GROUP_API_URL_TEMPLATE;
+import static kitchenpos.utils.MockMvcUtil.postRequestBuilder;
+
 import java.util.ArrayList;
 import java.util.List;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
 import org.springframework.boot.test.context.TestComponent;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 @TestComponent
 public class MenuGroupFixtureGenerator {
@@ -19,6 +23,7 @@ public class MenuGroupFixtureGenerator {
     private static int COUNTER = 0;
 
     public static MenuGroup generateMenuGroup() {
+        COUNTER++;
         MenuGroup menuGroup = new MenuGroup();
         menuGroup.setName(NAME + COUNTER);
         return menuGroup;
@@ -40,5 +45,9 @@ public class MenuGroupFixtureGenerator {
 
     public MenuGroup savedMenuGroup(){
         return menuGroupDao.save(generateMenuGroup());
+    }
+
+    public static MockHttpServletRequestBuilder 메뉴_그룹_생성_요청() throws Exception {
+        return postRequestBuilder(MENU_GROUP_API_URL_TEMPLATE, generateMenuGroup());
     }
 }

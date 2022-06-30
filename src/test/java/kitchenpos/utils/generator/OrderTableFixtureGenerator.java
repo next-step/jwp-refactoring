@@ -1,8 +1,12 @@
 package kitchenpos.utils.generator;
 
+import static kitchenpos.ui.TableRestControllerTest.TABLE_API_BASE_URL;
+import static kitchenpos.utils.MockMvcUtil.postRequestBuilder;
+
 import java.util.ArrayList;
 import java.util.List;
 import kitchenpos.domain.OrderTable;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 public class OrderTableFixtureGenerator {
 
@@ -24,5 +28,9 @@ public class OrderTableFixtureGenerator {
             orderTables.add(generateOrderTable());
         }
         return orderTables;
+    }
+
+    public static MockHttpServletRequestBuilder 주문_테이블_생성_요청() throws Exception {
+        return postRequestBuilder(TABLE_API_BASE_URL, generateOrderTable());
     }
 }

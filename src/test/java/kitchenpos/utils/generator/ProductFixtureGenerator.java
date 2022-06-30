@@ -1,11 +1,15 @@
 package kitchenpos.utils.generator;
 
+import static kitchenpos.ui.ProductRestControllerTest.PRODUCT_API_URL_TEMPLATE;
+import static kitchenpos.utils.MockMvcUtil.postRequestBuilder;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
 import org.springframework.boot.test.context.TestComponent;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 @TestComponent
 public class ProductFixtureGenerator {
@@ -59,5 +63,9 @@ public class ProductFixtureGenerator {
             product.add(productDao.save(generateProduct()));
         }
         return product;
+    }
+
+    public static MockHttpServletRequestBuilder 상품_생성_요청() throws Exception {
+        return postRequestBuilder(PRODUCT_API_URL_TEMPLATE, generateProduct());
     }
 }

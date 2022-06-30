@@ -1,5 +1,8 @@
 package kitchenpos.utils.generator;
 
+import static kitchenpos.ui.MenuRestControllerTest.MENU_API_URL_TEMPLATE;
+import static kitchenpos.utils.MockMvcUtil.postRequestBuilder;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +10,7 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 public class MenuFixtureGenerator {
 
@@ -40,5 +44,12 @@ public class MenuFixtureGenerator {
             menuProducts.add(menuProduct);
         }
         return menuProducts;
+    }
+
+    public static MockHttpServletRequestBuilder 메뉴_생성_요청(
+        final MenuGroup savedMenuGroup,
+        final List<Product> savedProducts
+    ) throws Exception {
+        return postRequestBuilder(MENU_API_URL_TEMPLATE, generateMenu(savedMenuGroup, savedProducts));
     }
 }
