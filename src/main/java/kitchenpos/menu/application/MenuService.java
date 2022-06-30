@@ -72,4 +72,8 @@ public class MenuService {
                 .map(product -> MenuProduct.of(product, Quantity.of(menuProductRequests.get(product.getId()))))
                 .collect(Collectors.toList());
     }
+
+    public Menu findById(long menuId) {
+        return menuRepository.findById(menuId).orElseThrow(NoSuchElementException::new);
+    }
 }
