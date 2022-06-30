@@ -5,24 +5,23 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
-import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.application.TableService;
-import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -84,10 +83,10 @@ class TableServiceTest extends ServiceTest {
     @DisplayName("주문 테이블이 시스템에 등록 되어 있지 않으면 빈테이블로 변경 할 수 없다.")
     void changeEmptyFailWithTableNotExitTest() {
 
-        OrderTable orderTable = new OrderTable(7L, 3, false);
+        OrderTable orderTable = new OrderTable(3, false);
         //when & then
         assertThatThrownBy(
-                () -> tableService.changeEmpty(orderTable.getId(), OrderTableRequest.of(orderTable.isEmptyTable()))
+                () -> tableService.changeEmpty(100L, OrderTableRequest.of(orderTable.isEmptyTable()))
         ).isInstanceOf(NoSuchElementException.class);
     }
 
@@ -97,10 +96,8 @@ class TableServiceTest extends ServiceTest {
                                            @Autowired MenuGroupRepository menuGroupRepository) {
 
         //given : 테이블 그룹 생성
-        TableGroup tableGroup = tableGroupRepository.save(new TableGroup(Arrays.asList(
-                new OrderTable(3, true),
-                new OrderTable(4, true))));
-        OrderTable savedOrdertable = orderTableRepository.save(new OrderTable(tableGroup, 10, false));
+        TableGroup tableGroup = tableGroupRepository.save(new TableGroup());
+        OrderTable savedOrdertable = orderTableRepository.save(new OrderTable(tableGroup.getId(), 10, false));
         // 주문 생성
         MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup("중식"));
         Menu menu = menuRepository.save(new Menu("볶음밥", BigDecimal.valueOf(1000L), menuGroup.getId()));
@@ -154,11 +151,11 @@ class TableServiceTest extends ServiceTest {
     @DisplayName("주문 테이블이 시스템에 등록 되어 있지 않으면 손님수를 변경 할 수 없다.")
     void changeNumberOfGuestsFailWithOrderTableNotExistTest() {
         //given
-        OrderTable orderTable = new OrderTable(8L, 5, false);
+        OrderTable orderTable = new OrderTable( 5, false);
 
         //when & then
         assertThatThrownBy(
-                () -> tableService.changeNumberOfGuests(orderTable.getId(),
+                () -> tableService.changeNumberOfGuests(100L,
                         OrderTableRequest.of(10))
         ).isInstanceOf(NoSuchElementException.class);
     }

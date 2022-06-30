@@ -16,11 +16,9 @@ class OrderTest {
     @Test
     @DisplayName("주문에 주문 항목 추가")
     void addOrderLineTest() {
-        //given
-        OrderTable orderTable = new OrderTable(1L, 10, false);
 
         //when
-        Order order = new Order(orderTable.getId(), new OrderLineItem(1L, 10));
+        Order order = new Order(1L, new OrderLineItem(1L, 10));
 
         //then
         assertThat(order.getOrderLineItems()).hasSize(1);
@@ -30,7 +28,7 @@ class OrderTest {
     @DisplayName("주문에 빈주문 항목 추가")
     void addEmptyOrderLineTest() {
         //given
-        OrderTable orderTable = new OrderTable(1L, 10, false);
+        OrderTable orderTable = new OrderTable(10, false);
 
         //when & then
         assertThatThrownBy(
@@ -42,7 +40,7 @@ class OrderTest {
     @DisplayName("완료 상태의 주문의 상태 수정")
     void changeOrderStatusTest() {
         //given
-        OrderTable orderTable = new OrderTable(1L, 10, false);
+        OrderTable orderTable = new OrderTable(10, false);
         Order order = new Order(orderTable.getId(), new OrderLineItem(1L, 10));
 
         //when

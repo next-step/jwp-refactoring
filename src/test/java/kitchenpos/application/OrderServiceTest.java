@@ -117,7 +117,7 @@ class OrderServiceTest extends ServiceTest {
         //when & then
         assertThatThrownBy(
                 () -> orderService.create(
-                        OrderRequest.of(orderTable.getId(), toOrderLineItemRequests(주문1.getOrderLineItems())))
+                        OrderRequest.of(100L, toOrderLineItemRequests(주문1.getOrderLineItems())))
         ).isInstanceOf(NoSuchElementException.class);
     }
 

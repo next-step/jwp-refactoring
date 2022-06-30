@@ -2,7 +2,6 @@ package kitchenpos.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Arrays;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
@@ -22,7 +21,7 @@ class OrderTableTest {
     void before() {
         orderTable1 = new OrderTable(0, true);
         orderTable2 = new OrderTable(0, true);
-        tableGroup = new TableGroup(Arrays.asList(orderTable1, orderTable2));
+        tableGroup = new TableGroup();
     }
     @Test
     @DisplayName("주문 테이블에 단체 지정을 할 수 잇다.")
@@ -31,10 +30,10 @@ class OrderTableTest {
         OrderTable orderTable = new OrderTable(0, true);
 
         //when
-        orderTable.attachToTableGroup(tableGroup);
+        orderTable.attachToTableGroup(10L);
 
         //then
-        assertThat(orderTable.getTableGroup()).isNotNull();
+        assertThat(orderTable.getTableGroupId()).isNotNull();
     }
 
     @Test

@@ -6,10 +6,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.List;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
-import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
@@ -17,7 +18,6 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,9 +33,6 @@ class TableGroupServiceTest extends ServiceTest {
 
     @Autowired
     private OrderTableRepository orderTableRepository;
-
-    @Autowired
-    private TableGroupRepository tableGroupRepository;
 
     @Autowired
     private TableGroupService tableGroupService;
@@ -55,14 +52,10 @@ class TableGroupServiceTest extends ServiceTest {
     @DisplayName("주문 테이블들이 시스템에 등록 되어 있지 않으면 테이블 그룹은 지정 할 수 없다.")
     void createFailWithOrderTableNotExistTest() {
 
-        //given
-        OrderTable wrongOrderTable1 = new OrderTable(5L, 5, false);
-        OrderTable wrongOrderTable2 = new OrderTable(5L, 5, false);
-
         //when & then
         assertThatThrownBy(
                 () -> tableGroupService.create(
-                        TableGroupRequest.from(Arrays.asList(wrongOrderTable1.getId(), wrongOrderTable2.getId())))
+                        TableGroupRequest.from(Arrays.asList(10L, 12L)))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -108,7 +101,9 @@ class TableGroupServiceTest extends ServiceTest {
         tableGroupService.ungroup(response.getId());
 
         //then
-        TableGroup tableGroup = tableGroupRepository.findById(response.getId()).get();
-        assertThat(tableGroup.getOrderTables()).isEmpty();
+        List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(response.getId());
+        long count = orderTables.stream().filter(orderTable -> !orderTable.isInTableGroup()).count();
+
+        assertThat(count).isZero();
     }
 }
