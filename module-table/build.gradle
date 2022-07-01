@@ -5,7 +5,3 @@ bootJar {
 jar {
     enabled = true
 }
-
-dependencies {
-    testImplementation project(':module-order')
-}
