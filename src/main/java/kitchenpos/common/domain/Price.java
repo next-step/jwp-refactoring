@@ -19,6 +19,12 @@ public class Price {
         this.price = price;
     }
 
+    public Price(Long price) {
+        BigDecimal value = BigDecimal.valueOf(price);
+        validationPrice(value);
+        this.price = value;
+    }
+
     private void validationPrice(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("가격은 0원 이상이어야 합니다.");

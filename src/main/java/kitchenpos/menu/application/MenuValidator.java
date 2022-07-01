@@ -54,8 +54,7 @@ public class MenuValidator {
 
         Price total = calculateTotalAmount(menuProducts, productIdPrices);
 
-        if (new Price(BigDecimal
-                .valueOf(request.getPrice()))
+        if (new Price(request.getPrice())
                 .greaterThan(total)) {
             throw new IllegalArgumentException("상품 가격의 합계 보다 비싼 메뉴 가격을 추가 할 수 업습니다.");
         }
