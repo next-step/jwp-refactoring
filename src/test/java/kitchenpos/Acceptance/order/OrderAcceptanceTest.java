@@ -18,6 +18,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static kitchenpos.menu.MenuGenerator.*;
 import static kitchenpos.order.OrderGenerator.*;
@@ -113,22 +115,22 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         주문_생성_성공됨(주문_생성_요청_결과);
     }
 
-//    @DisplayName("주문 목록 조회 시 정상 조회되어야 한다")
-//    @Test
-//    void findAllOrderTest() {
-//        // given
-//        OrderTable 변경_될_테이블 = 주문_테이블_생성(null, 10, false);
-//        빈_테이블_변경_요청(orderTable.getId(), 변경_될_테이블);
-//        List<OrderLineItem> 주문_목록 = Collections.singletonList(주문_목록_생성(null, menuId, 1));
-//        주문_생성_요청(orderTable.getId(), 주문_목록);
-//
-//        // when
-//        ExtractableResponse<Response> 주문_생성_요청_결과 = 주문_목록_조회();
-//
-//        // then
-//        주문_목록_조회_성공됨(주문_생성_요청_결과);
-//    }
-//
+    @DisplayName("주문 목록 조회 시 정상 조회되어야 한다")
+    @Test
+    void findAllOrderTest() {
+        // given
+        빈_테이블_변경_API_호출(주문_테이블_아이디, false);
+        OrderLineItemRequest 주문_물품_생성_요청 = 주문_물품_생성_요청(메뉴_아이디, 1L);
+        OrderCreateRequest 주문_생성_요청 = 주문_생성_요청(주문_테이블_아이디, Collections.singletonList(주문_물품_생성_요청));
+        Long 생성된_주문 = 주문_생성_API_요청(주문_생성_요청).as(OrderResponse.class).getId();
+
+        // when
+        ExtractableResponse<Response> 주문_생성_요청_결과 = 주문_목록_조회_API_요청();
+
+        // then
+        주문_목록_조회_성공됨(주문_생성_요청_결과, 생성된_주문);
+    }
+
 //    @DisplayName("저장되지 않은 주문의 상태를 변경하면 예외가 발생해야 한다")
 //    @Test
 //    void updateOrderStateByNotSavedOrderTest() {
@@ -194,13 +196,14 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
     }
 
-//    void 주문_목록_조회_성공됨(ExtractableResponse<Response> response) {
-//        List<Order> orders = response.body().jsonPath().getList("", Order.class);
-//
-//        assertThat(response.statusCode()).isEqualTo(HttpStatus.SC_OK);
-//        assertThat(orders.size()).isGreaterThanOrEqualTo(1);
-//    }
-//
+    void 주문_목록_조회_성공됨(ExtractableResponse<Response> response, Long savedOrderId) {
+        List<Long> orderIds = response.body().jsonPath().getList("id", Long.class);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.SC_OK);
+        assertThat(orderIds.size()).isGreaterThanOrEqualTo(1);
+        assertThat(orderIds).contains(savedOrderId);
+    }
+
 //    void 주문_상태_변경_실패됨(ExtractableResponse<Response> response) {
 //        assertThat(response.statusCode()).isEqualTo(HttpStatus.SC_INTERNAL_SERVER_ERROR);
 //    }

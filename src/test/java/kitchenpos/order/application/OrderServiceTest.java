@@ -10,6 +10,7 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.Orders;
 import kitchenpos.order.dto.OrderCreateRequest;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.product.dao.ProductRepository;
@@ -144,26 +145,29 @@ class OrderServiceTest {
         주문_정상_생성됨(주문, 주문_생성_요청);
     }
 
-//    @DisplayName("주문 목록을 조회하면 정상 조회되어야 한다")
-//    @Test
-//    void findAllOrderTest() {
-//        // given
-//        List<Order> 주문_리스트 = Arrays.asList(
-//                주문_생성(0L, OrderStatus.COOKING, Collections.emptyList()),
-//                주문_생성(0L, OrderStatus.COOKING, Collections.emptyList()),
-//                주문_생성(0L, OrderStatus.COOKING, Collections.emptyList()),
-//                주문_생성(0L, OrderStatus.COOKING, Collections.emptyList())
-//        );
-//        when(orderRepository.findAll()).thenReturn(주문_리스트);
-//
-//        // when
-//        List<Order> 주문_목록_조회_리스트 = orderService.list();
-//
-//        // then
-//        assertThat(주문_목록_조회_리스트.size()).isGreaterThanOrEqualTo(주문_리스트.size());
-//        assertThat(주문_목록_조회_리스트).containsAll(주문_리스트);
-//    }
-//
+    @DisplayName("주문 목록을 조회하면 정상 조회되어야 한다")
+    @Test
+    void findAllOrderTest() {
+        // given
+        tableService.changeEmpty(주문_테이블.getId(), false);
+        List<OrderLineItemRequest> 주문_목록_생성_요청 = Arrays.asList(
+                주문_물품_생성_요청(메뉴.getId(), 1L),
+                주문_물품_생성_요청(메뉴.getId(), 1L)
+        );
+        List<Long> 생성된_주문_아이디들 = Arrays.asList(
+                orderService.create(주문_생성_요청(주문_테이블.getId(), 주문_목록_생성_요청)).getId(),
+                orderService.create(주문_생성_요청(주문_테이블.getId(), 주문_목록_생성_요청)).getId(),
+                orderService.create(주문_생성_요청(주문_테이블.getId(), 주문_목록_생성_요청)).getId(),
+                orderService.create(주문_생성_요청(주문_테이블.getId(), 주문_목록_생성_요청)).getId()
+        );
+
+        // when
+        Orders 주문_목록_조회_리스트 = orderService.list();
+
+        // then
+        주문_목록_조회됨(주문_목록_조회_리스트, 생성된_주문_아이디들);
+    }
+
 //    @DisplayName("없는 주문의 주문 상태를 변경하면 예외가 발생해야 한다")
 //    @Test
 //    void changeOrderStateByNotSavedOrderTest() {
@@ -207,6 +211,11 @@ class OrderServiceTest {
         assertThat(order.getOrderLineItems().size()).isEqualTo(request.getOrderLineItems().size());
         assertThat(order.getOrderLineItems().stream().map(orderLineItem -> orderLineItem.getMenu().getId()).collect(Collectors.toList()))
                 .containsAll(request.getOrderLineItems().stream().map(OrderLineItemRequest::getMenu).collect(Collectors.toList()));
+    }
+
+    void 주문_목록_조회됨(Orders orders, List<Long> containIds) {
+        assertThat(orders.getValue().size()).isGreaterThanOrEqualTo(containIds.size());
+        assertThat(orders.getValue().stream().map(Order::getId).collect(Collectors.toList())).containsAll(containIds);
     }
 
 //    void 주문_상태_변경_실패됨(Runnable runnable) {

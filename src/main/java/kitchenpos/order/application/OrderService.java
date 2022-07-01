@@ -9,6 +9,7 @@ import kitchenpos.order.dao.OrderRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.Orders;
 import kitchenpos.order.dto.OrderCreateRequest;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
@@ -56,14 +57,8 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
-    public List<Order> list() {
-        final List<Order> orders = orderRepository.findAll();
-
-        for (final Order order : orders) {
-            order.setOrderLineItems(orderLineItemRepository.findAllByOrderId(order.getId()));
-        }
-
-        return orders;
+    public Orders list() {
+        return new Orders(orderRepository.findAll());
     }
 
     @Transactional

@@ -37,4 +37,8 @@ public class OrderGenerator {
     public static ExtractableResponse<Response> 주문_생성_API_요청(OrderCreateRequest request) {
         return RestAssuredRequest.postRequest(PATH, Collections.emptyMap(), request);
     }
+
+    public static ExtractableResponse<Response> 주문_목록_조회_API_요청() {
+        return RestAssuredRequest.getRequest(PATH, Collections.emptyMap());
+    }
 }
