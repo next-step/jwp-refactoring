@@ -1,7 +1,5 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableRepository;
 import kitchenpos.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static kitchenpos.domain.MenuTest.메뉴_생성;
 import static kitchenpos.domain.OrderLineItemTest.주문_항목_생성;
 import static kitchenpos.domain.OrderTableTest.주문_태이블_생성;
 import static kitchenpos.domain.OrderTest.주문_생성;
@@ -33,7 +32,7 @@ class OrderServiceTest {
     @Mock
     private OrderRepository orderRepository;
     @Mock
-    private OrderLineItemDao orderLineItemDao;
+    private OrderLineItemRepository orderLineItemRepository;
     @Mock
     private OrderTableRepository orderTableDao;
     @InjectMocks
@@ -45,8 +44,10 @@ class OrderServiceTest {
 
     @BeforeEach
     void setup() {
-        orderLineItem1 = 주문_항목_생성(null, 1L, 1);
-        orderLineItem2 = 주문_항목_생성(null, 2L, 1);
+        Menu menu1 = 메뉴_생성(1L, "menu", 1_000, 1L, null);
+        Menu menu2 = 메뉴_생성(2L, "menu", 1_000, 1L, null);
+        orderLineItem1 = 주문_항목_생성(null, menu1, 1);
+        orderLineItem2 = 주문_항목_생성(null, menu2, 1);
         orderLineItems = Arrays.asList(orderLineItem1, orderLineItem2);
     }
 
@@ -59,8 +60,8 @@ class OrderServiceTest {
 
         when(menuRepository.countByIdIn(any())).thenReturn(orderLineItems.size());
         when(orderTableDao.findById(any())).thenReturn(Optional.of(orderTable));
-        when(orderLineItemDao.save(orderLineItem1)).thenReturn(orderLineItem1);
-        when(orderLineItemDao.save(orderLineItem2)).thenReturn(orderLineItem2);
+        when(orderLineItemRepository.save(orderLineItem1)).thenReturn(orderLineItem1);
+        when(orderLineItemRepository.save(orderLineItem2)).thenReturn(orderLineItem2);
         when(orderRepository.save(order)).thenReturn(주문_생성(1L, orderTable.getId(), OrderStatus.COOKING.toString(),
                 LocalDateTime.now(), orderLineItems));
 
@@ -141,7 +142,7 @@ class OrderServiceTest {
         Order order = 주문_생성(orderTable.getId(), OrderStatus.COOKING.toString(), LocalDateTime.now(), orderLineItems);
 
         when(orderRepository.findAll()).thenReturn(Collections.singletonList(order));
-        when(orderLineItemDao.findAllByOrderId(order.getId())).thenReturn(orderLineItems);
+        when(orderLineItemRepository.findAllByOrderId(order.getId())).thenReturn(orderLineItems);
 
         // when
         List<Order> list = orderService.list();
@@ -158,7 +159,7 @@ class OrderServiceTest {
         Order order = 주문_생성(orderTable.getId(), OrderStatus.COOKING.toString(), LocalDateTime.now(), orderLineItems);
 
         when(orderRepository.findById(any())).thenReturn(Optional.of(order));
-        when(orderLineItemDao.findAllByOrderId(any())).thenReturn(orderLineItems);
+        when(orderLineItemRepository.findAllByOrderId(any())).thenReturn(orderLineItems);
 
         // when
         Order savedOrder = orderService.changeOrderStatus(1L, order);
