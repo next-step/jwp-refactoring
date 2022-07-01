@@ -14,6 +14,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.List;
 
+import static kitchenpos.util.testFixture.두마리_메뉴_그룹_생성;
+import static kitchenpos.util.testFixture.한마리_메뉴_그룹_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
@@ -26,13 +28,13 @@ class MenuGroupServiceTest {
     @Mock
     MenuGroupDao menuGroupDao;
 
-    private MenuGroup 두마리메뉴;
     private MenuGroup 한마리메뉴;
+    private MenuGroup 두마리메뉴;
 
     @BeforeEach
     void setUp() {
-        두마리메뉴 = MenuGroup.of((long)1, "두마리메뉴");
-        한마리메뉴 = MenuGroup.of((long)2, "한마리메뉴");
+        한마리메뉴 = 한마리_메뉴_그룹_생성();
+        두마리메뉴 = 두마리_메뉴_그룹_생성();
     }
 
     @DisplayName("메뉴 그룹 등록")

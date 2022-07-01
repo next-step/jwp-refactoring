@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static kitchenpos.util.testFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -55,13 +56,13 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        주문항목_1 = OrderLineItem.of(1L, 1L, 1L, 1L);
-        주문항목_2 = OrderLineItem.of(2L, 1L, 2L, 1L);
-        주문항목_3 = OrderLineItem.of(3L, 2L, 1L, 1L);
-        주문테이블_1 = OrderTable.of(1L, 1L, 3, false);
-        주문테이블_2 = OrderTable.of(2L, 1L, 0, false);
-        주문_1 = Order.of(1L, 1L, null, null, Arrays.asList(주문항목_1, 주문항목_2));
-        주문_2 = Order.of(2L, 1L, null, null, Arrays.asList(주문항목_3));
+        주문항목_1 = 주문항목_1_생성();
+        주문항목_2 = 주문항목_2_생성();
+        주문항목_3 = 주문항목_3_생성();
+        주문테이블_1 = 주문테이블_1_생성();
+        주문테이블_2 = 주문테이블_2_생성();
+        주문_1 = 주문_1_생성(Arrays.asList(주문항목_1, 주문항목_2));
+        주문_2 = 주문_2_생성(Arrays.asList(주문항목_3));
     }
 
     @DisplayName("주문 등록")

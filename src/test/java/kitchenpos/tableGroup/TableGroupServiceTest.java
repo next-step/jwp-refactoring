@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static kitchenpos.util.testFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -50,11 +51,11 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        주문테이블1 = OrderTable.of(1L, null, 3, true);
-        주문테이블2 = OrderTable.of(2L, null, 1, true);
-        주문테이블3 = OrderTable.of(3L, null, 3, true);
-        단체지정1 = TableGroup.of(1L, null, Arrays.asList(주문테이블1, 주문테이블2));
-        단체지정2 = TableGroup.of(1L, null, Arrays.asList(주문테이블3));
+        주문테이블1 = 빈_주문테이블_1_생성();
+        주문테이블2 = 빈_주문테이블_2_생성();
+        주문테이블3 = 빈_주문테이블_3_생성();
+        단체지정1 = 단체지정_1_생성(Arrays.asList(주문테이블1, 주문테이블2));
+        단체지정2 = 단체지정_2_생성(Arrays.asList(주문테이블3));
     }
 
     @DisplayName("단체 지정 등록")

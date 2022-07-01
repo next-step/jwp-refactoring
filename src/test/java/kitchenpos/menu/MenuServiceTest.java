@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static kitchenpos.util.testFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -54,16 +55,16 @@ class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        한마리메뉴 = MenuGroup.of(1L, "한마리메뉴");
+        한마리메뉴 = 한마리_메뉴_그룹_생성();
 
-        후라이드 = Product.of(1L, "후라이드", new BigDecimal(16000));
-        양념 = Product.of(2L, "양념치킨", new BigDecimal(16000));
+        후라이드 = 후라이드_상품_생성();
+        양념 = 양념치킨_상품_생성();
 
-        후라이드메뉴상품 = MenuProduct.of(1L, 1L, 후라이드.getId(), 1);
-        양념메뉴상품 = MenuProduct.of(2L, 2L, 양념.getId(), 1);
+        후라이드메뉴상품 = 후라이드_메뉴_상품_생성(후라이드.getId());
+        양념메뉴상품 = 양념_메뉴_상품_생성(양념.getId());
 
-        후라이드치킨 = Menu.of(1L, "후라이드치킨", new BigDecimal(16000), 한마리메뉴.getId(), Arrays.asList(후라이드메뉴상품));
-        양념치킨 = Menu.of(2L, "양념치킨", new BigDecimal(17000), 한마리메뉴.getId(), Arrays.asList(양념메뉴상품));
+        후라이드치킨 = 후라이드_치킨_메뉴_생성(한마리메뉴.getId(), Arrays.asList(후라이드메뉴상품));
+        양념치킨 = 양념_치킨_메뉴_생성(한마리메뉴.getId(), Arrays.asList(양념메뉴상품));
     }
 
     @DisplayName("메뉴 등록")

@@ -15,6 +15,8 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
+import static kitchenpos.util.testFixture.양념치킨_상품_생성;
+import static kitchenpos.util.testFixture.후라이드_상품_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -33,8 +35,8 @@ class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
-        후라이드 = Product.of((long)1, "후라이드", new BigDecimal(16000));
-        양념치킨 = Product.of((long)2, "양념치킨", new BigDecimal(16000));
+        후라이드 = 후라이드_상품_생성();
+        양념치킨 = 양념치킨_상품_생성();
     }
 
     @DisplayName("상품 등록")

@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static kitchenpos.util.testFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
@@ -37,8 +38,8 @@ public class TableServiceTest {
 
     @BeforeEach
     void setUp() {
-        주문테이블1 = OrderTable.of(1L, null, 2, true);
-        주문테이블2 = OrderTable.of(2L, null, 3, true);
+        주문테이블1 = 빈_주문테이블_1_생성();
+        주문테이블2 = 빈_주문테이블_2_생성();
     }
 
     @DisplayName("주문 테이블 등록")
