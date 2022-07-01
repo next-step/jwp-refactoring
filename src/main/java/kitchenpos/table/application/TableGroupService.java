@@ -31,7 +31,7 @@ public class TableGroupService {
         this.orderService = orderService;
     }
 
-    public TableGroup getTableGroup(Long id) {
+    public TableGroup getTableGroup(final Long id) {
         return tableGroupRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(id + " 에 해당하는 테이블 그룹을 찾을 수 없습니다."));
     }
@@ -55,13 +55,13 @@ public class TableGroupService {
         tableGroup.ungroup();
     }
 
-    private void checkOrderTableCount(OrderTables orderTables, List<Long> ids) {
+    private void checkOrderTableCount(final OrderTables orderTables, final List<Long> ids) {
         if (orderTables.getValue().size() != ids.size()) {
             throw new IllegalArgumentException("생성 요청된 테이블 그룹의 중 존재하지 않는 주문 테이블이 있습니다.");
         }
     }
 
-    private void possibleUngroupTableGroup(List<OrderTable> orderTables) {
+    private void possibleUngroupTableGroup(final List<OrderTable> orderTables) {
         List<Long> orderTableIds = orderTables.stream()
                 .mapToLong(OrderTable::getId)
                 .boxed()

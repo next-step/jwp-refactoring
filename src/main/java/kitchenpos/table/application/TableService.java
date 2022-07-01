@@ -33,7 +33,7 @@ public class TableService {
         return new OrderTables(orderTableRepository.findAll());
     }
 
-    public OrderTable getOrderTable(Long id) {
+    public OrderTable getOrderTable(final Long id) {
         if (id == null) {
             throw new IllegalArgumentException("id 는 null 이 아니여야 합니다.");
         }
@@ -42,11 +42,11 @@ public class TableService {
                 .orElseThrow(() -> new IllegalArgumentException(id + " 에 해당하는 주문 테이블을 찾을 수 없습니다."));
     }
 
-    public OrderTables findOrderTablesByIds(List<Long> ids) {
+    public OrderTables findOrderTablesByIds(final List<Long> ids) {
         return new OrderTables(orderTableRepository.findAllById(ids));
     }
 
-    public OrderTables findOrderTablesByTableGroupId(Long tableGroupId) {
+    public OrderTables findOrderTablesByTableGroupId(final Long tableGroupId) {
         return new OrderTables(orderTableRepository.findAllByTableGroupId(tableGroupId));
     }
 

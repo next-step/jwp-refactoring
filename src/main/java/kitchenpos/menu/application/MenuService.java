@@ -51,7 +51,7 @@ public class MenuService {
         return new Menus(menuRepository.findAll());
     }
 
-    public Menus findMenusInIds(List<Long> ids) {
+    public Menus findMenusInIds(final List<Long> ids) {
         return new Menus(menuRepository.findAllById(ids));
     }
 }

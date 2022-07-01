@@ -27,7 +27,7 @@ public class MenuGroupService {
         return new MenuGroups(menuGroupRepository.findAll());
     }
 
-    public MenuGroup getMenuGroup(Long id) {
+    public MenuGroup getMenuGroup(final Long id) {
         if (id == null) {
             throw new IllegalArgumentException("id 는 null 이 아니여야 합니다.");
         }

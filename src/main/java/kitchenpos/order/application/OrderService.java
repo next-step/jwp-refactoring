@@ -61,7 +61,7 @@ public class OrderService {
         return new Orders(orderRepository.findAll());
     }
 
-    public Order getOrder(Long id) {
+    public Order getOrder(final Long id) {
         return orderRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(id + " 에 해당하는 주문을 찾을 수 없습니다."));
     }
@@ -75,15 +75,15 @@ public class OrderService {
         return savedOrder;
     }
 
-    public OrderStatus getOrderStatusByOrderTableId(Long orderTableId) {
+    public OrderStatus getOrderStatusByOrderTableId(final Long orderTableId) {
         return orderRepository.findOrderStatusByOrderTableId(orderTableId);
     }
 
-    public boolean existsByOrderTableIdInAndOrderStatusIn(List<Long> orderTables, List<OrderStatus> orderStatuses) {
+    public boolean existsByOrderTableIdInAndOrderStatusIn(final List<Long> orderTables, final List<OrderStatus> orderStatuses) {
         return orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTables, orderStatuses);
     }
 
-    private void validateOrderCreate(OrderCreateRequest request, OrderTable orderTable, Menus menus) {
+    private void validateOrderCreate(final OrderCreateRequest request, final OrderTable orderTable, Menus menus) {
         if (menus.isNotAllContainIds(request.getMenus())) {
             throw new IllegalArgumentException("주문에 저장되지 않은 메뉴가 존재합니다.");
         }

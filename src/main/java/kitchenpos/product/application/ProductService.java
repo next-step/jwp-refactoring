@@ -25,7 +25,7 @@ public class ProductService {
         return new Products(productRepository.findAll());
     }
 
-    public Product getProduct(Long id) {
+    public Product getProduct(final Long id) {
         return productRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(id + " 에 해당하는 상품을 찾을 수 없습니다."));
     }
