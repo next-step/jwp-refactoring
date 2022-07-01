@@ -19,6 +19,9 @@ dependencies {
 
     implementation 'org.flywaydb:flyway-core'
 
+    implementation 'com.google.guava:guava:14.0.1'
+    
+    testImplementation 'io.rest-assured:rest-assured:3.3.0'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     runtimeOnly 'com.h2database:h2'
