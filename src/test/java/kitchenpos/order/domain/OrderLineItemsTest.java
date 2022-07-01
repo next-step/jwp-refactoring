@@ -19,8 +19,8 @@ class OrderLineItemsTest {
     @Test
     void create() {
         //given
-        Menu 후라이드치킨 = 메뉴_만들기("후라이드치킨", 10000);
-        Menu 피자 = 메뉴_만들기("피자", 20000);
+        Menu 후라이드치킨 = 메뉴_만들기(1L, "후라이드치킨", 10000);
+        Menu 피자 = 메뉴_만들기(2L, "피자", 20000);
         List<OrderLineItemRequest> requests = Collections.emptyList();
 
         //when then

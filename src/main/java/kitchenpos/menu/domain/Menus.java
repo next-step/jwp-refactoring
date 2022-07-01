@@ -1,25 +1,25 @@
 package kitchenpos.menu.domain;
 
-import java.util.HashMap;
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toMap;
+
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 public class Menus {
-    private final Map<Long, Menu> menuCaches = new HashMap<>();
-    private final List<Menu> menus;
+    private final Map<Long, Menu> menus;
 
     public Menus(List<Menu> menus) {
-        this.menus = menus;
+        this.menus = menus.stream()
+                .collect(collectingAndThen(toMap(Menu::getId, Function.identity()), Collections::unmodifiableMap));
     }
 
     public Menu getMenuBy(Long menuId) {
-        return menuCaches.computeIfAbsent(menuId, this::getMenu);
-    }
-
-    private Menu getMenu(Long menuId) {
-        return menus.stream()
-                .filter(menu -> menuId.equals(menu.getId()))
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("[ERROR] 메뉴 변환에 오류가 발생하였습니다."));
+        if (!menus.containsKey(menuId)) {
+            throw new IllegalStateException("[ERROR] productId 대한 값이 없습니다.");
+        }
+        return menus.get(menuId);
     }
 }
