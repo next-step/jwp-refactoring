@@ -10,7 +10,7 @@ public class Price {
     public static final int ZERO = 0;
 
     @Column(name = "price")
-    private BigDecimal value;
+    private BigDecimal value = BigDecimal.ZERO;
 
     protected Price() {
     }
@@ -28,5 +28,9 @@ public class Price {
 
     public BigDecimal value() {
         return value;
+    }
+
+    public boolean isExpensive(Price price) {
+        return price.value.compareTo(value) < ZERO;
     }
 }
