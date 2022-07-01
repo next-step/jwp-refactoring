@@ -1,7 +1,6 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,7 +32,7 @@ class MenuServiceTest {
     @Mock
     private MenuProductDao menuProductDao;
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
     @InjectMocks
     private MenuService menuService;
 
@@ -47,7 +46,7 @@ class MenuServiceTest {
         Menu menu = 메뉴_생성("매뉴", 1_000, 1L, menuProducts);
 
         when(menuGroupRepository.existsById(menu.getMenuGroupId())).thenReturn(true);
-        when(productDao.findById(any())).thenReturn(Optional.of(product));
+        when(productRepository.findById(any())).thenReturn(Optional.of(product));
         when(menuProductDao.save(menuProduct)).thenReturn(menuProduct);
         when(menuRepository.save(menu)).thenReturn(메뉴_생성(1L, "매뉴", 1_000, 1L, menuProducts));
 
@@ -97,7 +96,7 @@ class MenuServiceTest {
         Menu menu = 메뉴_생성("매뉴", 2_000, 1L, menuProducts);
 
         when(menuGroupRepository.existsById(menu.getMenuGroupId())).thenReturn(true);
-        when(productDao.findById(any())).thenReturn(Optional.empty());
+        when(productRepository.findById(any())).thenReturn(Optional.empty());
 
         // when, then
         assertThatThrownBy(() -> menuService.create(menu))
@@ -114,7 +113,7 @@ class MenuServiceTest {
         Menu menu = 메뉴_생성("매뉴", 2_000, 1L, menuProducts);
 
         when(menuGroupRepository.existsById(menu.getMenuGroupId())).thenReturn(true);
-        when(productDao.findById(any())).thenReturn(Optional.of(product));
+        when(productRepository.findById(any())).thenReturn(Optional.of(product));
 
         // when, then
         assertThatThrownBy(() -> menuService.create(menu))
