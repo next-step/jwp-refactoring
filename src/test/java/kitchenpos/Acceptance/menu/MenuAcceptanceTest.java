@@ -3,10 +3,8 @@ package kitchenpos.Acceptance.menu;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.Acceptance.AcceptanceTest;
-import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.product.dto.ProductResponse;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,27 +16,21 @@ import java.util.Collections;
 import java.util.List;
 
 import static kitchenpos.menu.MenuGenerator.*;
-import static kitchenpos.product.ProductGenerator.상품_생성_API_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MenuAcceptanceTest extends AcceptanceTest {
     private static final int PRODUCT_PRICE = 1_000;
 
-    private MenuGroupResponse menuGroup;
-    private ProductResponse product;
-
     @BeforeEach
     public void setUp() {
         super.setUp();
-        menuGroup = 메뉴_그룹_생성_API_호출("메뉴 그룹").as(MenuGroupResponse.class);
-        product = 상품_생성_API_요청("상품", PRODUCT_PRICE).as(ProductResponse.class);
     }
 
     @DisplayName("메뉴의 가격이 0원 미만인 경우 생성 요청이 실패해야 한다")
     @Test
     void createMenuByMinusPriceTest() {
         // when
-        ExtractableResponse<Response> 메뉴_생성_결과 = 메뉴_생성_API_호출("메뉴", -1, menuGroup.getId(), Collections.emptyList());
+        ExtractableResponse<Response> 메뉴_생성_결과 = 메뉴_생성_API_호출("메뉴", -1, 메뉴_그룹_아이디, Collections.emptyList());
 
         // then
         메뉴_생성_실패됨(메뉴_생성_결과);
@@ -68,9 +60,9 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> 상품_정보가_없는_메뉴_상품_메뉴_생성_결과 =
-                메뉴_생성_API_호출("메뉴", 1_000, menuGroup.getId(), Collections.singletonList(상품_정보가_없는_메뉴_상품_요청));
+                메뉴_생성_API_호출("메뉴", 1_000, 메뉴_그룹_아이디, Collections.singletonList(상품_정보가_없는_메뉴_상품_요청));
         ExtractableResponse<Response> 없는_상품이_포함된_메뉴_상품_메뉴_생성_결과 =
-                메뉴_생성_API_호출("메뉴", 1_000, menuGroup.getId(), Collections.singletonList(없는_상품이_포함된_메뉴_상품_요청));
+                메뉴_생성_API_호출("메뉴", 1_000, 메뉴_그룹_아이디, Collections.singletonList(없는_상품이_포함된_메뉴_상품_요청));
 
         // then
         메뉴_생성_실패됨(상품_정보가_없는_메뉴_상품_메뉴_생성_결과);
@@ -82,11 +74,11 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     void createMenuByNotMatchedMenuPriceAndProductTotalPriceTest() {
         // given
         Long menuProductQuantity = 2L;
-        MenuProductRequest 메뉴_상품_생성_요청 = 메뉴_상품_생성_요청(product.getId(), menuProductQuantity);
+        MenuProductRequest 메뉴_상품_생성_요청 = 메뉴_상품_생성_요청(상품_아이디, menuProductQuantity);
 
         // when
         ExtractableResponse<Response> 메뉴_생성_결과 =
-                메뉴_생성_API_호출("메뉴", 3_000, menuGroup.getId(), Collections.singletonList(메뉴_상품_생성_요청));
+                메뉴_생성_API_호출("메뉴", 3_000, 메뉴_그룹_아이디, Collections.singletonList(메뉴_상품_생성_요청));
 
         // then
         메뉴_생성_실패됨(메뉴_생성_결과);
@@ -98,11 +90,11 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         // given
         String 메뉴_이름 = "메뉴";
         Long menuProductQuantity = 2L;
-        MenuProductRequest 메뉴_상품_생성_요청 = 메뉴_상품_생성_요청(product.getId(), menuProductQuantity);
+        MenuProductRequest 메뉴_상품_생성_요청 = 메뉴_상품_생성_요청(상품_아이디, menuProductQuantity);
 
         // when
         ExtractableResponse<Response> 메뉴_생성_결과 =
-                메뉴_생성_API_호출("메뉴", PRODUCT_PRICE * menuProductQuantity.intValue(), menuGroup.getId(), Collections.singletonList(메뉴_상품_생성_요청));
+                메뉴_생성_API_호출("메뉴", PRODUCT_PRICE * menuProductQuantity.intValue(), 메뉴_그룹_아이디, Collections.singletonList(메뉴_상품_생성_요청));
 
         // then
         메뉴_생성_성공됨(메뉴_생성_결과, 메뉴_이름, PRODUCT_PRICE * menuProductQuantity);
@@ -113,8 +105,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     void findAllMenuTest() {
         // given
         List<String> 메뉴_이름들 = Arrays.asList("메뉴 1", "메뉴 2", "메뉴 3", "메뉴 4", "메뉴 5");
-        MenuProductRequest 메뉴_상품_생성_요청 = 메뉴_상품_생성_요청(product.getId(), 1L);
-        메뉴_이름들.forEach(name -> 메뉴_생성_API_호출(name, PRODUCT_PRICE, menuGroup.getId(), Collections.singletonList(메뉴_상품_생성_요청)));
+        MenuProductRequest 메뉴_상품_생성_요청 = 메뉴_상품_생성_요청(상품_아이디, 1L);
+        메뉴_이름들.forEach(name -> 메뉴_생성_API_호출(name, PRODUCT_PRICE, 메뉴_그룹_아이디, Collections.singletonList(메뉴_상품_생성_요청)));
 
         // when
         ExtractableResponse<Response> 상품_생성_결과 = 메뉴_목록_조회_API_호출();

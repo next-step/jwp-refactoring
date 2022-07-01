@@ -3,14 +3,21 @@ package kitchenpos.Acceptance.table;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.Acceptance.AcceptanceTest;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderCreateRequest;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.dto.OrderTableCreateRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import java.util.*;
 
+import static kitchenpos.order.OrderGenerator.*;
 import static kitchenpos.table.TableGenerator.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -75,29 +82,23 @@ public class TableAcceptanceTest extends AcceptanceTest {
         빈_테이블_변경_요청_실패됨(빈_테이블_변경_결과);
     }
 
-//    @DisplayName("요리중 또는 식사중인 테이블의 빈 테이블 여부를 변경하면 예외가 발생해야 한다")
-//    @Test
-//    void updateEmptyByCookingOrMealStatusTableTest() {
-//        // given
-//        OrderTable 주문_테이블 = 테이블_생성_요청(3).as(OrderTable.class);
-//        OrderTable 변경_될_주문_테이블 = 주문_테이블_생성(null, 3, false);
-//        빈_테이블_변경_요청(주문_테이블.getId(), 변경_될_주문_테이블);
-//        주문_테이블에_새로운_주문_생성(주문_테이블);
-//
-//        // when
-//        ExtractableResponse<Response> 요리중_테이블_변경_결과 = 빈_테이블_변경_요청(주문_테이블.getId(), 변경_될_주문_테이블);
-//
-//        // then
-//        빈_테이블_변경_요청_실패됨(요리중_테이블_변경_결과);
-//
-//        // when
-//        Order 변경_될_주문 = 주문_생성(주문_테이블.getId(), OrderStatus.MEAL, Collections.emptyList());
-//        주문_상태_변경_요청(주문_테이블.getId(), 변경_될_주문);
-//        ExtractableResponse<Response> 식사중_테이블_변경_결과 = 빈_테이블_변경_요청(주문_테이블.getId(), 변경_될_주문_테이블);
-//
-//        // then
-//        빈_테이블_변경_요청_실패됨(식사중_테이블_변경_결과);
-//    }
+    @DisplayName("요리중 또는 식사중인 테이블의 빈 테이블 여부를 변경하면 예외가 발생해야 한다")
+    @ParameterizedTest
+    @EnumSource(value = OrderStatus.class, names = { "COOKING", "MEAL" })
+    void updateEmptyByCookingOrMealStatusTableTest(OrderStatus orderStatus) {
+        // given
+        빈_테이블_변경_API_호출(주문_테이블_아이디, false);
+        OrderLineItemRequest 주문_물품_생성_요청 = 주문_물품_생성_요청(메뉴_아이디, 1L);
+        OrderCreateRequest 주문_생성_요청 = 주문_생성_요청(주문_테이블_아이디, Collections.singletonList(주문_물품_생성_요청));
+        Long 생성된_주문_아이디 = 주문_생성_API_요청(주문_생성_요청).as(OrderResponse.class).getId();
+        주문_상태_변경_API_요청(생성된_주문_아이디, orderStatus);
+
+        // when
+        ExtractableResponse<Response> 요리중_테이블_변경_결과 = 빈_테이블_변경_API_호출(주문_테이블_아이디, true);
+
+        // then
+        빈_테이블_변경_요청_실패됨(요리중_테이블_변경_결과);
+    }
 
     @DisplayName("정상 상태의 테이블의 빈 테이블 여부를 변경하면 정상 동작해야 한다")
     @Test

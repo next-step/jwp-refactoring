@@ -3,15 +3,10 @@ package kitchenpos.Acceptance.order;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.Acceptance.AcceptanceTest;
-import kitchenpos.menu.dto.MenuGroupResponse;
-import kitchenpos.menu.dto.MenuProductRequest;
-import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderCreateRequest;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.product.dto.ProductResponse;
-import kitchenpos.table.dto.OrderTableResponse;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,29 +16,16 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static kitchenpos.menu.MenuGenerator.*;
 import static kitchenpos.order.OrderGenerator.*;
-import static kitchenpos.product.ProductGenerator.상품_생성_API_요청;
-import static kitchenpos.table.TableGenerator.*;
+import static kitchenpos.table.TableGenerator.빈_테이블_변경_API_호출;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class OrderAcceptanceTest extends AcceptanceTest {
 
-    private Long 메뉴_아이디;
-    private Long 주문_테이블_아이디;
-
     @BeforeEach
     public void setUp() {
         super.setUp();
-
-        주문_테이블_아이디 = 테이블_생성_API_호출(주문_테이블_생성_요청(10)).as(OrderTableResponse.class).getId();
-        Long 메뉴_그룹_아이디 = 메뉴_그룹_생성_API_호출("메뉴 그룹").as(MenuGroupResponse.class).getId();
-        Long 상품_아이디 = 상품_생성_API_요청("상품", 1_000).as(ProductResponse.class).getId();
-        MenuProductRequest 메뉴_상품_생성_요청 = 메뉴_상품_생성_요청(상품_아이디, 1L);
-        메뉴_아이디 = 메뉴_생성_API_호출("메뉴", 1_000, 메뉴_그룹_아이디, Collections.singletonList(메뉴_상품_생성_요청))
-                .body().jsonPath().getLong("id");
     }
 
     @DisplayName("주문 생성시 주문 물품 리스트가 없으면 예외가 발생해야 한다")
