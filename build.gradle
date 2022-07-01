@@ -48,14 +48,22 @@ project(':module-common') {
     }
 }
 
+project(':module-product') {
+    dependencies {
+        compile project(':module-common')
+    }
+}
+
 project(':module-menu') {
     dependencies {
         compile project(':module-common')
+        compile project(':module-product')
     }
 }
 
 project(':module-order') {
     dependencies {
         compile project(':module-common')
+        compile project(':module-menu')
     }
 }

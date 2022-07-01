@@ -1,6 +1,6 @@
 package kitchenpos.menu.acceptance;
 
-import static kitchenpos.menuGroup.acceptance.MenuGroupRestAssured.메뉴그룹_등록_요청;
+import static kitchenpos.menugroup.acceptance.MenuGroupRestAssured.메뉴그룹_등록_요청;
 import static kitchenpos.menu.acceptance.MenuRestAssured.메뉴_등록_요청;
 import static kitchenpos.menu.acceptance.MenuRestAssured.메뉴_목록_조회_요청;
 import static kitchenpos.product.acceptance.ProductRestAssured.상품_등록_요청;
