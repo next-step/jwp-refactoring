@@ -4,9 +4,9 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,6 +38,12 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         피자 = 상품_등록_되어_있음("피자", BigDecimal.valueOf(20_000));
     }
 
+    public static MenuResponse 메뉴_등록되어_있음(String name, long price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
+        ExtractableResponse<Response> response = 메뉴_생성_요청(name, BigDecimal.valueOf(price), menuGroupId, menuProducts);
+
+        return response.as(MenuResponse.class);
+    }
+
     private static ExtractableResponse<Response> 메뉴_생성_요청(
             String name,
             BigDecimal price,
@@ -53,29 +59,6 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 .when().post(API_URL)
                 .then().log().all()
                 .extract();
-    }
-
-    public static Menu 메뉴_등록되어_있음(String name, long price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
-        ExtractableResponse<Response> response = 메뉴_생성_요청(name, BigDecimal.valueOf(price), menuGroupId, menuProducts);
-
-        return response.as(Menu.class);
-    }
-
-    private void 메뉴_생성_요청됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-    }
-
-    private ExtractableResponse<Response> 메뉴_목록_조회_요청() {
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get(API_URL)
-                .then().log().all()
-                .extract();
-    }
-
-    private void 메뉴_목록_조회됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     @Test
@@ -100,5 +83,22 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
         // then
         메뉴_목록_조회됨(메뉴_목록_조회_요청_결과);
+    }
+
+    private void 메뉴_생성_요청됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    private ExtractableResponse<Response> 메뉴_목록_조회_요청() {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get(API_URL)
+                .then().log().all()
+                .extract();
+    }
+
+    private void 메뉴_목록_조회됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }
