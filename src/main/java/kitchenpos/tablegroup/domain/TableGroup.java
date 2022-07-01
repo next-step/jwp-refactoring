@@ -21,7 +21,7 @@ public class TableGroup {
     private LocalDateTime createdDate;
 
     @Embedded
-    private OrderTables orderTables;
+    private OrderTables orderTables = OrderTables.empty();
 
     protected TableGroup() {
     }
@@ -57,7 +57,7 @@ public class TableGroup {
         return orderTables.getOrderTables();
     }
 
-    public void addOrderTable(OrderTables orderTables) {
+    private void addOrderTable(OrderTables orderTables) {
         orderTables.getOrderTables().forEach(orderTable -> {
             orderTable.setTableGroup(this);
             orderTable.setEmpty(Empty.of(false));

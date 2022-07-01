@@ -6,6 +6,7 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
+import kitchenpos.tablegroup.dto.OrderTableIdRequest;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import static kitchenpos.common.Messages.ORDER_TABLE_STATUS_CANNOT_UPDATE;
 import static kitchenpos.common.Messages.TABLE_GROUP_ORDER_IDS_REQUIRED;
@@ -32,15 +34,21 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
-        List<Long> requestOrderTablesIds = tableGroupRequest.getOrderTables();
+        List<Long> requestOrderTablesIds = convertOrderTableIds(tableGroupRequest.getOrderTableIds());
         validateOrderTableIds(requestOrderTablesIds);
 
         List<OrderTable> tables = tableService.findByIdIn(requestOrderTablesIds);
         OrderTables orderTables = OrderTables.of(tables);
-        orderTables.validateOrderTableGroup(tables);
+        orderTables.validateOrderTableGroup(requestOrderTablesIds);
 
         TableGroup tableGroup = TableGroup.of(orderTables);
         return TableGroupResponse.of(tableGroupRepository.save(tableGroup));
+    }
+
+    private List<Long> convertOrderTableIds(List<OrderTableIdRequest> OrderTableIdRequests) {
+        return OrderTableIdRequests.stream()
+                .map(OrderTableIdRequest::getId)
+                .collect(Collectors.toList());
     }
 
     private void validateOrderTableIds(List<Long> orderTablesIds) {
