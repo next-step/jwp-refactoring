@@ -23,8 +23,4 @@ public class Empty {
     public boolean isEmpty() {
         return empty;
     }
-
-    public boolean isNotEmpty() {
-        return !empty;
-    }
 }
