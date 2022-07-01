@@ -44,10 +44,6 @@ public class TableGroup {
         this.orderTables = newOrderTables;
     }
 
-    public List<Long> getOrderTableIds() {
-        return orderTables.getOrderTableIds();
-    }
-
     public void validateEmptyAndTableGroups() {
         orderTables.validateEmptyAndTableGroups();
 

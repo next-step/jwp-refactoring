@@ -83,8 +83,7 @@ public class Order {
     }
 
     public void addOrderLineItems(List<OrderLineItemRequest> orderLineItems) {
-        orderLineItems.forEach(orderLineItemResponse ->
-                this.orderLineItems.add(orderLineItemResponse.toOrderLineItem(this)));
+        orderLineItems.forEach(o -> this.orderLineItems.add(OrderLineItem.of(o, this)));
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {

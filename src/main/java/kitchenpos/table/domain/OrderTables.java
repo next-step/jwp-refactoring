@@ -26,16 +26,10 @@ public class OrderTables {
         return orderTables;
     }
 
-    public List<Long> getOrderTableIds() {
-        return orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-    }
-
     public void addTableGroupAndEmpties(boolean empty, TableGroup tableGroup) {
-        orderTables.forEach(savedOrderTable -> {
-            savedOrderTable.changeTableGroupIdAndEmpty(tableGroup);
-            savedOrderTable.changeEmpty(empty);
+        orderTables.forEach(o -> {
+            o.changeTableGroupIdAndEmpty(tableGroup);
+            o.changeEmpty(empty);
         });
     }
 

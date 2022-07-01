@@ -1,6 +1,7 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.embeddableEntity.Quantity;
+import kitchenpos.order.dto.OrderLineItemRequest;
 
 import javax.persistence.*;
 
@@ -28,6 +29,10 @@ public class OrderLineItem {
         this.order = order;
         this.menuId = menuId;
         this.quantity = quantity;
+    }
+
+    public static OrderLineItem of(OrderLineItemRequest request, Order order) {
+        return new OrderLineItem(order, request.getMenuId(), request.getQuantity());
     }
 
     public Long getSeq() {

@@ -11,7 +11,6 @@ import kitchenpos.table.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,7 +42,7 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableEmptyRequest request) {
         final OrderTable savedOrderTable = findByIdOrElseThrow(orderTableId);
 
-        savedOrderTable.validate();
+        savedOrderTable.validateGroupTable();
         validateOrderTableIdAndOrderStatusIn(orderTableId);
 
         savedOrderTable.changeEmpty(request.isEmpty());
@@ -53,15 +52,16 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final NumberOfGuestsRequest request) {
-        final OrderTable savedOrderTable = orderService.findOrderTableById(orderTableId);
-        savedOrderTable.validateOrderTableEmpty();
-        savedOrderTable.changeNumberOfGuests(request.getNumberOfGuests());
+        final OrderTable persistOrderTable = orderService.findOrderTableById(orderTableId);
 
-        return OrderTableResponse.of(savedOrderTable);
+        persistOrderTable.validateOrderTableEmpty();
+        persistOrderTable.changeNumberOfGuests(request.getNumberOfGuests());
+
+        return OrderTableResponse.of(persistOrderTable);
     }
 
     private void validateOrderTableIdAndOrderStatusIn(Long orderTableId) {
-        if (orderService.existsOrderByOrderTableIdAndOrderStatusIn(orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+        if (orderService.existsOrderByOrderTableIdAndOrderStatusIn(orderTableId, OrderStatus.getCookingAndMeal())) {
             throw new IllegalArgumentException();
         }
     }

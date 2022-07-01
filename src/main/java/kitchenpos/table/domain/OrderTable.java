@@ -46,7 +46,7 @@ public class OrderTable {
         return id;
     }
 
-    public void validate() {
+    public void validateGroupTable() {
         if (Objects.nonNull(tableGroup)) {
             throw new IllegalArgumentException();
         }

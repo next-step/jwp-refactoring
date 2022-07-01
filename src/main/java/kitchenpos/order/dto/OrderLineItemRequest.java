@@ -15,10 +15,6 @@ public class OrderLineItemRequest {
         this.quantity = quantity;
     }
 
-    public OrderLineItem toOrderLineItem(Order order) {
-        return new OrderLineItem(order, menuId, quantity);
-    }
-
     public Long getMenuId() {
         return menuId;
     }

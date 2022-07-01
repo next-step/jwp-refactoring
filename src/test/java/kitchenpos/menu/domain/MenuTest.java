@@ -47,4 +47,5 @@ class MenuTest {
                 () -> assertThat(menu.getMenuProducts()).isEqualTo(menuProducts)
         );
     }
+
 }

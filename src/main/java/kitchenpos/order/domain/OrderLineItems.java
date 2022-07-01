@@ -39,12 +39,6 @@ public class OrderLineItems {
         return orderLineItems.size();
     }
 
-    public List<Long> getMenuIds() {
-        return orderLineItems.stream()
-                .map(OrderLineItem::getMenuId)
-                .collect(Collectors.toList());
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
