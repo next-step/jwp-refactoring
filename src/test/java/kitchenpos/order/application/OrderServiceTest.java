@@ -5,18 +5,18 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import kitchenpos.exception.NotExistException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.Price;
 import kitchenpos.menu.repository.MenuRepository;
-import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
@@ -27,9 +27,6 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.order.repository.OrderRepository;
-import kitchenpos.table.domain.GuestNumber;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,8 +39,6 @@ class OrderServiceTest {
     private Menu menu;
     private OrderLineItem orderLineItem;
     private Orders order;
-    private OrderTable orderTable;
-
 
     private OrderService orderService;
 
@@ -54,11 +49,11 @@ class OrderServiceTest {
     private OrderRepository orderRepository;
 
     @Mock
-    private OrderTableRepository orderTableRepository;
+    private OrderValidator orderValidator;
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(menuRepository, orderRepository, orderTableRepository);
+        orderService = new OrderService(menuRepository, orderRepository, orderValidator);
 
         MenuGroup menuGroup = new MenuGroup(1L, "메뉴그룹");
         menu = new Menu.Builder("메뉴")
@@ -71,13 +66,8 @@ class OrderServiceTest {
                 .setMenu(menu)
                 .setQuantity(Quantity.of(1L))
                 .builder();
-        orderTable = new OrderTable.Builder()
-                .setId(1L)
-                .setGuestNumber(GuestNumber.of(5))
-                .setEmpty(false)
-                .build();
         OrderLineItems orderLineItems = new OrderLineItems(Arrays.asList(orderLineItem));
-        order = new Orders.Builder(orderTable)
+        order = new Orders.Builder(1L)
                 .setId(1L)
                 .setOrderStatus(OrderStatus.COOKING)
                 .setOrderLineItems(orderLineItems)
@@ -89,8 +79,7 @@ class OrderServiceTest {
     void createOrder() {
         // given
         when(menuRepository.countByIdIn(any())).thenReturn(1L);
-        when(orderTableRepository.findById(any())).thenReturn(
-                Optional.of(orderTable));
+        when(orderValidator.notEmptyOrderTableId(any())).thenReturn(1L);
         when(menuRepository.findById(any())).thenReturn(Optional.of(menu));
         when(orderRepository.save(any())).thenReturn(order);
         // when
@@ -100,7 +89,7 @@ class OrderServiceTest {
         assertAll(
                 () -> assertThat(actual.getOrderLineItems()).hasSize(1),
                 () -> assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name()),
-                () -> assertThat(actual.getOrderTable().getId()).isEqualTo(1L)
+                () -> assertThat(actual.getOrderTableId()).isEqualTo(1L)
         );
     }
 
@@ -133,7 +122,7 @@ class OrderServiceTest {
         // given
         final OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(1L, 1L);
         when(menuRepository.countByIdIn(any())).thenReturn(1L);
-        when(orderTableRepository.findById(any())).thenReturn(Optional.empty());
+        doThrow(new NotExistException()).when(orderValidator).notEmptyOrderTableId(any());
 
         // when && then
         assertThatIllegalArgumentException()
@@ -174,7 +163,7 @@ class OrderServiceTest {
     @DisplayName("완료된 주문을 주문 상태 변경시 에러 발생")
     void changeOrderStatusCompletionOrder() {
         // given
-        final Orders order = new Orders.Builder(orderTable)
+        final Orders order = new Orders.Builder(1L)
                 .setOrderStatus(OrderStatus.COMPLETION)
                 .build();
         when(orderRepository.findById(any())).thenReturn(Optional.of(order));

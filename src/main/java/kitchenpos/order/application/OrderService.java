@@ -14,8 +14,6 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.order.repository.OrderRepository;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.repository.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,13 +21,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
-    private final OrderTableRepository orderTableRepository;
+    private final OrderValidator orderValidator;
 
     public OrderService(MenuRepository menuRepository, OrderRepository orderRepository,
-                        OrderTableRepository orderTableRepository) {
+                        OrderValidator orderValidator) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
-        this.orderTableRepository = orderTableRepository;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
@@ -39,9 +37,8 @@ public class OrderService {
             throw new InvalidMenuNumberException();
         }
 
-        final OrderTable persistOrderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
-                .orElseThrow(NotExistException::new);
-        final Orders order = new Orders.Builder(persistOrderTable)
+        final Long orderTableId = orderValidator.notEmptyOrderTableId(orderRequest);
+        final Orders order = new Orders.Builder(orderTableId)
                 .setOrderStatus(OrderStatus.COOKING)
                 .build();
 

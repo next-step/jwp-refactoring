@@ -4,8 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.Price;
-import kitchenpos.table.domain.GuestNumber;
-import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -17,11 +15,7 @@ class OrderLineItemTest {
         final Menu menu = new Menu.Builder("menu")
                 .setPrice(Price.of(1_000L))
                 .build();
-        final OrderTable orderTable = new OrderTable.Builder()
-                .setGuestNumber(GuestNumber.of(2))
-                .setEmpty(false)
-                .build();
-        final Orders order = new Orders.Builder(orderTable)
+        final Orders order = new Orders.Builder(1L)
                 .build();
         final OrderLineItem orderLineItem = new OrderLineItem.Builder(order)
                 .setSeq(1L)

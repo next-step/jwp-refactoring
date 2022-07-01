@@ -171,8 +171,7 @@ class TableGroupServiceTest {
         final TableGroup tableGroup = new TableGroup(1L, null,
                 Arrays.asList(orderTableOf5Guests, orderTableOf3Guests));
         when(tableGroupRepository.findById(any())).thenReturn(Optional.of(tableGroup));
-        when(orderRepository.existNotCompletionOrderTables(Arrays.asList(orderTableOf5Guests, orderTableOf3Guests)))
-                .thenReturn(false);
+        when(orderRepository.existNotCompletionOrderTables(Arrays.asList(1L, 2L))).thenReturn(false);
         // when && then
         tableGroupService.ungroup(1L);
     }
@@ -183,8 +182,7 @@ class TableGroupServiceTest {
         final TableGroup tableGroup = new TableGroup(1L, null,
                 Arrays.asList(orderTableOf5Guests, orderTableOf3Guests));
         when(tableGroupRepository.findById(any())).thenReturn(Optional.of(tableGroup));
-        when(orderRepository.existNotCompletionOrderTables(Arrays.asList(orderTableOf5Guests, orderTableOf3Guests)))
-                .thenReturn(true);
+        when(orderRepository.existNotCompletionOrderTables(Arrays.asList(1L, 2L))).thenReturn(true);
 
         // when && then
         assertThatIllegalStateException()
