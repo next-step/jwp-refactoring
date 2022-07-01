@@ -28,26 +28,26 @@ public class OrderLineItem {
     private Long menuId;
 
     @Embedded
+    private Name menuName;
+
+    @Embedded
+    private Price menuPrice;
+
+    @Embedded
     private Quantity quantity;
 
     protected OrderLineItem() {
     }
 
-    public OrderLineItem(Long seq, Order order, Long menuId, long quantity) {
-        this.seq = seq;
-        this.order = order;
-        this.menuId = menuId;
-        this.quantity = new Quantity(quantity);
-    }
-
-    public OrderLineItem(Order order, Long menuId, long quantity) {
-        this.order = order;
-        this.menuId = menuId;
-        this.quantity = new Quantity(quantity);
-    }
-
     public OrderLineItem(Long menuId, long quantity) {
         this.menuId = menuId;
+        this.quantity = new Quantity(quantity);
+    }
+
+    public OrderLineItem(Long menuId, String menuName, Long menuPrice, Long quantity) {
+        this.menuId = menuId;
+        this.menuName = new Name(menuName);
+        this.menuPrice = new Price(menuPrice);
         this.quantity = new Quantity(quantity);
     }
 
@@ -57,6 +57,14 @@ public class OrderLineItem {
 
     public Long getMenuId() {
         return menuId;
+    }
+
+    public Name getMenuName() {
+        return menuName;
+    }
+
+    public Price getMenuPrice() {
+        return menuPrice;
     }
 
     public Long getSeq() {
