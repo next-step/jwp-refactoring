@@ -47,4 +47,8 @@ public class Product {
     public Price getPrice() {
         return price;
     }
+
+    public Long getPriceLong() {
+        return price.getValue().longValue();
+    }
 }

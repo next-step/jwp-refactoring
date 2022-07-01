@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
+import kitchenpos.menu.domain.Price;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
@@ -85,7 +85,7 @@ public class MenuValidator {
     private Map<Long, Price> makeProductIdPriceMap(List<Product> findProducts) {
         return findProducts.
                 stream().
-                collect(Collectors.toMap(Product::getId, Product::getPrice));
+                collect(Collectors.toMap(Product::getId, product -> new Price(product.getPriceLong())));
     }
 
     public Price calculateAmount(Price price, Long quantity) {
