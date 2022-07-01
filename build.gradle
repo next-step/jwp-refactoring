@@ -1,67 +1,130 @@
-plugins {
-    id 'org.springframework.boot' version '2.4.1'
-    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
-    id 'java'
-    id 'jacoco'
+buildscript {
+    ext {
+        springBootVersion = '2.4.1'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.11.RELEASE"
+    }
 }
 
-group = 'camp.nextstep.edu'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
+subprojects {
 
-repositories {
-    mavenCentral()
-}
+    apply plugin: 'java'
+    apply plugin: 'idea'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'jacoco'
 
-jacoco {
-    // JaCoCo 버전
-    toolVersion = '0.8.8'
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+    compileJava.options.encoding = 'UTF-8'
 
-}
-
-jacocoTestReport {
-    reports {
-        html.enabled true
-        csv.enabled true
-        xml.enabled false
+    repositories {
+        mavenCentral()
     }
 
-    finalizedBy 'jacocoTestCoverageVerification'
-}
+    dependencies {
 
-jacocoTestCoverageVerification {
-    violationRules {
-        rule {
-            enabled = true
-            element = 'CLASS'
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+        implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'com.google.guava:guava:11.0.2'
+        implementation 'org.flywaydb:flyway-core'
 
-            limit {
-                counter = 'LINE'
-                value = 'COVEREDRATIO'
-                minimum = 0.90
+        runtimeOnly 'com.h2database:h2'
+
+        testImplementation 'io.rest-assured:rest-assured:3.3.0'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+    jacoco {
+        // JaCoCo 버전
+        toolVersion = '0.8.8'
+
+    }
+
+    jacocoTestReport {
+        reports {
+            html.enabled true
+            csv.enabled true
+            xml.enabled false
+        }
+
+        finalizedBy 'jacocoTestCoverageVerification'
+    }
+
+    jacocoTestCoverageVerification {
+        violationRules {
+            rule {
+                enabled = true
+                element = 'CLASS'
+
+                limit {
+                    counter = 'LINE'
+                    value = 'COVEREDRATIO'
+                    minimum = 0.90
+                }
+                excludes[
+                        '*.ui.*'
+                ]
             }
-            excludes [
-                    '*.ui.*'
-            ]
         }
     }
 }
 
-dependencies {
+project(':module-common') {
+    bootJar { enabled = false }
+    jar { enabled = true }
 
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'com.google.guava:guava:11.0.2'
-    implementation 'org.flywaydb:flyway-core'
-
-    runtimeOnly 'com.h2database:h2'
-
-    testImplementation 'io.rest-assured:rest-assured:3.3.0'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
-test {
-    useJUnitPlatform()
+project(':module-product') {
+    bootJar { enabled = false }
+    jar { enabled = true }
+    dependencies {
+        compile project(':module-common')
+    }
+}
+
+project(':module-menu') {
+    bootJar { enabled = false }
+    jar { enabled = true }
+    dependencies {
+        compile project(':module-product')
+        compile project(':module-common')
+
+        testImplementation(testFixtures(project(":module-product")))
+    }
+}
+
+project(':module-order') {
+    bootJar { enabled = false }
+    jar { enabled = true }
+    dependencies {
+        compile project(':module-menu')
+        compile project(':module-common')
+
+        testImplementation(testFixtures(project(":module-menu")))
+        testImplementation(testFixtures(project(":module-table")))
+    }
+}
+
+project(':module-table') {
+    bootJar { enabled = false }
+    jar { enabled = true }
+    dependencies {
+        compile project(':module-order')
+        compile project(':module-common')
+
+        testImplementation(testFixtures(project(":module-order")))
+    }
 }
