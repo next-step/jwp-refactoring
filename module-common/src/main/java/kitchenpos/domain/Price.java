@@ -1,7 +1,7 @@
 package kitchenpos.domain;
 
-import kitchenpos.core.exception.BadRequestException;
-import kitchenpos.core.exception.ExceptionType;
+import kitchenpos.common.exception.BadRequestException;
+import kitchenpos.common.exception.ExceptionType;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
