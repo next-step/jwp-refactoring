@@ -75,7 +75,10 @@ Lombok은 그 강력한 기능만큼 사용상 주의를 요한다.
 
 ## 📚 Todo List 📚
 - [x] 모델링 분석
-![step3_image5_kitchenpos.jpg](images/step3_image5_kitchenpos.jpg)
+  - **Before**
+    ![step3_image5_kitchenpos.jpg](images/step3_image5_kitchenpos.jpg)
+  - **After**
+    ![step3_image6_kitchenpos.jpg](images/step3_image6_kitchenpos.jpg)
 - [x] OrderTable - TableGroup 양방향 도메인 의존성 제거
 - [x] Menu - Product 패키지 의존성 제거
 - [x] Order - Table 패키지 의존성 제거
