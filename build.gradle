@@ -67,3 +67,13 @@ project(':module-order') {
         compile project(':module-menu')
     }
 }
+
+bootJar { enabled = false }
+jar { enabled = true}
+
+dependencies {
+    implementation project(':module-menu')
+    implementation project(':module-order')
+    implementation project(':module-product')
+    implementation project(':module-common')
+}

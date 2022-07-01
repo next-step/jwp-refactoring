@@ -1,4 +1,4 @@
-package kitchenpos.tableGroup.acceptance;
+package kitchenpos.tablegroup.acceptance;
 
 import static kitchenpos.ordertable.acceptance.TableRestAssured.주문테이블_등록_요청;
 import static kitchenpos.utils.DomainFixtureFactory.createOrderTableRequest;

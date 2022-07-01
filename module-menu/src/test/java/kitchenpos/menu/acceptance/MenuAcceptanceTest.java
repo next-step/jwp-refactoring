@@ -1,9 +1,9 @@
 package kitchenpos.menu.acceptance;
 
-import static kitchenpos.menugroup.acceptance.MenuGroupRestAssured.메뉴그룹_등록_요청;
 import static kitchenpos.menu.acceptance.MenuRestAssured.메뉴_등록_요청;
 import static kitchenpos.menu.acceptance.MenuRestAssured.메뉴_목록_조회_요청;
-import static kitchenpos.product.acceptance.ProductRestAssured.상품_등록_요청;
+import static kitchenpos.menu.acceptance.MenuRestAssured.상품_등록_요청;
+import static kitchenpos.menugroup.acceptance.MenuGroupRestAssured.메뉴그룹_등록_요청;
 import static kitchenpos.utils.DomainFixtureFactory.createMenuGroupRequest;
 import static kitchenpos.utils.DomainFixtureFactory.createMenuRequest;
 import static kitchenpos.utils.DomainFixtureFactory.createProductRequest;
@@ -13,10 +13,10 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.List;
-import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.utils.AcceptanceTest;
 import org.assertj.core.api.Assertions;
