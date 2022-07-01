@@ -1,6 +1,6 @@
-package kitchenpos.tableGroup.acceptance;
+package kitchenpos.tablegroup.acceptance;
 
-import static kitchenpos.table.acceptance.TableAcceptanceSupport.주문_테이블_등록요청;
+import static kitchenpos.tablegroup.acceptance.TableGroupAcceptanceSupport.주문_테이블_등록요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -9,11 +9,11 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.AcceptanceTest;
 import kitchenpos.table.dto.request.OrderTableRequest;
-import kitchenpos.tableGroup.dto.request.TableGroupRequest;
 import kitchenpos.table.dto.response.OrderTableResponse;
-import kitchenpos.tableGroup.dto.response.TableGroupResponse;
+import kitchenpos.tablegroup.acceptance.utils.AcceptanceTest;
+import kitchenpos.tablegroup.dto.request.TableGroupRequest;
+import kitchenpos.tablegroup.dto.response.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

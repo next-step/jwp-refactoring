@@ -1,17 +1,16 @@
 package kitchenpos.table.application;
 
+import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.common.exception.BadRequestException;
-import kitchenpos.common.exception.ExceptionType;
-import kitchenpos.common.exception.NotFoundException;
+import kitchenpos.core.exception.BadRequestException;
+import kitchenpos.core.exception.ExceptionType;
+import kitchenpos.core.exception.NotFoundException;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.request.OrderTableRequest;
 import kitchenpos.table.dto.response.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class OrderTableService {

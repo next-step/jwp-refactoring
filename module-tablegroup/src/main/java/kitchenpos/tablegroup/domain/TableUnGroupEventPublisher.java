@@ -1,8 +1,7 @@
 package kitchenpos.tablegroup.domain;
 
-import kitchenpos.order.domain.OrderTable;
-
 import java.util.List;
+import kitchenpos.table.domain.OrderTable;
 
 public class TableUnGroupEventPublisher {
     private final List<OrderTable> orderTables;

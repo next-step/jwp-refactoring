@@ -1,10 +1,14 @@
-package kitchenpos.order.domain;
+package kitchenpos.table.domain;
 
+import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import kitchenpos.core.exception.BadRequestException;
 import kitchenpos.core.exception.ExceptionType;
-
-import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 @Table(name = "order_table")

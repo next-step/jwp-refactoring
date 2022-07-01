@@ -1,9 +1,9 @@
 package kitchenpos.tablegroup.application;
 
-import kitchenpos.order.domain.OrderTable;
 import kitchenpos.core.exception.BadRequestException;
 import kitchenpos.core.exception.CannotCreateException;
 import kitchenpos.core.exception.ExceptionType;
+import kitchenpos.table.domain.OrderTable;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;

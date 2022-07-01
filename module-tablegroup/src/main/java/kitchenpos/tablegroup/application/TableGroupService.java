@@ -1,9 +1,9 @@
 package kitchenpos.tablegroup.application;
 
-import kitchenpos.order.application.OrderTableService;
 import kitchenpos.core.exception.ExceptionType;
 import kitchenpos.core.exception.NotFoundException;
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.table.application.OrderTableService;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.tablegroup.dto.request.TableGroupRequest;
 import kitchenpos.tablegroup.dto.response.TableGroupResponse;
 import org.springframework.stereotype.Service;
