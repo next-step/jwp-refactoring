@@ -6,7 +6,6 @@ import kitchenpos.exception.InvalidPriceException;
 import kitchenpos.exception.NotExistException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.Price;
-import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.repository.ProductRepository;
 import org.springframework.stereotype.Component;
@@ -27,8 +26,8 @@ public class MenuValidator {
         }
     }
 
-    public Long findProductId(MenuProductRequest menuProduct) {
-        return productRepository.findById(menuProduct.getProductId())
+    public Long findProductId(Long menuProductId) {
+        return productRepository.findById(menuProductId)
                 .orElseThrow(() -> new NotExistException(ErrorMessage.NOT_EXIST_PRODUCT.message()))
                 .getId();
     }

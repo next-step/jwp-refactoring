@@ -6,11 +6,8 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Optional;
-import kitchenpos.menu.application.MenuValidator;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.Price;
-import kitchenpos.menu.dto.MenuProductRequest;
-import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.order.domain.Quantity;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.repository.ProductRepository;
@@ -66,10 +63,9 @@ class MenuValidatorTest {
     @DisplayName("메뉴를 구성하는 상품들이 존재하지 않으면 에러 발생")
     void invalidNotExistProduct() {
         // given
-        final MenuProductRequest menuProductRequest = new MenuProductRequest(1L, 2L);
         when(productRepository.findById(any())).thenReturn(Optional.empty());
         // when && then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> menuValidator.findProductId(menuProductRequest));
+                .isThrownBy(() -> menuValidator.findProductId(1L));
     }
 }

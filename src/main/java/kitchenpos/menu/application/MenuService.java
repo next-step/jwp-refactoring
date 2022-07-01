@@ -40,7 +40,7 @@ public class MenuService {
                 .build();
 
         for (MenuProductRequest menuProduct : menuRequest.getMenuProducts()) {
-            final Long productId = menuValidator.findProductId(menuProduct);
+            final Long productId = menuValidator.findProductId(menuProduct.getProductId());
             menu.addProduct(productId, Quantity.of(menuProduct.getQuantity()));
         }
 
