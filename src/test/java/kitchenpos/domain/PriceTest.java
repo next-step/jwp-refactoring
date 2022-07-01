@@ -28,4 +28,13 @@ class PriceTest {
         // then
         assertThat(result).isTrue();
     }
+
+    @Test
+    void 가격을_더한다() {
+        // when
+        Price result = PRICE.add(CHEAPER);
+
+        // then
+        assertThat(result.value()).isEqualTo(BigDecimal.valueOf(1500));
+    }
 }

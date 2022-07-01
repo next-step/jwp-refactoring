@@ -33,4 +33,8 @@ public class Price {
     public boolean isExpensive(Price price) {
         return price.value.compareTo(value) < ZERO;
     }
+
+    public Price add(Price price) {
+        return new Price(value.add(price.value));
+    }
 }
