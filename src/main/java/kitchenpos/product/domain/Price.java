@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import kitchenpos.common.domain.Quantity;
 
 @Embeddable
 public class Price {
@@ -34,18 +33,6 @@ public class Price {
 
     public BigDecimal getValue() {
         return price;
-    }
-
-    public Price multiply(Quantity quantity) {
-        return new Price(price.multiply(BigDecimal.valueOf(quantity.getValue())));
-    }
-
-    public Price add(Price price) {
-        return new Price(this.price.add(price.getValue()));
-    }
-
-    public boolean greaterThan(Price source) {
-        return price.compareTo(source.getValue()) > 0;
     }
 
     @Override
