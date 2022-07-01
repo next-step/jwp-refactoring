@@ -29,10 +29,26 @@ class OrderLineItemsTest {
         assertThat(result).containsExactly(1L, 2L);
     }
 
+    @Test
+    void 중복된_메뉴가_있는지_확인한다() {
+        // when & then
+        assertThatThrownBy(() ->
+                createDuplicateOrderLineItems().validateDuplicateMenu(1)
+        ).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("중복된 메뉴가 있습니다.");
+    }
+
     private OrderLineItems createOrderLineItems() {
         return new OrderLineItems(Arrays.asList(
-            new OrderLineItem(1L, 1),
-            new OrderLineItem(2L, 2)
+                new OrderLineItem(1L, 1),
+                new OrderLineItem(2L, 2)
+        ));
+    }
+
+    private OrderLineItems createDuplicateOrderLineItems() {
+        return new OrderLineItems(Arrays.asList(
+                new OrderLineItem(1L, 2),
+                new OrderLineItem(1L, 2)
         ));
     }
 }

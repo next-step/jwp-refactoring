@@ -39,4 +39,10 @@ public class OrderLineItems {
     public List<OrderLineItem> elements() {
         return Collections.unmodifiableList(elements);
     }
+
+    public void validateDuplicateMenu(int menuCount) {
+        if (elements.size() != menuCount) {
+            throw new IllegalArgumentException("중복된 메뉴가 있습니다.");
+        }
+    }
 }
