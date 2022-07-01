@@ -19,7 +19,7 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.validator.OrderValidator;
 import kitchenpos.ordertable.application.OrderTableValidator;
-import kitchenpos.tableGroup.application.TableGroupValidator;
+import kitchenpos.tablegroup.application.TableGroupValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

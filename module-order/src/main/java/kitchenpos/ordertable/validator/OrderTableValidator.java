@@ -1,6 +1,6 @@
 package kitchenpos.ordertable.validator;
 
-import static kitchenpos.tableGroup.domain.TableGroup.ORDER_TABLE_REQUEST_MIN;
+import static kitchenpos.tablegroup.domain.TableGroup.ORDER_TABLE_REQUEST_MIN;
 
 import java.util.List;
 import kitchenpos.ordertable.domain.OrderTables;

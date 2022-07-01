@@ -20,8 +20,8 @@ import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
-import kitchenpos.tableGroup.domain.TableGroup;
-import kitchenpos.tableGroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
 
 public class DomainFixtureFactory {
     public static Product createProduct(Long id, String name, BigDecimal price) {

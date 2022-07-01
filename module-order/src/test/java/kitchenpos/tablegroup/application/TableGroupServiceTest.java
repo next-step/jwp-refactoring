@@ -1,6 +1,6 @@
-package kitchenpos.tableGroup.application;
+package kitchenpos.tablegroup.application;
 
-import static kitchenpos.tableGroup.domain.TableGroup.ORDER_TABLE_REQUEST_MIN;
+import static kitchenpos.tablegroup.domain.TableGroup.ORDER_TABLE_REQUEST_MIN;
 import static kitchenpos.utils.DomainFixtureFactory.createOrderTable;
 import static kitchenpos.utils.DomainFixtureFactory.createTableGroup;
 import static kitchenpos.utils.DomainFixtureFactory.createTableGroupRequest;
@@ -14,10 +14,10 @@ import static org.mockito.Mockito.verify;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.event.ReserveEvent;
-import kitchenpos.tableGroup.domain.TableGroup;
-import kitchenpos.tableGroup.domain.TableGroupRepository;
-import kitchenpos.tableGroup.dto.TableGroupRequest;
-import kitchenpos.tableGroup.dto.TableGroupResponse;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

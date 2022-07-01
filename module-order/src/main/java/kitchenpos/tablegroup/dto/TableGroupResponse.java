@@ -1,8 +1,8 @@
-package kitchenpos.tableGroup.dto;
+package kitchenpos.tablegroup.dto;
 
 
 import java.time.LocalDateTime;
-import kitchenpos.tableGroup.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroup;
 
 public class TableGroupResponse {
     private final Long id;
