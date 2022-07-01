@@ -20,7 +20,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     private static final String API_URL = "/api/products";
 
     @Test
-    @DisplayName("상품 생성 및 조회 시나리오")
+    @DisplayName("상품을 관리 한다 (상품 생성 및 조회)")
     void product() {
         String 상품명 = "치킨";
         BigDecimal 가격 = BigDecimal.valueOf(20_000);
