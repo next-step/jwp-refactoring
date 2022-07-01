@@ -127,6 +127,7 @@
 ### 의존도 draw
 - Before(https://github.com/tyakamyz/jwp-refactoring/blob/step3/docs/refactor-before.drawio.png)
 - After(https://github.com/tyakamyz/jwp-refactoring/blob/step3/docs/refactor-after.drawio.png)
+- After - DIP 적용 후 (https://github.com/tyakamyz/jwp-refactoring/blob/step3/docs/refactor-after.drawio_DIP적용.png)
 
 ### 리팩토링 리스트
 - [x] 현재 의존성 현황 정리
@@ -135,7 +136,18 @@
 - [x] 패키지 사이의 의존 관계 단방향으로 리팩토링
 
 ---
-### 프로그래밍 요구 사항
+## 🚀 4단계 - 멀티 모듈 적용
+### 요구사항
+- Gradle의 멀티 모듈 개념을 적용해 자유롭게 서로 다른 프로젝트로 분리해 본다.
+  - 컨텍스트 간의 독립된 모듈로 만들 수 있다.
+  - 계층 간의 독립된 모듈로 만들 수 있다.
+- 의존성 주입, HTTP 요청/응답, 이벤트 발행/구독 등 다양한 방식으로 모듈 간 데이터를 주고받을 수 있다.
+
+### 리팩토링 리스트
+- [x] 멀티 모듈 분리
+- [x] 테스트 완료
+
+---
 - Lombok은 그 강력한 기능만큼 사용상 주의를 요한다.
   - 무분별한 setter 메서드 사용
   - 객체 간에 상호 참조하는 경우 무한 루프에 빠질 가능성
