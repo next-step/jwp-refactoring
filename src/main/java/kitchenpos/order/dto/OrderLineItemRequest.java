@@ -43,4 +43,12 @@ public class OrderLineItemRequest {
     public Long getQuantity() {
         return quantity;
     }
+
+    public String getMenuName() {
+        return menuName;
+    }
+
+    public Long getMenuPrice() {
+        return menuPrice;
+    }
 }
