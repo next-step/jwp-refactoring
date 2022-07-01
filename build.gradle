@@ -34,20 +34,19 @@ subprojects {
     test {
         useJUnitPlatform()
     }
-
-//    checkstyle {
-//        maxWarnings = 0
-//        configFile = file("${rootDir}/checkstyle-rules.xml")
-//        configProperties = ["suppressionFile": "${rootDir}/checkstyle-suppressions.xml"]
-//        toolVersion = "8.24"
-//    }
 }
 
-
-// 각 프로젝트에서만 사용하는 의존성 추가
 project(':module-main') {
+    bootJar.enabled = false
+    jar.enabled = true
 
-    // core 에서는 bootjar로 패키징 할 필요가 없으므로 추가
+    dependencies {
+        implementation project(':module-product')
+        implementation project(':module-menu')
+    }
+}
+
+project(':module-menu') {
     bootJar.enabled = false
     jar.enabled = true
 

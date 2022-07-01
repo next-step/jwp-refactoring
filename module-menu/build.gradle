@@ -1,0 +1,7 @@
+dependencies {
+    testImplementation 'io.rest-assured:rest-assured'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+bootJar { enabled = false }
+jar { enabled = true }
