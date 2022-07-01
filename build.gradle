@@ -48,14 +48,6 @@ dependencies {
     implementation project(':module-menu')
     implementation project(':module-order')
     implementation project(':module-table')
-    implementation project(':module-tablegroup')
-}
-
-project(':module-tablegroup') {
-    dependencies {
-        implementation project(':module-core')
-        implementation project(':module-table')
-    }
 }
 
 project(':module-table') {

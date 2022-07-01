@@ -9,10 +9,12 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import kitchenpos.core.exception.BadRequestException;
 import kitchenpos.core.exception.ExceptionType;
+import kitchenpos.table.event.TableChangeEmptyEventPublisher;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 @Entity
 @Table(name = "order_table")
-public class OrderTable {
+public class OrderTable extends AbstractAggregateRoot<OrderTable> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -73,6 +75,7 @@ public class OrderTable {
     }
 
     public void emptyTheTable() {
+        registerEvent(new TableChangeEmptyEventPublisher(this));
         this.empty = true;
     }
 

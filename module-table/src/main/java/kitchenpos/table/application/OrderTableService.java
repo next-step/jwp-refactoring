@@ -15,11 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class OrderTableService {
     private final OrderTableRepository orderTableRepository;
-    private final OrderTableStatusService orderTableStatusService;
 
-    public OrderTableService(OrderTableRepository orderTableRepository, OrderTableStatusService orderTableStatusService) {
+    public OrderTableService(OrderTableRepository orderTableRepository) {
         this.orderTableRepository = orderTableRepository;
-        this.orderTableStatusService = orderTableStatusService;
     }
 
     @Transactional
@@ -43,7 +41,6 @@ public class OrderTableService {
             .orElseThrow(() -> new NotFoundException(ExceptionType.NOT_EXIST_ORDER_TABLE));
         orderTable.validateHasTableGroupId();
 
-        orderTableStatusService.validateOrderTableStatus(orderTable);
 
         orderTable.emptyTheTable();
         orderTable = orderTableRepository.save(orderTable);
