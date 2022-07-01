@@ -56,6 +56,6 @@ public class TableGroup {
     }
 
     public void ungroup(){
-        orderTables.forEach(orderTable -> orderTable.ungroup());
+        orderTables.forEach(OrderTable::ungroup);
     }
 }

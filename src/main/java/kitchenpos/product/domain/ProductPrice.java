@@ -15,11 +15,11 @@ public class ProductPrice {
 
     }
     public ProductPrice(int price) {
-        this(new BigDecimal(price));
+        this(BigDecimal.valueOf(price));
     }
 
     public ProductPrice(double price) {
-        this(new BigDecimal(price));
+        this(BigDecimal.valueOf(price));
     }
 
     public ProductPrice(BigDecimal price) {

@@ -106,7 +106,7 @@ class TableGroupServiceTest extends ServiceTest {
         tableGroupService.ungroup(tableGroup.getId());
 
         List<OrderTableResponse> orderTables = tableService.findAllByTableGroupId(tableGroup.getId());
-        assertThat(orderTables).hasSize(0);
+        assertThat(orderTables).isEmpty();
     }
 
     @Test
@@ -123,7 +123,7 @@ class TableGroupServiceTest extends ServiceTest {
         tableGroupService.ungroup(tableGroup.getId());
 
         List<OrderTableResponse> orderTables = tableService.findAllByTableGroupId(tableGroup.getId());
-        assertThat(orderTables).hasSize(0);
+        assertThat(orderTables).isEmpty();
     }
 
     @Test
@@ -133,7 +133,8 @@ class TableGroupServiceTest extends ServiceTest {
         OrderTableResponse table2 = serviceTestHelper.빈테이블_생성됨();
         TableGroupResponse tableGroup = serviceTestHelper.테이블그룹_지정됨(table1, table2);
         주문생성됨(table1);
-        assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
+        Long tableGroupId = tableGroup.getId();
+        assertThatThrownBy(() -> tableGroupService.ungroup(tableGroupId))
                 .isInstanceOf(CannotUngroupException.class);
     }
 

@@ -61,7 +61,8 @@ class MenuTest {
         String menuName = "메뉴1";
         int menuPrice = 10000;
         Menu menu = 테스트_메뉴_생성(menuGroup, menuName, menuPrice);
-        assertThatThrownBy(() -> menu.checkSumPriceOfProducts(Lists.newArrayList(product1, product2)))
+        List<Product> products = Lists.newArrayList(product1, product2);
+        assertThatThrownBy(() -> menu.checkSumPriceOfProducts(products))
                 .isInstanceOf(InvalidMenuPriceException.class);
     }
 

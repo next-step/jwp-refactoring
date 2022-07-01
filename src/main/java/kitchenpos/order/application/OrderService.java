@@ -6,7 +6,6 @@ import java.util.List;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderLineItemRepository;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemDto;
@@ -21,18 +20,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderService {
     private final MenuService menuService;
     private final OrderRepository orderRepository;
-    private final OrderLineItemRepository orderLineItemRepository;
     private final TableService tableService;
 
     public OrderService(
             final MenuService menuService,
             final OrderRepository orderRepository,
-            final OrderLineItemRepository orderLineItemRepository,
             final TableService tableService
     ) {
         this.menuService = menuService;
         this.orderRepository = orderRepository;
-        this.orderLineItemRepository = orderLineItemRepository;
         this.tableService = tableService;
     }
 
@@ -47,7 +43,7 @@ public class OrderService {
     private Order convertToOrder(OrderRequest orderRequest){
         List<OrderLineItemDto> orderLineItemDtos = orderRequest.getOrderLineItemDtos();
         List<OrderLineItem> orderLineItems = orderLineItemDtos.stream()
-                .map(orderLineItemDto -> orderLineItemDto.toOrderLineItem())
+                .map(OrderLineItemDto::toOrderLineItem)
                 .collect(toList());
 
         return new Order(orderRequest.getOrderTableId(),orderLineItems);

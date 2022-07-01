@@ -3,31 +3,18 @@ package kitchenpos.order.domain;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import kitchenpos.fixture.MenuFixtureFactory;
-import kitchenpos.fixture.MenuProductFixtureFactory;
-import kitchenpos.fixture.OrderLineItemFixtureFactory;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.exception.NotExistMenuException;
-import kitchenpos.order.dto.OrderLineItemDto;
-import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.exception.CannotChangeOrderStatusException;
 import kitchenpos.order.exception.EmptyOrderLineItemsException;
-import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.table.exception.CanNotMakeOrderTableException;
-import kitchenpos.table.exception.NotExistTableException;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class OrderTest {
+class OrderTest {
 
     private Long orderTableId;
     private Long menuId;
@@ -72,7 +59,8 @@ public class OrderTest {
     @Test
     @DisplayName("주문항목이 없는경우 주문 등록 실패")
     void 주문등록_주문항목이_없는경우() {
-        assertThatThrownBy(() -> new Order(orderTableId,emptyList()))
+        List<OrderLineItem> orderLineItems = emptyList();
+        assertThatThrownBy(() -> new Order(orderTableId,orderLineItems))
                 .isInstanceOf(EmptyOrderLineItemsException.class);
     }
 

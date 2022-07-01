@@ -101,7 +101,8 @@ class TableServiceTest extends ServiceTest {
         OrderTableResponse emptyTable2 = serviceTestHelper.빈테이블_생성됨();
         serviceTestHelper.테이블그룹_지정됨(emptyTable, emptyTable2);
 
-        assertThatThrownBy(() -> serviceTestHelper.비어있지않은테이블로_변경(emptyTable.getId()))
+        Long tableId = emptyTable.getId();
+        assertThatThrownBy(() -> serviceTestHelper.비어있지않은테이블로_변경(tableId))
                 .isInstanceOf(CannotChangeEmptyState.class);
     }
 
@@ -111,7 +112,9 @@ class TableServiceTest extends ServiceTest {
         OrderTableResponse table = serviceTestHelper.비어있지않은테이블_생성됨(3);
         OrderResponse order = 테이블에_임시_주문_추가(table.getId());
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
-        assertThatThrownBy(() -> serviceTestHelper.빈테이블로_변경(table.getId()))
+
+        Long tableId = table.getId();
+        assertThatThrownBy(() -> serviceTestHelper.빈테이블로_변경(tableId))
                 .isInstanceOf(CannotChangeEmptyState.class);
     }
 
@@ -132,7 +135,9 @@ class TableServiceTest extends ServiceTest {
         OrderTableResponse savedOrderTable = serviceTestHelper.비어있지않은테이블_생성됨(4);
 
         int invalidNumberOfGuests = -5;
-        assertThatThrownBy(() -> serviceTestHelper.테이블_인원수_변경(savedOrderTable.getId(), invalidNumberOfGuests))
+
+        Long tableId = savedOrderTable.getId();
+        assertThatThrownBy(() -> serviceTestHelper.테이블_인원수_변경(tableId, invalidNumberOfGuests))
                 .isInstanceOf(CannotChangeNumberOfGuests.class);
     }
 
@@ -141,7 +146,9 @@ class TableServiceTest extends ServiceTest {
     void 테이블_인원수_변경_빈테이블인_경우() {
         OrderTableResponse savedOrderTable = serviceTestHelper.빈테이블_생성됨();
         int updatedNumberOfGuests = 4;
-        assertThatThrownBy(() -> serviceTestHelper.테이블_인원수_변경(savedOrderTable.getId(), updatedNumberOfGuests))
+
+        Long tableId = savedOrderTable.getId();
+        assertThatThrownBy(() -> serviceTestHelper.테이블_인원수_변경(tableId, updatedNumberOfGuests))
                 .isInstanceOf(CannotChangeNumberOfGuests.class);
     }
 
@@ -149,8 +156,10 @@ class TableServiceTest extends ServiceTest {
     @DisplayName("테이블이 주문을 받을수 있는 상태인지 확인")
     void 테이블_주문가능여부() {
         OrderTableResponse savedOrderTable = serviceTestHelper.비어있지않은테이블_생성됨(4);
+
+        Long tableId = savedOrderTable.getId();
         assertThatNoException()
-                .isThrownBy(() -> tableService.validateTableToMakeOrder(savedOrderTable.getId()));
+                .isThrownBy(() -> tableService.validateTableToMakeOrder(tableId));
     }
 
     @Test
@@ -164,7 +173,9 @@ class TableServiceTest extends ServiceTest {
     @DisplayName("빈 테이블인 경우 주문 불가")
     void 테이블_주문불가능케이스_빈테이블() {
         OrderTableResponse savedOrderTable = serviceTestHelper.빈테이블_생성됨();
-        assertThatThrownBy(() -> tableService.validateTableToMakeOrder(savedOrderTable.getId()))
+
+        Long tableId = savedOrderTable.getId();
+        assertThatThrownBy(() -> tableService.validateTableToMakeOrder(tableId))
                 .isInstanceOf(CanNotMakeOrderTableException.class);
     }
 

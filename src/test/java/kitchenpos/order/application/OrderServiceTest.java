@@ -2,7 +2,6 @@ package kitchenpos.order.application;
 
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
@@ -15,7 +14,6 @@ import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuDto;
 import kitchenpos.menu.exception.NotExistMenuException;
-import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemDto;
 import kitchenpos.order.dto.OrderResponse;
@@ -93,7 +91,9 @@ class OrderServiceTest extends ServiceTest {
     @Test
     @DisplayName("주문항목이 없는경우 주문 등록 실패")
     void 주문등록_주문항목이_없는경우() {
-        assertThatThrownBy(() -> serviceTestHelper.주문_생성됨(orderTable.getId(), emptyList()))
+        Long orderTableId = orderTable.getId();
+        List<OrderLineItemDto> orderLineItemDtos = emptyList();
+        assertThatThrownBy(() -> serviceTestHelper.주문_생성됨(orderTableId, orderLineItemDtos))
                 .isInstanceOf(EmptyOrderLineItemsException.class);
     }
 
@@ -103,7 +103,10 @@ class OrderServiceTest extends ServiceTest {
         MenuProduct menuProduct = MenuProductFixtureFactory.createMenuProduct(product1.getId(), 1);
         Menu notSavedMenu = MenuFixtureFactory.createMenu(menuGroup, "메뉴", 4000, Lists.newArrayList(menuProduct));
         OrderLineItemDto orderLineItem = OrderLineItemFixtureFactory.createOrderLine(notSavedMenu.getId(), 3);
-        assertThatThrownBy(() -> serviceTestHelper.주문_생성됨(orderTable.getId(), Lists.newArrayList(orderLineItem)))
+
+        Long orderTableId = orderTable.getId();
+        List<OrderLineItemDto> orderLineItemDtos = Lists.newArrayList(orderLineItem);
+        assertThatThrownBy(() -> serviceTestHelper.주문_생성됨(orderTableId, orderLineItemDtos))
                 .isInstanceOf(NotExistMenuException.class);
     }
 
@@ -113,7 +116,8 @@ class OrderServiceTest extends ServiceTest {
         Long notExistTableId = -1L;
         OrderLineItemDto orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
         OrderLineItemDto orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
-        assertThatThrownBy(() -> serviceTestHelper.주문_생성됨(notExistTableId, Lists.newArrayList(orderLineItem1, orderLineItem2)))
+        List<OrderLineItemDto> orderLineItemDtos = Lists.newArrayList(orderLineItem1, orderLineItem2);
+        assertThatThrownBy(() -> serviceTestHelper.주문_생성됨(notExistTableId, orderLineItemDtos))
                 .isInstanceOf(NotExistTableException.class);
     }
 
@@ -123,7 +127,10 @@ class OrderServiceTest extends ServiceTest {
         OrderTableResponse orderTable = serviceTestHelper.빈테이블_생성됨();
         OrderLineItemDto orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
         OrderLineItemDto orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
-        assertThatThrownBy(() -> serviceTestHelper.주문_생성됨(orderTable.getId(), Lists.newArrayList(orderLineItem1, orderLineItem2)))
+
+        Long orderTableId = orderTable.getId();
+        List<OrderLineItemDto> orderLineItemDtos = Lists.newArrayList(orderLineItem1, orderLineItem2);
+        assertThatThrownBy(() -> serviceTestHelper.주문_생성됨(orderTableId, orderLineItemDtos))
                 .isInstanceOf(CanNotMakeOrderTableException.class);
     }
 
@@ -162,7 +169,8 @@ class OrderServiceTest extends ServiceTest {
 
         OrderResponse order = serviceTestHelper.주문_생성됨(orderTable.getId(), Lists.newArrayList(orderLineItem1, orderLineItem2));
         serviceTestHelper.주문상태_변경(order.getId(), OrderStatus.COMPLETION);
-        assertThatThrownBy(() -> serviceTestHelper.주문상태_변경(order.getId(), OrderStatus.MEAL))
+        Long orderId = order.getId();
+        assertThatThrownBy(() -> serviceTestHelper.주문상태_변경(orderId, OrderStatus.MEAL))
                 .isInstanceOf(CannotChangeOrderStatusException.class);
     }
 }

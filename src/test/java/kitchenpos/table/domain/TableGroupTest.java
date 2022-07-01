@@ -36,8 +36,10 @@ class TableGroupTest {
     void 테이블그룹_지정_테이블이_2개미만인경우() {
         int numberOfGuests = 0;
         OrderTable emptyTable = new OrderTable(numberOfGuests,true);
-        assertThatThrownBy(() -> new TableGroup(Lists.newArrayList(emptyTable))).isInstanceOf(
-                CannotMakeTableGroupException.class);
+
+        List<OrderTable> orderTables = Lists.newArrayList(emptyTable);
+        assertThatThrownBy(() -> new TableGroup(orderTables))
+                .isInstanceOf(CannotMakeTableGroupException.class);
     }
 
     @Test
@@ -46,7 +48,9 @@ class TableGroupTest {
         int numberOfGuests = 0;
         OrderTable emptyTable = new OrderTable(numberOfGuests, true);
         OrderTable notEmptyTable = new OrderTable(numberOfGuests, false);
-        assertThatThrownBy(() -> new TableGroup(Lists.newArrayList(emptyTable, notEmptyTable)))
+
+        List<OrderTable> orderTables = Lists.newArrayList(emptyTable, notEmptyTable);
+        assertThatThrownBy(() -> new TableGroup(orderTables))
                 .isInstanceOf(CannotMakeTableGroupException.class);
     }
 

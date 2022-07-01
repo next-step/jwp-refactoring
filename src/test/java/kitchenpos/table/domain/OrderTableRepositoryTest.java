@@ -37,6 +37,6 @@ class OrderTableRepositoryTest extends JpaRepositoryTest {
     @DisplayName("유효하지 않은 아이디의 경우 빈 array를 리턴")
     void finaAllByIdInTestWithNotValidId(){
         List<OrderTable> orderTableList =  orderTableRepository.findAllByIdIn(Lists.newArrayList(-1L,-2L));
-        assertThat(orderTableList).hasSize(0).isNotNull();
+        assertThat(orderTableList).isNotNull().isEmpty();
     }
 }
