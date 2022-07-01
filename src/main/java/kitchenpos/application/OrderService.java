@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
@@ -88,5 +89,9 @@ public class OrderService {
         savedOrder.changeOrderStatus(request.getOrderStatus());
 
         return OrderResponse.of(orderRepository.save(savedOrder));
+    }
+
+    public boolean existsNotCompleteOrderByOrderTableIdIn(final List<Long> orderTableIds) {
+        return orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, OrderStatus.notCompletes());
     }
 }

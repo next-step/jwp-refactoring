@@ -12,6 +12,7 @@ import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderLineItems;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTables;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
 import kitchenpos.domain.Quantity;
@@ -36,9 +37,11 @@ public class UnitTestFixture {
     public final Menu 김치찌개정식 = new Menu(
             2L, "김치찌개정식", new Price(9000L), 식사류.getId(), new MenuProducts(Arrays.asList(김치찌개정식_김치찌개, 김치찌개정식_공깃밥)));
 
-    public final OrderLineItem 주문_항목1 = new OrderLineItem(1L, null, 1L, new Quantity(2));
-    public final OrderLineItem 주문_항목2 = new OrderLineItem(2L, null, 2L, new Quantity(1));
-    public final OrderLineItem 완료된_주문_항목 = new OrderLineItem(3L, null, 2L, new Quantity(2));
+    public final OrderLineItem 조리중_주문_항목1 = new OrderLineItem(1L, null, 1L, new Quantity(2));
+    public final OrderLineItem 조리중_주문_항목2 = new OrderLineItem(2L, null, 2L, new Quantity(1));
+    public final OrderLineItem 식사중_주문_항목1 = new OrderLineItem(3L, null, 1L, new Quantity(2));
+    public final OrderLineItem 식사중_주문_항목2 = new OrderLineItem(4L, null, 2L, new Quantity(1));
+    public final OrderLineItem 완료된_주문_항목 = new OrderLineItem(5L, null, 2L, new Quantity(2));
 
     public final OrderTable 테이블 = new OrderTable(1L, null, new NumberOfGuests(4), false);
     public final OrderTable 빈_테이블1 = new OrderTable(2L, null, new NumberOfGuests(0), true);
@@ -47,10 +50,20 @@ public class UnitTestFixture {
     public final OrderTable 단체_지정_테이블1 = new OrderTable(5L, 1L, new NumberOfGuests(4), false);
     public final OrderTable 단체_지정_테이블2 = new OrderTable(6L, 1L, new NumberOfGuests(4), false);
 
-    public final Order 주문 = new Order(
-            1L, 테이블.getId(), OrderStatus.COOKING, LocalDateTime.now(), new OrderLineItems(Arrays.asList(주문_항목1, 주문_항목2)));
+    public final Order 조리중_주문 = new Order(
+            1L,
+            테이블.getId(),
+            OrderStatus.COOKING,
+            LocalDateTime.now(),
+            new OrderLineItems(Arrays.asList(조리중_주문_항목1, 조리중_주문_항목2)));
+    public final Order 식사중_주문 = new Order(
+            2L,
+            테이블.getId(),
+            OrderStatus.MEAL,
+            LocalDateTime.now(),
+            new OrderLineItems(Arrays.asList(식사중_주문_항목1, 식사중_주문_항목2)));
     public final Order 완료된_주문 = new Order(
-            2L, 테이블.getId(), OrderStatus.COMPLETION, LocalDateTime.now(), new OrderLineItems(Arrays.asList(완료된_주문_항목)));
+            3L, 테이블.getId(), OrderStatus.COMPLETION, LocalDateTime.now(), new OrderLineItems(Arrays.asList(완료된_주문_항목)));
 
-    public final TableGroup 단체1 = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(단체_지정_테이블1, 단체_지정_테이블2));
+    public final TableGroup 단체1 = new TableGroup(1L, LocalDateTime.now(), new OrderTables(Arrays.asList(단체_지정_테이블1, 단체_지정_테이블2)));
 }

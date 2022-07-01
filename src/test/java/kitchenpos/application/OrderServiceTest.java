@@ -51,15 +51,15 @@ class OrderServiceTest {
     void 주문을_등록할_수_있어야_한다() {
         // given
         final List<OrderLineItemRequest> orderLineItemRequests = new ArrayList<>();
-        orderLineItemRequests.add(new OrderLineItemRequest(식당_포스.주문_항목1.getMenuId(), 식당_포스.주문_항목1.getQuantity()));
-        orderLineItemRequests.add(new OrderLineItemRequest(식당_포스.주문_항목2.getMenuId(), 식당_포스.주문_항목2.getQuantity()));
+        orderLineItemRequests.add(new OrderLineItemRequest(식당_포스.조리중_주문_항목1.getMenuId(), 식당_포스.조리중_주문_항목1.getQuantity()));
+        orderLineItemRequests.add(new OrderLineItemRequest(식당_포스.조리중_주문_항목2.getMenuId(), 식당_포스.조리중_주문_항목2.getQuantity()));
 
         final OrderRequest given = new OrderRequest(식당_포스.테이블.getId(), orderLineItemRequests);
 
         final Order expected = new Order(1L, 식당_포스.테이블.getId(), OrderStatus.COOKING, LocalDateTime.now());
         when(tableService.getById(식당_포스.테이블.getId())).thenReturn(식당_포스.테이블);
-        when(menuService.existsById(식당_포스.주문_항목1.getMenuId())).thenReturn(true);
-        when(menuService.existsById(식당_포스.주문_항목2.getMenuId())).thenReturn(true);
+        when(menuService.existsById(식당_포스.조리중_주문_항목1.getMenuId())).thenReturn(true);
+        when(menuService.existsById(식당_포스.조리중_주문_항목2.getMenuId())).thenReturn(true);
         when(orderRepository.save(any(Order.class))).thenReturn(expected);
 
         // when
@@ -68,7 +68,7 @@ class OrderServiceTest {
         // then
         assertThat(actual.getId()).isEqualTo(expected.getId());
         assertThat(actual.getOrderLineItems().stream().map(OrderLineItemResponse::getMenuId))
-                .containsExactly(식당_포스.주문_항목1.getMenuId(), 식당_포스.주문_항목2.getMenuId());
+                .containsExactly(식당_포스.조리중_주문_항목1.getMenuId(), 식당_포스.조리중_주문_항목2.getMenuId());
     }
 
     @Test
@@ -103,8 +103,8 @@ class OrderServiceTest {
         final OrderRequest given = new OrderRequest(
                 invalidOrderTableId,
                 Arrays.asList(
-                        new OrderLineItemRequest(식당_포스.주문_항목1.getMenuId(), 식당_포스.주문_항목1.getQuantity()),
-                        new OrderLineItemRequest(식당_포스.주문_항목2.getMenuId(), 식당_포스.주문_항목2.getQuantity())));
+                        new OrderLineItemRequest(식당_포스.조리중_주문_항목1.getMenuId(), 식당_포스.조리중_주문_항목1.getQuantity()),
+                        new OrderLineItemRequest(식당_포스.조리중_주문_항목2.getMenuId(), 식당_포스.조리중_주문_항목2.getQuantity())));
         when(tableService.getById(invalidOrderTableId)).thenThrow(new IllegalArgumentException());
 
         // when and then
@@ -118,8 +118,8 @@ class OrderServiceTest {
         final OrderRequest given = new OrderRequest(
                 식당_포스.빈_테이블1.getId(),
                 Arrays.asList(
-                        new OrderLineItemRequest(식당_포스.주문_항목1.getMenuId(), 식당_포스.주문_항목1.getQuantity()),
-                        new OrderLineItemRequest(식당_포스.주문_항목2.getMenuId(), 식당_포스.주문_항목2.getQuantity())));
+                        new OrderLineItemRequest(식당_포스.조리중_주문_항목1.getMenuId(), 식당_포스.조리중_주문_항목1.getQuantity()),
+                        new OrderLineItemRequest(식당_포스.조리중_주문_항목2.getMenuId(), 식당_포스.조리중_주문_항목2.getQuantity())));
         when(tableService.getById(식당_포스.빈_테이블1.getId())).thenReturn(식당_포스.빈_테이블1);
 
         // when and then
@@ -130,34 +130,34 @@ class OrderServiceTest {
     @Test
     void 주문_목록을_조회할_수_있어야_한다() {
         // given
-        when(orderRepository.findAll()).thenReturn(Arrays.asList(식당_포스.주문, 식당_포스.완료된_주문));
+        when(orderRepository.findAll()).thenReturn(Arrays.asList(식당_포스.조리중_주문, 식당_포스.완료된_주문));
 
         // when
         final List<OrderResponse> actual = orderService.list();
 
         // then
         assertThat(actual.stream().map(OrderResponse::getId).collect(Collectors.toList()))
-                .containsExactly(식당_포스.주문.getId(), 식당_포스.완료된_주문.getId());
+                .containsExactly(식당_포스.조리중_주문.getId(), 식당_포스.완료된_주문.getId());
     }
 
     @Test
     void 주문_상태를_변경할_수_있어야_한다() {
         // given
         final OrderStatus targetStatus = OrderStatus.MEAL;
-        when(orderRepository.findById(식당_포스.주문.getId())).thenReturn(Optional.of(식당_포스.주문));
+        when(orderRepository.findById(식당_포스.조리중_주문.getId())).thenReturn(Optional.of(식당_포스.조리중_주문));
         when(orderRepository.save(any())).thenReturn(
                 new Order(
-                        식당_포스.주문.getId(),
-                        식당_포스.주문.getOrderTableId(),
+                        식당_포스.조리중_주문.getId(),
+                        식당_포스.조리중_주문.getOrderTableId(),
                         targetStatus,
                         LocalDateTime.now(),
-                        new OrderLineItems(Arrays.asList(식당_포스.주문_항목1, 식당_포스.주문_항목2))));
+                        new OrderLineItems(Arrays.asList(식당_포스.조리중_주문_항목1, 식당_포스.조리중_주문_항목2))));
 
         // when
-        orderService.changeOrderStatus(식당_포스.주문.getId(), new OrderRequest(targetStatus));
+        orderService.changeOrderStatus(식당_포스.조리중_주문.getId(), new OrderRequest(targetStatus));
 
         // then
-        assertThat(식당_포스.주문.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
+        assertThat(식당_포스.조리중_주문.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
     }
 
     @Test
@@ -169,5 +169,17 @@ class OrderServiceTest {
         assertThatThrownBy(() -> {
             orderService.changeOrderStatus(식당_포스.완료된_주문.getId(), new OrderRequest(OrderStatus.COMPLETION));
         }).isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    void 주문_테이블들에_속한_주문들_중_완료되지_않은_주문이_있는지_조회할_수_있어야_한다() {
+        // given
+        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(
+                Arrays.asList(식당_포스.테이블.getId()),
+                Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).thenReturn(true);
+
+        // when and then
+        assertThat(orderService.existsNotCompleteOrderByOrderTableIdIn(
+                Arrays.asList(식당_포스.테이블.getId()))).isTrue();
     }
 }
