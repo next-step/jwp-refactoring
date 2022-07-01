@@ -1,0 +1,7 @@
+ALTER TABLE menu ALTER COLUMN price BIGINT(20);
+
+ALTER TABLE product ALTER COLUMN price BIGINT(20);
+
+ALTER TABLE menu_product ALTER COLUMN quantity INT;
+
+ALTER TABLE order_line_item ALTER COLUMN quantity INT;

@@ -9,8 +9,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.TableGroupResponse;
 import kitchenpos.fixture.acceptance.AcceptanceTestOrderTableFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -36,14 +37,14 @@ public class TableGroupAcceptanceTest extends BaseAcceptanceTest {
         테이블_단체_지정됨(created);
 
         // when
-        ExtractableResponse<Response> list = 테이블_단체_해제_요청(created.as(TableGroup.class).getId());
+        ExtractableResponse<Response> list = 테이블_단체_해제_요청(created.as(TableGroupResponse.class).getId());
         // then
         테이블_단체_해제됨(list);
     }
 
     public static ExtractableResponse<Response> 테이블_단체_지정_요청(final List<OrderTable> orderTables) {
         final Map<String, Object> body = new HashMap<>();
-        body.put("orderTables", orderTables);
+        body.put("orderTables", orderTables.stream().map(OrderTable::getId).collect(Collectors.toList()));
 
         return RestAssured
                 .given().log().all()

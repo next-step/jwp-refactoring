@@ -1,34 +1,33 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.ProductDao;
+import java.util.List;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.ProductRequest;
+import kitchenpos.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Objects;
-
 @Service
+@Transactional
 public class ProductService {
-    private final ProductDao productDao;
+    private final ProductRepository productRepository;
 
-    public ProductService(final ProductDao productDao) {
-        this.productDao = productDao;
+    public ProductService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
     }
 
-    @Transactional
-    public Product create(final Product product) {
-        final BigDecimal price = product.getPrice();
-
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
-
-        return productDao.save(product);
+    public Product create(final ProductRequest request) {
+        return productRepository.save(request.toProduct());
     }
 
+    @Transactional(readOnly = true)
     public List<Product> list() {
-        return productDao.findAll();
+        return productRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public Product getById(final Long id) {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(String.format("상품을 찾을 수 없습니다. id: %d", id)));
     }
 }

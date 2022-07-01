@@ -1,50 +1,72 @@
 package kitchenpos.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "menu_product")
 public class MenuProduct {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "seq")
     private Long seq;
-    private Long menuId;
+
+    @ManyToOne
+    @JoinColumn(name = "menu_id")
+    private Menu menu;
+
+    @Column(name = "product_id")
     private Long productId;
-    private long quantity;
+
+    @Embedded
+    private Quantity quantity;
 
     public MenuProduct() {
     }
 
-    public MenuProduct(final Long seq, final Long menuId, final Long productId, final long quantity) {
-        this.seq = seq;
-        this.menuId = menuId;
+    public MenuProduct(final Long productId,
+                       final Quantity quantity) {
         this.productId = productId;
         this.quantity = quantity;
+    }
+
+    public MenuProduct(final Long seq,
+                       final Menu menu,
+                       final Long productId,
+                       final Quantity quantity) {
+        this.seq = seq;
+        this.menu = menu;
+        this.productId = productId;
+        this.quantity = quantity;
+    }
+
+    public void relateToMenu(final Menu menu) {
+        if (null != this.menu) {
+            throw new IllegalStateException("이미 메뉴와의 연관관계가 설정되어 있습니다.");
+        }
+        this.menu = menu;
     }
 
     public Long getSeq() {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
-    }
-
-    public Long getMenuId() {
-        return menuId;
-    }
-
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
+    public Menu getMenu() {
+        return menu;
     }
 
     public Long getProductId() {
         return productId;
     }
 
-    public void setProductId(final Long productId) {
-        this.productId = productId;
-    }
-
-    public long getQuantity() {
+    public Quantity getQuantity() {
         return quantity;
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
     }
 }

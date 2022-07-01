@@ -6,9 +6,9 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.fixture.UnitTestFixture;
+import kitchenpos.repository.MenuGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,7 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @InjectMocks
     private MenuGroupService menuGroupService;
@@ -35,24 +35,34 @@ class MenuGroupServiceTest {
     void 메뉴_그룹을_등록할_수_있어야_한다() {
         // given
         final MenuGroup given = new MenuGroup(1L, "새로운 메뉴 그룹");
-        when(menuGroupDao.save(any(MenuGroup.class))).thenReturn(given);
+        when(menuGroupRepository.save(any(MenuGroup.class))).thenReturn(given);
 
         // when
         final MenuGroup actual = menuGroupService.create(given);
 
         // then
-        assertThat(given).isEqualTo(actual);
+        assertThat(actual).isEqualTo(given);
     }
 
     @Test
     void 메뉴_그룹_목록을_조회할_수_있어야_한다() {
         // given
-        when(menuGroupDao.findAll()).thenReturn(Arrays.asList(식당_포스.구이류, 식당_포스.식사류));
+        when(menuGroupRepository.findAll()).thenReturn(Arrays.asList(식당_포스.구이류, 식당_포스.식사류));
 
         // when
         final List<MenuGroup> actual = menuGroupService.list();
 
         // then
         assertThat(actual).containsExactly(식당_포스.구이류, 식당_포스.식사류);
+    }
+
+    @Test
+    void 아이디로_메뉴_그룹의_존재_여부를_조회할_수_있어야_한다() {
+        // given
+        final MenuGroup given = new MenuGroup(1L, "새로운 메뉴 그룹");
+        when(menuGroupRepository.existsById(given.getId())).thenReturn(true);
+
+        // when and then
+        assertThat(menuGroupService.existsById(given.getId())).isTrue();
     }
 }

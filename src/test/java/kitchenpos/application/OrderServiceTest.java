@@ -1,21 +1,26 @@
 package kitchenpos.application;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
+import java.util.stream.Collectors;
 import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
+import kitchenpos.domain.OrderLineItems;
 import kitchenpos.domain.OrderStatus;
+import kitchenpos.domain.Quantity;
+import kitchenpos.dto.OrderLineItemRequest;
+import kitchenpos.dto.OrderLineItemResponse;
+import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderResponse;
 import kitchenpos.fixture.UnitTestFixture;
+import kitchenpos.repository.OrderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,16 +31,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
-    private MenuDao menuDao;
-
+    private OrderRepository orderRepository;
     @Mock
-    private OrderDao orderDao;
-
+    private MenuService menuService;
     @Mock
-    private OrderLineItemDao orderLineItemDao;
-
-    @Mock
-    private OrderTableDao orderTableDao;
+    private TableService tableService;
 
     @InjectMocks
     private OrderService orderService;
@@ -50,32 +50,32 @@ class OrderServiceTest {
     @Test
     void 주문을_등록할_수_있어야_한다() {
         // given
-        final Order given = new Order(
-                1L,
-                식당_포스.테이블.getId(),
-                OrderStatus.COOKING.name(),
-                LocalDateTime.now(),
-                Arrays.asList(식당_포스.주문_항목1, 식당_포스.주문_항목2));
-        when(menuDao.countByIdIn(Arrays.asList(식당_포스.주문_항목1.getMenuId(), 식당_포스.주문_항목2.getMenuId()))).thenReturn(2L);
-        when(orderTableDao.findById(식당_포스.테이블.getId())).thenReturn(Optional.of(식당_포스.테이블));
-        when(orderDao.save(given)).thenReturn(given);
+        final List<OrderLineItemRequest> orderLineItemRequests = new ArrayList<>();
+        orderLineItemRequests.add(new OrderLineItemRequest(식당_포스.조리중_주문_항목1.getMenuId(), 식당_포스.조리중_주문_항목1.getQuantity()));
+        orderLineItemRequests.add(new OrderLineItemRequest(식당_포스.조리중_주문_항목2.getMenuId(), 식당_포스.조리중_주문_항목2.getQuantity()));
+
+        final OrderRequest given = new OrderRequest(식당_포스.테이블.getId(), orderLineItemRequests);
+
+        final Order expected = new Order(1L, 식당_포스.테이블.getId(), OrderStatus.COOKING, LocalDateTime.now());
+        when(tableService.getById(식당_포스.테이블.getId())).thenReturn(식당_포스.테이블);
+        when(menuService.existsById(식당_포스.조리중_주문_항목1.getMenuId())).thenReturn(true);
+        when(menuService.existsById(식당_포스.조리중_주문_항목2.getMenuId())).thenReturn(true);
+        when(orderRepository.save(any(Order.class))).thenReturn(expected);
 
         // when
-        final Order actual = orderService.create(given);
+        final OrderResponse actual = orderService.create(given);
 
         // then
-        assertThat(given).isEqualTo(actual);
+        assertThat(actual.getId()).isEqualTo(expected.getId());
+        assertThat(actual.getOrderLineItems().stream().map(OrderLineItemResponse::getMenuId))
+                .containsExactly(식당_포스.조리중_주문_항목1.getMenuId(), 식당_포스.조리중_주문_항목2.getMenuId());
     }
 
     @Test
     void 주문_등록_시_주문_항목이_비어있으면_에러가_발생해야_한다() {
         // given
-        final Order given = new Order(
-                1L,
-                식당_포스.테이블.getId(),
-                OrderStatus.COOKING.name(),
-                LocalDateTime.now(),
-                new ArrayList<>());
+        final OrderRequest given = new OrderRequest(식당_포스.테이블.getId(), new ArrayList<>());
+        when(tableService.getById(식당_포스.테이블.getId())).thenReturn(식당_포스.테이블);
 
         // when and then
         assertThatThrownBy(() -> orderService.create(given))
@@ -86,13 +86,10 @@ class OrderServiceTest {
     void 주문_등록_시_주문_항목에_속한_메뉴가_하나라도_존재하지_않으면_에러가_발생해야_한다() {
         // given
         final Long invalidMenuId = -1L;
-        final Order given = new Order(
-                1L,
+        final OrderRequest given = new OrderRequest(
                 식당_포스.테이블.getId(),
-                OrderStatus.COOKING.name(),
-                LocalDateTime.now(),
-                Arrays.asList(식당_포스.주문_항목1, new OrderLineItem(3L, 1L, invalidMenuId, 1)));
-        when(menuDao.countByIdIn(Arrays.asList(식당_포스.주문_항목1.getMenuId(), invalidMenuId))).thenReturn(1L);
+                Arrays.asList(new OrderLineItemRequest(invalidMenuId, new Quantity(1))));
+        when(tableService.getById(식당_포스.테이블.getId())).thenReturn(식당_포스.테이블);
 
         // when and then
         assertThatThrownBy(() -> orderService.create(given))
@@ -103,13 +100,12 @@ class OrderServiceTest {
     void 주문_등록_시_테이블이_존재하지_않으면_에러가_발생해야_한다() {
         // given
         final Long invalidOrderTableId = -1L;
-        final Order given = new Order(
-                1L,
+        final OrderRequest given = new OrderRequest(
                 invalidOrderTableId,
-                OrderStatus.COOKING.name(),
-                LocalDateTime.now(),
-                Arrays.asList(식당_포스.주문_항목1, 식당_포스.주문_항목2));
-        when(menuDao.countByIdIn(Arrays.asList(식당_포스.주문_항목1.getMenuId(), 식당_포스.주문_항목2.getMenuId()))).thenReturn(2L);
+                Arrays.asList(
+                        new OrderLineItemRequest(식당_포스.조리중_주문_항목1.getMenuId(), 식당_포스.조리중_주문_항목1.getQuantity()),
+                        new OrderLineItemRequest(식당_포스.조리중_주문_항목2.getMenuId(), 식당_포스.조리중_주문_항목2.getQuantity())));
+        when(tableService.getById(invalidOrderTableId)).thenThrow(new IllegalArgumentException());
 
         // when and then
         assertThatThrownBy(() -> orderService.create(given))
@@ -119,14 +115,12 @@ class OrderServiceTest {
     @Test
     void 주문_등록_시_테이블이_비어_있으면_에러가_발생해야_한다() {
         // given
-        final Order given = new Order(
-                1L,
+        final OrderRequest given = new OrderRequest(
                 식당_포스.빈_테이블1.getId(),
-                OrderStatus.COOKING.name(),
-                LocalDateTime.now(),
-                Arrays.asList(식당_포스.주문_항목1, 식당_포스.주문_항목2));
-        when(menuDao.countByIdIn(Arrays.asList(식당_포스.주문_항목1.getMenuId(), 식당_포스.주문_항목2.getMenuId()))).thenReturn(2L);
-        when(orderTableDao.findById(식당_포스.빈_테이블1.getId())).thenReturn(Optional.of(식당_포스.빈_테이블1));
+                Arrays.asList(
+                        new OrderLineItemRequest(식당_포스.조리중_주문_항목1.getMenuId(), 식당_포스.조리중_주문_항목1.getQuantity()),
+                        new OrderLineItemRequest(식당_포스.조리중_주문_항목2.getMenuId(), 식당_포스.조리중_주문_항목2.getQuantity())));
+        when(tableService.getById(식당_포스.빈_테이블1.getId())).thenReturn(식당_포스.빈_테이블1);
 
         // when and then
         assertThatThrownBy(() -> orderService.create(given))
@@ -136,49 +130,56 @@ class OrderServiceTest {
     @Test
     void 주문_목록을_조회할_수_있어야_한다() {
         // given
-        when(orderDao.findAll()).thenReturn(Arrays.asList(식당_포스.주문, 식당_포스.완료된_주문));
+        when(orderRepository.findAll()).thenReturn(Arrays.asList(식당_포스.조리중_주문, 식당_포스.완료된_주문));
 
         // when
-        final List<Order> actual = orderService.list();
+        final List<OrderResponse> actual = orderService.list();
 
         // then
-        assertThat(actual).containsExactly(식당_포스.주문, 식당_포스.완료된_주문);
+        assertThat(actual.stream().map(OrderResponse::getId).collect(Collectors.toList()))
+                .containsExactly(식당_포스.조리중_주문.getId(), 식당_포스.완료된_주문.getId());
     }
 
     @Test
     void 주문_상태를_변경할_수_있어야_한다() {
         // given
-        when(orderDao.findById(식당_포스.주문.getId())).thenReturn(Optional.of(식당_포스.주문));
+        final OrderStatus targetStatus = OrderStatus.MEAL;
+        when(orderRepository.findById(식당_포스.조리중_주문.getId())).thenReturn(Optional.of(식당_포스.조리중_주문));
+        when(orderRepository.save(any())).thenReturn(
+                new Order(
+                        식당_포스.조리중_주문.getId(),
+                        식당_포스.조리중_주문.getOrderTableId(),
+                        targetStatus,
+                        LocalDateTime.now(),
+                        new OrderLineItems(Arrays.asList(식당_포스.조리중_주문_항목1, 식당_포스.조리중_주문_항목2))));
 
         // when
-        orderService.changeOrderStatus(
-                식당_포스.주문.getId(),
-                new Order(
-                        식당_포스.주문.getId(),
-                        식당_포스.주문.getOrderTableId(),
-                        OrderStatus.MEAL.name(),
-                        식당_포스.주문.getOrderedTime(),
-                        식당_포스.주문.getOrderLineItems()));
+        orderService.changeOrderStatus(식당_포스.조리중_주문.getId(), new OrderRequest(targetStatus));
 
         // then
-        assertThat(식당_포스.주문.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
+        assertThat(식당_포스.조리중_주문.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
     }
 
     @Test
     void 주문_상태_변경_시_완료된_주문이면_에러가_발생해야_한다() {
         // given
-        when(orderDao.findById(식당_포스.완료된_주문.getId())).thenReturn(Optional.of(식당_포스.완료된_주문));
+        when(orderRepository.findById(식당_포스.완료된_주문.getId())).thenReturn(Optional.of(식당_포스.완료된_주문));
 
         // when and then
         assertThatThrownBy(() -> {
-            orderService.changeOrderStatus(
-                    식당_포스.완료된_주문.getId(),
-                    new Order(
-                            식당_포스.완료된_주문.getId(),
-                            식당_포스.완료된_주문.getOrderTableId(),
-                            OrderStatus.MEAL.name(),
-                            식당_포스.완료된_주문.getOrderedTime(),
-                            식당_포스.완료된_주문.getOrderLineItems()));
-        }).isInstanceOf(IllegalArgumentException.class);
+            orderService.changeOrderStatus(식당_포스.완료된_주문.getId(), new OrderRequest(OrderStatus.COMPLETION));
+        }).isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    void 주문_테이블들에_속한_주문들_중_완료되지_않은_주문이_있는지_조회할_수_있어야_한다() {
+        // given
+        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(
+                Arrays.asList(식당_포스.테이블.getId()),
+                Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).thenReturn(true);
+
+        // when and then
+        assertThat(orderService.existsNotCompletesByOrderTableIdIn(
+                Arrays.asList(식당_포스.테이블.getId()))).isTrue();
     }
 }
