@@ -4,8 +4,8 @@ import java.util.List;
 
 public class TableGroupEvent {
 
-    Long tableGroupId;
-    List<Long> orderTableIds;
+    private final Long tableGroupId;
+    private final List<Long> orderTableIds;
 
     public TableGroupEvent(Long tableGroupId, List<Long> orderTableIds) {
         this.tableGroupId = tableGroupId;
