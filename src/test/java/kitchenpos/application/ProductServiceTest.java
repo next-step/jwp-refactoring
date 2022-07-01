@@ -39,7 +39,7 @@ class ProductServiceTest {
         assertThat(result.getName()).isEqualTo("닭");
     }
 
-    @DisplayName("가격이 유효하지 않으면 상품을 생성할 수 없다.")
+    @DisplayName("가격이 0원 이상이 아니면, 상품을 생성할 수 없다.")
     @Test
     void create_invalid_price() {
         assertThatThrownBy(() -> productService.create(createProduct("닭", BigDecimal.valueOf(-1))))
