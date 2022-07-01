@@ -1,14 +1,12 @@
 package kitchenpos.table.application;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
+import kitchenpos.table.domain.TableOrderStatusChecker;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import kitchenpos.table.exception.CannotUngroupException;
@@ -19,13 +17,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TableGroupService {
-    private final OrderRepository orderRepository;
+    private final TableOrderStatusChecker tableOrderStatusChecker;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository,
-                             final TableGroupRepository tableGroupRepository) {
-        this.orderRepository = orderRepository;
+    public TableGroupService(TableOrderStatusChecker tableOrderStatusChecker,
+                             OrderTableRepository orderTableRepository,
+                             TableGroupRepository tableGroupRepository) {
+        this.tableOrderStatusChecker = tableOrderStatusChecker;
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
     }
@@ -46,8 +45,7 @@ public class TableGroupService {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
                 .orElseThrow(NotExistTableGroupException::new);
         final List<Long> orderTableIds = extractTableIds(tableGroup);
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+        if (tableOrderStatusChecker.isExistTablesBeforeBillingStatus(orderTableIds)) {
             throw new CannotUngroupException();
         }
         tableGroup.ungroup();

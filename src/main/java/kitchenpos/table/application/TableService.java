@@ -2,12 +2,10 @@ package kitchenpos.table.application;
 
 import static java.util.stream.Collectors.toList;
 
-import java.util.Arrays;
 import java.util.List;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.TableOrderStatusChecker;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.exception.CanNotMakeOrderTableException;
@@ -18,11 +16,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TableService {
-    private final OrderRepository orderRepository;
+    private final TableOrderStatusChecker tableOrderStatusChecker;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
+    public TableService(TableOrderStatusChecker tableOrderStatusChecker,
+                        OrderTableRepository orderTableRepository) {
+        this.tableOrderStatusChecker = tableOrderStatusChecker;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -51,12 +50,10 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = findOrderTableById(orderTableId);
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+        if (tableOrderStatusChecker.isBeforeBillingStatus(orderTableId)) {
             throw new CannotChangeEmptyState("not completed order exist");
         }
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
-
         return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
     }
 
