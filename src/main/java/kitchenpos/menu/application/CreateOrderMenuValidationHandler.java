@@ -14,9 +14,9 @@ public class CreateOrderMenuValidationHandler {
         this.menuRepository = menuRepository;
     }
 
-    @EventListener(CreateOrderEvent.class)
+    @EventListener
     public void validateOrderTable(CreateOrderEvent event) {
-        if (!menuRepository.existsAllByIdIn(event.getMenuIds())){
+        if (!menuRepository.existsAllByIdIn(event.getMenuIds())) {
             throw new IllegalArgumentException("등록되어 있지 않은 주문 항목이 존재 합니다.");
         }
     }

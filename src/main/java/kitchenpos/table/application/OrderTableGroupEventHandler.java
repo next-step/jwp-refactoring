@@ -29,7 +29,7 @@ public class OrderTableGroupEventHandler {
                 .forEach(orderTable -> orderTable.attachToTableGroup(event.getTableGroupId()));
     }
 
-    private void validateSavedOrderTables(List<Long> orderTableIds,List<OrderTable> orderTables) {
+    private void validateSavedOrderTables(List<Long> orderTableIds, List<OrderTable> orderTables) {
         if (orderTableIds.size() != orderTables.size()) {
             throw new IllegalArgumentException("시스템에 저장되지 않은 주문 테이블이 있습니다.");
         }
