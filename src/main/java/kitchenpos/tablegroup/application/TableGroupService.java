@@ -20,7 +20,6 @@ public class TableGroupService {
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
-
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         final TableGroup tableGroup = tableGroupRepository.save(TableGroup.create());
