@@ -57,8 +57,8 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTable orderTable) {
-        final int numberOfGuests = orderTable.getNumberOfGuests();
+    public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
+        final int numberOfGuests = orderTableRequest.getNumberOfGuests();
 
         if (numberOfGuests < 0) {
             throw new IllegalArgumentException();
@@ -72,7 +72,6 @@ public class TableService {
         }
 
         savedOrderTable.setNumberOfGuests(numberOfGuests);
-
-        return orderTableRepository.save(savedOrderTable);
+        return OrderTableResponse.of(savedOrderTable);
     }
 }

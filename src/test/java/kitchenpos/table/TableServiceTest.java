@@ -137,12 +137,11 @@ class TableServiceTest {
     @DisplayName("방문한 손님 수 정보를 변경한다")
     void changeNumberOfGuests() {
         // given
-        OrderTable 변경테이블 = new OrderTable(5, true);
+        OrderTableRequest 변경테이블 = new OrderTableRequest(5, true);
         given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(주문테이블));
-        given(orderTableRepository.save(any())).willReturn(변경테이블);
 
         // when
-        OrderTable actual = tableService.changeNumberOfGuests(주문테이블.getId(), 변경테이블);
+        OrderTableResponse actual = tableService.changeNumberOfGuests(주문테이블.getId(), 변경테이블);
 
         // then
         assertThat(actual.getNumberOfGuests()).isEqualTo(변경테이블.getNumberOfGuests());
@@ -152,7 +151,7 @@ class TableServiceTest {
     @DisplayName("변경하려는 방문 손님 수는 0명이상이다")
     void changeNumberOfGuests_numberError() {
         // given
-        OrderTable 변경테이블 = new OrderTable(-1, true);
+        OrderTableRequest 변경테이블 = new OrderTableRequest(-1, true);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
@@ -164,7 +163,7 @@ class TableServiceTest {
     @DisplayName("변경대상인 주문테이블은 존재하는 주문테이블이어야 한다")
     void changeNumberOfGuests_orderTableError() {
         // given
-        OrderTable 변경테이블 = new OrderTable(5, true);
+        OrderTableRequest 변경테이블 = new OrderTableRequest(5, true);
         given(orderTableRepository.findById(any())).willReturn(Optional.empty());
 
         // when & then
@@ -178,7 +177,7 @@ class TableServiceTest {
     void changeNumberOfGuests_emptyTableError() {
         // given
         주문테이블.setEmpty(true);
-        OrderTable 변경테이블 = new OrderTable(2, true);
+        OrderTableRequest 변경테이블 = new OrderTableRequest(2, true);
         given(orderTableRepository.findById(any())).willReturn(Optional.empty());
 
         // when & then
