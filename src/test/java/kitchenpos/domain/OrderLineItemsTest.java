@@ -3,7 +3,10 @@ package kitchenpos.domain;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class OrderLineItemsTest {
@@ -17,4 +20,19 @@ class OrderLineItemsTest {
                 .hasMessage("주문 항목이 없습니다.");
     }
 
+    @Test
+    void 메뉴_아이디_목록을_조회한다() {
+        // when
+        List<Long> result = createOrderLineItems().getMenuIds();
+
+        // then
+        assertThat(result).containsExactly(1L, 2L);
+    }
+
+    private OrderLineItems createOrderLineItems() {
+        return new OrderLineItems(Arrays.asList(
+            new OrderLineItem(1L, 1),
+            new OrderLineItem(2L, 2)
+        ));
+    }
 }

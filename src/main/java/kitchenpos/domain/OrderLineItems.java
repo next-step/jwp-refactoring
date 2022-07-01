@@ -7,7 +7,9 @@ import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class OrderLineItems {
@@ -26,5 +28,15 @@ public class OrderLineItems {
         if (CollectionUtils.isEmpty(elements)) {
             throw new IllegalArgumentException("주문 항목이 없습니다.");
         }
+    }
+
+    public List<Long> getMenuIds() {
+        return elements.stream()
+                .map(OrderLineItem::getMenuId)
+                .collect(Collectors.toList());
+    }
+
+    public List<OrderLineItem> elements() {
+        return Collections.unmodifiableList(elements);
     }
 }
