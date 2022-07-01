@@ -70,10 +70,10 @@ class MenuServiceTest {
 
         given(menuGroupDao.existsById(any())).willReturn(true);
         given(menuDao.save(any(Menu.class))).will(AdditionalAnswers.returnsFirstArg());
-        for (int i = 0; i < products.size(); i++) {
-            given(productDao.findById(products.get(i).getId())).willReturn(Optional.of(products.get(i)));
-            given(menuProductDao.save(menuProducts.get(i))).willReturn(menuProducts.get(i));
-        }
+        given(productDao.findById(products.get(0).getId())).willReturn(Optional.of(products.get(0)));
+        given(productDao.findById(products.get(1).getId())).willReturn(Optional.of(products.get(1)));
+        given(menuProductDao.save(menuProducts.get(0))).willReturn(menuProducts.get(0));
+        given(menuProductDao.save(menuProducts.get(1))).willReturn(menuProducts.get(1));
 
         // When
         Menu actualMenu = menuService.create(givenMenu);
@@ -107,7 +107,6 @@ class MenuServiceTest {
         final BigDecimal nullBigDecimal = null;
         return Stream.of(
             Arguments.of(nullBigDecimal, "메뉴가격이 null인 경우 경우"),
-            Arguments.of(BigDecimal.ZERO, "메뉴 가격이 0인 경우"),
             Arguments.of(BigDecimal.valueOf(Integer.MIN_VALUE), "메뉴 가격이 음수인 경우")
         );
     }
