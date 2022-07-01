@@ -10,6 +10,8 @@ import kitchenpos.dto.OrderTableResponse;
 
 @Embeddable
 public class OrderTables {
+    private static final int MIN_NUMBER_OF_ORDER_TABLES = 2;
+
     @OneToMany
     @JoinColumn(name = "table_group_id")
     private List<OrderTable> orderTables = new ArrayList<>();
@@ -19,6 +21,29 @@ public class OrderTables {
 
     public OrderTables(List<OrderTable> orderTables) {
         this.orderTables = orderTables;
+    }
+
+    public void makeRelations(final TableGroup tableGroup, final List<OrderTable> orderTables) {
+        validateNumberOfOrderTables(orderTables);
+        orderTables
+                .stream()
+                .forEach(orderTable -> {
+                    validateOrderTableToAdd(orderTable);
+                    orderTable.changeTableGroupId(tableGroup.getId());
+                    this.orderTables.add(orderTable);
+                });
+    }
+
+    public void validateNumberOfOrderTables(final List<OrderTable> orderTables) {
+        if (orderTables.size() < MIN_NUMBER_OF_ORDER_TABLES) {
+            throw new IllegalArgumentException("테이블이 2개 이상이어야 그룹을 만들 수 있습니다.");
+        }
+    }
+
+    private void validateOrderTableToAdd(final OrderTable orderTable) {
+        if (!orderTable.isEmpty()) {
+            throw new IllegalStateException("빈 테이블이 아니면 그룹을 만들 수 없습니다.");
+        }
     }
 
     public List<OrderTableResponse> getResponses() {

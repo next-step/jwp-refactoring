@@ -43,6 +43,10 @@ public class OrderTable {
         this.empty = empty;
     }
 
+    public void changeTableGroupId(final Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
+    }
+
     public Long getId() {
         return id;
     }
