@@ -1,10 +1,21 @@
 package kitchenpos.domain;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+@Entity
 public class OrderTable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long tableGroupId;
     private int numberOfGuests;
     private boolean empty;
+
+    public OrderTable() {
+    }
 
     public OrderTable(Long id) {
         this.id = id;
@@ -20,6 +31,12 @@ public class OrderTable {
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
+    }
+
+    public void validateEmpty() {
+        if (empty) {
+            throw new IllegalArgumentException("빈 테이블은 주문을 할 수 없습니다.");
+        }
     }
 
     public Long getId() {
@@ -45,7 +62,6 @@ public class OrderTable {
     public boolean isEmpty() {
         return empty;
     }
-
     public void changeEmpty(final boolean empty) {
         this.empty = empty;
     }
