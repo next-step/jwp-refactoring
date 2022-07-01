@@ -7,5 +7,9 @@ jar {
 }
 
 dependencies {
+    implementation project(':module-common')
+    implementation project(':module-menu')
+    implementation project(':module-table')
+
     testImplementation project(':module-product')
 }
