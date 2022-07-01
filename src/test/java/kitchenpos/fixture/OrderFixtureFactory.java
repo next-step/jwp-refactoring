@@ -10,7 +10,7 @@ public class OrderFixtureFactory {
     }
 
     public static OrderRequest createOrder(Long orderTableId, List<OrderLineItemDto> orderLineItemDtos) {
-        return new OrderRequest(orderTableId,orderLineItemDtos);
+        return new OrderRequest(orderTableId, orderLineItemDtos);
     }
 
     public static OrderRequest createParamForUpdateStatus(OrderStatus status) {

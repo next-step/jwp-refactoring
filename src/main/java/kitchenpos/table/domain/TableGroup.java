@@ -26,7 +26,7 @@ public class TableGroup {
     @Column(nullable = false)
     private LocalDateTime createdDate;
     @OneToMany(mappedBy = "tableGroup", cascade = {CascadeType.MERGE})
-    private List<OrderTable> orderTables = new ArrayList<>();
+    private final List<OrderTable> orderTables = new ArrayList<>();
 
     protected TableGroup() {
 
@@ -55,7 +55,7 @@ public class TableGroup {
         return orderTables;
     }
 
-    public void ungroup(){
+    public void ungroup() {
         orderTables.forEach(OrderTable::ungroup);
     }
 }

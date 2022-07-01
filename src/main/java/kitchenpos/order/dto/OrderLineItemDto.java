@@ -16,12 +16,12 @@ public class OrderLineItemDto {
         this.quantity = quantity;
     }
 
-    public static OrderLineItemDto of(OrderLineItem orderLineItem){
-        return new OrderLineItemDto(orderLineItem.getMenuId(),orderLineItem.getQuantity());
+    public static OrderLineItemDto of(OrderLineItem orderLineItem) {
+        return new OrderLineItemDto(orderLineItem.getMenuId(), orderLineItem.getQuantity());
     }
 
-    public OrderLineItem toOrderLineItem(){
-        return new OrderLineItem(menuId,quantity);
+    public OrderLineItem toOrderLineItem() {
+        return new OrderLineItem(menuId, quantity);
     }
 
     public Long getSeq() {

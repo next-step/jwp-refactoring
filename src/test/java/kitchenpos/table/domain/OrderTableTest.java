@@ -15,7 +15,7 @@ class OrderTableTest {
     @DisplayName("빈 테이블 생성")
     void 빈_테이블_생성() {
         int numberOfGuests = 0;
-        OrderTable orderTable = new OrderTable(numberOfGuests,true);
+        OrderTable orderTable = new OrderTable(numberOfGuests, true);
         assertThat(orderTable.isEmpty()).isTrue();
         assertThat(orderTable.getNumberOfGuests()).isZero();
         assertThat(orderTable.getTableGroup()).isNull();
@@ -25,7 +25,7 @@ class OrderTableTest {
     @DisplayName("비어있지 않은 테이블 생성")
     void 비어있지않은_테이블_생성() {
         int numberOfGuests = 4;
-        OrderTable orderTable = new OrderTable(numberOfGuests,false);
+        OrderTable orderTable = new OrderTable(numberOfGuests, false);
         assertThat(orderTable.isEmpty()).isFalse();
         assertThat(orderTable.getNumberOfGuests()).isEqualTo(numberOfGuests);
         assertThat(orderTable.getTableGroup()).isNull();
@@ -35,7 +35,7 @@ class OrderTableTest {
     @DisplayName("빈 테이블로 변경")
     void 빈_테이블로_변경() {
         int numberOfGuests = 4;
-        OrderTable orderTable = new OrderTable(numberOfGuests,false);
+        OrderTable orderTable = new OrderTable(numberOfGuests, false);
         orderTable.changeEmpty(true);
         assertThat(orderTable.isEmpty()).isTrue();
     }
@@ -44,7 +44,7 @@ class OrderTableTest {
     @DisplayName("비어있지않은 테이블로 변경")
     void 비어있지않은_테이블로_변경() {
         int numberOfGuests = 0;
-        OrderTable orderTable = new OrderTable(numberOfGuests,true);
+        OrderTable orderTable = new OrderTable(numberOfGuests, true);
         orderTable.changeEmpty(false);
         assertThat(orderTable.isEmpty()).isFalse();
     }
@@ -65,7 +65,7 @@ class OrderTableTest {
     @DisplayName("테이블 인원수 변경")
     void 테이블_인원수_변경() {
         int numberOfGuests = 0;
-        OrderTable orderTable = new OrderTable(numberOfGuests,false);
+        OrderTable orderTable = new OrderTable(numberOfGuests, false);
         int updatedNumberOfGuests = 3;
 
         orderTable.changeNumberOfGuests(updatedNumberOfGuests);

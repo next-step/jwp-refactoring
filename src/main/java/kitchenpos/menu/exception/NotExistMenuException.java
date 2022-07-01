@@ -1,6 +1,6 @@
 package kitchenpos.menu.exception;
 
-public class NotExistMenuException extends RuntimeException{
+public class NotExistMenuException extends RuntimeException {
     public NotExistMenuException() {
     }
 

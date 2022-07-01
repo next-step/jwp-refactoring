@@ -11,9 +11,10 @@ public class ProductPrice {
     @Column(nullable = false)
     BigDecimal price;
 
-    ProductPrice(){
+    ProductPrice() {
 
     }
+
     public ProductPrice(int price) {
         this(BigDecimal.valueOf(price));
     }
@@ -23,7 +24,7 @@ public class ProductPrice {
     }
 
     public ProductPrice(BigDecimal price) {
-        if(Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0){
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new InvalidProductPriceException();
         }
         this.price = price;

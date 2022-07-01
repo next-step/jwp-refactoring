@@ -16,12 +16,7 @@ import org.springframework.http.HttpStatus;
 
 class TableAcceptanceTest extends AcceptanceTest {
     /**
-     * When 빈 테이블을 생성한다.
-     * Then 빈 테이블이 생성된다.
-     * When 테이블을 조회한다.
-     * Then 테이블이 조회된다.
-     * When 테이블의 상태를 변경한다.
-     * Then 테이블의 상태가 변경된다.
+     * When 빈 테이블을 생성한다. Then 빈 테이블이 생성된다. When 테이블을 조회한다. Then 테이블이 조회된다. When 테이블의 상태를 변경한다. Then 테이블의 상태가 변경된다.
      */
     @Test
     @DisplayName("테이블 생성, 조회, 상태 변경 기능 인수테스트")

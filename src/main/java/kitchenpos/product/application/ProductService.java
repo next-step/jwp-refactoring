@@ -24,7 +24,7 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public Product findProductById(Long productId){
+    public Product findProductById(Long productId) {
         return productRepository.findById(productId)
                 .orElseThrow(NotExistProductException::new);
     }

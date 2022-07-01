@@ -30,7 +30,7 @@ public class MenuService {
         Menu menu = menuDto.toMenu();
 
         List<Product> products = menuDto.getMenuProductDtos().stream()
-                .map(menuProductDto ->  productService.findProductById(menuProductDto.getProductId()))
+                .map(menuProductDto -> productService.findProductById(menuProductDto.getProductId()))
                 .collect(toList());
 
         menu.checkSumPriceOfProducts(products);
@@ -42,8 +42,8 @@ public class MenuService {
         return menus.stream().map(MenuDto::of).collect(toList());
     }
 
-    public void validateAllMenusExist(List<Long> orderItemMenuIds){
-        if(orderItemMenuIds.size() == menuRepository.countByIdIn(orderItemMenuIds)){
+    public void validateAllMenusExist(List<Long> orderItemMenuIds) {
+        if (orderItemMenuIds.size() == menuRepository.countByIdIn(orderItemMenuIds)) {
             return;
         }
         throw new NotExistMenuException();

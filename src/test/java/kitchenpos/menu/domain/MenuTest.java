@@ -15,6 +15,7 @@ import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
 class MenuTest {
     private MenuGroup menuGroup;
     private Product product1;
@@ -23,8 +24,8 @@ class MenuTest {
     @BeforeEach
     void setUp() {
         menuGroup = MenuGroupFixtureFactory.createMenuGroup("메뉴그룹1");
-        product1 = ProductFixtureFactory.createProduct(1L,"상품1", 1000);
-        product2 = ProductFixtureFactory.createProduct(2L,"상품2", 2000);
+        product1 = ProductFixtureFactory.createProduct(1L, "상품1", 1000);
+        product2 = ProductFixtureFactory.createProduct(2L, "상품2", 2000);
     }
 
     @Test
@@ -69,6 +70,6 @@ class MenuTest {
     private Menu 테스트_메뉴_생성(MenuGroup menuGroup, String menuName, int menuPrice) {
         MenuProduct menuProduct1 = MenuProductFixtureFactory.createMenuProduct(1L, product1.getId(), 4);
         MenuProduct menuProduct2 = MenuProductFixtureFactory.createMenuProduct(2L, product2.getId(), 1);
-        return new Menu(menuName,new BigDecimal(menuPrice),menuGroup, Lists.newArrayList(menuProduct1, menuProduct2));
+        return new Menu(menuName, new BigDecimal(menuPrice), menuGroup, Lists.newArrayList(menuProduct1, menuProduct2));
     }
 }

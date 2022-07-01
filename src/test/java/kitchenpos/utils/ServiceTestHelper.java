@@ -91,7 +91,8 @@ public class ServiceTestHelper {
     }
 
     public OrderTableResponse 테이블_인원수_변경(Long orderTableId, int updatedNumberOfGuests) {
-        return tableService.changeNumberOfGuests(orderTableId, OrderTableFixtureFactory.createParamForChangeNumberOfGuests(updatedNumberOfGuests));
+        return tableService.changeNumberOfGuests(orderTableId,
+                OrderTableFixtureFactory.createParamForChangeNumberOfGuests(updatedNumberOfGuests));
     }
 
     public OrderResponse 주문_생성됨(Long orderTableId, List<OrderLineItemDto> orderLineItemDtos) {

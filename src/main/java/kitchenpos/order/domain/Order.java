@@ -33,8 +33,8 @@ public class Order {
     private OrderStatus orderStatus;
     @CreatedDate
     private LocalDateTime orderedTime;
-    @OneToMany(mappedBy = "order",cascade = {CascadeType.ALL}, orphanRemoval = true)
-    private List<OrderLineItem> orderLineItems = new ArrayList<>();
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.ALL}, orphanRemoval = true)
+    private final List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     protected Order() {
     }
@@ -49,7 +49,7 @@ public class Order {
         this.orderLineItems.forEach(orderLineItem -> orderLineItem.includeToOrder(this));
     }
 
-    public List<Long> menuIds(){
+    public List<Long> menuIds() {
         return orderLineItems.stream()
                 .map(OrderLineItem::getMenuId)
                 .collect(toList());
@@ -67,8 +67,8 @@ public class Order {
         return orderStatus;
     }
 
-    public void changeOrderStatus(OrderStatus status){
-        if(this.orderStatus == OrderStatus.COMPLETION){
+    public void changeOrderStatus(OrderStatus status) {
+        if (this.orderStatus == OrderStatus.COMPLETION) {
             throw new CannotChangeOrderStatusException();
         }
         this.orderStatus = status;

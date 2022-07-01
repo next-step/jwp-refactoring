@@ -1,6 +1,6 @@
 package kitchenpos.table.exception;
 
-public class NotExistTableException extends RuntimeException{
+public class NotExistTableException extends RuntimeException {
     public NotExistTableException() {
     }
 

@@ -103,9 +103,9 @@ class MenuServiceTest extends ServiceTest {
     void 메뉴존재여부확인() {
         MenuDto menu1 = 테스트_메뉴_생성(menuGroup, "menu1", 6000);
         MenuDto menu2 = 테스트_메뉴_생성(menuGroup, "menu2", 5000);
-        List<Long> menuIds = Lists.newArrayList(menu1.getId(),menu2.getId());
+        List<Long> menuIds = Lists.newArrayList(menu1.getId(), menu2.getId());
         assertThatNoException()
-                .isThrownBy(()-> menuService.validateAllMenusExist(menuIds));
+                .isThrownBy(() -> menuService.validateAllMenusExist(menuIds));
     }
 
     @Test
@@ -114,7 +114,7 @@ class MenuServiceTest extends ServiceTest {
         MenuDto menu1 = 테스트_메뉴_생성(menuGroup, "menu1", 6000);
         MenuDto menu2 = 테스트_메뉴_생성(menuGroup, "menu2", 5000);
         List<Long> menuIds = Lists.newArrayList(-1L);
-        assertThatThrownBy(()-> menuService.validateAllMenusExist(menuIds))
+        assertThatThrownBy(() -> menuService.validateAllMenusExist(menuIds))
                 .isInstanceOf(NotExistMenuException.class);
     }
 

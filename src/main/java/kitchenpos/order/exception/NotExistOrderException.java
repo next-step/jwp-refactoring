@@ -1,6 +1,6 @@
 package kitchenpos.order.exception;
 
-public class NotExistOrderException extends RuntimeException{
+public class NotExistOrderException extends RuntimeException {
     public NotExistOrderException() {
     }
 

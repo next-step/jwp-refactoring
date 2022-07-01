@@ -10,8 +10,8 @@ public class OrderTableFixtureFactory {
     }
 
     public static OrderTableResponse createEmptyOrderTableResponse(Long id) {
-        OrderTable orderTable = new OrderTable(0,true);
-        ReflectionTestUtils.setField(orderTable,"id",id);
+        OrderTable orderTable = new OrderTable(0, true);
+        ReflectionTestUtils.setField(orderTable, "id", id);
         return OrderTableResponse.of(orderTable);
     }
 
@@ -20,7 +20,7 @@ public class OrderTableFixtureFactory {
     }
 
     public static OrderTableRequest createNotEmptyOrderTable(int numberOfGuests) {
-        return new OrderTableRequest(numberOfGuests,false);
+        return new OrderTableRequest(numberOfGuests, false);
     }
 
     public static OrderTableRequest createParamForChangeEmptyState(boolean empty) {

@@ -65,14 +65,14 @@ public class OrderTable {
         return empty;
     }
 
-    public void changeEmpty(boolean empty){
-        if(this.tableGroup != null){
+    public void changeEmpty(boolean empty) {
+        if (this.tableGroup != null) {
             throw new CannotChangeEmptyState(INCLUDE_TO_TABLE_GROUP);
         }
         this.empty = empty;
     }
 
-    public void changeNumberOfGuests(int numberOfGuests){
+    public void changeNumberOfGuests(int numberOfGuests) {
         if (numberOfGuests < 0) {
             throw new CannotChangeNumberOfGuests(NEGATIVE_NUMBER_OF_GUESTS);
         }

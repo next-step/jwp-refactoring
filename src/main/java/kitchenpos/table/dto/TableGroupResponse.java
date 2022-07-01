@@ -11,12 +11,12 @@ public class TableGroupResponse {
     private LocalDateTime createdDate;
     private List<OrderTableResponse> orderTableResponses;
 
-    private TableGroupResponse(){
+    private TableGroupResponse() {
 
     }
 
     private TableGroupResponse(Long id, LocalDateTime createdDate,
-                              List<OrderTableResponse> orderTableResponses) {
+                               List<OrderTableResponse> orderTableResponses) {
         this.id = id;
         this.createdDate = createdDate;
         this.orderTableResponses = orderTableResponses;
@@ -26,8 +26,8 @@ public class TableGroupResponse {
         List<OrderTable> orderTables = tableGroup.getOrderTables();
         return new TableGroupResponse(
                 tableGroup.getId()
-                ,tableGroup.getCreatedDate()
-                ,orderTables.stream()
+                , tableGroup.getCreatedDate()
+                , orderTables.stream()
                 .map(OrderTableResponse::of)
                 .collect(Collectors.toList()));
     }

@@ -30,13 +30,8 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * Given 빈 테이블이 2개 등록되어 있다.
-     * When 테이블 그룹 지정을 시도한다.
-     * Then 그룹이 지정된다.
-     * When 테이블 그룹을 조회한다.
-     * Then 테이블 그룹이 조회된다.
-     * When 테이블 그룹을 해제한다.
-     * Then 테이블 그룹이 해제된다.
+     * Given 빈 테이블이 2개 등록되어 있다. When 테이블 그룹 지정을 시도한다. Then 그룹이 지정된다. When 테이블 그룹을 조회한다. Then 테이블 그룹이 조회된다. When 테이블 그룹을
+     * 해제한다. Then 테이블 그룹이 해제된다.
      */
     @Test
     @DisplayName("테이블그룹 지정, 조회, 그룹 해제 기능 인수테스트")

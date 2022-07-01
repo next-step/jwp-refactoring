@@ -21,11 +21,7 @@ import org.springframework.http.HttpStatus;
 
 class MenuAcceptanceTest extends AcceptanceTest {
     /**
-     * Given 메뉴그룹 및 상품이 생성되어 있다.
-     * When 메뉴를 생성한다.
-     * Then 메뉴가 생성된다.
-     * When 메뉴목록을 조회한다.
-     * Then 메뉴목록이 조회된다.
+     * Given 메뉴그룹 및 상품이 생성되어 있다. When 메뉴를 생성한다. Then 메뉴가 생성된다. When 메뉴목록을 조회한다. Then 메뉴목록이 조회된다.
      */
     @Test
     @DisplayName("메뉴생성 및 조회 기능 인수테스트")

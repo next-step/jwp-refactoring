@@ -138,7 +138,7 @@ class TableGroupServiceTest extends ServiceTest {
                 .isInstanceOf(CannotUngroupException.class);
     }
 
-    private OrderResponse 주문생성됨(OrderTableResponse orderTable){
+    private OrderResponse 주문생성됨(OrderTableResponse orderTable) {
         MenuGroup menuGroup = serviceTestHelper.메뉴그룹_생성됨("메뉴그룹1");
         Product product1 = serviceTestHelper.상품_생성됨("상품1", 1000);
         Product product2 = serviceTestHelper.상품_생성됨("상품2", 2000);

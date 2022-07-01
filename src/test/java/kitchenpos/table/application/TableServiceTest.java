@@ -123,7 +123,8 @@ class TableServiceTest extends ServiceTest {
     void 테이블_인원수_변경() {
         OrderTableResponse savedOrderTable = serviceTestHelper.비어있지않은테이블_생성됨(4);
         int updatedNumberOfGuests = 3;
-        OrderTableResponse updatedOrderTable = serviceTestHelper.테이블_인원수_변경(savedOrderTable.getId(), updatedNumberOfGuests);
+        OrderTableResponse updatedOrderTable = serviceTestHelper.테이블_인원수_변경(savedOrderTable.getId(),
+                updatedNumberOfGuests);
 
         assertThat(updatedOrderTable.getId()).isEqualTo(savedOrderTable.getId());
         assertThat(updatedOrderTable.getNumberOfGuests()).isEqualTo(updatedNumberOfGuests);

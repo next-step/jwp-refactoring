@@ -7,6 +7,6 @@ public class OrderLineItemFixtureFactory {
     }
 
     public static OrderLineItemDto createOrderLine(Long menuId, int quantity) {
-        return new OrderLineItemDto(menuId,quantity);
+        return new OrderLineItemDto(menuId, quantity);
     }
 }

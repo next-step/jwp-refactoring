@@ -40,13 +40,13 @@ public class OrderService {
         return OrderResponse.of(orderRepository.save(order));
     }
 
-    private Order convertToOrder(OrderRequest orderRequest){
+    private Order convertToOrder(OrderRequest orderRequest) {
         List<OrderLineItemDto> orderLineItemDtos = orderRequest.getOrderLineItemDtos();
         List<OrderLineItem> orderLineItems = orderLineItemDtos.stream()
                 .map(OrderLineItemDto::toOrderLineItem)
                 .collect(toList());
 
-        return new Order(orderRequest.getOrderTableId(),orderLineItems);
+        return new Order(orderRequest.getOrderTableId(), orderLineItems);
     }
 
     public List<OrderResponse> list() {

@@ -3,7 +3,7 @@ package kitchenpos.table.exception;
 /**
  * Can not make an order to the table
  */
-public class CanNotMakeOrderTableException extends RuntimeException{
+public class CanNotMakeOrderTableException extends RuntimeException {
     public CanNotMakeOrderTableException() {
     }
 

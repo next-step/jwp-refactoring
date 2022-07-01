@@ -18,21 +18,17 @@ import kitchenpos.product.domain.Product;
 
 @Entity
 public class Menu {
+    @OneToMany(mappedBy = "menu", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    private final List<MenuProduct> menuProducts = new ArrayList<>();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(nullable = false)
     private String name;
-
     @Column(nullable = false)
     private BigDecimal price;
-
     @ManyToOne
     private MenuGroup menuGroup;
-
-    @OneToMany(mappedBy = "menu", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private final List<MenuProduct> menuProducts = new ArrayList<>();
 
     protected Menu() {
     }
@@ -47,7 +43,7 @@ public class Menu {
         this.menuProducts.forEach(menuProduct -> menuProduct.includeToMenu(this));
     }
 
-    private void checkPrice(BigDecimal price){
+    private void checkPrice(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new InvalidMenuPriceException();
         }
@@ -66,7 +62,7 @@ public class Menu {
         }
     }
 
-    private MenuProduct findMenuProductByProductId(Long id){
+    private MenuProduct findMenuProductByProductId(Long id) {
         return menuProducts.stream()
                 .filter(menuProduct -> menuProduct.getProductId().equals(id))
                 .findFirst()

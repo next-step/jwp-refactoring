@@ -6,22 +6,25 @@ public class OrderTableRequest {
     private int numberOfGuests;
     private boolean empty;
 
-    private OrderTableRequest(){
+    private OrderTableRequest() {
 
     }
+
     public OrderTableRequest(int numberOfGuests, boolean empty) {
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
+
     public OrderTableRequest(int numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
     }
+
     public OrderTableRequest(boolean empty) {
         this.empty = empty;
     }
 
-    public OrderTable toOrderTable(){
-        return new OrderTable(numberOfGuests,empty);
+    public OrderTable toOrderTable() {
+        return new OrderTable(numberOfGuests, empty);
     }
 
     public int getNumberOfGuests() {

@@ -11,6 +11,6 @@ public class MenuFixtureFactory {
     }
 
     public static Menu createMenu(MenuGroup menuGroup, String menuName, int menuPrice, List<MenuProduct> menuProducts) {
-        return new Menu(menuName, new BigDecimal(menuPrice), menuGroup,menuProducts);
+        return new Menu(menuName, new BigDecimal(menuPrice), menuGroup, menuProducts);
     }
 }

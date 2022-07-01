@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class TableGroupRequest {
-    private List<Long> orderTableIds = new ArrayList<>();
+    private final List<Long> orderTableIds = new ArrayList<>();
 
     private TableGroupRequest() {
     }

@@ -51,7 +51,7 @@ public class TableGroupService {
         tableGroup.ungroup();
     }
 
-    private List<Long> extractTableIds(TableGroup tableGroup){
+    private List<Long> extractTableIds(TableGroup tableGroup) {
         final List<OrderTable> orderTables = tableGroup.getOrderTables();
         return orderTables.stream()
                 .map(OrderTable::getId)

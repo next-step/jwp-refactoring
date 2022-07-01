@@ -22,11 +22,11 @@ class OrderTest {
     private OrderLineItem orderLineItem2;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         orderTableId = Long.valueOf(3L);
         menuId = Long.valueOf(3L);
-        orderLineItem1 = new OrderLineItem(menuId,3);
-        orderLineItem2 = new OrderLineItem(menuId,4);
+        orderLineItem1 = new OrderLineItem(menuId, 3);
+        orderLineItem2 = new OrderLineItem(menuId, 4);
     }
 
     @Test
@@ -34,21 +34,21 @@ class OrderTest {
     void 주문등록() {
         Order order = 테스트_주문_생성();
         Assertions.assertAll("새로 생성된 order의 상태를 확인한다."
-                ,() -> assertThat(order.getOrderTableId()).isEqualTo(orderTableId)
-                ,() -> assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING)
-                ,() -> assertThatAllOrderLineItemIncludedToOrder(order)
+                , () -> assertThat(order.getOrderTableId()).isEqualTo(orderTableId)
+                , () -> assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING)
+                , () -> assertThatAllOrderLineItemIncludedToOrder(order)
         );
     }
 
-    private Order 테스트_주문_생성(){
+    private Order 테스트_주문_생성() {
         Long menuId = Long.valueOf(3L);
-        OrderLineItem orderLineItem1 = new OrderLineItem(menuId,3);
-        OrderLineItem orderLineItem2 = new OrderLineItem(menuId,4);
+        OrderLineItem orderLineItem1 = new OrderLineItem(menuId, 3);
+        OrderLineItem orderLineItem2 = new OrderLineItem(menuId, 4);
 
-        return new Order(orderTableId,Lists.newArrayList(orderLineItem1,orderLineItem2));
+        return new Order(orderTableId, Lists.newArrayList(orderLineItem1, orderLineItem2));
     }
 
-    private void assertThatAllOrderLineItemIncludedToOrder(Order order){
+    private void assertThatAllOrderLineItemIncludedToOrder(Order order) {
         List<OrderLineItem> orderLineItems = order.getOrderLineItems();
         List<OrderLineItem> includedOrderLineItems = orderLineItems.stream()
                 .filter(orderLineItem -> orderLineItem.getOrder() == order)
@@ -60,7 +60,7 @@ class OrderTest {
     @DisplayName("주문항목이 없는경우 주문 등록 실패")
     void 주문등록_주문항목이_없는경우() {
         List<OrderLineItem> orderLineItems = emptyList();
-        assertThatThrownBy(() -> new Order(orderTableId,orderLineItems))
+        assertThatThrownBy(() -> new Order(orderTableId, orderLineItems))
                 .isInstanceOf(EmptyOrderLineItemsException.class);
     }
 

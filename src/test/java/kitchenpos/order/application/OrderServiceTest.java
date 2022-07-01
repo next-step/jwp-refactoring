@@ -153,7 +153,8 @@ class OrderServiceTest extends ServiceTest {
     void 주문상태_변경() {
         OrderLineItemDto orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
         OrderLineItemDto orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
-        OrderResponse order = serviceTestHelper.주문_생성됨(orderTable.getId(), Lists.newArrayList(orderLineItem1, orderLineItem2));
+        OrderResponse order = serviceTestHelper.주문_생성됨(orderTable.getId(),
+                Lists.newArrayList(orderLineItem1, orderLineItem2));
 
         OrderResponse updatedOrder = serviceTestHelper.주문상태_변경(order.getId(), OrderStatus.MEAL);
 
@@ -167,7 +168,8 @@ class OrderServiceTest extends ServiceTest {
         OrderLineItemDto orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
         OrderLineItemDto orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
 
-        OrderResponse order = serviceTestHelper.주문_생성됨(orderTable.getId(), Lists.newArrayList(orderLineItem1, orderLineItem2));
+        OrderResponse order = serviceTestHelper.주문_생성됨(orderTable.getId(),
+                Lists.newArrayList(orderLineItem1, orderLineItem2));
         serviceTestHelper.주문상태_변경(order.getId(), OrderStatus.COMPLETION);
         Long orderId = order.getId();
         assertThatThrownBy(() -> serviceTestHelper.주문상태_변경(orderId, OrderStatus.MEAL))

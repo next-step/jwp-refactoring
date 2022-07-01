@@ -66,12 +66,12 @@ public class TableService {
 
     public void validateTableToMakeOrder(Long orderTableId) {
         OrderTable orderTable = findOrderTableById(orderTableId);
-        if(orderTable.isEmpty()){
+        if (orderTable.isEmpty()) {
             throw new CanNotMakeOrderTableException(String.valueOf(orderTable.getId()));
         }
     }
 
-    private OrderTable findOrderTableById(Long orderTableId){
+    private OrderTable findOrderTableById(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
                 .orElseThrow(NotExistTableException::new);
     }
