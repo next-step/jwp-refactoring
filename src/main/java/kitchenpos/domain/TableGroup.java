@@ -19,13 +19,17 @@ public class TableGroup {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "create_date")
+    @Column(name = "created_date")
     private LocalDateTime createdDate = LocalDateTime.now();
 
     @Embedded
     private OrderTables orderTables = new OrderTables();
 
     public TableGroup() {
+    }
+
+    public TableGroup(Long id) {
+        this.id = id;
     }
 
     public TableGroup(final OrderTables orderTables) {
@@ -36,6 +40,14 @@ public class TableGroup {
         this.id = id;
         this.createdDate = createdDate;
         this.orderTables = orderTables;
+    }
+
+    public void addOrderTables(final List<OrderTable> orderTables) {
+        this.orderTables.makeRelations(this, orderTables);
+    }
+
+    public void removeRelationsToOrderTables() {
+        this.orderTables.removeRelations();
     }
 
     public Long getId() {
