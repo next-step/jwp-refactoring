@@ -6,10 +6,9 @@ import java.util.Objects;
 
 @Embeddable
 public class Quantity {
-    private final long quantity;
+    private long quantity;
 
     public Quantity() {
-        this(0);
     }
 
     public Quantity(long quantity) {

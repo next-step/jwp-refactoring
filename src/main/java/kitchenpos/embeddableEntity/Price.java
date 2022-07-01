@@ -8,10 +8,9 @@ import java.util.Objects;
 @Embeddable
 public class Price {
     @Column(name = "price")
-    private final BigDecimal price;
+    private BigDecimal price;
 
     public Price() {
-        this(0);
     }
 
     public Price(int price) {
