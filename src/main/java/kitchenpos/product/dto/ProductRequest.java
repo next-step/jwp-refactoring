@@ -23,6 +23,7 @@ public class ProductRequest {
     public Product toProduct() {
         return new Product(name, price);
     }
+
     public String getName() {
         return name;
     }

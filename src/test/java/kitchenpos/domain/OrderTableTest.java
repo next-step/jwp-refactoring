@@ -23,6 +23,7 @@ class OrderTableTest {
         orderTable2 = new OrderTable(0, true);
         tableGroup = new TableGroup();
     }
+
     @Test
     @DisplayName("주문 테이블에 단체 지정을 할 수 잇다.")
     void attachTest() {

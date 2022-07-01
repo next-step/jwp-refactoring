@@ -25,7 +25,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-class MenuServiceTest extends ServiceTest{
+class MenuServiceTest extends ServiceTest {
 
     @Autowired
     private MenuRepository menuRepository;
@@ -52,13 +52,13 @@ class MenuServiceTest extends ServiceTest{
     @BeforeEach
     void before() {
         중식 = menuGroupRepository.save(new MenuGroup("중식"));
-        중식메뉴 = menuRepository.save(new Menu( "메뉴1", BigDecimal.valueOf(3000), 중식.getId()));
+        중식메뉴 = menuRepository.save(new Menu("메뉴1", BigDecimal.valueOf(3000), 중식.getId()));
 
         짬뽕 = productRepository.save(new Product("상품1", BigDecimal.valueOf(1000)));
         짜장 = productRepository.save(new Product("상품2", BigDecimal.valueOf(2000)));
 
-        중식_메뉴_짬뽕 = menuProductRepository.save(new MenuProduct( 중식메뉴, 짬뽕.getId(), 3));
-        중식_메뉴_짜장 = menuProductRepository.save(new MenuProduct( 중식메뉴, 짜장.getId(), 1));
+        중식_메뉴_짬뽕 = menuProductRepository.save(new MenuProduct(중식메뉴, 짬뽕.getId(), 3));
+        중식_메뉴_짜장 = menuProductRepository.save(new MenuProduct(중식메뉴, 짜장.getId(), 1));
 
         중식메뉴.addMenuProduct(Arrays.asList(중식_메뉴_짬뽕, 중식_메뉴_짜장));
     }
@@ -68,7 +68,7 @@ class MenuServiceTest extends ServiceTest{
     void createTestFailWithMenuGroupNotExist() {
 
         //given
-        MenuGroup wrongMenuGroup = new MenuGroup(1000L,"wrong menu group");
+        MenuGroup wrongMenuGroup = new MenuGroup(1000L, "wrong menu group");
         Menu wrongMenu = new Menu("wrong menu", BigDecimal.valueOf(1000), wrongMenuGroup.getId());
 
         //when & then
@@ -81,7 +81,7 @@ class MenuServiceTest extends ServiceTest{
     @DisplayName("생성 하려는 메뉴의 메뉴 상품이 시스템에 등록 되어 있지 않으면 추가 할 수 없다.")
     void createTestFailWithMenuProductNotExist() {
         //given
-        Product 잘못된_상품 = new Product(45L,"잘못된 상품", BigDecimal.valueOf(10));
+        Product 잘못된_상품 = new Product(45L, "잘못된 상품", BigDecimal.valueOf(10));
         MenuProduct 잘못된_메뉴_상품 = new MenuProduct(중식메뉴, 잘못된_상품.getId(), 10);
 
         //when & then
@@ -93,7 +93,7 @@ class MenuServiceTest extends ServiceTest{
                         Arrays.asList(
                                 MenuProductRequest.of(잘못된_상품.getId(), 잘못된_메뉴_상품.getQuantity())
                         )
-        ))).isInstanceOf(IllegalArgumentException.class);
+                ))).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test

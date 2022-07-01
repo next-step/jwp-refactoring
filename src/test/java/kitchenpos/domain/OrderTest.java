@@ -32,7 +32,7 @@ class OrderTest {
 
         //when & then
         assertThatThrownBy(
-                () -> new Order(orderTable.getId(),Collections.emptyList())
+                () -> new Order(orderTable.getId(), Collections.emptyList())
         ).isInstanceOf(IllegalArgumentException.class);
     }
 

@@ -15,7 +15,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-class ProductServiceTest extends ServiceTest{
+class ProductServiceTest extends ServiceTest {
 
     @Autowired
     private ProductRepository productRepository;
@@ -23,8 +23,8 @@ class ProductServiceTest extends ServiceTest{
     @Autowired
     private ProductService productService;
 
-   private Product 짬뽕;
-   private Product 짜장;
+    private Product 짬뽕;
+    private Product 짜장;
 
     @BeforeEach
     void before() {

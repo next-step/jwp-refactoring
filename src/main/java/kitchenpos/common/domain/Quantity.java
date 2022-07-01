@@ -7,7 +7,6 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Quantity {
 
-
     @Column(nullable = false)
     private long quantity;
 

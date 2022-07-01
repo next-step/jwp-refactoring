@@ -32,9 +32,9 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        TableGroup findTableGroup = tableGroupRepository.findById(tableGroupId).orElseThrow(() -> new NoSuchElementException("해당 테이블 그룹이 존재 하지 않습니다."));
+        TableGroup findTableGroup = tableGroupRepository.findById(tableGroupId)
+                .orElseThrow(() -> new NoSuchElementException("해당 테이블 그룹이 존재 하지 않습니다."));
         eventPublisher.publishEvent(new TableUngroupEvent(findTableGroup.getId()));
-
     }
 
 }

@@ -29,54 +29,6 @@ public class TableGroup {
     public TableGroup() {
     }
 
-
-/*
-    private void addOrderTables(final List<OrderTable> orderTables) {
-        validateAddingOrderTables(orderTables);
-        addAll(orderTables);
-    }
-
-    private void addAll(List<OrderTable> orderTables) {
-        for (OrderTable orderTable : orderTables) {
-            add(orderTable);
-        }
-    }
-
-    private void add(OrderTable orderTable) {
-        if (!orderTables.contains(orderTable)) {
-            orderTables.add(orderTable);
-        }
-        orderTable.attachToTableGroup(id);
-    }
-
-    public void ungroup(List<Order> orders) {
-        validateOrderStatus(orders);
-        this.orderTables.stream().forEach(OrderTable::detachFromTableGroup);
-        this.orderTables.clear();
-    }
-
-    private void validateOrderStatus(List<Order> orders) {
-        for (Order order : orders) {
-            if (!order.checkOrderComplete()) {
-                throw new IllegalArgumentException("주문의 상태가 COOKING, MEAL 입니다.");
-            }
-        }
-    }
-
-    private void validateAddingOrderTables(final List<OrderTable> orderTables) {
-        if (orderTables.size() < MIN_ORDER_TABLE_COUNT) {
-            throw new IllegalArgumentException();
-        }
-
-        if (checkOrderTableEmptyOrInTableGroup(orderTables)) {
-            throw new IllegalArgumentException("단체 지정을 위해서는 주문 테이블이 필요 합니다.");
-        }
-    }
-
-    private boolean checkOrderTableEmptyOrInTableGroup(final List<OrderTable> orderTables) {
-        return orderTables.stream().anyMatch(orderTable -> !orderTable.isEmptyTable() || orderTable.isInTableGroup());
-    }
-*/
     public Long getId() {
         return id;
     }

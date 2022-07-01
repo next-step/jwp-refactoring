@@ -76,7 +76,7 @@ class TableGroupServiceTest extends ServiceTest {
                                    @Autowired MenuGroupRepository menuGroupRepository) {
         //given : 주문 생성
         MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup("중식"));
-        Menu menu = menuRepository.save(new Menu( "볶음밥", BigDecimal.valueOf(1000L), menuGroup.getId()));
+        Menu menu = menuRepository.save(new Menu("볶음밥", BigDecimal.valueOf(1000L), menuGroup.getId()));
 
         Order order = new Order(주문_테이블1.getId(), new OrderLineItem(menu.getId(), 1));
         orderRepository.save(order);
