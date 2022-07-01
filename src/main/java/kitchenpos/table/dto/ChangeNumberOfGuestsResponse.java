@@ -2,6 +2,8 @@ package kitchenpos.table.dto;
 
 import kitchenpos.table.domain.OrderTable;
 
+import java.util.Objects;
+
 public class ChangeNumberOfGuestsResponse {
 
     private final Long id;
@@ -23,5 +25,36 @@ public class ChangeNumberOfGuestsResponse {
                 orderTable.getNumberOfGuests(),
                 orderTable.isEmpty()
         );
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Long getTableGroupId() {
+        return tableGroupId;
+    }
+
+    public int getNumberOfGuests() {
+        return numberOfGuests;
+    }
+
+    public boolean isEmpty() {
+        return empty;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChangeNumberOfGuestsResponse that = (ChangeNumberOfGuestsResponse) o;
+        return getNumberOfGuests() == that.getNumberOfGuests()
+                && isEmpty() == that.isEmpty()
+                && Objects.equals(getTableGroupId(), that.getTableGroupId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getTableGroupId(), getNumberOfGuests(), isEmpty());
     }
 }

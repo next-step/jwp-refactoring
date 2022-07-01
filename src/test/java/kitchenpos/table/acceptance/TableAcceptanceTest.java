@@ -4,10 +4,10 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.ChangeEmptyRequest;
 import kitchenpos.table.dto.ChangeNumberOfGuestsRequest;
 import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -31,28 +31,10 @@ public class TableAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    @Test
-    @DisplayName("테이블 관리 기능 (테이블 생성, 조회, 상태 수정)")
-    void table() {
-        ExtractableResponse<Response> 테이블_생성_요청_결과 = 테이블_생성_요청(4, true);
+    public static OrderTableResponse 주문_테이블_등록되어_있음(int numberOfGuests, boolean empty) {
+        ExtractableResponse<Response> response = 테이블_생성_요청(numberOfGuests, empty);
 
-        테이블_생성됨(테이블_생성_요청_결과);
-
-        ExtractableResponse<Response> 테이블_목록_조회_요청_결과 = 테이블_목록_조회_요청();
-
-        테이블_목록_조회됨(테이블_목록_조회_요청_결과);
-
-        Long 테이블_ID = 테이블_ID_조회(테이블_생성_요청_결과);
-
-        boolean 테이블_사용중 = false;
-        ExtractableResponse<Response> 테이블_상태_수정_결과 = 테이블_상태_수정(테이블_ID, 테이블_사용중);
-
-        테이블_상태_수정됨(테이블_상태_수정_결과, 테이블_사용중);
-
-        int 인원수 = 4;
-        ExtractableResponse<Response> 테이블_인원_수정_결과 = 테이블_인원_수정(테이블_ID, 인원수);
-
-        테이블_인원_수정됨(테이블_인원_수정_결과, 인원수);
+        return response.as(OrderTableResponse.class);
     }
 
     private void 테이블_생성됨(ExtractableResponse<Response> response) {
@@ -114,9 +96,27 @@ public class TableAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    public static OrderTable 주문_테이블_등록되어_있음(int numberOfGuests, boolean empty) {
-        ExtractableResponse<Response> response = 테이블_생성_요청(numberOfGuests, empty);
+    @Test
+    @DisplayName("테이블 관리 기능 (테이블 생성, 조회, 상태 수정)")
+    void table() {
+        ExtractableResponse<Response> 테이블_생성_요청_결과 = 테이블_생성_요청(4, true);
 
-        return response.as(OrderTable.class);
+        테이블_생성됨(테이블_생성_요청_결과);
+
+        ExtractableResponse<Response> 테이블_목록_조회_요청_결과 = 테이블_목록_조회_요청();
+
+        테이블_목록_조회됨(테이블_목록_조회_요청_결과);
+
+        Long 테이블_ID = 테이블_ID_조회(테이블_생성_요청_결과);
+
+        boolean 테이블_사용중 = false;
+        ExtractableResponse<Response> 테이블_상태_수정_결과 = 테이블_상태_수정(테이블_ID, 테이블_사용중);
+
+        테이블_상태_수정됨(테이블_상태_수정_결과, 테이블_사용중);
+
+        int 인원수 = 6;
+        ExtractableResponse<Response> 테이블_인원_수정_결과 = 테이블_인원_수정(테이블_ID, 인원수);
+
+        테이블_인원_수정됨(테이블_인원_수정_결과, 인원수);
     }
 }

@@ -90,6 +90,6 @@ public class OrderTable {
     }
 
     public boolean hasOrderTableGroup() {
-        return Objects.nonNull(tableGroup.getId());
+        return Objects.nonNull(getTableGroupId());
     }
 }
