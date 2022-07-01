@@ -36,7 +36,6 @@ public class TableGroupService {
         final TableGroup persistTableGroup = tableGroupRepository.save(request.toTableGroup());
         persistTableGroup.validateEmptyAndTableGroups();
         persistTableGroup.changeOrderTables(savedOrderTables, false);
-        tableGroupRepository.flush();
 
         return TableGroupResponse.of(persistTableGroup);
     }

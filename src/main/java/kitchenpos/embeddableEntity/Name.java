@@ -1,14 +1,15 @@
-package kitchenpos.menu.domain;
+package kitchenpos.embeddableEntity;
 
 import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import java.util.Objects;
 
+@Embeddable
 public class Name {
     @Column(name = "name")
-    private final String value;
+    private String value;
 
-    public Name() {
-        this("");
+    protected Name() {
     }
 
     public Name(String name) {

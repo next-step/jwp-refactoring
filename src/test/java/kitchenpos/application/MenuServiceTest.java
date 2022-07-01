@@ -2,14 +2,11 @@ package kitchenpos.application;
 
 import kitchenpos.fixture.*;
 import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.product.domain.ProductRepository;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -49,7 +46,8 @@ class MenuServiceTest {
     private Product 진순이;
     private MenuProductRequest 메뉴_진매;
     private MenuProductRequest 메뉴_진순이;
-    private MenuRequest 메뉴;
+    private MenuRequest 메뉴_요청;
+    private Menu 메뉴;
 
     @BeforeEach
     void setUp() {
@@ -60,7 +58,8 @@ class MenuServiceTest {
         메뉴_진매 = new MenuProductRequest(1L, 1);
         메뉴_진순이 = new MenuProductRequest(2L, 1);
 
-        메뉴 = TestMenuRequestFactory.toMenuRequest( "라면세트", 4_000, 1L, Arrays.asList(메뉴_진매, 메뉴_진순이));
+        메뉴_요청 = TestMenuRequestFactory.toMenuRequest( "라면세트", 4_000, 1L, Arrays.asList(메뉴_진매, 메뉴_진순이));
+        메뉴 = Menu.of(메뉴_요청, MenuProducts.of(Arrays.asList(MenuProduct.of(진매, 1), MenuProduct.of(진순이, 1))));
     }
 
     @Test
@@ -68,14 +67,14 @@ class MenuServiceTest {
     void create() throws Exception {
         // given
         given(menuGroupRepository.existsById(anyLong())).willReturn(true);
-        given(menuRepository.save(any(Menu.class))).willReturn(메뉴.toMenu());
+        given(menuRepository.save(any(Menu.class))).willReturn(메뉴);
         given(productRepository.findByIdIn(any())).willReturn(Arrays.asList(진매, 진순이));
 
         // when
-        MenuResponse menu = menuService.create(메뉴);
+        MenuResponse menu = menuService.create(메뉴_요청);
 
         // then
-        assertThat(menu).isEqualTo(MenuResponse.of(메뉴.toMenu()));
+        assertThat(menu).isEqualTo(MenuResponse.of(메뉴));
     }
 
     @DisplayName("메뉴 가격은 0원 이상이어야 한다.")
@@ -112,13 +111,13 @@ class MenuServiceTest {
     @Test
     void list() throws Exception {
         // given
-        given(menuRepository.findAll()).willReturn(Collections.singletonList(메뉴.toMenu()));
+        given(menuRepository.findAll()).willReturn(Collections.singletonList(메뉴));
 
         // when
         List<MenuResponse> list = menuService.list();
 
         // then
-        assertThat(list).containsExactly(MenuResponse.of(메뉴.toMenu()));
+        assertThat(list).containsExactly(MenuResponse.of(메뉴));
     }
 
 }

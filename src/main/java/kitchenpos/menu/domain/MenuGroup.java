@@ -1,5 +1,8 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.embeddableEntity.Name;
+import kitchenpos.menu.dto.MenuGroupRequest;
+
 import javax.persistence.*;
 
 @Entity
@@ -19,6 +22,10 @@ public class MenuGroup {
     public MenuGroup(Long id, Name name) {
         this.id = id;
         this.name = name;
+    }
+
+    public static MenuGroup of(MenuGroupRequest request) {
+        return new MenuGroup(request.getName());
     }
 
     public Long getId() {

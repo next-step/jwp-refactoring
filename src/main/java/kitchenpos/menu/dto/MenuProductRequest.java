@@ -25,10 +25,6 @@ public class MenuProductRequest {
         return quantity;
     }
 
-    public MenuProduct toMenuProduct(Menu menu) {
-        return new MenuProduct(menu, this.productId, this.quantity);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

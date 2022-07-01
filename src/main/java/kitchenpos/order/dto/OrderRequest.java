@@ -21,27 +21,6 @@ public class OrderRequest {
         this.orderLineItems = orderLineItems;
     }
 
-    public void validate(long menuCount) {
-        if (orderLineItems.size() != menuCount) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    public List<Long> getMenuIds() {
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
-        }
-        return orderLineItems.stream()
-                .map(OrderLineItemRequest::getMenuId)
-                .collect(Collectors.toList());
-    }
-
-    public Order toOrder() {
-        Order order = new Order(orderTableId);
-        order.addOrderLineItems(orderLineItems);
-        return order;
-    }
-
     public Long getOrderTableId() {
         return orderTableId;
     }

@@ -46,7 +46,7 @@ class ProductServiceTest {
     @DisplayName("상품을 등록할 수 있다")
     void create() {
         // given
-        given(productRepository.save(any(Product.class))).willReturn(진매.toProduct());
+        given(productRepository.save(any(Product.class))).willReturn(Product.of(진매));
 
         //when
         ProductResponse savedProduct = productService.create(진매);
@@ -70,7 +70,7 @@ class ProductServiceTest {
     @DisplayName("상품의 목록을 조회할 수 있다")
     void list() {
         // given
-        given(productRepository.findAll()).willReturn(Arrays.asList(진매.toProduct(), 진순이.toProduct()));
+        given(productRepository.findAll()).willReturn(Arrays.asList(Product.of(진매), Product.of(진순이)));
 
         // when
         List<ProductResponse> list = productService.list();

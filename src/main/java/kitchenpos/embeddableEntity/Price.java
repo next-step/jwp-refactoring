@@ -1,4 +1,4 @@
-package kitchenpos.menu.domain;
+package kitchenpos.embeddableEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -15,10 +15,6 @@ public class Price {
     }
 
     public Price(int price) {
-        this(BigDecimal.valueOf(price));
-    }
-
-    public Price(long price) {
         this(BigDecimal.valueOf(price));
     }
 
@@ -51,6 +47,10 @@ public class Price {
         if (o == null || getClass() != o.getClass()) return false;
         Price price1 = (Price) o;
         return Objects.equals(price, price1.price);
+    }
+
+    public boolean moreExpensiveThan(Price price) {
+        return this.price.compareTo(price.price) > 0;
     }
 
     @Override

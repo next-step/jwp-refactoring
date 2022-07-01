@@ -1,8 +1,5 @@
 package kitchenpos.product.dto;
 
-import kitchenpos.menu.domain.Price;
-import kitchenpos.product.domain.Product;
-
 import java.math.BigDecimal;
 import java.util.Objects;
 
@@ -30,10 +27,6 @@ public class ProductRequest {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException();
         }
-    }
-
-    public Product toProduct() {
-        return new Product(name, new Price(price));
     }
 
     @Override

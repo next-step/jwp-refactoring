@@ -1,12 +1,8 @@
 package kitchenpos.menu.dto;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.product.domain.Product;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class MenuRequest {
     private String name;
@@ -38,12 +34,6 @@ public class MenuRequest {
 
     public List<MenuProductRequest> getMenuProducts() {
         return menuProducts;
-    }
-
-    public Menu toMenu() {
-        Menu menu = new Menu(name, price, menuGroupId);
-        menu.addMenuProducts(menuProducts);
-        return menu;
     }
 
     @Override

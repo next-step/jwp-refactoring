@@ -2,6 +2,7 @@ package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.product.ui.ProductRestController;
@@ -50,7 +51,7 @@ class ProductRestControllerTest {
     @Test
     void post() throws Exception {
         // given
-        given(productService.create(any())).willReturn(ProductResponse.of(진라면_매운맛.toProduct()));
+        given(productService.create(any())).willReturn(ProductResponse.of(Product.of(진라면_매운맛)));
 
         // when & then
         mockMvc.perform(MockMvcRequestBuilders.post(URI)
@@ -64,7 +65,7 @@ class ProductRestControllerTest {
     @Test
     void get() throws Exception {
         // given
-        given(productService.list()).willReturn(Collections.singletonList(ProductResponse.of(진라면_매운맛.toProduct())));
+        given(productService.list()).willReturn(Collections.singletonList(ProductResponse.of(Product.of(진라면_매운맛))));
 
         // when & then
         mockMvc.perform(MockMvcRequestBuilders.get(URI)

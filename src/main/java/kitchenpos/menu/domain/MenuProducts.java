@@ -1,11 +1,12 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.embeddableEntity.Price;
+
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static javax.persistence.CascadeType.ALL;
 
@@ -26,22 +27,27 @@ public class MenuProducts {
         return menuProducts;
     }
 
-    public void add(MenuProduct menuProduct) {
-        menuProducts.add(menuProduct);
+    public static MenuProducts of(List<MenuProduct> menuProducts) {
+        return new MenuProducts(menuProducts);
     }
 
-    public List<Long> getProductIds() {
-        return menuProducts.stream()
-                .map(MenuProduct::getProductId)
-                .collect(Collectors.toList());
+    public Price totalPrice() {
+        Price sum = new Price();
+        for (final MenuProduct menuProduct : menuProducts) {
+            sum = sum.plus(
+                    menuProduct.getProduct()
+                            .getPrice()
+                            .multiply(menuProduct.getQuantity()));
+        }
+        return sum;
     }
 
-    public Quantity getMenuProductQuantity(Long productId) {
-        return menuProducts.stream()
-                .filter(m -> Objects.equals(m.getProductId(), productId))
-                .findFirst()
-                .orElseThrow(IllegalArgumentException::new)
-                .getQuantity();
+    public void setMenu(Menu menu) {
+        menuProducts.forEach(m -> m.setMenu(menu));
+    }
+
+    public List<MenuProduct> getMenuProducts() {
+        return menuProducts;
     }
 
     @Override

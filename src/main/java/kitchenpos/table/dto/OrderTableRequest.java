@@ -16,10 +16,6 @@ public class OrderTableRequest {
         this.empty = empty;
     }
 
-    public OrderTable toOrderTable() {
-        return new OrderTable(numberOfGuests, empty);
-    }
-
     public int getNumberOfGuests() {
         return numberOfGuests;
     }

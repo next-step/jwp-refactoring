@@ -1,10 +1,10 @@
 package kitchenpos.product.domain;
 
-import kitchenpos.menu.domain.Name;
-import kitchenpos.menu.domain.Price;
+import kitchenpos.embeddableEntity.Name;
+import kitchenpos.embeddableEntity.Price;
+import kitchenpos.product.dto.ProductRequest;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
@@ -27,6 +27,10 @@ public class Product {
         this.id = id;
         this.name = name;
         this.price = price;
+    }
+
+    public static Product of(ProductRequest request) {
+        return new Product(request.getName(), new Price(request.getPrice()));
     }
 
     public Long getId() {

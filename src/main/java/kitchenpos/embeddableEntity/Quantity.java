@@ -1,7 +1,6 @@
-package kitchenpos.menu.domain;
+package kitchenpos.embeddableEntity;
 
 import javax.persistence.Embeddable;
-import javax.persistence.Embedded;
 import java.math.BigDecimal;
 import java.util.Objects;
 

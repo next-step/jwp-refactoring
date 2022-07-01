@@ -1,10 +1,8 @@
 package kitchenpos.fixture;
 
-import kitchenpos.menu.domain.Name;
-import kitchenpos.menu.domain.Price;
+import kitchenpos.embeddableEntity.Name;
+import kitchenpos.embeddableEntity.Price;
 import kitchenpos.product.domain.Product;
-
-import java.math.BigDecimal;
 
 public class TestProductFactory {
 

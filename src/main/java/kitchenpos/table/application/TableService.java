@@ -1,6 +1,6 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.application.OrderService;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
@@ -18,18 +18,17 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 public class TableService {
-    private final OrderRepository orderRepository;
+    private final OrderService orderService;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
+    public TableService(final OrderService orderService, final OrderTableRepository orderTableRepository) {
+        this.orderService = orderService;
         this.orderTableRepository = orderTableRepository;
     }
 
     @Transactional
     public OrderTableResponse create(final OrderTableRequest request) {
-        OrderTable orderTable = orderTableRepository.save(request.toOrderTable());
-        orderTableRepository.flush();
+        OrderTable orderTable = orderTableRepository.save(OrderTable.of(request));
         return OrderTableResponse.of(orderTable);
     }
 
@@ -52,20 +51,19 @@ public class TableService {
         return OrderTableResponse.of(savedOrderTable);
     }
 
-    private void validateOrderTableIdAndOrderStatusIn(Long orderTableId) {
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
-        }
-    }
-
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final NumberOfGuestsRequest request) {
-        final OrderTable savedOrderTable = findByIdOrElseThrow(orderTableId);
+        final OrderTable savedOrderTable = orderService.findOrderTableById(orderTableId);
         savedOrderTable.validateOrderTableEmpty();
         savedOrderTable.changeNumberOfGuests(request.getNumberOfGuests());
 
         return OrderTableResponse.of(savedOrderTable);
+    }
+
+    private void validateOrderTableIdAndOrderStatusIn(Long orderTableId) {
+        if (orderService.existsOrderByOrderTableIdAndOrderStatusIn(orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+            throw new IllegalArgumentException();
+        }
     }
 
     private OrderTable findByIdOrElseThrow(Long orderTableId) {

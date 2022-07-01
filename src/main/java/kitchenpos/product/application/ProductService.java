@@ -23,8 +23,7 @@ public class ProductService {
     public ProductResponse create(final ProductRequest request) {
         request.validate();
 
-        Product persistProduct = productRepository.save(request.toProduct());
-        productRepository.flush();
+        Product persistProduct = productRepository.save(Product.of(request));
         return ProductResponse.of(persistProduct);
     }
 

@@ -2,7 +2,7 @@ package kitchenpos.fixture;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.Quantity;
+import kitchenpos.embeddableEntity.Quantity;
 import kitchenpos.product.domain.Product;
 
 public class TestMenuProductFactory {
@@ -11,6 +11,6 @@ public class TestMenuProductFactory {
     }
 
     public static MenuProduct create(Long seq, Menu menu, Product product, long quantity) {
-        return new MenuProduct(seq, menu, product.getId(), new Quantity(quantity));
+        return new MenuProduct(seq, menu, product, new Quantity(quantity));
     }
 }

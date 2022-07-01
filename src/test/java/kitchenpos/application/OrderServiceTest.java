@@ -1,9 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.domain.*;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
@@ -57,27 +54,25 @@ class OrderServiceTest {
     private MenuProduct 메뉴_진매;
     private MenuProduct 메뉴_진순이;
     private Menu 메뉴;
-    private OrderRequest 주문;
+    private OrderRequest 주문_요청;
     private OrderTableRequest 주문_테이블;
     private OrderLineItemRequest 주문_메뉴;
 
     @BeforeEach
     void setUp() {
-        분식류 = TestMenuGroupFactory.create("분식류");
+        분식류 = TestMenuGroupFactory.create(1L, "분식류");
 
         진매 = TestProductFactory.create(1L, "진라면 매운맛", 5_000);
         진순이 = TestProductFactory.create(2L, "진라면 순한맛", 5_000);
 
-        메뉴 = TestMenuFactory.create(10L, 4_000, 분식류, "라면메뉴");
+        메뉴 = TestMenuFactory.create(10L, 4_000, 분식류.getId(), "라면메뉴", Arrays.asList(MenuProduct.of(진매, 1), MenuProduct.of(진순이, 1)));
 
         메뉴_진매 = TestMenuProductFactory.create(메뉴, 진매, 1);
         메뉴_진순이 = TestMenuProductFactory.create(메뉴, 진매, 1);
-        메뉴.addMenuProduct(메뉴_진매);
-        메뉴.addMenuProduct(메뉴_진순이);
 
         주문_테이블 = TestOrderTableRequestFactory.create(1, false);
         주문_메뉴 = new OrderLineItemRequest(메뉴.getId(), 3);
-        주문 = new OrderRequest(1L, Collections.singletonList(주문_메뉴));
+        주문_요청 = new OrderRequest(1L, Collections.singletonList(주문_메뉴));
     }
 
     @DisplayName("주문을 등록할 수 있다")
@@ -86,14 +81,14 @@ class OrderServiceTest {
         // given
         OrderRequest orderRequest = new OrderRequest(1L, Collections.singletonList(주문_메뉴));
         given(menuRepository.countByIdIn(any())).willReturn(1L);
-        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(주문_테이블.toOrderTable()));
-        given(orderRepository.save(any(Order.class))).willReturn(orderRequest.toOrder());
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(OrderTable.of(주문_테이블)));
+        given(orderRepository.save(any(Order.class))).willReturn(Order.of(orderRequest));
 
         // when
         OrderResponse order = orderService.create(orderRequest);
 
         // then
-        assertThat(order.getId()).isEqualTo(OrderResponse.of(orderRequest.toOrder()).getId());
+        assertThat(order.getId()).isEqualTo(OrderResponse.of(Order.of(orderRequest)).getId());
     }
 
     @DisplayName("주문 항목이 비어있으면 등록할 수 없다")
@@ -109,11 +104,11 @@ class OrderServiceTest {
     @DisplayName("주문 항목의 메뉴가 존재하지 않으면 등록할 수 없다")
     @Test
     void createException2() throws Exception {
-        // given
-        given(menuRepository.countByIdIn(any())).willReturn(0L);
+
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(OrderTable.of(주문_테이블)));
 
         // when & then
-        assertThatThrownBy(() -> orderService.create(주문)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(주문_요청)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문 항목의 주문테이블이 존재하지 않으면 등록할 수 없다")
@@ -121,30 +116,27 @@ class OrderServiceTest {
     void createException3() throws Exception {
         // given
         주문_테이블 = TestOrderTableRequestFactory.create(2, true);
-        given(menuRepository.countByIdIn(any())).willReturn(1L);
-
-        given(orderTableRepository.findById(anyLong())).willReturn(Optional.ofNullable(주문_테이블.toOrderTable()));
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(OrderTable.of(주문_테이블)));
 
         // when & then
-        assertThatThrownBy(() -> orderService.create(주문)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(주문_요청)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문 항목의 주문테이블이 존재하지 않으면 등록할 수 없다")
     @Test
     void createException4() throws Exception {
         // given
-        given(menuRepository.countByIdIn(any())).willReturn(1L);
         given(orderTableRepository.findById(anyLong())).willThrow(IllegalArgumentException.class);
 
         // when & then
-        assertThatThrownBy(() -> orderService.create(주문)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(주문_요청)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("전체 주문목록을 조회할 수 있다")
     @Test
     void list() throws Exception {
         // given
-        given(orderRepository.findAll()).willReturn(Collections.singletonList(주문.toOrder()));
+        given(orderRepository.findAll()).willReturn(Collections.singletonList(Order.of(주문_요청)));
 
         // when
         List<OrderResponse> list = orderService.list();
@@ -158,9 +150,9 @@ class OrderServiceTest {
     @CsvSource(value = {"MEAL", "COOKING", "COMPLETION"})
     void change(OrderStatus newOrderStatus) throws Exception {
         // given
-        주문 = new OrderRequest(1L, Collections.singletonList(주문_메뉴));
+        주문_요청 = new OrderRequest(1L, Collections.singletonList(주문_메뉴));
 
-        given(orderRepository.findById(anyLong())).willReturn(Optional.of(주문.toOrder()));
+        given(orderRepository.findById(anyLong())).willReturn(Optional.of(Order.of(주문_요청)));
 
         // when
         OrderResponse changedOrder = orderService.changeOrderStatus(1L, new OrderStatusRequest(newOrderStatus));

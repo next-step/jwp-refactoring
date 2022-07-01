@@ -1,19 +1,21 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "orders")
 @EntityListeners(AuditingEntityListener.class)
 public class Order {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long orderTableId;
     @Enumerated(value = EnumType.STRING)
@@ -45,6 +47,12 @@ public class Order {
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
+    }
+
+    public static Order of(OrderRequest request) {
+        Order order = new Order(request.getOrderTableId());
+        order.addOrderLineItems(request.getOrderLineItems());
+        return order;
     }
 
     public Long getId() {

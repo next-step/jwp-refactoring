@@ -1,5 +1,8 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.embeddableEntity.Empty;
+import kitchenpos.table.dto.OrderTableRequest;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -33,6 +36,10 @@ public class OrderTable {
         this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
+    }
+
+    public static OrderTable of(OrderTableRequest request) {
+        return new OrderTable(request.getNumberOfGuests(), request.isEmpty());
     }
 
     public Long getId() {

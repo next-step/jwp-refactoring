@@ -1,16 +1,17 @@
 package kitchenpos.menu.application;
 
+import kitchenpos.menu.domain.*;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.product.domain.ProductRepository;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.product.domain.Product;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,27 +33,11 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest request) {
-        Menu menu = request.toMenu();
-        validate(menu);
+        validate(request);
 
+        Menu menu = Menu.of(request, MenuProducts.of(getMenuProducts(request)));
         Menu persistMenu = menuRepository.save(menu);
-        menuRepository.flush();
         return MenuResponse.of(persistMenu);
-    }
-
-    private void validate(Menu menu) {
-        validateMenuGroupExistsById(menu);
-        menu.validate(findProductIds(menu));
-    }
-
-    private void validateMenuGroupExistsById(Menu menu) {
-        if (!menuGroupRepository.existsById(menu.getMenuGroupId())) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    private List<Product> findProductIds(Menu menu) {
-        return productRepository.findByIdIn(menu.getProductIds());
     }
 
     public List<MenuResponse> list() {
@@ -60,5 +45,65 @@ public class MenuService {
                 .stream()
                 .map(MenuResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    public boolean existsMenuGroupById(Long menuGroupId) {
+        return menuGroupRepository.existsById(menuGroupId);
+    }
+
+    private void validate(MenuRequest request) {
+        validateMenuGroupExistsById(request.getMenuGroupId());
+        validateProductIds(request);
+    }
+
+    private void validateProductIds(MenuRequest request) {
+        List<Long> productIds = getProductIds(request.getMenuProducts());
+        List<Product> products = findProductIds(productIds);
+        Set<Long> productIdHashSet = new HashSet<>(productIds);
+
+        if (products.size() != productIdHashSet.size()) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private void validateMenuGroupExistsById(Long menuGroupId) {
+        if (!existsMenuGroupById(menuGroupId)) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private List<Long> getProductIds(List<MenuProductRequest> requests) {
+        return requests
+                .stream()
+                .map(MenuProductRequest::getProductId)
+                .collect(Collectors.toList());
+    }
+
+    private List<Product> findProductIds(List<Long> productIds) {
+        return productRepository.findByIdIn(productIds);
+    }
+
+    private List<MenuProduct> getMenuProducts(MenuRequest request) {
+        List<Long> productIds = getProductIds(request.getMenuProducts());
+        List<Product> products = findProductIds(productIds);
+
+        return request.getMenuProducts().stream()
+                .map(p -> new MenuProduct(getProduct(products, p.getProductId()), getQuantity(request.getMenuProducts(), p.getProductId())))
+                .collect(Collectors.toList());
+    }
+
+    private Product getProduct(List<Product> products, Long productId) {
+        return products.stream()
+                .filter(p -> p.getId().equals(productId))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
+    }
+
+    private long getQuantity(List<MenuProductRequest> requests, Long productId) {
+        return requests.stream()
+                .filter(r -> r.getProductId().equals(productId))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new)
+                .getQuantity();
     }
 }

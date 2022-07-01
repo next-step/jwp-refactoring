@@ -1,5 +1,6 @@
 package kitchenpos.application;
 
+import kitchenpos.order.application.OrderService;
 import kitchenpos.table.application.TableService;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -31,9 +32,9 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
     @Mock
-    private OrderTableRepository orderTableRepository;
+    private OrderTableRepository orderTableRepositoryMock;
     @Mock
-    private OrderRepository orderRepository;
+    private OrderService orderServiceMock;
 
     @InjectMocks
     private TableService tableService;
@@ -55,7 +56,7 @@ class TableServiceTest {
     @Test
     void create() throws Exception {
         // given
-        given(orderTableRepository.save(any())).willReturn(주문_테이블_1);
+        given(orderTableRepositoryMock.save(any())).willReturn(주문_테이블_1);
 
         // when
         OrderTableResponse orderTable = tableService.create(주문_테이블_요청_1);
@@ -68,7 +69,7 @@ class TableServiceTest {
     @Test
     void list() throws Exception {
         // given
-        given(orderTableRepository.findAll()).willReturn(Arrays.asList(주문_테이블_1, 주문_테이블_2));
+        given(orderTableRepositoryMock.findAll()).willReturn(Arrays.asList(주문_테이블_1, 주문_테이블_2));
 
         // when
         List<OrderTableResponse> orderTable = tableService.list();
@@ -82,8 +83,8 @@ class TableServiceTest {
     void changeEmpty() throws Exception {
         // given
         주문_테이블_1 = new OrderTable(1L, null, 1, false);
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(주문_테이블_1));
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), any())).willReturn(false);
+        given(orderTableRepositoryMock.findById(any())).willReturn(Optional.of(주문_테이블_1));
+        given(orderServiceMock.existsOrderByOrderTableIdAndOrderStatusIn(anyLong(), any())).willReturn(false);
 
         // when
         OrderTableResponse orderTable = tableService.changeEmpty(1L, 비움_요청);
@@ -96,7 +97,7 @@ class TableServiceTest {
     @Test
     void changeEmptyException1() throws Exception {
         // given
-        given(orderTableRepository.findById(any())).willThrow(IllegalArgumentException.class);
+        given(orderTableRepositoryMock.findById(any())).willThrow(IllegalArgumentException.class);
 
         // when & then
         assertThatThrownBy(() -> tableService.changeEmpty(1L, 비움_요청))
@@ -109,7 +110,7 @@ class TableServiceTest {
     @Test
     void changeEmptyException2() throws Exception {
         // given
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(주문_테이블_1));
+        given(orderTableRepositoryMock.findById(any())).willReturn(Optional.of(주문_테이블_1));
 
         // when & then
         assertThatThrownBy(() -> tableService.changeEmpty(1L, 비움_요청))
@@ -120,7 +121,7 @@ class TableServiceTest {
     @Test
     void changeEmptyException3() throws Exception {
         // given
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(주문_테이블_1));
+        given(orderTableRepositoryMock.findById(any())).willReturn(Optional.of(주문_테이블_1));
 
         // when & then
         assertThatThrownBy(() -> tableService.changeEmpty(주문_테이블_1.getId(), 비움_요청))
@@ -131,7 +132,7 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests() throws Exception {
         // given
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(주문_테이블_1));
+        given(orderServiceMock.findOrderTableById(any())).willReturn(주문_테이블_1);
 
         // when
         OrderTableResponse orderTable = tableService.changeNumberOfGuests(주문_테이블_1.getId(), new NumberOfGuestsRequest(10));
@@ -144,7 +145,7 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuestsException1() throws Exception {
         // given
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(주문_테이블_1));
+        given(orderServiceMock.findOrderTableById(any())).willReturn(주문_테이블_1);
 
         // when & then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(주문_테이블_1.getId(), new NumberOfGuestsRequest(-1)))
@@ -156,7 +157,7 @@ class TableServiceTest {
     void changeNumberOfGuestsException3() throws Exception {
         // given
         주문_테이블_1 = new OrderTable(1L, new TableGroup(), 1, true);
-        given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(주문_테이블_1));
+        given(orderServiceMock.findOrderTableById(any())).willReturn(주문_테이블_1);
         // when & then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(주문_테이블_1.getId(), new NumberOfGuestsRequest(3)))
                 .isInstanceOf(IllegalArgumentException.class);

@@ -1,11 +1,15 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.order.dto.OrderLineItemRequest;
+import org.springframework.util.CollectionUtils;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class OrderLineItems {
@@ -25,6 +29,20 @@ public class OrderLineItems {
 
     public void add(OrderLineItem orderLineItem) {
         orderLineItems.add(orderLineItem);
+    }
+
+    public boolean isEmpty() {
+        return CollectionUtils.isEmpty(orderLineItems);
+    }
+
+    public int size() {
+        return orderLineItems.size();
+    }
+
+    public List<Long> getMenuIds() {
+        return orderLineItems.stream()
+                .map(OrderLineItem::getMenuId)
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -1,8 +1,9 @@
 package kitchenpos.fixture;
 
+import kitchenpos.embeddableEntity.Name;
+import kitchenpos.embeddableEntity.Price;
 import kitchenpos.menu.domain.*;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
