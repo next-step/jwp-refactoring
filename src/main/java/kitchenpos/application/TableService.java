@@ -1,14 +1,12 @@
 package kitchenpos.application;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
-import kitchenpos.dao.OrderDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,12 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class TableService {
     private final OrderTableRepository orderTableRepository;
-    private final OrderDao orderDao;
+    private final OrderRepository orderRepository;
 
     public TableService(final OrderTableRepository orderTableRepository,
-                        final OrderDao orderDao) {
+                        final OrderRepository orderRepository) {
         this.orderTableRepository = orderTableRepository;
-        this.orderDao = orderDao;
+        this.orderRepository = orderRepository;
     }
 
     public OrderTableResponse create(final OrderTableRequest request) {
@@ -38,51 +36,49 @@ public class TableService {
                 .collect(Collectors.toList());
     }
 
-    public OrderTable changeEmpty(final Long orderTableId, final OrderTableRequest request) {
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
-            throw new IllegalArgumentException();
-        }
-
-        if (orderDao.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
-        }
-
-//        savedOrderTable.setEmpty(orderTable.isEmpty());
-
+    public OrderTable changeEmpty(final Long id, final OrderTableRequest request) {
+        final OrderTable savedOrderTable = findByIdElseThrow(id);
+        validateOrderTableToChangeEmpty(savedOrderTable);
+        savedOrderTable.changeEmpty(request.isEmpty());
         return orderTableRepository.save(savedOrderTable);
     }
 
-    public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTableRequest request) {
-        final int numberOfGuests = new OrderTable().getNumberOfGuests().value();
-
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
-        }
-
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-//        savedOrderTable.setNumberOfGuests(numberOfGuests);
-
-        return orderTableRepository.save(savedOrderTable);
-    }
-
-    @Transactional(readOnly = true)
-    public OrderTable getById(final Long id) {
+    private OrderTable findByIdElseThrow(final Long id) {
         return orderTableRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(String.format("주문 테이블을 찾을 수 없습니다. id: %d", id)));
     }
 
-    @Transactional
+    private void validateOrderTableToChangeEmpty(final OrderTable orderTable) {
+        if (null != orderTable.getTableGroupId()) {
+            throw new IllegalStateException("그룹이 지정된 테이블의 비었는지 여부를 변경할 수 없습니다.");
+        }
+        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTable.getId(), OrderStatus.notCompletes())) {
+            throw new IllegalStateException("주문이 완료되지 않은 테이블의 비었는지 여부를 변경할 수 없습니다.");
+        }
+    }
+
+    public OrderTable changeNumberOfGuests(final Long id, final OrderTableRequest request) {
+        final OrderTable savedOrderTable = getById(id);
+        validateOrderTableToChangeNumberOfGuests(savedOrderTable);
+        savedOrderTable.changeNumberOfGuests(request.getNumberOfGuests());
+        return orderTableRepository.save(savedOrderTable);
+    }
+
+    private void validateOrderTableToChangeNumberOfGuests(final OrderTable orderTable) {
+        if (orderTable.isEmpty()) {
+            throw new IllegalStateException("빈 테이블의 손님 수는 변경할 수 없습니다.");
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public OrderTable getById(final Long id) {
+        return findByIdElseThrow(id);
+    }
+
+    @Transactional(readOnly = true)
     public List<OrderTable> getAllByTableGroupId(final Long tableGroupId) {
         return orderTableRepository.findAllByTableGroupId(tableGroupId);
     }
+
+
 }

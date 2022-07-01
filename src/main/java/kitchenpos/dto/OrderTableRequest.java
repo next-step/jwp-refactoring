@@ -11,6 +11,14 @@ public class OrderTableRequest {
     public OrderTableRequest() {
     }
 
+    public OrderTableRequest(boolean empty) {
+        this.empty = empty;
+    }
+
+    public OrderTableRequest(NumberOfGuests numberOfGuests) {
+        this.numberOfGuests = numberOfGuests;
+    }
+
     public OrderTableRequest(final NumberOfGuests numberOfGuests, final boolean empty) {
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
