@@ -2,10 +2,7 @@ package kitchenpos.order.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.exception.InvalidMenuNumberException;
 import kitchenpos.exception.NotExistException;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.Orders;
 import kitchenpos.order.domain.Quantity;
@@ -19,23 +16,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class OrderService {
-    private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
     private final OrderValidator orderValidator;
 
-    public OrderService(MenuRepository menuRepository, OrderRepository orderRepository,
-                        OrderValidator orderValidator) {
-        this.menuRepository = menuRepository;
+    public OrderService(OrderRepository orderRepository, OrderValidator orderValidator) {
         this.orderRepository = orderRepository;
         this.orderValidator = orderValidator;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        final List<Long> orderMenuIds = orderRequest.getOrderMenuIds();
-        if (orderMenuIds.size() != menuRepository.countByIdIn(orderMenuIds)) {
-            throw new InvalidMenuNumberException();
-        }
+        orderValidator.validateOrderMenuCount(orderRequest.getOrderMenuIds());
 
         final Long orderTableId = orderValidator.notEmptyOrderTableId(orderRequest);
         final Orders order = new Orders.Builder(orderTableId)
@@ -43,9 +34,8 @@ public class OrderService {
                 .build();
 
         for (OrderLineItemRequest orderLineItemRequest : orderRequest.getOrderLineItems()) {
-            final Menu menu = menuRepository.findById(orderLineItemRequest.getMenuId())
-                    .orElseThrow(NotExistException::new);
-            order.addOrderMenu(menu, Quantity.of(orderLineItemRequest.getQuantity()));
+            final Long menuId = orderValidator.existMenuId(orderLineItemRequest.getMenuId());
+            order.addOrderMenu(menuId, Quantity.of(orderLineItemRequest.getQuantity()));
         }
 
         final Orders persist = orderRepository.save(order);

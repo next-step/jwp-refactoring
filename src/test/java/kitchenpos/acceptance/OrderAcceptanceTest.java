@@ -12,9 +12,7 @@ import io.restassured.response.Response;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.Price;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
@@ -66,14 +64,9 @@ class OrderAcceptanceTest extends AcceptanceTest {
                 .setOrderedTime(LocalDateTime.now())
                 .build();
         final MenuGroup menuGroup = new MenuGroup(1L, "후라이드세트");
-        final Menu menu = new Menu.Builder("후라이드")
-                .setId(1L)
-                .setPrice(Price.of(16_000L))
-                .setMenuGroup(menuGroup)
-                .build();
         final OrderLineItem orderLineItem = new OrderLineItem.Builder(order)
                 .setSeq(1L)
-                .setMenu(menu)
+                .setMenuId(1L)
                 .setQuantity(Quantity.of(2L))
                 .builder();
         final OrderResponse 예상된_주문_결과 = new OrderResponse(1L, 1L, OrderStatus.COOKING.name(), null, Arrays.asList(orderLineItem.toOrderLineItemResponse()));

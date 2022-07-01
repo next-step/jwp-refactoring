@@ -1,6 +1,7 @@
 package kitchenpos.order.domain;
 
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,8 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.dto.OrderLineItemResponse;
 
 @Entity
@@ -24,9 +23,8 @@ public class OrderLineItem {
     @JoinColumn(name = "order_id", nullable = false)
     private Orders order;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id", nullable = false)
-    private Menu menu;
+    @Column(nullable = false)
+    private Long menuId;
 
     @Embedded
     private Quantity quantity;
@@ -37,12 +35,12 @@ public class OrderLineItem {
     OrderLineItem(Builder builder) {
         this.seq = builder.seq;
         this.order = builder.order;
-        this.menu = builder.menu;
+        this.menuId = builder.menuId;
         this.quantity = builder.quantity;
     }
 
     public OrderLineItemResponse toOrderLineItemResponse() {
-        return new OrderLineItemResponse(this.seq, this.menu.toMenuResponse(), this.quantity.value());
+        return new OrderLineItemResponse(this.seq, this.menuId, this.quantity.value());
     }
 
     @Override
@@ -55,18 +53,18 @@ public class OrderLineItem {
         }
         OrderLineItem that = (OrderLineItem) o;
         return Objects.equals(seq, that.seq) && Objects.equals(order, that.order)
-                && Objects.equals(menu, that.menu) && Objects.equals(quantity, that.quantity);
+                && Objects.equals(menuId, that.menuId) && Objects.equals(quantity, that.quantity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(seq, order, menu, quantity);
+        return Objects.hash(seq, order, menuId, quantity);
     }
 
     public static class Builder {
         private Long seq;
         private Orders order;
-        private Menu menu;
+        private Long menuId;
         private Quantity quantity;
 
         public Builder(Orders order) {
@@ -83,8 +81,8 @@ public class OrderLineItem {
             return this;
         }
 
-        public Builder setMenu(Menu menu) {
-            this.menu = menu;
+        public Builder setMenuId(Long menuId) {
+            this.menuId = menuId;
             return this;
         }
 

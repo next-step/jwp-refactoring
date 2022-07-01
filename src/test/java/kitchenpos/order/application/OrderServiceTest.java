@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
@@ -12,11 +13,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import kitchenpos.exception.InvalidMenuNumberException;
 import kitchenpos.exception.NotExistException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.Price;
-import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
@@ -43,9 +44,6 @@ class OrderServiceTest {
     private OrderService orderService;
 
     @Mock
-    private MenuRepository menuRepository;
-
-    @Mock
     private OrderRepository orderRepository;
 
     @Mock
@@ -53,7 +51,7 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(menuRepository, orderRepository, orderValidator);
+        orderService = new OrderService(orderRepository, orderValidator);
 
         MenuGroup menuGroup = new MenuGroup(1L, "메뉴그룹");
         menu = new Menu.Builder("메뉴")
@@ -63,7 +61,7 @@ class OrderServiceTest {
                 .build();
         orderLineItem = new OrderLineItem.Builder(null)
                 .setSeq(1L)
-                .setMenu(menu)
+                .setMenuId(menu.getId())
                 .setQuantity(Quantity.of(1L))
                 .builder();
         OrderLineItems orderLineItems = new OrderLineItems(Arrays.asList(orderLineItem));
@@ -78,9 +76,9 @@ class OrderServiceTest {
     @DisplayName("주문을 생성한다.")
     void createOrder() {
         // given
-        when(menuRepository.countByIdIn(any())).thenReturn(1L);
+        doNothing().when(orderValidator).validateOrderMenuCount(any());
         when(orderValidator.notEmptyOrderTableId(any())).thenReturn(1L);
-        when(menuRepository.findById(any())).thenReturn(Optional.of(menu));
+        when(orderValidator.existMenuId(any())).thenReturn(1L);
         when(orderRepository.save(any())).thenReturn(order);
         // when
         final OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(1L, 1L);
@@ -110,6 +108,7 @@ class OrderServiceTest {
         // given
         final OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(1L, 1L);
         final OrderRequest notExistMenuOrderRequest = new OrderRequest(1L, Arrays.asList(orderLineItemRequest));
+        doThrow(new InvalidMenuNumberException()).when(orderValidator).validateOrderMenuCount(any());
 
         // when && then
         assertThatIllegalArgumentException()
@@ -121,7 +120,7 @@ class OrderServiceTest {
     void notExistOrderTable() {
         // given
         final OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(1L, 1L);
-        when(menuRepository.countByIdIn(any())).thenReturn(1L);
+        doNothing().when(orderValidator).validateOrderMenuCount(any());
         doThrow(new NotExistException()).when(orderValidator).notEmptyOrderTableId(any());
 
         // when && then

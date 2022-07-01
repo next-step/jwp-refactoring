@@ -44,6 +44,10 @@ public class Menu {
         this.menuProducts.add(menuProduct);
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public MenuProducts products() {
         return menuProducts;
     }
