@@ -16,8 +16,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Table(name = "table_group")
 public class TableGroup {
 
-    private static final int MIN_ORDER_TABLE_COUNT = 2;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
