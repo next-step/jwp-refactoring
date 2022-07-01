@@ -25,12 +25,12 @@ public class Product {
     public Product() {
     }
 
-    public Product(String name, Price price) {
+    public Product(final String name, final Price price) {
         this.name = name;
         this.price = price;
     }
 
-    public Product(Long id, String name, Price price) {
+    public Product(final Long id, final String name, final Price price) {
         this.id = id;
         this.name = name;
         this.price = price;

@@ -19,7 +19,7 @@ public class OrderTables {
     public OrderTables() {
     }
 
-    public OrderTables(List<OrderTable> orderTables) {
+    public OrderTables(final List<OrderTable> orderTables) {
         this.orderTables = orderTables;
     }
 

@@ -28,7 +28,7 @@ public class TableGroup {
     public TableGroup() {
     }
 
-    public TableGroup(Long id) {
+    public TableGroup(final Long id) {
         this.id = id;
     }
 

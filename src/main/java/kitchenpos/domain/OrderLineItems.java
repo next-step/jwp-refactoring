@@ -16,7 +16,7 @@ public class OrderLineItems {
     public OrderLineItems() {
     }
 
-    public OrderLineItems(List<OrderLineItem> orderLineItems) {
+    public OrderLineItems(final List<OrderLineItem> orderLineItems) {
         this.orderLineItems = orderLineItems;
     }
 

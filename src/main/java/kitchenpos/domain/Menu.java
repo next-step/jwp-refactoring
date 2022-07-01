@@ -33,7 +33,9 @@ public class Menu {
     public Menu() {
     }
 
-    public Menu(String name, Price price, Long menuGroupId) {
+    public Menu(final String name,
+                final Price price,
+                final Long menuGroupId) {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
