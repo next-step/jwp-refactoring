@@ -2,6 +2,8 @@ package kitchenpos.table.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import kitchenpos.ServiceTest;
@@ -15,6 +17,8 @@ import kitchenpos.order.dto.OrderLineItemDto;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.exception.CanNotMakeOrderTableException;
+import kitchenpos.table.exception.NotExistTableException;
 import kitchenpos.utils.ServiceTestHelper;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
@@ -85,8 +89,8 @@ class TableServiceTest extends ServiceTest {
     @DisplayName("존재하지 않는 테이블의 경우 공석여부 변경 시도시 실패")
     void 테이블_공석상태변경_테이블이_존재하지않는경우() {
         Long notExistTableId = -1L;
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> serviceTestHelper.비어있지않은테이블로_변경(notExistTableId));
+        assertThatThrownBy(() -> serviceTestHelper.비어있지않은테이블로_변경(notExistTableId))
+                .isInstanceOf(NotExistTableException.class);
     }
 
     @Test
@@ -138,6 +142,29 @@ class TableServiceTest extends ServiceTest {
         int updatedNumberOfGuests = 4;
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> serviceTestHelper.테이블_인원수_변경(savedOrderTable.getId(), updatedNumberOfGuests));
+    }
+
+    @Test
+    @DisplayName("테이블이 주문을 받을수 있는 상태인지 확인")
+    void 테이블_주문가능여부() {
+        OrderTableResponse savedOrderTable = serviceTestHelper.비어있지않은테이블_생성됨(4);
+        assertThatNoException()
+                .isThrownBy(() -> tableService.validateTableToMakeOrder(savedOrderTable.getId()));
+    }
+
+    @Test
+    @DisplayName("테이블이 존재하지 않는 경우 주문 불가")
+    void 테이블_주문불가능케이스_테이블이_없는경우() {
+        assertThatThrownBy(() -> tableService.validateTableToMakeOrder(-1L))
+                .isInstanceOf(NotExistTableException.class);
+    }
+
+    @Test
+    @DisplayName("빈 테이블인 경우 주문 불가")
+    void 테이블_주문불가능케이스_빈테이블() {
+        OrderTableResponse savedOrderTable = serviceTestHelper.빈테이블_생성됨();
+        assertThatThrownBy(() -> tableService.validateTableToMakeOrder(savedOrderTable.getId()))
+                .isInstanceOf(CanNotMakeOrderTableException.class);
     }
 
     private OrderResponse 테이블에_임시_주문_추가(Long tableId) {

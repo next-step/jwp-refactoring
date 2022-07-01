@@ -24,12 +24,12 @@ public class OrderLineItem {
     }
 
     public OrderLineItem(Long menuId, long quantity) {
-        this.menuId=menuId;
-        this.quantity=quantity;
+        this.menuId = menuId;
+        this.quantity = quantity;
     }
 
-    public Long getSeq() {
-        return seq;
+    public Order getOrder() {
+        return order;
     }
 
     public Long getMenuId() {
@@ -40,19 +40,7 @@ public class OrderLineItem {
         return quantity;
     }
 
-    public void setSeq(Long seq) {
-        this.seq = seq;
-    }
-
     void includeToOrder(Order order) {
         this.order = order;
-    }
-
-    public void setMenuId(Long menuId) {
-        this.menuId = menuId;
-    }
-
-    public void setQuantity(long quantity) {
-        this.quantity = quantity;
     }
 }

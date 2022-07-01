@@ -29,7 +29,7 @@
 
 ### 2단계 
 - [X] Spring Data JPA 의존성 추가
-- [ ] 응용서비스에서 도메인 로직을 분리
+- [X] 응용서비스에서 도메인 로직을 분리
   - [X] Menu Domain Context > MenuGroup
     - [X] 패키지 생성 및 기존 클래스 이동
     - [X] JPA Entity로 변경 및 JPARepository 생성
@@ -50,8 +50,12 @@
     - [X] JPA Entity로 변경 및 JPARepository 생성
     - [X] 응용서비스에서 도메인레이어로 로직 이동 (with 단위테스트 작성)
     - [X] 단위테스트 추가 작성
-  - [ ] Order Domain Context > Order, OrderLineItem, OrderStatus
+  - [X] Order Domain Context > Order, OrderLineItem, OrderStatus
     - [X] 패키지 생성 및 기존 클래스 이동
     - [X] 요청/응답을 위한 DTO 작성
     - [X] JPA Entity로 변경 및 JPARepository 생성
-    - [ ] 응용서비스에서 도메인레이어로 로직 이동 (with 단위테스트 작성)
+    - [X] 응용서비스에서 도메인레이어로 로직 이동 (with 단위테스트 작성)
+- [ ] 셀프 리뷰 및 리팩토링 진행
+  - [ ] 도메인 의미를 담은 사용자정의 예외 작성
+  - [ ] Repository보다 Service에 의존하도록 변경
+  - [ ] 타 컨텍스트에서 Order 컨텍스트에 대한 의존성 제거

@@ -3,6 +3,7 @@ package kitchenpos.order.application;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import kitchenpos.ServiceTest;
@@ -13,11 +14,17 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuDto;
+import kitchenpos.menu.exception.NotExistMenuException;
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemDto;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.exception.CannotChangeOrderStatusException;
+import kitchenpos.order.exception.EmptyOrderLineItemsException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.exception.CanNotMakeOrderTableException;
+import kitchenpos.table.exception.NotExistTableException;
 import kitchenpos.utils.ServiceTestHelper;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -86,8 +93,8 @@ class OrderServiceTest extends ServiceTest {
     @Test
     @DisplayName("주문항목이 없는경우 주문 등록 실패")
     void 주문등록_주문항목이_없는경우() {
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> serviceTestHelper.주문_생성됨(orderTable.getId(), emptyList()));
+        assertThatThrownBy(() -> serviceTestHelper.주문_생성됨(orderTable.getId(), emptyList()))
+                .isInstanceOf(EmptyOrderLineItemsException.class);
     }
 
     @Test
@@ -96,22 +103,18 @@ class OrderServiceTest extends ServiceTest {
         MenuProduct menuProduct = MenuProductFixtureFactory.createMenuProduct(product1.getId(), 1);
         Menu notSavedMenu = MenuFixtureFactory.createMenu(menuGroup, "메뉴", 4000, Lists.newArrayList(menuProduct));
         OrderLineItemDto orderLineItem = OrderLineItemFixtureFactory.createOrderLine(notSavedMenu.getId(), 3);
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> serviceTestHelper.주문_생성됨(orderTable.getId(), Lists.newArrayList(orderLineItem)));
+        assertThatThrownBy(() -> serviceTestHelper.주문_생성됨(orderTable.getId(), Lists.newArrayList(orderLineItem)))
+                .isInstanceOf(NotExistMenuException.class);
     }
 
     @Test
     @DisplayName("주문테이블이 존재하지 않는 경우 주문 등록 실패")
     void 주문등록_주문테이블이_없는경우() {
-        int numberOfGuests = 3;
         Long notExistTableId = -1L;
         OrderLineItemDto orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
         OrderLineItemDto orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> serviceTestHelper.주문_생성됨(notExistTableId,
-                        Lists.newArrayList(orderLineItem1, orderLineItem2)));
+        assertThatThrownBy(() -> serviceTestHelper.주문_생성됨(notExistTableId, Lists.newArrayList(orderLineItem1, orderLineItem2)))
+                .isInstanceOf(NotExistTableException.class);
     }
 
     @Test
@@ -120,10 +123,8 @@ class OrderServiceTest extends ServiceTest {
         OrderTableResponse orderTable = serviceTestHelper.빈테이블_생성됨();
         OrderLineItemDto orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
         OrderLineItemDto orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> serviceTestHelper.주문_생성됨(orderTable.getId(),
-                        Lists.newArrayList(orderLineItem1, orderLineItem2)));
+        assertThatThrownBy(() -> serviceTestHelper.주문_생성됨(orderTable.getId(), Lists.newArrayList(orderLineItem1, orderLineItem2)))
+                .isInstanceOf(CanNotMakeOrderTableException.class);
     }
 
     @Test
@@ -161,8 +162,7 @@ class OrderServiceTest extends ServiceTest {
 
         OrderResponse order = serviceTestHelper.주문_생성됨(orderTable.getId(), Lists.newArrayList(orderLineItem1, orderLineItem2));
         serviceTestHelper.주문상태_변경(order.getId(), OrderStatus.COMPLETION);
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> serviceTestHelper.주문상태_변경(order.getId(), OrderStatus.MEAL));
+        assertThatThrownBy(() -> serviceTestHelper.주문상태_변경(order.getId(), OrderStatus.MEAL))
+                .isInstanceOf(CannotChangeOrderStatusException.class);
     }
 }

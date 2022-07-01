@@ -10,6 +10,8 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.exception.CanNotMakeOrderTableException;
+import kitchenpos.table.exception.NotExistTableException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,8 +66,15 @@ public class TableService {
         return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
     }
 
+    public void validateTableToMakeOrder(Long orderTableId) {
+        OrderTable orderTable = findOrderTableById(orderTableId);
+        if(orderTable.isEmpty()){
+            throw new CanNotMakeOrderTableException(String.valueOf(orderTable.getId()));
+        }
+    }
+
     private OrderTable findOrderTableById(Long orderTableId){
         return orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(NotExistTableException::new);
     }
 }
