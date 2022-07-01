@@ -24,7 +24,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse create(final OrderTableRequest request) {
         OrderTable savedOrderTable = orderTableRepository.save(request.toOrderTable());
-        return  OrderTableResponse.from(savedOrderTable);
+        return OrderTableResponse.from(savedOrderTable);
     }
 
     public List<OrderTableResponse> list() {
@@ -32,7 +32,7 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTable) {
+    public OrderTableResponse changeEmpty(final Long orderTableId) {
         final OrderTable savedOrderTable = findOrderTable(orderTableId);
         Order order = findOrderByOrderTableId(savedOrderTable.getId());
         savedOrderTable.clear(order);

@@ -86,7 +86,7 @@ class TableServiceTest extends ServiceTest {
         OrderTable orderTable = new OrderTable(3, false);
         //when & then
         assertThatThrownBy(
-                () -> tableService.changeEmpty(100L, OrderTableRequest.of(orderTable.isEmptyTable()))
+                () -> tableService.changeEmpty(100L)
         ).isInstanceOf(NoSuchElementException.class);
     }
 
@@ -105,7 +105,7 @@ class TableServiceTest extends ServiceTest {
 
         //when & then
         assertThatThrownBy(
-                () -> tableService.changeEmpty(savedOrdertable.getId(), OrderTableRequest.of(true))
+                () -> tableService.changeEmpty(savedOrdertable.getId())
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -122,7 +122,7 @@ class TableServiceTest extends ServiceTest {
 
         //when & then
         assertThatThrownBy(
-                () -> tableService.changeEmpty(주문_테이블1.getId(), OrderTableRequest.of(주문_테이블1.isEmptyTable()))
+                () -> tableService.changeEmpty(주문_테이블1.getId())
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -132,16 +132,16 @@ class TableServiceTest extends ServiceTest {
                          @Autowired MenuGroupRepository menuGroupRepository) {
 
         //given : 테이블 생성
-        OrderTable savedOrdertable = orderTableRepository.save(new OrderTable( 10, false));
+        OrderTable savedOrdertable = orderTableRepository.save(new OrderTable(10, false));
 
         // 주문 생성
         MenuGroup menuGroup = menuGroupRepository.save(new MenuGroup("중식"));
         Menu menu = menuRepository.save(new Menu("볶음밥", BigDecimal.valueOf(1000L), menuGroup.getId()));
-        Order order = orderRepository.save(new Order(savedOrdertable.getId(), OrderStatus.COMPLETION, new OrderLineItem(menu.getId(), 10)));
+        Order order = orderRepository.save(
+                new Order(savedOrdertable.getId(), OrderStatus.COMPLETION, new OrderLineItem(menu.getId(), 10)));
 
         //when
-        OrderTableResponse orderTable = tableService.changeEmpty(savedOrdertable.getId(),
-                OrderTableRequest.of(true));
+        OrderTableResponse orderTable = tableService.changeEmpty(savedOrdertable.getId());
 
         //then
         assertThat(orderTable.isEmpty()).isTrue();
@@ -151,7 +151,7 @@ class TableServiceTest extends ServiceTest {
     @DisplayName("주문 테이블이 시스템에 등록 되어 있지 않으면 손님수를 변경 할 수 없다.")
     void changeNumberOfGuestsFailWithOrderTableNotExistTest() {
         //given
-        OrderTable orderTable = new OrderTable( 5, false);
+        OrderTable orderTable = new OrderTable(5, false);
 
         //when & then
         assertThatThrownBy(
@@ -164,7 +164,8 @@ class TableServiceTest extends ServiceTest {
     @DisplayName("빈테이블이 아니면 손님수를 변경 할 수 없다.")
     void changeNumberOfGuestsFailWithEmptyTableTest() {
         //given
-        OrderTable orderTable = orderTableRepository.save(new OrderTable(1L, 5, false));
+        TableGroup tableGroup = tableGroupRepository.save(new TableGroup());
+        OrderTable orderTable = orderTableRepository.save(new OrderTable(tableGroup.getId(), 5, false));
 
         //when & then
         assertThatThrownBy(
