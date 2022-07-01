@@ -51,7 +51,6 @@ public class OrderTable {
 
     public void validateGrouping() {
         validateExistGroupingTable();
-
         if (!this.empty) {
             throw new NotEmptyException();
         }

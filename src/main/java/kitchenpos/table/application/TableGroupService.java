@@ -1,13 +1,10 @@
 package kitchenpos.table.application;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import kitchenpos.exception.NotCompletionStatusException;
 import kitchenpos.exception.NotExistException;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
@@ -43,11 +40,7 @@ public class TableGroupService {
     public void ungroup(final Long tableGroupId) {
         final TableGroup persistTableGroup = tableGroupRepository.findById(tableGroupId)
                 .orElseThrow(NotExistException::new);
-
-        final List<Long> orderTableIds = persistTableGroup.getOrderTables().get().stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-        if (orderRepository.existNotCompletionOrderTables(orderTableIds)) {
+        if (orderRepository.existNotCompletionOrderTables(persistTableGroup.getOrderTableIds())) {
             throw new NotCompletionStatusException();
         }
         persistTableGroup.ungroup();
