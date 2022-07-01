@@ -16,7 +16,7 @@ public class CreateOrderTableValidationHandler {
         this.orderTableRepository = orderTableRepository;
     }
 
-    @EventListener(CreateOrderEvent.class)
+    @EventListener
     public void validateOrderTable(CreateOrderEvent event) {
         OrderTable orderTable = orderTableRepository.findById(event.getOrderTableId())
                 .orElseThrow(() -> new NoSuchElementException("주문 테이블이 시스템에 없습니다."));
