@@ -41,7 +41,6 @@ public class OrderTableService {
             .orElseThrow(() -> new NotFoundException(ExceptionType.NOT_EXIST_ORDER_TABLE));
         orderTable.validateHasTableGroupId();
 
-
         orderTable.emptyTheTable();
         orderTable = orderTableRepository.save(orderTable);
         return OrderTableResponse.of(orderTable);
