@@ -8,7 +8,6 @@ import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuCreateRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.Orders;
 import kitchenpos.order.dto.OrderCreateRequest;
@@ -18,10 +17,11 @@ import kitchenpos.product.domain.Product;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.dao.OrderTableRepository;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.dto.OrderTableCreateRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -168,39 +168,51 @@ class OrderServiceTest {
         주문_목록_조회됨(주문_목록_조회_리스트, 생성된_주문_아이디들);
     }
 
-//    @DisplayName("없는 주문의 주문 상태를 변경하면 예외가 발생해야 한다")
-//    @Test
-//    void changeOrderStateByNotSavedOrderTest() {
-//        주문_상태_변경_실패됨(() -> orderService.changeOrderStatus(0L, any()));
-//    }
-//
-//    @DisplayName("완료된 주문의 상태를 변경하면 예외가 발생해야 한다")
-//    @Test
-//    void changeOrderStatueByCompletionOrderTest() {
-//        // given
-//        Order 주문 = 주문_생성(0L, OrderStatus.COMPLETION, Collections.emptyList());
-//        when(orderRepository.findById(any())).thenReturn(Optional.of(주문));
-//
-//        // then
-//        주문_상태_변경_실패됨(() -> orderService.changeOrderStatus(주문.getId(), 주문));
-//    }
-//
-//    @DisplayName("주문 상태 변경 시 변경한 상태로 정상 변경되어야 한다")
-//    @Test
-//    void changeOrderStatusTest() {
-//        // given
-//        Order 주문 = 주문_생성(0L, OrderStatus.COOKING, Collections.emptyList());
-//        Order 변경할_주문 = 주문_생성(0L, OrderStatus.MEAL, Collections.emptyList());
-//        when(orderRepository.findById(any())).thenReturn(Optional.of(주문));
-//        when(orderRepository.save(any())).then(it -> it.getArgument(0));
-//
-//        // when
-//        Order 주문_상태_변경_결과 = orderService.changeOrderStatus(0L, 변경할_주문);
-//
-//        // then
-//        주문_상태_변경_성공됨(주문_상태_변경_결과.getOrderStatus(), 변경할_주문.getOrderStatus());
-//    }
-//
+    @DisplayName("없는 주문의 주문 상태를 변경하면 예외가 발생해야 한다")
+    @ParameterizedTest
+    @EnumSource(value = OrderStatus.class, names = { "COOKING", "MEAL", "COMPLETION" })
+    void changeOrderStateByNotSavedOrderTest(OrderStatus status) {
+        주문_상태_변경_실패됨(() -> orderService.changeOrderStatus(0L, status));
+    }
+
+    @DisplayName("완료된 주문의 상태를 변경하면 예외가 발생해야 한다")
+    @ParameterizedTest
+    @EnumSource(value = OrderStatus.class, names = { "COOKING", "MEAL", "COMPLETION" })
+    void changeOrderStatueByCompletionOrderTest(OrderStatus status) {
+        // given
+        List<OrderLineItemRequest> 주문_목록_생성_요청 = Arrays.asList(
+                주문_물품_생성_요청(메뉴.getId(), 1L),
+                주문_물품_생성_요청(메뉴.getId(), 1L)
+        );
+        OrderCreateRequest 주문_생성_요청 = 주문_생성_요청(주문_테이블.getId(), 주문_목록_생성_요청);
+        tableService.changeEmpty(주문_테이블.getId(), false);
+        Order 주문 = orderService.create(주문_생성_요청);
+        orderService.changeOrderStatus(주문.getId(), OrderStatus.COMPLETION);
+
+        // then
+        주문_상태_변경_실패됨(() -> orderService.changeOrderStatus(주문.getId(), status));
+    }
+
+    @DisplayName("주문 상태 변경 시 변경한 상태로 정상 변경되어야 한다")
+    @ParameterizedTest
+    @EnumSource(value = OrderStatus.class, names = { "COOKING", "MEAL", "COMPLETION" })
+    void changeOrderStatusTest(OrderStatus orderStatus) {
+        // given
+        List<OrderLineItemRequest> 주문_목록_생성_요청 = Arrays.asList(
+                주문_물품_생성_요청(메뉴.getId(), 1L),
+                주문_물품_생성_요청(메뉴.getId(), 1L)
+        );
+        OrderCreateRequest 주문_생성_요청 = 주문_생성_요청(주문_테이블.getId(), 주문_목록_생성_요청);
+        tableService.changeEmpty(주문_테이블.getId(), false);
+        Order 주문 = orderService.create(주문_생성_요청);
+
+        // when
+        Order 주문_상태_변경_결과 = orderService.changeOrderStatus(주문.getId(), orderStatus);
+
+        // then
+        주문_상태_변경_성공됨(주문_상태_변경_결과, orderStatus);
+    }
+
     void 주문_생성_실패됨(Runnable runnable) {
         assertThatIllegalArgumentException().isThrownBy(runnable::run);
     }
@@ -218,11 +230,11 @@ class OrderServiceTest {
         assertThat(orders.getValue().stream().map(Order::getId).collect(Collectors.toList())).containsAll(containIds);
     }
 
-//    void 주문_상태_변경_실패됨(Runnable runnable) {
-//        assertThatIllegalArgumentException().isThrownBy(runnable::run);
-//    }
-//
-//    void 주문_상태_변경_성공됨(OrderStatus sourceStatus, OrderStatus targetSource) {
-//        assertThat(sourceStatus).isEqualTo(targetSource);
-//    }
+    void 주문_상태_변경_실패됨(Runnable runnable) {
+        assertThatIllegalArgumentException().isThrownBy(runnable::run);
+    }
+
+    void 주문_상태_변경_성공됨(Order order, OrderStatus orderStatus) {
+        assertThat(order.getOrderStatus()).isEqualTo(orderStatus);
+    }
 }

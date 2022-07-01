@@ -61,18 +61,18 @@ public class OrderService {
         return new Orders(orderRepository.findAll());
     }
 
+    public Order getOrder(Long id) {
+        return orderRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(id + " 에 해당하는 주문을 찾을 수 없습니다."));
+    }
+
     @Transactional
-    public Order changeOrderStatus(final Long orderId, final Order order) {
-        final Order savedOrder = orderRepository.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
+    public Order changeOrderStatus(final Long orderId, final OrderStatus orderStatus) {
+        final Order savedOrder = getOrder(orderId);
 
-        if (OrderStatus.COMPLETION.equals(savedOrder.getOrderStatus())) {
-            throw new IllegalArgumentException();
-        }
+        savedOrder.changeOrderStatus(orderStatus);
 
-        savedOrder.setOrderStatus(order.getOrderStatus());
-
-        return orderRepository.save(savedOrder);
+        return savedOrder;
     }
 
     public OrderStatus getOrderStatusByOrderTableId(Long orderTableId) {

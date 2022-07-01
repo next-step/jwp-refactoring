@@ -16,6 +16,8 @@ import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import java.util.Collections;
 import java.util.List;
@@ -122,68 +124,42 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         빈_테이블_변경_API_호출(주문_테이블_아이디, false);
         OrderLineItemRequest 주문_물품_생성_요청 = 주문_물품_생성_요청(메뉴_아이디, 1L);
         OrderCreateRequest 주문_생성_요청 = 주문_생성_요청(주문_테이블_아이디, Collections.singletonList(주문_물품_생성_요청));
-        Long 생성된_주문 = 주문_생성_API_요청(주문_생성_요청).as(OrderResponse.class).getId();
+        Long 생성된_주문_아이디 = 주문_생성_API_요청(주문_생성_요청).as(OrderResponse.class).getId();
 
         // when
         ExtractableResponse<Response> 주문_생성_요청_결과 = 주문_목록_조회_API_요청();
 
         // then
-        주문_목록_조회_성공됨(주문_생성_요청_결과, 생성된_주문);
+        주문_목록_조회_성공됨(주문_생성_요청_결과, 생성된_주문_아이디);
     }
 
-//    @DisplayName("저장되지 않은 주문의 상태를 변경하면 예외가 발생해야 한다")
-//    @Test
-//    void updateOrderStateByNotSavedOrderTest() {
-//        // given
-//        Order 변경될_주문 = 주문_생성(null, OrderStatus.MEAL, Collections.emptyList());
-//
-//        // when
-//        ExtractableResponse<Response> 주문_상태_변경_결과 = 주문_상태_변경_요청(-1L, 변경될_주문);
-//
-//        // then
-//        주문_상태_변경_실패됨(주문_상태_변경_결과);
-//    }
-//
-//    @DisplayName("정상 상태의 주문 변경 요청은 해당 상태로 변경되어야 한다")
-//    @Test
-//    void updateOrderStateTest() {
-//        // given
-//        OrderTable 변경_될_테이블 = 주문_테이블_생성(null, 10, false);
-//        빈_테이블_변경_요청(orderTable.getId(), 변경_될_테이블);
-//        List<OrderLineItem> 주문_목록 = Collections.singletonList(주문_목록_생성(null, menuId, 1));
-//        Order 변경될_주문 = 주문_생성(null, OrderStatus.MEAL, Collections.emptyList());
-//        Long orderId = 주문_생성_요청(orderTable.getId(), 주문_목록).body().jsonPath().getLong("id");
-//
-//        // when
-//        ExtractableResponse<Response> 주문_상태_변경_결과 = 주문_상태_변경_요청(orderId, 변경될_주문);
-//
-//        // then
-//        주문_상태_변경됨(주문_상태_변경_결과, 변경될_주문.getOrderStatus());
-//    }
-//
-//    public static ExtractableResponse<Response> 주문_생성_요청(Long orderTableId, List<OrderLineItem> orderLineItems) {
-//        Order body = 주문_생성(orderTableId, OrderStatus.COOKING, orderLineItems);
-//
-//        return RestAssuredRequest.postRequest(PATH, Collections.emptyMap(), body);
-//    }
-//
-//    public static Long 주문_테이블에_새로운_주문_생성(OrderTable orderTable) {
-//        Product product = 상품_생성_요청("상품", 1_000).as(Product.class);
-//        MenuProductRequest menuProductRequest = 메뉴_상품_생성_요청(product.getId(), 1L);
-//        MenuGroup menuGroup = 메뉴_그룹_생성_요청("메뉴 그룹").as(MenuGroup.class);
-//        MenuResponse menu = 메뉴_생성_API_호출("메뉴", 1_000, menuGroup.getId(), Collections.singletonList(menuProductRequest)).as(MenuResponse.class);
-//        List<OrderLineItem> orderLineItems = Collections.singletonList(주문_목록_생성(null, menu.getId(), 1));
-//
-//        return 주문_생성_요청(orderTable.getId(), orderLineItems).body().jsonPath().getLong("id");
-//    }
-//
-//    public static ExtractableResponse<Response> 주문_목록_조회() {
-//        return RestAssuredRequest.getRequest(PATH, Collections.emptyMap());
-//    }
-//
-//    public static ExtractableResponse<Response> 주문_상태_변경_요청(Long orderTableId, Order target) {
-//        return RestAssuredRequest.putRequest(PATH + "/{orderId}/order-status", Collections.emptyMap(), target, orderTableId);
-//    }
+    @DisplayName("저장되지 않은 주문의 상태를 변경하면 예외가 발생해야 한다")
+    @Test
+    void updateOrderStateByNotSavedOrderTest() {
+        // when
+        ExtractableResponse<Response> 주문_상태_변경_결과 = 주문_상태_변경_API_요청(-1L, OrderStatus.MEAL);
+
+        // then
+        주문_상태_변경_실패됨(주문_상태_변경_결과);
+    }
+
+
+    @DisplayName("정상 상태의 주문 변경 요청은 해당 상태로 변경되어야 한다")
+    @ParameterizedTest
+    @EnumSource(value = OrderStatus.class, names = { "COOKING", "MEAL", "COMPLETION" })
+    void updateOrderStateTest(OrderStatus orderStatus) {
+        // given
+        빈_테이블_변경_API_호출(주문_테이블_아이디, false);
+        OrderLineItemRequest 주문_물품_생성_요청 = 주문_물품_생성_요청(메뉴_아이디, 1L);
+        OrderCreateRequest 주문_생성_요청 = 주문_생성_요청(주문_테이블_아이디, Collections.singletonList(주문_물품_생성_요청));
+        Long 생성된_주문_아이디 = 주문_생성_API_요청(주문_생성_요청).as(OrderResponse.class).getId();
+
+        // when
+        ExtractableResponse<Response> 주문_상태_변경_결과 = 주문_상태_변경_API_요청(생성된_주문_아이디, orderStatus);
+
+        // then
+        주문_상태_변경됨(주문_상태_변경_결과, orderStatus);
+    }
 
     void 주문_생성_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.SC_INTERNAL_SERVER_ERROR);
@@ -204,14 +180,14 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         assertThat(orderIds).contains(savedOrderId);
     }
 
-//    void 주문_상태_변경_실패됨(ExtractableResponse<Response> response) {
-//        assertThat(response.statusCode()).isEqualTo(HttpStatus.SC_INTERNAL_SERVER_ERROR);
-//    }
-//
-//    void 주문_상태_변경됨(ExtractableResponse<Response> response, OrderStatus expectedOrderState) {
-//        Order order = response.as(Order.class);
-//
-//        assertThat(response.statusCode()).isEqualTo(HttpStatus.SC_OK);
-//        assertThat(order.getOrderStatus()).isEqualTo(expectedOrderState);
-//    }
+    void 주문_상태_변경_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+    }
+
+    void 주문_상태_변경됨(ExtractableResponse<Response> response, OrderStatus expectedOrderState) {
+        OrderResponse order = response.as(OrderResponse.class);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.SC_OK);
+        assertThat(order.getOrderStatus()).isEqualTo(expectedOrderState);
+    }
 }

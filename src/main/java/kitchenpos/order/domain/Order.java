@@ -48,6 +48,12 @@ public class Order {
         this.orderLineItems.forEach(orderLineItem -> orderLineItem.prepareForSave(this));
     }
 
+    public void changeOrderStatus(OrderStatus orderStatus) {
+        isPossibleChangeOrderStatus();
+
+        this.orderStatus = orderStatus;
+    }
+
     public Long getId() {
         return id;
     }
@@ -76,6 +82,12 @@ public class Order {
     private void checkValidation(List<OrderLineItem> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
             throw new IllegalArgumentException("주문에 주문 목록이 존재하지 않습니다.");
+        }
+    }
+
+    private void isPossibleChangeOrderStatus() {
+        if (OrderStatus.COMPLETION.equals(this.orderStatus)) {
+            throw new IllegalArgumentException("완료 상태의 주문의 상태를 변경할 수 없습니다.");
         }
     }
 }
