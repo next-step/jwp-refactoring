@@ -4,6 +4,7 @@ import kitchenpos.common.BaseEntity;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -16,10 +17,11 @@ public class Menu extends BaseEntity {
     private Long menuGroupId;
 
     @OneToMany(
+            mappedBy = "menu",
             fetch = FetchType.LAZY,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             orphanRemoval = true)
-    private List<MenuProduct> menuProducts;
+    private List<MenuProduct> menuProducts = new ArrayList<>();
 
     public Menu() {
     }

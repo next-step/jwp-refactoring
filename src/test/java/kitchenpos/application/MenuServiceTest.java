@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuProductDao;
 import kitchenpos.domain.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,7 +29,7 @@ class MenuServiceTest {
     @Mock
     private MenuGroupRepository menuGroupRepository;
     @Mock
-    private MenuProductDao menuProductDao;
+    private MenuProductRepository menuProductRepository;
     @Mock
     private ProductRepository productRepository;
     @InjectMocks
@@ -40,14 +39,13 @@ class MenuServiceTest {
     @Test
     void createMenu() {
         // given
-        Product product = 상품_생성("상품", 1_000);
-        MenuProduct menuProduct = 메뉴_상품_생성(null, product.getId(), 1);
+        Product product = 상품_생성(1L, "상품", 1_000);
+        MenuProduct menuProduct = 메뉴_상품_생성(null, product, 1);
         List<MenuProduct> menuProducts = Collections.singletonList(menuProduct);
         Menu menu = 메뉴_생성("매뉴", 1_000, 1L, menuProducts);
 
         when(menuGroupRepository.existsById(menu.getMenuGroupId())).thenReturn(true);
         when(productRepository.findById(any())).thenReturn(Optional.of(product));
-        when(menuProductDao.save(menuProduct)).thenReturn(menuProduct);
         when(menuRepository.save(menu)).thenReturn(메뉴_생성(1L, "매뉴", 1_000, 1L, menuProducts));
 
         // when
@@ -55,10 +53,10 @@ class MenuServiceTest {
 
         // then
         assertAll(
+                () -> assertThat(savedMenu.getId()).isNotNull(),
                 () -> assertThat(savedMenu.getName()).isEqualTo(menu.getName()),
                 () -> assertThat(savedMenu.getPrice()).isEqualTo(menu.getPrice()),
-                () -> assertThat(savedMenu.getMenuGroupId()).isEqualTo(menu.getMenuGroupId()),
-                () -> assertThat(savedMenu.getMenuProducts()).isEqualTo(menu.getMenuProducts())
+                () -> assertThat(savedMenu.getMenuGroupId()).isEqualTo(menu.getMenuGroupId())
         );
     }
 
@@ -91,7 +89,7 @@ class MenuServiceTest {
     void createMenu3() {
         // given
         Product product = 상품_생성("상품", 1_000);
-        MenuProduct menuProduct = 메뉴_상품_생성(null, product.getId(), 1);
+        MenuProduct menuProduct = 메뉴_상품_생성(null, product, 1);
         List<MenuProduct> menuProducts = Collections.singletonList(menuProduct);
         Menu menu = 메뉴_생성("매뉴", 2_000, 1L, menuProducts);
 
@@ -108,7 +106,7 @@ class MenuServiceTest {
     void createMenu4() {
         // given
         Product product = 상품_생성("상품", 1_000);
-        MenuProduct menuProduct = 메뉴_상품_생성(null, product.getId(), 1);
+        MenuProduct menuProduct = 메뉴_상품_생성(null, product, 1);
         List<MenuProduct> menuProducts = Collections.singletonList(menuProduct);
         Menu menu = 메뉴_생성("매뉴", 2_000, 1L, menuProducts);
 
@@ -124,13 +122,15 @@ class MenuServiceTest {
     @Test
     void listMenu() {
         // given
+        Product product1 = 상품_생성(1L, "상품1", 1_000);
+        Product product2 = 상품_생성(2L, "상품2", 1_000);
         Menu menu = 메뉴_생성(1L, "매뉴", 1000, null, null);
         List<Menu> menus = Collections.singletonList(menu);
-        MenuProduct menuProduct1 = 메뉴_상품_생성(1L, 1L, 1);
-        MenuProduct menuProduct2 = 메뉴_상품_생성(1L, 2L, 1);
+        MenuProduct menuProduct1 = 메뉴_상품_생성(menu, product1, 1);
+        MenuProduct menuProduct2 = 메뉴_상품_생성(menu, product2, 1);
 
         when(menuRepository.findAll()).thenReturn(menus);
-        when(menuProductDao.findAllByMenuId(any())).thenReturn(Arrays.asList(menuProduct1, menuProduct2));
+        when(menuProductRepository.findAllByMenuId(any())).thenReturn(Arrays.asList(menuProduct1, menuProduct2));
 
         // when
         List<Menu> list = menuService.list();

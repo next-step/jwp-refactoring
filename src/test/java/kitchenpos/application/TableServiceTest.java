@@ -3,6 +3,7 @@ package kitchenpos.application;
 import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTableRepository;
+import kitchenpos.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,11 +11,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static kitchenpos.domain.OrderTableTest.주문_태이블_생성;
+import static kitchenpos.domain.TableGroupTest.단체_지정_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -90,8 +93,9 @@ class TableServiceTest {
     void changeEmpty1() {
         // given
         Long savedOrderId = 1L;
+        TableGroup tableGroup = 단체_지정_생성(1L, LocalDateTime.now(), null);
         OrderTable orderTable = 주문_태이블_생성(null, 0, true);
-        OrderTable savedOrderTable = 주문_태이블_생성(savedOrderId, 1L, 0, false);
+        OrderTable savedOrderTable = 주문_태이블_생성(savedOrderId, tableGroup, 0, false);
         when(orderTableRepository.findById(savedOrderId)).thenReturn(Optional.of(savedOrderTable));
 
         // when, then

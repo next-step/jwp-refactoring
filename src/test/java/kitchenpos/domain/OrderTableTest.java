@@ -2,11 +2,11 @@ package kitchenpos.domain;
 
 public class OrderTableTest {
 
-    public static OrderTable 주문_태이블_생성(Long tableGroupId, int numberOfGuests, boolean empty) {
-        return new OrderTable(tableGroupId, numberOfGuests, empty);
+    public static OrderTable 주문_태이블_생성(TableGroup tableGroup, int numberOfGuests, boolean empty) {
+        return new OrderTable(tableGroup, numberOfGuests, empty);
     }
 
-    public static OrderTable 주문_태이블_생성(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
-        return new OrderTable(id, tableGroupId, numberOfGuests, empty);
+    public static OrderTable 주문_태이블_생성(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+        return new OrderTable(id, tableGroup, numberOfGuests, empty);
     }
 }

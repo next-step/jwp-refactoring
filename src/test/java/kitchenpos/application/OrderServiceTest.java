@@ -56,13 +56,11 @@ class OrderServiceTest {
     void createOrder() {
         // given
         OrderTable orderTable = 주문_태이블_생성(1L, null, 1, false);
-        Order order = 주문_생성(orderTable.getId(), OrderStatus.COOKING.toString(), LocalDateTime.now(), orderLineItems);
+        Order order = 주문_생성(orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
 
         when(menuRepository.countByIdIn(any())).thenReturn(orderLineItems.size());
         when(orderTableDao.findById(any())).thenReturn(Optional.of(orderTable));
-        when(orderLineItemRepository.save(orderLineItem1)).thenReturn(orderLineItem1);
-        when(orderLineItemRepository.save(orderLineItem2)).thenReturn(orderLineItem2);
-        when(orderRepository.save(order)).thenReturn(주문_생성(1L, orderTable.getId(), OrderStatus.COOKING.toString(),
+        when(orderRepository.save(order)).thenReturn(주문_생성(1L, orderTable.getId(), OrderStatus.COOKING,
                 LocalDateTime.now(), orderLineItems));
 
         // when
@@ -83,7 +81,7 @@ class OrderServiceTest {
     void createOrder1() {
         // given
         OrderTable orderTable = 주문_태이블_생성(1L, null, 1, false);
-        Order order = 주문_생성(orderTable.getId(), OrderStatus.COOKING.toString(), LocalDateTime.now(), Collections.emptyList());
+        Order order = 주문_생성(orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now(), Collections.emptyList());
 
         // when, then
         assertThatThrownBy(() -> orderService.create(order))
@@ -95,7 +93,7 @@ class OrderServiceTest {
     void createOrder2() {
         // given
         OrderTable orderTable = 주문_태이블_생성(1L, null, 1, false);
-        Order order = 주문_생성(orderTable.getId(), OrderStatus.COOKING.toString(), LocalDateTime.now(), orderLineItems);
+        Order order = 주문_생성(orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
 
         when(menuRepository.countByIdIn(any())).thenReturn(0);
 
@@ -109,7 +107,7 @@ class OrderServiceTest {
     void createOrder3() {
         // given
         OrderTable orderTable = 주문_태이블_생성(1L, null, 1, false);
-        Order order = 주문_생성(orderTable.getId(), OrderStatus.COOKING.toString(), LocalDateTime.now(), orderLineItems);
+        Order order = 주문_생성(orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
 
         when(menuRepository.countByIdIn(any())).thenReturn(orderLineItems.size());
         when(orderTableDao.findById(any())).thenReturn(Optional.empty());
@@ -124,7 +122,7 @@ class OrderServiceTest {
     void createOrder4() {
         // given
         OrderTable orderTable = 주문_태이블_생성(1L, null, 1, true);
-        Order order = 주문_생성(orderTable.getId(), OrderStatus.COOKING.toString(), LocalDateTime.now(), orderLineItems);
+        Order order = 주문_생성(orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
 
         when(menuRepository.countByIdIn(any())).thenReturn(orderLineItems.size());
         when(orderTableDao.findById(any())).thenReturn(Optional.of(orderTable));
@@ -139,7 +137,7 @@ class OrderServiceTest {
     void list() {
         // given
         OrderTable orderTable = 주문_태이블_생성(1L, null, 1, false);
-        Order order = 주문_생성(orderTable.getId(), OrderStatus.COOKING.toString(), LocalDateTime.now(), orderLineItems);
+        Order order = 주문_생성(orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
 
         when(orderRepository.findAll()).thenReturn(Collections.singletonList(order));
         when(orderLineItemRepository.findAllByOrderId(order.getId())).thenReturn(orderLineItems);
@@ -156,7 +154,7 @@ class OrderServiceTest {
     void changeOrderStatus() {
         // given
         OrderTable orderTable = 주문_태이블_생성(1L, null, 1, false);
-        Order order = 주문_생성(orderTable.getId(), OrderStatus.COOKING.toString(), LocalDateTime.now(), orderLineItems);
+        Order order = 주문_생성(orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
 
         when(orderRepository.findById(any())).thenReturn(Optional.of(order));
         when(orderLineItemRepository.findAllByOrderId(any())).thenReturn(orderLineItems);
@@ -172,12 +170,12 @@ class OrderServiceTest {
         );
     }
 
-    @DisplayName("주문 상태를 변경한다.")
+    @DisplayName("주문의 현재 상태가 '조리' 또는 '식사' 이여만 상태를 변경할 수 있다.")
     @Test
     void changeOrderStatus2() {
         // given
         OrderTable orderTable = 주문_태이블_생성(1L, null, 1, false);
-        Order order = 주문_생성(orderTable.getId(), OrderStatus.COMPLETION.toString(), LocalDateTime.now(), orderLineItems);
+        Order order = 주문_생성(orderTable.getId(), OrderStatus.COMPLETION, LocalDateTime.now(), orderLineItems);
 
         when(orderRepository.findById(any())).thenReturn(Optional.of(order));
 

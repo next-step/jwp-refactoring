@@ -4,11 +4,11 @@ import kitchenpos.common.BaseEntity;
 
 import javax.persistence.*;
 
+@Entity
 public class OrderLineItem extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;

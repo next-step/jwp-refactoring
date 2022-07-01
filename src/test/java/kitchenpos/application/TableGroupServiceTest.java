@@ -1,10 +1,7 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderTableRepository;
-import kitchenpos.domain.OrderRepository;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
-import kitchenpos.domain.TableGroupRepository;
+
+import kitchenpos.domain.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -106,9 +103,10 @@ class TableGroupServiceTest {
     @Test
     void create4() {
         // given
-        OrderTable orderTable1 = 주문_태이블_생성(1L, 2L, 1, false);
-        OrderTable orderTable2 = 주문_태이블_생성(2L, 2L, 1, false);
-        TableGroup tableGroup = 단체_지정_생성(null, Arrays.asList(orderTable1, orderTable2));
+        TableGroup tableGroup = 단체_지정_생성(2L, LocalDateTime.now(), null);
+        OrderTable orderTable1 = 주문_태이블_생성(1L, tableGroup, 1, false);
+        OrderTable orderTable2 = 주문_태이블_생성(2L, tableGroup, 1, false);
+        tableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
 
         when(orderTableRepository.findAllByIdIn(any())).thenReturn(Arrays.asList(orderTable1, orderTable2));
 
@@ -122,23 +120,25 @@ class TableGroupServiceTest {
     void ungroup() {
         // given
         Long tableGroupId = 1L;
-        OrderTable orderTable1 = 주문_태이블_생성(1L, tableGroupId, 1, false);
-        OrderTable orderTable2 = 주문_태이블_생성(2L, tableGroupId, 1, false);
+        TableGroup tableGroup = 단체_지정_생성(tableGroupId, LocalDateTime.now(), null);
+        OrderTable orderTable1 = 주문_태이블_생성(1L, tableGroup, 1, false);
+        OrderTable orderTable2 = 주문_태이블_생성(2L, tableGroup, 1, false);
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
 
         when(orderTableRepository.findAllByTableGroupId(tableGroupId)).thenReturn(orderTables);
         when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(false);
 
         // when, then
-        tableGroupService.ungroup(1L);
+        tableGroupService.ungroup(tableGroupId);
     }
 
     @DisplayName("'조리', '식사' 상태 주문 존재하면 안된다.")
     @Test
     void ungroup1() {
         Long tableGroupId = 1L;
-        OrderTable orderTable1 = 주문_태이블_생성(1L, tableGroupId, 1, false);
-        OrderTable orderTable2 = 주문_태이블_생성(2L, tableGroupId, 1, false);
+        TableGroup tableGroup = 단체_지정_생성(tableGroupId, LocalDateTime.now(), null);
+        OrderTable orderTable1 = 주문_태이블_생성(1L, tableGroup, 1, false);
+        OrderTable orderTable2 = 주문_태이블_생성(2L, tableGroup, 1, false);
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
 
         when(orderTableRepository.findAllByTableGroupId(tableGroupId)).thenReturn(orderTables);
