@@ -67,6 +67,18 @@ class ProductServiceTest {
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
+    @DisplayName("상품 가격이 `null`인 경우 등록 불가")
+    @Test
+    void createProductAndPriceNull() {
+        // given
+        후라이드.setPrice(null);
+
+        // then
+        assertThatThrownBy(() -> {
+            productService.create(후라이드);
+        }).isInstanceOf(IllegalArgumentException.class);
+    }
+
     @DisplayName("상품 전체 조회")
     @Test
     void findProducts() {
