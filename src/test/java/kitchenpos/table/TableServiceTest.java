@@ -80,13 +80,12 @@ class TableServiceTest {
     @DisplayName("주문 테이블을 빈 상태로 만든다")
     void changeEmpty() {
         // given
-        주문테이블.setEmpty(true);
+        OrderTableRequest 변경테이블 = new OrderTableRequest(주문테이블.getNumberOfGuests(), true);
         given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(주문테이블));
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(false);
-        given(orderTableRepository.save(any())).willReturn(주문테이블);
 
         // when
-        OrderTable actual = tableService.changeEmpty(주문테이블.getId(), 주문테이블);
+        OrderTableResponse actual = tableService.changeEmpty(주문테이블.getId(), 변경테이블);
 
         // then
         assertThat(actual.isEmpty()).isTrue();
@@ -96,11 +95,12 @@ class TableServiceTest {
     @DisplayName("존재하지 않는 주문테이블이면 빈 상태로 변경 불가능하다")
     void changeEmpty_notExistOrderTable() {
         // given
+        OrderTableRequest 변경테이블 = new OrderTableRequest(주문테이블.getNumberOfGuests(), 주문테이블.isEmpty());
         given(orderTableRepository.findById(any())).willReturn(Optional.empty());
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
-                () -> tableService.changeEmpty(주문테이블.getId(), 주문테이블)
+                () -> tableService.changeEmpty(주문테이블.getId(), 변경테이블)
         );
     }
 
@@ -109,11 +109,12 @@ class TableServiceTest {
     void changeEmpty_notExistTableGroup() {
         // given
         주문테이블.setTableGroup(단체테이블);
+        OrderTableRequest 변경테이블 = new OrderTableRequest(주문테이블.getNumberOfGuests(), 주문테이블.isEmpty(), 단체테이블);
         given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(주문테이블));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
-                () -> tableService.changeEmpty(주문테이블.getId(), 주문테이블)
+                () -> tableService.changeEmpty(주문테이블.getId(), 변경테이블)
         );
     }
 
@@ -121,13 +122,14 @@ class TableServiceTest {
     @DisplayName("현재 주문 상태가 계산 완료가 아닌 경우 테이블을 빈 상태로 변경 불가능하다")
     void changeEmpty_orderStatus_completion() {
         // given
+        OrderTableRequest 변경테이블 = new OrderTableRequest(주문테이블.getNumberOfGuests(), 주문테이블.isEmpty());
         given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(주문테이블));
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(),
                 any())).willReturn(true);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
-                () -> tableService.changeEmpty(주문테이블.getId(), 주문테이블)
+                () -> tableService.changeEmpty(주문테이블.getId(), 변경테이블)
         );
     }
 

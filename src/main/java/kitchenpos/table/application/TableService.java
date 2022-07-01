@@ -38,7 +38,7 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTable changeEmpty(final Long orderTableId, final OrderTable orderTable) {
+    public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
@@ -51,9 +51,9 @@ public class TableService {
             throw new IllegalArgumentException();
         }
 
-        savedOrderTable.setEmpty(orderTable.isEmpty());
+        savedOrderTable.setEmpty(orderTableRequest.getEmpty());
 
-        return orderTableRepository.save(savedOrderTable);
+        return OrderTableResponse.of(savedOrderTable);
     }
 
     @Transactional
