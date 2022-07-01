@@ -29,7 +29,6 @@ allprojects {
         implementation 'org.springframework.boot:spring-boot-starter-actuator'
         implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
         implementation 'org.springframework.boot:spring-boot-starter-web'
-        implementation 'org.flywaydb:flyway-core'
         runtimeOnly 'com.h2database:h2'
 
         testImplementation 'io.rest-assured:rest-assured:3.3.0'
@@ -41,6 +40,12 @@ allprojects {
     }
 }
 
+dependencies {
+    implementation 'org.flywaydb:flyway-core'
+
+    implementation project(':module-product')
+}
+
 project(':module-tablegroup') {
     dependencies {
         implementation project(':module-order')
@@ -49,6 +54,12 @@ project(':module-tablegroup') {
 }
 
 project(':module-order') {
+    dependencies {
+        implementation project(':module-core')
+    }
+}
+
+project(':module-product') {
     dependencies {
         implementation project(':module-core')
     }
