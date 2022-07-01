@@ -1,12 +1,12 @@
 package kitchenpos.table.event;
 
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.OrderTables;
 import kitchenpos.tablegroup.event.GroupByEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.OrderTables;
 
 @Component
 public class GroupByEventHandler {

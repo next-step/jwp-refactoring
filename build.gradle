@@ -12,7 +12,6 @@ subprojects {
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'java'
-    apply plugin: 'checkstyle'
 
     group = 'camp.nextstep.edu'
     version = '0.0.1-SNAPSHOT'
@@ -37,33 +36,23 @@ subprojects {
 }
 
 project(':module-main') {
-    bootJar.enabled = false
-    jar.enabled = true
-
     dependencies {
         implementation project(':module-product')
         implementation project(':module-menu')
-//        implementation project(':module-order')
+        implementation project(':module-order')
     }
 }
 
 project(':module-menu') {
-    bootJar.enabled = false
-    jar.enabled = true
-
     dependencies {
         implementation project(':module-product')
     }
 }
 
 project(':module-order') {
-    bootJar.enabled = false
-    jar.enabled = true
-
     dependencies {
         implementation project(':module-menu')
         implementation project(':module-product')
-        implementation project(':module-main')
     }
 }
 
