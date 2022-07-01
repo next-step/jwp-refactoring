@@ -1,4 +1,4 @@
-package kitchenpos.table.domain;
+package kitchenpos.domain.table;
 
 import javax.persistence.*;
 import java.util.ArrayList;

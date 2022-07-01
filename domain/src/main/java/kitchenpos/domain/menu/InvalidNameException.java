@@ -1,3 +1,3 @@
-package kitchenpos.menu.domain;
+package kitchenpos.domain.menu;
 
 public class InvalidNameException extends RuntimeException {}

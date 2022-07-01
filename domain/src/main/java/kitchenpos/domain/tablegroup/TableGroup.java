@@ -1,7 +1,7 @@
-package kitchenpos.tablegroup.domain;
+package kitchenpos.domain.tablegroup;
 
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTables;
+import kitchenpos.domain.table.OrderTable;
+import kitchenpos.domain.table.OrderTables;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 

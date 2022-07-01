@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package kitchenpos.domain.order;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;

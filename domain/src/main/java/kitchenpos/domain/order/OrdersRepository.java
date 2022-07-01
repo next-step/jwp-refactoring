@@ -1,4 +1,4 @@
-package kitchenpos.order.domain;
+package kitchenpos.domain.order;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
