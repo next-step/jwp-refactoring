@@ -28,7 +28,7 @@ public class OrderService {
     public OrderResponse create(final OrderRequest orderRequest) {
         orderValidator.validateOrderMenuCount(orderRequest.getOrderMenuIds());
 
-        final Long orderTableId = orderValidator.notEmptyOrderTableId(orderRequest);
+        final Long orderTableId = orderValidator.notEmptyOrderTableId(orderRequest.getOrderTableId());
         final Orders order = new Orders.Builder(orderTableId)
                 .setOrderStatus(OrderStatus.COOKING)
                 .build();

@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.Optional;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.repository.MenuRepository;
-import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTable.Builder;
 import kitchenpos.table.repository.OrderTableRepository;
@@ -40,14 +39,13 @@ class OrderValidatorTest {
     @DisplayName("비어있지 않고 존재하는 주문 테이블이면 주문 테이블 번호를 반환한다.")
     void verifyValidOrderTable() {
         // given
-        OrderRequest orderRequest = new OrderRequest(1L, null);
         final OrderTable orderTable = new Builder()
                 .setId(1L)
                 .setEmpty(false)
                 .build();
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
         // when
-        final Long orderTableId = orderValidator.notEmptyOrderTableId(orderRequest);
+        final Long orderTableId = orderValidator.notEmptyOrderTableId(1L);
         // then
         assertThat(orderTableId).isEqualTo(1L);
     }
@@ -56,18 +54,16 @@ class OrderValidatorTest {
     @DisplayName("주문 테이블이 존재하지 않으면 에러 발생")
     void notExistOrderTable() {
         // given
-        OrderRequest orderRequest = new OrderRequest(1L, null);
         when(orderTableRepository.findById(any())).thenReturn(Optional.empty());
         // when & then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> orderValidator.notEmptyOrderTableId(orderRequest));
+                .isThrownBy(() -> orderValidator.notEmptyOrderTableId(1L));
     }
 
     @Test
     @DisplayName("주문 테이블이 존재하지만 비어있으면 에러 발생")
     void emptyOrderTable() {
         // given
-        OrderRequest orderRequest = new OrderRequest(1L, null);
         final OrderTable orderTable = new Builder()
                 .setId(1L)
                 .setEmpty(true)
@@ -75,7 +71,7 @@ class OrderValidatorTest {
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
         // when & then
         assertThatIllegalStateException()
-                .isThrownBy(() -> orderValidator.notEmptyOrderTableId(orderRequest));
+                .isThrownBy(() -> orderValidator.notEmptyOrderTableId(1L));
     }
 
     @Test

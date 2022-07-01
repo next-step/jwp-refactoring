@@ -1,6 +1,5 @@
 package kitchenpos.order.dto;
 
-
 import static kitchenpos.common.ValidationMessage.NOT_NULL;
 import static kitchenpos.common.ValidationMessage.POSITIVE_OR_ZERO;
 

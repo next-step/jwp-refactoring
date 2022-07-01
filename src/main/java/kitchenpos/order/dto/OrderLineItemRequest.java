@@ -3,7 +3,6 @@ package kitchenpos.order.dto;
 import static kitchenpos.common.ValidationMessage.POSITIVE;
 
 import javax.validation.constraints.Positive;
-import kitchenpos.common.ValidationMessage;
 
 public class OrderLineItemRequest {
     @Positive(message = POSITIVE)

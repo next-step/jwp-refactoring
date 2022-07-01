@@ -4,7 +4,6 @@ import java.util.List;
 import kitchenpos.exception.InvalidMenuNumberException;
 import kitchenpos.exception.NotExistException;
 import kitchenpos.menu.repository.MenuRepository;
-import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.repository.OrderTableRepository;
 import org.springframework.stereotype.Component;
@@ -32,8 +31,8 @@ public class OrderValidator {
                 .getId();
     }
 
-    public Long notEmptyOrderTableId(OrderRequest orderRequest) {
-        final OrderTable persistOrderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
+    public Long notEmptyOrderTableId(Long orderTableId) {
+        final OrderTable persistOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(NotExistException::new);
         validateOrderTable(persistOrderTable);
         return persistOrderTable.getId();

@@ -13,7 +13,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import kitchenpos.exception.InvalidOrderStatusException;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.dto.OrderLineItemResponse;
 import kitchenpos.order.dto.OrderResponse;
 import org.springframework.data.annotation.CreatedDate;
@@ -52,14 +51,6 @@ public class Orders {
         this.orderLineItems = builder.orderLineItems;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public Long getOrderTableId() {
-        return this.orderTableId;
-    }
-
     public void changeStatus(OrderStatus orderStatus) {
         if (this.orderStatus == OrderStatus.COMPLETION) {
             throw new InvalidOrderStatusException();
@@ -77,7 +68,8 @@ public class Orders {
 
     public OrderResponse toOrderResponse() {
         final List<OrderLineItemResponse> orderLineItemResponses = this.orderLineItems.toOrderLineItemResponses();
-        return new OrderResponse(this.id, this.orderTableId, this.orderStatus.name(), this.orderedTime, orderLineItemResponses);
+        return new OrderResponse(this.id, this.orderTableId, this.orderStatus.name(), this.orderedTime,
+                orderLineItemResponses);
     }
 
     @Override
