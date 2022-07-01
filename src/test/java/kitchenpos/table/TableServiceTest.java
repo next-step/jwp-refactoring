@@ -9,10 +9,11 @@ import static org.mockito.BDDMockito.given;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.table.application.TableService;
 import kitchenpos.order.dao.OrderDao;
-import kitchenpos.order.dao.OrderTableDao;
+import kitchenpos.order.dao.OrderTableRepository;
 import kitchenpos.order.domain.OrderTable;
+import kitchenpos.table.application.TableService;
+import kitchenpos.table.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,22 +32,23 @@ class TableServiceTest {
     OrderDao orderDao;
 
     @Mock
-    OrderTableDao orderTableDao;
+    OrderTableRepository orderTableRepository;
 
     OrderTable 주문테이블;
+    TableGroup 단체테이블;
 
     @BeforeEach
     void setUp() {
-        주문테이블 = new OrderTable();
+        주문테이블 = new OrderTable(2, false);
         주문테이블.setId(1L);
-        주문테이블.setEmpty(false);
+        단체테이블 = new TableGroup(Collections.singletonList(주문테이블));
     }
 
     @Test
     @DisplayName("주문에 대한 주문 테이블을 생성한다")
     void create() {
         // given
-        given(orderTableDao.save(any())).willReturn(주문테이블);
+        given(orderTableRepository.save(any())).willReturn(주문테이블);
 
         // when
         OrderTable actual = tableService.create(주문테이블);
@@ -54,7 +56,7 @@ class TableServiceTest {
         // then
         assertAll(
                 () -> assertThat(actual).isEqualTo(주문테이블),
-                () -> assertThat(actual.getTableGroupId()).isNull()
+                () -> assertThat(actual.getTableGroup()).isNull()
         );
     }
 
@@ -62,7 +64,7 @@ class TableServiceTest {
     @DisplayName("주문 테이블을 조회한다")
     void list() {
         // given
-        given(orderTableDao.findAll()).willReturn(Collections.singletonList(주문테이블));
+        given(orderTableRepository.findAll()).willReturn(Collections.singletonList(주문테이블));
 
         // when
         List<OrderTable> actual = tableService.list();
@@ -79,9 +81,9 @@ class TableServiceTest {
     void changeEmpty() {
         // given
         주문테이블.setEmpty(true);
-        given(orderTableDao.findById(any())).willReturn(Optional.ofNullable(주문테이블));
+        given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(주문테이블));
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(false);
-        given(orderTableDao.save(any())).willReturn(주문테이블);
+        given(orderTableRepository.save(any())).willReturn(주문테이블);
 
         // when
         OrderTable actual = tableService.changeEmpty(주문테이블.getId(), 주문테이블);
@@ -94,7 +96,7 @@ class TableServiceTest {
     @DisplayName("존재하지 않는 주문테이블이면 빈 상태로 변경 불가능하다")
     void changeEmpty_notExistOrderTable() {
         // given
-        given(orderTableDao.findById(any())).willReturn(Optional.empty());
+        given(orderTableRepository.findById(any())).willReturn(Optional.empty());
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
@@ -106,8 +108,8 @@ class TableServiceTest {
     @DisplayName("단체 테이블에 속하면 빈 상태로 변경 불가능하다")
     void changeEmpty_notExistTableGroup() {
         // given
-        주문테이블.setTableGroupId(1L);
-        given(orderTableDao.findById(any())).willReturn(Optional.ofNullable(주문테이블));
+        주문테이블.setTableGroup(단체테이블);
+        given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(주문테이블));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
@@ -119,7 +121,7 @@ class TableServiceTest {
     @DisplayName("현재 주문 상태가 계산 완료가 아닌 경우 테이블을 빈 상태로 변경 불가능하다")
     void changeEmpty_orderStatus_completion() {
         // given
-        given(orderTableDao.findById(any())).willReturn(Optional.ofNullable(주문테이블));
+        given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(주문테이블));
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(),
                 any())).willReturn(true);
 
@@ -133,10 +135,9 @@ class TableServiceTest {
     @DisplayName("방문한 손님 수 정보를 변경한다")
     void changeNumberOfGuests() {
         // given
-        OrderTable 변경테이블 = new OrderTable();
-        변경테이블.setNumberOfGuests(5);
-        given(orderTableDao.findById(any())).willReturn(Optional.ofNullable(주문테이블));
-        given(orderTableDao.save(any())).willReturn(변경테이블);
+        OrderTable 변경테이블 = new OrderTable(5, true);
+        given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(주문테이블));
+        given(orderTableRepository.save(any())).willReturn(변경테이블);
 
         // when
         OrderTable actual = tableService.changeNumberOfGuests(주문테이블.getId(), 변경테이블);
@@ -149,8 +150,7 @@ class TableServiceTest {
     @DisplayName("변경하려는 방문 손님 수는 0명이상이다")
     void changeNumberOfGuests_numberError() {
         // given
-        OrderTable 변경테이블 = new OrderTable();
-        변경테이블.setNumberOfGuests(-1);
+        OrderTable 변경테이블 = new OrderTable(-1, true);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
@@ -162,9 +162,8 @@ class TableServiceTest {
     @DisplayName("변경대상인 주문테이블은 존재하는 주문테이블이어야 한다")
     void changeNumberOfGuests_orderTableError() {
         // given
-        OrderTable 변경테이블 = new OrderTable();
-        변경테이블.setNumberOfGuests(5);
-        given(orderTableDao.findById(any())).willReturn(Optional.empty());
+        OrderTable 변경테이블 = new OrderTable(5, true);
+        given(orderTableRepository.findById(any())).willReturn(Optional.empty());
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
@@ -177,8 +176,8 @@ class TableServiceTest {
     void changeNumberOfGuests_emptyTableError() {
         // given
         주문테이블.setEmpty(true);
-        OrderTable 변경테이블 = new OrderTable();
-        given(orderTableDao.findById(any())).willReturn(Optional.empty());
+        OrderTable 변경테이블 = new OrderTable(2, true);
+        given(orderTableRepository.findById(any())).willReturn(Optional.empty());
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(

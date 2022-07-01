@@ -34,7 +34,7 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     @DisplayName("단체 손님을 생성한다")
     void 단체_손님을_생성한다() {
         // when
-        ExtractableResponse<Response> response = 단체_손님을_생성(new TableGroup(), Arrays.asList(손님1, 손님2));
+        ExtractableResponse<Response> response = 단체_손님을_생성(Arrays.asList(손님1, 손님2));
 
         // then
         단체_손님이_생성됨(response);
@@ -44,7 +44,7 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     @DisplayName("단체 손님을 해제한다")
     void 단체_손님을_해제한다() {
         // given
-        단체손님 = 단체_손님을_생성(new TableGroup(), Arrays.asList(손님1, 손님2)).as(TableGroup.class);
+        단체손님 = 단체_손님을_생성(Arrays.asList(손님1, 손님2)).as(TableGroup.class);
 
         // when
         ExtractableResponse<Response> response = 단체_손님을_해제(단체손님);
@@ -54,8 +54,8 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     }
 
 
-    public static ExtractableResponse<Response> 단체_손님을_생성(TableGroup tableGroup, List<OrderTable> orderTableList) {
-        tableGroup.setOrderTables(orderTableList);
+    public static ExtractableResponse<Response> 단체_손님을_생성(List<OrderTable> orderTableList) {
+        TableGroup tableGroup = new TableGroup(orderTableList);
 
         return AcceptanceTest.doPost("/api/table-groups", tableGroup);
     }

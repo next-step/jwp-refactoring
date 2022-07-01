@@ -73,9 +73,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 손님_입장(int numberOfGuests, boolean empty) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(numberOfGuests);
-        orderTable.setEmpty(empty);
+        OrderTable orderTable = new OrderTable(numberOfGuests, empty);
 
         return AcceptanceTest.doPost("/api/tables", orderTable);
     }
