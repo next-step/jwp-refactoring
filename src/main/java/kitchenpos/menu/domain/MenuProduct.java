@@ -2,12 +2,9 @@ package kitchenpos.menu.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
 import kitchenpos.product.domain.Product;
@@ -19,21 +16,20 @@ public class MenuProduct {
     private Long seq;
     @Column(nullable = false)
     private Quantity quantity;
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
-    private Product product;
+    @Column(name = "product_id", nullable = false)
+    private Long productId;
 
     protected MenuProduct() {
     }
 
-    public MenuProduct(Quantity quantity, Product product) {
+    public MenuProduct(Quantity quantity, Long productId) {
         this.quantity = quantity;
-        this.product = product;
+        this.productId = productId;
     }
 
-    public Price getTotalPrice() {
-        Price price = product.getPrice();
-        return new Price(price.getPrice() * quantity.getQuantity());
+    public Price getTotalPrice(Product product) {
+        Price productPrice = product.getPrice();
+        return new Price(productPrice.getPrice() * quantity.getQuantity());
     }
 
     public Long getSeq() {
@@ -44,8 +40,7 @@ public class MenuProduct {
         return quantity;
     }
 
-    public Product getProduct() {
-        return product;
+    public Long getProductId() {
+        return productId;
     }
-
 }

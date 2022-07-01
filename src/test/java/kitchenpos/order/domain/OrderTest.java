@@ -1,9 +1,7 @@
 package kitchenpos.order.domain;
 
-import static kitchenpos.helper.MenuFixtures.메뉴_만들기;
 import static kitchenpos.helper.OrderFixtures.주문_만들기;
-import static kitchenpos.helper.OrderLineItemFixtures.주문_항목_만들기;
-import static kitchenpos.helper.TableFixtures.빈_테이블_만들기;
+import static kitchenpos.helper.OrderLineItemFixtures.주문_항목들_만들기;
 import static kitchenpos.helper.TableFixtures.주문_테이블_만들기;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -17,27 +15,12 @@ import org.junit.jupiter.api.Test;
 @DisplayName("주문 관련 Domain 단위 테스트")
 class OrderTest {
 
-    @DisplayName("빈테이블인 경우 주문을 등록 할 수 없다.")
-    @Test
-    void order_empty_table() {
-        //given
-        OrderTable emptyTable = 빈_테이블_만들기();
-        OrderLineItem orderLineItem = 주문_항목_만들기(메뉴_만들기("닭", 0), 1);
-        OrderLineItems orderLineItems = new OrderLineItems();
-        orderLineItems.add(orderLineItem);
-
-        //when then
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> new Order(LocalDateTime.now(), emptyTable))
-                .withMessageContaining("빈테이블인 경우 주문을 등록 할 수 없습니다.");
-    }
-
     @DisplayName("주문 항목이 없는 경우 주문을 등록 할 수 없다.")
     @Test
     void order_not_item() {
         //given
         OrderTable orderTable = 주문_테이블_만들기();
-        Order order = new Order(LocalDateTime.now(), orderTable);
+        Order order = new Order(LocalDateTime.now(), orderTable.getId(), 주문_항목들_만들기());
 
         //when then
         assertThatIllegalArgumentException()
@@ -53,7 +36,7 @@ class OrderTest {
     @Test
     void changeOrderStatus() {
         //given
-        Order order = 주문_만들기(OrderStatus.COOKING, 주문_테이블_만들기());
+        Order order = 주문_만들기(OrderStatus.COOKING, 주문_테이블_만들기(), 주문_항목들_만들기());
 
         //when
         order.changeOrderStatus(OrderStatus.MEAL);
@@ -66,7 +49,7 @@ class OrderTest {
     @Test
     void changeOrderStatus_completion() {
         //given
-        Order order = 주문_만들기(1L, OrderStatus.COMPLETION, 주문_테이블_만들기());
+        Order order = 주문_만들기(1L, OrderStatus.COMPLETION, 주문_테이블_만들기(), 주문_항목들_만들기());
 
         //when
         assertThatIllegalArgumentException()

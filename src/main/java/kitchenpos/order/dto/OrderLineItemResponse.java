@@ -1,32 +1,40 @@
 package kitchenpos.order.dto;
 
-import kitchenpos.order.domain.Order;
+import kitchenpos.common.domain.Price;
+import kitchenpos.common.domain.Quantity;
 import kitchenpos.order.domain.OrderLineItem;
 
 public class OrderLineItemResponse {
-    private final Long orderId;
     private final Long menuId;
+    private final String menuName;
+    private final Integer price;
     private final Integer quantity;
 
-    public OrderLineItemResponse(Long orderId, Long menuId, Integer quantity) {
-        this.orderId = orderId;
+    public OrderLineItemResponse(Long menuId, String menuName, Price price, Quantity quantity) {
         this.menuId = menuId;
-        this.quantity = quantity;
+        this.menuName = menuName;
+        this.price = price.getPrice();
+        this.quantity = quantity.getQuantity();
     }
 
-    public static OrderLineItemResponse of(Order order, OrderLineItem orderLineItem) {
+    public static OrderLineItemResponse from(OrderLineItem orderLineItem) {
         return new OrderLineItemResponse(
-                order.getId(),
-                orderLineItem.getMenu().getId(),
-                orderLineItem.getQuantity().getQuantity());
-    }
-
-    public Long getOrderId() {
-        return orderId;
+                orderLineItem.getMenuId(),
+                orderLineItem.getMenuName(),
+                orderLineItem.getPrice(),
+                orderLineItem.getQuantity());
     }
 
     public Long getMenuId() {
         return menuId;
+    }
+
+    public String getMenuName() {
+        return menuName;
+    }
+
+    public Integer getPrice() {
+        return price;
     }
 
     public Integer getQuantity() {

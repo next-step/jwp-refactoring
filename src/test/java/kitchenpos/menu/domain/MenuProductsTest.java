@@ -1,9 +1,14 @@
 package kitchenpos.menu.domain;
 
+import static kitchenpos.helper.MenuProductFixtures.양념치킨_메뉴상품;
+import static kitchenpos.helper.MenuProductFixtures.후라이드치킨_메뉴상품;
+import static kitchenpos.helper.ProductFixtures.양념치킨_상품;
+import static kitchenpos.helper.ProductFixtures.후라이드치킨_상품;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Arrays;
 import kitchenpos.common.domain.Price;
-import kitchenpos.helper.MenuProductFixtures;
+import kitchenpos.product.domain.Products;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -15,11 +20,14 @@ class MenuProductsTest {
     void getTotalAmount() {
         //given
         MenuProducts menuProducts = new MenuProducts();
-        menuProducts.add(MenuProductFixtures.후라이드치킨_메뉴상품);
-        menuProducts.add(MenuProductFixtures.양념치킨_메뉴);
+        menuProducts.add(후라이드치킨_메뉴상품);
+        menuProducts.add(양념치킨_메뉴상품);
 
-        //when then
-        Price totalPrice = menuProducts.getTotalPrice();
+
+        //when
+        Price totalPrice = menuProducts.getTotalPrice(new Products(Arrays.asList(후라이드치킨_상품, 양념치킨_상품)));
+
+        //then
         assertThat(totalPrice.getPrice()).isEqualTo(32_000);
     }
 }

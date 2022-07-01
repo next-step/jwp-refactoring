@@ -5,26 +5,25 @@ import static kitchenpos.helper.OrderFixtures.주문_요청_만들기;
 import static kitchenpos.helper.OrderLineItemFixtures.주문_항목_요청_만들기;
 import static kitchenpos.helper.TableFixtures.테이블_만들기;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Optional;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.repository.MenuRepository;
 import kitchenpos.order.domain.repository.OrderRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 @DisplayName("주문 관련 Service 단위 테스트 - Stub")
 @ExtendWith(MockitoExtension.class)
@@ -35,12 +34,12 @@ class OrderServiceUnitTest {
     @Mock
     private MenuRepository menuRepository;
     @Mock
-    private OrderTableRepository orderTableRepository;
+    private ApplicationEventPublisher eventPublisher;
     private OrderService orderService;
 
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(orderRepository, orderTableRepository, menuRepository);
+        orderService = new OrderService(orderRepository, menuRepository, eventPublisher);
     }
 
 
@@ -65,11 +64,11 @@ class OrderServiceUnitTest {
         OrderTable orderTable = 테이블_만들기(1L, 3, false);
         OrderRequest request = 주문_요청_만들기(orderTable.getId(), Arrays.asList(orderLineItem1, orderLineItem2));
 
-        given(orderTableRepository.findById(request.getOrderTableId())).willReturn(Optional.of(orderTable));
-        given(menuRepository.findById(anyLong())).willThrow(IllegalArgumentException.class);
+        given(menuRepository.findAllById(any())).willReturn(Arrays.asList(menu));
 
         //when then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(request, LocalDateTime.now()));
+        assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(request, LocalDateTime.now()))
+                .withMessageContaining("등록 되어있지 않은 메뉴가 있습니다");
     }
 
 
@@ -82,8 +81,6 @@ class OrderServiceUnitTest {
         OrderLineItemRequest orderLineItem2 = 주문_항목_요청_만들기(menu.getId(), 2);
         OrderTable orderTable = 테이블_만들기(1L, 3, true);
         OrderRequest request = 주문_요청_만들기(orderTable.getId(), Arrays.asList(orderLineItem1, orderLineItem2));
-
-        given(orderTableRepository.findById(request.getOrderTableId())).willReturn(Optional.of(orderTable));
 
         //when then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(request, LocalDateTime.now()));
@@ -98,8 +95,6 @@ class OrderServiceUnitTest {
         OrderLineItemRequest orderLineItem2 = 주문_항목_요청_만들기(menu.getId(), 2);
         OrderTable orderTable = 테이블_만들기(1L, 3, true);
         OrderRequest request = 주문_요청_만들기(orderTable.getId(), Arrays.asList(orderLineItem1, orderLineItem2));
-
-        given(orderTableRepository.findById(request.getOrderTableId())).willReturn(Optional.of(orderTable));
 
         //when then
         assertThatIllegalArgumentException().isThrownBy(() -> orderService.create(request, LocalDateTime.now()));

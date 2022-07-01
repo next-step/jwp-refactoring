@@ -53,8 +53,8 @@ public class TableService {
         return OrderTableResponse.from(savedOrderTable);
     }
 
-    private Orders findOrders(OrderTable savedOrderTable) {
-        List<Order> orders = orderRepository.findAllByOrderTable(savedOrderTable);
+    private Orders findOrders(OrderTable orderTable) {
+        List<Order> orders = orderRepository.findAllByOrderTableId(orderTable.getId());
         return new Orders(orders);
     }
 

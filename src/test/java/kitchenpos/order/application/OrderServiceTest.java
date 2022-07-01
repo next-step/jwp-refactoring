@@ -1,5 +1,6 @@
 package kitchenpos.order.application;
 
+import static kitchenpos.helper.MenuFixtures.메뉴_만들기;
 import static kitchenpos.helper.OrderFixtures.주문_상태_계산완료_요청;
 import static kitchenpos.helper.OrderFixtures.주문_상태_식사_요청;
 import static kitchenpos.helper.OrderFixtures.주문_상태_조리_요청;
@@ -18,10 +19,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import kitchenpos.menu.domain.repository.MenuRepository;
 import kitchenpos.order.consts.OrderStatus;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.ValidateOrderTableEventHandler;
 import kitchenpos.table.domain.repository.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,9 +34,11 @@ import org.springframework.context.annotation.Import;
 
 @DisplayName("주문 관련 Service 기능 테스트")
 @DataJpaTest
-@Import({OrderService.class})
+@Import({OrderService.class, ValidateOrderTableEventHandler.class})
 class OrderServiceTest {
 
+    @Autowired
+    private MenuRepository menuRepository;
     @Autowired
     private OrderTableRepository orderTableRepository;
     @Autowired
@@ -52,8 +57,33 @@ class OrderServiceTest {
         //then
         assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
         assertThat(result.getOrderTableId()).isNotNull();
-        assertThat(result.getOrderLineItems().get(0).getOrderId()).isNotNull();
-        assertThat(result.getOrderLineItems().get(1).getOrderId()).isNotNull();
+        assertThat(result.getOrderLineItems().get(0).getMenuName()).isEqualTo("후라이드치킨");
+        assertThat(result.getOrderLineItems().get(1).getPrice()).isEqualTo(16000);
+    }
+
+
+    @DisplayName("메뉴 이름, 가격이 변동되더라도 주문 내역은 동일해야한다.")
+    @Test
+    void create_update_menu() {
+        //given
+        OrderTable orderTable = orderTableRepository.save(테이블_만들기(3, false));
+        OrderRequest request = 주문_요청_만들기(orderTable.getId(), Arrays.asList(주문_항목_요청1, 주문_항목_요청2));
+        OrderResponse createdOrder = orderService.create(request, LocalDateTime.now());
+
+        //when
+        menuRepository.save(메뉴_만들기(1L, "변경 메뉴이름 ", 17000));
+        List<OrderResponse> results = orderService.findAllOrders();
+
+        //then
+        OrderResponse response = results.stream()
+                .filter(orderResponse -> orderResponse.getId().equals(createdOrder.getId()))
+                .findFirst().orElseThrow(IllegalArgumentException::new);
+
+        assertThat(response.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(response.getOrderTableId()).isNotNull();
+        assertThat(response.getOrderLineItems().get(0).getMenuId()).isEqualTo(1L);
+        assertThat(response.getOrderLineItems().get(0).getMenuName()).isEqualTo("후라이드치킨");
+        assertThat(response.getOrderLineItems().get(0).getPrice()).isEqualTo(16000);
     }
 
     @DisplayName("주문 항목이 없으면 주문을 등록 할 수 없다.")

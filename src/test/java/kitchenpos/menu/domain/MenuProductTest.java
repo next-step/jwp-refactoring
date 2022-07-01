@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import static kitchenpos.helper.ProductFixtures.양념치킨_상품;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import kitchenpos.common.domain.Price;
@@ -13,10 +14,10 @@ class MenuProductTest {
     @Test
     void getAmount() {
         //given
-        MenuProduct menuProduct = MenuProductFixtures.양념치킨_메뉴;
+        MenuProduct menuProduct = MenuProductFixtures.양념치킨_메뉴상품;
 
         //when
-        Price amount = menuProduct.getTotalPrice();
+        Price amount = menuProduct.getTotalPrice(양념치킨_상품);
 
         //then
         assertThat(amount.getPrice()).isEqualTo(16_000);

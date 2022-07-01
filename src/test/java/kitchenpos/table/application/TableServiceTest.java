@@ -1,6 +1,7 @@
 package kitchenpos.table.application;
 
 import static kitchenpos.helper.OrderFixtures.주문_만들기;
+import static kitchenpos.helper.OrderLineItemFixtures.주문_항목들_만들기;
 import static kitchenpos.helper.TableFixtures.빈_테이블_요청;
 import static kitchenpos.helper.TableFixtures.주문_테이블;
 import static kitchenpos.helper.TableFixtures.주문_테이블_요청;
@@ -17,8 +18,8 @@ import javax.persistence.PersistenceContext;
 import kitchenpos.order.consts.OrderStatus;
 import kitchenpos.order.domain.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.repository.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.domain.repository.OrderTableRepository;
 import kitchenpos.table.domain.repository.TableGroupRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
@@ -96,17 +97,16 @@ class TableServiceTest {
     void changeEmpty_order_status_cooking_or_meal() {
         //given
         OrderTable orderTable1 = orderTableRepository.save(테이블_만들기(3, false));
-        orderRepository.save(주문_만들기(OrderStatus.MEAL, orderTable1));
-        orderRepository.save(주문_만들기(OrderStatus.COMPLETION, orderTable1));
+        orderRepository.save(주문_만들기(OrderStatus.MEAL, orderTable1, 주문_항목들_만들기()));
+        orderRepository.save(주문_만들기(OrderStatus.COMPLETION, orderTable1, 주문_항목들_만들기()));
 
         OrderTable orderTable2 = orderTableRepository.save(테이블_만들기(3, false));
-        orderRepository.save(주문_만들기(OrderStatus.COOKING, orderTable2));
-        orderRepository.save(주문_만들기(OrderStatus.COMPLETION, orderTable2));
+        orderRepository.save(주문_만들기(OrderStatus.COOKING, orderTable2, 주문_항목들_만들기()));
+        orderRepository.save(주문_만들기(OrderStatus.COMPLETION, orderTable2, 주문_항목들_만들기()));
 
         OrderTable orderTable3 = orderTableRepository.save(테이블_만들기(3, false));
-        orderRepository.save(주문_만들기(OrderStatus.COMPLETION, orderTable3));
-        orderRepository.save(주문_만들기(OrderStatus.COMPLETION, orderTable3));
-
+        orderRepository.save(주문_만들기(OrderStatus.COMPLETION, orderTable3, 주문_항목들_만들기()));
+        orderRepository.save(주문_만들기(OrderStatus.COMPLETION, orderTable3, 주문_항목들_만들기()));
 
         OrderTableRequest request = 테이블_요청_만들기(true);
 
