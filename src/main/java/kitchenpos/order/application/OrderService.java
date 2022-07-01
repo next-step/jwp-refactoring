@@ -5,6 +5,7 @@ import java.util.NoSuchElementException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.ChangeOrderStatusRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.event.CreateOrderEvent;
@@ -36,7 +37,7 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest request) {
+    public OrderResponse changeOrderStatus(final Long orderId, final ChangeOrderStatusRequest request) {
         final Order findOrder = orderRepository.findById(orderId)
                 .orElseThrow(NoSuchElementException::new);
         findOrder.changeOrderStatus(OrderStatus.valueOf(request.getOrderStatus()));
