@@ -44,6 +44,7 @@ dependencies {
     implementation 'org.flywaydb:flyway-core'
 
     implementation project(':module-product')
+    implementation project(':module-menugroup')
 }
 
 project(':module-tablegroup') {
@@ -60,6 +61,12 @@ project(':module-order') {
 }
 
 project(':module-product') {
+    dependencies {
+        implementation project(':module-core')
+    }
+}
+
+project(':module-menugroup') {
     dependencies {
         implementation project(':module-core')
     }
