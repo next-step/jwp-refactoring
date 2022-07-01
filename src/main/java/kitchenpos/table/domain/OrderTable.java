@@ -32,16 +32,31 @@ public class OrderTable {
         this.empty = empty;
     }
 
+    private OrderTable(Long id, TableGroup tableGroup, NumberOfGuests numberOfGuests, Empty empty) {
+        this(numberOfGuests, empty);
+
+        this.id = id;
+        this.tableGroup = tableGroup;
+    }
+
     public static OrderTable of(NumberOfGuests numberOfGuests, Empty empty) {
         return new OrderTable(numberOfGuests, empty);
+    }
+
+    public static OrderTable of(Long id, TableGroup tableGroup, NumberOfGuests numberOfGuests, Empty empty) {
+        return new OrderTable(id, tableGroup, numberOfGuests, empty);
     }
 
     public Long getId() {
         return id;
     }
 
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public Long getTableGroupId() {
+        if (tableGroup == null) {
+            return null;
+        }
+
+        return tableGroup.getId();
     }
 
     public void setTableGroup(TableGroup tableGroup) {

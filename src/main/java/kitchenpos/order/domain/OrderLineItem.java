@@ -25,6 +25,12 @@ public class OrderLineItem {
     protected OrderLineItem() {
     }
 
+    private OrderLineItem(Long seq, Order order, Menu menu, Quantity quantity) {
+        this(menu, quantity);
+        this.seq = seq;
+        this.order = order;
+    }
+
     private OrderLineItem(Menu menu, Quantity quantity) {
         this.menu = menu;
         this.quantity = quantity;
@@ -32,6 +38,10 @@ public class OrderLineItem {
 
     public static OrderLineItem of(Menu menu, Quantity quantity) {
         return new OrderLineItem(menu, quantity);
+    }
+
+    public static OrderLineItem of(Long seq, Order order, Menu menu, Quantity quantity) {
+        return new OrderLineItem(seq, order, menu, quantity);
     }
 
     public Long getSeq() {

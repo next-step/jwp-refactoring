@@ -1,6 +1,7 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.application.OrderService;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.Empty;
 import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
@@ -9,6 +10,7 @@ import kitchenpos.table.dto.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -20,11 +22,11 @@ import static kitchenpos.common.Messages.ORDER_TABLE_STATUS_CANNOT_UPDATE;
 @Transactional(readOnly = true)
 public class TableService {
     private final OrderTableRepository orderTableRepository;
-    private final OrderService orderService;
+    private final OrderRepository orderRepository;
 
-    public TableService(OrderTableRepository orderTableRepository, OrderService orderService) {
+    public TableService(OrderTableRepository orderTableRepository, OrderRepository orderRepository) {
         this.orderTableRepository = orderTableRepository;
-        this.orderService = orderService;
+        this.orderRepository = orderRepository;
     }
 
     @Transactional
@@ -46,7 +48,10 @@ public class TableService {
         OrderTable orderTable = findById(orderTableId);
         orderTable.validateHasOrderTable();
 
-        if (orderService.isOrderTableStateCookingOrMeal(orderTable)) {
+        if (orderRepository.existsByOrderTableAndOrderStatusIn(
+                orderTable,
+                Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))
+        ) {
             throw new IllegalArgumentException(ORDER_TABLE_STATUS_CANNOT_UPDATE);
         }
 

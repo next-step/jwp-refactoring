@@ -19,7 +19,7 @@ public class ChangeNumberOfGuestsResponse {
     public static ChangeNumberOfGuestsResponse of(OrderTable orderTable) {
         return new ChangeNumberOfGuestsResponse(
                 orderTable.getId(),
-                orderTable.getTableGroup().getId(),
+                orderTable.getTableGroupId(),
                 orderTable.getNumberOfGuests(),
                 orderTable.isEmpty()
         );

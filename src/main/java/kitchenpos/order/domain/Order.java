@@ -32,6 +32,11 @@ public class Order {
     protected Order() {
     }
 
+    private Order(Long id, OrderTable orderTable, OrderLineItems orderLineItems) {
+        this(orderTable, orderLineItems);
+        this.id = id;
+    }
+
     private Order(OrderTable orderTable, OrderLineItems orderLineItems) {
         validateOrderTable(orderTable);
         this.orderTable = orderTable;
@@ -42,6 +47,10 @@ public class Order {
 
     public static Order of(OrderTable orderTable, OrderLineItems orderLineItems) {
         return new Order(orderTable, orderLineItems);
+    }
+
+    public static Order of(Long id, OrderTable orderTable, OrderLineItems orderLineItems) {
+        return new Order(id, orderTable, orderLineItems);
     }
 
     private void validateOrderTable(OrderTable orderTable) {
