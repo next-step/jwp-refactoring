@@ -1,7 +1,6 @@
 package kitchenpos.table.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -18,6 +17,8 @@ import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.exception.CanNotMakeOrderTableException;
+import kitchenpos.table.exception.CannotChangeEmptyState;
+import kitchenpos.table.exception.CannotChangeNumberOfGuests;
 import kitchenpos.table.exception.NotExistTableException;
 import kitchenpos.utils.ServiceTestHelper;
 import org.assertj.core.util.Lists;
@@ -100,8 +101,8 @@ class TableServiceTest extends ServiceTest {
         OrderTableResponse emptyTable2 = serviceTestHelper.빈테이블_생성됨();
         serviceTestHelper.테이블그룹_지정됨(emptyTable, emptyTable2);
 
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> serviceTestHelper.비어있지않은테이블로_변경(emptyTable.getId()));
+        assertThatThrownBy(() -> serviceTestHelper.비어있지않은테이블로_변경(emptyTable.getId()))
+                .isInstanceOf(CannotChangeEmptyState.class);
     }
 
     @Test
@@ -110,8 +111,8 @@ class TableServiceTest extends ServiceTest {
         OrderTableResponse table = serviceTestHelper.비어있지않은테이블_생성됨(3);
         OrderResponse order = 테이블에_임시_주문_추가(table.getId());
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> serviceTestHelper.빈테이블로_변경(table.getId()));
+        assertThatThrownBy(() -> serviceTestHelper.빈테이블로_변경(table.getId()))
+                .isInstanceOf(CannotChangeEmptyState.class);
     }
 
     @Test
@@ -131,8 +132,8 @@ class TableServiceTest extends ServiceTest {
         OrderTableResponse savedOrderTable = serviceTestHelper.비어있지않은테이블_생성됨(4);
 
         int invalidNumberOfGuests = -5;
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> serviceTestHelper.테이블_인원수_변경(savedOrderTable.getId(), invalidNumberOfGuests));
+        assertThatThrownBy(() -> serviceTestHelper.테이블_인원수_변경(savedOrderTable.getId(), invalidNumberOfGuests))
+                .isInstanceOf(CannotChangeNumberOfGuests.class);
     }
 
     @Test
@@ -140,8 +141,8 @@ class TableServiceTest extends ServiceTest {
     void 테이블_인원수_변경_빈테이블인_경우() {
         OrderTableResponse savedOrderTable = serviceTestHelper.빈테이블_생성됨();
         int updatedNumberOfGuests = 4;
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> serviceTestHelper.테이블_인원수_변경(savedOrderTable.getId(), updatedNumberOfGuests));
+        assertThatThrownBy(() -> serviceTestHelper.테이블_인원수_변경(savedOrderTable.getId(), updatedNumberOfGuests))
+                .isInstanceOf(CannotChangeNumberOfGuests.class);
     }
 
     @Test

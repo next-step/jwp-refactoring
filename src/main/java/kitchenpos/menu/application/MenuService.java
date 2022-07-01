@@ -35,10 +35,6 @@ public class MenuService {
     public MenuDto create(final MenuDto menuDto) {
         Menu menu = menuDto.toMenu();
 
-        if (!menuGroupRepository.existsById(menu.getMenuGroup().getId())) {
-            throw new IllegalArgumentException();
-        }
-
         List<Product> products = menuDto.getMenuProductDtos().stream()
                 .map(menuProductDto ->  productService.findProductById(menuProductDto.getProductId()))
                 .collect(toList());

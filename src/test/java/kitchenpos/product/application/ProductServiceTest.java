@@ -1,11 +1,12 @@
 package kitchenpos.product.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import kitchenpos.ServiceTest;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.exception.InvalidProductPriceException;
 import kitchenpos.utils.ServiceTestHelper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,8 +34,8 @@ class ProductServiceTest extends ServiceTest {
     void 상품_추가_실패() {
         String name = "상품1";
         int price = -1000;
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> serviceTestHelper.상품_생성됨(name, price));
+        assertThatThrownBy(() -> serviceTestHelper.상품_생성됨(name, price))
+                .isInstanceOf(InvalidProductPriceException.class);
     }
 
     @Test

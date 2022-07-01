@@ -1,7 +1,7 @@
 package kitchenpos.table.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import kitchenpos.ServiceTest;
@@ -17,6 +17,9 @@ import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.table.exception.CannotMakeTableGroupException;
+import kitchenpos.table.exception.CannotUngroupException;
+import kitchenpos.table.exception.NotExistTableException;
 import kitchenpos.utils.ServiceTestHelper;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
@@ -61,17 +64,16 @@ class TableGroupServiceTest extends ServiceTest {
     void 테이블그룹_지정_저장되지않은_테이블로_그룹지정을_시도하는경우() {
         OrderTableResponse newOrderTable = OrderTableFixtureFactory.createEmptyOrderTableResponse(-1L);
         OrderTableResponse newOrderTable2 = OrderTableFixtureFactory.createEmptyOrderTableResponse(-2L);
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> serviceTestHelper.테이블그룹_지정됨(newOrderTable, newOrderTable2));
+        assertThatThrownBy(() -> serviceTestHelper.테이블그룹_지정됨(newOrderTable, newOrderTable2))
+                .isInstanceOf(NotExistTableException.class);
     }
 
     @Test
     @DisplayName("2개 미만의 테이블을 그룹 지정할 경우 실패")
     void 테이블그룹_지정_테이블이_2개미만인경우() {
         int numberOfTables = 1;
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> serviceTestHelper.테이블그룹_지정됨(numberOfTables));
+        assertThatThrownBy(() -> serviceTestHelper.테이블그룹_지정됨(numberOfTables))
+                .isInstanceOf(CannotMakeTableGroupException.class);
     }
 
     @Test
@@ -79,9 +81,8 @@ class TableGroupServiceTest extends ServiceTest {
     void 테이블그룹_지정_비어있지않은_테이블이_포함된_경우() {
         OrderTableResponse emptyTable = serviceTestHelper.빈테이블_생성됨();
         OrderTableResponse notEmptyTable = serviceTestHelper.비어있지않은테이블_생성됨(3);
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> serviceTestHelper.테이블그룹_지정됨(emptyTable, notEmptyTable));
+        assertThatThrownBy(() -> serviceTestHelper.테이블그룹_지정됨(emptyTable, notEmptyTable))
+                .isInstanceOf(CannotMakeTableGroupException.class);
     }
 
     @Test
@@ -91,9 +92,8 @@ class TableGroupServiceTest extends ServiceTest {
         OrderTableResponse emptyTable2 = serviceTestHelper.빈테이블_생성됨();
         OrderTableResponse emptyTable3 = serviceTestHelper.빈테이블_생성됨();
         serviceTestHelper.테이블그룹_지정됨(emptyTable1, emptyTable2);
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> serviceTestHelper.테이블그룹_지정됨(emptyTable2, emptyTable3));
+        assertThatThrownBy(() -> serviceTestHelper.테이블그룹_지정됨(emptyTable2, emptyTable3))
+                .isInstanceOf(CannotMakeTableGroupException.class);
     }
 
     @Test
@@ -133,9 +133,8 @@ class TableGroupServiceTest extends ServiceTest {
         OrderTableResponse table2 = serviceTestHelper.빈테이블_생성됨();
         TableGroupResponse tableGroup = serviceTestHelper.테이블그룹_지정됨(table1, table2);
         주문생성됨(table1);
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()));
+        assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))
+                .isInstanceOf(CannotUngroupException.class);
     }
 
     private OrderResponse 주문생성됨(OrderTableResponse orderTable){

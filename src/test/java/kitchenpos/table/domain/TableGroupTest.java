@@ -2,9 +2,10 @@ package kitchenpos.table.domain;
 
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
+import kitchenpos.table.exception.CannotMakeTableGroupException;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -35,19 +36,18 @@ class TableGroupTest {
     void 테이블그룹_지정_테이블이_2개미만인경우() {
         int numberOfGuests = 0;
         OrderTable emptyTable = new OrderTable(numberOfGuests,true);
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> new TableGroup(Lists.newArrayList(emptyTable)));
+        assertThatThrownBy(() -> new TableGroup(Lists.newArrayList(emptyTable))).isInstanceOf(
+                CannotMakeTableGroupException.class);
     }
 
     @Test
     @DisplayName("비어있지않은 테이블이 포함된 경우 테이블 그룹 지정 실패")
     void 테이블그룹_지정_비어있지않은_테이블이_포함된_경우() {
         int numberOfGuests = 0;
-        OrderTable emptyTable = new OrderTable(numberOfGuests,true);
-        OrderTable notEmptyTable = new OrderTable(numberOfGuests,false);
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> new TableGroup(Lists.newArrayList(emptyTable,notEmptyTable)));
+        OrderTable emptyTable = new OrderTable(numberOfGuests, true);
+        OrderTable notEmptyTable = new OrderTable(numberOfGuests, false);
+        assertThatThrownBy(() -> new TableGroup(Lists.newArrayList(emptyTable, notEmptyTable)))
+                .isInstanceOf(CannotMakeTableGroupException.class);
     }
 
     @Test

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import kitchenpos.product.exception.InvalidProductPriceException;
 
 @Embeddable
 public class ProductPrice {
@@ -23,7 +24,7 @@ public class ProductPrice {
 
     public ProductPrice(BigDecimal price) {
         if(Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0){
-            throw new IllegalArgumentException("상품의 가격이 유효하지 않습니다.");
+            throw new InvalidProductPriceException();
         }
         this.price = price;
     }

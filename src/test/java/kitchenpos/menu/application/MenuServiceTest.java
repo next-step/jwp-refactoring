@@ -2,7 +2,6 @@ package kitchenpos.menu.application;
 
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -13,6 +12,7 @@ import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuDto;
 import kitchenpos.menu.dto.MenuProductDto;
+import kitchenpos.menu.exception.InvalidMenuPriceException;
 import kitchenpos.menu.exception.NotExistMenuException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.utils.ServiceTestHelper;
@@ -21,7 +21,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.dao.DataIntegrityViolationException;
 
 class MenuServiceTest extends ServiceTest {
     @Autowired
@@ -67,8 +67,8 @@ class MenuServiceTest extends ServiceTest {
         MenuGroup notSavedMenuGroup = new MenuGroup("메뉴그룹1");
         String menuName = "메뉴1";
         int menuPrice = 5000;
-        assertThatThrownBy(()-> 테스트_메뉴_생성(notSavedMenuGroup, menuName, menuPrice)).isInstanceOf(
-                InvalidDataAccessApiUsageException.class);
+        assertThatThrownBy(() -> 테스트_메뉴_생성(notSavedMenuGroup, menuName, menuPrice))
+                .isInstanceOf(DataIntegrityViolationException.class);
     }
 
     @Test
@@ -76,8 +76,8 @@ class MenuServiceTest extends ServiceTest {
     void 메뉴그룹에_메뉴추가_가격이_음수인경우() {
         String menuName = "메뉴1";
         int menuPrice = -1 * 1000;
-
-        assertThatIllegalArgumentException().isThrownBy(() -> 테스트_메뉴_생성(menuGroup, menuName, menuPrice));
+        assertThatThrownBy(() -> 테스트_메뉴_생성(menuGroup, menuName, menuPrice))
+                .isInstanceOf(InvalidMenuPriceException.class);
     }
 
     @Test
@@ -85,7 +85,8 @@ class MenuServiceTest extends ServiceTest {
     void 메뉴그룹에_메뉴추가_가격이_상품가격의_합보다_큰경우() {
         String menuName = "메뉴1";
         int menuPrice = 10000;
-        assertThatIllegalArgumentException().isThrownBy(() -> 테스트_메뉴_생성(menuGroup, menuName, menuPrice));
+        assertThatThrownBy(() -> 테스트_메뉴_생성(menuGroup, menuName, menuPrice))
+                .isInstanceOf(InvalidMenuPriceException.class);
     }
 
     @Test

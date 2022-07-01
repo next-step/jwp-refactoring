@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import kitchenpos.table.exception.CannotMakeTableGroupException;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.CollectionUtils;
@@ -27,13 +28,16 @@ public class TableGroup {
     @OneToMany(mappedBy = "tableGroup", cascade = {CascadeType.MERGE})
     private List<OrderTable> orderTables = new ArrayList<>();
 
-    TableGroup(){
+    protected TableGroup() {
 
     }
 
     public TableGroup(List<OrderTable> savedOrderTables) {
-        if (CollectionUtils.isEmpty(savedOrderTables) || savedOrderTables.size() < 2) {
-            throw new IllegalArgumentException();
+        if (CollectionUtils.isEmpty(savedOrderTables)) {
+            throw new CannotMakeTableGroupException("there is no saved table");
+        }
+        if (savedOrderTables.size() < 2) {
+            throw new CannotMakeTableGroupException("number of tables in table group should larger than 1");
         }
         this.orderTables.addAll(savedOrderTables);
         this.orderTables.forEach(orderTable -> orderTable.includeTo(this));

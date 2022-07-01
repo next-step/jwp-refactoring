@@ -12,6 +12,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import kitchenpos.menu.exception.InvalidMenuPriceException;
+import kitchenpos.menu.exception.NotExistMenuProductException;
 import kitchenpos.product.domain.Product;
 
 @Entity
@@ -32,7 +34,7 @@ public class Menu {
     @OneToMany(mappedBy = "menu", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private final List<MenuProduct> menuProducts = new ArrayList<>();
 
-    Menu() {
+    protected Menu() {
     }
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup,
@@ -47,7 +49,7 @@ public class Menu {
 
     private void checkPrice(BigDecimal price){
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
+            throw new InvalidMenuPriceException();
         }
     }
 
@@ -60,7 +62,7 @@ public class Menu {
         }
 
         if (price.compareTo(sum) > 0) {
-            throw new IllegalArgumentException();
+            throw new InvalidMenuPriceException();
         }
     }
 
@@ -68,7 +70,7 @@ public class Menu {
         return menuProducts.stream()
                 .filter(menuProduct -> menuProduct.getProductId().equals(id))
                 .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(NotExistMenuProductException::new);
     }
 
     public Long getId() {
@@ -90,6 +92,4 @@ public class Menu {
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
     }
-
-
 }

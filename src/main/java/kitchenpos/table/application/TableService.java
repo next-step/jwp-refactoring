@@ -11,6 +11,7 @@ import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.exception.CanNotMakeOrderTableException;
+import kitchenpos.table.exception.CannotChangeEmptyState;
 import kitchenpos.table.exception.NotExistTableException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,7 +53,7 @@ public class TableService {
         final OrderTable savedOrderTable = findOrderTableById(orderTableId);
         if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
                 orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
+            throw new CannotChangeEmptyState("not completed order exist");
         }
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
 

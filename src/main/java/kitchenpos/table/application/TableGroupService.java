@@ -11,6 +11,9 @@ import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.table.exception.CannotUngroupException;
+import kitchenpos.table.exception.NotExistTableException;
+import kitchenpos.table.exception.NotExistTableGroupException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,18 +36,19 @@ public class TableGroupService {
         final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
 
         if (orderTableIds.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
+            throw new NotExistTableException();
         }
         return TableGroupResponse.of(tableGroupRepository.save(new TableGroup(savedOrderTables)));
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        TableGroup tableGroup = tableGroupRepository.findById(tableGroupId).orElseThrow(IllegalArgumentException::new);
+        TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
+                .orElseThrow(NotExistTableGroupException::new);
         final List<Long> orderTableIds = extractTableIds(tableGroup);
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
+            throw new CannotUngroupException();
         }
         tableGroup.ungroup();
     }
