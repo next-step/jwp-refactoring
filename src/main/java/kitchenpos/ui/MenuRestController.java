@@ -21,10 +21,6 @@ public class MenuRestController {
 
     @PostMapping("/api/menus")
     public ResponseEntity<MenuResponse> create(@RequestBody final MenuRequest request) {
-        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@");
-        System.out.println(request.getMenuGroupId());
-        System.out.println(request.getMenuProducts());
-        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@");
         final MenuResponse created = menuService.create(request);
         final URI uri = URI.create("/api/menus/" + created.getId());
         return ResponseEntity.created(uri)
