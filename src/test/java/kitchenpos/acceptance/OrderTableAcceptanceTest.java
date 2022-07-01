@@ -53,7 +53,7 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
         MenuProduct menuProduct = new MenuProduct();
         menuProduct.setProductId(후라이드.getId());
         menuProduct.setQuantity(1);
-        후라이드메뉴 = 메뉴_등록_요청(후라이드.getName(), 후라이드.getPrice(), 두마리메뉴.getId(), Arrays.asList(menuProduct)).as(Menu.class);
+        후라이드메뉴 = 메뉴_등록_요청(후라이드.getName(), 후라이드.getPrice().getPrice(), 두마리메뉴.getId(), Arrays.asList(menuProduct)).as(Menu.class);
 
         //주문
         주문항목 = new OrderLineItem();

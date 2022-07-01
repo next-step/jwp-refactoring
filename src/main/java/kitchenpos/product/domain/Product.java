@@ -1,5 +1,7 @@
 package kitchenpos.product.domain;
 
+import kitchenpos.product.dto.ProductRequest;
+
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -15,8 +17,21 @@ public class Product {
     private Long id;
     @Column
     private String name;
-    @Column
-    private BigDecimal price;
+    @Embedded
+    private Price price;
+
+    public Product() {
+    }
+
+    public Product(String name, Price price) {
+        this.name = name;
+        this.price = price;
+    }
+
+    public Product(ProductRequest productRequest) {
+        this.name = productRequest.getName();
+        this.price = Price.from(productRequest.getPrice());
+    }
 
     public Long getId() {
         return id;
@@ -34,11 +49,14 @@ public class Product {
         this.name = name;
     }
 
-    public BigDecimal getPrice() {
+    public Price getPrice() {
         return price;
+    }
+    public Integer getPriceValue(){
+        return price.getPriceValue();
     }
 
     public void setPrice(final BigDecimal price) {
-        this.price = price;
+        this.price = Price.from(price);
     }
 }

@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -16,9 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 public class ProductAcceptanceFactory {
 
     public static ExtractableResponse<Response> 상품_등록_요청(String name, int price) {
-        Product product = new Product();
-        product.setName(name);
-        product.setPrice(BigDecimal.valueOf(price));
+        ProductRequest product = ProductRequest.from(name,price);
 
         return RestAssured
                 .given().log().all()

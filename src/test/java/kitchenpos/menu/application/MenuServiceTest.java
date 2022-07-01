@@ -55,7 +55,7 @@ class MenuServiceTest {
         지코바치킨 = 상품생성(1L, "지코바치킨", BigDecimal.valueOf(20000));
         메뉴그룹 = 메뉴그룹생성(1L, "메뉴그룹");
         메뉴상품 = 메뉴상품생성(1L, 지코바치킨.getId(), 1L);
-        오늘의메뉴 = 메뉴생성(1L, "오늘의메뉴", 지코바치킨.getPrice(), 메뉴그룹.getId(), Arrays.asList(메뉴상품));
+        오늘의메뉴 = 메뉴생성(1L, "오늘의메뉴", 지코바치킨.getPrice().getPrice(), 메뉴그룹.getId(), Arrays.asList(메뉴상품));
     }
 
     @Test

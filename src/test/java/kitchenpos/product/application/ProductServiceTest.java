@@ -1,8 +1,9 @@
 package kitchenpos.product.application;
 
-import kitchenpos.product.dao.ProductDao;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,8 +17,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @DisplayName("상품서비스 테스트")
@@ -41,25 +42,15 @@ class ProductServiceTest {
 
     @Test
     void 상품을_등록할_수_있다() {
-        given(productRepository.save(지코바치킨)).willReturn(지코바치킨);
+        given(productRepository.save(any())).willReturn(지코바치킨);
 
-        Product createdProduct = productService.create(지코바치킨);
+        ProductResponse productResponse = productService.create(ProductRequest.from(지코바치킨));
 
         assertAll(
-                () -> assertThat(createdProduct.getName()).isEqualTo(지코바치킨.getName()),
-                () -> assertThat(createdProduct.getPrice()).isEqualTo(지코바치킨.getPrice()),
-                () -> assertThat(createdProduct).isNotNull()
+                () -> assertThat(productResponse.getName()).isEqualTo(지코바치킨.getName()),
+                () -> assertThat(productResponse.getPrice()).isEqualTo(지코바치킨.getPriceValue()),
+                () -> assertThat(productResponse).isNotNull()
         );
-    }
-
-    @Test
-    void 가격이_0보다작은_상품을_등록할_수_없다() {
-        Product 음수가격의_상품 = new Product();
-        음수가격의_상품.setPrice(BigDecimal.valueOf(-1000));
-        음수가격의_상품.setName("음수 상품");
-
-        assertThatThrownBy(() -> productService.create(음수가격의_상품))
-                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
