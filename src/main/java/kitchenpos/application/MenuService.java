@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class MenuService {
     private final MenuRepository menuRepository;
 
@@ -27,7 +28,6 @@ public class MenuService {
         this.productService = productService;
     }
 
-    @Transactional
     public MenuResponse create(final MenuRequest request) {
         validateRequest(request);
 
@@ -75,6 +75,7 @@ public class MenuService {
         return menu.getMenuProducts();
     }
 
+    @Transactional(readOnly = true)
     public List<MenuResponse> list() {
         final List<Menu> menus = menuRepository.findAll();
         return menus
@@ -83,6 +84,7 @@ public class MenuService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public boolean existsById(final Long id) {
         return menuRepository.existsById(id);
     }
