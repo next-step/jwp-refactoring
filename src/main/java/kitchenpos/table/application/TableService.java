@@ -4,9 +4,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import kitchenpos.order.dao.OrderDao;
-import kitchenpos.order.dao.OrderTableRepository;
+import kitchenpos.table.dao.OrderTableRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

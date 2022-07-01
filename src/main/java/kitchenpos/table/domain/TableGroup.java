@@ -8,7 +8,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import kitchenpos.common.BaseEntity;
-import kitchenpos.order.domain.OrderTable;
 
 @Entity
 public class TableGroup extends BaseEntity {
