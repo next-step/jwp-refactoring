@@ -13,6 +13,8 @@ public class ProductCreateRequest {
         return new Product(name, new Price(price));
     }
 
+    protected ProductCreateRequest() {}
+
     public ProductCreateRequest(String name, BigDecimal price) {
         this.name = name;
         this.price = price;
