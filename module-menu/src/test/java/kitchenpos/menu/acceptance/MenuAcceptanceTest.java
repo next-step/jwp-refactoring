@@ -16,7 +16,6 @@ import java.util.Arrays;
 import kitchenpos.menu.acceptance.utils.AcceptanceTest;
 import kitchenpos.menu.dto.request.MenuProductRequest;
 import kitchenpos.menu.dto.request.MenuRequest;
-import kitchenpos.menu.dto.response.MenuResponse;
 import kitchenpos.menu.dto.request.MenuGroupRequest;
 import kitchenpos.menu.dto.response.MenuGroupResponse;
 import kitchenpos.product.dto.response.ProductResponse;
@@ -56,13 +55,6 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
         // then
         메뉴목록_정상_조회됨(getResponse, 1);
-    }
-
-    public static MenuResponse 치킨세트_메뉴_등록함() {
-        MenuRequest 치킨_메뉴 = 치킨세트_메뉴_가져오기();
-        ExtractableResponse<Response> response = 메뉴등록을_요청(치킨_메뉴);
-
-        return response.as(MenuResponse.class);
     }
 
     public static MenuRequest 치킨세트_메뉴_가져오기() {

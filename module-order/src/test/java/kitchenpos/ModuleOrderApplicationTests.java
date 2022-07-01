@@ -1,10 +1,10 @@
-package kitchenpos.core;
+package kitchenpos;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-class ModuleCoreApplicationTests {
+public class ModuleOrderApplicationTests {
     @Test
     void contextLoads() {
     }

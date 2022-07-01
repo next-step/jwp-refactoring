@@ -18,6 +18,6 @@ public class MenuValidatorGroup {
     }
 
     public void validate(MenuRequest menuRequest) {
-        menuValidators.forEach(it -> it.execute(menuRequest));
+        menuValidators.forEach(it -> it.validate(menuRequest));
     }
 }

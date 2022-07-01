@@ -26,7 +26,7 @@ public class MenuCreationValidator implements MenuValidator {
     }
 
     @Override
-    public void execute(MenuRequest menuRequest) {
+    public void validate(MenuRequest menuRequest) {
         validateExistMenuGroup(menuRequest.getMenuGroupId());
         validateRegisteredProducts(menuRequest.getMenuProductRequests());
         validateMenuProducts(menuRequest.getMenuProductRequests());

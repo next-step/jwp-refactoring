@@ -21,7 +21,7 @@ public class MenuPriceValidator implements MenuValidator {
     }
 
     @Override
-    public void execute(MenuRequest menuRequest) {
+    public void validate(MenuRequest menuRequest) {
         validatePriceOverMenuPrice(menuRequest.getMenuProductRequests(), new Price(menuRequest.getPrice()));
     }
 

@@ -8,7 +8,4 @@ jar {
 
 dependencies {
     testImplementation project(':module-order')
-
-    testImplementation 'org.springframework.boot:spring-boot-starter-web'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
