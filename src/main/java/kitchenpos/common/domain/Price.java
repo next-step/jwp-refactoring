@@ -5,7 +5,7 @@ import javax.persistence.Embeddable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import static kitchenpos.common.Messages.PRICE_CANNOT_ZERO;
+import static kitchenpos.common.Messages.PRICE_CANNOT_ZERO_LESS_THAN;
 
 @Embeddable
 public class Price {
@@ -27,7 +27,7 @@ public class Price {
 
     private void validatePrice(BigDecimal price) {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException(PRICE_CANNOT_ZERO);
+            throw new IllegalArgumentException(PRICE_CANNOT_ZERO_LESS_THAN);
         }
     }
 

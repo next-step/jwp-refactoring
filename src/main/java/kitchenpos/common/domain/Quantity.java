@@ -3,7 +3,7 @@ package kitchenpos.common.domain;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import static kitchenpos.common.Messages.QUANTITY_CANNOT_EMPTY;
+import static kitchenpos.common.Messages.QUANTITY_CANNOT_ZERO_LESS_THAN;
 
 @Embeddable
 public class Quantity {
@@ -25,7 +25,7 @@ public class Quantity {
 
     private void validateQuantity(long quantity) {
         if (quantity < 0) {
-            throw new IllegalArgumentException(QUANTITY_CANNOT_EMPTY);
+            throw new IllegalArgumentException(QUANTITY_CANNOT_ZERO_LESS_THAN);
         }
     }
 
