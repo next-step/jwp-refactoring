@@ -45,7 +45,7 @@ class OrderLineItemsTest {
         ));
     }
 
-    private OrderLineItems createDuplicateOrderLineItems() {
+    public static OrderLineItems createDuplicateOrderLineItems() {
         return new OrderLineItems(Arrays.asList(
                 new OrderLineItem(1L, 2),
                 new OrderLineItem(1L, 2)

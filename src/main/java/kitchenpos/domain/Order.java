@@ -1,15 +1,25 @@
 package kitchenpos.domain;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+@Entity
+@Table(name = "orders")
 public class Order {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long orderTableId;
     private String orderStatus;
     private LocalDateTime orderedTime;
-    private List<OrderLineItem> orderLineItems;
+
+    @Embedded
+    private OrderLineItems orderLineItems = new OrderLineItems();
+
+    protected Order() {
+    }
 
     public Order(String orderStatus) {
         this.orderStatus = orderStatus;
@@ -17,7 +27,7 @@ public class Order {
 
     public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
         this.orderTableId = orderTableId;
-        this.orderLineItems = orderLineItems;
+        this.orderLineItems = new OrderLineItems(orderLineItems);
     }
 
     public Order(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime) {
@@ -56,11 +66,15 @@ public class Order {
     }
 
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
+        return orderLineItems.elements();
     }
 
     public void changeOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
+        this.orderLineItems = new OrderLineItems(orderLineItems);
+    }
+
+    public void validateDuplicateMenu(long menuCount) {
+        orderLineItems.validateDuplicateMenu(menuCount);
     }
 
     @Override
