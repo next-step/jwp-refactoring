@@ -1,6 +1,7 @@
 package kitchenpos.order.dto;
 
 import java.util.Objects;
+import kitchenpos.order.domain.OrderStatus;
 
 public class ChangeOrderStatusRequest {
 
@@ -20,8 +21,8 @@ public class ChangeOrderStatusRequest {
         return orderTableId;
     }
 
-    public String getOrderStatus() {
-        return orderStatus;
+    public OrderStatus getOrderStatus() {
+        return OrderStatus.valueOf(orderStatus);
     }
 
     @Override
