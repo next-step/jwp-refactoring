@@ -16,10 +16,11 @@ import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static kitchenpos.acceptance.MenuGroupAcceptanceTest.메뉴_그룹_등록_요청;
-import static kitchenpos.acceptance.ProductAcceptanceTest.상품_등록_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("메뉴 관련 기능")
@@ -106,6 +107,19 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
         // then
         메뉴_조회됨(response);
+    }
+
+    public static ExtractableResponse<Response> 상품_등록_요청(String name, BigDecimal price) {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", name);
+        params.put("price", price.toString());
+
+        return RestAssured
+                .given().log().all()
+                .body(params)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/api/products")
+                .then().log().all().extract();
     }
 
     public static ExtractableResponse<Response> 메뉴_등록_요청(String name, Integer price, Long menuGroupId, List<MenuProductRequest> menuProducts) {

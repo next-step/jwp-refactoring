@@ -9,6 +9,7 @@ import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.assertj.core.util.Lists;
@@ -27,7 +28,6 @@ import java.util.Optional;
 import static kitchenpos.menu.application.MenuGroupServiceTest.메뉴_그룹_등록;
 import static kitchenpos.menu.application.MenuServiceTest.메뉴_등록;
 import static kitchenpos.menu.application.MenuServiceTest.메뉴_상품_등록;
-import static kitchenpos.product.application.ProductServiceTest.상품_등록;
 import static kitchenpos.table.application.TableServiceTest.테이블_등록;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -171,6 +171,10 @@ public class OrderServiceTest {
         // when-then
         assertThat(orderService.changeOrderStatus(order.getId(), OrderStatusRequest.of(OrderStatus.MEAL)).getOrderStatus())
                 .isEqualTo(OrderStatus.MEAL);
+    }
+
+    public static Product 상품_등록(Long id, String name, Integer price) {
+        return Product.of(name, price);
     }
 
     private OrderLineItem 주문_항목_등록(Long seq, Long menuId, long quantity) {

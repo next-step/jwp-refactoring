@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static kitchenpos.menu.application.MenuGroupServiceTest.메뉴_그룹_등록;
-import static kitchenpos.product.application.ProductServiceTest.상품_등록;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -76,6 +75,10 @@ public class MenuServiceTest {
 
         // when-then
         assertThatThrownBy(() -> menuService.create(menuRequest)).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    public static Product 상품_등록(Long id, String name, Integer price) {
+        return Product.of(name, price);
     }
 
     public static Menu 메뉴_등록(Long id, String name, Integer price, Long menuGroupId, List<MenuProduct> menuProducts) {

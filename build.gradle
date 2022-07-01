@@ -2,7 +2,6 @@ plugins {
     id 'org.springframework.boot' version '2.4.1' apply false
     id 'io.spring.dependency-management' version '1.0.10.RELEASE' apply false
     id 'java'
-    id 'checkstyle'
 }
 
 repositories {
@@ -26,55 +25,35 @@ subprojects {
     dependencies {
         implementation 'org.springframework.boot:spring-boot-starter-actuator'
         implementation 'org.springframework.boot:spring-boot-starter-web'
-
         implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
         runtimeOnly 'com.h2database:h2'
 
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
-//        testImplementation project(':test-module')
     }
 
     test {
         useJUnitPlatform()
     }
 
-    checkstyle {
-        maxWarnings = 0
-        configFile = file("${rootDir}/checkstyle-rules.xml")
-        configProperties = ["suppressionFile" : "${rootDir}/checkstyle-suppressions.xml"]
-        toolVersion ="8.24"
-    }
+//    checkstyle {
+//        maxWarnings = 0
+//        configFile = file("${rootDir}/checkstyle-rules.xml")
+//        configProperties = ["suppressionFile": "${rootDir}/checkstyle-suppressions.xml"]
+//        toolVersion = "8.24"
+//    }
 }
 
-//project(':main-module') {
-//    dependencies {
-//        implementation project(':menu-module')
-//        implementation project(':order-module')
-//        implementation project(':product-module')
-//        implementation project(':table-module')
-//    }
-//}
 
-//project(':menu-module') {
-//    dependencies {
-//        implementation project(':product-module')
-//    }
-//}
-//
-//project(':order-module') {
-//    dependencies {
-//        implementation project(':menu-module')
-//        implementation project(':table-module')
-//        testImplementation project(':product-module')
-//    }
-//}
-//
-//project(':table-module') {
-//    dependencies {
-//        testImplementation project(':menu-module')
-//        testImplementation project(':product-module')
-//        testImplementation project(':order-module')
-//    }
-//}
+// 각 프로젝트에서만 사용하는 의존성 추가
+project(':module-main') {
+
+    // core 에서는 bootjar로 패키징 할 필요가 없으므로 추가
+    bootJar.enabled = false
+    jar.enabled = true
+
+    dependencies {
+        implementation project(':module-product')
+    }
+}
 
 jar { enabled = false }
