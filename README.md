@@ -93,6 +93,13 @@
     - MenuProduct -> Product id 참조 변경
     - OrderTable -> TableGroup id 참조 변경
 
+- 4단계 (멀티 모듈 적용)
+  - kitchenpos-menu
+  - kitchenpos-order
+  - kitchenpos-product
+  - kitchenpos-table
+  - kitchenpos-tablegroup
+
 
 ## 용어 사전
 
