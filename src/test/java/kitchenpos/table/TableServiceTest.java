@@ -70,13 +70,10 @@ class TableServiceTest {
         given(orderTableRepository.findAll()).willReturn(Collections.singletonList(주문테이블));
 
         // when
-        List<OrderTable> actual = tableService.list();
+        List<OrderTableResponse> actual = tableService.list();
 
         // then
-        assertAll(
-                () -> assertThat(actual).hasSize(1),
-                () -> assertThat(actual).containsExactly(주문테이블)
-        );
+        assertThat(actual).hasSize(1);
     }
 
     @Test
