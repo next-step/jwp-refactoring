@@ -55,6 +55,9 @@ public class Product {
     public Integer getPriceValue(){
         return price.getPriceValue();
     }
+    public BigDecimal getPriceBigDecimal(){
+        return price.getValue();
+    }
 
     public void setPrice(final BigDecimal price) {
         this.price = Price.from(price);

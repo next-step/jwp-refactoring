@@ -9,14 +9,14 @@ import java.util.Objects;
 public class Price {
     private static final Integer MIN = 0;
     @Column(name = "price")
-    private BigDecimal price;
+    private BigDecimal value;
 
     protected Price() {
     }
 
     protected Price(BigDecimal price) {
         validate(price);
-        this.price = price;
+        this.value = price;
     }
 
     public static Price from(Integer price) {
@@ -33,12 +33,12 @@ public class Price {
         }
     }
 
-    public BigDecimal getPrice() {
-        return price;
+    public BigDecimal getValue() {
+        return value;
     }
 
     public Integer getPriceValue() {
-        return price.intValue();
+        return value.intValue();
     }
 
 }

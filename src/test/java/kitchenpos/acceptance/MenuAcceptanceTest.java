@@ -40,7 +40,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         menuProduct.setProductId(product.getId());
         menuProduct.setQuantity(1);
 
-        ExtractableResponse<Response> 메뉴_등록_결과 = 메뉴_등록_요청(product.getName(), product.getPrice().getPrice(), menuGroup.getId(), Arrays.asList(menuProduct));
+        ExtractableResponse<Response> 메뉴_등록_결과 = 메뉴_등록_요청(product.getName(), product.getPriceBigDecimal(), menuGroup.getId(), Arrays.asList(menuProduct));
 
         메뉴_등록_성공(메뉴_등록_결과);
     }
@@ -64,7 +64,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         menuProduct.setProductId(product.getId());
         menuProduct.setQuantity(1);
 
-        ExtractableResponse<Response> 메뉴_등록_결과 = 메뉴_등록_요청(product.getName(), product.getPrice().getPrice(), null, Arrays.asList(menuProduct));
+        ExtractableResponse<Response> 메뉴_등록_결과 = 메뉴_등록_요청(product.getName(), product.getPriceBigDecimal(), null, Arrays.asList(menuProduct));
 
         메뉴_등록_실패(메뉴_등록_결과);
     }
@@ -76,7 +76,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         menuProduct.setProductId(999L);
         menuProduct.setQuantity(1);
 
-        ExtractableResponse<Response> 메뉴_등록_결과 = 메뉴_등록_요청(product.getName(), product.getPrice().getPrice(), menuGroup.getId(), Arrays.asList(menuProduct));
+        ExtractableResponse<Response> 메뉴_등록_결과 = 메뉴_등록_요청(product.getName(), product.getPriceBigDecimal(), menuGroup.getId(), Arrays.asList(menuProduct));
 
         메뉴_등록_실패(메뉴_등록_결과);
     }
