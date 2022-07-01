@@ -35,7 +35,8 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        Order order = Order.of(orderValidator, orderRequest);
+        orderValidator.creatingValidate(orderRequest);
+        Order order = orderRequest.toEntity();
         order.registerOrderLineItems(toOrderLineItems(orderRequest));
         order = orderRepository.save(order);
 
