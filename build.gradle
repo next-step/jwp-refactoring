@@ -45,6 +45,8 @@ dependencies {
 
     implementation project(':module-product')
     implementation project(':module-menugroup')
+    implementation project(':module-menu')
+    implementation project(':module-order')
 }
 
 project(':module-tablegroup') {
@@ -69,5 +71,13 @@ project(':module-product') {
 project(':module-menugroup') {
     dependencies {
         implementation project(':module-core')
+    }
+}
+
+project(':module-menu') {
+    dependencies {
+        implementation project(':module-core')
+        implementation project(':module-product')
+        implementation project(':module-menugroup')
     }
 }
