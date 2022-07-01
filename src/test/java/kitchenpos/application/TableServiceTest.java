@@ -1,8 +1,8 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,9 +24,9 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
     @InjectMocks
     private TableService tableService;
 
@@ -36,7 +36,7 @@ class TableServiceTest {
         // given
         OrderTable orderTable = 주문_태이블_생성(null, 0, true);
 
-        when(orderTableDao.save(orderTable))
+        when(orderTableRepository.save(orderTable))
                 .thenReturn(주문_태이블_생성(1L, null, orderTable.getNumberOfGuests(), orderTable.isEmpty()));
 
         // when
@@ -58,7 +58,7 @@ class TableServiceTest {
         OrderTable orderTable2 = 주문_태이블_생성(2L, null, 0, true);
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
 
-        when(orderTableDao.findAll()).thenReturn(orderTables);
+        when(orderTableRepository.findAll()).thenReturn(orderTables);
 
         // when
         List<OrderTable> list = tableService.list();
@@ -74,9 +74,9 @@ class TableServiceTest {
         Long savedOrderId = 1L;
         OrderTable orderTable = 주문_태이블_생성(null, 0, true);
         OrderTable savedOrderTable = 주문_태이블_생성(savedOrderId, null, 0, false);
-        when(orderTableDao.findById(savedOrderId)).thenReturn(Optional.of(savedOrderTable));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(false);
-        when(orderTableDao.save(savedOrderTable)).thenReturn(savedOrderTable);
+        when(orderTableRepository.findById(savedOrderId)).thenReturn(Optional.of(savedOrderTable));
+        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(false);
+        when(orderTableRepository.save(savedOrderTable)).thenReturn(savedOrderTable);
 
         // when
         savedOrderTable = tableService.changeEmpty(savedOrderId, orderTable);
@@ -92,7 +92,7 @@ class TableServiceTest {
         Long savedOrderId = 1L;
         OrderTable orderTable = 주문_태이블_생성(null, 0, true);
         OrderTable savedOrderTable = 주문_태이블_생성(savedOrderId, 1L, 0, false);
-        when(orderTableDao.findById(savedOrderId)).thenReturn(Optional.of(savedOrderTable));
+        when(orderTableRepository.findById(savedOrderId)).thenReturn(Optional.of(savedOrderTable));
 
         // when, then
         assertThatThrownBy(() -> tableService.changeEmpty(savedOrderId, orderTable))
@@ -106,8 +106,8 @@ class TableServiceTest {
         Long savedOrderId = 1L;
         OrderTable orderTable = 주문_태이블_생성(null, 0, true);
         OrderTable savedOrderTable = 주문_태이블_생성(savedOrderId, null, 0, false);
-        when(orderTableDao.findById(savedOrderId)).thenReturn(Optional.of(savedOrderTable));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(true);
+        when(orderTableRepository.findById(savedOrderId)).thenReturn(Optional.of(savedOrderTable));
+        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(true);
 
         // when, then
         assertThatThrownBy(() -> tableService.changeEmpty(savedOrderId, orderTable))
@@ -123,8 +123,8 @@ class TableServiceTest {
         OrderTable orderTable = 주문_태이블_생성(null, numberOfGuests, true);
         OrderTable savedOrderTable = 주문_태이블_생성(savedOrderTableId, null, 0, false);
 
-        when(orderTableDao.findById(savedOrderTableId)).thenReturn(Optional.of(savedOrderTable));
-        when(orderTableDao.save(savedOrderTable)).thenReturn(savedOrderTable);
+        when(orderTableRepository.findById(savedOrderTableId)).thenReturn(Optional.of(savedOrderTable));
+        when(orderTableRepository.save(savedOrderTable)).thenReturn(savedOrderTable);
 
         // when
         savedOrderTable = tableService.changeNumberOfGuests(savedOrderTableId, orderTable);
@@ -155,8 +155,8 @@ class TableServiceTest {
         OrderTable orderTable = 주문_태이블_생성(null, numberOfGuests, true);
         OrderTable savedOrderTable = 주문_태이블_생성(savedOrderTableId, null, 0, true);
 
-        when(orderTableDao.findById(savedOrderTableId)).thenReturn(Optional.of(savedOrderTable));
-        
+        when(orderTableRepository.findById(savedOrderTableId)).thenReturn(Optional.of(savedOrderTable));
+
         // when, then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(savedOrderTableId, orderTable))
                 .isInstanceOf(IllegalArgumentException.class);

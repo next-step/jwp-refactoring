@@ -1,6 +1,6 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.dao.OrderTableRepository;
 import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
@@ -30,7 +30,7 @@ class TableGroupServiceTest {
     @Mock
     private OrderRepository orderRepository;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
     @Mock
     private TableGroupRepository tableGroupRepository;
     @InjectMocks
@@ -44,7 +44,7 @@ class TableGroupServiceTest {
         OrderTable orderTable2 = 주문_태이블_생성(2L, null, 1, true);
         TableGroup tableGroup = 단체_지정_생성(null, Arrays.asList(orderTable1, orderTable2));
 
-        when(orderTableDao.findAllByIdIn(any())).thenReturn(Arrays.asList(orderTable1, orderTable2));
+        when(orderTableRepository.findAllByIdIn(any())).thenReturn(Arrays.asList(orderTable1, orderTable2));
         when(tableGroupRepository.save(tableGroup)).thenReturn(
                 단체_지정_생성(1L, LocalDateTime.now(), Arrays.asList(orderTable1, orderTable2))
         );
@@ -80,7 +80,7 @@ class TableGroupServiceTest {
         OrderTable orderTable2 = 주문_태이블_생성(2L, null, 1, true);
         TableGroup tableGroup = 단체_지정_생성(null, Arrays.asList(orderTable1, orderTable2));
 
-        when(orderTableDao.findAllByIdIn(any())).thenReturn(Collections.singletonList(orderTable1));
+        when(orderTableRepository.findAllByIdIn(any())).thenReturn(Collections.singletonList(orderTable1));
 
         // when, then
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
@@ -95,7 +95,7 @@ class TableGroupServiceTest {
         OrderTable orderTable2 = 주문_태이블_생성(2L, null, 1, false);
         TableGroup tableGroup = 단체_지정_생성(null, Arrays.asList(orderTable1, orderTable2));
 
-        when(orderTableDao.findAllByIdIn(any())).thenReturn(Arrays.asList(orderTable1, orderTable2));
+        when(orderTableRepository.findAllByIdIn(any())).thenReturn(Arrays.asList(orderTable1, orderTable2));
 
         // when, then
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
@@ -110,7 +110,7 @@ class TableGroupServiceTest {
         OrderTable orderTable2 = 주문_태이블_생성(2L, 2L, 1, false);
         TableGroup tableGroup = 단체_지정_생성(null, Arrays.asList(orderTable1, orderTable2));
 
-        when(orderTableDao.findAllByIdIn(any())).thenReturn(Arrays.asList(orderTable1, orderTable2));
+        when(orderTableRepository.findAllByIdIn(any())).thenReturn(Arrays.asList(orderTable1, orderTable2));
 
         // when, then
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
@@ -126,7 +126,7 @@ class TableGroupServiceTest {
         OrderTable orderTable2 = 주문_태이블_생성(2L, tableGroupId, 1, false);
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
 
-        when(orderTableDao.findAllByTableGroupId(tableGroupId)).thenReturn(orderTables);
+        when(orderTableRepository.findAllByTableGroupId(tableGroupId)).thenReturn(orderTables);
         when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(false);
 
         // when, then
@@ -141,7 +141,7 @@ class TableGroupServiceTest {
         OrderTable orderTable2 = 주문_태이블_생성(2L, tableGroupId, 1, false);
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
 
-        when(orderTableDao.findAllByTableGroupId(tableGroupId)).thenReturn(orderTables);
+        when(orderTableRepository.findAllByTableGroupId(tableGroupId)).thenReturn(orderTables);
         when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(true);
 
         // when, then

@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.dao.OrderTableRepository;
 import kitchenpos.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,7 +35,7 @@ class OrderServiceTest {
     @Mock
     private OrderLineItemDao orderLineItemDao;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableDao;
     @InjectMocks
     private OrderService orderService;
 

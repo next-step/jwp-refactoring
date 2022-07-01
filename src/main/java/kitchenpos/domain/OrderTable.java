@@ -1,6 +1,14 @@
 package kitchenpos.domain;
 
-public class OrderTable {
+import kitchenpos.common.BaseEntity;
+
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+public class OrderTable extends BaseEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long tableGroupId;
     private int numberOfGuests;
