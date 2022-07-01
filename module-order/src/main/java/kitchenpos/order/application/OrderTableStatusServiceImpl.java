@@ -1,8 +1,8 @@
 package kitchenpos.order.application;
 
 import java.util.Arrays;
-import kitchenpos.common.exception.CannotUpdateException;
-import kitchenpos.common.exception.ExceptionType;
+import kitchenpos.core.exception.CannotUpdateException;
+import kitchenpos.core.exception.ExceptionType;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.application.OrderTableStatusService;

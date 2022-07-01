@@ -3,12 +3,9 @@ package kitchenpos.order.domain;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.common.exception.CannotUpdateException;
-import kitchenpos.common.exception.ExceptionType;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.core.exception.CannotUpdateException;
+import kitchenpos.core.exception.ExceptionType;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.tableGroup.domain.TableUnGroupEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,13 +19,13 @@ public class TableUnGroupEventHandler {
         this.orderRepository = orderRepository;
     }
 
-    @EventListener
-    @Transactional
-    public void handle(TableUnGroupEventPublisher event) {
-        List<OrderTable> orderTables = event.getOrderTables();
-        validateOrderTableStatus(orderTables);
-        orderTables.forEach(OrderTable::unGroup);
-    }
+//    @EventListener
+//    @Transactional
+//    public void handle(TableUnGroupEventPublisher event) {
+//        List<OrderTable> orderTables = event.getOrderTables();
+//        validateOrderTableStatus(orderTables);
+//        orderTables.forEach(OrderTable::unGroup);
+//    }
 
     private void validateOrderTableStatus(List<OrderTable> orderTables) {
         List<Long> orderTableIds = orderTables.stream()

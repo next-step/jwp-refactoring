@@ -1,22 +1,21 @@
 package kitchenpos.order.application;
 
-import kitchenpos.common.exception.ExceptionType;
-import kitchenpos.common.exception.NotFoundException;
+import java.util.List;
+import java.util.stream.Collectors;
+import kitchenpos.core.exception.ExceptionType;
+import kitchenpos.core.exception.NotFoundException;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.request.OrderLineItemRequest;
-import kitchenpos.order.domain.request.OrderRequest;
-import kitchenpos.order.domain.response.OrderResponse;
+import kitchenpos.order.dto.request.OrderLineItemRequest;
+import kitchenpos.order.dto.request.OrderRequest;
+import kitchenpos.order.dto.response.OrderResponse;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderService {

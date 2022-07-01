@@ -15,10 +15,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import kitchenpos.common.exception.CannotUpdateException;
-import kitchenpos.common.exception.ExceptionType;
+import kitchenpos.core.exception.CannotUpdateException;
+import kitchenpos.core.exception.ExceptionType;
 import kitchenpos.order.application.OrderValidator;
-import kitchenpos.order.domain.request.OrderRequest;
+import kitchenpos.order.dto.request.OrderRequest;
 
 @Entity
 @Table(name = "orders")

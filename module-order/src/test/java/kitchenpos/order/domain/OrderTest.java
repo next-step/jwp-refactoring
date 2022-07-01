@@ -6,10 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 
 import java.util.Collections;
-import kitchenpos.common.exception.CannotUpdateException;
-import kitchenpos.common.exception.ExceptionType;
+import kitchenpos.core.exception.CannotUpdateException;
+import kitchenpos.core.exception.ExceptionType;
 import kitchenpos.order.application.OrderValidator;
-import kitchenpos.order.domain.request.OrderRequest;
+import kitchenpos.order.dto.request.OrderRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
