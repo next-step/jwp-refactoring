@@ -2,6 +2,7 @@ package kitchenpos.product.application;
 
 import kitchenpos.product.dao.ProductDao;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,7 +28,7 @@ class ProductServiceTest {
     private ProductService productService;
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
     private Product 지코바치킨;
 
     @BeforeEach
@@ -40,7 +41,7 @@ class ProductServiceTest {
 
     @Test
     void 상품을_등록할_수_있다() {
-        given(productDao.save(지코바치킨)).willReturn(지코바치킨);
+        given(productRepository.save(지코바치킨)).willReturn(지코바치킨);
 
         Product createdProduct = productService.create(지코바치킨);
 
@@ -63,7 +64,7 @@ class ProductServiceTest {
 
     @Test
     void 상품을_조회할_수_있다() {
-        given(productDao.findAll()).willReturn(Arrays.asList(지코바치킨));
+        given(productRepository.findAll()).willReturn(Arrays.asList(지코바치킨));
 
         List<Product> 상품리스트 = productService.list();
 
