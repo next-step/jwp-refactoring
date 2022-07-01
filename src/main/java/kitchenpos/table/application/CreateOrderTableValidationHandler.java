@@ -1,7 +1,7 @@
 package kitchenpos.table.application;
 
 import java.util.NoSuchElementException;
-import kitchenpos.order.event.CreateOrderEvent;
+import kitchenpos.order.event.OrderCreatedEvent;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.context.event.EventListener;
@@ -17,7 +17,7 @@ public class CreateOrderTableValidationHandler {
     }
 
     @EventListener
-    public void validateOrderTable(CreateOrderEvent event) {
+    public void validateOrderTable(OrderCreatedEvent event) {
         OrderTable orderTable = orderTableRepository.findById(event.getOrderTableId())
                 .orElseThrow(() -> new NoSuchElementException("주문 테이블이 시스템에 없습니다."));
         if (orderTable.isEmptyTable()) {
