@@ -38,7 +38,7 @@ class OrderLineItemsTest {
                 .hasMessage("중복된 메뉴가 있습니다.");
     }
 
-    private OrderLineItems createOrderLineItems() {
+    public static OrderLineItems createOrderLineItems() {
         return new OrderLineItems(Arrays.asList(
                 new OrderLineItem(1L, 1),
                 new OrderLineItem(2L, 2)

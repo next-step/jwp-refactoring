@@ -87,7 +87,7 @@ class OrderServiceTest {
     void 계산_완료_상태이면_상태를_변경할_수_없다() {
         // given
         Order saved = orderService.create(new Order(8L, createOrderLineItems()));
-        saved.changeOrderStatus(COMPLETION.name());
+        saved.changeOrderStatus(COMPLETION);
         orderService.changeOrderStatus(saved.getId(), saved);
 
         // when & then
@@ -101,7 +101,7 @@ class OrderServiceTest {
     void 주문_상태를_변경한다() {
         // given
         Order saved = orderService.create(new Order(8L, createOrderLineItems()));
-        saved.changeOrderStatus(MEAL.name());
+        saved.changeOrderStatus(MEAL);
 
         // when
         Order result = orderService.changeOrderStatus(saved.getId(), saved);

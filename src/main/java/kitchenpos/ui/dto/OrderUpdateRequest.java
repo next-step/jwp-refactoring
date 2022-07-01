@@ -1,6 +1,7 @@
 package kitchenpos.ui.dto;
 
 import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderStatus;
 
 public class OrderUpdateRequest {
     private String orderStatus;
@@ -13,7 +14,7 @@ public class OrderUpdateRequest {
     }
 
     public Order toEntity() {
-        return new Order(orderStatus);
+        return new Order(OrderStatus.valueOf(orderStatus));
     }
 
     public String getOrderStatus() {

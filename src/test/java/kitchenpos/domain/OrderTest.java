@@ -2,8 +2,13 @@ package kitchenpos.domain;
 
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
+
 import static kitchenpos.domain.OrderLineItemsTest.createDuplicateOrderLineItems;
+import static kitchenpos.domain.OrderLineItemsTest.createOrderLineItems;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class OrderTest {
 
@@ -17,5 +22,21 @@ class OrderTest {
                 order.validateDuplicateMenu(1)
         ).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("중복된 메뉴가 있습니다.");
+    }
+
+    @Test
+    void 주문을_처리한다() {
+        // given
+        Order order = new Order(1L, createOrderLineItems().elements());
+        LocalDateTime orderedTime = LocalDateTime.now();
+
+        // when
+        order.order(orderedTime);
+
+        // then
+        assertAll(
+                () -> assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING),
+                () -> assertThat(order.getOrderedTime()).isEqualTo(orderedTime)
+        );
     }
 }

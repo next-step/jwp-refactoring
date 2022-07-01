@@ -12,7 +12,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long orderTableId;
-    private String orderStatus;
+    @Enumerated(value = EnumType.STRING)
+    private OrderStatus orderStatus;
     private LocalDateTime orderedTime;
 
     @Embedded
@@ -21,20 +22,13 @@ public class Order {
     protected Order() {
     }
 
-    public Order(String orderStatus) {
+    public Order(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
     public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderLineItems = new OrderLineItems(orderLineItems);
-    }
-
-    public Order(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime) {
-        this.id = id;
-        this.orderTableId = orderTableId;
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
     }
 
     public Long getId() {
@@ -49,7 +43,7 @@ public class Order {
         this.orderTableId = orderTableId;
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
@@ -57,12 +51,8 @@ public class Order {
         return orderedTime;
     }
 
-    public void changeOrderStatus(final String orderStatus) {
+    public void changeOrderStatus(final OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
-    }
-
-    public void updateOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
     }
 
     public List<OrderLineItem> getOrderLineItems() {
@@ -75,6 +65,11 @@ public class Order {
 
     public void validateDuplicateMenu(long menuCount) {
         orderLineItems.validateDuplicateMenu(menuCount);
+    }
+
+    public void order(LocalDateTime orderedTime) {
+        this.orderStatus = OrderStatus.COOKING;
+        this.orderedTime = orderedTime;
     }
 
     @Override
