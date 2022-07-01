@@ -1,11 +1,7 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -18,14 +14,14 @@ import java.util.stream.Collectors;
 
 @Service
 public class TableGroupService {
-    private final OrderDao orderDao;
+    private final OrderRepository orderRepository;
     private final OrderTableDao orderTableDao;
-    private final TableGroupDao tableGroupDao;
+    private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final OrderDao orderDao, final OrderTableDao orderTableDao, final TableGroupDao tableGroupDao) {
-        this.orderDao = orderDao;
+    public TableGroupService(final OrderRepository orderDao, final OrderTableDao orderTableDao, final TableGroupRepository tableGroupRepository) {
+        this.orderRepository = orderDao;
         this.orderTableDao = orderTableDao;
-        this.tableGroupDao = tableGroupDao;
+        this.tableGroupRepository = tableGroupRepository;
     }
 
     @Transactional
@@ -54,7 +50,7 @@ public class TableGroupService {
 
         tableGroup.setCreatedDate(LocalDateTime.now());
 
-        final TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
+        final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
 
         final Long tableGroupId = savedTableGroup.getId();
         for (final OrderTable savedOrderTable : savedOrderTables) {
@@ -75,7 +71,7 @@ public class TableGroupService {
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
 
-        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
+        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
             throw new IllegalArgumentException();
         }

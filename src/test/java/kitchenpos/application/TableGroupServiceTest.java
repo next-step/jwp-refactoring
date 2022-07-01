@@ -1,10 +1,10 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
+import kitchenpos.domain.OrderRepository;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.TableGroupRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,11 +28,11 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
     private OrderTableDao orderTableDao;
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
     @InjectMocks
     private TableGroupService tableGroupService;
 
@@ -45,7 +45,7 @@ class TableGroupServiceTest {
         TableGroup tableGroup = 단체_지정_생성(null, Arrays.asList(orderTable1, orderTable2));
 
         when(orderTableDao.findAllByIdIn(any())).thenReturn(Arrays.asList(orderTable1, orderTable2));
-        when(tableGroupDao.save(tableGroup)).thenReturn(
+        when(tableGroupRepository.save(tableGroup)).thenReturn(
                 단체_지정_생성(1L, LocalDateTime.now(), Arrays.asList(orderTable1, orderTable2))
         );
 
@@ -125,10 +125,9 @@ class TableGroupServiceTest {
         OrderTable orderTable1 = 주문_태이블_생성(1L, tableGroupId, 1, false);
         OrderTable orderTable2 = 주문_태이블_생성(2L, tableGroupId, 1, false);
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
-        TableGroup tableGroup = 단체_지정_생성(tableGroupId, LocalDateTime.now(), orderTables);
 
         when(orderTableDao.findAllByTableGroupId(tableGroupId)).thenReturn(orderTables);
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(false);
+        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(false);
 
         // when, then
         tableGroupService.ungroup(1L);
@@ -141,10 +140,9 @@ class TableGroupServiceTest {
         OrderTable orderTable1 = 주문_태이블_생성(1L, tableGroupId, 1, false);
         OrderTable orderTable2 = 주문_태이블_생성(2L, tableGroupId, 1, false);
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
-        TableGroup tableGroup = 단체_지정_생성(tableGroupId, LocalDateTime.now(), orderTables);
 
         when(orderTableDao.findAllByTableGroupId(tableGroupId)).thenReturn(orderTables);
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(true);
+        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(true);
 
         // when, then
         assertThatThrownBy(() -> tableGroupService.ungroup(1L))

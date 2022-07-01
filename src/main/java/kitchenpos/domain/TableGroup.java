@@ -1,9 +1,16 @@
 package kitchenpos.domain;
 
+import kitchenpos.common.BaseEntity;
+
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class TableGroup {
+public class TableGroup extends BaseEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDateTime createdDate;
     private List<OrderTable> orderTables;
