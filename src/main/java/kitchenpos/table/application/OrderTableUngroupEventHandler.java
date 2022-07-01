@@ -34,7 +34,7 @@ public class OrderTableUngroupEventHandler {
 
     private void validateOrderStatus(List<Long> orderTableIds) {
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds,
-                Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))){
+                Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException("주문의 상태가 COOKING, MEAL 입니다.");
         }
     }
