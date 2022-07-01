@@ -29,7 +29,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 @DisplayName("테이블 관련 인수테스트")
-public class TableAcceptanceTest extends AcceptanceTest{
+public class TableAcceptanceTest extends AcceptanceTest {
 
     private static final String TABLE_URL = "/api/tables/";
 
@@ -69,21 +69,22 @@ public class TableAcceptanceTest extends AcceptanceTest{
                     MenuResponse 중식_메뉴 = 메뉴_생성_요청("중식_메뉴", 1000L, 중식.getId(),
                             Arrays.asList(MenuProductRequest.of(짬뽕.getId(), 1L))).as(MenuResponse.class);
 
-                    ExtractableResponse<Response> 주문_생성_요청 = 주문_생성_하기(테이블.getId(), 중식_메뉴.getId(), 1L);
+                    ExtractableResponse<Response> 주문_생성_요청 = 주문_생성_하기(테이블.getId(), 중식_메뉴.getId(), 중식_메뉴.getName(),
+                            중식_메뉴.getPrice().longValue(), 1L);
                     OrderResponse 주문 = 주문_생성_요청.as(OrderResponse.class);
 
                     주문_상태_수정_요청(주문.getId(), OrderStatus.COMPLETION);
 
-                    ExtractableResponse<Response> 테이블_빈테이블로_변경 = 테이블_빈테이블로_변경_요청(테이블.getId(), true);
+                    ExtractableResponse<Response> 테이블_빈테이블로_변경 = 테이블_빈테이블로_변경_요청(테이블.getId());
                     테이블_손님수_변경됨(테이블_빈테이블로_변경);
                     OrderTableResponse actual = 테이블_빈테이블로_변경.as(OrderTableResponse.class);
                     빈테이블_확인(actual);
                 }),
-                dynamicTest("주문 테이블 목록을 조회 한다.", ()->{
+                dynamicTest("주문 테이블 목록을 조회 한다.", () -> {
                     ExtractableResponse<Response> 테이블_목록_조회_요청 = 테이블_목록_조회_요청();
                     테이블_목록_조회됨(테이블_목록_조회_요청);
                 })
-                );
+        );
     }
 
     public static ExtractableResponse<Response> 테이블_목록_조회_요청() {
@@ -107,17 +108,16 @@ public class TableAcceptanceTest extends AcceptanceTest{
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(OrderTableRequest.of(numberOfGuests))
-                .when().put(TABLE_URL+orderTableId+"/number-of-guests")
+                .when().put(TABLE_URL + orderTableId + "/number-of-guests")
                 .then().log().all().
                 extract();
     }
 
-    public static ExtractableResponse<Response> 테이블_빈테이블로_변경_요청(Long orderTableId, boolean empty) {
+    public static ExtractableResponse<Response> 테이블_빈테이블로_변경_요청(Long orderTableId) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(OrderTableRequest.of(empty))
-                .when().put(TABLE_URL+orderTableId+"/empty")
+                .when().put(TABLE_URL + orderTableId + "/empty")
                 .then().log().all().
                 extract();
     }

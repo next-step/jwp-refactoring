@@ -20,6 +20,7 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.ChangeOrderStatusRequest;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.product.domain.Product;
@@ -82,7 +83,7 @@ class OrderServiceTest extends ServiceTest {
         주문_테이블 = orderTableRepository.save(new OrderTable(1, false));
         빈주문_테이블 = orderTableRepository.save(new OrderTable(0, true));
 
-        중식_주문_항목 = new OrderLineItem(중식_메뉴.getId(), 1);
+        중식_주문_항목 = new OrderLineItem(중식_메뉴.getId(), 중식_메뉴.getName(), 중식_메뉴.getPrice().longValue(), 1L);
 
         주문1 = orderRepository.save(new Order(주문_테이블.getId(), 중식_주문_항목));
     }
@@ -90,7 +91,8 @@ class OrderServiceTest extends ServiceTest {
 
     private List<OrderLineItemRequest> toOrderLineItemRequests(List<OrderLineItem> orderLineItems) {
         return orderLineItems.stream().
-                map(o -> OrderLineItemRequest.of(o.getMenuId(), o.getQuantity().getValue()))
+                map(o -> OrderLineItemRequest.of(o.getMenuId(), o.getMenuName().getValue(), o.getMenuPrice().getValue()
+                        .longValue(), o.getQuantity().getValue()))
                 .collect(Collectors.toList());
     }
 
@@ -98,7 +100,7 @@ class OrderServiceTest extends ServiceTest {
     @DisplayName("생성하려는 주문에서 주문 항목의 메뉴가 시스템에 등록 되어 있지 않으면 주문을 생성 할 수 없다.")
     void createFailWithMenuNotExistTest() {
         //given
-        OrderLineItem orderLineItem = new OrderLineItem(100L, 100);
+        OrderLineItem orderLineItem = new OrderLineItem(100L, "썩은짜장", 100L, 100L);
         Order order = new Order(주문_테이블.getId(), orderLineItem);
 
         //when & then
@@ -162,7 +164,8 @@ class OrderServiceTest extends ServiceTest {
     void changeOrderStatusFailWithOrderNotExistTest() {
         //when & then
         assertThatThrownBy(
-                () -> orderService.changeOrderStatus(1000L, OrderRequest.of(주문_테이블.getId(), OrderStatus.MEAL.name()))
+                () -> orderService.changeOrderStatus(1000L,
+                        ChangeOrderStatusRequest.of(주문_테이블.getId(), OrderStatus.MEAL.name()))
         ).isInstanceOf(NoSuchElementException.class);
     }
 
@@ -170,11 +173,13 @@ class OrderServiceTest extends ServiceTest {
     @DisplayName("주문이 완료 상태이면 변경 할 수 없다.")
     void changeOrderStatusFailWithCompleteStatusTest() {
         //given
-        orderService.changeOrderStatus(주문1.getId(), OrderRequest.of(주문_테이블.getId(), OrderStatus.COMPLETION.name()));
+        orderService.changeOrderStatus(주문1.getId(),
+                ChangeOrderStatusRequest.of(주문_테이블.getId(), OrderStatus.COMPLETION.name()));
 
         //when & then
         assertThatThrownBy(
-                () -> orderService.changeOrderStatus(주문1.getId(), OrderRequest.of(주문_테이블.getId(), OrderStatus.MEAL.name()))
+                () -> orderService.changeOrderStatus(주문1.getId(),
+                        ChangeOrderStatusRequest.of(주문_테이블.getId(), OrderStatus.MEAL.name()))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -183,7 +188,7 @@ class OrderServiceTest extends ServiceTest {
     void changeOrderStatusTest() {
         //when
         OrderResponse orderResponse = orderService.changeOrderStatus(주문1.getId(),
-                OrderRequest.of(주문_테이블.getId(), OrderStatus.MEAL.name()));
+                ChangeOrderStatusRequest.of(주문_테이블.getId(), OrderStatus.MEAL.name()));
 
         //then
         assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
