@@ -1,12 +1,8 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.domain.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,9 +27,9 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
     @Mock
     private MenuProductDao menuProductDao;
     @Mock
@@ -50,10 +46,10 @@ class MenuServiceTest {
         List<MenuProduct> menuProducts = Collections.singletonList(menuProduct);
         Menu menu = 메뉴_생성("매뉴", 1_000, 1L, menuProducts);
 
-        when(menuGroupDao.existsById(menu.getMenuGroupId())).thenReturn(true);
+        when(menuGroupRepository.existsById(menu.getMenuGroupId())).thenReturn(true);
         when(productDao.findById(any())).thenReturn(Optional.of(product));
         when(menuProductDao.save(menuProduct)).thenReturn(menuProduct);
-        when(menuDao.save(menu)).thenReturn(메뉴_생성(1L, "매뉴", 1_000, 1L, menuProducts));
+        when(menuRepository.save(menu)).thenReturn(메뉴_생성(1L, "매뉴", 1_000, 1L, menuProducts));
 
         // when
         Menu savedMenu = menuService.create(menu);
@@ -84,7 +80,7 @@ class MenuServiceTest {
         // given
         Menu menu = 메뉴_생성("매뉴", 1_000, null, null);
 
-        when(menuGroupDao.existsById(menu.getMenuGroupId())).thenReturn(false);
+        when(menuGroupRepository.existsById(menu.getMenuGroupId())).thenReturn(false);
 
         // when, then
         assertThatThrownBy(() -> menuService.create(menu))
@@ -100,7 +96,7 @@ class MenuServiceTest {
         List<MenuProduct> menuProducts = Collections.singletonList(menuProduct);
         Menu menu = 메뉴_생성("매뉴", 2_000, 1L, menuProducts);
 
-        when(menuGroupDao.existsById(menu.getMenuGroupId())).thenReturn(true);
+        when(menuGroupRepository.existsById(menu.getMenuGroupId())).thenReturn(true);
         when(productDao.findById(any())).thenReturn(Optional.empty());
 
         // when, then
@@ -117,7 +113,7 @@ class MenuServiceTest {
         List<MenuProduct> menuProducts = Collections.singletonList(menuProduct);
         Menu menu = 메뉴_생성("매뉴", 2_000, 1L, menuProducts);
 
-        when(menuGroupDao.existsById(menu.getMenuGroupId())).thenReturn(true);
+        when(menuGroupRepository.existsById(menu.getMenuGroupId())).thenReturn(true);
         when(productDao.findById(any())).thenReturn(Optional.of(product));
 
         // when, then
@@ -134,7 +130,7 @@ class MenuServiceTest {
         MenuProduct menuProduct1 = 메뉴_상품_생성(1L, 1L, 1);
         MenuProduct menuProduct2 = 메뉴_상품_생성(1L, 2L, 1);
 
-        when(menuDao.findAll()).thenReturn(menus);
+        when(menuRepository.findAll()).thenReturn(menus);
         when(menuProductDao.findAllByMenuId(any())).thenReturn(Arrays.asList(menuProduct1, menuProduct2));
 
         // when

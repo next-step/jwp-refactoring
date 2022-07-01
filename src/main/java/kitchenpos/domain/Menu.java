@@ -1,13 +1,24 @@
 package kitchenpos.domain;
 
+import kitchenpos.common.BaseEntity;
+
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class Menu {
+@Entity
+public class Menu extends BaseEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private BigDecimal price;
     private Long menuGroupId;
+
+    @OneToMany(
+            fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            orphanRemoval = true)
     private List<MenuProduct> menuProducts;
 
     public Menu() {
