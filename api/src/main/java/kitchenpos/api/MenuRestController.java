@@ -1,8 +1,8 @@
-package kitchenpos.menu.ui;
+package kitchenpos.api;
 
-import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.dto.MenuRequest;
-import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.service.menu.MenuService;
+import kitchenpos.service.menu.dto.MenuRequest;
+import kitchenpos.service.menu.dto.MenuResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;

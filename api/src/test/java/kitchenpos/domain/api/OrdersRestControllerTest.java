@@ -1,12 +1,10 @@
-package kitchenpos.order.ui;
+package kitchenpos.domain.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.order.application.OrderService;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.dto.OrderLineItemRequest;
-import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.order.dto.OrderStatusRequest;
-import kitchenpos.order.dto.OrdersRequest;
+import kitchenpos.api.OrderRestController;
+import kitchenpos.service.order.OrderService;
+import kitchenpos.service.order.dto.OrderResponse;
+import kitchenpos.service.order.dto.OrdersRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,7 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -56,8 +53,8 @@ class OrdersRestControllerTest {
         given(orderService.create(any())).willReturn(new OrderResponse());
 
         //then
-        mockMvc.perform(post("/api/orders").content(
-                        objectMapper.writeValueAsString(new OrdersRequest(0L, Arrays.asList(new OrderLineItemRequest(1L, 2L)))))
+        mockMvc.perform(post("/api/orders")
+                .content(objectMapper.writeValueAsString(new OrdersRequest(0, Collections.emptyList())))
                 .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isCreated());
     }
 
@@ -68,7 +65,7 @@ class OrdersRestControllerTest {
 
         //then
         mockMvc.perform(put("/api/orders/{orderId}/order-status", 0)
-                .content(objectMapper.writeValueAsString(new OrderStatusRequest(OrderStatus.MEAL)))
+                .content("{\"orderStatus\": \"COMPLETION\"}")
                 .contentType(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isOk());
     }
 }

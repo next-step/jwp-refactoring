@@ -1,10 +1,10 @@
-package kitchenpos.menugroup.ui;
+package kitchenpos.domain.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.menugroup.application.MenuGroupService;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.dto.MenuGroupRequest;
-import kitchenpos.menugroup.dto.MenuGroupResponse;
+import kitchenpos.api.MenuRestController;
+import kitchenpos.service.menu.MenuService;
+import kitchenpos.service.menu.dto.MenuRequest;
+import kitchenpos.service.menu.dto.MenuResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,28 +25,27 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-class MenuGroupRestControllerTest {
+class MenuRestControllerTest {
     private MockMvc mockMvc;
     @Mock
-    private MenuGroupService menuGroupService;
+    private MenuService menuService;
     @InjectMocks
-    private MenuGroupRestController menuGroupRestController;
+    private MenuRestController menuRestController;
     private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
+        this.mockMvc = MockMvcBuilders.standaloneSetup(menuRestController).build();
         this.objectMapper = new ObjectMapper();
-        this.mockMvc = MockMvcBuilders.standaloneSetup(menuGroupRestController).build();
     }
 
     @Test
     void test_get() throws Exception {
         //given
-        given(menuGroupService.list()).willReturn(Collections.singletonList(new MenuGroupResponse(new MenuGroup(
-                "menuGroup"))));
+        given(menuService.list()).willReturn(Collections.singletonList(new MenuResponse()));
 
         //then
-        mockMvc.perform(get("/api/menu-groups"))
+        mockMvc.perform(get("/api/menus"))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
@@ -54,12 +53,11 @@ class MenuGroupRestControllerTest {
     @Test
     void test_post() throws Exception {
         //given
-        MenuGroupRequest request = new MenuGroupRequest("menu");
-        given(menuGroupService.create(any())).willReturn(new MenuGroupResponse(request.toMenuGroup()));
+        given(menuService.create(any())).willReturn(new MenuResponse());
 
         //then
-        mockMvc.perform(post("/api/menu-groups")
-                        .content(objectMapper.writeValueAsString(request))
+        mockMvc.perform(post("/api/menus")
+                        .content(objectMapper.writeValueAsString(new MenuRequest()))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isCreated());

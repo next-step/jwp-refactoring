@@ -1,10 +1,11 @@
-package kitchenpos.product;
+package kitchenpos.domain.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.product.application.ProductService;
-import kitchenpos.product.dto.ProductRequest;
-import kitchenpos.product.dto.ProductResponse;
-import kitchenpos.product.ui.ProductRestController;
+import kitchenpos.api.TableGroupRestController;
+import kitchenpos.service.table.dto.OrderTableRequest;
+import kitchenpos.service.tablegroup.TableGroupService;
+import kitchenpos.service.tablegroup.dto.TableGroupRequest;
+import kitchenpos.service.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,47 +16,50 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.Collections;
+import java.util.Arrays;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.mockito.Mockito.doNothing;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-class ProductRestControllerTest {
+class TableGroupRestControllerTest {
     private MockMvc mockMvc;
     @Mock
-    private ProductService productService;
+    private TableGroupService tableGroupService;
     @InjectMocks
-    private ProductRestController productRestController;
+    private TableGroupRestController tableGroupRestController;
     private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
         this.objectMapper = new ObjectMapper();
-        this.mockMvc = MockMvcBuilders.standaloneSetup(productRestController).build();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(tableGroupRestController).build();
     }
 
     @Test
-    void test_get() throws Exception {
+    void test_delete() throws Exception {
         //given
-        given(productService.list()).willReturn(Collections.singletonList(new ProductResponse()));
+        doNothing().when(tableGroupService).ungroup(any());
 
         //then
-        mockMvc.perform(get("/api/products")).andDo(print()).andExpect(status().isOk());
+        mockMvc.perform(delete("/api/table-groups/{tableGroupId}", 0))
+                .andDo(print())
+                .andExpect(status().isNoContent());
     }
 
     @Test
     void test_post() throws Exception {
         //given
-        given(productService.create(any())).willReturn(new ProductResponse());
+        given(tableGroupService.create(any())).willReturn(new TableGroupResponse());
 
         //then
-        mockMvc.perform(post("/api/products")
-                .content(objectMapper.writeValueAsString(new ProductRequest("product", 0)))
+        mockMvc.perform(post("/api/table-groups").content(objectMapper.writeValueAsString(new TableGroupRequest(
+                                Arrays.asList(new OrderTableRequest(), new OrderTableRequest()))))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isCreated());

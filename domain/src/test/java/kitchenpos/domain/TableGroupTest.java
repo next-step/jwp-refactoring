@@ -1,13 +1,13 @@
-package kitchenpos.tablegroup.domain;
+package kitchenpos.domain;
 
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTables;
+import kitchenpos.domain.table.OrderTable;
+import kitchenpos.domain.table.OrderTables;
+import kitchenpos.domain.tablegroup.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class TableGroupTest {
