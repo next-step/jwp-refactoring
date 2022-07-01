@@ -14,6 +14,8 @@ import kitchenpos.table.dao.OrderTableRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,13 +51,14 @@ class TableServiceTest {
     void create() {
         // given
         given(orderTableRepository.save(any())).willReturn(주문테이블);
+        OrderTableRequest 주문요청 = new OrderTableRequest(2, false);
 
         // when
-        OrderTable actual = tableService.create(주문테이블);
+        OrderTableResponse actual = tableService.create(주문요청);
 
         // then
         assertAll(
-                () -> assertThat(actual).isEqualTo(주문테이블),
+                () -> assertThat(actual).isNotNull(),
                 () -> assertThat(actual.getTableGroup()).isNull()
         );
     }

@@ -7,6 +7,8 @@ import kitchenpos.order.dao.OrderDao;
 import kitchenpos.table.dao.OrderTableRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,10 +23,9 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTable create(final OrderTable orderTable) {
-        orderTable.setTableGroup(null);
-
-        return orderTableRepository.save(orderTable);
+    public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
+        OrderTable orderTable = orderTableRepository.save(orderTableRequest.toTableGroup());
+        return OrderTableResponse.of(orderTable);
     }
 
     public List<OrderTable> list() {
