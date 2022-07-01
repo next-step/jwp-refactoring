@@ -63,4 +63,21 @@ class OrderTablesTest {
         assertThatThrownBy(() -> orderTables.makeRelations(tableGroup, Arrays.asList(empty, alreadyGrouped)))
                 .isInstanceOf(IllegalStateException.class);
     }
+
+    @Test
+    void 테이블_그룹과_주문_테이블들과의_연관관계를_제거할_수_있어야_한다() {
+        // given
+        final TableGroup tableGroup = new TableGroup(1L);
+        final OrderTable orderTable1 = new OrderTable(1L, null, new NumberOfGuests(0), true);
+        final OrderTable orderTable2 = new OrderTable(2L, null, new NumberOfGuests(0), true);
+        final OrderTables orderTables = new OrderTables();
+        orderTables.makeRelations(tableGroup, Arrays.asList(orderTable1, orderTable2));
+
+        // when
+        orderTables.removeRelations();
+
+        // then
+        assertThat(orderTables.getResponses().stream().map(OrderTableResponse::getTableGroupId))
+                .containsExactly(null, null);
+    }
 }

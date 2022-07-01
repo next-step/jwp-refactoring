@@ -49,6 +49,13 @@ public class OrderTables {
         }
     }
 
+    public void removeRelations() {
+        orderTables.stream()
+                .forEach(orderTable -> {
+                    orderTable.changeTableGroupId(null);
+                });
+    }
+
     public List<OrderTableResponse> getResponses() {
         return orderTables
                 .stream()
