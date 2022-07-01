@@ -14,6 +14,8 @@ import kitchenpos.order.domain.OrderTable;
 import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.dao.TableGroupRepository;
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -57,7 +59,7 @@ class TableGroupServiceTest {
         given(tableGroupRepository.save(any())).willReturn(단체손님);
 
         // when
-        TableGroup actual = tableGroupService.create(단체손님);
+        TableGroupResponse actual = tableGroupService.create(new TableGroupRequest(Arrays.asList(주문테이블1, 주문테이블2)));
 
         // then
         assertThat(actual.getOrderTables()).isNotNull();
@@ -68,7 +70,7 @@ class TableGroupServiceTest {
     void create_singleTableGroupError() {
         // given & when & then
         assertThatIllegalArgumentException().isThrownBy(
-                () -> tableGroupService.create(단체손님)
+                () -> tableGroupService.create(new TableGroupRequest(Collections.singletonList(주문테이블1)))
         );
     }
 
@@ -80,7 +82,7 @@ class TableGroupServiceTest {
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
-                () -> tableGroupService.create(단체손님)
+                () -> tableGroupService.create(new TableGroupRequest(Arrays.asList(주문테이블1, 주문테이블2)))
         );
     }
 
@@ -93,7 +95,7 @@ class TableGroupServiceTest {
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
-                () -> tableGroupService.create(단체손님)
+                () -> tableGroupService.create(new TableGroupRequest(Arrays.asList(주문테이블1, 주문테이블2)))
         );
     }
 
@@ -101,6 +103,7 @@ class TableGroupServiceTest {
     @DisplayName("지정한 단체를 해제한다")
     void ungroup() {
         // given
+        create();
         given(orderTableRepository.findAllByTableGroupId(any())).willReturn(Arrays.asList(주문테이블1, 주문테이블2));
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(false);
 
@@ -118,6 +121,7 @@ class TableGroupServiceTest {
     @DisplayName("지정한 단체를 해제시 주문 상태가 계산 완료여야 한다")
     void ungroup_completionError() {
         // given
+        create();
         given(orderTableRepository.findAllByTableGroupId(any())).willReturn(Arrays.asList(주문테이블1, 주문테이블2));
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(true);
 
