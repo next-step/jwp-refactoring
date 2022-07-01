@@ -4,7 +4,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.tablegroup.dto.OrderTableIdRequest;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,10 +23,10 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
 
     private static final String API_URL = "/api/table-groups";
 
-    private OrderTable 주문_테이블_네명;
-    private OrderTable 주문_테이블_여섯명;
+    private OrderTableResponse 주문_테이블_네명;
+    private OrderTableResponse 주문_테이블_여섯명;
 
-    private static ExtractableResponse<Response> 테이블_그룹_생성_요청(List<Long> orderTables) {
+    private static ExtractableResponse<Response> 테이블_그룹_생성_요청(List<OrderTableIdRequest> orderTables) {
         TableGroupRequest tableGroupRequest = TableGroupRequest.of(orderTables);
 
         return RestAssured
@@ -48,7 +49,11 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("테이블 그룹 생성 및 해제 시나리오")
     void tableGroup() {
-        ExtractableResponse<Response> 테이블_그룹_생성_요청_결과 = 테이블_그룹_생성_요청(Arrays.asList(주문_테이블_네명.getId(), 주문_테이블_여섯명.getId()));
+        ExtractableResponse<Response> 테이블_그룹_생성_요청_결과 =
+                테이블_그룹_생성_요청(Arrays.asList(
+                        OrderTableIdRequest.of(주문_테이블_네명.getId()),
+                        OrderTableIdRequest.of(주문_테이블_여섯명.getId()))
+                );
 
         테이블_그룹_생성됨(테이블_그룹_생성_요청_결과);
 
