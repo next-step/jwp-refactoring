@@ -1,7 +1,13 @@
-package kitchenpos.menu.domain;
+package kitchenpos.menu.application;
+
+import static kitchenpos.common.ErrorMessage.NOT_EXIST_PRODUCT;
 
 import java.util.List;
 import kitchenpos.exception.InvalidPriceException;
+import kitchenpos.exception.NotExistException;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.Price;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.repository.ProductRepository;
 import org.springframework.stereotype.Component;
@@ -20,5 +26,11 @@ public class MenuValidator {
         if (menu.isMoreThan(totalPrice)) {
             throw new InvalidPriceException("제품의 합은 메뉴 가격보다 작을 수 없습니다.");
         }
+    }
+
+    public Long findProductId(MenuProductRequest menuProduct) {
+        return productRepository.findById(menuProduct.getProductId())
+                .orElseThrow(() -> new NotExistException(NOT_EXIST_PRODUCT))
+                .getId();
     }
 }

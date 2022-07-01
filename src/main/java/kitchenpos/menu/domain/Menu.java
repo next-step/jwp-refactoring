@@ -10,10 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import kitchenpos.exception.InvalidPriceException;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.order.domain.Quantity;
-import kitchenpos.product.domain.Product;
 
 @Entity
 public class Menu {
@@ -38,9 +36,9 @@ public class Menu {
     protected Menu() {
     }
 
-    public void addProduct(Product product, Quantity quantity) {
+    public void addProduct(Long productId, Quantity quantity) {
         final MenuProduct menuProduct = new MenuProduct.Builder(this)
-                .setProductId(product.getId())
+                .setProductId(productId)
                 .setQuantity(quantity)
                 .build();
         this.menuProducts.add(menuProduct);

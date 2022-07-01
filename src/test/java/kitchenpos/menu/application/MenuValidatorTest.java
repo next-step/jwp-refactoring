@@ -1,9 +1,16 @@
-package kitchenpos.menu.domain;
+package kitchenpos.menu.application;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
+import java.util.Optional;
+import kitchenpos.menu.application.MenuValidator;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.Price;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.order.domain.Quantity;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.repository.ProductRepository;
@@ -36,7 +43,7 @@ class MenuValidatorTest {
     void verifyValidProductsTotalPrice() {
         // given
         product = new Product(1L, "product", Price.of(1_100L));
-        menu.addProduct(product, Quantity.of(1L));
+        menu.addProduct(product.getId(), Quantity.of(1L));
         when(productRepository.findAll()).thenReturn(Arrays.asList(product));
         // when && then
         menuValidator.validateProductsTotalPrice(menu);
@@ -47,11 +54,22 @@ class MenuValidatorTest {
     void verifyInvalidProductsTotalPrice() {
         // given
         product = new Product(1L, "product", Price.of(900L));
-        menu.addProduct(product, Quantity.of(1L));
+        menu.addProduct(product.getId(), Quantity.of(1L));
         when(productRepository.findAll()).thenReturn(Arrays.asList(product));
 
         // when && then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuValidator.validateProductsTotalPrice(menu));
+    }
+
+    @Test
+    @DisplayName("메뉴를 구성하는 상품들이 존재하지 않으면 에러 발생")
+    void invalidNotExistProduct() {
+        // given
+        final MenuProductRequest menuProductRequest = new MenuProductRequest(1L, 2L);
+        when(productRepository.findById(any())).thenReturn(Optional.empty());
+        // when && then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> menuValidator.findProductId(menuProductRequest));
     }
 }

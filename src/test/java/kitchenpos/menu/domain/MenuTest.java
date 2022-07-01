@@ -1,10 +1,8 @@
 package kitchenpos.menu.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import kitchenpos.order.domain.Quantity;
-import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,8 +34,7 @@ class MenuTest {
     @Test
     @DisplayName("메뉴에 메뉴 제품들이 잘 들어가는지 검증")
     void addMenuProduct() {
-        final Product product = new Product("product", Price.of(10L));
-        menu.addProduct(product, Quantity.of(1L));
+        menu.addProduct(1L, Quantity.of(1L));
 
         assertThat(menu.products().get()).hasSize(1);
     }
