@@ -5,9 +5,9 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 
 import java.util.List;
 import kitchenpos.ServiceTest;
+import kitchenpos.product.domain.Product;
 import kitchenpos.utils.ServiceTestHelper;
 import org.junit.jupiter.api.DisplayName;
-import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

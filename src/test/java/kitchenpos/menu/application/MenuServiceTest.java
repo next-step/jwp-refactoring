@@ -7,13 +7,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import kitchenpos.ServiceTest;
-import kitchenpos.utils.ServiceTestHelper;
 import kitchenpos.fixture.MenuProductFixtureFactory;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuDto;
 import kitchenpos.menu.dto.MenuProductDto;
 import kitchenpos.product.domain.Product;
+import kitchenpos.utils.ServiceTestHelper;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

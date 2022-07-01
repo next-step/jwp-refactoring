@@ -5,21 +5,19 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 
 import java.util.List;
 import kitchenpos.ServiceTest;
-import kitchenpos.order.dto.OrderLineItemDto;
-import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.utils.ServiceTestHelper;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.fixture.MenuProductFixtureFactory;
 import kitchenpos.fixture.OrderLineItemFixtureFactory;
+import kitchenpos.fixture.OrderTableFixtureFactory;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuDto;
-import kitchenpos.fixture.OrderTableFixtureFactory;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemDto;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.product.domain.Product;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupResponse;
-import kitchenpos.product.domain.Product;
+import kitchenpos.utils.ServiceTestHelper;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

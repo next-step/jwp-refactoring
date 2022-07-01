@@ -1,15 +1,14 @@
 package kitchenpos.table.domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.List;
 import kitchenpos.JpaRepositoryTest;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import static org.assertj.core.api.Assertions.*;
 
 class OrderTableRepositoryTest extends JpaRepositoryTest {
     @Autowired

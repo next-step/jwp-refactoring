@@ -1,7 +1,6 @@
 package kitchenpos.fixture;
 
 import java.util.List;
-import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemDto;
 import kitchenpos.order.dto.OrderRequest;

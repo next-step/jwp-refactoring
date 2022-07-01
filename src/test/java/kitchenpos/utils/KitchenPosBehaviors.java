@@ -7,16 +7,16 @@ import io.restassured.response.Response;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import kitchenpos.order.domain.Order;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuDto;
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.product.domain.Product;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
-import kitchenpos.product.domain.Product;
 
 public class KitchenPosBehaviors {
     private KitchenPosBehaviors() {

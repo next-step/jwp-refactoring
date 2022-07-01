@@ -1,9 +1,10 @@
 package kitchenpos.product.domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+
 import java.math.BigDecimal;
-import kitchenpos.product.domain.ProductPrice;
 import org.junit.jupiter.api.Test;
-import static org.assertj.core.api.Assertions.*;
 class ProductPriceTest {
 
     @Test
