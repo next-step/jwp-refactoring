@@ -20,10 +20,11 @@ public class Menu {
     protected Menu() {
     }
 
-    public Menu(String name, BigDecimal price, Long menuGroupId) {
+    public Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         this.name = name;
         this.price = new Price(price);
         this.menuGroupId = menuGroupId;
+        changeMenuProducts(menuProducts);
     }
 
     public Long getId() {
@@ -46,8 +47,11 @@ public class Menu {
         return menuProducts.elements();
     }
 
-    public void changeMenuProducts(final List<MenuProduct> menuProducts) {
+    private void changeMenuProducts(final List<MenuProduct> menuProducts) {
         this.menuProducts = new MenuProducts(menuProducts);
+
+        this.menuProducts.validatePrice(price);
+        this.menuProducts.addMenu(this);
     }
 
     @Override
