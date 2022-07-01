@@ -43,9 +43,8 @@ allprojects {
 }
 
 
-project(':module-product') {
+project(':module-common') {
     dependencies {
-        compile project(':module-common')
     }
 }
 
