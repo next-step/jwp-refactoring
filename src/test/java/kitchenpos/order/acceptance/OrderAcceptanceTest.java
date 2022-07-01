@@ -106,7 +106,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     public static ResponseEntity<OrderResponse> 주문_등록_요청(OrderTableResponse orderTable,long quantity, MenuResponse menu) {
-        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menu.getId(), quantity);
+        OrderLineItemRequest orderLineItemRequest = new OrderLineItemRequest(menu.getId(), menu.getName(), menu.getPrice(), quantity);
         OrderRequest orderRequest = new OrderRequest(orderTable.getId(), Lists.list(orderLineItemRequest));
         return testRestTemplate.postForEntity("/api/orders", orderRequest, OrderResponse.class);
     }

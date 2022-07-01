@@ -25,6 +25,10 @@ public class Price {
         return price;
     }
 
+    public long getPriceLongValue() {
+        return price.longValue();
+    }
+
     public boolean isGreaterThan(Price value) {
         return price.compareTo(value.getPrice()) > 0;
     }
@@ -43,5 +47,22 @@ public class Price {
         if (Objects.isNull(value) || value.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("가격은 0원 이상이어야 합니다.");
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Price price1 = (Price) o;
+        return Objects.equals(price, price1.price);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(price);
     }
 }

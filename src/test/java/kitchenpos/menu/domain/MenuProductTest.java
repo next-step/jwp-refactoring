@@ -12,8 +12,8 @@ public class MenuProductTest {
     void createMenuProduct() {
         Product product = Product.of("허니콤보", 19_000L);
 
-        MenuProduct menuProduct = MenuProduct.createMenuProduct(product, 1L);
+        MenuProduct menuProduct = MenuProduct.createMenuProduct(product.getId(), 1L);
 
-        assertThat(menuProduct.getProduct()).isEqualTo(product);
+        assertThat(menuProduct.getProductId()).isEqualTo(product.getId());
     }
 }

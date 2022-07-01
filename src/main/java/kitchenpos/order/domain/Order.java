@@ -1,19 +1,9 @@
 package kitchenpos.order.domain;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import kitchenpos.table.domain.OrderTable;
+import java.util.Set;
+import javax.persistence.*;
+import kitchenpos.order.application.OrderValidator;
 
 @Entity(name = "orders")
 public class Order {
@@ -21,9 +11,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_table_id")
-    private OrderTable orderTable;
+    @Column(nullable = false)
+    private Long orderTableId;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
@@ -36,17 +25,18 @@ public class Order {
 
     protected Order() {}
 
-    private Order(OrderTable orderTable) {
-        this.orderTable = orderTable;
+    private Order(Long orderTableId, OrderLineItems orderLineItems) {
+        this.orderTableId = orderTableId;
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
+        this.addOrderLineItems(orderLineItems);
     }
 
-    public static Order from(OrderTable orderTable) {
-        return new Order(orderTable);
+    public static Order createOrder(Long orderTableId, OrderLineItems orderLineItems) {
+        return new Order(orderTableId, orderLineItems);
     }
 
-    public void addOrderLineItems(List<OrderLineItem> orderLineItems) {
+    private void addOrderLineItems(OrderLineItems orderLineItems) {
         this.orderLineItems.addAll(this, orderLineItems);
     }
 
@@ -58,7 +48,7 @@ public class Order {
         return orderStatus.name();
     }
 
-    public List<OrderLineItem> getOrderLineItems() {
+    public Set<OrderLineItem> getOrderLineItems() {
         return orderLineItems.getValue();
     }
 
@@ -71,10 +61,13 @@ public class Order {
     }
 
     public void updateOrderStatus(OrderStatus orderStatus) {
+        if (this.isComplete()) {
+            throw new IllegalArgumentException("계산 완료된 주문은 변경할 수 없습니다.");
+        }
         this.orderStatus = orderStatus;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 }

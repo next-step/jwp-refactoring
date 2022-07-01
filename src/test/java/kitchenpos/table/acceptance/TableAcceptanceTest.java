@@ -1,15 +1,24 @@
 package kitchenpos.table.acceptance;
 
+import static kitchenpos.menu.acceptance.MenuAcceptanceTest.메뉴_등록_되어있음;
+import static kitchenpos.menu.acceptance.MenuGroupAcceptanceTest.메뉴_그룹_등록되어_있음;
+import static kitchenpos.order.acceptance.OrderAcceptanceTest.주문_등록_되어있음;
+import static kitchenpos.product.acceptance.ProductAcceptanceTest.상품_등록_되어있음;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 import kitchenpos.AcceptanceTest;
+import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -70,23 +79,37 @@ public class TableAcceptanceTest extends AcceptanceTest {
 
                     ResponseEntity<OrderTableResponse> 손님수_0명_미만_수정_결과 = 테이블_손님수_수정_요청(손님_테이블, -1);
 
-                    테이블_손님수_수정_실패됨(손님수_0명_미만_수정_결과);
+                    테이블_수정_실패됨(손님수_0명_미만_수정_결과);
                 }),
                 dynamicTest("존재하지 않는 테이블을 수정할 수 없다.", () -> {
                     OrderTableResponse 없는_테이블 = new OrderTableResponse(99L, 4, true);
 
                     ResponseEntity<OrderTableResponse> 없는_테이블_손님수_수정_결과 = 테이블_손님수_수정_요청(없는_테이블, 5);
 
-                    테이블_손님수_수정_실패됨(없는_테이블_손님수_수정_결과);
+                    테이블_수정_실패됨(없는_테이블_손님수_수정_결과);
                 }),
                 dynamicTest("빈 테이블은 손님 수를 수정할 수 없다.", () -> {
                     OrderTableResponse 빈_테이블 = 테이블_등록_되어있음(0, true);
 
                     ResponseEntity<OrderTableResponse> 빈_테이블_손님수_수정_결과 = 테이블_손님수_수정_요청(빈_테이블, 5);
 
-                    테이블_손님수_수정_실패됨(빈_테이블_손님수_수정_결과);
+                    테이블_수정_실패됨(빈_테이블_손님수_수정_결과);
                 })
         );
+    }
+
+    @Test
+    @DisplayName("주문이 조리 및 식사 중일때는 빈 테이블 여부를 변경할 수 없습니다.")
+    void change() {
+        OrderTableResponse 손님_테이블 = 테이블_등록_되어있음(4, false);
+        MenuGroupResponse 추천메뉴 = 메뉴_그룹_등록되어_있음("추천메뉴");
+        ProductResponse 허니콤보 = 상품_등록_되어있음("허니콤보", 20_000L);
+        MenuResponse 허니레드콤보 = 메뉴_등록_되어있음(추천메뉴, "허니레드콤보", 19_000L, 허니콤보, 1L);
+        OrderResponse 주문 = 주문_등록_되어있음(손님_테이블, 1L, 허니레드콤보);
+
+        ResponseEntity<OrderTableResponse> 테이블_빈_테이블_여부_수정_결과 = 테이블_빈_테이블_여부_수정_요청(손님_테이블, true);
+
+        테이블_수정_실패됨(테이블_빈_테이블_여부_수정_결과);
     }
 
     public static OrderTableResponse 테이블_등록_되어있음(int numberOfGuests, boolean empty) {
@@ -98,7 +121,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
         return testRestTemplate.postForEntity("/api/tables", request, OrderTableResponse.class);
     }
 
-    private void 테이블_손님수_수정_실패됨(ResponseEntity<OrderTableResponse> response) {
+    private void 테이블_수정_실패됨(ResponseEntity<OrderTableResponse> response) {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

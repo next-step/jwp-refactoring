@@ -30,6 +30,9 @@ public class TableServiceTest {
     @Mock
     private OrderRepository orderRepository;
 
+    @Mock
+    private Validator validator;
+
     @InjectMocks
     private TableService tableService;
 
@@ -81,27 +84,12 @@ public class TableServiceTest {
     }
 
     @Test
-    @DisplayName("테이블이 조리, 식사 중이면 예외를 반환한다.")
-    void changeEmptyWithOrderStatus() {
-        OrderTableRequest orderTableRequest = new OrderTableRequest(4, false);
-        OrderTable orderTable =  OrderTable.of(4, true);
-        OrderTable updateTable =  OrderTable.of(4, false);
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
-        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(true);
-
-        assertThatThrownBy(() -> {
-            tableService.changeEmpty(1L, orderTableRequest);
-        }).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
     @DisplayName("테이블 빈 테이블 여부가 수정된다.")
     void changeEmpty() {
         OrderTableRequest orderTableRequest = new OrderTableRequest(4, false);
         OrderTable orderTable =  OrderTable.of(4, true);
         OrderTable updateTable =  OrderTable.of(4, false);
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
-        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(false);
         when(orderTableRepository.save(any())).thenReturn(updateTable);
 
         tableService.changeEmpty(1L, orderTableRequest);

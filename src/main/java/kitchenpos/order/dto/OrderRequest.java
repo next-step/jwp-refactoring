@@ -2,7 +2,9 @@ package kitchenpos.order.dto;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
 
 public class OrderRequest {
     private Long orderTableId;
@@ -24,15 +26,14 @@ public class OrderRequest {
         return orderLineItems;
     }
 
-    public List<Long> toMenuIds() {
-        return orderLineItems.stream()
-                .map(OrderLineItemRequest::getMenuId)
-                .collect(Collectors.toList());
+    public Order toEntity() {
+        return Order.createOrder(orderTableId, mapToOrderLineItems());
     }
 
-    public List<OrderLineItem> toEntity() {
-        return orderLineItems.stream()
+    private OrderLineItems mapToOrderLineItems() {
+        List<OrderLineItem> mapToOrderLineItems = orderLineItems.stream()
                 .map(OrderLineItemRequest::toEntity)
                 .collect(Collectors.toList());
+        return OrderLineItems.createOrderLineItems(mapToOrderLineItems);
     }
 }
