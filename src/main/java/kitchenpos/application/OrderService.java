@@ -5,14 +5,12 @@ import kitchenpos.dao.OrderLineItemRepository;
 import kitchenpos.dao.OrderRepository;
 import kitchenpos.dao.OrderTableRepository;
 import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class OrderService {
@@ -49,31 +47,19 @@ public class OrderService {
     }
 
     public List<Order> list() {
-        final List<Order> orders = orderRepository.findAll();
-
-        for (final Order order : orders) {
-            order.changeOrderLineItems(orderLineItemRepository.findAllByOrder(order));
-        }
-
-        return orders;
+        return orderRepository.findAll();
     }
 
     @Transactional
     public Order changeOrderStatus(final Long orderId, final Order order) {
-        final Order savedOrder = orderRepository.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
+        final Order savedOrder = findById(orderId);
+        savedOrder.changeOrderStatus(order.getOrderStatus());
 
-        if (Objects.equals(OrderStatus.COMPLETION, savedOrder.getOrderStatus())) {
-            throw new IllegalArgumentException("계산 완료한 주문은 상태를 변경할 수 없습니다.");
-        }
+        return orderRepository.save(savedOrder);
+    }
 
-        final OrderStatus orderStatus = order.getOrderStatus();
-        savedOrder.changeOrderStatus(orderStatus);
-
-        orderRepository.save(savedOrder);
-
-        savedOrder.changeOrderLineItems(orderLineItemRepository.findAllByOrder(savedOrder));
-
-        return savedOrder;
+    public Order findById(Long orderId) {
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("주문을 찾을 수 없습니다."));
     }
 }

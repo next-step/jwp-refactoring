@@ -48,6 +48,9 @@ public class Order {
     }
 
     public void changeOrderStatus(final OrderStatus orderStatus) {
+        if (this.orderStatus.isCompletion()) {
+            throw new IllegalArgumentException("계산 완료한 주문은 상태를 변경할 수 없습니다.");
+        }
         this.orderStatus = orderStatus;
     }
 

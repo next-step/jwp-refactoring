@@ -39,4 +39,16 @@ class OrderTest {
                 () -> assertThat(order.getOrderedTime()).isEqualTo(orderedTime)
         );
     }
+
+    @Test
+    void 계산_완료한_주문은_상태를_변경할_수_없다() {
+        // given
+        Order order = new Order(OrderStatus.COMPLETION);
+
+        // when & then
+        assertThatThrownBy(() ->
+                order.changeOrderStatus(OrderStatus.COOKING)
+        ).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("계산 완료한 주문은 상태를 변경할 수 없습니다.");
+    }
 }
