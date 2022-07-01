@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuGroupRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
     @InjectMocks
     private MenuGroupService menuGroupService;
 
@@ -30,7 +30,7 @@ class MenuGroupServiceTest {
         // given
         MenuGroup menuGroup = 메뉴그룹_생성("menuGroup");
 
-        Mockito.when(menuGroupDao.save(menuGroup)).thenReturn(메뉴그룹_생성(1L, "menuGroup"));
+        Mockito.when(menuGroupRepository.save(menuGroup)).thenReturn(메뉴그룹_생성(1L, "menuGroup"));
 
         // when
         MenuGroup savedMenuGroup = menuGroupService.create(menuGroup);
@@ -50,7 +50,7 @@ class MenuGroupServiceTest {
         MenuGroup menuGroup1 = 메뉴그룹_생성(1L, "menuGroup1");
         MenuGroup menuGroup2 = 메뉴그룹_생성(2L, "menuGroup2");
 
-        Mockito.when(menuGroupDao.findAll()).thenReturn(Arrays.asList(menuGroup1, menuGroup2));
+        Mockito.when(menuGroupRepository.findAll()).thenReturn(Arrays.asList(menuGroup1, menuGroup2));
 
         // when
         List<MenuGroup> savedMenuGroups = menuGroupService.list();
