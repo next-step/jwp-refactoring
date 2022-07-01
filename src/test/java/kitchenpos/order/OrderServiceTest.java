@@ -11,11 +11,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.order.application.OrderService;
 import kitchenpos.menu.dao.MenuRepository;
+import kitchenpos.order.application.OrderService;
 import kitchenpos.order.dao.OrderDao;
 import kitchenpos.order.dao.OrderLineItemDao;
-import kitchenpos.order.dao.OrderTableDao;
+import kitchenpos.order.dao.OrderTableRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
@@ -46,14 +46,16 @@ class OrderServiceTest {
     OrderLineItemDao orderLineItemDao;
 
     @Mock
-    OrderTableDao orderTableDao;
+    OrderTableRepository orderTableRepository;
 
     Order 주문 = new Order();
-    OrderTable 테이블1 = new OrderTable();
+    OrderTable 테이블1;
     OrderLineItem 주문내역 = new OrderLineItem();
 
     @BeforeEach
     void setUp() {
+        테이블1 = new OrderTable(5, false);
+
         주문.setOrderedTime(LocalDateTime.now());
         주문.setOrderStatus(OrderStatus.COOKING.name());
         주문.setOrderLineItems(Collections.singletonList(주문내역));
@@ -64,7 +66,7 @@ class OrderServiceTest {
     void create() {
         // given
         given(menuDao.countByIdIn(any())).willReturn(1L);
-        given(orderTableDao.findById(any())).willReturn(Optional.of(테이블1));
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(테이블1));
         given(orderDao.save(any())).willReturn(주문);
         given(orderLineItemDao.save(any())).willReturn(주문내역);
 
@@ -108,7 +110,7 @@ class OrderServiceTest {
     void create_nonExistTableError() {
         // given
         given(menuDao.countByIdIn(any())).willReturn(1L);
-        given(orderTableDao.findById(any())).willReturn(Optional.empty());
+        given(orderTableRepository.findById(any())).willReturn(Optional.empty());
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
