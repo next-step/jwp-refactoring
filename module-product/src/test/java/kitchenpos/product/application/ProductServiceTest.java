@@ -1,7 +1,7 @@
 package kitchenpos.product.application;
 
-import kitchenpos.core.exception.BadRequestException;
-import kitchenpos.core.exception.ExceptionType;
+import kitchenpos.common.exception.BadRequestException;
+import kitchenpos.common.exception.ExceptionType;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.request.ProductRequest;

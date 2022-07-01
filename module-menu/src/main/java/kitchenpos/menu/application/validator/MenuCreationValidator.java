@@ -4,9 +4,9 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 import java.util.Objects;
-import kitchenpos.core.exception.CannotCreateException;
-import kitchenpos.core.exception.ExceptionType;
-import kitchenpos.core.exception.NotFoundException;
+import kitchenpos.common.exception.CannotCreateException;
+import kitchenpos.common.exception.ExceptionType;
+import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.menu.dto.request.MenuProductRequest;
 import kitchenpos.menu.dto.request.MenuRequest;
 import kitchenpos.menu.domain.MenuGroupRepository;

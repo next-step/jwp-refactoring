@@ -5,8 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Collections;
-import kitchenpos.core.exception.BadRequestException;
-import kitchenpos.core.exception.ExceptionType;
+import kitchenpos.common.exception.BadRequestException;
+import kitchenpos.common.exception.ExceptionType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

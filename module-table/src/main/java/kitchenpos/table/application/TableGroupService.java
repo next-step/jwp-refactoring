@@ -1,7 +1,7 @@
 package kitchenpos.table.application;
 
-import kitchenpos.core.exception.ExceptionType;
-import kitchenpos.core.exception.NotFoundException;
+import kitchenpos.common.exception.ExceptionType;
+import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;

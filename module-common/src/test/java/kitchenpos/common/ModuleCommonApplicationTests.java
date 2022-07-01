@@ -1,11 +1,11 @@
-package kitchenpos.menugroup;
+package kitchenpos.common;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ModuleMenuGroupApplicationTests {
+class ModuleCommonApplicationTests {
     @Test
-    public void contextLoads() {
+    void contextLoads() {
     }
 }

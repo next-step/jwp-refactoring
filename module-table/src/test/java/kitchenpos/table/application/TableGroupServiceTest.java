@@ -1,10 +1,8 @@
 package kitchenpos.table.application;
 
-import kitchenpos.core.exception.BadRequestException;
-import kitchenpos.core.exception.CannotCreateException;
-import kitchenpos.core.exception.ExceptionType;
-import kitchenpos.table.application.OrderTableService;
-import kitchenpos.table.application.TableGroupService;
+import kitchenpos.common.exception.BadRequestException;
+import kitchenpos.common.exception.CannotCreateException;
+import kitchenpos.common.exception.ExceptionType;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.request.OrderTableRequest;
 import kitchenpos.table.dto.response.OrderTableResponse;

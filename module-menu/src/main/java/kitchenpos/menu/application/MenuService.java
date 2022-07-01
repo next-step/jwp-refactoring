@@ -3,8 +3,8 @@ package kitchenpos.menu.application;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
-import kitchenpos.core.exception.CannotCreateException;
-import kitchenpos.core.exception.ExceptionType;
+import kitchenpos.common.exception.CannotCreateException;
+import kitchenpos.common.exception.ExceptionType;
 import kitchenpos.menu.application.validator.MenuValidatorGroup;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;

@@ -7,8 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import kitchenpos.core.exception.BadRequestException;
-import kitchenpos.core.exception.ExceptionType;
+import kitchenpos.common.exception.BadRequestException;
+import kitchenpos.common.exception.ExceptionType;
 import kitchenpos.table.event.TableChangeEmptyEventPublisher;
 import org.springframework.data.domain.AbstractAggregateRoot;
 

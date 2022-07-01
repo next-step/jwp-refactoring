@@ -1,4 +1,4 @@
-package kitchenpos.core.exception;
+package kitchenpos.common.exception;
 
 import java.util.Objects;
 

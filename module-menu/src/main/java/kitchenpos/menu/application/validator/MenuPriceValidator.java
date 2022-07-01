@@ -2,8 +2,8 @@ package kitchenpos.menu.application.validator;
 
 import java.math.BigDecimal;
 import java.util.List;
-import kitchenpos.core.exception.CannotCreateException;
-import kitchenpos.core.exception.ExceptionType;
+import kitchenpos.common.exception.CannotCreateException;
+import kitchenpos.common.exception.ExceptionType;
 import kitchenpos.domain.Price;
 import kitchenpos.menu.dto.request.MenuProductRequest;
 import kitchenpos.menu.dto.request.MenuRequest;

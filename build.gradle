@@ -51,13 +51,13 @@ dependencies {
 
 project(':module-table') {
     dependencies {
-        implementation project(':module-core')
+        implementation project(':module-common')
     }
 }
 
 project(':module-order') {
     dependencies {
-        implementation project(':module-core')
+        implementation project(':module-common')
         implementation project(':module-menu')
         implementation project(':module-table')
     }
@@ -65,13 +65,13 @@ project(':module-order') {
 
 project(':module-product') {
     dependencies {
-        implementation project(':module-core')
+        implementation project(':module-common')
     }
 }
 
 project(':module-menu') {
     dependencies {
-        implementation project(':module-core')
+        implementation project(':module-common')
         implementation project(':module-product')
     }
 }

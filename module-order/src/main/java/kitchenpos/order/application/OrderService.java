@@ -2,8 +2,8 @@ package kitchenpos.order.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.core.exception.ExceptionType;
-import kitchenpos.core.exception.NotFoundException;
+import kitchenpos.common.exception.ExceptionType;
+import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
