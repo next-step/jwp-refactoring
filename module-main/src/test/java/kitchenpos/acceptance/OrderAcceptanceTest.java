@@ -43,14 +43,14 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         주문_등록됨(response);
 
         // when
-//        response = 주문_조회_요청();
-//        // then
-//        주문_목록_조회됨(response);
-//
-//        // when
-//        response = 주문_상태_변경_요청(createdOrder.getId(), OrderStatus.MEAL);
-//        // then
-//        주문_상태_변경됨(response, OrderStatus.MEAL);
+        response = 주문_조회_요청();
+        // then
+        주문_목록_조회됨(response);
+
+        // when
+        response = 주문_상태_변경_요청(createdOrder.getId(), OrderStatus.MEAL);
+        // then
+        주문_상태_변경됨(response, OrderStatus.MEAL);
     }
 
     private ExtractableResponse<Response> 주문_등록_요청(Long orderTableId, List<OrderLineItemRequest> orderLineItemRequest) {

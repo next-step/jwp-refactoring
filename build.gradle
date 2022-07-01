@@ -25,6 +25,7 @@ subprojects {
         implementation 'org.springframework.boot:spring-boot-starter-actuator'
         implementation 'org.springframework.boot:spring-boot-starter-web'
         implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
         runtimeOnly 'com.h2database:h2'
 
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -51,8 +52,9 @@ project(':module-menu') {
 
 project(':module-order') {
     dependencies {
-        implementation project(':module-menu')
         implementation project(':module-product')
+        implementation project(':module-menu')
+        testImplementation project(':module-menu')
     }
 }
 
