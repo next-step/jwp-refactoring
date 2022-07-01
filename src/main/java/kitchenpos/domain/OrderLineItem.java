@@ -20,6 +20,10 @@ public class OrderLineItem {
         this.quantity = quantity;
     }
 
+    public void updateOrder(Order order) {
+        this.order = order;
+    }
+
     public Long getSeq() {
         return seq;
     }

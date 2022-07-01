@@ -28,7 +28,7 @@ public class Order {
 
     public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
         this.orderTableId = orderTableId;
-        this.orderLineItems = new OrderLineItems(orderLineItems);
+        changeOrderLineItems(orderLineItems);
     }
 
     public Long getId() {
@@ -37,10 +37,6 @@ public class Order {
 
     public Long getOrderTableId() {
         return orderTableId;
-    }
-
-    public void updateOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
     }
 
     public OrderStatus getOrderStatus() {
@@ -61,6 +57,7 @@ public class Order {
 
     public void changeOrderLineItems(final List<OrderLineItem> orderLineItems) {
         this.orderLineItems = new OrderLineItems(orderLineItems);
+        this.orderLineItems.addOrder(this);
     }
 
     public void validateDuplicateMenu(long menuCount) {
@@ -70,6 +67,10 @@ public class Order {
     public void order(LocalDateTime orderedTime) {
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = orderedTime;
+    }
+
+    public List<Long> getMenuIds() {
+        return orderLineItems.getMenuIds();
     }
 
     @Override

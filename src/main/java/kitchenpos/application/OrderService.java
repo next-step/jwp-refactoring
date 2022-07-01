@@ -1,22 +1,18 @@
 package kitchenpos.application;
 
 import kitchenpos.dao.MenuRepository;
-import kitchenpos.dao.OrderRepository;
 import kitchenpos.dao.OrderLineItemRepository;
+import kitchenpos.dao.OrderRepository;
 import kitchenpos.dao.OrderTableRepository;
 import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -39,49 +35,24 @@ public class OrderService {
 
     @Transactional
     public Order create(final Order order) {
-        final List<OrderLineItem> orderLineItems = order.getOrderLineItems();
+        order.validateDuplicateMenu(menuRepository.countByIdIn(order.getMenuIds()));
+        validateOrderTable(order);
 
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException("주문 항목이 없습니다.");
-        }
+        order.order(LocalDateTime.now());
+        return orderRepository.save(order);
+    }
 
-        final List<Long> menuIds = orderLineItems.stream()
-                .map(OrderLineItem::getMenuId)
-                .collect(Collectors.toList());
-
-        if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException("중복된 메뉴가 있습니다.");
-        }
-
+    private void validateOrderTable(Order order) {
         final OrderTable orderTable = orderTableRepository.findById(order.getOrderTableId())
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException("빈 테이블은 주문을 할 수 없습니다.");
-        }
-
-        order.updateOrderTableId(orderTable.getId());
-        order.changeOrderStatus(OrderStatus.COOKING.name());
-        order.updateOrderedTime(LocalDateTime.now());
-
-        final Order savedOrder = orderRepository.save(order);
-
-        final Long orderId = savedOrder.getId();
-        final List<OrderLineItem> savedOrderLineItems = new ArrayList<>();
-        for (final OrderLineItem orderLineItem : orderLineItems) {
-            orderLineItem.updateOrderId(orderId);
-            savedOrderLineItems.add(orderLineItemRepository.save(orderLineItem));
-        }
-        savedOrder.changeOrderLineItems(savedOrderLineItems);
-
-        return savedOrder;
+                .orElseThrow(() -> new IllegalArgumentException("주문 테이블을 찾을 수 없습니다."));
+        orderTable.validateEmpty();
     }
 
     public List<Order> list() {
         final List<Order> orders = orderRepository.findAll();
 
         for (final Order order : orders) {
-            order.changeOrderLineItems(orderLineItemRepository.findAllByOrderId(order.getId()));
+            order.changeOrderLineItems(orderLineItemRepository.findAllByOrder(order));
         }
 
         return orders;
@@ -92,16 +63,16 @@ public class OrderService {
         final Order savedOrder = orderRepository.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        if (Objects.equals(OrderStatus.COMPLETION.name(), savedOrder.getOrderStatus())) {
+        if (Objects.equals(OrderStatus.COMPLETION, savedOrder.getOrderStatus())) {
             throw new IllegalArgumentException("계산 완료한 주문은 상태를 변경할 수 없습니다.");
         }
 
-        final OrderStatus orderStatus = OrderStatus.valueOf(order.getOrderStatus());
-        savedOrder.changeOrderStatus(orderStatus.name());
+        final OrderStatus orderStatus = order.getOrderStatus();
+        savedOrder.changeOrderStatus(orderStatus);
 
         orderRepository.save(savedOrder);
 
-        savedOrder.changeOrderLineItems(orderLineItemRepository.findAllByOrderId(orderId));
+        savedOrder.changeOrderLineItems(orderLineItemRepository.findAllByOrder(savedOrder));
 
         return savedOrder;
     }

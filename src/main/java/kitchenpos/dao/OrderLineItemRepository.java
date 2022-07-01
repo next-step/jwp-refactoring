@@ -1,5 +1,6 @@
 package kitchenpos.dao;
 
+import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 
 import java.util.List;
@@ -12,5 +13,5 @@ public interface OrderLineItemRepository {
 
     List<OrderLineItem> findAll();
 
-    List<OrderLineItem> findAllByOrderId(Long orderId);
+    List<OrderLineItem> findAllByOrder(Order order);
 }

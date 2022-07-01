@@ -36,9 +36,8 @@ public class MenuProduct {
         return menu.getId();
     }
 
-    public MenuProduct updateMenu(final Menu menu) {
+    public void updateMenu(final Menu menu) {
         this.menu = menu;
-        return this;
     }
 
     public Long getProductId() {

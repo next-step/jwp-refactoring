@@ -45,4 +45,10 @@ public class OrderLineItems {
             throw new IllegalArgumentException("중복된 메뉴가 있습니다.");
         }
     }
+
+    public void addOrder(Order order) {
+        elements.forEach(
+                orderLineItem -> orderLineItem.updateOrder(order)
+        );
+    }
 }

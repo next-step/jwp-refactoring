@@ -24,12 +24,9 @@ class OrderServiceTest {
 
     @Test
     void 주문_항목이_비어있을_경우_등록할_수_없다() {
-        // given
-        Order order = new Order(1L, null);
-
         // when & then
         assertThatThrownBy(() ->
-                orderService.create(order)
+                orderService.create(new Order(1L, null))
         ).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("주문 항목이 없습니다.");
     }
@@ -88,7 +85,6 @@ class OrderServiceTest {
         // given
         Order saved = orderService.create(new Order(8L, createOrderLineItems()));
         saved.changeOrderStatus(COMPLETION);
-        orderService.changeOrderStatus(saved.getId(), saved);
 
         // when & then
         assertThatThrownBy(() ->
@@ -107,7 +103,7 @@ class OrderServiceTest {
         Order result = orderService.changeOrderStatus(saved.getId(), saved);
 
         // then
-        assertThat(result.getOrderStatus()).isEqualTo(MEAL.name());
+        assertThat(result.getOrderStatus()).isEqualTo(MEAL);
     }
 
     private List<OrderLineItem> createOrderLineItems() {
