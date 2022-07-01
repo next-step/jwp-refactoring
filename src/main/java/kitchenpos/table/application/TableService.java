@@ -46,10 +46,6 @@ public class TableService {
         return new OrderTables(orderTableRepository.findAllById(ids));
     }
 
-    public OrderTables findOrderTablesByTableGroupId(final Long tableGroupId) {
-        return new OrderTables(orderTableRepository.findAllByTableGroupId(tableGroupId));
-    }
-
     @Transactional
     public OrderTable changeEmpty(final Long orderTableId, final boolean changedEmpty) {
         final OrderTable savedOrderTable = getOrderTable(orderTableId);

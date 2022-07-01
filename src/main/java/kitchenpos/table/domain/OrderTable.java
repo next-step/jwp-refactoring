@@ -30,10 +30,6 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public OrderTable(TableGroup tableGroup, NumberOfGuests numberOfGuests, boolean empty) {
-        this(null, tableGroup, numberOfGuests, empty);
-    }
-
     public OrderTable(NumberOfGuests numberOfGuests) {
         this(null, null, numberOfGuests, true);
     }

@@ -74,11 +74,6 @@ public class Order {
         return orderLineItems;
     }
 
-    @Deprecated
-    public void setOrderStatus(final OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
     private void checkValidation(List<OrderLineItem> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
             throw new IllegalArgumentException("주문에 주문 목록이 존재하지 않습니다.");

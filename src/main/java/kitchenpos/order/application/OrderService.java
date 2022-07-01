@@ -22,18 +22,15 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class OrderService {
     private final OrderRepository orderRepository;
-    private final OrderLineItemRepository orderLineItemRepository;
     private final MenuService menuService;
     private final TableService tableService;
 
     public OrderService(
             final OrderRepository orderRepository,
-            final OrderLineItemRepository orderLineItemRepository,
             final MenuService menuService,
             final TableService tableService
     ) {
         this.orderRepository = orderRepository;
-        this.orderLineItemRepository = orderLineItemRepository;
         this.menuService = menuService;
         this.tableService = tableService;
     }
@@ -44,7 +41,6 @@ public class OrderService {
         Menus menus = menuService.findMenusInIds(request.getMenus());
 
         validateOrderCreate(request, orderTable, menus);
-
 
         Order order = request.of(orderTable, orderLineItemRequest -> {
             Menu menu = menus.findMenuById(orderLineItemRequest.getMenu());

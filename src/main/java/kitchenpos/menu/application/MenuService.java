@@ -1,12 +1,13 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.menu.dao.*;
+import kitchenpos.menu.dao.MenuRepository;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.Menus;
 import kitchenpos.menu.dto.MenuCreateRequest;
 import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.Product;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,17 +20,13 @@ public class MenuService {
     private final MenuGroupService menuGroupService;
     private final ProductService productService;
 
-    private final MenuProductRepository menuProductRepository;
-
     public MenuService(
             final MenuRepository menuRepository,
             final MenuGroupService menuGroupService,
-            final MenuProductRepository menuProductRepository,
             final ProductService productService
     ) {
         this.menuRepository = menuRepository;
         this.menuGroupService = menuGroupService;
-        this.menuProductRepository = menuProductRepository;
         this.productService = productService;
     }
 
@@ -38,7 +35,8 @@ public class MenuService {
         MenuGroup menuGroup = menuGroupService.getMenuGroup(request.getMenuGroupId());
         Menu menu = request.of(menuGroup);
         MenuProducts menuProducts = request.convertMenuProducts(menuProductRequest -> {
-            return menuProductRequest.of(menu, productService.getProduct(menuProductRequest.getProductId()));
+            Product product = productService.getProduct(menuProductRequest.getProductId());
+            return menuProductRequest.of(menu, product);
         });
         menu.addMenuProducts(menuProducts);
 

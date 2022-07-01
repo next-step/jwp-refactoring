@@ -52,16 +52,6 @@ public class TableGroup {
         return orderTables;
     }
 
-    @Deprecated
-    public void setCreatedDate(final LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    @Deprecated
-    public void setOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
-    }
-
     private void checkValue(List<OrderTable> orderTables) {
         if (orderTables.size() < MINIMUM_COUNT) {
             throw new IllegalArgumentException("테이블 그룹에 속한 주문 테이블의 수는 최소 2개 이상이어야 합니다.");
