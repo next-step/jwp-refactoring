@@ -124,17 +124,25 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("테이블 그룹 해체시 테이블 그룹이 해제 가능한 상태라면 해제 한다")
     void ungroup() {
+        OrderTable 단체_주문_테이블_10명 = OrderTable.of(1L, null, NumberOfGuests.of(4), Empty.of(true));
+        OrderTable 단체_주문_테이블_20명 = OrderTable.of(2L, null, NumberOfGuests.of(4), Empty.of(true));
+
+        TableGroup 요청_단체_테이블_그룹 = TableGroup.of(
+                999L,
+                LocalDateTime.now(),
+                OrderTables.of(Arrays.asList(단체_주문_테이블_10명, 단체_주문_테이블_20명))
+        );
 
         // when
-        when(tableGroupRepository.findById(any())).thenReturn(Optional.of(단체_주문_테이블_그룹));
+        when(tableGroupRepository.findById(any())).thenReturn(Optional.of(요청_단체_테이블_그룹));
         when(orderService.isOrderTablesStateInCookingOrMeal(any())).thenReturn(false);
 
-        tableGroupService.ungroup(단체_주문_테이블_그룹.getId());
+        tableGroupService.ungroup(요청_단체_테이블_그룹.getId());
 
         // then
         assertAll(
-                () -> Assertions.assertThat(단체_주문_테이블_4명.getTableGroupId()).isNull(),
-                () -> Assertions.assertThat(단체_주문_테이블_6명.getTableGroupId()).isNull()
+                () -> Assertions.assertThat(단체_주문_테이블_10명.getTableGroupId()).isNull(),
+                () -> Assertions.assertThat(단체_주문_테이블_20명.getTableGroupId()).isNull()
         );
     }
 

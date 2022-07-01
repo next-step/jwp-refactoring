@@ -27,14 +27,15 @@ public class Order {
     private LocalDateTime orderedTime;
 
     @Embedded
-    private OrderLineItems orderLineItems = new OrderLineItems();
+    private final OrderLineItems orderLineItems = new OrderLineItems();
 
     protected Order() {
     }
 
-    private Order(Long id, OrderTable orderTable, OrderLineItems orderLineItems) {
+    private Order(Long id, OrderTable orderTable, OrderStatus orderStatus, OrderLineItems orderLineItems) {
         this(orderTable, orderLineItems);
         this.id = id;
+        this.orderStatus = orderStatus;
     }
 
     private Order(OrderTable orderTable, OrderLineItems orderLineItems) {
@@ -49,8 +50,8 @@ public class Order {
         return new Order(orderTable, orderLineItems);
     }
 
-    public static Order of(Long id, OrderTable orderTable, OrderLineItems orderLineItems) {
-        return new Order(id, orderTable, orderLineItems);
+    public static Order of(Long id, OrderTable orderTable, OrderStatus orderStatus, OrderLineItems orderLineItems) {
+        return new Order(id, orderTable, orderStatus, orderLineItems);
     }
 
     private void validateOrderTable(OrderTable orderTable) {
@@ -67,7 +68,7 @@ public class Order {
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
-        if (orderStatus.equals(OrderStatus.COMPLETION)) {
+        if (this.orderStatus.equals(OrderStatus.COMPLETION)) {
             throw new IllegalArgumentException(ORDER_STATUS_CHANGE_CANNOT_COMPLETION);
         }
 

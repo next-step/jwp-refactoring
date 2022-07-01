@@ -4,6 +4,7 @@ import kitchenpos.order.domain.Order;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class OrderResponse {
@@ -62,5 +63,21 @@ public class OrderResponse {
 
     public List<OrderLineItemResponse> getOrderLineItems() {
         return orderLineItems;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderResponse that = (OrderResponse) o;
+        return Objects.equals(getOrderTableId(), that.getOrderTableId())
+                && Objects.equals(getOrderStatus(), that.getOrderStatus())
+                && Objects.equals(getOrderedTime(), that.getOrderedTime())
+                && Objects.equals(getOrderLineItems(), that.getOrderLineItems());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getOrderTableId(), getOrderStatus(), getOrderedTime(), getOrderLineItems());
     }
 }

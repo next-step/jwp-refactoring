@@ -4,14 +4,14 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.dto.MenuGroupResponse;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.product.dto.ProductResponse;
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,13 +35,13 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
     private static final String API_URL = "/api/orders";
 
-    private OrderTable 주문_테이블;
+    private OrderTableResponse 주문_테이블;
     private MenuGroupResponse 메뉴_그룹;
     private MenuProductRequest 메뉴_치킨;
     private MenuProductRequest 메뉴_피자;
     private ProductResponse 피자;
     private ProductResponse 치킨;
-    private Menu 메뉴;
+    private MenuResponse 메뉴;
 
     @BeforeEach
     public void setUp() {
@@ -59,13 +59,12 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("주문 생성, 조회, 상태변경 테스트")
+    @DisplayName("주문을 관리한다 (주문 생성, 조회, 상태변경)")
     void Order() {
-        OrderLineItem 주문_항목 = new OrderLineItem();
-        주문_항목.setQuantity(1);
-        주문_항목.setMenuId(메뉴.getId());
-
-        ExtractableResponse<Response> 주문_생성_요청_결과 = 주문_생성_요청(주문_테이블.getId(), Arrays.asList(주문_항목));
+        ExtractableResponse<Response> 주문_생성_요청_결과 = 주문_생성_요청(
+                주문_테이블.getId(),
+                Arrays.asList(OrderLineItemRequest.of(메뉴.getId(), 1L))
+        );
 
         주문_생성됨(주문_생성_요청_결과);
 
@@ -82,15 +81,13 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         주문_상태_수정됨(주문_상태_수정_요청_결과, 주문_상태);
     }
 
-    private ExtractableResponse<Response> 주문_생성_요청(Long orderTableId, List<OrderLineItem> orderLineItems) {
-        Order order = new Order();
-        order.setOrderTableId(orderTableId);
-        order.setOrderLineItems(orderLineItems);
+    private ExtractableResponse<Response> 주문_생성_요청(Long orderTableId, List<OrderLineItemRequest> orderLineItems) {
+        OrderRequest orderRequest = OrderRequest.of(orderTableId, orderLineItems);
 
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(order)
+                .body(orderRequest)
                 .when().post(API_URL)
                 .then().log().all()
                 .extract();

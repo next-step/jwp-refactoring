@@ -1,28 +1,33 @@
 package kitchenpos.order.fixture;
 
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.table.domain.OrderTable;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List;
 
+import static kitchenpos.order.fixture.OrderLineItemFixture.완료_주문_항목;
 import static kitchenpos.order.fixture.OrderLineItemFixture.주문_항목;
+import static kitchenpos.table.fixture.TableFixture.비어있는_주문_테이블_그룹_없음;
 
 public class OrderFixture {
 
-    public static Order 요리중_상태_주문 = create(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), Arrays.asList(주문_항목));
-    public static Order 주문완료_상태_주문 = create(2L, 1L, OrderStatus.COMPLETION.name(), LocalDateTime.now(), Arrays.asList(주문_항목));
+    public static Order 요리중_상태_주문 = create(
+            1L,
+            비어있는_주문_테이블_그룹_없음,
+            OrderStatus.COOKING,
+            OrderLineItems.of(Arrays.asList(주문_항목))
+    );
 
-    public static Order create(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
-        Order order = new Order();
-        order.setId(id);
-        order.setOrderTableId(orderTableId);
-        order.setOrderStatus(orderStatus);
-        order.setOrderedTime(orderedTime);
-        order.setOrderLineItems(orderLineItems);
+    public static Order 주문완료_상태_주문 = create(
+            2L,
+            비어있는_주문_테이블_그룹_없음,
+            OrderStatus.COMPLETION,
+            OrderLineItems.of(Arrays.asList(완료_주문_항목))
+    );
 
-        return order;
+    public static Order create(Long id, OrderTable orderTable, OrderStatus orderStatus, OrderLineItems orderLineItems) {
+        return Order.of(id, orderTable, orderStatus, orderLineItems);
     }
 }

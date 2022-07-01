@@ -4,6 +4,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.List;
 
 import static kitchenpos.common.Messages.ORDER_LINE_ITEM_IDS_FIND_IN_NO_SUCH;
@@ -12,7 +13,7 @@ import static kitchenpos.common.Messages.ORDER_LINE_ITEM_IDS_FIND_IN_NO_SUCH;
 public class OrderLineItems {
 
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderLineItem> orderLineItems;
+    private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     protected OrderLineItems() {
     }
