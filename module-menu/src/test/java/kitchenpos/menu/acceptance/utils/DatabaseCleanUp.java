@@ -24,7 +24,8 @@ public class DatabaseCleanUp {
         tables = Arrays.asList(
             "menu",
             "menu_product",
-            "product"
+            "product",
+            "menu_group"
         );
     }
 

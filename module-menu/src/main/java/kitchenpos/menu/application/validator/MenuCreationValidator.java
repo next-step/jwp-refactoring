@@ -9,20 +9,20 @@ import kitchenpos.core.exception.ExceptionType;
 import kitchenpos.core.exception.NotFoundException;
 import kitchenpos.menu.dto.request.MenuProductRequest;
 import kitchenpos.menu.dto.request.MenuRequest;
-import kitchenpos.menugroup.domain.MenuGroupRepository;
+import kitchenpos.menu.domain.MenuGroupRepository;
+import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MenuCreationValidator implements MenuValidator {
 
     private final MenuGroupRepository menuGroupRepository;
-    private final ProductRepository productRepository;
+    private final ProductService productService;
 
-    public MenuCreationValidator(MenuGroupRepository menuGroupRepository, ProductRepository productRepository) {
+    public MenuCreationValidator(MenuGroupRepository menuGroupRepository, ProductService productService) {
         this.menuGroupRepository = menuGroupRepository;
-        this.productRepository = productRepository;
+        this.productService = productService;
     }
 
     @Override
@@ -51,7 +51,7 @@ public class MenuCreationValidator implements MenuValidator {
             .map(MenuProductRequest::getProductId)
             .collect(toList());
 
-        return productRepository.findByIdIn(productIds);
+        return productService.findByIdIn(productIds);
     }
 
     private void validateMenuProducts(List<MenuProductRequest> menuProductRequests) {

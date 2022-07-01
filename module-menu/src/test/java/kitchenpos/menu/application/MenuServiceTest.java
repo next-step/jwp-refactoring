@@ -18,7 +18,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import kitchenpos.core.exception.BadRequestException;
 import kitchenpos.core.exception.CannotCreateException;
 import kitchenpos.core.exception.ExceptionType;
@@ -32,9 +31,9 @@ import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.request.MenuRequest;
 import kitchenpos.menu.dto.response.MenuResponse;
-import kitchenpos.menugroup.domain.MenuGroupRepository;
+import kitchenpos.menu.domain.MenuGroupRepository;
+import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,7 +44,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
     private MenuGroupRepository menuGroupRepository;
-    private ProductRepository productRepository;
+    private ProductService productService;
     private MenuRepository menuRepository;
     private MenuValidator menuCreationValidator;
     private MenuValidator menuPriceValidator;
@@ -71,10 +70,10 @@ class MenuServiceTest {
         치킨_메뉴_entity = Menu.of(치킨_메뉴.getName(), 치킨_메뉴.getPrice(), null, Collections.singletonList(테스트_메뉴_항목));
 
         menuGroupRepository = mock(MenuGroupRepository.class);
-        productRepository = mock(ProductRepository.class);
+        productService = mock(ProductService.class);
         menuRepository = mock(MenuRepository.class);
-        menuCreationValidator = new MenuCreationValidator(menuGroupRepository, productRepository);
-        menuPriceValidator = new MenuPriceValidator(productRepository);
+        menuCreationValidator = new MenuCreationValidator(menuGroupRepository, productService);
+        menuPriceValidator = new MenuPriceValidator(productService);
 
         validatorGroup = new MenuValidatorGroup(menuCreationValidator, menuPriceValidator);
         menuService = new MenuService(menuRepository, validatorGroup);
@@ -87,12 +86,12 @@ class MenuServiceTest {
         치킨_메뉴 = 치킨_메뉴_FIXTURE;
         when(menuGroupRepository.existsById(치킨_메뉴.getMenuGroupId()))
             .thenReturn(true);
-        when(productRepository.findByIdIn(Arrays.asList(후라이드_치킨.getId(), 감자튀김.getId())))
+        when(productService.findByIdIn(Arrays.asList(후라이드_치킨.getId(), 감자튀김.getId())))
             .thenReturn(Arrays.asList(후라이드_치킨, 감자튀김));
-        when(productRepository.findById(메뉴_상품_FIXTURE.getProductId()))
-            .thenReturn(Optional.of(후라이드_치킨));
-        when(productRepository.findById(메뉴_상품_FIXTURE2.getProductId()))
-            .thenReturn(Optional.of(감자튀김));
+        when(productService.findById(메뉴_상품_FIXTURE.getProductId()))
+            .thenReturn(후라이드_치킨);
+        when(productService.findById(메뉴_상품_FIXTURE2.getProductId()))
+            .thenReturn(감자튀김);
         when(menuRepository.save(any()))
             .thenReturn(치킨_메뉴_entity);
 
@@ -127,7 +126,7 @@ class MenuServiceTest {
         치킨_메뉴 = new MenuRequest("test", null, 1L, Collections.emptyList());
         when(menuGroupRepository.existsById(치킨_메뉴.getMenuGroupId()))
             .thenReturn(true);
-        when(productRepository.findByIdIn(anyList()))
+        when(productService.findByIdIn(anyList()))
             .thenReturn(Collections.emptyList());
 
         // then
@@ -143,7 +142,7 @@ class MenuServiceTest {
         치킨_메뉴 = new MenuRequest("test", BigDecimal.valueOf(-300L), 1L, Collections.emptyList());
         when(menuGroupRepository.existsById(치킨_메뉴.getMenuGroupId()))
             .thenReturn(true);
-        when(productRepository.findByIdIn(anyList()))
+        when(productService.findByIdIn(anyList()))
             .thenReturn(Collections.emptyList());
 
         // then
@@ -160,7 +159,7 @@ class MenuServiceTest {
         치킨_메뉴 = new MenuRequest("test", BigDecimal.valueOf(300L), 1L, Arrays.asList(메뉴_상품_FIXTURE, 메뉴_상품_FIXTURE2));
         when(menuGroupRepository.existsById(치킨_메뉴.getMenuGroupId()))
             .thenReturn(true);
-        when(productRepository.findByIdIn(Arrays.asList(메뉴_상품_FIXTURE.getProductId(), 메뉴_상품_FIXTURE2.getProductId())))
+        when(productService.findByIdIn(Arrays.asList(메뉴_상품_FIXTURE.getProductId(), 메뉴_상품_FIXTURE2.getProductId())))
             .thenReturn(Collections.singletonList(후라이드_치킨));
 
         // then
@@ -177,12 +176,12 @@ class MenuServiceTest {
         치킨_메뉴 = 치킨_메뉴_FIXTURE2;
         when(menuGroupRepository.existsById(치킨_메뉴.getMenuGroupId()))
             .thenReturn(true);
-        when(productRepository.findByIdIn(Arrays.asList(후라이드_치킨.getId(), 감자튀김.getId())))
+        when(productService.findByIdIn(Arrays.asList(후라이드_치킨.getId(), 감자튀김.getId())))
             .thenReturn(Arrays.asList(후라이드_치킨, 감자튀김));
-        when(productRepository.findById(메뉴_상품_FIXTURE.getProductId()))
-            .thenReturn(Optional.of(후라이드_치킨));
-        when(productRepository.findById(메뉴_상품_FIXTURE2.getProductId()))
-            .thenReturn(Optional.of(감자튀김));
+        when(productService.findById(메뉴_상품_FIXTURE.getProductId()))
+            .thenReturn(후라이드_치킨);
+        when(productService.findById(메뉴_상품_FIXTURE2.getProductId()))
+            .thenReturn(감자튀김);
 
         // then
         assertThatThrownBy(() -> {

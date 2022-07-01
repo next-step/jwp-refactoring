@@ -1,14 +1,14 @@
-package kitchenpos.menugroup.acceptance;
+package kitchenpos.menu.acceptance;
 
-import static kitchenpos.menugroup.acceptance.MenuGroupAcceptanceSupport.메뉴_그룹_등록됨;
-import static kitchenpos.menugroup.acceptance.MenuGroupAcceptanceSupport.메뉴_그룹_등록요청;
-import static kitchenpos.menugroup.acceptance.MenuGroupAcceptanceSupport.메뉴_그룹목록_조회됨;
-import static kitchenpos.menugroup.acceptance.MenuGroupAcceptanceSupport.메뉴_그룹목록_조회요청;
+import static kitchenpos.menu.acceptance.MenuGroupAcceptanceSupport.메뉴_그룹_등록됨;
+import static kitchenpos.menu.acceptance.MenuGroupAcceptanceSupport.메뉴_그룹_등록요청;
+import static kitchenpos.menu.acceptance.MenuGroupAcceptanceSupport.메뉴_그룹목록_조회됨;
+import static kitchenpos.menu.acceptance.MenuGroupAcceptanceSupport.메뉴_그룹목록_조회요청;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.menugroup.acceptance.utils.AcceptanceTest;
-import kitchenpos.menugroup.dto.request.MenuGroupRequest;
+import kitchenpos.menu.acceptance.utils.AcceptanceTest;
+import kitchenpos.menu.dto.request.MenuGroupRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

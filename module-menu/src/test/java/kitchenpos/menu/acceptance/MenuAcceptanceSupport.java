@@ -10,7 +10,7 @@ import io.restassured.response.Response;
 import java.util.List;
 import kitchenpos.menu.dto.request.MenuRequest;
 import kitchenpos.menu.dto.response.MenuResponse;
-import kitchenpos.menugroup.dto.request.MenuGroupRequest;
+import kitchenpos.menu.dto.request.MenuGroupRequest;
 import kitchenpos.product.dto.request.ProductRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

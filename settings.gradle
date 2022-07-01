@@ -3,7 +3,6 @@ rootProject.name = 'kitchenpos'
 include 'module-order'
 include 'module-core'
 include 'module-product'
-include 'module-menugroup'
 include 'module-menu'
 include 'module-table'
 

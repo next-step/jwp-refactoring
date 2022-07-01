@@ -7,17 +7,17 @@ import kitchenpos.core.exception.ExceptionType;
 import kitchenpos.domain.Price;
 import kitchenpos.menu.dto.request.MenuProductRequest;
 import kitchenpos.menu.dto.request.MenuRequest;
+import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MenuPriceValidator implements MenuValidator {
 
-    private final ProductRepository productRepository;
+    private final ProductService productService;
 
-    public MenuPriceValidator(ProductRepository productRepository) {
-        this.productRepository = productRepository;
+    public MenuPriceValidator(ProductService productService) {
+        this.productService = productService;
     }
 
     @Override
@@ -39,7 +39,6 @@ public class MenuPriceValidator implements MenuValidator {
     }
 
     private Product findByProductId(Long productId) {
-        return productRepository.findById(productId)
-                .orElseThrow(() -> new CannotCreateException(ExceptionType.NOT_EXIST_PRODUCT));
+        return productService.findById(productId);
     }
 }

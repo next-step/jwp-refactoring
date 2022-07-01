@@ -1,5 +1,7 @@
 package kitchenpos.product.application;
 
+import kitchenpos.core.exception.CannotCreateException;
+import kitchenpos.core.exception.ExceptionType;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.request.ProductRequest;
@@ -31,5 +33,14 @@ public class ProductService {
         return products.stream()
             .map(ProductResponse::of)
             .collect(Collectors.toList());
+    }
+
+    public List<Product> findByIdIn(List<Long> productIds) {
+        return productRepository.findByIdIn(productIds);
+    }
+
+    public Product findById(Long productId) {
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new CannotCreateException(ExceptionType.NOT_EXIST_PRODUCT));
     }
 }

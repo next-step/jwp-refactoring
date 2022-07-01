@@ -1,4 +1,4 @@
-package kitchenpos.menugroup.acceptance;
+package kitchenpos.menu.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -6,8 +6,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
-import kitchenpos.menugroup.dto.request.MenuGroupRequest;
-import kitchenpos.menugroup.dto.response.MenuGroupResponse;
+import kitchenpos.menu.dto.request.MenuGroupRequest;
+import kitchenpos.menu.dto.response.MenuGroupResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
