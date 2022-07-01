@@ -27,6 +27,18 @@ class OrderTablesTest {
     }
 
     @Test
+    void 테이블_개수가_2개_미만이면_에러가_발생해야_한다() {
+        // given
+        final TableGroup tableGroup = new TableGroup();
+        final OrderTable orderTable = new OrderTable(1L, null, new NumberOfGuests(0), true);
+        final OrderTables orderTables = new OrderTables();
+
+        // when and then
+        assertThatThrownBy(() -> orderTables.makeRelations(tableGroup, Arrays.asList(orderTable)))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
     void 테이블이_하나라도_비어있지_않으면_에러가_발생해야_한다() {
         // given
         final TableGroup tableGroup = new TableGroup();
@@ -40,14 +52,15 @@ class OrderTablesTest {
     }
 
     @Test
-    void 테이블_개수가_2개_미만이면_에러가_발생해야_한다() {
+    void 이미_그룹이_지정된_테이블이_있으면_에러가_발생해야_한다() {
         // given
         final TableGroup tableGroup = new TableGroup();
-        final OrderTable orderTable = new OrderTable(1L, null, new NumberOfGuests(0), true);
+        final OrderTable empty = new OrderTable(2L, null, new NumberOfGuests(0), true);
+        final OrderTable alreadyGrouped = new OrderTable(1L, 1L, new NumberOfGuests(0), true);
         final OrderTables orderTables = new OrderTables();
 
         // when and then
-        assertThatThrownBy(() -> orderTables.makeRelations(tableGroup, Arrays.asList(orderTable)))
-                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderTables.makeRelations(tableGroup, Arrays.asList(empty, alreadyGrouped)))
+                .isInstanceOf(IllegalStateException.class);
     }
 }
