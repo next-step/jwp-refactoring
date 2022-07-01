@@ -144,4 +144,15 @@ class TableServiceTest {
         // when and then
         assertThat(tableService.getById(given.getId())).isEqualTo(given);
     }
+
+    @Test
+    void 테이블_그룹_아이디로_주문_테이블들을_조회할_수_있어야_한다() {
+        // given
+        when(orderTableRepository.findAllByTableGroupId(식당_포스.단체.getId()))
+                .thenReturn(Arrays.asList(식당_포스.단체_지정_테이블1, 식당_포스.단체_지정_테이블2));
+
+        // when and then
+        assertThat(tableService.getAllByTableGroupId(식당_포스.단체.getId()))
+                .containsExactly(식당_포스.단체_지정_테이블1, 식당_포스.단체_지정_테이블2);
+    }
 }

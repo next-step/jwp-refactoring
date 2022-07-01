@@ -91,7 +91,7 @@ public class OrderService {
         return OrderResponse.of(orderRepository.save(savedOrder));
     }
 
-    public boolean existsNotCompleteOrderByOrderTableIdIn(final List<Long> orderTableIds) {
+    public boolean existsNotCompletesByOrderTableIdIn(final List<Long> orderTableIds) {
         return orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, OrderStatus.notCompletes());
     }
 }

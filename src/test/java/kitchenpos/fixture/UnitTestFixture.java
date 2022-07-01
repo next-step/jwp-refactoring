@@ -65,5 +65,5 @@ public class UnitTestFixture {
     public final Order 완료된_주문 = new Order(
             3L, 테이블.getId(), OrderStatus.COMPLETION, LocalDateTime.now(), new OrderLineItems(Arrays.asList(완료된_주문_항목)));
 
-    public final TableGroup 단체1 = new TableGroup(1L, LocalDateTime.now(), new OrderTables(Arrays.asList(단체_지정_테이블1, 단체_지정_테이블2)));
+    public final TableGroup 단체 = new TableGroup(1L, LocalDateTime.now(), new OrderTables(Arrays.asList(단체_지정_테이블1, 단체_지정_테이블2)));
 }

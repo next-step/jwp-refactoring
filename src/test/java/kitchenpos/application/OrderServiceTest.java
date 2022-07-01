@@ -179,7 +179,7 @@ class OrderServiceTest {
                 Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).thenReturn(true);
 
         // when and then
-        assertThat(orderService.existsNotCompleteOrderByOrderTableIdIn(
+        assertThat(orderService.existsNotCompletesByOrderTableIdIn(
                 Arrays.asList(식당_포스.테이블.getId()))).isTrue();
     }
 }

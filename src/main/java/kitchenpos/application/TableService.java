@@ -80,4 +80,9 @@ public class TableService {
         return orderTableRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(String.format("주문 테이블을 찾을 수 없습니다. id: %d", id)));
     }
+
+    @Transactional
+    public List<OrderTable> getAllByTableGroupId(final Long tableGroupId) {
+        return orderTableRepository.findAllByTableGroupId(tableGroupId);
+    }
 }
