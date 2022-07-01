@@ -28,7 +28,7 @@ public class OrderResponse {
     public static OrderResponse of(Order order){
         List<OrderLineItem> orderLineItems = order.getOrderLineItems();
         List<OrderLineItemDto> orderLineItemDtos =orderLineItems.stream().map(OrderLineItemDto::of).collect(Collectors.toList());
-        return new OrderResponse(order.getId(),order.getOrderTableId(),order.getOrderStatus(),order.getOrderedTime(),orderLineItemDtos);
+        return new OrderResponse(order.getId(),order.getOrderTableId(),order.getOrderStatus().name(),order.getOrderedTime(),orderLineItemDtos);
     }
 
     public Long getId() {

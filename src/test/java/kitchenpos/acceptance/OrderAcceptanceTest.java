@@ -7,6 +7,7 @@ import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.order.dto.OrderLineItemDto;
 import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.utils.KitchenPosBehaviors;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -75,10 +76,10 @@ class OrderAcceptanceTest extends AcceptanceTest {
         KitchenPosBehaviors.테이블_인원수_변경_요청(orderTable1.getId(),
                 OrderTableFixtureFactory.createParamForChangeNumberOfGuests(3));
 
-        Order savedOrder = 주문을_추가하고_확인한다(orderTable1.getId());
+        OrderResponse savedOrder = 주문을_추가하고_확인한다(orderTable1.getId());
         주문의_상태를_변경하고_확인한다(savedOrder.getId(), OrderStatus.MEAL);
 
-        Order savedOrder2 = 주문을_추가하고_확인한다(orderTable1.getId());
+        OrderResponse savedOrder2 = 주문을_추가하고_확인한다(orderTable1.getId());
         주문의_상태를_변경하고_확인한다(savedOrder2.getId(), OrderStatus.MEAL);
 
         주문의_상태를_변경하고_확인한다(savedOrder.getId(), OrderStatus.COMPLETION);
@@ -90,14 +91,14 @@ class OrderAcceptanceTest extends AcceptanceTest {
                 OrderTableFixtureFactory.createParamForChangeNumberOfGuests(0));
     }
 
-    private Order 주문을_추가하고_확인한다(Long orderTableId) {
+    private OrderResponse 주문을_추가하고_확인한다(Long orderTableId) {
         OrderLineItemDto orderLineItemDto = OrderLineItemFixtureFactory.createOrderLine(menuDTO.getId(), 3);
         OrderRequest orderRequest = OrderFixtureFactory.createOrder(orderTableId, Lists.newArrayList(orderLineItemDto));
 
         ExtractableResponse<Response> createResponse = KitchenPosBehaviors.주문_추가_요청(orderRequest);
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
-        return createResponse.as(Order.class);
+        return createResponse.as(OrderResponse.class);
     }
 
     private void 주문의_상태를_변경하고_확인한다(Long orderTableId, OrderStatus orderStatus) {
@@ -136,8 +137,8 @@ class OrderAcceptanceTest extends AcceptanceTest {
         KitchenPosBehaviors.테이블_인원수_변경_요청(orderTable2.getId(),
                 OrderTableFixtureFactory.createParamForChangeNumberOfGuests(3));
 
-        Order savedOrder = 주문을_추가하고_확인한다(orderTable1.getId());
-        Order savedOrder2 = 주문을_추가하고_확인한다(orderTable2.getId());
+        OrderResponse savedOrder = 주문을_추가하고_확인한다(orderTable1.getId());
+        OrderResponse savedOrder2 = 주문을_추가하고_확인한다(orderTable2.getId());
 
         주문의_상태를_변경하고_확인한다(savedOrder.getId(), OrderStatus.MEAL);
         주문의_상태를_변경하고_확인한다(savedOrder2.getId(), OrderStatus.MEAL);
