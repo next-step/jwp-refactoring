@@ -44,6 +44,11 @@ project(':module-main') {
     }
 }
 
+project(':module-product') {
+    dependencies {
+    }
+}
+
 project(':module-menu') {
     dependencies {
         implementation project(':module-product')

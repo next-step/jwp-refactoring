@@ -94,10 +94,10 @@
     - OrderTable -> TableGroup id 참조 변경
 
 - 4단계 (멀티 모듈 적용)
-  - kitchenpos-main
-  - kitchenpos-menu
-  - kitchenpos-order
-  - kitchenpos-product
+  - module-main
+  - module-menu
+  - module-order
+  - module-product
   
 
 
