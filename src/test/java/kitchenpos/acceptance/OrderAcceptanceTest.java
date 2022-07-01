@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
+import kitchenpos.order.dto.OrderLineItemDto;
+import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.utils.KitchenPosBehaviors;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -89,10 +91,10 @@ class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     private Order 주문을_추가하고_확인한다(Long orderTableId) {
-        OrderLineItem orderLineItem = OrderLineItemFixtureFactory.createOrderLine(menuDTO.getId(), 3);
-        Order order = OrderFixtureFactory.createOrder(orderTableId, Lists.newArrayList(orderLineItem));
+        OrderLineItemDto orderLineItemDto = OrderLineItemFixtureFactory.createOrderLine(menuDTO.getId(), 3);
+        OrderRequest orderRequest = OrderFixtureFactory.createOrder(orderTableId, Lists.newArrayList(orderLineItemDto));
 
-        ExtractableResponse<Response> createResponse = KitchenPosBehaviors.주문_추가_요청(order);
+        ExtractableResponse<Response> createResponse = KitchenPosBehaviors.주문_추가_요청(orderRequest);
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
         return createResponse.as(Order.class);

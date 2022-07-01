@@ -6,10 +6,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 import kitchenpos.order.application.OrderService;
+import kitchenpos.order.dto.OrderLineItemDto;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.application.TableService;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.fixture.MenuFixtureFactory;
 import kitchenpos.fixture.MenuGroupFixtureFactory;
@@ -93,14 +95,12 @@ public class ServiceTestHelper {
         return tableService.changeNumberOfGuests(orderTableId, OrderTableFixtureFactory.createParamForChangeNumberOfGuests(updatedNumberOfGuests));
     }
 
-    public Order 주문_생성됨(Long orderTableId, List<OrderLineItem> orderLineItems) {
-        return orderService.create(OrderFixtureFactory.createOrder(orderTableId, orderLineItems));
+    public OrderResponse 주문_생성됨(Long orderTableId, List<OrderLineItemDto> orderLineItemDtos) {
+        return orderService.create(OrderFixtureFactory.createOrder(orderTableId, orderLineItemDtos));
     }
 
-    public Order 주문상태_변경(Long orderId, OrderStatus orderStatus) {
-        Order param = OrderFixtureFactory.createParamForUpdateStatus(orderStatus);
+    public OrderResponse 주문상태_변경(Long orderId, OrderStatus orderStatus) {
+        OrderRequest param = OrderFixtureFactory.createParamForUpdateStatus(orderStatus);
         return orderService.changeOrderStatus(orderId, param);
     }
-
-
 }

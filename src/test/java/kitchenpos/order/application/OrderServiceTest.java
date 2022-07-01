@@ -6,6 +6,8 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 
 import java.util.List;
 import kitchenpos.ServiceTest;
+import kitchenpos.order.dto.OrderLineItemDto;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.utils.ServiceTestHelper;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -56,10 +58,10 @@ class OrderServiceTest extends ServiceTest {
     @Test
     @DisplayName("주문 등록")
     void 주문등록() {
-        OrderLineItem orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
-        OrderLineItem orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
+        OrderLineItemDto orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
+        OrderLineItemDto orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
 
-        Order savedOrder = serviceTestHelper.주문_생성됨(orderTable.getId(),
+        OrderResponse savedOrder = serviceTestHelper.주문_생성됨(orderTable.getId(),
                 Lists.newArrayList(orderLineItem1, orderLineItem2));
 
         assertThat(savedOrder.getId()).isNotNull();
@@ -71,10 +73,10 @@ class OrderServiceTest extends ServiceTest {
     @Test
     @DisplayName("인원수가 0명이라도 주문 등록 가능")
     void 주문등록_인원수가0일때도_주문등록가능() {
-        OrderLineItem orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
-        OrderLineItem orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
+        OrderLineItemDto orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
+        OrderLineItemDto orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
         OrderTableResponse zeroGuestTable = serviceTestHelper.비어있지않은테이블_생성됨(0);
-        Order savedOrder = serviceTestHelper.주문_생성됨(zeroGuestTable.getId(),
+        OrderResponse savedOrder = serviceTestHelper.주문_생성됨(zeroGuestTable.getId(),
                 Lists.newArrayList(orderLineItem1, orderLineItem2));
 
         assertThat(savedOrder.getId()).isNotNull();
@@ -95,7 +97,7 @@ class OrderServiceTest extends ServiceTest {
     void 주문등록_주문항목에_표시된_메뉴가_저장되지않은경우() {
         MenuProduct menuProduct = MenuProductFixtureFactory.createMenuProduct(product1.getId(), 1);
         Menu notSavedMenu = MenuFixtureFactory.createMenu(menuGroup, "메뉴", 4000, Lists.newArrayList(menuProduct));
-        OrderLineItem orderLineItem = OrderLineItemFixtureFactory.createOrderLine(notSavedMenu.getId(), 3);
+        OrderLineItemDto orderLineItem = OrderLineItemFixtureFactory.createOrderLine(notSavedMenu.getId(), 3);
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> serviceTestHelper.주문_생성됨(orderTable.getId(), Lists.newArrayList(orderLineItem)));
@@ -106,8 +108,8 @@ class OrderServiceTest extends ServiceTest {
     void 주문등록_주문테이블이_없는경우() {
         int numberOfGuests = 3;
         Long notExistTableId = -1L;
-        OrderLineItem orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
-        OrderLineItem orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
+        OrderLineItemDto orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
+        OrderLineItemDto orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> serviceTestHelper.주문_생성됨(notExistTableId,
@@ -118,8 +120,8 @@ class OrderServiceTest extends ServiceTest {
     @DisplayName("주문테이블이 빈 테이블인 경우 주문 등록 실패")
     void 주문등록_주문테이블이_빈테이블인_경우() {
         OrderTableResponse orderTable = serviceTestHelper.빈테이블_생성됨();
-        OrderLineItem orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
-        OrderLineItem orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
+        OrderLineItemDto orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
+        OrderLineItemDto orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> serviceTestHelper.주문_생성됨(orderTable.getId(),
@@ -129,25 +131,25 @@ class OrderServiceTest extends ServiceTest {
     @Test
     @DisplayName("주문 목록 조회")
     void 주문목록_조회() {
-        OrderLineItem orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
-        OrderLineItem orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
-        OrderLineItem orderLineItem3 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 2);
+        OrderLineItemDto orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
+        OrderLineItemDto orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
+        OrderLineItemDto orderLineItem3 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 2);
 
         serviceTestHelper.주문_생성됨(orderTable.getId(), Lists.newArrayList(orderLineItem1, orderLineItem2));
         serviceTestHelper.주문_생성됨(orderTable.getId(), Lists.newArrayList(orderLineItem3));
 
-        List<Order> orders = orderService.list();
+        List<OrderResponse> orders = orderService.list();
         assertThat(orders).hasSize(2);
     }
 
     @Test
     @DisplayName("주문 상태 변경")
     void 주문상태_변경() {
-        OrderLineItem orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
-        OrderLineItem orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
-        Order order = serviceTestHelper.주문_생성됨(orderTable.getId(), Lists.newArrayList(orderLineItem1, orderLineItem2));
+        OrderLineItemDto orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
+        OrderLineItemDto orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
+        OrderResponse order = serviceTestHelper.주문_생성됨(orderTable.getId(), Lists.newArrayList(orderLineItem1, orderLineItem2));
 
-        Order updatedOrder = serviceTestHelper.주문상태_변경(order.getId(), OrderStatus.MEAL);
+        OrderResponse updatedOrder = serviceTestHelper.주문상태_변경(order.getId(), OrderStatus.MEAL);
 
         assertThat(updatedOrder.getId()).isEqualTo(order.getId());
         assertThat(updatedOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
@@ -156,10 +158,10 @@ class OrderServiceTest extends ServiceTest {
     @Test
     @DisplayName("주문 상태가 계산완료인 경우 주문 상태 변경 불가")
     void 주문상태_변경_이미_계산완료상태인경우() {
-        OrderLineItem orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
-        OrderLineItem orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
+        OrderLineItemDto orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
+        OrderLineItemDto orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
 
-        Order order = serviceTestHelper.주문_생성됨(orderTable.getId(), Lists.newArrayList(orderLineItem1, orderLineItem2));
+        OrderResponse order = serviceTestHelper.주문_생성됨(orderTable.getId(), Lists.newArrayList(orderLineItem1, orderLineItem2));
         serviceTestHelper.주문상태_변경(order.getId(), OrderStatus.COMPLETION);
 
         assertThatIllegalArgumentException()

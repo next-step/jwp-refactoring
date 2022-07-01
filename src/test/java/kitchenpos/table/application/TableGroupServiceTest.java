@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 
 import java.util.List;
 import kitchenpos.ServiceTest;
+import kitchenpos.order.dto.OrderLineItemDto;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.utils.ServiceTestHelper;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -115,8 +117,8 @@ class TableGroupServiceTest extends ServiceTest {
         OrderTableResponse table1 = serviceTestHelper.빈테이블_생성됨();
         OrderTableResponse table2 = serviceTestHelper.빈테이블_생성됨();
         TableGroupResponse tableGroup = serviceTestHelper.테이블그룹_지정됨(table1, table2);
-        Order order1 = 주문생성됨(table1);
-        Order order2 = 주문생성됨(table2);
+        OrderResponse order1 = 주문생성됨(table1);
+        OrderResponse order2 = 주문생성됨(table2);
         serviceTestHelper.주문상태_변경(order1.getId(), OrderStatus.COMPLETION);
         serviceTestHelper.주문상태_변경(order2.getId(), OrderStatus.COMPLETION);
 
@@ -138,7 +140,7 @@ class TableGroupServiceTest extends ServiceTest {
                 .isThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()));
     }
 
-    private Order 주문생성됨(OrderTableResponse orderTable){
+    private OrderResponse 주문생성됨(OrderTableResponse orderTable){
         MenuGroup menuGroup = serviceTestHelper.메뉴그룹_생성됨("메뉴그룹1");
         Product product1 = serviceTestHelper.상품_생성됨("상품1", 1000);
         Product product2 = serviceTestHelper.상품_생성됨("상품2", 2000);
@@ -146,8 +148,8 @@ class TableGroupServiceTest extends ServiceTest {
         MenuProduct menuProduct2 = MenuProductFixtureFactory.createMenuProduct(product2.getId(), 2);
         MenuDto menu1 = serviceTestHelper.메뉴_생성됨(menuGroup, "메뉴1", 4000, Lists.newArrayList(menuProduct1));
         MenuDto menu2 = serviceTestHelper.메뉴_생성됨(menuGroup, "메뉴2", 4000, Lists.newArrayList(menuProduct2));
-        OrderLineItem orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
-        OrderLineItem orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
+        OrderLineItemDto orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
+        OrderLineItemDto orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
 
         return serviceTestHelper.주문_생성됨(orderTable.getId(),
                 Lists.newArrayList(orderLineItem1, orderLineItem2));

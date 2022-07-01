@@ -11,6 +11,7 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuDto;
+import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupRequest;
@@ -164,19 +165,19 @@ public class KitchenPosBehaviors {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 주문_추가_요청(Order order) {
+    public static ExtractableResponse<Response> 주문_추가_요청(OrderRequest orderRequest) {
         return RestAssured
                 .given().contentType(ContentType.JSON).log().all()
-                .when().body(order).post("/api/orders/")
+                .when().body(orderRequest).post("/api/orders/")
                 .then().log().all()
                 .extract();
     }
 
-    public static Order 주문_추가(Order order) {
-        return 주문_추가_요청(order).as(Order.class);
+    public static Order 주문_추가(OrderRequest orderRequest) {
+        return 주문_추가_요청(orderRequest).as(Order.class);
     }
 
-    public static ExtractableResponse<Response> 주문상태변경_요청(Long orderId, Order param) {
+    public static ExtractableResponse<Response> 주문상태변경_요청(Long orderId, OrderRequest param) {
         String uri = String.format("/api/orders/%d/order-status", orderId);
 
         return RestAssured

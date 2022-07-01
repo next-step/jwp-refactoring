@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 
 import java.util.List;
 import kitchenpos.ServiceTest;
+import kitchenpos.order.dto.OrderLineItemDto;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.utils.ServiceTestHelper;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -104,7 +106,7 @@ class TableServiceTest extends ServiceTest {
     @DisplayName("주문의 상태가 계산완료가 아닌 경우 공석여부 변경 시도시 실패")
     void 테이블_공석상태변경_주문이_조리_식사상태인경우() {
         OrderTableResponse table = serviceTestHelper.비어있지않은테이블_생성됨(3);
-        Order order = 테이블에_임시_주문_추가(table.getId());
+        OrderResponse order = 테이블에_임시_주문_추가(table.getId());
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> serviceTestHelper.빈테이블로_변경(table.getId()));
@@ -140,12 +142,12 @@ class TableServiceTest extends ServiceTest {
                 .isThrownBy(() -> serviceTestHelper.테이블_인원수_변경(savedOrderTable.getId(), updatedNumberOfGuests));
     }
 
-    private Order 테이블에_임시_주문_추가(Long tableId) {
+    private OrderResponse 테이블에_임시_주문_추가(Long tableId) {
         MenuGroup menuGroup = serviceTestHelper.메뉴그룹_생성됨("메뉴그룹1");
         Product product1 = serviceTestHelper.상품_생성됨("상품1", 1000);
         MenuProduct menuProduct = MenuProductFixtureFactory.createMenuProduct(product1.getId(), 4);
         MenuDto menu = serviceTestHelper.메뉴_생성됨(menuGroup, "메뉴1", 4000, Lists.newArrayList(menuProduct));
-        OrderLineItem orderLineItem = OrderLineItemFixtureFactory.createOrderLine(menu.getId(), 3);
+        OrderLineItemDto orderLineItem = OrderLineItemFixtureFactory.createOrderLine(menu.getId(), 3);
         return serviceTestHelper.주문_생성됨(tableId, Lists.newArrayList(orderLineItem));
     }
 }
