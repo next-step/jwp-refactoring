@@ -144,6 +144,7 @@ class TableGroupServiceTest {
         assertThat(tableGroup.getId()).isNotNull();
         assertThat(tableGroup.getId()).isEqualTo(orderTable.getTableGroup().getId());
         assertThat(tableGroup.getOrderTables().size()).isEqualTo(expectedContainOrderTableCount);
+        tableGroup.getOrderTables().forEach(table -> assertThat(table.isEmpty()).isFalse());
     }
 
     void 테이블_그룹_해제_실패됨(Runnable runnable) {

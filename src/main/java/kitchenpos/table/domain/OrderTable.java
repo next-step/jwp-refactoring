@@ -56,6 +56,7 @@ public class OrderTable {
 
     public void joinGroup(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
+        this.empty = false;
     }
 
     public void leaveGroup() {

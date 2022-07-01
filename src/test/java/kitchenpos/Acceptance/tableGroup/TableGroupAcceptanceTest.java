@@ -3,6 +3,10 @@ package kitchenpos.Acceptance.tableGroup;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.Acceptance.AcceptanceTest;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderCreateRequest;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupCreateRequest;
 import kitchenpos.table.dto.TableGroupResponse;
@@ -10,12 +14,15 @@ import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static kitchenpos.order.OrderGenerator.*;
 import static kitchenpos.table.TableGenerator.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -85,7 +92,6 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void createTableGroupTest() {
         // given
-//
         TableGroupCreateRequest 테이블_그룹_생성_요청 = 테이블_그룹_생성_요청(Arrays.asList(주문_테이블_아이디들.get(0), 주문_테이블_아이디들.get(1)));
 
         // when
@@ -95,22 +101,25 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         테이블_그룹_생성_요청_성공됨(테이블_그룹_생성_요청_결과, 테이블_그룹_생성_요청);
     }
 
-//    @DisplayName("테이블 그룹에 포함되어 있는 테이블 중 요리중 또는 식사중 상태인 테이블이 존재하는 테이블 그룹을 해제하면 예외가 발생해야 한다")
-//    @Test
-//    void ungroupByIncludeCookingOrMealStatusTableTest() {
-//        // given
-//        Long 테이블_그룹_아이디 = 테이블_그룹_생성_API_호출(
-//                테이블_그룹_생성_요청(Arrays.asList(주문_테이블_아이디들.get(0), 주문_테이블_아이디들.get(1)))
-//        ).body().jsonPath().getLong("id");
-//        주문_테이블에_새로운_주문_생성(orderTables.get(0));
-//        주문_테이블에_새로운_주문_생성(orderTables.get(1));
-//
-//        // when
-//        ExtractableResponse<Response> 테이블_그룹_해제_요청_결과 = 테이블_그룹_해제_요청(테이블_그룹_아이디);
-//
-//        // then
-//        테이블_그룹_해제_요청_실패됨(테이블_그룹_해제_요청_결과);
-//    }
+    @DisplayName("테이블 그룹에 포함되어 있는 테이블 중 요리중 또는 식사중 상태인 테이블이 존재하는 테이블 그룹을 해제하면 예외가 발생해야 한다")
+    @ParameterizedTest
+    @EnumSource(value = OrderStatus.class, names = { "COOKING", "MEAL" })
+    void ungroupByIncludeCookingOrMealStatusTableTest(OrderStatus orderStatus) {
+        // given
+        Long 테이블_그룹_아이디 = 테이블_그룹_생성_API_호출(
+                테이블_그룹_생성_요청(Arrays.asList(주문_테이블_아이디들.get(0), 주문_테이블_아이디들.get(1)))
+        ).body().jsonPath().getLong("id");
+        OrderLineItemRequest 주문_물품_생성_요청 = 주문_물품_생성_요청(메뉴_아이디, 1L);
+        OrderCreateRequest 주문_생성_요청 = 주문_생성_요청(주문_테이블_아이디들.get(0), Collections.singletonList(주문_물품_생성_요청));
+        Long 생성된_주문_아이디 = 주문_생성_API_요청(주문_생성_요청).as(OrderResponse.class).getId();
+        주문_상태_변경_API_요청(생성된_주문_아이디, orderStatus);
+
+        // when
+        ExtractableResponse<Response> 테이블_그룹_해제_요청_결과 = 테이블_그룹_해제_API_호출(테이블_그룹_아이디);
+
+        // then
+        테이블_그룹_해제_요청_실패됨(테이블_그룹_해제_요청_결과);
+    }
 
     @DisplayName("정상 상태의 테이블 그룹 해제 요청시 정상 해제 되어야 한다")
     @Test
@@ -141,9 +150,9 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         assertThat(tableGroupBelongOrderTableIds).containsAll(expectedTableIdes);
     }
 
-//    void 테이블_그룹_해제_요청_실패됨(ExtractableResponse<Response> response) {
-//        assertThat(response.statusCode()).isEqualTo(HttpStatus.SC_INTERNAL_SERVER_ERROR);
-//    }
+    void 테이블_그룹_해제_요청_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+    }
 
     void 테이블_그룹_해제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.SC_NO_CONTENT);
