@@ -1,11 +1,13 @@
 package kitchenpos.application;
 
+import static kitchenpos.utils.generator.OrderTableFixtureGenerator.generateEmptyOrderTable;
 import static kitchenpos.utils.generator.OrderTableFixtureGenerator.generateNotEmptyOrderTable;
 import static kitchenpos.utils.generator.OrderTableFixtureGenerator.generateOrderTables;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
@@ -73,19 +75,19 @@ class TableServiceTest {
     public void changeEmpty() {
         // Given
         OrderTable givenOrderTable = generateNotEmptyOrderTable();
-        given(orderTableDao.findById(any())).willReturn(Optional.of(givenOrderTable));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(false);
-        given(orderTableDao.save(any())).will(AdditionalAnswers.returnsFirstArg());
+        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(givenOrderTable));
+        given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(false);
+        given(orderTableDao.save(any(OrderTable.class))).will(AdditionalAnswers.returnsFirstArg());
 
         // When
         OrderTable updateEmptyRequest = generateNotEmptyOrderTable();
         updateEmptyRequest.setEmpty(true);
-        OrderTable actualOrderTable = tableService.changeEmpty(givenOrderTable.getId(), updateEmptyRequest);
+        OrderTable actualOrderTable = tableService.changeEmpty(anyLong(), updateEmptyRequest);
 
         // Then
-        verify(orderTableDao).findById(any());
-        verify(orderDao).existsByOrderTableIdAndOrderStatusIn(any(), anyList());
-        verify(orderTableDao).save(any());
+        verify(orderTableDao).findById(anyLong());
+        verify(orderDao).existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList());
+        verify(orderTableDao).save(any(OrderTable.class));
         assertThat(actualOrderTable)
             .usingRecursiveComparison()
             .ignoringFields("empty")
@@ -98,12 +100,13 @@ class TableServiceTest {
     public void throwException_WhenTargetOrderTableIsNotExist() {
         // Given
         OrderTable givenOrderTable = generateNotEmptyOrderTable();
-        given(orderTableDao.findById(any())).willThrow(IllegalArgumentException.class);
+        given(orderTableDao.findById(anyLong())).willThrow(IllegalArgumentException.class);
 
         // When & Then
         assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> tableService.changeEmpty(any(), givenOrderTable));
-        verify(orderTableDao).findById(any());
+            .isThrownBy(() -> tableService.changeEmpty(anyLong(), givenOrderTable));
+
+        verify(orderTableDao).findById(anyLong());
     }
 
     @Test
@@ -112,13 +115,13 @@ class TableServiceTest {
         // Given
         OrderTable givenOrderTable = generateNotEmptyOrderTable();
         givenOrderTable.setTableGroupId(1L);
-        given(orderTableDao.findById(any())).willReturn(Optional.of(givenOrderTable));
+        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(givenOrderTable));
 
         // When & Then
         assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> tableService.changeEmpty(any(), givenOrderTable));
+            .isThrownBy(() -> tableService.changeEmpty(anyLong(), givenOrderTable));
 
-        verify(orderTableDao).findById(any());
+        verify(orderTableDao).findById(anyLong());
     }
 
     @Test
@@ -126,15 +129,15 @@ class TableServiceTest {
     public void throwException_WhenTargetOrderTableIsMealOrCooking() {
         // Given
         OrderTable givenOrderTable = generateNotEmptyOrderTable();
-        given(orderTableDao.findById(any())).willReturn(Optional.of(givenOrderTable));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(true);
+        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(givenOrderTable));
+        given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(true);
 
         // When & Then
         assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> tableService.changeEmpty(any(), givenOrderTable));
+            .isThrownBy(() -> tableService.changeEmpty(anyLong(), givenOrderTable));
 
-        verify(orderTableDao).findById(any());
-        verify(orderDao).existsByOrderTableIdAndOrderStatusIn(any(), anyList());
+        verify(orderTableDao).findById(anyLong());
+        verify(orderDao).existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList());
     }
 
     @Test
@@ -142,7 +145,7 @@ class TableServiceTest {
     public void changeNumberOfGuests() {
         // Given
         OrderTable givenOrderTable = generateNotEmptyOrderTable();
-        given(orderTableDao.findById(any())).willReturn(Optional.of(givenOrderTable));
+        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(givenOrderTable));
         given(orderTableDao.save(any(OrderTable.class))).will(AdditionalAnswers.returnsFirstArg());
 
         final int newNumberOfGuests = 4;
@@ -150,11 +153,11 @@ class TableServiceTest {
         updateNumberOfGuestsRequest.setNumberOfGuests(4);
 
         // When
-        OrderTable actualOrderTable = tableService.changeNumberOfGuests(any(), updateNumberOfGuestsRequest);
+        OrderTable actualOrderTable = tableService.changeNumberOfGuests(anyLong(), updateNumberOfGuestsRequest);
 
         // Then
-        verify(orderTableDao).findById(any());
-        verify(orderTableDao).save(any());
+        verify(orderTableDao).findById(anyLong());
+        verify(orderTableDao).save(any(OrderTable.class));
         assertThat(actualOrderTable)
             .usingRecursiveComparison()
             .ignoringFields("numberOfGuests")
@@ -167,12 +170,27 @@ class TableServiceTest {
     public void throwException_WhenOrderTableIsNotExist() {
         // Given
         OrderTable orderTable = generateNotEmptyOrderTable();
-        given(orderTableDao.findById(any())).willThrow(IllegalArgumentException.class);
+        given(orderTableDao.findById(anyLong())).willThrow(IllegalArgumentException.class);
 
         // When & Then
         assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> tableService.changeNumberOfGuests(any(), orderTable));
+            .isThrownBy(() -> tableService.changeNumberOfGuests(anyLong(), orderTable));
 
-        verify(orderTableDao).findById(any());
+        verify(orderTableDao).findById(anyLong());
+    }
+    
+    @Test
+    @DisplayName("비어있는 주문 테이블의 객수 변경 시, 예외 발생 검증")
+    public void throwException_WhenOrderTableIsEmpty(){
+        // Given
+        OrderTable orderTable = generateEmptyOrderTable();
+        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(orderTable));
+    
+        // When
+        assertThatExceptionOfType(IllegalArgumentException.class)
+            .isThrownBy(() -> tableService.changeNumberOfGuests(anyLong(), orderTable));
+    
+        // Then
+        verify(orderTableDao).findById(anyLong());
     }
 }

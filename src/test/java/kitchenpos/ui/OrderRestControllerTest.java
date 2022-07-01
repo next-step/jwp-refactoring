@@ -29,8 +29,7 @@ import org.springframework.test.web.servlet.ResultActions;
 public class OrderRestControllerTest extends BaseTest {
 
     public static final String ORDER_API_BASE_URL = "/api/orders";
-    public static final String UPDATE_ORDER_STATUS_API_URL_TEMPLATE = ORDER_API_BASE_URL
-        .concat("/{orderId}/order-status");
+    public static final String UPDATE_ORDER_STATUS_API_URL_TEMPLATE = ORDER_API_BASE_URL.concat("/{orderId}/order-status");
 
     private Product savedFirstProduct, savedSecondProduct, savedThirdProduct, savedForthProduct;
     private MenuGroup savedFirstMenuGroup, savedSecondMenuGroup;
@@ -84,9 +83,10 @@ public class OrderRestControllerTest extends BaseTest {
     @Test
     @DisplayName("주문 목록을 조회한다.")
     public void getAllOrders() throws Exception {
-        // When
+        // Given
         mockMvcUtil.post(주문_생성_요청(savedOrderTable, savedFirstMenu, savedSecondMenu));
 
+        // When
         ResultActions resultActions = mockMvcUtil.get(ORDER_API_BASE_URL);
 
         // Then
