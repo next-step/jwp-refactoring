@@ -1,8 +1,7 @@
 package kitchenpos.menu.application;
 
-import static kitchenpos.common.ErrorMessage.NOT_EXIST_PRODUCT;
-
 import java.util.List;
+import kitchenpos.common.ErrorMessage;
 import kitchenpos.exception.InvalidPriceException;
 import kitchenpos.exception.NotExistException;
 import kitchenpos.menu.domain.Menu;
@@ -30,7 +29,7 @@ public class MenuValidator {
 
     public Long findProductId(MenuProductRequest menuProduct) {
         return productRepository.findById(menuProduct.getProductId())
-                .orElseThrow(() -> new NotExistException(NOT_EXIST_PRODUCT))
+                .orElseThrow(() -> new NotExistException(ErrorMessage.NOT_EXIST_PRODUCT.message()))
                 .getId();
     }
 }

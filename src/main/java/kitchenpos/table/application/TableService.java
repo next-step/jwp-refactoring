@@ -8,7 +8,6 @@ import kitchenpos.exception.NotCompletionStatusException;
 import kitchenpos.exception.NotExistException;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.repository.OrderTableRepository;
@@ -61,6 +60,6 @@ public class TableService {
 
     private OrderTable getOrderTable(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
-                .orElseThrow(() -> new NotExistException(NOT_EXIST_ORDER_TABLE));
+                .orElseThrow(() -> new NotExistException(NOT_EXIST_ORDER_TABLE.message()));
     }
 }

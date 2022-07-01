@@ -33,7 +33,7 @@ public class MenuService {
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
         final MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
-                .orElseThrow(() -> new NotExistException(NOT_EXIST_MENU_GROUP));
+                .orElseThrow(() -> new NotExistException(NOT_EXIST_MENU_GROUP.message()));
         final Menu menu = new Menu.Builder(menuRequest.getName())
                 .setPrice(Price.of(menuRequest.getPrice()))
                 .setMenuGroup(menuGroup)

@@ -80,4 +80,4 @@ Lombok은 그 강력한 기능만큼 사용상 주의를 요한다.
 - [x] Menu - Product 패키지 의존성 제거
 - [x] Order - Table 패키지 의존성 제거
 - [x] Menu - Order 패키지 의존성 제거
-- [ ] 기존 리뷰 반영 (Message 개선 - static 클래스 -> Enum)
+- [x] 기존 리뷰 반영 (Message 개선 - static 클래스 -> Enum)
