@@ -10,6 +10,14 @@ Content-Type: application/json
     {
       "productId": 1,
       "quantity": 2
+    },
+    {
+      "productId": 2,
+      "quantity": 5
+    },
+    {
+      "productId": 5,
+      "quantity": 3
     }
   ]
 }

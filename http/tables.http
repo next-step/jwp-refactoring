@@ -3,7 +3,7 @@ POST {{host}}/api/tables
 Content-Type: application/json
 
 {
-  "numberOfGuests": 0,
+  "numberOfGuests": 2,
   "empty": true
 }
 

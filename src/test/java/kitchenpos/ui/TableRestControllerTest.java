@@ -1,10 +1,10 @@
 package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import kitchenpos.application.TableService;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.table.application.TableService;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.ui.TableRestController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -38,26 +38,25 @@ class TableRestControllerTest {
     private TableService tableService;
 
     private MockMvc mockMvc;
-    private OrderTable 테이블_1;
-    private OrderTable 테이블_2;
+    private OrderTableResponse 주문_테이블_응답_1;
+    private OrderTableRequest 테이블_2;
 
     @BeforeEach
     void setUp() {
         this.mockMvc = MockMvcBuilders.standaloneSetup(tableRestController).build();
-        테이블_1 = new OrderTable();
-        테이블_2 = new OrderTable();
+        주문_테이블_응답_1 = new OrderTableResponse(1L, 1L, 5, false);
+        테이블_2 = new OrderTableRequest();
     }
 
     @Test
     void post() throws Exception {
         // given
-        테이블_1.setNumberOfGuests(5);
-        given(tableService.create(any())).willReturn(테이블_1);
+        given(tableService.create(any())).willReturn(주문_테이블_응답_1);
 
         // when & then
         mockMvc.perform(MockMvcRequestBuilders.post(URI)
                         .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(테이블_1)))
+                        .content(objectMapper.writeValueAsString(주문_테이블_응답_1)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.numberOfGuests").value(5))
                 .andDo(print());
@@ -66,25 +65,25 @@ class TableRestControllerTest {
     @Test
     void get() throws Exception {
         // given
-        given(tableService.list()).willReturn(Arrays.asList(테이블_1, 테이블_2));
+        given(tableService.list()).willReturn(Collections.singletonList(주문_테이블_응답_1));
 
         // when & then
         mockMvc.perform(MockMvcRequestBuilders.get(URI)
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$.length()").value(1))
                 .andDo(print());
     }
 
     @Test
     void putForEmpty() throws Exception {
         // given
-        given(tableService.changeEmpty(anyLong(), any())).willReturn(테이블_1);
+        given(tableService.changeEmpty(anyLong(), any())).willReturn(주문_테이블_응답_1);
 
         // when & then
         mockMvc.perform(MockMvcRequestBuilders.put(URI + "/{orderTableId}/empty", 1)
                         .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(테이블_1)))
+                        .content(objectMapper.writeValueAsString(주문_테이블_응답_1)))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
@@ -93,12 +92,12 @@ class TableRestControllerTest {
     @Test
     void putForNumberOfGuests() throws Exception {
         // given
-        given(tableService.changeNumberOfGuests(anyLong(), any())).willReturn(테이블_1);
+        given(tableService.changeNumberOfGuests(anyLong(), any())).willReturn(주문_테이블_응답_1);
 
         // when & then
         mockMvc.perform(MockMvcRequestBuilders.put(URI + "/{orderTableId}/number-of-guests", 1)
                         .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(테이블_1)))
+                        .content(objectMapper.writeValueAsString(주문_테이블_응답_1)))
                 .andExpect(status().isOk())
                 .andDo(print());
     }

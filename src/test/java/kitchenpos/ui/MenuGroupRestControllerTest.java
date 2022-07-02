@@ -1,7 +1,7 @@
 package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuGroupRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -26,9 +26,7 @@ class MenuGroupRestControllerTest {
     @Test
     void post() throws Exception {
         // given
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setName("메뉴그룹");
-        String json = objectMapper.writeValueAsString(menuGroup);
+        String json = objectMapper.writeValueAsString(new MenuGroupRequest("메뉴그룹"));
 
         // when & then
         mockMvc.perform(MockMvcRequestBuilders.post("/api/menu-groups")

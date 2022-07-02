@@ -1,8 +1,18 @@
 package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.application.MenuService;
-import kitchenpos.domain.Menu;
+import kitchenpos.common.Name;
+import kitchenpos.common.Price;
+import kitchenpos.fixture.TestMenuRequestFactory;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.ui.MenuRestController;
+import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -35,24 +46,26 @@ class MenuRestControllerTest {
     private MenuRestController menuRestController;
 
     private MockMvc mockMvc;
+    private MenuRequest 메뉴_요청;
     private Menu 메뉴;
 
     @BeforeEach
     void setUp() {
         this.mockMvc = MockMvcBuilders.standaloneSetup(menuRestController).build();
-        메뉴 = new Menu();
-        메뉴.setName("메뉴");
+        MenuProductRequest 메뉴_진매 = new MenuProductRequest(1L, 1);
+        메뉴_요청 = TestMenuRequestFactory.toMenuRequest("메뉴", 5000, 1L, Arrays.asList(메뉴_진매));
+        메뉴 = Menu.of(메뉴_요청, MenuProducts.of(Collections.singletonList(new MenuProduct(1L, new Product(1L, new Name("진매"), new Price(5000)), 1))));
     }
 
     @Test
     void post() throws Exception {
         //given
-        given(menuService.create(any())).willReturn(메뉴);
+        given(menuService.create(any())).willReturn(MenuResponse.of(메뉴));
 
         //when & then
         mockMvc.perform(MockMvcRequestBuilders.post(URI)
                         .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(메뉴)))
+                        .content(objectMapper.writeValueAsString(메뉴_요청)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name").value("메뉴"))
                 .andDo(print());
@@ -61,7 +74,7 @@ class MenuRestControllerTest {
     @Test
     void get() throws Exception {
         // given
-        given(menuService.list()).willReturn(Collections.singletonList(메뉴));
+        given(menuService.list()).willReturn(Collections.singletonList(MenuResponse.of(메뉴)));
 
         // when & then
         mockMvc.perform(MockMvcRequestBuilders.get(URI)
