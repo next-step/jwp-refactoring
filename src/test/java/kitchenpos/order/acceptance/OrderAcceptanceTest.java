@@ -4,7 +4,6 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -132,7 +131,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
     public static OrderRequest 주문_생성() {
         MenuResponse 등록된_메뉴 = 메뉴_가져옴(메뉴_등록되어_있음(테스트_메뉴_생성(MENU_NAME01, MENU_PRICE01)));
-        OrderLineItem 생성된_주문_항목 = new OrderLineItem(new Menu(등록된_메뉴.getId()), 1);
+        OrderLineItem 생성된_주문_항목 = new OrderLineItem(등록된_메뉴.getId(), 1);
         OrderTable 등록된_주문_테이블 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, false)).toOrderTable();
         return new OrderRequest(등록된_주문_테이블.getId(), Arrays.asList(생성된_주문_항목));
     }
@@ -144,21 +143,21 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
     public static OrderRequest 메뉴와_주문_항목_개수_다른_주문_생성() {
         MenuResponse 등록된_메뉴 = 메뉴_가져옴(메뉴_등록되어_있음(테스트_메뉴_생성(MENU_NAME01, MENU_PRICE01)));
-        OrderLineItem 생성된_주문_항목1 = new OrderLineItem(new Menu(등록된_메뉴.getId()), 1);
-        OrderLineItem 생성된_주문_항목2 = new OrderLineItem(new Menu(등록된_메뉴.getId()), 1);
+        OrderLineItem 생성된_주문_항목1 = new OrderLineItem(등록된_메뉴.getId(), 1);
+        OrderLineItem 생성된_주문_항목2 = new OrderLineItem(등록된_메뉴.getId(), 1);
         OrderTable 등록된_주문_테이블 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, false)).toOrderTable();
         return new OrderRequest(등록된_주문_테이블.getId(), Arrays.asList(생성된_주문_항목1, 생성된_주문_항목2));
     }
 
     public static OrderRequest 주문_테이블_없는_주문_생성() {
         MenuResponse 등록된_메뉴 = 메뉴_가져옴(메뉴_등록되어_있음(테스트_메뉴_생성(MENU_NAME01, MENU_PRICE01)));
-        OrderLineItem 생성된_주문_항목 = new OrderLineItem(new Menu(등록된_메뉴.getId()), 1);
+        OrderLineItem 생성된_주문_항목 = new OrderLineItem(등록된_메뉴.getId(), 1);
         return new OrderRequest(null, Arrays.asList(생성된_주문_항목));
     }
 
     public static OrderRequest 비어_있는_주문_테이블에서_주문_생성() {
         MenuResponse 등록된_메뉴 = 메뉴_가져옴(메뉴_등록되어_있음(테스트_메뉴_생성(MENU_NAME01, MENU_PRICE01)));
-        OrderLineItem 생성된_주문_항목 = new OrderLineItem(new Menu(등록된_메뉴.getId()), 1);
+        OrderLineItem 생성된_주문_항목 = new OrderLineItem(등록된_메뉴.getId(), 1);
         OrderTable 등록된_주문_테이블 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, true)).toOrderTable();
         return new OrderRequest(등록된_주문_테이블.getId(), Arrays.asList(생성된_주문_항목));
     }

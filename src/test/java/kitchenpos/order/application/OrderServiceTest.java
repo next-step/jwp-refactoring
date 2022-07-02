@@ -185,12 +185,12 @@ public class OrderServiceTest {
 
     public static OrderLineItem createOrderListItem() {
         Menu menu = createMenu01();
-        return new OrderLineItem(1L, new Order(1L), menu, 1);
+        return new OrderLineItem(1L, new Order(1L), menu.getId(), 1);
     }
 
     public static OrderLineItem createOrderListItem2() {
         Menu menu = createMenu01();
-        return new OrderLineItem(2L, new Order(1L), menu, 1);
+        return new OrderLineItem(2L, new Order(1L), menu.getId(), 1);
     }
 
     public static List<Order> createOrderList() {

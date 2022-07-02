@@ -4,13 +4,12 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderRequest;
-import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -139,7 +138,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         TableGroupResponse tableGroupResponse = 테이블_그룹_가져옴(테이블_그룹_등록되어_있음(tableGroup));
 
         MenuResponse 등록된_메뉴 = 메뉴_가져옴(메뉴_등록되어_있음(테스트_메뉴_생성(MENU_NAME01, MENU_PRICE01)));
-        OrderLineItem 생성된_주문_항목 = new OrderLineItem(new Menu(등록된_메뉴.getId()), 1);
+        OrderLineItem 생성된_주문_항목 = new OrderLineItem(등록된_메뉴.getId(), 1);
 
         ExtractableResponse<Response> 등록된_주문1 = 주문_등록되어_있음(new OrderRequest(등록된_주문_테이블1.getId(), Arrays.asList(생성된_주문_항목)));
         ExtractableResponse<Response> 등록된_주문2 = 주문_등록되어_있음(new OrderRequest(등록된_주문_테이블2.getId(), Arrays.asList(생성된_주문_항목)));
@@ -158,7 +157,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         request = 테이블_그룹_등록되어_있음(request).as(TableGroupRequest.class);
 
         MenuResponse 등록된_메뉴 = 메뉴_가져옴(메뉴_등록되어_있음(테스트_메뉴_생성(MENU_NAME01, MENU_PRICE01)));
-        OrderLineItem 생성된_주문_항목 = new OrderLineItem(new Menu(등록된_메뉴.getId()), 1);
+        OrderLineItem 생성된_주문_항목 = new OrderLineItem(등록된_메뉴.getId(), 1);
 
         ExtractableResponse<Response> 등록된_주문1 = 주문_등록되어_있음(new OrderRequest(등록된_주문_테이블1.getId(), Arrays.asList(생성된_주문_항목)));
         ExtractableResponse<Response> 등록된_주문2 = 주문_등록되어_있음(new OrderRequest(등록된_주문_테이블2.getId(), Arrays.asList(생성된_주문_항목)));

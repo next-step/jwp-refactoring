@@ -39,11 +39,11 @@ public class OrderLineItemsTest {
     }
 
     public static OrderLineItem 두마리치킨_메뉴_주문상품() {
-        return new OrderLineItem(두마리치킨_메뉴(), 1);
+        return new OrderLineItem(두마리치킨_메뉴().getId(), 1);
     }
 
     public static OrderLineItem 불고기치즈버거_메뉴_주문상품() {
-        return new OrderLineItem(불고기치즈버거_메뉴(), 1);
+        return new OrderLineItem(불고기치즈버거_메뉴().getId(), 1);
     }
 
     public static List<OrderLineItem> 주문상품_리스트() {

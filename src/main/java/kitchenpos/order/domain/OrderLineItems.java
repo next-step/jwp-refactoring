@@ -1,6 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.menu.domain.Menu;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.CascadeType;
@@ -37,8 +36,7 @@ public class OrderLineItems {
 
     private List<Long> getMenuIds(List<OrderLineItem> orderLineItems) {
         return orderLineItems.stream()
-                .map(OrderLineItem::getMenu)
-                .map(Menu::getId)
+                .map(OrderLineItem::getMenuId)
                 .distinct()
                 .collect(Collectors.toList());
     }
