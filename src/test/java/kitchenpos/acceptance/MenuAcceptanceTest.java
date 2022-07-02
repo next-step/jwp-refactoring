@@ -1,5 +1,6 @@
 package kitchenpos.acceptance;
 
+import static kitchenpos.__fixture__.MenuProductTestFixture.메뉴_상품_1개_생성;
 import static kitchenpos.acceptance.MenuGroupAcceptanceTest.메뉴_그룹_생성_요청;
 import static kitchenpos.acceptance.ProductAcceptanceTest.상품_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,8 +40,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 "후라이드양념",
                 31_000,
                 두마리_메뉴_아이디,
-                new MenuProduct(후라이드_아이디, 1),
-                new MenuProduct(양념_아이디, 1)
+                메뉴_상품_1개_생성(후라이드_아이디),
+                메뉴_상품_1개_생성(양념_아이디)
         );
 
         //then
@@ -58,8 +59,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 "후라이드양념",
                 -16_000,
                 두마리_메뉴_아이디,
-                new MenuProduct(후라이드_아이디, 1),
-                new MenuProduct(양념_아이디, 1)
+                메뉴_상품_1개_생성(후라이드_아이디),
+                메뉴_상품_1개_생성(양념_아이디)
         );
 
         //then
@@ -77,8 +78,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 "후라이드양념",
                 16_000,
                 존재하지_않는_메뉴_그룹_아이디,
-                new MenuProduct(후라이드_아이디, 1),
-                new MenuProduct(양념_아이디, 1)
+                메뉴_상품_1개_생성(후라이드_아이디),
+                메뉴_상품_1개_생성(양념_아이디)
         );
 
         //then
@@ -93,8 +94,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 "후라이드양념",
                 34_000,
                 두마리_메뉴_아이디,
-                new MenuProduct(후라이드_아이디, 1),
-                new MenuProduct(양념_아이디, 1)
+                메뉴_상품_1개_생성(후라이드_아이디),
+                메뉴_상품_1개_생성(양념_아이디)
         );
 
         //then
@@ -109,8 +110,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 "후라이드양념",
                 31_000,
                 두마리_메뉴_아이디,
-                new MenuProduct(후라이드_아이디, 1),
-                new MenuProduct(양념_아이디, 1)
+                메뉴_상품_1개_생성(후라이드_아이디),
+                메뉴_상품_1개_생성(양념_아이디)
         );
 
         //when

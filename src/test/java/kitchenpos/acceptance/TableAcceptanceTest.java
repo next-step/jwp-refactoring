@@ -1,5 +1,7 @@
 package kitchenpos.acceptance;
 
+import static kitchenpos.__fixture__.MenuProductTestFixture.메뉴_상품_1개_생성;
+import static kitchenpos.__fixture__.OrderLineItemTestFixture.주문_항목_생성;
 import static kitchenpos.acceptance.MenuAcceptanceTest.메뉴_생성_요청;
 import static kitchenpos.acceptance.MenuGroupAcceptanceTest.메뉴_그룹_생성_요청;
 import static kitchenpos.acceptance.OrderAcceptanceTest.주문_생성_요청;
@@ -12,7 +14,6 @@ import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderTable;
@@ -40,8 +41,8 @@ public class TableAcceptanceTest extends AcceptanceTest {
                 "후라이드양념",
                 31_000,
                 두마리_메뉴_아이디,
-                new MenuProduct(후라이드_아이디, 1),
-                new MenuProduct(양념_아이디, 1)
+                메뉴_상품_1개_생성(후라이드_아이디),
+                메뉴_상품_1개_생성(양념_아이디)
         ).as(Menu.class);
     }
 
@@ -115,8 +116,8 @@ public class TableAcceptanceTest extends AcceptanceTest {
                 .stream()
                 .mapToLong(menuProduct -> menuProduct.getQuantity())
                 .sum();
-        final OrderLineItem orderLineItem = new OrderLineItem(메뉴_아이디, 메뉴_수량);
-        주문_생성_요청(생성된_테이블_1.getId(), "COOKING", orderLineItem).as(Order.class);
+        final OrderLineItem 주문_항목 = 주문_항목_생성(메뉴_아이디, 메뉴_수량);
+        주문_생성_요청(생성된_테이블_1.getId(), "COOKING", 주문_항목).as(Order.class);
         생성된_테이블_1.setEmpty(true);
 
         //when

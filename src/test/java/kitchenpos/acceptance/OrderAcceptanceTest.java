@@ -1,5 +1,7 @@
 package kitchenpos.acceptance;
 
+import static kitchenpos.__fixture__.MenuProductTestFixture.메뉴_상품_1개_생성;
+import static kitchenpos.__fixture__.OrderLineItemTestFixture.주문_항목_생성;
 import static kitchenpos.acceptance.MenuAcceptanceTest.메뉴_생성_요청;
 import static kitchenpos.acceptance.MenuGroupAcceptanceTest.메뉴_그룹_생성_요청;
 import static kitchenpos.acceptance.ProductAcceptanceTest.상품_생성_요청;
@@ -12,7 +14,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.time.LocalDateTime;
 import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderTable;
@@ -43,8 +44,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 "후라이드양념",
                 31_000,
                 두마리_메뉴_아이디,
-                new MenuProduct(후라이드_아이디, 1),
-                new MenuProduct(양념_아이디, 1)
+                메뉴_상품_1개_생성(후라이드_아이디),
+                메뉴_상품_1개_생성(양념_아이디)
         ).as(Menu.class);
     }
 
@@ -57,10 +58,10 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 .stream()
                 .mapToLong(menuProduct -> menuProduct.getQuantity())
                 .sum();
-        final OrderLineItem orderLineItem = new OrderLineItem(메뉴_아이디, 메뉴_수량);
+        final OrderLineItem 주문_항목 = 주문_항목_생성(메뉴_아이디, 메뉴_수량);
 
         //when
-        final ExtractableResponse<Response> 결과 = 주문_생성_요청(주문_테이블_비어있지_않음.getId(), "COOKING", orderLineItem);
+        final ExtractableResponse<Response> 결과 = 주문_생성_요청(주문_테이블_비어있지_않음.getId(), "COOKING", 주문_항목);
 
         //then
         assertThat(결과.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -81,10 +82,10 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     void createOrderFailedWhenMenuNotExists() {
         //given
         final Long 존재하지_않는_메뉴_아이디 = 100L;
-        final OrderLineItem orderLineItem = new OrderLineItem(존재하지_않는_메뉴_아이디, 2);
+        final OrderLineItem 주문_항목 = 주문_항목_생성(존재하지_않는_메뉴_아이디, 2L);
 
         //when
-        final ExtractableResponse<Response> 결과 = 주문_생성_요청(주문_테이블_비어있지_않음.getId(), "COOKING", orderLineItem);
+        final ExtractableResponse<Response> 결과 = 주문_생성_요청(주문_테이블_비어있지_않음.getId(), "COOKING", 주문_항목);
 
         //then
         assertThat(결과.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -99,10 +100,10 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 .stream()
                 .mapToLong(menuProduct -> menuProduct.getQuantity())
                 .sum();
-        final OrderLineItem orderLineItem = new OrderLineItem(메뉴_아이디, 메뉴_수량);
+        final OrderLineItem 주문_항목 = 주문_항목_생성(메뉴_아이디, 메뉴_수량);
 
         //when
-        final ExtractableResponse<Response> 결과 = 주문_생성_요청(주문_테이블_비어있음.getId(), "COOKING", orderLineItem);
+        final ExtractableResponse<Response> 결과 = 주문_생성_요청(주문_테이블_비어있음.getId(), "COOKING", 주문_항목);
 
         //then
         assertThat(결과.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -117,8 +118,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 .stream()
                 .mapToLong(menuProduct -> menuProduct.getQuantity())
                 .sum();
-        final OrderLineItem orderLineItem = new OrderLineItem(메뉴_아이디, 메뉴_수량);
-        주문_생성_요청(주문_테이블_비어있지_않음.getId(), "COOKING", orderLineItem);
+        final OrderLineItem 주문_항목 = 주문_항목_생성(메뉴_아이디, 메뉴_수량);
+        주문_생성_요청(주문_테이블_비어있지_않음.getId(), "COOKING", 주문_항목);
 
         //when
         final ExtractableResponse<Response> 결과 = 주문_목록_조회_요청();
@@ -137,12 +138,12 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 .stream()
                 .mapToLong(menuProduct -> menuProduct.getQuantity())
                 .sum();
-        final OrderLineItem orderLineItem = new OrderLineItem(메뉴_아이디, 메뉴_수량);
-        final Order 생성된_주문 = 주문_생성_요청(주문_테이블_비어있지_않음.getId(), "COOKING", orderLineItem).as(Order.class);
+        final OrderLineItem 주문_항목 = 주문_항목_생성(메뉴_아이디, 메뉴_수량);
+        final Order 생성된_주문 = 주문_생성_요청(주문_테이블_비어있지_않음.getId(), "COOKING", 주문_항목).as(Order.class);
 
         //when
         final ExtractableResponse<Response> 결과 = 주문_변경_요청(생성된_주문.getId(), 주문_테이블_비어있지_않음.getId(), "MEAL",
-                orderLineItem);
+                주문_항목);
 
         //then
         assertThat(결과.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -158,13 +159,13 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 .stream()
                 .mapToLong(menuProduct -> menuProduct.getQuantity())
                 .sum();
-        final OrderLineItem orderLineItem = new OrderLineItem(메뉴_아이디, 메뉴_수량);
-        final Order 생성된_주문 = 주문_생성_요청(주문_테이블_비어있지_않음.getId(), "COOKING", orderLineItem).as(Order.class);
-        주문_변경_요청(생성된_주문.getId(), 주문_테이블_비어있지_않음.getId(), "COMPLETION", orderLineItem);
-        
+        final OrderLineItem 주문_항목 = 주문_항목_생성(메뉴_아이디, 메뉴_수량);
+        final Order 생성된_주문 = 주문_생성_요청(주문_테이블_비어있지_않음.getId(), "COOKING", 주문_항목).as(Order.class);
+        주문_변경_요청(생성된_주문.getId(), 주문_테이블_비어있지_않음.getId(), "COMPLETION", 주문_항목);
+
         //when
         final ExtractableResponse<Response> 결과 = 주문_변경_요청(생성된_주문.getId(), 주문_테이블_비어있지_않음.getId(), "MEAL",
-                orderLineItem);
+                주문_항목);
 
         //then
         assertThat(결과.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
