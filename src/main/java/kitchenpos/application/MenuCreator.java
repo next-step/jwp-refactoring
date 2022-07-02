@@ -8,10 +8,12 @@ import kitchenpos.domain.Product;
 import kitchenpos.ui.dto.MenuCreateRequest;
 import kitchenpos.ui.dto.MenuProductCreateRequest;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Transactional(readOnly = true)
 @Component
 public class MenuCreator {
     private final MenuGroupRepository menuGroupRepository;
