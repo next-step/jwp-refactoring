@@ -9,12 +9,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.MenuProducts;
 import kitchenpos.domain.Product;
+import kitchenpos.repository.MenuGroupRepository;
 import kitchenpos.repository.MenuProductRepository;
 import kitchenpos.repository.MenuRepository;
 import kitchenpos.repository.ProductRepository;
@@ -28,16 +28,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
-
-    @Mock
-    MenuGroupDao menuGroupDao;
-
     @Mock
     MenuRepository menuRepository;
     @Mock
     ProductRepository productRepository;
     @Mock
     MenuProductRepository menuProductRepository;
+    @Mock
+    MenuGroupRepository menuGroupRepository;
 
     @InjectMocks
     MenuService menuService;
@@ -116,7 +114,7 @@ class MenuServiceTest {
 
         given(productRepository.findById(스낵랩.getId())).willReturn(Optional.of(스낵랩));
         given(productRepository.findById(맥모닝.getId())).willReturn(Optional.of(맥모닝));
-        given(menuGroupDao.existsById(패스트푸드류.getId())).willReturn(true);
+        given(menuGroupRepository.existsById(패스트푸드류.getId())).willReturn(true);
 
         assertThatThrownBy(()-> menuService.create(menu)).isInstanceOf(IllegalArgumentException.class);
     }
@@ -127,7 +125,7 @@ class MenuServiceTest {
 
         given(productRepository.findById(스낵랩.getId())).willReturn(Optional.of(스낵랩));
         given(menuProductRepository.save(스낵랩_메뉴_상품)).willReturn(스낵랩_메뉴_상품);
-        given(menuGroupDao.existsById(패스트푸드류.getId())).willReturn(true);
+        given(menuGroupRepository.existsById(패스트푸드류.getId())).willReturn(true);
         given(menuRepository.save(menu)).willReturn(menu);
 
         assertThat(menuService.create(menu).getId()).isEqualTo(menu.getId());

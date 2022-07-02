@@ -4,11 +4,11 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.MenuProducts;
 import kitchenpos.domain.Product;
+import kitchenpos.repository.MenuGroupRepository;
 import kitchenpos.repository.MenuProductRepository;
 import kitchenpos.repository.MenuRepository;
 import kitchenpos.repository.ProductRepository;
@@ -17,20 +17,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MenuService {
-    private final MenuGroupDao menuGroupDao;
-
     private final MenuRepository menuRepository;
     private final ProductRepository productRepository;
     private final MenuProductRepository menuProductRepository;
+    private final MenuGroupRepository menuGroupRepository;
 
     public MenuService(
-            final MenuGroupDao menuGroupDao,
             final MenuRepository menuRepository, final ProductRepository productRepository,
-            final MenuProductRepository menuProductRepository) {
-        this.menuGroupDao = menuGroupDao;
+            final MenuProductRepository menuProductRepository,
+            MenuGroupRepository menuGroupRepository) {
+//        this.menuGroupDao = menuGroupDao;
         this.menuRepository = menuRepository;
         this.productRepository = productRepository;
         this.menuProductRepository = menuProductRepository;
+        this.menuGroupRepository = menuGroupRepository;
     }
 
     @Transactional
@@ -41,7 +41,8 @@ public class MenuService {
             throw new IllegalArgumentException();
         }
 
-        if (menu.getMenuGroup() != null && !menuGroupDao.existsById(menu.getMenuGroup().getId())) {
+        if (menu.getMenuGroup() != null && !menuGroupRepository.existsById(menu.getMenuGroup().getId())) {
+//        if (menu.getMenuGroup() != null && !menuGroupDao.existsById(menu.getMenuGroup().getId())) {
 //        if (!menuGroupDao.existsById(menu.getMenuGroupId())) {
             throw new IllegalArgumentException();
         }

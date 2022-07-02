@@ -6,8 +6,8 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.repository.MenuGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class MenuGroupServiceTest {
 
     @Mock
-    MenuGroupDao menuGroupDao;
+    MenuGroupRepository menuGroupRepository;
 
     @InjectMocks
     MenuGroupService menuGroupService;
@@ -36,7 +36,7 @@ class MenuGroupServiceTest {
     @Test
     @DisplayName("메뉴 그룹 정상 등록 확인")
     public void create() {
-        given(menuGroupDao.save(any(MenuGroup.class))).willReturn(양식);
+        given(menuGroupRepository.save(any(MenuGroup.class))).willReturn(양식);
 
         MenuGroup savedMenuGroup = menuGroupService.create(양식);
         assertThat(savedMenuGroup.getName()).isEqualTo(양식.getName());
@@ -48,7 +48,7 @@ class MenuGroupServiceTest {
         MenuGroup 분식 = new MenuGroup();
         분식.setName("분식");
 
-        given(menuGroupDao.findAll()).willReturn(Arrays.asList(양식, 분식));
+        given(menuGroupRepository.findAll()).willReturn(Arrays.asList(양식, 분식));
 
         List<MenuGroup> menuGroups = menuGroupService.list();
 
