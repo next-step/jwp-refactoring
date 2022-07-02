@@ -11,6 +11,8 @@ import javax.persistence.ManyToOne;
 
 @Entity
 public class OrderTable {
+    private static final int ZERO = 0;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -55,7 +57,9 @@ public class OrderTable {
         return numberOfGuests;
     }
 
-    public void setNumberOfGuests(final int numberOfGuests) {
+    public void changeNumberOfGuests(final int numberOfGuests) {
+        validateEmptyTableCheck();
+        validateGuestNumberCheck(numberOfGuests);
         this.numberOfGuests = numberOfGuests;
     }
 
@@ -69,7 +73,18 @@ public class OrderTable {
 
     private void validateTableGroupCheck() {
         if (!isEmpty() || Objects.nonNull(tableGroup)) {
-            throw new IllegalArgumentException("빈 테이블이거나 이미 단체 테이블인 경우 단체로 지정할 수 없습니다.");
+            throw new IllegalArgumentException("주문 진행중이거나 이미 단체 테이블인 경우 단체로 지정할 수 없습니다.");
+        }
+    }
+
+    private void validateEmptyTableCheck() {
+        if (isEmpty()) {
+            throw new IllegalArgumentException("변경하려는 테이블은 빈 테이블이어야 합니다.");
+        }
+    }
+    private void validateGuestNumberCheck(int numberOfGuests) {
+        if (numberOfGuests < ZERO) {
+            throw new IllegalArgumentException("변경하려는 사용자의 수는 0명 이상이어야 합니다.");
         }
     }
 }

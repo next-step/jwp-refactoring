@@ -58,20 +58,9 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
-        final int numberOfGuests = orderTableRequest.getNumberOfGuests();
-
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
-        }
-
-        final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        savedOrderTable.setNumberOfGuests(numberOfGuests);
-        return OrderTableResponse.of(savedOrderTable);
+        final OrderTable orderTable = orderTableRepository.findById(orderTableId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문테이블 입니다."));
+        orderTable.changeNumberOfGuests(orderTableRequest.getNumberOfGuests());
+        return OrderTableResponse.of(orderTable);
     }
 }

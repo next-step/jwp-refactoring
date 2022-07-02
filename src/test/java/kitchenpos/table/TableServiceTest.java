@@ -152,18 +152,6 @@ class TableServiceTest {
     }
 
     @Test
-    @DisplayName("변경하려는 방문 손님 수는 0명이상이다")
-    void changeNumberOfGuests_numberError() {
-        // given
-        OrderTableRequest 변경테이블 = new OrderTableRequest(-1, 사용중);
-
-        // when & then
-        assertThatIllegalArgumentException().isThrownBy(
-                () -> tableService.changeNumberOfGuests(주문테이블.getId(), 변경테이블)
-        );
-    }
-
-    @Test
     @DisplayName("변경대상인 주문테이블은 존재하는 주문테이블이어야 한다")
     void changeNumberOfGuests_orderTableError() {
         // given
@@ -173,19 +161,33 @@ class TableServiceTest {
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
                 () -> tableService.changeNumberOfGuests(주문테이블.getId(), 변경테이블)
-        );
+        ).withMessageContaining("존재하지 않는 주문테이블 입니다.");
     }
 
     @Test
-    @DisplayName("변경대상인 주문테이블은 비어있지 않은 주문테이블이다")
+    @DisplayName("변경대상인 주문테이블은 빈 상태의 주문테이블이다")
     void changeNumberOfGuests_emptyTableError() {
         // given
         OrderTableRequest 변경테이블 = new OrderTableRequest(2, 사용중);
-        given(orderTableRepository.findById(any())).willReturn(Optional.empty());
+        given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(주문테이블));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
                 () -> tableService.changeNumberOfGuests(주문테이블.getId(), 변경테이블)
-        );
+        ).withMessageContaining("변경하려는 테이블은 빈 테이블이어야 합니다.");
+    }
+
+    @Test
+    @DisplayName("변경하려는 방문 손님 수는 0명이상이다")
+    void changeNumberOfGuests_numberError() {
+        // given
+        주문테이블.setEmpty(사용중);
+        OrderTableRequest 변경테이블 = new OrderTableRequest(-1, 사용중);
+        given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(주문테이블));
+
+        // when & then
+        assertThatIllegalArgumentException().isThrownBy(
+                () -> tableService.changeNumberOfGuests(주문테이블.getId(), 변경테이블)
+        ).withMessageContaining("변경하려는 사용자의 수는 0명 이상이어야 합니다.");
     }
 }

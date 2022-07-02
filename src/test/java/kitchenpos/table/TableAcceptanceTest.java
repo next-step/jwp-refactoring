@@ -89,7 +89,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 테이블_손님수_변경_요청(OrderTable orderTable, int numberOfGuests) {
-        orderTable.setNumberOfGuests(numberOfGuests);
+        orderTable.changeNumberOfGuests(numberOfGuests);
 
         return AcceptanceTest.doPut("/api/tables/" + orderTable.getId() + "/number-of-guests", orderTable);
     }
