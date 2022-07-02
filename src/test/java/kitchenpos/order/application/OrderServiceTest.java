@@ -25,6 +25,7 @@ import kitchenpos.table.exception.CanNotMakeOrderTableException;
 import kitchenpos.table.exception.NotExistTableException;
 import kitchenpos.utils.ServiceTestHelper;
 import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -66,11 +67,12 @@ class OrderServiceTest extends ServiceTest {
 
         OrderResponse savedOrder = serviceTestHelper.주문_생성됨(orderTable.getId(),
                 Lists.newArrayList(orderLineItem1, orderLineItem2));
-
-        assertThat(savedOrder.getId()).isNotNull();
-        assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.toString());
-        assertThat(savedOrder.getOrderTableId()).isEqualTo(orderTable.getId());
-        assertThat(savedOrder.getOrderLineItems()).hasSize(2);
+        Assertions.assertAll("등록된 주문을 확인한다"
+                , () -> assertThat(savedOrder.getId()).isNotNull()
+                , () -> assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.toString())
+                , () -> assertThat(savedOrder.getOrderTableId()).isEqualTo(orderTable.getId())
+                , () -> assertThat(savedOrder.getOrderLineItems()).hasSize(2)
+        );
     }
 
     @Test
@@ -81,11 +83,12 @@ class OrderServiceTest extends ServiceTest {
         OrderTableResponse zeroGuestTable = serviceTestHelper.비어있지않은테이블_생성됨(0);
         OrderResponse savedOrder = serviceTestHelper.주문_생성됨(zeroGuestTable.getId(),
                 Lists.newArrayList(orderLineItem1, orderLineItem2));
-
-        assertThat(savedOrder.getId()).isNotNull();
-        assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.toString());
-        assertThat(savedOrder.getOrderTableId()).isEqualTo(zeroGuestTable.getId());
-        assertThat(savedOrder.getOrderLineItems()).hasSize(2);
+        Assertions.assertAll("등록된 주문을 확인한다"
+                , () -> assertThat(savedOrder.getId()).isNotNull()
+                , () -> assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.toString())
+                , () -> assertThat(savedOrder.getOrderTableId()).isEqualTo(orderTable.getId())
+                , () -> assertThat(savedOrder.getOrderLineItems()).hasSize(2)
+        );
     }
 
     @Test
@@ -157,9 +160,12 @@ class OrderServiceTest extends ServiceTest {
                 Lists.newArrayList(orderLineItem1, orderLineItem2));
 
         OrderResponse updatedOrder = serviceTestHelper.주문상태_변경(order.getId(), OrderStatus.MEAL);
+        Assertions.assertAll("주문상태의 변경여부를 확인한다"
+                , () -> assertThat(updatedOrder.getId()).isEqualTo(order.getId())
+                , () -> assertThat(updatedOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name())
+        );
 
-        assertThat(updatedOrder.getId()).isEqualTo(order.getId());
-        assertThat(updatedOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
+
     }
 
     @Test

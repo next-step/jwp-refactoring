@@ -22,6 +22,7 @@ import kitchenpos.table.exception.CannotUngroupException;
 import kitchenpos.table.exception.NotExistTableException;
 import kitchenpos.utils.ServiceTestHelper;
 import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,8 +46,12 @@ class TableGroupServiceTest extends ServiceTest {
 
         List<OrderTableResponse> orderTables = savedTableGroup.getOrderTableResponses();
         assertThat(savedTableGroup.getId()).isNotNull();
-        assertThat(orderTables).hasSize(numberOfTables);
-        orderTables.forEach(table -> assertThat(table.getTableGroupId()).isEqualTo(savedTableGroup.getId()));
+
+        Assertions.assertAll("테이블 그룹에 포함된 테이블들을 확인한다."
+                , () -> assertThat(orderTables).hasSize(numberOfTables)
+                , () -> orderTables.forEach(
+                        table -> assertThat(table.getTableGroupId()).isEqualTo(savedTableGroup.getId()))
+        );
     }
 
     @Test

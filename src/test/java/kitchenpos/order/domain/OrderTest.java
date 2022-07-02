@@ -33,7 +33,7 @@ class OrderTest {
     @DisplayName("주문 생성")
     void 주문등록() {
         Order order = 테스트_주문_생성();
-        Assertions.assertAll("새로 생성된 order의 상태를 확인한다."
+        Assertions.assertAll("새로 생성된 주문을 확인한다."
                 , () -> assertThat(order.getOrderTableId()).isEqualTo(orderTableId)
                 , () -> assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING)
                 , () -> assertThatAllOrderLineItemIncludedToOrder(order)

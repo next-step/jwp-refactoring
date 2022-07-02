@@ -17,6 +17,7 @@ import kitchenpos.menu.exception.NotExistMenuException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.utils.ServiceTestHelper;
 import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,17 +49,21 @@ class MenuServiceTest extends ServiceTest {
         int menuPrice = 5000;
         MenuDto savedMenu = 테스트_메뉴_생성(menuGroup, menuName, menuPrice);
 
-        assertThat(savedMenu.getMenuGroup().getId()).isEqualTo(menuGroup.getId());
-        assertThat(savedMenu.getId()).isNotNull();
-        assertThat(savedMenu.getName()).isEqualTo(menuName);
-        assertThat(savedMenu.getPrice().intValue()).isEqualTo(menuPrice);
+        Assertions.assertAll("저장된 메뉴를 확인한다"
+                , () -> assertThat(savedMenu.getMenuGroup().getId()).isEqualTo(menuGroup.getId())
+                , () -> assertThat(savedMenu.getId()).isNotNull()
+                , () -> assertThat(savedMenu.getName()).isEqualTo(menuName)
+                , () -> assertThat(savedMenu.getPrice().intValue()).isEqualTo(menuPrice)
+        );
 
         List<MenuProductDto> menuProducts = savedMenu.getMenuProductDtos();
         List<Long> menuProductIds = menuProducts.stream()
                 .map(MenuProductDto::getProductId)
                 .collect(toList());
-        assertThat(menuProducts).hasSize(2);
-        assertThat(menuProductIds).containsExactlyInAnyOrder(product1.getId(), product2.getId());
+        Assertions.assertAll("저장된 메뉴의 메뉴 상품을 확인한다"
+                , () -> assertThat(menuProducts).hasSize(2)
+                , () -> assertThat(menuProductIds).containsExactlyInAnyOrder(product1.getId(), product2.getId())
+        );
     }
 
     @Test

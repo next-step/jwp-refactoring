@@ -12,6 +12,7 @@ import kitchenpos.fixture.ProductFixtureFactory;
 import kitchenpos.menu.exception.InvalidMenuPriceException;
 import kitchenpos.product.domain.Product;
 import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,17 +35,20 @@ class MenuTest {
         String menuName = "메뉴1";
         int menuPrice = 5000;
         Menu menu = 테스트_메뉴_생성(menuGroup, menuName, menuPrice);
-
-        assertThat(menu.getMenuGroup()).isSameAs(menuGroup);
-        assertThat(menu.getName()).isEqualTo(menuName);
-        assertThat(menu.getPrice().intValue()).isEqualTo(menuPrice);
+        Assertions.assertAll("저장된 메뉴를 확인한다"
+                , () -> assertThat(menu.getMenuGroup()).isSameAs(menuGroup)
+                , () -> assertThat(menu.getName()).isEqualTo(menuName)
+                , () -> assertThat(menu.getPrice().intValue()).isEqualTo(menuPrice)
+        );
 
         List<MenuProduct> menuProducts = menu.getMenuProducts();
         List<Long> menuProductIds = menuProducts.stream()
                 .map(MenuProduct::getProductId)
                 .collect(toList());
-        assertThat(menuProducts).hasSize(2);
-        assertThat(menuProductIds).containsExactlyInAnyOrder(product1.getId(), product2.getId());
+        Assertions.assertAll("저장된 메뉴의 메뉴 상품을 확인한다"
+                , () -> assertThat(menuProducts).hasSize(2)
+                , () -> assertThat(menuProductIds).containsExactlyInAnyOrder(product1.getId(), product2.getId())
+        );
     }
 
     @Test

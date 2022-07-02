@@ -22,6 +22,7 @@ import kitchenpos.table.exception.CannotChangeNumberOfGuests;
 import kitchenpos.table.exception.NotExistTableException;
 import kitchenpos.utils.ServiceTestHelper;
 import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,10 +38,11 @@ class TableServiceTest extends ServiceTest {
     @DisplayName("빈 테이블 생성")
     void 빈_테이블_생성() {
         OrderTableResponse savedOrderTable = serviceTestHelper.빈테이블_생성됨();
-
-        assertThat(savedOrderTable.getTableGroupId()).isNull();
-        assertThat(savedOrderTable.getId()).isNotNull();
-        assertThat(savedOrderTable.getNumberOfGuests()).isZero();
+        Assertions.assertAll("빈 테이블인지 확인한다."
+                , () -> assertThat(savedOrderTable.getTableGroupId()).isNull()
+                , () -> assertThat(savedOrderTable.getId()).isNotNull()
+                , () -> assertThat(savedOrderTable.getNumberOfGuests()).isZero()
+        );
     }
 
     @Test
@@ -48,10 +50,11 @@ class TableServiceTest extends ServiceTest {
     void 비어있지않은_테이블_생성() {
         int numberOfGuests = 4;
         OrderTableResponse savedOrderTable = serviceTestHelper.비어있지않은테이블_생성됨(numberOfGuests);
-
-        assertThat(savedOrderTable.getTableGroupId()).isNull();
-        assertThat(savedOrderTable.getId()).isNotNull();
-        assertThat(savedOrderTable.getNumberOfGuests()).isEqualTo(numberOfGuests);
+        Assertions.assertAll("비어있지 않은 테이블인지 확인한다."
+                , () -> assertThat(savedOrderTable.getTableGroupId()).isNull()
+                , () -> assertThat(savedOrderTable.getId()).isNotNull()
+                , () -> assertThat(savedOrderTable.getNumberOfGuests()).isEqualTo(numberOfGuests)
+        );
     }
 
     @Test
@@ -69,21 +72,21 @@ class TableServiceTest extends ServiceTest {
         int numberOfGuests = 4;
         OrderTableResponse orderTable = serviceTestHelper.비어있지않은테이블_생성됨(numberOfGuests);
         OrderTableResponse updatedOrderTable = serviceTestHelper.빈테이블로_변경(orderTable.getId());
-
-        assertThat(updatedOrderTable.getId()).isEqualTo(orderTable.getId());
-        assertThat(updatedOrderTable.isEmpty()).isTrue();
-        assertThat(updatedOrderTable.getNumberOfGuests()).isEqualTo(numberOfGuests);
+        Assertions.assertAll("빈 테이블로 변경되었는지 확인한다."
+                , () -> assertThat(updatedOrderTable.getId()).isEqualTo(orderTable.getId())
+                , () -> assertThat(updatedOrderTable.isEmpty()).isTrue()
+        );
     }
-
     @Test
     @DisplayName("비어있지않은 테이블로 변경")
     void 비어있지않은_테이블로_변경() {
         OrderTableResponse orderTable = serviceTestHelper.빈테이블_생성됨();
         OrderTableResponse updatedOrderTable = serviceTestHelper.비어있지않은테이블로_변경(orderTable.getId());
-
-        assertThat(updatedOrderTable.getId()).isEqualTo(orderTable.getId());
-        assertThat(updatedOrderTable.isEmpty()).isFalse();
-        assertThat(updatedOrderTable.getNumberOfGuests()).isZero();
+        Assertions.assertAll("비어있지 않은 테이블로 변경되었는지 확인한다."
+                , () -> assertThat(updatedOrderTable.getId()).isEqualTo(orderTable.getId())
+                , () -> assertThat(updatedOrderTable.isEmpty()).isFalse()
+                , () -> assertThat(updatedOrderTable.getNumberOfGuests()).isZero()
+        );
     }
 
     @Test
@@ -125,9 +128,10 @@ class TableServiceTest extends ServiceTest {
         int updatedNumberOfGuests = 3;
         OrderTableResponse updatedOrderTable = serviceTestHelper.테이블_인원수_변경(savedOrderTable.getId(),
                 updatedNumberOfGuests);
-
-        assertThat(updatedOrderTable.getId()).isEqualTo(savedOrderTable.getId());
-        assertThat(updatedOrderTable.getNumberOfGuests()).isEqualTo(updatedNumberOfGuests);
+        Assertions.assertAll("테이블 인원수 변경여부를 확인한다."
+                , () -> assertThat(updatedOrderTable.getId()).isEqualTo(savedOrderTable.getId())
+                , () -> assertThat(updatedOrderTable.getNumberOfGuests()).isEqualTo(updatedNumberOfGuests)
+        );
     }
 
     @Test

@@ -64,9 +64,11 @@ class TableGroupTest {
         TableGroup tableGroup = new TableGroup(Lists.newArrayList(emptyTable, emptyTable2));
 
         tableGroup.ungroup();
-        assertThat(emptyTable.getTableGroup()).isNull();
-        assertThat(emptyTable.isEmpty()).isFalse();
-        assertThat(emptyTable2.getTableGroup()).isNull();
-        assertThat(emptyTable2.isEmpty()).isFalse();
+        Assertions.assertAll("테이블 그룹에서 지정 해제되었는지 확인"
+                , () -> assertThat(emptyTable.getTableGroup()).isNull()
+                , () -> assertThat(emptyTable.isEmpty()).isFalse()
+                , () -> assertThat(emptyTable2.getTableGroup()).isNull()
+                , () -> assertThat(emptyTable2.isEmpty()).isFalse()
+        );
     }
 }

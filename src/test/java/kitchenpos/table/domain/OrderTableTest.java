@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import kitchenpos.table.exception.CannotChangeEmptyState;
 import kitchenpos.table.exception.CannotChangeNumberOfGuests;
 import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -16,9 +17,11 @@ class OrderTableTest {
     void 빈_테이블_생성() {
         int numberOfGuests = 0;
         OrderTable orderTable = new OrderTable(numberOfGuests, true);
-        assertThat(orderTable.isEmpty()).isTrue();
-        assertThat(orderTable.getNumberOfGuests()).isZero();
-        assertThat(orderTable.getTableGroup()).isNull();
+        Assertions.assertAll("빈 테이블인지 확인한다."
+                , () -> assertThat(orderTable.isEmpty()).isTrue()
+                , () -> assertThat(orderTable.getNumberOfGuests()).isZero()
+                , () -> assertThat(orderTable.getTableGroup()).isNull()
+        );
     }
 
     @Test
@@ -26,9 +29,11 @@ class OrderTableTest {
     void 비어있지않은_테이블_생성() {
         int numberOfGuests = 4;
         OrderTable orderTable = new OrderTable(numberOfGuests, false);
-        assertThat(orderTable.isEmpty()).isFalse();
-        assertThat(orderTable.getNumberOfGuests()).isEqualTo(numberOfGuests);
-        assertThat(orderTable.getTableGroup()).isNull();
+        Assertions.assertAll("비어있지 않은 테이블인지 확인한다."
+                , () -> assertThat(orderTable.isEmpty()).isFalse()
+                , () -> assertThat(orderTable.getNumberOfGuests()).isEqualTo(numberOfGuests)
+                , () -> assertThat(orderTable.getTableGroup()).isNull()
+        );
     }
 
     @Test

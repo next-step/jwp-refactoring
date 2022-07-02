@@ -8,6 +8,7 @@ import kitchenpos.ServiceTest;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.exception.InvalidProductPriceException;
 import kitchenpos.utils.ServiceTestHelper;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +26,12 @@ class ProductServiceTest extends ServiceTest {
         String name = "상품1";
         int price = 1000;
         Product savedProduct = serviceTestHelper.상품_생성됨(name, price);
-        assertThat(savedProduct.getName()).isEqualTo(name);
-        assertThat(savedProduct.getPrice().intValue()).isEqualTo(price);
+        Assertions.assertAll("추가된 상품의 정보를 확인한다"
+                , () -> assertThat(savedProduct.getName()).isEqualTo(name)
+                , () ->
+                        assertThat(savedProduct.getPrice().intValue()).isEqualTo(price)
+        );
+
     }
 
     @Test

@@ -4,16 +4,14 @@ import static kitchenpos.table.exception.CannotMakeTableGroupException.INSUFFICI
 import static kitchenpos.table.exception.CannotMakeTableGroupException.NOT_EXIST_TABLE;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import kitchenpos.table.exception.CannotMakeTableGroupException;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -28,22 +26,22 @@ public class TableGroup {
     @CreatedDate
     @Column(nullable = false)
     private LocalDateTime createdDate;
-    @OneToMany(mappedBy = "tableGroup", cascade = {CascadeType.MERGE})
-    private final List<OrderTable> orderTables = new ArrayList<>();
+    @Embedded
+    private final OrderTables orderTables = new OrderTables();
 
     protected TableGroup() {
 
     }
 
-    public TableGroup(List<OrderTable> savedOrderTables) {
-        if (CollectionUtils.isEmpty(savedOrderTables)) {
+    public TableGroup(List<OrderTable> orderTables) {
+        if (CollectionUtils.isEmpty(orderTables)) {
             throw new CannotMakeTableGroupException(NOT_EXIST_TABLE);
         }
-        if (savedOrderTables.size() < 2) {
+        if (orderTables.size() < 2) {
             throw new CannotMakeTableGroupException(INSUFFICIENT_NUMBER_OF_TABLE);
         }
-        this.orderTables.addAll(savedOrderTables);
-        this.orderTables.forEach(orderTable -> orderTable.includeTo(this));
+        this.orderTables.addOrderTables(orderTables);
+        this.orderTables.includeToTableGroup(this);
     }
 
     public Long getId() {
@@ -55,10 +53,12 @@ public class TableGroup {
     }
 
     public List<OrderTable> getOrderTables() {
-        return orderTables;
+        return orderTables.toList();
     }
 
     public void ungroup() {
-        orderTables.forEach(OrderTable::ungroup);
+        orderTables.ungroup();
     }
+
+
 }
