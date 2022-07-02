@@ -20,7 +20,7 @@ public class Quantity {
     }
 
     private void validate(Long quantity) {
-        if(Objects.isNull(quantity) || quantity < MIN_QUANTITY) {
+        if (Objects.isNull(quantity) || quantity < MIN_QUANTITY) {
             throw new IllegalArgumentException("수량 0 이상이어야 합니다.");
         }
     }

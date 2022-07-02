@@ -17,7 +17,9 @@ public class MenuFixture {
     public static Menu 메뉴_생성(String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProductList) {
         return new Menu(name, price, menuGroup, menuProductList);
     }
-    public static MenuRequest 메뉴_생성_요청(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProductList) {
+
+    public static MenuRequest 메뉴_생성_요청(String name, BigDecimal price, MenuGroup menuGroup,
+                                       List<MenuProduct> menuProductList) {
         List<MenuProductRequest> menuProductRequestList = menuProductList.stream()
                 .map(menuProduct -> new MenuProductRequest(menuProduct.getSeq(), menuProduct.getQuantity()))
                 .collect(Collectors.toList());

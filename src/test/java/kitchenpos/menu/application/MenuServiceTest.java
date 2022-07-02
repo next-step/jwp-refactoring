@@ -1,8 +1,12 @@
 package kitchenpos.menu.application;
 
-import static kitchenpos.fixture.MenuFixture.*;
+import static kitchenpos.fixture.MenuFixture.메뉴_생성;
+import static kitchenpos.fixture.MenuFixture.메뉴_생성_요청;
+import static kitchenpos.fixture.MenuFixture.메뉴그룹_생성;
+import static kitchenpos.fixture.MenuFixture.메뉴상품_생성;
 import static kitchenpos.fixture.ProductFixture.상품_생성;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -11,7 +15,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import kitchenpos.common.domain.Price;
-import kitchenpos.fixture.ProductFixture;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;

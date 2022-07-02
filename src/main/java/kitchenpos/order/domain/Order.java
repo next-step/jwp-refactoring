@@ -14,7 +14,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import kitchenpos.table.domain.OrderTable;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.util.CollectionUtils;
 
 @Entity
