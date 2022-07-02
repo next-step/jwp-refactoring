@@ -13,10 +13,10 @@ import java.util.stream.Collectors;
 @Embeddable
 public class OrderLineItems {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<OrderLineItem> list;
+    private final List<OrderLineItem> elements;
 
     public OrderLineItems() {
-        list = new ArrayList<>();
+        elements = new ArrayList<>();
     }
 
     public OrderLineItems(Order order, List<OrderLineItem> orderLineItems) {
@@ -32,7 +32,7 @@ public class OrderLineItems {
         for (OrderLineItem item : orderLineItems) {
             item.connectedBy(order);
         }
-        this.list = orderLineItems;
+        this.elements = orderLineItems;
     }
 
     private List<Long> getMenuIds(List<OrderLineItem> orderLineItems) {
@@ -45,6 +45,6 @@ public class OrderLineItems {
 
 
     public List<OrderLineItem> getList() {
-        return list;
+        return elements;
     }
 }
