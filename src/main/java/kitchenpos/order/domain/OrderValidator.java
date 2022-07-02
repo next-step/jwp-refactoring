@@ -2,8 +2,6 @@ package kitchenpos.order.domain;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItems;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
