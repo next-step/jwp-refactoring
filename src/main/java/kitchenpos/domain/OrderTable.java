@@ -63,6 +63,9 @@ public class OrderTable {
         if (numberOfGuests < 0) {
             throw new IllegalArgumentException("방문한 손님의 수가 0보다 작으면 손님의 수를 변경할 수 없습니다.");
         }
+        if (empty) {
+            throw new IllegalArgumentException("빈 테이블이면 방문한 손님 수를 변경할 수 없습니다.");
+        }
         this.numberOfGuests = numberOfGuests;
     }
 

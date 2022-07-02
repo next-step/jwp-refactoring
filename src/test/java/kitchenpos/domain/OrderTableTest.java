@@ -52,6 +52,15 @@ class OrderTableTest {
                 .hasMessage("방문한 손님의 수가 0보다 작으면 손님의 수를 변경할 수 없습니다.");
     }
 
+    @Test
+    void 빈_테이블이면_방문한_손님의_수를_변경할_수_없다() {
+        // when & then
+        assertThatThrownBy(() ->
+                EMPTY_TABLE.changeNumberOfGuests(2)
+        ).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("빈 테이블이면 방문한 손님 수를 변경할 수 없습니다.");
+    }
+
     private static Stream<Arguments> 그룹_지정할_수_없는_테이블_조회() {
         return Stream.of(
                 Arguments.of(
