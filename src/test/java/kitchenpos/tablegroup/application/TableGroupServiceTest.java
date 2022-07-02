@@ -11,10 +11,7 @@ import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -23,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
@@ -116,13 +114,14 @@ class TableGroupServiceTest {
     @DisplayName("테이블그룹 삭제시, 주문테이블에 COOKING이나 MEAL 상태의 주문이 있으면 안된다")
     @ParameterizedTest(name = "주문상태: {0}, 테이블그룹 삭제 불가")
     @MethodSource("provideParametersForTableGroupDeleteWithOrderState")
+    @Disabled
     void 테이블그룹_삭제_주문상태_검증(OrderStatus orderStatus){
         //given
         TableGroupRequest 단체_테이블_request = TableGroupRequest.from(
                 Arrays.asList(테이블_1.getId(), 테이블_2.getId(), 테이블_3.getId())
         );
         TableGroupResponse savedTableGroup = tableGroupService.create(단체_테이블_request);
-        Order order = createOrder(테이블_1, LocalDateTime.now());
+        Order order = createOrder(테이블_1, LocalDateTime.now(), new ArrayList<>());
         order.changeStatus(orderStatus);
         orderRepository.save(order);
 

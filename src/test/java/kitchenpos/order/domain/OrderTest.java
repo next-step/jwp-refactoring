@@ -47,9 +47,8 @@ class OrderTest {
     @Test
     void Order_생성() {
         OrderTable 테이블_1 = createOrderTable(3, false);
-        Order order = createOrder(테이블_1, LocalDateTime.now());
-        OrderLineItem orderLineItem_김치찌개 = createOrderLineItem(order, menu, 1);
-        order.registerOrderLineItems(Arrays.asList(orderLineItem_김치찌개));
+        OrderLineItem orderLineItem_김치찌개 = createOrderLineItem(menu, 1);
+        Order order = createOrder(테이블_1, LocalDateTime.now(), Arrays.asList(orderLineItem_김치찌개));
 
         assertAll(
                 () -> assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING),
@@ -62,21 +61,19 @@ class OrderTest {
     @Test
     void Order_주문항목_메뉴_1개_이상_검증(){
         OrderTable 테이블_1 = createOrderTable(3, false);
-        Order order = createOrder(테이블_1, LocalDateTime.now());
 
         assertThrows(IllegalOrderLineItemException.class,
-                () -> order.registerOrderLineItems(new ArrayList<>()));
+                () -> Order.of(테이블_1, LocalDateTime.now(), new ArrayList<>()));
     }
 
     @DisplayName("주문항목의 메뉴는 중복될 수 없다")
     @Test
     void Order_주문항목_메뉴_중복_검증(){
         OrderTable 테이블_1 = createOrderTable(3, false);
-        Order order = createOrder(테이블_1, LocalDateTime.now());
-        OrderLineItem orderLineItem_김치찌개 = createOrderLineItem(order, menu, 1);
+        OrderLineItem orderLineItem_김치찌개 = createOrderLineItem(menu, 1);
 
         assertThrows(IllegalOrderLineItemException.class,
-                () ->order.registerOrderLineItems(Arrays.asList(orderLineItem_김치찌개, orderLineItem_김치찌개)));
+                () -> Order.of(테이블_1, LocalDateTime.now(), Arrays.asList(orderLineItem_김치찌개, orderLineItem_김치찌개)));
     }
 
     @DisplayName("주문테이블은 비어있을 수 없다")
@@ -92,7 +89,8 @@ class OrderTest {
     @Test
     void Order_주문상태_변경(){
         OrderTable 테이블_1 = createOrderTable(3, false);
-        Order order = createOrder(테이블_1, LocalDateTime.now());
+        OrderLineItem orderLineItem_김치찌개 = createOrderLineItem(menu, 1);
+        Order order = createOrder(테이블_1, LocalDateTime.now(), Arrays.asList(orderLineItem_김치찌개));
         order.changeStatus(OrderStatus.COMPLETION);
 
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
@@ -102,7 +100,8 @@ class OrderTest {
     @Test
     void Order_주문상태_변경_COMPLETION_검증(){
         OrderTable 테이블_1 = createOrderTable(3, false);
-        Order order = createOrder(테이블_1, LocalDateTime.now());
+        OrderLineItem orderLineItem_김치찌개 = createOrderLineItem(menu, 1);
+        Order order = createOrder(테이블_1, LocalDateTime.now(), Arrays.asList(orderLineItem_김치찌개));
         order.changeStatus(OrderStatus.COMPLETION);
 
         assertThrows(IllegalOrderException.class, () -> order.changeStatus(OrderStatus.COOKING));

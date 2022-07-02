@@ -91,15 +91,13 @@ class OrderServiceTest {
                 , Arrays.asList(김치찌개세트_김치찌개, 김치찌개세트_공기밥)));
 
         테이블_1 = orderTableRepository.save(createOrderTable(4, false));
-        접수된_주문 = createOrder(테이블_1, LocalDateTime.now());
-        접수된주문_김치찌개세트 = createOrderLineItem(접수된_주문, 메뉴_김치찌개세트, 1);
-        접수된_주문.registerOrderLineItems(Arrays.asList(접수된주문_김치찌개세트));
+        접수된주문_김치찌개세트 = createOrderLineItem(메뉴_김치찌개세트, 1);
+        접수된_주문 = createOrder(테이블_1, LocalDateTime.now(), Arrays.asList(접수된주문_김치찌개세트));
 
         테이블_2 = orderTableRepository.save(createOrderTable(4, false));
-        완료된_주문 = createOrder(테이블_2, LocalDateTime.now());
+        완료된주문_김치찌개세트 = createOrderLineItem(메뉴_김치찌개세트, 1);
+        완료된_주문 = createOrder(테이블_2, LocalDateTime.now(), Arrays.asList(완료된주문_김치찌개세트));
         완료된_주문.changeStatus(OrderStatus.COMPLETION);
-        완료된주문_김치찌개세트 = createOrderLineItem(접수된_주문, 메뉴_김치찌개세트, 1);
-        완료된_주문.registerOrderLineItems(Arrays.asList(완료된주문_김치찌개세트));
 
         테이블_EMPTY = orderTableRepository.save(createOrderTable(0, true));
     }
@@ -218,10 +216,9 @@ class OrderServiceTest {
     @MethodSource("provideParametersForOrderStateUpdate")
     void 주문_상태_업데이트(OrderStatus beforeStatus, OrderStatus afterStatus){
         //given
-        Order order = createOrder(테이블_1, LocalDateTime.now());
+        Order order = createOrder(테이블_1, LocalDateTime.now(), Arrays.asList(접수된주문_김치찌개세트));
         order.changeStatus(beforeStatus);
         orderRepository.save(order);
-        order.registerOrderLineItems(Arrays.asList(접수된주문_김치찌개세트));
 
         //when
         OrderStatusRequest newStatus = OrderStatusRequest.from(afterStatus);
@@ -252,7 +249,7 @@ class OrderServiceTest {
     @Test
     void 주문_상태_업데이트_COMPLETION_검증(){
         //given
-        Order order = createOrder(테이블_1, LocalDateTime.now());
+        Order order = createOrder(테이블_1, LocalDateTime.now(), Arrays.asList(접수된주문_김치찌개세트));
         order.changeStatus(OrderStatus.COMPLETION);
         orderRepository.save(order);
 

@@ -37,8 +37,19 @@ public class Order {
         this.orderedTime = orderedTime;
     }
 
+    private Order(OrderTable orderTable, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+        validateOrderTableNotEmpty(orderTable);
+        this.orderTable = orderTable;
+        this.orderedTime = orderedTime;
+        registerOrderLineItems(orderLineItems);
+    }
+
     public static Order of(OrderTable orderTable, LocalDateTime orderedTime) {
         return new Order(orderTable, orderedTime);
+    }
+
+    public static Order of(OrderTable orderTable, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+        return new Order(orderTable, orderedTime, orderLineItems);
     }
 
     private void validateOrderTableNotEmpty(OrderTable orderTable) {
@@ -47,7 +58,7 @@ public class Order {
         }
     }
 
-    public void registerOrderLineItems(List<OrderLineItem> orderLineItems) {
+    private void registerOrderLineItems(List<OrderLineItem> orderLineItems) {
         validateOrderLineItems(orderLineItems);
         this.orderLineItems = orderLineItems;
         orderLineItems.forEach(orderLineItem -> orderLineItem.registerOrder(this));
