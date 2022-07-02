@@ -39,7 +39,7 @@ public class OrderService {
         List<Menu> menus = menuRepository.findAllByIdIn(menuIds);
 
         if (menus.size() != request.getOrderLineItemSize()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("요청 메뉴와 실제 메뉴 개수가 일치하지 않습니다.");
         }
 
         OrderTable orderTable = orderTableRepository.findById(request.getOrderTableId())
