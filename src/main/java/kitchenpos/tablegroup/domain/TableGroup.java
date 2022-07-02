@@ -21,7 +21,6 @@ public class TableGroup {
     public static final String ERROR_ORDER_TABLE_DUPLICATED = "주문테이블은 중복될 수 없습니다.";
     public static final String ERROR_ORDER_TABLE_GROUPED = "주문테이블은 그룹에 지정되어있을 수 없습니다.";
     public static final String ERROR_ORDER_TABLE_TOO_SMALL = "주문테이블의 개수는 %d 미만일 수 없습니다.";
-    public static final String ERROR_ORDER_INVALID_STATUS = "주문의 상태는 %s일 수 없습니다.";
     public static final int MIN_ORDER_TABLE_NUMBER = 2;
 
     protected TableGroup() {

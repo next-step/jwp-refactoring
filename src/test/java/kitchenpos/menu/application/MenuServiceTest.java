@@ -42,8 +42,6 @@ class MenuServiceTest {
     @Mock
     private MenuGroupService menuGroupService;
     @Mock
-    private MenuProductRepository menuProductDao;
-    @Mock
     private ProductService productService;
     @InjectMocks
     private MenuService menuService;

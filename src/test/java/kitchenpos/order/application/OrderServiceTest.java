@@ -56,8 +56,6 @@ class OrderServiceTest {
     @Mock
     OrderRepository orderRepository;
     @Mock
-    OrderLineItemRepository orderLineItemRepository;
-    @Mock
     TableService tableService;
     @InjectMocks
     OrderService orderService;

@@ -79,7 +79,6 @@ class OrderTest {
 
     @DisplayName("주문테이블은 비어있을 수 없다")
     @Test
-    @Disabled
     void Order_테이블_Empty_검증(){
         OrderTable 테이블_1 = createOrderTable(0, true);
 
