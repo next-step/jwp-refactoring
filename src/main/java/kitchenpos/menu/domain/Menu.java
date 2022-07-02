@@ -1,25 +1,20 @@
 package kitchenpos.menu.domain;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import kitchenpos.menu.exception.InvalidMenuPriceException;
-import kitchenpos.menu.exception.NotExistMenuProductException;
 import kitchenpos.product.domain.Product;
 
 @Entity
 public class Menu {
-    @OneToMany(mappedBy = "menu", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private final List<MenuProduct> menuProducts = new ArrayList<>();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,6 +24,8 @@ public class Menu {
     private BigDecimal price;
     @ManyToOne
     private MenuGroup menuGroup;
+    @Embedded
+    private final MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {
     }
@@ -39,8 +36,8 @@ public class Menu {
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
-        this.menuProducts.addAll(menuProducts);
-        this.menuProducts.forEach(menuProduct -> menuProduct.includeToMenu(this));
+        this.menuProducts.addMenuProducts(menuProducts);
+        this.menuProducts.includeToMenu(this);
     }
 
     private void checkPrice(BigDecimal price) {
@@ -63,10 +60,7 @@ public class Menu {
     }
 
     private MenuProduct findMenuProductByProductId(Long id) {
-        return menuProducts.stream()
-                .filter(menuProduct -> menuProduct.getProductId().equals(id))
-                .findFirst()
-                .orElseThrow(NotExistMenuProductException::new);
+        return menuProducts.findMenuProductByProductId(id);
     }
 
     public Long getId() {
@@ -86,6 +80,6 @@ public class Menu {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
+        return menuProducts.toList();
     }
 }
