@@ -1,8 +1,8 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.exception.IllegalOrderException;
-import kitchenpos.exception.IllegalOrderLineItemException;
-import kitchenpos.exception.IllegalOrderTableException;
+import kitchenpos.order.exception.IllegalOrderException;
+import kitchenpos.order.exception.IllegalOrderLineItemException;
+import kitchenpos.ordertable.exception.IllegalOrderTableException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menugroup.domain.MenuGroup;

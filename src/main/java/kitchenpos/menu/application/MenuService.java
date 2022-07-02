@@ -1,6 +1,6 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.exception.NoSuchMenuException;
+import kitchenpos.menu.exception.NoSuchMenuException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;

@@ -1,10 +1,9 @@
 package kitchenpos.ordertable.application;
 
-import kitchenpos.exception.IllegalOrderException;
-import kitchenpos.exception.IllegalOrderTableException;
-import kitchenpos.exception.NoSuchOrderTableException;
+import kitchenpos.order.exception.IllegalOrderException;
+import kitchenpos.ordertable.exception.IllegalOrderTableException;
+import kitchenpos.ordertable.exception.NoSuchOrderTableException;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.ordertable.domain.OrderTable;
@@ -15,7 +14,6 @@ import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
-import kitchenpos.utils.fixture.OrderLineItemFixtureFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;

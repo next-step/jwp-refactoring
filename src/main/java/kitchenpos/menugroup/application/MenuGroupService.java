@@ -1,6 +1,6 @@
 package kitchenpos.menugroup.application;
 
-import kitchenpos.exception.NoSuchMenuGroupException;
+import kitchenpos.menugroup.exception.NoSuchMenuGroupException;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menugroup.dto.MenuGroupRequest;

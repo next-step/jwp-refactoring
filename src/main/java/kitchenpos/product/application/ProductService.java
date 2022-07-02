@@ -1,6 +1,6 @@
 package kitchenpos.product.application;
 
-import kitchenpos.exception.NoSuchProductException;
+import kitchenpos.product.exception.NoSuchProductException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;

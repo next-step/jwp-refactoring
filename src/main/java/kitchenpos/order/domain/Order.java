@@ -1,9 +1,9 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.exception.ErrorMessage;
-import kitchenpos.exception.IllegalOrderException;
-import kitchenpos.exception.IllegalOrderLineItemException;
-import kitchenpos.exception.IllegalOrderTableException;
+import kitchenpos.order.exception.IllegalOrderException;
+import kitchenpos.order.exception.IllegalOrderLineItemException;
+import kitchenpos.ordertable.exception.IllegalOrderTableException;
 import kitchenpos.ordertable.domain.OrderTable;
 
 import javax.persistence.*;
@@ -26,6 +26,10 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
+    public static final String ERROR_ORDER_TABLE_EMPTY = "주문테이블은 비어있을 수 없습니다.";
+    public static final String ERROR_ORDER_INVALID_STATUS = "주문의 상태는 %s일 수 없습니다.";
+    public static final String ERROR_ORDER_LINE_ITEM_TOO_SMALL = "주문항목 개수는 %d 미만일 수 없습니다.";
+    public static final String ERROR_ORDER_LINE_ITEM_DUPLICATED = "주문항목은 중복이 불가합니다.";
     private static final int MINIMUM_ORDER_LINE_ITEM_NUMBER = 1;
 
     protected Order() {
@@ -44,7 +48,7 @@ public class Order {
 
     private void validateOrderTableNotEmpty(OrderTable orderTable) {
         if (orderTable.isEmpty()) {
-            throw new IllegalOrderTableException(ErrorMessage.ERROR_ORDER_TABLE_EMPTY);
+            throw new IllegalOrderTableException(ERROR_ORDER_TABLE_EMPTY);
         }
     }
 
@@ -62,7 +66,7 @@ public class Order {
     private void validateOrderLineItemsSize(List<OrderLineItem> orderLineItems) {
         if (orderLineItems == null || orderLineItems.size() < MINIMUM_ORDER_LINE_ITEM_NUMBER) {
             throw new IllegalOrderLineItemException(
-                    String.format(ErrorMessage.ERROR_ORDER_LINE_ITEM_TOO_SMALL, MINIMUM_ORDER_LINE_ITEM_NUMBER)
+                    String.format(ERROR_ORDER_LINE_ITEM_TOO_SMALL, MINIMUM_ORDER_LINE_ITEM_NUMBER)
             );
         }
     }
@@ -73,7 +77,7 @@ public class Order {
                         .map(orderLineItem -> orderLineItem.getMenu())
                         .distinct()
                         .count()){
-            throw new IllegalOrderLineItemException(ErrorMessage.ERROR_ORDER_LINE_ITEM_DUPLICATED);
+            throw new IllegalOrderLineItemException(ERROR_ORDER_LINE_ITEM_DUPLICATED);
         }
     }
 
@@ -85,7 +89,7 @@ public class Order {
     private void validateOrderStatusChangeable() {
         if (OrderStatus.COMPLETION.equals(this.orderStatus)) {
             throw new IllegalOrderException(
-                    String.format(ErrorMessage.ERROR_ORDER_INVALID_STATUS, OrderStatus.COMPLETION)
+                    String.format(ERROR_ORDER_INVALID_STATUS, OrderStatus.COMPLETION)
             );
         }
     }

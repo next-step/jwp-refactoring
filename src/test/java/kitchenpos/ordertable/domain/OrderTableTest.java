@@ -1,7 +1,7 @@
 package kitchenpos.ordertable.domain;
 
-import kitchenpos.exception.IllegalOrderException;
-import kitchenpos.exception.IllegalOrderTableException;
+import kitchenpos.order.exception.IllegalOrderException;
+import kitchenpos.ordertable.exception.IllegalOrderTableException;
 import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;

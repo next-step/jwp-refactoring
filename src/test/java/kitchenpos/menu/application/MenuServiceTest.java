@@ -1,8 +1,8 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.exception.IllegalPriceException;
-import kitchenpos.exception.NoSuchMenuGroupException;
-import kitchenpos.exception.NoSuchProductException;
+import kitchenpos.menugroup.exception.NoSuchMenuGroupException;
+import kitchenpos.product.exception.NoSuchProductException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProductRepository;

@@ -1,6 +1,6 @@
 package kitchenpos.ordertable.application;
 
-import kitchenpos.exception.NoSuchOrderTableException;
+import kitchenpos.ordertable.exception.NoSuchOrderTableException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;

@@ -1,8 +1,8 @@
 package kitchenpos.tablegroup.application;
 
 import kitchenpos.exception.ErrorMessage;
-import kitchenpos.exception.IllegalOrderTableException;
-import kitchenpos.exception.NoSuchTableGroupException;
+import kitchenpos.ordertable.exception.IllegalOrderTableException;
+import kitchenpos.tablegroup.exception.NoSuchTableGroupException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
@@ -24,6 +24,8 @@ public class TableGroupService {
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
+
+    public static final String ERROR_ORDER_TABLE_NOT_EXISTS = "존재하지 않는 주문테이블이 있습니다.";
 
     public TableGroupService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository, final TableGroupRepository tableGroupRepository) {
         this.orderRepository = orderRepository;
@@ -64,7 +66,7 @@ public class TableGroupService {
 
     private void validateOrderTablesAllExist(List<Long> orderTableIds, List<OrderTable> savedOrderTables) {
         if (orderTableIds.size() != savedOrderTables.size()) {
-            throw new IllegalOrderTableException(ErrorMessage.ERROR_ORDER_TABLE_NOT_EXISTS);
+            throw new IllegalOrderTableException(ERROR_ORDER_TABLE_NOT_EXISTS);
         }
     }
 

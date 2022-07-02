@@ -1,8 +1,8 @@
 package kitchenpos.tablegroup.application;
 
-import kitchenpos.exception.IllegalOrderException;
-import kitchenpos.exception.IllegalOrderTableException;
-import kitchenpos.exception.NoSuchTableGroupException;
+import kitchenpos.order.exception.IllegalOrderException;
+import kitchenpos.ordertable.exception.IllegalOrderTableException;
+import kitchenpos.tablegroup.exception.NoSuchTableGroupException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;

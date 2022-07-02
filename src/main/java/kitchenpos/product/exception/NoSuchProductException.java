@@ -1,4 +1,6 @@
-package kitchenpos.exception;
+package kitchenpos.product.exception;
+
+import kitchenpos.exception.KitchenPosArgumentException;
 
 public class NoSuchProductException extends KitchenPosArgumentException {
     private static final String ERROR_MESSAGE = "Product가 존재하지 않습니다 (id: %d)";

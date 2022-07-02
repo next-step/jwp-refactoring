@@ -1,6 +1,6 @@
 package kitchenpos.order.application;
 
-import kitchenpos.exception.NoSuchOrderException;
+import kitchenpos.order.exception.NoSuchOrderException;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;

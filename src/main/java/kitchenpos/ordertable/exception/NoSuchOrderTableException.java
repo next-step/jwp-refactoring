@@ -1,4 +1,6 @@
-package kitchenpos.exception;
+package kitchenpos.ordertable.exception;
+
+import kitchenpos.exception.KitchenPosArgumentException;
 
 public class NoSuchOrderTableException extends KitchenPosArgumentException {
     private static final String ERROR_MESSAGE = "OrderTable이 존재하지 않습니다 (id: %d)";
