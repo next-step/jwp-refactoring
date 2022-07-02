@@ -1,6 +1,6 @@
 package kitchenpos.api;
 
-import kitchenpos.service.table.TableService;
+import kitchenpos.service.table.application.TableService;
 import kitchenpos.service.table.dto.OrderTableRequest;
 import kitchenpos.service.table.dto.OrderTableResponse;
 import kitchenpos.service.table.dto.OrderTableUpdateEmptyRequest;

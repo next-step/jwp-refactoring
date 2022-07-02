@@ -2,8 +2,8 @@ package kitchenpos.service.menu.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import kitchenpos.menu.domain.InvalidNameException;
-import kitchenpos.menu.domain.InvalidPriceException;
+import kitchenpos.domain.menu.InvalidNameException;
+import kitchenpos.domain.menu.InvalidPriceException;
 
 import java.util.List;
 import java.util.Objects;
@@ -15,7 +15,8 @@ public class MenuRequest {
     private List<MenuProductRequest> menuProducts;
 
     @JsonCreator
-    public MenuRequest(@JsonProperty("name") String name, @JsonProperty("price") long price,
+    public MenuRequest(
+            @JsonProperty("name") String name, @JsonProperty("price") long price,
             @JsonProperty("menuGroupId") long menuGroupId,
             @JsonProperty("menuProducts") List<MenuProductRequest> menuProducts) {
         check(name, price);

@@ -1,11 +1,13 @@
-package kitchenpos.menu.application;
+package kitchenpos.service.menu;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.dto.MenuProductRequest;
-import kitchenpos.menu.dto.MenuProductResponse;
-import kitchenpos.menu.dto.MenuRequest;
-import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.domain.menu.Menu;
+import kitchenpos.domain.menu.MenuRepository;
+import kitchenpos.service.menu.application.MenuService;
+import kitchenpos.service.menu.application.MenuValidator;
+import kitchenpos.service.menu.dto.MenuProductRequest;
+import kitchenpos.service.menu.dto.MenuProductResponse;
+import kitchenpos.service.menu.dto.MenuRequest;
+import kitchenpos.service.menu.dto.MenuResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -2,7 +2,7 @@ package kitchenpos.service.order.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.domain.order.OrderStatus;
 
 public class OrderStatusRequest {
     private OrderStatus orderStatus;

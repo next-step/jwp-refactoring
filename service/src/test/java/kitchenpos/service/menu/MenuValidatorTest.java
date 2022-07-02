@@ -1,11 +1,12 @@
-package kitchenpos.menu.application;
+package kitchenpos.service.menu;
 
-import kitchenpos.menu.domain.InvalidPriceException;
-import kitchenpos.menu.dto.MenuProductRequest;
-import kitchenpos.menu.dto.MenuRequest;
-import kitchenpos.menugroup.domain.MenuGroupRepository;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.domain.menu.InvalidPriceException;
+import kitchenpos.domain.menugroup.MenuGroupRepository;
+import kitchenpos.domain.product.Product;
+import kitchenpos.domain.product.ProductRepository;
+import kitchenpos.service.menu.application.MenuValidator;
+import kitchenpos.service.menu.dto.MenuProductRequest;
+import kitchenpos.service.menu.dto.MenuRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

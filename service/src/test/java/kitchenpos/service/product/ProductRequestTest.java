@@ -1,8 +1,8 @@
-package kitchenpos.product;
+package kitchenpos.service.product;
 
-import kitchenpos.menu.domain.InvalidNameException;
-import kitchenpos.menu.domain.InvalidPriceException;
-import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.domain.menu.InvalidNameException;
+import kitchenpos.domain.menu.InvalidPriceException;
+import kitchenpos.service.product.dto.ProductRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

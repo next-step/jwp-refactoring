@@ -1,6 +1,6 @@
 package kitchenpos.service.menu.dto;
 
-import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.domain.menu.MenuProduct;
 
 public class MenuProductResponse {
     private Long seq;

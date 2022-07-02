@@ -2,9 +2,9 @@ package kitchenpos.service.product.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import kitchenpos.menu.domain.InvalidNameException;
-import kitchenpos.menu.domain.InvalidPriceException;
-import kitchenpos.product.domain.Product;
+import kitchenpos.domain.menu.InvalidNameException;
+import kitchenpos.domain.menu.InvalidPriceException;
+import kitchenpos.domain.product.Product;
 
 import java.util.Objects;
 

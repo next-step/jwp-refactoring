@@ -1,9 +1,11 @@
-package kitchenpos.order.application;
+package kitchenpos.service.order;
 
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.Orders;
-import kitchenpos.order.domain.OrdersRepository;
-import kitchenpos.order.dto.*;
+import kitchenpos.domain.order.OrderStatus;
+import kitchenpos.domain.order.Orders;
+import kitchenpos.domain.order.OrdersRepository;
+import kitchenpos.service.order.application.OrderService;
+import kitchenpos.service.order.application.OrdersValidator;
+import kitchenpos.service.order.dto.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

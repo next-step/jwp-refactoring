@@ -1,10 +1,11 @@
-package kitchenpos.order.application;
+package kitchenpos.service.order;
 
-import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.dto.OrderLineItemRequest;
-import kitchenpos.order.dto.OrdersRequest;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.domain.menu.MenuRepository;
+import kitchenpos.domain.table.OrderTable;
+import kitchenpos.domain.table.OrderTableRepository;
+import kitchenpos.service.order.application.OrdersValidator;
+import kitchenpos.service.order.dto.OrderLineItemRequest;
+import kitchenpos.service.order.dto.OrdersRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

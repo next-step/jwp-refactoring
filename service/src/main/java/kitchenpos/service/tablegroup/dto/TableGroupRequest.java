@@ -2,7 +2,7 @@ package kitchenpos.service.tablegroup.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.service.table.dto.OrderTableRequest;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;

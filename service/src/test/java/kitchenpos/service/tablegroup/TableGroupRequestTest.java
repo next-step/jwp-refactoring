@@ -1,6 +1,7 @@
-package kitchenpos.tablegroup.dto;
+package kitchenpos.service.tablegroup;
 
-import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.service.table.dto.OrderTableRequest;
+import kitchenpos.service.tablegroup.dto.TableGroupRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

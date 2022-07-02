@@ -1,9 +1,9 @@
 package kitchenpos.service.table.application;
 
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.OrdersRepository;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.dto.OrderTableUpdateNumberOfGuestsRequest;
+import kitchenpos.domain.order.OrderStatus;
+import kitchenpos.domain.order.OrdersRepository;
+import kitchenpos.domain.table.OrderTable;
+import kitchenpos.service.table.dto.OrderTableUpdateNumberOfGuestsRequest;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
