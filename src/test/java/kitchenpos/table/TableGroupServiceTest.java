@@ -9,11 +9,11 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
 import java.util.Collections;
-import kitchenpos.order.dao.OrderDao;
-import kitchenpos.table.dao.OrderTableRepository;
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.order.dao.OrderRepository;
 import kitchenpos.table.application.TableGroupService;
+import kitchenpos.table.dao.OrderTableRepository;
 import kitchenpos.table.dao.TableGroupRepository;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
@@ -32,7 +32,7 @@ class TableGroupServiceTest {
     TableGroupService tableGroupService;
 
     @Mock
-    OrderDao orderDao;
+    OrderRepository orderRepository;
 
     @Mock
     OrderTableRepository orderTableRepository;
@@ -108,7 +108,7 @@ class TableGroupServiceTest {
     void ungroup() {
         // given
         given(orderTableRepository.findAllByTableGroupId(any())).willReturn(Arrays.asList(주문테이블1, 주문테이블2));
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(false);
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(false);
 
         // when
         tableGroupService.ungroup(1L);
@@ -125,7 +125,7 @@ class TableGroupServiceTest {
     void ungroup_completionError() {
         // given
         given(orderTableRepository.findAllByTableGroupId(any())).willReturn(Arrays.asList(주문테이블1, 주문테이블2));
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(true);
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(true);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(

@@ -12,10 +12,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.order.dao.OrderDao;
+import kitchenpos.order.dao.OrderRepository;
+import kitchenpos.table.application.TableService;
 import kitchenpos.table.dao.OrderTableRepository;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
@@ -34,7 +34,7 @@ class TableServiceTest {
     TableService tableService;
 
     @Mock
-    OrderDao orderDao;
+    OrderRepository orderRepository;
 
     @Mock
     OrderTableRepository orderTableRepository;
@@ -84,7 +84,7 @@ class TableServiceTest {
         // given
         OrderTableRequest 변경테이블 = new OrderTableRequest(주문테이블.getNumberOfGuests(), 빈자리);
         given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(주문테이블));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(false);
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(false);
 
         // when
         OrderTableResponse actual = tableService.changeEmpty(주문테이블.getId(), 변경테이블);
@@ -127,7 +127,7 @@ class TableServiceTest {
         // given
         OrderTableRequest 변경테이블 = new OrderTableRequest(주문테이블.getNumberOfGuests(), 사용중);
         given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(주문테이블));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(),
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(),
                 any())).willReturn(true);
 
         // when & then

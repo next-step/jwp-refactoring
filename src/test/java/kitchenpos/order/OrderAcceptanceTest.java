@@ -21,8 +21,8 @@ import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.product.domain.Product;
+import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -52,7 +52,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
         주문테이블 = 손님_입장(5, 빈자리).as(OrderTable.class);
         테이블_상태_변경(주문테이블, 사용중);
 
-        주문목록 = new OrderLineItem();
+        주문목록 = new OrderLineItem(양념치킨.getId(), 1L);
         주문목록.setMenuId(양념치킨.getId());
         주문목록.setQuantity(1L);
     }
@@ -95,9 +95,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 주문_생성_요청(Long orderTableId, List<OrderLineItem> orderLineItems) {
-        Order order = new Order();
-        order.setOrderTableId(orderTableId);
-        order.setOrderLineItems(orderLineItems);
+        Order order = new Order(orderTableId, orderLineItems);
 
         return AcceptanceTest.doPost("/api/orders", order);
     }
