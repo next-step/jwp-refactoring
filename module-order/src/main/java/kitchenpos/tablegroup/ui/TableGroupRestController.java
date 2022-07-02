@@ -1,4 +1,4 @@
-package kitchenpos.tableGroup.ui;
+package kitchenpos.tablegroup.ui;
 
 import java.net.URI;
 import kitchenpos.tablegroup.application.TableGroupService;
