@@ -1,13 +1,13 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.*;
+import kitchenpos.dto.*;
+import kitchenpos.exception.OrderStatusException;
+import kitchenpos.exception.OrderTableException;
 import kitchenpos.repository.MenuRepository;
+import kitchenpos.repository.OrderLineItemRepository;
+import kitchenpos.repository.OrderRepository;
+import kitchenpos.repository.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,21 +15,20 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static kitchenpos.factory.OrderFixture.주문_메뉴_생성;
-import static kitchenpos.factory.OrderFixture.주문테이블_생성;
+import static kitchenpos.factory.OrderFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-
-;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
@@ -41,13 +40,13 @@ class OrderServiceTest {
     MenuRepository menuRepository;
 
     @Mock
-    OrderDao orderDao;
+    OrderRepository orderRepository;
 
     @Mock
-    OrderLineItemDao orderLineItemDao;
+    OrderLineItemRepository orderLineItemRepository;
 
     @Mock
-    OrderTableDao orderTableDao;
+    OrderTableRepository orderTableRepository;
 
     Order 내주문;
 
@@ -56,32 +55,39 @@ class OrderServiceTest {
     OrderLineItem 주문상품1;
     OrderLineItem 주문상품2;
 
+    Menu 주문메뉴1;
+    Menu 주문메뉴2;
+
     @Test
     @DisplayName("주문을 생성한다 (Happy Path)")
     void create() {
         //given
-        내주문 = new Order(1L, 주문테이블.getId());
+        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000));
+        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000));
         주문테이블 = 주문테이블_생성(1L);
-        주문상품1 = 주문_메뉴_생성(1L, 내주문.getId(), 1L);
-        주문상품2 = 주문_메뉴_생성(2L, 내주문.getId(), 2L);
-        내주문.setOrderLineItems(Arrays.asList(주문상품1, 주문상품2));
-        given(menuRepository.countByIdIn(anyList())).willReturn(Math.toIntExact(Long.valueOf(내주문.getOrderLineItems().size())));
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(주문테이블));
-        given(orderDao.save(any(Order.class))).willReturn(내주문);
-        given(orderLineItemDao.save(주문상품1)).willReturn(주문상품1);
-        given(orderLineItemDao.save(주문상품2)).willReturn(주문상품2);
+        주문상품1 = 주문_메뉴_생성(1L, 내주문, 주문메뉴1, 1L);
+        주문상품2 = 주문_메뉴_생성(2L, 내주문, 주문메뉴2, 2L);
+        내주문 = new Order(1L, 주문테이블, new ArrayList<OrderLineItem>());
+        OrderLineItemRequest 주문상품1Request = new OrderLineItemRequest(주문메뉴1.getId(), 1L);
+        OrderLineItemRequest 주문상품2Request = new OrderLineItemRequest(주문메뉴2.getId(), 1L);
+        OrderRequest 내주문Request = new OrderRequest(주문테이블.getId(), Arrays.asList(주문상품1Request, 주문상품2Request));
+
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(주문테이블));
+        given(orderRepository.save(any(Order.class))).willReturn(내주문);
+        given(menuRepository.findById(주문메뉴1.getId())).willReturn(Optional.of(주문메뉴1));
+        given(menuRepository.findById(주문메뉴2.getId())).willReturn(Optional.of(주문메뉴2));
 
         //when
-        Order savedOrder = orderService.create(내주문);
+        OrderResponse savedOrder = orderService.create(내주문Request);
 
         //then
         assertAll(() -> {
             assertThat(savedOrder.getOrderLineItems().stream()
-                    .map(OrderLineItem::getMenuId)
+                    .map(OrderLineItemResponse::getMenuId)
                     .collect(Collectors.toList()))
-                    .containsExactlyInAnyOrderElementsOf(Arrays.asList(주문상품1.getMenuId(), 주문상품2.getMenuId()));
-            assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
-            assertThat(savedOrder.getOrderTableId()).isEqualTo(주문테이블.getId());
+                    .containsExactlyInAnyOrderElementsOf(Arrays.asList(주문상품1.getMenu().getId(), 주문상품2.getMenu().getId()));
+            assertThat(savedOrder.getOrderStatus().name()).isEqualTo(OrderStatus.COOKING.name());
+            assertThat(savedOrder.getOrderTableResponse().getId()).isEqualTo(주문테이블.getId());
         });
     }
 
@@ -89,14 +95,22 @@ class OrderServiceTest {
     @DisplayName("주문 메뉴가 없을 경우 주문 생성 불가")
     void createEmptyOrderLineItems() {
         //given
-        내주문 = new Order(1L, 주문테이블.getId());
+        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000));
+        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000));
         주문테이블 = 주문테이블_생성(1L);
-        주문상품1 = 주문_메뉴_생성(1L, 내주문.getId(), 1L);
-        주문상품2 = 주문_메뉴_생성(2L, 내주문.getId(), 2L);
+        주문상품1 = 주문_메뉴_생성(1L, 내주문, 주문메뉴1, 1L);
+        주문상품2 = 주문_메뉴_생성(2L, 내주문, 주문메뉴2, 2L);
+        내주문 = new Order(1L, 주문테이블, Arrays.asList(주문상품1, 주문상품2));
+        OrderLineItemRequest 주문상품1Request = new OrderLineItemRequest(주문메뉴1.getId(), 1L);
+        OrderLineItemRequest 주문상품2Request = new OrderLineItemRequest(주문메뉴2.getId(), 1L);
+        OrderRequest 내주문Request = new OrderRequest(주문테이블.getId(), null);
+
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(주문테이블));
+        given(orderRepository.save(any(Order.class))).willReturn(내주문);
 
         //then
         assertThatThrownBy(() -> {
-            orderService.create(내주문);
+            orderService.create(내주문Request);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -104,17 +118,23 @@ class OrderServiceTest {
     @DisplayName("주문에 포함된 주문 메뉴가 유효하지 않은 메뉴가 있을 경우 주문 생성 불가")
     void createInvalidOrderLineItems() {
         //given
-        OrderLineItem 유효하지않은메뉴 = new OrderLineItem();
-        내주문 = new Order(1L, 주문테이블.getId());
+        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000));
+        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000));
         주문테이블 = 주문테이블_생성(1L);
-        주문상품1 = 주문_메뉴_생성(1L, 내주문.getId(), 1L);
-        주문상품2 = 주문_메뉴_생성(2L, 내주문.getId(), 2L);
-        내주문.setOrderLineItems(Arrays.asList(주문상품1, 주문상품2));
-        given(menuRepository.countByIdIn(anyList())).willReturn(Math.toIntExact(Long.valueOf(Arrays.asList(주문상품1, 주문상품2, 유효하지않은메뉴).size())));
+        주문상품1 = 주문_메뉴_생성(1L, 내주문, 주문메뉴1, 1L);
+        주문상품2 = 주문_메뉴_생성(2L, 내주문, 주문메뉴2, 2L);
+        내주문 = new Order(1L, 주문테이블, Arrays.asList(주문상품1, 주문상품2));
+        OrderLineItemRequest 주문상품1Request = new OrderLineItemRequest(주문메뉴1.getId(), 1L);
+        OrderLineItemRequest 주문상품2Request = new OrderLineItemRequest(주문메뉴2.getId(), 1L);
+        OrderRequest 내주문Request = new OrderRequest(주문테이블.getId(), Arrays.asList(주문상품1Request, 주문상품2Request));
+
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(주문테이블));
+        given(orderRepository.save(any(Order.class))).willReturn(내주문);
+        given(menuRepository.findById(주문메뉴1.getId())).willReturn(Optional.empty());
 
         //then
         assertThatThrownBy(() -> {
-            orderService.create(내주문);
+            orderService.create(내주문Request);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -122,17 +142,21 @@ class OrderServiceTest {
     @DisplayName("주문 테이블이 유효하지 않을 경우 주문 생성 불가")
     void createInvalidOrderTable() {
         //given
-        내주문 = new Order(1L, 주문테이블.getId());
+        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000));
+        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000));
         주문테이블 = 주문테이블_생성(1L);
-        주문상품1 = 주문_메뉴_생성(1L, 내주문.getId(), 1L);
-        주문상품2 = 주문_메뉴_생성(2L, 내주문.getId(), 2L);
-        내주문.setOrderLineItems(Arrays.asList(주문상품1, 주문상품2));
-        given(menuRepository.countByIdIn(anyList())).willReturn(Math.toIntExact(Long.valueOf(내주문.getOrderLineItems().size())));
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.empty());
+        주문상품1 = 주문_메뉴_생성(1L, 내주문, 주문메뉴1, 1L);
+        주문상품2 = 주문_메뉴_생성(2L, 내주문, 주문메뉴2, 2L);
+        내주문 = new Order(1L, 주문테이블, Arrays.asList(주문상품1, 주문상품2));
+        OrderLineItemRequest 주문상품1Request = new OrderLineItemRequest(주문메뉴1.getId(), 1L);
+        OrderLineItemRequest 주문상품2Request = new OrderLineItemRequest(주문메뉴2.getId(), 1L);
+        OrderRequest 내주문Request = new OrderRequest(주문테이블.getId(), Arrays.asList(주문상품1Request, 주문상품2Request));
+
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.empty());
 
         //then
         assertThatThrownBy(() -> {
-            orderService.create(내주문);
+            orderService.create(내주문Request);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -140,48 +164,49 @@ class OrderServiceTest {
     @DisplayName("주문한 주문 테이블이 비어있는 경우 주문 생성 불가")
     void createIsEmptyOrderTable() {
         //given
-        내주문 = new Order(1L, 주문테이블.getId());
-        주문테이블 = 주문테이블_생성(1L);
-        주문상품1 = 주문_메뉴_생성(1L, 내주문.getId(), 1L);
-        주문상품2 = 주문_메뉴_생성(2L, 내주문.getId(), 2L);
-        내주문.setOrderLineItems(Arrays.asList(주문상품1, 주문상품2));
-        given(menuRepository.countByIdIn(anyList())).willReturn(Math.toIntExact(Long.valueOf(내주문.getOrderLineItems().size())));
-        주문테이블.setEmpty(true);
-        given(orderTableDao.findById(anyLong())).willReturn(Optional.of(주문테이블));
+        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000));
+        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000));
+        주문테이블 = 주문테이블_생성(1L, 2, true);
+        주문상품1 = 주문_메뉴_생성(1L, 내주문, 주문메뉴1, 1L);
+        주문상품2 = 주문_메뉴_생성(2L, 내주문, 주문메뉴2, 2L);
+        내주문 = new Order(1L, 주문테이블, Arrays.asList(주문상품1, 주문상품2));
+        OrderLineItemRequest 주문상품1Request = new OrderLineItemRequest(주문메뉴1.getId(), 1L);
+        OrderLineItemRequest 주문상품2Request = new OrderLineItemRequest(주문메뉴2.getId(), 1L);
+        OrderRequest 내주문Request = new OrderRequest(주문테이블.getId(), Arrays.asList(주문상품1Request, 주문상품2Request));
+
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(주문테이블));
 
         //then
         assertThatThrownBy(() -> {
-            orderService.create(내주문);
-        }).isInstanceOf(IllegalArgumentException.class);
+            orderService.create(내주문Request);
+        }).isInstanceOf(OrderTableException.class)
+        .hasMessageContaining(OrderTableException.ORDER_TABLE_IS_EMPTY_MSG);
     }
 
     @Test
     @DisplayName("주문리스트를 조회한다 (Happy Path)")
     void list() {
         //given
-        내주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), Arrays.asList(주문상품1, 주문상품2));
         주문테이블 = 주문테이블_생성(1L);
-        주문상품1 = 주문_메뉴_생성(1L, 내주문.getId(), 1L);
-        주문상품2 = 주문_메뉴_생성(2L, 내주문.getId(), 2L);
-        given(orderDao.findAll()).willReturn(Arrays.asList(내주문));
-        given(orderLineItemDao.findAllByOrderId(내주문.getId())).willReturn(Arrays.asList(주문상품1, 주문상품2));
+        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000));
+        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000));
+        주문상품1 = 주문_메뉴_생성(1L, 내주문, 주문메뉴1, 1L);
+        주문상품2 = 주문_메뉴_생성(2L, 내주문, 주문메뉴2, 2L);
+        내주문 = new Order(1L, 주문테이블, Arrays.asList(주문상품1, 주문상품2));
+        given(orderRepository.findAll()).willReturn(Arrays.asList(내주문));
 
         //when
-        List<Order> orders = orderService.list();
+        List<OrderResponse> orders = orderService.list();
 
         //then
         assertAll(() -> {
-            assertThat(orders).containsExactlyInAnyOrderElementsOf(Arrays.asList(내주문));
             assertThat(orders.stream()
-                            .map(Order::getOrderLineItems)
-                            .collect(Collectors.toList()))
-                            .containsExactlyInAnyOrderElementsOf(Arrays.asList(Arrays.asList(주문상품1, 주문상품2)));
-            assertThat(orders.stream()
-                    .map(Order::getOrderStatus)
+                    .map(OrderResponse::getOrderStatus)
                     .collect(Collectors.toList()))
-                    .containsExactlyInAnyOrderElementsOf(Arrays.asList(OrderStatus.COOKING.name()));
+                    .containsExactlyInAnyOrderElementsOf(Arrays.asList(OrderStatus.COOKING));
             assertThat(orders.stream()
-                    .map(Order::getOrderTableId)
+                    .map(OrderResponse::getOrderTableResponse)
+                    .map(OrderTableResponse::getId)
                     .collect(Collectors.toList()))
                     .containsExactlyInAnyOrderElementsOf(Arrays.asList(주문테이블.getId()));
         });
@@ -191,39 +216,37 @@ class OrderServiceTest {
     @DisplayName("주문상태를 변경한다 (Happy Path)")
     void changeOrderStatus() {
         //given
-        내주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), Arrays.asList(주문상품1, 주문상품2));
         주문테이블 = 주문테이블_생성(1L);
-        주문상품1 = 주문_메뉴_생성(1L, 내주문.getId(), 1L);
-        주문상품2 = 주문_메뉴_생성(2L, 내주문.getId(), 2L);
-        Order 변경주문 = new Order();
-        변경주문.setOrderStatus(OrderStatus.MEAL.name());
-        given(orderDao.findById(anyLong())).willReturn(Optional.of(내주문));
-        given(orderDao.save(any(Order.class))).willReturn(내주문);
-        given(orderLineItemDao.findAllByOrderId(anyLong())).willReturn(내주문.getOrderLineItems());
+        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000));
+        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000));
+        주문상품1 = 주문_메뉴_생성(1L, 내주문, 주문메뉴1, 1L);
+        주문상품2 = 주문_메뉴_생성(2L, 내주문, 주문메뉴2, 2L);
+        내주문 = new Order(1L, 주문테이블, Arrays.asList(주문상품1, 주문상품2));
+        OrderStatus 변경주문상태 = OrderStatus.MEAL;
+        given(orderRepository.findById(anyLong())).willReturn(Optional.of(내주문));
 
         //when
-        Order changedOrder = orderService.changeOrderStatus(내주문.getId(), 변경주문);
+        OrderResponse changedOrder = orderService.changeOrderStatus(내주문.getId(), 변경주문상태);
 
         //then
         assertThat(changedOrder.getId()).isEqualTo(내주문.getId());
-        assertThat(changedOrder.getOrderStatus()).isEqualTo(변경주문.getOrderStatus());
+        assertThat(changedOrder.getOrderStatus()).isEqualTo(변경주문상태);
     }
 
     @Test
     @DisplayName("변경하려는 주문이 유효하지 않을 때 주문상태 변경불가")
     void changeOrderStatusInvalidOrder() {
         //given
-        내주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COOKING.name(), LocalDateTime.now(), Arrays.asList(주문상품1, 주문상품2));
         주문테이블 = 주문테이블_생성(1L);
-        주문상품1 = 주문_메뉴_생성(1L, 내주문.getId(), 1L);
-        주문상품2 = 주문_메뉴_생성(2L, 내주문.getId(), 2L);
-        Order 변경주문 = new Order();
-        변경주문.setOrderStatus(OrderStatus.MEAL.name());
-        given(orderDao.findById(anyLong())).willReturn(Optional.empty());
+        주문상품1 = 주문_메뉴_생성(1L, 내주문, 주문메뉴1, 1L);
+        주문상품2 = 주문_메뉴_생성(2L, 내주문, 주문메뉴2, 2L);
+        내주문 = new Order(1L, 주문테이블, Arrays.asList(주문상품1, 주문상품2));
+        OrderStatus 변경주문상태 = OrderStatus.MEAL;
+        given(orderRepository.findById(anyLong())).willReturn(Optional.empty());
 
         //then
         assertThatThrownBy(() -> {
-            orderService.changeOrderStatus(내주문.getId(), 변경주문);
+            orderService.changeOrderStatus(내주문.getId(), 변경주문상태);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -231,17 +254,20 @@ class OrderServiceTest {
     @DisplayName("변경하려는 주문이 완료 상태일 때 주문상태 변경불가")
     void changeOrderStatusAlreadyCompleted() {
         //given
-        내주문 = new Order(1L, 주문테이블.getId(), OrderStatus.COMPLETION.name(), LocalDateTime.now(), Arrays.asList(주문상품1, 주문상품2));
         주문테이블 = 주문테이블_생성(1L);
-        주문상품1 = 주문_메뉴_생성(1L, 내주문.getId(), 1L);
-        주문상품2 = 주문_메뉴_생성(2L, 내주문.getId(), 2L);
-        Order 변경주문 = new Order();
-        변경주문.setOrderStatus(OrderStatus.MEAL.name());
-        given(orderDao.findById(anyLong())).willReturn(Optional.of(내주문));
+        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000));
+        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000));
+        주문상품1 = 주문_메뉴_생성(1L, 내주문, 주문메뉴1, 1L);
+        주문상품2 = 주문_메뉴_생성(2L, 내주문, 주문메뉴2, 2L);
+        내주문 = new Order(1L, 주문테이블, Arrays.asList(주문상품1, 주문상품2));
+        내주문.setOrderStatus(OrderStatus.COMPLETION);
+        OrderStatus 변경주문상태 = OrderStatus.MEAL;
+        given(orderRepository.findById(anyLong())).willReturn(Optional.of(내주문));
 
         //then
         assertThatThrownBy(() -> {
-            orderService.changeOrderStatus(내주문.getId(), 변경주문);
-        }).isInstanceOf(IllegalArgumentException.class);
+            orderService.changeOrderStatus(내주문.getId(), 변경주문상태);
+        }).isInstanceOf(OrderStatusException.class)
+            .hasMessageContaining(OrderStatusException.COMPLETE_DOES_NOT_CHANGE_MSG);
     }
 }
