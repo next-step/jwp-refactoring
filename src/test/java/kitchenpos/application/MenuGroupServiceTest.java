@@ -4,6 +4,7 @@ import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,9 +38,9 @@ class MenuGroupServiceTest {
         MenuGroup 치킨 = new MenuGroup(name);
         given(menuGroupRepository.save(any(MenuGroup.class))).willReturn(치킨);
 
-        MenuGroup result = menuGroupService.create(request);
+        MenuGroupResponse response = menuGroupService.create(request);
 
-        assertThat(result.getName()).isEqualTo(name);
+        assertThat(response.getName()).isEqualTo(name);
     }
 
     @DisplayName("메뉴 그룹 목록을 조회한다.")
