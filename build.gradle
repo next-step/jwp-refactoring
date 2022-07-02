@@ -128,3 +128,17 @@ project(':module-table') {
         testImplementation(testFixtures(project(":module-order")))
     }
 }
+
+
+project(':test-module-acceptance') {
+    bootJar { enabled = false }
+    jar { enabled = false }
+
+    dependencies {
+        compile project(':module-menu')
+        compile project(':module-product')
+        compile project(':module-order')
+        compile project(':module-table')
+        compile project(':module-common')
+    }
+}
