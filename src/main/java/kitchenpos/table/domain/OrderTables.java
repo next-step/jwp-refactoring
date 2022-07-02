@@ -9,18 +9,18 @@ import java.util.Objects;
 @Embeddable
 public class OrderTables {
     @OneToMany(mappedBy = "tableGroup")
-    private List<OrderTable> list;
+    private List<OrderTable> elements;
 
     public OrderTables() {
-        list = new ArrayList<>();
+        elements = new ArrayList<>();
     }
 
     public OrderTables(List<OrderTable> orderTables) {
-        list = orderTables;
+        elements = orderTables;
     }
 
     public OrderTables(TableGroup tableGroup, List<OrderTable> orderTables) {
-        this.list = orderTables;
+        this.elements = orderTables;
         for (OrderTable orderTable : orderTables) {
             orderTable.setTableGroup(tableGroup);
             orderTable.setEmpty(false);
@@ -28,11 +28,11 @@ public class OrderTables {
     }
 
     public void validateSizeForTableGroup(int orderTableSize) {
-        if (list.size() != orderTableSize) {
+        if (elements.size() != orderTableSize) {
             throw new IllegalArgumentException();
         }
 
-        for (OrderTable orderTable : list) {
+        for (OrderTable orderTable : elements) {
             if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup())) {
                 throw new IllegalArgumentException();
             }
@@ -40,18 +40,18 @@ public class OrderTables {
     }
 
     public void changeEmpty(boolean empty) {
-        for (OrderTable table : list) {
+        for (OrderTable table : elements) {
             table.setEmpty(empty);
         }
     }
 
     public void unGroupOrderTables() {
-        for (OrderTable orderTable : list) {
+        for (OrderTable orderTable : elements) {
             orderTable.setTableGroup(null);
         }
     }
 
     public List<OrderTable> getList() {
-        return list;
+        return elements;
     }
 }
