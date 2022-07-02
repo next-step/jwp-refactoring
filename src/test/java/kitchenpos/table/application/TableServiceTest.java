@@ -75,6 +75,7 @@ class TableServiceTest extends ServiceTest {
                 , () -> assertThat(updatedOrderTable.isEmpty()).isTrue()
         );
     }
+
     @Test
     @DisplayName("비어있지않은 테이블로 변경")
     void 비어있지않은_테이블로_변경() {

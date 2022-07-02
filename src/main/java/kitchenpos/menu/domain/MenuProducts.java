@@ -14,7 +14,7 @@ public class MenuProducts {
     @OneToMany(mappedBy = "menu", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private final List<MenuProduct> elements = new ArrayList<>();
 
-    protected MenuProducts(){
+    protected MenuProducts() {
 
     }
 

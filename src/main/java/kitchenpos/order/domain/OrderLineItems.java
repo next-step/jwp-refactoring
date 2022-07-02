@@ -13,7 +13,7 @@ public class OrderLineItems {
     @OneToMany(mappedBy = "order", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private final List<OrderLineItem> elements = new ArrayList<>();
 
-    protected OrderLineItems(){
+    protected OrderLineItems() {
 
     }
 
@@ -26,7 +26,7 @@ public class OrderLineItems {
     }
 
     List<Long> menuIds() {
-       return elements.stream()
+        return elements.stream()
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
     }
