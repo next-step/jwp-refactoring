@@ -1,12 +1,9 @@
 package kitchenpos.order.domain;
 
-import static java.util.stream.Collectors.toList;
-
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
@@ -14,7 +11,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import kitchenpos.order.exception.CannotChangeOrderStatusException;
 import kitchenpos.order.exception.EmptyOrderLineItemsException;
 import org.springframework.data.annotation.CreatedDate;
@@ -33,8 +29,8 @@ public class Order {
     private OrderStatus orderStatus;
     @CreatedDate
     private LocalDateTime orderedTime;
-    @OneToMany(mappedBy = "order", cascade = {CascadeType.ALL}, orphanRemoval = true)
-    private final List<OrderLineItem> orderLineItems = new ArrayList<>();
+    @Embedded
+    private final OrderLineItems orderLineItems = new OrderLineItems();
 
     protected Order() {
     }
@@ -45,14 +41,12 @@ public class Order {
             throw new EmptyOrderLineItemsException();
         }
         this.orderStatus = OrderStatus.COOKING;
-        this.orderLineItems.addAll(orderLineItems);
-        this.orderLineItems.forEach(orderLineItem -> orderLineItem.includeToOrder(this));
+        this.orderLineItems.addOrderLineItems(orderLineItems);
+        this.orderLineItems.includeToOrder(this);
     }
 
     public List<Long> menuIds() {
-        return orderLineItems.stream()
-                .map(OrderLineItem::getMenuId)
-                .collect(toList());
+        return orderLineItems.menuIds();
     }
 
     public Long getId() {
@@ -79,7 +73,7 @@ public class Order {
     }
 
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
+        return orderLineItems.toList();
     }
 
 }
