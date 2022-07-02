@@ -47,13 +47,11 @@ public class MenuService {
         List<Product> products = productRepository.findByIdIn(productIds);
 
         for (MenuProductRequest menuProduct : request.getMenuProducts()) {
-            Optional<Product> product = products.stream()
-                                                .filter(prod -> prod.getId().equals(menuProduct.getProductId()))
-                                                .findFirst();
-            if (!product.isPresent()) {
-                throw new IllegalArgumentException("등록하고자 하는 상품이 존재하지 않습니다.");
-            }
-            menuProducts.add(new MenuProduct(product.get(), menuProduct.getQuantity()));
+            Product product = products.stream()
+                                      .filter(prod -> prod.getId().equals(menuProduct.getProductId()))
+                                      .findFirst()
+                                      .orElseThrow(() -> new IllegalArgumentException("등록하고자 하는 상품이 존재하지 않습니다."));
+            menuProducts.add(new MenuProduct(product, menuProduct.getQuantity()));
         }
 
         return menuRepository.save(new Menu(request.getName(), request.getPrice(), menuGroup, menuProducts));
