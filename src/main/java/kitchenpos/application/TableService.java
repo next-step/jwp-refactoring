@@ -2,7 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.dao.OrderTableRepository;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.validator.OrderValidator;
+import kitchenpos.domain.validator.OrderTableValidator;
 import kitchenpos.dto.OrderTableRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,12 +14,12 @@ import java.util.NoSuchElementException;
 @Service
 public class TableService {
     private final OrderTableRepository orderTableRepository;
-    private final OrderValidator orderValidator;
+    private final OrderTableValidator orderTableValidator;
 
     @Autowired
-    public TableService(OrderTableRepository orderTableRepository, OrderValidator orderValidator) {
+    public TableService(OrderTableRepository orderTableRepository, OrderTableValidator orderTableValidator) {
         this.orderTableRepository = orderTableRepository;
-        this.orderValidator = orderValidator;
+        this.orderTableValidator = orderTableValidator;
     }
 
     @Transactional
@@ -36,7 +36,7 @@ public class TableService {
         OrderTable orderTable = orderTableRepository.findById(orderTableId)
                                                     .orElseThrow(NoSuchElementException::new);
 
-        orderValidator.hasOrderStatusInCookingOrMeal(orderTable);
+        orderTableValidator.hasOrderStatusInCookingOrMeal(orderTable);
 
         orderTable.changeEmpty(request.isEmpty());
 

@@ -8,10 +8,10 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class OrderValidator {
+public class OrderTableValidator {
     private final OrderRepository orderRepository;
 
-    public OrderValidator(OrderRepository orderRepository) {
+    public OrderTableValidator(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
     }
 

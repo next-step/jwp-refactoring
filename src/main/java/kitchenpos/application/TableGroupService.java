@@ -4,7 +4,7 @@ import kitchenpos.dao.OrderTableRepository;
 import kitchenpos.dao.TableGroupRepository;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
-import kitchenpos.domain.validator.OrderValidator;
+import kitchenpos.domain.validator.OrderTableValidator;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.TableGroupRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +18,13 @@ import java.util.stream.Collectors;
 public class TableGroupService {
     private final TableGroupRepository tableGroupRepository;
     private final OrderTableRepository orderTableRepository;
-    private final OrderValidator orderValidator;
+    private final OrderTableValidator orderTableValidator;
 
     @Autowired
-    public TableGroupService(TableGroupRepository tableGroupRepository, OrderTableRepository orderTableRepository, OrderValidator orderValidator) {
+    public TableGroupService(TableGroupRepository tableGroupRepository, OrderTableRepository orderTableRepository, OrderTableValidator orderTableValidator) {
         this.tableGroupRepository = tableGroupRepository;
         this.orderTableRepository = orderTableRepository;
-        this.orderValidator = orderValidator;
+        this.orderTableValidator = orderTableValidator;
     }
 
     @Transactional
@@ -48,7 +48,7 @@ public class TableGroupService {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
                                                     .orElseThrow(IllegalArgumentException::new);
 
-        orderValidator.hasOrderStatusInCookingOrMeal(tableGroup.getOrderTables());
+        orderTableValidator.hasOrderStatusInCookingOrMeal(tableGroup.getOrderTables());
 
         tableGroup.ungroup();
     }
