@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class OrderTablesTest {
 
     @Test
-    void 두개_미만의_테이블은_단체지정할_수_없다() {
+    void 두개_미만의_테이블은_단체지정을_할_수_없다() {
         // given
         List<OrderTable> orderTables = Collections.singletonList(
                 new OrderTable(1, true)
@@ -37,6 +37,15 @@ class OrderTablesTest {
         assertThat(result).containsExactly(1L, 2L);
     }
 
+    @Test
+    void 중복되거나_등록되지_않은_테이블은_단체지정을_할_수_없다() {
+        // when & then
+        assertThatThrownBy(() ->
+                createOrderTables().validateTablesSize(1)
+        ).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("중복된 테이블이 있거나 등록되지 않은 테이블이 있습니다.");
+    }
+
     private OrderTables createOrderTables() {
         return new OrderTables(
                 Arrays.asList(
@@ -45,6 +54,4 @@ class OrderTablesTest {
                 )
         );
     }
-
-
 }

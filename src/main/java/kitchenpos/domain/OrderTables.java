@@ -41,4 +41,10 @@ public class OrderTables {
     public List<OrderTable> elements() {
         return Collections.unmodifiableList(elements);
     }
+
+    public void validateTablesSize(int tableSize) {
+        if (elements.size() != tableSize) {
+            throw new IllegalArgumentException("중복된 테이블이 있거나 등록되지 않은 테이블이 있습니다.");
+        }
+    }
 }
