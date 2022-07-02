@@ -22,11 +22,4 @@ public class MenuProductRequest {
         return quantity;
     }
 
-    @Override
-    public String toString() {
-        return "MenuProductRequest{" +
-                "productId=" + productId +
-                ", quantity=" + quantity +
-                '}';
-    }
 }

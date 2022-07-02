@@ -1,7 +1,9 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.menu.dao.MenuGroupDao;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroupRepository;
+import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,6 +17,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @DisplayName("메뉴그룹 서비스 테스트")
@@ -25,7 +28,7 @@ class MenuGroupServiceTest {
     private MenuGroupService menuGroupService;
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
     private MenuGroup 메뉴그룹;
 
     @BeforeEach
@@ -37,9 +40,10 @@ class MenuGroupServiceTest {
 
     @Test
     void 메뉴그룹을_등록할_수_있다() {
-        given(menuGroupDao.save(메뉴그룹)).willReturn(메뉴그룹);
+        MenuGroupRequest menuGroupRequest = new MenuGroupRequest(메뉴그룹.getName());
+        given(menuGroupRepository.save(any())).willReturn(메뉴그룹);
 
-        MenuGroup createdMenuGroup = menuGroupService.create(메뉴그룹);
+        MenuGroupResponse createdMenuGroup = menuGroupService.create(menuGroupRequest);
 
         assertAll(
                 () -> assertThat(createdMenuGroup.getName()).isEqualTo(메뉴그룹.getName()),
@@ -49,9 +53,9 @@ class MenuGroupServiceTest {
 
     @Test
     void 메뉴그룹을_조회할_수_있다() {
-        given(menuGroupDao.findAll()).willReturn(Arrays.asList(메뉴그룹));
+        given(menuGroupRepository.findAll()).willReturn(Arrays.asList(메뉴그룹));
 
-        List<MenuGroup> 메뉴그룹리스트 = menuGroupService.list();
+        List<MenuGroupResponse> 메뉴그룹리스트 = menuGroupService.list();
 
         assertThat(메뉴그룹리스트).isNotNull();
     }
