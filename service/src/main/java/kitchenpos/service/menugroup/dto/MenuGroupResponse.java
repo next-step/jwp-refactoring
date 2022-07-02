@@ -11,6 +11,9 @@ public class MenuGroupResponse {
         this.name = menuGroup.getName();
     }
 
+    public MenuGroupResponse() {
+    }
+
     public Long getId() {
         return id;
     }

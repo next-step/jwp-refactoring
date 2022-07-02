@@ -13,6 +13,9 @@ public class OrderTableResponse {
         this.isEmpty = orderTable.isEmpty();
     }
 
+    public OrderTableResponse() {
+    }
+
     public Long getId() {
         return id;
     }

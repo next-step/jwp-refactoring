@@ -3,7 +3,7 @@ package kitchenpos.domain.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.api.TableGroupRestController;
 import kitchenpos.service.table.dto.OrderTableRequest;
-import kitchenpos.service.tablegroup.TableGroupService;
+import kitchenpos.service.tablegroup.application.TableGroupService;
 import kitchenpos.service.tablegroup.dto.TableGroupRequest;
 import kitchenpos.service.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;

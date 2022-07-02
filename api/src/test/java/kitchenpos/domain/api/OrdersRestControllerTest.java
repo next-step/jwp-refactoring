@@ -2,7 +2,7 @@ package kitchenpos.domain.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.api.OrderRestController;
-import kitchenpos.service.order.OrderService;
+import kitchenpos.service.order.application.OrderService;
 import kitchenpos.service.order.dto.OrderResponse;
 import kitchenpos.service.order.dto.OrdersRequest;
 import org.junit.jupiter.api.BeforeEach;

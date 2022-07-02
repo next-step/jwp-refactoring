@@ -2,7 +2,7 @@ package kitchenpos.domain.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.api.TableRestController;
-import kitchenpos.service.table.TableService;
+import kitchenpos.service.table.application.TableService;
 import kitchenpos.service.table.dto.OrderTableRequest;
 import kitchenpos.service.table.dto.OrderTableResponse;
 import kitchenpos.service.table.dto.OrderTableUpdateEmptyRequest;

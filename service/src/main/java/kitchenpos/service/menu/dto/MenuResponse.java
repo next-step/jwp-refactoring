@@ -18,6 +18,9 @@ public class MenuResponse {
         this.products = menu.getMenuProducts().stream().map(MenuProductResponse::new).collect(Collectors.toList());
     }
 
+    public MenuResponse() {
+    }
+
     public Long getId() {
         return id;
     }

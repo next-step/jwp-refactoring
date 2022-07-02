@@ -2,7 +2,7 @@ package kitchenpos.domain.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.api.MenuGroupRestController;
-import kitchenpos.service.menugroup.MenuGroupService;
+import kitchenpos.service.menugroup.application.MenuGroupService;
 import kitchenpos.service.menugroup.dto.MenuGroupRequest;
 import kitchenpos.service.menugroup.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;

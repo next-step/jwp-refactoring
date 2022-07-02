@@ -15,6 +15,9 @@ public class TableGroupResponse {
         this.orderTables = save.getOrderTables().stream().map(OrderTableResponse::new).collect(Collectors.toList());
     }
 
+    public TableGroupResponse() {
+    }
+
     public Long getId() {
         return id;
     }

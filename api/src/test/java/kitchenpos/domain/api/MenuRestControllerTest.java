@@ -2,7 +2,7 @@ package kitchenpos.domain.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.api.MenuRestController;
-import kitchenpos.service.menu.MenuService;
+import kitchenpos.service.menu.application.MenuService;
 import kitchenpos.service.menu.dto.MenuRequest;
 import kitchenpos.service.menu.dto.MenuResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,7 +57,12 @@ class MenuRestControllerTest {
 
         //then
         mockMvc.perform(post("/api/menus")
-                        .content(objectMapper.writeValueAsString(new MenuRequest()))
+                        .content(objectMapper.writeValueAsString(new MenuRequest(
+                                "name",
+                                10L,
+                                1L,
+                                Collections.emptyList()
+                        )))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isCreated());

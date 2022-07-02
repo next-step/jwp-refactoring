@@ -2,7 +2,7 @@ package kitchenpos.domain.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.api.ProductRestController;
-import kitchenpos.service.product.ProductService;
+import kitchenpos.service.product.application.ProductService;
 import kitchenpos.service.product.dto.ProductRequest;
 import kitchenpos.service.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,6 +1,6 @@
 package kitchenpos.api;
 
-import kitchenpos.service.order.OrderService;
+import kitchenpos.service.order.application.OrderService;
 import kitchenpos.service.order.dto.OrderResponse;
 import kitchenpos.service.order.dto.OrderStatusRequest;
 import kitchenpos.service.order.dto.OrdersRequest;
