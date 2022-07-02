@@ -9,6 +9,7 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Embeddable
@@ -45,6 +46,14 @@ public class OrderTables {
     public void validateTablesSize(int tableSize) {
         if (elements.size() != tableSize) {
             throw new IllegalArgumentException("중복된 테이블이 있거나 등록되지 않은 테이블이 있습니다.");
+        }
+    }
+
+    public void validateCanSave() {
+        for (final OrderTable orderTable : elements) {
+            if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroupId())) {
+                throw new IllegalArgumentException("빈 테이블이 아니거나 이미 단체가 지정되었습니다.");
+            }
         }
     }
 }

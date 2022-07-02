@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static kitchenpos.domain.OrderTableTest.EMPTY_TABLE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -46,10 +47,28 @@ class OrderTablesTest {
                 .hasMessage("중복된 테이블이 있거나 등록되지 않은 테이블이 있습니다.");
     }
 
+    @Test
+    void 빈_테이블이_아니거나_이미_단체가_지정되었으면_단체지정을_할_수_없다() {
+        // when & then
+        assertThatThrownBy(() ->
+                createEmptyOrderTables().validateCanSave()
+        ).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("빈 테이블이 아니거나 이미 단체가 지정되었습니다.");
+    }
+
     private OrderTables createOrderTables() {
         return new OrderTables(
                 Arrays.asList(
                         new OrderTable(1L),
+                        new OrderTable(2L)
+                )
+        );
+    }
+
+    private OrderTables createEmptyOrderTables() {
+        return new OrderTables(
+                Arrays.asList(
+                        EMPTY_TABLE,
                         new OrderTable(2L)
                 )
         );
