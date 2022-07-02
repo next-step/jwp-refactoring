@@ -25,8 +25,7 @@ public class OrderLineItem {
     }
 
     public OrderLineItem(Long menuId, long quantity) {
-        this.menuId = menuId;
-        this.quantity = new Quantity(quantity);
+        this(null, null, menuId, quantity);
     }
 
     public OrderLineItem(Long seq, Order order, Long menuId, long quantity) {

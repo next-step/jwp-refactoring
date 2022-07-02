@@ -35,10 +35,7 @@ public class Menu {
     }
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        this.name = name;
-        this.price = new Price(price);
-        this.menuGroup = menuGroup;
-        this.menuProducts = new MenuProducts(this, menuProducts);
+        this(0L, name, price, menuGroup, menuProducts);
     }
 
     public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
