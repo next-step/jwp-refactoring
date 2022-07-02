@@ -14,6 +14,12 @@ public class Product {
     protected Product() {
     }
 
+    public Product(Long id, String name, int price) {
+        this.id = id;
+        this.name = name;
+        this.price = ProductPrice.from(price);
+    }
+
     private Product(String name, int price) {
         this.name = name;
         this.price = ProductPrice.from(price);
@@ -21,6 +27,10 @@ public class Product {
 
     public static Product of(String name, int price) {
         return new Product(name, price);
+    }
+
+    public static Product of(Long id, String name, int price) {
+        return new Product(id, name, price);
     }
 
     public Long getId() {
