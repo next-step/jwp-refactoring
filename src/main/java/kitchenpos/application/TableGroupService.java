@@ -1,7 +1,9 @@
 package kitchenpos.application;
 
+import kitchenpos.dao.OrderRepository;
 import kitchenpos.dao.OrderTableRepository;
 import kitchenpos.dao.TableGroupRepository;
+import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.OrderTableRequest;
@@ -17,6 +19,8 @@ import java.util.stream.Collectors;
 public class TableGroupService {
     private final TableGroupRepository tableGroupRepository;
     private final OrderTableRepository orderTableRepository;
+    @Autowired
+    private OrderRepository orderRepository;
 
     @Autowired
     public TableGroupService(TableGroupRepository tableGroupRepository, OrderTableRepository orderTableRepository) {
@@ -42,9 +46,16 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        tableGroupRepository.findById(tableGroupId)
-                            .orElseThrow(IllegalArgumentException::new)
-                            .ungroup();
+        TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
+                                                    .orElseThrow(IllegalArgumentException::new);
+
+        tableGroup.getOrderTables()
+                  .forEach(orderTable -> {
+                      List<Order> orders = orderRepository.findByOrderTable(orderTable);
+                      if (orders.stream().anyMatch(Order::hasOrderStatusInCookingOrMeal)) {
+                          throw new IllegalArgumentException("주문 상태가 조리 또는 식사인 테이블은 주문 등록 가능 상태를 변경할 수 없습니다.");
+                      }});
+        tableGroup.ungroup();
     }
 
     private void validatePresentOrderTable(int inputSize, int presentSize) {

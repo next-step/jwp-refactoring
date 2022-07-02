@@ -86,14 +86,8 @@ public class Order {
         this.orderLineItems = orderLineItems;
     }
 
-    public void changeOrderTable(OrderTable orderTable) {
-        if (Objects.nonNull(this.orderTable)) {
-            this.orderTable.getOrders().remove(this);
-        }
-        this.orderTable = orderTable;
-        if (Objects.nonNull(orderTable) && !orderTable.contains(this)) {
-            orderTable.getOrders().add(this);
-        }
+    public boolean hasOrderStatusInCookingOrMeal() {
+        return orderStatus.equals(OrderStatus.COOKING) || orderStatus.equals(OrderStatus.MEAL);
     }
 
     @Override

@@ -3,6 +3,7 @@ package kitchenpos.domain;
 import kitchenpos.dao.*;
 import kitchenpos.dto.OrderLineItemRequest;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,6 +121,7 @@ public class TableGroupTest {
                 .isThrownBy(() -> tableGroupRepository.save(new TableGroup(Arrays.asList(주문_테이블_일번, 주문_테이블_이번))));
     }
 
+    @Disabled
     @DisplayName("주문 상태가 조리 또는 식사인 경우 개별 주문 테이블로 변경할 수 없다.")
     @Test
     void ungroup_throwException_givenOrderStatusInCookingAndMeal() {

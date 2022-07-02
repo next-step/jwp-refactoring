@@ -1,7 +1,6 @@
 package kitchenpos.domain;
 
 import kitchenpos.dto.OrderTableRequest;
-import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
