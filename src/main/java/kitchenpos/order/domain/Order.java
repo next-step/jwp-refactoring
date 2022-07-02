@@ -79,8 +79,8 @@ public class Order {
         return orderedTime;
     }
 
-    public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems.getList();
+    public OrderLineItems getOrderLineItems() {
+        return orderLineItems;
     }
 
     @Override

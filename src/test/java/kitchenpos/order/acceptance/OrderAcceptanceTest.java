@@ -143,8 +143,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
     public static OrderRequest 메뉴와_주문_항목_개수_다른_주문_생성() {
         MenuResponse 등록된_메뉴 = 메뉴_가져옴(메뉴_등록되어_있음(테스트_메뉴_생성(MENU_NAME01, MENU_PRICE01)));
-        OrderLineItem 생성된_주문_항목1 = new OrderLineItem(등록된_메뉴.getId(), 1);
-        OrderLineItem 생성된_주문_항목2 = new OrderLineItem(등록된_메뉴.getId(), 1);
+        OrderLineItem 생성된_주문_항목1 = new OrderLineItem(1L, null, 등록된_메뉴.getId(), 1);
+        OrderLineItem 생성된_주문_항목2 = new OrderLineItem(2L, null, 등록된_메뉴.getId(), 1);
         OrderTable 등록된_주문_테이블 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, false)).toOrderTable();
         return new OrderRequest(등록된_주문_테이블.getId(), Arrays.asList(생성된_주문_항목1, 생성된_주문_항목2));
     }
@@ -211,7 +211,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 주문_상태_변경_요청(ExtractableResponse<Response> response, OrderStatus orderStatus) {
         OrderResponse orderResponse = response.as(OrderResponse.class);
-        Order changedOrder = new Order(orderStatus);
+        OrderRequest changedOrder = new OrderRequest(orderStatus.name());
 
         return RestAssured
                 .given().log().all()
@@ -223,7 +223,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 주문_상태_변경_요청(Order order, OrderStatus orderStatus) {
-        Order changedOrder = new Order(orderStatus);
+        OrderRequest changedOrder = new OrderRequest(orderStatus.name());
 
         return RestAssured
                 .given().log().all()
