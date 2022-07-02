@@ -1,9 +1,8 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderRepository;
 import kitchenpos.dao.OrderTableRepository;
-import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.validator.OrderValidator;
 import kitchenpos.dto.OrderTableRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,13 +13,13 @@ import java.util.NoSuchElementException;
 
 @Service
 public class TableService {
-    private OrderTableRepository orderTableRepository;
-    private OrderRepository orderRepository;
+    private final OrderTableRepository orderTableRepository;
+    private final OrderValidator orderValidator;
 
     @Autowired
-    public TableService(OrderTableRepository orderTableRepository, OrderRepository orderRepository) {
+    public TableService(OrderTableRepository orderTableRepository, OrderValidator orderValidator) {
         this.orderTableRepository = orderTableRepository;
-        this.orderRepository = orderRepository;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
@@ -37,10 +36,7 @@ public class TableService {
         OrderTable orderTable = orderTableRepository.findById(orderTableId)
                                                     .orElseThrow(NoSuchElementException::new);
 
-        List<Order> orders = orderRepository.findByOrderTable(orderTable);
-        if (orders.stream().anyMatch(Order::hasOrderStatusInCookingOrMeal)) {
-            throw new IllegalArgumentException("주문 상태가 조리 또는 식사인 테이블은 주문 등록 가능 상태를 변경할 수 없습니다.");
-        }
+        orderValidator.hasOrderStatusInCookingOrMeal(orderTable);
 
         orderTable.changeEmpty(request.isEmpty());
 
