@@ -1,5 +1,8 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.domain.Products;
@@ -26,9 +29,7 @@ public class MenuValidator {
     private BigDecimal calculateTotalPrice(MenuProducts menuProducts, Products products) {
         BigDecimal sum = BigDecimal.ZERO;
         for (MenuProduct menuProduct : menuProducts.getMenuProducts()) {
-            System.out.println("menuProduct: " + menuProduct);
             Product product = products.findById(menuProduct.getProductId());
-            System.out.println("product: " + product);
             sum = sum.add(getMultiply(menuProduct, product));
         }
         return sum;
