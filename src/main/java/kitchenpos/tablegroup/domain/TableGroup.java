@@ -27,6 +27,12 @@ public class TableGroup {
     protected TableGroup() {
     }
 
+    private TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
+        this.id = id;
+        this.createdDate = createdDate;
+        assignOrderTables(orderTables);
+    }
+
     private TableGroup(LocalDateTime createdDate, List<OrderTable> orderTables) {
         this.createdDate = createdDate;
         assignOrderTables(orderTables);
@@ -34,6 +40,10 @@ public class TableGroup {
 
     public static TableGroup of(LocalDateTime createdDate, List<OrderTable> orderTables) {
         return new TableGroup(createdDate, orderTables);
+    }
+
+    public static TableGroup of(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
+        return new TableGroup(id, createdDate, orderTables);
     }
 
     private void assignOrderTables(List<OrderTable> orderTables) {
