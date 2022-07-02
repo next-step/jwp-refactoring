@@ -22,10 +22,11 @@
 
 ## 리뷰 반영
 ### 2단계
-- [ ] JPA Entity 생성자의 접근 범위 정정 
+- [X] JPA Entity 생성자의 접근 범위 정정 
 - [ ] 일급 콜렉션 적용
 - [ ] 메뉴 컨텍스트에서 주문 컨텍스트의 관심사 제거 (validateAllMenusExist)
 - [ ] 메뉴 생성 중 가격 검증 과정에서의 비효율 제거
+- [ ] Menu 엔티티에서 Product 의존성 제거 
 - [ ] 테스트 코드에 assertAll 적용
 
 
