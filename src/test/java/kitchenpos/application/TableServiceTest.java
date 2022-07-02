@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static kitchenpos.domain.TableGroupTest.createTableGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
@@ -59,6 +60,7 @@ class TableServiceTest {
     void 단체_지정이_되어_있으면_이용_여부를_변경할_수_없다() {
         // given
         OrderTable orderTable = new OrderTable(0, true);
+        orderTable.group(createTableGroup());
         given(orderTableRepository.findById(1L))
                 .willReturn(Optional.of(orderTable));
 
@@ -103,12 +105,9 @@ class TableServiceTest {
 
     @Test
     void 방문한_손님의_수가_0보다_작으면_손님의_수를_변경할_수_없다() {
-        // given
-        OrderTable orderTable = new OrderTable(-1, true);
-
         // when & then
         assertThatThrownBy(() ->
-                tableService.changeNumberOfGuests(1L, orderTable)
+                tableService.changeNumberOfGuests(1L, new OrderTable(-1, true))
         ).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("방문한 손님의 수가 0보다 작으면 손님의 수를 변경할 수 없습니다.");
     }
@@ -141,6 +140,6 @@ class TableServiceTest {
     }
 
     private OrderTable createOrderTable() {
-        return new OrderTable( 0, true);
+        return new OrderTable( 1L,0, true);
     }
 }

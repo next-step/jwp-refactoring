@@ -8,7 +8,7 @@ import java.util.List;
 import static kitchenpos.domain.OrderTablesTest.createGroupingOrderTables;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class TableGroupTest {
+public class TableGroupTest {
 
     @Test
     void 주문테이블을_변경한다() {
@@ -23,7 +23,7 @@ class TableGroupTest {
         assertThat(tableGroup.getOrderTables()).isEqualTo(orderTables);
     }
 
-    private TableGroup createTableGroup() {
+    public static TableGroup createTableGroup() {
         return new TableGroup(Arrays.asList(
                 new OrderTable(2L),
                 new OrderTable(3L)

@@ -1,11 +1,13 @@
 package kitchenpos.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
 public class NumberOfGuests {
     public static final int MINIMUM_GUEST_NUMBER = 0;
 
+    @Column(name = "number_of_guests")
     private int value;
 
     protected NumberOfGuests() {
