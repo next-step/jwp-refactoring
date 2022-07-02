@@ -2,13 +2,14 @@ package kitchenpos.application;
 
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuGroupRepository;
+import kitchenpos.dto.MenuGroupRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,6 +23,9 @@ class MenuGroupServiceTest {
     @Mock
     private MenuGroupDao menuGroupDao;
 
+    @Mock
+    private MenuGroupRepository menuGroupRepository;
+
     @InjectMocks
     private MenuGroupService menuGroupService;
 
@@ -29,10 +33,11 @@ class MenuGroupServiceTest {
     @Test
     void create() {
         final String name = "치킨";
+        MenuGroupRequest request = new MenuGroupRequest(name);
         MenuGroup 치킨 = new MenuGroup(name);
-        given(menuGroupDao.save(any(MenuGroup.class))).willReturn(치킨);
+        given(menuGroupRepository.save(any(MenuGroup.class))).willReturn(치킨);
 
-        MenuGroup result = menuGroupService.create(치킨);
+        MenuGroup result = menuGroupService.create(request);
 
         assertThat(result.getName()).isEqualTo(name);
     }
