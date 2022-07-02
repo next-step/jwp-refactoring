@@ -55,26 +55,11 @@ public class MenuService {
 
         final Menu savedMenu = menuRepository.save(menu);
 
-/*        final Long menuId = savedMenu.getId();
-        final List<MenuProduct> savedMenuProducts = new ArrayList<>();
-        for (final MenuProduct menuProduct : menuProducts) {
-            menuProduct.changeMenuId(menuId);
-            savedMenuProducts.add(menuProductDao.save(menuProduct));
-        }
-        savedMenu.changeMenuProducts(savedMenuProducts);*/
-
         return savedMenu;
     }
 
     public List<Menu> list() {
         final List<Menu> menus = menuRepository.findAll();
-/*
-
-        for (final Menu menu : menus) {
-            menu.changeMenuProducts(menuProductDao.findAllByMenuId(menu.getId()));
-        }
-*/
-
         return menus;
     }
 }
