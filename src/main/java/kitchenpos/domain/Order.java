@@ -1,13 +1,11 @@
 package kitchenpos.domain;
 
-import kitchenpos.dto.OrderRequest;
 import kitchenpos.exception.OrderStatusException;
 import kitchenpos.exception.OrderTableException;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class Order {
