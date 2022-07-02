@@ -29,7 +29,7 @@ class OrderTest {
     @Test
     void 주문_항목_추가() {
         // given
-        Order order = new Order(orderTable);
+        Order order = new Order(orderTable.getId());
 
         // when
         order.addOrderLineItems(OrderLineItems.from(orderLineItems));
@@ -42,22 +42,11 @@ class OrderTest {
     @Test
     void 주문_상태_변경_완료_상태_예외() {
         // given
-        Order order = new Order(1L, orderTable, OrderStatus.COMPLETION, null, orderLineItems);
+        Order order = new Order(1L, orderTable.getId(), OrderStatus.COMPLETION, null, orderLineItems);
 
         // when, then
         assertThatThrownBy(
                 () -> order.changeOrderStatus(OrderStatus.COOKING)
         ).isInstanceOf(OrderStatusCompleteException.class);
-    }
-
-    @Test
-    void 주문_생성_빈_테이블_예외() {
-        // given
-        orderTable.changeEmpty(true);
-
-        // when, then
-        assertThatThrownBy(
-                () -> new Order(orderTable)
-        ).isInstanceOf(OrderTableAlreadyEmptyException.class);
     }
 }

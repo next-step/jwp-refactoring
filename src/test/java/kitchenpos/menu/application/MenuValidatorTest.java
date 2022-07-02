@@ -1,7 +1,5 @@
 package kitchenpos.menu.application;
 
-import static kitchenpos.fixture.MenuFactory.createMenu;
-import static kitchenpos.fixture.MenuProductFactory.createMenuProduct;
 import static kitchenpos.fixture.ProductFactory.createProduct;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
@@ -14,7 +12,7 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuName;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.order.domain.Quantity;
+import kitchenpos.menu.domain.Quantity;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.Test;

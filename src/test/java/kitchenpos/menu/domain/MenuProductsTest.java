@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Arrays;
 import kitchenpos.common.Price;
 
-import kitchenpos.order.domain.Quantity;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductName;
 import org.junit.jupiter.api.BeforeEach;

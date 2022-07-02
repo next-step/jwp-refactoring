@@ -3,12 +3,10 @@ package kitchenpos.menu.application;
 import static kitchenpos.Exception.NotFoundMenuGroupException.NOT_FOUND_MENU_GROUP_EXCEPTION;
 
 import java.util.stream.Collectors;
-import kitchenpos.order.domain.Quantity;
-import kitchenpos.product.application.ProductService;
+import kitchenpos.menu.domain.Quantity;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.product.domain.Product;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;

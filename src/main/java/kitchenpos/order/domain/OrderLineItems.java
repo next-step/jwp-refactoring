@@ -5,6 +5,7 @@ import static kitchenpos.Exception.EmptyOrderLineItemsException.EMPTY_ORDER_LINE
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
@@ -34,6 +35,14 @@ public class OrderLineItems {
 
     public List<OrderLineItem> getValues() {
         return Collections.unmodifiableList(orderLineItems);
+    }
+
+    public List<Long> getMenuIds() {
+        return Collections.unmodifiableList(
+                orderLineItems.stream()
+                        .map(OrderLineItem::getMenuId)
+                        .collect(Collectors.toList())
+        );
     }
 
     private void validateOrderLineItems(List<OrderLineItem> orderLineItems) {

@@ -13,7 +13,7 @@ import kitchenpos.order.dto.OrderStatusRequest;
 public class OrderFactory {
     public static Order createOrder(Long id, OrderTable orderTable, String orderStatus, LocalDateTime orderedTime,
                                     List<OrderLineItem> orderLineItems) {
-        Order order = new Order(id, orderTable, OrderStatus.valueOf(orderStatus), orderedTime, orderLineItems);
+        Order order = new Order(id, orderTable.getId(), OrderStatus.valueOf(orderStatus), orderedTime, orderLineItems);
         return order;
     }
 

@@ -3,16 +3,12 @@ package kitchenpos.order.application;
 
 import static kitchenpos.order.domain.OrderStatus.getCannotUngroupTableGroupStatus;
 
-import kitchenpos.Exception.NotFoundMenuException;
 import kitchenpos.Exception.NotFoundOrderException;
-import kitchenpos.table.application.OrderTableService;
-import kitchenpos.menu.application.MenuService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
@@ -26,26 +22,23 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 public class OrderService {
-    private final MenuService menuService;
     private final OrderRepository orderRepository;
-    private final OrderTableService orderTableService;
+    private final OrderValidator orderValidator;
 
     public OrderService(
-            final MenuService menuService,
             final OrderRepository orderRepository,
-            final OrderTableService orderTableService
+            final OrderValidator orderValidator
     ) {
-        this.menuService = menuService;
         this.orderRepository = orderRepository;
-        this.orderTableService = orderTableService;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        final OrderTable orderTable = orderTableService.findOrderTableById(orderRequest.getOrderTableId());
-
-        final Order savedOrder = orderRepository.save(new Order(orderTable));
+        final Order savedOrder = orderRepository.save(new Order(orderRequest.getOrderTableId()));
         connectOrderToOrderLineItems(orderRequest, savedOrder);
+
+        orderValidator.validate(savedOrder);
 
         return OrderResponse.from(savedOrder);
     }
@@ -78,24 +71,7 @@ public class OrderService {
         List<OrderLineItem> orderLineItems = orderRequest.getOrderLineItems().stream()
                 .map(OrderLineItemRequest::toOrderLineItem)
                 .collect(Collectors.toList());
-        final List<Long> menuIds = orderLineItems.stream()
-                .map(OrderLineItem::getMenuId)
-                .collect(Collectors.toList());
 
-        validateNotFoundMenu(orderLineItems);
         savedOrder.addOrderLineItems(OrderLineItems.from(orderLineItems));
     }
-
-    private void validateNotFoundMenu(List<OrderLineItem> orderLineItems) {
-
-        final List<Long> menuIds = orderLineItems.stream()
-                .map(OrderLineItem::getMenuId)
-                .collect(Collectors.toList());
-
-        if (orderLineItems.size() != menuService.countByIdIn(menuIds)) {
-            throw new NotFoundMenuException("존재하지 않는 메뉴가 포함되어 있습니다.");
-        }
-    }
-
-
 }

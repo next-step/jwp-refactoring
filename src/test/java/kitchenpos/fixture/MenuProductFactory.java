@@ -3,7 +3,7 @@ package kitchenpos.fixture;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
-import kitchenpos.order.domain.Quantity;
+import kitchenpos.menu.domain.Quantity;
 import kitchenpos.menu.dto.MenuProductRequest;
 
 public class MenuProductFactory {
