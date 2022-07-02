@@ -39,9 +39,8 @@ class OrderTest {
     public void setUp(){
         menuGroup_한식 = createMenuGroup("한식");
         product_김치찌개 = createProduct("김치찌개", 8000);
-        menu = createMenu("김치찌개", 8000, menuGroup_한식);
-        menuProduct_김치찌개 = createMenuProduct(menu, product_김치찌개, 1);
-        menu.registerMenuProducts(Arrays.asList(menuProduct_김치찌개));
+        menuProduct_김치찌개 = createMenuProduct(product_김치찌개, 1);
+        menu = createMenu("김치찌개", 8000, menuGroup_한식, Arrays.asList(menuProduct_김치찌개));
     }
 
     @DisplayName("주문을 생성한다")

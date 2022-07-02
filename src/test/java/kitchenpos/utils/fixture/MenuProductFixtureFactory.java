@@ -5,7 +5,7 @@ import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.product.domain.Product;
 
 public class MenuProductFixtureFactory {
-    public static MenuProduct createMenuProduct(Menu menu, Product product, int quantity) {
-        return MenuProduct.of(menu, product, quantity);
+    public static MenuProduct createMenuProduct(Product product, int quantity) {
+        return MenuProduct.of(product, quantity);
     }
 }

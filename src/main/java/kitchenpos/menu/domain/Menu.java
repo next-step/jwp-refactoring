@@ -25,17 +25,18 @@ public class Menu {
     protected Menu() {
     }
 
-    private Menu(String name, int price, MenuGroup menuGroup) {
+    private Menu(String name, int price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.name = name;
         this.price = MenuPrice.from(price);
         this.menuGroup = menuGroup;
+        registerMenuProducts(menuProducts);
     }
 
-    public static Menu of(String name, int price, MenuGroup menuGroup){
-        return new Menu(name, price, menuGroup);
+    public static Menu of(String name, int price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        return new Menu(name, price, menuGroup, menuProducts);
     }
 
-    public void registerMenuProducts(List<MenuProduct> menuProducts) {
+    private void registerMenuProducts(List<MenuProduct> menuProducts) {
         validateMenuPrice(menuProducts);
         this.menuProducts = menuProducts;
         menuProducts.forEach(menuProduct -> menuProduct.registerMenu(this));

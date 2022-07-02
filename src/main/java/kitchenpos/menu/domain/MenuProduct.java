@@ -20,18 +20,13 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
-    private MenuProduct(Menu menu, Product product, int quantity) {
-        this.menu = menu;
+    private MenuProduct(Product product, int quantity) {
         this.product = product;
         this.quantity = quantity;
     }
 
-    public static MenuProduct of(Menu menu, Product product, int quantity){
-        return new MenuProduct(menu, product, quantity);
-    }
-
     public static MenuProduct of(Product product, int quantity){
-        return new MenuProduct(null, product, quantity);
+        return new MenuProduct(product, quantity);
     }
 
     public void registerMenu(Menu menu) {

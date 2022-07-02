@@ -42,8 +42,7 @@ public class MenuService {
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
         final MenuGroup menuGroup = findMenuGroupById(menuRequest.getMenuGroupId());
-        final Menu menu = Menu.of(menuRequest.getName(), menuRequest.getPrice(), menuGroup);
-        menu.registerMenuProducts(retrieveMenuProducts(menuRequest));
+        final Menu menu = Menu.of(menuRequest.getName(), menuRequest.getPrice(), menuGroup, retrieveMenuProducts(menuRequest));
         final Menu savedMenu = menuRepository.save(menu);
 
         return MenuResponse.from(savedMenu);

@@ -61,10 +61,10 @@ class MenuServiceTest {
         김치찌개 = productRepository.save(createProduct("김치찌개", 8000));
         공기밥 = productRepository.save(createProduct("공기밥", 1000));
 
-        메뉴_김치찌개세트 = createMenu("김치찌개세트", 15000, 메뉴그룹_한식);
-        김치찌개세트_김치찌개 = createMenuProduct(메뉴_김치찌개세트, 김치찌개, 2);
-        김치찌개세트_공기밥 = createMenuProduct(메뉴_김치찌개세트, 공기밥, 2);
-        메뉴_김치찌개세트.registerMenuProducts(Arrays.asList(김치찌개세트_김치찌개, 김치찌개세트_공기밥));
+        김치찌개세트_김치찌개 = createMenuProduct(김치찌개, 2);
+        김치찌개세트_공기밥 = createMenuProduct(공기밥, 2);
+        메뉴_김치찌개세트 = createMenu("김치찌개세트", 15000, 메뉴그룹_한식,
+                Arrays.asList(김치찌개세트_김치찌개, 김치찌개세트_공기밥));
     }
 
     @DisplayName("메뉴를 등록할 수 있다")
