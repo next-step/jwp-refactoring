@@ -11,7 +11,8 @@ public class OrderTable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "table_group_id")
     private TableGroup tableGroup;
-    private int numberOfGuests;
+    @Embedded
+    private NumberOfGuests numberOfGuests = new NumberOfGuests();
     private boolean empty;
 
     public OrderTable() {
@@ -22,13 +23,13 @@ public class OrderTable {
     }
 
     public OrderTable(int numberOfGuests, boolean empty) {
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = new NumberOfGuests(numberOfGuests);
         this.empty = empty;
     }
 
     public OrderTable(Long id, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = new NumberOfGuests(numberOfGuests);
         this.empty = empty;
     }
 
@@ -56,17 +57,14 @@ public class OrderTable {
     }
 
     public int getNumberOfGuests() {
-        return numberOfGuests;
+        return numberOfGuests.value();
     }
 
     public void changeNumberOfGuests(final int numberOfGuests) {
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException("방문한 손님의 수가 0보다 작으면 손님의 수를 변경할 수 없습니다.");
-        }
         if (empty) {
             throw new IllegalArgumentException("빈 테이블이면 방문한 손님 수를 변경할 수 없습니다.");
         }
-        this.numberOfGuests = numberOfGuests;
+        this.numberOfGuests = new NumberOfGuests(numberOfGuests);
     }
 
     public boolean isEmpty() {
