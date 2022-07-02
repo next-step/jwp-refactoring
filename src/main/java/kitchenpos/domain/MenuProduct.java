@@ -1,89 +1,99 @@
 package kitchenpos.domain;
 
+import javax.persistence.*;
+import java.math.BigDecimal;
+import java.util.Objects;
+
+@Entity
 public class MenuProduct {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
-    private Long menuId;
-    private Long productId;
+
+    @ManyToOne
+    @JoinColumn(name = "menu_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_menu_product_menu"))
+    private Menu menu;
+
+    @ManyToOne
+    @JoinColumn(name = "product_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_menu_product_product"))
+    private Product product;
+
     private long quantity;
 
     public MenuProduct() {
     }
 
-    public MenuProduct(Builder builder) {
-        this.seq = builder.seq;
-        this.menuId = builder.menuId;
-        this.productId = builder.productId;
-        this.quantity = builder.quantity;
+    public MenuProduct(Menu menu, Product product, long quantity) {
+        this.menu = menu;
+        this.product = product;
+        this.quantity = quantity;
+    }
+
+    public MenuProduct(Product product, long quantity) {
+        this(null, product, quantity);
     }
 
     public Long getSeq() {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
+    public void setSeq(Long seq) {
         this.seq = seq;
     }
 
-    public Long getMenuId() {
-        return menuId;
+    public Menu getMenu() {
+        return menu;
     }
 
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
+    public void setMenu(Menu menu) {
+        this.menu = menu;
     }
 
-    public Long getProductId() {
-        return productId;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setProductId(final Long productId) {
-        this.productId = productId;
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public BigDecimal getProductPrice() {
+        return product.getPrice();
     }
 
     public long getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(final long quantity) {
+    public void setQuantity(long quantity) {
         this.quantity = quantity;
     }
 
-    public static class Builder {
-        private Long seq;
-        private Long menuId;
-        private Long productId;
-        private long quantity;
+    public void setMenuId(long menuId) {
+    }
 
-        public Builder() {
-        }
+    public void setProductId(long productId) {
+    }
 
-        public Builder(Long productId, long quantity) {
-            this.productId = productId;
-            this.quantity = quantity;
-        }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MenuProduct that = (MenuProduct) o;
+        return quantity == that.quantity
+                && Objects.equals(seq, that.seq);
+    }
 
-        public Builder seq(Long seq) {
-            this.seq = seq;
-            return this;
-        }
+    @Override
+    public int hashCode() {
+        return Objects.hash(seq, quantity);
+    }
 
-        public Builder menuId(Long menuId) {
-            this.menuId = menuId;
-            return this;
-        }
-
-        public Builder productId(Long productId) {
-            this.productId = productId;
-            return this;
-        }
-
-        public Builder quantity(long quantity) {
-            this.quantity = quantity;
-            return this;
-        }
-
-        public MenuProduct build() {
-            return new MenuProduct(this);
-        }
+    @Override
+    public String toString() {
+        return "MenuProduct{" +
+                "seq=" + seq +
+                ", quantity=" + quantity +
+                '}';
     }
 }

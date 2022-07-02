@@ -1,19 +1,34 @@
 package kitchenpos.domain;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Objects;
 
+@Entity
 public class Product {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false, unique = true)
     private String name;
+
+    @Column(nullable = false, precision = 15, scale = 2)
     private BigDecimal price;
 
     public Product() {
     }
 
-    public Product(Builder builder) {
-        this.id = builder.id;
-        this.name = builder.name;
-        this.price = builder.price;
+    public Product(String name, double price) {
+        this(name, BigDecimal.valueOf(price));
+    }
+
+    public Product(String name, BigDecimal price) {
+        if (isNull(price) || isLessThanZero(price)) {
+            throw new IllegalArgumentException("상품 가격은 0원 보다 작을 수 없습니다.");
+        }
+        this.name = name;
+        this.price = price;
     }
 
     public Long getId() {
@@ -40,36 +55,35 @@ public class Product {
         this.price = price;
     }
 
-    public static class Builder {
-        private Long id;
-        private String name;
-        private BigDecimal price;
+    private boolean isNull(BigDecimal price) {
+        return Objects.isNull(price);
+    }
 
-        public Builder() {
-        }
+    private boolean isLessThanZero(BigDecimal price) {
+        return price.compareTo(BigDecimal.ZERO) < 0;
+    }
 
-        public Builder(String name, long price) {
-            this.name = name;
-            this.price = BigDecimal.valueOf(price);
-        }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return Objects.equals(id, product.id)
+                && Objects.equals(name, product.name)
+                && Objects.equals(price, product.price);
+    }
 
-        public Builder id(Long id) {
-            this.id = id;
-            return this;
-        }
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, price);
+    }
 
-        public Builder name(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public Builder price(long price) {
-            this.price = BigDecimal.valueOf(price);
-            return this;
-        }
-
-        public Product build() {
-            return new Product(this);
-        }
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                '}';
     }
 }

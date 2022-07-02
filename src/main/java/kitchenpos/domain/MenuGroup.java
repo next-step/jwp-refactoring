@@ -1,13 +1,21 @@
 package kitchenpos.domain;
 
+import javax.persistence.*;
+import java.util.Objects;
+
+@Entity
 public class MenuGroup {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false, unique = true)
     private String name;
 
     public MenuGroup() {
     }
 
-    public MenuGroup(Builder builder) {
+    private MenuGroup(Builder builder) {
         this.id = builder.id;
         this.name = builder.name;
     }
@@ -28,16 +36,30 @@ public class MenuGroup {
         this.name = name;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MenuGroup menuGroup = (MenuGroup) o;
+        return Objects.equals(id, menuGroup.id) && Objects.equals(name, menuGroup.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
+    }
+
+    @Override
+    public String toString() {
+        return "MenuGroup{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
     public static class Builder {
         private Long id;
         private String name;
-
-        public Builder() {
-        }
-
-        public Builder(String name) {
-            this.name = name;
-        }
 
         public Builder id(Long id) {
             this.id = id;
@@ -52,5 +74,9 @@ public class MenuGroup {
         public MenuGroup build() {
             return new MenuGroup(this);
         }
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 }
