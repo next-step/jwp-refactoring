@@ -4,13 +4,12 @@ import kitchenpos.exception.ErrorMessage;
 import kitchenpos.exception.IllegalOrderException;
 import kitchenpos.exception.IllegalOrderLineItemException;
 import kitchenpos.exception.IllegalOrderTableException;
-import kitchenpos.orderTable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTable;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name = "orders")

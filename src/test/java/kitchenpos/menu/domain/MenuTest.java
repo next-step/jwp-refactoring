@@ -1,12 +1,8 @@
 package kitchenpos.menu.domain;
 
 import kitchenpos.exception.IllegalPriceException;
-import kitchenpos.menuGroup.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
-import kitchenpos.utils.fixture.MenuFixtureFactory;
-import kitchenpos.utils.fixture.MenuGroupFixtureFactory;
-import kitchenpos.utils.fixture.MenuProductFixtureFactory;
-import kitchenpos.utils.fixture.ProductFixtureFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

@@ -6,7 +6,7 @@ import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menuGroup.dto.MenuGroupResponse;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static kitchenpos.menuGroup.acceptance.MenuGroupAcceptanceTest.메뉴그룹_등록되어_있음;
+import static kitchenpos.menugroup.acceptance.MenuGroupAcceptanceTest.메뉴그룹_등록되어_있음;
 import static kitchenpos.product.acceptance.ProductAcceptanceTest.상품_등록되어_있음;
 import static kitchenpos.utils.RestAssuredMethods.get;
 import static kitchenpos.utils.RestAssuredMethods.post;

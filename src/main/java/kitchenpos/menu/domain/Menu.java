@@ -2,7 +2,7 @@ package kitchenpos.menu.domain;
 
 import kitchenpos.exception.ErrorMessage;
 import kitchenpos.exception.IllegalPriceException;
-import kitchenpos.menuGroup.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroup;
 
 import javax.persistence.*;
 import java.util.ArrayList;

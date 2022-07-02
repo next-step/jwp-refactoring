@@ -1,7 +1,7 @@
 package kitchenpos.utils.fixture;
 
 import kitchenpos.order.domain.Order;
-import kitchenpos.orderTable.domain.OrderTable;
+import kitchenpos.ordertable.domain.OrderTable;
 
 import java.time.LocalDateTime;
 
