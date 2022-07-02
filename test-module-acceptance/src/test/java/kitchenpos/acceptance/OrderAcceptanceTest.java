@@ -218,7 +218,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     private void 주문_등록_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     private void 주문_상태_업데이트됨(ExtractableResponse<Response> response, OrderStatus orderStatus) {
@@ -227,7 +227,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     private void 주문_상태_업데이트_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     private void 주문_목록_조회됨(ExtractableResponse<Response> response,List<OrderStatus> orderStatuses) {

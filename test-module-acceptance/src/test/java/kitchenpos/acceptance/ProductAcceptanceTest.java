@@ -110,7 +110,7 @@ class ProductAcceptanceTest extends AcceptanceTest {
     }
 
     private void 상품_등록_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     private void 상품_등록됨(ExtractableResponse<Response> response) {

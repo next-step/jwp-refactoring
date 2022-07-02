@@ -178,7 +178,7 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     }  
     
     private void 단체_지정_등록_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     private void 단체_지정_해제됨(ExtractableResponse<Response> response) {
@@ -186,7 +186,7 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     }
 
     private void 단체_지정_해제_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
 }

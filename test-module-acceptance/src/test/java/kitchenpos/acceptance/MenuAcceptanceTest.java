@@ -160,7 +160,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
     }
 
     private void 메뉴_등록_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     private void 메뉴_목록_조회됨(ExtractableResponse<Response> response, List<String> menuNames, int ...menuPrices) {
