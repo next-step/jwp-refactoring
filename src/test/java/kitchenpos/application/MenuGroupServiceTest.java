@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuGroupRepository;
 import kitchenpos.dto.MenuGroupRequest;
@@ -21,9 +20,6 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
-    @Mock
-    private MenuGroupDao menuGroupDao;
-
     @Mock
     private MenuGroupRepository menuGroupRepository;
 
@@ -48,11 +44,11 @@ class MenuGroupServiceTest {
     void list() {
         final String name = "치킨";
         MenuGroup 치킨 = new MenuGroup(name);
-        given(menuGroupDao.findAll()).willReturn(Arrays.asList(치킨));
+        given(menuGroupRepository.findAll()).willReturn(Arrays.asList(치킨));
 
-        List<MenuGroup> result = menuGroupService.list();
+        List<MenuGroupResponse> responses = menuGroupService.list();
 
-        assertThat(result.size()).isEqualTo(1);
-        assertThat(result.get(0).getName()).isEqualTo(name);
+        assertThat(responses.size()).isEqualTo(1);
+        assertThat(responses.get(0).getName()).isEqualTo(name);
     }
 }
