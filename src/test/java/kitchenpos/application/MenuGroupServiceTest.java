@@ -12,8 +12,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Collections;
 import java.util.List;
 
-import static kitchenpos.fixture.MenuGroupFixture.메뉴_그룹_생성;
-import static kitchenpos.fixture.MenuGroupFixture.메뉴_그룹_요청데이터_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
@@ -27,43 +25,41 @@ class MenuGroupServiceTest {
     @Mock
     private MenuGroupDao menuGroupDao;
 
+    private MenuGroup 메뉴_그룹;
+
     @BeforeEach
     void setUp() {
         menuGroupService = new MenuGroupService(menuGroupDao);
+        메뉴_그룹 = new MenuGroup(1L, "세트 메뉴");
     }
 
     @DisplayName("메뉴 그룹 생성")
     @Test
     void create() {
         // given
-        String name = "튀김류";
-        MenuGroup request = 메뉴_그룹_요청데이터_생성(name);
-        MenuGroup expected = 메뉴_그룹_생성(request.getName());
-
-        given(menuGroupDao.save(any())).willReturn(expected);
+        given(menuGroupDao.save(any())).willReturn(메뉴_그룹);
 
         // when
-        MenuGroup actual = menuGroupService.create(request);
+        MenuGroup menuGroup = menuGroupService.create(메뉴_그룹);
 
         // then
-        assertThat(actual).isEqualTo(expected);
+        assertThat(menuGroup).isEqualTo(메뉴_그룹);
     }
 
     @DisplayName("메뉴 그룹 목록 조회")
     @Test
     void list() {
         // given
-        String name = "튀김류";
-        MenuGroup request = 메뉴_그룹_요청데이터_생성(name);
-        given(menuGroupDao.findAll()).willReturn(Collections.singletonList(메뉴_그룹_생성(request.getName())));
+        given(menuGroupDao.findAll()).willReturn(Collections.singletonList(메뉴_그룹));
 
         // when
-        List<MenuGroup> actual = menuGroupService.list();
+        List<MenuGroup> menuGroups = menuGroupService.list();
 
         // then
         assertAll(
-                () -> assertThat(actual).isNotEmpty(),
-                () -> assertThat(actual).hasSize(1)
+                () -> assertThat(menuGroups).isNotEmpty(),
+                () -> assertThat(menuGroups).hasSize(1),
+                () -> assertThat(menuGroups).containsExactly(메뉴_그룹)
         );
     }
 }
