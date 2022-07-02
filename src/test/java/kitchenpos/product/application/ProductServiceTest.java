@@ -57,7 +57,7 @@ public class ProductServiceTest {
     void list() {
         //given
         given(productRepository.findAll()).willReturn(
-                Arrays.asList(상품_생성("피자", 25000), 상품_생성("파스타", 15000)));
+                Arrays.asList(상품_생성(1L, "피자", 25000), 상품_생성(2L, "파스타", 15000)));
 
         //when
         List<ProductResponse> productResponses = productService.list();
