@@ -68,6 +68,7 @@ public class OrderTable {
     }
 
     public void setEmpty(final boolean empty) {
+        hasTableGroupCheck();
         this.empty = empty;
     }
 
@@ -85,6 +86,12 @@ public class OrderTable {
     private void validateGuestNumberCheck(int numberOfGuests) {
         if (numberOfGuests < ZERO) {
             throw new IllegalArgumentException("변경하려는 사용자의 수는 0명 이상이어야 합니다.");
+        }
+    }
+
+    private void hasTableGroupCheck() {
+        if (Objects.nonNull(tableGroup)) {
+            throw new IllegalArgumentException("단체 테이블인 경우 상태를 변경할 수 없습니다.");
         }
     }
 }

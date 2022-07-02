@@ -91,7 +91,7 @@ class TableGroupServiceTest {
     }
 
     @Test
-    @DisplayName("단체 지정시 주문 테이블은 빈 테이블이거나 이미 단체 테이블이면 안 된다")
+    @DisplayName("단체 지정시 주문 테이블은 이미 주문이 진행중인 테이블이거나 이미 단체 테이블이면 안 된다")
     void create_emptyTableGroupError() {
         // given
         주문테이블1.setEmpty(false);
@@ -100,7 +100,7 @@ class TableGroupServiceTest {
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
                 () -> tableGroupService.create(new TableGroupRequest(Arrays.asList(1L, 2L)))
-        ).withMessageContaining("빈 테이블이거나 이미 단체 테이블인 경우 단체로 지정할 수 없습니다.");
+        ).withMessageContaining("주문 진행중이거나 이미 단체 테이블인 경우 단체로 지정할 수 없습니다.");
     }
 
     @Test

@@ -103,7 +103,7 @@ class TableServiceTest {
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
                 () -> tableService.changeEmpty(주문테이블.getId(), 변경테이블)
-        );
+        ).withMessageContaining("존재하지 않는 주문테이블 입니다.");
     }
 
     @Test
@@ -118,7 +118,7 @@ class TableServiceTest {
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
                 () -> tableService.changeEmpty(주문테이블.getId(), 변경테이블)
-        );
+        ).withMessageContaining("단체 테이블인 경우 상태를 변경할 수 없습니다.");
     }
 
     @Test
