@@ -1,6 +1,6 @@
 package kitchenpos.table;
 
-import static kitchenpos.table.TableAcceptanceTest.사용가능;
+import static kitchenpos.table.TableAcceptanceTest.빈자리;
 import static kitchenpos.table.TableAcceptanceTest.사용중;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -45,7 +45,7 @@ class TableServiceTest {
 
     @BeforeEach
     void setUp() {
-        주문테이블 = new OrderTable(2, 사용가능);
+        주문테이블 = new OrderTable(2, 빈자리);
     }
 
     @Test
@@ -53,7 +53,7 @@ class TableServiceTest {
     void create() {
         // given
         given(orderTableRepository.save(any())).willReturn(주문테이블);
-        OrderTableRequest 주문요청 = new OrderTableRequest(2, 사용가능);
+        OrderTableRequest 주문요청 = new OrderTableRequest(2, 빈자리);
 
         // when
         OrderTableResponse actual = tableService.create(주문요청);
@@ -82,7 +82,7 @@ class TableServiceTest {
     @DisplayName("주문 테이블을 빈 상태로 만든다")
     void changeEmpty() {
         // given
-        OrderTableRequest 변경테이블 = new OrderTableRequest(주문테이블.getNumberOfGuests(), 사용가능);
+        OrderTableRequest 변경테이블 = new OrderTableRequest(주문테이블.getNumberOfGuests(), 빈자리);
         given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(주문테이블));
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(false);
 
@@ -110,7 +110,7 @@ class TableServiceTest {
     @DisplayName("단체 테이블에 속하면 빈 상태로 변경 불가능하다")
     void changeEmpty_notExistTableGroup() {
         // given
-        주문테이블2 = new OrderTable(2, 사용가능);
+        주문테이블2 = new OrderTable(2, 빈자리);
         단체테이블 = new TableGroup(Arrays.asList(주문테이블, 주문테이블2));
         OrderTableRequest 변경테이블 = new OrderTableRequest(주문테이블.getNumberOfGuests(), 사용중);
         given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(주문테이블));

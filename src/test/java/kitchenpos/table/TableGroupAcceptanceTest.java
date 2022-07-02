@@ -1,6 +1,6 @@
 package kitchenpos.table;
 
-import static kitchenpos.table.TableAcceptanceTest.사용가능;
+import static kitchenpos.table.TableAcceptanceTest.빈자리;
 import static kitchenpos.table.TableAcceptanceTest.손님_입장;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,8 +28,8 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        손님1 = 손님_입장(4, 사용가능).as(OrderTable.class);
-        손님2 = 손님_입장(4, 사용가능).as(OrderTable.class);
+        손님1 = 손님_입장(4, 빈자리).as(OrderTable.class);
+        손님2 = 손님_입장(4, 빈자리).as(OrderTable.class);
     }
 
     @Test

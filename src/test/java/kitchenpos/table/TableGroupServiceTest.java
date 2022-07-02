@@ -1,6 +1,6 @@
 package kitchenpos.table;
 
-import static kitchenpos.table.TableAcceptanceTest.사용가능;
+import static kitchenpos.table.TableAcceptanceTest.빈자리;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -46,10 +46,10 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        주문테이블1 = new OrderTable(2, 사용가능);
-        주문테이블2 = new OrderTable(2, 사용가능);
+        주문테이블1 = new OrderTable(2, 빈자리);
+        주문테이블2 = new OrderTable(2, 빈자리);
 
-        단체손님 = new TableGroup(Arrays.asList(new OrderTable(2, 사용가능), new OrderTable(2, 사용가능)));
+        단체손님 = new TableGroup(Arrays.asList(new OrderTable(2, 빈자리), new OrderTable(2, 빈자리)));
     }
 
     @Test

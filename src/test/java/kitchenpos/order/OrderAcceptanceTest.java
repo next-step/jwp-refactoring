@@ -3,7 +3,7 @@ package kitchenpos.order;
 import static kitchenpos.menu.MenuAcceptanceTest.메뉴_생성_요청;
 import static kitchenpos.menu.MenuGroupAcceptanceTest.메뉴_그룹_생성_요청;
 import static kitchenpos.product.ProductAcceptanceTest.상품_생성_요청;
-import static kitchenpos.table.TableAcceptanceTest.사용가능;
+import static kitchenpos.table.TableAcceptanceTest.빈자리;
 import static kitchenpos.table.TableAcceptanceTest.사용중;
 import static kitchenpos.table.TableAcceptanceTest.손님_입장;
 import static kitchenpos.table.TableAcceptanceTest.테이블_상태_변경;
@@ -49,7 +49,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
 
         양념치킨 = 메뉴_생성_요청("양념치킨", new BigDecimal(18000), 메뉴그룹.getId(), Collections.singletonList(메뉴상품)).as(Menu.class);
 
-        주문테이블 = 손님_입장(5, 사용가능).as(OrderTable.class);
+        주문테이블 = 손님_입장(5, 빈자리).as(OrderTable.class);
         테이블_상태_변경(주문테이블, 사용중);
 
         주문목록 = new OrderLineItem();
