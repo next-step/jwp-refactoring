@@ -3,12 +3,11 @@ package kitchenpos.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -16,18 +15,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MenuAcceptanceFactory {
 
 
-    public static ExtractableResponse<Response> 메뉴_등록_요청(String 이름, BigDecimal 가격, Long 메뉴그룹Id, List<MenuProduct> 메뉴상품들) {
-        Menu menu = new Menu();
-        menu.setName(이름);
-        menu.setPrice(가격);
-        menu.setMenuGroupId(메뉴그룹Id);
-        menu.setMenuProducts(메뉴상품들);
+    public static ExtractableResponse<Response> 메뉴_등록_요청(String 이름, Integer 가격, Long 메뉴그룹Id, List<MenuProductRequest> 메뉴상품들) {
+        MenuRequest menuRequest = MenuRequest.from(이름, 가격, 메뉴그룹Id, 메뉴상품들);
 
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(menu)
+                .body(menuRequest)
                 .when()
                 .post("/api/menus")
                 .then().log().all()

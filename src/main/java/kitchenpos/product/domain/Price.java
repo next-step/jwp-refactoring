@@ -33,6 +33,10 @@ public class Price {
         }
     }
 
+    public boolean biggerThan(BigDecimal target) {
+        return value.compareTo(target) > 0;
+    }
+
     public BigDecimal getValue() {
         return value;
     }
@@ -41,4 +45,16 @@ public class Price {
         return value.intValue();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Price price = (Price) o;
+        return Objects.equals(getValue(), price.getValue());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getValue());
+    }
 }

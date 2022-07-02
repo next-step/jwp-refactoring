@@ -5,6 +5,7 @@ import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.product.domain.Price;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.product.domain.Product;
 import kitchenpos.tablegroup.domain.TableGroup;
@@ -24,20 +25,20 @@ public class ServiceTestFactory {
     }
 
 
-    public static Menu 메뉴생성(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    public static Menu 메뉴생성(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         Menu menu = new Menu();
         menu.setId(id);
         menu.setName("오늘의메뉴");
-        menu.setPrice(price);
-        menu.setMenuGroupId(menuGroupId);
+        menu.setPrice(Price.from(price));
+        menu.setMenuGroup(menuGroup);
         menu.setMenuProducts(menuProducts);
         return menu;
     }
 
-    public static MenuProduct 메뉴상품생성(Long seq, Long productId, Long quantity) {
+    public static MenuProduct 메뉴상품생성(Long seq, Product product, Long quantity) {
         MenuProduct menuProduct = new MenuProduct();
         menuProduct.setSeq(seq);
-        menuProduct.setProductId(productId);
+        menuProduct.setProduct(product);
         menuProduct.setQuantity(quantity);
         return menuProduct;
     }

@@ -51,9 +51,9 @@ public class OrderTableAcceptanceTest extends AcceptanceTest {
         Product 후라이드 = 상품_등록_요청("후라이드", 16000).as(Product.class);
         MenuGroup 두마리메뉴 = 메뉴그룹_등록_요청("두마리메뉴").as(MenuGroup.class);
         MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setProductId(후라이드.getId());
+//        menuProduct.setProductId(후라이드.getId());
         menuProduct.setQuantity(1);
-        후라이드메뉴 = 메뉴_등록_요청(후라이드.getName(), 후라이드.getPriceBigDecimal(), 두마리메뉴.getId(), Arrays.asList(menuProduct)).as(Menu.class);
+//        후라이드메뉴 = 메뉴_등록_요청(후라이드.getName(), 후라이드.getPriceBigDecimal(), 두마리메뉴.getId(), Arrays.asList(menuProduct)).as(Menu.class);
 
         //주문
         주문항목 = new OrderLineItem();
