@@ -2,7 +2,7 @@ package kitchenpos.order.event;
 
 public class TableUngroupEvent {
 
-    Long tableGroupId;
+        private final Long tableGroupId;
 
     public TableUngroupEvent(Long tableGroupId) {
         this.tableGroupId = tableGroupId;
