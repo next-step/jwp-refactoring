@@ -96,7 +96,13 @@ class OrderServiceTest {
     @Test
     @DisplayName("주문 정상 저장 후 COOKING 초기 상태 확인")
     public void orderSuccessSave() {
-        OrderLineItem orderLineItem = new OrderLineItem(1L, 1L, 1L, 1);
+//        OrderLineItem orderLineItem = new OrderLineItem(1L, 1L, 1L, 1);
+        //
+        Order order = new Order();
+
+        //
+//        OrderLineItem orderLineItem = new OrderLineItem(1L, 1L, 1L, 1);
+        OrderLineItem orderLineItem = new OrderLineItem(1L, order, 1L, 1);
         orderLineItems.add(orderLineItem);
 
         OrderTable orderTable = new OrderTable(1L, null, 3, false);

@@ -13,6 +13,7 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.TableGroup;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -79,7 +80,8 @@ class TableServiceTest {
     @DisplayName("단체로 지정된 테이블의 자리 착석여부 변경시 예외처리")
     public void changeEmtpyAlreadyInTableGroup() {
         orderTable.setEmpty(true);
-        orderTable.setTableGroupId(2L);
+//        orderTable.setTableGroupId(2L);
+        orderTable.setTableGroup(new TableGroup());
 
         OrderTable changeOrderTable = new OrderTable();
         changeOrderTable.setEmpty(false);
@@ -94,7 +96,8 @@ class TableServiceTest {
     @DisplayName("변경할 테이블의 주문건 중 COOKING 또는 MEAL 상태인 건 존재시 변경 불가")
     public void changeEmtpyInCookingOrMeal() {
         orderTable.setEmpty(true);
-        orderTable.setTableGroupId(2L);
+        orderTable.setTableGroup(new TableGroup());
+//        orderTable.setTableGroupId(2L);
 
         OrderTable changeOrderTable = new OrderTable();
         changeOrderTable.setEmpty(false);

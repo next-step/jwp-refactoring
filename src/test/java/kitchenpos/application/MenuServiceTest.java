@@ -16,7 +16,9 @@ import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.MenuProducts;
 import kitchenpos.domain.Product;
+import kitchenpos.repository.MenuRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,6 +38,9 @@ class MenuServiceTest {
     MenuProductDao menuProductDao;
     @Mock
     ProductDao productDao;
+
+    @Mock
+    MenuRepository menuRepository;
 
     @InjectMocks
     MenuService menuService;
@@ -101,7 +106,8 @@ class MenuServiceTest {
         Menu menu = new Menu();
         List<MenuProduct> menuProducts = new ArrayList<>();
         menuProducts.add(menuProduct);
-        menu.setMenuProducts(menuProducts);
+//        menu.setMenuProducts(menuProducts);
+        menu.setMenuProducts(new MenuProducts(menuProducts));
         menu.setPrice(BigDecimal.valueOf(18000));
 
         assertThatThrownBy(() -> menuService.create(menu)).isInstanceOf(IllegalArgumentException.class);
@@ -110,7 +116,7 @@ class MenuServiceTest {
     @Test
     @DisplayName("메뉴 각 상품의 합보다 메뉴의 가격이 작지 않으면 등록 시 에러 반환")
     public void createNotCheaperPrice() {
-        Menu menu = new Menu(1L, "모닝세트", BigDecimal.valueOf(8000), 패스트푸드류.getId(), Arrays.asList(스낵랩_메뉴_상품, 맥모닝_메뉴_상품));
+        Menu menu = new Menu(1L, "모닝세트", BigDecimal.valueOf(8000), 패스트푸드류.getId(), new MenuProducts(Arrays.asList(스낵랩_메뉴_상품, 맥모닝_메뉴_상품)));
 
         given(productDao.findById(스낵랩.getId())).willReturn(Optional.of(스낵랩));
         given(productDao.findById(맥모닝.getId())).willReturn(Optional.of(맥모닝));
@@ -121,22 +127,24 @@ class MenuServiceTest {
 
     @Test
     public void createSuccess() {
-        Menu menu = new Menu(1L, "스낵랩 상품", BigDecimal.valueOf(3000), 패스트푸드류.getId(), Arrays.asList(스낵랩_메뉴_상품));
+        Menu menu = new Menu(1L, "스낵랩 상품", BigDecimal.valueOf(3000), 패스트푸드류.getId(), new MenuProducts(Arrays.asList(스낵랩_메뉴_상품)));
 
         given(productDao.findById(스낵랩.getId())).willReturn(Optional.of(스낵랩));
         given(menuProductDao.save(스낵랩_메뉴_상품)).willReturn(스낵랩_메뉴_상품);
         given(menuGroupDao.existsById(패스트푸드류.getId())).willReturn(true);
-        given(menuDao.save(menu)).willReturn(menu);
+//        given(menuDao.save(menu)).willReturn(menu);
+        given(menuRepository.save(menu)).willReturn(menu);
 
         assertThat(menuService.create(menu).getId()).isEqualTo(menu.getId());
     }
 
     @Test
     public void list(){
-        Menu 스낵랩_세트 = new Menu(1L, "스낵랩 상품", BigDecimal.valueOf(3000), 패스트푸드류.getId(), Arrays.asList(스낵랩_메뉴_상품));
-        Menu 모닝_세트 = new Menu(1L, "모닝세트", BigDecimal.valueOf(7000), 패스트푸드류.getId(), Arrays.asList(스낵랩_메뉴_상품, 맥모닝_메뉴_상품));
+        Menu 스낵랩_세트 = new Menu(1L, "스낵랩 상품", BigDecimal.valueOf(3000), 패스트푸드류.getId(), new MenuProducts(Arrays.asList(스낵랩_메뉴_상품)));
+        Menu 모닝_세트 = new Menu(1L, "모닝세트", BigDecimal.valueOf(7000), 패스트푸드류.getId(), new MenuProducts(Arrays.asList(스낵랩_메뉴_상품, 맥모닝_메뉴_상품)));
 
-        given(menuDao.findAll()).willReturn(Arrays.asList(스낵랩_세트, 모닝_세트));
+//        given(menuDao.findAll()).willReturn(Arrays.asList(스낵랩_세트, 모닝_세트));
+        given(menuRepository.findAll()).willReturn(Arrays.asList(스낵랩_세트, 모닝_세트));
         given(menuProductDao.findAllByMenuId(스낵랩.getId())).willReturn(Arrays.asList(스낵랩_메뉴_상품, 맥모닝_메뉴_상품));
 
         assertThat(menuService.list()).contains(스낵랩_세트, 모닝_세트);

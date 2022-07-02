@@ -105,7 +105,8 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("이미 단체 지정된 테이블은 단체로 지정 불가")
     public void createAlreadyInGroup() {
-        orderTable1.setTableGroupId(2L);
+//        orderTable1.setTableGroupId(2L);
+        orderTable1.setTableGroup(tableGroup);
 
         assertThatThrownBy(() -> tableGroupService.create(tableGroup)).isInstanceOf(IllegalArgumentException.class);
     }
@@ -143,7 +144,9 @@ class TableGroupServiceTest {
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(false);
 
         tableGroupService.ungroup(tableGroup.getId());
-        assertThat(orderTable1.getTableGroupId()).isNull();
-        assertThat(orderTable2.getTableGroupId()).isNull();
+        assertThat(orderTable1.getTableGroup()).isNull();
+//        assertThat(orderTable1.getTableGroupId()).isNull();
+        assertThat(orderTable2.getTableGroup()).isNull();
+//        assertThat(orderTable2.getTableGroupId()).isNull();
     }
 }
