@@ -5,6 +5,22 @@ import java.util.List;
 
 public class Menu {
     private Long id;
+
+    public Menu() {
+    }
+
+    public Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        this.name = name;
+        this.price = price;
+        this.menuGroupId = menuGroupId;
+        this.menuProducts = menuProducts;
+    }
+
+    public Menu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        this(name, price, menuGroupId, menuProducts);
+        this.id = id;
+    }
+
     private String name;
     private BigDecimal price;
     private Long menuGroupId;
