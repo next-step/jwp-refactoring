@@ -10,7 +10,7 @@ import java.util.Objects;
 @Embeddable
 public class Price {
     @Column(nullable = false)
-    private BigDecimal price;
+    private BigDecimal price = BigDecimal.ZERO;
 
     protected Price() {
     }

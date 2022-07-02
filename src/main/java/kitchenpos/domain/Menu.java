@@ -40,6 +40,12 @@ public class Menu {
         this.menuProducts = menuProducts;
     }
 
+    public Menu(Long id, String name, BigDecimal price) {
+        this.id = id;
+        this.name = name;
+        this.price = new Price(price);
+    }
+
     public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = name;
