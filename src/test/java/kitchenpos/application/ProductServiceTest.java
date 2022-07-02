@@ -29,7 +29,7 @@ class ProductServiceTest {
         assertThatThrownBy(() ->
                 productService.create(new Product("치킨", BigDecimal.valueOf(-1)))
         ).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("상품 가격은 0원 이상이어야 합니다.");
+                .hasMessage("가격은 0원 이상이어야 합니다.");
     }
 
     @Test
