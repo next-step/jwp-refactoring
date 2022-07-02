@@ -17,12 +17,12 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 public class TableService {
-    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
+    private final OrderRepository orderRepository;
 
-    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
+    public TableService(final OrderTableRepository orderTableRepository, final OrderRepository orderRepository) {
         this.orderTableRepository = orderTableRepository;
+        this.orderRepository = orderRepository;
     }
 
     @Transactional
@@ -53,7 +53,7 @@ public class TableService {
         return OrderTableResponse.from(savedOrderTable);
     }
 
-    private OrderTable findOrderTableById(Long orderTableId) {
+    public OrderTable findOrderTableById(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
                 .orElseThrow(() -> new NoSuchOrderTableException(orderTableId));
     }

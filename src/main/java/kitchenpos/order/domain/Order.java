@@ -31,21 +31,11 @@ public class Order {
     protected Order() {
     }
 
-    private Order(OrderTable orderTable, LocalDateTime orderedTime) {
-        validateOrderTableNotEmpty(orderTable);
-        this.orderTable = orderTable;
-        this.orderedTime = orderedTime;
-    }
-
     private Order(OrderTable orderTable, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
         validateOrderTableNotEmpty(orderTable);
         this.orderTable = orderTable;
         this.orderedTime = orderedTime;
         registerOrderLineItems(orderLineItems);
-    }
-
-    public static Order of(OrderTable orderTable, LocalDateTime orderedTime) {
-        return new Order(orderTable, orderedTime);
     }
 
     public static Order of(OrderTable orderTable, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {

@@ -1,18 +1,16 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.exception.NoSuchMenuGroupException;
+import kitchenpos.exception.NoSuchMenuException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProductRepository;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.exception.NoSuchProductException;
+import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.domain.MenuGroupRepository;
+import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,25 +21,22 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class MenuService {
     private final MenuRepository menuRepository;
-    private final MenuGroupRepository menuGroupRepository;
-    private final MenuProductRepository menuProductRepository;
-    private final ProductRepository productRepository;
+    private final MenuGroupService menuGroupService;
+    private final ProductService productService;
 
     public MenuService(
             final MenuRepository menuRepository,
-            final MenuGroupRepository menuGroupRepository,
-            final MenuProductRepository menuProductRepository,
-            final ProductRepository productRepository
+            final MenuGroupService menuGroupService,
+            final ProductService productService
     ) {
         this.menuRepository = menuRepository;
-        this.menuGroupRepository = menuGroupRepository;
-        this.menuProductRepository = menuProductRepository;
-        this.productRepository = productRepository;
+        this.menuGroupService = menuGroupService;
+        this.productService = productService;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        final MenuGroup menuGroup = findMenuGroupById(menuRequest.getMenuGroupId());
+        final MenuGroup menuGroup = menuGroupService.findMenuGroupById(menuRequest.getMenuGroupId());
         final Menu menu = Menu.of(menuRequest.getName(), menuRequest.getPrice(), menuGroup, retrieveMenuProducts(menuRequest));
         final Menu savedMenu = menuRepository.save(menu);
 
@@ -57,19 +52,14 @@ public class MenuService {
         List<MenuProductRequest> menuProductRequests = menuRequest.getMenuProducts();
         return menuProductRequests.stream()
                 .map(menuProductRequest -> {
-                    Product product = findProductById(menuProductRequest.getProductId());
+                    Product product = productService.findProductById(menuProductRequest.getProductId());
                     return MenuProduct.of(product, menuProductRequest.getQuantity());
                 })
                 .collect(Collectors.toList());
     }
 
-    private MenuGroup findMenuGroupById(Long menuGroupId) {
-        return menuGroupRepository.findById(menuGroupId)
-                .orElseThrow(() -> new NoSuchMenuGroupException(menuGroupId));
-    }
-
-    private Product findProductById(Long productId) {
-        return productRepository.findById(productId)
-                .orElseThrow(() -> new NoSuchProductException(productId));
+    public Menu findMenuById(Long menuId) {
+        return menuRepository.findById(menuId)
+                .orElseThrow(() -> new NoSuchMenuException(menuId));
     }
 }

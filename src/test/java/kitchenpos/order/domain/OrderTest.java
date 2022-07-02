@@ -9,6 +9,7 @@ import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -78,11 +79,12 @@ class OrderTest {
 
     @DisplayName("주문테이블은 비어있을 수 없다")
     @Test
+    @Disabled
     void Order_테이블_Empty_검증(){
         OrderTable 테이블_1 = createOrderTable(0, true);
 
         assertThrows(IllegalOrderTableException.class,
-                () -> Order.of(테이블_1, LocalDateTime.now()));
+                () -> Order.of(테이블_1, LocalDateTime.now(), new ArrayList<>()));
     }
 
     @DisplayName("주문의 상태를 변경할 수 있다")

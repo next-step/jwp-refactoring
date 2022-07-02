@@ -1,5 +1,6 @@
 package kitchenpos.menugroup.application;
 
+import kitchenpos.exception.NoSuchMenuGroupException;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menugroup.dto.MenuGroupRequest;
@@ -27,5 +28,10 @@ public class MenuGroupService {
     public List<MenuGroupResponse> list() {
         List<MenuGroup> menuGroups = menuGroupRepository.findAll();
         return MenuGroupResponse.asListFrom(menuGroups);
+    }
+
+    public MenuGroup findMenuGroupById(Long menuGroupId) {
+        return menuGroupRepository.findById(menuGroupId)
+                .orElseThrow(() -> new NoSuchMenuGroupException(menuGroupId));
     }
 }

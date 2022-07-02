@@ -1,5 +1,6 @@
 package kitchenpos.product.application;
 
+import kitchenpos.exception.NoSuchProductException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
@@ -27,5 +28,10 @@ public class ProductService {
     public List<ProductResponse> list() {
         List<Product> products = productRepository.findAll();
         return ProductResponse.asListFrom(products);
+    }
+
+    public Product findProductById(Long productId) {
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new NoSuchProductException(productId));
     }
 }

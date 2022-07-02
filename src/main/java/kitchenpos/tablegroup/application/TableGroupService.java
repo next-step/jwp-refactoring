@@ -68,7 +68,7 @@ public class TableGroupService {
         }
     }
 
-    private TableGroup findTableGroupById(Long tableGroupId) {
+    public TableGroup findTableGroupById(Long tableGroupId) {
         return tableGroupRepository.findById(tableGroupId)
                 .orElseThrow(() -> new NoSuchTableGroupException(tableGroupId));
     }
