@@ -8,7 +8,7 @@ import java.util.Objects;
 public class Price implements Comparable<Price> {
     public static final Price ZERO = Price.valueOf(0);
     private static final String INVALID_PRICE = "가격은 마이너스가 될 수 없습니다";
-    private static final long MINIMUM_PRICE = 0;
+    private static final long MIN = 0;
     @Column(name = "price")
     private long value;
 
@@ -27,7 +27,7 @@ public class Price implements Comparable<Price> {
     }
 
     private boolean isInvalid(long value) {
-        return value < MINIMUM_PRICE;
+        return value < MIN;
     }
 
     public Price multiply(Price o) {
