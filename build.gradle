@@ -68,9 +68,6 @@ project(':module-order') {
     }
 }
 
-bootJar { enabled = false }
-jar { enabled = true}
-
 dependencies {
     implementation project(':module-menu')
     implementation project(':module-order')
