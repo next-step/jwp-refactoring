@@ -36,12 +36,9 @@ class TableGroupServiceTest {
     
     @Test
     void 주문_테이블이_2개_미만이면_단체를_지정할_수_없다() {
-        // given
-        TableGroup tableGroup = new TableGroup(Collections.singletonList(new OrderTable(1L)));
-
         // when & then
         assertThatThrownBy(() ->
-                tableGroupService.create(tableGroup)
+                tableGroupService.create(new TableGroup(Collections.singletonList(new OrderTable(1L))))
         ).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("2개 이상의 테이블을 단체 지정할 수 있습니다.");
     }
@@ -57,7 +54,7 @@ class TableGroupServiceTest {
         assertThatThrownBy(() ->
                 tableGroupService.create(tableGroup)
         ).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("주문 테이블이 등록되어 있지 않습니다.");
+                .hasMessage("중복된 테이블이 있거나 등록되지 않은 테이블이 있습니다.");
     }
 
     @Test

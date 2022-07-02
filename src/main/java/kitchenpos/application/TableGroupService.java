@@ -8,12 +8,10 @@ import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,41 +28,11 @@ public class TableGroupService {
 
     @Transactional
     public TableGroup create(final TableGroup tableGroup) {
-        final List<OrderTable> orderTables = tableGroup.getOrderTables();
+        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(tableGroup.getOrderTableIds());
+        tableGroup.changeOrderTables(savedOrderTables);
+        tableGroup.create(LocalDateTime.now());
 
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException("2개 이상의 테이블을 단체 지정할 수 있습니다.");
-        }
-
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-
-        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
-
-        if (orderTables.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException("주문 테이블이 등록되어 있지 않습니다.");
-        }
-
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
-                throw new IllegalArgumentException("빈 테이블이 아니거나 이미 단체가 지정되었습니다.");
-            }
-        }
-
-        tableGroup.createdDate(LocalDateTime.now());
-
-        final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
-
-        final Long tableGroupId = savedTableGroup.getId();
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.updateTableGroupId(tableGroupId);
-            savedOrderTable.changeEmpty(false);
-            orderTableRepository.save(savedOrderTable);
-        }
-        savedTableGroup.changeOrderTables(savedOrderTables);
-
-        return savedTableGroup;
+        return tableGroupRepository.save(tableGroup);
     }
 
     @Transactional
