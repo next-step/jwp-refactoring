@@ -5,12 +5,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.stream.Stream;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -47,6 +51,28 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
         //then
         등록한_메뉴그룹이_조회됨(일식, retrievedResponse);
 
+    }
+
+    @DisplayName("상품의 이름이 없으면 등록할 수 없음")
+    @ParameterizedTest
+    @MethodSource("이름이_없는_메뉴그룹")
+    void noNameProduct(String name) {
+        //givne
+        MenuGroupRequest 이름없는_메뉴그룹 = new MenuGroupRequest(name);
+
+        //when
+        ExtractableResponse<Response> createProduct = 메뉴그룹_등록을_요청(이름없는_메뉴그룹);
+
+        //then
+        assertThat(createProduct.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+
+    private static Stream<Arguments> 이름이_없는_메뉴그룹() {
+        return Stream.of(
+                null,
+                Arguments.of("")
+        );
     }
 
 
