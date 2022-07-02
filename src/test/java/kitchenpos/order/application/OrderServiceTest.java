@@ -1,10 +1,7 @@
 package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.domain.OrderTable;
@@ -38,9 +35,12 @@ public class OrderServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
 
+    @Mock
+    private OrderValidator orderValidator;
+
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(orderRepository, orderTableRepository);
+        orderService = new OrderService(orderRepository, orderTableRepository, orderValidator);
     }
 
     @DisplayName("주문을 생성한다.")
@@ -66,18 +66,6 @@ public class OrderServiceTest {
         // when, then
         assertThatThrownBy(() -> {
             orderService.create(createOrderRequestWithoutOrderListItem());
-        }).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("[예외] 메뉴와 메뉴 항목이 일치하지 않는 주문을 생성한다.")
-    @Test
-    void createOrder_menu_and_order_list_item_not_matching() {
-        OrderTable orderTable = new OrderTable(1L, 3, false);
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
-
-        // when, then
-        assertThatThrownBy(() -> {
-            orderService.create(createOrderRequestNotMatchingOrderAndOrderListItem());
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
