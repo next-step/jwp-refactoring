@@ -4,6 +4,21 @@ public class OrderTable {
     private Long id;
     private Long tableGroupId;
     private int numberOfGuests;
+
+    public OrderTable() {
+    }
+
+    public OrderTable(Long tableGroupId, int numberOfGuests, boolean empty) {
+        this.tableGroupId = tableGroupId;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
+    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+        this(tableGroupId, numberOfGuests, empty);
+        this.id = id;
+    }
+
     private boolean empty;
 
     public Long getId() {
