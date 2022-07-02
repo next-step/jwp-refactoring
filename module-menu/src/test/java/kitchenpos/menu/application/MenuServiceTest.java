@@ -75,7 +75,7 @@ class MenuServiceTest {
         menuCreationValidator = new MenuCreationValidator(menuGroupRepository, productService);
         menuPriceValidator = new MenuPriceValidator(productService);
 
-        validatorGroup = new MenuValidatorGroup(menuCreationValidator, menuPriceValidator);
+        validatorGroup = new MenuValidatorGroup(Arrays.asList(menuCreationValidator, menuPriceValidator));
         menuService = new MenuService(menuRepository, validatorGroup);
     }
 
