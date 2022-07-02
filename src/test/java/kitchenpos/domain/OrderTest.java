@@ -1,5 +1,7 @@
 package kitchenpos.domain;
 
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderStatus;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;

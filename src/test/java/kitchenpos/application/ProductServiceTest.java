@@ -1,7 +1,8 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.ProductRepository;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.application.ProductService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

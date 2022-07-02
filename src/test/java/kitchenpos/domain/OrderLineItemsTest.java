@@ -1,5 +1,7 @@
 package kitchenpos.domain;
 
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

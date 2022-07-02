@@ -1,6 +1,7 @@
 package kitchenpos.application;
 
-import kitchenpos.ui.dto.MenuCreateRequest;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.ui.dto.MenuCreateRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

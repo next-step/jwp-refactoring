@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import kitchenpos.ordertable.domain.NumberOfGuests;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
