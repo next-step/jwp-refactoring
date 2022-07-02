@@ -6,8 +6,8 @@ import static kitchenpos.utils.MockMvcUtil.postRequestBuilder;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.dao.product.ProductDao;
+import kitchenpos.domain.product.Product;
 import org.springframework.boot.test.context.TestComponent;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 

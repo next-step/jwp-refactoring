@@ -13,9 +13,10 @@ import static org.mockito.Mockito.verify;
 
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.application.table.TableService;
+import kitchenpos.dao.order.OrderDao;
+import kitchenpos.dao.table.OrderTableDao;
+import kitchenpos.domain.table.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

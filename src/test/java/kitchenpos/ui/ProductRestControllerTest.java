@@ -8,7 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.math.BigDecimal;
-import kitchenpos.domain.Product;
+import kitchenpos.domain.product.Product;
 import kitchenpos.utils.BaseTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

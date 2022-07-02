@@ -9,7 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.stream.Stream;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.table.OrderTable;
 import kitchenpos.utils.BaseTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

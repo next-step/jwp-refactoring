@@ -6,10 +6,10 @@ import static kitchenpos.utils.MockMvcUtil.postRequestBuilder;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.domain.menu.Menu;
+import kitchenpos.domain.menu.MenuGroup;
+import kitchenpos.domain.menu.MenuProduct;
+import kitchenpos.domain.product.Product;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 public class MenuFixtureGenerator {

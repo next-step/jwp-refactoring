@@ -8,8 +8,9 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 import java.util.List;
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.application.product.ProductService;
+import kitchenpos.dao.product.ProductDao;
+import kitchenpos.domain.product.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

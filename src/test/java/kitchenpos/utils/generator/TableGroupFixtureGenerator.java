@@ -4,8 +4,8 @@ import static kitchenpos.ui.TableGroupRestControllerTest.TABLE_GROUP_API_BASE_UR
 import static kitchenpos.utils.MockMvcUtil.postRequestBuilder;
 
 import java.util.Arrays;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.domain.table.OrderTable;
+import kitchenpos.domain.table.TableGroup;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 public class TableGroupFixtureGenerator {

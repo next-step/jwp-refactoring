@@ -9,10 +9,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.domain.menu.Menu;
+import kitchenpos.domain.menu.MenuGroup;
+import kitchenpos.domain.menu.MenuProduct;
+import kitchenpos.domain.product.Product;
 import kitchenpos.utils.BaseTest;
 import kitchenpos.utils.generator.MenuGroupFixtureGenerator;
 import kitchenpos.utils.generator.ProductFixtureGenerator;

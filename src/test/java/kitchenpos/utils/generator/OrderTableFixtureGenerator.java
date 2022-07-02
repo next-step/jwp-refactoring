@@ -8,7 +8,7 @@ import static kitchenpos.utils.MockMvcUtil.putRequestBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.table.OrderTable;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 public class OrderTableFixtureGenerator {

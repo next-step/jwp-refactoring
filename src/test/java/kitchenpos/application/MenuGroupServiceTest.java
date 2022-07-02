@@ -8,8 +8,9 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 import java.util.List;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.application.menu.MenuGroupService;
+import kitchenpos.dao.menu.MenuGroupDao;
+import kitchenpos.domain.menu.MenuGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

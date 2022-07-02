@@ -5,8 +5,8 @@ import static kitchenpos.utils.MockMvcUtil.postRequestBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.dao.menu.MenuGroupDao;
+import kitchenpos.domain.menu.MenuGroup;
 import org.springframework.boot.test.context.TestComponent;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
