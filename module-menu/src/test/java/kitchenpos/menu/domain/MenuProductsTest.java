@@ -1,7 +1,7 @@
 package kitchenpos.menu.domain;
 
-import static kitchenpos.helper.MenuProductFixtures.양념치킨_메뉴상품;
-import static kitchenpos.helper.MenuProductFixtures.후라이드치킨_메뉴상품;
+import static kitchenpos.menu.helper.MenuProductFixtures.양념치킨_메뉴상품;
+import static kitchenpos.menu.helper.MenuProductFixtures.후라이드치킨_메뉴상품;
 import static kitchenpos.helper.ProductFixtures.양념치킨_상품;
 import static kitchenpos.helper.ProductFixtures.후라이드치킨_상품;
 import static org.assertj.core.api.Assertions.assertThat;

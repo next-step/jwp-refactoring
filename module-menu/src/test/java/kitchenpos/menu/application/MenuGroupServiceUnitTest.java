@@ -1,7 +1,7 @@
 package kitchenpos.menu.application;
 
-import static kitchenpos.helper.MenuGroupFixtures.메뉴_그룹_만들기;
-import static kitchenpos.helper.MenuGroupFixtures.인기메뉴_그룹_요청;
+import static kitchenpos.menu.helper.MenuGroupFixtures.메뉴_그룹_만들기;
+import static kitchenpos.menu.helper.MenuGroupFixtures.인기메뉴_그룹_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;

@@ -1,8 +1,8 @@
 package kitchenpos.menu.application;
 
-import static kitchenpos.helper.MenuFixtures.통반세트_메뉴_요청_만들기;
-import static kitchenpos.helper.MenuGroupFixtures.두마리메뉴_그룹;
-import static kitchenpos.helper.MenuGroupFixtures.없는메뉴_그룹;
+import static kitchenpos.menu.helper.MenuFixtures.통반세트_메뉴_요청_만들기;
+import static kitchenpos.menu.helper.MenuGroupFixtures.두마리메뉴_그룹;
+import static kitchenpos.menu.helper.MenuGroupFixtures.없는메뉴_그룹;
 import static kitchenpos.helper.ProductFixtures.반반치킨_상품;
 import static kitchenpos.helper.ProductFixtures.통구이_상품;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,7 +34,6 @@ class MenuServiceTest {
     void create() {
         //given
         MenuRequest request = 통반세트_메뉴_요청_만들기(두마리메뉴_그룹.getId(), 30000);
-
         //when
         MenuResponse result = menuService.create(request);
 

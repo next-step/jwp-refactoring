@@ -18,7 +18,7 @@ public class Menus {
 
     public Menu getMenuBy(Long menuId) {
         if (!menus.containsKey(menuId)) {
-            throw new IllegalStateException("[ERROR] productId 대한 값이 없습니다.");
+            throw new IllegalStateException("[ERROR] menuId 대한 값이 없습니다.");
         }
         return menus.get(menuId);
     }

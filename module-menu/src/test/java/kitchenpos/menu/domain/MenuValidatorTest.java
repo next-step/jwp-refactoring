@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import static kitchenpos.helper.MenuFixtures.메뉴_만들기;
+import static kitchenpos.menu.helper.MenuFixtures.메뉴_만들기;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import kitchenpos.menu.domain.repository.MenuProductRepository;

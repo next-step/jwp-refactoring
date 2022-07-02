@@ -16,7 +16,14 @@ public class MenuProducts {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "menu_id")
-    private final List<MenuProduct> menuProducts = new ArrayList<>();
+    private List<MenuProduct> menuProducts = new ArrayList<>();
+
+    public MenuProducts() {
+    }
+
+    public MenuProducts(List<MenuProduct> menuProducts) {
+        this.menuProducts = menuProducts;
+    }
 
     public void add(MenuProduct menuProduct) {
         menuProducts.add(menuProduct);

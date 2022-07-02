@@ -4,6 +4,7 @@ import static kitchenpos.helper.ProductFixtures.양념치킨_상품;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import kitchenpos.common.domain.Price;
+import kitchenpos.menu.helper.MenuProductFixtures;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 @DisplayName("메뉴 상품 관련 Domain 단위 테스트")

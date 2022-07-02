@@ -1,7 +1,7 @@
-package kitchenpos.helper;
+package kitchenpos.menu.helper;
 
-import static kitchenpos.helper.MenuProductFixtures.반반치킨_메뉴상품_요청;
-import static kitchenpos.helper.MenuProductFixtures.통구이_메뉴상품_요청;
+import static kitchenpos.menu.helper.MenuProductFixtures.반반치킨_메뉴상품_요청;
+import static kitchenpos.menu.helper.MenuProductFixtures.통구이_메뉴상품_요청;
 
 import java.util.Arrays;
 import java.util.List;

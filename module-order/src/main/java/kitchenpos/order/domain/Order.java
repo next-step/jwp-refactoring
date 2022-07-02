@@ -43,20 +43,9 @@ public class Order {
         this.orderLineItems = orderLineItems;
     }
 
-    public void addOrderLineItem(OrderLineItem orderLineItem) {
-        validateOrderLineItem(orderLineItem);
-        orderLineItems.add(orderLineItem);
-    }
-
     public void changeOrderStatus(OrderStatus orderStatus) {
         validatePossibleChangOrder();
         this.orderStatus = orderStatus;
-    }
-
-    private void validateOrderLineItem(OrderLineItem orderLineItem) {
-        if (orderLineItem == null || orderLineItem.isEmptyOrderLineItem()) {
-            throw new IllegalArgumentException("[ERROR] 주문 항목이 없는 경우 주문에 등록 할 수 없습니다.");
-        }
     }
 
     private void validatePossibleChangOrder() {

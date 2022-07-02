@@ -1,6 +1,6 @@
 package kitchenpos.menu.application;
 
-import static kitchenpos.helper.MenuGroupFixtures.인기메뉴_그룹_요청;
+import static kitchenpos.menu.helper.MenuGroupFixtures.인기메뉴_그룹_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;

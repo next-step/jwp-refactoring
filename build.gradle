@@ -114,7 +114,7 @@ project(':module-order') {
         compile project(':module-common')
 
         testImplementation(testFixtures(project(":module-menu")))
-        testImplementation(testFixtures(project(":module-table")))
+        testImplementation(project(":module-table"))
     }
 }
 
