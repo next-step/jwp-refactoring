@@ -134,7 +134,7 @@ class MenuServiceTest {
     }
 
     @Test
-    void 메뉴의_가격이_구성_상품들의합보다_큰_경우() {
+    void 메뉴의_가격이_구성_상품들의_합보다_큰_경우() {
         // given
         A_세트 = new Menu(1L, "A세트", BigDecimal.valueOf(5000), 1L, Arrays.asList(A_세트_감자_튀김, A_세트_치즈볼));
         given(menuGroupDao.existsById(A_세트.getMenuGroupId())).willReturn(true);
