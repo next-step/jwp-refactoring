@@ -6,8 +6,8 @@ import static org.mockito.BDDMockito.given;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import kitchenpos.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class ProductServiceTest {
 
     @Mock
-    ProductDao productDao;
+    ProductRepository productRepository;
 
     @InjectMocks
     ProductService productService;
@@ -50,7 +50,7 @@ class ProductServiceTest {
     @Test
     @DisplayName("상품 정상 등록")
     public void saveSuccess() {
-        given(productDao.save(스낵랩)).willReturn(스낵랩);
+        given(productRepository.save(스낵랩)).willReturn(스낵랩);
 
         assertThat(productService.create(스낵랩).getId()).isEqualTo(스낵랩.getId());
     }
@@ -58,7 +58,7 @@ class ProductServiceTest {
     @Test
     public void list() {
         Product 맥모닝 = new Product(1L, "맥모닝", BigDecimal.valueOf(4000));
-        given(productDao.findAll()).willReturn(Arrays.asList(스낵랩, 맥모닝));
+        given(productRepository.findAll()).willReturn(Arrays.asList(스낵랩, 맥모닝));
 
         assertThat(productService.list()).contains(스낵랩, 맥모닝);
     }
