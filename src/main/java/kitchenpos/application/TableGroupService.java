@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderRepository;
 import kitchenpos.dao.OrderTableRepository;
 import kitchenpos.dao.TableGroupRepository;
 import kitchenpos.domain.OrderTable;
@@ -10,7 +9,6 @@ import kitchenpos.dto.TableGroupRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,7 +26,7 @@ public class TableGroupService {
 
     @Transactional
     public TableGroup create(final TableGroupRequest request) {
-        validateIncorrectInputOrderTableSize(request.getOrderTables());
+        TableGroup.validateInputOrderTable(request.getOrderTables());
 
         final List<Long> orderTableIds = request.getOrderTables()
                                                 .stream()
@@ -37,7 +35,7 @@ public class TableGroupService {
 
         List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(orderTableIds);
 
-        validatePresentOrderTableSize(request.getOrderTables(), orderTables);
+        validatePresentOrderTable(request.getOrderTableSize(), orderTables.size());
 
         return tableGroupRepository.save(new TableGroup(orderTables));
     }
@@ -49,14 +47,8 @@ public class TableGroupService {
                             .ungroup();
     }
 
-    private void validateIncorrectInputOrderTableSize(List<OrderTableRequest> orderTables) {
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    private void validatePresentOrderTableSize(List<OrderTableRequest> request, List<OrderTable> orderTables) {
-        if (request.size() != orderTables.size()) {
+    private void validatePresentOrderTable(int inputSize, int presentSize) {
+        if (inputSize != presentSize) {
             throw new IllegalArgumentException("요청 테이블과 실제 테이블 개수가 일치하지 않습니다.");
         }
     }

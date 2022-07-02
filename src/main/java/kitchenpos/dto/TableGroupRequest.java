@@ -19,6 +19,10 @@ public class TableGroupRequest {
         return orderTables;
     }
 
+    public int getOrderTableSize() {
+        return orderTables == null ? 0 : orderTables.size();
+    }
+
     public void setOrderTables(List<OrderTableRequest> orderTables) {
         this.orderTables = orderTables;
     }

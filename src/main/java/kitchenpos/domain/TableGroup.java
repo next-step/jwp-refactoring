@@ -1,5 +1,8 @@
 package kitchenpos.domain;
 
+import kitchenpos.dto.OrderTableRequest;
+import org.springframework.util.CollectionUtils;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -56,6 +59,12 @@ public class TableGroup {
             throw new NoSuchElementException("단체 지정된 주문 테이블이 존재하지 않습니다.");
         }
         orderTables.forEach(OrderTable::excludeFromGroup);
+    }
+
+    public static void validateInputOrderTable(List<OrderTableRequest> orderTables) {
+        if (Objects.isNull(orderTables) || orderTables.size() < 2) {
+            throw new IllegalArgumentException();
+        }
     }
 
     @Override
