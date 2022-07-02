@@ -4,6 +4,17 @@ public class OrderLineItem {
     private Long seq;
     private Long orderId;
     private Long menuId;
+
+    public OrderLineItem() {
+    }
+
+    public OrderLineItem(Long seq, Long orderId, Long menuId, long quantity) {
+        this.seq = seq;
+        this.orderId = orderId;
+        this.menuId = menuId;
+        this.quantity = quantity;
+    }
+
     private long quantity;
 
     public Long getSeq() {
