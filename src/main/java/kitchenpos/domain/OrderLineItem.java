@@ -1,10 +1,20 @@
 package kitchenpos.domain;
 
 import java.util.Objects;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
+@Entity
 public class OrderLineItem {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
-    private Long orderId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Order order;
     private Long menuId;
     private long quantity;
 
@@ -13,13 +23,11 @@ public class OrderLineItem {
 
     public OrderLineItem(Long seq, Long orderId, Long menuId, long quantity) {
         this.seq = seq;
-        this.orderId = orderId;
         this.menuId = menuId;
         this.quantity = quantity;
     }
 
     public OrderLineItem(Long orderId, Long menuId, long quantity) {
-        this.orderId = orderId;
         this.menuId = menuId;
         this.quantity = quantity;
     }
@@ -32,28 +40,17 @@ public class OrderLineItem {
         this.seq = seq;
     }
 
-    public Long getOrderId() {
-        return orderId;
-    }
 
-    public void changeOrderId(final Long orderId) {
-        this.orderId = orderId;
+    public void toOrder(Order order) {
+        if (this.order != null) {
+            this.order.getOrderLineItems().remove(this);
+        }
+        this.order = order;
+        order.getOrderLineItems().add(this);
     }
 
     public Long getMenuId() {
         return menuId;
-    }
-
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
-    }
-
-    public long getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
     }
 
     @Override
@@ -65,11 +62,11 @@ public class OrderLineItem {
             return false;
         }
         OrderLineItem that = (OrderLineItem) o;
-        return quantity == that.quantity && Objects.equals(seq, that.seq) && Objects.equals(orderId, that.orderId) && Objects.equals(menuId, that.menuId);
+        return quantity == that.quantity && Objects.equals(seq, that.seq) && Objects.equals(menuId, that.menuId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(seq, orderId, menuId, quantity);
+        return Objects.hash(seq, menuId, quantity);
     }
 }

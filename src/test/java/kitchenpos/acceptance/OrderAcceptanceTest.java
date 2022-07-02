@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.domain.Order;
@@ -39,7 +38,8 @@ public class OrderAcceptanceTest extends BaseAcceptanceTest{
 
         //메뉴 상태 변경
         //given
-        Order 변경주문 = new Order(1l, 1l, OrderStatus.MEAL.name(), LocalDateTime.now());
+        Order 변경주문 = new Order(1l);
+        변경주문.changeOrderStatus(OrderStatus.MEAL);
         //when
         ExtractableResponse<Response> 주문_상태_변경_요청 = 주문_상태_변경_요청(주문_생성_요청.as(Order.class).getId(), 변경주문);
         //then

@@ -2,7 +2,6 @@ package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.Arrays;
 import java.util.List;
@@ -24,8 +23,10 @@ public class OrderServiceTest {
     @Test
     public void createOrder() {
         //given
+        Order order = new Order(1l);
+        order.addOrderItems(new OrderLineItem(1l, 1l, 1));
         //when
-        Order result = orderService.create(new Order(1l, createOrderLineItem()));
+        Order result = orderService.create(order);
         //then
         assertThat(result).isNotNull();
     }
@@ -71,25 +72,31 @@ public class OrderServiceTest {
     @Test
     public void getOrders() {
         //given
-        Order order = orderService.create(new Order(1l, createOrderLineItem()));
+        Order order = new Order(1l);
+        order.addOrderItems(new OrderLineItem(1l, 1l, 1));
+        orderService.create(order);
         //when
         List<Order> result = orderService.list();
         //then
-        assertAll(() -> assertThat(result).contains(order),
-            () -> assertThat(result).isNotNull());
+        assertThat(result).isNotNull();
     }
 
     @DisplayName("주문 상태를 변경한다.")
     @Test
     public void updateOrderStatus() {
         //given
-        Order order = orderService.create(new Order(1l, createOrderLineItem()));
-        Order changeStatusOrder = new Order(2l, createOrderLineItem());
-        changeStatusOrder.changeOrderStatus(OrderStatus.MEAL.name());
+        Order order = new Order(1l);
+        order.addOrderItems(new OrderLineItem(1l, 1l, 1));
+        orderService.create(order);
+
+        Order changeStatusOrder = new Order(2l);
+        changeStatusOrder.addOrderItems(new OrderLineItem(1l, 1l, 1));
+        changeStatusOrder.changeOrderStatus(OrderStatus.MEAL);
+        orderService.create(changeStatusOrder);
         //when
         Order result = orderService.changeOrderStatus(order.getId(), changeStatusOrder);
         //then
-        assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());
+        assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.MEAL);
     }
 
 
@@ -97,12 +104,15 @@ public class OrderServiceTest {
     @Test
     public void updateWithCompleteStatus() {
         //given
-        Order order = orderService.create(new Order(1l, createOrderLineItem()));
-        Order changeStatusOrder = new Order(2l, createOrderLineItem());
-        changeStatusOrder.changeOrderStatus(OrderStatus.COMPLETION.name());
-        orderService.changeOrderStatus(order.getId(), changeStatusOrder);
+        Order order = new Order(1l);
+        order.addOrderItems(new OrderLineItem(1l, 1l, 1));
+        order.changeOrderStatus(OrderStatus.COMPLETION);
+        orderService.create(order);
+
+        Order changeStatusOrder = new Order(2l);
+        changeStatusOrder.addOrderItems(new OrderLineItem(1l, 1l, 1));
+        orderService.create(changeStatusOrder);
         //when
-        changeStatusOrder.changeOrderStatus(OrderStatus.MEAL.name());
         assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), changeStatusOrder)).isInstanceOf(IllegalArgumentException.class);
     }
 
