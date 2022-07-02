@@ -1,5 +1,8 @@
 package kitchenpos.table.domain;
 
+import static kitchenpos.table.exception.CannotMakeTableGroupException.INSUFFICIENT_NUMBER_OF_TABLE;
+import static kitchenpos.table.exception.CannotMakeTableGroupException.NOT_EXIST_TABLE;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,10 +37,10 @@ public class TableGroup {
 
     public TableGroup(List<OrderTable> savedOrderTables) {
         if (CollectionUtils.isEmpty(savedOrderTables)) {
-            throw new CannotMakeTableGroupException("there is no saved table");
+            throw new CannotMakeTableGroupException(NOT_EXIST_TABLE);
         }
         if (savedOrderTables.size() < 2) {
-            throw new CannotMakeTableGroupException("number of tables in table group should larger than 1");
+            throw new CannotMakeTableGroupException(INSUFFICIENT_NUMBER_OF_TABLE);
         }
         this.orderTables.addAll(savedOrderTables);
         this.orderTables.forEach(orderTable -> orderTable.includeTo(this));
