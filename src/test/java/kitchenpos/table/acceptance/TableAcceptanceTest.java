@@ -8,8 +8,8 @@ import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.tablegroup.dto.TableGroupRequest;
-import kitchenpos.tablegroup.dto.TableGroupResponse;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -21,8 +21,8 @@ import java.util.stream.Collectors;
 
 import static kitchenpos.order.acceptance.OrderAcceptanceTest.주문_등록되어_있음;
 import static kitchenpos.order.acceptance.OrderAcceptanceTest.주문_생성;
-import static kitchenpos.tablegroup.acceptance.TableGroupAcceptanceTest.테이블_그룹_가져옴;
-import static kitchenpos.tablegroup.acceptance.TableGroupAcceptanceTest.테이블_그룹_생성_요청;
+import static kitchenpos.table.acceptance.TableGroupAcceptanceTest.테이블_그룹_가져옴;
+import static kitchenpos.table.acceptance.TableGroupAcceptanceTest.테이블_그룹_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("주문 테이블 관련 기능")
