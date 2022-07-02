@@ -34,7 +34,6 @@ public class OrderTable {
         this.id = id;
     }
 
-
     public TableGroup getTableGroup() {
         return tableGroup;
     }

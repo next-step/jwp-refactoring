@@ -65,11 +65,11 @@ class MenuServiceTest {
 
         스낵랩_메뉴_상품 = new MenuProduct();
         스낵랩_메뉴_상품.setQuantity(1);
-        스낵랩_메뉴_상품.setProductId(스낵랩.getId());
+        스낵랩_메뉴_상품.setProduct(스낵랩);
 
         맥모닝_메뉴_상품 = new MenuProduct();
         맥모닝_메뉴_상품.setQuantity(1);
-        맥모닝_메뉴_상품.setProductId(맥모닝.getId());
+        맥모닝_메뉴_상품.setProduct(맥모닝);
 
         패스트푸드류 = new MenuGroup();
         패스트푸드류.setId(1L);
@@ -89,7 +89,7 @@ class MenuServiceTest {
     @DisplayName("미존재하는 메뉴 그룹으로 메뉴 등록 시 에러 반환")
     public void createNonExistsMenuGroup() {
         Menu menu = new Menu();
-        menu.setMenuGroupId(0L);
+        menu.setMenuGroup(new MenuGroup());
         menu.setPrice(BigDecimal.valueOf(18000));
         menu.setName("탕수육 세트");
 
@@ -100,13 +100,12 @@ class MenuServiceTest {
     @DisplayName("미존재하는 상품으로 메뉴 구성시 에러 반황")
     public void createNonExistsProduct() {
         MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setProductId(1L);
+        menuProduct.setProduct(null);
         menuProduct.setQuantity(2);
 
         Menu menu = new Menu();
         List<MenuProduct> menuProducts = new ArrayList<>();
         menuProducts.add(menuProduct);
-//        menu.setMenuProducts(menuProducts);
         menu.setMenuProducts(new MenuProducts(menuProducts));
         menu.setPrice(BigDecimal.valueOf(18000));
 
@@ -116,7 +115,7 @@ class MenuServiceTest {
     @Test
     @DisplayName("메뉴 각 상품의 합보다 메뉴의 가격이 작지 않으면 등록 시 에러 반환")
     public void createNotCheaperPrice() {
-        Menu menu = new Menu(1L, "모닝세트", BigDecimal.valueOf(8000), 패스트푸드류.getId(), new MenuProducts(Arrays.asList(스낵랩_메뉴_상품, 맥모닝_메뉴_상품)));
+        Menu menu = new Menu(1L, "모닝세트", BigDecimal.valueOf(8000), 패스트푸드류, new MenuProducts(Arrays.asList(스낵랩_메뉴_상품, 맥모닝_메뉴_상품)));
 
         given(productDao.findById(스낵랩.getId())).willReturn(Optional.of(스낵랩));
         given(productDao.findById(맥모닝.getId())).willReturn(Optional.of(맥모닝));
@@ -127,7 +126,7 @@ class MenuServiceTest {
 
     @Test
     public void createSuccess() {
-        Menu menu = new Menu(1L, "스낵랩 상품", BigDecimal.valueOf(3000), 패스트푸드류.getId(), new MenuProducts(Arrays.asList(스낵랩_메뉴_상품)));
+        Menu menu = new Menu(1L, "스낵랩 상품", BigDecimal.valueOf(3000), 패스트푸드류, new MenuProducts(Arrays.asList(스낵랩_메뉴_상품)));
 
         given(productDao.findById(스낵랩.getId())).willReturn(Optional.of(스낵랩));
         given(menuProductDao.save(스낵랩_메뉴_상품)).willReturn(스낵랩_메뉴_상품);
@@ -140,8 +139,8 @@ class MenuServiceTest {
 
     @Test
     public void list(){
-        Menu 스낵랩_세트 = new Menu(1L, "스낵랩 상품", BigDecimal.valueOf(3000), 패스트푸드류.getId(), new MenuProducts(Arrays.asList(스낵랩_메뉴_상품)));
-        Menu 모닝_세트 = new Menu(1L, "모닝세트", BigDecimal.valueOf(7000), 패스트푸드류.getId(), new MenuProducts(Arrays.asList(스낵랩_메뉴_상품, 맥모닝_메뉴_상품)));
+        Menu 스낵랩_세트 = new Menu(1L, "스낵랩 상품", BigDecimal.valueOf(3000), 패스트푸드류, new MenuProducts(Arrays.asList(스낵랩_메뉴_상품)));
+        Menu 모닝_세트 = new Menu(1L, "모닝세트", BigDecimal.valueOf(7000), 패스트푸드류, new MenuProducts(Arrays.asList(스낵랩_메뉴_상품, 맥모닝_메뉴_상품)));
 
 //        given(menuDao.findAll()).willReturn(Arrays.asList(스낵랩_세트, 모닝_세트));
         given(menuRepository.findAll()).willReturn(Arrays.asList(스낵랩_세트, 모닝_세트));

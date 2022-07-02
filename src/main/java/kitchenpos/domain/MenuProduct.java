@@ -15,8 +15,9 @@ public class MenuProduct {
     private Long id;
 
     private Long seq;
-//    private Long menuId;
-    private Long productId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Product product;
     private long quantity;
 
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
@@ -41,14 +42,6 @@ public class MenuProduct {
         this.seq = seq;
     }
 
-//    public Long getMenuId() {
-//        return menuId;
-//    }
-//
-//    public void setMenuId(final Long menuId) {
-//        this.menuId = menuId;
-//    }
-
     public Menu getMenu() {
         return menu;
     }
@@ -57,12 +50,12 @@ public class MenuProduct {
         this.menu = menu;
     }
 
-    public Long getProductId() {
-        return productId;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setProductId(final Long productId) {
-        this.productId = productId;
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     public long getQuantity() {
