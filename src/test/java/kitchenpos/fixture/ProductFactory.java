@@ -1,11 +1,11 @@
 package kitchenpos.fixture;
 
 import java.math.BigDecimal;
-import kitchenpos.domain.Price;
-import kitchenpos.domain.Product;
-import kitchenpos.domain.ProductName;
-import kitchenpos.dto.ProductRequest;
-import kitchenpos.dto.ProductResponse;
+import kitchenpos.common.Price;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductName;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 
 public class ProductFactory {
     public static Product createProduct(Long id, String name, long price) {

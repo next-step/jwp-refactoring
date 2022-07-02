@@ -3,7 +3,7 @@
 ## step3 작업 계획
 
 - [x] 기존 도메인 의존성 분석
-- [ ] 패키지 분리
+- [x] 패키지 분리
 - [ ] 다른 패키지와의 엔티티 연관관계를 간접 참조로 변경
   - [ ] MenuProduct -> Product
   - [ ] Order -> OrderTable
