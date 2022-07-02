@@ -22,16 +22,12 @@ public class MenuRestController {
     public ResponseEntity<MenuResponse> create(@RequestBody final MenuRequest menu) {
         final MenuResponse created = menuService.create(menu);
         final URI uri = URI.create("/api/menus/" + created.getId());
-        return ResponseEntity.created(uri)
-                .body(created)
-                ;
+        return ResponseEntity.created(uri).body(created);
     }
 
     @GetMapping("/api/menus")
     public ResponseEntity<List<MenuResponse>> list() {
-        return ResponseEntity.ok()
-                .body(menuService.list())
-                ;
+        return ResponseEntity.ok().body(menuService.list());
     }
 
     @ExceptionHandler(KitchenPosArgumentException.class)

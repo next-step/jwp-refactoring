@@ -23,16 +23,12 @@ public class OrderRestController {
     public ResponseEntity<OrderResponse> create(@RequestBody final OrderRequest order) {
         final OrderResponse created = orderService.create(order);
         final URI uri = URI.create("/api/orders/" + created.getId());
-        return ResponseEntity.created(uri)
-                .body(created)
-                ;
+        return ResponseEntity.created(uri).body(created);
     }
 
     @GetMapping("/api/orders")
     public ResponseEntity<List<OrderResponse>> list() {
-        return ResponseEntity.ok()
-                .body(orderService.list())
-                ;
+        return ResponseEntity.ok().body(orderService.list());
     }
 
     @PutMapping("/api/orders/{orderId}/order-status")
