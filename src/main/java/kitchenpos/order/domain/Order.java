@@ -29,6 +29,12 @@ public class Order {
         this.orderLineItems = orderLineItems;
     }
 
+    public Order(Long orderTableId, String orderStatus, LocalDateTime orderedTime) {
+        this.orderTableId = orderTableId;
+        this.orderStatus = orderStatus;
+        this.orderedTime = orderedTime;
+    }
+
     public Long getId() {
         return id;
     }

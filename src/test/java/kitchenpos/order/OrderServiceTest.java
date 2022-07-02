@@ -18,6 +18,8 @@ import kitchenpos.order.dao.OrderRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.dao.OrderTableRepository;
 import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
@@ -51,6 +53,7 @@ class OrderServiceTest {
     Order 주문;
     OrderTable 테이블1;
     OrderLineItem 주문내역;
+    OrderRequest 주문요청;
 
     @BeforeEach
     void setUp() {
@@ -60,6 +63,8 @@ class OrderServiceTest {
         주문 = new Order(1L, Collections.singletonList(주문내역));
         주문.setOrderedTime(LocalDateTime.now());
         주문.setOrderStatus(OrderStatus.COOKING.name());
+
+        주문요청 = new OrderRequest(주문.getOrderTableId(), 주문.getOrderStatus(), 주문.getOrderedTime(), 주문.getOrderLineItems());
     }
 
     @Test
@@ -71,21 +76,21 @@ class OrderServiceTest {
         given(orderRepository.save(any())).willReturn(주문);
 
         // when
-        Order actual = orderService.create(주문);
+        OrderResponse actual = orderService.create(주문요청);
 
         // then
-        assertThat(actual).isEqualTo(주문);
+        assertThat(actual).isNotNull();
     }
 
     @Test
     @DisplayName("주문시 주문내역이 존재해야 한다")
     void create_EmptyOrderLineItemsError() {
         // given
-        주문.setOrderLineItems(null);
+        주문요청 = new OrderRequest(1L, OrderStatus.COOKING.name(), LocalDateTime.now(), null);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
-                () -> orderService.create(주문)
+                () -> orderService.create(주문요청)
         );
     }
 
@@ -95,13 +100,13 @@ class OrderServiceTest {
         // given
         OrderLineItem 주문내역1 = new OrderLineItem(1L, 1L);
         OrderLineItem 주문내역2 = new OrderLineItem(1L, 1L);
-        주문.setOrderLineItems(Arrays.asList(주문내역1, 주문내역2));
+        주문요청 = new OrderRequest(1L, OrderStatus.COOKING.name(), LocalDateTime.now(), Arrays.asList(주문내역1, 주문내역2));
 
         given(menuRepository.countByIdIn(any())).willReturn(1L);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
-                () -> orderService.create(주문)
+                () -> orderService.create(주문요청)
         );
     }
 
@@ -114,7 +119,7 @@ class OrderServiceTest {
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
-                () -> orderService.create(주문)
+                () -> orderService.create(주문요청)
         );
     }
 
@@ -122,10 +127,11 @@ class OrderServiceTest {
     @DisplayName("주문 리스트를 조회한다")
     void list() {
         // given
+        Order 주문 = new Order(1L, Collections.singletonList(주문내역));
         given(orderRepository.findAll()).willReturn(Collections.singletonList(주문));
 
         // when
-        List<Order> actual = orderService.list();
+        List<OrderResponse> actual = orderService.list();
 
         // then
         assertAll(
@@ -138,14 +144,14 @@ class OrderServiceTest {
     @CsvSource(value = {"COOKING|MEAL", "COOKING|COMPLETION", "MEAL|COMPLETION"}, delimiter = '|')
     void changeOrderStatus(OrderStatus currentStatus, OrderStatus expected) {
         // given
+        Order 주문 = new Order(1L, Collections.singletonList(주문내역));
         주문.setId(1L);
         주문.setOrderStatus(currentStatus.name());
-        Order 변경하려는_주문 = new Order(주문.getOrderTableId(), 주문.getOrderLineItems());
-        변경하려는_주문.setOrderStatus(expected.name());
-        given(orderRepository.findById(any())).willReturn(Optional.ofNullable(주문));
+        OrderRequest 변경하려는_주문 = new OrderRequest(주문.getOrderTableId(), expected.name(), LocalDateTime.now(), 주문.getOrderLineItems());
+        given(orderRepository.findById(any())).willReturn(Optional.of(주문));
 
         // when
-        Order actual = orderService.changeOrderStatus(주문.getId(), 변경하려는_주문);
+        OrderResponse actual = orderService.changeOrderStatus(주문.getId(), 변경하려는_주문);
 
         // then
         assertThat(actual.getOrderStatus()).isEqualTo(expected.name());
@@ -155,10 +161,10 @@ class OrderServiceTest {
     @DisplayName("현재 주문 상태가 계산 완료인 경우 변경할 수 없다")
     void changeOrderStatus_completion() {
         // given
+        Order 주문 = new Order(1L, Collections.singletonList(주문내역));
         주문.setId(1L);
         주문.setOrderStatus(OrderStatus.COMPLETION.name());
-        Order 변경하려는_주문 = new Order(1L, 주문.getOrderLineItems());
-        변경하려는_주문.setOrderStatus(OrderStatus.COMPLETION.name());
+        OrderRequest 변경하려는_주문 = new OrderRequest(1L, OrderStatus.COMPLETION.name(), LocalDateTime.now(), 주문.getOrderLineItems());
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
