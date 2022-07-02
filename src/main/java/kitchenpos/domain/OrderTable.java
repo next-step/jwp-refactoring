@@ -58,6 +58,7 @@ public class OrderTable {
         if (isGrouped()) {
             throw new IllegalArgumentException("이미 단체 지정된 테이블 입니다.");
         }
+        this.empty = false;
         this.tableGroup = tableGroup;
     }
 
