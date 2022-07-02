@@ -29,7 +29,7 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
     @Mock
-    MenuDao menuDao;
+    private MenuDao menuDao;
 
     @Mock
     private MenuGroupDao menuGroupDao;
@@ -41,7 +41,7 @@ class MenuServiceTest {
     private ProductDao productDao;
 
     @InjectMocks
-    MenuService menuService;
+    private MenuService menuService;
 
     private Product 첫번째_상품;
     private Product 두번째_상품;
@@ -53,8 +53,8 @@ class MenuServiceTest {
     void setUp() {
         첫번째_상품 = new Product(1L, "짬뽕", BigDecimal.valueOf(9000));
         두번째_상품 = new Product(2L, "짜장면", BigDecimal.valueOf(8000));
-        첫번째_메뉴상품 = new MenuProduct(1L, 1L, 1L, 2);
-        두번째_메뉴상품 = new MenuProduct(2L, 1L, 2L, 1);
+        첫번째_메뉴상품 = new MenuProduct(1L, 2);
+        두번째_메뉴상품 = new MenuProduct(2L, 1);
         메뉴상품_목록 = Arrays.asList(첫번째_메뉴상품, 두번째_메뉴상품);
     }
 
@@ -121,7 +121,7 @@ class MenuServiceTest {
     void createMenuFailsWhenNoProduct() {
         // given
         Long 존재하지_않는_상품ID = 1000L;
-        MenuProduct 유효하지_않은_메뉴상품 = new MenuProduct(1L, 1L, 존재하지_않는_상품ID, 10);
+        MenuProduct 유효하지_않은_메뉴상품 = new MenuProduct(존재하지_않는_상품ID, 10);
         Menu 생성할_메뉴 = new Menu("짬짜면세트", BigDecimal.valueOf(26000), 1L, Arrays.asList(유효하지_않은_메뉴상품));
 
         // when & then
