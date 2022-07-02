@@ -1,6 +1,5 @@
 package kitchenpos.product.application;
 
-import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.repository.ProductRepository;
 import org.junit.jupiter.api.DisplayName;

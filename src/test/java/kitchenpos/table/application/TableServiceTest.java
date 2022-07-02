@@ -1,6 +1,5 @@
 package kitchenpos.table.application;
 
-import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableValidator;
 import kitchenpos.table.repository.OrderTableRepository;

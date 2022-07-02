@@ -1,7 +1,7 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
