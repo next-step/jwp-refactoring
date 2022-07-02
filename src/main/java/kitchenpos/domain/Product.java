@@ -1,25 +1,49 @@
 package kitchenpos.domain;
 
 import java.math.BigDecimal;
+import java.util.Objects;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import org.springframework.util.ObjectUtils;
 
+@Entity
 public class Product {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private BigDecimal price;
 
-    public Product() {
+    @Embedded
+    private Price price;
 
+    protected Product() {
+
+    }
+
+    public Product(String name) {
+        validName(name);
+        this.name = name;
     }
 
     public Product(String name, BigDecimal price) {
-        this.name = name;
-        this.price = price;
+        this(name);
+        this.price = Price.of(price);
     }
 
     public Product(Long id, String name, BigDecimal price) {
+        this(name, price);
         this.id = id;
-        this.name = name;
-        this.price = price;
+    }
+
+
+    private void validName(String name) {
+        if (ObjectUtils.isEmpty(name)) {
+            throw new IllegalArgumentException("상품의 이름은 필수 입니다.");
+        }
     }
 
     public Long getId() {
@@ -38,12 +62,30 @@ public class Product {
         this.name = name;
     }
 
-    public BigDecimal getPrice() {
+    public Price getPrice() {
         return price;
     }
 
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
+    public BigDecimal getPriceValue() {
+        return price.value();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Product product = (Product) o;
+        return Objects.equals(getName(), product.getName()) && Objects.equals(getPrice(),
+                product.getPrice());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName(), getPrice());
+    }
 }
+

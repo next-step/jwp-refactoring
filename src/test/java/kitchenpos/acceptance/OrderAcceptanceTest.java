@@ -17,9 +17,10 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
+import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,8 +32,8 @@ import org.springframework.http.MediaType;
 public class OrderAcceptanceTest extends AcceptanceTest {
 
     OrderTable 주문테이블;
-    private Product 생맥주;
-    private Product 닭강정;
+    private ProductResponse 생맥주;
+    private ProductResponse 닭강정;
     private MenuGroupResponse 일식;
 
     private Menu 닭강정_안주;
@@ -44,8 +45,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         super.setUp();
         주문테이블 = 주문_테이블이_존재함(new OrderTable(null, 3, false));
 
-        생맥주 = 상품이_등록되어_있음(new Product("생맥주", BigDecimal.valueOf(2000)));
-        닭강정 = 상품이_등록되어_있음(new Product("닭강정", BigDecimal.valueOf(3000)));
+        생맥주 = 상품이_등록되어_있음(new ProductRequest("생맥주", BigDecimal.valueOf(2000)));
+        닭강정 = 상품이_등록되어_있음(new ProductRequest("닭강정", BigDecimal.valueOf(3000)));
         일식 = 메뉴그룹이_등록되어있음(new MenuGroupRequest("일식"));
 
         MenuProduct 닭강정_안주_닭강정 = new MenuProduct(1L, 2L, 닭강정.getId(), 2);
@@ -168,8 +169,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         return TableAcceptanceTest.주문가능한_테이블을_요청한다(orderTable).as(OrderTable.class);
     }
 
-    private Product 상품이_등록되어_있음(Product product) {
-        return ProductAcceptanceTest.상품_등록을_요청(product).as(Product.class);
+    private ProductResponse 상품이_등록되어_있음(ProductRequest product) {
+        return ProductAcceptanceTest.상품_등록을_요청(product).as(ProductResponse.class);
     }
 
     private MenuGroupResponse 메뉴그룹이_등록되어있음(MenuGroupRequest menuGroupRequest) {

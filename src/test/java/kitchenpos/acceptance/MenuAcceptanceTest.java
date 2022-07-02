@@ -24,15 +24,15 @@ import org.springframework.http.MediaType;
 @DisplayName("메뉴")
 public class MenuAcceptanceTest extends AcceptanceTest {
 
-    private Product 생맥주;
-    private Product 닭강정;
+    private ProductResponse 생맥주;
+    private ProductResponse 닭강정;
     private MenuGroup 일식;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        생맥주 = 상품이_등록되어_있음(new Product("생맥주", BigDecimal.valueOf(2000)));
-        닭강정 = 상품이_등록되어_있음(new Product("닭강정", BigDecimal.valueOf(3000)));
+        생맥주 = 상품이_등록되어_있음(new ProductRequest("생맥주", BigDecimal.valueOf(2000)));
+        닭강정 = 상품이_등록되어_있음(new ProductRequest("닭강정", BigDecimal.valueOf(3000)));
         일식 = 메뉴그룹이_등록되어있음(new MenuGroupRequest("일식"));
     }
 
@@ -85,8 +85,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         assertThat(createResponse.jsonPath().getList("menuProducts", MenuProduct.class)).hasSize(2);
     }
 
-    private Product 상품이_등록되어_있음(Product product) {
-        return ProductAcceptanceTest.상품_등록을_요청(product).as(Product.class);
+    private ProductResponse 상품이_등록되어_있음(ProductRequest product) {
+        return ProductAcceptanceTest.상품_등록을_요청(product).as(ProductResponse.class);
     }
 
 
