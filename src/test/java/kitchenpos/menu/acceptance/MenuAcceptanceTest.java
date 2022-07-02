@@ -7,7 +7,7 @@ import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static kitchenpos.menugroup.acceptance.MenuGroupAcceptanceTest.*;
+import static kitchenpos.menu.acceptance.MenuGroupAcceptanceTest.*;
 import static kitchenpos.product.acceptance.ProductAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
