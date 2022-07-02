@@ -23,5 +23,4 @@ public class OrderLineItemRequest {
     public long getQuantity() {
         return quantity;
     }
-
 }
