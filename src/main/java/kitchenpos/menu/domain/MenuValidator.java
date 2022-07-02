@@ -18,9 +18,13 @@ public class MenuValidator {
     public void validate(Menu menu) {
         MenuProducts menuProducts = menu.getMenuProducts();
         Products products = new Products(productRepository.findAllById(menuProducts.getProductIds()));
-        if (menu.getPrice().getValue().compareTo(calculateTotalPrice(menuProducts, products)) > 0) {
+        if (isMenuPriceBigger(menu, menuProducts, products)) {
             throw new IllegalArgumentException();
         }
+    }
+
+    private boolean isMenuPriceBigger(Menu menu, MenuProducts menuProducts, Products products) {
+        return menu.getPrice().getValue().compareTo(calculateTotalPrice(menuProducts, products)) > 0;
     }
 
     private BigDecimal calculateTotalPrice(MenuProducts menuProducts, Products products) {
