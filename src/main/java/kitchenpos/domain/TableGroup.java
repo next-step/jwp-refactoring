@@ -35,6 +35,7 @@ public class TableGroup {
     }
 
     public void create(final LocalDateTime createdDate) {
+        this.orderTables.group(this);
         this.createdDate = createdDate;
     }
 
@@ -51,5 +52,9 @@ public class TableGroup {
 
     public List<Long> getOrderTableIds() {
         return orderTables.getOrderTableIds();
+    }
+
+    public void ungroupOrderTables() {
+        orderTables.unGroup();
     }
 }

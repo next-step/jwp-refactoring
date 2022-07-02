@@ -13,6 +13,4 @@ public interface OrderTableRepository {
     List<OrderTable> findAll();
 
     List<OrderTable> findAllByIdIn(List<Long> ids);
-
-    List<OrderTable> findAllByTableGroupId(Long tableGroupId);
 }

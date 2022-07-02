@@ -20,7 +20,7 @@ public class OrderTableCreateRequest {
     }
 
     public OrderTable toEntity() {
-        return new OrderTable(id, null, numberOfGuests, empty);
+        return new OrderTable(id, numberOfGuests, empty);
     }
 
     public Long getId() {

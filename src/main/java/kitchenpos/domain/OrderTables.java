@@ -53,4 +53,16 @@ public class OrderTables {
             orderTable.validateCanGroup();
         }
     }
+
+    public void group(TableGroup tableGroup) {
+        for (final OrderTable orderTable : elements) {
+            orderTable.group(tableGroup);
+        }
+    }
+
+    public void unGroup() {
+        for (final OrderTable orderTable : elements) {
+            orderTable.unGroup();
+        }
+    }
 }

@@ -44,7 +44,7 @@ class OrderTableTest {
 
     private static OrderTable createAlreadyGroupedTable() {
         OrderTable orderTable = new OrderTable();
-        orderTable.updateTableGroupId(1L);
+        orderTable.group(new TableGroup());
         return orderTable;
     }
 }
