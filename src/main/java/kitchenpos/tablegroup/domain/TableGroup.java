@@ -2,6 +2,8 @@ package kitchenpos.tablegroup.domain;
 
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.exception.IllegalOrderTableException;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -9,10 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class TableGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @CreatedDate
     private LocalDateTime createdDate;
     @OneToMany(mappedBy = "tableGroup")
     private List<OrderTable> orderTables = new ArrayList<>();
@@ -26,23 +30,21 @@ public class TableGroup {
     protected TableGroup() {
     }
 
-    private TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
+    private TableGroup(Long id, List<OrderTable> orderTables) {
         this.id = id;
-        this.createdDate = createdDate;
         assignOrderTables(orderTables);
     }
 
-    private TableGroup(LocalDateTime createdDate, List<OrderTable> orderTables) {
-        this.createdDate = createdDate;
+    private TableGroup(List<OrderTable> orderTables) {
         assignOrderTables(orderTables);
     }
 
-    public static TableGroup of(LocalDateTime createdDate, List<OrderTable> orderTables) {
-        return new TableGroup(createdDate, orderTables);
+    public static TableGroup of(List<OrderTable> orderTables) {
+        return new TableGroup(orderTables);
     }
 
-    public static TableGroup of(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
-        return new TableGroup(id, createdDate, orderTables);
+    public static TableGroup of(Long id, List<OrderTable> orderTables) {
+        return new TableGroup(id, orderTables);
     }
 
     private void assignOrderTables(List<OrderTable> orderTables) {

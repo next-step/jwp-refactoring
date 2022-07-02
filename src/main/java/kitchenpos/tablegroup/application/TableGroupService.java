@@ -38,7 +38,7 @@ public class TableGroupService {
     @Transactional
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         List<OrderTable> orderTables = retrieveOrderTables(tableGroupRequest);
-        final TableGroup savedTableGroup = tableGroupRepository.save(TableGroup.of(LocalDateTime.now(), orderTables));
+        final TableGroup savedTableGroup = tableGroupRepository.save(TableGroup.of(orderTables));
 
         return TableGroupResponse.from(savedTableGroup);
     }

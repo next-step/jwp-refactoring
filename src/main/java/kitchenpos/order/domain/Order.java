@@ -4,6 +4,8 @@ import kitchenpos.order.exception.IllegalOrderException;
 import kitchenpos.order.exception.IllegalOrderLineItemException;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.exception.IllegalOrderTableException;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -12,6 +14,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "orders")
+@EntityListeners(AuditingEntityListener.class)
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,6 +24,7 @@ public class Order {
     private OrderTable orderTable;
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus = OrderStatus.COOKING;
+    @CreatedDate
     private LocalDateTime orderedTime;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
@@ -34,27 +38,25 @@ public class Order {
     protected Order() {
     }
 
-    private Order(Long id, OrderTable orderTable, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+    private Order(Long id, OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         this.id = id;
         validateOrderTableNotEmpty(orderTable);
         this.orderTable = orderTable;
-        this.orderedTime = orderedTime;
         registerOrderLineItems(orderLineItems);
     }
 
-    private Order(OrderTable orderTable, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+    private Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         validateOrderTableNotEmpty(orderTable);
         this.orderTable = orderTable;
-        this.orderedTime = orderedTime;
         registerOrderLineItems(orderLineItems);
     }
 
-    public static Order of(OrderTable orderTable, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
-        return new Order(orderTable, orderedTime, orderLineItems);
+    public static Order of(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        return new Order(orderTable, orderLineItems);
     }
 
-    public static Order of(Long id, OrderTable orderTable, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
-        return new Order(id, orderTable, orderedTime, orderLineItems);
+    public static Order of(Long id, OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+        return new Order(id, orderTable, orderLineItems);
     }
 
     private void validateOrderTableNotEmpty(OrderTable orderTable) {

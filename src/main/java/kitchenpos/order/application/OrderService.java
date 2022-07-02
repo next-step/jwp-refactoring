@@ -39,7 +39,7 @@ public class OrderService {
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
         final OrderTable orderTable = tableService.findOrderTableById(orderRequest.getOrderTableId());
-        final Order order = Order.of(orderTable, LocalDateTime.now(), retrieveOrderLineItems(orderRequest));
+        final Order order = Order.of(orderTable, retrieveOrderLineItems(orderRequest));
         final Order savedOrder = orderRepository.save(order);
 
         return OrderResponse.from(savedOrder);

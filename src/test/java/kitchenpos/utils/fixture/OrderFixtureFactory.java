@@ -10,14 +10,12 @@ import java.util.List;
 public class OrderFixtureFactory {
     public static Order createOrder(Long id,
                                     OrderTable orderTable,
-                                    LocalDateTime orderedTime,
                                     List<OrderLineItem> orderLineItems) {
-        return Order.of(id, orderTable, orderedTime, orderLineItems);
+        return Order.of(id, orderTable, orderLineItems);
     }
 
     public static Order createOrder(OrderTable orderTable,
-                                    LocalDateTime orderedTime,
                                     List<OrderLineItem> orderLineItems) {
-        return Order.of(orderTable, orderedTime, orderLineItems);
+        return Order.of(orderTable, orderLineItems);
     }
 }

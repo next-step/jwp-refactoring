@@ -83,11 +83,11 @@ class OrderServiceTest {
 
         테이블_1 = createOrderTable(1L, null, 4, false);
         접수된주문_김치찌개세트 = createOrderLineItem(1L, 메뉴_김치찌개세트, 1);
-        접수된_주문 = createOrder(1L, 테이블_1, LocalDateTime.now(), Arrays.asList(접수된주문_김치찌개세트));
+        접수된_주문 = createOrder(1L, 테이블_1, Arrays.asList(접수된주문_김치찌개세트));
 
         테이블_2 = createOrderTable(2L, null, 4, false);
         완료된주문_김치찌개세트 = createOrderLineItem(2L, 메뉴_김치찌개세트, 1);
-        완료된_주문 = createOrder(2L, 테이블_2, LocalDateTime.now(), Arrays.asList(완료된주문_김치찌개세트));
+        완료된_주문 = createOrder(2L, 테이블_2, Arrays.asList(완료된주문_김치찌개세트));
         완료된_주문.changeStatus(OrderStatus.COMPLETION);
 
         테이블_Empty = createOrderTable(3L, null, 0, true);
@@ -203,7 +203,7 @@ class OrderServiceTest {
     void 주문_상태_업데이트(OrderStatus beforeStatus, OrderStatus afterStatus){
         //given
         given(orderRepository.findById(anyLong())).willReturn(Optional.of(접수된_주문));
-        Order 주문_MEAL = createOrder(테이블_1, LocalDateTime.now(), Arrays.asList(접수된주문_김치찌개세트));
+        Order 주문_MEAL = createOrder(테이블_1, Arrays.asList(접수된주문_김치찌개세트));
         주문_MEAL.changeStatus(beforeStatus);
 
         //when
