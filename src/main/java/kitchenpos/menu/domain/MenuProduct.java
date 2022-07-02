@@ -1,5 +1,7 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.common.domain.Quantity;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -17,22 +19,22 @@ public class MenuProduct {
     @Column(name = "product_id", nullable = false)
     private Long productId;
 
-    @Column(nullable = false)
-    private long quantity;
+    @Embedded
+    private Quantity quantity;
 
     protected MenuProduct() {
     }
 
     public MenuProduct(Long productId, long quantity) {
         this.productId = productId;
-        this.quantity = quantity;
+        this.quantity = new Quantity(quantity);
     }
 
     public MenuProduct(Long seq, Menu menu, Long productId, long quantity) {
         this.seq = seq;
         this.menu = menu;
         this.productId = productId;
-        this.quantity = quantity;
+        this.quantity = new Quantity(quantity);
     }
 
     public Long getSeq() {
@@ -44,7 +46,7 @@ public class MenuProduct {
     }
 
     public long getQuantity() {
-        return quantity;
+        return quantity.getValue();
     }
 
     public void connectedBy(Menu menu) {

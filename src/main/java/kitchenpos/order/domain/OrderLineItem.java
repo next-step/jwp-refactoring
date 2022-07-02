@@ -1,5 +1,7 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.common.domain.Quantity;
+
 import javax.persistence.*;
 
 @Entity
@@ -16,22 +18,22 @@ public class OrderLineItem {
     @Column(name = "menu_id", nullable = false)
     private Long menuId;
 
-    @Column(nullable = false)
-    private long quantity;
+    @Embedded
+    Quantity quantity;
 
     protected OrderLineItem() {
     }
 
     public OrderLineItem(Long menuId, long quantity) {
         this.menuId = menuId;
-        this.quantity = quantity;
+        this.quantity = new Quantity(quantity);
     }
 
     public OrderLineItem(Long seq, Order order, Long menuId, long quantity) {
         this.seq = seq;
         this.order = order;
         this.menuId = menuId;
-        this.quantity = quantity;
+        this.quantity = new Quantity(quantity);;
     }
 
     public Long getSeq() {
@@ -51,6 +53,6 @@ public class OrderLineItem {
     }
 
     public long getQuantity() {
-        return quantity;
+        return quantity.getValue();
     }
 }
