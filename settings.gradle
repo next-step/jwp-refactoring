@@ -1,1 +1,4 @@
-rootProject.name = 'kitchenpos'
+rootProject.name = 'jwp-refactoring'
+include 'module-common','module-menu', 'module-order', 'module-product', 'module-table'
+include 'test-module-acceptance'
+
