@@ -4,7 +4,6 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProductRepository;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -42,8 +41,6 @@ class MenuServiceTest {
     private MenuRepository menuRepository;
     @Mock
     private MenuGroupRepository menuGroupRepository;
-    @Mock
-    private MenuProductRepository menuProductRepository;
     @Mock
     private ProductRepository productRepository;
     @InjectMocks
