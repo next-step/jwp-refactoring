@@ -15,6 +15,7 @@ import kitchenpos.order.exception.IllegalOrderLineItemException;
 import kitchenpos.order.exception.NoSuchOrderException;
 import kitchenpos.ordertable.application.TableService;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.exception.IllegalOrderTableException;
 import kitchenpos.ordertable.exception.NoSuchOrderTableException;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
@@ -68,6 +69,7 @@ class OrderServiceTest {
     private MenuProduct 김치찌개세트_김치찌개;
     private OrderTable 테이블_1;
     private OrderTable 테이블_2;
+    private OrderTable 테이블_Empty;
     private Order 접수된_주문;
     private Order 완료된_주문;
     private OrderLineItem 접수된주문_김치찌개세트;
@@ -89,6 +91,8 @@ class OrderServiceTest {
         완료된주문_김치찌개세트 = createOrderLineItem(2L, 메뉴_김치찌개세트, 1);
         완료된_주문 = createOrder(2L, 테이블_2, LocalDateTime.now(), Arrays.asList(완료된주문_김치찌개세트));
         완료된_주문.changeStatus(OrderStatus.COMPLETION);
+
+        테이블_Empty = createOrderTable(3L, null, 0, true);
     }
 
     @DisplayName("주문을 등록할 수 있다")
@@ -150,6 +154,22 @@ class OrderServiceTest {
         assertThrows(NoSuchOrderTableException.class, () -> orderService.create(orderRequest));
     }
 
+    @DisplayName("등록하려는 주문테이블은 비어있을 수 없다")
+    @Test
+    void 주문_주문테이블_Empty_검증(){
+        //given
+        given(tableService.findOrderTableById(anyLong())).willReturn(테이블_Empty);
+        given(menuService.findMenuById(anyLong())).willReturn(메뉴_김치찌개세트);
+
+        //when
+        OrderRequest orderRequest = OrderRequest.of(테이블_Empty.getId(), Arrays.asList(
+                OrderLineItemRequest.of(메뉴_김치찌개세트.getId(), 1)
+        ));
+
+        //then
+        assertThrows(IllegalOrderTableException.class, () -> orderService.create(orderRequest));
+    }
+
     @DisplayName("등록하려는 주문항목의 메뉴가 존재해야 한다")
     @Test
     void 주문_주문항목_메뉴_검증(){
@@ -202,6 +222,7 @@ class OrderServiceTest {
                 Arguments.of(OrderStatus.MEAL, OrderStatus.COMPLETION)
         );
     }
+
     @DisplayName("주문이 존재해야 주문상태를 업데이트할 수 있다")
     @Test
     void 주문_상태_업데이트_주문_검증(){

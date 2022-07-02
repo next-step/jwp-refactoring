@@ -1,220 +1,208 @@
 package kitchenpos.ordertable.application;
 
-import kitchenpos.order.exception.IllegalOrderException;
-import kitchenpos.ordertable.exception.IllegalOrderTableException;
-import kitchenpos.ordertable.exception.NoSuchOrderTableException;
-import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.exception.IllegalOrderException;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.dto.OrderTableEmptyRequest;
 import kitchenpos.ordertable.dto.OrderTableNumOfGuestRequest;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
+import kitchenpos.ordertable.exception.IllegalOrderTableException;
+import kitchenpos.ordertable.exception.NoSuchOrderTableException;
 import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.tablegroup.domain.TableGroupRepository;
+import kitchenpos.utils.fixture.TableGroupFixtureFactory;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
-import static kitchenpos.utils.fixture.OrderFixtureFactory.*;
 import static kitchenpos.utils.fixture.OrderTableFixtureFactory.createOrderTable;
-import static kitchenpos.utils.fixture.TableGroupFixtureFactory.createTableGroup;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.given;
 
-@SpringBootTest
-@Transactional
-@DisplayName("테이블 Service 테스트")
+@ExtendWith(MockitoExtension.class)
 public class TableServiceTest {
-    @Autowired
+    @Mock
     private OrderRepository orderRepository;
-    @Autowired
+    @Mock
     private OrderTableRepository orderTableRepository;
-    @Autowired
-    private TableGroupRepository tableGroupRepository;
-    @Autowired
+    @InjectMocks
     private TableService tableService;
 
     private OrderTable 테이블_EMPTY;
     private OrderTable 테이블_NOT_EMPTY;
 
+    private TableGroup 테이블_그룹;
+    private OrderTable 테이블_GROUPED;
+    private OrderTable 테이블_GROUPED2;
+
     @BeforeEach
     void setUp() {
-        테이블_EMPTY = createOrderTable(0, true);
-        테이블_NOT_EMPTY = createOrderTable(4, false);
+        테이블_EMPTY = createOrderTable(1L, null, 0, true);
+        테이블_NOT_EMPTY = createOrderTable(1L, null, 4, false);
+        테이블_GROUPED = createOrderTable(3L, null, 0, true);
+        테이블_GROUPED2 = createOrderTable(4L, null, 0, true);
+        테이블_그룹 = TableGroupFixtureFactory.createTableGroup(LocalDateTime.now(),
+                Arrays.asList(테이블_GROUPED, 테이블_GROUPED2));
     }
 
     @DisplayName("주문테이블을 등록할 수 있다")
     @Test
     void 주문테이블_등록(){
+        //given
+        given(orderTableRepository.save(any(OrderTable.class))).willReturn(테이블_EMPTY);
+
         //when
-        OrderTableResponse savedTable = tableService.create(
-                OrderTableRequest.of(테이블_EMPTY.getNumberOfGuests(), 테이블_EMPTY.isEmpty())
-        );
+        OrderTableRequest orderTableRequest = OrderTableRequest.of(0, true);
+        OrderTableResponse savedOrderTable = tableService.create(orderTableRequest);
 
         //then
-        assertAll(
-                () -> assertThat(savedTable.getId()).isNotNull(),
-                () -> assertThat(savedTable.getNumberOfGuests()).isEqualTo(테이블_EMPTY.getNumberOfGuests())
-        );
+        assertThat(savedOrderTable).isEqualTo(OrderTableResponse.from(테이블_EMPTY));
     }
 
     @DisplayName("주문테이블의 목록을 조회할 수 있다")
     @Test
     void 주문테이블_목록_조회(){
         //given
-        OrderTableResponse savedTable = tableService.create(
-                OrderTableRequest.of(테이블_EMPTY.getNumberOfGuests(), 테이블_EMPTY.isEmpty())
-        );
+        given(orderTableRepository.findAll()).willReturn(Arrays.asList(테이블_EMPTY));
 
         //when
         List<OrderTableResponse> list = tableService.list();
 
         //then
-        assertThat(list).contains(savedTable);
+        assertThat(list).containsExactly(OrderTableResponse.from(테이블_EMPTY));
     }
 
     @DisplayName("주문테이블의 비어있음 여부를 업데이트할 수 있다")
-    @Test
-    void 주문테이블_Empty_업데이트(){
+    @ParameterizedTest(name = "이전 Empty 상태: {0}, 새로운 Empty 상태: {1}")
+    @MethodSource("provideParametersForEmptyUpdate")
+    void 주문테이블_Empty_업데이트(boolean before, boolean after){
         //given
-        OrderTableResponse savedTable = tableService.create(
-                OrderTableRequest.of(테이블_NOT_EMPTY.getNumberOfGuests(), 테이블_NOT_EMPTY.isEmpty())
-        );
+        테이블_EMPTY.changeEmpty(before);
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(테이블_EMPTY));
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(false);
 
         //when
-        OrderTableEmptyRequest emptyRequest = OrderTableEmptyRequest.from(true);
-        tableService.changeEmpty(savedTable.getId(), emptyRequest);
+        OrderTableEmptyRequest orderTableEmptyRequest = OrderTableEmptyRequest.from(after);
+        tableService.changeEmpty(테이블_EMPTY.getId(), orderTableEmptyRequest);
 
         //then
-        assertThat(orderTableRepository.findById(savedTable.getId()).get().isEmpty()).isTrue();
+        assertThat(테이블_EMPTY.isEmpty()).isEqualTo(after);
+    }
+
+    private static Stream<Arguments> provideParametersForEmptyUpdate() {
+        return Stream.of(
+                Arguments.of(true, false),
+                Arguments.of(false, true)
+        );
     }
 
     @DisplayName("주문테이블의 비어있음 여부를 업데이트시, 주문테이블이 존재해야 한다")
     @Test
     void 주문테이블_Empty_업데이트_주문테이블_검증(){
+        //given
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.ofNullable(null));
+
         //when
-        OrderTableEmptyRequest emptyRequest = OrderTableEmptyRequest.from(true);
+        OrderTableEmptyRequest orderTableEmptyRequest = OrderTableEmptyRequest.from(false);
 
         //then
-        assertThrows(NoSuchOrderTableException.class, () -> tableService.changeEmpty(0L, emptyRequest));
+        assertThrows(NoSuchOrderTableException.class, () -> tableService.changeEmpty(테이블_EMPTY.getId(), orderTableEmptyRequest));
     }
 
     @DisplayName("주문테이블의 비어있음 여부를 업데이트시, 주문테이블이 테이블그룹에 등록되어있으면 안된다")
     @Test
     void 주문테이블_Empty_업데이트_주문테이블_테이블그룹_등록_검증(){
         //given
-        OrderTable 테이블_1 = orderTableRepository.save(createOrderTable(0, true));
-        OrderTable 테이블_2 = orderTableRepository.save(createOrderTable(0, true));
-        TableGroup 테이블_그룹 = tableGroupRepository.save(createTableGroup(LocalDateTime.now(), Arrays.asList(테이블_1, 테이블_2)));
-
-        OrderTableEmptyRequest emptyRequest = OrderTableEmptyRequest.from(true);
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(테이블_GROUPED));
+        OrderTableEmptyRequest orderTableEmptyRequest = OrderTableEmptyRequest.from(false);
 
         //then
-        assertThrows(IllegalOrderTableException.class, () -> tableService.changeEmpty(테이블_1.getId(), emptyRequest));
+        assertThrows(IllegalOrderTableException.class,
+                () -> tableService.changeEmpty(테이블_GROUPED.getId(), orderTableEmptyRequest));
     }
 
     @DisplayName("주문테이블의 비어있음 여부를 업데이트시, 주문테이블에 COOKING이나 MEAL 상태의 주문이 있으면 안된다")
-    @ParameterizedTest(name = "주문상태: {0}, 주문테이블의 비어있음 여부 업데이트 불가")
-    @MethodSource("provideParametersForOrderTableUpdateWithOrderState")
-    @Disabled
-    void 주문테이블_Empty_업데이트_주문_상태_검증(OrderStatus orderStatus){
+    @Test
+    void 주문테이블_Empty_업데이트_주문_상태_검증(){
         //given
-        OrderTableResponse savedTable = tableService.create(
-                OrderTableRequest.of(테이블_NOT_EMPTY.getNumberOfGuests(), 테이블_NOT_EMPTY.isEmpty())
-        );
-        OrderTable orderTable = orderTableRepository.findById(savedTable.getId()).get();
-        Order order = createOrder(orderTable, LocalDateTime.now(), new ArrayList<>());
-        order.changeStatus(orderStatus);
-        orderRepository.save(order);
-
-        //when
-        OrderTableEmptyRequest emptyRequest = OrderTableEmptyRequest.from(false);
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(테이블_EMPTY));
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(true);
+        OrderTableEmptyRequest orderTableEmptyRequest = OrderTableEmptyRequest.from(false);
 
         //then
-        assertThrows(IllegalOrderException.class, () -> tableService.changeEmpty(savedTable.getId(), emptyRequest));
-    }
-
-    private static Stream<Arguments> provideParametersForOrderTableUpdateWithOrderState() {
-        return Stream.of(
-                Arguments.of(OrderStatus.MEAL),
-                Arguments.of(OrderStatus.COOKING)
-        );
+        assertThrows(IllegalOrderException.class,
+                () -> tableService.changeEmpty(테이블_EMPTY.getId(), orderTableEmptyRequest));
     }
 
     @DisplayName("주문테이블의 손님 수를 업데이트할 수 있다")
     @Test
-    @Disabled
     void 주문테이블_손님수_업데이트(){
         //given
-        OrderTableResponse savedTable = tableService.create(
-                OrderTableRequest.of(테이블_NOT_EMPTY.getNumberOfGuests(), 테이블_NOT_EMPTY.isEmpty())
-        );
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(테이블_NOT_EMPTY));
 
         //when
-        OrderTableNumOfGuestRequest oneGuestRequest = OrderTableNumOfGuestRequest.from(1);
-        tableService.changeNumberOfGuests(savedTable.getId(), oneGuestRequest);
+        OrderTableNumOfGuestRequest orderTableNumOfGuestRequest = OrderTableNumOfGuestRequest.from(10);
+        tableService.changeNumberOfGuests(테이블_NOT_EMPTY.getId(), orderTableNumOfGuestRequest);
 
         //then
-        assertThat(orderTableRepository.findById(savedTable.getId()).get().getNumberOfGuests()).isEqualTo(1);
+        assertThat(테이블_NOT_EMPTY.getNumberOfGuests()).isEqualTo(10);
     }
 
     @DisplayName("주문테이블의 손님 수를 업데이트 시, 손님 수는 0 이상이다")
     @Test
     void 주문테이블_손님수_업데이트_손님수_검증(){
         //given
-        OrderTableResponse savedTable = tableService.create(
-                OrderTableRequest.of(테이블_NOT_EMPTY.getNumberOfGuests(), 테이블_NOT_EMPTY.isEmpty())
-        );
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(테이블_NOT_EMPTY));
 
         //when
-        OrderTableNumOfGuestRequest invalidRequest = OrderTableNumOfGuestRequest.from(-1);
+        OrderTableNumOfGuestRequest orderTableNumOfGuestRequest = OrderTableNumOfGuestRequest.from(-10);
 
         //then
         assertThrows(IllegalOrderTableException.class,
-                () -> tableService.changeNumberOfGuests(savedTable.getId(), invalidRequest));
+                () -> tableService.changeNumberOfGuests(테이블_NOT_EMPTY.getId(), orderTableNumOfGuestRequest));
     }
 
     @DisplayName("주문테이블의 손님 수를 업데이트 시, 업데이트할 주문테이블이 존재해야 한다")
     @Test
     void 주문테이블_손님수_업데이트_주문테이블_검증(){
+        //given
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.ofNullable(null));
+
         //when
-        OrderTableNumOfGuestRequest oneGuestRequest = OrderTableNumOfGuestRequest.from(1);
+        OrderTableNumOfGuestRequest orderTableNumOfGuestRequest = OrderTableNumOfGuestRequest.from(10);
 
         //then
         assertThrows(NoSuchOrderTableException.class,
-                () -> tableService.changeNumberOfGuests(0L, oneGuestRequest));
+                () -> tableService.changeNumberOfGuests(테이블_NOT_EMPTY.getId(), orderTableNumOfGuestRequest));
     }
 
     @DisplayName("주문테이블의 손님 수를 업데이트 시, 주문테이블이 비어있으면 안된다")
     @Test
     void 주문테이블_손님수_업데이트_주문테이블_Empty_검증(){
         //given
-        OrderTableResponse savedTable = tableService.create(
-                OrderTableRequest.of(테이블_EMPTY.getNumberOfGuests(), 테이블_EMPTY.isEmpty())
-        );
+        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(테이블_EMPTY));
 
         //when
-        OrderTableNumOfGuestRequest oneGuestRequest = OrderTableNumOfGuestRequest.from(1);
+        OrderTableNumOfGuestRequest orderTableNumOfGuestRequest = OrderTableNumOfGuestRequest.from(10);
 
         //then
         assertThrows(IllegalOrderTableException.class,
-                () -> tableService.changeNumberOfGuests(savedTable.getId(), oneGuestRequest));
+                () -> tableService.changeNumberOfGuests(테이블_EMPTY.getId(), orderTableNumOfGuestRequest));
     }
 }
