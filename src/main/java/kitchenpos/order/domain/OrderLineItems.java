@@ -31,7 +31,7 @@ public class OrderLineItems {
                 .collect(Collectors.toList());
     }
 
-    List<OrderLineItem> toList() {
+    public List<OrderLineItem> toList() {
         return Collections.unmodifiableList(elements);
     }
 }

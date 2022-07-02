@@ -49,7 +49,7 @@ class OrderTest {
     }
 
     private void assertThatAllOrderLineItemIncludedToOrder(Order order) {
-        List<OrderLineItem> orderLineItems = order.getOrderLineItems();
+        List<OrderLineItem> orderLineItems = order.getOrderLineItems().toList();
         List<OrderLineItem> includedOrderLineItems = orderLineItems.stream()
                 .filter(orderLineItem -> orderLineItem.getOrder() == order)
                 .collect(toList());

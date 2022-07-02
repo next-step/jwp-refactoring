@@ -8,7 +8,6 @@ import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableOrderStatusChecker;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.table.exception.CanNotMakeOrderTableException;
 import kitchenpos.table.exception.CannotChangeEmptyState;
 import kitchenpos.table.exception.NotExistTableException;
 import org.springframework.stereotype.Service;
@@ -62,13 +61,6 @@ public class TableService {
         final OrderTable savedOrderTable = findOrderTableById(orderTableId);
         savedOrderTable.changeNumberOfGuests(orderTableRequest.getNumberOfGuests());
         return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
-    }
-
-    public void validateTableToMakeOrder(Long orderTableId) {
-        OrderTable orderTable = findOrderTableById(orderTableId);
-        if (orderTable.isEmpty()) {
-            throw new CanNotMakeOrderTableException(String.valueOf(orderTable.getId()));
-        }
     }
 
     private OrderTable findOrderTableById(Long orderTableId) {

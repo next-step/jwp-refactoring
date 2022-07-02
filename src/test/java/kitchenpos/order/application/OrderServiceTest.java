@@ -18,10 +18,10 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemDto;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.exception.CannotChangeOrderStatusException;
+import kitchenpos.order.exception.CannotMakeOrderException;
 import kitchenpos.order.exception.EmptyOrderLineItemsException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.table.exception.CanNotMakeOrderTableException;
 import kitchenpos.table.exception.NotExistTableException;
 import kitchenpos.utils.ServiceTestHelper;
 import org.assertj.core.util.Lists;
@@ -134,7 +134,7 @@ class OrderServiceTest extends ServiceTest {
         Long orderTableId = orderTable.getId();
         List<OrderLineItemDto> orderLineItemDtos = Lists.newArrayList(orderLineItem1, orderLineItem2);
         assertThatThrownBy(() -> serviceTestHelper.주문_생성됨(orderTableId, orderLineItemDtos))
-                .isInstanceOf(CanNotMakeOrderTableException.class);
+                .isInstanceOf(CannotMakeOrderException.class);
     }
 
     @Test

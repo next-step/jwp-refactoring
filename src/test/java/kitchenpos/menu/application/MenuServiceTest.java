@@ -2,7 +2,6 @@ package kitchenpos.menu.application;
 
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
@@ -13,7 +12,6 @@ import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuDto;
 import kitchenpos.menu.dto.MenuProductDto;
 import kitchenpos.menu.exception.InvalidMenuPriceException;
-import kitchenpos.menu.exception.NotExistMenuException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.utils.ServiceTestHelper;
 import org.assertj.core.util.Lists;
@@ -101,26 +99,6 @@ class MenuServiceTest extends ServiceTest {
         테스트_메뉴_생성(menuGroup, "menu2", 5000);
         List<MenuDto> menus = menuService.list();
         assertThat(menus).hasSize(2);
-    }
-
-    @Test
-    @DisplayName("외부로부터 전달받은 메뉴 ID를 가진 메뉴들이 실제로 존재하는지 확인")
-    void 메뉴존재여부확인() {
-        MenuDto menu1 = 테스트_메뉴_생성(menuGroup, "menu1", 6000);
-        MenuDto menu2 = 테스트_메뉴_생성(menuGroup, "menu2", 5000);
-        List<Long> menuIds = Lists.newArrayList(menu1.getId(), menu2.getId());
-        assertThatNoException()
-                .isThrownBy(() -> menuService.validateAllMenusExist(menuIds));
-    }
-
-    @Test
-    @DisplayName("외부로부터 전달받은 메뉴 ID를 가진 메뉴들이 존재하지 않는경우 예외 발생")
-    void 메뉴존재여부확인_실패() {
-        MenuDto menu1 = 테스트_메뉴_생성(menuGroup, "menu1", 6000);
-        MenuDto menu2 = 테스트_메뉴_생성(menuGroup, "menu2", 5000);
-        List<Long> menuIds = Lists.newArrayList(-1L);
-        assertThatThrownBy(() -> menuService.validateAllMenusExist(menuIds))
-                .isInstanceOf(NotExistMenuException.class);
     }
 
     private MenuDto 테스트_메뉴_생성(MenuGroup menuGroup, String menuName, int menuPrice) {

@@ -6,7 +6,6 @@ import java.util.List;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuDto;
-import kitchenpos.menu.exception.NotExistMenuException;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import org.springframework.stereotype.Service;
@@ -40,12 +39,5 @@ public class MenuService {
     public List<MenuDto> list() {
         List<Menu> menus = menuRepository.findAll();
         return menus.stream().map(MenuDto::of).collect(toList());
-    }
-
-    public void validateAllMenusExist(List<Long> orderItemMenuIds) {
-        if (orderItemMenuIds.size() == menuRepository.countByIdIn(orderItemMenuIds)) {
-            return;
-        }
-        throw new NotExistMenuException();
     }
 }
