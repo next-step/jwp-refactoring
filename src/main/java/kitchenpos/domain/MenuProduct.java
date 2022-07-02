@@ -1,25 +1,33 @@
 package kitchenpos.domain;
 
 import java.util.Objects;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
+@Entity
 public class MenuProduct {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
-    private Long menuId;
     private Long productId;
     private long quantity;
+    @ManyToOne
+    private Menu menu;
 
-    public MenuProduct() {
+    protected MenuProduct() {
     }
 
-    public MenuProduct(Long seq, Long menuId, Long productId, long quantity) {
+    public MenuProduct(Long seq, Long productId, long quantity) {
         this.seq = seq;
-        this.menuId = menuId;
         this.productId = productId;
         this.quantity = quantity;
     }
 
-    public MenuProduct(Long menuId, Long productId, long quantity) {
-        this.menuId = menuId;
+    public MenuProduct(Long productId, long quantity) {
         this.productId = productId;
         this.quantity = quantity;
     }
@@ -30,14 +38,6 @@ public class MenuProduct {
 
     public void setSeq(final Long seq) {
         this.seq = seq;
-    }
-
-    public Long getMenuId() {
-        return menuId;
-    }
-
-    public void changeMenuId(final Long menuId) {
-        this.menuId = menuId;
     }
 
     public Long getProductId() {
@@ -65,11 +65,11 @@ public class MenuProduct {
             return false;
         }
         MenuProduct that = (MenuProduct) o;
-        return quantity == that.quantity && Objects.equals(seq, that.seq) && Objects.equals(menuId, that.menuId) && Objects.equals(productId, that.productId);
+        return quantity == that.quantity && Objects.equals(seq, that.seq) && Objects.equals(productId, that.productId) && Objects.equals(menu, that.menu);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(seq, menuId, productId, quantity);
+        return Objects.hash(seq, productId, quantity, menu);
     }
 }
