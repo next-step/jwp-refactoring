@@ -1,14 +1,4 @@
-package kitchenpos.table.ui;
-
-import kitchenpos.common.ui.BaseRestControllerTest;
-import kitchenpos.table.application.TableGroupService;
-import kitchenpos.table.dto.TableGroupRequestDto;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+package kitchenpos.table_group.ui;
 
 import static kitchenpos.common.fixture.TableGroupFixture.단체_응답_데이터_생성;
 import static kitchenpos.common.fixture.TableGroupFixture.단체_지정_데이터_생성;
@@ -19,6 +9,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import kitchenpos.common.ui.BaseRestControllerTest;
+import kitchenpos.table.dto.TableGroupRequestDto;
+import kitchenpos.table_group.application.TableGroupService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 class TableGroupRestControllerTest extends BaseRestControllerTest {
 

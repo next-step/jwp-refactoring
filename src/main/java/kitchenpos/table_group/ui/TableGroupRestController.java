@@ -1,12 +1,15 @@
-package kitchenpos.table.ui;
-
-import kitchenpos.table.application.TableGroupService;
-import kitchenpos.table.dto.TableGroupRequestDto;
-import kitchenpos.table.dto.TableGroupResponseDto;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+package kitchenpos.table_group.ui;
 
 import java.net.URI;
+import kitchenpos.table.dto.TableGroupRequestDto;
+import kitchenpos.table.dto.TableGroupResponseDto;
+import kitchenpos.table_group.application.TableGroupService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class TableGroupRestController {

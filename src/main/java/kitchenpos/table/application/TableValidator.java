@@ -1,11 +1,11 @@
 package kitchenpos.table.application;
 
+import java.util.List;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table_group.domain.TableGroup;
 
 public interface TableValidator {
 
     void checkValidChangeEmpty(OrderTable orderTable);
 
-    void checkValidUngroup(TableGroup tableGroup);
+    void checkValidUngroup(List<Long> orderTableIds);
 }

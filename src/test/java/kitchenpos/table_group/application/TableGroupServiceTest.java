@@ -1,21 +1,4 @@
-package kitchenpos.table.application;
-
-import kitchenpos.order.application.TableValidator;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.dto.TableGroupRequestDto;
-import kitchenpos.table.dto.TableGroupResponseDto;
-import kitchenpos.table.repository.OrderTableRepository;
-import kitchenpos.table.repository.TableGroupRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Arrays;
-import java.util.Optional;
+package kitchenpos.table_group.application;
 
 import static kitchenpos.common.fixture.OrderTableFixture.주문테이블_데이터_생성;
 import static kitchenpos.common.fixture.TableGroupFixture.단체_데이터_생성;
@@ -25,13 +8,29 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
+import java.util.Arrays;
+import java.util.Optional;
+import kitchenpos.order.application.TableValidatorImpl;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.TableGroupRequestDto;
+import kitchenpos.table.dto.TableGroupResponseDto;
+import kitchenpos.table.repository.OrderTableRepository;
+import kitchenpos.table_group.domain.TableGroup;
+import kitchenpos.table_group.repository.TableGroupRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
 
     private TableGroupService tableGroupService;
 
     @Mock
-    private TableValidator tableValidator;
+    private TableValidatorImpl tableValidator;
 
     @Mock
     private OrderTableRepository orderTableRepository;

@@ -1,9 +1,7 @@
 package kitchenpos.table.dto;
 
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.TableGroup;
-
 import java.util.Objects;
+import kitchenpos.table.domain.OrderTable;
 
 public class OrderTableResponseDto {
     private Long id;
@@ -12,15 +10,15 @@ public class OrderTableResponseDto {
     private Long tableGroupId;
 
     public OrderTableResponseDto(OrderTable orderTable) {
-        this(orderTable.getId(), orderTable.getNumberOfGuests(), orderTable.isEmpty(), orderTable.getTableGroup());
+        this(orderTable.getId(), orderTable.getNumberOfGuests(), orderTable.isEmpty(), orderTable.getTableGroupId());
     }
 
-    public OrderTableResponseDto(Long id, int numberOfGuests, boolean empty, TableGroup tableGroup) {
+    public OrderTableResponseDto(Long id, int numberOfGuests, boolean empty, Long tableGroupId) {
         this.id = id;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
-        if (Objects.nonNull(tableGroup)) {
-            this.tableGroupId = tableGroup.getId();
+        if (Objects.nonNull(tableGroupId)) {
+            this.tableGroupId = tableGroupId;
         }
     }
 

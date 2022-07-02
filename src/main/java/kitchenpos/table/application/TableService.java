@@ -1,16 +1,14 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.application.TableValidator;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.persistence.EntityNotFoundException;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequestDto;
 import kitchenpos.table.dto.OrderTableResponseDto;
 import kitchenpos.table.repository.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityNotFoundException;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class TableService {

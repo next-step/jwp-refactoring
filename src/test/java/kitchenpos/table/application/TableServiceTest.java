@@ -1,6 +1,18 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.application.TableValidator;
+import static kitchenpos.common.fixture.OrderTableFixture.주문테이블_데이터_생성;
+import static kitchenpos.common.fixture.OrderTableFixture.주문테이블_요청_데이터_생성;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import javax.persistence.EntityNotFoundException;
+import kitchenpos.order.application.TableValidatorImpl;
 import kitchenpos.table.dto.OrderTableRequestDto;
 import kitchenpos.table.dto.OrderTableResponseDto;
 import kitchenpos.table.repository.OrderTableRepository;
@@ -11,21 +23,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.persistence.EntityNotFoundException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import static kitchenpos.common.fixture.OrderTableFixture.주문테이블_데이터_생성;
-import static kitchenpos.common.fixture.OrderTableFixture.주문테이블_요청_데이터_생성;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-
 @ExtendWith(MockitoExtension.class)
-class TableServiceTest {
+class ㅅTableServiceTest {
 
     private TableService tableService;
 
@@ -33,7 +32,7 @@ class TableServiceTest {
     private OrderTableRepository orderTableRepository;
 
     @Mock
-    private TableValidator tableValidator;
+    private TableValidatorImpl tableValidator;
 
     @BeforeEach
     void setUp() {

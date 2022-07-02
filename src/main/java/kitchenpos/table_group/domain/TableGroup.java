@@ -1,12 +1,17 @@
-package kitchenpos.table.domain;
+package kitchenpos.table_group.domain;
 
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import kitchenpos.table.domain.OrderTable;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -59,12 +64,16 @@ public class TableGroup {
     }
 
     private void checkEmptyOrGrouped(OrderTable orderTable) {
-        if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroup())) {
+        if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroupId())) {
             throw new IllegalArgumentException();
         }
     }
 
     public void ungroup() {
         orderTables.ungroup();
+    }
+
+    public List<Long> getTableIds() {
+        return orderTables.getIds();
     }
 }

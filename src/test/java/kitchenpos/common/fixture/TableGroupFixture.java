@@ -1,11 +1,10 @@
 package kitchenpos.common.fixture;
 
-import kitchenpos.table.domain.TableGroup;
-import kitchenpos.table.dto.TableGroupRequestDto;
-import kitchenpos.table.dto.TableGroupResponseDto;
-
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import kitchenpos.table.dto.TableGroupRequestDto;
+import kitchenpos.table.dto.TableGroupResponseDto;
+import kitchenpos.table_group.domain.TableGroup;
 
 public class TableGroupFixture {
 

@@ -1,17 +1,16 @@
-package kitchenpos.table.application;
+package kitchenpos.table_group.application;
 
-import kitchenpos.order.application.TableValidator;
+import java.util.List;
+import javax.persistence.EntityNotFoundException;
+import kitchenpos.table.application.TableValidator;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.TableGroupRequestDto;
 import kitchenpos.table.dto.TableGroupResponseDto;
 import kitchenpos.table.repository.OrderTableRepository;
-import kitchenpos.table.repository.TableGroupRepository;
+import kitchenpos.table_group.domain.TableGroup;
+import kitchenpos.table_group.repository.TableGroupRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityNotFoundException;
-import java.util.List;
 
 @Service
 public class TableGroupService {
@@ -45,8 +44,8 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        TableGroup tableGroup = tableGroupRepository.findById(tableGroupId).orElseThrow(EntityNotFoundException::new);
-        tableValidator.checkValidUngroup(tableGroup);
+        TableGroup tableGroup = tableGroupRepository.findById(tableGroupId).orElseThrow(EntityNotFoundException::new);;
+        tableValidator.checkValidUngroup(tableGroup.getTableIds());
         tableGroup.ungroup();
     }
 }
