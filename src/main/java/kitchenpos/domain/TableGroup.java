@@ -34,7 +34,7 @@ public class TableGroup {
         return createdDate;
     }
 
-    public void createdDate(final LocalDateTime createdDate) {
+    public void create(final LocalDateTime createdDate) {
         this.createdDate = createdDate;
     }
 
@@ -43,6 +43,13 @@ public class TableGroup {
     }
 
     public void changeOrderTables(final List<OrderTable> orderTables) {
+        this.orderTables.validateTablesSize(orderTables.size());
+
         this.orderTables = new OrderTables(orderTables);
+        this.orderTables.validateCanGroup();
+    }
+
+    public List<Long> getOrderTableIds() {
+        return orderTables.getOrderTableIds();
     }
 }

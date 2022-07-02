@@ -56,7 +56,7 @@ class OrderTablesTest {
                 .hasMessage("빈 테이블이 아니거나 이미 단체가 지정되었습니다.");
     }
 
-    private OrderTables createOrderTables() {
+    public static OrderTables createOrderTables() {
         return new OrderTables(
                 Arrays.asList(
                         new OrderTable(1L),
@@ -70,6 +70,15 @@ class OrderTablesTest {
                 Arrays.asList(
                         EMPTY_TABLE,
                         new OrderTable(2L)
+                )
+        );
+    }
+
+    public static OrderTables createGroupingOrderTables() {
+        return new OrderTables(
+                Arrays.asList(
+                        new OrderTable(1, true),
+                        new OrderTable(2, true)
                 )
         );
     }
