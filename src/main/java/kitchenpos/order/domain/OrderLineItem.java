@@ -1,7 +1,5 @@
 package kitchenpos.order.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import kitchenpos.menu.domain.Menu;
 
 import javax.persistence.*;

@@ -16,10 +16,6 @@ public class MenuProducts {
         elements = new ArrayList<>();
     }
 
-    public MenuProducts(List<MenuProduct> elements) {
-        this.elements = elements;
-    }
-
     public MenuProducts(Menu menu, List<MenuProduct> elements) {
         this.elements = elements;
         for (final MenuProduct menuProduct : this.elements) {
