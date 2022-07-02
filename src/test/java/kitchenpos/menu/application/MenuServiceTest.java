@@ -10,12 +10,9 @@ import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menugroup.exception.NoSuchMenuGroupException;
 import kitchenpos.product.application.ProductService;
-import kitchenpos.product.domain.ProductPrice;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.exception.NoSuchProductException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,10 +22,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static kitchenpos.utils.fixture.MenuFixtureFactory.createMenu;
 import static kitchenpos.utils.fixture.MenuGroupFixtureFactory.createMenuGroup;

@@ -20,6 +20,12 @@ public class MenuProduct {
     protected MenuProduct() {
     }
 
+    public MenuProduct(Long seq, Product product, int quantity) {
+        this.seq = seq;
+        this.product = product;
+        this.quantity = quantity;
+    }
+
     private MenuProduct(Product product, int quantity) {
         this.product = product;
         this.quantity = quantity;
@@ -27,6 +33,10 @@ public class MenuProduct {
 
     public static MenuProduct of(Product product, int quantity){
         return new MenuProduct(product, quantity);
+    }
+
+    public static MenuProduct of(Long seq, Product product, int quantity) {
+        return new MenuProduct(seq, product, quantity);
     }
 
     public void registerMenu(Menu menu) {

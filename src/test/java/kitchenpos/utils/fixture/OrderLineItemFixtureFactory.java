@@ -8,4 +8,8 @@ public class OrderLineItemFixtureFactory {
     public static OrderLineItem createOrderLineItem(Menu menu, int quantity) {
         return OrderLineItem.of(menu, quantity);
     }
+
+    public static OrderLineItem createOrderLineItem(Long seq, Menu menu, int quantity) {
+        return OrderLineItem.of(seq, menu, quantity);
+    }
 }

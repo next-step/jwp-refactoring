@@ -8,4 +8,8 @@ public class MenuProductFixtureFactory {
     public static MenuProduct createMenuProduct(Product product, int quantity) {
         return MenuProduct.of(product, quantity);
     }
+
+    public static MenuProduct createMenuProduct(Long seq, Product product, int quantity) {
+        return MenuProduct.of(seq, product, quantity);
+    }
 }

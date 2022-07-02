@@ -20,18 +20,23 @@ public class OrderLineItem {
     protected OrderLineItem() {
     }
 
-    private OrderLineItem(Order order, Menu menu, int quantity) {
-        this.order = order;
+    public OrderLineItem(Long seq, Menu menu, int quantity) {
+        this.seq = seq;
         this.menu = menu;
         this.quantity = quantity;
     }
 
-    public static OrderLineItem of(Order order, Menu menu, int quantity) {
-        return new OrderLineItem(order, menu, quantity);
+    private OrderLineItem(Menu menu, int quantity) {
+        this.menu = menu;
+        this.quantity = quantity;
+    }
+
+    public static OrderLineItem of(Long seq, Menu menu, int quantity) {
+        return new OrderLineItem(seq, menu, quantity);
     }
 
     public static OrderLineItem of(Menu menu, int quantity) {
-        return new OrderLineItem(null, menu, quantity);
+        return new OrderLineItem(menu, quantity);
     }
 
     public void registerOrder(Order order) {
