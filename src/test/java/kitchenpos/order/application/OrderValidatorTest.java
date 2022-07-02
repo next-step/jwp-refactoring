@@ -1,5 +1,17 @@
 package kitchenpos.order.application;
 
+import static kitchenpos.common.fixture.OrderFixture.주문_요청_데이터_생성;
+import static kitchenpos.common.fixture.OrderLineItemFixture.주문항목_요청_데이터_생성;
+import static kitchenpos.common.fixture.OrderTableFixture.주문테이블_데이터_생성;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import javax.persistence.EntityNotFoundException;
 import kitchenpos.order.dto.OrderLineItemRequestDto;
 import kitchenpos.order.dto.OrderRequestDto;
 import kitchenpos.table.domain.OrderTable;
@@ -10,19 +22,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import javax.persistence.EntityNotFoundException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import static kitchenpos.common.fixture.OrderFixture.주문_요청_데이터_생성;
-import static kitchenpos.common.fixture.OrderLineItemFixture.주문항목_요청_데이터_생성;
-import static kitchenpos.common.fixture.OrderTableFixture.주문테이블_데이터_생성;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class OrderValidatorTest {
@@ -62,7 +61,9 @@ class OrderValidatorTest {
         given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
 
         //when //then
-        assertThatIllegalArgumentException().isThrownBy(() -> orderValidator.checkCreatable(request));
+        assertThatIllegalArgumentException()
+            .isThrownBy(() -> orderValidator.checkCreatable(request))
+            .withMessage("orderTable must be notEmpty");
     }
 
 }

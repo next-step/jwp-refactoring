@@ -1,14 +1,15 @@
 package kitchenpos.order.application;
 
+import javax.persistence.EntityNotFoundException;
 import kitchenpos.order.dto.OrderRequestDto;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.repository.OrderTableRepository;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
-
 @Service
 public class OrderValidator {
+
+    private static final String EMPTY_TABLE_EXCEPTION_MESSAGE = "orderTable must be notEmpty";
 
     private final OrderTableRepository orderTableRepository;
 
@@ -19,7 +20,7 @@ public class OrderValidator {
     public void checkCreatable(OrderRequestDto request) {
         OrderTable orderTable = orderTableRepository.findById(request.getOrderTableId()).orElseThrow(EntityNotFoundException::new);
         if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(EMPTY_TABLE_EXCEPTION_MESSAGE);
         }
     }
 }
