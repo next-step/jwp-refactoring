@@ -1,11 +1,9 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.exception.ErrorMessage;
 import kitchenpos.exception.IllegalPriceException;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import java.util.List;
 
 @Embeddable
 public class MenuPrice {

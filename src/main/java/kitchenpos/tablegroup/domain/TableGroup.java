@@ -1,11 +1,10 @@
 package kitchenpos.tablegroup.domain;
 
-import kitchenpos.exception.ErrorMessage;
-import kitchenpos.order.exception.IllegalOrderException;
-import kitchenpos.ordertable.exception.IllegalOrderTableException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.exception.IllegalOrderException;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.exception.IllegalOrderTableException;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
