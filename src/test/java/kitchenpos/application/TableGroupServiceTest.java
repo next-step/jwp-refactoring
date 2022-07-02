@@ -16,10 +16,10 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
@@ -90,9 +90,9 @@ class TableGroupServiceTest {
     @Test
     void 조리_또는_식사_중인_주문_테이블이_있을_경우_단체_지정을_해제할_수_없다() {
         // given
-        given(orderTableRepository.findAllByTableGroupId(1L))
-                .willReturn(createOrderTables());
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(createOrderTableIds(), createOrderStatus()))
+        given(tableGroupRepository.findById(1L))
+                .willReturn(Optional.of(new TableGroup(createOrderTables())));
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(createOrderTableIds(), OrderStatus.findNotCompletionStatus()))
                 .willReturn(true);
 
         // when & then
@@ -105,21 +105,18 @@ class TableGroupServiceTest {
     @Test
     void 단체_지정을_해제할_수_있다() {
         // given
-        List<OrderTable> orderTables = createOrderTables();
+        Optional<TableGroup> tableGroup = Optional.of(new TableGroup(createOrderTables()));
 
-        given(orderTableRepository.findAllByTableGroupId(1L))
-                .willReturn(orderTables);
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(createOrderTableIds(), createOrderStatus()))
+        given(tableGroupRepository.findById(1L))
+                .willReturn(tableGroup);
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(createOrderTableIds(), OrderStatus.findNotCompletionStatus()))
                 .willReturn(false);
 
         // when
         tableGroupService.ungroup(1L);
 
         // then
-        assertAll(
-                () -> then(orderTableRepository).should().save(orderTables.get(0)),
-                () -> then(orderTableRepository).should().save(orderTables.get(1))
-        );
+        then(tableGroupRepository).should().save(tableGroup.get());
     }
 
     private List<OrderTable> createOrderTables() {
@@ -138,9 +135,5 @@ class TableGroupServiceTest {
 
     private List<Long> createOrderTableIds() {
         return Arrays.asList(1L, 2L);
-    }
-
-    private List<String> createOrderStatus() {
-        return Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
     }
 }
