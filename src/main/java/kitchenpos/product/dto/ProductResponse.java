@@ -22,10 +22,6 @@ public class ProductResponse {
         this.price = product.getPriceValue();
     }
 
-    public static ProductResponse from(Product product) {
-        return new ProductResponse(product);
-    }
-
     public Long getId() {
         return id;
     }

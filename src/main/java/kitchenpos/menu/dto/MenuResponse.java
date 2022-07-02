@@ -23,12 +23,12 @@ public class MenuResponse {
         this.price = price;
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts.stream()
-                .map(MenuProductResponse::from)
+                .map(MenuProductResponse::new)
                 .collect(Collectors.toList());
     }
 
-    public static MenuResponse from(Menu menu) {
-        return new MenuResponse(menu.getId(), menu.getName(), menu.getPriceBigDecimal(), menu.getMenuGroup().getId(), menu.getMenuProducts());
+    public MenuResponse(Menu menu) {
+        this(menu.getId(), menu.getName(), menu.getPriceBigDecimal(), menu.getMenuGroup().getId(), menu.getMenuProducts());
     }
 
     public Long getId() {

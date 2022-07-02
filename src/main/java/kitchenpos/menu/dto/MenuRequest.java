@@ -18,10 +18,6 @@ public class MenuRequest {
         this.menuProducts = menuProducts;
     }
 
-    public static MenuRequest from(String name, Integer price, Long menuGroupId, List<MenuProductRequest> menuProducts) {
-        return new MenuRequest(name, price, menuGroupId, menuProducts);
-    }
-
     public String getName() {
         return name;
     }

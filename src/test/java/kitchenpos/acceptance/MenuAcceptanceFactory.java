@@ -16,7 +16,7 @@ public class MenuAcceptanceFactory {
 
 
     public static ExtractableResponse<Response> 메뉴_등록_요청(String 이름, Integer 가격, Long 메뉴그룹Id, List<MenuProductRequest> 메뉴상품들) {
-        MenuRequest menuRequest = MenuRequest.from(이름, 가격, 메뉴그룹Id, 메뉴상품들);
+        MenuRequest menuRequest = new MenuRequest(이름, 가격, 메뉴그룹Id, 메뉴상품들);
 
         return RestAssured
                 .given().log().all()

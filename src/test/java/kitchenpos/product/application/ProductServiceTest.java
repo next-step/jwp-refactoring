@@ -44,7 +44,7 @@ class ProductServiceTest {
     void 상품을_등록할_수_있다() {
         given(productRepository.save(any())).willReturn(지코바치킨);
 
-        ProductResponse productResponse = productService.create(ProductRequest.from(지코바치킨));
+        ProductResponse productResponse = productService.create(new ProductRequest(지코바치킨));
 
         assertAll(
                 () -> assertThat(productResponse.getName()).isEqualTo(지코바치킨.getName()),

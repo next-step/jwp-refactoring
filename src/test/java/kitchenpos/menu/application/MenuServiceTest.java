@@ -64,7 +64,7 @@ class MenuServiceTest {
 
     @Test
     void 메뉴를_등록할_수_있다() {
-        MenuRequest 메뉴요청 = MenuRequest.from(오늘의메뉴.getName(), 지코바치킨.getPriceValue(), 메뉴그룹.getId(), Arrays.asList(new MenuProductRequest(지코바치킨.getId(), 1L)));
+        MenuRequest 메뉴요청 = new MenuRequest(오늘의메뉴.getName(), 지코바치킨.getPriceValue(), 메뉴그룹.getId(), Arrays.asList(new MenuProductRequest(지코바치킨.getId(), 1L)));
         given(menuGroupRepository.findById(오늘의메뉴.getMenuGroup().getId())).willReturn(Optional.of(메뉴그룹));
         given(productRepository.findById(메뉴상품.getProduct().getId())).willReturn(Optional.of(지코바치킨));
         given(menuRepository.save(any())).willReturn(오늘의메뉴);
@@ -80,7 +80,7 @@ class MenuServiceTest {
     @Test
     void 메뉴그룹이_존재하지_않으면_메뉴를_등록할_수_없다() {
         long 존재하지않는_메뉴그룹ID = 1000L;
-        MenuRequest menuRequest = MenuRequest.from("메뉴이름", 1000, 존재하지않는_메뉴그룹ID, Arrays.asList());
+        MenuRequest menuRequest = new MenuRequest("메뉴이름", 1000, 존재하지않는_메뉴그룹ID, Arrays.asList());
         given(menuGroupRepository.findById(any())).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> menuService.create(menuRequest))
@@ -90,7 +90,7 @@ class MenuServiceTest {
     @Test
     void 상품이_존재하지않으면_메뉴를_등록할_수_없다() {
         MenuProductRequest 존재하지않는_메뉴상품 = new MenuProductRequest(999L, 1L);
-        MenuRequest menuRequest = MenuRequest.from("메뉴이름", 1000, 메뉴그룹.getId(), Arrays.asList(존재하지않는_메뉴상품));
+        MenuRequest menuRequest = new MenuRequest("메뉴이름", 1000, 메뉴그룹.getId(), Arrays.asList(존재하지않는_메뉴상품));
         given(menuGroupRepository.findById(menuRequest.getMenuGroupId())).willReturn(Optional.of(메뉴그룹));
         given(productRepository.findById(any())).willReturn(Optional.empty());
 

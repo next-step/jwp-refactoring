@@ -23,7 +23,7 @@ class MenuTest {
         MenuProduct 메뉴상품2 = 메뉴상품생성(1L, 상품2, 1L);
         List<MenuProduct> menuProducts = Arrays.asList(메뉴상품1, 메뉴상품2);
 
-        Menu menu = 메뉴생성(1L,"name", BigDecimal.valueOf(10000), menuGroup,menuProducts);
+        Menu menu = 메뉴생성(1L, "name", BigDecimal.valueOf(10000), menuGroup, menuProducts);
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> menu.addMenuProducts(menuProducts));

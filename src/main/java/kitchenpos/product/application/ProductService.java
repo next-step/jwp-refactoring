@@ -21,7 +21,7 @@ public class ProductService {
     @Transactional
     public ProductResponse create(final ProductRequest productRequest) {
         Product save = repository.save(new Product(productRequest));
-        return ProductResponse.from(save);
+        return new ProductResponse(save);
     }
 
     public List<Product> list() {

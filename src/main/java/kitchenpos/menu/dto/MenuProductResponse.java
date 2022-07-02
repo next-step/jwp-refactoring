@@ -18,8 +18,8 @@ public class MenuProductResponse {
         this.quantity = quantity;
     }
 
-    public static MenuProductResponse from(MenuProduct menuProduct) {
-        return new MenuProductResponse(menuProduct.getSeq(), menuProduct.getMenu().getId(), menuProduct.getProduct().getId(), menuProduct.getQuantity());
+    public MenuProductResponse(MenuProduct menuProduct) {
+        this(menuProduct.getSeq(), menuProduct.getMenu().getId(), menuProduct.getProduct().getId(), menuProduct.getQuantity());
     }
 
     public Long getProductId() {
@@ -30,11 +30,4 @@ public class MenuProductResponse {
         return quantity;
     }
 
-    @Override
-    public String toString() {
-        return "MenuProductRequest{" +
-                "productId=" + productId +
-                ", quantity=" + quantity +
-                '}';
-    }
 }
