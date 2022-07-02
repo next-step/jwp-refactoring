@@ -51,7 +51,7 @@ class OrderTablesTest {
     void 빈_테이블이_아니거나_이미_단체가_지정되었으면_단체지정을_할_수_없다() {
         // when & then
         assertThatThrownBy(() ->
-                createEmptyOrderTables().validateCanSave()
+                createEmptyOrderTables().validateCanGroup()
         ).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("빈 테이블이 아니거나 이미 단체가 지정되었습니다.");
     }

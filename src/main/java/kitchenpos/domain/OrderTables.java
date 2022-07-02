@@ -49,11 +49,9 @@ public class OrderTables {
         }
     }
 
-    public void validateCanSave() {
+    public void validateCanGroup() {
         for (final OrderTable orderTable : elements) {
-            if (!orderTable.isEmpty() || Objects.nonNull(orderTable.getTableGroupId())) {
-                throw new IllegalArgumentException("빈 테이블이 아니거나 이미 단체가 지정되었습니다.");
-            }
+            orderTable.validateCanGroup();
         }
     }
 }

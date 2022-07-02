@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.Objects;
 
 @Entity
 public class OrderTable {
@@ -36,6 +37,12 @@ public class OrderTable {
     public void validateEmpty() {
         if (empty) {
             throw new IllegalArgumentException("빈 테이블은 주문을 할 수 없습니다.");
+        }
+    }
+
+    public void validateCanGroup() {
+        if (!empty || Objects.nonNull(tableGroupId)) {
+            throw new IllegalArgumentException("빈 테이블이 아니거나 이미 단체가 지정되었습니다.");
         }
     }
 
