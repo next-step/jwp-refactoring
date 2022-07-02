@@ -112,14 +112,14 @@ class OrderServiceTest {
         given(orderDao.save(order)).willReturn(order);
 
         Order savedOrder = orderService.create(order);
-        assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
+        assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
     }
 
     @Test
     @DisplayName("전체 주문 내역 보기")
     public void listOrders() {
-        Order orderCooking = new Order(1L, 1L, OrderStatus.COOKING.name(), LocalDateTime.now(), null);
-        Order orderMeal = new Order(2L, 2L, OrderStatus.MEAL.name(), LocalDateTime.now(), null);
+        Order orderCooking = new Order(1L, 1L, OrderStatus.COOKING, LocalDateTime.now(), null);
+        Order orderMeal = new Order(2L, 2L, OrderStatus.MEAL, LocalDateTime.now(), null);
 
         given(orderDao.findAll()).willReturn(Arrays.asList(orderCooking, orderMeal));
 
@@ -131,7 +131,7 @@ class OrderServiceTest {
     public void changeStatusNotExitsOrder() {
         given(orderDao.findById(any())).willReturn(Optional.empty());
 
-        order.setOrderStatus(OrderStatus.MEAL.name());
+        order.setOrderStatus(OrderStatus.MEAL);
 
         assertThatThrownBy(() -> orderService.changeOrderStatus(1L, order)).isInstanceOf(
                 IllegalArgumentException.class);
@@ -140,7 +140,7 @@ class OrderServiceTest {
     @Test
     @DisplayName("완료단계 주문 건 상태 변경 시도시 에러 반환")
     public void changeStatusInCompletion() {
-        order.setOrderStatus(OrderStatus.COMPLETION.name());
+        order.setOrderStatus(OrderStatus.COMPLETION);
 
         given(orderDao.findById(order.getId())).willReturn(Optional.of(order));
 
@@ -151,10 +151,10 @@ class OrderServiceTest {
     @Test
     @DisplayName("주문 상태 변경 정상 처리")
     public void changeStatusSuccess() {
-        order.setOrderStatus(OrderStatus.COOKING.name());
+        order.setOrderStatus(OrderStatus.COOKING);
 
         Order changeOrder = new Order();
-        changeOrder.setOrderStatus(OrderStatus.MEAL.name());
+        changeOrder.setOrderStatus(OrderStatus.MEAL);
 
         given(orderDao.findById(order.getId())).willReturn(Optional.of(order));
 

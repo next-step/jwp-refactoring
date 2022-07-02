@@ -20,7 +20,6 @@ public class Menu {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private MenuGroup menuGroup;
-//    private Long menuGroupId;
 
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
@@ -29,12 +28,10 @@ public class Menu {
     }
 
     public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
-//    public Menu(Long id, String name, BigDecimal price, Long menuGroupId, MenuProducts menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
-//        this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
     }
 
@@ -61,10 +58,6 @@ public class Menu {
     public void setPrice(final BigDecimal price) {
         this.price = price;
     }
-
-//    public void setMenuGroupId(final Long menuGroupId) {
-//        this.menuGroupId = menuGroupId;
-//    }
 
     public MenuGroup getMenuGroup() {
         return menuGroup;

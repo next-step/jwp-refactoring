@@ -62,7 +62,8 @@ public class OrderService {
         }
 
         order.setOrderTableId(orderTable.getId());
-        order.setOrderStatus(OrderStatus.COOKING.name());
+        order.setOrderStatus(OrderStatus.COOKING);
+//        order.setOrderStatus(OrderStatus.COOKING.name());
         order.setOrderedTime(LocalDateTime.now());
 
         final Order savedOrder = orderDao.save(order);
@@ -94,12 +95,15 @@ public class OrderService {
         final Order savedOrder = orderDao.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        if (Objects.equals(OrderStatus.COMPLETION.name(), savedOrder.getOrderStatus())) {
+        if (Objects.equals(OrderStatus.COMPLETION, savedOrder.getOrderStatus())) {
+//        if (Objects.equals(OrderStatus.COMPLETION.name(), savedOrder.getOrderStatus())) {
             throw new IllegalArgumentException();
         }
 
-        final OrderStatus orderStatus = OrderStatus.valueOf(order.getOrderStatus());
-        savedOrder.setOrderStatus(orderStatus.name());
+        final OrderStatus orderStatus = order.getOrderStatus();
+//        final OrderStatus orderStatus = OrderStatus.valueOf(order.getOrderStatus());
+        savedOrder.setOrderStatus(orderStatus);
+//        savedOrder.setOrderStatus(orderStatus.name());
 
         orderDao.save(savedOrder);
 
