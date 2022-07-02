@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,6 +30,7 @@ public class MenuGroupServiceTest {
     MenuGroupService menuGroupService;
 
     @Test
+    @DisplayName("메뉴 그룹 추가")
     void create() {
         // given
         given(menuGroupDao.save(any()))
@@ -40,6 +42,7 @@ public class MenuGroupServiceTest {
     }
 
     @Test
+    @DisplayName("메뉴 그룹 조회")
     void list() {
         // given
         given(menuGroupDao.findAll())

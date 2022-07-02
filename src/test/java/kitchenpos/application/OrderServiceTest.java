@@ -10,6 +10,7 @@ import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -59,6 +60,7 @@ class OrderServiceTest {
     }
 
     @Test
+    @DisplayName("주문 추가")
     void create() {
         // given
         given(menuDao.countByIdIn(any()))
@@ -77,6 +79,7 @@ class OrderServiceTest {
     }
 
     @Test
+    @DisplayName("메뉴 조회")
     void list() {
         // given
         given(orderDao.findAll())
@@ -90,6 +93,7 @@ class OrderServiceTest {
     }
 
     @Test
+    @DisplayName("메뉴 주문 상태 변경")
     void changeOrderStatus() {
         // given
         given(orderDao.findById(any()))

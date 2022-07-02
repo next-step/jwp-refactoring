@@ -7,6 +7,7 @@ import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -41,6 +42,7 @@ class TableGroupServiceTest {
     TableGroupService tableGroupService;
 
     @Test
+    @DisplayName("테이블 병합")
     void create() {
         // given
         given(orderTableDao.findAllByIdIn(any()))
@@ -57,6 +59,7 @@ class TableGroupServiceTest {
     }
 
     @Test
+    @DisplayName("테이블 분리")
     void ungroup() {
         // given
         given(orderTableDao.findAllByTableGroupId(그룹_테이블.getId()))

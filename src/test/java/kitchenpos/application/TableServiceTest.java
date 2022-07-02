@@ -4,6 +4,7 @@ import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderTable;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -47,6 +48,7 @@ public class TableServiceTest {
     }
 
     @Test
+    @DisplayName("테이블 추가")
     void create() {
         // given
         orderTableSave(orderTableDao, new OrderTable());
@@ -57,6 +59,7 @@ public class TableServiceTest {
     }
 
     @Test
+    @DisplayName("테이블 전체 조회")
     void list() {
         // given
         orderTableFindyAll();
@@ -67,6 +70,7 @@ public class TableServiceTest {
     }
 
     @Test
+    @DisplayName("테이블 빈 값 상태 변경")
     void changeEmpty() {
         // given
         orderTableFindById(orderTableDao, 일번_테이블);
@@ -83,6 +87,7 @@ public class TableServiceTest {
     }
 
     @Test
+    @DisplayName("테이블 사람수 변경")
     void changeNumberOfGuests() {
         // given
         orderTableFindById(orderTableDao, 일번_테이블);

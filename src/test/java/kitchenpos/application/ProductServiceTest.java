@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -37,6 +38,7 @@ public class ProductServiceTest {
     ProductService productService;
 
     @Test
+    @DisplayName("상품 추가")
     void create() {
         // given
         given(productDao.save(any()))
@@ -48,6 +50,7 @@ public class ProductServiceTest {
     }
 
     @Test
+    @DisplayName("상품 전체 조회")
     void list() {
         // given
         given(productDao.findAll())
