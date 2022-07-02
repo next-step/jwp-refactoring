@@ -88,6 +88,7 @@ class MenuServiceTest {
         // given
         A_세트 = new Menu(1L, "A세트", BigDecimal.valueOf(5000), 1L, Arrays.asList(A_세트_감자_튀김, A_세트_햄버거));
         given(menuDao.findAll()).willReturn(Collections.singletonList(A_세트));
+        given(menuProductDao.findAllByMenuId(any())).willReturn(Arrays.asList(A_세트_감자_튀김, A_세트_햄버거));
 
         // when
         List<Menu> menus = menuService.list();
@@ -95,7 +96,8 @@ class MenuServiceTest {
         // then
         assertAll(
                 () -> assertThat(menus).hasSize(1),
-                () -> assertThat(menus).containsExactly(A_세트)
+                () -> assertThat(menus).containsExactly(A_세트),
+                () -> assertThat(menus.get(0).getMenuProducts()).containsExactly(A_세트_감자_튀김, A_세트_햄버거)
         );
     }
 
