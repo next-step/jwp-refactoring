@@ -29,6 +29,9 @@ public class Order {
     }
 
     public Order(OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException("주문 테이블은 빈 테이블이 아니어야 합니다.");
+        }
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderLineItems.addAll(toOrderLineItems(orderLineItems));

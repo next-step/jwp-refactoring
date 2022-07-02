@@ -62,6 +62,7 @@ public class OrderTest {
     void create() {
         // given
         List<OrderLineItemRequest> OrderLineItems = Arrays.asList(new OrderLineItemRequest(점심특선.getId(), 1));
+        주문_테이블.changeEmpty(false);
 
         // when
         Order 주문 = orderRepository.save(new Order(주문_테이블, OrderStatus.COOKING, toOrderLineItems(Arrays.asList(점심특선), OrderLineItems)));
@@ -70,11 +71,24 @@ public class OrderTest {
         assertThat(주문.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
     }
 
+    @DisplayName("빈 테이블에는 주문할 수 없다.")
+    @Test
+    void create_throwException_givenEmptyTable() {
+        // given
+        List<OrderLineItemRequest> OrderLineItems = Arrays.asList(new OrderLineItemRequest(점심특선.getId(), 1));
+
+        // when
+        // then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new Order(주문_테이블, OrderStatus.COOKING, toOrderLineItems(Arrays.asList(점심특선), OrderLineItems)));
+    }
+
     @DisplayName("주문 상태를 변경한다.")
     @Test
     void changeOrderStatus() {
         // given
         List<OrderLineItemRequest> OrderLineItems = Arrays.asList(new OrderLineItemRequest(점심특선.getId(), 1));
+        주문_테이블.changeEmpty(false);
         Order 주문 = orderRepository.save(new Order(주문_테이블, OrderStatus.COOKING, toOrderLineItems(Arrays.asList(점심특선), OrderLineItems)));
 
         // when
@@ -89,6 +103,7 @@ public class OrderTest {
     void changeOrderStatus_throwException_givenCompletion() {
         // given
         List<OrderLineItemRequest> OrderLineItems = Arrays.asList(new OrderLineItemRequest(점심특선.getId(), 1));
+        주문_테이블.changeEmpty(false);
         Order 주문 = orderRepository.save(new Order(주문_테이블, OrderStatus.COMPLETION, toOrderLineItems(Arrays.asList(점심특선), OrderLineItems)));
 
         // when
