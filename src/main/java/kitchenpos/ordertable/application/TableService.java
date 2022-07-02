@@ -35,7 +35,7 @@ public class TableService {
         validateChangeEmpty(orderTableId);
 
         savedOrderTable.changeEmpty(orderTable.isEmpty());
-        return orderTableRepository.save(savedOrderTable);
+        return savedOrderTable;
     }
 
     private void validateChangeEmpty(Long orderTableId) {
@@ -50,7 +50,7 @@ public class TableService {
         final OrderTable savedOrderTable = findOrderTableById(orderTableId);
         savedOrderTable.changeNumberOfGuests(orderTable.getNumberOfGuests());
 
-        return orderTableRepository.save(savedOrderTable);
+        return savedOrderTable;
     }
 
     private OrderTable findOrderTableById(Long orderTableId) {

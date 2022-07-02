@@ -41,7 +41,6 @@ public class TableGroupService {
         validateUngroup(tableGroup.getOrderTableIds());
 
         tableGroup.ungroupOrderTables();
-        tableGroupRepository.save(tableGroup);
     }
 
     private void validateUngroup(List<Long> orderTableIds) {

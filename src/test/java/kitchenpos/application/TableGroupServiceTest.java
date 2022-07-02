@@ -21,6 +21,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
@@ -106,7 +107,8 @@ class TableGroupServiceTest {
     @Test
     void 단체_지정을_해제할_수_있다() {
         // given
-        Optional<TableGroup> tableGroup = Optional.of(new TableGroup(createOrderTables()));
+        List<OrderTable> orderTables = createOrderTables();
+        Optional<TableGroup> tableGroup = Optional.of(new TableGroup(orderTables));
 
         given(tableGroupRepository.findById(1L))
                 .willReturn(tableGroup);
@@ -117,7 +119,10 @@ class TableGroupServiceTest {
         tableGroupService.ungroup(1L);
 
         // then
-        then(tableGroupRepository).should().save(tableGroup.get());
+        assertAll(
+                () -> assertThat(orderTables.get(0).getTableGroupId()).isNull(),
+                () ->assertThat(orderTables.get(1).getTableGroupId()).isNull()
+        );
     }
 
     private List<OrderTable> createOrderTables() {

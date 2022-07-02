@@ -98,10 +98,10 @@ class TableServiceTest {
                 .willReturn(false);
 
         // when
-        tableService.changeEmpty(1L, orderTable);
+        OrderTable result = tableService.changeEmpty(1L, orderTable);
 
         // then
-        then(orderTableRepository).should().save(orderTable);
+        assertThat(result.isEmpty()).isTrue();
     }
 
     @Test
@@ -129,15 +129,15 @@ class TableServiceTest {
     @Test
     void 방문한_손님의_수를_변경한다() {
         // given
-        OrderTable orderTable = new OrderTable(0, false);
+        OrderTable orderTable = new OrderTable(5, false);
         given(orderTableRepository.findById(1L))
                 .willReturn(Optional.of(orderTable));
 
         // when
-        tableService.changeNumberOfGuests(1L, orderTable);
+        OrderTable result = tableService.changeNumberOfGuests(1L, orderTable);
 
         // then
-        then(orderTableRepository).should().save(orderTable);
+        assertThat(result.getNumberOfGuests()).isEqualTo(5);
     }
 
     private OrderTable createOrderTable() {
