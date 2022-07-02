@@ -58,7 +58,7 @@ class TableServiceTest {
     @Test
     void 단체_지정이_되어_있으면_이용_여부를_변경할_수_없다() {
         // given
-        OrderTable orderTable = new OrderTable(1L, 1L, 0, true);
+        OrderTable orderTable = new OrderTable(0, true);
         given(orderTableRepository.findById(1L))
                 .willReturn(Optional.of(orderTable));
 
@@ -75,7 +75,7 @@ class TableServiceTest {
         OrderTable orderTable = createOrderTable();
         given(orderTableRepository.findById(1L))
                 .willReturn(Optional.of(orderTable));
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(1L, createOrderStatus()))
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(1L, OrderStatus.findNotCompletionStatus()))
                 .willReturn(true);
 
         // when & then
@@ -91,7 +91,7 @@ class TableServiceTest {
         OrderTable orderTable = createOrderTable();
         given(orderTableRepository.findById(1L))
                 .willReturn(Optional.of(orderTable));
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(1L, createOrderStatus()))
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(1L, OrderStatus.findNotCompletionStatus()))
                 .willReturn(false);
 
         // when
@@ -129,7 +129,7 @@ class TableServiceTest {
     @Test
     void 방문한_손님의_수를_변경한다() {
         // given
-        OrderTable orderTable = new OrderTable(1L, null, 0, false);
+        OrderTable orderTable = new OrderTable(0, false);
         given(orderTableRepository.findById(1L))
                 .willReturn(Optional.of(orderTable));
 
@@ -140,11 +140,7 @@ class TableServiceTest {
         then(orderTableRepository).should().save(orderTable);
     }
 
-    private List<String> createOrderStatus() {
-        return Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
-    }
-
     private OrderTable createOrderTable() {
-        return new OrderTable(1L, null, 0, true);
+        return new OrderTable( 0, true);
     }
 }

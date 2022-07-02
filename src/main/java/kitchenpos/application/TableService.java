@@ -7,9 +7,7 @@ import kitchenpos.domain.OrderTable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class TableService {
@@ -23,8 +21,6 @@ public class TableService {
 
     @Transactional
     public OrderTable create(final OrderTable orderTable) {
-        orderTable.updateTableGroupId(null);
-
         return orderTableRepository.save(orderTable);
     }
 
@@ -35,20 +31,18 @@ public class TableService {
     @Transactional
     public OrderTable changeEmpty(final Long orderTableId, final OrderTable orderTable) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
-            throw new IllegalArgumentException("단체 지정이 되어 있는 테이블은 이용 여부를 변경할 수 없습니다.");
-        }
-
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException("조리 또는 식사 중인 테이블은 이용 여부를 변경할 수 없습니다.");
-        }
+                .orElseThrow(() -> new IllegalArgumentException("주문 테이블을 찾을 수 없습니다."));
+        validateChangeEmpty(orderTableId);
 
         savedOrderTable.changeEmpty(orderTable.isEmpty());
-
         return orderTableRepository.save(savedOrderTable);
+    }
+
+    private void validateChangeEmpty(Long orderTableId) {
+        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
+                orderTableId, OrderStatus.findNotCompletionStatus())) {
+            throw new IllegalArgumentException("조리 또는 식사 중인 테이블은 이용 여부를 변경할 수 없습니다.");
+        }
     }
 
     @Transactional
