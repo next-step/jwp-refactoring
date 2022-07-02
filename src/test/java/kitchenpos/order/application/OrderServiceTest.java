@@ -13,7 +13,6 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuDto;
-import kitchenpos.menu.exception.NotExistMenuException;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemDto;
 import kitchenpos.order.dto.OrderResponse;
@@ -86,7 +85,7 @@ class OrderServiceTest extends ServiceTest {
         Assertions.assertAll("등록된 주문을 확인한다"
                 , () -> assertThat(savedOrder.getId()).isNotNull()
                 , () -> assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING.toString())
-                , () -> assertThat(savedOrder.getOrderTableId()).isEqualTo(orderTable.getId())
+                , () -> assertThat(savedOrder.getOrderTableId()).isEqualTo(zeroGuestTable.getId())
                 , () -> assertThat(savedOrder.getOrderLineItems()).hasSize(2)
         );
     }
@@ -110,7 +109,7 @@ class OrderServiceTest extends ServiceTest {
         Long orderTableId = orderTable.getId();
         List<OrderLineItemDto> orderLineItemDtos = Lists.newArrayList(orderLineItem);
         assertThatThrownBy(() -> serviceTestHelper.주문_생성됨(orderTableId, orderLineItemDtos))
-                .isInstanceOf(NotExistMenuException.class);
+                .isInstanceOf(CannotMakeOrderException.class);
     }
 
     @Test

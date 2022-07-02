@@ -33,8 +33,10 @@ public class MenuDto {
                 , menu.getName()
                 , menu.getPrice()
                 , menu.getMenuGroup()
-                , menu.getMenuProducts().stream()
-                .map(MenuProductDto::of).collect(toList()));
+                , menu.getMenuProducts().toList()
+                .stream()
+                .map(MenuProductDto::of)
+                .collect(toList()));
     }
 
     public Menu toMenu() {

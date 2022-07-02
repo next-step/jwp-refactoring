@@ -3,6 +3,7 @@ package kitchenpos.menu.domain;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
@@ -19,21 +20,28 @@ public class MenuProducts {
 
     void addMenuProducts(List<MenuProduct> menuProducts) {
         elements.addAll(menuProducts);
-
     }
 
     void includeToMenu(Menu menu) {
         elements.forEach(menuProduct -> menuProduct.includeToMenu(menu));
     }
 
-    List<MenuProduct> toList(){
+    public List<MenuProduct> toList() {
         return Collections.unmodifiableList(elements);
     }
 
-    MenuProduct findMenuProductByProductId(Long id) {
+    public List<Long> productIds() {
+        return elements
+                .stream()
+                .map(MenuProduct::getProductId)
+                .collect(Collectors.toList());
+    }
+
+    public long findQuantityByProductId(Long id) {
         return elements.stream()
-                .filter(menuProduct -> menuProduct.getProductId().equals(id))
+                .filter(menuProduct -> menuProduct.getProductId() == id)
                 .findFirst()
-                .orElseThrow(NotExistMenuProductException::new);
+                .orElseThrow(NotExistMenuProductException::new)
+                .getQuantity();
     }
 }

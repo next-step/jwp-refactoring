@@ -4,6 +4,8 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProductAmount;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuDto;
 import kitchenpos.product.application.ProductService;
@@ -27,12 +29,15 @@ public class MenuService {
     @Transactional
     public MenuDto create(final MenuDto menuDto) {
         Menu menu = menuDto.toMenu();
-
-        List<Product> products = menuDto.getMenuProductDtos().stream()
-                .map(menuProductDto -> productService.findProductById(menuProductDto.getProductId()))
-                .collect(toList());
-
-        menu.checkSumPriceOfProducts(products);
+        MenuProducts menuProducts = menu.getMenuProducts();
+        List<Long> productIds = menuProducts.productIds();
+        List<Product> products = productService.findAllProductByIds(productIds);
+        List<MenuProductAmount> menuProductAmounts = products.stream()
+                .map(product -> {
+                    long quantity = menuProducts.findQuantityByProductId(product.getId());
+                    return new MenuProductAmount(quantity, product.getPrice());
+                }).collect(toList());
+        menu.checkSumPriceOfProducts(menuProductAmounts);
         return MenuDto.of(menuRepository.save(menu));
     }
 

@@ -24,8 +24,11 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public Product findProductById(Long productId) {
-        return productRepository.findById(productId)
-                .orElseThrow(NotExistProductException::new);
+    public List<Product> findAllProductByIds(List<Long> productIds) {
+        List<Product> products = productRepository.findAllById(productIds);
+        if (productIds.size() != products.size()) {
+            throw new NotExistProductException();
+        }
+        return products;
     }
 }

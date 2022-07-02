@@ -30,8 +30,9 @@
 - [X] 테스트 코드에 assertAll 적용
 - [X] 메뉴 컨텍스트에서 주문 컨텍스트의 관심사 제거 (validateAllMenusExist)
 - [X] 테이블 컨텍스트에서 주문 컨텍스트의 관심사 제거 (validateTableToMakeOrder)
-- [ ] 메뉴 생성 중 가격 검증 과정에서의 비효율 제거
-- [ ] Menu 엔티티에서 Product 의존성 제거
+- [X] Menu 생성 로직 개선 및 불필요한 의존성 제거
+  - [X] 메뉴 생성 중 가격 검증 과정에서의 비효율 제거
+  - [X] Menu 엔티티에서 Product 의존성 제거
 
 ## 작업목록
 ### 1단계

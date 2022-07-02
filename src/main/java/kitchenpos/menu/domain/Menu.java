@@ -11,7 +11,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import kitchenpos.menu.exception.InvalidMenuPriceException;
-import kitchenpos.product.domain.Product;
 
 @Entity
 public class Menu {
@@ -46,21 +45,15 @@ public class Menu {
         }
     }
 
-    public void checkSumPriceOfProducts(List<Product> products) {
-        BigDecimal sum = BigDecimal.ZERO;
-
-        for (final Product product : products) {
-            MenuProduct menuProduct = findMenuProductByProductId(product.getId());
-            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
-        }
-
+    public void checkSumPriceOfProducts(List<MenuProductAmount> menuProductAmounts) {
+        BigDecimal sum = menuProductAmounts.stream()
+                .reduce(BigDecimal.ZERO
+                        , (prevSum, menuProductAmount) -> prevSum.add(menuProductAmount.getAmount())
+                        , BigDecimal::add
+                );
         if (price.compareTo(sum) > 0) {
             throw new InvalidMenuPriceException();
         }
-    }
-
-    private MenuProduct findMenuProductByProductId(Long id) {
-        return menuProducts.findMenuProductByProductId(id);
     }
 
     public Long getId() {
@@ -79,7 +72,7 @@ public class Menu {
         return menuGroup;
     }
 
-    public List<MenuProduct> getMenuProducts() {
-        return menuProducts.toList();
+    public MenuProducts getMenuProducts() {
+        return menuProducts;
     }
 }

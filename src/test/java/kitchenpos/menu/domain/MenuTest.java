@@ -41,7 +41,7 @@ class MenuTest {
                 , () -> assertThat(menu.getPrice().intValue()).isEqualTo(menuPrice)
         );
 
-        List<MenuProduct> menuProducts = menu.getMenuProducts();
+        List<MenuProduct> menuProducts = menu.getMenuProducts().toList();
         List<Long> menuProductIds = menuProducts.stream()
                 .map(MenuProduct::getProductId)
                 .collect(toList());
@@ -66,8 +66,14 @@ class MenuTest {
         String menuName = "메뉴1";
         int menuPrice = 10000;
         Menu menu = 테스트_메뉴_생성(menuGroup, menuName, menuPrice);
+        MenuProducts menuProducts = menu.getMenuProducts();
         List<Product> products = Lists.newArrayList(product1, product2);
-        assertThatThrownBy(() -> menu.checkSumPriceOfProducts(products))
+        List<MenuProductAmount> menuProductAmounts = products.stream()
+                .map(product -> {
+                    long quantity = menuProducts.findQuantityByProductId(product.getId());
+                    return new MenuProductAmount(quantity, product.getPrice());
+                }).collect(toList());
+        assertThatThrownBy(() -> menu.checkSumPriceOfProducts(menuProductAmounts))
                 .isInstanceOf(InvalidMenuPriceException.class);
     }
 
