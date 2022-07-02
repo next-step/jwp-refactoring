@@ -29,9 +29,7 @@ public class OrderService {
     }
 
     public OrderResponse create(final OrderRequest request) {
-        final OrderTable orderTable = orderTableRepository.findById(request.getOrderTableId())
-                .orElseThrow(IllegalArgumentException::new);
-        Order order = new Order(orderTable, request.getOrderLineItems());
+        Order order = new Order(request.getOrderTableId(), request.getOrderLineItems());
         orderValidator.validate(order);
         return OrderResponse.of(orderRepository.save(order));
     }

@@ -47,7 +47,6 @@ public class OrderServiceTest {
     @Test
     void create() {
         OrderTable orderTable = new OrderTable(1L, 3, false);
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
         when(orderRepository.save(any())).thenReturn(createOrder());
 
         // when
@@ -55,28 +54,6 @@ public class OrderServiceTest {
 
         // then
         assertThat(created).isNotNull();
-    }
-
-    @DisplayName("[예외] 주문 테이블 없는 주문을 생성한다.")
-    @Test
-    void createOrder_without_order_table() {
-        when(orderTableRepository.findById(any())).thenReturn(Optional.empty());
-
-        // when, then
-        assertThatThrownBy(() -> {
-            orderService.create(createOrderRequest());
-        }).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("[예외] 비어 있는 주문 테이블에서 주문을 생성한다.")
-    @Test
-    void createOrder_with_empty_order_table() {
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(new OrderTable(1L, 3, true)));
-
-        // when, then
-        assertThatThrownBy(() -> {
-            orderService.create(createOrderRequest());
-        }).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문 목록을 조회한다.")
@@ -132,7 +109,7 @@ public class OrderServiceTest {
     public static Order createOrder() {
         OrderLineItem orderListItem = createOrderListItem();
         OrderTable orderTable = new OrderTable(1L, 3, false);
-        return new Order(1L, orderTable, OrderStatus.COOKING, Arrays.asList(orderListItem));
+        return new Order(1L, orderTable.getId(), OrderStatus.COOKING, Arrays.asList(orderListItem));
     }
 
     public static OrderRequest createOrderRequest() {
@@ -156,7 +133,7 @@ public class OrderServiceTest {
     public static Order createOrderWithCompletion() {
         OrderLineItem orderListItem = createOrderListItem();
         OrderTable orderTable = new OrderTable(1L, 3, false);
-        return new Order(1L, orderTable, OrderStatus.COMPLETION, Arrays.asList(orderListItem));
+        return new Order(1L, orderTable.getId(), OrderStatus.COMPLETION, Arrays.asList(orderListItem));
     }
 
     public static OrderLineItem createOrderListItem() {
