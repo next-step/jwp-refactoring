@@ -4,9 +4,12 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -18,6 +21,7 @@ import java.util.stream.Collectors;
 
 import static kitchenpos.order.acceptance.OrderAcceptanceTest.주문_등록되어_있음;
 import static kitchenpos.order.acceptance.OrderAcceptanceTest.주문_생성;
+import static kitchenpos.tablegroup.acceptance.TableGroupAcceptanceTest.테이블_그룹_가져옴;
 import static kitchenpos.tablegroup.acceptance.TableGroupAcceptanceTest.테이블_그룹_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -71,7 +75,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
         final boolean 테이블_사용중 = false;
 
         // when
-        ExtractableResponse<Response> 변경된_주문_테이블 = 주문_테이블_상태_수정_요청(저장_안한_주문_테이블, 테이블_사용중);
+        ExtractableResponse<Response> 변경된_주문_테이블 = 주문_테이블_상태_수정_요청(OrderTableRequest.of(저장_안한_주문_테이블), 테이블_사용중);
 
         // then
         주문_테이블_상태_수정_실패(변경된_주문_테이블);
@@ -80,13 +84,16 @@ public class TableAcceptanceTest extends AcceptanceTest {
     @DisplayName("[예외] 테이블 그룹에 매핑된 주문 테이블의 상태를 변경한다.")
     @Test
     void changeEmpty_with_mapping_with_table_group() {
-        OrderTable 테이블_그룹_매핑된_주문_테이블1 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, true));
-        OrderTable 테이블_그룹_매핑된_주문_테이블2 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, true));
-        테이블_그룹_생성_요청(new TableGroup(Arrays.asList(테이블_그룹_매핑된_주문_테이블1, 테이블_그룹_매핑된_주문_테이블2)));
+        OrderTableRequest 등록된_주문_테이블1 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, true));
+        OrderTableRequest 등록된_주문_테이블2 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, true));
+        List<OrderTableRequest> 등록된_주문_테이블_리스트 = Arrays.asList(등록된_주문_테이블1, 등록된_주문_테이블2);
+
+        TableGroupResponse 등록된_테이블_그룹 = 테이블_그룹_가져옴(테이블_그룹_생성_요청(new TableGroupRequest(등록된_주문_테이블_리스트)));
+        OrderTableResponse 테이블_그룹과_매핑된_주문_테이블 = 등록된_테이블_그룹.getOrderTables().get(0);
         final boolean 테이블_사용중 = false;
 
         // when
-        ExtractableResponse<Response> 변경된_주문_테이블 = 주문_테이블_상태_수정_요청(테이블_그룹_매핑된_주문_테이블1, 테이블_사용중);
+        ExtractableResponse<Response> 변경된_주문_테이블 = 주문_테이블_상태_수정_요청(new OrderTableRequest(테이블_그룹과_매핑된_주문_테이블.getId()), 테이블_사용중);
 
         // then
         주문_테이블_상태_수정_실패(변경된_주문_테이블);
@@ -95,12 +102,12 @@ public class TableAcceptanceTest extends AcceptanceTest {
     @DisplayName("[예외] 요리 중인 주문 테이블의 상태를 변경한다.")
     @Test
     void changeEmpty_with_cooking_order_table() {
-        Order 등록된_요리중인_주문 = 주문_등록되어_있음(주문_생성()).as(Order.class);
+        OrderResponse 등록된_요리중인_주문 = 주문_등록되어_있음(주문_생성()).as(OrderResponse.class);
         OrderTable 등록된_요리중인_주문_테이블 = new OrderTable(등록된_요리중인_주문.getOrderTableId());
         final boolean 테이블_사용중 = false;
 
         // when
-        ExtractableResponse<Response> 변경된_주문_테이블 = 주문_테이블_상태_수정_요청(등록된_요리중인_주문_테이블, 테이블_사용중);
+        ExtractableResponse<Response> 변경된_주문_테이블 = 주문_테이블_상태_수정_요청(OrderTableRequest.of(등록된_요리중인_주문_테이블), 테이블_사용중);
 
         // then
         주문_테이블_상태_수정_실패(변경된_주문_테이블);
@@ -114,7 +121,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
         final int 변경된_테이블_손님수 = 5;
 
         // when
-        OrderTable 변경된_주문_테이블 = 주문_테이블_인원_수정_요청(등록된_주문_테이블, 변경된_테이블_손님수).as(OrderTable.class);
+        OrderTableResponse 변경된_주문_테이블 = 주문_테이블_인원_수정_요청(등록된_주문_테이블, 변경된_테이블_손님수).as(OrderTableResponse.class);
         
         // then
         주문_테이블_손님수_검증됨(변경된_주문_테이블, 변경된_테이블_손님수);
@@ -159,14 +166,14 @@ public class TableAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 주문_테이블_등록되어_있음(int numberOfGuests, boolean empty) {
-        OrderTable orderTable = new OrderTable(numberOfGuests, empty);
-        return 주문_테이블_생성_요청(orderTable);
+        OrderTableRequest request = new OrderTableRequest(numberOfGuests, empty);
+        return 주문_테이블_생성_요청(request);
     }
 
-    public static ExtractableResponse<Response> 주문_테이블_생성_요청(OrderTable orderTable) {
+    public static ExtractableResponse<Response> 주문_테이블_생성_요청(OrderTableRequest request) {
         return RestAssured
                 .given().log().all()
-                .body(orderTable)
+                .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/api/tables")
                 .then().log().all()
@@ -203,8 +210,8 @@ public class TableAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 주문_테이블_인원_수정_요청(ExtractableResponse<Response> response, int numberOfGuests) {
-        OrderTable responseOrderTable = response.as(OrderTable.class);
-        OrderTable changedOrderTable = new OrderTable(numberOfGuests, responseOrderTable.isEmpty());
+        OrderTableResponse responseOrderTable = response.as(OrderTableResponse.class);
+        OrderTableRequest changedOrderTable = new OrderTableRequest(numberOfGuests, responseOrderTable.getEmpty());
 
         return RestAssured
                 .given().log().all()
@@ -216,7 +223,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 주문_테이블_인원_수정_요청(OrderTable orderTable, int numberOfGuests) {
-        OrderTable changedOrderTable = new OrderTable(numberOfGuests, false);
+        OrderTableRequest changedOrderTable = new OrderTableRequest(numberOfGuests, false);
 
         return RestAssured
                 .given().log().all()
@@ -228,8 +235,8 @@ public class TableAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 주문_테이블_상태_수정_요청(ExtractableResponse<Response> response, boolean isEmpty) {
-        OrderTable responseOrderTable = response.as(OrderTable.class);
-        OrderTable changedOrderTable = new OrderTable(isEmpty);
+        OrderTableResponse responseOrderTable = response.as(OrderTableResponse.class);
+        OrderTableRequest changedOrderTable = new OrderTableRequest(3, isEmpty);
 
         return RestAssured
                 .given().log().all()
@@ -240,25 +247,27 @@ public class TableAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 주문_테이블_상태_수정_요청(OrderTable orderTable, boolean isEmpty) {
+    public static ExtractableResponse<Response> 주문_테이블_상태_수정_요청(OrderTableRequest response, boolean isEmpty) {
+        OrderTableRequest request = new OrderTableRequest(isEmpty);
+
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(orderTable)
-                .when().put("/api/tables/{orderTableId}/empty", orderTable.getId())
+                .body(request)
+                .when().put("/api/tables/{orderTableId}/empty", response.getId())
                 .then().log().all()
                 .extract();
     }
 
-    public static OrderTable 주문_테이블_가져옴(ExtractableResponse<Response> response) {
-        return response.as(OrderTable.class);
+    public static OrderTableRequest 주문_테이블_가져옴(ExtractableResponse<Response> response) {
+        return response.as(OrderTableRequest.class);
     }
 
     public static void 주문_테이블_상태_검증됨(OrderTable 변경된_주문_테이블, boolean 테이블_사용중) {
         assertThat(변경된_주문_테이블.isEmpty()).isEqualTo(테이블_사용중);
     }
 
-    public static void 주문_테이블_손님수_검증됨(OrderTable 변경된_주문_테이블, int 변경된_테이블_손님수) {
+    public static void 주문_테이블_손님수_검증됨(OrderTableResponse 변경된_주문_테이블, int 변경된_테이블_손님수) {
         assertThat(변경된_주문_테이블.getNumberOfGuests()).isEqualTo(변경된_테이블_손님수);
     }
 

@@ -4,7 +4,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -71,14 +72,14 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 상품_등록되어_있음(String name, BigDecimal price) {
-        Product product = new Product(name, price);
+        ProductRequest product = new ProductRequest(name, price);
         return 상품_생성_요청(product);
     }
 
-    public static ExtractableResponse<Response> 상품_생성_요청(Product product) {
+    public static ExtractableResponse<Response> 상품_생성_요청(ProductRequest request) {
         return RestAssured
                 .given().log().all()
-                .body(product)
+                .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/api/products")
                 .then().log().all()
@@ -107,8 +108,8 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 상품_목록_포함됨(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> createdResponses) {
-        List<Long> resultLineIds = response.jsonPath().getList(".", Product.class).stream()
-                .map(Product::getId)
+        List<Long> resultLineIds = response.jsonPath().getList(".", ProductResponse.class).stream()
+                .map(ProductResponse::getId)
                 .collect(Collectors.toList());
 
         List<Long> expectedLineIds = createdResponses.stream()
@@ -118,7 +119,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         assertThat(resultLineIds).containsAll(expectedLineIds);
     }
 
-    public static Product 상품_가져옴(ExtractableResponse<Response> response) {
-        return response.as(Product.class);
+    public static ProductResponse 상품_가져옴(ExtractableResponse<Response> response) {
+        return response.as(ProductResponse.class);
     }
 }

@@ -4,16 +4,18 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -102,33 +104,35 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         메뉴_목록_포함됨(메뉴_목록, Arrays.asList(등록된_메뉴));
     }
 
-    public static Menu 테스트_메뉴_생성(String menuName, BigDecimal menuPrice) {
-        MenuGroup menuGroup = 메뉴_그룹_가져옴(메뉴_그룹_등록되어_있음(MENU_GROUP_NAME01));
-        Product product = 상품_가져옴(상품_등록되어_있음(PRODUCT_NAME01, PRODUCT_PRICE01));
-        MenuProduct menuProduct = new MenuProduct(product.getId(), 1);
-        return new Menu(menuName, menuPrice, menuGroup.getId(), Collections.singletonList(menuProduct));
+    public static MenuRequest 테스트_메뉴_생성(String menuName, BigDecimal menuPrice) {
+        MenuGroup menuGroup = 메뉴_그룹_가져옴(메뉴_그룹_등록되어_있음(MENU_GROUP_NAME01)).toMenuGroup();
+        ProductResponse productResponse = 상품_가져옴(상품_등록되어_있음(PRODUCT_NAME01, PRODUCT_PRICE01));
+        MenuProduct menuProduct = new MenuProduct(productResponse.toProduct(), 1);
+        List<MenuProduct> list = new ArrayList<>();
+        list.add(menuProduct);
+        return new MenuRequest(menuName, menuPrice, menuGroup.getId(), list);
     }
 
-    public static Menu 메뉴_그룹_없는_테스트_메뉴_생성(String menuName, BigDecimal menuPrice) {
-        Product product = 상품_가져옴(상품_등록되어_있음(PRODUCT_NAME01, PRODUCT_PRICE01));
-        MenuProduct menuProduct = new MenuProduct(product.getId(), 1);
-        return new Menu(menuName, menuPrice, null, Collections.singletonList(menuProduct));
+    public static MenuRequest 메뉴_그룹_없는_테스트_메뉴_생성(String menuName, BigDecimal menuPrice) {
+        ProductResponse productResponse = 상품_가져옴(상품_등록되어_있음(PRODUCT_NAME01, PRODUCT_PRICE01));
+        MenuProduct menuProduct = new MenuProduct(productResponse.toProduct(), 1);
+        return new MenuRequest(menuName, menuPrice, null, Collections.singletonList(menuProduct));
     }
 
-    public static Menu 상품_없는_테스트_메뉴_생성(String menuName, BigDecimal menuPrice) {
-        MenuGroup menuGroup = 메뉴_그룹_가져옴(메뉴_그룹_등록되어_있음(MENU_GROUP_NAME01));
+    public static MenuRequest 상품_없는_테스트_메뉴_생성(String menuName, BigDecimal menuPrice) {
+        MenuGroup menuGroup = 메뉴_그룹_가져옴(메뉴_그룹_등록되어_있음(MENU_GROUP_NAME01)).toMenuGroup();
         MenuProduct menuProduct = new MenuProduct(null, 1);
-        return new Menu(menuName, menuPrice, menuGroup.getId(), Collections.singletonList(menuProduct));
+        return new MenuRequest(menuName, menuPrice, menuGroup.getId(), Collections.singletonList(menuProduct));
     }
 
-    public static ExtractableResponse<Response> 메뉴_등록되어_있음(Menu menu) {
-        return 메뉴_생성_요청(menu);
+    public static ExtractableResponse<Response> 메뉴_등록되어_있음(MenuRequest request) {
+        return 메뉴_생성_요청(request);
     }
 
-    public static ExtractableResponse<Response> 메뉴_생성_요청(Menu menu) {
+    public static ExtractableResponse<Response> 메뉴_생성_요청(MenuRequest request) {
         return RestAssured
                 .given().log().all()
-                .body(menu)
+                .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/api/menus")
                 .then().log().all()
@@ -157,8 +161,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 메뉴_목록_포함됨(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> createdResponses) {
-        List<Long> resultLineIds = response.jsonPath().getList(".", Menu.class).stream()
-                .map(Menu::getId)
+        List<Long> resultLineIds = response.jsonPath().getList(".", MenuResponse.class).stream()
+                .map(MenuResponse::getId)
                 .collect(Collectors.toList());
 
         List<Long> expectedLineIds = createdResponses.stream()
@@ -168,7 +172,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         assertThat(resultLineIds).containsAll(expectedLineIds);
     }
 
-    public static Menu 메뉴_가져옴(ExtractableResponse<Response> response) {
-        return response.as(Menu.class);
+    public static MenuResponse 메뉴_가져옴(ExtractableResponse<Response> response) {
+        return response.as(MenuResponse.class);
     }
 }

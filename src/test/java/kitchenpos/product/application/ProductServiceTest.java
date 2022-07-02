@@ -1,8 +1,9 @@
 package kitchenpos.product.application;
 
-import kitchenpos.application.ProductService;
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,20 +32,20 @@ public class ProductServiceTest {
     private ProductService productService;
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @BeforeEach
     void setUp() {
-        productService = new ProductService(productDao);
+        productService = new ProductService(productRepository);
     }
 
     @DisplayName("상품을 생성한다.")
     @Test
     void create() {
-        when(productDao.save(any())).thenReturn(createProduct01());
+        when(productRepository.save(any())).thenReturn(createProduct1());
 
         // when
-        Product created = productService.create(new Product(PRODUCT_NAME01, PRODUCT_PRICE01));
+        ProductResponse created = productService.create(new ProductRequest(PRODUCT_NAME01, PRODUCT_PRICE01));
 
         // then
         assertThat(created).isNotNull();
@@ -55,7 +56,7 @@ public class ProductServiceTest {
     @Test
     void create_price_null() {
         assertThatThrownBy(() -> {
-            productService.create(new Product(PRODUCT_NAME01, null));
+            productService.create(new ProductRequest(PRODUCT_NAME01, null));
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -63,31 +64,31 @@ public class ProductServiceTest {
     @Test
     void create_price_under_zero() {
         assertThatThrownBy(() -> {
-            productService.create(new Product(PRODUCT_NAME01, new BigDecimal(-100)));
+            productService.create(new ProductRequest(PRODUCT_NAME01, new BigDecimal(-100)));
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("상품 목록을 조회한다.")
     @Test
     void list() {
-        when(productService.list()).thenReturn(createProductList());
+        when(productRepository.findAll()).thenReturn(createProductList());
 
         // when
-        List<Product> list = productService.list();
+        List<ProductResponse> list = productService.list();
 
         // then
         assertThat(list).isNotNull();
     }
-    
-    public static Product createProduct01() {
+
+    public static Product createProduct1() {
         return new Product(1L, PRODUCT_NAME01, PRODUCT_PRICE01);
     }
 
-    public static Product createProduct02() {
+    public static Product createProduct2() {
         return new Product(2L, PRODUCT_NAME02, PRODUCT_PRICE02);
     }
 
     public static List<Product> createProductList() {
-        return Arrays.asList(createProduct01(), createProduct02());
+        return Arrays.asList(createProduct1(), createProduct2());
     }
 }

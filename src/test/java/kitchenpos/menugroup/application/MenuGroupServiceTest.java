@@ -1,8 +1,9 @@
 package kitchenpos.menugroup.application;
 
-import kitchenpos.application.MenuGroupService;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,20 +27,20 @@ public class MenuGroupServiceTest {
     private MenuGroupService menuGroupService;
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @BeforeEach
     void setUp() {
-        menuGroupService = new MenuGroupService(menuGroupDao);
+        menuGroupService = new MenuGroupService(menuGroupRepository);
     }
 
     @DisplayName("메뉴 그룹을 생성한다.")
     @Test
     void create() {
-        when(menuGroupDao.save(any())).thenReturn(createMenuGroup01());
+        when(menuGroupRepository.save(any())).thenReturn(createMenuGroup01());
 
         // when
-        MenuGroup created = menuGroupService.create(new MenuGroup(MENU_GROUP_NAME01));
+        MenuGroupResponse created = menuGroupService.create(new MenuGroupRequest(MENU_GROUP_NAME01));
 
         // then
         assertThat(created).isNotNull();
@@ -49,10 +50,10 @@ public class MenuGroupServiceTest {
     @DisplayName("메뉴 그룹 목록을 조회한다.")
     @Test
     void list() {
-        when(menuGroupDao.findAll()).thenReturn(createMenuGroupList());
+        when(menuGroupRepository.findAll()).thenReturn(createMenuGroupList());
 
         // when
-        List<MenuGroup> list = menuGroupService.list();
+        List<MenuGroupResponse> list = menuGroupService.list();
 
         // then
         assertThat(list).isNotNull();

@@ -4,7 +4,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -47,14 +48,13 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 메뉴_그룹_등록되어_있음(String name) {
-        MenuGroup menuGroup = new MenuGroup(name);
-        return 메뉴_그룹_생성_요청(menuGroup);
+        return 메뉴_그룹_생성_요청(new MenuGroupRequest(name));
     }
 
-    public static ExtractableResponse<Response> 메뉴_그룹_생성_요청(MenuGroup menuGroup) {
+    public static ExtractableResponse<Response> 메뉴_그룹_생성_요청(MenuGroupRequest request) {
         return RestAssured
                 .given().log().all()
-                .body(menuGroup)
+                .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/api/menu-groups")
                 .then().log().all()
@@ -79,8 +79,8 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 메뉴_그룹_목록_포함됨(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> createdResponses) {
-        List<Long> resultLineIds = response.jsonPath().getList(".", MenuGroup.class).stream()
-                .map(MenuGroup::getId)
+        List<Long> resultLineIds = response.jsonPath().getList(".", MenuGroupResponse.class).stream()
+                .map(MenuGroupResponse::getId)
                 .collect(Collectors.toList());
 
         List<Long> expectedLineIds = createdResponses.stream()
@@ -90,7 +90,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
         assertThat(resultLineIds).containsAll(expectedLineIds);
     }
 
-    public static MenuGroup 메뉴_그룹_가져옴(ExtractableResponse<Response> response) {
-        return response.as(MenuGroup.class);
+    public static MenuGroupResponse 메뉴_그룹_가져옴(ExtractableResponse<Response> response) {
+        return response.as(MenuGroupResponse.class);
     }
 }

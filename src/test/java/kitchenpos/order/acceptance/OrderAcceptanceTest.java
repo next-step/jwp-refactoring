@@ -4,7 +4,14 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.*;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -16,7 +23,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static kitchenpos.menu.acceptance.MenuAcceptanceTest.*;
-import static kitchenpos.table.acceptance.TableAcceptanceTest.*;
+import static kitchenpos.table.acceptance.TableAcceptanceTest.주문_테이블_가져옴;
+import static kitchenpos.table.acceptance.TableAcceptanceTest.주문_테이블_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class OrderAcceptanceTest extends AcceptanceTest {
@@ -122,47 +130,47 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         주문_상태_변경_실패됨(변경된_주문);
     }
 
-    public static Order 주문_생성() {
-        Menu 등록된_메뉴 = 메뉴_가져옴(메뉴_등록되어_있음(테스트_메뉴_생성(MENU_NAME01, MENU_PRICE01)));
-        OrderLineItem 생성된_주문_항목 = new OrderLineItem(등록된_메뉴.getId(), 1);
-        OrderTable 등록된_주문_테이블 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, false));
-        return new Order(등록된_주문_테이블.getId(), Arrays.asList(생성된_주문_항목));
+    public static OrderRequest 주문_생성() {
+        MenuResponse 등록된_메뉴 = 메뉴_가져옴(메뉴_등록되어_있음(테스트_메뉴_생성(MENU_NAME01, MENU_PRICE01)));
+        OrderLineItem 생성된_주문_항목 = new OrderLineItem(new Menu(등록된_메뉴.getId()), 1);
+        OrderTable 등록된_주문_테이블 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, false)).toOrderTable();
+        return new OrderRequest(등록된_주문_테이블.getId(), Arrays.asList(생성된_주문_항목));
     }
 
-    public static Order 주문_항목_없는_주문_생성() {
-        OrderTable 등록된_주문_테이블 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, false));
-        return new Order(등록된_주문_테이블.getId(), Collections.emptyList());
+    public static OrderRequest 주문_항목_없는_주문_생성() {
+        OrderTable 등록된_주문_테이블 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, false)).toOrderTable();
+        return new OrderRequest(등록된_주문_테이블.getId(), Collections.emptyList());
     }
 
-    public static Order 메뉴와_주문_항목_개수_다른_주문_생성() {
-        Menu 등록된_메뉴 = 메뉴_가져옴(메뉴_등록되어_있음(테스트_메뉴_생성(MENU_NAME01, MENU_PRICE01)));
-        OrderLineItem 생성된_주문_항목1 = new OrderLineItem(등록된_메뉴.getId(), 1);
-        OrderLineItem 생성된_주문_항목2 = new OrderLineItem(등록된_메뉴.getId(), 1);
-        OrderTable 등록된_주문_테이블 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, false));
-        return new Order(등록된_주문_테이블.getId(), Arrays.asList(생성된_주문_항목1, 생성된_주문_항목2));
+    public static OrderRequest 메뉴와_주문_항목_개수_다른_주문_생성() {
+        MenuResponse 등록된_메뉴 = 메뉴_가져옴(메뉴_등록되어_있음(테스트_메뉴_생성(MENU_NAME01, MENU_PRICE01)));
+        OrderLineItem 생성된_주문_항목1 = new OrderLineItem(new Menu(등록된_메뉴.getId()), 1);
+        OrderLineItem 생성된_주문_항목2 = new OrderLineItem(new Menu(등록된_메뉴.getId()), 1);
+        OrderTable 등록된_주문_테이블 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, false)).toOrderTable();
+        return new OrderRequest(등록된_주문_테이블.getId(), Arrays.asList(생성된_주문_항목1, 생성된_주문_항목2));
     }
 
-    public static Order 주문_테이블_없는_주문_생성() {
-        Menu 등록된_메뉴 = 메뉴_가져옴(메뉴_등록되어_있음(테스트_메뉴_생성(MENU_NAME01, MENU_PRICE01)));
-        OrderLineItem 생성된_주문_항목 = new OrderLineItem(등록된_메뉴.getId(), 1);
-        return new Order(null, Arrays.asList(생성된_주문_항목));
+    public static OrderRequest 주문_테이블_없는_주문_생성() {
+        MenuResponse 등록된_메뉴 = 메뉴_가져옴(메뉴_등록되어_있음(테스트_메뉴_생성(MENU_NAME01, MENU_PRICE01)));
+        OrderLineItem 생성된_주문_항목 = new OrderLineItem(new Menu(등록된_메뉴.getId()), 1);
+        return new OrderRequest(null, Arrays.asList(생성된_주문_항목));
     }
 
-    public static Order 비어_있는_주문_테이블에서_주문_생성() {
-        Menu 등록된_메뉴 = 메뉴_가져옴(메뉴_등록되어_있음(테스트_메뉴_생성(MENU_NAME01, MENU_PRICE01)));
-        OrderLineItem 생성된_주문_항목 = new OrderLineItem(등록된_메뉴.getId(), 1);
-        OrderTable 등록된_주문_테이블 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, true));
-        return new Order(등록된_주문_테이블.getId(), Arrays.asList(생성된_주문_항목));
+    public static OrderRequest 비어_있는_주문_테이블에서_주문_생성() {
+        MenuResponse 등록된_메뉴 = 메뉴_가져옴(메뉴_등록되어_있음(테스트_메뉴_생성(MENU_NAME01, MENU_PRICE01)));
+        OrderLineItem 생성된_주문_항목 = new OrderLineItem(new Menu(등록된_메뉴.getId()), 1);
+        OrderTable 등록된_주문_테이블 = 주문_테이블_가져옴(주문_테이블_등록되어_있음(3, true)).toOrderTable();
+        return new OrderRequest(등록된_주문_테이블.getId(), Arrays.asList(생성된_주문_항목));
     }
 
-    public static ExtractableResponse<Response> 주문_등록되어_있음(Order order) {
-        return 주문_생성_요청(order);
+    public static ExtractableResponse<Response> 주문_등록되어_있음(OrderRequest request) {
+        return 주문_생성_요청(request);
     }
 
-    public static ExtractableResponse<Response> 주문_생성_요청(Order order) {
+    public static ExtractableResponse<Response> 주문_생성_요청(OrderRequest request) {
         return RestAssured
                 .given().log().all()
-                .body(order)
+                .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/api/orders")
                 .then().log().all()
@@ -191,8 +199,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 주문_목록_포함됨(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> createdResponses) {
-        List<Long> resultLineIds = response.jsonPath().getList(".", Order.class).stream()
-                .map(Order::getId)
+        List<Long> resultLineIds = response.jsonPath().getList(".", OrderResponse.class).stream()
+                .map(OrderResponse::getId)
                 .collect(Collectors.toList());
 
         List<Long> expectedLineIds = createdResponses.stream()
@@ -203,20 +211,20 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 주문_상태_변경_요청(ExtractableResponse<Response> response, OrderStatus orderStatus) {
-        Order responseOrder = response.as(Order.class);
-        Order changedOrder = new Order(orderStatus.name());
+        OrderResponse orderResponse = response.as(OrderResponse.class);
+        Order changedOrder = new Order(orderStatus);
 
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(changedOrder)
-                .when().put("/api/orders/{orderId}/order-status", responseOrder.getId())
+                .when().put("/api/orders/{orderId}/order-status", orderResponse.getId())
                 .then().log().all()
                 .extract();
     }
 
     public static ExtractableResponse<Response> 주문_상태_변경_요청(Order order, OrderStatus orderStatus) {
-        Order changedOrder = new Order(orderStatus.name());
+        Order changedOrder = new Order(orderStatus);
 
         return RestAssured
                 .given().log().all()
@@ -227,8 +235,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static Order 주문_가져옴(ExtractableResponse<Response> response) {
-        return response.as(Order.class);
+    public static OrderResponse 주문_가져옴(ExtractableResponse<Response> response) {
+        return response.as(OrderResponse.class);
     }
 
     public void 주문_상태_일치함(ExtractableResponse<Response> response, OrderStatus orderStatus) {
