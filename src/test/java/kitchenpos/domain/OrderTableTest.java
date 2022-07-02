@@ -31,6 +31,15 @@ class OrderTableTest {
                 .hasMessage("빈 테이블이 아니거나 이미 단체가 지정되었습니다.");
     }
 
+    @Test
+    void 단체_지정이_되어있는_테이블은_이용_여부를_변경할_수_없다() {
+        // when & then
+        assertThatThrownBy(() ->
+                createAlreadyGroupedTable().changeEmpty(false)
+        ).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("단체 지정이 되어 있는 테이블은 이용 여부를 변경할 수 없습니다.");
+    }
+
     private static Stream<Arguments> 그룹_지정할_수_없는_테이블_조회() {
         return Stream.of(
                 Arguments.of(

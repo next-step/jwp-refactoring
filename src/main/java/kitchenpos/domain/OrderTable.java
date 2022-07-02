@@ -68,6 +68,9 @@ public class OrderTable {
     }
 
     public void changeEmpty(final boolean empty) {
+        if (Objects.nonNull(tableGroup)) {
+            throw new IllegalArgumentException("단체 지정이 되어 있는 테이블은 이용 여부를 변경할 수 없습니다.");
+        }
         this.empty = empty;
     }
 

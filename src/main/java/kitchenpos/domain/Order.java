@@ -60,7 +60,6 @@ public class Order {
 
     public void changeOrderLineItems(final List<OrderLineItem> orderLineItems) {
         this.orderLineItems = new OrderLineItems(orderLineItems);
-        this.orderLineItems.addOrder(this);
     }
 
     public void validateDuplicateMenu(long menuCount) {
@@ -68,6 +67,7 @@ public class Order {
     }
 
     public void order(LocalDateTime orderedTime) {
+        this.orderLineItems.addOrder(this);
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = orderedTime;
     }
