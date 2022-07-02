@@ -25,7 +25,7 @@ public class OrderLineItemBuilder {
         return this;
     }
 
-    public OrderLineItemBuilder menuId(String menuName) {
+    public OrderLineItemBuilder menuName(String menuName) {
         this.menuName = menuName;
         return this;
     }

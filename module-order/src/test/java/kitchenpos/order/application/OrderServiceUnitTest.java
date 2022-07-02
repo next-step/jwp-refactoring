@@ -1,7 +1,7 @@
 package kitchenpos.order.application;
 
-import static kitchenpos.order.helper.OrderFixtures.주문_요청_만들기;
-import static kitchenpos.order.helper.OrderLineItemFixtures.주문_항목_요청_만들기;
+import static kitchenpos.order.helper.OrderRequestFixtures.주문_요청_만들기;
+import static kitchenpos.order.helper.OrderLineItemRequestFixtures.주문_항목_요청_만들기;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;

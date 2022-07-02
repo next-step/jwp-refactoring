@@ -5,7 +5,7 @@ import kitchenpos.order.consts.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 
-public class OrderFixtures {
+public class OrderRequestFixtures {
 
     public static OrderRequest 주문_상태_조리_요청 = 주문_요청_만들기(OrderStatus.COMPLETION);
     public static OrderRequest 주문_상태_식사_요청 = 주문_요청_만들기(OrderStatus.MEAL);

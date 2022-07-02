@@ -2,7 +2,7 @@ package kitchenpos.order.helper;
 
 import kitchenpos.order.dto.OrderLineItemRequest;
 
-public class OrderLineItemFixtures {
+public class OrderLineItemRequestFixtures {
 
     public static final OrderLineItemRequest 주문_항목_요청1 = 주문_항목_요청_만들기(1L, 1);
     public static final OrderLineItemRequest 주문_항목_요청2 = 주문_항목_요청_만들기(2L, 2);

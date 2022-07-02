@@ -1,12 +1,12 @@
 package kitchenpos.order.application;
 
-import static kitchenpos.order.helper.OrderFixtures.주문_상태_계산완료_요청;
-import static kitchenpos.order.helper.OrderFixtures.주문_상태_식사_요청;
-import static kitchenpos.order.helper.OrderFixtures.주문_상태_조리_요청;
-import static kitchenpos.order.helper.OrderFixtures.주문_요청_만들기;
-import static kitchenpos.order.helper.OrderLineItemFixtures.없는_주문_항목_요청;
-import static kitchenpos.order.helper.OrderLineItemFixtures.주문_항목_요청1;
-import static kitchenpos.order.helper.OrderLineItemFixtures.주문_항목_요청2;
+import static kitchenpos.order.helper.OrderRequestFixtures.주문_상태_계산완료_요청;
+import static kitchenpos.order.helper.OrderRequestFixtures.주문_상태_식사_요청;
+import static kitchenpos.order.helper.OrderRequestFixtures.주문_상태_조리_요청;
+import static kitchenpos.order.helper.OrderRequestFixtures.주문_요청_만들기;
+import static kitchenpos.order.helper.OrderLineItemRequestFixtures.없는_주문_항목_요청;
+import static kitchenpos.order.helper.OrderLineItemRequestFixtures.주문_항목_요청1;
+import static kitchenpos.order.helper.OrderLineItemRequestFixtures.주문_항목_요청2;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
