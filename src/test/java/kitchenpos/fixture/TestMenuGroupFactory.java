@@ -1,7 +1,7 @@
 package kitchenpos.fixture;
 
+import kitchenpos.common.Name;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.embeddableEntity.Name;
 
 public class TestMenuGroupFactory {
 

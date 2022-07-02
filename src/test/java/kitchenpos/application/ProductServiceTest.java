@@ -1,11 +1,11 @@
 package kitchenpos.application;
 
+import kitchenpos.fixture.TestProductRequestFactory;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
-import kitchenpos.product.application.ProductService;
-import kitchenpos.product.domain.ProductRepository;
-import kitchenpos.product.domain.Product;
-import kitchenpos.fixture.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,7 +1,7 @@
 package kitchenpos.product.domain;
 
-import kitchenpos.embeddableEntity.Name;
-import kitchenpos.embeddableEntity.Price;
+import kitchenpos.common.Name;
+import kitchenpos.common.Price;
 import kitchenpos.product.dto.ProductRequest;
 
 import javax.persistence.*;
@@ -17,6 +17,7 @@ public class Product {
     private Price price;
 
     public Product() {
+
     }
 
     public Product(String name, Price price) {

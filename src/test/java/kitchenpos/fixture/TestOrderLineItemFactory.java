@@ -1,7 +1,7 @@
 package kitchenpos.fixture;
 
+import kitchenpos.common.Quantity;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.embeddableEntity.Quantity;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 

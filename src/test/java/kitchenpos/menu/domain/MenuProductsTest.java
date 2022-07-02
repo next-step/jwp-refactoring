@@ -1,19 +1,16 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.embeddableEntity.Price;
-import kitchenpos.embeddableEntity.Quantity;
+import kitchenpos.common.Price;
+import kitchenpos.common.Quantity;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class MenuProductsTest {
 
@@ -41,6 +38,7 @@ class MenuProductsTest {
     }
 
     @Test
+    @DisplayName("메뉴상품들의 수량을 곱한 가격을 계산한다")
     void totalPrice() {
         // given & when
         MenuProducts result = MenuProducts.of(menuProducts);
@@ -50,7 +48,8 @@ class MenuProductsTest {
     }
 
     @Test
-    void addMenu() {
+    @DisplayName("메뉴제품에 메뉴 엔티티를 넣어준다")
+    void setMenu() {
         // given
         MenuProducts menuProducts = MenuProducts.of(this.menuProducts);
         Menu menu = new Menu("라면메뉴", new Price(9000), 1L, MenuProducts.of(this.menuProducts));

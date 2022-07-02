@@ -1,7 +1,7 @@
 package kitchenpos.fixture;
 
-import kitchenpos.embeddableEntity.Name;
-import kitchenpos.embeddableEntity.Price;
+import kitchenpos.common.Name;
+import kitchenpos.common.Price;
 import kitchenpos.product.domain.Product;
 
 public class TestProductFactory {

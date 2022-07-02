@@ -1,11 +1,11 @@
 package kitchenpos.application;
 
-import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.fixture.TestMenuGroupFactory;
 import kitchenpos.fixture.TestMenuGroupRequestFactory;
 import kitchenpos.menu.application.MenuGroupService;
-import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.fixture.TestMenuGroupFactory;
+import kitchenpos.menu.domain.MenuGroupRepository;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

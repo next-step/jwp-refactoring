@@ -1,7 +1,5 @@
 package kitchenpos.menu.dto;
 
-import kitchenpos.menu.domain.MenuGroup;
-
 import java.util.Objects;
 
 public class MenuGroupRequest {

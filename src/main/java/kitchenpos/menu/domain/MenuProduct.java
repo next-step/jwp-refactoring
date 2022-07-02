@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.embeddableEntity.Quantity;
+import kitchenpos.common.Quantity;
 import kitchenpos.product.domain.Product;
 
 import javax.persistence.*;

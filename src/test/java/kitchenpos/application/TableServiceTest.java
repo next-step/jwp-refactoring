@@ -1,11 +1,10 @@
 package kitchenpos.application;
 
+import kitchenpos.fixture.TestOrderTableRequestFactory;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.table.application.TableService;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.fixture.TestOrderTableRequestFactory;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.NumberOfGuestsRequest;
 import kitchenpos.table.dto.OrderTableEmptyRequest;

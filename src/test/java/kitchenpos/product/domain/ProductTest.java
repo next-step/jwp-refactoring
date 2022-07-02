@@ -1,15 +1,13 @@
 package kitchenpos.product.domain;
 
-import kitchenpos.embeddableEntity.Name;
-import kitchenpos.embeddableEntity.Price;
+import kitchenpos.common.Name;
+import kitchenpos.common.Price;
 import kitchenpos.product.dto.ProductRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class ProductTest {
 

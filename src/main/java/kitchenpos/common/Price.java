@@ -1,4 +1,4 @@
-package kitchenpos.embeddableEntity;
+package kitchenpos.common;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -8,7 +8,7 @@ import java.util.Objects;
 @Embeddable
 public class Price {
     @Column(name = "price")
-    private BigDecimal price;
+    private BigDecimal price = BigDecimal.ZERO;
 
     public Price() {
     }

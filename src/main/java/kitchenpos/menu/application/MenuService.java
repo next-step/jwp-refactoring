@@ -6,12 +6,11 @@ import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.Products;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,6 +46,10 @@ public class MenuService {
                 .collect(Collectors.toList());
     }
 
+    public List<Product> findProductsByIdIn(List<Long> productIds) {
+        return productRepository.findByIdIn(productIds);
+    }
+
     public boolean existsMenuGroupById(Long menuGroupId) {
         return menuGroupRepository.existsById(menuGroupId);
     }
@@ -58,10 +61,9 @@ public class MenuService {
 
     private void validateProductIds(MenuRequest request) {
         List<Long> productIds = getProductIds(request.getMenuProducts());
-        List<Product> products = findProductIds(productIds);
-        Set<Long> productIdHashSet = new HashSet<>(productIds);
+        Products products = new Products(findProductsByIdIn(productIds));
 
-        if (products.size() != productIdHashSet.size()) {
+        if (!products.isSameSize(productIds)) {
             throw new IllegalArgumentException();
         }
     }
@@ -79,13 +81,9 @@ public class MenuService {
                 .collect(Collectors.toList());
     }
 
-    private List<Product> findProductIds(List<Long> productIds) {
-        return productRepository.findByIdIn(productIds);
-    }
-
     private List<MenuProduct> getMenuProducts(MenuRequest request) {
         List<Long> productIds = getProductIds(request.getMenuProducts());
-        List<Product> products = findProductIds(productIds);
+        List<Product> products = findProductsByIdIn(productIds);
 
         return request.getMenuProducts().stream()
                 .map(p -> new MenuProduct(getProduct(products, p.getProductId()), getQuantity(request.getMenuProducts(), p.getProductId())))

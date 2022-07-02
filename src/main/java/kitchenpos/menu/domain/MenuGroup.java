@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.embeddableEntity.Name;
+import kitchenpos.common.Name;
 import kitchenpos.menu.dto.MenuGroupRequest;
 
 import javax.persistence.*;

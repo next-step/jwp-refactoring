@@ -1,4 +1,4 @@
-package kitchenpos.embeddableEntity;
+package kitchenpos.common;
 
 import javax.persistence.Embeddable;
 import java.math.BigDecimal;

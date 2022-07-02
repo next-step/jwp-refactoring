@@ -1,14 +1,14 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.embeddableEntity.Name;
-import kitchenpos.embeddableEntity.Price;
-import kitchenpos.embeddableEntity.Quantity;
+import kitchenpos.common.Name;
+import kitchenpos.common.Price;
+import kitchenpos.common.Quantity;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class MenuProductTest {
 

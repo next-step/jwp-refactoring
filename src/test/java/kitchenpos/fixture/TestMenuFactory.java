@@ -1,8 +1,11 @@
 package kitchenpos.fixture;
 
-import kitchenpos.embeddableEntity.Name;
-import kitchenpos.embeddableEntity.Price;
-import kitchenpos.menu.domain.*;
+import kitchenpos.common.Name;
+import kitchenpos.common.Price;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
 
 import java.util.ArrayList;
 import java.util.List;

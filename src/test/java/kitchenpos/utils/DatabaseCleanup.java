@@ -1,6 +1,7 @@
 package kitchenpos.utils;
 
 
+import com.google.common.base.CaseFormat;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 import org.springframework.test.context.ActiveProfiles;
@@ -11,7 +12,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.stream.Collectors;
-import com.google.common.base.CaseFormat;
 
 @Service
 @ActiveProfiles("test")

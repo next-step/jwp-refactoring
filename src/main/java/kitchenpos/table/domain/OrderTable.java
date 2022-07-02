@@ -1,6 +1,6 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.embeddableEntity.Empty;
+import kitchenpos.common.Empty;
 import kitchenpos.table.dto.OrderTableRequest;
 
 import javax.persistence.*;

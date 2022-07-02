@@ -2,7 +2,6 @@ package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.table.application.TableGroupService;
-import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.TableGroupResponse;
 import kitchenpos.table.ui.TableGroupRestController;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +22,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)

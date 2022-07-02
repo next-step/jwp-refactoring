@@ -1,8 +1,8 @@
 package kitchenpos.fixture;
 
+import kitchenpos.common.Quantity;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.embeddableEntity.Quantity;
 import kitchenpos.product.domain.Product;
 
 public class TestMenuProductFactory {

@@ -1,6 +1,6 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.embeddableEntity.Empty;
+import kitchenpos.common.Empty;
 import kitchenpos.table.dto.OrderTableRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class OrderTableTest {
     NumberOfGuests numberOfGuests;

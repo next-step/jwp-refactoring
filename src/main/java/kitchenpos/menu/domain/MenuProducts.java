@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.embeddableEntity.Price;
+import kitchenpos.common.Price;
 
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;

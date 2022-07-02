@@ -1,6 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.order.dto.OrderLineItemRequest;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.CascadeType;
@@ -9,7 +8,6 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Embeddable
 public class OrderLineItems {

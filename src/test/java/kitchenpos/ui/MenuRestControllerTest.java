@@ -1,14 +1,16 @@
 package kitchenpos.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kitchenpos.embeddableEntity.Name;
-import kitchenpos.embeddableEntity.Price;
+import kitchenpos.common.Name;
+import kitchenpos.common.Price;
+import kitchenpos.fixture.TestMenuRequestFactory;
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.domain.*;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.fixture.TestMenuRequestFactory;
 import kitchenpos.menu.ui.MenuRestController;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,13 +1,15 @@
 package kitchenpos.application;
 
-import kitchenpos.fixture.*;
+import kitchenpos.fixture.TestMenuGroupFactory;
+import kitchenpos.fixture.TestMenuRequestFactory;
+import kitchenpos.fixture.TestProductFactory;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

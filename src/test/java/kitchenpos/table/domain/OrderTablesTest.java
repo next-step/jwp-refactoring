@@ -1,13 +1,13 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.embeddableEntity.Empty;
+import kitchenpos.common.Empty;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class OrderTablesTest {
 

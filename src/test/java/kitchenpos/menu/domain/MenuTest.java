@@ -1,22 +1,20 @@
 package kitchenpos.menu.domain;
 
-import com.google.common.collect.ArrayListMultimap;
-import kitchenpos.embeddableEntity.Name;
-import kitchenpos.embeddableEntity.Price;
-import kitchenpos.embeddableEntity.Quantity;
+import kitchenpos.common.Name;
+import kitchenpos.common.Price;
+import kitchenpos.common.Quantity;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class MenuTest {
 

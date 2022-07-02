@@ -1,7 +1,7 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.embeddableEntity.Name;
-import kitchenpos.embeddableEntity.Price;
+import kitchenpos.common.Name;
+import kitchenpos.common.Price;
 import kitchenpos.menu.dto.MenuRequest;
 
 import javax.persistence.*;
