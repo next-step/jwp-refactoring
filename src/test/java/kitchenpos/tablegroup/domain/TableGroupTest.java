@@ -75,7 +75,7 @@ class TableGroupTest {
         OrderTable orderTable = createOrderTable(0, true);
         OrderTable orderTable2 = createOrderTable(0, true);
         TableGroup tableGroup = createTableGroup(LocalDateTime.now(), Arrays.asList(orderTable, orderTable2));
-        tableGroup.ungroup(new ArrayList<>());
+        tableGroup.ungroup();
 
         assertAll(
                 () -> assertThat(orderTable.isGrouped()).isFalse(),

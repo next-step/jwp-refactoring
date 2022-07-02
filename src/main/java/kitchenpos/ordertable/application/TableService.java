@@ -1,5 +1,7 @@
 package kitchenpos.ordertable.application;
 
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.exception.IllegalOrderException;
 import kitchenpos.ordertable.exception.NoSuchOrderTableException;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderRepository;
@@ -12,6 +14,7 @@ import kitchenpos.ordertable.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -19,6 +22,8 @@ import java.util.List;
 public class TableService {
     private final OrderTableRepository orderTableRepository;
     private final OrderRepository orderRepository;
+
+    public static final String ERROR_ORDER_INVALID_STATUS = "주문의 상태는 %s일 수 없습니다.";
 
     public TableService(final OrderTableRepository orderTableRepository, final OrderRepository orderRepository) {
         this.orderTableRepository = orderTableRepository;
@@ -39,8 +44,8 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableEmptyRequest orderTableRequest) {
         final OrderTable savedOrderTable = findOrderTableById(orderTableId);
-        List<Order> orders = findOrdersByOrderTable(orderTableId);
-        savedOrderTable.changeEmpty(orderTableRequest.isEmpty(), orders);
+        validateOrderStatusToChangeEmpty(orderTableId);
+        savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
 
         return OrderTableResponse.from(savedOrderTable);
     }
@@ -58,7 +63,12 @@ public class TableService {
                 .orElseThrow(() -> new NoSuchOrderTableException(orderTableId));
     }
 
-    private List<Order> findOrdersByOrderTable(Long orderTableId) {
-        return orderRepository.findAllByOrderTableId(orderTableId);
+    private void validateOrderStatusToChangeEmpty(Long orderTableId) {
+        if(orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTableId,
+                Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+            throw new IllegalOrderException(
+                    String.format(ERROR_ORDER_INVALID_STATUS, OrderStatus.COOKING + " " + OrderStatus.MEAL)
+            );
+        }
     }
 }

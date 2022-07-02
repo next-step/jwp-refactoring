@@ -43,19 +43,9 @@ public class OrderTable {
         return new OrderTable(null, numberOfGuests, empty);
     }
 
-    public void changeEmpty(boolean empty, List<Order> orders) {
-        validateOrderStatusToChangeEmpty(orders);
+    public void changeEmpty(boolean empty) {
         validateOrderTableNotGrouped();
         this.empty = empty;
-    }
-
-    private void validateOrderStatusToChangeEmpty(List<Order> orders) {
-        if (orders.stream()
-                .anyMatch(order -> order.isCooking() || order.isEating())) {
-            throw new IllegalOrderException(
-                    String.format(ERROR_ORDER_INVALID_STATUS, OrderStatus.COOKING + " " + OrderStatus.MEAL)
-            );
-        }
     }
 
     private void validateOrderTableNotGrouped() {

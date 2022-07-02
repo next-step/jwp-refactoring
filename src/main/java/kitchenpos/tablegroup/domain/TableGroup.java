@@ -1,8 +1,5 @@
 package kitchenpos.tablegroup.domain;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.exception.IllegalOrderException;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.exception.IllegalOrderTableException;
 
@@ -80,19 +77,9 @@ public class TableGroup {
         }
     }
 
-    public void ungroup(List<Order> orders) {
-        validateOrdersToUngroup(orders);
+    public void ungroup() {
         for (final OrderTable orderTable : orderTables) {
             orderTable.removeTableGroup();
-        }
-    }
-
-    private void validateOrdersToUngroup(List<Order> orders) {
-        if (orders.stream()
-                .anyMatch(order -> order.isCooking() || order.isEating())) {
-            throw new IllegalOrderException(
-                    String.format(ERROR_ORDER_INVALID_STATUS, OrderStatus.COOKING + " " + OrderStatus.MEAL)
-            );
         }
     }
 
