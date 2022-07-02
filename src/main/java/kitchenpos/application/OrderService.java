@@ -32,7 +32,7 @@ public class OrderService {
     @Transactional
     public Order create(final OrderRequest request) {
         if (CollectionUtils.isEmpty(request.getOrderLineItems())) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("메뉴가 선택되지 않았습니다.");
         }
 
         final List<Long> menuIds = extractMenuIds(request);
