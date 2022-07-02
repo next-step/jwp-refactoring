@@ -1,23 +1,23 @@
 package kitchenpos.order.application;
 
-import kitchenpos.common.domain.OrderStatus;
-import kitchenpos.common.exception.InvalidOrderStatusException;
-import kitchenpos.order.repository.OrderRepository;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.TableGroup;
-import org.springframework.stereotype.Service;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import kitchenpos.common.domain.OrderStatus;
+import kitchenpos.common.exception.InvalidOrderStatusException;
+import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.table.application.TableValidator;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table_group.domain.TableGroup;
+import org.springframework.stereotype.Service;
 
 @Service
-public class TableValidator {
+public class TableValidatorImpl implements TableValidator {
 
     private final OrderRepository orderRepository;
 
-    public TableValidator(OrderRepository orderRepository) {
+    public TableValidatorImpl(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
     }
 
@@ -27,7 +27,7 @@ public class TableValidator {
     }
 
     private void checkNotGroup(OrderTable orderTable) {
-        if (Objects.nonNull(orderTable.getTableGroup())) {
+        if (Objects.nonNull(orderTable.getTableGroupId())) {
             throw new IllegalArgumentException();
         }
     }
