@@ -15,7 +15,7 @@ public class TableGroup {
     private Long id;
     private LocalDateTime createdDate;
 
-    @OneToMany
+    @OneToMany(mappedBy = "tableGroup")
     private List<OrderTable> orderTables;
 
     public TableGroup() {

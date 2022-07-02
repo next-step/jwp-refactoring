@@ -14,6 +14,7 @@ import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
+import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
@@ -64,8 +65,8 @@ class OrderServiceTest {
     @Test
     @DisplayName("주문 내역의 개수는 메뉴의 개수와 동일하지 않으면 에러 반환")
     public void orderLineCountNotEqualsMenuCount() {
-        orderLineItems.add(new OrderLineItem(1L, null, 1L, 1));
-        orderLineItems.add(new OrderLineItem(2L, null, 2L, 2));
+        orderLineItems.add(new OrderLineItem(1L, null, new Menu(), 1));
+        orderLineItems.add(new OrderLineItem(2L, null, new Menu(), 2));
 
         order.setOrderLineItems(orderLineItems);
 
@@ -96,13 +97,9 @@ class OrderServiceTest {
     @Test
     @DisplayName("주문 정상 저장 후 COOKING 초기 상태 확인")
     public void orderSuccessSave() {
-//        OrderLineItem orderLineItem = new OrderLineItem(1L, 1L, 1L, 1);
-        //
         Order order = new Order();
 
-        //
-//        OrderLineItem orderLineItem = new OrderLineItem(1L, 1L, 1L, 1);
-        OrderLineItem orderLineItem = new OrderLineItem(1L, order, 1L, 1);
+        OrderLineItem orderLineItem = new OrderLineItem(1L, order, new Menu(), 1);
         orderLineItems.add(orderLineItem);
 
         OrderTable orderTable = new OrderTable(1L, null, 3, false);
@@ -131,27 +128,29 @@ class OrderServiceTest {
 
     @Test
     @DisplayName("존재하지 않는 주문 상태 변경 시도 시 에러 반환")
-    public void changeStatusNotExitsOrder(){
+    public void changeStatusNotExitsOrder() {
         given(orderDao.findById(any())).willReturn(Optional.empty());
 
         order.setOrderStatus(OrderStatus.MEAL.name());
 
-        assertThatThrownBy(() -> orderService.changeOrderStatus(1L, order)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.changeOrderStatus(1L, order)).isInstanceOf(
+                IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("완료단계 주문 건 상태 변경 시도시 에러 반환")
-    public void changeStatusInCompletion(){
+    public void changeStatusInCompletion() {
         order.setOrderStatus(OrderStatus.COMPLETION.name());
 
         given(orderDao.findById(order.getId())).willReturn(Optional.of(order));
 
-        assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), new Order())).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), new Order())).isInstanceOf(
+                IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("주문 상태 변경 정상 처리")
-    public void changeStatusSuccess(){
+    public void changeStatusSuccess() {
         order.setOrderStatus(OrderStatus.COOKING.name());
 
         Order changeOrder = new Order();
@@ -159,6 +158,7 @@ class OrderServiceTest {
 
         given(orderDao.findById(order.getId())).willReturn(Optional.of(order));
 
-        assertThat(orderService.changeOrderStatus(order.getId(), changeOrder).getOrderStatus()).isEqualTo(changeOrder.getOrderStatus());
+        assertThat(orderService.changeOrderStatus(order.getId(), changeOrder).getOrderStatus()).isEqualTo(
+                changeOrder.getOrderStatus());
     }
 }

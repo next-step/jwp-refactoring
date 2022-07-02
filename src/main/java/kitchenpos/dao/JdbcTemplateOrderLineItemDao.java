@@ -1,5 +1,6 @@
 package kitchenpos.dao;
 
+import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -74,7 +75,8 @@ public class JdbcTemplateOrderLineItemDao implements OrderLineItemDao {
         entity.setSeq(resultSet.getLong(KEY_COLUMN_NAME));
 //        entity.setOrderId(resultSet.getLong("order_id"));
         entity.setOrder((Order) resultSet.getObject("order")); //TODO
-        entity.setMenuId(resultSet.getLong("menu_id"));
+//        entity.setMenuId(resultSet.getLong("menu_id"));
+        entity.setMenu((Menu) resultSet.getObject("menu"));
         entity.setQuantity(resultSet.getLong("quantity"));
         return entity;
     }
