@@ -1,7 +1,10 @@
 package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.order.domain.*;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.domain.OrderTable;
@@ -55,18 +58,6 @@ public class OrderServiceTest {
 
         // then
         assertThat(created).isNotNull();
-    }
-
-    @DisplayName("[예외] 주문 항목이 없는 주문을 생성한다.")
-    @Test
-    void createOrder_without_order_list_item() {
-        OrderTable orderTable = new OrderTable(1L, 3, false);
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
-
-        // when, then
-        assertThatThrownBy(() -> {
-            orderService.create(createOrderRequestWithoutOrderListItem());
-        }).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("[예외] 주문 테이블 없는 주문을 생성한다.")
