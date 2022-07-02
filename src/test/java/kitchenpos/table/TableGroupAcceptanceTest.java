@@ -8,9 +8,11 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.TableGroupRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,7 +46,7 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     @DisplayName("단체 손님을 해제한다")
     void 단체_손님을_해제한다() {
         // given
-        단체손님 = 단체_손님을_생성(Arrays.asList(손님1, 손님2)).as(TableGroup.class);
+        Long 단체손님 = 단체_손님을_생성(Arrays.asList(손님1, 손님2)).jsonPath().getLong("id");
 
         // when
         ExtractableResponse<Response> response = 단체_손님을_해제(단체손님);
@@ -55,13 +57,16 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
 
 
     public static ExtractableResponse<Response> 단체_손님을_생성(List<OrderTable> orderTableList) {
-        TableGroup tableGroup = new TableGroup(orderTableList);
+        List<Long> orderTableIds = orderTableList.stream()
+                .map(OrderTable::getId)
+                .collect(Collectors.toList());
+        TableGroupRequest tableGroup = new TableGroupRequest(orderTableIds);
 
         return AcceptanceTest.doPost("/api/table-groups", tableGroup);
     }
 
-    public static ExtractableResponse<Response> 단체_손님을_해제(TableGroup tableGroup) {
-        return AcceptanceTest.doDelete("/api/table-groups/" + tableGroup.getId());
+    public static ExtractableResponse<Response> 단체_손님을_해제(Long orderTableId) {
+        return AcceptanceTest.doDelete("/api/table-groups/" + orderTableId);
     }
 
     public static void 단체_손님이_생성됨(ExtractableResponse<Response> response) {

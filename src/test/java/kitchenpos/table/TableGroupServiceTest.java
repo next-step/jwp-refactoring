@@ -1,5 +1,6 @@
 package kitchenpos.table;
 
+import static kitchenpos.table.TableAcceptanceTest.사용가능;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -45,33 +46,24 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        주문테이블1 = new OrderTable(2, true);
-        주문테이블2 = new OrderTable(2, true);
+        주문테이블1 = new OrderTable(2, 사용가능);
+        주문테이블2 = new OrderTable(2, 사용가능);
 
-        단체손님 = new TableGroup(Arrays.asList(주문테이블1, 주문테이블2));
+        단체손님 = new TableGroup(Arrays.asList(new OrderTable(2, 사용가능), new OrderTable(2, 사용가능)));
     }
 
     @Test
     @DisplayName("단체를 지정하여 저장한다")
     void create() {
         // given
-        given(orderTableRepository.findAllByIdIn(any())).willReturn(단체손님.getOrderTables());
+        given(orderTableRepository.findAllByIdIn(any())).willReturn(Arrays.asList(주문테이블1, 주문테이블2));
         given(tableGroupRepository.save(any())).willReturn(단체손님);
 
         // when
-        TableGroupResponse actual = tableGroupService.create(new TableGroupRequest(Arrays.asList(주문테이블1, 주문테이블2)));
+        TableGroupResponse actual = tableGroupService.create(new TableGroupRequest(Arrays.asList(1L, 2L)));
 
         // then
-        assertThat(actual.getOrderTables()).isNotNull();
-    }
-
-    @Test
-    @DisplayName("단체 지정시 최소 2팀 이상 지정해야 한다")
-    void create_singleTableGroupError() {
-        // given & when & then
-        assertThatIllegalArgumentException().isThrownBy(
-                () -> tableGroupService.create(new TableGroupRequest(Collections.singletonList(주문테이블1)))
-        );
+        assertThat(actual).isNotNull();
     }
 
     @Test
@@ -82,12 +74,24 @@ class TableGroupServiceTest {
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
-                () -> tableGroupService.create(new TableGroupRequest(Arrays.asList(주문테이블1, 주문테이블2)))
-        );
+                () -> tableGroupService.create(new TableGroupRequest(Arrays.asList(1L, 2L)))
+        ).withMessageContaining("존재하지 않는 주문테이블입니다.");
     }
 
     @Test
-    @DisplayName("단체 지정시 주문 테이블은 단체 테이블 정보를 가지고 있다")
+    @DisplayName("단체 지정시 최소 2팀 이상 지정해야 한다")
+    void create_singleTableGroupError() {
+        // given
+        given(orderTableRepository.findAllByIdIn(any())).willReturn(Collections.singletonList(주문테이블1));
+
+        // when & then
+        assertThatIllegalArgumentException().isThrownBy(
+                () -> tableGroupService.create(new TableGroupRequest(Collections.singletonList(주문테이블1.getId())))
+        ).withMessageContaining("주문 테이블은 2개 이상 존재하여야 합니다.");
+    }
+
+    @Test
+    @DisplayName("단체 지정시 주문 테이블은 빈 테이블이거나 이미 단체 테이블이면 안 된다")
     void create_emptyTableGroupError() {
         // given
         주문테이블1.setEmpty(false);
@@ -95,20 +99,19 @@ class TableGroupServiceTest {
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
-                () -> tableGroupService.create(new TableGroupRequest(Arrays.asList(주문테이블1, 주문테이블2)))
-        );
+                () -> tableGroupService.create(new TableGroupRequest(Arrays.asList(1L, 2L)))
+        ).withMessageContaining("빈 테이블이거나 이미 단체 테이블인 경우 단체로 지정할 수 없습니다.");
     }
 
     @Test
     @DisplayName("지정한 단체를 해제한다")
     void ungroup() {
         // given
-        create();
         given(orderTableRepository.findAllByTableGroupId(any())).willReturn(Arrays.asList(주문테이블1, 주문테이블2));
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(false);
 
         // when
-        tableGroupService.ungroup(단체손님.getId());
+        tableGroupService.ungroup(1L);
 
         // then
         assertAll(
@@ -121,13 +124,12 @@ class TableGroupServiceTest {
     @DisplayName("지정한 단체를 해제시 주문 상태가 계산 완료여야 한다")
     void ungroup_completionError() {
         // given
-        create();
         given(orderTableRepository.findAllByTableGroupId(any())).willReturn(Arrays.asList(주문테이블1, 주문테이블2));
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(true);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
-                () -> tableGroupService.ungroup(단체손님.getId())
+                () -> tableGroupService.ungroup(1L)
         );
     }
 }

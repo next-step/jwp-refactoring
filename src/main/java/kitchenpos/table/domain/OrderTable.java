@@ -1,5 +1,6 @@
 package kitchenpos.table.domain;
 
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -39,8 +40,15 @@ public class OrderTable {
         return tableGroup;
     }
 
-    public void setTableGroup(TableGroup tableGroup) {
+    public void groupTable(TableGroup tableGroup) {
+        validateTableGroupCheck();
         this.tableGroup = tableGroup;
+        this.empty = false;
+    }
+
+    public void ungroupTable() {
+        this.tableGroup = null;
+        this.empty = true;
     }
 
     public int getNumberOfGuests() {
@@ -57,5 +65,11 @@ public class OrderTable {
 
     public void setEmpty(final boolean empty) {
         this.empty = empty;
+    }
+
+    private void validateTableGroupCheck() {
+        if (!isEmpty() || Objects.nonNull(tableGroup)) {
+            throw new IllegalArgumentException("빈 테이블이거나 이미 단체 테이블인 경우 단체로 지정할 수 없습니다.");
+        }
     }
 }

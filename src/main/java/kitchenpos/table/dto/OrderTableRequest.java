@@ -34,8 +34,6 @@ public class OrderTableRequest {
     }
 
     public OrderTable toTableGroup() {
-        OrderTable orderTable = new OrderTable(numberOfGuests, empty);
-        orderTable.setTableGroup(tableGroup);
-        return orderTable;
+        return new OrderTable(numberOfGuests, empty);
     }
 }
