@@ -1,7 +1,5 @@
 package kitchenpos.product.domain;
 
-import kitchenpos.common.domain.Price;
-
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -17,7 +15,7 @@ public class Product {
     private String name;
 
     @Embedded
-    private Price price;
+    private ProductPrice price;
 
     protected Product() {
     }
@@ -29,7 +27,7 @@ public class Product {
     public Product(Long id, String name, BigDecimal price) {
         this.id = id;
         this.name = name;
-        this.price = new Price(price);
+        this.price = new ProductPrice(price);
     }
 
     public Long getId() {
@@ -40,7 +38,7 @@ public class Product {
         return name;
     }
 
-    public Price getPrice() {
+    public ProductPrice getPrice() {
         return price;
     }
 

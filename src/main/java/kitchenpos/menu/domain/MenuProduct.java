@@ -1,7 +1,5 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.common.domain.Quantity;
-
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -20,7 +18,7 @@ public class MenuProduct {
     private Long productId;
 
     @Embedded
-    private Quantity quantity;
+    private MenuProductQuantity quantity;
 
     protected MenuProduct() {
     }
@@ -33,7 +31,7 @@ public class MenuProduct {
         this.seq = seq;
         this.menu = menu;
         this.productId = productId;
-        this.quantity = new Quantity(quantity);
+        this.quantity = new MenuProductQuantity(quantity);
     }
 
     public Long getSeq() {

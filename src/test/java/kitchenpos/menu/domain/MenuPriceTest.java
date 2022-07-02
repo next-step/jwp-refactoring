@@ -1,4 +1,4 @@
-package kitchenpos.common.domain;
+package kitchenpos.menu.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -8,21 +8,21 @@ import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class QuantityTest {
+class MenuPriceTest {
 
-    @DisplayName("Quantity 생성")
+    @DisplayName("MenuPrice 생성")
     @ParameterizedTest
-    @ValueSource(longs = { 0, 1000, 35000 })
-    void quantity(Long value) {
-        new Quantity(value);
+    @ValueSource(ints = { 0, 10000, 3500000 })
+    void price(int value) {
+        new MenuPrice(new BigDecimal(value));
     }
 
-    @DisplayName("Quantity 예외 생성")
+    @DisplayName("MenuPrice 예외 생성")
     @ParameterizedTest
-    @ValueSource(longs = { -1000, -100, -1 })
-    void quantityException(Long value) {
+    @ValueSource(ints = { -1000, -100, -1 })
+    void priceException(int value) {
         assertThatThrownBy(() -> {
-            new Quantity(value);
+            new MenuPrice(new BigDecimal(value));
         }).isInstanceOf(IllegalArgumentException.class);
     }
 }
