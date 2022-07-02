@@ -32,4 +32,8 @@ public class ProductService {
         return productRepository.findById(id)
                 .orElseThrow(NotFoundProductException::new);
     }
+
+    public List<Product> findProductsByIdIn(List<Long> ids) {
+        return productRepository.findByIdIn(ids);
+    }
 }

@@ -5,7 +5,7 @@
 - [x] 기존 도메인 의존성 분석
 - [x] 패키지 분리
 - [ ] 다른 패키지와의 엔티티 연관관계를 간접 참조로 변경
-  - [ ] MenuProduct -> Product
+  - [x] MenuProduct -> Product
   - [ ] Order -> OrderTable
 - [ ] 서비스간 연관관계를 중간 객체를 참조하는 방식으로 변경
 

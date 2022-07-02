@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
+import java.util.stream.Collectors;
 import kitchenpos.Exception.InvalidMenuPriceException;
 import kitchenpos.common.Price;
 import kitchenpos.menu.domain.Menu;
@@ -17,33 +18,34 @@ import org.junit.jupiter.api.Test;
 
 class MenuTest {
     private Menu menu;
+    private Product product1;
+    private Product product2;
+
 
     @BeforeEach
     void setUp() {
         menu = new Menu(MenuName.from("빅맥"), Price.from(5000), 1L);
-    }
 
-    @Test
-    void 메뉴_생성_상품_가격_총_합_예외() {
-        // given
-        MenuProduct 토마토 = new MenuProduct(new Product(ProductName.from("토마토"), Price.from(1000)), Quantity.from(1));
-        MenuProduct 양상추 = new MenuProduct(new Product(ProductName.from("토마토"), Price.from(1000)), Quantity.from(2));
-
-        // when, then
-        assertThatThrownBy(
-                () -> menu.addMenuProducts(Arrays.asList(토마토, 양상추))
-        ).isInstanceOf(InvalidMenuPriceException.class);
+        product1 = new Product(ProductName.from("토마토"), Price.from(5000));
+        product2 = new Product(ProductName.from("양상추"), Price.from(1000));
     }
 
     @Test
     void 메뉴_상품_추가() {
         // given
-        MenuProduct 토마토 = new MenuProduct(new Product(ProductName.from("토마토"), Price.from(5000)), Quantity.from(1));
-        MenuProduct 양상추 = new MenuProduct(new Product(ProductName.from("토마토"), Price.from(1000)), Quantity.from(2));
+        MenuProduct 토마토 = new MenuProduct(product1.getId(), Quantity.from(1));
+        MenuProduct 양상추 = new MenuProduct(product2.getId(), Quantity.from(2));
 
         // when
         menu.addMenuProducts(Arrays.asList(토마토, 양상추));
+
         // then
-        assertThat(menu.getMenuProducts().sumOfPrice()).isEqualTo(Price.from(7000));
+        assertThat(
+                menu.getMenuProducts().getMenuProducts()
+                        .stream()
+                        .map(MenuProduct::getProductId)
+                        .collect(Collectors.toList())
+        ).containsExactlyElementsOf(
+                Arrays.asList(product1.getId(), product2.getId()));
     }
 }

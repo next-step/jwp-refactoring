@@ -17,12 +17,9 @@ import kitchenpos.Exception.InvalidMenuPriceException;
 import kitchenpos.Exception.InvalidPriceException;
 import kitchenpos.Exception.NotFoundMenuGroupException;
 import kitchenpos.Exception.NotFoundProductException;
-import kitchenpos.menu.application.MenuGroupService;
-import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -35,6 +32,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -44,7 +43,7 @@ class MenuServiceTest {
     @Mock
     private MenuGroupService menuGroupService;
     @Mock
-    private ProductService productService;
+    private MenuValidator menuValidator;
     @InjectMocks
     private MenuService menuService;
     private MenuGroup 빅맥세트;
@@ -113,8 +112,7 @@ class MenuServiceTest {
     void 메뉴_생성_존재하지_않는_상품_예외() {
         // given
         given(menuGroupService.existsById(빅맥세트.getId())).willReturn(true);
-        given(productService.findProductById(토마토.getId())).willReturn(토마토);
-        given(productService.findProductById(양상추.getId())).willThrow(NotFoundProductException.class);
+        willThrow(NotFoundProductException.class).given(menuValidator).validate(any(Menu.class));
 
         // when
         MenuRequest 상품없음 = createMenuRequest("상품없음", BigDecimal.valueOf(1000), 빅맥세트.getId(),
@@ -129,8 +127,7 @@ class MenuServiceTest {
     void 메뉴_생성_메뉴_가격이_상품_가격_합_보다_큼_예외() {
         // given
         given(menuGroupService.existsById(빅맥세트.getId())).willReturn(true);
-        given(productService.findProductById(토마토.getId())).willReturn(토마토);
-        given(productService.findProductById(양상추.getId())).willReturn(양상추);
+        willThrow(InvalidMenuPriceException.class).given(menuValidator).validate(any(Menu.class));
 
         // when
         MenuRequest 메뉴가격큼 = createMenuRequest("메뉴가격큼", BigDecimal.valueOf(5000), 빅맥세트.getId(),
@@ -146,8 +143,7 @@ class MenuServiceTest {
     void 메뉴_생성() {
         // given
         given(menuGroupService.existsById(빅맥세트.getId())).willReturn(true);
-        given(productService.findProductById(토마토.getId())).willReturn(토마토);
-        given(productService.findProductById(양상추.getId())).willReturn(양상추);
+        willDoNothing().given(menuValidator).validate(any(Menu.class));
         when(menuRepository.save(any(Menu.class))).thenReturn(빅맥버거);
 
         // when

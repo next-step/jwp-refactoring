@@ -6,7 +6,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import kitchenpos.Exception.InvalidMenuPriceException;
 import kitchenpos.common.Price;
 
 @Entity
@@ -44,19 +43,16 @@ public class Menu {
         this.price = price;
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
-        validateSumPrice(this.menuProducts);
         this.menuProducts.addMenu(this);
     }
 
     public void addMenuProducts(List<MenuProduct> menuProducts) {
-        setMenuProducts(MenuProducts.from(menuProducts));
+        this.menuProducts = MenuProducts.from(menuProducts);
         this.menuProducts.addMenu(this);
     }
 
-    private void validateSumPrice(MenuProducts menuProducts) {
-        if (price.compareTo(menuProducts.sumOfPrice()) > 0) {
-            throw new InvalidMenuPriceException(price, menuProducts.sumOfPrice());
-        }
+    public boolean isMoreExpensiveThanMenuProductsPrice(Price sumOfMenuProductPrice) {
+        return price.compareTo(sumOfMenuProductPrice) > 0;
     }
 
     public Long getId() {
@@ -79,8 +75,7 @@ public class Menu {
         return menuProducts;
     }
 
-    private void setMenuProducts(MenuProducts menuProducts) {
-        validateSumPrice(menuProducts);
-        this.menuProducts = menuProducts;
+    public int getMenuProductsSize() {
+        return menuProducts.getSize();
     }
 }

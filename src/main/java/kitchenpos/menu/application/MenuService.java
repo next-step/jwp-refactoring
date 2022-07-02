@@ -3,6 +3,7 @@ package kitchenpos.menu.application;
 import static kitchenpos.Exception.NotFoundMenuGroupException.NOT_FOUND_MENU_GROUP_EXCEPTION;
 
 import java.util.stream.Collectors;
+import kitchenpos.order.domain.Quantity;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
@@ -22,16 +23,16 @@ import java.util.List;
 public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupService menuGroupService;
-    private final ProductService productService;
+    private final MenuValidator menuValidator;
 
     public MenuService(
             final MenuRepository menuRepository,
             final MenuGroupService menuGroupService,
-            final ProductService productService
+            final MenuValidator menuValidator
     ) {
         this.menuRepository = menuRepository;
         this.menuGroupService = menuGroupService;
-        this.productService = productService;
+        this.menuValidator = menuValidator;
     }
 
     @Transactional
@@ -39,11 +40,14 @@ public class MenuService {
         validateNotFoundMenuGroup(menuRequest);
 
         Menu menu = menuRequest.toMenu();
+
         final List<MenuProductRequest> menuProductRequests = menuRequest.getMenuProducts();
         List<MenuProduct> menuProducts = menuProductRequests.stream()
-                .map((it) -> createMenuProductAddedProduct(it))
+                .map((it) -> new MenuProduct(it.getProductId(), Quantity.from(it.getQuantity())))
                 .collect(Collectors.toList());
         menu.addMenuProducts(menuProducts);
+
+        menuValidator.validate(menu);
 
         return MenuResponse.from(menuRepository.save(menu));
     }
@@ -54,11 +58,6 @@ public class MenuService {
 
     public int countByIdIn(List<Long> ids) {
         return menuRepository.countByIdIn(ids);
-    }
-
-    private MenuProduct createMenuProductAddedProduct(MenuProductRequest menuProductRequest) {
-        Product product = productService.findProductById(menuProductRequest.getProductId());
-        return menuProductRequest.toMenuProduct(product);
     }
 
     private void validateNotFoundMenuGroup(MenuRequest menuRequest) {

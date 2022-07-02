@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import kitchenpos.common.Price;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.order.domain.Quantity;
 
 @Entity
@@ -56,5 +57,9 @@ public class Product {
 
     public Price getPrice() {
         return price;
+    }
+
+    public boolean equalToMenuProduct(MenuProduct menuProduct) {
+        return id.equals(menuProduct.getProductId());
     }
 }

@@ -16,10 +16,6 @@ public class MenuProductRequest {
     protected MenuProductRequest() {
     }
 
-    public MenuProduct toMenuProduct(Product product) {
-        return new MenuProduct(product, Quantity.from(quantity));
-    }
-
     public Long getProductId() {
         return productId;
     }
