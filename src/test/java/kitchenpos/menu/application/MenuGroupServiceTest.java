@@ -1,6 +1,7 @@
 package kitchenpos.menu.application;
 
 
+import static kitchenpos.fixture.MenuFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -9,6 +10,8 @@ import java.util.Arrays;
 import java.util.List;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.repository.MenuGroupRepository;
+import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,7 +31,7 @@ public class MenuGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        menuGroup = 메뉴_그룹_생성(1L, "파스타");
+        menuGroup = 메뉴그룹_생성(1L, "파스타");
     }
 
     @DisplayName("메뉴 그룹을 등록한다.")
@@ -36,32 +39,28 @@ public class MenuGroupServiceTest {
     void create() {
         //given
         given(menuGroupRepository.save(any())).willReturn(menuGroup);
+        MenuGroupRequest menuGroupRequest = 메뉴그룹_생성_요청(menuGroup.getName());
 
         //when
-        MenuGroup createdMenuGroup = menuGroupService.create(menuGroup);
+        MenuGroupResponse createdMenuGroupResponse = menuGroupService.create(menuGroupRequest);
 
         //then
-        assertThat(createdMenuGroup).isNotNull();
-        assertThat(createdMenuGroup.getName()).isEqualTo(menuGroup.getName());
+        assertThat(createdMenuGroupResponse).isNotNull();
+        assertThat(createdMenuGroupResponse.getName()).isEqualTo(menuGroup.getName());
     }
 
     @DisplayName("메뉴 그룹 목록을 조회한다.")
     @Test
     void list() {
         //given
-        given(menuGroupRepository.findAll()).willReturn(Arrays.asList(menuGroup, 메뉴_그룹_생성(2L, "피자")));
+        given(menuGroupRepository.findAll()).willReturn(Arrays.asList(menuGroup, 메뉴그룹_생성(2L, "피자")));
 
         //when
-        List<MenuGroup> menuGroups = menuGroupService.list();
+        List<MenuGroupResponse> menuGroupResponses = menuGroupService.list();
 
         //then
-        assertThat(menuGroups).hasSize(2);
+        assertThat(menuGroupResponses).hasSize(2);
     }
 
-    public static MenuGroup 메뉴_그룹_생성(Long id, String name) {
-        MenuGroup menuGroup = new MenuGroup();
-        menuGroup.setId(id);
-        menuGroup.setName(name);
-        return menuGroup;
-    }
+
 }

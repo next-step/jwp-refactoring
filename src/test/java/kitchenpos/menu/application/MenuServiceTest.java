@@ -1,7 +1,8 @@
 package kitchenpos.menu.application;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static kitchenpos.fixture.MenuFixture.*;
+import static kitchenpos.fixture.ProductFixture.상품_생성;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -9,13 +10,16 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import kitchenpos.common.domain.Price;
+import kitchenpos.fixture.ProductFixture;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.repository.MenuGroupRepository;
 import kitchenpos.menu.domain.repository.MenuProductRepository;
 import kitchenpos.menu.domain.repository.MenuRepository;
-import kitchenpos.product.application.ProductServiceTest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,23 +50,24 @@ public class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        파스타메뉴 = MenuGroupServiceTest.메뉴_그룹_생성(1L, "파스타메뉴");
-        봉골레파스타 = ProductServiceTest.상품_생성(1L, "봉골레파스타", 13000);
-        감자튀김 = ProductServiceTest.상품_생성(2L, "감자튀김", 5000);
-        봉골레파스타세트 = 메뉴_생성(1L, "봉골레파스타세트", BigDecimal.valueOf(15000), 파스타메뉴.getId(), 파스타메뉴_상품_생성());
+        파스타메뉴 = 메뉴그룹_생성(1L, "파스타메뉴");
+        봉골레파스타 = 상품_생성(1L, "봉골레파스타", 13000);
+        감자튀김 = 상품_생성(2L, "감자튀김", 5000);
+        봉골레파스타세트 = 메뉴_생성("봉골레파스타세트", new Price(15000), 파스타메뉴, 파스타메뉴_상품_생성());
     }
 
     @DisplayName("메뉴를 등록한다.")
     @Test
     void create() {
         //given
-        given(menuGroupRepository.existsById(any())).willReturn(true);
+        given(menuGroupRepository.findById(any())).willReturn(Optional.of(파스타메뉴));
         given(productRepository.findById(봉골레파스타.getId())).willReturn(Optional.of(봉골레파스타));
         given(productRepository.findById(감자튀김.getId())).willReturn(Optional.of(감자튀김));
         given(menuRepository.save(any())).willReturn(봉골레파스타세트);
+        MenuRequest 봉골레파스타세트_요청 = 메뉴_생성_요청("봉골레파스타세트", BigDecimal.valueOf(15000), 파스타메뉴, 파스타메뉴_상품_생성());
 
         //when
-        Menu createdMenu = menuService.create(봉골레파스타세트);
+        MenuResponse createdMenu = menuService.create(봉골레파스타세트_요청);
 
         //then
         assertThat(createdMenu).isNotNull();
@@ -73,10 +78,10 @@ public class MenuServiceTest {
     @Test
     void create_invalidPrice() {
         //given
-        봉골레파스타세트.setPrice(BigDecimal.valueOf(-1));
+        MenuRequest 봉골레파스타세트_요청 = 메뉴_생성_요청("봉골레파스타세트", BigDecimal.valueOf(-1), 파스타메뉴, 파스타메뉴_상품_생성());
 
         //when & then
-        assertThatThrownBy(() -> menuService.create(봉골레파스타세트))
+        assertThatThrownBy(() -> menuService.create(봉골레파스타세트_요청))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -84,11 +89,12 @@ public class MenuServiceTest {
     @Test
     void create_invalidNotExistsMenuProduct() {
         //given
-        given(menuGroupRepository.existsById(any())).willReturn(true);
-        given(productRepository.findById(봉골레파스타.getId())).willReturn(Optional.ofNullable(null));
+        given(menuGroupRepository.findById(any())).willReturn(Optional.of(파스타메뉴));
+        given(productRepository.findById(봉골레파스타.getId())).willReturn(Optional.empty());
+        MenuRequest 봉골레파스타세트_요청 = 메뉴_생성_요청("봉골레파스타세트", BigDecimal.valueOf(20000), 파스타메뉴, 파스타메뉴_상품_생성());
 
         //when & then
-        assertThatThrownBy(() -> menuService.create(봉골레파스타세트))
+        assertThatThrownBy(() -> menuService.create(봉골레파스타세트_요청))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -96,13 +102,11 @@ public class MenuServiceTest {
     @Test
     void create_invalidPriceSum() {
         //given
-        봉골레파스타세트.setPrice(BigDecimal.valueOf(20000));
-        given(menuGroupRepository.existsById(any())).willReturn(true);
-        given(productRepository.findById(봉골레파스타.getId())).willReturn(Optional.of(봉골레파스타));
-        given(productRepository.findById(감자튀김.getId())).willReturn(Optional.of(감자튀김));
+        given(menuGroupRepository.findById(any())).willReturn(Optional.of(파스타메뉴));
+        MenuRequest 봉골레파스타세트_요청 = 메뉴_생성_요청("봉골레파스타세트", BigDecimal.valueOf(20000), 파스타메뉴, 파스타메뉴_상품_생성());
 
         //when & then
-        assertThatThrownBy(() -> menuService.create(봉골레파스타세트))
+        assertThatThrownBy(() -> menuService.create(봉골레파스타세트_요청))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -111,39 +115,18 @@ public class MenuServiceTest {
     void list() {
         //given
         given(menuRepository.findAll()).willReturn(Arrays.asList(봉골레파스타세트));
-        given(menuProductRepository.findAllByMenuId(any())).willReturn(파스타메뉴_상품_생성());
 
         //when
-        List<Menu> menus = menuService.list();
+        List<MenuResponse> menuResponses = menuService.list();
 
         //then
-        assertThat(menus).hasSize(1);
-        assertThat(menus).containsExactly(봉골레파스타세트);
-    }
-
-    public static Menu 메뉴_생성(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        Menu menu = new Menu();
-        menu.setId(id);
-        menu.setName(name);
-        menu.setPrice(price);
-        menu.setMenuGroupId(menuGroupId);
-        menu.setMenuProducts(menuProducts);
-        return menu;
-    }
-
-    public static MenuProduct 메뉴_상품_생성(Long id, Long seq, Long productId, Long quantity) {
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setMenuId(id);
-        menuProduct.setSeq(seq);
-        menuProduct.setProductId(productId);
-        menuProduct.setQuantity(quantity);
-        return menuProduct;
+        assertThat(menuResponses).hasSize(1);
     }
 
     private List<MenuProduct> 파스타메뉴_상품_생성() {
         return Arrays.asList(
-                메뉴_상품_생성(1L, 0L, 봉골레파스타.getId(), 1L),
-                메뉴_상품_생성(2L, 1L, 감자튀김.getId(), 1L)
+                메뉴상품_생성(1L, 봉골레파스타, 1L),
+                메뉴상품_생성(2L, 감자튀김, 1L)
         );
     }
 }
