@@ -1,21 +1,10 @@
 package kitchenpos.menu.domain;
 
-import org.junit.jupiter.api.Test;
-
 import java.math.BigDecimal;
 
 import static kitchenpos.menu.domain.MenuProductsTest.*;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class MenuTest {
-
-    @Test
-    void validateMenuPrice() {
-        // when, then
-        assertThatThrownBy(() -> {
-            두마리치킨_메뉴(35000);
-        }).isInstanceOf(IllegalArgumentException.class);
-    }
 
     public static Menu 두마리치킨_메뉴() {
         return new Menu(1L, "두마리치킨", new BigDecimal(30000), 패스트푸드_메뉴그룹(), 두마리치킨_메뉴상품_리스트());

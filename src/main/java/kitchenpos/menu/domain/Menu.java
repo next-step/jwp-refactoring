@@ -23,7 +23,7 @@ public class Menu {
     private MenuGroup menuGroup;
 
     @Embedded
-    MenuProducts menuProducts = new MenuProducts();
+    private MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {
     }
@@ -37,7 +37,6 @@ public class Menu {
         this.price = new Price(price);
         this.menuGroup = menuGroup;
         this.menuProducts = new MenuProducts(this, menuProducts);
-        validateMenuPrice();
     }
 
     public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
@@ -46,13 +45,6 @@ public class Menu {
         this.price = new Price(price);
         this.menuGroup = menuGroup;
         this.menuProducts = new MenuProducts(this, menuProducts);
-        validateMenuPrice();
-    }
-
-    private void validateMenuPrice() {
-        if (price.getValue().compareTo(menuProducts.calculateTotalPrice()) > 0) {
-            throw new IllegalArgumentException();
-        }
     }
 
     public Long getId() {

@@ -1,11 +1,9 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.domain.*;
+import kitchenpos.menu.dto.MenuProductRequests;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuGroupRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,16 +15,21 @@ import java.util.stream.Collectors;
 public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
+    private final MenuValidator menuValidator;
 
     public MenuService(final MenuRepository menuRepository,
-                       final MenuGroupRepository menuGroupRepository) {
+                       final MenuGroupRepository menuGroupRepository,
+                       final MenuValidator menuValidator) {
         this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
+        this.menuValidator = menuValidator;
     }
 
     public MenuResponse create(final MenuRequest request) {
         MenuGroup menuGroup = menuGroupRepository.findById(request.getMenuGroupId()).orElseThrow(IllegalArgumentException::new);
-        Menu menu = new Menu(request.getName(), request.getPrice(), menuGroup, request.getMenuProducts());
+        MenuProductRequests menuProductRequests = new MenuProductRequests(request.getMenuProducts());
+        Menu menu = new Menu(request.getName(), request.getPrice(), menuGroup, menuProductRequests.toMenuProducts());
+        menuValidator.validate(menu);
         return MenuResponse.of(menuRepository.save(menu));
     }
 

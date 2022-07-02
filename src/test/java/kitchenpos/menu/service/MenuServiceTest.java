@@ -1,13 +1,10 @@
 package kitchenpos.menu.service;
 
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.domain.*;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -41,9 +38,12 @@ public class MenuServiceTest {
     @Mock
     private MenuGroupRepository menuGroupRepository;
 
+    @Mock
+    private MenuValidator menuValidator;
+
     @BeforeEach
     void setUp() {
-        menuService = new MenuService(menuRepository, menuGroupRepository);
+        menuService = new MenuService(menuRepository, menuGroupRepository, menuValidator);
     }
 
     @DisplayName("메뉴를 생성한다.")
@@ -53,7 +53,7 @@ public class MenuServiceTest {
         when(menuRepository.save(any())).thenReturn(createMenu01());
 
         // when
-        MenuResponse menuResponse = menuService.create(new MenuRequest(MENU_NAME01, MENU_PRICE01, 1L, createMenuProductList()));
+        MenuResponse menuResponse = menuService.create(new MenuRequest(MENU_NAME01, MENU_PRICE01, 1L, createMenuProductRequestList()));
 
         // then
         assertThat(menuResponse).isNotNull();
@@ -64,7 +64,7 @@ public class MenuServiceTest {
     public void create_price_null() {
         // when, then
         assertThatThrownBy(() -> {
-            menuService.create(new MenuRequest(MENU_NAME01, null, 1L, createMenuProductList()));
+            menuService.create(new MenuRequest(MENU_NAME01, null, 1L, createMenuProductRequestList()));
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -73,7 +73,7 @@ public class MenuServiceTest {
     public void create_price_under_zero() {
         // when, then
         assertThatThrownBy(() -> {
-            menuService.create(new MenuRequest(MENU_NAME01, new BigDecimal(-1), 1L, createMenuProductList()));
+            menuService.create(new MenuRequest(MENU_NAME01, new BigDecimal(-1), 1L, createMenuProductRequestList()));
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -84,7 +84,7 @@ public class MenuServiceTest {
 
         // when, then
         assertThatThrownBy(() -> {
-            menuService.create(new MenuRequest(MENU_NAME01, MENU_PRICE01, 1L, createMenuProductList()));
+            menuService.create(new MenuRequest(MENU_NAME01, MENU_PRICE01, 1L, createMenuProductRequestList()));
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -95,19 +95,8 @@ public class MenuServiceTest {
 
         // when, then
         assertThatThrownBy(() -> {
-            menuService.create(new MenuRequest(MENU_NAME01, MENU_PRICE01, 1L, Collections.singletonList(createMenuWithoutProduct())));
+            menuService.create(new MenuRequest(MENU_NAME01, MENU_PRICE01, 1L, Collections.singletonList(createMenuProductRequestWithoutProduct())));
         }).isInstanceOf(NullPointerException.class);
-    }
-
-    @DisplayName("[예외] 메뉴 상품보다 가격이 비싼 메뉴를 생성한다.")
-    @Test
-    public void create_expensive_than_menu_products() {
-        when(menuGroupRepository.findById(any())).thenReturn(Optional.of(new MenuGroup(1L)));
-
-        // when, then
-        assertThatThrownBy(() -> {
-            menuService.create(new MenuRequest(MENU_NAME01, new BigDecimal(1000000), 1L, createMenuProductList()));
-        }).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("메뉴 목록을 조회한다.")
@@ -125,23 +114,31 @@ public class MenuServiceTest {
     public static Menu createMenu01() {
         MenuGroup menuGroup = createMenuGroup01();
         Product product = createProduct1();
-        MenuProduct menuProduct = new MenuProduct(product, 1);
+        MenuProduct menuProduct = new MenuProduct(product.getId(), 1);
         return new Menu(MENU_NAME01, MENU_PRICE01, menuGroup, Collections.singletonList(menuProduct));
     }
 
     public static MenuProduct createMenuProduct01() {
         Product product = createProduct1();
         Menu menu = MenuServiceTest.createMenu01();
-        return new MenuProduct(1L, menu, product, 1);
+        return new MenuProduct(1L, menu, product.getId(), 1);
     }
 
-    public static MenuProduct createMenuWithoutProduct() {
-        Menu menu = MenuServiceTest.createMenu01();
-        return new MenuProduct(1L, menu, null, 1);
+    public static MenuProductRequest createMenuProductRequest01() {
+        Product product = createProduct1();
+        return new MenuProductRequest(product.getId(), 1);
+    }
+
+    public static MenuProductRequest createMenuProductRequestWithoutProduct() {
+        return new MenuProductRequest(null, 1);
     }
 
     public static List<MenuProduct> createMenuProductList() {
         return Collections.singletonList(createMenuProduct01());
+    }
+
+    public static List<MenuProductRequest> createMenuProductRequestList() {
+        return Collections.singletonList(createMenuProductRequest01());
     }
 
     public static List<Menu> createMenuList() {
