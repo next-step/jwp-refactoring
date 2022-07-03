@@ -4,7 +4,7 @@ package kitchenpos.domain;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menus.menugroup.domain.MenuGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

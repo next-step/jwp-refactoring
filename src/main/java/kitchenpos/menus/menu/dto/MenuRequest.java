@@ -1,12 +1,12 @@
-package kitchenpos.menu.dto;
+package kitchenpos.menus.menu.dto;
 
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menus.menu.domain.Menu;
+import kitchenpos.menus.menu.domain.MenuProduct;
 
 public class MenuRequest {
 

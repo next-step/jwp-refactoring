@@ -3,11 +3,11 @@ package kitchenpos.application;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-import kitchenpos.menugroup.application.MenuGroupService;
-import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.domain.MenuGroupRepository;
-import kitchenpos.menugroup.dto.MenuGroupRequest;
-import kitchenpos.menugroup.dto.MenuGroupResponse;
+import kitchenpos.menus.menugroup.application.MenuGroupService;
+import kitchenpos.menus.menugroup.domain.MenuGroup;
+import kitchenpos.menus.menugroup.domain.MenuGroupRepository;
+import kitchenpos.menus.menugroup.dto.MenuGroupRequest;
+import kitchenpos.menus.menugroup.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

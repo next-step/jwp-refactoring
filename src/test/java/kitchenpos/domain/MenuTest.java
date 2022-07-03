@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
-import kitchenpos.menu.domain.Menu;
+import kitchenpos.menus.menu.domain.Menu;
 import org.junit.jupiter.api.Test;
 
 class MenuTest {

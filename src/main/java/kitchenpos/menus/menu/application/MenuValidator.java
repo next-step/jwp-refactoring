@@ -1,4 +1,4 @@
-package kitchenpos.menu.application;
+package kitchenpos.menus.menu.application;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -6,10 +6,10 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import kitchenpos.common.domain.Quantity;
-import kitchenpos.menu.domain.Price;
-import kitchenpos.menu.dto.MenuProductRequest;
-import kitchenpos.menu.dto.MenuRequest;
-import kitchenpos.menugroup.domain.MenuGroupRepository;
+import kitchenpos.menus.menu.domain.Price;
+import kitchenpos.menus.menu.dto.MenuProductRequest;
+import kitchenpos.menus.menu.dto.MenuRequest;
+import kitchenpos.menus.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Component;
