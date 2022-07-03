@@ -1,7 +1,6 @@
-package kitchenpos.acceptance;
+package kitchenpos.ui.acceptance;
 
-import static kitchenpos.acceptance.TableAcceptanceTest.테이블_생성_요청;
-import static org.assertj.core.api.Assertions.assertThat;
+import static kitchenpos.ui.acceptance.TableAcceptanceTest.테이블_생성_요청;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 import io.restassured.RestAssured;
@@ -13,6 +12,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import kitchenpos.orders.table.dto.OrderTableResponse;
 import kitchenpos.orders.tablegroup.dto.TableGroupRequest;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
@@ -79,14 +79,14 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 단체가_지정됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     public static void 단체가_지정_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     public static void 단체가_해제됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }

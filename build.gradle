@@ -18,9 +18,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.flywaydb:flyway-core'
 
-    // handlebars
-    implementation 'pl.allegro.tech.boot:handlebars-spring-boot-starter:0.3.0'
-
     implementation project(':module-product')
     implementation project(':module-menus')
     implementation project(':module-orders')
@@ -29,7 +26,7 @@ dependencies {
 
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'io.rest-assured:rest-assured:3.3.0'
+
 }
 
 test {
@@ -77,6 +74,9 @@ project(':module-ui') {
         implementation project(':module-product')
         implementation project(':module-menus')
         implementation project(':module-orders')
+        testImplementation 'io.rest-assured:rest-assured:3.3.0'
+        // handlebars
+        implementation 'pl.allegro.tech.boot:handlebars-spring-boot-starter:0.3.0'
     }
 }
 

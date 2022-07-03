@@ -1,9 +1,8 @@
-package kitchenpos.acceptance;
+package kitchenpos.ui.acceptance;
 
-import static kitchenpos.acceptance.MenuAcceptanceTest.메뉴_생성_요청;
-import static kitchenpos.acceptance.MenuGroupAcceptanceTest.메뉴그룹_생성_요청;
-import static kitchenpos.acceptance.ProductAcceptanceTest.상품_생성_요청;
-import static kitchenpos.acceptance.TableAcceptanceTest.테이블_생성_요청;
+import static kitchenpos.ui.acceptance.MenuAcceptanceTest.메뉴_생성_요청;
+import static kitchenpos.ui.acceptance.MenuGroupAcceptanceTest.메뉴그룹_생성_요청;
+import static kitchenpos.ui.acceptance.TableAcceptanceTest.테이블_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
@@ -24,6 +23,7 @@ import kitchenpos.orders.order.dto.OrderRequest;
 import kitchenpos.orders.order.dto.OrderResponse;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.orders.table.dto.OrderTableResponse;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
@@ -44,7 +44,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     Stream<DynamicTest> orderTest() {
         return Stream.of(
                 dynamicTest("상품, 메뉴그룹, 메뉴, 테이블 준비", () -> {
-                    짬뽕 = 상품_생성_요청("짬뽕", BigDecimal.valueOf(10000L)).as(ProductResponse.class);
+                    짬뽕 = ProductAcceptanceTest.상품_생성_요청("짬뽕", BigDecimal.valueOf(10000L)).as(ProductResponse.class);
                     중식 = 메뉴그룹_생성_요청("중식").as(MenuGroupResponse.class);
                     테이블 = 테이블_생성_요청(3, false).as(OrderTableResponse.class);
 
@@ -77,19 +77,19 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 주문_생성됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     public static void 주문_수정됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     public static void 주문_수정_실패(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     public static void 주문_조회됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     public static ExtractableResponse<Response> 주문_생성_요청(Long

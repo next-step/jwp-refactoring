@@ -1,4 +1,4 @@
-package kitchenpos.acceptance;
+package kitchenpos.ui.acceptance;
 
 
 import com.google.common.base.CaseFormat;

@@ -1,10 +1,7 @@
-package kitchenpos.acceptance;
+package kitchenpos.ui.acceptance;
 
-import static kitchenpos.acceptance.MenuAcceptanceTest.메뉴_생성_요청;
-import static kitchenpos.acceptance.MenuGroupAcceptanceTest.메뉴그룹_생성_요청;
-import static kitchenpos.acceptance.OrderAcceptanceTest.주문_상태_수정_요청;
-import static kitchenpos.acceptance.OrderAcceptanceTest.주문_생성_하기;
-import static kitchenpos.acceptance.ProductAcceptanceTest.상품_생성_요청;
+import static kitchenpos.ui.acceptance.MenuAcceptanceTest.메뉴_생성_요청;
+import static kitchenpos.ui.acceptance.MenuGroupAcceptanceTest.메뉴그룹_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
@@ -22,6 +19,7 @@ import kitchenpos.orders.order.dto.OrderResponse;
 import kitchenpos.orders.table.dto.OrderTableRequest;
 import kitchenpos.orders.table.dto.OrderTableResponse;
 import kitchenpos.product.dto.ProductResponse;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
@@ -62,17 +60,17 @@ public class TableAcceptanceTest extends AcceptanceTest {
                 }),
                 dynamicTest("손님 있는 주문 테이블을 빈테이블로 변경한다.", () -> {
                     //given
-                    ProductResponse 짬뽕 = 상품_생성_요청("짬뽕", BigDecimal.valueOf(10000L)).as(ProductResponse.class);
+                    ProductResponse 짬뽕 = ProductAcceptanceTest.상품_생성_요청("짬뽕", BigDecimal.valueOf(10000L)).as(ProductResponse.class);
                     MenuGroupResponse 중식 = 메뉴그룹_생성_요청("중식").as(MenuGroupResponse.class);
                     OrderTableResponse 테이블 = 테이블_생성_요청(3, false).as(OrderTableResponse.class);
 
                     MenuResponse 중식_메뉴 = 메뉴_생성_요청("중식_메뉴", 1000L, 중식.getId(),
                             Arrays.asList(MenuProductRequest.of(짬뽕.getId(), 1L))).as(MenuResponse.class);
 
-                    ExtractableResponse<Response> 주문_생성_요청 = 주문_생성_하기(테이블.getId(), 중식_메뉴.getId(), 1L);
+                    ExtractableResponse<Response> 주문_생성_요청 = OrderAcceptanceTest.주문_생성_하기(테이블.getId(), 중식_메뉴.getId(), 1L);
                     OrderResponse 주문 = 주문_생성_요청.as(OrderResponse.class);
 
-                    주문_상태_수정_요청(주문.getId(), OrderStatus.COMPLETION);
+                    OrderAcceptanceTest.주문_상태_수정_요청(주문.getId(), OrderStatus.COMPLETION);
 
                     ExtractableResponse<Response> 테이블_빈테이블로_변경 = 테이블_빈테이블로_변경_요청(테이블.getId());
                     테이블_손님수_변경됨(테이블_빈테이블로_변경);
@@ -95,11 +93,11 @@ public class TableAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 테이블_목록_조회됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     public static void 테이블_생성_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     public static ExtractableResponse<Response> 테이블_손님수_변경_요청(Long orderTableId, int numberOfGuests) {
@@ -122,7 +120,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 테이블_손님수_변경됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     public static void 변경된_테이블_손님수_확인(OrderTableResponse actual, int expectedNumbersOfGuests) {
@@ -144,6 +142,6 @@ public class TableAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 주문_테이블_등록됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 }

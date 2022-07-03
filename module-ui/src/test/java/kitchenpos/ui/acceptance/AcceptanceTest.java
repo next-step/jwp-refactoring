@@ -1,4 +1,4 @@
-package kitchenpos.acceptance;
+package kitchenpos.ui.acceptance;
 
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,11 +11,8 @@ public class AcceptanceTest {
     @LocalServerPort
     int port;
 
-    @Autowired
-    private DatabaseCleanup databaseCleanup;
-
     @BeforeEach
-    public void setUp() {
+    public void setUp(@Autowired DatabaseCleanup databaseCleanup) {
         RestAssured.port = port;
         databaseCleanup.execute();
     }

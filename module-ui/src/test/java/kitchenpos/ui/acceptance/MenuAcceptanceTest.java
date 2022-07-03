@@ -1,7 +1,5 @@
-package kitchenpos.acceptance;
+package kitchenpos.ui.acceptance;
 
-import static kitchenpos.acceptance.MenuGroupAcceptanceTest.메뉴그룹_생성_요청;
-import static kitchenpos.acceptance.ProductAcceptanceTest.상품_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
@@ -16,6 +14,7 @@ import kitchenpos.menus.menugroup.dto.MenuGroupResponse;
 import kitchenpos.menus.menu.dto.MenuProductRequest;
 import kitchenpos.menus.menu.dto.MenuRequest;
 import kitchenpos.product.dto.ProductResponse;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
@@ -36,11 +35,11 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         return Stream.of(
                 dynamicTest("메뉴를 생성 할 수 있다.", () -> {
                     //given
-                    ExtractableResponse<Response> 짬뽕_생성_요청 = 상품_생성_요청("짬뽕", BigDecimal.valueOf(10000));
+                    ExtractableResponse<Response> 짬뽕_생성_요청 = ProductAcceptanceTest.상품_생성_요청("짬뽕", BigDecimal.valueOf(10000));
                     짬뽕 = 짬뽕_생성_요청.as(ProductResponse.class);
-                    ExtractableResponse<Response> 짜장_생성_요청 = 상품_생성_요청("짜장", BigDecimal.valueOf(10000));
+                    ExtractableResponse<Response> 짜장_생성_요청 = ProductAcceptanceTest.상품_생성_요청("짜장", BigDecimal.valueOf(10000));
                     짜장 = 짜장_생성_요청.as(ProductResponse.class);
-                    ExtractableResponse<Response> 중식_생성_요청_응답 = 메뉴그룹_생성_요청("중식");
+                    ExtractableResponse<Response> 중식_생성_요청_응답 = MenuGroupAcceptanceTest.메뉴그룹_생성_요청("중식");
                     중식 = 중식_생성_요청_응답.as(MenuGroupResponse.class);
 
                     //when & then
@@ -100,15 +99,15 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 메뉴_목록__조회됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     public static void 메뉴_생성됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     public static void 메뉴_생성_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
 
