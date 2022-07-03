@@ -10,6 +10,7 @@ import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderTableRequest;
+import kitchenpos.order.dto.TableGroupRequest;
 import kitchenpos.product.domain.*;
 import kitchenpos.product.dto.ProductRequest;
 
@@ -83,5 +84,9 @@ public class CommonTestFixture {
 
     public static TableGroup createTableGroup(List<OrderTable> orderTables) {
         return new TableGroup(orderTables);
+    }
+
+    public static TableGroupRequest createTableGroupRequest(List<Long> orderTablesIds) {
+        return new TableGroupRequest(orderTablesIds);
     }
 }
