@@ -55,6 +55,8 @@ class OrderServiceTest {
     OrderLineItem 주문상품1;
     OrderLineItem 주문상품2;
 
+    MenuGroup 메뉴그룹;
+
     Menu 주문메뉴1;
     Menu 주문메뉴2;
 
@@ -62,8 +64,9 @@ class OrderServiceTest {
     @DisplayName("주문을 생성한다 (Happy Path)")
     void create() {
         //given
-        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000));
-        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000));
+        메뉴그룹 = new MenuGroup(1L, "메뉴그룹");
+        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000), 메뉴그룹);
+        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000), 메뉴그룹);
         주문테이블 = 주문테이블_생성(1L);
         주문상품1 = 주문_메뉴_생성(1L, 내주문, 주문메뉴1, 1L);
         주문상품2 = 주문_메뉴_생성(2L, 내주문, 주문메뉴2, 2L);
@@ -95,8 +98,9 @@ class OrderServiceTest {
     @DisplayName("주문 메뉴가 없을 경우 주문 생성 불가")
     void createEmptyOrderLineItems() {
         //given
-        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000));
-        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000));
+        메뉴그룹 = new MenuGroup(1L, "메뉴그룹");
+        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000), 메뉴그룹);
+        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000), 메뉴그룹);
         주문테이블 = 주문테이블_생성(1L);
         주문상품1 = 주문_메뉴_생성(1L, 내주문, 주문메뉴1, 1L);
         주문상품2 = 주문_메뉴_생성(2L, 내주문, 주문메뉴2, 2L);
@@ -118,8 +122,9 @@ class OrderServiceTest {
     @DisplayName("주문에 포함된 주문 메뉴가 유효하지 않은 메뉴가 있을 경우 주문 생성 불가")
     void createInvalidOrderLineItems() {
         //given
-        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000));
-        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000));
+        메뉴그룹 = new MenuGroup(1L, "메뉴그룹");
+        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000), 메뉴그룹);
+        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000), 메뉴그룹);
         주문테이블 = 주문테이블_생성(1L);
         주문상품1 = 주문_메뉴_생성(1L, 내주문, 주문메뉴1, 1L);
         주문상품2 = 주문_메뉴_생성(2L, 내주문, 주문메뉴2, 2L);
@@ -142,8 +147,9 @@ class OrderServiceTest {
     @DisplayName("주문 테이블이 유효하지 않을 경우 주문 생성 불가")
     void createInvalidOrderTable() {
         //given
-        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000));
-        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000));
+        메뉴그룹 = new MenuGroup(1L, "메뉴그룹");
+        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000), 메뉴그룹);
+        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000), 메뉴그룹);
         주문테이블 = 주문테이블_생성(1L);
         주문상품1 = 주문_메뉴_생성(1L, 내주문, 주문메뉴1, 1L);
         주문상품2 = 주문_메뉴_생성(2L, 내주문, 주문메뉴2, 2L);
@@ -164,8 +170,9 @@ class OrderServiceTest {
     @DisplayName("주문한 주문 테이블이 비어있는 경우 주문 생성 불가")
     void createIsEmptyOrderTable() {
         //given
-        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000));
-        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000));
+        메뉴그룹 = new MenuGroup(1L, "메뉴그룹");
+        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000), 메뉴그룹);
+        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000), 메뉴그룹);
         주문테이블 = 주문테이블_생성(1L, 2, true);
         주문상품1 = 주문_메뉴_생성(1L, 내주문, 주문메뉴1, 1L);
         주문상품2 = 주문_메뉴_생성(2L, 내주문, 주문메뉴2, 2L);
@@ -187,9 +194,10 @@ class OrderServiceTest {
     @DisplayName("주문리스트를 조회한다 (Happy Path)")
     void list() {
         //given
+        메뉴그룹 = new MenuGroup(1L, "메뉴그룹");
         주문테이블 = 주문테이블_생성(1L);
-        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000));
-        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000));
+        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000), 메뉴그룹);
+        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000), 메뉴그룹);
         주문상품1 = 주문_메뉴_생성(1L, 내주문, 주문메뉴1, 1L);
         주문상품2 = 주문_메뉴_생성(2L, 내주문, 주문메뉴2, 2L);
         내주문 = new Order(1L, 주문테이블, Arrays.asList(주문상품1, 주문상품2));
@@ -216,9 +224,10 @@ class OrderServiceTest {
     @DisplayName("주문상태를 변경한다 (Happy Path)")
     void changeOrderStatus() {
         //given
+        메뉴그룹 = new MenuGroup(1L, "메뉴그룹");
         주문테이블 = 주문테이블_생성(1L);
-        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000));
-        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000));
+        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000), 메뉴그룹);
+        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000), 메뉴그룹);
         주문상품1 = 주문_메뉴_생성(1L, 내주문, 주문메뉴1, 1L);
         주문상품2 = 주문_메뉴_생성(2L, 내주문, 주문메뉴2, 2L);
         내주문 = new Order(1L, 주문테이블, Arrays.asList(주문상품1, 주문상품2));
@@ -238,6 +247,7 @@ class OrderServiceTest {
     void changeOrderStatusInvalidOrder() {
         //given
         주문테이블 = 주문테이블_생성(1L);
+        메뉴그룹 = new MenuGroup(1L, "메뉴그룹");
         주문상품1 = 주문_메뉴_생성(1L, 내주문, 주문메뉴1, 1L);
         주문상품2 = 주문_메뉴_생성(2L, 내주문, 주문메뉴2, 2L);
         내주문 = new Order(1L, 주문테이블, Arrays.asList(주문상품1, 주문상품2));
@@ -255,8 +265,9 @@ class OrderServiceTest {
     void changeOrderStatusAlreadyCompleted() {
         //given
         주문테이블 = 주문테이블_생성(1L);
-        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000));
-        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000));
+        메뉴그룹 = new MenuGroup(1L, "메뉴그룹");
+        주문메뉴1 = 메뉴생성(1L, "치킨메뉴", new BigDecimal(15000), 메뉴그룹);
+        주문메뉴2 = 메뉴생성(2L, "피자메뉴", new BigDecimal(20000), 메뉴그룹);
         주문상품1 = 주문_메뉴_생성(1L, 내주문, 주문메뉴1, 1L);
         주문상품2 = 주문_메뉴_생성(2L, 내주문, 주문메뉴2, 2L);
         내주문 = new Order(1L, 주문테이블, Arrays.asList(주문상품1, 주문상품2));

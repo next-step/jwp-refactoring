@@ -17,7 +17,7 @@ public class OrderFixture {
         return new OrderLineItem(seq, order, menu, menuId);
     }
 
-    public static Menu 메뉴생성(Long id, String name, BigDecimal price) {
-        return new Menu(id, name, price);
+    public static Menu 메뉴생성(Long id, String name, BigDecimal price, MenuGroup menuGroup) {
+        return new Menu(id, name, price, menuGroup);
     }
 }
