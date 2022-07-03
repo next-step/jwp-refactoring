@@ -10,6 +10,10 @@ public class Product {
     public Product() {
     }
 
+    public Product(String name) {
+        this(null, name, null);
+    }
+
     public Product(String name, BigDecimal price) {
         this(null, name, price);
     }
