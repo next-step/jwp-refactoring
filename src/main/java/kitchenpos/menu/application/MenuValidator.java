@@ -8,23 +8,23 @@ import kitchenpos.Exception.NotFoundProductException;
 import kitchenpos.common.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MenuValidator {
-    private final ProductService productService;
+    private final ProductRepository productRepository;
 
-    public MenuValidator(final ProductService productService) {
-        this.productService = productService;
+    public MenuValidator(final ProductRepository productRepository) {
+        this.productRepository = productRepository;
     }
 
     public void validate(Menu menu) {
         List<Long> menuProductIds = menu.getMenuProducts().getMenuProducts().stream().map(MenuProduct::getProductId)
                 .collect(Collectors.toList());
 
-        List<Product> products = productService.findProductsByIdIn(menuProductIds);
+        List<Product> products = productRepository.findByIdIn(menuProductIds);
 
         validateNotFoundProduct(menu, products);
         validateSumPrice(menu, products);

@@ -13,8 +13,8 @@ import kitchenpos.menu.domain.MenuName;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.common.Quantity;
-import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,7 +24,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class MenuValidatorTest {
     @Mock
-    private ProductService productService;
+    private ProductRepository productRepository;
     @InjectMocks
     private MenuValidator menuValidator;
 
@@ -38,7 +38,7 @@ class MenuValidatorTest {
                 MenuProducts.from(Arrays.asList(new MenuProduct(토마토.getId(), Quantity.from(1)),
                         new MenuProduct(양상추.getId(), Quantity.from(5)))));
 
-        given(productService.findProductsByIdIn(Arrays.asList(토마토.getId(), 양상추.getId()))).willReturn(
+        given(productRepository.findByIdIn(Arrays.asList(토마토.getId(), 양상추.getId()))).willReturn(
                 Arrays.asList(토마토, 양상추));
 
         // when, then
@@ -57,7 +57,7 @@ class MenuValidatorTest {
                 MenuProducts.from(Arrays.asList(new MenuProduct(토마토.getId(), Quantity.from(1)),
                         new MenuProduct(양상추.getId(), Quantity.from(5)))));
 
-        given(productService.findProductsByIdIn(Arrays.asList(토마토.getId(), 양상추.getId()))).willReturn(
+        given(productRepository.findByIdIn(Arrays.asList(토마토.getId(), 양상추.getId()))).willReturn(
                 Arrays.asList(토마토));
 
         // when, then
