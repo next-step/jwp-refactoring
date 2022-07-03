@@ -44,7 +44,7 @@ public class MenuService {
             .orElseThrow(() -> new IllegalArgumentException(NOT_EXIST_MENU_GROUP_ERROR_MESSAGE));
 
         // TODO : productDao.findByAllIds 를 이용하여 In절로 조회 -> 조회 쿼리 수 감소
-        // TODO : findBByAllIds와 menuProducts size를 비교하는 구문으로 유효성 검증 변경
+        // TODO : List<MenuProductRequest>와 List<Product>의 매핑 처리를 stream 내에서 구현 후 List<MenuProduct> 반환
         BigDecimal sum = BigDecimal.ZERO;
 
         final List<MenuProduct> menuProducts = new ArrayList<>();
@@ -63,8 +63,6 @@ public class MenuService {
             throw new IllegalArgumentException();
         }
 
-        // TODO : Menu Entity와 MenuProduct Entity의 생명 주기가 같도록 영속성 전이 옵션 설정
-        // TODO : e.g. @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
         final Menu savedMenu = menuRepository.save(createMenuRequest.toMenu(menuGroup, menuProducts));
         return MenuResponse.from(savedMenu);
     }
