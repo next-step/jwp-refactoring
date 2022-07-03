@@ -1,4 +1,4 @@
-package kitchenpos.tablegroup.ui;
+package kitchenpos.ui;
 
 import kitchenpos.tablegroup.application.TableGroupService;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
