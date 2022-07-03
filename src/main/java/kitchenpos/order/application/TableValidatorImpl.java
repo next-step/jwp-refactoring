@@ -1,7 +1,6 @@
 package kitchenpos.order.application;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import kitchenpos.common.domain.OrderStatus;
 import kitchenpos.common.exception.InvalidOrderStatusException;
@@ -36,9 +35,4 @@ public class TableValidatorImpl implements TableValidator {
         }
     }
 
-    public void checkValidUngroup(List<Long> orderTableIds) {
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new InvalidOrderStatusException();
-        }
-    }
 }

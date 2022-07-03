@@ -1,8 +1,7 @@
 package kitchenpos.table_group.application;
 
 import java.util.List;
-import javax.persistence.EntityNotFoundException;
-import kitchenpos.table.application.TableValidator;
+import java.util.stream.Collectors;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.TableGroupRequestDto;
 import kitchenpos.table.dto.TableGroupResponseDto;
@@ -15,12 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TableGroupService {
 
-    private final TableValidator tableValidator;
+    private final TableGroupValidator tableGroupValidator;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(TableValidator tableValidator, OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository) {
-        this.tableValidator = tableValidator;
+    public TableGroupService(TableGroupValidator tableGroupValidator, OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository) {
+        this.tableGroupValidator = tableGroupValidator;
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
     }
@@ -32,7 +31,7 @@ public class TableGroupService {
         checkNotFoundOrderTables(orderTableIds, orderTables);
 
         TableGroup tableGroup = tableGroupRepository.save(new TableGroup());
-        tableGroup.group(orderTables);
+        orderTables.forEach(orderTable -> orderTable.group(tableGroup.getId()));
         return new TableGroupResponseDto(tableGroup);
     }
 
@@ -44,8 +43,9 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        TableGroup tableGroup = tableGroupRepository.findById(tableGroupId).orElseThrow(EntityNotFoundException::new);;
-        tableValidator.checkValidUngroup(tableGroup.getTableIds());
-        tableGroup.ungroup();
+        List<OrderTable> orderTables = orderTableRepository.findByTableGroupId(tableGroupId);
+        List<Long> orderTableIds = orderTables.stream().map(OrderTable::getId).collect(Collectors.toList());
+        tableGroupValidator.checkValidUngroup(orderTableIds);
+        orderTables.forEach(OrderTable::ungroup);
     }
 }

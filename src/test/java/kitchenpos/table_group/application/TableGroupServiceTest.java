@@ -3,19 +3,17 @@ package kitchenpos.table_group.application;
 import static kitchenpos.common.fixture.OrderTableFixture.주문테이블_데이터_생성;
 import static kitchenpos.common.fixture.TableGroupFixture.단체_데이터_생성;
 import static kitchenpos.common.fixture.TableGroupFixture.단체_지정_데이터_생성;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
-import java.util.Optional;
-import kitchenpos.order.application.TableValidatorImpl;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.TableGroupRequestDto;
 import kitchenpos.table.dto.TableGroupResponseDto;
 import kitchenpos.table.repository.OrderTableRepository;
-import kitchenpos.table_group.domain.TableGroup;
 import kitchenpos.table_group.repository.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,7 +28,7 @@ class TableGroupServiceTest {
     private TableGroupService tableGroupService;
 
     @Mock
-    private TableValidatorImpl tableValidator;
+    private TableGroupValidator tableGroupValidator;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -40,7 +38,7 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        tableGroupService = new TableGroupService(tableValidator, orderTableRepository, tableGroupRepository);
+        tableGroupService = new TableGroupService(tableGroupValidator, orderTableRepository, tableGroupRepository);
     }
 
     @DisplayName("테이블 그룹을 생성한다.")
@@ -61,6 +59,7 @@ class TableGroupServiceTest {
 
         //then
         단체_데이터_확인(response, tableGroupId);
+        테이블_그룹핑_확인(tableGroupId, table1, table2);
     }
 
     @DisplayName("조회되지 않는 주문 테이블이 있으면 생성할 수 없다.")
@@ -73,7 +72,7 @@ class TableGroupServiceTest {
 
         //when //then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> tableGroupService.create(request));
+            .isThrownBy(() -> tableGroupService.create(request));
     }
 
     @DisplayName("테이블 그룹을 해제한다.")
@@ -81,18 +80,26 @@ class TableGroupServiceTest {
     void ungroup() {
         //given
         Long tableGroupId = 1L;
+        OrderTable table1 = 주문테이블_데이터_생성(1L, 1L, 4, true);
+        OrderTable table2 = 주문테이블_데이터_생성(2L, 1L, 4, true);
 
-        TableGroup tableGroup = 단체_데이터_생성(tableGroupId);
-        OrderTable table1 = 주문테이블_데이터_생성(1L, null, 4, true);
-        OrderTable table2 = 주문테이블_데이터_생성(2L, null, 4, true);
-        tableGroup.group(Arrays.asList(table1, table2));
-        given(tableGroupRepository.findById(tableGroupId)).willReturn(Optional.of(tableGroup));
+        given(orderTableRepository.findByTableGroupId(tableGroupId)).willReturn(Arrays.asList(table1, table2));
 
-        //when //then
+        //when
         tableGroupService.ungroup(tableGroupId);
+
+        //then
+        assertThat(table1.getTableGroupId()).isNull();
+        assertThat(table2.getTableGroupId()).isNull();
     }
 
     private void 단체_데이터_확인(TableGroupResponseDto response, Long tableGroupId) {
         assertEquals(tableGroupId, response.getId());
+    }
+
+    private void 테이블_그룹핑_확인(Long tableGroupId, OrderTable... orderTables) {
+        for (final OrderTable orderTable : orderTables) {
+            assertEquals(tableGroupId, orderTable.getTableGroupId());
+        }
     }
 }

@@ -1,6 +1,5 @@
 package kitchenpos.table.domain;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,7 +14,6 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "table_group_id")
     private Long tableGroupId;
     private int numberOfGuests;
     private boolean empty;

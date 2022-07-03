@@ -7,7 +7,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 
-import java.util.Arrays;
 import kitchenpos.common.exception.InvalidOrderStatusException;
 import kitchenpos.order.application.TableValidatorImpl;
 import kitchenpos.order.repository.OrderRepository;
@@ -20,7 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class TableValidatorTest {
+class TableValidatorImplTest {
 
     private TableValidatorImpl tableValidator;
 
@@ -54,20 +53,6 @@ class TableValidatorTest {
         //when //then
         assertThatExceptionOfType(InvalidOrderStatusException.class)
                 .isThrownBy(() -> tableValidator.checkValidChangeEmpty(orderTable));
-    }
-
-    @DisplayName("주문상태가 조리나 식사이면 그룹 해제할 수 없다.")
-    @Test
-    void ungroup_fail_invalidOrderStatus() {
-        //given
-        Long tableId1 = 1L;
-        Long tableId2 = 2L;
-
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
-
-        //when //then
-        assertThatExceptionOfType(InvalidOrderStatusException.class)
-                .isThrownBy(() -> tableValidator.checkValidUngroup(Arrays.asList(tableId1, tableId2)));
     }
 
 }
