@@ -1,0 +1,15 @@
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
+
+dependencies {
+    implementation project(':module-common')
+    implementation project(':module-menu')
+    implementation project(':module-table')
+
+    testImplementation project(':module-product')
+}
