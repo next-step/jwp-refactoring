@@ -1,7 +1,7 @@
 package kitchenpos.menus.menu.application;
 
 import kitchenpos.menus.menu.domain.MenuRepository;
-import kitchenpos.order.event.OrderCreatedEvent;
+import kitchenpos.orders.order.event.OrderCreatedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 

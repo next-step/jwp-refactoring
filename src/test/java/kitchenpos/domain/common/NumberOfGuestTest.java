@@ -2,7 +2,7 @@ package kitchenpos.domain.common;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import kitchenpos.table.domain.NumberOfGuests;
+import kitchenpos.orders.table.domain.NumberOfGuests;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

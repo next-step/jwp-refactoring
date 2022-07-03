@@ -2,10 +2,10 @@ package kitchenpos.ui;
 
 import java.net.URI;
 import java.util.List;
-import kitchenpos.order.application.OrderService;
-import kitchenpos.order.dto.ChangeOrderStatusRequest;
-import kitchenpos.order.dto.OrderRequest;
-import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.orders.order.application.OrderService;
+import kitchenpos.orders.order.dto.ChangeOrderStatusRequest;
+import kitchenpos.orders.order.dto.OrderRequest;
+import kitchenpos.orders.order.dto.OrderResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
