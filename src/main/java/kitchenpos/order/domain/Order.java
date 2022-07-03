@@ -26,9 +26,12 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
-    public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
+    public Order(Long orderTableId, List<OrderLineItem> orderLineItems, LocalDateTime orderedTime) {
         this.orderTableId = orderTableId;
         changeOrderLineItems(orderLineItems);
+        this.orderLineItems.addOrder(this);
+        this.orderStatus = OrderStatus.COOKING;
+        this.orderedTime = orderedTime;
     }
 
     public Long getId() {
@@ -64,12 +67,6 @@ public class Order {
 
     public void validateDuplicateMenu(long menuCount) {
         orderLineItems.validateDuplicateMenu(menuCount);
-    }
-
-    public void order(LocalDateTime orderedTime) {
-        this.orderLineItems.addOrder(this);
-        this.orderStatus = OrderStatus.COOKING;
-        this.orderedTime = orderedTime;
     }
 
     public List<Long> getMenuIds() {

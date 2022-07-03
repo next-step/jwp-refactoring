@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,7 +20,8 @@ public class OrderRestController {
 
     @PostMapping("/api/orders")
     public ResponseEntity<OrderCreateResponse> create(@RequestBody final OrderCreateRequest request) {
-        final OrderCreateResponse created = new OrderCreateResponse(orderService.create(request.toEntity()));
+        LocalDateTime orderedTime = LocalDateTime.now();
+        final OrderCreateResponse created = new OrderCreateResponse(orderService.create(request.toEntity(orderedTime)));
         final URI uri = URI.create("/api/orders/" + created.getId());
         return ResponseEntity.created(uri)
                 .body(created)

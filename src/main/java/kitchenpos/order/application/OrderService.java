@@ -33,7 +33,6 @@ public class OrderService {
         order.validateDuplicateMenu(menuRepository.countByIdIn(order.getMenuIds()));
         validateOrderTable(order);
 
-        order.order(LocalDateTime.now());
         return orderRepository.save(order);
     }
 
