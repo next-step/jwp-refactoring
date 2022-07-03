@@ -58,7 +58,7 @@ public class Order {
     }
 
     public void changeOrderStatus(OrderStatus newOrderStatus) {
-        if (Objects.equals(OrderStatus.COMPLETION.name(), this.orderStatus.name())) {
+        if (Objects.equals(OrderStatus.COMPLETION, this.orderStatus)) {
             throw new IllegalArgumentException("완료된 주문의 상태는 수정할 수 없습니다.");
         }
         this.orderStatus = newOrderStatus;
