@@ -1,16 +1,15 @@
 package kitchenpos.fixture;
 
 import java.util.List;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import java.util.stream.Collectors;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.dto.TableGroupRequest;
 
 public class TableGroupFixtureFactory {
     private TableGroupFixtureFactory() {
     }
 
-    public static TableGroup createTableGroup(List<OrderTable> orderTables) {
-        TableGroup tableGroup = new TableGroup();
-        tableGroup.setOrderTables(orderTables);
-        return tableGroup;
+    public static TableGroupRequest createTableGroup(List<OrderTableResponse> orderTables) {
+        return new TableGroupRequest(orderTables.stream().map(OrderTableResponse::getId).collect(Collectors.toList()));
     }
 }

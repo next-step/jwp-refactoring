@@ -1,33 +1,33 @@
 package kitchenpos.fixture;
 
-import kitchenpos.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import org.springframework.test.util.ReflectionTestUtils;
 
 public class OrderTableFixtureFactory {
     private OrderTableFixtureFactory() {
     }
 
-    public static OrderTable createEmptyOrderTable() {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setEmpty(true);
-        return orderTable;
+    public static OrderTableResponse createEmptyOrderTableResponse(Long id) {
+        OrderTable orderTable = new OrderTable(0, true);
+        ReflectionTestUtils.setField(orderTable, "id", id);
+        return OrderTableResponse.of(orderTable);
     }
 
-    public static OrderTable createNotEmptyOrderTable(int numberOfGuests) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setEmpty(false);
-        orderTable.setNumberOfGuests(numberOfGuests);
-        return orderTable;
+    public static OrderTableRequest createEmptyOrderTable() {
+        return new OrderTableRequest(true);
     }
 
-    public static OrderTable createParamForChangeEmptyState(boolean empty) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setEmpty(empty);
-        return orderTable;
+    public static OrderTableRequest createNotEmptyOrderTable(int numberOfGuests) {
+        return new OrderTableRequest(numberOfGuests, false);
     }
 
-    public static OrderTable createParamForChangeNumberOfGuests(int numberOfGuests) {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(numberOfGuests);
-        return orderTable;
+    public static OrderTableRequest createParamForChangeEmptyState(boolean empty) {
+        return new OrderTableRequest(empty);
+    }
+
+    public static OrderTableRequest createParamForChangeNumberOfGuests(int numberOfGuests) {
+        return new OrderTableRequest(numberOfGuests);
     }
 }

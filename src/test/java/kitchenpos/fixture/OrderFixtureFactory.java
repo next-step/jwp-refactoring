@@ -1,24 +1,19 @@
 package kitchenpos.fixture;
 
 import java.util.List;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemDto;
+import kitchenpos.order.dto.OrderRequest;
 
 public class OrderFixtureFactory {
     private OrderFixtureFactory() {
     }
 
-    public static Order createOrder(Long orderTableId, List<OrderLineItem> orderLineItems) {
-        Order order = new Order();
-        order.setOrderTableId(orderTableId);
-        order.setOrderLineItems(orderLineItems);
-        return order;
+    public static OrderRequest createOrder(Long orderTableId, List<OrderLineItemDto> orderLineItemDtos) {
+        return new OrderRequest(orderTableId, orderLineItemDtos);
     }
 
-    public static Order createParamForUpdateStatus(OrderStatus status) {
-        Order order = new Order();
-        order.setOrderStatus(status.name());
-        return order;
+    public static OrderRequest createParamForUpdateStatus(OrderStatus status) {
+        return new OrderRequest(status.name());
     }
 }
