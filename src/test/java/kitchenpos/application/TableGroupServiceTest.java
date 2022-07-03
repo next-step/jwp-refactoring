@@ -41,7 +41,7 @@ class TableGroupServiceTest {
     @DisplayName("개별 주문 테이블이 2개 미만일 경우 단체석으로 지정할 수 없다.")
     void isLimitOrderTable() {
         //given
-        TableGroup tableGroup = new TableGroup(Collections.singletonList(new OrderTable()));
+        TableGroup tableGroup = new TableGroup(Collections.singletonList(OrderTable.createOrderTable()));
 
         //when & then
         assertThatIllegalArgumentException().isThrownBy(() ->
@@ -53,7 +53,7 @@ class TableGroupServiceTest {
     @DisplayName("단체지정할 주문 테이블이 존재하지 않으면 단체석으로 지정할 수 없다.")
     void isNotExistOrderTable() {
         //given
-        TableGroup tableGroup = new TableGroup(Arrays.asList(new OrderTable(), new OrderTable()));
+        TableGroup tableGroup = new TableGroup(Arrays.asList(OrderTable.createOrderTable(), OrderTable.createOrderTable()));
         given(orderTableDao.findAllByIdIn(anyList())).willReturn(new ArrayList<>());
 
         //when & then
