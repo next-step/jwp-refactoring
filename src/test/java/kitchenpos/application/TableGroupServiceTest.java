@@ -9,11 +9,11 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
+import kitchenpos.repository.TableGroupRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +29,7 @@ public class TableGroupServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
     @InjectMocks
     private TableGroupService tableGroupService;
 
@@ -40,7 +40,7 @@ public class TableGroupServiceTest {
         //given
         TableGroup given = new TableGroup(1l, createOrderTables());
         when(orderTableRepository.findAllByIdIn(any())).thenReturn(createOrderTables());
-        when(tableGroupDao.save(any())).thenReturn(given);
+        when(tableGroupRepository.save(any())).thenReturn(given);
         //when
         TableGroup result = tableGroupService.create(given);
         //then
