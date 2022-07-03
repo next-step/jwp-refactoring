@@ -174,6 +174,21 @@ class OrderTableAcceptanceTest extends BaseAcceptanceTest {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 주문_테이블_생성_요청(long tableGroupId, int numberOfGuests, boolean empty) {
+        OrderTable orderTable = new OrderTable();
+        orderTable.setTableGroupId(tableGroupId);
+        orderTable.setNumberOfGuests(numberOfGuests);
+        orderTable.setEmpty(empty);
+
+        return RestAssured
+                .given().log().all()
+                .body(orderTable)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/api/tables")
+                .then().log().all()
+                .extract();
+    }
+
     public static ExtractableResponse<Response> 주문_테이블_빈_테이블로_변경_요청(long orderTableId, OrderTable orderTable) {
         return RestAssured
                 .given().log().all()
