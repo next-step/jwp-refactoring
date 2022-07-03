@@ -1,7 +1,6 @@
 package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 
 import java.math.BigDecimal;
@@ -30,21 +29,6 @@ class ProductServiceTest {
     @BeforeEach
     void setUp() {
         스낵랩 = new Product(1L, "스낵랩", BigDecimal.valueOf(3000));
-    }
-
-    @Test
-    @DisplayName("상품 등록 시 가격 null 예외처리")
-    public void saveProductPriceNull() {
-        Product product = new Product();
-        assertThatThrownBy(() -> productService.create(product)).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    @DisplayName("상품 등록 시 가격 0미만 예외처리")
-    public void saveProductPriceZero() {
-        스낵랩.setPrice(BigDecimal.valueOf(-1));
-
-        assertThatThrownBy(() -> productService.create(스낵랩)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test

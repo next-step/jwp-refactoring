@@ -13,6 +13,7 @@ import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.MenuProducts;
+import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
 import kitchenpos.repository.MenuGroupRepository;
 import kitchenpos.repository.MenuProductRepository;
@@ -72,20 +73,12 @@ class MenuServiceTest {
     }
 
     @Test
-    @DisplayName("메뉴 생성 시도 시 메뉴 가격이 음수 일 경우 에러 반환")
-    public void createPriceException() {
-        Menu menu = new Menu();
-        menu.setPrice(BigDecimal.valueOf(-1));
-
-        assertThatThrownBy(() -> menuService.create(menu)).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
     @DisplayName("미존재하는 메뉴 그룹으로 메뉴 등록 시 에러 반환")
     public void createNonExistsMenuGroup() {
         Menu menu = new Menu();
         menu.setMenuGroup(new MenuGroup());
-        menu.setPrice(BigDecimal.valueOf(18000));
+//        menu.setPrice(BigDecimal.valueOf(18000));
+        menu.setPrice(new Price(BigDecimal.valueOf(18000)));
         menu.setName("탕수육 세트");
 
         assertThatThrownBy(() -> menuService.create(menu)).isInstanceOf(IllegalArgumentException.class);
@@ -102,7 +95,7 @@ class MenuServiceTest {
         List<MenuProduct> menuProducts = new ArrayList<>();
         menuProducts.add(menuProduct);
         menu.setMenuProducts(new MenuProducts(menuProducts));
-        menu.setPrice(BigDecimal.valueOf(18000));
+        menu.setPrice(new Price(BigDecimal.valueOf(18000)));
 
         assertThatThrownBy(() -> menuService.create(menu)).isInstanceOf(IllegalArgumentException.class);
     }

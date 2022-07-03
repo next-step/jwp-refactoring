@@ -7,6 +7,7 @@ import java.util.Objects;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.MenuProducts;
+import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
 import kitchenpos.repository.MenuGroupRepository;
 import kitchenpos.repository.MenuProductRepository;
@@ -35,11 +36,12 @@ public class MenuService {
 
     @Transactional
     public Menu create(final Menu menu) {
-        final BigDecimal price = menu.getPrice();
+//        final BigDecimal price = menu.getPrice();
+        final Price price = menu.getPrice();
 
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
+//        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+//            throw new IllegalArgumentException();
+//        }
 
         if (menu.getMenuGroup() != null && !menuGroupRepository.existsById(menu.getMenuGroup().getId())) {
 //        if (menu.getMenuGroup() != null && !menuGroupDao.existsById(menu.getMenuGroup().getId())) {
@@ -49,7 +51,8 @@ public class MenuService {
 
         final List<MenuProduct> menuProducts = menu.getMenuProducts();
 
-        BigDecimal sum = BigDecimal.ZERO;
+//        BigDecimal sum = BigDecimal.ZERO;
+        Price sum = new Price(BigDecimal.ZERO);
         for (final MenuProduct menuProduct : menuProducts) {
 //            final Product product = productDao.findById(menuProduct.getProductId())
 //            final Product product = productDao.findById(menuProduct.getProduct().getId())
@@ -60,9 +63,12 @@ public class MenuService {
             //
             final Product product = productRepository.findById(menuProduct.getProduct().getId())
                     .orElseThrow(IllegalArgumentException::new);
-            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
+//            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
+            sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
         }
 
+        System.out.println("price : "+price.getPrice());
+        System.out.println("sum : "+sum.getPrice());
         if (price.compareTo(sum) > 0) {
             throw new IllegalArgumentException();
         }
