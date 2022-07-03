@@ -9,8 +9,8 @@ import static org.mockito.Mockito.verify;
 
 import java.util.List;
 import kitchenpos.application.menu.MenuGroupService;
-import kitchenpos.dao.menu.MenuGroupDao;
 import kitchenpos.domain.menu.MenuGroup;
+import kitchenpos.domain.menu.MenuGroupRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +24,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class MenuGroupServiceTest {
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @InjectMocks
     private MenuGroupService menuGroupService;
@@ -34,13 +34,13 @@ class MenuGroupServiceTest {
     public void createMenuGroup() {
         // Given
         final MenuGroup given = generateMenuGroup();
-        given(menuGroupDao.save(any(MenuGroup.class))).will(AdditionalAnswers.returnsFirstArg());
+        given(menuGroupRepository.save(any(MenuGroup.class))).will(AdditionalAnswers.returnsFirstArg());
 
         // When
         MenuGroup actual = menuGroupService.create(given);
 
         // Then
-        verify(menuGroupDao).save(any(MenuGroup.class));
+        verify(menuGroupRepository).save(any(MenuGroup.class));
         assertThat(actual).isEqualTo(given);
     }
 
@@ -50,13 +50,13 @@ class MenuGroupServiceTest {
         // Given
         final int generateMenuGroupCount = 5;
         List<MenuGroup> givenMenuGroups = generateMenuGroups(generateMenuGroupCount);
-        given(menuGroupDao.findAll()).willReturn(givenMenuGroups);
+        given(menuGroupRepository.findAll()).willReturn(givenMenuGroups);
 
         // When
         List<MenuGroup> actualMenuGroups = menuGroupService.list();
 
         // Then
-        verify(menuGroupDao).findAll();
+        verify(menuGroupRepository).findAll();
         assertThat(actualMenuGroups).hasSize(generateMenuGroupCount);
     }
 }
