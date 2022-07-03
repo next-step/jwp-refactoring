@@ -20,6 +20,7 @@ import kitchenpos.dto.OrderLineItemResponse;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
 import kitchenpos.fixture.UnitTestFixture;
+import kitchenpos.menu.application.MenuService;
 import kitchenpos.repository.OrderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

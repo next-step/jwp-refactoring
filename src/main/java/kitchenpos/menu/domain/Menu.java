@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.menu.domain;
 
 import java.util.List;
 import javax.persistence.Column;
@@ -8,7 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import kitchenpos.dto.MenuProductResponse;
+import kitchenpos.domain.Price;
+import kitchenpos.menu.dto.MenuProductResponse;
 
 @Entity
 @Table(name = "menu")

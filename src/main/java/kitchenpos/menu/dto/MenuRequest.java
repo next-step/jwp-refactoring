@@ -1,4 +1,4 @@
-package kitchenpos.dto;
+package kitchenpos.menu.dto;
 
 import java.util.List;
 import kitchenpos.domain.Price;

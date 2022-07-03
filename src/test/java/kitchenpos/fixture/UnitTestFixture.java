@@ -2,10 +2,6 @@ package kitchenpos.fixture;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.MenuProducts;
 import kitchenpos.domain.NumberOfGuests;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
@@ -16,6 +12,10 @@ import kitchenpos.domain.OrderTables;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.Quantity;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.product.domain.Product;
 
 public class UnitTestFixture {

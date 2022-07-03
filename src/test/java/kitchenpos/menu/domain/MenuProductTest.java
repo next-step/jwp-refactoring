@@ -1,8 +1,10 @@
-package kitchenpos.domain;
+package kitchenpos.menu.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import kitchenpos.domain.Price;
+import kitchenpos.domain.Quantity;
 import org.junit.jupiter.api.Test;
 
 class MenuProductTest {
