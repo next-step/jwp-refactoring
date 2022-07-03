@@ -1,10 +1,14 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.common.exception.BadRequestException;
+import kitchenpos.common.exception.ErrorCode;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Embeddable
@@ -20,7 +24,7 @@ public class MenuProducts {
     }
 
     public List<MenuProduct> getElements() {
-        return new ArrayList<>(this.elements);
+        return Collections.unmodifiableList(new ArrayList<>(this.elements));
     }
 
     public void addMenu(Menu menu) {
@@ -29,7 +33,7 @@ public class MenuProducts {
 
     public void validatePrice(BigDecimal price) {
         if (price.compareTo(sum()) > 0) {
-            throw new IllegalArgumentException();
+            throw new BadRequestException(ErrorCode.INVALID_MENU_PRICE);
         }
     }
 

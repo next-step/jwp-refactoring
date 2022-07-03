@@ -1,17 +1,19 @@
 package kitchenpos.application;
 
+import kitchenpos.common.exception.BadRequestException;
+import kitchenpos.common.exception.ErrorCode;
+import kitchenpos.common.exception.NotFoundException;
+import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProductRepository;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.application.MenuService;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,8 +44,6 @@ class MenuServiceTest {
     private ProductRepository productRepository;
     @Mock
     private MenuRepository menuRepository;
-    @Mock
-    private MenuProductRepository menuProductRepository;
 
     @InjectMocks
     private MenuService menuService;
@@ -93,18 +93,21 @@ class MenuServiceTest {
         assertThat(response.getName()).isEqualTo(양념_치킨.getName());
     }
 
-    @DisplayName("메뉴의 가격이 0원이면 예외를 던진다.")
+    @DisplayName("메뉴의 가격이 0원 이상이 아니라면 예외를 던진다.")
     @Test
     void createWithInvalidPrice() {
-        MenuGroup menuGroup = createMenuGroup(1000L, "테스트");
-        Menu menu = createMenu(1000L, "테스트상품", BigDecimal.ZERO, menuGroup.getId(), null);
+        MenuProductRequest menuProductRequest_2 = new MenuProductRequest(양념_치킨_닭.getProduct().getId(), 양념_치킨_닭.getQuantity());
 
-        menuRequest = new MenuRequest(menu.getName(), menu.getPrice(), menu.getMenuGroupId(), Arrays.asList());
+        menuRequest = new MenuRequest(양념_치킨.getName(), BigDecimal.valueOf(-1L), 양념_치킨.getMenuGroupId(),
+                Arrays.asList(menuProductRequest, menuProductRequest_2));
 
-        given(menuGroupRepository.existsById(menuGroup.getId())).willReturn(Boolean.FALSE);
+        given(menuGroupRepository.existsById(menuRequest.getMenuGroupId())).willReturn(Boolean.TRUE);
+        given(productRepository.findById(menuProductRequest.getProductId())).willReturn(Optional.of(콜라));
+        given(productRepository.findById(menuProductRequest_2.getProductId())).willReturn(Optional.of(닭));
 
         assertThatThrownBy(() -> menuService.create(menuRequest))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage(ErrorCode.INVALID_PRICE.getMessage());
     }
 
     @DisplayName("메뉴 그룹에 등록되지 않았다면 예외를 던진다.")
@@ -118,7 +121,9 @@ class MenuServiceTest {
         given(menuGroupRepository.existsById(menuGroup.getId())).willReturn(Boolean.FALSE);
 
         assertThatThrownBy(() -> menuService.create(menuRequest))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage(ErrorCode.MENU_GROUP_NOT_FOUND.getMessage());
+
     }
 
     @DisplayName("상품이 존재하지 않는다면 예외를 던진다.")
@@ -128,7 +133,8 @@ class MenuServiceTest {
         given(productRepository.findById(양념_치킨_콜라.getProduct().getId())).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> menuService.create(menuRequest))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage(ErrorCode.PRODUCT_NOT_FOUND.getMessage());
     }
 
     @DisplayName("상품 금액의 합보다 메뉴 금액이 더 크면 예외를 던진다.")
@@ -141,7 +147,8 @@ class MenuServiceTest {
         given(productRepository.findById(양념_치킨_콜라.getProduct().getId())).willReturn(Optional.of(콜라));
 
         assertThatThrownBy(() -> menuService.create(menuRequest))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage(ErrorCode.INVALID_MENU_PRICE.getMessage());
     }
 
     @Test
