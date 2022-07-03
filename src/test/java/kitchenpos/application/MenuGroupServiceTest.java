@@ -1,6 +1,7 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.application.MenuGroupService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,7 +24,6 @@ class MenuGroupServiceTest {
         MenuGroup menuGroup = createMenuGroup();
 
         // when
-        List<MenuGroup> a = menuGroupService.list();
         MenuGroup result = menuGroupService.create(menuGroup);
 
         // then

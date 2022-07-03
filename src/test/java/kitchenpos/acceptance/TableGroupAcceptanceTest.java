@@ -3,9 +3,9 @@ package kitchenpos.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.ui.dto.OrderTableCreateRequest;
-import kitchenpos.ui.dto.TableGroupCreateRequest;
-import kitchenpos.ui.dto.TableGroupCreateResponse;
+import kitchenpos.ordertable.ui.dto.OrderTableCreateRequest;
+import kitchenpos.tablegroup.ui.dto.TableGroupCreateRequest;
+import kitchenpos.tablegroup.ui.dto.TableGroupCreateResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
@@ -34,7 +34,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     }
 
     @TestFactory
-    Stream<DynamicTest> 주문_테이블_관리_시나리오() {
+    Stream<DynamicTest> 단체_지정_관리_시나리오() {
         return Stream.of(
                 dynamicTest("단체 지정을 등록한다.", this::단체_지정을_등록한다),
                 dynamicTest("단체 지정을 해제한다", this::단체_지정을_해제한다)

@@ -1,9 +1,10 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.application.TableService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static kitchenpos.domain.TableGroupTest.createTableGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
@@ -22,9 +24,9 @@ import static org.mockito.BDDMockito.then;
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
     @InjectMocks
     private TableService tableService;
 
@@ -32,7 +34,7 @@ class TableServiceTest {
     void 주문_테이블을_등록한다() {
         // given
         OrderTable orderTable = new OrderTable(0, true);
-        given(orderTableDao.save(orderTable))
+        given(orderTableRepository.save(orderTable))
                 .willReturn(createOrderTable());
 
         // when
@@ -45,7 +47,7 @@ class TableServiceTest {
     @Test
     void 주문_테이블_목록을_조회한다() {
         // given
-        given(orderTableDao.findAll())
+        given(orderTableRepository.findAll())
                 .willReturn(Arrays.asList(new OrderTable(1L), new OrderTable(2L)));
 
         // when
@@ -58,8 +60,9 @@ class TableServiceTest {
     @Test
     void 단체_지정이_되어_있으면_이용_여부를_변경할_수_없다() {
         // given
-        OrderTable orderTable = new OrderTable(1L, 1L, 0, true);
-        given(orderTableDao.findById(1L))
+        OrderTable orderTable = new OrderTable(0, true);
+        orderTable.group(createTableGroup());
+        given(orderTableRepository.findById(1L))
                 .willReturn(Optional.of(orderTable));
 
         // when & then
@@ -73,9 +76,9 @@ class TableServiceTest {
     void 조리_또는_식사_중인_테이블은_이용_여부를_변경할_수_없다() {
         // given
         OrderTable orderTable = createOrderTable();
-        given(orderTableDao.findById(1L))
+        given(orderTableRepository.findById(1L))
                 .willReturn(Optional.of(orderTable));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(1L, createOrderStatus()))
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(1L, OrderStatus.findNotCompletionStatus()))
                 .willReturn(true);
 
         // when & then
@@ -89,26 +92,23 @@ class TableServiceTest {
     void 테이블_이용_여부를_변경한다() {
         // given
         OrderTable orderTable = createOrderTable();
-        given(orderTableDao.findById(1L))
+        given(orderTableRepository.findById(1L))
                 .willReturn(Optional.of(orderTable));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(1L, createOrderStatus()))
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(1L, OrderStatus.findNotCompletionStatus()))
                 .willReturn(false);
 
         // when
-        tableService.changeEmpty(1L, orderTable);
+        OrderTable result = tableService.changeEmpty(1L, orderTable);
 
         // then
-        then(orderTableDao).should().save(orderTable);
+        assertThat(result.isEmpty()).isTrue();
     }
 
     @Test
     void 방문한_손님의_수가_0보다_작으면_손님의_수를_변경할_수_없다() {
-        // given
-        OrderTable orderTable = new OrderTable(-1, true);
-
         // when & then
         assertThatThrownBy(() ->
-                tableService.changeNumberOfGuests(1L, orderTable)
+                tableService.changeNumberOfGuests(1L, new OrderTable(-1, true))
         ).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("방문한 손님의 수가 0보다 작으면 손님의 수를 변경할 수 없습니다.");
     }
@@ -116,7 +116,7 @@ class TableServiceTest {
     @Test
     void 빈_테이블이면_방문한_손님_수를_변경할_수_없다() {
         // given
-        given(orderTableDao.findById(1L))
+        given(orderTableRepository.findById(1L))
                 .willReturn(Optional.of(createOrderTable()));
 
         // when & then
@@ -129,22 +129,18 @@ class TableServiceTest {
     @Test
     void 방문한_손님의_수를_변경한다() {
         // given
-        OrderTable orderTable = new OrderTable(1L, null, 0, false);
-        given(orderTableDao.findById(1L))
+        OrderTable orderTable = new OrderTable(5, false);
+        given(orderTableRepository.findById(1L))
                 .willReturn(Optional.of(orderTable));
 
         // when
-        tableService.changeNumberOfGuests(1L, orderTable);
+        OrderTable result = tableService.changeNumberOfGuests(1L, orderTable);
 
         // then
-        then(orderTableDao).should().save(orderTable);
-    }
-
-    private List<String> createOrderStatus() {
-        return Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
+        assertThat(result.getNumberOfGuests()).isEqualTo(5);
     }
 
     private OrderTable createOrderTable() {
-        return new OrderTable(1L, null, 0, true);
+        return new OrderTable( 1L,0, true);
     }
 }

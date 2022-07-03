@@ -1,7 +1,8 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.application.ProductService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,27 +20,24 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
     @InjectMocks
     private ProductService productService;
 
     @Test
     void 상품의_가격이_올바르지_않으면_등록할_수_없다() {
-        // given
-        Product product = new Product("치킨", BigDecimal.valueOf(-1));
-
         // when & then
         assertThatThrownBy(() ->
-                productService.create(product)
+                productService.create(new Product("치킨", BigDecimal.valueOf(-1)))
         ).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("상품 가격은 0원 이상이어야 합니다.");
+                .hasMessage("가격은 0원 이상이어야 합니다.");
     }
 
     @Test
     void 상품을_등록한다() {
         // given
         Product product = new Product("치킨", BigDecimal.valueOf(10000));
-        given(productDao.save(product)).willReturn(createProduct());
+        given(productRepository.save(product)).willReturn(createProduct());
 
         // when
         Product result = productService.create(product);
@@ -51,7 +49,7 @@ class ProductServiceTest {
     @Test
     void 상품_목록을_조회한다() {
         // given
-        given(productDao.findAll()).willReturn(createProducts());
+        given(productRepository.findAll()).willReturn(createProducts());
 
         // when
         List<Product> result = productService.list();

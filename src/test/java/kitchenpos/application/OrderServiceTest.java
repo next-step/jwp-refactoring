@@ -1,7 +1,8 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.application.OrderService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,8 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.domain.OrderStatus.COMPLETION;
-import static kitchenpos.domain.OrderStatus.MEAL;
+import static kitchenpos.order.domain.OrderStatus.COMPLETION;
+import static kitchenpos.order.domain.OrderStatus.MEAL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -24,12 +25,9 @@ class OrderServiceTest {
 
     @Test
     void 주문_항목이_비어있을_경우_등록할_수_없다() {
-        // given
-        Order order = new Order(1L, null);
-
         // when & then
         assertThatThrownBy(() ->
-                orderService.create(order)
+                orderService.create(new Order(1L, null))
         ).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("주문 항목이 없습니다.");
     }
@@ -87,8 +85,7 @@ class OrderServiceTest {
     void 계산_완료_상태이면_상태를_변경할_수_없다() {
         // given
         Order saved = orderService.create(new Order(8L, createOrderLineItems()));
-        saved.changeOrderStatus(COMPLETION.name());
-        orderService.changeOrderStatus(saved.getId(), saved);
+        saved.changeOrderStatus(COMPLETION);
 
         // when & then
         assertThatThrownBy(() ->
@@ -101,13 +98,13 @@ class OrderServiceTest {
     void 주문_상태를_변경한다() {
         // given
         Order saved = orderService.create(new Order(8L, createOrderLineItems()));
-        saved.changeOrderStatus(MEAL.name());
+        saved.changeOrderStatus(MEAL);
 
         // when
         Order result = orderService.changeOrderStatus(saved.getId(), saved);
 
         // then
-        assertThat(result.getOrderStatus()).isEqualTo(MEAL.name());
+        assertThat(result.getOrderStatus()).isEqualTo(MEAL);
     }
 
     private List<OrderLineItem> createOrderLineItems() {

@@ -1,11 +1,12 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.tablegroup.domain.TableGroupRepository;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.application.TableGroupService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -26,22 +28,19 @@ import static org.mockito.BDDMockito.then;
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
     @InjectMocks
     private TableGroupService tableGroupService;
     
     @Test
     void 주문_테이블이_2개_미만이면_단체를_지정할_수_없다() {
-        // given
-        TableGroup tableGroup = new TableGroup(Collections.singletonList(new OrderTable(1L)));
-
         // when & then
         assertThatThrownBy(() ->
-                tableGroupService.create(tableGroup)
+                tableGroupService.create(new TableGroup(Collections.singletonList(new OrderTable(1L))))
         ).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("2개 이상의 테이블을 단체 지정할 수 있습니다.");
     }
@@ -50,21 +49,21 @@ class TableGroupServiceTest {
     void 주문_테이블이_저장되어_있지_않으면_단체를_지정할_수_없다() {
         // given
         TableGroup tableGroup = new TableGroup(createOrderTables());
-        given(orderTableDao.findAllByIdIn(createOrderTableIds()))
+        given(orderTableRepository.findAllByIdIn(createOrderTableIds()))
                 .willReturn(Collections.singletonList(new OrderTable(1L)));
 
         // when & then
         assertThatThrownBy(() ->
                 tableGroupService.create(tableGroup)
         ).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("주문 테이블이 등록되어 있지 않습니다.");
+                .hasMessage("중복된 테이블이 있거나 등록되지 않은 테이블이 있습니다.");
     }
 
     @Test
     void 주문_테이블이_빈_테이블이_아니거나_이미_단체_지정_되어_있으면_단체를_지정할_수_없다() {
         // given
         TableGroup tableGroup = new TableGroup(createOrderTables());
-        given(orderTableDao.findAllByIdIn(createOrderTableIds()))
+        given(orderTableRepository.findAllByIdIn(createOrderTableIds()))
                 .willReturn(createOrderTables());
 
         // when & then
@@ -78,9 +77,9 @@ class TableGroupServiceTest {
     void 단체_지정을_등록한다() {
         // given
         TableGroup tableGroup = new TableGroup(createOrderTables());
-        given(orderTableDao.findAllByIdIn(createOrderTableIds()))
+        given(orderTableRepository.findAllByIdIn(createOrderTableIds()))
                 .willReturn(createEmptyTables());
-        given(tableGroupDao.save(tableGroup))
+        given(tableGroupRepository.save(tableGroup))
                 .willReturn(new TableGroup(1L, LocalDateTime.now()));
         
         // when
@@ -93,9 +92,9 @@ class TableGroupServiceTest {
     @Test
     void 조리_또는_식사_중인_주문_테이블이_있을_경우_단체_지정을_해제할_수_없다() {
         // given
-        given(orderTableDao.findAllByTableGroupId(1L))
-                .willReturn(createOrderTables());
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(createOrderTableIds(), createOrderStatus()))
+        given(tableGroupRepository.findById(1L))
+                .willReturn(Optional.of(new TableGroup(createOrderTables())));
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(createOrderTableIds(), OrderStatus.findNotCompletionStatus()))
                 .willReturn(true);
 
         // when & then
@@ -109,10 +108,11 @@ class TableGroupServiceTest {
     void 단체_지정을_해제할_수_있다() {
         // given
         List<OrderTable> orderTables = createOrderTables();
+        Optional<TableGroup> tableGroup = Optional.of(new TableGroup(orderTables));
 
-        given(orderTableDao.findAllByTableGroupId(1L))
-                .willReturn(orderTables);
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(createOrderTableIds(), createOrderStatus()))
+        given(tableGroupRepository.findById(1L))
+                .willReturn(tableGroup);
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(createOrderTableIds(), OrderStatus.findNotCompletionStatus()))
                 .willReturn(false);
 
         // when
@@ -120,8 +120,8 @@ class TableGroupServiceTest {
 
         // then
         assertAll(
-                () -> then(orderTableDao).should().save(orderTables.get(0)),
-                () -> then(orderTableDao).should().save(orderTables.get(1))
+                () -> assertThat(orderTables.get(0).getTableGroupId()).isNull(),
+                () ->assertThat(orderTables.get(1).getTableGroupId()).isNull()
         );
     }
 
@@ -141,9 +141,5 @@ class TableGroupServiceTest {
 
     private List<Long> createOrderTableIds() {
         return Arrays.asList(1L, 2L);
-    }
-
-    private List<String> createOrderStatus() {
-        return Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name());
     }
 }
