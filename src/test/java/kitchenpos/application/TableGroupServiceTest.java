@@ -10,11 +10,11 @@ import static org.mockito.BDDMockito.given;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
+import kitchenpos.repository.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,13 +26,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    TableGroupDao tableGroupDao;
-
-    @Mock
     OrderRepository orderRepository;
-
     @Mock
     OrderTableRepository orderTableRepository;
+    @Mock
+    TableGroupRepository tableGroupRepository;
 
     @InjectMocks
     TableGroupService tableGroupService;
@@ -116,7 +114,7 @@ class TableGroupServiceTest {
         orderTable2.setEmpty(true);
 
         given(orderTableRepository.findAllByIdIn(Arrays.asList(orderTable1.getId(), orderTable2.getId()))).willReturn(orderTables);
-        given(tableGroupDao.save(tableGroup)).willReturn(tableGroup);
+        given(tableGroupRepository.save(tableGroup)).willReturn(tableGroup);
         assertThat(tableGroupService.create(tableGroup).getId()).isEqualTo(tableGroup.getId());
     }
 
