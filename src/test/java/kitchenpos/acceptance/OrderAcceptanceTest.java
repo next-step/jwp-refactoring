@@ -12,6 +12,7 @@ import java.util.List;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.ordertable.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -24,7 +25,7 @@ public class OrderAcceptanceTest extends BaseAcceptanceTest{
     public void manageOrder() {
         //메뉴 생성
         //given
-        Order order = new Order(1l);
+        Order order = new Order(new OrderTable(1l,0,false));
         order.addOrderItems(new OrderLineItem(1l, 1));
         //when
         ExtractableResponse<Response> 주문_생성_요청 = 주문_생성_요청(order);
@@ -40,7 +41,7 @@ public class OrderAcceptanceTest extends BaseAcceptanceTest{
 
         //메뉴 상태 변경
         //given
-        Order 변경주문 = new Order(1l);
+        Order 변경주문 = new Order(new OrderTable(1l,0,false));
         변경주문.changeOrderStatus(OrderStatus.MEAL);
         //when
         ExtractableResponse<Response> 주문_상태_변경_요청 = 주문_상태_변경_요청(주문_생성_요청.as(Order.class).getId(), 변경주문);

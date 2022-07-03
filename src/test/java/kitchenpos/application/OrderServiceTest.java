@@ -4,10 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
+import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.application.OrderService;
+import kitchenpos.ordertable.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class OrderServiceTest {
     @Test
     public void createOrder() {
         //given
-        Order order = new Order(1l);
+        Order order = new Order(new OrderTable(1l,0,false));
         order.addOrderItems(new OrderLineItem(1l, 1l, 1));
         //when
         Order result = orderService.create(order);
@@ -37,7 +38,7 @@ public class OrderServiceTest {
     public void createWithNoExistOrderLineItem() {
         //when
         //then
-        assertThatThrownBy(() -> orderService.create(new Order(1l))).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(new Order(new OrderTable(1l,0,false)))).isInstanceOf(IllegalArgumentException.class);
     }
 
 
@@ -45,7 +46,7 @@ public class OrderServiceTest {
     @Test
     public void createWithDuplicateOrderLineItem() {
         //given
-        Order order = new Order(1l);
+        Order order = new Order(new OrderTable(1l,0,false));
         order.addOrderItems(new OrderLineItem(1l, 1l, 1));
         order.addOrderItems(new OrderLineItem(1l, 1l, 1));
         //when
@@ -58,7 +59,7 @@ public class OrderServiceTest {
     @Test
     public void createWithNoExistOrderTable() {
         //given
-        Order order = new Order(9999l);
+        Order order = new Order(new OrderTable(9999l,0,false));
         order.addOrderItems(new OrderLineItem(1l, 1l, 1));
         //when
         //then
@@ -69,9 +70,9 @@ public class OrderServiceTest {
     @Test
     public void createWithEmptyOrderTable() {
         //given
-        Order order = new Order(2L);
+        Order order = new Order(new OrderTable(2l,0,false));
         order.addOrderItems(new OrderLineItem(1l, 1l, 1));
-        order.changeOrderTableId(9999l);
+        order.changeOrderTable(new OrderTable(9999l,0,false));
         //when
         //then
         assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
@@ -82,7 +83,7 @@ public class OrderServiceTest {
     @Test
     public void getOrders() {
         //given
-        Order order = new Order(1l);
+        Order order = new Order(new OrderTable(1l,0,false));
         order.addOrderItems(new OrderLineItem(1l, 1l, 1));
         orderService.create(order);
         //when
@@ -95,11 +96,11 @@ public class OrderServiceTest {
     @Test
     public void updateOrderStatus() {
         //given
-        Order order = new Order(1l);
+        Order order = new Order(new OrderTable(1l,0,false));
         order.addOrderItems(new OrderLineItem(1l, 1l, 1));
         orderService.create(order);
 
-        Order changeStatusOrder = new Order(2l);
+        Order changeStatusOrder = new Order(new OrderTable(2l,0,false));
         changeStatusOrder.addOrderItems(new OrderLineItem(1l, 1l, 1));
         changeStatusOrder.changeOrderStatus(OrderStatus.MEAL);
         orderService.create(changeStatusOrder);
@@ -114,12 +115,12 @@ public class OrderServiceTest {
     @Test
     public void updateWithCompleteStatus() {
         //given
-        Order order = new Order(1l);
+        Order order = new Order(new OrderTable(1l,0,false));
         order.addOrderItems(new OrderLineItem(1l, 1l, 1));
         order.changeOrderStatus(OrderStatus.COMPLETION);
         orderService.create(order);
 
-        Order changeStatusOrder = new Order(2l);
+        Order changeStatusOrder = new Order(new OrderTable(2l,0,false));
         changeStatusOrder.addOrderItems(new OrderLineItem(1l, 1l, 1));
         orderService.create(changeStatusOrder);
         //when
