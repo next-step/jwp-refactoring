@@ -48,12 +48,6 @@ public class Order {
         this.orderLineItems = new OrderLineItems(orderLineItems);
     }
 
-    private void validateOrderLineItems(List<OrderLineItem> orderLineItems) {
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new BadRequestException(ErrorCode.ORDER_LINE_ITEM_EMPTY);
-        }
-    }
-
     public Order(Long id, Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
         this.id = id;
         this.orderTableId = orderTableId;
@@ -110,12 +104,6 @@ public class Order {
         this.orderLineItems.add(this);
     }
 
-    private void validateOrderTable(OrderTable orderTable) {
-        if (orderTable.isEmpty()) {
-            throw new BadRequestException(ErrorCode.ORDER_TABLE_EMPTY);
-        }
-    }
-
     public void changeOrderStatus(OrderStatus orderStatus) {
         if (Objects.equals(OrderStatus.COMPLETION, this.getOrderStatus())) {
             throw new BadRequestException(ErrorCode.CAN_NOT_CHANGE_COMPLETED_ORDER_STATUS);
@@ -126,5 +114,17 @@ public class Order {
     public void addOrderLineItems(List<OrderLineItem> orderLineItems) {
         this.orderLineItems = new OrderLineItems(orderLineItems);
         this.orderLineItems.add(this);
+    }
+
+    private void validateOrderLineItems(List<OrderLineItem> orderLineItems) {
+        if (CollectionUtils.isEmpty(orderLineItems)) {
+            throw new BadRequestException(ErrorCode.ORDER_LINE_ITEM_EMPTY);
+        }
+    }
+
+    private void validateOrderTable(OrderTable orderTable) {
+        if (orderTable.isEmpty()) {
+            throw new BadRequestException(ErrorCode.ORDER_TABLE_EMPTY);
+        }
     }
 }
