@@ -1,7 +1,7 @@
 package kitchenpos.table.application;
 
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableValidator;
+import kitchenpos.table.domain.TableValidator;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.repository.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +28,7 @@ class TableGroupServiceTest {
     @MockBean
     TableGroupRepository tableGroupRepository;
     @MockBean
-    OrderTableValidator orderTableValidator;
+    TableValidator orderTableValidator;
 
     Long orderTableId1;
     Long orderTableId2;

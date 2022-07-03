@@ -17,9 +17,9 @@ import static org.mockito.Mockito.when;
 
 @DisplayName("주문 테이블 유효성검사 관련")
 @SpringBootTest
-class OrderTableValidatorTest {
+class TableValidatorTest {
     @Autowired
-    OrderTableValidator orderTableValidator;
+    TableValidator tableValidator;
     @MockBean
     OrderRepository orderRepository;
 
@@ -31,7 +31,7 @@ class OrderTableValidatorTest {
         when(orderRepository.findAllByOrderTableId(orderTableId)).thenReturn(singletonList(new Order(orderTableId, OrderStatus.MEAL)));
 
         // when then
-        assertThatThrownBy(() -> orderTableValidator.checkOrderStatus(orderTableId))
+        assertThatThrownBy(() -> tableValidator.checkOrderStatus(orderTableId))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -44,7 +44,7 @@ class OrderTableValidatorTest {
         when(orderRepository.findAllByOrderTableIdIn(orderTableIds)).thenReturn(singletonList(new Order(orderTableId, OrderStatus.MEAL)));
 
         // when then
-        assertThatThrownBy(() -> orderTableValidator.checkOrderStatusIn(orderTableIds))
+        assertThatThrownBy(() -> tableValidator.checkOrderStatusIn(orderTableIds))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

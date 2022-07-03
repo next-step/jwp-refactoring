@@ -1,7 +1,7 @@
 package kitchenpos.table.application;
 
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableValidator;
+import kitchenpos.table.domain.TableValidator;
 import kitchenpos.table.repository.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,11 +11,11 @@ import java.util.List;
 @Service
 public class TableService {
     private final OrderTableRepository orderTableRepository;
-    private final OrderTableValidator orderTableValidator;
+    private final TableValidator tableValidator;
 
-    public TableService(OrderTableRepository orderTableRepository, OrderTableValidator orderTableValidator) {
+    public TableService(OrderTableRepository orderTableRepository, TableValidator tableValidator) {
         this.orderTableRepository = orderTableRepository;
-        this.orderTableValidator = orderTableValidator;
+        this.tableValidator = tableValidator;
     }
 
     @Transactional
@@ -30,15 +30,15 @@ public class TableService {
 
     @Transactional
     public OrderTable changeEmpty(final Long orderTableId, final boolean empty) {
-        final OrderTable savedOrderTable = orderTableValidator.findExistsOrderTableById(orderTableId);
-        orderTableValidator.checkOrderStatus(orderTableId);
+        final OrderTable savedOrderTable = tableValidator.findExistsOrderTableById(orderTableId);
+        tableValidator.checkOrderStatus(orderTableId);
         savedOrderTable.changeEmpty(empty);
         return savedOrderTable;
     }
 
     @Transactional
     public OrderTable changeNumberOfGuests(final Long orderTableId, final int numberOfGuests) {
-        final OrderTable savedOrderTable = orderTableValidator.findExistsOrderTableById(orderTableId);
+        final OrderTable savedOrderTable = tableValidator.findExistsOrderTableById(orderTableId);
         savedOrderTable.changeNumberOfGuests(numberOfGuests);
         return savedOrderTable;
     }

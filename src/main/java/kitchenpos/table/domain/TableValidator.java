@@ -8,13 +8,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class OrderTableValidator {
+public class TableValidator {
     private static final String ORDER_TABLE_IS_NOT_EXIST = "주문테이블이 존재하지 않습니다";
     private static final String NOT_COMPLETION_ORDER_IS_EXIST = "계산완료되지 않은 주문이 존재합니다";
     private final OrderTableRepository orderTableRepository;
     private final OrderRepository orderRepository;
 
-    public OrderTableValidator(OrderTableRepository orderTableRepository, OrderRepository orderRepository) {
+    public TableValidator(OrderTableRepository orderTableRepository, OrderRepository orderRepository) {
         this.orderTableRepository = orderTableRepository;
         this.orderRepository = orderRepository;
     }
