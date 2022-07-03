@@ -1,6 +1,4 @@
 package kitchenpos.menu.domain;
-import kitchenpos.exception.IllegalPriceException;
-import kitchenpos.menugroup.domain.MenuGroup;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -18,8 +16,6 @@ public class Menu {
     private Long menuGroupId;
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuProduct> menuProducts = new ArrayList<>();
-
-    public static final String ERROR_PRICE_TOO_HIGH = "가격은 %d 초과일 수 없습니다.";
 
     protected Menu() {
     }
@@ -48,18 +44,8 @@ public class Menu {
     }
 
     private void registerMenuProducts(List<MenuProduct> menuProducts) {
-        validateMenuPrice(menuProducts);
         this.menuProducts = menuProducts;
         menuProducts.forEach(menuProduct -> menuProduct.registerMenu(this));
-    }
-
-    private void validateMenuPrice(List<MenuProduct> menuProducts) {
-        int sumOfProductPrice = menuProducts.stream().
-                mapToInt(menuProduct -> menuProduct.getProduct().getPrice() * menuProduct.getQuantity()).
-                sum();
-        if (price.isLargerThan(sumOfProductPrice)) {
-            throw new IllegalPriceException(String.format(ERROR_PRICE_TOO_HIGH, sumOfProductPrice));
-        }
     }
 
     public Long getId() {

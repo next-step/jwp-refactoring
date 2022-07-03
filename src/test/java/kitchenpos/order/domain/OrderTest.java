@@ -39,8 +39,8 @@ class OrderTest {
     @BeforeEach
     public void setUp(){
         menuGroup_한식 = createMenuGroup(1L, "한식");
-        product_김치찌개 = createProduct("김치찌개", 8000);
-        menuProduct_김치찌개 = createMenuProduct(product_김치찌개, 1);
+        product_김치찌개 = createProduct(1L, "김치찌개", 8000);
+        menuProduct_김치찌개 = createMenuProduct(product_김치찌개.getId(), 1);
         menu = createMenu("김치찌개", 8000, menuGroup_한식.getId(), Arrays.asList(menuProduct_김치찌개));
     }
 

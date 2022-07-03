@@ -34,4 +34,8 @@ public class ProductService {
         return productRepository.findById(productId)
                 .orElseThrow(() -> new NoSuchProductException(productId));
     }
+
+    public List<Product> findProductsByIdList(List<Long> productIds) {
+        return productRepository.findAllByIdIn(productIds);
+    }
 }
