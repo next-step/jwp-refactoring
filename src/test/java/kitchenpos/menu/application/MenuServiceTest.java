@@ -4,6 +4,8 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProductRepository;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menuGroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
@@ -14,12 +16,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
-import static kitchenpos.menu.domain.MenuProductTest.메뉴_상품_생성;
 import static kitchenpos.menu.domain.MenuTest.메뉴_생성;
 import static kitchenpos.product.domain.ProductTest.상품_생성;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -46,23 +46,24 @@ class MenuServiceTest {
     void createMenu() {
         // given
         Product product = 상품_생성(1L, "상품", 1_000);
-        MenuProduct menuProduct = 메뉴_상품_생성(null, product, 1);
-        List<MenuProduct> menuProducts = Collections.singletonList(menuProduct);
-        Menu menu = 메뉴_생성("매뉴", 1_000, 1L, menuProducts);
+        MenuRequest.ProductInfo productInfo = new MenuRequest.ProductInfo(product.getId(), 1);
+        List<MenuRequest.ProductInfo> productInfos = Collections.singletonList(productInfo);
+        MenuProduct menuProduct = new MenuProduct(product, productInfo.getQuantity());
+        MenuRequest request = new MenuRequest("매뉴", BigDecimal.valueOf(1_000), 1L, productInfos);
 
-        when(menuGroupRepository.existsById(menu.getMenuGroupId())).thenReturn(true);
-        when(productRepository.findById(any())).thenReturn(Optional.of(product));
-        when(menuRepository.save(menu)).thenReturn(메뉴_생성(1L, "매뉴", 1_000, 1L, menuProducts));
+        when(menuGroupRepository.existsById(any())).thenReturn(true);
+        when(productRepository.findAllByIdIn(any())).thenReturn(Collections.singletonList(product));
+        when(menuRepository.save(any())).thenReturn(메뉴_생성(1L, "매뉴", 1_000, 1L, Collections.singletonList(menuProduct)));
 
         // when
-        Menu savedMenu = menuService.create(menu);
+        MenuResponse response = menuService.create(request);
 
         // then
         assertAll(
-                () -> assertThat(savedMenu.getId()).isNotNull(),
-                () -> assertThat(savedMenu.getName()).isEqualTo(menu.getName()),
-                () -> assertThat(savedMenu.getPrice()).isEqualTo(menu.getPrice()),
-                () -> assertThat(savedMenu.getMenuGroupId()).isEqualTo(menu.getMenuGroupId())
+                () -> assertThat(response.getMenuId()).isNotNull(),
+                () -> assertThat(response.getName()).isEqualTo(request.getName()),
+                () -> assertThat(response.getPrice()).isEqualTo(request.getPrice()),
+                () -> assertThat(response.getMenuGroupId()).isEqualTo(request.getMenuGroupId())
         );
     }
 
@@ -70,10 +71,10 @@ class MenuServiceTest {
     @Test
     void createMenu1() {
         // given
-        Menu menu = 메뉴_생성("매뉴", -1, null, null);
+        MenuRequest request = new MenuRequest("매뉴", BigDecimal.valueOf(1_000), null, null);
 
         // when, then
-        assertThatThrownBy(() -> menuService.create(menu))
+        assertThatThrownBy(() -> menuService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -81,12 +82,12 @@ class MenuServiceTest {
     @Test
     void createMenu2() {
         // given
-        Menu menu = 메뉴_생성("매뉴", 1_000, null, null);
+        MenuRequest request = new MenuRequest("매뉴", BigDecimal.valueOf(1_000), null, null);
 
-        when(menuGroupRepository.existsById(menu.getMenuGroupId())).thenReturn(false);
+        when(menuGroupRepository.existsById(any())).thenReturn(false);
 
         // when, then
-        assertThatThrownBy(() -> menuService.create(menu))
+        assertThatThrownBy(() -> menuService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -94,16 +95,15 @@ class MenuServiceTest {
     @Test
     void createMenu3() {
         // given
-        Product product = 상품_생성("상품", 1_000);
-        MenuProduct menuProduct = 메뉴_상품_생성(null, product, 1);
-        List<MenuProduct> menuProducts = Collections.singletonList(menuProduct);
-        Menu menu = 메뉴_생성("매뉴", 2_000, 1L, menuProducts);
+        Product product = 상품_생성(1L, "상품", 1_000);
+        MenuRequest.ProductInfo productInfo = new MenuRequest.ProductInfo(product.getId(), 1);
+        List<MenuRequest.ProductInfo> productInfos = Collections.singletonList(productInfo);
+        MenuRequest request = new MenuRequest("매뉴", BigDecimal.valueOf(1_000), 1L, productInfos);
 
-        when(menuGroupRepository.existsById(menu.getMenuGroupId())).thenReturn(true);
-        when(productRepository.findById(any())).thenReturn(Optional.empty());
-
+        when(menuGroupRepository.existsById(any())).thenReturn(true);
+        when(productRepository.findAllByIdIn(any())).thenReturn(Collections.emptyList());
         // when, then
-        assertThatThrownBy(() -> menuService.create(menu))
+        assertThatThrownBy(() -> menuService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -111,16 +111,16 @@ class MenuServiceTest {
     @Test
     void createMenu4() {
         // given
-        Product product = 상품_생성("상품", 1_000);
-        MenuProduct menuProduct = 메뉴_상품_생성(null, product, 1);
-        List<MenuProduct> menuProducts = Collections.singletonList(menuProduct);
-        Menu menu = 메뉴_생성("매뉴", 2_000, 1L, menuProducts);
+        Product product = 상품_생성(1L, "상품", 1_000);
+        MenuRequest.ProductInfo productInfo = new MenuRequest.ProductInfo(product.getId(), 1);
+        List<MenuRequest.ProductInfo> productInfos = Collections.singletonList(productInfo);
+        MenuRequest request = new MenuRequest("매뉴", BigDecimal.valueOf(2_000), 1L, productInfos);
 
-        when(menuGroupRepository.existsById(menu.getMenuGroupId())).thenReturn(true);
-        when(productRepository.findById(any())).thenReturn(Optional.of(product));
+        when(menuGroupRepository.existsById(any())).thenReturn(true);
+        when(productRepository.findAllByIdIn(any())).thenReturn(Collections.singletonList(product));
 
         // when, then
-        assertThatThrownBy(() -> menuService.create(menu))
+        assertThatThrownBy(() -> menuService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -128,20 +128,14 @@ class MenuServiceTest {
     @Test
     void listMenu() {
         // given
-        Product product1 = 상품_생성(1L, "상품1", 1_000);
-        Product product2 = 상품_생성(2L, "상품2", 1_000);
         Menu menu = 메뉴_생성(1L, "매뉴", 1000, null, null);
-        List<Menu> menus = Collections.singletonList(menu);
-        MenuProduct menuProduct1 = 메뉴_상품_생성(menu, product1, 1);
-        MenuProduct menuProduct2 = 메뉴_상품_생성(menu, product2, 1);
 
-        when(menuRepository.findAll()).thenReturn(menus);
-        when(menuProductRepository.findAllByMenuId(any())).thenReturn(Arrays.asList(menuProduct1, menuProduct2));
+        when(menuRepository.findAll()).thenReturn(Collections.singletonList(menu));
 
         // when
-        List<Menu> list = menuService.list();
+        List<MenuResponse> list = menuService.list();
 
         // then
-        assertThat(list).containsExactly(menu);
+        assertThat(list).hasSize(1);
     }
 }

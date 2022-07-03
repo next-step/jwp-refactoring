@@ -2,6 +2,8 @@ package kitchenpos.menuGroup.application;
 
 import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.menuGroup.domain.MenuGroupRepository;
+import kitchenpos.menuGroup.dto.MenuGroupRequest;
+import kitchenpos.menuGroup.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +18,7 @@ import java.util.List;
 import static kitchenpos.menuGroup.domain.MenuGroupTest.메뉴그룹_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
@@ -28,17 +31,18 @@ class MenuGroupServiceTest {
     @Test
     void createMenuGroup() {
         // given
-        MenuGroup menuGroup = 메뉴그룹_생성("menuGroup");
+        String name = "menuGroup";
+        MenuGroupRequest request = new MenuGroupRequest(name);
 
-        Mockito.when(menuGroupRepository.save(menuGroup)).thenReturn(메뉴그룹_생성(1L, "menuGroup"));
+        Mockito.when(menuGroupRepository.save(any())).thenReturn(메뉴그룹_생성(1L, name));
 
         // when
-        MenuGroup savedMenuGroup = menuGroupService.create(menuGroup);
+        MenuGroupResponse response = menuGroupService.create(request);
 
         // then
         assertAll(
-                () -> assertThat(savedMenuGroup.getId()).isNotNull(),
-                () -> assertThat(savedMenuGroup.getName()).isEqualTo(menuGroup.getName())
+                () -> assertThat(response.getMenuGroupId()).isNotNull(),
+                () -> assertThat(response.getName()).isEqualTo(name)
         );
 
     }
@@ -49,13 +53,14 @@ class MenuGroupServiceTest {
         // given
         MenuGroup menuGroup1 = 메뉴그룹_생성(1L, "menuGroup1");
         MenuGroup menuGroup2 = 메뉴그룹_생성(2L, "menuGroup2");
+        List<MenuGroup> menuGroups = Arrays.asList(menuGroup1, menuGroup2);
 
-        Mockito.when(menuGroupRepository.findAll()).thenReturn(Arrays.asList(menuGroup1, menuGroup2));
+        Mockito.when(menuGroupRepository.findAll()).thenReturn(menuGroups);
 
         // when
-        List<MenuGroup> savedMenuGroups = menuGroupService.list();
+        List<MenuGroupResponse> list = menuGroupService.list();
 
         // then
-        assertThat(savedMenuGroups).containsExactly(menuGroup1, menuGroup2);
+        assertThat(list).hasSize(menuGroups.size());
     }
 }

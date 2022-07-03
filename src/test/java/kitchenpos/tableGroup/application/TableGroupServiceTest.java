@@ -2,24 +2,26 @@ package kitchenpos.tableGroup.application;
 
 
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.orderTable.domain.OrderTable;
+import kitchenpos.orderTable.domain.OrderTableRepository;
 import kitchenpos.tableGroup.domain.TableGroup;
 import kitchenpos.tableGroup.domain.TableGroupRepository;
+import kitchenpos.tableGroup.dto.TableGroupRequest;
+import kitchenpos.tableGroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
+import java.util.Optional;
 
-import static kitchenpos.table.domain.OrderTableTest.주문_태이블_생성;
+import static kitchenpos.orderTable.domain.OrderTableTest.주문_태이블_생성;
 import static kitchenpos.tableGroup.domain.TableGroupTest.단체_지정_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -32,7 +34,7 @@ class TableGroupServiceTest {
     private OrderRepository orderRepository;
     @Mock
     private OrderTableRepository orderTableRepository;
-    @Mock
+    @Spy
     private TableGroupRepository tableGroupRepository;
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -43,21 +45,20 @@ class TableGroupServiceTest {
         // given
         OrderTable orderTable1 = 주문_태이블_생성(1L, null, 1, true);
         OrderTable orderTable2 = 주문_태이블_생성(2L, null, 1, true);
-        TableGroup tableGroup = 단체_지정_생성(null, Arrays.asList(orderTable1, orderTable2));
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(orderTable1.getId(), orderTable2.getId()));
 
         when(orderTableRepository.findAllByIdIn(any())).thenReturn(Arrays.asList(orderTable1, orderTable2));
-        when(tableGroupRepository.save(tableGroup)).thenReturn(
-                단체_지정_생성(1L, LocalDateTime.now(), Arrays.asList(orderTable1, orderTable2))
+        when(tableGroupRepository.save(any())).thenReturn(
+                단체_지정_생성(1L, Arrays.asList(orderTable1, orderTable2))
         );
 
         // when
-        TableGroup savedTableGroup = tableGroupService.create(tableGroup);
+        TableGroupResponse tableGroupResponse = tableGroupService.create(tableGroupRequest);
 
         // then
         Assertions.assertAll(
-                () -> assertThat(savedTableGroup.getId()).isNotNull(),
-                () -> assertThat(savedTableGroup.getCreatedDate()).isNotNull(),
-                () -> assertThat(savedTableGroup.getOrderTables()).containsExactly(orderTable1, orderTable2)
+                () -> assertThat(tableGroupResponse.getTableGroupId()).isNotNull(),
+                () -> assertThat(tableGroupResponse.getOrderTableIds()).containsExactly(orderTable1.getId(), orderTable2.getId())
         );
     }
 
@@ -65,11 +66,13 @@ class TableGroupServiceTest {
     @Test
     void create1() {
         // given
-        List<OrderTable> orderTables = Collections.singletonList(주문_태이블_생성(1L, null, 1, true));
-        TableGroup tableGroup = 단체_지정_생성(null, orderTables);
+        OrderTable orderTable = 주문_태이블_생성(1L, null, 1, true);
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(Collections.singletonList(orderTable.getId()));
+
+        when(orderTableRepository.findAllByIdIn(any())).thenReturn(Collections.singletonList(orderTable));
 
         // when, then
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+        assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -79,12 +82,12 @@ class TableGroupServiceTest {
         // given
         OrderTable orderTable1 = 주문_태이블_생성(1L, null, 1, true);
         OrderTable orderTable2 = 주문_태이블_생성(2L, null, 1, true);
-        TableGroup tableGroup = 단체_지정_생성(null, Arrays.asList(orderTable1, orderTable2));
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(orderTable1.getId(), orderTable2.getId()));
 
         when(orderTableRepository.findAllByIdIn(any())).thenReturn(Collections.singletonList(orderTable1));
 
         // when, then
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+        assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -94,12 +97,12 @@ class TableGroupServiceTest {
         // given
         OrderTable orderTable1 = 주문_태이블_생성(1L, null, 1, false);
         OrderTable orderTable2 = 주문_태이블_생성(2L, null, 1, false);
-        TableGroup tableGroup = 단체_지정_생성(null, Arrays.asList(orderTable1, orderTable2));
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(orderTable1.getId(), orderTable2.getId()));
 
         when(orderTableRepository.findAllByIdIn(any())).thenReturn(Arrays.asList(orderTable1, orderTable2));
 
         // when, then
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+        assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -107,15 +110,15 @@ class TableGroupServiceTest {
     @Test
     void create4() {
         // given
-        TableGroup tableGroup = 단체_지정_생성(2L, LocalDateTime.now(), null);
+        TableGroup tableGroup = 단체_지정_생성(2L, null);
         OrderTable orderTable1 = 주문_태이블_생성(1L, tableGroup, 1, false);
         OrderTable orderTable2 = 주문_태이블_생성(2L, tableGroup, 1, false);
-        tableGroup.setOrderTables(Arrays.asList(orderTable1, orderTable2));
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(orderTable1.getId(), orderTable2.getId()));
 
         when(orderTableRepository.findAllByIdIn(any())).thenReturn(Arrays.asList(orderTable1, orderTable2));
 
         // when, then
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup))
+        assertThatThrownBy(() -> tableGroupService.create(tableGroupRequest))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -124,12 +127,11 @@ class TableGroupServiceTest {
     void ungroup() {
         // given
         Long tableGroupId = 1L;
-        TableGroup tableGroup = 단체_지정_생성(tableGroupId, LocalDateTime.now(), null);
-        OrderTable orderTable1 = 주문_태이블_생성(1L, tableGroup, 1, false);
-        OrderTable orderTable2 = 주문_태이블_생성(2L, tableGroup, 1, false);
-        List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
+        OrderTable orderTable1 = 주문_태이블_생성(1L, null, 1, false);
+        OrderTable orderTable2 = 주문_태이블_생성(2L, null, 1, false);
+        TableGroup tableGroup = 단체_지정_생성(tableGroupId, Arrays.asList(orderTable1, orderTable2));
 
-        when(orderTableRepository.findAllByTableGroupId(tableGroupId)).thenReturn(orderTables);
+        when(tableGroupRepository.findWithOrderTablesById(any())).thenReturn(Optional.of(tableGroup));
         when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(false);
 
         // when, then
@@ -140,12 +142,11 @@ class TableGroupServiceTest {
     @Test
     void ungroup1() {
         Long tableGroupId = 1L;
-        TableGroup tableGroup = 단체_지정_생성(tableGroupId, LocalDateTime.now(), null);
-        OrderTable orderTable1 = 주문_태이블_생성(1L, tableGroup, 1, false);
-        OrderTable orderTable2 = 주문_태이블_생성(2L, tableGroup, 1, false);
-        List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
+        OrderTable orderTable1 = 주문_태이블_생성(1L, null, 1, false);
+        OrderTable orderTable2 = 주문_태이블_생성(2L, null, 1, false);
+        TableGroup tableGroup = 단체_지정_생성(tableGroupId, Arrays.asList(orderTable1, orderTable2));
 
-        when(orderTableRepository.findAllByTableGroupId(tableGroupId)).thenReturn(orderTables);
+        when(tableGroupRepository.findWithOrderTablesById(any())).thenReturn(Optional.of(tableGroup));
         when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(true);
 
         // when, then
