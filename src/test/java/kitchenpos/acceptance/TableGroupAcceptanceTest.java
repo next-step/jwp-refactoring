@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.OrderTableRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,8 +28,8 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        주문테이블1 = 주문가능한_테이블을_존재(new OrderTable(null, 3, true));
-        주문테이블2 = 주문가능한_테이블을_존재(new OrderTable(null, 4, true));
+        주문테이블1 = 주문가능한_테이블을_존재(new OrderTableRequest(3, true));
+        주문테이블2 = 주문가능한_테이블을_존재(new OrderTableRequest(4, true));
     }
 
     /*
@@ -119,7 +120,7 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     }
 
 
-    private OrderTable 주문가능한_테이블을_존재(OrderTable orderTable) {
+    private OrderTable 주문가능한_테이블을_존재(OrderTableRequest orderTable) {
         return TableAcceptanceTest.주문가능한_테이블을_요청한다(orderTable).as(OrderTable.class);
     }
 

@@ -7,6 +7,9 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderResponse;
+import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
@@ -32,7 +35,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
     @DisplayName("주문 테이블 관리")
     void orderTableManager() {
         //given
-        OrderTable orderTable = new OrderTable(null, 3, false);
+        OrderTableRequest orderTable = new OrderTableRequest(3, false);
 
         //when
         final ExtractableResponse<Response> createResponse = 주문가능한_테이블을_요청한다(orderTable);
@@ -45,8 +48,8 @@ public class TableAcceptanceTest extends AcceptanceTest {
         //then
         생성된_주문테이블이_조회_된다(createResponse, retrievedResponse);
 
-        //given
-        final OrderTable 등록된_주문_테이블 = createResponse.as(OrderTable.class);
+/*        //given
+        final OrderTableResponse 등록된_주문_테이블 = createResponse.as(OrderTableResponse.class);
         int updateGuestNumber = 4;
         등록된_주문_테이블.setNumberOfGuests(updateGuestNumber);
 
@@ -59,13 +62,13 @@ public class TableAcceptanceTest extends AcceptanceTest {
         //when
         final ExtractableResponse<Response> updateEmptyTable = 빈테이블로_변경한다(등록된_주문_테이블);
         //then
-        빈테이블로_변경이_된다(updateEmptyTable);
+        빈테이블로_변경이_된다(updateEmptyTable);*/
 
     }
 
 
 
-    public static ExtractableResponse<Response> 주문가능한_테이블을_요청한다 (OrderTable orderTable) {
+    public static ExtractableResponse<Response> 주문가능한_테이블을_요청한다 (OrderTableRequest orderTable) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(orderTable)
@@ -110,12 +113,10 @@ public class TableAcceptanceTest extends AcceptanceTest {
     }
 
 
-    private ExtractableResponse<Response> 빈테이블로_변경한다(OrderTable orderTable) {
-        orderTable.setEmpty(true);
+    private ExtractableResponse<Response> 빈테이블로_변경한다(OrderResponse orderResponse) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(orderTable)
-                .pathParam("orderTableId", orderTable.getId())
+                .pathParam("orderTableId", orderResponse.getOrderTableId())
                 .when().put("/api/tables/{orderTableId}/empty")
                 .then()
                 .log().all()
@@ -124,7 +125,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
 
     private void 빈테이블로_변경이_된다(ExtractableResponse<Response> updateEmptyTable) {
         assertThat(updateEmptyTable.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(updateEmptyTable.as(OrderTable.class).isEmpty()).isTrue();
+        assertThat(updateEmptyTable.as(OrderTableResponse.class).isEmpty()).isTrue();
     }
 
 }

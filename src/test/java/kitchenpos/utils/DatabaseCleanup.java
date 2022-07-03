@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Table;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 import org.springframework.test.context.ActiveProfiles;
@@ -21,10 +22,19 @@ public class DatabaseCleanup implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
+
         tableNames = entityManager.getMetamodel().getEntities().stream()
                 .filter(e -> e.getJavaType().getAnnotation(Entity.class) != null)
+                .filter(e -> e.getJavaType().getAnnotation(Table.class) == null)
                 .map(e -> CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, e.getName()))
                 .collect(Collectors.toList());
+
+        List<String> tableNamesWithAnnotation = entityManager.getMetamodel().getEntities().stream()
+                .filter(e -> e.getJavaType().getAnnotation(Table.class) != null)
+                .map(e -> CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, e.getJavaType().getAnnotation(Table.class).name()))
+                .collect(Collectors.toList());
+
+        tableNames.addAll(tableNamesWithAnnotation);
     }
 
     @Transactional

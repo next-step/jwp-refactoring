@@ -1,5 +1,6 @@
 package kitchenpos.domain;
 
+import java.util.Objects;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -56,15 +57,14 @@ public class OrderTable {
         this.numberOfGuests = NumberOfGuest.of(numberOfGuests);
     }
 
-    public void setEmpty(boolean empty) {
-        this.empty = empty;
-    }
-
     public void setTableGroupId(Long tableGroupId) {
         this.tableGroupId = tableGroupId;
     }
 
     public void changeEmptyTable() {
+        if (Objects.nonNull(tableGroupId)) {
+            throw new IllegalStateException("테이블 그룹이 있어 변경할 수 없습니다.");
+        }
         this.empty = true;
     }
 

@@ -5,15 +5,16 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class NumberOfGuest {
     private static final int MIN_NUMBER_OF_GUEST = 0;
-    private int numberOfGuest = 0;
+
+    private Integer numberOfGuests = 0;
 
     protected NumberOfGuest() {
 
     }
 
-    private NumberOfGuest(int numberOfGuest) {
-        validNumberOfGuest(numberOfGuest);
-        this.numberOfGuest = numberOfGuest;
+    private NumberOfGuest(int numberOfGuests) {
+        validNumberOfGuest(numberOfGuests);
+        this.numberOfGuests = numberOfGuests;
     }
 
     public static NumberOfGuest of(int numberOfGuest) {
@@ -27,6 +28,6 @@ public class NumberOfGuest {
     }
 
     public int value() {
-        return numberOfGuest;
+        return numberOfGuests;
     }
 }
