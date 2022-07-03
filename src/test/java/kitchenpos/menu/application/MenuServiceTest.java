@@ -3,7 +3,6 @@ package kitchenpos.menu.application;
 import kitchenpos.exception.IllegalPriceException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProductRepository;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -56,7 +55,7 @@ class MenuServiceTest {
         메뉴그룹_한식 = createMenuGroup(1L, "한식메뉴");
         김치찌개 = createProduct(1L, "김치찌개", 8000);
         김치찌개세트_김치찌개 = createMenuProduct(김치찌개, 2);
-        메뉴_김치찌개세트 = createMenu("김치찌개세트", 15000, 메뉴그룹_한식,
+        메뉴_김치찌개세트 = createMenu("김치찌개세트", 15000, 메뉴그룹_한식.getId(),
                 Arrays.asList(김치찌개세트_김치찌개));
     }
 
@@ -70,7 +69,7 @@ class MenuServiceTest {
 
         //when
         MenuRequest menuRequest = MenuRequest.of(
-                메뉴_김치찌개세트.getName(), 메뉴_김치찌개세트.getPrice(), 메뉴_김치찌개세트.getMenuGroup().getId(),
+                메뉴_김치찌개세트.getName(), 메뉴_김치찌개세트.getPrice(), 메뉴_김치찌개세트.getMenuGroupId(),
                 Arrays.asList(
                         MenuProductRequest.of(김치찌개세트_김치찌개.getProduct().getId(), 김치찌개세트_김치찌개.getQuantity())
                 )
@@ -84,8 +83,12 @@ class MenuServiceTest {
     @DisplayName("메뉴의 가격은 0 이상이어야 한다")
     @Test
     void 메뉴_등록_가격_검증_0이상(){
+        //given
+        given(menuGroupService.findMenuGroupById(anyLong())).willReturn(메뉴그룹_한식);
+
+        //then
         MenuRequest invalidMenuRequest = MenuRequest.of(
-                메뉴_김치찌개세트.getName(), -15000, 메뉴_김치찌개세트.getMenuGroup().getId(),
+                메뉴_김치찌개세트.getName(), -15000, 메뉴_김치찌개세트.getMenuGroupId(),
                 Arrays.asList(
                         MenuProductRequest.of(김치찌개세트_김치찌개.getProduct().getId(), 김치찌개세트_김치찌개.getQuantity())
                 )
@@ -103,7 +106,7 @@ class MenuServiceTest {
         given(productService.findProductById(anyLong())).willReturn(김치찌개);
 
         MenuRequest invalidMenuRequest = MenuRequest.of(
-                메뉴_김치찌개세트.getName(), 20000, 메뉴_김치찌개세트.getMenuGroup().getId(),
+                메뉴_김치찌개세트.getName(), 20000, 메뉴_김치찌개세트.getMenuGroupId(),
                 Arrays.asList(
                         MenuProductRequest.of(김치찌개세트_김치찌개.getProduct().getId(), 김치찌개세트_김치찌개.getQuantity())
                 )
@@ -121,7 +124,7 @@ class MenuServiceTest {
 
         //when
         MenuRequest invalidMenuRequest = MenuRequest.of(
-                메뉴_김치찌개세트.getName(), 15000, 메뉴_김치찌개세트.getMenuGroup().getId(),
+                메뉴_김치찌개세트.getName(), 15000, 메뉴_김치찌개세트.getMenuGroupId(),
                 Arrays.asList(
                         MenuProductRequest.of(김치찌개세트_김치찌개.getProduct().getId(), 김치찌개세트_김치찌개.getQuantity())
                 )
@@ -140,7 +143,7 @@ class MenuServiceTest {
 
         //when
         MenuRequest invalidMenuRequest = MenuRequest.of(
-                메뉴_김치찌개세트.getName(), 15000, 메뉴_김치찌개세트.getMenuGroup().getId(),
+                메뉴_김치찌개세트.getName(), 15000, 메뉴_김치찌개세트.getMenuGroupId(),
                 Arrays.asList(
                         MenuProductRequest.of(김치찌개세트_김치찌개.getProduct().getId(), 김치찌개세트_김치찌개.getQuantity())
                 )

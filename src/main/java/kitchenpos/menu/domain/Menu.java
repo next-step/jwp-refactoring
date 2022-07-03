@@ -14,9 +14,8 @@ public class Menu {
     private String name;
     @Embedded
     private MenuPrice price;
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_group_id", nullable = false)
-    private MenuGroup menuGroup;
+    private Long menuGroupId;
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuProduct> menuProducts = new ArrayList<>();
 
@@ -25,27 +24,27 @@ public class Menu {
     protected Menu() {
     }
 
-    private Menu(Long id, String name, int price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+    private Menu(Long id, String name, int price, Long menuGroupId, List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = name;
         this.price = MenuPrice.from(price);
-        this.menuGroup = menuGroup;
+        this.menuGroupId = menuGroupId;
         registerMenuProducts(menuProducts);
     }
 
-    private Menu(String name, int price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+    private Menu(String name, int price, Long menuGroupId, List<MenuProduct> menuProducts) {
         this.name = name;
         this.price = MenuPrice.from(price);
-        this.menuGroup = menuGroup;
+        this.menuGroupId = menuGroupId;
         registerMenuProducts(menuProducts);
     }
 
-    public static Menu of(Long id, String name, int price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        return new Menu(id, name, price, menuGroup, menuProducts);
+    public static Menu of(Long id, String name, int price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        return new Menu(id, name, price, menuGroupId, menuProducts);
     }
 
-    public static Menu of(String name, int price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        return new Menu(name, price, menuGroup, menuProducts);
+    public static Menu of(String name, int price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        return new Menu(name, price, menuGroupId, menuProducts);
     }
 
     private void registerMenuProducts(List<MenuProduct> menuProducts) {
@@ -75,8 +74,8 @@ public class Menu {
         return price.getValue();
     }
 
-    public MenuGroup getMenuGroup() {
-        return menuGroup;
+    public Long getMenuGroupId() {
+        return menuGroupId;
     }
 
     public List<MenuProduct> getMenuProducts() {

@@ -78,7 +78,7 @@ class OrderServiceTest {
         메뉴그룹_한식 = createMenuGroup(1L, "한식메뉴");
         김치찌개 = createProduct(1L, "김치찌개", 8000);
         김치찌개세트_김치찌개 = createMenuProduct(1L, 김치찌개, 2);
-        메뉴_김치찌개세트 = createMenu(1L, "김치찌개세트", 15000, 메뉴그룹_한식,
+        메뉴_김치찌개세트 = createMenu(1L, "김치찌개세트", 15000, 메뉴그룹_한식.getId(),
                 Arrays.asList(김치찌개세트_김치찌개));
 
         테이블_1 = createOrderTable(1L, null, 4, false);
