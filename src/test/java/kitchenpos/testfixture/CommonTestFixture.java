@@ -3,6 +3,7 @@ package kitchenpos.testfixture;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.order.domain.*;
 import kitchenpos.product.domain.*;
 import kitchenpos.product.dto.ProductRequest;
@@ -19,8 +20,12 @@ public class CommonTestFixture {
         return new ProductRequest(name, price);
     }
 
-    public static MenuGroup createMenuGroup(Long id, String name) {
-        return new MenuGroup(id, name);
+    public static MenuGroup createMenuGroup(String name) {
+        return new MenuGroup(name);
+    }
+
+    public static MenuGroupRequest createMenuGroupRequest(String name) {
+        return new MenuGroupRequest(name);
     }
 
     public static Menu createMenu(Long id, Long menuGroupId, String name, int price, List<MenuProduct> menuProducts) {
