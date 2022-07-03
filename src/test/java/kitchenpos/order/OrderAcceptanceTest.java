@@ -1,28 +1,28 @@
 package kitchenpos.order;
 
-import static kitchenpos.menu.MenuAcceptanceTest.메뉴_생성_요청;
-import static kitchenpos.menu.MenuGroupAcceptanceTest.메뉴_그룹_생성_요청;
-import static kitchenpos.product.ProductAcceptanceTest.상품_생성_요청;
+import static kitchenpos.menu.MenuAcceptanceAPI.메뉴_그룹_생성_요청;
+import static kitchenpos.menu.MenuAcceptanceAPI.메뉴_생성_요청;
+import static kitchenpos.order.OrderAcceptanceAPI.주문_상태_변경;
+import static kitchenpos.order.OrderAcceptanceAPI.주문_생성_요청;
+import static kitchenpos.order.OrderAcceptanceAPI.주문_조회_요청;
+import static kitchenpos.product.ProductAcceptanceAPI.상품_생성_요청;
+import static kitchenpos.table.TableAcceptanceAPI.손님_입장;
+import static kitchenpos.table.TableAcceptanceAPI.테이블_상태_변경_요청;
 import static kitchenpos.table.TableAcceptanceTest.빈자리;
 import static kitchenpos.table.TableAcceptanceTest.사용중;
-import static kitchenpos.table.TableAcceptanceTest.손님_입장;
-import static kitchenpos.table.TableAcceptanceTest.테이블_상태_변경;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.Collections;
-import java.util.List;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,7 +52,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
         양념치킨 = 메뉴_생성_요청("양념치킨", new BigDecimal(18000), 메뉴그룹.getId(), Collections.singletonList(메뉴상품)).as(Menu.class);
 
         주문테이블 = 손님_입장(5, 빈자리).as(OrderTable.class);
-        테이블_상태_변경(주문테이블, 사용중);
+        테이블_상태_변경_요청(주문테이블, 사용중);
 
         주문목록 = new OrderLineItem(양념치킨.getId(), 1L);
     }
@@ -91,22 +91,6 @@ class OrderAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.jsonPath().getString("orderStatus")).isEqualTo(OrderStatus.MEAL.name());
-    }
-
-    public static ExtractableResponse<Response> 주문_생성_요청(Long orderTableId, List<OrderLineItem> orderLineItems) {
-        OrderRequest order = new OrderRequest(orderTableId, orderLineItems);
-
-        return AcceptanceTest.doPost("/api/orders", order);
-    }
-
-    public static ExtractableResponse<Response> 주문_조회_요청() {
-        return AcceptanceTest.doGet("/api/orders");
-    }
-
-    public static ExtractableResponse<Response> 주문_상태_변경(Long orderId, OrderStatus orderStatus) {
-        OrderStatusRequest orderStatusRequest = new OrderStatusRequest(orderStatus);
-
-        return AcceptanceTest.doPut("/api/orders/" + orderId + "/order-status", orderStatusRequest);
     }
 
     public static void 주문_생성됨(ExtractableResponse<Response> response) {

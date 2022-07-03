@@ -1,12 +1,13 @@
 package kitchenpos.product;
 
+import static kitchenpos.product.ProductAcceptanceAPI.상품_생성_요청;
+import static kitchenpos.product.ProductAcceptanceAPI.상품_조회_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.product.dto.ProductRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,16 +45,6 @@ public class ProductAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 상품_생성되어_있음(String name, BigDecimal price) {
         return 상품_생성_요청(name, price);
-    }
-
-    public static ExtractableResponse<Response> 상품_생성_요청(String name, BigDecimal price) {
-        ProductRequest productRequest = new ProductRequest(name, price);
-
-        return AcceptanceTest.doPost("/api/products", productRequest);
-    }
-
-    public static ExtractableResponse<Response> 상품_조회_요청() {
-        return AcceptanceTest.doGet("/api/products");
     }
 
     public static void 상품_생성됨(ExtractableResponse<Response> response) {

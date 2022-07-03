@@ -1,11 +1,12 @@
 package kitchenpos.menu;
 
+import static kitchenpos.menu.MenuAcceptanceAPI.메뉴_그룹_생성_요청;
+import static kitchenpos.menu.MenuAcceptanceAPI.메뉴_그룹_조회_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.menu.domain.MenuGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,16 +44,6 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 메뉴_그룹_생성되어_있음(String name) {
         return 메뉴_그룹_생성_요청(name);
-    }
-
-    public static ExtractableResponse<Response> 메뉴_그룹_생성_요청(String name) {
-        MenuGroup menuGroup = new MenuGroup(name);
-
-        return AcceptanceTest.doPost("/api/menu-groups", menuGroup);
-    }
-
-    public static ExtractableResponse<Response> 메뉴_그룹_조회_요청() {
-        return AcceptanceTest.doGet("/api/menu-groups");
     }
 
     public static void 메뉴_그룹_생성됨(ExtractableResponse<Response> response) {

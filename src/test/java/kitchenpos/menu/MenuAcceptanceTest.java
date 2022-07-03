@@ -1,18 +1,18 @@
 package kitchenpos.menu;
 
+import static kitchenpos.menu.MenuAcceptanceAPI.메뉴_생성_요청;
+import static kitchenpos.menu.MenuAcceptanceAPI.메뉴_조회_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.Collections;
-import java.util.List;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.product.domain.Product;
 import kitchenpos.product.ProductAcceptanceTest;
+import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -56,17 +56,6 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.jsonPath().getList("name")).hasSize(1);
-    }
-
-    public static ExtractableResponse<Response> 메뉴_생성_요청(String name, BigDecimal price, Long menuGroupId,
-                                                         List<MenuProduct> menuProductList) {
-        Menu menu = new Menu(name, price, menuGroupId, menuProductList);
-
-        return AcceptanceTest.doPost("/api/menus", menu);
-    }
-
-    public static ExtractableResponse<Response> 메뉴_조회_요청() {
-        return AcceptanceTest.doGet("/api/menus");
     }
 
     public static void 메뉴_생성됨(ExtractableResponse<Response> response) {

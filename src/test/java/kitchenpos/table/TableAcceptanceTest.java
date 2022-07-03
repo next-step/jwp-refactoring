@@ -1,5 +1,9 @@
 package kitchenpos.table;
 
+import static kitchenpos.table.TableAcceptanceAPI.손님_리스트_조회;
+import static kitchenpos.table.TableAcceptanceAPI.손님_입장;
+import static kitchenpos.table.TableAcceptanceAPI.테이블_상태_변경_요청;
+import static kitchenpos.table.TableAcceptanceAPI.테이블_손님수_변경_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
@@ -52,7 +56,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
         주문테이블 = 손님_입장(0, 빈자리).as(OrderTable.class);
 
         // when
-        ExtractableResponse<Response> response = 테이블_상태_변경(주문테이블, 사용중);
+        ExtractableResponse<Response> response = 테이블_상태_변경_요청(주문테이블, 사용중);
 
         // then
         assertThat(response.jsonPath().getBoolean("empty")).isEqualTo(사용중);
@@ -63,35 +67,13 @@ public class TableAcceptanceTest extends AcceptanceTest {
     void 테이블의_손님_수를_변경한다() {
         // given
         주문테이블 = 손님_입장(0, 빈자리).as(OrderTable.class);
-        테이블_상태_변경(주문테이블, 사용중);
+        테이블_상태_변경_요청(주문테이블, 사용중);
 
         // when
         ExtractableResponse<Response> response = 테이블_손님수_변경_요청(주문테이블, 5);
 
         // then
         assertThat(response.jsonPath().getInt("numberOfGuests")).isEqualTo(주문테이블.getNumberOfGuests());
-    }
-
-    public static ExtractableResponse<Response> 손님_입장(int numberOfGuests, boolean empty) {
-        OrderTable orderTable = new OrderTable(numberOfGuests, empty);
-
-        return AcceptanceTest.doPost("/api/tables", orderTable);
-    }
-
-    public static ExtractableResponse<Response> 손님_리스트_조회() {
-        return AcceptanceTest.doGet("/api/tables");
-    }
-
-    public static ExtractableResponse<Response> 테이블_상태_변경(OrderTable orderTable, boolean empty) {
-        orderTable.setEmpty(empty);
-
-        return AcceptanceTest.doPut("/api/tables/" + orderTable.getId() + "/empty", orderTable);
-    }
-
-    public static ExtractableResponse<Response> 테이블_손님수_변경_요청(OrderTable orderTable, int numberOfGuests) {
-        orderTable.changeNumberOfGuests(numberOfGuests);
-
-        return AcceptanceTest.doPut("/api/tables/" + orderTable.getId() + "/number-of-guests", orderTable);
     }
 
     public static void 빈자리_착석_완료(ExtractableResponse<Response> response) {
