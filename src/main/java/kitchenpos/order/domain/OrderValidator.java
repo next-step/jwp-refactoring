@@ -1,7 +1,8 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.table.domain.OrderTable;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.repository.OrderTableRepository;
 import org.springframework.stereotype.Service;
 
@@ -23,19 +24,18 @@ public class OrderValidator {
         if (order.isEmptyItem()) {
             throw new IllegalArgumentException(ORDER_ITEM_IS_ESSENTIAL);
         }
-        if (!isItemMenuExistsAll(order)) {
-            throw new IllegalArgumentException(MENU_IS_NOT_EXIST);
-        }
+        menuDetails(order);
     }
 
-    private boolean isItemMenuExistsAll(final Order order) {
-        return order.getOrderLineItems().getOrderLineItems().stream()
-                .map(OrderLineItem::getMenuId)
-                .allMatch(this::isMenuExists);
+    private void menuDetails(final Order order) {
+        order.getOrderLineItems().getOrderLineItems()
+                .forEach(this::menuDetail);
     }
 
-    private boolean isMenuExists(Long menuId) {
-        return menuRepository.existsById(menuId);
+    private void menuDetail(OrderLineItem orderLineItem) {
+        Menu menu = menuRepository.findById(orderLineItem.getMenuId())
+                .orElseThrow(() -> new IllegalArgumentException(MENU_IS_NOT_EXIST));
+        orderLineItem.setOrderMenu(new OrderMenu(menu.getName(), menu.getPrice().getValue()));
     }
 
     public void checkOrderTable(final Order order) {

@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.repository.OrderTableRepository;
@@ -28,6 +29,7 @@ class OrderValidatorTest {
     Long orderTableId;
     OrderTable orderTable;
     Long menuId;
+    Menu menu = new Menu("메뉴", 10000, 1L);
 
     @BeforeEach
     void setUp() {
@@ -43,7 +45,7 @@ class OrderValidatorTest {
 
     void setMenu() {
         menuId = 1L;
-        when(menuRepository.existsById(menuId)).thenReturn(true);
+        when(menuRepository.findById(menuId)).thenReturn(Optional.of(menu));
     }
 
     @DisplayName("주문 항목이 없으면 안된다")

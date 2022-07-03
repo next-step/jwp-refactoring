@@ -174,12 +174,14 @@ public class OrderRestController {
 
     static class OrderLineItemResponse {
         private Long seq;
-        private Long menuId;
+        private String name;
+        private long price;
         private long quantity;
 
         public OrderLineItemResponse(OrderLineItem orderLineItem) {
             seq = orderLineItem.getSeq();
-            menuId = orderLineItem.getMenuId();
+            name = orderLineItem.getOrderMenu().getName();
+            price = orderLineItem.getOrderMenu().getPrice();
             quantity = orderLineItem.getQuantity();
         }
 
@@ -191,12 +193,20 @@ public class OrderRestController {
             this.seq = seq;
         }
 
-        public Long getMenuId() {
-            return menuId;
+        public String getName() {
+            return name;
         }
 
-        public void setMenuId(Long menuId) {
-            this.menuId = menuId;
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public long getPrice() {
+            return price;
+        }
+
+        public void setPrice(long price) {
+            this.price = price;
         }
 
         public long getQuantity() {
