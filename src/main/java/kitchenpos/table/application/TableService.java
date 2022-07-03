@@ -16,12 +16,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TableService {
-    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
+    private final TableValidator tableValidator;
 
-    public TableService(OrderRepository orderRepository, OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
+    public TableService(OrderTableRepository orderTableRepository,
+                        TableValidator tableValidator) {
         this.orderTableRepository = orderTableRepository;
+        this.tableValidator = tableValidator;
     }
 
     @Transactional
@@ -42,10 +43,7 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId) {
         final OrderTable persistOrderTable = getOrderTable(orderTableId);
 
-        if (orderRepository.existNotCompletionOrderTable(orderTableId)) {
-            throw new NotCompletionStatusException();
-        }
-
+        tableValidator.validateNotCompletionOrderTable(orderTableId);
         persistOrderTable.validateExistGroupingTable();
         persistOrderTable.changeEmpty();
         return persistOrderTable.toOrderTableResponse();
