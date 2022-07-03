@@ -5,16 +5,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
 import java.util.List;
-import kitchenpos.domain.Product;
-import kitchenpos.domain.ProductRepository;
-import kitchenpos.dto.ProductRequest;
-import kitchenpos.dto.ProductResponse;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-class ProductServiceTest extends ServiceTest{
+class ProductServiceTest extends ServiceTest {
 
     @Autowired
     private ProductRepository productRepository;
@@ -22,8 +23,8 @@ class ProductServiceTest extends ServiceTest{
     @Autowired
     private ProductService productService;
 
-   private Product 짬뽕;
-   private Product 짜장;
+    private Product 짬뽕;
+    private Product 짜장;
 
     @BeforeEach
     void before() {

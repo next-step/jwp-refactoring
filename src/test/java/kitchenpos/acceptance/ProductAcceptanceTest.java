@@ -8,7 +8,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.stream.Stream;
-import kitchenpos.dto.ProductRequest;
+import kitchenpos.product.dto.ProductRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
@@ -16,7 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 @DisplayName("상품 관련 인수테스트")
-public class ProductAcceptanceTest extends AcceptanceTest{
+public class ProductAcceptanceTest extends AcceptanceTest {
 
     static private final String PRODUCT_URL = "/api/products";
 

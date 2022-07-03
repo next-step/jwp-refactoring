@@ -9,23 +9,25 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuGroupRepository;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.MenuProductRepository;
-import kitchenpos.domain.MenuRepository;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderRepository;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.OrderTableRepository;
-import kitchenpos.domain.Product;
-import kitchenpos.domain.ProductRepository;
-import kitchenpos.dto.OrderLineItemRequest;
-import kitchenpos.dto.OrderRequest;
-import kitchenpos.dto.OrderResponse;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProductRepository;
+import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderRepository;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.ChangeOrderStatusRequest;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -68,20 +70,20 @@ class OrderServiceTest extends ServiceTest {
     @BeforeEach
     void before() {
         중식 = menuGroupRepository.save(new MenuGroup("중식"));
-        중식_메뉴 = menuRepository.save(new Menu("중식_메뉴", BigDecimal.valueOf(3000), 중식));
+        중식_메뉴 = menuRepository.save(new Menu("중식_메뉴", BigDecimal.valueOf(3000), 중식.getId()));
 
         짬뽕 = productRepository.save(new Product("짬뽕", BigDecimal.valueOf(1000)));
         짜장 = productRepository.save(new Product("짜장", BigDecimal.valueOf(2000)));
 
-        중식_메뉴_짬뽕 = menuProductRepository.save(new MenuProduct(중식_메뉴, 짬뽕, 3));
-        중식_메뉴_짜장 = menuProductRepository.save(new MenuProduct(중식_메뉴, 짜장, 1));
+        중식_메뉴_짬뽕 = menuProductRepository.save(new MenuProduct(중식_메뉴, 짬뽕.getId(), 3));
+        중식_메뉴_짜장 = menuProductRepository.save(new MenuProduct(중식_메뉴, 짜장.getId(), 1));
 
         중식_메뉴.addMenuProduct(Arrays.asList(중식_메뉴_짬뽕, 중식_메뉴_짜장));
 
         주문_테이블 = orderTableRepository.save(new OrderTable(1, false));
         빈주문_테이블 = orderTableRepository.save(new OrderTable(0, true));
 
-        중식_주문_항목 = new OrderLineItem(중식_메뉴.getId(), 1);
+        중식_주문_항목 = new OrderLineItem(중식_메뉴.getId(), 중식_메뉴.getName(), 중식_메뉴.getPrice().longValue(), 1L);
 
         주문1 = orderRepository.save(new Order(주문_테이블.getId(), 중식_주문_항목));
     }
@@ -89,7 +91,8 @@ class OrderServiceTest extends ServiceTest {
 
     private List<OrderLineItemRequest> toOrderLineItemRequests(List<OrderLineItem> orderLineItems) {
         return orderLineItems.stream().
-                map(o -> OrderLineItemRequest.of(o.getMenuId(), o.getQuantity().getValue()))
+                map(o -> OrderLineItemRequest.of(o.getMenuId(), o.getMenuName().getValue(), o.getMenuPrice().getValue()
+                        .longValue(), o.getQuantity().getValue()))
                 .collect(Collectors.toList());
     }
 
@@ -97,7 +100,7 @@ class OrderServiceTest extends ServiceTest {
     @DisplayName("생성하려는 주문에서 주문 항목의 메뉴가 시스템에 등록 되어 있지 않으면 주문을 생성 할 수 없다.")
     void createFailWithMenuNotExistTest() {
         //given
-        OrderLineItem orderLineItem = new OrderLineItem(100L, 100);
+        OrderLineItem orderLineItem = new OrderLineItem(100L, "썩은짜장", 100L, 100L);
         Order order = new Order(주문_테이블.getId(), orderLineItem);
 
         //when & then
@@ -116,7 +119,7 @@ class OrderServiceTest extends ServiceTest {
         //when & then
         assertThatThrownBy(
                 () -> orderService.create(
-                        OrderRequest.of(orderTable.getId(), toOrderLineItemRequests(주문1.getOrderLineItems())))
+                        OrderRequest.of(100L, toOrderLineItemRequests(주문1.getOrderLineItems())))
         ).isInstanceOf(NoSuchElementException.class);
     }
 
@@ -161,7 +164,8 @@ class OrderServiceTest extends ServiceTest {
     void changeOrderStatusFailWithOrderNotExistTest() {
         //when & then
         assertThatThrownBy(
-                () -> orderService.changeOrderStatus(1000L, OrderRequest.of(주문_테이블.getId(), OrderStatus.MEAL.name()))
+                () -> orderService.changeOrderStatus(1000L,
+                        ChangeOrderStatusRequest.of(주문_테이블.getId(), OrderStatus.MEAL.name()))
         ).isInstanceOf(NoSuchElementException.class);
     }
 
@@ -169,11 +173,13 @@ class OrderServiceTest extends ServiceTest {
     @DisplayName("주문이 완료 상태이면 변경 할 수 없다.")
     void changeOrderStatusFailWithCompleteStatusTest() {
         //given
-        orderService.changeOrderStatus(주문1.getId(), OrderRequest.of(주문_테이블.getId(), OrderStatus.COMPLETION.name()));
+        orderService.changeOrderStatus(주문1.getId(),
+                ChangeOrderStatusRequest.of(주문_테이블.getId(), OrderStatus.COMPLETION.name()));
 
         //when & then
         assertThatThrownBy(
-                () -> orderService.changeOrderStatus(주문1.getId(), OrderRequest.of(주문_테이블.getId(), OrderStatus.MEAL.name()))
+                () -> orderService.changeOrderStatus(주문1.getId(),
+                        ChangeOrderStatusRequest.of(주문_테이블.getId(), OrderStatus.MEAL.name()))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -182,7 +188,7 @@ class OrderServiceTest extends ServiceTest {
     void changeOrderStatusTest() {
         //when
         OrderResponse orderResponse = orderService.changeOrderStatus(주문1.getId(),
-                OrderRequest.of(주문_테이블.getId(), OrderStatus.MEAL.name()));
+                ChangeOrderStatusRequest.of(주문_테이블.getId(), OrderStatus.MEAL.name()));
 
         //then
         assertThat(orderResponse.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name());

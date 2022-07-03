@@ -2,7 +2,11 @@ package kitchenpos.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Arrays;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,8 +21,9 @@ class OrderTableTest {
     void before() {
         orderTable1 = new OrderTable(0, true);
         orderTable2 = new OrderTable(0, true);
-        tableGroup = new TableGroup(Arrays.asList(orderTable1, orderTable2));
+        tableGroup = new TableGroup();
     }
+
     @Test
     @DisplayName("주문 테이블에 단체 지정을 할 수 잇다.")
     void attachTest() {
@@ -26,10 +31,10 @@ class OrderTableTest {
         OrderTable orderTable = new OrderTable(0, true);
 
         //when
-        orderTable.attachToTableGroup(tableGroup);
+        orderTable.attachToTableGroup(10L);
 
         //then
-        assertThat(orderTable.getTableGroup()).isNotNull();
+        assertThat(orderTable.getTableGroupId()).isNotNull();
     }
 
     @Test
@@ -57,6 +62,6 @@ class OrderTableTest {
         nonEmptyTable.clear(order);
 
         //then
-        assertThat(nonEmptyTable.isEmpty()).isTrue();
+        assertThat(nonEmptyTable.isEmptyTable()).isTrue();
     }
 }

@@ -8,23 +8,24 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuGroupRepository;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.MenuProductRepository;
-import kitchenpos.domain.MenuRepository;
-import kitchenpos.domain.Product;
-import kitchenpos.domain.ProductRepository;
-import kitchenpos.dto.MenuProductRequest;
-import kitchenpos.dto.MenuRequest;
-import kitchenpos.dto.MenuResponse;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menugroup.domain.MenuGroupRepository;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProductRepository;
+import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-class MenuServiceTest extends ServiceTest{
+class MenuServiceTest extends ServiceTest {
 
     @Autowired
     private MenuRepository menuRepository;
@@ -51,13 +52,13 @@ class MenuServiceTest extends ServiceTest{
     @BeforeEach
     void before() {
         중식 = menuGroupRepository.save(new MenuGroup("중식"));
-        중식메뉴 = menuRepository.save(new Menu( "메뉴1", BigDecimal.valueOf(3000), 중식));
+        중식메뉴 = menuRepository.save(new Menu("메뉴1", BigDecimal.valueOf(3000), 중식.getId()));
 
         짬뽕 = productRepository.save(new Product("상품1", BigDecimal.valueOf(1000)));
         짜장 = productRepository.save(new Product("상품2", BigDecimal.valueOf(2000)));
 
-        중식_메뉴_짬뽕 = menuProductRepository.save(new MenuProduct( 중식메뉴, 짬뽕, 3));
-        중식_메뉴_짜장 = menuProductRepository.save(new MenuProduct( 중식메뉴, 짜장, 1));
+        중식_메뉴_짬뽕 = menuProductRepository.save(new MenuProduct(중식메뉴, 짬뽕.getId(), 3));
+        중식_메뉴_짜장 = menuProductRepository.save(new MenuProduct(중식메뉴, 짜장.getId(), 1));
 
         중식메뉴.addMenuProduct(Arrays.asList(중식_메뉴_짬뽕, 중식_메뉴_짜장));
     }
@@ -67,8 +68,8 @@ class MenuServiceTest extends ServiceTest{
     void createTestFailWithMenuGroupNotExist() {
 
         //given
-        MenuGroup wrongMenuGroup = new MenuGroup(1000L,"wrong menu group");
-        Menu wrongMenu = new Menu("wrong menu", BigDecimal.valueOf(1000), wrongMenuGroup);
+        MenuGroup wrongMenuGroup = new MenuGroup(1000L, "wrong menu group");
+        Menu wrongMenu = new Menu("wrong menu", BigDecimal.valueOf(1000), wrongMenuGroup.getId());
 
         //when & then
         assertThatThrownBy(
@@ -80,8 +81,8 @@ class MenuServiceTest extends ServiceTest{
     @DisplayName("생성 하려는 메뉴의 메뉴 상품이 시스템에 등록 되어 있지 않으면 추가 할 수 없다.")
     void createTestFailWithMenuProductNotExist() {
         //given
-        Product 잘못된_상품 = new Product(45L,"잘못된 상품", BigDecimal.valueOf(10));
-        MenuProduct 잘못된_메뉴_상품 = new MenuProduct(중식메뉴, 잘못된_상품, 10);
+        Product 잘못된_상품 = new Product(45L, "잘못된 상품", BigDecimal.valueOf(10));
+        MenuProduct 잘못된_메뉴_상품 = new MenuProduct(중식메뉴, 잘못된_상품.getId(), 10);
 
         //when & then
         assertThatThrownBy(
@@ -90,16 +91,16 @@ class MenuServiceTest extends ServiceTest{
                         중식메뉴.getPrice().longValue(),
                         중식.getId(),
                         Arrays.asList(
-                                MenuProductRequest.of(잘못된_메뉴_상품.getProduct().getId(), 잘못된_메뉴_상품.getQuantity())
+                                MenuProductRequest.of(잘못된_상품.getId(), 잘못된_메뉴_상품.getQuantity())
                         )
-        ))).isInstanceOf(NoSuchElementException.class);
+                ))).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("생성 하려는 메뉴 가격이 전체 메뉴상품의 전체 금액(가격 * 수량의 총합)보다 클 수 없다.")
     void createTestFailWithAmount() {
         //given;
-        Menu 잘못된_메뉴 = new Menu("잘못된 메뉴", BigDecimal.valueOf(100_000), 중식);
+        Menu 잘못된_메뉴 = new Menu("잘못된 메뉴", BigDecimal.valueOf(100_000), 중식.getId());
 
         //when & then
         assertThatThrownBy(
@@ -108,8 +109,8 @@ class MenuServiceTest extends ServiceTest{
                         잘못된_메뉴.getPrice().longValue(),
                         중식.getId(),
                         Arrays.asList(
-                                MenuProductRequest.of(중식_메뉴_짬뽕.getProduct().getId(), 중식_메뉴_짬뽕.getQuantity()),
-                                MenuProductRequest.of(중식_메뉴_짜장.getProduct().getId(), 중식_메뉴_짜장.getQuantity()))))
+                                MenuProductRequest.of(짬뽕.getId(), 중식_메뉴_짬뽕.getQuantity()),
+                                MenuProductRequest.of(짜장.getId(), 중식_메뉴_짜장.getQuantity()))))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -123,8 +124,8 @@ class MenuServiceTest extends ServiceTest{
                         중식메뉴.getPrice().longValue(),
                         중식.getId(),
                         Arrays.asList(
-                                MenuProductRequest.of(중식_메뉴_짬뽕.getProduct().getId(), 중식_메뉴_짬뽕.getQuantity()),
-                                MenuProductRequest.of(중식_메뉴_짜장.getProduct().getId(), 중식_메뉴_짜장.getQuantity())))
+                                MenuProductRequest.of(짬뽕.getId(), 중식_메뉴_짬뽕.getQuantity()),
+                                MenuProductRequest.of(짜장.getId(), 중식_메뉴_짜장.getQuantity())))
         );
 
         //then

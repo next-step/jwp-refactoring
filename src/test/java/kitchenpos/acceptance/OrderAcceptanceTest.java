@@ -14,16 +14,16 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.dto.MenuGroupResponse;
-import kitchenpos.dto.MenuProductRequest;
-import kitchenpos.dto.MenuResponse;
-import kitchenpos.dto.OrderLineItemRequest;
-import kitchenpos.dto.OrderRequest;
-import kitchenpos.dto.OrderResponse;
-import kitchenpos.dto.OrderTableResponse;
-import kitchenpos.dto.ProductResponse;
-import org.assertj.core.util.Lists;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.ChangeOrderStatusRequest;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
@@ -52,7 +52,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                             Arrays.asList(MenuProductRequest.of(짬뽕.getId(), 1L))).as(MenuResponse.class);
                 }),
                 dynamicTest("주문 생성", () -> {
-                    ExtractableResponse<Response> 주문_생성_요청 = 주문_생성_하기(테이블.getId(), 중식_메뉴.getId(), 1L);
+                    ExtractableResponse<Response> 주문_생성_요청 = 주문_생성_하기(테이블.getId(), 중식_메뉴.getId(), 중식_메뉴.getName(),
+                            중식_메뉴.getPrice().longValue(), 1L);
                     주문_생성됨(주문_생성_요청);
                     주문 = 주문_생성_요청.as(OrderResponse.class);
                 }),
@@ -71,9 +72,10 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    public static ExtractableResponse<Response> 주문_생성_하기(Long tableId, Long menuId, Long quantity) {
+    public static ExtractableResponse<Response> 주문_생성_하기(Long tableId, Long menuId, String menuName, Long menuPrice,
+                                                         Long quantity) {
         return 주문_생성_요청(tableId,
-                Lists.newArrayList(OrderLineItemRequest.of(menuId, quantity)));
+                Arrays.asList(OrderLineItemRequest.of(menuId, menuName, menuPrice, quantity)));
     }
 
     public static void 주문_생성됨(ExtractableResponse<Response> response) {
@@ -111,7 +113,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(OrderRequest.of(orderTableId, status.name()))
+                .body(ChangeOrderStatusRequest.of(orderTableId, status.name()))
                 .when().put(ORDER_URL + orderTableId + "/order-status")
                 .then().log().all().
                 extract();
