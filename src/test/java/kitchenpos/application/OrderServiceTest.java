@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order;
@@ -19,6 +18,7 @@ import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.repository.MenuRepository;
 import kitchenpos.repository.OrderLineItemRepository;
+import kitchenpos.repository.OrderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,8 +29,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
-    @Mock
-    OrderDao orderDao;
+
     @Mock
     OrderTableDao orderTableDao;
 
@@ -38,6 +37,8 @@ class OrderServiceTest {
     MenuRepository menuRepository;
     @Mock
     OrderLineItemRepository orderLineItemRepository;
+    @Mock
+    OrderRepository orderRepository;
 
     @InjectMocks
     OrderService orderService;
@@ -71,7 +72,6 @@ class OrderServiceTest {
         order.setOrderLineItems(orderLineItems);
 
         given(menuRepository.countByIdIn(any(List.class))).willReturn(3L);
-//        given(menuDao.countByIdIn(any(List.class))).willReturn(3L);
         assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -109,9 +109,8 @@ class OrderServiceTest {
         order.setOrderTableId(orderTable.getId());
 
         given(menuRepository.countByIdIn(any(List.class))).willReturn((long) orderLineItems.size());
-//        given(menuDao.countByIdIn(any(List.class))).willReturn((long) orderLineItems.size());
         given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
-        given(orderDao.save(order)).willReturn(order);
+        given(orderRepository.save(order)).willReturn(order);
 
         Order savedOrder = orderService.create(order);
         assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
@@ -123,7 +122,7 @@ class OrderServiceTest {
         Order orderCooking = new Order(1L, 1L, OrderStatus.COOKING, LocalDateTime.now(), null);
         Order orderMeal = new Order(2L, 2L, OrderStatus.MEAL, LocalDateTime.now(), null);
 
-        given(orderDao.findAll()).willReturn(Arrays.asList(orderCooking, orderMeal));
+        given(orderRepository.findAll()).willReturn(Arrays.asList(orderCooking, orderMeal));
 
         assertThat(orderService.list()).contains(orderCooking, orderMeal);
     }
@@ -131,7 +130,7 @@ class OrderServiceTest {
     @Test
     @DisplayName("존재하지 않는 주문 상태 변경 시도 시 에러 반환")
     public void changeStatusNotExitsOrder() {
-        given(orderDao.findById(any())).willReturn(Optional.empty());
+        given(orderRepository.findById(any())).willReturn(Optional.empty());
 
         order.setOrderStatus(OrderStatus.MEAL);
 
@@ -144,7 +143,7 @@ class OrderServiceTest {
     public void changeStatusInCompletion() {
         order.setOrderStatus(OrderStatus.COMPLETION);
 
-        given(orderDao.findById(order.getId())).willReturn(Optional.of(order));
+        given(orderRepository.findById(order.getId())).willReturn(Optional.of(order));
 
         assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), new Order())).isInstanceOf(
                 IllegalArgumentException.class);
@@ -158,7 +157,7 @@ class OrderServiceTest {
         Order changeOrder = new Order();
         changeOrder.setOrderStatus(OrderStatus.MEAL);
 
-        given(orderDao.findById(order.getId())).willReturn(Optional.of(order));
+        given(orderRepository.findById(order.getId())).willReturn(Optional.of(order));
 
         assertThat(orderService.changeOrderStatus(order.getId(), changeOrder).getOrderStatus()).isEqualTo(
                 changeOrder.getOrderStatus());

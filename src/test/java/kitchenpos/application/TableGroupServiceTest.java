@@ -10,11 +10,11 @@ import static org.mockito.BDDMockito.given;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.repository.OrderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,13 +27,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class TableGroupServiceTest {
 
     @Mock
-    OrderDao orderDao;
-
-    @Mock
     OrderTableDao orderTableDao;
 
     @Mock
     TableGroupDao tableGroupDao;
+
+    @Mock
+    OrderRepository orderRepository;
 
     @InjectMocks
     TableGroupService tableGroupService;
@@ -105,7 +105,6 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("이미 단체 지정된 테이블은 단체로 지정 불가")
     public void createAlreadyInGroup() {
-//        orderTable1.setTableGroupId(2L);
         orderTable1.setTableGroup(tableGroup);
 
         assertThatThrownBy(() -> tableGroupService.create(tableGroup)).isInstanceOf(IllegalArgumentException.class);
@@ -128,7 +127,7 @@ class TableGroupServiceTest {
     public void cookingMealChangeStatus() {
 
         given(orderTableDao.findAllByTableGroupId(any())).willReturn(Arrays.asList(orderTable1, orderTable2));
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(orderTable1.getId(), orderTable2.getId()),
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(orderTable1.getId(), orderTable2.getId()),
                 Arrays.asList(COOKING.name(), MEAL.name()))).willReturn(true);
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId())).isInstanceOf(
                 IllegalArgumentException.class);
@@ -141,12 +140,10 @@ class TableGroupServiceTest {
         orderTable2.setEmpty(true);
 
         given(orderTableDao.findAllByTableGroupId(any())).willReturn(Arrays.asList(orderTable1, orderTable2));
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(false);
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(false);
 
         tableGroupService.ungroup(tableGroup.getId());
         assertThat(orderTable1.getTableGroup()).isNull();
-//        assertThat(orderTable1.getTableGroupId()).isNull();
         assertThat(orderTable2.getTableGroup()).isNull();
-//        assertThat(orderTable2.getTableGroupId()).isNull();
     }
 }

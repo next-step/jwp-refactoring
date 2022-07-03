@@ -9,11 +9,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.repository.OrderRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,10 +27,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class TableServiceTest {
 
     @Mock
-    OrderDao orderDao;
+    OrderTableDao orderTableDao;
 
     @Mock
-    OrderTableDao orderTableDao;
+    OrderRepository orderRepository;
 
     @InjectMocks
     TableService tableService;
@@ -80,7 +80,6 @@ class TableServiceTest {
     @DisplayName("단체로 지정된 테이블의 자리 착석여부 변경시 예외처리")
     public void changeEmtpyAlreadyInTableGroup() {
         orderTable.setEmpty(true);
-//        orderTable.setTableGroupId(2L);
         orderTable.setTableGroup(new TableGroup());
 
         OrderTable changeOrderTable = new OrderTable();
@@ -97,7 +96,6 @@ class TableServiceTest {
     public void changeEmtpyInCookingOrMeal() {
         orderTable.setEmpty(true);
         orderTable.setTableGroup(new TableGroup());
-//        orderTable.setTableGroupId(2L);
 
         OrderTable changeOrderTable = new OrderTable();
         changeOrderTable.setEmpty(false);
@@ -119,7 +117,7 @@ class TableServiceTest {
         changeOrderTable.setEmpty(false);
 
         given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(orderTable.getId(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(false);
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTable.getId(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(false);
         given(orderTableDao.save(orderTable)).willReturn(changeOrderTable);
 
         assertThat(tableService.changeEmpty(orderTable.getId(), changeOrderTable).isEmpty()).isEqualTo(changeOrderTable.isEmpty());
