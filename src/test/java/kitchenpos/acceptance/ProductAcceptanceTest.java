@@ -6,13 +6,14 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.AcceptanceTest;
+import kitchenpos.menu.dto.MenuGroupRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-@DisplayName("메뉴 그룹을 관리한다.")
-public class MenuGroupAcceptanceTest extends AcceptanceTest {
+@DisplayName("상품을 관리한다.")
+public class ProductAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("메뉴 그룹을 생성한다.")
