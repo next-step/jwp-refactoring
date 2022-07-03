@@ -8,18 +8,18 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
-import kitchenpos.menus.menu.domain.Menu;
 import kitchenpos.menus.menu.application.MenuService;
-import kitchenpos.menus.menugroup.domain.MenuGroup;
-import kitchenpos.menus.menugroup.domain.MenuGroupRepository;
+import kitchenpos.menus.menu.domain.Menu;
 import kitchenpos.menus.menu.domain.MenuProduct;
 import kitchenpos.menus.menu.domain.MenuProductRepository;
 import kitchenpos.menus.menu.domain.MenuRepository;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.menus.menu.dto.MenuProductRequest;
 import kitchenpos.menus.menu.dto.MenuRequest;
 import kitchenpos.menus.menu.dto.MenuResponse;
+import kitchenpos.menus.menugroup.domain.MenuGroup;
+import kitchenpos.menus.menugroup.domain.MenuGroupRepository;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,9 +37,6 @@ class MenuServiceTest extends ServiceTest {
     private MenuProductRepository menuProductRepository;
 
     @Autowired
-    private ProductRepository productRepository;
-
-    @Autowired
     private MenuService menuService;
 
     private Menu 중식메뉴;
@@ -50,7 +47,7 @@ class MenuServiceTest extends ServiceTest {
     private Product 짜장;
 
     @BeforeEach
-    void before() {
+    void before(@Autowired ProductRepository productRepository) {
         중식 = menuGroupRepository.save(new MenuGroup("중식"));
         중식메뉴 = menuRepository.save(new Menu("메뉴1", BigDecimal.valueOf(3000), 중식.getId()));
 
