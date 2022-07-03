@@ -15,8 +15,7 @@ import java.util.Collections;
 import static kitchenpos.common.domain.PriceTest.가격_생성;
 import static kitchenpos.menu.MenuGenerator.*;
 import static kitchenpos.menu.domain.QuantityTest.수량_생성;
-import static kitchenpos.order.OrderGenerator.주문_물품_생성;
-import static kitchenpos.order.OrderGenerator.주문_생성;
+import static kitchenpos.order.OrderGenerator.*;
 import static kitchenpos.product.ProductGenerator.상품_생성;
 import static kitchenpos.table.TableGenerator.주문_테이블_생성;
 import static kitchenpos.table.domain.NumberOfGuestsTest.손님_수_생성;
@@ -32,14 +31,15 @@ public class OrderTest {
     @DisplayName("주문 생성 시 주문 물품이 포함되어 있지 않으면 예외가 발생해야 한다")
     @Test
     void createOrderByNotIncludeOrderItemsTest() {
-        assertThatIllegalArgumentException().isThrownBy(() -> 주문_생성(주문_테이블, Collections.emptyList()));
+        assertThatIllegalArgumentException().isThrownBy(() -> 주문_생성(주문_테이블, 주문_물품_목록_생성()));
     }
 
     @DisplayName("정상 상태로 주문을 생성하면 정상 생성되어야 한다")
     @Test
     void createOrderTest() {
         OrderLineItem 주문_물품 = 주문_물품_생성(메뉴, 1);
-        assertThatNoException().isThrownBy(() -> 주문_생성(주문_테이블, Collections.singletonList(주문_물품)));
+        주문_테이블.updateEmpty(false, OrderStatus.COMPLETION);
+        assertThatNoException().isThrownBy(() -> 주문_생성(주문_테이블, 주문_물품_목록_생성(주문_물품)));
     }
 
     @DisplayName("완료 상태의 주문의 상태를 변경하면 예외가 발생해야 한다")
@@ -48,7 +48,8 @@ public class OrderTest {
     void orderChangeStatusByCompletionStateTest(OrderStatus orderStatus) {
         // given
         OrderLineItem 주문_물품 = 주문_물품_생성(메뉴, 1);
-        Order 주문 = 주문_생성(주문_테이블, Collections.singletonList(주문_물품));
+        주문_테이블.updateEmpty(false, OrderStatus.COMPLETION);
+        Order 주문 = 주문_생성(주문_테이블, 주문_물품_목록_생성(주문_물품));
         주문.changeOrderStatus(OrderStatus.COMPLETION);
 
         // then
@@ -61,7 +62,8 @@ public class OrderTest {
     void orderChangeStatusTest(OrderStatus orderStatus) {
         // given
         OrderLineItem 주문_물품 = 주문_물품_생성(메뉴, 1);
-        Order 주문 = 주문_생성(주문_테이블, Collections.singletonList(주문_물품));
+        주문_테이블.updateEmpty(false, OrderStatus.COMPLETION);
+        Order 주문 = 주문_생성(주문_테이블, 주문_물품_목록_생성(주문_물품));
 
         // when
         주문.changeOrderStatus(orderStatus);

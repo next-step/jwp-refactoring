@@ -6,11 +6,13 @@ import kitchenpos.Acceptance.utils.RestAssuredRequest;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderCreateRequest;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.table.domain.OrderTable;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -20,12 +22,16 @@ import static kitchenpos.menu.domain.QuantityTest.수량_생성;
 public class OrderGenerator {
     private static final String PATH = "/api/orders";
 
-    public static Order 주문_생성(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+    public static Order 주문_생성(OrderTable orderTable, OrderLineItems orderLineItems) {
         return new Order(orderTable, orderLineItems);
     }
 
     public static OrderLineItem 주문_물품_생성(Menu menu, long quantity) {
         return new OrderLineItem(menu, 수량_생성(quantity));
+    }
+
+    public static OrderLineItems 주문_물품_목록_생성(OrderLineItem... orderLineItems) {
+        return new OrderLineItems(Arrays.asList(orderLineItems));
     }
 
     public static OrderCreateRequest 주문_생성_요청(Long orderTable, List<OrderLineItemRequest> orderLineItems) {

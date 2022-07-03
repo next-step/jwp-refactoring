@@ -34,6 +34,7 @@ public class OrderResponse {
 
     public static OrderResponse from(Order order) {
         List<OrderLineItemResponse> orderLineItemResponses = order.getOrderLineItems()
+                .getValue()
                 .stream()
                 .map(OrderLineItemResponse::from)
                 .collect(Collectors.toList());

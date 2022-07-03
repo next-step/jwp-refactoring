@@ -4,12 +4,8 @@ import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.Menus;
 import kitchenpos.menu.domain.Quantity;
-import kitchenpos.order.dao.OrderLineItemRepository;
 import kitchenpos.order.dao.OrderRepository;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.Orders;
+import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderCreateRequest;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
@@ -17,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -38,17 +35,8 @@ public class OrderService {
     @Transactional
     public Order create(final OrderCreateRequest request) {
         OrderTable orderTable = tableService.getOrderTable(request.getOrderTable());
-        Menus menus = menuService.findMenusInIds(request.getMenus());
-
-        validateOrderCreate(request, orderTable, menus);
-
-        Order order = request.of(orderTable, orderLineItemRequest -> {
-            Menu menu = menus.findMenuById(orderLineItemRequest.getMenu());
-            Quantity quantity = new Quantity(orderLineItemRequest.getQuantity());
-
-            return new OrderLineItem(menu, quantity);
-        });
-        order.prepareForSave();
+        OrderLineItems orderLineItems = convertOrderLineItemsByRequest(request);
+        Order order = request.of(orderTable, orderLineItems);
 
         return orderRepository.save(order);
     }
@@ -79,13 +67,21 @@ public class OrderService {
         return orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTables, orderStatuses);
     }
 
-    private void validateOrderCreate(final OrderCreateRequest request, final OrderTable orderTable, Menus menus) {
-        if (menus.isNotAllContainIds(request.getMenus())) {
-            throw new IllegalArgumentException("주문에 저장되지 않은 메뉴가 존재합니다.");
-        }
+    private OrderLineItems convertOrderLineItemsByRequest(final OrderCreateRequest orderCreateRequest) {
+        Menus menus = menuService.findMenusInIds(orderCreateRequest.getMenus());
 
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException("빈 자리의 테이블에 주문을 할 수 없습니다.");
-        }
+        orderCreateRequest.checkAllMenuIsExist(menus);
+
+        List<OrderLineItem> orderLineItems = orderCreateRequest.getOrderLineItems()
+                .stream()
+                .map(request -> {
+                    Menu menu = menus.findMenuById(request.getMenu());
+                    Quantity quantity = new Quantity(request.getQuantity());
+
+                    return new OrderLineItem(menu, quantity);
+                })
+                .collect(Collectors.toList());
+
+        return new OrderLineItems(orderLineItems);
     }
 }

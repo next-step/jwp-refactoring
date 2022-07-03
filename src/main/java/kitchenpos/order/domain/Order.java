@@ -1,14 +1,9 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.table.domain.OrderTable;
-import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "orders")
@@ -25,27 +20,25 @@ public class Order {
 
     private LocalDateTime orderedTime;
 
-    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<OrderLineItem> orderLineItems = new ArrayList<>();
+    @Embedded
+    private OrderLineItems orderLineItems = new OrderLineItems();
 
     protected Order() {}
 
-    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
-        checkValidation(orderLineItems);
+    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, OrderLineItems orderLineItems) {
+        checkValidation(orderTable, orderLineItems);
 
         this.id = id;
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = LocalDateTime.now();
-        this.orderLineItems.addAll(orderLineItems);
+        this.orderLineItems.addOrderLineItems(orderLineItems);
+
+        this.orderLineItems.associateOrder(this);
     }
 
-    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
+    public Order(OrderTable orderTable, OrderLineItems orderLineItems) {
         this(null, orderTable, OrderStatus.COOKING, orderLineItems);
-    }
-
-    public void prepareForSave() {
-        this.orderLineItems.forEach(orderLineItem -> orderLineItem.prepareForSave(this));
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
@@ -70,13 +63,16 @@ public class Order {
         return orderedTime;
     }
 
-    public List<OrderLineItem> getOrderLineItems() {
+    public OrderLineItems getOrderLineItems() {
         return orderLineItems;
     }
 
-    private void checkValidation(List<OrderLineItem> orderLineItems) {
-        if (CollectionUtils.isEmpty(orderLineItems)) {
+    private void checkValidation(OrderTable orderTable, OrderLineItems orderLineItems) {
+        if (orderLineItems.isEmpty()) {
             throw new IllegalArgumentException("주문에 주문 목록이 존재하지 않습니다.");
+        }
+        if (orderTable == null || orderTable.isEmpty()) {
+            throw new IllegalArgumentException("빈 자리의 테이블에 주문을 할 수 없습니다.");
         }
     }
 

@@ -1,12 +1,12 @@
 package kitchenpos.order.dto;
 
+import kitchenpos.menu.domain.Menus;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.table.domain.OrderTable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class OrderCreateRequest {
@@ -20,11 +20,7 @@ public class OrderCreateRequest {
         this.orderLineItems.addAll(orderLineItems);
     }
 
-    public Order of(OrderTable orderTable, Function<OrderLineItemRequest, OrderLineItem> converter) {
-        List<OrderLineItem> orderLineItems = this.orderLineItems.stream()
-                .map(converter)
-                .collect(Collectors.toList());
-
+    public Order of(OrderTable orderTable, OrderLineItems orderLineItems) {
         return new Order(orderTable, orderLineItems);
     }
 
@@ -40,5 +36,11 @@ public class OrderCreateRequest {
         return orderLineItems.stream()
                 .map(OrderLineItemRequest::getMenu)
                 .collect(Collectors.toList());
+    }
+
+    public void checkAllMenuIsExist(final Menus menus) {
+        if (menus.isNotAllContainIds(this.getMenus())) {
+            throw new IllegalArgumentException("주문에 저장되지 않은 메뉴가 존재합니다.");
+        }
     }
 }

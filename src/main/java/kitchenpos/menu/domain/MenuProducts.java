@@ -2,6 +2,7 @@ package kitchenpos.menu.domain;
 
 import kitchenpos.common.domain.Price;
 import kitchenpos.menu.dto.MenuProductResponse;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -35,7 +36,7 @@ public class MenuProducts {
     }
 
     public boolean isEmpty() {
-        return this.value.size() == 0;
+        return CollectionUtils.isEmpty(this.value);
     }
 
     public boolean isNotSameTotalPriceByPrice(Price price) {

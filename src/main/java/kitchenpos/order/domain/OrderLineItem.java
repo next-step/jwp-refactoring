@@ -33,10 +33,6 @@ public class OrderLineItem {
         this(null, null, menu, quantity);
     }
 
-    public void prepareForSave(Order order) {
-        this.order = order;
-    }
-
     public Long getSeq() {
         return seq;
     }
@@ -51,5 +47,9 @@ public class OrderLineItem {
 
     public Quantity getQuantity() {
         return quantity;
+    }
+
+    public void associateOrder(Order order) {
+        this.order = order;
     }
 }

@@ -220,8 +220,8 @@ class OrderServiceTest {
     void 주문_정상_생성됨(Order order, OrderCreateRequest request) {
         assertThat(order.getOrderTable().getId()).isEqualTo(request.getOrderTable());
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
-        assertThat(order.getOrderLineItems().size()).isEqualTo(request.getOrderLineItems().size());
-        assertThat(order.getOrderLineItems().stream().map(orderLineItem -> orderLineItem.getMenu().getId()).collect(Collectors.toList()))
+        assertThat(order.getOrderLineItems().getValue().size()).isEqualTo(request.getOrderLineItems().size());
+        assertThat(order.getOrderLineItems().getValue().stream().map(orderLineItem -> orderLineItem.getMenu().getId()).collect(Collectors.toList()))
                 .containsAll(request.getOrderLineItems().stream().map(OrderLineItemRequest::getMenu).collect(Collectors.toList()));
     }
 
