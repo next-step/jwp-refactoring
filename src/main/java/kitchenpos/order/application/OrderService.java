@@ -7,6 +7,7 @@ import kitchenpos.menu.domain.Quantity;
 import kitchenpos.order.dao.OrderRepository;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderCreateRequest;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import org.springframework.stereotype.Service;
@@ -33,16 +34,16 @@ public class OrderService {
     }
 
     @Transactional
-    public Order create(final OrderCreateRequest request) {
+    public OrderResponse create(final OrderCreateRequest request) {
         OrderTable orderTable = tableService.getOrderTable(request.getOrderTable());
         Menus menus = menuService.findMenusInIds(request.getMenus());
         Order order = request.of(orderTable, menus);
 
-        return orderRepository.save(order);
+        return OrderResponse.from(orderRepository.save(order));
     }
 
-    public Orders list() {
-        return new Orders(orderRepository.findAll());
+    public List<OrderResponse> list() {
+        return new Orders(orderRepository.findAll()).toResponse();
     }
 
     public Order getOrder(final Long id) {
@@ -51,12 +52,12 @@ public class OrderService {
     }
 
     @Transactional
-    public Order changeOrderStatus(final Long orderId, final OrderStatus orderStatus) {
+    public OrderResponse changeOrderStatus(final Long orderId, final OrderStatus orderStatus) {
         final Order savedOrder = getOrder(orderId);
 
         savedOrder.changeOrderStatus(orderStatus);
 
-        return savedOrder;
+        return OrderResponse.from(savedOrder);
     }
 
     public OrderStatus getOrderStatusByOrderTableId(final Long orderTableId) {
