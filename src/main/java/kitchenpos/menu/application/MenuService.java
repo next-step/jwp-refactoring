@@ -3,7 +3,7 @@ package kitchenpos.menu.application;
 import static kitchenpos.Exception.NotFoundMenuGroupException.NOT_FOUND_MENU_GROUP_EXCEPTION;
 
 import java.util.stream.Collectors;
-import kitchenpos.menu.domain.Quantity;
+import kitchenpos.common.Quantity;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;

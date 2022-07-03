@@ -1,4 +1,4 @@
-package kitchenpos.menu.domain;
+package kitchenpos.common;
 
 import static kitchenpos.Exception.InvalidQuantityException.INVALID_QUANTITY_EXCEPTION;
 

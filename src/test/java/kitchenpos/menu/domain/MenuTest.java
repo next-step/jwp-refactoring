@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import kitchenpos.common.Price;
+import kitchenpos.common.Quantity;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductName;
 import org.junit.jupiter.api.BeforeEach;

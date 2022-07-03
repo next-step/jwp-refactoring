@@ -12,7 +12,7 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuName;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.menu.domain.Quantity;
+import kitchenpos.common.Quantity;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.Test;

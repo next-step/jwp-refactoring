@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import kitchenpos.Exception.ProductPriceEmptyException;
 import kitchenpos.common.Price;
-import kitchenpos.menu.domain.Quantity;
+import kitchenpos.common.Quantity;
 import org.junit.jupiter.api.Test;
 
 class ProductTest {

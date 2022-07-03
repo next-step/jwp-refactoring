@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import kitchenpos.Exception.InvalidPriceException;
-import kitchenpos.menu.domain.Quantity;
 import org.junit.jupiter.api.Test;
 
 class PriceTest {
