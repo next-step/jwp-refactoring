@@ -7,8 +7,11 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.domain.Product;
-import kitchenpos.repository.ProductRepository;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.product.repository.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,11 +31,9 @@ public class ProductServiceTest {
     @DisplayName("상품을 등록한다.")
     @Test
     public void createProduct() {
-        //given
-        Product given = new Product("메뉴", 1000);
-        when(productRepository.save(any())).thenReturn(given);
         //when
-        Product result = productService.create(given);
+        when(productRepository.save(any())).thenReturn(Product.of("메뉴", 1000));
+        ProductResponse result = productService.create(ProductRequest.of("메뉴", 1000));
         //then
         assertThat(result).isNotNull();
     }
@@ -42,7 +43,7 @@ public class ProductServiceTest {
     @Test
     public void createProductMinusPrice() {
         //given
-        Product given = new Product("메뉴", -1);
+        ProductRequest given = ProductRequest.of("메뉴", -1);
         //when
         //then
         assertThatThrownBy(() -> productService.create(given)).isInstanceOf(IllegalArgumentException.class);
@@ -52,11 +53,11 @@ public class ProductServiceTest {
     @Test
     public void getProducts() {
         //given
-        Product given = new Product("메뉴",1000);
-        Product given2 = new Product("메뉴2", 2000);
-        when(productRepository.findAll()).thenReturn(Arrays.asList(given, given2));
+        ProductRequest given = ProductRequest.of("메뉴",1000);
+        ProductRequest given2 = ProductRequest.of("메뉴2", 2000);
+        when(productRepository.findAll()).thenReturn(Arrays.asList(Product.of("메뉴", 1000), Product.of("메뉴2", 2000)));
         //when
-        List<Product> result = productService.list();
+        List<ProductResponse> result = productService.list();
         //then
         assertThat(result).hasSize(2);
     }
