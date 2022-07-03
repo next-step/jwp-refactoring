@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import kitchenpos.domain.Product;
@@ -18,9 +17,9 @@ public class ProductService {
 
     @Transactional
     public Product create(final Product product) {
-        final BigDecimal price = product.getPrice();
+        final long price = product.getPrice();
 
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+        if (Objects.isNull(price) || price < 0) {
             throw new IllegalArgumentException();
         }
 

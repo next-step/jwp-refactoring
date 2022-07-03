@@ -4,11 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +25,9 @@ public class MenuServiceTest {
     @Test
     public void createMenu(){
         //given
-        Menu menu = new Menu("메뉴", BigDecimal.valueOf(1000), 1L, createMenuProducts());
+        MenuRequest menu = MenuRequest.of("메뉴", 1000, 1L, createMenuProducts());
         //when
-        Menu result = menuService.create(menu);
+        MenuResponse result = menuService.create(menu);
         //then
         assertThat(result).isNotNull();
     }
@@ -35,7 +36,7 @@ public class MenuServiceTest {
     @Test
     public void createMinusPriceMenu(){
         //given
-        Menu menu = new Menu("메뉴", BigDecimal.valueOf(-1), 1L, createMenuProducts());
+        MenuRequest menu = MenuRequest.of("메뉴", -1, 1L, createMenuProducts());
         //when
         //then
         assertThatThrownBy(() -> menuService.create(menu)).isInstanceOf(IllegalArgumentException.class);
@@ -45,7 +46,7 @@ public class MenuServiceTest {
     @Test
     public void createWithNoExistMenuGroup(){
         //given
-        Menu menu = new Menu("메뉴", BigDecimal.valueOf(1000), 99999L, createMenuProducts());
+        MenuRequest menu = MenuRequest.of("메뉴", 1000, 99999L, createMenuProducts());
         //when
         //then
         assertThatThrownBy(() -> menuService.create(menu)).isInstanceOf(IllegalArgumentException.class);
@@ -55,7 +56,7 @@ public class MenuServiceTest {
     @Test
     public void createWithNoExistMenuProducts(){
         //given
-        Menu menu = new Menu("메뉴", BigDecimal.valueOf(1000), 1L, createNoExistMenuProducts());
+        MenuRequest menu = MenuRequest.of("메뉴", 1000, 1L, createNoExistMenuProducts());
         //when
         //then
         assertThatThrownBy(() -> menuService.create(menu)).isInstanceOf(IllegalArgumentException.class);
@@ -65,7 +66,7 @@ public class MenuServiceTest {
     @Test
     public void createWithGreaterSumPrice(){
         //given
-        Menu menu = new Menu("메뉴", BigDecimal.valueOf(20000), 1L, createMenuProducts());
+        MenuRequest menu = MenuRequest.of("메뉴",20000, 1L, createMenuProducts());
         //when
         //then
         assertThatThrownBy(() -> menuService.create(menu)).isInstanceOf(IllegalArgumentException.class);
@@ -76,22 +77,21 @@ public class MenuServiceTest {
     @Test
     public void getMenus(){
         //given
-        Menu menu = menuService.create(new Menu("메뉴", BigDecimal.valueOf(1000), 1L, createMenuProducts()));
+        MenuResponse menu = menuService.create(MenuRequest.of("메뉴", 1000, 1L, createMenuProducts()));
         //when
-        List<Menu> result = menuService.list();
+        List<MenuResponse> result = menuService.list();
         //then ( 사전에 DB에 저장이 되어 있음 )
         assertAll(() -> assertThat(result.contains(menu)),
             () -> assertThat(result).hasSizeGreaterThan(1));
 
     }
 
-    //16000원
-    private List<MenuProduct> createMenuProducts() {
-        return Arrays.asList(new MenuProduct( 1L, 1L, 1L));
+    private static List<MenuProductRequest> createMenuProducts() {
+        return Arrays.asList(new MenuProductRequest( 1L, 1l));
     }
 
-    private List<MenuProduct> createNoExistMenuProducts() {
-        return Arrays.asList(new MenuProduct( 999L, 999L, 999L));
+    private List<MenuProductRequest> createNoExistMenuProducts() {
+        return Arrays.asList(new MenuProductRequest( 999l, 1000l));
     }
 
 }

@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.math.BigDecimal;
 import kitchenpos.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +20,7 @@ public class ProductAcceptanceTest extends BaseAcceptanceTest{
     public void manageProduct() {
         //상품 생성
         //given
-        Product 상품 = new Product("상품", BigDecimal.valueOf(1000));
+        Product 상품 = new Product("상품", 1000);
         //when
         ExtractableResponse<Response> 상품_생성_요청 = 상품_생성_요청(상품);
         //then

@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.domain.Product;
@@ -30,7 +29,7 @@ public class ProductServiceTest {
     @Test
     public void createProduct() {
         //given
-        Product given = new Product("메뉴", BigDecimal.valueOf(1000));
+        Product given = new Product("메뉴", 1000);
         when(productRepository.save(any())).thenReturn(given);
         //when
         Product result = productService.create(given);
@@ -43,7 +42,7 @@ public class ProductServiceTest {
     @Test
     public void createProductMinusPrice() {
         //given
-        Product given = new Product("메뉴", BigDecimal.valueOf(-1));
+        Product given = new Product("메뉴", -1);
         //when
         //then
         assertThatThrownBy(() -> productService.create(given)).isInstanceOf(IllegalArgumentException.class);
@@ -53,8 +52,8 @@ public class ProductServiceTest {
     @Test
     public void getProducts() {
         //given
-        Product given = new Product("메뉴", BigDecimal.valueOf(1000));
-        Product given2 = new Product("메뉴2", BigDecimal.valueOf(2000));
+        Product given = new Product("메뉴",1000);
+        Product given2 = new Product("메뉴2", 2000);
         when(productRepository.findAll()).thenReturn(Arrays.asList(given, given2));
         //when
         List<Product> result = productService.list();

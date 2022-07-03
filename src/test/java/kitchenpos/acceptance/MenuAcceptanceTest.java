@@ -5,11 +5,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -22,7 +22,7 @@ public class MenuAcceptanceTest extends BaseAcceptanceTest{
     public void manageMenu() {
         //메뉴 생성
         //given
-        Menu 메뉴 = new Menu("메뉴", BigDecimal.valueOf(1000), 1L, createMenuProducts());
+        MenuRequest 메뉴 = MenuRequest.of("메뉴", 1000, 1L, createMenuProducts());
         //when
         ExtractableResponse<Response> 메뉴_그룹_생성_요청 = 메뉴_생성_요청(메뉴);
         //then
@@ -36,7 +36,7 @@ public class MenuAcceptanceTest extends BaseAcceptanceTest{
         메뉴_조회됨(메뉴_목록_조회_요청, 메뉴.getName());
     }
 
-    public static ExtractableResponse<Response> 메뉴_생성_요청(Menu menu) {
+    public static ExtractableResponse<Response> 메뉴_생성_요청(MenuRequest menu) {
         return RestAssured
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -60,11 +60,11 @@ public class MenuAcceptanceTest extends BaseAcceptanceTest{
     }
 
     public static void 메뉴_조회됨(final ExtractableResponse<Response> response, String menuName) {
-        assertThat(response.jsonPath().getList(".", Menu.class).stream().anyMatch(searchMenu -> searchMenu.getName().equals(menuName))).isTrue();
+        assertThat(response.jsonPath().getList(".", MenuResponse.class).stream().anyMatch(searchMenu -> searchMenu.getName().equals(menuName))).isTrue();
     }
 
     //16000원
-    private static List<MenuProduct> createMenuProducts() {
-        return Arrays.asList(new MenuProduct( 1L, 1L, 1L));
+    private static List<MenuProductRequest> createMenuProducts() {
+        return Arrays.asList(new MenuProductRequest( 1L, 1000l));
     }
 }
