@@ -1,4 +1,4 @@
-package kitchenpos.table.acceptance;
+package kitchenpos.tablegroup.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import kitchenpos.common.acceptance.BaseAcceptanceTest;
 import kitchenpos.fixture.acceptance.AcceptanceTestOrderTableFixture;
 import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
