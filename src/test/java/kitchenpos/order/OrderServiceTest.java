@@ -1,5 +1,6 @@
 package kitchenpos.order;
 
+import static kitchenpos.table.TableAcceptanceTest.빈자리;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -105,25 +106,26 @@ class OrderServiceTest {
         OrderLineItem 주문내역2 = new OrderLineItem(1L, 1L);
         주문요청 = new OrderRequest(1L, Arrays.asList(주문내역1, 주문내역2));
 
+        given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(테이블1));
         given(menuRepository.countByIdIn(any())).willReturn(1L);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
                 () -> orderService.create(주문요청)
-        );
+        ).withMessageContaining("존재하지 않는 메뉴입니다.");
     }
 
     @Test
     @DisplayName("주문시 주문테이블 정보를 가지고 있어야 한다")
     void create_nonExistTableError() {
         // given
-        given(menuRepository.countByIdIn(any())).willReturn(1L);
-        given(orderTableRepository.findById(any())).willReturn(Optional.empty());
+        테이블1.setEmpty(빈자리);
+        given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(테이블1));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
                 () -> orderService.create(주문요청)
-        );
+        ).withMessageContaining("주문 테이블이 존재하지 않습니다.");
     }
 
     @Test

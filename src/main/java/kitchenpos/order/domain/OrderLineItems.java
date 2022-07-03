@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import org.springframework.util.CollectionUtils;
 
 @Embeddable
 public class OrderLineItems {
@@ -15,6 +16,9 @@ public class OrderLineItems {
     }
 
     public OrderLineItems(List<OrderLineItem> orderLineItems) {
+        if (CollectionUtils.isEmpty(orderLineItems)) {
+            throw new IllegalArgumentException("주문 내역이 존재하지 않습니다.");
+        }
         this.orderLineItems = orderLineItems;
     }
 

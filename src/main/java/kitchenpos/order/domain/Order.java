@@ -22,7 +22,7 @@ public class Order {
     private OrderStatus orderStatus;
     private LocalDateTime orderedTime;
     @Embedded
-    private OrderLineItems orderLineItems = new OrderLineItems();
+    private OrderLineItems orderLineItems;
 
     protected Order() {
     }

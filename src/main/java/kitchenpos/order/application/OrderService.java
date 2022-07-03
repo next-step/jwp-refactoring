@@ -37,29 +37,16 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        final List<OrderLineItem> orderLineItems = orderRequest.getOrderLineItems();
-
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
-        }
-
-        final List<Long> menuIds = orderLineItems.stream()
-                .map(OrderLineItem::getMenuId)
-                .collect(Collectors.toList());
-
-        if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException();
-        }
-
         final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
                 .orElseThrow(IllegalArgumentException::new);
 
         if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문 테이블이 존재하지 않습니다.");
         }
 
         final Order savedOrder = orderRepository.save(orderRequest.toOrder());
 
+        List<OrderLineItem> orderLineItems = validateOrderLineItems(orderRequest.getOrderLineItems());
         for (final OrderLineItem orderLineItem : orderLineItems) {
             orderLineItem.setOrder(savedOrder);
         }
@@ -84,5 +71,23 @@ public class OrderService {
         savedOrder.changeOrderStatus(orderStatus);
 
         return OrderResponse.of(savedOrder);
+    }
+
+    private List<OrderLineItem> validateOrderLineItems(List<OrderLineItem> orderLineItems) {
+        if (CollectionUtils.isEmpty(orderLineItems)) {
+            throw new IllegalArgumentException();
+        }
+
+        final List<Long> menuIds = orderLineItems.stream()
+                .map(OrderLineItem::getMenuId)
+                .collect(Collectors.toList());
+
+        long menuCount = menuRepository.countByIdIn(menuIds);
+
+        if (orderLineItems.size() != menuCount) {
+            throw new IllegalArgumentException("존재하지 않는 메뉴입니다.");
+        }
+
+        return orderLineItems;
     }
 }
