@@ -7,10 +7,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTables;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
@@ -37,7 +36,7 @@ class TableGroupServiceTest {
 
     OrderTable orderTable1;
     OrderTable orderTable2;
-    List<OrderTable> orderTables;
+    OrderTables orderTables;
     TableGroup tableGroup;
 
 
@@ -49,7 +48,7 @@ class TableGroupServiceTest {
         orderTable2 = new OrderTable();
         orderTable2.setId(2L);
 
-        orderTables = new ArrayList<>();
+        orderTables = new OrderTables();
         orderTables.add(orderTable1);
         orderTables.add(orderTable2);
 
@@ -62,8 +61,7 @@ class TableGroupServiceTest {
     @DisplayName("빈 테이블 단체 지정 시 예외 처리")
     public void emptyTableSetTableGroupException() {
         TableGroup tableGroup = new TableGroup();
-        List<OrderTable> orderTables = new ArrayList<>();
-        tableGroup.setOrderTables(orderTables);
+        tableGroup.setOrderTables(new OrderTables());
 
         assertThatThrownBy(() -> tableGroupService.create(tableGroup)).isInstanceOf(IllegalArgumentException.class);
     }
@@ -72,7 +70,7 @@ class TableGroupServiceTest {
     @DisplayName("2개 미만 테이블 단체 지정 시 예외 처리")
     public void setTableGroupLessThan2() {
         TableGroup tableGroup = new TableGroup();
-        List<OrderTable> orderTables = new ArrayList<>();
+        OrderTables orderTables = new OrderTables();
         orderTables.add(new OrderTable());
         tableGroup.setOrderTables(orderTables);
 
@@ -82,7 +80,7 @@ class TableGroupServiceTest {
     @Test
     @DisplayName("단체 지정 요청한 테이블 수와 저장된 단체의 테이블 수 불일치 시 예외 처리")
     public void createOrderTableCountMisMatchC() {
-        List<OrderTable> orderTables = new ArrayList<>();
+        OrderTables orderTables = new OrderTables();
         orderTables.add(new OrderTable());
 
         TableGroup tableGroup = new TableGroup();
@@ -113,7 +111,6 @@ class TableGroupServiceTest {
         orderTable1.setEmpty(true);
         orderTable2.setEmpty(true);
 
-        given(orderTableRepository.findAllByIdIn(Arrays.asList(orderTable1.getId(), orderTable2.getId()))).willReturn(orderTables);
         given(tableGroupRepository.save(tableGroup)).willReturn(tableGroup);
         assertThat(tableGroupService.create(tableGroup).getId()).isEqualTo(tableGroup.getId());
     }
