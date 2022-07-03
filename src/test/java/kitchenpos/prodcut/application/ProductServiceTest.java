@@ -1,8 +1,12 @@
-package kitchenpos.application;
+package kitchenpos.prodcut.application;
 
-import kitchenpos.dao.ProductDao;
-import kitchenpos.product.domain.Product;
+import kitchenpos.common.exception.ErrorCode;
+import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +27,7 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private ProductService productService;
@@ -32,19 +36,20 @@ class ProductServiceTest {
     @Test
     void create() {
         Product product = createProduct(1L, "닭", BigDecimal.valueOf(1000L));
-        given(productDao.save(any(Product.class))).willReturn(product);
+        given(productRepository.save(any(Product.class))).willReturn(product);
 
-        Product result = productService.create(createProduct("닭", BigDecimal.valueOf(1000L)));
+        ProductResponse response = productService.create(new ProductRequest("닭", BigDecimal.valueOf(1000L)));
 
-        assertThat(result.getId()).isEqualTo(1L);
-        assertThat(result.getName()).isEqualTo("닭");
+        assertThat(response.getId()).isEqualTo(1L);
+        assertThat(response.getName()).isEqualTo("닭");
     }
 
     @DisplayName("가격이 0원 이상이 아니면, 상품을 생성할 수 없다.")
     @Test
     void create_invalid_price() {
-        assertThatThrownBy(() -> productService.create(createProduct("닭", BigDecimal.valueOf(-1))))
-                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> productService.create(new ProductRequest("닭", BigDecimal.valueOf(-1))))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage(ErrorCode.INVALID_PRICE.getMessage());
     }
 
     @DisplayName("상품 목록을 조회할 수 있다.")
@@ -52,10 +57,10 @@ class ProductServiceTest {
     void list() {
         Product firstProduct = createProduct(1L, "닭", BigDecimal.valueOf(1000L));
         Product secondProduct = createProduct(2L, "콜라", BigDecimal.valueOf(500L));
-        given(productDao.findAll()).willReturn(Arrays.asList(firstProduct, secondProduct));
+        given(productRepository.findAll()).willReturn(Arrays.asList(firstProduct, secondProduct));
 
-        List<Product> products = productService.list();
+        List<ProductResponse> response = productService.list();
 
-        assertThat(products).hasSize(2);
+        assertThat(response).hasSize(2);
     }
 }
