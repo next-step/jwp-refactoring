@@ -1,6 +1,5 @@
 package kitchenpos.application;
 
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.Product;
@@ -17,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@Ignore
 public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
