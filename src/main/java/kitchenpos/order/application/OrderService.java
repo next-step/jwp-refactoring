@@ -77,8 +77,7 @@ public class OrderService {
         final Order order = findOrderById(orderId);
         final OrderStatus orderStatus = OrderStatus.valueOf(orderRequest.getOrderStatus());
         order.changeOrderStatus(orderStatus);
-        Order savedOrder = orderRepository.save(order);
-        return OrderResponse.of(savedOrder);
+        return OrderResponse.of(order);
     }
 
     private Order findOrderById(Long orderId) {
