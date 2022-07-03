@@ -9,25 +9,27 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+import kitchenpos.ServiceTest;
 import kitchenpos.menus.menu.domain.Menu;
-import kitchenpos.menus.menugroup.domain.MenuGroup;
-import kitchenpos.menus.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menus.menu.domain.MenuProduct;
 import kitchenpos.menus.menu.domain.MenuProductRepository;
 import kitchenpos.menus.menu.domain.MenuRepository;
+import kitchenpos.menus.menugroup.domain.MenuGroup;
+import kitchenpos.menus.menugroup.domain.MenuGroupRepository;
 import kitchenpos.orders.order.application.OrderService;
 import kitchenpos.orders.order.domain.Order;
 import kitchenpos.orders.order.domain.OrderLineItem;
 import kitchenpos.orders.order.domain.OrderRepository;
 import kitchenpos.orders.order.domain.OrderStatus;
 import kitchenpos.orders.order.dto.ChangeOrderStatusRequest;
+import kitchenpos.orders.order.dto.OrderLineItemRequest;
+import kitchenpos.orders.order.dto.OrderRequest;
+import kitchenpos.orders.order.dto.OrderResponse;
 import kitchenpos.orders.table.domain.OrderTable;
 import kitchenpos.orders.table.domain.OrderTableRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
-import kitchenpos.orders.order.dto.OrderLineItemRequest;
-import kitchenpos.orders.order.dto.OrderRequest;
-import kitchenpos.orders.order.dto.OrderResponse;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -155,7 +157,7 @@ class OrderServiceTest extends ServiceTest {
         List<OrderResponse> orders = orderService.list();
 
         //then
-        assertThat(orders).hasSize(1);
+        Assertions.assertThat(orders).hasSize(1);
     }
 
     @Test

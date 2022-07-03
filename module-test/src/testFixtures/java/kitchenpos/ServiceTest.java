@@ -1,18 +1,16 @@
-package kitchenpos.application;
+package kitchenpos;
 
-import kitchenpos.acceptance.DatabaseCleanup;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 
 @SpringBootTest
+@Import(DatabaseCleanup.class)
 public abstract class ServiceTest {
 
-    @Autowired
-    private DatabaseCleanup databaseCleanup;
-
     @BeforeEach
-    public void setUp() {
+    public void setUp(@Autowired DatabaseCleanup databaseCleanup) {
         databaseCleanup.execute();
     }
 }

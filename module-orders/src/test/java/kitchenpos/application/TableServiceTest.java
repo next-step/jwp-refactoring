@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.NoSuchElementException;
+import kitchenpos.ServiceTest;
 import kitchenpos.menus.menu.domain.Menu;
 import kitchenpos.menus.menu.domain.MenuRepository;
 import kitchenpos.menus.menugroup.domain.MenuGroup;
@@ -22,6 +23,7 @@ import kitchenpos.orders.table.dto.OrderTableRequest;
 import kitchenpos.orders.table.dto.OrderTableResponse;
 import kitchenpos.orders.tablegroup.domain.TableGroup;
 import kitchenpos.orders.tablegroup.domain.TableGroupRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -74,8 +76,8 @@ class TableServiceTest extends ServiceTest {
         List<OrderTableResponse> orderTables = tableService.list();
         //then
         assertAll(
-                () -> assertThat(orderTables).isNotNull(),
-                () -> assertThat(orderTables).hasSize(1)
+                () -> Assertions.assertThat(orderTables).isNotNull(),
+                () -> Assertions.assertThat(orderTables).hasSize(1)
         );
     }
 

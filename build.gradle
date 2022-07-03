@@ -2,6 +2,7 @@ plugins {
     id 'org.springframework.boot' version '2.4.1'
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
     id 'java'
+//    id 'java-test-fixtures'
 }
 
 group = 'camp.nextstep.edu'
@@ -17,15 +18,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.flywaydb:flyway-core'
-
+    runtimeOnly 'com.h2database:h2'
     implementation project(':module-product')
     implementation project(':module-menus')
     implementation project(':module-orders')
-    implementation project(':module-ui')
-    runtimeOnly 'com.h2database:h2'
-
-
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation project('module-ui')
 
 }
 
@@ -66,6 +63,8 @@ subprojects {
 
 project(':module-product') {
     dependencies {
+        apply plugin: 'java-test-fixtures'
+        testImplementation(testFixtures(project(':module-test')))
     }
 }
 
@@ -83,12 +82,15 @@ project(':module-ui') {
 project(':module-menus') {
     dependencies {
         implementation project(':module-product')
+        testImplementation(testFixtures(project(':module-test')))
     }
 }
 
 project(':module-orders') {
     dependencies {
         implementation project(':module-menus')
+        implementation project(':module-product')
+        testImplementation(testFixtures(project(':module-test')))
     }
 }
 

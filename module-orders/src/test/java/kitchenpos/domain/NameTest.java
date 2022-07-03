@@ -1,18 +1,18 @@
-package kitchenpos.domain.common;
+package kitchenpos.domain;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import kitchenpos.orders.table.domain.NumberOfGuests;
+import kitchenpos.menus.menu.domain.Name;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class NumberOfGuestTest {
+class NameTest {
 
     @Test
-    @DisplayName("손님수는 0명 이상이어야 한다.")
+    @DisplayName("이름은 빈 문자열 일 수 없다.")
     void validationTest() {
         assertThatThrownBy(
-                () -> new NumberOfGuests(-1)
+                () -> new Name("")
         ).isInstanceOf(IllegalArgumentException.class);
     }
 }
