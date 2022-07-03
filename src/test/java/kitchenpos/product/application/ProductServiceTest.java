@@ -2,6 +2,8 @@ package kitchenpos.product.application;
 
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -16,6 +19,7 @@ import static kitchenpos.product.domain.ProductTest.상품_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,18 +33,18 @@ class ProductServiceTest {
     @Test
     void createProduct() {
         // given
-        Product product = 상품_생성("후라이드치킨", 15_000);
+        ProductRequest request = new ProductRequest("후라이드치킨", BigDecimal.valueOf(15_000));
 
-        when(productRepository.save(product)).thenReturn(상품_생성(1L, "후라이드치킨", 15_000));
+        when(productRepository.save(any())).thenReturn(상품_생성(1L, "후라이드치킨", 15_000));
 
         // when
-        Product savedProduct = productService.create(product);
+        ProductResponse response = productService.create(request);
 
         // then
         assertAll(
-                () -> assertThat(savedProduct.getId()).isNotNull(),
-                () -> assertThat(savedProduct.getName()).isEqualTo(product.getName()),
-                () -> assertThat(savedProduct.getPrice()).isEqualTo(product.getPrice())
+                () -> assertThat(response.getProductId()).isNotNull(),
+                () -> assertThat(response.getName()).isEqualTo(request.getName()),
+                () -> assertThat(response.getPrice()).isEqualTo(request.getPrice())
         );
     }
 
@@ -48,10 +52,10 @@ class ProductServiceTest {
     @Test
     void createProduct1() {
         // given
-        Product product = 상품_생성("후라이드치킨", -1_000);
+        ProductRequest request = new ProductRequest("후라이드치킨", BigDecimal.valueOf(-1_000));
 
         // when, then
-        assertThatThrownBy(() -> productService.create(product))
+        assertThatThrownBy(() -> productService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -61,13 +65,14 @@ class ProductServiceTest {
         // given
         Product product1 = 상품_생성("후라이드치킨", 15_000);
         Product product2 = 상품_생성("양념치킨", 15_000);
+        List<Product> products = Arrays.asList(product1, product2);
 
-        when(productRepository.findAll()).thenReturn(Arrays.asList(product1, product2));
+        when(productRepository.findAll()).thenReturn(products);
 
         // when
-        List<Product> products = productService.list();
+        List<ProductResponse> responses = productService.list();
 
         // then
-        assertThat(products).containsExactly(product1, product2);
+        assertThat(responses).hasSize(products.size());
     }
 }
