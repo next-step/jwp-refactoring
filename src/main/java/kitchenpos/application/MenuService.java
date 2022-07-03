@@ -51,12 +51,9 @@ public class MenuService {
         return MenuResponse.from(savedMenu);
     }
 
+    @Transactional(readOnly = true)
     public List<MenuResponse> list() {
         final List<Menu> menus = menuRepository.findAll();
-//
-//        for (final Menu menu : menus) {
-//            menu.setMenuProducts(menuProductDao.findAllByMenuId(menu.getId()));
-//        }
         return MenuResponse.ofMenuResponses(menus);
     }
 }
