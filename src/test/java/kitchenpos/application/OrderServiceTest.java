@@ -10,15 +10,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.repository.MenuRepository;
+import kitchenpos.repository.OrderLineItemRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,15 +29,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
-
-    @Mock
-    MenuDao menuDao;
     @Mock
     OrderDao orderDao;
     @Mock
-    OrderLineItemDao orderLineItemDao;
-    @Mock
     OrderTableDao orderTableDao;
+
+    @Mock
+    MenuRepository menuRepository;
+    @Mock
+    OrderLineItemRepository orderLineItemRepository;
 
     @InjectMocks
     OrderService orderService;
@@ -70,7 +70,8 @@ class OrderServiceTest {
 
         order.setOrderLineItems(orderLineItems);
 
-        given(menuDao.countByIdIn(any(List.class))).willReturn(3L);
+        given(menuRepository.countByIdIn(any(List.class))).willReturn(3L);
+//        given(menuDao.countByIdIn(any(List.class))).willReturn(3L);
         assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -107,7 +108,8 @@ class OrderServiceTest {
         order.setOrderLineItems(orderLineItems);
         order.setOrderTableId(orderTable.getId());
 
-        given(menuDao.countByIdIn(any(List.class))).willReturn((long) orderLineItems.size());
+        given(menuRepository.countByIdIn(any(List.class))).willReturn((long) orderLineItems.size());
+//        given(menuDao.countByIdIn(any(List.class))).willReturn((long) orderLineItems.size());
         given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
         given(orderDao.save(order)).willReturn(order);
 
