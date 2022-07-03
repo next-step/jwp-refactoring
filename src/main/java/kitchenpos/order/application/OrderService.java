@@ -40,11 +40,7 @@ public class OrderService {
         final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
                 .orElseThrow(IllegalArgumentException::new);
 
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException("주문 테이블이 존재하지 않습니다.");
-        }
-
-        final Order savedOrder = orderRepository.save(orderRequest.toOrder());
+        final Order savedOrder = orderRepository.save(new Order(orderTable));
 
         OrderLineItems orderLineItems = validateOrderLineItemsCheck(orderRequest.getOrderLineItems());
         orderLineItems.setOrder(savedOrder);

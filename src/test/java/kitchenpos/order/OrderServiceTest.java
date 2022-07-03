@@ -61,12 +61,12 @@ class OrderServiceTest {
         테이블1 = new OrderTable(5, false);
         주문내역 = new OrderLineItem(1L, 1L);
 
-        주문 = new Order(1L);
+        주문 = new Order(테이블1);
 
         주문.setOrderLineItems(new OrderLineItems((Collections.singletonList(주문내역))));
         주문내역.setOrder(주문);
 
-        주문요청 = new OrderRequest(주문.getOrderTableId(), Collections.singletonList(주문내역));
+        주문요청 = new OrderRequest(1L, Collections.singletonList(주문내역));
     }
 
     @Test
