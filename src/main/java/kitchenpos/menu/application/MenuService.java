@@ -2,73 +2,83 @@ package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProductRepository;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menuGroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
-    private final MenuProductRepository menuProductRepository;
     private final ProductRepository productRepository;
 
-    public MenuService(
-            MenuRepository menuRepository, MenuGroupRepository menuGroupRepository,
-            MenuProductRepository menuProductRepository, ProductRepository productRepository) {
+    public MenuService(MenuRepository menuRepository, MenuGroupRepository menuGroupRepository, ProductRepository productRepository) {
         this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
-        this.menuProductRepository = menuProductRepository;
         this.productRepository = productRepository;
     }
 
     @Transactional
-    public Menu create(final Menu menu) {
-        final BigDecimal price = menu.getPrice();
+    public MenuResponse create(final MenuRequest request) {
+        validateExistMenuGroup(request.getMenuGroupId());
 
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
+        List<MenuRequest.ProductInfo> productInfos = request.getProductInfos();
+        Map<Long, Product> products = findProductAllByIdIn(request.getProductIds());
 
-        if (!menuGroupRepository.existsById(menu.getMenuGroupId())) {
-            throw new IllegalArgumentException();
-        }
+        validateProductSize(productInfos, products);
 
-        final List<MenuProduct> menuProducts = menu.getMenuProducts();
+        List<MenuProduct> menuProducts = createMenuProducts(productInfos, products);
 
-        BigDecimal sum = BigDecimal.ZERO;
-        for (final MenuProduct menuProduct : menuProducts) {
-            final Product product = productRepository.findById(menuProduct.getProduct().getId())
-                    .orElseThrow(IllegalArgumentException::new);
-            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
-        }
+        Menu menu = Menu.createMenu(request.getName(), request.getMenuGroupId(), request.getPrice(), menuProducts);
 
-        if (price.compareTo(sum) > 0) {
-            throw new IllegalArgumentException();
-        }
-
-        final Menu savedMenu = menuRepository.save(menu);
-
-        savedMenu.setMenuProducts(menuProducts);
-
-        return savedMenu;
+        return new MenuResponse(menuRepository.save(menu));
     }
 
-    public List<Menu> list() {
-        final List<Menu> menus = menuRepository.findAll();
-
-        for (final Menu menu : menus) {
-            menu.setMenuProducts(menuProductRepository.findAllByMenuId(menu.getId()));
+    private Map<Long, Product> findProductAllByIdIn(List<Long> productIds) {
+        if (CollectionUtils.isEmpty(productIds)) {
+            throw new IllegalArgumentException();
         }
+        return productRepository.findAllByIdIn(productIds).stream()
+                .collect(Collectors.toMap(Product::getId, product -> product));
+    }
 
-        return menus;
+    private void validateProductSize(List<MenuRequest.ProductInfo> productInfos, Map<Long, Product> products) {
+        if (productInfos.size() != products.size()) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private void validateExistMenuGroup(Long menuGroupId) {
+        if (!menuGroupRepository.existsById(menuGroupId)) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private List<MenuProduct> createMenuProducts(List<MenuRequest.ProductInfo> productInfos, Map<Long, Product> products) {
+        return productInfos.stream()
+                .map(productInfo -> createMenuProduct(productInfo, products))
+                .collect(Collectors.toList());
+    }
+
+    private MenuProduct createMenuProduct(final MenuRequest.ProductInfo productInfo, final Map<Long, Product> products) {
+        Product product = products.get(productInfo.getProductId());
+        return new MenuProduct(product, productInfo.getQuantity());
+    }
+
+    public List<MenuResponse> list() {
+        return menuRepository.findAll().stream()
+                .map(MenuResponse::new)
+                .collect(Collectors.toList());
     }
 }

@@ -1,17 +1,17 @@
 package kitchenpos.menu.ui;
 
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/menus")
 public class MenuRestController {
     private final MenuService menuService;
 
@@ -19,19 +19,15 @@ public class MenuRestController {
         this.menuService = menuService;
     }
 
-    @PostMapping("/api/menus")
-    public ResponseEntity<Menu> create(@RequestBody final Menu menu) {
-        final Menu created = menuService.create(menu);
-        final URI uri = URI.create("/api/menus/" + created.getId());
-        return ResponseEntity.created(uri)
-                .body(created)
-                ;
+    @PostMapping
+    public ResponseEntity<MenuResponse> create(@RequestBody @Valid final MenuRequest request) {
+        final MenuResponse response = menuService.create(request);
+        final URI uri = URI.create("/api/menus/" + response.getMenuId());
+        return ResponseEntity.created(uri).body(response);
     }
 
-    @GetMapping("/api/menus")
-    public ResponseEntity<List<Menu>> list() {
-        return ResponseEntity.ok()
-                .body(menuService.list())
-                ;
+    @GetMapping
+    public ResponseEntity<List<MenuResponse>> list() {
+        return ResponseEntity.ok(menuService.list());
     }
 }
