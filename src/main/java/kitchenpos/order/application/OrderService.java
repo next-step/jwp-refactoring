@@ -23,15 +23,18 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class OrderService {
     private final OrderRepository orderRepository;
+    private final OrderValidator orderValidator;
     private final MenuService menuService;
     private final TableService tableService;
 
     public OrderService(
             final OrderRepository orderRepository,
+            final OrderValidator orderValidator,
             final MenuService menuService,
             final TableService tableService
     ) {
         this.orderRepository = orderRepository;
+        this.orderValidator = orderValidator;
         this.menuService = menuService;
         this.tableService = tableService;
     }
@@ -40,6 +43,7 @@ public class OrderService {
     public OrderResponse create(final OrderRequest orderRequest) {
         final OrderTable orderTable = tableService.findOrderTableById(orderRequest.getOrderTableId());
         final Order order = Order.of(orderTable, retrieveOrderLineItems(orderRequest));
+        orderValidator.validate(order);
         final Order savedOrder = orderRepository.save(order);
 
         return OrderResponse.from(savedOrder);
@@ -61,10 +65,8 @@ public class OrderService {
     private List<OrderLineItem> retrieveOrderLineItems(OrderRequest orderRequest) {
         final List<OrderLineItemRequest> orderLineItems = orderRequest.getOrderLineItems();
         return orderLineItems.stream()
-                .map(orderLineItemsRequest -> {
-                    Menu menu = menuService.findMenuById(orderLineItemsRequest.getMenuId());
-                    return OrderLineItem.of(menu, orderLineItemsRequest.getQuantity());
-                })
+                .map(orderLineItemsRequest ->
+                    OrderLineItem.of(orderLineItemsRequest.getMenuId(), orderLineItemsRequest.getQuantity()))
                 .collect(Collectors.toList());
     }
 

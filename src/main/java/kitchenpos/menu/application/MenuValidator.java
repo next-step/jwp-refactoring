@@ -21,14 +21,14 @@ public class MenuValidator {
 
     public void validate(Menu menu){
         validateMenuGroup(menu);
-        validateProductPrice(menu);
+        validateProductsAndPrice(menu);
     }
 
     private void validateMenuGroup(Menu menu) {
         menuGroupService.findMenuGroupById(menu.getMenuGroupId());
     }
 
-    private void validateProductPrice(Menu menu) {
+    private void validateProductsAndPrice(Menu menu) {
         int sumOfProductPrice = menu.getMenuProducts().stream().
                 mapToInt(menuProduct -> {
                     Product product = productService.findProductById(menuProduct.getProductId());

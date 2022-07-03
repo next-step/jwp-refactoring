@@ -7,12 +7,8 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menugroup.application.MenuGroupService;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.menugroup.exception.NoSuchMenuGroupException;
-import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.exception.NoSuchProductException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,18 +27,12 @@ import static kitchenpos.utils.fixture.ProductFixtureFactory.createProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willThrow;
 
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
     @Mock
     private MenuRepository menuRepository;
-    @Mock
-    private MenuGroupService menuGroupService;
-    @Mock
-    private ProductService productService;
     @Mock
     private MenuValidator menuValidator;
     @InjectMocks

@@ -31,9 +31,6 @@ public class Order {
 
     public static final String ERROR_ORDER_TABLE_EMPTY = "주문테이블은 비어있을 수 없습니다.";
     public static final String ERROR_ORDER_INVALID_STATUS = "주문의 상태는 %s일 수 없습니다.";
-    public static final String ERROR_ORDER_LINE_ITEM_TOO_SMALL = "주문항목 개수는 %d 미만일 수 없습니다.";
-    public static final String ERROR_ORDER_LINE_ITEM_DUPLICATED = "주문항목은 중복이 불가합니다.";
-    private static final int MINIMUM_ORDER_LINE_ITEM_NUMBER = 1;
 
     protected Order() {
     }
@@ -66,32 +63,8 @@ public class Order {
     }
 
     private void registerOrderLineItems(List<OrderLineItem> orderLineItems) {
-        validateOrderLineItems(orderLineItems);
         this.orderLineItems = orderLineItems;
         orderLineItems.forEach(orderLineItem -> orderLineItem.registerOrder(this));
-    }
-
-    private void validateOrderLineItems(List<OrderLineItem> orderLineItems) {
-        validateOrderLineItemsSize(orderLineItems);
-        validateOrderLineItemsDuplicated(orderLineItems);
-    }
-
-    private void validateOrderLineItemsSize(List<OrderLineItem> orderLineItems) {
-        if (orderLineItems == null || orderLineItems.size() < MINIMUM_ORDER_LINE_ITEM_NUMBER) {
-            throw new IllegalOrderLineItemException(
-                    String.format(ERROR_ORDER_LINE_ITEM_TOO_SMALL, MINIMUM_ORDER_LINE_ITEM_NUMBER)
-            );
-        }
-    }
-
-    private void validateOrderLineItemsDuplicated(List<OrderLineItem> orderLineItems) {
-        if(orderLineItems.size() !=
-                orderLineItems.stream()
-                        .map(orderLineItem -> orderLineItem.getMenu())
-                        .distinct()
-                        .count()){
-            throw new IllegalOrderLineItemException(ERROR_ORDER_LINE_ITEM_DUPLICATED);
-        }
     }
 
     public void changeStatus(OrderStatus orderStatus) {

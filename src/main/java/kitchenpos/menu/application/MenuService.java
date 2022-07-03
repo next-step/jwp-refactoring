@@ -1,17 +1,14 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.menu.exception.NoSuchMenuException;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.menu.exception.NoSuchMenuException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -43,5 +40,9 @@ public class MenuService {
     public Menu findMenuById(Long menuId) {
         return menuRepository.findById(menuId)
                 .orElseThrow(() -> new NoSuchMenuException(menuId));
+    }
+
+    public List<Menu> findMenusByIdList(List<Long> menuIds) {
+        return menuRepository.findAllByIdIn(menuIds);
     }
 }

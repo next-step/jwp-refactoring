@@ -1,7 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.menu.domain.Menu;
-
 import javax.persistence.*;
 
 @Entity
@@ -12,31 +10,30 @@ public class OrderLineItem {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_id")
-    private Menu menu;
+    private Long menuId;
     private int quantity;
 
     protected OrderLineItem() {
     }
 
-    public OrderLineItem(Long seq, Menu menu, int quantity) {
+    public OrderLineItem(Long seq, Long menuId, int quantity) {
         this.seq = seq;
-        this.menu = menu;
+        this.menuId = menuId;
         this.quantity = quantity;
     }
 
-    private OrderLineItem(Menu menu, int quantity) {
-        this.menu = menu;
+    private OrderLineItem(Long menuId, int quantity) {
+        this.menuId = menuId;
         this.quantity = quantity;
     }
 
-    public static OrderLineItem of(Long seq, Menu menu, int quantity) {
-        return new OrderLineItem(seq, menu, quantity);
+    public static OrderLineItem of(Long seq, Long menuId, int quantity) {
+        return new OrderLineItem(seq, menuId, quantity);
     }
 
-    public static OrderLineItem of(Menu menu, int quantity) {
-        return new OrderLineItem(menu, quantity);
+    public static OrderLineItem of(Long menuId, int quantity) {
+        return new OrderLineItem(menuId, quantity);
     }
 
     public void registerOrder(Order order) {
@@ -51,8 +48,8 @@ public class OrderLineItem {
         return order;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public Long getMenuId() {
+        return menuId;
     }
 
     public int getQuantity() {
