@@ -21,6 +21,7 @@ import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
@@ -95,7 +96,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 주문_생성_요청(Long orderTableId, List<OrderLineItem> orderLineItems) {
-        Order order = new Order(orderTableId, orderLineItems);
+        OrderRequest order = new OrderRequest(orderTableId, orderLineItems);
 
         return AcceptanceTest.doPost("/api/orders", order);
     }
