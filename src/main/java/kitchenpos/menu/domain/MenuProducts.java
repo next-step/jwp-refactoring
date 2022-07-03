@@ -30,7 +30,7 @@ public class MenuProducts {
     }
 
     public List<MenuProduct> get() {
-        return elements;
+        return new ArrayList<>(elements);
     }
 
 }
