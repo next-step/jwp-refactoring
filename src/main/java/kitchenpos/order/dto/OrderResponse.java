@@ -2,18 +2,19 @@ package kitchenpos.order.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
 
 public class OrderResponse {
     private final Long id;
     private final Long orderTableId;
-    private final String orderStatus;
+    private final OrderStatus orderStatus;
     private final LocalDateTime orderedTime;
-    private final List<OrderLineItem> orderLineItems;
+    private final List<OrderLineItemResponse> orderLineItems;
 
-    private OrderResponse(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime,
-                          List<OrderLineItem> orderLineItems) {
+    private OrderResponse(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime,
+                          List<OrderLineItemResponse> orderLineItems) {
         this.id = id;
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
@@ -22,8 +23,12 @@ public class OrderResponse {
     }
 
     public static OrderResponse of(Order order) {
-        return new OrderResponse(order.getId(), order.getOrderTableId(), order.getOrderStatus(), order.getOrderedTime(),
-                order.getOrderLineItems());
+        List<OrderLineItemResponse> orderLineItemResponseList = order.getOrderLineItems().stream()
+                .map(OrderLineItemResponse::of)
+                .collect(Collectors.toList());
+
+        return new OrderResponse(order.getId(), order.getOrderTableId(), order.getOrderStatus(),
+                order.getOrderedTime(), orderLineItemResponseList);
     }
 
     public Long getId() {
@@ -34,7 +39,7 @@ public class OrderResponse {
         return orderTableId;
     }
 
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
@@ -42,7 +47,7 @@ public class OrderResponse {
         return orderedTime;
     }
 
-    public List<OrderLineItem> getOrderLineItems() {
+    public List<OrderLineItemResponse> getOrderLineItems() {
         return orderLineItems;
     }
 }

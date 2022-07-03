@@ -87,7 +87,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
         Order 주문 = 주문_생성_요청(주문테이블.getId(), Collections.singletonList(주문목록)).as(Order.class);
 
         // when
-        주문.setOrderStatus(OrderStatus.MEAL.name());
+        주문.setOrderStatus(OrderStatus.MEAL);
         ExtractableResponse<Response> response = 주문_상태_변경(주문);
 
         // then
