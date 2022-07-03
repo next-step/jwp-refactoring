@@ -93,6 +93,13 @@
     - MenuProduct -> Product id 참조 변경
     - OrderTable -> TableGroup id 참조 변경
 
+- 4단계 (멀티 모듈 적용)
+  - module-main
+  - module-menu
+  - module-order
+  - module-product
+  
+
 
 ## 용어 사전
 
