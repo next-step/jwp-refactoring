@@ -8,4 +8,6 @@ import java.util.List;
 public interface MenuRepository extends JpaRepository<Menu, Long> {
     @Query("SELECT m FROM Menu m join fetch m.menuProducts.elements")
     List<Menu> findAllWithMenuProducts();
+
+    long countByIdIn(List<Long> menuIds);
 }
