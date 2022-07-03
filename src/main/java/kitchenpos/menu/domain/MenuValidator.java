@@ -18,27 +18,23 @@ public class MenuValidator {
     public void validate(Menu menu) {
         MenuProducts menuProducts = menu.getMenuProducts();
         Products products = new Products(productRepository.findAllById(menuProducts.getProductIds()));
-        if (isMenuPriceBigger(menu, menuProducts, products)) {
+        BigDecimal totalPrice = calculateTotalPrice(menuProducts, products);
+        if (menu.getPrice().isBiggerThan(totalPrice)) {
             throw new IllegalArgumentException();
         }
-    }
-
-    private boolean isMenuPriceBigger(Menu menu, MenuProducts menuProducts, Products products) {
-        return menu.getPrice().getValue().compareTo(calculateTotalPrice(menuProducts, products)) > 0;
     }
 
     private BigDecimal calculateTotalPrice(MenuProducts menuProducts, Products products) {
         BigDecimal sum = BigDecimal.ZERO;
         for (MenuProduct menuProduct : menuProducts.getMenuProducts()) {
             Product product = products.findById(menuProduct.getProductId());
-            sum = sum.add(getMultiply(menuProduct, product));
+            sum = sum.add(calculatePrice(menuProduct, product));
         }
         return sum;
     }
 
-    private BigDecimal getMultiply(MenuProduct menuProduct, Product product) {
+    private BigDecimal calculatePrice(MenuProduct menuProduct, Product product) {
         long quantity = menuProduct.getQuantity();
-        BigDecimal price = product.getPrice().getValue();
-        return price.multiply(BigDecimal.valueOf(quantity));
+        return product.getPrice().calculatePrice(quantity);
     }
 }

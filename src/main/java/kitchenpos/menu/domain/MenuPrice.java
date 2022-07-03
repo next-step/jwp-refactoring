@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 @Embeddable
 public class MenuPrice {
     @Column(name = "price", nullable = false)
-    private BigDecimal value;
+    private final BigDecimal value;
 
     public MenuPrice() {
         this.value = new BigDecimal(0);
@@ -22,5 +22,9 @@ public class MenuPrice {
 
     public BigDecimal getValue() {
         return value;
+    }
+
+    public boolean isBiggerThan(BigDecimal totalPrice) {
+        return value.compareTo(totalPrice) > 0;
     }
 }

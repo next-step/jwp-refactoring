@@ -20,6 +20,10 @@ public class ProductPrice {
         this.value = value;
     }
 
+    public BigDecimal calculatePrice(long quantity) {
+        return value.multiply(BigDecimal.valueOf(quantity));
+    }
+
     public BigDecimal getValue() {
         return value;
     }
