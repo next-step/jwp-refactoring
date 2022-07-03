@@ -24,6 +24,11 @@ public class Price {
         }
     }
 
+    public Price add(Price totalPrice) {
+        BigDecimal result = this.price.add(totalPrice.getPrice());
+        return new Price(result);
+    }
+
     public BigDecimal getPrice() {
         return this.price;
     }
