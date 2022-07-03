@@ -30,6 +30,7 @@ public class TableGroup {
             throw new IllegalArgumentException(ORDER_TABLE_LEAST_2);
         }
         orderTables.forEach(orderTable -> orderTable.groupBy(this));
+        groupTables.addAll(orderTables);
     }
 
     public static TableGroup group(List<OrderTable> orderTables) {

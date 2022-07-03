@@ -47,7 +47,6 @@ public class OrderTable {
             throw new IllegalArgumentException(NOT_EMPTY_OR_GROUPED_TABLE_CANNOT_GROUP);
         }
         this.tableGroup = tableGroup;
-        tableGroup.getGroupTables().getOrderTables().add(this);
         empty = false;
     }
 

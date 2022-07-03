@@ -12,8 +12,8 @@ public class GroupTables {
     @Column(insertable = false)
     private List<OrderTable> orderTables = new ArrayList<>();
 
-    public List<OrderTable> getOrderTables() {
-        return orderTables;
+    public void addAll(List<OrderTable> orderTables) {
+        this.orderTables.addAll(orderTables);
     }
 
     public void ungroup() {
@@ -23,5 +23,9 @@ public class GroupTables {
 
     public boolean isEmpty() {
         return orderTables.isEmpty();
+    }
+
+    public List<OrderTable> getOrderTables() {
+        return orderTables;
     }
 }
