@@ -35,8 +35,8 @@ public class OrderService {
     @Transactional
     public Order create(final OrderCreateRequest request) {
         OrderTable orderTable = tableService.getOrderTable(request.getOrderTable());
-        OrderLineItems orderLineItems = convertOrderLineItemsByRequest(request);
-        Order order = request.of(orderTable, orderLineItems);
+        Menus menus = menuService.findMenusInIds(request.getMenus());
+        Order order = request.of(orderTable, menus);
 
         return orderRepository.save(order);
     }
@@ -65,23 +65,5 @@ public class OrderService {
 
     public boolean existsByOrderTableIdInAndOrderStatusIn(final List<Long> orderTables, final List<OrderStatus> orderStatuses) {
         return orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTables, orderStatuses);
-    }
-
-    private OrderLineItems convertOrderLineItemsByRequest(final OrderCreateRequest orderCreateRequest) {
-        Menus menus = menuService.findMenusInIds(orderCreateRequest.getMenus());
-
-        orderCreateRequest.checkAllMenuIsExist(menus);
-
-        List<OrderLineItem> orderLineItems = orderCreateRequest.getOrderLineItems()
-                .stream()
-                .map(request -> {
-                    Menu menu = menus.findMenuById(request.getMenu());
-                    Quantity quantity = new Quantity(request.getQuantity());
-
-                    return new OrderLineItem(menu, quantity);
-                })
-                .collect(Collectors.toList());
-
-        return new OrderLineItems(orderLineItems);
     }
 }

@@ -2,6 +2,8 @@ package kitchenpos.menu.dto;
 
 import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.*;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.Products;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -24,8 +26,22 @@ public class MenuCreateRequest {
         this.menuProducts.addAll(menuProducts);
     }
 
-    public Menu of(MenuGroup menuGroup, MenuProducts menuProducts) {
-        return new Menu(name, new Price(price), menuGroup, menuProducts);
+    public Menu of(MenuGroup menuGroup, Products products) {
+        return new Menu(name, new Price(price), menuGroup, convertMenuProductsByRequest(products));
+    }
+
+    private MenuProducts convertMenuProductsByRequest(final Products products) {
+        checkAllProductsIsExist(products);
+
+        List<MenuProduct> menuProducts = this.getMenuProducts()
+                .stream()
+                .map(request -> {
+                    Product product = products.findMenuById(request.getProductId());
+                    return new MenuProduct(product, new Quantity(request.getQuantity()));
+                })
+                .collect(Collectors.toList());
+
+        return new MenuProducts(menuProducts);
     }
 
     public String getName() {
@@ -42,5 +58,17 @@ public class MenuCreateRequest {
 
     public List<MenuProductRequest> getMenuProducts() {
         return menuProducts;
+    }
+
+    public List<Long> getProductIds() {
+        return this.menuProducts.stream()
+                .map(MenuProductRequest::getProductId)
+                .collect(Collectors.toList());
+    }
+
+    private void checkAllProductsIsExist(final Products products) {
+        if (products.isNotAllContainIds(getProductIds())) {
+            throw new IllegalArgumentException("메뉴에 저장되지 않은 상품이 존재합니다.");
+        }
     }
 }

@@ -5,6 +5,7 @@ import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuCreateRequest;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.Products;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,8 +32,8 @@ public class MenuService {
     @Transactional
     public Menu create(final MenuCreateRequest request) {
         MenuGroup menuGroup = menuGroupService.getMenuGroup(request.getMenuGroupId());
-        MenuProducts menuProducts = convertMenuProductsByRequest(request);
-        Menu menu = request.of(menuGroup, menuProducts);
+        Products products = productService.findMenusInIds(request.getProductIds());
+        Menu menu = request.of(menuGroup, products);
 
         return menuRepository.save(menu);
     }
@@ -43,18 +44,5 @@ public class MenuService {
 
     public Menus findMenusInIds(final List<Long> ids) {
         return new Menus(menuRepository.findAllById(ids));
-    }
-
-
-    private MenuProducts convertMenuProductsByRequest(final MenuCreateRequest menuProductRequests) {
-        List<MenuProduct> menuProducts = menuProductRequests.getMenuProducts()
-                .stream()
-                .map(request -> {
-                    Product product = productService.getProduct(request.getProductId());
-                    return new MenuProduct(product, new Quantity(request.getQuantity()));
-                })
-                .collect(Collectors.toList());
-
-        return new MenuProducts(menuProducts);
     }
 }
