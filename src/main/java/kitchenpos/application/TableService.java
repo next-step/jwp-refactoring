@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 public class TableService {
     private final OrderTableRepository orderTableRepository;
     private final OrderRepository orderRepository;
@@ -23,6 +22,7 @@ public class TableService {
         this.orderRepository = orderRepository;
     }
 
+    @Transactional
     public OrderTableResponse create(final OrderTableRequest request) {
         final OrderTable persistOrderTable = orderTableRepository.save(request.toOrderTable());
         return OrderTableResponse.of(persistOrderTable);
@@ -36,6 +36,7 @@ public class TableService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public OrderTable changeEmpty(final Long id, final OrderTableRequest request) {
         final OrderTable savedOrderTable = findByIdElseThrow(id);
         validateOrderTableToChangeEmpty(savedOrderTable);
@@ -57,6 +58,7 @@ public class TableService {
         }
     }
 
+    @Transactional
     public OrderTable changeNumberOfGuests(final Long id, final OrderTableRequest request) {
         final OrderTable savedOrderTable = getById(id);
         validateOrderTableToChangeNumberOfGuests(savedOrderTable);

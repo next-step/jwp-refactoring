@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 public class OrderService {
     private final OrderRepository orderRepository;
     private final MenuService menuService;
@@ -28,6 +27,7 @@ public class OrderService {
         this.tableService = tableService;
     }
 
+    @Transactional
     public OrderResponse create(final OrderRequest request) {
         validateRequest(request);
 
@@ -82,6 +82,7 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public OrderResponse changeOrderStatus(final Long id, final OrderRequest request) {
         final Order savedOrder = orderRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(String.format("주문을 찾을 수 없습니다. id: %d", id)));

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 public class TableGroupService {
     private final TableGroupRepository tableGroupRepository;
     private final TableService tableService;
@@ -26,6 +25,7 @@ public class TableGroupService {
         this.orderService = orderService;
     }
 
+    @Transactional
     public TableGroupResponse create(final TableGroupRequest request) {
         final TableGroup tableGroup = tableGroupRepository.save(new TableGroup());
         tableGroup.addOrderTables(getOrderTablesFromRequest(request));
@@ -39,6 +39,7 @@ public class TableGroupService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void ungroup(final Long id) {
         final TableGroup savedTableGroup = tableGroupRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(String.format("테이블 그룹을 찾을 수 없습니다. id: %d", id)));
