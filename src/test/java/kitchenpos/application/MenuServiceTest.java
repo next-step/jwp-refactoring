@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
@@ -77,7 +76,6 @@ class MenuServiceTest {
     public void createNonExistsMenuGroup() {
         Menu menu = new Menu();
         menu.setMenuGroup(new MenuGroup());
-//        menu.setPrice(BigDecimal.valueOf(18000));
         menu.setPrice(new Price(BigDecimal.valueOf(18000)));
         menu.setName("탕수육 세트");
 
@@ -105,8 +103,6 @@ class MenuServiceTest {
     public void createNotCheaperPrice() {
         Menu menu = new Menu(1L, "모닝세트", BigDecimal.valueOf(8000), 패스트푸드류, new MenuProducts(Arrays.asList(스낵랩_메뉴_상품, 맥모닝_메뉴_상품)));
 
-        given(productRepository.findById(스낵랩.getId())).willReturn(Optional.of(스낵랩));
-        given(productRepository.findById(맥모닝.getId())).willReturn(Optional.of(맥모닝));
         given(menuGroupRepository.existsById(패스트푸드류.getId())).willReturn(true);
 
         assertThatThrownBy(()-> menuService.create(menu)).isInstanceOf(IllegalArgumentException.class);
@@ -116,8 +112,6 @@ class MenuServiceTest {
     public void createSuccess() {
         Menu menu = new Menu(1L, "스낵랩 상품", BigDecimal.valueOf(3000), 패스트푸드류, new MenuProducts(Arrays.asList(스낵랩_메뉴_상품)));
 
-        given(productRepository.findById(스낵랩.getId())).willReturn(Optional.of(스낵랩));
-        given(menuProductRepository.save(스낵랩_메뉴_상품)).willReturn(스낵랩_메뉴_상품);
         given(menuGroupRepository.existsById(패스트푸드류.getId())).willReturn(true);
         given(menuRepository.save(menu)).willReturn(menu);
 

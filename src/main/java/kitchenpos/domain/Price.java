@@ -35,7 +35,6 @@ public class Price {
     }
 
     public void add(Price value){
-        System.out.println("value.getPrice() = " + value.getPrice());
         price = price.add(value.getPrice());
     }
 

@@ -1,7 +1,6 @@
 package kitchenpos.domain;
 
 import java.math.BigDecimal;
-import java.util.List;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -69,8 +68,8 @@ public class Menu {
         this.menuGroup = menuGroup;
     }
 
-    public List<MenuProduct> getMenuProducts() {
-        return menuProducts.getMenuProducts();
+    public MenuProducts getMenuProducts() {
+        return menuProducts;
     }
 
     public void setMenuProducts(MenuProducts menuProducts){
