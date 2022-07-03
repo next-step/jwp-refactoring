@@ -3,9 +3,14 @@ package kitchenpos.util;
 import kitchenpos.domain.*;
 import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.domain.OrderTable;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
+
+import static kitchenpos.util.testFixture.빈_주문테이블_3_생성;
 
 public class testFixture {
 
@@ -54,11 +59,11 @@ public class testFixture {
     }
 
     public static OrderTable 주문테이블_1_생성() {
-        return OrderTable.of(1L, 1L, 3, false);
+        return OrderTable.of(단체지정_1_생성(Arrays.asList(빈_주문테이블_1_생성(), 빈_주문테이블_2_생성())), 1, false);
     }
 
     public static OrderTable 주문테이블_2_생성() {
-        return OrderTable.of(2L, 1L, 0, false);
+        return OrderTable.of(단체지정_2_생성(Arrays.asList(빈_주문테이블_3_생성())), 1, false);
     }
 
     public static OrderTable 빈_주문테이블_1_생성() {
@@ -74,15 +79,15 @@ public class testFixture {
     }
 
     public static OrderTable 주문테이블_3_생성() {
-        return OrderTable.of(3L, null, 3, true);
+        return OrderTable.of(null, 3, true);
     }
 
     public static TableGroup 단체지정_1_생성(List<OrderTable> orderTables) {
-        return TableGroup.of(1L, null, orderTables);
+        return TableGroup.of(orderTables);
     }
 
     public static TableGroup 단체지정_2_생성(List<OrderTable> orderTables) {
-        return TableGroup.of(1L, null, orderTables);
+        return TableGroup.of(orderTables);
     }
 
     public static Order 주문_1_생성(List<OrderLineItem> orderLineItems) {
