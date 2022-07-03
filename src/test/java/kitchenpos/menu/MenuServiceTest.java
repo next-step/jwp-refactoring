@@ -12,10 +12,12 @@ import java.util.List;
 import java.util.Optional;
 import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.dao.MenuRepository;
 import kitchenpos.menu.dao.MenuProductRepository;
+import kitchenpos.menu.dao.MenuRepository;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.dao.ProductRepository;
@@ -43,18 +45,23 @@ class MenuServiceTest {
     @Mock
     MenuGroupService menuGroupService;
 
+    @Mock
+    MenuProductRepository menuProductRepository;
+
     Menu 후라이드치킨;
     Product 후라이드;
-    MenuProduct 후라이드치킨상품;
     MenuRequest 상품;
+    MenuProduct 후라이드치킨상품;
 
     @BeforeEach
     void setUp() {
         후라이드 = new Product("후라이드", BigDecimal.valueOf(15000));
-        후라이드치킨 = new Menu("후라이드치킨", BigDecimal.valueOf(15000));
-        후라이드치킨상품 = new MenuProduct(후라이드치킨, 후라이드.getId(), 1L);
+        후라이드치킨 = new Menu("후라이드치킨", BigDecimal.valueOf(15000), 1L);
+        후라이드치킨상품 = new MenuProduct(후라이드, 1L);
+        후라이드치킨.setMenuProducts(new MenuProducts(Collections.singletonList(후라이드치킨상품)));
 
-        상품 = new MenuRequest(후라이드치킨.getName(), BigDecimal.valueOf(15000), 후라이드치킨.getMenuGroupId(), Collections.singletonList(후라이드치킨상품));
+        상품 = new MenuRequest("후라이드치킨", BigDecimal.valueOf(15000), 1L,
+                Collections.singletonList(new MenuProductRequest(1L, 1L)));
     }
 
     @Test
@@ -63,6 +70,7 @@ class MenuServiceTest {
         // given
         given(productRepository.findById(any())).willReturn(Optional.ofNullable(후라이드));
         given(menuRepository.save(any())).willReturn(후라이드치킨);
+        given(menuProductRepository.saveAll(any())).willReturn(Collections.singletonList(후라이드치킨상품));
 
         // when
         MenuResponse actual = menuService.create(상품);
@@ -75,7 +83,8 @@ class MenuServiceTest {
     @DisplayName("메뉴 저장시 메뉴의 금액은 0원 이상이다")
     void create_priceException() {
         // given
-        상품 = new MenuRequest(후라이드치킨.getName(), BigDecimal.valueOf(-1), 후라이드치킨.getMenuGroupId(), Collections.singletonList(후라이드치킨상품));
+        상품 = new MenuRequest("후라이드치킨", BigDecimal.valueOf(-1), 1L,
+                Collections.singletonList(new MenuProductRequest(1L, 1L)));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
@@ -100,7 +109,7 @@ class MenuServiceTest {
     @DisplayName("메뉴 저장시 메뉴는 존재하는 상품 정보를 가져야 한다")
     void create_nonProductInfoError() {
         // given
-        given(productRepository.findById(후라이드치킨상품.getProductId())).willReturn(Optional.empty());
+        given(productRepository.findById(any())).willReturn(Optional.empty());
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
@@ -112,8 +121,9 @@ class MenuServiceTest {
     @DisplayName("메뉴 저장시 메뉴상품에 속한 상품들의 금액 합보다 메뉴 가격이 작아야 한다")
     void create_totalPriceError() {
         // given
-        MenuRequest 상품 = new MenuRequest(후라이드치킨.getName(), BigDecimal.valueOf(20000), 후라이드치킨.getMenuGroupId(), Collections.singletonList(후라이드치킨상품));
-        given(productRepository.findById(후라이드치킨상품.getProductId())).willReturn(Optional.ofNullable(후라이드));
+        상품 = new MenuRequest("후라이드치킨", BigDecimal.valueOf(20000), 1L,
+                Collections.singletonList(new MenuProductRequest(1L, 1L)));
+        given(productRepository.findById(any())).willReturn(Optional.ofNullable(후라이드));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(

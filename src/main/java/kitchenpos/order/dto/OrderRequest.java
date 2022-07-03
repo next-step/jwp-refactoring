@@ -11,10 +11,9 @@ public class OrderRequest {
     public OrderRequest() {
     }
 
-    public OrderRequest(Long orderTableId, List<OrderLineItem> orderLineItems) {
+    public OrderRequest(Long orderTableId, List<OrderLineItemRequest> orderLineItems) {
         this.orderTableId = orderTableId;
-        this.orderLineItems = orderLineItems.stream().map(x -> new OrderLineItemRequest(x.getMenuId(), x.getQuantity()))
-                .collect(Collectors.toList());
+        this.orderLineItems = orderLineItems;
     }
 
     public Long getOrderTableId() {

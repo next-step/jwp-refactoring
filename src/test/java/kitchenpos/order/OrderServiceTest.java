@@ -19,6 +19,7 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.dao.OrderTableRepository;
@@ -63,10 +64,11 @@ class OrderServiceTest {
 
         주문 = new Order(테이블1);
 
-        주문.setOrderLineItems(new OrderLineItems((Collections.singletonList(주문내역))));
+        주문.setOrderLineItems(new OrderLineItems(Collections.singletonList(주문내역)));
         주문내역.setOrder(주문);
 
-        주문요청 = new OrderRequest(1L, Collections.singletonList(주문내역));
+        주문요청 = new OrderRequest(1L,
+                Collections.singletonList(new OrderLineItemRequest(주문내역.getMenuId(), 주문내역.getQuantity())));
     }
 
     @Test
@@ -105,8 +107,8 @@ class OrderServiceTest {
     @DisplayName("주문시 주문내역의 메뉴는 모두 존재하는 메뉴여야 한다")
     void create_nonMenuError() {
         // given
-        OrderLineItem 주문내역1 = new OrderLineItem(1L, 1L);
-        OrderLineItem 주문내역2 = new OrderLineItem(1L, 1L);
+        OrderLineItemRequest 주문내역1 = new OrderLineItemRequest(1L, 1L);
+        OrderLineItemRequest 주문내역2 = new OrderLineItemRequest(1L, 1L);
         주문요청 = new OrderRequest(1L, Arrays.asList(주문내역1, 주문내역2));
 
         given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(테이블1));

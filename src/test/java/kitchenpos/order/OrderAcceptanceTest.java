@@ -17,9 +17,9 @@ import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.Collections;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderResponse;
@@ -35,7 +35,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
     Product 상품;
     MenuGroup 메뉴그룹;
     MenuProduct 메뉴상품;
-    Menu 양념치킨;
+    MenuResponse 양념치킨;
     OrderTable 주문테이블;
     OrderLineItem 주문목록;
 
@@ -47,9 +47,9 @@ class OrderAcceptanceTest extends AcceptanceTest {
 
         메뉴그룹 = 메뉴_그룹_생성_요청("추천메뉴").as(MenuGroup.class);
 
-        메뉴상품 = new MenuProduct(상품.getId(), 1L);
+        메뉴상품 = new MenuProduct(상품, 1L);
 
-        양념치킨 = 메뉴_생성_요청("양념치킨", new BigDecimal(18000), 메뉴그룹.getId(), Collections.singletonList(메뉴상품)).as(Menu.class);
+        양념치킨 = 메뉴_생성_요청("양념치킨", new BigDecimal(18000), 메뉴그룹.getId(), 메뉴상품).as(MenuResponse.class);
 
         주문테이블 = 손님_입장(5, 빈자리).as(OrderTable.class);
         테이블_상태_변경_요청(주문테이블, 사용중);

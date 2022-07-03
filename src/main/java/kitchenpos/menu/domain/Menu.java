@@ -3,11 +3,11 @@ package kitchenpos.menu.domain;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 
 @Entity
 public class Menu {
@@ -17,22 +17,17 @@ public class Menu {
     private String name;
     private BigDecimal price;
     private Long menuGroupId;
-    @OneToMany(mappedBy = "menu")
-    private List<MenuProduct> menuProducts;
+    @Embedded
+    private MenuProducts menuProducts;
 
     protected Menu() {
     }
 
-    public Menu(String name, BigDecimal price) {
-        this(name, price, null, null);
-    }
-
-    public Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    public Menu(String name, BigDecimal price, Long menuGroupId) {
         validatePriceCheck(price);
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
-        this.menuProducts = menuProducts;
     }
 
     public Long getId() {
@@ -52,7 +47,11 @@ public class Menu {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts;
+        return menuProducts.getMenuProducts();
+    }
+
+    public void setMenuProducts(MenuProducts menuProducts) {
+        this.menuProducts = menuProducts;
     }
 
     private void validatePriceCheck(BigDecimal price) {

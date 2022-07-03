@@ -3,19 +3,23 @@ package kitchenpos.menu;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
 
 public class MenuAcceptanceAPI {
 
     public static ExtractableResponse<Response> 메뉴_생성_요청(String name, BigDecimal price, Long menuGroupId,
-                                                         List<MenuProduct> menuProductList) {
-        Menu menu = new Menu(name, price, menuGroupId, menuProductList);
+                                                         MenuProduct menuProduct) {
+        List<MenuProductRequest> menuProductRequests = Collections.singletonList(
+                new MenuProductRequest(menuProduct.getProduct().getId(), menuProduct.getQuantity()));
+        MenuRequest menuRequest = new MenuRequest(name, price, menuGroupId, menuProductRequests);
 
-        return AcceptanceTest.doPost("/api/menus", menu);
+        return AcceptanceTest.doPost("/api/menus", menuRequest);
     }
 
     public static ExtractableResponse<Response> 메뉴_조회_요청() {
