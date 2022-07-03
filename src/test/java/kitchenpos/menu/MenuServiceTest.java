@@ -53,9 +53,8 @@ class MenuServiceTest {
         후라이드 = new Product("후라이드", BigDecimal.valueOf(15000));
         후라이드치킨 = new Menu("후라이드치킨", BigDecimal.valueOf(15000));
         후라이드치킨상품 = new MenuProduct(후라이드치킨, 후라이드.getId(), 1L);
-        후라이드치킨.setMenuProducts(Collections.singletonList(후라이드치킨상품));
 
-        상품 = new MenuRequest(후라이드치킨.getName(), BigDecimal.valueOf(15000), 후라이드치킨.getMenuGroupId(), 후라이드치킨.getMenuProducts());
+        상품 = new MenuRequest(후라이드치킨.getName(), BigDecimal.valueOf(15000), 후라이드치킨.getMenuGroupId(), Collections.singletonList(후라이드치킨상품));
     }
 
     @Test
@@ -76,7 +75,7 @@ class MenuServiceTest {
     @DisplayName("메뉴 저장시 메뉴의 금액은 0원 이상이다")
     void create_priceException() {
         // given
-        상품 = new MenuRequest(후라이드치킨.getName(), BigDecimal.valueOf(-1), 후라이드치킨.getMenuGroupId(), 후라이드치킨.getMenuProducts());
+        상품 = new MenuRequest(후라이드치킨.getName(), BigDecimal.valueOf(-1), 후라이드치킨.getMenuGroupId(), Collections.singletonList(후라이드치킨상품));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
@@ -113,7 +112,7 @@ class MenuServiceTest {
     @DisplayName("메뉴 저장시 메뉴상품에 속한 상품들의 금액 합보다 메뉴 가격이 작아야 한다")
     void create_totalPriceError() {
         // given
-        MenuRequest 상품 = new MenuRequest(후라이드치킨.getName(), BigDecimal.valueOf(20000), 후라이드치킨.getMenuGroupId(), 후라이드치킨.getMenuProducts());
+        MenuRequest 상품 = new MenuRequest(후라이드치킨.getName(), BigDecimal.valueOf(20000), 후라이드치킨.getMenuGroupId(), Collections.singletonList(후라이드치킨상품));
         given(productRepository.findById(후라이드치킨상품.getProductId())).willReturn(Optional.ofNullable(후라이드));
 
         // when & then
