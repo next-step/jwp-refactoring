@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Menu {
@@ -24,10 +25,23 @@ public class Menu {
     }
 
     public Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        validatePrice(price);
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
+        updateMenuProducts(menuProducts);
+    }
+
+    private void updateMenuProducts(List<MenuProduct> menuProducts) {
         this.menuProducts = new MenuProducts(menuProducts);
+        this.menuProducts.validatePrice(price);
+        this.menuProducts.addMenu(this);
+    }
+
+    private void validatePrice(BigDecimal price) {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException();
+        }
     }
 
     public Long getId() {
@@ -63,7 +77,11 @@ public class Menu {
     }
 
     public List<MenuProduct> getMenuProducts() {
-        return menuProducts.getMenuProducts();
+        return menuProducts.getElements();
+    }
+
+    public void setMenuProducts(MenuProducts menuProducts) {
+        this.menuProducts = menuProducts;
     }
 
     public void setMenuProducts(final List<MenuProduct> menuProducts) {
