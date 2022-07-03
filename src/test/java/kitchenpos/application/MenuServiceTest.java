@@ -50,20 +50,13 @@ class MenuServiceTest {
         스낵랩.setName("스낵랩");
         스낵랩.setPrice(BigDecimal.valueOf(3000));
 
-        맥모닝 = new Product();
-        맥모닝.setName("맥모닝");
-        맥모닝.setPrice(BigDecimal.valueOf(4000));
-
         스낵랩_메뉴_상품 = new MenuProduct();
         스낵랩_메뉴_상품.setQuantity(1);
         스낵랩_메뉴_상품.setProduct(스낵랩);
 
-        맥모닝_메뉴_상품 = new MenuProduct();
-        맥모닝_메뉴_상품.setQuantity(1);
-        맥모닝_메뉴_상품.setProduct(맥모닝);
-
         패스트푸드류 = new MenuGroup();
         패스트푸드류.setName("패스트푸드");
+        menuGroupRepository.save(패스트푸드류);
     }
 
     @AfterEach
@@ -106,14 +99,11 @@ class MenuServiceTest {
     public void createNotCheaperPrice() {
         Menu menu = new Menu("모닝세트", BigDecimal.valueOf(8000), 패스트푸드류,
                 new MenuProducts(Arrays.asList(스낵랩_메뉴_상품, 맥모닝_메뉴_상품)));
-        menuGroupRepository.save(패스트푸드류);
-
         assertThatThrownBy(() -> menuService.create(menu)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     public void createSuccess() {
-        menuGroupRepository.save(패스트푸드류);
         productRepository.save(스낵랩);
 
         Menu menu = new Menu("스낵랩 상품", BigDecimal.valueOf(3000), 패스트푸드류,
@@ -123,7 +113,14 @@ class MenuServiceTest {
 
     @Test
     public void list() {
-        menuGroupRepository.save(패스트푸드류);
+        맥모닝 = new Product();
+        맥모닝.setName("맥모닝");
+        맥모닝.setPrice(BigDecimal.valueOf(4000));
+
+        맥모닝_메뉴_상품 = new MenuProduct();
+        맥모닝_메뉴_상품.setQuantity(1);
+        맥모닝_메뉴_상품.setProduct(맥모닝);
+
         스낵랩_메뉴_상품.setProduct(productRepository.save(스낵랩));
         맥모닝_메뉴_상품.setProduct(productRepository.save(맥모닝));
 

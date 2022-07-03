@@ -2,48 +2,57 @@ package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
+import javax.transaction.Transactional;
 import kitchenpos.domain.Menu;
+import kitchenpos.domain.MenuGroup;
+import kitchenpos.domain.MenuProduct;
+import kitchenpos.domain.MenuProducts;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderLineItems;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.Product;
+import kitchenpos.repository.MenuGroupRepository;
+import kitchenpos.repository.MenuProductRepository;
 import kitchenpos.repository.MenuRepository;
 import kitchenpos.repository.OrderLineItemRepository;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
+import kitchenpos.repository.ProductRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class OrderServiceTest {
-    @Mock
+    @Autowired
+    MenuProductRepository menuProductRepository;
+    @Autowired
     MenuRepository menuRepository;
-    @Mock
-    OrderLineItemRepository orderLineItemRepository;
-    @Mock
-    OrderRepository orderRepository;
-    @Mock
+    @Autowired
     OrderTableRepository orderTableRepository;
+    @Autowired
+    OrderRepository orderRepository;
+    @Autowired
+    MenuGroupRepository menuGroupRepository;
+    @Autowired
+    ProductRepository productRepository;
+    @Autowired
+    OrderLineItemRepository orderLineItemRepository;
 
-    @InjectMocks
+    @Autowired
     OrderService orderService;
 
     List<OrderLineItem> orderLineItems;
-
     Order order;
 
     @BeforeEach
@@ -51,6 +60,16 @@ class OrderServiceTest {
         orderLineItems = new ArrayList<>();
         order = new Order();
         order.setId(1L);
+    }
+
+    @AfterEach
+    void tearDown() {
+        menuProductRepository.deleteAllInBatch();
+        productRepository.deleteAllInBatch();
+        orderLineItemRepository.deleteAllInBatch();
+        menuRepository.deleteAllInBatch();
+        menuGroupRepository.deleteAllInBatch();
+        orderRepository.deleteAllInBatch();
     }
 
     @Test
@@ -62,22 +81,10 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("주문 내역의 개수는 메뉴의 개수와 동일하지 않으면 에러 반환")
-    public void orderLineCountNotEqualsMenuCount() {
-        orderLineItems.add(new OrderLineItem(1L, null, new Menu(), 1));
-        orderLineItems.add(new OrderLineItem(2L, null, new Menu(), 2));
-
-        order.setOrderLineItems(orderLineItems);
-
-        given(menuRepository.countByIdIn(any(List.class))).willReturn(3L);
-        assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
     @DisplayName("존재하지 않는 테이블에서 주문 시 에러 반환")
-    public void orderTableNotExists() {
+    public void orderTableNotExists()
+    {
         order.setOrderTable(new OrderTable());
-
         assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -89,55 +96,32 @@ class OrderServiceTest {
         orderTable.setEmpty(true);
 
         order.setOrderTable(orderTable);
-
         assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("주문 정상 저장 후 COOKING 초기 상태 확인")
     public void orderSuccessSave() {
-        Order order = new Order();
-
-        OrderLineItem orderLineItem = new OrderLineItem(1L, order, new Menu(), 1);
-        orderLineItems.add(orderLineItem);
-
-        OrderTable orderTable = new OrderTable(1L, null, 3, false);
-
-        order.setOrderLineItems(orderLineItems);
-        order.setOrderTable(orderTable);
-
-        given(menuRepository.countByIdIn(any(List.class))).willReturn((long) orderLineItems.size());
-        given(orderTableRepository.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
-        given(orderRepository.save(order)).willReturn(order);
-
-        Order savedOrder = orderService.create(order);
+        Order savedOrder = 주문_생성_저장();
         assertThat(savedOrder.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
     }
 
     @Test
     @DisplayName("전체 주문 내역 보기")
     public void listOrders() {
-        Order orderCooking = new Order(1L, new OrderTable(), OrderStatus.COOKING, LocalDateTime.now(), null);
-        Order orderMeal = new Order(2L, new OrderTable(), OrderStatus.MEAL, LocalDateTime.now(), null);
-
-        given(orderRepository.findAll()).willReturn(Arrays.asList(orderCooking, orderMeal));
-
-        assertThat(orderService.list()).contains(orderCooking, orderMeal);
+        Order savedOrder = 주문_생성_저장();
+        assertThat(orderService.list().get(0).getId()).isEqualTo(savedOrder.getId());
     }
 
     @Test
+    @Transactional
     @DisplayName("전체 주문 내역 조회시 주문 항목 확인 가능")
     public void listOrdersShowOrderLineItems(){
-        OrderLineItem orderLineItem = new OrderLineItem(1L, order, new Menu(), 1);
-        OrderLineItems orderLineItems= new OrderLineItems();
-        orderLineItems.add(orderLineItem);
-
-        order.setOrderLineItems(orderLineItems);
-
-        given(orderRepository.findAll()).willReturn(Arrays.asList(order));
+        Order savedOrder = 주문_생성_저장();
+        OrderLineItem orderLineItem = savedOrder.getOrderLineItems().getOrderLineItems().get(0);
 
         Order findOrder = orderService.list().stream()
-                .filter(it -> it.getId().equals(this.order.getId()))
+                .filter(it -> it.getId().equals(savedOrder.getId()))
                 .findFirst()
                 .get();
 
@@ -149,8 +133,6 @@ class OrderServiceTest {
     @Test
     @DisplayName("존재하지 않는 주문 상태 변경 시도 시 에러 반환")
     public void changeStatusNotExitsOrder() {
-        given(orderRepository.findById(any())).willReturn(Optional.empty());
-
         order.setOrderStatus(OrderStatus.MEAL);
 
         assertThatThrownBy(() -> orderService.changeOrderStatus(1L, order)).isInstanceOf(
@@ -158,12 +140,11 @@ class OrderServiceTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("완료단계 주문 건 상태 변경 시도시 에러 반환")
     public void changeStatusInCompletion() {
-        order.setOrderStatus(OrderStatus.COMPLETION);
-
-        given(orderRepository.findById(order.getId())).willReturn(Optional.of(order));
-
+        Order savedOrder = 주문_생성_저장();
+        savedOrder.setOrderStatus(OrderStatus.COMPLETION);
         assertThatThrownBy(() -> orderService.changeOrderStatus(order.getId(), new Order())).isInstanceOf(
                 IllegalArgumentException.class);
     }
@@ -171,14 +152,53 @@ class OrderServiceTest {
     @Test
     @DisplayName("주문 상태 변경 정상 처리")
     public void changeStatusSuccess() {
-        order.setOrderStatus(OrderStatus.COOKING);
-
+        Order savedOrder = 주문_생성_저장();
+        savedOrder.setOrderStatus(OrderStatus.COOKING);
         Order changeOrder = new Order();
         changeOrder.setOrderStatus(OrderStatus.MEAL);
 
-        given(orderRepository.findById(order.getId())).willReturn(Optional.of(order));
-
-        assertThat(orderService.changeOrderStatus(order.getId(), changeOrder).getOrderStatus()).isEqualTo(
+        assertThat(orderService.changeOrderStatus(savedOrder.getId(), changeOrder).getOrderStatus()).isEqualTo(
                 changeOrder.getOrderStatus());
+    }
+
+    private Order 주문_생성_저장() {
+        Menu 스낵랩_상품 = 메뉴생성();
+        OrderLineItems orderLineItems = 주문항목_리스트_생성(스낵랩_상품);
+        OrderTable orderTable = 주문테이블_생성();
+
+        Order savedOrder = 주문저장(orderLineItems, orderTable);
+        return savedOrder;
+    }
+
+    private Menu 메뉴생성() {
+        MenuGroup 패스트푸드류 = menuGroupRepository.save(new MenuGroup("패스트푸드"));
+        Product 스낵랩 = productRepository.save(new Product("스낵랩", BigDecimal.valueOf(3000)));
+
+        MenuProduct 스낵랩_메뉴_상품 = new MenuProduct();
+        스낵랩_메뉴_상품.setQuantity(1);
+        스낵랩_메뉴_상품.setProduct(스낵랩);
+
+        Menu 스낵랩_상품 = menuRepository.save(new Menu("스낵랩 상품", BigDecimal.valueOf(3000), 패스트푸드류,
+                new MenuProducts(Arrays.asList(스낵랩_메뉴_상품))));
+        return 스낵랩_상품;
+    }
+
+    private OrderLineItems 주문항목_리스트_생성(Menu menu) {
+        OrderLineItem orderLineItem = new OrderLineItem(1L, null, menu, 1);
+        OrderLineItems orderLineItems = new OrderLineItems();
+        orderLineItems.add(orderLineItem);
+        return orderLineItems;
+    }
+
+    private OrderTable 주문테이블_생성() {
+        return orderTableRepository.save(new OrderTable(null, 3, false));
+    }
+
+    private Order 주문저장(OrderLineItems orderLineItems, OrderTable orderTable) {
+        Order order = new Order();
+        order.setOrderLineItems(orderLineItems);
+        order.setOrderTable(orderTable);
+        Order savedOrder = orderService.create(order);
+        return savedOrder;
     }
 }
