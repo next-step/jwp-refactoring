@@ -1,5 +1,7 @@
 package kitchenpos.order.domain;
 
+import kitchenpos.common.exception.BadRequestException;
+import kitchenpos.common.exception.ErrorCode;
 import kitchenpos.table.domain.OrderTable;
 import org.springframework.util.CollectionUtils;
 
@@ -48,7 +50,7 @@ public class Order {
 
     private void validateOrderLineItems(List<OrderLineItem> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
+            throw new BadRequestException(ErrorCode.ORDER_LINE_ITEM_EMPTY);
         }
     }
 
@@ -110,13 +112,13 @@ public class Order {
 
     private void validateOrderTable(OrderTable orderTable) {
         if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new BadRequestException(ErrorCode.ORDER_TABLE_EMPTY);
         }
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
         if (Objects.equals(OrderStatus.COMPLETION, this.getOrderStatus())) {
-            throw new IllegalArgumentException();
+            throw new BadRequestException(ErrorCode.CAN_NOT_CHANGE_COMPLETED_ORDER_STATUS);
         }
         this.orderStatus = orderStatus;
     }

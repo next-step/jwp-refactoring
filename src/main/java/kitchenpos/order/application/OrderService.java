@@ -1,5 +1,8 @@
 package kitchenpos.order.application;
 
+import kitchenpos.common.exception.BadRequestException;
+import kitchenpos.common.exception.ErrorCode;
+import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -51,7 +54,7 @@ public class OrderService {
     @Transactional
     public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest request) {
         final Order savedOrder = orderRepository.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_NOT_FOUND));
 
         savedOrder.changeOrderStatus(request.getOrderStatus());
         savedOrder.addOrderLineItems(orderLineItemRepository.findAllByOrderId(orderId));
@@ -64,7 +67,7 @@ public class OrderService {
         final List<Long> menuIds = OrderLineItems.extractMenuIds(orderLineItems);
 
         if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
-            throw new IllegalArgumentException();
+            throw new BadRequestException(ErrorCode.CONTAINS_NOT_EXIST_MENU);
         }
 
         return orderLineItems;
@@ -72,6 +75,6 @@ public class OrderService {
 
     private OrderTable findOrderTableById(OrderRequest request) {
         return orderTableRepository.findById(request.getOrderTableId())
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_TABLE_NOT_FOUND));
     }
 }
