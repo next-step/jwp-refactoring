@@ -32,7 +32,7 @@ public class OrderService {
         validateRequest(request);
 
         final Order persistOrder = orderRepository.save(new Order(request.getOrderTableId()));
-        persistOrder.addOrderLineItems(getOrderLineItemsFromRequest(request));
+        persistOrder.addOrderLineItems(createOrderLineItemsFromRequest(request));
 
         return OrderResponse.of(persistOrder);
     }
@@ -61,12 +61,12 @@ public class OrderService {
     }
 
     private void validateMenuId(final Long id) {
-        if (!menuService.existsById(id)) {
+        if (!menuService.notExistsById(id)) {
             throw new IllegalArgumentException(String.format("주문 테이블이 존재하지 않습니다. id: %d", id));
         }
     }
 
-    private List<OrderLineItem> getOrderLineItemsFromRequest(final OrderRequest request) {
+    private List<OrderLineItem> createOrderLineItemsFromRequest(final OrderRequest request) {
         return request.getOrderLineItems()
                 .stream()
                 .map(orderLineItemRequest -> new OrderLineItem(

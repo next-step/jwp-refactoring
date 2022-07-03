@@ -141,12 +141,12 @@ class MenuServiceTest {
     }
 
     @Test
-    void 아이디로_메뉴의_존재_여부를_조회할_수_있어야_한다() {
+    void 아이디로_메뉴의_부존재_여부를_조회할_수_있어야_한다() {
         // given
         final Menu given = new Menu(1L, "menu", new Price(15000L), 1L);
         when(menuRepository.existsById(given.getId())).thenReturn(true);
 
         // when and then
-        assertThat(menuService.existsById(given.getId())).isTrue();
+        assertThat(menuService.notExistsById(given.getId())).isFalse();
     }
 }

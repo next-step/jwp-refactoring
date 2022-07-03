@@ -31,8 +31,7 @@ public class MenuService {
     public MenuResponse create(final MenuRequest request) {
         validateRequest(request);
 
-        final Menu persistMenu = menuRepository.save(
-                new Menu(request.getName(), request.getPrice(), request.getMenuGroupId()));
+        final Menu persistMenu = menuRepository.save(createMenu(request));
         persistMenu.addMenuProducts(getMenuProductsFromRequest(request));
 
         return MenuResponse.of(persistMenu);
@@ -62,6 +61,10 @@ public class MenuService {
         }
     }
 
+    private Menu createMenu(MenuRequest request) {
+        return new Menu(request.getName(), request.getPrice(), request.getMenuGroupId());
+    }
+
     private List<MenuProduct> getMenuProductsFromRequest(final MenuRequest request) {
         return request.getMenuProducts()
                 .stream()
@@ -85,7 +88,7 @@ public class MenuService {
     }
 
     @Transactional(readOnly = true)
-    public boolean existsById(final Long id) {
-        return menuRepository.existsById(id);
+    public boolean notExistsById(final Long id) {
+        return !menuRepository.existsById(id);
     }
 }

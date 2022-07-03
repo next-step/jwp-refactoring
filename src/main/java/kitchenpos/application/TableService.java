@@ -39,7 +39,7 @@ public class TableService {
     @Transactional
     public OrderTable changeEmpty(final Long id, final OrderTableRequest request) {
         final OrderTable savedOrderTable = findByIdElseThrow(id);
-        validateOrderTableToChangeEmpty(savedOrderTable);
+        checkIfPossibleToChangeEmpty(savedOrderTable);
         savedOrderTable.changeEmpty(request.isEmpty());
         return orderTableRepository.save(savedOrderTable);
     }
@@ -49,8 +49,8 @@ public class TableService {
                 .orElseThrow(() -> new IllegalArgumentException(String.format("주문 테이블을 찾을 수 없습니다. id: %d", id)));
     }
 
-    private void validateOrderTableToChangeEmpty(final OrderTable orderTable) {
-        if (null != orderTable.getTableGroupId()) {
+    private void checkIfPossibleToChangeEmpty(final OrderTable orderTable) {
+        if (orderTable.getTableGroupId() != null) {
             throw new IllegalStateException("그룹이 지정된 테이블의 비었는지 여부를 변경할 수 없습니다.");
         }
         if (orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTable.getId(), OrderStatus.notCompletes())) {
@@ -61,12 +61,12 @@ public class TableService {
     @Transactional
     public OrderTable changeNumberOfGuests(final Long id, final OrderTableRequest request) {
         final OrderTable savedOrderTable = getById(id);
-        validateOrderTableToChangeNumberOfGuests(savedOrderTable);
+        checkIfPossibleToChangeNumberOfGuests(savedOrderTable);
         savedOrderTable.changeNumberOfGuests(request.getNumberOfGuests());
         return orderTableRepository.save(savedOrderTable);
     }
 
-    private void validateOrderTableToChangeNumberOfGuests(final OrderTable orderTable) {
+    private void checkIfPossibleToChangeNumberOfGuests(final OrderTable orderTable) {
         if (orderTable.isEmpty()) {
             throw new IllegalStateException("빈 테이블의 손님 수는 변경할 수 없습니다.");
         }
@@ -81,6 +81,4 @@ public class TableService {
     public List<OrderTable> getAllByTableGroupId(final Long tableGroupId) {
         return orderTableRepository.findAllByTableGroupId(tableGroupId);
     }
-
-
 }

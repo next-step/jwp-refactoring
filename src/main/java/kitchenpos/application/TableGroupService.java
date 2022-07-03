@@ -29,7 +29,7 @@ public class TableGroupService {
     public TableGroupResponse create(final TableGroupRequest request) {
         final TableGroup tableGroup = tableGroupRepository.save(new TableGroup());
         tableGroup.addOrderTables(getOrderTablesFromRequest(request));
-        return TableGroupResponse.of(tableGroupRepository.save(tableGroup));
+        return TableGroupResponse.of(tableGroup);
     }
 
     private List<OrderTable> getOrderTablesFromRequest(final TableGroupRequest request) {
