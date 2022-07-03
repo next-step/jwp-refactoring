@@ -22,6 +22,7 @@ import kitchenpos.dto.OrderResponse;
 import kitchenpos.fixture.UnitTestFixture;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.repository.OrderRepository;
+import kitchenpos.table.application.TableService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

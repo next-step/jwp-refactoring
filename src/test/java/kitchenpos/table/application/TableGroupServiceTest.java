@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.table.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -8,11 +8,12 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Optional;
-import kitchenpos.domain.TableGroup;
-import kitchenpos.dto.TableGroupRequest;
-import kitchenpos.dto.TableGroupResponse;
+import kitchenpos.application.OrderService;
 import kitchenpos.fixture.UnitTestFixture;
-import kitchenpos.repository.TableGroupRepository;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.table.repository.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

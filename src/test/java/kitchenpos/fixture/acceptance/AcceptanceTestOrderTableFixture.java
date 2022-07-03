@@ -1,7 +1,7 @@
 package kitchenpos.fixture.acceptance;
 
-import kitchenpos.acceptance.TableAcceptanceTest;
-import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.table.acceptance.TableAcceptanceTest;
+import kitchenpos.table.dto.OrderTableResponse;
 
 public class AcceptanceTestOrderTableFixture {
     public final OrderTableResponse 테이블1;

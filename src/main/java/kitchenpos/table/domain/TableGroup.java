@@ -1,4 +1,4 @@
-package kitchenpos.domain;
+package kitchenpos.table.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -9,7 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.table.dto.OrderTableResponse;
 
 @Entity
 @Table(name = "table_group")

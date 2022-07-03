@@ -2,21 +2,21 @@ package kitchenpos.fixture;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import kitchenpos.domain.NumberOfGuests;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderLineItems;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.OrderTables;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.Quantity;
-import kitchenpos.domain.TableGroup;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.product.domain.Product;
+import kitchenpos.table.domain.NumberOfGuests;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTables;
+import kitchenpos.table.domain.TableGroup;
 
 public class UnitTestFixture {
     public final MenuGroup 구이류 = new MenuGroup(1L, "구이류");

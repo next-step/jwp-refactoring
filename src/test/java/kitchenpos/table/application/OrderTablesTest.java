@@ -1,11 +1,15 @@
-package kitchenpos.domain;
+package kitchenpos.table.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
-import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.table.domain.NumberOfGuests;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTables;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.Test;
 
 class OrderTablesTest {

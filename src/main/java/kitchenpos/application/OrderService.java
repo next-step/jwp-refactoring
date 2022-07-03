@@ -5,12 +5,13 @@ import java.util.stream.Collectors;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.OrderLineItemRequest;
 import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.repository.OrderRepository;
+import kitchenpos.table.application.TableService;
+import kitchenpos.table.domain.OrderTable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
