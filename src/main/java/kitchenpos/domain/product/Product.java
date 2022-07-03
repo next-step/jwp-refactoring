@@ -2,13 +2,22 @@ package kitchenpos.domain.product;
 
 import java.math.BigDecimal;
 import java.util.Objects;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
+@Entity
 public class Product {
     private static final int MINIMUM_PRICE = 0;
     public static final String INVALID_PRODUCT_PRICE_ERROR_MESSAGE = "상품 가격이 올바르지 않습니다. 0원 이상의 가격을 입력해주세요.";
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
+
     private BigDecimal price;
 
     public Product() {

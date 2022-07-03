@@ -9,8 +9,8 @@ import static org.mockito.Mockito.verify;
 
 import java.util.List;
 import kitchenpos.application.product.ProductService;
-import kitchenpos.dao.product.ProductDao;
 import kitchenpos.domain.product.Product;
+import kitchenpos.domain.product.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +24,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class ProductServiceTest {
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private ProductService productService;
@@ -34,13 +34,13 @@ class ProductServiceTest {
     public void createProduct() {
         // Given
         final Product given = generateProduct();
-        given(productDao.save(any(Product.class))).will(AdditionalAnswers.returnsFirstArg());
+        given(productRepository.save(any(Product.class))).will(AdditionalAnswers.returnsFirstArg());
 
         // When
         Product actual = productService.create(given);
 
         // Then
-        verify(productDao).save(any(Product.class));
+        verify(productRepository).save(any(Product.class));
         assertThat(actual).isEqualTo(given);
     }
 
@@ -50,13 +50,13 @@ class ProductServiceTest {
         // Given
         final int generateProductCount = 5;
         List<Product> givenProducts = generateProducts(generateProductCount);
-        given(productDao.findAll()).willReturn(givenProducts);
+        given(productRepository.findAll()).willReturn(givenProducts);
 
         // When
         List<Product> actualProducts = productService.list();
 
         // Then
-        verify(productDao).findAll();
+        verify(productRepository).findAll();
         assertThat(actualProducts).hasSize(generateProductCount);
     }
 }
