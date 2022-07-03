@@ -16,7 +16,7 @@ public class OrderLineItem {
     @Column
     private Quantity quantity;
 
-    public OrderLineItem() {
+    protected OrderLineItem() {
     }
 
     public OrderLineItem(Order order, Menu menu, long quantity) {

@@ -9,7 +9,7 @@ public class OrderLineItems {
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
-    public OrderLineItems() {
+    protected OrderLineItems() {
     }
 
     public OrderLineItems(List<OrderLineItem> orderLineItems) {

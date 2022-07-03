@@ -16,7 +16,7 @@ public class OrderTables {
     @OneToMany(mappedBy = "table_group", fetch = FetchType.LAZY)
     private List<OrderTable> orderTables = new ArrayList<>();
 
-    public OrderTables() {
+    protected OrderTables() {
     }
 
     public OrderTables(List<OrderTable> orderTables) {
