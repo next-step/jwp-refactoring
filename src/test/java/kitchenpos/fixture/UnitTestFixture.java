@@ -37,11 +37,16 @@ public class UnitTestFixture {
     public final Menu 김치찌개정식 = new Menu(
             2L, "김치찌개정식", new Price(9000L), 식사류.getId(), new MenuProducts(Arrays.asList(김치찌개정식_김치찌개, 김치찌개정식_공깃밥)));
 
-    public final OrderLineItem 조리중_주문_항목1 = new OrderLineItem(1L, null, 1L, new Quantity(2));
-    public final OrderLineItem 조리중_주문_항목2 = new OrderLineItem(2L, null, 2L, new Quantity(1));
-    public final OrderLineItem 식사중_주문_항목1 = new OrderLineItem(3L, null, 1L, new Quantity(2));
-    public final OrderLineItem 식사중_주문_항목2 = new OrderLineItem(4L, null, 2L, new Quantity(1));
-    public final OrderLineItem 완료된_주문_항목 = new OrderLineItem(5L, null, 2L, new Quantity(2));
+    public final OrderLineItem 조리중_주문_항목1 = new OrderLineItem(
+            1L, null, 1L, 돼지모듬.getName(), 돼지모듬.getPrice().value(), new Quantity(2));
+    public final OrderLineItem 조리중_주문_항목2 = new OrderLineItem(
+            2L, null, 2L, 김치찌개정식.getName(), 김치찌개정식.getPrice().value(), new Quantity(1));
+    public final OrderLineItem 식사중_주문_항목1 = new OrderLineItem(
+            3L, null, 1L, 돼지모듬.getName(), 돼지모듬.getPrice().value(), new Quantity(2));
+    public final OrderLineItem 식사중_주문_항목2 = new OrderLineItem(
+            4L, null, 2L, 김치찌개정식.getName(), 김치찌개정식.getPrice().value(), new Quantity(1));
+    public final OrderLineItem 완료된_주문_항목 = new OrderLineItem(
+            5L, null, 2L, 김치찌개정식.getName(), 김치찌개정식.getPrice().value(), new Quantity(2));
 
     public final OrderTable 테이블 = new OrderTable(1L, null, new NumberOfGuests(4), false);
     public final OrderTable 빈_테이블1 = new OrderTable(2L, null, new NumberOfGuests(0), true);

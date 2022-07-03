@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
@@ -149,5 +150,15 @@ class MenuServiceTest {
 
         // when and then
         assertThat(menuService.notExistsById(given.getId())).isFalse();
+    }
+
+    @Test
+    void 아이디로_메뉴를_조회할_숭_있어야_한다() {
+        // given
+        final Menu given = new Menu(1L, "menu", new Price(15000L), 1L);
+        when(menuRepository.findById(given.getId())).thenReturn(Optional.of(given));
+
+        // when and then
+        assertThat(menuService.getById(given.getId())).isEqualTo(given);
     }
 }

@@ -58,10 +58,15 @@ class OrderServiceTest {
 
         final OrderRequest given = new OrderRequest(식당_포스.테이블.getId(), orderLineItemRequests);
 
-        final Order expected = new Order(1L, 식당_포스.테이블.getId(), OrderStatus.COOKING, LocalDateTime.now());
+        final Order expected = new Order(
+                1L,
+                식당_포스.테이블.getId(),
+                OrderStatus.COOKING,
+                LocalDateTime.now(),
+                new OrderLineItems(Arrays.asList(식당_포스.조리중_주문_항목1, 식당_포스.조리중_주문_항목2)));
         when(tableService.getById(식당_포스.테이블.getId())).thenReturn(식당_포스.테이블);
-        when(menuService.notExistsById(식당_포스.조리중_주문_항목1.getMenuId())).thenReturn(false);
-        when(menuService.notExistsById(식당_포스.조리중_주문_항목2.getMenuId())).thenReturn(false);
+        when(menuService.getById(식당_포스.조리중_주문_항목1.getMenuId())).thenReturn(식당_포스.돼지모듬);
+        when(menuService.getById(식당_포스.조리중_주문_항목2.getMenuId())).thenReturn(식당_포스.김치찌개정식);
         when(orderRepository.save(any(Order.class))).thenReturn(expected);
 
         // when
@@ -92,7 +97,7 @@ class OrderServiceTest {
                 식당_포스.테이블.getId(),
                 Arrays.asList(new OrderLineItemRequest(invalidMenuId, new Quantity(1))));
         when(tableService.getById(식당_포스.테이블.getId())).thenReturn(식당_포스.테이블);
-        when(menuService.notExistsById(invalidMenuId)).thenReturn(true);
+        when(menuService.getById(invalidMenuId)).thenThrow(new IllegalArgumentException());
 
         // when and then
         assertThatThrownBy(() -> orderService.create(given))

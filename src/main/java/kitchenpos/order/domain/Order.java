@@ -37,11 +37,11 @@ public class Order {
     public Order() {
     }
 
-    public Order(Long orderTableId) {
+    public Order(final Long orderTableId) {
         this.orderTableId = orderTableId;
     }
 
-    public Order(OrderStatus orderStatus) {
+    public Order(final OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
@@ -49,6 +49,12 @@ public class Order {
                  final Long orderTableId) {
         this.id = id;
         this.orderTableId = orderTableId;
+    }
+
+    public Order(final Long orderTableId,
+                 final List<OrderLineItem> orderLineItems) {
+        this.orderTableId = orderTableId;
+        this.orderLineItems.makeRelations(this, orderLineItems);
     }
 
     public Order(final Long id,

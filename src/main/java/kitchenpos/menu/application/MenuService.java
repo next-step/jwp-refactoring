@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.dto.MenuProductResponse;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.repository.MenuRepository;
@@ -75,10 +74,6 @@ public class MenuService {
                 .collect(Collectors.toList());
     }
 
-    private List<MenuProductResponse> getMenuProductResponsesFromMenu(final Menu menu) {
-        return menu.getMenuProducts();
-    }
-
     @Transactional(readOnly = true)
     public List<MenuResponse> list() {
         final List<Menu> menus = menuRepository.findAll();
@@ -91,5 +86,11 @@ public class MenuService {
     @Transactional(readOnly = true)
     public boolean notExistsById(final Long id) {
         return !menuRepository.existsById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public Menu getById(final Long id) {
+        return menuRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(String.format("메뉴를 찾을 수 없습니다. id: %d", id)));
     }
 }

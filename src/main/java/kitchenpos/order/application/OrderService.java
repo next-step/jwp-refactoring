@@ -3,6 +3,7 @@ package kitchenpos.order.application;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
@@ -31,49 +32,69 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest request) {
-        validateRequest(request);
+//        validateRequest(request);
 
-        final Order persistOrder = orderRepository.save(new Order(request.getOrderTableId()));
-        persistOrder.addOrderLineItems(createOrderLineItemsFromRequest(request));
+        validateOrderTable(request.getOrderTableId());
+
+//        final Order persistOrder = orderRepository.save(new Order(request.getOrderTableId()));
+//        persistOrder.addOrderLineItems(createOrderLineItems(request));
+
+        final Order persistOrder = orderRepository.save(createOrder(request));
 
         return OrderResponse.of(persistOrder);
     }
 
-    private void validateRequest(final OrderRequest request) {
-        validateOrderTable(request.getOrderTableId());
-        validateOrderLineItemRequests(request.getOrderLineItems());
-    }
+//    private void validateRequest(final OrderRequest request) {
+//        validateOrderTable(request.getOrderTableId());
+//        validateOrderLineItemRequests(request.getOrderLineItems());
+//    }
 
-    private void validateOrderTable(final Long id) {
-        final OrderTable orderTable = tableService.getById(id);
+    private void validateOrderTable(final Long orderTableId) {
+        final OrderTable orderTable = tableService.getById(orderTableId);
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException("주문 테이블이 비어있습니다.");
         }
     }
 
-    private void validateOrderLineItemRequests(final List<OrderLineItemRequest> requests) {
-        if (requests.isEmpty()) {
+    private Order createOrder(final OrderRequest request) {
+        return new Order(
+                request.getOrderTableId(), createOrderLineItems(request.getOrderLineItems()));
+    }
+
+//    private void validateOrderLineItemRequests(final List<OrderLineItemRequest> requests) {
+//        if (requests.isEmpty()) {
+//            throw new IllegalArgumentException("주문에 포함된 메뉴 정보가 없습니다.");
+//        }
+//        requests
+//                .stream()
+//                .forEach(orderLineItemRequest -> {
+//                    validateMenuId(orderLineItemRequest.getMenuId());
+//                });
+//    }
+
+//    private void validateMenuId(final Long id) {
+//        if (menuService.notExistsById(id)) {
+//            throw new IllegalArgumentException(String.format("메뉴가 존재하지 않습니다. id: %d", id));
+//        }
+//    }
+
+    private List<OrderLineItem> createOrderLineItems(final List<OrderLineItemRequest> orderLineItemRequests) {
+        if (orderLineItemRequests.isEmpty()) {
             throw new IllegalArgumentException("주문에 포함된 메뉴 정보가 없습니다.");
         }
-        requests
+        return orderLineItemRequests
                 .stream()
-                .forEach(orderLineItemRequest -> {
-                    validateMenuId(orderLineItemRequest.getMenuId());
-                });
-    }
-
-    private void validateMenuId(final Long id) {
-        if (menuService.notExistsById(id)) {
-            throw new IllegalArgumentException(String.format("메뉴가 존재하지 않습니다. id: %d", id));
-        }
-    }
-
-    private List<OrderLineItem> createOrderLineItemsFromRequest(final OrderRequest request) {
-        return request.getOrderLineItems()
-                .stream()
-                .map(orderLineItemRequest -> new OrderLineItem(
-                        orderLineItemRequest.getMenuId(), orderLineItemRequest.getQuantity()))
+                .map(orderLineItemRequest -> createOrderLineItem(orderLineItemRequest))
                 .collect(Collectors.toList());
+    }
+
+    private OrderLineItem createOrderLineItem(final OrderLineItemRequest orderLineItemRequest) {
+        final Menu menu = menuService.getById(orderLineItemRequest.getMenuId());
+        return new OrderLineItem(
+                menu.getId(),
+                menu.getName(),
+                menu.getPrice().value(),
+                orderLineItemRequest.getQuantity());
     }
 
     @Transactional(readOnly = true)

@@ -26,6 +26,12 @@ public class OrderLineItem {
     @Column(name = "menu_id")
     private Long menuId;
 
+    @Column(name = "menu_name")
+    private String menuName;
+
+    @Column(name = "menu_price")
+    private Long menuPrice;
+
     @Embedded
     private Quantity quantity;
 
@@ -48,6 +54,30 @@ public class OrderLineItem {
         this.quantity = quantity;
     }
 
+    public OrderLineItem(final Long menuId,
+                         final String menuName,
+                         final Long menuPrice,
+                         final Quantity quantity) {
+        this.menuId = menuId;
+        this.menuName = menuName;
+        this.menuPrice = menuPrice;
+        this.quantity = quantity;
+    }
+
+    public OrderLineItem(final Long seq,
+                         final Order order,
+                         final Long menuId,
+                         final String menuName,
+                         final Long menuPrice,
+                         final Quantity quantity) {
+        this.seq = seq;
+        this.order = order;
+        this.menuId = menuId;
+        this.menuName = menuName;
+        this.menuPrice = menuPrice;
+        this.quantity = quantity;
+    }
+
     public void relateToOrder(final Order order) {
         if (null != this.order) {
             throw new IllegalStateException("이미 주문과의 연관관계가 설정되어 있습니다.");
@@ -65,6 +95,14 @@ public class OrderLineItem {
 
     public Long getMenuId() {
         return menuId;
+    }
+
+    public String getMenuName() {
+        return menuName;
+    }
+
+    public Long getMenuPrice() {
+        return menuPrice;
     }
 
     public Quantity getQuantity() {
