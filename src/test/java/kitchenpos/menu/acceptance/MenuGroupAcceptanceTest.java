@@ -14,29 +14,49 @@ import org.springframework.http.HttpStatus;
 
 @DisplayName("메뉴 그룹을 관리한다.")
 public class MenuGroupAcceptanceTest extends AcceptanceTest {
-
     @Test
     @DisplayName("메뉴 그룹을 생성한다.")
     void createMenuGroup() {
-        MenuGroupRequest menuGroupRequest = new MenuGroupRequest("추천메뉴");
+        // when
+        ExtractableResponse<Response> response = 메뉴_그룹_생성_요청("추천메뉴");
 
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .contentType(ContentType.JSON)
-            .body(menuGroupRequest)
-            .when().post("/api/menu-groups")
-            .then().log().all().extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        // then
+        메뉴_그룹_생성_요청됨(response);
     }
 
     @Test
     @DisplayName("메뉴 그룹 목록을 조회한다.")
     void findAll() {
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
+        // when
+        ExtractableResponse<Response> response = 메뉴_그룹_목록_조회_요청();
+
+        // then
+        메뉴_그룹_목록_조회_응답됨(response);
+    }
+
+    public static ExtractableResponse<Response> 메뉴_그룹_생성_요청(String name) {
+        MenuGroupRequest menuGroupRequest = new MenuGroupRequest(name);
+
+        return RestAssured.given().log().all()
+            .contentType(ContentType.JSON)
+            .body(menuGroupRequest)
+            .when().post("/api/menu-groups")
+            .then().log().all().extract();
+    }
+
+    private static ExtractableResponse<Response> 메뉴_그룹_목록_조회_요청() {
+        return RestAssured.given().log().all()
             .contentType(ContentType.JSON)
             .when().get("/api/menu-groups")
             .then().log().all().extract();
+    }
 
+    public static void 메뉴_그룹_생성_요청됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.header("Location")).isNotBlank();
+    }
+
+    public static void 메뉴_그룹_목록_조회_응답됨(ExtractableResponse response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }

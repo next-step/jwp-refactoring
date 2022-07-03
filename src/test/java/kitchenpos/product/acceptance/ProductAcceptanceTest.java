@@ -15,29 +15,49 @@ import org.springframework.http.HttpStatus;
 
 @DisplayName("상품을 관리한다.")
 public class ProductAcceptanceTest extends AcceptanceTest {
-
     @Test
     @DisplayName("상품을 생성한다.")
     void createMenuGroup() {
-        ProductRequest productRequest = new ProductRequest("강정치킨", new BigDecimal(1_7000));
+        // when
+        ExtractableResponse<Response> response = 상품_생성_요청("강정치킨", 1_7000L);
 
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .contentType(ContentType.JSON)
-            .body(productRequest)
-            .when().post("/api/products")
-            .then().log().all().extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        // then
+        상품_생성됨(response);
     }
 
     @Test
     @DisplayName("상품 목록을 조회한다.")
     void findAll() {
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
+        // when
+        ExtractableResponse<Response> response = 상품_목록_조회_요청();
+
+        // then
+        상품_목록_응답됨(response);
+    }
+
+    public static ExtractableResponse<Response> 상품_생성_요청(String name, Long price) {
+        ProductRequest productRequest = new ProductRequest(name, new BigDecimal(price));
+
+        return RestAssured.given().log().all()
+            .contentType(ContentType.JSON)
+            .body(productRequest)
+            .when().post("/api/products")
+            .then().log().all().extract();
+    }
+
+    private static ExtractableResponse<Response> 상품_목록_조회_요청() {
+        return RestAssured.given().log().all()
             .contentType(ContentType.JSON)
             .when().get("/api/products")
             .then().log().all().extract();
+    }
 
+    public static void 상품_생성됨(ExtractableResponse response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.header("Location")).isNotBlank();
+    }
+
+    public static void 상품_목록_응답됨(ExtractableResponse response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }
