@@ -35,6 +35,46 @@ public class Menu {
         updateMenuProducts(menuProducts);
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public Long getMenuGroupId() {
+        return menuGroupId;
+    }
+
+    public void setMenuGroupId(Long menuGroupId) {
+        this.menuGroupId = menuGroupId;
+    }
+
+    public List<MenuProduct> getMenuProducts() {
+        return menuProducts.getElements();
+    }
+
+    public void setMenuProducts(List<MenuProduct> menuProducts) {
+        this.menuProducts = new MenuProducts(menuProducts);
+    }
+
     private void updateMenuProducts(List<MenuProduct> menuProducts) {
         this.menuProducts = new MenuProducts(menuProducts);
         this.menuProducts.validatePrice(price);
@@ -45,49 +85,5 @@ public class Menu {
         if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new BadRequestException(ErrorCode.INVALID_PRICE);
         }
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
-    }
-
-    public Long getMenuGroupId() {
-        return menuGroupId;
-    }
-
-    public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
-    }
-
-    public List<MenuProduct> getMenuProducts() {
-        return menuProducts.getElements();
-    }
-
-    public void setMenuProducts(MenuProducts menuProducts) {
-        this.menuProducts = menuProducts;
-    }
-
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts = new MenuProducts(menuProducts);
     }
 }
