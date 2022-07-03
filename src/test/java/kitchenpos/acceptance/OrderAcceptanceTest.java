@@ -52,8 +52,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                             Arrays.asList(MenuProductRequest.of(짬뽕.getId(), 1L))).as(MenuResponse.class);
                 }),
                 dynamicTest("주문 생성", () -> {
-                    ExtractableResponse<Response> 주문_생성_요청 = 주문_생성_하기(테이블.getId(), 중식_메뉴.getId(), 중식_메뉴.getName(),
-                            중식_메뉴.getPrice().longValue(), 1L);
+                    ExtractableResponse<Response> 주문_생성_요청 = 주문_생성_하기(테이블.getId(), 중식_메뉴.getId(), 1L);
                     주문_생성됨(주문_생성_요청);
                     주문 = 주문_생성_요청.as(OrderResponse.class);
                 }),
@@ -72,10 +71,9 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    public static ExtractableResponse<Response> 주문_생성_하기(Long tableId, Long menuId, String menuName, Long menuPrice,
-                                                         Long quantity) {
+    public static ExtractableResponse<Response> 주문_생성_하기(Long tableId, Long menuId, Long quantity) {
         return 주문_생성_요청(tableId,
-                Arrays.asList(OrderLineItemRequest.of(menuId, menuName, menuPrice, quantity)));
+                Arrays.asList(OrderLineItemRequest.of(menuId, quantity)));
     }
 
     public static void 주문_생성됨(ExtractableResponse<Response> response) {

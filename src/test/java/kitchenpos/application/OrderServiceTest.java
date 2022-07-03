@@ -91,8 +91,7 @@ class OrderServiceTest extends ServiceTest {
 
     private List<OrderLineItemRequest> toOrderLineItemRequests(List<OrderLineItem> orderLineItems) {
         return orderLineItems.stream().
-                map(o -> OrderLineItemRequest.of(o.getMenuId(), o.getMenuName().getValue(), o.getMenuPrice().getValue()
-                        .longValue(), o.getQuantity().getValue()))
+                map(o -> OrderLineItemRequest.of(o.getMenuId(), o.getQuantity().getValue()))
                 .collect(Collectors.toList());
     }
 
@@ -119,7 +118,7 @@ class OrderServiceTest extends ServiceTest {
         //when & then
         assertThatThrownBy(
                 () -> orderService.create(
-                        OrderRequest.of(100L, toOrderLineItemRequests(주문1.getOrderLineItems())))
+                        OrderRequest.of(orderTable.getId(), toOrderLineItemRequests(주문1.getOrderLineItems())))
         ).isInstanceOf(NoSuchElementException.class);
     }
 

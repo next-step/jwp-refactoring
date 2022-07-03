@@ -7,4 +7,6 @@ public interface MenuRepository extends JpaRepository<Menu, Long> {
     Long countByIdIn(List<Long> menuIds);
 
     boolean existsAllByIdIn(List<Long> menuIds);
+
+    List<Menu> findMenusByIdIn(List<Long> menuIds);
 }

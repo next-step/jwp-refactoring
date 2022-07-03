@@ -2,7 +2,9 @@ package kitchenpos.orders.order.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+import kitchenpos.menus.menu.dto.OrderMenuResponse;
 import kitchenpos.orders.order.domain.Order;
 import kitchenpos.orders.order.domain.OrderLineItem;
 
@@ -32,14 +34,24 @@ public class OrderRequest {
         return new OrderRequest(orderTableId, orderLineItems);
     }
 
-    public Order toOrder() {
-        return new Order(orderTableId, toOrderLineItems());
+    public Order toOrder(List<OrderMenuResponse> orderMenus) {
+        return new Order(orderTableId, toOrderLineItems(orderMenus));
     }
 
-    public List<OrderLineItem> toOrderLineItems() {
-        return orderLineItems.stream().
-                map(OrderLineItemRequest::toOrderLineItem).
-                collect(Collectors.toList());
+    public List<OrderLineItem> toOrderLineItems(List<OrderMenuResponse> orderMenus) {
+        return orderLineItems.stream()
+                .map(orderLineItem -> {
+                    OrderMenuResponse findOrderMenu = findOrderMenuById(orderLineItem.getMenuId(), orderMenus);
+                    return new OrderLineItem(orderLineItem.getMenuId(), findOrderMenu.getMenuName(),
+                            findOrderMenu.getMenuPrice(), orderLineItem.getQuantity());
+                }).collect(Collectors.toList());
+    }
+
+    public OrderMenuResponse findOrderMenuById(Long id, List<OrderMenuResponse> orderMenus) {
+        return orderMenus.stream()
+                .filter(orderMenuResponse -> orderMenuResponse.getMenuId() == id)
+                .findAny()
+                .orElseThrow(NoSuchElementException::new);
     }
 
     @JsonIgnore

@@ -69,8 +69,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
                     MenuResponse 중식_메뉴 = 메뉴_생성_요청("중식_메뉴", 1000L, 중식.getId(),
                             Arrays.asList(MenuProductRequest.of(짬뽕.getId(), 1L))).as(MenuResponse.class);
 
-                    ExtractableResponse<Response> 주문_생성_요청 = 주문_생성_하기(테이블.getId(), 중식_메뉴.getId(), 중식_메뉴.getName(),
-                            중식_메뉴.getPrice().longValue(), 1L);
+                    ExtractableResponse<Response> 주문_생성_요청 = 주문_생성_하기(테이블.getId(), 중식_메뉴.getId(), 1L);
                     OrderResponse 주문 = 주문_생성_요청.as(OrderResponse.class);
 
                     주문_상태_수정_요청(주문.getId(), OrderStatus.COMPLETION);
