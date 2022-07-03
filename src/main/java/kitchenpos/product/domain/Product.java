@@ -27,16 +27,21 @@ public class Product {
         this.price = new Price(price);
     }
 
+    private Product(String name, BigDecimal price) {
+        this.name = new Name(name);
+        this.price = new Price(price);
+    }
+
     public static Product of(Long id, String name, BigDecimal price) {
         return new Product(id, name, price);
     }
 
-    public Long getId() {
-        return id;
+    public static Product of(String name, BigDecimal price) {
+        return new Product(name, price);
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    public Long getId() {
+        return id;
     }
 
     public String getName() {
