@@ -28,8 +28,7 @@ public class Menu extends BaseEntity {
 
     protected Menu() {
     }
-
-
+    
     public Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         this.name = name;
         this.price = new Price(price);
@@ -61,17 +60,17 @@ public class Menu extends BaseEntity {
         return menu;
     }
 
-    private void addMenuProduct(MenuProduct menuProduct) {
+    private void addMenuProduct(final MenuProduct menuProduct) {
         this.menuProducts.add(menuProduct);
         menuProduct.setMenu(this);
     }
 
-    private static void validate(BigDecimal price, List<MenuProduct> menuProducts) {
+    private static void validate(final BigDecimal price, final List<MenuProduct> menuProducts) {
         validateEmptyMenuProducts(menuProducts);
         validatePrice(price, menuProducts);
     }
 
-    private static void validatePrice(BigDecimal price, List<MenuProduct> menuProducts) {
+    private static void validatePrice(final BigDecimal price, final List<MenuProduct> menuProducts) {
         BigDecimal sum = BigDecimal.ZERO;
         for (final MenuProduct menuProduct : menuProducts) {
             final Product product = menuProduct.getProduct();
@@ -83,7 +82,7 @@ public class Menu extends BaseEntity {
         }
     }
 
-    private static void validateEmptyMenuProducts(List<MenuProduct> menuProducts) {
+    private static void validateEmptyMenuProducts(final List<MenuProduct> menuProducts) {
         if (CollectionUtils.isEmpty(menuProducts)) {
             throw new IllegalArgumentException();
         }

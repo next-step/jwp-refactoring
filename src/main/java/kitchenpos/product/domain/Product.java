@@ -29,7 +29,7 @@ public class Product extends BaseEntity {
         this.price = new Price(price);
     }
 
-    public static Product createProduct(String name, BigDecimal price) {
+    public static Product createProduct(final String name, final BigDecimal price) {
         return new Product(name, price);
     }
 

@@ -36,10 +36,6 @@ public class OrderLineItem extends BaseEntity {
         return id;
     }
 
-    public void setId(final Long seq) {
-        this.id = seq;
-    }
-
     public Order getOrder() {
         return order;
     }
@@ -54,13 +50,5 @@ public class OrderLineItem extends BaseEntity {
 
     public void setMenu(final Menu menu) {
         this.menu = menu;
-    }
-
-    public long getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
     }
 }

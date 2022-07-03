@@ -58,7 +58,7 @@ public class TableGroupService {
         tableGroupRepository.delete(tableGroup);
     }
 
-    private TableGroup findWithOrderTablesById(Long tableGroupId) {
+    private TableGroup findWithOrderTablesById(final Long tableGroupId) {
         return tableGroupRepository.findWithOrderTablesById(tableGroupId)
                 .orElseThrow(() -> new IllegalArgumentException("단체 지정 그룹이 존재하지 않습니다."));
     }

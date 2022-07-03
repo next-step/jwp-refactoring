@@ -18,7 +18,7 @@ public class OrderRequest {
     public OrderRequest() {
     }
 
-    public OrderRequest(Long orderTableId, List<MenuInfo> menuInfos) {
+    public OrderRequest(final Long orderTableId, final List<MenuInfo> menuInfos) {
         this.orderTableId = orderTableId;
         this.menuInfos = menuInfos;
     }
@@ -47,7 +47,7 @@ public class OrderRequest {
         public MenuInfo() {
         }
 
-        public MenuInfo(Long menuId, long quantity) {
+        public MenuInfo(final Long menuId, final long quantity) {
             this.menuId = menuId;
             this.quantity = quantity;
         }

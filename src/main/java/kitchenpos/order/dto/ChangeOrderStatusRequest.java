@@ -11,7 +11,7 @@ public class ChangeOrderStatusRequest {
     public ChangeOrderStatusRequest() {
     }
 
-    public ChangeOrderStatusRequest(OrderStatus orderStatus) {
+    public ChangeOrderStatusRequest(final OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 

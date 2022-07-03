@@ -17,7 +17,7 @@ public class MenuResponse {
     public MenuResponse() {
     }
 
-    public MenuResponse(Menu menu) {
+    public MenuResponse(final Menu menu) {
         menuId = menu.getId();
         name = menu.getName();
         price = menu.getPrice();

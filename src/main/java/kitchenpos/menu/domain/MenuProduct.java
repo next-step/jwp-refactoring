@@ -18,16 +18,16 @@ public class MenuProduct extends BaseEntity {
     private Product product;
     private long quantity;
 
-    public MenuProduct() {
+    protected MenuProduct() {
     }
 
-    public MenuProduct(Menu menu, Product product, long quantity) {
+    public MenuProduct(final Menu menu, final Product product, final long quantity) {
         this.menu = menu;
         this.product = product;
         this.quantity = quantity;
     }
 
-    public MenuProduct(Product product, int quantity) {
+    public MenuProduct(final Product product, final int quantity) {
         this.product = product;
         this.quantity = quantity;
     }

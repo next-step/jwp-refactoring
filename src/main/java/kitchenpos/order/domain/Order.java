@@ -66,7 +66,7 @@ public class Order extends BaseEntity {
         orderLineItems.add(orderLineItem);
     }
 
-    public void changeOrderStatus(OrderStatus orderStatus) {
+    public void changeOrderStatus(final OrderStatus orderStatus) {
         if (OrderStatus.isCompletion(this.orderStatus)) {
             throw new IllegalArgumentException();
         }

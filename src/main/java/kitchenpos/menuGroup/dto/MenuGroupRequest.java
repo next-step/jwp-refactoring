@@ -9,7 +9,7 @@ public class MenuGroupRequest {
     public MenuGroupRequest() {
     }
 
-    public MenuGroupRequest(String name) {
+    public MenuGroupRequest(final String name) {
         this.name = name;
     }
 

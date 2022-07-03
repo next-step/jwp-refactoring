@@ -12,7 +12,7 @@ public class TableGroupResponse {
     public TableGroupResponse() {
     }
 
-    public TableGroupResponse(TableGroup tableGroup) {
+    public TableGroupResponse(final TableGroup tableGroup) {
         this.tableGroupId = tableGroup.getId();
         this.orderTableIds = tableGroup.getOrderTableIds();
     }

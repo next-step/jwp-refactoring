@@ -26,7 +26,7 @@ public class MenuGroup extends BaseEntity {
         this.name = name;
     }
 
-    public static MenuGroup createMenuGroup(String name) {
+    public static MenuGroup createMenuGroup(final String name) {
         return new MenuGroup(name);
     }
 
