@@ -98,7 +98,7 @@ class TableGroupServiceTest {
         //given
         주문테이블1 = 테이블_생성(1L);
         주문테이블2 = 테이블_생성(2L);
-        OrderTable 유효하지않은테이블 = new OrderTable();
+        OrderTable 유효하지않은테이블 = new OrderTable(3L, null, 3, false);
         단체 = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(주문테이블1, 주문테이블2));
         TableGroupRequest 단체Request = new TableGroupRequest(Arrays.asList(new OrderTableIdsRequest(주문테이블1.getId()),
                 new OrderTableIdsRequest(주문테이블2.getId()), new OrderTableIdsRequest(3L)));
@@ -114,7 +114,7 @@ class TableGroupServiceTest {
     @DisplayName("테이블 그룹내 테이블이 다른 테이블 그룹에 포함되어 있는 경우 그룹 생성 불가")
     void createInvalidAssignedTableGroup() {
         //given
-        TableGroup 다른단체 = new TableGroup();
+        TableGroup 다른단체 = new TableGroup(5L, LocalDateTime.now());
         주문테이블1 = 테이블_생성(1L);
         주문테이블2 = 테이블_생성(2L, 다른단체, 2, false);
         TableGroupRequest 단체Request = new TableGroupRequest(Arrays.asList(new OrderTableIdsRequest(주문테이블1.getId()),

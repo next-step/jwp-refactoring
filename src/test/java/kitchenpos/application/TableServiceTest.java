@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -117,7 +118,7 @@ class TableServiceTest {
     @DisplayName("테이블이 테이블 그룹에 포함되어 있는 경우 테이블 비어있는지 여부 변경 불가")
     void changeEmptyInvalidTableGroup() {
         //given
-        주문테이블 = new OrderTable(1L, new TableGroup(), 2, true);
+        주문테이블 = new OrderTable(1L, new TableGroup(2L, LocalDateTime.now()), 2, true);
         boolean 변경후상태 = false;
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(주문테이블));
         given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(false);
