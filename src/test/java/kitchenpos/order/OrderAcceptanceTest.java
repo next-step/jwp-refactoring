@@ -18,10 +18,10 @@ import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.OrderTable;
@@ -55,8 +55,6 @@ class OrderAcceptanceTest extends AcceptanceTest {
         테이블_상태_변경(주문테이블, 사용중);
 
         주문목록 = new OrderLineItem(양념치킨.getId(), 1L);
-        주문목록.setMenuId(양념치킨.getId());
-        주문목록.setQuantity(1L);
     }
 
     @Test
@@ -86,7 +84,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @DisplayName("주문 상태를 변경한다")
     void 주문_상태를_변경한다() {
         // given
-        Order 주문 = 주문_생성_요청(주문테이블.getId(), Collections.singletonList(주문목록)).as(Order.class);
+        OrderResponse 주문 = 주문_생성_요청(주문테이블.getId(), Collections.singletonList(주문목록)).as(OrderResponse.class);
 
         // when
         ExtractableResponse<Response> response = 주문_상태_변경(주문.getId(), OrderStatus.MEAL);

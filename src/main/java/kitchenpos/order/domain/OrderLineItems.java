@@ -25,4 +25,12 @@ public class OrderLineItems {
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
     }
+
+    public void setOrder(Order savedOrder) {
+        for (final OrderLineItem orderLineItem : orderLineItems) {
+            orderLineItem.setOrder(savedOrder);
+        }
+        savedOrder.setOrderLineItems(this);
+
+    }
 }

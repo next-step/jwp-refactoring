@@ -7,6 +7,7 @@ import kitchenpos.order.dao.OrderLineItemRepository;
 import kitchenpos.order.dao.OrderRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
@@ -14,7 +15,6 @@ import kitchenpos.table.dao.OrderTableRepository;
 import kitchenpos.table.domain.OrderTable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 @Service
 public class OrderService {
@@ -46,12 +46,9 @@ public class OrderService {
 
         final Order savedOrder = orderRepository.save(orderRequest.toOrder());
 
-        List<OrderLineItem> orderLineItems = validateOrderLineItems(orderRequest.getOrderLineItems());
-        for (final OrderLineItem orderLineItem : orderLineItems) {
-            orderLineItem.setOrder(savedOrder);
-        }
-        final List<OrderLineItem> savedOrderLineItems = orderLineItemRepository.saveAll(orderLineItems);
-        savedOrder.setOrderLineItems(savedOrderLineItems);
+        OrderLineItems orderLineItems = validateOrderLineItemsCheck(orderRequest.getOrderLineItems());
+        orderLineItems.setOrder(savedOrder);
+        orderLineItemRepository.saveAll(orderLineItems.getOrderLineItems());
 
         return OrderResponse.of(savedOrder);
     }
@@ -73,11 +70,7 @@ public class OrderService {
         return OrderResponse.of(savedOrder);
     }
 
-    private List<OrderLineItem> validateOrderLineItems(List<OrderLineItem> orderLineItems) {
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
-        }
-
+    private OrderLineItems validateOrderLineItemsCheck(List<OrderLineItem> orderLineItems) {
         final List<Long> menuIds = orderLineItems.stream()
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
@@ -88,6 +81,6 @@ public class OrderService {
             throw new IllegalArgumentException("존재하지 않는 메뉴입니다.");
         }
 
-        return orderLineItems;
+        return new OrderLineItems(orderLineItems);
     }
 }

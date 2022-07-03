@@ -53,8 +53,8 @@ public class Order {
         return orderLineItems.getOrderLineItems();
     }
 
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = new OrderLineItems(orderLineItems);
+    public void setOrderLineItems(final OrderLineItems orderLineItems) {
+        this.orderLineItems = orderLineItems;
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {

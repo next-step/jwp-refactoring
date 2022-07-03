@@ -17,6 +17,7 @@ import kitchenpos.order.dao.OrderLineItemRepository;
 import kitchenpos.order.dao.OrderRepository;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
@@ -61,7 +62,8 @@ class OrderServiceTest {
         주문내역 = new OrderLineItem(1L, 1L);
 
         주문 = new Order(1L);
-        주문.setOrderLineItems(Collections.singletonList(주문내역));
+
+        주문.setOrderLineItems(new OrderLineItems((Collections.singletonList(주문내역))));
         주문내역.setOrder(주문);
 
         주문요청 = new OrderRequest(주문.getOrderTableId(), Collections.singletonList(주문내역));
@@ -91,11 +93,12 @@ class OrderServiceTest {
     void create_EmptyOrderLineItemsError() {
         // given
         주문요청 = new OrderRequest(1L, Collections.emptyList());
+        given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(테이블1));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
                 () -> orderService.create(주문요청)
-        );
+        ).withMessageContaining("주문 내역이 존재하지 않습니다.");
     }
 
     @Test
