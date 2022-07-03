@@ -1,6 +1,6 @@
 package kitchenpos.menu.dto;
 
-import kitchenpos.domain.Quantity;
+import kitchenpos.common.domain.Quantity;
 
 public class MenuProductRequest {
     private Long productId;

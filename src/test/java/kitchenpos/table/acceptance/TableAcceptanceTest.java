@@ -7,7 +7,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.HashMap;
 import java.util.Map;
-import kitchenpos.acceptance.BaseAcceptanceTest;
+import kitchenpos.common.acceptance.BaseAcceptanceTest;
 import kitchenpos.fixture.acceptance.AcceptanceTestOrderTableFixture;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;

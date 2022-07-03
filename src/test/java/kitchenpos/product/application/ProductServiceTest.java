@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import kitchenpos.domain.Price;
+import kitchenpos.common.domain.Price;
 import kitchenpos.fixture.UnitTestFixture;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.dto.ProductRequest;

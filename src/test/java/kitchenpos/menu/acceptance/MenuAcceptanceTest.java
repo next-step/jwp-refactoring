@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import kitchenpos.acceptance.BaseAcceptanceTest;
+import kitchenpos.common.acceptance.BaseAcceptanceTest;
 import kitchenpos.fixture.acceptance.AcceptanceTestMenuGroupFixture;
 import kitchenpos.fixture.acceptance.AcceptanceTestProductFixture;
 import kitchenpos.menu.domain.MenuGroup;

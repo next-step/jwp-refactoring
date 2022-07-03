@@ -8,8 +8,8 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Optional;
-import kitchenpos.application.OrderService;
 import kitchenpos.fixture.UnitTestFixture;
+import kitchenpos.order.application.OrderService;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
