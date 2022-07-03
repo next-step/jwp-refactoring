@@ -33,7 +33,7 @@ public class TableGroupService {
 
     public TableGroup getTableGroup(final Long id) {
         return tableGroupRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(id + " 에 해당하는 테이블 그룹을 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException(id + " 에 해당하는 단체 지정 정보를 찾을 수 없습니다."));
     }
 
     @Transactional
@@ -57,7 +57,7 @@ public class TableGroupService {
 
     private void checkOrderTableCount(final OrderTables orderTables, final List<Long> ids) {
         if (orderTables.getValue().size() != ids.size()) {
-            throw new IllegalArgumentException("생성 요청된 테이블 그룹의 중 존재하지 않는 주문 테이블이 있습니다.");
+            throw new IllegalArgumentException("생성 요청된 단체 지정에 존재하지 않는 주문 테이블이 있습니다.");
         }
     }
 
@@ -67,10 +67,14 @@ public class TableGroupService {
                 .boxed()
                 .collect(Collectors.toList());
 
-        if (orderService.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))
-        ) {
+        if (isPossibleUngroupTable(orderTableIds)) {
             throw new IllegalArgumentException("그룹 해제를 하려는 테이블 중 요리중 또는 식사중인 테이블이 존재합니다.");
         }
+    }
+
+    private boolean isPossibleUngroupTable(List<Long> orderTableIds) {
+        return orderService.existsByOrderTableIdInAndOrderStatusIn(
+                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)
+        );
     }
 }

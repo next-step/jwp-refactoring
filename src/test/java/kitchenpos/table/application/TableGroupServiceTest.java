@@ -43,7 +43,7 @@ class TableGroupServiceTest {
         주문_테이블 = TableGenerator.주문_테이블_생성(손님_수_생성(10));
     }
 
-    @DisplayName("테이블 그룹 생성 시 2개 미만의 주문 테이블이 속해 있으면 예외가 발생해야 한다")
+    @DisplayName("단체 지정 생성 시 2개 미만의 주문 테이블이 속해 있으면 예외가 발생해야 한다")
     @Test
     void createTableGroupByUnderTwoOrderTableTest() {
         // given
@@ -59,7 +59,7 @@ class TableGroupServiceTest {
         테이블_그룹_생성_실패됨(() -> tableGroupService.create(테이블_그룹_생성_요청(Collections.emptyList())));
     }
 
-    @DisplayName("저장되지 않은 주문 테이블을 포함한 테이블 그룹 생성 요청 시 예외가 발생해야 한다")
+    @DisplayName("저장되지 않은 주문 테이블을 포함한 단체 지정 생성 요청 시 예외가 발생해야 한다")
     @Test
     void createTableGroupByContainNotSavedOrderTableTest() {
         // given
@@ -69,7 +69,7 @@ class TableGroupServiceTest {
         테이블_그룹_생성_실패됨(() -> tableGroupService.create(테이블_그룹_생성_요청(Arrays.asList(0L, 0L, 0L))));
     }
 
-    @DisplayName("비어있지 않은 주문 테이블이 포함된 테이블 그룹 생성 요청 시 예외가 발생해야 한다")
+    @DisplayName("비어있지 않은 주문 테이블이 포함된 단체 지정 생성 요청 시 예외가 발생해야 한다")
     @Test
     void createTableGroupByContainNotEmptyOrderTableTest() {
         // given
@@ -81,7 +81,7 @@ class TableGroupServiceTest {
         테이블_그룹_생성_실패됨(() -> tableGroupService.create(테이블_그룹_생성_요청(Arrays.asList(0L, 0L))));
     }
 
-    @DisplayName("테이블 그룹 생성 시 이미 테이블 그룹에 포함된 주문 테이블이 포함되어 있으면 예외가 발생해야 한다")
+    @DisplayName("단체 지정 생성 시 이미 단체 지정에 포함된 주문 테이블이 포함되어 있으면 예외가 발생해야 한다")
     @Test
     void createTableGroupByContainAlreadyBelongTableGroupOrderTableTest() {
         // given
@@ -93,7 +93,7 @@ class TableGroupServiceTest {
         테이블_그룹_생성_실패됨(() -> tableGroupService.create(테이블_그룹_생성_요청(Arrays.asList(0L, 0L))));
     }
 
-    @DisplayName("정상 조건으로 테이블 그룹 생성 시 정상 생성되어야 한다")
+    @DisplayName("정상 조건으로 단체 지정 생성 시 정상 생성되어야 한다")
     @Test
     void createTableGroupTest() {
         // given
@@ -107,7 +107,7 @@ class TableGroupServiceTest {
         테이블_그룹_정상_성상됨(테이블_그룹, 주문_테이블, 2);
     }
 
-    @DisplayName("테이블 그룹 해제시 테이블 그룹에 속해있는 주문 테이블 중 요리중 또는 식사중인 테이블이 포함되어 있으면 예외가 발생해야 한다")
+    @DisplayName("단체 지정 해제시 단체 지정에 속해있는 주문 테이블 중 요리중 또는 식사중인 테이블이 포함되어 있으면 예외가 발생해야 한다")
     @Test
     void ungroupByIncludeCookingOrMealOrderStatusOrderTableTest() {
         // given
@@ -120,7 +120,7 @@ class TableGroupServiceTest {
         테이블_그룹_해제_실패됨(() -> tableGroupService.ungroup(테이블_그룹.getId()));
     }
 
-//    @DisplayName("테이블 그룹 해제 시 정상 동작해야 한다")
+//    @DisplayName("단체 지정 해제 시 정상 동작해야 한다")
 //    @Test
 //    void ungroupTest() {
 //        // given

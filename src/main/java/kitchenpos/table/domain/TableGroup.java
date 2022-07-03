@@ -54,7 +54,7 @@ public class TableGroup {
 
     private void checkValue(List<OrderTable> orderTables) {
         if (orderTables.size() < MINIMUM_COUNT) {
-            throw new IllegalArgumentException("테이블 그룹에 속한 주문 테이블의 수는 최소 2개 이상이어야 합니다.");
+            throw new IllegalArgumentException("단체 지정에 속한 주문 테이블의 수는 최소 2개 이상이어야 합니다.");
         }
         orderTables.forEach(this::canBelongGroupByOrderTable);
     }
@@ -64,7 +64,7 @@ public class TableGroup {
             throw new IllegalArgumentException("빈 주문 테이블만 새로운 그룹에 속할 수 있습니다.");
         }
         if (Objects.nonNull(orderTable.getTableGroup())) {
-            throw new IllegalArgumentException("이미 테이블 그룹에 속한 주문 테이블이 존재합니다.");
+            throw new IllegalArgumentException("이미 단체 지정에 속한 주문 테이블이 존재합니다.");
         }
     }
 

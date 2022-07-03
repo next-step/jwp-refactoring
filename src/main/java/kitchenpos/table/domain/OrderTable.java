@@ -77,7 +77,7 @@ public class OrderTable {
 
     private void isPossibleChangeEmpty(OrderStatus orderStatus) {
         if (Objects.nonNull(this.tableGroup)) {
-            throw new IllegalArgumentException("테이블 그룹에 포함되어 있어서 빈 자리 여부를 변경할 수 없습니다.");
+            throw new IllegalArgumentException("단체 지정에 포함되어 있어서 빈 자리 여부를 변경할 수 없습니다.");
         }
         if (Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL).contains(orderStatus)) {
             throw new IllegalArgumentException("주문 상태가 요리중 또는 식사중인 상태인 주문 테이블의 빈 자리 여부는 변경할 수 없습니다.");

@@ -17,14 +17,14 @@ class TableGroupTest {
 
     private OrderTable 주문_테이블 = TableGenerator.주문_테이블_생성(손님_수_생성(10));
 
-    @DisplayName("테이블 그룹 생성 시 주문 테이블 수가 1개 이하이면 예외가 발생해야 한다")
+    @DisplayName("단체 지정 생성 시 주문 테이블 수가 1개 이하이면 예외가 발생해야 한다")
     @Test
     void createTableGroupByContainUnderOneOrderTable() {
         assertThatIllegalArgumentException().isThrownBy(() -> 테이블_그룹_생성(Collections.singletonList(주문_테이블)));
         assertThatIllegalArgumentException().isThrownBy(() -> 테이블_그룹_생성(Collections.emptyList()));
     }
 
-    @DisplayName("그룹 테이블 생성 요청 시 이미 테이블 그룹에 속한 주문 테이블이 포함되어 있으면 예외가 발생해야 한다")
+    @DisplayName("그룹 테이블 생성 요청 시 이미 단체 지정에 속한 주문 테이블이 포함되어 있으면 예외가 발생해야 한다")
     @Test
     void createTableGroupByAlreadyBelongGroupTest() {
         // given

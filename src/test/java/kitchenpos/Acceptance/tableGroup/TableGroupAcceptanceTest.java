@@ -40,7 +40,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         }
     }
 
-    @DisplayName("테이블 그룹 생성 시 해당 그룹에 속한 테이블의 수가 2개 미만이면 예외가 발생해야 한다")
+    @DisplayName("단체 지정 생성 시 해당 그룹에 속한 테이블의 수가 2개 미만이면 예외가 발생해야 한다")
     @Test
     void createTableGroupByNotFillMinimumTableCount() {
         // when
@@ -56,7 +56,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         테이블_그룹_생성_요청_실패됨(테이블_그룹에_속한_테이블이_없는_요청_결과);
     }
 
-    @DisplayName("테이블 그룹의 테이블 수와 실제 저장된 테이블 수가 다를 경우 예외가 발생해야 한다")
+    @DisplayName("단체 지정의 테이블 수와 실제 저장된 테이블 수가 다를 경우 예외가 발생해야 한다")
     @Test
     void createTableGroupByNotMatchedTableCountTest() {
         // when
@@ -68,7 +68,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         테이블_그룹_생성_요청_실패됨(생성_요청_결과);
     }
 
-    @DisplayName("테이블 그룹 생성 시 포함된 테이블 중 빈 테이블 아니거나 이미 다른 테이블 그룹에 속해 있는 테이블이 포함되어 있으면 예외가 발생해야 한다")
+    @DisplayName("단체 지정 생성 시 포함된 테이블 중 빈 테이블 아니거나 이미 다른 단체 지정에 속해 있는 테이블이 포함되어 있으면 예외가 발생해야 한다")
     @Test
     void createTableByContainAlreadyBelongOrNotEmptyTableTest() {
         // given
@@ -88,7 +88,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         테이블_그룹_생성_요청_실패됨(빈_상태가_아닌_테이블이_포함된_테이블_그룹_생성_요청_결과);
     }
 
-    @DisplayName("정상 상태의 테이블 그룹 생성 요청 시 정상 생성 되어야 한다")
+    @DisplayName("정상 상태의 단체 지정 생성 요청 시 정상 생성 되어야 한다")
     @Test
     void createTableGroupTest() {
         // given
@@ -101,7 +101,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         테이블_그룹_생성_요청_성공됨(테이블_그룹_생성_요청_결과, 테이블_그룹_생성_요청);
     }
 
-    @DisplayName("테이블 그룹에 포함되어 있는 테이블 중 요리중 또는 식사중 상태인 테이블이 존재하는 테이블 그룹을 해제하면 예외가 발생해야 한다")
+    @DisplayName("단체 지정에 포함되어 있는 테이블 중 요리중 또는 식사중 상태인 테이블이 존재하는 테이블 그룹을 해제하면 예외가 발생해야 한다")
     @ParameterizedTest
     @EnumSource(value = OrderStatus.class, names = { "COOKING", "MEAL" })
     void ungroupByIncludeCookingOrMealStatusTableTest(OrderStatus orderStatus) {
@@ -121,7 +121,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         테이블_그룹_해제_요청_실패됨(테이블_그룹_해제_요청_결과);
     }
 
-    @DisplayName("정상 상태의 테이블 그룹 해제 요청시 정상 해제 되어야 한다")
+    @DisplayName("정상 상태의 단체 지정 해제 요청시 정상 해제 되어야 한다")
     @Test
     void ungroupTestGroupTest() {
         // given

@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 
 class OrderTableTest {
 
-    @DisplayName("테이블 그룹에 포함된 주문 테이블의 빈 자리 여부를 변경하면 예외가 발생해야 한다")
+    @DisplayName("단체 지정에 포함된 주문 테이블의 빈 자리 여부를 변경하면 예외가 발생해야 한다")
     @Test
     void changeEmptyByBelongTableGroupTest() {
         // given
@@ -36,7 +36,7 @@ class OrderTableTest {
         assertThatIllegalArgumentException().isThrownBy(() -> 주문_테이블.updateEmpty(false, OrderStatus.MEAL));
     }
 
-    @DisplayName("테이블 그룹에 포함되지 않고 완료 상태의 주문 테이블의 빈 자리 여부를 변경하면 정상 변경되어야 한다")
+    @DisplayName("단체 지정에 포함되지 않고 완료 상태의 주문 테이블의 빈 자리 여부를 변경하면 정상 변경되어야 한다")
     @Test
     void changeEmptyTest() {
         // given
