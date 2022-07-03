@@ -1,6 +1,8 @@
 package kitchenpos.util;
 
 import kitchenpos.domain.*;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.TableGroup;
@@ -9,8 +11,6 @@ import kitchenpos.table.domain.OrderTable;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-
-import static kitchenpos.util.testFixture.빈_주문테이블_3_생성;
 
 public class testFixture {
 
@@ -31,19 +31,19 @@ public class testFixture {
     }
 
     public static MenuProduct 후라이드_메뉴_상품_생성(Long productId) {
-        return MenuProduct.of(1L, 1L, productId, 1);
+        return MenuProduct.of(후라이드_상품_생성(), 1);
     }
 
     public static MenuProduct 양념_메뉴_상품_생성(Long productId) {
-        return MenuProduct.of(2L, 2L, productId, 1);
+        return MenuProduct.of(양념치킨_상품_생성(), 2);
     }
 
     public static Menu 후라이드_치킨_메뉴_생성(Long menuGroupId, List<MenuProduct> menuProducs) {
-        return Menu.of(1L, "후라이드치킨", new BigDecimal(16000), menuGroupId, menuProducs);
+        return Menu.of("후라이드치킨", new BigDecimal(16000), 한마리_메뉴_그룹_생성(), menuProducs);
     }
 
     public static Menu 양념_치킨_메뉴_생성(Long menuGroupId, List<MenuProduct> menuProducts) {
-        return Menu.of(1L, "후라이드치킨", new BigDecimal(16000), menuGroupId, menuProducts);
+        return Menu.of("양념치킨", new BigDecimal(16000), 한마리_메뉴_그룹_생성(), menuProducts);
     }
 
     public static OrderLineItem 주문항목_1_생성() {
