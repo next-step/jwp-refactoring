@@ -7,7 +7,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.HashMap;
 import java.util.Map;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.fixture.acceptance.AcceptanceTestOrderTableFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -76,7 +76,7 @@ public class TableAcceptanceTest extends BaseAcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 주문_테이블_비었는지_여부_변경_요청(final OrderTable orderTable,
+    public static ExtractableResponse<Response> 주문_테이블_비었는지_여부_변경_요청(final OrderTableResponse orderTable,
                                                                   final int numberOfGuests,
                                                                   final boolean isEmpty) {
         final Map<String, Object> body = new HashMap<>();
@@ -94,7 +94,7 @@ public class TableAcceptanceTest extends BaseAcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 주문_테이블_손님_수_변경_요청(final OrderTable orderTable,
+    public static ExtractableResponse<Response> 주문_테이블_손님_수_변경_요청(final OrderTableResponse orderTable,
                                                                      final int numberOfGuests) {
         final Map<String, Object> body = new HashMap<>();
         body.put("id", orderTable.getId());

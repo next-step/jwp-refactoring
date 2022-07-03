@@ -61,8 +61,8 @@ public class OrderService {
     }
 
     private void validateMenuId(final Long id) {
-        if (!menuService.notExistsById(id)) {
-            throw new IllegalArgumentException(String.format("주문 테이블이 존재하지 않습니다. id: %d", id));
+        if (menuService.notExistsById(id)) {
+            throw new IllegalArgumentException(String.format("메뉴가 존재하지 않습니다. id: %d", id));
         }
     }
 

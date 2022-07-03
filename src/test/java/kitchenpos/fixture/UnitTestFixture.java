@@ -14,9 +14,9 @@ import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTables;
 import kitchenpos.domain.Price;
-import kitchenpos.domain.Product;
 import kitchenpos.domain.Quantity;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.product.domain.Product;
 
 public class UnitTestFixture {
     public final MenuGroup 구이류 = new MenuGroup(1L, "구이류");

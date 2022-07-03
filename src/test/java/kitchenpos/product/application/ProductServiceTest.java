@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.product.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.any;
@@ -7,11 +7,13 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import kitchenpos.domain.Price;
-import kitchenpos.domain.Product;
-import kitchenpos.dto.ProductRequest;
 import kitchenpos.fixture.UnitTestFixture;
-import kitchenpos.repository.ProductRepository;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.product.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,10 +45,10 @@ class ProductServiceTest {
         when(productRepository.save(any(Product.class))).thenReturn(expected);
 
         // when
-        final Product actual = productService.create(given);
+        final ProductResponse actual = productService.create(given);
 
         // then
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual.getId()).isEqualTo(expected.getId());
     }
 
     @Test
@@ -55,10 +57,11 @@ class ProductServiceTest {
         when(productRepository.findAll()).thenReturn(Arrays.asList(식당_포스.삼겹살, 식당_포스.목살, 식당_포스.김치찌개, 식당_포스.공깃밥));
 
         // when
-        final List<Product> actual = productService.list();
+        final List<ProductResponse> actual = productService.list();
 
         // then
-        assertThat(actual).containsExactly(식당_포스.삼겹살, 식당_포스.목살, 식당_포스.김치찌개, 식당_포스.공깃밥);
+        assertThat(actual.stream().map(ProductResponse::getId).collect(Collectors.toList()))
+                .containsExactly(식당_포스.삼겹살.getId(), 식당_포스.목살.getId(), 식당_포스.김치찌개.getId(), 식당_포스.공깃밥.getId());
     }
 
     @Test

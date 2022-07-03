@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import kitchenpos.acceptance.MenuAcceptanceTest;
-import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuResponse;
+import kitchenpos.product.domain.Product;
 
 public class AcceptanceTestMenuFixture {
     public final AcceptanceTestMenuGroupFixture 메뉴_그룹;

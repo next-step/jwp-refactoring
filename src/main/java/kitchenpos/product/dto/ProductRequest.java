@@ -1,7 +1,7 @@
-package kitchenpos.dto;
+package kitchenpos.product.dto;
 
 import kitchenpos.domain.Price;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
 
 public class ProductRequest {
     private String name;

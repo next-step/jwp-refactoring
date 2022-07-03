@@ -58,8 +58,8 @@ class OrderServiceTest {
 
         final Order expected = new Order(1L, 식당_포스.테이블.getId(), OrderStatus.COOKING, LocalDateTime.now());
         when(tableService.getById(식당_포스.테이블.getId())).thenReturn(식당_포스.테이블);
-        when(menuService.notExistsById(식당_포스.조리중_주문_항목1.getMenuId())).thenReturn(true);
-        when(menuService.notExistsById(식당_포스.조리중_주문_항목2.getMenuId())).thenReturn(true);
+        when(menuService.notExistsById(식당_포스.조리중_주문_항목1.getMenuId())).thenReturn(false);
+        when(menuService.notExistsById(식당_포스.조리중_주문_항목2.getMenuId())).thenReturn(false);
         when(orderRepository.save(any(Order.class))).thenReturn(expected);
 
         // when
@@ -90,6 +90,7 @@ class OrderServiceTest {
                 식당_포스.테이블.getId(),
                 Arrays.asList(new OrderLineItemRequest(invalidMenuId, new Quantity(1))));
         when(tableService.getById(식당_포스.테이블.getId())).thenReturn(식당_포스.테이블);
+        when(menuService.notExistsById(invalidMenuId)).thenReturn(true);
 
         // when and then
         assertThatThrownBy(() -> orderService.create(given))
