@@ -40,6 +40,10 @@ public class TableGroup {
         this(null, LocalDateTime.now(), orderTables.getValue());
     }
 
+    public void ungroup() {
+        this.orderTables.forEach(OrderTable::leaveGroup);
+    }
+
     public Long getId() {
         return id;
     }
@@ -66,9 +70,5 @@ public class TableGroup {
         if (Objects.nonNull(orderTable.getTableGroup())) {
             throw new IllegalArgumentException("이미 단체 지정에 속한 주문 테이블이 존재합니다.");
         }
-    }
-
-    public void ungroup() {
-        this.orderTables.forEach(OrderTable::leaveGroup);
     }
 }

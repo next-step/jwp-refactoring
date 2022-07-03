@@ -7,6 +7,7 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.TableGroupCreateRequest;
+import kitchenpos.table.dto.TableGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,12 +38,14 @@ public class TableGroupService {
     }
 
     @Transactional
-    public TableGroup create(final TableGroupCreateRequest request) {
+    public TableGroupResponse create(final TableGroupCreateRequest request) {
         OrderTables orderTables = tableService.findOrderTablesByIds(request.getOrderTables());
 
         checkOrderTableCount(orderTables, request.getOrderTables());
 
-        return tableGroupRepository.save(new TableGroup(orderTables));
+        return TableGroupResponse.from(
+                tableGroupRepository.save(new TableGroup(orderTables))
+        );
     }
 
     @Transactional

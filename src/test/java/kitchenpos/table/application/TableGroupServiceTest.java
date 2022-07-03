@@ -6,21 +6,23 @@ import kitchenpos.table.TableGenerator;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.TableGroupCreateRequest;
+import kitchenpos.table.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.Arrays;
 import java.util.Collections;
 
 import static kitchenpos.table.TableGenerator.주문_테이블_목록_생성;
 import static kitchenpos.table.TableGenerator.테이블_그룹_생성_요청;
 import static kitchenpos.table.domain.NumberOfGuestsTest.손님_수_생성;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -35,6 +37,9 @@ class TableGroupServiceTest {
 
     @Autowired
     private TableGroupService tableGroupService;
+
+    @Autowired
+    private EntityManager entityManager;
 
     private OrderTable 주문_테이블;
 
@@ -101,7 +106,7 @@ class TableGroupServiceTest {
         when(tableService.findOrderTablesByIds(any())).thenReturn(주문_테이블_목록_생성(Arrays.asList(주문_테이블, 주문_테이블)));
 
         // when
-        TableGroup 테이블_그룹 = tableGroupService.create(테이블_그룹_생성_요청);
+        TableGroupResponse 테이블_그룹 = tableGroupService.create(테이블_그룹_생성_요청);
 
         // then
         테이블_그룹_정상_성상됨(테이블_그룹, 주문_테이블, 2);
@@ -114,45 +119,42 @@ class TableGroupServiceTest {
         TableGroupCreateRequest 테이블_그룹_생성_요청 = 테이블_그룹_생성_요청(Arrays.asList(0L, 0L));
         when(tableService.findOrderTablesByIds(any())).thenReturn(주문_테이블_목록_생성(Arrays.asList(주문_테이블, 주문_테이블)));
         when(orderService.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(true);
-        TableGroup 테이블_그룹 = tableGroupService.create(테이블_그룹_생성_요청);
+        TableGroupResponse 테이블_그룹 = tableGroupService.create(테이블_그룹_생성_요청);
 
         // then
         테이블_그룹_해제_실패됨(() -> tableGroupService.ungroup(테이블_그룹.getId()));
     }
 
-//    @DisplayName("단체 지정 해제 시 정상 동작해야 한다")
-//    @Test
-//    void ungroupTest() {
-//        // given
-//        TableGroupCreateRequest 테이블_그룹_생성_요청 = 테이블_그룹_생성_요청(Arrays.asList(0L, 0L));
-//        when(tableService.findOrderTablesByIds(any())).thenReturn(주문_테이블_목록_생성(Arrays.asList(주문_테이블, 주문_테이블)));
-//        when(orderService.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(false);
-//        TableGroup 테이블_그룹 = tableGroupService.create(테이블_그룹_생성_요청);
-//
-//        // when
-//        tableGroupService.ungroup(테이블_그룹.getId());
-//
-//        // then
-//        테이블_그룹_해제_성공됨(테이블_그룹.getId());
-//    }
+    @DisplayName("단체 지정 해제 시 정상 동작해야 한다")
+    @Test
+    void ungroupTest() {
+        // given
+        TableGroupCreateRequest 테이블_그룹_생성_요청 = 테이블_그룹_생성_요청(Arrays.asList(0L, 0L));
+        when(tableService.findOrderTablesByIds(any())).thenReturn(주문_테이블_목록_생성(Arrays.asList(주문_테이블, 주문_테이블)));
+        when(orderService.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(false);
+        TableGroupResponse 테이블_그룹 = tableGroupService.create(테이블_그룹_생성_요청);
+
+        // then
+        테이블_그룹_해제_성공됨(() -> tableGroupService.ungroup(테이블_그룹.getId()));
+    }
 
     void 테이블_그룹_생성_실패됨(Runnable runnable) {
         assertThatIllegalArgumentException().isThrownBy(runnable::run);
     }
 
-    void 테이블_그룹_정상_성상됨(TableGroup tableGroup, OrderTable orderTable, int expectedContainOrderTableCount) {
+    void 테이블_그룹_정상_성상됨(TableGroupResponse tableGroup, OrderTable orderTable, int expectedContainOrderTableCount) {
         assertThat(tableGroup.getId()).isNotNull();
         assertThat(tableGroup.getId()).isEqualTo(orderTable.getTableGroup().getId());
-        assertThat(tableGroup.getOrderTables().size()).isEqualTo(expectedContainOrderTableCount);
-        tableGroup.getOrderTables().forEach(table -> assertThat(table.isEmpty()).isFalse());
+        assertThat(tableGroup.getOrderTableResponses().size()).isEqualTo(expectedContainOrderTableCount);
+        tableGroup.getOrderTableResponses().forEach(table -> assertThat(table.isEmpty()).isFalse());
     }
 
     void 테이블_그룹_해제_실패됨(Runnable runnable) {
         assertThatIllegalArgumentException().isThrownBy(runnable::run);
     }
 
-    void 테이블_그룹_해제_성공됨(Long id) {
-//        TODO - failed to lazily initialize a collection of role 이슈 해결 할 수 있는 방법 문의하기
-        assertThat(tableGroupService.getTableGroup(id).getOrderTables().size()).isEqualTo(0);
+    void 테이블_그룹_해제_성공됨(Runnable runnable) {
+//        assertThat(tableGroupService.getTableGroup(id).getOrderTables().size()).isEqualTo(0);
+        assertThatNoException().isThrownBy(runnable::run);
     }
 }

@@ -7,6 +7,7 @@ import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.dto.OrderTableCreateRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,12 +26,14 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTable create(final OrderTableCreateRequest request) {
-        return orderTableRepository.save(request.of());
+    public OrderTableResponse create(final OrderTableCreateRequest request) {
+        return OrderTableResponse.from(
+                orderTableRepository.save(request.of())
+        );
     }
 
-    public OrderTables list() {
-        return new OrderTables(orderTableRepository.findAll());
+    public List<OrderTableResponse> list() {
+        return new OrderTables(orderTableRepository.findAll()).toResponse();
     }
 
     public OrderTable getOrderTable(final Long id) {
@@ -47,20 +50,20 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTable changeEmpty(final Long orderTableId, final boolean changedEmpty) {
+    public OrderTableResponse changeEmpty(final Long orderTableId, final boolean changedEmpty) {
         final OrderTable savedOrderTable = getOrderTable(orderTableId);
         OrderStatus orderStatus = orderService.getOrderStatusByOrderTableId(orderTableId);
 
         savedOrderTable.updateEmpty(changedEmpty, orderStatus);
 
-        return savedOrderTable;
+        return OrderTableResponse.from(savedOrderTable);
     }
 
     @Transactional
-    public OrderTable changeNumberOfGuests(final Long orderTableId, final int numberOfGuests) {
+    public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final int numberOfGuests) {
         final OrderTable savedOrderTable = getOrderTable(orderTableId);
         savedOrderTable.updateNumberOfGuests(new NumberOfGuests(numberOfGuests));
 
-        return savedOrderTable;
+        return OrderTableResponse.from(savedOrderTable);
     }
 }

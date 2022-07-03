@@ -6,6 +6,7 @@ import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.dto.OrderTableCreateRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -40,7 +41,7 @@ public class TableServiceTest {
         OrderTableCreateRequest 주문_테이블_생성_요청 = 주문_테이블_생성_요청(numberOfGuests);
 
         // when
-        OrderTable 생성_된_주문_테이블 = tableService.create(주문_테이블_생성_요청);
+        OrderTableResponse 생성_된_주문_테이블 = tableService.create(주문_테이블_생성_요청);
 
         // then
         주문_테이블_저장됨(생성_된_주문_테이블, 주문_테이블_생성_요청);
@@ -58,7 +59,7 @@ public class TableServiceTest {
         }
 
         // when
-        OrderTables 주문_테이블_목록_조회_결과 = tableService.list();
+        List<OrderTableResponse> 주문_테이블_목록_조회_결과 = tableService.list();
 
         // then
         주문_테이블_목록_조회됨(주문_테이블_목록_조회_결과, 포함되어야_할_아이디들);
@@ -76,7 +77,7 @@ public class TableServiceTest {
     void changeEmptyByCockingOrMealStatusOrderTableTest(OrderStatus orderStatus) {
         // given
         when(orderService.getOrderStatusByOrderTableId(any())).thenReturn(orderStatus);
-        OrderTable 생성_된_주문_테이블 = tableService.create(주문_테이블_생성_요청(10));
+        OrderTableResponse 생성_된_주문_테이블 = tableService.create(주문_테이블_생성_요청(10));
 
         // then
         주문_테이블_인원_변경_실패됨(() -> tableService.changeEmpty(생성_된_주문_테이블.getId(), false));
@@ -86,10 +87,10 @@ public class TableServiceTest {
     @Test
     void changeEmptyTest() {
         // given
-        OrderTable 생성_된_주문_테이블 = tableService.create(주문_테이블_생성_요청(10));
+        OrderTableResponse 생성_된_주문_테이블 = tableService.create(주문_테이블_생성_요청(10));
 
         // when
-        OrderTable 빈_자리_상태_변경_된_주문_테이블 = tableService.changeEmpty(생성_된_주문_테이블.getId(), false);
+        OrderTableResponse 빈_자리_상태_변경_된_주문_테이블 = tableService.changeEmpty(생성_된_주문_테이블.getId(), false);
 
         // then
         빈_자리_여부_상태_변경_성공됨(빈_자리_상태_변경_된_주문_테이블, false);
@@ -105,7 +106,7 @@ public class TableServiceTest {
     @Test
     void changeNumberOfGuestByMinusGuests() {
         // given
-        OrderTable 생성_된_주문_테이블 = tableService.create(주문_테이블_생성_요청(10));
+        OrderTableResponse 생성_된_주문_테이블 = tableService.create(주문_테이블_생성_요청(10));
 
         // then
         주문_테이블_인원_변경_실패됨(() -> tableService.changeNumberOfGuests(생성_된_주문_테이블.getId(), -1));
@@ -115,7 +116,7 @@ public class TableServiceTest {
     @Test
     void changeNumberOfGuestsByEmptyOrderTableTest() {
         // given
-        OrderTable 생성_된_주문_테이블 = tableService.create(주문_테이블_생성_요청(10));
+        OrderTableResponse 생성_된_주문_테이블 = tableService.create(주문_테이블_생성_요청(10));
 
         // then
         주문_테이블_인원_변경_실패됨(() -> tableService.changeNumberOfGuests(생성_된_주문_테이블.getId(), 5));
@@ -126,7 +127,7 @@ public class TableServiceTest {
     void changeNumberOfGuestsTest() {
         // given
         when(orderService.getOrderStatusByOrderTableId(any())).thenReturn(OrderStatus.COMPLETION);
-        OrderTable 생성_된_주문_테이블 = tableService.create(주문_테이블_생성_요청(10));
+        OrderTableResponse 생성_된_주문_테이블 = tableService.create(주문_테이블_생성_요청(10));
         tableService.changeEmpty(생성_된_주문_테이블.getId(), false);
 
         // when
@@ -137,17 +138,17 @@ public class TableServiceTest {
         주문_테이블_인원_변경_성공됨(orderTable, 5);
     }
 
-    void 주문_테이블_저장됨(OrderTable orderTable, OrderTableCreateRequest request) {
-        assertThat(orderTable.getNumberOfGuests().getValue()).isEqualTo(request.getNumberOfGuests());
+    void 주문_테이블_저장됨(OrderTableResponse orderTable, OrderTableCreateRequest request) {
+        assertThat(orderTable.getNumberOfGuests()).isEqualTo(request.getNumberOfGuests());
         assertThat(orderTable.isEmpty()).isTrue();
     }
 
-    void 주문_테이블_목록_조회됨(OrderTables orderTables, List<Long> containIds) {
-        assertThat(orderTables.getValue().size()).isGreaterThanOrEqualTo(containIds.size());
-        assertThat(orderTables.getValue().stream().mapToLong(OrderTable::getId)).containsAll(containIds);
+    void 주문_테이블_목록_조회됨(List<OrderTableResponse> orderTables, List<Long> containIds) {
+        assertThat(orderTables.size()).isGreaterThanOrEqualTo(containIds.size());
+        assertThat(orderTables.stream().mapToLong(OrderTableResponse::getId)).containsAll(containIds);
     }
 
-    void 빈_자리_여부_상태_변경_성공됨(OrderTable orderTable, boolean empty) {
+    void 빈_자리_여부_상태_변경_성공됨(OrderTableResponse orderTable, boolean empty) {
         assertThat(orderTable.isEmpty()).isEqualTo(empty);
     }
 
