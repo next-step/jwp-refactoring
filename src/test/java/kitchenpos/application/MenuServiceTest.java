@@ -8,7 +8,6 @@ import static kitchenpos.utils.generator.ProductFixtureGenerator.generateProduct
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -86,7 +85,6 @@ class MenuServiceTest {
         given(productRepository.findById(firstProduct.getId())).willReturn(Optional.of(firstProduct));
         given(productRepository.findById(secondProduct.getId())).willReturn(Optional.of(secondProduct));
         given(menuRepository.save(any(Menu.class))).will(AdditionalAnswers.returnsFirstArg());
-        given(menuProductRepository.saveAll(anyList())).willReturn(menuProducts);
 
         // When
         menuService.create(createMenuRequest);
@@ -95,7 +93,6 @@ class MenuServiceTest {
         verify(menuGroupRepository).findById(any());
         verify(productRepository, times(menuProducts.size())).findById(anyLong());
         verify(menuRepository).save(any(Menu.class));
-        verify(menuProductRepository).saveAll(anyList());
     }
 
     @ParameterizedTest(name = "case[{index}] : ''{0}'' => {1}")

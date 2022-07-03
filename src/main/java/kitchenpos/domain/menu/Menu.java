@@ -1,7 +1,10 @@
 package kitchenpos.domain.menu;
 
+import static kitchenpos.domain.validator.PriceValidator.validatePrice;
+
 import java.math.BigDecimal;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
@@ -31,15 +34,15 @@ public class Menu {
     )
     private MenuGroup menuGroup;
 
-    @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "menu", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuProduct> menuProducts;
 
     public Menu() {
 
     }
 
-    public Menu(String name, BigDecimal price, MenuGroup menuGroup,
-        List<MenuProduct> menuProducts) {
+    public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+        validatePrice(price);
         menuProducts.forEach(it -> it.setMenu(this));
         this.name = name;
         this.price = price;

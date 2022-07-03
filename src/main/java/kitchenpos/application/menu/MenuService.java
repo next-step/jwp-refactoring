@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MenuService {
+    public static final String NOT_EXIST_MENU_GROUP_ERROR_MESSAGE = "메뉴 그룹 정보가 존재하지 않습니다.";
 
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
@@ -39,21 +40,16 @@ public class MenuService {
     public MenuResponse create(final CreateMenuRequest createMenuRequest) {
         final BigDecimal price = createMenuRequest.getPrice();
 
-        // TODO : Menu Entity 객체 생성 시점에 원시 타입 포장 객체를 이용한 유효성 검증
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
-
-        // TODO : 오류 메세지 추가
         MenuGroup menuGroup = menuGroupRepository.findById(createMenuRequest.getMenuGroupId())
-            .orElseThrow(() -> new IllegalArgumentException());
+            .orElseThrow(() -> new IllegalArgumentException(NOT_EXIST_MENU_GROUP_ERROR_MESSAGE));
 
         // TODO : productDao.findByAllIds 를 이용하여 In절로 조회 -> 조회 쿼리 수 감소
         // TODO : findBByAllIds와 menuProducts size를 비교하는 구문으로 유효성 검증 변경
         BigDecimal sum = BigDecimal.ZERO;
 
-        final List<MenuProductRequest> menuProductRequests = createMenuRequest.getMenuProductRequests();
         final List<MenuProduct> menuProducts = new ArrayList<>();
+        final List<MenuProductRequest> menuProductRequests = createMenuRequest.getMenuProductRequests();
+
         for (final MenuProductRequest menuProductRequest : menuProductRequests) {
             final Product product = productRepository.findById(menuProductRequest.getProductId())
                 .orElseThrow(IllegalArgumentException::new);
@@ -70,8 +66,6 @@ public class MenuService {
         // TODO : Menu Entity와 MenuProduct Entity의 생명 주기가 같도록 영속성 전이 옵션 설정
         // TODO : e.g. @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
         final Menu savedMenu = menuRepository.save(createMenuRequest.toMenu(menuGroup, menuProducts));
-        menuProductRepository.saveAll(menuProducts);
-
         return MenuResponse.from(savedMenu);
     }
 
