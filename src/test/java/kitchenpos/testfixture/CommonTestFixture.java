@@ -7,6 +7,9 @@ import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.order.domain.*;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.product.domain.*;
 import kitchenpos.product.dto.ProductRequest;
 
@@ -50,23 +53,35 @@ public class CommonTestFixture {
         return new MenuProductRequest(productId, (long) quantity);
     }
 
-    public static Order createOrder(Long id, Long orderTableId, String orderStatus) {
-        return new Order(id, orderTableId, orderStatus);
+    public static Order createOrder(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        return new Order(orderTableId, orderLineItems);
     }
 
-    public static Order createOrder(Long id, Long orderTableId, String orderStatus, List<OrderLineItem> orderLineItems) {
-        return new Order(id, orderTableId, orderStatus, orderLineItems);
+    public static Order createOrder(Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
+        return new Order(orderTableId, orderStatus, orderLineItems);
     }
 
-    public static OrderLineItem createOrderLineItem(int seq, Long orderId, Long menuId, long quantity) {
-        return new OrderLineItem((long) seq, orderId, menuId, quantity);
+    public static OrderRequest createOrderRequest(Long orderTableId, OrderStatus orderStatus, List<OrderLineItemRequest> orderLineItems) {
+        return new OrderRequest(orderTableId, orderStatus, orderLineItems);
     }
 
-    public static OrderTable createOrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
-        return new OrderTable(id, tableGroupId, numberOfGuests, empty);
+    public static OrderLineItemRequest createOrderLineItemRequest(Long menuId, int quantity) {
+        return new OrderLineItemRequest(menuId, (long) quantity);
     }
 
-    public static TableGroup createTableGroup(Long id, List<OrderTable> orderTables) {
-        return new TableGroup(id, orderTables);
+    public static OrderLineItem createOrderLineItem(Long menuId, long quantity) {
+        return new OrderLineItem(menuId, quantity);
+    }
+
+    public static OrderTableRequest createOrderTableRequest(int numberOfGuests, boolean empty) {
+        return new OrderTableRequest(numberOfGuests, empty);
+    }
+
+    public static OrderTable createOrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+        return new OrderTable(id, tableGroup, numberOfGuests, empty);
+    }
+
+    public static TableGroup createTableGroup(List<OrderTable> orderTables) {
+        return new TableGroup(orderTables);
     }
 }
