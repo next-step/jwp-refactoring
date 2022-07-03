@@ -43,14 +43,10 @@ public class OrderService {
         return OrderResponse.of(orderRepository.save(order));
     }
 
-    public List<Order> list() {
-        final List<Order> orders = orderRepository.findAll();
+    public List<OrderResponse> list() {
+        final List<Order> orders = orderRepository.findAllWithOrderLineItems();
 
-        for (final Order order : orders) {
-            order.setOrderLineItems(orderLineItemRepository.findAllByOrderId(order.getId()));
-        }
-
-        return orders;
+        return OrderResponse.of(orders);
     }
 
     @Transactional

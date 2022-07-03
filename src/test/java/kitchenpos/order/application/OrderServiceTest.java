@@ -111,19 +111,13 @@ class OrderServiceTest {
     @DisplayName("주문 목록을 조회한다")
     @Test
     void list() {
-        Order firstOrder = new Order(1L);
-        Order secondOrder = new Order(2L);
-        List<Order> orders = Arrays.asList(firstOrder, secondOrder);
+        Order order = new Order(1L, Arrays.asList(new OrderLineItem(), new OrderLineItem()));
+        given(orderRepository.findAllWithOrderLineItems()).willReturn(Arrays.asList(order));
 
-        given(orderRepository.findAll()).willReturn(orders);
-        given(orderLineItemDao.findAllByOrderId(1L))
-                .willReturn(Arrays.asList(new OrderLineItem(firstOrder)));
-        given(orderLineItemDao.findAllByOrderId(2L))
-                .willReturn(Arrays.asList(new OrderLineItem(secondOrder)));
+        List<OrderResponse> responses = orderService.list();
 
-        List<Order> result = orderService.list();
-
-        assertThat(result).hasSize(2);
+        assertThat(responses).hasSize(1);
+        assertThat(responses.get(0).getOrderLineItems()).hasSize(2);
     }
 
     @DisplayName("주문 상태를 변경한다")
