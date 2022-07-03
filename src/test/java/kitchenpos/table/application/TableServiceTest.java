@@ -1,19 +1,22 @@
 package kitchenpos.table.application;
 
-import static kitchenpos.fixture.TableFixture.*;
-import static org.assertj.core.api.Assertions.*;
+import static kitchenpos.fixture.TableFixture.테이블_생성;
+import static kitchenpos.fixture.TableFixture.테이블요청_생성;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.order.domain.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.repository.OrderTableRepository;
 import kitchenpos.table.domain.repository.TableGroupRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.validator.TableValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,11 +28,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class TableServiceTest {
     @Mock
-    private OrderRepository orderRepository;
-    @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
     private TableGroupRepository tableGroupRepository;
+    @Mock
+    private TableValidator tableValidator;
     @InjectMocks
     private TableService tableService;
 
@@ -74,7 +77,6 @@ public class TableServiceTest {
     void changeEmpty() {
         //given
         given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(false);
         given(orderTableRepository.save(any())).willReturn(orderTable);
 
         //when
@@ -113,7 +115,9 @@ public class TableServiceTest {
     void changeEmpty_invalidOrderStatus() {
         //given
         given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(true);
+        willThrow(new IllegalArgumentException("현재 조리중이거나 식사중인 주문이 존재합니다."))
+                .given(tableValidator)
+                .validateOrderStatus(1L);
 
         //when & then
         assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), orderTableRequest))

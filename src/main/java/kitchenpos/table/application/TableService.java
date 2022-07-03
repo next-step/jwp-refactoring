@@ -1,29 +1,27 @@
 package kitchenpos.table.application;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.repository.OrderTableRepository;
 import kitchenpos.table.domain.repository.TableGroupRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.validator.TableValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TableService {
-    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
+    private final TableValidator tableValidator;
 
-    public TableService(OrderRepository orderRepository, OrderTableRepository orderTableRepository,
-                        TableGroupRepository tableGroupRepository) {
-        this.orderRepository = orderRepository;
+    public TableService(OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository,
+                        TableValidator tableValidator) {
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
+        this.tableValidator = tableValidator;
     }
 
     @Transactional
@@ -44,17 +42,10 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         OrderTable OrderTable = findOrderTableById(orderTableId);
         validateJoinedTableGroup(orderTableId);
-        validateOrderStatus(orderTableId);
+        tableValidator.validateOrderStatus(orderTableId);
         OrderTable.changeEmpty(orderTableRequest.getEmpty());
         OrderTable savedOrderTable = orderTableRepository.save(OrderTable);
         return OrderTableResponse.of(savedOrderTable);
-    }
-
-    private void validateOrderStatus(Long orderTableId) {
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException("현재 조리중이거나 식사중인 주문이 존재합니다.");
-        }
     }
 
     private void validateJoinedTableGroup(Long orderTableId) {

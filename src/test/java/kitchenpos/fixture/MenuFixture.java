@@ -1,6 +1,7 @@
 package kitchenpos.fixture;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.common.domain.Price;
@@ -17,8 +18,8 @@ public class MenuFixture {
         return new Menu(name, price, menuGroupId, menuProductList);
     }
 
-    public static MenuRequest 메뉴_생성_요청(String name, BigDecimal price, Long menuGroupId,
-                                       List<MenuProduct> menuProductList) {
+    public static MenuRequest 메뉴요청_생성(String name, BigDecimal price, Long menuGroupId,
+                                      List<MenuProduct> menuProductList) {
         List<MenuProductRequest> menuProductRequestList = menuProductList.stream()
                 .map(menuProduct -> new MenuProductRequest(menuProduct.getSeq(), menuProduct.getQuantity()))
                 .collect(Collectors.toList());
@@ -35,5 +36,12 @@ public class MenuFixture {
 
     public static MenuGroupRequest 메뉴그룹_생성_요청(String name) {
         return new MenuGroupRequest(name);
+    }
+
+    public static List<MenuProduct> 파스타메뉴_상품_생성() {
+        return Arrays.asList(
+                메뉴상품_생성(1L, 1L, 1L),
+                메뉴상품_생성(2L, 2L, 1L)
+        );
     }
 }

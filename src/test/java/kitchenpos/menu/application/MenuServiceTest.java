@@ -1,9 +1,9 @@
 package kitchenpos.menu.application;
 
 import static kitchenpos.fixture.MenuFixture.메뉴_생성;
-import static kitchenpos.fixture.MenuFixture.메뉴_생성_요청;
 import static kitchenpos.fixture.MenuFixture.메뉴그룹_생성;
-import static kitchenpos.fixture.MenuFixture.메뉴상품_생성;
+import static kitchenpos.fixture.MenuFixture.메뉴요청_생성;
+import static kitchenpos.fixture.MenuFixture.파스타메뉴_상품_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -16,7 +16,6 @@ import java.util.List;
 import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.repository.MenuRepository;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
@@ -52,7 +51,7 @@ public class MenuServiceTest {
     void create() {
         //given
         given(menuRepository.save(any())).willReturn(봉골레파스타세트);
-        MenuRequest 봉골레파스타세트_요청 = 메뉴_생성_요청("봉골레파스타세트", BigDecimal.valueOf(15000), 파스타메뉴.getId(), 파스타메뉴_상품_생성());
+        MenuRequest 봉골레파스타세트_요청 = 메뉴요청_생성("봉골레파스타세트", BigDecimal.valueOf(15000), 파스타메뉴.getId(), 파스타메뉴_상품_생성());
 
         //when
         MenuResponse createdMenu = menuService.create(봉골레파스타세트_요청);
@@ -66,7 +65,7 @@ public class MenuServiceTest {
     @Test
     void create_invalidPrice() {
         //given
-        MenuRequest 봉골레파스타세트_요청 = 메뉴_생성_요청("봉골레파스타세트", BigDecimal.valueOf(-1), 파스타메뉴.getId(), 파스타메뉴_상품_생성());
+        MenuRequest 봉골레파스타세트_요청 = 메뉴요청_생성("봉골레파스타세트", BigDecimal.valueOf(-1), 파스타메뉴.getId(), 파스타메뉴_상품_생성());
 
         //when & then
         assertThatThrownBy(() -> menuService.create(봉골레파스타세트_요청))
@@ -77,7 +76,7 @@ public class MenuServiceTest {
     @Test
     void create_invalidNotExistsMenuProduct() {
         //given
-        MenuRequest 봉골레파스타세트_요청 = 메뉴_생성_요청("봉골레파스타세트", BigDecimal.valueOf(20000), 파스타메뉴.getId(), 파스타메뉴_상품_생성());
+        MenuRequest 봉골레파스타세트_요청 = 메뉴요청_생성("봉골레파스타세트", BigDecimal.valueOf(20000), 파스타메뉴.getId(), 파스타메뉴_상품_생성());
         willThrow(new IllegalArgumentException("존재하지 않는 메뉴그룹입니다."))
                 .given(menuValidator)
                 .validate(봉골레파스타세트_요청);
@@ -91,7 +90,7 @@ public class MenuServiceTest {
     @Test
     void create_invalidPriceSum() {
         //given
-        MenuRequest 봉골레파스타세트_요청 = 메뉴_생성_요청("봉골레파스타세트", BigDecimal.valueOf(20000), 파스타메뉴.getId(), 파스타메뉴_상품_생성());
+        MenuRequest 봉골레파스타세트_요청 = 메뉴요청_생성("봉골레파스타세트", BigDecimal.valueOf(20000), 파스타메뉴.getId(), 파스타메뉴_상품_생성());
         willThrow(new IllegalArgumentException("메뉴 내 제품가격의 합보다 메뉴가격이 클 수 없습니다."))
                 .given(menuValidator)
                 .validate(봉골레파스타세트_요청);
@@ -114,10 +113,4 @@ public class MenuServiceTest {
         assertThat(menuResponses).hasSize(1);
     }
 
-    private List<MenuProduct> 파스타메뉴_상품_생성() {
-        return Arrays.asList(
-                메뉴상품_생성(1L, 1L, 1L),
-                메뉴상품_생성(2L, 2L, 1L)
-        );
-    }
 }
