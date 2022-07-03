@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.common.domain.Price;
 import kitchenpos.common.domain.Quantity;
 
 import javax.persistence.*;
@@ -18,6 +19,12 @@ public class MenuProduct {
 
     @Column(name = "product_id", nullable = false)
     private Long productId;
+
+    @Column(name = "menu_name")
+    private String menuName;
+
+    @Column(name = "menu_price")
+    private Price menuPrice;
 
     @Embedded
     private Quantity quantity;
@@ -50,6 +57,12 @@ public class MenuProduct {
 
     public void connectedBy(Menu menu) {
         this.menu = menu;
+        this.menuName = menu.getName();
+        this.menuPrice = menu.getPrice();
+    }
+
+    public Menu getMenu() {
+        return menu;
     }
 
     @Override
