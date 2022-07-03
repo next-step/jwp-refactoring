@@ -1,17 +1,17 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.menu.dao.MenuRepository;
-import kitchenpos.menu.domain.*;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.Menus;
 import kitchenpos.menu.dto.MenuCreateRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.application.ProductService;
-import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.Products;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)

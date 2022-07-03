@@ -9,7 +9,8 @@ import static kitchenpos.common.domain.PriceTest.가격_생성;
 import static kitchenpos.menu.MenuGenerator.*;
 import static kitchenpos.menu.domain.QuantityTest.수량_생성;
 import static kitchenpos.product.ProductGenerator.상품_생성;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 
 class MenuTest {
 

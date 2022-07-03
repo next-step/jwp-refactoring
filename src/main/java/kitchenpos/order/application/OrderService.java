@@ -1,11 +1,11 @@
 package kitchenpos.order.application;
 
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.Menus;
-import kitchenpos.menu.domain.Quantity;
 import kitchenpos.order.dao.OrderRepository;
-import kitchenpos.order.domain.*;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.Orders;
 import kitchenpos.order.dto.OrderCreateRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.application.TableService;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)

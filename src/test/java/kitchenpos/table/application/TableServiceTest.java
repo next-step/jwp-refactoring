@@ -4,7 +4,6 @@ import kitchenpos.order.application.OrderService;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.dto.OrderTableCreateRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;

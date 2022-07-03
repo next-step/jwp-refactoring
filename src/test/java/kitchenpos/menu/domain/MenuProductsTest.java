@@ -1,6 +1,5 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.common.domain.Price;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
