@@ -2,7 +2,6 @@ plugins {
     id 'org.springframework.boot' version '2.4.1'
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
     id 'java'
-//    id 'java-test-fixtures'
 }
 
 group = 'camp.nextstep.edu'
@@ -61,13 +60,6 @@ subprojects {
     }
 }
 
-project(':module-product') {
-    dependencies {
-        apply plugin: 'java-test-fixtures'
-        testImplementation(testFixtures(project(':module-test')))
-    }
-}
-
 project(':module-ui') {
     dependencies {
         implementation project(':module-product')
@@ -76,6 +68,12 @@ project(':module-ui') {
         testImplementation 'io.rest-assured:rest-assured:3.3.0'
         // handlebars
         implementation 'pl.allegro.tech.boot:handlebars-spring-boot-starter:0.3.0'
+    }
+}
+
+project(':module-product') {
+    dependencies {
+        testImplementation(testFixtures(project(':module-test')))
     }
 }
 
