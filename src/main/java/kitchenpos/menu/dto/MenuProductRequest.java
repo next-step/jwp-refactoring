@@ -4,10 +4,10 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 
 public class MenuProductRequest {
-    Long seq;
-    Long menuId;
-    Long productId;
-    Integer quantity;
+    private Long seq;
+    private Long menuId;
+    private Long productId;
+    private Integer quantity;
 
     public MenuProductRequest() {
     }
