@@ -1,8 +1,8 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuGroups;
 import kitchenpos.menu.dto.MenuGroupCreateRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ class MenuGroupServiceTest {
         MenuGroupCreateRequest 메뉴_그룹 = 메뉴_그룹_생성_요청(메뉴_그룹_이름);
 
         // when
-        MenuGroup 메뉴_그룹_생성_결과 = menuGroupService.create(메뉴_그룹);
+        MenuGroupResponse 메뉴_그룹_생성_결과 = menuGroupService.create(메뉴_그룹);
 
         // then
         메뉴_그룹_생성_성공됨(메뉴_그룹_생성_결과, 메뉴_그룹_이름);
@@ -49,7 +49,7 @@ class MenuGroupServiceTest {
         }
 
         // when
-        MenuGroups 메뉴_그룹_조회_결과 = menuGroupService.list();
+        List<MenuGroupResponse> 메뉴_그룹_조회_결과 = menuGroupService.listResponse();
 
         // then
         메뉴_그룹_목록_정상_조회됨(메뉴_그룹_조회_결과, 포함_되어야_할_아이디들);
@@ -75,14 +75,14 @@ class MenuGroupServiceTest {
         assertThat(메뉴_그룹.getId()).isEqualTo(메뉴_그룹_아이디);
     }
 
-    private void 메뉴_그룹_생성_성공됨(MenuGroup menuGroup, String name) {
+    private void 메뉴_그룹_생성_성공됨(MenuGroupResponse menuGroup, String name) {
         assertThat(menuGroup.getId()).isNotNull();
         assertThat(menuGroup.getName()).isEqualTo(name);
     }
 
-    void 메뉴_그룹_목록_정상_조회됨(MenuGroups menuGroups, List<Long> containIds) {
-        assertThat(menuGroups.getValue().size()).isGreaterThanOrEqualTo(containIds.size());
-        assertThat(menuGroups.getValue().stream().mapToLong(MenuGroup::getId)).containsAll(containIds);
+    void 메뉴_그룹_목록_정상_조회됨(List<MenuGroupResponse> menuGroups, List<Long> containIds) {
+        assertThat(menuGroups.size()).isGreaterThanOrEqualTo(containIds.size());
+        assertThat(menuGroups.stream().mapToLong(MenuGroupResponse::getId)).containsAll(containIds);
     }
 
     void 메뉴_그룹_조회_실패됨(Runnable runnable) {

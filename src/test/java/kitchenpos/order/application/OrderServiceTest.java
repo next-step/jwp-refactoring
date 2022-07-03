@@ -65,7 +65,7 @@ class OrderServiceTest {
     private MenuGroup 메뉴_그룹;
     private Product 상품;
     private MenuProduct 메뉴_상품;
-    private Menu 메뉴;
+    private Long 메뉴_아이디;
 
     @BeforeEach
     void setUp() {
@@ -76,7 +76,7 @@ class OrderServiceTest {
         MenuProductRequest 메뉴_상품_요청 = 메뉴_상품_생성_요청(상품.getId(), 1L);
         MenuCreateRequest 메뉴_생성_요청 = 메뉴_생성_요청("메뉴", 1_000, 메뉴_그룹.getId(), Collections.singletonList(메뉴_상품_요청));
 
-        메뉴 = menuService.create(메뉴_생성_요청);
+        메뉴_아이디 = menuService.create(메뉴_생성_요청).getId();
     }
 
     @DisplayName("주문에 주문 목록이 포함되어 있지 않으면 예외가 발생해야 한다")
@@ -91,7 +91,7 @@ class OrderServiceTest {
         // given
         Long 없는_메뉴_아이디 = -1L;
         List<OrderLineItemRequest> 주문_목록_생성_요청 = Arrays.asList(
-                주문_물품_생성_요청(메뉴.getId(), 1L),
+                주문_물품_생성_요청(메뉴_아이디, 1L),
                 주문_물품_생성_요청(없는_메뉴_아이디, 1L)
         );
 
@@ -105,8 +105,8 @@ class OrderServiceTest {
         // given
         Long 없는_테이블_아이디 = -1L;
         List<OrderLineItemRequest> 주문_목록_생성_요청 = Arrays.asList(
-                주문_물품_생성_요청(메뉴.getId(), 1L),
-                주문_물품_생성_요청(메뉴.getId(), 1L)
+                주문_물품_생성_요청(메뉴_아이디, 1L),
+                주문_물품_생성_요청(메뉴_아이디, 1L)
         );
 
         // then
@@ -118,8 +118,8 @@ class OrderServiceTest {
     void createOrderByEmptyOrderTableTest() {
         // given
         List<OrderLineItemRequest> 주문_목록_생성_요청 = Arrays.asList(
-                주문_물품_생성_요청(메뉴.getId(), 1L),
-                주문_물품_생성_요청(메뉴.getId(), 1L)
+                주문_물품_생성_요청(메뉴_아이디, 1L),
+                주문_물품_생성_요청(메뉴_아이디, 1L)
         );
         tableService.changeEmpty(주문_테이블.getId(), true);
 
@@ -132,8 +132,8 @@ class OrderServiceTest {
     void createOrderTest() {
         // given
         List<OrderLineItemRequest> 주문_목록_생성_요청 = Arrays.asList(
-                주문_물품_생성_요청(메뉴.getId(), 1L),
-                주문_물품_생성_요청(메뉴.getId(), 1L)
+                주문_물품_생성_요청(메뉴_아이디, 1L),
+                주문_물품_생성_요청(메뉴_아이디, 1L)
         );
         OrderCreateRequest 주문_생성_요청 = 주문_생성_요청(주문_테이블.getId(), 주문_목록_생성_요청);
         tableService.changeEmpty(주문_테이블.getId(), false);
@@ -151,8 +151,8 @@ class OrderServiceTest {
         // given
         tableService.changeEmpty(주문_테이블.getId(), false);
         List<OrderLineItemRequest> 주문_목록_생성_요청 = Arrays.asList(
-                주문_물품_생성_요청(메뉴.getId(), 1L),
-                주문_물품_생성_요청(메뉴.getId(), 1L)
+                주문_물품_생성_요청(메뉴_아이디, 1L),
+                주문_물품_생성_요청(메뉴_아이디, 1L)
         );
         List<Long> 생성된_주문_아이디들 = Arrays.asList(
                 orderService.create(주문_생성_요청(주문_테이블.getId(), 주문_목록_생성_요청)).getId(),
@@ -181,8 +181,8 @@ class OrderServiceTest {
     void changeOrderStatueByCompletionOrderTest(OrderStatus status) {
         // given
         List<OrderLineItemRequest> 주문_목록_생성_요청 = Arrays.asList(
-                주문_물품_생성_요청(메뉴.getId(), 1L),
-                주문_물품_생성_요청(메뉴.getId(), 1L)
+                주문_물품_생성_요청(메뉴_아이디, 1L),
+                주문_물품_생성_요청(메뉴_아이디, 1L)
         );
         OrderCreateRequest 주문_생성_요청 = 주문_생성_요청(주문_테이블.getId(), 주문_목록_생성_요청);
         tableService.changeEmpty(주문_테이블.getId(), false);
@@ -199,8 +199,8 @@ class OrderServiceTest {
     void changeOrderStatusTest(OrderStatus orderStatus) {
         // given
         List<OrderLineItemRequest> 주문_목록_생성_요청 = Arrays.asList(
-                주문_물품_생성_요청(메뉴.getId(), 1L),
-                주문_물품_생성_요청(메뉴.getId(), 1L)
+                주문_물품_생성_요청(메뉴_아이디, 1L),
+                주문_물품_생성_요청(메뉴_아이디, 1L)
         );
         OrderCreateRequest 주문_생성_요청 = 주문_생성_요청(주문_테이블.getId(), 주문_목록_생성_요청);
         tableService.changeEmpty(주문_테이블.getId(), false);

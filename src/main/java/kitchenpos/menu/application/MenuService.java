@@ -3,6 +3,7 @@ package kitchenpos.menu.application;
 import kitchenpos.menu.dao.MenuRepository;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuCreateRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.Products;
@@ -30,16 +31,16 @@ public class MenuService {
     }
 
     @Transactional
-    public Menu create(final MenuCreateRequest request) {
+    public MenuResponse create(final MenuCreateRequest request) {
         MenuGroup menuGroup = menuGroupService.getMenuGroup(request.getMenuGroupId());
         Products products = productService.findMenusInIds(request.getProductIds());
         Menu menu = request.of(menuGroup, products);
 
-        return menuRepository.save(menu);
+        return MenuResponse.from(menuRepository.save(menu));
     }
 
-    public Menus list() {
-        return new Menus(menuRepository.findAll());
+    public List<MenuResponse> listResponse() {
+        return new Menus(menuRepository.findAll()).toResponse();
     }
 
     public Menus findMenusInIds(final List<Long> ids) {

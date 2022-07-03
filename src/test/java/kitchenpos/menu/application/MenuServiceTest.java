@@ -7,6 +7,7 @@ import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.Menus;
 import kitchenpos.menu.dto.MenuCreateRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.product.dao.ProductRepository;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
@@ -117,7 +118,7 @@ class MenuServiceTest {
         );
 
         // when
-        Menu 생성_메뉴 = menuService.create(메뉴_생성_요청);
+        MenuResponse 생성_메뉴 = menuService.create(메뉴_생성_요청);
 
         // then
         메뉴_생성_성공됨(생성_메뉴, 메뉴_생성_요청);
@@ -141,7 +142,7 @@ class MenuServiceTest {
         }
 
         // when
-        Menus 메뉴_조회_결과 = menuService.list();
+        List<MenuResponse> 메뉴_조회_결과 = menuService.listResponse();
 
         // then
         메뉴_목록_조회됨(메뉴_조회_결과, 포함되어야_할_아이디들);
@@ -151,15 +152,15 @@ class MenuServiceTest {
         assertThatIllegalArgumentException().isThrownBy(runnable::run);
     }
 
-    void 메뉴_생성_성공됨(Menu menu, MenuCreateRequest request) {
+    void 메뉴_생성_성공됨(MenuResponse menu, MenuCreateRequest request) {
         assertThat(menu.getId()).isNotNull();
         assertThat(menu.getName()).isEqualTo(request.getName());
-        assertThat(menu.getPrice()).isEqualTo(new Price(request.getPrice()));
-        assertThat(menu.getMenuGroup().getId()).isEqualTo(request.getMenuGroupId());
+        assertThat(menu.getPrice()).isEqualTo(request.getPrice());
+        assertThat(menu.getMenuGroup()).isEqualTo(request.getMenuGroupId());
     }
 
-    void 메뉴_목록_조회됨(Menus menus, List<Long> containIds) {
-        assertThat(menus.getValue().size()).isGreaterThanOrEqualTo(containIds.size());
-        assertThat(menus.getValue().stream().mapToLong(Menu::getId)).containsAll(containIds);
+    void 메뉴_목록_조회됨(List<MenuResponse> menus, List<Long> containIds) {
+        assertThat(menus.size()).isGreaterThanOrEqualTo(containIds.size());
+        assertThat(menus.stream().mapToLong(MenuResponse::getId)).containsAll(containIds);
     }
 }

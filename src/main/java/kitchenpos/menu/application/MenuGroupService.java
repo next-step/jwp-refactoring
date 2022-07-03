@@ -4,6 +4,7 @@ import kitchenpos.menu.dao.MenuGroupRepository;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroups;
 import kitchenpos.menu.dto.MenuGroupCreateRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,12 +20,14 @@ public class MenuGroupService {
     }
 
     @Transactional
-    public MenuGroup create(final MenuGroupCreateRequest request) {
-        return menuGroupRepository.save(request.of());
+    public MenuGroupResponse create(final MenuGroupCreateRequest request) {
+        return MenuGroupResponse.from(
+                menuGroupRepository.save(request.of())
+        );
     }
 
-    public MenuGroups list() {
-        return new MenuGroups(menuGroupRepository.findAll());
+    public List<MenuGroupResponse> listResponse() {
+        return new MenuGroups(menuGroupRepository.findAll()).toResponse();
     }
 
     public MenuGroup getMenuGroup(final Long id) {
@@ -34,5 +37,9 @@ public class MenuGroupService {
 
         return menuGroupRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(id + " 에 해당하는 메뉴 그룹을 찾을 수 없습니다."));
+    }
+
+    public MenuGroupResponse getMenuResponseGroup(final Long id) {
+        return MenuGroupResponse.from(getMenuGroup(id));
     }
 }
