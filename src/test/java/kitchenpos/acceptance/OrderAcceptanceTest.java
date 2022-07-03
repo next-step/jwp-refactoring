@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.domain.Order;
@@ -23,9 +24,10 @@ public class OrderAcceptanceTest extends BaseAcceptanceTest{
     public void manageOrder() {
         //메뉴 생성
         //given
-        Order 주문 = new Order(1l, createOrderLineItem());
+        Order order = new Order(1l);
+        order.addOrderItems(new OrderLineItem(1l, 1));
         //when
-        ExtractableResponse<Response> 주문_생성_요청 = 주문_생성_요청(주문);
+        ExtractableResponse<Response> 주문_생성_요청 = 주문_생성_요청(order);
         //then
         응답코드_확인(주문_생성_요청, HttpStatus.CREATED);
 
@@ -44,7 +46,7 @@ public class OrderAcceptanceTest extends BaseAcceptanceTest{
         ExtractableResponse<Response> 주문_상태_변경_요청 = 주문_상태_변경_요청(주문_생성_요청.as(Order.class).getId(), 변경주문);
         //then
         응답코드_확인(주문_상태_변경_요청, HttpStatus.OK);
-        상태_변경됨(주문_상태_변경_요청, OrderStatus.MEAL.name());
+        상태_변경됨(주문_상태_변경_요청, OrderStatus.MEAL);
 
     }
 
@@ -82,11 +84,11 @@ public class OrderAcceptanceTest extends BaseAcceptanceTest{
         assertThat(response.jsonPath().getList(".", Order.class).stream().anyMatch(order -> order.getId().equals(id))).isTrue();
     }
 
-    public static void 상태_변경됨(final ExtractableResponse<Response> response, String orderStats) {
+    public static void 상태_변경됨(final ExtractableResponse<Response> response, OrderStatus orderStats) {
         assertThat(response.as(Order.class).getOrderStatus()).isEqualTo(orderStats);
     }
 
     private List<OrderLineItem> createOrderLineItem() {
-        return Arrays.asList(new OrderLineItem(1l, 1l, 1));
+        return new ArrayList<>(Arrays.asList(new OrderLineItem( 1l, 1)));
     }
 }

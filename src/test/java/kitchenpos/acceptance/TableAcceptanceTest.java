@@ -19,7 +19,7 @@ public class TableAcceptanceTest extends BaseAcceptanceTest{
     public void manageOrderTable() {
         //주문  생성
         //given
-        OrderTable 주문테이블 = new OrderTable(1l, 1l, 1, true);
+        OrderTable 주문테이블 = new OrderTable(1l,  1, true);
         //when
         ExtractableResponse<Response> 주문테이블_생성_요청 = 주문테이블_생성_요청(주문테이블);
         //then
@@ -34,7 +34,7 @@ public class TableAcceptanceTest extends BaseAcceptanceTest{
 
         //주문 테이블 빈 테이블 수정
         //given
-        OrderTable 수정테이블 = new OrderTable(2l, 2l, 3, false);
+        OrderTable 수정테이블 =new OrderTable(2l,  3, false);
         //when
         ExtractableResponse<Response> 주문테이블_빈테이블_수정_요청 = 주문테이블_빈테이블_수정_요청(주문테이블_생성_요청.as(OrderTable.class).getId(), 수정테이블);
         //then

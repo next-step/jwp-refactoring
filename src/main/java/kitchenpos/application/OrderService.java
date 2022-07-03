@@ -4,13 +4,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.repository.MenuRepository;
 import kitchenpos.repository.OrderRepository;
+import kitchenpos.repository.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -19,13 +19,12 @@ import org.springframework.util.CollectionUtils;
 public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
+    private final OrderTableRepository orderTableRepository;
 
-    private final OrderTableDao orderTableDao;
-
-    public OrderService(MenuRepository menuRepository, OrderRepository orderRepository, OrderTableDao orderTableDao) {
+    public OrderService(MenuRepository menuRepository, OrderRepository orderRepository, OrderTableRepository orderTableRepository) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
-        this.orderTableDao = orderTableDao;
+        this.orderTableRepository = orderTableRepository;
     }
 
     @Transactional
@@ -44,7 +43,7 @@ public class OrderService {
             throw new IllegalArgumentException();
         }
 
-        final OrderTable orderTable = orderTableDao.findById(order.getOrderTableId())
+        final OrderTable orderTable = orderTableRepository.findById(order.getOrderTableId())
                 .orElseThrow(IllegalArgumentException::new);
 
         if (orderTable.isEmpty()) {

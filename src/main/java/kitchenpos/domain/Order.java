@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -24,7 +23,7 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
     private LocalDateTime orderedTime;
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "order")
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
     protected Order() {
@@ -34,6 +33,13 @@ public class Order {
         this.orderTableId = orderTableId;
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
+    }
+
+    public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        this.orderTableId = orderTableId;
+        this.orderStatus = OrderStatus.COOKING;
+        this.orderedTime = LocalDateTime.now();
+        orderLineItems.forEach(orderLineItem -> orderLineItem.toOrder(this));
     }
 
     public Long getId() {
@@ -70,12 +76,6 @@ public class Order {
 
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
-    }
-
-
-    public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
-        this.orderTableId = orderTableId;
-        this.orderLineItems = orderLineItems;
     }
 
     public void addOrderItems(final OrderLineItem orderLineItem) {

@@ -3,7 +3,6 @@ package kitchenpos.domain;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,7 +18,7 @@ public class Menu {
     private BigDecimal price;
     private Long menuGroupId;
 
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "menu")
     private List<MenuProduct> menuProducts;
 
     public Menu() {
@@ -59,25 +58,18 @@ public class Menu {
         return price;
     }
 
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
-    }
-
     public Long getMenuGroupId() {
         return menuGroupId;
-    }
-
-    public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
     }
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
     }
 
-    public void changeMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
+    public void add(MenuProduct menuProduct) {
+        menuProducts.add(menuProduct);
     }
+
 
     @Override
     public boolean equals(Object o) {

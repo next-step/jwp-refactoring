@@ -1,17 +1,31 @@
 package kitchenpos.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+@Entity
 public class OrderTable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long tableGroupId;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "table_group_id")
+    private TableGroup tableGroup;
     private int numberOfGuests;
     private boolean empty;
 
-    public OrderTable() {
+    protected OrderTable() {
     }
 
-    public OrderTable(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+    public OrderTable(Long id, int numberOfGuests, boolean empty) {
         this.id = id;
-        this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
@@ -22,14 +36,6 @@ public class OrderTable {
 
     public void setId(final Long id) {
         this.id = id;
-    }
-
-    public Long getTableGroupId() {
-        return tableGroupId;
-    }
-
-    public void changeTableGroupId(final Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
     }
 
     public int getNumberOfGuests() {
@@ -46,5 +52,22 @@ public class OrderTable {
 
     public void changeEmpty(final boolean empty) {
         this.empty = empty;
+    }
+
+    public void groupBy(TableGroup tableGroup){
+        if (tableGroup == null) {
+            throw new IllegalArgumentException();
+        }
+        this.tableGroup = tableGroup;
+        tableGroup.getOrderTables().add(this);
+        empty = false;
+    }
+
+    public TableGroup getTableGroup() {
+        return tableGroup;
+    }
+
+    public void ungroup(){
+        this.tableGroup = null;
     }
 }

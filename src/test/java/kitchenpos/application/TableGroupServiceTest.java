@@ -6,13 +6,14 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.repository.OrderRepository;
+import kitchenpos.repository.OrderTableRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,9 +25,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class TableGroupServiceTest {
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
     @Mock
     private TableGroupDao tableGroupDao;
     @InjectMocks
@@ -38,7 +39,7 @@ public class TableGroupServiceTest {
 
         //given
         TableGroup given = new TableGroup(1l, createOrderTables());
-        when(orderTableDao.findAllByIdIn(any())).thenReturn(createOrderTables());
+        when(orderTableRepository.findAllByIdIn(any())).thenReturn(createOrderTables());
         when(tableGroupDao.save(any())).thenReturn(given);
         //when
         TableGroup result = tableGroupService.create(given);
@@ -50,7 +51,7 @@ public class TableGroupServiceTest {
     @Test
     public void createTableGroupWithLessOrderTables() {
         //given
-        TableGroup given = new TableGroup(1l, Arrays.asList(new OrderTable(1l, null, 1, true)));
+        TableGroup given = new TableGroup(1l, Arrays.asList(new OrderTable(1l,  1, true)));
 
         //when
         //then
@@ -62,7 +63,7 @@ public class TableGroupServiceTest {
     public void createTableGroupWithNoExistOrderTables() {
         //given
         TableGroup given = new TableGroup(1l, createOrderTables());
-        when(orderTableDao.findAllByIdIn(any())).thenReturn(Arrays.asList(new OrderTable(1l, null, 1, true)));
+        when(orderTableRepository.findAllByIdIn(any())).thenReturn(Arrays.asList(new OrderTable(1l,  1, true)));
         //when
         //then
         assertThatThrownBy(() -> tableGroupService.create(given)).isInstanceOf(IllegalArgumentException.class);
@@ -73,7 +74,7 @@ public class TableGroupServiceTest {
     public void createTableGroupWithEmptyOrderTables() {
         //given
         TableGroup given = new TableGroup(1l, createNotEmptyOrderTables());
-        when(orderTableDao.findAllByIdIn(any())).thenReturn(createNotEmptyOrderTables());
+        when(orderTableRepository.findAllByIdIn(any())).thenReturn(createNotEmptyOrderTables());
         //when
         //then
         assertThatThrownBy(() -> tableGroupService.create(given)).isInstanceOf(IllegalArgumentException.class);
@@ -85,7 +86,7 @@ public class TableGroupServiceTest {
     public void createTableGroupExist() {
         //given
         TableGroup given = new TableGroup(1l, createHasTableGroupOrderTables());
-        when(orderTableDao.findAllByIdIn(any())).thenReturn(createHasTableGroupOrderTables());
+        when(orderTableRepository.findAllByIdIn(any())).thenReturn(createHasTableGroupOrderTables());
         //when
         //then
         assertThatThrownBy(() -> tableGroupService.create(given)).isInstanceOf(IllegalArgumentException.class);
@@ -95,23 +96,23 @@ public class TableGroupServiceTest {
     @Test
     public void ungroup(){
         //given
-        OrderTable orderTable = new OrderTable(1l, 1l, 1, true);
-        OrderTable orderTable2 = new OrderTable(2l, 1l, 1, true);
+        OrderTable orderTable = new OrderTable(1l,  1, true);
+        OrderTable orderTable2 = new OrderTable(2l,  1, true);
 
-        when(orderTableDao.findAllByTableGroupId(any())).thenReturn(Arrays.asList(orderTable, orderTable2));
+        when(orderTableRepository.findAllByTableGroupId(any())).thenReturn(Arrays.asList(orderTable, orderTable2));
         //when
         tableGroupService.ungroup(1l);
         //then
-        assertAll(() -> assertThat(orderTable.getTableGroupId()).isNull(),
-            () -> assertThat(orderTable2.getTableGroupId()).isNull());
+        assertAll(() -> assertThat(orderTable.getTableGroup()).isNull(),
+            () -> assertThat(orderTable2.getTableGroup()).isNull());
     }
 
     @DisplayName("조리, 식사 중인 상태인 경우에는 해제할 수 없다.")
     @Test
     public void ungroupWithStatus(){
         //given
-        when(orderTableDao.findAllByTableGroupId(any())).thenReturn(createOrderTables());
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(true);
+        when(orderTableRepository.findAllByTableGroupId(any())).thenReturn(createOrderTables());
+        when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(true);
         //when
         //then
         assertThatThrownBy(() ->  tableGroupService.ungroup(1l)).isInstanceOf(IllegalArgumentException.class);
@@ -119,14 +120,16 @@ public class TableGroupServiceTest {
     }
 
     private List<OrderTable> createOrderTables() {
-        return Arrays.asList(new OrderTable(1l, null, 1, true), new OrderTable(2l, null, 1, true));
+        return Arrays.asList(new OrderTable(1l,  1, true), new OrderTable(2l,  1, true));
     }
 
     private List<OrderTable> createNotEmptyOrderTables() {
-        return Arrays.asList(new OrderTable(1l, null, 1, false), new OrderTable(2l, null, 1, false));
+        return Arrays.asList(new OrderTable(1l,  1, false), new OrderTable(2l,  1, false));
     }
 
     private List<OrderTable> createHasTableGroupOrderTables() {
-        return Arrays.asList(new OrderTable(1l, 1l, 1, true), new OrderTable(2l, 1l, 1, true));
+        OrderTable orderTable = new OrderTable(1l, 1, true);
+        orderTable.groupBy(new TableGroup(1l, LocalDateTime.now()));
+        return Arrays.asList(orderTable, new OrderTable(2l,  1, true));
     }
 }

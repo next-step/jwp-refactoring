@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-public class TableGroupAcceptanceTest extends BaseAcceptanceTest{
+public class TableGroupAcceptanceTest extends BaseAcceptanceTest {
 
     @DisplayName("단체 지정을 관리한다")
     @Test
@@ -56,7 +56,8 @@ public class TableGroupAcceptanceTest extends BaseAcceptanceTest{
     }
 
     private List<OrderTable> createOrderTables() {
-        return Arrays.asList(new OrderTable(2l, null, 1, true), new OrderTable(3l, null, 1, true));
+        return Arrays.asList(new OrderTable(3l,  1, true), new OrderTable(4l,  1, true));
     }
+
 
 }

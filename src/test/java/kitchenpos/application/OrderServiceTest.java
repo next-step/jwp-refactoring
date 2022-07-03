@@ -3,7 +3,6 @@ package kitchenpos.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.util.Arrays;
 import java.util.List;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
@@ -37,34 +36,44 @@ public class OrderServiceTest {
     public void createWithNoExistOrderLineItem() {
         //when
         //then
-        assertThatThrownBy(() -> orderService.create(new Order(1l, null))).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(new Order(1l))).isInstanceOf(IllegalArgumentException.class);
     }
 
 
     @DisplayName("주문 항목에 중복된 것이 존재하면 에러")
     @Test
     public void createWithDuplicateOrderLineItem() {
+        //given
+        Order order = new Order(1l);
+        order.addOrderItems(new OrderLineItem(1l, 1l, 1));
+        order.addOrderItems(new OrderLineItem(1l, 1l, 1));
         //when
         //then
-        assertThatThrownBy(() -> orderService.create(new Order(1l,
-            Arrays.asList(new OrderLineItem(1l, 1l, 1), new OrderLineItem(1l, 1l, 1)))))
+        assertThatThrownBy(() -> orderService.create(order))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문 테이블 존재하지 않으면 에러")
     @Test
     public void createWithNoExistOrderTable() {
+        //given
+        Order order = new Order(9999l);
+        order.addOrderItems(new OrderLineItem(1l, 1l, 1));
         //when
         //then
-        assertThatThrownBy(() -> orderService.create(new Order(9999l, createOrderLineItem()))).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문 테이블이 빈 값이면 에러")
     @Test
     public void createWithEmptyOrderTable() {
+        //given
+        Order order = new Order(2L);
+        order.addOrderItems(new OrderLineItem(1l, 1l, 1));
+        order.changeOrderTableId(9999l);
         //when
         //then
-        assertThatThrownBy(() -> orderService.create(new Order(2L, createOrderLineItem()))).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
     }
 
 
@@ -117,8 +126,5 @@ public class OrderServiceTest {
     }
 
 
-    private List<OrderLineItem> createOrderLineItem() {
-        return Arrays.asList(new OrderLineItem(1l, 1l, 1));
-    }
 
 }
