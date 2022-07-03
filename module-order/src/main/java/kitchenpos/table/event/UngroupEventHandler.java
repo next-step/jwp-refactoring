@@ -1,7 +1,6 @@
 package kitchenpos.table.event;
 
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.tablegroup.event.UngroupEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

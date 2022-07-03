@@ -1,6 +1,5 @@
 package kitchenpos.table.event;
 
-import kitchenpos.tablegroup.event.GroupByEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;

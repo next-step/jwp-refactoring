@@ -20,7 +20,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.table.application.TableServiceTest.테이블_등록;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -76,6 +75,10 @@ public class TableGroupServiceTest {
 
         // then
         assertThat(orderTable1.getTableGroup()).isNull();
+    }
+
+    public static OrderTable 테이블_등록(int numberOfGuests, boolean empty) {
+        return OrderTable.of(numberOfGuests, empty);
     }
 
     public TableGroupResponse 단체_지정_등록() {

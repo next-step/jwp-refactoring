@@ -41,6 +41,7 @@ project(':module-main') {
         implementation project(':module-product')
         implementation project(':module-menu')
         implementation project(':module-order')
+        implementation project(':module-tablegroup')
     }
 }
 
@@ -60,6 +61,13 @@ project(':module-order') {
         implementation project(':module-product')
         implementation project(':module-menu')
         testImplementation project(':module-menu')
+    }
+}
+
+project(':module-tablegroup') {
+    dependencies {
+        implementation project(':module-order')
+        testImplementation project(':module-order')
     }
 }
 
