@@ -36,26 +36,17 @@ public class Menu {
     }
 
     public Menu(String name, Price price, MenuGroup menuGroup, List<MenuProduct> menuProductList) {
-        validate(price, menuProductList);
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
         menuProductList.forEach(menuProducts::add);
+        validate();
     }
 
-    private void validate(Price price, List<MenuProduct> menuProducts) {
-        if (price.biggerThan(getTotalPrice(menuProducts))) {
+    private void validate() {
+        if (price.biggerThan(menuProducts.getTotalPrice())) {
             throw new IllegalArgumentException("메뉴 내 제품가격의 합보다 메뉴가격이 클 수 없습니다.");
         }
-    }
-
-    public static Price getTotalPrice(List<MenuProduct> menuProductList) {
-        Price totalPrice = new Price(Price.MIN_PRICE);
-        for (MenuProduct menuProduct : menuProductList) {
-            Price price = menuProduct.getPrice();
-            totalPrice.sum(price);
-        }
-        return totalPrice;
     }
 
     public Long getId() {
