@@ -155,7 +155,6 @@ class OrderServiceTest {
     void changeOrderStatus() {
         //given
         given(orderRepository.findById(any())).willReturn(Optional.of(order));
-        given(orderRepository.save(any())).willReturn(order);
         OrderRequest changeOrderStatusRequest = new OrderRequest(null, null, OrderStatus.COOKING.name());
 
         //when
