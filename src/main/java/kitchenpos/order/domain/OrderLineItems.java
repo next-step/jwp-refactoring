@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 @Embeddable
 public class OrderLineItems {
-    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST})
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<OrderLineItem> elements = new ArrayList<>();
 
     public OrderLineItems() {

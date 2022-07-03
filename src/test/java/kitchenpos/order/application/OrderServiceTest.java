@@ -36,7 +36,7 @@ class OrderServiceTest {
     @Mock
     private OrderRepository orderRepository;
     @Mock
-    private OrderLineItemRepository orderLineItemDao;
+    private OrderLineItemRepository orderLineItemRepository;
     @Mock
     private OrderTableRepository orderTableRepository;
 
@@ -124,12 +124,12 @@ class OrderServiceTest {
     @Test
     void changeOrderStatus() {
         given(orderRepository.findById(ORDER_ID)).willReturn(Optional.of(order));
-        given(orderLineItemDao.findAllByOrderId(ORDER_ID))
+        given(orderLineItemRepository.findAllByOrderId(ORDER_ID))
                 .willReturn(Arrays.asList(new OrderLineItem(order)));
 
-        Order result = orderService.changeOrderStatus(ORDER_ID, new Order(OrderStatus.COMPLETION));
+        OrderResponse response = orderService.changeOrderStatus(ORDER_ID, new OrderRequest(OrderStatus.COMPLETION));
 
-        assertThat(result.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
+        assertThat(response.getOrderStatus()).isEqualTo(OrderStatus.COMPLETION);
     }
 
     @DisplayName("존재하는 주문이 없다면 주문 상태를 변경할 수 없다")
@@ -137,7 +137,7 @@ class OrderServiceTest {
     void changeOrderStatus_invalid_orderId() {
         given(orderRepository.findById(ORDER_ID)).willReturn(Optional.empty());
 
-        assertThatThrownBy(() -> orderService.changeOrderStatus(ORDER_ID, new Order(OrderStatus.COMPLETION)))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(ORDER_ID, new OrderRequest(OrderStatus.COMPLETION)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -147,7 +147,7 @@ class OrderServiceTest {
         order.setOrderStatus(OrderStatus.COMPLETION);
         given(orderRepository.findById(ORDER_ID)).willReturn(Optional.of(order));
 
-        assertThatThrownBy(() -> orderService.changeOrderStatus(ORDER_ID, new Order(OrderStatus.COMPLETION)))
+        assertThatThrownBy(() -> orderService.changeOrderStatus(ORDER_ID, new OrderRequest(OrderStatus.COMPLETION)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }
