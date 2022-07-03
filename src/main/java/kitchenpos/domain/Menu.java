@@ -20,6 +20,15 @@ public class Menu {
         this.menuProducts = MenuProduct.ofList(menuProducts);
     }
 
+    public Menu(final Long id, final String name, final BigDecimal price, final Long menuGroupId,
+                final MenuProduct... menuProducts) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.menuGroupId = menuGroupId;
+        this.menuProducts = MenuProduct.ofList(menuProducts);
+    }
+
     public Long getId() {
         return id;
     }
