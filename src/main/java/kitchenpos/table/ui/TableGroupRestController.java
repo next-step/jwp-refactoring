@@ -75,7 +75,7 @@ public class TableGroupRestController {
         public TableGroupResponse(TableGroup tableGroup) {
             id = tableGroup.getId();
             createdDate = tableGroup.getCreatedDate();
-            orderTables = tableGroup.getOrderTables().getOrderTables().stream()
+            orderTables = tableGroup.getGroupTables().getOrderTables().stream()
                     .map(TableGroupOrderTableResponse::new)
                     .collect(toList());
         }

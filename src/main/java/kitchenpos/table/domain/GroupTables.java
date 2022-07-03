@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Embeddable
-public class OrderTables {
+public class GroupTables {
     @OneToMany(mappedBy = "tableGroup")
     @Column(insertable = false)
     private List<OrderTable> orderTables = new ArrayList<>();
@@ -18,5 +18,10 @@ public class OrderTables {
 
     public void ungroup() {
         orderTables.forEach(OrderTable::ungroup);
+        orderTables.clear();
+    }
+
+    public boolean isEmpty() {
+        return orderTables.isEmpty();
     }
 }

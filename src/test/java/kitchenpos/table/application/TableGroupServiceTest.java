@@ -1,8 +1,8 @@
 package kitchenpos.table.application;
 
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.TableValidator;
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.table.repository.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,9 +16,11 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.util.Collections.singletonList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @DisplayName("단체 지정 관련")
 @SpringBootTest
@@ -28,7 +30,7 @@ class TableGroupServiceTest {
     @MockBean
     TableGroupRepository tableGroupRepository;
     @MockBean
-    TableValidator orderTableValidator;
+    OrderTableRepository orderTableRepository;
 
     Long orderTableId1;
     Long orderTableId2;
@@ -45,9 +47,9 @@ class TableGroupServiceTest {
         orderTableId2 = 2L;
         orderTable1 = new OrderTable(1, true);
         orderTable2 = new OrderTable(1, true);
-        when(orderTableValidator.findExistsOrderTableByIdIn(singletonList(orderTableId1))).thenReturn(singletonList(orderTable1));
-        when(orderTableValidator.findExistsOrderTableByIdIn(singletonList(orderTableId2))).thenReturn(singletonList(orderTable2));
-        when(orderTableValidator.findExistsOrderTableByIdIn(Arrays.asList(orderTableId1, orderTableId2))).thenReturn(Arrays.asList(orderTable1, orderTable2));
+        when(orderTableRepository.findByIdIn(singletonList(orderTableId1))).thenReturn(singletonList(orderTable1));
+        when(orderTableRepository.findByIdIn(singletonList(orderTableId2))).thenReturn(singletonList(orderTable2));
+        when(orderTableRepository.findByIdIn(Arrays.asList(orderTableId1, orderTableId2))).thenReturn(Arrays.asList(orderTable1, orderTable2));
     }
 
     @DisplayName("여러 주문 테이블을 단체 지정할 수 있다")
@@ -85,6 +87,6 @@ class TableGroupServiceTest {
         tableGroupService.ungroup(tableGroupId);
 
         // then
-        verify(orderTableValidator).checkOrderStatusIn(anyList());
+        assertThat(tableGroup.getGroupTables().isEmpty()).isTrue();
     }
 }

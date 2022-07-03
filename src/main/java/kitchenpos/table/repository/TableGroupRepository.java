@@ -10,6 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface TableGroupRepository extends JpaRepository<TableGroup, Long> {
-    @Query("select distinct t from TableGroup t join fetch t.orderTables.orderTables where t.id = :id")
+    @Query("select distinct t from TableGroup t join fetch t.groupTables.orderTables where t.id = :id")
     Optional<TableGroup> findByIdWithOrderTable(@Param("id") Long id);
 }

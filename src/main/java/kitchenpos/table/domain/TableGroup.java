@@ -20,7 +20,7 @@ public class TableGroup {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdDate;
     @Embedded
-    private final OrderTables orderTables = new OrderTables();
+    private final GroupTables groupTables = new GroupTables();
 
     protected TableGroup() {
     }
@@ -44,11 +44,11 @@ public class TableGroup {
         return createdDate;
     }
 
-    public OrderTables getOrderTables() {
-        return orderTables;
+    public GroupTables getGroupTables() {
+        return groupTables;
     }
 
     public void ungroup() {
-        orderTables.ungroup();
+        groupTables.ungroup();
     }
 }
