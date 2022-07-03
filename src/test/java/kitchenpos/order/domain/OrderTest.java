@@ -36,51 +36,27 @@ class OrderTest {
         menuGroup = 메뉴그룹_생성(1L, "파스타메뉴");
         menu = 메뉴_생성("봉골레파스타세트", product.getPrice(), 1L, Arrays.asList(메뉴상품_생성(1L, 1L, 1L)));
         orderTable = 테이블_생성(1L, 2, false);
-        orderLineItems = Arrays.asList(주문항목_생성(0L, menu, 1L));
+        orderLineItems = Arrays.asList(주문항목_생성(0L, menu.getId(), 1L));
     }
 
     @DisplayName("주문을 생성한다.")
     @Test
     void create() {
         //when
-        Order order = 주문_생성(1L, orderTable, OrderStatus.COOKING, orderLineItems);
+        Order order = 주문_생성(1L, orderTable.getId(), OrderStatus.COOKING, orderLineItems);
 
         //then
         assertThat(order).isNotNull();
         assertThat(order.getId()).isEqualTo(1L);
         assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING);
-        assertThat(order.getOrderTable()).isEqualTo(orderTable);
-    }
-
-    @DisplayName("주문의 테이블이 빈 테이블이라면, 주문 등록에 실패한다.")
-    @Test
-    void create_invalidEmptyTable() {
-        //given
-        orderTable.changeEmpty(true);
-
-        //when & then
-        assertThatThrownBy(() -> 주문_생성(1L, orderTable, OrderStatus.COOKING, orderLineItems))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("빈 테이블은 등록할 수 없습니다.");
-    }
-
-    @DisplayName("주문 항목이 없으면, 주문 등록에 실패한다.")
-    @Test
-    void create_invalidOrderLineItemsSize() {
-        //given
-        orderLineItems = new ArrayList<>();
-
-        //when & then
-        assertThatThrownBy(() -> 주문_생성(1L, orderTable, OrderStatus.COOKING, orderLineItems))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("주문 항목이 1개 이상이어야 합니다.");
+        assertThat(order.getOrderTableId()).isEqualTo(orderTable.getId());
     }
 
     @DisplayName("주문 상태를 수정한다.")
     @Test
     void changeOrderStatus() {
         //given
-        Order order = 주문_생성(1L, orderTable, OrderStatus.COOKING, orderLineItems);
+        Order order = 주문_생성(1L, orderTable.getId(), OrderStatus.COOKING, orderLineItems);
 
         //when
         order.changeOrderStatus(OrderStatus.MEAL);
@@ -93,7 +69,7 @@ class OrderTest {
     @Test
     void changeOrderStatus_invalidOrderStatus() {
         //given
-        Order order = 주문_생성(1L, orderTable, OrderStatus.COMPLETION, orderLineItems);
+        Order order = 주문_생성(1L, orderTable.getId(), OrderStatus.COMPLETION, orderLineItems);
 
         //when & then
         assertThatThrownBy(() -> order.changeOrderStatus(OrderStatus.MEAL))

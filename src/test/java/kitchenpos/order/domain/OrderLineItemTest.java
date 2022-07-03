@@ -33,11 +33,11 @@ class OrderLineItemTest {
     @Test
     void craete() {
         //when
-        OrderLineItem orderLineItem = new OrderLineItem(menu, 1L);
+        OrderLineItem orderLineItem = new OrderLineItem(1L, menu.getId(), 1L);
 
         //then
         assertThat(orderLineItem).isNotNull();
-        assertThat(orderLineItem.getMenu().getName()).isEqualTo(menu.getName());
+        assertThat(orderLineItem.getMenuId()).isEqualTo(menu.getId());
         assertThat(orderLineItem.getQuantity()).isEqualTo(1L);
     }
 
@@ -45,7 +45,7 @@ class OrderLineItemTest {
     @Test
     void create_invalidQuantity() {
         //when & then
-        assertThatThrownBy(() -> new OrderLineItem(menu, -1L))
+        assertThatThrownBy(() -> new OrderLineItem(1L, menu.getId(), -1L))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("수량 0 이상이어야 합니다.");
     }

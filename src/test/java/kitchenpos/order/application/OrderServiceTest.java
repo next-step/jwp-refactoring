@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,6 +28,7 @@ import kitchenpos.order.domain.repository.OrderLineItemRepository;
 import kitchenpos.order.domain.repository.OrderRepository;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.validator.OrderValidator;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.repository.OrderTableRepository;
@@ -41,13 +43,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
-    private MenuRepository menuRepository;
-    @Mock
     private OrderRepository orderRepository;
     @Mock
-    private OrderLineItemRepository orderLineItemRepository;
-    @Mock
-    private OrderTableRepository orderTableRepository;
+    private OrderValidator orderValidator;
     @InjectMocks
     private OrderService orderService;
 
@@ -65,8 +63,8 @@ class OrderServiceTest {
         menuGroup = 메뉴그룹_생성(1L, "파스타메뉴");
         menu = 메뉴_생성("봉골레파스타세트", product.getPrice(), 1L, Arrays.asList(메뉴상품_생성(1L, 1L, 1L)));
         orderTable = 테이블_생성(1L, 2, false);
-        orderLineItems = Arrays.asList(주문항목_생성(0L, menu, 1L));
-        order = 주문_생성(1L, orderTable, OrderStatus.COOKING, orderLineItems);
+        orderLineItems = Arrays.asList(주문항목_생성(0L, menu.getId(), 1L));
+        order = 주문_생성(1L, orderTable.getId(), OrderStatus.COOKING, orderLineItems);
         orderRequest = 주문요청_생성(orderTable.getId(), orderLineItems);
     }
 
@@ -74,8 +72,6 @@ class OrderServiceTest {
     @Test
     void create() {
         //given
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
-        given(menuRepository.findById(any())).willReturn(Optional.of(menu));
         given(orderRepository.save(any())).willReturn(order);
 
         //when
@@ -90,8 +86,10 @@ class OrderServiceTest {
     @Test
     void create_invalidOrderLineItemsSize() {
         //given
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
         orderRequest = 주문요청_생성(orderTable.getId(), new ArrayList<>());
+        willThrow(new IllegalArgumentException("주문 항목이 1개 이상이어야 합니다."))
+                .given(orderValidator)
+                .validate(orderRequest);
 
         //when & then
         assertThatThrownBy(() -> orderService.create(orderRequest))
@@ -103,8 +101,9 @@ class OrderServiceTest {
     @Test
     void create_invalidNotExistsMenu() {
         //given
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
-        given(menuRepository.findById(any())).willReturn(Optional.empty());
+        willThrow(new IllegalArgumentException("존재하지 않는 메뉴입니다."))
+                .given(orderValidator)
+                .validate(orderRequest);
 
         //when & then
         assertThatThrownBy(() -> orderService.create(orderRequest))
@@ -116,7 +115,9 @@ class OrderServiceTest {
     @Test
     void create_invalidNotExistsTable() {
         //given
-        given(orderTableRepository.findById(any())).willReturn(Optional.empty());
+        willThrow(new IllegalArgumentException("주문테이블이 존재하지 않습니다."))
+                .given(orderValidator)
+                .validate(orderRequest);
 
         //when & then
         assertThatThrownBy(() -> orderService.create(orderRequest))
@@ -128,8 +129,9 @@ class OrderServiceTest {
     @Test
     void create_invalidEmptyTable() {
         //given
-        orderTable = 테이블_생성(1L, 2, true);
-        given(orderTableRepository.findById(any())).willReturn(Optional.of(orderTable));
+        willThrow(new IllegalArgumentException("빈 테이블은 등록할 수 없습니다."))
+                .given(orderValidator)
+                .validate(orderRequest);
 
         //when & then
         assertThatThrownBy(() -> orderService.create(orderRequest))
@@ -169,7 +171,7 @@ class OrderServiceTest {
     @Test
     void changeOrderStatus_invalidNotExistsOrder() {
         //given
-        order = 주문_생성(1L, orderTable, OrderStatus.COMPLETION, orderLineItems);
+        order = 주문_생성(1L, orderTable.getId(), OrderStatus.COMPLETION, orderLineItems);
         given(orderRepository.findById(any())).willReturn(Optional.of(order));
         orderRequest = new OrderRequest(null, null, OrderStatus.COOKING.name());
 

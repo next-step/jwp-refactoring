@@ -4,7 +4,6 @@ import static kitchenpos.fixture.MenuFixture.메뉴_생성;
 import static kitchenpos.fixture.MenuFixture.메뉴_생성_요청;
 import static kitchenpos.fixture.MenuFixture.메뉴그룹_생성;
 import static kitchenpos.fixture.MenuFixture.메뉴상품_생성;
-import static kitchenpos.fixture.ProductFixture.상품_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
