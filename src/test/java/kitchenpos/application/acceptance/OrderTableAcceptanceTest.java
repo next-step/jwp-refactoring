@@ -22,25 +22,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("주문 테이블 관련 기능")
 class OrderTableAcceptanceTest extends BaseAcceptanceTest {
-//
-//    private MenuGroup 메뉴_그룹;
-//
-//    private Product 상품;
-//
-//    private MenuProduct 메뉴_상품;
-//
-//    private final String MENU_NAME = "순살치킨";
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-
-
-//        메뉴_그룹 = 메뉴_그룹_생성_요청("신메뉴").as(MenuGroup.class);
-//        상품 = 상품_생성_요청(MENU_NAME, new BigDecimal(15000)).as(Product.class);
-//        메뉴_상품 = new MenuProduct();
-//        메뉴_상품.setProductId(상품.getId());
-//        메뉴_상품.setQuantity(1);
     }
 
     /**
