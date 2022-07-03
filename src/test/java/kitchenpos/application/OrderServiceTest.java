@@ -91,4 +91,16 @@ class OrderServiceTest {
         assertThatThrownBy(() -> orderService.create(order))
                 .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @DisplayName("주문 상태가 COMPLETION 인 주문의 상태를 변경할 경우 오류가 발생한다")
+    @Test
+    void changeOrderStatusOfCompletionOrder() {
+        Order order = new Order();
+        order.setOrderStatus(OrderStatus.COMPLETION.name());
+
+        given(orderDao.findById(anyLong())).willReturn(Optional.of(order));
+
+        assertThatThrownBy(() -> orderService.changeOrderStatus(1L, order))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
 }
