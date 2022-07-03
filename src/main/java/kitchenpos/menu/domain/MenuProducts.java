@@ -29,12 +29,6 @@ public class MenuProducts {
         }
     }
 
-//    public Price sumOfPrice() {
-//        return menuProducts.stream()
-//                .map(MenuProduct::calculatePrice)
-//                .reduce(Price.from(BigDecimal.ZERO), Price::add);
-//    }
-
     public List<MenuProduct> getMenuProducts() {
         return Collections.unmodifiableList(menuProducts);
     }
