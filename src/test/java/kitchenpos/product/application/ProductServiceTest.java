@@ -1,9 +1,7 @@
 package kitchenpos.product.application;
 
-import kitchenpos.common.domain.Price;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.domain.Products;
 import kitchenpos.product.dto.ProductCreateRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +39,7 @@ class ProductServiceTest {
         ProductCreateRequest 상품_생성_요청 = 상품_생성_요청("상품", 1_000);
 
         // when
-        Product 상품_생성_결과 = productService.create(상품_생성_요청);
+        ProductResponse 상품_생성_결과 = productService.create(상품_생성_요청);
 
         // then
         상품_생성_성공됨(상품_생성_결과, 상품_생성_요청);
@@ -59,7 +57,7 @@ class ProductServiceTest {
         }
 
         // when
-        Products 상품_조회_결과 = productService.list();
+        List<ProductResponse> 상품_조회_결과 = productService.list();
 
         // then
         상품_목록_정상_조회됨(상품_조회_결과, 포함_되어야_할_아이디들);
@@ -78,7 +76,7 @@ class ProductServiceTest {
         Long 상품_아이디 = productService.create(상품_생성_요청("상품", 1_000)).getId();
 
         // when
-        Product 상품 = productService.getProduct(상품_아이디);
+        ProductResponse 상품 = productService.getProduct(상품_아이디);
 
         // then
         assertThat(상품).isNotNull();
@@ -89,14 +87,14 @@ class ProductServiceTest {
         assertThatIllegalArgumentException().isThrownBy(runnable::run);
     }
 
-    void 상품_생성_성공됨(Product product, ProductCreateRequest request) {
+    void 상품_생성_성공됨(ProductResponse product, ProductCreateRequest request) {
         assertThat(product.getName()).isEqualTo(request.getName());
-        assertThat(product.getPrice()).isEqualTo(new Price(request.getPrice()));
+        assertThat(product.getPrice()).isEqualTo(request.getPrice());
     }
 
-    void 상품_목록_정상_조회됨(Products products, List<Long> containIds) {
-        assertThat(products.getValue().size()).isGreaterThanOrEqualTo(containIds.size());
-        assertThat(products.getValue().stream().mapToLong(Product::getId)).containsAll(containIds);
+    void 상품_목록_정상_조회됨(List<ProductResponse> products, List<Long> containIds) {
+        assertThat(products.size()).isGreaterThanOrEqualTo(containIds.size());
+        assertThat(products.stream().mapToLong(ProductResponse::getId)).containsAll(containIds);
     }
 
     void 상품_조회_실패됨(Runnable runnable) {

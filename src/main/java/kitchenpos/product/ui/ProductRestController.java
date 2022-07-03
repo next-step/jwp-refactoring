@@ -20,24 +20,24 @@ public class ProductRestController {
 
     @PostMapping("/api/products")
     public ResponseEntity<ProductResponse> create(@RequestBody final ProductCreateRequest request) {
-        final Product created = productService.create(request);
+        final ProductResponse created = productService.create(request);
         final URI uri = URI.create("/api/products/" + created.getId());
         return ResponseEntity.created(uri)
-                .body(ProductResponse.from(created))
+                .body(created)
                 ;
     }
 
     @GetMapping("/api/products")
     public ResponseEntity<List<ProductResponse>> list() {
         return ResponseEntity.ok()
-                .body(productService.list().toResponse())
+                .body(productService.list())
                 ;
     }
 
     @GetMapping("/api/products/{id}")
     public ResponseEntity<ProductResponse> get(@PathVariable Long id) {
         return ResponseEntity.ok()
-                .body(ProductResponse.from(productService.getProduct(id)))
+                .body(productService.getProduct(id))
                 ;
     }
 }
