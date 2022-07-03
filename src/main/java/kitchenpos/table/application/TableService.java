@@ -1,8 +1,6 @@
 package kitchenpos.table.application;
 
 import kitchenpos.Exception.NotFoundOrderTableException;
-import kitchenpos.Exception.UnCompletedOrderStatusException;
-import kitchenpos.order.application.OrderService;
 import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -16,11 +14,11 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 public class TableService {
-    private final OrderService orderService;
+    private final TableValidator tableValidator;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderService orderService, final OrderTableRepository orderTableRepository) {
-        this.orderService = orderService;
+    public TableService(final TableValidator tableValidator, final OrderTableRepository orderTableRepository) {
+        this.tableValidator = tableValidator;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -38,7 +36,7 @@ public class TableService {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(NotFoundOrderTableException::new);
 
-        validateUnCompletedOrderStatus(orderTableId);
+        tableValidator.validate(orderTableId);
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
 
         return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
@@ -54,9 +52,4 @@ public class TableService {
         return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));
     }
 
-    private void validateUnCompletedOrderStatus(Long orderTableId) {
-        if (orderService.existsByOrderTableIdUnCompletedOrderStatus(orderTableId)) {
-            throw new UnCompletedOrderStatusException("계산 완료 상태의 주문이 있는 테이블은 빈 테이블로 변경할 수 없습니다.");
-        }
-    }
 }

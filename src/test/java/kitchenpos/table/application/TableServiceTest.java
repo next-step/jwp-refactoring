@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,7 +33,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
     @Mock
-    private OrderService orderService;
+    private TableValidator tableValidator;
     @Mock
     private OrderTableRepository orderTableRepository;
     @InjectMocks
@@ -94,22 +95,11 @@ class TableServiceTest {
     }
 
     @Test
-    void 빈_상태_변경_주문_상태_계산완료_아닌경우_예외() {
-        // given
-        given(orderTableRepository.findById(orderTable.getId())).willReturn(Optional.ofNullable(orderTable));
-        given(orderService.existsByOrderTableIdUnCompletedOrderStatus(orderTable.getId())).willReturn(true);
-
-        // when, then
-        assertThatThrownBy(
-                () -> tableService.changeEmpty(orderTable.getId(), orderTableRequest)
-        ).isInstanceOf(UnCompletedOrderStatusException.class);
-    }
-
-    @Test
     void 빈_상태_변경() {
         // given
         given(orderTableRepository.findById(orderTable.getId())).willReturn(Optional.ofNullable(orderTable));
-        given(orderService.existsByOrderTableIdUnCompletedOrderStatus(orderTable.getId())).willReturn(false);
+
+        willDoNothing().given(tableValidator).validate(orderTable.getId());
         given(orderTableRepository.save(orderTable)).willReturn(orderTable);
 
         // when
