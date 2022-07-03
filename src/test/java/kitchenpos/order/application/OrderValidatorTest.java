@@ -6,9 +6,13 @@ import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.exception.IllegalOrderLineItemException;
 import kitchenpos.ordertable.application.TableService;
 import kitchenpos.ordertable.domain.OrderTable;
+import kitchenpos.ordertable.exception.IllegalOrderTableException;
+import kitchenpos.ordertable.exception.NoSuchOrderTableException;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,10 +28,14 @@ import java.util.Arrays;
 import static kitchenpos.utils.fixture.MenuFixtureFactory.createMenu;
 import static kitchenpos.utils.fixture.MenuGroupFixtureFactory.createMenuGroup;
 import static kitchenpos.utils.fixture.MenuProductFixtureFactory.createMenuProduct;
+import static kitchenpos.utils.fixture.OrderFixtureFactory.createOrder;
 import static kitchenpos.utils.fixture.OrderLineItemFixtureFactory.createOrderLineItem;
 import static kitchenpos.utils.fixture.OrderTableFixtureFactory.createOrderTable;
 import static kitchenpos.utils.fixture.ProductFixtureFactory.createProduct;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 public class OrderValidatorTest {
@@ -43,6 +51,7 @@ public class OrderValidatorTest {
     private Menu 메뉴_김치찌개세트;
     private MenuProduct 김치찌개세트_김치찌개;
     private OrderTable 테이블_1;
+    private Order 접수된_주문;
     private OrderLineItem 접수된주문_김치찌개세트;
 
     @BeforeEach
@@ -55,41 +64,79 @@ public class OrderValidatorTest {
 
         테이블_1 = createOrderTable(1L, null, 4, false);
         접수된주문_김치찌개세트 = createOrderLineItem(1L, 메뉴_김치찌개세트.getId(), 1);
+        접수된_주문 = createOrder(1L, 테이블_1.getId(), Arrays.asList(접수된주문_김치찌개세트));
     }
+
+//    @DisplayName("등록하려는 주문테이블이 존재해야 한다")
+//    @Test
+//    void 주문_주문테이블_검증(){
+//        //given
+//        given(tableService.findOrderTableById(anyLong())).willThrow(NoSuchOrderTableException.class);
+//
+//        //when
+//        OrderRequest orderRequest = OrderRequest.of(테이블_1.getId(), Arrays.asList(
+//                OrderLineItemRequest.of(메뉴_김치찌개세트.getId(), 1)
+//        ));
+//
+//        //then
+//        assertThrows(NoSuchOrderTableException.class, () -> orderService.create(orderRequest));
+//    }
+//
+//    @DisplayName("등록하려는 주문테이블은 비어있을 수 없다")
+//    @Test
+//    void 주문_주문테이블_Empty_검증(){
+//        //given
+//        given(tableService.findOrderTableById(anyLong())).willReturn(테이블_Empty);
+//
+//        //when
+//        OrderRequest orderRequest = OrderRequest.of(테이블_Empty.getId(), Arrays.asList(
+//                OrderLineItemRequest.of(메뉴_김치찌개세트.getId(), 1)
+//        ));
+//
+//        //then
+//        assertThrows(IllegalOrderTableException.class, () -> orderService.create(orderRequest));
+//    }
 
     @DisplayName("주문항목은 비어있을 수 없다")
     @Test
     void 주문_주문항목_검증(){
-        //given;
-        Order order = Order.of(테이블_1, new ArrayList<>());
+        //given
+        given(tableService.findOrderTableById(anyLong())).willReturn(테이블_1);
+        OrderRequest invalidOrderRequest = OrderRequest.of(테이블_1.getId(), new ArrayList<>());
 
         //then
-        assertThrows(IllegalOrderLineItemException.class, () -> orderValidator.validate(order));
+        assertThrows(IllegalOrderLineItemException.class, () -> orderValidator.validate(invalidOrderRequest.toOrder()));
     }
 
     @DisplayName("주문항목간 메뉴는 중복될 수 없다")
     @Test
     void 주문_주문항목_메뉴_중복_검증(){
         //given
-        Order order = Order.of(테이블_1, Arrays.asList(
-                OrderLineItem.of(메뉴_김치찌개세트.getId(), 1),
-                OrderLineItem.of(메뉴_김치찌개세트.getId(), 2)
+        given(tableService.findOrderTableById(anyLong())).willReturn(테이블_1);
+        given(menuService.findMenusByIdList(anyList())).willReturn(Arrays.asList(메뉴_김치찌개세트));
+        OrderRequest invalidOrderRequest = OrderRequest.of(테이블_1.getId(), Arrays.asList(
+                OrderLineItemRequest.of(메뉴_김치찌개세트.getId(), 1),
+                OrderLineItemRequest.of(메뉴_김치찌개세트.getId(), 2)
         ));
 
         //then
-        assertThrows(IllegalOrderLineItemException.class, () -> orderValidator.validate(order));
+        assertThrows(IllegalOrderLineItemException.class, () -> orderValidator.validate(invalidOrderRequest.toOrder()));
     }
 
     @DisplayName("등록하려는 주문항목의 메뉴가 존재해야 한다")
     @Test
     void 주문_주문항목_메뉴_검증(){
         //given
-        Order order = Order.of(테이블_1, Arrays.asList(
-                OrderLineItem.of(0L, 1),
-                OrderLineItem.of(메뉴_김치찌개세트.getId(), 2)
+        given(tableService.findOrderTableById(anyLong())).willReturn(테이블_1);
+        given(menuService.findMenusByIdList(anyList())).willReturn(Arrays.asList(메뉴_김치찌개세트));
+
+        //when
+        OrderRequest invalidOrderRequest = OrderRequest.of(테이블_1.getId(), Arrays.asList(
+                OrderLineItemRequest.of(메뉴_김치찌개세트.getId(), 1),
+                OrderLineItemRequest.of(0L, 1)
         ));
 
         //then
-        assertThrows(IllegalOrderLineItemException.class, () -> orderValidator.validate(order));
+        assertThrows(IllegalOrderLineItemException.class, () -> orderValidator.validate(invalidOrderRequest.toOrder()));
     }
 }

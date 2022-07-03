@@ -41,8 +41,7 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        final OrderTable orderTable = tableService.findOrderTableById(orderRequest.getOrderTableId());
-        final Order order = Order.of(orderTable, retrieveOrderLineItems(orderRequest));
+        final Order order = orderRequest.toOrder();
         orderValidator.validate(order);
         final Order savedOrder = orderRepository.save(order);
 
@@ -60,14 +59,6 @@ public class OrderService {
         savedOrder.changeStatus(orderRequest.getOrderStatus());
 
         return OrderResponse.from(savedOrder);
-    }
-
-    private List<OrderLineItem> retrieveOrderLineItems(OrderRequest orderRequest) {
-        final List<OrderLineItemRequest> orderLineItems = orderRequest.getOrderLineItems();
-        return orderLineItems.stream()
-                .map(orderLineItemsRequest ->
-                    OrderLineItem.of(orderLineItemsRequest.getMenuId(), orderLineItemsRequest.getQuantity()))
-                .collect(Collectors.toList());
     }
 
     private Order findOrderById(Long orderId) {

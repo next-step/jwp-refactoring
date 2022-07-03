@@ -85,11 +85,11 @@ class OrderServiceTest {
 
         테이블_1 = createOrderTable(1L, null, 4, false);
         접수된주문_김치찌개세트 = createOrderLineItem(1L, 메뉴_김치찌개세트.getId(), 1);
-        접수된_주문 = createOrder(1L, 테이블_1, Arrays.asList(접수된주문_김치찌개세트));
+        접수된_주문 = createOrder(1L, 테이블_1.getId(), Arrays.asList(접수된주문_김치찌개세트));
 
         테이블_2 = createOrderTable(2L, null, 4, false);
         완료된주문_김치찌개세트 = createOrderLineItem(2L, 메뉴_김치찌개세트.getId(), 1);
-        완료된_주문 = createOrder(2L, 테이블_2, Arrays.asList(완료된주문_김치찌개세트));
+        완료된_주문 = createOrder(2L, 테이블_2.getId(), Arrays.asList(완료된주문_김치찌개세트));
         완료된_주문.changeStatus(OrderStatus.COMPLETION);
 
         테이블_Empty = createOrderTable(3L, null, 0, true);
@@ -99,7 +99,6 @@ class OrderServiceTest {
     @Test
     void 주문_등록(){
         //given
-        given(tableService.findOrderTableById(anyLong())).willReturn(테이블_1);
         given(orderRepository.save(any(Order.class))).willReturn(접수된_주문);
 
         //when
@@ -110,36 +109,6 @@ class OrderServiceTest {
 
         //then
         assertThat(savedOrder).isEqualTo(OrderResponse.from(접수된_주문));
-    }
-
-    @DisplayName("등록하려는 주문테이블이 존재해야 한다")
-    @Test
-    void 주문_주문테이블_검증(){
-        //given
-        given(tableService.findOrderTableById(anyLong())).willThrow(NoSuchOrderTableException.class);
-
-        //when
-        OrderRequest orderRequest = OrderRequest.of(테이블_1.getId(), Arrays.asList(
-                OrderLineItemRequest.of(메뉴_김치찌개세트.getId(), 1)
-        ));
-
-        //then
-        assertThrows(NoSuchOrderTableException.class, () -> orderService.create(orderRequest));
-    }
-
-    @DisplayName("등록하려는 주문테이블은 비어있을 수 없다")
-    @Test
-    void 주문_주문테이블_Empty_검증(){
-        //given
-        given(tableService.findOrderTableById(anyLong())).willReturn(테이블_Empty);
-
-        //when
-        OrderRequest orderRequest = OrderRequest.of(테이블_Empty.getId(), Arrays.asList(
-                OrderLineItemRequest.of(메뉴_김치찌개세트.getId(), 1)
-        ));
-
-        //then
-        assertThrows(IllegalOrderTableException.class, () -> orderService.create(orderRequest));
     }
 
     @DisplayName("주문의 목록을 조회할 수 있다")
@@ -161,7 +130,7 @@ class OrderServiceTest {
     void 주문_상태_업데이트(OrderStatus beforeStatus, OrderStatus afterStatus){
         //given
         given(orderRepository.findById(anyLong())).willReturn(Optional.of(접수된_주문));
-        Order 주문_MEAL = createOrder(테이블_1, Arrays.asList(접수된주문_김치찌개세트));
+        Order 주문_MEAL = createOrder(테이블_1.getId(), Arrays.asList(접수된주문_김치찌개세트));
         주문_MEAL.changeStatus(beforeStatus);
 
         //when
