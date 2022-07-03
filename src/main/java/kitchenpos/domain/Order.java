@@ -5,9 +5,11 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -18,7 +20,9 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long orderTableId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private OrderTable orderTable;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
@@ -30,10 +34,10 @@ public class Order {
     public Order() {
     }
 
-    public Order(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime,
+    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
                  List<OrderLineItem> orderLineItems) {
         this.id = id;
-        this.orderTableId = orderTableId;
+        this.orderTable = orderTable;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
@@ -47,12 +51,12 @@ public class Order {
         this.id = id;
     }
 
-    public Long getOrderTableId() {
-        return orderTableId;
+    public OrderTable getOrderTable() {
+        return orderTable;
     }
 
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
+    public void setOrderTable(OrderTable orderTable) {
+        this.orderTable = orderTable;
     }
 
     public OrderStatus getOrderStatus() {

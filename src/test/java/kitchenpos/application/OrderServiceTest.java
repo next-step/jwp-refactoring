@@ -76,7 +76,7 @@ class OrderServiceTest {
     @Test
     @DisplayName("존재하지 않는 테이블에서 주문 시 에러 반환")
     public void orderTableNotExists() {
-        order.setOrderTableId(1L);
+        order.setOrderTable(new OrderTable());
 
         assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
     }
@@ -88,7 +88,7 @@ class OrderServiceTest {
         orderTable.setId(1L);
         orderTable.setEmpty(true);
 
-        order.setOrderTableId(1L);
+        order.setOrderTable(orderTable);
 
         assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
     }
@@ -104,7 +104,7 @@ class OrderServiceTest {
         OrderTable orderTable = new OrderTable(1L, null, 3, false);
 
         order.setOrderLineItems(orderLineItems);
-        order.setOrderTableId(orderTable.getId());
+        order.setOrderTable(orderTable);
 
         given(menuRepository.countByIdIn(any(List.class))).willReturn((long) orderLineItems.size());
         given(orderTableRepository.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
@@ -117,8 +117,8 @@ class OrderServiceTest {
     @Test
     @DisplayName("전체 주문 내역 보기")
     public void listOrders() {
-        Order orderCooking = new Order(1L, 1L, OrderStatus.COOKING, LocalDateTime.now(), null);
-        Order orderMeal = new Order(2L, 2L, OrderStatus.MEAL, LocalDateTime.now(), null);
+        Order orderCooking = new Order(1L, new OrderTable(), OrderStatus.COOKING, LocalDateTime.now(), null);
+        Order orderMeal = new Order(2L, new OrderTable(), OrderStatus.MEAL, LocalDateTime.now(), null);
 
         given(orderRepository.findAll()).willReturn(Arrays.asList(orderCooking, orderMeal));
 

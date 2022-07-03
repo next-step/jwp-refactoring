@@ -51,14 +51,14 @@ public class OrderService {
             throw new IllegalArgumentException();
         }
 
-        final OrderTable orderTable = orderTableRepository.findById(order.getOrderTableId())
+        final OrderTable orderTable = orderTableRepository.findById(order.getOrderTable().getId())
                 .orElseThrow(IllegalArgumentException::new);
 
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException();
         }
 
-        order.setOrderTableId(orderTable.getId());
+        order.setOrderTable(orderTable);
         order.setOrderStatus(OrderStatus.COOKING);
         order.setOrderedTime(LocalDateTime.now());
 
