@@ -31,7 +31,7 @@ class ProductAcceptanceTest extends BaseAcceptanceTest {
      */
     @DisplayName("상품 생성")
     @Test
-    void 상품_생성_요청() {
+    void createProduct() {
         // given
         String name = "녹두빈대떡";
         BigDecimal price = new BigDecimal(7000);
