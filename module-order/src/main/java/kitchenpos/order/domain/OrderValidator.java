@@ -20,9 +20,6 @@ public class OrderValidator {
     }
 
     public void validate(OrderRequest orderRequest) {
-        System.out.println("-----");
-        System.out.println(getMenuIds(orderRequest.getOrderLineItemRequests()));
-        System.out.println(menuRepository.findAll().size());
         Integer menuCount = menuRepository.countByIdIn(getMenuIds(orderRequest.getOrderLineItemRequests()));
         if (!menuCount.equals(orderRequest.getOrderLineItemRequests().size())) {
             throw new IllegalArgumentException("주문 항목에 메뉴가 존재해야 합니다.");
