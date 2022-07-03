@@ -6,9 +6,10 @@ import java.util.List;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderCreationValidator;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItemFactory;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.dto.OrderLineItemDto;
+import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.exception.NotExistOrderException;
@@ -19,13 +20,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderService {
     private final OrderCreationValidator orderCreationValidator;
     private final OrderRepository orderRepository;
+    private final OrderLineItemFactory orderLineItemFactory;
 
-    public OrderService(
-            final OrderCreationValidator orderCreationValidator,
-            final OrderRepository orderRepository
-    ) {
+    public OrderService(OrderCreationValidator orderCreationValidator,
+                        OrderRepository orderRepository, OrderLineItemFactory orderLineItemFactory) {
         this.orderCreationValidator = orderCreationValidator;
         this.orderRepository = orderRepository;
+        this.orderLineItemFactory = orderLineItemFactory;
     }
 
     @Transactional
@@ -37,9 +38,11 @@ public class OrderService {
     }
 
     private Order convertToOrder(OrderRequest orderRequest) {
-        List<OrderLineItemDto> orderLineItemDtos = orderRequest.getOrderLineItemDtos();
-        List<OrderLineItem> orderLineItems = orderLineItemDtos.stream()
-                .map(OrderLineItemDto::toOrderLineItem)
+        List<OrderLineItemRequest> orderLineItemRequests = orderRequest.getOrderLineItemRequests();
+        List<OrderLineItem> orderLineItems = orderLineItemRequests.stream()
+                .map(orderLineItemDto -> orderLineItemFactory.createOrderLineItem(
+                        orderLineItemDto.getMenuId(), orderLineItemDto.getQuantity())
+                )
                 .collect(toList());
 
         return new Order(orderRequest.getOrderTableId(), orderLineItems);

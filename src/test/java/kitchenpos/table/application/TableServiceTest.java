@@ -11,7 +11,7 @@ import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuDto;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.dto.OrderLineItemDto;
+import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.dto.OrderTableResponse;
@@ -161,7 +161,7 @@ class TableServiceTest extends ServiceTest {
         Product product1 = serviceTestHelper.상품_생성됨("상품1", 1000);
         MenuProduct menuProduct = MenuProductFixtureFactory.createMenuProduct(product1.getId(), 4);
         MenuDto menu = serviceTestHelper.메뉴_생성됨(menuGroup, "메뉴1", 4000, Lists.newArrayList(menuProduct));
-        OrderLineItemDto orderLineItem = OrderLineItemFixtureFactory.createOrderLine(menu.getId(), 3);
+        OrderLineItemRequest orderLineItem = OrderLineItemFixtureFactory.createOrderLine(menu.getId(), 3);
         return serviceTestHelper.주문_생성됨(tableId, Lists.newArrayList(orderLineItem));
     }
 }

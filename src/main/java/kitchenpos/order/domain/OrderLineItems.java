@@ -27,7 +27,8 @@ public class OrderLineItems {
 
     List<Long> menuIds() {
         return elements.stream()
-                .map(OrderLineItem::getMenuId)
+                .map(OrderLineItem::getOrderLineMenu)
+                .map(OrderLineMenu::getMenuId)
                 .collect(Collectors.toList());
     }
 

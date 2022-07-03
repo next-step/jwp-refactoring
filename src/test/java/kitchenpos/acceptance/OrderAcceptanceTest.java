@@ -15,7 +15,7 @@ import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuDto;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.dto.OrderLineItemDto;
+import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.product.domain.Product;
@@ -80,8 +80,9 @@ class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     private OrderResponse 주문을_추가하고_확인한다(Long orderTableId) {
-        OrderLineItemDto orderLineItemDto = OrderLineItemFixtureFactory.createOrderLine(menuDTO.getId(), 3);
-        OrderRequest orderRequest = OrderFixtureFactory.createOrder(orderTableId, Lists.newArrayList(orderLineItemDto));
+        OrderLineItemRequest orderLineItemRequest = OrderLineItemFixtureFactory.createOrderLine(menuDTO.getId(), 3);
+        OrderRequest orderRequest = OrderFixtureFactory.createOrder(orderTableId, Lists.newArrayList(
+                orderLineItemRequest));
 
         ExtractableResponse<Response> createResponse = KitchenPosBehaviors.주문_추가_요청(orderRequest);
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());

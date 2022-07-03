@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.math.BigDecimal;
 import java.util.List;
 import kitchenpos.order.exception.CannotChangeOrderStatusException;
 import kitchenpos.order.exception.EmptyOrderLineItemsException;
@@ -18,15 +19,11 @@ class OrderTest {
 
     private Long orderTableId;
     private Long menuId;
-    private OrderLineItem orderLineItem1;
-    private OrderLineItem orderLineItem2;
 
     @BeforeEach
     void setUp() {
         orderTableId = Long.valueOf(3L);
         menuId = Long.valueOf(3L);
-        orderLineItem1 = new OrderLineItem(menuId, 3);
-        orderLineItem2 = new OrderLineItem(menuId, 4);
     }
 
     @Test
@@ -42,8 +39,8 @@ class OrderTest {
 
     private Order 테스트_주문_생성() {
         Long menuId = Long.valueOf(3L);
-        OrderLineItem orderLineItem1 = new OrderLineItem(menuId, 3);
-        OrderLineItem orderLineItem2 = new OrderLineItem(menuId, 4);
+        OrderLineItem orderLineItem1 = new OrderLineItem(new OrderLineMenu(menuId, "메뉴1", BigDecimal.valueOf(1000)), 3);
+        OrderLineItem orderLineItem2 = new OrderLineItem(new OrderLineMenu(menuId, "메뉴2", BigDecimal.valueOf(2000)), 4);
 
         return new Order(orderTableId, Lists.newArrayList(orderLineItem1, orderLineItem2));
     }

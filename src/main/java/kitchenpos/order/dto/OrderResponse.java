@@ -11,26 +11,26 @@ public class OrderResponse {
     private Long orderTableId;
     private String orderStatus;
     private LocalDateTime orderedTime;
-    private List<OrderLineItemDto> orderLineItems;
+    private List<OrderLineItemResponse> orderLineItemResponses;
 
     private OrderResponse() {
     }
 
     public OrderResponse(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime,
-                         List<OrderLineItemDto> orderLineItems) {
+                         List<OrderLineItemResponse> orderLineItemResponses) {
         this.id = id;
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
-        this.orderLineItems = orderLineItems;
+        this.orderLineItemResponses = orderLineItemResponses;
     }
 
     public static OrderResponse of(Order order) {
         List<OrderLineItem> orderLineItems = order.getOrderLineItems().toList();
-        List<OrderLineItemDto> orderLineItemDtos = orderLineItems.stream().map(OrderLineItemDto::of)
+        List<OrderLineItemResponse> orderLineItemResponses = orderLineItems.stream().map(OrderLineItemResponse::of)
                 .collect(Collectors.toList());
         return new OrderResponse(order.getId(), order.getOrderTableId(), order.getOrderStatus().name(),
-                order.getOrderedTime(), orderLineItemDtos);
+                order.getOrderedTime(), orderLineItemResponses);
     }
 
     public Long getId() {
@@ -49,7 +49,7 @@ public class OrderResponse {
         return orderedTime;
     }
 
-    public List<OrderLineItemDto> getOrderLineItems() {
-        return orderLineItems;
+    public List<OrderLineItemResponse> getOrderLineItemResponses() {
+        return orderLineItemResponses;
     }
 }
