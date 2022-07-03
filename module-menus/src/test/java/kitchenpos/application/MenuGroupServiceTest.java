@@ -9,7 +9,6 @@ import kitchenpos.menus.menugroup.domain.MenuGroup;
 import kitchenpos.menus.menugroup.domain.MenuGroupRepository;
 import kitchenpos.menus.menugroup.dto.MenuGroupRequest;
 import kitchenpos.menus.menugroup.dto.MenuGroupResponse;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -58,7 +57,7 @@ class MenuGroupServiceTest extends ServiceTest {
         List<MenuGroupResponse> menuGroups = menuGroupService.list();
 
         //then
-        Assertions.assertThat(menuGroups).containsExactly(
+        assertThat(menuGroups).containsExactly(
                 MenuGroupResponse.from(한식),
                 MenuGroupResponse.from(중식),
                 MenuGroupResponse.from(양식)

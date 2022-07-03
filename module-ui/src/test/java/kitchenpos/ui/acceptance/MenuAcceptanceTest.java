@@ -10,11 +10,10 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
-import kitchenpos.menus.menugroup.dto.MenuGroupResponse;
 import kitchenpos.menus.menu.dto.MenuProductRequest;
 import kitchenpos.menus.menu.dto.MenuRequest;
+import kitchenpos.menus.menugroup.dto.MenuGroupResponse;
 import kitchenpos.product.dto.ProductResponse;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
@@ -99,15 +98,15 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 메뉴_목록__조회됨(ExtractableResponse<Response> response) {
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     public static void 메뉴_생성됨(ExtractableResponse<Response> response) {
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     public static void 메뉴_생성_실패됨(ExtractableResponse<Response> response) {
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
 

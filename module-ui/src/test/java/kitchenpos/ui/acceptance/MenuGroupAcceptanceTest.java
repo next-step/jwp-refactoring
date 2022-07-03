@@ -8,7 +8,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.stream.Stream;
 import kitchenpos.menus.menugroup.dto.MenuGroupRequest;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
@@ -48,16 +47,16 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 메뉴그룹_생성됨(ExtractableResponse<Response> response) {
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
 
     public static void 메뉴그룹_생성_실패됨(ExtractableResponse<Response> response) {
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     public static void 메뉴그룹_조회됨(ExtractableResponse<Response> response) {
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     public static ExtractableResponse<Response> 메뉴그룹_조회_요청() {

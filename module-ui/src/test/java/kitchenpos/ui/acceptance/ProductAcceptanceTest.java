@@ -9,7 +9,6 @@ import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.stream.Stream;
 import kitchenpos.product.dto.ProductRequest;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
@@ -44,15 +43,15 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     }
 
     private void 삼품_목록_조회됨(ExtractableResponse<Response> response) {
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     public static void 상품_생성됨(ExtractableResponse<Response> response) {
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     public static void 상품_생성_실패함(ExtractableResponse<Response> response) {
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     public static ExtractableResponse<Response> 상품_생성_요청(String name, BigDecimal price) {

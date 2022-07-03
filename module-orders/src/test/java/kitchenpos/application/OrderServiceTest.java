@@ -29,7 +29,6 @@ import kitchenpos.orders.table.domain.OrderTable;
 import kitchenpos.orders.table.domain.OrderTableRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -157,7 +156,7 @@ class OrderServiceTest extends ServiceTest {
         List<OrderResponse> orders = orderService.list();
 
         //then
-        Assertions.assertThat(orders).hasSize(1);
+        assertThat(orders).hasSize(1);
     }
 
     @Test

@@ -23,7 +23,6 @@ import kitchenpos.orders.table.dto.OrderTableRequest;
 import kitchenpos.orders.table.dto.OrderTableResponse;
 import kitchenpos.orders.tablegroup.domain.TableGroup;
 import kitchenpos.orders.tablegroup.domain.TableGroupRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -76,8 +75,8 @@ class TableServiceTest extends ServiceTest {
         List<OrderTableResponse> orderTables = tableService.list();
         //then
         assertAll(
-                () -> Assertions.assertThat(orderTables).isNotNull(),
-                () -> Assertions.assertThat(orderTables).hasSize(1)
+                () -> assertThat(orderTables).isNotNull(),
+                () -> assertThat(orderTables).hasSize(1)
         );
     }
 

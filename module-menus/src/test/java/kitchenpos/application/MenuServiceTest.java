@@ -21,7 +21,6 @@ import kitchenpos.menus.menugroup.domain.MenuGroup;
 import kitchenpos.menus.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -138,6 +137,6 @@ class MenuServiceTest extends ServiceTest {
         List<MenuResponse> menus = menuService.list();
 
         //then
-        Assertions.assertThat(menus).isNotNull();
+        assertThat(menus).isNotNull();
     }
 }

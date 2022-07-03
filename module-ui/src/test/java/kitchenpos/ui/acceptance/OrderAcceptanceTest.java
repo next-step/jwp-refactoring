@@ -21,9 +21,8 @@ import kitchenpos.orders.order.dto.ChangeOrderStatusRequest;
 import kitchenpos.orders.order.dto.OrderLineItemRequest;
 import kitchenpos.orders.order.dto.OrderRequest;
 import kitchenpos.orders.order.dto.OrderResponse;
-import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.orders.table.dto.OrderTableResponse;
-import org.assertj.core.api.Assertions;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
@@ -77,19 +76,19 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 주문_생성됨(ExtractableResponse<Response> response) {
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     public static void 주문_수정됨(ExtractableResponse<Response> response) {
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     public static void 주문_수정_실패(ExtractableResponse<Response> response) {
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     public static void 주문_조회됨(ExtractableResponse<Response> response) {
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     public static ExtractableResponse<Response> 주문_생성_요청(Long

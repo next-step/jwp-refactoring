@@ -11,15 +11,14 @@ import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.stream.Stream;
-import kitchenpos.orders.order.domain.OrderStatus;
-import kitchenpos.menus.menugroup.dto.MenuGroupResponse;
 import kitchenpos.menus.menu.dto.MenuProductRequest;
 import kitchenpos.menus.menu.dto.MenuResponse;
+import kitchenpos.menus.menugroup.dto.MenuGroupResponse;
+import kitchenpos.orders.order.domain.OrderStatus;
 import kitchenpos.orders.order.dto.OrderResponse;
 import kitchenpos.orders.table.dto.OrderTableRequest;
 import kitchenpos.orders.table.dto.OrderTableResponse;
 import kitchenpos.product.dto.ProductResponse;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
@@ -93,11 +92,11 @@ public class TableAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 테이블_목록_조회됨(ExtractableResponse<Response> response) {
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     public static void 테이블_생성_실패됨(ExtractableResponse<Response> response) {
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     public static ExtractableResponse<Response> 테이블_손님수_변경_요청(Long orderTableId, int numberOfGuests) {
@@ -120,7 +119,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 테이블_손님수_변경됨(ExtractableResponse<Response> response) {
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     public static void 변경된_테이블_손님수_확인(OrderTableResponse actual, int expectedNumbersOfGuests) {
@@ -142,6 +141,6 @@ public class TableAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 주문_테이블_등록됨(ExtractableResponse<Response> response) {
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 }
