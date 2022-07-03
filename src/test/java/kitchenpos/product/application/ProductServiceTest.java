@@ -1,7 +1,6 @@
-package kitchenpos.application;
+package kitchenpos.product.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -9,8 +8,10 @@ import static org.mockito.BDDMockito.given;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductDao;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
+public
 class ProductServiceTest {
     @Mock
     private ProductDao productDao;
@@ -44,7 +46,7 @@ class ProductServiceTest {
         given(productDao.save(any(Product.class))).willReturn(햄버거);
 
         // when
-        Product savedProduct = productService.create(햄버거);
+        ProductResponse savedProduct = productService.create(new ProductRequest(햄버거));
 
         // then
         assertAll(
@@ -55,40 +57,24 @@ class ProductServiceTest {
     }
 
     @Test
-    @DisplayName("상품 가격이 null 이거나 음수일 경우 - 오류")
-    void invalidPrice() {
-        // given
-        Product 떡볶이 = 상품_생성("떡볶이", -3_000L);
-        Product 값이_없는_상품 = 상품_생성("떡볶이");
-
-        // when then
-        assertAll(
-            () -> assertThatThrownBy(() -> productService.create(떡볶이))
-                .isInstanceOf(IllegalArgumentException.class),
-            () -> assertThatThrownBy(() -> productService.create(값이_없는_상품))
-                .isInstanceOf(IllegalArgumentException.class)
-        );
-    }
-
-    @Test
     @DisplayName("상품 목록을 조회한다.")
     void findAll() {
         // given
         given(productDao.findAll()).willReturn(Arrays.asList(햄버거, 피자));
 
         // when
-        List<Product> products = productService.list();
+        List<ProductResponse> products = productService.list();
 
         // then
-        assertThat(products).containsExactly(햄버거, 피자);
+        assertThat(products.size()).isEqualTo(2);
     }
 
     public static Product 상품_생성(String name) {
-        return new Product(null, name, null);
+        return new Product(name, null);
     }
 
     public static Product 상품_생성(String name, Long price) {
-        return new Product(null, name, new BigDecimal(price));
+        return new Product(name, new BigDecimal(price));
     }
 
     public static Product 상품_생성(Long id, String name, Long price) {
