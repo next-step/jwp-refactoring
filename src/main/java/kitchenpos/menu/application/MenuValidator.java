@@ -62,7 +62,7 @@ public class MenuValidator {
 
     private Product findProduct(List<Product> products, MenuProduct menuProduct) {
         Product product = products.stream()
-                .filter(p -> p.equalToMenuProduct(menuProduct)).findFirst().orElseThrow(
+                .filter(p -> p.isEqualToId(menuProduct.getProductId())).findFirst().orElseThrow(
                         NotFoundProductException::new);
         return product;
     }
