@@ -1,13 +1,22 @@
-package kitchenpos.application;
+package kitchenpos.testfixture;
 
-import kitchenpos.domain.*;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.order.domain.*;
+import kitchenpos.product.domain.*;
+import kitchenpos.product.dto.ProductRequest;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 public class CommonTestFixture {
-    public static Product createProduct(Long id, String name, int price) {
-        return new Product(id, name, BigDecimal.valueOf(price));
+    public static Product createProduct(String name, BigDecimal price) {
+        return new Product(name, price);
+    }
+
+    public static ProductRequest createProductRequest(String name, BigDecimal price) {
+        return new ProductRequest(name, price);
     }
 
     public static MenuGroup createMenuGroup(Long id, String name) {
