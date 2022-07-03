@@ -13,7 +13,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
@@ -21,6 +20,7 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.repository.MenuRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,7 +33,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class OrderServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Mock
     private OrderDao orderDao;
     @Mock
@@ -70,7 +70,7 @@ class OrderServiceTest {
     void registerNotMenuOrder() {
         //given
         Order order = new Order(1L, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItems);
-        given(menuDao.countByIdIn(anyList())).willReturn(0L);
+        given(menuRepository.countByIdIn(anyList())).willReturn(0L);
 
 
         //when & then
@@ -84,7 +84,7 @@ class OrderServiceTest {
     void existNotOrderTable() {
         //gvien
         Order order = new Order(1L, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItems);
-        given(menuDao.countByIdIn(anyList())).willReturn(2L);
+        given(menuRepository.countByIdIn(anyList())).willReturn(2L);
         given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.empty());
 
         //when & then
@@ -99,7 +99,7 @@ class OrderServiceTest {
         //gvien
         Order order = new Order(1L, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItems);
 
-        given(menuDao.countByIdIn(anyList())).willReturn(2L);
+        given(menuRepository.countByIdIn(anyList())).willReturn(2L);
         OrderTable emptyTable = new OrderTable(1L, 3, true);
         given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(emptyTable));
 
@@ -114,7 +114,7 @@ class OrderServiceTest {
     void createOrder() {
         //gvien
         Order order = new Order(1L, OrderStatus.COOKING.name(), LocalDateTime.now(), orderLineItems);
-        given(menuDao.countByIdIn(anyList())).willReturn(2L);
+        given(menuRepository.countByIdIn(anyList())).willReturn(2L);
 
         OrderTable orderTable = new OrderTable(1L, 3, false);
         given(orderTableDao.findById(order.getOrderTableId())).willReturn(Optional.of(orderTable));

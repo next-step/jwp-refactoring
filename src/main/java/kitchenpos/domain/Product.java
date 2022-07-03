@@ -29,10 +29,25 @@ public class Product {
         this.name = name;
     }
 
-    public Product(String name, BigDecimal price) {
-        this(name);
-        this.price = Price.of(price);
+
+    public Product(String name, Price price) {
+        validName(name);
+        validPrice(price);
+        this.name = name;
+        this.price = price;
     }
+
+
+    public Product(String name, BigDecimal price) {
+        this(name, Price.of(price));
+    }
+
+    public Product(Long id, String name, Price price) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+    }
+
 
     public Product(Long id, String name, BigDecimal price) {
         this(name, price);
@@ -45,6 +60,13 @@ public class Product {
             throw new IllegalArgumentException("상품의 이름은 필수 입니다.");
         }
     }
+
+    private void validPrice(Price price) {
+        if (ObjectUtils.isEmpty(price)) {
+            throw new IllegalArgumentException("가격은 필수 입니다.");
+        }
+    }
+
 
     public Long getId() {
         return id;

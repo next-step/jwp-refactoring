@@ -8,7 +8,6 @@ import org.springframework.util.ObjectUtils;
 @Embeddable
 public class Price {
     private static final int COMPARE_EQUAL_NUMBER = 0;
-    private static final int COMPARE_BIG_NUMBER = 1;
 
     private BigDecimal price;
 
@@ -30,6 +29,7 @@ public class Price {
     private boolean isZeroOver(BigDecimal price) {
         return BigDecimal.ZERO.compareTo(price) >= COMPARE_EQUAL_NUMBER;
     }
+
 
     public static Price of(BigDecimal price) {
         return new Price(price);
@@ -61,7 +61,20 @@ public class Price {
         return Objects.hash(price);
     }
 
+
+    private boolean isBigThen(BigDecimal target) {
+        return this.value().compareTo(target) > COMPARE_EQUAL_NUMBER;
+    }
+
     public boolean isBigThen(Price target) {
-        return this.value().compareTo(target.value()) > COMPARE_EQUAL_NUMBER;
+        return isBigThen(target.value());
+    }
+
+    public boolean isBigThen(Amount target) {
+        return isBigThen(target.value());
+    }
+
+    public BigDecimal multiply(Quantity quantity) {
+        return price.multiply(BigDecimal.valueOf(quantity.value()));
     }
 }

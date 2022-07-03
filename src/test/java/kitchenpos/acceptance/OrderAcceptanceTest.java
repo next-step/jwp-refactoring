@@ -11,14 +11,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
+import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.MenuResponse;
 import kitchenpos.dto.ProductRequest;
 import kitchenpos.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,8 +37,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     private ProductResponse 닭강정;
     private MenuGroupResponse 일식;
 
-    private Menu 닭강정_안주;
-    private Menu 닭강정_세트;
+    private MenuResponse 닭강정_안주;
+    private MenuResponse 닭강정_세트;
 
 
     @BeforeEach
@@ -49,15 +50,15 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         닭강정 = 상품이_등록되어_있음(new ProductRequest("닭강정", BigDecimal.valueOf(3000)));
         일식 = 메뉴그룹이_등록되어있음(new MenuGroupRequest("일식"));
 
-        MenuProduct 닭강정_안주_닭강정 = new MenuProduct(1L, 2L, 닭강정.getId(), 2);
-        List<MenuProduct> 닭강정_안주_상품들 = Collections.singletonList(닭강정_안주_닭강정);
-        닭강정_안주 = 메뉴가_등록_되어_있음(new Menu("닭강정_안주", BigDecimal.valueOf(3000), 일식.getId(), 닭강정_안주_상품들));
+        MenuProductRequest 닭강정_안주_닭강정 = new MenuProductRequest(닭강정.getId(), 2);
+        List<MenuProductRequest> 닭강정_안주_상품들 = Collections.singletonList(닭강정_안주_닭강정);
+        닭강정_안주 = 메뉴가_등록_되어_있음(new MenuRequest("닭강정_안주", BigDecimal.valueOf(3000), 일식.getId(), 닭강정_안주_상품들));
 
-        MenuProduct 닭강정_세트_닭강정 = new MenuProduct(1L, 2L, 닭강정.getId(), 2);
-        MenuProduct 닭강정_세트_생맥주 = new MenuProduct(1L, 2L, 생맥주.getId(), 1);
-        List<MenuProduct> 닭강정_세트_상품들 = Arrays.asList(닭강정_세트_닭강정, 닭강정_세트_생맥주);
+        MenuProductRequest 닭강정_세트_닭강정 = new MenuProductRequest(닭강정.getId(), 2);
+        MenuProductRequest 닭강정_세트_생맥주 = new MenuProductRequest(생맥주.getId(), 1);
+        List<MenuProductRequest> 닭강정_세트_상품들 = Arrays.asList(닭강정_세트_닭강정, 닭강정_세트_생맥주);
 
-        닭강정_세트 = 메뉴가_등록_되어_있음(new Menu("닭강정_세트", BigDecimal.valueOf(4000), 일식.getId(), 닭강정_세트_상품들));
+        닭강정_세트 = 메뉴가_등록_되어_있음(new MenuRequest("닭강정_세트", BigDecimal.valueOf(4000), 일식.getId(), 닭강정_세트_상품들));
     }
 
 
@@ -177,8 +178,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         return MenuGroupAcceptanceTest.메뉴그룹_등록을_요청(menuGroupRequest).as(MenuGroupResponse.class);
     }
 
-    private Menu 메뉴가_등록_되어_있음(Menu menu) {
-        return MenuAcceptanceTest.메뉴등록을_요청(menu).as(Menu.class);
+    private MenuResponse 메뉴가_등록_되어_있음(MenuRequest menu) {
+        return MenuAcceptanceTest.메뉴등록을_요청(menu).as(MenuResponse.class);
     }
 
 }

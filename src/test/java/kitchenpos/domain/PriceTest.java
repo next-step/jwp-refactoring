@@ -38,7 +38,9 @@ class PriceTest {
         assertAll(
                 () -> assertThat(Price.of(4).isBigThen(Price.of(3))).isTrue(),
                 () -> assertThat(Price.of(3).isBigThen(Price.of(3))).isFalse(),
-                () -> assertThat(Price.of(3).isBigThen(Price.of(4))).isFalse()
+                () -> assertThat(Price.of(3).isBigThen(Price.of(4))).isFalse(),
+                () -> assertThat(Price.of(3).isBigThen(Amount.of(4))).isFalse(),
+                () -> assertThat(Price.of(4).isBigThen(Amount.of(3))).isTrue()
         );
     }
 

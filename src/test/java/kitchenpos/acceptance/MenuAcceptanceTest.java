@@ -9,11 +9,13 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
 import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
+import kitchenpos.dto.MenuProductRequest;
+import kitchenpos.dto.MenuProductResponse;
+import kitchenpos.dto.MenuRequest;
+import kitchenpos.dto.ProductRequest;
+import kitchenpos.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,7 +28,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
 
     private ProductResponse 생맥주;
     private ProductResponse 닭강정;
-    private MenuGroup 일식;
+    private MenuGroupResponse 일식;
 
     @BeforeEach
     public void setUp() {
@@ -48,12 +50,12 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     @DisplayName("메뉴를 등록 관리")
     void menuCrateManage() {
         //given
-        MenuProduct 닭강정정식_생맥주 = new MenuProduct(1L, 1L, 생맥주.getId(), 1);
-        MenuProduct 닭강정정식_닭강정 = new MenuProduct(1L, 2L, 닭강정.getId(), 2);
+        MenuProductRequest 닭강정정식_생맥주 = new MenuProductRequest(생맥주.getId(), 1);
+        MenuProductRequest 닭강정정식_닭강정 = new MenuProductRequest(닭강정.getId(), 2);
         //given
-        List<MenuProduct> 닭강정정식_상품들 = Arrays.asList(닭강정정식_닭강정, 닭강정정식_생맥주);
+        List<MenuProductRequest> 닭강정정식_상품들 = Arrays.asList(닭강정정식_닭강정, 닭강정정식_생맥주);
         //given
-        Menu menu = new Menu("닭강정정식", BigDecimal.valueOf(5000), 일식.getId(), 닭강정정식_상품들);
+        MenuRequest menu = new MenuRequest("닭강정정식", BigDecimal.valueOf(5000), 일식.getId(), 닭강정정식_상품들);
 
         //when
         final ExtractableResponse<Response> createResponse = 메뉴등록을_요청(menu);
@@ -65,13 +67,12 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         //then
         등록한_메뉴가_조회됨(menu, retrieveResponse);
 
-
     }
 
-    public static ExtractableResponse<Response> 메뉴등록을_요청(Menu menu) {
+    public static ExtractableResponse<Response> 메뉴등록을_요청(MenuRequest menuRequest) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(menu)
+                .body(menuRequest)
                 .when().post("/api/menus")
                 .then()
                 .log().all()
@@ -82,7 +83,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(createResponse.header(HttpHeaders.LOCATION)).isNotEmpty();
         assertThat(createResponse.jsonPath().getString("name")).isEqualTo("닭강정정식");
-        assertThat(createResponse.jsonPath().getList("menuProducts", MenuProduct.class)).hasSize(2);
+        assertThat(createResponse.jsonPath().getList("menuProducts", MenuProductResponse.class)).hasSize(2);
     }
 
     private ProductResponse 상품이_등록되어_있음(ProductRequest product) {
@@ -99,13 +100,13 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 등록한_메뉴가_조회됨(Menu menu, ExtractableResponse<Response> retriveResponse) {
-        assertThat(retriveResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(retriveResponse.jsonPath().getList("name")).contains(menu.getName());
+    private void 등록한_메뉴가_조회됨(MenuRequest menu, ExtractableResponse<Response> retrievedResponse) {
+        assertThat(retrievedResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(retrievedResponse.jsonPath().getList("name")).contains(menu.getName());
     }
 
-    private MenuGroup 메뉴그룹이_등록되어있음(MenuGroupRequest menuGroupRequest) {
-        return MenuGroupAcceptanceTest.메뉴그룹_등록을_요청(menuGroupRequest).as(MenuGroup.class);
+    private MenuGroupResponse 메뉴그룹이_등록되어있음(MenuGroupRequest menuGroupRequest) {
+        return MenuGroupAcceptanceTest.메뉴그룹_등록을_요청(menuGroupRequest).as(MenuGroupResponse.class);
     }
 
 
