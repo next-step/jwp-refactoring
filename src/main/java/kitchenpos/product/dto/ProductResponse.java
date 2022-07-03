@@ -22,10 +22,6 @@ public class ProductResponse {
         return new ProductResponse(product.getId(), product.getName(), product.getPrice().getValue());
     }
 
-    public Product toProduct() {
-        return new Product(id, name, price);
-    }
-
     public Long getId() {
         return id;
     }

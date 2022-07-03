@@ -1,6 +1,7 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.product.domain.Product;
+import kitchenpos.common.domain.Price;
+import kitchenpos.common.domain.Quantity;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -16,42 +17,52 @@ public class MenuProduct {
     @JoinColumn(name = "menu_id")
     private Menu menu;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
+    @Column(name = "product_id", nullable = false)
+    private Long productId;
 
-    @Column(nullable = false)
-    private long quantity;
+    @Column(name = "menu_name")
+    private String menuName;
+
+    @Column(name = "menu_price")
+    private Price menuPrice;
+
+    @Embedded
+    private Quantity quantity;
 
     protected MenuProduct() {
     }
 
-    public MenuProduct(Product product, long quantity) {
-        this.product = product;
-        this.quantity = quantity;
+    public MenuProduct(Long productId, long quantity) {
+        this(null, null, productId, quantity);
     }
 
-    public MenuProduct(Long seq, Menu menu, Product product, long quantity) {
+    public MenuProduct(Long seq, Menu menu, Long productId, long quantity) {
         this.seq = seq;
         this.menu = menu;
-        this.product = product;
-        this.quantity = quantity;
+        this.productId = productId;
+        this.quantity = new Quantity(quantity);
     }
 
     public Long getSeq() {
         return seq;
     }
 
-    public Product getProduct() {
-        return product;
+    public Long getProductId() {
+        return productId;
     }
 
     public long getQuantity() {
-        return quantity;
+        return quantity.getValue();
     }
 
     public void connectedBy(Menu menu) {
         this.menu = menu;
+        this.menuName = menu.getName();
+        this.menuPrice = menu.getPrice();
+    }
+
+    public Menu getMenu() {
+        return menu;
     }
 
     @Override

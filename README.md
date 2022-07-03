@@ -116,3 +116,19 @@
 | 단체 지정 | table group | 통합 계산을 위해 개별 주문 테이블을 그룹화하는 기능 |
 | 주문 항목 | order line item | 주문에 속하는 수량이 있는 메뉴 |
 | 매장 식사 | eat in | 포장하지 않고 매장에서 식사하는 것 |
+
+### 직접참조 → 간접참조
+- MenuProduct - Product 간 직접 참조 제거
+    - MenuValidator를 이용한 간접 참조(리포지토리를 통한 탐색)
+- OrderLineItem - Menu 간 직접 참조 제거
+    - OrderValidator를 이용한 간접 참조(리포지토리를 통한 탐색)
+- Order - OrderTable 간 직접 참조 제거
+    - OrderValidator를 이용한 간접 참조(리포지토리를 통한 탐색)
+    
+### 도메인그룹
+- menu
+    - (엔티티) Menu, MenuGroup, MenuProduct
+- order
+    - (엔티티) Order, OderLineItem
+- table
+    - (엔티티) OrderTable, TableGroup

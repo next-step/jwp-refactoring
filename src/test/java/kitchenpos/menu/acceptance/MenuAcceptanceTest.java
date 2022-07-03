@@ -5,9 +5,10 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,13 +22,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static kitchenpos.menugroup.acceptance.MenuGroupAcceptanceTest.*;
+import static kitchenpos.menu.acceptance.MenuGroupAcceptanceTest.*;
 import static kitchenpos.product.acceptance.ProductAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("메뉴 관련 기능")
 public class MenuAcceptanceTest extends AcceptanceTest {
-    public static final String MENU_NAME01 = "바베큐치킨";
+    public static final String MENU_NAME01 = "치킨세트";
     public static final BigDecimal MENU_PRICE01 = new BigDecimal(30000);
 
     @DisplayName("메뉴를 생성한다.")
@@ -107,22 +108,20 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     public static MenuRequest 테스트_메뉴_생성(String menuName, BigDecimal menuPrice) {
         MenuGroup menuGroup = 메뉴_그룹_가져옴(메뉴_그룹_등록되어_있음(MENU_GROUP_NAME01)).toMenuGroup();
         ProductResponse productResponse = 상품_가져옴(상품_등록되어_있음(PRODUCT_NAME01, PRODUCT_PRICE01));
-        MenuProduct menuProduct = new MenuProduct(productResponse.toProduct(), 1);
-        List<MenuProduct> list = new ArrayList<>();
-        list.add(menuProduct);
-        return new MenuRequest(menuName, menuPrice, menuGroup.getId(), list);
+        MenuProductRequest request = new MenuProductRequest(productResponse.getId(), 1);
+        return new MenuRequest(menuName, menuPrice, menuGroup.getId(), Collections.singletonList(request));
     }
 
     public static MenuRequest 메뉴_그룹_없는_테스트_메뉴_생성(String menuName, BigDecimal menuPrice) {
         ProductResponse productResponse = 상품_가져옴(상품_등록되어_있음(PRODUCT_NAME01, PRODUCT_PRICE01));
-        MenuProduct menuProduct = new MenuProduct(productResponse.toProduct(), 1);
-        return new MenuRequest(menuName, menuPrice, null, Collections.singletonList(menuProduct));
+        MenuProductRequest request = new MenuProductRequest(productResponse.getId(), 1);
+        return new MenuRequest(menuName, menuPrice, null, Collections.singletonList(request));
     }
 
     public static MenuRequest 상품_없는_테스트_메뉴_생성(String menuName, BigDecimal menuPrice) {
         MenuGroup menuGroup = 메뉴_그룹_가져옴(메뉴_그룹_등록되어_있음(MENU_GROUP_NAME01)).toMenuGroup();
-        MenuProduct menuProduct = new MenuProduct(null, 1);
-        return new MenuRequest(menuName, menuPrice, menuGroup.getId(), Collections.singletonList(menuProduct));
+        MenuProductRequest request = new MenuProductRequest(null, 1);
+        return new MenuRequest(menuName, menuPrice, menuGroup.getId(), Collections.singletonList(request));
     }
 
     public static ExtractableResponse<Response> 메뉴_등록되어_있음(MenuRequest request) {

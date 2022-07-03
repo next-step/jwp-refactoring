@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.menugroup.domain.MenuGroup;
+import kitchenpos.common.domain.Price;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -25,7 +25,7 @@ public class Menu {
     private MenuGroup menuGroup;
 
     @Embedded
-    MenuProducts menuProducts = new MenuProducts();
+    private MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {
     }
@@ -35,11 +35,7 @@ public class Menu {
     }
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        this.name = name;
-        this.price = new Price(price);
-        this.menuGroup = menuGroup;
-        this.menuProducts = new MenuProducts(this, menuProducts);
-        validateMenuPrice();
+        this(0L, name, price, menuGroup, menuProducts);
     }
 
     public Menu(Long id, String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
@@ -48,13 +44,6 @@ public class Menu {
         this.price = new Price(price);
         this.menuGroup = menuGroup;
         this.menuProducts = new MenuProducts(this, menuProducts);
-        validateMenuPrice();
-    }
-
-    private void validateMenuPrice() {
-        if (price.getValue().compareTo(menuProducts.calculateTotalPrice()) > 0) {
-            throw new IllegalArgumentException();
-        }
     }
 
     public Long getId() {

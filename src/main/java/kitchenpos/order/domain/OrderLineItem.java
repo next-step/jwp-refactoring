@@ -1,8 +1,6 @@
 package kitchenpos.order.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import kitchenpos.menu.domain.Menu;
+import kitchenpos.common.domain.Quantity;
 
 import javax.persistence.*;
 
@@ -17,26 +15,24 @@ public class OrderLineItem {
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_id", nullable = false)
-    private Menu menu;
+    @Column(name = "menu_id", nullable = false)
+    private Long menuId;
 
-    @Column(nullable = false)
-    private long quantity;
+    @Embedded
+    private Quantity quantity;
 
     protected OrderLineItem() {
     }
 
-    public OrderLineItem(Menu menu, long quantity) {
-        this.menu = menu;
-        this.quantity = quantity;
+    public OrderLineItem(Long menuId, long quantity) {
+        this(null, null, menuId, quantity);
     }
 
-    public OrderLineItem(Long seq, Order order, Menu menu, long quantity) {
+    public OrderLineItem(Long seq, Order order, Long menuId, long quantity) {
         this.seq = seq;
         this.order = order;
-        this.menu = menu;
-        this.quantity = quantity;
+        this.menuId = menuId;
+        this.quantity = new Quantity(quantity);
     }
 
     public Long getSeq() {
@@ -51,11 +47,11 @@ public class OrderLineItem {
         this.order = order;
     }
 
-    public Menu getMenu() {
-        return menu;
+    public Long getMenuId() {
+        return menuId;
     }
 
     public long getQuantity() {
-        return quantity;
+        return quantity.getValue();
     }
 }

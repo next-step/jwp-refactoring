@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class OrderTableRequests {
-    List<OrderTableRequest> list;
+    List<OrderTableRequest> elements;
 
     public OrderTableRequests() {
     }
@@ -15,16 +15,16 @@ public class OrderTableRequests {
         if (CollectionUtils.isEmpty(list) || list.size() < 2) {
             throw new IllegalArgumentException();
         }
-        this.list = list;
+        this.elements = list;
     }
 
     public List<Long> getOrderTableIds() {
-        return list.stream()
+        return elements.stream()
                 .map(OrderTableRequest::getId)
                 .collect(Collectors.toList());
     }
 
     public int getSize() {
-        return list.size();
+        return elements.size();
     }
 }

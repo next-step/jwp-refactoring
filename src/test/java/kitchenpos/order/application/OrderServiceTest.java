@@ -1,10 +1,7 @@
 package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.table.domain.OrderTable;
@@ -38,16 +35,18 @@ public class OrderServiceTest {
     @Mock
     private OrderTableRepository orderTableRepository;
 
+    @Mock
+    private OrderValidator orderValidator;
+
     @BeforeEach
     void setUp() {
-        orderService = new OrderService(orderRepository, orderTableRepository);
+        orderService = new OrderService(orderRepository, orderTableRepository, orderValidator);
     }
 
     @DisplayName("주문을 생성한다.")
     @Test
     void create() {
         OrderTable orderTable = new OrderTable(1L, 3, false);
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
         when(orderRepository.save(any())).thenReturn(createOrder());
 
         // when
@@ -55,52 +54,6 @@ public class OrderServiceTest {
 
         // then
         assertThat(created).isNotNull();
-    }
-
-    @DisplayName("[예외] 주문 항목이 없는 주문을 생성한다.")
-    @Test
-    void createOrder_without_order_list_item() {
-        OrderTable orderTable = new OrderTable(1L, 3, false);
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
-
-        // when, then
-        assertThatThrownBy(() -> {
-            orderService.create(createOrderRequestWithoutOrderListItem());
-        }).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("[예외] 메뉴와 메뉴 항목이 일치하지 않는 주문을 생성한다.")
-    @Test
-    void createOrder_menu_and_order_list_item_not_matching() {
-        OrderTable orderTable = new OrderTable(1L, 3, false);
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
-
-        // when, then
-        assertThatThrownBy(() -> {
-            orderService.create(createOrderRequestNotMatchingOrderAndOrderListItem());
-        }).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("[예외] 주문 테이블 없는 주문을 생성한다.")
-    @Test
-    void createOrder_without_order_table() {
-        when(orderTableRepository.findById(any())).thenReturn(Optional.empty());
-
-        // when, then
-        assertThatThrownBy(() -> {
-            orderService.create(createOrderRequest());
-        }).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("[예외] 비어 있는 주문 테이블에서 주문을 생성한다.")
-    @Test
-    void createOrder_with_empty_order_table() {
-        when(orderTableRepository.findById(any())).thenReturn(Optional.of(new OrderTable(1L, 3, true)));
-
-        // when, then
-        assertThatThrownBy(() -> {
-            orderService.create(createOrderRequest());
-        }).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문 목록을 조회한다.")
@@ -156,7 +109,7 @@ public class OrderServiceTest {
     public static Order createOrder() {
         OrderLineItem orderListItem = createOrderListItem();
         OrderTable orderTable = new OrderTable(1L, 3, false);
-        return new Order(1L, orderTable, OrderStatus.COOKING, Arrays.asList(orderListItem));
+        return new Order(1L, orderTable.getId(), OrderStatus.COOKING, Arrays.asList(orderListItem));
     }
 
     public static OrderRequest createOrderRequest() {
@@ -180,17 +133,17 @@ public class OrderServiceTest {
     public static Order createOrderWithCompletion() {
         OrderLineItem orderListItem = createOrderListItem();
         OrderTable orderTable = new OrderTable(1L, 3, false);
-        return new Order(1L, orderTable, OrderStatus.COMPLETION, Arrays.asList(orderListItem));
+        return new Order(1L, orderTable.getId(), OrderStatus.COMPLETION, Arrays.asList(orderListItem));
     }
 
     public static OrderLineItem createOrderListItem() {
         Menu menu = createMenu01();
-        return new OrderLineItem(1L, new Order(1L), menu, 1);
+        return new OrderLineItem(1L, new Order(1L), menu.getId(), 1);
     }
 
     public static OrderLineItem createOrderListItem2() {
         Menu menu = createMenu01();
-        return new OrderLineItem(2L, new Order(1L), menu, 1);
+        return new OrderLineItem(2L, new Order(1L), menu.getId(), 1);
     }
 
     public static List<Order> createOrderList() {

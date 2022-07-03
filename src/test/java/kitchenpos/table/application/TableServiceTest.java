@@ -5,7 +5,7 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.table.domain.TableGroup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -66,7 +66,7 @@ public class TableServiceTest {
     @Test
     void changeEmpty() {
         Mockito.when(orderTableRepository.findById(any())).thenReturn(Optional.of(new OrderTable(1L, 3, false)));
-        Mockito.when(orderRepository.existsByOrderTableAndOrderStatusIn(any(), any())).thenReturn(false);
+        Mockito.when(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(false);
 
         // when
         OrderTableRequest request = new OrderTableRequest(3, true);
@@ -105,7 +105,7 @@ public class TableServiceTest {
     @Test
     void changeEmpty_with_cooking_order_table() {
         Mockito.when(orderTableRepository.findById(any())).thenReturn(Optional.of(new OrderTable(1L, 3, false)));
-        Mockito.when(orderRepository.existsByOrderTableAndOrderStatusIn(any(), any())).thenReturn(true);
+        Mockito.when(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(true);
 
         // when, then
         assertThatThrownBy(() -> {

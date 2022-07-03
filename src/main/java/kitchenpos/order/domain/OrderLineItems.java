@@ -1,8 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.menu.domain.Menu;
-import org.springframework.util.CollectionUtils;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
@@ -13,38 +10,27 @@ import java.util.stream.Collectors;
 @Embeddable
 public class OrderLineItems {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<OrderLineItem> list;
+    private final List<OrderLineItem> elements;
 
     public OrderLineItems() {
-        list = new ArrayList<>();
+        elements = new ArrayList<>();
     }
 
-    public OrderLineItems(Order order, List<OrderLineItem> orderLineItems) {
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException();
-        }
-
-        final List<Long> menuIds = getMenuIds(orderLineItems);
-        if (orderLineItems.size() != menuIds.size()) {
-            throw new IllegalArgumentException();
-        }
-
-        for (OrderLineItem item : orderLineItems) {
+    public OrderLineItems(Order order, List<OrderLineItem> elements) {
+        this.elements = elements;
+        for (OrderLineItem item : this.elements) {
             item.connectedBy(order);
         }
-        this.list = orderLineItems;
     }
 
-    private List<Long> getMenuIds(List<OrderLineItem> orderLineItems) {
-        return orderLineItems.stream()
-                .map(OrderLineItem::getMenu)
-                .map(Menu::getId)
+    public List<Long> getMenuIds() {
+        return this.elements.stream()
+                .map(OrderLineItem::getMenuId)
                 .distinct()
                 .collect(Collectors.toList());
     }
 
-
     public List<OrderLineItem> getList() {
-        return list;
+        return elements;
     }
 }
