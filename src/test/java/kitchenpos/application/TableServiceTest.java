@@ -2,8 +2,8 @@ package kitchenpos.application;
 
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.order.domain.OrderTable;
 import kitchenpos.table.application.TableService;
+import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -58,7 +58,7 @@ class TableServiceTest {
     void changeEmpty() {
         Long orderTableId = 1L;
         OrderTable request = createOrderTable(false);
-        OrderTable orderTable = createOrderTable(1L ,true);
+        OrderTable orderTable = createOrderTable(1L, true);
 
         given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(request));
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList()))
@@ -104,7 +104,7 @@ class TableServiceTest {
         given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(orderTable));
         given(orderTableDao.save(any(OrderTable.class))).willReturn(orderTable);
 
-        OrderTable result = tableService.changeNumberOfGuests(orderTableId, createOrderTable( 5));
+        OrderTable result = tableService.changeNumberOfGuests(orderTableId, createOrderTable(5));
 
         assertThat(result.getNumberOfGuests()).isEqualTo(5);
     }
@@ -114,7 +114,7 @@ class TableServiceTest {
     void changeNumberOfGuests_invalid_numberOfGuests() {
         Long orderTableId = 1L;
 
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, createOrderTable( 0)))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, createOrderTable(0)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -124,7 +124,7 @@ class TableServiceTest {
         Long orderTableId = 1L;
         given(orderTableDao.findById(orderTableId)).willReturn(Optional.empty());
 
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, createOrderTable( 5)))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, createOrderTable(5)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -136,7 +136,7 @@ class TableServiceTest {
 
         given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(orderTable));
 
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, createOrderTable( 5)))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, createOrderTable(5)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }
