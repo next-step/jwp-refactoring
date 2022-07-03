@@ -27,23 +27,14 @@ public class Order {
     protected Order() {
     }
 
-    public Order(Long orderTableId, OrderLineItems orderLineItems) {
+    public Order(Long orderTableId) {
         this.orderTableId = orderTableId;
-        this.orderLineItems = orderLineItems;
-    }
-
-    public Order(Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime) {
-        this.orderTableId = orderTableId;
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
+        this.orderStatus = OrderStatus.COOKING;
+        this.orderedTime = LocalDateTime.now();
     }
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
     }
 
     public Long getOrderTableId() {
@@ -52,10 +43,6 @@ public class Order {
 
     public OrderStatus getOrderStatus() {
         return orderStatus;
-    }
-
-    public void setOrderStatus(final OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
     }
 
     public LocalDateTime getOrderedTime() {
@@ -68,5 +55,12 @@ public class Order {
 
     public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
         this.orderLineItems = new OrderLineItems(orderLineItems);
+    }
+
+    public void changeOrderStatus(OrderStatus orderStatus) {
+        if (this.orderStatus == OrderStatus.COMPLETION) {
+            throw new IllegalArgumentException("주문 상태가 계산 완료인 경우 변경할 수 없습니다.");
+        }
+        this.orderStatus = orderStatus;
     }
 }
