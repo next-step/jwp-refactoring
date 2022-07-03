@@ -15,7 +15,7 @@ public class ProductResponse {
     public ProductResponse(Product product) {
         this.id = product.getId();
         this.name = product.getName();
-        this.price = product.getPrice();
+        this.price = product.getPrice().value();
     }
 
     public Long getId() {

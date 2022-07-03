@@ -37,4 +37,8 @@ public class Price {
     public Price add(Price price) {
         return new Price(value.add(price.value));
     }
+
+    public Price multiply(long quantity) {
+        return new Price(value.multiply(BigDecimal.valueOf(quantity)));
+    }
 }

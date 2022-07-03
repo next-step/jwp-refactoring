@@ -19,7 +19,7 @@ public class MenuCreateResponse {
     public MenuCreateResponse(Menu menu) {
         this.id = menu.getId();
         this.name = menu.getName();
-        this.price = menu.getPrice();
+        this.price = menu.getPrice().value();
         this.menuGroupId = menu.getMenuGroupId();
         this.menuProducts = menu.getMenuProducts()
                 .stream()
