@@ -7,6 +7,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -32,7 +33,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    private OrderService orderService;
+    private TableGroupValidator tableGroupValidator;
     @Mock
     private OrderTableService orderTableService;
     @Mock
@@ -118,28 +119,11 @@ class TableGroupServiceTest {
     }
 
     @Test
-    void 단체_지정_삭제_주문_상태_예외() {
-        // given
-        TableGroup 단체지정 = new TableGroup(1L, null, Arrays.asList(주문테이블1, 주문테이블2));
-        given(tableGroupRepository.findById(단체지정.getId())).willReturn(Optional.of(단체지정));
-        given(orderService.existsByOrderTableIdUnCompletedOrderStatus(
-                Arrays.asList(주문테이블1.getId(), 주문테이블2.getId())
-        )).willReturn(true);
-
-        // when, then
-        assertThatThrownBy(
-                () -> tableGroupService.ungroup(단체지정.getId())
-        ).isInstanceOf(UnCompletedOrderStatusException.class);
-    }
-
-    @Test
     void 단체_지정_삭제() {
         // given
         TableGroup 단체지정 = new TableGroup(1L, null, Arrays.asList(주문테이블1, 주문테이블2));
         given(tableGroupRepository.findById(단체지정.getId())).willReturn(Optional.of(단체지정));
-        given(orderService.existsByOrderTableIdUnCompletedOrderStatus(
-                Arrays.asList(주문테이블1.getId(), 주문테이블2.getId())
-        )).willReturn(false);
+        willDoNothing().given(tableGroupValidator).validate(any(TableGroup.class));
 
         tableGroupService.ungroup(단체지정.getId());
 
