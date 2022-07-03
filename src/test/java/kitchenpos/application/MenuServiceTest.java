@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -20,6 +21,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static kitchenpos.fixture.MenuFixture.메뉴_데이터_생성;
+import static kitchenpos.fixture.MenuProductFixture.메뉴_상품_데이터_생성;
+import static kitchenpos.fixture.ProductFixture.상품_데이터_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -29,6 +33,7 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
 
+    @InjectMocks
     private MenuService menuService;
 
     @Mock
@@ -50,13 +55,12 @@ class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        menuService = new MenuService(menuDao, menuGroupDao, menuProductDao, productDao);
-        감자_튀김 = new Product(1L, "감자튀김", BigDecimal.valueOf(1500));
-        햄버거 = new Product(2L, "햄버거", BigDecimal.valueOf(3500));
-        치즈볼 = new Product(3L, "피자", BigDecimal.valueOf(1000));
-        A_세트_감자_튀김 = new MenuProduct(1L, 1L, 1L, 1);
-        A_세트_햄버거 = new MenuProduct(2L, 1L, 2L, 1);
-        A_세트_치즈볼 = new MenuProduct(3L, 1L, 3L, 1);
+        감자_튀김 = 상품_데이터_생성(1L, "감자튀김", BigDecimal.valueOf(1500));
+        햄버거 = 상품_데이터_생성(2L, "햄버거", BigDecimal.valueOf(3500));
+        치즈볼 = 상품_데이터_생성(3L, "피자", BigDecimal.valueOf(1000));
+        A_세트_감자_튀김 = 메뉴_상품_데이터_생성(1L, 1L, 1L, 1);
+        A_세트_햄버거 = 메뉴_상품_데이터_생성(2L, 1L, 2L, 1);
+        A_세트_치즈볼 = 메뉴_상품_데이터_생성(3L, 1L, 3L, 1);
     }
 
 
@@ -64,7 +68,7 @@ class MenuServiceTest {
     @Test
     void create() {
         // given
-        A_세트 = new Menu(1L, "A세트", BigDecimal.valueOf(5000), 1L, Arrays.asList(A_세트_감자_튀김, A_세트_햄버거));
+        A_세트 = 메뉴_데이터_생성(1L, "A세트", BigDecimal.valueOf(5000), 1L, Arrays.asList(A_세트_감자_튀김, A_세트_햄버거));
         given(menuGroupDao.existsById(any())).willReturn(true);
         given(productDao.findById(any())).willReturn(Optional.of(감자_튀김));
         given(productDao.findById(any())).willReturn(Optional.of(햄버거));
@@ -86,7 +90,7 @@ class MenuServiceTest {
     @Test
     void list() {
         // given
-        A_세트 = new Menu(1L, "A세트", BigDecimal.valueOf(5000), 1L, Arrays.asList(A_세트_감자_튀김, A_세트_햄버거));
+        A_세트 = 메뉴_데이터_생성(1L, "A세트", BigDecimal.valueOf(5000), 1L, Arrays.asList(A_세트_감자_튀김, A_세트_햄버거));
         given(menuDao.findAll()).willReturn(Collections.singletonList(A_세트));
         given(menuProductDao.findAllByMenuId(any())).willReturn(Arrays.asList(A_세트_감자_튀김, A_세트_햄버거));
 
@@ -104,7 +108,7 @@ class MenuServiceTest {
     @Test
     void 메뉴_가격은_0미만일_경우() {
         // given
-        A_세트 = new Menu(1L, "A세트", BigDecimal.valueOf(-1), 1L, Arrays.asList(A_세트_감자_튀김, A_세트_햄버거));
+        A_세트 = 메뉴_데이터_생성(1L, "A세트", BigDecimal.valueOf(-1), 1L, Arrays.asList(A_세트_감자_튀김, A_세트_햄버거));
 
         // when & then
         assertThatThrownBy(() -> menuService.create(A_세트))
@@ -114,7 +118,7 @@ class MenuServiceTest {
     @Test
     void 등록할_메뉴_그룹이_없는_경우() {
         // given
-        A_세트 = new Menu(1L, "A세트", BigDecimal.valueOf(5000), 1L, Arrays.asList(A_세트_감자_튀김, A_세트_햄버거));
+        A_세트 = 메뉴_데이터_생성(1L, "A세트", BigDecimal.valueOf(5000), 1L, Arrays.asList(A_세트_감자_튀김, A_세트_햄버거));
         given(menuGroupDao.existsById(A_세트.getMenuGroupId())).willReturn(false);
 
         // when & then
@@ -125,7 +129,7 @@ class MenuServiceTest {
     @Test
     void 등록된_상품으로만_메뉴을_구성해야한다() {
         // given
-        A_세트 = new Menu(1L, "A세트", BigDecimal.valueOf(5000), 1L, Arrays.asList(A_세트_감자_튀김, A_세트_햄버거));
+        A_세트 = 메뉴_데이터_생성(1L, "A세트", BigDecimal.valueOf(5000), 1L, Arrays.asList(A_세트_감자_튀김, A_세트_햄버거));
         given(menuGroupDao.existsById(A_세트.getMenuGroupId())).willReturn(true);
         given(productDao.findById(감자_튀김.getId())).willReturn(Optional.of(감자_튀김));
         given(productDao.findById(햄버거.getId())).willReturn(Optional.empty());
@@ -138,7 +142,7 @@ class MenuServiceTest {
     @Test
     void 메뉴의_가격이_구성_상품들의_합보다_큰_경우() {
         // given
-        A_세트 = new Menu(1L, "A세트", BigDecimal.valueOf(5000), 1L, Arrays.asList(A_세트_감자_튀김, A_세트_치즈볼));
+        A_세트 = 메뉴_데이터_생성(1L, "A세트", BigDecimal.valueOf(5000), 1L, Arrays.asList(A_세트_감자_튀김, A_세트_치즈볼));
         given(menuGroupDao.existsById(A_세트.getMenuGroupId())).willReturn(true);
         given(productDao.findById(감자_튀김.getId())).willReturn(Optional.of(감자_튀김));
         given(productDao.findById(치즈볼.getId())).willReturn(Optional.of(치즈볼));

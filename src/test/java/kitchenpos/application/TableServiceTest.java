@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static kitchenpos.fixture.OrderTableFixture.주문_테이블_데이터_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -39,7 +40,7 @@ class TableServiceTest {
     @Test
     void create() {
         // given
-        주문_테이블 = new OrderTable(1L, null, 0, true);
+        주문_테이블 = 주문_테이블_데이터_생성(1L, null, 0, true);
         given(orderTableDao.save(any())).willReturn(주문_테이블);
 
         // when
@@ -53,7 +54,7 @@ class TableServiceTest {
     @Test
     void list() {
         // given
-        주문_테이블 = new OrderTable(1L, null, 0, true);
+        주문_테이블 = 주문_테이블_데이터_생성(1L, null, 0, true);
         given(orderTableDao.findAll()).willReturn(Collections.singletonList(주문_테이블));
 
         // when
@@ -70,8 +71,8 @@ class TableServiceTest {
     @Test
     void changeEmpty() {
         // given
-        주문_테이블 = new OrderTable(1L, null, 3, false);
-        변경_테이블 = new OrderTable(2L, null, 0, true);
+        주문_테이블 = 주문_테이블_데이터_생성(1L, null, 3, false);
+        변경_테이블 = 주문_테이블_데이터_생성(2L, null, 0, true);
         given(orderTableDao.findById(any())).willReturn(Optional.of(주문_테이블));
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(false);
         given(orderTableDao.save(any())).willReturn(주문_테이블);
@@ -86,7 +87,7 @@ class TableServiceTest {
     @Test
     void 존재하지않는_테이블의_상태를_변경할_경우() {
         // given
-        변경_테이블 = new OrderTable(2L, null, 0, true);
+        변경_테이블 = 주문_테이블_데이터_생성(2L, null, 0, true);
         given(orderTableDao.findById(any())).willReturn(Optional.empty());
 
         // when & then
@@ -97,8 +98,8 @@ class TableServiceTest {
     @Test
     void 단체_지정된_주문_테이블의_상태를_변경할_경우() {
         // given
-        주문_테이블 = new OrderTable(1L, 1L, 3, false);
-        변경_테이블 = new OrderTable(2L, null, 0, true);
+        주문_테이블 = 주문_테이블_데이터_생성(1L, 1L, 3, false);
+        변경_테이블 = 주문_테이블_데이터_생성(2L, null, 0, true);
         given(orderTableDao.findById(any())).willReturn(Optional.of(주문_테이블));
 
         // when & then
@@ -109,8 +110,8 @@ class TableServiceTest {
     @Test
     void 조리_또는_식사중인_상태의_테이블을_변경하는_경우() {
         // given
-        주문_테이블 = new OrderTable(1L, null, 3, false);
-        변경_테이블 = new OrderTable(2L, null, 0, true);
+        주문_테이블 = 주문_테이블_데이터_생성(1L, null, 3, false);
+        변경_테이블 = 주문_테이블_데이터_생성(2L, null, 0, true);
         given(orderTableDao.findById(any())).willReturn(Optional.of(주문_테이블));
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(any(), anyList())).willReturn(true);
 
@@ -123,8 +124,8 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests() {
         // given
-        주문_테이블 = new OrderTable(1L, null, 3, false);
-        변경_테이블 = new OrderTable(2L, null, 0, true);
+        주문_테이블 = 주문_테이블_데이터_생성(1L, null, 3, false);
+        변경_테이블 = 주문_테이블_데이터_생성(2L, null, 0, true);
         given(orderTableDao.findById(any())).willReturn(Optional.of(주문_테이블));
         given(orderTableDao.save(any())).willReturn(주문_테이블);
 
@@ -138,7 +139,7 @@ class TableServiceTest {
     @Test
     void 손님수를_0미만으로_변경할_경우() {
         // given
-        변경_테이블 = new OrderTable(2L, null, -1, true);
+        변경_테이블 = 주문_테이블_데이터_생성(2L, null, -1, true);
 
         // when & then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, 변경_테이블))
@@ -148,7 +149,7 @@ class TableServiceTest {
     @Test
     void 존재하지_않는_테이블의_손님_수를_변경할_경우() {
         // given
-        변경_테이블 = new OrderTable(2L, null, 0, true);
+        변경_테이블 = 주문_테이블_데이터_생성(2L, null, 0, true);
         given(orderTableDao.findById(any())).willReturn(Optional.empty());
 
         // when & then
@@ -159,8 +160,8 @@ class TableServiceTest {
     @Test
     void 비어있는_테이블의_손님_수를_변경할_경우() {
         // given
-        주문_테이블 = new OrderTable(1L, null, 0, true);
-        변경_테이블 = new OrderTable(2L, null, 0, true);
+        주문_테이블 = 주문_테이블_데이터_생성(1L, null, 0, true);
+        변경_테이블 = 주문_테이블_데이터_생성(2L, null, 0, true);
         given(orderTableDao.findById(any())).willReturn(Optional.of(주문_테이블));
 
         // when & then

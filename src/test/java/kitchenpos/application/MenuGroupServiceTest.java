@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Collections;
 import java.util.List;
 
+import static kitchenpos.fixture.MenuGroupFixture.메뉴_그룹_데이터_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
@@ -30,7 +31,7 @@ class MenuGroupServiceTest {
     @BeforeEach
     void setUp() {
         menuGroupService = new MenuGroupService(menuGroupDao);
-        메뉴_그룹 = new MenuGroup(1L, "세트 메뉴");
+        메뉴_그룹 = 메뉴_그룹_데이터_생성(1L, "세트 메뉴");
     }
 
     @DisplayName("메뉴 그룹 생성")

@@ -2,10 +2,10 @@ package kitchenpos.application;
 
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Product;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
+import static kitchenpos.fixture.ProductFixture.상품_데이터_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -22,6 +23,7 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
 
+    @InjectMocks
     private ProductService productService;
 
     @Mock
@@ -29,16 +31,11 @@ class ProductServiceTest {
 
     private Product 상품;
 
-    @BeforeEach
-    void setUp() {
-        productService = new ProductService(productDao);
-    }
-
     @DisplayName("상품 생성")
     @Test
     void create() {
         // given
-        상품 = new Product(1L, "상품", BigDecimal.valueOf(3000));
+        상품 = 상품_데이터_생성(1L, "상품", BigDecimal.valueOf(3000));
         given(productDao.save(any())).willReturn(상품);
 
         // when
@@ -52,7 +49,7 @@ class ProductServiceTest {
     @Test
     void list() {
         // given
-        상품 = new Product(1L, "상품", BigDecimal.valueOf(3000));
+        상품 = 상품_데이터_생성(1L, "상품", BigDecimal.valueOf(3000));
         given(productDao.findAll()).willReturn(Collections.singletonList(상품));
 
         // when
@@ -68,7 +65,7 @@ class ProductServiceTest {
     @Test
     void 상품_가격이_0보다_작은경우() {
         // given
-        상품 = new Product(1L, "상품", BigDecimal.valueOf(-1000));
+        상품 = 상품_데이터_생성(1L, "상품", BigDecimal.valueOf(-1000));
 
         // when & then
         assertThatThrownBy(() -> productService.create(상품))
@@ -78,7 +75,7 @@ class ProductServiceTest {
     @Test
     void 상품_가격이_빈값인_경우() {
         // given
-        상품 = new Product(1L, "상품", null);
+        상품 = 상품_데이터_생성(1L, "상품", null);
 
         // when & then
         assertThatThrownBy(() -> productService.create(상품))
