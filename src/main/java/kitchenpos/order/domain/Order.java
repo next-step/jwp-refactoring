@@ -1,13 +1,15 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.common.BaseEntity;
+import kitchenpos.common.domain.BaseEntity;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+@Table(name = "ORDERS")
+@Entity(name = "orders")
 public class Order extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,57 +25,67 @@ public class Order extends BaseEntity {
             orphanRemoval = true)
     private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
-    public Order() {
+    protected Order() {
     }
 
-    public Order(Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+    public Order(Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
+        this.orderedTime = LocalDateTime.now();
         this.orderLineItems = orderLineItems;
     }
 
-    public Order(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+    public Order(Long id, Long orderTableId, OrderStatus orderStatus, List<OrderLineItem> orderLineItems) {
         this.id = id;
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
+        this.orderedTime = LocalDateTime.now();
         this.orderLineItems = orderLineItems;
+    }
+
+    private Order(final Long orderTableId) {
+        this.orderTableId = orderTableId;
+        this.orderedTime = LocalDateTime.now();
+        this.orderStatus = OrderStatus.COOKING;
+    }
+
+    public static Order createOrder(final Long orderTableId, final List<OrderLineItem> orderLineItems) {
+        if (CollectionUtils.isEmpty(orderLineItems)) {
+            throw new IllegalArgumentException();
+        }
+
+        Order order = new Order(orderTableId);
+
+        orderLineItems.forEach(order::addOrderLineItem);
+
+        return order;
+    }
+
+    private void addOrderLineItem(final OrderLineItem orderLineItem) {
+        orderLineItem.setOrder(this);
+        orderLineItems.add(orderLineItem);
+    }
+
+    public void changeOrderStatus(OrderStatus orderStatus) {
+        if (OrderStatus.isCompletion(this.orderStatus)) {
+            throw new IllegalArgumentException();
+        }
+        this.orderStatus = orderStatus;
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public Long getOrderTableId() {
         return orderTableId;
-    }
-
-    public void setOrderTableId(Long orderTableId) {
-        this.orderTableId = orderTableId;
     }
 
     public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
-    public void setOrderedTime(LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
-    }
-
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
-    }
-
-    public void setOrderLineItems(List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
     }
 }

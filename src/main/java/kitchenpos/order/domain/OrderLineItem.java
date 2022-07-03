@@ -1,6 +1,6 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.common.BaseEntity;
+import kitchenpos.common.domain.BaseEntity;
 import kitchenpos.menu.domain.Menu;
 
 import javax.persistence.*;
@@ -9,7 +9,7 @@ import javax.persistence.*;
 public class OrderLineItem extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long seq;
+    private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
@@ -27,12 +27,17 @@ public class OrderLineItem extends BaseEntity {
         this.quantity = quantity;
     }
 
-    public Long getSeq() {
-        return seq;
+    public OrderLineItem(Menu menu, long quantity) {
+        this.menu = menu;
+        this.quantity = quantity;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(final Long seq) {
+        this.id = seq;
     }
 
     public Order getOrder() {
