@@ -22,6 +22,7 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
@@ -88,8 +89,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
         Order 주문 = 주문_생성_요청(주문테이블.getId(), Collections.singletonList(주문목록)).as(Order.class);
 
         // when
-        주문.setOrderStatus(OrderStatus.MEAL);
-        ExtractableResponse<Response> response = 주문_상태_변경(주문);
+        ExtractableResponse<Response> response = 주문_상태_변경(주문.getId(), OrderStatus.MEAL);
 
         // then
         assertThat(response.jsonPath().getString("orderStatus")).isEqualTo(OrderStatus.MEAL.name());
@@ -105,8 +105,10 @@ class OrderAcceptanceTest extends AcceptanceTest {
         return AcceptanceTest.doGet("/api/orders");
     }
 
-    public static ExtractableResponse<Response> 주문_상태_변경(Order order) {
-        return AcceptanceTest.doPut("/api/orders/" + order.getId() + "/order-status", order);
+    public static ExtractableResponse<Response> 주문_상태_변경(Long orderId, OrderStatus orderStatus) {
+        OrderStatusRequest orderStatusRequest = new OrderStatusRequest(orderStatus);
+
+        return AcceptanceTest.doPut("/api/orders/" + orderId + "/order-status", orderStatusRequest);
     }
 
     public static void 주문_생성됨(ExtractableResponse<Response> response) {

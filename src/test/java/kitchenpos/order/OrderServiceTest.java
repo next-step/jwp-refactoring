@@ -88,7 +88,7 @@ class OrderServiceTest {
     @DisplayName("주문시 주문내역이 존재해야 한다")
     void create_EmptyOrderLineItemsError() {
         // given
-        주문요청 = new OrderRequest(1L, OrderStatus.COOKING, Collections.emptyList());
+        주문요청 = new OrderRequest(1L, Collections.emptyList());
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
@@ -102,7 +102,7 @@ class OrderServiceTest {
         // given
         OrderLineItem 주문내역1 = new OrderLineItem(1L, 1L);
         OrderLineItem 주문내역2 = new OrderLineItem(1L, 1L);
-        주문요청 = new OrderRequest(1L, OrderStatus.COOKING, Arrays.asList(주문내역1, 주문내역2));
+        주문요청 = new OrderRequest(1L, Arrays.asList(주문내역1, 주문내역2));
 
         given(menuRepository.countByIdIn(any())).willReturn(1L);
 
@@ -147,13 +147,11 @@ class OrderServiceTest {
     void changeOrderStatus(OrderStatus currentStatus, OrderStatus expected) {
         // given
         Order 주문 = new Order(1L, new OrderLineItems(Collections.singletonList(주문내역)));
-        주문.setId(1L);
         주문.setOrderStatus(currentStatus);
-        OrderRequest 변경하려는_주문 = new OrderRequest(주문.getOrderTableId(), expected, Collections.singletonList(주문내역));
         given(orderRepository.findById(any())).willReturn(Optional.of(주문));
 
         // when
-        OrderResponse actual = orderService.changeOrderStatus(주문.getId(), 변경하려는_주문);
+        OrderResponse actual = orderService.changeOrderStatus(1L, expected);
 
         // then
         assertThat(actual.getOrderStatus()).isEqualTo(expected);
@@ -164,13 +162,11 @@ class OrderServiceTest {
     void changeOrderStatus_completion() {
         // given
         Order 주문 = new Order(1L, new OrderLineItems(Collections.singletonList(주문내역)));
-        주문.setId(1L);
         주문.setOrderStatus(OrderStatus.COMPLETION);
-        OrderRequest 변경하려는_주문 = new OrderRequest(1L, OrderStatus.COMPLETION, Collections.singletonList(주문내역));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
-                () -> orderService.changeOrderStatus(주문.getId(), 변경하려는_주문)
+                () -> orderService.changeOrderStatus(1L, OrderStatus.COMPLETION)
         );
     }
 }

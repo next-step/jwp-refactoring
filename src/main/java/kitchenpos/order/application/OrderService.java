@@ -1,6 +1,5 @@
 package kitchenpos.order.application;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.menu.dao.MenuRepository;
@@ -59,9 +58,7 @@ public class OrderService {
             throw new IllegalArgumentException();
         }
 
-        Order order = new Order(orderTable.getId(), OrderStatus.COOKING, LocalDateTime.now());
-
-        final Order savedOrder = orderRepository.save(order);
+        final Order savedOrder = orderRepository.save(orderRequest.toOrder());
 
         for (final OrderLineItem orderLineItem : orderLineItems) {
             orderLineItem.setOrder(savedOrder);
@@ -80,7 +77,7 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponse changeOrderStatus(final Long orderId, final OrderRequest orderRequest) {
+    public OrderResponse changeOrderStatus(final Long orderId, final OrderStatus orderStatus) {
         final Order savedOrder = orderRepository.findById(orderId)
                 .orElseThrow(IllegalArgumentException::new);
 
@@ -88,7 +85,7 @@ public class OrderService {
             throw new IllegalArgumentException();
         }
 
-        savedOrder.setOrderStatus(orderRequest.getOrderStatus());
+        savedOrder.setOrderStatus(orderStatus);
 
         orderRepository.save(savedOrder);
 
