@@ -16,27 +16,29 @@ public class OrderTableTest {
     private List<OrderTable> orderTables;
     private TableGroup tableGroup;
     private OrderTable 단체지정_테이블;
-    private OrderTable 빈_테이블_1, 빈_테이블_2;
+    private OrderTable 빈_테이블;
 
     @BeforeEach
     void setUp() {
         // given
-        빈_테이블_1 = createOrderTable(1L, null, 0, true);
-        빈_테이블_2 = createOrderTable(2L, null, 0, true);
-        orderTables = Arrays.asList(빈_테이블_1, 빈_테이블_2);
+        orderTables = Arrays.asList(
+                createOrderTable(1L, null, 0, true),
+                createOrderTable(2L, null, 0, true)
+        );
         tableGroup = createTableGroup(orderTables);
         단체지정_테이블 = createOrderTable(1L, tableGroup, 4, false);
+        빈_테이블 = createOrderTable(1L, null, 0, true);
     }
 
     @Test
     @DisplayName("테이블 단체지정 후 값 비교 확인")
     void setTableGroup() {
-        빈_테이블_1.setTableGroup(tableGroup);
+        빈_테이블.setTableGroup(tableGroup);
 
         // then
         assertAll(
-                () -> assertThat(빈_테이블_1.isEmpty()).isFalse(),
-                () -> assertThat(빈_테이블_1.getTableGroup()).isEqualTo(tableGroup)
+                () -> assertThat(빈_테이블.isEmpty()).isFalse(),
+                () -> assertThat(빈_테이블.getTableGroup()).isEqualTo(tableGroup)
         );
     }
 
@@ -46,7 +48,7 @@ public class OrderTableTest {
         // then
         assertAll(
                 () -> assertThat(단체지정_테이블.isGrouped()).isTrue(),
-                () -> assertThat(빈_테이블_1.isGrouped()).isFalse()
+                () -> assertThat(빈_테이블.isGrouped()).isFalse()
         );
     }
 
@@ -64,7 +66,7 @@ public class OrderTableTest {
     void validateIsEmpty() {
         // then
         assertThatThrownBy(() -> {
-            빈_테이블_1.validateIsEmpty();
+            빈_테이블.validateIsEmpty();
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
