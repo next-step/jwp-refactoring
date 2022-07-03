@@ -1,8 +1,10 @@
 package kitchenpos.MenuGroup;
 
-import kitchenpos.application.MenuGroupService;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menuGroup.application.MenuGroupService;
+import kitchenpos.menuGroup.domain.MenuGroup;
+import kitchenpos.menuGroup.domain.MenuGroupRepository;
+import kitchenpos.menuGroup.dto.MenuGroupRequest;
+import kitchenpos.menuGroup.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +19,7 @@ import java.util.List;
 import static kitchenpos.util.testFixture.두마리_메뉴_그룹_생성;
 import static kitchenpos.util.testFixture.한마리_메뉴_그룹_생성;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -26,7 +28,7 @@ class MenuGroupServiceTest {
     MenuGroupService menuGroupService;
 
     @Mock
-    MenuGroupDao menuGroupDao;
+    MenuGroupRepository menuGroupRepository;
 
     private MenuGroup 한마리메뉴;
     private MenuGroup 두마리메뉴;
@@ -41,33 +43,27 @@ class MenuGroupServiceTest {
     @Test
     void createMenuGroup() {
         // given
-        when(menuGroupDao.save(두마리메뉴))
+        when(menuGroupRepository.save(any()))
                 .thenReturn(두마리메뉴);
 
         // when
-        MenuGroup result = menuGroupService.create(두마리메뉴);
+        MenuGroupResponse result = menuGroupService.create(new MenuGroupRequest(두마리메뉴.getName()));
 
         // then
-        assertAll(
-                () -> assertThat(result.getId()).isEqualTo(두마리메뉴.getId()),
-                () -> assertThat(result.getName()).isEqualTo(두마리메뉴.getName())
-        );
+        assertThat(result.getName()).isEqualTo(두마리메뉴.getName());
     }
 
     @DisplayName("메뉴 그룹 전체 조회")
     @Test
     void findAllMenuGroups() {
         // given
-        when(menuGroupDao.findAll())
+        when(menuGroupRepository.findAll())
                 .thenReturn(Arrays.asList(두마리메뉴, 한마리메뉴));
 
         // when
-        List<MenuGroup> list = menuGroupService.list();
+        List<MenuGroupResponse> list = menuGroupService.list();
 
         // then
-        assertAll(
-                () -> assertThat(list).hasSize(2),
-                () -> assertThat(list).containsExactly(두마리메뉴, 한마리메뉴)
-        );
+        assertThat(list).hasSize(2);
     }
 }

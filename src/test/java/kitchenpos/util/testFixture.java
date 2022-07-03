@@ -1,6 +1,7 @@
 package kitchenpos.util;
 
 import kitchenpos.domain.*;
+import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 
 import java.math.BigDecimal;
@@ -17,11 +18,11 @@ public class testFixture {
     }
 
     public static MenuGroup 한마리_메뉴_그룹_생성() {
-        return MenuGroup.of((long)2, "한마리메뉴");
+        return MenuGroup.of("한마리메뉴");
     }
 
     public static MenuGroup 두마리_메뉴_그룹_생성() {
-        return MenuGroup.of((long)2, "두마리메뉴");
+        return MenuGroup.of("두마리메뉴");
     }
 
     public static MenuProduct 후라이드_메뉴_상품_생성(Long productId) {
