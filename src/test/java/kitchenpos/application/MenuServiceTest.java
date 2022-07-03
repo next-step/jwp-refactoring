@@ -2,7 +2,6 @@ package kitchenpos.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.BDDMockito.given;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -18,26 +17,25 @@ import kitchenpos.repository.MenuGroupRepository;
 import kitchenpos.repository.MenuProductRepository;
 import kitchenpos.repository.MenuRepository;
 import kitchenpos.repository.ProductRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class MenuServiceTest {
-    @Mock
-    MenuRepository menuRepository;
-    @Mock
+    @Autowired
     ProductRepository productRepository;
-    @Mock
+    @Autowired
     MenuProductRepository menuProductRepository;
-    @Mock
+    @Autowired
     MenuGroupRepository menuGroupRepository;
+    @Autowired
+    MenuRepository menuRepository;
 
-    @InjectMocks
+    @Autowired
     MenuService menuService;
 
     Product 스낵랩;
@@ -49,12 +47,10 @@ class MenuServiceTest {
     @BeforeEach
     void setUp() {
         스낵랩 = new Product();
-        스낵랩.setId(1L);
         스낵랩.setName("스낵랩");
         스낵랩.setPrice(BigDecimal.valueOf(3000));
 
         맥모닝 = new Product();
-        맥모닝.setId(2L);
         맥모닝.setName("맥모닝");
         맥모닝.setPrice(BigDecimal.valueOf(4000));
 
@@ -67,8 +63,15 @@ class MenuServiceTest {
         맥모닝_메뉴_상품.setProduct(맥모닝);
 
         패스트푸드류 = new MenuGroup();
-        패스트푸드류.setId(1L);
         패스트푸드류.setName("패스트푸드");
+    }
+
+    @AfterEach
+    void tearDown() {
+        menuProductRepository.deleteAllInBatch();
+        productRepository.deleteAllInBatch();
+        menuRepository.deleteAllInBatch();
+        menuGroupRepository.deleteAllInBatch();
     }
 
     @Test
@@ -101,30 +104,42 @@ class MenuServiceTest {
     @Test
     @DisplayName("메뉴 각 상품의 합보다 메뉴의 가격이 작지 않으면 등록 시 에러 반환")
     public void createNotCheaperPrice() {
-        Menu menu = new Menu(1L, "모닝세트", BigDecimal.valueOf(8000), 패스트푸드류, new MenuProducts(Arrays.asList(스낵랩_메뉴_상품, 맥모닝_메뉴_상품)));
+        Menu menu = new Menu("모닝세트", BigDecimal.valueOf(8000), 패스트푸드류,
+                new MenuProducts(Arrays.asList(스낵랩_메뉴_상품, 맥모닝_메뉴_상품)));
+        menuGroupRepository.save(패스트푸드류);
 
-        given(menuGroupRepository.existsById(패스트푸드류.getId())).willReturn(true);
-
-        assertThatThrownBy(()-> menuService.create(menu)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuService.create(menu)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     public void createSuccess() {
-        Menu menu = new Menu(1L, "스낵랩 상품", BigDecimal.valueOf(3000), 패스트푸드류, new MenuProducts(Arrays.asList(스낵랩_메뉴_상품)));
+        menuGroupRepository.save(패스트푸드류);
+        productRepository.save(스낵랩);
 
-        given(menuGroupRepository.existsById(패스트푸드류.getId())).willReturn(true);
-        given(menuRepository.save(menu)).willReturn(menu);
-
-        assertThat(menuService.create(menu).getId()).isEqualTo(menu.getId());
+        Menu menu = new Menu("스낵랩 상품", BigDecimal.valueOf(3000), 패스트푸드류,
+                new MenuProducts(Arrays.asList(스낵랩_메뉴_상품)));
+        assertThat(menuService.create(menu).getId()).isNotNull();
     }
 
     @Test
-    public void list(){
-        Menu 스낵랩_세트 = new Menu(1L, "스낵랩 상품", BigDecimal.valueOf(3000), 패스트푸드류, new MenuProducts(Arrays.asList(스낵랩_메뉴_상품)));
-        Menu 모닝_세트 = new Menu(1L, "모닝세트", BigDecimal.valueOf(7000), 패스트푸드류, new MenuProducts(Arrays.asList(스낵랩_메뉴_상품, 맥모닝_메뉴_상품)));
+    public void list() {
+        menuGroupRepository.save(패스트푸드류);
+        스낵랩_메뉴_상품.setProduct(productRepository.save(스낵랩));
+        맥모닝_메뉴_상품.setProduct(productRepository.save(맥모닝));
 
-        given(menuRepository.findAll()).willReturn(Arrays.asList(스낵랩_세트, 모닝_세트));
+        MenuProduct 모닝_스낵랩 = new MenuProduct();
+        모닝_스낵랩.setQuantity(1);
+        모닝_스낵랩.setProduct(스낵랩);
 
-        assertThat(menuService.list()).contains(스낵랩_세트, 모닝_세트);
+        Menu 스낵랩_세트 = new Menu("스낵랩 상품", BigDecimal.valueOf(3000), 패스트푸드류,
+                new MenuProducts(Arrays.asList(스낵랩_메뉴_상품)));
+        Menu 모닝_세트 = new Menu( "모닝_세트", BigDecimal.valueOf(7000), 패스트푸드류,
+                new MenuProducts(Arrays.asList( 모닝_스낵랩, 맥모닝_메뉴_상품)));
+
+        menuRepository.save(스낵랩_세트);
+        menuRepository.save(모닝_세트);
+
+        List<Menu> list = menuService.list();
+        assertThat(list).hasSize(2);
     }
 }

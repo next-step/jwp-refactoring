@@ -20,7 +20,7 @@ public class MenuProduct {
     private Product product;
     private long quantity;
 
-    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Menu menu;
 
     public MenuProduct() {

@@ -13,14 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class MenuService {
     private final MenuRepository menuRepository;
-    private final MenuGroupRepository menuGroupRepository;
 
     public MenuService(
             final MenuRepository menuRepository,
-            final MenuProductRepository menuProductRepository,
             final MenuGroupRepository menuGroupRepository) {
         this.menuRepository = menuRepository;
-        this.menuGroupRepository = menuGroupRepository;
     }
 
     @Transactional
@@ -36,7 +33,7 @@ public class MenuService {
     }
 
     private void validateMenuGroup(Menu menu) {
-        if (menu.getMenuGroup() != null && !menuGroupRepository.existsById(menu.getMenuGroup().getId())) {
+        if (menu.getMenuGroup() != null && menu.getMenuGroup().getId() == null) {
             throw new IllegalArgumentException();
         }
     }

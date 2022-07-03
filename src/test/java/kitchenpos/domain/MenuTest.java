@@ -11,7 +11,7 @@ public class MenuTest {
     @Test
     @DisplayName("메뉴 생성 시도 시 메뉴 가격이 없을 경우 에러 반환")
     public void createPriceNullException() {
-        assertThatThrownBy(() -> new Menu(1L, "메뉴명",null, null, null)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new Menu("메뉴명",null, null, null)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
