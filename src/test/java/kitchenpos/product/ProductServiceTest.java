@@ -1,8 +1,10 @@
 package kitchenpos.product;
 
-import kitchenpos.application.ProductService;
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,11 +17,11 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.util.testFixture.양념치킨_상품_생성;
-import static kitchenpos.util.testFixture.후라이드_상품_생성;
+import static kitchenpos.util.testFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,7 +30,7 @@ class ProductServiceTest {
     ProductService productService;
 
     @Mock
-    ProductDao productDao;
+    ProductRepository productRepository;
 
     private Product 후라이드;
     private Product 양념치킨;
@@ -43,11 +45,11 @@ class ProductServiceTest {
     @Test
     void createProduct() {
         // given
-        when(productDao.save(후라이드))
+        when(productRepository.save(any()))
                 .thenReturn(후라이드);
 
         // when
-        Product result = productService.create(후라이드);
+        ProductResponse result = productService.create(new ProductRequest(후라이드.getName(), 후라이드.getPrice()));
 
         // then
         assertAll(
@@ -61,11 +63,11 @@ class ProductServiceTest {
     @Test
     void createProductAndPriceZero() {
         // given
-        후라이드.setPrice(new BigDecimal(-1));
+        ProductRequest 후라이드_요청 = new ProductRequest(후라이드.getName(), new BigDecimal(-1));
 
         // then
         assertThatThrownBy(() -> {
-            productService.create(후라이드);
+            productService.create(후라이드_요청);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -73,11 +75,11 @@ class ProductServiceTest {
     @Test
     void createProductAndPriceNull() {
         // given
-        후라이드.setPrice(null);
+        ProductRequest 후라이드_요청 = new ProductRequest(후라이드.getName(), null);
 
         // then
         assertThatThrownBy(() -> {
-            productService.create(후라이드);
+            productService.create(후라이드_요청);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -85,16 +87,13 @@ class ProductServiceTest {
     @Test
     void findProducts() {
         // given
-        when(productDao.findAll())
+        when(productRepository.findAll())
                 .thenReturn(Arrays.asList(후라이드, 양념치킨));
 
         // when
-        List<Product> list = productService.list();
+        List<ProductResponse> list = productService.list();
 
         // then
-        assertAll(
-                () -> assertThat(list.size()).isEqualTo(2),
-                () -> assertThat(list).containsExactly(후라이드, 양념치킨)
-        );
+        assertThat(list.size()).isEqualTo(2);
     }
 }
