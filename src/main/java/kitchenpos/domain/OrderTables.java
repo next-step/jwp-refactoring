@@ -2,8 +2,6 @@ package kitchenpos.domain;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
@@ -39,21 +37,15 @@ public class OrderTables {
             throw new IllegalArgumentException();
         }
 
-        // table group 등록하면서 cascade 할거임
-//       final List<Long> orderTableIds = orderTables.stream()
-//                .map(OrderTable::getId)
-//                .collect(Collectors.toList());
-//
-//        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
-//
-//        //등록 안된 orderTable 있으면 에러
-//        if (orderTables.size() != savedOrderTables.size()) {
-//            throw new IllegalArgumentException();
-//        }
-
         //한건이라도 이미 등록된 단체 있으면 에러
         for (final OrderTable orderTable : orderTables) {
-            orderTable.canGroupTable();
+            orderTable.validateCanGroupTable();
+        }
+    }
+
+    public void setAllEmpty(boolean bool) {
+        for (OrderTable savedOrderTable : orderTables) {
+            savedOrderTable.setEmpty(bool);
         }
     }
 }

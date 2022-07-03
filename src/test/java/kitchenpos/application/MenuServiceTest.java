@@ -124,7 +124,6 @@ class MenuServiceTest {
         Menu 모닝_세트 = new Menu(1L, "모닝세트", BigDecimal.valueOf(7000), 패스트푸드류, new MenuProducts(Arrays.asList(스낵랩_메뉴_상품, 맥모닝_메뉴_상품)));
 
         given(menuRepository.findAll()).willReturn(Arrays.asList(스낵랩_세트, 모닝_세트));
-        given(menuProductRepository.findAllByMenuId(스낵랩.getId())).willReturn(Arrays.asList(스낵랩_메뉴_상품, 맥모닝_메뉴_상품));
 
         assertThat(menuService.list()).contains(스낵랩_세트, 모닝_세트);
     }

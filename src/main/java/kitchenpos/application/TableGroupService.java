@@ -30,46 +30,37 @@ public class TableGroupService {
 
     @Transactional
     public TableGroup create(final TableGroup tableGroup) {
-//        final List<OrderTable> orderTables = tableGroup.getOrderTables();
         OrderTables orderTables = tableGroup.getOrderTables();
         orderTables.validateCreate();
-        //
+        orderTables.setAllEmpty(false);
 
         tableGroup.setCreatedDate(LocalDateTime.now());
+        tableGroup.setOrderTables(orderTables);  //TODO check
 
-        final TableGroup savedTableGroup = tableGroupRepository.save(tableGroup);
-
-        for (final OrderTable savedOrderTable : orderTables.getOrderTables()) {
-            savedOrderTable.setTableGroup(savedTableGroup);
-            savedOrderTable.setEmpty(false);
-            orderTableRepository.save(savedOrderTable);
-        }
-//        for (final OrderTable savedOrderTable : savedOrderTables) {
-//            savedOrderTable.setTableGroup(savedTableGroup);
-//            savedOrderTable.setEmpty(false);
-//            orderTableRepository.save(savedOrderTable);
-//        }
-//        savedTableGroup.setOrderTables(savedOrderTables);
-
-        return savedTableGroup;
+        return tableGroupRepository.save(tableGroup);
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
         final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
 
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
-        }
+        checkTablesCookingOrMeal(orderTables);
 
         for (final OrderTable orderTable : orderTables) {
             orderTable.setTableGroup(null);
             orderTableRepository.save(orderTable);
+        }
+    }
+
+    private void checkTablesCookingOrMeal(List<OrderTable> orderTables) {
+        final List<Long> orderTableIds = orderTables.stream()
+                .map(OrderTable::getId)
+                .collect(Collectors.toList());
+
+        //조리중 식사중인 테이블 존재 시 단체 해제 불가
+        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
+                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
+            throw new IllegalArgumentException();
         }
     }
 }

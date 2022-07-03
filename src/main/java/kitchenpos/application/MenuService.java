@@ -13,15 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class MenuService {
     private final MenuRepository menuRepository;
-    private final MenuProductRepository menuProductRepository;
     private final MenuGroupRepository menuGroupRepository;
 
     public MenuService(
             final MenuRepository menuRepository,
             final MenuProductRepository menuProductRepository,
-            MenuGroupRepository menuGroupRepository) {
+            final MenuGroupRepository menuGroupRepository) {
         this.menuRepository = menuRepository;
-        this.menuProductRepository = menuProductRepository;
         this.menuGroupRepository = menuGroupRepository;
     }
 
@@ -29,22 +27,21 @@ public class MenuService {
     public Menu create(final Menu menu) {
         final Price price = menu.getPrice();
 
-        if (menu.getMenuGroup() != null && !menuGroupRepository.existsById(menu.getMenuGroup().getId())) {
-            throw new IllegalArgumentException();
-        }
+        validateMenuGroup(menu);
+
         final MenuProducts menuProducts = menu.getMenuProducts();
         menuProducts.validateTotalPriceNotExpensiveThanEach(price);
 
         return menuRepository.save(menu);
     }
 
-    public List<Menu> list() {
-        final List<Menu> menus = menuRepository.findAll();
-
-        for (final Menu menu : menus) {
-            menu.setMenuProducts(new MenuProducts(menuProductRepository.findAllByMenuId(menu.getId())));
+    private void validateMenuGroup(Menu menu) {
+        if (menu.getMenuGroup() != null && !menuGroupRepository.existsById(menu.getMenuGroup().getId())) {
+            throw new IllegalArgumentException();
         }
+    }
 
-        return menus;
+    public List<Menu> list() {
+        return menuRepository.findAll();
     }
 }

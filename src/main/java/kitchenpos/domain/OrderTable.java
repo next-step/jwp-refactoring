@@ -61,13 +61,20 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public void canGroupTable() {
+    public void validateCanGroupTable() {
         if (!isEmpty() || Objects.nonNull(tableGroup)) {
             throw new IllegalArgumentException();
         }
         if(!empty){
             throw new IllegalArgumentException();
         }
+    }
 
+    public void changeEmpty(OrderTable orderTable){
+        if (Objects.nonNull(tableGroup)) {
+            throw new IllegalArgumentException();
+        }
+
+        setEmpty(orderTable.isEmpty());
     }
 }
