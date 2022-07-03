@@ -9,6 +9,8 @@ import java.util.Arrays;
 import java.util.List;
 import kitchenpos.dao.MenuGroupDao;
 import kitchenpos.domain.MenuGroup;
+import kitchenpos.dto.MenuGroupRequest;
+import kitchenpos.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,12 +43,12 @@ class MenuGroupServiceTest {
         given(menuGroupDao.save(any(MenuGroup.class))).willReturn(양식);
 
         // when
-        MenuGroup menuGroup = menuGroupService.create(양식);
+        MenuGroupResponse menuGroupResponse = menuGroupService.create(new MenuGroupRequest(양식));
 
         // then
         assertAll(
-            () -> assertThat(menuGroup).isNotNull(),
-            () -> assertThat(menuGroup.getName()).isEqualTo(양식.getName())
+            () -> assertThat(menuGroupResponse).isNotNull(),
+            () -> assertThat(menuGroupResponse.getName()).isEqualTo(양식.getName())
         );
     }
 
@@ -57,10 +59,13 @@ class MenuGroupServiceTest {
         given(menuGroupDao.findAll()).willReturn(Arrays.asList(양식, 한식));
 
         // when
-        List<MenuGroup> menuGroups = menuGroupService.list();
+        List<MenuGroupResponse> menuGroups = menuGroupService.list();
 
         // then
-        assertThat(menuGroups).containsExactly(양식, 한식);
+        assertAll(
+            () -> assertThat(menuGroups).isNotNull(),
+            () -> assertThat(menuGroups.size()).isEqualTo(2)
+        );
     }
 
     public static MenuGroup 메뉴_그룹_생성(Long id, String name) {
