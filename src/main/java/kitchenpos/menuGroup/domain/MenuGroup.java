@@ -1,6 +1,6 @@
 package kitchenpos.menuGroup.domain;
 
-import kitchenpos.common.BaseEntity;
+import kitchenpos.common.domain.BaseEntity;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,6 +24,10 @@ public class MenuGroup extends BaseEntity {
     public MenuGroup(Long id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public static MenuGroup createMenuGroup(String name) {
+        return new MenuGroup(name);
     }
 
     public Long getId() {
