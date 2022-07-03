@@ -1,10 +1,7 @@
 package kitchenpos.menu.application;
 
 import kitchenpos.menu.dao.MenuRepository;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.menu.domain.Menus;
+import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuCreateRequest;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
@@ -12,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -33,14 +31,8 @@ public class MenuService {
     @Transactional
     public Menu create(final MenuCreateRequest request) {
         MenuGroup menuGroup = menuGroupService.getMenuGroup(request.getMenuGroupId());
-        Menu menu = request.of(menuGroup);
-        MenuProducts menuProducts = request.convertMenuProducts(menuProductRequest -> {
-            Product product = productService.getProduct(menuProductRequest.getProductId());
-            return menuProductRequest.of(menu, product);
-        });
-        menu.addMenuProducts(menuProducts);
-
-        menu.validateMenuAndProductTotalPrice();
+        MenuProducts menuProducts = convertMenuProductsByRequest(request);
+        Menu menu = request.of(menuGroup, menuProducts);
 
         return menuRepository.save(menu);
     }
@@ -51,5 +43,18 @@ public class MenuService {
 
     public Menus findMenusInIds(final List<Long> ids) {
         return new Menus(menuRepository.findAllById(ids));
+    }
+
+
+    private MenuProducts convertMenuProductsByRequest(final MenuCreateRequest menuProductRequests) {
+        List<MenuProduct> menuProducts = menuProductRequests.getMenuProducts()
+                .stream()
+                .map(request -> {
+                    Product product = productService.getProduct(request.getProductId());
+                    return new MenuProduct(product, new Quantity(request.getQuantity()));
+                })
+                .collect(Collectors.toList());
+
+        return new MenuProducts(menuProducts);
     }
 }

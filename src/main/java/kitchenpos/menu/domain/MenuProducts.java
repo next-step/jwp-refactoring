@@ -28,16 +28,28 @@ public class MenuProducts {
         this.value.addAll(menuProducts.value);
     }
 
-    public Price getTotalProductPrice() {
-        return this.value.stream()
-                .map(MenuProduct::getTotalPrice)
-                .reduce(Price::add)
-                .orElse(new Price(BigDecimal.ZERO));
-    }
-
     public List<MenuProductResponse> toProductResponses() {
         return this.value.stream()
                 .map(menuProduct -> MenuProductResponse.from(menuProduct.getProduct(), menuProduct.getQuantity()))
                 .collect(Collectors.toList());
+    }
+
+    public boolean isEmpty() {
+        return this.value.size() == 0;
+    }
+
+    public boolean isNotSameTotalPriceByPrice(Price price) {
+        return this.getTotalProductPrice().isNotSame(price);
+    }
+
+    public void associateMenu(Menu menu) {
+        this.value.forEach(menuProduct -> menuProduct.associateMenu(menu));
+    }
+
+    private Price getTotalProductPrice() {
+        return this.value.stream()
+                .map(MenuProduct::getTotalPrice)
+                .reduce(Price::add)
+                .orElse(new Price(BigDecimal.ZERO));
     }
 }

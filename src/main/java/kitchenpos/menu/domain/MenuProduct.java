@@ -33,6 +33,14 @@ public class MenuProduct {
         this(null, menu, product, quantity);
     }
 
+    public MenuProduct(Product product, Quantity quantity) {
+        this(null, null, product, quantity);
+    }
+
+    public void associateMenu(Menu menu) {
+        this.menu = menu;
+    }
+
     public Long getSeq() {
         return seq;
     }

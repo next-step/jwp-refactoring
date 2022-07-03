@@ -21,7 +21,7 @@ public class MenuGenerator {
     private MenuGenerator() {}
 
     public static Menu 메뉴_생성(String name, int price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        return new Menu(null, name, new Price(new BigDecimal(price)), menuGroup, menuProducts);
+        return new Menu(name, new Price(new BigDecimal(price)), menuGroup, menuProducts);
     }
 
     public static MenuGroup 메뉴_그룹_생성(String name) {

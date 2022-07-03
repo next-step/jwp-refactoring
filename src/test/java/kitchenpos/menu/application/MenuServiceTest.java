@@ -156,7 +156,6 @@ class MenuServiceTest {
         assertThat(menu.getName()).isEqualTo(request.getName());
         assertThat(menu.getPrice()).isEqualTo(new Price(request.getPrice()));
         assertThat(menu.getMenuGroup().getId()).isEqualTo(request.getMenuGroupId());
-        assertThat(menu.getMenuProducts().getTotalProductPrice()).isEqualTo(new Price(request.getPrice()));
     }
 
     void 메뉴_목록_조회됨(Menus menus, List<Long> containIds) {

@@ -24,26 +24,24 @@ public class Menu {
 
     protected Menu() {}
 
-    public Menu(Long id, String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        this.id = id;
+    public Menu(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
+        validateMenu(menuProducts, price);
+
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
         this.menuProducts.addMenuProducts(menuProducts);
+
+        this.menuProducts.associateMenu(this);
     }
 
-    public Menu(String name, Price price, MenuGroup menuGroup) {
-        this(null, name, price, menuGroup, new MenuProducts());
-    }
-
-    public void validateMenuAndProductTotalPrice() {
-        if (isNotSameMenuAndProductTotalPrice()) {
+    public void validateMenu(MenuProducts menuProducts, Price price) {
+        if (menuProducts == null || menuProducts.isEmpty()) {
+            throw new IllegalArgumentException("메뉴에 상품이 포함되어 있지 않습니다.");
+        }
+        if (menuProducts.isNotSameTotalPriceByPrice(price)) {
             throw new IllegalArgumentException("메뉴의 가격과 상품의 총 가격이 일치하지 않습니다.");
         }
-    }
-
-    public void addMenuProducts(MenuProducts menuProducts) {
-        this.menuProducts.addMenuProducts(menuProducts);
     }
 
     public Long getId() {
@@ -64,11 +62,5 @@ public class Menu {
 
     public MenuProducts getMenuProducts() {
         return menuProducts;
-    }
-
-    private boolean isNotSameMenuAndProductTotalPrice() {
-        return this.menuProducts
-                .getTotalProductPrice()
-                .isNotSame(this.price);
     }
 }

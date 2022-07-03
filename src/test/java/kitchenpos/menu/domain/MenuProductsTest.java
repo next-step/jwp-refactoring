@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class MenuProductsTest {
 
-    @DisplayName("메뉴 상품 리스트에 존재하는 총 가격은 (상품 가격 * 수량) 의 합이어야 한다")
+    @DisplayName("메뉴 상품 리스트에 존재하는 총 가격은 (상품 가격 * 수량) 와 일치해야 한다")
     @Test
     void MenuProductsTotalPriceTest() {
         // given
@@ -28,9 +28,11 @@ class MenuProductsTest {
         MenuProducts 메뉴_상품_목록 = 메뉴_상품_목록_생성(Arrays.asList(메뉴_상품1, 메뉴_상품2));
 
         // when
-        Price 메뉴_상품_목록_전체_가격 = 메뉴_상품_목록.getTotalProductPrice();
+        boolean 메뉴_상품_목록_전체_가격_불일치_여부1 = 메뉴_상품_목록.isNotSameTotalPriceByPrice(가격_생성((1_000 * 5) + (2_000 * 5)));
+        boolean 메뉴_상품_목록_전체_가격_불일치_여부2 = 메뉴_상품_목록.isNotSameTotalPriceByPrice(가격_생성((1_000 * 5) + (2_000 * 5) - 1));
 
         // then
-        assertThat(메뉴_상품_목록_전체_가격).isEqualTo(가격_생성((1_000 * 5) + (2_000 * 5)));
+        assertThat(메뉴_상품_목록_전체_가격_불일치_여부1).isFalse();
+        assertThat(메뉴_상품_목록_전체_가격_불일치_여부2).isTrue();
     }
 }

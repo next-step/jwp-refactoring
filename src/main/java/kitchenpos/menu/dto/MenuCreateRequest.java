@@ -24,16 +24,8 @@ public class MenuCreateRequest {
         this.menuProducts.addAll(menuProducts);
     }
 
-    public Menu of(MenuGroup menuGroup) {
-        return new Menu(name, new Price(price), menuGroup);
-    }
-
-    public MenuProducts convertMenuProducts(Function<MenuProductRequest, MenuProduct> converter) {
-        List<MenuProduct> menuProducts = this.menuProducts.stream()
-                .map(converter)
-                .collect(Collectors.toList());
-
-        return new MenuProducts(menuProducts);
+    public Menu of(MenuGroup menuGroup, MenuProducts menuProducts) {
+        return new Menu(name, new Price(price), menuGroup, menuProducts);
     }
 
     public String getName() {
