@@ -43,7 +43,7 @@ public class Order {
     }
 
     public static Order from(OrderTable orderTable) {
-        if(orderTable.isEmpty()) {
+        if (orderTable.isEmpty()) {
             throw new OrderTableException(OrderTableException.ORDER_TABLE_IS_EMPTY_MSG);
         }
         return new Order(orderTable);
@@ -78,7 +78,7 @@ public class Order {
     }
 
     public void changeOrderStatus(OrderStatus orderStatus) {
-        if(OrderStatus.COMPLETION.name().equals(this.orderStatus.name())) {
+        if (OrderStatus.COMPLETION.name().equals(this.orderStatus.name())) {
             throw new OrderStatusException(OrderStatusException.COMPLETE_DOES_NOT_CHANGE_MSG);
         }
 

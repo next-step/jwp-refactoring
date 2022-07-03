@@ -40,7 +40,7 @@ public class MenuService {
                                                  .orElseThrow(IllegalArgumentException::new);
         Menu menu = new Menu(menuRequest.getName(), menuRequest.getPrice(), menuGroup);
 
-        for(MenuProductRequest menuProductRequest : menuRequest.getMenuProductRequests()) {
+        for (MenuProductRequest menuProductRequest : menuRequest.getMenuProductRequests()) {
             Product product = productRepository.findById(menuProductRequest.getProductId())
                                                 .orElseThrow(IllegalArgumentException::new);
             menu.addProduct(product, menuProductRequest.getQuantity());

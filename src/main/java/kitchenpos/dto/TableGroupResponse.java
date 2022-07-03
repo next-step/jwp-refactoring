@@ -16,7 +16,7 @@ public class TableGroupResponse {
     }
 
     public static TableGroupResponse from(TableGroup tableGroup) {
-        if(Objects.isNull(tableGroup)) {
+        if (Objects.isNull(tableGroup)) {
             return null;
         }
 

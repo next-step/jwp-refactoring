@@ -20,7 +20,7 @@ public class Quantity {
     }
 
     private void quantityValid(long quantity) {
-        if(Objects.isNull(quantity) || quantity < 0) {
+        if (Objects.isNull(quantity) || quantity < 0) {
             throw new QuantityException(QuantityException.INVALID_QUANTITY_MSG);
         }
     }

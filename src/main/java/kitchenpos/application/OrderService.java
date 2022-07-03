@@ -45,7 +45,7 @@ public class OrderService {
 
         Order savedOrder = orderRepository.save(order);
 
-        if(CollectionUtils.isEmpty(orderRequest.getOrderLineItems())) {
+        if (CollectionUtils.isEmpty(orderRequest.getOrderLineItems())) {
             throw new IllegalArgumentException();
         }
 

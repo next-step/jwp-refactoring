@@ -21,7 +21,7 @@ public class Price {
     }
 
     private void priceValid(BigDecimal price) {
-        if(Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
+        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
             throw new PriceException(PriceException.INVALID_PRICE_MSG);
         }
     }

@@ -59,7 +59,7 @@ public class OrderTable {
             throw new IllegalArgumentException();
         }
 
-        if(isEmpty()) {
+        if (isEmpty()) {
             throw new IllegalArgumentException();
         }
 

@@ -60,7 +60,7 @@ public class Menu {
     }
 
     public void priceCheck() {
-        if(price.getPrice().compareTo(menuProducts.getTotalPrice()) > 0) {
+        if (price.getPrice().compareTo(menuProducts.getTotalPrice()) > 0) {
            throw new MenuProductException(MenuProductException.MENU_PRICE_MORE_EXPENSIVE_PRODUCTS_MSG);
         }
     }

@@ -31,7 +31,7 @@ public class TableGroupService {
     public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
         final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(tableGroupRequest.getOrderTableIds());
 
-        if(savedOrderTables.size() != tableGroupRequest.getOrderTableIds().size()) {
+        if (savedOrderTables.size() != tableGroupRequest.getOrderTableIds().size()) {
             throw new IllegalArgumentException();
         }
 
