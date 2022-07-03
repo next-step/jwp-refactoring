@@ -63,7 +63,7 @@ class OrderServiceTest {
     void setUp() {
         product = ProductFixture.상품_생성(1L, "봉골레파스타", 13000);
         menuGroup = 메뉴그룹_생성(1L, "파스타메뉴");
-        menu = 메뉴_생성("봉골레파스타세트", product.getPrice(), menuGroup, Arrays.asList(메뉴상품_생성(1L, product, 1L)));
+        menu = 메뉴_생성("봉골레파스타세트", product.getPrice(), 1L, Arrays.asList(메뉴상품_생성(1L, 1L, 1L)));
         orderTable = 테이블_생성(1L, 2, false);
         orderLineItems = Arrays.asList(주문항목_생성(0L, menu, 1L));
         order = 주문_생성(1L, orderTable, OrderStatus.COOKING, orderLineItems);

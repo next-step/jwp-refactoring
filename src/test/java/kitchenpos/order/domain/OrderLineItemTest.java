@@ -26,7 +26,7 @@ class OrderLineItemTest {
         //given
         product = ProductFixture.상품_생성(1L, "봉골레파스타", 13000);
         menuGroup = 메뉴그룹_생성(1L, "파스타메뉴");
-        menu = 메뉴_생성("봉골레파스타세트", product.getPrice(), menuGroup, Arrays.asList(메뉴상품_생성(1L, product, 1L)));
+        menu = 메뉴_생성("봉골레파스타세트", product.getPrice(), 1L, Arrays.asList(메뉴상품_생성(1L, 1L, 1L)));
     }
 
     @DisplayName("주문항목을 생성한다.")
