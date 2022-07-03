@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
@@ -19,6 +18,7 @@ import kitchenpos.domain.OrderTable;
 import kitchenpos.repository.MenuRepository;
 import kitchenpos.repository.OrderLineItemRepository;
 import kitchenpos.repository.OrderRepository;
+import kitchenpos.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,16 +29,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
-
-    @Mock
-    OrderTableDao orderTableDao;
-
     @Mock
     MenuRepository menuRepository;
     @Mock
     OrderLineItemRepository orderLineItemRepository;
     @Mock
     OrderRepository orderRepository;
+    @Mock
+    OrderTableRepository orderTableRepository;
 
     @InjectMocks
     OrderService orderService;
@@ -109,7 +107,7 @@ class OrderServiceTest {
         order.setOrderTableId(orderTable.getId());
 
         given(menuRepository.countByIdIn(any(List.class))).willReturn((long) orderLineItems.size());
-        given(orderTableDao.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
+        given(orderTableRepository.findById(orderTable.getId())).willReturn(Optional.of(orderTable));
         given(orderRepository.save(order)).willReturn(order);
 
         Order savedOrder = orderService.create(order);

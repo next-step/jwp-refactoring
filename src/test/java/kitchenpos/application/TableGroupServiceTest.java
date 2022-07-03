@@ -10,11 +10,11 @@ import static org.mockito.BDDMockito.given;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.dao.OrderTableDao;
 import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.repository.OrderRepository;
+import kitchenpos.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,15 +25,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
-
-    @Mock
-    OrderTableDao orderTableDao;
-
     @Mock
     TableGroupDao tableGroupDao;
 
     @Mock
     OrderRepository orderRepository;
+
+    @Mock
+    OrderTableRepository orderTableRepository;
 
     @InjectMocks
     TableGroupService tableGroupService;
@@ -116,8 +115,7 @@ class TableGroupServiceTest {
         orderTable1.setEmpty(true);
         orderTable2.setEmpty(true);
 
-        given(orderTableDao.findAllByIdIn(Arrays.asList(orderTable1.getId(), orderTable2.getId()))).willReturn(
-                orderTables);
+        given(orderTableRepository.findAllByIdIn(Arrays.asList(orderTable1.getId(), orderTable2.getId()))).willReturn(orderTables);
         given(tableGroupDao.save(tableGroup)).willReturn(tableGroup);
         assertThat(tableGroupService.create(tableGroup).getId()).isEqualTo(tableGroup.getId());
     }
@@ -126,7 +124,7 @@ class TableGroupServiceTest {
     @DisplayName("cooking이나 meal 상태인 테이블이 있으면 단체 해제 불가")
     public void cookingMealChangeStatus() {
 
-        given(orderTableDao.findAllByTableGroupId(any())).willReturn(Arrays.asList(orderTable1, orderTable2));
+        given(orderTableRepository.findAllByTableGroupId(any())).willReturn(Arrays.asList(orderTable1, orderTable2));
         given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(orderTable1.getId(), orderTable2.getId()),
                 Arrays.asList(COOKING.name(), MEAL.name()))).willReturn(true);
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId())).isInstanceOf(
@@ -139,7 +137,7 @@ class TableGroupServiceTest {
         orderTable1.setEmpty(true);
         orderTable2.setEmpty(true);
 
-        given(orderTableDao.findAllByTableGroupId(any())).willReturn(Arrays.asList(orderTable1, orderTable2));
+        given(orderTableRepository.findAllByTableGroupId(any())).willReturn(Arrays.asList(orderTable1, orderTable2));
         given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(false);
 
         tableGroupService.ungroup(tableGroup.getId());
