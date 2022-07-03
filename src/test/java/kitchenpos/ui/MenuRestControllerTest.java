@@ -9,32 +9,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuGroup;
-import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.domain.product.Product;
+import kitchenpos.dto.menu.MenuProductResponse;
+import kitchenpos.dto.menu.MenuResponse;
 import kitchenpos.utils.BaseTest;
-import kitchenpos.utils.generator.MenuGroupFixtureGenerator;
-import kitchenpos.utils.generator.ProductFixtureGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.ResultActions;
 
 @DisplayName("API:Menu")
-@Import({MenuGroupFixtureGenerator.class, ProductFixtureGenerator.class})
 public class MenuRestControllerTest extends BaseTest {
-
-    private final MenuGroupFixtureGenerator menuGroupFixtureGenerator;
-    private final ProductFixtureGenerator productFixtureGenerator;
-
-    public MenuRestControllerTest(
-        MenuGroupFixtureGenerator menuGroupFixtureGenerator,
-        ProductFixtureGenerator productFixtureGenerator
-    ) {
-        this.menuGroupFixtureGenerator = menuGroupFixtureGenerator;
-        this.productFixtureGenerator = productFixtureGenerator;
-    }
 
     public static final String MENU_API_URL_TEMPLATE = "/api/menus";
 
@@ -53,7 +38,6 @@ public class MenuRestControllerTest extends BaseTest {
             .andExpect(jsonPath("$.[*].price").exists())
             .andExpect(jsonPath("$.[*].menuGroupId").exists())
             .andExpect(jsonPath("$.[*].menuProducts[*].seq").exists())
-            .andExpect(jsonPath("$.[*].menuProducts[*].menuId").exists())
             .andExpect(jsonPath("$.[*].menuProducts[*].productId").exists())
             .andExpect(jsonPath("$.[*].menuProducts[*].quantity").exists());
     }
@@ -83,14 +67,13 @@ public class MenuRestControllerTest extends BaseTest {
             .andExpect(jsonPath("$.name").exists())
             .andExpect(jsonPath("$.menuGroupId").value(savedMenuGroup.getId()))
             .andExpect(jsonPath("$.menuProducts[*].seq").exists())
-            .andExpect(jsonPath("$.menuProducts[*].menuId").exists())
             .andExpect(jsonPath("$.menuProducts[*].productId").exists())
             .andExpect(jsonPath("$.menuProducts[*].quantity").exists());
 
-        Menu createMenuResponse = as(resultActions, Menu.class);
+        MenuResponse createMenuResponse = as(resultActions, MenuResponse.class);
 
         assertThat(createMenuResponse.getMenuProducts())
-            .extracting(MenuProduct::getProductId)
+            .extracting(MenuProductResponse::getProductId)
             .containsExactly(savedFirstProduct.getId(), savedSecondProduct.getId());
     }
 }

@@ -10,6 +10,8 @@ import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.domain.product.Product;
+import kitchenpos.dto.menu.CreateMenuRequest;
+import kitchenpos.dto.menu.MenuProductRequest;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 public class MenuFixtureGenerator {
@@ -25,7 +27,7 @@ public class MenuFixtureGenerator {
         Menu menu = new Menu();
         menu.setName(NAME + COUNTER);
         menu.setPrice(PRICE);
-        menu.setMenuGroupId(menuGroup.getId());
+        menu.setMenuGroup(menuGroup);
         menu.setMenuProducts(generateMenuProduct(products));
         return menu;
     }
@@ -36,7 +38,7 @@ public class MenuFixtureGenerator {
         int lastMenuGroupSeq = 7;
         for (Product product : products) {
             MenuProduct menuProduct = new MenuProduct();
-            menuProduct.setProductId(product.getId());
+            menuProduct.setProduct(product);
             menuProduct.setQuantity(1);
             menuProduct.setSeq((long) lastMenuGroupSeq);
             lastMenuGroupSeq++;
@@ -46,10 +48,25 @@ public class MenuFixtureGenerator {
         return menuProducts;
     }
 
+    public static CreateMenuRequest generateCreateMenuRequest(
+        final MenuGroup savedMenuGroup,
+        final Product... savedProducts) {
+        return new CreateMenuRequest(NAME, PRICE, savedMenuGroup.getId(), generateMenuProductRequest(savedProducts));
+    }
+
+    public static List<MenuProductRequest> generateMenuProductRequest(final Product... savedProducts) {
+        List<MenuProductRequest> menuProductRequests = new ArrayList<>();
+        for (Product savedProduct : savedProducts) {
+            MenuProductRequest menuProductRequest = new MenuProductRequest(savedProduct.getId(), 1);
+            menuProductRequests.add(menuProductRequest);
+        }
+        return menuProductRequests;
+    }
+
     public static MockHttpServletRequestBuilder 메뉴_생성_요청(
         final MenuGroup savedMenuGroup,
         final Product... savedProducts
     ) throws Exception {
-        return postRequestBuilder(MENU_API_URL_TEMPLATE, generateMenu(savedMenuGroup, savedProducts));
+        return postRequestBuilder(MENU_API_URL_TEMPLATE, generateCreateMenuRequest(savedMenuGroup, savedProducts));
     }
 }

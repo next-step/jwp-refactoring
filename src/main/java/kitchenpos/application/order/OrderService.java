@@ -1,9 +1,14 @@
 package kitchenpos.application.order;
 
-import kitchenpos.dao.menu.MenuDao;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import kitchenpos.dao.order.OrderDao;
 import kitchenpos.dao.order.OrderLineItemDao;
 import kitchenpos.dao.table.OrderTableDao;
+import kitchenpos.domain.menu.MenuRepository;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderLineItem;
 import kitchenpos.domain.order.OrderStatus;
@@ -12,26 +17,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
 @Service
 public class OrderService {
-    private final MenuDao menuDao;
+    private final MenuRepository menuRepository;
     private final OrderDao orderDao;
     private final OrderLineItemDao orderLineItemDao;
     private final OrderTableDao orderTableDao;
 
     public OrderService(
-            final MenuDao menuDao,
-            final OrderDao orderDao,
-            final OrderLineItemDao orderLineItemDao,
-            final OrderTableDao orderTableDao
+        final MenuRepository menuRepository,
+        final OrderDao orderDao,
+        final OrderLineItemDao orderLineItemDao,
+        final OrderTableDao orderTableDao
     ) {
-        this.menuDao = menuDao;
+        this.menuRepository = menuRepository;
         this.orderDao = orderDao;
         this.orderLineItemDao = orderLineItemDao;
         this.orderTableDao = orderTableDao;
@@ -48,19 +47,19 @@ public class OrderService {
         }
 
         final List<Long> menuIds = orderLineItems.stream()
-                .map(OrderLineItem::getMenuId)
-                .collect(Collectors.toList());
+            .map(OrderLineItem::getMenuId)
+            .collect(Collectors.toList());
 
         // 존재하지 않는 메뉴를 주문한 경우 예외 처리
         // TODO : 문제 추적 및 파악이 용이하도록 예외 처리 시 오류 문구를 포함
-        if (orderLineItems.size() != menuDao.countByIdIn(menuIds)) {
+        if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {
             throw new IllegalArgumentException();
         }
 
         // 주문에 포함된 주문 테이블이 DB에 존재하지 않는 경우 예외 처리
         // TODO : 문제 추적 및 파악이 용이하도록 예외 처리 시 오류 문구를 포함
         final OrderTable orderTable = orderTableDao.findById(order.getOrderTableId())
-                .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(IllegalArgumentException::new);
 
         // TODO : 문제 추적 및 파악이 용이하도록 예외 처리 시 오류 문구를 포함
         if (orderTable.isEmpty()) {
@@ -103,7 +102,7 @@ public class OrderService {
     public Order changeOrderStatus(final Long orderId, final Order order) {
         // TODO : 문제 추적 및 파악이 용이하도록 예외 처리 시 오류 문구를 포함
         final Order savedOrder = orderDao.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(IllegalArgumentException::new);
 
         // TODO : 주문 상태 변경 로직을 주문 도메인 안쪽으로 이동 후, 해당 로직에서 주문 상태 변경 가능에 대한 유효성 검증 처리
         // TODO : 문제 추적 및 파악이 용이하도록 예외 처리 시 오류 문구를 포함
