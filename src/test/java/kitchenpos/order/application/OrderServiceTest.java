@@ -13,19 +13,19 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuDto;
-import kitchenpos.menu.util.MenuApplicationBehavior;
+import kitchenpos.menu.application.util.MenuContextServiceBehavior;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.exception.CannotChangeOrderStatusException;
 import kitchenpos.order.exception.CannotMakeOrderException;
 import kitchenpos.order.exception.EmptyOrderLineItemsException;
-import kitchenpos.order.util.OrderApplicationBehavior;
+import kitchenpos.order.application.util.OrderContextServiceBehavior;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.util.ProductApplicationBehavior;
+import kitchenpos.product.application.util.ProductContextServiceBehavior;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.exception.NotExistTableException;
-import kitchenpos.table.util.TableApplicationBehavior;
+import kitchenpos.table.application.util.TableContextServiceBehavior;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,16 +35,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 class OrderServiceTest extends ServiceTest {
     @Autowired
-    private TableApplicationBehavior tableApplicationBehavior;
+    private TableContextServiceBehavior tableContextServiceBehavior;
 
     @Autowired
-    private MenuApplicationBehavior menuApplicationBehavior;
+    private MenuContextServiceBehavior menuContextServiceBehavior;
 
     @Autowired
-    private ProductApplicationBehavior productApplicationBehavior;
+    private ProductContextServiceBehavior productContextServiceBehavior;
 
     @Autowired
-    private OrderApplicationBehavior orderApplicationBehavior;
+    private OrderContextServiceBehavior orderContextServiceBehavior;
 
     @Autowired
     private OrderService orderService;
@@ -59,15 +59,15 @@ class OrderServiceTest extends ServiceTest {
 
     @BeforeEach
     void setUp() {
-        menuGroup = menuApplicationBehavior.메뉴그룹_생성됨("메뉴그룹1");
-        product1 = productApplicationBehavior.상품_생성됨("상품1", 1000);
-        product2 = productApplicationBehavior.상품_생성됨("상품2", 2000);
-        product3 = productApplicationBehavior.상품_생성됨("상품3", 3000);
+        menuGroup = menuContextServiceBehavior.메뉴그룹_생성됨("메뉴그룹1");
+        product1 = productContextServiceBehavior.상품_생성됨("상품1", 1000);
+        product2 = productContextServiceBehavior.상품_생성됨("상품2", 2000);
+        product3 = productContextServiceBehavior.상품_생성됨("상품3", 3000);
         MenuProduct menuProduct1 = MenuProductFixtureFactory.createMenuProduct(product1.getId(), 4);
         MenuProduct menuProduct2 = MenuProductFixtureFactory.createMenuProduct(product2.getId(), 2);
-        menu1 = menuApplicationBehavior.메뉴_생성됨(menuGroup, "메뉴1", 4000, Lists.newArrayList(menuProduct1));
-        menu2 = menuApplicationBehavior.메뉴_생성됨(menuGroup, "메뉴2", 4000, Lists.newArrayList(menuProduct2));
-        orderTable = tableApplicationBehavior.비어있지않은테이블_생성됨(3);
+        menu1 = menuContextServiceBehavior.메뉴_생성됨(menuGroup, "메뉴1", 4000, Lists.newArrayList(menuProduct1));
+        menu2 = menuContextServiceBehavior.메뉴_생성됨(menuGroup, "메뉴2", 4000, Lists.newArrayList(menuProduct2));
+        orderTable = tableContextServiceBehavior.비어있지않은테이블_생성됨(3);
     }
 
     @Test
@@ -76,7 +76,7 @@ class OrderServiceTest extends ServiceTest {
         OrderLineItemRequest orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
         OrderLineItemRequest orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
 
-        OrderResponse savedOrder = orderApplicationBehavior.주문_생성됨(orderTable.getId(),
+        OrderResponse savedOrder = orderContextServiceBehavior.주문_생성됨(orderTable.getId(),
                 Lists.newArrayList(orderLineItem1, orderLineItem2));
         Assertions.assertAll("등록된 주문을 확인한다"
                 , () -> assertThat(savedOrder.getId()).isNotNull()
@@ -91,8 +91,8 @@ class OrderServiceTest extends ServiceTest {
     void 주문등록_인원수가0일때도_주문등록가능() {
         OrderLineItemRequest orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
         OrderLineItemRequest orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
-        OrderTableResponse zeroGuestTable = tableApplicationBehavior.비어있지않은테이블_생성됨(0);
-        OrderResponse savedOrder = orderApplicationBehavior.주문_생성됨(zeroGuestTable.getId(),
+        OrderTableResponse zeroGuestTable = tableContextServiceBehavior.비어있지않은테이블_생성됨(0);
+        OrderResponse savedOrder = orderContextServiceBehavior.주문_생성됨(zeroGuestTable.getId(),
                 Lists.newArrayList(orderLineItem1, orderLineItem2));
         Assertions.assertAll("등록된 주문을 확인한다"
                 , () -> assertThat(savedOrder.getId()).isNotNull()
@@ -107,7 +107,7 @@ class OrderServiceTest extends ServiceTest {
     void 주문등록_주문항목이_없는경우() {
         Long orderTableId = orderTable.getId();
         List<OrderLineItemRequest> orderLineItemRequests = emptyList();
-        assertThatThrownBy(() -> orderApplicationBehavior.주문_생성됨(orderTableId, orderLineItemRequests))
+        assertThatThrownBy(() -> orderContextServiceBehavior.주문_생성됨(orderTableId, orderLineItemRequests))
                 .isInstanceOf(EmptyOrderLineItemsException.class);
     }
 
@@ -120,7 +120,7 @@ class OrderServiceTest extends ServiceTest {
 
         Long orderTableId = orderTable.getId();
         List<OrderLineItemRequest> orderLineItemRequests = Lists.newArrayList(orderLineItem);
-        assertThatThrownBy(() -> orderApplicationBehavior.주문_생성됨(orderTableId, orderLineItemRequests))
+        assertThatThrownBy(() -> orderContextServiceBehavior.주문_생성됨(orderTableId, orderLineItemRequests))
                 .isInstanceOf(CannotMakeOrderException.class);
     }
 
@@ -131,20 +131,20 @@ class OrderServiceTest extends ServiceTest {
         OrderLineItemRequest orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
         OrderLineItemRequest orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
         List<OrderLineItemRequest> orderLineItemRequests = Lists.newArrayList(orderLineItem1, orderLineItem2);
-        assertThatThrownBy(() -> orderApplicationBehavior.주문_생성됨(notExistTableId, orderLineItemRequests))
+        assertThatThrownBy(() -> orderContextServiceBehavior.주문_생성됨(notExistTableId, orderLineItemRequests))
                 .isInstanceOf(NotExistTableException.class);
     }
 
     @Test
     @DisplayName("주문테이블이 빈 테이블인 경우 주문 등록 실패")
     void 주문등록_주문테이블이_빈테이블인_경우() {
-        OrderTableResponse orderTable = tableApplicationBehavior.빈테이블_생성됨();
+        OrderTableResponse orderTable = tableContextServiceBehavior.빈테이블_생성됨();
         OrderLineItemRequest orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
         OrderLineItemRequest orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
 
         Long orderTableId = orderTable.getId();
         List<OrderLineItemRequest> orderLineItemRequests = Lists.newArrayList(orderLineItem1, orderLineItem2);
-        assertThatThrownBy(() -> orderApplicationBehavior.주문_생성됨(orderTableId, orderLineItemRequests))
+        assertThatThrownBy(() -> orderContextServiceBehavior.주문_생성됨(orderTableId, orderLineItemRequests))
                 .isInstanceOf(CannotMakeOrderException.class);
     }
 
@@ -155,8 +155,8 @@ class OrderServiceTest extends ServiceTest {
         OrderLineItemRequest orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
         OrderLineItemRequest orderLineItem3 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 2);
 
-        orderApplicationBehavior.주문_생성됨(orderTable.getId(), Lists.newArrayList(orderLineItem1, orderLineItem2));
-        orderApplicationBehavior.주문_생성됨(orderTable.getId(), Lists.newArrayList(orderLineItem3));
+        orderContextServiceBehavior.주문_생성됨(orderTable.getId(), Lists.newArrayList(orderLineItem1, orderLineItem2));
+        orderContextServiceBehavior.주문_생성됨(orderTable.getId(), Lists.newArrayList(orderLineItem3));
 
         List<OrderResponse> orders = orderService.list();
         assertThat(orders).hasSize(2);
@@ -167,10 +167,10 @@ class OrderServiceTest extends ServiceTest {
     void 주문상태_변경() {
         OrderLineItemRequest orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
         OrderLineItemRequest orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
-        OrderResponse order = orderApplicationBehavior.주문_생성됨(orderTable.getId(),
+        OrderResponse order = orderContextServiceBehavior.주문_생성됨(orderTable.getId(),
                 Lists.newArrayList(orderLineItem1, orderLineItem2));
 
-        OrderResponse updatedOrder = orderApplicationBehavior.주문상태_변경(order.getId(), OrderStatus.MEAL);
+        OrderResponse updatedOrder = orderContextServiceBehavior.주문상태_변경(order.getId(), OrderStatus.MEAL);
         Assertions.assertAll("주문상태의 변경여부를 확인한다"
                 , () -> assertThat(updatedOrder.getId()).isEqualTo(order.getId())
                 , () -> assertThat(updatedOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name())
@@ -185,11 +185,11 @@ class OrderServiceTest extends ServiceTest {
         OrderLineItemRequest orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
         OrderLineItemRequest orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
 
-        OrderResponse order = orderApplicationBehavior.주문_생성됨(orderTable.getId(),
+        OrderResponse order = orderContextServiceBehavior.주문_생성됨(orderTable.getId(),
                 Lists.newArrayList(orderLineItem1, orderLineItem2));
-        orderApplicationBehavior.주문상태_변경(order.getId(), OrderStatus.COMPLETION);
+        orderContextServiceBehavior.주문상태_변경(order.getId(), OrderStatus.COMPLETION);
         Long orderId = order.getId();
-        assertThatThrownBy(() -> orderApplicationBehavior.주문상태_변경(orderId, OrderStatus.MEAL))
+        assertThatThrownBy(() -> orderContextServiceBehavior.주문상태_변경(orderId, OrderStatus.MEAL))
                 .isInstanceOf(CannotChangeOrderStatusException.class);
     }
 }

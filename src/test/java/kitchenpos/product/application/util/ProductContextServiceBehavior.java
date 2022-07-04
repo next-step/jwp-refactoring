@@ -1,4 +1,4 @@
-package kitchenpos.product.util;
+package kitchenpos.product.application.util;
 
 import kitchenpos.product.fixture.ProductFixtureFactory;
 import kitchenpos.product.application.ProductService;
@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ProductApplicationBehavior {
+public class ProductContextServiceBehavior {
 
     @Autowired
     private ProductService productService;

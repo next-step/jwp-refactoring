@@ -1,4 +1,4 @@
-package kitchenpos.table.util;
+package kitchenpos.table.application.util;
 
 import static java.util.stream.Collectors.toList;
 
@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TableApplicationBehavior {
+public class TableContextServiceBehavior {
     @Autowired
     private TableService tableService;
 

@@ -1,4 +1,4 @@
-package kitchenpos.menu.util;
+package kitchenpos.menu.application.util;
 
 import java.util.List;
 import kitchenpos.menu.fixture.MenuFixtureFactory;
@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MenuApplicationBehavior {
+public class MenuContextServiceBehavior {
     @Autowired
     private MenuGroupService menuGroupService;
 

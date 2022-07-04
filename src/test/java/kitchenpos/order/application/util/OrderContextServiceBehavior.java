@@ -1,4 +1,4 @@
-package kitchenpos.order.util;
+package kitchenpos.order.application.util;
 
 import java.util.List;
 import kitchenpos.order.fixture.OrderFixtureFactory;
@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class OrderApplicationBehavior {
+public class OrderContextServiceBehavior {
 
     @Autowired
     private OrderService orderService;
