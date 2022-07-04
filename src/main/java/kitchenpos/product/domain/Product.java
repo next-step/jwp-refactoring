@@ -40,6 +40,10 @@ public class Product {
         return new Product(name, price);
     }
 
+    public BigDecimal getMultipleValue(long quantity) {
+        return price.getValue().multiply(BigDecimal.valueOf(quantity));
+    }
+
     public Long getId() {
         return id;
     }
