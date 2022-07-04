@@ -2,6 +2,7 @@ package kitchenpos.application;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -11,10 +12,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
-import kitchenpos.domain.GroupOrderTables;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.OrderTables;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.TableGroupRequest;
 import kitchenpos.dto.TableGroupResponse;
@@ -75,13 +77,15 @@ class TableGroupServiceTest {
         OrderTable orderTable1 = new OrderTable(1, false);
         OrderTable orderTable2 = new OrderTable(1, true);
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
-        TableGroupRequest tableGroup = new TableGroupRequest(Arrays.asList(1L, 2L));
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(1L, 2L));
+        TableGroup tableGroup = new TableGroup(1L, OrderTables.of(orderTables));
 
         given(orderTableRepository.findAllByIdIn(anyList())).willReturn(orderTables);
+        given(tableGroupRepository.save(any())).willReturn(tableGroup);
 
         //when & then
         assertThatIllegalArgumentException().isThrownBy(() ->
-                tableGroupService.create(tableGroup)
+                tableGroupService.create(tableGroupRequest)
         );
     }
 
@@ -92,13 +96,15 @@ class TableGroupServiceTest {
         OrderTable orderTable1 = new OrderTable(1L,1, false);
         OrderTable orderTable2 = new OrderTable(1, false);
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
-        TableGroupRequest tableGroup = new TableGroupRequest(Arrays.asList(1L, 2L));
+        TableGroupRequest request = new TableGroupRequest(Arrays.asList(1L, 2L));
+        TableGroup tableGroup = new TableGroup(1L, OrderTables.of(orderTables));
 
         given(orderTableRepository.findAllByIdIn(anyList())).willReturn(orderTables);
+        given(tableGroupRepository.save(any())).willReturn(tableGroup);
 
         //when & then
         assertThatIllegalArgumentException().isThrownBy(() ->
-                tableGroupService.create(tableGroup)
+                tableGroupService.create(request)
         );
     }
 
@@ -107,11 +113,11 @@ class TableGroupServiceTest {
     @DisplayName("단체석이 생성된다.")
     void tableGroupCreate() {
         //given
-        OrderTable orderTable1 = new OrderTable(1L, null, 1, true);
-        OrderTable orderTable2 = new OrderTable(2L, null, 1, true);
+        OrderTable orderTable1 = new OrderTable(1L, null, 1, false);
+        OrderTable orderTable2 = new OrderTable(2L, null, 1, false);
         List<OrderTable> orderTables = Arrays.asList(orderTable1, orderTable2);
         TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(1L, 2L));
-        TableGroup tableGroup = new TableGroup(1L, GroupOrderTables.of(Arrays.asList(orderTable1, orderTable2)));
+        TableGroup tableGroup = new TableGroup(1L, OrderTables.of(orderTables));
 
         given(orderTableRepository.findAllByIdIn(anyList())).willReturn(orderTables);
         given(tableGroupRepository.save(any())).willReturn(tableGroup);
@@ -127,12 +133,25 @@ class TableGroupServiceTest {
     }
 
     @Test
+    @DisplayName("테이블 그룹이 존재하지 않는 경우 개인테이블로 변경되지 않는다")
+    void unGroup() {
+        //given
+        given(tableGroupRepository.findById(1L)).willReturn(Optional.empty());
+
+        //when & then
+
+        assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(() ->
+                tableGroupService.ungroup(1L)
+        );
+    }
+
+    @Test
     @DisplayName("주문 테이블중 조리중인 경우에 단체석을 개인 주문테이블로 변경할 수 없다.")
     void isNotAbleUngroup() {
         //given
-        OrderTable orderTable1 = new OrderTable(1L, 1L, 1, true);
-        OrderTable orderTable2 = new OrderTable(2L, 1L, 1, true);
-        TableGroup tableGroup = new TableGroup(GroupOrderTables.of(Arrays.asList(orderTable1, orderTable2)));
+        OrderTable orderTable1 = new OrderTable(1L, 1L, 1, false);
+        OrderTable orderTable2 = new OrderTable(2L, 1L, 1, false);
+        TableGroup tableGroup = new TableGroup(OrderTables.of(Arrays.asList(orderTable1, orderTable2)));
 
         given(tableGroupRepository.findById(1L)).willReturn(Optional.of(tableGroup));
         given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(1L, 2L),
@@ -143,22 +162,8 @@ class TableGroupServiceTest {
                 tableGroupService.ungroup(1L)
         );
     }
-//
-//    @Test
-//    @DisplayName("개별 테이블로 변경된다.")
-//    void unGroup() {
-//        //given
-//        OrderTable orderTable1 = new OrderTable(1L, null, 1, true);
-//        OrderTable orderTable2 = new OrderTable(2L, null, 1, true);
-//        TableGroup tableGroup = new TableGroup(Arrays.asList(orderTable1, orderTable2));
-//
-//        given(orderTableDao.findAllByTableGroupId(1L)).willReturn(tableGroup.getOrderTables());
-//        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(1L, 2L),
-//                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))).willReturn(false);
-//
-//        //when & then
-//        tableGroupService.ungroup(1L);
-//    }
+
+
 
 
 }

@@ -1,6 +1,7 @@
 package kitchenpos.domain;
 
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,6 +14,8 @@ public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "table_group_id")
     private Long tableGroupId;
 
     @Embedded
@@ -45,23 +48,11 @@ public class OrderTable {
         return new OrderTable(numberOfGuests, empty);
     }
 
-    public static OrderTable createOrderTable() {
-        return new OrderTable();
-    }
-
     public void changeNumberOfGuests(int numberOfGuests) {
         if (isEmpty()) {
             throw new IllegalArgumentException("빈테이블일 경우 방문자를 변경할 수 없습니다.");
         }
         this.numberOfGuests = NumberOfGuest.of(numberOfGuests);
-    }
-
-    public void setNumberOfGuests(int numberOfGuests) {
-        this.numberOfGuests = NumberOfGuest.of(numberOfGuests);
-    }
-
-    public void setTableGroupId(Long tableGroupId) {
-        this.tableGroupId = tableGroupId;
     }
 
     public void changeTableGroupId(Long tableGroupId) {
@@ -91,7 +82,4 @@ public class OrderTable {
         return empty;
     }
 
-    public boolean isOrderAble() {
-        return empty;
-    }
 }

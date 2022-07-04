@@ -7,8 +7,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "table_group")
 public class TableGroup {
 
     @Id
@@ -17,19 +19,19 @@ public class TableGroup {
     private LocalDateTime createdDate;
 
     @Embedded
-    private GroupOrderTables orderTables;
+    private OrderTables orderTables;
 
     protected TableGroup() {
 
     }
 
-    public TableGroup(Long id, GroupOrderTables orderTables) {
+    public TableGroup(Long id, OrderTables orderTables) {
         this(orderTables);
         createdDate = LocalDateTime.now();
         this.id = id;
     }
 
-    public TableGroup(GroupOrderTables orderTables) {
+    public TableGroup(OrderTables orderTables) {
         this.orderTables = orderTables;
         createdDate = LocalDateTime.now();
     }

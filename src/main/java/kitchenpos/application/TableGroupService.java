@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-import kitchenpos.domain.GroupOrderTables;
+import kitchenpos.domain.OrderTables;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
@@ -39,7 +39,7 @@ public class TableGroupService {
 
         validExistOrderTable(requestOrderTables, savedOrderTables);
 
-        TableGroup result = tableGroupRepository.save(new TableGroup(GroupOrderTables.of(savedOrderTables)));
+        TableGroup result = tableGroupRepository.save(new TableGroup(OrderTables.of(savedOrderTables)));
         result.group();
 
         return new TableGroupResponse(result.getId(), OrderTableResponse.of(result.getOrderTables()),

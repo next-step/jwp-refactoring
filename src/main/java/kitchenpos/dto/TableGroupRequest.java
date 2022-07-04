@@ -7,6 +7,10 @@ public class TableGroupRequest {
 
     List<Long> orderTables = new ArrayList<>();
 
+    public TableGroupRequest() {
+
+    }
+
     public TableGroupRequest(List<Long> orderTables) {
         this.orderTables = orderTables;
     }

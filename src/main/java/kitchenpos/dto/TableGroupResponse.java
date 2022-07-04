@@ -8,6 +8,10 @@ public class TableGroupResponse {
     private List<OrderTableResponse> orderTables;
     private LocalDateTime createDate;
 
+    public TableGroupResponse() {
+
+    }
+
     public TableGroupResponse(Long id, List<OrderTableResponse> orderTables, LocalDateTime createDate) {
         this.id = id;
         this.orderTables = orderTables;

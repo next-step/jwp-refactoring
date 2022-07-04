@@ -20,11 +20,11 @@ class GroupOrderTablesTest {
         //when & then
         assertAll(
                 () -> assertThatIllegalArgumentException()
-                        .isThrownBy(() -> GroupOrderTables.of(null)),
+                        .isThrownBy(() -> OrderTables.of(null)),
                 () -> assertThatIllegalArgumentException()
-                        .isThrownBy(() -> GroupOrderTables.of(Collections.emptyList())),
+                        .isThrownBy(() -> OrderTables.of(Collections.emptyList())),
                 () -> assertThatIllegalArgumentException()
-                        .isThrownBy(() -> GroupOrderTables.of(Collections.singletonList(orderTable)))
+                        .isThrownBy(() -> OrderTables.of(Collections.singletonList(orderTable)))
         );
     }
 
@@ -34,9 +34,11 @@ class GroupOrderTablesTest {
         //given
         OrderTable orderTable = new OrderTable(1, false);
         OrderTable orderTable2 = new OrderTable(1, true);
+        OrderTables orderTables = OrderTables.of(Arrays.asList(orderTable, orderTable2));
+
 
         assertThatIllegalArgumentException()
-                .isThrownBy(()-> GroupOrderTables.of(Arrays.asList(orderTable, orderTable2)));
+                .isThrownBy(()-> orderTables.group(1L));
     }
 
     @Test
@@ -45,11 +47,11 @@ class GroupOrderTablesTest {
         //given
         OrderTable orderTable = new OrderTable(1L, 1, false);
         OrderTable orderTable2 = new OrderTable(1, false);
-
+        OrderTables orderTables = OrderTables.of(Arrays.asList(orderTable, orderTable2));
 
         //when & then
         assertThatIllegalArgumentException()
-                .isThrownBy(()-> GroupOrderTables.of(Arrays.asList(orderTable, orderTable2)));
+                .isThrownBy(()-> orderTables.group(1L));
     }
 
     @Test
@@ -58,7 +60,7 @@ class GroupOrderTablesTest {
         //given
         OrderTable orderTable = new OrderTable(1, false);
         OrderTable orderTable2 = new OrderTable(1, false);
-        GroupOrderTables groupOrderTables = GroupOrderTables.of(Arrays.asList(orderTable, orderTable2));
+        OrderTables groupOrderTables = OrderTables.of(Arrays.asList(orderTable, orderTable2));
 
         //when
         groupOrderTables.group(1L);
@@ -74,7 +76,7 @@ class GroupOrderTablesTest {
         //given
         OrderTable orderTable = new OrderTable(1, false);
         OrderTable orderTable2 = new OrderTable(1, false);
-        GroupOrderTables groupOrderTables = GroupOrderTables.of(Arrays.asList(orderTable, orderTable2));
+        OrderTables groupOrderTables = OrderTables.of(Arrays.asList(orderTable, orderTable2));
 
         //when
         groupOrderTables.group(1L);

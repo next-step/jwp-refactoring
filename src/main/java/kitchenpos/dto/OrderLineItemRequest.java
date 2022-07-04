@@ -4,6 +4,9 @@ public class OrderLineItemRequest {
     private long menuId;
     private long quantity;
 
+    public OrderLineItemRequest() {
+
+    }
     public OrderLineItemRequest(long menuId, int quantity) {
         this.menuId = menuId;
         this.quantity = quantity;
