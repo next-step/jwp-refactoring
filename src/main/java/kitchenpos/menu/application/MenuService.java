@@ -26,23 +26,23 @@ import static java.util.stream.Collectors.toList;
 public class MenuService {
     private static final int FIRST_INDEX = 0;
     private final MenuRepository menuRepository;
-    private final MenuGroupRepository menuGroupRepository;
     private final ProductRepository productRepository;
+
+    private final MenuGroupService menuGroupService;
 
     public MenuService(
             final MenuRepository menuRepository,
-            final MenuGroupRepository menuGroupRepository,
-            final ProductRepository productRepository
+            final ProductRepository productRepository,
+            final MenuGroupService menuGroupService
     ) {
         this.menuRepository = menuRepository;
-        this.menuGroupRepository = menuGroupRepository;
         this.productRepository = productRepository;
+        this.menuGroupService = menuGroupService;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest request) {
-        MenuGroup menuGroup = menuGroupRepository.findById(request.getMenuGroupId())
-                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 메뉴가 있습니다."));
+        MenuGroup menuGroup = menuGroupService.findById(request.getMenuGroupId());
 
         List<Long> productIds = request.getMenuProductRequests().stream()
                 .map(MenuProductRequest::getProductId)
@@ -70,27 +70,5 @@ public class MenuService {
         return menuRepository.findAll().stream()
                 .map(MenuResponse::of)
                 .collect(toList());
-    }
-
-    @Service
-    public static class MenuGroupService {
-        private final MenuGroupRepository menuGroupRepository;
-
-        public MenuGroupService(final MenuGroupRepository menuGroupRepository) {
-            this.menuGroupRepository = menuGroupRepository;
-        }
-
-        @Transactional
-        public MenuGroupResponse create(final MenuGroupRequest menuGroupRequest) {
-            MenuGroup menuGroup = MenuGroup.of(menuGroupRequest.getName());
-            menuGroup = menuGroupRepository.save(menuGroup);
-            return MenuGroupResponse.of(menuGroup);
-        }
-
-        public List<MenuGroupResponse> list() {
-            return menuGroupRepository.findAll().stream()
-                    .map(MenuGroupResponse::of)
-                    .collect(toList());
-        }
     }
 }

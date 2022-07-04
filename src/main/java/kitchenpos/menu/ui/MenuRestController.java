@@ -1,5 +1,6 @@
 package kitchenpos.menu.ui;
 
+import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.dto.MenuGroupRequest;
 import kitchenpos.menu.dto.MenuGroupResponse;
@@ -36,9 +37,11 @@ public class MenuRestController {
 
     @RestController
     public static class MenuGroupRestController {
-        private final MenuService.MenuGroupService menuGroupService;
+        private final MenuService menuService;
+        private final MenuGroupService menuGroupService;
 
-        public MenuGroupRestController(final MenuService.MenuGroupService menuGroupService) {
+        public MenuGroupRestController(final MenuService menuService, MenuGroupService menuGroupService) {
+            this.menuService = menuService;
             this.menuGroupService = menuGroupService;
         }
 
