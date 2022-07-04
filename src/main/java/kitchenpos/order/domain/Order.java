@@ -38,18 +38,6 @@ public class Order {
         this.orderedTime = LocalDateTime.now();
     }
 
-    private Order(Long id, OrderTable orderTable) {
-        this.id = id;
-        this.orderTable = orderTable;
-        this.orderStatus = OrderStatus.COOKING;
-        this.orderedTime = LocalDateTime.now();
-    }
-
-    public static Order of(Long id, OrderTable orderTable) {
-        orderTable.validIsEmpty();
-        return new Order(id, orderTable);
-    }
-
     public static Order of(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         orderTable.validIsEmpty();
         return new Order(orderTable, orderLineItems);
