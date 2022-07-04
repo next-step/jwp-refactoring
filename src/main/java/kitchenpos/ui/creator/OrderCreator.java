@@ -61,7 +61,7 @@ public class OrderCreator {
         if (orderLineItems != null) {
             orderLineItemRequests = orderLineItems.getOrderLineItems()
                     .stream()
-                    .map(it -> new OrderLineItemRequest(it))
+                    .map(OrderLineItemRequest::of)
                     .collect(Collectors.toList());
         }
         return orderLineItemRequests;

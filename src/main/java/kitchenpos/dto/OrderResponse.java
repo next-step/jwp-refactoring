@@ -66,7 +66,7 @@ public class OrderResponse {
 
     public static OrderResponse of(Order order) {
         List<OrderLineItemRequest> orderLineItemRequests = order.getOrderLineItems().getOrderLineItems()
-                .stream().map(it -> new OrderLineItemRequest(it))
+                .stream().map(OrderLineItemRequest::of)
                 .collect(Collectors.toList());
 
         return new OrderResponse(order.getId(), order.getOrderTable().getId(), order.getOrderStatus().name(),

@@ -15,16 +15,8 @@ public class OrderTables {
     public OrderTables() {
     }
 
-    public OrderTables(List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
-    }
-
     public List<OrderTable> getOrderTables() {
         return orderTables;
-    }
-
-    public void setOrderTables(List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
     }
 
     public void add(OrderTable orderTable){

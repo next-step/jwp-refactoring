@@ -34,10 +34,6 @@ public class MenuProduct {
         this.id = id;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
-    }
-
     public void setMenu(Menu menu) {
         this.menu = menu;
     }

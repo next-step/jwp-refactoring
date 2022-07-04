@@ -14,52 +14,23 @@ public class OrderLineItemRequest {
     private Long menuId;
     private long quantity;
 
-    public OrderLineItemRequest() {
-    }
-
-    public OrderLineItemRequest(OrderLineItem orderLineItem) {
-        Long orderId = setOrderLineItemOrderId(orderLineItem);
-        Long menuId = setOrderLineItemMenuId(orderLineItem);
-
-        this.seq = orderLineItem.getSeq();
-        this.orderId = orderId;
-        this.menuId = menuId;
-        this.quantity = orderLineItem.getQuantity();
-    }
-
     public Long getSeq() {
         return seq;
-    }
-
-    public void setSeq(final Long seq) {
-        this.seq = seq;
     }
 
     public Long getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(final Long orderId) {
-        this.orderId = orderId;
-    }
-
     public Long getMenuId() {
         return menuId;
-    }
-
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
     }
 
     public long getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
-    }
-
-    private Long setOrderLineItemOrderId(OrderLineItem orderLineItem) {
+    private static Long setOrderLineItemOrderId(OrderLineItem orderLineItem) {
         Long orderId = null;
         Order order = orderLineItem.getOrder();
         if (order != null) {
@@ -68,12 +39,24 @@ public class OrderLineItemRequest {
         return orderId;
     }
 
-    private Long setOrderLineItemMenuId(OrderLineItem orderLineItem) {
+    private static Long setOrderLineItemMenuId(OrderLineItem orderLineItem) {
         Long menuId = null;
         Menu menu = orderLineItem.getMenu();
         if (menu != null) {
             menuId = menu.getId();
         }
         return menuId;
+    }
+
+    public static OrderLineItemRequest of(OrderLineItem orderLineItem) {
+        Long orderId = setOrderLineItemOrderId(orderLineItem);
+        Long menuId = setOrderLineItemMenuId(orderLineItem);
+
+        return OrderLineItemRequest.builder()
+                .seq(orderLineItem.getSeq())
+                .orderId(orderId)
+                .menuId(menuId)
+                .quantity(orderLineItem.getQuantity())
+                .build();
     }
 }

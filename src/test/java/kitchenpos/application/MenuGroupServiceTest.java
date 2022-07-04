@@ -14,10 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class MenuGroupServiceTest {
-
     @Autowired
     MenuGroupRepository menuGroupRepository;
-
     @Autowired
     MenuGroupService menuGroupService;
 

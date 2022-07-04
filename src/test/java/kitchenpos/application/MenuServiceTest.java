@@ -37,10 +37,10 @@ class MenuServiceTest {
     MenuRepository menuRepository;
 
     @Autowired
-    MenuService menuService;
+    MenuCreator menuCreator;
 
     @Autowired
-    MenuCreator menuCreator;
+    MenuService menuService;
 
     Product 스낵랩;
     Product 맥모닝;

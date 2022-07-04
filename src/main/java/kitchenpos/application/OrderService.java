@@ -34,7 +34,6 @@ public class OrderService {
 
     @Transactional
     public Order create(final OrderRequest orderRequest) {
-//    public Order create(final Order order) {
         Order order = orderCreator.toOrder(orderRequest);
         final OrderLineItems orderLineItems = order.getOrderLineItems();
 

@@ -2,7 +2,6 @@ package kitchenpos.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import kitchenpos.domain.Order;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
@@ -27,10 +26,6 @@ public class OrderRequest {
         return orderTableId;
     }
 
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
-    }
-
     public String getOrderStatus() {
         return orderStatus;
     }
@@ -43,15 +38,7 @@ public class OrderRequest {
         return orderedTime;
     }
 
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
-    }
-
     public List<OrderLineItemRequest> getOrderLineItems() {
         return orderLineItems;
-    }
-
-    public void setOrderLineItems(final List<OrderLineItemRequest> orderLineItems) {
-        this.orderLineItems = orderLineItems;
     }
 }

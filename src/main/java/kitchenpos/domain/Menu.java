@@ -10,11 +10,13 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
 @Entity
 public class Menu {
     @Id
@@ -31,7 +33,6 @@ public class Menu {
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
 
-
     public Menu(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
         this.name = name;
         this.price = new Price(price);
@@ -39,40 +40,20 @@ public class Menu {
         this.menuProducts = menuProducts;
     }
 
-    public Long getId() {
-        return id;
-    }
-
     public void setId(final Long id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public void setName(final String name) {
         this.name = name;
     }
 
-    public Price getPrice() {
-        return price;
-    }
-
     public void setPrice(Price price) {
         this.price = price;
     }
 
-    public MenuGroup getMenuGroup() {
-        return menuGroup;
-    }
-
     public void setMenuGroup(MenuGroup menuGroup) {
         this.menuGroup = menuGroup;
-    }
-
-    public MenuProducts getMenuProducts() {
-        return menuProducts;
     }
 
     public void setMenuProducts(MenuProducts menuProducts){

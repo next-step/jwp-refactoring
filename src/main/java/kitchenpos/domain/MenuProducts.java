@@ -23,10 +23,6 @@ public class MenuProducts {
         return menuProducts;
     }
 
-    public void setMenuProducts(List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
-    }
-
     public void validateTotalPriceNotExpensiveThanEach(Price menuPrice) {
         Price sum = new Price(BigDecimal.ZERO);
         for (MenuProduct menuProduct : menuProducts) {

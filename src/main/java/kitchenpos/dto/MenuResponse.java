@@ -5,25 +5,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProducts;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 
+@Builder
+@AllArgsConstructor
 public class MenuResponse {
     private Long id;
     private String name;
     private BigDecimal price;
     private Long menuGroupId;
     private List<MenuProductResponse> menuProducts;
-
-    public MenuResponse() {
-    }
-
-    public MenuResponse(Long id, String name, BigDecimal price, Long menuGroupId,
-                        List<MenuProductResponse> menuProducts) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.menuGroupId = menuGroupId;
-        this.menuProducts = menuProducts;
-    }
 
     public Long getId() {
         return id;
@@ -53,25 +45,24 @@ public class MenuResponse {
         return menuGroupId;
     }
 
-    public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
-    }
-
     public List<MenuProductResponse> getMenuProducts() {
         return menuProducts;
     }
 
-    public void setMenuProducts(final List<MenuProductResponse> menuProducts) {
-        this.menuProducts = menuProducts;
-    }
-
-    public static MenuResponse of(Menu menu){
+    public static MenuResponse of(Menu menu) {
         MenuProducts menuProducts = menu.getMenuProducts();
+
         List<MenuProductResponse> menuProductResponses = menuProducts.getMenuProducts().stream()
                 .map(MenuProductResponse::of)
                 .collect(Collectors.toList());
 
-        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice().getPrice(), menu.getMenuGroup().getId(), menuProductResponses);
+        return MenuResponse.builder()
+                .id(menu.getId())
+                .name(menu.getName())
+                .price(menu.getPrice().getPrice())
+                .menuGroupId(menu.getMenuGroup().getId())
+                .menuProducts(menuProductResponses)
+                .build();
     }
 
 }

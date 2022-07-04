@@ -35,7 +35,7 @@ public class TableGroupService {
         orderTables.setAllEmpty(false);
 
         tableGroup.setCreatedDate(LocalDateTime.now());
-        tableGroup.setOrderTables(orderTables);  //TODO check
+        tableGroup.setOrderTables(orderTables);
 
         return tableGroupRepository.save(tableGroup);
     }

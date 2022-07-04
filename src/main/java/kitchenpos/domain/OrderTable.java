@@ -27,7 +27,8 @@ public class OrderTable {
     private int numberOfGuests;
     private boolean empty;
 
-    public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {this.tableGroup = tableGroup;
+    public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
+        this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
@@ -54,11 +55,25 @@ public class OrderTable {
         }
     }
 
-    public void changeEmpty(OrderTable orderTable){
+    public void changeEmpty(OrderTable orderTable) {
         if (Objects.nonNull(tableGroup)) {
             throw new IllegalArgumentException();
         }
 
         setEmpty(orderTable.isEmpty());
+    }
+
+    public int checkNumberOfGuests() {
+        if (numberOfGuests < 0) {
+            throw new IllegalArgumentException();
+        }
+        return numberOfGuests;
+    }
+
+    public void checkOrderTableSave(int numberOfGuestsInput) {
+        if (empty) {
+            throw new IllegalArgumentException();
+        }
+        setNumberOfGuests(numberOfGuestsInput);
     }
 }
