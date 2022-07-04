@@ -70,13 +70,17 @@ public class OrderService {
     }
 
     private void validateExistMenu(List<OrderLineItemRequest> orderLineItemRequests) {
-        List<Long> menuIds = orderLineItemRequests.stream()
-                .map(OrderLineItemRequest::getMenuId)
-                .collect(Collectors.toList());
+        List<Long> menuIds = getMenuIds(orderLineItemRequests);
 
         if (orderLineItemRequests.size() != menuRepository.countByIdIn(menuIds)) {
             throw new IllegalArgumentException(ERROR_MESSAGE_MENU_EMPTY);
         }
+    }
+
+    private List<Long> getMenuIds(List<OrderLineItemRequest> orderLineItemRequests) {
+        return orderLineItemRequests.stream()
+                .map(OrderLineItemRequest::getMenuId)
+                .collect(Collectors.toList());
     }
 
     private OrderTable getOrderTableById(Long orderTableId) {

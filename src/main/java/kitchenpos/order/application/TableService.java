@@ -46,15 +46,18 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId) {
         OrderTable orderTable = getOrderTableById(orderTableId);
         orderTable.validateHasTableGroupId();
-
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTable.getId(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_INVALID_ORDER_STATUS);
-        }
+        validateOrderStatus(orderTable.getId());
 
         orderTable.updateEmpty();
         orderTable = orderTableRepository.save(orderTable);
         return OrderTableResponse.of(orderTable);
+    }
+
+    private void validateOrderStatus(Long orderTableId) {
+        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
+                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+            throw new IllegalArgumentException(ERROR_MESSAGE_INVALID_ORDER_STATUS);
+        }
     }
 
     @Transactional
