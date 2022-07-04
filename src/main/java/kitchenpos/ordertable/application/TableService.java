@@ -42,7 +42,7 @@ public class TableService {
         return OrderTableResponse.from(savedOrderTable);
     }
 
-    private void validateOrderTableAndOrderStatus(Long orderTableId) {
+    private void validateOrderTableAndOrderStatus(final Long orderTableId) {
         if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
             orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException();

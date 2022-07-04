@@ -34,7 +34,6 @@ public class Order {
     protected Order() {
     }
 
-
     public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         validateOrderTable(orderTable);
         validateOrderLineItems(orderLineItems);
@@ -48,7 +47,7 @@ public class Order {
         return new Order(orderTable, orderLineItems);
     }
 
-    private void validateOrderLineItems(List<OrderLineItem> orderLineItems) {
+    private void validateOrderLineItems(final List<OrderLineItem> orderLineItems) {
         if (CollectionUtils.isEmpty(orderLineItems)) {
             throw new IllegalArgumentException();
         }
@@ -60,7 +59,7 @@ public class Order {
         }
     }
 
-    private void validateOrderTable(OrderTable orderTable) {
+    private void validateOrderTable(final OrderTable orderTable) {
         if (orderTable.isEmpty()) {
             throw new IllegalArgumentException();
         }
@@ -96,7 +95,7 @@ public class Order {
         return orderLineItems;
     }
 
-    public void changeStatus(OrderStatus orderStatus) {
+    public void changeStatus(final OrderStatus orderStatus) {
         validateOrderStatus();
         this.orderStatus = orderStatus;
     }

@@ -25,11 +25,6 @@ public class OrderLineItem {
     public OrderLineItem() {
     }
 
-    public OrderLineItem(Long seq, Menu menu, long quantity) {
-        this.seq = seq;
-        this.menu = menu;
-        this.quantity = quantity;
-    }
 
     public OrderLineItem(Menu menu, long quantity) {
         this.menu = menu;
@@ -45,7 +40,7 @@ public class OrderLineItem {
     }
 
 
-    public void toOrder(Order order) {
+    public void toOrder(final Order order) {
         if (this.order != null) {
             this.order.getOrderLineItems().remove(this);
         }
@@ -53,9 +48,6 @@ public class OrderLineItem {
         order.getOrderLineItems().add(this);
     }
 
-    public void setOrder(Order order) {
-        this.order = order;
-    }
 
     public Order getOrder() {
         return order;

@@ -33,35 +33,33 @@ public class TableGroupService {
         return TableGroupResponse.from(savedTableGroup);
     }
 
-    private List<OrderTable> convertToOrderTable(List<Long> orderTableIds) {
+    @Transactional
+    public void ungroup(final Long tableGroupId) {
+        final TableGroup tableGroup = tableGroupRepository.findById(tableGroupId).orElseThrow(() -> new IllegalArgumentException());
+        validateOrderTableStatus(tableGroup);
+        tableGroup.ungroup();
+    }
+
+    private List<OrderTable> convertToOrderTable(final List<Long> orderTableIds) {
         final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
         validateOrderTablesExist(orderTableIds, savedOrderTables);
         return savedOrderTables;
     }
 
-    private void validateOrderTablesExist(List<Long> orderTableIds, List<OrderTable> savedOrderTables) {
+    private void validateOrderTablesExist(final List<Long> orderTableIds, final List<OrderTable> savedOrderTables) {
         if (orderTableIds.size() != savedOrderTables.size()) {
             throw new IllegalArgumentException();
         }
     }
 
-
-    @Transactional
-    public void ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
-
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
+    private void validateOrderTableStatus(TableGroup tableGroup) {
+        final List<Long> orderTableIds = tableGroup.getOrderTables().stream()
+            .map(OrderTable::getId)
+            .collect(Collectors.toList());
 
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+            orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
             throw new IllegalArgumentException();
-        }
-
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.ungroup();
-            orderTableRepository.save(orderTable);
         }
     }
 }

@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.repository.OrderTableRepository;
@@ -38,7 +39,6 @@ public class TableGroupServiceTest {
     @DisplayName("단체 지정을 생성한다.")
     @Test
     public void createTableGroup() {
-
         //given
         TableGroupRequest given = TableGroupRequest.from(createOrderTableIds());
         when(orderTableRepository.findAllByIdIn(any())).thenReturn(createOrderTables());
@@ -63,7 +63,7 @@ public class TableGroupServiceTest {
     @Test
     public void createTableGroupWithNoExistOrderTables() {
         //given
-        TableGroupRequest given = TableGroupRequest.from(Arrays.asList(1l, 2l));
+        TableGroupRequest given = TableGroupRequest.from(createOrderTableIds());
         when(orderTableRepository.findAllByIdIn(any())).thenReturn(Arrays.asList(new OrderTable(1l,  1, true)));
         //when
         //then
@@ -99,20 +99,19 @@ public class TableGroupServiceTest {
     @Test
     public void ungroup() {
         //given
-        OrderTable orderTable = new OrderTable(1l, 1, true);
-        orderTable.groupBy(new TableGroup(1l, LocalDateTime.now()));
-        when(orderTableRepository.findAllByTableGroupId(any())).thenReturn(Arrays.asList(orderTable));
+        TableGroup tableGroup = TableGroup.of(createOrderTables());
+        when(tableGroupRepository.findById(any())).thenReturn(Optional.of(tableGroup));
         //when
-        tableGroupService.ungroup(1l);
+        tableGroupService.ungroup(tableGroup.getId());
         //then
-        assertThat(orderTable.isGrouped()).isFalse();
+        tableGroup.getOrderTables().forEach(orderTable -> assertThat(orderTable.isGrouped()).isFalse());
     }
 
     @DisplayName("조리, 식사 중인 상태인 경우에는 해제할 수 없다.")
     @Test
     public void ungroupWithStatus(){
         //given
-        when(orderTableRepository.findAllByTableGroupId(any())).thenReturn(createOrderTables());
+        when(tableGroupRepository.findById(any())).thenReturn(Optional.of(TableGroup.of(createOrderTables())));
         when(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).thenReturn(true);
         //when
         //then
@@ -121,7 +120,7 @@ public class TableGroupServiceTest {
     }
 
     private List<Long> createOrderTableIds() {
-        return Arrays.asList(1l,2l);
+        return Arrays.asList(1l, 2l);
     }
 
     private List<OrderTable> createOrderTables() {
@@ -135,6 +134,6 @@ public class TableGroupServiceTest {
     private List<OrderTable> createHasTableGroupOrderTables() {
         OrderTable orderTable = new OrderTable(3l, 1, true);
         orderTable.groupBy(new TableGroup(3l, LocalDateTime.now()));
-        return Arrays.asList(orderTable, new OrderTable(3l,  1, true));
+        return Arrays.asList(orderTable);
     }
 }

@@ -27,8 +27,4 @@ public class ProductPrice {
             throw new IllegalArgumentException();
         }
     }
-
-    public long getValue() {
-        return value;
-    }
 }

@@ -35,8 +35,4 @@ public class ProductResponse {
     public String getName() {
         return name;
     }
-
-    public long getPrice() {
-        return price;
-    }
 }

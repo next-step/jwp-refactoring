@@ -92,12 +92,6 @@ public class OrderTable {
         empty = false;
     }
 
-
-
-    public TableGroup getTableGroup() {
-        return tableGroup;
-    }
-
     public void ungroup(){
         this.tableGroup = null;
     }

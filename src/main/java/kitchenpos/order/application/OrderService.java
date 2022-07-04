@@ -44,7 +44,7 @@ public class OrderService {
         return OrderResponse.from(savedOrder);
     }
 
-    private List<OrderLineItem> convertToOrderLineItems( List<OrderLineItemRequest> orderLineItemRequests) {
+    private List<OrderLineItem> convertToOrderLineItems(final List<OrderLineItemRequest> orderLineItemRequests) {
         return orderLineItemRequests.stream()
             .map(orderLineItemsRequest -> {
                 Menu menu = menuRepository.findById(orderLineItemsRequest.getMenuId()).orElseThrow(() -> new IllegalArgumentException());
@@ -61,9 +61,9 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponse changeOrderStatus(Long orderId, OrderStatusRequest orderStatusRequest) {
+    public OrderResponse changeOrderStatus(final Long orderId, final OrderStatusRequest orderStatusRequest) {
         final Order savedOrder = orderRepository.findById(orderId)
-                .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(IllegalArgumentException::new);
 
         savedOrder.changeStatus(orderStatusRequest.getOrderStatus());
         return OrderResponse.from(savedOrder);
