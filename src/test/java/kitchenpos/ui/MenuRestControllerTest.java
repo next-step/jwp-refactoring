@@ -1,7 +1,9 @@
 package kitchenpos.ui;
 
 import static kitchenpos.utils.MockMvcUtil.as;
+import static kitchenpos.utils.generator.MenuFixtureGenerator.메뉴_구성_상품_생성;
 import static kitchenpos.utils.generator.MenuFixtureGenerator.메뉴_생성_요청;
+import static kitchenpos.utils.generator.MenuFixtureGenerator.메뉴_생성_요청_생성;
 import static kitchenpos.utils.generator.MenuGroupFixtureGenerator.메뉴_그룹_생성_요청;
 import static kitchenpos.utils.generator.ProductFixtureGenerator.상품_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -11,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.product.Product;
+import kitchenpos.dto.menu.CreateMenuRequest;
 import kitchenpos.dto.menu.MenuProductResponse;
 import kitchenpos.dto.menu.MenuResponse;
 import kitchenpos.utils.BaseTest;
@@ -52,12 +55,19 @@ public class MenuRestControllerTest extends BaseTest {
     @DisplayName("메뉴를 추가한다.")
     public void createMenu() throws Exception {
         // Given
-        Product savedFirstProduct = as(mockMvcUtil.post(상품_생성_요청()), Product.class);
-        Product savedSecondProduct = as(mockMvcUtil.post(상품_생성_요청()), Product.class);
-        final MenuGroup savedMenuGroup = as(mockMvcUtil.post(메뉴_그룹_생성_요청()), MenuGroup.class);
+        final Product 항정살 = as(mockMvcUtil.post(상품_생성_요청("항정살", 20_000)), Product.class);
+        final Product 고추장_불고기 = as(mockMvcUtil.post(상품_생성_요청("고추장_불고기", 15_000)), Product.class);
+        final MenuGroup 고기만_듬뿍 = as(mockMvcUtil.post(메뉴_그룹_생성_요청("고기만_듬뿍")), MenuGroup.class);
+        final CreateMenuRequest 고기_더블_더블_메뉴_생성_요청 = 메뉴_생성_요청_생성(
+            "고기만 듬뿍",
+            30_000,
+            고기만_듬뿍,
+            메뉴_구성_상품_생성(항정살, 1),
+            메뉴_구성_상품_생성(고추장_불고기, 1)
+        );
 
         // When
-        ResultActions resultActions = mockMvcUtil.post(메뉴_생성_요청(savedMenuGroup, savedFirstProduct, savedSecondProduct));
+        ResultActions resultActions = mockMvcUtil.post(메뉴_생성_요청(고기_더블_더블_메뉴_생성_요청));
 
         // Then
         resultActions
@@ -65,7 +75,7 @@ public class MenuRestControllerTest extends BaseTest {
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.id").exists())
             .andExpect(jsonPath("$.name").exists())
-            .andExpect(jsonPath("$.menuGroupId").value(savedMenuGroup.getId()))
+            .andExpect(jsonPath("$.menuGroupId").value(고기만_듬뿍.getId()))
             .andExpect(jsonPath("$.menuProducts[*].seq").exists())
             .andExpect(jsonPath("$.menuProducts[*].productId").exists())
             .andExpect(jsonPath("$.menuProducts[*].quantity").exists());
@@ -74,6 +84,6 @@ public class MenuRestControllerTest extends BaseTest {
 
         assertThat(createMenuResponse.getMenuProducts())
             .extracting(MenuProductResponse::getProductId)
-            .containsExactly(savedFirstProduct.getId(), savedSecondProduct.getId());
+            .containsExactly(항정살.getId(), 고추장_불고기.getId());
     }
 }

@@ -14,22 +14,16 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 public class ProductFixtureGenerator {
 
     private static String NAME = "뽀빠이 닭강정";
-    private static BigDecimal PRICE = BigDecimal.valueOf(23000);
+    private static BigDecimal PRICE = BigDecimal.valueOf(23_000);
     private static int COUNTER = 0;
 
     public static Product 상품_생성() {
         COUNTER++;
-        Product product = new Product();
-        product.setName(NAME + COUNTER);
-        product.setPrice(PRICE);
-        return product;
+        return Product.of(NAME + COUNTER, PRICE);
     }
 
-    public static Product 상품_생성(final String name, final BigDecimal price) {
-        Product product = new Product();
-        product.setName(name);
-        product.setPrice(price);
-        return product;
+    public static Product 상품_생성(final String name, final int price) {
+        return Product.of(name, new BigDecimal(price));
     }
 
     public static List<Product> 상품_목록_생성(int count) {
@@ -44,7 +38,7 @@ public class ProductFixtureGenerator {
         return postRequestBuilder(PRODUCT_API_URL_TEMPLATE, 상품_생성());
     }
 
-    public static MockHttpServletRequestBuilder 상품_생성_요청(final String name, final BigDecimal price) throws Exception {
+    public static MockHttpServletRequestBuilder 상품_생성_요청(final String name, final int price) throws Exception {
         return postRequestBuilder(PRODUCT_API_URL_TEMPLATE, 상품_생성(name, price));
     }
 }

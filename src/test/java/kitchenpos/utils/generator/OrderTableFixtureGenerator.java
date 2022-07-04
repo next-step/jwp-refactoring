@@ -18,15 +18,15 @@ public class OrderTableFixtureGenerator {
     private static int COUNTER = 0;
 
     public static OrderTable 비어있는_주문_테이블_생성() {
-        COUNTER++;
         OrderTable orderTable = new OrderTable();
-        orderTable.setNumberOfGuests(NUMBER_OF_GUESTS + COUNTER);
         orderTable.setEmpty(true);
         return orderTable;
     }
 
     public static OrderTable 비어있지_않은_주문_테이블_생성() {
+        COUNTER++;
         OrderTable orderTable = 비어있는_주문_테이블_생성();
+        orderTable.setNumberOfGuests(NUMBER_OF_GUESTS + COUNTER);
         orderTable.setEmpty(EMPTY);
         return orderTable;
     }

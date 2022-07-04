@@ -1,10 +1,11 @@
 package kitchenpos.application;
 
-import static kitchenpos.utils.generator.MenuFixtureGenerator.메뉴_생성;
-import static kitchenpos.utils.generator.MenuGroupFixtureGenerator.메뉴_그룹_생성;
-import static kitchenpos.utils.generator.OrderFixtureGenerator.주문_생성;
+import static kitchenpos.application.MenuServiceTest.커플_냉삼_메뉴;
+import static kitchenpos.application.MenuServiceTest.커플_냉삼_메뉴_상품_생성;
+import static kitchenpos.application.MenuServiceTest.커플_냉삼_메뉴_생성;
+import static kitchenpos.application.MenuServiceTest.커플_냉삼_메뉴_생성_요청_생성;
+import static kitchenpos.utils.generator.OrderTableFixtureGenerator.비어있는_주문_테이블_생성;
 import static kitchenpos.utils.generator.OrderTableFixtureGenerator.비어있지_않은_주문_테이블_생성;
-import static kitchenpos.utils.generator.ProductFixtureGenerator.상품_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
@@ -19,13 +20,10 @@ import kitchenpos.application.order.OrderService;
 import kitchenpos.dao.order.OrderDao;
 import kitchenpos.dao.order.OrderLineItemDao;
 import kitchenpos.dao.table.OrderTableDao;
-import kitchenpos.domain.menu.Menu;
-import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menu.MenuRepository;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderLineItem;
 import kitchenpos.domain.order.OrderStatus;
-import kitchenpos.domain.product.Product;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.utils.generator.OrderFixtureGenerator;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,22 +54,17 @@ class OrderServiceTest {
     @InjectMocks
     private OrderService orderService;
 
-    private Menu menu;
-    private MenuGroup menuGroup;
-    private Product firstProduct, secondProduct;
-
-    private OrderTable orderTable;
+    private OrderTable 비어있지_않은_주문_테이블_생성;
     private Order order;
 
     @BeforeEach
     void setUp() {
-        firstProduct = 상품_생성();
-        secondProduct = 상품_생성();
-        menuGroup = 메뉴_그룹_생성();
-        menu = 메뉴_생성(menuGroup, firstProduct, secondProduct);
+        커플_냉삼_메뉴_상품_생성();
+        커플_냉삼_메뉴_생성();
+        커플_냉삼_메뉴_생성_요청_생성();
 
-        orderTable = 비어있지_않은_주문_테이블_생성();
-        order = OrderFixtureGenerator.주문_생성(orderTable, menu);
+        비어있지_않은_주문_테이블_생성 = 비어있지_않은_주문_테이블_생성();
+        order = OrderFixtureGenerator.주문_생성(this.비어있지_않은_주문_테이블_생성, 커플_냉삼_메뉴);
     }
 
     @Test
@@ -79,7 +72,7 @@ class OrderServiceTest {
     void createOrder() {
         // Given
         given(menuRepository.countByIdIn(anyList())).willReturn((long) order.getOrderLineItems().size());
-        given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
+        given(orderTableDao.findById(any())).willReturn(Optional.of(비어있지_않은_주문_테이블_생성));
         given(orderDao.save(any(Order.class))).will(AdditionalAnswers.returnsFirstArg());
 
         // When
@@ -132,11 +125,10 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("주문에 포함된 주문테이블이 비어있는경우(주문을 요청한 테이블이 `isEmpty() = true`인 경우) 예외가 발생 검증")
+    @DisplayName("주문에 포함된 주문테이블이 비어있는 경우(주문을 요청한 테이블이 `isEmpty() = true`인 경우) 예외가 발생 검증")
     public void throwException_When() {
         given(menuRepository.countByIdIn(anyList())).willReturn((long) order.getOrderLineItems().size());
-        given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
-        orderTable.setEmpty(true);
+        given(orderTableDao.findById(any())).willReturn(Optional.of(비어있는_주문_테이블_생성()));
 
         // When & Then
         assertThatExceptionOfType(IllegalArgumentException.class)
