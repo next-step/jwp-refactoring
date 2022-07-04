@@ -6,9 +6,11 @@ import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.menu.application.MenuGroupServiceTest;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroupTest;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.product.application.ProductServiceTest;
+import kitchenpos.product.domain.ProductTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -28,24 +31,8 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
-    public static Menu 불고기_새우버거_메뉴 = new Menu();
-    public static MenuProduct 불고기버거 = new MenuProduct();
-    public static MenuProduct 새우버거 = new MenuProduct();
-
-    static {
-        불고기_새우버거_메뉴.setId(1L);
-        불고기_새우버거_메뉴.setName("불고기버거 + 새우버거");
-        불고기_새우버거_메뉴.setPrice(BigDecimal.valueOf(2000.0));
-        불고기_새우버거_메뉴.setMenuGroupId(MenuGroupServiceTest.햄버거_메뉴.getId());
-
-        불고기버거.setProductId(ProductServiceTest.불고기버거.getId());
-        불고기버거.setQuantity(1L);
-
-        새우버거.setProductId(ProductServiceTest.새우버거.getId());
-        불고기버거.setQuantity(2L);
-
-        불고기_새우버거_메뉴.setMenuProducts(Arrays.asList(불고기버거, 새우버거));
-    }
+    public static Menu 불고기_새우버거_메뉴 = new Menu(1L, "불고기버거 + 새우버거", BigDecimal.valueOf(2000.0),
+            MenuGroupTest.햄버거_메뉴, null);
 
     @Mock
     private MenuDao menuDao;
@@ -82,9 +69,9 @@ class MenuServiceTest {
         // given
         given(menuDao.findAll())
                 .willReturn(Arrays.asList(불고기_새우버거_메뉴));
-
-        given(menuProductDao.findAllByMenuId(any()))
-                .willReturn(Arrays.asList(불고기버거, 새우버거));
+//
+//        given(menuProductDao.findAllByMenuId(any()))
+//                .willReturn(Arrays.asList(불고기버거, 새우버거));
         // when
         final List<Menu> list = menuService.list();
         // then

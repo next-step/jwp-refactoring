@@ -23,7 +23,6 @@ public class MenuGroupRestController {
 
     @PostMapping("/api/menu-groups")
     public ResponseEntity<MenuGroupResponse> create(@RequestBody final CreateMenuGroupRequest createMenuGroupRequest) {
-        System.out.println("createMenuGroupRequest" + createMenuGroupRequest);
         final MenuGroupResponse created = menuGroupService.create(createMenuGroupRequest.toEntity());
         final URI uri = URI.create("/api/menu-groups/" + created.getId());
         return ResponseEntity.created(uri).body(created);

@@ -1,54 +1,54 @@
 package kitchenpos.menu.domain;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
+@Entity
 public class Menu {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false)
     private String name;
-    private BigDecimal price;
-    private Long menuGroupId;
+    @Embedded
+    private MenuPrice price;
+    @ManyToOne
+    @JoinColumn(name = "menu_group_id_id")
+    private MenuGroup menuGroupId;
+    @OneToMany(mappedBy = "seq")
     private List<MenuProduct> menuProducts;
+
+    public Menu(final Long id, final String name, final BigDecimal price, final MenuGroup menuGroupId, final List<MenuProduct> products) {
+        this.id = id;
+        this.name = name;
+        this.price = MenuPrice.of(price);
+        this.menuGroupId = menuGroupId;
+        this.menuProducts = products;
+    }
+    public static Menu of(final String name, final BigDecimal price, final MenuGroup menuGroupId, final List<MenuProduct> products) {
+        return new Menu(null, name, price, menuGroupId, products);
+    }
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(final String name) {
-        this.name = name;
-    }
-
     public BigDecimal getPrice() {
-        return price;
+        return price.getValue();
     }
 
-    public void setPrice(final BigDecimal price) {
-        this.price = price;
-    }
-
-    public Long getMenuGroupId() {
+    public MenuGroup getMenuGroupId() {
         return menuGroupId;
-    }
-
-    public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroupId = menuGroupId;
     }
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
-    }
-
-    public void setMenuProducts(final List<MenuProduct> menuProducts) {
-        this.menuProducts = menuProducts;
     }
 
     @Override
