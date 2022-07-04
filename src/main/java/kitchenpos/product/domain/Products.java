@@ -13,4 +13,8 @@ public class Products {
     public boolean isSameSize(List<Long> productIds) {
         return products.size() == new HashSet<>(productIds).size();
     }
+
+    public List<Product> getProducts() {
+        return products;
+    }
 }

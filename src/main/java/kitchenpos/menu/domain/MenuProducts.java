@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.common.Price;
+import kitchenpos.common.Quantity;
 
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
@@ -10,10 +10,11 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.FetchType.LAZY;
 
 @Embeddable
 public class MenuProducts {
-    @OneToMany(mappedBy = "menu", cascade = ALL)
+    @OneToMany(mappedBy = "menu", fetch = LAZY, cascade = ALL, orphanRemoval = true)
     private final List<MenuProduct> menuProducts;
 
     public MenuProducts() {
@@ -32,17 +33,6 @@ public class MenuProducts {
         return new MenuProducts(menuProducts);
     }
 
-    public Price totalPrice() {
-        Price sum = new Price();
-        for (final MenuProduct menuProduct : menuProducts) {
-            sum = sum.plus(
-                    menuProduct.getProduct()
-                            .getPrice()
-                            .multiply(menuProduct.getQuantity()));
-        }
-        return sum;
-    }
-
     public void setMenu(Menu menu) {
         menuProducts.forEach(m -> m.setMenu(menu));
     }
@@ -55,6 +45,14 @@ public class MenuProducts {
         return menuProducts.stream()
                 .map(MenuProduct::getProductId)
                 .collect(Collectors.toList());
+    }
+
+    public Quantity getQuantity(Long productId) {
+        return menuProducts.stream()
+                .filter(m -> m.getProductId().equals(productId))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new)
+                .getQuantity();
     }
 
     @Override

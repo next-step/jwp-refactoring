@@ -17,6 +17,7 @@ public class Menu {
     private Name name;
     @Embedded
     private Price price;
+    @Column(nullable = false)
     private Long menuGroupId;
     @Embedded
     private MenuProducts menuProducts;
@@ -41,16 +42,12 @@ public class Menu {
     }
 
     public Menu(Long id, Name name, Price price, Long menuGroupId, MenuProducts menuProducts) {
-        if (price.moreExpensiveThan(menuProducts.totalPrice())) {
-            throw new IllegalArgumentException();
-        }
-        menuProducts.setMenu(this);
-
         this.id = id;
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
+        menuProducts.setMenu(this);
     }
 
     public Long getId() {

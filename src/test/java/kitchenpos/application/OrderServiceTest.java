@@ -66,7 +66,7 @@ class OrderServiceTest {
         진매 = TestProductFactory.create(1L, "진라면 매운맛", 5_000);
         진순이 = TestProductFactory.create(2L, "진라면 순한맛", 5_000);
 
-        메뉴 = TestMenuFactory.create(10L, 4_000, 분식류.getId(), "라면메뉴", Arrays.asList(MenuProduct.of(진매, 1), MenuProduct.of(진순이, 1)));
+        메뉴 = TestMenuFactory.create(10L, 4_000, 분식류.getId(), "라면메뉴", Arrays.asList(new MenuProduct(1L, 1), new MenuProduct(2L, 1)));
 
         주문_메뉴 = new OrderLineItemRequest(메뉴.getId(), 3);
         주문_요청 = new OrderRequest(1L, Collections.singletonList(주문_메뉴));

@@ -67,7 +67,7 @@ class MenuServiceTest {
         메뉴_진순이 = new MenuProductRequest(2L, 1);
 
         메뉴_요청 = TestMenuRequestFactory.toMenuRequest("라면세트", 4_000, 1L, Arrays.asList(메뉴_진매, 메뉴_진순이));
-        메뉴 = new Menu("라면세트", new Price(4_000), 1L, MenuProducts.of(Arrays.asList(MenuProduct.of(진매, 1), MenuProduct.of(진순이, 1))));
+        메뉴 = new Menu("라면세트", new Price(4_000), 1L, MenuProducts.of(Arrays.asList(new MenuProduct(1L, 1), new MenuProduct(2L, 1))));
     }
 
     @Test
@@ -106,9 +106,11 @@ class MenuServiceTest {
     @Test
     void createException3() throws Exception {
         // given
-        메뉴_요청 = TestMenuRequestFactory.toMenuRequest("라면세트", 100_000, 1L, Arrays.asList(메뉴_진매, 메뉴_진순이));
+        메뉴 = new Menu("라면세트", new Price(10_001), 1L, MenuProducts.of(Arrays.asList(new MenuProduct(1L, 1), new MenuProduct(2L, 1))));
+        given(productRepository.findByIdIn(any())).willReturn(Arrays.asList(진매, 진순이));
+        given(menuGroupRepository.existsById(any())).willReturn(true);
         // when & then
-        assertThatThrownBy(() -> menuMapperInject.mapFrom(메뉴_요청)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuValidatorInject.validate(메뉴)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("등록된 전체 메뉴를 조회한다")

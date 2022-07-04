@@ -23,7 +23,7 @@ class MenuProductsTest {
     void setUp() {
         quantity = new Quantity(10);
         product = new Product("진매", new Price(1000));
-        menuProduct = MenuProduct.of(product, quantity.value());
+        menuProduct = new MenuProduct(1L, quantity.value());
         menuProducts = Collections.singletonList(menuProduct);
     }
 
@@ -35,16 +35,6 @@ class MenuProductsTest {
 
         // then
         assertThat(result.getMenuProducts()).isEqualTo(menuProducts);
-    }
-
-    @Test
-    @DisplayName("메뉴상품들의 수량을 곱한 가격을 계산한다")
-    void totalPrice() {
-        // given & when
-        MenuProducts result = MenuProducts.of(menuProducts);
-
-        // then
-        assertThat(result.totalPrice()).isEqualTo(new Price(10000));
     }
 
     @Test

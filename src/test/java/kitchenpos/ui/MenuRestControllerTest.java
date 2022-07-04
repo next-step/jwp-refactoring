@@ -55,9 +55,10 @@ class MenuRestControllerTest {
         this.mockMvc = MockMvcBuilders.standaloneSetup(menuRestController).build();
         MenuProductRequest 메뉴_진매 = new MenuProductRequest(1L, 1);
         메뉴_요청 = TestMenuRequestFactory.toMenuRequest("메뉴", 5000, 1L, Arrays.asList(메뉴_진매));
+        Product 진매 = new Product(1L, new Name("진매"), new Price(5000));
         메뉴 = new Menu("메뉴",
                 new Price(5_000),
-                MenuProducts.of(Collections.singletonList(new MenuProduct(1L, new Product(1L, new Name("진매"), new Price(5000)), 1))));
+                MenuProducts.of(Collections.singletonList(new MenuProduct(1L, 진매.getId(), 1))));
     }
 
     @Test
