@@ -3,9 +3,9 @@ package kitchenpos.menu.domain;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
-import kitchenpos.fixture.MenuGroupFixtureFactory;
-import kitchenpos.fixture.MenuProductFixtureFactory;
-import kitchenpos.fixture.ProductFixtureFactory;
+import kitchenpos.menu.fixture.MenuGroupFixtureFactory;
+import kitchenpos.menu.fixture.MenuProductFixtureFactory;
+import kitchenpos.product.fixture.ProductFixtureFactory;
 import kitchenpos.menu.exception.InvalidMenuPriceException;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;

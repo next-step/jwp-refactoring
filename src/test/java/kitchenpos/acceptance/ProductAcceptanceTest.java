@@ -7,7 +7,7 @@ import io.restassured.response.Response;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.product.domain.Product;
-import kitchenpos.utils.KitchenPosBehaviors;
+import kitchenpos.acceptance.util.KitchenPosBehaviors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;

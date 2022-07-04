@@ -1,4 +1,4 @@
-package kitchenpos.fixture;
+package kitchenpos.order.fixture;
 
 import java.util.List;
 import kitchenpos.order.domain.OrderStatus;

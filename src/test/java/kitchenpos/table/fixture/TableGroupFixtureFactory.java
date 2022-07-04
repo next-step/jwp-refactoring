@@ -1,4 +1,4 @@
-package kitchenpos.fixture;
+package kitchenpos.table.fixture;
 
 import java.util.List;
 import java.util.stream.Collectors;

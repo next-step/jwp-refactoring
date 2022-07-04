@@ -5,9 +5,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import kitchenpos.ServiceTest;
-import kitchenpos.fixture.MenuProductFixtureFactory;
-import kitchenpos.fixture.OrderLineItemFixtureFactory;
-import kitchenpos.fixture.OrderTableFixtureFactory;
+import kitchenpos.menu.fixture.MenuProductFixtureFactory;
+import kitchenpos.order.fixture.OrderLineItemFixtureFactory;
+import kitchenpos.table.fixture.OrderTableFixtureFactory;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuDto;

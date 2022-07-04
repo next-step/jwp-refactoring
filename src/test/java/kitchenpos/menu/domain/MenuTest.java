@@ -5,9 +5,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
 import java.util.List;
-import kitchenpos.fixture.MenuGroupFixtureFactory;
-import kitchenpos.fixture.MenuProductFixtureFactory;
-import kitchenpos.fixture.ProductFixtureFactory;
+import kitchenpos.menu.fixture.MenuGroupFixtureFactory;
+import kitchenpos.menu.fixture.MenuProductFixtureFactory;
+import kitchenpos.product.fixture.ProductFixtureFactory;
 import kitchenpos.product.domain.Product;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;

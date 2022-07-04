@@ -1,6 +1,6 @@
 package kitchenpos.product.util;
 
-import kitchenpos.fixture.ProductFixtureFactory;
+import kitchenpos.product.fixture.ProductFixtureFactory;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import org.springframework.beans.factory.annotation.Autowired;

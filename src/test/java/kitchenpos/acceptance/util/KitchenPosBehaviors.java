@@ -1,4 +1,4 @@
-package kitchenpos.utils;
+package kitchenpos.acceptance.util;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;

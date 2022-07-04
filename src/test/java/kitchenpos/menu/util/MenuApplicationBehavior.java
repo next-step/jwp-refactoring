@@ -1,8 +1,8 @@
 package kitchenpos.menu.util;
 
 import java.util.List;
-import kitchenpos.fixture.MenuFixtureFactory;
-import kitchenpos.fixture.MenuGroupFixtureFactory;
+import kitchenpos.menu.fixture.MenuFixtureFactory;
+import kitchenpos.menu.fixture.MenuGroupFixtureFactory;
 import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;

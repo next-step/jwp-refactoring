@@ -1,4 +1,4 @@
-package kitchenpos.fixture;
+package kitchenpos.table.fixture;
 
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequest;

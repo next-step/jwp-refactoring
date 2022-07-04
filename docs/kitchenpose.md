@@ -83,9 +83,10 @@
 - [X] 메뉴 정보가 변경되더라도 주문 항목이 변경되지 않게 구현
   - [X] flyway 버전 추가(orderLineItem 테이블에 메뉴이름과 메뉴가격 컬럼을 추가)
   - [X] OrderLineItem 객체 생성시점에 메뉴 정보를 복사 
-- [ ] 프로덕션 및 테스트 코드 의존성 분석 및 조치
+- [X] 프로덕션 및 테스트 코드 의존성 분석 및 조치
   - [X] 프로덕션 의존성 구성도 작성
   - [X] 테스트 코드 분리
-    - [X] ServiceTestHelper
-    - [ ] Fixtures 
+    - [X] ServiceTestHelper를 각 패키지로 분리
+    - [X] Fixtures를 각 패키지로 이동
+    - [X] KitchenPosBehaviors는 인수테스트 패키지 내부로 이동
   - [ ] 테스트 의존성 구성도 작성

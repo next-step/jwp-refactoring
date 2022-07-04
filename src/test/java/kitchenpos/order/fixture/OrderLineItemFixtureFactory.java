@@ -1,4 +1,4 @@
-package kitchenpos.fixture;
+package kitchenpos.order.fixture;
 
 import kitchenpos.order.dto.OrderLineItemRequest;
 
