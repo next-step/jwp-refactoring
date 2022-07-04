@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import lombok.NoArgsConstructor;
 import org.springframework.util.CollectionUtils;
 
 @Embeddable

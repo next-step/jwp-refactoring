@@ -6,10 +6,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Getter
+@NoArgsConstructor
 @Entity
 public class Product {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -17,9 +20,6 @@ public class Product {
 
     @Embedded
     private Price price = new Price();
-
-    public Product() {
-    }
 
     public Product(String name, BigDecimal price) {
         this.name = name;
@@ -32,16 +32,8 @@ public class Product {
         this.price = new Price(price);
     }
 
-    public Long getId() {
-        return id;
-    }
-
     public void setId(final Long id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public void setName(final String name) {
@@ -50,10 +42,6 @@ public class Product {
 
     public void setPrice(final BigDecimal price) {
         this.price = new Price(price);
-    }
-
-    public Price getPrice() {
-        return price;
     }
 
 }

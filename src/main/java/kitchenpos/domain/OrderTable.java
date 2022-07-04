@@ -7,7 +7,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Getter
+@NoArgsConstructor
 @Entity
 public class OrderTable {
     @Id
@@ -19,8 +23,6 @@ public class OrderTable {
     private int numberOfGuests;
     private boolean empty;
 
-    public OrderTable() {
-    }
 
     public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {this.tableGroup = tableGroup;
         this.numberOfGuests = numberOfGuests;
@@ -34,32 +36,16 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public Long getId() {
-        return id;
-    }
-
     public void setId(final Long id) {
         this.id = id;
-    }
-
-    public TableGroup getTableGroup() {
-        return tableGroup;
     }
 
     public void setTableGroup(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
     }
 
-    public int getNumberOfGuests() {
-        return numberOfGuests;
-    }
-
     public void setNumberOfGuests(final int numberOfGuests) {
         this.numberOfGuests = numberOfGuests;
-    }
-
-    public boolean isEmpty() {
-        return empty;
     }
 
     public void setEmpty(final boolean empty) {
@@ -78,15 +64,5 @@ public class OrderTable {
         }
 
         setEmpty(orderTable.isEmpty());
-    }
-
-    @Override
-    public String toString() {
-        return "OrderTable{" +
-                "id=" + id +
-                ", tableGroup=" + tableGroup +
-                ", numberOfGuests=" + numberOfGuests +
-                ", empty=" + empty +
-                '}';
     }
 }

@@ -4,7 +4,9 @@ import java.math.BigDecimal;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode
 @Embeddable
 public class Price {
 
@@ -42,21 +44,5 @@ public class Price {
         return price.compareTo(value.getPrice());
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Price)) {
-            return false;
-        }
-        Price price1 = (Price) o;
-        return Objects.equals(getPrice(), price1.getPrice());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getPrice());
-    }
 }
 

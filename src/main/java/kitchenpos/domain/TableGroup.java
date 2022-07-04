@@ -6,7 +6,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Getter
+@NoArgsConstructor
 @Entity
 public class TableGroup {
     @Id
@@ -17,27 +21,12 @@ public class TableGroup {
     @Embedded
     private OrderTables orderTables;
 
-    public TableGroup() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
     public void setId(final Long id) {
         this.id = id;
     }
 
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
-
     public void setCreatedDate(final LocalDateTime createdDate) {
         this.createdDate = createdDate;
-    }
-
-    public OrderTables getOrderTables() {
-        return orderTables;
     }
 
     public void setOrderTables(OrderTables orderTables) {
