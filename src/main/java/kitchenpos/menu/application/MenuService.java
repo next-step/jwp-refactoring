@@ -24,7 +24,6 @@ public class MenuService {
     private static final int FIRST_INDEX = 0;
     private final MenuRepository menuRepository;
     private final ProductRepository productRepository;
-
     private final MenuGroupService menuGroupService;
 
     public MenuService(
@@ -41,14 +40,7 @@ public class MenuService {
     public MenuResponse create(final MenuRequest request) {
         MenuGroup menuGroup = menuGroupService.findById(request.getMenuGroupId());
 
-        List<Long> productIds = request.getMenuProductRequests().stream()
-                .map(MenuProductRequest::getProductId)
-                .collect(toList());
-
-        List<Product> products = productRepository.findByIdIn(productIds);
-        if (products.size() != request.getMenuProductRequests().size()) {
-            throw new IllegalArgumentException("등록되지 않은 상품이 있습니다.");
-        }
+        List<Product> products = getProducts(request);
 
         Map<Long, List<Product>> productMap = products.stream()
                 .collect(groupingBy(Product::getId));
@@ -67,5 +59,18 @@ public class MenuService {
         return menuRepository.findAll().stream()
                 .map(MenuResponse::of)
                 .collect(toList());
+    }
+
+    private List<Product> getProducts(MenuRequest request) {
+        List<Long> productIds = request.getMenuProductRequests().stream()
+                .map(MenuProductRequest::getProductId)
+                .collect(toList());
+
+        List<Product> products = productRepository.findByIdIn(productIds);
+        if (products.size() != request.getMenuProductRequests().size()) {
+            throw new IllegalArgumentException("등록되지 않은 상품이 있습니다.");
+        }
+
+        return products;
     }
 }
