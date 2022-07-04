@@ -1,7 +1,10 @@
-package kitchenpos.application;
+package kitchenpos.product.application;
 
 import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Product;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,44 +22,34 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
-    public static final Product 불고기버거 = new Product();
-    public static final Product 새우버거 = new Product();
-
-    static {
-        불고기버거.setId(1L);
-        불고기버거.setName("불고기버거");
-        불고기버거.setPrice(BigDecimal.valueOf(1000.0));
-
-        새우버거.setId(2L);
-        새우버거.setName("새우버거");
-        새우버거.setPrice(BigDecimal.valueOf(5000.0));
-    }
-
+    public static final Product 불고기버거 = Product.of("불고기버거", BigDecimal.valueOf(1500));
+    public static final Product 새우버거 = Product.of("새우버거", BigDecimal.valueOf(2000));
     @Mock
-    ProductDao productDao;
+    ProductRepository productRepository;
     @InjectMocks
     ProductService productService;
+
 
     @Test
     @DisplayName("상품 추가")
     void create() {
         // given
-        given(productDao.save(any()))
-                .willReturn(new Product());
+        given(productRepository.save(any()))
+                .willReturn(불고기버거);
         // when
-        final Product 제품_생성 = productService.create(불고기버거);
+        final ProductResponse 제품_생성 = productService.create(불고기버거);
         // then
-        assertThat(제품_생성).isInstanceOf(Product.class);
+        assertThat(제품_생성).isInstanceOf(ProductResponse.class);
     }
 
     @Test
     @DisplayName("상품 전체 조회")
     void list() {
         // given
-        given(productDao.findAll())
+        given(productRepository.findAll())
                 .willReturn(Arrays.asList(불고기버거, 새우버거));
         // when
-        final List<Product> list = productService.list();
+        final List<ProductResponse> list = productService.list();
         // then
         assertThat(list).hasSize(2);
     }

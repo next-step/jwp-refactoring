@@ -7,7 +7,8 @@ import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuGroup;
 import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
+import kitchenpos.product.acceptance.ProductAcceptanceTest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,8 +43,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     void menu() {
         // given
         final MenuGroup 메뉴_그룹 = MenuGroupAcceptanceTest.메뉴_그룹_추가_되어_있음(MenuGroupAcceptanceTest.햄버거_메뉴);
-        final Product 불고기버거 = ProductAcceptanceTest.제품_추가_되어_있음(ProductAcceptanceTest.불고기버거);
-        final Product 새우버거 = ProductAcceptanceTest.제품_추가_되어_있음(ProductAcceptanceTest.새우버거);
+        final ProductResponse 불고기버거 = ProductAcceptanceTest.제품_추가_되어_있음(ProductAcceptanceTest.불고기버거);
+        final ProductResponse 새우버거 = ProductAcceptanceTest.제품_추가_되어_있음(ProductAcceptanceTest.새우버거);
 
         final MenuProduct 불고기 = new MenuProduct();
         불고기.setProductId(불고기버거.getId());

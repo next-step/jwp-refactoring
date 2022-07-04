@@ -1,33 +1,25 @@
-package kitchenpos.acceptance;
+package kitchenpos.product.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.Product;
+import kitchenpos.product.dto.CreateProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ProductAcceptanceTest extends AcceptanceTest {
     private static final String PRODUCT_URL = "/api/products";
-    public static final Product 불고기버거 = new Product();
-    public static final Product 새우버거 = new Product();
-
-    static {
-        불고기버거.setName("불고기버거");
-        불고기버거.setPrice(BigDecimal.valueOf(1500.0));
-
-        새우버거.setName("새우버거");
-        새우버거.setPrice(BigDecimal.valueOf(2000.0));
-    }
+    public static final CreateProductRequest 불고기버거 = new CreateProductRequest("불고기버거", 1500);
+    public static final CreateProductRequest 새우버거 = new CreateProductRequest("새우버거", 2000);
 
     @Override
     @BeforeEach
@@ -48,22 +40,17 @@ public class ProductAcceptanceTest extends AcceptanceTest {
         // when
         final ExtractableResponse<Response> 제품_추가_요청 = 제품_추가_요청(불고기버거);
         // then
-        제품_추가_됨(제품_추가_요청);
+        final ProductResponse 제품_추가_됨 = 제품_추가_됨(제품_추가_요청);
 
         // when
         final ExtractableResponse<Response> 전체_제품_조회 = 제품_전체_조회();
         // then
-        final List<Product> products = 제품_조회_됨(전체_제품_조회);
-        final String 제품명 = products.stream()
-                .filter(it -> ProductAcceptanceTest.불고기버거.getName().equals(it.getName()))
-                .map(Product::getName)
-                .findFirst()
-                .get();
+        final List<ProductResponse> products = 제품_조회_됨(전체_제품_조회);
 
-        assertThat(제품명).isEqualTo(불고기버거.getName());
+        assertThat(products).hasSize(1);
     }
 
-    public static ExtractableResponse<Response> 제품_추가_요청(final Product product) {
+    public static ExtractableResponse<Response> 제품_추가_요청(final CreateProductRequest product) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(product)
@@ -72,12 +59,12 @@ public class ProductAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static Product 제품_추가_됨(final ExtractableResponse<Response> response) {
+    public static ProductResponse 제품_추가_됨(final ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        return response.as(Product.class);
+        return response.as(ProductResponse.class);
     }
 
-    public static Product 제품_추가_되어_있음(final Product product) {
+    public static ProductResponse 제품_추가_되어_있음(final CreateProductRequest product) {
         return 제품_추가_됨(제품_추가_요청(product));
     }
 
@@ -88,8 +75,8 @@ public class ProductAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static List<Product> 제품_조회_됨(final ExtractableResponse<Response> response) {
+    public static List<ProductResponse> 제품_조회_됨(final ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        return response.jsonPath().getList(".", Product.class);
+        return response.jsonPath().getList(".", ProductResponse.class);
     }
 }
