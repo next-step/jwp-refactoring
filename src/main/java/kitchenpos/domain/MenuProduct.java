@@ -1,10 +1,20 @@
 package kitchenpos.domain;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class MenuProduct {
     private Long seq;
     private Long menuId;
     private Long productId;
     private long quantity;
+
+    public MenuProduct() {}
+
+    public MenuProduct(final Long productId, final long quantity) {
+        this.productId = productId;
+        this.quantity = quantity;
+    }
 
     public Long getSeq() {
         return seq;
@@ -36,5 +46,9 @@ public class MenuProduct {
 
     public void setQuantity(final long quantity) {
         this.quantity = quantity;
+    }
+
+    public static List<MenuProduct> ofList(final MenuProduct... menuProducts) {
+        return Arrays.asList(menuProducts);
     }
 }

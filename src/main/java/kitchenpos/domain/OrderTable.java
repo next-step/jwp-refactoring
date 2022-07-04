@@ -1,10 +1,28 @@
 package kitchenpos.domain;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class OrderTable {
     private Long id;
     private Long tableGroupId;
     private int numberOfGuests;
     private boolean empty;
+
+    public OrderTable() {
+    }
+
+    public OrderTable(final Long id, final Long tableGroupId, final int numberOfGuests, final boolean empty) {
+        this.id = id;
+        this.tableGroupId = tableGroupId;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
+    public OrderTable(final int numberOfGuests, final boolean empty) {
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
 
     public Long getId() {
         return id;
@@ -36,5 +54,9 @@ public class OrderTable {
 
     public void setEmpty(final boolean empty) {
         this.empty = empty;
+    }
+
+    public static List<OrderTable> ofList(final OrderTable... orderTables) {
+        return Arrays.asList(orderTables);
     }
 }

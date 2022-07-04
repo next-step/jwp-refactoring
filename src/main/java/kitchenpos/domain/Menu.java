@@ -10,6 +10,25 @@ public class Menu {
     private Long menuGroupId;
     private List<MenuProduct> menuProducts;
 
+    public Menu() {
+    }
+
+    public Menu(final String name, final BigDecimal price, final Long menuGroupId, final MenuProduct... menuProducts) {
+        this.name = name;
+        this.price = price;
+        this.menuGroupId = menuGroupId;
+        this.menuProducts = MenuProduct.ofList(menuProducts);
+    }
+
+    public Menu(final Long id, final String name, final BigDecimal price, final Long menuGroupId,
+                final MenuProduct... menuProducts) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.menuGroupId = menuGroupId;
+        this.menuProducts = MenuProduct.ofList(menuProducts);
+    }
+
     public Long getId() {
         return id;
     }
