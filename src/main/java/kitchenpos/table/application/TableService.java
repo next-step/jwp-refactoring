@@ -27,7 +27,7 @@ public class TableService {
     }
 
     public OrderTableResponse create(OrderTableRequest request) {
-        OrderTable orderTable = request.toEntity();
+        OrderTable orderTable = request.toEntity(request);
         OrderTable savedOrderTable = orderTableRepository.save(orderTable);
 
         return OrderTableResponse.of(savedOrderTable);

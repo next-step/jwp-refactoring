@@ -95,4 +95,8 @@ public class OrderTable {
         }
         this.numberOfGuests = numberOfGuests;
     }
+
+    public void updateTableGroup(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
+    }
 }
