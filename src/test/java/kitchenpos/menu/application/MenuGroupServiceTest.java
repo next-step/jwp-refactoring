@@ -1,7 +1,8 @@
-package kitchenpos.application;
+package kitchenpos.menu.application;
 
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroupRepository;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,14 +19,10 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 public class MenuGroupServiceTest {
-    public static final MenuGroup 햄버거_메뉴 =  new MenuGroup();
-
-    static {
-        햄버거_메뉴.setName("햄버거 메뉴");
-    }
+    public static final MenuGroup 햄버거_메뉴 = MenuGroup.of("햄버거메뉴");
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
     @InjectMocks
     MenuGroupService menuGroupService;
 
@@ -33,22 +30,22 @@ public class MenuGroupServiceTest {
     @DisplayName("메뉴 그룹 추가")
     void create() {
         // given
-        given(menuGroupDao.save(any()))
-                .willReturn(new MenuGroup());
+        given(menuGroupRepository.save(any()))
+                .willReturn(햄버거_메뉴);
         // when
-        final MenuGroup menuGroup = menuGroupService.create(햄버거_메뉴);
+        final MenuGroupResponse menuGroup = menuGroupService.create(햄버거_메뉴);
         // then
-        assertThat(menuGroup).isInstanceOf(MenuGroup.class);
+        assertThat(menuGroup).isInstanceOf(MenuGroupResponse.class);
     }
 
     @Test
     @DisplayName("메뉴 그룹 조회")
     void list() {
         // given
-        given(menuGroupDao.findAll())
+        given(menuGroupRepository.findAll())
                 .willReturn(Arrays.asList(햄버거_메뉴));
         // when
-        final List<MenuGroup> list = menuGroupService.list();
+        final List<MenuGroupResponse> list = menuGroupService.list();
         // then
         assertThat(list).hasSize(1);
     }
