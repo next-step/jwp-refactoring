@@ -1,6 +1,5 @@
 package kitchenpos.util;
 
-import kitchenpos.domain.*;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menuGroup.domain.MenuGroup;
@@ -46,18 +45,6 @@ public class testFixture {
         return Menu.of("양념치킨", new BigDecimal(16000), 한마리_메뉴_그룹_생성(), menuProducts);
     }
 
-    public static OrderLineItem 주문항목_1_생성() {
-        return OrderLineItem.of(1L, 1L, 1L, 1L);
-    }
-
-    public static OrderLineItem 주문항목_2_생성() {
-        return OrderLineItem.of(2L, 1L, 2L, 1L);
-    }
-
-    public static OrderLineItem 주문항목_3_생성() {
-        return OrderLineItem.of(3L, 2L, 1L, 1L);
-    }
-
     public static OrderTable 주문테이블_1_생성() {
         return OrderTable.of(단체지정_1_생성(Arrays.asList(빈_주문테이블_1_생성(), 빈_주문테이블_2_생성())), 1, false);
     }
@@ -78,23 +65,11 @@ public class testFixture {
         return OrderTable.of(3L, null, 3, true);
     }
 
-    public static OrderTable 주문테이블_3_생성() {
-        return OrderTable.of(null, 3, true);
-    }
-
     public static TableGroup 단체지정_1_생성(List<OrderTable> orderTables) {
         return TableGroup.of(orderTables);
     }
 
     public static TableGroup 단체지정_2_생성(List<OrderTable> orderTables) {
         return TableGroup.of(orderTables);
-    }
-
-    public static Order 주문_1_생성(List<OrderLineItem> orderLineItems) {
-        return Order.of(1L, 1L, null, null, orderLineItems);
-    }
-
-    public static Order 주문_2_생성(List<OrderLineItem> orderLineItems) {
-        return Order.of(1L, 1L, null, null, orderLineItems);
     }
 }
