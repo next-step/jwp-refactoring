@@ -27,7 +27,7 @@ public class MenuProducts {
     }
 
     private void validMenu(List<MenuProduct> menuProducts) {
-        menuProducts.forEach(menuProduct -> menuProduct.validProduct());
+        menuProducts.forEach(MenuProduct::validProduct);
     }
 
     private void validPrice(List<MenuProduct> menuProducts, Price price) {

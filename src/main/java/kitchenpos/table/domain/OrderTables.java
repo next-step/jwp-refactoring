@@ -36,7 +36,7 @@ public class OrderTables {
     }
 
     public void changeUnGroup() {
-        orderTables.forEach(orderTable -> orderTable.changeUnGroup());
+        orderTables.forEach(OrderTable::changeUnGroup);
     }
 
     public List<OrderTable> getOrderTables() {

@@ -8,7 +8,6 @@ public class OrderTableRequest {
     private boolean empty;
 
     public OrderTableRequest(Long tableGroupId, int numberOfGuests, boolean empty) {
-        this.id = id;
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;

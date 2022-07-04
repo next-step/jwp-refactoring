@@ -26,7 +26,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class TableServiceTest {
+class TableServiceTest {
     @InjectMocks
     TableService tableService;
 

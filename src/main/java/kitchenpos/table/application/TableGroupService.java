@@ -14,7 +14,6 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class TableGroupService {
@@ -71,7 +70,7 @@ public class TableGroupService {
     }
 
     private void validOrderTableSizeIsEqual(List<OrderTable> orderTables, List<Long> orderTableIds) {
-        if (orderTableIds.size() != orderTableIds.size()) {
+        if (orderTables.size() != orderTableIds.size()) {
             throw new IllegalArgumentException("등록되지 않은 주문테이블이 있습니다.");
         }
     }

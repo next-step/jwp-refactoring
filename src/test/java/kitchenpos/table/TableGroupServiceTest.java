@@ -163,7 +163,7 @@ class TableGroupServiceTest {
         )).thenReturn(true);
 
         // then
-        Assertions.assertThatThrownBy(() -> {
+        assertThatThrownBy(() -> {
             tableGroupService.ungroup(단체지정1.getId());
         }).isInstanceOf(IllegalArgumentException.class);
     }
