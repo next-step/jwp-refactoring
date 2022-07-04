@@ -1,10 +1,10 @@
 package kitchenpos.MenuGroup;
 
-import kitchenpos.menuGroup.application.MenuGroupService;
-import kitchenpos.menuGroup.domain.MenuGroup;
-import kitchenpos.menuGroup.domain.MenuGroupRepository;
-import kitchenpos.menuGroup.dto.MenuGroupRequest;
-import kitchenpos.menuGroup.dto.MenuGroupResponse;
+import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroupRepository;
+import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
     @InjectMocks
-    MenuGroupService menuGroupService;
+    MenuService.MenuGroupService menuGroupService;
 
     @Mock
     MenuGroupRepository menuGroupRepository;

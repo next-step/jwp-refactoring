@@ -2,7 +2,7 @@ package kitchenpos.util;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menuGroup.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.OrderTable;

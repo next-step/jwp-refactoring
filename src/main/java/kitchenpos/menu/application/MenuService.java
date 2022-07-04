@@ -6,15 +6,15 @@ import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menuGroup.domain.MenuGroup;
-import kitchenpos.menuGroup.domain.MenuGroupRepository;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuGroupRepository;
+import kitchenpos.menu.dto.MenuGroupRequest;
+import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -70,5 +70,27 @@ public class MenuService {
         return menuRepository.findAll().stream()
                 .map(MenuResponse::of)
                 .collect(toList());
+    }
+
+    @Service
+    public static class MenuGroupService {
+        private final MenuGroupRepository menuGroupRepository;
+
+        public MenuGroupService(final MenuGroupRepository menuGroupRepository) {
+            this.menuGroupRepository = menuGroupRepository;
+        }
+
+        @Transactional
+        public MenuGroupResponse create(final MenuGroupRequest menuGroupRequest) {
+            MenuGroup menuGroup = MenuGroup.of(menuGroupRequest.getName());
+            menuGroup = menuGroupRepository.save(menuGroup);
+            return MenuGroupResponse.of(menuGroup);
+        }
+
+        public List<MenuGroupResponse> list() {
+            return menuGroupRepository.findAll().stream()
+                    .map(MenuGroupResponse::of)
+                    .collect(toList());
+        }
     }
 }
