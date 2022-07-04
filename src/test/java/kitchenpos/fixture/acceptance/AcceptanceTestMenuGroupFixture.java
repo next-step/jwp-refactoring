@@ -1,7 +1,7 @@
 package kitchenpos.fixture.acceptance;
 
-import kitchenpos.acceptance.MenuGroupAcceptanceTest;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menu.acceptance.MenuGroupAcceptanceTest;
+import kitchenpos.menu.domain.MenuGroup;
 
 public class AcceptanceTestMenuGroupFixture {
     public final MenuGroup 구이류;

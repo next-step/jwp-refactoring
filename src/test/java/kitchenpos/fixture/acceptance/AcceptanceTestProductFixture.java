@@ -1,8 +1,8 @@
 package kitchenpos.fixture.acceptance;
 
 import java.math.BigDecimal;
-import kitchenpos.acceptance.ProductAcceptanceTest;
-import kitchenpos.domain.Product;
+import kitchenpos.product.acceptance.ProductAcceptanceTest;
+import kitchenpos.product.domain.Product;
 
 public class AcceptanceTestProductFixture {
     public final Product 삼겹살;

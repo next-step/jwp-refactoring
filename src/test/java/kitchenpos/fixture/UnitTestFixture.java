@@ -2,21 +2,21 @@ package kitchenpos.fixture;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.MenuProducts;
-import kitchenpos.domain.NumberOfGuests;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderLineItems;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.OrderTables;
-import kitchenpos.domain.Price;
-import kitchenpos.domain.Product;
-import kitchenpos.domain.Quantity;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.common.domain.Price;
+import kitchenpos.common.domain.Quantity;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.product.domain.Product;
+import kitchenpos.table.domain.NumberOfGuests;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.tablegroup.domain.OrderTables;
+import kitchenpos.tablegroup.domain.TableGroup;
 
 public class UnitTestFixture {
     public final MenuGroup 구이류 = new MenuGroup(1L, "구이류");
@@ -37,11 +37,16 @@ public class UnitTestFixture {
     public final Menu 김치찌개정식 = new Menu(
             2L, "김치찌개정식", new Price(9000L), 식사류.getId(), new MenuProducts(Arrays.asList(김치찌개정식_김치찌개, 김치찌개정식_공깃밥)));
 
-    public final OrderLineItem 조리중_주문_항목1 = new OrderLineItem(1L, null, 1L, new Quantity(2));
-    public final OrderLineItem 조리중_주문_항목2 = new OrderLineItem(2L, null, 2L, new Quantity(1));
-    public final OrderLineItem 식사중_주문_항목1 = new OrderLineItem(3L, null, 1L, new Quantity(2));
-    public final OrderLineItem 식사중_주문_항목2 = new OrderLineItem(4L, null, 2L, new Quantity(1));
-    public final OrderLineItem 완료된_주문_항목 = new OrderLineItem(5L, null, 2L, new Quantity(2));
+    public final OrderLineItem 조리중_주문_항목1 = new OrderLineItem(
+            1L, null, 1L, 돼지모듬.getName(), 돼지모듬.getPrice().value(), new Quantity(2));
+    public final OrderLineItem 조리중_주문_항목2 = new OrderLineItem(
+            2L, null, 2L, 김치찌개정식.getName(), 김치찌개정식.getPrice().value(), new Quantity(1));
+    public final OrderLineItem 식사중_주문_항목1 = new OrderLineItem(
+            3L, null, 1L, 돼지모듬.getName(), 돼지모듬.getPrice().value(), new Quantity(2));
+    public final OrderLineItem 식사중_주문_항목2 = new OrderLineItem(
+            4L, null, 2L, 김치찌개정식.getName(), 김치찌개정식.getPrice().value(), new Quantity(1));
+    public final OrderLineItem 완료된_주문_항목 = new OrderLineItem(
+            5L, null, 2L, 김치찌개정식.getName(), 김치찌개정식.getPrice().value(), new Quantity(2));
 
     public final OrderTable 테이블 = new OrderTable(1L, null, new NumberOfGuests(4), false);
     public final OrderTable 빈_테이블1 = new OrderTable(2L, null, new NumberOfGuests(0), true);
