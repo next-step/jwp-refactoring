@@ -21,12 +21,6 @@ public class ProductService {
 
     @Transactional
     public ProductResponse create(final ProductRequest request) {
-        final BigDecimal price = request.getPrice();
-
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
-
         Product product = productRepository.save(request.toProduct());
         return ProductResponse.of(product);
     }
