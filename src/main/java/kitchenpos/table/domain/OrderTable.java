@@ -8,11 +8,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import kitchenpos.Exception.OrderTableAlreadyEmptyException;
 import kitchenpos.Exception.OrderTableAlreadyTableGroupException;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 @Entity
-@Transactional(readOnly = true)
-public class OrderTable {
+public class OrderTable extends AbstractAggregateRoot<OrderTable> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -41,6 +40,7 @@ public class OrderTable {
     public void changeEmpty(boolean empty) {
         validateTableGroup();
         this.empty = empty;
+        registerEvent(new OrderTableChangedEmptyEvent(id));
     }
 
 

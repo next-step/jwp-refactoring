@@ -166,4 +166,8 @@ public class TableAcceptanceTest extends AcceptanceTest {
     private static void 테이블_손님_수_변경됨(ExtractableResponse<Response> response, int numberOfGuests) {
         assertThat(response.as(OrderTableResponse.class).getNumberOfGuests()).isEqualTo(numberOfGuests);
     }
+
+    private static void 조리_혹은_식사_상태가_아닌_주문_실패함(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
 }

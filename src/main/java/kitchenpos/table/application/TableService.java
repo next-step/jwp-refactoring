@@ -14,11 +14,9 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 public class TableService {
-    private final TableValidator tableValidator;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(final TableValidator tableValidator, final OrderTableRepository orderTableRepository) {
-        this.tableValidator = tableValidator;
+    public TableService(final OrderTableRepository orderTableRepository) {
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -36,7 +34,6 @@ public class TableService {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(NotFoundOrderTableException::new);
 
-        tableValidator.validate(orderTableId);
         savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
 
         return OrderTableResponse.from(orderTableRepository.save(savedOrderTable));

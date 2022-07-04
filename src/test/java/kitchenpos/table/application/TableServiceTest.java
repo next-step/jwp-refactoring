@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willDoNothing;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,9 +15,6 @@ import kitchenpos.Exception.InvalidNumberOfGuestsException;
 import kitchenpos.Exception.NotFoundOrderTableException;
 import kitchenpos.Exception.OrderTableAlreadyEmptyException;
 import kitchenpos.Exception.OrderTableAlreadyTableGroupException;
-import kitchenpos.Exception.UnCompletedOrderStatusException;
-import kitchenpos.order.application.OrderService;
-import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -32,8 +28,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
-    @Mock
-    private TableValidator tableValidator;
     @Mock
     private OrderTableRepository orderTableRepository;
     @InjectMocks
@@ -98,8 +92,6 @@ class TableServiceTest {
     void 빈_상태_변경() {
         // given
         given(orderTableRepository.findById(orderTable.getId())).willReturn(Optional.ofNullable(orderTable));
-
-        willDoNothing().given(tableValidator).validate(orderTable.getId());
         given(orderTableRepository.save(orderTable)).willReturn(orderTable);
 
         // when
