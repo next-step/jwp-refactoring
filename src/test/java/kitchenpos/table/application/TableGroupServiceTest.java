@@ -33,8 +33,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    private TableGroupValidator tableGroupValidator;
-    @Mock
     private OrderTableService orderTableService;
     @Mock
     private TableGroupRepository tableGroupRepository;
@@ -123,7 +121,6 @@ class TableGroupServiceTest {
         // given
         TableGroup 단체지정 = new TableGroup(1L, null, Arrays.asList(주문테이블1, 주문테이블2));
         given(tableGroupRepository.findById(단체지정.getId())).willReturn(Optional.of(단체지정));
-        willDoNothing().given(tableGroupValidator).validate(any(TableGroup.class));
 
         tableGroupService.ungroup(단체지정.getId());
 

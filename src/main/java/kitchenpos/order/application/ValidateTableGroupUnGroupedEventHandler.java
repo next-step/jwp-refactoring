@@ -4,25 +4,26 @@ import static kitchenpos.order.domain.OrderStatus.getCannotUngroupTableGroupStat
 
 import kitchenpos.Exception.UnCompletedOrderStatusException;
 import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.table.domain.OrderTableChangedEmptyEvent;
+import kitchenpos.table.domain.TableGroupUnGroupedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
-public class ValidateOrderTableChangedEmptyEventHandler {
+public class ValidateTableGroupUnGroupedEventHandler {
     private final OrderRepository orderRepository;
 
-    public ValidateOrderTableChangedEmptyEventHandler(final OrderRepository orderRepository) {
+    public ValidateTableGroupUnGroupedEventHandler(final OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
     }
 
-    @EventListener(OrderTableChangedEmptyEvent.class)
+    @EventListener(TableGroupUnGroupedEvent.class)
     @Transactional
-    public void handle(OrderTableChangedEmptyEvent event) {
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(event.getOrderTableId(),
+    public void handle(TableGroupUnGroupedEvent event) {
+        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(event.getOrderTableIds(),
                 getCannotUngroupTableGroupStatus())) {
-            throw new UnCompletedOrderStatusException("계산 완료 상태의 주문이 있는 테이블은 빈 테이블로 변경할 수 없습니다.");
+            throw new UnCompletedOrderStatusException("단체 내 모든 테이블의 주문 상태가 주문 또는 식사 상태이면 단체 지정을 해제할 수 없습니다.");
         }
     }
+
 }

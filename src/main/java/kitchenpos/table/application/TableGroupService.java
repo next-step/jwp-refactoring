@@ -16,13 +16,11 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 public class TableGroupService {
-    private final TableGroupValidator tableGroupValidator;
     private final OrderTableService orderTableService;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final TableGroupValidator tableGroupValidator, final OrderTableService orderTableService,
+    public TableGroupService(final OrderTableService orderTableService,
                              final TableGroupRepository tableGroupRepository) {
-        this.tableGroupValidator = tableGroupValidator;
         this.orderTableService = orderTableService;
         this.tableGroupRepository = tableGroupRepository;
     }
@@ -46,7 +44,6 @@ public class TableGroupService {
     public void ungroup(final Long tableGroupId) {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
                 .orElseThrow(NotFoundTableGroupException::new);
-        tableGroupValidator.validate(tableGroup);
         tableGroup.unGroupOrderTables();
     }
 
