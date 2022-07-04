@@ -19,7 +19,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     @DisplayName("상품을 생성한다.")
     void createMenuGroup() {
         // when
-        ExtractableResponse<Response> response = 상품_생성_요청("강정치킨", 1_7000L);
+        ExtractableResponse<Response> response = 상품_생성_요청("강정치킨", 17_000L);
 
         // then
         상품_생성됨(response);
