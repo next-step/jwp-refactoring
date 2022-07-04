@@ -145,10 +145,7 @@ class MenuServiceTest {
     @DisplayName("메뉴에 구성되는 메뉴 상품이 존재하지 않는 경우 예외가 발생한다.")
     public void throwException_WhenMenuProductIsNotExist() {
         // Given
-        Menu menu = new Menu();
-        menu.setPrice(new BigDecimal(1000));
-        List<MenuProduct> menuProducts = generateMenuProduct(generateProductMock());
-        menu.setMenuProducts(menuProducts);
+        Menu menu = new Menu("mock menu name", new BigDecimal(1000), generateMenuGroup(), generateMenuProduct(generateProductMock()));
 
         given(menuGroupRepository.findById(any())).willReturn(Optional.of(menuGroup));
         given(productRepository.findById(any())).willThrow(IllegalArgumentException.class);
@@ -206,8 +203,7 @@ class MenuServiceTest {
     private List<Menu> generateMenuMocks(int count) {
         List<Menu> menus = new ArrayList<>();
         for (int i = 0; i < count; i++) {
-            Menu menu = new Menu();
-            menu.setMenuProducts(generateMenuProduct(generateProductMock()));
+            Menu menu = new Menu("mock menu name", new BigDecimal(1000), generateMenuGroup(), generateMenuProduct(generateProductMock()));
             menus.add(menu);
         }
         return menus;

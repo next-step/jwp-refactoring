@@ -24,12 +24,7 @@ public class MenuFixtureGenerator {
         final MenuGroup menuGroup,
         final Product... products
     ) {
-        Menu menu = new Menu();
-        menu.setName(NAME + COUNTER);
-        menu.setPrice(PRICE);
-        menu.setMenuGroup(menuGroup);
-        menu.setMenuProducts(generateMenuProduct(products));
-        return menu;
+        return new Menu(NAME + COUNTER, PRICE, menuGroup, generateMenuProduct(products));
     }
 
     public static List<MenuProduct> generateMenuProduct(Product... products) {

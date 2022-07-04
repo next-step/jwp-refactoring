@@ -38,8 +38,6 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final CreateMenuRequest createMenuRequest) {
-        final BigDecimal price = createMenuRequest.getPrice();
-
         MenuGroup menuGroup = menuGroupRepository.findById(createMenuRequest.getMenuGroupId())
             .orElseThrow(() -> new IllegalArgumentException(NOT_EXIST_MENU_GROUP_ERROR_MESSAGE));
 
@@ -59,6 +57,7 @@ public class MenuService {
         }
 
         // TODO : Menu 도메인 내부의 sum 계산 메소드에서 유효성 검증을 완료한 후 반환 하도록 수정
+        final BigDecimal price = createMenuRequest.getPrice();
         if (price.compareTo(sum) > 0) {
             throw new IllegalArgumentException();
         }

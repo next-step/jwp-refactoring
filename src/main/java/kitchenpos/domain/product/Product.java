@@ -3,12 +3,21 @@ package kitchenpos.domain.product;
 import static kitchenpos.domain.validator.PriceValidator.validatePrice;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Entity
+@Table(
+    uniqueConstraints = @UniqueConstraint(
+        name = "UK_PRODUCT_NAME",
+        columnNames = "name"
+    )
+)
 public class Product {
 
     @Id
@@ -55,5 +64,22 @@ public class Product {
 
     public void setPrice(final BigDecimal price) {
         this.price = price;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Product product = (Product) o;
+        return Objects.equals(name, product.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }
