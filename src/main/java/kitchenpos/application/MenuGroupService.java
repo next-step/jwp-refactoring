@@ -24,7 +24,7 @@ public class MenuGroupService {
         return MenuGroupResponse.of(menuGroup);
     }
 
-    public List<MenuGroup> list() {
-        return menuGroupRepository.findAll();
+    public List<MenuGroupResponse> list() {
+        return MenuGroupResponse.of(menuGroupRepository.findAll());
     }
 }
