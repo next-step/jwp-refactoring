@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.product.application;
 
 import kitchenpos.fixture.TestProductRequestFactory;
 import kitchenpos.product.application.ProductService;

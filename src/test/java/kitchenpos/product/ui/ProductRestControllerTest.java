@@ -1,4 +1,4 @@
-package kitchenpos.ui;
+package kitchenpos.product.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.product.application.ProductService;

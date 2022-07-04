@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.menu.application;
 
 import kitchenpos.common.Price;
 import kitchenpos.fixture.TestMenuRequestFactory;

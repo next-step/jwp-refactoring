@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.table.application;
 
 import kitchenpos.fixture.TestOrderTableRequestFactory;
 import kitchenpos.order.domain.OrderRepository;
