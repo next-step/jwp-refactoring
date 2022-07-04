@@ -62,6 +62,7 @@ public class OrderService {
         }
     }
 
+    @Transactional(readOnly = true)
     public List<OrderResponse> list() {
         List<Order> list = orderRepository.findAllOrderAndItems();
         return list.stream()
