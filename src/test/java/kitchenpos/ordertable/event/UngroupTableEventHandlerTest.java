@@ -4,7 +4,7 @@ import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.exception.IllegalOrderException;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
-import kitchenpos.ordertable.exception.IllegalOrderTableException;
+import kitchenpos.ordertable.event.handler.UngroupTableEventHandler;
 import kitchenpos.tablegroup.domain.TableGroup;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,7 +21,6 @@ import static kitchenpos.utils.fixture.OrderTableFixtureFactory.createOrderTable
 import static kitchenpos.utils.fixture.TableGroupFixtureFactory.createTableGroup;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)

@@ -1,7 +1,8 @@
-package kitchenpos.ordertable.event;
+package kitchenpos.ordertable.event.handler;
 
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.ordertable.event.GroupTableEvent;
 import kitchenpos.ordertable.exception.IllegalOrderTableException;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;

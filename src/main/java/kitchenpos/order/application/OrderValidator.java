@@ -4,10 +4,9 @@ import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.event.CreateOrderEvent;
 import kitchenpos.order.exception.IllegalOrderLineItemException;
-import kitchenpos.ordertable.application.TableService;
-import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.exception.IllegalOrderTableException;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -16,28 +15,20 @@ import java.util.stream.Collectors;
 @Component
 public class OrderValidator {
     private final MenuService menuService;
-    private final TableService tableService;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public static final String ERROR_ORDER_TABLE_EMPTY = "주문테이블은 비어있을 수 없습니다.";
     public static final String ERROR_ORDER_LINE_ITEM_TOO_SMALL = "주문항목 개수는 %d 이하일 수 없습니다.";
     public static final String ERROR_ORDER_LINE_ITEM_INVALID_MENU = "주문항목에 잘못된 메뉴가 포함되어 있습니다.";
     public static final int MINIMUM_ORDER_LINE_ITEM_NUMBER = 0;
 
-    public OrderValidator(MenuService menuService, TableService tableService) {
+    public OrderValidator(MenuService menuService, ApplicationEventPublisher eventPublisher) {
         this.menuService = menuService;
-        this.tableService = tableService;
+        this.eventPublisher = eventPublisher;
     }
 
     public void validate(Order order){
-        validateOrderTable(order);
         validateOrderLineItems(order);
-    }
-
-    private void validateOrderTable(Order order) {
-        OrderTable orderTable = tableService.findOrderTableById(order.getOrderTableId());
-        if (orderTable.isEmpty()) {
-            throw new IllegalOrderTableException(ERROR_ORDER_TABLE_EMPTY);
-        }
+        eventPublisher.publishEvent(CreateOrderEvent.from(order.getOrderTableId()));
     }
 
     private void validateOrderLineItems(Order order) {

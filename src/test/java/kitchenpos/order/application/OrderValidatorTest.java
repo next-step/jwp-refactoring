@@ -4,12 +4,10 @@ import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menugroup.domain.MenuGroup;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.event.CreateOrderEvent;
 import kitchenpos.order.exception.IllegalOrderLineItemException;
-import kitchenpos.ordertable.application.TableService;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.exception.IllegalOrderTableException;
 import kitchenpos.ordertable.exception.NoSuchOrderTableException;
@@ -21,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,21 +27,20 @@ import java.util.Arrays;
 import static kitchenpos.utils.fixture.MenuFixtureFactory.createMenu;
 import static kitchenpos.utils.fixture.MenuGroupFixtureFactory.createMenuGroup;
 import static kitchenpos.utils.fixture.MenuProductFixtureFactory.createMenuProduct;
-import static kitchenpos.utils.fixture.OrderFixtureFactory.createOrder;
-import static kitchenpos.utils.fixture.OrderLineItemFixtureFactory.createOrderLineItem;
 import static kitchenpos.utils.fixture.OrderTableFixtureFactory.createOrderTable;
 import static kitchenpos.utils.fixture.ProductFixtureFactory.createProduct;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
 
 @ExtendWith(MockitoExtension.class)
 public class OrderValidatorTest {
     @Mock
     private MenuService menuService;
     @Mock
-    private TableService tableService;
+    private ApplicationEventPublisher eventPublisher;
     @InjectMocks
     private OrderValidator orderValidator;
 
@@ -51,8 +49,6 @@ public class OrderValidatorTest {
     private Menu 메뉴_김치찌개세트;
     private MenuProduct 김치찌개세트_김치찌개;
     private OrderTable 테이블_1;
-    private Order 접수된_주문;
-    private OrderLineItem 접수된주문_김치찌개세트;
 
     @BeforeEach
     void setUp() {
@@ -63,45 +59,44 @@ public class OrderValidatorTest {
                 Arrays.asList(김치찌개세트_김치찌개));
 
         테이블_1 = createOrderTable(1L, null, 4, false);
-        접수된주문_김치찌개세트 = createOrderLineItem(1L, 메뉴_김치찌개세트.getId(), 1);
-        접수된_주문 = createOrder(1L, 테이블_1.getId(), Arrays.asList(접수된주문_김치찌개세트));
     }
 
-//    @DisplayName("등록하려는 주문테이블이 존재해야 한다")
-//    @Test
-//    void 주문_주문테이블_검증(){
-//        //given
-//        given(tableService.findOrderTableById(anyLong())).willThrow(NoSuchOrderTableException.class);
-//
-//        //when
-//        OrderRequest orderRequest = OrderRequest.of(테이블_1.getId(), Arrays.asList(
-//                OrderLineItemRequest.of(메뉴_김치찌개세트.getId(), 1)
-//        ));
-//
-//        //then
-//        assertThrows(NoSuchOrderTableException.class, () -> orderService.create(orderRequest));
-//    }
-//
-//    @DisplayName("등록하려는 주문테이블은 비어있을 수 없다")
-//    @Test
-//    void 주문_주문테이블_Empty_검증(){
-//        //given
-//        given(tableService.findOrderTableById(anyLong())).willReturn(테이블_Empty);
-//
-//        //when
-//        OrderRequest orderRequest = OrderRequest.of(테이블_Empty.getId(), Arrays.asList(
-//                OrderLineItemRequest.of(메뉴_김치찌개세트.getId(), 1)
-//        ));
-//
-//        //then
-//        assertThrows(IllegalOrderTableException.class, () -> orderService.create(orderRequest));
-//    }
+    @DisplayName("등록하려는 주문테이블이 존재해야 한다")
+    @Test
+    void 주문_주문테이블_검증(){
+        //given
+        given(menuService.findMenusByIdList(anyList())).willReturn(Arrays.asList(메뉴_김치찌개세트));
+        willThrow(NoSuchOrderTableException.class).given(eventPublisher).publishEvent(any(CreateOrderEvent.class));
+
+        //when
+        OrderRequest orderRequest = OrderRequest.of(테이블_1.getId(), Arrays.asList(
+                OrderLineItemRequest.of(메뉴_김치찌개세트.getId(), 1)
+        ));
+
+        //then
+        assertThrows(NoSuchOrderTableException.class, () -> orderValidator.validate(orderRequest.toOrder()));
+    }
+
+    @DisplayName("등록하려는 주문테이블은 비어있을 수 없다")
+    @Test
+    void 주문_주문테이블_Empty_검증(){
+        //given
+        given(menuService.findMenusByIdList(anyList())).willReturn(Arrays.asList(메뉴_김치찌개세트));
+        willThrow(IllegalOrderTableException.class).given(eventPublisher).publishEvent(any(CreateOrderEvent.class));
+
+        //when
+        OrderRequest orderRequest = OrderRequest.of(테이블_1.getId(), Arrays.asList(
+                OrderLineItemRequest.of(메뉴_김치찌개세트.getId(), 1)
+        ));
+
+        //then
+        assertThrows(IllegalOrderTableException.class, () -> orderValidator.validate(orderRequest.toOrder()));
+    }
 
     @DisplayName("주문항목은 비어있을 수 없다")
     @Test
     void 주문_주문항목_검증(){
         //given
-        given(tableService.findOrderTableById(anyLong())).willReturn(테이블_1);
         OrderRequest invalidOrderRequest = OrderRequest.of(테이블_1.getId(), new ArrayList<>());
 
         //then
@@ -112,7 +107,6 @@ public class OrderValidatorTest {
     @Test
     void 주문_주문항목_메뉴_중복_검증(){
         //given
-        given(tableService.findOrderTableById(anyLong())).willReturn(테이블_1);
         given(menuService.findMenusByIdList(anyList())).willReturn(Arrays.asList(메뉴_김치찌개세트));
         OrderRequest invalidOrderRequest = OrderRequest.of(테이블_1.getId(), Arrays.asList(
                 OrderLineItemRequest.of(메뉴_김치찌개세트.getId(), 1),
@@ -127,7 +121,6 @@ public class OrderValidatorTest {
     @Test
     void 주문_주문항목_메뉴_검증(){
         //given
-        given(tableService.findOrderTableById(anyLong())).willReturn(테이블_1);
         given(menuService.findMenusByIdList(anyList())).willReturn(Arrays.asList(메뉴_김치찌개세트));
 
         //when

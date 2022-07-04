@@ -1,8 +1,8 @@
 package kitchenpos.ordertable.event;
 
-import kitchenpos.ordertable.application.TableService;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.ordertable.event.handler.GroupTableEventHandler;
 import kitchenpos.ordertable.exception.IllegalOrderTableException;
 import kitchenpos.tablegroup.domain.TableGroup;
 import org.assertj.core.api.Assertions;

@@ -19,8 +19,7 @@ public class OrderService {
 
     public OrderService(
             final OrderRepository orderRepository,
-            final OrderValidator orderValidator
-    ) {
+            final OrderValidator orderValidator) {
         this.orderRepository = orderRepository;
         this.orderValidator = orderValidator;
     }

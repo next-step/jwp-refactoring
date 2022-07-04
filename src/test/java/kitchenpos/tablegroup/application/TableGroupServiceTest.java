@@ -1,9 +1,7 @@
 package kitchenpos.tablegroup.application;
 
-import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.exception.IllegalOrderException;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.event.GroupTableEvent;
 import kitchenpos.ordertable.event.UngroupTableEvent;
 import kitchenpos.ordertable.exception.IllegalOrderTableException;
@@ -11,6 +9,7 @@ import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,6 +24,7 @@ import java.util.Arrays;
 import static kitchenpos.utils.fixture.OrderTableFixtureFactory.createOrderTable;
 import static kitchenpos.utils.fixture.TableGroupFixtureFactory.createTableGroup;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -134,6 +134,12 @@ class TableGroupServiceTest {
 
         //then
         assertThrows(IllegalOrderTableException.class, () -> tableGroupService.create(invalidTableGroupRequest));
+    }
+
+    @DisplayName("주문테이블을 삭제할 수 없다")
+    @Test
+    void 테이블그룹_삭제(){
+        assertDoesNotThrow(() -> tableGroupService.ungroup(단체_테이블.getId()));
     }
 
     @DisplayName("주문테이블에 COOKING이나 MEAL 상태의 주문이 있으면 삭제할 수 없다")
