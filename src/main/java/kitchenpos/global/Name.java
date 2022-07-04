@@ -1,4 +1,4 @@
-package kitchenpos.commonDomain;
+package kitchenpos.global;
 
 import org.springframework.util.StringUtils;
 
