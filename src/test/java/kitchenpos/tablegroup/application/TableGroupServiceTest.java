@@ -4,12 +4,13 @@ import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.exception.IllegalOrderException;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
+import kitchenpos.ordertable.event.GroupTableEvent;
+import kitchenpos.ordertable.event.UngroupTableEvent;
 import kitchenpos.ordertable.exception.IllegalOrderTableException;
 import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.tablegroup.domain.TableGroupRepository;
 import kitchenpos.tablegroup.dto.TableGroupRequest;
 import kitchenpos.tablegroup.dto.TableGroupResponse;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,26 +18,24 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Optional;
 
 import static kitchenpos.utils.fixture.OrderTableFixtureFactory.createOrderTable;
 import static kitchenpos.utils.fixture.TableGroupFixtureFactory.createTableGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
 
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    private OrderRepository orderRepository;
-    @Mock
-    private OrderTableRepository orderTableRepository;
-    @Mock
     private TableGroupRepository tableGroupRepository;
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
     @InjectMocks
     private TableGroupService tableGroupService;
 
@@ -49,7 +48,7 @@ class TableGroupServiceTest {
     void setUp() {
         테이블_1 = createOrderTable(1L, null, 0, true);
         테이블_2 = createOrderTable(2L, null, 0, true);
-        단체_테이블 = createTableGroup(1L, LocalDateTime.now(), Arrays.asList(테이블_1, 테이블_2));
+        단체_테이블 = createTableGroup(1L, Arrays.asList(테이블_1, 테이블_2));
 
         테이블_Full = createOrderTable(4L, null, 4, false);
     }
@@ -60,7 +59,6 @@ class TableGroupServiceTest {
         //given
         OrderTable 테이블_1 = createOrderTable(1L, null, 0, true);
         OrderTable 테이블_2 = createOrderTable(2L, null, 0, true);
-        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(Arrays.asList(테이블_1, 테이블_2));
         given(tableGroupRepository.save(any(TableGroup.class))).willReturn(단체_테이블);
 
         //when
@@ -77,6 +75,8 @@ class TableGroupServiceTest {
     @Test
     void 테이블그룹_등록_주문테이블_두개_이상_검증(){
         //given
+        given(tableGroupRepository.save(any(TableGroup.class))).willReturn(단체_테이블);
+        willThrow(IllegalOrderTableException.class).given(eventPublisher).publishEvent(any(GroupTableEvent.class));
         OrderTable 테이블_1 = createOrderTable(1L, null, 0, true);
         TableGroupRequest invalidTableGroupRequest = TableGroupRequest.from(Arrays.asList(테이블_1.getId()));
 
@@ -88,9 +88,10 @@ class TableGroupServiceTest {
     @Test
     void 테이블그룹_등록_주문테이블_검증(){
         //given
+        given(tableGroupRepository.save(any(TableGroup.class))).willReturn(단체_테이블);
+        willThrow(IllegalOrderTableException.class).given(eventPublisher).publishEvent(any(GroupTableEvent.class));
         OrderTable 테이블_1 = createOrderTable(1L, null, 0, true);
         OrderTable 테이블_2 = createOrderTable(2L, null, 0, true);
-        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(Arrays.asList(테이블_1));
 
         //when
         TableGroupRequest invalidTableGroupRequest = TableGroupRequest.from(
@@ -105,8 +106,9 @@ class TableGroupServiceTest {
     @Test
     void 테이블그룹_등록_주문테이블_Empty_검증(){
         //given
+        given(tableGroupRepository.save(any(TableGroup.class))).willReturn(단체_테이블);
+        willThrow(IllegalOrderTableException.class).given(eventPublisher).publishEvent(any(GroupTableEvent.class));
         OrderTable 테이블_1 = createOrderTable(1L, null, 0, true);
-        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(Arrays.asList(테이블_1, 테이블_Full));
 
         //when
         TableGroupRequest invalidTableGroupRequest = TableGroupRequest.from(
@@ -121,8 +123,9 @@ class TableGroupServiceTest {
     @Test
     void 테이블그룹_등록_주문테이블_이미_테이블그룹에_속해있는지_검증(){
         //given
+        given(tableGroupRepository.save(any(TableGroup.class))).willReturn(단체_테이블);
+        willThrow(IllegalOrderTableException.class).given(eventPublisher).publishEvent(any(GroupTableEvent.class));
         OrderTable 테이블_1 = createOrderTable(1L, null, 0, true);
-        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(Arrays.asList(테이블_1, 테이블_2));
 
         //when
         TableGroupRequest invalidTableGroupRequest = TableGroupRequest.from(
@@ -133,29 +136,11 @@ class TableGroupServiceTest {
         assertThrows(IllegalOrderTableException.class, () -> tableGroupService.create(invalidTableGroupRequest));
     }
 
-    @DisplayName("테이블 그룹을 삭제할 수 있다")
-    @Test
-    void 테이블그룹_삭제(){
-        //given
-        given(tableGroupRepository.findById(anyLong())).willReturn(Optional.of(단체_테이블));
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
-
-        //when
-        tableGroupService.ungroup(단체_테이블.getId());
-
-        //then
-        Assertions.assertAll(
-                () -> assertThat(테이블_1.getTableGroup()).isNull(),
-                () -> assertThat(테이블_2.getTableGroup()).isNull()
-        );
-    }
-
     @DisplayName("주문테이블에 COOKING이나 MEAL 상태의 주문이 있으면 삭제할 수 없다")
     @Test
     void 테이블그룹_삭제_주문상태_검증(){
         //given
-        given(tableGroupRepository.findById(anyLong())).willReturn(Optional.of(단체_테이블));
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
+        willThrow(IllegalOrderException.class).given(eventPublisher).publishEvent(any(UngroupTableEvent.class));
 
         //then
         assertThrows(IllegalOrderException.class, () -> tableGroupService.ungroup(단체_테이블.getId()));

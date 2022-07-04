@@ -1,16 +1,15 @@
 package kitchenpos.ordertable.application;
 
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.exception.IllegalOrderException;
-import kitchenpos.ordertable.exception.NoSuchOrderTableException;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.ordertable.domain.OrderTable;
 import kitchenpos.ordertable.domain.OrderTableRepository;
 import kitchenpos.ordertable.dto.OrderTableEmptyRequest;
 import kitchenpos.ordertable.dto.OrderTableNumOfGuestRequest;
 import kitchenpos.ordertable.dto.OrderTableRequest;
 import kitchenpos.ordertable.dto.OrderTableResponse;
+import kitchenpos.ordertable.exception.NoSuchOrderTableException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

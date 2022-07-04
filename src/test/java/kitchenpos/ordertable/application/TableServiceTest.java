@@ -57,8 +57,7 @@ public class TableServiceTest {
         테이블_NOT_EMPTY = createOrderTable(1L, null, 4, false);
         테이블_GROUPED = createOrderTable(3L, null, 0, true);
         테이블_GROUPED2 = createOrderTable(4L, null, 0, true);
-        테이블_그룹 = TableGroupFixtureFactory.createTableGroup(LocalDateTime.now(),
-                Arrays.asList(테이블_GROUPED, 테이블_GROUPED2));
+        테이블_그룹 = TableGroupFixtureFactory.createTableGroup(1L, Arrays.asList(테이블_GROUPED, 테이블_GROUPED2));
     }
 
     @DisplayName("주문테이블을 등록할 수 있다")

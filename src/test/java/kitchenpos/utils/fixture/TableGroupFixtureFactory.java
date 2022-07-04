@@ -7,11 +7,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class TableGroupFixtureFactory {
-    public static TableGroup createTableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
-        return TableGroup.of(id, orderTables);
+    public static TableGroup createTableGroup(Long id, List<OrderTable> orderTables) {
+        for (OrderTable orderTable : orderTables) {
+            orderTable.assignTableGroup(id);
+        }
+        return TableGroup.of(id);
     }
 
-    public static TableGroup createTableGroup(LocalDateTime createdDate, List<OrderTable> orderTables) {
-        return TableGroup.of(orderTables);
+    public static TableGroup createTableGroup(Long id) {
+        return TableGroup.of(id);
     }
 }

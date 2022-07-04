@@ -43,10 +43,10 @@ public class OrderTableTest {
     @DisplayName("주문테이블이 테이블그룹에 등록되어있으면 주문테이블의 비어있음여부를 업데이트할 수 없다")
     @Test
     void OrderTable_Empty_업데이트_TableGroup_검증(){
-        TableGroup tableGroup = createTableGroup(LocalDateTime.now(),
+        TableGroup tableGroup = createTableGroup(1L,
                 Arrays.asList(createOrderTable(0, true),
                         createOrderTable(0, true)));
-        OrderTable orderTable = createOrderTable(tableGroup, 4, false);
+        OrderTable orderTable = createOrderTable(tableGroup.getId(), 4, false);
 
         assertThrows(IllegalOrderTableException.class, () -> orderTable.changeEmpty(true));
     }
