@@ -8,9 +8,12 @@ public class OrderTableRequest {
     public OrderTableRequest() {
 
     }
+    public OrderTableRequest(int numberOfGuests) {
+        this.numberOfGuests = numberOfGuests;
+    }
 
     public OrderTableRequest(int numberOfGuests, boolean empty) {
-        this.numberOfGuests = numberOfGuests;
+        this(numberOfGuests);
         this.empty = empty;
     }
 

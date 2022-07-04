@@ -50,6 +50,9 @@ public class OrderTable {
     }
 
     public void changeNumberOfGuests(int numberOfGuests) {
+        if (isEmpty()) {
+            throw new IllegalArgumentException("빈테이블일 경우 방문자를 변경할 수 없습니다.");
+        }
         this.numberOfGuests = NumberOfGuest.of(numberOfGuests);
     }
 
@@ -81,6 +84,10 @@ public class OrderTable {
     }
 
     public boolean isEmpty() {
+        return empty;
+    }
+
+    public boolean isOrderAble() {
         return empty;
     }
 }

@@ -7,6 +7,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderRequest;
 import kitchenpos.dto.OrderResponse;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.OrderTableResponse;
@@ -48,21 +49,19 @@ public class TableAcceptanceTest extends AcceptanceTest {
         //then
         생성된_주문테이블이_조회_된다(createResponse, retrievedResponse);
 
-/*        //given
+       //given
         final OrderTableResponse 등록된_주문_테이블 = createResponse.as(OrderTableResponse.class);
-        int updateGuestNumber = 4;
-        등록된_주문_테이블.setNumberOfGuests(updateGuestNumber);
-
+        OrderTableRequest 방문자수변경요청 = new OrderTableRequest(4);
         //when
-        final ExtractableResponse<Response> updateGuestResponse = 주문_테이블의_방문자를_변경한다(등록된_주문_테이블);
+        final ExtractableResponse<Response> updateGuestResponse = 주문_테이블의_방문자를_변경한다(등록된_주문_테이블, 방문자수변경요청);
 
         //then
-        방문자가_변경됨(updateGuestNumber, updateGuestResponse);
+        방문자가_변경됨(방문자수변경요청.getNumberOfGuests(), updateGuestResponse);
 
         //when
         final ExtractableResponse<Response> updateEmptyTable = 빈테이블로_변경한다(등록된_주문_테이블);
         //then
-        빈테이블로_변경이_된다(updateEmptyTable);*/
+        빈테이블로_변경이_된다(updateEmptyTable);
 
     }
 
@@ -96,11 +95,11 @@ public class TableAcceptanceTest extends AcceptanceTest {
         assertThat(retrievedResponse.jsonPath().getList("id", Long.class)).contains(createResponse.as(OrderTable.class).getId());
     }
 
-    private ExtractableResponse<Response> 주문_테이블의_방문자를_변경한다(OrderTable orderTable) {
+    private ExtractableResponse<Response> 주문_테이블의_방문자를_변경한다(OrderTableResponse orderTableResponse, OrderTableRequest request) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(orderTable)
-                .pathParam("orderTableId", orderTable.getId())
+                .body(request)
+                .pathParam("orderTableId", orderTableResponse.getId())
                 .when().put("/api/tables/{orderTableId}/number-of-guests")
                 .then()
                 .log().all()
@@ -109,14 +108,14 @@ public class TableAcceptanceTest extends AcceptanceTest {
 
     private void 방문자가_변경됨(int updateGuestNumber, ExtractableResponse<Response> updateGuestResponse) {
         assertThat(updateGuestResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(updateGuestResponse.as(OrderTable.class).getNumberOfGuests()).isEqualTo(updateGuestNumber);
+        assertThat(updateGuestResponse.as(OrderTableResponse.class).getNumberOfGuests()).isEqualTo(updateGuestNumber);
     }
 
 
-    private ExtractableResponse<Response> 빈테이블로_변경한다(OrderResponse orderResponse) {
+    private ExtractableResponse<Response> 빈테이블로_변경한다(OrderTableResponse orderTableResponse) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .pathParam("orderTableId", orderResponse.getOrderTableId())
+                .pathParam("orderTableId", orderTableResponse.getId())
                 .when().put("/api/tables/{orderTableId}/empty")
                 .then()
                 .log().all()

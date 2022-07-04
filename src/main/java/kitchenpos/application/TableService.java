@@ -40,33 +40,28 @@ public class TableService {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(() -> new NoSuchElementException("변경할 테이블이 존재하지 않습니다."));
 
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException("주문이 완료된 상태여만 빈테이블로 변경이 가능합니다.");
-        }
+        validateChangeEmptyTable(orderTableId);
 
         savedOrderTable.changeEmptyTable();
 
         return OrderTableResponse.formOrderTable(savedOrderTable);
     }
 
+    private void validateChangeEmptyTable(Long orderTableId) {
+        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
+                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+            throw new IllegalArgumentException("주문이 완료된 상태여만 빈테이블로 변경이 가능합니다.");
+        }
+    }
+
     @Transactional
-    public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTable orderTable) {
-        final int numberOfGuests = orderTable.getNumberOfGuests();
-
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
-        }
-
+    public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
+        final int numberOfGuests = orderTableRequest.getNumberOfGuests();
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
-
-        if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
+                .orElseThrow(() -> new NoSuchElementException("오더 테이블이 존재하지 않습니다."));
 
         savedOrderTable.changeNumberOfGuests(numberOfGuests);
 
-        return orderTableRepository.save(savedOrderTable);
+        return OrderTableResponse.formOrderTable(savedOrderTable);
     }
 }

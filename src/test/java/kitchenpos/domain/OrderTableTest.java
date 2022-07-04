@@ -2,6 +2,7 @@ package kitchenpos.domain;
 
 
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 
 import org.junit.jupiter.api.DisplayName;
@@ -22,10 +23,36 @@ class OrderTableTest {
                 .isThrownBy(orderTable::changeEmptyTable);
     }
 
-    @Test
-    @DisplayName("방문자는 한명 이상이어야 합니다.")
-    void changeNumberOfGuests() {
 
+    @Test
+    @DisplayName("방문자변경은 0명이상 이어야 합니다.")
+    void createNumberOfGuests() {
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new OrderTable(-1, false));
     }
+
+    @Test
+    @DisplayName("방문자는 0명이상 이어야 합니다.")
+    void changeNumberOfGuests() {
+        OrderTable orderTable = new OrderTable(1L,3, false);
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> orderTable.changeNumberOfGuests(-1));
+    }
+
+    @Test
+    @DisplayName("빈테이블일 경우 방문자를 변경할 수 없습니다.")
+    void changeNumberOfGuestsIsEmptyTable() {
+        //given
+        OrderTable orderTable = new OrderTable(3, false);
+
+        //when
+        orderTable.changeEmptyTable();
+
+        //when & then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> orderTable.changeNumberOfGuests(2));
+    }
+
 
 }
