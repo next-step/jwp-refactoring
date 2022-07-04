@@ -30,19 +30,19 @@ public class TableGroupService {
     }
 
     @Transactional
-    public TableGroupResponse create(final TableGroupRequest request) {
-        List<OrderTable> orderTables = findOrderTablesByIdsWithValidation(request);
+    public TableGroupResponse create(TableGroupRequest request) {
+        List<OrderTable> orderTables = findOrderTablesByIdsWithValidation(request.getOrderTableIds());
         TableGroup tableGroup = tableGroupRepository.save(new TableGroup());
         tableGroup.addOrderTables(orderTables);
         return TableGroupResponse.of(tableGroup);
     }
 
-    private List<OrderTable> findOrderTablesByIdsWithValidation(TableGroupRequest request) {
-        if (CollectionUtils.isEmpty(request.getOrderTableIds())) {
+    private List<OrderTable> findOrderTablesByIdsWithValidation(List<Long> orderTableIds) {
+        if (CollectionUtils.isEmpty(orderTableIds)) {
             throw new IllegalArgumentException();
         }
-        List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(request.getOrderTableIds());
-        if (request.getOrderTableIds().size() != orderTables.size()) {
+        List<OrderTable> orderTables = orderTableRepository.findAllByIdIn(orderTableIds);
+        if (orderTableIds.size() != orderTables.size()) {
             throw new IllegalArgumentException();
         }
         return orderTables;
