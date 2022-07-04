@@ -18,19 +18,19 @@ public class MenuProductRequest {
         this.quantity = quantity;
     }
 
-    public Long getProductId() {
-        return productId;
-    }
-
-    public long getQuantity() {
-        return quantity;
-    }
-
     public MenuProduct toMenuProduct(Menu menu, Product product) {
         return new MenuProduct(menu, product, quantity);
     }
 
     public MenuProduct toMenuProduct(Product product){
         return new MenuProduct(product, quantity);
+    }
+
+    public Long getProductId() {
+        return productId;
+    }
+
+    public long getQuantity() {
+        return quantity;
     }
 }

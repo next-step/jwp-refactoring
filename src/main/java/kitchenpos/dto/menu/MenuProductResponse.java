@@ -9,7 +9,8 @@ public class MenuProductResponse {
     private Long menuId;
     private long quantity;
 
-    protected MenuProductResponse() {
+    public MenuProductResponse() {
+
     }
 
     private MenuProductResponse(Long seq, Long productId, Long menuId, long quantity) {
@@ -34,6 +35,10 @@ public class MenuProductResponse {
 
     public Long getProductId() {
         return productId;
+    }
+
+    public Long getMenuId() {
+        return menuId;
     }
 
     public long getQuantity() {

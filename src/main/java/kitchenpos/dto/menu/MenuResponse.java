@@ -13,7 +13,8 @@ public class MenuResponse {
     private Long menuGroupId;
     private List<MenuProductResponse> menuProducts;
 
-    protected MenuResponse() {
+    public MenuResponse() {
+
     }
 
     private MenuResponse(Long id, String name, BigDecimal price, Long menuGroupId,
