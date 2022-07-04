@@ -17,29 +17,29 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 
 public class OrderFixtureGenerator {
 
-    public static Order generateOrder(
+    public static Order 주문_생성(
         final OrderTable savedOrderTable,
         final Menu... savedMenus
     ) {
         Order order = new Order();
         order.setOrderTableId(savedOrderTable.getId());
-        order.setOrderLineItems(generateOrderLineItems(savedMenus));
+        order.setOrderLineItems(주문_항목_목록_생성(savedMenus));
         order.setOrderStatus(OrderStatus.COOKING.name());
         return order;
     }
 
-    public static Order generateOrder(
+    public static Order 주문_생성(
         final OrderTable savedOrderTable,
         final MenuResponse... savedMenus
     ) {
         Order order = new Order();
         order.setOrderTableId(savedOrderTable.getId());
-        order.setOrderLineItems(generateOrderLineItems(savedMenus));
+        order.setOrderLineItems(주문_항목_목록_생성(savedMenus));
         order.setOrderStatus(OrderStatus.COOKING.name());
         return order;
     }
 
-    private static List<OrderLineItem> generateOrderLineItems(Menu... menus) {
+    private static List<OrderLineItem> 주문_항목_목록_생성(Menu... menus) {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         for (Menu menu : menus) {
             OrderLineItem orderLineItem = new OrderLineItem();
@@ -50,7 +50,7 @@ public class OrderFixtureGenerator {
         return orderLineItems;
     }
 
-    private static List<OrderLineItem> generateOrderLineItems(MenuResponse... menus) {
+    private static List<OrderLineItem> 주문_항목_목록_생성(MenuResponse... menus) {
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         for (MenuResponse menu : menus) {
             OrderLineItem orderLineItem = new OrderLineItem();
@@ -65,7 +65,7 @@ public class OrderFixtureGenerator {
         final OrderTable savedOrderTable,
         final MenuResponse... savedMenus
     ) throws Exception {
-        return postRequestBuilder(ORDER_API_BASE_URL, generateOrder(savedOrderTable, savedMenus));
+        return postRequestBuilder(ORDER_API_BASE_URL, 주문_생성(savedOrderTable, savedMenus));
     }
 
     public static MockHttpServletRequestBuilder 주문_상태_변경_요청(

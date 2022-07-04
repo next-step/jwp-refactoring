@@ -1,6 +1,6 @@
 package kitchenpos.application.menu;
 
-import static kitchenpos.utils.generator.ProductFixtureGenerator.generateProduct;
+import static kitchenpos.utils.generator.ProductFixtureGenerator.상품_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.groups.Tuple.tuple;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -42,8 +42,8 @@ class MenuProductServiceTest {
     void setUp() {
         firstProductId = 1L;
         secondProductId = 2L;
-        firstProduct = generateProduct();
-        secondProduct = generateProduct();
+        firstProduct = 상품_생성();
+        secondProduct = 상품_생성();
         firstMenuProductRequest = new MenuProductRequest(firstProductId, 1);
         secondMenuProductRequest = new MenuProductRequest(secondProductId, 2);
         menuProductRequestList = Arrays.asList(firstMenuProductRequest, secondMenuProductRequest);

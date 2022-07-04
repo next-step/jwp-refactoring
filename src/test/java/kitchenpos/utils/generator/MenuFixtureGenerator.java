@@ -20,14 +20,14 @@ public class MenuFixtureGenerator {
     private static BigDecimal PRICE = BigDecimal.valueOf(33000);
     private static int COUNTER = 0;
 
-    public static Menu generateMenu(
+    public static Menu 메뉴_생성(
         final MenuGroup menuGroup,
         final Product... products
     ) {
-        return new Menu(NAME + COUNTER, PRICE, menuGroup, generateMenuProduct(products));
+        return new Menu(NAME + COUNTER, PRICE, menuGroup, 메뉴_상품_목록_생성(products));
     }
 
-    public static List<MenuProduct> generateMenuProduct(Product... products) {
+    public static List<MenuProduct> 메뉴_상품_목록_생성(Product... products) {
         List<MenuProduct> menuProducts = new ArrayList<>();
 
         int lastMenuGroupSeq = 7;
@@ -43,13 +43,13 @@ public class MenuFixtureGenerator {
         return menuProducts;
     }
 
-    public static CreateMenuRequest generateCreateMenuRequest(
+    public static CreateMenuRequest 메뉴_생성_요청_생성(
         final MenuGroup savedMenuGroup,
         final Product... savedProducts) {
-        return new CreateMenuRequest(NAME, PRICE, savedMenuGroup.getId(), generateMenuProductRequest(savedProducts));
+        return new CreateMenuRequest(NAME, PRICE, savedMenuGroup.getId(), 메뉴_상품_요청_목록_생성(savedProducts));
     }
 
-    public static List<MenuProductRequest> generateMenuProductRequest(final Product... savedProducts) {
+    public static List<MenuProductRequest> 메뉴_상품_요청_목록_생성(final Product... savedProducts) {
         List<MenuProductRequest> menuProductRequests = new ArrayList<>();
         for (Product savedProduct : savedProducts) {
             MenuProductRequest menuProductRequest = new MenuProductRequest(savedProduct.getId(), 1);
@@ -62,6 +62,6 @@ public class MenuFixtureGenerator {
         final MenuGroup savedMenuGroup,
         final Product... savedProducts
     ) throws Exception {
-        return postRequestBuilder(MENU_API_URL_TEMPLATE, generateCreateMenuRequest(savedMenuGroup, savedProducts));
+        return postRequestBuilder(MENU_API_URL_TEMPLATE, 메뉴_생성_요청_생성(savedMenuGroup, savedProducts));
     }
 }

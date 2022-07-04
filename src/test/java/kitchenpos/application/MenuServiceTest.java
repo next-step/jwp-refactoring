@@ -1,10 +1,10 @@
 package kitchenpos.application;
 
-import static kitchenpos.utils.generator.MenuFixtureGenerator.generateCreateMenuRequest;
-import static kitchenpos.utils.generator.MenuFixtureGenerator.generateMenu;
-import static kitchenpos.utils.generator.MenuFixtureGenerator.generateMenuProduct;
-import static kitchenpos.utils.generator.MenuGroupFixtureGenerator.generateMenuGroup;
-import static kitchenpos.utils.generator.ProductFixtureGenerator.generateProductMock;
+import static kitchenpos.utils.generator.MenuFixtureGenerator.메뉴_생성_요청_생성;
+import static kitchenpos.utils.generator.MenuFixtureGenerator.메뉴_생성;
+import static kitchenpos.utils.generator.MenuFixtureGenerator.메뉴_상품_목록_생성;
+import static kitchenpos.utils.generator.MenuGroupFixtureGenerator.메뉴_그룹_생성;
+import static kitchenpos.utils.generator.ProductFixtureGenerator.상품_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
@@ -68,13 +68,15 @@ class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        메뉴_그룹 = generateMenuGroup();
-        firstProduct = generateProductMock();
-        secondProduct = generateProductMock();
-        menu = generateMenu(메뉴_그룹, firstProduct, secondProduct);
+        메뉴_그룹 = 메뉴_그룹_생성();
+//        firstProduct = generateProductMock();
+//        secondProduct = generateProductMock();
+        firstProduct = 상품_생성();
+        secondProduct = 상품_생성();
+        menu = 메뉴_생성(메뉴_그룹, firstProduct, secondProduct);
         메뉴_상품 = menu.getMenuProducts();
 
-        메뉴_생성_요청_객체 = generateCreateMenuRequest(메뉴_그룹, firstProduct, secondProduct);
+        메뉴_생성_요청_객체 = 메뉴_생성_요청_생성(메뉴_그룹, firstProduct, secondProduct);
         메뉴_상품_요청_객체 = 메뉴_생성_요청_객체.getMenuProductRequests();
     }
 
@@ -145,7 +147,7 @@ class MenuServiceTest {
     @DisplayName("메뉴에 구성되는 메뉴 상품이 존재하지 않는 경우 예외가 발생한다.")
     public void throwException_WhenMenuProductIsNotExist() {
         // Given
-        CreateMenuRequest createMenuRequest = generateCreateMenuRequest(generateMenuGroup(), generateProductMock());
+        CreateMenuRequest createMenuRequest = 메뉴_생성_요청_생성(메뉴_그룹_생성(), 상품_생성());
 
         given(menuGroupRepository.findById(any())).willReturn(Optional.of(메뉴_그룹));
         given(menuProductService.findMenuProductByMenuProductRequest(createMenuRequest.getMenuProductRequests())).willThrow(IllegalArgumentException.class);
@@ -163,8 +165,8 @@ class MenuServiceTest {
     @DisplayName("메뉴에 포함된 상품의 가격의 총 합이 메뉴의 가격보다 큰 경우 예외가 발생한다.")
     public void throwException_WhenMenuPriceIsOverThanSumOfEachMenuProductsPrice() {
         // Given
-        CreateMenuRequest createMenuRequest = generateCreateMenuRequest(메뉴_그룹, firstProduct);
-        List<MenuProduct> 메뉴_상품_목록 = generateMenuProduct(firstProduct);
+        CreateMenuRequest createMenuRequest = 메뉴_생성_요청_생성(메뉴_그룹, firstProduct);
+        List<MenuProduct> 메뉴_상품_목록 = 메뉴_상품_목록_생성(firstProduct);
 
         given(menuGroupRepository.findById(any())).willReturn(Optional.of(메뉴_그룹));
         given(menuProductService.findMenuProductByMenuProductRequest(createMenuRequest.getMenuProductRequests())).willReturn(메뉴_상품_목록);
@@ -203,8 +205,8 @@ class MenuServiceTest {
     private List<Menu> generateMenuMocks(int count) {
         List<Menu> menus = new ArrayList<>();
         for (int i = 0; i < count; i++) {
-            Menu menu = new Menu("mock menu name", new BigDecimal(1000), generateMenuGroup(),
-                generateMenuProduct(generateProductMock()));
+            Menu menu = new Menu("mock menu name", new BigDecimal(1000), 메뉴_그룹_생성(),
+                메뉴_상품_목록_생성(상품_생성()));
             menus.add(menu);
         }
         return menus;

@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
-import static kitchenpos.utils.generator.OrderTableFixtureGenerator.generateEmptyOrderTable;
-import static kitchenpos.utils.generator.OrderTableFixtureGenerator.generateNotEmptyOrderTable;
+import static kitchenpos.utils.generator.OrderTableFixtureGenerator.비어있는_주문_테이블_생성;
+import static kitchenpos.utils.generator.OrderTableFixtureGenerator.비어있지_않은_주문_테이블_생성;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -53,8 +53,8 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        firstOrderTable = generateEmptyOrderTable();
-        secondOrderTable = generateEmptyOrderTable();
+        firstOrderTable = 비어있는_주문_테이블_생성();
+        secondOrderTable = 비어있는_주문_테이블_생성();
         orderTables = Arrays.asList(firstOrderTable, secondOrderTable);
         tableGroup = new TableGroup();
         tableGroup.setOrderTables(orderTables);
@@ -116,7 +116,7 @@ class TableGroupServiceTest {
     public void throwException_WhenContainsIsNotEmptyOrderTable() {
         // Given
         List<OrderTable> givenContainsNotEmptyOrderTables = Arrays
-            .asList(generateNotEmptyOrderTable(), generateEmptyOrderTable());
+            .asList(비어있지_않은_주문_테이블_생성(), 비어있는_주문_테이블_생성());
         given(orderTableDao.findAllByIdIn(anyList())).willReturn(givenContainsNotEmptyOrderTables);
 
         TableGroup givenTableGroup = new TableGroup();
@@ -133,10 +133,10 @@ class TableGroupServiceTest {
     @DisplayName("이미 그룹핑 된 주문 테이블이 포함된 경우 예외 발생 검증")
     public void throwException_ContainsAlreadyHasTableGroupOrderTable() {
         // Given
-        OrderTable givenAlreadyHasTableGroupOrderTable = generateEmptyOrderTable();
+        OrderTable givenAlreadyHasTableGroupOrderTable = 비어있는_주문_테이블_생성();
         givenAlreadyHasTableGroupOrderTable.setTableGroupId(1L);
 
-        List<OrderTable> givenContainsAlreadyHasTableGroupOrderTables = Arrays.asList(givenAlreadyHasTableGroupOrderTable, generateEmptyOrderTable());
+        List<OrderTable> givenContainsAlreadyHasTableGroupOrderTables = Arrays.asList(givenAlreadyHasTableGroupOrderTable, 비어있는_주문_테이블_생성());
         given(orderTableDao.findAllByIdIn(anyList())).willReturn(givenContainsAlreadyHasTableGroupOrderTables);
 
         TableGroup givenTableGroup = new TableGroup();

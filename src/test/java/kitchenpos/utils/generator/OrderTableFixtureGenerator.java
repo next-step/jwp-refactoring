@@ -17,7 +17,7 @@ public class OrderTableFixtureGenerator {
     private static boolean EMPTY = false;
     private static int COUNTER = 0;
 
-    public static OrderTable generateEmptyOrderTable() {
+    public static OrderTable 비어있는_주문_테이블_생성() {
         COUNTER++;
         OrderTable orderTable = new OrderTable();
         orderTable.setNumberOfGuests(NUMBER_OF_GUESTS + COUNTER);
@@ -25,32 +25,32 @@ public class OrderTableFixtureGenerator {
         return orderTable;
     }
 
-    public static OrderTable generateNotEmptyOrderTable() {
-        OrderTable orderTable = generateEmptyOrderTable();
+    public static OrderTable 비어있지_않은_주문_테이블_생성() {
+        OrderTable orderTable = 비어있는_주문_테이블_생성();
         orderTable.setEmpty(EMPTY);
         return orderTable;
     }
 
-    public static List<OrderTable> generateOrderTables(int count) {
+    public static List<OrderTable> 비어있지_않은_주문_테이블_목록_생성(int count) {
         List<OrderTable> orderTables = new ArrayList<>();
         for (int i = 0; i < count; i++) {
-            orderTables.add(generateNotEmptyOrderTable());
+            orderTables.add(비어있지_않은_주문_테이블_생성());
         }
         return orderTables;
     }
 
     public static MockHttpServletRequestBuilder 비어있지_않은_주문_테이블_생성_요청() throws Exception {
-        return postRequestBuilder(TABLE_API_BASE_URL, generateNotEmptyOrderTable());
+        return postRequestBuilder(TABLE_API_BASE_URL, 비어있지_않은_주문_테이블_생성());
     }
 
     public static MockHttpServletRequestBuilder 비어있는_주문_테이블_생성_요청() throws Exception {
-        return postRequestBuilder(TABLE_API_BASE_URL, generateEmptyOrderTable());
+        return postRequestBuilder(TABLE_API_BASE_URL, 비어있는_주문_테이블_생성());
     }
 
     public static MockHttpServletRequestBuilder 테이블_사용_가능_여부_수정_요청_생성(
         final OrderTable updateOrderTableEmptyRequest,
         final Long savedOrderId
-        ) throws Exception {
+    ) throws Exception {
         return putRequestBuilder(UPDATE_TABLE_EMPTY_URL_TEMPLATE, updateOrderTableEmptyRequest, savedOrderId);
     }
 

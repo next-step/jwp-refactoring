@@ -10,13 +10,13 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 
 public class TableGroupFixtureGenerator {
 
-    public static TableGroup generateTableGroup(final OrderTable... savedOrderTables) {
+    public static TableGroup 테이블_그룹_생성(final OrderTable... savedOrderTables) {
         TableGroup tableGroup = new TableGroup();
         tableGroup.setOrderTables(Arrays.asList(savedOrderTables));
         return tableGroup;
     }
 
     public static MockHttpServletRequestBuilder 테이블_그룹_생성_요청(final OrderTable... savedOrderTables) throws Exception {
-        return postRequestBuilder(TABLE_GROUP_API_BASE_URL, generateTableGroup(savedOrderTables));
+        return postRequestBuilder(TABLE_GROUP_API_BASE_URL, 테이블_그룹_생성(savedOrderTables));
     }
 }

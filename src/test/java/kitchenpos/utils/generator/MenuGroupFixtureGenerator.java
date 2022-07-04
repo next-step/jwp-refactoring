@@ -15,32 +15,32 @@ public class MenuGroupFixtureGenerator {
     private static String NAME = "오늘의 메뉴";
     private static int COUNTER = 0;
 
-    public static MenuGroup generateMenuGroup() {
+    public static MenuGroup 메뉴_그룹_생성() {
         COUNTER++;
         MenuGroup menuGroup = new MenuGroup();
         menuGroup.setName(NAME + COUNTER);
         return menuGroup;
     }
 
-    public static MenuGroup generateMenuGroup(final String name) {
+    public static MenuGroup 메뉴_그룹_생성(final String name) {
         MenuGroup menuGroup = new MenuGroup();
         menuGroup.setName(name);
         return menuGroup;
     }
 
-    public static List<MenuGroup> generateMenuGroups(int count) {
+    public static List<MenuGroup> 메뉴_그룹_목록_생성(int count) {
         List<MenuGroup> menuGroups = new ArrayList<>();
         for (int i = 0; i < count; i++) {
-            menuGroups.add(generateMenuGroup());
+            menuGroups.add(메뉴_그룹_생성());
         }
         return menuGroups;
     }
 
     public static MockHttpServletRequestBuilder 메뉴_그룹_생성_요청() throws Exception {
-        return postRequestBuilder(MENU_GROUP_API_URL_TEMPLATE, generateMenuGroup());
+        return postRequestBuilder(MENU_GROUP_API_URL_TEMPLATE, 메뉴_그룹_생성());
     }
 
     public static MockHttpServletRequestBuilder 메뉴_그룹_생성_요청(final String name) throws Exception {
-        return postRequestBuilder(MENU_GROUP_API_URL_TEMPLATE, generateMenuGroup(name));
+        return postRequestBuilder(MENU_GROUP_API_URL_TEMPLATE, 메뉴_그룹_생성(name));
     }
 }

@@ -1,8 +1,8 @@
 package kitchenpos.application;
 
-import static kitchenpos.utils.generator.OrderTableFixtureGenerator.generateEmptyOrderTable;
-import static kitchenpos.utils.generator.OrderTableFixtureGenerator.generateNotEmptyOrderTable;
-import static kitchenpos.utils.generator.OrderTableFixtureGenerator.generateOrderTables;
+import static kitchenpos.utils.generator.OrderTableFixtureGenerator.비어있는_주문_테이블_생성;
+import static kitchenpos.utils.generator.OrderTableFixtureGenerator.비어있지_않은_주문_테이블_생성;
+import static kitchenpos.utils.generator.OrderTableFixtureGenerator.비어있지_않은_주문_테이블_목록_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
@@ -42,7 +42,7 @@ class TableServiceTest {
     @DisplayName("주문 테이블을 생성한다.")
     public void createOrderTable() {
         // Given
-        OrderTable givenOrderTable = generateNotEmptyOrderTable();
+        OrderTable givenOrderTable = 비어있지_않은_주문_테이블_생성();
         given(orderTableDao.save(any(OrderTable.class))).will(AdditionalAnswers.returnsFirstArg());
 
         // When
@@ -61,7 +61,7 @@ class TableServiceTest {
     public void getAllOrderTables() {
         // Given
         final int generateOrderTableCount = 5;
-        List<OrderTable> givenOrderTables = generateOrderTables(generateOrderTableCount);
+        List<OrderTable> givenOrderTables = 비어있지_않은_주문_테이블_목록_생성(generateOrderTableCount);
         given(orderTableDao.findAll()).willReturn(givenOrderTables);
 
         // When
@@ -75,13 +75,13 @@ class TableServiceTest {
     @DisplayName("테이블의 사용 가능 여부를 변경한다.")
     public void changeEmpty() {
         // Given
-        OrderTable givenOrderTable = generateNotEmptyOrderTable();
+        OrderTable givenOrderTable = 비어있지_않은_주문_테이블_생성();
         given(orderTableDao.findById(anyLong())).willReturn(Optional.of(givenOrderTable));
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(false);
         given(orderTableDao.save(any(OrderTable.class))).will(AdditionalAnswers.returnsFirstArg());
 
         // When
-        OrderTable updateEmptyRequest = generateNotEmptyOrderTable();
+        OrderTable updateEmptyRequest = 비어있지_않은_주문_테이블_생성();
         updateEmptyRequest.setEmpty(true);
         OrderTable actualOrderTable = tableService.changeEmpty(anyLong(), updateEmptyRequest);
 
@@ -100,7 +100,7 @@ class TableServiceTest {
     @DisplayName("존재하지 않는 주문 테이블의 상태 변경 시 예외 발생 검증")
     public void throwException_WhenTargetOrderTableIsNotExist() {
         // Given
-        OrderTable givenOrderTable = generateNotEmptyOrderTable();
+        OrderTable givenOrderTable = 비어있지_않은_주문_테이블_생성();
         given(orderTableDao.findById(anyLong())).willThrow(IllegalArgumentException.class);
 
         // When & Then
@@ -114,7 +114,7 @@ class TableServiceTest {
     @DisplayName("단체 지정된 주문 테이블의 사용 가능 상태 변경 시 예외 발생 검증")
     public void throwException_WhenTargetOrderTableIsBindingToTableGroup() {
         // Given
-        OrderTable givenOrderTable = generateNotEmptyOrderTable();
+        OrderTable givenOrderTable = 비어있지_않은_주문_테이블_생성();
         givenOrderTable.setTableGroupId(1L);
         given(orderTableDao.findById(anyLong())).willReturn(Optional.of(givenOrderTable));
 
@@ -129,7 +129,7 @@ class TableServiceTest {
     @DisplayName("조리중이거나 식사중인 주문테이블의 사용 가능 상태 변경 시 예외 발생 검증")
     public void throwException_WhenTargetOrderTableIsMealOrCooking() {
         // Given
-        OrderTable givenOrderTable = generateNotEmptyOrderTable();
+        OrderTable givenOrderTable = 비어있지_않은_주문_테이블_생성();
         given(orderTableDao.findById(anyLong())).willReturn(Optional.of(givenOrderTable));
         given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(true);
 
@@ -145,12 +145,12 @@ class TableServiceTest {
     @DisplayName("주문 테이블의 객수를 변경한다.")
     public void changeNumberOfGuests() {
         // Given
-        OrderTable givenOrderTable = generateNotEmptyOrderTable();
+        OrderTable givenOrderTable = 비어있지_않은_주문_테이블_생성();
         given(orderTableDao.findById(anyLong())).willReturn(Optional.of(givenOrderTable));
         given(orderTableDao.save(any(OrderTable.class))).will(AdditionalAnswers.returnsFirstArg());
 
         final int newNumberOfGuests = 4;
-        OrderTable updateNumberOfGuestsRequest = generateNotEmptyOrderTable();
+        OrderTable updateNumberOfGuestsRequest = 비어있지_않은_주문_테이블_생성();
         updateNumberOfGuestsRequest.setNumberOfGuests(4);
 
         // When
@@ -170,7 +170,7 @@ class TableServiceTest {
     @DisplayName("존재하지 않는 주문 테이블의 객수 변경 시, 예외 발생 검증")
     public void throwException_WhenOrderTableIsNotExist() {
         // Given
-        OrderTable orderTable = generateNotEmptyOrderTable();
+        OrderTable orderTable = 비어있지_않은_주문_테이블_생성();
         given(orderTableDao.findById(anyLong())).willThrow(IllegalArgumentException.class);
 
         // When & Then
@@ -184,7 +184,7 @@ class TableServiceTest {
     @DisplayName("비어있는 주문 테이블의 객수 변경 시, 예외 발생 검증")
     public void throwException_WhenOrderTableIsEmpty(){
         // Given
-        OrderTable orderTable = generateEmptyOrderTable();
+        OrderTable orderTable = 비어있는_주문_테이블_생성();
         given(orderTableDao.findById(anyLong())).willReturn(Optional.of(orderTable));
     
         // When

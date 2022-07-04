@@ -1,10 +1,10 @@
 package kitchenpos.application;
 
-import static kitchenpos.utils.generator.MenuFixtureGenerator.generateMenu;
-import static kitchenpos.utils.generator.MenuGroupFixtureGenerator.generateMenuGroup;
-import static kitchenpos.utils.generator.OrderFixtureGenerator.generateOrder;
-import static kitchenpos.utils.generator.OrderTableFixtureGenerator.generateNotEmptyOrderTable;
-import static kitchenpos.utils.generator.ProductFixtureGenerator.generateProduct;
+import static kitchenpos.utils.generator.MenuFixtureGenerator.메뉴_생성;
+import static kitchenpos.utils.generator.MenuGroupFixtureGenerator.메뉴_그룹_생성;
+import static kitchenpos.utils.generator.OrderFixtureGenerator.주문_생성;
+import static kitchenpos.utils.generator.OrderTableFixtureGenerator.비어있지_않은_주문_테이블_생성;
+import static kitchenpos.utils.generator.ProductFixtureGenerator.상품_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
@@ -27,6 +27,7 @@ import kitchenpos.domain.order.OrderLineItem;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.product.Product;
 import kitchenpos.domain.table.OrderTable;
+import kitchenpos.utils.generator.OrderFixtureGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -64,13 +65,13 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        firstProduct = generateProduct();
-        secondProduct = generateProduct();
-        menuGroup = generateMenuGroup();
-        menu = generateMenu(menuGroup, firstProduct, secondProduct);
+        firstProduct = 상품_생성();
+        secondProduct = 상품_생성();
+        menuGroup = 메뉴_그룹_생성();
+        menu = 메뉴_생성(menuGroup, firstProduct, secondProduct);
 
-        orderTable = generateNotEmptyOrderTable();
-        order = generateOrder(orderTable, menu);
+        orderTable = 비어있지_않은_주문_테이블_생성();
+        order = OrderFixtureGenerator.주문_생성(orderTable, menu);
     }
 
     @Test

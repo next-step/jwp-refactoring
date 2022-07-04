@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
-import static kitchenpos.utils.generator.MenuGroupFixtureGenerator.generateMenuGroup;
-import static kitchenpos.utils.generator.MenuGroupFixtureGenerator.generateMenuGroups;
+import static kitchenpos.utils.generator.MenuGroupFixtureGenerator.메뉴_그룹_생성;
+import static kitchenpos.utils.generator.MenuGroupFixtureGenerator.메뉴_그룹_목록_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -33,7 +33,7 @@ class MenuGroupServiceTest {
     @DisplayName("메뉴 그룹을 생성한다.")
     public void createMenuGroup() {
         // Given
-        final MenuGroup given = generateMenuGroup();
+        final MenuGroup given = 메뉴_그룹_생성();
         given(menuGroupRepository.save(any(MenuGroup.class))).will(AdditionalAnswers.returnsFirstArg());
 
         // When
@@ -49,7 +49,7 @@ class MenuGroupServiceTest {
     public void getMenuGroups() {
         // Given
         final int generateMenuGroupCount = 5;
-        List<MenuGroup> givenMenuGroups = generateMenuGroups(generateMenuGroupCount);
+        List<MenuGroup> givenMenuGroups = 메뉴_그룹_목록_생성(generateMenuGroupCount);
         given(menuGroupRepository.findAll()).willReturn(givenMenuGroups);
 
         // When

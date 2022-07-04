@@ -1,7 +1,7 @@
 package kitchenpos.application;
 
-import static kitchenpos.utils.generator.ProductFixtureGenerator.generateProduct;
-import static kitchenpos.utils.generator.ProductFixtureGenerator.generateProducts;
+import static kitchenpos.utils.generator.ProductFixtureGenerator.상품_생성;
+import static kitchenpos.utils.generator.ProductFixtureGenerator.상품_목록_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -33,7 +33,7 @@ class ProductServiceTest {
     @DisplayName("상품을 생성한다.")
     public void createProduct() {
         // Given
-        final Product given = generateProduct();
+        final Product given = 상품_생성();
         given(productRepository.save(any(Product.class))).will(AdditionalAnswers.returnsFirstArg());
 
         // When
@@ -49,7 +49,7 @@ class ProductServiceTest {
     public void getProducts() {
         // Given
         final int generateProductCount = 5;
-        List<Product> givenProducts = generateProducts(generateProductCount);
+        List<Product> givenProducts = 상품_목록_생성(generateProductCount);
         given(productRepository.findAll()).willReturn(givenProducts);
 
         // When
