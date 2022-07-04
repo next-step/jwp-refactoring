@@ -89,4 +89,12 @@
     - [X] ServiceTestHelper를 각 패키지로 분리
     - [X] Fixtures를 각 패키지로 이동
     - [X] KitchenPosBehaviors는 인수테스트 패키지 내부로 이동
-  - [ ] 테스트 의존성 구성도 작성
+  - [X] 테스트 의존성 구성도 작성
+  
+
+## 의존성 구성도 첨부
+### 프로덕션 코드
+![production](../capture/ProductionDeps.png)
+
+### 테스트 코드 (컨텍스트 단위)
+![test](../capture/TestDeps.png)
