@@ -1,4 +1,4 @@
-package kitchenpos.menu.validator;
+package kitchenpos.menu.domain;
 
 import java.util.List;
 import kitchenpos.common.domain.Price;

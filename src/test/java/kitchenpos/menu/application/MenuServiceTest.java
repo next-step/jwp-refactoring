@@ -19,7 +19,7 @@ import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.repository.MenuRepository;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.menu.validator.MenuValidator;
+import kitchenpos.menu.domain.MenuValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

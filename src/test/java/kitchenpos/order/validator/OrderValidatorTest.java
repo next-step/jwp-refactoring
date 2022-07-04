@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import kitchenpos.menu.domain.repository.MenuRepository;
 import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.repository.OrderTableRepository;

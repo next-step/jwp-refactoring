@@ -1,4 +1,4 @@
-package kitchenpos.table.validator;
+package kitchenpos.table.domain;
 
 import java.util.Arrays;
 import kitchenpos.order.domain.OrderStatus;

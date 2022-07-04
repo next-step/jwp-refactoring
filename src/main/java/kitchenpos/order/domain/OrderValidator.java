@@ -1,4 +1,4 @@
-package kitchenpos.order.validator;
+package kitchenpos.order.domain;
 
 import java.util.List;
 import kitchenpos.menu.domain.repository.MenuRepository;
