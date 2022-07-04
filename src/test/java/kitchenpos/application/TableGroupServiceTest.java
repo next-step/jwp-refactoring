@@ -112,17 +112,11 @@ class TableGroupServiceTest {
     @DisplayName("cooking이나 meal 상태인 테이블이 있으면 단체 해제 불가")
     public void cookingMealChangeStatus() {
         TableGroup save = tableGroupRepository.save(tableGroup);
-
         orderTable1.setTableGroup(save);
-        orderTable2.setTableGroup(save);
-        OrderTable orderTable = save.getOrderTables().getOrderTables().get(0);
+        orderTableRepository.save(orderTable1);
+        orderRepository.save(new Order(orderTable1, OrderStatus.MEAL));
 
-        orderRepository.save(new Order(orderTable, OrderStatus.MEAL));
-        orderRepository.flush();
-
-        orderTableRepository.save(orderTable);
-
-        assertThatThrownBy(() -> tableGroupService.ungroup(orderTable.getId())).isInstanceOf(
+        assertThatThrownBy(() -> tableGroupService.ungroup(save.getId())).isInstanceOf(
                 IllegalArgumentException.class);
     }
 
