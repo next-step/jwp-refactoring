@@ -8,6 +8,9 @@ public class ChangeOrderStatusRequest {
     private Long orderTableId;
     private String orderStatus;
 
+    public ChangeOrderStatusRequest() {
+    }
+
     protected ChangeOrderStatusRequest(Long orderTableId, String orderStatus) {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
