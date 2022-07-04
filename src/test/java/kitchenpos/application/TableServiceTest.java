@@ -1,8 +1,10 @@
 package kitchenpos.application;
 
 import static kitchenpos.utils.generator.OrderTableFixtureGenerator.비어있는_주문_테이블_생성;
-import static kitchenpos.utils.generator.OrderTableFixtureGenerator.비어있지_않은_주문_테이블_생성;
+import static kitchenpos.utils.generator.OrderTableFixtureGenerator.비어있는_주문_테이블_생성_요청_객체;
 import static kitchenpos.utils.generator.OrderTableFixtureGenerator.비어있지_않은_주문_테이블_목록_생성;
+import static kitchenpos.utils.generator.OrderTableFixtureGenerator.비어있지_않은_주문_테이블_생성;
+import static kitchenpos.utils.generator.OrderTableFixtureGenerator.비어있지_않은_주문_테이블_생성_요청_객체;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
@@ -13,13 +15,19 @@ import static org.mockito.Mockito.verify;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 import kitchenpos.application.table.TableService;
 import kitchenpos.dao.order.OrderDao;
 import kitchenpos.dao.table.OrderTableDao;
 import kitchenpos.domain.table.OrderTable;
+import kitchenpos.dto.table.CreateOrderTableRequest;
+import kitchenpos.dto.table.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.AdditionalAnswers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -38,22 +46,31 @@ class TableServiceTest {
     @InjectMocks
     private TableService tableService;
 
-    @Test
+    @ParameterizedTest(name = "case[{index}] : {0} => {1}")
+    @MethodSource
     @DisplayName("주문 테이블을 생성한다.")
-    public void createOrderTable() {
+    public void createOrderTable(
+        final CreateOrderTableRequest 주문_테이블_생성_객체,
+        final String testDescription
+    ) {
         // Given
-        OrderTable givenOrderTable = 비어있지_않은_주문_테이블_생성();
         given(orderTableDao.save(any(OrderTable.class))).will(AdditionalAnswers.returnsFirstArg());
 
         // When
-        OrderTable actualOrderTable = tableService.create(givenOrderTable);
+        OrderTableResponse actualOrderTable = tableService.create(주문_테이블_생성_객체);
 
         // Then
         verify(orderTableDao).save(any(OrderTable.class));
-        assertThat(actualOrderTable)
-            .usingRecursiveComparison()
-            .ignoringFields("id")
-            .isEqualTo(givenOrderTable);
+        assertThat(actualOrderTable.isEmpty())
+            .as(testDescription)
+            .isEqualTo(주문_테이블_생성_객체.isEmpty());
+    }
+
+    private static Stream<Arguments> createOrderTable(){
+        return Stream.of(
+            Arguments.of(비어있는_주문_테이블_생성_요청_객체(), "비어 있는 주문 테이블 생성"),
+            Arguments.of(비어있지_않은_주문_테이블_생성_요청_객체(), "비어 있지 않은 주문 테이블 생성")
+        );
     }
 
     @Test
@@ -65,7 +82,7 @@ class TableServiceTest {
         given(orderTableDao.findAll()).willReturn(givenOrderTables);
 
         // When
-        List<OrderTable> actualOrderTables = tableService.list();
+        List<OrderTableResponse> actualOrderTables = tableService.list();
 
         // Then
         assertThat(actualOrderTables).hasSize(generateOrderTableCount);
@@ -179,18 +196,18 @@ class TableServiceTest {
 
         verify(orderTableDao).findById(anyLong());
     }
-    
+
     @Test
     @DisplayName("비어있는 주문 테이블의 객수 변경 시, 예외 발생 검증")
-    public void throwException_WhenOrderTableIsEmpty(){
+    public void throwException_WhenOrderTableIsEmpty() {
         // Given
         OrderTable orderTable = 비어있는_주문_테이블_생성();
         given(orderTableDao.findById(anyLong())).willReturn(Optional.of(orderTable));
-    
+
         // When
         assertThatExceptionOfType(IllegalArgumentException.class)
             .isThrownBy(() -> tableService.changeNumberOfGuests(anyLong(), orderTable));
-    
+
         // Then
         verify(orderTableDao).findById(anyLong());
     }

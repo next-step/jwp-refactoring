@@ -9,6 +9,7 @@ import static kitchenpos.utils.MockMvcUtil.putRequestBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import kitchenpos.domain.table.OrderTable;
+import kitchenpos.dto.table.CreateOrderTableRequest;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 public class OrderTableFixtureGenerator {
@@ -29,6 +30,14 @@ public class OrderTableFixtureGenerator {
         orderTable.setNumberOfGuests(NUMBER_OF_GUESTS + COUNTER);
         orderTable.setEmpty(EMPTY);
         return orderTable;
+    }
+
+    public static CreateOrderTableRequest 비어있는_주문_테이블_생성_요청_객체() {
+        return new CreateOrderTableRequest(0, true);
+    }
+
+    public static CreateOrderTableRequest 비어있지_않은_주문_테이블_생성_요청_객체() {
+        return new CreateOrderTableRequest(0, false);
     }
 
     public static List<OrderTable> 비어있지_않은_주문_테이블_목록_생성(int count) {

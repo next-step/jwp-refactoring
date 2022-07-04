@@ -1,10 +1,21 @@
 package kitchenpos.domain.table;
 
 public class OrderTable {
+
     private Long id;
     private Long tableGroupId;
     private int numberOfGuests;
     private boolean empty;
+
+    public OrderTable() {
+
+    }
+
+    public OrderTable(int numberOfGuests, boolean empty) {
+        this.tableGroupId = null;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
 
     public Long getId() {
         return id;
