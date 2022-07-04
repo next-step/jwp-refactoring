@@ -13,16 +13,19 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuDto;
+import kitchenpos.menu.util.MenuApplicationBehavior;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.exception.CannotChangeOrderStatusException;
 import kitchenpos.order.exception.CannotMakeOrderException;
 import kitchenpos.order.exception.EmptyOrderLineItemsException;
+import kitchenpos.order.util.OrderApplicationBehavior;
 import kitchenpos.product.domain.Product;
+import kitchenpos.product.util.ProductApplicationBehavior;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.exception.NotExistTableException;
-import kitchenpos.utils.ServiceTestHelper;
+import kitchenpos.table.util.TableApplicationBehavior;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +35,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 class OrderServiceTest extends ServiceTest {
     @Autowired
-    private ServiceTestHelper serviceTestHelper;
+    private TableApplicationBehavior tableApplicationBehavior;
+
+    @Autowired
+    private MenuApplicationBehavior menuApplicationBehavior;
+
+    @Autowired
+    private ProductApplicationBehavior productApplicationBehavior;
+
+    @Autowired
+    private OrderApplicationBehavior orderApplicationBehavior;
 
     @Autowired
     private OrderService orderService;
@@ -47,15 +59,15 @@ class OrderServiceTest extends ServiceTest {
 
     @BeforeEach
     void setUp() {
-        menuGroup = serviceTestHelper.메뉴그룹_생성됨("메뉴그룹1");
-        product1 = serviceTestHelper.상품_생성됨("상품1", 1000);
-        product2 = serviceTestHelper.상품_생성됨("상품2", 2000);
-        product3 = serviceTestHelper.상품_생성됨("상품3", 3000);
+        menuGroup = menuApplicationBehavior.메뉴그룹_생성됨("메뉴그룹1");
+        product1 = productApplicationBehavior.상품_생성됨("상품1", 1000);
+        product2 = productApplicationBehavior.상품_생성됨("상품2", 2000);
+        product3 = productApplicationBehavior.상품_생성됨("상품3", 3000);
         MenuProduct menuProduct1 = MenuProductFixtureFactory.createMenuProduct(product1.getId(), 4);
         MenuProduct menuProduct2 = MenuProductFixtureFactory.createMenuProduct(product2.getId(), 2);
-        menu1 = serviceTestHelper.메뉴_생성됨(menuGroup, "메뉴1", 4000, Lists.newArrayList(menuProduct1));
-        menu2 = serviceTestHelper.메뉴_생성됨(menuGroup, "메뉴2", 4000, Lists.newArrayList(menuProduct2));
-        orderTable = serviceTestHelper.비어있지않은테이블_생성됨(3);
+        menu1 = menuApplicationBehavior.메뉴_생성됨(menuGroup, "메뉴1", 4000, Lists.newArrayList(menuProduct1));
+        menu2 = menuApplicationBehavior.메뉴_생성됨(menuGroup, "메뉴2", 4000, Lists.newArrayList(menuProduct2));
+        orderTable = tableApplicationBehavior.비어있지않은테이블_생성됨(3);
     }
 
     @Test
@@ -64,7 +76,7 @@ class OrderServiceTest extends ServiceTest {
         OrderLineItemRequest orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
         OrderLineItemRequest orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
 
-        OrderResponse savedOrder = serviceTestHelper.주문_생성됨(orderTable.getId(),
+        OrderResponse savedOrder = orderApplicationBehavior.주문_생성됨(orderTable.getId(),
                 Lists.newArrayList(orderLineItem1, orderLineItem2));
         Assertions.assertAll("등록된 주문을 확인한다"
                 , () -> assertThat(savedOrder.getId()).isNotNull()
@@ -79,8 +91,8 @@ class OrderServiceTest extends ServiceTest {
     void 주문등록_인원수가0일때도_주문등록가능() {
         OrderLineItemRequest orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
         OrderLineItemRequest orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
-        OrderTableResponse zeroGuestTable = serviceTestHelper.비어있지않은테이블_생성됨(0);
-        OrderResponse savedOrder = serviceTestHelper.주문_생성됨(zeroGuestTable.getId(),
+        OrderTableResponse zeroGuestTable = tableApplicationBehavior.비어있지않은테이블_생성됨(0);
+        OrderResponse savedOrder = orderApplicationBehavior.주문_생성됨(zeroGuestTable.getId(),
                 Lists.newArrayList(orderLineItem1, orderLineItem2));
         Assertions.assertAll("등록된 주문을 확인한다"
                 , () -> assertThat(savedOrder.getId()).isNotNull()
@@ -95,7 +107,7 @@ class OrderServiceTest extends ServiceTest {
     void 주문등록_주문항목이_없는경우() {
         Long orderTableId = orderTable.getId();
         List<OrderLineItemRequest> orderLineItemRequests = emptyList();
-        assertThatThrownBy(() -> serviceTestHelper.주문_생성됨(orderTableId, orderLineItemRequests))
+        assertThatThrownBy(() -> orderApplicationBehavior.주문_생성됨(orderTableId, orderLineItemRequests))
                 .isInstanceOf(EmptyOrderLineItemsException.class);
     }
 
@@ -108,7 +120,7 @@ class OrderServiceTest extends ServiceTest {
 
         Long orderTableId = orderTable.getId();
         List<OrderLineItemRequest> orderLineItemRequests = Lists.newArrayList(orderLineItem);
-        assertThatThrownBy(() -> serviceTestHelper.주문_생성됨(orderTableId, orderLineItemRequests))
+        assertThatThrownBy(() -> orderApplicationBehavior.주문_생성됨(orderTableId, orderLineItemRequests))
                 .isInstanceOf(CannotMakeOrderException.class);
     }
 
@@ -119,20 +131,20 @@ class OrderServiceTest extends ServiceTest {
         OrderLineItemRequest orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
         OrderLineItemRequest orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
         List<OrderLineItemRequest> orderLineItemRequests = Lists.newArrayList(orderLineItem1, orderLineItem2);
-        assertThatThrownBy(() -> serviceTestHelper.주문_생성됨(notExistTableId, orderLineItemRequests))
+        assertThatThrownBy(() -> orderApplicationBehavior.주문_생성됨(notExistTableId, orderLineItemRequests))
                 .isInstanceOf(NotExistTableException.class);
     }
 
     @Test
     @DisplayName("주문테이블이 빈 테이블인 경우 주문 등록 실패")
     void 주문등록_주문테이블이_빈테이블인_경우() {
-        OrderTableResponse orderTable = serviceTestHelper.빈테이블_생성됨();
+        OrderTableResponse orderTable = tableApplicationBehavior.빈테이블_생성됨();
         OrderLineItemRequest orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
         OrderLineItemRequest orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
 
         Long orderTableId = orderTable.getId();
         List<OrderLineItemRequest> orderLineItemRequests = Lists.newArrayList(orderLineItem1, orderLineItem2);
-        assertThatThrownBy(() -> serviceTestHelper.주문_생성됨(orderTableId, orderLineItemRequests))
+        assertThatThrownBy(() -> orderApplicationBehavior.주문_생성됨(orderTableId, orderLineItemRequests))
                 .isInstanceOf(CannotMakeOrderException.class);
     }
 
@@ -143,8 +155,8 @@ class OrderServiceTest extends ServiceTest {
         OrderLineItemRequest orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
         OrderLineItemRequest orderLineItem3 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 2);
 
-        serviceTestHelper.주문_생성됨(orderTable.getId(), Lists.newArrayList(orderLineItem1, orderLineItem2));
-        serviceTestHelper.주문_생성됨(orderTable.getId(), Lists.newArrayList(orderLineItem3));
+        orderApplicationBehavior.주문_생성됨(orderTable.getId(), Lists.newArrayList(orderLineItem1, orderLineItem2));
+        orderApplicationBehavior.주문_생성됨(orderTable.getId(), Lists.newArrayList(orderLineItem3));
 
         List<OrderResponse> orders = orderService.list();
         assertThat(orders).hasSize(2);
@@ -155,10 +167,10 @@ class OrderServiceTest extends ServiceTest {
     void 주문상태_변경() {
         OrderLineItemRequest orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
         OrderLineItemRequest orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
-        OrderResponse order = serviceTestHelper.주문_생성됨(orderTable.getId(),
+        OrderResponse order = orderApplicationBehavior.주문_생성됨(orderTable.getId(),
                 Lists.newArrayList(orderLineItem1, orderLineItem2));
 
-        OrderResponse updatedOrder = serviceTestHelper.주문상태_변경(order.getId(), OrderStatus.MEAL);
+        OrderResponse updatedOrder = orderApplicationBehavior.주문상태_변경(order.getId(), OrderStatus.MEAL);
         Assertions.assertAll("주문상태의 변경여부를 확인한다"
                 , () -> assertThat(updatedOrder.getId()).isEqualTo(order.getId())
                 , () -> assertThat(updatedOrder.getOrderStatus()).isEqualTo(OrderStatus.MEAL.name())
@@ -173,11 +185,11 @@ class OrderServiceTest extends ServiceTest {
         OrderLineItemRequest orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
         OrderLineItemRequest orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
 
-        OrderResponse order = serviceTestHelper.주문_생성됨(orderTable.getId(),
+        OrderResponse order = orderApplicationBehavior.주문_생성됨(orderTable.getId(),
                 Lists.newArrayList(orderLineItem1, orderLineItem2));
-        serviceTestHelper.주문상태_변경(order.getId(), OrderStatus.COMPLETION);
+        orderApplicationBehavior.주문상태_변경(order.getId(), OrderStatus.COMPLETION);
         Long orderId = order.getId();
-        assertThatThrownBy(() -> serviceTestHelper.주문상태_변경(orderId, OrderStatus.MEAL))
+        assertThatThrownBy(() -> orderApplicationBehavior.주문상태_변경(orderId, OrderStatus.MEAL))
                 .isInstanceOf(CannotChangeOrderStatusException.class);
     }
 }

@@ -12,8 +12,9 @@ import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuDto;
 import kitchenpos.menu.dto.MenuProductDto;
 import kitchenpos.menu.exception.InvalidMenuPriceException;
+import kitchenpos.menu.util.MenuApplicationBehavior;
 import kitchenpos.product.domain.Product;
-import kitchenpos.utils.ServiceTestHelper;
+import kitchenpos.product.util.ProductApplicationBehavior;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +25,10 @@ import org.springframework.dao.DataIntegrityViolationException;
 
 class MenuServiceTest extends ServiceTest {
     @Autowired
-    private ServiceTestHelper serviceTestHelper;
+    private MenuApplicationBehavior menuApplicationBehavior;
+
+    @Autowired
+    private ProductApplicationBehavior productApplicationBehavior;
 
     @Autowired
     private MenuService menuService;
@@ -35,9 +39,9 @@ class MenuServiceTest extends ServiceTest {
 
     @BeforeEach
     void setUp() {
-        menuGroup = serviceTestHelper.메뉴그룹_생성됨("메뉴그룹1");
-        product1 = serviceTestHelper.상품_생성됨("상품1", 1000);
-        product2 = serviceTestHelper.상품_생성됨("상품2", 2000);
+        menuGroup = menuApplicationBehavior.메뉴그룹_생성됨("메뉴그룹1");
+        product1 = productApplicationBehavior.상품_생성됨("상품1", 1000);
+        product2 = productApplicationBehavior.상품_생성됨("상품2", 2000);
     }
 
     @Test
@@ -104,7 +108,8 @@ class MenuServiceTest extends ServiceTest {
     private MenuDto 테스트_메뉴_생성(MenuGroup menuGroup, String menuName, int menuPrice) {
         MenuProduct menuProduct1 = MenuProductFixtureFactory.createMenuProduct(product1.getId(), 4);
         MenuProduct menuProduct2 = MenuProductFixtureFactory.createMenuProduct(product2.getId(), 1);
-        return serviceTestHelper.메뉴_생성됨(menuGroup, menuName, menuPrice, Lists.newArrayList(menuProduct1, menuProduct2));
+        return menuApplicationBehavior.메뉴_생성됨(menuGroup, menuName, menuPrice,
+                Lists.newArrayList(menuProduct1, menuProduct2));
     }
 
 }

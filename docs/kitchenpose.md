@@ -84,3 +84,8 @@
   - [X] flyway 버전 추가(orderLineItem 테이블에 메뉴이름과 메뉴가격 컬럼을 추가)
   - [X] OrderLineItem 객체 생성시점에 메뉴 정보를 복사 
 - [ ] 프로덕션 및 테스트 코드 의존성 분석 및 조치
+  - [X] 프로덕션 의존성 구성도 작성
+  - [X] 테스트 코드 분리
+    - [X] ServiceTestHelper
+    - [ ] Fixtures 
+  - [ ] 테스트 의존성 구성도 작성

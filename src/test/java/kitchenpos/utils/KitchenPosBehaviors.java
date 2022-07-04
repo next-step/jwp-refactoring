@@ -10,7 +10,6 @@ import java.util.Map;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuDto;
-import kitchenpos.order.domain.Order;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -171,10 +170,6 @@ public class KitchenPosBehaviors {
                 .when().body(orderRequest).post("/api/orders/")
                 .then().log().all()
                 .extract();
-    }
-
-    public static Order 주문_추가(OrderRequest orderRequest) {
-        return 주문_추가_요청(orderRequest).as(Order.class);
     }
 
     public static ExtractableResponse<Response> 주문상태변경_요청(Long orderId, OrderRequest param) {
