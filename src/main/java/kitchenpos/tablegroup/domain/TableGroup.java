@@ -23,11 +23,6 @@ public class TableGroup {
     protected TableGroup() {
     }
 
-    public TableGroup(Long id, LocalDateTime createdDate) {
-        this.id = id;
-        this.createdDate = createdDate;
-    }
-
     private TableGroup(List<OrderTable> orderTables) {
         assignOrderTables(orderTables);
         createdDate = LocalDateTime.now();

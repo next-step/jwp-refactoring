@@ -34,13 +34,23 @@ public class OrderServiceTest {
     }
 
 
+    @DisplayName("주문 항목이 빈값이면 에러")
+    @Test
+    public void createWithOrderLineItemEmpty() {
+        //when
+        //then
+        OrderRequest order = OrderRequest.of(3l, Arrays.asList(OrderLineItemRequest.of( 1l, 1)));
+
+        assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
+    }
+
 
     @DisplayName("주문 항목이 존재하지 않으면 에러")
     @Test
     public void createWithNoExistOrderLineItem() {
         //when
         //then
-        OrderRequest order = OrderRequest.of(3l, Arrays.asList(OrderLineItemRequest.of( 1l, 1)));
+        OrderRequest order = OrderRequest.of(999l, Arrays.asList(OrderLineItemRequest.of( 1l, 1)));
 
         assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
     }

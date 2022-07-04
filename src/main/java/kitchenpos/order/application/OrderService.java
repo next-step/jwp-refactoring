@@ -1,6 +1,5 @@
 package kitchenpos.order.application;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.menu.domain.Menu;
@@ -31,15 +30,10 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-
         final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
                 .orElseThrow(IllegalArgumentException::new);
 
         Order order = Order.of(orderTable, convertToOrderLineItems(orderRequest.getOrderLineItems()));
-
-        order.changeOrderTable(orderTable);
-        order.updateOrderedTime(LocalDateTime.now());
-
         final Order savedOrder = orderRepository.save(order);
         return OrderResponse.from(savedOrder);
     }

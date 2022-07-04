@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -77,7 +76,7 @@ public class TableServiceTest {
     public void changeEmptyWithExistTableGroupId() {
         //given
         OrderTable given = new OrderTable(1l,  1, false);
-        given.groupBy(new TableGroup(1l, LocalDateTime.now()));
+        given.groupBy(TableGroup.of(Arrays.asList(OrderTable.of(1, true), OrderTable.of(2, true))));
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(given));
         //when
         //then

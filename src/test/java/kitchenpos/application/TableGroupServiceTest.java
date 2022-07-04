@@ -5,7 +5,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -133,7 +132,8 @@ public class TableGroupServiceTest {
 
     private List<OrderTable> createHasTableGroupOrderTables() {
         OrderTable orderTable = new OrderTable(3l, 1, true);
-        orderTable.groupBy(new TableGroup(3l, LocalDateTime.now()));
+        orderTable.groupBy(TableGroup.of(Arrays.asList(OrderTable.of(1, true), OrderTable.of(2, true))));
+
         return Arrays.asList(orderTable);
     }
 }
