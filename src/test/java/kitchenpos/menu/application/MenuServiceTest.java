@@ -6,15 +6,14 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import kitchenpos.ServiceTest;
-import kitchenpos.menu.fixture.MenuProductFixtureFactory;
+import kitchenpos.menu.application.fixture.MenuProductDtoFixtureFactory;
+import kitchenpos.menu.application.util.MenuContextServiceBehavior;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuDto;
 import kitchenpos.menu.dto.MenuProductDto;
 import kitchenpos.menu.exception.InvalidMenuPriceException;
-import kitchenpos.menu.application.util.MenuContextServiceBehavior;
-import kitchenpos.product.domain.Product;
 import kitchenpos.product.application.util.ProductContextServiceBehavior;
+import kitchenpos.product.domain.Product;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -106,8 +105,8 @@ class MenuServiceTest extends ServiceTest {
     }
 
     private MenuDto 테스트_메뉴_생성(MenuGroup menuGroup, String menuName, int menuPrice) {
-        MenuProduct menuProduct1 = MenuProductFixtureFactory.createMenuProduct(product1.getId(), 4);
-        MenuProduct menuProduct2 = MenuProductFixtureFactory.createMenuProduct(product2.getId(), 1);
+        MenuProductDto menuProduct1 = MenuProductDtoFixtureFactory.createMenuProduct(product1.getId(), 4);
+        MenuProductDto menuProduct2 = MenuProductDtoFixtureFactory.createMenuProduct(product2.getId(), 1);
         return menuContextServiceBehavior.메뉴_생성됨(menuGroup, menuName, menuPrice,
                 Lists.newArrayList(menuProduct1, menuProduct2));
     }

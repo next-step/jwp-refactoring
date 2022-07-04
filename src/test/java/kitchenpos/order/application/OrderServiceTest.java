@@ -6,26 +6,25 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import kitchenpos.ServiceTest;
-import kitchenpos.menu.fixture.MenuFixtureFactory;
-import kitchenpos.menu.fixture.MenuProductFixtureFactory;
-import kitchenpos.order.fixture.OrderLineItemFixtureFactory;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.dto.MenuDto;
+import kitchenpos.menu.application.fixture.MenuDtoFixtureFactory;
+import kitchenpos.menu.application.fixture.MenuProductDtoFixtureFactory;
 import kitchenpos.menu.application.util.MenuContextServiceBehavior;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.dto.MenuDto;
+import kitchenpos.menu.dto.MenuProductDto;
+import kitchenpos.order.application.util.OrderContextServiceBehavior;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.exception.CannotChangeOrderStatusException;
 import kitchenpos.order.exception.CannotMakeOrderException;
 import kitchenpos.order.exception.EmptyOrderLineItemsException;
-import kitchenpos.order.application.util.OrderContextServiceBehavior;
-import kitchenpos.product.domain.Product;
+import kitchenpos.order.fixture.OrderLineItemFixtureFactory;
 import kitchenpos.product.application.util.ProductContextServiceBehavior;
+import kitchenpos.product.domain.Product;
+import kitchenpos.table.application.util.TableContextServiceBehavior;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.exception.NotExistTableException;
-import kitchenpos.table.application.util.TableContextServiceBehavior;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -63,8 +62,8 @@ class OrderServiceTest extends ServiceTest {
         product1 = productContextServiceBehavior.상품_생성됨("상품1", 1000);
         product2 = productContextServiceBehavior.상품_생성됨("상품2", 2000);
         product3 = productContextServiceBehavior.상품_생성됨("상품3", 3000);
-        MenuProduct menuProduct1 = MenuProductFixtureFactory.createMenuProduct(product1.getId(), 4);
-        MenuProduct menuProduct2 = MenuProductFixtureFactory.createMenuProduct(product2.getId(), 2);
+        MenuProductDto menuProduct1 = MenuProductDtoFixtureFactory.createMenuProduct(product1.getId(), 4);
+        MenuProductDto menuProduct2 = MenuProductDtoFixtureFactory.createMenuProduct(product2.getId(), 2);
         menu1 = menuContextServiceBehavior.메뉴_생성됨(menuGroup, "메뉴1", 4000, Lists.newArrayList(menuProduct1));
         menu2 = menuContextServiceBehavior.메뉴_생성됨(menuGroup, "메뉴2", 4000, Lists.newArrayList(menuProduct2));
         orderTable = tableContextServiceBehavior.비어있지않은테이블_생성됨(3);
@@ -114,8 +113,8 @@ class OrderServiceTest extends ServiceTest {
     @Test
     @DisplayName("주문항목에 표시된 메뉴가 존재하지 않는 경우 주문 등록 실패")
     void 주문등록_주문항목에_표시된_메뉴가_저장되지않은경우() {
-        MenuProduct menuProduct = MenuProductFixtureFactory.createMenuProduct(product1.getId(), 1);
-        Menu notSavedMenu = MenuFixtureFactory.createMenu(menuGroup, "메뉴", 4000, Lists.newArrayList(menuProduct));
+        MenuProductDto menuProduct = MenuProductDtoFixtureFactory.createMenuProduct(product1.getId(), 1);
+        MenuDto notSavedMenu = MenuDtoFixtureFactory.createMenu(menuGroup, "메뉴", 4000, Lists.newArrayList(menuProduct));
         OrderLineItemRequest orderLineItem = OrderLineItemFixtureFactory.createOrderLine(notSavedMenu.getId(), 3);
 
         Long orderTableId = orderTable.getId();

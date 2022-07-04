@@ -7,12 +7,12 @@ import static org.mockito.Mockito.when;
 import java.math.BigDecimal;
 import java.util.Optional;
 import kitchenpos.ServiceTest;
+import kitchenpos.menu.application.fixture.MenuGroupDtoFixtureFactory;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.fixture.MenuGroupFixtureFactory;
-import kitchenpos.menu.fixture.MenuProductFixtureFactory;
+import kitchenpos.menu.domain.fixture.MenuProductFixtureFactory;
 import kitchenpos.order.exception.CannotMakeOrderException;
 import kitchenpos.product.application.fixture.ProductDtoFixtureFactory;
 import kitchenpos.product.domain.Product;
@@ -42,7 +42,7 @@ class OrderLineItemFactoryTest extends ServiceTest {
     void setUp() {
         orderLineItemFactory = new OrderLineItemFactory(menuRepository);
 
-        menuGroup = MenuGroupFixtureFactory.createMenuGroup("메뉴그룹1");
+        menuGroup = MenuGroupDtoFixtureFactory.createMenuGroup("메뉴그룹1");
         product1 = ProductDtoFixtureFactory.createProduct(1L, "상품1", 1000);
         product2 = ProductDtoFixtureFactory.createProduct(2L, "상품2", 2000);
     }

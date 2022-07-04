@@ -1,14 +1,13 @@
 package kitchenpos.menu.application.util;
 
 import java.util.List;
-import kitchenpos.menu.fixture.MenuFixtureFactory;
-import kitchenpos.menu.fixture.MenuGroupFixtureFactory;
 import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.application.fixture.MenuDtoFixtureFactory;
+import kitchenpos.menu.application.fixture.MenuGroupDtoFixtureFactory;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuDto;
+import kitchenpos.menu.dto.MenuProductDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,11 +20,11 @@ public class MenuContextServiceBehavior {
     private MenuService menuService;
 
     public MenuGroup 메뉴그룹_생성됨(String name) {
-        return menuGroupService.create(MenuGroupFixtureFactory.createMenuGroup(name));
+        return menuGroupService.create(MenuGroupDtoFixtureFactory.createMenuGroup(name));
     }
 
-    public MenuDto 메뉴_생성됨(MenuGroup menuGroup, String menuName, int menuPrice, List<MenuProduct> menuProducts) {
-        Menu menuFixture = MenuFixtureFactory.createMenu(menuGroup, menuName, menuPrice, menuProducts);
-        return menuService.create(MenuDto.of(menuFixture));
+    public MenuDto 메뉴_생성됨(MenuGroup menuGroup, String menuName, int menuPrice, List<MenuProductDto> menuProductDtos) {
+        MenuDto menuDto = MenuDtoFixtureFactory.createMenu(menuGroup, menuName, menuPrice, menuProductDtos);
+        return menuService.create(menuDto);
     }
 }

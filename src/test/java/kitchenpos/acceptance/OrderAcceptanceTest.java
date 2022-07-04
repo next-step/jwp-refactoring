@@ -5,23 +5,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.menu.fixture.MenuFixtureFactory;
-import kitchenpos.menu.fixture.MenuProductFixtureFactory;
-import kitchenpos.order.fixture.OrderFixtureFactory;
-import kitchenpos.order.fixture.OrderLineItemFixtureFactory;
-import kitchenpos.table.application.fixture.OrderTableDtoFixtureFactory;
-import kitchenpos.table.application.fixture.TableGroupDtoFixtureFactory;
+import kitchenpos.acceptance.util.KitchenPosBehaviors;
+import kitchenpos.menu.application.fixture.MenuDtoFixtureFactory;
+import kitchenpos.menu.application.fixture.MenuProductDtoFixtureFactory;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuDto;
+import kitchenpos.menu.dto.MenuProductDto;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.fixture.OrderFixtureFactory;
+import kitchenpos.order.fixture.OrderLineItemFixtureFactory;
 import kitchenpos.product.domain.Product;
+import kitchenpos.table.application.fixture.OrderTableDtoFixtureFactory;
+import kitchenpos.table.application.fixture.TableGroupDtoFixtureFactory;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupResponse;
-import kitchenpos.acceptance.util.KitchenPosBehaviors;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -32,7 +32,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
 
     Product product;
     MenuGroup menuGroup;
-    MenuDto menuDTO;
+    MenuDto menuDto;
     OrderTableResponse orderTable1;
     OrderTableResponse orderTable2;
 
@@ -41,9 +41,9 @@ class OrderAcceptanceTest extends AcceptanceTest {
         super.setUp();
         product = KitchenPosBehaviors.상품_생성됨("상품1", 10000);
         menuGroup = KitchenPosBehaviors.메뉴그룹_생성됨("메뉴그룹1");
-        MenuProduct menuProduct = MenuProductFixtureFactory.createMenuProduct(product.getId(), 1);
-        menuDTO = KitchenPosBehaviors.메뉴_생성됨(
-                MenuFixtureFactory.createMenu(menuGroup, "강정치킨 한마리", 10000, Lists.newArrayList(menuProduct)));
+        MenuProductDto menuProductDto = MenuProductDtoFixtureFactory.createMenuProduct(product.getId(), 1);
+        menuDto = KitchenPosBehaviors.메뉴_생성됨(
+                MenuDtoFixtureFactory.createMenu(menuGroup, "강정치킨 한마리", 10000, Lists.newArrayList(menuProductDto)));
         orderTable1 = KitchenPosBehaviors.테이블_생성됨(OrderTableDtoFixtureFactory.createEmptyOrderTable());
         orderTable2 = KitchenPosBehaviors.테이블_생성됨(OrderTableDtoFixtureFactory.createEmptyOrderTable());
     }
@@ -80,7 +80,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     private OrderResponse 주문을_추가하고_확인한다(Long orderTableId) {
-        OrderLineItemRequest orderLineItemRequest = OrderLineItemFixtureFactory.createOrderLine(menuDTO.getId(), 3);
+        OrderLineItemRequest orderLineItemRequest = OrderLineItemFixtureFactory.createOrderLine(menuDto.getId(), 3);
         OrderRequest orderRequest = OrderFixtureFactory.createOrder(orderTableId, Lists.newArrayList(
                 orderLineItemRequest));
 
