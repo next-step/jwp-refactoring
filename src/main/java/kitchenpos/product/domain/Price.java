@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 public class Price {
     private static final BigDecimal MIN_PRICE = BigDecimal.ZERO;
 
-    @Column(name = "price", nullable = false)
+    @Column(name = "sprice", nullable = false)
     private BigDecimal value;
 
     protected Price() {
