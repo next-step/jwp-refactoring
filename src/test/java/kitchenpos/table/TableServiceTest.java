@@ -1,8 +1,8 @@
 package kitchenpos.table;
 
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.application.TableService;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -31,7 +31,7 @@ public class TableServiceTest {
     TableService tableService;
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -79,9 +79,9 @@ public class TableServiceTest {
         // given
         when(orderTableRepository.findById(주문테이블1.getId()))
                 .thenReturn(Optional.ofNullable(주문테이블1));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(주문테이블1.getId(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
+        when(orderRepository.existsByOrderTableAndOrderStatusIn(주문테이블1, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)))
                 .thenReturn(false);
-        when(orderTableRepository.save(any()))
+        when(orderTableRepository.save(주문테이블1))
                 .thenReturn(주문테이블1);
 
         // when
@@ -91,26 +91,13 @@ public class TableServiceTest {
         assertThat(result.isEmpty());
     }
 
-    @DisplayName("주문 테이블 빈 테이블로 상태 변경 시 단체 지정 아이디가 있는 경우 변경 불가능")
-    @Test
-    void changeEmptyTestAndIsTableGroup() {
-        // given
-        when(orderTableRepository.findById(주문테이블1.getId()))
-                .thenReturn(Optional.ofNullable(주문테이블1));
-
-        // then
-        assertThatThrownBy(() -> {
-            tableService.changeEmpty(주문테이블1.getId());
-        }).isInstanceOf(IllegalArgumentException.class);
-    }
-
     @DisplayName("주문 테이블 빈 테이블로 상태 변경 시 `조리`, `식사` 상태인 경우 변경 불가능")
     @Test
     void changeEmptyTestAndNotCompletionStatus() {
         // given
         when(orderTableRepository.findById(주문테이블1.getId()))
                 .thenReturn(Optional.ofNullable(주문테이블1));
-        when(orderDao.existsByOrderTableIdAndOrderStatusIn(주문테이블1.getId(), Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())))
+        when(orderRepository.existsByOrderTableAndOrderStatusIn(주문테이블1, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)))
                 .thenReturn(true);
 
         // then
@@ -123,14 +110,15 @@ public class TableServiceTest {
     @Test
     void changeNumberOfGuests() {
         // given
+        OrderTable 주문테이블 = OrderTable.of(단체지정_1_생성(Arrays.asList(빈_주문테이블_1_생성(), 빈_주문테이블_2_생성())), 1, false);
         OrderTableRequest 주문테이블_요청 = new OrderTableRequest(주문테이블1.getId(), 100, false);
-        when(orderTableRepository.findById(주문테이블1.getId()))
-                .thenReturn(Optional.ofNullable(주문테이블1));
-        when(orderTableRepository.save(주문테이블1))
-                .thenReturn(주문테이블1);
+        when(orderTableRepository.findById(1L))
+                .thenReturn(Optional.of(주문테이블));
+        when(orderTableRepository.save(주문테이블))
+                .thenReturn(주문테이블);
 
         // when
-        OrderTableResponse result = tableService.changeNumberOfGuests(주문테이블1.getId(), 주문테이블_요청);
+        OrderTableResponse result = tableService.changeNumberOfGuests(1L, 주문테이블_요청);
 
         // then
         assertThat(result.getNumberOfGuests()).isEqualTo(100);
