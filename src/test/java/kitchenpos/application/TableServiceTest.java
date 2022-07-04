@@ -9,11 +9,13 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.ordertable.application.TableService;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.tablegroup.domain.TableGroup;
-import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.ordertable.dto.OrderTableRequest;
+import kitchenpos.ordertable.dto.OrderTableResponse;
 import kitchenpos.ordertable.repository.OrderTableRepository;
+import kitchenpos.tablegroup.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,10 +37,10 @@ public class TableServiceTest {
     @Test
     public void createOrderTable() {
         //given
-        OrderTable given = new OrderTable(1l,  1, true);
-        when(orderTableRepository.save(any())).thenReturn(given);
+        OrderTableRequest given = OrderTableRequest.of(1, true);
+        when(orderTableRepository.save(any())).thenReturn(given.toOrderTable());
         //when
-        OrderTable result = tableService.create(given);
+        OrderTableResponse result = tableService.create(given);
         //then
         assertThat(result).isNotNull();
     }
@@ -47,12 +49,12 @@ public class TableServiceTest {
     @Test
     public void getOrderTables() {
         //given
-        OrderTable given = new OrderTable(1l,  1, true);
-        OrderTable given2 = new OrderTable(2l,  1, true);
+        OrderTable given = OrderTable.of(1, true);
+        OrderTable given2 = OrderTable.of(1, true);
 
         when(orderTableRepository.findAll()).thenReturn(Arrays.asList(given, given2));
         //when
-        List<OrderTable> result = tableService.list();
+        List<OrderTableResponse> result = tableService.list();
         //then
         assertThat(result).hasSize(2);
     }
@@ -64,10 +66,8 @@ public class TableServiceTest {
         OrderTable given = new OrderTable(1l, 1, false);
         OrderTable notEmptyOrderTable = new OrderTable(2l,  2, true);
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(given));
-        when(orderTableRepository.save(any())).thenReturn(notEmptyOrderTable);
-
         //when
-        OrderTable result = tableService.changeEmpty(1l, given);
+        OrderTableResponse result = tableService.changeEmpty(1l, OrderTableRequest.of(2, true));
         //then
         assertThat(result.isEmpty()).isEqualTo(notEmptyOrderTable.isEmpty());
     }
@@ -81,7 +81,7 @@ public class TableServiceTest {
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(given));
         //when
         //then
-        assertThatThrownBy(() -> tableService.changeEmpty(1l, given)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableService.changeEmpty(1l, OrderTableRequest.of(1, false))).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("조리, 식사 중인 경우 수정 실패")
@@ -93,7 +93,7 @@ public class TableServiceTest {
         when(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).thenReturn(true);
         //when
         //then
-        assertThatThrownBy(() -> tableService.changeEmpty(1l, given)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableService.changeEmpty(1l, OrderTableRequest.of(1, false))).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문 테이블의 손님 수를 변경한다.")
@@ -107,7 +107,7 @@ public class TableServiceTest {
         when(orderTableRepository.save(any())).thenReturn(anotherOrderTable);
 
         //when
-        OrderTable result = tableService.changeNumberOfGuests(1l, anotherOrderTable);
+        OrderTableResponse result = tableService.changeNumberOfGuests(1l, OrderTableRequest.of(2, true));
         //then
         assertThat(result.getNumberOfGuests()).isEqualTo(2);
     }
@@ -116,22 +116,19 @@ public class TableServiceTest {
     @Test
     public void changeNumberOfGuestsWithMinus() {
         //given
-        OrderTable given = new OrderTable(1l, 1, false);
-        OrderTable anotherOrderTable = new OrderTable(2l, -1, true);
         //when
         //then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1l, anotherOrderTable)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1l, OrderTableRequest.of(-1, true))).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문 테이블이 이미 등록되어 있지 않으면 에러")
     @Test
     public void changeNumberOfGuestsWithNoExistOrderTable() {
         //given
-        OrderTable given = new OrderTable(1l, 1, false);
         when(orderTableRepository.findById(any())).thenReturn(Optional.empty());
         //when
         //then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1l, given)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1l, OrderTableRequest.of(1, false))).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("주문 테이블이 빈 테이블이면 에러")
@@ -142,6 +139,6 @@ public class TableServiceTest {
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(given));
         //when
         //then
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1l, given)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1l, OrderTableRequest.of(1, true))).isInstanceOf(IllegalArgumentException.class);
     }
 }
