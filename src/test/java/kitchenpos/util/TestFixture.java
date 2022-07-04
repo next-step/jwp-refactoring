@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-public class testFixture {
+public class TestFixture {
 
     public static Product 후라이드_상품_생성() {
         return Product.of((long)1, "후라이드", new BigDecimal(16000));

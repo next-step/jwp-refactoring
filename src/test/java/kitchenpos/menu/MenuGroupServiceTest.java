@@ -17,8 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.util.testFixture.두마리_메뉴_그룹_생성;
-import static kitchenpos.util.testFixture.한마리_메뉴_그룹_생성;
+import static kitchenpos.util.TestFixture.두마리_메뉴_그룹_생성;
+import static kitchenpos.util.TestFixture.한마리_메뉴_그룹_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
