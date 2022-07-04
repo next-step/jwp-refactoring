@@ -9,10 +9,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.jdbc.Sql;
 
 @SpringBootTest
-@Sql({"classpath:truncate.sql"})
 public class MenuGroupServiceTest {
 
     @Autowired
@@ -36,6 +34,6 @@ public class MenuGroupServiceTest {
         //when
         List<MenuGroup> results = menuGroupService.list();
         //then
-        assertThat(results).hasSize(1);
+        assertThat(results).hasSizeGreaterThan(1);
     }
 }
