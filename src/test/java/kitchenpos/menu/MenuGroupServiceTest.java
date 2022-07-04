@@ -1,5 +1,6 @@
 package kitchenpos.menu;
 
+import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuGroupRepository;
@@ -25,7 +26,10 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class MenuGroupServiceTest {
     @InjectMocks
-    MenuService.MenuGroupService menuGroupService;
+    MenuService menuService;
+
+    @InjectMocks
+    MenuGroupService menuGroupService;
 
     @Mock
     MenuGroupRepository menuGroupRepository;

@@ -1,5 +1,6 @@
 package kitchenpos.menu;
 
+import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
@@ -8,7 +9,6 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuGroupRepository;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +22,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static kitchenpos.util.testFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,7 +36,7 @@ class MenuServiceTest {
     MenuService menuService;
 
     @Mock
-    MenuGroupRepository menuGroupRepository;
+    MenuGroupService menuGroupService;
 
     @Mock
     ProductRepository productRepository;
@@ -71,8 +70,8 @@ class MenuServiceTest {
     @Test
     void createMenu() {
         // given
-        when(menuGroupRepository.findById(후라이드치킨.getMenuGroupId()))
-                .thenReturn(Optional.of(한마리메뉴));
+        when(menuGroupService.findById(후라이드치킨.getMenuGroupId()))
+                .thenReturn(한마리메뉴);
         when(productRepository.findByIdIn(Arrays.asList(후라이드.getId())))
                 .thenReturn(Arrays.asList(후라이드));
         when(menuRepository.save(any()))
