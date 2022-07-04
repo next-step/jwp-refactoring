@@ -1,8 +1,7 @@
-package kitchenpos.prodcut.application;
+package kitchenpos.product.application;
 
 import kitchenpos.common.exception.ErrorCode;
 import kitchenpos.common.exception.NotFoundException;
-import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import kitchenpos.product.dto.ProductRequest;

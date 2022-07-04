@@ -1,6 +1,7 @@
 package kitchenpos.factory.fixture;
 
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableGroup;
 
 public class OrderTableFixtureFactory {
     public static OrderTable createOrderTable(boolean isEmpty) {
@@ -29,18 +30,18 @@ public class OrderTableFixtureFactory {
         return orderTable;
     }
 
-    public static OrderTable createOrderTable(boolean isEmpty, Long tableGroupId) {
+    public static OrderTable createOrderTable(boolean isEmpty, TableGroup tableGroup) {
         OrderTable orderTable = new OrderTable();
         orderTable.setEmpty(isEmpty);
-        orderTable.setTableGroupId(tableGroupId);
+        orderTable.setTableGroup(tableGroup);
         return orderTable;
     }
 
-    public static OrderTable createOrderTable(Long id, boolean isEmpty, Long tableGroupId) {
+    public static OrderTable createOrderTable(Long id, boolean isEmpty, TableGroup tableGroup) {
         OrderTable orderTable = new OrderTable();
         orderTable.setId(id);
         orderTable.setEmpty(isEmpty);
-        orderTable.setTableGroupId(tableGroupId);
+        orderTable.setTableGroup(tableGroup);
         return orderTable;
     }
 }

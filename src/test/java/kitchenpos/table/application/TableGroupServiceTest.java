@@ -1,11 +1,10 @@
-package kitchenpos.application;
+package kitchenpos.table.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
-import kitchenpos.table.application.TableGroupService;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.domain.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,13 +28,13 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @Mock
-    private TableGroupDao tableGroupDao;
+    private TableGroupRepository tableGroupRepository;
 
     @InjectMocks
     private TableGroupService tableGroupService;
@@ -56,9 +55,9 @@ class TableGroupServiceTest {
     @DisplayName("테이블 그룹을 생성할 수 있다.")
     @Test
     void create() {
-        given(orderTableDao.findAllByIdIn(Arrays.asList(firstOrderTable.getId(), secondOrderTable.getId())))
+        given(orderTableRepository.findAllByIdIn(Arrays.asList(firstOrderTable.getId(), secondOrderTable.getId())))
                 .willReturn(orderTables);
-        given(tableGroupDao.save(any(TableGroup.class))).willReturn(tableGroup);
+        given(tableGroupRepository.save(any(TableGroup.class))).willReturn(tableGroup);
 
         TableGroup result = tableGroupService.create(tableGroup);
 
@@ -77,7 +76,7 @@ class TableGroupServiceTest {
     @DisplayName("등록된 주문 테이블을 사용하지 않는다면 테이블 그룹을 생성할 수 없다.")
     @Test
     void create_invalid_orderTables_id() {
-        given(orderTableDao.findAllByIdIn(Arrays.asList(firstOrderTable.getId(), secondOrderTable.getId())))
+        given(orderTableRepository.findAllByIdIn(Arrays.asList(firstOrderTable.getId(), secondOrderTable.getId())))
                 .willReturn(Arrays.asList(firstOrderTable));
 
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
@@ -90,7 +89,7 @@ class TableGroupServiceTest {
         firstOrderTable.setEmpty(false);
         secondOrderTable.setEmpty(false);
 
-        given(orderTableDao.findAllByIdIn(Arrays.asList(firstOrderTable.getId(), secondOrderTable.getId())))
+        given(orderTableRepository.findAllByIdIn(Arrays.asList(firstOrderTable.getId(), secondOrderTable.getId())))
                 .willReturn(Arrays.asList(firstOrderTable));
 
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
@@ -100,9 +99,9 @@ class TableGroupServiceTest {
     @DisplayName("등록된 주문 테이블에 테이블그룹아이디가 설정되어 있다면, 테이블 그룹을 생성할 수 없다.")
     @Test
     void create_nonNull_orderTables() {
-        firstOrderTable.setTableGroupId(1L);
+        firstOrderTable.setTableGroup(new TableGroup(1L));
 
-        given(orderTableDao.findAllByIdIn(Arrays.asList(firstOrderTable.getId(), secondOrderTable.getId())))
+        given(orderTableRepository.findAllByIdIn(Arrays.asList(firstOrderTable.getId(), secondOrderTable.getId())))
                 .willReturn(Arrays.asList(firstOrderTable));
 
         assertThatThrownBy(() -> tableGroupService.create(tableGroup))
@@ -112,21 +111,21 @@ class TableGroupServiceTest {
     @DisplayName("테이블 그룹을 해제할 수 있다.")
     @Test
     void unGroup() {
-        firstOrderTable.setTableGroupId(1L);
-        secondOrderTable.setTableGroupId(1L);
-        given(orderTableDao.findAllByTableGroupId(1L)).willReturn(orderTables);
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(Boolean.FALSE);
+        firstOrderTable.setTableGroup(new TableGroup(1L));
+        secondOrderTable.setTableGroup(new TableGroup(1L));
+        given(orderTableRepository.findAllByTableGroupId(1L)).willReturn(orderTables);
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(Boolean.FALSE);
 
         tableGroupService.ungroup(1L);
 
-        assertThat(firstOrderTable.getTableGroupId()).isNull();
+        assertThat(firstOrderTable.getTableGroup()).isNull();
     }
 
     @DisplayName("주문 상태가 COOKING 이거나 MEAL 이면, 테이블 그룹을 해제할 수 없다.")
     @Test
     void unGroup_invalid_orderStatus() {
-        given(orderTableDao.findAllByTableGroupId(1L)).willReturn(orderTables);
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(Boolean.TRUE);
+        given(orderTableRepository.findAllByTableGroupId(1L)).willReturn(orderTables);
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(Boolean.TRUE);
 
         assertThatThrownBy(() -> tableGroupService.ungroup(1L))
                 .isInstanceOf(IllegalArgumentException.class);

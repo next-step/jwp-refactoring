@@ -1,9 +1,9 @@
-package kitchenpos.application;
+package kitchenpos.table.application;
 
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderTableDao;
-import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,7 +39,7 @@ class TableServiceTest {
     void create() {
         OrderTable orderTable = createOrderTable(1L, true, null);
         given(orderTableDao.save(any(OrderTable.class))).willReturn(orderTable);
-        OrderTable result = tableService.create(createOrderTable(true, 1L));
+        OrderTable result = tableService.create(createOrderTable(true, new TableGroup(1L)));
 
         assertThat(result.getId()).isNotNull();
     }
@@ -87,7 +87,7 @@ class TableServiceTest {
     @Test
     void changeEmpty_nonNull_tableGroupId() {
         Long orderTableId = 1L;
-        OrderTable request = createOrderTable(false, 1L);
+        OrderTable request = createOrderTable(false, new TableGroup(1L));
 
         given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(request));
 

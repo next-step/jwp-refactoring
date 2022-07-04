@@ -8,4 +8,6 @@ import java.util.List;
 public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("SELECT o FROM Order o join fetch o.orderLineItems.elements")
     List<Order> findAllWithOrderLineItems();
+
+    boolean existsByOrderTableIdInAndOrderStatusIn(List<Long> orderTableIds, List<String> asList);
 }
