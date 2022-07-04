@@ -1,6 +1,7 @@
 package kitchenpos.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -12,7 +13,8 @@ import kitchenpos.dto.ProductRequest;
 import kitchenpos.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -22,6 +24,8 @@ import org.springframework.http.MediaType;
 
 @DisplayName("상품")
 public class ProductAcceptanceTest extends AcceptanceTest {
+
+    ProductRequest 생맥주;
 
     @BeforeEach
     public void setUp() {
@@ -36,21 +40,26 @@ public class ProductAcceptanceTest extends AcceptanceTest {
      * when 상품목록을 조회한다.
      * then 등록한 상품이 조회 된다.
      * */
-    @Test
+    @TestFactory
     @DisplayName("상품을 등록 관리")
-    void manageProduct() {
-        //givne
-        ProductRequest 생맥주 = new ProductRequest("생맥주", BigDecimal.valueOf(2000));
+    Stream<DynamicTest> manageProduct() {
+        return Stream.of(
+                dynamicTest("상품을 등록한다.", () -> {
+                    //givne
+                    생맥주 = new ProductRequest("생맥주", BigDecimal.valueOf(2000));
 
-        //when
-        ExtractableResponse<Response> createProduct = 상품_등록을_요청(생맥주);
-        //then
-        상품이_등록됨(생맥주, createProduct);
-
-        //when
-        final ExtractableResponse<Response> searchProducts = 상품_목록을_조회();
-        //then
-        등록한_상품이_조회됨(생맥주, searchProducts);
+                    //when
+                    ExtractableResponse<Response> createProduct = 상품_등록을_요청(생맥주);
+                    //then
+                    상품이_등록됨(생맥주, createProduct);
+                }),
+                dynamicTest("등록한 상품이 조회됨",() -> {
+                    //when
+                    final ExtractableResponse<Response> searchProducts = 상품_목록을_조회();
+                    //then
+                    등록한_상품이_조회됨(생맥주, searchProducts);
+                })
+        );
     }
 
 

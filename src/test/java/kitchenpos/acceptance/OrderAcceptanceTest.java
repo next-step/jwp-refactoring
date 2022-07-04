@@ -1,6 +1,7 @@
 package kitchenpos.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -9,9 +10,8 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.dto.OrderRequest;
-import kitchenpos.dto.OrderResponse;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
@@ -19,13 +19,16 @@ import kitchenpos.dto.MenuProductRequest;
 import kitchenpos.dto.MenuRequest;
 import kitchenpos.dto.MenuResponse;
 import kitchenpos.dto.OrderLineItemRequest;
+import kitchenpos.dto.OrderRequest;
+import kitchenpos.dto.OrderResponse;
 import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.dto.OrderTableResponse;
 import kitchenpos.dto.ProductRequest;
 import kitchenpos.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -40,6 +43,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
 
     private MenuResponse 닭강정_안주;
     private MenuResponse 닭강정_세트;
+
+    ExtractableResponse<Response> 요청한주문;
 
 
     @BeforeEach
@@ -81,37 +86,42 @@ public class OrderAcceptanceTest extends AcceptanceTest {
             when  주문목록조회
             then  주문의 상태가 완료됨 상태를 조회됨
     */
-    @Test
+    @TestFactory
     @DisplayName("주문관리")
-    void orderManage() {
+    Stream<DynamicTest> orderManage() {
+        return Stream.of(
+                dynamicTest("주문을 요청 한다.", () -> {
+                    OrderLineItemRequest 주문1 = new OrderLineItemRequest(닭강정_세트.getId(),1);
+                    OrderLineItemRequest 주문2 = new OrderLineItemRequest(닭강정_안주.getId(),2);
+                    List<OrderLineItemRequest> 주문항목 = Arrays.asList(주문1, 주문2);
+                    OrderRequest order = new OrderRequest(주문테이블.getId(), OrderStatus.MEAL.name(), 주문항목);
 
-        //given
-        OrderLineItemRequest 주문1 = new OrderLineItemRequest(닭강정_세트.getId(),1);
-        OrderLineItemRequest 주문2 = new OrderLineItemRequest(닭강정_안주.getId(),2);
-        List<OrderLineItemRequest> 주문항목 = Arrays.asList(주문1, 주문2);
-        OrderRequest order = new OrderRequest(주문테이블.getId(), OrderStatus.MEAL.name(), 주문항목);
+                    //when
+                    요청한주문 = 주문을_요청(order);
 
-        //when
-        ExtractableResponse<Response> createResponse = 주문을_요청(order);
+                    //then
+                    주문_요청됨(요청한주문);
+                })
+                ,dynamicTest("요청한 주문을 조회", () -> {
+                    //when
+                    ExtractableResponse<Response> orderResponse = 주문_목록_조회();
+                    //then
+                    요청한_주문이_조회됨(요청한주문, orderResponse);
+                })
+                ,dynamicTest("주문의 상태를 변경한다.", () -> {
+                    //when
+                    final ExtractableResponse<Response> updateResponse = 주문의_상태를_완료로_변경_요청(요청한주문);
+                    //then
+                    주문의_상태가_변경됨(updateResponse);
+                })
+                ,dynamicTest("주문의 상태를 변경됨을 확인한다",() -> {
+                    //when
+                    final ExtractableResponse<Response> reSearchResponse = 주문_목록_조회();
+                    //then
+                    주문완료_상태로_변경됨(요청한주문.as(OrderResponse.class).getId() ,reSearchResponse);
+                })
+        );
 
-        //then
-        주문_요청됨(createResponse);
-
-        //when
-        ExtractableResponse<Response> orderResponse = 주문_목록_조회();
-        //then
-        요청한_주문이_조회됨(createResponse, orderResponse);
-
-        //when
-        final ExtractableResponse<Response> updateResponse = 주문의_상태를_완료로_변경_요청(createResponse);
-
-        //then
-        주문의_상태가_변경됨(updateResponse);
-
-        //when
-        final ExtractableResponse<Response> reSearchResponse = 주문_목록_조회();
-        //then
-        주문완료_상태로_변경됨(createResponse.as(OrderResponse.class).getId() ,reSearchResponse);
     }
 
 

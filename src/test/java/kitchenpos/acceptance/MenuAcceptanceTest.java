@@ -1,6 +1,7 @@
 package kitchenpos.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -8,6 +9,7 @@ import io.restassured.response.Response;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 import kitchenpos.AcceptanceTest;
 import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
@@ -18,7 +20,8 @@ import kitchenpos.dto.ProductRequest;
 import kitchenpos.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,6 +33,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     private ProductResponse 닭강정;
     private MenuGroupResponse 일식;
 
+    MenuRequest menu;
+
     @BeforeEach
     public void setUp() {
         super.setUp();
@@ -38,36 +43,40 @@ public class MenuAcceptanceTest extends AcceptanceTest {
         일식 = 메뉴그룹이_등록되어있음(new MenuGroupRequest("일식"));
     }
 
-/*  -- 메뉴 등록 관리
-    given 상품이 2개가 등록 되어 있음
-    given 메뉴를 구성할 상품과 수량을 결정
-    given 등록할 메뉴 생성
-    when 메뉴 등록 요청
-    then 메뉴등록이 됨
-    when 등록한_메뉴들을_조회
-    then 등록한 메뉴가 조회됨*/
-    @Test
+    /*  -- 메뉴 등록 관리
+        given 상품이 2개가 등록 되어 있음
+        given 메뉴를 구성할 상품과 수량을 결정
+        given 등록할 메뉴 생성
+        when 메뉴 등록 요청
+        then 메뉴등록이 됨
+        when 등록한_메뉴들을_조회
+        then 등록한 메뉴가 조회됨*/
     @DisplayName("메뉴를 등록 관리")
-    void menuCrateManage() {
-        //given
-        MenuProductRequest 닭강정정식_생맥주 = new MenuProductRequest(생맥주.getId(), 1);
-        MenuProductRequest 닭강정정식_닭강정 = new MenuProductRequest(닭강정.getId(), 2);
-        //given
-        List<MenuProductRequest> 닭강정정식_상품들 = Arrays.asList(닭강정정식_닭강정, 닭강정정식_생맥주);
-        //given
-        MenuRequest menu = new MenuRequest("닭강정정식", BigDecimal.valueOf(5000), 일식.getId(), 닭강정정식_상품들);
+    @TestFactory
+    Stream<DynamicTest> menuCrateManage() {
+        return Stream.of(
+                dynamicTest("메뉴를 등록 한다", () -> {
+                    MenuProductRequest 닭강정정식_생맥주 = new MenuProductRequest(생맥주.getId(), 1);
+                    MenuProductRequest 닭강정정식_닭강정 = new MenuProductRequest(닭강정.getId(), 2);
+                    //given
+                    List<MenuProductRequest> 닭강정정식_상품들 = Arrays.asList(닭강정정식_닭강정, 닭강정정식_생맥주);
+                    //given
+                    menu = new MenuRequest("닭강정정식", BigDecimal.valueOf(5000), 일식.getId(), 닭강정정식_상품들);
 
-        //when
-        final ExtractableResponse<Response> createResponse = 메뉴등록을_요청(menu);
-        //then
-        메뉴등록이_됨(createResponse);
+                    //when
+                    final ExtractableResponse<Response> createResponse = 메뉴등록을_요청(menu);
+                    메뉴등록이_됨(createResponse);
+                })
+                , dynamicTest("등록한 메뉴를 조회", () -> {
+                    //when
+                    final ExtractableResponse<Response> retrieveResponse = 등록한_메뉴들을_조회();
+                    //then
+                    등록한_메뉴가_조회됨(menu, retrieveResponse);
 
-        //when
-        final ExtractableResponse<Response> retrieveResponse = 등록한_메뉴들을_조회();
-        //then
-        등록한_메뉴가_조회됨(menu, retrieveResponse);
-
+                })
+        );
     }
+
 
     public static ExtractableResponse<Response> 메뉴등록을_요청(MenuRequest menuRequest) {
         return RestAssured.given().log().all()

@@ -1,6 +1,7 @@
 package kitchenpos.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -11,7 +12,8 @@ import kitchenpos.dto.MenuGroupRequest;
 import kitchenpos.dto.MenuGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -26,7 +28,7 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
     }
-
+    MenuGroupRequest 일식;
 /*
 - 메뉴그룹 등록 관리
       given 등록할 메뉴그룹 생성
@@ -35,21 +37,27 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
       when 등록된_메뉴그룹들을_조회
       then 등록한_메뉴그룹이_조회됨
 */
+    @TestFactory
     @DisplayName("메뉴그룹 등록 관리")
-    @Test
-    void menuGroupManage() {
+    Stream<DynamicTest> menuGroupManage() {
+        return Stream.of(
+                dynamicTest("메뉴 그룹 등록", () -> {
+                    일식 = new MenuGroupRequest("일식");
+                    //when
+                    ExtractableResponse<Response> createResponse = 메뉴그룹_등록을_요청(일식);
+                    //then
+                    메뉴_그룹이_등록됨(일식, createResponse);
+                }),
+                dynamicTest("등록한 메뉴 그룹을 조회한다.", () -> {
+                    //when
+                    ExtractableResponse<Response> retrievedResponse = 등록된_메뉴그룹들을_조회();
+                    //then
+                    등록한_메뉴그룹이_조회됨(일식, retrievedResponse);
+
+                })
+        );
         //given
-        MenuGroupRequest 일식 = new MenuGroupRequest("일식");
 
-        //when
-        ExtractableResponse<Response> createResponse = 메뉴그룹_등록을_요청(일식);
-        //then
-        메뉴_그룹이_등록됨(일식, createResponse);
-
-        //when
-        ExtractableResponse<Response> retrievedResponse = 등록된_메뉴그룹들을_조회();
-        //then
-        등록한_메뉴그룹이_조회됨(일식, retrievedResponse);
 
     }
 
