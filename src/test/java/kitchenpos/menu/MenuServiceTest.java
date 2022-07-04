@@ -121,7 +121,7 @@ class MenuServiceTest {
     @Test
     void createMenuAndIsNotRegisterMenuGroup() {
         // given
-        MenuRequest 후라이드치킨_요청 = new MenuRequest(후라이드치킨.getName(), new BigDecimal(-16000), 후라이드치킨.getMenuGroupId(),
+        MenuRequest 후라이드치킨_요청 = new MenuRequest(후라이드치킨.getName(), new BigDecimal(16000), 후라이드치킨.getMenuGroupId(),
                 Arrays.asList(new MenuProductRequest(후라이드.getId(), 1L)));
 
         // then
