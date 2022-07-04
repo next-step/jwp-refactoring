@@ -91,9 +91,9 @@
     - [X] KitchenPosBehaviors는 인수테스트 패키지 내부로 이동
   - [X] 테스트 의존성 구성도 작성
   - [X] order-table 테스트 코드 패키지간 양방향 의존성 제거
-- [ ] 테스트 코드 리팩토링
+- [X] 테스트 코드 리팩토링
   - [X] ㅇㅇㅇApplicationBehavior -> ㅇㅇㅇContextServiceBehavior로 이름 변경 및 위치 이동
-  - [ ] 도메인 객체 픽스처 팩토리 추가(기존 픽스처 팩토리는 DtoFixtureFactory로 이름 변경 및 위치 이동)
+  - [X] 도메인 객체 픽스처 팩토리 추가(기존 픽스처 팩토리는 DtoFixtureFactory로 이름 변경 및 위치 이동)
     - [X] Table
     - [X] Product
     - [X] Menu
@@ -104,4 +104,4 @@
 ![production](../capture/ProductionDeps.png)
 
 ### 테스트 코드 (컨텍스트 단위)
-![test](../capture/TestDeps.png)
+![test](../capture/TestDeps_new.png)
