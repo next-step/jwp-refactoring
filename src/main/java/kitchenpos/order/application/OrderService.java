@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
+    private static final String ERROR_MESSAGE_ORDER_TABLE_EMPTY = "빈 테이블이 존재합니다.";
     private static final String ERROR_MESSAGE_ORDER_LINE_ITEM_EMPTY = "존재하지 않는 메뉴가 있습니다.";
     private static final String ERROR_MESSAGE_MENU_EMPTY = "주문항목이 비어있습니다.";
 
@@ -33,6 +34,7 @@ public class OrderService {
         List<OrderLineItem> orderLineItems = mapOrderLineItem(orderRequest.getOrderLineItems());
 
         OrderTable orderTable = getOrderTableById(orderRequest.getOrderTableId());
+        validateOrderTableEmpty(orderTable);
         Order order = new Order(orderTable.getId(), orderLineItems);
 
         orderRepository.save(order);
@@ -55,7 +57,7 @@ public class OrderService {
     }
 
     private List<OrderLineItem> mapOrderLineItem(List<OrderLineItemRequest> orderLineItemRequests) {
-        validateEmpty(orderLineItemRequests);
+        validateOrderLineItemEmpty(orderLineItemRequests);
         validateExistMenu(orderLineItemRequests);
 
         return orderLineItemRequests.stream()
@@ -63,7 +65,13 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
-    private void validateEmpty(List<OrderLineItemRequest> orderLineItemRequests) {
+    private void validateOrderTableEmpty(OrderTable orderTable) {
+        if (orderTable.isEmpty()) {
+            throw new IllegalArgumentException(ERROR_MESSAGE_ORDER_TABLE_EMPTY);
+        }
+    }
+
+    private void validateOrderLineItemEmpty(List<OrderLineItemRequest> orderLineItemRequests) {
         if (Objects.isNull(orderLineItemRequests) || orderLineItemRequests.isEmpty()) {
             throw new IllegalArgumentException(ERROR_MESSAGE_ORDER_LINE_ITEM_EMPTY);
         }

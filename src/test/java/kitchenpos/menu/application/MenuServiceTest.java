@@ -15,10 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static kitchenpos.testfixture.CommonTestFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -93,6 +90,9 @@ class MenuServiceTest {
                 createMenuProductRequest(콜라.getId(), 1)
         );
         MenuRequest 싱글세트 = createMenuRequest(맘스세트메뉴.getId(), "싱글세트", BigDecimal.valueOf(-1), menuProductsRequests);
+        given(menuGroupRepository.findById(맘스세트메뉴.getId())).willReturn(Optional.of(맘스세트메뉴));
+        given(productRepository.findById(싸이버거.getId())).willReturn(Optional.of(싸이버거));
+        given(productRepository.findById(콜라.getId())).willReturn(Optional.of(콜라));
 
         // then
         assertThatThrownBy(() -> {
@@ -114,7 +114,7 @@ class MenuServiceTest {
         // then
         assertThatThrownBy(() -> {
             menuService.create(싱글세트);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(NoSuchElementException.class);
     }
 
     @DisplayName("메뉴 등록에 실패한다. (메뉴 상품 가격의 총 합이 메뉴 가격보다 큰 경우")

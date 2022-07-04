@@ -19,10 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static kitchenpos.testfixture.CommonTestFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -127,7 +124,7 @@ public class OrderServiceTest {
         // then
         assertThatThrownBy(() -> {
             orderService.create(주문_요청);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(NoSuchElementException.class);
     }
 
     @DisplayName("주문 등록에 실패한다. (주문 테이블이 빈 테이블인 경우)")
@@ -136,7 +133,7 @@ public class OrderServiceTest {
         // given
         OrderRequest 주문_요청 = createOrderRequest(빈_테이블.getId(), OrderStatus.valueOf(OrderStatus.COOKING.name()), Lists.newArrayList(주문항목_요청));
         given(menuRepository.countByIdIn(anyList())).willReturn(1L);
-        given(orderTableRepository.findById(빈_테이블.getId())).willReturn(Optional.empty());
+        given(orderTableRepository.findById(빈_테이블.getId())).willReturn(Optional.of(빈_테이블));
 
         // then
         assertThatThrownBy(() -> {
@@ -185,7 +182,7 @@ public class OrderServiceTest {
         // then
         assertThatThrownBy(() -> {
             orderService.changeOrderStatus(주문.getId(), 주문_계산완료);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(NoSuchElementException.class);
     }
 
     @DisplayName("주문의 상태 변경에 실패한다. (이미 계산완료된 주문인 경우)")
