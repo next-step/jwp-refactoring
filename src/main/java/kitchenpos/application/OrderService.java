@@ -44,6 +44,8 @@ public class OrderService {
         Order saveOrder = orderRepository.save(Order.createOrder(orderTable.getId(),
                 OrderLineItems.of(orderLineItemRequests)));
 
+
+
         return OrderResponse.of(saveOrder);
     }
 

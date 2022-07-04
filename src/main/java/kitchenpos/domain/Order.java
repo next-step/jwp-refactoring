@@ -61,7 +61,9 @@ public class Order {
     }
 
     public static Order createOrder(Long orderTableId, OrderLineItems orderLineItems) {
-        return new Order(orderTableId, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
+        Order order = new Order(orderTableId, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
+        orderLineItems.changeOrder(order);
+        return order;
     }
 
     public void changOrderStatus(OrderStatus orderStatus) {
@@ -93,4 +95,5 @@ public class Order {
     public Long getId() {
         return id;
     }
+
 }

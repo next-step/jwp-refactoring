@@ -112,8 +112,6 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         final ExtractableResponse<Response> reSearchResponse = 주문_목록_조회();
         //then
         주문완료_상태로_변경됨(createResponse.as(OrderResponse.class).getId() ,reSearchResponse);
-
-
     }
 
 
