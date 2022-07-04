@@ -1,9 +1,11 @@
 package kitchenpos.table.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,10 +28,10 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private TableService tableService;
@@ -38,17 +40,17 @@ class TableServiceTest {
     @Test
     void create() {
         OrderTable orderTable = createOrderTable(1L, true, null);
-        given(orderTableDao.save(any(OrderTable.class))).willReturn(orderTable);
-        OrderTable result = tableService.create(createOrderTable(true, new TableGroup(1L)));
+        given(orderTableRepository.save(any(OrderTable.class))).willReturn(orderTable);
+        OrderTableResponse response = tableService.create(new OrderTableRequest(1, true));
 
-        assertThat(result.getId()).isNotNull();
+        assertThat(response.getId()).isNotNull();
     }
 
     @DisplayName("테이블 목록을 조회한다.")
     @Test
     void list() {
         List<OrderTable> orderTables = Arrays.asList(new OrderTable(), new OrderTable());
-        given(orderTableDao.findAll()).willReturn(orderTables);
+        given(orderTableRepository.findAll()).willReturn(orderTables);
 
         assertThat(tableService.list()).hasSize(2);
     }
@@ -60,10 +62,10 @@ class TableServiceTest {
         OrderTable request = createOrderTable(false);
         OrderTable orderTable = createOrderTable(1L, true);
 
-        given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(request));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList()))
+        given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(request));
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList()))
                 .willReturn(Boolean.FALSE);
-        given(orderTableDao.save(any(OrderTable.class)))
+        given(orderTableRepository.save(any(OrderTable.class)))
                 .willReturn(orderTable);
 
         OrderTable result = tableService.changeEmpty(orderTableId, request);
@@ -77,7 +79,7 @@ class TableServiceTest {
         Long orderTableId = 1L;
         OrderTable request = createOrderTable(false);
 
-        given(orderTableDao.findById(orderTableId)).willReturn(Optional.empty());
+        given(orderTableRepository.findById(orderTableId)).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> tableService.changeEmpty(orderTableId, request))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -87,11 +89,11 @@ class TableServiceTest {
     @Test
     void changeEmpty_nonNull_tableGroupId() {
         Long orderTableId = 1L;
-        OrderTable request = createOrderTable(false, new TableGroup(1L));
+        OrderTable orderTable = createOrderTable(orderTableId, false, new TableGroup(1L));
 
-        given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(request));
+        given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
 
-        assertThatThrownBy(() -> tableService.changeEmpty(orderTableId, request))
+        assertThatThrownBy(() -> tableService.changeEmpty(orderTableId, new OrderTable(1, false, new TableGroup(1L))))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -101,8 +103,8 @@ class TableServiceTest {
         Long orderTableId = 1L;
         OrderTable orderTable = createOrderTable(0);
 
-        given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(orderTable));
-        given(orderTableDao.save(any(OrderTable.class))).willReturn(orderTable);
+        given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
+        given(orderTableRepository.save(any(OrderTable.class))).willReturn(orderTable);
 
         OrderTable result = tableService.changeNumberOfGuests(orderTableId, createOrderTable(5));
 
@@ -122,7 +124,7 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests_notExisted_orderTable() {
         Long orderTableId = 1L;
-        given(orderTableDao.findById(orderTableId)).willReturn(Optional.empty());
+        given(orderTableRepository.findById(orderTableId)).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, createOrderTable(5)))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -134,7 +136,7 @@ class TableServiceTest {
         Long orderTableId = 1L;
         OrderTable orderTable = createOrderTable(true, 0);
 
-        given(orderTableDao.findById(orderTableId)).willReturn(Optional.of(orderTable));
+        given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
 
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, createOrderTable(5)))
                 .isInstanceOf(IllegalArgumentException.class);
