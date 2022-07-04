@@ -1,12 +1,14 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
+import kitchenpos.dao.MenuGroupRepository;
+import kitchenpos.dao.MenuRepository;
+import kitchenpos.dao.ProductRepository;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.request.MenuProductRequest;
+import kitchenpos.dto.request.MenuRequest;
+import kitchenpos.dto.response.MenuResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,9 +23,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.fixture.MenuFixture.메뉴_데이터_생성;
-import static kitchenpos.fixture.MenuProductFixture.메뉴_상품_데이터_생성;
-import static kitchenpos.fixture.ProductFixture.상품_데이터_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -37,30 +36,23 @@ class MenuServiceTest {
     private MenuService menuService;
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
     @Mock
-    private MenuProductDao menuProductDao;
-    @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     private Menu A_세트;
-    private MenuProduct A_세트_감자_튀김;
-    private MenuProduct A_세트_햄버거;
-    private MenuProduct A_세트_치즈볼;
     private Product 감자_튀김;
     private Product 햄버거;
     private Product 치즈볼;
 
     @BeforeEach
     void setUp() {
-        감자_튀김 = 상품_데이터_생성(1L, "감자튀김", BigDecimal.valueOf(1500));
-        햄버거 = 상품_데이터_생성(2L, "햄버거", BigDecimal.valueOf(3500));
-        치즈볼 = 상품_데이터_생성(3L, "피자", BigDecimal.valueOf(1000));
-        A_세트_감자_튀김 = 메뉴_상품_데이터_생성(1L, 1L, 1L, 1);
-        A_세트_햄버거 = 메뉴_상품_데이터_생성(2L, 1L, 2L, 1);
-        A_세트_치즈볼 = 메뉴_상품_데이터_생성(3L, 1L, 3L, 1);
+        A_세트 = new Menu(1L, "A세트", BigDecimal.valueOf(6000), 1L);
+        감자_튀김 = new Product(1L, "감자튀김", BigDecimal.valueOf(1500));
+        햄버거 = new Product(2L, "햄버거", BigDecimal.valueOf(3500));
+        치즈볼 = new Product(3L, "피자", BigDecimal.valueOf(1000));
     }
 
 
@@ -68,21 +60,20 @@ class MenuServiceTest {
     @Test
     void create() {
         // given
-        A_세트 = 메뉴_데이터_생성(1L, "A세트", BigDecimal.valueOf(5000), 1L, Arrays.asList(A_세트_감자_튀김, A_세트_햄버거));
-        given(menuGroupDao.existsById(any())).willReturn(true);
-        given(productDao.findById(any())).willReturn(Optional.of(감자_튀김));
-        given(productDao.findById(any())).willReturn(Optional.of(햄버거));
-        given(menuDao.save(any())).willReturn(A_세트);
-        given(menuProductDao.save(A_세트_감자_튀김)).willReturn(A_세트_감자_튀김);
-        given(menuProductDao.save(A_세트_햄버거)).willReturn(A_세트_햄버거);
+        MenuRequest request = new MenuRequest("A세트", BigDecimal.valueOf(5000), 1L,
+                Arrays.asList(new MenuProductRequest(1L, 1), new MenuProductRequest(2L, 1)));
+        given(menuGroupRepository.existsById(any())).willReturn(true);
+        given(menuRepository.save(any())).willReturn(A_세트);
+        given(productRepository.findById(any())).willReturn(Optional.of(감자_튀김));
+        given(productRepository.findById(any())).willReturn(Optional.of(햄버거));
 
         // when
-        Menu menu = menuService.create(A_세트);
+        MenuResponse response = menuService.create(request);
 
         // then
         assertAll(
-                () -> assertThat(menu).isEqualTo(A_세트),
-                () -> assertThat(menu.getMenuProducts()).containsExactly(A_세트_감자_튀김, A_세트_햄버거)
+                () -> assertThat(response.getName()).isEqualTo("A세트"),
+                () -> assertThat(response.getMenuProducts()).hasSize(2)
         );
     }
 
@@ -90,65 +81,69 @@ class MenuServiceTest {
     @Test
     void list() {
         // given
-        A_세트 = 메뉴_데이터_생성(1L, "A세트", BigDecimal.valueOf(5000), 1L, Arrays.asList(A_세트_감자_튀김, A_세트_햄버거));
-        given(menuDao.findAll()).willReturn(Collections.singletonList(A_세트));
-        given(menuProductDao.findAllByMenuId(any())).willReturn(Arrays.asList(A_세트_감자_튀김, A_세트_햄버거));
+        A_세트.addMenuProducts(Collections.singletonList(new MenuProduct(감자_튀김, 4)));
+        given(menuRepository.findAll()).willReturn(Collections.singletonList(A_세트));
 
         // when
-        List<Menu> menus = menuService.list();
+        List<MenuResponse> responses = menuService.list();
 
         // then
         assertAll(
-                () -> assertThat(menus).hasSize(1),
-                () -> assertThat(menus).containsExactly(A_세트),
-                () -> assertThat(menus.get(0).getMenuProducts()).containsExactly(A_세트_감자_튀김, A_세트_햄버거)
+                () -> assertThat(responses).hasSize(1),
+                () -> assertThat(responses.stream().map(MenuResponse::getName)).containsExactly("A세트"),
+                () -> assertThat(responses.get(0).getMenuProducts()).hasSize(1)
         );
     }
 
     @Test
     void 메뉴_가격은_0미만일_경우() {
         // given
-        A_세트 = 메뉴_데이터_생성(1L, "A세트", BigDecimal.valueOf(-1), 1L, Arrays.asList(A_세트_감자_튀김, A_세트_햄버거));
+        MenuRequest request = new MenuRequest("A세트", BigDecimal.valueOf(-5000), 1L,
+                Arrays.asList(new MenuProductRequest(1L, 1), new MenuProductRequest(2L, 1)));
 
         // when & then
-        assertThatThrownBy(() -> menuService.create(A_세트))
+        assertThatThrownBy(() -> menuService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void 등록할_메뉴_그룹이_없는_경우() {
         // given
-        A_세트 = 메뉴_데이터_생성(1L, "A세트", BigDecimal.valueOf(5000), 1L, Arrays.asList(A_세트_감자_튀김, A_세트_햄버거));
-        given(menuGroupDao.existsById(A_세트.getMenuGroupId())).willReturn(false);
+        MenuRequest request = new MenuRequest("A세트", BigDecimal.valueOf(5000), 1L,
+                Arrays.asList(new MenuProductRequest(1L, 1), new MenuProductRequest(2L, 1)));
+        given(menuGroupRepository.existsById(A_세트.getMenuGroupId())).willReturn(false);
 
         // when & then
-        assertThatThrownBy(() -> menuService.create(A_세트))
+        assertThatThrownBy(() -> menuService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void 등록된_상품으로만_메뉴을_구성해야한다() {
         // given
-        A_세트 = 메뉴_데이터_생성(1L, "A세트", BigDecimal.valueOf(5000), 1L, Arrays.asList(A_세트_감자_튀김, A_세트_햄버거));
-        given(menuGroupDao.existsById(A_세트.getMenuGroupId())).willReturn(true);
-        given(productDao.findById(감자_튀김.getId())).willReturn(Optional.of(감자_튀김));
-        given(productDao.findById(햄버거.getId())).willReturn(Optional.empty());
+        MenuRequest request = new MenuRequest("A세트", BigDecimal.valueOf(5000), 1L,
+                Arrays.asList(new MenuProductRequest(1L, 1), new MenuProductRequest(2L, 1)));
+        given(menuGroupRepository.existsById(request.getMenuGroupId())).willReturn(true);
+        given(productRepository.findById(감자_튀김.getId())).willReturn(Optional.of(감자_튀김));
+        given(productRepository.findById(햄버거.getId())).willReturn(Optional.empty());
 
         // when & then
-        assertThatThrownBy(() -> menuService.create(A_세트))
+        assertThatThrownBy(() -> menuService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void 메뉴의_가격이_구성_상품들의_합보다_큰_경우() {
         // given
-        A_세트 = 메뉴_데이터_생성(1L, "A세트", BigDecimal.valueOf(5000), 1L, Arrays.asList(A_세트_감자_튀김, A_세트_치즈볼));
-        given(menuGroupDao.existsById(A_세트.getMenuGroupId())).willReturn(true);
-        given(productDao.findById(감자_튀김.getId())).willReturn(Optional.of(감자_튀김));
-        given(productDao.findById(치즈볼.getId())).willReturn(Optional.of(치즈볼));
+        MenuRequest request = new MenuRequest("A세트", BigDecimal.valueOf(5000), 1L,
+                Arrays.asList(new MenuProductRequest(1L, 1), new MenuProductRequest(3L, 1)));
+        given(menuRepository.save(any())).willReturn(A_세트);
+        given(menuGroupRepository.existsById(A_세트.getMenuGroupId())).willReturn(true);
+        given(productRepository.findById(감자_튀김.getId())).willReturn(Optional.of(감자_튀김));
+        given(productRepository.findById(치즈볼.getId())).willReturn(Optional.of(치즈볼));
 
         // when & then
-        assertThatThrownBy(() -> menuService.create(A_세트))
+        assertThatThrownBy(() -> menuService.create(request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

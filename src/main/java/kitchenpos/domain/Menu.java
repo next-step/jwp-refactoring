@@ -2,8 +2,8 @@ package kitchenpos.domain;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class Menu {
@@ -11,30 +11,49 @@ public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private BigDecimal price;
-
+    @Embedded
+    private Name name;
+    @Embedded
+    private Price price;
     @Column(nullable = false)
     private Long menuGroupId;
-    @OneToMany
-    private List<MenuProduct> menuProducts;
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MenuProduct> menuProducts = new ArrayList<>();
 
     public Menu() {
     }
 
-    public Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
-        this.name = name;
-        this.price = price;
+    public Menu(String name, BigDecimal price, Long menuGroupId) {
+        this.name = new Name(name);
+        this.price = new Price(price);
         this.menuGroupId = menuGroupId;
-        this.menuProducts = menuProducts;
     }
 
-    public Menu(Long id, String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
+    public Menu(Long id, String name, BigDecimal price, Long menuGroupId) {
         this.id = id;
-        this.name = name;
-        this.price = price;
+        this.name = new Name(name);
+        this.price = new Price(price);
         this.menuGroupId = menuGroupId;
-        this.menuProducts = menuProducts;
+    }
+
+    public void addMenuProducts(List<MenuProduct> menuProducts) {
+        validateSumPrice(menuProducts);
+        for (MenuProduct menuProduct : menuProducts) {
+            if (!this.menuProducts.contains(menuProduct)) {
+                this.menuProducts.add(menuProduct);
+            }
+            menuProduct.bindTo(this);
+        }
+    }
+
+    private void validateSumPrice(List<MenuProduct> menuProducts) {
+        BigDecimal sum = menuProducts.stream()
+                .map(MenuProduct::calculateSumPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        if (price.isGatherThan(sum)) {
+            throw new IllegalArgumentException();
+        }
     }
 
     public Long getId() {
@@ -42,11 +61,11 @@ public class Menu {
     }
 
     public String getName() {
-        return name;
+        return name.getValue();
     }
 
     public BigDecimal getPrice() {
-        return price;
+        return price.getValue();
     }
 
     public Long getMenuGroupId() {
@@ -56,4 +75,5 @@ public class Menu {
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
     }
+
 }
