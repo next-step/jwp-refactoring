@@ -5,10 +5,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.table.creator.TableGroupCreator;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.table.repository.TableGroupRepository;
 import org.springframework.stereotype.Service;
@@ -19,17 +21,21 @@ public class TableGroupService {
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
+    private final TableGroupCreator tableGroupCreator;
 
     public TableGroupService(OrderRepository orderRepository,
                              OrderTableRepository orderTableRepository,
-                             TableGroupRepository tableGroupRepository) {
+                             TableGroupRepository tableGroupRepository,
+                             TableGroupCreator tableGroupCreator) {
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
+        this.tableGroupCreator = tableGroupCreator;
     }
 
     @Transactional
-    public TableGroup create(final TableGroup tableGroup) {
+    public TableGroup create(final TableGroupRequest tableGroupRequest) {
+        TableGroup tableGroup = tableGroupCreator.toTableGroup(tableGroupRequest);
         OrderTables orderTables = tableGroup.getOrderTables();
         orderTables.validateCreate();
         orderTables.setAllEmpty(false);

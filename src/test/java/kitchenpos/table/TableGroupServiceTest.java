@@ -11,8 +11,10 @@ import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.table.repository.TableGroupRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,6 +49,14 @@ class TableGroupServiceTest {
 
         tableGroup = new TableGroup();
         tableGroup.setOrderTables(orderTables);
+
+    }
+
+    @AfterEach
+    void tearDown() {
+        orderRepository.deleteAllInBatch();
+        orderTableRepository.deleteAllInBatch();
+        tableGroupRepository.deleteAllInBatch();
     }
 
     @Test
@@ -55,7 +65,7 @@ class TableGroupServiceTest {
         TableGroup tableGroup = new TableGroup();
         tableGroup.setOrderTables(new OrderTables());
 
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableGroupService.create(TableGroupRequest.of(tableGroup))).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -66,7 +76,7 @@ class TableGroupServiceTest {
         orderTables.add(new OrderTable());
         tableGroup.setOrderTables(orderTables);
 
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableGroupService.create(TableGroupRequest.of(tableGroup))).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -78,7 +88,7 @@ class TableGroupServiceTest {
         TableGroup tableGroup = new TableGroup();
         tableGroup.setOrderTables(orderTables);
 
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableGroupService.create(TableGroupRequest.of(tableGroup))).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -87,31 +97,33 @@ class TableGroupServiceTest {
     public void createTableGroupNonEmptyOrderTable() {
         orderTable1.setEmpty(false);
 
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableGroupService.create(TableGroupRequest.of(tableGroup))).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @Transactional
     @DisplayName("이미 단체 지정된 테이블은 단체로 지정 불가")
     public void createAlreadyInGroup() {
-        orderTable1.setTableGroup(tableGroup);
+        orderTables.add(new OrderTable(new TableGroup(), 3, false));
+        tableGroup.setOrderTables(orderTables);
 
-        assertThatThrownBy(() -> tableGroupService.create(tableGroup)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> tableGroupService.create(TableGroupRequest.of(tableGroup))).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("테이블 단체 지정 정상 처리")
     public void createTableGroupSuccess() {
-        orderTable1.setEmpty(true);
-        orderTable2.setEmpty(true);
-
-        assertThat(tableGroupService.create(tableGroup).getId()).isEqualTo(tableGroup.getId());
+        orderTables.add(new OrderTable(null, 2, true));
+        orderTables.add(new OrderTable(null, 4, true));
+        TableGroup savedTableGroup = tableGroupService.create(TableGroupRequest.of(tableGroup));
+        assertThat(savedTableGroup.getId()).isNotNull();
     }
 
     @Test
     @Transactional
     @DisplayName("cooking이나 meal 상태인 테이블이 있으면 단체 해제 불가")
     public void cookingMealChangeStatus() {
+        orderTables.add(new OrderTable(null, 4, true));
         TableGroup save = tableGroupRepository.save(tableGroup);
         orderTable1.setTableGroup(save);
         orderTableRepository.save(orderTable1);
