@@ -2,13 +2,10 @@ package kitchenpos.menu.domain;
 
 import kitchenpos.common.domain.Name;
 import kitchenpos.common.domain.Price;
-import kitchenpos.menugroup.domain.MenuGroup;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
-
-import static kitchenpos.common.Messages.MENU_PRICE_EXPENSIVE;
 
 @Entity
 public class Menu {
@@ -23,8 +20,8 @@ public class Menu {
     @Embedded
     private Price price;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    private MenuGroup menuGroup;
+    @Column
+    private Long menuGroupId;
 
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
@@ -32,31 +29,24 @@ public class Menu {
     protected Menu() {
     }
 
-    private Menu(Long id, Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        this(name, price, menuGroup, menuProducts);
+    private Menu(Long id, Name name, Price price, Long menuGroupId, MenuProducts menuProducts) {
+        this(name, price, menuGroupId, menuProducts);
         this.id = id;
     }
 
-    public Menu(Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        validateExpensivePrice(price, menuProducts);
+    public Menu(Name name, Price price, Long menuGroupId, MenuProducts menuProducts) {
         this.name = name;
         this.price = price;
-        this.menuGroup = menuGroup;
+        this.menuGroupId = menuGroupId;
         addMenuProducts(menuProducts);
     }
 
-    public static Menu of(Long id, Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        return new Menu(id, name, price, menuGroup, menuProducts);
+    public static Menu of(Long id, Name name, Price price, Long menuGroupId, MenuProducts menuProducts) {
+        return new Menu(id, name, price, menuGroupId, menuProducts);
     }
 
-    public static Menu of(Name name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        return new Menu(name, price, menuGroup, menuProducts);
-    }
-
-    private void validateExpensivePrice(Price price, MenuProducts menuProducts) {
-        if (price.isExpensive(menuProducts.sumTotalPrice())) {
-            throw new IllegalArgumentException(MENU_PRICE_EXPENSIVE);
-        }
+    public static Menu of(Name name, Price price, Long menuGroupId, MenuProducts menuProducts) {
+        return new Menu(name, price, menuGroupId, menuProducts);
     }
 
     private void addMenuProducts(MenuProducts menuProducts) {
@@ -78,8 +68,8 @@ public class Menu {
         return price.getPrice();
     }
 
-    public MenuGroup getMenuGroup() {
-        return menuGroup;
+    public Long getMenuGroupId() {
+        return menuGroupId;
     }
 
     public List<MenuProduct> getMenuProducts() {

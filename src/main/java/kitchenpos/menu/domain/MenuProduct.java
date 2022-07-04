@@ -1,10 +1,8 @@
 package kitchenpos.menu.domain;
 
 import kitchenpos.common.domain.Quantity;
-import kitchenpos.product.domain.Product;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 
 @Entity
 @Table(name = "menu_product")
@@ -17,8 +15,7 @@ public class MenuProduct {
     @ManyToOne(fetch = FetchType.LAZY)
     private Menu menu;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    private Product product;
+    private Long productId;
 
     @Embedded
     private Quantity quantity;
@@ -27,23 +24,23 @@ public class MenuProduct {
 
     }
 
-    public MenuProduct(Long seq, Menu menu, Product product, Quantity quantity) {
-        this(product, quantity);
+    public MenuProduct(Long seq, Menu menu, Long productId, Quantity quantity) {
+        this(productId, quantity);
         this.seq = seq;
         this.menu = menu;
     }
 
-    private MenuProduct(Product product, Quantity quantity) {
-        this.product = product;
+    private MenuProduct(Long productId, Quantity quantity) {
+        this.productId = productId;
         this.quantity = quantity;
     }
 
-    public static MenuProduct of(Long seq, Menu menu, Product product, Quantity quantity) {
-        return new MenuProduct(seq, menu, product, quantity);
+    public static MenuProduct of(Long seq, Menu menu, Long productId, Quantity quantity) {
+        return new MenuProduct(seq, menu, productId, quantity);
     }
 
-    public static MenuProduct of(Product product, Quantity quantity) {
-        return new MenuProduct(product, quantity);
+    public static MenuProduct of(Long productId, Quantity quantity) {
+        return new MenuProduct(productId, quantity);
     }
 
     public Long getSeq() {
@@ -54,18 +51,12 @@ public class MenuProduct {
         return menu;
     }
 
-    public Product getProduct() {
-        return product;
+    public Long getProductId() {
+        return productId;
     }
 
     public long getQuantity() {
         return quantity.getQuantity();
-    }
-
-    public BigDecimal getProductPrice() {
-        BigDecimal price = product.getPrice();
-
-        return price.multiply(BigDecimal.valueOf(quantity.getQuantity()));
     }
 
     public void toMenu(Menu menu) {

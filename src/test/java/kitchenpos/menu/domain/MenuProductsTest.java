@@ -20,8 +20,8 @@ class MenuProductsTest {
     void menuProducts() {
         // given
         Product 피자 = Product.of(Name.of("피자"), Price.of(BigDecimal.valueOf(17_000)));
-        Quantity 수량 = Quantity.of(1);
-        MenuProduct 메뉴_상품 = MenuProduct.of(피자, 수량);
+        Quantity 수량 = Quantity.of(2);
+        MenuProduct 메뉴_상품 = MenuProduct.of(피자.getId(), 수량);
 
         // when
         MenuProducts 메뉴_상품_목록 = MenuProducts.of(Arrays.asList(메뉴_상품));
@@ -31,19 +31,5 @@ class MenuProductsTest {
                 () -> assertThat(메뉴_상품_목록).isNotNull(),
                 () -> assertThat(메뉴_상품_목록.getMenuProducts()).isEqualTo(Arrays.asList(메뉴_상품))
         );
-    }
-
-    @Test
-    @DisplayName("메뉴 상품 목록 가격 테스트")
-    void sumTotalPrice() {
-        // given
-        Product 피자 = Product.of(Name.of("피자"), Price.of(BigDecimal.valueOf(17_000)));
-        Quantity 수량 = Quantity.of(10);
-        MenuProduct 메뉴_상품 = MenuProduct.of(피자, 수량);
-
-        // when
-        MenuProducts 메뉴_상품_목록 = MenuProducts.of(Arrays.asList(메뉴_상품, 메뉴_상품));
-
-        assertThat(메뉴_상품_목록.sumTotalPrice()).isEqualTo(BigDecimal.valueOf(340_000));
     }
 }
