@@ -38,6 +38,11 @@ public class OrderTable {
         this.empty = empty;
     }
 
+    public OrderTable(boolean empty, TableGroup tableGroup) {
+        this.empty = empty;
+        this.tableGroup = tableGroup;
+    }
+
     public OrderTable(int numberOfGuests, boolean empty, TableGroup tableGroup) {
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
