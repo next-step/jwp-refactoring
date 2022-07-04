@@ -92,9 +92,13 @@
   - [X] 테스트 의존성 구성도 작성
   - [X] order-table 테스트 코드 패키지간 양방향 의존성 제거
 - [ ] 테스트 코드 리팩토링
-  - [X] ㅇㅇApplicationBehavior -> ㅇㅇㅇContextServiceBehavior로 이름 변경 및 위치 이동
-  - [ ] 도메인 객체픽스처 생성을 위한 팩토리 추가
-  - [ ] 기존 픽스처 팩토리는 application 패키지로 이동
+  - [X] ㅇㅇㅇApplicationBehavior -> ㅇㅇㅇContextServiceBehavior로 이름 변경 및 위치 이동
+  - [ ] 도메인 객체 픽스처 팩토리 추가(기존 픽스처 팩토리는 DtoFixtureFactory로 이름 변경 및 위치 이동)
+    - [X] Table
+    - [ ] Product
+    - [ ] Menu
+    - [ ] Order
+
 ## 의존성 구성도 첨부
 ### 프로덕션 코드
 ![production](../capture/ProductionDeps.png)

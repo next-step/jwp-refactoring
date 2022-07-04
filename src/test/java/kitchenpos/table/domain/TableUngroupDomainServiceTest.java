@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
+import kitchenpos.table.domain.fixture.OrderTableFixtureFactory;
+import kitchenpos.table.domain.fixture.TableGroupFixtureFactory;
 import kitchenpos.table.exception.CannotUngroupException;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
@@ -14,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 class TableUngroupDomainServiceTest {
@@ -31,16 +32,13 @@ class TableUngroupDomainServiceTest {
         tableUngroupDomainService = new TableUngroupDomainService(tableOrderStatusChecker, tableGroupRepository);
     }
 
-
     @Test
     @DisplayName("모든 주문 테이블이 계산완료된 경우 테이블 그룹 해제 성공")
     void 테이블그룹_지정해제_계산완료시() {
         Long tableGroupId = 1L;
-        OrderTable emptyTable = new OrderTable(0, true);
-        ReflectionTestUtils.setField(emptyTable, "id", 1L);
-        OrderTable emptyTable2 = new OrderTable(0, true);
-        ReflectionTestUtils.setField(emptyTable2, "id", 2L);
-        TableGroup tableGroup = new TableGroup(Lists.newArrayList(emptyTable, emptyTable2));
+        OrderTable emptyTable = OrderTableFixtureFactory.createEmptyTableOrderWithId(1L);
+        OrderTable emptyTable2 = OrderTableFixtureFactory.createEmptyTableOrderWithId(2L);
+        TableGroup tableGroup = TableGroupFixtureFactory.createTableGroup(emptyTable, emptyTable2);
         when(tableGroupRepository.findById(tableGroupId)).thenReturn(Optional.of(tableGroup));
         when(tableOrderStatusChecker.isExistTablesBeforeBillingStatus(
                 Lists.newArrayList(emptyTable.getId(), emptyTable2.getId())))
@@ -60,11 +58,9 @@ class TableUngroupDomainServiceTest {
     @DisplayName("계산완료되지 않은 주문 테이블이 있는 경우 테이블 그룹 해제 실패")
     void 테이블그룹_지정해제_계산완료전() {
         Long tableGroupId = 1L;
-        OrderTable emptyTable = new OrderTable(0, true);
-        ReflectionTestUtils.setField(emptyTable, "id", 1L);
-        OrderTable emptyTable2 = new OrderTable(0, true);
-        ReflectionTestUtils.setField(emptyTable2, "id", 2L);
-        TableGroup tableGroup = new TableGroup(Lists.newArrayList(emptyTable, emptyTable2));
+        OrderTable emptyTable = OrderTableFixtureFactory.createEmptyTableOrderWithId(1L);
+        OrderTable emptyTable2 = OrderTableFixtureFactory.createEmptyTableOrderWithId(2L);
+        TableGroup tableGroup = TableGroupFixtureFactory.createTableGroup(emptyTable, emptyTable2);
         when(tableGroupRepository.findById(tableGroupId)).thenReturn(Optional.of(tableGroup));
         when(tableOrderStatusChecker.isExistTablesBeforeBillingStatus(
                 Lists.newArrayList(emptyTable.getId(), emptyTable2.getId())))

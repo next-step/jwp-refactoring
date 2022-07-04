@@ -6,7 +6,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.table.fixture.OrderTableFixtureFactory;
+import kitchenpos.table.application.fixture.OrderTableDtoFixtureFactory;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.acceptance.util.KitchenPosBehaviors;
@@ -21,7 +21,7 @@ class TableAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("테이블 생성, 조회, 상태 변경 기능 인수테스트")
     void tableAcceptanceTest() {
-        OrderTableRequest table = OrderTableFixtureFactory.createNotEmptyOrderTable(0);
+        OrderTableRequest table = OrderTableDtoFixtureFactory.createNotEmptyOrderTable(0);
         ExtractableResponse<Response> createResponse = KitchenPosBehaviors.테이블_생성_요청(table);
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
@@ -36,7 +36,7 @@ class TableAcceptanceTest extends AcceptanceTest {
     }
 
     private void 빈테이블로_변경하고_확인한다(Long orderTableId) {
-        OrderTableRequest param = OrderTableFixtureFactory.createParamForChangeEmptyState(false);
+        OrderTableRequest param = OrderTableDtoFixtureFactory.createParamForChangeEmptyState(false);
         ExtractableResponse<Response> changeEmptyStateResponse = KitchenPosBehaviors.테이블_공석여부_변경_요청(orderTableId,
                 param);
         assertThat(changeEmptyStateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -47,7 +47,7 @@ class TableAcceptanceTest extends AcceptanceTest {
     }
 
     private void 인원수를_변경하고_확인한다(Long orderTableId, int numberOfGuests) {
-        OrderTableRequest param = OrderTableFixtureFactory.createParamForChangeNumberOfGuests(numberOfGuests);
+        OrderTableRequest param = OrderTableDtoFixtureFactory.createParamForChangeNumberOfGuests(numberOfGuests);
         ExtractableResponse<Response> changeEmptyStateResponse = KitchenPosBehaviors.테이블_인원수_변경_요청(orderTableId, param);
         assertThat(changeEmptyStateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
 

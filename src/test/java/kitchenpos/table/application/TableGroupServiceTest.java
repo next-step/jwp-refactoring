@@ -9,7 +9,7 @@ import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupResponse;
 import kitchenpos.table.exception.CannotMakeTableGroupException;
 import kitchenpos.table.exception.NotExistTableException;
-import kitchenpos.table.fixture.OrderTableFixtureFactory;
+import kitchenpos.table.application.fixture.OrderTableDtoFixtureFactory;
 import kitchenpos.table.application.util.TableContextServiceBehavior;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -56,8 +56,8 @@ class TableGroupServiceTest extends ServiceTest {
     @Test
     @DisplayName("존재하지 않는 테이블이 포함된 경우 테이블 그룹 지정 실패")
     void 테이블그룹_지정_저장되지않은_테이블로_그룹지정을_시도하는경우() {
-        OrderTableResponse newOrderTable = OrderTableFixtureFactory.createEmptyOrderTableResponse(-1L);
-        OrderTableResponse newOrderTable2 = OrderTableFixtureFactory.createEmptyOrderTableResponse(-2L);
+        OrderTableResponse newOrderTable = OrderTableDtoFixtureFactory.createEmptyOrderTableResponse(-1L);
+        OrderTableResponse newOrderTable2 = OrderTableDtoFixtureFactory.createEmptyOrderTableResponse(-2L);
         assertThatThrownBy(() -> tableContextServiceBehavior.테이블그룹_지정됨(newOrderTable, newOrderTable2))
                 .isInstanceOf(NotExistTableException.class);
     }

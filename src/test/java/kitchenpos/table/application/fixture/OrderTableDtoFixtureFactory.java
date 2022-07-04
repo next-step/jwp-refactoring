@@ -1,16 +1,17 @@
-package kitchenpos.table.fixture;
+package kitchenpos.table.application.fixture;
 
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.fixture.OrderTableFixtureFactory;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.springframework.test.util.ReflectionTestUtils;
 
-public class OrderTableFixtureFactory {
-    private OrderTableFixtureFactory() {
+public class OrderTableDtoFixtureFactory {
+    private OrderTableDtoFixtureFactory() {
     }
 
     public static OrderTableResponse createEmptyOrderTableResponse(Long id) {
-        OrderTable orderTable = new OrderTable(0, true);
+        OrderTable orderTable = OrderTableFixtureFactory.createEmptyOrderTable();
         ReflectionTestUtils.setField(orderTable, "id", id);
         return OrderTableResponse.of(orderTable);
     }
