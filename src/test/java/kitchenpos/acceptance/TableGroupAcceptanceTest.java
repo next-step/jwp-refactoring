@@ -8,7 +8,8 @@ import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
 import kitchenpos.ordertable.domain.OrderTable;
-import kitchenpos.tablegroup.domain.TableGroup;
+import kitchenpos.tablegroup.dto.TableGroupRequest;
+import kitchenpos.tablegroup.dto.TableGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,7 @@ public class TableGroupAcceptanceTest extends BaseAcceptanceTest {
     public void manageTableGroup() {
         //단체 지정 생성
         //given
-        TableGroup 단체지정 = new TableGroup(1l, createOrderTables());
+        TableGroupRequest 단체지정 = TableGroupRequest.from(Arrays.asList(3l,4l));
         //when
         ExtractableResponse<Response> 단체_지정_요청 = 단체_지정_요청(단체지정);
         //then
@@ -29,13 +30,13 @@ public class TableGroupAcceptanceTest extends BaseAcceptanceTest {
 
         //단체 지정 해제
         //when
-        ExtractableResponse<Response> 단체_지정_해제_요청 = 단체_지정_해제_요청(단체_지정_요청.as(TableGroup.class).getId());
+        ExtractableResponse<Response> 단체_지정_해제_요청 = 단체_지정_해제_요청(단체_지정_요청.as(TableGroupResponse.class).getId());
         //then
         응답코드_확인(단체_지정_해제_요청, HttpStatus.NO_CONTENT);
 
     }
 
-    public static ExtractableResponse<Response> 단체_지정_요청(TableGroup tableGroup) {
+    public static ExtractableResponse<Response> 단체_지정_요청(TableGroupRequest tableGroup) {
 
         return RestAssured
             .given().log().all()

@@ -75,9 +75,13 @@ public class OrderTable {
     }
 
     private void validateGrouped() {
-        if (tableGroup != null) {
+        if (isGrouped()) {
             throw new IllegalArgumentException();
         }
+    }
+
+    public boolean isGrouped() {
+        return tableGroup != null;
     }
 
     public void groupBy(TableGroup tableGroup){
@@ -85,7 +89,6 @@ public class OrderTable {
             throw new IllegalArgumentException();
         }
         this.tableGroup = tableGroup;
-        tableGroup.getOrderTables().add(this);
         empty = false;
     }
 

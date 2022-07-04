@@ -18,8 +18,53 @@ public class TableGroup {
     private LocalDateTime createdDate;
     @OneToMany(mappedBy = "tableGroup")
     private List<OrderTable> orderTables= new ArrayList<>();
+    public static final int MIN_ORDER_TABLE_NUMBER = 2;
 
     protected TableGroup() {
+    }
+
+    private TableGroup(List<OrderTable> orderTables) {
+        assignOrderTables(orderTables);
+        createdDate = LocalDateTime.now();
+    }
+
+    private void assignOrderTables(List<OrderTable> orderTables) {
+        validateOrderTables(orderTables);
+        this.orderTables = orderTables;
+        orderTables.forEach(orderTable -> orderTable.groupBy(this));
+    }
+
+    private void validateOrderTables(List<OrderTable> orderTables) {
+        validateOrderTablesSize(orderTables);
+        validateOrderTablesDuplicated(orderTables);
+        validateOrderTablesNotGrouped(orderTables);
+        validateOrderTablesEmpty(orderTables);
+    }
+
+    private void validateOrderTablesSize(List<OrderTable> orderTables) {
+        if (orderTables == null || orderTables.size() < MIN_ORDER_TABLE_NUMBER) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private void validateOrderTablesDuplicated(List<OrderTable> orderTables) {
+        if(orderTables.size() != orderTables.stream().distinct().count()){
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private void validateOrderTablesNotGrouped(List<OrderTable> orderTables) {
+        if (orderTables.stream().
+            anyMatch(orderTable -> orderTable.isGrouped())) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private void validateOrderTablesEmpty(List<OrderTable> orderTables) {
+        if (orderTables.stream().
+            anyMatch(orderTable -> !orderTable.isEmpty())) {
+            throw new IllegalArgumentException();
+        }
     }
 
     public TableGroup(Long id, LocalDateTime createdDate) {
@@ -30,6 +75,11 @@ public class TableGroup {
     public TableGroup(Long id, List<OrderTable> orderTables) {
         this.id = id;
         orderTables.forEach(orderTable -> orderTable.groupBy(this));
+    }
+
+
+    public static TableGroup of(List<OrderTable> orderTables) {
+        return new TableGroup(orderTables);
     }
 
     public Long getId() {
