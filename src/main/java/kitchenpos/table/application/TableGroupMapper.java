@@ -20,7 +20,6 @@ public class TableGroupMapper {
         this.orderTableRepository = orderTableRepository;
     }
 
-    @Transactional
     public TableGroup mapFrom(TableGroupRequest request) {
         if (request.getOrderTables() == null || request.getOrderTables().size() < 2) {
             throw new IllegalArgumentException();
