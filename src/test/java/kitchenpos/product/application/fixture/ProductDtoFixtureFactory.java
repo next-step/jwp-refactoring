@@ -1,13 +1,10 @@
-package kitchenpos.product.fixture;
+package kitchenpos.product.application.fixture;
 
 import java.math.BigDecimal;
 import kitchenpos.product.domain.Product;
 import org.springframework.test.util.ReflectionTestUtils;
 
-public class ProductFixtureFactory {
-    private ProductFixtureFactory() {
-    }
-
+public class ProductDtoFixtureFactory {
     public static Product createProduct(String name, int price) {
         return new Product(name, new BigDecimal(price));
     }

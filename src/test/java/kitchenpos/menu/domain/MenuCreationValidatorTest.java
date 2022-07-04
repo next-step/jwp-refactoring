@@ -3,10 +3,10 @@ package kitchenpos.menu.domain;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
+import kitchenpos.menu.exception.InvalidMenuPriceException;
 import kitchenpos.menu.fixture.MenuGroupFixtureFactory;
 import kitchenpos.menu.fixture.MenuProductFixtureFactory;
-import kitchenpos.product.fixture.ProductFixtureFactory;
-import kitchenpos.menu.exception.InvalidMenuPriceException;
+import kitchenpos.product.application.fixture.ProductDtoFixtureFactory;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
 import org.assertj.core.util.Lists;
@@ -35,8 +35,8 @@ class MenuCreationValidatorTest {
         menuCreationValidator = new MenuCreationValidator(productRepository);
 
         menuGroup = MenuGroupFixtureFactory.createMenuGroup("메뉴그룹1");
-        product1 = ProductFixtureFactory.createProduct(1L, "상품1", 1000);
-        product2 = ProductFixtureFactory.createProduct(2L, "상품2", 2000);
+        product1 = ProductDtoFixtureFactory.createProduct(1L, "상품1", 1000);
+        product2 = ProductDtoFixtureFactory.createProduct(2L, "상품2", 2000);
     }
 
     @Test

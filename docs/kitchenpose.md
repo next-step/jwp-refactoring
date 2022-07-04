@@ -95,7 +95,7 @@
   - [X] ㅇㅇㅇApplicationBehavior -> ㅇㅇㅇContextServiceBehavior로 이름 변경 및 위치 이동
   - [ ] 도메인 객체 픽스처 팩토리 추가(기존 픽스처 팩토리는 DtoFixtureFactory로 이름 변경 및 위치 이동)
     - [X] Table
-    - [ ] Product
+    - [X] Product
     - [ ] Menu
     - [ ] Order
 

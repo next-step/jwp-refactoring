@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import kitchenpos.menu.fixture.MenuGroupFixtureFactory;
 import kitchenpos.menu.fixture.MenuProductFixtureFactory;
-import kitchenpos.product.fixture.ProductFixtureFactory;
+import kitchenpos.product.application.fixture.ProductDtoFixtureFactory;
 import kitchenpos.product.domain.Product;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
@@ -23,8 +23,8 @@ class MenuTest {
     @BeforeEach
     void setUp() {
         menuGroup = MenuGroupFixtureFactory.createMenuGroup("메뉴그룹1");
-        product1 = ProductFixtureFactory.createProduct(1L, "상품1", 1000);
-        product2 = ProductFixtureFactory.createProduct(2L, "상품2", 2000);
+        product1 = ProductDtoFixtureFactory.createProduct(1L, "상품1", 1000);
+        product2 = ProductDtoFixtureFactory.createProduct(2L, "상품2", 2000);
     }
 
     @Test
