@@ -17,6 +17,8 @@ import javax.persistence.ManyToOne;
 @Entity
 public class Menu {
 
+    public static final String MENU_PRICE_IS_OVER_THAN_TOTAL_SUM_OF_MENU_PRODUCT_PRICE_ERROR_MESSAGE = "메뉴에 구성된 상품 가격의 총합 보다 메뉴 가격이 클 수 없습니다.";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -46,6 +48,13 @@ public class Menu {
         this.price = price;
         this.menuGroup = menuGroup;
         this.menuProducts = MenuProducts.of(this, menuProducts);
+        validateMenuPrice();
+    }
+
+    public void validateMenuPrice() {
+        if (price.compareTo(menuProducts.totalMenuProductPrice()) > 0) {
+            throw new IllegalArgumentException(MENU_PRICE_IS_OVER_THAN_TOTAL_SUM_OF_MENU_PRODUCT_PRICE_ERROR_MESSAGE);
+        }
     }
 
     public Long getId() {

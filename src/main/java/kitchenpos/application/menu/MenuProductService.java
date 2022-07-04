@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class MenuProductService {
 
+    public static final String PRODUCT_NOT_FOUND_ERROR_MESSAGE = "요청에 해당하는 상품이 존재하지 않습니다.";
     private final ProductRepository productRepository;
 
     public MenuProductService(ProductRepository productRepository, MenuProductRepository menuProductRepository) {
@@ -23,7 +24,8 @@ public class MenuProductService {
     public List<MenuProduct> findMenuProductByMenuProductRequest(List<MenuProductRequest> menuProductRequests) {
         return menuProductRequests.stream()
             .map(it -> {
-                Product product = productRepository.findById(it.getProductId()).orElseThrow(IllegalArgumentException::new);
+                Product product = productRepository.findById(it.getProductId())
+                    .orElseThrow(() -> new IllegalArgumentException(PRODUCT_NOT_FOUND_ERROR_MESSAGE));
                 return new MenuProduct(product, it.getQuantity());
             })
             .collect(Collectors.toList());
