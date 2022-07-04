@@ -1,5 +1,8 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.common.exception.BadRequestException;
+import kitchenpos.common.exception.ErrorCode;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -43,30 +46,6 @@ public class OrderTable {
         this.tableGroup = tableGroup;
     }
 
-    public OrderTable(int numberOfGuests, boolean empty, TableGroup tableGroup) {
-        this.numberOfGuests = numberOfGuests;
-        this.empty = empty;
-        this.tableGroup = tableGroup;
-    }
-
-    public OrderTable(long id, TableGroup tableGroup) {
-        this.id = id;
-        this.tableGroup = tableGroup;
-    }
-
-    public OrderTable(long id, int numberOfGuests, boolean empty, TableGroup tableGroup) {
-        this.id = id;
-        this.numberOfGuests = numberOfGuests;
-        this.empty = empty;
-        this.tableGroup = tableGroup;
-    }
-
-    public OrderTable(long id, int numberOfGuests, boolean empty) {
-        this.id = id;
-        this.numberOfGuests = numberOfGuests;
-        this.empty = empty;
-    }
-
     public Long getId() {
         return id;
     }
@@ -101,18 +80,18 @@ public class OrderTable {
 
     public void changeEmpty(boolean empty) {
         if (Objects.nonNull(this.getTableGroup())) {
-            throw new IllegalArgumentException();
+            throw new BadRequestException(ErrorCode.ORDER_TABLE_GROUPED);
         }
         this.empty = empty;
     }
 
     public void changeNumberOfGuests(int numberOfGuests) {
         if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
+            throw new BadRequestException(ErrorCode.NEGATIVE_NUMBER_OF_GUESTS);
         }
 
         if (this.isEmpty()) {
-            throw new IllegalArgumentException();
+            throw new BadRequestException(ErrorCode.TABLE_EMPTY);
         }
         this.numberOfGuests = numberOfGuests;
     }

@@ -1,5 +1,8 @@
 package kitchenpos.table.application;
 
+import kitchenpos.common.exception.BadRequestException;
+import kitchenpos.common.exception.ErrorCode;
+import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -80,7 +83,24 @@ class TableServiceTest {
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> tableService.changeEmpty(orderTableId, request))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage(ErrorCode.ORDER_TABLE_NOT_FOUND.getMessage());
+    }
+
+    @DisplayName("조리, 식사중인 테이블은 변경할 수 없다.")
+    @Test
+    void changeEmpty_cooking_meal() {
+        Long orderTableId = 1L;
+        OrderTableRequest request = new OrderTableRequest(1, true);
+        OrderTable orderTable = createOrderTable(1L, false);
+
+        given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList()))
+                .willReturn(Boolean.TRUE);
+
+        assertThatThrownBy(() -> tableService.changeEmpty(orderTableId, request))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage(ErrorCode.CAN_NOT_CHANGE_COOKING_AND_MEAL.getMessage());
     }
 
     @DisplayName("테이블 그룹이 이미 존재한다면, 테이블을 비운다.")
@@ -93,7 +113,8 @@ class TableServiceTest {
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
 
         assertThatThrownBy(() -> tableService.changeEmpty(orderTableId, request))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage(ErrorCode.ORDER_TABLE_GROUPED.getMessage());
     }
 
     @DisplayName("인원을 변경할 수 있다.")
@@ -115,7 +136,8 @@ class TableServiceTest {
         Long orderTableId = 1L;
 
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, new OrderTableRequest(0, false)))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage(ErrorCode.ORDER_TABLE_NOT_FOUND.getMessage());
     }
 
     @DisplayName("주문 테이블이 존재하지 않는다면, 변경할 수 없다.")
@@ -125,7 +147,8 @@ class TableServiceTest {
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, new OrderTableRequest(5, false)))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage(ErrorCode.ORDER_TABLE_NOT_FOUND.getMessage());
     }
 
     @DisplayName("주문 테이블이 비어있다면, 변경할 수 없다.")
@@ -137,6 +160,7 @@ class TableServiceTest {
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
 
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, new OrderTableRequest(5, false)))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage(ErrorCode.TABLE_EMPTY.getMessage());
     }
 }

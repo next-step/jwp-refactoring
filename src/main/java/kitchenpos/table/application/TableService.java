@@ -1,5 +1,8 @@
 package kitchenpos.table.application;
 
+import kitchenpos.common.exception.BadRequestException;
+import kitchenpos.common.exception.ErrorCode;
+import kitchenpos.common.exception.NotFoundException;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
@@ -37,7 +40,7 @@ public class TableService {
 
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest request) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_TABLE_NOT_FOUND));
 
         validateOrderStatus(orderTableId);
 
@@ -48,7 +51,7 @@ public class TableService {
 
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest request) {
         final OrderTable savedOrderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_TABLE_NOT_FOUND));
 
         savedOrderTable.changeNumberOfGuests(request.getNumberOfGuests());
 
@@ -58,7 +61,7 @@ public class TableService {
     private void validateOrderStatus(Long orderTableId) {
         if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
                 orderTableId, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException();
+            throw new BadRequestException(ErrorCode.CAN_NOT_CHANGE_COOKING_AND_MEAL);
         }
     }
 }

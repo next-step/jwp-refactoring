@@ -1,5 +1,7 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.common.exception.BadRequestException;
+import kitchenpos.common.exception.ErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +24,8 @@ class OrderTableTest {
         assertThatThrownBy(() -> {
             OrderTable orderTable = new OrderTable(false, new TableGroup(1L));
             orderTable.changeEmpty(true);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(BadRequestException.class)
+                .hasMessage(ErrorCode.ORDER_TABLE_GROUPED.getMessage());
     }
 
     @DisplayName("방문한 손님 수를 변경한다")
@@ -40,7 +43,8 @@ class OrderTableTest {
         assertThatThrownBy(() -> {
             OrderTable orderTable = new OrderTable(5, false);
             orderTable.changeNumberOfGuests(-1);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(BadRequestException.class)
+                .hasMessage(ErrorCode.NEGATIVE_NUMBER_OF_GUESTS.getMessage());
     }
 
     @DisplayName("주문 테이블이 비어있다면 방문한 손님 수를 변경할 수 없다.")
@@ -49,6 +53,7 @@ class OrderTableTest {
         assertThatThrownBy(() -> {
             OrderTable orderTable = new OrderTable(5, true);
             orderTable.changeNumberOfGuests(3);
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(BadRequestException.class)
+                .hasMessage(ErrorCode.TABLE_EMPTY.getMessage());
     }
 }
