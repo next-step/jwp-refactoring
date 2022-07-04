@@ -8,8 +8,6 @@ import java.util.List;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query(value = "select o from Order o "
-
-
             + "join fetch o.orderLineItems")
     List<Order> findAllOrderAndItems();
 
