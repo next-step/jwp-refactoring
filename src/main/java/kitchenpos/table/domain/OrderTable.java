@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import java.util.Objects;
 
 @Entity
 public class OrderTable {
@@ -91,5 +92,23 @@ public class OrderTable {
 
     public void setEmpty(final boolean empty) {
         this.empty = empty;
+    }
+
+    public void changeEmpty(boolean empty) {
+        if (Objects.nonNull(this.getTableGroup())) {
+            throw new IllegalArgumentException();
+        }
+        this.empty = empty;
+    }
+
+    public void changeNumberOfGuests(int numberOfGuests) {
+        if (numberOfGuests < 0) {
+            throw new IllegalArgumentException();
+        }
+
+        if (this.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        this.numberOfGuests = numberOfGuests;
     }
 }

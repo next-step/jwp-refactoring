@@ -59,25 +59,23 @@ class TableServiceTest {
     @Test
     void changeEmpty() {
         Long orderTableId = 1L;
-        OrderTable request = createOrderTable(false);
-        OrderTable orderTable = createOrderTable(1L, true);
+        OrderTableRequest request = new OrderTableRequest(1, true);
+        OrderTable orderTable = createOrderTable(1L, false);
 
-        given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(request));
+        given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
         given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList()))
                 .willReturn(Boolean.FALSE);
-        given(orderTableRepository.save(any(OrderTable.class)))
-                .willReturn(orderTable);
 
-        OrderTable result = tableService.changeEmpty(orderTableId, request);
+        OrderTableResponse response = tableService.changeEmpty(orderTableId, request);
 
-        assertThat(result.isEmpty()).isTrue();
+        assertThat(response.isEmpty()).isTrue();
     }
 
     @DisplayName("주문 테이블이 존재하지 않는다면, 테이블을 비운다.")
     @Test
     void changeEmpty_notExisted_orderTable() {
         Long orderTableId = 1L;
-        OrderTable request = createOrderTable(false);
+        OrderTableRequest request = new OrderTableRequest(1, false);
 
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.empty());
 
@@ -89,11 +87,12 @@ class TableServiceTest {
     @Test
     void changeEmpty_nonNull_tableGroupId() {
         Long orderTableId = 1L;
+        OrderTableRequest request = new OrderTableRequest(1, false);
         OrderTable orderTable = createOrderTable(orderTableId, false, new TableGroup(1L));
 
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
 
-        assertThatThrownBy(() -> tableService.changeEmpty(orderTableId, new OrderTable(1, false, new TableGroup(1L))))
+        assertThatThrownBy(() -> tableService.changeEmpty(orderTableId, request))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -104,11 +103,10 @@ class TableServiceTest {
         OrderTable orderTable = createOrderTable(0);
 
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
-        given(orderTableRepository.save(any(OrderTable.class))).willReturn(orderTable);
 
-        OrderTable result = tableService.changeNumberOfGuests(orderTableId, createOrderTable(5));
+        OrderTableResponse response = tableService.changeNumberOfGuests(orderTableId, new OrderTableRequest(5, false));
 
-        assertThat(result.getNumberOfGuests()).isEqualTo(5);
+        assertThat(response.getNumberOfGuests()).isEqualTo(5);
     }
 
     @DisplayName("인원을 1명 미만으로 변경요청 하면  변경할 수 없다.")
@@ -116,7 +114,7 @@ class TableServiceTest {
     void changeNumberOfGuests_invalid_numberOfGuests() {
         Long orderTableId = 1L;
 
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, createOrderTable(0)))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, new OrderTableRequest(0, false)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -126,7 +124,7 @@ class TableServiceTest {
         Long orderTableId = 1L;
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.empty());
 
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, createOrderTable(5)))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, new OrderTableRequest(5, false)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -138,7 +136,7 @@ class TableServiceTest {
 
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
 
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, createOrderTable(5)))
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(orderTableId, new OrderTableRequest(5, false)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }
