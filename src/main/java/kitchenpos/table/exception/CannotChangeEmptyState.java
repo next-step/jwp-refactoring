@@ -2,6 +2,7 @@ package kitchenpos.table.exception;
 
 public class CannotChangeEmptyState extends RuntimeException {
     public static final String INCLUDE_TO_TABLE_GROUP = "table is included tableGroup";
+    public static final String NOT_COMPLETED_ORDER = "not completed order exist";
 
     public CannotChangeEmptyState() {
     }

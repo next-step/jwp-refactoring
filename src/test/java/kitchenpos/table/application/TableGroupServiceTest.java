@@ -5,26 +5,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import kitchenpos.ServiceTest;
-import kitchenpos.menu.fixture.MenuProductFixtureFactory;
-import kitchenpos.order.fixture.OrderLineItemFixtureFactory;
-import kitchenpos.table.fixture.OrderTableFixtureFactory;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.dto.MenuDto;
-import kitchenpos.menu.util.MenuApplicationBehavior;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.dto.OrderLineItemRequest;
-import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.order.util.OrderApplicationBehavior;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.util.ProductApplicationBehavior;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupResponse;
 import kitchenpos.table.exception.CannotMakeTableGroupException;
-import kitchenpos.table.exception.CannotUngroupException;
 import kitchenpos.table.exception.NotExistTableException;
+import kitchenpos.table.fixture.OrderTableFixtureFactory;
 import kitchenpos.table.util.TableApplicationBehavior;
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,15 +20,6 @@ class TableGroupServiceTest extends ServiceTest {
 
     @Autowired
     TableApplicationBehavior tableApplicationBehavior;
-
-    @Autowired
-    private MenuApplicationBehavior menuApplicationBehavior;
-
-    @Autowired
-    private ProductApplicationBehavior productApplicationBehavior;
-
-    @Autowired
-    private OrderApplicationBehavior orderApplicationBehavior;
 
     @Autowired
     TableService tableService;
@@ -124,49 +101,5 @@ class TableGroupServiceTest extends ServiceTest {
 
         List<OrderTableResponse> orderTables = tableService.findAllByTableGroupId(tableGroup.getId());
         assertThat(orderTables).isEmpty();
-    }
-
-    @Test
-    @DisplayName("모든 주문 테이블이 계산완료된 경우 테이블 그룹 해제 성공")
-    void 테이블그룹_지정해제_계산완료시() {
-        OrderTableResponse table1 = tableApplicationBehavior.빈테이블_생성됨();
-        OrderTableResponse table2 = tableApplicationBehavior.빈테이블_생성됨();
-        TableGroupResponse tableGroup = tableApplicationBehavior.테이블그룹_지정됨(table1, table2);
-        OrderResponse order1 = 주문생성됨(table1);
-        OrderResponse order2 = 주문생성됨(table2);
-        orderApplicationBehavior.주문상태_변경(order1.getId(), OrderStatus.COMPLETION);
-        orderApplicationBehavior.주문상태_변경(order2.getId(), OrderStatus.COMPLETION);
-
-        tableGroupService.ungroup(tableGroup.getId());
-
-        List<OrderTableResponse> orderTables = tableService.findAllByTableGroupId(tableGroup.getId());
-        assertThat(orderTables).isEmpty();
-    }
-
-    @Test
-    @DisplayName("계산완료되지 않은 주문 테이블이 있는 경우 테이블 그룹 해제 실패")
-    void 테이블그룹_지정해제_계산완료전() {
-        OrderTableResponse table1 = tableApplicationBehavior.빈테이블_생성됨();
-        OrderTableResponse table2 = tableApplicationBehavior.빈테이블_생성됨();
-        TableGroupResponse tableGroup = tableApplicationBehavior.테이블그룹_지정됨(table1, table2);
-        주문생성됨(table1);
-        Long tableGroupId = tableGroup.getId();
-        assertThatThrownBy(() -> tableGroupService.ungroup(tableGroupId))
-                .isInstanceOf(CannotUngroupException.class);
-    }
-
-    private OrderResponse 주문생성됨(OrderTableResponse orderTable) {
-        MenuGroup menuGroup = menuApplicationBehavior.메뉴그룹_생성됨("메뉴그룹1");
-        Product product1 = productApplicationBehavior.상품_생성됨("상품1", 1000);
-        Product product2 = productApplicationBehavior.상품_생성됨("상품2", 2000);
-        MenuProduct menuProduct1 = MenuProductFixtureFactory.createMenuProduct(product1.getId(), 4);
-        MenuProduct menuProduct2 = MenuProductFixtureFactory.createMenuProduct(product2.getId(), 2);
-        MenuDto menu1 = menuApplicationBehavior.메뉴_생성됨(menuGroup, "메뉴1", 4000, Lists.newArrayList(menuProduct1));
-        MenuDto menu2 = menuApplicationBehavior.메뉴_생성됨(menuGroup, "메뉴2", 4000, Lists.newArrayList(menuProduct2));
-        OrderLineItemRequest orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
-        OrderLineItemRequest orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
-
-        return orderApplicationBehavior.주문_생성됨(orderTable.getId(),
-                Lists.newArrayList(orderLineItem1, orderLineItem2));
     }
 }

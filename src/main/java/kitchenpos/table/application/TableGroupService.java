@@ -1,32 +1,29 @@
 package kitchenpos.table.application;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.TableGroupRepository;
-import kitchenpos.table.domain.TableOrderStatusChecker;
+import kitchenpos.table.domain.TableUngroupDomainService;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
-import kitchenpos.table.exception.CannotUngroupException;
 import kitchenpos.table.exception.NotExistTableException;
-import kitchenpos.table.exception.NotExistTableGroupException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TableGroupService {
-    private final TableOrderStatusChecker tableOrderStatusChecker;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
+    private final TableUngroupDomainService tableUngroupDomainService;
 
-    public TableGroupService(TableOrderStatusChecker tableOrderStatusChecker,
-                             OrderTableRepository orderTableRepository,
-                             TableGroupRepository tableGroupRepository) {
-        this.tableOrderStatusChecker = tableOrderStatusChecker;
+    public TableGroupService(OrderTableRepository orderTableRepository,
+                             TableGroupRepository tableGroupRepository,
+                             TableUngroupDomainService tableUngroupDomainService) {
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
+        this.tableUngroupDomainService = tableUngroupDomainService;
     }
 
     @Transactional
@@ -42,19 +39,7 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
-                .orElseThrow(NotExistTableGroupException::new);
-        final List<Long> orderTableIds = extractTableIds(tableGroup);
-        if (tableOrderStatusChecker.isExistTablesBeforeBillingStatus(orderTableIds)) {
-            throw new CannotUngroupException();
-        }
-        tableGroup.ungroup();
+        tableUngroupDomainService.ungroup(tableGroupId);
     }
 
-    private List<Long> extractTableIds(TableGroup tableGroup) {
-        final List<OrderTable> orderTables = tableGroup.getOrderTables();
-        return orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-    }
 }

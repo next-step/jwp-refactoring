@@ -3,24 +3,23 @@ package kitchenpos.table.application;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
+import kitchenpos.table.domain.ChangeEmptyDomainService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.domain.TableOrderStatusChecker;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
-import kitchenpos.table.exception.CannotChangeEmptyState;
 import kitchenpos.table.exception.NotExistTableException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TableService {
-    private final TableOrderStatusChecker tableOrderStatusChecker;
+    private final ChangeEmptyDomainService changeEmptyDomainService;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(TableOrderStatusChecker tableOrderStatusChecker,
+    public TableService(ChangeEmptyDomainService changeEmptyDomainService,
                         OrderTableRepository orderTableRepository) {
-        this.tableOrderStatusChecker = tableOrderStatusChecker;
+        this.changeEmptyDomainService = changeEmptyDomainService;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -48,12 +47,8 @@ public class TableService {
 
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
-        final OrderTable savedOrderTable = findOrderTableById(orderTableId);
-        if (tableOrderStatusChecker.isBeforeBillingStatus(orderTableId)) {
-            throw new CannotChangeEmptyState("not completed order exist");
-        }
-        savedOrderTable.changeEmpty(orderTableRequest.isEmpty());
-        return OrderTableResponse.of(orderTableRepository.save(savedOrderTable));
+        OrderTable orderTable = changeEmptyDomainService.changeEmpty(orderTableId, orderTableRequest.isEmpty());
+        return OrderTableResponse.of(orderTableRepository.save(orderTable));
     }
 
     @Transactional

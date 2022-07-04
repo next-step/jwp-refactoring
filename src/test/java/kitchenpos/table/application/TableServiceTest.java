@@ -5,24 +5,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import kitchenpos.ServiceTest;
-import kitchenpos.menu.fixture.MenuProductFixtureFactory;
-import kitchenpos.order.fixture.OrderLineItemFixtureFactory;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.dto.MenuDto;
-import kitchenpos.menu.util.MenuApplicationBehavior;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.dto.OrderLineItemRequest;
-import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.order.util.OrderApplicationBehavior;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.util.ProductApplicationBehavior;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.exception.CannotChangeEmptyState;
 import kitchenpos.table.exception.CannotChangeNumberOfGuests;
 import kitchenpos.table.exception.NotExistTableException;
 import kitchenpos.table.util.TableApplicationBehavior;
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,15 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 class TableServiceTest extends ServiceTest {
     @Autowired
     TableApplicationBehavior tableApplicationBehavior;
-
-    @Autowired
-    private MenuApplicationBehavior menuApplicationBehavior;
-
-    @Autowired
-    private ProductApplicationBehavior productApplicationBehavior;
-
-    @Autowired
-    private OrderApplicationBehavior orderApplicationBehavior;
 
     @Autowired
     TableService tableService;
@@ -121,18 +99,6 @@ class TableServiceTest extends ServiceTest {
     }
 
     @Test
-    @DisplayName("주문의 상태가 계산완료가 아닌 경우 공석여부 변경 시도시 실패")
-    void 테이블_공석상태변경_주문이_조리_식사상태인경우() {
-        OrderTableResponse table = tableApplicationBehavior.비어있지않은테이블_생성됨(3);
-        OrderResponse order = 테이블에_임시_주문_추가(table.getId());
-        assertThat(order.getOrderStatus()).isEqualTo(OrderStatus.COOKING.name());
-
-        Long tableId = table.getId();
-        assertThatThrownBy(() -> tableApplicationBehavior.빈테이블로_변경(tableId))
-                .isInstanceOf(CannotChangeEmptyState.class);
-    }
-
-    @Test
     @DisplayName("테이블 인원수 변경")
     void 테이블_인원수_변경() {
         OrderTableResponse savedOrderTable = tableApplicationBehavior.비어있지않은테이블_생성됨(4);
@@ -168,12 +134,4 @@ class TableServiceTest extends ServiceTest {
                 .isInstanceOf(CannotChangeNumberOfGuests.class);
     }
 
-    private OrderResponse 테이블에_임시_주문_추가(Long tableId) {
-        MenuGroup menuGroup = menuApplicationBehavior.메뉴그룹_생성됨("메뉴그룹1");
-        Product product1 = productApplicationBehavior.상품_생성됨("상품1", 1000);
-        MenuProduct menuProduct = MenuProductFixtureFactory.createMenuProduct(product1.getId(), 4);
-        MenuDto menu = menuApplicationBehavior.메뉴_생성됨(menuGroup, "메뉴1", 4000, Lists.newArrayList(menuProduct));
-        OrderLineItemRequest orderLineItem = OrderLineItemFixtureFactory.createOrderLine(menu.getId(), 3);
-        return orderApplicationBehavior.주문_생성됨(tableId, Lists.newArrayList(orderLineItem));
-    }
 }
