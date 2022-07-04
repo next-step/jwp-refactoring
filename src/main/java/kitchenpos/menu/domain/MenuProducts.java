@@ -36,7 +36,7 @@ public class MenuProducts {
             total.add(menuProduct.getTotalPrice());
         }
 
-        if (total.getPrice().compareTo(price.getPrice()) > 0) {
+        if (total.getValue().compareTo(price.getValue()) > 0) {
             throw new IllegalArgumentException("메뉴 상품보다 메뉴의 가격이 높을 수 없습니다.");
         }
     }

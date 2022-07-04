@@ -8,14 +8,14 @@ import java.util.Objects;
 @Embeddable
 public class Price {
     @Column(nullable = false)
-    private BigDecimal price;
+    private BigDecimal value;
 
     protected Price() {
     }
 
     public Price(BigDecimal price) {
         validPrice(price);
-        this.price = price;
+        this.value = price;
     }
 
     private void validPrice(BigDecimal price) {
@@ -25,11 +25,11 @@ public class Price {
     }
 
     public Price add(Price totalPrice) {
-        BigDecimal result = this.price.add(totalPrice.getPrice());
+        BigDecimal result = this.value.add(totalPrice.getValue());
         return new Price(result);
     }
 
-    public BigDecimal getPrice() {
-        return this.price;
+    public BigDecimal getValue() {
+        return this.value;
     }
 }
