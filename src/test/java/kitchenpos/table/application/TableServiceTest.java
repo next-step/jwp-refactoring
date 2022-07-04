@@ -5,11 +5,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import kitchenpos.ServiceTest;
+import kitchenpos.table.application.util.TableContextServiceBehavior;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.exception.CannotChangeEmptyState;
 import kitchenpos.table.exception.CannotChangeNumberOfGuests;
 import kitchenpos.table.exception.NotExistTableException;
-import kitchenpos.table.application.util.TableContextServiceBehavior;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

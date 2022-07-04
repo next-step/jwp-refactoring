@@ -5,10 +5,10 @@ import static java.util.stream.Collectors.toList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
-import kitchenpos.table.application.fixture.OrderTableDtoFixtureFactory;
-import kitchenpos.table.application.fixture.TableGroupDtoFixtureFactory;
 import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.application.TableService;
+import kitchenpos.table.application.fixture.OrderTableDtoFixtureFactory;
+import kitchenpos.table.application.fixture.TableGroupDtoFixtureFactory;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,8 @@ public class TableContextServiceBehavior {
     }
 
     public OrderTableResponse 비어있지않은테이블로_변경(Long orderTableId) {
-        return tableService.changeEmpty(orderTableId, OrderTableDtoFixtureFactory.createParamForChangeEmptyState(false));
+        return tableService.changeEmpty(orderTableId,
+                OrderTableDtoFixtureFactory.createParamForChangeEmptyState(false));
     }
 
     public OrderTableResponse 비어있지않은테이블_생성됨(int numberOfGuests) {

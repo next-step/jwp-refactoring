@@ -6,7 +6,6 @@ import static org.mockito.Mockito.when;
 import java.util.Optional;
 import kitchenpos.table.domain.fixture.OrderTableFixtureFactory;
 import kitchenpos.table.exception.CannotChangeEmptyState;
-import org.aspectj.weaver.ast.Or;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

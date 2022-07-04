@@ -12,6 +12,8 @@ import javax.persistence.ManyToOne;
 
 @Entity
 public class Menu {
+    @Embedded
+    private final MenuProducts menuProducts = new MenuProducts();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,8 +23,6 @@ public class Menu {
     private BigDecimal price;
     @ManyToOne
     private MenuGroup menuGroup;
-    @Embedded
-    private final MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {
     }

@@ -20,14 +20,14 @@ import org.springframework.util.CollectionUtils;
 @EntityListeners(AuditingEntityListener.class)
 @Entity
 public class TableGroup {
+    @Embedded
+    private final OrderTables orderTables = new OrderTables();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @CreatedDate
     @Column(nullable = false)
     private LocalDateTime createdDate;
-    @Embedded
-    private final OrderTables orderTables = new OrderTables();
 
     protected TableGroup() {
 
