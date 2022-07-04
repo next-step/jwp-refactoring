@@ -46,7 +46,7 @@ public class MenuService {
 
     public List<MenuResponse> list() {
         final List<Menu> menus = menuRepository.findAll();
-        // TODO N+1 발생
+        // TODO N+1 발생 : *toOne 관계는 @EntityGraph로 함께조회, *toMany 관계는 FetchType.LAZY + batch size 옵션을 이용하여 In절로 조회
         return menus.stream()
             .map(MenuResponse::from)
             .collect(Collectors.toList());

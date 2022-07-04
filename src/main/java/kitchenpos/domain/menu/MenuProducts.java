@@ -3,10 +3,12 @@ package kitchenpos.domain.menu;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import kitchenpos.dto.menu.MenuProductResponse;
 
 @Embeddable
 public class MenuProducts {
@@ -36,5 +38,11 @@ public class MenuProducts {
         return menuProducts.stream()
             .map(MenuProduct::multiplyQuantityToPrice)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public List<MenuProductResponse> toResponse() {
+        return menuProducts.stream()
+            .map(MenuProductResponse::from)
+            .collect(Collectors.toList());
     }
 }

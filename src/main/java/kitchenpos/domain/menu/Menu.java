@@ -13,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import kitchenpos.dto.menu.MenuProductResponse;
 
 @Entity
 public class Menu {
@@ -75,5 +76,9 @@ public class Menu {
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts.getMenuProducts();
+    }
+
+    public List<MenuProductResponse> getMenuProductResponse() {
+        return menuProducts.toResponse();
     }
 }

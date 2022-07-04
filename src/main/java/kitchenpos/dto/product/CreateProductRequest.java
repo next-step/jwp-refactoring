@@ -21,10 +21,6 @@ public class CreateProductRequest {
         return Product.of(name, price);
     }
 
-    public CreateProductRequest(String name) {
-        this.name = name;
-    }
-
     public String getName() {
         return name;
     }

@@ -2,7 +2,6 @@ package kitchenpos.dto.menu;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
 import kitchenpos.domain.menu.Menu;
 
 public class MenuResponse {
@@ -27,16 +26,12 @@ public class MenuResponse {
     }
 
     public static MenuResponse from(Menu savedMenu) {
-        // TODO MenuProducts 일급 컬렉션을 이용한 MenuProductResponse 생성 및 반환 처리
-        List<MenuProductResponse> menuProductResponses = savedMenu.getMenuProducts().stream()
-            .map(MenuProductResponse::from)
-            .collect(Collectors.toList());
         return new MenuResponse(
             savedMenu.getId(),
             savedMenu.getName(),
             savedMenu.getPrice(),
             savedMenu.getMenuGroup().getId(),
-            menuProductResponses
+            savedMenu.getMenuProductResponse()
         );
     }
 
