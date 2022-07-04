@@ -43,6 +43,12 @@ public class OrderTable {
         return new OrderTable(tableGroup, numberOfGuests, empty);
     }
 
+    public void validIsEmpty() {
+        if (isEmpty()) {
+            throw new IllegalArgumentException("테이블이 존재하지 않습니다.");
+        }
+    }
+
     public void changeGroup(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
         this.empty = false;
