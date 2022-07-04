@@ -1,13 +1,11 @@
 package kitchenpos.application;
 
-import static kitchenpos.domain.OrderStatus.COOKING;
-import static kitchenpos.domain.OrderStatus.MEAL;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 
-import java.util.Arrays;
+import javax.transaction.Transactional;
+import kitchenpos.domain.Order;
+import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.OrderTables;
 import kitchenpos.domain.TableGroup;
@@ -17,21 +15,19 @@ import kitchenpos.repository.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class TableGroupServiceTest {
-    @Mock
+    @Autowired
     OrderRepository orderRepository;
-    @Mock
-    OrderTableRepository orderTableRepository;
-    @Mock
+    @Autowired
     TableGroupRepository tableGroupRepository;
+    @Autowired
+    OrderTableRepository orderTableRepository;
 
-    @InjectMocks
+    @Autowired
     TableGroupService tableGroupService;
 
     OrderTable orderTable1;
@@ -39,21 +35,16 @@ class TableGroupServiceTest {
     OrderTables orderTables;
     TableGroup tableGroup;
 
-
     @BeforeEach
     void setUp() {
-        orderTable1 = new OrderTable();
-        orderTable1.setId(1L);
-
-        orderTable2 = new OrderTable();
-        orderTable2.setId(2L);
+        orderTable1 = new OrderTable(null, 3, true);
+        orderTable2 = new OrderTable(null, 4, true);
 
         orderTables = new OrderTables();
         orderTables.add(orderTable1);
         orderTables.add(orderTable2);
 
         tableGroup = new TableGroup();
-        tableGroup.setId(1L);
         tableGroup.setOrderTables(orderTables);
     }
 
@@ -90,6 +81,7 @@ class TableGroupServiceTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("비지 않은 테이블은 단체로 지정 불가")
     public void createTableGroupNonEmptyOrderTable() {
         orderTable1.setEmpty(false);
@@ -98,6 +90,7 @@ class TableGroupServiceTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("이미 단체 지정된 테이블은 단체로 지정 불가")
     public void createAlreadyInGroup() {
         orderTable1.setTableGroup(tableGroup);
@@ -106,34 +99,39 @@ class TableGroupServiceTest {
     }
 
     @Test
-    @DisplayName("테이블은 단체 지정 정상 처리")
+    @DisplayName("테이블 단체 지정 정상 처리")
     public void createTableGroupSuccess() {
         orderTable1.setEmpty(true);
         orderTable2.setEmpty(true);
 
-        given(tableGroupRepository.save(tableGroup)).willReturn(tableGroup);
         assertThat(tableGroupService.create(tableGroup).getId()).isEqualTo(tableGroup.getId());
     }
 
     @Test
+    @Transactional
     @DisplayName("cooking이나 meal 상태인 테이블이 있으면 단체 해제 불가")
     public void cookingMealChangeStatus() {
+        TableGroup save = tableGroupRepository.save(tableGroup);
 
-        given(orderTableRepository.findAllByTableGroupId(any())).willReturn(Arrays.asList(orderTable1, orderTable2));
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(Arrays.asList(orderTable1.getId(), orderTable2.getId()),
-                Arrays.asList(COOKING.name(), MEAL.name()))).willReturn(true);
-        assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId())).isInstanceOf(
+        orderTable1.setTableGroup(save);
+        orderTable2.setTableGroup(save);
+        OrderTable orderTable = save.getOrderTables().getOrderTables().get(0);
+
+        orderRepository.save(new Order(orderTable, OrderStatus.MEAL));
+        orderRepository.flush();
+
+        orderTableRepository.save(orderTable);
+
+        assertThatThrownBy(() -> tableGroupService.ungroup(orderTable.getId())).isInstanceOf(
                 IllegalArgumentException.class);
     }
 
     @Test
+    @Transactional
     @DisplayName("단체 해제 정상처리")
     public void changeStatusSuccess() {
         orderTable1.setEmpty(true);
         orderTable2.setEmpty(true);
-
-        given(orderTableRepository.findAllByTableGroupId(any())).willReturn(Arrays.asList(orderTable1, orderTable2));
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(false);
 
         tableGroupService.ungroup(tableGroup.getId());
         assertThat(orderTable1.getTableGroup()).isNull();

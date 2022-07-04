@@ -54,6 +54,14 @@ class MenuServiceTest {
         스낵랩_메뉴_상품.setQuantity(1);
         스낵랩_메뉴_상품.setProduct(스낵랩);
 
+        맥모닝 = new Product();
+        맥모닝.setName("맥모닝");
+        맥모닝.setPrice(BigDecimal.valueOf(4000));
+
+        맥모닝_메뉴_상품 = new MenuProduct();
+        맥모닝_메뉴_상품.setQuantity(1);
+        맥모닝_메뉴_상품.setProduct(맥모닝);
+
         패스트푸드류 = new MenuGroup();
         패스트푸드류.setName("패스트푸드");
         menuGroupRepository.save(패스트푸드류);
@@ -113,14 +121,6 @@ class MenuServiceTest {
 
     @Test
     public void list() {
-        맥모닝 = new Product();
-        맥모닝.setName("맥모닝");
-        맥모닝.setPrice(BigDecimal.valueOf(4000));
-
-        맥모닝_메뉴_상품 = new MenuProduct();
-        맥모닝_메뉴_상품.setQuantity(1);
-        맥모닝_메뉴_상품.setProduct(맥모닝);
-
         스낵랩_메뉴_상품.setProduct(productRepository.save(스낵랩));
         맥모닝_메뉴_상품.setProduct(productRepository.save(맥모닝));
 

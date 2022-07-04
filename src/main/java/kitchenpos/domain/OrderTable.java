@@ -22,6 +22,11 @@ public class OrderTable {
     public OrderTable() {
     }
 
+    public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {this.tableGroup = tableGroup;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
     public OrderTable(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
         this.id = id;
         this.tableGroup = tableGroup;
@@ -62,10 +67,7 @@ public class OrderTable {
     }
 
     public void validateCanGroupTable() {
-        if (!isEmpty() || Objects.nonNull(tableGroup)) {
-            throw new IllegalArgumentException();
-        }
-        if(!empty){
+        if (!empty || Objects.nonNull(tableGroup)) {
             throw new IllegalArgumentException();
         }
     }
@@ -76,5 +78,15 @@ public class OrderTable {
         }
 
         setEmpty(orderTable.isEmpty());
+    }
+
+    @Override
+    public String toString() {
+        return "OrderTable{" +
+                "id=" + id +
+                ", tableGroup=" + tableGroup +
+                ", numberOfGuests=" + numberOfGuests +
+                ", empty=" + empty +
+                '}';
     }
 }
