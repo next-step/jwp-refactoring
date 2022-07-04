@@ -9,8 +9,6 @@ public class OrderLineItemResponse {
     public OrderLineItemResponse() {
     }
 
-
-
     public Long getSeq() {
         return seq;
     }

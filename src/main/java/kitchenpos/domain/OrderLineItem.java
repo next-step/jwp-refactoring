@@ -7,7 +7,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class OrderLineItem {
     @Id
@@ -22,9 +28,6 @@ public class OrderLineItem {
     @ManyToOne(fetch = FetchType.LAZY)
     private Menu menu;
     private long quantity;
-
-    public OrderLineItem() {
-    }
 
     public OrderLineItem(Long seq, Order order, Menu menu, long quantity) {
         this.seq = seq;

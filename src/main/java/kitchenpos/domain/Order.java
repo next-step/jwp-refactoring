@@ -14,7 +14,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Builder
 @Entity
 @Table(name = "orders")
 public class Order {
@@ -33,48 +41,21 @@ public class Order {
     @Embedded
     private OrderLineItems orderLineItems = new OrderLineItems();
 
-    public Order() {
-    }
-
-    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, OrderLineItems orderLineItems) {
-        this.id = id;
-        this.orderTable = orderTable;
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
-        this.orderLineItems = orderLineItems;
-    }
-
     public Order(OrderTable orderTable, OrderStatus orderStatus) {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public void setId(final Long id) {
         this.id = id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
-    }
-
     public void setOrderTable(OrderTable orderTable) {
         this.orderTable = orderTable;
     }
 
-    public OrderStatus getOrderStatus() {
-        return orderStatus;
-    }
-
     public void setOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
-    }
-
-    public LocalDateTime getOrderedTime() {
-        return orderedTime;
     }
 
     public void setOrderedTime(final LocalDateTime orderedTime) {
@@ -83,10 +64,6 @@ public class Order {
 
     public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
         this.orderLineItems = new OrderLineItems(orderLineItems);
-    }
-
-    public OrderLineItems getOrderLineItems() {
-        return orderLineItems;
     }
 
     public void setOrderLineItems(OrderLineItems orderLineItems) {

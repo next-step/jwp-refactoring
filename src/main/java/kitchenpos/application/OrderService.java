@@ -7,9 +7,11 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItems;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
+import kitchenpos.dto.OrderRequest;
 import kitchenpos.repository.MenuRepository;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
+import kitchenpos.ui.creator.OrderCreator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,18 +20,22 @@ public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
+    private final OrderCreator orderCreator;
 
     public OrderService(
             final MenuRepository menuRepository,
             final OrderRepository orderRepository,
-            final OrderTableRepository orderTableRepository) {
+            final OrderTableRepository orderTableRepository, OrderCreator orderCreator) {
         this.menuRepository = menuRepository;
         this.orderRepository = orderRepository;
         this.orderTableRepository = orderTableRepository;
+        this.orderCreator = orderCreator;
     }
 
     @Transactional
-    public Order create(final Order order) {
+    public Order create(final OrderRequest orderRequest) {
+//    public Order create(final Order order) {
+        Order order = orderCreator.toOrder(orderRequest);
         final OrderLineItems orderLineItems = order.getOrderLineItems();
 
         if (orderLineItems.isEmpty()) {
@@ -58,7 +64,7 @@ public class OrderService {
 
     private void checkSavedMenus(OrderLineItems orderLineItems) {
         final List<Long> menuIds = orderLineItems.getOrderLineItems().stream()
-                .map((it)-> it.getMenu().getId())
+                .map((it) -> it.getMenu().getId())
                 .collect(Collectors.toList());
 
         if (orderLineItems.size() != menuRepository.countByIdIn(menuIds)) {

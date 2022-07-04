@@ -2,16 +2,18 @@ package kitchenpos.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import kitchenpos.domain.Order;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 
+@Builder
+@AllArgsConstructor
 public class OrderRequest {
     private Long id;
     private Long orderTableId;
     private String orderStatus;
     private LocalDateTime orderedTime;
     private List<OrderLineItemRequest> orderLineItems;
-
-    public OrderRequest() {
-    }
 
     public Long getId() {
         return id;

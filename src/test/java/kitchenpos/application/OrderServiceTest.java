@@ -25,6 +25,7 @@ import kitchenpos.repository.OrderLineItemRepository;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.repository.ProductRepository;
+import kitchenpos.ui.creator.OrderCreator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -48,6 +49,9 @@ class OrderServiceTest {
     ProductRepository productRepository;
     @Autowired
     OrderLineItemRepository orderLineItemRepository;
+
+    @Autowired
+    OrderCreator orderCreator;
 
     @Autowired
     OrderService orderService;
@@ -77,7 +81,7 @@ class OrderServiceTest {
     public void emptyOrderLinesCreate() {
         order.setOrderLineItems(orderLineItems);
 
-        assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(orderCreator.toOrderRequest(order))).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -85,7 +89,7 @@ class OrderServiceTest {
     public void orderTableNotExists()
     {
         order.setOrderTable(new OrderTable());
-        assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(orderCreator.toOrderRequest(order))).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -96,7 +100,7 @@ class OrderServiceTest {
         orderTable.setEmpty(true);
 
         order.setOrderTable(orderTable);
-        assertThatThrownBy(() -> orderService.create(order)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(orderCreator.toOrderRequest(order))).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -198,7 +202,6 @@ class OrderServiceTest {
         Order order = new Order();
         order.setOrderLineItems(orderLineItems);
         order.setOrderTable(orderTable);
-        Order savedOrder = orderService.create(order);
-        return savedOrder;
+        return orderService.create(orderCreator.toOrderRequest(order));
     }
 }
