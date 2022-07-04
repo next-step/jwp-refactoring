@@ -15,6 +15,16 @@ public class OrderTableCreator {
         this.tableGroupRepository = tableGroupRepository;
     }
 
+    private TableGroup getTableGroupById(OrderTableRequest orderTableRequest) {
+        TableGroup tableGroup = null;
+        Long tableGroupId = orderTableRequest.getTableGroupId();
+
+        if (tableGroupId != null) {
+            tableGroup = tableGroupRepository.findById(tableGroupId).orElse(null);
+        }
+        return tableGroup;
+    }
+
     public OrderTable toOrderTable(OrderTableRequest orderTableRequest) {
         TableGroup tableGroup = getTableGroupById(orderTableRequest);
 
@@ -24,15 +34,5 @@ public class OrderTableCreator {
                 .numberOfGuests(orderTableRequest.getNumberOfGuests())
                 .empty(orderTableRequest.isEmpty())
                 .build();
-    }
-
-    private TableGroup getTableGroupById(OrderTableRequest orderTableRequest) {
-        TableGroup tableGroup = null;
-        Long tableGroupId = orderTableRequest.getTableGroupId();
-
-        if (tableGroupId != null) {
-            tableGroup = tableGroupRepository.findById(tableGroupId).orElse(null);
-        }
-        return tableGroup;
     }
 }

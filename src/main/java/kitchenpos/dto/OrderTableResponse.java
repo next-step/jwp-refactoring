@@ -17,6 +17,15 @@ public class OrderTableResponse {
     private int numberOfGuests;
     private boolean empty;
 
+    private static Long getTableGroupIdByOrderTable(OrderTable orderTable) {
+        Long tableGroupId = null;
+        TableGroup tableGroup = orderTable.getTableGroup();
+        if (tableGroup != null) {
+            tableGroupId = tableGroup.getId();
+        }
+        return tableGroupId;
+    }
+
     public static OrderTableResponse of(OrderTable orderTable) {
         Long tableGroupId = getTableGroupIdByOrderTable(orderTable);
         return OrderTableResponse.builder()
@@ -25,14 +34,5 @@ public class OrderTableResponse {
                 .numberOfGuests(orderTable.getNumberOfGuests())
                 .empty(orderTable.isEmpty())
                 .build();
-    }
-
-    private static Long getTableGroupIdByOrderTable(OrderTable orderTable) {
-        Long tableGroupId = null;
-        TableGroup tableGroup = orderTable.getTableGroup();
-        if (tableGroup != null) {
-            tableGroupId = tableGroup.getId();
-        }
-        return tableGroupId;
     }
 }

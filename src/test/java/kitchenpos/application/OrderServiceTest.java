@@ -18,6 +18,7 @@ import kitchenpos.domain.OrderLineItems;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.OrderRequest;
 import kitchenpos.repository.MenuGroupRepository;
 import kitchenpos.repository.MenuProductRepository;
 import kitchenpos.repository.MenuRepository;
@@ -81,7 +82,7 @@ class OrderServiceTest {
     public void emptyOrderLinesCreate() {
         order.setOrderLineItems(orderLineItems);
 
-        assertThatThrownBy(() -> orderService.create(orderCreator.toOrderRequest(order))).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(OrderRequest.of(order))).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -89,7 +90,7 @@ class OrderServiceTest {
     public void orderTableNotExists()
     {
         order.setOrderTable(new OrderTable());
-        assertThatThrownBy(() -> orderService.create(orderCreator.toOrderRequest(order))).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(OrderRequest.of(order))).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -100,7 +101,7 @@ class OrderServiceTest {
         orderTable.setEmpty(true);
 
         order.setOrderTable(orderTable);
-        assertThatThrownBy(() -> orderService.create(orderCreator.toOrderRequest(order))).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(OrderRequest.of(order))).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -202,6 +203,6 @@ class OrderServiceTest {
         Order order = new Order();
         order.setOrderLineItems(orderLineItems);
         order.setOrderTable(orderTable);
-        return orderService.create(orderCreator.toOrderRequest(order));
+        return orderService.create(OrderRequest.of(order));
     }
 }

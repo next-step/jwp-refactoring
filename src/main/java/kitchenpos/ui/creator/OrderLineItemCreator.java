@@ -14,14 +14,6 @@ public class OrderLineItemCreator {
         this.menuRepository = menuRepository;
     }
 
-    public OrderLineItem toOrderLineItem(OrderLineItemRequest orderLineItemRequest) {
-        Menu menu = setMenu(orderLineItemRequest);
-        return OrderLineItem.builder()
-                .seq(orderLineItemRequest.getSeq())
-                .menu(menu)
-                .quantity(orderLineItemRequest.getQuantity())
-                .build();
-    }
     private Menu setMenu(OrderLineItemRequest orderLineItemRequest) {
         Menu menu = null;
         Long menuId = orderLineItemRequest.getMenuId();
@@ -30,4 +22,14 @@ public class OrderLineItemCreator {
         }
         return menu;
     }
+
+    public OrderLineItem toOrderLineItem(OrderLineItemRequest orderLineItemRequest) {
+        Menu menu = setMenu(orderLineItemRequest);
+        return OrderLineItem.builder()
+                .seq(orderLineItemRequest.getSeq())
+                .menu(menu)
+                .quantity(orderLineItemRequest.getQuantity())
+                .build();
+    }
+
 }

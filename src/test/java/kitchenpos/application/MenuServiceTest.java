@@ -13,11 +13,11 @@ import kitchenpos.domain.MenuProduct;
 import kitchenpos.domain.MenuProducts;
 import kitchenpos.domain.Price;
 import kitchenpos.domain.Product;
+import kitchenpos.dto.MenuRequest;
 import kitchenpos.repository.MenuGroupRepository;
 import kitchenpos.repository.MenuProductRepository;
 import kitchenpos.repository.MenuRepository;
 import kitchenpos.repository.ProductRepository;
-import kitchenpos.ui.creator.MenuCreator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,9 +35,6 @@ class MenuServiceTest {
     MenuGroupRepository menuGroupRepository;
     @Autowired
     MenuRepository menuRepository;
-
-    @Autowired
-    MenuCreator menuCreator;
 
     @Autowired
     MenuService menuService;
@@ -88,7 +85,7 @@ class MenuServiceTest {
         menu.setName("탕수육 세트");
 
 
-        assertThatThrownBy(() -> menuService.create(menuCreator.toMenuRequest(menu))).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuService.create(MenuRequest.of(menu))).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -104,7 +101,7 @@ class MenuServiceTest {
         menu.setMenuProducts(new MenuProducts(menuProducts));
         menu.setPrice(new Price(BigDecimal.valueOf(18000)));
 
-        assertThatThrownBy(() -> menuService.create(menuCreator.toMenuRequest(menu))).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuService.create(MenuRequest.of(menu))).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -112,7 +109,7 @@ class MenuServiceTest {
     public void createNotCheaperPrice() {
         Menu menu = new Menu("모닝세트", BigDecimal.valueOf(8000), 패스트푸드류,
                 new MenuProducts(Arrays.asList(스낵랩_메뉴_상품, 맥모닝_메뉴_상품)));
-        assertThatThrownBy(() -> menuService.create(menuCreator.toMenuRequest(menu))).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuService.create(MenuRequest.of(menu))).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -122,7 +119,7 @@ class MenuServiceTest {
 
         Menu menu = new Menu("스낵랩 상품", BigDecimal.valueOf(3000), 패스트푸드류,
                 new MenuProducts(Arrays.asList(menuProduct)));
-        assertThat(menuService.create(menuCreator.toMenuRequest(menu)).getId()).isNotNull();
+        assertThat(menuService.create(MenuRequest.of(menu)).getId()).isNotNull();
     }
 
     @Test

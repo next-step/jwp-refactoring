@@ -1,5 +1,6 @@
 package kitchenpos.dto;
 
+import kitchenpos.domain.MenuProduct;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
@@ -15,31 +16,42 @@ public class MenuProductRequest {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
-    }
-
     public Long getMenuId() {
         return menuId;
-    }
-
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
     }
 
     public Long getProductId() {
         return productId;
     }
 
-    public void setProductId(final Long productId) {
-        this.productId = productId;
-    }
-
     public long getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
+    private static Long setProductIdFromMenuProduct(MenuProduct menuProduct) {
+        Long productId = null;
+        if(menuProduct.getProduct()!= null){
+            productId = menuProduct.getProduct().getId();
+        }
+        return productId;
+    }
+
+    private static Long setMenuIdFromMenuProduct(MenuProduct menuProduct) {
+        Long menuId = null;
+        if(menuProduct.getMenu()!= null){
+            menuId = menuProduct.getMenu().getId();
+        }
+        return menuId;
+    }
+
+    public static MenuProductRequest of(MenuProduct menuProduct){
+        Long productId = setProductIdFromMenuProduct(menuProduct);
+        Long menuId = setMenuIdFromMenuProduct(menuProduct);
+
+        return MenuProductRequest.builder().seq(menuProduct.getSeq())
+                .productId(productId)
+                .quantity(menuProduct.getQuantity())
+                .menuId(menuId)
+                .build();
     }
 }

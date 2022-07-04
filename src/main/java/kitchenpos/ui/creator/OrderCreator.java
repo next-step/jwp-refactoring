@@ -23,62 +23,6 @@ public class OrderCreator {
         this.orderLineItemCreator = orderLineItemCreator;
     }
 
-    public OrderRequest toOrderRequest(Order order) {
-        Long orderTableId = setOrderTableId(order);
-        String orderStatusName = setOrderStatusName(order);
-        List<OrderLineItemRequest> orderLineItemRequests = setOrderLineItemsRequests(order);
-
-        return OrderRequest.builder()
-                .id(order.getId())
-                .orderTableId(orderTableId)
-                .orderStatus(orderStatusName)
-                .orderedTime(order.getOrderedTime())
-                .orderLineItems(orderLineItemRequests)
-                .build();
-    }
-
-    private Long setOrderTableId(Order order) {
-        Long orderTableId = null;
-        OrderTable orderTable = order.getOrderTable();
-        if (orderTable != null) {
-            orderTableId = order.getOrderTable().getId();
-        }
-        return orderTableId;
-    }
-
-    private String setOrderStatusName(Order order) {
-        String orderStatusName = null;
-        OrderStatus orderStatus = order.getOrderStatus();
-        if (orderStatus != null) {
-            orderStatusName = orderStatus.name();
-        }
-        return orderStatusName;
-    }
-
-    private List<OrderLineItemRequest> setOrderLineItemsRequests(Order order) {
-        OrderLineItems orderLineItems = order.getOrderLineItems();
-        List<OrderLineItemRequest> orderLineItemRequests = null;
-        if (orderLineItems != null) {
-            orderLineItemRequests = orderLineItems.getOrderLineItems()
-                    .stream()
-                    .map(OrderLineItemRequest::of)
-                    .collect(Collectors.toList());
-        }
-        return orderLineItemRequests;
-    }
-
-    public Order toOrder(OrderRequest orderRequest) {
-        OrderTable orderTable = setOrderTable(orderRequest);
-        OrderStatus orderStatus = setOrderStatus(orderRequest);
-        OrderLineItems orderLineItems = setOrderLineItems(orderRequest);
-        return Order.builder().id(orderRequest.getId())
-                .orderTable(orderTable)
-                .orderStatus(orderStatus)
-                .orderedTime(orderRequest.getOrderedTime())
-                .orderLineItems(orderLineItems)
-                .build();
-    }
-
     private OrderTable setOrderTable(OrderRequest orderRequest) {
         OrderTable orderTable = null;
         Long orderTableId = orderRequest.getOrderTableId();
@@ -108,5 +52,17 @@ public class OrderCreator {
             orderLineItems = new OrderLineItems(collect);
         }
         return orderLineItems;
+    }
+
+    public Order toOrder(OrderRequest orderRequest) {
+        OrderTable orderTable = setOrderTable(orderRequest);
+        OrderStatus orderStatus = setOrderStatus(orderRequest);
+        OrderLineItems orderLineItems = setOrderLineItems(orderRequest);
+        return Order.builder().id(orderRequest.getId())
+                .orderTable(orderTable)
+                .orderStatus(orderStatus)
+                .orderedTime(orderRequest.getOrderedTime())
+                .orderLineItems(orderLineItems)
+                .build();
     }
 }
