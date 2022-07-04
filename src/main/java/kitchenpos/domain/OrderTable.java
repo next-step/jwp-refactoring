@@ -77,4 +77,13 @@ public class OrderTable {
 
         this.numberOfGuests = numberOfGuests;
     }
+
+    public void grouping(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
+        this.empty = false;
+    }
+
+    public void unGrouping() {
+        tableGroup = null;
+    }
 }
