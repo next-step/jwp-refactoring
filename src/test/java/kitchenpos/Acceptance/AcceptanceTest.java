@@ -2,7 +2,7 @@ package kitchenpos.Acceptance;
 
 import io.restassured.RestAssured;
 import kitchenpos.Acceptance.utils.DatabaseCleanup;
-import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menuGroup.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.table.dto.OrderTableResponse;

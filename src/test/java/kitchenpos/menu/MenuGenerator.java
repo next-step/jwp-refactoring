@@ -6,8 +6,9 @@ import kitchenpos.Acceptance.utils.RestAssuredRequest;
 import kitchenpos.common.domain.Price;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuCreateRequest;
-import kitchenpos.menu.dto.MenuGroupCreateRequest;
+import kitchenpos.menuGroup.dto.MenuGroupCreateRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.product.domain.Product;
 
 import java.math.BigDecimal;
@@ -20,27 +21,27 @@ public class MenuGenerator {
 
     private MenuGenerator() {}
 
-    public static Menu 메뉴_생성(String name, int price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        return new Menu(name, new Price(new BigDecimal(price)), menuGroup, menuProducts);
+    public static Menu 메뉴_생성(String name, int price, long menuGroupId, MenuProducts menuProducts) {
+        return new Menu(name, new Price(new BigDecimal(price)), menuGroupId, menuProducts);
     }
 
     public static MenuGroup 메뉴_그룹_생성(String name) {
         return new MenuGroup(name);
     }
 
-    public static MenuProduct 메뉴_상품_생성(Product product, Quantity quantity) {
-        return new MenuProduct(null, product, quantity);
+    public static MenuProduct 메뉴_상품_생성(long productId, Quantity quantity) {
+        return new MenuProduct(null, productId, quantity);
     }
 
-    public static MenuProduct 메뉴_상품_생성(Menu menu, Product product, Quantity quantity) {
-        return new MenuProduct(menu, product, quantity);
+    public static MenuProduct 메뉴_상품_생성(Menu menu, long productId, Quantity quantity) {
+        return new MenuProduct(menu, productId, quantity);
     }
 
     public static MenuProducts 메뉴_상품_목록_생성(List<MenuProduct> menuProducts) {
         return new MenuProducts(menuProducts);
     }
 
-    public static MenuCreateRequest 메뉴_생성_요청(String name, int price, Long menuGroupId, List<MenuProductRequest> menuProductRequests) {
+    public static MenuCreateRequest 메뉴_생성_요청(String name, int price, long menuGroupId, List<MenuProductRequest> menuProductRequests) {
         return new MenuCreateRequest(name, new BigDecimal(price), menuGroupId, menuProductRequests);
     }
 
@@ -48,12 +49,12 @@ public class MenuGenerator {
         return new MenuGroupCreateRequest(name);
     }
 
-    public static MenuProductRequest 메뉴_상품_생성_요청(Long productId, Long quantity) {
+    public static MenuProductRequest 메뉴_상품_생성_요청(long productId, Long quantity) {
         return new MenuProductRequest(productId, quantity);
     }
 
     public static ExtractableResponse<Response> 메뉴_생성_API_호출(
-            String name, int menuPrice, Long menuGroupId, List<MenuProductRequest> menuProducts
+            String name, int menuPrice, long menuGroupId, List<MenuProductRequest> menuProducts
     ) {
         MenuCreateRequest body = 메뉴_생성_요청(name, menuPrice, menuGroupId, menuProducts);
 
@@ -72,7 +73,7 @@ public class MenuGenerator {
         return RestAssuredRequest.getRequest(MENU_GROUP_PATH, Collections.emptyMap());
     }
 
-    public static ExtractableResponse<Response> 메뉴_그룹_조회_API_요청(Long id) {
+    public static ExtractableResponse<Response> 메뉴_그룹_조회_API_요청(long id) {
         return RestAssuredRequest.getRequest(MENU_GROUP_PATH + "/{id}", Collections.emptyMap(), id);
     }
 }

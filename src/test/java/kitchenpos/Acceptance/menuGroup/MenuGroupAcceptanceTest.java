@@ -4,7 +4,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.Acceptance.AcceptanceTest;
 import kitchenpos.menu.MenuGenerator;
-import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menuGroup.dto.MenuGroupResponse;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

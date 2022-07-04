@@ -14,7 +14,7 @@ public class MenuCreateRequest {
     private String name;
     private BigDecimal price;
     private Long menuGroupId;
-    private List<MenuProductRequest> menuProducts = new ArrayList<>();
+    private List<MenuProductRequest> menuProductRequests = new ArrayList<>();
 
     protected MenuCreateRequest() {}
 
@@ -22,25 +22,17 @@ public class MenuCreateRequest {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
-        this.menuProducts.addAll(menuProducts);
+        this.menuProductRequests.addAll(menuProducts);
     }
 
-    public Menu of(MenuGroup menuGroup, Products products) {
-        return new Menu(name, new Price(price), menuGroup, convertMenuProductsByRequest(products));
-    }
+    public Menu of() {
+        MenuProducts menuProducts = new MenuProducts(
+                menuProductRequests.stream()
+                        .map(MenuProductRequest::of)
+                        .collect(Collectors.toList())
+        );
 
-    private MenuProducts convertMenuProductsByRequest(final Products products) {
-        checkAllProductsIsExist(products);
-
-        List<MenuProduct> menuProducts = this.getMenuProducts()
-                .stream()
-                .map(request -> {
-                    Product product = products.findMenuById(request.getProductId());
-                    return new MenuProduct(product, new Quantity(request.getQuantity()));
-                })
-                .collect(Collectors.toList());
-
-        return new MenuProducts(menuProducts);
+        return new Menu(name, new Price(price), menuGroupId, menuProducts);
     }
 
     public String getName() {
@@ -55,19 +47,7 @@ public class MenuCreateRequest {
         return menuGroupId;
     }
 
-    public List<MenuProductRequest> getMenuProducts() {
-        return menuProducts;
-    }
-
-    public List<Long> getProductIds() {
-        return this.menuProducts.stream()
-                .map(MenuProductRequest::getProductId)
-                .collect(Collectors.toList());
-    }
-
-    private void checkAllProductsIsExist(final Products products) {
-        if (products.isNotAllContainIds(getProductIds())) {
-            throw new IllegalArgumentException("메뉴에 저장되지 않은 상품이 존재합니다.");
-        }
+    public List<MenuProductRequest> getMenuProductRequests() {
+        return menuProductRequests;
     }
 }

@@ -1,6 +1,6 @@
-package kitchenpos.menu.domain;
+package kitchenpos.menuGroup.domain;
 
-import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menuGroup.dto.MenuGroupResponse;
 
 import java.util.ArrayList;
 import java.util.List;

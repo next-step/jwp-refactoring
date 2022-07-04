@@ -29,10 +29,6 @@ public class ProductService {
         return new Products(productRepository.findAll()).toResponse();
     }
 
-    public Products findMenusInIds(final List<Long> ids) {
-        return new Products(productRepository.findAllById(ids));
-    }
-
     public ProductResponse getProduct(final Long id) {
         return ProductResponse.from(
                 productRepository.findById(id)

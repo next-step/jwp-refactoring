@@ -1,6 +1,7 @@
 package kitchenpos.menu.domain;
 
 import kitchenpos.common.domain.Price;
+import kitchenpos.menuGroup.domain.MenuGroup;
 
 import javax.persistence.*;
 
@@ -16,32 +17,20 @@ public class Menu {
     @Embedded
     private Price price;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private MenuGroup menuGroup;
+    private Long menuGroupId;
 
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
 
     protected Menu() {}
 
-    public Menu(String name, Price price, MenuGroup menuGroup, MenuProducts menuProducts) {
-        validateMenu(menuProducts, price);
-
+    public Menu(String name, Price price, Long menuGroupId, MenuProducts menuProducts) {
         this.name = name;
         this.price = price;
-        this.menuGroup = menuGroup;
+        this.menuGroupId = menuGroupId;
         this.menuProducts.addMenuProducts(menuProducts);
 
         this.menuProducts.associateMenu(this);
-    }
-
-    public void validateMenu(MenuProducts menuProducts, Price price) {
-        if (menuProducts == null || menuProducts.isEmpty()) {
-            throw new IllegalArgumentException("메뉴에 상품이 포함되어 있지 않습니다.");
-        }
-        if (menuProducts.isNotSameTotalPriceByPrice(price)) {
-            throw new IllegalArgumentException("메뉴의 가격과 상품의 총 가격이 일치하지 않습니다.");
-        }
     }
 
     public Long getId() {
@@ -56,8 +45,8 @@ public class Menu {
         return price;
     }
 
-    public MenuGroup getMenuGroup() {
-        return menuGroup;
+    public Long getMenuGroupId() {
+        return menuGroupId;
     }
 
     public MenuProducts getMenuProducts() {

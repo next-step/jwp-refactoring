@@ -1,32 +1,39 @@
 package kitchenpos.menu.dto;
 
-import kitchenpos.menu.domain.Quantity;
-import kitchenpos.product.domain.Product;
+import kitchenpos.menu.domain.MenuProduct;
 
 import java.math.BigDecimal;
 
 public class MenuProductResponse {
-    private Long id;
-    private String name;
-    private BigDecimal price;
+    private Long seq;
+    private Long menuId;
+    private Long productId;
     private Long quantity;
 
-    public static MenuProductResponse from(Product product, Quantity quantity) {
+    public static MenuProductResponse from(MenuProduct menuProduct) {
         MenuProductResponse response = new MenuProductResponse();
 
-        response.id = product.getId();
-        response.name = product.getName();
-        response.price = product.getPrice().getValue();
-        response.quantity = quantity.getValue();
+        response.seq = menuProduct.getSeq();
+        response.menuId = menuProduct.getMenu().getId();
+        response.productId = menuProduct.getProductId();
+        response.quantity = menuProduct.getQuantity().getValue();
 
         return response;
     }
 
-    public Long getId() {
-        return id;
+    public Long getSeq() {
+        return seq;
     }
 
-    public String getName() {
-        return name;
+    public Long getMenuId() {
+        return menuId;
+    }
+
+    public Long getProductId() {
+        return productId;
+    }
+
+    public Long getQuantity() {
+        return quantity;
     }
 }

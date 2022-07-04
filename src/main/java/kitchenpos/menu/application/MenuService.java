@@ -2,12 +2,10 @@ package kitchenpos.menu.application;
 
 import kitchenpos.menu.dao.MenuRepository;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.validator.MenuValidator;
 import kitchenpos.menu.domain.Menus;
 import kitchenpos.menu.dto.MenuCreateRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.product.application.ProductService;
-import kitchenpos.product.domain.Products;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,24 +15,17 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class MenuService {
     private final MenuRepository menuRepository;
-    private final MenuGroupService menuGroupService;
-    private final ProductService productService;
+    private final MenuValidator menuValidator;
 
-    public MenuService(
-            final MenuRepository menuRepository,
-            final MenuGroupService menuGroupService,
-            final ProductService productService
-    ) {
+    public MenuService(final MenuRepository menuRepository, MenuValidator menuValidator) {
         this.menuRepository = menuRepository;
-        this.menuGroupService = menuGroupService;
-        this.productService = productService;
+        this.menuValidator = menuValidator;
     }
 
     @Transactional
     public MenuResponse create(final MenuCreateRequest request) {
-        MenuGroup menuGroup = menuGroupService.getMenuGroup(request.getMenuGroupId());
-        Products products = productService.findMenusInIds(request.getProductIds());
-        Menu menu = request.of(menuGroup, products);
+        Menu menu = request.of();
+        menuValidator.validateMenu(menu);
 
         return MenuResponse.from(menuRepository.save(menu));
     }

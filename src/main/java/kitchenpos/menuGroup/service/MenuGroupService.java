@@ -1,10 +1,10 @@
-package kitchenpos.menu.application;
+package kitchenpos.menuGroup.service;
 
-import kitchenpos.menu.dao.MenuGroupRepository;
-import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuGroups;
-import kitchenpos.menu.dto.MenuGroupCreateRequest;
-import kitchenpos.menu.dto.MenuGroupResponse;
+import kitchenpos.menuGroup.dao.MenuGroupRepository;
+import kitchenpos.menuGroup.domain.MenuGroup;
+import kitchenpos.menuGroup.domain.MenuGroups;
+import kitchenpos.menuGroup.dto.MenuGroupCreateRequest;
+import kitchenpos.menuGroup.dto.MenuGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,11 +30,7 @@ public class MenuGroupService {
         return new MenuGroups(menuGroupRepository.findAll()).toResponse();
     }
 
-    public MenuGroup getMenuGroup(final Long id) {
-        if (id == null) {
-            throw new IllegalArgumentException("id 는 null 이 아니여야 합니다.");
-        }
-
+    public MenuGroup getMenuGroup(final long id) {
         return menuGroupRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(id + " 에 해당하는 메뉴 그룹을 찾을 수 없습니다."));
     }

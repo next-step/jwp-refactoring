@@ -1,8 +1,8 @@
 package kitchenpos.order.application;
 
 import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.dao.MenuGroupRepository;
-import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menuGroup.dao.MenuGroupRepository;
+import kitchenpos.menuGroup.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuCreateRequest;
 import kitchenpos.menu.dto.MenuProductRequest;
