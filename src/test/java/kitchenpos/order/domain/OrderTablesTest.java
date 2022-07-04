@@ -28,7 +28,7 @@ public class OrderTablesTest {
     }
 
     @Test
-    @DisplayName("OrderTables 생성 시 빈 테이블이 아니면 Exception 발생 확인")
+    @DisplayName("OrderTables 생성 시 빈 테이블이어야 한다.")
     void validateTablesEmpty_notEmpty() {
         OrderTable 주문_테이블 = createOrderTable(3L, null, 0, false);
         orderTables = Arrays.asList(빈_테이블_1, 주문_테이블);
@@ -40,7 +40,7 @@ public class OrderTablesTest {
     }
 
     @Test
-    @DisplayName("OrderTables 생성 시 이미 단체지정된 테이블이 존재하면 Exception 발생 확인")
+    @DisplayName("OrderTables 생성 시 단체 지정되지 않은 테이블이어야 한다.")
     void validateTablesEmpty_alreadyGrouped() {
         orderTables = Arrays.asList(빈_테이블_1, 단체지정_테이블);
 
@@ -51,7 +51,7 @@ public class OrderTablesTest {
     }
 
     @Test
-    @DisplayName("OrderTables 생성 시 주문테이블이 2개 미만이면 Exception 발생 확인")
+    @DisplayName("OrderTables 생성 시 주문테이블은 2개 이상이어야 한다.")
     void validateOrderTableSize() {
         orderTables = Arrays.asList(
                 createOrderTable(1L, null, 0, true),

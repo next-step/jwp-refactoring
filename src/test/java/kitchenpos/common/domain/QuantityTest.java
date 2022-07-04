@@ -11,7 +11,7 @@ public class QuantityTest {
     @ParameterizedTest
     @NullSource
     @ValueSource(longs = {-1L})
-    @DisplayName("수량이 비어있거나 0개 미만이면 Exception 발생 확인")
+    @DisplayName("수량은 0개 이상이어야 한다.")
     void validate(Long quantity) {
         // then
         assertThatThrownBy(() -> {

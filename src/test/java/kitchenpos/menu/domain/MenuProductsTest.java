@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class MenuProductsTest {
     @Test
-    @DisplayName("상품이 존재하지 않으면 Exception 발생 확인")
+    @DisplayName("상품이 존재해야 한다.")
     void validateEmpty() {
         // then
         assertThatThrownBy(() -> {
@@ -24,7 +24,7 @@ public class MenuProductsTest {
     }
 
     @Test
-    @DisplayName("상품 금액의 합이 메뉴 가격보다 작지 않으면 Exception 발생 확인")
+    @DisplayName("상품 금액의 합은 메뉴 가격보다 작아야 한다.")
     void validateMenuPrice() {
         // given
         Product 후라이드싸이순살 = createProduct("후라이드싸이순살", BigDecimal.valueOf(20_000));

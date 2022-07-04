@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class OrderTest {
     @Test
-    @DisplayName("테이블 id가 존재하지 않으면 않으면 Exception 발생 확인")
+    @DisplayName("테이블 id가 존재해야 한다.")
     void validateOrder() {
         // then
         assertThatThrownBy(() -> {
@@ -22,7 +22,7 @@ public class OrderTest {
     }
 
     @Test
-    @DisplayName("주문상태 변경 시 이미 완료된 주문이면 Exception 발생 확인")
+    @DisplayName("주문상태 변경 시 이미 완료된 주문이 아니어야 한다.")
     void changeOrderStatus() {
         // given
         List<OrderLineItem> orderLineItems = Arrays.asList(

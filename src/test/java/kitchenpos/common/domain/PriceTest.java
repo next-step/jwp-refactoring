@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class PriceTest {
     @Test
-    @DisplayName("가격이 0원 미만이면 Exception 발생 확인")
+    @DisplayName("가격은 0원 이상이어야 한다.")
     void validate() {
         // then
         assertThatThrownBy(() -> {

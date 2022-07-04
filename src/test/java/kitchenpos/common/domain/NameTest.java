@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class NameTest {
     @ParameterizedTest
     @NullAndEmptySource
-    @DisplayName("이름이 비어있으면 Exception 발생 확인")
+    @DisplayName("이름은 비어있을 수 없다.")
     void validate(String name) {
         // then
         assertThatThrownBy(() -> {

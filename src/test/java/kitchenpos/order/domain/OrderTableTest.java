@@ -53,7 +53,7 @@ public class OrderTableTest {
     }
 
     @Test
-    @DisplayName("이미 단체지정된 테이블이면 Exception 발생 확인")
+    @DisplayName("단체 지정되지 않은 테이블이어야 한다.")
     void validateHasTableGroupId() {
         // then
         assertThatThrownBy(() -> {
@@ -62,7 +62,7 @@ public class OrderTableTest {
     }
 
     @Test
-    @DisplayName("빈 테이블이면 Exception 발생 확인")
+    @DisplayName("빈 테이블이 아니어야 한다.")
     void validateIsEmpty() {
         // then
         assertThatThrownBy(() -> {
