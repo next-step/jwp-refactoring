@@ -28,7 +28,7 @@ public class MenuService {
 
     public MenuResponse create(final MenuRequest request) {
         MenuGroup menuGroup = menuGroupService.getMenuGroupById(request.getMenuGroupId());
-        Menu menu = new Menu(request.getName(), request.getPrice(), menuGroup.getId(), getMenuProducts(request));
+        Menu menu = request.buildEntity(menuGroup.getId(), getMenuProducts(request));
         return MenuResponse.of(menuRepository.save(menu));
     }
 
