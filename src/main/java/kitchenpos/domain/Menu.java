@@ -13,6 +13,7 @@ public class Menu {
     private Long id;
     private String name;
     private BigDecimal price;
+
     @Column(nullable = false)
     private Long menuGroupId;
     @OneToMany
@@ -55,5 +56,4 @@ public class Menu {
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
     }
-
 }

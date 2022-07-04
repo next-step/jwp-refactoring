@@ -11,6 +11,7 @@ public class OrderLineItem {
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
+    @Column(nullable = false)
     private Long menuId;
     private long quantity;
 
@@ -45,5 +46,5 @@ public class OrderLineItem {
     public long getQuantity() {
         return quantity;
     }
-
 }
+

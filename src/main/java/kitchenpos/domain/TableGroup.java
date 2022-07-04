@@ -17,14 +17,14 @@ public class TableGroup {
     public TableGroup() {
     }
 
-    public TableGroup(LocalDateTime createdDate, List<OrderTable> orderTables) {
-        this.createdDate = createdDate;
+    public TableGroup(List<OrderTable> orderTables) {
+        this.createdDate = LocalDateTime.now();
         this.orderTables = orderTables;
     }
 
-    public TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
+    public TableGroup(Long id, List<OrderTable> orderTables) {
         this.id = id;
-        this.createdDate = createdDate;
+        this.createdDate = LocalDateTime.now();
         this.orderTables = orderTables;
     }
 

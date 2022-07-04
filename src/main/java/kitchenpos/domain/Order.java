@@ -4,15 +4,14 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Entity
+@Entity(name = "orders")
 public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
-    @JoinColumn(name = "order_table_id")
-    private OrderTable orderTable;
+    @Column(nullable = false)
+    private Long orderTableId;
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
     private LocalDateTime orderedTime;
@@ -22,18 +21,18 @@ public class Order {
     public Order() {
     }
 
-    public Order(OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
-        this.orderTable = orderTable;
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
+    public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        this.orderTableId = orderTableId;
+        this.orderStatus = OrderStatus.COOKING;
+        this.orderedTime = LocalDateTime.now();
         this.orderLineItems = orderLineItems;
     }
 
-    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+    public Order(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
         this.id = id;
-        this.orderTable = orderTable;
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
+        this.orderTableId = orderTableId;
+        this.orderStatus = OrderStatus.COOKING;
+        this.orderedTime = LocalDateTime.now();
         this.orderLineItems = orderLineItems;
     }
 
@@ -41,8 +40,8 @@ public class Order {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {
@@ -56,4 +55,5 @@ public class Order {
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
     }
+
 }
