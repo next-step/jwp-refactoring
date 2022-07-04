@@ -4,12 +4,9 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import kitchenpos.exception.EmptyTableException;
 import kitchenpos.exception.ExistGroupTableException;
 import kitchenpos.exception.NotEmptyException;
@@ -23,9 +20,8 @@ public class OrderTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "table_group_id")
-    private TableGroup tableGroup;
+    @Column(nullable = false)
+    private Long tableGroupId;
 
     @Embedded
     private GuestNumber guestNumber;
@@ -38,7 +34,7 @@ public class OrderTable {
 
     OrderTable(Builder builder) {
         this.id = builder.id;
-        this.tableGroup = builder.tableGroup;
+        this.tableGroupId = builder.tableGroupId;
         this.guestNumber = builder.guestNumber;
         this.empty = builder.empty;
     }
@@ -48,14 +44,13 @@ public class OrderTable {
     }
 
     public void validateExistGroupingTable() {
-        if (this.tableGroup != null) {
+        if (this.tableGroupId != null) {
             throw new ExistGroupTableException();
         }
     }
 
     public void validateGrouping() {
         validateExistGroupingTable();
-
         if (!this.empty) {
             throw new NotEmptyException();
         }
@@ -79,14 +74,14 @@ public class OrderTable {
     }
 
     public void ungroupTable() {
-        this.tableGroup = null;
+        this.tableGroupId = null;
     }
 
     public OrderTableResponse toOrderTableResponse() {
-        if (this.tableGroup == null) {
+        if (this.tableGroupId == null) {
             return new OrderTableResponse(this.id, null, this.guestNumber.number(), this.empty);
         }
-        return new OrderTableResponse(this.id, this.tableGroup.getId(), this.guestNumber.number(), this.empty);
+        return new OrderTableResponse(this.id, this.tableGroupId, this.guestNumber.number(), this.empty);
     }
 
     boolean isEmpty() {
@@ -97,8 +92,8 @@ public class OrderTable {
         return this.guestNumber;
     }
 
-    TableGroup tableGroup() {
-        return this.tableGroup;
+    Long tableGroupId() {
+        return this.tableGroupId;
     }
 
     @Override
@@ -110,18 +105,18 @@ public class OrderTable {
             return false;
         }
         OrderTable that = (OrderTable) o;
-        return empty == that.empty && Objects.equals(id, that.id) && Objects.equals(tableGroup,
-                that.tableGroup) && Objects.equals(guestNumber, that.guestNumber);
+        return empty == that.empty && Objects.equals(id, that.id) && Objects.equals(tableGroupId,
+                that.tableGroupId) && Objects.equals(guestNumber, that.guestNumber);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, tableGroup, guestNumber, empty);
+        return Objects.hash(id, tableGroupId, guestNumber, empty);
     }
 
     public static class Builder {
         private Long id;
-        private TableGroup tableGroup;
+        private Long tableGroupId;
         private GuestNumber guestNumber;
         private boolean empty;
 
@@ -133,8 +128,8 @@ public class OrderTable {
             return this;
         }
 
-        public Builder setTableGroup(TableGroup tableGroup) {
-            this.tableGroup = tableGroup;
+        public Builder setTableGroupId(Long tableGroupId) {
+            this.tableGroupId = tableGroupId;
             return this;
         }
 

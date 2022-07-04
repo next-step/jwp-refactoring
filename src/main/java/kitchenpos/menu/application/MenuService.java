@@ -1,7 +1,6 @@
 package kitchenpos.menu.application;
 
 import static kitchenpos.common.ErrorMessage.NOT_EXIST_MENU_GROUP;
-import static kitchenpos.common.ErrorMessage.NOT_EXIST_PRODUCT;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,8 +14,6 @@ import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.repository.MenuGroupRepository;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.domain.Quantity;
-import kitchenpos.product.domain.Product;
-import kitchenpos.product.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,31 +21,30 @@ import org.springframework.transaction.annotation.Transactional;
 public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
-    private final ProductRepository productRepository;
+    private final MenuValidator menuValidator;
 
     public MenuService(MenuRepository menuRepository, MenuGroupRepository menuGroupRepository,
-                       ProductRepository productRepository) {
+                       MenuValidator menuValidator) {
         this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
-        this.productRepository = productRepository;
+        this.menuValidator = menuValidator;
     }
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
         final MenuGroup menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId())
-                .orElseThrow(() -> new NotExistException(NOT_EXIST_MENU_GROUP));
+                .orElseThrow(() -> new NotExistException(NOT_EXIST_MENU_GROUP.message()));
         final Menu menu = new Menu.Builder(menuRequest.getName())
                 .setPrice(Price.of(menuRequest.getPrice()))
                 .setMenuGroup(menuGroup)
                 .build();
 
         for (MenuProductRequest menuProduct : menuRequest.getMenuProducts()) {
-            final Product persistProduct = productRepository.findById(menuProduct.getProductId())
-                    .orElseThrow(() -> new NotExistException(NOT_EXIST_PRODUCT));
-            menu.addProduct(persistProduct, Quantity.of(menuProduct.getQuantity()));
+            final Long productId = menuValidator.findProductId(menuProduct.getProductId());
+            menu.addProduct(productId, Quantity.of(menuProduct.getQuantity()));
         }
 
-        menu.validateProductsTotalPrice();
+        menuValidator.validateProductsTotalPrice(menu);
         final Menu persist = menuRepository.save(menu);
         return persist.toMenuResponse();
     }

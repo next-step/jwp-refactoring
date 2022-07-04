@@ -15,14 +15,14 @@ class MenuProductTest {
 
     @BeforeEach
     void setUp() {
-        product = new Product(null, null, Price.of(100L));
+        product = new Product(1L, null, Price.of(100L));
         menu = new Menu.Builder("메뉴")
                 .setId(1L)
                 .setPrice(Price.of(100L))
                 .build();
         menuProduct = new MenuProduct.Builder(menu)
                 .setSeq(1L)
-                .setProduct(product)
+                .setProductId(product.getId())
                 .setQuantity(Quantity.of(1L))
                 .build();
     }
@@ -32,7 +32,7 @@ class MenuProductTest {
     void verifyEqualsMenuProduct() {
         assertThat(menuProduct).isEqualTo(new MenuProduct.Builder(menu)
                 .setSeq(1L)
-                .setProduct(product)
+                .setProductId(product.getId())
                 .setQuantity(Quantity.of(1L))
                 .build());
     }
@@ -42,6 +42,6 @@ class MenuProductTest {
     void verifyMenuProductPrice() {
         final Price expectedPrice = product.getPrice().multiply(menuProduct.quantity().value());
 
-        assertThat(menuProduct.price()).isEqualTo(expectedPrice);
+        assertThat(menuProduct.price(product.getPrice())).isEqualTo(expectedPrice);
     }
 }

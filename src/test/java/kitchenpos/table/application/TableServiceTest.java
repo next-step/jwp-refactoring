@@ -5,18 +5,19 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.exception.NotCompletionStatusException;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.GuestNumber;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,14 +32,14 @@ class TableServiceTest {
     private OrderTable orderTable;
 
     @Mock
-    private OrderRepository orderRepository;
+    private OrderTableRepository orderTableRepository;
 
     @Mock
-    private OrderTableRepository orderTableRepository;
+    private TableValidator tableValidator;
 
     @BeforeEach
     void setUp() {
-        tableService = new TableService(orderRepository, orderTableRepository);
+        tableService = new TableService(orderTableRepository, tableValidator);
 
         orderTable = new OrderTable.Builder()
                 .setId(1L)
@@ -86,8 +87,7 @@ class TableServiceTest {
     void changeEmptyOrderTable() {
         // given
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
-        when(orderRepository.existNotCompletionOrderTable(1L))
-                .thenReturn(false);
+        doNothing().when(tableValidator).validateNotCompletionOrderTable(any());
         // when
         final OrderTableResponse actual = tableService.changeEmpty(1L);
         // then
@@ -106,10 +106,9 @@ class TableServiceTest {
     @DisplayName("빈 테이블로 변경할 테이블이 단체 그룹이면 예외 발생")
     void notTableGroup() {
         // given
-        final TableGroup tableGroup = new TableGroup(1L, null);
         final OrderTable fullOrderTableGroup = new OrderTable.Builder()
                 .setId(1L)
-                .setTableGroup(tableGroup)
+                .setTableGroupId(1L)
                 .setGuestNumber(GuestNumber.of(5))
                 .setEmpty(false)
                 .build();
@@ -125,8 +124,7 @@ class TableServiceTest {
     void cookingAndMealOrderTable() {
         // given
         when(orderTableRepository.findById(any())).thenReturn(Optional.of(orderTable));
-        when(orderRepository.existNotCompletionOrderTable(1L))
-                .thenReturn(true);
+        doThrow(new NotCompletionStatusException()).when(tableValidator).validateNotCompletionOrderTable(any());
         // when && then
         assertThatIllegalStateException()
                 .isThrownBy(() -> tableService.changeEmpty(1L));

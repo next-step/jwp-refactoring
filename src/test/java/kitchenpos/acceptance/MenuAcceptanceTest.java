@@ -45,10 +45,9 @@ class MenuAcceptanceTest extends AcceptanceTest {
     void searchMenu() {
         // given
         final MenuGroup 예상된_메뉴그룹= new MenuGroup(1L, "후라이드세트");
-        final Product 예상된_제품 = new Product(1L, "후라이드", Price.of(16_000L));
         final List<MenuProduct> menuProducts = Arrays.asList(new MenuProduct.Builder(null)
                 .setSeq(1L)
-                .setProduct(예상된_제품)
+                .setProductId(1L)
                 .setQuantity(Quantity.of(2L))
                 .build());
         final Menu 예상된_메뉴 = new Menu.Builder("후라이드")
@@ -58,7 +57,7 @@ class MenuAcceptanceTest extends AcceptanceTest {
                 .build();
         final MenuProduct 예상된_메뉴_제품들 = new MenuProduct.Builder(예상된_메뉴)
                 .setSeq(1L)
-                .setProduct(예상된_제품)
+                .setProductId(1L)
                 .setQuantity(Quantity.of(2L))
                 .build();
         final MenuResponse 예상된_메뉴_결과 = new MenuResponse(1L, "반반후라이드", Price.of(16_000L), 예상된_메뉴그룹.toMenuGroupResponse(),

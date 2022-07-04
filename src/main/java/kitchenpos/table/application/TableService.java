@@ -8,7 +8,6 @@ import kitchenpos.exception.NotCompletionStatusException;
 import kitchenpos.exception.NotExistException;
 import kitchenpos.order.dto.OrderTableRequest;
 import kitchenpos.order.dto.OrderTableResponse;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.repository.OrderTableRepository;
@@ -17,12 +16,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TableService {
-    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
+    private final TableValidator tableValidator;
 
-    public TableService(OrderRepository orderRepository, OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
+    public TableService(OrderTableRepository orderTableRepository,
+                        TableValidator tableValidator) {
         this.orderTableRepository = orderTableRepository;
+        this.tableValidator = tableValidator;
     }
 
     @Transactional
@@ -43,10 +43,7 @@ public class TableService {
     public OrderTableResponse changeEmpty(final Long orderTableId) {
         final OrderTable persistOrderTable = getOrderTable(orderTableId);
 
-        if (orderRepository.existNotCompletionOrderTable(orderTableId)) {
-            throw new NotCompletionStatusException();
-        }
-
+        tableValidator.validateNotCompletionOrderTable(orderTableId);
         persistOrderTable.validateExistGroupingTable();
         persistOrderTable.changeEmpty();
         return persistOrderTable.toOrderTableResponse();
@@ -61,6 +58,6 @@ public class TableService {
 
     private OrderTable getOrderTable(Long orderTableId) {
         return orderTableRepository.findById(orderTableId)
-                .orElseThrow(() -> new NotExistException(NOT_EXIST_ORDER_TABLE));
+                .orElseThrow(() -> new NotExistException(NOT_EXIST_ORDER_TABLE.message()));
     }
 }

@@ -1,6 +1,7 @@
 package kitchenpos.menu.domain;
 
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,7 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import kitchenpos.order.domain.Quantity;
-import kitchenpos.product.domain.Product;
 
 @Entity
 public class MenuProduct {
@@ -22,9 +22,8 @@ public class MenuProduct {
     @JoinColumn(name = "menu_id", nullable = false)
     private Menu menu;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
+    @Column(nullable = false)
+    private Long productId;
 
     @Embedded
     private Quantity quantity;
@@ -35,16 +34,16 @@ public class MenuProduct {
     MenuProduct(Builder builder) {
         this.seq = builder.seq;
         this.menu = builder.menu;
-        this.product = builder.product;
+        this.productId = builder.productId;
         this.quantity = builder.quantity;
     }
 
-    public Price price() {
-        return this.product.multiply(quantity.value());
+    public Price price(Price price) {
+        return price.multiply(this.quantity.value());
     }
 
     public Quantity quantity() {
-        return quantity;
+        return this.quantity;
     }
 
     @Override
@@ -57,18 +56,22 @@ public class MenuProduct {
         }
         MenuProduct that = (MenuProduct) o;
         return Objects.equals(seq, that.seq) && Objects.equals(menu, that.menu)
-                && Objects.equals(product, that.product) && Objects.equals(quantity, that.quantity);
+                && Objects.equals(productId, that.productId) && Objects.equals(quantity, that.quantity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(seq, menu, product, quantity);
+        return Objects.hash(seq, menu, productId, quantity);
+    }
+
+    public boolean sameProductId(Long productId) {
+        return this.productId.equals(productId);
     }
 
     public static class Builder {
         private Long seq;
         private Menu menu;
-        private Product product;
+        private Long productId;
         private Quantity quantity;
 
         public Builder(Menu menu) {
@@ -85,8 +88,8 @@ public class MenuProduct {
             return this;
         }
 
-        public Builder setProduct(Product product) {
-            this.product = product;
+        public Builder setProductId(Long productId) {
+            this.productId = productId;
             return this;
         }
 

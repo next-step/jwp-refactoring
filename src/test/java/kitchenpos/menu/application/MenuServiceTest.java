@@ -4,13 +4,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
-import kitchenpos.menu.application.MenuService;
+import kitchenpos.exception.InvalidPriceException;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
@@ -23,7 +24,6 @@ import kitchenpos.menu.repository.MenuGroupRepository;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.order.domain.Quantity;
 import kitchenpos.product.domain.Product;
-import kitchenpos.product.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -51,11 +51,11 @@ class MenuServiceTest {
     private MenuGroupRepository menuGroupRepository;
 
     @Mock
-    private ProductRepository productRepository;
+    private MenuValidator menuValidator;
 
     @BeforeEach
     void setUp() {
-        menuService = new MenuService(menuRepository, menuGroupRepository, productRepository);
+        menuService = new MenuService(menuRepository, menuGroupRepository, menuValidator);
         product = new Product(1L, "후라이드", Price.of(500L));
         menuGroup = new MenuGroup(1L, "후라이드세트");
         menuProducts = new MenuProducts(Arrays.asList(menuProduct));
@@ -67,7 +67,7 @@ class MenuServiceTest {
                 .build();
         menuProduct = new MenuProduct.Builder(menu)
                 .setSeq(1L)
-                .setProduct(product)
+                .setProductId(product.getId())
                 .setQuantity(Quantity.of(2L))
                 .build();
         expected = new MenuResponse(null, "후라이드+후라이드", Price.of(1_000L), menuGroup.toMenuGroupResponse(),
@@ -82,7 +82,7 @@ class MenuServiceTest {
         final MenuRequest menuRequest = new MenuRequest("후라이드+후라이드", 1_000L, 1L,
                 Arrays.asList(menuProductRequest));
         when(menuGroupRepository.findById(any())).thenReturn(Optional.of(menuGroup));
-        when(productRepository.findById(any())).thenReturn(Optional.of(product));
+        when(menuValidator.findProductId(any())).thenReturn(product.getId());
         when(menuRepository.save(any())).thenReturn(menu);
         // when
         final MenuResponse actual = menuService.create(menuRequest);
@@ -121,20 +121,6 @@ class MenuServiceTest {
     }
 
     @Test
-    @DisplayName("메뉴를 구성하는 상품들이 존재하지 않으면 에러 발생")
-    void invalidNotExistProduct() {
-        // given
-        final MenuProductRequest menuProductRequest = new MenuProductRequest(1L, 2L);
-        final MenuRequest menuRequest = new MenuRequest("후라이드+후라이드", 1_000L, 1L,
-                Arrays.asList(menuProductRequest));
-        when(menuGroupRepository.findById(any())).thenReturn(Optional.of(menuGroup));
-        when(productRepository.findById(any())).thenReturn(Optional.empty());
-        // when && then
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> menuService.create(menuRequest));
-    }
-
-    @Test
     @DisplayName("메뉴 가격은 구성하는 상품들의 합보다 크면 에러 발생")
     void invalidPriceMoreThenProductSum() {
         // given
@@ -142,7 +128,8 @@ class MenuServiceTest {
         final MenuRequest invalidMenuRequest = new MenuRequest("잘못된_메뉴", 100_000L, 1L,
                 Arrays.asList(menuProductRequest));
         when(menuGroupRepository.findById(any())).thenReturn(Optional.of(menuGroup));
-        when(productRepository.findById(any())).thenReturn(Optional.of(product));
+        when(menuValidator.findProductId(any())).thenReturn(product.getId());
+        doThrow(new InvalidPriceException()).when(menuValidator).validateProductsTotalPrice(any());
         // when && then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> menuService.create(invalidMenuRequest));

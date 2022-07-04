@@ -34,7 +34,7 @@ class OrderTableTest {
     @DisplayName("테이블 그룹이 존재하면 예외 발생")
     void existTableGroupThenException() {
         final OrderTable existTableGroup = new Builder()
-                .setTableGroup(new TableGroup())
+                .setTableGroupId(1L)
                 .build();
         assertThatIllegalArgumentException()
                 .isThrownBy(existTableGroup::validateExistGroupingTable);
@@ -67,10 +67,10 @@ class OrderTableTest {
     @DisplayName("그룹화된 테이블을 해제한다")
     void ungroupOrderTable() {
         final OrderTable existTableGroup = new Builder()
-                .setTableGroup(new TableGroup())
+                .setTableGroupId(1L)
                 .build();
 
         existTableGroup.ungroupTable();
-        assertThat(existTableGroup.tableGroup()).isNull();
+        assertThat(existTableGroup.tableGroupId()).isNull();
     }
 }

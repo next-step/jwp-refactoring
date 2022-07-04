@@ -1,12 +1,8 @@
 package kitchenpos.table.application;
 
 import java.util.List;
-import kitchenpos.exception.NotCompletionStatusException;
 import kitchenpos.exception.NotExistException;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
@@ -17,16 +13,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TableGroupService {
-    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
+    private final TableValidator tableValidator;
 
-    public TableGroupService(OrderRepository orderRepository,
-                             OrderTableRepository orderTableRepository,
-                             TableGroupRepository tableGroupRepository) {
-        this.orderRepository = orderRepository;
+    public TableGroupService(OrderTableRepository orderTableRepository,
+                             TableGroupRepository tableGroupRepository,
+                             TableValidator tableValidator) {
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
+        this.tableValidator = tableValidator;
     }
 
     @Transactional
@@ -43,10 +39,7 @@ public class TableGroupService {
         final TableGroup persistTableGroup = tableGroupRepository.findById(tableGroupId)
                 .orElseThrow(NotExistException::new);
 
-        final OrderTables orderTables = persistTableGroup.getOrderTables();
-        if (orderRepository.existNotCompletionOrderTables(orderTables.get())) {
-            throw new NotCompletionStatusException();
-        }
+        tableValidator.validateNotCompletionOrderTables(persistTableGroup.getOrderTableIds());
         persistTableGroup.ungroup();
     }
 }

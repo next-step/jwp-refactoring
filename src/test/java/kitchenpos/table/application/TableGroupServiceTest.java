@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
@@ -12,14 +14,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+import kitchenpos.exception.NotCompletionStatusException;
 import kitchenpos.order.dto.OrderTableResponse;
 import kitchenpos.table.domain.GuestNumber;
-import kitchenpos.table.dto.TableGroupRequest;
-import kitchenpos.table.dto.TableGroupResponse;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.TableGroupRequest;
+import kitchenpos.table.dto.TableGroupResponse;
 import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.table.repository.TableGroupRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,17 +39,17 @@ class TableGroupServiceTest {
     private OrderTable orderTableOf5Guests, orderTableOf3Guests;
 
     @Mock
-    private OrderRepository orderRepository;
-
-    @Mock
     private OrderTableRepository orderTableRepository;
 
     @Mock
     private TableGroupRepository tableGroupRepository;
 
+    @Mock
+    private TableValidator tableValidator;
+
     @BeforeEach
     void setUp() {
-        tableGroupService = new TableGroupService(orderRepository, orderTableRepository, tableGroupRepository);
+        tableGroupService = new TableGroupService(orderTableRepository, tableGroupRepository, tableValidator);
 
         orderTableOf5Guests = new OrderTable.Builder()
                 .setId(1L)
@@ -143,10 +144,9 @@ class TableGroupServiceTest {
                 .setGuestNumber(GuestNumber.of(5))
                 .setEmpty(true)
                 .build();
-        final TableGroup existTableGroup = new TableGroup(2L, null, Arrays.asList(orderTable, orderTable));
         final OrderTable groupingOrderTable = new OrderTable.Builder()
                 .setId(1L)
-                .setTableGroup(existTableGroup)
+                .setTableGroupId(2L)
                 .setGuestNumber(GuestNumber.of(5))
                 .setEmpty(false)
                 .build();
@@ -173,8 +173,7 @@ class TableGroupServiceTest {
         final TableGroup tableGroup = new TableGroup(1L, null,
                 Arrays.asList(orderTableOf5Guests, orderTableOf3Guests));
         when(tableGroupRepository.findById(any())).thenReturn(Optional.of(tableGroup));
-        when(orderRepository.existNotCompletionOrderTables(Arrays.asList(orderTableOf5Guests, orderTableOf3Guests)))
-                .thenReturn(false);
+        doNothing().when(tableValidator).validateNotCompletionOrderTables(any());
         // when && then
         tableGroupService.ungroup(1L);
     }
@@ -185,8 +184,7 @@ class TableGroupServiceTest {
         final TableGroup tableGroup = new TableGroup(1L, null,
                 Arrays.asList(orderTableOf5Guests, orderTableOf3Guests));
         when(tableGroupRepository.findById(any())).thenReturn(Optional.of(tableGroup));
-        when(orderRepository.existNotCompletionOrderTables(Arrays.asList(orderTableOf5Guests, orderTableOf3Guests)))
-                .thenReturn(true);
+        doThrow(new NotCompletionStatusException()).when(tableValidator).validateNotCompletionOrderTables(any());
 
         // when && then
         assertThatIllegalStateException()

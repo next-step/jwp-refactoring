@@ -3,6 +3,7 @@ package kitchenpos.table.domain;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -33,11 +34,6 @@ public class TableGroup {
     protected TableGroup() {
     }
 
-    public TableGroup(Long id, LocalDateTime createdDate) {
-        this.id = id;
-        this.createdDate = createdDate;
-    }
-
     public TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
         this.id = id;
         this.createdDate = createdDate;
@@ -56,8 +52,10 @@ public class TableGroup {
         return id;
     }
 
-    public OrderTables getOrderTables() {
-        return orderTables;
+    public List<Long> getOrderTableIds() {
+        return this.orderTables.get().stream()
+                .map(OrderTable::getId)
+                .collect(Collectors.toList());
     }
 
     public void ungroup() {

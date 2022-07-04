@@ -6,6 +6,8 @@ import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import kitchenpos.exception.NotExistException;
+import kitchenpos.product.domain.Product;
 
 @Embeddable
 public class MenuProducts {
@@ -27,12 +29,20 @@ public class MenuProducts {
         return menuProducts;
     }
 
-    public Price totalPrice() {
+    public Price totalPrice(List<Product> products) {
         Price total = Price.zero();
         for (MenuProduct menuProduct : menuProducts) {
-            total = total.sum(menuProduct.price());
+            final Product product = findSameProduct(products, menuProduct);
+            total = total.sum(menuProduct.price(product.getPrice()));
         }
         return total;
+    }
+
+    private Product findSameProduct(List<Product> products, MenuProduct menuProduct) {
+        return products.stream()
+                .filter(it -> menuProduct.sameProductId(it.getId()))
+                .findFirst()
+                .orElseThrow(NotExistException::new);
     }
 
     @Override

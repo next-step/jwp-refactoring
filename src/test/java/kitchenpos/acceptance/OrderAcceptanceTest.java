@@ -12,21 +12,17 @@ import io.restassured.response.Response;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.Price;
 import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.Orders;
 import kitchenpos.order.domain.Quantity;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.order.dto.OrderTableResponse;
-import kitchenpos.order.domain.OrderLineItem;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.Orders;
-import kitchenpos.table.domain.GuestNumber;
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.utils.RestAssuredHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -62,28 +58,18 @@ class OrderAcceptanceTest extends AcceptanceTest {
     void createOrder() {
         // given
         final OrderTableResponse 주문_테이블_결과 = new OrderTableResponse(1L, null, 3, false);
-        final OrderTable orderTable = new OrderTable.Builder()
-                .setId(1L)
-                .setGuestNumber(GuestNumber.of(5))
-                .setEmpty(false)
-                .build();
-        final Orders order = new Orders.Builder(orderTable)
+        final Orders order = new Orders.Builder(1L)
                 .setId(1L)
                 .setOrderStatus(OrderStatus.COOKING)
                 .setOrderedTime(LocalDateTime.now())
                 .build();
         final MenuGroup menuGroup = new MenuGroup(1L, "후라이드세트");
-        final Menu menu = new Menu.Builder("후라이드")
-                .setId(1L)
-                .setPrice(Price.of(16_000L))
-                .setMenuGroup(menuGroup)
-                .build();
         final OrderLineItem orderLineItem = new OrderLineItem.Builder(order)
                 .setSeq(1L)
-                .setMenu(menu)
+                .setMenuId(1L)
                 .setQuantity(Quantity.of(2L))
                 .builder();
-        final OrderResponse 예상된_주문_결과 = new OrderResponse(1L, 주문_테이블_결과, OrderStatus.COOKING.name(), null, Arrays.asList(orderLineItem.toOrderLineItemResponse()));
+        final OrderResponse 예상된_주문_결과 = new OrderResponse(1L, 1L, OrderStatus.COOKING.name(), null, Arrays.asList(orderLineItem.toOrderLineItemResponse()));
 
         // when
         final ExtractableResponse<Response> 주문_요청_결과 = 주문_요청(1L, 1L, 1L);
@@ -146,8 +132,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
             assertAll(
                     () -> assertThat(주문1.get(innerIdx).getOrderStatus()).isEqualTo(주문2.get(innerIdx).getOrderStatus()),
                     () -> assertThat(주문1.get(innerIdx).getId()).isEqualTo(주문2.get(innerIdx).getId()),
-                    () -> assertThat(주문1.get(innerIdx).getOrderTable().getId())
-                            .isEqualTo(주문2.get(innerIdx).getOrderTable().getId())
+                    () -> assertThat(주문1.get(innerIdx).getOrderTableId()).isEqualTo(주문2.get(innerIdx).getOrderTableId())
             );
         }
     }
