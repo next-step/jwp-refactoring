@@ -28,17 +28,11 @@ public class TableGroupService {
     public TableGroupResponseDto create(final TableGroupRequestDto request) {
         List<Long> orderTableIds = request.getOrderTableIds();
         List<OrderTable> orderTables = orderTableRepository.findByIdIn(orderTableIds);
-        checkNotFoundOrderTables(orderTableIds, orderTables);
+        tableGroupValidator.checkCreatable(orderTables, request.getOrderTableIds());
 
         TableGroup tableGroup = tableGroupRepository.save(new TableGroup());
         orderTables.forEach(orderTable -> orderTable.group(tableGroup.getId()));
         return new TableGroupResponseDto(tableGroup);
-    }
-
-    private void checkNotFoundOrderTables(List<Long> orderTableIds, List<OrderTable> orderTables) {
-        if (orderTables.size() != orderTableIds.size()) {
-            throw new IllegalArgumentException();
-        }
     }
 
     @Transactional

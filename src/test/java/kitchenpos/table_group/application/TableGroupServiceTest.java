@@ -4,7 +4,6 @@ import static kitchenpos.common.fixture.OrderTableFixture.주문테이블_데이
 import static kitchenpos.common.fixture.TableGroupFixture.단체_데이터_생성;
 import static kitchenpos.common.fixture.TableGroupFixture.단체_지정_데이터_생성;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -60,19 +59,6 @@ class TableGroupServiceTest {
         //then
         단체_데이터_확인(response, tableGroupId);
         테이블_그룹핑_확인(tableGroupId, table1, table2);
-    }
-
-    @DisplayName("조회되지 않는 주문 테이블이 있으면 생성할 수 없다.")
-    @Test
-    void create_fail_notExistsTable() {
-        //given
-        TableGroupRequestDto request = 단체_지정_데이터_생성(1L, 2L);
-        OrderTable table1 = 주문테이블_데이터_생성(1L, null, 4, true);
-        given(orderTableRepository.findByIdIn(any())).willReturn(Arrays.asList(table1));
-
-        //when //then
-        assertThatIllegalArgumentException()
-            .isThrownBy(() -> tableGroupService.create(request));
     }
 
     @DisplayName("테이블 그룹을 해제한다.")
