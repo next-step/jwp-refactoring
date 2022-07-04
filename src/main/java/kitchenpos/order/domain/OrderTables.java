@@ -9,6 +9,7 @@ import javax.persistence.OneToMany;
 
 @Embeddable
 public class OrderTables {
+    private static final int MIN_ORDER_TABLE_SIZE = 2;
     private static final String ERROR_MESSAGE_INVALID_TABLE = "빈 테이블이 아니거나 단체 지정된 테이블입니다.";
     private static final String ERROR_MESSAGE_TABLE_COUNT = "단체지정하려면 테이블 수가 2개 이상이어야 합니다.";
 
@@ -35,7 +36,7 @@ public class OrderTables {
     }
 
     private void validateOrderTableSize(List<OrderTable> items) {
-        if (items.size() < 2) {
+        if (items.size() < MIN_ORDER_TABLE_SIZE) {
             throw new IllegalArgumentException(ERROR_MESSAGE_TABLE_COUNT);
         }
     }
