@@ -16,17 +16,17 @@ import static org.mockito.Mockito.verify;
 import java.util.Collections;
 import java.util.Optional;
 import kitchenpos.application.order.OrderService;
-import kitchenpos.dao.menu.MenuDao;
 import kitchenpos.dao.order.OrderDao;
 import kitchenpos.dao.order.OrderLineItemDao;
 import kitchenpos.dao.table.OrderTableDao;
 import kitchenpos.domain.menu.Menu;
 import kitchenpos.domain.menu.MenuGroup;
+import kitchenpos.domain.menu.MenuRepository;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderLineItem;
 import kitchenpos.domain.order.OrderStatus;
-import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.product.Product;
+import kitchenpos.domain.table.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,7 +41,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class OrderServiceTest {
 
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
     private OrderDao orderDao;
@@ -77,7 +77,7 @@ class OrderServiceTest {
     @DisplayName("주문을 생성한다.")
     void createOrder() {
         // Given
-        given(menuDao.countByIdIn(anyList())).willReturn((long) order.getOrderLineItems().size());
+        given(menuRepository.countByIdIn(anyList())).willReturn((long) order.getOrderLineItems().size());
         given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
         given(orderDao.save(any(Order.class))).will(AdditionalAnswers.returnsFirstArg());
 
@@ -85,7 +85,7 @@ class OrderServiceTest {
         orderService.create(order);
 
         // Then
-        verify(menuDao).countByIdIn(anyList());
+        verify(menuRepository).countByIdIn(anyList());
         verify(orderTableDao).findById(any());
         verify(orderDao).save(any(Order.class));
         verify(orderLineItemDao, times(order.getOrderLineItems().size())).save(any(OrderLineItem.class));
@@ -106,34 +106,34 @@ class OrderServiceTest {
     @DisplayName("존재하지 않는 메뉴를 주문한 경우 예외 발생 검증")
     public void throwException_WhenOrderMenuCountIsOverThanPersistMenusCount() {
         // Given
-        given(menuDao.countByIdIn(anyList())).willReturn(0L);
+        given(menuRepository.countByIdIn(anyList())).willReturn(0L);
 
         // When & Then
         assertThatExceptionOfType(IllegalArgumentException.class)
             .isThrownBy(() -> orderService.create(order));
 
-        verify(menuDao).countByIdIn(anyList());
+        verify(menuRepository).countByIdIn(anyList());
     }
 
     @Test
     @DisplayName("주문 테이블이 존재하지 않는 주문을 생성하는 경우 예외 발생 검증")
     public void throwException_WhenOrderTableIsNotExist() {
         // Given
-        given(menuDao.countByIdIn(anyList())).willReturn((long) order.getOrderLineItems().size());
+        given(menuRepository.countByIdIn(anyList())).willReturn((long) order.getOrderLineItems().size());
         given(orderTableDao.findById(any())).willThrow(IllegalArgumentException.class);
 
         // When & Then
         assertThatExceptionOfType(IllegalArgumentException.class)
             .isThrownBy(() -> orderService.create(order));
 
-        verify(menuDao).countByIdIn(anyList());
+        verify(menuRepository).countByIdIn(anyList());
         verify(orderTableDao).findById(any());
     }
 
     @Test
     @DisplayName("주문에 포함된 주문테이블이 비어있는경우(주문을 요청한 테이블이 `isEmpty() = true`인 경우) 예외가 발생 검증")
     public void throwException_When() {
-        given(menuDao.countByIdIn(anyList())).willReturn((long) order.getOrderLineItems().size());
+        given(menuRepository.countByIdIn(anyList())).willReturn((long) order.getOrderLineItems().size());
         given(orderTableDao.findById(any())).willReturn(Optional.of(orderTable));
         orderTable.setEmpty(true);
 
@@ -141,7 +141,7 @@ class OrderServiceTest {
         assertThatExceptionOfType(IllegalArgumentException.class)
             .isThrownBy(() -> orderService.create(order));
 
-        verify(menuDao).countByIdIn(anyList());
+        verify(menuRepository).countByIdIn(anyList());
         verify(orderTableDao).findById(any());
     }
 

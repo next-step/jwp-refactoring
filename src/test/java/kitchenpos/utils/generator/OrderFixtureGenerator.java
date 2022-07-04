@@ -12,6 +12,7 @@ import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderLineItem;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.table.OrderTable;
+import kitchenpos.dto.menu.MenuResponse;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 public class OrderFixtureGenerator {
@@ -19,6 +20,17 @@ public class OrderFixtureGenerator {
     public static Order generateOrder(
         final OrderTable savedOrderTable,
         final Menu... savedMenus
+    ) {
+        Order order = new Order();
+        order.setOrderTableId(savedOrderTable.getId());
+        order.setOrderLineItems(generateOrderLineItems(savedMenus));
+        order.setOrderStatus(OrderStatus.COOKING.name());
+        return order;
+    }
+
+    public static Order generateOrder(
+        final OrderTable savedOrderTable,
+        final MenuResponse... savedMenus
     ) {
         Order order = new Order();
         order.setOrderTableId(savedOrderTable.getId());
@@ -38,9 +50,20 @@ public class OrderFixtureGenerator {
         return orderLineItems;
     }
 
+    private static List<OrderLineItem> generateOrderLineItems(MenuResponse... menus) {
+        List<OrderLineItem> orderLineItems = new ArrayList<>();
+        for (MenuResponse menu : menus) {
+            OrderLineItem orderLineItem = new OrderLineItem();
+            orderLineItem.setMenuId(menu.getId());
+            orderLineItem.setQuantity(1);
+            orderLineItems.add(orderLineItem);
+        }
+        return orderLineItems;
+    }
+
     public static MockHttpServletRequestBuilder 주문_생성_요청(
         final OrderTable savedOrderTable,
-        final Menu... savedMenus
+        final MenuResponse... savedMenus
     ) throws Exception {
         return postRequestBuilder(ORDER_API_BASE_URL, generateOrder(savedOrderTable, savedMenus));
     }

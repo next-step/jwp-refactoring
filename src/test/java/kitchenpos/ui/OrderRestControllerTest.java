@@ -19,6 +19,7 @@ import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.product.Product;
+import kitchenpos.dto.menu.MenuResponse;
 import kitchenpos.utils.BaseTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,7 +34,7 @@ public class OrderRestControllerTest extends BaseTest {
 
     private Product savedFirstProduct, savedSecondProduct, savedThirdProduct, savedForthProduct;
     private MenuGroup savedFirstMenuGroup, savedSecondMenuGroup;
-    private Menu savedFirstMenu, savedSecondMenu;
+    private MenuResponse savedFirstMenu, savedSecondMenu;
     private OrderTable savedOrderTable;
 
     /**
@@ -53,8 +54,8 @@ public class OrderRestControllerTest extends BaseTest {
         savedFirstMenuGroup = as(mockMvcUtil.post(메뉴_그룹_생성_요청()), MenuGroup.class);
         savedSecondMenuGroup = as(mockMvcUtil.post(메뉴_그룹_생성_요청()), MenuGroup.class);
 
-        savedFirstMenu = as(mockMvcUtil.post(메뉴_생성_요청(savedFirstMenuGroup, savedFirstProduct, savedSecondProduct)), Menu.class);
-        savedSecondMenu = as(mockMvcUtil.post(메뉴_생성_요청(savedSecondMenuGroup, savedThirdProduct, savedForthProduct)), Menu.class);
+        savedFirstMenu = as(mockMvcUtil.post(메뉴_생성_요청(savedFirstMenuGroup, savedFirstProduct, savedSecondProduct)), MenuResponse.class);
+        savedSecondMenu = as(mockMvcUtil.post(메뉴_생성_요청(savedSecondMenuGroup, savedThirdProduct, savedForthProduct)), MenuResponse.class);
 
         savedOrderTable = as(mockMvcUtil.post(비어있지_않은_주문_테이블_생성_요청()), OrderTable.class);
     }
