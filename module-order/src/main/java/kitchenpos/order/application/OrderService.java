@@ -5,7 +5,6 @@ import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
