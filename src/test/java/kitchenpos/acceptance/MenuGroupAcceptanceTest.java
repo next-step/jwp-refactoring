@@ -9,13 +9,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.menugroup.dto.MenuGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-public class MenuGroupAcceptanceTest extends BaseAcceptanceTest{
+public class MenuGroupAcceptanceTest extends BaseAcceptanceTest {
 
     @DisplayName("메뉴그룹을 관리한다")
     @Test
@@ -63,7 +63,7 @@ public class MenuGroupAcceptanceTest extends BaseAcceptanceTest{
     }
 
     public static void 메뉴_그룹_조회됨(final ExtractableResponse<Response> response, String name) {
-        List<String> menuNames = response.jsonPath().getList(".", MenuGroup.class).stream().map(menuGroup -> menuGroup.getName()).collect(Collectors.toList());
+        List<String> menuNames = response.jsonPath().getList(".", MenuGroupResponse.class).stream().map(menuGroup -> menuGroup.getName()).collect(Collectors.toList());
 
         assertThat(menuNames).contains(name);
     }

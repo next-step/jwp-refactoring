@@ -6,8 +6,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.math.BigDecimal;
-import kitchenpos.domain.Product;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,7 @@ public class ProductAcceptanceTest extends BaseAcceptanceTest{
     public void manageProduct() {
         //상품 생성
         //given
-        Product 상품 = new Product("상품", BigDecimal.valueOf(1000));
+        ProductRequest 상품 = ProductRequest.of("상품", 1000);
         //when
         ExtractableResponse<Response> 상품_생성_요청 = 상품_생성_요청(상품);
         //then
@@ -32,11 +33,11 @@ public class ProductAcceptanceTest extends BaseAcceptanceTest{
         ExtractableResponse<Response> 상품_목록_조회_요청 = 상품_목록_조회_요청();
         //then
         응답코드_확인(상품_목록_조회_요청, HttpStatus.OK);
-        상품_조회됨(상품_목록_조회_요청, 상품_생성_요청.as(Product.class).getId());
+        상품_조회됨(상품_목록_조회_요청, 상품_생성_요청.as(ProductResponse.class).getId());
 
     }
 
-    public static ExtractableResponse<Response> 상품_생성_요청(Product product) {
+    public static ExtractableResponse<Response> 상품_생성_요청(ProductRequest product) {
 
         return RestAssured
             .given().log().all()
@@ -60,6 +61,4 @@ public class ProductAcceptanceTest extends BaseAcceptanceTest{
         assertThat(response.jsonPath().getList(".", Product.class).stream()
             .anyMatch(product -> product.getId().equals(id))).isTrue();
     }
-
-
 }
