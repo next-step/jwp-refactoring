@@ -1,6 +1,5 @@
 package kitchenpos.orders.order.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -54,7 +53,6 @@ public class OrderRequest {
                 .orElseThrow(NoSuchElementException::new);
     }
 
-    @JsonIgnore
     public List<Long> getMenuIds() {
         return orderLineItems.stream()
                 .map(OrderLineItemRequest::getMenuId)
