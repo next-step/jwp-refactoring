@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import kitchenpos.domain.product.Product;
+import kitchenpos.dto.product.CreateProductRequest;
 import org.springframework.boot.test.context.TestComponent;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
@@ -24,6 +25,10 @@ public class ProductFixtureGenerator {
 
     public static Product 상품_생성(final String name, final int price) {
         return Product.of(name, new BigDecimal(price));
+    }
+
+    public static CreateProductRequest 상품_생성_요청_객체(final String name, final int price) {
+        return new CreateProductRequest(name, new BigDecimal(price));
     }
 
     public static List<Product> 상품_목록_생성(int count) {
