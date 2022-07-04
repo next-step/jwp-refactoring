@@ -8,9 +8,11 @@ import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.OrderTableRequest;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
 import kitchenpos.repository.TableGroupRepository;
+import kitchenpos.ui.creator.OrderTableCreator;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,12 +29,14 @@ class TableServiceTest {
     @Autowired
     OrderRepository orderRepository;
 
-
     @Autowired
     TableService tableService;
 
     @Autowired
     TableGroupRepository tableGroupRepository;
+
+    @Autowired
+    OrderTableCreator orderTableCreator;
 
     OrderTable orderTable;
 
@@ -52,15 +56,15 @@ class TableServiceTest {
     @Test
     @DisplayName("주문 테이블 저장")
     public void save() {
-        OrderTable savedTable = tableService.create(new OrderTable());
+        OrderTable savedTable = tableService.create(new OrderTableRequest());
         assertThat(savedTable.getId()).isNotNull();
     }
 
     @Test
     @DisplayName("전체 테이블 조회 정상")
     public void list() {
-        tableService.create(new OrderTable());
-        tableService.create(new OrderTable());
+        tableService.create(new OrderTableRequest());
+        tableService.create(new OrderTableRequest());
 
         assertThat(tableService.list()).hasSize(2);
     }
@@ -68,7 +72,7 @@ class TableServiceTest {
     @Test
     @DisplayName("테이블 빈값 여부 세팅할 테이블 미존재")
     public void changeEmptyNotFoundException() {
-        Assertions.assertThatThrownBy(() -> tableService.changeEmpty(10L, new OrderTable()))
+        Assertions.assertThatThrownBy(() -> tableService.changeEmpty(10L, new OrderTableRequest()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -86,7 +90,7 @@ class TableServiceTest {
 
         orderTableRepository.save(orderTable);
 
-        Assertions.assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), changeOrderTable))
+        Assertions.assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), OrderTableRequest.of(changeOrderTable)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -102,7 +106,7 @@ class TableServiceTest {
         orderRepository.save(order);
 
 
-        Assertions.assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), changeOrderTable))
+        Assertions.assertThatThrownBy(() -> tableService.changeEmpty(orderTable.getId(), OrderTableRequest.of(changeOrderTable)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -118,7 +122,7 @@ class TableServiceTest {
 
         orderTableRepository.save(orderTable);
 
-        assertThat(tableService.changeEmpty(orderTable.getId(), changeOrderTable).isEmpty()).isEqualTo(
+        assertThat(tableService.changeEmpty(orderTable.getId(), OrderTableRequest.of(changeOrderTable)).isEmpty()).isEqualTo(
                 changeOrderTable.isEmpty());
     }
 
@@ -128,7 +132,7 @@ class TableServiceTest {
         orderTableRepository.save(orderTable);
         orderTable.setNumberOfGuests(-1);
 
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, orderTable)).isInstanceOf(
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, OrderTableRequest.of(orderTable))).isInstanceOf(
                 IllegalArgumentException.class);
     }
 
@@ -137,7 +141,7 @@ class TableServiceTest {
     public void changeNumerOfGuestsEmptyTable() {
         orderTable.setNumberOfGuests(2);
 
-        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, orderTable)).isInstanceOf(
+        assertThatThrownBy(() -> tableService.changeNumberOfGuests(1L, OrderTableRequest.of(orderTable))).isInstanceOf(
                 IllegalArgumentException.class);
     }
 
@@ -150,7 +154,7 @@ class TableServiceTest {
         OrderTable changeOrderTable = new OrderTable();
         changeOrderTable.setNumberOfGuests(2);
 
-        Assertions.assertThat(tableService.changeNumberOfGuests(savedOrderTable.getId(), changeOrderTable).getNumberOfGuests())
+        Assertions.assertThat(tableService.changeNumberOfGuests(savedOrderTable.getId(), OrderTableRequest.of(changeOrderTable)).getNumberOfGuests())
                 .isEqualTo(changeOrderTable.getNumberOfGuests());
     }
 }
