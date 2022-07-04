@@ -7,8 +7,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
+@Builder
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 public class MenuProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,8 +29,8 @@ public class MenuProduct {
     @ManyToOne(fetch = FetchType.LAZY)
     private Menu menu;
 
-    public MenuProduct() {
-    }
+//    public MenuProduct() {
+//    }
 
     public Long getId() {
         return id;

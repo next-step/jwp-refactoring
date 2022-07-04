@@ -27,10 +27,10 @@ public class MenuProducts {
         this.menuProducts = menuProducts;
     }
 
-    public void validateTotalPriceNotExpensiveThanEach(Price menuPrice){
+    public void validateTotalPriceNotExpensiveThanEach(Price menuPrice) {
         Price sum = new Price(BigDecimal.ZERO);
         for (MenuProduct menuProduct : menuProducts) {
-            if(menuProduct.getProduct() == null){
+            if (menuProduct.getProduct() == null) {
                 throw new IllegalArgumentException();
             }
             Product product = menuProduct.getProduct();

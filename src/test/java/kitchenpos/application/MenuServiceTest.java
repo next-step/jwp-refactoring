@@ -17,6 +17,7 @@ import kitchenpos.repository.MenuGroupRepository;
 import kitchenpos.repository.MenuProductRepository;
 import kitchenpos.repository.MenuRepository;
 import kitchenpos.repository.ProductRepository;
+import kitchenpos.ui.creator.MenuCreator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,6 +38,9 @@ class MenuServiceTest {
 
     @Autowired
     MenuService menuService;
+
+    @Autowired
+    MenuCreator menuCreator;
 
     Product 스낵랩;
     Product 맥모닝;
@@ -83,7 +87,8 @@ class MenuServiceTest {
         menu.setPrice(new Price(BigDecimal.valueOf(18000)));
         menu.setName("탕수육 세트");
 
-        assertThatThrownBy(() -> menuService.create(menu)).isInstanceOf(IllegalArgumentException.class);
+
+        assertThatThrownBy(() -> menuService.create(menuCreator.toMenuRequest(menu))).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -99,7 +104,7 @@ class MenuServiceTest {
         menu.setMenuProducts(new MenuProducts(menuProducts));
         menu.setPrice(new Price(BigDecimal.valueOf(18000)));
 
-        assertThatThrownBy(() -> menuService.create(menu)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuService.create(menuCreator.toMenuRequest(menu))).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -107,16 +112,17 @@ class MenuServiceTest {
     public void createNotCheaperPrice() {
         Menu menu = new Menu("모닝세트", BigDecimal.valueOf(8000), 패스트푸드류,
                 new MenuProducts(Arrays.asList(스낵랩_메뉴_상품, 맥모닝_메뉴_상품)));
-        assertThatThrownBy(() -> menuService.create(menu)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuService.create(menuCreator.toMenuRequest(menu))).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     public void createSuccess() {
         productRepository.save(스낵랩);
+        MenuProduct menuProduct = menuProductRepository.save(스낵랩_메뉴_상품);
 
         Menu menu = new Menu("스낵랩 상품", BigDecimal.valueOf(3000), 패스트푸드류,
-                new MenuProducts(Arrays.asList(스낵랩_메뉴_상품)));
-        assertThat(menuService.create(menu).getId()).isNotNull();
+                new MenuProducts(Arrays.asList(menuProduct)));
+        assertThat(menuService.create(menuCreator.toMenuRequest(menu)).getId()).isNotNull();
     }
 
     @Test
@@ -130,8 +136,8 @@ class MenuServiceTest {
 
         Menu 스낵랩_세트 = new Menu("스낵랩 상품", BigDecimal.valueOf(3000), 패스트푸드류,
                 new MenuProducts(Arrays.asList(스낵랩_메뉴_상품)));
-        Menu 모닝_세트 = new Menu( "모닝_세트", BigDecimal.valueOf(7000), 패스트푸드류,
-                new MenuProducts(Arrays.asList( 모닝_스낵랩, 맥모닝_메뉴_상품)));
+        Menu 모닝_세트 = new Menu("모닝_세트", BigDecimal.valueOf(7000), 패스트푸드류,
+                new MenuProducts(Arrays.asList(모닝_스낵랩, 맥모닝_메뉴_상품)));
 
         menuRepository.save(스낵랩_세트);
         menuRepository.save(모닝_세트);

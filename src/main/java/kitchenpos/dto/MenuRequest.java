@@ -2,16 +2,17 @@ package kitchenpos.dto;
 
 import java.math.BigDecimal;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 
+@Builder
+@AllArgsConstructor
 public class MenuRequest {
     private Long id;
     private String name;
     private BigDecimal price;
     private Long menuGroupId;
     private List<MenuProductRequest> menuProducts;
-
-    public MenuRequest() {
-    }
 
     public Long getId() {
         return id;

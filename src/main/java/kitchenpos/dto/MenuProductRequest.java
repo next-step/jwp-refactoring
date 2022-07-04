@@ -1,13 +1,15 @@
 package kitchenpos.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+
+@Builder
+@AllArgsConstructor
 public class MenuProductRequest {
     private Long seq;
     private Long menuId;
     private Long productId;
     private long quantity;
-
-    public MenuProductRequest() {
-    }
 
     public Long getSeq() {
         return seq;
