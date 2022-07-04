@@ -18,7 +18,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.flywaydb:flyway-core'
     runtimeOnly 'com.h2database:h2'
-    implementation project(':module-product')
+    implementation project(':module-products')
     implementation project(':module-menus')
     implementation project(':module-orders')
     implementation project('module-ui')
@@ -62,7 +62,7 @@ subprojects {
 
 project(':module-ui') {
     dependencies {
-        implementation project(':module-product')
+        implementation project(':module-products')
         implementation project(':module-menus')
         implementation project(':module-orders')
         testImplementation 'io.rest-assured:rest-assured:3.3.0'
@@ -71,7 +71,7 @@ project(':module-ui') {
     }
 }
 
-project(':module-product') {
+project(':module-products') {
     dependencies {
         testImplementation(testFixtures(project(':module-test')))
     }
@@ -79,7 +79,7 @@ project(':module-product') {
 
 project(':module-menus') {
     dependencies {
-        implementation project(':module-product')
+        implementation project(':module-products')
         testImplementation(testFixtures(project(':module-test')))
     }
 }
@@ -87,7 +87,7 @@ project(':module-menus') {
 project(':module-orders') {
     dependencies {
         implementation project(':module-menus')
-        implementation project(':module-product')
+        implementation project(':module-products')
         testImplementation(testFixtures(project(':module-test')))
     }
 }

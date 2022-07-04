@@ -1,5 +1,5 @@
 rootProject.name = 'kitchenpos'
-include 'module-product'
+include 'module-products'
 include 'module-ui'
 include 'module-menus'
 include 'module-orders'
