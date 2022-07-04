@@ -7,12 +7,12 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import kitchenpos.dao.order.OrderDao;
 import kitchenpos.dao.order.OrderLineItemDao;
-import kitchenpos.dao.table.OrderTableDao;
 import kitchenpos.domain.menu.MenuRepository;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderLineItem;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.table.OrderTable;
+import kitchenpos.domain.table.OrderTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -22,18 +22,18 @@ public class OrderService {
     private final MenuRepository menuRepository;
     private final OrderDao orderDao;
     private final OrderLineItemDao orderLineItemDao;
-    private final OrderTableDao orderTableDao;
+    private final OrderTableRepository orderTableRepository;
 
     public OrderService(
         final MenuRepository menuRepository,
         final OrderDao orderDao,
         final OrderLineItemDao orderLineItemDao,
-        final OrderTableDao orderTableDao
+        final OrderTableRepository orderTableRepository
     ) {
         this.menuRepository = menuRepository;
         this.orderDao = orderDao;
         this.orderLineItemDao = orderLineItemDao;
-        this.orderTableDao = orderTableDao;
+        this.orderTableRepository = orderTableRepository;
     }
 
     @Transactional
@@ -58,7 +58,7 @@ public class OrderService {
 
         // 주문에 포함된 주문 테이블이 DB에 존재하지 않는 경우 예외 처리
         // TODO : 문제 추적 및 파악이 용이하도록 예외 처리 시 오류 문구를 포함
-        final OrderTable orderTable = orderTableDao.findById(order.getOrderTableId())
+        final OrderTable orderTable = orderTableRepository.findById(order.getOrderTableId())
             .orElseThrow(IllegalArgumentException::new);
 
         // TODO : 문제 추적 및 파악이 용이하도록 예외 처리 시 오류 문구를 포함

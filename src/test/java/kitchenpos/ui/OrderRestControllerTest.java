@@ -18,8 +18,8 @@ import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.product.Product;
-import kitchenpos.domain.table.OrderTable;
 import kitchenpos.dto.menu.MenuResponse;
+import kitchenpos.dto.table.OrderTableResponse;
 import kitchenpos.utils.BaseTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,7 +35,7 @@ public class OrderRestControllerTest extends BaseTest {
     private Product 물냉면, 비빔냉면, 삼겹살, 항정살, 고추장_불고기;
     private MenuGroup 고기랑_같이, 고기만_듬뿍;
     private MenuResponse 커플_냉삼_메뉴, 고기_더블_더블_메뉴;
-    private OrderTable 비어있지_않은_주문_테이블;
+    private OrderTableResponse 비어있지_않은_주문_테이블;
 
     /**
      * @Given 상품을 2개를 생성한다.
@@ -48,7 +48,7 @@ public class OrderRestControllerTest extends BaseTest {
     void setUp() throws Exception {
         고기_더블_더블_메뉴_생성();
         커플_냉삼_메뉴_생성();
-        비어있지_않은_주문_테이블 = as(mockMvcUtil.post(비어있지_않은_주문_테이블_생성_요청()), OrderTable.class);
+        비어있지_않은_주문_테이블 = as(mockMvcUtil.post(비어있지_않은_주문_테이블_생성_요청()), OrderTableResponse.class);
     }
 
     /**

@@ -13,6 +13,7 @@ import kitchenpos.domain.order.OrderLineItem;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.dto.menu.MenuResponse;
+import kitchenpos.dto.table.OrderTableResponse;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 public class OrderFixtureGenerator {
@@ -29,7 +30,7 @@ public class OrderFixtureGenerator {
     }
 
     public static Order 주문_생성(
-        final OrderTable savedOrderTable,
+        final OrderTableResponse savedOrderTable,
         final MenuResponse... savedMenus
     ) {
         Order order = new Order();
@@ -62,7 +63,7 @@ public class OrderFixtureGenerator {
     }
 
     public static MockHttpServletRequestBuilder 주문_생성_요청(
-        final OrderTable savedOrderTable,
+        final OrderTableResponse savedOrderTable,
         final MenuResponse... savedMenus
     ) throws Exception {
         return postRequestBuilder(ORDER_API_BASE_URL, 주문_생성(savedOrderTable, savedMenus));

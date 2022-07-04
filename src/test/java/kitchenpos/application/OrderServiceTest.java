@@ -19,12 +19,12 @@ import java.util.Optional;
 import kitchenpos.application.order.OrderService;
 import kitchenpos.dao.order.OrderDao;
 import kitchenpos.dao.order.OrderLineItemDao;
-import kitchenpos.dao.table.OrderTableDao;
 import kitchenpos.domain.menu.MenuRepository;
 import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderLineItem;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.table.OrderTable;
+import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.utils.generator.OrderFixtureGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -49,7 +49,7 @@ class OrderServiceTest {
     private OrderLineItemDao orderLineItemDao;
 
     @Mock
-    private OrderTableDao orderTableDao;
+    private OrderTableRepository orderTableRepository;
 
     @InjectMocks
     private OrderService orderService;
@@ -72,7 +72,7 @@ class OrderServiceTest {
     void createOrder() {
         // Given
         given(menuRepository.countByIdIn(anyList())).willReturn((long) order.getOrderLineItems().size());
-        given(orderTableDao.findById(any())).willReturn(Optional.of(비어있지_않은_주문_테이블_생성));
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(비어있지_않은_주문_테이블_생성));
         given(orderDao.save(any(Order.class))).will(AdditionalAnswers.returnsFirstArg());
 
         // When
@@ -80,7 +80,7 @@ class OrderServiceTest {
 
         // Then
         verify(menuRepository).countByIdIn(anyList());
-        verify(orderTableDao).findById(any());
+        verify(orderTableRepository).findById(any());
         verify(orderDao).save(any(Order.class));
         verify(orderLineItemDao, times(order.getOrderLineItems().size())).save(any(OrderLineItem.class));
     }
@@ -114,28 +114,28 @@ class OrderServiceTest {
     public void throwException_WhenOrderTableIsNotExist() {
         // Given
         given(menuRepository.countByIdIn(anyList())).willReturn((long) order.getOrderLineItems().size());
-        given(orderTableDao.findById(any())).willThrow(IllegalArgumentException.class);
+        given(orderTableRepository.findById(any())).willThrow(IllegalArgumentException.class);
 
         // When & Then
         assertThatExceptionOfType(IllegalArgumentException.class)
             .isThrownBy(() -> orderService.create(order));
 
         verify(menuRepository).countByIdIn(anyList());
-        verify(orderTableDao).findById(any());
+        verify(orderTableRepository).findById(any());
     }
 
     @Test
     @DisplayName("주문에 포함된 주문테이블이 비어있는 경우(주문을 요청한 테이블이 `isEmpty() = true`인 경우) 예외가 발생 검증")
     public void throwException_When() {
         given(menuRepository.countByIdIn(anyList())).willReturn((long) order.getOrderLineItems().size());
-        given(orderTableDao.findById(any())).willReturn(Optional.of(비어있는_주문_테이블_생성()));
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(비어있는_주문_테이블_생성()));
 
         // When & Then
         assertThatExceptionOfType(IllegalArgumentException.class)
             .isThrownBy(() -> orderService.create(order));
 
         verify(menuRepository).countByIdIn(anyList());
-        verify(orderTableDao).findById(any());
+        verify(orderTableRepository).findById(any());
     }
 
     @Test

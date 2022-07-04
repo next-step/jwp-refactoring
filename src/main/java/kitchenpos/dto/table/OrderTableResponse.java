@@ -13,17 +13,22 @@ public class OrderTableResponse {
 
     }
 
-    private OrderTableResponse(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+    private OrderTableResponse(
+        final Long id,
+        final Long tableGroupId,
+        final int numberOfGuests,
+        final boolean empty
+    ) {
         this.id = id;
         this.tableGroupId = tableGroupId;
         this.numberOfGuests = numberOfGuests;
         this.empty = empty;
     }
 
-    public static OrderTableResponse from(OrderTable orderTable) {
+    public static OrderTableResponse from(final OrderTable orderTable) {
         return new OrderTableResponse(
             orderTable.getId(),
-            orderTable.getTableGroupId(),
+            orderTable.getTableGroupIdOrNull(),
             orderTable.getNumberOfGuests(),
             orderTable.isEmpty()
         );
