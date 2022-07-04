@@ -21,8 +21,8 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
-    private OrderTable orderTable;
+    @Column(nullable = false)
+    private Long orderTableId;
     @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)
     private OrderStatus orderStatus;
@@ -34,31 +34,21 @@ public class Order {
     protected Order() {
     }
 
-    public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        this(null, orderTable, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
+    public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        this(null, orderTableId, OrderStatus.COOKING, LocalDateTime.now(), orderLineItems);
     }
 
-    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
+    public Order(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime,
                  List<OrderLineItem> orderLineItems) {
-        validate(orderTable, orderLineItems);
         this.id = id;
-        this.orderTable = orderTable;
+        this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         orderLineItems.forEach(this.orderLineItems::add);
     }
 
-    private void validate(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException("빈 테이블은 등록할 수 없습니다.");
-        }
-        if (CollectionUtils.isEmpty(orderLineItems)) {
-            throw new IllegalArgumentException("주문 항목이 1개 이상이어야 합니다.");
-        }
-    }
-
     public void changeOrderStatus(OrderStatus newOrderStatus) {
-        if (Objects.equals(OrderStatus.COMPLETION.name(), this.orderStatus.name())) {
+        if (Objects.equals(OrderStatus.COMPLETION, this.orderStatus)) {
             throw new IllegalArgumentException("완료된 주문의 상태는 수정할 수 없습니다.");
         }
         this.orderStatus = newOrderStatus;
@@ -68,8 +58,8 @@ public class Order {
         return id;
     }
 
-    public OrderTable getOrderTable() {
-        return orderTable;
+    public Long getOrderTableId() {
+        return orderTableId;
     }
 
     public OrderStatus getOrderStatus() {

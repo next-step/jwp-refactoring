@@ -25,7 +25,7 @@ public class MenuGroupService {
     }
 
     private MenuGroup createMenuGroup(MenuGroupRequest menuGroupRequest) {
-        return new MenuGroup(menuGroupRequest.getName());
+        return menuGroupRequest.toMenuGroup();
     }
 
     @Transactional(readOnly = true)

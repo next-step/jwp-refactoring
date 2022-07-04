@@ -17,10 +17,6 @@ public class OrderTables {
     protected OrderTables() {
     }
 
-    public OrderTables(List<OrderTable> elements) {
-        this.elements = elements;
-    }
-
     public int size() {
         return elements.size();
     }
@@ -40,6 +36,6 @@ public class OrderTables {
     }
 
     public List<OrderTable> get() {
-        return elements;
+        return new ArrayList<>(elements);
     }
 }

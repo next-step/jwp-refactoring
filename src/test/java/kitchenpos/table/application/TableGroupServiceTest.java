@@ -7,16 +7,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
 
 import java.util.Arrays;
 import java.util.Optional;
-import kitchenpos.order.domain.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.repository.OrderTableRepository;
 import kitchenpos.table.domain.repository.TableGroupRepository;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.table.validator.TableValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,11 +29,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class TableGroupServiceTest {
     @Mock
-    private OrderRepository orderRepository;
-    @Mock
     private OrderTableRepository orderTableRepository;
     @Mock
     private TableGroupRepository tableGroupRepository;
+    @Mock
+    private TableValidator tableValidator;
     @InjectMocks
     private TableGroupService tableGroupService;
 
@@ -105,7 +106,6 @@ class TableGroupServiceTest {
     void ungroup() {
         //given
         given(tableGroupRepository.findById(any())).willReturn(Optional.of(tableGroup));
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(false);
 
         //when & then
         tableGroupService.ungroup(tableGroup.getId());
@@ -119,7 +119,9 @@ class TableGroupServiceTest {
     void ungroup_invalidOrderStatus() {
         //given
         given(tableGroupRepository.findById(any())).willReturn(Optional.of(tableGroup));
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(true);
+        willThrow(new IllegalArgumentException("현재 조리중이거나 식사중인 주문이 존재합니다."))
+                .given(tableValidator)
+                .validateOrderStatus(1L);
 
         //when & then
         assertThatThrownBy(() -> tableGroupService.ungroup(tableGroup.getId()))

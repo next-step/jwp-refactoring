@@ -13,9 +13,13 @@ public class OrderLineItemRequest {
 
     public static OrderLineItemRequest of(OrderLineItem orderLineItem) {
         return new OrderLineItemRequest(
-                orderLineItem.getMenu().getId(),
+                orderLineItem.getMenuId(),
                 orderLineItem.getQuantity()
         );
+    }
+
+    public OrderLineItem toOrderLineItem() {
+        return new OrderLineItem(menuId, quantity);
     }
 
     public Long getMenuId() {

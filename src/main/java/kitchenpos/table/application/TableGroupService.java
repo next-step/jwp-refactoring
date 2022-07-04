@@ -1,9 +1,6 @@
 package kitchenpos.table.application;
 
-import java.util.Arrays;
 import java.util.List;
-import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.domain.repository.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
@@ -11,20 +8,21 @@ import kitchenpos.table.domain.repository.OrderTableRepository;
 import kitchenpos.table.domain.repository.TableGroupRepository;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
+import kitchenpos.table.validator.TableValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TableGroupService {
-    private final OrderRepository orderRepository;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
+    private final TableValidator tableValidator;
 
-    public TableGroupService(OrderRepository orderRepository, OrderTableRepository orderTableRepository,
-                             TableGroupRepository tableGroupRepository) {
-        this.orderRepository = orderRepository;
+    public TableGroupService(OrderTableRepository orderTableRepository, TableGroupRepository tableGroupRepository,
+                             TableValidator tableValidator) {
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
+        this.tableValidator = tableValidator;
     }
 
     @Transactional
@@ -62,10 +60,7 @@ public class TableGroupService {
     }
 
     private void validateOrderStatus(OrderTables orderTables) {
-        final List<Long> orderTableIds = orderTables.getOrderTableIds();
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-            throw new IllegalArgumentException("현재 조리중이거나 식사중인 주문이 존재합니다.");
-        }
+        orderTables.getOrderTableIds()
+                .forEach(tableValidator::validateOrderStatus);
     }
 }
