@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 @Entity
+
 public class Menu {
 
     @Id
@@ -26,6 +27,11 @@ public class Menu {
 
     public Menu() {
     }
+
+    public Menu(Long id) {
+        this.id = id;
+    }
+
 
     public Menu(Long id, String name, int price, Long menuGroupId) {
         this.id = id;
