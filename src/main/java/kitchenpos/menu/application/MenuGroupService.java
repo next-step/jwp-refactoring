@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,6 +33,7 @@ public class MenuGroupService {
     }
 
     public MenuGroup getMenuGroupById(Long menuGroupId) {
-        return menuGroupRepository.findById(menuGroupId).orElseThrow(IllegalArgumentException::new);
+        return menuGroupRepository.findById(menuGroupId)
+                .orElseThrow(NoSuchElementException::new);
     }
 }

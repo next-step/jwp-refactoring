@@ -52,6 +52,6 @@ public class MenuService {
     }
 
     public Menu getMenuById(Long menuId) {
-        return menuRepository.findById(menuId).orElseThrow(IllegalArgumentException::new);
+        return menuRepository.findById(menuId).orElseThrow(NoSuchElementException::new);
     }
 }
