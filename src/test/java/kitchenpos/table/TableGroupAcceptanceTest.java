@@ -1,18 +1,16 @@
 package kitchenpos.table;
 
-import static kitchenpos.table.TableAcceptanceTest.사용가능;
-import static kitchenpos.table.TableAcceptanceTest.사용중;
-import static kitchenpos.table.TableAcceptanceTest.손님_입장;
-import static kitchenpos.table.TableAcceptanceTest.테이블_상태_변경;
+import static kitchenpos.table.TableAcceptanceAPI.단체_손님을_생성;
+import static kitchenpos.table.TableAcceptanceAPI.단체_손님을_해제;
+import static kitchenpos.table.TableAcceptanceAPI.손님_입장;
+import static kitchenpos.table.TableAcceptanceTest.빈자리;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
-import java.util.List;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
+import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,7 +18,6 @@ import org.springframework.http.HttpStatus;
 
 class TableGroupAcceptanceTest extends AcceptanceTest {
 
-    TableGroup 단체손님;
     OrderTable 손님1;
     OrderTable 손님2;
 
@@ -28,15 +25,15 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        손님1 = 손님_입장(4, 사용가능).as(OrderTable.class);
-        손님2 = 손님_입장(4, 사용가능).as(OrderTable.class);
+        손님1 = 손님_입장(4, 빈자리).as(OrderTable.class);
+        손님2 = 손님_입장(4, 빈자리).as(OrderTable.class);
     }
 
     @Test
     @DisplayName("단체 손님을 생성한다")
     void 단체_손님을_생성한다() {
         // when
-        ExtractableResponse<Response> response = 단체_손님을_생성(new TableGroup(), Arrays.asList(손님1, 손님2));
+        ExtractableResponse<Response> response = 단체_손님을_생성(Arrays.asList(손님1, 손님2));
 
         // then
         단체_손님이_생성됨(response);
@@ -46,24 +43,13 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     @DisplayName("단체 손님을 해제한다")
     void 단체_손님을_해제한다() {
         // given
-        단체손님 = 단체_손님을_생성(new TableGroup(), Arrays.asList(손님1, 손님2)).as(TableGroup.class);
+        Long 단체손님 = 단체_손님을_생성(Arrays.asList(손님1, 손님2)).jsonPath().getLong("id");
 
         // when
         ExtractableResponse<Response> response = 단체_손님을_해제(단체손님);
 
         // then
         단체_손님이_해제됨(response);
-    }
-
-
-    public static ExtractableResponse<Response> 단체_손님을_생성(TableGroup tableGroup, List<OrderTable> orderTableList) {
-        tableGroup.setOrderTables(orderTableList);
-
-        return AcceptanceTest.doPost("/api/table-groups", tableGroup);
-    }
-
-    public static ExtractableResponse<Response> 단체_손님을_해제(TableGroup tableGroup) {
-        return AcceptanceTest.doDelete("/api/table-groups/" + tableGroup.getId());
     }
 
     public static void 단체_손님이_생성됨(ExtractableResponse<Response> response) {

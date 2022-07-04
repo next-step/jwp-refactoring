@@ -1,25 +1,29 @@
 package kitchenpos.order;
 
+import static kitchenpos.table.TableAcceptanceTest.빈자리;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.application.OrderService;
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderLineItemDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.menu.dao.MenuRepository;
+import kitchenpos.order.application.OrderService;
+import kitchenpos.order.dao.OrderLineItemRepository;
+import kitchenpos.order.dao.OrderRepository;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderLineItems;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.table.dao.OrderTableRepository;
+import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,94 +41,106 @@ class OrderServiceTest {
     OrderService orderService;
 
     @Mock
-    MenuDao menuDao;
+    MenuRepository menuRepository;
 
     @Mock
-    OrderDao orderDao;
+    OrderRepository orderRepository;
 
     @Mock
-    OrderLineItemDao orderLineItemDao;
+    OrderLineItemRepository orderLineItemRepository;
 
     @Mock
-    OrderTableDao orderTableDao;
+    OrderTableRepository orderTableRepository;
 
-    Order 주문 = new Order();
-    OrderTable 테이블1 = new OrderTable();
-    OrderLineItem 주문내역 = new OrderLineItem();
+    Order 주문;
+    OrderTable 테이블1;
+    OrderLineItem 주문내역;
+    OrderRequest 주문요청;
 
     @BeforeEach
     void setUp() {
-        주문.setOrderedTime(LocalDateTime.now());
-        주문.setOrderStatus(OrderStatus.COOKING.name());
-        주문.setOrderLineItems(Collections.singletonList(주문내역));
+        테이블1 = new OrderTable(5, false);
+        주문내역 = new OrderLineItem(1L, 1L);
+
+        주문 = new Order(테이블1);
+
+        주문.setOrderLineItems(new OrderLineItems(Collections.singletonList(주문내역)));
+        주문내역.setOrder(주문);
+
+        주문요청 = new OrderRequest(1L,
+                Collections.singletonList(new OrderLineItemRequest(주문내역.getMenuId(), 주문내역.getQuantity())));
     }
 
     @Test
     @DisplayName("주문을 저장한다")
     void create() {
         // given
-        given(menuDao.countByIdIn(any())).willReturn(1L);
-        given(orderTableDao.findById(any())).willReturn(Optional.of(테이블1));
-        given(orderDao.save(any())).willReturn(주문);
-        given(orderLineItemDao.save(any())).willReturn(주문내역);
+        given(menuRepository.countByIdIn(any())).willReturn(1L);
+        given(orderTableRepository.findById(any())).willReturn(Optional.of(테이블1));
+        given(orderRepository.save(any())).willReturn(주문);
+        given(orderLineItemRepository.saveAll(any())).willReturn(Collections.singletonList(주문내역));
 
         // when
-        Order actual = orderService.create(주문);
+        OrderResponse actual = orderService.create(주문요청);
 
         // then
-        assertThat(actual).isEqualTo(주문);
+        assertAll(
+                () -> assertThat(actual).isNotNull(),
+                () -> assertThat(actual.getOrderStatus()).isEqualTo(OrderStatus.COOKING)
+        );
     }
 
     @Test
     @DisplayName("주문시 주문내역이 존재해야 한다")
     void create_EmptyOrderLineItemsError() {
         // given
-        주문.setOrderLineItems(null);
+        주문요청 = new OrderRequest(1L, Collections.emptyList());
+        given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(테이블1));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
-                () -> orderService.create(주문)
-        );
+                () -> orderService.create(주문요청)
+        ).withMessageContaining("주문 내역이 존재하지 않습니다.");
     }
 
     @Test
     @DisplayName("주문시 주문내역의 메뉴는 모두 존재하는 메뉴여야 한다")
     void create_nonMenuError() {
         // given
-        OrderLineItem 주문내역1 = new OrderLineItem();
-        OrderLineItem 주문내역2 = new OrderLineItem();
-        주문.setOrderLineItems(Arrays.asList(주문내역1, 주문내역2));
+        OrderLineItemRequest 주문내역1 = new OrderLineItemRequest(1L, 1L);
+        OrderLineItemRequest 주문내역2 = new OrderLineItemRequest(1L, 1L);
+        주문요청 = new OrderRequest(1L, Arrays.asList(주문내역1, 주문내역2));
 
-        given(menuDao.countByIdIn(any())).willReturn(1L);
+        given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(테이블1));
+        given(menuRepository.countByIdIn(any())).willReturn(1L);
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
-                () -> orderService.create(주문)
-        );
+                () -> orderService.create(주문요청)
+        ).withMessageContaining("존재하지 않는 메뉴입니다.");
     }
 
     @Test
     @DisplayName("주문시 주문테이블 정보를 가지고 있어야 한다")
     void create_nonExistTableError() {
         // given
-        given(menuDao.countByIdIn(any())).willReturn(1L);
-        given(orderTableDao.findById(any())).willReturn(Optional.empty());
+        테이블1.setEmpty(빈자리);
+        given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(테이블1));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
-                () -> orderService.create(주문)
-        );
+                () -> orderService.create(주문요청)
+        ).withMessageContaining("주문 테이블이 존재하지 않습니다.");
     }
 
     @Test
     @DisplayName("주문 리스트를 조회한다")
     void list() {
         // given
-        given(orderDao.findAll()).willReturn(Collections.singletonList(주문));
-        given(orderLineItemDao.findAllByOrderId(any())).willReturn(Collections.singletonList(주문내역));
+        given(orderRepository.findAll()).willReturn(Collections.singletonList(주문));
 
         // when
-        List<Order> actual = orderService.list();
+        List<OrderResponse> actual = orderService.list();
 
         // then
         assertAll(
@@ -137,31 +153,26 @@ class OrderServiceTest {
     @CsvSource(value = {"COOKING|MEAL", "COOKING|COMPLETION", "MEAL|COMPLETION"}, delimiter = '|')
     void changeOrderStatus(OrderStatus currentStatus, OrderStatus expected) {
         // given
-        주문.setId(1L);
-        주문.setOrderStatus(currentStatus.name());
-        Order 변경하려는_주문 = new Order();
-        변경하려는_주문.setOrderStatus(expected.name());
-        given(orderDao.findById(any())).willReturn(Optional.ofNullable(주문));
+        주문.changeOrderStatus(currentStatus);
+        given(orderRepository.findById(any())).willReturn(Optional.of(주문));
 
         // when
-        Order actual = orderService.changeOrderStatus(주문.getId(), 변경하려는_주문);
+        OrderResponse actual = orderService.changeOrderStatus(1L, expected);
 
         // then
-        assertThat(actual.getOrderStatus()).isEqualTo(expected.name());
+        assertThat(actual.getOrderStatus()).isEqualTo(expected);
     }
 
     @Test
     @DisplayName("현재 주문 상태가 계산 완료인 경우 변경할 수 없다")
     void changeOrderStatus_completion() {
         // given
-        주문.setId(1L);
-        주문.setOrderStatus(OrderStatus.COMPLETION.name());
-        Order 변경하려는_주문 = new Order();
-        변경하려는_주문.setOrderStatus(OrderStatus.COMPLETION.name());
+        주문.changeOrderStatus(OrderStatus.COMPLETION);
+        given(orderRepository.findById(any())).willReturn(Optional.of(주문));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
-                () -> orderService.changeOrderStatus(주문.getId(), 변경하려는_주문)
-        );
+                () -> orderService.changeOrderStatus(1L, OrderStatus.COMPLETION)
+        ).withMessageContaining("주문 상태가 계산 완료인 경우 변경할 수 없습니다.");
     }
 }
