@@ -1,14 +1,13 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
-import kitchenpos.dao.MenuProductDao;
-import kitchenpos.dao.ProductDao;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuGroup;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.Product;
-import org.junit.jupiter.api.BeforeEach;
+import kitchenpos.domain.*;
+import kitchenpos.dto.*;
+import kitchenpos.exception.MenuProductException;
+import kitchenpos.exception.PriceException;
+import kitchenpos.repository.MenuGroupRepository;
+import kitchenpos.repository.MenuProductRepository;
+import kitchenpos.repository.MenuRepository;
+import kitchenpos.repository.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,10 +19,12 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static kitchenpos.factory.MenuFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -32,16 +33,16 @@ import static org.mockito.BDDMockito.given;
 class MenuServiceTest {
 
     @Mock
-    MenuDao menuDao;
+    MenuRepository menuRepository;
 
     @Mock
-    MenuGroupDao menuGroupDao;
+    MenuGroupRepository menuGroupRepository;
 
     @Mock
-    MenuProductDao menuProductDao;
+    MenuProductRepository menuProductRepository;
 
     @Mock
-    ProductDao productDao;
+    ProductRepository productRepository;
 
     @InjectMocks
     MenuService menuService;
@@ -63,22 +64,30 @@ class MenuServiceTest {
         간장치킨 = 상품생성(2L, "간장치킨", 15000);
         양념치킨한마리 = 메뉴_상품_생성(양념치킨);
         간장치킨한마리 = 메뉴_상품_생성(간장치킨);
-        치킨 = new Menu(1L, "치킨", new BigDecimal(15000), 한마리메뉴.getId(), Arrays.asList(양념치킨한마리, 간장치킨한마리));
-        given(menuDao.save(any(Menu.class))).willReturn(치킨);
-        given(menuGroupDao.existsById(anyLong())).willReturn(true);
-        given(productDao.findById(양념치킨한마리.getProductId())).willReturn(Optional.of(양념치킨));
-        given(productDao.findById(간장치킨한마리.getProductId())).willReturn(Optional.of(간장치킨));
+        MenuProductRequest 양념치킨한마리Request = new MenuProductRequest(양념치킨.getId(), 1);
+        MenuProductRequest 간장치킨한마리Request = new MenuProductRequest(간장치킨.getId(), 1);
+        MenuRequest 치킨Request = new MenuRequest("치킨", new BigDecimal(30000),
+                                                    한마리메뉴.getId(), Arrays.asList(양념치킨한마리Request, 간장치킨한마리Request));
+        치킨 = new Menu(1L, "치킨", new BigDecimal(30000), 한마리메뉴, Arrays.asList(양념치킨한마리, 간장치킨한마리));
+        given(menuRepository.save(any(Menu.class))).willReturn(치킨);
+        given(menuGroupRepository.findById(한마리메뉴.getId())).willReturn(Optional.of(한마리메뉴));
+        given(productRepository.findById(양념치킨한마리.getProduct().getId())).willReturn(Optional.of(양념치킨));
+        given(productRepository.findById(간장치킨한마리.getProduct().getId())).willReturn(Optional.of(간장치킨));
 
         //when
-        Menu savedMenu = menuService.create(치킨);
+        MenuResponse menuResponse = menuService.create(치킨Request);
 
         //then
-        assertThat(savedMenu).isNotNull()
+        assertThat(menuResponse).isNotNull()
                 .satisfies(menu -> {
                             menu.getId().equals(치킨.getId());
                             menu.getName().equals(치킨.getName());
-                            menu.getMenuGroupId().equals(한마리메뉴.getId());
-                            menu.getMenuProducts().containsAll(Arrays.asList(양념치킨한마리, 간장치킨한마리));
+                            menu.getMenuGroupResponse().getId().equals(한마리메뉴.getId());
+                            menu.getMenuProductResponses().stream()
+                                                        .map(MenuProductResponse::getProductResponse)
+                                                        .map(ProductResponse::getId)
+                                                        .collect(Collectors.toList())
+                                                        .containsAll(Arrays.asList(양념치킨한마리.getProduct().getId(), 간장치킨한마리.getProduct().getId()));
                         }
                 );
     }
@@ -93,12 +102,15 @@ class MenuServiceTest {
         간장치킨한마리 = 메뉴_상품_생성(간장치킨);
 
         //given
-        치킨 = new Menu(1L, "치킨", new BigDecimal(15000), 2L, Arrays.asList(양념치킨한마리, 간장치킨한마리));
-        given(menuGroupDao.existsById(anyLong())).willReturn(false);
+        MenuProductRequest 양념치킨한마리Request = new MenuProductRequest(양념치킨.getId(), 1);
+        MenuProductRequest 간장치킨한마리Request = new MenuProductRequest(간장치킨.getId(), 1);
+        MenuRequest 치킨Request = new MenuRequest("치킨", new BigDecimal(30000),
+                한마리메뉴.getId(), Arrays.asList(양념치킨한마리Request, 간장치킨한마리Request));
+        given(menuGroupRepository.findById(anyLong())).willReturn(Optional.empty());
 
         //then
         assertThatThrownBy(() -> {
-            menuService.create(치킨);
+            menuService.create(치킨Request);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -111,12 +123,17 @@ class MenuServiceTest {
         간장치킨 = 상품생성(2L, "간장치킨", 15000);
         양념치킨한마리 = 메뉴_상품_생성(양념치킨);
         간장치킨한마리 = 메뉴_상품_생성(간장치킨);
-        치킨 = new Menu(1L, "치킨", new BigDecimal(-1), 2L, Arrays.asList(양념치킨한마리, 간장치킨한마리));
+        MenuProductRequest 양념치킨한마리Request = new MenuProductRequest(양념치킨.getId(), 1);
+        MenuProductRequest 간장치킨한마리Request = new MenuProductRequest(간장치킨.getId(), 1);
+        MenuRequest 치킨Request = new MenuRequest("치킨", new BigDecimal(-1),
+                한마리메뉴.getId(), Arrays.asList(양념치킨한마리Request, 간장치킨한마리Request));
+        given(menuGroupRepository.findById(한마리메뉴.getId())).willReturn(Optional.of(한마리메뉴));
 
         //then
         assertThatThrownBy(() -> {
-            menuService.create(치킨);
-        }).isInstanceOf(IllegalArgumentException.class);
+            menuService.create(치킨Request);
+        }).isInstanceOf(PriceException.class)
+            .hasMessageContaining(PriceException.INVALID_PRICE_MSG);
     }
 
     @Test
@@ -128,15 +145,20 @@ class MenuServiceTest {
         간장치킨 = 상품생성(2L, "간장치킨", 15000);
         양념치킨한마리 = 메뉴_상품_생성(양념치킨);
         간장치킨한마리 = 메뉴_상품_생성(간장치킨);
-        치킨 = new Menu(1L, "치킨", new BigDecimal(50000), 2L, Arrays.asList(양념치킨한마리, 간장치킨한마리));
-        given(menuGroupDao.existsById(anyLong())).willReturn(true);
-        given(productDao.findById(양념치킨한마리.getProductId())).willReturn(Optional.of(양념치킨));
-        given(productDao.findById(간장치킨한마리.getProductId())).willReturn(Optional.of(간장치킨));
+        치킨 = new Menu(1L, "치킨", new BigDecimal(30000), 한마리메뉴, Arrays.asList(양념치킨한마리, 간장치킨한마리));
+        MenuProductRequest 양념치킨한마리Request = new MenuProductRequest(양념치킨.getId(), 1);
+        MenuProductRequest 간장치킨한마리Request = new MenuProductRequest(간장치킨.getId(), 1);
+        MenuRequest 치킨Request = new MenuRequest("치킨", new BigDecimal(50000),
+                한마리메뉴.getId(), Arrays.asList(양념치킨한마리Request, 간장치킨한마리Request));
+        given(menuGroupRepository.findById(한마리메뉴.getId())).willReturn(Optional.of(한마리메뉴));
+        given(productRepository.findById(양념치킨한마리.getProduct().getId())).willReturn(Optional.of(양념치킨));
+        given(productRepository.findById(간장치킨한마리.getProduct().getId())).willReturn(Optional.of(간장치킨));
 
         //then
         assertThatThrownBy(() -> {
-            menuService.create(치킨);
-        }).isInstanceOf(IllegalArgumentException.class);
+            menuService.create(치킨Request);
+        }).isInstanceOf(MenuProductException.class)
+        .hasMessageContaining(MenuProductException.MENU_PRICE_MORE_EXPENSIVE_PRODUCTS_MSG);
     }
 
     @Test
@@ -148,13 +170,17 @@ class MenuServiceTest {
         간장치킨 = 상품생성(2L, "간장치킨", 15000);
         양념치킨한마리 = 메뉴_상품_생성(양념치킨);
         간장치킨한마리 = 메뉴_상품_생성(간장치킨);
-        치킨 = new Menu(1L, "치킨", new BigDecimal(15000), 2L, Arrays.asList(양념치킨한마리, 간장치킨한마리));
-        given(menuGroupDao.existsById(anyLong())).willReturn(true);
-        given(productDao.findById(양념치킨한마리.getProductId())).willReturn(Optional.empty());
+        치킨 = new Menu(1L, "치킨", new BigDecimal(15000), 한마리메뉴, Arrays.asList(양념치킨한마리, 간장치킨한마리));
+        MenuProductRequest 양념치킨한마리Request = new MenuProductRequest(양념치킨.getId(), 1);
+        MenuProductRequest 간장치킨한마리Request = new MenuProductRequest(간장치킨.getId(), 1);
+        MenuRequest 치킨Request = new MenuRequest("치킨", new BigDecimal(50000),
+                한마리메뉴.getId(), Arrays.asList(양념치킨한마리Request, 간장치킨한마리Request));
+        given(menuGroupRepository.findById(한마리메뉴.getId())).willReturn(Optional.of(한마리메뉴));
+        given(productRepository.findById(양념치킨한마리.getProduct().getId())).willReturn(Optional.empty());
 
         //then
         assertThatThrownBy(() -> {
-            menuService.create(치킨);
+            menuService.create(치킨Request);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -166,13 +192,20 @@ class MenuServiceTest {
         간장치킨 = 상품생성(2L, "간장치킨", 15000);
         양념치킨한마리 = 메뉴_상품_생성(양념치킨);
         간장치킨한마리 = 메뉴_상품_생성(간장치킨);
-        치킨 = new Menu(1L, "치킨", new BigDecimal(15000), 한마리메뉴.getId(), Arrays.asList(양념치킨한마리, 간장치킨한마리));
-        given(menuDao.findAll()).willReturn(Arrays.asList(치킨));
+        치킨 = new Menu(1L, "치킨", new BigDecimal(30000), 한마리메뉴, Arrays.asList(양념치킨한마리, 간장치킨한마리));
+        given(menuRepository.findAll()).willReturn(Arrays.asList(치킨));
 
         //when
-        List<Menu> menus = menuService.list();
+        List<MenuResponse> menus = menuService.list();
 
         //then
-        assertThat(menus).containsExactlyInAnyOrderElementsOf(Arrays.asList(치킨));
+        assertAll(() -> {
+            assertThat(menus.stream().map(MenuResponse::getId)
+                    .collect(Collectors.toList()))
+                    .containsExactlyInAnyOrderElementsOf(Arrays.asList(치킨.getId()));
+            assertThat(menus.stream().map(MenuResponse::getPrice)
+                    .collect(Collectors.toList()))
+                    .containsExactlyInAnyOrderElementsOf(Arrays.asList(치킨.getPrice()));
+        });
     }
 }

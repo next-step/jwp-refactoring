@@ -1,11 +1,16 @@
 package kitchenpos.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.dao.TableGroupDao;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
-import org.junit.jupiter.api.BeforeEach;
+import kitchenpos.dto.OrderTableIdsRequest;
+import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
+import kitchenpos.exception.OrderStatusException;
+import kitchenpos.exception.OrderTableException;
+import kitchenpos.repository.OrderRepository;
+import kitchenpos.repository.OrderTableRepository;
+import kitchenpos.repository.TableGroupRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,8 +20,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-import static kitchenpos.factory.TableGroupFixture.테이블그룹_생성;
+import static kitchenpos.factory.TableGroupFixture.테이블_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
@@ -29,37 +36,43 @@ class TableGroupServiceTest {
     TableGroupService tableGroupService;
 
     @Mock
-    OrderDao orderDao;
+    OrderRepository orderRepository;
 
     @Mock
-    OrderTableDao orderTableDao;
+    OrderTableRepository orderTableRepository;
 
     @Mock
-    TableGroupDao tableGroupDao;
+    TableGroupRepository tableGroupRepository;
 
-    TableGroup 주문테이블그룹;
+    TableGroup 단체;
 
     OrderTable 주문테이블1;
     OrderTable 주문테이블2;
 
     @Test
-    @DisplayName("주문테이블그룹을 생성한다.(Happy Path)")
+    @DisplayName("단체를 생성 및 지정한다.(Happy Path)")
     void create() {
         //given
-        주문테이블1 = 테이블그룹_생성(1L);
-        주문테이블2 = 테이블그룹_생성(2L);
-        주문테이블그룹 = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(주문테이블1, 주문테이블2));
-        given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(주문테이블1, 주문테이블2));
-        given(tableGroupDao.save(any(TableGroup.class))).willReturn(주문테이블그룹);
+        주문테이블1 = 테이블_생성(1L);
+        주문테이블2 = 테이블_생성(2L);
+        단체 = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(주문테이블1, 주문테이블2));
+        TableGroupRequest 단체Request = new TableGroupRequest(Arrays.asList(new OrderTableIdsRequest(주문테이블1.getId()),
+                new OrderTableIdsRequest(주문테이블2.getId())));
+        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(Arrays.asList(주문테이블1, 주문테이블2));
+        given(tableGroupRepository.save(any(TableGroup.class))).willReturn(단체);
 
         //when
-        TableGroup savedTableGroup = tableGroupService.create(주문테이블그룹);
+        TableGroupResponse savedTableGroup = tableGroupService.create(단체Request);
 
         //then
         assertThat(savedTableGroup).isNotNull()
                 .satisfies(tableGroup -> {
-                            tableGroup.getId().equals(주문테이블그룹.getId());
-                            tableGroup.getOrderTables().containsAll(Arrays.asList(주문테이블1, 주문테이블2));
+                            tableGroup.getId().equals(단체.getId());
+                            tableGroup.getOrderTableResponses()
+                                        .stream()
+                                        .map(OrderTableResponse::getId)
+                                        .collect(Collectors.toList())
+                                        .containsAll(Arrays.asList(주문테이블1.getId(), 주문테이블2.getId()));
                         }
                 );
     }
@@ -68,29 +81,32 @@ class TableGroupServiceTest {
     @DisplayName("테이블 그룹에 2개 이상의 테이블이 없는 경우 테이블 그룹 생성 불가")
     void createInvalidOrderTables() {
         //given
-        주문테이블1 = 테이블그룹_생성(1L);
-        주문테이블2 = 테이블그룹_생성(2L);
-        주문테이블그룹 = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(주문테이블1));
+        주문테이블1 = 테이블_생성(1L);
+        TableGroupRequest 단체Request = new TableGroupRequest(Arrays.asList(new OrderTableIdsRequest(주문테이블1.getId())));
+        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(Arrays.asList(주문테이블1));
 
         //then
         assertThatThrownBy(() -> {
-            tableGroupService.create(주문테이블그룹);
-        }).isInstanceOf(IllegalArgumentException.class);
+            tableGroupService.create(단체Request);
+        }).isInstanceOf(OrderTableException.class)
+        .hasMessageContaining(OrderTableException.ORDER_TABLE_SIZE_OVER_TWO_MSG);
     }
 
     @Test
     @DisplayName("테이블 그룹에 유효하지 않은 테이블이 존재할 경우 그룹 생성 불가")
     void createInvalidOrderTable() {
         //given
-        주문테이블1 = 테이블그룹_생성(1L);
-        주문테이블2 = 테이블그룹_생성(2L);
-        OrderTable 유효하지않은테이블 = new OrderTable();
-        주문테이블그룹 = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(주문테이블1, 주문테이블2, 유효하지않은테이블));
-        given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(주문테이블1, 주문테이블2));
+        주문테이블1 = 테이블_생성(1L);
+        주문테이블2 = 테이블_생성(2L);
+        OrderTable 유효하지않은테이블 = new OrderTable(3L, null, 3, false);
+        단체 = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(주문테이블1, 주문테이블2));
+        TableGroupRequest 단체Request = new TableGroupRequest(Arrays.asList(new OrderTableIdsRequest(주문테이블1.getId()),
+                new OrderTableIdsRequest(주문테이블2.getId()), new OrderTableIdsRequest(3L)));
+        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(Arrays.asList(주문테이블1, 주문테이블2));
 
         //then
         assertThatThrownBy(() -> {
-            tableGroupService.create(주문테이블그룹);
+            tableGroupService.create(단체Request);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -98,33 +114,32 @@ class TableGroupServiceTest {
     @DisplayName("테이블 그룹내 테이블이 다른 테이블 그룹에 포함되어 있는 경우 그룹 생성 불가")
     void createInvalidAssignedTableGroup() {
         //given
-        주문테이블1 = 테이블그룹_생성(1L);
-        주문테이블2 = 테이블그룹_생성(2L);
-        주문테이블1.setTableGroupId(2L);
-        주문테이블2.setTableGroupId(2L);
-        주문테이블그룹 = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(주문테이블1, 주문테이블2));
-        given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(주문테이블1, 주문테이블2));
+        TableGroup 다른단체 = new TableGroup(5L, LocalDateTime.now());
+        주문테이블1 = 테이블_생성(1L);
+        주문테이블2 = 테이블_생성(2L, 다른단체, 2, false);
+        TableGroupRequest 단체Request = new TableGroupRequest(Arrays.asList(new OrderTableIdsRequest(주문테이블1.getId()),
+                new OrderTableIdsRequest(주문테이블2.getId())));
+        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(Arrays.asList(주문테이블1, 주문테이블2));
 
         //then
         assertThatThrownBy(() -> {
-            tableGroupService.create(주문테이블그룹);
-        }).isInstanceOf(IllegalArgumentException.class);
+            tableGroupService.create(단체Request);
+        }).isInstanceOf(OrderTableException.class)
+        .hasMessageContaining(OrderTableException.ORDER_TALBE_ALREADY_HAS_GROUP_MSG);
     }
 
     @Test
     @DisplayName("테이블 그룹내 테이블이 중복되어 있을 경우 그룹 생성 불가")
     void createDuplicateTable() {
         //given
-        주문테이블1 = 테이블그룹_생성(1L);
-        주문테이블2 = 테이블그룹_생성(2L);
-        주문테이블1.setTableGroupId(1L);
-        주문테이블2.setTableGroupId(1L);
-        주문테이블그룹 = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(주문테이블1, 주문테이블1, 주문테이블2));
-        given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(주문테이블1, 주문테이블2));
+        주문테이블1 = 테이블_생성(1L);
+        TableGroupRequest 단체Request = new TableGroupRequest(Arrays.asList(new OrderTableIdsRequest(주문테이블1.getId()),
+                new OrderTableIdsRequest(주문테이블1.getId())));
+        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(Arrays.asList(주문테이블1));
 
         //then
         assertThatThrownBy(() -> {
-            tableGroupService.create(주문테이블그룹);
+            tableGroupService.create(단체Request);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -132,39 +147,35 @@ class TableGroupServiceTest {
     @DisplayName("주문테이블 그룹에 포함된 주물테이블들 그룹 해제(Happy Path)")
     void ungroup() {
         //given
-        주문테이블1 = 테이블그룹_생성(1L);
-        주문테이블2 = 테이블그룹_생성(2L);
-        주문테이블그룹 = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(주문테이블1, 주문테이블2));
-        주문테이블1.setTableGroupId(주문테이블그룹.getId());
-        주문테이블2.setTableGroupId(주문테이블그룹.getId());
-        given(orderTableDao.findAllByTableGroupId(anyLong())).willReturn(Arrays.asList(주문테이블1, 주문테이블2));
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
-        given(orderTableDao.save(주문테이블1)).willReturn(주문테이블1);
-        given(orderTableDao.save(주문테이블2)).willReturn(주문테이블2);
+        주문테이블1 = 테이블_생성(1L, 단체, 2, false);
+        주문테이블2 = 테이블_생성(2L, 단체, 3, false);
+        단체 = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(주문테이블1, 주문테이블2));
+        given(tableGroupRepository.findById(anyLong())).willReturn(Optional.of(단체));
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
 
         //when
-        tableGroupService.ungroup(주문테이블그룹.getId());
+        tableGroupService.ungroup(단체.getId());
 
         //then
-        assertThat(주문테이블1.getTableGroupId()).isNull();
-        assertThat(주문테이블2.getTableGroupId()).isNull();
+        assertThat(주문테이블1.getTableGroup()).isNull();
+        assertThat(주문테이블2.getTableGroup()).isNull();
     }
 
     @Test
     @DisplayName("주문테이블 그룹에 포함된 주물테이블들이 조리중/식사중일 경우 그룹 해제 불가")
     void ungroupInvalidOrderStatus() {
         //given
-        주문테이블1 = 테이블그룹_생성(1L);
-        주문테이블2 = 테이블그룹_생성(2L);
-        주문테이블그룹 = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(주문테이블1, 주문테이블2));
-        주문테이블1.setTableGroupId(주문테이블그룹.getId());
-        주문테이블2.setTableGroupId(주문테이블그룹.getId());
-        given(orderTableDao.findAllByTableGroupId(anyLong())).willReturn(Arrays.asList(주문테이블1, 주문테이블2));
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
+        //given
+        주문테이블1 = 테이블_생성(1L, 단체, 2, false);
+        주문테이블2 = 테이블_생성(2L, 단체, 3, false);
+        단체 = new TableGroup(1L, LocalDateTime.now(), Arrays.asList(주문테이블1, 주문테이블2));
+        given(tableGroupRepository.findById(anyLong())).willReturn(Optional.of(단체));
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
 
         //then
         assertThatThrownBy(() -> {
-            tableGroupService.ungroup(주문테이블그룹.getId());
-        }).isInstanceOf(IllegalArgumentException.class);
+            tableGroupService.ungroup(단체.getId());
+        }).isInstanceOf(OrderStatusException.class)
+            .hasMessageContaining(OrderStatusException.ORDER_STATUS_CAN_NOT_UNGROUP_MSG);
     }
 }

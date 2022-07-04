@@ -1,52 +1,68 @@
 package kitchenpos.domain;
 
+import kitchenpos.exception.OrderStatusException;
+import kitchenpos.exception.OrderTableException;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
+@Entity
 public class Order {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long orderTableId;
-    private String orderStatus;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private OrderTable orderTable;
+
+    @Column
+    private OrderStatus orderStatus;
+
+    @Column
     private LocalDateTime orderedTime;
-    private List<OrderLineItem> orderLineItems;
 
-    public Order() {
+    @Embedded
+    private OrderLineItems orderLineItems = new OrderLineItems();
+
+    protected Order() {
     }
 
-    public Order(Long id, Long orderTableId) {
-        this.id = id;
-        this.orderTableId = orderTableId;
+    public Order(OrderTable orderTable) {
+        this.orderStatus = OrderStatus.COOKING;
+        this.orderedTime = LocalDateTime.now();
+        this.orderTable = orderTable;
     }
 
-    public Order(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+    public Order(Long id, OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         this.id = id;
-        this.orderTableId = orderTableId;
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
-        this.orderLineItems = orderLineItems;
+        this.orderTable = orderTable;
+        this.orderStatus = OrderStatus.COOKING;
+        this.orderedTime = LocalDateTime.now();
+        this.orderLineItems = new OrderLineItems(orderLineItems);
+    }
+
+    public static Order from(OrderTable orderTable) {
+        if (orderTable.isEmpty()) {
+            throw new OrderTableException(OrderTableException.ORDER_TABLE_IS_EMPTY_MSG);
+        }
+        return new Order(orderTable);
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    public OrderTable getOrderTable() {
+        return orderTable;
     }
 
-    public Long getOrderTableId() {
-        return orderTableId;
-    }
-
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
-    }
-
-    public String getOrderStatus() {
+    public OrderStatus getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(final String orderStatus) {
+    public void setOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
 
@@ -54,15 +70,32 @@ public class Order {
         return orderedTime;
     }
 
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
-    }
-
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
+        return orderLineItems.getOrderLineItems();
     }
 
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
+    public void addOrderLineItem(Menu menu, long quantity) {
+        orderLineItems.add(new OrderLineItem(this, menu, quantity));
+    }
+
+    public void changeOrderStatus(OrderStatus orderStatus) {
+        if (OrderStatus.COMPLETION.name().equals(this.orderStatus.name())) {
+            throw new OrderStatusException(OrderStatusException.COMPLETE_DOES_NOT_CHANGE_MSG);
+        }
+
+        this.orderStatus = orderStatus;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Order order = (Order) o;
+        return Objects.equals(id, order.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

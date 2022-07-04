@@ -1,14 +1,26 @@
 package kitchenpos.domain;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
+@Entity
 public class TableGroup {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column
     private LocalDateTime createdDate;
-    private List<OrderTable> orderTables;
+    @Embedded
+    private OrderTables orderTables;
 
-    public TableGroup() {
+    protected TableGroup() {
+    }
+
+    public TableGroup(List<OrderTable> orderTables) {
+        createdDate = LocalDateTime.now();
+        this.orderTables = new OrderTables(orderTables);
     }
 
     public TableGroup(Long id, LocalDateTime createdDate) {
@@ -19,7 +31,7 @@ public class TableGroup {
     public TableGroup(Long id, LocalDateTime createdDate, List<OrderTable> orderTables) {
         this.id = id;
         this.createdDate = createdDate;
-        this.orderTables = orderTables;
+        this.orderTables = new OrderTables(orderTables);
     }
 
     public Long getId() {
@@ -38,11 +50,25 @@ public class TableGroup {
         this.createdDate = createdDate;
     }
 
-    public List<OrderTable> getOrderTables() {
+    public OrderTables getOrderTables() {
         return orderTables;
     }
 
-    public void setOrderTables(final List<OrderTable> orderTables) {
-        this.orderTables = orderTables;
+    public void unGroup() {
+        orderTables.unGroup();
+        this.orderTables = new OrderTables();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TableGroup that = (TableGroup) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

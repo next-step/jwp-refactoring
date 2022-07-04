@@ -1,55 +1,61 @@
 package kitchenpos.domain;
 
+import javax.persistence.*;
+import java.math.BigDecimal;
+
+@Entity
 public class MenuProduct {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
-    private Long menuId;
-    private Long productId;
-    private long quantity;
 
-    public MenuProduct() {
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Menu menu;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Product product;
+
+    @Embedded
+    private Quantity quantity;
+
+    protected MenuProduct() {
     }
 
-    public MenuProduct(Long productId, long quantity) {
-        this.productId = productId;
-        this.quantity = quantity;
+    public MenuProduct(Product product, long quantity) {
+        this.product = product;
+        this.quantity = new Quantity(quantity);
     }
 
-    public MenuProduct(Long seq, Long menuId, Long productId, long quantity) {
+    public MenuProduct(Menu menu, Product product, long quantity) {
+        this.menu = menu;
+        this.product = product;
+        this.quantity = new Quantity(quantity);
+    }
+
+    public MenuProduct(Long seq, Menu menu, Product product, long quantity) {
         this.seq = seq;
-        this.menuId = menuId;
-        this.productId = productId;
-        this.quantity = quantity;
+        this.menu = menu;
+        this.product = product;
+        this.quantity = new Quantity(quantity);
+    }
+
+    public BigDecimal getTotalPrice() {
+        return product.getPrice().multiply(BigDecimal.valueOf(quantity.getQuantity()));
     }
 
     public Long getSeq() {
         return seq;
     }
 
-    public void setSeq(final Long seq) {
-        this.seq = seq;
+    public Menu getMenu() {
+        return menu;
     }
 
-    public Long getMenuId() {
-        return menuId;
-    }
-
-    public void setMenuId(final Long menuId) {
-        this.menuId = menuId;
-    }
-
-    public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(final Long productId) {
-        this.productId = productId;
+    public Product getProduct() {
+        return product;
     }
 
     public long getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
+        return quantity.getQuantity();
     }
 }
