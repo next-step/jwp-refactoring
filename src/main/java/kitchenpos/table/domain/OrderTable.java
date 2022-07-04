@@ -99,4 +99,10 @@ public class OrderTable {
     public void updateTableGroup(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
     }
+
+    public void validate() {
+        if (!this.isEmpty() || Objects.nonNull(this.getTableGroup())) {
+            throw new BadRequestException(ErrorCode.ORDER_TABLE_GROUPED);
+        }
+    }
 }

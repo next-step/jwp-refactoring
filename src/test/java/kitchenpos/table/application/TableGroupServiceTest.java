@@ -1,5 +1,7 @@
 package kitchenpos.table.application;
 
+import kitchenpos.common.exception.BadRequestException;
+import kitchenpos.common.exception.ErrorCode;
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
@@ -21,7 +23,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static kitchenpos.factory.fixture.OrderTableFixtureFactory.createOrderTable;
-import static kitchenpos.factory.fixture.TableGroupFixtureFactory.createTableGroup;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -45,21 +46,19 @@ class TableGroupServiceTest {
     private OrderTable firstOrderTable;
     private OrderTable secondOrderTable;
     private List<OrderTable> orderTables;
-    private TableGroup tableGroup;
 
     @BeforeEach
     void setUp() {
         firstOrderTable = createOrderTable(1L, true);
         secondOrderTable = createOrderTable(2L, true);
         orderTables = Arrays.asList(firstOrderTable, secondOrderTable);
-        tableGroup = createTableGroup(LocalDateTime.now(), orderTables);
     }
 
     @DisplayName("테이블 그룹을 생성할 수 있다.")
     @Test
     void create() {
         given(orderTableRepository.findAllByIdIn(anyList())).willReturn(orderTables);
-        given(tableGroupRepository.save(any(TableGroup.class))).willReturn(tableGroup);
+        given(tableGroupRepository.save(any(TableGroup.class))).willReturn(new TableGroup(1L, LocalDateTime.now(), orderTables));
 
         List<OrderTableRequest> orderTableRequest = Arrays.asList(
                 new OrderTableRequest(1, true),
@@ -76,15 +75,23 @@ class TableGroupServiceTest {
     @Test
     void create_invalid_orderTables_size() {
         assertThatThrownBy(() -> tableGroupService.create(new TableGroupRequest(LocalDateTime.now(), Arrays.asList())))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage(ErrorCode.MORE_THAN_TWO_ORDER_TABLE.getMessage());
     }
 
     @DisplayName("등록된 주문 테이블을 사용하지 않는다면 테이블 그룹을 생성할 수 없다.")
     @Test
     void create_invalid_orderTables_id() {
-        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(Arrays.asList(firstOrderTable));
+        List<OrderTable> invalidOrderTables = Arrays.asList(
+                new OrderTable(3L),
+                new OrderTable(4L),
+                new OrderTable(5L)
+        );
 
-        List<OrderTableRequest> orderTableRequest = Arrays.asList(new OrderTableRequest(1, true),
+        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(invalidOrderTables);
+
+        List<OrderTableRequest> orderTableRequest = Arrays.asList(
+                new OrderTableRequest(1, true),
                 new OrderTableRequest(2, true));
 
         TableGroupRequest request = new TableGroupRequest(LocalDateTime.now(), orderTableRequest);
@@ -104,10 +111,11 @@ class TableGroupServiceTest {
 
         TableGroupRequest request = new TableGroupRequest(LocalDateTime.now(), orderTableRequest);
 
-        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(Arrays.asList(firstOrderTable));
+        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(Arrays.asList(firstOrderTable, secondOrderTable));
 
         assertThatThrownBy(() -> tableGroupService.create(request))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage(ErrorCode.ORDER_TABLE_GROUPED.getMessage());
     }
 
     @DisplayName("등록된 주문 테이블에 테이블그룹아이디가 설정되어 있다면, 테이블 그룹을 생성할 수 없다.")
@@ -115,7 +123,7 @@ class TableGroupServiceTest {
     void create_nonNull_orderTables() {
         OrderTable firstOrderTable = new OrderTable(false, new TableGroup(1L));
 
-        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(Arrays.asList(firstOrderTable));
+        given(orderTableRepository.findAllByIdIn(anyList())).willReturn(Arrays.asList(firstOrderTable, secondOrderTable));
 
         List<OrderTableRequest> orderTableRequest = Arrays.asList(new OrderTableRequest(1, true),
                 new OrderTableRequest(2, true));
@@ -123,7 +131,8 @@ class TableGroupServiceTest {
         TableGroupRequest request = new TableGroupRequest(LocalDateTime.now(), orderTableRequest);
 
         assertThatThrownBy(() -> tableGroupService.create(request))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage(ErrorCode.ORDER_TABLE_GROUPED.getMessage());
     }
 
     @DisplayName("테이블 그룹을 해제할 수 있다.")
@@ -146,6 +155,7 @@ class TableGroupServiceTest {
         given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(Boolean.TRUE);
 
         assertThatThrownBy(() -> tableGroupService.ungroup(1L))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(BadRequestException.class)
+                .hasMessage(ErrorCode.CAN_NOT_CHANGE_COOKING_AND_MEAL.getMessage());
     }
 }
