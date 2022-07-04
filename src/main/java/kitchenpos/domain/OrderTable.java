@@ -64,6 +64,10 @@ public class OrderTable {
         this.tableGroupId = tableGroupId;
     }
 
+    public void changeTableGroupId(Long tableGroupId) {
+        this.tableGroupId = tableGroupId;
+    }
+
     public void changeEmptyTable() {
         if (Objects.nonNull(tableGroupId)) {
             throw new IllegalStateException("테이블 그룹이 있어 변경할 수 없습니다.");

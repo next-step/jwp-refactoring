@@ -12,6 +12,8 @@ import kitchenpos.AcceptanceTest;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
 import kitchenpos.dto.OrderTableRequest;
+import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -50,7 +52,7 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void tableGroupManage() {
         //given
-        TableGroup 단체지정테이블 = new TableGroup(Arrays.asList(주문테이블1, 주문테이블2));
+        TableGroupRequest 단체지정테이블 = new TableGroupRequest(Arrays.asList(주문테이블1.getId(), 주문테이블2.getId()));
 
         //when
         final ExtractableResponse<Response> response = 단체지정테이블_요청(단체지정테이블);
@@ -60,25 +62,24 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
 
 
 
-        List<OrderTable> orderTables = 주문테이블을_조회();
-        단체지정테이블 = response.as(TableGroup.class);
+        TableGroupResponse 단체지정된_테이블 = response.as(TableGroupResponse.class);
         //then
-        단체지정된_테이블이_조회됨(단체지정테이블, orderTables);
+        단체지정된_테이블이_조회됨(단체지정된_테이블, 주문테이블을_조회());
 
-        //when
-        final ExtractableResponse<Response> deleteResponse = 단체지정_테이블_제거(단체지정테이블);
-        //then
-        단체_테이블_제거가됨(deleteResponse);
-
-        //when
-        orderTables = 주문테이블을_조회();
-        //then
-        단체지정된_테이블이_조회되지_않음(단체지정테이블, orderTables);
+//        //when
+//        final ExtractableResponse<Response> deleteResponse = 단체지정_테이블_제거(단체지정테이블);
+//        //then
+//        단체_테이블_제거가됨(deleteResponse);
+//
+//        //when
+//        List<OrderTable> orderTables = 주문테이블을_조회();
+//        //then
+//        단체지정된_테이블이_조회되지_않음(단체지정테이블, orderTables);
     }
 
 
 
-    private void 단체지정된_테이블이_조회됨(TableGroup tableGroup, List<OrderTable> 주문테이블을_조회) {
+    private void 단체지정된_테이블이_조회됨(TableGroupResponse tableGroup, List<OrderTable> 주문테이블을_조회) {
         final List<OrderTable> collect = 주문테이블을_조회.stream()
                 .filter((it) -> tableGroup.getId().equals(it.getTableGroupId()))
                 .collect(Collectors.toList());
@@ -99,10 +100,10 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
         assertThat(response.header(HttpHeaders.LOCATION)).isNotEmpty();
     }
 
-    private ExtractableResponse<Response> 단체지정테이블_요청(TableGroup tableGroup) {
+    private ExtractableResponse<Response> 단체지정테이블_요청(TableGroupRequest tableGroupRequest) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(tableGroup)
+                .body(tableGroupRequest)
                 .when().post("/api/table-groups")
                 .then()
                 .log().all()

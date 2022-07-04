@@ -1,87 +1,76 @@
 package kitchenpos.application;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-import kitchenpos.dao.TableGroupDao;
+import kitchenpos.domain.GroupOrderTables;
 import kitchenpos.domain.OrderStatus;
 import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.dto.OrderTableResponse;
+import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.dto.TableGroupResponse;
 import kitchenpos.repository.OrderRepository;
 import kitchenpos.repository.OrderTableRepository;
+import kitchenpos.repository.TableGroupRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 @Service
 public class TableGroupService {
     private final OrderTableRepository orderTableRepository;
     private final OrderRepository orderRepository;
-    private final TableGroupDao tableGroupDao;
+    private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final OrderTableRepository orderTableRepository, final OrderRepository orderRepository, final TableGroupDao tableGroupDao) {
+    public TableGroupService(final OrderTableRepository orderTableRepository, final OrderRepository orderRepository,
+                             final TableGroupRepository tableGroupRepository) {
+
         this.orderTableRepository = orderTableRepository;
         this.orderRepository = orderRepository;
-        this.tableGroupDao = tableGroupDao;
+        this.tableGroupRepository = tableGroupRepository;
     }
 
+
     @Transactional
-    public TableGroup create(final TableGroup tableGroup) {
-        final List<OrderTable> orderTables = tableGroup.getOrderTables();
+    public TableGroupResponse create(final TableGroupRequest tableGroupRequest) {
+        final List<Long> requestOrderTables = tableGroupRequest.getOrderTables();
+        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(requestOrderTables);
 
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < 2) {
-            throw new IllegalArgumentException();
+        validExistOrderTable(requestOrderTables, savedOrderTables);
+
+        TableGroup result = tableGroupRepository.save(new TableGroup(GroupOrderTables.of(savedOrderTables)));
+        result.group();
+
+        return new TableGroupResponse(result.getId(), OrderTableResponse.of(result.getOrderTables()),
+                result.getCreatedDate());
+    }
+
+    private void validExistOrderTable(List<Long> requestOrderTables, List<OrderTable> savedOrderTables) {
+        if (requestOrderTables.size() != savedOrderTables.size()) {
+            throw new IllegalArgumentException("단체지정할 주문 테이블이 없으면 단체석으로 지정할 수 없습니다.");
         }
-
-        final List<Long> orderTableIds = orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-
-        final List<OrderTable> savedOrderTables = orderTableRepository.findAllByIdIn(orderTableIds);
-
-        if (orderTables.size() != savedOrderTables.size()) {
-            throw new IllegalArgumentException();
-        }
-
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            if (!savedOrderTable.isEmpty() || Objects.nonNull(savedOrderTable.getTableGroupId())) {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        tableGroup.setCreatedDate(LocalDateTime.now());
-
-        final TableGroup savedTableGroup = tableGroupDao.save(tableGroup);
-
-        final Long tableGroupId = savedTableGroup.getId();
-        for (final OrderTable savedOrderTable : savedOrderTables) {
-            savedOrderTable.setTableGroupId(tableGroupId);
-            //savedOrderTable.setEmpty(false);
-            orderTableRepository.save(savedOrderTable);
-        }
-        savedTableGroup.setOrderTables(savedOrderTables);
-
-        return savedTableGroup;
     }
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-        final List<OrderTable> orderTables = orderTableRepository.findAllByTableGroupId(tableGroupId);
+        final TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
+                .orElseThrow(() -> new NoSuchElementException("해당 단체지정석을 찾을수 없습니다."));
 
-        final List<Long> orderTableIds = orderTables.stream()
+        validUngroup(tableGroup);
+
+        tableGroup.unGroup();
+    }
+
+    private void validUngroup(TableGroup tableGroup) {
+        final List<Long> orderTableIds = tableGroup.getOrderTables()
+                .stream()
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
 
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
-        }
-
-        for (final OrderTable orderTable : orderTables) {
-            orderTable.setTableGroupId(null);
-            orderTableRepository.save(orderTable);
+            throw new IllegalArgumentException("주문 테이블중 조리중인 경우에 단체석을 개인 주문테이블로 변경할 수 없습니다.");
         }
     }
 }
