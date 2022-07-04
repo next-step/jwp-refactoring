@@ -34,17 +34,9 @@ class OrderLineItemFactoryTest extends ServiceTest {
     @Mock
     private MenuRepository menuRepository;
 
-    private MenuGroup menuGroup;
-    private Product product1;
-    private Product product2;
-
     @BeforeEach
     void setUp() {
         orderLineItemFactory = new OrderLineItemFactory(menuRepository);
-
-        menuGroup = MenuGroupDtoFixtureFactory.createMenuGroup("메뉴그룹1");
-        product1 = ProductDtoFixtureFactory.createProduct(1L, "상품1", 1000);
-        product2 = ProductDtoFixtureFactory.createProduct(2L, "상품2", 2000);
     }
 
     @Test
@@ -55,7 +47,7 @@ class OrderLineItemFactoryTest extends ServiceTest {
         int menuPrice = 5000;
         long orderLineItemQuantity = 4L;
         when(menuRepository.findById(menuId)).thenReturn(
-                Optional.of(테스트_메뉴_생성(menuId, menuGroup, menuName, menuPrice)));
+                Optional.of(테스트_메뉴_생성(menuId, menuName, menuPrice)));
 
         OrderLineItem orderLineItem = orderLineItemFactory.createOrderLineItem(menuId, orderLineItemQuantity);
         OrderLineMenu orderLineMenu = orderLineItem.getOrderLineMenu();
@@ -79,7 +71,10 @@ class OrderLineItemFactoryTest extends ServiceTest {
                 .isInstanceOf(CannotMakeOrderException.class);
     }
 
-    private Menu 테스트_메뉴_생성(Long menuId, MenuGroup menuGroup, String menuName, int menuPrice) {
+    private Menu 테스트_메뉴_생성(Long menuId, String menuName, int menuPrice) {
+        MenuGroup menuGroup = MenuGroupDtoFixtureFactory.createMenuGroup("메뉴그룹1");
+        Product product1 = ProductDtoFixtureFactory.createProduct(1L, "상품1", 1000);
+        Product product2 = ProductDtoFixtureFactory.createProduct(2L, "상품2", 2000);
         MenuProduct menuProduct1 = MenuProductFixtureFactory.createMenuProduct(1L, product1.getId(), 4);
         MenuProduct menuProduct2 = MenuProductFixtureFactory.createMenuProduct(2L, product2.getId(), 1);
         Menu menu = new Menu(menuName, new BigDecimal(menuPrice), menuGroup,

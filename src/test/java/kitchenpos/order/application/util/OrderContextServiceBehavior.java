@@ -1,8 +1,8 @@
 package kitchenpos.order.application.util;
 
 import java.util.List;
-import kitchenpos.order.fixture.OrderFixtureFactory;
 import kitchenpos.order.application.OrderService;
+import kitchenpos.order.application.fixture.OrderDtoFixtureFactory;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
@@ -17,11 +17,11 @@ public class OrderContextServiceBehavior {
     private OrderService orderService;
 
     public OrderResponse 주문_생성됨(Long orderTableId, List<OrderLineItemRequest> orderLineItemRequests) {
-        return orderService.create(OrderFixtureFactory.createOrder(orderTableId, orderLineItemRequests));
+        return orderService.create(OrderDtoFixtureFactory.createOrder(orderTableId, orderLineItemRequests));
     }
 
     public OrderResponse 주문상태_변경(Long orderId, OrderStatus orderStatus) {
-        OrderRequest param = OrderFixtureFactory.createParamForUpdateStatus(orderStatus);
+        OrderRequest param = OrderDtoFixtureFactory.createParamForUpdateStatus(orderStatus);
         return orderService.changeOrderStatus(orderId, param);
     }
 }

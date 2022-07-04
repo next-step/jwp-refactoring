@@ -12,6 +12,7 @@ import kitchenpos.menu.application.util.MenuContextServiceBehavior;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuDto;
 import kitchenpos.menu.dto.MenuProductDto;
+import kitchenpos.order.application.fixture.OrderLineItemDtoFixtureFactory;
 import kitchenpos.order.application.util.OrderContextServiceBehavior;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
@@ -19,7 +20,6 @@ import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.exception.CannotChangeOrderStatusException;
 import kitchenpos.order.exception.CannotMakeOrderException;
 import kitchenpos.order.exception.EmptyOrderLineItemsException;
-import kitchenpos.order.fixture.OrderLineItemFixtureFactory;
 import kitchenpos.product.application.util.ProductContextServiceBehavior;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.application.util.TableContextServiceBehavior;
@@ -72,8 +72,8 @@ class OrderServiceTest extends ServiceTest {
     @Test
     @DisplayName("주문 등록")
     void 주문등록() {
-        OrderLineItemRequest orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
-        OrderLineItemRequest orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
+        OrderLineItemRequest orderLineItem1 = OrderLineItemDtoFixtureFactory.createOrderLineItem(menu1.getId(), 3);
+        OrderLineItemRequest orderLineItem2 = OrderLineItemDtoFixtureFactory.createOrderLineItem(menu2.getId(), 3);
 
         OrderResponse savedOrder = orderContextServiceBehavior.주문_생성됨(orderTable.getId(),
                 Lists.newArrayList(orderLineItem1, orderLineItem2));
@@ -88,8 +88,8 @@ class OrderServiceTest extends ServiceTest {
     @Test
     @DisplayName("인원수가 0명이라도 주문 등록 가능")
     void 주문등록_인원수가0일때도_주문등록가능() {
-        OrderLineItemRequest orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
-        OrderLineItemRequest orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
+        OrderLineItemRequest orderLineItem1 = OrderLineItemDtoFixtureFactory.createOrderLineItem(menu1.getId(), 3);
+        OrderLineItemRequest orderLineItem2 = OrderLineItemDtoFixtureFactory.createOrderLineItem(menu2.getId(), 3);
         OrderTableResponse zeroGuestTable = tableContextServiceBehavior.비어있지않은테이블_생성됨(0);
         OrderResponse savedOrder = orderContextServiceBehavior.주문_생성됨(zeroGuestTable.getId(),
                 Lists.newArrayList(orderLineItem1, orderLineItem2));
@@ -115,7 +115,8 @@ class OrderServiceTest extends ServiceTest {
     void 주문등록_주문항목에_표시된_메뉴가_저장되지않은경우() {
         MenuProductDto menuProduct = MenuProductDtoFixtureFactory.createMenuProduct(product1.getId(), 1);
         MenuDto notSavedMenu = MenuDtoFixtureFactory.createMenu(menuGroup, "메뉴", 4000, Lists.newArrayList(menuProduct));
-        OrderLineItemRequest orderLineItem = OrderLineItemFixtureFactory.createOrderLine(notSavedMenu.getId(), 3);
+        OrderLineItemRequest orderLineItem = OrderLineItemDtoFixtureFactory.createOrderLineItem(notSavedMenu.getId(),
+                3);
 
         Long orderTableId = orderTable.getId();
         List<OrderLineItemRequest> orderLineItemRequests = Lists.newArrayList(orderLineItem);
@@ -127,8 +128,8 @@ class OrderServiceTest extends ServiceTest {
     @DisplayName("주문테이블이 존재하지 않는 경우 주문 등록 실패")
     void 주문등록_주문테이블이_없는경우() {
         Long notExistTableId = -1L;
-        OrderLineItemRequest orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
-        OrderLineItemRequest orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
+        OrderLineItemRequest orderLineItem1 = OrderLineItemDtoFixtureFactory.createOrderLineItem(menu1.getId(), 3);
+        OrderLineItemRequest orderLineItem2 = OrderLineItemDtoFixtureFactory.createOrderLineItem(menu2.getId(), 3);
         List<OrderLineItemRequest> orderLineItemRequests = Lists.newArrayList(orderLineItem1, orderLineItem2);
         assertThatThrownBy(() -> orderContextServiceBehavior.주문_생성됨(notExistTableId, orderLineItemRequests))
                 .isInstanceOf(NotExistTableException.class);
@@ -138,8 +139,8 @@ class OrderServiceTest extends ServiceTest {
     @DisplayName("주문테이블이 빈 테이블인 경우 주문 등록 실패")
     void 주문등록_주문테이블이_빈테이블인_경우() {
         OrderTableResponse orderTable = tableContextServiceBehavior.빈테이블_생성됨();
-        OrderLineItemRequest orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
-        OrderLineItemRequest orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
+        OrderLineItemRequest orderLineItem1 = OrderLineItemDtoFixtureFactory.createOrderLineItem(menu1.getId(), 3);
+        OrderLineItemRequest orderLineItem2 = OrderLineItemDtoFixtureFactory.createOrderLineItem(menu2.getId(), 3);
 
         Long orderTableId = orderTable.getId();
         List<OrderLineItemRequest> orderLineItemRequests = Lists.newArrayList(orderLineItem1, orderLineItem2);
@@ -150,9 +151,9 @@ class OrderServiceTest extends ServiceTest {
     @Test
     @DisplayName("주문 목록 조회")
     void 주문목록_조회() {
-        OrderLineItemRequest orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
-        OrderLineItemRequest orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
-        OrderLineItemRequest orderLineItem3 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 2);
+        OrderLineItemRequest orderLineItem1 = OrderLineItemDtoFixtureFactory.createOrderLineItem(menu1.getId(), 3);
+        OrderLineItemRequest orderLineItem2 = OrderLineItemDtoFixtureFactory.createOrderLineItem(menu2.getId(), 3);
+        OrderLineItemRequest orderLineItem3 = OrderLineItemDtoFixtureFactory.createOrderLineItem(menu2.getId(), 2);
 
         orderContextServiceBehavior.주문_생성됨(orderTable.getId(), Lists.newArrayList(orderLineItem1, orderLineItem2));
         orderContextServiceBehavior.주문_생성됨(orderTable.getId(), Lists.newArrayList(orderLineItem3));
@@ -164,8 +165,8 @@ class OrderServiceTest extends ServiceTest {
     @Test
     @DisplayName("주문 상태 변경")
     void 주문상태_변경() {
-        OrderLineItemRequest orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
-        OrderLineItemRequest orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
+        OrderLineItemRequest orderLineItem1 = OrderLineItemDtoFixtureFactory.createOrderLineItem(menu1.getId(), 3);
+        OrderLineItemRequest orderLineItem2 = OrderLineItemDtoFixtureFactory.createOrderLineItem(menu2.getId(), 3);
         OrderResponse order = orderContextServiceBehavior.주문_생성됨(orderTable.getId(),
                 Lists.newArrayList(orderLineItem1, orderLineItem2));
 
@@ -181,8 +182,8 @@ class OrderServiceTest extends ServiceTest {
     @Test
     @DisplayName("주문 상태가 계산완료인 경우 주문 상태 변경 불가")
     void 주문상태_변경_이미_계산완료상태인경우() {
-        OrderLineItemRequest orderLineItem1 = OrderLineItemFixtureFactory.createOrderLine(menu1.getId(), 3);
-        OrderLineItemRequest orderLineItem2 = OrderLineItemFixtureFactory.createOrderLine(menu2.getId(), 3);
+        OrderLineItemRequest orderLineItem1 = OrderLineItemDtoFixtureFactory.createOrderLineItem(menu1.getId(), 3);
+        OrderLineItemRequest orderLineItem2 = OrderLineItemDtoFixtureFactory.createOrderLineItem(menu2.getId(), 3);
 
         OrderResponse order = orderContextServiceBehavior.주문_생성됨(orderTable.getId(),
                 Lists.newArrayList(orderLineItem1, orderLineItem2));

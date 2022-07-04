@@ -97,7 +97,7 @@
     - [X] Table
     - [X] Product
     - [X] Menu
-    - [ ] Order
+    - [X] Order
 
 ## 의존성 구성도 첨부
 ### 프로덕션 코드

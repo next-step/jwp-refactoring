@@ -11,12 +11,12 @@ import kitchenpos.menu.application.fixture.MenuProductDtoFixtureFactory;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.dto.MenuDto;
 import kitchenpos.menu.dto.MenuProductDto;
+import kitchenpos.order.application.fixture.OrderDtoFixtureFactory;
+import kitchenpos.order.application.fixture.OrderLineItemDtoFixtureFactory;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.order.fixture.OrderFixtureFactory;
-import kitchenpos.order.fixture.OrderLineItemFixtureFactory;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.application.fixture.OrderTableDtoFixtureFactory;
 import kitchenpos.table.application.fixture.TableGroupDtoFixtureFactory;
@@ -80,8 +80,9 @@ class OrderAcceptanceTest extends AcceptanceTest {
     }
 
     private OrderResponse 주문을_추가하고_확인한다(Long orderTableId) {
-        OrderLineItemRequest orderLineItemRequest = OrderLineItemFixtureFactory.createOrderLine(menuDto.getId(), 3);
-        OrderRequest orderRequest = OrderFixtureFactory.createOrder(orderTableId, Lists.newArrayList(
+        OrderLineItemRequest orderLineItemRequest = OrderLineItemDtoFixtureFactory.createOrderLineItem(menuDto.getId(),
+                3);
+        OrderRequest orderRequest = OrderDtoFixtureFactory.createOrder(orderTableId, Lists.newArrayList(
                 orderLineItemRequest));
 
         ExtractableResponse<Response> createResponse = KitchenPosBehaviors.주문_추가_요청(orderRequest);
@@ -92,7 +93,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
 
     private void 주문의_상태를_변경하고_확인한다(Long orderTableId, OrderStatus orderStatus) {
         ExtractableResponse<Response> response = KitchenPosBehaviors.주문상태변경_요청(orderTableId,
-                OrderFixtureFactory.createParamForUpdateStatus(orderStatus));
+                OrderDtoFixtureFactory.createParamForUpdateStatus(orderStatus));
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
