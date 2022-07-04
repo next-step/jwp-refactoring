@@ -1,8 +1,8 @@
 package kitchenpos.tableGroup;
 
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.application.TableGroupService;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.domain.OrderStatus;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
@@ -34,7 +34,7 @@ class TableGroupServiceTest {
     TableGroupService tableGroupService;
 
     @Mock
-    OrderDao orderDao;
+    OrderRepository orderRepository;
 
     @Mock
     OrderTableRepository orderTableRepository;
@@ -60,7 +60,7 @@ class TableGroupServiceTest {
         // given
         OrderTable new_주문테이블1 = 빈_주문테이블_1_생성();
         OrderTable new_주문테이블2 = 빈_주문테이블_2_생성();
-        when(orderTableRepository.findAllByTableGroupIds(Arrays.asList(주문테이블1.getId(), 주문테이블2.getId())))
+        when(orderTableRepository.findAllByIdIn(Arrays.asList(주문테이블1.getId(), 주문테이블2.getId())))
                 .thenReturn(Arrays.asList(new_주문테이블1, new_주문테이블2));
         when(tableGroupRepository.save(any()))
                 .thenReturn(TableGroup.of(1L, Arrays.asList(주문테이블1, 주문테이블2)));
@@ -103,7 +103,7 @@ class TableGroupServiceTest {
     void createTableGroupAndOrderTableNotSave() {
         // given
         주문테이블1 = 주문테이블_1_생성();
-        when(orderTableRepository.findAllByTableGroupIds(Arrays.asList(주문테이블1.getId(), 주문테이블2.getId())))
+        when(orderTableRepository.findAllByIdIn(Arrays.asList(주문테이블1.getId(), 주문테이블2.getId())))
                 .thenReturn(Arrays.asList(주문테이블1));
         TableGroupRequest 단체지정_요청 = new TableGroupRequest(null, Arrays.asList(주문테이블1.getId(), 주문테이블2.getId()));
         // then
@@ -118,7 +118,7 @@ class TableGroupServiceTest {
         // given
         주문테이블1 = 주문테이블_1_생성();
         TableGroupRequest 단체지정_요청 = new TableGroupRequest(1L, Arrays.asList(주문테이블1.getId(), 주문테이블2.getId()));
-        when(orderTableRepository.findAllByTableGroupIds(Arrays.asList(주문테이블1.getId(), 주문테이블2.getId())))
+        when(orderTableRepository.findAllByIdIn(Arrays.asList(주문테이블1.getId(), 주문테이블2.getId())))
                 .thenReturn(Arrays.asList(주문테이블1, 주문테이블2));
 
         // then
@@ -157,9 +157,9 @@ class TableGroupServiceTest {
                 .thenReturn(Optional.of(단체지정1));
         when(orderTableRepository.findAllByTableGroup(단체지정1))
                 .thenReturn(Arrays.asList(주문테이블1, 주문테이블2));
-        when(orderDao.existsByOrderTableIdInAndOrderStatusIn(
-                Arrays.asList(주문테이블1.getId(), 주문테이블2.getId()),
-                Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name())
+        when(orderRepository.existsByOrderTableInAndOrderStatusIn(
+                Arrays.asList(주문테이블1, 주문테이블2),
+                Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL)
         )).thenReturn(true);
 
         // then
