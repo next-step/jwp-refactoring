@@ -45,7 +45,7 @@ public class Menu {
     }
 
     public String getName() {
-        return name.getName();
+        return name.getValue();
     }
 
     public BigDecimal getPrice() {
