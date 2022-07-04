@@ -8,6 +8,7 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class OrderLineItems {
@@ -33,8 +34,14 @@ public class OrderLineItems {
         return CollectionUtils.isEmpty(orderLineItems);
     }
 
-    public int size() {
-        return orderLineItems.size();
+    public List<Long> getMenuIds() {
+        return orderLineItems.stream()
+                .map(OrderLineItem::getMenuId)
+                .collect(Collectors.toList());
+    }
+
+    public void setOrder(Order order) {
+        orderLineItems.forEach(o -> o.setOrder(order));
     }
 
     @Override

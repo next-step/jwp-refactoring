@@ -2,7 +2,6 @@ package kitchenpos.menu.domain;
 
 import kitchenpos.common.Name;
 import kitchenpos.common.Price;
-import kitchenpos.menu.dto.MenuRequest;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -20,9 +19,13 @@ public class Menu {
     private Price price;
     private Long menuGroupId;
     @Embedded
-    private MenuProducts menuProducts = new MenuProducts();
+    private MenuProducts menuProducts;
 
     public Menu() {
+    }
+
+    public Menu(String name, Price price, MenuProducts menuProducts) {
+        this(null, new Name(name), price, null, menuProducts);
     }
 
     public Menu(String name, BigDecimal price, Long menuGroupId) {
@@ -48,10 +51,6 @@ public class Menu {
         this.price = price;
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
-    }
-
-    public static Menu of(MenuRequest menuRequest, MenuProducts menuProducts) {
-        return new Menu(menuRequest.getName(), menuRequest.getPrice(), menuRequest.getMenuGroupId(), menuProducts);
     }
 
     public Long getId() {

@@ -4,11 +4,10 @@ import kitchenpos.common.Quantity;
 import kitchenpos.product.domain.Product;
 
 import javax.persistence.*;
-
 import java.util.Objects;
 
-import static javax.persistence.CascadeType.*;
-import static javax.persistence.FetchType.*;
+import static javax.persistence.CascadeType.PERSIST;
+import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
@@ -19,7 +18,8 @@ public class MenuProduct {
     @ManyToOne(cascade = PERSIST, fetch = LAZY)
     @JoinColumn(name = "menu_id")
     private Menu menu;
-    @OneToOne(fetch = LAZY)
+    //@OneToOne(fetch = LAZY)
+    @ManyToOne(fetch = LAZY)
     private Product product;
     @Embedded
     private Quantity quantity;
@@ -29,10 +29,6 @@ public class MenuProduct {
 
     public MenuProduct(Product product, long quantity) {
         this(null, null, product, new Quantity(quantity));
-    }
-
-    public MenuProduct(Menu menu, Product product, long quantity) {
-        this(null, menu, product, new Quantity(quantity));
     }
 
     public MenuProduct(Long seq, Product product, long quantity) {

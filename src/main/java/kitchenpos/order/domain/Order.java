@@ -1,7 +1,6 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.order.dto.OrderLineItemRequest;
-import kitchenpos.order.dto.OrderRequest;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -21,7 +20,6 @@ public class Order {
     private OrderStatus orderStatus;
     @CreatedDate
     private LocalDateTime orderedTime;
-
     @Embedded
     private OrderLineItems orderLineItems = new OrderLineItems();
 
@@ -40,18 +38,17 @@ public class Order {
         this(id, orderTableId, orderStatus, orderedTime, new OrderLineItems());
     }
 
+    public Order(Long orderTableId, OrderStatus orderStatus, OrderLineItems orderLineItems) {
+        this(null, orderTableId, orderStatus, null, orderLineItems);
+    }
+
     public Order(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, OrderLineItems orderLineItems) {
         this.id = id;
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
-    }
-
-    public static Order of(OrderRequest request) {
-        Order order = new Order(request.getOrderTableId());
-        order.addOrderLineItems(request.getOrderLineItems());
-        return order;
+        orderLineItems.setOrder(this);
     }
 
     public Long getId() {

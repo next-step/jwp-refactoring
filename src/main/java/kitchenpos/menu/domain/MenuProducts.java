@@ -7,6 +7,7 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static javax.persistence.CascadeType.ALL;
 
@@ -48,6 +49,12 @@ public class MenuProducts {
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts;
+    }
+
+    public List<Long> getProductIds() {
+        return menuProducts.stream()
+                .map(MenuProduct::getProductId)
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -59,8 +59,7 @@ class OrderRestControllerTest {
     void post() throws Exception {
         // given
         given(orderService.create(any())).willReturn(주문_응답);
-        System.out.println(objectMapper.writeValueAsString(주문_요청));
-        String a = objectMapper.writeValueAsString(주문_요청);
+
         // when & then
         mockMvc.perform(MockMvcRequestBuilders.post(URI)
                         .contentType(APPLICATION_JSON)

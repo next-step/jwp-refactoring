@@ -31,6 +31,10 @@ public class OrderLineItem {
         this.quantity = quantity;
     }
 
+    public static OrderLineItem of(OrderLineItemRequest request) {
+        return of(request, null);
+    }
+
     public static OrderLineItem of(OrderLineItemRequest request, Order order) {
         return new OrderLineItem(order, request.getMenuId(), request.getQuantity());
     }
@@ -41,6 +45,10 @@ public class OrderLineItem {
 
     public Order getOrder() {
         return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
     }
 
     public Long getOrderId() {

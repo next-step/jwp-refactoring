@@ -2,14 +2,15 @@ package kitchenpos.table.domain;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Objects;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class TableGroup {
+public class TableGroup extends AbstractAggregateRoot<TableGroup> {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @CreatedDate
@@ -21,9 +22,14 @@ public class TableGroup {
         this(null, new OrderTables());
     }
 
+    public TableGroup(OrderTables orderTables) {
+        this(null, orderTables);
+    }
+
     public TableGroup(Long id, OrderTables orderTables) {
         this.id = id;
         this.orderTables = orderTables;
+        orderTables.addTableGroupAndEmpties(false, this);
     }
 
     public Long getId() {
@@ -38,15 +44,20 @@ public class TableGroup {
         return orderTables;
     }
 
-    public void changeOrderTables(List<OrderTable> orderTables, boolean empty) {
-        OrderTables newOrderTables = new OrderTables(orderTables);
-        newOrderTables.addTableGroupAndEmpties(empty, this);
-        this.orderTables = newOrderTables;
+    public void ungroup() {
+        registerEvent(new OrderTableUnGroupEvent(this));
     }
 
-    public void validateEmptyAndTableGroups() {
-        orderTables.validateEmptyAndTableGroups();
-
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TableGroup that = (TableGroup) o;
+        return Objects.equals(getId(), that.getId()) && Objects.equals(getCreatedDate(), that.getCreatedDate());
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getCreatedDate());
+    }
 }
