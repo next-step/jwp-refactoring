@@ -12,11 +12,11 @@ public class Name {
     @Column(nullable = false)
     private String value;
 
-    public Name(String value) {
-        this.value = requireNonNull(value, "name");
+    protected Name() {
     }
 
-    protected Name() {
+    public Name(String value) {
+        this.value = requireNonNull(value, "name");
     }
 
     public String getValue() {
