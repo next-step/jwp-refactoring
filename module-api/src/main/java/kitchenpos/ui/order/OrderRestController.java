@@ -1,4 +1,4 @@
-package kichenpos.ui.order;
+package kitchenpos.ui.order;
 
 import kitchenpos.application.order.OrderService;
 import kitchenpos.dto.order.OrderRequest;
