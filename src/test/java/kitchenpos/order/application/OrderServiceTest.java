@@ -31,6 +31,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 
 class OrderServiceTest extends ServiceTest {
     @Autowired
@@ -121,7 +122,7 @@ class OrderServiceTest extends ServiceTest {
         Long orderTableId = orderTable.getId();
         List<OrderLineItemRequest> orderLineItemRequests = Lists.newArrayList(orderLineItem);
         assertThatThrownBy(() -> orderContextServiceBehavior.주문_생성됨(orderTableId, orderLineItemRequests))
-                .isInstanceOf(CannotMakeOrderException.class);
+                .isInstanceOf(InvalidDataAccessApiUsageException.class);
     }
 
     @Test

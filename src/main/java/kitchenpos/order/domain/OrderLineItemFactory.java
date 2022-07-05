@@ -17,12 +17,7 @@ public class OrderLineItemFactory {
     }
 
     public OrderLineItem createOrderLineItem(Long menuId, long quantity) {
-        Menu menu = null;
-        try {
-            menu = menuRepository.findById(menuId).orElseThrow(() -> new CannotMakeOrderException(NOT_EXIST_MENU));
-        } catch (RuntimeException e) {
-            throw new CannotMakeOrderException(NOT_EXIST_MENU);
-        }
+        Menu menu = menuRepository.findById(menuId).orElseThrow(() -> new CannotMakeOrderException(NOT_EXIST_MENU));
         OrderLineMenu orderLineMenu = new OrderLineMenu(menu.getId(), menu.getName(), menu.getPrice());
         return new OrderLineItem(orderLineMenu, quantity);
     }
