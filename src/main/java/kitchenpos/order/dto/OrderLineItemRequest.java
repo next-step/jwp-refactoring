@@ -12,7 +12,7 @@ public class OrderLineItemRequest {
     }
 
     public static OrderLineItem toEntity(OrderLineItemRequest request) {
-        return OrderLineItem.of(null, null, request.getMenuId(), request.getQuantity());
+        return OrderLineItem.of(request.getMenuId(), request.getQuantity());
     }
 
     public Long getMenuId() {

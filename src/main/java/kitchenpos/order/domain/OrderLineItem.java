@@ -12,20 +12,18 @@ public class OrderLineItem {
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
     private Long menuId;
-    private long quantity;
+    private Long quantity;
 
     public OrderLineItem() {
     }
 
-    private OrderLineItem(Long id, Order order, Long menuId, Long quantity) {
-        this.id = id;
-        this.order = order;
+    private OrderLineItem(Long menuId, Long quantity) {
         this.menuId = menuId;
         this.quantity = quantity;
     }
 
-    public static OrderLineItem of(Long id, Order order, Long menuId, Long quantity) {
-        return new OrderLineItem(id, order, menuId, quantity);
+    public static OrderLineItem of(Long menuId, Long quantity) {
+        return new OrderLineItem(menuId, quantity);
     }
 
     public void changeOrderLineItem(Order order) {

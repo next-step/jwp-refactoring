@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static kitchenpos.util.TestFixture.주문항목_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -52,8 +53,10 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        주문항목_1 = OrderLineItem.of(1L, 주문_1, 1L, 1L);
-        주문항목_2 = OrderLineItem.of(2L, 주문_1, 2L, 1L);
+        주문항목_1 = OrderLineItem.of(1L, 1L);
+        주문항목_생성(주문항목_1, 주문_1);
+        주문항목_2 = OrderLineItem.of(2L, 1L);
+        주문항목_생성(주문항목_2, 주문_1);
         주문테이블_1 = OrderTable.of(1L, null, 2, false);
         주문_1 = Order.of(주문테이블_1, Arrays.asList(주문항목_1, 주문항목_2));
     }

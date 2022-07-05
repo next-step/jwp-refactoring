@@ -3,10 +3,13 @@ package kitchenpos.util;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.domain.OrderTable;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
@@ -71,5 +74,19 @@ public class TestFixture {
 
     public static TableGroup 단체지정_2_생성(List<OrderTable> orderTables) {
         return TableGroup.of(orderTables);
+    }
+
+    public static void 주문항목_생성(OrderLineItem orderLineItem, Order order) {
+        //OrderLineItem.of(1L, 주문_1, 1L, 1L);
+        try{
+            Field[] fields = orderLineItem.getClass().getDeclaredFields();
+            for(Field f : fields){
+                f.setAccessible(true);  //private 변수를 public 변수로 변경
+                if (f.getName().equals("id"))  f.set(orderLineItem,  1L);
+                if (f.getName().equals("order")) f.set(orderLineItem, order);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 }
