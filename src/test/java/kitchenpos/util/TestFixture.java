@@ -77,7 +77,6 @@ public class TestFixture {
     }
 
     public static void 주문항목_생성(OrderLineItem orderLineItem, Order order) {
-        //OrderLineItem.of(1L, 주문_1, 1L, 1L);
         try{
             Field[] fields = orderLineItem.getClass().getDeclaredFields();
             for(Field f : fields){
