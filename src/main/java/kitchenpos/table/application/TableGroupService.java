@@ -62,10 +62,9 @@ public class TableGroupService {
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
 
-        //조리중 식사중인 테이블 존재 시 단체 해제 불가
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("조리중 또는 식사중인 테이블이 존재합니다");
         }
     }
 }
