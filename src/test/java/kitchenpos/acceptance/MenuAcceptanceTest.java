@@ -10,6 +10,8 @@ import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.MenuProduct;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,8 +42,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 "후라이드양념",
                 31_000,
                 두마리_메뉴_아이디,
-                메뉴_상품_1개_생성(후라이드_아이디),
-                메뉴_상품_1개_생성(양념_아이디)
+                Arrays.asList(메뉴_상품_1개_생성(후라이드_아이디),
+                        메뉴_상품_1개_생성(양념_아이디))
         );
 
         //then
@@ -59,8 +61,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 "후라이드양념",
                 -16_000,
                 두마리_메뉴_아이디,
-                메뉴_상품_1개_생성(후라이드_아이디),
-                메뉴_상품_1개_생성(양념_아이디)
+                Arrays.asList(메뉴_상품_1개_생성(후라이드_아이디),
+                        메뉴_상품_1개_생성(양념_아이디))
         );
 
         //then
@@ -78,8 +80,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 "후라이드양념",
                 16_000,
                 존재하지_않는_메뉴_그룹_아이디,
-                메뉴_상품_1개_생성(후라이드_아이디),
-                메뉴_상품_1개_생성(양념_아이디)
+                Arrays.asList(메뉴_상품_1개_생성(후라이드_아이디),
+                        메뉴_상품_1개_생성(양념_아이디))
         );
 
         //then
@@ -94,8 +96,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 "후라이드양념",
                 34_000,
                 두마리_메뉴_아이디,
-                메뉴_상품_1개_생성(후라이드_아이디),
-                메뉴_상품_1개_생성(양념_아이디)
+                Arrays.asList(메뉴_상품_1개_생성(후라이드_아이디),
+                        메뉴_상품_1개_생성(양념_아이디))
         );
 
         //then
@@ -110,8 +112,8 @@ public class MenuAcceptanceTest extends AcceptanceTest {
                 "후라이드양념",
                 31_000,
                 두마리_메뉴_아이디,
-                메뉴_상품_1개_생성(후라이드_아이디),
-                메뉴_상품_1개_생성(양념_아이디)
+                Arrays.asList(메뉴_상품_1개_생성(후라이드_아이디),
+                        메뉴_상품_1개_생성(양념_아이디))
         );
 
         //when
@@ -123,7 +125,7 @@ public class MenuAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 메뉴_생성_요청(final String name, final int price, final Long menuGroupId,
-                                                         final MenuProduct... menuProducts) {
+                                                         final List<MenuProduct> menuProducts) {
         final Menu menu = new Menu(name, BigDecimal.valueOf(price), menuGroupId, menuProducts);
 
         return RestAssured.given().log().all()

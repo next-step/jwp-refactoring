@@ -49,7 +49,7 @@ public class TableGroupServiceTest {
         주문_테이블2 = 주문_테이블_생성(2L, 2L, 3, false);
         주문_테이블3 = 주문_테이블_생성(3L, 3L, 3, false);
 
-        테이블_그룹 = 테이블_그룹_생성(1L, LocalDateTime.now(), 주문_테이블, 주문_테이블2);
+        테이블_그룹 = 테이블_그룹_생성(1L, LocalDateTime.now(), Arrays.asList(주문_테이블, 주문_테이블2));
     }
 
     @Test
@@ -63,7 +63,7 @@ public class TableGroupServiceTest {
     @Test
     @DisplayName("단체 테이블 생성 시 주문 테이블이 2개 미만일 경우 Exception")
     public void createOrderTableListAreLessThanTwoException() {
-        final TableGroup 테이블_그룹 = 테이블_그룹_생성(1L, LocalDateTime.now(), 주문_테이블);
+        final TableGroup 테이블_그룹 = 테이블_그룹_생성(1L, LocalDateTime.now(), Arrays.asList(주문_테이블));
 
         assertThatThrownBy(() -> tableGroupService.create(테이블_그룹)).isInstanceOf(IllegalArgumentException.class);
     }
@@ -88,7 +88,7 @@ public class TableGroupServiceTest {
     public void createOrderTableIsNotEmptyException() {
         final OrderTable 주문_테이블 = 주문_테이블_생성(1L, null, 4, false);
         final OrderTable 주문_테이블2 = 주문_테이블_생성(2L, null, 4, false);
-        final TableGroup 테이블_그룹 = 테이블_그룹_생성(1L, LocalDateTime.now(), 주문_테이블, 주문_테이블2);
+        final TableGroup 테이블_그룹 = 테이블_그룹_생성(1L, LocalDateTime.now(), Arrays.asList(주문_테이블, 주문_테이블2));
 
         assertThatThrownBy(() -> tableGroupService.create(테이블_그룹)).isInstanceOf(IllegalArgumentException.class);
     }
@@ -98,7 +98,7 @@ public class TableGroupServiceTest {
     public void createOrderTableIsAlreadyGroupException() {
         final OrderTable 주문_테이블 = 주문_테이블_생성(1L, 1L, 4, false);
         final OrderTable 주문_테이블2 = 주문_테이블_생성(2L, 2L, 4, false);
-        final TableGroup 테이블_그룹 = 테이블_그룹_생성(1L, LocalDateTime.now(), 주문_테이블, 주문_테이블2);
+        final TableGroup 테이블_그룹 = 테이블_그룹_생성(1L, LocalDateTime.now(), Arrays.asList(주문_테이블, 주문_테이블2));
 
         assertThatThrownBy(() -> tableGroupService.create(테이블_그룹)).isInstanceOf(IllegalArgumentException.class);
     }
@@ -108,7 +108,7 @@ public class TableGroupServiceTest {
     public void create() {
         final OrderTable 주문_테이블 = 주문_테이블_생성(1L, null, 4, true);
         final OrderTable 주문_테이블2 = 주문_테이블_생성(2L, null, 4, true);
-        final TableGroup 테이블_그룹 = 테이블_그룹_생성(1L, LocalDateTime.now(), 주문_테이블, 주문_테이블2);
+        final TableGroup 테이블_그룹 = 테이블_그룹_생성(1L, LocalDateTime.now(), Arrays.asList(주문_테이블, 주문_테이블2));
 
         final List<Long> 주문_테이블_아이디_리스트 = 테이블_그룹.getOrderTables()
                 .stream()
@@ -127,14 +127,12 @@ public class TableGroupServiceTest {
     public void ungroupOrderStatusIsCookingOrMealException() {
         final OrderTable 주문_테이블 = 주문_테이블_생성(1L, null, 4, true);
         final OrderTable 주문_테이블2 = 주문_테이블_생성(2L, null, 4, true);
-        final TableGroup 테이블_그룹 = 테이블_그룹_생성(1L, LocalDateTime.now(), 주문_테이블, 주문_테이블2);
+        final TableGroup 테이블_그룹 = 테이블_그룹_생성(1L, LocalDateTime.now(), Arrays.asList(주문_테이블, 주문_테이블2));
 
         final List<Long> 주문_테이블_아이디_리스트 = 테이블_그룹.getOrderTables()
                 .stream()
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
-
-        final List<OrderTable> 저장된_주문_테이블_리스트 = 주문_테이블_리스트_생성(주문_테이블, 주문_테이블2);
 
         given(orderTableDao.findAllByTableGroupId(테이블_그룹.getId())).willReturn(테이블_그룹.getOrderTables());
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(주문_테이블_아이디_리스트,
@@ -148,14 +146,12 @@ public class TableGroupServiceTest {
     public void ungroup() {
         final OrderTable 주문_테이블 = 주문_테이블_생성(1L, null, 4, true);
         final OrderTable 주문_테이블2 = 주문_테이블_생성(2L, null, 4, true);
-        final TableGroup 테이블_그룹 = 테이블_그룹_생성(1L, LocalDateTime.now(), 주문_테이블, 주문_테이블2);
+        final TableGroup 테이블_그룹 = 테이블_그룹_생성(1L, LocalDateTime.now(), Arrays.asList(주문_테이블, 주문_테이블2));
 
         final List<Long> 주문_테이블_아이디_리스트 = 테이블_그룹.getOrderTables()
                 .stream()
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
-
-        final List<OrderTable> 저장된_주문_테이블_리스트 = 주문_테이블_리스트_생성(주문_테이블, 주문_테이블2);
 
         given(orderTableDao.findAllByTableGroupId(테이블_그룹.getId())).willReturn(테이블_그룹.getOrderTables());
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(주문_테이블_아이디_리스트,

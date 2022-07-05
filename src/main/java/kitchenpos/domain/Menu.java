@@ -13,20 +13,21 @@ public class Menu {
     public Menu() {
     }
 
-    public Menu(final String name, final BigDecimal price, final Long menuGroupId, final MenuProduct... menuProducts) {
+    public Menu(final String name, final BigDecimal price, final Long menuGroupId,
+                final List<MenuProduct> menuProducts) {
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
-        this.menuProducts = MenuProduct.ofList(menuProducts);
+        this.menuProducts = menuProducts;
     }
 
     public Menu(final Long id, final String name, final BigDecimal price, final Long menuGroupId,
-                final MenuProduct... menuProducts) {
+                final List<MenuProduct> menuProducts) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
-        this.menuProducts = MenuProduct.ofList(menuProducts);
+        this.menuProducts = menuProducts;
     }
 
     public Long getId() {

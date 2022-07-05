@@ -13,6 +13,7 @@ import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
@@ -44,8 +45,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
                 "후라이드양념",
                 31_000,
                 두마리_메뉴_아이디,
-                메뉴_상품_1개_생성(후라이드_아이디),
-                메뉴_상품_1개_생성(양념_아이디)
+                Arrays.asList(메뉴_상품_1개_생성(후라이드_아이디),
+                        메뉴_상품_1개_생성(양념_아이디))
         ).as(Menu.class);
     }
 

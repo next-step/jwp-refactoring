@@ -15,6 +15,8 @@ import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import kitchenpos.domain.Menu;
 import kitchenpos.domain.Order;
 import kitchenpos.domain.OrderLineItem;
@@ -47,8 +49,8 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
                 "후라이드양념",
                 31_000,
                 두마리_메뉴_아이디,
-                메뉴_상품_1개_생성(후라이드_아이디),
-                메뉴_상품_1개_생성(양념_아이디)
+                Arrays.asList(메뉴_상품_1개_생성(후라이드_아이디),
+                        메뉴_상품_1개_생성(양념_아이디))
         ).as(Menu.class);
     }
 
@@ -56,7 +58,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void createTableGroup() {
         //when
-        final ExtractableResponse<Response> 결과 = 테이블_그룹_생성_요청(주문_테이블_1, 주문_테이블_2);
+        final ExtractableResponse<Response> 결과 = 테이블_그룹_생성_요청(Arrays.asList(주문_테이블_1, 주문_테이블_2));
 
         //then
         assertThat(결과.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -67,7 +69,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void createTableGroupFailedWhenOrderTableLessThanTwo() {
         //when
-        final ExtractableResponse<Response> 결과 = 테이블_그룹_생성_요청(주문_테이블_1);
+        final ExtractableResponse<Response> 결과 = 테이블_그룹_생성_요청(Arrays.asList(주문_테이블_1));
 
         //then
         assertThat(결과.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -80,7 +82,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         final OrderTable 저장되지_않은_주문_테이블 = new OrderTable(100L, 1L, 3, true);
 
         //when
-        final ExtractableResponse<Response> 결과 = 테이블_그룹_생성_요청(주문_테이블_1, 저장되지_않은_주문_테이블);
+        final ExtractableResponse<Response> 결과 = 테이블_그룹_생성_요청(Arrays.asList(주문_테이블_1, 저장되지_않은_주문_테이블));
 
         //then
         assertThat(결과.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -93,7 +95,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         final OrderTable 비어있지_않은_테이블 = 테이블_생성_요청(5, false).as(OrderTable.class);
 
         //when
-        final ExtractableResponse<Response> 결과 = 테이블_그룹_생성_요청(주문_테이블_1, 비어있지_않은_테이블);
+        final ExtractableResponse<Response> 결과 = 테이블_그룹_생성_요청(Arrays.asList(주문_테이블_1, 비어있지_않은_테이블));
 
         //then
         assertThat(결과.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -103,11 +105,11 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void createTableGroupFailedWhenOrderTableAlreadyGrouped() {
         //given
-        테이블_그룹_생성_요청(주문_테이블_1, 주문_테이블_2);
+        테이블_그룹_생성_요청(Arrays.asList(주문_테이블_1, 주문_테이블_2));
         final OrderTable[] 테이블_목록 = 테이블_목록_조회().as(OrderTable[].class);
 
         //when
-        final ExtractableResponse<Response> 결과 = 테이블_그룹_생성_요청(테이블_목록);
+        final ExtractableResponse<Response> 결과 = 테이블_그룹_생성_요청(Arrays.asList(테이블_목록));
 
         //then
         assertThat(결과.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -117,7 +119,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void ungroupTableGroup() {
         //given
-        final TableGroup 생성된_테이블_그룹 = 테이블_그룹_생성_요청(주문_테이블_1, 주문_테이블_2).as(TableGroup.class);
+        final TableGroup 생성된_테이블_그룹 = 테이블_그룹_생성_요청(Arrays.asList(주문_테이블_1, 주문_테이블_2)).as(TableGroup.class);
 
         //when
         final ExtractableResponse<Response> 결과 = 테이블_그룹_해제_요청(생성된_테이블_그룹.getId());
@@ -130,7 +132,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
     @Test
     void ungroupTableGroupFailedWhenOrderExistsAndCookingOrMeal() {
         //given
-        final TableGroup 생성된_테이블_그룹 = 테이블_그룹_생성_요청(주문_테이블_1, 주문_테이블_2).as(TableGroup.class);
+        final TableGroup 생성된_테이블_그룹 = 테이블_그룹_생성_요청(Arrays.asList(주문_테이블_1, 주문_테이블_2)).as(TableGroup.class);
         final Long 메뉴_아이디 = 메뉴_1.getId();
         final Long 메뉴_수량 = 메뉴_1.getMenuProducts()
                 .stream()
@@ -146,7 +148,7 @@ public class TableGroupAcceptanceTest extends AcceptanceTest {
         assertThat(결과.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    public static ExtractableResponse<Response> 테이블_그룹_생성_요청(final OrderTable... orderTables) {
+    public static ExtractableResponse<Response> 테이블_그룹_생성_요청(final List<OrderTable> orderTables) {
         final TableGroup tableGroup = new TableGroup(LocalDateTime.now(), orderTables);
 
         return RestAssured.given().log().all()

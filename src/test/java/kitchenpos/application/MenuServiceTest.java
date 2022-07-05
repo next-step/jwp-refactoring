@@ -10,6 +10,7 @@ import static org.mockito.BDDMockito.given;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 import kitchenpos.dao.MenuDao;
 import kitchenpos.dao.MenuGroupDao;
@@ -49,7 +50,7 @@ public class MenuServiceTest {
     @BeforeEach
     void setUp() {
         한마리_메뉴_그룹 = 메뉴_그룹_생성(1L, "한마리메뉴");
-        한마리치킨 = 메뉴_생성(1L, "한마리치킨", BigDecimal.valueOf(16_000), 한마리_메뉴_그룹.getId());
+        한마리치킨 = 메뉴_생성(1L, "한마리치킨", BigDecimal.valueOf(16_000), 한마리_메뉴_그룹.getId(), Collections.emptyList());
         후라이드치킨 = 메뉴_상품_1개_생성(1L);
         후라이드치킨_상품 = 상품_생성(1L, "후라이드치킨", BigDecimal.valueOf(16_000));
     }
@@ -57,7 +58,7 @@ public class MenuServiceTest {
     @Test
     @DisplayName("메뉴 생성 시도 시 메뉴 가격이 0보다 작을 경우 Exception")
     public void createPriceException() {
-        final Menu 메뉴 = 메뉴_생성(1L, "한마리치킨", BigDecimal.valueOf(-16_000), 한마리_메뉴_그룹.getId());
+        final Menu 메뉴 = 메뉴_생성(1L, "한마리치킨", BigDecimal.valueOf(-16_000), 한마리_메뉴_그룹.getId(), Collections.emptyList());
 
         assertThatThrownBy(() -> menuService.create(메뉴)).isInstanceOf(IllegalArgumentException.class);
     }
@@ -73,7 +74,7 @@ public class MenuServiceTest {
     @Test
     @DisplayName("메뉴의 가격이 상품의 합계보다 클 경우 Exception")
     public void createPriceIsGreaterThanProductsPriceSumException() {
-        final Menu 메뉴 = 메뉴_생성(1L, "한마리치킨", BigDecimal.valueOf(17_000), 한마리_메뉴_그룹.getId(), 후라이드치킨);
+        final Menu 메뉴 = 메뉴_생성(1L, "한마리치킨", BigDecimal.valueOf(17_000), 한마리_메뉴_그룹.getId(), Arrays.asList(후라이드치킨));
 
         given(menuGroupDao.existsById(한마리_메뉴_그룹.getId())).willReturn(true);
         given(productDao.findById(후라이드치킨_상품.getId())).willReturn(Optional.of(후라이드치킨_상품));
@@ -84,7 +85,7 @@ public class MenuServiceTest {
     @Test
     @DisplayName("메뉴 생성")
     public void create() {
-        final Menu 메뉴 = 메뉴_생성(1L, "한마리치킨", BigDecimal.valueOf(16_000), 한마리_메뉴_그룹.getId(), 후라이드치킨);
+        final Menu 메뉴 = 메뉴_생성(1L, "한마리치킨", BigDecimal.valueOf(16_000), 한마리_메뉴_그룹.getId(), Arrays.asList(후라이드치킨));
 
         given(menuGroupDao.existsById(한마리_메뉴_그룹.getId())).willReturn(true);
         given(productDao.findById(후라이드치킨_상품.getId())).willReturn(Optional.of(후라이드치킨_상품));
