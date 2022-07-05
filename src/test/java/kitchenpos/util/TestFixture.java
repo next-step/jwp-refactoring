@@ -57,15 +57,15 @@ public class TestFixture {
     }
 
     public static OrderTable 빈_주문테이블_1_생성() {
-        return OrderTable.of(1L, null, 2, true);
+        return OrderTable.of(null, 2, true);
     }
 
     public static OrderTable 빈_주문테이블_2_생성() {
-        return OrderTable.of(2L, null, 3, true);
+        return OrderTable.of(null, 3, true);
     }
 
     public static OrderTable 빈_주문테이블_3_생성() {
-        return OrderTable.of(3L, null, 3, true);
+        return OrderTable.of(null, 3, true);
     }
 
     public static TableGroup 단체지정_1_생성(List<OrderTable> orderTables) {
