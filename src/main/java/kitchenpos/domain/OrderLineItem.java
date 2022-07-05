@@ -2,6 +2,8 @@ package kitchenpos.domain;
 
 import javax.persistence.*;
 
+import static java.util.Objects.requireNonNull;
+
 @Entity
 public class OrderLineItem {
 
@@ -15,20 +17,22 @@ public class OrderLineItem {
     private Long menuId;
     private long quantity;
 
-    public OrderLineItem() {
-    }
-
-    public OrderLineItem(Order order, Long menuId, long quantity) {
-        this.order = order;
-        this.menuId = menuId;
-        this.quantity = quantity;
+    protected OrderLineItem() {
     }
 
     public OrderLineItem(Long seq, Order order, Long menuId, long quantity) {
         this.seq = seq;
         this.order = order;
-        this.menuId = menuId;
+        this.menuId = requireNonNull(menuId, "menuId");
         this.quantity = quantity;
+    }
+
+    public OrderLineItem(Long menuId, long quantity) {
+        this(null, null, menuId, quantity);
+    }
+
+    public void bindTo(Order order) {
+        this.order = order;
     }
 
     public Long getSeq() {

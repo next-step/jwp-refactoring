@@ -2,7 +2,11 @@ package kitchenpos.domain;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 @Entity(name = "orders")
 public class Order {
@@ -15,25 +19,52 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
     private LocalDateTime orderedTime;
-    @OneToMany
-    private List<OrderLineItem> orderLineItems;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderLineItem> orderLineItems = new ArrayList<>();
 
-    public Order() {
+    protected Order() {
     }
 
-    public Order(Long orderTableId, List<OrderLineItem> orderLineItems) {
-        this.orderTableId = orderTableId;
-        this.orderStatus = OrderStatus.COOKING;
-        this.orderedTime = LocalDateTime.now();
-        this.orderLineItems = orderLineItems;
-    }
-
-    public Order(Long id, Long orderTableId, OrderStatus orderStatus, LocalDateTime orderedTime, List<OrderLineItem> orderLineItems) {
+    public Order(Long id, Long orderTableId) {
         this.id = id;
-        this.orderTableId = orderTableId;
-        this.orderStatus = OrderStatus.COOKING;
+        this.orderTableId = requireNonNull(orderTableId, "orderTableId");
         this.orderedTime = LocalDateTime.now();
-        this.orderLineItems = orderLineItems;
+        this.orderStatus = OrderStatus.COOKING;
+    }
+
+    public Order(Long orderTableId) {
+        this(null, orderTableId);
+    }
+
+    public void addOrderLineItems(List<OrderLineItem> orderLineItems) {
+        validateOrderLineItems(orderLineItems);
+        for (OrderLineItem orderLineItem : orderLineItems) {
+            add(orderLineItem);
+        }
+    }
+
+    private void add(OrderLineItem orderLineItem) {
+        if (!this.orderLineItems.contains(orderLineItem)) {
+            this.orderLineItems.add(orderLineItem);
+        }
+        orderLineItem.bindTo(this);
+    }
+
+    private void validateOrderLineItems(List<OrderLineItem> orderLineItems) {
+        if (orderLineItems.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public void changeOrderStatus(OrderStatus orderStatus) {
+        if (isCompleted()) {
+            throw new IllegalArgumentException();
+        }
+        this.orderStatus = orderStatus;
+    }
+
+    private boolean isCompleted() {
+        return this.orderStatus == OrderStatus.COMPLETION;
     }
 
     public Long getId() {
