@@ -20,6 +20,8 @@ import org.springframework.util.CollectionUtils;
 @EntityListeners(AuditingEntityListener.class)
 @Entity(name = "orders")
 public class Order {
+    @Embedded
+    private final OrderLineItems orderLineItems = new OrderLineItems();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,8 +31,6 @@ public class Order {
     private OrderStatus orderStatus;
     @CreatedDate
     private LocalDateTime orderedTime;
-    @Embedded
-    private final OrderLineItems orderLineItems = new OrderLineItems();
 
     protected Order() {
     }

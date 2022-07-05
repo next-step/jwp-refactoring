@@ -6,14 +6,13 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.fixture.MenuFixtureFactory;
-import kitchenpos.fixture.MenuProductFixtureFactory;
-import kitchenpos.menu.domain.Menu;
+import kitchenpos.acceptance.util.KitchenPosBehaviors;
+import kitchenpos.menu.application.fixture.MenuDtoFixtureFactory;
+import kitchenpos.menu.application.fixture.MenuProductDtoFixtureFactory;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuDto;
+import kitchenpos.menu.dto.MenuProductDto;
 import kitchenpos.product.domain.Product;
-import kitchenpos.utils.KitchenPosBehaviors;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,10 +27,12 @@ class MenuAcceptanceTest extends AcceptanceTest {
     void menuAcceptanceTest() {
         MenuGroup menuGroup = KitchenPosBehaviors.메뉴그룹_생성됨("치킨");
         Product product = KitchenPosBehaviors.상품_생성됨("강정치킨", 10000);
-        MenuProduct menuProduct = MenuProductFixtureFactory.createMenuProduct(product.getId(), 1);
-        Menu menu = MenuFixtureFactory.createMenu(menuGroup, "강정치킨 한마리", 10000, Lists.newArrayList(menuProduct));
+        MenuProductDto menuProductDto = MenuProductDtoFixtureFactory.createMenuProduct(product.getId(), 1);
+        MenuDto menuDto = MenuDtoFixtureFactory.createMenu(menuGroup
+                , "강정치킨 한마리", 10000
+                , Lists.newArrayList(menuProductDto));
 
-        ExtractableResponse<Response> createResponse = KitchenPosBehaviors.메뉴_생성_요청(menu);
+        ExtractableResponse<Response> createResponse = KitchenPosBehaviors.메뉴_생성_요청(menuDto);
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 
         List<MenuDto> menus = KitchenPosBehaviors.메뉴_목록조회();

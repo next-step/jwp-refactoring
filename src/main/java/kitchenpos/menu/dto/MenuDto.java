@@ -8,6 +8,7 @@ import java.util.List;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
 
 public class MenuDto {
     private Long id;
@@ -40,10 +41,17 @@ public class MenuDto {
     }
 
     public Menu toMenu() {
-        List<MenuProduct> menuProducts = menuProductDtos.stream()
+        return new Menu(name, price, menuGroup, menuProductList());
+    }
+
+    public MenuProducts menuProducts() {
+        return new MenuProducts(menuProductList());
+    }
+
+    private List<MenuProduct> menuProductList() {
+        return menuProductDtos.stream()
                 .map(menuProductDto -> new MenuProduct(menuProductDto.getProductId(), menuProductDto.getQuantity()))
                 .collect(toList());
-        return new Menu(name, price, menuGroup, menuProducts);
     }
 
     public Long getId() {

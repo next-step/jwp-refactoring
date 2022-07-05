@@ -5,23 +5,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.fixture.MenuFixtureFactory;
-import kitchenpos.fixture.MenuProductFixtureFactory;
-import kitchenpos.fixture.OrderFixtureFactory;
-import kitchenpos.fixture.OrderLineItemFixtureFactory;
-import kitchenpos.fixture.OrderTableFixtureFactory;
-import kitchenpos.fixture.TableGroupFixtureFactory;
+import kitchenpos.acceptance.util.KitchenPosBehaviors;
+import kitchenpos.menu.application.fixture.MenuDtoFixtureFactory;
+import kitchenpos.menu.application.fixture.MenuProductDtoFixtureFactory;
 import kitchenpos.menu.domain.MenuGroup;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.dto.MenuDto;
+import kitchenpos.menu.dto.MenuProductDto;
+import kitchenpos.order.application.fixture.OrderDtoFixtureFactory;
+import kitchenpos.order.application.fixture.OrderLineItemDtoFixtureFactory;
 import kitchenpos.order.domain.OrderStatus;
-import kitchenpos.order.dto.OrderLineItemDto;
+import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.product.domain.Product;
+import kitchenpos.table.application.fixture.OrderTableDtoFixtureFactory;
+import kitchenpos.table.application.fixture.TableGroupDtoFixtureFactory;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupResponse;
-import kitchenpos.utils.KitchenPosBehaviors;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -32,7 +32,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
 
     Product product;
     MenuGroup menuGroup;
-    MenuDto menuDTO;
+    MenuDto menuDto;
     OrderTableResponse orderTable1;
     OrderTableResponse orderTable2;
 
@@ -41,11 +41,11 @@ class OrderAcceptanceTest extends AcceptanceTest {
         super.setUp();
         product = KitchenPosBehaviors.상품_생성됨("상품1", 10000);
         menuGroup = KitchenPosBehaviors.메뉴그룹_생성됨("메뉴그룹1");
-        MenuProduct menuProduct = MenuProductFixtureFactory.createMenuProduct(product.getId(), 1);
-        menuDTO = KitchenPosBehaviors.메뉴_생성됨(
-                MenuFixtureFactory.createMenu(menuGroup, "강정치킨 한마리", 10000, Lists.newArrayList(menuProduct)));
-        orderTable1 = KitchenPosBehaviors.테이블_생성됨(OrderTableFixtureFactory.createEmptyOrderTable());
-        orderTable2 = KitchenPosBehaviors.테이블_생성됨(OrderTableFixtureFactory.createEmptyOrderTable());
+        MenuProductDto menuProductDto = MenuProductDtoFixtureFactory.createMenuProduct(product.getId(), 1);
+        menuDto = KitchenPosBehaviors.메뉴_생성됨(
+                MenuDtoFixtureFactory.createMenu(menuGroup, "강정치킨 한마리", 10000, Lists.newArrayList(menuProductDto)));
+        orderTable1 = KitchenPosBehaviors.테이블_생성됨(OrderTableDtoFixtureFactory.createEmptyOrderTable());
+        orderTable2 = KitchenPosBehaviors.테이블_생성됨(OrderTableDtoFixtureFactory.createEmptyOrderTable());
     }
 
     /**
@@ -60,9 +60,9 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @DisplayName("한 테이블 손님 시나리오")
     void scenario1() {
         KitchenPosBehaviors.테이블_공석여부_변경_요청(orderTable1.getId(),
-                OrderTableFixtureFactory.createParamForChangeEmptyState(false));
+                OrderTableDtoFixtureFactory.createParamForChangeEmptyState(false));
         KitchenPosBehaviors.테이블_인원수_변경_요청(orderTable1.getId(),
-                OrderTableFixtureFactory.createParamForChangeNumberOfGuests(3));
+                OrderTableDtoFixtureFactory.createParamForChangeNumberOfGuests(3));
 
         OrderResponse savedOrder = 주문을_추가하고_확인한다(orderTable1.getId());
         주문의_상태를_변경하고_확인한다(savedOrder.getId(), OrderStatus.MEAL);
@@ -74,14 +74,16 @@ class OrderAcceptanceTest extends AcceptanceTest {
         주문의_상태를_변경하고_확인한다(savedOrder2.getId(), OrderStatus.COMPLETION);
 
         KitchenPosBehaviors.테이블_공석여부_변경_요청(orderTable1.getId(),
-                OrderTableFixtureFactory.createParamForChangeEmptyState(true));
+                OrderTableDtoFixtureFactory.createParamForChangeEmptyState(true));
         KitchenPosBehaviors.테이블_인원수_변경_요청(orderTable1.getId(),
-                OrderTableFixtureFactory.createParamForChangeNumberOfGuests(0));
+                OrderTableDtoFixtureFactory.createParamForChangeNumberOfGuests(0));
     }
 
     private OrderResponse 주문을_추가하고_확인한다(Long orderTableId) {
-        OrderLineItemDto orderLineItemDto = OrderLineItemFixtureFactory.createOrderLine(menuDTO.getId(), 3);
-        OrderRequest orderRequest = OrderFixtureFactory.createOrder(orderTableId, Lists.newArrayList(orderLineItemDto));
+        OrderLineItemRequest orderLineItemRequest = OrderLineItemDtoFixtureFactory.createOrderLineItem(menuDto.getId(),
+                3);
+        OrderRequest orderRequest = OrderDtoFixtureFactory.createOrder(orderTableId, Lists.newArrayList(
+                orderLineItemRequest));
 
         ExtractableResponse<Response> createResponse = KitchenPosBehaviors.주문_추가_요청(orderRequest);
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -91,7 +93,7 @@ class OrderAcceptanceTest extends AcceptanceTest {
 
     private void 주문의_상태를_변경하고_확인한다(Long orderTableId, OrderStatus orderStatus) {
         ExtractableResponse<Response> response = KitchenPosBehaviors.주문상태변경_요청(orderTableId,
-                OrderFixtureFactory.createParamForUpdateStatus(orderStatus));
+                OrderDtoFixtureFactory.createParamForUpdateStatus(orderStatus));
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
@@ -109,11 +111,11 @@ class OrderAcceptanceTest extends AcceptanceTest {
     @DisplayName("단체 손님 시나리오")
     void scenario2() {
         TableGroupResponse tableGroup = KitchenPosBehaviors.테이블그룹_생성(
-                TableGroupFixtureFactory.createTableGroup(Lists.newArrayList(orderTable1, orderTable2)));
+                TableGroupDtoFixtureFactory.createTableGroup(Lists.newArrayList(orderTable1, orderTable2)));
         KitchenPosBehaviors.테이블_인원수_변경_요청(orderTable1.getId(),
-                OrderTableFixtureFactory.createParamForChangeNumberOfGuests(4));
+                OrderTableDtoFixtureFactory.createParamForChangeNumberOfGuests(4));
         KitchenPosBehaviors.테이블_인원수_변경_요청(orderTable2.getId(),
-                OrderTableFixtureFactory.createParamForChangeNumberOfGuests(3));
+                OrderTableDtoFixtureFactory.createParamForChangeNumberOfGuests(3));
 
         OrderResponse savedOrder = 주문을_추가하고_확인한다(orderTable1.getId());
         OrderResponse savedOrder2 = 주문을_추가하고_확인한다(orderTable2.getId());

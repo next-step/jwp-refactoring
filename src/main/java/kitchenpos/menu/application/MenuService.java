@@ -4,41 +4,26 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProductAmount;
-import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.menu.domain.MenuCreationValidator;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuDto;
-import kitchenpos.product.application.ProductService;
-import kitchenpos.product.domain.Product;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MenuService {
     private final MenuRepository menuRepository;
-    private final ProductService productService;
+    private final MenuCreationValidator menuCreationValidator;
 
-    public MenuService(
-            final MenuRepository menuRepository,
-            final ProductService productService
-    ) {
+    public MenuService(MenuRepository menuRepository, MenuCreationValidator menuCreationValidator) {
         this.menuRepository = menuRepository;
-        this.productService = productService;
+        this.menuCreationValidator = menuCreationValidator;
     }
 
     @Transactional
     public MenuDto create(final MenuDto menuDto) {
-        Menu menu = menuDto.toMenu();
-        MenuProducts menuProducts = menu.getMenuProducts();
-        List<Long> productIds = menuProducts.productIds();
-        List<Product> products = productService.findAllProductByIds(productIds);
-        List<MenuProductAmount> menuProductAmounts = products.stream()
-                .map(product -> {
-                    long quantity = menuProducts.findQuantityByProductId(product.getId());
-                    return new MenuProductAmount(quantity, product.getPrice());
-                }).collect(toList());
-        menu.checkSumPriceOfProducts(menuProductAmounts);
-        return MenuDto.of(menuRepository.save(menu));
+        menuCreationValidator.validate(menuDto.getPrice(), menuDto.menuProducts());
+        return MenuDto.of(menuRepository.save(menuDto.toMenu()));
     }
 
     public List<MenuDto> list() {

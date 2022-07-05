@@ -5,12 +5,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.fixture.OrderTableFixtureFactory;
-import kitchenpos.fixture.TableGroupFixtureFactory;
+import kitchenpos.acceptance.util.KitchenPosBehaviors;
+import kitchenpos.table.application.fixture.OrderTableDtoFixtureFactory;
+import kitchenpos.table.application.fixture.TableGroupDtoFixtureFactory;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
-import kitchenpos.utils.KitchenPosBehaviors;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,8 +25,8 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        table1 = KitchenPosBehaviors.테이블_생성됨(OrderTableFixtureFactory.createEmptyOrderTable());
-        table2 = KitchenPosBehaviors.테이블_생성됨(OrderTableFixtureFactory.createEmptyOrderTable());
+        table1 = KitchenPosBehaviors.테이블_생성됨(OrderTableDtoFixtureFactory.createEmptyOrderTable());
+        table2 = KitchenPosBehaviors.테이블_생성됨(OrderTableDtoFixtureFactory.createEmptyOrderTable());
     }
 
     /**
@@ -36,7 +36,7 @@ class TableGroupAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("테이블그룹 지정, 조회, 그룹 해제 기능 인수테스트")
     void tableGroupAcceptanceTest() {
-        TableGroupRequest tableGroup = TableGroupFixtureFactory.createTableGroup(Lists.newArrayList(table1, table2));
+        TableGroupRequest tableGroup = TableGroupDtoFixtureFactory.createTableGroup(Lists.newArrayList(table1, table2));
 
         ExtractableResponse<Response> createResponse = KitchenPosBehaviors.테이블그룹_생성_요청(tableGroup);
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());

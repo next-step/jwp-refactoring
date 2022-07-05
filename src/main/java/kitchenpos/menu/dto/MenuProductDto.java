@@ -20,6 +20,14 @@ public class MenuProductDto {
     }
 
     public static MenuProductDto of(MenuProduct menuProduct) {
+        if (menuProduct.getMenu() == null) {
+            return new MenuProductDto(
+                    menuProduct.getSeq()
+                    , null
+                    , menuProduct.getProductId()
+                    , menuProduct.getQuantity()
+            );
+        }
         return new MenuProductDto(
                 menuProduct.getSeq()
                 , menuProduct.getMenu().getId()

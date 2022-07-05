@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import kitchenpos.JpaRepositoryTest;
+import kitchenpos.table.domain.fixture.OrderTableFixtureFactory;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,13 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 class OrderTableRepositoryTest extends JpaRepositoryTest {
     OrderTable orderTable1;
     OrderTable orderTable2;
+
     @Autowired
     private OrderTableRepository orderTableRepository;
 
     @BeforeEach
     void setUp() {
-        orderTable1 = new OrderTable(0, true);
-        orderTable2 = new OrderTable(0, true);
+        orderTable1 = OrderTableFixtureFactory.createEmptyOrderTable();
+        orderTable2 = OrderTableFixtureFactory.createEmptyOrderTable();
         orderTableRepository.saveAll(Lists.newArrayList(orderTable1, orderTable2));
     }
 

@@ -18,6 +18,10 @@ public class MenuProducts {
 
     }
 
+    public MenuProducts(List<MenuProduct> inputs) {
+        elements.addAll(inputs);
+    }
+
     void addMenuProducts(List<MenuProduct> menuProducts) {
         elements.addAll(menuProducts);
     }
@@ -39,7 +43,7 @@ public class MenuProducts {
 
     public long findQuantityByProductId(Long id) {
         return elements.stream()
-                .filter(menuProduct -> menuProduct.getProductId() == id)
+                .filter(menuProduct -> menuProduct.getProductId().equals(id))
                 .findFirst()
                 .orElseThrow(NotExistMenuProductException::new)
                 .getQuantity();

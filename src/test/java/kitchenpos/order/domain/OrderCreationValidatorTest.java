@@ -4,11 +4,14 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.order.domain.fixture.OrderFixtureFactory;
+import kitchenpos.order.domain.fixture.OrderLineItemFixtureFactory;
 import kitchenpos.order.exception.CannotMakeOrderException;
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
+import kitchenpos.table.domain.fixture.OrderTableFixtureFactory;
 import kitchenpos.table.exception.NotExistTableException;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,7 +41,11 @@ class OrderCreationValidatorTest {
     @DisplayName("외부로부터 전달받은 메뉴 ID를 가진 메뉴들이 실제로 존재하는지 확인")
     void 메뉴존재여부확인() {
         when(menuRepository.countByIdIn(Lists.newArrayList(1L, 2L))).thenReturn(2L);
-        Order order = new Order(1L, Lists.newArrayList(new OrderLineItem(1L, 1), new OrderLineItem(2L, 2)));
+        List<OrderLineItem> newOrderLineItems = Lists.newArrayList(
+                OrderLineItemFixtureFactory.createOrderLineItem(1L, "메뉴1", 1000, 1)
+                , OrderLineItemFixtureFactory.createOrderLineItem(2L, "메뉴2", 2000, 2)
+        );
+        Order order = OrderFixtureFactory.createOrder(1L, newOrderLineItems);
         OrderLineItems orderLineItems = order.getOrderLineItems();
 
         assertThatNoException()
@@ -49,9 +56,14 @@ class OrderCreationValidatorTest {
     @DisplayName("외부로부터 전달받은 메뉴 ID중 유효하지 않은 ID가 있는 경우 예외 발생")
     void 메뉴존재여부확인_실패() {
         when(menuRepository.countByIdIn(Lists.newArrayList(1L, 2L))).thenReturn(0L);
-        Order order = new Order(1L, Lists.newArrayList(new OrderLineItem(1L, 1), new OrderLineItem(2L, 2)));
-        OrderLineItems orderLineItems = order.getOrderLineItems();
+        List<OrderLineItem> newOrderLineItems = Lists.newArrayList(
+                OrderLineItemFixtureFactory.createOrderLineItem(1L, "메뉴1", 1000, 1)
+                , OrderLineItemFixtureFactory.createOrderLineItem(2L, "메뉴2", 2000, 2)
+        );
 
+        Order order = OrderFixtureFactory.createOrder(1L, newOrderLineItems);
+
+        OrderLineItems orderLineItems = order.getOrderLineItems();
         assertThatThrownBy(() -> orderCreationValidator.validateAllMenusExist(orderLineItems))
                 .isInstanceOf(CannotMakeOrderException.class);
     }
@@ -61,7 +73,7 @@ class OrderCreationValidatorTest {
     void 테이블_주문가능여부() {
         Long orderTableId = 1L;
         when(orderTableRepository.findById(orderTableId))
-                .thenReturn(Optional.of(new OrderTable(4, false)));
+                .thenReturn(Optional.of(OrderTableFixtureFactory.createNotEmptyOrderTable(4)));
 
         assertThatNoException()
                 .isThrownBy(() -> orderCreationValidator.validateTableToMakeOrder(orderTableId));
@@ -83,7 +95,7 @@ class OrderCreationValidatorTest {
     void 테이블_주문불가능케이스_빈테이블() {
         Long orderTableId = 1L;
         when(orderTableRepository.findById(orderTableId))
-                .thenReturn(Optional.of(new OrderTable(0, true)));
+                .thenReturn(Optional.of(OrderTableFixtureFactory.createEmptyOrderTable()));
 
         assertThatThrownBy(() -> orderCreationValidator.validateTableToMakeOrder(orderTableId))
                 .isInstanceOf(CannotMakeOrderException.class);

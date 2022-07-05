@@ -1,4 +1,4 @@
-package kitchenpos.fixture;
+package kitchenpos.menu.domain.fixture;
 
 import kitchenpos.menu.domain.MenuProduct;
 import org.springframework.test.util.ReflectionTestUtils;
