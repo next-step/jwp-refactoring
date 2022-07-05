@@ -9,7 +9,6 @@ import static org.mockito.Mockito.doThrow;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import kitchenpos.menu.application.MenuGroupService;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.dao.MenuProductRepository;
@@ -20,7 +19,6 @@ import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
-import kitchenpos.product.dao.ProductRepository;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -38,9 +36,6 @@ class MenuServiceTest {
 
     @Mock
     MenuRepository menuRepository;
-
-    @Mock
-    ProductRepository productRepository;
 
     @Mock
     MenuGroupService menuGroupService;
@@ -68,7 +63,6 @@ class MenuServiceTest {
     @DisplayName("메뉴를 저장한다")
     void create() {
         // given
-        given(productRepository.findById(any())).willReturn(Optional.ofNullable(후라이드));
         given(menuRepository.save(any())).willReturn(후라이드치킨);
         given(menuProductRepository.saveAll(any())).willReturn(Collections.singletonList(후라이드치킨상품));
 
@@ -77,19 +71,6 @@ class MenuServiceTest {
 
         // then
         assertThat(actual.getName()).isEqualTo("후라이드치킨");
-    }
-
-    @Test
-    @DisplayName("메뉴 저장시 메뉴의 금액은 0원 이상이다")
-    void create_priceException() {
-        // given
-        상품 = new MenuRequest("후라이드치킨", BigDecimal.valueOf(-1), 1L,
-                Collections.singletonList(new MenuProductRequest(1L, 1L)));
-
-        // when & then
-        assertThatIllegalArgumentException().isThrownBy(
-                () -> menuService.create(상품)
-        );
     }
 
     @Test
@@ -103,32 +84,6 @@ class MenuServiceTest {
         assertThatIllegalArgumentException().isThrownBy(
                 () -> menuService.create(상품)
         ).withMessageContaining("존재하지 않는 메뉴그룹입니다.");
-    }
-
-    @Test
-    @DisplayName("메뉴 저장시 메뉴는 존재하는 상품 정보를 가져야 한다")
-    void create_nonProductInfoError() {
-        // given
-        given(productRepository.findById(any())).willReturn(Optional.empty());
-
-        // when & then
-        assertThatIllegalArgumentException().isThrownBy(
-                () -> menuService.create(상품)
-        ).withMessageContaining("존재하지 않는 상품입니다.");
-    }
-
-    @Test
-    @DisplayName("메뉴 저장시 메뉴상품에 속한 상품들의 금액 합보다 메뉴 가격이 작아야 한다")
-    void create_totalPriceError() {
-        // given
-        상품 = new MenuRequest("후라이드치킨", BigDecimal.valueOf(20000), 1L,
-                Collections.singletonList(new MenuProductRequest(1L, 1L)));
-        given(productRepository.findById(any())).willReturn(Optional.ofNullable(후라이드));
-
-        // when & then
-        assertThatIllegalArgumentException().isThrownBy(
-                () -> menuService.create(상품)
-        ).withMessageContaining("메뉴의 금액은 상품의 합 보다 작아야합니다.");
     }
 
     @Test
