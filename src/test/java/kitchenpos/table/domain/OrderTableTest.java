@@ -1,38 +1,28 @@
 package kitchenpos.table.domain;
 
-import kitchenpos.tablegroup.domain.TableGroup;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
-
-import static kitchenpos.common.Messages.HAS_ORDER_TABLE_GROUP;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class OrderTableTest {
-    private OrderTable 주문_테이블_2명;
-    private OrderTables 주문_테이블_그룹;
-    private TableGroup 테이블_그룹;
-
-    @BeforeEach
-    void setUp() {
-        주문_테이블_2명 = OrderTable.of(NumberOfGuests.of(2), Empty.of(true));
-        주문_테이블_그룹 = OrderTables.of(Arrays.asList(주문_테이블_2명));
-        테이블_그룹 = TableGroup.of(1L, LocalDateTime.now(), 주문_테이블_그룹);
-    }
 
     @Test
-    @DisplayName("테이블 데이터 검증시 테이블 그룹이 존재하는 경우 실패")
-    void validateHasOrderTable() {
+    @DisplayName("주문 테이블 등록시 정상적으로 손님수와 빈 테이블 등록 테스트")
+    void createOrderTable() {
+
         // given
-        OrderTable 주문_테이블_그룹_있음 = OrderTable.of(1L, 테이블_그룹, NumberOfGuests.of(4), Empty.of(false));
+        NumberOfGuests numberOfGuests = NumberOfGuests.of(4);
+        Empty empty = Empty.of(false);
+
+        // when
+        OrderTable orderTable = OrderTable.of(numberOfGuests, empty);
 
         // then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(주문_테이블_그룹_있음::validateHasOrderTable)
-                .withMessage(HAS_ORDER_TABLE_GROUP)
-        ;
+        assertAll(
+                () -> assertThat(orderTable.getNumberOfGuests()).isEqualTo(4),
+                () -> assertThat(orderTable.isEmpty()).isFalse()
+        );
     }
 }

@@ -5,13 +5,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List;
 
-import static kitchenpos.common.Messages.TABLE_GROUP_ORDER_IDS_FIND_IN_NO_SUCH;
-import static kitchenpos.common.Messages.TABLE_GROUP_ORDER_NOT_EMPTY;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 class OrderTablesTest {
@@ -39,45 +36,11 @@ class OrderTablesTest {
     }
 
     @Test
-    @DisplayName("주문 테이블 생성시 조회된 ID 숫자가 다른경우 실패")
-    void tableGroupOrderIdsFindInNoSuch() {
-        // given
-        List<Long> requestOrderTablesIds = Arrays.asList(1L);
-
-        // when
-        OrderTables orderTables = OrderTables.of(Arrays.asList(주문_테이블_4명, 주문_테이블_2명));
-
-        // then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> orderTables.validateOrderTableGroup(requestOrderTablesIds))
-                .withMessage(TABLE_GROUP_ORDER_IDS_FIND_IN_NO_SUCH)
-        ;
-    }
-
-    @Test
-    @DisplayName("주문 테이블 생성시 조회된 ID 숫자가 다른경우 실패")
-    void tableGroupOrderNotEmpty() {
-        // given
-        List<Long> requestOrderTablesIds = Arrays.asList(1L, 2L);
-        주문_테이블_4명 = OrderTable.of(NumberOfGuests.of(4), Empty.of(false));
-
-        // when
-        OrderTables orderTables = OrderTables.of(Arrays.asList(주문_테이블_4명, 주문_테이블_2명));
-
-        // then
-        assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> orderTables.validateOrderTableGroup(requestOrderTablesIds))
-                .withMessage(TABLE_GROUP_ORDER_NOT_EMPTY)
-        ;
-    }
-
-    @Test
     @DisplayName("테이블 그룹 해제")
     void ungroup() {
         // given
-        OrderTables tables = OrderTables.of(Arrays.asList(주문_테이블_2명));
-        TableGroup tableGroup = TableGroup.of(tables);
-        OrderTable 주문_테이블_그룹_있음 = OrderTable.of(1L, tableGroup, NumberOfGuests.of(4), Empty.of(false));
+        TableGroup tableGroup = TableGroup.of(LocalDateTime.now());
+        OrderTable 주문_테이블_그룹_있음 = OrderTable.of(1L, tableGroup.getId(), NumberOfGuests.of(4), Empty.of(false));
         OrderTables orderTables = OrderTables.of(Arrays.asList(주문_테이블_그룹_있음));
 
         // when
