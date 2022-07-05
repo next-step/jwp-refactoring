@@ -4,15 +4,18 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.table.domain.TableGroup;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 
-//@Builder
-@AllArgsConstructor
 public class TableGroupRequest {
     private Long id;
     private LocalDateTime createdDate;
     private List<OrderTableRequest> orderTables;
+
+    public TableGroupRequest(Long id, LocalDateTime createdDate,
+                             List<OrderTableRequest> orderTables) {
+        this.id = id;
+        this.createdDate = createdDate;
+        this.orderTables = orderTables;
+    }
 
     public Long getId() {
         return id;
@@ -33,11 +36,6 @@ public class TableGroupRequest {
                 .map(OrderTableRequest::of)
                 .collect(Collectors.toList());
 
-//        return TableGroupRequest.builder()
-//                .id(tableGroup.getId())
-//                .createdDate(tableGroup.getCreatedDate())
-//                .orderTables(orderTableRequests)
-//                .build();
         return new TableGroupRequest(tableGroup.getId(), tableGroup.getCreatedDate(), orderTableRequests);
     }
 }

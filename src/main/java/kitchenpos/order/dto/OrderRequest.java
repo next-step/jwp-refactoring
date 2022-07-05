@@ -7,15 +7,22 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
-import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
 public class OrderRequest {
     private Long id;
     private Long orderTableId;
     private String orderStatus;
     private LocalDateTime orderedTime;
     private List<OrderLineItemRequest> orderLineItems;
+
+    public OrderRequest(Long id, Long orderTableId, String orderStatus, LocalDateTime orderedTime,
+                        List<OrderLineItemRequest> orderLineItems) {
+        this.id = id;
+        this.orderTableId = orderTableId;
+        this.orderStatus = orderStatus;
+        this.orderedTime = orderedTime;
+        this.orderLineItems = orderLineItems;
+    }
 
     public Long getId() {
         return id;

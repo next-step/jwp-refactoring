@@ -7,11 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import kitchenpos.menu.domain.Menu;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 public class OrderLineItem {
     @Id
@@ -27,12 +23,16 @@ public class OrderLineItem {
     private Menu menu;
     private long quantity;
 
+    public OrderLineItem() {
+    }
+
     public OrderLineItem(Long seq, Order order, Menu menu, long quantity) {
         this.seq = seq;
         this.order = order;
         this.menu = menu;
         this.quantity = quantity;
     }
+
 
     public Long getSeq() {
         return seq;

@@ -3,14 +3,19 @@ package kitchenpos.order.dto;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
-import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
 public class OrderLineItemRequest {
     private Long seq;
     private Long orderId;
     private Long menuId;
     private long quantity;
+
+    public OrderLineItemRequest(Long seq, Long orderId, Long menuId, long quantity) {
+        this.seq = seq;
+        this.orderId = orderId;
+        this.menuId = menuId;
+        this.quantity = quantity;
+    }
 
     public Long getSeq() {
         return seq;

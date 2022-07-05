@@ -5,9 +5,7 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import kitchenpos.product.domain.ProductPrice;
-import lombok.EqualsAndHashCode;
 
-@EqualsAndHashCode
 @Embeddable
 public class MenuPrice {
 
@@ -37,13 +35,25 @@ public class MenuPrice {
         return this;
     }
 
-    public void add(MenuPrice value){
-        price = price.add(value.getPrice());
-    }
-
     public int compareTo(ProductPrice value){
         return price.compareTo(value.getPrice());
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof MenuPrice)) {
+            return false;
+        }
+        MenuPrice menuPrice = (MenuPrice) o;
+        return Objects.equals(getPrice(), menuPrice.getPrice());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getPrice());
+    }
 }
 

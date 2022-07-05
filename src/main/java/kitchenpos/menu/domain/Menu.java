@@ -9,13 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
 @Entity
 public class Menu {
     @Id
@@ -31,6 +25,9 @@ public class Menu {
 
     @Embedded
     private MenuProducts menuProducts = new MenuProducts();
+
+    public Menu() {
+    }
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
         this.name = name;
@@ -48,6 +45,35 @@ public class Menu {
     public Menu(MenuPrice price, MenuProducts menuProducts) {
         this.price = price;
         this.menuProducts = menuProducts;
+    }
+
+    public Menu(Long id, String name, MenuPrice price, MenuGroup menuGroup,
+                MenuProducts menuProducts) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.menuGroup = menuGroup;
+        this.menuProducts = menuProducts;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public MenuPrice getPrice() {
+        return price;
+    }
+
+    public MenuGroup getMenuGroup() {
+        return menuGroup;
+    }
+
+    public MenuProducts getMenuProducts() {
+        return menuProducts;
     }
 
     public List<MenuProduct> getMenuProductList() {

@@ -1,16 +1,19 @@
 package kitchenpos.product.dto;
 
 import kitchenpos.menu.domain.MenuProduct;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 
-@Builder
-@AllArgsConstructor
 public class MenuProductRequest {
     private Long seq;
     private Long menuId;
     private Long productId;
     private long quantity;
+
+    public MenuProductRequest(Long seq, Long menuId, Long productId, long quantity) {
+        this.seq = seq;
+        this.menuId = menuId;
+        this.productId = productId;
+        this.quantity = quantity;
+    }
 
     public Long getSeq() {
         return seq;
@@ -30,7 +33,7 @@ public class MenuProductRequest {
 
     private static Long setProductIdFromMenuProduct(MenuProduct menuProduct) {
         Long productId = null;
-        if(menuProduct.getProduct()!= null){
+        if (menuProduct.getProduct() != null) {
             productId = menuProduct.getProduct().getId();
         }
         return productId;
@@ -38,20 +41,22 @@ public class MenuProductRequest {
 
     private static Long setMenuIdFromMenuProduct(MenuProduct menuProduct) {
         Long menuId = null;
-        if(menuProduct.getMenu()!= null){
+        if (menuProduct.getMenu() != null) {
             menuId = menuProduct.getMenu().getId();
         }
         return menuId;
     }
 
-    public static MenuProductRequest of(MenuProduct menuProduct){
+    public static MenuProductRequest of(MenuProduct menuProduct) {
         Long productId = setProductIdFromMenuProduct(menuProduct);
         Long menuId = setMenuIdFromMenuProduct(menuProduct);
 
-        return MenuProductRequest.builder().seq(menuProduct.getSeq())
-                .productId(productId)
-                .quantity(menuProduct.getQuantity())
-                .menuId(menuId)
-                .build();
+//        return MenuProductRequest.builder().seq(menuProduct.getSeq())
+//                .productId(productId)
+//                .quantity(menuProduct.getQuantity())
+//                .menuId(menuId)
+//                .build();
+//        return new MenuProductRequest(menuProduct.getSeq(), productId, menuProduct.getQuantity(), menuId);
+        return new MenuProductRequest(menuProduct.getSeq(), menuId, productId, menuProduct.getQuantity());
     }
 }

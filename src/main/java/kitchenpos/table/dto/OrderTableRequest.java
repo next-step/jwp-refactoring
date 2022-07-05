@@ -2,22 +2,38 @@ package kitchenpos.table.dto;
 
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@Getter
-@Setter
 public class OrderTableRequest {
     private Long id;
     private Long tableGroupId;
     private int numberOfGuests;
     private boolean empty;
+
+    public OrderTableRequest() {
+    }
+
+    public OrderTableRequest(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+        this.id = id;
+        this.tableGroupId = tableGroupId;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Long getTableGroupId() {
+        return tableGroupId;
+    }
+
+    public int getNumberOfGuests() {
+        return numberOfGuests;
+    }
+
+    public boolean isEmpty() {
+        return empty;
+    }
 
     public static OrderTableRequest of(OrderTable orderTable) {
         TableGroup tableGroup = orderTable.getTableGroup();
@@ -26,12 +42,6 @@ public class OrderTableRequest {
             tableGroupId = tableGroup.getId();
         }
 
-//        return OrderTableRequest.builder()
-//                .id(orderTable.getId())
-//                .tableGroupId(tableGroupId)
-//                .numberOfGuests(orderTable.getNumberOfGuests())
-//                .empty(orderTable.isEmpty())
-//                .build();
         return new OrderTableRequest(orderTable.getId(), tableGroupId, orderTable.getNumberOfGuests(),
                 orderTable.isEmpty());
     }

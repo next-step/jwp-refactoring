@@ -2,15 +2,7 @@ package kitchenpos.table.dto;
 
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
 
-//@Builder
-@AllArgsConstructor
-@Getter
-@Setter
 public class OrderTableResponse {
     private Long id;
     private Long tableGroupId;
@@ -26,14 +18,19 @@ public class OrderTableResponse {
         return tableGroupId;
     }
 
+    public OrderTableResponse(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
+        this.id = id;
+        this.tableGroupId = tableGroupId;
+        this.numberOfGuests = numberOfGuests;
+        this.empty = empty;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
     public static OrderTableResponse of(OrderTable orderTable) {
         Long tableGroupId = getTableGroupIdByOrderTable(orderTable);
-//        return OrderTableResponse.builder()
-//                .id(orderTable.getId())
-//                .tableGroupId(tableGroupId)
-//                .numberOfGuests(orderTable.getNumberOfGuests())
-//                .empty(orderTable.isEmpty())
-//                .build();
         return new OrderTableResponse(orderTable.getId(), tableGroupId, orderTable.getNumberOfGuests(),
                 orderTable.isEmpty());
     }

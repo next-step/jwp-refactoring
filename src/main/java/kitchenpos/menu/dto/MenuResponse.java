@@ -6,15 +6,22 @@ import java.util.stream.Collectors;
 import kitchenpos.product.dto.MenuProductResponse;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProducts;
-import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
 public class MenuResponse {
     private Long id;
     private String name;
     private BigDecimal price;
     private Long menuGroupId;
     private List<MenuProductResponse> menuProducts;
+
+    public MenuResponse(Long id, String name, BigDecimal price, Long menuGroupId,
+                        List<MenuProductResponse> menuProducts) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.menuGroupId = menuGroupId;
+        this.menuProducts = menuProducts;
+    }
 
     public Long getId() {
         return id;

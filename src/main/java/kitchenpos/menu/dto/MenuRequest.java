@@ -5,15 +5,23 @@ import kitchenpos.menu.domain.Menu;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
-import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
 public class MenuRequest {
     private Long id;
     private String name;
     private BigDecimal price;
     private Long menuGroupId;
     private List<MenuProductRequest> menuProducts;
+
+    public MenuRequest(Long id, String name, BigDecimal price, Long menuGroupId,
+                       List<MenuProductRequest> menuProducts) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.menuGroupId = menuGroupId;
+        this.menuProducts = menuProducts;
+    }
+
 
     public Long getId() {
         return id;

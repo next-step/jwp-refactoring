@@ -5,13 +5,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
-import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
 public class TableGroupResponse {
     private Long id;
     private LocalDateTime createdDate;
     private List<OrderTableResponse> orderTables;
+
+    public TableGroupResponse(Long id, LocalDateTime createdDate,
+                              List<OrderTableResponse> orderTables) {
+        this.id = id;
+        this.createdDate = createdDate;
+        this.orderTables = orderTables;
+    }
 
     public Long getId() {
         return id;

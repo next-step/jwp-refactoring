@@ -15,13 +15,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import kitchenpos.table.domain.OrderTable;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
+
 @Entity
 @Table(name = "orders")
 public class Order {
@@ -40,6 +35,9 @@ public class Order {
     @Embedded
     private OrderLineItems orderLineItems = new OrderLineItems();
 
+    public Order() {
+    }
+
     public Order(OrderTable orderTable, OrderStatus orderStatus) {
         this.orderTable = orderTable;
         this.orderStatus = orderStatus;
@@ -47,6 +45,35 @@ public class Order {
 
     public Order(Long id){
         this.id = id;
+    }
+
+    public Order(Long id, OrderTable orderTable, OrderStatus orderStatus, LocalDateTime orderedTime,
+                 OrderLineItems orderLineItems) {
+        this.id = id;
+        this.orderTable = orderTable;
+        this.orderStatus = orderStatus;
+        this.orderedTime = orderedTime;
+        this.orderLineItems = orderLineItems;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public OrderTable getOrderTable() {
+        return orderTable;
+    }
+
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
+    public LocalDateTime getOrderedTime() {
+        return orderedTime;
+    }
+
+    public OrderLineItems getOrderLineItems() {
+        return orderLineItems;
     }
 
     public void setOrderTable(OrderTable orderTable) {
