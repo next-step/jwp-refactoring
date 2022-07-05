@@ -48,7 +48,7 @@ public class OrderTable {
         }
     }
 
-    private boolean isGroupTable() {
+    public boolean isGroupTable() {
         return tableGroup != null;
     }
 

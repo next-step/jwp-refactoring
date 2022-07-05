@@ -73,7 +73,6 @@ class TableGroupServiceTest {
         // Then
         verify(orderTableRepository).findAllByIdIn(anyList());
         verify(tableGroupRepository).save(any(TableGroup.class));
-        verify(orderTableRepository, times(orderTables.size())).save(any(OrderTable.class));
     }
 
     @ParameterizedTest(name = "case[{index}] : {0} => {1}")
