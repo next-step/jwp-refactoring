@@ -54,7 +54,7 @@ public class OrderTest {
         점심특선_마늘치킨 = new MenuProduct(마늘치킨, 1);
         점심특선_양념치킨 = new MenuProduct(양념치킨, 1);
 
-        점심특선 = menuRepository.save(new Menu("점심특선", 2000, 점심메뉴, Arrays.asList(점심특선_마늘치킨, 점심특선_양념치킨)));
+        점심특선 = menuRepository.save(new Menu("점심특선", 2000, 점심메뉴.getId(), Arrays.asList(점심특선_마늘치킨, 점심특선_양념치킨)));
     }
 
     @DisplayName("주문을 생성하면 최초의 주문 상태는 조리로 설정된다.")

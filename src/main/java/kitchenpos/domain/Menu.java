@@ -28,16 +28,16 @@ public class Menu {
     public Menu() {
     }
 
-    public Menu(String name, long price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
-        this(name, BigDecimal.valueOf(price), menuGroup, menuProducts);
+    public Menu(String name, long price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        this(name, BigDecimal.valueOf(price), menuGroupId, menuProducts);
     }
 
-    public Menu(String name, BigDecimal price, MenuGroup menuGroup, List<MenuProduct> menuProducts) {
+    public Menu(String name, BigDecimal price, Long menuGroupId, List<MenuProduct> menuProducts) {
         validateMenuPrice(price);
         validateTotalPrice(price, menuProducts);
         this.name = name;
         this.price = price;
-        this.menuGroupId = menuGroup.getId();
+        this.menuGroupId = menuGroupId;
         this.menuProducts.addAll(toMenuProducts(menuProducts));
     }
 

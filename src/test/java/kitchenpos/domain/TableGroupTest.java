@@ -66,7 +66,7 @@ public class TableGroupTest {
         점심특선_마늘치킨 = new MenuProduct(마늘치킨, 1);
         점심특선_양념치킨 = new MenuProduct(양념치킨, 1);
 
-        점심특선 = menuRepository.save(new Menu("점심특선", 2000, 점심메뉴, Arrays.asList(점심특선_마늘치킨, 점심특선_양념치킨)));
+        점심특선 = menuRepository.save(new Menu("점심특선", 2000, 점심메뉴.getId(), Arrays.asList(점심특선_마늘치킨, 점심특선_양념치킨)));
     }
 
     @DisplayName("2개 이상의 개별 주문 테이블을 하나의 단체 지정 테이블로 생성한다.")

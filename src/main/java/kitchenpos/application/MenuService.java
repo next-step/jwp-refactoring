@@ -54,7 +54,7 @@ public class MenuService {
             menuProducts.add(new MenuProduct(product, menuProduct.getQuantity()));
         }
 
-        return menuRepository.save(new Menu(request.getName(), request.getPrice(), menuGroup, menuProducts));
+        return menuRepository.save(new Menu(request.getName(), request.getPrice(), menuGroup.getId(), menuProducts));
     }
 
     @Transactional(readOnly = true)

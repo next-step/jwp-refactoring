@@ -48,7 +48,7 @@ public class MenuTest {
     @Test
     void save() {
         // given
-        Menu menu = new Menu("점심특선", 2000, 점심메뉴, Arrays.asList(점심특선_마늘치킨, 점심특선_양념치킨));
+        Menu menu = new Menu("점심특선", 2000, 점심메뉴.getId(), Arrays.asList(점심특선_마늘치킨, 점심특선_양념치킨));
 
         // when
         Menu 점심특선 = menuRepository.save(menu);
@@ -62,7 +62,7 @@ public class MenuTest {
     void save_throwsException_givenPriceLessThanZero() {
         // when
         // then
-        assertThatThrownBy(() -> new Menu("점심특선", -2000, 점심메뉴, Arrays.asList(점심특선_마늘치킨, 점심특선_양념치킨)))
+        assertThatThrownBy(() -> new Menu("점심특선", -2000, 점심메뉴.getId(), Arrays.asList(점심특선_마늘치킨, 점심특선_양념치킨)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -71,7 +71,7 @@ public class MenuTest {
     void save_throwsException_givenWrongPrice() {
         // when
         // then
-        assertThatThrownBy(() -> new Menu("점심특선", 4000, 점심메뉴, Arrays.asList(점심특선_마늘치킨, 점심특선_양념치킨)))
+        assertThatThrownBy(() -> new Menu("점심특선", 4000, 점심메뉴.getId(), Arrays.asList(점심특선_마늘치킨, 점심특선_양념치킨)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }
