@@ -56,23 +56,6 @@ public class OrderTable {
         return tableGroup != null;
     }
 
-    public void validateChangeOrderTableNumberOfGuests() {
-        validateNumberOfGuestsOverZero();
-        validateEmptyOrderTable();
-    }
-
-    private void validateNumberOfGuestsOverZero() {
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    private void validateEmptyOrderTable() {
-        if (isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-    }
-
     public boolean isEmpty() {
         return empty;
     }
@@ -86,27 +69,23 @@ public class OrderTable {
         this.tableGroup = null;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public int getNumberOfGuests() {
-        return numberOfGuests;
-    }
-
     public void changeNumberOfGuests(final int numberOfGuests) {
         validateNumberOfGuests(numberOfGuests);
         this.numberOfGuests = numberOfGuests;
     }
 
     public void validateNumberOfGuests(final int numberOfGuests) {
+        validateNumberOfGuestsOverZero();
+        validateEmptyOrderTable();
+    }
+
+    private void validateNumberOfGuestsOverZero() {
         if (numberOfGuests < MINIMUM_NUMBER_OF_GUESTS_COUNT) {
             throw new IllegalArgumentException(LEEN_THAN_MINIMUM_NUMBER_OF_GUEST_COUNT_ERROR_MESSAGE);
         }
+    }
+
+    private void validateEmptyOrderTable() {
         if (isEmpty()) {
             throw new IllegalArgumentException(EMPTY_ORDER_TABLE_CHANGE_NUMBER_OF_GUESTS_ERROR_MESSAGE);
         }
@@ -117,5 +96,13 @@ public class OrderTable {
             return tableGroup.getId();
         }
         return null;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public int getNumberOfGuests() {
+        return numberOfGuests;
     }
 }
