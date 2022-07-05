@@ -115,13 +115,13 @@ class TableGroupServiceTest {
 
         assertThatThrownBy(() -> tableGroupService.create(request))
                 .isInstanceOf(BadRequestException.class)
-                .hasMessage(ErrorCode.ORDER_TABLE_GROUPED.getMessage());
+                .hasMessage(ErrorCode.TABLE_NOT_EMPTY.getMessage());
     }
 
     @DisplayName("등록된 주문 테이블에 테이블그룹아이디가 설정되어 있다면, 테이블 그룹을 생성할 수 없다.")
     @Test
     void create_nonNull_orderTables() {
-        OrderTable firstOrderTable = new OrderTable(false, new TableGroup(1L));
+        OrderTable firstOrderTable = new OrderTable(true, new TableGroup(1L));
 
         given(orderTableRepository.findAllByIdIn(anyList())).willReturn(Arrays.asList(firstOrderTable, secondOrderTable));
 

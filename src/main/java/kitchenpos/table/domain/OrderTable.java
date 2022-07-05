@@ -78,6 +78,10 @@ public class OrderTable {
         this.empty = empty;
     }
 
+    public void updateTableGroup(TableGroup tableGroup) {
+        this.tableGroup = tableGroup;
+    }
+
     public void changeEmpty(boolean empty) {
         if (Objects.nonNull(this.getTableGroup())) {
             throw new BadRequestException(ErrorCode.ORDER_TABLE_GROUPED);
@@ -96,12 +100,12 @@ public class OrderTable {
         this.numberOfGuests = numberOfGuests;
     }
 
-    public void updateTableGroup(TableGroup tableGroup) {
-        this.tableGroup = tableGroup;
-    }
-
     public void validate() {
-        if (!this.isEmpty() || Objects.nonNull(this.getTableGroup())) {
+        if (!this.isEmpty()) {
+            throw new BadRequestException(ErrorCode.TABLE_NOT_EMPTY);
+        }
+
+        if (Objects.nonNull(this.getTableGroup())) {
             throw new BadRequestException(ErrorCode.ORDER_TABLE_GROUPED);
         }
     }

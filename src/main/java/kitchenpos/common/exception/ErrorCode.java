@@ -3,6 +3,7 @@ package kitchenpos.common.exception;
 import org.springframework.http.HttpStatus;
 
 public enum ErrorCode {
+    TABLE_NOT_EMPTY("테이블이 비어있지 않습니다", HttpStatus.BAD_REQUEST),
     TABLE_EMPTY("테이블이 비어있습니다.", HttpStatus.BAD_REQUEST),
     MORE_THAN_TWO_ORDER_TABLE("두 개 이상의 메뉴 테이블을 요청해야 합니다.", HttpStatus.BAD_REQUEST),
     NEGATIVE_NUMBER_OF_GUESTS("방문한 손님 수는 음수일 수 없습니다.", HttpStatus.BAD_REQUEST),

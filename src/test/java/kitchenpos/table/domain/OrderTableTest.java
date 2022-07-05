@@ -56,4 +56,24 @@ class OrderTableTest {
         }).isInstanceOf(BadRequestException.class)
                 .hasMessage(ErrorCode.TABLE_EMPTY.getMessage());
     }
+
+    @DisplayName("주문 테이블은 비어있으면 안된다")
+    @Test
+    void validate_empty() {
+        assertThatThrownBy(() ->{
+            OrderTable orderTable = new OrderTable(1L,false);
+            orderTable.validate();
+        }).isInstanceOf(BadRequestException.class)
+                .hasMessage(ErrorCode.TABLE_NOT_EMPTY.getMessage());
+    }
+
+    @DisplayName("주문 테이블은 그룹화 되어 있으면 안된다")
+    @Test
+    void validate_group() {
+        assertThatThrownBy(() ->{
+            OrderTable orderTable = new OrderTable(true, new TableGroup(1L));
+            orderTable.validate();
+        }).isInstanceOf(BadRequestException.class)
+                .hasMessage(ErrorCode.ORDER_TABLE_GROUPED.getMessage());
+    }
 }
