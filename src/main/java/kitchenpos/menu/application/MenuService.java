@@ -30,9 +30,7 @@ public class MenuService {
 
     @Transactional
     public MenuResponse create(final MenuRequest menuRequest) {
-        if (!menuGroupRepository.existsById(menuRequest.getMenuGroupId())) {
-            throw new IllegalArgumentException("그룹이 존재하지 않습니다.");
-        }
+        validateMenuGroupExist(menuRequest);
         final Menu menu = Menu.of(menuRequest.getName(), menuRequest.getPrice(), menuRequest.getMenuGroupId(), convertToMenuProduct(menuRequest.getMenuProducts()));
         final Menu savedMenu = menuRepository.save(menu);
         return MenuResponse.of(savedMenu);
@@ -48,5 +46,11 @@ public class MenuService {
     public List<MenuResponse> list() {
         final List<Menu> menus = menuRepository.findAll();
         return MenuResponse.convertToMenuResponses(menus);
+    }
+
+    private void validateMenuGroupExist(MenuRequest menuRequest) {
+        if (!menuGroupRepository.existsById(menuRequest.getMenuGroupId())) {
+            throw new IllegalArgumentException("그룹이 존재하지 않습니다.");
+        }
     }
 }
