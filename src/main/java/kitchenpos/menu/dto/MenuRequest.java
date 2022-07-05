@@ -47,7 +47,7 @@ public class MenuRequest {
 
     private static List<MenuProductRequest> setMenuProductReqeustsFromMenu(Menu menu) {
         List<MenuProductRequest> menuProductRequests = null;
-        if (menu.getMenuProducts() != null && menu.getMenuProducts().getMenuProducts()!= null) {
+        if (menu.getMenuProducts() != null && menu.getMenuProductList()!= null) {
             menuProductRequests = menu.getMenuProducts().getMenuProducts().stream()
                     .map(MenuProductRequest::of)
                     .collect(Collectors.toList());

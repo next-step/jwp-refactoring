@@ -28,13 +28,22 @@ public class MenuProducts {
     public void validateTotalPriceNotExpensiveThanEach(Price menuPrice) {
         Price sum = new Price(BigDecimal.ZERO);
         for (MenuProduct menuProduct : menuProducts) {
-            if (menuProduct.getProduct() == null) {
-                throw new IllegalArgumentException();
-            }
+            checkIsNotNull(menuProduct);
+
             Product product = menuProduct.getProduct();
             sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
         }
 
+        checkPriceNotExpensiveThanSum(menuPrice, sum);
+    }
+
+    private void checkIsNotNull(MenuProduct menuProduct) {
+        if (menuProduct.getProduct() == null) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private void checkPriceNotExpensiveThanSum(Price menuPrice, Price sum) {
         if (menuPrice.compareTo(sum) > 0) {
             throw new IllegalArgumentException();
         }
