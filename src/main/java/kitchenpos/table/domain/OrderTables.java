@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 @Embeddable
@@ -27,5 +26,13 @@ public class OrderTables {
 
     public List<OrderTable> getOrderTables() {
         return Collections.unmodifiableList(orderTables);
+    }
+
+    public void ungroup() {
+        for(OrderTable orderTable: orderTables) {
+            orderTable.ungroup();
+        }
+
+        orderTables.clear();
     }
 }

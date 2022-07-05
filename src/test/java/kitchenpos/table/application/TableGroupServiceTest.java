@@ -52,8 +52,6 @@ class TableGroupServiceTest {
     void init() {
         일번_주문_테이블 = 주문_테이블_생성(1L, 4, true);
         이번_주문_테이블 = 주문_테이블_생성(2L, 6, true);
-
-//        테이블_그룹 = 테이블_그룹_생성(1L);
     }
 
     @Test
@@ -62,11 +60,10 @@ class TableGroupServiceTest {
         // given
         OrderTables orderTables = new OrderTables(Arrays.asList(일번_주문_테이블, 이번_주문_테이블));
         테이블_그룹 = 테이블_그룹_생성(1L, orderTables);
+        TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(일번_주문_테이블.getId(), 이번_주문_테이블.getId()));
 
         given(orderTableDao.findAllByIdIn(anyList())).willReturn(Arrays.asList(일번_주문_테이블, 이번_주문_테이블));
         given(tableGroupDao.save(any(TableGroup.class))).willReturn(테이블_그룹);
-
-        TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(일번_주문_테이블.getId(), 이번_주문_테이블.getId()));
 
         // when
         TableGroupResponse savedTableGroup = tableGroupService.create(tableGroupRequest);
@@ -106,8 +103,8 @@ class TableGroupServiceTest {
     @DisplayName("주문 테이블에 이미 테이블 그룹이 지정되어 있는 경우 - 오류")
     void ifExistentTableGroup() {
         // given
-        TableGroup 삼번_주문_테이블 = 테이블_그룹_생성(3L);
-        OrderTable 테이블_그룹_있는_주문_테이블 = 테이블_그룹_있는_주문_테이블_생성(1L, 삼번_주문_테이블, 6, true);
+        테이블_그룹 = 테이블_그룹_생성(3L);
+        OrderTable 테이블_그룹_있는_주문_테이블 = 테이블_그룹_있는_주문_테이블_생성(1L, 테이블_그룹, 6, true);
         List<OrderTable> 유효하지_않는_주문_테이블 = Arrays.asList(일번_주문_테이블, 테이블_그룹_있는_주문_테이블);
         TableGroupRequest tableGroupRequest = new TableGroupRequest(Arrays.asList(일번_주문_테이블.getId(), 테이블_그룹_있는_주문_테이블.getId()));
 
@@ -137,12 +134,13 @@ class TableGroupServiceTest {
     @DisplayName("주문 테이블의 단체 지정을 해제한다.")
     void ungroup() {
         // given
-        OrderTable 테이블_그룹_있는_일번_주문_테이블 = 테이블_그룹_있는_주문_테이블_생성(일번_주문_테이블.getId(), 일번_주문_테이블.getTableGroup(), 6, true);
-        OrderTable 테이블_그룹_있는_이번_주문_테이블 = 테이블_그룹_있는_주문_테이블_생성(이번_주문_테이블.getId(), 이번_주문_테이블.getTableGroup(), 6, true);
+        테이블_그룹 = 테이블_그룹_생성(3L);
+
+        OrderTable 테이블_그룹_있는_일번_주문_테이블 = 테이블_그룹_있는_주문_테이블_생성(일번_주문_테이블.getId(), 테이블_그룹, 6, true);
+        OrderTable 테이블_그룹_있는_이번_주문_테이블 = 테이블_그룹_있는_주문_테이블_생성(이번_주문_테이블.getId(), 테이블_그룹, 6, true);
 
         given(orderTableDao.findAllByTableGroupId(anyLong())).willReturn(Arrays.asList(테이블_그룹_있는_일번_주문_테이블, 테이블_그룹_있는_이번_주문_테이블));
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(false);
-        given(orderTableDao.save(any())).willReturn(테이블_그룹_있는_일번_주문_테이블, 테이블_그룹_있는_이번_주문_테이블);
 
         // when
         tableGroupService.ungroup(테이블_그룹.getId());
@@ -158,7 +156,9 @@ class TableGroupServiceTest {
     @DisplayName("주문의 상태가 `요리중`이거나 `식사`일 경우 - 오류")
     void ungroupIfOrderStatusCookingOrMeal() {
         // given
-//        테이블_그룹.setOrderTables(Arrays.asList(일번_주문_테이블, 이번_주문_테이블));
+        OrderTables orderTables = new OrderTables(Arrays.asList(일번_주문_테이블, 이번_주문_테이블));
+        테이블_그룹 = 테이블_그룹_생성(1L, orderTables);
+
         given(orderTableDao.findAllByTableGroupId(테이블_그룹.getId())).willReturn(Arrays.asList(일번_주문_테이블, 이번_주문_테이블));
         given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
 

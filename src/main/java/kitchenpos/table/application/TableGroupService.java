@@ -1,5 +1,6 @@
 package kitchenpos.table.application;
 
+import java.util.Optional;
 import kitchenpos.order.domain.OrderDao;
 import kitchenpos.table.domain.OrderTableDao;
 import kitchenpos.table.domain.OrderTables;
@@ -58,21 +59,12 @@ public class TableGroupService {
 
     @Transactional
     public void ungroup(final Long tableGroupId) {
-//        final List<OrderTable> orderTables = orderTableDao.findAllByTableGroupId(tableGroupId);
-//
-//        final List<Long> orderTableIds = orderTables.stream()
-//                .map(OrderTable::getId)
-//                .collect(Collectors.toList());
-//
-//        if (orderDao.existsByOrderTableIdInAndOrderStatusIn(
-//                orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
-//            throw new IllegalArgumentException();
-//        }
-//
-//        for (final OrderTable orderTable : orderTables) {
-//            orderTable.setTableGroupId(null);
-//            orderTableDao.save(orderTable);
-//        }
+        TableGroup tableGroup = tableGroupDao.findById(tableGroupId)
+            .orElseThrow(IllegalArgumentException::new);
+
+        validatePossibilityOfCancellation(tableGroupId);
+        tableGroup.ungroup();
+        tableGroupDao.delete(tableGroup);
     }
 
     private OrderTables getOrderTables(TableGroup tableGroup, List<OrderTable> savedOrderTables) {
@@ -89,6 +81,19 @@ public class TableGroupService {
 
     private void validateOrderTable(OrderTable orderTable) {
         if(orderTable.isAlreadyRegistered()) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private void validatePossibilityOfCancellation(Long tableGroupId) {
+        final List<OrderTable> orderTables = orderTableDao.findAllByTableGroupId(tableGroupId);
+
+        final List<Long> orderTableIds = orderTables.stream()
+            .map(OrderTable::getId)
+            .collect(Collectors.toList());
+
+        if(orderDao.existsByOrderTableIdInAndOrderStatusIn(
+            orderTableIds, Arrays.asList(OrderStatus.COOKING.name(), OrderStatus.MEAL.name()))) {
             throw new IllegalArgumentException();
         }
     }

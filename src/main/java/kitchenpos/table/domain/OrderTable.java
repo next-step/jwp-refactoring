@@ -88,6 +88,11 @@ public class OrderTable {
         this.empty = empty;
     }
 
+    public void ungroup() {
+        this.tableGroup = null;
+        this.empty = true;
+    }
+
     @Override
     public boolean equals(Object o) {
         if(this == o) {
