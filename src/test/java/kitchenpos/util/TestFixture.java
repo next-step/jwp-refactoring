@@ -45,7 +45,7 @@ public class TestFixture {
     }
 
     public static Menu 양념_치킨_메뉴_생성(Long menuGroupId, List<MenuProduct> menuProducts) {
-        return Menu.of("양념치킨", new BigDecimal(16000), 한마리_메뉴_그룹_생성(), menuProducts);
+        return Menu.of("양념치킨", new BigDecimal(32000), 한마리_메뉴_그룹_생성(), menuProducts);
     }
 
     public static OrderTable 주문테이블_1_생성() {
