@@ -21,18 +21,13 @@ public class MenuProducts {
 
     public MenuProducts(List<MenuProduct> menuProducts, Price price, Menu menu) {
         validMenu(menuProducts);
-        validPrice(menuProducts, price);
+        validComparePrice(getTotalPrice(menuProducts), price);
         changeMenu(menuProducts, menu);
         this.menuProducts = menuProducts;
     }
 
     private void validMenu(List<MenuProduct> menuProducts) {
         menuProducts.forEach(MenuProduct::validProduct);
-    }
-
-    private void validPrice(List<MenuProduct> menuProducts, Price price) {
-        Price totalPrice = getTotalPrice(menuProducts);
-        validComparePrice(totalPrice, price);
     }
 
     private Price getTotalPrice(List<MenuProduct> menuProducts) {
