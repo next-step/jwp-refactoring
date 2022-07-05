@@ -1,9 +1,11 @@
-package kitchenpos.application;
+package kitchenpos.table.application;
 
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.order.domain.OrderDao;
+import kitchenpos.table.domain.OrderTableDao;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,6 +14,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
+@Transactional(readOnly = true)
 public class TableService {
     private final OrderDao orderDao;
     private final OrderTableDao orderTableDao;
@@ -22,10 +25,13 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTable create(final OrderTable orderTable) {
-        orderTable.setTableGroupId(null);
+    public OrderTableResponse create(final OrderTableRequest orderTableRequest) {
+        OrderTable orderTable = new OrderTable(orderTableRequest.getNumberOfGuests(),
+            orderTableRequest.isEmpty());
 
-        return orderTableDao.save(orderTable);
+        OrderTable saveOrderTable = orderTableDao.save(orderTable);
+
+        return OrderTableResponse.from(saveOrderTable);
     }
 
     public List<OrderTable> list() {
@@ -37,7 +43,7 @@ public class TableService {
         final OrderTable savedOrderTable = orderTableDao.findById(orderTableId)
                 .orElseThrow(IllegalArgumentException::new);
 
-        if (Objects.nonNull(savedOrderTable.getTableGroupId())) {
+        if (Objects.nonNull(savedOrderTable.getTableGroup())) {
             throw new IllegalArgumentException();
         }
 

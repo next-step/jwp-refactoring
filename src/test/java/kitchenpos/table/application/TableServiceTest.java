@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.table.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -11,9 +11,12 @@ import static org.mockito.BDDMockito.given;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.OrderDao;
-import kitchenpos.dao.OrderTableDao;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.order.domain.OrderDao;
+import kitchenpos.table.domain.OrderTableDao;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,6 +26,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
+public
 class TableServiceTest {
     @Mock
     private OrderTableDao orderTableDao;
@@ -38,8 +42,8 @@ class TableServiceTest {
 
     @BeforeEach
     void init() {
-        주문_테이블 = 주문_테이블_생성(1L, 0, true);
-        비어있는_주문_테이블 = 주문_테이블_생성(1L, 0, false);
+        주문_테이블 = 주문_테이블_생성(1L, 4, true);
+        비어있는_주문_테이블 = 주문_테이블_생성(1L, 7, false);
     }
 
     @Test
@@ -49,7 +53,7 @@ class TableServiceTest {
         given(orderTableDao.save(any(OrderTable.class))).willReturn(주문_테이블);
 
         // when
-        OrderTable savedOrderTable = tableService.create(주문_테이블);
+        OrderTableResponse savedOrderTable = tableService.create(new OrderTableRequest(주문_테이블.getNumberOfGuests(), 주문_테이블.isEmpty()));
 
         // then
         assertAll(
@@ -92,7 +96,7 @@ class TableServiceTest {
     @DisplayName("유효하지 않은 주문 테이블의 빈 테이블 상태를 변경할 경우 - 오류")
     void changeEmptyByNonExistentOrderTable() {
         // given
-        OrderTable 테이블_그룹_있는_주문_테이블 = 테이블_그룹_있는_주문_테이블_생성(1L, 1L, 0, false);
+        OrderTable 테이블_그룹_있는_주문_테이블 = 테이블_그룹_있는_주문_테이블_생성(1L, 비어있는_주문_테이블.getTableGroup(), 0, false);
 
         // when then
         assertThatThrownBy(() -> tableService.changeEmpty(테이블_그룹_있는_주문_테이블.getId(), 테이블_그룹_있는_주문_테이블))
@@ -176,7 +180,7 @@ class TableServiceTest {
         return new OrderTable(id, numberOfGuests, empty);
     }
 
-    public static OrderTable 테이블_그룹_있는_주문_테이블_생성(Long id, Long tableGroupId, int numberOfGuests, boolean empty) {
-        return new OrderTable(id, tableGroupId, numberOfGuests, empty);
+    public static OrderTable 테이블_그룹_있는_주문_테이블_생성(Long id, TableGroup tableGroup, int numberOfGuests, boolean empty) {
+        return new OrderTable(id, tableGroup, numberOfGuests, empty);
     }
 }
