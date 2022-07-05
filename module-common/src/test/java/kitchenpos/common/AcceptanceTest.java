@@ -1,7 +1,7 @@
-package kitchenpos.acceptance;
+package kitchenpos.common;
 
 import io.restassured.RestAssured;
-import kitchenpos.utils.DatabaseCleanup;
+import kitchenpos.common.utils.DatabaseCleanup;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-class AcceptanceTest {
+public class AcceptanceTest {
     @LocalServerPort
     private int port;
 
@@ -17,7 +17,7 @@ class AcceptanceTest {
     private DatabaseCleanup databaseCleanup;
 
     @BeforeEach
-    void setUp() {
+    protected void setUp() {
         if (RestAssured.port == RestAssured.UNDEFINED_PORT) {
             RestAssured.port = port;
         }
