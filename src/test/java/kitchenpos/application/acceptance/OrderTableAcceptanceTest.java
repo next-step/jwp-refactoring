@@ -3,9 +3,7 @@ package kitchenpos.application.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.Menu;
-import kitchenpos.domain.MenuProduct;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +14,12 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
+import static kitchenpos.application.acceptance.MenuAcceptanceTest.메뉴_생성_요청;
+import static kitchenpos.application.acceptance.MenuGroupAcceptanceTest.메뉴_그룹_생성_요청;
+import static kitchenpos.application.acceptance.OrderAcceptanceTest.주문_상태_변경_요청;
+import static kitchenpos.application.acceptance.OrderAcceptanceTest.주문_생성_요청;
+import static kitchenpos.application.acceptance.ProductAcceptanceTest.상품_생성_요청;
+import static kitchenpos.application.acceptance.TableGroupAcceptanceTest.단체_지정_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -149,6 +153,62 @@ class OrderTableAcceptanceTest extends BaseAcceptanceTest {
 
         // then
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), 주문_테이블_손님_수_변경_요청_응답.statusCode());
+    }
+
+    /**
+     * Given 주문 테이블 2건을 등록하고 단체 지정을 생성한 후
+     * When empty 로 상태를 변경하면
+     * Then 오류가 발생한다.
+     */
+    @DisplayName("단체 지정 정보가 등록된 주문 테이블 상태 변경")
+    @Test
+    void changeEmptyOfNotEmptyTableGroupId() {
+        // given
+        OrderTable 주문_테이블_1 = 주문_테이블_생성_요청(1L, 3, true).as(OrderTable.class);
+        OrderTable 주문_테이블_2 = 주문_테이블_생성_요청(2L, 2, true).as(OrderTable.class);
+        단체_지정_생성_요청(Arrays.asList(주문_테이블_1, 주문_테이블_2));
+
+        // when
+        ExtractableResponse<Response> 주문_테이블_빈_테이블로_변경_요청_응답
+                = 주문_테이블_빈_테이블로_변경_요청(주문_테이블_1.getId(), 주문_테이블_1);
+
+        // then
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), 주문_테이블_빈_테이블로_변경_요청_응답.statusCode());
+    }
+
+    /**
+     * Given 주문을 생성한 후 주문의 상태를 MEAL 로 변경하고
+     * When 주문에 해당하는 주문 테이블을 빈 테이블로 변경할 경우
+     * Then 오류가 발생한다
+     */
+    @DisplayName("주문의 상태가 MEAL 인 주문 테이블을 빈 테이블로 변경")
+    @Test
+    void changeMealStatusTableToEmptyStatus() {
+        // given
+        OrderTable 주문_테이블_1 = 주문_테이블_생성_요청(1L, 3, true).as(OrderTable.class);
+        OrderTable 주문_테이블_2 = 주문_테이블_생성_요청(2L,2, true).as(OrderTable.class);
+        TableGroup 단체 = 단체_지정_생성_요청(Arrays.asList(주문_테이블_1, 주문_테이블_2)).as(TableGroup.class);
+
+        MenuGroup 메뉴_그룹 = 메뉴_그룹_생성_요청("신메뉴").as(MenuGroup.class);
+        Product 상품 = 상품_생성_요청("녹두빈대떡", new BigDecimal(7000)).as(Product.class);
+        MenuProduct 메뉴_상품 = new MenuProduct();
+        메뉴_상품.setProductId(상품.getId());
+        메뉴_상품.setQuantity(1);
+
+        Menu 메뉴 = 메뉴_생성_요청("녹두빈대떡", new BigDecimal(7000), 메뉴_그룹.getId(), Arrays.asList(메뉴_상품)).as(Menu.class);
+        OrderLineItem 주문_항목 = new OrderLineItem();
+        주문_항목.setMenuId(메뉴.getId());
+        주문_항목.setQuantity(1);
+
+        Order 주문 = 주문_생성_요청(주문_테이블_1.getId(), Arrays.asList(주문_항목)).as(Order.class);
+        주문_상태_변경_요청(주문.getId(), OrderStatus.MEAL);
+
+        // when
+        ExtractableResponse<Response> 주문_테이블_빈_테이블로_변경_요청_응답
+                = 주문_테이블_빈_테이블로_변경_요청(주문_테이블_1.getId(), 주문_테이블_1);
+
+        // then
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), 주문_테이블_빈_테이블로_변경_요청_응답.statusCode());
     }
 
     public static ExtractableResponse<Response> 주문_테이블_목록_조회_요청() {

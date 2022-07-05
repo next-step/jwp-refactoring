@@ -105,10 +105,11 @@ class TableGroupAcceptanceTest extends BaseAcceptanceTest {
     @Test
     void createTableGroupWithNotEmptyTableGroupId() {
         // given
-        OrderTable 주문_테이블_1 = 주문_테이블_생성_요청(1L, 3, false).as(OrderTable.class);
-        OrderTable 주문_테이블_2 = 주문_테이블_생성_요청(2L,2, false).as(OrderTable.class);
+        OrderTable 주문_테이블_1 = 주문_테이블_생성_요청(1L, 3, true).as(OrderTable.class);
+        OrderTable 주문_테이블_2 = 주문_테이블_생성_요청(2L,2, true).as(OrderTable.class);
 
         // when
+        단체_지정_생성_요청(Arrays.asList(주문_테이블_1, 주문_테이블_2));
         ExtractableResponse<Response> 단체_지정_생성_요청_응답 = 단체_지정_생성_요청(Arrays.asList(주문_테이블_1, 주문_테이블_2));
 
         // then
@@ -252,6 +253,41 @@ class TableGroupAcceptanceTest extends BaseAcceptanceTest {
 
         // then
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), 단체_지정_해제_요청_응답.statusCode());
+    }
+
+    /**
+     * Given 단체를 생성하고
+     * When 단체를 해제하면
+     * Then 단체ID 가 null 로 조회된다.
+     */
+    @DisplayName("단체 해제 후 단체ID null 확인")
+    @Test
+    void ungroupWithNullTableGroupId() {
+        // given
+        OrderTable 주문_테이블_1 = 주문_테이블_생성_요청(1L, 3, true).as(OrderTable.class);
+        OrderTable 주문_테이블_2 = 주문_테이블_생성_요청(2L,2, true).as(OrderTable.class);
+
+        MenuGroup 메뉴_그룹 = 메뉴_그룹_생성_요청("신메뉴").as(MenuGroup.class);
+        Product 상품 = 상품_생성_요청("녹두빈대떡", new BigDecimal(7000)).as(Product.class);
+        MenuProduct 메뉴_상품 = new MenuProduct();
+        메뉴_상품.setProductId(상품.getId());
+        메뉴_상품.setQuantity(1);
+
+        Menu 메뉴 = 메뉴_생성_요청("녹두빈대떡", new BigDecimal(7000), 메뉴_그룹.getId(), Arrays.asList(메뉴_상품)).as(Menu.class);
+        OrderLineItem 주문_항목 = new OrderLineItem();
+        주문_항목.setMenuId(메뉴.getId());
+        주문_항목.setQuantity(1);
+
+        ExtractableResponse<Response> 단체_지정_생성_요청_응답 = 단체_지정_생성_요청(Arrays.asList(주문_테이블_1, 주문_테이블_2));
+        assertNotNull(단체_지정_생성_요청_응답.jsonPath().getList("orderTables.tableGroupId").get(0));
+        assertNotNull(단체_지정_생성_요청_응답.jsonPath().getList("orderTables.tableGroupId").get(1));
+
+        // when
+        TableGroup 단체 = 단체_지정_생성_요청_응답.as(TableGroup.class);
+        ExtractableResponse<Response> 단체_지정_해제_요청_응답 = 단체_지정_해제_요청(단체.getId());
+
+        // then
+        assertEquals(HttpStatus.NO_CONTENT.value(), 단체_지정_해제_요청_응답.statusCode());
     }
 
 
