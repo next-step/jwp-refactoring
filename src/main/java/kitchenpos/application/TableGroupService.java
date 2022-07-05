@@ -51,7 +51,7 @@ public class TableGroupService {
     @Transactional
     public void ungroup(Long tableGroupId) {
         TableGroup tableGroup = tableGroupRepository.findById(tableGroupId)
-                .orElseThrow(IllegalAccessError::new);
+                .orElseThrow(IllegalArgumentException::new);
         validateUngroup(tableGroupId);
         tableGroup.ungroup();
     }

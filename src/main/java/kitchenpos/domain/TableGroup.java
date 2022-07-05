@@ -65,13 +65,11 @@ public class TableGroup {
         if (!this.orderTables.contains(orderTable)) {
             this.orderTables.add(orderTable);
         }
-        orderTable.grouping(this);
+        orderTable.bindTo(this);
     }
 
     public void ungroup() {
-        for (OrderTable orderTable : orderTables) {
-            orderTable.unGrouping();
-            orderTables.clear();
-        }
+        orderTables.forEach(OrderTable::unBind);
+        orderTables.clear();
     }
 }
