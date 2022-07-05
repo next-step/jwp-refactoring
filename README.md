@@ -107,6 +107,13 @@ __# 키친포스
 ---------------------
 
 ## 의존성 리팩터링
-- [ ] 클래스 사이 의존관계는 단방향이 되어야 한다
-- [ ] 패키지 사이 의존관계는 단방향이 되어야 한다
+- [X] 클래스 사이 의존관계는 단방향이 되어야 한다
+- [X] 패키지 사이 의존관계는 단방향이 되어야 한다
 
+
+#### Entity 연관관계 도식도
+- 화살표는 직접참조, 점은 ID를 통한 간접참조를 의미
+![image/EntityMapping.PNG](image/EntityMapping.PNG)
+####Class/Package 간 의존성 도식도
+- 빨간 화살표는 Package 간 의존성, 검정 화살표는 Package 내부 의존성을 의미
+![image/Dependency.PNG](image/Dependency.PNG)
