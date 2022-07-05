@@ -1,0 +1,7 @@
+apply plugin: 'java-test-fixtures'
+dependencies {
+    testFixturesApi 'org.springframework.boot:spring-boot-starter-web'
+    testFixturesApi 'org.springframework.boot:spring-boot-starter-data-jpa'
+    testFixturesApi 'org.springframework.boot:spring-boot-starter-test'
+    testFixturesImplementation 'pl.allegro.tech.boot:handlebars-spring-boot-starter:0.3.0'
+}

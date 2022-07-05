@@ -17,16 +17,78 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.flywaydb:flyway-core'
-
-    // handlebars
-    implementation 'pl.allegro.tech.boot:handlebars-spring-boot-starter:0.3.0'
-
     runtimeOnly 'com.h2database:h2'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'io.rest-assured:rest-assured:3.3.0'
+    implementation project(':module-products')
+    implementation project(':module-menus')
+    implementation project(':module-orders')
+    implementation project('module-ui')
 
 }
 
 test {
     useJUnitPlatform()
 }
+
+subprojects {
+
+    apply plugin: 'java'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'org.springframework.boot'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        runtimeOnly 'com.h2database:h2'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+    bootJar {
+        enabled = false
+    }
+
+    jar {
+        enabled = true
+    }
+}
+
+project(':module-ui') {
+    dependencies {
+        implementation project(':module-products')
+        implementation project(':module-menus')
+        implementation project(':module-orders')
+        testImplementation 'io.rest-assured:rest-assured:3.3.0'
+        // handlebars
+        implementation 'pl.allegro.tech.boot:handlebars-spring-boot-starter:0.3.0'
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+    }
+}
+
+project(':module-products') {
+    dependencies {
+        testImplementation(testFixtures(project(':module-test')))
+    }
+}
+
+project(':module-menus') {
+    dependencies {
+        implementation project(':module-products')
+        testImplementation(testFixtures(project(':module-test')))
+    }
+}
+
+project(':module-orders') {
+    dependencies {
+        implementation project(':module-menus')
+        implementation project(':module-products')
+        testImplementation(testFixtures(project(':module-test')))
+    }
+}
+
