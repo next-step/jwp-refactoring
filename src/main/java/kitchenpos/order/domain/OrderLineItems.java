@@ -41,6 +41,10 @@ public class OrderLineItems {
                 .collect(Collectors.toList());
     }
 
+    public int size() {
+        return orderLineItems.size();
+    }
+
     public void setOrder(Order order) {
         orderLineItems.forEach(o -> o.setOrder(order));
     }

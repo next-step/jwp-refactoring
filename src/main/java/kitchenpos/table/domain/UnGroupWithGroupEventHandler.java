@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class UnGroupWithGroupEventHandler {
@@ -38,15 +37,5 @@ public class UnGroupWithGroupEventHandler {
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(orderTableIds, OrderStatus.getCookingAndMeal())) {
             throw new IllegalArgumentException();
         }
-    }
-
-    private List<Long> getOrderTableIds(List<OrderTable> orderTables) {
-        return orderTables.stream()
-                .map(OrderTable::getId)
-                .collect(Collectors.toList());
-    }
-
-    private void changeTableGroupIdAndEmpty(List<OrderTable> orderTables) {
-        new OrderTables(orderTables).unGroup();
     }
 }

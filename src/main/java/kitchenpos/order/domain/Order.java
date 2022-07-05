@@ -1,7 +1,9 @@
 package kitchenpos.order.domain;
 
 import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.table.domain.TableGroup;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -11,7 +13,7 @@ import java.util.List;
 @Entity
 @Table(name = "orders")
 @EntityListeners(AuditingEntityListener.class)
-public class Order {
+public class Order extends AbstractAggregateRoot<Order> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -92,5 +94,13 @@ public class Order {
 
     private boolean isOrderStatusCompletion() {
         return this.orderStatus == OrderStatus.COMPLETION;
+    }
+
+    public void validate() {
+        registerEvent(new OrderTableEmptyValidateEvent(this));
+        if (orderLineItems == null) {
+            throw new IllegalArgumentException();
+        }
+        registerEvent(new MenuCountValidateEvent(this));
     }
 }
