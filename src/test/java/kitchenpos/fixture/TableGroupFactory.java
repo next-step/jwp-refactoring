@@ -2,8 +2,8 @@ package kitchenpos.fixture;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.dto.OrderTableIdRequest;
-import kitchenpos.dto.TableGroupRequest;
+import kitchenpos.table.dto.OrderTableIdRequest;
+import kitchenpos.table.dto.TableGroupRequest;
 
 public class TableGroupFactory {
     public static TableGroupRequest createTableGroupRequest(List<Long> orderIds) {

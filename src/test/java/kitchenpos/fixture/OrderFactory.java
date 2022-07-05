@@ -2,18 +2,18 @@ package kitchenpos.fixture;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import kitchenpos.domain.Order;
-import kitchenpos.domain.OrderLineItem;
-import kitchenpos.domain.OrderStatus;
-import kitchenpos.domain.OrderTable;
-import kitchenpos.dto.OrderLineItemRequest;
-import kitchenpos.dto.OrderRequest;
-import kitchenpos.dto.OrderStatusRequest;
+import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderStatusRequest;
 
 public class OrderFactory {
     public static Order createOrder(Long id, OrderTable orderTable, String orderStatus, LocalDateTime orderedTime,
                                     List<OrderLineItem> orderLineItems) {
-        Order order = new Order(id, orderTable, OrderStatus.valueOf(orderStatus), orderedTime, orderLineItems);
+        Order order = new Order(id, orderTable.getId(), OrderStatus.valueOf(orderStatus), orderedTime, orderLineItems);
         return order;
     }
 
