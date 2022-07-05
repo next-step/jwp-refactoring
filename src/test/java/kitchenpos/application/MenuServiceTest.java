@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 import kitchenpos.dao.MenuDao;
-import kitchenpos.dao.MenuGroupDao;
+import kitchenpos.dao.MenuGroupRepository;
 import kitchenpos.dao.MenuProductDao;
 import kitchenpos.dao.ProductDao;
 import kitchenpos.domain.Menu;
@@ -39,7 +39,7 @@ public class MenuServiceTest {
     @Mock
     private MenuDao menuDao;
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
     @Mock
     private MenuProductDao menuProductDao;
     @Mock
@@ -66,7 +66,7 @@ public class MenuServiceTest {
     @Test
     @DisplayName("등록되지 않은 메뉴 그룹으로 메뉴 등록 시 Exception")
     public void createNotExistsMenuGroupException() {
-        given(menuGroupDao.existsById(한마리_메뉴_그룹.getId())).willReturn(false);
+        given(menuGroupRepository.existsById(한마리_메뉴_그룹.getId())).willReturn(false);
 
         assertThatThrownBy(() -> menuService.create(한마리치킨)).isInstanceOf(IllegalArgumentException.class);
     }
@@ -76,7 +76,7 @@ public class MenuServiceTest {
     public void createPriceIsGreaterThanProductsPriceSumException() {
         final Menu 메뉴 = 메뉴_생성(1L, "한마리치킨", BigDecimal.valueOf(17_000), 한마리_메뉴_그룹.getId(), Arrays.asList(후라이드치킨));
 
-        given(menuGroupDao.existsById(한마리_메뉴_그룹.getId())).willReturn(true);
+        given(menuGroupRepository.existsById(한마리_메뉴_그룹.getId())).willReturn(true);
         given(productDao.findById(후라이드치킨_상품.getId())).willReturn(Optional.of(후라이드치킨_상품));
 
         assertThatThrownBy(() -> menuService.create(메뉴)).isInstanceOf(IllegalArgumentException.class);
@@ -87,7 +87,7 @@ public class MenuServiceTest {
     public void create() {
         final Menu 메뉴 = 메뉴_생성(1L, "한마리치킨", BigDecimal.valueOf(16_000), 한마리_메뉴_그룹.getId(), Arrays.asList(후라이드치킨));
 
-        given(menuGroupDao.existsById(한마리_메뉴_그룹.getId())).willReturn(true);
+        given(menuGroupRepository.existsById(한마리_메뉴_그룹.getId())).willReturn(true);
         given(productDao.findById(후라이드치킨_상품.getId())).willReturn(Optional.of(후라이드치킨_상품));
         given(menuProductDao.save(후라이드치킨)).willReturn(후라이드치킨);
         given(menuDao.save(메뉴)).willReturn(메뉴);
