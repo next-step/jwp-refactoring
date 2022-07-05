@@ -7,7 +7,6 @@ import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.validator.MenuValidator;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,16 +39,11 @@ class MenuServiceTest {
     @Mock
     private MenuValidator menuValidator;
 
-    private MenuProductRequest 양념_치킨_요청값;
-
-    @BeforeEach
-    void setUp() {
-        양념_치킨_요청값 = MenuProductRequest.of(치킨.getId(), 1);
-    }
-
     @Test
     @DisplayName("메뉴의 정상적인 데이터를 입력한다면 정상 상품 등록이 된다")
     void create() {
+        MenuProductRequest 양념_치킨_요청값 = MenuProductRequest.of(치킨.getId(), 1);
+
         MenuRequest 추천_기본_메뉴_요청값 = MenuRequest.of("추천 기본 메뉴", BigDecimal.valueOf(17_000), 추천_메뉴.getId(), Arrays.asList(양념_치킨_요청값));
         when(menuRepository.save(any())).thenReturn(추천_기본_메뉴);
 
@@ -61,6 +55,8 @@ class MenuServiceTest {
     @Test
     @DisplayName("메뉴의 가격을 0원보다 미만으로 등록한다면 에러가 발생된다")
     void create2() {
+        MenuProductRequest 양념_치킨_요청값 = MenuProductRequest.of(치킨.getId(), 1);
+
         MenuRequest 잘못된_금액_요청값 = MenuRequest.of(
                 "추천 기본 메뉴",
                 BigDecimal.valueOf(-1000),

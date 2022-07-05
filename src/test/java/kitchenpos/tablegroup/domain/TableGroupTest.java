@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 class TableGroupTest {
 
     @Test
-    @DisplayName("테이블 그룹 생성")
+    @DisplayName("테이블 그룹을 생성한다면 정상적으로 생성 된다.")
     void tableGroup() {
         // given
         LocalDateTime localDateTime = LocalDateTime.now();

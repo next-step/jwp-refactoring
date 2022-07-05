@@ -4,7 +4,6 @@ import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menugroup.domain.MenuGroupRepository;
 import kitchenpos.product.domain.ProductRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,16 +35,11 @@ class MenuValidatorTest {
     @Mock
     private ProductRepository productRepository;
 
-    private MenuProductRequest 양념_치킨_요청값;
-
-    @BeforeEach
-    void setUp() {
-        양념_치킨_요청값 = MenuProductRequest.of(치킨.getId(), 1);
-    }
-
     @Test
     @DisplayName("메뉴를 생성할때 정상적으로 유효성 검사가 성공 된다")
     void validateCreateMenu() {
+        MenuProductRequest 양념_치킨_요청값 = MenuProductRequest.of(치킨.getId(), 1);
+
         MenuRequest 정상_메뉴 = MenuRequest.of(
                 "추천 기본 메뉴",
                 BigDecimal.valueOf(17_000),
@@ -62,6 +56,8 @@ class MenuValidatorTest {
     @Test
     @DisplayName("메뉴의 메뉴그룹 ID가 잘못된 경우 에러가 발생 된다.")
     void createMenuGroupNotExists() {
+        MenuProductRequest 양념_치킨_요청값 = MenuProductRequest.of(치킨.getId(), 1);
+
         MenuRequest 잘못된_그룹_메뉴_ID_요청값 = MenuRequest.of(
                 "추천 기본 메뉴",
                 BigDecimal.valueOf(17_000),
@@ -80,6 +76,8 @@ class MenuValidatorTest {
     @Test
     @DisplayName("메뉴 등록시 상품정보가 조회가 되지 않은 경우 에러가 발생된다")
     void createProductFindInNoSuch() {
+        MenuProductRequest 양념_치킨_요청값 = MenuProductRequest.of(치킨.getId(), 1);
+
         MenuRequest 잘못된_상품_정보_요청값 = MenuRequest.of(
                 "추천 기본 메뉴",
                 BigDecimal.valueOf(17_000),
@@ -97,6 +95,8 @@ class MenuValidatorTest {
     @Test
     @DisplayName("메뉴 등록시 상품 가격의 합보다 메뉴가격이 큰 경우 실패 테스트")
     void create5() {
+        MenuProductRequest 양념_치킨_요청값 = MenuProductRequest.of(치킨.getId(), 1);
+
         MenuRequest 잘못된_상품_정보_요청값 = MenuRequest.of(
                 "추천 기본 메뉴",
                 BigDecimal.valueOf(100_000),

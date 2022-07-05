@@ -7,7 +7,6 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.menu.fixture.MenuFixture;
 import kitchenpos.menugroup.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
@@ -16,7 +15,6 @@ import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.table.domain.OrderTableRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,43 +46,27 @@ class OrderValidatorTest {
     @Mock
     private OrderTableRepository orderTableRepository;
 
-    private Menu 치킨_두마리;
-    private MenuGroup 추천_메뉴;
-    private MenuProduct 메뉴_치킨;
-    private OrderLineItem 주문_항목;
-
-    @BeforeEach
-    void setUp() {
-        메뉴_치킨 = MenuProduct.of(1L, Quantity.of(1L));
-        추천_메뉴 = MenuGroup.of(1L, Name.of("추천 메뉴"));
-        치킨_두마리 = MenuFixture.create(
-                1L,
-                Name.of("치킨"),
-                Price.of(BigDecimal.valueOf(17_000)),
-                추천_메뉴.getId(),
-                MenuProducts.of(Arrays.asList(메뉴_치킨))
-        );
-
-        주문_항목 = OrderLineItem.of(치킨_두마리.getId(), Quantity.of(2));
-    }
-
     @Test
     @DisplayName("주문 생성시 정상적으로 유효성 검사에 성공한다.")
     void validateCreateOrder() {
+        // given
         OrderRequest 주문_생성_요청 = OrderRequest.of(
                 1L,
                 Arrays.asList(OrderLineItemRequest.of(1L, 1L))
         );
 
+        // when
         when(orderTableRepository.existsById(any())).thenReturn(Boolean.TRUE);
         when(menuRepository.findByIdIn(any())).thenReturn(Arrays.asList(기본_메뉴));
 
+        // then
         assertDoesNotThrow(() -> orderValidator.validateCreateOrder(주문_생성_요청));
     }
 
     @Test
     @DisplayName("주문 생성시 주문 테이블 정보가 없는 경우 유효성 검사에 실패 된다.")
     void orderTableNotExists() {
+        // given
         OrderRequest 주문_생성_요청 = OrderRequest.of(
                 1L,
                 Arrays.asList(OrderLineItemRequest.of(1L, 1L))
@@ -100,6 +82,7 @@ class OrderValidatorTest {
     @Test
     @DisplayName("주문 생성시 주문 항목 정보가 없는 경우 유효성 검사에 실패 된다.")
     void orderLineItemRequired() {
+        // given
         OrderRequest 주문_생성_요청 = OrderRequest.of(
                 1L,
                 null
@@ -115,6 +98,7 @@ class OrderValidatorTest {
     @Test
     @DisplayName("주문 생성시 메뉴 정보가 없는 경우 유효성 검사에 실패 된다.")
     void menuFindInNoSuch() {
+        // given
         OrderRequest 주문_생성_요청 = OrderRequest.of(
                 1L,
                 Arrays.asList(OrderLineItemRequest.of(1L, 1L))
@@ -131,6 +115,18 @@ class OrderValidatorTest {
     @Test
     @DisplayName("주문 상태 변경시 주문 상태가 유효성 검사에 성공한다.")
     void validateChangeOrderStatus() {
+        MenuProduct 메뉴_치킨 = MenuProduct.of(1L, Quantity.of(1L));
+        MenuGroup 추천_메뉴 = MenuGroup.of(1L, Name.of("추천 메뉴"));
+        Menu 치킨_두마리 = Menu.of(
+                1L,
+                Name.of("치킨"),
+                Price.of(BigDecimal.valueOf(17_000)),
+                추천_메뉴.getId(),
+                MenuProducts.of(Arrays.asList(메뉴_치킨))
+        );
+
+        OrderLineItem 주문_항목 = OrderLineItem.of(치킨_두마리.getId(), Quantity.of(2));
+
         Order 신규_주문 = Order.of(1L, 1L, OrderStatus.COOKING, OrderLineItems.of(Arrays.asList(주문_항목)));
 
         assertDoesNotThrow(() -> orderValidator.validateChangeOrderStatus(신규_주문));
@@ -139,6 +135,18 @@ class OrderValidatorTest {
     @Test
     @DisplayName("주문 상태 변경시 주문 상태가 완성 상태인 경우 유효성 검사에 실패 된다.")
     void orderStatusChangeCannotCompletion() {
+        MenuProduct 메뉴_치킨 = MenuProduct.of(1L, Quantity.of(1L));
+        MenuGroup 추천_메뉴 = MenuGroup.of(1L, Name.of("추천 메뉴"));
+        Menu 치킨_두마리 = Menu.of(
+                1L,
+                Name.of("치킨"),
+                Price.of(BigDecimal.valueOf(17_000)),
+                추천_메뉴.getId(),
+                MenuProducts.of(Arrays.asList(메뉴_치킨))
+        );
+
+        OrderLineItem 주문_항목 = OrderLineItem.of(치킨_두마리.getId(), Quantity.of(2));
+
         Order 신규_주문 = Order.of(1L, 1L, OrderStatus.COMPLETION, OrderLineItems.of(Arrays.asList(주문_항목)));
 
         assertThatExceptionOfType(IllegalArgumentException.class)
