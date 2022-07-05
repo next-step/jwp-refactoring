@@ -1,8 +1,7 @@
 package kitchenpos.order.application;
 
-import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.order.domain.Order;
+import kitchenpos.order.domain.OrderRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,12 +10,10 @@ import java.util.List;
 @Transactional(readOnly = true)
 @Service
 public class OrderService {
-    private final MenuRepository menuRepository;
     private final OrderRepository orderRepository;
     private final OrderValidator orderValidator;
 
-    public OrderService(MenuRepository menuRepository, OrderRepository orderRepository, OrderValidator orderValidator) {
-        this.menuRepository = menuRepository;
+    public OrderService(OrderRepository orderRepository, OrderValidator orderValidator) {
         this.orderRepository = orderRepository;
         this.orderValidator = orderValidator;
     }

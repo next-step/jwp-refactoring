@@ -36,7 +36,7 @@ class PriceTest {
         Price result = PRICE.add(CHEAPER);
 
         // then
-        assertThat(result.value()).isEqualTo(BigDecimal.valueOf(1500));
+        assertThat(result).isEqualTo(new Price(BigDecimal.valueOf(1500)));
     }
 
     @Test
@@ -45,6 +45,6 @@ class PriceTest {
         Price result = PRICE.multiply(5);
 
         // then
-        assertThat(result.value()).isEqualTo(BigDecimal.valueOf(5000));
+        assertThat(result).isEqualTo(new Price(BigDecimal.valueOf(5000)));
     }
 }

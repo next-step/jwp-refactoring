@@ -19,6 +19,12 @@ public class Menu {
     protected Menu() {
     }
 
+    public Menu(Long id, String name, Price price) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+    }
+
     public Menu(String name, Price price, Long menuGroupId, List<MenuProduct> menuProducts) {
         this.name = name;
         this.price = price;

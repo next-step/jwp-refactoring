@@ -20,6 +20,6 @@ class MenuProductTest {
         Price result = menuProduct.price();
 
         // then
-        assertThat(result.value()).isEqualTo(BigDecimal.valueOf(25000));
+        assertThat(result).isEqualTo(new Price(BigDecimal.valueOf(25000)));
     }
 }

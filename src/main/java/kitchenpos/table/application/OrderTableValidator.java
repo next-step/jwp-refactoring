@@ -1,15 +1,16 @@
 package kitchenpos.table.application;
 
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.application.OrderValidator;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.*;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderTableValidator implements OrderValidator {
@@ -25,11 +26,35 @@ public class OrderTableValidator implements OrderValidator {
 
     @Override
     public void validateOrder(Order order) {
-        long menuCount = menuRepository.countByIdIn(order.getMenuIds());
-        if (order.orderLineItemSize() != menuCount) {
+        List<Menu> menus = menuRepository.findByIdIn(order.getMenuIds());
+        List<OrderLineItem> orderLineItems = order.getOrderLineItems();
+
+        if (orderLineItems.size() != menus.size()) {
             throw new IllegalArgumentException("중복된 메뉴가 있습니다.");
         }
 
+        validateMenu(menus, orderLineItems);
+        validateEmptyTable(order);
+    }
+
+    private void validateMenu(List<Menu> menus, List<OrderLineItem> orderLineItems) {
+        Map<Long, OrderMenu> orderMenus = menuToOrderMenu(menus);
+
+        for (OrderLineItem orderLineItem : orderLineItems) {
+            OrderMenu orderMenu = orderMenus.get(orderLineItem.getMenuId());
+            orderMenu.validateMenu(orderLineItem.getOrderMenu());
+        }
+    }
+
+    private Map<Long, OrderMenu> menuToOrderMenu(List<Menu> menus) {
+        return menus.stream()
+                .collect(Collectors.toMap(
+                        Menu::getId,
+                        menu -> new OrderMenu(menu.getId(), menu.getName(), menu.getPrice()))
+                );
+    }
+
+    private void validateEmptyTable(Order order) {
         final OrderTable orderTable = orderTableRepository.findById(order.getOrderTableId())
                 .orElseThrow(() -> new IllegalArgumentException("주문 테이블을 찾을 수 없습니다."));
         if (orderTable.isEmpty()) {

@@ -69,10 +69,6 @@ public class Order {
         return orderLineItems.getMenuIds();
     }
 
-    public long orderLineItemSize() {
-        return orderLineItems.size();
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

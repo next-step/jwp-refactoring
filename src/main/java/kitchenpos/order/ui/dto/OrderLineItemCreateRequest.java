@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 public class OrderLineItemCreateRequest {
     private Long menuId;
     private String menuName;
-    private BigDecimal price;
+    private BigDecimal menuPrice;
     private long quantity;
 
     private OrderLineItemCreateRequest() {
@@ -18,12 +18,12 @@ public class OrderLineItemCreateRequest {
     public OrderLineItemCreateRequest(Long menuId, String menuName, BigDecimal price, long quantity) {
         this.menuId = menuId;
         this.menuName = menuName;
-        this.price = price;
+        this.menuPrice = price;
         this.quantity = quantity;
     }
 
     public OrderLineItem toEntity() {
-        return new OrderLineItem(new OrderMenu(menuId, menuName, new Price(price)), quantity);
+        return new OrderLineItem(new OrderMenu(menuId, menuName, new Price(menuPrice)), quantity);
     }
 
     public Long getMenuId() {
@@ -34,8 +34,8 @@ public class OrderLineItemCreateRequest {
         return menuName;
     }
 
-    public BigDecimal getPrice() {
-        return price;
+    public BigDecimal getMenuPrice() {
+        return menuPrice;
     }
 
     public long getQuantity() {

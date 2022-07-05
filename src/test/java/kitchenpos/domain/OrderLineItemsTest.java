@@ -49,10 +49,10 @@ public class OrderLineItemsTest {
     }
 
     public static OrderMenu createOrderMenu() {
-        return new OrderMenu(1L, "치킨", new Price(BigDecimal.valueOf(10000)));
+        return new OrderMenu(1L, "후라이드치킨", new Price(BigDecimal.valueOf(16000)));
     }
 
     public static OrderMenu createOrderMenu2() {
-        return new OrderMenu(2L, "파닭", new Price(BigDecimal.valueOf(12000)));
+        return new OrderMenu(2L, "양념치킨", new Price(BigDecimal.valueOf(16000)));
     }
 }

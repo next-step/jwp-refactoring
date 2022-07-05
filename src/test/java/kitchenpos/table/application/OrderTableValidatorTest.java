@@ -1,6 +1,8 @@
 package kitchenpos.table.application;
 
+import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuRepository;
+import kitchenpos.menu.domain.Price;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderRepository;
@@ -13,7 +15,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,7 +53,7 @@ class OrderTableValidatorTest {
         // given
         List<OrderLineItem> orderLineItems = createDuplicateOrderLineItems().elements();
         Order order = new Order(1L, orderLineItems, orderedTime());
-        given(menuRepository.countByIdIn(Arrays.asList(1L, 1L))).willReturn(1L);
+        given(menuRepository.findByIdIn(Arrays.asList(1L, 1L))).willReturn(createSingleMenus());
 
         // when & then
         assertThatThrownBy(() ->
@@ -59,10 +63,26 @@ class OrderTableValidatorTest {
     }
 
     @Test
+    void 메뉴_정보와_주문_메뉴_정보가_일치하지_않으면_등록할_수_없다() {
+        // given
+        Menu menu = new Menu(1L, "치킨", new Price(BigDecimal.valueOf(10000)));
+        Menu menu1 = new Menu(2L, "복숭아", new Price(BigDecimal.valueOf(12000)));
+
+        Order order = new Order(1L, createOrderLineItems().elements(), orderedTime());
+        given(menuRepository.findByIdIn(Arrays.asList(1L, 2L))).willReturn(Arrays.asList(menu, menu1));
+
+        // when & then
+        assertThatThrownBy(() ->
+                orderTableValidator.validateOrder(order)
+        ).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("주문 정보가 일치하지 않습니다.");
+    }
+
+    @Test
     void 주문_테이블이_빈_테이블이면_등록할_수_없다() {
         // given
         Order order = new Order(1L, createOrderLineItems().elements(), orderedTime());
-        given(menuRepository.countByIdIn(Arrays.asList(1L, 2L))).willReturn(2L);
+        given(menuRepository.findByIdIn(Arrays.asList(1L, 2L))).willReturn(createMenus());
         given(orderTableRepository.findById(1L)).willReturn(Optional.of(new OrderTable(1, true)));
 
         // when & then
@@ -83,5 +103,16 @@ class OrderTableValidatorTest {
                 orderTableValidator.validateUngroup(createOrderTableIds())
         ).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("조리 또는 식사 중인 테이블은 단체 지정을 해제할 수 없습니다.");
+    }
+
+    private List<Menu> createSingleMenus() {
+        return Collections.singletonList(new Menu(1L, "치킨", new Price(BigDecimal.valueOf(10000))));
+    }
+
+    private List<Menu> createMenus() {
+        Menu menu = new Menu(1L, "후라이드치킨", new Price(BigDecimal.valueOf(16000)));
+        Menu menu1 = new Menu(2L, "양념치킨", new Price(BigDecimal.valueOf(16000)));
+
+        return Arrays.asList(menu, menu1);
     }
 }
