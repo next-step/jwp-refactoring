@@ -38,7 +38,7 @@ public class MenuProducts {
     private Price getTotalPrice(List<MenuProduct> menuProducts) {
         Price total = new Price(BigDecimal.ZERO);
         for (MenuProduct menuProduct : menuProducts) {
-            total.add(menuProduct.getTotalPrice());
+            total = total.add(menuProduct.getTotalPrice());
         }
         return total;
     }
