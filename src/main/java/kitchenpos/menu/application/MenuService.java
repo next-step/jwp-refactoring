@@ -45,7 +45,7 @@ public class MenuService {
     @Transactional(readOnly = true)
     public List<MenuResponse> list() {
         final List<Menu> menus = menuRepository.findAll();
-        return MenuResponse.convertToMenuResponses(menus);
+        return MenuResponse.toMenuResponses(menus);
     }
 
     private void validateMenuGroupExist(MenuRequest menuRequest) {

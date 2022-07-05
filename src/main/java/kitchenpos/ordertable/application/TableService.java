@@ -29,7 +29,7 @@ public class TableService {
 
     public List<OrderTableResponse> list() {
         List<OrderTable> orderTables = orderTableRepository.findAll();
-        return OrderTableResponse.convertToOrderTableResponse(orderTables);
+        return OrderTableResponse.toOrderTableResponse(orderTables);
     }
 
     @Transactional

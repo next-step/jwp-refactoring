@@ -24,7 +24,7 @@ public class ProductService {
     }
 
     public List<ProductResponse> list() {
-        return ProductResponse.convertToProductResponses(productRepository.findAll());
+        return ProductResponse.toProductResponses(productRepository.findAll());
     }
 
     public Product findByIdOrElseThrow(long productId) {

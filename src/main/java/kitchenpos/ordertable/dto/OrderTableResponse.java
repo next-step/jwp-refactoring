@@ -22,7 +22,7 @@ public class OrderTableResponse {
         return new OrderTableResponse(orderTable.getId(), orderTable.getNumberOfGuests(), orderTable.isEmpty());
     }
 
-    public static List<OrderTableResponse> convertToOrderTableResponse(List<OrderTable> orderTables) {
+    public static List<OrderTableResponse> toOrderTableResponse(List<OrderTable> orderTables) {
         return orderTables.stream()
             .map(orderTable -> OrderTableResponse.from(orderTable))
             .collect(Collectors.toList());
