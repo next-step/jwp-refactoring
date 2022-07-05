@@ -1,9 +1,9 @@
-package kitchenpos.application;
+package kitchenpos.menu.application;
 
-import kitchenpos.fixture.TestMenuGroupFactory;
+import kitchenpos.common.Price;
 import kitchenpos.fixture.TestMenuRequestFactory;
 import kitchenpos.fixture.TestProductFactory;
-import kitchenpos.menu.application.MenuService;
+import kitchenpos.menu.domain.MenuMapper;
 import kitchenpos.menu.domain.*;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
@@ -28,8 +28,8 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
@@ -39,11 +39,18 @@ class MenuServiceTest {
     private MenuGroupRepository menuGroupRepository;
     @Mock
     private ProductRepository productRepository;
+    @Mock
+    private MenuMapper menuMapper;
+    @Mock
+    private MenuValidator menuValidator;
 
     @InjectMocks
     private MenuService menuService;
+    @InjectMocks
+    private MenuValidator menuValidatorInject;
+    @InjectMocks
+    private MenuMapper menuMapperInject;
 
-    private MenuGroup 분식류;
     private Product 진매;
     private Product 진순이;
     private MenuProductRequest 메뉴_진매;
@@ -53,24 +60,22 @@ class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        분식류 = TestMenuGroupFactory.create(1L, "분식류");
-
         진매 = TestProductFactory.create(1L, "진라면 매운맛", 5_000);
         진순이 = TestProductFactory.create(2L, "진라면 순한맛", 5_000);
         메뉴_진매 = new MenuProductRequest(1L, 1);
         메뉴_진순이 = new MenuProductRequest(2L, 1);
 
-        메뉴_요청 = TestMenuRequestFactory.toMenuRequest( "라면세트", 4_000, 1L, Arrays.asList(메뉴_진매, 메뉴_진순이));
-        메뉴 = Menu.of(메뉴_요청, MenuProducts.of(Arrays.asList(MenuProduct.of(진매, 1), MenuProduct.of(진순이, 1))));
+        메뉴_요청 = TestMenuRequestFactory.toMenuRequest("라면세트", 4_000, 1L, Arrays.asList(메뉴_진매, 메뉴_진순이));
+        메뉴 = new Menu("라면세트", new Price(4_000), 1L, MenuProducts.of(Arrays.asList(new MenuProduct(1L, 1), new MenuProduct(2L, 1))));
     }
 
     @Test
     @DisplayName("메뉴를 등록할 수 있다")
     void create() throws Exception {
         // given
-        given(menuGroupRepository.existsById(anyLong())).willReturn(true);
         given(menuRepository.save(any(Menu.class))).willReturn(메뉴);
-        given(productRepository.findByIdIn(any())).willReturn(Arrays.asList(진매, 진순이));
+        given(menuMapper.mapFrom(any())).willReturn(메뉴);
+        doNothing().when(menuValidator).validate(any());
 
         // when
         MenuResponse menu = menuService.create(메뉴_요청);
@@ -83,30 +88,28 @@ class MenuServiceTest {
     @ParameterizedTest
     @CsvSource(value = {"-1", "null"}, nullValues = {"null"})
     void createException1(BigDecimal price) throws Exception {
-        // given
-        MenuRequest menu = TestMenuRequestFactory.toMenuRequest("라면메뉴", price, 50L);
         // when & then
-        assertThatThrownBy(() -> menuService.create(menu)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new Menu("라면메뉴", price, 50L)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("등록되지 않은 메뉴그룹은 예외가 발생한다")
     @Test
     void createException2() throws Exception {
         // given
-        MenuRequest menu = TestMenuRequestFactory.toMenuRequest("라면메뉴", 4_000, 50L);
+        given(menuGroupRepository.existsById(any())).willReturn(false);
         // when & then
-        assertThatThrownBy(() -> menuService.create(menu)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuValidatorInject.validate(메뉴)).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @DisplayName("메뉴상품 총합이 메뉴가격보다 높으면 예외가 발생한다")
+    @DisplayName("메뉴가격이 메뉴상품 총합보다 높으면 예외가 발생한다")
     @Test
     void createException3() throws Exception {
         // given
-        MenuRequest menu = TestMenuRequestFactory.toMenuRequest("라면메뉴", 10_001, 50L, Arrays.asList(메뉴_진매, 메뉴_진순이));
-        given(menuGroupRepository.existsById(anyLong())).willReturn(true);
-
+        메뉴 = new Menu("라면세트", new Price(10_001), 1L, MenuProducts.of(Arrays.asList(new MenuProduct(1L, 1), new MenuProduct(2L, 1))));
+        given(productRepository.findByIdIn(any())).willReturn(Arrays.asList(진매, 진순이));
+        given(menuGroupRepository.existsById(any())).willReturn(true);
         // when & then
-        assertThatThrownBy(() -> menuService.create(menu)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> menuValidatorInject.validate(메뉴)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("등록된 전체 메뉴를 조회한다")

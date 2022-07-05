@@ -6,7 +6,7 @@ import java.util.Objects;
 
 @Embeddable
 public class Name {
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String value;
 
     protected Name() {

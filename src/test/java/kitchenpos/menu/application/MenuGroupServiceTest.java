@@ -1,4 +1,4 @@
-package kitchenpos.application;
+package kitchenpos.menu.application;
 
 import kitchenpos.fixture.TestMenuGroupFactory;
 import kitchenpos.fixture.TestMenuGroupRequestFactory;

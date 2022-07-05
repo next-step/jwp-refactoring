@@ -1,14 +1,12 @@
 package kitchenpos.menu.domain;
 
 import kitchenpos.common.Quantity;
-import kitchenpos.product.domain.Product;
 
 import javax.persistence.*;
-
 import java.util.Objects;
 
-import static javax.persistence.CascadeType.*;
-import static javax.persistence.FetchType.*;
+import static javax.persistence.CascadeType.PERSIST;
+import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
@@ -19,35 +17,27 @@ public class MenuProduct {
     @ManyToOne(cascade = PERSIST, fetch = LAZY)
     @JoinColumn(name = "menu_id")
     private Menu menu;
-    @OneToOne(fetch = LAZY)
-    private Product product;
+    @Column(nullable = false)
+    private Long productId;
     @Embedded
     private Quantity quantity;
 
     public MenuProduct() {
     }
 
-    public MenuProduct(Product product, long quantity) {
-        this(null, null, product, new Quantity(quantity));
+    public MenuProduct(Long productId, long quantity) {
+        this(null, null, productId, new Quantity(quantity));
     }
 
-    public MenuProduct(Menu menu, Product product, long quantity) {
-        this(null, menu, product, new Quantity(quantity));
+    public MenuProduct(Long seq, Long productId, long quantity) {
+        this(seq, null, productId, new Quantity(quantity));
     }
 
-    public MenuProduct(Long seq, Product product, long quantity) {
-        this(seq, null, product, new Quantity(quantity));
-    }
-
-    public MenuProduct(Long seq, Menu menu, Product product, Quantity quantity) {
+    public MenuProduct(Long seq, Menu menu, Long productId, Quantity quantity) {
         this.seq = seq;
         this.menu = menu;
-        this.product = product;
+        this.productId = productId;
         this.quantity = quantity;
-    }
-
-    public static MenuProduct of(Product product, long quantity) {
-        return new MenuProduct(product, quantity);
     }
 
     public Long getSeq() {
@@ -65,16 +55,12 @@ public class MenuProduct {
         this.menu = menu;
     }
 
-    public Product getProduct() {
-        return product;
-    }
-
     public Quantity getQuantity() {
         return quantity;
     }
 
     public Long getProductId() {
-        return product.getId();
+        return productId;
     }
 
     public Long getMenuId() {
@@ -86,11 +72,11 @@ public class MenuProduct {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MenuProduct that = (MenuProduct) o;
-        return Objects.equals(getSeq(), that.getSeq()) && Objects.equals(getMenu(), that.getMenu()) && Objects.equals(getProduct(), that.getProduct()) && Objects.equals(getQuantity(), that.getQuantity());
+        return Objects.equals(getSeq(), that.getSeq()) && Objects.equals(getMenu(), that.getMenu()) && Objects.equals(getProductId(), that.getProductId()) && Objects.equals(getQuantity(), that.getQuantity());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getSeq(), getMenu(), getProduct(), getQuantity());
+        return Objects.hash(getSeq(), getMenu(), getProductId(), getQuantity());
     }
 }

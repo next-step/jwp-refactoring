@@ -1,4 +1,4 @@
-package kitchenpos.ui;
+package kitchenpos.menu.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.common.Name;
@@ -14,6 +14,7 @@ import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.ui.MenuRestController;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -54,10 +55,14 @@ class MenuRestControllerTest {
         this.mockMvc = MockMvcBuilders.standaloneSetup(menuRestController).build();
         MenuProductRequest 메뉴_진매 = new MenuProductRequest(1L, 1);
         메뉴_요청 = TestMenuRequestFactory.toMenuRequest("메뉴", 5000, 1L, Arrays.asList(메뉴_진매));
-        메뉴 = Menu.of(메뉴_요청, MenuProducts.of(Collections.singletonList(new MenuProduct(1L, new Product(1L, new Name("진매"), new Price(5000)), 1))));
+        Product 진매 = new Product(1L, new Name("진매"), new Price(5000));
+        메뉴 = new Menu("메뉴",
+                new Price(5_000),
+                MenuProducts.of(Collections.singletonList(new MenuProduct(1L, 진매.getId(), 1))));
     }
 
     @Test
+    @DisplayName("PostMapping 된 Controller 를 호출한다")
     void post() throws Exception {
         //given
         given(menuService.create(any())).willReturn(MenuResponse.of(메뉴));
@@ -72,6 +77,7 @@ class MenuRestControllerTest {
     }
 
     @Test
+    @DisplayName("GetMapping 된 Controller 메서드를 호출한다")
     void get() throws Exception {
         // given
         given(menuService.list()).willReturn(Collections.singletonList(MenuResponse.of(메뉴)));

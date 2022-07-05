@@ -2,7 +2,6 @@ package kitchenpos.product.domain;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class Products {
     private final List<Product> products;
@@ -13,5 +12,9 @@ public class Products {
 
     public boolean isSameSize(List<Long> productIds) {
         return products.size() == new HashSet<>(productIds).size();
+    }
+
+    public List<Product> getProducts() {
+        return products;
     }
 }

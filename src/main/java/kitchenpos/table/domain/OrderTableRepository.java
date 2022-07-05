@@ -5,14 +5,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface OrderTableRepository extends JpaRepository<OrderTable, Long> {
     OrderTable save(OrderTable entity);
-
-    Optional<OrderTable> findById(Long id);
-
-    List<OrderTable> findAll();
 
     List<OrderTable> findAllByIdIn(List<Long> ids);
 

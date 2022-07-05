@@ -1,8 +1,7 @@
-package kitchenpos.ui;
+package kitchenpos.table.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kitchenpos.table.application.TableService;
-import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import kitchenpos.table.ui.TableRestController;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,13 +38,11 @@ class TableRestControllerTest {
 
     private MockMvc mockMvc;
     private OrderTableResponse 주문_테이블_응답_1;
-    private OrderTableRequest 테이블_2;
 
     @BeforeEach
     void setUp() {
         this.mockMvc = MockMvcBuilders.standaloneSetup(tableRestController).build();
         주문_테이블_응답_1 = new OrderTableResponse(1L, 1L, 5, false);
-        테이블_2 = new OrderTableRequest();
     }
 
     @Test

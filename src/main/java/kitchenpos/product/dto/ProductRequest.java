@@ -23,12 +23,6 @@ public class ProductRequest {
         return price;
     }
 
-    public void validate() {
-        if (Objects.isNull(price) || price.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException();
-        }
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

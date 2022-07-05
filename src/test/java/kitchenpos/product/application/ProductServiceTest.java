@@ -1,9 +1,10 @@
-package kitchenpos.application;
+package kitchenpos.product.application;
 
 import kitchenpos.fixture.TestProductRequestFactory;
 import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import kitchenpos.product.domain.ProductRepository;
+import kitchenpos.product.domain.ProductValidator;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,11 +25,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
     @Mock
     private ProductRepository productRepository;
+    @Mock
+    private ProductValidator productValidator;
 
     @InjectMocks
     private ProductService productService;
@@ -46,6 +50,7 @@ class ProductServiceTest {
     @DisplayName("상품을 등록할 수 있다")
     void create() {
         // given
+        doNothing().when(productValidator).validatePrice(any());
         given(productRepository.save(any(Product.class))).willReturn(Product.of(진매));
 
         //when

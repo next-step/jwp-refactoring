@@ -2,7 +2,6 @@ package kitchenpos.menu.domain;
 
 import kitchenpos.common.Name;
 import kitchenpos.common.Price;
-import kitchenpos.menu.dto.MenuRequest;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -18,11 +17,16 @@ public class Menu {
     private Name name;
     @Embedded
     private Price price;
+    @Column(nullable = false)
     private Long menuGroupId;
     @Embedded
-    private MenuProducts menuProducts = new MenuProducts();
+    private MenuProducts menuProducts;
 
     public Menu() {
+    }
+
+    public Menu(String name, Price price, MenuProducts menuProducts) {
+        this(null, new Name(name), price, null, menuProducts);
     }
 
     public Menu(String name, BigDecimal price, Long menuGroupId) {
@@ -38,20 +42,12 @@ public class Menu {
     }
 
     public Menu(Long id, Name name, Price price, Long menuGroupId, MenuProducts menuProducts) {
-        if (price.moreExpensiveThan(menuProducts.totalPrice())) {
-            throw new IllegalArgumentException();
-        }
-        menuProducts.setMenu(this);
-
         this.id = id;
         this.name = name;
         this.price = price;
         this.menuGroupId = menuGroupId;
         this.menuProducts = menuProducts;
-    }
-
-    public static Menu of(MenuRequest menuRequest, MenuProducts menuProducts) {
-        return new Menu(menuRequest.getName(), menuRequest.getPrice(), menuRequest.getMenuGroupId(), menuProducts);
+        menuProducts.setMenu(this);
     }
 
     public Long getId() {

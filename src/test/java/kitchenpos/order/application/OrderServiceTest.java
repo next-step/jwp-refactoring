@@ -1,23 +1,17 @@
-package kitchenpos.application;
+package kitchenpos.order.application;
 
-import kitchenpos.fixture.*;
+import kitchenpos.fixture.TestMenuFactory;
+import kitchenpos.fixture.TestMenuGroupFactory;
+import kitchenpos.fixture.TestProductFactory;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuRepository;
-import kitchenpos.order.application.OrderService;
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItemRepository;
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.product.domain.Product;
-import kitchenpos.table.domain.OrderTable;
-import kitchenpos.table.domain.OrderTableRepository;
-import kitchenpos.table.dto.OrderTableRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,17 +32,16 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @Mock
     private OrderRepository orderRepository;
     @Mock
-    private OrderTableRepository orderTableRepository;
+    private OrderMapper orderMapperMock;
     @Mock
-    private MenuRepository menuRepository;
-    @Mock
-    private OrderLineItemRepository orderLineItemRepository;
+    private OrderValidator orderValidator;
 
     @InjectMocks
     private OrderService orderService;
@@ -56,11 +49,9 @@ class OrderServiceTest {
     private MenuGroup 분식류;
     private Product 진매;
     private Product 진순이;
-    private MenuProduct 메뉴_진매;
-    private MenuProduct 메뉴_진순이;
     private Menu 메뉴;
     private OrderRequest 주문_요청;
-    private OrderTableRequest 주문_테이블;
+    private Order 주문;
     private OrderLineItemRequest 주문_메뉴;
 
     @BeforeEach
@@ -70,14 +61,12 @@ class OrderServiceTest {
         진매 = TestProductFactory.create(1L, "진라면 매운맛", 5_000);
         진순이 = TestProductFactory.create(2L, "진라면 순한맛", 5_000);
 
-        메뉴 = TestMenuFactory.create(10L, 4_000, 분식류.getId(), "라면메뉴", Arrays.asList(MenuProduct.of(진매, 1), MenuProduct.of(진순이, 1)));
+        메뉴 = TestMenuFactory.create(10L, 4_000, 분식류.getId(), "라면메뉴", Arrays.asList(new MenuProduct(1L, 1), new MenuProduct(2L, 1)));
 
-        메뉴_진매 = TestMenuProductFactory.create(메뉴, 진매, 1);
-        메뉴_진순이 = TestMenuProductFactory.create(메뉴, 진매, 1);
-
-        주문_테이블 = TestOrderTableRequestFactory.create(1, false);
         주문_메뉴 = new OrderLineItemRequest(메뉴.getId(), 3);
         주문_요청 = new OrderRequest(1L, Collections.singletonList(주문_메뉴));
+        주문 = new Order(1L);
+        주문.addOrderLineItems(Collections.singletonList(주문_메뉴));
     }
 
     @DisplayName("주문을 등록할 수 있다")
@@ -85,15 +74,15 @@ class OrderServiceTest {
     void create() throws Exception {
         // given
         OrderRequest orderRequest = new OrderRequest(1L, Collections.singletonList(주문_메뉴));
-        given(menuRepository.countByIdIn(any())).willReturn(1L);
-        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(OrderTable.of(주문_테이블)));
-        given(orderRepository.save(any(Order.class))).willReturn(Order.of(orderRequest));
+        given(orderRepository.save(any())).willReturn(주문);
+        given(orderMapperMock.mapFrom(any())).willReturn(주문);
+        doNothing().when(orderValidator).validate(any());
 
         // when
-        OrderResponse order = orderService.create(orderRequest);
+        OrderResponse orderResponse = orderService.create(orderRequest);
 
         // then
-        assertThat(order.getId()).isEqualTo(OrderResponse.of(Order.of(orderRequest)).getId());
+        assertThat(orderResponse.getId()).isEqualTo(OrderResponse.of(new Order(1L)).getId());
     }
 
     @DisplayName("주문 항목이 비어있으면 등록할 수 없다")
@@ -101,7 +90,7 @@ class OrderServiceTest {
     void createException1() throws Exception {
         // given
         OrderRequest orderRequest = new OrderRequest(1L, null);
-
+        given(orderMapperMock.mapFrom(any())).willThrow(IllegalArgumentException.class);
         // when & then
         assertThatThrownBy(() -> orderService.create(orderRequest)).isInstanceOf(IllegalArgumentException.class);
     }
@@ -109,8 +98,7 @@ class OrderServiceTest {
     @DisplayName("주문 항목의 메뉴가 존재하지 않으면 등록할 수 없다")
     @Test
     void createException2() throws Exception {
-
-        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(OrderTable.of(주문_테이블)));
+        given(orderMapperMock.mapFrom(any())).willThrow(IllegalArgumentException.class);
 
         // when & then
         assertThatThrownBy(() -> orderService.create(주문_요청)).isInstanceOf(IllegalArgumentException.class);
@@ -119,19 +107,8 @@ class OrderServiceTest {
     @DisplayName("주문 항목의 주문테이블이 존재하지 않으면 등록할 수 없다")
     @Test
     void createException3() throws Exception {
-        // given
-        주문_테이블 = TestOrderTableRequestFactory.create(2, true);
-        given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(OrderTable.of(주문_테이블)));
-
-        // when & then
-        assertThatThrownBy(() -> orderService.create(주문_요청)).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("주문 항목의 주문테이블이 존재하지 않으면 등록할 수 없다")
-    @Test
-    void createException4() throws Exception {
-        // given
-        given(orderTableRepository.findById(anyLong())).willThrow(IllegalArgumentException.class);
+        //given
+        given(orderMapperMock.mapFrom(주문_요청)).willThrow(IllegalArgumentException.class);
 
         // when & then
         assertThatThrownBy(() -> orderService.create(주문_요청)).isInstanceOf(IllegalArgumentException.class);
@@ -141,7 +118,7 @@ class OrderServiceTest {
     @Test
     void list() throws Exception {
         // given
-        given(orderRepository.findAll()).willReturn(Collections.singletonList(Order.of(주문_요청)));
+        given(orderRepository.findAll()).willReturn(Collections.singletonList(주문));
 
         // when
         List<OrderResponse> list = orderService.list();
@@ -157,7 +134,7 @@ class OrderServiceTest {
         // given
         주문_요청 = new OrderRequest(1L, Collections.singletonList(주문_메뉴));
 
-        given(orderRepository.findById(anyLong())).willReturn(Optional.of(Order.of(주문_요청)));
+        given(orderRepository.findById(anyLong())).willReturn(Optional.of(주문));
 
         // when
         OrderResponse changedOrder = orderService.changeOrderStatus(1L, new OrderStatusRequest(newOrderStatus));

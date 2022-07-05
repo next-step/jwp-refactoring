@@ -11,8 +11,7 @@ public class OrderTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "table_group_id")
     private TableGroup tableGroup;
     @Embedded
@@ -46,17 +45,6 @@ public class OrderTable {
         return id;
     }
 
-    public void validateGroupTable() {
-        if (Objects.nonNull(tableGroup)) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    public void validateOrderTableEmpty() {
-        if (isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-    }
     public void changeNumberOfGuests(int numberOfGuests) {
         changeNumberOfGuests(new NumberOfGuests(numberOfGuests));
     }
@@ -105,7 +93,24 @@ public class OrderTable {
         }
     }
 
-    public void changeTableGroupIdAndEmpty(TableGroup tableGroup) {
+    public void changeTableGroup(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
+    }
+
+    public void unGroup() {
+        this.tableGroup = null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderTable that = (OrderTable) o;
+        return Objects.equals(getId(), that.getId()) && Objects.equals(getTableGroup(), that.getTableGroup()) && Objects.equals(getNumberOfGuests(), that.getNumberOfGuests()) && Objects.equals(isEmpty(), that.isEmpty());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getTableGroup(), getNumberOfGuests(), isEmpty());
     }
 }

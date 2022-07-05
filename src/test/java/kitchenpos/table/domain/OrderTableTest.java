@@ -41,35 +41,6 @@ class OrderTableTest {
     }
 
     @Test
-    @DisplayName("그룹이 존재할 경우 예외가 발생한다")
-    void validate() {
-        // given
-        OrderTable orderTable = OrderTable.of(orderTableRequest);
-
-        // when
-        orderTable.changeTableGroupIdAndEmpty(new TableGroup());
-
-        // then
-        assertThatThrownBy(orderTable::validateGroupTable)
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    @DisplayName("테이블이 비었으면 예외가 발생한다")
-    void validateOrderTableEmptyTrue() {
-        // given
-        OrderTable orderTable = OrderTable.of(orderTableRequest);
-
-        // when
-        orderTable.changeEmpty(true);
-
-        // then
-        assertThatThrownBy(orderTable::validateOrderTableEmpty)
-                .isInstanceOf(IllegalArgumentException.class);
-
-    }
-
-    @Test
     @DisplayName("주문 테이블의 손님 수를 10명에서 5명으로 변경한다")
     void changeNumberOfGuests() {
         // given
@@ -116,7 +87,7 @@ class OrderTableTest {
         OrderTable orderTable = OrderTable.of(orderTableRequest);
 
         // when
-        orderTable.changeTableGroupIdAndEmpty(new TableGroup());
+        orderTable.changeTableGroup(new TableGroup());
 
         // then
         assertThatThrownBy(orderTable::validateEmptyAndTableGroup)

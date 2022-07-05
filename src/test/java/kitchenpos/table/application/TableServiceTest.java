@@ -1,11 +1,12 @@
-package kitchenpos.application;
+package kitchenpos.table.application;
 
 import kitchenpos.fixture.TestOrderTableRequestFactory;
-import kitchenpos.order.application.OrderService;
+import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.domain.TableValidator;
 import kitchenpos.table.dto.NumberOfGuestsRequest;
 import kitchenpos.table.dto.OrderTableEmptyRequest;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -25,18 +26,26 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 
 @ExtendWith(MockitoExtension.class)
 class TableServiceTest {
     @Mock
     private OrderTableRepository orderTableRepositoryMock;
+
     @Mock
-    private OrderService orderServiceMock;
+    private TableValidator tableValidator;
+
+    @Mock
+    private OrderRepository orderRepository;
+
 
     @InjectMocks
     private TableService tableService;
+    @InjectMocks
+    private TableValidator tableValidatorInject;
 
     private OrderTableRequest 주문_테이블_요청_1;
     private OrderTable 주문_테이블_1;
@@ -83,7 +92,7 @@ class TableServiceTest {
         // given
         주문_테이블_1 = new OrderTable(1L, null, 1, false);
         given(orderTableRepositoryMock.findById(any())).willReturn(Optional.of(주문_테이블_1));
-        given(orderServiceMock.existsOrderByOrderTableIdAndOrderStatusIn(anyLong(), any())).willReturn(false);
+        doNothing().when(tableValidator).validateEmpty(any());
 
         // when
         OrderTableResponse orderTable = tableService.changeEmpty(1L, 비움_요청);
@@ -92,7 +101,7 @@ class TableServiceTest {
         assertThat(orderTable.isEmpty()).isEqualTo(true);
     }
 
-    @DisplayName("주문 테이블이 없으면 비울 수 없다")
+    @DisplayName("주문 테이블이 존재하지 않으면 비울 수 없다")
     @Test
     void changeEmptyException1() throws Exception {
         // given
@@ -108,11 +117,8 @@ class TableServiceTest {
     @DisplayName("단체 테이블이면 비울 수 없다")
     @Test
     void changeEmptyException2() throws Exception {
-        // given
-        given(orderTableRepositoryMock.findById(any())).willReturn(Optional.of(주문_테이블_1));
-
         // when & then
-        assertThatThrownBy(() -> tableService.changeEmpty(1L, 비움_요청))
+        assertThatThrownBy(() -> tableValidatorInject.validateEmpty(주문_테이블_1))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -120,10 +126,11 @@ class TableServiceTest {
     @Test
     void changeEmptyException3() throws Exception {
         // given
-        given(orderTableRepositoryMock.findById(any())).willReturn(Optional.of(주문_테이블_1));
+        주문_테이블_1 = new OrderTable(3, false);
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).willThrow(IllegalArgumentException.class);
 
         // when & then
-        assertThatThrownBy(() -> tableService.changeEmpty(주문_테이블_1.getId(), 비움_요청))
+        assertThatThrownBy(() -> tableValidatorInject.validateEmpty(주문_테이블_1))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -131,7 +138,8 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests() throws Exception {
         // given
-        given(orderServiceMock.findOrderTableById(any())).willReturn(주문_테이블_1);
+        given(orderTableRepositoryMock.findById(any())).willReturn(Optional.ofNullable(주문_테이블_1));
+        doNothing().when(tableValidator).validateOrderTableEmpty(any());
 
         // when
         OrderTableResponse orderTable = tableService.changeNumberOfGuests(주문_테이블_1.getId(), new NumberOfGuestsRequest(10));
@@ -144,7 +152,8 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuestsException1() throws Exception {
         // given
-        given(orderServiceMock.findOrderTableById(any())).willReturn(주문_테이블_1);
+        given(orderTableRepositoryMock.findById(any())).willReturn(Optional.ofNullable(주문_테이블_1));
+        doNothing().when(tableValidator).validateOrderTableEmpty(any());
 
         // when & then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(주문_테이블_1.getId(), new NumberOfGuestsRequest(-1)))
@@ -156,7 +165,9 @@ class TableServiceTest {
     void changeNumberOfGuestsException3() throws Exception {
         // given
         주문_테이블_1 = new OrderTable(1L, new TableGroup(), 1, true);
-        given(orderServiceMock.findOrderTableById(any())).willReturn(주문_테이블_1);
+        given(orderTableRepositoryMock.findById(any())).willReturn(Optional.ofNullable(주문_테이블_1));
+        doThrow(IllegalArgumentException.class).when(tableValidator).validateOrderTableEmpty(주문_테이블_1);
+
         // when & then
         assertThatThrownBy(() -> tableService.changeNumberOfGuests(주문_테이블_1.getId(), new NumberOfGuestsRequest(3)))
                 .isInstanceOf(IllegalArgumentException.class);
