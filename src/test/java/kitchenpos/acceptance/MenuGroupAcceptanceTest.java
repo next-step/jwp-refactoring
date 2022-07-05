@@ -6,7 +6,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kitchenpos.domain.MenuGroup;
+import kitchenpos.request.MenuGroupRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -40,10 +40,10 @@ public class MenuGroupAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 메뉴_그룹_생성_요청(final String name) {
-        final MenuGroup menuGroup = new MenuGroup(name);
+        final MenuGroupRequest menuGroupRequest = new MenuGroupRequest(name);
         return RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .body(menuGroup)
+                .body(menuGroupRequest)
                 .when().post("/api/menu-groups")
                 .then().log().all()
                 .extract();
