@@ -17,7 +17,9 @@ public class MenuProducts {
     protected MenuProducts() {
 
     }
-
+    public MenuProducts(List<MenuProduct> inputs) {
+        elements.addAll(inputs);
+    }
     void addMenuProducts(List<MenuProduct> menuProducts) {
         elements.addAll(menuProducts);
     }

@@ -5,8 +5,10 @@ import static java.util.stream.Collectors.toList;
 import java.util.List;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuCreationValidator;
+import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.menu.dto.MenuDto;
+import kitchenpos.menu.dto.MenuProductDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,9 +24,8 @@ public class MenuService {
 
     @Transactional
     public MenuDto create(final MenuDto menuDto) {
-        Menu menu = menuDto.toMenu();
-        menuCreationValidator.validate(menu);
-        return MenuDto.of(menuRepository.save(menu));
+        menuCreationValidator.validate(menuDto.getPrice(),menuDto.menuProducts());
+        return MenuDto.of(menuRepository.save(menuDto.toMenu()));
     }
 
     public List<MenuDto> list() {
