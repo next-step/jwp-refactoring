@@ -42,7 +42,9 @@ public class OrderService {
 
         final Order savedOrder = orderRepository.save(new Order(orderTable));
 
-        OrderLineItems orderLineItems = validateOrderLineItemsCheck(orderRequest.getOrderLineItems());
+        validateOrderLineItemsCheck(orderRequest.getOrderLineItems());
+
+        OrderLineItems orderLineItems = new OrderLineItems(orderRequest.getOrderLineItems());
         orderLineItems.saveOrder(savedOrder);
         orderLineItemRepository.saveAll(orderLineItems.getOrderLineItems());
 
@@ -66,7 +68,7 @@ public class OrderService {
         return OrderResponse.of(savedOrder);
     }
 
-    private OrderLineItems validateOrderLineItemsCheck(List<OrderLineItem> orderLineItems) {
+    private void validateOrderLineItemsCheck(List<OrderLineItem> orderLineItems) {
         final List<Long> menuIds = orderLineItems.stream()
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
@@ -76,7 +78,5 @@ public class OrderService {
         if (orderLineItems.size() != menuCount) {
             throw new IllegalArgumentException("존재하지 않는 메뉴입니다.");
         }
-
-        return new OrderLineItems(orderLineItems);
     }
 }
