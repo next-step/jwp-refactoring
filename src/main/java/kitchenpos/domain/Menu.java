@@ -20,9 +20,7 @@ public class Menu {
     @Column(nullable = false, precision = 19, scale = 2)
     private BigDecimal price;
 
-    @ManyToOne
-    @JoinColumn(name = "menu_group_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "fk_menu_menu_group"))
-    private MenuGroup menuGroup;
+    private Long menuGroupId;
 
     @OneToMany(mappedBy = "menu", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<MenuProduct> menuProducts = new ArrayList<>();
@@ -39,7 +37,7 @@ public class Menu {
         validateTotalPrice(price, menuProducts);
         this.name = name;
         this.price = price;
-        this.menuGroup = menuGroup;
+        this.menuGroupId = menuGroup.getId();
         this.menuProducts.addAll(toMenuProducts(menuProducts));
     }
 
@@ -67,20 +65,12 @@ public class Menu {
         this.price = price;
     }
 
-    public MenuGroup getMenuGroup() {
-        return menuGroup;
-    }
-
-    public void setMenuGroup(MenuGroup menuGroup) {
-        this.menuGroup = menuGroup;
-    }
-
     public Long getMenuGroupId() {
-        return menuGroup.getId();
+        return menuGroupId;
     }
 
-    public void setMenuGroupId(final Long menuGroupId) {
-        this.menuGroup.setId(menuGroupId);
+    public void setMenuGroupId(Long menuGroupId) {
+        this.menuGroupId = menuGroupId;
     }
 
     public List<MenuProduct> getMenuProducts() {
