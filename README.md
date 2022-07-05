@@ -94,6 +94,12 @@ orders : 테이블 번호, 주문 상태를 관리하는 테이블
 
 order_line_item : 주문, 메뉴 연결 테이블 테이블, 주문 수량을 추가함
 
+## 테이블 스키마
+
+[V1__Initialize_project_tables.sql](https://github.com/tasklet1579/jwp-refactoring/blob/step2/src/main/resources/db/migration/V1__Initialize_project_tables.sql)
+
+[V2__Insert_default_data.sql](https://github.com/tasklet1579/jwp-refactoring/blob/step2/src/main/resources/db/migration/V2__Insert_default_data.sql)
+
 ## 용어 사전
 
 | 한글명 | 영문명 | 설명 |
