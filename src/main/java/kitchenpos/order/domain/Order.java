@@ -39,7 +39,7 @@ public class Order {
     }
 
     public static Order of(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
-        orderTable.validIsEmpty();
+        orderTable.validEmpty();
         return new Order(orderTable, orderLineItems);
     }
 

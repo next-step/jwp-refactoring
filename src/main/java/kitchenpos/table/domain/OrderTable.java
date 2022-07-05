@@ -32,12 +32,6 @@ public class OrderTable {
         return new OrderTable(tableGroup, numberOfGuests, empty);
     }
 
-    public void validIsEmpty() {
-        if (isEmpty()) {
-            throw new IllegalArgumentException("테이블이 존재하지 않습니다.");
-        }
-    }
-
     public void changeGroup(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
         this.empty = false;
@@ -53,7 +47,7 @@ public class OrderTable {
         this.numberOfGuests = changeNumber;
     }
 
-    private void validEmpty() {
+    public void validEmpty() {
         if (isEmpty()) {
             throw new IllegalArgumentException("주문 테이블이 존재하지 않습니다.");
         }
