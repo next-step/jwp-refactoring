@@ -47,7 +47,6 @@ class MenuAcceptanceTest extends BaseAcceptanceTest {
     }
 
     /**
-     * Given 메뉴 그룹과 상품, 메뉴 상품 데이터를 생성한 후
      * When 메뉴를 생성하면
      * Then 저장된 메뉴 데이터가 리턴된다
      */
@@ -66,7 +65,6 @@ class MenuAcceptanceTest extends BaseAcceptanceTest {
     }
 
     /**
-     * Given 메뉴 그룹과 상품, 메뉴 상품 데이터를 생성한 후
      * When 가격을 음수로 지정하여 메뉴를 생성하면
      * Then 오류가 발생한다
      */
@@ -81,7 +79,6 @@ class MenuAcceptanceTest extends BaseAcceptanceTest {
     }
 
     /**
-     * Given 메뉴 그룹과 상품, 메뉴 상품 데이터를 생성한 후
      * When 등록되지 않은 메뉴 그룹 ID 를 이용하여 메뉴를 생성하면
      * Then 오류가 발생한다
      */
@@ -96,7 +93,6 @@ class MenuAcceptanceTest extends BaseAcceptanceTest {
     }
 
     /**
-     * Given 메뉴 그룹과 상품, 메뉴 상품 데이터를 생성한 후
      * When (메뉴상품의 수량 * 상품 가격) 의 곱보다 메뉴 가격이 크면
      * Then 오류가 발생한다
      */
@@ -111,7 +107,6 @@ class MenuAcceptanceTest extends BaseAcceptanceTest {
     }
 
     /**
-     * Given 메뉴 그룹과 상품, 메뉴 상품 데이터를 생성한 후
      * When 메뉴를 생성하면
      * Then 저장된 메뉴 데이터와 메뉴 상품 목록이 함께 리턴된다
      */
@@ -129,7 +124,6 @@ class MenuAcceptanceTest extends BaseAcceptanceTest {
     }
 
     /**
-     * Given 메뉴 1건을 등록한 후
      * When 메뉴 목록을 조회하면
      * Then 메뉴 상품과 함께 조회된다
      */
