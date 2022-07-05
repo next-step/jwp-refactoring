@@ -12,14 +12,13 @@ import org.springframework.http.MediaType;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.List;
 
 import static kitchenpos.application.acceptance.MenuAcceptanceTest.메뉴_생성_요청;
 import static kitchenpos.application.acceptance.MenuGroupAcceptanceTest.메뉴_그룹_생성_요청;
 import static kitchenpos.application.acceptance.OrderAcceptanceTest.주문_상태_변경_요청;
 import static kitchenpos.application.acceptance.OrderAcceptanceTest.주문_생성_요청;
 import static kitchenpos.application.acceptance.ProductAcceptanceTest.상품_생성_요청;
-import static kitchenpos.application.acceptance.TableGroupAcceptanceTest.단체_지정_생성_요청;
+import static kitchenpos.application.acceptance.TableGroupAcceptanceTest.단체_지정_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -166,7 +165,7 @@ class OrderTableAcceptanceTest extends BaseAcceptanceTest {
         // given
         OrderTable 주문_테이블_1 = 주문_테이블_생성_요청(1L, 3, true).as(OrderTable.class);
         OrderTable 주문_테이블_2 = 주문_테이블_생성_요청(2L, 2, true).as(OrderTable.class);
-        단체_지정_생성_요청(Arrays.asList(주문_테이블_1, 주문_테이블_2));
+        단체_지정_요청(Arrays.asList(주문_테이블_1, 주문_테이블_2));
 
         // when
         ExtractableResponse<Response> 주문_테이블_빈_테이블로_변경_요청_응답
@@ -187,7 +186,7 @@ class OrderTableAcceptanceTest extends BaseAcceptanceTest {
         // given
         OrderTable 주문_테이블_1 = 주문_테이블_생성_요청(1L, 3, true).as(OrderTable.class);
         OrderTable 주문_테이블_2 = 주문_테이블_생성_요청(2L,2, true).as(OrderTable.class);
-        TableGroup 단체 = 단체_지정_생성_요청(Arrays.asList(주문_테이블_1, 주문_테이블_2)).as(TableGroup.class);
+        TableGroup 단체 = 단체_지정_요청(Arrays.asList(주문_테이블_1, 주문_테이블_2)).as(TableGroup.class);
 
         MenuGroup 메뉴_그룹 = 메뉴_그룹_생성_요청("신메뉴").as(MenuGroup.class);
         Product 상품 = 상품_생성_요청("녹두빈대떡", new BigDecimal(7000)).as(Product.class);
