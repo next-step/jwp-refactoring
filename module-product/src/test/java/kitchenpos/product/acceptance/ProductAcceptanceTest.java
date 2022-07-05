@@ -1,16 +1,16 @@
-package kitchenpos.acceptance;
+package kitchenpos.product.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import kitchenpos.common.AcceptanceTest;
+import kitchenpos.common.utils.RestAssuredHelper;
 import kitchenpos.product.dto.ProductRequest;
 import kitchenpos.product.dto.ProductResponse;
-import kitchenpos.utils.RestAssuredHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,7 @@ public class ProductAcceptanceTest extends AcceptanceTest {
     private static final String PRODUCT_URI = "/api/products";
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         super.setUp();
     }
 
