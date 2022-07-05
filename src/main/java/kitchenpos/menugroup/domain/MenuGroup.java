@@ -25,6 +25,13 @@ public class MenuGroup {
     public MenuGroup(Long id, String name) {
         this.id = id;
         this.name = name;
+        validateNonNullFields();
+    }
+
+    private void validateNonNullFields() {
+        if (name == null) {
+            throw new IllegalArgumentException("이름은 메뉴 그룹의 필수 사항입니다.");
+        }
     }
 
     public Long getId() {
