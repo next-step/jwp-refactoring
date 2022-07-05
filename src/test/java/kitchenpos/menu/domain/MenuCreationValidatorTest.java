@@ -16,7 +16,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -43,10 +42,12 @@ class MenuCreationValidatorTest {
     @Test
     @DisplayName("메뉴가격이 음수인 경우 메뉴 등록 실패")
     void 메뉴그룹에_메뉴추가_가격이_음수인경우() {
-        int menuPrice = -1 * 1000;
+        BigDecimal menuPrice = new BigDecimal(-1 * 1000);
         MenuProduct menuProduct1 = MenuProductFixtureFactory.createMenuProduct(1L, product1.getId(), 4);
         MenuProduct menuProduct2 = MenuProductFixtureFactory.createMenuProduct(2L, product2.getId(), 1);
-        assertThatThrownBy(() -> menuCreationValidator.validate(new BigDecimal(menuPrice), new MenuProducts( Lists.newArrayList(menuProduct1, menuProduct2))))
+        MenuProducts menuProducts = new MenuProducts(Lists.newArrayList(menuProduct1, menuProduct2));
+
+        assertThatThrownBy(() -> menuCreationValidator.validate(menuPrice, menuProducts))
                 .isInstanceOf(InvalidMenuPriceException.class);
     }
 
@@ -55,10 +56,12 @@ class MenuCreationValidatorTest {
     void 메뉴그룹에_메뉴추가_가격이_상품가격의_합보다_큰경우() {
         when(productRepository.findAllById(Lists.newArrayList(product1.getId(), product2.getId())))
                 .thenReturn(Lists.newArrayList(product1, product2));
-        int menuPrice = 10000;
+        BigDecimal menuPrice = new BigDecimal(10000);
         MenuProduct menuProduct1 = MenuProductFixtureFactory.createMenuProduct(1L, product1.getId(), 4);
         MenuProduct menuProduct2 = MenuProductFixtureFactory.createMenuProduct(2L, product2.getId(), 1);
-        assertThatThrownBy(() -> menuCreationValidator.validate(new BigDecimal(menuPrice), new MenuProducts( Lists.newArrayList(menuProduct1, menuProduct2))))
+        MenuProducts menuProducts = new MenuProducts(Lists.newArrayList(menuProduct1, menuProduct2));
+
+        assertThatThrownBy(() -> menuCreationValidator.validate(menuPrice, menuProducts))
                 .isInstanceOf(InvalidMenuPriceException.class);
     }
 }

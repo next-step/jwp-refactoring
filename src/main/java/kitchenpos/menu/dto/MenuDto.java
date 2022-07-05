@@ -45,11 +45,10 @@ public class MenuDto {
     }
 
     public MenuProducts menuProducts() {
-        MenuProducts menuProducts = new MenuProducts(menuProductList());
-        return menuProducts;
+        return new MenuProducts(menuProductList());
     }
 
-    private List<MenuProduct> menuProductList(){
+    private List<MenuProduct> menuProductList() {
         return menuProductDtos.stream()
                 .map(menuProductDto -> new MenuProduct(menuProductDto.getProductId(), menuProductDto.getQuantity()))
                 .collect(toList());
