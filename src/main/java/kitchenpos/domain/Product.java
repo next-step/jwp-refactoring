@@ -17,15 +17,14 @@ public class Product {
     protected Product() {
     }
 
-    public Product(String name, BigDecimal price) {
-        this.name = new Name(name);
-        this.price = new Price(price);
-    }
-
     public Product(Long id, String name, BigDecimal price) {
         this.id = id;
         this.name = new Name(name);
         this.price = new Price(price);
+    }
+
+    public Product(String name, BigDecimal price) {
+        this(null, name, price);
     }
 
     public Long getId() {

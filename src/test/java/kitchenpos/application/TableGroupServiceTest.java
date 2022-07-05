@@ -121,8 +121,8 @@ class TableGroupServiceTest {
 
         // then
         assertAll(
-                () -> assertThat(첫번째_테이블.getTableGroupId()).isNull(),
-                () -> assertThat(두번째_테이블.getTableGroupId()).isNull()
+                () -> assertThat(첫번째_테이블.getTableGroup()).isNull(),
+                () -> assertThat(두번째_테이블.getTableGroup()).isNull()
         );
     }
 

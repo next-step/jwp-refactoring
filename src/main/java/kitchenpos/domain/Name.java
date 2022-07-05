@@ -10,17 +10,17 @@ import static java.util.Objects.requireNonNull;
 public class Name {
 
     @Column(nullable = false)
-    private String value;
+    private String name;
 
     protected Name() {
     }
 
-    public Name(String value) {
-        this.value = requireNonNull(value, "name");
+    public Name(String name) {
+        this.name = requireNonNull(name, "name");
     }
 
     public String getValue() {
-        return value;
+        return name;
     }
 
     @Override
@@ -28,11 +28,11 @@ public class Name {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Name name = (Name) o;
-        return Objects.equals(value, name.value);
+        return Objects.equals(name, name.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(value);
+        return Objects.hash(name);
     }
 }

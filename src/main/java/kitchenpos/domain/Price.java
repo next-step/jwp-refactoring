@@ -11,13 +11,13 @@ import static java.util.Objects.requireNonNull;
 public class Price {
 
     @Column(nullable = false)
-    private BigDecimal value;
+    private BigDecimal price;
 
     protected Price() {
     }
 
-    public Price(BigDecimal value) {
-        this.value = validate(value);
+    public Price(BigDecimal price) {
+        this.price = validate(price);
     }
 
     private BigDecimal validate(BigDecimal price) {
@@ -29,11 +29,11 @@ public class Price {
     }
 
     public boolean isGatherThan(BigDecimal sum) {
-        return value.compareTo(sum) > 0;
+        return price.compareTo(sum) > 0;
     }
 
     public BigDecimal getValue() {
-        return value;
+        return price;
     }
 
     @Override
@@ -41,11 +41,11 @@ public class Price {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Price price1 = (Price) o;
-        return Objects.equals(value, price1.value);
+        return Objects.equals(price, price1.price);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(value);
+        return Objects.hash(price);
     }
 }
