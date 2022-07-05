@@ -8,6 +8,7 @@ import java.util.Arrays;
 
 import static kitchenpos.table.TableGenerator.*;
 import static kitchenpos.table.domain.NumberOfGuestsTest.손님_수_생성;
+import static kitchenpos.tableGroup.TableGroupGenerator.테이블_그룹_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 

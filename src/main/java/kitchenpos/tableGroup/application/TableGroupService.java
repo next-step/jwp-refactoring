@@ -1,10 +1,10 @@
 package kitchenpos.tableGroup.application;
 
-import kitchenpos.table.application.TableService;
 import kitchenpos.tableGroup.dao.TableGroupRepository;
 import kitchenpos.tableGroup.domain.TableGroup;
 import kitchenpos.tableGroup.dto.TableGroupCreateRequest;
 import kitchenpos.tableGroup.dto.TableGroupResponse;
+import kitchenpos.tableGroup.mapper.TableGroupMapper;
 import kitchenpos.tableGroup.validator.TableGroupValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,17 +13,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class TableGroupService {
     private final TableGroupRepository tableGroupRepository;
-    private final TableService tableService;
     private final TableGroupValidator tableGroupValidator;
+    private final TableGroupMapper tableGroupMapper;
 
     public TableGroupService(
             final TableGroupRepository tableGroupRepository,
-            final TableService tableService,
-            final TableGroupValidator tableGroupValidator
+            final TableGroupValidator tableGroupValidator,
+            final TableGroupMapper tableGroupMapper
     ) {
-        this.tableService = tableService;
-        this.tableGroupRepository = tableGroupRepository;
         this.tableGroupValidator = tableGroupValidator;
+        this.tableGroupRepository = tableGroupRepository;
+        this.tableGroupMapper = tableGroupMapper;
     }
 
     public TableGroup getTableGroup(final Long id) {
@@ -33,11 +33,8 @@ public class TableGroupService {
 
     @Transactional
     public TableGroupResponse create(final TableGroupCreateRequest request) {
-        TableGroup tableGroup = request.of(tableService.findOrderTablesByIds(request.getOrderTables()));
-        tableGroupValidator.validateTableGroup(tableGroup);
-
         return TableGroupResponse.from(
-                tableGroupRepository.save(tableGroup)
+                tableGroupRepository.save(tableGroupMapper.mapFrom(request))
         );
     }
 

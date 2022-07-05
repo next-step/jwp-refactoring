@@ -12,36 +12,14 @@ import java.util.Objects;
 
 @Component
 public class TableGroupValidator {
-    private static final int MINIMUM_COUNT = 2;
-
     private final OrderRepository orderRepository;
 
     public TableGroupValidator(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
     }
 
-    public void validateTableGroup(final TableGroup tableGroup) {
-        checkAssociateCount(tableGroup);
-        tableGroup.getOrderTables().getValue().forEach(this::checkPossibleBelongGroup);
-    }
-
     public void possibleUngroupTableGroup(final TableGroup tableGroup) {
         isPossibleUngroupTable(tableGroup);
-    }
-
-    private void checkAssociateCount(TableGroup tableGroup) {
-        if (tableGroup.getOrderTables().getValue().size() < MINIMUM_COUNT) {
-            throw new IllegalArgumentException("단체 지정에 속한 주문 테이블의 수는 최소 2개 이상이어야 합니다.");
-        }
-    }
-
-    private void checkPossibleBelongGroup(OrderTable orderTable) {
-        if (orderTable.isNotEmpty()) {
-            throw new IllegalArgumentException("빈 주문 테이블만 새로운 그룹에 속할 수 있습니다.");
-        }
-        if (Objects.nonNull(orderTable.getTableGroup())) {
-            throw new IllegalArgumentException("이미 단체 지정에 속한 주문 테이블이 존재합니다.");
-        }
     }
 
     private void isPossibleUngroupTable(TableGroup tableGroup) {

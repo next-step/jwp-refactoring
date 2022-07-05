@@ -1,4 +1,4 @@
-package kitchenpos.tableGroup.ui;
+package kitchenpos.table.ui;
 
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.dto.OrderTableCreateRequest;

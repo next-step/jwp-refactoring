@@ -24,6 +24,7 @@ import java.util.List;
 
 import static kitchenpos.order.OrderGenerator.*;
 import static kitchenpos.table.TableGenerator.*;
+import static kitchenpos.tableGroup.TableGroupGenerator.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TableGroupAcceptanceTest extends AcceptanceTest {

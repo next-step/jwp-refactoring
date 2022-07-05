@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TableGroupCreateRequest {
-    List<Long> orderTables = new ArrayList<>();
+    private List<Long> orderTables = new ArrayList<>();
 
     protected TableGroupCreateRequest() {}
 
