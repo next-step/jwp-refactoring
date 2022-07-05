@@ -1,0 +1,49 @@
+package kitchenpos.menu.domain;
+
+import java.math.BigDecimal;
+import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Embeddable;
+import javax.persistence.OneToMany;
+
+@Embeddable
+public class MenuProducts {
+
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MenuProduct> menuProducts;
+
+    public MenuProducts() {
+    }
+
+    public MenuProducts(List<MenuProduct> menuProducts) {
+        this.menuProducts = menuProducts;
+    }
+
+    public List<MenuProduct> getMenuProducts() {
+        return menuProducts;
+    }
+
+    public void validateTotalPriceNotExpensiveThanEach(MenuPrice menuPrice) {
+        ProductPrice sum = new ProductPrice(BigDecimal.ZERO);
+        for (MenuProduct menuProduct : menuProducts) {
+            checkIsNotNull(menuProduct);
+
+            Product product = menuProduct.getProduct();
+            sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
+        }
+
+        checkPriceNotExpensiveThanSum(menuPrice, sum);
+    }
+
+    private void checkIsNotNull(MenuProduct menuProduct) {
+        if (menuProduct.getProduct() == null) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private void checkPriceNotExpensiveThanSum(MenuPrice menuPrice, ProductPrice sum) {
+        if (menuPrice.compareTo(sum) > 0) {
+            throw new IllegalArgumentException();
+        }
+    }
+}
