@@ -15,7 +15,7 @@ public class OrderTable {
     private int numberOfGuests;
     private boolean empty;
 
-    public OrderTable() {
+    protected OrderTable() {
     }
 
     public OrderTable(TableGroup tableGroup, int numberOfGuests, boolean empty) {
@@ -78,12 +78,12 @@ public class OrderTable {
         this.numberOfGuests = numberOfGuests;
     }
 
-    public void grouping(TableGroup tableGroup) {
+    public void bindTo(TableGroup tableGroup) {
         this.tableGroup = tableGroup;
         this.empty = false;
     }
 
-    public void unGrouping() {
-        tableGroup = null;
+    public void unBind() {
+        this.tableGroup = null;
     }
 }
