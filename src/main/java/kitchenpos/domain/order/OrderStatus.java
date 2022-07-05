@@ -6,7 +6,7 @@ import java.util.List;
 public enum OrderStatus {
     COOKING, MEAL, COMPLETION;
 
-    public static List<String> cnaNotUngroupStatus() {
-        return Arrays.asList(COOKING.name(), MEAL.name());
+    public static List<OrderStatus> cnaNotChangeOrderTableStatuses() {
+        return Arrays.asList(COOKING, MEAL);
     }
 }

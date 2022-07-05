@@ -21,7 +21,7 @@ public class OrderTables {
         this.orderTables = orderTables;
     }
 
-    public List<Long> getOrderTablesId() {
+    public List<Long> getOrderTablesIds() {
         return orderTables.stream()
             .map(OrderTable::getId)
             .collect(Collectors.toList());

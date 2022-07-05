@@ -2,19 +2,31 @@ package kitchenpos.domain.order;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import kitchenpos.domain.table.OrderTable;
 
+@Entity
+@Table(name = "orders")
 public class Order {
 
+    public static final String EMPTY_ORDER_TABLE_ERROR_MESSAGE = "주문 테이블이 비어있는 경우 주문을 생성할 수 없습니다.";
+    public static final String EMPTY_ORDER_LINE_ITEM_ERROR_MESSAGE = "주문 항목이 없는 경우 주문을 생성할 수 없습니다.";
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long orderTableId;
 
     @ManyToOne
     @JoinColumn(
@@ -24,14 +36,13 @@ public class Order {
     )
     private OrderTable orderTable;
 
-    private String orderStatus;
-
     @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatuses;
+    private OrderStatus orderStatus;
 
     private LocalDateTime orderedTime;
 
-    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
+    // TODO 일급 컬렉션
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderLineItem> orderLineItems;
 
     public Order() {
@@ -41,9 +52,10 @@ public class Order {
     public Order(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
         validateOrder(orderTable, orderLineItems);
         this.orderTable = orderTable;
-        this.orderStatuses = OrderStatus.COOKING;
+        this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
         this.orderLineItems = orderLineItems;
+        orderLineItems.forEach(it -> it.setOrder(this));
     }
 
     private void validateOrder(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
@@ -53,13 +65,13 @@ public class Order {
 
     private void validateOrderTableIsEmpty(OrderTable orderTable) {
         if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException("주문 테이블이 비어있는 경우 주문을 생성할 수 없습니다.");
+            throw new IllegalArgumentException(EMPTY_ORDER_TABLE_ERROR_MESSAGE);
         }
     }
 
     private void validateOrderLineItemIsEmpty(List<OrderLineItem> orderLineItems) {
-        if (orderLineItems.isEmpty()) {
-            throw new IllegalArgumentException("주문 항목이 없는 경우 주문을 생성할 수 없습니다.");
+        if (orderLineItems == null || orderLineItems.isEmpty()) {
+            throw new IllegalArgumentException(EMPTY_ORDER_LINE_ITEM_ERROR_MESSAGE);
         }
     }
 
@@ -67,39 +79,27 @@ public class Order {
         return id;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public Long getOrderTableId() {
-        return orderTableId;
-    }
-
-    public void setOrderTableId(final Long orderTableId) {
-        this.orderTableId = orderTableId;
-    }
-
-    public String getOrderStatus() {
-        return orderStatus;
-    }
-
-    public void setOrderStatus(final String orderStatus) {
-        this.orderStatus = orderStatus;
-    }
-
     public LocalDateTime getOrderedTime() {
         return orderedTime;
-    }
-
-    public void setOrderedTime(final LocalDateTime orderedTime) {
-        this.orderedTime = orderedTime;
     }
 
     public List<OrderLineItem> getOrderLineItems() {
         return orderLineItems;
     }
 
+    public OrderTable getOrderTable() {
+        return orderTable;
+    }
+
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
     public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
         this.orderLineItems = orderLineItems;
+    }
+
+    public void changeOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
     }
 }

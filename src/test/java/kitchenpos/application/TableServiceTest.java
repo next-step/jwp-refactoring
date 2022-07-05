@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 import kitchenpos.application.table.TableService;
-import kitchenpos.dao.order.OrderDao;
+import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.domain.table.TableGroup;
@@ -39,7 +39,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class TableServiceTest {
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
     private OrderTableRepository orderTableRepository;
@@ -50,10 +50,7 @@ class TableServiceTest {
     @ParameterizedTest(name = "case[{index}] : {0} => {1}")
     @MethodSource
     @DisplayName("주문 테이블을 생성한다.")
-    public void createOrderTable(
-        final CreateOrderTableRequest 주문_테이블_생성_객체,
-        final String testDescription
-    ) {
+    public void createOrderTable(final CreateOrderTableRequest 주문_테이블_생성_객체, final String testDescription) {
         // Given
         given(orderTableRepository.save(any(OrderTable.class))).will(AdditionalAnswers.returnsFirstArg());
 
@@ -95,7 +92,7 @@ class TableServiceTest {
         // Given
         OrderTable givenOrderTable = 비어있지_않은_주문_테이블_생성();
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(givenOrderTable));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(false);
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(false);
 
         // When
         OrderTable updateEmptyRequest = 비어있지_않은_주문_테이블_생성();
@@ -104,7 +101,7 @@ class TableServiceTest {
 
         // Then
         verify(orderTableRepository).findById(anyLong());
-        verify(orderDao).existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList());
+        verify(orderRepository).existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList());
         assertThat(actualOrderTable.isEmpty()).isEqualTo(updateEmptyRequest.isEmpty());
     }
 
@@ -143,14 +140,14 @@ class TableServiceTest {
         // Given
         OrderTable givenOrderTable = 비어있지_않은_주문_테이블_생성();
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(givenOrderTable));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(true);
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(true);
 
         // When & Then
         assertThatExceptionOfType(IllegalArgumentException.class)
             .isThrownBy(() -> tableService.changeEmpty(anyLong(), givenOrderTable));
 
         verify(orderTableRepository).findById(anyLong());
-        verify(orderDao).existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList());
+        verify(orderRepository).existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList());
     }
 
     @Test

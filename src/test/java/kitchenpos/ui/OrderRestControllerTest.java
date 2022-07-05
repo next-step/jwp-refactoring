@@ -19,6 +19,7 @@ import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.product.Product;
 import kitchenpos.dto.menu.MenuResponse;
+import kitchenpos.dto.order.OrderResponse;
 import kitchenpos.dto.table.OrderTableResponse;
 import kitchenpos.utils.BaseTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -69,7 +70,7 @@ public class OrderRestControllerTest extends BaseTest {
             .andExpect(jsonPath("$.orderTableId").value(비어있지_않은_주문_테이블.getId()))
             .andExpect(jsonPath("$.orderStatus").value(OrderStatus.COOKING.name()))
             .andExpect(jsonPath("$.orderedTime").exists())
-            .andExpect(jsonPath("$.orderLineItems[*]").exists());
+            .andExpect(jsonPath("$.orderLineItemResponses[*]").exists());
     }
 
     @Test
@@ -91,10 +92,10 @@ public class OrderRestControllerTest extends BaseTest {
     @DisplayName("주문 상태를 변경한다.")
     public void updateOrderStatus() throws Exception {
         // Given
-        Order savedOrder = as(mockMvcUtil.post(주문_생성_요청(비어있지_않은_주문_테이블, 커플_냉삼_메뉴, 고기_더블_더블_메뉴)), Order.class);
+        OrderResponse savedOrder = as(mockMvcUtil.post(주문_생성_요청(비어있지_않은_주문_테이블, 커플_냉삼_메뉴, 고기_더블_더블_메뉴)), OrderResponse.class);
 
         Order updateOrderStatusRequest = new Order();
-        updateOrderStatusRequest.setOrderStatus(OrderStatus.MEAL.name());
+        updateOrderStatusRequest.changeOrderStatus(OrderStatus.MEAL);
 
         // When
         ResultActions resultActions = mockMvcUtil.put(주문_상태_변경_요청(updateOrderStatusRequest, savedOrder.getId()));
@@ -105,7 +106,7 @@ public class OrderRestControllerTest extends BaseTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.orderStatus").value(OrderStatus.MEAL.name()));
 
-        Order updatedOrder = as(resultActions, Order.class);
+        OrderResponse updatedOrder = as(resultActions, OrderResponse.class);
         assertThat(updatedOrder)
             .usingRecursiveComparison()
             .as("주문상태, 주문시간을 제외한 나머지 항목이 주문상태 변경 전과 동일한지 여부 검증")

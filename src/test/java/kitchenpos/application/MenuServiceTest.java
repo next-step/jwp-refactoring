@@ -24,7 +24,6 @@ import kitchenpos.domain.menu.MenuRepository;
 import kitchenpos.dto.menu.CreateMenuRequest;
 import kitchenpos.dto.menu.MenuResponse;
 import kitchenpos.utils.generator.ScenarioTestFixtureGenerator;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -161,7 +160,6 @@ class MenuServiceTest extends ScenarioTestFixtureGenerator {
             .findMenuProductByMenuProductRequest(메뉴_구성_상품_가격의_총합이_메뉴의_가격보다_큰_메뉴_생성_요청.getMenuProductRequests());
     }
 
-    @Disabled
     @Test
     @DisplayName("메뉴 목록을 조회한다. : 조회된 메뉴의 수만큼 메뉴 상품을 조회하는 과정에서 `N+1` 문제가 발생한다.")
     public void getAllMenus() {
@@ -180,6 +178,4 @@ class MenuServiceTest extends ScenarioTestFixtureGenerator {
             .collect(Collectors.toList());
         assertThat(조회된_메뉴_목록).extracting(MenuResponse::getName).isEqualTo(givenMenuNames);
     }
-
-
 }

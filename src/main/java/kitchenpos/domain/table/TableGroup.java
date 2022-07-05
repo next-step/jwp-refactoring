@@ -76,8 +76,8 @@ public class TableGroup {
         return orderTables.getOrderTables();
     }
 
-    public List<Long> getOrderTablesId(){
-        return orderTables.getOrderTablesId();
+    public List<Long> getOrderTablesIds(){
+        return orderTables.getOrderTablesIds();
     }
 
     public void deallocateOrderTable() {

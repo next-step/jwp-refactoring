@@ -7,7 +7,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.Arrays;
@@ -16,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 import kitchenpos.application.table.TableGroupService;
-import kitchenpos.dao.order.OrderDao;
+import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.domain.table.TableGroup;
@@ -41,7 +40,7 @@ class TableGroupServiceTest {
     private OrderTableRepository orderTableRepository;
 
     @Mock
-    private OrderDao orderDao;
+    private OrderRepository orderRepository;
 
     @Mock
     private TableGroupRepository tableGroupRepository;
@@ -144,16 +143,13 @@ class TableGroupServiceTest {
         // Given
         TableGroup tableGroup = new TableGroup(orderTables);
         given(tableGroupRepository.findById(any())).willReturn(Optional.of(tableGroup));
-//        given(orderTableRepository.findAllByTableGroupId(any())).willReturn(orderTables);
 
         // When
         tableGroupService.ungroup(tableGroup.getId());
 
         // Then
         verify(tableGroupRepository).findById(any());
-//        verify(orderTableRepository).findAllByTableGroupId(any());
-        verify(orderDao).existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList());
-//        verify(orderTableRepository, times(orderTables.size())).save(any(OrderTable.class));
+        verify(orderRepository).existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList());
     }
 
     @Test
@@ -162,13 +158,13 @@ class TableGroupServiceTest {
         // Given
         TableGroup tableGroup = new TableGroup(orderTables);
         given(tableGroupRepository.findById(any())).willReturn(Optional.of(tableGroup));
-        given(orderDao.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
+        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(true);
 
         // When & Then
         assertThatExceptionOfType(IllegalArgumentException.class)
             .isThrownBy(() -> tableGroupService.ungroup(any()));
 
         verify(tableGroupRepository).findById(any());
-        verify(orderDao).existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList());
+        verify(orderRepository).existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList());
     }
 }
