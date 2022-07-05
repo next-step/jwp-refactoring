@@ -1,10 +1,6 @@
-package kitchenpos.menu;
+package kitchenpos.menu.domain;
 
 import kitchenpos.global.Price;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -12,8 +8,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static kitchenpos.menu.MenuProductTest.상품이_등록된_메뉴_상품_생성;
-import static kitchenpos.menu.MenuProductTest.상품이_등록안된_메뉴_상품_생성;
+import static kitchenpos.menu.domain.MenuProductTest.상품이_등록된_메뉴_상품_생성;
+import static kitchenpos.menu.domain.MenuProductTest.상품이_등록안된_메뉴_상품_생성;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 @DisplayName("MenuProucts Domaian Teste")
