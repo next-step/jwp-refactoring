@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-class TableGroupServiceTest {
+public class TableGroupServiceTest {
     @Mock
     private OrderRepository orderRepository;
     @Mock
@@ -89,21 +89,6 @@ class TableGroupServiceTest {
     }
 
     @Test
-    void 조리_또는_식사_중인_주문_테이블이_있을_경우_단체_지정을_해제할_수_없다() {
-        // given
-        given(tableGroupRepository.findById(1L))
-                .willReturn(Optional.of(new TableGroup(createOrderTables())));
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(createOrderTableIds(), OrderStatus.findNotCompletionStatus()))
-                .willReturn(true);
-
-        // when & then
-        assertThatThrownBy(() ->
-                tableGroupService.ungroup(1L)
-        ).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("조리 또는 식사 중인 테이블은 단체 지정을 해제할 수 없습니다.");
-    }
-
-    @Test
     void 단체_지정을_해제할_수_있다() {
         // given
         List<OrderTable> orderTables = createOrderTables();
@@ -138,7 +123,7 @@ class TableGroupServiceTest {
         return Arrays.asList(orderTable, orderTable1);
     }
 
-    private List<Long> createOrderTableIds() {
+    public static List<Long> createOrderTableIds() {
         return Arrays.asList(1L, 2L);
     }
 }
