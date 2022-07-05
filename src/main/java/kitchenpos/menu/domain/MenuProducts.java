@@ -19,7 +19,7 @@ public class MenuProducts {
         this(new ArrayList<>());
     }
 
-    protected MenuProducts(List<MenuProduct> menuProducts) {
+    public MenuProducts(List<MenuProduct> menuProducts) {
         this.values = copy(menuProducts);
     }
 

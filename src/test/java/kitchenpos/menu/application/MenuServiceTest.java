@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Optional;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.domain.Price;
 import kitchenpos.menu.domain.Product;
 import kitchenpos.menu.dto.MenuProductRequest;
@@ -59,9 +61,16 @@ class MenuServiceTest {
     @Test
     void 메뉴_조회() {
         // given
-        Menu 떡볶이_세트1 = new Menu("떡볶이 세트1", BigDecimal.ZERO, 분식_그룹);
-        Menu 떡볶이_세트2 = new Menu("떡볶이 세트2", BigDecimal.ZERO, 분식_그룹);
-        Menu 떡볶이_세트3 = new Menu("떡볶이 세트3", BigDecimal.ZERO, 분식_그룹);
+        Product 떡볶이 = new Product(1L, "떡볶이", Price.from(1000));
+        Product 순대 = new Product(2L, "순대", Price.from(1500));
+
+        MenuProduct 떡볶이_메뉴_상품 = MenuProduct.of(떡볶이, 1L);
+        MenuProduct 순대_메뉴_상품 = MenuProduct.of(순대, 1L);
+        MenuProducts 떡볶이_순대 = new MenuProducts(Arrays.asList(떡볶이_메뉴_상품, 순대_메뉴_상품));
+
+        Menu 떡볶이_세트1 = new Menu("떡볶이 세트1", BigDecimal.ZERO, 분식_그룹, 떡볶이_순대);
+        Menu 떡볶이_세트2 = new Menu("떡볶이 세트2", BigDecimal.ZERO, 분식_그룹, 떡볶이_순대);
+        Menu 떡볶이_세트3 = new Menu("떡볶이 세트3", BigDecimal.ZERO, 분식_그룹, 떡볶이_순대);
 
         given(menuRepository.findAll()).willReturn(Arrays.asList(떡볶이_세트1, 떡볶이_세트2, 떡볶이_세트3));
 

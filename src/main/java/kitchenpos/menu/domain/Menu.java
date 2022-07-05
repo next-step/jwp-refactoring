@@ -2,6 +2,7 @@ package kitchenpos.menu.domain;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -37,10 +38,6 @@ public class Menu {
     }
 
     protected Menu() {
-    }
-
-    public Menu(String name, BigDecimal price, MenuGroup menuGroup) {
-        this(null, name, price, menuGroup, new MenuProducts());
     }
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
@@ -99,6 +96,30 @@ public class Menu {
 
     public List<MenuProduct> getMenuProducts() {
         return menuProducts.value();
+    }
+
+    @Override
+    public String toString() {
+        return "Menu{" + "id=" + id + ", name='" + name + '\'' + ", price=" + price + ", menuGroup=" + menuGroup
+                + ", menuProducts=" + menuProducts + '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Menu menu = (Menu) o;
+        return Objects.equals(id, menu.id) && Objects.equals(name, menu.name) && Objects.equals(price, menu.price)
+                && Objects.equals(menuGroup, menu.menuGroup) && Objects.equals(menuProducts, menu.menuProducts);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, price, menuGroup, menuProducts);
     }
 
     public static class Builder {

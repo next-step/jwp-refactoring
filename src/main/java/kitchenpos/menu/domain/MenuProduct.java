@@ -1,6 +1,6 @@
 package kitchenpos.menu.domain;
 
-import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import kitchenpos.common.domain.Quantity;
 
 @Entity
 public class MenuProduct {
@@ -19,8 +20,8 @@ public class MenuProduct {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    @Column(nullable = false)
-    private Long quantity;
+    @Embedded
+    private Quantity quantity;
 
     protected MenuProduct() {
     }
@@ -30,26 +31,13 @@ public class MenuProduct {
     }
 
     private MenuProduct(Product product, Long quantity) {
+        this(product, Quantity.from(quantity));
+    }
+
+    private MenuProduct(Product product, Quantity quantity) {
         this.product = product;
         this.quantity = quantity;
-        validate();
-    }
-
-    private void validate() {
         validateNonNullFields();
-        validateQuantity();
-    }
-
-    private void validateNonNullFields() {
-        if (product == null || quantity == null) {
-            throw new IllegalArgumentException("상품, 수량은 메뉴 상품의 필수 사항입니다.");
-        }
-    }
-
-    private void validateQuantity() {
-        if (quantity < 0) {
-            throw new IllegalArgumentException("수량이 0보다 작을 수 없습니다.");
-        }
     }
 
     public static MenuProduct from(MenuProduct menuProduct) {
@@ -60,8 +48,14 @@ public class MenuProduct {
         return new MenuProduct(product, quantity);
     }
 
+    private void validateNonNullFields() {
+        if (product == null || quantity == null) {
+            throw new IllegalArgumentException("상품, 수량은 메뉴 상품의 필수 사항입니다.");
+        }
+    }
+
     public Price amount() {
-        return product.calculateTotal(quantity);
+        return product.calculateTotal(quantity.value());
     }
 
     public Long getSeq() {
@@ -73,6 +67,6 @@ public class MenuProduct {
     }
 
     public Long getQuantity() {
-        return quantity;
+        return quantity.value();
     }
 }

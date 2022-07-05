@@ -61,4 +61,9 @@ public class MenuService {
     public List<MenuResponse> list() {
         return MenuResponse.from(menuRepository.findAll());
     }
+
+    public Menu findMenuById(Long id) {
+        return menuRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(String.format("메뉴(%d)를 찾을 수 없습니다.", id)));
+    }
 }

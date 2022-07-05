@@ -32,17 +32,5 @@ class MenuProductTest {
         void 상품이_NULL() {
             assertThatThrownBy(() -> MenuProduct.of(null, 3L)).isInstanceOf(IllegalArgumentException.class);
         }
-
-        @DisplayName("수량이 NULL이면 생성할 수 없습니다.")
-        @Test
-        void 수량이_NULL() {
-            assertThatThrownBy(() -> MenuProduct.of(후라이드, null)).isInstanceOf(IllegalArgumentException.class);
-        }
-
-        @DisplayName("수량이 0이하이면 생성할 수 없습니다.")
-        @Test
-        void 수량이_0이하L() {
-            assertThatThrownBy(() -> MenuProduct.of(후라이드, -1L)).isInstanceOf(IllegalArgumentException.class);
-        }
     }
 }
