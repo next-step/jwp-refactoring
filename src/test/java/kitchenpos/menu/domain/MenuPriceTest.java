@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import kitchenpos.product.domain.ProductTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +13,7 @@ public class MenuPriceTest {
     @DisplayName("Menu Price 생성")
     void create() {
         // when
-        final MenuPrice price = MenuPrice.of(BigDecimal.valueOf(1000));
+        final MenuPrice price = MenuPrice.of(BigDecimal.valueOf(1_000));
         // then
         assertThat(price).isInstanceOf(MenuPrice.class);
     }
@@ -21,8 +22,9 @@ public class MenuPriceTest {
     @DisplayName("Menu Price 최솟값 오류")
     void createException() {
         // when
-        final MenuPrice price = MenuPrice.of(BigDecimal.valueOf(1000));
+        final MenuPrice price = MenuPrice.of(BigDecimal.valueOf(1_000));
         // then
         assertThat(price).isInstanceOf(MenuPrice.class);
     }
+
 }

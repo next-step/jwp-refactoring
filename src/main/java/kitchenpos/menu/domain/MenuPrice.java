@@ -1,7 +1,7 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.product.exception.ProductException;
-import kitchenpos.product.exception.ProductExceptionType;
+import kitchenpos.menu.exception.MenuException;
+import kitchenpos.menu.exception.MenuExceptionType;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -17,23 +17,18 @@ public class MenuPrice {
     protected MenuPrice(){}
 
     private MenuPrice(final BigDecimal value) {
+        validate(value);
         this.value = value;
     }
 
     private void validate(final BigDecimal value) {
         if (value == null || MIN_PRICE.compareTo(value) >= BigDecimal.ZERO.intValue()) {
-            throw new ProductException(ProductExceptionType.MIN_PRICE);
+            throw new MenuException(MenuExceptionType.MIN_PRICE);
         }
     }
 
     public static MenuPrice of(final BigDecimal value) {
         return new MenuPrice(value);
-    }
-
-    public void compareSumPrice(final BigDecimal sum) {
-        if (value.compareTo(sum) > BigDecimal.ZERO.intValue()) {
-            throw new IllegalArgumentException();
-        }
     }
 
     public BigDecimal getValue() {
