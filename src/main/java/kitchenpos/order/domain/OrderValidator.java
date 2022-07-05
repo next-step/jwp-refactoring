@@ -2,9 +2,16 @@ package kitchenpos.order.domain;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.repository.OrderTableRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class OrderValidator {
@@ -20,25 +27,33 @@ public class OrderValidator {
         this.orderTableRepository = orderTableRepository;
     }
 
-    public void checkOrderLineItems(final Order order) {
-        if (order.isEmptyItem()) {
+    public List<OrderMenu> checkItems(final OrderRequest order) {
+        List<OrderLineItemRequest> orderLineItems = order.getOrderLineItems();
+        checkItemsNotEmpty(orderLineItems);
+        List<Menu> menus = checkMenuExist(orderLineItems);
+        return menus.stream()
+                .map(OrderMenu::new)
+                .collect(toList());
+    }
+
+    private void checkItemsNotEmpty(final List<OrderLineItemRequest> orderLineItems) {
+        if (CollectionUtils.isEmpty(orderLineItems)) {
             throw new IllegalArgumentException(ORDER_ITEM_IS_ESSENTIAL);
         }
-        menuDetails(order);
     }
 
-    private void menuDetails(final Order order) {
-        order.getOrderLineItems().getOrderLineItems()
-                .forEach(this::menuDetail);
+    private List<Menu> checkMenuExist(final List<OrderLineItemRequest> orderLineItems) {
+        List<Long> menuIds = orderLineItems.stream()
+                .map(OrderLineItemRequest::getMenuId)
+                .collect(toList());
+        List<Menu> menus = menuRepository.findAllById(menuIds);
+        if (menus.size() != menuIds.size()) {
+            throw new IllegalArgumentException(MENU_IS_NOT_EXIST);
+        }
+        return menus;
     }
 
-    private void menuDetail(OrderLineItem orderLineItem) {
-        Menu menu = menuRepository.findById(orderLineItem.getMenuId())
-                .orElseThrow(() -> new IllegalArgumentException(MENU_IS_NOT_EXIST));
-        orderLineItem.setOrderMenu(new OrderMenu(menu.getName(), menu.getPrice().getValue()));
-    }
-
-    public void checkOrderTable(final Order order) {
+    public void checkOrderTable(final OrderRequest order) {
         final OrderTable orderTable = orderTableRepository.findById(order.getOrderTableId())
                 .orElseThrow(() -> new IllegalArgumentException(ORDER_TABLE_IS_NOT_EXIST));
 

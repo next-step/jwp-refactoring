@@ -1,18 +1,28 @@
 package kitchenpos.order.application;
 
 import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
+import kitchenpos.order.domain.OrderMenu;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.domain.OrderValidator;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.product.domain.Price;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.List;
+
+import static java.util.Collections.singletonList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @DisplayName("주문 관련")
 @SpringBootTest
@@ -28,16 +38,18 @@ class OrderServiceTest {
     @Test
     void create() {
         // given
-        Order order = new Order(1L);
-        order.addOrderLineItem(new OrderLineItem(1L, 1));
+        OrderRequest given = new OrderRequest(1L);
+        given.setOrderLineItems(singletonList(new OrderLineItemRequest(1L, 1)));
+        List<OrderMenu> orderMenus = singletonList(new OrderMenu(1L, "메뉴", Price.valueOf(10000)));
+        when(orderValidator.checkItems(given)).thenReturn(orderMenus);
+        when(orderRepository.save(any(Order.class))).thenReturn(given.toEntity(orderMenus));
 
         // when
-        orderService.create(order);
+        OrderResponse actual = orderService.create(given);
 
         // then
-        verify(orderValidator).checkOrderLineItems(order);
-        verify(orderValidator).checkOrderTable(order);
-        verify(orderRepository).save(order);
+        verify(orderValidator).checkOrderTable(given);
+        assertThat(actual.getOrderTableId()).isEqualTo(given.getOrderTableId());
     }
 
     @DisplayName("주문의 목록을 조회할 수 있다")

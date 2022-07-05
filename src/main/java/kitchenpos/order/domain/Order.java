@@ -5,11 +5,13 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")
 @EntityListeners(AuditingEntityListener.class)
 public class Order {
+    private static final String ORDER_ITEM_IS_ESSENTIAL = "주문 항목은 필수입니다";
     private static final String ORDER_STATUS_IS_COMPLETION = "계산 완료된 주문은 변경할 수 없습니다";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,14 +28,23 @@ public class Order {
     protected Order() {
     }
 
-    public Order(Long orderTableId) {
+    Order(Long orderTableId) {
         this.orderTableId = orderTableId;
         this.orderStatus = OrderStatus.COOKING;
     }
 
-    public Order(Long orderTableId, OrderStatus orderStatus) {
+    Order(Long orderTableId, OrderStatus orderStatus) {
         this.orderTableId = orderTableId;
         this.orderStatus = orderStatus;
+    }
+
+    public static Order of(Long orderTableId, List<OrderLineItem> orderLineItems) {
+        if (orderLineItems.isEmpty()) {
+            throw new IllegalArgumentException(ORDER_ITEM_IS_ESSENTIAL);
+        }
+        Order order = new Order(orderTableId);
+        orderLineItems.forEach(order::addOrderLineItem);
+        return order;
     }
 
     public Long getId() {
@@ -59,10 +70,6 @@ public class Order {
     public void addOrderLineItem(OrderLineItem orderLineItem) {
         orderLineItems.add(orderLineItem);
         orderLineItem.setOrder(this);
-    }
-
-    public boolean isEmptyItem() {
-        return orderLineItems.isEmpty();
     }
 
     public void changeStatus(OrderStatus orderStatus) {

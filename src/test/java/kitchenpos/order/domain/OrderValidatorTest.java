@@ -2,6 +2,8 @@ package kitchenpos.order.domain;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.repository.MenuRepository;
+import kitchenpos.order.dto.OrderLineItemRequest;
+import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +15,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Optional;
 
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
@@ -45,17 +48,17 @@ class OrderValidatorTest {
 
     void setMenu() {
         menuId = 1L;
-        when(menuRepository.findById(menuId)).thenReturn(Optional.of(menu));
+        when(menuRepository.findAllById(singletonList(menuId))).thenReturn(singletonList(menu));
     }
 
     @DisplayName("주문 항목이 없으면 안된다")
     @Test
     void orderLineItem_is_not_empty() {
         // given
-        Order order = new Order(orderTableId);
+        OrderRequest order = new OrderRequest(orderTableId);
 
         // when then
-        assertThatThrownBy(() -> orderValidator.checkOrderLineItems(order))
+        assertThatThrownBy(() -> orderValidator.checkItems(order))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -63,12 +66,12 @@ class OrderValidatorTest {
     @Test
     void menu_is_exists() {
         // given
-        Order order = new Order(orderTableId);
+        OrderRequest order = new OrderRequest(orderTableId);
         Long notExistsMenuId = 1000L;
-        order.addOrderLineItem(new OrderLineItem(notExistsMenuId, 1));
+        order.setOrderLineItems(singletonList(new OrderLineItemRequest(notExistsMenuId, 1)));
 
         // when then
-        assertThatThrownBy(() -> orderValidator.checkOrderLineItems(order))
+        assertThatThrownBy(() -> orderValidator.checkItems(order))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -76,7 +79,7 @@ class OrderValidatorTest {
     @Test
     void orderTable_is_not_null() {
         // given
-        Order order = new Order(null);
+        OrderRequest order = new OrderRequest(null);
 
         // when then
         assertThatThrownBy(() -> orderValidator.checkOrderTable(order))
@@ -88,7 +91,7 @@ class OrderValidatorTest {
     void orderTable_is_exists() {
         // given
         Long notExistsOrderTableId = 1000L;
-        Order order = new Order(notExistsOrderTableId);
+        OrderRequest order = new OrderRequest(notExistsOrderTableId);
 
         // when then
         assertThatThrownBy(() -> orderValidator.checkOrderTable(order))
@@ -102,7 +105,7 @@ class OrderValidatorTest {
         Long emptyOrderTableId = 1001L;
         OrderTable emptyOrderTable = new OrderTable(0, true);
         when(orderTableRepository.findById(emptyOrderTableId)).thenReturn(Optional.of(emptyOrderTable));
-        Order order = new Order(emptyOrderTableId);
+        OrderRequest order = new OrderRequest(emptyOrderTableId);
 
         // when then
         assertThatThrownBy(() -> orderValidator.checkOrderTable(order))
