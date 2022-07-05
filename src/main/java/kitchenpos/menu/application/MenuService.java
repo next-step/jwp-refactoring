@@ -58,13 +58,13 @@ public class MenuService {
                 .collect(Collectors.toList());
     }
 
-    private void validPriceCheck(BigDecimal price, List<MenuProductRequest> menuProducts) {
+    private void validPriceCheck(BigDecimal price, List<MenuProductRequest> menuProductRequestList) {
         BigDecimal sum = BigDecimal.ZERO;
 
-        for (final MenuProductRequest menuProduct : menuProducts) {
-            final Product product = productRepository.findById(menuProduct.getProductId())
+        for (final MenuProductRequest menuProductRequest : menuProductRequestList) {
+            final Product product = productRepository.findById(menuProductRequest.getProductId())
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
-            sum = sum.add(product.getPrice().multiply(BigDecimal.valueOf(menuProduct.getQuantity())));
+            sum = sum.add(product.multiplyPrice(menuProductRequest.getQuantity()));
         }
 
         if (price.compareTo(sum) > 0) {
