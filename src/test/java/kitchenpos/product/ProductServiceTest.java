@@ -41,10 +41,8 @@ class ProductServiceTest {
 
     void createProduct() {
         후라이드 = new Product("후라이드", BigDecimal.valueOf(15000));
-        //후라이드.setId(1L);
 
         양념치킨 = new Product("양념치킨", BigDecimal.valueOf(15000));
-        //양념치킨.setId(2L);
     }
 
     @Test
