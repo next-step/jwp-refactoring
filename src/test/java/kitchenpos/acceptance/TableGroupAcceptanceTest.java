@@ -4,8 +4,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.OrderTable;
 import kitchenpos.domain.TableGroup;
+import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,21 +19,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class TableGroupAcceptanceTest extends AcceptanceTest {
     private static final String TABLE_GROUP_URL = "/api/table-groups";
     public TableGroup 테이블_그룹;
-    public OrderTable 구번_테이블;
-    public OrderTable 십번_테이블;
+    public OrderTable 구번_테이블 = OrderTable.of(0, true);
+    public OrderTable 십번_테이블 = OrderTable.of(0, true);
 
     @Override
     @BeforeEach
     public void setUp() {
         super.setUp();
-
-        구번_테이블 = new OrderTable();
-        구번_테이블.setEmpty(true);
-        구번_테이블.setNumberOfGuests(0);
-
-        십번_테이블 = new OrderTable();
-        십번_테이블.setEmpty(true);
-        십번_테이블.setNumberOfGuests(0);
     }
 
     /**

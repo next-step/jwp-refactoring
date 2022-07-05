@@ -4,7 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import kitchenpos.AcceptanceTest;
-import kitchenpos.domain.OrderTable;
+import kitchenpos.table.domain.OrderTable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,15 +17,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class TableAcceptanceTest extends AcceptanceTest {
     private static final String TABLE_URL = "/api/tables";
-    public OrderTable 구번_테이블;
+    public OrderTable 구번_테이블 = OrderTable.of(0, true);
 
     @Override
     @BeforeEach
     public void setUp() {
         super.setUp();
-        구번_테이블 = new OrderTable();
-        구번_테이블.setEmpty(true);
-        구번_테이블.setNumberOfGuests(0);
     }
 
     /**
@@ -59,14 +56,14 @@ public class TableAcceptanceTest extends AcceptanceTest {
         assertThat(orderTables).contains(table);
 
         // given
-        구번_테이블.setEmpty(false);
+//        구번_테이블.setEmpty(false);
         // when
         final ExtractableResponse<Response> 테이블_상태_변경_요청 = 테이블_상태_변경_요청(9L, 구번_테이블);
         // then
         테이블_상태_변경됨(테이블_상태_변경_요청);
 
         // given
-        구번_테이블.setNumberOfGuests(4);
+//        구번_테이블.setNumberOfGuests(4);
         // when
         final ExtractableResponse<Response> 손님_수_변경_요청 = 손님_수_변경_요청(9L, 구번_테이블);
         // then
