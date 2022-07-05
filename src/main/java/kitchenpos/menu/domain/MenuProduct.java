@@ -1,5 +1,6 @@
 package kitchenpos.menu.domain;
 
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -49,7 +50,7 @@ public class MenuProduct {
     }
 
     public void relateToMenu(final Menu menu) {
-        if (null != this.menu) {
+        if (Objects.nonNull(this.menu)) {
             throw new IllegalStateException("이미 메뉴와의 연관관계가 설정되어 있습니다.");
         }
         this.menu = menu;

@@ -1,6 +1,7 @@
 package kitchenpos.table.application;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.repository.OrderRepository;
@@ -50,7 +51,7 @@ public class TableService {
     }
 
     private void checkIfPossibleToChangeEmpty(final OrderTable orderTable) {
-        if (orderTable.getTableGroupId() != null) {
+        if (Objects.nonNull(orderTable.getTableGroupId())) {
             throw new IllegalStateException("그룹이 지정된 테이블의 비었는지 여부를 변경할 수 없습니다.");
         }
         if (orderRepository.existsByOrderTableIdAndOrderStatusIn(orderTable.getId(), OrderStatus.notCompletes())) {

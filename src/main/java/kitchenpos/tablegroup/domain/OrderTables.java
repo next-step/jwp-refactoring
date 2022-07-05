@@ -2,6 +2,7 @@ package kitchenpos.tablegroup.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
@@ -45,7 +46,7 @@ public class OrderTables {
         if (!orderTable.isEmpty()) {
             throw new IllegalStateException("빈 테이블이 아니면 그룹을 만들 수 없습니다.");
         }
-        if (null != orderTable.getTableGroupId()) {
+        if (Objects.nonNull(orderTable.getTableGroupId())) {
             throw new IllegalStateException("이미 그룹이 지정된 테이블로 그룹을 만들 수 없습니다.");
         }
     }

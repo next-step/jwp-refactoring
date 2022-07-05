@@ -1,5 +1,6 @@
 package kitchenpos.common.domain;
 
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -17,7 +18,7 @@ public class Price {
     }
 
     private void validatePrice(final Long price) {
-        if (null == price || price < 0) {
+        if (Objects.isNull(price) || price < 0) {
             throw new IllegalArgumentException("가격은 0 이상의 숫자여야 합니다.");
         }
     }

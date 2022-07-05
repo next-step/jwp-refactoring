@@ -2,6 +2,7 @@ package kitchenpos.order.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -71,7 +72,7 @@ public class Order {
     }
 
     private void validateStatusToChange(final OrderStatus targetStatus) {
-        if (null == targetStatus) {
+        if (Objects.isNull(targetStatus)) {
             throw new IllegalArgumentException("변경하려는 상태값이 입력되지 않았습니다.");
         }
         if (OrderStatus.COMPLETION.equals(orderStatus)) {

@@ -1,5 +1,6 @@
 package kitchenpos.order.domain;
 
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -79,7 +80,7 @@ public class OrderLineItem {
     }
 
     public void relateToOrder(final Order order) {
-        if (null != this.order) {
+        if (Objects.nonNull(this.order)) {
             throw new IllegalStateException("이미 주문과의 연관관계가 설정되어 있습니다.");
         }
         this.order = order;
