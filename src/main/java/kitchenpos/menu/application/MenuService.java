@@ -76,7 +76,7 @@ public class MenuService {
         List<MenuProduct> menuProducts = new ArrayList<>();
         for (MenuProductRequest menuProductRequest : menuProductRequestList) {
             Product product = productRepository.findById(menuProductRequest.getProductId())
-                    .orElseThrow(IllegalArgumentException::new);
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
             menuProducts.add(new MenuProduct(product, menuProductRequest.getQuantity()));
         }
         return new MenuProducts(menuProducts);

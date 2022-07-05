@@ -46,7 +46,7 @@ public class TableGroupService {
 
         if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
                 orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("계산 완료 상태가 아닌 경우 단체를 해제할 수 없습니다.");
         }
 
         for (final OrderTable orderTable : orderTables) {
