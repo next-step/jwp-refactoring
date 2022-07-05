@@ -56,11 +56,6 @@ class OrderAcceptanceTest extends BaseAcceptanceTest {
     }
 
     /**
-     * Given empty 가 false 인 주문 테이블을 생성하고
-     *       And 메뉴 그룹을 생성하고
-     *       And 상품을 생성하고
-     *       And 메뉴를 생성하고
-     *       And 주문 항목을 생성한 후
      * When 주문을 생성하면
      * Then 주문 상태가 COOKING 인 주문 데이터가 리턴된다
      */
@@ -79,15 +74,11 @@ class OrderAcceptanceTest extends BaseAcceptanceTest {
     }
 
     /**
-     * Given empty 가 false 인 주문 테이블을 생성하고
-     *       And 메뉴 그룹을 생성하고
-     *       And 상품을 생성하고
-     *       And 메뉴를 생성하고
-     *       And 주문 항목과, 메뉴가 존재하지 않는 주문 항목을 생성한 후
-     * When 주문을 생성하면
+     * Given 존재하지 않는 메뉴ID 를 이용하여 주문 항목을 생성한 후
+     * When 주문 항목을 이용하여 주문을 생성하면
      * Then 주문 항목의 수와 메뉴의 수가 일치하지 않아 에러가 발생한다.
      */
-    @DisplayName("주문 항목 없이 주문 생성")
+    @DisplayName("메뉴 정보가 존재하지 않는 주문 항목을 이용한 주문 생성")
     @Test
     void createOrderWithoutOrderLineItem() {
         // given
@@ -104,15 +95,11 @@ class OrderAcceptanceTest extends BaseAcceptanceTest {
     }
 
     /**
-     * Given 빈 테이블인 주문 테이블을 생성하고
-     *       And 메뉴 그룹을 생성하고
-     *       And 상품을 생성하고
-     *       And 메뉴를 생성하고
-     *       And 주문 항목과, 메뉴가 존재하지 않는 주문 항목을 생성한 후
+     * Given 비어 있는 주문 테이블을 생성하고
      * When 주문을 생성하면
-     * Then 주문 항목의 수와 메뉴의 수가 일치하지 않아 에러가 발생한다.
+     * Then 에러가 발생한다.
      */
-    @DisplayName("빈 주문 테이블을 포함한 주문 생성")
+    @DisplayName("비어 있는 테이블을 포함한 주문 생성")
     @Test
     void createOrderWithEmptyOrderTable() {
         // given
@@ -127,13 +114,8 @@ class OrderAcceptanceTest extends BaseAcceptanceTest {
     }
 
     /**
-     * Given 주문 테이블을 생성하고
-     *       And 메뉴 그룹을 생성하고
-     *       And 상품을 생성하고
-     *       And 메뉴를 생성하고
-     *       And 주문 항목과, 메뉴가 존재하지 않는 주문 항목을 생성한 후
      * When 주문을 생성하면
-     * Then 주문 테이블의 ID 와 주문의 테이블 ID 가 동일하다.
+     * Then 주문 테이블의 ID 와 주문의 테이블 ID 가 동일하게 지정된다.
      */
     @DisplayName("주문 테이블과 주문의 테이블ID 일치")
     @Test
@@ -147,11 +129,6 @@ class OrderAcceptanceTest extends BaseAcceptanceTest {
     }
 
     /**
-     * Given 주문 테이블을 생성하고
-     *       And 메뉴 그룹을 생성하고
-     *       And 상품을 생성하고
-     *       And 메뉴를 생성하고
-     *       And 주문 항목과, 메뉴가 존재하지 않는 주문 항목을 생성한 후
      * When 주문을 생성하면
      * Then 주문 시간이 등록된다.
      */
@@ -167,11 +144,6 @@ class OrderAcceptanceTest extends BaseAcceptanceTest {
     }
 
     /**
-     * Given 주문 테이블을 생성하고
-     *       And 메뉴 그룹을 생성하고
-     *       And 상품을 생성하고
-     *       And 메뉴를 생성하고
-     *       And 주문 항목과, 메뉴가 존재하지 않는 주문 항목을 생성한 후
      * When 주문을 생성하면
      * Then 주문 항목이 조회된다.
      */
