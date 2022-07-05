@@ -3,6 +3,7 @@ package kitchenpos.menu.domain;
 import kitchenpos.product.domain.Price;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Menu {
@@ -23,6 +24,13 @@ public class Menu {
         this.name = name;
         this.price = Price.valueOf(price);
         this.menuGroupId = menuGroupId;
+    }
+
+    public Menu(String name, Price price, Long menuGroupId, List<MenuProduct> menuProducts) {
+        this.name = name;
+        this.price = price;
+        this.menuGroupId = menuGroupId;
+        menuProducts.forEach(this::addMenuProduct);
     }
 
     public void addMenuProduct(MenuProduct menuProduct) {
@@ -48,9 +56,5 @@ public class Menu {
 
     public MenuProducts getMenuProducts() {
         return menuProducts;
-    }
-
-    public boolean moreExpensiveThen(Price price) {
-        return this.price.compareTo(price) > 0;
     }
 }

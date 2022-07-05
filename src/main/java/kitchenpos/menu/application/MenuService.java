@@ -2,11 +2,15 @@ package kitchenpos.menu.application;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuValidator;
+import kitchenpos.menu.dto.MenuRequest;
+import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.repository.MenuRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class MenuService {
@@ -19,14 +23,17 @@ public class MenuService {
     }
 
     @Transactional
-    public Menu create(final Menu menu) {
+    public MenuResponse create(final MenuRequest menu) {
         menuValidator.checkMenuGroup(menu);
         menuValidator.checkPrice(menu);
-        return menuRepository.save(menu);
+        Menu savedMenu = menuRepository.save(menu.toEntity());
+        return new MenuResponse(savedMenu);
     }
 
     @Transactional(readOnly = true)
-    public List<Menu> list() {
-        return menuRepository.findAllWithMenuProduct();
+    public List<MenuResponse> list() {
+        return menuRepository.findAllWithMenuProduct().stream()
+                .map(MenuResponse::new)
+                .collect(toList());
     }
 }

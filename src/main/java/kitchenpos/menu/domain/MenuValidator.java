@@ -1,9 +1,13 @@
 package kitchenpos.menu.domain;
 
-import kitchenpos.product.domain.Price;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu_group.repository.MenuGroupRepository;
+import kitchenpos.product.domain.Price;
 import kitchenpos.product.repository.ProductRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class MenuValidator {
@@ -18,26 +22,26 @@ public class MenuValidator {
         this.productRepository = productRepository;
     }
 
-    public void checkMenuGroup(final Menu menu) {
+    public void checkMenuGroup(final MenuRequest menu) {
         if (!menuGroupRepository.existsById(menu.getMenuGroupId())) {
             throw new IllegalArgumentException(MENU_GROUP_IS_NOT_EXIST);
         }
     }
 
-    public void checkPrice(final Menu menu) {
-        if (menu.moreExpensiveThen(totalMenuProductsPrice(menu))) {
+    public void checkPrice(final MenuRequest menu) {
+        if (Price.valueOf(menu.getPrice()).compareTo(totalMenuProductsPrice(menu.getMenuProducts())) > 0) {
             throw new IllegalArgumentException(MENU_PRICE_IS_TOO_EXPENSIVE);
         }
     }
 
-    private Price totalMenuProductsPrice(final Menu menu) {
-        return menu.getMenuProducts().getMenuProducts().stream()
+    private Price totalMenuProductsPrice(final List<MenuProductRequest> menuProducts) {
+        return menuProducts.stream()
                 .map(this::menuProductPrice)
                 .reduce(Price::add)
                 .orElse(Price.ZERO);
     }
 
-    private Price menuProductPrice(final MenuProduct menuProduct) {
+    private Price menuProductPrice(final MenuProductRequest menuProduct) {
         return productPrice(menuProduct.getProductId())
                 .multiply(Price.valueOf(menuProduct.getQuantity()));
     }

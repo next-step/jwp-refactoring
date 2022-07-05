@@ -1,10 +1,10 @@
 package kitchenpos.menu_group.domain;
 
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuValidator;
-import kitchenpos.product.domain.Product;
+import kitchenpos.menu.dto.MenuProductRequest;
+import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu_group.repository.MenuGroupRepository;
+import kitchenpos.product.domain.Product;
 import kitchenpos.product.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,8 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.Arrays;
 import java.util.Optional;
 
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
@@ -60,7 +62,7 @@ class MenuValidatorTest {
     void checkMenuGroup() {
         // given
         Long notExistsMenuGroupId = 1000L;
-        Menu menu = new Menu("메뉴", 19000, notExistsMenuGroupId);
+        MenuRequest menu = new MenuRequest("메뉴", 19000, notExistsMenuGroupId);
 
         // when then
         assertThatThrownBy(() -> menuValidator.checkMenuGroup(menu))
@@ -72,8 +74,8 @@ class MenuValidatorTest {
     void checkProduct() {
         // given
         Long notExistsProductId = 1000L;
-        Menu menu = new Menu("메뉴", 15000, menuGroupId);
-        menu.addMenuProduct(new MenuProduct(notExistsProductId, 1));
+        MenuRequest menu = new MenuRequest("메뉴", 15000, menuGroupId);
+        menu.setMenuProducts(singletonList(new MenuProductRequest(notExistsProductId, 1)));
 
         // when then
         assertThatThrownBy(() -> menuValidator.checkPrice(menu))
@@ -84,9 +86,11 @@ class MenuValidatorTest {
     @Test
     void checkPrice() {
         // given
-        Menu menu = new Menu("메뉴", 19001, menuGroupId);
-        menu.addMenuProduct(new MenuProduct(productId1, 2)); // 6000 * 2
-        menu.addMenuProduct(new MenuProduct(productId2, 1)); // 7000 * 1
+        MenuRequest menu = new MenuRequest("메뉴", 19001, menuGroupId);
+        menu.setMenuProducts(Arrays.asList(
+                new MenuProductRequest(productId1, 2),
+                new MenuProductRequest(productId2, 1)
+        ));
 
         // when then
         assertThatThrownBy(() -> menuValidator.checkPrice(menu))
