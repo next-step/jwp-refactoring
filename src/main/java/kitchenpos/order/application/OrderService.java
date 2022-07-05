@@ -32,22 +32,10 @@ public class OrderService {
 
     @Transactional
     public OrderResponse create(final OrderRequest request) {
-//        validateRequest(request);
-
         validateOrderTable(request.getOrderTableId());
-
-//        final Order persistOrder = orderRepository.save(new Order(request.getOrderTableId()));
-//        persistOrder.addOrderLineItems(createOrderLineItems(request));
-
         final Order persistOrder = orderRepository.save(createOrder(request));
-
         return OrderResponse.of(persistOrder);
     }
-
-//    private void validateRequest(final OrderRequest request) {
-//        validateOrderTable(request.getOrderTableId());
-//        validateOrderLineItemRequests(request.getOrderLineItems());
-//    }
 
     private void validateOrderTable(final Long orderTableId) {
         final OrderTable orderTable = tableService.getById(orderTableId);
@@ -60,23 +48,6 @@ public class OrderService {
         return new Order(
                 request.getOrderTableId(), createOrderLineItems(request.getOrderLineItems()));
     }
-
-//    private void validateOrderLineItemRequests(final List<OrderLineItemRequest> requests) {
-//        if (requests.isEmpty()) {
-//            throw new IllegalArgumentException("주문에 포함된 메뉴 정보가 없습니다.");
-//        }
-//        requests
-//                .stream()
-//                .forEach(orderLineItemRequest -> {
-//                    validateMenuId(orderLineItemRequest.getMenuId());
-//                });
-//    }
-
-//    private void validateMenuId(final Long id) {
-//        if (menuService.notExistsById(id)) {
-//            throw new IllegalArgumentException(String.format("메뉴가 존재하지 않습니다. id: %d", id));
-//        }
-//    }
 
     private List<OrderLineItem> createOrderLineItems(final List<OrderLineItemRequest> orderLineItemRequests) {
         if (orderLineItemRequests.isEmpty()) {
