@@ -11,6 +11,7 @@ import kitchenpos.table.dto.OrderTableRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 @DisplayName("주문 테이블을 관리한다.")
 public class TableAcceptanceTest extends AcceptanceTest {
@@ -28,7 +29,7 @@ public class TableAcceptanceTest extends AcceptanceTest {
         OrderTableRequest orderTableRequest = new OrderTableRequest(numberOfGuests, empty);
 
         return RestAssured.given().log().all()
-            .contentType(ContentType.JSON)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(orderTableRequest)
             .when().post("/api/tables")
             .then().log().all().extract();

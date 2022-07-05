@@ -5,9 +5,11 @@ import kitchenpos.menu.domain.MenuDao;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.order.domain.OrderDao;
 import kitchenpos.order.domain.OrderLineItemDao;
+import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.product.domain.Product;
 import kitchenpos.table.domain.OrderTableDao;
 import kitchenpos.order.domain.Order;
@@ -63,30 +65,20 @@ public class OrderService {
     }
 
     @Transactional
-    public Order changeOrderStatus(final Long orderId, final Order order) {
-//        final Order savedOrder = orderDao.findById(orderId)
-//                .orElseThrow(IllegalArgumentException::new);
-//
-//        if (Objects.equals(OrderStatus.COMPLETION.name(), savedOrder.getOrderStatus())) {
-//            throw new IllegalArgumentException();
-//        }
-//
-//        final OrderStatus orderStatus = OrderStatus.valueOf(order.getOrderStatus());
-//        savedOrder.setOrderStatus(orderStatus.name());
-//
-//        orderDao.save(savedOrder);
-//
-//        savedOrder.setOrderLineItems(orderLineItemDao.findAllByOrderId(orderId));
-//
-//        return savedOrder;
-        return null;
+    public OrderResponse changeOrderStatus(final Long orderId, final OrderStatusRequest orderStatusRequest) {
+        final Order savedOrder = orderDao.findById(orderId)
+                .orElseThrow(IllegalArgumentException::new);
+
+        savedOrder.updateOrderStatus(orderStatusRequest.getOrderStatus());
+
+        return OrderResponse.from(savedOrder);
     }
 
     private void setOrderLineItems(Order order, OrderRequest orderRequest) {
-        final List<OrderLineItemRequest> orderLineItemRequests = orderRequest.getOrderLineItemRequest();
+        final List<OrderLineItemRequest> orderLineItemRequests = orderRequest.getOrderLineItems();
 
         validateOrderLineItemRequestEmpty(orderLineItemRequests);
-        validateIfThereIsMenu(orderRequest.getMenuIds());
+        validateIfThereIsMenu(orderRequest.tpMenuIds());
 
         List<OrderLineItem> orderLineItems = new ArrayList<>();
         for(OrderLineItemRequest orderLineItemRequest: orderLineItemRequests) {
@@ -94,6 +86,8 @@ public class OrderService {
 
             orderLineItems.add(new OrderLineItem(order, menu, orderLineItemRequest.getQuantity()));
         }
+
+        order.updateOrderLineItems(new OrderLineItems(orderLineItems));
     }
 
     private void validateOrderLineItemRequestEmpty(List<OrderLineItemRequest> orderLineItemRequests) {

@@ -5,6 +5,7 @@ import static kitchenpos.menu.acceptance.MenuAcceptanceTest.메뉴_생성_요청
 import static kitchenpos.menu.acceptance.MenuGroupAcceptanceTest.메뉴_그룹_생성_요청;
 import static kitchenpos.product.acceptance.ProductAcceptanceTest.상품_생성_요청;
 import static kitchenpos.table.acceptance.TableAcceptanceTest.주문_테이블_생성_요청;
+import static kitchenpos.table.acceptance.TableGroupAcceptanceTest.테이블_그룹_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
@@ -17,8 +18,11 @@ import kitchenpos.AcceptanceTest;
 import kitchenpos.menu.dto.MenuGroupResponse;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.product.dto.ProductResponse;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,6 +38,7 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     private MenuGroupResponse 추천_메뉴;
     private MenuResponse 후라이드_세트_메뉴;
     private OrderTableResponse 일번_주문_테이블;
+    private OrderTableResponse 이번_주문_테이블;
 
     @BeforeEach
     void init() {
@@ -44,6 +49,8 @@ public class OrderAcceptanceTest extends AcceptanceTest {
         후라이드_세트_메뉴 = 메뉴_생성_요청("후라이드+후라이드", 19_000L, 추천_메뉴.getId(), Arrays.asList(후라이드_원플원)).as(MenuResponse.class);
 
         일번_주문_테이블 = 주문_테이블_생성_요청(4, true).as(OrderTableResponse.class);
+        이번_주문_테이블 = 주문_테이블_생성_요청(7, true).as(OrderTableResponse.class);
+        테이블_그룹_생성_요청(Arrays.asList(일번_주문_테이블.getId(), 이번_주문_테이블.getId()));
     }
 
     @Test
@@ -64,12 +71,27 @@ public class OrderAcceptanceTest extends AcceptanceTest {
     void findAll() {
         // given
         OrderLineItemRequest 후라이드_아이템 = 주문_아이템_생성(후라이드_세트_메뉴.getId(), 1);
+        주문_생성_요청(일번_주문_테이블.getId(), Arrays.asList(후라이드_아이템));
 
         // when
         ExtractableResponse<Response> response = 주문_목록_조회_요청();
 
         // then
         주문_목록_조회_요청됨(response);
+    }
+
+    @Test
+    @DisplayName("주문의 상태를 변경한다.")
+    void changeOrderStatus() {
+        // given
+        OrderLineItemRequest 후라이드_아이템 = 주문_아이템_생성(후라이드_세트_메뉴.getId(), 1);
+        OrderResponse 주문 = 주문_생성_요청(일번_주문_테이블.getId(), Arrays.asList(후라이드_아이템)).as(OrderResponse.class);
+
+        // when
+        ExtractableResponse<Response> response = 주문_상태_변경_요청(주문.getId(), OrderStatus.MEAL.name());
+
+        // then
+        주문_상태_변경_처리됨(response);
     }
 
     public static ExtractableResponse<Response> 주문_생성_요청(Long orderTableId, List<OrderLineItemRequest> orderLineItemRequestList) {
@@ -88,12 +110,26 @@ public class OrderAcceptanceTest extends AcceptanceTest {
             .then().log().all().extract();
     }
 
+    public static ExtractableResponse<Response> 주문_상태_변경_요청(Long orderId, String orderStatus) {
+        OrderStatusRequest orderStatusRequest = new OrderStatusRequest(orderStatus);
+
+        return RestAssured.given().log().all()
+            .contentType(ContentType.JSON)
+            .body(orderStatusRequest)
+            .when().put("/api/orders/{orderId}/order-status", orderId)
+            .then().log().all().extract();
+    }
+
     public static void 주문_생성됨(ExtractableResponse response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
     }
 
     public static void 주문_목록_조회_요청됨(ExtractableResponse response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 주문_상태_변경_처리됨(ExtractableResponse response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 

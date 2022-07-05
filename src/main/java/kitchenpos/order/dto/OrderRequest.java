@@ -24,11 +24,11 @@ public class OrderRequest {
         return orderTableId;
     }
 
-    public List<OrderLineItemRequest> getOrderLineItemRequest() {
+    public List<OrderLineItemRequest> getOrderLineItems() {
         return orderLineItems;
     }
 
-    public List<Long> getMenuIds() {
+    public List<Long> tpMenuIds() {
         return orderLineItems.stream()
             .map(OrderLineItemRequest::getMenuId)
             .collect(Collectors.toList());

@@ -24,6 +24,7 @@ import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
+import kitchenpos.order.dto.OrderStatusRequest;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableDao;
 import org.junit.jupiter.api.BeforeEach;
@@ -135,50 +136,39 @@ class OrderServiceTest {
     @DisplayName("주문의 상태를 변경한다.")
     void changeOrderStatus() {
         // given
-//        Order 저장된_주문 = 주문_생성(1L, 주문_테이블);
-//        Order 주문_상태가_변경된_주문 = 주문_생성(저장된_주문.getId(), 저장된_주문.getOrderTableId(), OrderStatus.COOKING);
+        OrderLineItems orderLineItems = new OrderLineItems(Arrays.asList(주문_목록_추천_치킨));
+        Order 저장된_주문 = 주문_생성(1L, 주문_테이블, orderLineItems);
+        OrderStatusRequest orderStatusRequest = new OrderStatusRequest(OrderStatus.MEAL.name());
 
-//        저장된_주문.setOrderLineItems(Arrays.asList(주문_목록_추천_치킨));
-//        given(orderDao.save(any(Order.class))).willReturn(저장된_주문);
-//        given(orderDao.findById(저장된_주문.getId())).willReturn(Optional.of(저장된_주문));
-//        given(orderLineItemDao.findAllByOrderId(any(Long.class))).willReturn(Arrays.asList(주문_목록_반반치킨));
+        given(orderDao.findById(저장된_주문.getId())).willReturn(Optional.of(저장된_주문));
 
         // when
-//        Order changedOrder = orderService.changeOrderStatus(저장된_주문.getId(), 주문_상태가_변경된_주문);
+        OrderResponse changedOrder = orderService.changeOrderStatus(저장된_주문.getId(), orderStatusRequest);
 
         // then
-//        assertThat(changedOrder.getOrderStatus()).isEqualTo(주문_상태가_변경된_주문.getOrderStatus());
+        assertThat(changedOrder.getOrderStatus()).isEqualTo(orderStatusRequest.getOrderStatus());
     }
 
     @Test
     @DisplayName("존재하지 않는 주문의 상태를 변경할 경우 - 오류")
     void changeOrderStatusIfNonExistentOrder() {
         // given
-//        Order 없는_주문 = 주문_생성(2L, 주문.getOrderTableId(), OrderStatus.COOKING);
+        OrderLineItems orderLineItems = new OrderLineItems(Arrays.asList(주문_목록_추천_치킨));
+        Order 없는_주문 = 주문_생성(1L, 주문_테이블, OrderStatus.COOKING, orderLineItems);
 
-//        given(orderDao.findById(없는_주문.getId())).willReturn(Optional.empty());
-
-        // when then
-//        assertThatThrownBy(() -> orderService.changeOrderStatus(없는_주문.getId(), 없는_주문))
-//            .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    @DisplayName("저장된 '주문 완료' 상태의 주문을 변경할 경우 - 오류")
-    void changeOrderStatusIfOrderStatusIsCompletion() {
-        // given
-//        Order 주문_완료된_주문 = 주문_생성(주문.getId(), 주문.getOrderTableId(), OrderStatus.COMPLETION);
-//        Order 주문_상태가_변경된_주문 = 주문_생성(주문.getId(), 주문.getOrderTableId(), OrderStatus.COOKING);
-
-//        given(orderDao.findById(주문.getId())).willReturn(Optional.of(주문_완료된_주문));
+        given(orderDao.findById(없는_주문.getId())).willReturn(Optional.empty());
 
         // when then
-//        assertThatThrownBy(() -> orderService.changeOrderStatus(주문.getId(), 주문_상태가_변경된_주문))
-//            .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.changeOrderStatus(없는_주문.getId(), new OrderStatusRequest(OrderStatus.MEAL.name())))
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
     public static Order 주문_생성(Long id, OrderTable orderTable, OrderLineItems orderLineItems) {
         return new Order(id, orderTable, orderLineItems);
+    }
+
+    public static Order 주문_생성(Long id, OrderTable orderTable, OrderStatus orderStatus, OrderLineItems orderLineItems) {
+        return new Order(id, orderTable, orderStatus, orderLineItems);
     }
 
     public static OrderLineItem 주문_목록_생성(Order order, Menu menu, int quantity) {
