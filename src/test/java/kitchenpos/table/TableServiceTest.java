@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.order.application.OrderService;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.dao.OrderTableRepository;
 import kitchenpos.table.domain.OrderTable;
@@ -34,7 +34,7 @@ class TableServiceTest {
     TableService tableService;
 
     @Mock
-    OrderService orderService;
+    OrderValidator orderValidator;
 
     @Mock
     OrderTableRepository orderTableRepository;

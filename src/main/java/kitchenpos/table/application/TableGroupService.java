@@ -2,10 +2,10 @@ package kitchenpos.table.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.order.application.OrderService;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.table.dao.OrderTableRepository;
-import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dao.TableGroupRepository;
+import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.TableGroupRequest;
 import kitchenpos.table.dto.TableGroupResponse;
@@ -14,13 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TableGroupService {
-    private final OrderService orderService;
+    private final OrderValidator orderValidator;
     private final OrderTableRepository orderTableRepository;
     private final TableGroupRepository tableGroupRepository;
 
-    public TableGroupService(final OrderService orderService, final OrderTableRepository orderTableRepository,
+    public TableGroupService(final OrderValidator orderValidator, final OrderTableRepository orderTableRepository,
                              final TableGroupRepository tableGroupRepository) {
-        this.orderService = orderService;
+        this.orderValidator = orderValidator;
         this.orderTableRepository = orderTableRepository;
         this.tableGroupRepository = tableGroupRepository;
     }
@@ -44,7 +44,7 @@ public class TableGroupService {
                 .map(OrderTable::getId)
                 .collect(Collectors.toList());
 
-        orderService.validateOrderStatusCheck(orderTableIds);
+        orderValidator.validateOrderStatusCheck(orderTableIds);
 
         savedTableGroup.ungroupTables();
     }

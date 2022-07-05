@@ -2,7 +2,7 @@ package kitchenpos.table.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.order.application.OrderService;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.table.dao.OrderTableRepository;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequest;
@@ -12,11 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TableService {
-    private final OrderService orderService;
+    private static final String NOT_EXIST_ORDER_TABLE_MESSAGE = "존재하지 않는 주문테이블 입니다.";
+    private final OrderValidator orderValidator;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderService orderService, final OrderTableRepository orderTableRepository) {
-        this.orderService = orderService;
+    public TableService(final OrderValidator orderValidator, final OrderTableRepository orderTableRepository) {
+        this.orderValidator = orderValidator;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -37,9 +38,9 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeEmpty(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable orderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문테이블 입니다."));
+                .orElseThrow(() -> new IllegalArgumentException(NOT_EXIST_ORDER_TABLE_MESSAGE));
 
-        orderService.validateChangeableOrderStatusCheck(orderTableId);
+        orderValidator.validateChangeableOrderStatusCheck(orderTableId);
 
         orderTable.changeEmpty(orderTableRequest.getEmpty());
 
@@ -49,7 +50,7 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTableRequest orderTableRequest) {
         final OrderTable orderTable = orderTableRepository.findById(orderTableId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문테이블 입니다."));
+                .orElseThrow(() -> new IllegalArgumentException(NOT_EXIST_ORDER_TABLE_MESSAGE));
         orderTable.changeNumberOfGuests(orderTableRequest.getNumberOfGuests());
         return OrderTableResponse.of(orderTable);
     }

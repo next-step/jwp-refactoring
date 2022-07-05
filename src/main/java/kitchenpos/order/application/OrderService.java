@@ -1,6 +1,5 @@
 package kitchenpos.order.application;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.menu.application.MenuService;
@@ -10,10 +9,9 @@ import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
-import kitchenpos.table.dao.OrderTableRepository;
-import kitchenpos.table.domain.OrderTable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,26 +20,25 @@ public class OrderService {
     private final MenuService menuService;
     private final OrderRepository orderRepository;
     private final OrderLineItemRepository orderLineItemRepository;
-    private final OrderTableRepository orderTableRepository;
+    private final OrderValidator orderValidator;
 
     public OrderService(
             final MenuService menuService,
             final OrderRepository orderRepository,
             final OrderLineItemRepository orderLineItemRepository,
-            final OrderTableRepository orderTableRepository
+            final OrderValidator orderValidator
     ) {
         this.menuService = menuService;
         this.orderRepository = orderRepository;
         this.orderLineItemRepository = orderLineItemRepository;
-        this.orderTableRepository = orderTableRepository;
+        this.orderValidator = orderValidator;
     }
 
     @Transactional
     public OrderResponse create(final OrderRequest orderRequest) {
-        final OrderTable orderTable = orderTableRepository.findById(orderRequest.getOrderTableId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문테이블 입니다."));
+        orderValidator.validateOrderTableCheck(orderRequest.getOrderTableId());
 
-        final Order savedOrder = orderRepository.save(new Order(orderTable));
+        final Order savedOrder = orderRepository.save(new Order(orderRequest.getOrderTableId()));
 
         validateOrderLineItemsCheck(orderRequest.getOrderLineItems());
 
@@ -69,19 +66,6 @@ public class OrderService {
         return OrderResponse.of(savedOrder);
     }
 
-    public void validateOrderStatusCheck(List<Long> orderTableIds) {
-        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
-                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException("계산 완료 상태가 아닌 경우 단체를 해제할 수 없습니다.");
-        }
-    }
-
-    public void validateChangeableOrderStatusCheck(Long orderTableId) {
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException("주문상태를 변경할 수 없습니다.");
-        }
-    }
 
     private void validateOrderLineItemsCheck(List<OrderLineItem> orderLineItems) {
         final List<Long> menuIds = orderLineItems.stream()

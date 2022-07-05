@@ -6,11 +6,10 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doThrow;
 
 import java.util.Arrays;
 import java.util.Collections;
-import kitchenpos.order.application.OrderService;
+import kitchenpos.order.domain.OrderValidator;
 import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.dao.OrderTableRepository;
 import kitchenpos.table.dao.TableGroupRepository;
@@ -33,7 +32,7 @@ class TableGroupServiceTest {
     TableGroupService tableGroupService;
 
     @Mock
-    OrderService orderService;
+    OrderValidator orderValidator;
 
     @Mock
     OrderTableRepository orderTableRepository;
@@ -118,19 +117,5 @@ class TableGroupServiceTest {
                 () -> assertThat(주문테이블1.getTableGroup()).isNull(),
                 () -> assertThat(주문테이블2.getTableGroup()).isNull()
         );
-    }
-
-    @Test
-    @DisplayName("지정한 단체를 해제시 주문 상태가 계산 완료여야 한다")
-    void ungroup_completionError() {
-        // given
-        given(orderTableRepository.findAllByTableGroupId(any())).willReturn(Arrays.asList(주문테이블1, 주문테이블2));
-        doThrow(new IllegalArgumentException("계산 완료 상태가 아닌 경우 단체를 해제할 수 없습니다."))
-                .when(orderService).validateOrderStatusCheck(any());
-
-        // when & then
-        assertThatIllegalArgumentException().isThrownBy(
-                () -> tableGroupService.ungroup(1L)
-        ).withMessageContaining("계산 완료 상태가 아닌 경우 단체를 해제할 수 없습니다.");
     }
 }
