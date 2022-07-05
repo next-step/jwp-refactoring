@@ -156,4 +156,16 @@ class OrderServiceTest {
                 () -> orderService.changeOrderStatus(1L, OrderStatus.COMPLETION)
         ).withMessageContaining("주문 상태가 계산 완료인 경우 변경할 수 없습니다.");
     }
+
+    @Test
+    @DisplayName("현재 주문 상태가 계산 완료가 아닌 경우 테이블을 빈 상태로 변경 불가능하다")
+    void changeEmpty_orderStatus_completion() {
+        // given
+        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(true);
+
+        // when & then
+        assertThatIllegalArgumentException().isThrownBy(
+                () -> orderService.validateChangeableOrderStatusCheck(1L)
+        );
+    }
 }

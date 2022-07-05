@@ -1,11 +1,9 @@
 package kitchenpos.table.application;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.order.dao.OrderRepository;
+import kitchenpos.order.application.OrderService;
 import kitchenpos.table.dao.OrderTableRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
@@ -14,11 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TableService {
-    private final OrderRepository orderRepository;
+    private final OrderService orderService;
     private final OrderTableRepository orderTableRepository;
 
-    public TableService(final OrderRepository orderRepository, final OrderTableRepository orderTableRepository) {
-        this.orderRepository = orderRepository;
+    public TableService(final OrderService orderService, final OrderTableRepository orderTableRepository) {
+        this.orderService = orderService;
         this.orderTableRepository = orderTableRepository;
     }
 
@@ -41,10 +39,7 @@ public class TableService {
         final OrderTable orderTable = orderTableRepository.findById(orderTableId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문테이블 입니다."));
 
-        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
-                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException("주문상태를 변경할 수 없습니다.");
-        }
+        orderService.validateChangeableOrderStatusCheck(orderTableId);
 
         orderTable.changeEmpty(orderTableRequest.getEmpty());
 

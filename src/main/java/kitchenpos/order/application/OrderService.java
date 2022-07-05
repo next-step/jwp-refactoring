@@ -76,6 +76,13 @@ public class OrderService {
         }
     }
 
+    public void validateChangeableOrderStatusCheck(Long orderTableId) {
+        if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
+                orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+            throw new IllegalArgumentException("주문상태를 변경할 수 없습니다.");
+        }
+    }
+
     private void validateOrderLineItemsCheck(List<OrderLineItem> orderLineItems) {
         final List<Long> menuIds = orderLineItems.stream()
                 .map(OrderLineItem::getMenuId)

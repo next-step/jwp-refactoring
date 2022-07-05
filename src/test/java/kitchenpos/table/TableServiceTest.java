@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.order.dao.OrderRepository;
+import kitchenpos.order.application.OrderService;
 import kitchenpos.table.application.TableService;
 import kitchenpos.table.dao.OrderTableRepository;
 import kitchenpos.table.domain.OrderTable;
@@ -34,7 +34,7 @@ class TableServiceTest {
     TableService tableService;
 
     @Mock
-    OrderRepository orderRepository;
+    OrderService orderService;
 
     @Mock
     OrderTableRepository orderTableRepository;
@@ -84,7 +84,6 @@ class TableServiceTest {
         // given
         OrderTableRequest 변경테이블 = new OrderTableRequest(주문테이블.getNumberOfGuests(), 빈자리);
         given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(주문테이블));
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(), any())).willReturn(false);
 
         // when
         OrderTableResponse actual = tableService.changeEmpty(주문테이블.getId(), 변경테이블);
@@ -119,21 +118,6 @@ class TableServiceTest {
         assertThatIllegalArgumentException().isThrownBy(
                 () -> tableService.changeEmpty(주문테이블.getId(), 변경테이블)
         ).withMessageContaining("단체 테이블인 경우 상태를 변경할 수 없습니다.");
-    }
-
-    @Test
-    @DisplayName("현재 주문 상태가 계산 완료가 아닌 경우 테이블을 빈 상태로 변경 불가능하다")
-    void changeEmpty_orderStatus_completion() {
-        // given
-        OrderTableRequest 변경테이블 = new OrderTableRequest(주문테이블.getNumberOfGuests(), 사용중);
-        given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(주문테이블));
-        given(orderRepository.existsByOrderTableIdAndOrderStatusIn(any(),
-                any())).willReturn(true);
-
-        // when & then
-        assertThatIllegalArgumentException().isThrownBy(
-                () -> tableService.changeEmpty(주문테이블.getId(), 변경테이블)
-        );
     }
 
     @Test
