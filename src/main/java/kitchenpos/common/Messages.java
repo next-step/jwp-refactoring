@@ -1,6 +1,6 @@
 package kitchenpos.common;
 
-public class Messages {
+public final class Messages {
     public static final String PRICE_CANNOT_ZERO_LESS_THAN = "[ERROR] 가격은 0원 이상 입력해야 합니다.";
     public static final String NAME_CANNOT_EMPTY = "[ERROR] 이름은 필수로 입력해야 합니다.";
     public static final String QUANTITY_CANNOT_ZERO_LESS_THAN = "[ERROR] 수량은 0개 이상 입력해야 합니다.";
@@ -23,4 +23,7 @@ public class Messages {
     public static final String ORDER_LINE_ITEM_REQUIRED = "[ERROR] 주문 항목은 필수입니다.";
     public static final String ORDER_LINE_ITEM_IDS_FIND_IN_NO_SUCH = "[ERROR] 주문 항목이 정상적으로 조회되지 않았습니다.";
     public static final String ORDER_STATUS_CHANGE_CANNOT_COMPLETION = "[ERROR] 주문건이 완료된 상태입니다.";
+
+    private Messages() {
+    }
 }
