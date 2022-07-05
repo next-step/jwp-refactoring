@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.factory.fixture.OrderTableFixtureFactory.createOrderTable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -42,7 +41,7 @@ class TableServiceTest {
     @DisplayName("테이블을 생성한다.")
     @Test
     void create() {
-        OrderTable orderTable = createOrderTable(1L, true, null);
+        OrderTable orderTable = new OrderTable(1L, true, null);
         given(orderTableRepository.save(any(OrderTable.class))).willReturn(orderTable);
         OrderTableResponse response = tableService.create(new OrderTableRequest(1, true));
 
@@ -63,7 +62,7 @@ class TableServiceTest {
     void changeEmpty() {
         Long orderTableId = 1L;
         OrderTableRequest request = new OrderTableRequest(1, true);
-        OrderTable orderTable = createOrderTable(1L, false);
+        OrderTable orderTable = new OrderTable(1L, false);
 
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
         given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList()))
@@ -92,7 +91,7 @@ class TableServiceTest {
     void changeEmpty_cooking_meal() {
         Long orderTableId = 1L;
         OrderTableRequest request = new OrderTableRequest(1, true);
-        OrderTable orderTable = createOrderTable(1L, false);
+        OrderTable orderTable = new OrderTable(1L, false);
 
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
         given(orderRepository.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList()))
@@ -108,7 +107,7 @@ class TableServiceTest {
     void changeEmpty_nonNull_tableGroupId() {
         Long orderTableId = 1L;
         OrderTableRequest request = new OrderTableRequest(1, false);
-        OrderTable orderTable = createOrderTable(orderTableId, false, new TableGroup(1L));
+        OrderTable orderTable = new OrderTable(orderTableId, false, new TableGroup(1L));
 
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
 
@@ -121,7 +120,7 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests() {
         Long orderTableId = 1L;
-        OrderTable orderTable = createOrderTable(0);
+        OrderTable orderTable = new OrderTable(0);
 
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
 
@@ -155,7 +154,7 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests_empty_orderTable() {
         Long orderTableId = 1L;
-        OrderTable orderTable = createOrderTable(true, 0);
+        OrderTable orderTable = new OrderTable(true, 0);
 
         given(orderTableRepository.findById(orderTableId)).willReturn(Optional.of(orderTable));
 

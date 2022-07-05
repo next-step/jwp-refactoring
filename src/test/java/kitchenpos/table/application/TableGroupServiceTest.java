@@ -22,7 +22,6 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.factory.fixture.OrderTableFixtureFactory.createOrderTable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -49,8 +48,8 @@ class TableGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        firstOrderTable = createOrderTable(1L, true);
-        secondOrderTable = createOrderTable(2L, true);
+        firstOrderTable = new OrderTable(1L, true);
+        secondOrderTable = new OrderTable(2L, true);
         orderTables = Arrays.asList(firstOrderTable, secondOrderTable);
     }
 
@@ -103,8 +102,8 @@ class TableGroupServiceTest {
     @DisplayName("등록된 주문 테이블이 비어있다면, 테이블 그룹을 생성할 수 없다.")
     @Test
     void create_empty_orderTables() {
-        OrderTable firstOrderTable = createOrderTable(1L, false);
-        OrderTable secondOrderTable = createOrderTable(1L, false);
+        OrderTable firstOrderTable = new OrderTable(1L, false);
+        OrderTable secondOrderTable = new OrderTable(1L, false);
 
         List<OrderTableRequest> orderTableRequest = Arrays.asList(new OrderTableRequest(1, true),
                 new OrderTableRequest(2, true));
@@ -138,8 +137,8 @@ class TableGroupServiceTest {
     @DisplayName("테이블 그룹을 해제할 수 있다.")
     @Test
     void unGroup() {
-        firstOrderTable.setTableGroup(new TableGroup(1L));
-        secondOrderTable.setTableGroup(new TableGroup(1L));
+        firstOrderTable.updateTableGroup(new TableGroup(1L));
+
         given(orderTableRepository.findAllByTableGroupId(1L)).willReturn(orderTables);
         given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(anyList(), anyList())).willReturn(Boolean.FALSE);
 

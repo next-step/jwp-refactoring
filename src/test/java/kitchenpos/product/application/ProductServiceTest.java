@@ -17,7 +17,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import static kitchenpos.factory.fixture.ProductFixtureFactory.createProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -34,7 +33,7 @@ class ProductServiceTest {
     @DisplayName("상품을 생성한다")
     @Test
     void create() {
-        Product product = createProduct(1L, "닭", BigDecimal.valueOf(1000L));
+        Product product = new Product(1L, "닭", BigDecimal.valueOf(1000L));
         given(productRepository.save(any(Product.class))).willReturn(product);
 
         ProductResponse response = productService.create(new ProductRequest("닭", BigDecimal.valueOf(1000L)));
@@ -54,8 +53,8 @@ class ProductServiceTest {
     @DisplayName("상품 목록을 조회할 수 있다.")
     @Test
     void list() {
-        Product firstProduct = createProduct(1L, "닭", BigDecimal.valueOf(1000L));
-        Product secondProduct = createProduct(2L, "콜라", BigDecimal.valueOf(500L));
+        Product firstProduct = new Product(1L, "닭", BigDecimal.valueOf(1000L));
+        Product secondProduct = new Product(2L, "콜라", BigDecimal.valueOf(500L));
         given(productRepository.findAll()).willReturn(Arrays.asList(firstProduct, secondProduct));
 
         List<ProductResponse> response = productService.list();

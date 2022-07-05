@@ -154,7 +154,7 @@ class OrderServiceTest {
     @DisplayName("존재하는 주문의 상태가 COMPLETION이라면, 주문 상태를 변경할 수 없다")
     @Test
     void changeOrderStatus_invalid_orderStatus() {
-        order.setOrderStatus(OrderStatus.COMPLETION);
+        order.changeOrderStatus(OrderStatus.COMPLETION);
         given(orderRepository.findById(ORDER_ID)).willReturn(Optional.of(order));
 
         assertThatThrownBy(() -> orderService.changeOrderStatus(ORDER_ID, new OrderRequest(OrderStatus.COMPLETION)))

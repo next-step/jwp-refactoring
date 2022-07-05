@@ -26,10 +26,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static kitchenpos.factory.fixture.MenuFixtureFactory.createMenu;
-import static kitchenpos.factory.fixture.MenuGroupFixtureFactory.createMenuGroup;
-import static kitchenpos.factory.fixture.MenuProductFixtureFactory.createMenuProduct;
-import static kitchenpos.factory.fixture.ProductFixtureFactory.createProduct;
+//import static kitchenpos.factory.fixture.MenuFixtureFactory.createMenu;
+//import static kitchenpos.factory.fixture.MenuGroupFixtureFactory.createMenuGroup;
+//import static kitchenpos.factory.fixture.MenuProductFixtureFactory.createMenuProduct;
+//import static kitchenpos.factory.fixture.ProductFixtureFactory.createProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -64,12 +64,12 @@ class MenuServiceTest {
         양념_치킨_ID = 1L;
         치킨_그룹_ID = 1L;
 
-        콜라 = createProduct(1L, "밀가루", BigDecimal.valueOf(5000L));
-        닭 = createProduct(2L, "닭", BigDecimal.valueOf(10000L));
-        양념_치킨_콜라 = createMenuProduct(1L, 양념_치킨, 콜라, 3);
-        양념_치킨_닭 = createMenuProduct(2L, 양념_치킨, 닭, 1);
-        치킨_그룹 = createMenuGroup(치킨_그룹_ID, "치킨");
-        양념_치킨 = createMenu(양념_치킨_ID, "양념치킨", BigDecimal.valueOf(20000L), 치킨_그룹.getId(), Arrays.asList(양념_치킨_콜라, 양념_치킨_닭));
+        콜라 = new Product(1L, "밀가루", BigDecimal.valueOf(5000L));
+        닭 = new Product(2L, "닭", BigDecimal.valueOf(10000L));
+        양념_치킨_콜라 = new MenuProduct(1L, 양념_치킨, 콜라, 3);
+        양념_치킨_닭 = new MenuProduct(2L, 양념_치킨, 닭, 1);
+        치킨_그룹 = new MenuGroup(치킨_그룹_ID, "치킨");
+        양념_치킨 = new Menu(양념_치킨_ID, "양념치킨", BigDecimal.valueOf(20000L), 치킨_그룹.getId(), Arrays.asList(양념_치킨_콜라, 양념_치킨_닭));
         menuProductRequest = new MenuProductRequest(양념_치킨_콜라.getProduct().getId(), 양념_치킨_콜라.getQuantity());
         menuRequest = new MenuRequest(양념_치킨.getName(), 양념_치킨.getPrice(), 양념_치킨.getMenuGroupId(), Arrays.asList(menuProductRequest));
     }
@@ -112,8 +112,8 @@ class MenuServiceTest {
     @DisplayName("메뉴 그룹에 등록되지 않았다면 예외를 던진다.")
     @Test
     void createWihInvalidMeuGroupId() {
-        MenuGroup menuGroup = createMenuGroup(1000L, "테스트");
-        Menu menu = createMenu(1000L, null, BigDecimal.valueOf(1000L), menuGroup.getId(), null);
+        MenuGroup menuGroup = new MenuGroup(1000L, "테스트");
+        Menu menu = new Menu(1000L, null, BigDecimal.valueOf(1000L), menuGroup.getId(), null);
 
         menuRequest = new MenuRequest(menu.getName(), menu.getPrice(), menu.getMenuGroupId(), Arrays.asList());
 
@@ -139,8 +139,8 @@ class MenuServiceTest {
     @DisplayName("상품 금액의 합보다 메뉴 금액이 더 크면 예외를 던진다.")
     @Test
     void createWithInvalidSum() {
-        닭.setPrice(BigDecimal.valueOf(10000L));
-        콜라.setPrice(BigDecimal.valueOf(4000L));
+        Product 닭 = new Product(1L, "밀가루", BigDecimal.valueOf(10000L));
+        Product 콜라 = new Product(2L, "닭", BigDecimal.valueOf(4000L));
 
         given(menuGroupRepository.existsById(양념_치킨.getMenuGroupId())).willReturn(true);
         given(productRepository.findById(양념_치킨_콜라.getProduct().getId())).willReturn(Optional.of(콜라));
@@ -152,7 +152,7 @@ class MenuServiceTest {
 
     @Test
     void list() {
-        Menu 양념_치킨 = createMenu(양념_치킨_ID, "양념치킨", BigDecimal.valueOf(20000L), 치킨_그룹.getId(), Arrays.asList(양념_치킨_콜라, 양념_치킨_닭));
+        Menu 양념_치킨 = new Menu(양념_치킨_ID, "양념치킨", BigDecimal.valueOf(20000L), 치킨_그룹.getId(), Arrays.asList(양념_치킨_콜라, 양념_치킨_닭));
         given(menuRepository.findAllWithMenuProducts()).willReturn(Arrays.asList(양념_치킨));
 
         List<MenuResponse> response = menuService.list();
