@@ -33,8 +33,9 @@ public class OrderTable {
         this.empty = empty;
     }
 
-    public void setId(final Long id) {
+    public OrderTable(Long id, boolean empty) {
         this.id = id;
+        this.empty = empty;
     }
 
     public void setTableGroup(TableGroup tableGroup) {

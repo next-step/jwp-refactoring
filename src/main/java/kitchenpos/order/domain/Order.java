@@ -47,7 +47,7 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
-    public void setId(final Long id) {
+    public Order(Long id){
         this.id = id;
     }
 

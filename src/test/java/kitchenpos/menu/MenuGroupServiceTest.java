@@ -24,8 +24,7 @@ class MenuGroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        양식 = new MenuGroup();
-        양식.setName("양식");
+        양식 = new MenuGroup("양식");
     }
 
     @AfterEach
@@ -43,8 +42,7 @@ class MenuGroupServiceTest {
     @Test
     @DisplayName("전체 조회")
     public void list(){
-        MenuGroup 분식 = new MenuGroup();
-        분식.setName("분식");
+        MenuGroup 분식 = new MenuGroup("분식");
         menuGroupService.create(양식);
         menuGroupService.create(분식);
 

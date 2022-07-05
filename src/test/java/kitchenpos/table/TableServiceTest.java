@@ -112,10 +112,7 @@ class TableServiceTest {
     @DisplayName("테이블 empty 상태 변경 정상 처리")
     public void changEmptySuccess() {
         orderTable.setEmpty(true);
-
-        OrderTable changeOrderTable = new OrderTable();
-        changeOrderTable.setId(1L);
-        changeOrderTable.setEmpty(false);
+        OrderTable changeOrderTable = new OrderTable(1L, false);
 
         orderTableRepository.save(orderTable);
 

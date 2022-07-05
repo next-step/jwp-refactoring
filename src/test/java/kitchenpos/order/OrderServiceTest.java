@@ -60,8 +60,7 @@ class OrderServiceTest {
     @BeforeEach
     void setUp() {
         orderLineItems = new ArrayList<>();
-        order = new Order();
-        order.setId(1L);
+        order = new Order(1L);
     }
 
     @AfterEach
@@ -79,26 +78,26 @@ class OrderServiceTest {
     public void emptyOrderLinesCreate() {
         order.setOrderLineItems(orderLineItems);
 
-        assertThatThrownBy(() -> orderService.create(OrderRequest.of(order))).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(OrderRequest.of(order))).isInstanceOf(
+                IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("존재하지 않는 테이블에서 주문 시 에러 반환")
-    public void orderTableNotExists()
-    {
+    public void orderTableNotExists() {
         order.setOrderTable(new OrderTable());
-        assertThatThrownBy(() -> orderService.create(OrderRequest.of(order))).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(OrderRequest.of(order))).isInstanceOf(
+                IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("빈 테이블에서 주문 시 에러 반환")
     public void orderEmptyTable() {
-        OrderTable orderTable = new OrderTable();
-        orderTable.setId(1L);
-        orderTable.setEmpty(true);
+        OrderTable orderTable = new OrderTable(1L, true);
 
         order.setOrderTable(orderTable);
-        assertThatThrownBy(() -> orderService.create(OrderRequest.of(order))).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> orderService.create(OrderRequest.of(order))).isInstanceOf(
+                IllegalArgumentException.class);
     }
 
     @Test
@@ -118,7 +117,7 @@ class OrderServiceTest {
     @Test
     @Transactional
     @DisplayName("전체 주문 내역 조회시 주문 항목 확인 가능")
-    public void listOrdersShowOrderLineItems(){
+    public void listOrdersShowOrderLineItems() {
         Order savedOrder = 주문_생성_저장();
         OrderLineItem orderLineItem = savedOrder.getOrderLineItems().getOrderLineItems().get(0);
 
@@ -176,9 +175,7 @@ class OrderServiceTest {
         MenuGroup 패스트푸드류 = menuGroupRepository.save(new MenuGroup("패스트푸드"));
         Product 스낵랩 = productRepository.save(new Product("스낵랩", BigDecimal.valueOf(3000)));
 
-        MenuProduct 스낵랩_메뉴_상품 = new MenuProduct();
-        스낵랩_메뉴_상품.setQuantity(1);
-        스낵랩_메뉴_상품.setProduct(스낵랩);
+        MenuProduct 스낵랩_메뉴_상품 = new MenuProduct(스낵랩, 1);
 
         Menu 스낵랩_상품 = menuRepository.save(new Menu("스낵랩 상품", BigDecimal.valueOf(3000), 패스트푸드류,
                 new MenuProducts(Arrays.asList(스낵랩_메뉴_상품))));

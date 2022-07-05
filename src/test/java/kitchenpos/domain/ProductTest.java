@@ -22,9 +22,4 @@ public class ProductTest {
         assertThatThrownBy(() -> new Product("상품명", null)).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @Test
-    @DisplayName("상품 등록 시 가격 0미만 예외처리")
-    public void saveProductPriceZero() {
-        assertThatThrownBy(() -> 스낵랩.setPrice(BigDecimal.valueOf(-1))).isInstanceOf(IllegalArgumentException.class);
-    }
 }

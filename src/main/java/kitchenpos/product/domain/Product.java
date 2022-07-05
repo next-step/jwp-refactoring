@@ -32,16 +32,4 @@ public class Product {
         this.price = new Price(price);
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
-    }
-
-    public void setPrice(final BigDecimal price) {
-        this.price = new Price(price);
-    }
-
 }

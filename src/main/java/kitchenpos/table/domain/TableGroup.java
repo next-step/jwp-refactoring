@@ -25,10 +25,6 @@ public class TableGroup {
     @Embedded
     private OrderTables orderTables;
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
     public void setCreatedDate(final LocalDateTime createdDate) {
         this.createdDate = createdDate;
     }

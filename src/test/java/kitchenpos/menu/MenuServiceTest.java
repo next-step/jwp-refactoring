@@ -48,24 +48,13 @@ class MenuServiceTest {
 
     @BeforeEach
     void setUp() {
-        스낵랩 = new Product();
-        스낵랩.setName("스낵랩");
-        스낵랩.setPrice(BigDecimal.valueOf(3000));
+        스낵랩 = new Product("스낵랩", BigDecimal.valueOf(3000));
+        스낵랩_메뉴_상품 = new MenuProduct(스낵랩, 1);
 
-        스낵랩_메뉴_상품 = new MenuProduct();
-        스낵랩_메뉴_상품.setQuantity(1);
-        스낵랩_메뉴_상품.setProduct(스낵랩);
+        맥모닝 = new Product("맥모닝",BigDecimal.valueOf(4000));
+        맥모닝_메뉴_상품 = new MenuProduct(맥모닝, 1);
 
-        맥모닝 = new Product();
-        맥모닝.setName("맥모닝");
-        맥모닝.setPrice(BigDecimal.valueOf(4000));
-
-        맥모닝_메뉴_상품 = new MenuProduct();
-        맥모닝_메뉴_상품.setQuantity(1);
-        맥모닝_메뉴_상품.setProduct(맥모닝);
-
-        패스트푸드류 = new MenuGroup();
-        패스트푸드류.setName("패스트푸드");
+        패스트푸드류 = new MenuGroup("패스트푸드");
         menuGroupRepository.save(패스트푸드류);
     }
 
@@ -80,11 +69,7 @@ class MenuServiceTest {
     @Test
     @DisplayName("미존재하는 메뉴 그룹으로 메뉴 등록 시 에러 반환")
     public void createNonExistsMenuGroup() {
-        Menu menu = new Menu();
-        menu.setMenuGroup(new MenuGroup());
-        menu.setPrice(new Price(BigDecimal.valueOf(18000)));
-        menu.setName("탕수육 세트");
-
+        Menu menu = new Menu("탕수육 세트", new Price(BigDecimal.valueOf(18000)), new MenuGroup());
 
         assertThatThrownBy(() -> menuService.create(MenuRequest.of(menu))).isInstanceOf(IllegalArgumentException.class);
     }
@@ -92,15 +77,10 @@ class MenuServiceTest {
     @Test
     @DisplayName("미존재하는 상품으로 메뉴 구성시 에러 반황")
     public void createNonExistsProduct() {
-        MenuProduct menuProduct = new MenuProduct();
-        menuProduct.setProduct(null);
-        menuProduct.setQuantity(2);
-
-        Menu menu = new Menu();
+        MenuProduct menuProduct = new MenuProduct(null, 2);
         List<MenuProduct> menuProducts = new ArrayList<>();
         menuProducts.add(menuProduct);
-        menu.setMenuProducts(new MenuProducts(menuProducts));
-        menu.setPrice(new Price(BigDecimal.valueOf(18000)));
+        Menu menu = new Menu(new Price(BigDecimal.valueOf(18000)), new MenuProducts(menuProducts));
 
         assertThatThrownBy(() -> menuService.create(MenuRequest.of(menu))).isInstanceOf(IllegalArgumentException.class);
     }
@@ -128,9 +108,7 @@ class MenuServiceTest {
         스낵랩_메뉴_상품.setProduct(productRepository.save(스낵랩));
         맥모닝_메뉴_상품.setProduct(productRepository.save(맥모닝));
 
-        MenuProduct 모닝_스낵랩 = new MenuProduct();
-        모닝_스낵랩.setQuantity(1);
-        모닝_스낵랩.setProduct(스낵랩);
+        MenuProduct 모닝_스낵랩 = new MenuProduct(스낵랩, 1);
 
         Menu 스낵랩_세트 = new Menu("스낵랩 상품", BigDecimal.valueOf(3000), 패스트푸드류,
                 new MenuProducts(Arrays.asList(스낵랩_메뉴_상품)));

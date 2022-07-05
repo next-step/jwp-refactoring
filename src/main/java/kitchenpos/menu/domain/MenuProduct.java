@@ -31,19 +31,13 @@ public class MenuProduct {
     @ManyToOne(fetch = FetchType.LAZY)
     private Menu menu;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setMenu(Menu menu) {
-        this.menu = menu;
+    public MenuProduct(Product product, long quantity) {
+        this.product = product;
+        this.quantity = quantity;
     }
 
     public void setProduct(Product product) {
         this.product = product;
     }
 
-    public void setQuantity(final long quantity) {
-        this.quantity = quantity;
-    }
 }

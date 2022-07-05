@@ -16,11 +16,11 @@ public class MenuTest {
         assertThatThrownBy(() -> new Menu("메뉴명",null, null, null)).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @Test
-    @DisplayName("메뉴 생성 시도 시 메뉴 가격이 음수 일 경우 에러 반환")
-    public void createPriceUnderZeroException() {
-        Menu menu = new Menu();
-
-        assertThatThrownBy(() -> menu.setPrice(new Price(BigDecimal.valueOf(-1)))).isInstanceOf(IllegalArgumentException.class);
-    }
+//    @Test
+//    @DisplayName("메뉴 생성 시도 시 메뉴 가격이 음수 일 경우 에러 반환")
+//    public void createPriceUnderZeroException() {
+//        Menu menu = new Menu();
+//
+//        assertThatThrownBy(() -> menu.setPrice(new Price(BigDecimal.valueOf(-1)))).isInstanceOf(IllegalArgumentException.class);
+//    }
 }

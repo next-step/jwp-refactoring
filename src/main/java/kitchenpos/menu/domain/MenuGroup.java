@@ -22,12 +22,4 @@ public class MenuGroup {
     public MenuGroup(String name) {
         this.name = name;
     }
-
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
-    }
 }

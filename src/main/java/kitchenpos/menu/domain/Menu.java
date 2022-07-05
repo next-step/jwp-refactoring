@@ -41,23 +41,14 @@ public class Menu {
         this.menuProducts = menuProducts;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public void setName(final String name) {
+    public Menu(String name, Price price, MenuGroup menuGroup) {
         this.name = name;
-    }
-
-    public void setPrice(Price price) {
         this.price = price;
-    }
-
-    public void setMenuGroup(MenuGroup menuGroup) {
         this.menuGroup = menuGroup;
     }
 
-    public void setMenuProducts(MenuProducts menuProducts) {
+    public Menu(Price price, MenuProducts menuProducts) {
+        this.price = price;
         this.menuProducts = menuProducts;
     }
 

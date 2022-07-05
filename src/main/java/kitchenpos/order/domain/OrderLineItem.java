@@ -44,16 +44,8 @@ public class OrderLineItem {
         return order;
     }
 
-    public void setOrder(Order order) {
-        this.order = order;
-    }
-
     public Menu getMenu() {
         return menu;
-    }
-
-    public void setMenu(Menu menu) {
-        this.menu = menu;
     }
 
     public long getQuantity() {
