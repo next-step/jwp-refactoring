@@ -29,10 +29,10 @@ class OrderLineItemTest {
     @BeforeEach
     void setUp() {
         피자 = Product.of(Name.of("피자"), Price.of(BigDecimal.valueOf(17_000)));
-        피자_2판 = MenuProduct.of(피자, Quantity.of(2));
+        피자_2판 = MenuProduct.of(피자.getId(), Quantity.of(2));
         피자_구성품 = MenuProducts.of(Arrays.asList(피자_2판));
         피자_2판_메뉴_그룹 = MenuGroup.of(Name.of("피자_2판_메뉴_그룹"));
-        피자_두판_세트_메뉴 = Menu.of(Name.of("피자_두판_세트_메뉴"), Price.of(BigDecimal.valueOf(30_000)), 피자_2판_메뉴_그룹, 피자_구성품);
+        피자_두판_세트_메뉴 = Menu.of(Name.of("피자_두판_세트_메뉴"), Price.of(BigDecimal.valueOf(30_000)), 피자_2판_메뉴_그룹.getId(), 피자_구성품);
     }
 
     @Test
@@ -42,12 +42,12 @@ class OrderLineItemTest {
         Quantity 수량 = Quantity.of(1);
 
         // when
-        OrderLineItem 주문_항목 = OrderLineItem.of(피자_두판_세트_메뉴, 수량);
+        OrderLineItem 주문_항목 = OrderLineItem.of(피자_두판_세트_메뉴.getId(), 수량);
 
         // then
         assertAll(
                 () -> assertThat(주문_항목).isNotNull(),
-                () -> assertThat(주문_항목.getMenu()).isEqualTo(피자_두판_세트_메뉴),
+                () -> assertThat(주문_항목.getMenuId()).isEqualTo(피자_두판_세트_메뉴.getId()),
                 () -> assertThat(주문_항목.getQuantity()).isEqualTo(수량.getQuantity())
         );
     }
