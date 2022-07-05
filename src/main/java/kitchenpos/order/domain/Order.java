@@ -37,10 +37,6 @@ public class Order {
     public Order() {
     }
 
-    public Order(final Long orderTableId) {
-        this.orderTableId = orderTableId;
-    }
-
     public Order(final OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
@@ -60,16 +56,6 @@ public class Order {
     public Order(final Long id,
                  final Long orderTableId,
                  final OrderStatus orderStatus,
-                 final LocalDateTime orderedTime) {
-        this.id = id;
-        this.orderTableId = orderTableId;
-        this.orderStatus = orderStatus;
-        this.orderedTime = orderedTime;
-    }
-
-    public Order(final Long id,
-                 final Long orderTableId,
-                 final OrderStatus orderStatus,
                  final LocalDateTime orderedTime,
                  final OrderLineItems orderLineItems) {
         this.id = id;
@@ -77,10 +63,6 @@ public class Order {
         this.orderStatus = orderStatus;
         this.orderedTime = orderedTime;
         this.orderLineItems = orderLineItems;
-    }
-
-    public void addOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems.makeRelations(this, orderLineItems);
     }
 
     public void changeOrderStatus(final OrderStatus targetStatus) {
