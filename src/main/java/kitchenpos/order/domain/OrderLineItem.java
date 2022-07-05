@@ -8,10 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import kitchenpos.menu.domain.Menu;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.NoArgsConstructor;
 
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity

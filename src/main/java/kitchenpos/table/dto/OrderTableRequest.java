@@ -26,11 +26,13 @@ public class OrderTableRequest {
             tableGroupId = tableGroup.getId();
         }
 
-        return OrderTableRequest.builder()
-                .id(orderTable.getId())
-                .tableGroupId(tableGroupId)
-                .numberOfGuests(orderTable.getNumberOfGuests())
-                .empty(orderTable.isEmpty())
-                .build();
+//        return OrderTableRequest.builder()
+//                .id(orderTable.getId())
+//                .tableGroupId(tableGroupId)
+//                .numberOfGuests(orderTable.getNumberOfGuests())
+//                .empty(orderTable.isEmpty())
+//                .build();
+        return new OrderTableRequest(orderTable.getId(), tableGroupId, orderTable.getNumberOfGuests(),
+                orderTable.isEmpty());
     }
 }

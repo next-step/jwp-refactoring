@@ -7,7 +7,7 @@ import kitchenpos.table.domain.TableGroup;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
-@Builder
+//@Builder
 @AllArgsConstructor
 public class TableGroupRequest {
     private Long id;
@@ -33,10 +33,11 @@ public class TableGroupRequest {
                 .map(OrderTableRequest::of)
                 .collect(Collectors.toList());
 
-        return TableGroupRequest.builder()
-                .id(tableGroup.getId())
-                .createdDate(tableGroup.getCreatedDate())
-                .orderTables(orderTableRequests)
-                .build();
+//        return TableGroupRequest.builder()
+//                .id(tableGroup.getId())
+//                .createdDate(tableGroup.getCreatedDate())
+//                .orderTables(orderTableRequests)
+//                .build();
+        return new TableGroupRequest(tableGroup.getId(), tableGroup.getCreatedDate(), orderTableRequests);
     }
 }

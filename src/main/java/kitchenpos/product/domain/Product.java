@@ -19,17 +19,17 @@ public class Product {
     private String name;
 
     @Embedded
-    private Price price = new Price();
+    private ProductPrice price = new ProductPrice();
 
     public Product(String name, BigDecimal price) {
         this.name = name;
-        this.price = new Price(price);
+        this.price = new ProductPrice(price);
     }
 
     public Product(Long id, String name, BigDecimal price) {
         this.id = id;
         this.name = name;
-        this.price = new Price(price);
+        this.price = new ProductPrice(price);
     }
 
 }

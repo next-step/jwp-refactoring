@@ -11,7 +11,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Builder
+//@Builder
 @AllArgsConstructor
 @Getter
 @NoArgsConstructor

@@ -8,15 +8,15 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode
 @Embeddable
-public class Price {
+public class ProductPrice {
 
     @Column
     private BigDecimal price = BigDecimal.ZERO;
 
-    public Price() {
+    public ProductPrice() {
     }
 
-    public Price(BigDecimal price) {
+    public ProductPrice(BigDecimal price) {
         validatePrice(price);
         this.price = price;
     }
@@ -31,16 +31,16 @@ public class Price {
         }
     }
 
-    public Price multiply(BigDecimal value){
+    public ProductPrice multiply(BigDecimal value){
         price = price.multiply(value);
         return this;
     }
 
-    public void add(Price value){
+    public void add(ProductPrice value){
         price = price.add(value.getPrice());
     }
 
-    public int compareTo(Price value){
+    public int compareTo(ProductPrice value){
         return price.compareTo(value.getPrice());
     }
 

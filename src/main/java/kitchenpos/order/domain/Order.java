@@ -16,14 +16,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import kitchenpos.table.domain.OrderTable;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Builder
 @Entity
 @Table(name = "orders")
 public class Order {

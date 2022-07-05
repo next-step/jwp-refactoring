@@ -10,9 +10,9 @@ import java.util.List;
 import kitchenpos.menu.application.MenuService;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuPrice;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.product.domain.Price;
 import kitchenpos.product.domain.Product;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.repository.MenuGroupRepository;
@@ -69,7 +69,7 @@ class MenuServiceTest {
     @Test
     @DisplayName("미존재하는 메뉴 그룹으로 메뉴 등록 시 에러 반환")
     public void createNonExistsMenuGroup() {
-        Menu menu = new Menu("탕수육 세트", new Price(BigDecimal.valueOf(18000)), new MenuGroup());
+        Menu menu = new Menu("탕수육 세트", new MenuPrice(BigDecimal.valueOf(18000)), new MenuGroup());
 
         assertThatThrownBy(() -> menuService.create(MenuRequest.of(menu))).isInstanceOf(IllegalArgumentException.class);
     }
@@ -80,7 +80,7 @@ class MenuServiceTest {
         MenuProduct menuProduct = new MenuProduct(null, 2);
         List<MenuProduct> menuProducts = new ArrayList<>();
         menuProducts.add(menuProduct);
-        Menu menu = new Menu(new Price(BigDecimal.valueOf(18000)), new MenuProducts(menuProducts));
+        Menu menu = new Menu(new MenuPrice(BigDecimal.valueOf(18000)), new MenuProducts(menuProducts));
 
         assertThatThrownBy(() -> menuService.create(MenuRequest.of(menu))).isInstanceOf(IllegalArgumentException.class);
     }

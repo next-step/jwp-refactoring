@@ -2,8 +2,8 @@ package kitchenpos.menu.application;
 
 import java.util.List;
 import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuPrice;
 import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.product.domain.Price;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.repository.MenuRepository;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ public class MenuService {
     @Transactional
     public Menu create(final MenuRequest menuRequest) {
         Menu menu = menuCreator.toMenu(menuRequest);
-        final Price price = menu.getPrice();
+        final MenuPrice price = menu.getPrice();
 
         menu.validateMenuGroup();
 

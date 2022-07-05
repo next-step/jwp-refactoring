@@ -11,7 +11,7 @@ class PriceTest {
     @Test
     @DisplayName("가격이 음수 일 경우 에러 반환")
     public void createPriceUnderZeroException() {
-        assertThatThrownBy(() -> new Price(BigDecimal.valueOf(-1))).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new ProductPrice(BigDecimal.valueOf(-1))).isInstanceOf(IllegalArgumentException.class);
     }
 
 }

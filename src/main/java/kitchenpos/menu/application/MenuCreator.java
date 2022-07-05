@@ -3,12 +3,13 @@ package kitchenpos.menu.application;
 import java.util.List;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuPrice;
 import kitchenpos.menu.domain.MenuProduct;
 import kitchenpos.menu.domain.MenuProducts;
-import kitchenpos.product.domain.Price;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.repository.MenuGroupRepository;
 import kitchenpos.menu.repository.MenuProductRepository;
+import kitchenpos.menu.repository.MenuRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +28,7 @@ public class MenuCreator {
 
     private MenuGroup setMenuGroup(MenuRequest menuRequest) {
         MenuGroup menuGroup = null;
-        if(menuRequest.getMenuGroupId() != null){
+        if (menuRequest.getMenuGroupId() != null) {
             menuGroup = menuGroupRepository.findById(menuRequest.getMenuGroupId()).orElse(null);
         }
         return menuGroup;
@@ -38,12 +39,8 @@ public class MenuCreator {
 
         List<MenuProduct> menuProducts = menuProductRepository.findAllByMenuId(menuRequest.getId());
 
-        return Menu.builder().id(menuRequest.getId())
-                .name(menuRequest.getName())
-                .price(new Price(menuRequest.getPrice()))
-                .menuGroup(menuGroup)
-                .menuProducts(new MenuProducts(menuProducts))
-                .build();
+        return new Menu(menuRequest.getId(), menuRequest.getName(), new MenuPrice(menuRequest.getPrice()), menuGroup,
+                new MenuProducts(menuProducts));
     }
 
 }

@@ -8,9 +8,7 @@ import kitchenpos.order.domain.OrderLineItems;
 import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.OrderTable;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 
-@Builder
 @AllArgsConstructor
 public class OrderRequest {
     private Long id;
@@ -47,6 +45,7 @@ public class OrderRequest {
         }
         return orderTableId;
     }
+
     private static String setOrderStatusNameFromOrder(Order order) {
         String orderStatusName = null;
         OrderStatus orderStatus = order.getOrderStatus();
@@ -68,17 +67,12 @@ public class OrderRequest {
         return orderLineItemRequests;
     }
 
-    public static OrderRequest of(Order order){
+    public static OrderRequest of(Order order) {
         Long orderTableId = setOrderTableIdFromOrder(order);
         String orderStatusName = setOrderStatusNameFromOrder(order);
         List<OrderLineItemRequest> orderLineItemRequests = setOrderLineItemsRequestsFromOrder(order);
 
-        return OrderRequest.builder()
-                .id(order.getId())
-                .orderTableId(orderTableId)
-                .orderStatus(orderStatusName)
-                .orderedTime(order.getOrderedTime())
-                .orderLineItems(orderLineItemRequests)
-                .build();
+        return new OrderRequest(order.getId(), orderTableId, orderStatusName, order.getOrderedTime(),
+                orderLineItemRequests);
     }
 }

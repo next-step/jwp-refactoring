@@ -28,11 +28,12 @@ public class OrderTableCreator {
     public OrderTable toOrderTable(OrderTableRequest orderTableRequest) {
         TableGroup tableGroup = getTableGroupById(orderTableRequest);
 
-        return OrderTable.builder()
-                .id(orderTableRequest.getId())
-                .tableGroup(tableGroup)
-                .numberOfGuests(orderTableRequest.getNumberOfGuests())
-                .empty(orderTableRequest.isEmpty())
-                .build();
+//        return OrderTable.builder()
+//                .id(orderTableRequest.getId())
+//                .tableGroup(tableGroup)
+//                .numberOfGuests(orderTableRequest.getNumberOfGuests())
+//                .empty(orderTableRequest.isEmpty())
+//                .build();
+        return new OrderTable(orderTableRequest.getId(), tableGroup, orderTableRequest.getNumberOfGuests(), orderTableRequest.isEmpty());
     }
 }

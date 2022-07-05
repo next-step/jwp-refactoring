@@ -7,9 +7,7 @@ import kitchenpos.product.dto.MenuProductResponse;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuProducts;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 
-@Builder
 @AllArgsConstructor
 public class MenuResponse {
     private Long id;
@@ -45,12 +43,7 @@ public class MenuResponse {
                 .map(MenuProductResponse::of)
                 .collect(Collectors.toList());
 
-        return MenuResponse.builder()
-                .id(menu.getId())
-                .name(menu.getName())
-                .price(menu.getPrice().getPrice())
-                .menuGroupId(menu.getMenuGroup().getId())
-                .menuProducts(menuProductResponses)
-                .build();
+        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice().getPrice(), menu.getMenuGroup().getId(),
+                menuProductResponses);
     }
 }

@@ -6,9 +6,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 
-@Builder
 @AllArgsConstructor
 public class MenuRequest {
     private Long id;
@@ -59,11 +57,6 @@ public class MenuRequest {
         List<MenuProductRequest> menuProductRequests = setMenuProductReqeustsFromMenu(menu);
         Long menuGroupId = setMenuGroupIdFromMenu(menu);
 
-        return MenuRequest.builder().id(menu.getId())
-                .name(menu.getName())
-                .price(menu.getPrice().getPrice())
-                .menuGroupId(menuGroupId)
-                .menuProducts(menuProductRequests)
-                .build();
+        return new MenuRequest(menu.getId(),menu.getName(),menu.getPrice().getPrice(),menuGroupId, menuProductRequests );
     }
 }

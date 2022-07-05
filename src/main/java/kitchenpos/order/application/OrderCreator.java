@@ -58,11 +58,6 @@ public class OrderCreator {
         OrderTable orderTable = setOrderTable(orderRequest);
         OrderStatus orderStatus = setOrderStatus(orderRequest);
         OrderLineItems orderLineItems = setOrderLineItems(orderRequest);
-        return Order.builder().id(orderRequest.getId())
-                .orderTable(orderTable)
-                .orderStatus(orderStatus)
-                .orderedTime(orderRequest.getOrderedTime())
-                .orderLineItems(orderLineItems)
-                .build();
+        return new Order(orderRequest.getId(), orderTable, orderStatus, orderRequest.getOrderedTime(), orderLineItems);
     }
 }

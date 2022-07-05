@@ -4,9 +4,7 @@ import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 
-@Builder
 @AllArgsConstructor
 public class OrderLineItemRequest {
     private Long seq;
@@ -52,11 +50,6 @@ public class OrderLineItemRequest {
         Long orderId = setOrderLineItemOrderId(orderLineItem);
         Long menuId = setOrderLineItemMenuId(orderLineItem);
 
-        return OrderLineItemRequest.builder()
-                .seq(orderLineItem.getSeq())
-                .orderId(orderId)
-                .menuId(menuId)
-                .quantity(orderLineItem.getQuantity())
-                .build();
+        return new OrderLineItemRequest(orderLineItem.getSeq(), orderId, menuId, orderLineItem.getQuantity());
     }
 }

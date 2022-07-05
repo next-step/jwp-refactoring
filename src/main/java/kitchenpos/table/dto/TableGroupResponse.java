@@ -6,9 +6,7 @@ import java.util.stream.Collectors;
 import kitchenpos.table.domain.OrderTables;
 import kitchenpos.table.domain.TableGroup;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 
-@Builder
 @AllArgsConstructor
 public class TableGroupResponse {
     private Long id;
@@ -38,10 +36,6 @@ public class TableGroupResponse {
                     .collect(Collectors.toList());
         }
 
-        return TableGroupResponse.builder()
-                .id(tableGroup.getId())
-                .createdDate(tableGroup.getCreatedDate())
-                .orderTables(orderTableResponses)
-                .build();
+        return new TableGroupResponse(tableGroup.getId(), tableGroup.getCreatedDate(), orderTableResponses);
     }
 }

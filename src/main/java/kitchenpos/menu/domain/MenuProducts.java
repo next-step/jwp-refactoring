@@ -5,7 +5,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import kitchenpos.product.domain.Price;
+import kitchenpos.product.domain.ProductPrice;
 import kitchenpos.product.domain.Product;
 
 @Embeddable
@@ -25,8 +25,8 @@ public class MenuProducts {
         return menuProducts;
     }
 
-    public void validateTotalPriceNotExpensiveThanEach(Price menuPrice) {
-        Price sum = new Price(BigDecimal.ZERO);
+    public void validateTotalPriceNotExpensiveThanEach(MenuPrice menuPrice) {
+        ProductPrice sum = new ProductPrice(BigDecimal.ZERO);
         for (MenuProduct menuProduct : menuProducts) {
             checkIsNotNull(menuProduct);
 
@@ -43,7 +43,7 @@ public class MenuProducts {
         }
     }
 
-    private void checkPriceNotExpensiveThanSum(Price menuPrice, Price sum) {
+    private void checkPriceNotExpensiveThanSum(MenuPrice menuPrice, ProductPrice sum) {
         if (menuPrice.compareTo(sum) > 0) {
             throw new IllegalArgumentException();
         }

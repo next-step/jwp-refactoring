@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-@Builder
+//@Builder
 @AllArgsConstructor
 @Getter
 @Setter
@@ -28,11 +28,13 @@ public class OrderTableResponse {
 
     public static OrderTableResponse of(OrderTable orderTable) {
         Long tableGroupId = getTableGroupIdByOrderTable(orderTable);
-        return OrderTableResponse.builder()
-                .id(orderTable.getId())
-                .tableGroupId(tableGroupId)
-                .numberOfGuests(orderTable.getNumberOfGuests())
-                .empty(orderTable.isEmpty())
-                .build();
+//        return OrderTableResponse.builder()
+//                .id(orderTable.getId())
+//                .tableGroupId(tableGroupId)
+//                .numberOfGuests(orderTable.getNumberOfGuests())
+//                .empty(orderTable.isEmpty())
+//                .build();
+        return new OrderTableResponse(orderTable.getId(), tableGroupId, orderTable.getNumberOfGuests(),
+                orderTable.isEmpty());
     }
 }

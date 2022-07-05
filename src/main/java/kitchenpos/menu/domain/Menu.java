@@ -9,13 +9,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import kitchenpos.product.domain.Price;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -27,7 +24,7 @@ public class Menu {
     private String name;
 
     @Embedded
-    private Price price = new Price();
+    private MenuPrice price = new MenuPrice();
 
     @ManyToOne(fetch = FetchType.LAZY)
     private MenuGroup menuGroup;
@@ -37,18 +34,18 @@ public class Menu {
 
     public Menu(String name, BigDecimal price, MenuGroup menuGroup, MenuProducts menuProducts) {
         this.name = name;
-        this.price = new Price(price);
+        this.price = new MenuPrice(price);
         this.menuGroup = menuGroup;
         this.menuProducts = menuProducts;
     }
 
-    public Menu(String name, Price price, MenuGroup menuGroup) {
+    public Menu(String name, MenuPrice price, MenuGroup menuGroup) {
         this.name = name;
         this.price = price;
         this.menuGroup = menuGroup;
     }
 
-    public Menu(Price price, MenuProducts menuProducts) {
+    public Menu(MenuPrice price, MenuProducts menuProducts) {
         this.price = price;
         this.menuProducts = menuProducts;
     }

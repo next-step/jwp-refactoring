@@ -25,9 +25,10 @@ public class TableGroupCreator {
             orderTables = new OrderTables(
                     tableRequests.stream().map(orderTableCreator::toOrderTable).collect(Collectors.toList()));
         }
-        return TableGroup.builder()
-                .id(tableGroupRequest.getId())
-                .createdDate(tableGroupRequest.getCreatedDate())
-                .orderTables(orderTables).build();
+//        return TableGroup.builder()
+//                .id(tableGroupRequest.getId())
+//                .createdDate(tableGroupRequest.getCreatedDate())
+//                .orderTables(orderTables).build();
+        return new TableGroup(tableGroupRequest.getId(), tableGroupRequest.getCreatedDate(), orderTables);
     }
 }
