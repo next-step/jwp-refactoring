@@ -37,8 +37,4 @@ public class ProductService {
 
         return products.stream().map(ProductResponse::of).collect(Collectors.toList());
     }
-
-    public List<Product> findByIdIn(List<Long> productsIds) {
-        return productRepository.findByIdIn(productsIds);
-    }
 }
