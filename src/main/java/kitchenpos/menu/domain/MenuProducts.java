@@ -31,12 +31,20 @@ public class MenuProducts {
     }
 
     private void validPrice(List<MenuProduct> menuProducts, Price price) {
+        Price totalPrice = getTotalPrice(menuProducts);
+        validComparePrice(totalPrice, price);
+    }
+
+    private Price getTotalPrice(List<MenuProduct> menuProducts) {
         Price total = new Price(BigDecimal.ZERO);
         for (MenuProduct menuProduct : menuProducts) {
             total.add(menuProduct.getTotalPrice());
         }
+        return total;
+    }
 
-        if (total.getValue().compareTo(price.getValue()) > 0) {
+    private void validComparePrice(Price totalPrice, Price price) {
+        if (totalPrice.getValue().compareTo(price.getValue()) > 0) {
             throw new IllegalArgumentException("메뉴 상품보다 메뉴의 가격이 높을 수 없습니다.");
         }
     }
