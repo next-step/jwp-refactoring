@@ -3,12 +3,12 @@ package kitchenpos.order.application;
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.domain.*;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
 import kitchenpos.order.dto.OrderResponse;
 import kitchenpos.product.domain.Product;
+import kitchenpos.order.domain.OrderTable;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,16 +27,14 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.willThrow;
 
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
     @Mock
-    private MenuRepository menuRepository;
-    @Mock
     private OrderRepository orderRepository;
     @Mock
-    private OrderTableRepository orderTableRepository;
+    private OrderValidator orderValidator;
     @InjectMocks
     OrderService orderService;
 
@@ -70,8 +68,6 @@ public class OrderServiceTest {
         // given
         Order 주문 = createOrder(주문_테이블.getId(), Lists.newArrayList(주문항목));
         OrderRequest 주문_요청 = createOrderRequest(주문_테이블.getId(), OrderStatus.valueOf(OrderStatus.COOKING.name()), Lists.newArrayList(주문항목_요청));
-        given(menuRepository.countByIdIn(anyList())).willReturn(1L);
-        given(orderTableRepository.findById(주문_테이블.getId())).willReturn(Optional.of(주문_테이블));
         given(orderRepository.save(any())).willReturn(주문);
 
         // when
@@ -102,14 +98,12 @@ public class OrderServiceTest {
     void create_fail_duplicated_menu() {
         // given
         OrderLineItemRequest 미존재메뉴_주문항목_요청 = createOrderLineItemRequest(null, 1);
-        OrderRequest 주문 = createOrderRequest(주문_테이블.getId(), OrderStatus.valueOf(OrderStatus.COOKING.name()), Lists.newArrayList(주문항목_요청, 미존재메뉴_주문항목_요청));
-        when(menuRepository.countByIdIn(Arrays.asList(
-                주문항목_요청.getMenuId(), 미존재메뉴_주문항목_요청.getMenuId())))
-                .thenReturn(1L);
+        OrderRequest 주문_요청 = createOrderRequest(주문_테이블.getId(), OrderStatus.valueOf(OrderStatus.COOKING.name()), Lists.newArrayList(주문항목_요청, 미존재메뉴_주문항목_요청));
+        willThrow(new IllegalArgumentException()).given(orderValidator).validateCreate(주문_요청);
 
         // then
         assertThatThrownBy(() -> {
-            orderService.create(주문);
+            orderService.create(주문_요청);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -118,8 +112,7 @@ public class OrderServiceTest {
     void create_fail_empty_orderTable() {
         // given
         OrderRequest 주문_요청 = createOrderRequest(주문_테이블.getId(), OrderStatus.valueOf(OrderStatus.COOKING.name()), Lists.newArrayList(주문항목_요청));
-        given(menuRepository.countByIdIn(anyList())).willReturn(1L);
-        given(orderTableRepository.findById(주문_테이블.getId())).willReturn(Optional.empty());
+        willThrow(new NoSuchElementException()).given(orderValidator).validateCreate(주문_요청);
 
         // then
         assertThatThrownBy(() -> {
@@ -132,8 +125,7 @@ public class OrderServiceTest {
     void create_fail_emptyTable() {
         // given
         OrderRequest 주문_요청 = createOrderRequest(빈_테이블.getId(), OrderStatus.valueOf(OrderStatus.COOKING.name()), Lists.newArrayList(주문항목_요청));
-        given(menuRepository.countByIdIn(anyList())).willReturn(1L);
-        given(orderTableRepository.findById(빈_테이블.getId())).willReturn(Optional.of(빈_테이블));
+        willThrow(new IllegalArgumentException()).given(orderValidator).validateCreate(주문_요청);
 
         // then
         assertThatThrownBy(() -> {
