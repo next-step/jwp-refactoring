@@ -5,8 +5,6 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import kitchenpos.product.domain.ProductPrice;
-import kitchenpos.product.domain.Product;
 
 @Embeddable
 public class MenuProducts {
