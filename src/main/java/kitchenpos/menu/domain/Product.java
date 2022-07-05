@@ -1,10 +1,18 @@
 package kitchenpos.menu.domain;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 
+@Table(name = "product")
+@Entity
 public class Product {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "name", nullable = false)
     private String name;
+
     private BigDecimal price;
 
     public Product() {
