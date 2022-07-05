@@ -24,8 +24,8 @@ class MenuProductsTest {
     }
 
     public static List<MenuProduct> createMenuProducts() {
-        MenuProduct menuProduct = new MenuProduct(new Product("치킨", BigDecimal.valueOf(5000)), 2);
-        MenuProduct menuProduct1 = new MenuProduct(new Product("떡볶이", BigDecimal.valueOf(2000)), 2);
+        MenuProduct menuProduct = new MenuProduct(new Product("치킨", new Price(BigDecimal.valueOf(5000))), 2);
+        MenuProduct menuProduct1 = new MenuProduct(new Product("떡볶이", new Price(BigDecimal.valueOf(2000))), 2);
 
         return Arrays.asList(menuProduct, menuProduct1);
     }

@@ -14,7 +14,7 @@ class MenuProductTest {
     @Test
     void 메뉴_상품의_가격을_계산한다() {
         // given
-        MenuProduct menuProduct = new MenuProduct(new Product("치킨", BigDecimal.valueOf(5000)), 5);
+        MenuProduct menuProduct = new MenuProduct(new Product("치킨", new Price(BigDecimal.valueOf(5000))), 5);
 
         // when
         Price result = menuProduct.price();
