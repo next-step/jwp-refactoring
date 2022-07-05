@@ -8,7 +8,7 @@ public class MenuGroupResponse {
     private Long id;
     private String name;
 
-    protected MenuGroupResponse(Long id, String name) {
+    protected MenuGroupResponse(final Long id, final String name) {
         this.id = id;
         this.name = name;
     }
@@ -16,11 +16,11 @@ public class MenuGroupResponse {
     protected MenuGroupResponse() {
     }
 
-    public static MenuGroupResponse of(MenuGroup menuGroup) {
+    public static MenuGroupResponse of(final MenuGroup menuGroup) {
         return new MenuGroupResponse(menuGroup.getId(), menuGroup.getName());
     }
 
-    public static List<MenuGroupResponse> of(List<MenuGroup> menuGroups) {
+    public static List<MenuGroupResponse> of(final List<MenuGroup> menuGroups) {
         return menuGroups.stream()
                 .map(MenuGroupResponse::of)
                 .collect(Collectors.toList());

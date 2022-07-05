@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.dao.MenuDao;
+import kitchenpos.dao.MenuRepository;
 import kitchenpos.dao.OrderDao;
 import kitchenpos.dao.OrderLineItemDao;
 import kitchenpos.dao.OrderTableDao;
@@ -33,7 +33,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
     @Mock
     private OrderDao orderDao;
     @Mock
@@ -62,14 +62,14 @@ public class OrderServiceTest {
     @Test
     @DisplayName("주문 시 주문 항목이 메뉴에 존재하지 않으면 Exception")
     public void createOrderLineItemsNotExistsException() {
-        given(menuDao.countByIdIn(any(List.class))).willReturn(2L);
+        given(menuRepository.countByIdIn(any(List.class))).willReturn(2L);
         assertThatThrownBy(() -> orderService.create(주문)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("주문 테이블이 존재하지 않을 경우 Exception")
     public void createTableNotExistsException() {
-        given(menuDao.countByIdIn(any(List.class))).willReturn(1L);
+        given(menuRepository.countByIdIn(any(List.class))).willReturn(1L);
         given(orderTableDao.findById(주문.getOrderTableId())).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> orderService.create(주문)).isInstanceOf(IllegalArgumentException.class);
@@ -80,7 +80,7 @@ public class OrderServiceTest {
     public void createEmptyTableException() {
         final OrderTable 주문_테이블 = 주문_테이블_생성(1L, 1L, 4, true);
 
-        given(menuDao.countByIdIn(any(List.class))).willReturn(1L);
+        given(menuRepository.countByIdIn(any(List.class))).willReturn(1L);
         given(orderTableDao.findById(주문.getOrderTableId())).willReturn(Optional.of(주문_테이블));
 
         assertThatThrownBy(() -> orderService.create(주문)).isInstanceOf(IllegalArgumentException.class);
@@ -91,7 +91,7 @@ public class OrderServiceTest {
     public void create() {
         final OrderTable 주문_테이블 = 주문_테이블_생성(1L, 1L, 4, false);
 
-        given(menuDao.countByIdIn(any(List.class))).willReturn(1L);
+        given(menuRepository.countByIdIn(any(List.class))).willReturn(1L);
         given(orderTableDao.findById(주문.getOrderTableId())).willReturn(Optional.of(주문_테이블));
         given(orderDao.save(주문)).willReturn(주문);
         given(orderLineItemDao.save(주문_항목)).willReturn(주문_항목);

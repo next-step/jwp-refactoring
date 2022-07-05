@@ -5,7 +5,7 @@ import kitchenpos.domain.MenuGroup;
 public class MenuGroupRequest {
     private String name;
 
-    public MenuGroupRequest(String name) {
+    public MenuGroupRequest(final String name) {
         this.name = name;
     }
 
