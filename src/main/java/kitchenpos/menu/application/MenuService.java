@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
@@ -42,12 +43,10 @@ public class MenuService {
 
         List<Product> products = getProducts(request);
 
-        Map<Long, List<Product>> productMap = products.stream()
-                .collect(groupingBy(Product::getId));
+        Map<Long, Product> productMap = listToMap(products);
 
         List<MenuProduct> menuProducts = request.getMenuProductRequests().stream()
-                .map(it -> MenuProduct.of(productMap.get(it.getProductId()).get(FIRST_INDEX),
-                        it.getQuantity()))
+                .map(it -> MenuProduct.of(productMap.get(it.getProductId()), it.getQuantity()))
                 .collect(Collectors.toList());
 
         Menu menu = Menu.of(request.getName(), request.getPrice(), menuGroup, menuProducts);
@@ -72,5 +71,10 @@ public class MenuService {
         }
 
         return products;
+    }
+
+    private Map<Long, Product> listToMap(List<Product> products) {
+        return products.stream().collect(
+                Collectors.toMap(Product::getId, Function.identity()));
     }
 }
