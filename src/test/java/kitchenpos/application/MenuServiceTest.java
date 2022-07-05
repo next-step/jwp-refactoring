@@ -1,10 +1,7 @@
 package kitchenpos.application;
 
 import static kitchenpos.utils.generator.MenuFixtureGenerator.메뉴_구성_상품_생성;
-import static kitchenpos.utils.generator.MenuFixtureGenerator.메뉴_생성;
 import static kitchenpos.utils.generator.MenuFixtureGenerator.메뉴_생성_요청_생성;
-import static kitchenpos.utils.generator.MenuGroupFixtureGenerator.메뉴_그룹_생성;
-import static kitchenpos.utils.generator.ProductFixtureGenerator.상품_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
@@ -21,15 +18,12 @@ import java.util.stream.Stream;
 import kitchenpos.application.menu.MenuProductService;
 import kitchenpos.application.menu.MenuService;
 import kitchenpos.domain.menu.Menu;
-import kitchenpos.domain.menu.MenuGroup;
 import kitchenpos.domain.menu.MenuGroupRepository;
 import kitchenpos.domain.menu.MenuProduct;
 import kitchenpos.domain.menu.MenuRepository;
-import kitchenpos.domain.product.Product;
 import kitchenpos.dto.menu.CreateMenuRequest;
-import kitchenpos.dto.menu.MenuProductRequest;
 import kitchenpos.dto.menu.MenuResponse;
-import org.junit.jupiter.api.BeforeEach;
+import kitchenpos.utils.generator.ScenarioTestFixtureGenerator;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,7 +38,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Service:Menu")
-class MenuServiceTest {
+class MenuServiceTest extends ScenarioTestFixtureGenerator {
 
     @Mock
     private MenuRepository menuRepository;
@@ -57,24 +51,6 @@ class MenuServiceTest {
 
     @InjectMocks
     private MenuService menuService;
-
-    public static Product 물냉면, 비빔냉면, 삼겹살, 항정살, 고추장_불고기;
-    public static MenuGroup 고기랑_같이, 고기만_듬뿍;
-    public static Menu 커플_냉삼_메뉴, 고기_더블_더블_메뉴;
-    public static List<MenuProduct> 커플_냉삼_메뉴_구성_상품, 고기_더블_더블_메뉴_구성_상품;
-
-    public static CreateMenuRequest 커플_냉삼_메뉴_생성_요청, 고기_더블_더블_메뉴_생성_요청;
-    public static List<MenuProductRequest> 커플_냉삼_메뉴_구성_상품_생성_요청, 고기_더블_더블_메뉴_구성_상품_생성_요청;
-
-    @BeforeEach
-    void setUp() {
-        커플_냉삼_메뉴_상품_생성();
-        커플_냉삼_메뉴_생성();
-        커플_냉삼_메뉴_생성_요청_생성();
-
-        고기_더블_더블_메뉴_상품_생성();
-        고기_더블_더블_메뉴_생성();
-    }
 
     @Test
     @DisplayName("메뉴를 생성한다.")
@@ -205,62 +181,5 @@ class MenuServiceTest {
         assertThat(조회된_메뉴_목록).extracting(MenuResponse::getName).isEqualTo(givenMenuNames);
     }
 
-    public static void 커플_냉삼_메뉴_상품_생성() {
-        물냉면 = 상품_생성("물냉면", 8_000);
-        비빔냉면 = 상품_생성("비빔냉면", 8_000);
-        삼겹살 = 상품_생성("삼겹살", 15_000);
-    }
 
-    public static void 커플_냉삼_메뉴_생성() {
-        고기랑_같이 = 메뉴_그룹_생성("고기랑 같이");
-        커플_냉삼_메뉴 = 메뉴_생성(
-            "커플_냉삼",
-            25_000,
-            고기랑_같이,
-            메뉴_구성_상품_생성(물냉면, 1),
-            메뉴_구성_상품_생성(비빔냉면, 1),
-            메뉴_구성_상품_생성(삼겹살, 1)
-        );
-        커플_냉삼_메뉴_구성_상품 = 커플_냉삼_메뉴.getMenuProducts();
-    }
-
-    public static void 커플_냉삼_메뉴_생성_요청_생성() {
-        커플_냉삼_메뉴_생성_요청 = 메뉴_생성_요청_생성(
-            "커플_냉삼",
-            25_000,
-            고기랑_같이,
-            메뉴_구성_상품_생성(물냉면, 1),
-            메뉴_구성_상품_생성(비빔냉면, 1),
-            메뉴_구성_상품_생성(삼겹살, 1)
-        );
-        커플_냉삼_메뉴_구성_상품_생성_요청 = 커플_냉삼_메뉴_생성_요청.getMenuProductRequests();
-    }
-
-    public static void 고기_더블_더블_메뉴_상품_생성() {
-        항정살 = 상품_생성("항정살", 20_000);
-        고추장_불고기 = 상품_생성("고추장_불고기", 15_000);
-    }
-
-    public static void 고기_더블_더블_메뉴_생성() {
-        고기만_듬뿍 = 메뉴_그룹_생성("고기만_듬뿍");
-        고기_더블_더블_메뉴 = 메뉴_생성(
-            "고기_더블_더블",
-            30_000,
-            고기만_듬뿍,
-            메뉴_구성_상품_생성(항정살, 1),
-            메뉴_구성_상품_생성(고추장_불고기, 1)
-        );
-        고기_더블_더블_메뉴_구성_상품 = 고기_더블_더블_메뉴.getMenuProducts();
-    }
-
-    public static void 고기_더블_더블_메뉴_생성_요청_생성() {
-        고기_더블_더블_메뉴_생성_요청 = 메뉴_생성_요청_생성(
-            "고기_더블_더블",
-            30_000,
-            고기만_듬뿍,
-            메뉴_구성_상품_생성(항정살, 1),
-            메뉴_구성_상품_생성(고추장_불고기, 1)
-        );
-        고기_더블_더블_메뉴_구성_상품_생성_요청 = 커플_냉삼_메뉴_생성_요청.getMenuProductRequests();
-    }
 }

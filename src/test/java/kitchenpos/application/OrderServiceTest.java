@@ -1,9 +1,5 @@
 package kitchenpos.application;
 
-import static kitchenpos.application.MenuServiceTest.커플_냉삼_메뉴;
-import static kitchenpos.application.MenuServiceTest.커플_냉삼_메뉴_상품_생성;
-import static kitchenpos.application.MenuServiceTest.커플_냉삼_메뉴_생성;
-import static kitchenpos.application.MenuServiceTest.커플_냉삼_메뉴_생성_요청_생성;
 import static kitchenpos.utils.generator.OrderTableFixtureGenerator.비어있는_주문_테이블_생성;
 import static kitchenpos.utils.generator.OrderTableFixtureGenerator.비어있지_않은_주문_테이블_생성;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,6 +22,7 @@ import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
 import kitchenpos.utils.generator.OrderFixtureGenerator;
+import kitchenpos.utils.generator.ScenarioTestFixtureGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,7 +34,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Service:Order")
-class OrderServiceTest {
+class OrderServiceTest extends ScenarioTestFixtureGenerator {
 
     @Mock
     private MenuRepository menuRepository;
@@ -58,11 +55,7 @@ class OrderServiceTest {
     private Order order;
 
     @BeforeEach
-    void setUp() {
-        커플_냉삼_메뉴_상품_생성();
-        커플_냉삼_메뉴_생성();
-        커플_냉삼_메뉴_생성_요청_생성();
-
+    public void setUp() {
         비어있지_않은_주문_테이블_생성 = 비어있지_않은_주문_테이블_생성();
         order = OrderFixtureGenerator.주문_생성(this.비어있지_않은_주문_테이블_생성, 커플_냉삼_메뉴);
     }
