@@ -1,10 +1,10 @@
 package kitchenpos.table.application;
 
 import kitchenpos.order.domain.*;
-import kitchenpos.table.application.TableService;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.domain.TableValidator;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,14 +27,15 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class TableServiceTest {
     @Mock
-    private OrderRepository orderRepository;
-    @Mock
     private OrderTableRepository orderTableRepository;
+    @Mock
+    private TableValidator tableValidator;
     @InjectMocks
     private TableService tableService;
 
@@ -90,7 +91,6 @@ public class TableServiceTest {
     void changeEmpty_success() {
         // given
         when(orderTableRepository.findById(주문_테이블.getId())).thenReturn(Optional.of(주문_테이블));
-        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(주문_테이블.getId(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).thenReturn(false);
         when(orderTableRepository.save(주문_테이블)).thenReturn(주문_테이블);
 
         // when
@@ -131,7 +131,7 @@ public class TableServiceTest {
     void changeEmpty_fail_orderStatus() {
         // given
         when(orderTableRepository.findById(주문_테이블.getId())).thenReturn(Optional.of(주문_테이블));
-        when(orderRepository.existsByOrderTableIdAndOrderStatusIn(주문_테이블.getId(), Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))).thenReturn(true);
+        willThrow(new IllegalArgumentException()).given(tableValidator).validateOrderStatus(주문_테이블.getId());
 
         // then
         assertThatThrownBy(() -> {
@@ -157,6 +157,9 @@ public class TableServiceTest {
     @DisplayName("테이블의 방문객 수를 변경에 실패한다. (변경할 방문객 수가 0명 미만인 경우)")
     @Test
     void changeNumberOfGuests_fail_guestZero() {
+        // given
+        willThrow(new IllegalArgumentException()).given(tableValidator).validateNumberOfGuests(-1);
+
         // then
         assertThatThrownBy(() -> {
             tableService.changeNumberOfGuests(주문_테이블.getId(), createOrderTableRequest(-1, false));
