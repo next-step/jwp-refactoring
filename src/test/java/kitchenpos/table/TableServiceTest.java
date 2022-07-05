@@ -111,7 +111,7 @@ class TableServiceTest {
     void changeEmpty_notExistTableGroup() {
         // given
         주문테이블2 = new OrderTable(2, 빈자리);
-        단체테이블 = new TableGroup(Arrays.asList(주문테이블, 주문테이블2));
+        단체테이블 = new TableGroup(Arrays.asList(주문테이블, 주문테이블2)).groupTables();
         OrderTableRequest 변경테이블 = new OrderTableRequest(주문테이블.getNumberOfGuests(), 사용중);
         given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(주문테이블));
 

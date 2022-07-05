@@ -7,11 +7,10 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import kitchenpos.menu.dao.MenuRepository;
+import kitchenpos.menu.application.MenuService;
 import kitchenpos.order.application.OrderService;
 import kitchenpos.order.dao.OrderLineItemRepository;
 import kitchenpos.order.dao.OrderRepository;
@@ -41,9 +40,6 @@ class OrderServiceTest {
     OrderService orderService;
 
     @Mock
-    MenuRepository menuRepository;
-
-    @Mock
     OrderRepository orderRepository;
 
     @Mock
@@ -51,6 +47,9 @@ class OrderServiceTest {
 
     @Mock
     OrderTableRepository orderTableRepository;
+
+    @Mock
+    MenuService menuService;
 
     Order 주문;
     OrderTable 테이블1;
@@ -75,7 +74,6 @@ class OrderServiceTest {
     @DisplayName("주문을 저장한다")
     void create() {
         // given
-        given(menuRepository.countByIdIn(any())).willReturn(1L);
         given(orderTableRepository.findById(any())).willReturn(Optional.of(테이블1));
         given(orderRepository.save(any())).willReturn(주문);
         given(orderLineItemRepository.saveAll(any())).willReturn(Collections.singletonList(주문내역));
@@ -101,23 +99,6 @@ class OrderServiceTest {
         assertThatIllegalArgumentException().isThrownBy(
                 () -> orderService.create(주문요청)
         ).withMessageContaining("주문 내역이 존재하지 않습니다.");
-    }
-
-    @Test
-    @DisplayName("주문시 주문내역의 메뉴는 모두 존재하는 메뉴여야 한다")
-    void create_nonMenuError() {
-        // given
-        OrderLineItemRequest 주문내역1 = new OrderLineItemRequest(1L, 1L);
-        OrderLineItemRequest 주문내역2 = new OrderLineItemRequest(1L, 1L);
-        주문요청 = new OrderRequest(1L, Arrays.asList(주문내역1, 주문내역2));
-
-        given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(테이블1));
-        given(menuRepository.countByIdIn(any())).willReturn(1L);
-
-        // when & then
-        assertThatIllegalArgumentException().isThrownBy(
-                () -> orderService.create(주문요청)
-        ).withMessageContaining("존재하지 않는 메뉴입니다.");
     }
 
     @Test

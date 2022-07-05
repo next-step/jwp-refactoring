@@ -1,8 +1,9 @@
 package kitchenpos.order.application;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import kitchenpos.menu.dao.MenuRepository;
+import kitchenpos.menu.application.MenuService;
 import kitchenpos.order.dao.OrderLineItemRepository;
 import kitchenpos.order.dao.OrderRepository;
 import kitchenpos.order.domain.Order;
@@ -18,18 +19,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class OrderService {
-    private final MenuRepository menuRepository;
+    private final MenuService menuService;
     private final OrderRepository orderRepository;
     private final OrderLineItemRepository orderLineItemRepository;
     private final OrderTableRepository orderTableRepository;
 
     public OrderService(
-            final MenuRepository menuRepository,
+            final MenuService menuService,
             final OrderRepository orderRepository,
             final OrderLineItemRepository orderLineItemRepository,
             final OrderTableRepository orderTableRepository
     ) {
-        this.menuRepository = menuRepository;
+        this.menuService = menuService;
         this.orderRepository = orderRepository;
         this.orderLineItemRepository = orderLineItemRepository;
         this.orderTableRepository = orderTableRepository;
@@ -68,15 +69,18 @@ public class OrderService {
         return OrderResponse.of(savedOrder);
     }
 
+    public void validateOrderStatusCheck(List<Long> orderTableIds) {
+        if (orderRepository.existsByOrderTableIdInAndOrderStatusIn(
+                orderTableIds, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
+            throw new IllegalArgumentException("계산 완료 상태가 아닌 경우 단체를 해제할 수 없습니다.");
+        }
+    }
+
     private void validateOrderLineItemsCheck(List<OrderLineItem> orderLineItems) {
         final List<Long> menuIds = orderLineItems.stream()
                 .map(OrderLineItem::getMenuId)
                 .collect(Collectors.toList());
 
-        long menuCount = menuRepository.countByIdIn(menuIds);
-
-        if (orderLineItems.size() != menuCount) {
-            throw new IllegalArgumentException("존재하지 않는 메뉴입니다.");
-        }
+        menuService.countByIdIn(menuIds);
     }
 }

@@ -6,10 +6,11 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 
 import java.util.Arrays;
 import java.util.Collections;
-import kitchenpos.order.dao.OrderRepository;
+import kitchenpos.order.application.OrderService;
 import kitchenpos.table.application.TableGroupService;
 import kitchenpos.table.dao.OrderTableRepository;
 import kitchenpos.table.dao.TableGroupRepository;
@@ -32,7 +33,7 @@ class TableGroupServiceTest {
     TableGroupService tableGroupService;
 
     @Mock
-    OrderRepository orderRepository;
+    OrderService orderService;
 
     @Mock
     OrderTableRepository orderTableRepository;
@@ -49,7 +50,7 @@ class TableGroupServiceTest {
         주문테이블1 = new OrderTable(2, 빈자리);
         주문테이블2 = new OrderTable(2, 빈자리);
 
-        단체손님 = new TableGroup(Arrays.asList(new OrderTable(2, 빈자리), new OrderTable(2, 빈자리)));
+        단체손님 = new TableGroup(Arrays.asList(new OrderTable(2, 빈자리), new OrderTable(2, 빈자리))).groupTables();
     }
 
     @Test
@@ -108,7 +109,6 @@ class TableGroupServiceTest {
     void ungroup() {
         // given
         given(orderTableRepository.findAllByTableGroupId(any())).willReturn(Arrays.asList(주문테이블1, 주문테이블2));
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(false);
 
         // when
         tableGroupService.ungroup(1L);
@@ -125,7 +125,8 @@ class TableGroupServiceTest {
     void ungroup_completionError() {
         // given
         given(orderTableRepository.findAllByTableGroupId(any())).willReturn(Arrays.asList(주문테이블1, 주문테이블2));
-        given(orderRepository.existsByOrderTableIdInAndOrderStatusIn(any(), any())).willReturn(true);
+        doThrow(new IllegalArgumentException("계산 완료 상태가 아닌 경우 단체를 해제할 수 없습니다."))
+                .when(orderService).validateOrderStatusCheck(any());
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(

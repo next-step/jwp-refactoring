@@ -7,6 +7,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import kitchenpos.menu.application.MenuGroupService;
@@ -19,6 +20,7 @@ import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.menu.dto.MenuProductRequest;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
+import kitchenpos.product.application.ProductService;
 import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -42,6 +44,9 @@ class MenuServiceTest {
 
     @Mock
     MenuProductRepository menuProductRepository;
+
+    @Mock
+    ProductService productService;
 
     Menu 후라이드치킨;
     Product 후라이드;
@@ -97,5 +102,17 @@ class MenuServiceTest {
 
         // then
         assertThat(actual).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("주문내역의 메뉴가 모두 존재하지 않으면 오류를 반환한다")
+    void create_nonMenuError() {
+        // given
+        given(menuRepository.countByIdIn(any())).willReturn(1L);
+
+        // when & then
+        assertThatIllegalArgumentException().isThrownBy(
+                () -> menuService.countByIdIn(Arrays.asList(1L, 2L))
+        ).withMessageContaining("존재하지 않는 메뉴입니다.");
     }
 }
