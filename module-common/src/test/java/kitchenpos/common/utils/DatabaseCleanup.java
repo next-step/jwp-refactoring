@@ -1,4 +1,4 @@
-package kitchenpos.utils;
+package kitchenpos.common.utils;
 
 import com.google.common.base.CaseFormat;
 import java.util.Arrays;

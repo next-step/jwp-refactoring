@@ -1,7 +1,7 @@
-package kitchenpos.exception;
+package kitchenpos.common.exception;
 
 
-import static kitchenpos.common.ErrorMessage.NOT_EMPTY_TABLE;
+import static kitchenpos.common.message.ErrorMessage.*;
 
 public class NotEmptyException extends IllegalArgumentException {
     public NotEmptyException() {

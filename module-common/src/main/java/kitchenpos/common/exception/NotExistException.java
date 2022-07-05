@@ -1,6 +1,7 @@
-package kitchenpos.exception;
+package kitchenpos.common.exception;
 
-import static kitchenpos.common.ErrorMessage.NOT_EXIST_COMMON;
+
+import static kitchenpos.common.message.ErrorMessage.*;
 
 public class NotExistException extends IllegalArgumentException {
     public NotExistException() {

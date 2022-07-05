@@ -1,6 +1,6 @@
-package kitchenpos.exception;
+package kitchenpos.common.exception;
 
-import static kitchenpos.common.ErrorMessage.EMPTY_TABLE;
+import static kitchenpos.common.message.ErrorMessage.*;
 
 public class EmptyTableException extends IllegalStateException {
     public EmptyTableException() {

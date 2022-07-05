@@ -1,14 +1,8 @@
-package kitchenpos.common;
+package kitchenpos.common.exception;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import kitchenpos.exception.InvalidGuestNumberException;
-import kitchenpos.exception.InvalidMenuNumberException;
-import kitchenpos.exception.InvalidOrderStatusException;
-import kitchenpos.exception.InvalidTableNumberException;
-import kitchenpos.exception.NotCompletionStatusException;
-import kitchenpos.exception.NotExistException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;

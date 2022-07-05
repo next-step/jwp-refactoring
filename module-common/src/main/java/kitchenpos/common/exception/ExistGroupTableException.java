@@ -1,7 +1,7 @@
-package kitchenpos.exception;
+package kitchenpos.common.exception;
 
 
-import static kitchenpos.common.ErrorMessage.EXIST_GROUP_TABLE;
+import static kitchenpos.common.message.ErrorMessage.*;
 
 public class ExistGroupTableException extends IllegalArgumentException {
     public ExistGroupTableException() {

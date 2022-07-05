@@ -1,6 +1,6 @@
-package kitchenpos.exception;
+package kitchenpos.common.exception;
 
-import static kitchenpos.common.ErrorMessage.NOT_CHANGE_COMPLETION;
+import static kitchenpos.common.message.ErrorMessage.*;
 
 public class InvalidOrderStatusException extends IllegalStateException {
     public InvalidOrderStatusException() {

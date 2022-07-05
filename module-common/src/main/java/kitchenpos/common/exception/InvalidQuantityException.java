@@ -1,7 +1,6 @@
-package kitchenpos.exception;
+package kitchenpos.common.exception;
 
-import static kitchenpos.common.ErrorMessage.INVALID_QUANTITY;
-
+import static kitchenpos.common.message.ErrorMessage.*;
 
 public class InvalidQuantityException extends IllegalArgumentException {
     public InvalidQuantityException() {

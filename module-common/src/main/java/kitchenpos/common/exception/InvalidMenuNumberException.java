@@ -1,7 +1,7 @@
-package kitchenpos.exception;
+package kitchenpos.common.exception;
 
 
-import static kitchenpos.common.ErrorMessage.INVALID_MENU_NUMBER;
+import static kitchenpos.common.message.ErrorMessage.*;
 
 public class InvalidMenuNumberException extends IllegalArgumentException {
     public InvalidMenuNumberException() {

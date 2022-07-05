@@ -1,4 +1,4 @@
-package kitchenpos.common;
+package kitchenpos.common.message;
 
 public enum ErrorMessage {
     EMPTY_TABLE("비어있는 테이블입니다."),

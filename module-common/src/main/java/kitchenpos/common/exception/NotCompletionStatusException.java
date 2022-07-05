@@ -1,6 +1,6 @@
-package kitchenpos.exception;
+package kitchenpos.common.exception;
 
-import static kitchenpos.common.ErrorMessage.NOT_COMPLETION_STATUS;
+import static kitchenpos.common.message.ErrorMessage.*;
 
 public class NotCompletionStatusException extends IllegalStateException {
     public NotCompletionStatusException() {

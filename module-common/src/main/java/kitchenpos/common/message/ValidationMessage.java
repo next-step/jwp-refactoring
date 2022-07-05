@@ -1,4 +1,4 @@
-package kitchenpos.common;
+package kitchenpos.common.message;
 
 public final class ValidationMessage {
     public static final String NOT_EMPTY = "빈 값이나 공백이 들어올 수 없습니다.";
