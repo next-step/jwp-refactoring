@@ -26,13 +26,13 @@ class MenuServiceTest {
     private MenuRepository menuRepository;
 
     @Mock
-    private MenuGroupDao menuGroupDao;
+    private MenuGroupRepository menuGroupRepository;
 
     @Mock
-    private MenuProductDao menuProductDao;
+    private MenuProductRepository menuProductRepository;
 
     @Mock
-    private ProductDao productDao;
+    private ProductRepository productRepository;
 
     @InjectMocks
     private MenuService menuService;
@@ -57,17 +57,17 @@ class MenuServiceTest {
     void createMenu() {
         // given
         Menu 생성할_메뉴 = new Menu("짬짜면세트", BigDecimal.valueOf(26000), 1L, 메뉴상품_목록);
-        given(menuGroupDao.existsById(anyLong()))
+        given(menuGroupRepository.existsById(anyLong()))
                 .willReturn(true);
-        given(productDao.findById(1L))
+        given(productRepository.findById(1L))
                 .willReturn(Optional.of(첫번째_상품));
-        given(productDao.findById(2L))
+        given(productRepository.findById(2L))
                 .willReturn(Optional.of(두번째_상품));
         given(menuRepository.save(생성할_메뉴))
                 .willReturn(new Menu(1L, "짬짜면세트", BigDecimal.valueOf(26000), 1L, 메뉴상품_목록));
-        given(menuProductDao.save(첫번째_메뉴상품))
+        given(menuProductRepository.save(첫번째_메뉴상품))
                 .willReturn(첫번째_메뉴상품);
-        given(menuProductDao.save(두번째_메뉴상품))
+        given(menuProductRepository.save(두번째_메뉴상품))
                 .willReturn(두번째_메뉴상품);
 
         // when
@@ -103,7 +103,7 @@ class MenuServiceTest {
         // given
         Long 존재하지_않는_메뉴그룹ID = 1000L;
         Menu 생성할_메뉴 = new Menu("짬짜면세트", BigDecimal.valueOf(26000), 존재하지_않는_메뉴그룹ID, 메뉴상품_목록);
-        given(menuGroupDao.existsById(anyLong()))
+        given(menuGroupRepository.existsById(anyLong()))
                 .willReturn(true);
 
         // when & then
@@ -127,11 +127,11 @@ class MenuServiceTest {
     void createMenuFailsWhenInvalidPrice() {
         // given
         Menu 생성할_메뉴 = new Menu("짬짜면세트", BigDecimal.valueOf(27000), 1L, 메뉴상품_목록);
-        given(menuGroupDao.existsById(anyLong()))
+        given(menuGroupRepository.existsById(anyLong()))
                 .willReturn(true);
-        given(productDao.findById(1L))
+        given(productRepository.findById(1L))
                 .willReturn(Optional.of(첫번째_상품));
-        given(productDao.findById(2L))
+        given(productRepository.findById(2L))
                 .willReturn(Optional.of(두번째_상품));
 
         // when & then
