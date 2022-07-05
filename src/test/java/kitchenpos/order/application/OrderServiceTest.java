@@ -53,8 +53,8 @@ public class OrderServiceTest {
     void setUp() {
         싸이버거 = createProduct("싸이버거", BigDecimal.valueOf(3500));
         콜라 = createProduct("콜라", BigDecimal.valueOf(1500));
-        싱글세트_싸이버거 = createMenuProduct(싸이버거, 1);
-        싱글세트_콜라 = createMenuProduct(콜라, 1);
+        싱글세트_싸이버거 = createMenuProduct(싸이버거.getId(), 1);
+        싱글세트_콜라 = createMenuProduct(콜라.getId(), 1);
         맘스세트메뉴 = createMenuGroup("맘스세트메뉴");
         싱글세트 = createMenu(1L, 1L, "싱글세트", BigDecimal.valueOf(5000), Lists.newArrayList(싱글세트_싸이버거, 싱글세트_콜라));
 

@@ -30,8 +30,8 @@ public class MenuProductsTest {
         Product 후라이드싸이순살 = createProduct("후라이드싸이순살", BigDecimal.valueOf(20_000));
         Product 블랙쏘이치킨 = createProduct("블랙쏘이치킨", BigDecimal.valueOf(18_000));
         List<MenuProduct> menuProducts = Arrays.asList(
-                new MenuProduct(후라이드싸이순살, 1L),
-                new MenuProduct(블랙쏘이치킨, 1L)
+                new MenuProduct(후라이드싸이순살.getId(), 1L),
+                new MenuProduct(블랙쏘이치킨.getId(), 1L)
         );
 
         // then

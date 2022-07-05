@@ -46,8 +46,8 @@ public class CommonTestFixture {
         return new MenuRequest(name, price, menuGroupId, menuProducts);
     }
 
-    public static MenuProduct createMenuProduct(Product product, int quantity) {
-        return new MenuProduct(product, (long) quantity);
+    public static MenuProduct createMenuProduct(Long productId, int quantity) {
+        return new MenuProduct(productId, (long) quantity);
     }
 
     public static MenuProductRequest createMenuProductRequest(Long productId, int quantity) {
