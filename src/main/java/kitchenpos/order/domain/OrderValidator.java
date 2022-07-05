@@ -3,6 +3,8 @@ package kitchenpos.order.domain;
 import kitchenpos.menu.domain.MenuRepository;
 import kitchenpos.order.dto.OrderLineItemRequest;
 import kitchenpos.order.dto.OrderRequest;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.OrderTableRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
