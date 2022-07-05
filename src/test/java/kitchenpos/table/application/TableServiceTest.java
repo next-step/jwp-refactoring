@@ -1,6 +1,8 @@
 package kitchenpos.table.application;
 
 import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.dto.TableRequest;
+import kitchenpos.table.dto.TableResponse;
 import kitchenpos.table.repository.OrderTableRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,6 +16,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -43,13 +46,14 @@ class TableServiceTest {
     @Test
     void create() {
         // given
-        OrderTable orderTable = new OrderTable(0, false);
+        TableRequest given = new TableRequest(0, false);
+        when(orderTableRepository.save(any(OrderTable.class))).thenReturn(given.toEntity());
 
         // when
-        tableService.create(orderTable);
+        TableResponse actual = tableService.create(given);
 
         // then
-        verify(orderTableRepository).save(orderTable);
+        assertThat(actual.getNumberOfGuests()).isEqualTo(given.getNumberOfGuests());
     }
 
     @DisplayName("주문 테이블의 목록을 조회할 수 있다")
@@ -66,7 +70,7 @@ class TableServiceTest {
     @Test
     void changeEmpty() {
         // when
-        OrderTable changedOrderTable = tableService.changeEmpty(orderTableId, true);
+        TableResponse changedOrderTable = tableService.changeEmpty(orderTableId, true);
 
         // then
         assertThat(changedOrderTable.isEmpty()).isTrue();
@@ -91,7 +95,7 @@ class TableServiceTest {
     @Test
     void changeNumberOfGuests() {
         // when
-        OrderTable changedOrderTable = tableService.changeNumberOfGuests(orderTableId, 2);
+        TableResponse changedOrderTable = tableService.changeNumberOfGuests(orderTableId, 2);
 
         // then
         assertThat(changedOrderTable.getNumberOfGuests()).isEqualTo(2);
