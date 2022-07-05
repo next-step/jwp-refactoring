@@ -55,6 +55,9 @@ class TableGroupServiceTest {
     @DisplayName("여러 주문 테이블을 단체 지정할 수 있다")
     @Test
     void create() {
+        // given
+        when(tableGroupRepository.save(any(TableGroup.class))).thenReturn(new TableGroup());
+
         // when
         tableGroupService.create(Arrays.asList(orderTableId1, orderTableId2));
 

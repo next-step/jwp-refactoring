@@ -22,19 +22,18 @@ public class TableGroup {
     @Embedded
     private final GroupTables groupTables = new GroupTables();
 
-    protected TableGroup() {
-    }
-
-    public TableGroup(List<OrderTable> orderTables) {
+    public static TableGroup group(List<OrderTable> orderTables) {
         if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < MINIMUM_GROUP_SIZE) {
             throw new IllegalArgumentException(ORDER_TABLE_LEAST_2);
         }
-        orderTables.forEach(orderTable -> orderTable.groupBy(this));
-        groupTables.addAll(orderTables);
+        TableGroup tableGroup = new TableGroup();
+        orderTables.forEach(tableGroup::addTable);
+        return tableGroup;
     }
 
-    public static TableGroup group(List<OrderTable> orderTables) {
-        return new TableGroup(orderTables);
+    private void addTable(OrderTable orderTable) {
+        groupTables.add(orderTable);
+        orderTable.groupBy(this);
     }
 
     public Long getId() {

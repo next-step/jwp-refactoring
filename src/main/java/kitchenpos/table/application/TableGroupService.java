@@ -2,6 +2,7 @@ package kitchenpos.table.application;
 
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.TableGroupResponse;
 import kitchenpos.table.event.TableUngroupEvent;
 import kitchenpos.table.repository.OrderTableRepository;
 import kitchenpos.table.repository.TableGroupRepository;
@@ -27,12 +28,13 @@ public class TableGroupService {
     }
 
     @Transactional
-    public TableGroup create(final List<Long> orderTableIds) {
+    public TableGroupResponse create(final List<Long> orderTableIds) {
         final List<OrderTable> savedOrderTables = orderTableRepository.findByIdIn(orderTableIds);
         if (savedOrderTables.size() != orderTableIds.size()) {
             throw new IllegalArgumentException(ORDER_TABLE_IS_NOT_EXIST);
         }
-        return tableGroupRepository.save(TableGroup.group(savedOrderTables));
+        TableGroup savedTableGroup = tableGroupRepository.save(TableGroup.group(savedOrderTables));
+        return new TableGroupResponse(savedTableGroup);
     }
 
     @Transactional
