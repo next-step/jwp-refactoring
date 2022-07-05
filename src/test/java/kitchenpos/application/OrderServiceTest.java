@@ -11,7 +11,6 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 import kitchenpos.application.order.OrderService;
@@ -22,6 +21,7 @@ import kitchenpos.domain.order.OrderRepository;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.domain.table.OrderTableRepository;
+import kitchenpos.dto.order.ChangeOrderStatusRequest;
 import kitchenpos.dto.order.CreateOrderRequest;
 import kitchenpos.dto.order.CreateOrderTableItemRequest;
 import kitchenpos.dto.order.OrderResponse;
@@ -95,7 +95,8 @@ class OrderServiceTest extends ScenarioTestFixtureGenerator {
     @DisplayName("존재하지 않는 메뉴를 주문한 경우 예외 발생 검증")
     public void throwException_WhenOrderMenuCountIsOverThanPersistMenusCount() {
         CreateOrderTableItemRequest 존재하지_않는_메뉴의_주문_항목 = new CreateOrderTableItemRequest(1L, 1L);
-        CreateOrderRequest 존재하지_않는_메뉴의_주문_항목이_포함된_주문_생성_요청 = new CreateOrderRequest(1L, Collections.singletonList(존재하지_않는_메뉴의_주문_항목));
+        CreateOrderRequest 존재하지_않는_메뉴의_주문_항목이_포함된_주문_생성_요청 = new CreateOrderRequest(1L,
+            Collections.singletonList(존재하지_않는_메뉴의_주문_항목));
 
         given(menuRepository.findById(anyLong())).willThrow(IllegalArgumentException.class);
 
@@ -146,7 +147,6 @@ class OrderServiceTest extends ScenarioTestFixtureGenerator {
 
         // Then
         verify(orderRepository).findAll();
-        verify(orderLineItemRepository).findAllByOrderId(any());
     }
 
     @Test
@@ -155,18 +155,14 @@ class OrderServiceTest extends ScenarioTestFixtureGenerator {
         // Given
         given(orderRepository.findById(any())).willReturn(Optional.of(order));
 
-        Order updateOrderRequest = new Order();
-        OrderStatus newOrderStatus = OrderStatus.MEAL;
-        updateOrderRequest.changeOrderStatus(newOrderStatus);
+        ChangeOrderStatusRequest updateOrderRequest = new ChangeOrderStatusRequest(OrderStatus.MEAL);
 
         // When
         OrderResponse actualOrder = orderService.changeOrderStatus(order.getId(), updateOrderRequest);
 
         // Then
         verify(orderRepository).findById(any());
-        verify(orderRepository).save(any(Order.class));
-        verify(orderLineItemRepository).findAllByOrderId(any());
-        assertThat(actualOrder.getOrderStatus()).isEqualTo(newOrderStatus);
+        assertThat(actualOrder.getOrderStatus()).isEqualTo(updateOrderRequest.getOrderStatus());
     }
 
     @Test
@@ -174,10 +170,11 @@ class OrderServiceTest extends ScenarioTestFixtureGenerator {
     public void throwException_WhenOrderIsNotExist() {
         // Given
         given(orderRepository.findById(any())).willThrow(IllegalArgumentException.class);
+        ChangeOrderStatusRequest changeOrderStatusRequest = new ChangeOrderStatusRequest(OrderStatus.MEAL);
 
         // When & Then
         assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> orderService.changeOrderStatus(any(), order));
+            .isThrownBy(() -> orderService.changeOrderStatus(any(), changeOrderStatusRequest));
 
         verify(orderRepository).findById(any());
     }
@@ -186,12 +183,12 @@ class OrderServiceTest extends ScenarioTestFixtureGenerator {
     @DisplayName("주문 상태 값이 없는 주문의 주문 상태를 수정하는 경우 예외 발생 검증")
     public void throwException_WhenOrderStatusIsNull() {
         // Given
-        Order order = new Order();
+        ChangeOrderStatusRequest changeOrderStatusRequest = new ChangeOrderStatusRequest();
         given(orderRepository.findById(any())).willReturn(Optional.of(order));
 
         // When & Then
-        assertThatExceptionOfType(NullPointerException.class)
-            .isThrownBy(() -> orderService.changeOrderStatus(order.getId(), order));
+        assertThatExceptionOfType(IllegalArgumentException.class)
+            .isThrownBy(() -> orderService.changeOrderStatus(order.getId(), changeOrderStatusRequest));
 
         verify(orderRepository).findById(any());
     }
@@ -200,14 +197,14 @@ class OrderServiceTest extends ScenarioTestFixtureGenerator {
     @DisplayName("완료 상태인 주문의 주문 상태를 수정하는 경우 예외 발생 검증")
     public void throwException_WhenOrderStatusIsCompletion() {
         // Given
-        Order order = new Order();
         order.changeOrderStatus(OrderStatus.COMPLETION);
+        ChangeOrderStatusRequest changeOrderStatusRequest = new ChangeOrderStatusRequest(OrderStatus.MEAL);
 
         given(orderRepository.findById(any())).willReturn(Optional.of(order));
 
         // When & Then
         assertThatExceptionOfType(IllegalArgumentException.class)
-            .isThrownBy(() -> orderService.changeOrderStatus(any(), order));
+            .isThrownBy(() -> orderService.changeOrderStatus(any(), changeOrderStatusRequest));
 
         verify(orderRepository).findById(any());
     }

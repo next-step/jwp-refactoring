@@ -2,18 +2,15 @@ package kitchenpos.domain.order;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import kitchenpos.domain.table.OrderTable;
 
@@ -23,6 +20,8 @@ public class Order {
 
     public static final String EMPTY_ORDER_TABLE_ERROR_MESSAGE = "주문 테이블이 비어있는 경우 주문을 생성할 수 없습니다.";
     public static final String EMPTY_ORDER_LINE_ITEM_ERROR_MESSAGE = "주문 항목이 없는 경우 주문을 생성할 수 없습니다.";
+    public static final String TARGET_ORDER_STATUS_IS_INVALID_ERROR_MESSAGE = "변경하는 주문 상태가 올바르지 않습니다.";
+    public static final String TARGET_ORDER_STATUS_IS_ALREADY_COMPLETION_ERROR_MESSAGE = "완료 상태인 주문의 주문 상태는 변경할 수 없습니다.";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,9 +40,7 @@ public class Order {
 
     private LocalDateTime orderedTime;
 
-    // TODO 일급 컬렉션
-    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderLineItem> orderLineItems;
+    private OrderLineItems orderLineItems;
 
     public Order() {
 
@@ -54,8 +51,7 @@ public class Order {
         this.orderTable = orderTable;
         this.orderStatus = OrderStatus.COOKING;
         this.orderedTime = LocalDateTime.now();
-        this.orderLineItems = orderLineItems;
-        orderLineItems.forEach(it -> it.setOrder(this));
+        this.orderLineItems = OrderLineItems.of(this, orderLineItems);
     }
 
     private void validateOrder(OrderTable orderTable, List<OrderLineItem> orderLineItems) {
@@ -84,7 +80,7 @@ public class Order {
     }
 
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
+        return orderLineItems.getOrderLineItems();
     }
 
     public OrderTable getOrderTable() {
@@ -95,11 +91,17 @@ public class Order {
         return orderStatus;
     }
 
-    public void setOrderLineItems(final List<OrderLineItem> orderLineItems) {
-        this.orderLineItems = orderLineItems;
+    public void changeOrderStatus(OrderStatus targetOrderStatus) {
+        validateCangeTargetOrderStatus(targetOrderStatus);
+        this.orderStatus = targetOrderStatus;
     }
 
-    public void changeOrderStatus(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
+    private void validateCangeTargetOrderStatus(OrderStatus orderStatus) {
+        if (orderStatus == null) {
+            throw new IllegalArgumentException(TARGET_ORDER_STATUS_IS_INVALID_ERROR_MESSAGE);
+        }
+        if (this.orderStatus.isCompletion()) {
+            throw new IllegalArgumentException(TARGET_ORDER_STATUS_IS_ALREADY_COMPLETION_ERROR_MESSAGE);
+        }
     }
 }

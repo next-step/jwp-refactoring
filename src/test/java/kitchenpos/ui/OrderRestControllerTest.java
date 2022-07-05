@@ -15,10 +15,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import kitchenpos.domain.menu.MenuGroup;
-import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderStatus;
 import kitchenpos.domain.product.Product;
 import kitchenpos.dto.menu.MenuResponse;
+import kitchenpos.dto.order.ChangeOrderStatusRequest;
 import kitchenpos.dto.order.OrderResponse;
 import kitchenpos.dto.table.OrderTableResponse;
 import kitchenpos.utils.BaseTest;
@@ -94,11 +94,10 @@ public class OrderRestControllerTest extends BaseTest {
         // Given
         OrderResponse savedOrder = as(mockMvcUtil.post(주문_생성_요청(비어있지_않은_주문_테이블, 커플_냉삼_메뉴, 고기_더블_더블_메뉴)), OrderResponse.class);
 
-        Order updateOrderStatusRequest = new Order();
-        updateOrderStatusRequest.changeOrderStatus(OrderStatus.MEAL);
+        ChangeOrderStatusRequest changeOrderStatusRequest = new ChangeOrderStatusRequest(OrderStatus.MEAL);
 
         // When
-        ResultActions resultActions = mockMvcUtil.put(주문_상태_변경_요청(updateOrderStatusRequest, savedOrder.getId()));
+        ResultActions resultActions = mockMvcUtil.put(주문_상태_변경_요청(changeOrderStatusRequest, savedOrder.getId()));
 
         // Then
         resultActions

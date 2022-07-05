@@ -9,4 +9,8 @@ public enum OrderStatus {
     public static List<OrderStatus> cnaNotChangeOrderTableStatuses() {
         return Arrays.asList(COOKING, MEAL);
     }
+
+    public boolean isCompletion() {
+        return this == COMPLETION;
+    }
 }

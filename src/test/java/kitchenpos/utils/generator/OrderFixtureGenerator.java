@@ -12,6 +12,7 @@ import kitchenpos.domain.order.Order;
 import kitchenpos.domain.order.OrderLineItem;
 import kitchenpos.domain.table.OrderTable;
 import kitchenpos.dto.menu.MenuResponse;
+import kitchenpos.dto.order.ChangeOrderStatusRequest;
 import kitchenpos.dto.order.CreateOrderRequest;
 import kitchenpos.dto.order.CreateOrderTableItemRequest;
 import kitchenpos.dto.table.OrderTableResponse;
@@ -75,7 +76,7 @@ public class OrderFixtureGenerator {
     }
 
     public static MockHttpServletRequestBuilder 주문_상태_변경_요청(
-        final Order updateOrderStatusRequest,
+        final ChangeOrderStatusRequest updateOrderStatusRequest,
         final Long savedOrderId
     ) throws Exception {
         return putRequestBuilder(UPDATE_ORDER_STATUS_API_URL_TEMPLATE, updateOrderStatusRequest, savedOrderId);
