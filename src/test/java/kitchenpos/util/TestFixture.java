@@ -6,7 +6,7 @@ import kitchenpos.menu.domain.MenuGroup;
 import kitchenpos.order.domain.Order;
 import kitchenpos.order.domain.OrderLineItem;
 import kitchenpos.product.domain.Product;
-import kitchenpos.table.domain.TableGroup;
+import kitchenpos.tablegroup.domain.TableGroup;
 import kitchenpos.table.domain.OrderTable;
 
 import java.lang.reflect.Field;

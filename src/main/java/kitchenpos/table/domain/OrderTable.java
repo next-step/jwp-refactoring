@@ -1,5 +1,7 @@
 package kitchenpos.table.domain;
 
+import kitchenpos.tablegroup.domain.TableGroup;
+
 import javax.persistence.*;
 import java.util.Objects;
 

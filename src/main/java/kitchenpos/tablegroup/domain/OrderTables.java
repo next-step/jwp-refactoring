@@ -1,4 +1,6 @@
-package kitchenpos.table.domain;
+package kitchenpos.tablegroup.domain;
+
+import kitchenpos.table.domain.OrderTable;
 
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
