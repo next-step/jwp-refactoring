@@ -57,7 +57,7 @@ class MenuServiceTest {
     void setUp() {
         후라이드 = new Product("후라이드", BigDecimal.valueOf(15000));
         후라이드치킨 = new Menu("후라이드치킨", BigDecimal.valueOf(15000), 1L);
-        후라이드치킨상품 = new MenuProduct(후라이드, 1L);
+        후라이드치킨상품 = new MenuProduct(1L, 1L);
         후라이드치킨.saveMenuProducts(new MenuProducts(Collections.singletonList(후라이드치킨상품)));
 
         상품 = new MenuRequest("후라이드치킨", BigDecimal.valueOf(15000), 1L,

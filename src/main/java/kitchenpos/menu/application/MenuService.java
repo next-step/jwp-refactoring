@@ -77,7 +77,7 @@ public class MenuService {
         for (MenuProductRequest menuProductRequest : menuProductRequestList) {
             Product product = productRepository.findById(menuProductRequest.getProductId())
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
-            menuProducts.add(new MenuProduct(product, menuProductRequest.getQuantity()));
+            menuProducts.add(new MenuProduct(product.getId(), menuProductRequest.getQuantity()));
         }
         return new MenuProducts(menuProducts);
     }
