@@ -1,13 +1,6 @@
 package kitchenpos.menu.application;
 
-import kitchenpos.menu.application.MenuService;
-import kitchenpos.menu.domain.MenuDao;
-import kitchenpos.menu.domain.MenuGroupDao;
-import kitchenpos.menu.domain.MenuProductDao;
-import kitchenpos.menu.domain.ProductDao;
-import kitchenpos.menu.domain.Menu;
-import kitchenpos.menu.domain.MenuProduct;
-import kitchenpos.menu.domain.Product;
+import kitchenpos.menu.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,7 +23,7 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class MenuServiceTest {
     @Mock
-    private MenuDao menuDao;
+    private MenuRepository menuRepository;
 
     @Mock
     private MenuGroupDao menuGroupDao;
@@ -70,7 +63,7 @@ class MenuServiceTest {
                 .willReturn(Optional.of(첫번째_상품));
         given(productDao.findById(2L))
                 .willReturn(Optional.of(두번째_상품));
-        given(menuDao.save(생성할_메뉴))
+        given(menuRepository.save(생성할_메뉴))
                 .willReturn(new Menu(1L, "짬짜면세트", BigDecimal.valueOf(26000), 1L, 메뉴상품_목록));
         given(menuProductDao.save(첫번째_메뉴상품))
                 .willReturn(첫번째_메뉴상품);
@@ -151,7 +144,7 @@ class MenuServiceTest {
         // given
         Menu 생성된_메뉴 = new Menu(1L, "짬짜면세트", BigDecimal.valueOf(26000), 1L, 메뉴상품_목록);
         List<Menu> 조회할_메뉴_목록 = Arrays.asList(생성된_메뉴);
-        given(menuDao.findAll())
+        given(menuRepository.findAll())
                 .willReturn(조회할_메뉴_목록);
 
         // when
