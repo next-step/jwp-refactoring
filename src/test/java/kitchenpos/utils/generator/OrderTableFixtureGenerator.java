@@ -15,21 +15,15 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 public class OrderTableFixtureGenerator {
 
     private static int NUMBER_OF_GUESTS = 0;
-    private static boolean EMPTY = false;
     private static int COUNTER = 0;
 
     public static OrderTable 비어있는_주문_테이블_생성() {
-        OrderTable orderTable = new OrderTable();
-        orderTable.changeEmpty(true);
-        return orderTable;
+        return new OrderTable(0, true);
     }
 
     public static OrderTable 비어있지_않은_주문_테이블_생성() {
         COUNTER++;
-        OrderTable orderTable = 비어있는_주문_테이블_생성();
-        orderTable.changeNumberOfGuests(NUMBER_OF_GUESTS + COUNTER);
-        orderTable.changeEmpty(EMPTY);
-        return orderTable;
+        return new OrderTable(NUMBER_OF_GUESTS + COUNTER, false);
     }
 
     public static CreateOrderTableRequest 비어있는_주문_테이블_생성_요청_객체() {

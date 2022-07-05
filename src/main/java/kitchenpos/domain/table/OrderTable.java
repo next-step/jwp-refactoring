@@ -13,6 +13,10 @@ import javax.persistence.ManyToOne;
 public class OrderTable {
 
     public static final String CHANGE_EMPTY_TARGET_ORDER_TABLE_IS_GROUPED_ERROR_MESSAGE = "테이블 그룹에 할당된 주문 테이블의 좌석 상태는 수정할 수 없습니다.";
+    public static final int MINIMUM_NUMBER_OF_GUESTS_COUNT = 0;
+    public static final String LEEN_THAN_MINIMUM_NUMBER_OF_GUEST_COUNT_ERROR_MESSAGE = String
+        .format("유효하지 못한 인원 수입니다. %d명 이상 입력해주세요.", MINIMUM_NUMBER_OF_GUESTS_COUNT);
+    public static final String EMPTY_ORDER_TABLE_CHANGE_NUMBER_OF_GUESTS_ERROR_MESSAGE = "비어 있는 주문테이블의 인원 수는 변경할 수 없습니다.";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -95,12 +99,17 @@ public class OrderTable {
     }
 
     public void changeNumberOfGuests(final int numberOfGuests) {
+        validateNumberOfGuests(numberOfGuests);
         this.numberOfGuests = numberOfGuests;
     }
 
-
-    public TableGroup getTableGroup() {
-        return tableGroup;
+    public void validateNumberOfGuests(final int numberOfGuests) {
+        if (numberOfGuests < MINIMUM_NUMBER_OF_GUESTS_COUNT) {
+            throw new IllegalArgumentException(LEEN_THAN_MINIMUM_NUMBER_OF_GUEST_COUNT_ERROR_MESSAGE);
+        }
+        if (isEmpty()) {
+            throw new IllegalArgumentException(EMPTY_ORDER_TABLE_CHANGE_NUMBER_OF_GUESTS_ERROR_MESSAGE);
+        }
     }
 
     public Long getTableGroupIdOrNull() {

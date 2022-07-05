@@ -159,22 +159,16 @@ class TableServiceTest {
         // Given
         OrderTable givenOrderTable = 비어있지_않은_주문_테이블_생성();
         given(orderTableRepository.findById(anyLong())).willReturn(Optional.of(givenOrderTable));
-        given(orderTableRepository.save(any(OrderTable.class))).will(AdditionalAnswers.returnsFirstArg());
 
         final int newNumberOfGuests = 4;
         OrderTable updateNumberOfGuestsRequest = 비어있지_않은_주문_테이블_생성();
         updateNumberOfGuestsRequest.changeNumberOfGuests(4);
 
         // When
-        OrderTable actualOrderTable = tableService.changeNumberOfGuests(anyLong(), updateNumberOfGuestsRequest);
+        OrderTableResponse actualOrderTable = tableService.changeNumberOfGuests(anyLong(), updateNumberOfGuestsRequest);
 
         // Then
         verify(orderTableRepository).findById(anyLong());
-        verify(orderTableRepository).save(any(OrderTable.class));
-        assertThat(actualOrderTable)
-            .usingRecursiveComparison()
-            .ignoringFields("numberOfGuests")
-            .isEqualTo(givenOrderTable);
         assertThat(actualOrderTable.getNumberOfGuests()).isEqualTo(newNumberOfGuests);
     }
 

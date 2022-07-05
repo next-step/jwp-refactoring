@@ -50,23 +50,10 @@ public class TableService {
     }
 
     @Transactional
-    public OrderTable changeNumberOfGuests(final Long orderTableId, final OrderTable orderTable) {
-        final int numberOfGuests = orderTable.getNumberOfGuests();
-
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException();
-        }
-
+    public OrderTableResponse changeNumberOfGuests(final Long orderTableId, final OrderTable orderTable) {
         final OrderTable savedOrderTable = findOrderTableById(orderTableId);
-
-        if (savedOrderTable.isEmpty()) {
-            throw new IllegalArgumentException();
-        }
-
-        savedOrderTable.changeNumberOfGuests(numberOfGuests);
-
-        // TODO : 도메인 내부에서 변경된 사항에 대한 감지를 통해 수정
-        return orderTableRepository.save(savedOrderTable);
+        savedOrderTable.changeNumberOfGuests(orderTable.getNumberOfGuests());
+        return OrderTableResponse.from(savedOrderTable);
     }
 
     private OrderTable findOrderTableById(Long id) {
