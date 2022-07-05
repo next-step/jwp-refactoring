@@ -181,7 +181,7 @@ class TableServiceTest {
     @DisplayName("변경하려는 방문 손님 수는 0명이상이다")
     void changeNumberOfGuests_numberError() {
         // given
-        주문테이블.setEmpty(사용중);
+        주문테이블.changeEmpty(사용중);
         OrderTableRequest 변경테이블 = new OrderTableRequest(-1, 사용중);
         given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(주문테이블));
 

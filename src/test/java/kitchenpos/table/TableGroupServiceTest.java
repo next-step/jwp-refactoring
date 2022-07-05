@@ -94,7 +94,7 @@ class TableGroupServiceTest {
     @DisplayName("단체 지정시 주문 테이블은 이미 주문이 진행중인 테이블이거나 이미 단체 테이블이면 안 된다")
     void create_emptyTableGroupError() {
         // given
-        주문테이블1.setEmpty(false);
+        주문테이블1.changeEmpty(false);
         given(orderTableRepository.findAllByIdIn(any())).willReturn(단체손님.getOrderTables());
 
         // when & then

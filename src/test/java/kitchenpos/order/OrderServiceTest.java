@@ -124,7 +124,7 @@ class OrderServiceTest {
     @DisplayName("주문시 주문테이블 정보를 가지고 있어야 한다")
     void create_nonExistTableError() {
         // given
-        테이블1.setEmpty(빈자리);
+        테이블1.changeEmpty(빈자리);
         given(orderTableRepository.findById(any())).willReturn(Optional.ofNullable(테이블1));
 
         // when & then

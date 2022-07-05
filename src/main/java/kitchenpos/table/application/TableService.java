@@ -43,10 +43,10 @@ public class TableService {
 
         if (orderRepository.existsByOrderTableIdAndOrderStatusIn(
                 orderTableId, Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("주문상태를 변경할 수 없습니다.");
         }
 
-        orderTable.setEmpty(orderTableRequest.getEmpty());
+        orderTable.changeEmpty(orderTableRequest.getEmpty());
 
         return OrderTableResponse.of(orderTable);
     }

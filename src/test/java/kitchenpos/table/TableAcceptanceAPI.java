@@ -21,7 +21,7 @@ public class TableAcceptanceAPI {
     }
 
     public static ExtractableResponse<Response> 테이블_상태_변경_요청(OrderTable orderTable, boolean empty) {
-        orderTable.setEmpty(empty);
+        orderTable.changeEmpty(empty);
 
         return AcceptanceTest.doPut("/api/tables/" + orderTable.getId() + "/empty", orderTable);
     }
