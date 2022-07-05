@@ -52,4 +52,14 @@ public class TableService {
         savedOrderTable.changeNumberOfGuests(numberOfGuests);
         return new TableResponse(savedOrderTable);
     }
+
+    public void groupBy(Long tableGroupId, List<Long> orderTableIds) {
+        List<OrderTable> orderTables = orderTableRepository.findByIdIn(orderTableIds);
+        orderTables.forEach(orderTable -> orderTable.groupBy(tableGroupId));
+    }
+
+    public void ungroup(Long tableGroupId) {
+        List<OrderTable> orderTables = orderTableRepository.findByTableGroupId(tableGroupId);
+        orderTables.forEach(OrderTable::ungroup);
+    }
 }

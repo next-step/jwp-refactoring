@@ -1,4 +1,4 @@
-package kitchenpos.table.domain;
+package kitchenpos.table_group.domain;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -19,21 +19,13 @@ public class TableGroup {
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdDate;
-    @Embedded
-    private final GroupTables groupTables = new GroupTables();
 
-    public static TableGroup group(List<OrderTable> orderTables) {
-        if (CollectionUtils.isEmpty(orderTables) || orderTables.size() < MINIMUM_GROUP_SIZE) {
+    public static TableGroup group(List<GroupTable> groupTables) {
+        if (CollectionUtils.isEmpty(groupTables) || groupTables.size() < MINIMUM_GROUP_SIZE) {
             throw new IllegalArgumentException(ORDER_TABLE_LEAST_2);
         }
-        TableGroup tableGroup = new TableGroup();
-        orderTables.forEach(tableGroup::addTable);
-        return tableGroup;
-    }
-
-    private void addTable(OrderTable orderTable) {
-        groupTables.add(orderTable);
-        orderTable.groupBy(this);
+        groupTables.forEach(GroupTable::group);
+        return new TableGroup();
     }
 
     public Long getId() {
@@ -42,13 +34,5 @@ public class TableGroup {
 
     public LocalDateTime getCreatedDate() {
         return createdDate;
-    }
-
-    public GroupTables getGroupTables() {
-        return groupTables;
-    }
-
-    public void ungroup() {
-        groupTables.ungroup();
     }
 }

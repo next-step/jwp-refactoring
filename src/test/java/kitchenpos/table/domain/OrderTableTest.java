@@ -29,7 +29,7 @@ class OrderTableTest {
     @Test
     void groupedTable_is_cannot_change() {
         OrderTable orderTable = new OrderTable(0, true);
-        orderTable.groupBy(new TableGroup());
+        orderTable.groupBy(1L);
         assertThatThrownBy(() -> orderTable.changeEmpty(false))
                 .isInstanceOf(IllegalArgumentException.class);
     }
@@ -62,10 +62,10 @@ class OrderTableTest {
     @Test
     void group() {
         OrderTable orderTable = new OrderTable(0, true);
-        TableGroup tableGroup = new TableGroup();
-        orderTable.groupBy(tableGroup);
+        Long tableGroupId = 1L;
+        orderTable.groupBy(tableGroupId);
         assertAll(() -> {
-            assertThat(orderTable.getTableGroup()).isEqualTo(tableGroup);
+            assertThat(orderTable.getTableGroupId()).isEqualTo(tableGroupId);
             assertThat(orderTable.isEmpty()).isFalse();
         });
     }
@@ -74,9 +74,9 @@ class OrderTableTest {
     @Test
     void ungroup() {
         OrderTable orderTable = new OrderTable(0, true);
-        TableGroup tableGroup = new TableGroup();
-        orderTable.groupBy(tableGroup);
+        Long tableGroupId = 1L;
+        orderTable.groupBy(tableGroupId);
         orderTable.ungroup();
-        assertThat(orderTable.getTableGroup()).isNull();
+        assertThat(orderTable.getTableGroupId()).isNull();
     }
 }

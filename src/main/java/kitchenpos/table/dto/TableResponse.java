@@ -10,9 +10,7 @@ public class TableResponse {
 
     public TableResponse(OrderTable orderTable) {
         id = orderTable.getId();
-        if (orderTable.getTableGroup() != null) {
-            tableGroupId = orderTable.getTableGroup().getId();
-        }
+        tableGroupId = orderTable.getTableGroupId();
         numberOfGuests = orderTable.getNumberOfGuests();
         empty = orderTable.isEmpty();
     }

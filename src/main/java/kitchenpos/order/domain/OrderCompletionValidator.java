@@ -2,7 +2,7 @@ package kitchenpos.order.domain;
 
 import kitchenpos.order.repository.OrderRepository;
 import kitchenpos.table.domain.TableChangeEmptyValidator;
-import kitchenpos.table.domain.TableUngroupValidator;
+import kitchenpos.table_group.domain.TableUngroupValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
