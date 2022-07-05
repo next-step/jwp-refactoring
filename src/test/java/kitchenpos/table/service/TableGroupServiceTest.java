@@ -1,4 +1,4 @@
-package kitchenpos.table;
+package kitchenpos.table.service;
 
 import kitchenpos.order.domain.OrderRepository;
 import kitchenpos.table.application.TableGroupService;

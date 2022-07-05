@@ -57,7 +57,7 @@ class OrderServiceTest {
         주문항목_생성(주문항목_1, 주문_1);
         주문항목_2 = OrderLineItem.of(2L, 1L);
         주문항목_생성(주문항목_2, 주문_1);
-        주문테이블_1 = OrderTable.of(1L, null, 2, false);
+        주문테이블_1 = OrderTable.of(null, 2, false);
         주문_1 = Order.of(주문테이블_1, Arrays.asList(주문항목_1, 주문항목_2));
     }
 
