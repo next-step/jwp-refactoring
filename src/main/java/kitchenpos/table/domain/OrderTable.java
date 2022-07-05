@@ -58,14 +58,21 @@ public class OrderTable {
         this.empty = true;
     }
 
-    public void changeNumberOfGuests(int numberOfGuests) {
+    public void changeNumberOfGuests(int changeNumber) {
         validEmpty();
-        this.numberOfGuests = numberOfGuests;
+        validCheckSize(changeNumber);
+        this.numberOfGuests = changeNumber;
     }
 
     private void validEmpty() {
         if (isEmpty()) {
             throw new IllegalArgumentException("주문 테이블이 존재하지 않습니다.");
+        }
+    }
+
+    private void validCheckSize(int changeNumber) {
+        if (changeNumber < 0) {
+            throw new IllegalArgumentException("0명보다 작을 수 없습니다.");
         }
     }
 

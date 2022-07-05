@@ -55,7 +55,6 @@ public class TableService {
     @Transactional
     public OrderTableResponse changeNumberOfGuests(final Long id, OrderTableRequest request) {
         final int numberOfGuests = request.getNumberOfGuests();
-        validNumberOfGuests(numberOfGuests);
 
         OrderTable orderTable = orderTableRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 값이 존재하지 않습니다."));
@@ -63,11 +62,5 @@ public class TableService {
         orderTable = orderTableRepository.save(orderTable);
 
         return OrderTableResponse.of(orderTable);
-    }
-
-    private void validNumberOfGuests(int numberOfGuests) {
-        if (numberOfGuests < 0) {
-            throw new IllegalArgumentException("0명보다 작을 수 없습니다.");
-        }
     }
 }
