@@ -44,7 +44,7 @@ public class MenuProduct {
         return quantity;
     }
 
-    public void setMenu(Menu menu) {
+    public void saveMenu(Menu menu) {
         this.menu = menu;
     }
 }

@@ -58,7 +58,7 @@ public class Order {
         return orderLineItems.getOrderLineItems();
     }
 
-    public void setOrderLineItems(final OrderLineItems orderLineItems) {
+    public void saveOrderLineItems(final OrderLineItems orderLineItems) {
         this.orderLineItems = orderLineItems;
     }
 

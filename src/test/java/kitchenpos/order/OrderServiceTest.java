@@ -64,8 +64,8 @@ class OrderServiceTest {
 
         주문 = new Order(테이블1);
 
-        주문.setOrderLineItems(new OrderLineItems(Collections.singletonList(주문내역)));
-        주문내역.setOrder(주문);
+        주문.saveOrderLineItems(new OrderLineItems(Collections.singletonList(주문내역)));
+        주문내역.saveOrder(주문);
 
         주문요청 = new OrderRequest(1L,
                 Collections.singletonList(new OrderLineItemRequest(주문내역.getMenuId(), 주문내역.getQuantity())));

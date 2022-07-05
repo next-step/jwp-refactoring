@@ -50,7 +50,7 @@ public class Menu {
         return menuProducts.getMenuProducts();
     }
 
-    public void setMenuProducts(MenuProducts menuProducts) {
+    public void saveMenuProducts(MenuProducts menuProducts) {
         this.menuProducts = menuProducts;
     }
 

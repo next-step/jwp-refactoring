@@ -20,8 +20,8 @@ public class MenuProducts {
         return menuProducts;
     }
 
-    public void setMenu(Menu menu) {
-        menuProducts.forEach(menuProduct -> menuProduct.setMenu(menu));
-        menu.setMenuProducts(this);
+    public void saveMenu(Menu menu) {
+        menuProducts.forEach(menuProduct -> menuProduct.saveMenu(menu));
+        menu.saveMenuProducts(this);
     }
 }

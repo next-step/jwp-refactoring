@@ -26,11 +26,11 @@ public class OrderLineItems {
         return orderLineItems;
     }
 
-    public void setOrder(Order savedOrder) {
+    public void saveOrder(Order savedOrder) {
         for (final OrderLineItem orderLineItem : orderLineItems) {
-            orderLineItem.setOrder(savedOrder);
+            orderLineItem.saveOrder(savedOrder);
         }
-        savedOrder.setOrderLineItems(this);
+        savedOrder.saveOrderLineItems(this);
 
     }
 }

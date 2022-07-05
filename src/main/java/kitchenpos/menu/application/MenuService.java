@@ -43,7 +43,7 @@ public class MenuService {
         Menu savedMenu = menuRepository.save(menuRequest.toMenu());
 
         MenuProducts menuProducts = createMenuProduct(menuRequest.getMenuProducts());
-        menuProducts.setMenu(savedMenu);
+        menuProducts.saveMenu(savedMenu);
         menuProductRepository.saveAll(menuProducts.getMenuProducts());
 
         return MenuResponse.of(savedMenu);

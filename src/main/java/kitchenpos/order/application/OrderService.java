@@ -43,7 +43,7 @@ public class OrderService {
         final Order savedOrder = orderRepository.save(new Order(orderTable));
 
         OrderLineItems orderLineItems = validateOrderLineItemsCheck(orderRequest.getOrderLineItems());
-        orderLineItems.setOrder(savedOrder);
+        orderLineItems.saveOrder(savedOrder);
         orderLineItemRepository.saveAll(orderLineItems.getOrderLineItems());
 
         return OrderResponse.of(savedOrder);
