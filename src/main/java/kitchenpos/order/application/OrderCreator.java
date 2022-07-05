@@ -1,4 +1,4 @@
-package kitchenpos.order.creator;
+package kitchenpos.order.application;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -1,4 +1,4 @@
-package kitchenpos.table.creator;
+package kitchenpos.table.application;
 
 import java.util.List;
 import java.util.stream.Collectors;

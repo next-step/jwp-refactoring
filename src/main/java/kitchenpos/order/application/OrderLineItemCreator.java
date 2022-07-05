@@ -1,4 +1,4 @@
-package kitchenpos.order.creator;
+package kitchenpos.order.application;
 
 import kitchenpos.menu.domain.Menu;
 import kitchenpos.order.domain.OrderLineItem;

@@ -57,8 +57,13 @@ public class Menu {
         this.menuGroup = menuGroup;
     }
 
-    public void setMenuProducts(MenuProducts menuProducts){
+    public void setMenuProducts(MenuProducts menuProducts) {
         this.menuProducts = menuProducts;
     }
 
+    public void validateMenuGroup() {
+        if (menuGroup != null && menuGroup.getId() == null) {
+            throw new IllegalArgumentException();
+        }
+    }
 }

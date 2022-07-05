@@ -1,4 +1,4 @@
-package kitchenpos.menu.creator;
+package kitchenpos.menu.application;
 
 import java.util.List;
 import kitchenpos.menu.domain.Menu;

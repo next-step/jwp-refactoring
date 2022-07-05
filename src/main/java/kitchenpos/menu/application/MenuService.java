@@ -6,7 +6,6 @@ import kitchenpos.menu.domain.MenuProducts;
 import kitchenpos.product.domain.Price;
 import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.repository.MenuRepository;
-import kitchenpos.menu.creator.MenuCreator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,18 +25,12 @@ public class MenuService {
         Menu menu = menuCreator.toMenu(menuRequest);
         final Price price = menu.getPrice();
 
-        validateMenuGroup(menu);
+        menu.validateMenuGroup();
 
         final MenuProducts menuProducts = menu.getMenuProducts();
         menuProducts.validateTotalPriceNotExpensiveThanEach(price);
 
         return menuRepository.save(menu);
-    }
-
-    private void validateMenuGroup(Menu menu) {
-        if (menu.getMenuGroup() != null && menu.getMenuGroup().getId() == null) {
-            throw new IllegalArgumentException();
-        }
     }
 
     public List<Menu> list() {
