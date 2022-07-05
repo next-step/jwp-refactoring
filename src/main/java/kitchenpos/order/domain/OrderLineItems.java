@@ -1,7 +1,5 @@
 package kitchenpos.order.domain;
 
-import kitchenpos.order.domain.Order;
-import kitchenpos.order.domain.OrderLineItem;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.CascadeType;

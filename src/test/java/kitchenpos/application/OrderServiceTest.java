@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+import static kitchenpos.domain.OrderLineItemsTest.*;
 import static kitchenpos.order.domain.OrderStatus.COMPLETION;
 import static kitchenpos.order.domain.OrderStatus.MEAL;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,7 +37,7 @@ public class OrderServiceTest {
     @Test
     void 중복된_메뉴가_있을_경우_등록할_수_없다() {
         // given
-        List<OrderLineItem> orderLineItems = Arrays.asList(new OrderLineItem(1L, 1), new OrderLineItem(1L, 1));
+        List<OrderLineItem> orderLineItems = createDuplicateOrderLineItems().elements();
         Order order = new Order(1L, orderLineItems, orderedTime());
 
         // when & then
@@ -109,7 +110,7 @@ public class OrderServiceTest {
     }
 
     private List<OrderLineItem> createOrderLineItems() {
-        return Arrays.asList(new OrderLineItem(1L, 1), new OrderLineItem(2L, 1));
+        return Arrays.asList(new OrderLineItem(createOrderMenu(), 1), new OrderLineItem(createOrderMenu2(), 1));
     }
 
     public static LocalDateTime orderedTime() {
