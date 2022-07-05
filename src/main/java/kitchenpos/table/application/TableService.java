@@ -1,32 +1,27 @@
 package kitchenpos.table.application;
 
-import kitchenpos.order.domain.OrderRepository;
-import kitchenpos.order.domain.OrderStatus;
 import kitchenpos.table.domain.Empty;
 import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTableRepository;
 import kitchenpos.table.dto.*;
+import kitchenpos.table.validator.OrderTableValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-
-import static kitchenpos.common.Messages.ORDER_TABLE_CANNOT_EMPTY;
-import static kitchenpos.common.Messages.ORDER_TABLE_STATUS_CANNOT_UPDATE;
 
 @Service
 @Transactional(readOnly = true)
 public class TableService {
     private final OrderTableRepository orderTableRepository;
-    private final OrderRepository orderRepository;
+    private final OrderTableValidator orderTableValidator;
 
-    public TableService(OrderTableRepository orderTableRepository, OrderRepository orderRepository) {
+    public TableService(OrderTableRepository orderTableRepository, OrderTableValidator orderTableValidator) {
         this.orderTableRepository = orderTableRepository;
-        this.orderRepository = orderRepository;
+        this.orderTableValidator = orderTableValidator;
     }
 
     @Transactional
@@ -46,14 +41,7 @@ public class TableService {
     @Transactional
     public ChangeEmptyResponse changeEmpty(final Long orderTableId, final ChangeEmptyRequest changeEmptyRequest) {
         OrderTable orderTable = findById(orderTableId);
-        orderTable.validateHasOrderTable();
-
-        if (orderRepository.existsByOrderTableAndOrderStatusIn(
-                orderTable,
-                Arrays.asList(OrderStatus.COOKING, OrderStatus.MEAL))
-        ) {
-            throw new IllegalArgumentException(ORDER_TABLE_STATUS_CANNOT_UPDATE);
-        }
+        orderTableValidator.validateChangeEmpty(orderTable);
 
         orderTable.setEmpty(Empty.of(changeEmptyRequest.isEmpty()));
         return ChangeEmptyResponse.of(orderTableRepository.save(orderTable));
@@ -67,9 +55,7 @@ public class TableService {
         NumberOfGuests numberOfGuests = NumberOfGuests.of(changeNumberOfGuestsRequest.getNumberOfGuests());
         OrderTable orderTable = findById(orderTableId);
 
-        if (orderTable.isEmpty()) {
-            throw new IllegalArgumentException(ORDER_TABLE_CANNOT_EMPTY);
-        }
+        orderTableValidator.validateChangeNumberOfGuests(orderTable);
 
         orderTable.setNumberOfGuests(numberOfGuests);
         return ChangeNumberOfGuestsResponse.of(orderTableRepository.save(orderTable));
