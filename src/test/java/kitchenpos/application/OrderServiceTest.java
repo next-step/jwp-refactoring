@@ -26,40 +26,6 @@ public class OrderServiceTest {
     private OrderService orderService;
 
     @Test
-    void 주문_항목이_비어있을_경우_등록할_수_없다() {
-        // when & then
-        assertThatThrownBy(() ->
-                orderService.create(new Order(1L, null, orderedTime()))
-        ).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("주문 항목이 없습니다.");
-    }
-
-    @Test
-    void 중복된_메뉴가_있을_경우_등록할_수_없다() {
-        // given
-        List<OrderLineItem> orderLineItems = createDuplicateOrderLineItems().elements();
-        Order order = new Order(1L, orderLineItems, orderedTime());
-
-        // when & then
-        assertThatThrownBy(() ->
-                orderService.create(order)
-        ).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("중복된 메뉴가 있습니다.");
-    }
-
-    @Test
-    void 주문_테이블이_빈_테이블이면_등록할_수_없다() {
-        // given
-        Order order = new Order(1L, createOrderLineItems(), orderedTime());
-
-        // when & then
-        assertThatThrownBy(() ->
-                orderService.create(order)
-        ).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("빈 테이블은 주문을 할 수 없습니다.");
-    }
-
-    @Test
     void 주문을_등록한다() {
         // when
         Order result = orderService.create(new Order(8L, createOrderLineItems(), orderedTime()));

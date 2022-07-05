@@ -65,12 +65,12 @@ public class Order {
         this.orderLineItems = new OrderLineItems(orderLineItems);
     }
 
-    public void validateDuplicateMenu(long menuCount) {
-        orderLineItems.validateDuplicateMenu(menuCount);
-    }
-
     public List<Long> getMenuIds() {
         return orderLineItems.getMenuIds();
+    }
+
+    public long orderLineItemSize() {
+        return orderLineItems.size();
     }
 
     @Override
@@ -85,4 +85,5 @@ public class Order {
     public int hashCode() {
         return Objects.hash(id);
     }
+
 }

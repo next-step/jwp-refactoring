@@ -34,15 +34,6 @@ public class OrderLineItemsTest {
         assertThat(result).containsExactly(1L, 2L);
     }
 
-    @Test
-    void 중복된_메뉴가_있는지_확인한다() {
-        // when & then
-        assertThatThrownBy(() ->
-                createDuplicateOrderLineItems().validateDuplicateMenu(1)
-        ).isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("중복된 메뉴가 있습니다.");
-    }
-
     public static OrderLineItems createOrderLineItems() {
         return new OrderLineItems(Arrays.asList(
                 new OrderLineItem(createOrderMenu(), 1),
