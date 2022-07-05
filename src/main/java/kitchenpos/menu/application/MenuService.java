@@ -1,7 +1,6 @@
 package kitchenpos.menu.application;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import kitchenpos.menu.dao.MenuProductRepository;
@@ -73,12 +72,11 @@ public class MenuService {
     }
 
     private MenuProducts createMenuProduct(List<MenuProductRequest> menuProductRequestList) {
-        List<MenuProduct> menuProducts = new ArrayList<>();
-        for (MenuProductRequest menuProductRequest : menuProductRequestList) {
-            Product product = productRepository.findById(menuProductRequest.getProductId())
-                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
-            menuProducts.add(new MenuProduct(product.getId(), menuProductRequest.getQuantity()));
-        }
+        List<MenuProduct> menuProducts = menuProductRequestList.stream()
+                .map(menuProductRequest -> new MenuProduct(menuProductRequest.getProductId(),
+                        menuProductRequest.getQuantity()))
+                .collect(Collectors.toList());
+
         return new MenuProducts(menuProducts);
     }
 }
