@@ -1,13 +1,14 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
-import kitchenpos.dto.OrderTableRequest;
-import kitchenpos.dto.OrderTableResponse;
-import kitchenpos.exception.OrderStatusException;
-import kitchenpos.exception.OrderTableException;
-import kitchenpos.repository.OrderRepository;
-import kitchenpos.repository.OrderTableRepository;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.OrderTableRequest;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.order.exception.OrderStatusException;
+import kitchenpos.table.exception.OrderTableException;
+import kitchenpos.order.repository.OrderRepository;
+import kitchenpos.table.repository.OrderTableRepository;
+import kitchenpos.table.application.TableService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

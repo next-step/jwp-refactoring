@@ -1,7 +1,11 @@
 package kitchenpos.domain;
 
-import kitchenpos.exception.MenuProductException;
-import org.assertj.core.api.Assertions;
+import kitchenpos.menu.exception.MenuProductException;
+import kitchenpos.menu.domain.Menu;
+import kitchenpos.menu.domain.MenuGroup;
+import kitchenpos.menu.domain.MenuProduct;
+import kitchenpos.menu.domain.MenuProducts;
+import kitchenpos.product.domain.Product;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -9,7 +13,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 class MenuTest {
 

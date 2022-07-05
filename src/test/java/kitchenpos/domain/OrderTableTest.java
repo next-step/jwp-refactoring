@@ -1,12 +1,14 @@
 package kitchenpos.domain;
 
-import kitchenpos.exception.OrderStatusException;
-import kitchenpos.exception.OrderTableException;
+import kitchenpos.table.exception.OrderTableException;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
+
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 class OrderTableTest {
 
@@ -29,7 +31,7 @@ class OrderTableTest {
     @DisplayName("테이블 비어있는지 여부를 변경할 때, 단체가 지정되어 있으면 변경할 수 없다.")
     void changeEmptyHasTableGroup() {
         //given
-        TableGroup 단체 = new TableGroup();
+        TableGroup 단체 = new TableGroup(1L, LocalDateTime.now());
         테이블 = new OrderTable(1L, 단체, 2, false);
 
         //then
@@ -78,7 +80,7 @@ class OrderTableTest {
     @DisplayName("테이블의 단체를 해제하면 해제된다.")
     void unGroup() {
         //given
-        TableGroup 단체 = new TableGroup();
+        TableGroup 단체 = new TableGroup(1L, LocalDateTime.now());
         테이블 = new OrderTable(1L, 단체, 2, false);
 
         //when

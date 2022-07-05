@@ -1,11 +1,12 @@
 package kitchenpos.domain;
 
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableGroup;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import static kitchenpos.factory.TableGroupFixture.테이블_생성;
 import static org.assertj.core.api.Assertions.assertThat;

@@ -1,9 +1,7 @@
 package kitchenpos.factory;
 
-import kitchenpos.domain.OrderTable;
-import kitchenpos.domain.TableGroup;
-
-import java.time.LocalDateTime;
+import kitchenpos.table.domain.OrderTable;
+import kitchenpos.table.domain.TableGroup;
 
 public class TableGroupFixture {
     public static OrderTable 테이블_생성(Long id) {

@@ -1,10 +1,11 @@
 package kitchenpos.application;
 
-import kitchenpos.domain.Product;
-import kitchenpos.dto.ProductRequest;
-import kitchenpos.dto.ProductResponse;
-import kitchenpos.exception.PriceException;
-import kitchenpos.repository.ProductRepository;
+import kitchenpos.product.domain.Product;
+import kitchenpos.product.dto.ProductRequest;
+import kitchenpos.product.dto.ProductResponse;
+import kitchenpos.product.exception.PriceException;
+import kitchenpos.product.application.ProductService;
+import kitchenpos.product.repository.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
