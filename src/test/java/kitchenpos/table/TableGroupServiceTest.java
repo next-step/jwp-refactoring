@@ -130,6 +130,6 @@ class TableGroupServiceTest {
         // when & then
         assertThatIllegalArgumentException().isThrownBy(
                 () -> tableGroupService.ungroup(1L)
-        );
+        ).withMessageContaining("계산 완료 상태가 아닌 경우 단체를 해제할 수 없습니다.");
     }
 }
