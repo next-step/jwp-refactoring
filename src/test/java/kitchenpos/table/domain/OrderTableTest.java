@@ -6,8 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
-import static kitchenpos.table.TableGenerator.주문_테이블_생성;
-import static kitchenpos.table.TableGenerator.테이블_그룹_생성;
+import static kitchenpos.table.TableGenerator.*;
 import static kitchenpos.table.domain.NumberOfGuestsTest.손님_수_생성;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -19,7 +18,7 @@ class OrderTableTest {
     void changeEmptyByBelongTableGroupTest() {
         // given
         OrderTable 주문_테이블 = 주문_테이블_생성(손님_수_생성(10));
-        주문_테이블.joinGroup(테이블_그룹_생성(Arrays.asList(주문_테이블, 주문_테이블)));
+        주문_테이블.joinGroup(테이블_그룹_생성(주문_테이블_목록_생성(Arrays.asList(주문_테이블, 주문_테이블))));
 
         // then
         assertThatIllegalArgumentException().isThrownBy(() -> 주문_테이블.updateEmpty(false, OrderStatus.COMPLETION));

@@ -6,11 +6,10 @@ import kitchenpos.Acceptance.utils.RestAssuredRequest;
 import kitchenpos.table.domain.NumberOfGuests;
 import kitchenpos.table.domain.OrderTable;
 import kitchenpos.table.domain.OrderTables;
-import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableCreateRequest;
-import kitchenpos.table.dto.TableGroupCreateRequest;
+import kitchenpos.tableGroup.domain.TableGroup;
+import kitchenpos.tableGroup.dto.TableGroupCreateRequest;
 
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -27,8 +26,8 @@ public class TableGenerator {
         return new OrderTables(orderTables);
     }
 
-    public static TableGroup 테이블_그룹_생성(List<OrderTable> orderTables) {
-        return new TableGroup(LocalDateTime.now(), orderTables);
+    public static TableGroup 테이블_그룹_생성(OrderTables orderTables) {
+        return new TableGroup(orderTables);
     }
 
     public static OrderTableCreateRequest 주문_테이블_생성_요청(int numberOfGuests) {

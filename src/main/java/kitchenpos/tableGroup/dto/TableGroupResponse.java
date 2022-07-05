@@ -1,6 +1,7 @@
-package kitchenpos.table.dto;
+package kitchenpos.tableGroup.dto;
 
-import kitchenpos.table.domain.TableGroup;
+import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.tableGroup.domain.TableGroup;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,6 +15,7 @@ public class TableGroupResponse {
 
         response.id = tableGroup.getId();
         response.orderTableResponses = tableGroup.getOrderTables()
+                .getValue()
                 .stream()
                 .map(OrderTableResponse::from)
                 .collect(Collectors.toList());
