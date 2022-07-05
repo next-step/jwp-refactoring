@@ -1,6 +1,7 @@
 package kitchenpos.table.domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
@@ -22,7 +23,7 @@ public class OrderTables {
     }
 
     public List<OrderTable> getOrderTables() {
-        return orderTables;
+        return Collections.unmodifiableList(orderTables);
     }
 
     private void validateOrderTablesCheck(List<OrderTable> orderTables) {

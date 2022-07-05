@@ -1,6 +1,7 @@
 package kitchenpos.order.domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
@@ -23,7 +24,7 @@ public class OrderLineItems {
     }
 
     public List<OrderLineItem> getOrderLineItems() {
-        return orderLineItems;
+        return Collections.unmodifiableList(orderLineItems);
     }
 
     public void saveOrder(Order savedOrder) {
