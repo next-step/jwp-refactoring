@@ -26,4 +26,8 @@ public class ProductService {
     public List<ProductResponse> list() {
         return ProductResponse.convertToProductResponses(productRepository.findAll());
     }
+
+    public Product findByIdOrElseThrow(long productId) {
+        return productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException());
+    }
 }

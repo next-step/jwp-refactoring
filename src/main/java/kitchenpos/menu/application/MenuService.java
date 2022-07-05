@@ -9,7 +9,7 @@ import kitchenpos.menu.dto.MenuRequest;
 import kitchenpos.menu.dto.MenuResponse;
 import kitchenpos.menu.repository.MenuRepository;
 import kitchenpos.menugroup.repository.MenuGroupRepository;
-import kitchenpos.product.repository.ProductRepository;
+import kitchenpos.product.application.ProductService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,14 +18,14 @@ public class MenuService {
 
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
-    private final ProductRepository productRepository;
+    private final ProductService productService;
 
     public MenuService(final MenuRepository menuRepository,
         final MenuGroupRepository menuGroupRepository,
-        final ProductRepository productRepository) {
+        final ProductService productService) {
         this.menuRepository = menuRepository;
         this.menuGroupRepository = menuGroupRepository;
-        this.productRepository = productRepository;
+        this.productService = productService;
     }
 
     @Transactional
@@ -40,7 +40,7 @@ public class MenuService {
 
     private List<MenuProduct> convertToMenuProduct(List<MenuProductRequest> menuProductRequests) {
         return menuProductRequests.stream()
-            .map(request -> new MenuProduct(productRepository.findById(request.getProductId()).orElseThrow(() -> new IllegalArgumentException()), request.getQuantity())).
+            .map(request -> new MenuProduct(productService.findByIdOrElseThrow(request.getProductId()), request.getQuantity())).
             collect(Collectors.toList());
     }
 
