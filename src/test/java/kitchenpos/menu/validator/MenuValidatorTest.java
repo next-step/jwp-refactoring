@@ -45,7 +45,7 @@ class MenuValidatorTest {
 
     @Test
     @DisplayName("메뉴를 생성할때 정상적으로 유효성 검사가 성공 된다")
-    void validate() {
+    void validateCreateMenu() {
         MenuRequest 정상_메뉴 = MenuRequest.of(
                 "추천 기본 메뉴",
                 BigDecimal.valueOf(17_000),
