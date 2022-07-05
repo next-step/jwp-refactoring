@@ -17,6 +17,7 @@ import kitchenpos.table.domain.OrderTableDao;
 import kitchenpos.table.domain.TableGroup;
 import kitchenpos.table.dto.OrderTableRequest;
 import kitchenpos.table.dto.OrderTableResponse;
+import kitchenpos.table.dto.OrderTableStatusRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -81,12 +82,11 @@ class TableServiceTest {
     @DisplayName("주문 테이블의 빈 테이블 상태를 변경한다.")
     void changeEmpty() {
         // given
-        given(orderTableDao.save(any(OrderTable.class))).willReturn(주문_테이블);
         given(orderTableDao.findById(anyLong())).willReturn(Optional.of(주문_테이블));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(false);
+        given(orderDao.existsByOrderTableAndOrderStatusIn(any(OrderTable.class), anyList())).willReturn(false);
 
         // when
-        OrderTable changedOrderTable = tableService.changeEmpty(주문_테이블.getId(), 비어있는_주문_테이블);
+        OrderTableResponse changedOrderTable = tableService.changeEmpty(주문_테이블.getId(), new OrderTableStatusRequest(비어있는_주문_테이블.isEmpty()));
 
         // then
         assertThat(changedOrderTable.isEmpty()).isFalse();
@@ -99,7 +99,7 @@ class TableServiceTest {
         OrderTable 테이블_그룹_있는_주문_테이블 = 테이블_그룹_있는_주문_테이블_생성(1L, 비어있는_주문_테이블.getTableGroup(), 0, false);
 
         // when then
-        assertThatThrownBy(() -> tableService.changeEmpty(테이블_그룹_있는_주문_테이블.getId(), 테이블_그룹_있는_주문_테이블))
+        assertThatThrownBy(() -> tableService.changeEmpty(테이블_그룹_있는_주문_테이블.getId(), new OrderTableStatusRequest(테이블_그룹_있는_주문_테이블.isEmpty())))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -110,7 +110,7 @@ class TableServiceTest {
         given(orderTableDao.findById(주문_테이블.getId())).willReturn(Optional.empty());
 
         // when then
-        assertThatThrownBy(() -> tableService.changeEmpty(주문_테이블.getId(), 비어있는_주문_테이블))
+        assertThatThrownBy(() -> tableService.changeEmpty(주문_테이블.getId(), new OrderTableStatusRequest(비어있는_주문_테이블.isEmpty())))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -119,10 +119,10 @@ class TableServiceTest {
     void changeEmptyByInvalidOrderStatus() {
         // given
         given(orderTableDao.findById(anyLong())).willReturn(Optional.of(주문_테이블));
-        given(orderDao.existsByOrderTableIdAndOrderStatusIn(anyLong(), anyList())).willReturn(true);
+        given(orderDao.existsByOrderTableAndOrderStatusIn(any(OrderTable.class), anyList())).willReturn(true);
 
         // when then
-        assertThatThrownBy(() -> tableService.changeEmpty(주문_테이블.getId(), 비어있는_주문_테이블))
+        assertThatThrownBy(() -> tableService.changeEmpty(주문_테이블.getId(), new OrderTableStatusRequest(비어있는_주문_테이블.isEmpty())))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
